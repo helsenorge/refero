@@ -1,0 +1,6 @@
+node_modules/
+dist/
+lib/
+.jest-cache/
+coverage/
+test-report.xml
