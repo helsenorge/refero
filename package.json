@@ -23,7 +23,7 @@
     "chai": "^3.5.0"
   },
   "dependencies": {    
-    "@helsenorge/toolkit": "^1.8.12",
+    "@helsenorge/toolkit": "^1.8.13",
     "react-redux": "^5.0.6",
     "marked": "^0.3.17",
     "uuid": "2.0.3"
