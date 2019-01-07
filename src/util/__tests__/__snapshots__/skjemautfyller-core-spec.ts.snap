@@ -1,0 +1,18 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`getItemWithTypeFromArray should not fail on empty answer array 1`] = `undefined`;
+
+exports[`getItemWithTypeFromArray should return correct items 1`] = `
+Array [
+  Object {
+    "answer": Array [
+      Object {
+        "valueAttachment": Object {
+          "title": "",
+        },
+      },
+    ],
+    "linkId": "123",
+  },
+]
+`;

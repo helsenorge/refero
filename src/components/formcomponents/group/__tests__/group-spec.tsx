@@ -1,0 +1,35 @@
+/* tslint:disable */
+import * as React from 'react';
+import { shallow } from 'enzyme';
+import { Group } from '../group';
+import { QuestionnaireItem, QuestionnaireResponseAnswer } from '../../../../types/fhir';
+import CustomTag from '@helsenorge/toolkit/utils/custom-tag';
+
+describe('group', () => {
+  it('should render correct tag', () => {
+    const item: QuestionnaireItem = {
+      linkId: '2.1',
+      repeats: false,
+      type: 'group',
+      text: 'Overskrift',
+    };
+    const answer: QuestionnaireResponseAnswer = {} as any;
+    const group = shallow(
+      <Group
+        item={item}
+        answer={answer}
+        path={[]}
+        headerTag={3}
+        renderChildrenItems={() => {
+          return undefined;
+        }}
+        repeatButton={<div />}
+        renderDeleteButton={() => {
+          return undefined;
+        }}
+      />
+    );
+    expect(group.find(CustomTag)).toMatchSnapshot();
+  });
+});
+/* tslint:enable */

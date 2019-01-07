@@ -1,0 +1,835 @@
+/* tslint:disable */
+import * as chai from 'chai';
+import reducer, { Form } from '../form';
+import { Questionnaire, QuestionnaireResponse, Coding, QuestionnaireResponseItem, Attachment } from '../../../types/fhir';
+import {
+  newStringValue,
+  newBooleanValue,
+  newDecimalValue,
+  newIntegerValue,
+  newDateValue,
+  newDateTimeValue,
+  newTimeValue,
+  newCodingValue,
+  addRepeatItem,
+  newAttachment,
+  deleteRepeatItem,
+  NewValueAction,
+} from '../../actions/newValue';
+import {
+  getQuestionnaireDefinitionItem,
+  getDefinitionItems,
+  getResponseItems,
+  getQuestionnaireResponseItemWithLinkid,
+  getItemWithIdFromResponseItemArray,
+} from '../../util/skjemautfyller-core';
+import { GlobalState } from '..';
+
+const should = chai.should();
+
+const dataModel: GlobalState = {
+  skjemautfyller: {
+    form: {
+      InitialFormData: {
+        Content: undefined,
+      },
+      Language: 'no',
+      FormDefinition: {
+        Content: <Questionnaire>{
+          status: {
+            value: 'draft',
+          },
+          resourceType: 'Questionnaire',
+          url: 'bundle1Url',
+          item: [
+            {
+              linkId: '1',
+              type: 'string',
+            },
+            {
+              linkId: 'b',
+              type: 'boolean',
+            },
+            {
+              linkId: 'd',
+              type: 'decimal',
+              enableWhen: [
+                {
+                  question: 'b',
+                  answerBoolean: true,
+                },
+              ],
+            },
+            {
+              linkId: 'i',
+              type: 'integer',
+              enableWhen: [
+                {
+                  question: 'd',
+                  answerDecimal: 2.5,
+                },
+              ],
+            },
+            {
+              linkId: 'date',
+              type: 'date',
+            },
+            {
+              linkId: 'dt',
+              type: 'datetime',
+            },
+            {
+              linkId: 't',
+              type: 'time',
+            },
+            {
+              linkId: 'c',
+              type: 'choice',
+            },
+            {
+              linkId: 't0',
+              type: 'string',
+              item: [
+                {
+                  linkId: 't11',
+                  type: 'string',
+                  item: [
+                    {
+                      linkId: 't21',
+                      type: 'string',
+                      item: [
+                        {
+                          linkId: 't31.abc',
+                          type: 'string',
+                        },
+                        {
+                          linkId: 't32.def',
+                          type: 'string',
+                          item: [
+                            {
+                              linkId: 't41',
+                              type: 'string',
+                              enableWhen: [
+                                {
+                                  question: 'i',
+                                  answerInteger: 2,
+                                },
+                              ],
+                            },
+                          ],
+                        },
+                      ],
+                    },
+                    {
+                      linkId: 't22',
+                      type: 'string',
+                    },
+                  ],
+                },
+                {
+                  linkId: 't12',
+                  type: 'string',
+                },
+              ],
+            },
+            {
+              linkId: 'addGroupTest1',
+              type: 'group',
+              repeats: true,
+              item: [
+                {
+                  linkId: 'addGroupTest11',
+                  type: 'group',
+                  item: [
+                    {
+                      linkId: 'addGroupTest111',
+                      type: 'string',
+                    },
+                  ],
+                },
+                {
+                  linkId: 'addGroupTest12',
+                  type: 'string',
+                },
+              ],
+            },
+            {
+              linkId: 'attachment',
+              type: 'attachment',
+            },
+            {
+              linkId: 'group110',
+              type: 'group',
+              item: [
+                {
+                  linkId: 'group110.1',
+                  type: 'group',
+                  repeats: true,
+                  item: [
+                    {
+                      linkId: 'group110.11',
+                      type: 'string',
+                    },
+                  ],
+                },
+                {
+                  linkId: 'group110.111',
+                  type: 'string',
+                },
+              ],
+            },
+          ],
+        },
+      },
+      FormData: {
+        Content: <QuestionnaireResponse>{
+          questionnaire: {
+            reference: 'fakeurl',
+          },
+          status: 'completed',
+          item: [
+            {
+              linkId: '1',
+              type: 'string',
+              answer: [
+                {
+                  valueString: 'test svar',
+                },
+              ],
+            },
+            {
+              linkId: 'b',
+              answer: [
+                {
+                  valueBoolean: true,
+                },
+              ],
+            },
+            {
+              linkId: 'd',
+              answer: [
+                {
+                  valueDecimal: 2.5,
+                },
+              ],
+            },
+            {
+              linkId: 'i',
+              answer: [
+                {
+                  valueInteger: 2,
+                },
+              ],
+            },
+            {
+              linkId: 'date',
+              answer: [
+                {
+                  valueDate: '2018',
+                },
+              ],
+            },
+            {
+              linkId: 'dt',
+              answer: [
+                {
+                  valueDateTime: '2018-05-18T10:28:45Z',
+                },
+              ],
+            },
+            {
+              linkId: 't',
+              answer: [
+                {
+                  valueTime: '10:28',
+                },
+              ],
+            },
+            {
+              linkId: 'c',
+              answer: [
+                {
+                  valueCoding: {
+                    code: 'y',
+                    display: 'displayy',
+                  },
+                },
+              ],
+            },
+
+            {
+              linkId: 't0',
+              type: 'string',
+              item: [
+                {
+                  linkId: 't11',
+                  type: 'string',
+                  item: [
+                    {
+                      linkId: 't21',
+                      type: 'string',
+                      item: [
+                        {
+                          linkId: 't31.abc',
+                          type: 'string',
+                        },
+                        {
+                          linkId: 't32.def',
+                          type: 'string',
+                          item: [
+                            {
+                              linkId: `t41`,
+                              type: 'string',
+                            },
+                          ],
+                        },
+                      ],
+                    },
+                    {
+                      linkId: 't22',
+                      type: 'string',
+                    },
+                  ],
+                },
+                {
+                  linkId: 't12',
+                  type: 'string',
+                },
+              ],
+            },
+            {
+              linkId: 'addGroupTest1^0',
+              item: [
+                {
+                  linkId: 'addGroupTest11^0',
+                  item: [
+                    {
+                      linkId: 'addGroupTest111^0',
+                    },
+                  ],
+                },
+                {
+                  linkId: 'addGroupTest12^0',
+                },
+              ],
+            },
+            {
+              linkId: 'attachment',
+              type: 'attachment',
+            },
+            {
+              linkId: 'group110',
+              item: [
+                {
+                  linkId: 'group110.1^0',
+                  item: [
+                    {
+                      linkId: 'group110.11^0',
+                    },
+                  ],
+                },
+                {
+                  linkId: 'group110.111',
+                },
+              ],
+            },
+          ],
+        },
+      },
+    },
+  },
+};
+
+describe('new value action', () => {
+  it('should update string value', () => {
+    let action: NewValueAction = newStringValue([{ linkId: '1' }], 'ny string', undefined);
+    let newState: Form | undefined = reducer(dataModel.skjemautfyller.form, action);
+    if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
+      return fail();
+    }
+    let item = newState.FormData.Content.item[0];
+    if (!item || item.answer === undefined || item.answer === null || !item.answer[0]) {
+      return fail();
+    }
+    expect(item.answer[0].valueString).toEqual('ny string');
+
+    action = newStringValue([{ linkId: '1' }], '', undefined);
+    newState = reducer(dataModel.skjemautfyller.form, action);
+    if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
+      return fail();
+    }
+    item = newState.FormData.Content.item[0];
+    expect(item.answer).toBeUndefined;
+  });
+
+  it('should update boolean value', () => {
+    let action: NewValueAction = newBooleanValue([{ linkId: 'b' }], true, undefined);
+    let newState: Form | undefined = reducer(dataModel.skjemautfyller.form, action);
+    if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
+      return fail();
+    }
+    let item = newState.FormData.Content.item[1];
+    if (!item || item.answer === undefined || item.answer === null || !item.answer[0]) {
+      return fail();
+    }
+    expect(item.answer[0].valueBoolean).toEqual(true);
+
+    action = newBooleanValue([{ linkId: 'b' }], false, undefined);
+    newState = reducer(dataModel.skjemautfyller.form, action);
+    if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
+      return fail();
+    }
+    item = newState.FormData.Content.item[1];
+    if (!item || item.answer === undefined || item.answer === null || !item.answer[0]) {
+      return fail();
+    }
+    expect(item.answer[0].valueBoolean).toEqual(false);
+  });
+
+  it('should update decimal value', () => {
+    let action: NewValueAction = newDecimalValue([{ linkId: 'd' }], 1.5, undefined);
+    let newState: Form | undefined = reducer(dataModel.skjemautfyller.form, action);
+    if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
+      return fail();
+    }
+    let item = newState.FormData.Content.item[2];
+    if (!item || item.answer === undefined || item.answer === null || !item.answer[0]) {
+      return fail();
+    }
+    expect(item.answer[0].valueDecimal).toEqual(1.5);
+
+    action = newDecimalValue([{ linkId: 'd' }], 2.5, undefined);
+    newState = reducer(dataModel.skjemautfyller.form, action);
+    if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
+      return fail();
+    }
+    item = newState.FormData.Content.item[2];
+    if (!item || item.answer === undefined || item.answer === null || !item.answer[0]) {
+      return fail();
+    }
+    expect(item.answer[0].valueDecimal).toEqual(2.5);
+  });
+
+  it('should update integer value', () => {
+    let action: NewValueAction = newIntegerValue([{ linkId: 'i' }], 3, undefined);
+    let newState: Form | undefined = reducer(dataModel.skjemautfyller.form, action);
+    if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
+      return fail();
+    }
+    let item = newState.FormData.Content.item[3];
+    if (!item || item.answer === undefined || item.answer === null || !item.answer[0]) {
+      return fail();
+    }
+    expect(item.answer[0].valueInteger).toEqual(3);
+
+    action = newIntegerValue([{ linkId: 'i' }], 4, undefined);
+    newState = reducer(dataModel.skjemautfyller.form, action);
+    if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
+      return fail();
+    }
+    item = newState.FormData.Content.item[3];
+    if (!item || item.answer === undefined || item.answer === null || !item.answer[0]) {
+      return fail();
+    }
+    expect(item.answer[0].valueInteger).toEqual(4);
+  });
+
+  it('should update date value', () => {
+    let action: NewValueAction = newDateValue([{ linkId: 'date' }], '2018-05-18T10:28:45Z', undefined);
+    let newState: Form | undefined = reducer(dataModel.skjemautfyller.form, action);
+    if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
+      return fail();
+    }
+    let item = newState.FormData.Content.item[4];
+    if (!item || item.answer === undefined || item.answer === null || !item.answer[0]) {
+      return fail();
+    }
+    expect(item.answer[0].valueDate).toEqual('2018-05-18T10:28:45Z');
+
+    action = newDateValue([{ linkId: 'date' }], '2017-05-18T10:28:45Z', undefined);
+    newState = reducer(dataModel.skjemautfyller.form, action);
+    if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
+      return fail();
+    }
+    item = newState.FormData.Content.item[4];
+    if (!item || item.answer === undefined || item.answer === null || !item.answer[0]) {
+      return fail();
+    }
+    expect(item.answer[0].valueDate).toEqual('2017-05-18T10:28:45Z');
+  });
+
+  it('should update datetime value', () => {
+    let action: NewValueAction = newDateTimeValue([{ linkId: 'dt' }], '2018-05-11T10:28:45Z', undefined);
+    let newState: Form | undefined = reducer(dataModel.skjemautfyller.form, action);
+    if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
+      return fail();
+    }
+    let item = newState.FormData.Content.item[5];
+    if (!item || item.answer === undefined || item.answer === null || !item.answer[0]) {
+      return fail();
+    }
+    expect(item.answer[0].valueDateTime).toEqual('2018-05-11T10:28:45Z');
+  });
+  it('should update datetime value', () => {
+    let action: NewValueAction = newDateTimeValue([{ linkId: 'dt' }], '2018-05-11T10:28:45Z', undefined);
+    let newState: Form | undefined = reducer(dataModel.skjemautfyller.form, action);
+    if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
+      return fail();
+    }
+    let item = newState.FormData.Content.item[5];
+    if (!item || item.answer === undefined || item.answer === null || !item.answer[0]) {
+      return fail();
+    }
+    expect(item.answer[0].valueDateTime).toEqual('2018-05-11T10:28:45Z');
+
+    action = newDateTimeValue([{ linkId: 'dt' }], '2017-05-18T10:28:45Z', undefined);
+    newState = reducer(dataModel.skjemautfyller.form, action);
+    if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
+      return fail();
+    }
+    item = newState.FormData.Content.item[5];
+    if (!item || item.answer === undefined || item.answer === null || !item.answer[0]) {
+      return fail();
+    }
+    expect(item.answer[0].valueDateTime).toEqual('2017-05-18T10:28:45Z');
+  });
+
+  it('should update time value', () => {
+    let action: NewValueAction = newTimeValue([{ linkId: 't' }], '09:00', undefined);
+    let newState: Form | undefined = reducer(dataModel.skjemautfyller.form, action);
+    if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
+      return fail();
+    }
+    let item = newState.FormData.Content.item[6];
+    if (!item || item.answer === undefined || item.answer === null || !item.answer[0]) {
+      return fail();
+    }
+    expect(item.answer[0].valueTime).toEqual('09:00');
+
+    action = newTimeValue([{ linkId: 't' }], '17:00', undefined);
+    newState = reducer(dataModel.skjemautfyller.form, action);
+    if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
+      return fail();
+    }
+    item = newState.FormData.Content.item[6];
+    if (!item || item.answer === undefined || item.answer === null || !item.answer[0]) {
+      return fail();
+    }
+    expect(item.answer[0].valueTime).toEqual('17:00');
+  });
+
+  it('should update string value', () => {
+    let action: NewValueAction = newStringValue([{ linkId: 't0' }], 'test', undefined);
+    let newState: Form | undefined = reducer(dataModel.skjemautfyller.form, action);
+    if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
+      return fail();
+    }
+    let item = newState.FormData.Content.item[8];
+    if (!item || item.answer === undefined || item.answer === null || !item.answer[0]) {
+      return fail();
+    }
+    expect(item.answer[0].valueString).toEqual('test');
+
+    action = newStringValue([{ linkId: 't0' }], 'test2', undefined);
+    newState = reducer(dataModel.skjemautfyller.form, action);
+    if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
+      return fail();
+    }
+    item = newState.FormData.Content.item[8];
+    if (!item || item.answer === undefined || item.answer === null || !item.answer[0]) {
+      return fail();
+    }
+    expect(item.answer[0].valueString).toEqual('test2');
+  });
+
+  it('should update coding value', () => {
+    let action: NewValueAction = newCodingValue([{ linkId: 'c' }], { code: 'y', display: 'displayy' } as Coding, undefined);
+    let newState: Form | undefined = reducer(dataModel.skjemautfyller.form, action);
+    if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
+      return fail();
+    }
+    let item = newState.FormData.Content.item[7];
+    if (!item || item.answer === undefined || item.answer === null || !item.answer[0]) {
+      return fail();
+    }
+    let answer = item.answer[0];
+    if (!answer || !answer.valueCoding) {
+      return fail();
+    }
+    expect(answer.valueCoding.code).toEqual('y');
+    expect(answer.valueCoding.display).toEqual('displayy');
+
+    action = newCodingValue([{ linkId: 'c' }], { code: 'n', display: 'new display' } as Coding, undefined);
+    newState = reducer(dataModel.skjemautfyller.form, action);
+    if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
+      return fail();
+    }
+    item = newState.FormData.Content.item[7];
+    if (!item || item.answer === undefined || item.answer === null || !item.answer[0]) {
+      return fail();
+    }
+    answer = item.answer[0];
+    if (!answer || !answer.valueCoding) {
+      return fail();
+    }
+    expect(answer.valueCoding.code).toEqual('n');
+    expect(answer.valueCoding.display).toEqual('new display');
+  });
+
+  it('should update coding value with multiple answers', () => {
+    let action: NewValueAction = newCodingValue([{ linkId: 'c' }], { code: 'y', display: 'displayy' } as Coding, undefined, true);
+    let newState: Form | undefined = reducer(dataModel.skjemautfyller.form, action);
+    if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
+      return fail();
+    }
+    let item = newState.FormData.Content.item[7];
+    if (!item || item.answer === undefined || item.answer === null || !item.answer[0]) {
+      return fail();
+    }
+    let answer = item.answer[0];
+    if (!answer || !answer.valueCoding) {
+      return fail();
+    }
+    expect(answer.valueCoding.code).toMatchSnapshot();
+    expect(answer.valueCoding.display).toMatchSnapshot();
+
+    action = newCodingValue([{ linkId: 'c' }], { code: 'n', display: 'new display' } as Coding, undefined, true);
+    newState = reducer(dataModel.skjemautfyller.form, action);
+    if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
+      return fail();
+    }
+    item = newState.FormData.Content.item[7];
+    if (!item || item.answer === undefined || item.answer === null || !item.answer[0]) {
+      return fail();
+    }
+    expect(item.answer.length).toMatchSnapshot();
+    expect(item.answer[0]).toMatchSnapshot();
+    expect(item.answer[1]).toMatchSnapshot();
+  });
+  it('should update attachment value', () => {
+    let action: NewValueAction = newAttachment([{ linkId: 'attachment' }], { url: 'y', title: 'displayy' } as Attachment, undefined);
+    let newState: Form | undefined = reducer(dataModel.skjemautfyller.form, action);
+    if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
+      return fail();
+    }
+    let item = newState.FormData.Content.item[10];
+    if (!item || item.answer === undefined || item.answer === null || !item.answer[0]) {
+      return fail();
+    }
+    let answer = item.answer[0];
+    if (!answer || !answer.valueAttachment) {
+      return fail();
+    }
+    expect(answer.valueAttachment.url).toEqual('y');
+    expect(answer.valueAttachment.title).toEqual('displayy');
+
+    action = newAttachment([{ linkId: 'attachment' }], { url: 'n', title: 'new display' } as Attachment, undefined);
+    newState = reducer(dataModel.skjemautfyller.form, action);
+    if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
+      return fail();
+    }
+    item = newState.FormData.Content.item[10];
+    if (!item || item.answer === undefined || item.answer === null || !item.answer[0]) {
+      return fail();
+    }
+    answer = item.answer[0];
+    if (!answer || !answer.valueAttachment) {
+      return fail();
+    }
+    expect(answer.valueAttachment.url).toEqual('n');
+    expect(answer.valueAttachment.title).toEqual('new display');
+  });
+});
+
+describe('new value action', () => {
+  it('should not copy non existing item', () => {
+    let action: NewValueAction = addRepeatItem([{ linkId: 'foobar' }], { linkId: 'foobar', type: 'group' }, undefined);
+    let newState: Form | undefined = reducer(dataModel.skjemautfyller.form, action);
+    if (!newState || !newState.FormData.Content || !newState.FormData.Content.item) {
+      return fail();
+    }
+    expect(newState.FormData.Content.item.length).toEqual(12);
+  });
+
+  it('should add group', () => {
+    let action: NewValueAction = addRepeatItem([], { linkId: 'addGroupTest1', type: 'group' }, [
+      {
+        linkId: 'addGroupTest1^0',
+        item: [
+          <QuestionnaireResponseItem>{
+            linkId: 'addGroupTest11^0',
+            item: [
+              {
+                linkId: 'addGroupTest111^0',
+                answer: [{ valueString: 'testSvar' }],
+              },
+            ],
+          },
+          {
+            linkId: 'addGroupTest12^0',
+          },
+        ],
+      },
+    ]);
+    if (!dataModel.skjemautfyller.form.FormData.Content || !dataModel.skjemautfyller.form.FormData.Content.item) {
+      return fail();
+    }
+    expect(dataModel.skjemautfyller.form.FormData.Content.item.length).toEqual(12);
+    let newState: Form | undefined = reducer(dataModel.skjemautfyller.form, action);
+    if (!newState || (!newState.FormData.Content || !newState.FormData.Content.item)) {
+      return fail();
+    }
+    expect(newState.FormData.Content.item.length).toEqual(13);
+    expect(dataModel.skjemautfyller.form.FormData.Content.item.length).toEqual(12);
+
+    let repeatGroupResponseItems = getItemWithIdFromResponseItemArray('addGroupTest1', newState.FormData.Content.item, true);
+    should.exist(repeatGroupResponseItems);
+    if (repeatGroupResponseItems) {
+      expect(repeatGroupResponseItems.length).toEqual(2);
+    }
+
+    let addedGroup = newState.FormData.Content.item[12];
+    should.exist(addedGroup);
+
+    if (!addedGroup || !addedGroup.item) {
+      return fail();
+    }
+    expect(addedGroup.item[0].linkId).toEqual('addGroupTest11^1');
+    let items = addedGroup.item[0].item;
+    if (!items) {
+      return fail();
+    }
+    expect(items.length).toEqual(1);
+    should.exist(items[0]);
+
+    expect(items[0].linkId).toEqual('addGroupTest111^1');
+    // also check answer items are copied but not answer value
+    expect(items[0].answer).toBeUndefined;
+    expect(addedGroup.item[1].linkId).toEqual('addGroupTest12^1');
+  });
+
+  it('should add nested group', () => {
+    let action: NewValueAction = addRepeatItem([{ linkId: 'group110' }], { linkId: 'group110.1', type: 'group' }, [
+      {
+        linkId: 'group110.1^0',
+        item: [
+          {
+            linkId: 'group110.11^0',
+          },
+        ],
+      },
+    ]);
+    if (!dataModel.skjemautfyller.form.FormData.Content || !dataModel.skjemautfyller.form.FormData.Content.item) {
+      return fail();
+    }
+    expect(dataModel.skjemautfyller.form.FormData.Content.item.length).toEqual(12);
+    let newState: Form | undefined = reducer(dataModel.skjemautfyller.form, action);
+    if (!newState || (!newState.FormData.Content || !newState.FormData.Content.item)) {
+      return fail();
+    }
+
+    let addedGroup = getQuestionnaireResponseItemWithLinkid('group110.1^1', newState.FormData.Content.item[11]);
+    should.exist(addedGroup);
+
+    if (!addedGroup || !addedGroup.item) {
+      return fail();
+    }
+    expect(addedGroup.item.length).toEqual(1);
+    expect(addedGroup.item[0].linkId).toEqual('group110.11^1');
+
+    action = addRepeatItem([{ linkId: 'group110' }], { linkId: 'group110.1', type: 'group' }, [
+      {
+        linkId: 'group110.1^0',
+        item: [
+          {
+            linkId: 'group110.11^0',
+          },
+        ],
+      },
+      {
+        linkId: 'group110.1^1',
+        item: [
+          {
+            linkId: 'group110.11^1',
+          },
+        ],
+      },
+    ]);
+    newState = reducer(newState, action);
+    if (!newState || (!newState.FormData.Content || !newState.FormData.Content.item)) {
+      return fail();
+    }
+    addedGroup = getQuestionnaireResponseItemWithLinkid('group110.1^2', newState.FormData.Content.item[11]);
+    should.exist(addedGroup);
+
+    action = deleteRepeatItem([{ linkId: 'group110' }, { linkId: 'group110.1^1' }], { linkId: 'group110.1', type: 'group' });
+    newState = reducer(newState, action);
+    if (!newState || (!newState.FormData.Content || !newState.FormData.Content.item)) {
+      return fail();
+    }
+    let deletedGroup = getQuestionnaireResponseItemWithLinkid('group110.1^2', newState.FormData.Content.item[11]);
+    expect(deletedGroup).toEqual(undefined);
+
+    let groupMovedForward = getQuestionnaireResponseItemWithLinkid('group110.1^1', newState.FormData.Content.item[11]);
+
+    if (!groupMovedForward || !groupMovedForward.item) {
+      return fail();
+    }
+    expect(groupMovedForward.item[0].linkId).toEqual('group110.11^1');
+  });
+});
+
+describe('update enable when action', () => {
+  it('should update deactivated and tømme answers', () => {
+    let action: NewValueAction = newBooleanValue([{ linkId: 'b' }], true, {
+      linkId: 'b',
+      type: 'boolean',
+    });
+    let newState: Form | undefined = reducer(dataModel.skjemautfyller.form, action);
+    if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
+      return fail();
+    }
+
+    action = newDecimalValue([{ linkId: 'd' }], 3, {
+      linkId: 'd',
+      type: 'decimal',
+    });
+    action = newBooleanValue([{ linkId: 'b' }], false, {
+      linkId: 'b',
+      type: 'boolean',
+    });
+    newState = reducer(dataModel.skjemautfyller.form, action);
+    if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
+      return fail();
+    }
+    const definitionItems = getDefinitionItems(newState.FormDefinition);
+    if (!definitionItems || definitionItems.length === 0) {
+      return fail();
+    }
+    const responseItems = getResponseItems(newState.FormData);
+
+    let answerItem: QuestionnaireResponseItem | undefined;
+    for (let i = 0; responseItems && i < responseItems.length; i++) {
+      let responseItem: QuestionnaireResponseItem | undefined = responseItems[i];
+      if (responseItem && responseItem.linkId !== 'd') {
+        responseItem = getQuestionnaireResponseItemWithLinkid('d', responseItems[i], true);
+      }
+      if (!responseItem) {
+        continue;
+      } else {
+        answerItem = responseItem;
+      }
+    }
+    if (!answerItem || !answerItem.answer) {
+      return fail();
+    }
+    let integerAnswer = answerItem.answer;
+    const integer = getQuestionnaireDefinitionItem('i', definitionItems);
+    if (!integer) {
+      return fail();
+    }
+    expect(integerAnswer[0]).toMatchObject({});
+    expect(integerAnswer).toHaveLength(1);
+    expect(integer.deactivated).toEqual(true);
+  });
+});

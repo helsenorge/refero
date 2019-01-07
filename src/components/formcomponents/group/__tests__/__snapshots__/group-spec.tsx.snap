@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`group should render correct tag 1`] = `
+<CustomTag
+  tagName="h3"
+>
+   Overskrift
+</CustomTag>
+`;
