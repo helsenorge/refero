@@ -12,7 +12,7 @@ import { getValidationTextExtension, getPlaceholder, getMinLengthExtensionValue 
 import { QuestionnaireItem, QuestionnaireResponseAnswer } from '../../../types/fhir';
 import withCommonFunctions from '../../with-common-functions';
 import TextView from '../textview';
-interface Props {
+export interface Props {
   item: QuestionnaireItem;
   answer: QuestionnaireResponseAnswer;
   dispatch?: Dispatch<{}>;

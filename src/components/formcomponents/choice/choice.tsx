@@ -8,7 +8,7 @@ import { newCodingValue, removeCodingValue } from '../../../actions/newValue';
 import { selectComponent, mergeProps, mapDispatchToProps, Path } from '../../../util/skjemautfyller-core';
 import Constants from '../../../constants/index';
 import { QuestionnaireItem, QuestionnaireResponseAnswer, Resource, Coding, QuestionnaireResponseItem } from '../../../types/fhir';
-import { Resources } from '../../../../npm/types/Resources';
+import { Resources } from '../../../util/resources';
 import { isRequired, isReadOnly } from '../../../util/index';
 import { getValidationTextExtension, getItemControlExtensionValue } from '../../../util/extension';
 import { getOptions, hasOptions, getSystem } from '../../../util/choice';
@@ -18,7 +18,7 @@ import DropdownView from './dropdown-view';
 import RadioView from './radio-view';
 import CheckboxView from './checkbox-view';
 
-interface ChoiceProps {
+export interface ChoiceProps {
   item: QuestionnaireItem;
   answer: Array<QuestionnaireResponseAnswer> | QuestionnaireResponseAnswer;
   resources?: Resources;

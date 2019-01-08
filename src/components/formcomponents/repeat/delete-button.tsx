@@ -2,7 +2,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { selectComponent, mergeProps, mapDispatchToProps, Path } from '../../../util/skjemautfyller-core';
 import { QuestionnaireItem } from '../../../types/fhir';
-import { Resources } from '../../../../npm/types/Resources';
+import { Resources } from '../../../util/resources';
 import { Dispatch } from 'redux';
 import { ConfirmBox } from '@helsenorge/toolkit/components/molecules/confirmbox';
 import { InlineButton } from '@helsenorge/toolkit/components/atoms/buttons/inline-button';

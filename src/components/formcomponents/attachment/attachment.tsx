@@ -12,9 +12,9 @@ import { isRequired, getId, renderPrefix, getText, isReadOnly } from '../../../u
 import { getValidationTextExtension } from '../../../util/extension';
 import { log } from '@helsenorge/toolkit/utils/logger';
 import { QuestionnaireItem, QuestionnaireResponseAnswer } from '../../../types/fhir';
-import { Resources } from '../../../../npm/types/Resources';
+import { Resources } from '../../../util/resources';
 import TextView from '../textview';
-interface Props {
+export interface Props {
   dispatch?: Dispatch<{}>;
   path: Array<Path>;
   item: QuestionnaireItem;

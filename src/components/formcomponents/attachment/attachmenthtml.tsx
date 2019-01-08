@@ -1,6 +1,6 @@
 import * as React from 'react';
 import constants, { VALID_FILE_TYPES } from '../../../constants';
-import { Resources } from '../../../../npm/types/Resources';
+import { Resources } from '../../../util/resources';
 import Dropzone, { MimeTypes, TextMessage } from '@helsenorge/toolkit/components/atoms/dropzone';
 import Validation, { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
 import { typeIsValid, sizeIsValid } from '@helsenorge/toolkit/components/atoms/dropzone/validation';

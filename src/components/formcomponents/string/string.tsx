@@ -11,9 +11,9 @@ import { isReadOnly, isRequired, getId, renderPrefix, getText, getStringValue, g
 import { getValidationTextExtension, getPlaceholder, getMinLengthExtensionValue, getRegexExtension } from '../../../util/extension';
 import withCommonFunctions from '../../with-common-functions';
 import { QuestionnaireItem, QuestionnaireResponseAnswer } from '../../../types/fhir';
-import { Resources } from '../../../../npm/types/Resources';
+import { Resources } from '../../../util/resources';
 import TextView from '../textview';
-interface Props {
+export interface Props {
   item: QuestionnaireItem;
   answer: QuestionnaireResponseAnswer;
   path: Array<Path>;

@@ -1,7 +1,9 @@
 {
   "compilerOptions": {
+    "outDir": "../lib",
+    "declaration": true,
     "target": "es5",
-    "module": "esnext",
+    "module": "commonjs",
     "moduleResolution": "node",
     "sourceMap": true,
     "jsx": "preserve",
@@ -18,9 +20,16 @@
       "dom",
       "scripthost"
     ],
-    "noUnusedLocals": true,
+    "noUnusedLocals": false,
     "noUnusedParameters": true,
     "strictNullChecks": true,
-    "noEmit": true
-  }
+  },
+  "include": [
+    "../src/**/*.tsx",
+    "../src/**/*.ts"
+  ],
+  "exclude": [
+    "../**/__test__*",
+    "../lib/**/*.*"
+  ]
 }

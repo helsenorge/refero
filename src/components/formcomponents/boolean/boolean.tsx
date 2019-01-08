@@ -12,7 +12,7 @@ import { isReadOnly, isRequired, getId, renderPrefix, getText } from '../../../u
 import { getValidationTextExtension } from '../../../util/extension';
 import layoutChange from '@helsenorge/toolkit/higher-order-components/layoutChange';
 import Pdf from './pdf';
-interface Props {
+export interface Props {
   item: QuestionnaireItem;
   answer: QuestionnaireResponseAnswer;
   dispatch?: Dispatch<{}>;

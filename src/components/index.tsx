@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { connect, Store } from 'react-redux';
 import { Dispatch } from 'redux';
-import { Resources } from '../../npm/types/Resources';
+import { Resources } from '../util/resources';
 import { GlobalState } from '../reducers';
 import { getFormDefinition, getFormData, getInitialFormData } from '../reducers/form';
 

@@ -16,7 +16,7 @@ marked.setOptions({
   renderer: renderer,
 });
 
-interface Props {
+export interface Props {
   item?: QuestionnaireItem;
   enable?: boolean;
   pdf?: boolean;

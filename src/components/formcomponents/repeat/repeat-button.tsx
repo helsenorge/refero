@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { selectComponent, mergeProps, mapDispatchToProps, Path } from '../../../util/skjemautfyller-core';
 import { QuestionnaireItem, QuestionnaireResponseItem } from '../../../types/fhir';
 import { getRepeatsTextExtension } from '../../../util/extension';
-import { Resources } from '../../../../npm/types/Resources';
+import { Resources } from '../../../util/resources';
 import { Dispatch } from 'redux';
 import { InlineButton } from '@helsenorge/toolkit/components/atoms/buttons/inline-button';
 import { addRepeatItem } from '../../../actions/newValue';
