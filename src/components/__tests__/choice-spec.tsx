@@ -1,12 +1,13 @@
 import * as React from 'react';
 import rootReducer from '../../reducers';
-import { configureStoreWithMiddleware } from '@helsenorge/core-framework/utils/store';
+//import { configureStoreWithMiddleware } from '@helsenorge/core-framework/utils/store';
+import { createStore } from 'redux';
 import { ReactWrapper, mount } from 'enzyme';
 
 import { Provider, Store } from 'react-redux';
 
 import { Choice } from '../formcomponents/choice/choice';
-import { QuestionnaireItem, QuestionnaireOption, QuestionnaireResponseAnswer, integer, date, time, Extension } from '../../../types/fhir';
+import { QuestionnaireItem, QuestionnaireOption, QuestionnaireResponseAnswer, integer, date, time, Extension } from '../../types/fhir';
 import { Path } from '../../util/skjemautfyller-core';
 
 describe('Choice component renders item.option[]', () => {
@@ -218,11 +219,12 @@ function createValueTimeOption(...options: string[]): QuestionnaireOption[] {
 }
 
 function createWrapperWithItem(item: QuestionnaireItem): ReactWrapper<{}, {}> {
-  let store: Store<{}> = configureStoreWithMiddleware(rootReducer);
+  //let store: Store<{}> = configureStoreWithMiddleware(rootReducer);
+  let store: Store<{}> = createStore(rootReducer);
   return mount(
     <Provider store={store}>
       <Choice
-        dispatch={() => undefined}
+        dispatch={() => undefined as any}
         answer={{} as QuestionnaireResponseAnswer}
         item={item}
         path={{} as Path[]}

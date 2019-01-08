@@ -9,7 +9,7 @@ import { hasOptions } from '../../../util/choice';
 import { QuestionnaireItem, QuestionnaireResponseAnswer, Resource } from '../../../types/fhir';
 import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
 
-interface Props {
+export interface Props {
   item: QuestionnaireItem;
   answer: QuestionnaireResponseAnswer;
   path: Array<Path>;

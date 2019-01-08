@@ -6,9 +6,9 @@ import CustomTag from '@helsenorge/toolkit/utils/custom-tag';
 import { renderPrefix, getText } from '../../../util/index';
 import { QuestionnaireItem, QuestionnaireResponseAnswer, QuestionnaireResponseItem } from '../../../types/fhir';
 import withCommonFunctions from '../../with-common-functions';
-import { Resources } from '../../../../npm/types/Resources';
+import { Resources } from '../../../util/resources';
 
-interface Props {
+export interface Props {
   item: QuestionnaireItem;
   answer: QuestionnaireResponseAnswer;
   responseItem?: Array<QuestionnaireResponseItem>;

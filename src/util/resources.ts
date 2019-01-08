@@ -1,4 +1,4 @@
-export type Resources = {
+export interface Resources {
   /**
    * Slett
    */
@@ -151,4 +151,4 @@ export type Resources = {
    * Fra-dato kan ikke være senere enn til-dato
    */
   filterDateErrorAfterMaxDate: string;
-};
+}

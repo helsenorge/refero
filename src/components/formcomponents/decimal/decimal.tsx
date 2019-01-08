@@ -10,7 +10,7 @@ import { Extension } from '../../../types/fhir';
 import { selectComponent, mergeProps, mapDispatchToProps, Path } from '../../../util/skjemautfyller-core';
 import { newDecimalValue } from '../../../actions/newValue';
 import { QuestionnaireItem, QuestionnaireResponseAnswer } from '../../../types/fhir';
-import { Resources } from '../../../../npm/types/Resources';
+import { Resources } from '../../../util/resources';
 import { isReadOnly, isRequired, getId, renderPrefix, getText } from '../../../util/index';
 import {
   getValidationTextExtension,
@@ -26,7 +26,7 @@ interface DecimalInputFieldProps {
   step?: string;
 }
 
-interface Props {
+export interface Props {
   item: QuestionnaireItem;
   answer: QuestionnaireResponseAnswer;
   resources?: Resources;

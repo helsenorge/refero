@@ -16,10 +16,12 @@ import Quantity from '../components/formcomponents/quantity/quantity';
 import * as uuid from 'uuid';
 import { QuestionnaireItem, QuestionnaireResponseAnswer } from '../types/fhir';
 import Constants from '../constants/index';
-import { Resources } from '../../npm/types/Resources';
+import { Resources } from '../util/resources';
 import { getMaxOccursExtensionValue, getMarkdownExtensionValue } from './extension';
 import * as marked from 'marked';
 marked.setOptions({ sanitize: true });
+
+import { ComponentClass } from 'react';
 
 export function getComponentForItem(type: QuestionnaireItemTypeList) {
   if (String(type) === 'group') {

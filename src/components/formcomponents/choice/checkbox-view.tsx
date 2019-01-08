@@ -4,7 +4,7 @@ import CheckBoxGroup from '@helsenorge/toolkit/components/atoms/checkbox-group';
 import { renderPrefix, getText, isRequired, getId } from '../../../util/index';
 import * as Collapse from 'react-collapse';
 import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
-import { Resources } from '../../../../npm/types/Resources';
+import { Resources } from '../../../util/resources';
 
 import { QuestionnaireItem } from '../../../types/fhir';
 import { getMaxOccursExtensionValue, getMinOccursExtensionValue, getValidationTextExtension } from '../../../util/extension';

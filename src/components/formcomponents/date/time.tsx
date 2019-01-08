@@ -14,10 +14,10 @@ import { newTimeValue } from '../../../actions/newValue';
 import { getExtension, getValidationTextExtension } from '../../../util/extension';
 import { isReadOnly, isRequired, getId, renderPrefix, getText } from '../../../util/index';
 import { QuestionnaireItem, QuestionnaireResponseAnswer } from '../../../types/fhir';
-import { Resources } from '../../../../npm/types/Resources';
+import { Resources } from '../../../util/resources';
 import TextView from '../textview';
 
-interface Props {
+export interface Props {
   value?: string;
   answer: QuestionnaireResponseAnswer;
   item: QuestionnaireItem;

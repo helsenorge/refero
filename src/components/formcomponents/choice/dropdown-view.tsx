@@ -5,7 +5,7 @@ import { isRequired, getId, renderPrefix, getText } from '../../../util/index';
 import * as Collapse from 'react-collapse';
 import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
 import SafeSelect from '@helsenorge/toolkit/components/atoms/safe-select';
-import { Resources } from '../../../../npm/types/Resources';
+import { Resources } from '../../../util/resources';
 import layoutChange from '@helsenorge/toolkit/higher-order-components/layoutChange';
 
 import { QuestionnaireItem } from '../../../types/fhir';

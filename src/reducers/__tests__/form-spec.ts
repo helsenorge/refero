@@ -1,7 +1,7 @@
 /* tslint:disable */
 import * as chai from 'chai';
 import reducer, { Form } from '../form';
-import { Questionnaire, QuestionnaireResponse, Coding, QuestionnaireResponseItem, Attachment } from '../../../types/fhir';
+import { Questionnaire, QuestionnaireResponse, Coding, QuestionnaireResponseItem, Attachment } from '../../types/fhir';
 import {
   newStringValue,
   newBooleanValue,

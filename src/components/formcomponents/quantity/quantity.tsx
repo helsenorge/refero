@@ -20,9 +20,9 @@ import {
 } from '../../../util/extension';
 
 import { QuestionnaireItem, QuestionnaireResponseAnswer, Quantity as QuantityType, decimal, code } from '../../../types/fhir';
-import { Resources } from '../../../../npm/types/Resources';
+import { Resources } from '../../../util/resources';
 import TextView from '../textview';
-interface Props {
+export interface Props {
   item: QuestionnaireItem;
   answer: QuestionnaireResponseAnswer;
   resources?: Resources;

@@ -15,10 +15,10 @@ import { newDateTimeValue } from '../../../actions/newValue';
 import { isRequired, getId, renderPrefix, getText, isReadOnly } from '../../../util/index';
 import { getValidationTextExtension, getExtension } from '../../../util/extension';
 import { QuestionnaireItem, QuestionnaireResponseAnswer } from '../../../types/fhir';
-import { Resources } from '../../../../npm/types/Resources';
+import { Resources } from '../../../util/resources';
 import TextView from '../textview';
 
-interface Props {
+export interface Props {
   item: QuestionnaireItem;
   answer: QuestionnaireResponseAnswer;
   resources?: Resources;

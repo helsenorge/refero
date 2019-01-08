@@ -9,7 +9,7 @@ import {
   shouldRenderDeleteButton,
 } from '../util/skjemautfyller-core';
 import { Resource, QuestionnaireResponseItem, QuestionnaireItem, QuestionnaireResponseAnswer } from '../types/fhir';
-import { Resources } from '../../npm/types/Resources';
+import { Resources } from '../util/resources';
 import { getComponentForItem, getChildHeaderTag, shouldRenderRepeatButton } from '../util/index';
 import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
 import { FormChild } from '@helsenorge/toolkit/components/molecules/form';

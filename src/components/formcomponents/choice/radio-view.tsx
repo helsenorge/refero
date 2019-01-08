@@ -3,7 +3,7 @@ import { RadioGroup, Options } from '@helsenorge/toolkit/components/atoms/radio-
 import { isRequired, getId, renderPrefix, getText } from '../../../util/index';
 import * as Collapse from 'react-collapse';
 import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
-import { Resources } from '../../../../npm/types/Resources';
+import { Resources } from '../../../util/resources';
 
 import { QuestionnaireItem } from '../../../types/fhir';
 
