@@ -6,7 +6,7 @@
     "module": "commonjs",
     "moduleResolution": "node",
     "sourceMap": true,
-    "jsx": "preserve",
+    "jsx": "react",
     "noImplicitAny": true,
     "suppressImplicitAnyIndexErrors": true,
     "allowSyntheticDefaultImports": false,

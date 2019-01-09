@@ -1,6 +1,6 @@
 {
   "name": "@helsenorge/skjemautfyller",
-  "version": "0.0.3",
+  "version": "0.0.7",
   "main": "index.js",
   "author": "helsenorge",
   "license": "UNLICENSED",
@@ -47,7 +47,7 @@
     "@helsenorge/toolkit": "^1.9.2",
     "marked": "^0.3.17",
     "moment": "2.23.0",
-    "react-redux": "^5.0.6",
+    "react-redux": "5.0.6",
     "uuid": "2.0.3"
   }
 }
