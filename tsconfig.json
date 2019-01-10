@@ -4,7 +4,7 @@
     "module": "esnext",
     "moduleResolution": "node",
     "sourceMap": true,
-    "jsx": "preserve",
+    "jsx": "react",
     "noImplicitAny": true,
     "suppressImplicitAnyIndexErrors": true,
     "allowSyntheticDefaultImports": false,
@@ -18,9 +18,10 @@
       "dom",
       "scripthost"
     ],
-    "noUnusedLocals": true,
+    "noUnusedLocals": false,
     "noUnusedParameters": true,
     "strictNullChecks": true,
-    "noEmit": true
+    "noEmit": true,
+    "allowJs": true
   }
 }

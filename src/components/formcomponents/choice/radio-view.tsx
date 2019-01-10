@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { RadioGroup, Options } from '@helsenorge/toolkit/components/atoms/radio-group';
 import { isRequired, getId, renderPrefix, getText } from '../../../util/index';
-import * as Collapse from 'react-collapse';
+import { Collapse } from 'react-collapse';
 import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
 import { Resources } from '../../../util/resources';
 
