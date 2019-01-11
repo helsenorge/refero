@@ -1,6 +1,5 @@
 import * as React from 'react';
 import rootReducer from '../../reducers';
-//import { configureStoreWithMiddleware } from '@helsenorge/core-framework/utils/store';
 import { createStore } from 'redux';
 import { ReactWrapper, mount } from 'enzyme';
 
@@ -219,7 +218,6 @@ function createValueTimeOption(...options: string[]): QuestionnaireOption[] {
 }
 
 function createWrapperWithItem(item: QuestionnaireItem): ReactWrapper<{}, {}> {
-  //let store: Store<{}> = configureStoreWithMiddleware(rootReducer);
   let store: Store<{}> = createStore(rootReducer);
   return mount(
     <Provider store={store}>
