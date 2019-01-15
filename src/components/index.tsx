@@ -14,13 +14,7 @@ import {
   getAnswerFromResponseItem,
   shouldRenderDeleteButton,
 } from '../util/skjemautfyller-core';
-import {
-  QuestionnaireResponseItem,
-  QuestionnaireResponseAnswer,
-  Questionnaire,
-  QuestionnaireResponse,
-  QuestionnaireItem,
-} from '../types/fhir';
+import { QuestionnaireResponseItem, Questionnaire, QuestionnaireResponse, QuestionnaireItem } from '../types/fhir';
 import Constants from '../constants/index';
 import { FormDefinition, FormData } from '../reducers/form';
 import RepeatButton from '../components/formcomponents/repeat/repeat-button';
@@ -28,6 +22,7 @@ import RepeatButton from '../components/formcomponents/repeat/repeat-button';
 import { IE11HackToWorkAroundBug187484 } from '../util/hacks';
 import 'redux-thunk';
 import { TextMessage, UploadedFile } from '@helsenorge/toolkit/components/atoms/dropzone';
+import { receiveSkjemaDefinition } from '../actions/form';
 
 export interface QueryStringsInterface {
   MessageId: string;
@@ -40,13 +35,12 @@ interface StateProps {
   formDefinition?: FormDefinition | null;
   formData?: FormData | null;
   initialFormData?: FormData | null;
-  // questionnaire: Questionnaire | null | undefined;
-  // questionnaireResponse: QuestionnaireResponse | null | undefined;
 }
 
 interface DispatchProps {
-  dispatch?: Dispatch<{}>;
-  mount?: () => void;
+  dispatch: Dispatch<{}>;
+  mount: () => void;
+  updateSkjema: (questionnaire: Questionnaire, questionnaireResponse?: QuestionnaireResponse, language?: string) => void;
   path: Array<Path>;
 }
 
@@ -75,6 +69,9 @@ interface Props {
     item: QuestionnaireItem | undefined,
     cb: (success: boolean, errormessage: TextMessage | null, uploadedFile?: UploadedFile) => void
   ) => void;
+  questionnaire?: Questionnaire;
+  questionnaireResponse?: QuestionnaireResponse;
+  language?: string;
 }
 
 interface State {
@@ -95,20 +92,18 @@ class Skjemautfyller extends React.Component<StateProps & DispatchProps & Props,
   }
 
   componentDidMount(): void {
-    if (this.props.mount) {
-      this.props.mount();
-    }
+    this.props.mount();
   }
 
   componentDidUpdate(): void {
     IE11HackToWorkAroundBug187484();
   }
 
-  // componentWillReceiveProps(nextProps: StateProps) {
-  //   if (this.props.questionnaire != nextProps.questionnaire) {
-  //     //dispatch(getUpdateQuestionnaireAction(next.props.questionnaire))
-  //   }
-  // }
+  componentWillReceiveProps(nextProps: Props) {
+    if (nextProps.questionnaire && nextProps.questionnaire !== this.props.questionnaire) {
+      this.props.updateSkjema(nextProps.questionnaire, nextProps.questionnaireResponse, nextProps.language);
+    }
+  }
 
   renderFormItems(pdf?: boolean): Array<JSX.Element> | undefined {
     const { formDefinition, resources, formData, promptLoginMessage } = this.props;
@@ -260,26 +255,23 @@ class Skjemautfyller extends React.Component<StateProps & DispatchProps & Props,
 }
 
 function mapStateToProps(state: GlobalState): StateProps {
-  //let questionnaire: Questionnaire | null | undefined = null,
-  //  questionnaireResponse: QuestionnaireResponse | null | undefined = null;
-  //
-  //if (state.skjemautfyller.skjema) {
-  //  questionnaire = state.skjemautfyller.skjema.FormDefinition.Content;
-  //  questionnaireResponse = state.skjemautfyller.skjema.FormData.Content;
-  //}
-
   return {
     formDefinition: getFormDefinition(state),
     formData: getFormData(state),
     initialFormData: getInitialFormData(state),
-    // questionnaire,
-    // questionnaireResponse,
   };
 }
 
-function mapDispatchToProps(dispatch: Dispatch<{}>): DispatchProps {
+function mapDispatchToProps(dispatch: Dispatch<{}>, props: Props): DispatchProps {
   return {
-    mount: (): void => {},
+    updateSkjema: (questionnaire: Questionnaire, questionnaireResponse: QuestionnaireResponse, language: string): void => {
+      dispatch(receiveSkjemaDefinition(questionnaire, questionnaireResponse, language));
+    },
+    mount: (): void => {
+      if (props.questionnaire) {
+        dispatch(receiveSkjemaDefinition(props.questionnaire, props.questionnaireResponse, props.language));
+      }
+    },
     dispatch,
     path: [],
   };
