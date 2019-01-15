@@ -24,6 +24,8 @@ import {
 } from '../util/skjemautfyller-core';
 import { getMinOccursExtensionValue } from '../util/extension';
 import { Languages } from '@helsenorge/toolkit/constants';
+import { FormAction, RECEIVE_SKJEMA_DEFINITION } from '../actions/form';
+import { generateQuestionnaireResponse } from '../actions/generateQuestionnaireResponse';
 
 export interface FormData {
   Content: QuestionnaireResponse | null | undefined;
@@ -53,7 +55,7 @@ const initialState: Form = {
   Language: Languages.NORWEGIAN.toLowerCase(),
 };
 
-export default function reducer(state: Form = initialState, action: NewValueAction): Form | undefined {
+export default function reducer(state: Form = initialState, action: NewValueAction | FormAction): Form | undefined {
   switch (action.type) {
     case NEW_VALUE:
       return processNewValueAction(action, state);
@@ -67,6 +69,8 @@ export default function reducer(state: Form = initialState, action: NewValueActi
     case DELETE_REPEAT_ITEM:
       return processDeleteRepeatItemAction(action, state);
 
+    case RECEIVE_SKJEMA_DEFINITION:
+      return processResceiveSkjemaDefinition(action as FormAction, state);
     default:
       return state;
   }
@@ -552,4 +556,37 @@ function getItemEnableWhenQuestionMatchIdFromArray(linkId: string, definitionIte
     }
   }
   return matchedItems;
+}
+
+function processResceiveSkjemaDefinition(action: FormAction, state: Form): Form {
+  if (!action.questionnaire) {
+    return state;
+  }
+
+  const formDefinition: FormDefinition = {
+    Content: action.questionnaire,
+  };
+
+  let formData: FormData;
+  if (action.questionnaireResponse) {
+    formData = { Content: action.questionnaireResponse };
+  } else if (state.FormData === initialState.FormData) {
+    formData = { Content: generateQuestionnaireResponse(action.questionnaire) };
+  } else {
+    formData = state.FormData;
+  }
+
+  let initialFormData: FormData;
+  if (state.InitialFormData === initialState.InitialFormData) {
+    initialFormData = formData;
+  } else {
+    initialFormData = state.InitialFormData;
+  }
+  return {
+    ...state,
+    FormDefinition: formDefinition,
+    FormData: formData,
+    Language: action.language || state.Language,
+    InitialFormData: initialFormData,
+  };
 }
