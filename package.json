@@ -1,10 +1,12 @@
 {
   "name": "@helsenorge/skjemautfyller",
-  "version": "0.0.16",
+  "version": "0.0.17",
   "main": "index.js",
   "author": "helsenorge",
   "license": "UNLICENSED",
-  "files": ["lib"],
+  "files": [
+    "lib"
+  ],
   "scripts": {
     "build:js": "tsc --p config/tsconfig.build.json",
     "build:copy-files": "node build/copy-build-files.js",
