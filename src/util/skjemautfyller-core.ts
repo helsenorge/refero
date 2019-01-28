@@ -1,16 +1,9 @@
-import {
-  QuestionnaireResponse,
-  QuestionnaireResponseItem,
-  QuestionnaireResponseAnswer,
-  QuestionnaireItem,
-  QuestionnaireEnableWhen,
-} from '../types/fhir';
-import { GlobalState } from '../reducers/index';
-import { FormData, getFormDefinition, FormDefinition, getFormData } from '../reducers/form';
-import { Props } from '../components/with-common-functions';
+import { QuestionnaireResponseItem, QuestionnaireResponseAnswer, QuestionnaireItem, QuestionnaireEnableWhen } from '../types/fhir';
+
+import { FormData, FormDefinition } from '../reducers/form';
 import { parseDate } from '@helsenorge/toolkit/components/atoms/time-input/date-core';
 import * as moment from 'moment';
-import { Dispatch } from 'redux';
+
 import ItemType from '../constants/itemType';
 import { getMinOccursExtensionValue } from './extension';
 
@@ -84,62 +77,6 @@ export function getAllResponseItemsWithLinkid(
 
   for (let k = 0; k < responseItems.length; k++) {
     getResponseItemsWithLinkid(definitionLinkId, responseItems[k]);
-  }
-
-  return relatedResponseItems;
-}
-
-export function getAllResponseItemsWithType(
-  type: string,
-  responseItems: QuestionnaireResponseItem[] | undefined
-): QuestionnaireResponseItem[] {
-  if (!responseItems) {
-    return [];
-  }
-  let relatedResponseItems: QuestionnaireResponseItem[] = [];
-
-  var getResponseItemsWithType = function(Type: string, responseItem: QuestionnaireResponseItem | QuestionnaireResponseAnswer): void {
-    if (!responseItem) {
-      return;
-    }
-    const responseAsAnswer = responseItem as QuestionnaireResponseItem;
-    const hasItems = responseItem.item && responseItem.item.length > 0;
-    const hasAnswers = responseAsAnswer.answer && responseAsAnswer.answer.length > 0;
-    if (!hasItems && !hasAnswers) {
-      return;
-    }
-
-    const itemsWithType = getItemWithTypeFromArray(Type, responseItem.item);
-    if (itemsWithType && itemsWithType.length > 0) {
-      itemsWithType.forEach(i => {
-        relatedResponseItems.push(i);
-      });
-    }
-
-    for (let i = 0; responseItem.item && i < responseItem.item.length; i++) {
-      getResponseItemsWithType(Type, responseItem.item[i]);
-    }
-
-    // linkId not found in items, check the answers for items
-    if (!hasAnswers) {
-      return;
-    }
-    for (let i = 0; responseAsAnswer.answer && i < responseAsAnswer.answer.length; i++) {
-      const answerWithType = getItemWithTypeFromArray(type, responseAsAnswer.answer[i].item);
-      if (answerWithType && answerWithType.length > 0) {
-        answerWithType.forEach(i => {
-          relatedResponseItems.push(i);
-        });
-      }
-    }
-
-    for (let i = 0; responseAsAnswer.answer && i < responseAsAnswer.answer.length; i++) {
-      getResponseItemsWithType(type, responseAsAnswer.answer[i]);
-    }
-  };
-
-  for (let k = 0; k < responseItems.length; k++) {
-    getResponseItemsWithType(type, responseItems[k]);
   }
 
   return relatedResponseItems;
@@ -443,51 +380,6 @@ export function enableWhenMatchesAnswer(
   return matches;
 }
 
-export function selectComponent(state: GlobalState, originalProps: Props) {
-  if (!originalProps.item || !originalProps.item.enableWhen) {
-    return { ...originalProps, enable: true } as Props;
-  }
-  let enable = false;
-  originalProps.item.enableWhen.forEach((enableWhen: QuestionnaireEnableWhen) => {
-    const definitionItems = getDefinitionItems(getFormDefinition(state));
-    const enableWhenQuestionItem = getQuestionnaireDefinitionItem(enableWhen.question, definitionItems);
-    const responseItems = getResponseItems(getFormData(state));
-    let enableWhenQuestion = enableWhen.question;
-    let parentPath = undefined;
-    if (originalProps.path) {
-      parentPath = originalProps.path.slice(0, -1);
-    }
-
-    if (wrappedByRepeatItem(parentPath) && originalProps.id && originalProps.id.includes('^')) {
-      enableWhenQuestion += originalProps.id.substring(originalProps.id.indexOf('^'));
-    }
-
-    for (let i = 0; responseItems && i < responseItems.length; i++) {
-      let responseItem: QuestionnaireResponseItem | undefined = responseItems[i];
-      if (responseItem.linkId !== enableWhen.question) {
-        responseItem = getQuestionnaireResponseItemWithLinkid(enableWhenQuestion, responseItems[i], true);
-      }
-      if (!responseItem) {
-        continue;
-      }
-      let deactivated = enableWhenQuestionItem ? enableWhenQuestionItem.deactivated : false;
-      enable = enable || (enableWhenMatchesAnswer(enableWhen, responseItem.answer) && !deactivated);
-    }
-  });
-  return { ...originalProps, enable } as Props;
-}
-
-export function mergeProps(stateProps: Props, dispatchProps: Props, ownProps: Props) {
-  return Object.assign({}, ownProps, stateProps, dispatchProps);
-}
-
-export function mapDispatchToProps(dispatch: Dispatch<{}>, props: Props): Props {
-  return {
-    dispatch,
-    path: props.path,
-  };
-}
-
 export interface Path {
   linkId: string;
   // repeatIndex?: number;
@@ -580,91 +472,6 @@ export function getResponseItemWithPath(path: Array<Path> | undefined, formData:
   return item;
 }
 
-const getAnswerAsString = (answer: QuestionnaireResponseAnswer): string => {
-  if (!answer) {
-    return '';
-  }
-  if (answer.valueBoolean === true || answer.valueBoolean === false) {
-    return `${answer.valueBoolean}`;
-  }
-  if (answer.valueTime) {
-    return answer.valueTime;
-  }
-  if (answer.valueDecimal) {
-    return `${answer.valueDecimal}`;
-  }
-  if (answer.valueInteger) {
-    return `${answer.valueInteger}`;
-  }
-  if (answer.valueString) {
-    return answer.valueString;
-  }
-  const coding = answer.valueCoding;
-  const codingValue = coding && coding.code ? String(coding.code) : null;
-  if (codingValue !== null && codingValue !== undefined && codingValue !== '') {
-    return codingValue;
-  }
-  if (answer.valueDate) {
-    return parseDate(answer.valueDate).toISOString();
-  }
-  if (answer.valueDateTime) {
-    return parseDate(answer.valueDateTime).toISOString();
-  }
-  return '';
-};
-
-const encode = (s: string): string => {
-  return s
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&apos;');
-};
-
-const createNarrativeForItem = (qi: QuestionnaireResponseItem): string => {
-  let narrative = '';
-  const hasAnswers = qi.answer && qi.answer.length > 0;
-  const hasItems = qi.item && qi.item.length > 0;
-  const text = qi.text ? ` ${encode(qi.text)}?` : '';
-  narrative += `<p><b>${qi.linkId}.${text}</b>`;
-  if (!qi || (!hasItems && !hasAnswers)) {
-    return `${narrative}</p>`;
-  }
-  if (qi.answer) {
-    narrative += '</p>';
-    qi.answer.forEach((a: QuestionnaireResponseAnswer) => {
-      narrative += `<p>${encode(getAnswerAsString(a))}</p>`;
-      if (a.item && a.item.length > 0) {
-        a.item.forEach((ai: QuestionnaireResponseItem) => {
-          narrative += createNarrativeForItem(ai);
-        });
-      }
-    });
-  }
-
-  if (qi.item && qi.item.length > 0) {
-    if (!hasAnswers) {
-      narrative = `${narrative}</p>`;
-    }
-    qi.item.forEach((ai: QuestionnaireResponseItem) => {
-      narrative += createNarrativeForItem(ai);
-    });
-  }
-  return narrative;
-};
-
-export const createNarrative = (qr: QuestionnaireResponse | null | undefined): string => {
-  let narrative = '';
-  if (!qr) {
-    return narrative;
-  }
-  for (let i = 0; qr.item && i < qr.item.length; i++) {
-    narrative += createNarrativeForItem(qr.item[i]);
-  }
-  return `<div xmlns=\"http://www.w3.org/1999/xhtml\">${narrative}</div>`;
-};
-
 export function getQuestionnaireDefinitionItem(
   linkId: string,
   definitionItems: QuestionnaireItem[] | undefined
@@ -729,51 +536,4 @@ function getQuestionnaireItemWithIdFromArray(
     return undefined;
   }
   return filteredItems;
-}
-
-export function createQuestionnaireResponseAnswer(item: QuestionnaireItem): QuestionnaireResponseAnswer | undefined {
-  const answer = {} as QuestionnaireResponseAnswer;
-  let hasInitialAnswer = false;
-
-  if (item.initialBoolean !== undefined) {
-    answer.valueBoolean = item.initialBoolean;
-    hasInitialAnswer = true;
-  } else if (item.type === 'boolean') {
-    hasInitialAnswer = true;
-    answer.valueBoolean = false;
-  }
-  if (item.initialDecimal !== undefined) {
-    hasInitialAnswer = true;
-    answer.valueDecimal = Number(item.initialDecimal);
-  }
-  if (item.initialInteger !== undefined) {
-    hasInitialAnswer = true;
-    answer.valueInteger = Number(item.initialInteger);
-  }
-  if (item.initialDate !== undefined) {
-    hasInitialAnswer = true;
-    answer.valueDate = String(item.initialDate);
-  }
-  if (item.initialDateTime !== undefined) {
-    hasInitialAnswer = true;
-    answer.valueDateTime = String(item.initialDateTime);
-  }
-  if (item.initialTime !== undefined) {
-    hasInitialAnswer = true;
-    answer.valueTime = String(item.initialTime);
-  }
-  if (item.initialString !== undefined) {
-    hasInitialAnswer = true;
-    answer.valueString = item.initialString;
-  }
-  if (item.initialCoding !== undefined) {
-    hasInitialAnswer = true;
-    answer.valueCoding = item.initialCoding;
-  }
-  if (item.initialAttachment !== undefined) {
-    hasInitialAnswer = true;
-    answer.valueAttachment = item.initialAttachment;
-  }
-
-  return hasInitialAnswer ? answer : undefined;
 }

@@ -6,7 +6,8 @@ import { CheckBox } from '@helsenorge/toolkit/components/atoms/checkbox';
 import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
 import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
 import withCommonFunctions from '../../with-common-functions';
-import { selectComponent, mergeProps, mapDispatchToProps, Path } from '../../../util/skjemautfyller-core';
+import { Path } from '../../../util/skjemautfyller-core';
+import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { newBooleanValue } from '../../../actions/newValue';
 import { isReadOnly, isRequired, getId, renderPrefix, getText } from '../../../util/index';
 import { getValidationTextExtension } from '../../../util/extension';
@@ -110,5 +111,5 @@ class Boolean extends React.Component<Props & ValidationProps, {}> {
   }
 }
 const withCommonFunctionsComponent = withCommonFunctions(Boolean);
-const connectedComponent = connect(selectComponent, mapDispatchToProps, mergeProps)(layoutChange(withCommonFunctionsComponent));
+const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(layoutChange(withCommonFunctionsComponent));
 export default connectedComponent;

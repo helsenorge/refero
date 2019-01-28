@@ -5,7 +5,8 @@ import { SafeTextarea } from '@helsenorge/toolkit/components/atoms/safe-textarea
 import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
 import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
 import Constants from '../../../constants/index';
-import { selectComponent, mergeProps, mapDispatchToProps, Path } from '../../../util/skjemautfyller-core';
+import { Path } from '../../../util/skjemautfyller-core';
+import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { newStringValue } from '../../../actions/newValue';
 import { isReadOnly, isRequired, getId, renderPrefix, getText, getStringValue, getMaxLength, getPDFStringValue } from '../../../util/index';
 import { getValidationTextExtension, getPlaceholder, getMinLengthExtensionValue } from '../../../util/extension';
@@ -75,5 +76,5 @@ class Text extends React.Component<Props & ValidationProps, {}> {
 }
 
 const withCommonFunctionsComponent = withCommonFunctions(Text);
-const connectedComponent = connect(selectComponent, mapDispatchToProps, mergeProps)(withCommonFunctionsComponent);
+const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(withCommonFunctionsComponent);
 export default connectedComponent;

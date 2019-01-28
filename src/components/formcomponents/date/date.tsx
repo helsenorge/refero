@@ -8,7 +8,8 @@ import Validation from '@helsenorge/toolkit/components/molecules/form/validation
 import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
 import ExtensionConstants from '../../../constants/extensions';
 import { parseDate } from '@helsenorge/toolkit/components/atoms/time-input/date-core';
-import { selectComponent, mergeProps, mapDispatchToProps, Path } from '../../../util/skjemautfyller-core';
+import { Path } from '../../../util/skjemautfyller-core';
+import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import Constants from '../../../constants/index';
 import { newDateValue } from '../../../actions/newValue';
 import withCommonFunctions from '../../with-common-functions';
@@ -194,5 +195,5 @@ class DateComponent extends React.Component<Props & ValidationProps> {
 }
 
 const withCommonFunctionsComponent = withCommonFunctions(DateComponent);
-const connectedComponent = connect(selectComponent, mapDispatchToProps, mergeProps)(withCommonFunctionsComponent);
+const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(withCommonFunctionsComponent);
 export default connectedComponent;

@@ -6,7 +6,8 @@ import ExtensionConstants from '../../../constants/extensions';
 import { Extension } from '../../../types/fhir';
 import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
 import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
-import { selectComponent, mergeProps, mapDispatchToProps, Path } from '../../../util/skjemautfyller-core';
+import { Path } from '../../../util/skjemautfyller-core';
+import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { newQuantityValue } from '../../../actions/newValue';
 import withCommonFunctions from '../../with-common-functions';
 import { isReadOnly, isRequired, getId, renderPrefix, getText } from '../../../util/index';
@@ -153,5 +154,5 @@ class Quantity extends React.Component<Props & ValidationProps, {}> {
 }
 
 const withCommonFunctionsComponent = withCommonFunctions(Quantity);
-const connectedComponent = connect(selectComponent, mapDispatchToProps, mergeProps)(withCommonFunctionsComponent);
+const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(withCommonFunctionsComponent);
 export default connectedComponent;

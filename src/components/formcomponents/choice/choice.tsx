@@ -5,7 +5,8 @@ import { Options } from '@helsenorge/toolkit/components/atoms/radio-group';
 import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
 import withCommonFunctions from '../../with-common-functions';
 import { newCodingValue, removeCodingValue } from '../../../actions/newValue';
-import { selectComponent, mergeProps, mapDispatchToProps, Path } from '../../../util/skjemautfyller-core';
+import { Path } from '../../../util/skjemautfyller-core';
+import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import Constants from '../../../constants/index';
 import { QuestionnaireItem, QuestionnaireResponseAnswer, Resource, Coding, QuestionnaireResponseItem } from '../../../types/fhir';
 import { Resources } from '../../../util/resources';
@@ -299,5 +300,5 @@ export class Choice extends React.Component<ChoiceProps & ValidationProps, Choic
 }
 
 const withCommonFunctionsComponent = withCommonFunctions(Choice);
-const connectedComponent = connect(selectComponent, mapDispatchToProps, mergeProps)(withCommonFunctionsComponent);
+const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(withCommonFunctionsComponent);
 export default connectedComponent;

@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { selectComponent, mergeProps, mapDispatchToProps, Path } from '../../../util/skjemautfyller-core';
+import { Path } from '../../../util/skjemautfyller-core';
+import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { QuestionnaireItem, QuestionnaireResponseItem } from '../../../types/fhir';
 import { getRepeatsTextExtension } from '../../../util/extension';
 import { Resources } from '../../../util/resources';
@@ -35,5 +36,5 @@ const RepeatButton: React.SFC<Props> = ({ item, resources, dispatch, parentPath,
   );
 };
 
-const connectedComponent = connect(selectComponent, mapDispatchToProps, mergeProps)(RepeatButton);
+const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(RepeatButton);
 export default connectedComponent;

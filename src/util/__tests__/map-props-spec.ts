@@ -1,0 +1,271 @@
+import { Props } from '../../components/with-common-functions';
+import * as chai from 'chai';
+import { dataModel } from './skjemautfyller-core-spec';
+import { mapStateToProps, mapDispatchToProps } from '../map-props';
+import { getQuestionnaireDefinitionItem } from '../skjemautfyller-core';
+const should = chai.should();
+
+describe('mapStateToProps', () => {
+  it('should enable component when no enableWhen field', () => {
+    const result = mapStateToProps(dataModel, {
+      item: { linkId: '1' },
+    } as Props);
+    const enable = result.enable;
+    should.exist(enable);
+    expect(enable).toEqual(true);
+  });
+
+  it('should enable component when correct string answer', () => {
+    if (
+      !dataModel ||
+      !dataModel.skjemautfyller ||
+      !dataModel.skjemautfyller.form.FormDefinition ||
+      !dataModel.skjemautfyller.form.FormDefinition.Content ||
+      !dataModel.skjemautfyller.form.FormDefinition.Content.item
+    ) {
+      return;
+    }
+    const result = mapStateToProps(dataModel, {
+      item: dataModel.skjemautfyller.form.FormDefinition.Content.item[1],
+    } as Props);
+
+    const enable = result.enable;
+    should.exist(enable);
+    expect(enable).toEqual(true);
+  });
+
+  it('should not enable component when incorrect answer', () => {
+    if (
+      !dataModel ||
+      !dataModel.skjemautfyller ||
+      !dataModel.skjemautfyller.form.FormDefinition ||
+      !dataModel.skjemautfyller.form.FormDefinition.Content ||
+      !dataModel.skjemautfyller.form.FormDefinition.Content.item
+    ) {
+      return;
+    }
+    const result = mapStateToProps(dataModel, {
+      item: dataModel.skjemautfyller.form.FormDefinition.Content.item[2],
+    } as Props);
+    const enable = result.enable;
+    should.exist(enable);
+    expect(enable).toEqual(false);
+  });
+
+  it('should enable component when correct boolean answer', () => {
+    if (
+      !dataModel ||
+      !dataModel.skjemautfyller ||
+      !dataModel.skjemautfyller.form.FormDefinition ||
+      !dataModel.skjemautfyller.form.FormDefinition.Content ||
+      !dataModel.skjemautfyller.form.FormDefinition.Content.item
+    ) {
+      return;
+    }
+    const result = mapStateToProps(dataModel, {
+      item: dataModel.skjemautfyller.form.FormDefinition.Content.item[4],
+    } as Props);
+
+    const enable = result.enable;
+    should.exist(enable);
+    expect(enable).toEqual(true);
+  });
+
+  it('should enable component when correct decimal answer', () => {
+    if (
+      !dataModel ||
+      !dataModel.skjemautfyller ||
+      !dataModel.skjemautfyller.form.FormDefinition ||
+      !dataModel.skjemautfyller.form.FormDefinition.Content ||
+      !dataModel.skjemautfyller.form.FormDefinition.Content.item
+    ) {
+      return;
+    }
+    const result = mapStateToProps(dataModel, {
+      item: dataModel.skjemautfyller.form.FormDefinition.Content.item[6],
+    } as Props);
+    const enable = result.enable;
+    should.exist(enable);
+    expect(enable).toEqual(true);
+  });
+
+  it('should not enable component when wrong integer answer', () => {
+    if (
+      !dataModel ||
+      !dataModel.skjemautfyller ||
+      !dataModel.skjemautfyller.form.FormDefinition ||
+      !dataModel.skjemautfyller.form.FormDefinition.Content ||
+      !dataModel.skjemautfyller.form.FormDefinition.Content.item
+    ) {
+      return;
+    }
+    const result = mapStateToProps(dataModel, {
+      item: dataModel.skjemautfyller.form.FormDefinition.Content.item[8],
+    } as Props);
+    const enable = result.enable;
+    should.exist(enable);
+    expect(enable).toEqual(false);
+  });
+
+  it('should enable component when correct date answer', () => {
+    if (
+      !dataModel ||
+      !dataModel.skjemautfyller ||
+      !dataModel.skjemautfyller.form.FormDefinition ||
+      !dataModel.skjemautfyller.form.FormDefinition.Content ||
+      !dataModel.skjemautfyller.form.FormDefinition.Content.item
+    ) {
+      return;
+    }
+    const result = mapStateToProps(dataModel, {
+      item: dataModel.skjemautfyller.form.FormDefinition.Content.item[10],
+    } as Props);
+    const enable = result.enable;
+    should.exist(enable);
+    expect(enable).toEqual(true);
+  });
+
+  it('should enable component when correct datetime answer', () => {
+    if (
+      !dataModel ||
+      !dataModel.skjemautfyller ||
+      !dataModel.skjemautfyller.form.FormDefinition ||
+      !dataModel.skjemautfyller.form.FormDefinition.Content ||
+      !dataModel.skjemautfyller.form.FormDefinition.Content.item
+    ) {
+      return;
+    }
+    const result = mapStateToProps(dataModel, {
+      item: dataModel.skjemautfyller.form.FormDefinition.Content.item[12],
+    } as Props);
+
+    const enable = result.enable;
+    should.exist(enable);
+    expect(enable).toEqual(true);
+  });
+
+  it('should enable component when correct time answer', () => {
+    if (
+      !dataModel ||
+      !dataModel.skjemautfyller ||
+      !dataModel.skjemautfyller.form.FormDefinition ||
+      !dataModel.skjemautfyller.form.FormDefinition.Content ||
+      !dataModel.skjemautfyller.form.FormDefinition.Content.item
+    ) {
+      return;
+    }
+    const result = mapStateToProps(dataModel, {
+      item: dataModel.skjemautfyller.form.FormDefinition.Content.item[14],
+    } as Props);
+    const enable = result.enable;
+    should.exist(enable);
+    expect(enable).toEqual(true);
+  });
+
+  it('should enable component when correct code answer', () => {
+    if (
+      !dataModel ||
+      !dataModel.skjemautfyller ||
+      !dataModel.skjemautfyller.form.FormDefinition ||
+      !dataModel.skjemautfyller.form.FormDefinition.Content ||
+      !dataModel.skjemautfyller.form.FormDefinition.Content.item
+    ) {
+      return;
+    }
+    const result = mapStateToProps(dataModel, {
+      item: dataModel.skjemautfyller.form.FormDefinition.Content.item[16],
+    } as Props);
+
+    const enable = result.enable;
+    should.exist(enable);
+    expect(enable).toEqual(true);
+  });
+
+  it('should enable reference-component if has correct answer', () => {
+    if (
+      !dataModel ||
+      !dataModel.skjemautfyller ||
+      !dataModel.skjemautfyller.form.FormDefinition ||
+      !dataModel.skjemautfyller.form.FormDefinition.Content ||
+      !dataModel.skjemautfyller.form.FormDefinition.Content.item
+    ) {
+      return;
+    }
+
+    let item = dataModel.skjemautfyller.form.FormDefinition.Content.item[20];
+    const result = mapStateToProps(dataModel, {
+      item: item,
+    } as Props);
+
+    const enable = result.enable;
+    should.exist(enable);
+    expect(enable).toEqual(true);
+  });
+
+  it('should not enable reference-component if has incorrect answer', () => {
+    if (
+      !dataModel ||
+      !dataModel.skjemautfyller ||
+      !dataModel.skjemautfyller.form.FormDefinition ||
+      !dataModel.skjemautfyller.form.FormDefinition.Content ||
+      !dataModel.skjemautfyller.form.FormDefinition.Content.item
+    ) {
+      return;
+    }
+
+    let item = dataModel.skjemautfyller.form.FormDefinition.Content.item[22];
+    const result = mapStateToProps(dataModel, {
+      item: item,
+    } as Props);
+
+    const enable = result.enable;
+    should.exist(enable);
+    expect(enable).toEqual(false);
+  });
+
+  it('should not enable component if has no answer', () => {
+    if (
+      !dataModel ||
+      !dataModel.skjemautfyller ||
+      !dataModel.skjemautfyller.form.FormDefinition ||
+      !dataModel.skjemautfyller.form.FormDefinition.Content ||
+      !dataModel.skjemautfyller.form.FormDefinition.Content.item
+    ) {
+      return;
+    }
+    let item = getQuestionnaireDefinitionItem('group1.2.2', dataModel.skjemautfyller.form.FormDefinition.Content.item);
+    should.exist(item);
+    const result = mapStateToProps(dataModel, {
+      item: item,
+    } as Props);
+    const enable = result.enable;
+    should.exist(enable);
+    expect(enable).toEqual(false);
+  });
+
+  it('should not enable component if has answer', () => {
+    if (
+      !dataModel ||
+      !dataModel.skjemautfyller ||
+      !dataModel.skjemautfyller.form.FormDefinition ||
+      !dataModel.skjemautfyller.form.FormDefinition.Content ||
+      !dataModel.skjemautfyller.form.FormDefinition.Content.item
+    ) {
+      return;
+    }
+    const result = mapStateToProps(dataModel, {
+      item: dataModel.skjemautfyller.form.FormDefinition.Content.item[18],
+    } as Props);
+    const enable = result.enable;
+    should.exist(enable);
+    expect(enable).toEqual(true);
+  });
+});
+
+describe('mapDispatchToProps', () => {
+  it('should return object', () => {
+    const props = mapDispatchToProps(() => {}, { path: [] });
+    should.exist(props.dispatch);
+    should.exist(props.path);
+  });
+});

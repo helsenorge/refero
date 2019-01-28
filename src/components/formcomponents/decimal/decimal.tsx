@@ -7,7 +7,8 @@ import Validation from '@helsenorge/toolkit/components/molecules/form/validation
 import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
 import ExtensionConstants from '../../../constants/extensions';
 import { Extension } from '../../../types/fhir';
-import { selectComponent, mergeProps, mapDispatchToProps, Path } from '../../../util/skjemautfyller-core';
+import { Path } from '../../../util/skjemautfyller-core';
+import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { newDecimalValue } from '../../../actions/newValue';
 import { QuestionnaireItem, QuestionnaireResponseAnswer } from '../../../types/fhir';
 import { Resources } from '../../../util/resources';
@@ -160,5 +161,5 @@ class Decimal extends React.Component<Props & ValidationProps, {}> {
 }
 
 const withCommonFunctionsComponent = withCommonFunctions(Decimal);
-const connectedComponent = connect(selectComponent, mapDispatchToProps, mergeProps)(layoutChange(withCommonFunctionsComponent));
+const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(layoutChange(withCommonFunctionsComponent));
 export default connectedComponent;

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { selectComponent, mergeProps, mapDispatchToProps } from '../../../util/skjemautfyller-core';
+import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { renderPrefix, getText } from '../../../util/index';
 import { QuestionnaireItem } from '../../../types/fhir';
 import { getMarkdownExtensionValue } from '../../../util/extension';
@@ -51,5 +51,5 @@ const Display: React.SFC<Props> = ({ enable, pdf, item }) => {
   return <div className="page_skjemautfyller__component">{value}</div>;
 };
 
-const connectedComponent = connect(selectComponent, mapDispatchToProps, mergeProps)(Display);
+const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(Display);
 export default connectedComponent;

@@ -3,7 +3,8 @@ import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import TextField from './text-field';
 import Choice from './choice';
-import { selectComponent, mergeProps, mapDispatchToProps, Path } from '../../../util/skjemautfyller-core';
+import { Path } from '../../../util/skjemautfyller-core';
+import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { newStringValue } from '../../../actions/newValue';
 import { hasOptions } from '../../../util/choice';
 import { QuestionnaireItem, QuestionnaireResponseAnswer, Resource } from '../../../types/fhir';
@@ -53,5 +54,5 @@ class OpenChoice extends React.Component<Props & ValidationProps, {}> {
   }
 }
 
-const connectedStringComponent = connect(selectComponent, mapDispatchToProps, mergeProps)(OpenChoice);
+const connectedStringComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(OpenChoice);
 export default connectedStringComponent;
