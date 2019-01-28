@@ -9,7 +9,8 @@ import Validation from '@helsenorge/toolkit/components/molecules/form/validation
 import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
 import withCommonFunctions from '../../with-common-functions';
 import ExtensionConstants from '../../../constants/extensions';
-import { selectComponent, mergeProps, mapDispatchToProps, Path } from '../../../util/skjemautfyller-core';
+import { Path } from '../../../util/skjemautfyller-core';
+import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { newTimeValue } from '../../../actions/newValue';
 import { getExtension, getValidationTextExtension } from '../../../util/extension';
 import { isReadOnly, isRequired, getId, renderPrefix, getText } from '../../../util/index';
@@ -252,5 +253,5 @@ class Time extends React.Component<Props & ValidationProps> {
   }
 }
 const withCommonFunctionsComponent = withCommonFunctions(Time);
-const connectedComponent = connect(selectComponent, mapDispatchToProps, mergeProps)(withCommonFunctionsComponent);
+const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(withCommonFunctionsComponent);
 export default connectedComponent;

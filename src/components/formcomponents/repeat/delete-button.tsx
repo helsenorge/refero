@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { selectComponent, mergeProps, mapDispatchToProps, Path } from '../../../util/skjemautfyller-core';
+import { Path } from '../../../util/skjemautfyller-core';
+import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { QuestionnaireItem } from '../../../types/fhir';
 import { Resources } from '../../../util/resources';
 import { Dispatch } from 'redux';
@@ -76,5 +77,5 @@ class DeleteButton extends React.Component<Props, State> {
     );
   }
 }
-const connectedComponent = connect(selectComponent, mapDispatchToProps, mergeProps)(DeleteButton);
+const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(DeleteButton);
 export default connectedComponent;

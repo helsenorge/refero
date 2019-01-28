@@ -7,7 +7,8 @@ import AttachmentHtml from './attachmenthtml';
 import { UploadedFile, TextMessage } from '@helsenorge/toolkit/components/atoms/dropzone';
 import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
 
-import { selectComponent, mergeProps, mapDispatchToProps, Path } from '../../../util/skjemautfyller-core';
+import { Path } from '../../../util/skjemautfyller-core';
+import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { isRequired, getId, renderPrefix, getText, isReadOnly } from '../../../util/index';
 import { getValidationTextExtension } from '../../../util/extension';
 import { log } from '@helsenorge/toolkit/utils/logger';
@@ -123,5 +124,5 @@ class Attachment extends React.Component<Props & ValidationProps> {
 }
 
 const withCommonFunctionsComponent = withCommonFunctions(Attachment);
-const connectedComponent = connect(selectComponent, mapDispatchToProps, mergeProps)(withCommonFunctionsComponent);
+const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(withCommonFunctionsComponent);
 export default connectedComponent;

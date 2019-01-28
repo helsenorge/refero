@@ -2,12 +2,13 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import * as moment from 'moment';
-import withCommonFunctions from '../../with-common-functions';
+import withCommonFunctions, { Props as CommonProps } from '../../with-common-functions';
 import DateTimeInput from '@helsenorge/toolkit/components/atoms/date-time-input';
 import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
 import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
 import layoutChange from '@helsenorge/toolkit/higher-order-components/layoutChange';
-import { selectComponent, mergeProps, mapDispatchToProps, Path } from '../../../util/skjemautfyller-core';
+import { Path } from '../../../util/skjemautfyller-core';
+import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { parseDate } from '@helsenorge/toolkit/components/atoms/time-input/date-core';
 import Constants from '../../../constants/index';
 import ExtensionConstants from '../../../constants/extensions';
@@ -17,6 +18,7 @@ import { getValidationTextExtension, getExtension } from '../../../util/extensio
 import { QuestionnaireItem, QuestionnaireResponseAnswer } from '../../../types/fhir';
 import { Resources } from '../../../util/resources';
 import TextView from '../textview';
+import { GlobalState } from '../../../reducers';
 
 export interface Props {
   item: QuestionnaireItem;
@@ -156,5 +158,5 @@ class DateTime extends React.Component<Props & ValidationProps> {
 }
 
 const withCommonFunctionsComponent = withCommonFunctions(DateTime);
-const connectedComponent = connect(selectComponent, mapDispatchToProps, mergeProps)(layoutChange(withCommonFunctionsComponent));
+const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(layoutChange(withCommonFunctionsComponent));
 export default connectedComponent;

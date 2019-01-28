@@ -20,12 +20,12 @@ import {
   getResponseItems,
   getDefinitionItems,
   enableWhenMatchesAnswer,
-  createQuestionnaireResponseAnswer,
 } from '../util/skjemautfyller-core';
 import { getMinOccursExtensionValue } from '../util/extension';
 import { Languages } from '@helsenorge/toolkit/constants';
 import { FormAction, RECEIVE_SKJEMA_DEFINITION } from '../actions/form';
 import { generateQuestionnaireResponse } from '../actions/generateQuestionnaireResponse';
+import { createQuestionnaireResponseAnswer } from '../util/createQuestionnaireResponseAnswer';
 
 export interface FormData {
   Content: QuestionnaireResponse | null | undefined;

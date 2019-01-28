@@ -1,4 +1,4 @@
-import { createQuestionnaireResponseAnswer } from '../util/skjemautfyller-core';
+import { createQuestionnaireResponseAnswer } from '../util/createQuestionnaireResponseAnswer';
 import StatusConstants from '../constants/status';
 import { QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItem, QuestionnaireResponseAnswer, Reference } from '../types/fhir';
 

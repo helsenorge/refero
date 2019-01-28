@@ -26,9 +26,9 @@
     regenerator-runtime "^0.12.0"
 
 "@helsenorge/core-framework@^1.5.0":
-  version "1.5.0"
-  resolved "https://tfs.ehelse.no/Ehelse/_packaging/Helsenorge/npm/registry/@helsenorge/core-framework/-/core-framework-1.5.0.tgz#fa02ece6028ed80c096a74fc8b34768e1b307f84"
-  integrity sha1-+gLs5gKO2AwJanT8izR2jhswf4Q=
+  version "1.5.4"
+  resolved "https://tfs.ehelse.no/Ehelse/_packaging/Helsenorge/npm/registry/@helsenorge/core-framework/-/core-framework-1.5.4.tgz#06807297d5f98782c10d9ea5cafa02066a307da1"
+  integrity sha1-BoByl9X5h4LBDZ6lyvoCBmowfaE=
   dependencies:
     "@helsenorge/toolkit" "^1.10.0"
     core-js "^2.4.1"
@@ -42,23 +42,10 @@
     redux "3.6.0"
     redux-thunk "2.2.0"
 
-"@helsenorge/toolkit@^1.10.0":
-  version "1.10.0"
-  resolved "https://tfs.ehelse.no/Ehelse/_packaging/Helsenorge/npm/registry/@helsenorge/toolkit/-/toolkit-1.10.0.tgz#571ec2bc3cb61f3a99429a45d9e93c85b7993783"
-  integrity sha1-Vx7CvDy2HzqZQppF2ek8hbeZN4M=
-  dependencies:
-    applicationinsights-js "^1.0.20"
-    jquery "^3.1.1"
-    react-addons-shallow-compare "^15.6.2"
-    react-dropzone "4.1.3"
-    react-router-dom "4.3.1"
-    react-widgets "^4.0.3"
-    uuid "^3.3.2"
-
-"@helsenorge/toolkit@^1.9.2":
-  version "1.9.3"
-  resolved "https://tfs.ehelse.no/Ehelse/_packaging/Helsenorge/npm/registry/@helsenorge/toolkit/-/toolkit-1.9.3.tgz#08bd9fdf1803f71544a4d0b6a211ccd7db69133c"
-  integrity sha1-CL2f3xgD9xVEpNC2ohHM19tpEzw=
+"@helsenorge/toolkit@^1.10.0", "@helsenorge/toolkit@^1.9.2":
+  version "1.10.7"
+  resolved "https://tfs.ehelse.no/Ehelse/_packaging/Helsenorge/npm/registry/@helsenorge/toolkit/-/toolkit-1.10.7.tgz#95a96109aa2ee3a2699dfc63df8ce352cf224944"
+  integrity sha1-lalhCaou46Jpnfxj34zjUs8iSUQ=
   dependencies:
     applicationinsights-js "^1.0.20"
     jquery "^3.1.1"
@@ -897,9 +884,9 @@ core-js@^2.4.0:
   integrity sha512-L72mmmEayPJBejKIWe2pYtGis5r0tQ5NaJekdhyXgeMQTpJoBsH0NL4ElY2LfSoV15xeQWKQ+XTTOZdyero5Xg==
 
 core-js@^2.4.1:
-  version "2.6.2"
-  resolved "https://registry.yarnpkg.com/core-js/-/core-js-2.6.2.tgz#267988d7268323b349e20b4588211655f0e83944"
-  integrity sha512-NdBPF/RVwPW6jr0NCILuyN9RiqLo2b1mddWHkUL+VnvcB7dzlnBJ1bXYntjpTGOgkZiiLWj2JxmOr7eGE3qK6g==
+  version "2.6.3"
+  resolved "https://registry.yarnpkg.com/core-js/-/core-js-2.6.3.tgz#4b70938bdffdaf64931e66e2db158f0892289c49"
+  integrity sha512-l00tmFFZOBHtYhN4Cz7k32VM7vTn3rE2ANjQDxdEN6zmXZ/xq1jQuutnmHvMG1ZJ7xd72+TA5YpUK8wz3rWsfQ==
 
 core-js@^2.5.0:
   version "2.6.0"

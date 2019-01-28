@@ -5,7 +5,8 @@ import SafeInputField from '@helsenorge/toolkit/components/atoms/safe-input-fiel
 import layoutChange from '@helsenorge/toolkit/higher-order-components/layoutChange';
 import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
 import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
-import { selectComponent, mergeProps, mapDispatchToProps, Path } from '../../../util/skjemautfyller-core';
+import { Path } from '../../../util/skjemautfyller-core';
+import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { newStringValue } from '../../../actions/newValue';
 import { isReadOnly, isRequired, getId, renderPrefix, getText, getStringValue, getMaxLength, getPDFStringValue } from '../../../util/index';
 import { getValidationTextExtension, getPlaceholder, getMinLengthExtensionValue, getRegexExtension } from '../../../util/extension';
@@ -89,5 +90,5 @@ class String extends React.Component<Props & ValidationProps, {}> {
   }
 }
 const withCommonFunctionsComponent = withCommonFunctions(String);
-const connectedComponent = connect(selectComponent, mapDispatchToProps, mergeProps)(layoutChange(withCommonFunctionsComponent));
+const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(layoutChange(withCommonFunctionsComponent));
 export default connectedComponent;
