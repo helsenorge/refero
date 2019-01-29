@@ -1,8 +1,8 @@
 import { Questionnaire } from '../types/fhir';
 import { QuestionnaireResponse } from '../types/fhir';
 
-export type RECEIVE_SKJEMA_DEFINITION = 'skjemautfyller/RECEIVE_SKJEMA_DEFINITION';
-export const RECEIVE_SKJEMA_DEFINITION: RECEIVE_SKJEMA_DEFINITION = 'skjemautfyller/RECEIVE_SKJEMA_DEFINITION';
+export type SET_SKJEMA_DEFINITION = 'skjemautfyller/SET_SKJEMA_DEFINITION';
+export const SET_SKJEMA_DEFINITION: SET_SKJEMA_DEFINITION = 'skjemautfyller/SET_SKJEMA_DEFINITION';
 
 export interface FormAction {
   questionnaire: Questionnaire;
@@ -11,13 +11,13 @@ export interface FormAction {
   type: string;
 }
 
-export function receiveSkjemaDefinition(
+export function setSkjemaDefinition(
   skjemaDefinition: Questionnaire,
   questionnaireResponse?: QuestionnaireResponse,
   language?: string
 ): FormAction {
   return {
-    type: RECEIVE_SKJEMA_DEFINITION,
+    type: SET_SKJEMA_DEFINITION,
     questionnaire: skjemaDefinition,
     questionnaireResponse: questionnaireResponse,
     language: language,
