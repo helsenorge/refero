@@ -22,7 +22,7 @@ import RepeatButton from '../components/formcomponents/repeat/repeat-button';
 import { IE11HackToWorkAroundBug187484 } from '../util/hacks';
 import 'redux-thunk';
 import { TextMessage, UploadedFile } from '@helsenorge/toolkit/components/atoms/dropzone';
-import { receiveSkjemaDefinition } from '../actions/form';
+import { setSkjemaDefinition } from '../actions/form';
 
 export interface QueryStringsInterface {
   MessageId: string;
@@ -265,11 +265,11 @@ function mapStateToProps(state: GlobalState): StateProps {
 function mapDispatchToProps(dispatch: Dispatch<{}>, props: Props): DispatchProps {
   return {
     updateSkjema: (questionnaire: Questionnaire, questionnaireResponse: QuestionnaireResponse, language: string): void => {
-      dispatch(receiveSkjemaDefinition(questionnaire, questionnaireResponse, language));
+      dispatch(setSkjemaDefinition(questionnaire, questionnaireResponse, language));
     },
     mount: (): void => {
       if (props.questionnaire) {
-        dispatch(receiveSkjemaDefinition(props.questionnaire, props.questionnaireResponse, props.language));
+        dispatch(setSkjemaDefinition(props.questionnaire, props.questionnaireResponse, props.language));
       }
     },
     dispatch,

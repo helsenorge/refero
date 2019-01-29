@@ -23,7 +23,7 @@ import {
 } from '../util/skjemautfyller-core';
 import { getMinOccursExtensionValue } from '../util/extension';
 import { Languages } from '@helsenorge/toolkit/constants';
-import { FormAction, RECEIVE_SKJEMA_DEFINITION } from '../actions/form';
+import { FormAction, SET_SKJEMA_DEFINITION } from '../actions/form';
 import { generateQuestionnaireResponse } from '../actions/generateQuestionnaireResponse';
 import { createQuestionnaireResponseAnswer } from '../util/createQuestionnaireResponseAnswer';
 
@@ -69,8 +69,8 @@ export default function reducer(state: Form = initialState, action: NewValueActi
     case DELETE_REPEAT_ITEM:
       return processDeleteRepeatItemAction(action, state);
 
-    case RECEIVE_SKJEMA_DEFINITION:
-      return processResceiveSkjemaDefinition(action as FormAction, state);
+    case SET_SKJEMA_DEFINITION:
+      return processSetSkjemaDefinition(action as FormAction, state);
     default:
       return state;
   }
@@ -558,7 +558,7 @@ function getItemEnableWhenQuestionMatchIdFromArray(linkId: string, definitionIte
   return matchedItems;
 }
 
-function processResceiveSkjemaDefinition(action: FormAction, state: Form): Form {
+function processSetSkjemaDefinition(action: FormAction, state: Form): Form {
   if (!action.questionnaire) {
     return state;
   }
