@@ -48,9 +48,9 @@ interface Props {
   store?: Store<{}>;
   authorized: boolean;
   blockSubmit?: boolean;
-  onSave: () => void;
+  onSave: (questionnaireResponse: QuestionnaireResponse) => void;
   onCancel: () => void;
-  onSubmit: () => void;
+  onSubmit: (questionnaireResponse: QuestionnaireResponse) => void;
   loginButton: JSX.Element;
   resources?: Resources;
   pdf?: boolean;
@@ -90,6 +90,18 @@ class Skjemautfyller extends React.Component<StateProps & DispatchProps & Props,
       showCancelLightbox: false,
     };
   }
+
+  onSubmit = () => {
+    if (this.props.formData && this.props.formData.Content) {
+      this.props.onSubmit(this.props.formData.Content);
+    }
+  };
+
+  onSave = () => {
+    if (this.props.formData && this.props.formData.Content) {
+      this.props.onSave(this.props.formData.Content);
+    }
+  };
 
   componentDidMount(): void {
     this.props.mount();
@@ -223,12 +235,12 @@ class Skjemautfyller extends React.Component<StateProps & DispatchProps & Props,
           disabled={this.props.blockSubmit}
           submitButtonText={resources.formSend}
           errorMessage={resources.formError}
-          onSubmit={this.props.onSubmit}
+          onSubmit={this.onSubmit}
           requiredLabel={resources.formRequired}
           optionalLabel={resources.formOptional}
           cancelButtonText={resources.formCancel}
           pauseButtonText={'Fortsett senere'}
-          onPause={this.props.onSave}
+          onPause={this.onSave}
           pauseButtonClasses={'atom_inline-btn pause page_skjemautfyller__pausebutton'}
           onCancel={this.props.onCancel}
           buttonClasses="page_skjemautfyller__saveblock"
