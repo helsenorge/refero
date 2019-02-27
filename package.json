@@ -1,10 +1,12 @@
 {
   "name": "@helsenorge/skjemautfyller",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "main": "index.js",
   "author": "helsenorge",
   "license": "UNLICENSED",
-  "files": ["lib"],
+  "files": [
+    "lib"
+  ],
   "scripts": {
     "build:js": "tsc --p config/tsconfig.build.json",
     "build:copy-files": "node build/copy-build-files.js",
@@ -18,7 +20,7 @@
       "pre-commit": "pretty-quick --staged"
     }
   },
-  "devDependencies": {    
+  "devDependencies": {
     "@types/chai": "^3.5.2",
     "@types/classnames": "2.2.6",
     "@types/enzyme": "3.1.15",
@@ -54,7 +56,7 @@
     "whatwg-fetch": "2.0.4"
   },
   "dependencies": {
-    "@helsenorge/toolkit": "^2.1.1",
+    "@helsenorge/toolkit": "^2.2.0",
     "marked": "^0.3.17",
     "moment": "2.23.0",
     "uuid": "2.0.3"
