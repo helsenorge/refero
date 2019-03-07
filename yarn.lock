@@ -25,10 +25,10 @@
   dependencies:
     regenerator-runtime "^0.12.0"
 
-"@helsenorge/toolkit@^2.2.0":
-  version "2.2.0"
-  resolved "https://tfs.ehelse.no/Ehelse/_packaging/Helsenorge/npm/registry/@helsenorge/toolkit/-/toolkit-2.2.0.tgz#71b239a9f35fc8c4b6e798110c81cd3cb951eda9"
-  integrity sha1-cbI5qfNfyMS255gRDIHNPLlR7ak=
+"@helsenorge/toolkit@^2.1.0":
+  version "2.1.0"
+  resolved "https://tfs.ehelse.no/Ehelse/_packaging/Helsenorge/npm/registry/@helsenorge/toolkit/-/toolkit-2.1.0.tgz#7add966bf7b123acad101bb87070bf4a7253f1b4"
+  integrity sha1-et2Wa/exI6ytEBu4cHC/SnJT8bQ=
   dependencies:
     applicationinsights-js "^1.0.20"
     jquery "^3.1.1"
