@@ -2,6 +2,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import * as moment from 'moment';
+import 'moment/locale/nb';
 import withCommonFunctions, { Props as CommonProps } from '../../with-common-functions';
 import DateTimeInput from '@helsenorge/toolkit/components/atoms/date-time-input';
 import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
@@ -85,6 +86,7 @@ class DateTime extends React.Component<Props & ValidationProps> {
     const { dispatch, promptLoginMessage } = this.props;
     if (dispatch) {
       const momentDate = moment(date)
+        .locale('nb')
         .utc()
         .format(Constants.DATE_TIME_FORMAT);
       dispatch(newDateTimeValue(this.props.path, momentDate, this.props.item));
@@ -111,7 +113,11 @@ class DateTime extends React.Component<Props & ValidationProps> {
     if (this.props.resources && this.props.resources.ikkeBesvart) {
       text = this.props.resources.ikkeBesvart;
     }
-    return date ? moment(date).format('LLL') : text;
+    return date
+      ? moment(date)
+          .locale('nb')
+          .format('LLL')
+      : text;
   };
 
   render(): JSX.Element | null {
@@ -158,5 +164,9 @@ class DateTime extends React.Component<Props & ValidationProps> {
 }
 
 const withCommonFunctionsComponent = withCommonFunctions(DateTime);
-const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(layoutChange(withCommonFunctionsComponent));
+const connectedComponent = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+  mergeProps
+)(layoutChange(withCommonFunctionsComponent));
 export default connectedComponent;
