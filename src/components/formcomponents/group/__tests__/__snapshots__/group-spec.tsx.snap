@@ -9,6 +9,7 @@ ShallowWrapper {
       headerTag={3}
       item={
         Object {
+          "id": "2",
           "linkId": "2.1",
           "repeats": false,
           "text": "Overskrift",
@@ -45,6 +46,7 @@ ShallowWrapper {
           undefined,
           <div />,
         ],
+        "id": "section-2",
       },
       "ref": null,
       "rendered": Array [
@@ -103,6 +105,7 @@ ShallowWrapper {
             undefined,
             <div />,
           ],
+          "id": "section-2",
         },
         "ref": null,
         "rendered": Array [
@@ -234,6 +237,7 @@ ShallowWrapper {
           undefined,
           <div />,
         ],
+        "id": "section-2",
       },
       "ref": null,
       "rendered": Array [

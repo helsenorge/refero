@@ -8,6 +8,7 @@ import CustomTag from '@helsenorge/toolkit/utils/custom-tag';
 describe('group', () => {
   it('should render correct tag', () => {
     const item: QuestionnaireItem = {
+      id: '2',
       linkId: '2.1',
       repeats: false,
       type: 'group',

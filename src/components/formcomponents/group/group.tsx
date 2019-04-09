@@ -33,7 +33,7 @@ export class Group extends React.Component<Props, State> {
 
   renderAllItems = (): JSX.Element => {
     return (
-      <section>
+      <section id={'section-' + this.props.item.id}>
         {this.renderGroupHeader()}
         <div className="page_skjemautfyller__component">{this.props.renderChildrenItems()}</div>
         {this.props.renderDeleteButton('page_skjemautfyller__deletebutton--margin-top')}
@@ -66,5 +66,9 @@ export class Group extends React.Component<Props, State> {
   }
 }
 const withCommonFunctionsComponent = withCommonFunctions(Group);
-const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(withCommonFunctionsComponent);
+const connectedComponent = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+  mergeProps
+)(withCommonFunctionsComponent);
 export default connectedComponent;
