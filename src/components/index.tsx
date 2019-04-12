@@ -72,6 +72,7 @@ interface Props {
   questionnaire?: Questionnaire;
   questionnaireResponse?: QuestionnaireResponse;
   language?: string;
+  sticky?: boolean;
 }
 
 interface State {
@@ -239,7 +240,7 @@ class Skjemautfyller extends React.Component<StateProps & DispatchProps & Props,
           requiredLabel={resources.formRequired}
           optionalLabel={resources.formOptional}
           cancelButtonText={resources.formCancel}
-          pauseButtonText={'Fortsett senere'}
+          pauseButtonText={resources.formSave ? resources.formSave : 'Lagre'}
           onPause={this.onSave}
           pauseButtonClasses={'atom_inline-btn pause page_skjemautfyller__pausebutton'}
           onCancel={this.props.onCancel}
@@ -248,6 +249,7 @@ class Skjemautfyller extends React.Component<StateProps & DispatchProps & Props,
             enable: true,
             header: resources.validationSummaryHeader,
           }}
+          sticky={this.props.sticky}
         >
           {this.renderFormItems()}
         </Form>
@@ -289,5 +291,8 @@ function mapDispatchToProps(dispatch: Dispatch<{}>, props: Props): DispatchProps
   };
 }
 
-const SkjemautfyllerContainer = connect<StateProps, DispatchProps, Props>(mapStateToProps, mapDispatchToProps)(Skjemautfyller);
+const SkjemautfyllerContainer = connect<StateProps, DispatchProps, Props>(
+  mapStateToProps,
+  mapDispatchToProps
+)(Skjemautfyller);
 export { SkjemautfyllerContainer };

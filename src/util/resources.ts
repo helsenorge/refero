@@ -72,6 +72,10 @@ export interface Resources {
    */
   formSend: string;
   /**
+   * Lagre
+   */
+  formSave: string;
+  /**
    * Sjekk at alt er riktig utfylt.
    */
   formError: string;
