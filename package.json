@@ -1,6 +1,6 @@
 {
   "name": "@helsenorge/skjemautfyller",
-  "version": "1.0.3",
+  "version": "1.1.0",
   "main": "index.js",
   "author": "helsenorge",
   "license": "UNLICENSED",
@@ -42,7 +42,7 @@
     "jest": "^23.6.0",
     "npm-run-all": "^4.1.5",
     "prettier": "1.16.4",
-    "pretty-quick": "1.10.0",    
+    "pretty-quick": "1.10.0",
     "react": "^16.8.4",
     "react-collapse": "^4.0.3",
     "react-dom": "^16.8.4",
