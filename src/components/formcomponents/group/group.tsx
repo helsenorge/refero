@@ -4,7 +4,7 @@ import { Dispatch } from 'redux';
 import { Path } from '../../../util/skjemautfyller-core';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import CustomTag from '@helsenorge/toolkit/utils/custom-tag';
-import { renderPrefix, getText } from '../../../util/index';
+import { renderPrefix, getText, getId } from '../../../util/index';
 import { QuestionnaireItem, QuestionnaireResponseAnswer, QuestionnaireResponseItem } from '../../../types/fhir';
 import withCommonFunctions from '../../with-common-functions';
 import { Resources } from '../../../util/resources';
@@ -22,6 +22,7 @@ export interface Props {
   renderDeleteButton: (className?: string) => JSX.Element | undefined;
   renderChildrenItems: () => Array<JSX.Element> | undefined;
   repeatButton: JSX.Element;
+  id?: string;
 }
 interface State {
   counter?: number;
@@ -33,7 +34,7 @@ export class Group extends React.Component<Props, State> {
 
   renderAllItems = (): JSX.Element => {
     return (
-      <section id={'section-' + this.props.item.id}>
+      <section id={getId(this.props.id)}>
         {this.renderGroupHeader()}
         <div className="page_skjemautfyller__component">{this.props.renderChildrenItems()}</div>
         {this.props.renderDeleteButton('page_skjemautfyller__deletebutton--margin-top')}
