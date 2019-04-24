@@ -154,6 +154,7 @@ class Skjemautfyller extends React.Component<StateProps & DispatchProps & Props,
               pdf={pdf}
               promptLoginMessage={promptLoginMessage}
               key={`item_${responseItem.linkId}_${index}`}
+              id={`item_${responseItem.linkId}`}
               item={item}
               responseItem={responseItem}
               answer={getAnswerFromResponseItem(responseItem)}
