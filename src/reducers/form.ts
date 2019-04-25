@@ -340,7 +340,7 @@ function processNewValueAction(action: NewValueAction, state: Form): Form {
     answer.valueAttachment = <Attachment>{
       url: action.valueAttachment.url,
       title: action.valueAttachment.title,
-    };
+      data: action.valueAttachment.data,
   }
   if (action.valueQuantity) {
     hasAnswer = true;
