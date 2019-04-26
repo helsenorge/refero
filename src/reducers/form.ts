@@ -341,6 +341,11 @@ function processNewValueAction(action: NewValueAction, state: Form): Form {
       url: action.valueAttachment.url,
       title: action.valueAttachment.title,
       data: action.valueAttachment.data,
+      contentType: action.valueAttachment.contentType,
+      creation: action.valueAttachment.creation,
+      hash: action.valueAttachment.hash,
+      size: action.valueAttachment.size,
+      language: action.valueAttachment.language,
     };
   }
   if (action.valueQuantity) {
