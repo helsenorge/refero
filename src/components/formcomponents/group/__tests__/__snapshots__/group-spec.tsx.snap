@@ -7,6 +7,7 @@ ShallowWrapper {
     Symbol(enzyme.__unrendered__): <Group
       answer={Object {}}
       headerTag={3}
+      id="item_2"
       item={
         Object {
           "id": "2",
@@ -46,7 +47,7 @@ ShallowWrapper {
           undefined,
           <div />,
         ],
-        "id": "section-2",
+        "id": "item_2",
       },
       "ref": null,
       "rendered": Array [
@@ -105,7 +106,7 @@ ShallowWrapper {
             undefined,
             <div />,
           ],
-          "id": "section-2",
+          "id": "item_2",
         },
         "ref": null,
         "rendered": Array [
@@ -237,7 +238,7 @@ ShallowWrapper {
           undefined,
           <div />,
         ],
-        "id": "section-2",
+        "id": "item_2",
       },
       "ref": null,
       "rendered": Array [

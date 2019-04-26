@@ -61,5 +61,8 @@
     "marked": "^0.3.17",
     "moment": "2.23.0",
     "uuid": "2.0.3"
+  },
+  "resolutions": {
+    "write-file-atomic": "2.4.1"
   }
 }

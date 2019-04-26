@@ -28,6 +28,7 @@ describe('group', () => {
         renderDeleteButton={() => {
           return undefined;
         }}
+        id="item_2"
       />
     );
     expect(group.find(CustomTag)).toMatchSnapshot();
