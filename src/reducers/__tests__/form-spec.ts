@@ -1,7 +1,7 @@
 /* tslint:disable */
 import * as chai from 'chai';
 import reducer, { Form } from '../form';
-import { Questionnaire, QuestionnaireResponse, Coding, QuestionnaireResponseItem, Attachment } from '../../types/fhir';
+import { Questionnaire, QuestionnaireResponse, Coding, QuestionnaireResponseItem, Attachment, base64Binary } from '../../types/fhir';
 import {
   newStringValue,
   newBooleanValue,
@@ -24,6 +24,7 @@ import {
   getItemWithIdFromResponseItemArray,
 } from '../../util/skjemautfyller-core';
 import { GlobalState } from '..';
+import { code } from '../../../lib/types/fhir';
 
 const should = chai.should();
 
@@ -606,6 +607,31 @@ describe('new value action', () => {
     expect(item.answer[0]).toMatchSnapshot();
     expect(item.answer[1]).toMatchSnapshot();
   });
+  it('should update attachment fields', () => {
+    let action: NewValueAction = newAttachment(
+      [{ linkId: 'attachment' }],
+      { url: 'y', title: 'display', data: { value: '123' } as base64Binary, contentType: { value: 'image/jpg' } as code } as Attachment,
+      undefined
+    );
+    let newState: Form | undefined = reducer(dataModel.skjemautfyller.form, action);
+    if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
+      return fail();
+    }
+    let item = newState.FormData.Content.item[10];
+    if (!item || item.answer === undefined || item.answer === null || !item.answer[0]) {
+      return fail();
+    }
+    let answer = item.answer[0];
+    if (!answer || !answer.valueAttachment) {
+      return fail();
+    }
+    expect(answer.valueAttachment.url).toEqual('y');
+    expect(answer.valueAttachment.title).toEqual('display');
+    expect((answer.valueAttachment.data as base64Binary).value).toEqual('123');
+    expect((answer.valueAttachment.contentType as code).value).toEqual('image/jpg');
+    expect(answer.valueAttachment.hash).toBeUndefined();
+  });
+
   it('should update attachment value', () => {
     let action: NewValueAction = newAttachment([{ linkId: 'attachment' }], { url: 'y', title: 'displayy' } as Attachment, undefined);
     let newState: Form | undefined = reducer(dataModel.skjemautfyller.form, action);
