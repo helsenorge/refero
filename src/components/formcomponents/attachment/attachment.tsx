@@ -11,7 +11,6 @@ import { Path } from '../../../util/skjemautfyller-core';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { isRequired, getId, renderPrefix, getText, isReadOnly } from '../../../util/index';
 import { getValidationTextExtension } from '../../../util/extension';
-import { log } from '@helsenorge/toolkit/utils/logger';
 import { QuestionnaireItem, QuestionnaireResponseAnswer } from '../../../types/fhir';
 import { Resources } from '../../../util/resources';
 import TextView from '../textview';
@@ -43,7 +42,6 @@ export interface Props {
 
 class Attachment extends React.Component<Props & ValidationProps> {
   onUpload = (files: File[], cb: (success: boolean, errormessage: TextMessage | null) => void) => {
-    log(files);
     const { uploadAttachment } = this.props;
     if (uploadAttachment) {
       uploadAttachment(this.props.path, files, this.props.item, cb);
@@ -124,5 +122,9 @@ class Attachment extends React.Component<Props & ValidationProps> {
 }
 
 const withCommonFunctionsComponent = withCommonFunctions(Attachment);
-const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(withCommonFunctionsComponent);
+const connectedComponent = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+  mergeProps
+)(withCommonFunctionsComponent);
 export default connectedComponent;
