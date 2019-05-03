@@ -11,9 +11,10 @@ import { Path } from '../../../util/skjemautfyller-core';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { isRequired, getId, renderPrefix, getText, isReadOnly } from '../../../util/index';
 import { getValidationTextExtension } from '../../../util/extension';
-import { QuestionnaireItem, QuestionnaireResponseAnswer } from '../../../types/fhir';
+import { QuestionnaireItem, QuestionnaireResponseAnswer, Attachment } from '../../../types/fhir';
 import { Resources } from '../../../util/resources';
 import TextView from '../textview';
+import { newAttachment } from '../../../actions/newValue';
 export interface Props {
   dispatch?: Dispatch<{}>;
   path: Array<Path>;
@@ -25,26 +26,32 @@ export interface Props {
   renderDeleteButton: () => JSX.Element | undefined;
   repeatButton: JSX.Element;
   uploadAttachment?: (
-    itemPath: Array<Path>,
     files: File[],
-    item: QuestionnaireItem | undefined,
-    cb: (success: boolean, errormessage: TextMessage | null, uploadedFile?: UploadedFile) => void
+    onSuccess: (uploadedFile: UploadedFile, attachment: Attachment) => void,
+    onError: (errorMessage: TextMessage | null) => void
   ) => void;
-  onDeleteAttachment?: (
-    itemPath: Array<Path>,
-    item: QuestionnaireItem | undefined,
-    fileId: string,
-    cb: (success: boolean, errorMessage: TextMessage | null) => void
-  ) => void;
+  onDeleteAttachment?: (fileId: string, onSuccess: () => void, onError: (errorMessage: TextMessage | null) => void) => void;
   onOpenAttachment?: (fileId: string) => void;
   onRequestAttachmentLink?: (file: string) => string;
 }
 
-class Attachment extends React.Component<Props & ValidationProps> {
-  onUpload = (files: File[], cb: (success: boolean, errormessage: TextMessage | null) => void) => {
+class AttachmentComponent extends React.Component<Props & ValidationProps> {
+  onUpload = (files: File[], cb: (success: boolean, errormessage: TextMessage | null, uploadedFile?: UploadedFile) => void) => {
     const { uploadAttachment } = this.props;
     if (uploadAttachment) {
-      uploadAttachment(this.props.path, files, this.props.item, cb);
+      const onSuccess = (uploadedFile: UploadedFile, attachment: Attachment) => {
+        if (this.props.dispatch && attachment) {
+          this.props.dispatch(newAttachment(this.props.path, attachment, this.props.item));
+        }
+
+        cb(true, null, uploadedFile);
+      };
+
+      const onError = (errorMessage: TextMessage | null) => {
+        cb(false, errorMessage);
+      };
+
+      uploadAttachment(files, onSuccess, onError);
     }
   };
 
@@ -52,7 +59,18 @@ class Attachment extends React.Component<Props & ValidationProps> {
     const { answer, onDeleteAttachment } = this.props;
 
     if (onDeleteAttachment && answer && answer.valueAttachment && answer.valueAttachment.url) {
-      onDeleteAttachment(this.props.path, this.props.item, answer.valueAttachment.url, cb);
+      const onSuccess = () => {
+        if (this.props.dispatch) {
+          this.props.dispatch(newAttachment(this.props.path, {} as Attachment, this.props.item));
+        }
+
+        cb(true, null);
+      };
+      const onError = (errormessage: TextMessage | null) => {
+        cb(false, errormessage);
+      };
+
+      onDeleteAttachment(answer.valueAttachment.url, onSuccess, onError);
     }
   };
 
@@ -121,7 +139,7 @@ class Attachment extends React.Component<Props & ValidationProps> {
   }
 }
 
-const withCommonFunctionsComponent = withCommonFunctions(Attachment);
+const withCommonFunctionsComponent = withCommonFunctions(AttachmentComponent);
 const connectedComponent = connect(
   mapStateToProps,
   mapDispatchToProps,

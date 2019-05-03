@@ -7,7 +7,7 @@ import { typeIsValid, sizeIsValid } from '@helsenorge/toolkit/components/atoms/d
 import { UploadedFile } from '@helsenorge/toolkit/components/atoms/dropzone';
 
 interface Props {
-  onUpload: (files: Array<File>, cb: (success: boolean, errormessage: TextMessage | null) => void) => void;
+  onUpload: (files: Array<File>, cb: (success: boolean, errormessage: TextMessage | null, uploadedFile?: UploadedFile) => void) => void;
   onDelete: (cb: (success: boolean, errormessage: TextMessage | null) => void) => void;
   onOpen?: (fileId: string) => void;
   uploadButtonText: string;

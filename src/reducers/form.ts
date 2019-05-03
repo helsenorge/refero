@@ -335,7 +335,7 @@ function processNewValueAction(action: NewValueAction, state: Form): Form {
       };
     }
   }
-  if (action.valueAttachment) {
+  if (action.valueAttachment && Object.keys(action.valueAttachment).length > 0) {
     hasAnswer = true;
     answer.valueAttachment = <Attachment>{
       url: action.valueAttachment.url,
@@ -353,7 +353,11 @@ function processNewValueAction(action: NewValueAction, state: Form): Form {
     answer.valueQuantity = action.valueQuantity;
   }
   if (!hasAnswer) {
-    nullAnswerValue(answer);
+    if (action.valueAttachment !== undefined && Object.keys(action.valueAttachment).length === 0) {
+      delete responseItem.answer; // Bare støtte for ett vedlegg og ingen initial value
+    } else {
+      nullAnswerValue(answer);
+    }
   }
   if (action.item) {
     updateEnableWhenItemsIteration([action.item], newState.FormData, newState.FormDefinition);
@@ -483,9 +487,7 @@ export function nullAnswerValue(
     return undefined;
   }
 
-  if (answer.valueAttachment !== undefined) {
-    initialAnswer ? (answer.valueAttachment = initialAnswer.valueAttachment) : delete answer.valueAttachment;
-  } else if (answer.valueBoolean !== undefined) {
+  if (answer.valueBoolean !== undefined) {
     initialAnswer ? (answer.valueBoolean = initialAnswer.valueBoolean) : (answer.valueBoolean = false);
   } else if (answer.valueCoding !== undefined) {
     initialAnswer ? (answer.valueCoding = initialAnswer.valueCoding) : delete answer.valueCoding;
