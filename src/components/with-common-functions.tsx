@@ -15,7 +15,8 @@ import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/v
 import { FormChild } from '@helsenorge/toolkit/components/molecules/form';
 import RepeatButton from './formcomponents/repeat/repeat-button';
 import DeleteButton from './formcomponents/repeat/delete-button';
-import { UploadedFile, TextMessage } from '@helsenorge/toolkit/components/atoms/dropzone';
+import { UploadedFile } from '@helsenorge/toolkit/components/atoms/dropzone';
+import { TextMessage } from '../types/text-message';
 
 export interface Props {
   resources?: Resources;

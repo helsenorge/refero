@@ -4,7 +4,7 @@ import { Dispatch } from 'redux';
 
 import withCommonFunctions from '../../with-common-functions';
 import AttachmentHtml from './attachmenthtml';
-import { UploadedFile, TextMessage } from '@helsenorge/toolkit/components/atoms/dropzone';
+import { UploadedFile } from '@helsenorge/toolkit/components/atoms/dropzone';
 import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
 
 import { Path } from '../../../util/skjemautfyller-core';
@@ -15,6 +15,8 @@ import { QuestionnaireItem, QuestionnaireResponseAnswer, Attachment } from '../.
 import { Resources } from '../../../util/resources';
 import TextView from '../textview';
 import { newAttachment } from '../../../actions/newValue';
+import { TextMessage } from '../../../types/text-message';
+
 export interface Props {
   dispatch?: Dispatch<{}>;
   path: Array<Path>;
