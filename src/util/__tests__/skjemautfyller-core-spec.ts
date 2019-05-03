@@ -7,7 +7,6 @@ import {
   createPathForItem,
   getResponseItemWithPath,
   getItemWithTypeFromArray,
-  getQuestionnaireDefinitionItem,
 } from '../skjemautfyller-core';
 import {
   QuestionnaireResponseItem,
@@ -17,10 +16,37 @@ import {
   QuestionnaireItem,
 } from '../../types/fhir';
 import { GlobalState } from '../../reducers/index';
-
 import itemType from '../../constants/itemType';
+import { OPEN_CHOICE_ID, OPEN_CHOICE_LABEL } from '../../constants';
 
 const should = chai.should();
+
+let valueSet = `{
+  "resourceType": "ValueSet",
+  "id": "8459",
+  "version": "1.0",
+  "name": "urn:oid:8459",
+  "title": "Kjønn",
+  "status": "draft",
+  "publisher": "Direktoratet for e-helse",
+  "compose": {
+    "include": [
+        {
+            "system": "urn:oid:2.16.578.1.12.4.1.8459",
+            "concept": [
+                {
+                    "code": "1",
+                    "display": "Mann"
+                },
+                {
+                    "code": "2",
+                    "display": "Kvinne"
+                }
+            ]
+        }
+    ]
+  }
+}`;
 
 export const dataModel: GlobalState = {
   skjemautfyller: {
@@ -28,6 +54,7 @@ export const dataModel: GlobalState = {
       Language: 'nb-NO',
       FormDefinition: {
         Content: <Questionnaire>{
+          contained: [JSON.parse(valueSet)],
           status: {
             value: 'draft',
           },
@@ -282,6 +309,16 @@ export const dataModel: GlobalState = {
               linkId: 'invalid XML1.1',
               text: 'Header: <xml> er "tull" og \'tøys\'!',
               type: 'string',
+            },
+
+            // 24
+            {
+              linkId: 'open-choice1',
+              text: 'Open Choice',
+              type: 'open-choice',
+              options: {
+                reference: '#8459',
+              },
             },
           ],
         },
@@ -542,6 +579,23 @@ export const dataModel: GlobalState = {
               answer: [
                 {
                   valueString: '<xml> er "Tull" & \'tøys\'!',
+                },
+              ],
+            },
+
+            // 24
+            {
+              linkId: 'open-choice1',
+              text: 'Open Choice',
+              answer: [
+                {
+                  valueCoding: {
+                    code: OPEN_CHOICE_ID,
+                    display: OPEN_CHOICE_LABEL,
+                  },
+                },
+                {
+                  valueString: 'foo',
                 },
               ],
             },

@@ -7,13 +7,19 @@ import withCommonFunctions from '../../with-common-functions';
 import { newCodingValue, removeCodingValue } from '../../../actions/newValue';
 import { Path } from '../../../util/skjemautfyller-core';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
-import Constants from '../../../constants/index';
 import { QuestionnaireItem, QuestionnaireResponseAnswer, Resource, Coding, QuestionnaireResponseItem } from '../../../types/fhir';
 import { Resources } from '../../../util/resources';
-import { isRequired, isReadOnly } from '../../../util/index';
-import { getValidationTextExtension, getItemControlExtensionValue } from '../../../util/extension';
-import { getOptions, hasOptions, getSystem } from '../../../util/choice';
-import itemControlConstants from '../../../constants/itemcontrol';
+import { isReadOnly } from '../../../util/index';
+import {
+  getOptions,
+  hasOptions,
+  getSystem,
+  getErrorMessage,
+  validateInput,
+  getIndexOfAnswer,
+  getDisplay,
+  renderOptions,
+} from '../../../util/choice';
 import TextView from '../textview';
 import DropdownView from './dropdown-view';
 import RadioView from './radio-view';
@@ -50,8 +56,10 @@ export class Choice extends React.Component<ChoiceProps & ValidationProps, Choic
     };
   }
 
-  getValue = () => {
-    const { item, answer } = this.props;
+  getValue = (
+    item: QuestionnaireItem,
+    answer: Array<QuestionnaireResponseAnswer> | QuestionnaireResponseAnswer
+  ): (string | undefined)[] | undefined => {
     if (answer && Array.isArray(answer)) {
       return answer.map((el: QuestionnaireResponseAnswer) => {
         if (el && el.valueCoding && el.valueCoding.code) {
@@ -67,55 +75,29 @@ export class Choice extends React.Component<ChoiceProps & ValidationProps, Choic
     return [String(item.initialCoding.code)];
   };
 
-  getPDFValue = () => {
-    const value = this.getValue();
+  getPDFValue = (item: QuestionnaireItem, answer: Array<QuestionnaireResponseAnswer> | QuestionnaireResponseAnswer): string => {
+    const { resources, containedResources } = this.props;
+
+    const value = this.getValue(item, answer);
     if (!value) {
       let text = '';
-      if (this.props.resources && this.props.resources.ikkeBesvart) {
-        text = this.props.resources.ikkeBesvart;
+      if (resources && resources.ikkeBesvart) {
+        text = resources.ikkeBesvart;
       }
       return text;
     }
 
-    return value.map(el => this.getDisplay(getOptions(this.props.item, this.props.containedResources), el)).join(', ');
-  };
-
-  getDisplay = (options: Array<Options> | undefined, value: string | undefined): string | undefined => {
-    if (!options || options.length === 0) {
-      return undefined;
-    }
-    let display;
-    options.forEach(o => {
-      if (o.type === value) {
-        display = o.label;
-        return;
-      }
-    });
-    return display;
-  };
-
-  getIndexOfAnswer = (code: string, answer: Array<QuestionnaireResponseAnswer> | QuestionnaireResponseAnswer) => {
-    if (answer && Array.isArray(answer)) {
-      return answer.findIndex(el => {
-        if (el && el.valueCoding && el.valueCoding.code) {
-          return el.valueCoding.code === code;
-        }
-        return false;
-      });
-    } else if (answer && !Array.isArray(answer) && answer.valueCoding && answer.valueCoding.code === code) {
-      return 0;
-    }
-    return -1;
+    return value.map(el => getDisplay(getOptions(item, containedResources), el)).join(', ');
   };
 
   handleCheckboxChange = (code?: string): void => {
-    const { dispatch, answer, promptLoginMessage } = this.props;
+    const { dispatch, answer, promptLoginMessage, item } = this.props;
     if (dispatch && code) {
-      let display = this.getDisplay(getOptions(this.props.item, this.props.containedResources), code);
-      const system = getSystem(this.props.item, this.props.containedResources);
+      let display = getDisplay(getOptions(item, this.props.containedResources), code);
+      const system = getSystem(item, this.props.containedResources);
       let coding = { code, display, system } as Coding;
-      if (this.getIndexOfAnswer(code, answer) > -1) {
-        dispatch(removeCodingValue(this.props.path, coding, this.props.item));
+      if (getIndexOfAnswer(code, answer) > -1) {
+        dispatch(removeCodingValue(this.props.path, coding, item));
 
         if (promptLoginMessage) {
           promptLoginMessage();
@@ -130,91 +112,16 @@ export class Choice extends React.Component<ChoiceProps & ValidationProps, Choic
   };
 
   handleChange = (code?: string): void => {
-    const { dispatch, promptLoginMessage } = this.props;
+    const { dispatch, promptLoginMessage, item } = this.props;
     if (dispatch && code) {
-      const display = this.getDisplay(getOptions(this.props.item, this.props.containedResources), code);
-      const system = getSystem(this.props.item, this.props.containedResources);
+      const display = getDisplay(getOptions(item, this.props.containedResources), code);
+      const system = getSystem(item, this.props.containedResources);
       const coding = { code, display, system } as Coding;
-      dispatch(newCodingValue(this.props.path, coding, this.props.item));
+      dispatch(newCodingValue(this.props.path, coding, item));
       if (promptLoginMessage) {
         promptLoginMessage();
       }
     }
-  };
-
-  isAllowedValue = (value: string | undefined): boolean => {
-    const { item, containedResources } = this.props;
-    if (!item) {
-      return true;
-    }
-
-    if (item.options || item.options) {
-      const allowedValues: Array<Options> | undefined = getOptions(item, containedResources);
-      if (!allowedValues || allowedValues.length === 0) {
-        return true;
-      }
-
-      const matches = allowedValues.filter((a: Options) => a.type === value);
-      return matches.length > 0;
-    }
-
-    return true;
-  };
-
-  validateInput = (value: string | undefined) => {
-    if (isRequired(this.props.item) && !value) {
-      return false;
-    }
-    if (!this.isAllowedValue(value)) {
-      return false;
-    }
-    return true;
-  };
-
-  getErrorMessage = (value: string): string => {
-    const { resources, item } = this.props;
-    if (!resources || !item) {
-      return '';
-    }
-    const extensionText = getValidationTextExtension(item);
-    if (extensionText) {
-      return extensionText;
-    }
-    if (!value && isRequired(this.props.item) && resources) {
-      return resources.oppgiVerdi;
-    }
-    if (!this.isAllowedValue(value)) {
-      return resources.oppgiGyldigVerdi;
-    }
-    return '';
-  };
-
-  getItemControlValue = () => {
-    const itemControl = getItemControlExtensionValue(this.props.item);
-    if (itemControl) {
-      for (let i = 0; i < itemControl.length; i++) {
-        if (itemControl[i] && itemControl[i].code) {
-          if (itemControl[i].code === itemControlConstants.CHECKBOX) {
-            return itemControlConstants.CHECKBOX;
-          }
-          if (itemControl[i].code === itemControlConstants.DROPDOWN) {
-            return itemControlConstants.DROPDOWN;
-          }
-          if (itemControl[i].code === itemControlConstants.RADIOBUTTON) {
-            return itemControlConstants.RADIOBUTTON;
-          }
-        }
-      }
-    }
-    return undefined;
-  };
-
-  isAboveDropdownThreshold = (): boolean => {
-    const options = getOptions(this.props.item, this.props.containedResources);
-    if (!options) {
-      return false;
-    }
-    return options.length > Constants.CHOICE_DROPDOWN_TRESHOLD;
   };
 
   renderCheckbox = (options: Array<Options> | undefined) => {
@@ -224,7 +131,7 @@ export class Choice extends React.Component<ChoiceProps & ValidationProps, Choic
         item={this.props.item}
         id={this.props.id}
         handleChange={this.handleCheckboxChange}
-        selected={this.getValue()}
+        selected={this.getValue(this.props.item, this.props.answer)}
         children={this.props.children}
         repeatButton={this.props.repeatButton}
         {...this.props}
@@ -239,8 +146,8 @@ export class Choice extends React.Component<ChoiceProps & ValidationProps, Choic
         item={this.props.item}
         id={this.props.id}
         handleChange={this.handleChange}
-        selected={this.getValue()}
-        validateInput={this.validateInput}
+        selected={this.getValue(this.props.item, this.props.answer)}
+        validateInput={(value: string) => validateInput(this.props.item, value, this.props.containedResources)}
         resources={this.props.resources}
         children={this.props.children}
         repeatButton={this.props.repeatButton}
@@ -254,45 +161,34 @@ export class Choice extends React.Component<ChoiceProps & ValidationProps, Choic
       <RadioView
         options={options}
         item={this.props.item}
-        getErrorMessage={this.getErrorMessage}
+        getErrorMessage={(value: string) => getErrorMessage(this.props.item, value, this.props.resources, this.props.containedResources)}
         children={this.props.children}
         handleChange={this.handleChange}
-        validateInput={this.validateInput}
+        validateInput={(value: string) => validateInput(this.props.item, value, this.props.containedResources)}
         id={this.props.id}
-        selected={this.getValue()}
+        selected={this.getValue(this.props.item, this.props.answer)}
         repeatButton={this.props.repeatButton}
         {...this.props}
       />
     );
   };
 
-  renderOptions = (options: Array<Options> | undefined): JSX.Element | null => {
-    const itemControlValue = this.getItemControlValue();
-    if (itemControlValue) {
-      switch (itemControlValue) {
-        case itemControlConstants.DROPDOWN:
-          return this.renderDropdown(options);
-        case itemControlConstants.CHECKBOX:
-          return this.renderCheckbox(options);
-        case itemControlConstants.RADIOBUTTON:
-          return this.renderRadio(options);
-        default:
-          break;
-      }
-    } else if (this.isAboveDropdownThreshold()) {
-      return this.renderDropdown(options);
-    }
-    return this.renderRadio(options);
-  };
-
   render(): JSX.Element | null {
-    if (this.props.pdf || isReadOnly(this.props.item)) {
-      return <TextView item={this.props.item} value={this.getPDFValue()} children={this.props.children} />;
+    const { item, pdf, answer, containedResources, children } = this.props;
+    if (pdf || isReadOnly(item)) {
+      return <TextView item={item} value={this.getPDFValue(item, answer)} children={children} />;
     }
     return (
       <React.Fragment>
-        {hasOptions(this.props.item, this.props.containedResources)
-          ? this.renderOptions(getOptions(this.props.item, this.props.containedResources))
+        {hasOptions(item, containedResources)
+          ? renderOptions(
+              item,
+              containedResources,
+              getOptions(item, containedResources),
+              this.renderRadio,
+              this.renderCheckbox,
+              this.renderDropdown
+            )
           : null}
       </React.Fragment>
     );
@@ -300,5 +196,9 @@ export class Choice extends React.Component<ChoiceProps & ValidationProps, Choic
 }
 
 const withCommonFunctionsComponent = withCommonFunctions(Choice);
-const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(withCommonFunctionsComponent);
+const connectedComponent = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+  mergeProps
+)(withCommonFunctionsComponent);
 export default connectedComponent;

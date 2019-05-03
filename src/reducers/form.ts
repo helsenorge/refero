@@ -1,4 +1,12 @@
-import { NEW_VALUE, REMOVE_VALUE, ADD_REPEAT_ITEM, DELETE_REPEAT_ITEM, NewValueAction } from '../actions/newValue';
+import {
+  NEW_VALUE,
+  REMOVE_CODING_VALUE,
+  ADD_REPEAT_ITEM,
+  DELETE_REPEAT_ITEM,
+  NewValueAction,
+  NEW_CODINGSTRING_VALUE,
+  REMOVE_CODINGSTRING_VALUE,
+} from '../actions/newValue';
 import { GlobalState } from '../reducers/index';
 import { isStringEmpty, removeLinkIdSuffix } from '../util/index';
 
@@ -60,8 +68,14 @@ export default function reducer(state: Form = initialState, action: NewValueActi
     case NEW_VALUE:
       return processNewValueAction(action, state);
 
-    case REMOVE_VALUE:
-      return processRemoveValueAction(action, state);
+    case REMOVE_CODING_VALUE:
+      return processRemoveCodingValueAction(action, state);
+
+    case NEW_CODINGSTRING_VALUE:
+      return processNewCodingStringValueAction(action, state);
+
+    case REMOVE_CODINGSTRING_VALUE:
+      return processRemoveCodingStringValueAction(action, state);
 
     case ADD_REPEAT_ITEM:
       return processAddRepeatItemAction(action, state);
@@ -245,7 +259,7 @@ function copyItem(
   return target;
 }
 
-function processRemoveValueAction(action: NewValueAction, state: Form) {
+function processRemoveCodingValueAction(action: NewValueAction, state: Form) {
   let newState: Form = copyObject(state) as Form;
   let responseItem = getResponseItemWithPath(action.itemPath, newState.FormData);
   if (!responseItem || !responseItem.answer || !responseItem.answer.length) {
@@ -256,8 +270,26 @@ function processRemoveValueAction(action: NewValueAction, state: Form) {
       if (el && el.valueCoding && el.valueCoding.code && action.valueCoding) {
         return el.valueCoding.code !== action.valueCoding.code;
       }
+      return true;
     });
   }
+
+  return newState;
+}
+
+function processRemoveCodingStringValueAction(action: NewValueAction, state: Form) {
+  let newState: Form = copyObject(state) as Form;
+  let responseItem = getResponseItemWithPath(action.itemPath, newState.FormData);
+  if (!responseItem || !responseItem.answer || !responseItem.answer.length) {
+    return newState;
+  }
+
+  responseItem.answer = responseItem.answer.filter(el => {
+    if (el && el.valueString) {
+      return false;
+    }
+    return true;
+  });
 
   return newState;
 }
@@ -361,6 +393,48 @@ function processNewValueAction(action: NewValueAction, state: Form): Form {
   }
   if (action.item) {
     updateEnableWhenItemsIteration([action.item], newState.FormData, newState.FormDefinition);
+  }
+
+  return newState;
+}
+
+function processNewCodingStringValueAction(action: NewValueAction, state: Form): Form {
+  let newState: Form = copyObject(state) as Form;
+  let responseItem = getResponseItemWithPath(action.itemPath, newState.FormData);
+  if (!responseItem) {
+    return newState;
+  }
+
+  if (!responseItem.answer) {
+    responseItem.answer = [];
+  }
+  if (responseItem.answer.length === 0) {
+    responseItem.answer[0] = {} as QuestionnaireResponseAnswer;
+  }
+
+  let hasAnswer = false;
+  let answer = responseItem.answer[0];
+
+  if (!isStringEmpty(action.valueString)) {
+    hasAnswer = true;
+    //answer.valueString = action.valueString;
+
+    let found = -1;
+    for (let i = 0; i < responseItem.answer.length; i++) {
+      if (!isStringEmpty(responseItem.answer[i].valueString)) {
+        found = i;
+        break;
+      }
+    }
+
+    let newAnswer = {
+      valueString: action.valueString,
+    } as QuestionnaireResponseAnswer;
+    if (found >= 0) {
+      responseItem.answer[found] = newAnswer;
+    } else {
+      responseItem.answer.push(newAnswer);
+    }
   }
 
   return newState;

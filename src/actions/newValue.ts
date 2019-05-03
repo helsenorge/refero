@@ -4,7 +4,11 @@ import { Action } from 'redux';
 
 export type NEW_VALUE = 'skjemautfyller/NEW_VALUE';
 export const NEW_VALUE: NEW_VALUE = 'skjemautfyller/NEW_VALUE';
-export const REMOVE_VALUE = 'skjemautfyller/REMOVE_VALUE';
+export type NEW_CODINGSTRING_VALUE = 'skjemautfyller/NEW_CODINGSTRING_VALUE';
+export const NEW_CODINGSTRING_VALUE: NEW_CODINGSTRING_VALUE = 'skjemautfyller/NEW_CODINGSTRING_VALUE';
+export type REMOVE_CODINGSTRING_VALUE = 'skjemautfyller/REMOVE_CODINGSTRING_VALUE';
+export const REMOVE_CODINGSTRING_VALUE: REMOVE_CODINGSTRING_VALUE = 'skjemautfyller/REMOVE_CODINGSTRING_VALUE';
+export const REMOVE_CODING_VALUE = 'skjemautfyller/REMOVE_CODING_VALUE';
 export type ADD_REPEAT_ITEM = 'skjemautfyller/ADD_REPEAT_ITEM';
 export const ADD_REPEAT_ITEM: ADD_REPEAT_ITEM = 'skjemautfyller/ADD_REPEAT_ITEM';
 export type DELETE_REPEAT_ITEM = 'skjemautfyller/DELETE_REPEAT_ITEM';
@@ -62,6 +66,29 @@ export function newCodingValue(
   };
 }
 
+export function newCodingStringValue(
+  itemPath: Array<Path>,
+  value: string,
+  item: QuestionnaireItem | undefined,
+  multipleAnswers?: boolean
+): NewValueAction {
+  return {
+    type: NEW_CODINGSTRING_VALUE,
+    itemPath,
+    valueString: value,
+    item: item,
+    multipleAnswers,
+  };
+}
+
+export function removeCodingStringValue(itemPath: Array<Path>, item: QuestionnaireItem | undefined): NewValueAction {
+  return {
+    type: REMOVE_CODINGSTRING_VALUE,
+    itemPath,
+    item: item,
+  };
+}
+
 export function newQuantityValue(itemPath: Array<Path>, value: Quantity, item: QuestionnaireItem | undefined): NewValueAction {
   return {
     type: NEW_VALUE,
@@ -73,7 +100,7 @@ export function newQuantityValue(itemPath: Array<Path>, value: Quantity, item: Q
 
 export function removeCodingValue(itemPath: Array<Path>, value: Coding, item: QuestionnaireItem | undefined): NewValueAction {
   return {
-    type: REMOVE_VALUE,
+    type: REMOVE_CODING_VALUE,
     itemPath,
     valueCoding: value,
     item: item,

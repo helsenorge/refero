@@ -1,8 +1,23 @@
-import { QuestionnaireItem, QuestionnaireOption, integer, time, date, Reference, Coding, Extension } from '../types/fhir';
+import {
+  QuestionnaireItem,
+  QuestionnaireOption,
+  integer,
+  time,
+  date,
+  Reference,
+  Coding,
+  Extension,
+  QuestionnaireResponseAnswer,
+} from '../types/fhir';
 import { ValueSetContains, ValueSet, Resource, ValueSetConcept, ValueSetInclude } from '../types/fhir';
 import { Options } from '@helsenorge/toolkit/components/atoms/radio-group';
-import { isReadOnly } from './index';
+import { isReadOnly, isRequired } from './index';
 import ExtensionConstants from '../constants/extensions';
+import Constants, { OPEN_CHOICE_ID, OPEN_CHOICE_LABEL } from '../constants/index';
+import { getItemControlExtensionValue, getValidationTextExtension } from './extension';
+import itemControlConstants from '../constants/itemcontrol';
+import { Resources } from './resources';
+import ItemType from '../constants/itemType';
 
 export function hasOptions(item: QuestionnaireItem, containedResources?: Resource[]): boolean {
   const options = getOptions(item, containedResources);
@@ -17,21 +32,28 @@ export function getOptions(item: QuestionnaireItem, containedResources?: Resourc
     return undefined;
   }
 
+  var options;
   if (item.options && item.options.reference) {
     if (item.options.reference.startsWith('#')) {
-      return getContainedOptions(item, containedResources);
+      options = getContainedOptions(item, containedResources);
     }
+  } else if (item.option) {
+    options = getInlineOptions(item, isReadOnly(item));
+  } else if (hasExtensionOptions(item)) {
+    options = getExtensionOptions(item, isReadOnly(item));
   }
 
-  if (item.option) {
-    return getInlineOptions(item, isReadOnly(item));
+  if (item.type === ItemType.OPENCHOICE) {
+    if (!options) {
+      options = [] as Options[];
+    }
+    options.push({
+      label: OPEN_CHOICE_LABEL,
+      type: OPEN_CHOICE_ID,
+    } as Options);
   }
 
-  if (hasExtensionOptions(item)) {
-    return getExtensionOptions(item, isReadOnly(item));
-  }
-
-  return undefined;
+  return options;
 }
 
 export function getSystem(item: QuestionnaireItem, containedResources?: Resource[]) {
@@ -46,6 +68,156 @@ export function getSystem(item: QuestionnaireItem, containedResources?: Resource
     }
   }
   return undefined;
+}
+
+export function getDisplay(options: Array<Options> | undefined, value: string | undefined): string | undefined {
+  if (!options || options.length === 0) {
+    return undefined;
+  }
+  let display;
+  options.forEach(o => {
+    if (o.type === value) {
+      display = o.label;
+      return;
+    }
+  });
+  return display;
+}
+
+export function renderOptions(
+  item: QuestionnaireItem,
+  containedResources: Resource[] | undefined,
+  options: Array<Options> | undefined,
+  renderRadio: (o: Array<Options> | undefined) => JSX.Element,
+  renderCheckbox: (o: Array<Options> | undefined) => JSX.Element,
+  renderDropdown: (o: Array<Options> | undefined) => JSX.Element
+): JSX.Element {
+  const itemControlValue = getItemControlValue(item);
+  if (itemControlValue) {
+    switch (itemControlValue) {
+      case itemControlConstants.DROPDOWN:
+        return renderDropdown(options);
+      case itemControlConstants.CHECKBOX:
+        return renderCheckbox(options);
+      case itemControlConstants.RADIOBUTTON:
+        return renderRadio(options);
+      default:
+        break;
+    }
+  } else if (isAboveDropdownThreshold(item, containedResources)) {
+    return renderDropdown(options);
+  }
+  return renderRadio(options);
+}
+
+export function isAboveDropdownThreshold(item: QuestionnaireItem, containedResources?: Resource[]): boolean {
+  const options = getOptions(item, containedResources);
+  if (!options) {
+    return false;
+  }
+  return options.length > Constants.CHOICE_DROPDOWN_TRESHOLD;
+}
+
+export function getItemControlValue(item: QuestionnaireItem) {
+  const itemControl = getItemControlExtensionValue(item);
+  if (itemControl) {
+    for (let i = 0; i < itemControl.length; i++) {
+      if (itemControl[i] && itemControl[i].code) {
+        if (itemControl[i].code === itemControlConstants.CHECKBOX) {
+          return itemControlConstants.CHECKBOX;
+        }
+        if (itemControl[i].code === itemControlConstants.DROPDOWN) {
+          return itemControlConstants.DROPDOWN;
+        }
+        if (itemControl[i].code === itemControlConstants.RADIOBUTTON) {
+          return itemControlConstants.RADIOBUTTON;
+        }
+      }
+    }
+  }
+  return undefined;
+}
+
+export function getErrorMessage(
+  item: QuestionnaireItem,
+  value: string,
+  resources: Resources | undefined,
+  containedResources: Resource[] | undefined
+): string {
+  if (!resources || !item) {
+    return '';
+  }
+  const extensionText = getValidationTextExtension(item);
+  if (extensionText) {
+    return extensionText;
+  }
+  if (!value && isRequired(item) && resources) {
+    return resources.oppgiVerdi;
+  }
+  if (!isAllowedValue(item, value, containedResources)) {
+    return resources.oppgiGyldigVerdi;
+  }
+  return '';
+}
+
+export function isAllowedValue(item: QuestionnaireItem, value: string | undefined, containedResources: Resource[] | undefined): boolean {
+  if (!item) {
+    return true;
+  }
+
+  if (item.options || item.options) {
+    const allowedValues: Array<Options> | undefined = getOptions(item, containedResources);
+    if (!allowedValues || allowedValues.length === 0) {
+      return true;
+    }
+
+    const matches = allowedValues.filter((a: Options) => a.type === value);
+    return matches.length > 0;
+  }
+
+  return true;
+}
+
+export function validateInput(item: QuestionnaireItem, value: string | undefined, containedResources: Resource[] | undefined) {
+  if (isRequired(item) && !value) {
+    return false;
+  }
+  if (!isAllowedValue(item, value, containedResources)) {
+    return false;
+  }
+  return true;
+}
+
+export function getIndexOfAnswer(code: string, answer: Array<QuestionnaireResponseAnswer> | QuestionnaireResponseAnswer) {
+  if (answer && Array.isArray(answer)) {
+    return answer.findIndex(el => {
+      if (el && el.valueCoding && el.valueCoding.code) {
+        return el.valueCoding.code === code;
+      }
+      return false;
+    });
+  } else if (answer && !Array.isArray(answer) && answer.valueCoding && answer.valueCoding.code === code) {
+    return 0;
+  }
+  return -1;
+}
+
+export function shouldShowExtraChoice(answer: Array<QuestionnaireResponseAnswer> | QuestionnaireResponseAnswer): boolean {
+  if (!answer) {
+    return false;
+  }
+
+  if (Array.isArray(answer)) {
+    for (let i = 0; i < answer.length; i++) {
+      let el = answer[i] as QuestionnaireResponseAnswer;
+      if (el.valueCoding && el.valueCoding.code === OPEN_CHOICE_ID) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  return !!answer.valueCoding && !!answer.valueCoding.code && answer.valueCoding.code === OPEN_CHOICE_ID;
 }
 
 function hasExtensionOptions(item: QuestionnaireItem): boolean {
