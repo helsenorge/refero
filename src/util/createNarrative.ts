@@ -1,5 +1,6 @@
 import { QuestionnaireResponse, QuestionnaireResponseItem, QuestionnaireResponseAnswer } from '../types/fhir';
 import { parseDate } from '@helsenorge/toolkit/components/atoms/time-input/date-core';
+import { OPEN_CHOICE_ID } from '../constants';
 
 export const createNarrative = (qr: QuestionnaireResponse | null | undefined): string => {
   let narrative = '';
@@ -74,7 +75,7 @@ const getAnswerAsString = (answer: QuestionnaireResponseAnswer): string => {
   }
   const coding = answer.valueCoding;
   const codingValue = coding && coding.code ? String(coding.code) : null;
-  if (codingValue !== null && codingValue !== undefined && codingValue !== '') {
+  if (codingValue !== null && codingValue !== undefined && codingValue !== '' && codingValue !== OPEN_CHOICE_ID) {
     return codingValue;
   }
   if (answer.valueDate) {

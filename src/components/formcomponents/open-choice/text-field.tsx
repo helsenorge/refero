@@ -13,9 +13,9 @@ interface Props {
   answer: QuestionnaireResponseAnswer;
   handleStringChange: (event: React.FormEvent<{}>) => void;
 }
-const textField: React.SFC<Props & ValidationProps> = ({ id, pdf, item, answer, handleStringChange, ...other }) => {
+const textField: React.SFC<Props & ValidationProps> = ({ id, pdf, item, answer, handleStringChange, children, ...other }) => {
   if (pdf) {
-    return <Pdf item={item} value={getPDFStringValue(answer)} children={this.props.children} />;
+    return <Pdf item={item} value={getPDFStringValue(answer)} children={children} />;
   }
   return (
     <Validation {...other}>
@@ -24,7 +24,7 @@ const textField: React.SFC<Props & ValidationProps> = ({ id, pdf, item, answer, 
         id={getId(id)}
         inputName={getId(id)}
         value={getStringValue(answer)}
-        showLabel={true}
+        showLabel={false}
         label={
           <span
             dangerouslySetInnerHTML={{

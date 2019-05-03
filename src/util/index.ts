@@ -10,7 +10,7 @@ import DateTime from '../components/formcomponents/date/date-time';
 import Display from '../components/formcomponents/display/display';
 import StringComponent from '../components/formcomponents/string/string';
 import Text from '../components/formcomponents/text/text';
-import OpenChoice from '../components/formcomponents/choice/open-choice';
+import OpenChoice from '../components/formcomponents/open-choice/open-choice';
 import Attachment from '../components/formcomponents/attachment/attachment';
 import Quantity from '../components/formcomponents/quantity/quantity';
 import * as uuid from 'uuid';
