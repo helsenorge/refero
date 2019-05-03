@@ -8,7 +8,7 @@ import {
   wrappedByRepeatItem,
   shouldRenderDeleteButton,
 } from '../util/skjemautfyller-core';
-import { Resource, QuestionnaireResponseItem, QuestionnaireItem, QuestionnaireResponseAnswer } from '../types/fhir';
+import { Resource, QuestionnaireResponseItem, QuestionnaireItem, QuestionnaireResponseAnswer, Attachment } from '../types/fhir';
 import { Resources } from '../util/resources';
 import { getComponentForItem, getChildHeaderTag, shouldRenderRepeatButton } from '../util/index';
 import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
@@ -41,17 +41,11 @@ export interface Props {
   repeatButton?: JSX.Element;
   onRequestAttachmentLink?: (file: string) => string;
   onOpenAttachment?: (fileId: string) => void;
-  onDeleteAttachment?: (
-    itemPath: Array<Path>,
-    item: QuestionnaireItem | undefined,
-    fileId: string,
-    cb: (success: boolean, errorMessage: TextMessage | null) => void
-  ) => void;
+  onDeleteAttachment?: (fileId: string, onSuccess: () => void, onError: (errormessage: TextMessage | null) => void) => void;
   uploadAttachment?: (
-    itemPath: Array<Path>,
     files: File[],
-    item: QuestionnaireItem | undefined,
-    cb: (success: boolean, errormessage: TextMessage | null, uploadedFile?: UploadedFile) => void
+    onSuccess: (uploadedFile: UploadedFile, attachment: Attachment) => void,
+    onError: (errormessage: TextMessage | null) => void
   ) => void;
 }
 

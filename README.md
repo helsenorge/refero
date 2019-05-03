@@ -4,10 +4,10 @@ React component that consumes a [FHIR Questionnaire](https://www.hl7.org/fhir/qu
 
 ## Dependencies
 
-* @helsenorge/toolkit
-* [marked](https://www.npmjs.com/package/marked)
-* [moment](https://www.npmjs.com/package/moment)
-* [uuid](https://www.npmjs.com/package/uuid)
+- @helsenorge/toolkit
+- [marked](https://www.npmjs.com/package/marked)
+- [moment](https://www.npmjs.com/package/moment)
+- [uuid](https://www.npmjs.com/package/uuid)
 
 ## Example usage
 
@@ -100,43 +100,35 @@ This callback is called when the user requests the current form to be saved.
 
 This callback is called when the user requests the current form to be cancled.
 
-### `uploadAttachment: (itemPath: Array<Path>, files: File[], item: QuestionnaireItem | undefined, cb: (success: boolean, errormessage: TextMessage | null, uploadedFile?: UploadedFile) => void) => void`
+### `uploadAttachment: (files: File[], onSuccess: (uploadedFile: UploadedFile, attachment: Attachment) => void, onError: (errorMessage: ErrorMessage|null)) => void`
 
 This callback is called when the user requests uploading an attachment. The callback is called with the following arguments:
 
-* `itemPath: Array<Path>` An array of [`Path`](#Path) objects that points to the QuestionnaireItem.linkId that is assosiated with the
-  current upload action. Ex. if an upload element is defined at a QuestionnaireItem with linkId '2.1', the array would contain two entries,
-  one for linkId '2' and the last entry for linkId '2.1'.
-* `files: File[]` An array of [`File`](https://developer.mozilla.org/en-US/docs/Web/API/File) objects to be be uploaded.
-* `item: QuestionnaireItem | undefined` A reference to the
-  [`QuestionnaireItem`](https://www.hl7.org/fhir/questionnaire-definitions.html#Questionnaire.item) assosiated with the current upload
-  action.
-* `cb: (success: boolean, errormessage: TextMessage | null, uploadedFile?: UploadedFile) => void` Call this callback to indicate success or
-  failure of the upload action. Upon success, the [`uploadedFile`](#UploadedFile) argument should be passed along, while a
-  [`TextMessage`](#TextMessage) should be passed along upon failure. The `id`-property of [`UploadedFile`](#UploadedFile) is used for other
-  callbacks related to attachments in order to identify an attachment.
+- `files: File[]` An array of [`File`](https://developer.mozilla.org/en-US/docs/Web/API/File) objects to be be uploaded.
 
-### `onDeleteAttachment: (itemPath: Array<Path>, item: QuestionnaireItem | undefined, fileId: string, cb: (success: boolean, errorMessage: TextMessage | null) => void) => void`
+- `onSuccess: (uploadedFile: UploadedFile, attachment: Attachment) => void` Call this callback to indicate success
+- `onError: (TextMessage: TextMessage|null) => void` Call this callback to indicate error.
+
+### `onDeleteAttachment: (fileId: string, onSuccess: () => void, onError: (errorMessage: ErrorMessage|null)) => void`
 
 This callback is called when the user requests deleting an attachment. The callback is called with the following arguments:
 
-* `itemPath: Array<Path>` See `uploadAttachment` for a description of this argument.
-* `item: QuestionnaireItem | undefined` See `uploadAttachment` for a description of this argument.
-* `fileId: string` This indicates which file the user is requesting to delete. It corresponds to the `id` property of
-  [`UploadedFile`](#UploadedFile) passed to the `cb`-callback in `uploadAttachment`.
+- `fileId: string` This indicates which file the user is requesting to delete
+- `onSuccess: () => void` Call this callback to indicate success.
+- `onError: (TextMessage: TextMessage|null) => void` Call this callback to indicate error.
 
 ### `onOpenAttachment: (fileId: string) => void`
 
 This callback is called when the user requests to open an attachment. The callback is called with the following arguments:
 
-* `fileId: string` This identifies the attachment, as described under `onDeleteAttachment`.
+- `fileId: string` This identifies the attachment, as described under `onDeleteAttachment`.
 
 ### `onRequestAttachmentLink: (fileId: string) => string`
 
 This callback is called when the form needs to render an `<a href>`-type link. The callback should return a link to the the attachment. The
 callback is called with the following arguments:
 
-* `fileId: string` This identifies the attachment, as described under `onDeleteAttachment`.
+- `fileId: string` This identifies the attachment, as described under `onDeleteAttachment`.
 
 ### `promptLoginMessage: () => void`
 

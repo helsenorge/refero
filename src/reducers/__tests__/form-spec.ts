@@ -1,7 +1,7 @@
 /* tslint:disable */
 import * as chai from 'chai';
 import reducer, { Form } from '../form';
-import { Questionnaire, QuestionnaireResponse, Coding, QuestionnaireResponseItem, Attachment, base64Binary } from '../../types/fhir';
+import { Questionnaire, QuestionnaireResponse, Coding, QuestionnaireResponseItem, Attachment, base64Binary, code } from '../../types/fhir';
 import {
   newStringValue,
   newBooleanValue,
@@ -24,7 +24,6 @@ import {
   getItemWithIdFromResponseItemArray,
 } from '../../util/skjemautfyller-core';
 import { GlobalState } from '..';
-import { code } from '../../../lib/types/fhir';
 
 const should = chai.should();
 
@@ -664,6 +663,36 @@ describe('new value action', () => {
     }
     expect(answer.valueAttachment.url).toEqual('n');
     expect(answer.valueAttachment.title).toEqual('new display');
+  });
+
+  it('should be able to remove attachment value', () => {
+    let action: NewValueAction = newAttachment([{ linkId: 'attachment' }], { url: 'y', title: 'display' } as Attachment, undefined);
+    let newState: Form | undefined = reducer(dataModel.skjemautfyller.form, action);
+    if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
+      return fail();
+    }
+    let item = newState.FormData.Content.item[10];
+    if (!item || item.answer === undefined || item.answer === null || !item.answer[0]) {
+      return fail();
+    }
+    let answer = item.answer[0];
+    if (!answer || !answer.valueAttachment) {
+      return fail();
+    }
+    expect(answer.valueAttachment.url).toEqual('y');
+    expect(answer.valueAttachment.title).toEqual('display');
+
+    action = newAttachment([{ linkId: 'attachment' }], {} as Attachment, undefined);
+    newState = reducer(dataModel.skjemautfyller.form, action);
+    if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
+      return fail();
+    }
+    item = newState.FormData.Content.item[10];
+
+    if (!item) {
+      return fail();
+    }
+    expect(item.answer).toBeUndefined();
   });
 });
 

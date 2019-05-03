@@ -14,7 +14,7 @@ import {
   getAnswerFromResponseItem,
   shouldRenderDeleteButton,
 } from '../util/skjemautfyller-core';
-import { QuestionnaireResponseItem, Questionnaire, QuestionnaireResponse, QuestionnaireItem } from '../types/fhir';
+import { QuestionnaireResponseItem, Questionnaire, QuestionnaireResponse, Attachment } from '../types/fhir';
 import Constants from '../constants/index';
 import { FormDefinition, FormData } from '../reducers/form';
 import RepeatButton from '../components/formcomponents/repeat/repeat-button';
@@ -57,18 +57,13 @@ interface Props {
   promptLoginMessage?: () => void;
   onRequestAttachmentLink?: (fileId: string) => string;
   onOpenAttachment?: (fileId: string) => void;
-  onDeleteAttachment?: (
-    itemPath: Array<Path>,
-    item: QuestionnaireItem | undefined,
-    fileId: string,
-    cb: (success: boolean, errorMessage: TextMessage | null) => void
-  ) => void;
+  onDeleteAttachment?: (fileId: string, onSuccess: () => void, onError: (errormessage: TextMessage | null) => void) => void;
   uploadAttachment?: (
-    itemPath: Array<Path>,
     files: File[],
-    item: QuestionnaireItem | undefined,
-    cb: (success: boolean, errormessage: TextMessage | null, uploadedFile?: UploadedFile) => void
+    onSuccess: (uploadedFile: UploadedFile, attachment: Attachment) => void,
+    onError: (errormessage: TextMessage | null) => void
   ) => void;
+
   questionnaire?: Questionnaire;
   questionnaireResponse?: QuestionnaireResponse;
   language?: string;
