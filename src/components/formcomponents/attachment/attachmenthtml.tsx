@@ -1,10 +1,11 @@
 import * as React from 'react';
 import constants, { VALID_FILE_TYPES } from '../../../constants';
 import { Resources } from '../../../util/resources';
-import Dropzone, { MimeTypes, TextMessage } from '@helsenorge/toolkit/components/atoms/dropzone';
+import Dropzone, { MimeTypes } from '@helsenorge/toolkit/components/atoms/dropzone';
 import Validation, { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
 import { typeIsValid, sizeIsValid } from '@helsenorge/toolkit/components/atoms/dropzone/validation';
 import { UploadedFile } from '@helsenorge/toolkit/components/atoms/dropzone';
+import { TextMessage } from '../../../types/text-message';
 
 interface Props {
   onUpload: (files: Array<File>, cb: (success: boolean, errormessage: TextMessage | null, uploadedFile?: UploadedFile) => void) => void;

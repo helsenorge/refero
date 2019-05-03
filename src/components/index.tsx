@@ -21,8 +21,9 @@ import RepeatButton from '../components/formcomponents/repeat/repeat-button';
 
 import { IE11HackToWorkAroundBug187484 } from '../util/hacks';
 import 'redux-thunk';
-import { TextMessage, UploadedFile } from '@helsenorge/toolkit/components/atoms/dropzone';
+import { UploadedFile } from '@helsenorge/toolkit/components/atoms/dropzone';
 import { setSkjemaDefinition } from '../actions/form';
+import { TextMessage } from '../types/text-message';
 
 export interface QueryStringsInterface {
   MessageId: string;
