@@ -61,8 +61,8 @@ const RadioView: React.SFC<Props> = ({
             validator={validateInput}
             getErrorMessage={getErrorMessage}
           />
-          {shouldShowExtraChoice(answer) ? <div className="page_skjemautfyller__component">{renderOpenField()}</div> : <React.Fragment />}
         </Validation>
+        {shouldShowExtraChoice(answer) ? <div className="page_skjemautfyller__component">{renderOpenField()}</div> : <React.Fragment />}
         {renderDeleteButton('page_skjemautfyller__deletebutton--margin-top')}
         {repeatButton}
         {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : undefined}

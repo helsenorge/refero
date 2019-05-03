@@ -81,15 +81,10 @@ class DropdownView extends React.Component<Props, {}> {
               onChangeValidator={validateInput}
               errorMessage={getValidationTextExtension(item)}
               className="page_skjemautfyller__input"
-            >
-              {shouldShowExtraChoice(answer) ? (
-                <div className="page_skjemautfyller__component">{renderOpenField()}</div>
-              ) : (
-                <React.Fragment />
-              )}
-              {!oneToTwoColumn ? renderDeleteButton('page_skjemautfyller__deletebutton--margin-left') : null}
-            </SafeSelect>
+            />
           </Validation>
+          {shouldShowExtraChoice(answer) ? <div className="page_skjemautfyller__component">{renderOpenField()}</div> : <React.Fragment />}
+          {!oneToTwoColumn ? renderDeleteButton('page_skjemautfyller__deletebutton--margin-left') : null}
           {oneToTwoColumn ? (
             <div>
               {renderDeleteButton('page_skjemautfyller__deletebutton--margin-top')}
