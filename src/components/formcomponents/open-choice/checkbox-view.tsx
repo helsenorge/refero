@@ -62,8 +62,8 @@ const CheckboxView: React.SFC<Props> = ({
             min={getMinOccursExtensionValue(item)}
             errorMessage={getValidationTextExtension(item)}
           />
-          {shouldShowExtraChoice(answer) ? <div className="page_skjemautfyller__component">{renderOpenField()}</div> : <React.Fragment />}
         </Validation>
+        {shouldShowExtraChoice(answer) ? <div className="page_skjemautfyller__component">{renderOpenField()}</div> : <React.Fragment />}
         {renderDeleteButton('page_skjemautfyller__deletebutton--margin-top')}
         {repeatButton}
         {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
