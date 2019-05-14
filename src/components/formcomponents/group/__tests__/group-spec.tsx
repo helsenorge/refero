@@ -29,6 +29,9 @@ describe('group', () => {
           return undefined;
         }}
         id="item_2"
+        renderHelpButton={() => <React.Fragment />}
+        renderHelpElement={() => <React.Fragment />}
+        helpElementIsVisible={false}
       />
     );
     expect(group.find(CustomTag)).toMatchSnapshot();

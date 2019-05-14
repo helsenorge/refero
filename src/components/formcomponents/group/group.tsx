@@ -23,6 +23,10 @@ export interface Props {
   renderChildrenItems: () => Array<JSX.Element> | undefined;
   repeatButton: JSX.Element;
   id?: string;
+
+  renderHelpButton: () => JSX.Element;
+  renderHelpElement: () => JSX.Element;
+  helpElementIsVisible: boolean;
 }
 interface State {
   counter?: number;
@@ -36,6 +40,7 @@ export class Group extends React.Component<Props, State> {
     return (
       <section id={getId(this.props.id)}>
         {this.renderGroupHeader()}
+        {this.props.helpElementIsVisible && this.props.renderHelpElement()}
         <div className="page_skjemautfyller__component">{this.props.renderChildrenItems()}</div>
         {this.props.renderDeleteButton('page_skjemautfyller__deletebutton--margin-top')}
         {this.props.repeatButton}
@@ -53,7 +58,12 @@ export class Group extends React.Component<Props, State> {
     }
     const tagName = `h${this.props.headerTag}`;
 
-    return <CustomTag tagName={tagName}>{renderPrefix(this.props.item) + ' ' + getText(this.props.item)}</CustomTag>;
+    return (
+      <React.Fragment>
+        <CustomTag tagName={tagName}>{renderPrefix(this.props.item) + ' ' + getText(this.props.item)}</CustomTag>
+        {this.props.renderHelpButton()}
+      </React.Fragment>
+    );
   };
 
   render(): JSX.Element | null {
