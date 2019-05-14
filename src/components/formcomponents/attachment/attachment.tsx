@@ -35,6 +35,10 @@ export interface Props {
   onDeleteAttachment?: (fileId: string, onSuccess: () => void, onError: (errorMessage: TextMessage | null) => void) => void;
   onOpenAttachment?: (fileId: string) => void;
   onRequestAttachmentLink?: (file: string) => string;
+
+  renderHelpButton: () => JSX.Element;
+  renderHelpElement: () => JSX.Element;
+  helpElementIsVisible: boolean;
 }
 
 class AttachmentComponent extends React.Component<Props & ValidationProps> {
@@ -134,6 +138,9 @@ class AttachmentComponent extends React.Component<Props & ValidationProps> {
           renderDeleteButton={this.props.renderDeleteButton}
           repeatButton={this.props.repeatButton}
           onRequestAttachmentLink={this.props.onRequestAttachmentLink}
+          withHelpButton={this.props.renderHelpButton()}
+          withHelpElement={this.props.renderHelpElement()}
+          isHelpVisible={this.props.helpElementIsVisible}
           {...other}
         />
       );
