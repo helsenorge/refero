@@ -14,7 +14,7 @@ import {
   getAnswerFromResponseItem,
   shouldRenderDeleteButton,
 } from '../util/skjemautfyller-core';
-import { QuestionnaireResponseItem, Questionnaire, QuestionnaireResponse, Attachment } from '../types/fhir';
+import { QuestionnaireResponseItem, Questionnaire, QuestionnaireResponse, Attachment, QuestionnaireItem } from '../types/fhir';
 import Constants from '../constants/index';
 import { FormDefinition, FormData } from '../reducers/form';
 import RepeatButton from '../components/formcomponents/repeat/repeat-button';
@@ -69,6 +69,8 @@ interface Props {
   questionnaireResponse?: QuestionnaireResponse;
   language?: string;
   sticky?: boolean;
+  onRequestHelpButton?: (item: QuestionnaireItem, itemHelp: QuestionnaireItem, opening: boolean) => JSX.Element;
+  onRequestHelpElement?: (item: QuestionnaireItem, itemHelp: QuestionnaireItem, opening: boolean) => JSX.Element;
 }
 
 interface State {
@@ -164,6 +166,8 @@ class Skjemautfyller extends React.Component<StateProps & DispatchProps & Props,
               onOpenAttachment={this.props.onOpenAttachment}
               onDeleteAttachment={this.props.onDeleteAttachment}
               uploadAttachment={this.props.uploadAttachment}
+              onRequestHelpButton={this.props.onRequestHelpButton}
+              onRequestHelpElement={this.props.onRequestHelpElement}
             />
           );
         });

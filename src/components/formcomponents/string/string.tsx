@@ -14,6 +14,7 @@ import withCommonFunctions from '../../with-common-functions';
 import { QuestionnaireItem, QuestionnaireResponseAnswer } from '../../../types/fhir';
 import { Resources } from '../../../util/resources';
 import TextView from '../textview';
+
 export interface Props {
   item: QuestionnaireItem;
   answer: QuestionnaireResponseAnswer;
@@ -27,6 +28,10 @@ export interface Props {
   renderDeleteButton: (className?: string) => JSX.Element | undefined;
   repeatButton: JSX.Element;
   oneToTwoColumn: boolean;
+
+  renderHelpButton: () => JSX.Element;
+  renderHelpElement: () => JSX.Element;
+  helpElementIsVisible: boolean;
 }
 
 class String extends React.Component<Props & ValidationProps, {}> {
@@ -42,11 +47,23 @@ class String extends React.Component<Props & ValidationProps, {}> {
     }
   };
 
+  getLabel(item: QuestionnaireItem) {
+    var label = <span dangerouslySetInnerHTML={{ __html: `${renderPrefix(item)} ${getText(item)}` }} />;
+
+    return (
+      <React.Fragment>
+        {label}
+        {this.props.renderHelpButton()}
+      </React.Fragment>
+    );
+  }
+
   render(): JSX.Element | null {
     const { item, pdf, resources, answer } = this.props;
     if (pdf || isReadOnly(item)) {
       return <TextView item={item} value={getPDFStringValue(answer, resources)} children={this.props.children} />;
     }
+
     return (
       <div className="page_skjemautfyller__component">
         <Validation {...this.props}>
@@ -56,13 +73,7 @@ class String extends React.Component<Props & ValidationProps, {}> {
             inputName={getId(this.props.id)}
             value={getStringValue(answer)}
             showLabel={true}
-            label={
-              <span
-                dangerouslySetInnerHTML={{
-                  __html: `${renderPrefix(item)} ${getText(item)}`,
-                }}
-              />
-            }
+            label={this.getLabel(item)}
             isRequired={isRequired(item)}
             placeholder={getPlaceholder(item)}
             minLength={getMinLengthExtensionValue(item)}
@@ -76,6 +87,9 @@ class String extends React.Component<Props & ValidationProps, {}> {
             {!this.props.oneToTwoColumn ? this.props.renderDeleteButton() : null}
           </SafeInputField>
         </Validation>
+
+        {this.props.helpElementIsVisible && this.props.renderHelpElement()}
+
         {this.props.oneToTwoColumn ? (
           <div>
             {this.props.renderDeleteButton('page_skjemautfyller__deletebutton--margin-top')}
@@ -90,5 +104,9 @@ class String extends React.Component<Props & ValidationProps, {}> {
   }
 }
 const withCommonFunctionsComponent = withCommonFunctions(String);
-const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(layoutChange(withCommonFunctionsComponent));
+const connectedComponent = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+  mergeProps
+)(layoutChange(withCommonFunctionsComponent));
 export default connectedComponent;

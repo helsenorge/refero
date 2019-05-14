@@ -8,15 +8,18 @@ import {
   wrappedByRepeatItem,
   shouldRenderDeleteButton,
 } from '../util/skjemautfyller-core';
-import { Resource, QuestionnaireResponseItem, QuestionnaireItem, QuestionnaireResponseAnswer, Attachment } from '../types/fhir';
+import { Resource, QuestionnaireResponseItem, QuestionnaireItem, QuestionnaireResponseAnswer, Attachment, integer } from '../types/fhir';
 import { Resources } from '../util/resources';
-import { getComponentForItem, getChildHeaderTag, shouldRenderRepeatButton } from '../util/index';
+import { getComponentForItem, getChildHeaderTag, shouldRenderRepeatButton, getText } from '../util/index';
 import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
 import { FormChild } from '@helsenorge/toolkit/components/molecules/form';
 import RepeatButton from './formcomponents/repeat/repeat-button';
 import DeleteButton from './formcomponents/repeat/delete-button';
 import { UploadedFile } from '@helsenorge/toolkit/components/atoms/dropzone';
 import { TextMessage } from '../types/text-message';
+import { findHelpItem, isHelpItem } from '../util/help';
+import HelpButton from './help-button/help-button';
+import { HelpIcon } from '@helsenorge/toolkit/components/icons';
 
 export interface Props {
   resources?: Resources;
@@ -48,6 +51,8 @@ export interface Props {
     onSuccess: (uploadedFile: UploadedFile, attachment: Attachment) => void,
     onError: (errormessage: TextMessage | null) => void
   ) => void;
+  onRequestHelpButton?: (item: QuestionnaireItem, itemHelp: QuestionnaireItem, opening: boolean) => JSX.Element;
+  onRequestHelpElement?: (item: QuestionnaireItem, itemHelp: QuestionnaireItem, opening: boolean) => JSX.Element;
 }
 
 interface EnhancedProps {
@@ -57,14 +62,17 @@ interface EnhancedProps {
 
 interface State {
   childComponents?: Array<React.Component<Props>>;
+  isHelpVisible: boolean;
 }
 
 export default function withCommonFunctions<T>(WrappedComponent: React.ComponentClass<T & EnhancedProps>) {
   return class WithCommonFunctions extends React.Component<T & ValidationProps & Props, State> {
     constructor(props: T & ValidationProps & Props) {
       super(props);
+
       this.state = {
         childComponents: [],
+        isHelpVisible: false,
       };
     }
 
@@ -109,12 +117,57 @@ export default function withCommonFunctions<T>(WrappedComponent: React.Component
       return !!answer && Object.keys(answer as object).length > 0;
     }
 
+    toggleHelp = (isOpen: boolean) => {
+      this.setState({ isHelpVisible: isOpen });
+    };
+
+    renderHelpButton = () => {
+      const { item, onRequestHelpButton } = this.props;
+
+      if (!item) return;
+      let qItem = item as QuestionnaireItem;
+
+      var helpItem = findHelpItem(qItem);
+      if (!helpItem) return;
+
+      if (onRequestHelpButton) {
+        return (
+          <HelpButton item={helpItem} callback={this.toggleHelp}>
+            {onRequestHelpButton(qItem, helpItem, this.state.isHelpVisible)}
+          </HelpButton>
+        );
+      }
+      return (
+        <HelpButton item={helpItem} callback={this.toggleHelp}>
+          <HelpIcon />
+        </HelpButton>
+      );
+    };
+
+    renderHelpElement = () => {
+      const { item, onRequestHelpElement } = this.props;
+      if (!item) return;
+      let qItem = item as QuestionnaireItem;
+
+      var helpItem = findHelpItem(qItem);
+      if (!helpItem) return;
+
+      if (onRequestHelpElement) {
+        return onRequestHelpElement(qItem, helpItem, this.state.isHelpVisible);
+      }
+
+      return <div className="page_skjemautfyller__helpComponent" dangerouslySetInnerHTML={{ __html: `${getText(helpItem)}` }} />;
+    };
+
     renderItem = (item: QuestionnaireItem): Array<JSX.Element | undefined> => {
       const { resources, containedResources, responseItem, pdf, path, headerTag, promptLoginMessage } = this.props;
+      if (isHelpItem(item)) return [];
+
       const Comp = getComponentForItem(item.type);
       if (!Comp) {
         return [];
       }
+
       let response: Array<QuestionnaireResponseItem> | undefined;
       // let suffix = repeatIndex === undefined ? '' : '^' + repeatIndex.toString();
 
@@ -168,6 +221,8 @@ export default function withCommonFunctions<T>(WrappedComponent: React.Component
               onOpenAttachment={this.props.onOpenAttachment}
               onDeleteAttachment={this.props.onDeleteAttachment}
               uploadAttachment={this.props.uploadAttachment}
+              onRequestHelpButton={this.props.onRequestHelpButton}
+              onRequestHelpElement={this.props.onRequestHelpElement}
             />
           );
         });
@@ -198,6 +253,9 @@ export default function withCommonFunctions<T>(WrappedComponent: React.Component
             renderChildrenItems={this.renderChildrenItems}
             renderDeleteButton={this.renderDeleteButton}
             renderRepeatButton={this.renderRepeatButton}
+            helpElementIsVisible={this.state.isHelpVisible}
+            renderHelpButton={this.renderHelpButton}
+            renderHelpElement={this.renderHelpElement}
             {...this.props as any}
           />
         );
