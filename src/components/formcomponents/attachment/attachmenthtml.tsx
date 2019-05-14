@@ -22,6 +22,10 @@ interface Props {
   renderDeleteButton: (className?: string) => JSX.Element | undefined;
   onRequestAttachmentLink?: (file: string) => string;
   repeatButton: JSX.Element;
+
+  withHelpButton?: JSX.Element;
+  withHelpElement?: JSX.Element;
+  isHelpVisible?: boolean;
 }
 
 const attachmentHtml: React.SFC<Props & ValidationProps> = ({
@@ -38,6 +42,9 @@ const attachmentHtml: React.SFC<Props & ValidationProps> = ({
   renderDeleteButton,
   repeatButton,
   onRequestAttachmentLink,
+  withHelpButton,
+  withHelpElement,
+  isHelpVisible,
   ...other
 }) => {
   return (
@@ -60,6 +67,9 @@ const attachmentHtml: React.SFC<Props & ValidationProps> = ({
           isRequired={isRequired}
           wrapperClasses="page_skjemautfyller__input"
           onRequestLink={onRequestAttachmentLink}
+          withHelpButton={withHelpButton}
+          withHelpElement={withHelpElement}
+          isHelpVisible={isHelpVisible}
         />
       </Validation>
       {renderDeleteButton('page_skjemautfyller__deletebutton--margin-top')}
