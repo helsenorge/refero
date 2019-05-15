@@ -35,6 +35,10 @@ export interface Props {
   validationErrorRenderer?: JSX.Element;
   renderDeleteButton: () => JSX.Element | undefined;
   repeatButton: JSX.Element;
+
+  renderHelpButton: () => JSX.Element;
+  renderHelpElement: () => JSX.Element;
+  helpElementIsVisible: boolean;
 }
 
 class DateComponent extends React.Component<Props & ValidationProps> {
@@ -184,6 +188,9 @@ class DateComponent extends React.Component<Props & ValidationProps> {
             onDateChange={this.onDateChange}
             onDateError={this.props.onDateError}
             validationErrorRenderer={this.props.validationErrorRenderer}
+            helpButton={this.props.renderHelpButton()}
+            helpElement={this.props.renderHelpElement()}
+            isHelpVisible={this.props.helpElementIsVisible}
           >
             {this.props.renderDeleteButton()}
           </DatePicker>
@@ -195,5 +202,9 @@ class DateComponent extends React.Component<Props & ValidationProps> {
 }
 
 const withCommonFunctionsComponent = withCommonFunctions(DateComponent);
-const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(withCommonFunctionsComponent);
+const connectedComponent = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+  mergeProps
+)(withCommonFunctionsComponent);
 export default connectedComponent;

@@ -138,8 +138,8 @@ class AttachmentComponent extends React.Component<Props & ValidationProps> {
           renderDeleteButton={this.props.renderDeleteButton}
           repeatButton={this.props.repeatButton}
           onRequestAttachmentLink={this.props.onRequestAttachmentLink}
-          withHelpButton={this.props.renderHelpButton()}
-          withHelpElement={this.props.renderHelpElement()}
+          helpButton={this.props.renderHelpButton()}
+          helpElement={this.props.renderHelpElement()}
           isHelpVisible={this.props.helpElementIsVisible}
           {...other}
         />

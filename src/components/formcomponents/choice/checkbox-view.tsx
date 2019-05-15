@@ -18,6 +18,10 @@ interface Props {
   resources?: Resources;
   repeatButton: JSX.Element;
   renderDeleteButton: (className?: string) => JSX.Element | undefined;
+
+  renderHelpButton: () => JSX.Element;
+  renderHelpElement: () => JSX.Element;
+  helpElementIsVisible: boolean;
 }
 
 const CheckboxView: React.SFC<Props> = ({
@@ -29,6 +33,9 @@ const CheckboxView: React.SFC<Props> = ({
   children,
   repeatButton,
   renderDeleteButton,
+  renderHelpButton,
+  renderHelpElement,
+  helpElementIsVisible,
   ...other
 }) => {
   if (!options) {
@@ -57,6 +64,9 @@ const CheckboxView: React.SFC<Props> = ({
             max={getMaxOccursExtensionValue(item)}
             min={getMinOccursExtensionValue(item)}
             errorMessage={getValidationTextExtension(item)}
+            helpButton={renderHelpButton()}
+            helpElement={renderHelpElement()}
+            isHelpVisible={helpElementIsVisible}
           />
         </Validation>
         {renderDeleteButton('page_skjemautfyller__deletebutton--margin-top')}

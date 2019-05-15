@@ -23,8 +23,8 @@ interface Props {
   onRequestAttachmentLink?: (file: string) => string;
   repeatButton: JSX.Element;
 
-  withHelpButton?: JSX.Element;
-  withHelpElement?: JSX.Element;
+  helpButton?: JSX.Element;
+  helpElement?: JSX.Element;
   isHelpVisible?: boolean;
 }
 
@@ -42,8 +42,8 @@ const attachmentHtml: React.SFC<Props & ValidationProps> = ({
   renderDeleteButton,
   repeatButton,
   onRequestAttachmentLink,
-  withHelpButton,
-  withHelpElement,
+  helpButton,
+  helpElement,
   isHelpVisible,
   ...other
 }) => {
@@ -67,8 +67,8 @@ const attachmentHtml: React.SFC<Props & ValidationProps> = ({
           isRequired={isRequired}
           wrapperClasses="page_skjemautfyller__input"
           onRequestLink={onRequestAttachmentLink}
-          withHelpButton={withHelpButton}
-          withHelpElement={withHelpElement}
+          helpButton={helpButton}
+          helpElement={helpElement}
           isHelpVisible={isHelpVisible}
         />
       </Validation>

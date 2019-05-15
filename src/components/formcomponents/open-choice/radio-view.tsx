@@ -21,6 +21,10 @@ interface Props {
   renderOpenField: () => JSX.Element | undefined;
   repeatButton: JSX.Element;
   answer: Array<QuestionnaireResponseAnswer> | QuestionnaireResponseAnswer;
+
+  renderHelpButton: () => JSX.Element;
+  renderHelpElement: () => JSX.Element;
+  helpElementIsVisible: boolean;
 }
 
 const RadioView: React.SFC<Props> = ({
@@ -36,6 +40,9 @@ const RadioView: React.SFC<Props> = ({
   renderDeleteButton,
   renderOpenField,
   answer,
+  renderHelpButton,
+  renderHelpElement,
+  helpElementIsVisible,
   ...other
 }) => {
   if (!options) {
@@ -60,6 +67,9 @@ const RadioView: React.SFC<Props> = ({
             isRequired={isRequired(item)}
             validator={validateInput}
             getErrorMessage={getErrorMessage}
+            helpButton={renderHelpButton()}
+            helpElement={renderHelpElement()}
+            isHelpVisible={helpElementIsVisible}
           />
         </Validation>
         {shouldShowExtraChoice(answer) ? <div className="page_skjemautfyller__component">{renderOpenField()}</div> : <React.Fragment />}

@@ -24,6 +24,9 @@ interface Props {
   oneToTwoColumn?: boolean;
   renderOpenField: () => JSX.Element | undefined;
   answer: Array<QuestionnaireResponseAnswer> | QuestionnaireResponseAnswer;
+  renderHelpButton: () => JSX.Element;
+  renderHelpElement: () => JSX.Element;
+  helpElementIsVisible: boolean;
 }
 
 class DropdownView extends React.Component<Props, {}> {
@@ -42,6 +45,9 @@ class DropdownView extends React.Component<Props, {}> {
       renderDeleteButton,
       renderOpenField,
       oneToTwoColumn,
+      renderHelpButton,
+      renderHelpElement,
+      helpElementIsVisible,
       ...other
     } = this.props;
     if (!options) {
@@ -81,6 +87,9 @@ class DropdownView extends React.Component<Props, {}> {
               onChangeValidator={validateInput}
               errorMessage={getValidationTextExtension(item)}
               className="page_skjemautfyller__input"
+              helpButton={renderHelpButton()}
+              helpElement={renderHelpElement()}
+              isHelpVisible={helpElementIsVisible}
             />
           </Validation>
           {shouldShowExtraChoice(answer) ? <div className="page_skjemautfyller__component">{renderOpenField()}</div> : <React.Fragment />}

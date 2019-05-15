@@ -19,7 +19,7 @@ import { UploadedFile } from '@helsenorge/toolkit/components/atoms/dropzone';
 import { TextMessage } from '../types/text-message';
 import { findHelpItem, isHelpItem } from '../util/help';
 import HelpButton from './help-button/help-button';
-import { HelpIcon } from '@helsenorge/toolkit/components/icons';
+import { HelpTrigger } from '@helsenorge/toolkit/components/icons';
 
 export interface Props {
   resources?: Resources;
@@ -139,7 +139,7 @@ export default function withCommonFunctions<T>(WrappedComponent: React.Component
       }
       return (
         <HelpButton item={helpItem} callback={this.toggleHelp}>
-          <HelpIcon />
+          <HelpTrigger />
         </HelpButton>
       );
     };

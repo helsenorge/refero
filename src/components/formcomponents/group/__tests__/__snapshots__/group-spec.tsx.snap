@@ -7,6 +7,7 @@ ShallowWrapper {
     Symbol(enzyme.__unrendered__): <Group
       answer={Object {}}
       headerTag={3}
+      helpElementIsVisible={false}
       id="item_2"
       item={
         Object {
@@ -20,6 +21,8 @@ ShallowWrapper {
       path={Array []}
       renderChildrenItems={[Function]}
       renderDeleteButton={[Function]}
+      renderHelpButton={[Function]}
+      renderHelpElement={[Function]}
       repeatButton={<div />}
     />,
     Symbol(enzyme.__renderer__): Object {
@@ -36,11 +39,16 @@ ShallowWrapper {
       "nodeType": "host",
       "props": Object {
         "children": Array [
-          <CustomTag
-            tagName="h3"
-          >
-             Overskrift
-          </CustomTag>,
+          <React.Fragment>
+            <CustomTag
+              className="page_skjemautfyller__heading"
+              tagName="h3"
+            >
+               Overskrift
+            </CustomTag>
+            <React.Fragment />
+          </React.Fragment>,
+          false,
           <div
             className="page_skjemautfyller__component"
           />,
@@ -54,15 +62,46 @@ ShallowWrapper {
         Object {
           "instance": null,
           "key": undefined,
-          "nodeType": "class",
+          "nodeType": "function",
           "props": Object {
-            "children": " Overskrift",
-            "tagName": "h3",
+            "children": Array [
+              <CustomTag
+                className="page_skjemautfyller__heading"
+                tagName="h3"
+              >
+                 Overskrift
+              </CustomTag>,
+              <React.Fragment />,
+            ],
           },
           "ref": null,
-          "rendered": " Overskrift",
-          "type": [Function],
+          "rendered": Array [
+            Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "class",
+              "props": Object {
+                "children": " Overskrift",
+                "className": "page_skjemautfyller__heading",
+                "tagName": "h3",
+              },
+              "ref": null,
+              "rendered": " Overskrift",
+              "type": [Function],
+            },
+            Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "function",
+              "props": Object {},
+              "ref": null,
+              "rendered": null,
+              "type": Symbol(react.fragment),
+            },
+          ],
+          "type": Symbol(react.fragment),
         },
+        false,
         Object {
           "instance": null,
           "key": undefined,
@@ -95,11 +134,16 @@ ShallowWrapper {
         "nodeType": "host",
         "props": Object {
           "children": Array [
-            <CustomTag
-              tagName="h3"
-            >
-               Overskrift
-            </CustomTag>,
+            <React.Fragment>
+              <CustomTag
+                className="page_skjemautfyller__heading"
+                tagName="h3"
+              >
+                 Overskrift
+              </CustomTag>
+              <React.Fragment />
+            </React.Fragment>,
+            false,
             <div
               className="page_skjemautfyller__component"
             />,
@@ -113,15 +157,46 @@ ShallowWrapper {
           Object {
             "instance": null,
             "key": undefined,
-            "nodeType": "class",
+            "nodeType": "function",
             "props": Object {
-              "children": " Overskrift",
-              "tagName": "h3",
+              "children": Array [
+                <CustomTag
+                  className="page_skjemautfyller__heading"
+                  tagName="h3"
+                >
+                   Overskrift
+                </CustomTag>,
+                <React.Fragment />,
+              ],
             },
             "ref": null,
-            "rendered": " Overskrift",
-            "type": [Function],
+            "rendered": Array [
+              Object {
+                "instance": null,
+                "key": undefined,
+                "nodeType": "class",
+                "props": Object {
+                  "children": " Overskrift",
+                  "className": "page_skjemautfyller__heading",
+                  "tagName": "h3",
+                },
+                "ref": null,
+                "rendered": " Overskrift",
+                "type": [Function],
+              },
+              Object {
+                "instance": null,
+                "key": undefined,
+                "nodeType": "function",
+                "props": Object {},
+                "ref": null,
+                "rendered": null,
+                "type": Symbol(react.fragment),
+              },
+            ],
+            "type": Symbol(react.fragment),
           },
+          false,
           Object {
             "instance": null,
             "key": undefined,
@@ -182,6 +257,7 @@ ShallowWrapper {
     "nodeType": "class",
     "props": Object {
       "children": " Overskrift",
+      "className": "page_skjemautfyller__heading",
       "tagName": "h3",
     },
     "ref": null,
@@ -195,6 +271,7 @@ ShallowWrapper {
       "nodeType": "class",
       "props": Object {
         "children": " Overskrift",
+        "className": "page_skjemautfyller__heading",
         "tagName": "h3",
       },
       "ref": null,
@@ -227,11 +304,16 @@ ShallowWrapper {
       "nodeType": "host",
       "props": Object {
         "children": Array [
-          <CustomTag
-            tagName="h3"
-          >
-             Overskrift
-          </CustomTag>,
+          <React.Fragment>
+            <CustomTag
+              className="page_skjemautfyller__heading"
+              tagName="h3"
+            >
+               Overskrift
+            </CustomTag>
+            <React.Fragment />
+          </React.Fragment>,
+          false,
           <div
             className="page_skjemautfyller__component"
           />,
@@ -245,15 +327,46 @@ ShallowWrapper {
         Object {
           "instance": null,
           "key": undefined,
-          "nodeType": "class",
+          "nodeType": "function",
           "props": Object {
-            "children": " Overskrift",
-            "tagName": "h3",
+            "children": Array [
+              <CustomTag
+                className="page_skjemautfyller__heading"
+                tagName="h3"
+              >
+                 Overskrift
+              </CustomTag>,
+              <React.Fragment />,
+            ],
           },
           "ref": null,
-          "rendered": " Overskrift",
-          "type": [Function],
+          "rendered": Array [
+            Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "class",
+              "props": Object {
+                "children": " Overskrift",
+                "className": "page_skjemautfyller__heading",
+                "tagName": "h3",
+              },
+              "ref": null,
+              "rendered": " Overskrift",
+              "type": [Function],
+            },
+            Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "function",
+              "props": Object {},
+              "ref": null,
+              "rendered": null,
+              "type": Symbol(react.fragment),
+            },
+          ],
+          "type": Symbol(react.fragment),
         },
+        false,
         Object {
           "instance": null,
           "key": undefined,

@@ -25,6 +25,10 @@ export interface Props {
   renderDeleteButton: (className?: string) => JSX.Element | undefined;
   repeatButton: JSX.Element;
   oneToTwoColumn: boolean;
+
+  renderHelpButton: () => JSX.Element;
+  renderHelpElement: () => JSX.Element;
+  helpElementIsVisible: boolean;
 }
 
 class Boolean extends React.Component<Props & ValidationProps, {}> {
@@ -93,6 +97,9 @@ class Boolean extends React.Component<Props & ValidationProps, {}> {
             onChange={this.handleChange}
             disabled={isReadOnly(this.props.item)}
             className="page_skjemautfyller__input"
+            helpButton={this.props.renderHelpButton()}
+            helpElement={this.props.renderHelpElement()}
+            isHelpVisible={this.props.helpElementIsVisible}
           />
         </Validation>
         {this.props.oneToTwoColumn ? (
@@ -111,5 +118,9 @@ class Boolean extends React.Component<Props & ValidationProps, {}> {
   }
 }
 const withCommonFunctionsComponent = withCommonFunctions(Boolean);
-const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(layoutChange(withCommonFunctionsComponent));
+const connectedComponent = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+  mergeProps
+)(layoutChange(withCommonFunctionsComponent));
 export default connectedComponent;

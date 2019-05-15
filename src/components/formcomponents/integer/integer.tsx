@@ -26,6 +26,10 @@ export interface Props {
   id?: string;
   repeatButton: JSX.Element;
   oneToTwoColumn: boolean;
+
+  renderHelpButton: () => JSX.Element;
+  renderHelpElement: () => JSX.Element;
+  helpElementIsVisible: boolean;
 }
 
 class Integer extends React.Component<Props & ValidationProps, {}> {
@@ -100,6 +104,9 @@ class Integer extends React.Component<Props & ValidationProps, {}> {
             }}
             className="page_skjemautfyller__input"
             onBlur={this.handleChange}
+            helpButton={this.props.renderHelpButton()}
+            helpElement={this.props.renderHelpElement()}
+            isHelpVisible={this.props.helpElementIsVisible}
           >
             {!this.props.oneToTwoColumn ? this.props.renderDeleteButton() : null}
           </SafeInputField>
@@ -119,5 +126,9 @@ class Integer extends React.Component<Props & ValidationProps, {}> {
 }
 
 const withCommonFunctionsComponent = withCommonFunctions(Integer);
-const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(layoutChange(withCommonFunctionsComponent));
+const connectedComponent = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+  mergeProps
+)(layoutChange(withCommonFunctionsComponent));
 export default connectedComponent;

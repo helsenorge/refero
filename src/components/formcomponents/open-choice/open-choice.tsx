@@ -43,6 +43,10 @@ export interface Props {
   headerTag?: number;
   responseItem?: Array<QuestionnaireResponseItem>;
   repeatButton: JSX.Element;
+
+  renderHelpButton: () => JSX.Element;
+  renderHelpElement: () => JSX.Element;
+  helpElementIsVisible: boolean;
 }
 
 class OpenChoice extends React.Component<Props & ValidationProps> {
