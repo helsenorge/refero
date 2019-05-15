@@ -20,6 +20,10 @@ interface Props {
   renderDeleteButton: (className?: string) => JSX.Element | undefined;
   renderOpenField: () => JSX.Element | undefined;
   answer: Array<QuestionnaireResponseAnswer> | QuestionnaireResponseAnswer;
+
+  renderHelpButton: () => JSX.Element;
+  renderHelpElement: () => JSX.Element;
+  helpElementIsVisible: boolean;
 }
 
 const CheckboxView: React.SFC<Props> = ({
@@ -33,6 +37,9 @@ const CheckboxView: React.SFC<Props> = ({
   repeatButton,
   renderDeleteButton,
   renderOpenField,
+  renderHelpButton,
+  renderHelpElement,
+  helpElementIsVisible,
   ...other
 }) => {
   if (!options) {
@@ -61,6 +68,9 @@ const CheckboxView: React.SFC<Props> = ({
             max={getMaxOccursExtensionValue(item)}
             min={getMinOccursExtensionValue(item)}
             errorMessage={getValidationTextExtension(item)}
+            helpButton={renderHelpButton()}
+            helpElement={renderHelpElement()}
+            isHelpVisible={helpElementIsVisible}
           />
         </Validation>
         {shouldShowExtraChoice(answer) ? <div className="page_skjemautfyller__component">{renderOpenField()}</div> : <React.Fragment />}

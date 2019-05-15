@@ -33,6 +33,10 @@ export interface Props {
   promptLoginMessage?: () => void;
   id?: string;
   repeatButton: JSX.Element;
+
+  renderHelpButton: () => JSX.Element;
+  renderHelpElement: () => JSX.Element;
+  helpElementIsVisible: boolean;
 }
 interface QuantityInputFieldProps {
   step?: string;
@@ -142,6 +146,9 @@ class Quantity extends React.Component<Props & ValidationProps, {}> {
             errorMessage={getValidationTextExtension(item)}
             className="page_skjemautfyller__quantity"
             inputProps={this.inputProps()}
+            helpButton={this.props.renderHelpButton()}
+            helpElement={this.props.renderHelpElement()}
+            isHelpVisible={this.props.helpElementIsVisible}
           >
             <span className="page_skjemautfyller__unit">{this.getUnit()}</span>
           </SafeInputField>
@@ -154,5 +161,9 @@ class Quantity extends React.Component<Props & ValidationProps, {}> {
 }
 
 const withCommonFunctionsComponent = withCommonFunctions(Quantity);
-const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(withCommonFunctionsComponent);
+const connectedComponent = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+  mergeProps
+)(withCommonFunctionsComponent);
 export default connectedComponent;

@@ -21,6 +21,10 @@ interface Props {
   renderDeleteButton: (className?: string) => JSX.Element | undefined;
   repeatButton: JSX.Element;
   oneToTwoColumn?: boolean;
+
+  renderHelpButton: () => JSX.Element;
+  renderHelpElement: () => JSX.Element;
+  helpElementIsVisible: boolean;
 }
 
 class DropdownView extends React.Component<Props, {}> {
@@ -37,6 +41,9 @@ class DropdownView extends React.Component<Props, {}> {
       repeatButton,
       renderDeleteButton,
       oneToTwoColumn,
+      renderHelpButton,
+      renderHelpElement,
+      helpElementIsVisible,
       ...other
     } = this.props;
     if (!options) {
@@ -76,6 +83,9 @@ class DropdownView extends React.Component<Props, {}> {
               onChangeValidator={validateInput}
               errorMessage={getValidationTextExtension(item)}
               className="page_skjemautfyller__input"
+              helpButton={renderHelpButton()}
+              helpElement={renderHelpElement()}
+              isHelpVisible={helpElementIsVisible}
             >
               {!oneToTwoColumn ? renderDeleteButton('page_skjemautfyller__deletebutton--margin-left') : null}
             </SafeSelect>

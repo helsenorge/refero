@@ -23,6 +23,10 @@ export interface Props {
   renderDeleteButton: (className?: string) => JSX.Element | undefined;
   id?: string;
   repeatButton: JSX.Element;
+
+  renderHelpButton: () => JSX.Element;
+  renderHelpElement: () => JSX.Element;
+  helpElementIsVisible: boolean;
 }
 class Text extends React.Component<Props & ValidationProps, {}> {
   showCounter(): boolean {
@@ -66,6 +70,9 @@ class Text extends React.Component<Props & ValidationProps, {}> {
             onBlur={this.handleChange}
             errorMessage={getValidationTextExtension(item)}
             allowInputOverMaxLength
+            helpButton={this.props.renderHelpButton()}
+            helpElement={this.props.renderHelpElement()}
+            isHelpVisible={this.props.helpElementIsVisible}
           />
         </Validation>
         {this.props.renderDeleteButton('page_skjemautfyller__deletebutton--margin-top')}
@@ -76,5 +83,9 @@ class Text extends React.Component<Props & ValidationProps, {}> {
 }
 
 const withCommonFunctionsComponent = withCommonFunctions(Text);
-const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(withCommonFunctionsComponent);
+const connectedComponent = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+  mergeProps
+)(withCommonFunctionsComponent);
 export default connectedComponent;

@@ -39,6 +39,10 @@ export interface Props {
   renderDeleteButton: (className?: string) => JSX.Element | undefined;
   repeatButton: JSX.Element;
   oneToTwoColumn: boolean;
+
+  renderHelpButton: () => JSX.Element;
+  renderHelpElement: () => JSX.Element;
+  helpElementIsVisible: boolean;
 }
 
 class Decimal extends React.Component<Props & ValidationProps, {}> {
@@ -142,6 +146,9 @@ class Decimal extends React.Component<Props & ValidationProps, {}> {
             errorMessage={getValidationTextExtension(item)}
             pattern={this.getPattern()}
             className="page_skjemautfyller__input"
+            helpButton={this.props.renderHelpButton()}
+            helpElement={this.props.renderHelpElement()}
+            isHelpVisible={this.props.helpElementIsVisible}
           >
             {!this.props.oneToTwoColumn ? this.props.renderDeleteButton() : null}
           </SafeInputField>
@@ -161,5 +168,9 @@ class Decimal extends React.Component<Props & ValidationProps, {}> {
 }
 
 const withCommonFunctionsComponent = withCommonFunctions(Decimal);
-const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(layoutChange(withCommonFunctionsComponent));
+const connectedComponent = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+  mergeProps
+)(layoutChange(withCommonFunctionsComponent));
 export default connectedComponent;

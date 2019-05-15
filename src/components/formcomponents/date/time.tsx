@@ -34,6 +34,10 @@ export interface Props {
   enable?: boolean;
   renderDeleteButton: (className?: string) => JSX.Element | undefined;
   repeatButton: JSX.Element;
+
+  renderHelpButton: () => JSX.Element;
+  renderHelpElement: () => JSX.Element;
+  helpElementIsVisible: boolean;
 }
 
 class Time extends React.Component<Props & ValidationProps> {
@@ -244,6 +248,9 @@ class Time extends React.Component<Props & ValidationProps> {
               resetButtonText: this.getResetButtonText(),
               onReset: this.onTimeChange,
             }}
+            helpButton={this.props.renderHelpButton()}
+            helpElement={this.props.renderHelpElement()}
+            isHelpVisible={this.props.helpElementIsVisible}
           />
         </Validation>
         {this.props.renderDeleteButton('page_skjemautfyller__deletebutton--margin-top')}
@@ -253,5 +260,9 @@ class Time extends React.Component<Props & ValidationProps> {
   }
 }
 const withCommonFunctionsComponent = withCommonFunctions(Time);
-const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(withCommonFunctionsComponent);
+const connectedComponent = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+  mergeProps
+)(withCommonFunctionsComponent);
 export default connectedComponent;

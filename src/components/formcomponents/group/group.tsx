@@ -60,7 +60,9 @@ export class Group extends React.Component<Props, State> {
 
     return (
       <React.Fragment>
-        <CustomTag tagName={tagName}>{renderPrefix(this.props.item) + ' ' + getText(this.props.item)}</CustomTag>
+        <CustomTag tagName={tagName} className={'page_skjemautfyller__heading'}>
+          {renderPrefix(this.props.item) + ' ' + getText(this.props.item)}
+        </CustomTag>
         {this.props.renderHelpButton()}
       </React.Fragment>
     );

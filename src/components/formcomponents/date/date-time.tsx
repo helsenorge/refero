@@ -33,6 +33,10 @@ export interface Props {
   renderDeleteButton: (className?: string) => JSX.Element | undefined;
   repeatButton: JSX.Element;
   oneToTwoColumn: boolean;
+
+  renderHelpButton: () => JSX.Element;
+  renderHelpElement: () => JSX.Element;
+  helpElementIsVisible: boolean;
 }
 
 class DateTime extends React.Component<Props & ValidationProps> {
@@ -146,6 +150,9 @@ class DateTime extends React.Component<Props & ValidationProps> {
             isRequired={isRequired(item)}
             errorMessage={getValidationTextExtension(item)}
             timeClassName="page_skjemautfyller__input"
+            helpButton={this.props.renderHelpButton()}
+            helpElement={this.props.renderHelpElement()}
+            isHelpVisible={this.props.helpElementIsVisible}
           >
             {!this.props.oneToTwoColumn ? this.props.renderDeleteButton('page_skjemautfyller__deletebutton--datetime') : null}
           </DateTimeInput>

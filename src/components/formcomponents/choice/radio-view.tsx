@@ -18,6 +18,10 @@ interface Props {
   getErrorMessage: (val: string) => string;
   renderDeleteButton: (className: string) => JSX.Element | undefined;
   repeatButton: JSX.Element;
+
+  renderHelpButton: () => JSX.Element;
+  renderHelpElement: () => JSX.Element;
+  helpElementIsVisible: boolean;
 }
 
 const RadioView: React.SFC<Props> = ({
@@ -31,6 +35,9 @@ const RadioView: React.SFC<Props> = ({
   getErrorMessage,
   repeatButton,
   renderDeleteButton,
+  renderHelpButton,
+  renderHelpElement,
+  helpElementIsVisible,
   ...other
 }) => {
   if (!options) {
@@ -55,6 +62,9 @@ const RadioView: React.SFC<Props> = ({
             isRequired={isRequired(item)}
             validator={validateInput}
             getErrorMessage={getErrorMessage}
+            helpButton={renderHelpButton()}
+            helpElement={renderHelpElement()}
+            isHelpVisible={helpElementIsVisible}
           />
         </Validation>
         {renderDeleteButton('page_skjemautfyller__deletebutton--margin-top')}

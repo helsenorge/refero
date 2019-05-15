@@ -48,14 +48,7 @@ class String extends React.Component<Props & ValidationProps, {}> {
   };
 
   getLabel(item: QuestionnaireItem) {
-    var label = <span dangerouslySetInnerHTML={{ __html: `${renderPrefix(item)} ${getText(item)}` }} />;
-
-    return (
-      <React.Fragment>
-        {label}
-        {this.props.renderHelpButton()}
-      </React.Fragment>
-    );
+    return <span dangerouslySetInnerHTML={{ __html: `${renderPrefix(item)} ${getText(item)}` }} />;
   }
 
   render(): JSX.Element | null {
@@ -83,12 +76,13 @@ class String extends React.Component<Props & ValidationProps, {}> {
             errorMessage={getValidationTextExtension(item)}
             className="page_skjemautfyller__input"
             allowInputOverMaxLength
+            helpButton={this.props.renderHelpButton()}
+            helpElement={this.props.renderHelpElement()}
+            isHelpVisible={this.props.helpElementIsVisible}
           >
             {!this.props.oneToTwoColumn ? this.props.renderDeleteButton() : null}
           </SafeInputField>
         </Validation>
-
-        {this.props.helpElementIsVisible && this.props.renderHelpElement()}
 
         {this.props.oneToTwoColumn ? (
           <div>

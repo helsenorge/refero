@@ -39,6 +39,10 @@ export interface ChoiceProps {
   responseItem?: Array<QuestionnaireResponseItem>;
   renderDeleteButton: () => JSX.Element | undefined;
   repeatButton: JSX.Element;
+
+  renderHelpButton: () => JSX.Element;
+  renderHelpElement: () => JSX.Element;
+  helpElementIsVisible: boolean;
 }
 
 interface ChoiceState {
