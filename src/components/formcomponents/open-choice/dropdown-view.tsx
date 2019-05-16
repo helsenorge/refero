@@ -24,6 +24,7 @@ interface Props {
   oneToTwoColumn?: boolean;
   renderOpenField: () => JSX.Element | undefined;
   answer: Array<QuestionnaireResponseAnswer> | QuestionnaireResponseAnswer;
+
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
   helpElementIsVisible: boolean;
