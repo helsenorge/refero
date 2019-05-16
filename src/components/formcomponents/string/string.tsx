@@ -48,7 +48,7 @@ class String extends React.Component<Props & ValidationProps, {}> {
       return <TextView item={item} value={getPDFStringValue(answer, resources)} children={this.props.children} />;
     }
     return (
-      <div className="page_skjemautfyller__component">
+      <div className="page_skjemautfyller__component page_skjemautfyller__component_string">
         <Validation {...this.props}>
           <SafeInputField
             type="text"
@@ -90,5 +90,9 @@ class String extends React.Component<Props & ValidationProps, {}> {
   }
 }
 const withCommonFunctionsComponent = withCommonFunctions(String);
-const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(layoutChange(withCommonFunctionsComponent));
+const connectedComponent = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+  mergeProps
+)(layoutChange(withCommonFunctionsComponent));
 export default connectedComponent;

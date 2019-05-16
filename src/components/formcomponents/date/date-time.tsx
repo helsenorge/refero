@@ -126,7 +126,7 @@ class DateTime extends React.Component<Props & ValidationProps> {
       return <TextView item={item} value={this.getStringValue()} children={this.props.children} />;
     }
     return (
-      <div className="page_skjemautfyller__component">
+      <div className="page_skjemautfyller__component page_skjemautfyller__component_datetime">
         <Validation {...other}>
           <DateTimeInput
             id={getId(id)}

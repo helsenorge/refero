@@ -118,7 +118,7 @@ class Quantity extends React.Component<Props & ValidationProps, {}> {
     }
     const value = this.getValue();
     return (
-      <div className="page_skjemautfyller__component">
+      <div className="page_skjemautfyller__component page_skjemautfyller__component_quantity">
         <Validation {...this.props}>
           <SafeInputField
             size="xSmall"
@@ -154,5 +154,9 @@ class Quantity extends React.Component<Props & ValidationProps, {}> {
 }
 
 const withCommonFunctionsComponent = withCommonFunctions(Quantity);
-const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(withCommonFunctionsComponent);
+const connectedComponent = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+  mergeProps
+)(withCommonFunctionsComponent);
 export default connectedComponent;

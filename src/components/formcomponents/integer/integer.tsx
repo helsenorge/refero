@@ -69,7 +69,7 @@ class Integer extends React.Component<Props & ValidationProps, {}> {
     }
     const value = this.getValue();
     return (
-      <div className="page_skjemautfyller__component">
+      <div className="page_skjemautfyller__component page_skjemautfyller__component_integer">
         <Validation {...this.props}>
           <SafeInputField
             type="number"
@@ -119,5 +119,9 @@ class Integer extends React.Component<Props & ValidationProps, {}> {
 }
 
 const withCommonFunctionsComponent = withCommonFunctions(Integer);
-const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(layoutChange(withCommonFunctionsComponent));
+const connectedComponent = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+  mergeProps
+)(layoutChange(withCommonFunctionsComponent));
 export default connectedComponent;
