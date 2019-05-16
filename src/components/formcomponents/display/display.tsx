@@ -48,8 +48,12 @@ const Display: React.SFC<Props> = ({ enable, pdf, item }) => {
     }
     return <div>{value}</div>;
   }
-  return <div className="page_skjemautfyller__component">{value}</div>;
+  return <div className="page_skjemautfyller__component page_skjemautfyller__component_display">{value}</div>;
 };
 
-const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(Display);
+const connectedComponent = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+  mergeProps
+)(Display);
 export default connectedComponent;

@@ -42,7 +42,7 @@ const RadioView: React.SFC<Props> = ({
     return null;
   }
   return (
-    <div className="page_skjemautfyller__component">
+    <div className="page_skjemautfyller__component page_skjemautfyller__component_openchoice page_skjemautfyller__component_openchoice_radiobutton">
       <Collapse isOpened hasNestedCollapse={true}>
         <Validation {...other}>
           <RadioGroup
@@ -62,7 +62,11 @@ const RadioView: React.SFC<Props> = ({
             getErrorMessage={getErrorMessage}
           />
         </Validation>
-        {shouldShowExtraChoice(answer) ? <div className="page_skjemautfyller__component">{renderOpenField()}</div> : <React.Fragment />}
+        {shouldShowExtraChoice(answer) ? (
+          <div className="page_skjemautfyller__component_openchoice_openfield">{renderOpenField()}</div>
+        ) : (
+          <React.Fragment />
+        )}
         {renderDeleteButton('page_skjemautfyller__deletebutton--margin-top')}
         {repeatButton}
         {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : undefined}

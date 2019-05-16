@@ -153,7 +153,7 @@ class DateComponent extends React.Component<Props & ValidationProps> {
       }
     }
     return (
-      <div className="page_skjemautfyller__component">
+      <div className="page_skjemautfyller__component page_skjemautfyller__component_date">
         <Validation {...this.props}>
           <DatePicker
             id={getId(this.props.id)}
@@ -195,5 +195,9 @@ class DateComponent extends React.Component<Props & ValidationProps> {
 }
 
 const withCommonFunctionsComponent = withCommonFunctions(DateComponent);
-const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(withCommonFunctionsComponent);
+const connectedComponent = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+  mergeProps
+)(withCommonFunctionsComponent);
 export default connectedComponent;

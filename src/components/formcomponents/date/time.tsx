@@ -216,7 +216,7 @@ class Time extends React.Component<Props & ValidationProps> {
     }
 
     return (
-      <div className="page_skjemautfyller__component">
+      <div className="page_skjemautfyller__component page_skjemautfyller__component_time">
         <Validation {...this.props}>
           <TimeInput
             id={getId(id)}
@@ -253,5 +253,9 @@ class Time extends React.Component<Props & ValidationProps> {
   }
 }
 const withCommonFunctionsComponent = withCommonFunctions(Time);
-const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(withCommonFunctionsComponent);
+const connectedComponent = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+  mergeProps
+)(withCommonFunctionsComponent);
 export default connectedComponent;

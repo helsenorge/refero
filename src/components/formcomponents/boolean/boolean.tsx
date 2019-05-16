@@ -76,7 +76,7 @@ class Boolean extends React.Component<Props & ValidationProps, {}> {
     }
     return (
       // Dette er en hack for FHI-skjema. TODO: fjern hack
-      <div className="page_skjemautfyller__component">
+      <div className="page_skjemautfyller__component page_skjemautfyller__component_boolean">
         <Validation {...this.props}>
           <CheckBox
             label={
@@ -111,5 +111,9 @@ class Boolean extends React.Component<Props & ValidationProps, {}> {
   }
 }
 const withCommonFunctionsComponent = withCommonFunctions(Boolean);
-const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(layoutChange(withCommonFunctionsComponent));
+const connectedComponent = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+  mergeProps
+)(layoutChange(withCommonFunctionsComponent));
 export default connectedComponent;
