@@ -46,7 +46,6 @@ export interface Props {
 
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
-  helpElementIsVisible: boolean;
 }
 
 class OpenChoice extends React.Component<Props & ValidationProps> {

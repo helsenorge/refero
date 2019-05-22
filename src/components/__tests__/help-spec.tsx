@@ -37,150 +37,76 @@ describe('Component renders help items', () => {
 
   it('should render help button and text for choice component of type radio-button', () => {
     var extension = createItemControlExtension('radio-button');
-    runTest('choice', true, HelpElement.HelpButtonAndText, [extension]);
-  });
-
-  it('should render help button for choice component of type radio-button', () => {
-    var extension = createItemControlExtension('radio-button');
-    runTest('choice', false, HelpElement.HelpButton, [extension]);
+    runTest('choice', HelpElement.HelpButtonAndText, [extension]);
   });
 
   it('should render help button and text for choice component of type check-box', () => {
     var extension = createItemControlExtension('check-box');
-    runTest('choice', true, HelpElement.HelpButtonAndText, [extension]);
-  });
-
-  it('should render help button for choice component of type check-box', () => {
-    var extension = createItemControlExtension('check-box');
-    runTest('choice', false, HelpElement.HelpButton, [extension]);
+    runTest('choice', HelpElement.HelpButtonAndText, [extension]);
   });
 
   it('should render help button and text for choice component of type drop-down', () => {
     var extension = createItemControlExtension('drop-down');
-    runTest('choice', true, HelpElement.HelpButtonAndText, [extension]);
-  });
-
-  it('should render help button for choice component of type drop-down', () => {
-    var extension = createItemControlExtension('drop-down');
-    runTest('choice', false, HelpElement.HelpButton, [extension]);
+    runTest('choice', HelpElement.HelpButtonAndText, [extension]);
   });
 
   it('should render help button and text for string component', () => {
-    runTest('string', true, HelpElement.HelpButtonAndText);
-  });
-
-  it('should render help button for string component', () => {
-    runTest('string', false, HelpElement.HelpButton);
+    runTest('string', HelpElement.HelpButtonAndText);
   });
 
   it('should render help button and text for boolean component', () => {
-    runTest('boolean', true, HelpElement.HelpButtonAndText);
-  });
-
-  it('should render help button for boolean component', () => {
-    runTest('boolean', false, HelpElement.HelpButton);
+    runTest('boolean', HelpElement.HelpButtonAndText);
   });
 
   it('should render help button and text for group component', () => {
-    runTest('group', true, HelpElement.HelpButtonAndText);
-  });
-
-  it('should render help button for group component', () => {
-    runTest('group', false, HelpElement.HelpButton);
+    runTest('group', HelpElement.HelpButtonAndText);
   });
 
   it('should render help button and text for attachment component', () => {
-    runTest('attachment', true, HelpElement.HelpButtonAndText);
-  });
-
-  it('should render help button for attachment component', () => {
-    runTest('attachment', false, HelpElement.HelpButton);
+    runTest('attachment', HelpElement.HelpButtonAndText);
   });
 
   it('should render help button and text for date component', () => {
-    runTest('date', true, HelpElement.HelpButtonAndText);
-  });
-
-  it('should render help button for date component', () => {
-    runTest('date', false, HelpElement.HelpButton);
+    runTest('date', HelpElement.HelpButtonAndText);
   });
 
   it('should render help button and text for dateTime component', () => {
-    runTest('dateTime', true, HelpElement.HelpButtonAndText);
-  });
-
-  it('should render help button for dateTime component', () => {
-    runTest('dateTime', false, HelpElement.HelpButton);
+    runTest('dateTime', HelpElement.HelpButtonAndText);
   });
 
   it('should render help button and text for time component', () => {
-    runTest('time', true, HelpElement.HelpButtonAndText);
-  });
-
-  it('should render help button for time component', () => {
-    runTest('time', false, HelpElement.HelpButton);
+    runTest('time', HelpElement.HelpButtonAndText);
   });
 
   it('should render help button and text for decimal component', () => {
-    runTest('decimal', true, HelpElement.HelpButtonAndText);
-  });
-
-  it('should render help button for decimal component', () => {
-    runTest('decimal', false, HelpElement.HelpButton);
+    runTest('decimal', HelpElement.HelpButtonAndText);
   });
 
   it('should render help button and text for integer component', () => {
-    runTest('integer', true, HelpElement.HelpButtonAndText);
-  });
-
-  it('should render help button for integer component', () => {
-    runTest('integer', false, HelpElement.HelpButton);
+    runTest('integer', HelpElement.HelpButtonAndText);
   });
 
   it('should render help button and text for quantity component', () => {
-    runTest('quantity', true, HelpElement.HelpButtonAndText);
-  });
-
-  it('should render help button for quantity component', () => {
-    runTest('quantity', false, HelpElement.HelpButton);
+    runTest('quantity', HelpElement.HelpButtonAndText);
   });
 
   it('should render help button and text for text component', () => {
-    runTest('text', true, HelpElement.HelpButtonAndText);
-  });
-
-  it('should render help button for text component', () => {
-    runTest('text', false, HelpElement.HelpButton);
+    runTest('text', HelpElement.HelpButtonAndText);
   });
 
   it('should render help button and text for open-choice component of type radio-button', () => {
     var extension = createItemControlExtension('radio-button');
-    runTest('open-choice', true, HelpElement.HelpButtonAndText, [extension]);
-  });
-
-  it('should render help button for open-choice component of type radio-button', () => {
-    var extension = createItemControlExtension('radio-button');
-    runTest('open-choice', false, HelpElement.HelpButton, [extension]);
+    runTest('open-choice', HelpElement.HelpButtonAndText, [extension]);
   });
 
   it('should render help button and text for open-choice component of type check-box', () => {
     var extension = createItemControlExtension('check-box');
-    runTest('open-choice', true, HelpElement.HelpButtonAndText, [extension]);
-  });
-
-  it('should render help button for open-choice component of type check-box', () => {
-    var extension = createItemControlExtension('check-box');
-    runTest('open-choice', false, HelpElement.HelpButton, [extension]);
+    runTest('open-choice', HelpElement.HelpButtonAndText, [extension]);
   });
 
   it('should render help button and text for open-choice component of type drop-down', () => {
     var extension = createItemControlExtension('drop-down');
-    runTest('open-choice', true, HelpElement.HelpButtonAndText, [extension]);
-  });
-
-  it('should render help button for open-choice component of type drop-down', () => {
-    var extension = createItemControlExtension('drop-down');
-    runTest('open-choice', false, HelpElement.HelpButton, [extension]);
+    runTest('open-choice', HelpElement.HelpButtonAndText, [extension]);
   });
 });
 
@@ -189,8 +115,8 @@ enum HelpElement {
   HelpButtonAndText = 2,
 }
 
-function runTest(itemType: QuestionnaireItemTypeList, withVisibleHelp: boolean, expect: HelpElement, extensions?: Extension[]) {
-  let component = createComponentOfType(itemType, withVisibleHelp, extensions);
+function runTest(itemType: QuestionnaireItemTypeList, expect: HelpElement, extensions?: Extension[]) {
+  let component = createComponentOfType(itemType, extensions);
   let wrapper = createWrapperWithComponent(component);
   wrapper.render();
 
@@ -251,40 +177,40 @@ function createWrapperWithComponent(component: JSX.Element): ReactWrapper<{}, {}
   return mount(<Provider store={store}>{component}</Provider>);
 }
 
-function createComponentOfType(itemType: QuestionnaireItemTypeList, withVisibleHelp: boolean, extensions?: Extension[]): JSX.Element {
+function createComponentOfType(itemType: QuestionnaireItemTypeList, extensions?: Extension[]): JSX.Element {
   switch (itemType) {
     case 'choice':
-      return createComponentChoice(withVisibleHelp, extensions);
+      return createComponentChoice(extensions);
     case 'string':
-      return createComponentString(withVisibleHelp, extensions);
+      return createComponentString(extensions);
     case 'boolean':
-      return createComponentBoolean(withVisibleHelp, extensions);
+      return createComponentBoolean(extensions);
     case 'group':
-      return createComponentGroup(withVisibleHelp, extensions);
+      return createComponentGroup(extensions);
     case 'attachment':
-      return createComponentAttachment(withVisibleHelp, extensions);
+      return createComponentAttachment(extensions);
     case 'date':
-      return createComponentDate(withVisibleHelp, extensions);
+      return createComponentDate(extensions);
     case 'dateTime':
-      return createComponentDateTime(withVisibleHelp, extensions);
+      return createComponentDateTime(extensions);
     case 'time':
-      return createComponentTime(withVisibleHelp, extensions);
+      return createComponentTime(extensions);
     case 'decimal':
-      return createComponentDecimal(withVisibleHelp, extensions);
+      return createComponentDecimal(extensions);
     case 'integer':
-      return createComponentInteger(withVisibleHelp, extensions);
+      return createComponentInteger(extensions);
     case 'quantity':
-      return createComponentQuantity(withVisibleHelp, extensions);
+      return createComponentQuantity(extensions);
     case 'text':
-      return createComponentText(withVisibleHelp, extensions);
+      return createComponentText(extensions);
     case 'open-choice':
-      return createComponentOpenChoice(withVisibleHelp, extensions);
+      return createComponentOpenChoice(extensions);
     default:
       return <React.Fragment />;
   }
 }
 
-function createComponentText(withVisibleHelp: boolean, extensions?: Extension[]): JSX.Element {
+function createComponentText(extensions?: Extension[]): JSX.Element {
   let item = createItem('text', extensions);
 
   return (
@@ -295,14 +221,13 @@ function createComponentText(withVisibleHelp: boolean, extensions?: Extension[])
       path={{} as Path[]}
       renderDeleteButton={() => undefined}
       repeatButton={<React.Fragment />}
-      helpElementIsVisible={withVisibleHelp}
       renderHelpButton={() => <div className="helpButton">help button</div>}
       renderHelpElement={() => <div className="helpText">help text</div>}
     />
   );
 }
 
-function createComponentQuantity(withVisibleHelp: boolean, extensions?: Extension[]): JSX.Element {
+function createComponentQuantity(extensions?: Extension[]): JSX.Element {
   let item = createItem('quantity', extensions);
 
   return (
@@ -312,14 +237,13 @@ function createComponentQuantity(withVisibleHelp: boolean, extensions?: Extensio
       item={item}
       path={{} as Path[]}
       repeatButton={<React.Fragment />}
-      helpElementIsVisible={withVisibleHelp}
       renderHelpButton={() => <div className="helpButton">help button</div>}
       renderHelpElement={() => <div className="helpText">help text</div>}
     />
   );
 }
 
-function createComponentInteger(withVisibleHelp: boolean, extensions?: Extension[]): JSX.Element {
+function createComponentInteger(extensions?: Extension[]): JSX.Element {
   let item = createItem('integer', extensions);
 
   return (
@@ -331,14 +255,13 @@ function createComponentInteger(withVisibleHelp: boolean, extensions?: Extension
       renderDeleteButton={() => undefined}
       repeatButton={<React.Fragment />}
       oneToTwoColumn={false}
-      helpElementIsVisible={withVisibleHelp}
       renderHelpButton={() => <div className="helpButton">help button</div>}
       renderHelpElement={() => <div className="helpText">help text</div>}
     />
   );
 }
 
-function createComponentDecimal(withVisibleHelp: boolean, extensions?: Extension[]): JSX.Element {
+function createComponentDecimal(extensions?: Extension[]): JSX.Element {
   let item = createItem('decimal', extensions);
 
   return (
@@ -350,14 +273,13 @@ function createComponentDecimal(withVisibleHelp: boolean, extensions?: Extension
       renderDeleteButton={() => undefined}
       repeatButton={<React.Fragment />}
       oneToTwoColumn={false}
-      helpElementIsVisible={withVisibleHelp}
       renderHelpButton={() => <div className="helpButton">help button</div>}
       renderHelpElement={() => <div className="helpText">help text</div>}
     />
   );
 }
 
-function createComponentTime(withVisibleHelp: boolean, extensions?: Extension[]): JSX.Element {
+function createComponentTime(extensions?: Extension[]): JSX.Element {
   let item = createItem('time', extensions);
 
   return (
@@ -368,14 +290,13 @@ function createComponentTime(withVisibleHelp: boolean, extensions?: Extension[])
       path={{} as Path[]}
       renderDeleteButton={() => undefined}
       repeatButton={<React.Fragment />}
-      helpElementIsVisible={withVisibleHelp}
       renderHelpButton={() => <div className="helpButton">help button</div>}
       renderHelpElement={() => <div className="helpText">help text</div>}
     />
   );
 }
 
-function createComponentDateTime(withVisibleHelp: boolean, extensions?: Extension[]): JSX.Element {
+function createComponentDateTime(extensions?: Extension[]): JSX.Element {
   let item = createItem('dateTime', extensions);
 
   return (
@@ -387,14 +308,13 @@ function createComponentDateTime(withVisibleHelp: boolean, extensions?: Extensio
       renderDeleteButton={() => undefined}
       repeatButton={<React.Fragment />}
       oneToTwoColumn={false}
-      helpElementIsVisible={withVisibleHelp}
       renderHelpButton={() => <div className="helpButton">help button</div>}
       renderHelpElement={() => <div className="helpText">help text</div>}
     />
   );
 }
 
-function createComponentDate(withVisibleHelp: boolean, extensions?: Extension[]): JSX.Element {
+function createComponentDate(extensions?: Extension[]): JSX.Element {
   let item = createItem('date', extensions);
 
   return (
@@ -405,14 +325,13 @@ function createComponentDate(withVisibleHelp: boolean, extensions?: Extension[])
       path={{} as Path[]}
       renderDeleteButton={() => undefined}
       repeatButton={<React.Fragment />}
-      helpElementIsVisible={withVisibleHelp}
       renderHelpButton={() => <div className="helpButton">help button</div>}
       renderHelpElement={() => <div className="helpText">help text</div>}
     />
   );
 }
 
-function createComponentAttachment(withVisibleHelp: boolean, extensions?: Extension[]): JSX.Element {
+function createComponentAttachment(extensions?: Extension[]): JSX.Element {
   let item = createItem('attachment', extensions);
 
   return (
@@ -423,14 +342,13 @@ function createComponentAttachment(withVisibleHelp: boolean, extensions?: Extens
       path={{} as Path[]}
       renderDeleteButton={() => undefined}
       repeatButton={<React.Fragment />}
-      helpElementIsVisible={withVisibleHelp}
       renderHelpButton={() => <div className="helpButton">help button</div>}
       renderHelpElement={() => <div className="helpText">help text</div>}
     />
   );
 }
 
-function createComponentGroup(withVisibleHelp: boolean, extensions?: Extension[]): JSX.Element {
+function createComponentGroup(extensions?: Extension[]): JSX.Element {
   let item = createItem('group', extensions);
 
   return (
@@ -443,14 +361,13 @@ function createComponentGroup(withVisibleHelp: boolean, extensions?: Extension[]
       renderDeleteButton={() => undefined}
       repeatButton={<React.Fragment />}
       renderChildrenItems={() => []}
-      helpElementIsVisible={withVisibleHelp}
       renderHelpButton={() => <div className="helpButton">help button</div>}
       renderHelpElement={() => <div className="helpText">help text</div>}
     />
   );
 }
 
-function createComponentBoolean(withVisibleHelp: boolean, extensions?: Extension[]): JSX.Element {
+function createComponentBoolean(extensions?: Extension[]): JSX.Element {
   let item = createItem('boolean', extensions);
 
   return (
@@ -462,14 +379,13 @@ function createComponentBoolean(withVisibleHelp: boolean, extensions?: Extension
       renderDeleteButton={() => undefined}
       repeatButton={<React.Fragment />}
       oneToTwoColumn={false}
-      helpElementIsVisible={withVisibleHelp}
       renderHelpButton={() => <div className="helpButton">help button</div>}
       renderHelpElement={() => <div className="helpText">help text</div>}
     />
   );
 }
 
-function createComponentString(withVisibleHelp: boolean, extensions?: Extension[]): JSX.Element {
+function createComponentString(extensions?: Extension[]): JSX.Element {
   let item = createItem('string', extensions);
 
   return (
@@ -482,14 +398,13 @@ function createComponentString(withVisibleHelp: boolean, extensions?: Extension[
       repeatButton={<React.Fragment />}
       visibleDeleteButton={false}
       oneToTwoColumn={false}
-      helpElementIsVisible={withVisibleHelp}
       renderHelpButton={() => <div className="helpButton">help button</div>}
       renderHelpElement={() => <div className="helpText">help text</div>}
     />
   );
 }
 
-function createComponentChoice(withVisibleHelp: boolean, extensions?: Extension[]): JSX.Element {
+function createComponentChoice(extensions?: Extension[]): JSX.Element {
   let option = createValueStringOption('dog', 'cat');
   let item = createItemWithOption(extensions, ...option);
 
@@ -501,14 +416,13 @@ function createComponentChoice(withVisibleHelp: boolean, extensions?: Extension[
       path={{} as Path[]}
       renderDeleteButton={() => undefined}
       repeatButton={<React.Fragment />}
-      helpElementIsVisible={withVisibleHelp}
       renderHelpButton={() => <div className="helpButton">help button</div>}
       renderHelpElement={() => <div className="helpText">help text</div>}
     />
   );
 }
 
-function createComponentOpenChoice(withVisibleHelp: boolean, extensions?: Extension[]): JSX.Element {
+function createComponentOpenChoice(extensions?: Extension[]): JSX.Element {
   let option = createValueStringOption('dog', 'cat');
   let item = createItemWithOption(extensions, ...option);
 
@@ -520,7 +434,6 @@ function createComponentOpenChoice(withVisibleHelp: boolean, extensions?: Extens
       path={{} as Path[]}
       renderDeleteButton={() => undefined}
       repeatButton={<React.Fragment />}
-      helpElementIsVisible={withVisibleHelp}
       renderHelpButton={() => <div className="helpButton">help button</div>}
       renderHelpElement={() => <div className="helpText">help text</div>}
     />

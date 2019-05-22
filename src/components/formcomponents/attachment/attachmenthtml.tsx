@@ -25,7 +25,6 @@ interface Props {
 
   helpButton?: JSX.Element;
   helpElement?: JSX.Element;
-  isHelpVisible?: boolean;
 }
 
 const attachmentHtml: React.SFC<Props & ValidationProps> = ({
@@ -44,7 +43,6 @@ const attachmentHtml: React.SFC<Props & ValidationProps> = ({
   onRequestAttachmentLink,
   helpButton,
   helpElement,
-  isHelpVisible,
   ...other
 }) => {
   return (
@@ -69,7 +67,6 @@ const attachmentHtml: React.SFC<Props & ValidationProps> = ({
           onRequestLink={onRequestAttachmentLink}
           helpButton={helpButton}
           helpElement={helpElement}
-          isHelpVisible={isHelpVisible}
         />
       </Validation>
       {renderDeleteButton('page_skjemautfyller__deletebutton--margin-top')}

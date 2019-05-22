@@ -20,6 +20,7 @@ import { TextMessage } from '../types/text-message';
 import { findHelpItem, isHelpItem } from '../util/help';
 import HelpButton from './help-button/help-button';
 import { HelpTrigger } from '@helsenorge/toolkit/components/icons';
+import { Collapse } from 'react-collapse';
 
 export interface Props {
   resources?: Resources;
@@ -52,7 +53,7 @@ export interface Props {
     onError: (errormessage: TextMessage | null) => void
   ) => void;
   onRequestHelpButton?: (item: QuestionnaireItem, itemHelp: QuestionnaireItem, opening: boolean) => JSX.Element;
-  onRequestHelpElement?: (item: QuestionnaireItem, itemHelp: QuestionnaireItem, opening: boolean) => JSX.Element;
+  onRequestHelpElement?: (item: QuestionnaireItem, itemHelp: QuestionnaireItem, help: string, opening: boolean) => JSX.Element;
 }
 
 interface EnhancedProps {
@@ -153,10 +154,14 @@ export default function withCommonFunctions<T>(WrappedComponent: React.Component
       if (!helpItem) return;
 
       if (onRequestHelpElement) {
-        return onRequestHelpElement(qItem, helpItem, this.state.isHelpVisible);
+        return onRequestHelpElement(qItem, helpItem, getText(helpItem), this.state.isHelpVisible);
       }
 
-      return <div className="page_skjemautfyller__helpComponent" dangerouslySetInnerHTML={{ __html: `${getText(helpItem)}` }} />;
+      return (
+        <Collapse isOpened={this.state.isHelpVisible}>
+          <div className="page_skjemautfyller__helpComponent" dangerouslySetInnerHTML={{ __html: `${getText(helpItem)}` }} />
+        </Collapse>
+      );
     };
 
     renderItem = (item: QuestionnaireItem): Array<JSX.Element | undefined> => {
@@ -253,7 +258,6 @@ export default function withCommonFunctions<T>(WrappedComponent: React.Component
             renderChildrenItems={this.renderChildrenItems}
             renderDeleteButton={this.renderDeleteButton}
             renderRepeatButton={this.renderRepeatButton}
-            helpElementIsVisible={this.state.isHelpVisible}
             renderHelpButton={this.renderHelpButton}
             renderHelpElement={this.renderHelpElement}
             {...this.props as any}

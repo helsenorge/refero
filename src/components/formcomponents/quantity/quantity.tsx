@@ -36,7 +36,6 @@ export interface Props {
 
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
-  helpElementIsVisible: boolean;
 }
 interface QuantityInputFieldProps {
   step?: string;
@@ -148,7 +147,6 @@ class Quantity extends React.Component<Props & ValidationProps, {}> {
             inputProps={this.inputProps()}
             helpButton={this.props.renderHelpButton()}
             helpElement={this.props.renderHelpElement()}
-            isHelpVisible={this.props.helpElementIsVisible}
           >
             <span className="page_skjemautfyller__unit">{this.getUnit()}</span>
           </SafeInputField>

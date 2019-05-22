@@ -26,7 +26,6 @@ export interface Props {
 
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
-  helpElementIsVisible: boolean;
 }
 interface State {
   counter?: number;
@@ -40,7 +39,7 @@ export class Group extends React.Component<Props, State> {
     return (
       <section id={getId(this.props.id)}>
         {this.renderGroupHeader()}
-        {this.props.helpElementIsVisible && this.props.renderHelpElement()}
+        {this.props.renderHelpElement()}
         <div className="page_skjemautfyller__component page_skjemautfyller__component_group">{this.props.renderChildrenItems()}</div>
         {this.props.renderDeleteButton('page_skjemautfyller__deletebutton--margin-top')}
         {this.props.repeatButton}

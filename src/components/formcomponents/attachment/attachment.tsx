@@ -38,7 +38,6 @@ export interface Props {
 
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
-  helpElementIsVisible: boolean;
 }
 
 class AttachmentComponent extends React.Component<Props & ValidationProps> {
@@ -140,7 +139,6 @@ class AttachmentComponent extends React.Component<Props & ValidationProps> {
           onRequestAttachmentLink={this.props.onRequestAttachmentLink}
           helpButton={this.props.renderHelpButton()}
           helpElement={this.props.renderHelpElement()}
-          isHelpVisible={this.props.helpElementIsVisible}
           {...other}
         />
       );

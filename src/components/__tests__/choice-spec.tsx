@@ -230,7 +230,6 @@ function createWrapperWithItem(item: QuestionnaireItem): ReactWrapper<{}, {}> {
         repeatButton={<React.Fragment />}
         renderHelpButton={() => <React.Fragment />}
         renderHelpElement={() => <React.Fragment />}
-        helpElementIsVisible={false}
       />
     </Provider>
   );

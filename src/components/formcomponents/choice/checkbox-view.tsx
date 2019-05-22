@@ -21,7 +21,6 @@ interface Props {
 
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
-  helpElementIsVisible: boolean;
 }
 
 const CheckboxView: React.SFC<Props> = ({
@@ -35,7 +34,6 @@ const CheckboxView: React.SFC<Props> = ({
   renderDeleteButton,
   renderHelpButton,
   renderHelpElement,
-  helpElementIsVisible,
   ...other
 }) => {
   if (!options) {
@@ -66,7 +64,6 @@ const CheckboxView: React.SFC<Props> = ({
             errorMessage={getValidationTextExtension(item)}
             helpButton={renderHelpButton()}
             helpElement={renderHelpElement()}
-            isHelpVisible={helpElementIsVisible}
           />
         </Validation>
         {renderDeleteButton('page_skjemautfyller__deletebutton--margin-top')}

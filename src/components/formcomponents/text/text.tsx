@@ -26,7 +26,6 @@ export interface Props {
 
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
-  helpElementIsVisible: boolean;
 }
 class Text extends React.Component<Props & ValidationProps, {}> {
   showCounter(): boolean {
@@ -72,7 +71,6 @@ class Text extends React.Component<Props & ValidationProps, {}> {
             allowInputOverMaxLength
             helpButton={this.props.renderHelpButton()}
             helpElement={this.props.renderHelpElement()}
-            isHelpVisible={this.props.helpElementIsVisible}
           />
         </Validation>
         {this.props.renderDeleteButton('page_skjemautfyller__deletebutton--margin-top')}

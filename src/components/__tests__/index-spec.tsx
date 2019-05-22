@@ -26,12 +26,13 @@ describe('Component renders help items', () => {
       return <div className="helpButton">help button</div>;
     };
 
-    let helpElementCb = (item: QuestionnaireItem, helpItem: QuestionnaireItem, opening: boolean) => {
+    let helpElementCb = (item: QuestionnaireItem, helpItem: QuestionnaireItem, help: string, opening: boolean) => {
       expect(item.linkId).toBe('1');
       expect(helpItem.linkId).toBe('1.1');
+      expect(help).toBe('help text');
       expect(opening).toBe(expectedOpeningStatus);
 
-      return <div className="helpElement">help element</div>;
+      return opening ? <div className="helpElement">help element</div> : <React.Fragment />;
     };
 
     // Render schema with 1 help button
@@ -55,7 +56,7 @@ describe('Component renders help items', () => {
 
 function createWrapper(
   helpButtonCb: (item: QuestionnaireItem, helpItem: QuestionnaireItem, opening: boolean) => JSX.Element,
-  helpElementCb: (item: QuestionnaireItem, helpItem: QuestionnaireItem, opening: boolean) => JSX.Element
+  helpElementCb: (item: QuestionnaireItem, helpItem: QuestionnaireItem, help: string, opening: boolean) => JSX.Element
 ) {
   let store: Store<{}> = createStore(rootReducer);
   return mount(
