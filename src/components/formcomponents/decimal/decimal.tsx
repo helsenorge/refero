@@ -122,7 +122,7 @@ class Decimal extends React.Component<Props & ValidationProps, {}> {
       return <TextView item={item} value={this.getPDFValue()} children={this.props.children} />;
     }
     return (
-      <div className="page_skjemautfyller__component">
+      <div className="page_skjemautfyller__component page_skjemautfyller__component_decimal">
         <Validation {...this.props}>
           <SafeInputField
             type="number"

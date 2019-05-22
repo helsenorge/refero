@@ -50,7 +50,7 @@ ShallowWrapper {
           </React.Fragment>,
           false,
           <div
-            className="page_skjemautfyller__component"
+            className="page_skjemautfyller__component page_skjemautfyller__component_group"
           />,
           undefined,
           <div />,
@@ -108,7 +108,7 @@ ShallowWrapper {
           "nodeType": "host",
           "props": Object {
             "children": undefined,
-            "className": "page_skjemautfyller__component",
+            "className": "page_skjemautfyller__component page_skjemautfyller__component_group",
           },
           "ref": null,
           "rendered": null,
@@ -145,7 +145,7 @@ ShallowWrapper {
             </React.Fragment>,
             false,
             <div
-              className="page_skjemautfyller__component"
+              className="page_skjemautfyller__component page_skjemautfyller__component_group"
             />,
             undefined,
             <div />,
@@ -203,7 +203,7 @@ ShallowWrapper {
             "nodeType": "host",
             "props": Object {
               "children": undefined,
-              "className": "page_skjemautfyller__component",
+              "className": "page_skjemautfyller__component page_skjemautfyller__component_group",
             },
             "ref": null,
             "rendered": null,
@@ -315,7 +315,7 @@ ShallowWrapper {
           </React.Fragment>,
           false,
           <div
-            className="page_skjemautfyller__component"
+            className="page_skjemautfyller__component page_skjemautfyller__component_group"
           />,
           undefined,
           <div />,
@@ -373,7 +373,7 @@ ShallowWrapper {
           "nodeType": "host",
           "props": Object {
             "children": undefined,
-            "className": "page_skjemautfyller__component",
+            "className": "page_skjemautfyller__component page_skjemautfyller__component_group",
           },
           "ref": null,
           "rendered": null,

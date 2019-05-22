@@ -54,7 +54,7 @@ class Text extends React.Component<Props & ValidationProps, {}> {
       return <TextView item={item} value={getPDFStringValue(answer)} children={this.props.children} />;
     }
     return (
-      <div className="page_skjemautfyller__component">
+      <div className="page_skjemautfyller__component page_skjemautfyller__component_text">
         <Validation {...other}>
           <SafeTextarea
             id={getId(this.props.id)}

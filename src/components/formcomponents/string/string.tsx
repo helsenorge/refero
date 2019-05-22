@@ -58,7 +58,7 @@ class String extends React.Component<Props & ValidationProps, {}> {
     }
 
     return (
-      <div className="page_skjemautfyller__component">
+      <div className="page_skjemautfyller__component page_skjemautfyller__component_string">
         <Validation {...this.props}>
           <SafeInputField
             type="text"

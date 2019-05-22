@@ -66,7 +66,7 @@ class DropdownView extends React.Component<Props, {}> {
     }
 
     return (
-      <div className="page_skjemautfyller__component">
+      <div className="page_skjemautfyller__component page_skjemautfyller__component_openchoice page_skjemautfyller__component_openchoice_dropdown">
         <Collapse isOpened hasNestedCollapse={true}>
           <Validation {...other}>
             <SafeSelect
@@ -93,7 +93,11 @@ class DropdownView extends React.Component<Props, {}> {
               isHelpVisible={helpElementIsVisible}
             />
           </Validation>
-          {shouldShowExtraChoice(answer) ? <div className="page_skjemautfyller__component">{renderOpenField()}</div> : <React.Fragment />}
+          {shouldShowExtraChoice(answer) ? (
+            <div className="page_skjemautfyller__component_openchoice_openfield">{renderOpenField()}</div>
+          ) : (
+            <React.Fragment />
+          )}
           {!oneToTwoColumn ? renderDeleteButton('page_skjemautfyller__deletebutton--margin-left') : null}
           {oneToTwoColumn ? (
             <div>

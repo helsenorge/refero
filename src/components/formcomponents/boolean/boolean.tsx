@@ -80,7 +80,7 @@ class Boolean extends React.Component<Props & ValidationProps, {}> {
     }
     return (
       // Dette er en hack for FHI-skjema. TODO: fjern hack
-      <div className="page_skjemautfyller__component">
+      <div className="page_skjemautfyller__component page_skjemautfyller__component_boolean">
         <Validation {...this.props}>
           <CheckBox
             label={
