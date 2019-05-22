@@ -50,7 +50,7 @@ const CheckboxView: React.SFC<Props> = ({
     return { label: el.label, id: el.type, checked: isSelected(el, selected) };
   });
   return (
-    <div className="page_skjemautfyller__component">
+    <div className="page_skjemautfyller__component page_skjemautfyller__component_openchoice page_skjemautfyller__component_openchoice_checkbox">
       <Collapse isOpened hasNestedCollapse={true}>
         <Validation {...other}>
           <CheckBoxGroup
@@ -73,7 +73,11 @@ const CheckboxView: React.SFC<Props> = ({
             isHelpVisible={helpElementIsVisible}
           />
         </Validation>
-        {shouldShowExtraChoice(answer) ? <div className="page_skjemautfyller__component">{renderOpenField()}</div> : <React.Fragment />}
+        {shouldShowExtraChoice(answer) ? (
+          <div className="page_skjemautfyller__component_openchoice_openfield">{renderOpenField()}</div>
+        ) : (
+          <React.Fragment />
+        )}
         {renderDeleteButton('page_skjemautfyller__deletebutton--margin-top')}
         {repeatButton}
         {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}

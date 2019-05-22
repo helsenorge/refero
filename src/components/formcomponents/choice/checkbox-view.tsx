@@ -46,7 +46,7 @@ const CheckboxView: React.SFC<Props> = ({
     return { label: el.label, id: el.type, checked: isSelected(el, selected) };
   });
   return (
-    <div className="page_skjemautfyller__component">
+    <div className="page_skjemautfyller__component page_skjemautfyller__component_choice page_skjemautfyller__component_choice_checkbox">
       <Collapse isOpened hasNestedCollapse={true}>
         <Validation {...other}>
           <CheckBoxGroup

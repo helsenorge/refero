@@ -41,7 +41,7 @@ export class Group extends React.Component<Props, State> {
       <section id={getId(this.props.id)}>
         {this.renderGroupHeader()}
         {this.props.helpElementIsVisible && this.props.renderHelpElement()}
-        <div className="page_skjemautfyller__component">{this.props.renderChildrenItems()}</div>
+        <div className="page_skjemautfyller__component page_skjemautfyller__component_group">{this.props.renderChildrenItems()}</div>
         {this.props.renderDeleteButton('page_skjemautfyller__deletebutton--margin-top')}
         {this.props.repeatButton}
       </section>

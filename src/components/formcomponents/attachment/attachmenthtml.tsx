@@ -48,7 +48,7 @@ const attachmentHtml: React.SFC<Props & ValidationProps> = ({
   ...other
 }) => {
   return (
-    <div className="page_skjemautfyller__component">
+    <div className="page_skjemautfyller__component page_skjemautfyller__component_attachment">
       <Validation {...other}>
         <Dropzone
           id={id}

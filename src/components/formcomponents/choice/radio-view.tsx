@@ -44,7 +44,7 @@ const RadioView: React.SFC<Props> = ({
     return null;
   }
   return (
-    <div className="page_skjemautfyller__component">
+    <div className="page_skjemautfyller__component page_skjemautfyller__component_choice page_skjemautfyller__component_choice_radiobutton">
       <Collapse isOpened hasNestedCollapse={true}>
         <Validation {...other}>
           <RadioGroup
