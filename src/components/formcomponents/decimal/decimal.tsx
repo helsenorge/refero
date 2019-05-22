@@ -42,7 +42,6 @@ export interface Props {
 
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
-  helpElementIsVisible: boolean;
 }
 
 class Decimal extends React.Component<Props & ValidationProps, {}> {
@@ -148,7 +147,6 @@ class Decimal extends React.Component<Props & ValidationProps, {}> {
             className="page_skjemautfyller__input"
             helpButton={this.props.renderHelpButton()}
             helpElement={this.props.renderHelpElement()}
-            isHelpVisible={this.props.helpElementIsVisible}
           >
             {!this.props.oneToTwoColumn ? this.props.renderDeleteButton() : null}
           </SafeInputField>

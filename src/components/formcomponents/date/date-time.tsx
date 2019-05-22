@@ -19,7 +19,6 @@ import { getValidationTextExtension, getExtension } from '../../../util/extensio
 import { QuestionnaireItem, QuestionnaireResponseAnswer } from '../../../types/fhir';
 import { Resources } from '../../../util/resources';
 import TextView from '../textview';
-import { GlobalState } from '../../../reducers';
 
 export interface Props {
   item: QuestionnaireItem;
@@ -36,7 +35,6 @@ export interface Props {
 
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
-  helpElementIsVisible: boolean;
 }
 
 class DateTime extends React.Component<Props & ValidationProps> {
@@ -152,7 +150,6 @@ class DateTime extends React.Component<Props & ValidationProps> {
             timeClassName="page_skjemautfyller__input"
             helpButton={this.props.renderHelpButton()}
             helpElement={this.props.renderHelpElement()}
-            isHelpVisible={this.props.helpElementIsVisible}
           >
             {!this.props.oneToTwoColumn ? this.props.renderDeleteButton('page_skjemautfyller__deletebutton--datetime') : null}
           </DateTimeInput>

@@ -7,7 +7,6 @@ ShallowWrapper {
     Symbol(enzyme.__unrendered__): <Group
       answer={Object {}}
       headerTag={3}
-      helpElementIsVisible={false}
       id="item_2"
       item={
         Object {
@@ -48,7 +47,7 @@ ShallowWrapper {
             </CustomTag>
             <React.Fragment />
           </React.Fragment>,
-          false,
+          <React.Fragment />,
           <div
             className="page_skjemautfyller__component page_skjemautfyller__component_group"
           />,
@@ -101,7 +100,15 @@ ShallowWrapper {
           ],
           "type": Symbol(react.fragment),
         },
-        false,
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "function",
+          "props": Object {},
+          "ref": null,
+          "rendered": null,
+          "type": Symbol(react.fragment),
+        },
         Object {
           "instance": null,
           "key": undefined,
@@ -143,7 +150,7 @@ ShallowWrapper {
               </CustomTag>
               <React.Fragment />
             </React.Fragment>,
-            false,
+            <React.Fragment />,
             <div
               className="page_skjemautfyller__component page_skjemautfyller__component_group"
             />,
@@ -196,7 +203,15 @@ ShallowWrapper {
             ],
             "type": Symbol(react.fragment),
           },
-          false,
+          Object {
+            "instance": null,
+            "key": undefined,
+            "nodeType": "function",
+            "props": Object {},
+            "ref": null,
+            "rendered": null,
+            "type": Symbol(react.fragment),
+          },
           Object {
             "instance": null,
             "key": undefined,
@@ -313,7 +328,7 @@ ShallowWrapper {
             </CustomTag>
             <React.Fragment />
           </React.Fragment>,
-          false,
+          <React.Fragment />,
           <div
             className="page_skjemautfyller__component page_skjemautfyller__component_group"
           />,
@@ -366,7 +381,15 @@ ShallowWrapper {
           ],
           "type": Symbol(react.fragment),
         },
-        false,
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "function",
+          "props": Object {},
+          "ref": null,
+          "rendered": null,
+          "type": Symbol(react.fragment),
+        },
         Object {
           "instance": null,
           "key": undefined,

@@ -31,7 +31,6 @@ export interface Props {
 
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
-  helpElementIsVisible: boolean;
 }
 
 class String extends React.Component<Props & ValidationProps, {}> {
@@ -78,7 +77,6 @@ class String extends React.Component<Props & ValidationProps, {}> {
             allowInputOverMaxLength
             helpButton={this.props.renderHelpButton()}
             helpElement={this.props.renderHelpElement()}
-            isHelpVisible={this.props.helpElementIsVisible}
           >
             {!this.props.oneToTwoColumn ? this.props.renderDeleteButton() : null}
           </SafeInputField>

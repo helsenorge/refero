@@ -21,7 +21,6 @@ interface Props {
 
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
-  helpElementIsVisible: boolean;
 }
 
 const RadioView: React.SFC<Props> = ({
@@ -37,7 +36,6 @@ const RadioView: React.SFC<Props> = ({
   renderDeleteButton,
   renderHelpButton,
   renderHelpElement,
-  helpElementIsVisible,
   ...other
 }) => {
   if (!options) {
@@ -64,7 +62,6 @@ const RadioView: React.SFC<Props> = ({
             getErrorMessage={getErrorMessage}
             helpButton={renderHelpButton()}
             helpElement={renderHelpElement()}
-            isHelpVisible={helpElementIsVisible}
           />
         </Validation>
         {renderDeleteButton('page_skjemautfyller__deletebutton--margin-top')}

@@ -38,7 +38,6 @@ export interface Props {
 
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
-  helpElementIsVisible: boolean;
 }
 
 class DateComponent extends React.Component<Props & ValidationProps> {
@@ -190,7 +189,6 @@ class DateComponent extends React.Component<Props & ValidationProps> {
             validationErrorRenderer={this.props.validationErrorRenderer}
             helpButton={this.props.renderHelpButton()}
             helpElement={this.props.renderHelpElement()}
-            isHelpVisible={this.props.helpElementIsVisible}
           >
             {this.props.renderDeleteButton()}
           </DatePicker>

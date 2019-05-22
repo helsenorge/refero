@@ -24,7 +24,6 @@ interface Props {
 
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
-  helpElementIsVisible: boolean;
 }
 
 class DropdownView extends React.Component<Props, {}> {
@@ -43,7 +42,6 @@ class DropdownView extends React.Component<Props, {}> {
       oneToTwoColumn,
       renderHelpButton,
       renderHelpElement,
-      helpElementIsVisible,
       ...other
     } = this.props;
     if (!options) {
@@ -85,7 +83,6 @@ class DropdownView extends React.Component<Props, {}> {
               className="page_skjemautfyller__input"
               helpButton={renderHelpButton()}
               helpElement={renderHelpElement()}
-              isHelpVisible={helpElementIsVisible}
             >
               {!oneToTwoColumn ? renderDeleteButton('page_skjemautfyller__deletebutton--margin-left') : null}
             </SafeSelect>

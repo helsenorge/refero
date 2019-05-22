@@ -28,7 +28,6 @@ export interface Props {
 
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
-  helpElementIsVisible: boolean;
 }
 
 class Boolean extends React.Component<Props & ValidationProps, {}> {
@@ -99,7 +98,6 @@ class Boolean extends React.Component<Props & ValidationProps, {}> {
             className="page_skjemautfyller__input"
             helpButton={this.props.renderHelpButton()}
             helpElement={this.props.renderHelpElement()}
-            isHelpVisible={this.props.helpElementIsVisible}
           />
         </Validation>
         {this.props.oneToTwoColumn ? (

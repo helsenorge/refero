@@ -24,7 +24,6 @@ interface Props {
 
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
-  helpElementIsVisible: boolean;
 }
 
 const RadioView: React.SFC<Props> = ({
@@ -42,7 +41,6 @@ const RadioView: React.SFC<Props> = ({
   answer,
   renderHelpButton,
   renderHelpElement,
-  helpElementIsVisible,
   ...other
 }) => {
   if (!options) {
@@ -69,7 +67,6 @@ const RadioView: React.SFC<Props> = ({
             getErrorMessage={getErrorMessage}
             helpButton={renderHelpButton()}
             helpElement={renderHelpElement()}
-            isHelpVisible={helpElementIsVisible}
           />
         </Validation>
         {shouldShowExtraChoice(answer) ? (

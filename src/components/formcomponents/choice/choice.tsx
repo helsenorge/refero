@@ -42,7 +42,6 @@ export interface ChoiceProps {
 
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
-  helpElementIsVisible: boolean;
 }
 
 interface ChoiceState {
