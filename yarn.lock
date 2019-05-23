@@ -25,10 +25,10 @@
   dependencies:
     regenerator-runtime "^0.12.0"
 
-"@helsenorge/toolkit@4.1.1":
-  version "4.1.1"
-  resolved "https://tfs.ehelse.no/Ehelse/_packaging/Helsenorge/npm/registry/@helsenorge/toolkit/-/toolkit-4.1.1.tgz#8a01654e4c496adf9a2a742d6aaa39f76001375c"
-  integrity sha1-igFlTkxJat+aKnQtaqo592ABN1w=
+"@helsenorge/toolkit@4.3.0-skjemahelp-beta01":
+  version "4.3.0-skjemahelp-beta01"
+  resolved "https://tfs.ehelse.no/Ehelse/_packaging/Helsenorge/npm/registry/@helsenorge/toolkit/-/toolkit-4.3.0-skjemahelp-beta01.tgz#4fd1b17d58a763deb5c2f145fd15767686c3a91f"
+  integrity sha1-T9GxfVinY961wvFF/RV2dobDqR8=
   dependencies:
     ical.js "^1.2.2"
     jquery "^3.1.1"
