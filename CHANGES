@@ -1,3 +1,37 @@
+2.3.0
+-----
+* Added support for helpitems.
+
+  Help for an item can be defined using another item that is a direct
+  descendant of the item in question. This helpitem must be of type "text" and
+  implement the itemControl-extension with a code value of "help". Eg.
+
+  {
+    linkId: "1",
+    text: "This is a question",
+    type: "group",
+    item: [
+      {
+        extension: [
+          {
+            url: "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              valueCodeableConcept: {
+                coding: [
+                  {
+                    system: "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    code: "help"
+                  }
+                ]
+              }
+          }
+        ],
+        linkId: "1.0.1",
+        text: "This is the help text for the item with linkId 1",
+        type: "text"
+      }
+    ]
+  }
+
 2.2.2
 -----
 * Added component specific css classes for all components.

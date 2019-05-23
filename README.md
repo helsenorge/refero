@@ -27,6 +27,7 @@ class App extends Component<{}, {}> {
         <SkjemautfyllerContainer
           store={store}
           questionnaire={...}
+          questionnaireResponse={...}
           resources={...}
           onCancel={...}
           onSave={...}
@@ -38,6 +39,10 @@ class App extends Component<{}, {}> {
           uploadAttachment={...}
           loginButton={...}
           authorized
+          sticky
+          pdf
+          onRequestHelpButton={...}
+          onRequestHelpElement={...}
         />
       </Provider>
     );
@@ -62,6 +67,9 @@ class App extends Component<{}, {}> {
 | loginButton             | true     | JSX.Element           |         | JSX for when the form needs to render a login button                 |
 | authorized              | true     | boolean               |         | Whether or not the user is authorized/authenticated                  |
 | pdf                     |          | boolean               | false   | Renders the form without interactive elements                        |
+| sticky                  |          | boolean               | false   | Whether the actionbar (bar with buttons send/save) should be sticky  |
+| onRequestHelpButton     |          | callback              | null    | Callback when the form needs to render a help button                 |
+| onRequestHelpElement    |          | callback              | null    | Callback when the form needs to render a help element (help text)    |
 
 ### `questionnaire: Questionnaire`
 
@@ -86,6 +94,10 @@ submit and save buttons, and while the user is allowed to fill out the form, at 
 
 When this property is `true`, the form is rendered in a read-only manner suitable for printing, when `false`, the form is rendered as usual.
 
+### `sticky: boolean`
+
+When this property is `true`, the form renders the actionbar as sticky.
+
 ## Callback API
 
 ### `onSubmit: () => void`
@@ -100,22 +112,22 @@ This callback is called when the user requests the current form to be saved.
 
 This callback is called when the user requests the current form to be cancled.
 
-### `uploadAttachment: (files: File[], onSuccess: (uploadedFile: UploadedFile, attachment: Attachment) => void, onError: (errorMessage: ErrorMessage|null)) => void`
+### `uploadAttachment: (files: File[], onSuccess: (uploadedFile: UploadedFile, attachment: Attachment) => void, onError: (errorMessage: TextMessage|null)) => void`
 
 This callback is called when the user requests uploading an attachment. The callback is called with the following arguments:
 
 - `files: File[]` An array of [`File`](https://developer.mozilla.org/en-US/docs/Web/API/File) objects to be be uploaded.
 
 - `onSuccess: (uploadedFile: UploadedFile, attachment: Attachment) => void` Call this callback to indicate success
-- `onError: (TextMessage: TextMessage|null) => void` Call this callback to indicate error.
+- `onError: (errormessage: TextMessage|null) => void` Call this callback to indicate error.
 
-### `onDeleteAttachment: (fileId: string, onSuccess: () => void, onError: (errorMessage: ErrorMessage|null)) => void`
+### `onDeleteAttachment: (fileId: string, onSuccess: () => void, onError: (errorMessage: TextMessage|null)) => void`
 
 This callback is called when the user requests deleting an attachment. The callback is called with the following arguments:
 
 - `fileId: string` This indicates which file the user is requesting to delete
 - `onSuccess: () => void` Call this callback to indicate success.
-- `onError: (TextMessage: TextMessage|null) => void` Call this callback to indicate error.
+- `onError: (errormessage: TextMessage|null) => void` Call this callback to indicate error.
 
 ### `onOpenAttachment: (fileId: string) => void`
 
@@ -134,6 +146,25 @@ callback is called with the following arguments:
 
 This callback is called when the form needs to notify the user about authentication. The callback could f.ex. show an alertbox to that
 effect.
+
+### `onRequestHelpButton: (item: QuestionniareItem, itemHelp: QuestionnaireItem, opening: boolean) => JSX.Element`
+
+This callback is called when the form encounters an element with help. The callback should return a JSX.Element which is placed after the
+items label. If this is not specified, a default implementation is provided. The callback is called with the following arguments:
+
+- `item: QuestionnaireItem` This is the item for which the help button is about to be rendered.
+- `helpItem: QuestionnaireItem` This is the item containing the raw help text.
+- `opening: boolean` This boolean indicates whether the help text is visible or not (open or closed)
+
+### `onRequestHelpElement: (item: QuestionnaireItem, itemHelp: QuestionniareItem, help: string, opening: boolean) => JSX.Element`
+
+This callback is called when the form encounters an element with help. The callback could return a JSX.Element which would be placed after
+the items label. If this is not specified, a default implementation is provided. The callback is called with the following arguments:
+
+- `item: QuestionnaireItem` This is the item for which the help element is about to be rendered.
+- `helpItem: QuestionnaireItem` This is the item containing the raw help text.
+- `help: string` The help text, either as plain text or html (in the case the help item had markdown)
+- `opening: boolean` This boolean indicates whether the help text is visible or not (open or closed)
 
 # Interface definitions
 
