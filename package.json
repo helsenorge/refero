@@ -57,7 +57,7 @@
     "whatwg-fetch": "2.0.4"
   },
   "dependencies": {
-    "@helsenorge/toolkit": "4.1.1",
+    "@helsenorge/toolkit": "4.3.0-skjemahelp-beta01",
     "marked": "^0.3.17",
     "moment": "2.23.0",
     "uuid": "2.0.3",
