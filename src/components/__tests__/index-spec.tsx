@@ -7,6 +7,7 @@ import { SkjemautfyllerContainer } from '../index';
 import { Resources } from '../../util/resources';
 import { Questionnaire, QuestionnaireItem, uri, Coding, Extension } from '../../types/fhir';
 import HelpButton from '../help-button/help-button';
+import itemControlConstants from '../../constants/itemcontrol';
 
 describe('Component renders help items', () => {
   beforeEach(() => {
@@ -18,18 +19,21 @@ describe('Component renders help items', () => {
   it('help button should be visible and control the help element', () => {
     let expectedOpeningStatus: boolean = false;
 
-    let helpButtonCb = (item: QuestionnaireItem, helpItem: QuestionnaireItem, opening: boolean) => {
+    let helpButtonCb = (item: QuestionnaireItem, helpItem: QuestionnaireItem, helpType: string, helpText: string, opening: boolean) => {
       expect(item.linkId).toBe('1');
       expect(helpItem.linkId).toBe('1.1');
+      expect(helpText).toBe('help text');
+      expect(helpType).toBe(itemControlConstants.HELP);
       expect(opening).toBe(expectedOpeningStatus);
 
       return <div className="helpButton">help button</div>;
     };
 
-    let helpElementCb = (item: QuestionnaireItem, helpItem: QuestionnaireItem, help: string, opening: boolean) => {
+    let helpElementCb = (item: QuestionnaireItem, helpItem: QuestionnaireItem, helpType: string, helpText: string, opening: boolean) => {
       expect(item.linkId).toBe('1');
       expect(helpItem.linkId).toBe('1.1');
-      expect(help).toBe('help text');
+      expect(helpText).toBe('help text');
+      expect(helpType).toBe(itemControlConstants.HELP);
       expect(opening).toBe(expectedOpeningStatus);
 
       return opening ? <div className="helpElement">help element</div> : <React.Fragment />;
@@ -55,8 +59,8 @@ describe('Component renders help items', () => {
 });
 
 function createWrapper(
-  helpButtonCb: (item: QuestionnaireItem, helpItem: QuestionnaireItem, opening: boolean) => JSX.Element,
-  helpElementCb: (item: QuestionnaireItem, helpItem: QuestionnaireItem, help: string, opening: boolean) => JSX.Element
+  helpButtonCb: (item: QuestionnaireItem, helpItem: QuestionnaireItem, helpType: string, help: string, opening: boolean) => JSX.Element,
+  helpElementCb: (item: QuestionnaireItem, helpItem: QuestionnaireItem, helpType: string, help: string, opening: boolean) => JSX.Element
 ) {
   let store: Store<{}> = createStore(rootReducer);
   return mount(

@@ -17,10 +17,11 @@ import RepeatButton from './formcomponents/repeat/repeat-button';
 import DeleteButton from './formcomponents/repeat/delete-button';
 import { UploadedFile } from '@helsenorge/toolkit/components/atoms/dropzone';
 import { TextMessage } from '../types/text-message';
-import { findHelpItem, isHelpItem } from '../util/help';
+import { findHelpItem, isHelpItem, getHelpItemType } from '../util/help';
 import HelpButton from './help-button/help-button';
 import { HelpTrigger } from '@helsenorge/toolkit/components/icons';
 import { Collapse } from 'react-collapse';
+import itemControlConstants from '../constants/itemcontrol';
 
 export interface Props {
   resources?: Resources;
@@ -52,8 +53,20 @@ export interface Props {
     onSuccess: (uploadedFile: UploadedFile, attachment: Attachment) => void,
     onError: (errormessage: TextMessage | null) => void
   ) => void;
-  onRequestHelpButton?: (item: QuestionnaireItem, itemHelp: QuestionnaireItem, opening: boolean) => JSX.Element;
-  onRequestHelpElement?: (item: QuestionnaireItem, itemHelp: QuestionnaireItem, help: string, opening: boolean) => JSX.Element;
+  onRequestHelpButton?: (
+    item: QuestionnaireItem,
+    itemHelp: QuestionnaireItem,
+    helpType: string,
+    helpText: string,
+    opening: boolean
+  ) => JSX.Element;
+  onRequestHelpElement?: (
+    item: QuestionnaireItem,
+    itemHelp: QuestionnaireItem,
+    helpType: string,
+    helpText: string,
+    opening: boolean
+  ) => JSX.Element;
 }
 
 interface EnhancedProps {
@@ -131,10 +144,12 @@ export default function withCommonFunctions<T>(WrappedComponent: React.Component
       var helpItem = findHelpItem(qItem);
       if (!helpItem) return;
 
+      var helpItemType = getHelpItemType(helpItem) || itemControlConstants.HELP;
+
       if (onRequestHelpButton) {
         return (
           <HelpButton item={helpItem} callback={this.toggleHelp}>
-            {onRequestHelpButton(qItem, helpItem, this.state.isHelpVisible)}
+            {onRequestHelpButton(qItem, helpItem, helpItemType, getText(helpItem), this.state.isHelpVisible)}
           </HelpButton>
         );
       }
@@ -153,8 +168,10 @@ export default function withCommonFunctions<T>(WrappedComponent: React.Component
       var helpItem = findHelpItem(qItem);
       if (!helpItem) return;
 
+      var helpItemType = getHelpItemType(helpItem) || itemControlConstants.HELP;
+
       if (onRequestHelpElement) {
-        return onRequestHelpElement(qItem, helpItem, getText(helpItem), this.state.isHelpVisible);
+        return onRequestHelpElement(qItem, helpItem, helpItemType, getText(helpItem), this.state.isHelpVisible);
       }
 
       return (
