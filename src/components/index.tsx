@@ -69,8 +69,20 @@ interface Props {
   questionnaireResponse?: QuestionnaireResponse;
   language?: string;
   sticky?: boolean;
-  onRequestHelpButton?: (item: QuestionnaireItem, itemHelp: QuestionnaireItem, opening: boolean) => JSX.Element;
-  onRequestHelpElement?: (item: QuestionnaireItem, itemHelp: QuestionnaireItem, help: string, opening: boolean) => JSX.Element;
+  onRequestHelpButton?: (
+    item: QuestionnaireItem,
+    itemHelp: QuestionnaireItem,
+    helpType: string,
+    helpText: string,
+    opening: boolean
+  ) => JSX.Element;
+  onRequestHelpElement?: (
+    item: QuestionnaireItem,
+    itemHelp: QuestionnaireItem,
+    helpType: string,
+    helpText: string,
+    opening: boolean
+  ) => JSX.Element;
 }
 
 interface State {

@@ -3,4 +3,5 @@ export default {
   DROPDOWN: 'drop-down',
   RADIOBUTTON: 'radio-button',
   HELP: 'help',
+  HELPLINK: 'help-link',
 };
