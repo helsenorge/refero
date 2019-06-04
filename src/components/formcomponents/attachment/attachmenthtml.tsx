@@ -1,9 +1,9 @@
 import * as React from 'react';
 import constants, { VALID_FILE_TYPES } from '../../../constants';
 import { Resources } from '../../../util/resources';
-import Dropzone, { MimeTypes } from '@helsenorge/toolkit/components/atoms/dropzone';
+import Dropzone from '@helsenorge/toolkit/components/atoms/dropzone';
 import Validation, { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
-import { typeIsValid, sizeIsValid } from '@helsenorge/toolkit/components/atoms/dropzone/validation';
+import { sizeIsValid, mimeTypeIsValid } from '@helsenorge/toolkit/components/atoms/dropzone/validation';
 import { UploadedFile } from '@helsenorge/toolkit/components/atoms/dropzone';
 import { TextMessage } from '../../../types/text-message';
 
@@ -23,7 +23,7 @@ interface Props {
   onRequestAttachmentLink?: (file: string) => string;
   repeatButton: JSX.Element;
   attachmentMaxFileSize?: number;
-  attachmentValidTypes?: Array<MimeTypes>;
+  attachmentValidTypes?: Array<string>;
 
   helpButton?: JSX.Element;
   helpElement?: JSX.Element;
@@ -64,7 +64,7 @@ const attachmentHtml: React.SFC<Props & ValidationProps> = ({
           uploadButtonText={uploadButtonText}
           uploadedFile={uploadedFile}
           maxFileSize={maxFilesize}
-          validFileTypes={validFileTypes}
+          validMimeTypes={validFileTypes}
           supportedFileFormatsText={resources ? resources.supportedFileFormats : undefined}
           errorMessage={file => {
             return getErrorMessage(validFileTypes, maxFilesize, errorText, file, resources);
@@ -83,14 +83,14 @@ const attachmentHtml: React.SFC<Props & ValidationProps> = ({
 };
 
 function getErrorMessage(
-  validFileTypes: Array<MimeTypes>,
+  validFileTypes: Array<string>,
   maxFileSize: number,
   genericErrorText?: string,
   file?: File,
   resources?: Resources
 ) {
   if (file && resources) {
-    if (!typeIsValid(file, validFileTypes)) {
+    if (!mimeTypeIsValid(file, validFileTypes)) {
       return resources.validationFileType;
     } else if (!sizeIsValid(file, maxFileSize)) {
       return resources.validationFileMax;
