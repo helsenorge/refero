@@ -1,6 +1,6 @@
 {
   "name": "@helsenorge/skjemautfyller",
-  "version": "2.4.0",
+  "version": "2.4.0-beta01",
   "main": "index.js",
   "author": "helsenorge",
   "license": "UNLICENSED",
@@ -57,7 +57,7 @@
     "whatwg-fetch": "2.0.4"
   },
   "dependencies": {
-    "@helsenorge/toolkit": "4.3.0",
+    "@helsenorge/toolkit": "4.3.2-att-validation-beta01",
     "marked": "^0.3.17",
     "moment": "2.23.0",
     "uuid": "2.0.3",
