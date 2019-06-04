@@ -43,6 +43,8 @@ class App extends Component<{}, {}> {
           pdf
           onRequestHelpButton={...}
           onRequestHelpElement={...}
+          attachmentMaxFileSize={...}
+          attachmentValidTypes={...}
         />
       </Provider>
     );
@@ -50,26 +52,28 @@ class App extends Component<{}, {}> {
 
 ## Props
 
-| Name                    | Required | Type                  | Default | Description                                                          |
-| ----------------------- | -------- | --------------------- | ------- | -------------------------------------------------------------------- |
-| store                   |          | Store<{}>             | null    | Redux store                                                          |
-| questionnaire           |          | Questionnaire         | null    | FHIR Questionnaire object                                            |
-| questionnaireResponse   |          | QuestionnaireResponse | null    | FHIR QuestionnaireResponse object                                    |
-| resources               |          | Resources             | null    | Resources object                                                     |
-| onSubmit                | true     | callback              |         | Callback when user submits the form                                  |
-| onSave                  | true     | callback              |         | Callback when user saves the form                                    |
-| onCancel                | true     | callback              |         | Callback when user cancels the form                                  |
-| uploadAttachment        |          | callback              | null    | Callback when user uploads attachment                                |
-| onDeleteAttachment      |          | callback              | null    | Callback when user deletes attachment                                |
-| onOpenAttachment        |          | callback              | null    | Callback when user opens attachment                                  |
-| onRequestAttachmentLink |          | callback              | null    | Callback when the form needs to render a link to an attachment       |
-| promptLoginMessage      |          | callback              | null    | Callback when the form needs to notify the user about authentication |
-| loginButton             | true     | JSX.Element           |         | JSX for when the form needs to render a login button                 |
-| authorized              | true     | boolean               |         | Whether or not the user is authorized/authenticated                  |
-| pdf                     |          | boolean               | false   | Renders the form without interactive elements                        |
-| sticky                  |          | boolean               | false   | Whether the actionbar (bar with buttons send/save) should be sticky  |
-| onRequestHelpButton     |          | callback              | null    | Callback when the form needs to render a help button                 |
-| onRequestHelpElement    |          | callback              | null    | Callback when the form needs to render a help element (help text)    |
+| Name                    | Required | Type                  | Default | Description                                                                                                   |
+| ----------------------- | -------- | --------------------- | ------- | ------------------------------------------------------------------------------------------------------------- |
+| store                   |          | Store<{}>             | null    | Redux store                                                                                                   |
+| questionnaire           |          | Questionnaire         | null    | FHIR Questionnaire object                                                                                     |
+| questionnaireResponse   |          | QuestionnaireResponse | null    | FHIR QuestionnaireResponse object                                                                             |
+| resources               |          | Resources             | null    | Resources object                                                                                              |
+| onSubmit                | true     | callback              |         | Callback when user submits the form                                                                           |
+| onSave                  | true     | callback              |         | Callback when user saves the form                                                                             |
+| onCancel                | true     | callback              |         | Callback when user cancels the form                                                                           |
+| uploadAttachment        |          | callback              | null    | Callback when user uploads attachment                                                                         |
+| onDeleteAttachment      |          | callback              | null    | Callback when user deletes attachment                                                                         |
+| onOpenAttachment        |          | callback              | null    | Callback when user opens attachment                                                                           |
+| onRequestAttachmentLink |          | callback              | null    | Callback when the form needs to render a link to an attachment                                                |
+| attachmentMaxFileSize   |          | number                | 25M     | Max allowed file size for attachments in bytes. Default is 25M                                                |
+| attachmentValidTypes    |          | Array<MimeTypes>      | ...     | List of allowed mime types for attachments. Default allowed types are: image/jpeg, image/png, application/pdf |
+| promptLoginMessage      |          | callback              | null    | Callback when the form needs to notify the user about authentication                                          |
+| loginButton             | true     | JSX.Element           |         | JSX for when the form needs to render a login button                                                          |
+| authorized              | true     | boolean               |         | Whether or not the user is authorized/authenticated                                                           |
+| pdf                     |          | boolean               | false   | Renders the form without interactive elements                                                                 |
+| sticky                  |          | boolean               | false   | Whether the actionbar (bar with buttons send/save) should be sticky                                           |
+| onRequestHelpButton     |          | callback              | null    | Callback when the form needs to render a help button                                                          |
+| onRequestHelpElement    |          | callback              | null    | Callback when the form needs to render a help element (help text)                                             |
 
 ### `questionnaire: Questionnaire`
 
@@ -97,6 +101,14 @@ When this property is `true`, the form is rendered in a read-only manner suitabl
 ### `sticky: boolean`
 
 When this property is `true`, the form renders the actionbar as sticky.
+
+### `attachmentMaxFileSize: number`
+
+Max file size in bytes allowed for attachments. Default is 25M.
+
+### `attachmentValidTypes: Array<MimeTypes>`
+
+List of allowed mime types for attachments. Default allowed types are image/jpeg, image/png, application/pdf
 
 ## Callback API
 
@@ -195,6 +207,12 @@ interface UploadedFile {
   id?: string;
   name: string;
 }
+```
+
+## `MimeTypes`
+
+```ts
+type MimeTypes = 'image/jpeg' | 'image/jpg' | 'image/png' | 'application/pdf' | 'image/gif' | 'image/tiff' | 'image/bmp' | 'image/tif';
 ```
 
 ## `Resources`

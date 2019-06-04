@@ -22,6 +22,8 @@ interface Props {
   renderDeleteButton: (className?: string) => JSX.Element | undefined;
   onRequestAttachmentLink?: (file: string) => string;
   repeatButton: JSX.Element;
+  attachmentMaxFileSize?: number;
+  attachmentValidTypes?: Array<MimeTypes>;
 
   helpButton?: JSX.Element;
   helpElement?: JSX.Element;
@@ -43,8 +45,13 @@ const attachmentHtml: React.SFC<Props & ValidationProps> = ({
   onRequestAttachmentLink,
   helpButton,
   helpElement,
+  attachmentMaxFileSize,
+  attachmentValidTypes,
   ...other
 }) => {
+  const maxFilesize = attachmentMaxFileSize ? attachmentMaxFileSize : constants.MAX_FILE_SIZE;
+  const validFileTypes = attachmentValidTypes ? attachmentValidTypes : VALID_FILE_TYPES;
+
   return (
     <div className="page_skjemautfyller__component page_skjemautfyller__component_attachment">
       <Validation {...other}>
@@ -56,11 +63,11 @@ const attachmentHtml: React.SFC<Props & ValidationProps> = ({
           onOpenFile={onOpen}
           uploadButtonText={uploadButtonText}
           uploadedFile={uploadedFile}
-          maxFileSize={constants.MAX_FILE_SIZE}
-          validFileTypes={VALID_FILE_TYPES}
+          maxFileSize={maxFilesize}
+          validFileTypes={validFileTypes}
           supportedFileFormatsText={resources ? resources.supportedFileFormats : undefined}
           errorMessage={file => {
-            return getErrorMessage(VALID_FILE_TYPES, constants.MAX_FILE_SIZE, errorText, file, resources);
+            return getErrorMessage(validFileTypes, maxFilesize, errorText, file, resources);
           }}
           isRequired={isRequired}
           wrapperClasses="page_skjemautfyller__input"
