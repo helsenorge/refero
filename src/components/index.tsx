@@ -21,7 +21,7 @@ import RepeatButton from '../components/formcomponents/repeat/repeat-button';
 
 import { IE11HackToWorkAroundBug187484 } from '../util/hacks';
 import 'redux-thunk';
-import { UploadedFile } from '@helsenorge/toolkit/components/atoms/dropzone';
+import { UploadedFile, MimeTypes } from '@helsenorge/toolkit/components/atoms/dropzone';
 import { setSkjemaDefinition } from '../actions/form';
 import { TextMessage } from '../types/text-message';
 
@@ -56,6 +56,8 @@ interface Props {
   resources?: Resources;
   pdf?: boolean;
   promptLoginMessage?: () => void;
+  attachmentMaxFileSize?: number;
+  attachmentValidTypes?: Array<MimeTypes>;
   onRequestAttachmentLink?: (fileId: string) => string;
   onOpenAttachment?: (fileId: string) => void;
   onDeleteAttachment?: (fileId: string, onSuccess: () => void, onError: (errormessage: TextMessage | null) => void) => void;
@@ -180,6 +182,8 @@ class Skjemautfyller extends React.Component<StateProps & DispatchProps & Props,
               uploadAttachment={this.props.uploadAttachment}
               onRequestHelpButton={this.props.onRequestHelpButton}
               onRequestHelpElement={this.props.onRequestHelpElement}
+              attachmentMaxFileSize={this.props.attachmentMaxFileSize}
+              attachmentValidTypes={this.props.attachmentValidTypes}
             />
           );
         });

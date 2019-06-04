@@ -1,3 +1,8 @@
+2.4.0
+-----
+* Added public API to control what file types and file sizes are valid for
+  attachments.
+
 2.3.0
 -----
 * Added support for helpitems.

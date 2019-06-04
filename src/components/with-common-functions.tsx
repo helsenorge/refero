@@ -15,7 +15,7 @@ import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/v
 import { FormChild } from '@helsenorge/toolkit/components/molecules/form';
 import RepeatButton from './formcomponents/repeat/repeat-button';
 import DeleteButton from './formcomponents/repeat/delete-button';
-import { UploadedFile } from '@helsenorge/toolkit/components/atoms/dropzone';
+import { UploadedFile, MimeTypes } from '@helsenorge/toolkit/components/atoms/dropzone';
 import { TextMessage } from '../types/text-message';
 import { findHelpItem, isHelpItem, getHelpItemType } from '../util/help';
 import HelpButton from './help-button/help-button';
@@ -45,6 +45,8 @@ export interface Props {
   dispatch?: Dispatch<{}>;
   visibleDeleteButton?: boolean;
   repeatButton?: JSX.Element;
+  attachmentMaxFileSize?: number;
+  attachmentValidTypes?: Array<MimeTypes>;
   onRequestAttachmentLink?: (file: string) => string;
   onOpenAttachment?: (fileId: string) => void;
   onDeleteAttachment?: (fileId: string, onSuccess: () => void, onError: (errormessage: TextMessage | null) => void) => void;
@@ -245,6 +247,8 @@ export default function withCommonFunctions<T>(WrappedComponent: React.Component
               uploadAttachment={this.props.uploadAttachment}
               onRequestHelpButton={this.props.onRequestHelpButton}
               onRequestHelpElement={this.props.onRequestHelpElement}
+              attachmentMaxFileSize={this.props.attachmentMaxFileSize}
+              attachmentValidTypes={this.props.attachmentValidTypes}
             />
           );
         });

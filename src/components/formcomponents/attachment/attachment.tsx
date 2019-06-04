@@ -4,7 +4,7 @@ import { Dispatch } from 'redux';
 
 import withCommonFunctions from '../../with-common-functions';
 import AttachmentHtml from './attachmenthtml';
-import { UploadedFile } from '@helsenorge/toolkit/components/atoms/dropzone';
+import { UploadedFile, MimeTypes } from '@helsenorge/toolkit/components/atoms/dropzone';
 import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
 
 import { Path } from '../../../util/skjemautfyller-core';
@@ -27,6 +27,8 @@ export interface Props {
   resources?: Resources;
   renderDeleteButton: () => JSX.Element | undefined;
   repeatButton: JSX.Element;
+  attachmentMaxFileSize?: number;
+  attachmentValidTypes?: Array<MimeTypes>;
   uploadAttachment?: (
     files: File[],
     onSuccess: (uploadedFile: UploadedFile, attachment: Attachment) => void,
@@ -139,6 +141,8 @@ class AttachmentComponent extends React.Component<Props & ValidationProps> {
           onRequestAttachmentLink={this.props.onRequestAttachmentLink}
           helpButton={this.props.renderHelpButton()}
           helpElement={this.props.renderHelpElement()}
+          attachmentMaxFileSize={this.props.attachmentMaxFileSize}
+          attachmentValidTypes={this.props.attachmentValidTypes}
           {...other}
         />
       );
