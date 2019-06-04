@@ -66,7 +66,7 @@ class App extends Component<{}, {}> {
 | onOpenAttachment        |          | callback              | null    | Callback when user opens attachment                                                                           |
 | onRequestAttachmentLink |          | callback              | null    | Callback when the form needs to render a link to an attachment                                                |
 | attachmentMaxFileSize   |          | number                | 25M     | Max allowed file size for attachments in bytes. Default is 25M                                                |
-| attachmentValidTypes    |          | Array<MimeTypes>      | ...     | List of allowed mime types for attachments. Default allowed types are: image/jpeg, image/png, application/pdf |
+| attachmentValidTypes    |          | Array<string>         | ...     | List of allowed mime types for attachments. Default allowed types are: image/jpeg, image/png, application/pdf |
 | promptLoginMessage      |          | callback              | null    | Callback when the form needs to notify the user about authentication                                          |
 | loginButton             | true     | JSX.Element           |         | JSX for when the form needs to render a login button                                                          |
 | authorized              | true     | boolean               |         | Whether or not the user is authorized/authenticated                                                           |
@@ -106,7 +106,7 @@ When this property is `true`, the form renders the actionbar as sticky.
 
 Max file size in bytes allowed for attachments. Default is 25M.
 
-### `attachmentValidTypes: Array<MimeTypes>`
+### `attachmentValidTypes: Array<string>`
 
 List of allowed mime types for attachments. Default allowed types are image/jpeg, image/png, application/pdf
 
@@ -207,12 +207,6 @@ interface UploadedFile {
   id?: string;
   name: string;
 }
-```
-
-## `MimeTypes`
-
-```ts
-type MimeTypes = 'image/jpeg' | 'image/jpg' | 'image/png' | 'application/pdf' | 'image/gif' | 'image/tiff' | 'image/bmp' | 'image/tif';
 ```
 
 ## `Resources`
