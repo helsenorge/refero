@@ -87,6 +87,13 @@ export function isRequired(item: QuestionnaireItem) {
   return false;
 }
 
+export function isRepeat(item: QuestionnaireItem) {
+  if (item && item.repeats) {
+    return item.repeats;
+  }
+  return false;
+}
+
 export function getId(id?: string) {
   if (id) {
     return id;

@@ -6,6 +6,7 @@ import {
   NewValueAction,
   NEW_CODINGSTRING_VALUE,
   REMOVE_CODINGSTRING_VALUE,
+  REMOVE_ATTACHMENT_VALUE,
 } from '../actions/newValue';
 import { GlobalState } from '../reducers/index';
 import { isStringEmpty, removeLinkIdSuffix } from '../util/index';
@@ -67,6 +68,9 @@ export default function reducer(state: Form = initialState, action: NewValueActi
   switch (action.type) {
     case NEW_VALUE:
       return processNewValueAction(action, state);
+
+    case REMOVE_ATTACHMENT_VALUE:
+      return processRemoveAttachmentValueAction(action, state);
 
     case REMOVE_CODING_VALUE:
       return processRemoveCodingValueAction(action, state);
@@ -294,6 +298,21 @@ function processRemoveCodingStringValueAction(action: NewValueAction, state: For
   return newState;
 }
 
+function processRemoveAttachmentValueAction(action: NewValueAction, state: Form) {
+  let newstate: Form = copyObject(state) as Form;
+  let responseItem = getResponseItemWithPath(action.itemPath, newstate.FormData);
+  if (!responseItem || !responseItem.answer || !responseItem.answer.length) {
+    return newstate;
+  }
+
+  if (action.valueAttachment) {
+    var attachmentToRemove = action.valueAttachment.url;
+    responseItem.answer = responseItem.answer.filter(el => el && el.valueAttachment && el.valueAttachment.url !== attachmentToRemove);
+  }
+
+  return newstate;
+}
+
 function processNewValueAction(action: NewValueAction, state: Form): Form {
   let newState: Form = copyObject(state) as Form;
   let responseItem = getResponseItemWithPath(action.itemPath, newState.FormData);
@@ -369,7 +388,8 @@ function processNewValueAction(action: NewValueAction, state: Form): Form {
   }
   if (action.valueAttachment && Object.keys(action.valueAttachment).length > 0) {
     hasAnswer = true;
-    answer.valueAttachment = <Attachment>{
+
+    var attachment = <Attachment>{
       url: action.valueAttachment.url,
       title: action.valueAttachment.title,
       data: action.valueAttachment.data,
@@ -379,6 +399,18 @@ function processNewValueAction(action: NewValueAction, state: Form): Form {
       size: action.valueAttachment.size,
       language: action.valueAttachment.language,
     };
+
+    if (action.multipleAnswers) {
+      let newAnswer = {} as QuestionnaireResponseAnswer;
+      newAnswer.valueAttachment = attachment;
+      if (Object.keys(responseItem.answer[0]).length === 0) {
+        responseItem.answer[0] = newAnswer;
+      } else if (responseItem.answer.indexOf(newAnswer) < 0) {
+        responseItem.answer.push(newAnswer);
+      }
+    } else {
+      answer.valueAttachment = attachment;
+    }
   }
   if (action.valueQuantity) {
     hasAnswer = true;
@@ -582,7 +614,7 @@ export function nullAnswerValue(
 
 function getItemWithEnableWhen(linkId: string, definitionItems: QuestionnaireItem[]): QuestionnaireItem[] {
   let relatedItems: QuestionnaireItem[] = [];
-  var getQuestionnaireItemHasEnableWhenLinkid = function(linkId: string, definitionItem: QuestionnaireItem | undefined): void {
+  var getQuestionnaireItemHasEnableWhenLinkid = function (linkId: string, definitionItem: QuestionnaireItem | undefined): void {
     if (!definitionItem) {
       return undefined;
     }
