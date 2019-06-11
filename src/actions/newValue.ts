@@ -14,6 +14,8 @@ export const ADD_REPEAT_ITEM: ADD_REPEAT_ITEM = 'skjemautfyller/ADD_REPEAT_ITEM'
 export type DELETE_REPEAT_ITEM = 'skjemautfyller/DELETE_REPEAT_ITEM';
 export const DELETE_REPEAT_ITEM: DELETE_REPEAT_ITEM = 'skjemautfyller/DELETE_REPEAT_ITEM';
 export const PROCESS_SKJEMA = 'skjemautfyller/PROCESS_SKJEMA';
+export type REMOVE_ATTACHMENT_VALUE = 'skjemautfyller/REMOVE_ATTACHMENT_VALUE';
+export const REMOVE_ATTACHMENT_VALUE: REMOVE_ATTACHMENT_VALUE = 'skjemautfyller/REMOVE_ATTACHMENT_VALUE';
 
 export interface NewValueAction extends Action {
   itemPath?: Array<Path>;
@@ -33,9 +35,19 @@ export interface NewValueAction extends Action {
   multipleAnswers?: boolean;
 }
 
-export function newAttachment(itemPath: Array<Path>, value: Attachment, item: QuestionnaireItem | undefined): NewValueAction {
+export function newAttachment(itemPath: Array<Path>, value: Attachment, item: QuestionnaireItem | undefined, multipleAnswers?: boolean): NewValueAction {
   return {
     type: NEW_VALUE,
+    itemPath,
+    valueAttachment: value,
+    item: item,
+    multipleAnswers,
+  };
+}
+
+export function removeAttachment(itemPath: Array<Path>, value: Attachment, item: QuestionnaireItem | undefined) {
+  return {
+    type: REMOVE_ATTACHMENT_VALUE,
     itemPath,
     valueAttachment: value,
     item: item,

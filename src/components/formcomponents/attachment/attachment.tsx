@@ -9,19 +9,19 @@ import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/v
 
 import { Path } from '../../../util/skjemautfyller-core';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
-import { isRequired, getId, renderPrefix, getText, isReadOnly } from '../../../util/index';
-import { getValidationTextExtension } from '../../../util/extension';
+import { isRequired, getId, renderPrefix, getText, isReadOnly, isRepeat } from '../../../util/index';
+import { getValidationTextExtension, getMaxOccursExtensionValue, getMinOccursExtensionValue } from '../../../util/extension';
 import { QuestionnaireItem, QuestionnaireResponseAnswer, Attachment } from '../../../types/fhir';
 import { Resources } from '../../../util/resources';
 import TextView from '../textview';
-import { newAttachment } from '../../../actions/newValue';
+import { newAttachment, removeAttachment } from '../../../actions/newValue';
 import { TextMessage } from '../../../types/text-message';
 
 export interface Props {
   dispatch?: Dispatch<{}>;
   path: Array<Path>;
   item: QuestionnaireItem;
-  answer: QuestionnaireResponseAnswer;
+  answer: Array<QuestionnaireResponseAnswer> | QuestionnaireResponseAnswer;
   pdf?: boolean;
   id?: string;
   resources?: Resources;
@@ -44,38 +44,41 @@ class AttachmentComponent extends React.Component<Props & ValidationProps> {
   onUpload = (files: File[], cb: (success: boolean, errormessage: TextMessage | null, uploadedFile?: UploadedFile) => void) => {
     const { uploadAttachment } = this.props;
     if (uploadAttachment) {
-      const onSuccess = (uploadedFile: UploadedFile, attachment: Attachment) => {
-        if (this.props.dispatch && attachment) {
-          this.props.dispatch(newAttachment(this.props.path, attachment, this.props.item));
-        }
+      for (let file of files) {
+        const onSuccess = (uploadedFile: UploadedFile, attachment: Attachment) => {
+          if (this.props.dispatch && attachment) {
+            this.props.dispatch(newAttachment(this.props.path, attachment, this.props.item, isRepeat(this.props.item)));
+          }
 
-        cb(true, null, uploadedFile);
-      };
+          cb(true, null, uploadedFile);
+        };
 
-      const onError = (errorMessage: TextMessage | null) => {
-        cb(false, errorMessage);
-      };
+        const onError = (errorMessage: TextMessage | null) => {
+          cb(false, errorMessage);
+        };
 
-      uploadAttachment(files, onSuccess, onError);
+        uploadAttachment([file], onSuccess, onError);
+      }
     }
   };
 
-  onDelete = (cb: (success: boolean, errormessage: TextMessage | null) => void) => {
-    const { answer, onDeleteAttachment } = this.props;
+  onDelete = (fileId: string, cb: (success: boolean, errormessage: TextMessage | null) => void) => {
+    const { onDeleteAttachment } = this.props;
 
-    if (onDeleteAttachment && answer && answer.valueAttachment && answer.valueAttachment.url) {
+    if (onDeleteAttachment) {
       const onSuccess = () => {
         if (this.props.dispatch) {
-          this.props.dispatch(newAttachment(this.props.path, {} as Attachment, this.props.item));
+          this.props.dispatch(removeAttachment(this.props.path, { url: fileId } as Attachment, this.props.item));
         }
 
         cb(true, null);
       };
+
       const onError = (errormessage: TextMessage | null) => {
         cb(false, errormessage);
       };
 
-      onDeleteAttachment(answer.valueAttachment.url, onSuccess, onError);
+      onDeleteAttachment(fileId, onSuccess, onError);
     }
   };
 
@@ -88,27 +91,35 @@ class AttachmentComponent extends React.Component<Props & ValidationProps> {
     return buttonText;
   };
 
-  getAttachment = (): UploadedFile | undefined => {
+  getAttachment = (): UploadedFile[] => {
     const { answer } = this.props;
-    let attachment: UploadedFile | undefined;
-    if (answer && answer.valueAttachment && answer.valueAttachment.url) {
-      attachment = {
-        id: answer.valueAttachment.url,
-        name: answer.valueAttachment.title ? answer.valueAttachment.title : '',
-      };
+    if (Array.isArray(answer)) {
+      return answer.map(v => {
+        return {
+          id: v.valueAttachment && v.valueAttachment.url ? v.valueAttachment.url : -1,
+          name: v.valueAttachment && v.valueAttachment.title ? v.valueAttachment.title : ''
+        } as UploadedFile
+      })
+    } else {
+      if (answer && answer.valueAttachment && answer.valueAttachment.url) {
+        return [{
+          id: answer.valueAttachment.url,
+          name: answer.valueAttachment.title ? answer.valueAttachment.title : '',
+        } as UploadedFile];
+      }
     }
-    return attachment;
+    return [];
   };
 
   getPdfValue = () => {
-    let value = '';
-    const attachment = this.getAttachment();
-    if (attachment) {
-      value = attachment.name;
+    const attachments = this.getAttachment();
+    if (attachments) {
+      return attachments.map(v => v.name).join(", ");
     } else if (this.props.resources) {
-      value = this.props.resources.ikkeBesvart;
+      return this.props.resources.ikkeBesvart;
     }
-    return value;
+
+    return '';
   };
 
   render(): JSX.Element | null {
@@ -132,13 +143,15 @@ class AttachmentComponent extends React.Component<Props & ValidationProps> {
           uploadButtonText={this.getButtonText()}
           resources={resources}
           isRequired={isRequired(item)}
+          multiple={isRepeat(item)}
           errorText={getValidationTextExtension(item)}
-          uploadedFile={this.getAttachment()}
-          renderDeleteButton={this.props.renderDeleteButton}
-          repeatButton={this.props.repeatButton}
+          uploadedFiles={this.getAttachment()}
           onRequestAttachmentLink={this.props.onRequestAttachmentLink}
           helpButton={this.props.renderHelpButton()}
           helpElement={this.props.renderHelpElement()}
+          maxFiles={getMaxOccursExtensionValue(item)}
+          minFiles={getMinOccursExtensionValue(item)}
+          item={item}
           {...other}
         />
       );

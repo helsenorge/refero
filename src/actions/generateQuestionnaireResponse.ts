@@ -4,6 +4,7 @@ import { QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItem, Qu
 
 import Constants from '../constants/index';
 import { getMinOccursExtensionValue } from '../util/extension';
+import itemType from '../constants/itemType';
 
 export function generateQuestionnaireResponse(questionnaire: any): QuestionnaireResponse | undefined {
   const response: QuestionnaireResponse = {
@@ -73,6 +74,11 @@ function addChildrenItemsToResponseItem(item: QuestionnaireItem, response: Quest
 }
 
 function getMinOccurs(i: QuestionnaireItem) {
+  // Attachment handles "repeats" itself
+  if (i.type === itemType.ATTATCHMENT) {
+    return 1;
+  }
+
   const minoccurs = getMinOccursExtensionValue(i);
   if (minoccurs && i.repeats) {
     return minoccurs;

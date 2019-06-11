@@ -6,10 +6,12 @@ import Validation, { ValidationProps } from '@helsenorge/toolkit/components/mole
 import { typeIsValid, sizeIsValid } from '@helsenorge/toolkit/components/atoms/dropzone/validation';
 import { UploadedFile } from '@helsenorge/toolkit/components/atoms/dropzone';
 import { TextMessage } from '../../../types/text-message';
+import { QuestionnaireItem } from '../../../types/fhir';
+import { getValidationTextExtension } from '../../../util/extension';
 
 interface Props {
   onUpload: (files: Array<File>, cb: (success: boolean, errormessage: TextMessage | null, uploadedFile?: UploadedFile) => void) => void;
-  onDelete: (cb: (success: boolean, errormessage: TextMessage | null) => void) => void;
+  onDelete: (fileId: string, cb: (success: boolean, errormessage: TextMessage | null) => void) => void;
   onOpen?: (fileId: string) => void;
   uploadButtonText: string;
   label: string | JSX.Element;
@@ -17,11 +19,13 @@ interface Props {
   getComponentToValidate?: (el: Dropzone) => void;
   resources?: Resources;
   isRequired?: boolean;
+  multiple?: boolean;
   errorText?: string;
-  uploadedFile: UploadedFile | undefined;
-  renderDeleteButton: (className?: string) => JSX.Element | undefined;
+  uploadedFiles: UploadedFile[] | undefined;
   onRequestAttachmentLink?: (file: string) => string;
-  repeatButton: JSX.Element;
+  maxFiles?: number;
+  minFiles?: number;
+  item: QuestionnaireItem;
 
   helpButton?: JSX.Element;
   helpElement?: JSX.Element;
@@ -37,12 +41,14 @@ const attachmentHtml: React.SFC<Props & ValidationProps> = ({
   resources,
   isRequired,
   errorText,
-  uploadedFile,
-  renderDeleteButton,
-  repeatButton,
+  uploadedFiles,
   onRequestAttachmentLink,
   helpButton,
   helpElement,
+  multiple,
+  maxFiles,
+  minFiles,
+  item,
   ...other
 }) => {
   return (
@@ -55,22 +61,23 @@ const attachmentHtml: React.SFC<Props & ValidationProps> = ({
           onDelete={onDelete}
           onOpenFile={onOpen}
           uploadButtonText={uploadButtonText}
-          uploadedFile={uploadedFile}
+          uploadedFiles={uploadedFiles}
           maxFileSize={constants.MAX_FILE_SIZE}
           validFileTypes={VALID_FILE_TYPES}
           supportedFileFormatsText={resources ? resources.supportedFileFormats : undefined}
           errorMessage={file => {
-            return getErrorMessage(VALID_FILE_TYPES, constants.MAX_FILE_SIZE, errorText, file, resources);
+            return getErrorMessage(VALID_FILE_TYPES, constants.MAX_FILE_SIZE, item, errorText, file, resources);
           }}
           isRequired={isRequired}
           wrapperClasses="page_skjemautfyller__input"
           onRequestLink={onRequestAttachmentLink}
           helpButton={helpButton}
           helpElement={helpElement}
+          multiple={multiple}
+          maxFiles={maxFiles}
+          minFiles={minFiles}
         />
       </Validation>
-      {renderDeleteButton('page_skjemautfyller__deletebutton--margin-top')}
-      {repeatButton}
     </div>
   );
 };
@@ -78,9 +85,10 @@ const attachmentHtml: React.SFC<Props & ValidationProps> = ({
 function getErrorMessage(
   validFileTypes: Array<MimeTypes>,
   maxFileSize: number,
+  item: QuestionnaireItem,
   genericErrorText?: string,
   file?: File,
-  resources?: Resources
+  resources?: Resources,
 ) {
   if (file && resources) {
     if (!typeIsValid(file, validFileTypes)) {
@@ -89,6 +97,12 @@ function getErrorMessage(
       return resources.validationFileMax;
     }
   }
+
+  let validationText = getValidationTextExtension(item);
+  if (validationText) {
+    return validationText;
+  }
+
   if (genericErrorText) {
     return genericErrorText;
   }
