@@ -1,7 +1,7 @@
 import * as React from 'react';
 import constants, { VALID_FILE_TYPES } from '../../../constants';
 import { Resources } from '../../../util/resources';
-import Dropzone, { MimeTypes } from '@helsenorge/toolkit/components/atoms/dropzone';
+import MultiDropzone, { MimeTypes } from '@helsenorge/toolkit/components/atoms/multi-dropzone';
 import Validation, { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
 import { typeIsValid, sizeIsValid } from '@helsenorge/toolkit/components/atoms/dropzone/validation';
 import { UploadedFile } from '@helsenorge/toolkit/components/atoms/dropzone';
@@ -16,7 +16,7 @@ interface Props {
   uploadButtonText: string;
   label: string | JSX.Element;
   id: string;
-  getComponentToValidate?: (el: Dropzone) => void;
+  getComponentToValidate?: (el: MultiDropzone) => void;
   resources?: Resources;
   isRequired?: boolean;
   multiple?: boolean;
@@ -54,7 +54,7 @@ const attachmentHtml: React.SFC<Props & ValidationProps> = ({
   return (
     <div className="page_skjemautfyller__component page_skjemautfyller__component_attachment">
       <Validation {...other}>
-        <Dropzone
+        <MultiDropzone
           id={id}
           label={label}
           onDrop={onUpload}
