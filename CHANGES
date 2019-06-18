@@ -1,3 +1,9 @@
+2.5.0
+-----
+* Item type of attachment with repeat set to true, will render to a component
+  that can handle upload of multiple files. The component will for that reason
+  render without the repeat and delete buttons.
+
 2.4.0
 -----
 * Added public API to control what file types and file sizes are valid for
