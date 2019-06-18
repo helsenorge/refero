@@ -45,6 +45,8 @@ export interface Props {
   dispatch?: Dispatch<{}>;
   visibleDeleteButton?: boolean;
   repeatButton?: JSX.Element;
+  attachmentMaxFileSize?: number;
+  attachmentValidTypes?: Array<string>;
   onRequestAttachmentLink?: (file: string) => string;
   onOpenAttachment?: (fileId: string) => void;
   onDeleteAttachment?: (fileId: string, onSuccess: () => void, onError: (errormessage: TextMessage | null) => void) => void;
@@ -245,6 +247,8 @@ export default function withCommonFunctions<T>(WrappedComponent: React.Component
               uploadAttachment={this.props.uploadAttachment}
               onRequestHelpButton={this.props.onRequestHelpButton}
               onRequestHelpElement={this.props.onRequestHelpElement}
+              attachmentMaxFileSize={this.props.attachmentMaxFileSize}
+              attachmentValidTypes={this.props.attachmentValidTypes}
             />
           );
         });

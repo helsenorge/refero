@@ -56,6 +56,8 @@ interface Props {
   resources?: Resources;
   pdf?: boolean;
   promptLoginMessage?: () => void;
+  attachmentMaxFileSize?: number;
+  attachmentValidTypes?: Array<string>;
   onRequestAttachmentLink?: (fileId: string) => string;
   onOpenAttachment?: (fileId: string) => void;
   onDeleteAttachment?: (fileId: string, onSuccess: () => void, onError: (errormessage: TextMessage | null) => void) => void;
@@ -157,8 +159,8 @@ class Skjemautfyller extends React.Component<StateProps & DispatchProps & Props,
                 parentPath={this.props.path}
               />
             ) : (
-              undefined
-            );
+                undefined
+              );
           renderedItems.push(
             <Comp
               pdf={pdf}
@@ -180,6 +182,8 @@ class Skjemautfyller extends React.Component<StateProps & DispatchProps & Props,
               uploadAttachment={this.props.uploadAttachment}
               onRequestHelpButton={this.props.onRequestHelpButton}
               onRequestHelpElement={this.props.onRequestHelpElement}
+              attachmentMaxFileSize={this.props.attachmentMaxFileSize}
+              attachmentValidTypes={this.props.attachmentValidTypes}
             />
           );
         });

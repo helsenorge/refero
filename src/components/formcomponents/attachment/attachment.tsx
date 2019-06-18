@@ -27,6 +27,8 @@ export interface Props {
   resources?: Resources;
   renderDeleteButton: () => JSX.Element | undefined;
   repeatButton: JSX.Element;
+  attachmentMaxFileSize?: number;
+  attachmentValidTypes?: Array<string>;
   uploadAttachment?: (
     files: File[],
     onSuccess: (uploadedFile: UploadedFile, attachment: Attachment) => void,
@@ -151,6 +153,8 @@ class AttachmentComponent extends React.Component<Props & ValidationProps> {
           helpElement={this.props.renderHelpElement()}
           maxFiles={getMaxOccursExtensionValue(item)}
           minFiles={getMinOccursExtensionValue(item)}
+          attachmentMaxFileSize={this.props.attachmentMaxFileSize}
+          attachmentValidTypes={this.props.attachmentValidTypes}
           item={item}
           {...other}
         />

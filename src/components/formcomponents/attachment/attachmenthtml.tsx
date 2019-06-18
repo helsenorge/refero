@@ -1,9 +1,9 @@
 import * as React from 'react';
 import constants, { VALID_FILE_TYPES } from '../../../constants';
 import { Resources } from '../../../util/resources';
-import MultiDropzone, { MimeTypes } from '@helsenorge/toolkit/components/atoms/multi-dropzone';
+import MultiDropzone from '@helsenorge/toolkit/components/atoms/multi-dropzone';
 import Validation, { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
-import { typeIsValid, sizeIsValid } from '@helsenorge/toolkit/components/atoms/dropzone/validation';
+import { sizeIsValid, mimeTypeIsValid } from '@helsenorge/toolkit/components/atoms/dropzone/validation';
 import { UploadedFile } from '@helsenorge/toolkit/components/atoms/dropzone';
 import { TextMessage } from '../../../types/text-message';
 import { QuestionnaireItem } from '../../../types/fhir';
@@ -26,6 +26,8 @@ interface Props {
   maxFiles?: number;
   minFiles?: number;
   item: QuestionnaireItem;
+  attachmentMaxFileSize?: number;
+  attachmentValidTypes?: Array<string>;
 
   helpButton?: JSX.Element;
   helpElement?: JSX.Element;
@@ -47,10 +49,15 @@ const attachmentHtml: React.SFC<Props & ValidationProps> = ({
   helpElement,
   multiple,
   maxFiles,
+  attachmentMaxFileSize,
+  attachmentValidTypes,
   minFiles,
   item,
   ...other
 }) => {
+  const maxFilesize = attachmentMaxFileSize ? attachmentMaxFileSize : constants.MAX_FILE_SIZE;
+  const validFileTypes = attachmentValidTypes ? attachmentValidTypes : VALID_FILE_TYPES;
+
   return (
     <div className="page_skjemautfyller__component page_skjemautfyller__component_attachment">
       <Validation {...other}>
@@ -62,11 +69,11 @@ const attachmentHtml: React.SFC<Props & ValidationProps> = ({
           onOpenFile={onOpen}
           uploadButtonText={uploadButtonText}
           uploadedFiles={uploadedFiles}
-          maxFileSize={constants.MAX_FILE_SIZE}
-          validFileTypes={VALID_FILE_TYPES}
+          maxFileSize={maxFilesize}
+          validMimeTypes={validFileTypes}
           supportedFileFormatsText={resources ? resources.supportedFileFormats : undefined}
           errorMessage={file => {
-            return getErrorMessage(VALID_FILE_TYPES, constants.MAX_FILE_SIZE, item, errorText, file, resources);
+            return getErrorMessage(validFileTypes, maxFilesize, item, errorText, file, resources);
           }}
           isRequired={isRequired}
           wrapperClasses="page_skjemautfyller__input"
@@ -83,7 +90,7 @@ const attachmentHtml: React.SFC<Props & ValidationProps> = ({
 };
 
 function getErrorMessage(
-  validFileTypes: Array<MimeTypes>,
+  validFileTypes: Array<string>,
   maxFileSize: number,
   item: QuestionnaireItem,
   genericErrorText?: string,
@@ -91,7 +98,7 @@ function getErrorMessage(
   resources?: Resources,
 ) {
   if (file && resources) {
-    if (!typeIsValid(file, validFileTypes)) {
+    if (!mimeTypeIsValid(file, validFileTypes)) {
       return resources.validationFileType;
     } else if (!sizeIsValid(file, maxFileSize)) {
       return resources.validationFileMax;
