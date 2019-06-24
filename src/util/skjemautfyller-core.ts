@@ -32,7 +32,7 @@ export function getAllResponseItemsWithLinkid(
   }
   let relatedResponseItems: QuestionnaireResponseItem[] = [];
 
-  var getResponseItemsWithLinkid = function(
+  var getResponseItemsWithLinkid = function (
     definitionLinkId: string,
     responseItem: QuestionnaireResponseItem | QuestionnaireResponseAnswer
   ): void {
@@ -340,7 +340,7 @@ export function enableWhenMatchesAnswer(
   enableWhen: QuestionnaireEnableWhen,
   answers: Array<QuestionnaireResponseAnswer> | undefined
 ): boolean {
-  if (!enableWhen || !answers) {
+  if (!enableWhen || !answers || answers.length === 0) {
     return false;
   }
   let matches = true;
