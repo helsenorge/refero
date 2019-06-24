@@ -5,9 +5,12 @@ import { mount } from 'enzyme';
 import { Provider, Store } from 'react-redux';
 import { SkjemautfyllerContainer } from '../index';
 import { Resources } from '../../util/resources';
-import { Questionnaire, QuestionnaireItem, uri, Coding, Extension } from '../../types/fhir';
+import { Questionnaire, QuestionnaireItem, uri, Extension, QuestionnaireEnableWhen } from '../../types/fhir';
 import HelpButton from '../help-button/help-button';
 import itemControlConstants from '../../constants/itemcontrol';
+import RepeatButton from '../../components/formcomponents/repeat/repeat-button';
+import Boolean from '../../components/formcomponents/boolean/boolean';
+import SafeInputField from '@helsenorge/toolkit/components/atoms/safe-input-field';
 
 describe('Component renders help items', () => {
   beforeEach(() => {
@@ -40,7 +43,7 @@ describe('Component renders help items', () => {
     };
 
     // Render schema with 1 help button
-    let wrapper = createWrapper(helpButtonCb, helpElementCb);
+    let wrapper = createWrapper(questionnaireWithHelp(), helpButtonCb, helpElementCb);
     wrapper.render();
 
     expect(wrapper.find('.helpButton')).toHaveLength(1);
@@ -58,9 +61,39 @@ describe('Component renders help items', () => {
   });
 });
 
+describe('repeat with enableWhen', () => {
+  beforeEach(() => {
+    window.matchMedia = jest.fn().mockImplementation(_ => {
+      return {};
+    });
+  });
+
+  it('When we add a section with repeat, the enableWhen component should be hidden per default', () => {
+    let wrapper = createWrapper(questionnaireWithRepeatedEnableWhens());
+    wrapper.render();
+
+    // clicking the repeat button, repeats the elements
+    expect(wrapper.find(Boolean)).toHaveLength(1);
+    wrapper.find(RepeatButton).simulate('click');
+    expect(wrapper.find(Boolean)).toHaveLength(2);
+
+    // no enableWhen components should be visible
+    expect(wrapper.find(SafeInputField)).toHaveLength(0);
+
+    // Click first boolean input, and enableWhen component should be enabled
+    wrapper.find("input[type='checkbox']").first().simulate('change', { taget: { checked: true } });
+    expect(wrapper.find(SafeInputField)).toHaveLength(1);
+
+    // Click last boolean input, and enableWhen component should be enabled
+    wrapper.find("input[type='checkbox']").last().simulate('change', { target: { checked: true } });
+    expect(wrapper.find(SafeInputField)).toHaveLength(2);
+  });
+});
+
 function createWrapper(
-  helpButtonCb: (item: QuestionnaireItem, helpItem: QuestionnaireItem, helpType: string, help: string, opening: boolean) => JSX.Element,
-  helpElementCb: (item: QuestionnaireItem, helpItem: QuestionnaireItem, helpType: string, help: string, opening: boolean) => JSX.Element
+  questionnaire: Questionnaire,
+  helpButtonCb?: (item: QuestionnaireItem, helpItem: QuestionnaireItem, helpType: string, help: string, opening: boolean) => JSX.Element,
+  helpElementCb?: (item: QuestionnaireItem, helpItem: QuestionnaireItem, helpType: string, help: string, opening: boolean) => JSX.Element
 ) {
   let store: Store<{}> = createStore(rootReducer);
   return mount(
@@ -69,11 +102,11 @@ function createWrapper(
         loginButton={<React.Fragment />}
         store={store}
         authorized={true}
-        onCancel={() => {}}
-        onSave={() => {}}
-        onSubmit={() => {}}
+        onCancel={() => { }}
+        onSave={() => { }}
+        onSubmit={() => { }}
         resources={{} as Resources}
-        questionnaire={questinnaire()}
+        questionnaire={questionnaire}
         onRequestHelpButton={helpButtonCb}
         onRequestHelpElement={helpElementCb}
       />
@@ -81,7 +114,47 @@ function createWrapper(
   );
 }
 
-function questinnaire(): Questionnaire {
+function questionnaireWithRepeatedEnableWhens(): Questionnaire {
+  return {
+    resourceType: 'questionnaire',
+    status: { value: 'active' },
+    item: [
+      {
+        linkId: "8",
+        text: "Gruppe",
+        type: "group",
+        item: [
+          {
+            linkId: "8.1",
+            text: "Gruppe med repeat",
+            type: "group",
+            repeats: true,
+            item: [
+              {
+                linkId: "8.1.1",
+                text: "Checkbox",
+                type: "boolean",
+              },
+              {
+                linkId: "8.1.2",
+                text: "enableWhen",
+                type: "string",
+                enableWhen: [
+                  {
+                    question: "8.1.1",
+                    answerBoolean: true,
+                  } as QuestionnaireEnableWhen
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
+
+function questionnaireWithHelp(): Questionnaire {
   return {
     resourceType: 'questionnaire',
     status: { value: 'active' },
