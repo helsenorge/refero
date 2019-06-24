@@ -54,19 +54,21 @@ class Boolean extends React.Component<Props & ValidationProps, {}> {
     }
   };
 
+  getLabel = (): JSX.Element => {
+    return (<span
+      dangerouslySetInnerHTML={{
+        __html: `${renderPrefix(this.props.item)} ${getText(this.props.item)}`
+      }}
+    />);
+  };
+
   render(): JSX.Element | null {
     if (this.props.pdf) {
       return <Pdf item={this.props.item} checked={this.getValue()} />;
     } else if (isReadOnly(this.props.item)) {
       return (
         <CheckBox
-          label={
-            <span
-              dangerouslySetInnerHTML={{
-                __html: `${renderPrefix(this.props.item)} ${getText(this.props.item)}`,
-              }}
-            />
-          }
+          label={this.getLabel()}
           id={getId(this.props.id)}
           checked={this.getValue()}
           disabled
@@ -82,13 +84,7 @@ class Boolean extends React.Component<Props & ValidationProps, {}> {
       <div className="page_skjemautfyller__component page_skjemautfyller__component_boolean">
         <Validation {...this.props}>
           <CheckBox
-            label={
-              <span
-                dangerouslySetInnerHTML={{
-                  __html: `${renderPrefix(this.props.item)} ${getText(this.props.item)}`,
-                }}
-              />
-            }
+            label={this.getLabel()}
             id={getId(this.props.id)}
             isRequired={isRequired(this.props.item)}
             errorMessage={getValidationTextExtension(this.props.item)}
@@ -106,11 +102,11 @@ class Boolean extends React.Component<Props & ValidationProps, {}> {
             {this.props.repeatButton}
           </div>
         ) : (
-          <React.Fragment>
-            {this.props.renderDeleteButton()}
-            <div>{this.props.repeatButton}</div>
-          </React.Fragment>
-        )}
+            <React.Fragment>
+              {this.props.renderDeleteButton()}
+              <div>{this.props.repeatButton}</div>
+            </React.Fragment>
+          )}
       </div>
     );
   }
