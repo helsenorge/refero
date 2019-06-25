@@ -45,6 +45,7 @@ class App extends Component<{}, {}> {
           onRequestHelpElement={...}
           attachmentMaxFileSize={...}
           attachmentValidTypes={...}
+          validationSummaryPlacement={...}
         />
       </Provider>
     );
@@ -52,28 +53,29 @@ class App extends Component<{}, {}> {
 
 ## Props
 
-| Name                    | Required | Type                  | Default | Description                                                                                                   |
-| ----------------------- | -------- | --------------------- | ------- | ------------------------------------------------------------------------------------------------------------- |
-| store                   |          | Store<{}>             | null    | Redux store                                                                                                   |
-| questionnaire           |          | Questionnaire         | null    | FHIR Questionnaire object                                                                                     |
-| questionnaireResponse   |          | QuestionnaireResponse | null    | FHIR QuestionnaireResponse object                                                                             |
-| resources               |          | Resources             | null    | Resources object                                                                                              |
-| onSubmit                | true     | callback              |         | Callback when user submits the form                                                                           |
-| onSave                  | true     | callback              |         | Callback when user saves the form                                                                             |
-| onCancel                | true     | callback              |         | Callback when user cancels the form                                                                           |
-| uploadAttachment        |          | callback              | null    | Callback when user uploads attachment                                                                         |
-| onDeleteAttachment      |          | callback              | null    | Callback when user deletes attachment                                                                         |
-| onOpenAttachment        |          | callback              | null    | Callback when user opens attachment                                                                           |
-| onRequestAttachmentLink |          | callback              | null    | Callback when the form needs to render a link to an attachment                                                |
-| attachmentMaxFileSize   |          | number                | 25M     | Max allowed file size for attachments in bytes. Default is 25M                                                |
-| attachmentValidTypes    |          | Array<string>         | ...     | List of allowed mime types for attachments. Default allowed types are: image/jpeg, image/png, application/pdf |
-| promptLoginMessage      |          | callback              | null    | Callback when the form needs to notify the user about authentication                                          |
-| loginButton             | true     | JSX.Element           |         | JSX for when the form needs to render a login button                                                          |
-| authorized              | true     | boolean               |         | Whether or not the user is authorized/authenticated                                                           |
-| pdf                     |          | boolean               | false   | Renders the form without interactive elements                                                                 |
-| sticky                  |          | boolean               | false   | Whether the actionbar (bar with buttons send/save) should be sticky                                           |
-| onRequestHelpButton     |          | callback              | null    | Callback when the form needs to render a help button                                                          |
-| onRequestHelpElement    |          | callback              | null    | Callback when the form needs to render a help element (help text)                                             |
+| Name                       | Required | Type                       | Default | Description                                                                                                   |
+| -------------------------- | -------- | -------------------------- | ------- | ------------------------------------------------------------------------------------------------------------- |
+| store                      |          | Store<{}>                  | null    | Redux store                                                                                                   |
+| questionnaire              |          | Questionnaire              | null    | FHIR Questionnaire object                                                                                     |
+| questionnaireResponse      |          | QuestionnaireResponse      | null    | FHIR QuestionnaireResponse object                                                                             |
+| resources                  |          | Resources                  | null    | Resources object                                                                                              |
+| onSubmit                   | true     | callback                   |         | Callback when user submits the form                                                                           |
+| onSave                     | true     | callback                   |         | Callback when user saves the form                                                                             |
+| onCancel                   | true     | callback                   |         | Callback when user cancels the form                                                                           |
+| uploadAttachment           |          | callback                   | null    | Callback when user uploads attachment                                                                         |
+| onDeleteAttachment         |          | callback                   | null    | Callback when user deletes attachment                                                                         |
+| onOpenAttachment           |          | callback                   | null    | Callback when user opens attachment                                                                           |
+| onRequestAttachmentLink    |          | callback                   | null    | Callback when the form needs to render a link to an attachment                                                |
+| attachmentMaxFileSize      |          | number                     | 25M     | Max allowed file size for attachments in bytes. Default is 25M                                                |
+| attachmentValidTypes       |          | Array<string>              | ...     | List of allowed mime types for attachments. Default allowed types are: image/jpeg, image/png, application/pdf |
+| promptLoginMessage         |          | callback                   | null    | Callback when the form needs to notify the user about authentication                                          |
+| loginButton                | true     | JSX.Element                |         | JSX for when the form needs to render a login button                                                          |
+| authorized                 | true     | boolean                    |         | Whether or not the user is authorized/authenticated                                                           |
+| pdf                        |          | boolean                    | false   | Renders the form without interactive elements                                                                 |
+| sticky                     |          | boolean                    | false   | Whether the actionbar (bar with buttons send/save) should be sticky                                           |
+| onRequestHelpButton        |          | callback                   | null    | Callback when the form needs to render a help button                                                          |
+| onRequestHelpElement       |          | callback                   | null    | Callback when the form needs to render a help element (help text)                                             |
+| validationSummaryPlacement |          | ValidationSummaryPlacement | null    | Controls the placement of the form validation summary                                                         |
 
 ### `questionnaire: Questionnaire`
 
@@ -109,6 +111,11 @@ Max file size in bytes allowed for attachments. Default is 25M.
 ### `attachmentValidTypes: Array<string>`
 
 List of allowed mime types for attachments. Default allowed types are image/jpeg, image/png, application/pdf
+
+### `validationSummaryPlacement: ValidationSummaryPlacement`
+
+Controls the placement of the form validation summary. See ['ValidationSummaryPlacement'](#ValidationSummaryPlacement) for possible values.
+If not specified, it defaults to ValidationSummaryPlacement.Top
 
 ## Callback API
 
@@ -181,11 +188,24 @@ the items label. If this is not specified, a default implementation is provided.
 - `helpText: string` The help text, either as plain text or html (in the case the help item had markdown)
 - `opening: boolean` This boolean indicates whether the help text is visible or not (open or closed)
 
+# Enum definitions
+
+## `ValidationSummaryPlacement`
+
+```ts
+// location: '@helsenorge/toolkit/components/molecules/form/validationSummaryPlacement'
+enum ValidationSummaryPlacement {
+  Top = "Top",
+  Bottom = "Bottom"
+}
+```
+
 # Interface definitions
 
 ## `Path`
 
 ```ts
+// location: '@helsenorge/skjemautfyller/util/skjemautfyller-core'
 interface Path {
   linkId: string;
 }
@@ -194,6 +214,7 @@ interface Path {
 ## `TextMessage`
 
 ```ts
+// location: '@helsenorge/skjemautfyller/types/text-message'
 interface TextMessage {
   Title: string;
   Body: string;
@@ -203,6 +224,7 @@ interface TextMessage {
 ## `UploadedFile`
 
 ```ts
+// location: '@helsenorge/toolkit/components/atoms/multi-dropzone'
 interface UploadedFile {
   id?: string;
   name: string;
@@ -212,6 +234,7 @@ interface UploadedFile {
 ## `Resources`
 
 ```ts
+// location: '@helsenorge/skjemautfyller/util/resources'
 interface Resources {
   deleteButtonText: string;
   validationSummaryHeader: string;
