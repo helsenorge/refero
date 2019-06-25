@@ -24,6 +24,7 @@ import 'redux-thunk';
 import { UploadedFile } from '@helsenorge/toolkit/components/atoms/dropzone';
 import { setSkjemaDefinition } from '../actions/form';
 import { TextMessage } from '../types/text-message';
+import { ValidationSummaryPlacement } from '@helsenorge/toolkit/components/molecules/form/validationSummaryPlacement';
 
 export interface QueryStringsInterface {
   MessageId: string;
@@ -71,6 +72,7 @@ interface Props {
   questionnaireResponse?: QuestionnaireResponse;
   language?: string;
   sticky?: boolean;
+  validationSummaryPlacement?: ValidationSummaryPlacement;
   onRequestHelpButton?: (
     item: QuestionnaireItem,
     itemHelp: QuestionnaireItem,
@@ -228,6 +230,7 @@ class Skjemautfyller extends React.Component<StateProps & DispatchProps & Props,
           requiredLabel={resources.formRequired}
           optionalLabel={resources.formOptional}
           triggerPreventDefaultOnSubmit
+          validationSummaryPlacement={this.props.validationSummaryPlacement}
           validationSummary={{
             enable: true,
             header: resources.validationSummaryHeader,
@@ -262,6 +265,7 @@ class Skjemautfyller extends React.Component<StateProps & DispatchProps & Props,
           pauseButtonClasses={'atom_inline-btn pause page_skjemautfyller__pausebutton'}
           onCancel={this.props.onCancel}
           buttonClasses="page_skjemautfyller__saveblock"
+          validationSummaryPlacement={this.props.validationSummaryPlacement}
           validationSummary={{
             enable: true,
             header: resources.validationSummaryHeader,
