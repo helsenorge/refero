@@ -195,8 +195,8 @@ the items label. If this is not specified, a default implementation is provided.
 ```ts
 // location: '@helsenorge/toolkit/components/molecules/form/validationSummaryPlacement'
 enum ValidationSummaryPlacement {
-  Top = "Top",
-  Bottom = "Bottom"
+  Top = 'Top',
+  Bottom = 'Bottom',
 }
 ```
 

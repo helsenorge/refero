@@ -161,8 +161,8 @@ class Skjemautfyller extends React.Component<StateProps & DispatchProps & Props,
                 parentPath={this.props.path}
               />
             ) : (
-                undefined
-              );
+              undefined
+            );
           renderedItems.push(
             <Comp
               pdf={pdf}
