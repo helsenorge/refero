@@ -1,3 +1,7 @@
+2.6.1
+-----
+* Use @helsenorge/toolkit v6.2.1
+
 2.6.0
 -----
 * Introduce a new property 'validationSummaryPlacement' to control the
