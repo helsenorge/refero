@@ -1,3 +1,8 @@
+2.6.1
+-----
+* When closing items via enableWhen, make sure only the hidden fields are
+  cleaned up, and not unrelated fields.
+
 2.6.0
 -----
 * Introduce a new property 'validationSummaryPlacement' to control the
