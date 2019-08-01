@@ -1,6 +1,6 @@
 {
   "name": "@helsenorge/skjemautfyller",
-  "version": "2.6.0",
+  "version": "2.6.1-beta01",
   "main": "index.js",
   "author": "helsenorge",
   "license": "UNLICENSED",

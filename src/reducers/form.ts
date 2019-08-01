@@ -25,10 +25,11 @@ import {
   getResponseItemWithPath,
   getQuestionnaireDefinitionItem,
   getQuestionnaireResponseItemWithLinkid,
-  getAllResponseItemsWithLinkid,
   getResponseItems,
   getDefinitionItems,
   enableWhenMatchesAnswer,
+  getQuestionnaireResponseItemsWithLinkId,
+  getArrayContainingResponseItemFromItems,
 } from '../util/skjemautfyller-core';
 import { getMinOccursExtensionValue } from '../util/extension';
 import { Languages } from '@helsenorge/toolkit/constants';
@@ -472,58 +473,88 @@ function processNewCodingStringValueAction(action: NewValueAction, state: Form):
   return newState;
 }
 
+function getResponseItemWithLinkIdPossiblyContainingRepeat(
+  linkId: string,
+  repeatId: string,
+  items: Array<QuestionnaireResponseItem>
+): QuestionnaireResponseItem | undefined {
+  let findResponseItem = (linkId: string, items: Array<QuestionnaireResponseItem>): QuestionnaireResponseItem | undefined => {
+    for (let item of items) {
+      result = getQuestionnaireResponseItemWithLinkid(linkId, item, true);
+      if (result) return result;
+    }
+  };
+
+  let result = findResponseItem(linkId, items);
+  if (!result && repeatId) {
+    linkId += repeatId;
+    result = findResponseItem(linkId, items);
+  }
+
+  return result;
+}
+
 function updateEnableWhenItemsIteration(items: QuestionnaireItem[], formData: FormData, formDefinition: FormDefinition): void {
   if (!items) {
     return;
   }
 
-  let enableWhenRelatedItemArray: QuestionnaireItem[] = [];
-  let definitionItems = getDefinitionItems(formDefinition);
-
-  for (let i = 0; i < items.length; i++) {
-    if (definitionItems) {
-      let enableWhenRelatedItems = getItemWithEnableWhen(items[i].linkId, definitionItems);
-      if (enableWhenRelatedItems) {
-        enableWhenRelatedItems.forEach(i => {
-          enableWhenRelatedItemArray.push(i);
-        });
-      }
-    }
-  }
-  if (!enableWhenRelatedItemArray || enableWhenRelatedItemArray.length === 0) {
+  const definitionItems = getDefinitionItems(formDefinition);
+  const responseItems = getResponseItems(formData);
+  if (!responseItems || responseItems.length === 0) {
     return;
   }
 
-  for (let x = 0; x < enableWhenRelatedItemArray.length; x++) {
-    let enableWhen = enableWhenRelatedItemArray[x].enableWhen;
-    if (!enableWhen) {
+  // Find all items with an enableWhen-clause
+  let qitemsWithEnableWhen: QuestionnaireItem[] = [];
+  for (let i = 0; i < items.length; i++) {
+    if (definitionItems) {
+      qitemsWithEnableWhen.push(...getItemsWithEnableWhen(items[i].linkId, definitionItems));
+    }
+  }
+  if (!qitemsWithEnableWhen || qitemsWithEnableWhen.length === 0) {
+    return;
+  }
+
+  for (let qItemWithEnableWhen of qitemsWithEnableWhen) {
+    let enableWhenClauses = qItemWithEnableWhen.enableWhen;
+    if (!enableWhenClauses) {
       continue;
     }
-    const responseItems = getResponseItems(formData);
-    let enable = false;
-    enableWhen.forEach((enableWhen: QuestionnaireEnableWhen) => {
-      const enableWhenQuestionItem = getQuestionnaireDefinitionItem(enableWhen.question, definitionItems);
-      for (let j = 0; responseItems && j < responseItems.length; j++) {
-        let responseItem: QuestionnaireResponseItem | undefined = responseItems[j];
-        if (responseItem.linkId !== enableWhen.question) {
-          responseItem = getQuestionnaireResponseItemWithLinkid(enableWhen.question, responseItems[j], true);
-        }
-        if (!responseItem) {
-          continue;
-        }
-        let deactivated = enableWhenQuestionItem ? enableWhenQuestionItem.deactivated : false;
-        enable = enable || (enableWhenMatchesAnswer(enableWhen, responseItem.answer) && !deactivated);
 
-        // This should remove repeated items, but not the original, so remove linkId 4.1^1, 4.1^2 etc.,
-        // but not 4.1^0 as it is the original. (So if you click add on a repeated item in an enableWhen,
-        // collapse the enableWhen and exapnd it again, the added items should be gone)
-        // Go through the array backwards and delete, so not to screw up the indices we're looping over.
-        if (!enable && enableWhenRelatedItemArray[x].repeats) {
-          let minOccurs = getMinOccursExtensionValue(enableWhenRelatedItemArray[x]);
-          let arrayToDeleteItem = getArrayToAddGroupTo(responseItem);
+    // There may be several questionnaireResponseItemsWithEnableWhen corresponding to a questionnaireItemWithEnableWhen.
+    // F.ex. if the questionnaireItemWithEnableWhen is repeatable
+    var qrItemsWithEnableWhen = getQuestionnaireResponseItemsWithLinkId(qItemWithEnableWhen.linkId, responseItems, true, true);
+    for (let qrItemWithEnableWhen of qrItemsWithEnableWhen) {
+      let enable = false;
+      enableWhenClauses.forEach((enableWhen: QuestionnaireEnableWhen) => {
+        let enableWhenQuestionItem = getQuestionnaireDefinitionItem(enableWhen.question, definitionItems);
+        if (!enableWhenQuestionItem) return;
+
+        // find responseItem corresponding to enableWhen.question. Looks both for X.Y.Z and X.Y.Z^r
+        let responseItem = getResponseItemWithLinkIdPossiblyContainingRepeat(
+          enableWhen.question,
+          qrItemWithEnableWhen.linkId.substring(qrItemWithEnableWhen.linkId.indexOf('^')),
+          responseItems
+        );
+
+        if (responseItem) {
+          let deactivated = enableWhenQuestionItem ? enableWhenQuestionItem.deactivated : false;
+          enable = enable || (enableWhenMatchesAnswer(enableWhen, responseItem.answer) && !deactivated);
+        }
+      });
+
+      if (!enable) {
+        if (qItemWithEnableWhen.repeats) {
+          // This should remove repeated items, but not the original, so remove linkId 4.1^1, 4.1^2 etc.,
+          // but not 4.1^0 as it is the original. (So if you click add on a repeated item in an enableWhen,
+          // collapse the enableWhen and expand it again, the added items should be gone)
+          // Go through the array backwards and delete, so not to screw up the indices we're looping over.
+          let arrayToDeleteItem = getArrayContainingResponseItemFromItems(qrItemWithEnableWhen.linkId, responseItems);
+          let minOccurs = getMinOccursExtensionValue(qItemWithEnableWhen);
           if (arrayToDeleteItem) {
             let keepThreshold = minOccurs ? minOccurs : 1;
-            let prefix = enableWhenRelatedItemArray[x].linkId + '^';
+            let prefix = qItemWithEnableWhen.linkId + '^';
             for (let i = arrayToDeleteItem.length - 1; i >= 0; i--) {
               let e = arrayToDeleteItem[i];
               if (e.linkId.startsWith(prefix) && Number(e.linkId.replace(prefix, '')) >= keepThreshold) {
@@ -532,24 +563,16 @@ function updateEnableWhenItemsIteration(items: QuestionnaireItem[], formData: Fo
             }
           }
         }
+
+        wipeAnswerItems(qrItemWithEnableWhen, qItemWithEnableWhen);
+
+        qItemWithEnableWhen.deactivated = true;
+      } else {
+        qItemWithEnableWhen.deactivated = false;
       }
-    });
-
-    if (!enable) {
-      // relatedResponseItems skal være array siden det kan være flere responseItems med samme linkid
-      let relatedResponseItems: QuestionnaireResponseItem[] = [];
-
-      relatedResponseItems = getAllResponseItemsWithLinkid(enableWhenRelatedItemArray[x].linkId, responseItems, true);
-      relatedResponseItems.forEach(i => {
-        wipeAnswerItems(i, enableWhenRelatedItemArray[x]);
-      });
-
-      enableWhenRelatedItemArray[x].deactivated = true;
-    } else {
-      enableWhenRelatedItemArray[x].deactivated = false;
     }
   }
-  updateEnableWhenItemsIteration(enableWhenRelatedItemArray, formData, formDefinition);
+  updateEnableWhenItemsIteration(qitemsWithEnableWhen, formData, formDefinition);
 }
 
 export function getFormDefinition(state: GlobalState): FormDefinition | null {
@@ -612,9 +635,9 @@ export function nullAnswerValue(
   }
 }
 
-function getItemWithEnableWhen(linkId: string, definitionItems: QuestionnaireItem[]): QuestionnaireItem[] {
+function getItemsWithEnableWhen(linkId: string, definitionItems: QuestionnaireItem[]): QuestionnaireItem[] {
   let relatedItems: QuestionnaireItem[] = [];
-  var getQuestionnaireItemHasEnableWhenLinkid = function (linkId: string, definitionItem: QuestionnaireItem | undefined): void {
+  var getQuestionnaireItemHasEnableWhenLinkid = function(linkId: string, definitionItem: QuestionnaireItem | undefined): void {
     if (!definitionItem) {
       return undefined;
     }

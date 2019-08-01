@@ -1,4 +1,10 @@
-import { QuestionnaireResponseItem, QuestionnaireResponseAnswer, QuestionnaireItem, QuestionnaireEnableWhen } from '../types/fhir';
+import {
+  QuestionnaireResponseItem,
+  QuestionnaireResponseAnswer,
+  QuestionnaireItem,
+  QuestionnaireEnableWhen,
+  QuestionnaireResponse,
+} from '../types/fhir';
 
 import { FormData, FormDefinition } from '../reducers/form';
 import { parseDate } from '@helsenorge/toolkit/components/atoms/time-input/date-core';
@@ -32,7 +38,7 @@ export function getAllResponseItemsWithLinkid(
   }
   let relatedResponseItems: QuestionnaireResponseItem[] = [];
 
-  var getResponseItemsWithLinkid = function (
+  var getResponseItemsWithLinkid = function(
     definitionLinkId: string,
     responseItem: QuestionnaireResponseItem | QuestionnaireResponseAnswer
   ): void {
@@ -134,6 +140,75 @@ export function getQuestionnaireResponseItemWithLinkid(
   return undefined;
 }
 
+export function getQuestionnaireResponseItemsWithLinkId(
+  linkId: string,
+  responseItems: Array<QuestionnaireResponseItem>,
+  recursive = false,
+  removeSuffix = false
+): Array<QuestionnaireResponseItem> {
+  if (!responseItems) {
+    return [];
+  }
+
+  let itemsWithLinkId = getItemsWithIdFromResponseItemArray(linkId, responseItems, recursive, removeSuffix);
+  if (itemsWithLinkId && itemsWithLinkId.length > 0) {
+    return itemsWithLinkId;
+  }
+
+  function collectAnswerItems(items: Array<QuestionnaireResponseItem>): Array<QuestionnaireResponseAnswer> {
+    if (items.length === 0) return [];
+
+    let answers: Array<QuestionnaireResponseAnswer> = [];
+    answers = answers.concat(...items.map(i => i.answer || []));
+
+    let subItems: Array<QuestionnaireResponseItem> = [];
+    subItems = subItems.concat(...items.map(i => i.item || []));
+
+    return answers.concat(...collectAnswerItems(subItems));
+  }
+
+  let answers = collectAnswerItems(responseItems);
+  let items: Array<QuestionnaireResponseItem> = [];
+  items = items.concat(...answers.map(a => a.item || []));
+  itemsWithLinkId = getItemsWithIdFromResponseItemArray(linkId, items, false, removeSuffix);
+  return itemsWithLinkId;
+}
+
+export function getArrayContainingResponseItemFromItems(
+  linkId: string,
+  items: Array<QuestionnaireResponseItem>
+): Array<QuestionnaireResponseItem> | undefined {
+  for (let item of items) {
+    if (item.linkId === linkId) {
+      return items;
+    }
+    if (item.item) {
+      let result = getArrayContainingResponseItemFromItems(linkId, item.item);
+      if (result) return result;
+    }
+    if (item.answer) {
+      let result = getArrayContainingResponseItemFromAnswers(linkId, item.answer);
+      if (result) return result;
+    }
+  }
+
+  return undefined;
+}
+
+function getArrayContainingResponseItemFromAnswers(
+  linkId: string,
+  answers: Array<QuestionnaireResponseAnswer>
+): Array<QuestionnaireResponseItem> | undefined {
+  for (let answer of answers) {
+    if (answer.item) {
+      let result = getArrayContainingResponseItemFromItems(linkId, answer.item);
+      if (result) return result;
+    }
+  }
+
+  return undefined;
+}
+
 export function getAnswerFromResponseItem(responseItem: QuestionnaireResponseItem | undefined) {
   if (!responseItem) {
     return undefined;
@@ -186,6 +261,35 @@ export function getItemWithIdFromResponseItemArray(
   if (!filteredItems || filteredItems.length === 0) {
     return undefined;
   }
+  return filteredItems;
+}
+
+export function getItemsWithIdFromResponseItemArray(
+  linkId: string,
+  responseItems: Array<QuestionnaireResponseItem> | undefined,
+  recurse = false,
+  removeSuffix = false
+): Array<QuestionnaireResponseItem> {
+  if (!responseItems || responseItems.length === 0) {
+    return [];
+  }
+  const filteredItems = responseItems.filter(i => {
+    if (removeSuffix) {
+      return i.linkId.split('^')[0] === linkId;
+    }
+    return i.linkId === linkId;
+  });
+
+  if (recurse) {
+    var reducer = (acc: Array<QuestionnaireResponseItem>, val: QuestionnaireResponseItem) => {
+      if (val.item) {
+        acc.push(...getItemsWithIdFromResponseItemArray(linkId, val.item, recurse, removeSuffix));
+      }
+      return acc;
+    };
+    return responseItems.reduce(reducer, filteredItems);
+  }
+
   return filteredItems;
 }
 
