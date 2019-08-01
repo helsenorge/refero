@@ -1,0 +1,87 @@
+{
+  "resourceType": "Questionnaire",
+  "id": "test-enableWhen-02",
+  "meta": {
+    "versionId": "3",
+    "lastUpdated": "2019-06-18T14:09:36.972+00:00",
+    "profile": [
+      "http://ehelse.no/fhir/StructureDefinition/sdf-Questionnaire"
+    ],
+    "tag": [
+      {
+        "system": "urn:ietf:bcp:47",
+        "code": "nb-NO",
+        "display": "Norsk bokmål"
+      }
+    ]
+  },
+  "language": "nb-NO",
+  "extension": [
+    {
+      "url": "http://ehelse.no/fhir/StructureDefinition/sdf-endpoint",
+      "valueReference": {
+        "reference": "https://skjemakatalog-test-fhir-apimgmt.azure-api.net/api/v1/Endpoint/1"
+      }
+    }
+  ],
+  "url": "https://skjemakatalog-dev-fhir-apimgmt.azure-api.net/api/v1/Questionnaire/test-enableWhen-02",
+  "version": "0.1",
+  "title": "test",
+  "status": "draft",
+  "date": "2018-02-02",
+  "publisher": "Direktoratet for e-helse",
+  "description": "test",
+  "purpose": "Test",
+  "approvalDate": "2018-02-02",
+  "lastReviewDate": "2018-02-02",
+  "contact": [
+    {
+      "name": "http://www.e-helse.no"
+    }
+  ],
+  "copyright": "Er utviklet av Direktoratet for e-helse til fri benyttelse",
+  "subjectType": [
+    "Person"
+  ],
+  "item": [
+    {
+      "linkId": "8",
+      "prefix": "8.",
+      "text": "Gruppe",
+      "type": "group",
+      "repeats": false,
+      "item": [
+        {
+          "linkId": "8.1",
+          "text": "Something",
+          "type": "group",
+          "repeats": true,
+          "item": [
+            {
+              "linkId": "8.1.1",
+              "text": "Checkbox",
+              "type": "boolean",
+              "required": false,
+              "repeats": false,
+              "readOnly": false
+            },
+            {
+              "linkId": "8.1.2",
+              "text": "Analyse",
+              "type": "text",
+              "enableWhen": [
+                {
+                  "question": "8.1.1",
+                  "answerBoolean": true
+                }
+              ],
+              "required": false,
+              "repeats": false,
+              "readOnly": false
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

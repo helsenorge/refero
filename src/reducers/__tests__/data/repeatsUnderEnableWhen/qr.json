@@ -1,0 +1,33 @@
+{
+  "resourceType": "QuestionnaireResponse",
+  "status": "in-progress",
+  "questionnaire": {
+    "reference": "https://localhost:49911/Questionnaire/test-enableWhen-01"
+  },
+  "item": [
+    {
+      "linkId": "7",
+      "text": "Journaldel",
+      "item": [
+        {
+          "linkId": "7.1",
+          "text": "Hvilke deler av journalen ønsker du kopi av?",
+          "answer": [
+            {
+              "item": [
+                {
+                  "linkId": "7.1.1",
+                  "text": "Oppgi tidsrom for innleggelse/periode/konsultasjon du ønsker kopi av journal fra:"
+                },
+                {
+                  "linkId": "7.1.2^0",
+                  "text": "Oppgi avdeling(er) du ønsker kopi av journal fra:"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

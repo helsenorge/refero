@@ -1,0 +1,127 @@
+{
+  "resourceType": "Questionnaire",
+  "id": "test-enableWhen-01",
+  "meta": {
+    "versionId": "1",
+    "lastUpdated": "2019-06-18T11:02:04.337+00:00",
+    "profile": [
+      "http://ehelse.no/fhir/StructureDefinition/sdf-Questionnaire"
+    ],
+    "tag": [
+      {
+        "system": "urn:ietf:bcp:47",
+        "code": "nb-NO",
+        "display": "Norsk bokmål"
+      }
+    ]
+  },
+  "language": "nb-NO",
+  "contained": [
+    {
+      "resourceType": "ValueSet",
+      "id": "JournalDeler",
+      "version": "1.0",
+      "name": "JournalDeler",
+      "title": "Journaldeler",
+      "status": "draft",
+      "publisher": "Direktoratet for e-helse",
+      "compose": {
+        "include": [
+          {
+            "system": "http://ehelse.no/JournalDeler",
+            "concept": [
+              {
+                "code": "1",
+                "display": "Fra siste innleggelse/konsultasjon "
+              },
+              {
+                "code": "2",
+                "display": "Fra en eller flere innleggelser eller perioder"
+              },
+              {
+                "code": "3",
+                "display": "Fra en eller flere avdelinger"
+              },
+              {
+                "code": "4",
+                "display": "Fra alle innleggelser/konsultasjoner"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "url": "https://localhost:49911/Questionnaire/test-enableWhen-01",
+  "version": "0.3",
+  "title": "test",
+  "status": "draft",
+  "date": "2018-10-05",
+  "publisher": "Direktoratet for e-helse",
+  "description": "test",
+  "purpose": "test",
+  "contact": [
+    {
+      "name": "http://www.e-helse.no"
+    }
+  ],
+  "copyright": "Er utviklet av Direktoratet for e-helse til fri benyttelse",
+  "subjectType": [
+    "Person"
+  ],
+  "item": [
+    {
+      "linkId": "7",
+      "text": "Journaldel",
+      "type": "group",
+      "repeats": false,
+      "item": [
+        {
+          "linkId": "7.1",
+          "text": "Hvilke deler av journalen ønsker du kopi av?",
+          "type": "choice",
+          "required": true,
+          "repeats": false,
+          "readOnly": false,
+          "options": {
+            "reference": "#JournalDeler"
+          },
+          "item": [
+            {
+              "linkId": "7.1.1",
+              "text": "Oppgi tidsrom for innleggelse/periode/konsultasjon du ønsker kopi av journal fra:",
+              "type": "group",
+              "enableWhen": [
+                {
+                  "question": "7.1",
+                  "answerCoding": {
+                    "system": "http://ehelse.no/JournalDeler",
+                    "code": "2"
+                  }
+                }
+              ],
+              "repeats": false
+            },
+            {
+              "linkId": "7.1.2",
+              "text": "Oppgi avdeling(er) du ønsker kopi av journal fra:",
+              "type": "text",
+              "enableWhen": [
+                {
+                  "question": "7.1",
+                  "answerCoding": {
+                    "system": "http://ehelse.no/JournalDeler",
+                    "code": "3"
+                  }
+                }
+              ],
+              "required": true,
+              "repeats": true,
+              "readOnly": false
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

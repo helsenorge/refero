@@ -1,0 +1,34 @@
+{
+  "resourceType": "QuestionnaireResponse",
+  "status": "in-progress",
+  "questionnaire": {
+    "reference": "https://skjemakatalog-dev-fhir-apimgmt.azure-api.net/api/v1/Questionnaire/test-enableWhen-02"
+  },
+  "item": [
+    {
+      "linkId": "8",
+      "text": "Gruppe",
+      "item": [
+        {
+          "linkId": "8.1^0",
+          "text": "Something",
+          "item": [
+            {
+              "linkId": "8.1.1^0",
+              "text": "Checkbox",
+              "answer": [
+                {
+                  "valueBoolean": false
+                }
+              ]
+            },
+            {
+              "linkId": "8.1.2^0",
+              "text": "Analyse"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
