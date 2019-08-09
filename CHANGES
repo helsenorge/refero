@@ -1,7 +1,12 @@
-2.6.1
+2.6.4
 -----
 * When closing items via enableWhen, make sure only the hidden fields are
   cleaned up, and not unrelated fields.
+
+2.6.1
+-----
+* Use @helsenorge/toolkit v6.2.1
+
 
 2.6.0
 -----
