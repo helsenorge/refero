@@ -1,6 +1,6 @@
 2.6.3
 -----
-* Endret versjon av moment til moment": "2.22.2" slik at skjemautfyller kan bruke samme versjon som resten av Min helse 
+* Changed the version of moment to "2.22.2" because that version is used by MinHelse 
 
 2.6.1
 -----
