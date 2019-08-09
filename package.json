@@ -1,6 +1,6 @@
 {
   "name": "@helsenorge/skjemautfyller",
-  "version": "2.6.1",
+  "version": "2.6.3",
   "main": "index.js",
   "author": "helsenorge",
   "license": "UNLICENSED",
@@ -61,7 +61,7 @@
   "dependencies": {
     "@helsenorge/toolkit": "6.2.1",
     "marked": "^0.3.17",
-    "moment": "2.23.0",
+    "moment": "2.22.2",
     "uuid": "2.0.3",
     "isomorphic-fetch": "^2.2.1"
   },
