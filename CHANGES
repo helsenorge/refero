@@ -1,3 +1,7 @@
+2.6.5
+-----
+* Adding onKeyPress validity check on Quantity input so only numbers and decimal go through
+  
 2.6.4
 -----
 * When closing items via enableWhen, make sure only the hidden fields are
