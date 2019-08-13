@@ -39,6 +39,7 @@ export interface Props {
 }
 interface QuantityInputFieldProps {
   step?: string;
+  onKeyPress: (e: React.KeyboardEvent<{}>) => void;
 }
 
 class Quantity extends React.Component<Props & ValidationProps, {}> {
@@ -92,7 +93,14 @@ class Quantity extends React.Component<Props & ValidationProps, {}> {
   };
 
   inputProps() {
-    const props: QuantityInputFieldProps = {};
+    const props: QuantityInputFieldProps = {
+      onKeyPress: (e: React.KeyboardEvent<{}>) => {
+        let key = String.fromCharCode(e.which);
+        if ('0123456789-.,'.indexOf(key) === -1) {
+          e.preventDefault();
+        }
+      },
+    };
     const step = getExtension(ExtensionConstants.STEP_URL, this.props.item);
     if (step && step.valueInteger) {
       props.step = this.getStepInputProp(step);
