@@ -8,6 +8,7 @@ import { renderPrefix, getText, getId } from '../../../util/index';
 import { QuestionnaireItem, QuestionnaireResponseAnswer, QuestionnaireResponseItem } from '../../../types/fhir';
 import withCommonFunctions from '../../with-common-functions';
 import { Resources } from '../../../util/resources';
+import { getGroupItemControl } from '../../../util/group-item-control';
 
 export interface Props {
   item: QuestionnaireItem;
@@ -40,11 +41,21 @@ export class Group extends React.Component<Props, State> {
       <section id={getId(this.props.id)}>
         {this.renderGroupHeader()}
         {this.props.renderHelpElement()}
-        <div className="page_skjemautfyller__component page_skjemautfyller__component_group">{this.props.renderChildrenItems()}</div>
+        <div className={this.getClassNames()}>{this.props.renderChildrenItems()}</div>
         {this.props.renderDeleteButton('page_skjemautfyller__deletebutton--margin-top')}
         {this.props.repeatButton}
       </section>
     );
+  };
+
+  getClassNames = (): string => {
+    var classNames = ['page_skjemautfyller__component', 'page_skjemautfyller__component_group'];
+    var coding = getGroupItemControl(this.props.item);
+    if (coding.length > 0) {
+      classNames.push('page_skjemautfyller__itemControl_' + coding[0].code);
+    }
+
+    return classNames.join(' ');
   };
 
   getComponentToValidate = (): undefined => {

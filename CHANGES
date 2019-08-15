@@ -1,3 +1,11 @@
+2.6.6
+-----
+* Support for questionnaire-item-control 'table', 'htable', 'gtable' and 'atable'.
+
+  Group-items with itemControl-extension, having one of the codes 'table', 'htable',
+  'gtable' or 'atable', will be rendered with a corresponding class name.
+  E.g. 'page_skjemautfyller__itemControl_gtable'
+
 2.6.5
 -----
 * Adding onKeyPress validity check on Quantity input so only numbers and decimal go through
