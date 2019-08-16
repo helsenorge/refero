@@ -49,8 +49,8 @@ export class Group extends React.Component<Props, State> {
   };
 
   getClassNames = (): string => {
-    var classNames = ['page_skjemautfyller__component', 'page_skjemautfyller__component_group'];
-    var coding = getGroupItemControl(this.props.item);
+    const classNames = ['page_skjemautfyller__component', 'page_skjemautfyller__component_group'];
+    const coding = getGroupItemControl(this.props.item);
     if (coding.length > 0) {
       classNames.push('page_skjemautfyller__itemControl_' + coding[0].code);
     }
