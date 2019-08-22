@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { Dispatch } from 'redux';
 import * as moment from 'moment';
 import { FormChild } from '@helsenorge/toolkit/components/molecules/form';
 import { DatePicker, DatePickerResources } from '@helsenorge/toolkit/components/atoms/datepicker';
@@ -11,18 +10,20 @@ import { parseDate } from '@helsenorge/toolkit/components/atoms/time-input/date-
 import { Path } from '../../../util/skjemautfyller-core';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import Constants from '../../../constants/index';
-import { newDateValue } from '../../../actions/newValue';
+import { newDateValue, NewValueAction } from '../../../actions/newValue';
 import withCommonFunctions from '../../with-common-functions';
 import { isReadOnly, isRequired, getId, renderPrefix, getText } from '../../../util/index';
 import { getValidationTextExtension, getPlaceholder, getExtension } from '../../../util/extension';
 import { QuestionnaireItem, QuestionnaireResponseAnswer } from '../../../types/fhir';
 import { Resources } from '../../../util/resources';
 import TextView from '../textview';
+import { ThunkDispatch } from 'redux-thunk';
+import { GlobalState } from '../../../reducers';
 export interface Props {
   item: QuestionnaireItem;
   answer: QuestionnaireResponseAnswer;
   resources?: Resources;
-  dispatch?: Dispatch<{}>;
+  dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
   date?: Date;
   onDateChange?: (newDate?: Date) => void;
   onDateError?: (newDate?: Date) => void;

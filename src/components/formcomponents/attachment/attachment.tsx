@@ -1,6 +1,8 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { Dispatch } from 'redux';
+import { ThunkDispatch } from 'redux-thunk';
+import { GlobalState } from '../../../reducers';
+import { NewValueAction } from '../../../actions/newValue';
 
 import withCommonFunctions from '../../with-common-functions';
 import AttachmentHtml from './attachmenthtml';
@@ -18,7 +20,7 @@ import { newAttachment, removeAttachment } from '../../../actions/newValue';
 import { TextMessage } from '../../../types/text-message';
 
 export interface Props {
-  dispatch?: Dispatch<{}>;
+  dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
   path: Array<Path>;
   item: QuestionnaireItem;
   answer: Array<QuestionnaireResponseAnswer> | QuestionnaireResponseAnswer;
@@ -99,15 +101,17 @@ class AttachmentComponent extends React.Component<Props & ValidationProps> {
       return answer.map(v => {
         return {
           id: v.valueAttachment && v.valueAttachment.url ? v.valueAttachment.url : -1,
-          name: v.valueAttachment && v.valueAttachment.title ? v.valueAttachment.title : ''
-        } as UploadedFile
-      })
+          name: v.valueAttachment && v.valueAttachment.title ? v.valueAttachment.title : '',
+        } as UploadedFile;
+      });
     } else {
       if (answer && answer.valueAttachment && answer.valueAttachment.url) {
-        return [{
-          id: answer.valueAttachment.url,
-          name: answer.valueAttachment.title ? answer.valueAttachment.title : '',
-        } as UploadedFile];
+        return [
+          {
+            id: answer.valueAttachment.url,
+            name: answer.valueAttachment.title ? answer.valueAttachment.title : '',
+          } as UploadedFile,
+        ];
       }
     }
     return [];
@@ -116,7 +120,7 @@ class AttachmentComponent extends React.Component<Props & ValidationProps> {
   getPdfValue = () => {
     const attachments = this.getAttachment();
     if (attachments) {
-      return attachments.map(v => v.name).join(", ");
+      return attachments.map(v => v.name).join(', ');
     } else if (this.props.resources) {
       return this.props.resources.ikkeBesvart;
     }

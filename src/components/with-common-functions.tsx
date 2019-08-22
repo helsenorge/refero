@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { Dispatch } from 'redux';
+import { ThunkDispatch } from 'redux-thunk';
+import { GlobalState } from '../reducers';
 import {
   Path,
   getAnswerFromResponseItem,
@@ -22,6 +23,7 @@ import HelpButton from './help-button/help-button';
 import { HelpTrigger } from '@helsenorge/toolkit/components/icons';
 import { Collapse } from 'react-collapse';
 import itemControlConstants from '../constants/itemcontrol';
+import { NewValueAction } from '../actions/newValue';
 
 export interface Props {
   resources?: Resources;
@@ -42,7 +44,7 @@ export interface Props {
   requiredLabel?: string;
   showOptionalLabel?: boolean;
   showRequiredLabel?: boolean;
-  dispatch?: Dispatch<{}>;
+  dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
   visibleDeleteButton?: boolean;
   repeatButton?: JSX.Element;
   attachmentMaxFileSize?: number;

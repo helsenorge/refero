@@ -4,7 +4,9 @@ import { Path } from '../../../util/skjemautfyller-core';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { QuestionnaireItem } from '../../../types/fhir';
 import { Resources } from '../../../util/resources';
-import { Dispatch } from 'redux';
+import { ThunkDispatch } from 'redux-thunk';
+import { GlobalState } from '../../../reducers';
+import { NewValueAction } from '../../../actions/newValue';
 import { ConfirmBox } from '@helsenorge/toolkit/components/molecules/confirmbox';
 import { InlineButton } from '@helsenorge/toolkit/components/atoms/buttons/inline-button';
 import * as classNames from 'classnames';
@@ -13,7 +15,7 @@ interface Props {
   item: QuestionnaireItem;
   path: Array<Path>;
   resources?: Resources;
-  dispatch?: Dispatch<{}>;
+  dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
   mustShowConfirm: boolean;
   className?: string;
 }
@@ -77,5 +79,9 @@ class DeleteButton extends React.Component<Props, State> {
     );
   }
 }
-const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(DeleteButton);
+const connectedComponent = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+  mergeProps
+)(DeleteButton);
 export default connectedComponent;

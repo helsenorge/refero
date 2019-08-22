@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { connect, Store } from 'react-redux';
-import { Dispatch } from 'redux';
+import { ThunkDispatch } from 'redux-thunk';
+import { NewValueAction } from '../actions/newValue';
 import { Resources } from '../util/resources';
 import { GlobalState } from '../reducers';
 import { getFormDefinition, getFormData, getInitialFormData } from '../reducers/form';
@@ -40,7 +41,7 @@ interface StateProps {
 }
 
 interface DispatchProps {
-  dispatch: Dispatch<{}>;
+  dispatch: ThunkDispatch<GlobalState, void, NewValueAction>;
   mount: () => void;
   updateSkjema: (questionnaire: Questionnaire, questionnaireResponse?: QuestionnaireResponse, language?: string) => void;
   path: Array<Path>;
@@ -297,7 +298,7 @@ function mapStateToProps(state: GlobalState): StateProps {
   };
 }
 
-function mapDispatchToProps(dispatch: Dispatch<{}>, props: Props): DispatchProps {
+function mapDispatchToProps(dispatch: ThunkDispatch<GlobalState, void, NewValueAction>, props: Props): DispatchProps {
   return {
     updateSkjema: (questionnaire: Questionnaire, questionnaireResponse: QuestionnaireResponse, language: string): void => {
       dispatch(setSkjemaDefinition(questionnaire, questionnaireResponse, language));

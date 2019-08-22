@@ -1,6 +1,8 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { Dispatch } from 'redux';
+import { ThunkDispatch } from 'redux-thunk';
+import { GlobalState } from '../../../reducers';
+import { NewValueAction } from '../../../actions/newValue';
 import { Path } from '../../../util/skjemautfyller-core';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import CustomTag from '@helsenorge/toolkit/utils/custom-tag';
@@ -14,7 +16,7 @@ export interface Props {
   item: QuestionnaireItem;
   answer: QuestionnaireResponseAnswer;
   responseItem?: Array<QuestionnaireResponseItem>;
-  dispatch?: Dispatch<{}>;
+  dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
   path: Array<Path>;
   pdf?: boolean;
   className?: string;

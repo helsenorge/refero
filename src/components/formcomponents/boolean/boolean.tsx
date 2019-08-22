@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { Dispatch } from 'redux';
 import { QuestionnaireItem, QuestionnaireResponseAnswer } from '../../../types/fhir';
 import { CheckBox } from '@helsenorge/toolkit/components/atoms/checkbox';
 import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
@@ -8,15 +7,17 @@ import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/v
 import withCommonFunctions from '../../with-common-functions';
 import { Path } from '../../../util/skjemautfyller-core';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
-import { newBooleanValue } from '../../../actions/newValue';
+import { newBooleanValue, NewValueAction } from '../../../actions/newValue';
 import { isReadOnly, isRequired, getId, renderPrefix, getText } from '../../../util/index';
 import { getValidationTextExtension } from '../../../util/extension';
 import layoutChange from '@helsenorge/toolkit/higher-order-components/layoutChange';
 import Pdf from './pdf';
+import { ThunkDispatch } from 'redux-thunk';
+import { GlobalState } from '../../../reducers';
 export interface Props {
   item: QuestionnaireItem;
   answer: QuestionnaireResponseAnswer;
-  dispatch?: Dispatch<{}>;
+  dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
   path: Array<Path>;
   pdf?: boolean;
   promptLoginMessage?: () => void;
@@ -55,11 +56,13 @@ class Boolean extends React.Component<Props & ValidationProps, {}> {
   };
 
   getLabel = (): JSX.Element => {
-    return (<span
-      dangerouslySetInnerHTML={{
-        __html: `${renderPrefix(this.props.item)} ${getText(this.props.item)}`
-      }}
-    />);
+    return (
+      <span
+        dangerouslySetInnerHTML={{
+          __html: `${renderPrefix(this.props.item)} ${getText(this.props.item)}`,
+        }}
+      />
+    );
   };
 
   render(): JSX.Element | null {
@@ -102,11 +105,11 @@ class Boolean extends React.Component<Props & ValidationProps, {}> {
             {this.props.repeatButton}
           </div>
         ) : (
-            <React.Fragment>
-              {this.props.renderDeleteButton()}
-              <div>{this.props.repeatButton}</div>
-            </React.Fragment>
-          )}
+          <React.Fragment>
+            {this.props.renderDeleteButton()}
+            <div>{this.props.repeatButton}</div>
+          </React.Fragment>
+        )}
       </div>
     );
   }
