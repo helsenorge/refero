@@ -8,7 +8,7 @@ import { Resources } from '../../util/resources';
 import { Questionnaire, QuestionnaireItem, uri, Extension, QuestionnaireEnableWhen } from '../../types/fhir';
 import HelpButton from '../help-button/help-button';
 import itemControlConstants from '../../constants/itemcontrol';
-import RepeatButton from '../../components/formcomponents/repeat/repeat-button';
+import RepeatButton, { RepeatButton as RepeatButtonInstance } from '../../components/formcomponents/repeat/repeat-button';
 import Boolean from '../../components/formcomponents/boolean/boolean';
 import SafeInputField from '@helsenorge/toolkit/components/atoms/safe-input-field';
 
@@ -74,18 +74,25 @@ describe('repeat with enableWhen', () => {
 
     // clicking the repeat button, repeats the elements
     expect(wrapper.find(Boolean)).toHaveLength(1);
-    wrapper.find(RepeatButton).simulate('click');
+
+    wrapper.find(RepeatButtonInstance).simulate('click');
     expect(wrapper.find(Boolean)).toHaveLength(2);
 
     // no enableWhen components should be visible
     expect(wrapper.find(SafeInputField)).toHaveLength(0);
 
     // Click first boolean input, and enableWhen component should be enabled
-    wrapper.find("input[type='checkbox']").first().simulate('change', { taget: { checked: true } });
+    wrapper
+      .find("input[type='checkbox']")
+      .first()
+      .simulate('change', { taget: { checked: true } });
     expect(wrapper.find(SafeInputField)).toHaveLength(1);
 
     // Click last boolean input, and enableWhen component should be enabled
-    wrapper.find("input[type='checkbox']").last().simulate('change', { target: { checked: true } });
+    wrapper
+      .find("input[type='checkbox']")
+      .last()
+      .simulate('change', { target: { checked: true } });
     expect(wrapper.find(SafeInputField)).toHaveLength(2);
   });
 });
@@ -102,9 +109,9 @@ function createWrapper(
         loginButton={<React.Fragment />}
         store={store}
         authorized={true}
-        onCancel={() => { }}
-        onSave={() => { }}
-        onSubmit={() => { }}
+        onCancel={() => {}}
+        onSave={() => {}}
+        onSubmit={() => {}}
         resources={{} as Resources}
         questionnaire={questionnaire}
         onRequestHelpButton={helpButtonCb}
@@ -120,38 +127,38 @@ function questionnaireWithRepeatedEnableWhens(): Questionnaire {
     status: { value: 'active' },
     item: [
       {
-        linkId: "8",
-        text: "Gruppe",
-        type: "group",
+        linkId: '8',
+        text: 'Gruppe',
+        type: 'group',
         item: [
           {
-            linkId: "8.1",
-            text: "Gruppe med repeat",
-            type: "group",
+            linkId: '8.1',
+            text: 'Gruppe med repeat',
+            type: 'group',
             repeats: true,
             item: [
               {
-                linkId: "8.1.1",
-                text: "Checkbox",
-                type: "boolean",
+                linkId: '8.1.1',
+                text: 'Checkbox',
+                type: 'boolean',
               },
               {
-                linkId: "8.1.2",
-                text: "enableWhen",
-                type: "string",
+                linkId: '8.1.2',
+                text: 'enableWhen',
+                type: 'string',
                 enableWhen: [
                   {
-                    question: "8.1.1",
+                    question: '8.1.1',
                     answerBoolean: true,
-                  } as QuestionnaireEnableWhen
-                ]
-              }
-            ]
-          }
-        ]
-      }
-    ]
-  }
+                  } as QuestionnaireEnableWhen,
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  };
 }
 
 function questionnaireWithHelp(): Questionnaire {

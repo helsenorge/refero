@@ -3,7 +3,7 @@ import { GlobalState } from '../reducers/index';
 import { getFormDefinition, getFormData } from '../reducers/form';
 import { Props } from '../components/with-common-functions';
 
-import { Dispatch } from 'redux';
+import { Dispatch, Action } from 'redux';
 import {
   enableWhenMatchesAnswer,
   getQuestionnaireResponseItemWithLinkid,
@@ -12,6 +12,8 @@ import {
   getQuestionnaireDefinitionItem,
   getDefinitionItems,
 } from './skjemautfyller-core';
+import { ThunkDispatch } from 'redux-thunk';
+import { NewValueAction } from '../actions/newValue';
 
 export function mapStateToProps(state: GlobalState, originalProps: Props) {
   if (!originalProps.item || !originalProps.item.enableWhen) {
@@ -51,7 +53,7 @@ export function mergeProps(stateProps: Props, dispatchProps: Props, ownProps: Pr
   return Object.assign({}, ownProps, stateProps, dispatchProps);
 }
 
-export function mapDispatchToProps(dispatch: Dispatch<{}>, props: Props): Props {
+export function mapDispatchToProps(dispatch: ThunkDispatch<GlobalState, void, NewValueAction>, props: Props): Props {
   return {
     dispatch,
     path: props.path,

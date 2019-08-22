@@ -1,6 +1,8 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { Dispatch } from 'redux';
+import { ThunkDispatch } from 'redux-thunk';
+import { GlobalState } from '../../../reducers';
+import { NewValueAction } from '../../../actions/newValue';
 import { SafeTextarea } from '@helsenorge/toolkit/components/atoms/safe-textarea';
 import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
 import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
@@ -16,7 +18,7 @@ import TextView from '../textview';
 export interface Props {
   item: QuestionnaireItem;
   answer: QuestionnaireResponseAnswer;
-  dispatch?: Dispatch<{}>;
+  dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
   path: Array<Path>;
   pdf?: boolean;
   promptLoginMessage?: () => void;

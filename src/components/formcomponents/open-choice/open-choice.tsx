@@ -1,6 +1,8 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { Dispatch } from 'redux';
+import { ThunkDispatch } from 'redux-thunk';
+import { GlobalState } from '../../../reducers';
+import { NewValueAction } from '../../../actions/newValue';
 import TextField from './text-field';
 import { Path } from '../../../util/skjemautfyller-core';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
@@ -36,7 +38,7 @@ export interface Props {
   id?: string;
   pdf?: boolean;
   promptLoginMessage?: () => void;
-  dispatch?: Dispatch<{}>;
+  dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
   resources?: Resources;
   containedResources?: Resource[];
   renderDeleteButton: () => JSX.Element | undefined;

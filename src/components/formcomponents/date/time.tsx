@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { Dispatch } from 'redux';
 import * as moment from 'moment';
 import { parseDate, getHoursFromTimeString, getMinutesFromTimeString } from '@helsenorge/toolkit/components/atoms/time-input/date-core';
 import TimeInput from '@helsenorge/toolkit/components/atoms/time-input';
@@ -11,19 +10,21 @@ import withCommonFunctions from '../../with-common-functions';
 import ExtensionConstants from '../../../constants/extensions';
 import { Path } from '../../../util/skjemautfyller-core';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
-import { newTimeValue } from '../../../actions/newValue';
+import { newTimeValue, NewValueAction } from '../../../actions/newValue';
 import { getExtension, getValidationTextExtension } from '../../../util/extension';
 import { isReadOnly, isRequired, getId, renderPrefix, getText } from '../../../util/index';
 import { QuestionnaireItem, QuestionnaireResponseAnswer } from '../../../types/fhir';
 import { Resources } from '../../../util/resources';
 import TextView from '../textview';
+import { ThunkDispatch } from 'redux-thunk';
+import { GlobalState } from '../../../reducers';
 
 export interface Props {
   value?: string;
   answer: QuestionnaireResponseAnswer;
   item: QuestionnaireItem;
   resources?: Resources;
-  dispatch?: Dispatch<{}>;
+  dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
   path: Array<Path>;
   onTimeChange?: (newTime: string) => void;
   pdf?: boolean;

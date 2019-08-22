@@ -1,10 +1,9 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { Dispatch } from 'redux';
 import { Options } from '@helsenorge/toolkit/components/atoms/radio-group';
 import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
 import withCommonFunctions from '../../with-common-functions';
-import { newCodingValue, removeCodingValue } from '../../../actions/newValue';
+import { newCodingValue, removeCodingValue, NewValueAction } from '../../../actions/newValue';
 import { Path } from '../../../util/skjemautfyller-core';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { QuestionnaireItem, QuestionnaireResponseAnswer, Resource, Coding, QuestionnaireResponseItem } from '../../../types/fhir';
@@ -24,13 +23,15 @@ import TextView from '../textview';
 import DropdownView from './dropdown-view';
 import RadioView from './radio-view';
 import CheckboxView from './checkbox-view';
+import { ThunkDispatch } from 'redux-thunk';
+import { GlobalState } from '../../../reducers';
 
 export interface ChoiceProps {
   item: QuestionnaireItem;
   answer: Array<QuestionnaireResponseAnswer> | QuestionnaireResponseAnswer;
   resources?: Resources;
   containedResources?: Resource[];
-  dispatch?: Dispatch<{}>;
+  dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
   path: Array<Path>;
   id?: string;
   pdf?: boolean;

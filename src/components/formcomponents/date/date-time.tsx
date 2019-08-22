@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { Dispatch } from 'redux';
 import * as moment from 'moment';
 import 'moment/locale/nb';
 import withCommonFunctions, { Props as CommonProps } from '../../with-common-functions';
@@ -13,18 +12,20 @@ import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/m
 import { parseDate } from '@helsenorge/toolkit/components/atoms/time-input/date-core';
 import Constants from '../../../constants/index';
 import ExtensionConstants from '../../../constants/extensions';
-import { newDateTimeValue } from '../../../actions/newValue';
+import { newDateTimeValue, NewValueAction } from '../../../actions/newValue';
 import { isRequired, getId, renderPrefix, getText, isReadOnly } from '../../../util/index';
 import { getValidationTextExtension, getExtension } from '../../../util/extension';
 import { QuestionnaireItem, QuestionnaireResponseAnswer } from '../../../types/fhir';
 import { Resources } from '../../../util/resources';
 import TextView from '../textview';
+import { ThunkDispatch } from 'redux-thunk';
+import { GlobalState } from '../../../reducers';
 
 export interface Props {
   item: QuestionnaireItem;
   answer: QuestionnaireResponseAnswer;
   resources?: Resources;
-  dispatch?: Dispatch<{}>;
+  dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
   path: Array<Path>;
   pdf?: boolean;
   promptLoginMessage?: () => void;

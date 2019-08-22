@@ -5,7 +5,9 @@ import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/m
 import { QuestionnaireItem, QuestionnaireResponseItem } from '../../../types/fhir';
 import { getRepeatsTextExtension } from '../../../util/extension';
 import { Resources } from '../../../util/resources';
-import { Dispatch } from 'redux';
+import { ThunkDispatch } from 'redux-thunk';
+import { GlobalState } from '../../../reducers';
+import { NewValueAction } from '../../../actions/newValue';
 import { InlineButton } from '@helsenorge/toolkit/components/atoms/buttons/inline-button';
 import { addRepeatItem } from '../../../actions/newValue';
 
@@ -14,10 +16,10 @@ interface Props {
   parentPath?: Array<Path>;
   responseItems?: Array<QuestionnaireResponseItem>;
   resources?: Resources;
-  dispatch?: Dispatch<{}>;
+  dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
 }
 
-const RepeatButton: React.SFC<Props> = ({ item, resources, dispatch, parentPath, responseItems }) => {
+export const RepeatButton: React.SFC<Props> = ({ item, resources, dispatch, parentPath, responseItems }) => {
   const onAddRepeatItem = () => {
     if (dispatch && item) {
       dispatch(addRepeatItem(parentPath, item, responseItems));
@@ -36,5 +38,9 @@ const RepeatButton: React.SFC<Props> = ({ item, resources, dispatch, parentPath,
   );
 };
 
-const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(RepeatButton);
+const connectedComponent = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+  mergeProps
+)(RepeatButton);
 export default connectedComponent;

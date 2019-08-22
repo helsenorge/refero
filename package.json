@@ -1,6 +1,6 @@
 {
   "name": "@helsenorge/skjemautfyller",
-  "version": "2.6.7",
+  "version": "3.0.0",
   "main": "index.js",
   "author": "helsenorge",
   "license": "UNLICENSED",
@@ -22,7 +22,16 @@
       "pre-commit": "pretty-quick --staged"
     }
   },
+  "peerDependencies": {
+    "@helsenorge/toolkit": "^7.0.0",
+    "react": "^16.8.4",
+    "react-dom": "^16.8.4",
+    "react-redux": "^7.1.0",
+    "redux": "^4.0.4",
+    "redux-thunk": "^2.3.0"
+  },
   "devDependencies": {
+    "@helsenorge/toolkit": "^7.0.0",
     "@types/chai": "^3.5.2",
     "@types/classnames": "2.2.6",
     "@types/enzyme": "3.1.15",
@@ -49,21 +58,20 @@
     "react-collapse": "^4.0.3",
     "react-dom": "^16.8.4",
     "react-motion": "^0.5.2",
-    "react-redux": "5.0.6",
-    "redux": "^3.6.0",
+    "react-redux": "^7.1.0",
+    "redux": "^4.0.4",
+    "redux-thunk": "^2.3.0",
     "redux-mock-store": "^1.1.4",
-    "redux-thunk": "2.2.0",
-    "tabbable": "^3.1.1",
     "ts-jest": "^23.10.5",
-    "typescript": "^2.8.3",
+    "typescript": "3.5.3",
     "whatwg-fetch": "2.0.4"
   },
   "dependencies": {
-    "@helsenorge/toolkit": "6.2.5",
     "marked": "^0.3.17",
     "moment": "2.22.2",
     "uuid": "2.0.3",
-    "isomorphic-fetch": "^2.2.1"
+    "isomorphic-fetch": "^2.2.1",
+    "tabbable": "^3.1.1"
   },
   "resolutions": {
     "write-file-atomic": "2.4.1"
