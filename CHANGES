@@ -1,3 +1,9 @@
+3.0.1
+-----
+* Empty answer objects used to remain in the QuestionnaireResponse structure when
+  an answer was removed. This should no longer be the case. An empty answer should
+  now result in the answer property being removed entirely.
+
 3.0.0
 -----
 * Use new versions of redux (7.1.0), react-redux (4.0.4) and redux-thunk (2.3)

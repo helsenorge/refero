@@ -1,0 +1,71 @@
+{
+  "resourceType": "QuestionnaireResponse",
+  "status": "in-progress",
+  "questionnaire": {
+    "reference": "bar"
+  },
+  "item": [
+    {
+      "linkId": "1",
+      "text": "Gruppe",
+      "item": [
+        {
+          "linkId": "1.1",
+          "text": "Text"
+        },
+        {
+          "linkId": "1.2",
+          "text": "String"
+        },
+        {
+          "linkId": "1.3",
+          "text": "Quantity"
+        },
+        {
+          "linkId": "1.4",
+          "text": "Integer"
+        },
+        {
+          "linkId": "1.5",
+          "text": "Decimal"
+        },
+        {
+          "linkId": "1.6",
+          "text": "Date"
+        },
+        {
+          "linkId": "1.7",
+          "text": "Time"
+        },
+        {
+          "linkId": "1.8",
+          "text": "DateTime"
+        },
+        {
+          "linkId": "1.9",
+          "text": "Boolean"
+        },
+        {
+          "linkId": "1.10",
+          "text": "Attachment"
+        },
+        {
+          "linkId": "1.11",
+          "text": "Choice - Radio"
+        },
+        {
+          "linkId": "1.12",
+          "text": "Choice - Checkbox"
+        },
+        {
+          "linkId": "1.13",
+          "text": "OpenChoice - Radio"
+        },
+        {
+          "linkId": "1.14",
+          "text": "OpenChoice - Checkbox"
+        }
+      ]
+    }
+  ]
+}
