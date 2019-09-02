@@ -1,5 +1,5 @@
 import { createGlobalStateWithQuestionnaire } from '../../utils';
-import { GlobalState } from '../../../';
+import { GlobalState } from '../../..';
 import * as fs from 'fs';
 
 let qr = JSON.parse(fs.readFileSync(__dirname + '/qr.json').toString());
