@@ -277,6 +277,10 @@ function processRemoveCodingValueAction(action: NewValueAction, state: Form) {
       }
       return true;
     });
+
+    if (responseItem.answer.length === 0) {
+      delete responseItem.answer;
+    }
   }
 
   return newState;
@@ -296,6 +300,10 @@ function processRemoveCodingStringValueAction(action: NewValueAction, state: For
     return true;
   });
 
+  if (responseItem.answer.length === 0) {
+    delete responseItem.answer;
+  }
+
   return newState;
 }
 
@@ -311,6 +319,10 @@ function processRemoveAttachmentValueAction(action: NewValueAction, state: Form)
     responseItem.answer = responseItem.answer.filter(el => el && el.valueAttachment && el.valueAttachment.url !== attachmentToRemove);
   }
 
+  if (responseItem.answer.length === 0) {
+    delete responseItem.answer;
+  }
+
   return newstate;
 }
 
@@ -321,24 +333,22 @@ function processNewValueAction(action: NewValueAction, state: Form): Form {
     return newState;
   }
 
-  if (!responseItem.answer) {
-    responseItem.answer = [<QuestionnaireResponseAnswer>{}];
-  }
+  let hasAnswer = false;
 
   if (!responseItem.answer) {
     responseItem.answer = [];
   }
-  if (responseItem.answer.length === 0) {
-    responseItem.answer[0] = {} as QuestionnaireResponseAnswer;
-  }
-  let hasAnswer = false;
+
   let answer = responseItem.answer[0];
+  if (!answer) {
+    answer = {} as QuestionnaireResponseAnswer;
+    responseItem.answer.push(answer);
+  }
 
   if (action.valueBoolean !== undefined) {
     hasAnswer = true;
     answer.valueBoolean = action.valueBoolean;
   }
-
   if (action.valueDecimal !== undefined && !isNaN(action.valueDecimal)) {
     hasAnswer = true;
     answer.valueDecimal = action.valueDecimal;
@@ -363,34 +373,35 @@ function processNewValueAction(action: NewValueAction, state: Form): Form {
     hasAnswer = true;
     answer.valueString = action.valueString;
   }
+  if (action.valueQuantity && action.valueQuantity.value !== undefined) {
+    hasAnswer = true;
+    answer.valueQuantity = action.valueQuantity;
+  }
   if (action.valueCoding) {
     hasAnswer = true;
 
+    let coding = <Coding>{
+      system: action.valueCoding.system,
+      code: action.valueCoding.code,
+      display: action.valueCoding.display,
+    };
+
     if (action.multipleAnswers) {
-      // Coding with checkbox view can have multiple answers
-      let newAnswer = {} as QuestionnaireResponseAnswer;
-      newAnswer.valueCoding = <Coding>{
-        system: action.valueCoding.system,
-        code: action.valueCoding.code,
-        display: action.valueCoding.display,
-      };
-      if (Object.keys(responseItem.answer[0]).length === 0) {
-        responseItem.answer[0] = newAnswer;
-      } else if (responseItem.answer.indexOf(newAnswer) < 0) {
+      if (Object.keys(answer).length === 0) {
+        answer.valueCoding = coding;
+      } else {
+        let newAnswer = {} as QuestionnaireResponseAnswer;
+        newAnswer.valueCoding = coding;
         responseItem.answer.push(newAnswer);
       }
     } else {
-      answer.valueCoding = <Coding>{
-        system: action.valueCoding.system,
-        code: action.valueCoding.code,
-        display: action.valueCoding.display,
-      };
+      answer.valueCoding = coding;
     }
   }
   if (action.valueAttachment && Object.keys(action.valueAttachment).length > 0) {
     hasAnswer = true;
 
-    var attachment = <Attachment>{
+    let attachment = <Attachment>{
       url: action.valueAttachment.url,
       title: action.valueAttachment.title,
       data: action.valueAttachment.data,
@@ -402,28 +413,28 @@ function processNewValueAction(action: NewValueAction, state: Form): Form {
     };
 
     if (action.multipleAnswers) {
-      let newAnswer = {} as QuestionnaireResponseAnswer;
-      newAnswer.valueAttachment = attachment;
-      if (Object.keys(responseItem.answer[0]).length === 0) {
-        responseItem.answer[0] = newAnswer;
-      } else if (responseItem.answer.indexOf(newAnswer) < 0) {
+      if (Object.keys(answer).length === 0) {
+        answer.valueAttachment = attachment;
+      } else {
+        let newAnswer = {} as QuestionnaireResponseAnswer;
+        newAnswer.valueAttachment = attachment;
         responseItem.answer.push(newAnswer);
       }
     } else {
       answer.valueAttachment = attachment;
     }
   }
-  if (action.valueQuantity) {
-    hasAnswer = true;
-    answer.valueQuantity = action.valueQuantity;
-  }
+
   if (!hasAnswer) {
-    if (action.valueAttachment !== undefined && Object.keys(action.valueAttachment).length === 0) {
-      delete responseItem.answer; // Bare støtte for ett vedlegg og ingen initial value
-    } else {
-      nullAnswerValue(answer);
+    nullAnswerValue(answer);
+
+    if (Object.keys(answer).filter(prop => !prop.startsWith('value')).length === 0) {
+      if (responseItem.answer && responseItem.answer.length === 1) {
+        delete responseItem.answer;
+      }
     }
   }
+
   if (action.item) {
     updateEnableWhenItemsIteration([action.item], newState.FormData, newState.FormDefinition);
   }
@@ -441,17 +452,8 @@ function processNewCodingStringValueAction(action: NewValueAction, state: Form):
   if (!responseItem.answer) {
     responseItem.answer = [];
   }
-  if (responseItem.answer.length === 0) {
-    responseItem.answer[0] = {} as QuestionnaireResponseAnswer;
-  }
-
-  let hasAnswer = false;
-  let answer = responseItem.answer[0];
 
   if (!isStringEmpty(action.valueString)) {
-    hasAnswer = true;
-    //answer.valueString = action.valueString;
-
     let found = -1;
     for (let i = 0; i < responseItem.answer.length; i++) {
       if (!isStringEmpty(responseItem.answer[i].valueString)) {
@@ -463,6 +465,7 @@ function processNewCodingStringValueAction(action: NewValueAction, state: Form):
     let newAnswer = {
       valueString: action.valueString,
     } as QuestionnaireResponseAnswer;
+
     if (found >= 0) {
       responseItem.answer[found] = newAnswer;
     } else {
