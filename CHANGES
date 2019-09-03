@@ -1,3 +1,8 @@
+3.0.2
+-----
+* All components now properly renders their children. In previous versions, some
+  component types did not render their childre.
+
 3.0.0
 -----
 * Use new versions of redux (7.1.0), react-redux (4.0.4) and redux-thunk (2.3)
