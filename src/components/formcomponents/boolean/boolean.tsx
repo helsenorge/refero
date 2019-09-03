@@ -110,6 +110,7 @@ class Boolean extends React.Component<Props & ValidationProps, {}> {
             <div>{this.props.repeatButton}</div>
           </React.Fragment>
         )}
+        {this.props.children ? <div className="nested-fieldset nested-fieldset--full-height">{this.props.children}</div> : null}
       </div>
     );
   }

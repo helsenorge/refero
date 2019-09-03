@@ -18,35 +18,9 @@ import {
 import { GlobalState } from '../../reducers/index';
 import itemType from '../../constants/itemType';
 import { OPEN_CHOICE_ID, OPEN_CHOICE_LABEL } from '../../constants';
+import Valueset from './__data__/valuesets/valueset-8459';
 
 const should = chai.should();
-
-let valueSet = `{
-  "resourceType": "ValueSet",
-  "id": "8459",
-  "version": "1.0",
-  "name": "urn:oid:8459",
-  "title": "Kjønn",
-  "status": "draft",
-  "publisher": "Direktoratet for e-helse",
-  "compose": {
-    "include": [
-        {
-            "system": "urn:oid:2.16.578.1.12.4.1.8459",
-            "concept": [
-                {
-                    "code": "1",
-                    "display": "Mann"
-                },
-                {
-                    "code": "2",
-                    "display": "Kvinne"
-                }
-            ]
-        }
-    ]
-  }
-}`;
 
 export const dataModel: GlobalState = {
   skjemautfyller: {
@@ -54,7 +28,7 @@ export const dataModel: GlobalState = {
       Language: 'nb-NO',
       FormDefinition: {
         Content: <Questionnaire>{
-          contained: [JSON.parse(valueSet)],
+          contained: [Valueset],
           status: {
             value: 'draft',
           },
