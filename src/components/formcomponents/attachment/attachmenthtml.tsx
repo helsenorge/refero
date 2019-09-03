@@ -53,6 +53,7 @@ const attachmentHtml: React.SFC<Props & ValidationProps> = ({
   attachmentValidTypes,
   minFiles,
   item,
+  children,
   ...other
 }) => {
   const maxFilesize = attachmentMaxFileSize ? attachmentMaxFileSize : constants.MAX_FILE_SIZE;
@@ -85,6 +86,7 @@ const attachmentHtml: React.SFC<Props & ValidationProps> = ({
           minFiles={minFiles}
         />
       </Validation>
+      {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
     </div>
   );
 };
@@ -95,7 +97,7 @@ function getErrorMessage(
   item: QuestionnaireItem,
   genericErrorText?: string,
   file?: File,
-  resources?: Resources,
+  resources?: Resources
 ) {
   if (file && resources) {
     if (!mimeTypeIsValid(file, validFileTypes)) {

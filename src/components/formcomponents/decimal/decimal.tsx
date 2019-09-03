@@ -161,7 +161,7 @@ class Decimal extends React.Component<Props & ValidationProps, {}> {
         ) : (
           <div>{this.props.repeatButton}</div>
         )}
-        {this.props.children}
+        {this.props.children ? <div className="nested-fieldset nested-fieldset--full-height">{this.props.children}</div> : null}
       </div>
     );
   }

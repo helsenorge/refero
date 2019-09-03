@@ -1,4 +1,4 @@
-import enableWhenDataModel from './data/repeatsUnderEnableWhen/';
+import enableWhenDataModel from './__data__/repeatsUnderEnableWhen';
 import { Form } from '../form';
 import { Coding, QuestionnaireItem } from '../../types/fhir';
 import { getQuestionnaireDefinitionItem, getDefinitionItems } from '../../util/skjemautfyller-core';

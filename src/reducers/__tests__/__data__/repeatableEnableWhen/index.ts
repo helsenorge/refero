@@ -1,4 +1,4 @@
-import { GlobalState } from '../../../';
+import { GlobalState } from '../../..';
 import { QuestionnaireResponse, Questionnaire } from '../../../../types/fhir';
 import * as fs from 'fs';
 

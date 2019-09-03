@@ -194,7 +194,8 @@ class DateComponent extends React.Component<Props & ValidationProps> {
             {this.props.renderDeleteButton()}
           </DatePicker>
         </Validation>
-        {this.props.repeatButton}
+        <div>{this.props.repeatButton}</div>
+        {this.props.children ? <div className="nested-fieldset nested-fieldset--full-height">{this.props.children}</div> : null}
       </div>
     );
   }

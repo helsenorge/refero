@@ -23,7 +23,7 @@ import {
   getQuestionnaireResponseItemWithLinkid,
   getItemWithIdFromResponseItemArray,
 } from '../../util/skjemautfyller-core';
-import dataModel from './data/dummy-data-model';
+import dataModel from './__data__/dummy-data-model';
 
 const should = chai.should();
 

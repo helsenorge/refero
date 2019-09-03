@@ -1,0 +1,26 @@
+{
+  "resourceType": "ValueSet",
+  "id": "8459",
+  "version": "1.0",
+  "name": "urn:oid:8459",
+  "title": "Kjønn",
+  "status": "draft",
+  "publisher": "Direktoratet for e-helse",
+  "compose": {
+    "include": [
+      {
+        "system": "urn:oid:2.16.578.1.12.4.1.8459",
+        "concept": [
+          {
+            "code": "1",
+            "display": "Mann"
+          },
+          {
+            "code": "2",
+            "display": "Kvinne"
+          }
+        ]
+      }
+    ]
+  }
+}

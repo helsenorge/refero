@@ -1,4 +1,4 @@
-import enableWhenDataModel from './data/repeatableEnableWhen/';
+import enableWhenDataModel from './__data__/repeatableEnableWhen';
 import { Form } from '../form';
 import { QuestionnaireItem } from '../../types/fhir';
 import { getQuestionnaireDefinitionItem, getDefinitionItems } from '../../util/skjemautfyller-core';
