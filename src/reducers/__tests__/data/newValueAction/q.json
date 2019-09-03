@@ -1,0 +1,172 @@
+{
+  "resourceType": "Questionnaire",
+  "id": "test-enableWhen-02",
+  "status": "draft",
+  "contained": [
+    {
+      "resourceType": "ValueSet",
+      "id": "MyOptions",
+      "status": "draft",
+      "compose": {
+        "include": [
+          {
+            "system": "foo",
+            "concept": [
+              {
+                "code": "1",
+                "display": "Ja"
+              },
+              {
+                "code": "2",
+                "display": "Nei"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "item": [
+    {
+      "linkId": "1",
+      "text": "Gruppe",
+      "type": "group",
+      "item": [
+        {
+          "linkId": "1.1",
+          "text": "Text",
+          "type": "text"
+        },
+        {
+          "linkId": "1.2",
+          "text": "String",
+          "type": "string"
+        },
+        {
+          "linkId": "1.3",
+          "text": "Quantity",
+          "type": "quantity"
+        },
+        {
+          "linkId": "1.4",
+          "text": "Integer",
+          "type": "integer"
+        },
+        {
+          "linkId": "1.5",
+          "text": "Decimal",
+          "type": "decimal"
+        },
+        {
+          "linkId": "1.6",
+          "text": "Date",
+          "type": "date"
+        },
+        {
+          "linkId": "1.7",
+          "text": "Time",
+          "type": "time"
+        },
+        {
+          "linkId": "1.8",
+          "text": "DateTime",
+          "type": "dateTime"
+        },
+        {
+          "linkId": "1.9",
+          "text": "Boolean",
+          "type": "boolean"
+        },
+        {
+          "linkId": "1.10",
+          "text": "Attachment",
+          "type": "attachment"
+        },
+        {
+          "linkId": "1.11",
+          "text": "Choice - Radio",
+          "type": "choice",
+          "options": {
+            "reference": "#MyOptions"
+          },
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "radio-button"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "1.12",
+          "text": "Choice - Checkbox",
+          "type": "choice",
+          "options": {
+            "reference": "#MyOptions"
+          },
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "check-box"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "1.13",
+          "text": "OpenChoice - Radio",
+          "type": "open-choice",
+          "options": {
+            "reference": "#MyOptions"
+          },
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "radio-button"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "1.14",
+          "text": "OpenChoice - Checkbox",
+          "type": "open-choice",
+          "options": {
+            "reference": "#MyOptions"
+          },
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "check-box"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
