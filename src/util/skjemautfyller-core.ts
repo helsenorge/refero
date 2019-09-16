@@ -445,6 +445,9 @@ export function enableWhenMatchesAnswer(
   answers: Array<QuestionnaireResponseAnswer> | undefined
 ): boolean {
   if (!enableWhen || !answers || answers.length === 0) {
+    if (enableWhen.hasAnswer === false) {
+      return true;
+    }
     return false;
   }
   let matches = true;
@@ -481,7 +484,8 @@ export function enableWhenMatchesAnswer(
       matches = matches && enableWhenMatchesReferenceAnswer(enableWhen, answer);
     }
   });
-  return matches;
+
+  return matches && enableWhen.hasAnswer !== false;
 }
 
 export interface Path {

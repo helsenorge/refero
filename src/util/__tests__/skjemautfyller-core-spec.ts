@@ -7,6 +7,7 @@ import {
   createPathForItem,
   getResponseItemWithPath,
   getItemWithTypeFromArray,
+  enableWhenMatchesAnswer,
 } from '../skjemautfyller-core';
 import {
   QuestionnaireResponseItem,
@@ -14,6 +15,7 @@ import {
   QuestionnaireResponse,
   QuestionnaireResponseAnswer,
   QuestionnaireItem,
+  QuestionnaireEnableWhen,
 } from '../../types/fhir';
 import { GlobalState } from '../../reducers/index';
 import itemType from '../../constants/itemType';
@@ -865,5 +867,18 @@ describe('getItemWithTypeFromArray', () => {
     } as QuestionnaireResponseItem;
     const response = getItemWithTypeFromArray(itemType.ATTATCHMENT, [item1]);
     expect(response).toMatchSnapshot();
+  });
+});
+describe('Given a Questionnaire with hasAnswer=false', () => {
+  it('When an item does not have an answer then enablewhen should return true', () => {
+    const result = enableWhenMatchesAnswer({ question: '1.0.0', hasAnswer: false } as QuestionnaireEnableWhen, undefined);
+    expect(result).toBe(true);
+  });
+
+  it('When an item does have an answer then enablewhen should return false', () => {
+    const result = enableWhenMatchesAnswer({ question: '1.0.0', hasAnswer: false } as QuestionnaireEnableWhen, [
+      { valueString: 'et svar' } as QuestionnaireResponseAnswer,
+    ]);
+    expect(result).toBe(false);
   });
 });

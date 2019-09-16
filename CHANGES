@@ -1,6 +1,8 @@
 3.0.3
 -----
 * Fixed bug when a boolean with more than one children is repeated
+* When using hasAnswer = false in enableWhen, then the item should be visible 
+  if there are no answer.
 
 3.0.2
 -----
