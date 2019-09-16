@@ -575,3 +575,5 @@ describe('update enable when action', () => {
     expect(integer.deactivated).toEqual(true);
   });
 });
+
+'';

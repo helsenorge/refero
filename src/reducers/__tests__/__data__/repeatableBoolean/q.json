@@ -1,0 +1,66 @@
+{
+  "resourceType": "Questionnaire",
+  "id": "test-booleanRepeat",
+  "meta": {
+    "versionId": "23",
+    "lastUpdated": "2019-09-11T13:07:11.983+00:00",
+    "profile": ["http://ehelse.no/fhir/StructureDefinition/sdf-Questionnaire"],
+    "tag": [{ "system": "urn:ietf:bcp:47", "code": "nb-NO", "display": "Norsk bokmål" }]
+  },
+  "language": "nb-NO",
+  "url": "https://skjemakatalog-dev-fhir-apimgmt.azure-api.net/api/v1/Questionnaire/test-booleanRepeat",
+  "version": "0.1",
+  "title": "test",
+  "status": "draft",
+  "date": "2018-02-02",
+  "publisher": "Direktoratet for e-helse",
+  "description": "test",
+  "purpose": "Test",
+  "approvalDate": "2018-02-02",
+  "lastReviewDate": "2018-02-02",
+  "contact": [{ "name": "http://www.e-helse.no" }],
+  "copyright": "Er utviklet av Direktoratet for e-helse til fri benyttelse",
+  "subjectType": ["Person"],
+  "item": [
+    {
+      "linkId": "1",
+      "text": "tittel",
+      "type": "group",
+      "item": [
+        {
+          "linkId": "1.0",
+          "text": "Analyse",
+          "type": "group",
+          "repeats": true,
+          "item": [
+            {
+              "linkId": "1.0.3",
+              "text": "Mor",
+              "type": "boolean",
+              "repeats": false,
+              "item": [
+                {
+                  "linkId": "1.0.3.1",
+                  "text": "Fullblod",
+                  "type": "boolean",
+                  "enableWhen": [{ "question": "1.0.3", "answerBoolean": true }]
+                }
+              ]
+            },
+            {
+              "linkId": "1.0.4",
+              "text": "Far",
+              "type": "boolean",
+              "repeats": false,
+              "item": [
+                { "linkId": "1.0.4.0", "text": "Fullblod", "type": "boolean" },
+                { "linkId": "1.0.4.1", "text": "Annet", "type": "boolean" },
+                { "linkId": "1.0.4.2", "text": "Annet2", "type": "boolean" }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

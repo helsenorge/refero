@@ -1,3 +1,7 @@
+3.0.3
+-----
+* Fixed bug when a boolean with more than one children is repeated
+
 3.0.2
 -----
 * All components now properly renders their children. In previous versions, some
