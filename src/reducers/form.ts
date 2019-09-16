@@ -250,15 +250,21 @@ function copyItem(
       target.answer = [];
     }
     const answer = source.answer[i];
+    const targetAnswer = {
+      item: [] as QuestionnaireResponseItem[],
+    } as QuestionnaireResponseAnswer;
+
     for (let j = 0; answer && answer.item && j < answer.item.length; j++) {
       const newResponseItem = {
         linkId: removeLinkIdSuffix(answer.item[j].linkId, '^') + repeatedId,
       } as QuestionnaireResponseItem;
-      target.answer.push({
-        item: [newResponseItem],
-      } as QuestionnaireResponseAnswer);
+      (targetAnswer.item as QuestionnaireResponseItem[]).push(newResponseItem);
+
+      target.text = source.text;
       copyItem(answer.item[j], newResponseItem, repeatedId);
     }
+
+    target.answer.push(targetAnswer);
   }
 
   return target;

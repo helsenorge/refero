@@ -1,0 +1,40 @@
+{
+  "resourceType": "QuestionnaireResponse",
+  "status": "in-progress",
+  "questionnaire": { "reference": "https://skjemakatalog-dev-fhir-apimgmt.azure-api.net/api/v1/Questionnaire/test-booleanRepeat" },
+  "item": [
+    {
+      "linkId": "1",
+      "text": "tittel",
+      "item": [
+        {
+          "linkId": "1.0^0",
+          "text": "Analyse",
+          "item": [
+            {
+              "linkId": "1.0.3^0",
+              "text": "Mor",
+              "answer": [
+                { "valueBoolean": false, "item": [{ "linkId": "1.0.3.1^0", "text": "Fullblod", "answer": [{ "valueBoolean": false }] }] }
+              ]
+            },
+            {
+              "linkId": "1.0.4^0",
+              "text": "Far",
+              "answer": [
+                {
+                  "valueBoolean": false,
+                  "item": [
+                    { "linkId": "1.0.4.0^0", "text": "Fullblod", "answer": [{ "valueBoolean": false }] },
+                    { "linkId": "1.0.4.1^0", "text": "Annet", "answer": [{ "valueBoolean": false }] },
+                    { "linkId": "1.0.4.2^0", "text": "Annet2", "answer": [{ "valueBoolean": false }] }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
