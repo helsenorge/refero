@@ -10,8 +10,19 @@ import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/v
 import { Path } from '../../../util/skjemautfyller-core';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { newStringValue } from '../../../actions/newValue';
-import { isReadOnly, isRequired, getId, renderPrefix, getText, getStringValue, getMaxLength, getPDFStringValue } from '../../../util/index';
-import { getValidationTextExtension, getPlaceholder, getMinLengthExtensionValue, getRegexExtension } from '../../../util/extension';
+import {
+  isReadOnly,
+  isRequired,
+  getId,
+  renderPrefix,
+  getText,
+  getStringValue,
+  getMaxLength,
+  getPDFStringValue,
+  validateText,
+  getTextValidationErrorMessage,
+} from '../../../util/index';
+import { getPlaceholder, getMinLengthExtensionValue, getRegexExtension } from '../../../util/extension';
 import withCommonFunctions from '../../with-common-functions';
 import { QuestionnaireItem, QuestionnaireResponseAnswer } from '../../../types/fhir';
 import { Resources } from '../../../util/resources';
@@ -30,7 +41,7 @@ export interface Props {
   renderDeleteButton: (className?: string) => JSX.Element | undefined;
   repeatButton: JSX.Element;
   oneToTwoColumn: boolean;
-
+  validateHtml: boolean;
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
 }
@@ -46,6 +57,14 @@ class String extends React.Component<Props & ValidationProps, {}> {
     if (promptLoginMessage) {
       promptLoginMessage();
     }
+  };
+
+  validateText = (value: string): boolean => {
+    return validateText(value, this.props.validateHtml);
+  };
+
+  getValidationErrorMessage = (value: string): string => {
+    return getTextValidationErrorMessage(value, this.props.item, this.props.resources);
   };
 
   getLabel(item: QuestionnaireItem) {
@@ -66,6 +85,7 @@ class String extends React.Component<Props & ValidationProps, {}> {
             id={getId(this.props.id)}
             inputName={getId(this.props.id)}
             value={getStringValue(answer)}
+            onChangeValidator={this.validateText}
             showLabel={true}
             label={this.getLabel(item)}
             isRequired={isRequired(item)}
@@ -74,7 +94,7 @@ class String extends React.Component<Props & ValidationProps, {}> {
             maxLength={getMaxLength(item)}
             onBlur={this.handleChange}
             pattern={getRegexExtension(item)}
-            errorMessage={getValidationTextExtension(item)}
+            errorMessage={this.getValidationErrorMessage}
             className="page_skjemautfyller__input"
             allowInputOverMaxLength
             helpButton={this.props.renderHelpButton()}

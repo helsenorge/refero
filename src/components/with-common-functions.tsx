@@ -42,6 +42,7 @@ export interface Props {
   onValidated?: (valid: boolean | undefined) => void;
   optionalLabel?: string;
   requiredLabel?: string;
+  validateHtml?: boolean;
   showOptionalLabel?: boolean;
   showRequiredLabel?: boolean;
   dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
@@ -235,6 +236,7 @@ export default function withCommonFunctions<T>(WrappedComponent: React.Component
               path={createPathForItem(path, item, responseItem)}
               headerTag={getChildHeaderTag(this.props.item, headerTag)}
               onValidated={this.props.onValidated}
+              validateHtml={this.props.validateHtml}
               addFormComponent={this.props.addFormComponent}
               removeFormComponent={this.props.removeFormComponent}
               optionalLabel={this.props.optionalLabel}

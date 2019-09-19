@@ -1,3 +1,8 @@
+3.1.0
+-----
+* Added validation of text and string input. If the new prop validateHtml = true then
+* html tags are allowed. Added resource validationNotAllowed (er ikke tillatt)
+
 3.0.3
 -----
 * Fixed bug when a boolean with more than one children is repeated
