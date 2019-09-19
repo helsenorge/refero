@@ -73,7 +73,7 @@ interface Props {
   questionnaireResponse?: QuestionnaireResponse;
   language?: string;
   sticky?: boolean;
-  validateHtml?: boolean;
+  validateScriptInjection?: boolean;
   validationSummaryPlacement?: ValidationSummaryPlacement;
   onRequestHelpButton?: (
     item: QuestionnaireItem,
@@ -188,7 +188,7 @@ class Skjemautfyller extends React.Component<StateProps & DispatchProps & Props,
               onRequestHelpElement={this.props.onRequestHelpElement}
               attachmentMaxFileSize={this.props.attachmentMaxFileSize}
               attachmentValidTypes={this.props.attachmentValidTypes}
-              validateHtml={this.props.validateHtml}
+              validateScriptInjection={this.props.validateScriptInjection}
             />
           );
         });

@@ -214,15 +214,20 @@ export function removeLinkIdSuffix(linkId: string, suffix: string): string {
   return linkId.split(suffix)[0];
 }
 
-export function validateText(value: string, validateHtml: boolean): boolean {
-  if (validateHtml) {
+export function validateText(value: string, validateScriptInjection: boolean): boolean {
+  if (!validateScriptInjection) {
     return true;
   }
   return isValid(value);
 }
 
-export function getTextValidationErrorMessage(value: string, item: QuestionnaireItem, resources?: Resources): string {
-  if (value && typeof value === 'string') {
+export function getTextValidationErrorMessage(
+  value: string,
+  validateScriptInjection: boolean,
+  item: QuestionnaireItem,
+  resources?: Resources
+): string {
+  if (validateScriptInjection && value && typeof value === 'string') {
     const invalid: string[] = invalidNodes(value);
 
     if (invalid && invalid.length > 0) {

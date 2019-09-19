@@ -1,6 +1,6 @@
 3.1.0
 -----
-* Added validation of text and string input. If the new prop validateHtml = true then
+* Added validation of text and string input. If the new prop validateScriptInjection = true then
 * html tags are allowed. Added resource validationNotAllowed (er ikke tillatt)
 
 3.0.3
