@@ -41,12 +41,12 @@ export interface Props {
   renderDeleteButton: (className?: string) => JSX.Element | undefined;
   repeatButton: JSX.Element;
   oneToTwoColumn: boolean;
-  validateHtml: boolean;
+  validateScriptInjection: boolean;
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
 }
 
-class String extends React.Component<Props & ValidationProps, {}> {
+export class String extends React.Component<Props & ValidationProps, {}> {
   handleChange = (event: React.FormEvent<{}>): void => {
     const { dispatch, promptLoginMessage } = this.props;
     const value = (event.target as HTMLInputElement).value;
@@ -60,11 +60,11 @@ class String extends React.Component<Props & ValidationProps, {}> {
   };
 
   validateText = (value: string): boolean => {
-    return validateText(value, this.props.validateHtml);
+    return validateText(value, this.props.validateScriptInjection);
   };
 
   getValidationErrorMessage = (value: string): string => {
-    return getTextValidationErrorMessage(value, this.props.item, this.props.resources);
+    return getTextValidationErrorMessage(value, this.props.validateScriptInjection, this.props.item, this.props.resources);
   };
 
   getLabel(item: QuestionnaireItem) {

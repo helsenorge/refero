@@ -37,7 +37,7 @@ export interface Props {
   renderDeleteButton: (className?: string) => JSX.Element | undefined;
   id?: string;
   repeatButton: JSX.Element;
-  validateHtml: boolean;
+  validateScriptInjection: boolean;
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
   resources?: Resources;
@@ -63,11 +63,11 @@ class Text extends React.Component<Props & ValidationProps, {}> {
   };
 
   validateText = (value: string): boolean => {
-    return validateText(value, this.props.validateHtml);
+    return validateText(value, this.props.validateScriptInjection);
   };
 
   getValidationErrorMessage = (value: string): string => {
-    return getTextValidationErrorMessage(value, this.props.item, this.props.resources);
+    return getTextValidationErrorMessage(value, this.props.validateScriptInjection, this.props.item, this.props.resources);
   };
 
   render(): JSX.Element | null {
