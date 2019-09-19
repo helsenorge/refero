@@ -17,11 +17,12 @@ import * as uuid from 'uuid';
 import { QuestionnaireItem, QuestionnaireResponseAnswer } from '../types/fhir';
 import Constants from '../constants/index';
 import { Resources } from '../util/resources';
-import { getMaxOccursExtensionValue, getMarkdownExtensionValue } from './extension';
+import { getMaxOccursExtensionValue, getMarkdownExtensionValue, getValidationTextExtension } from './extension';
 import * as marked from 'marked';
 marked.setOptions({ sanitize: true });
 
 import { ComponentClass } from 'react';
+import { isValid, invalidNodes } from '@helsenorge/toolkit/utils/validation';
 
 export function getComponentForItem(type: QuestionnaireItemTypeList) {
   if (String(type) === 'group') {
@@ -211,4 +212,23 @@ export function removeLinkIdSuffix(linkId: string, suffix: string): string {
     return linkId;
   }
   return linkId.split(suffix)[0];
+}
+
+export function validateText(value: string, validateHtml: boolean): boolean {
+  if (validateHtml) {
+    return true;
+  }
+  return isValid(value);
+}
+
+export function getTextValidationErrorMessage(value: string, item: QuestionnaireItem, resources?: Resources): string {
+  if (value && typeof value === 'string') {
+    const invalid: string[] = invalidNodes(value);
+
+    if (invalid && invalid.length > 0) {
+      return invalid.join(', ') + ' ' + (resources ? (resources as Resources).validationNotAllowed : 'er ikke tillatt');
+    }
+  }
+
+  return getValidationTextExtension(item) || '';
 }

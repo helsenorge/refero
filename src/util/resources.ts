@@ -155,4 +155,8 @@ export interface Resources {
    * Fra-dato kan ikke være senere enn til-dato
    */
   filterDateErrorAfterMaxDate: string;
+  /**
+   * er ikke tillatt
+   */
+  validationNotAllowed: string;
 }

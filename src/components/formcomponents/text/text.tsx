@@ -10,11 +10,23 @@ import Constants from '../../../constants/index';
 import { Path } from '../../../util/skjemautfyller-core';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { newStringValue } from '../../../actions/newValue';
-import { isReadOnly, isRequired, getId, renderPrefix, getText, getStringValue, getMaxLength, getPDFStringValue } from '../../../util/index';
-import { getValidationTextExtension, getPlaceholder, getMinLengthExtensionValue } from '../../../util/extension';
+import {
+  isReadOnly,
+  isRequired,
+  getId,
+  renderPrefix,
+  getText,
+  getStringValue,
+  getMaxLength,
+  getPDFStringValue,
+  validateText,
+  getTextValidationErrorMessage,
+} from '../../../util/index';
+import { getPlaceholder, getMinLengthExtensionValue } from '../../../util/extension';
 import { QuestionnaireItem, QuestionnaireResponseAnswer } from '../../../types/fhir';
 import withCommonFunctions from '../../with-common-functions';
 import TextView from '../textview';
+import { Resources } from '../../../util/resources';
 export interface Props {
   item: QuestionnaireItem;
   answer: QuestionnaireResponseAnswer;
@@ -25,9 +37,10 @@ export interface Props {
   renderDeleteButton: (className?: string) => JSX.Element | undefined;
   id?: string;
   repeatButton: JSX.Element;
-
+  validateHtml: boolean;
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
+  resources?: Resources;
 }
 class Text extends React.Component<Props & ValidationProps, {}> {
   showCounter(): boolean {
@@ -47,6 +60,14 @@ class Text extends React.Component<Props & ValidationProps, {}> {
     if (promptLoginMessage) {
       promptLoginMessage();
     }
+  };
+
+  validateText = (value: string): boolean => {
+    return validateText(value, this.props.validateHtml);
+  };
+
+  getValidationErrorMessage = (value: string): string => {
+    return getTextValidationErrorMessage(value, this.props.item, this.props.resources);
   };
 
   render(): JSX.Element | null {
@@ -69,7 +90,8 @@ class Text extends React.Component<Props & ValidationProps, {}> {
             minlength={getMinLengthExtensionValue(item)}
             counter={this.showCounter()}
             onBlur={this.handleChange}
-            errorMessage={getValidationTextExtension(item)}
+            validator={this.validateText}
+            errorMessage={this.getValidationErrorMessage}
             allowInputOverMaxLength
             helpButton={this.props.renderHelpButton()}
             helpElement={this.props.renderHelpElement()}
