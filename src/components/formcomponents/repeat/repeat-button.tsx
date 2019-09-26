@@ -8,7 +8,7 @@ import { Resources } from '../../../util/resources';
 import { ThunkDispatch } from 'redux-thunk';
 import { GlobalState } from '../../../reducers';
 import { NewValueAction } from '../../../actions/newValue';
-import { InlineButton } from '@helsenorge/toolkit/components/atoms/buttons/inline-button';
+import { FunctionButton } from '@helsenorge/toolkit/components/atoms/buttons/function-button';
 import { addRepeatItem } from '../../../actions/newValue';
 
 interface Props {
@@ -32,9 +32,9 @@ export const RepeatButton: React.SFC<Props> = ({ item, resources, dispatch, pare
   }
 
   return (
-    <InlineButton type="add" className=" page_skjemautfyller__repeatbutton" onClick={onAddRepeatItem}>
+    <FunctionButton iconType="add" className=" page_skjemautfyller__repeatbutton" onClick={onAddRepeatItem}>
       {text}
-    </InlineButton>
+    </FunctionButton>
   );
 };
 

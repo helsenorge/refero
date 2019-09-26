@@ -265,7 +265,7 @@ class Skjemautfyller extends React.Component<StateProps & DispatchProps & Props,
           cancelButtonText={resources.formCancel}
           pauseButtonText={resources.formSave ? resources.formSave : 'Lagre'}
           onPause={this.onSave}
-          pauseButtonClasses={'atom_inline-btn pause page_skjemautfyller__pausebutton'}
+          pauseButtonClasses={'page_skjemautfyller__pausebutton'}
           onCancel={this.props.onCancel}
           buttonClasses="page_skjemautfyller__saveblock"
           validationSummaryPlacement={this.props.validationSummaryPlacement}
