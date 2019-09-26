@@ -95,7 +95,7 @@ class Integer extends React.Component<Props & ValidationProps, {}> {
             min={getMinValueExtensionValue(this.props.item)}
             errorMessage={getValidationTextExtension(this.props.item)}
             inputProps={{
-              step: 1,
+              step: '1',
               onKeyPress: (e: React.KeyboardEvent<{}>) => {
                 let key = String.fromCharCode(e.which);
                 if ('0123456789-'.indexOf(key) === -1) {

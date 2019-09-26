@@ -8,7 +8,7 @@ import { ThunkDispatch } from 'redux-thunk';
 import { GlobalState } from '../../../reducers';
 import { NewValueAction } from '../../../actions/newValue';
 import { ConfirmBox } from '@helsenorge/toolkit/components/molecules/confirmbox';
-import { InlineButton } from '@helsenorge/toolkit/components/atoms/buttons/inline-button';
+import { FunctionButton } from '@helsenorge/toolkit/components/atoms/buttons/function-button';
 import * as classNames from 'classnames';
 import { deleteRepeatItem } from '../../../actions/newValue';
 interface Props {
@@ -54,13 +54,13 @@ class DeleteButton extends React.Component<Props, State> {
 
     return (
       <React.Fragment>
-        <InlineButton
-          type="delete"
+        <FunctionButton
+          iconType="delete"
           onClick={this.onDeleteRepeatItem}
           className={classNames('page_skjemautfyller__deletebutton', this.props.className)}
         >
           {resources && resources.deleteButtonText ? resources.deleteButtonText : ''}
-        </InlineButton>
+        </FunctionButton>
         {this.state.showConfirm && resources ? (
           <ConfirmBox
             energize
