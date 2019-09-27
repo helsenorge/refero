@@ -25,10 +25,10 @@
   dependencies:
     regenerator-runtime "^0.13.2"
 
-"@helsenorge/toolkit@8.0.0":
-  version "8.0.0"
-  resolved "https://tfs.ehelse.no/Ehelse/_packaging/Helsenorge/npm/registry/@helsenorge/toolkit/-/toolkit-8.0.0.tgz#ee6f125cec987f272f4842d6822701c44f1c6faf"
-  integrity sha1-7m8SXOyYfycvSELWgicBxE8cb68=
+"@helsenorge/toolkit@^8.0.1":
+  version "8.0.1"
+  resolved "https://tfs.ehelse.no/Ehelse/_packaging/Helsenorge/npm/registry/@helsenorge/toolkit/-/toolkit-8.0.1.tgz#60ae003d18ab856ca662ae4ef1668137907c21d0"
+  integrity sha1-YK4APRirhWymYq5O8WaBN5B8IdA=
   dependencies:
     "@types/jss" "^9.5.8"
     ical.js "^1.2.2"
