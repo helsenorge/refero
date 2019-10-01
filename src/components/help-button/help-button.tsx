@@ -4,7 +4,7 @@ import { QuestionnaireItem } from '../../types/fhir';
 
 interface Props {
   item: QuestionnaireItem | undefined;
-  callback: (isOpen: unknown) => void;
+  callback: (isOpen: boolean) => void;
 }
 
 const HelpButton: React.SFC<Props> = ({ item, children, callback }) => {
