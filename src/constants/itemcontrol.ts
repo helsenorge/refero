@@ -4,6 +4,7 @@ export default {
   RADIOBUTTON: 'radio-button',
   HELP: 'help',
   HELPLINK: 'help-link',
+  INLINE: 'inline',
   Group: {
     VERTICAL_TABLE: 'table',
     HORIZONTAL_TABLE: 'htable',

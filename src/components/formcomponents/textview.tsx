@@ -10,7 +10,7 @@ interface Props {
 const textView: React.SFC<Props> = ({ item, value, children }) => {
   return (
     <div>
-      <b>{`${renderPrefix(item)} ${getText(item)} `}</b>
+      <b dangerouslySetInnerHTML={{ __html: `${renderPrefix(item)} ${getText(item)} ` }} />
       <div>{value}</div>
       {children ? (
         <span>

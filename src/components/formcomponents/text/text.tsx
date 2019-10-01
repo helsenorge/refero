@@ -5,6 +5,7 @@ import { GlobalState } from '../../../reducers';
 import { NewValueAction } from '../../../actions/newValue';
 import { SafeTextarea } from '@helsenorge/toolkit/components/atoms/safe-textarea';
 import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
+import ExpandableBlock from '@helsenorge/toolkit/components/atoms/expandable-block';
 import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
 import Constants from '../../../constants/index';
 import { Path } from '../../../util/skjemautfyller-core';
@@ -22,11 +23,13 @@ import {
   validateText,
   getTextValidationErrorMessage,
 } from '../../../util/index';
-import { getPlaceholder, getMinLengthExtensionValue } from '../../../util/extension';
+import { getPlaceholder, getMinLengthExtensionValue, getItemControlExtensionValue } from '../../../util/extension';
 import { QuestionnaireItem, QuestionnaireResponseAnswer } from '../../../types/fhir';
 import withCommonFunctions from '../../with-common-functions';
 import TextView from '../textview';
 import { Resources } from '../../../util/resources';
+import itemControlConstants from '../../../constants/itemcontrol';
+
 export interface Props {
   item: QuestionnaireItem;
   answer: QuestionnaireResponseAnswer;
@@ -42,7 +45,7 @@ export interface Props {
   renderHelpElement: () => JSX.Element;
   resources?: Resources;
 }
-class Text extends React.Component<Props & ValidationProps, {}> {
+export class Text extends React.Component<Props & ValidationProps, {}> {
   showCounter(): boolean {
     if (getMaxLength(this.props.item) || getMinLengthExtensionValue(this.props.item)) {
       return true;
@@ -71,7 +74,17 @@ class Text extends React.Component<Props & ValidationProps, {}> {
   };
 
   render(): JSX.Element | null {
-    const { item, answer, pdf, ...other } = this.props;
+    const { item, answer, pdf, children, ...other } = this.props;
+    const itemControls = getItemControlExtensionValue(item);
+
+    if (itemControls && itemControls.some(itemControl => itemControl.code === itemControlConstants.INLINE)) {
+      return (
+        <ExpandableBlock expandButtonText={item.text}>
+          <React.Fragment>{children}</React.Fragment>
+        </ExpandableBlock>
+      );
+    }
+
     if (pdf || isReadOnly(item)) {
       return <TextView item={item} value={getPDFStringValue(answer)} children={this.props.children} />;
     }
@@ -101,7 +114,7 @@ class Text extends React.Component<Props & ValidationProps, {}> {
           {this.props.renderDeleteButton('page_skjemautfyller__deletebutton--margin-top')}
           {this.props.repeatButton}
         </div>
-        {this.props.children ? <div className="nested-fieldset nested-fieldset--full-height">{this.props.children}</div> : null}
+        {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
       </div>
     );
   }
