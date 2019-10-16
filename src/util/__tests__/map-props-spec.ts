@@ -192,7 +192,7 @@ describe('mapStateToProps', () => {
       return;
     }
 
-    let item = dataModel.skjemautfyller.form.FormDefinition.Content.item[20];
+    const item = dataModel.skjemautfyller.form.FormDefinition.Content.item[20];
     const result = mapStateToProps(dataModel, {
       item: item,
     } as Props);
@@ -213,7 +213,7 @@ describe('mapStateToProps', () => {
       return;
     }
 
-    let item = dataModel.skjemautfyller.form.FormDefinition.Content.item[22];
+    const item = dataModel.skjemautfyller.form.FormDefinition.Content.item[22];
     const result = mapStateToProps(dataModel, {
       item: item,
     } as Props);
@@ -233,7 +233,7 @@ describe('mapStateToProps', () => {
     ) {
       return;
     }
-    let item = getQuestionnaireDefinitionItem('group1.2.2', dataModel.skjemautfyller.form.FormDefinition.Content.item);
+    const item = getQuestionnaireDefinitionItem('group1.2.2', dataModel.skjemautfyller.form.FormDefinition.Content.item);
     should.exist(item);
     const result = mapStateToProps(dataModel, {
       item: item,

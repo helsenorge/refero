@@ -27,6 +27,9 @@ import Integer from '../formcomponents/integer/integer';
 import OpenChoice from '../formcomponents/open-choice/open-choice';
 import Quantity from '../formcomponents/quantity/quantity';
 import Text from '../formcomponents/text/text';
+import { GlobalState } from '../../reducers/index';
+import { NewValueAction } from '../../actions/newValue';
+import { ThunkDispatch } from 'redux-thunk';
 
 describe('Component renders help items', () => {
   beforeEach(() => {
@@ -36,17 +39,17 @@ describe('Component renders help items', () => {
   });
 
   it('should render help button and text for choice component of type radio-button', () => {
-    var extension = createItemControlExtension('radio-button');
+    const extension = createItemControlExtension('radio-button');
     runTest('choice', HelpElement.HelpButtonAndText, [extension]);
   });
 
   it('should render help button and text for choice component of type check-box', () => {
-    var extension = createItemControlExtension('check-box');
+    const extension = createItemControlExtension('check-box');
     runTest('choice', HelpElement.HelpButtonAndText, [extension]);
   });
 
   it('should render help button and text for choice component of type drop-down', () => {
-    var extension = createItemControlExtension('drop-down');
+    const extension = createItemControlExtension('drop-down');
     runTest('choice', HelpElement.HelpButtonAndText, [extension]);
   });
 
@@ -95,17 +98,17 @@ describe('Component renders help items', () => {
   });
 
   it('should render help button and text for open-choice component of type radio-button', () => {
-    var extension = createItemControlExtension('radio-button');
+    const extension = createItemControlExtension('radio-button');
     runTest('open-choice', HelpElement.HelpButtonAndText, [extension]);
   });
 
   it('should render help button and text for open-choice component of type check-box', () => {
-    var extension = createItemControlExtension('check-box');
+    const extension = createItemControlExtension('check-box');
     runTest('open-choice', HelpElement.HelpButtonAndText, [extension]);
   });
 
   it('should render help button and text for open-choice component of type drop-down', () => {
-    var extension = createItemControlExtension('drop-down');
+    const extension = createItemControlExtension('drop-down');
     runTest('open-choice', HelpElement.HelpButtonAndText, [extension]);
   });
 });
@@ -116,8 +119,8 @@ enum HelpElement {
 }
 
 function runTest(itemType: QuestionnaireItemTypeList, expect: HelpElement, extensions?: Extension[]) {
-  let component = createComponentOfType(itemType, extensions);
-  let wrapper = createWrapperWithComponent(component);
+  const component = createComponentOfType(itemType, extensions);
+  const wrapper = createWrapperWithComponent(component);
   wrapper.render();
 
   expectToFind(wrapper, expect);
@@ -173,7 +176,7 @@ function createItemControlCoding(code: string): Coding {
 }
 
 function createWrapperWithComponent(component: JSX.Element): ReactWrapper<{}, {}> {
-  let store: Store<{}> = createStore(rootReducer);
+  const store: Store<{}> = createStore(rootReducer);
   return mount(<Provider store={store}>{component}</Provider>);
 }
 
@@ -211,149 +214,149 @@ function createComponentOfType(itemType: QuestionnaireItemTypeList, extensions?:
 }
 
 function createComponentText(extensions?: Extension[]): JSX.Element {
-  let item = createItem('text', extensions);
+  const item = createItem('text', extensions);
 
   return (
     <Text
-      dispatch={() => undefined as any}
+      dispatch={() => (undefined as unknown) as ThunkDispatch<GlobalState, void, NewValueAction>}
       answer={{} as QuestionnaireResponseAnswer}
       item={item}
       path={{} as Path[]}
       renderDeleteButton={() => undefined}
       repeatButton={<React.Fragment />}
-      renderHelpButton={() => <div className="helpButton">help button</div>}
-      renderHelpElement={() => <div className="helpText">help text</div>}
+      renderHelpButton={() => <div className="helpButton">{'help button'}</div>}
+      renderHelpElement={() => <div className="helpText">{'help text'}</div>}
     />
   );
 }
 
 function createComponentQuantity(extensions?: Extension[]): JSX.Element {
-  let item = createItem('quantity', extensions);
+  const item = createItem('quantity', extensions);
 
   return (
     <Quantity
-      dispatch={() => undefined as any}
+      dispatch={() => (undefined as unknown) as ThunkDispatch<GlobalState, void, NewValueAction>}
       answer={{} as QuestionnaireResponseAnswer}
       item={item}
       path={{} as Path[]}
       repeatButton={<React.Fragment />}
-      renderHelpButton={() => <div className="helpButton">help button</div>}
-      renderHelpElement={() => <div className="helpText">help text</div>}
+      renderHelpButton={() => <div className="helpButton">{'help button'}</div>}
+      renderHelpElement={() => <div className="helpText">{'help text'}</div>}
     />
   );
 }
 
 function createComponentInteger(extensions?: Extension[]): JSX.Element {
-  let item = createItem('integer', extensions);
+  const item = createItem('integer', extensions);
 
   return (
     <Integer
-      dispatch={() => undefined as any}
+      dispatch={() => (undefined as unknown) as ThunkDispatch<GlobalState, void, NewValueAction>}
       answer={{} as QuestionnaireResponseAnswer}
       item={item}
       path={{} as Path[]}
       renderDeleteButton={() => undefined}
       repeatButton={<React.Fragment />}
       oneToTwoColumn={false}
-      renderHelpButton={() => <div className="helpButton">help button</div>}
-      renderHelpElement={() => <div className="helpText">help text</div>}
+      renderHelpButton={() => <div className="helpButton">{'help button'}</div>}
+      renderHelpElement={() => <div className="helpText">{'help text'}</div>}
     />
   );
 }
 
 function createComponentDecimal(extensions?: Extension[]): JSX.Element {
-  let item = createItem('decimal', extensions);
+  const item = createItem('decimal', extensions);
 
   return (
     <Decimal
-      dispatch={() => undefined as any}
+      dispatch={() => (undefined as unknown) as ThunkDispatch<GlobalState, void, NewValueAction>}
       answer={{} as QuestionnaireResponseAnswer}
       item={item}
       path={{} as Path[]}
       renderDeleteButton={() => undefined}
       repeatButton={<React.Fragment />}
       oneToTwoColumn={false}
-      renderHelpButton={() => <div className="helpButton">help button</div>}
-      renderHelpElement={() => <div className="helpText">help text</div>}
+      renderHelpButton={() => <div className="helpButton">{'help button'}</div>}
+      renderHelpElement={() => <div className="helpText">{'help text'}</div>}
     />
   );
 }
 
 function createComponentTime(extensions?: Extension[]): JSX.Element {
-  let item = createItem('time', extensions);
+  const item = createItem('time', extensions);
 
   return (
     <Time
-      dispatch={() => undefined as any}
+      dispatch={() => (undefined as unknown) as ThunkDispatch<GlobalState, void, NewValueAction>}
       answer={{} as QuestionnaireResponseAnswer}
       item={item}
       path={{} as Path[]}
       renderDeleteButton={() => undefined}
       repeatButton={<React.Fragment />}
-      renderHelpButton={() => <div className="helpButton">help button</div>}
-      renderHelpElement={() => <div className="helpText">help text</div>}
+      renderHelpButton={() => <div className="helpButton">{'help button'}</div>}
+      renderHelpElement={() => <div className="helpText">{'help text'}</div>}
     />
   );
 }
 
 function createComponentDateTime(extensions?: Extension[]): JSX.Element {
-  let item = createItem('dateTime', extensions);
+  const item = createItem('dateTime', extensions);
 
   return (
     <DateTime
-      dispatch={() => undefined as any}
+      dispatch={() => (undefined as unknown) as ThunkDispatch<GlobalState, void, NewValueAction>}
       answer={{} as QuestionnaireResponseAnswer}
       item={item}
       path={{} as Path[]}
       renderDeleteButton={() => undefined}
       repeatButton={<React.Fragment />}
       oneToTwoColumn={false}
-      renderHelpButton={() => <div className="helpButton">help button</div>}
-      renderHelpElement={() => <div className="helpText">help text</div>}
+      renderHelpButton={() => <div className="helpButton">{'help button'}</div>}
+      renderHelpElement={() => <div className="helpText">{'help text'}</div>}
     />
   );
 }
 
 function createComponentDate(extensions?: Extension[]): JSX.Element {
-  let item = createItem('date', extensions);
+  const item = createItem('date', extensions);
 
   return (
     <Date
-      dispatch={() => undefined as any}
+      dispatch={() => (undefined as unknown) as ThunkDispatch<GlobalState, void, NewValueAction>}
       answer={{} as QuestionnaireResponseAnswer}
       item={item}
       path={{} as Path[]}
       renderDeleteButton={() => undefined}
       repeatButton={<React.Fragment />}
-      renderHelpButton={() => <div className="helpButton">help button</div>}
-      renderHelpElement={() => <div className="helpText">help text</div>}
+      renderHelpButton={() => <div className="helpButton">{'help button'}</div>}
+      renderHelpElement={() => <div className="helpText">{'help text'}</div>}
     />
   );
 }
 
 function createComponentAttachment(extensions?: Extension[]): JSX.Element {
-  let item = createItem('attachment', extensions);
+  const item = createItem('attachment', extensions);
 
   return (
     <Attachment
-      dispatch={() => undefined as any}
+      dispatch={() => (undefined as unknown) as ThunkDispatch<GlobalState, void, NewValueAction>}
       answer={{} as QuestionnaireResponseAnswer}
       item={item}
       path={{} as Path[]}
       renderDeleteButton={() => undefined}
       repeatButton={<React.Fragment />}
-      renderHelpButton={() => <div className="helpButton">help button</div>}
-      renderHelpElement={() => <div className="helpText">help text</div>}
+      renderHelpButton={() => <div className="helpButton">{'help button'}</div>}
+      renderHelpElement={() => <div className="helpText">{'help text'}</div>}
     />
   );
 }
 
 function createComponentGroup(extensions?: Extension[]): JSX.Element {
-  let item = createItem('group', extensions);
+  const item = createItem('group', extensions);
 
   return (
     <Group
-      dispatch={() => undefined as any}
+      dispatch={() => (undefined as unknown) as ThunkDispatch<GlobalState, void, NewValueAction>}
       answer={{} as QuestionnaireResponseAnswer}
       item={item}
       path={{} as Path[]}
@@ -361,36 +364,36 @@ function createComponentGroup(extensions?: Extension[]): JSX.Element {
       renderDeleteButton={() => undefined}
       repeatButton={<React.Fragment />}
       renderChildrenItems={() => []}
-      renderHelpButton={() => <div className="helpButton">help button</div>}
-      renderHelpElement={() => <div className="helpText">help text</div>}
+      renderHelpButton={() => <div className="helpButton">{'help button'}</div>}
+      renderHelpElement={() => <div className="helpText">{'help text'}</div>}
     />
   );
 }
 
 function createComponentBoolean(extensions?: Extension[]): JSX.Element {
-  let item = createItem('boolean', extensions);
+  const item = createItem('boolean', extensions);
 
   return (
     <Boolean
-      dispatch={() => undefined as any}
+      dispatch={() => (undefined as unknown) as ThunkDispatch<GlobalState, void, NewValueAction>}
       answer={{} as QuestionnaireResponseAnswer}
       item={item}
       path={{} as Path[]}
       renderDeleteButton={() => undefined}
       repeatButton={<React.Fragment />}
       oneToTwoColumn={false}
-      renderHelpButton={() => <div className="helpButton">help button</div>}
-      renderHelpElement={() => <div className="helpText">help text</div>}
+      renderHelpButton={() => <div className="helpButton">{'help button'}</div>}
+      renderHelpElement={() => <div className="helpText">{'help text'}</div>}
     />
   );
 }
 
 function createComponentString(extensions?: Extension[]): JSX.Element {
-  let item = createItem('string', extensions);
+  const item = createItem('string', extensions);
 
   return (
     <String
-      dispatch={() => undefined as any}
+      dispatch={() => (undefined as unknown) as ThunkDispatch<GlobalState, void, NewValueAction>}
       answer={{} as QuestionnaireResponseAnswer}
       item={item}
       path={{} as Path[]}
@@ -398,44 +401,44 @@ function createComponentString(extensions?: Extension[]): JSX.Element {
       repeatButton={<React.Fragment />}
       visibleDeleteButton={false}
       oneToTwoColumn={false}
-      renderHelpButton={() => <div className="helpButton">help button</div>}
-      renderHelpElement={() => <div className="helpText">help text</div>}
+      renderHelpButton={() => <div className="helpButton">{'help button'}</div>}
+      renderHelpElement={() => <div className="helpText">{'help text'}</div>}
     />
   );
 }
 
 function createComponentChoice(extensions?: Extension[]): JSX.Element {
-  let option = createValueStringOption('dog', 'cat');
-  let item = createItemWithOption(extensions, ...option);
+  const option = createValueStringOption('dog', 'cat');
+  const item = createItemWithOption(extensions, ...option);
 
   return (
     <Choice
-      dispatch={() => undefined as any}
+      dispatch={() => (undefined as unknown) as ThunkDispatch<GlobalState, void, NewValueAction>}
       answer={{} as QuestionnaireResponseAnswer}
       item={item}
       path={{} as Path[]}
       renderDeleteButton={() => undefined}
       repeatButton={<React.Fragment />}
-      renderHelpButton={() => <div className="helpButton">help button</div>}
-      renderHelpElement={() => <div className="helpText">help text</div>}
+      renderHelpButton={() => <div className="helpButton">{'help button'}</div>}
+      renderHelpElement={() => <div className="helpText">{'help text'}</div>}
     />
   );
 }
 
 function createComponentOpenChoice(extensions?: Extension[]): JSX.Element {
-  let option = createValueStringOption('dog', 'cat');
-  let item = createItemWithOption(extensions, ...option);
+  const option = createValueStringOption('dog', 'cat');
+  const item = createItemWithOption(extensions, ...option);
 
   return (
     <OpenChoice
-      dispatch={() => undefined as any}
+      dispatch={() => (undefined as unknown) as ThunkDispatch<GlobalState, void, NewValueAction>}
       answer={{} as QuestionnaireResponseAnswer}
       item={item}
       path={{} as Path[]}
       renderDeleteButton={() => undefined}
       repeatButton={<React.Fragment />}
-      renderHelpButton={() => <div className="helpButton">help button</div>}
-      renderHelpElement={() => <div className="helpText">help text</div>}
+      renderHelpButton={() => <div className="helpButton">{'help button'}</div>}
+      renderHelpElement={() => <div className="helpText">{'help text'}</div>}
     />
   );
 }

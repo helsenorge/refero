@@ -68,13 +68,13 @@ class Quantity extends React.Component<Props & ValidationProps, {}> {
     const { dispatch, promptLoginMessage } = this.props;
     const extension = getQuestionnaireUnitExtensionValue(this.props.item);
     if (extension) {
-      const value = Number(parseFloat((event.target as HTMLInputElement).value)) as any; // tslint:disable-line
-      const code = extension.code as any; // tslint:disable-line
+      const value = Number(parseFloat((event.target as HTMLInputElement).value));
+      const code = extension.code;
       const quantity = {
-        value: value as decimal,
+        value: (value as unknown) as decimal,
         unit: extension.display,
         system: extension.system,
-        code: code as code,
+        code: (code as unknown) as code,
       } as QuantityType;
       if (dispatch) {
         dispatch(newQuantityValue(this.props.path, quantity, this.props.item));
@@ -97,7 +97,7 @@ class Quantity extends React.Component<Props & ValidationProps, {}> {
   inputProps() {
     const props: QuantityInputFieldProps = {
       onKeyPress: (e: React.KeyboardEvent<{}>) => {
-        let key = String.fromCharCode(e.which);
+        const key = String.fromCharCode(e.which);
         if ('0123456789-.,'.indexOf(key) === -1) {
           e.preventDefault();
         }
@@ -127,7 +127,11 @@ class Quantity extends React.Component<Props & ValidationProps, {}> {
   render(): JSX.Element | null {
     const { item } = this.props;
     if (this.props.pdf || isReadOnly(item)) {
-      return <TextView item={this.props.item} value={this.getPDFValue()} children={this.props.children} />;
+      return (
+        <TextView item={this.props.item} value={this.getPDFValue()}>
+          {this.props.children}
+        </TextView>
+      );
     }
     const value = this.getValue();
     return (

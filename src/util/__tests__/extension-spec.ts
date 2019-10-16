@@ -61,7 +61,8 @@ describe('extensions', () => {
 
   describe('getMaxValueExtensionValue', () => {
     it('should return max value', () => {
-      const valueInteger: integer = 2 as any; // tslint:disable-line
+      /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+      const valueInteger: integer = 2 as any;
       const extension: Extension = {
         url: extensionConstants.MAX_VALUE_URL,
         valueInteger,
@@ -77,7 +78,8 @@ describe('extensions', () => {
 
   describe('getMinValueExtensionValue', () => {
     it('should return min value', () => {
-      const valueInteger: integer = 2 as any; // tslint:disable-line
+      /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+      const valueInteger: integer = 2 as any;
       const extension: Extension = {
         url: extensionConstants.MIN_VALUE_URL,
         valueInteger,
@@ -93,7 +95,8 @@ describe('extensions', () => {
 
   describe('getMinOccursExtensionValue', () => {
     it('should return min occurs value', () => {
-      const valueInteger: integer = 2 as any; // tslint:disable-line
+      /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+      const valueInteger: integer = 2 as any;
       const extension: Extension = {
         url: extensionConstants.MIN_OCCURS_URL,
         valueInteger,
@@ -109,7 +112,8 @@ describe('extensions', () => {
 
   describe('getMaxOccursExtensionValue', () => {
     it('should return max occurs value', () => {
-      const valueInteger: integer = 2 as any; // tslint:disable-line
+      /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+      const valueInteger: integer = 2 as any;
       const extension: Extension = {
         url: extensionConstants.MAX_OCCURS_URL,
         valueInteger,
@@ -125,7 +129,8 @@ describe('extensions', () => {
 
   describe('getMinLengthExtensionValue', () => {
     it('should return min length value', () => {
-      const valueInteger: integer = 2 as any; // tslint:disable-line
+      /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+      const valueInteger: integer = 2 as any;
       const extension: Extension = {
         url: extensionConstants.MIN_LENGTH_URL,
         valueInteger,

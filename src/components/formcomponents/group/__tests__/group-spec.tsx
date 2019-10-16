@@ -1,4 +1,3 @@
-/* tslint:disable */
 import * as React from 'react';
 import { shallow } from 'enzyme';
 import { Group } from '../group';
@@ -14,7 +13,7 @@ describe('group', () => {
       type: 'group',
       text: 'Overskrift',
     };
-    const answer: QuestionnaireResponseAnswer = {} as any;
+    const answer: QuestionnaireResponseAnswer = {} as QuestionnaireResponseAnswer;
     const group = shallow(
       <Group
         item={item}
@@ -36,4 +35,3 @@ describe('group', () => {
     expect(group.find(CustomTag)).toMatchSnapshot();
   });
 });
-/* tslint:enable */

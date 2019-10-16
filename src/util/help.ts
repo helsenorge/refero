@@ -6,7 +6,7 @@ import itemControlConstants from '../constants/itemcontrol';
 export function findHelpItem(parent: QuestionnaireItem): QuestionnaireItem | undefined {
   if (parent.item === undefined) return;
 
-  for (let childItem of parent.item) {
+  for (const childItem of parent.item) {
     if (isHelpItem(childItem)) return childItem;
   }
 
@@ -14,12 +14,12 @@ export function findHelpItem(parent: QuestionnaireItem): QuestionnaireItem | und
 }
 
 export function isHelpItem(item: QuestionnaireItem): boolean {
-  var itemControl = getHelpItemControl(item);
+  const itemControl = getHelpItemControl(item);
   return itemControl ? true : false;
 }
 
 export function getHelpItemType(item: QuestionnaireItem): string | undefined {
-  var itemControl = getHelpItemControl(item);
+  const itemControl = getHelpItemControl(item);
   if (!itemControl) return;
 
   return itemControl.code;
@@ -28,7 +28,7 @@ export function getHelpItemType(item: QuestionnaireItem): string | undefined {
 function getHelpItemControl(item: QuestionnaireItem): Coding | undefined {
   if (item.type !== itemType.TEXT) return;
 
-  let itemControl = getItemControlExtensionValue(item);
+  const itemControl = getItemControlExtensionValue(item);
   if (!itemControl) return;
 
   for (let i = 0; i < itemControl.length; i++) {

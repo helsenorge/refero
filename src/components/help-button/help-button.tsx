@@ -9,7 +9,7 @@ interface Props {
 
 const HelpButton: React.SFC<Props> = ({ item, children, callback }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const handleToggle = (_e: any) => {
+  const handleToggle = () => {
     setIsOpen(!isOpen);
     callback(!isOpen);
   };

@@ -11,11 +11,11 @@
 export function IE11HackToWorkAroundBug187484() {
   if (isIE11()) {
     window.setTimeout(function() {
-      var heights = ['1.51', '1.5'];
-      var elem = document.getElementsByTagName('body')[0];
-      var currentHeight = elem.style.lineHeight || '1.5';
-      var index = heights.indexOf(currentHeight);
-      var newHeight = heights[(index + 1) % 2];
+      const heights = ['1.51', '1.5'];
+      const elem = document.getElementsByTagName('body')[0];
+      const currentHeight = elem.style.lineHeight || '1.5';
+      const index = heights.indexOf(currentHeight);
+      const newHeight = heights[(index + 1) % 2];
 
       elem.style.lineHeight = newHeight;
     });

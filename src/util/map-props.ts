@@ -3,7 +3,6 @@ import { GlobalState } from '../reducers/index';
 import { getFormDefinition, getFormData } from '../reducers/form';
 import { Props } from '../components/with-common-functions';
 
-import { Dispatch, Action } from 'redux';
 import {
   enableWhenMatchesAnswer,
   getQuestionnaireResponseItemWithLinkid,
@@ -42,7 +41,7 @@ export function mapStateToProps(state: GlobalState, originalProps: Props) {
       if (!responseItem) {
         continue;
       }
-      let deactivated = enableWhenQuestionItem ? enableWhenQuestionItem.deactivated : false;
+      const deactivated = enableWhenQuestionItem ? enableWhenQuestionItem.deactivated : false;
       enable = enable || (enableWhenMatchesAnswer(enableWhen, responseItem.answer) && !deactivated);
     }
   });

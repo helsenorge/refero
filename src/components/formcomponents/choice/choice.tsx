@@ -97,9 +97,9 @@ export class Choice extends React.Component<ChoiceProps & ValidationProps, Choic
   handleCheckboxChange = (code?: string): void => {
     const { dispatch, answer, promptLoginMessage, item } = this.props;
     if (dispatch && code) {
-      let display = getDisplay(getOptions(item, this.props.containedResources), code);
+      const display = getDisplay(getOptions(item, this.props.containedResources), code);
       const system = getSystem(item, this.props.containedResources);
-      let coding = { code, display, system } as Coding;
+      const coding = { code, display, system } as Coding;
       if (getIndexOfAnswer(code, answer) > -1) {
         dispatch(removeCodingValue(this.props.path, coding, item));
 
@@ -136,10 +136,11 @@ export class Choice extends React.Component<ChoiceProps & ValidationProps, Choic
         id={this.props.id}
         handleChange={this.handleCheckboxChange}
         selected={this.getValue(this.props.item, this.props.answer)}
-        children={this.props.children}
         repeatButton={this.props.repeatButton}
         {...this.props}
-      />
+      >
+        {this.props.children}
+      </CheckboxView>
     );
   };
 
@@ -153,10 +154,11 @@ export class Choice extends React.Component<ChoiceProps & ValidationProps, Choic
         selected={this.getValue(this.props.item, this.props.answer)}
         validateInput={(value: string) => validateInput(this.props.item, value, this.props.containedResources)}
         resources={this.props.resources}
-        children={this.props.children}
         repeatButton={this.props.repeatButton}
         {...this.props}
-      />
+      >
+        {this.props.children}
+      </DropdownView>
     );
   };
 
@@ -166,21 +168,26 @@ export class Choice extends React.Component<ChoiceProps & ValidationProps, Choic
         options={options}
         item={this.props.item}
         getErrorMessage={(value: string) => getErrorMessage(this.props.item, value, this.props.resources, this.props.containedResources)}
-        children={this.props.children}
         handleChange={this.handleChange}
         validateInput={(value: string) => validateInput(this.props.item, value, this.props.containedResources)}
         id={this.props.id}
         selected={this.getValue(this.props.item, this.props.answer)}
         repeatButton={this.props.repeatButton}
         {...this.props}
-      />
+      >
+        {this.props.children}
+      </RadioView>
     );
   };
 
   render(): JSX.Element | null {
     const { item, pdf, answer, containedResources, children } = this.props;
     if (pdf || isReadOnly(item)) {
-      return <TextView item={item} value={this.getPDFValue(item, answer)} children={children} />;
+      return (
+        <TextView item={item} value={this.getPDFValue(item, answer)}>
+          {children}
+        </TextView>
+      );
     }
     return (
       <React.Fragment>

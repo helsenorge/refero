@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { String } from '../string';
-import { QuestionnaireItem } from '../../../../types/fhir';
+import { QuestionnaireItem, QuestionnaireResponseAnswer } from '../../../../types/fhir';
 import { mount } from 'enzyme';
 
 describe('string', () => {
@@ -46,7 +46,7 @@ function getStringWrapperWithChangedValue(validateScriptInjection: boolean, valu
   const wrapper = mount(
     <String
       item={item}
-      answer={{} as any}
+      answer={{} as QuestionnaireResponseAnswer}
       path={[]}
       id="item_2"
       oneToTwoColumn

@@ -120,7 +120,11 @@ class Decimal extends React.Component<Props & ValidationProps, {}> {
     const { item, pdf } = this.props;
     const value = this.getValue();
     if (pdf || isReadOnly(item)) {
-      return <TextView item={item} value={this.getPDFValue()} children={this.props.children} />;
+      return (
+        <TextView item={item} value={this.getPDFValue()}>
+          {this.props.children}
+        </TextView>
+      );
     }
     return (
       <div className="page_skjemautfyller__component page_skjemautfyller__component_decimal">

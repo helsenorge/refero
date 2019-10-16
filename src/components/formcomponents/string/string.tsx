@@ -74,7 +74,11 @@ export class String extends React.Component<Props & ValidationProps, {}> {
   render(): JSX.Element | null {
     const { item, pdf, resources, answer } = this.props;
     if (pdf || isReadOnly(item)) {
-      return <TextView item={item} value={getPDFStringValue(answer, resources)} children={this.props.children} />;
+      return (
+        <TextView item={item} value={getPDFStringValue(answer, resources)}>
+          {this.props.children}
+        </TextView>
+      );
     }
 
     return (

@@ -28,8 +28,8 @@ describe('Components render children', () => {
   });
 
   it('attachments with children renders', () => {
-    var q = createQuestionnaire(creatNestedItem('attachment'));
-    var wrapper = createWrapper(q);
+    const q = createQuestionnaire(creatNestedItem('attachment'));
+    const wrapper = createWrapper(q);
 
     wrapper.render();
 
@@ -37,8 +37,8 @@ describe('Components render children', () => {
   });
 
   it('booleans with children renders', () => {
-    var q = createQuestionnaire(creatNestedItem('boolean'));
-    var wrapper = createWrapper(q);
+    const q = createQuestionnaire(creatNestedItem('boolean'));
+    const wrapper = createWrapper(q);
 
     wrapper.render();
 
@@ -46,8 +46,8 @@ describe('Components render children', () => {
   });
 
   it('date with children renders', () => {
-    var q = createQuestionnaire(creatNestedItem('date'));
-    var wrapper = createWrapper(q);
+    const q = createQuestionnaire(creatNestedItem('date'));
+    const wrapper = createWrapper(q);
 
     wrapper.render();
 
@@ -55,8 +55,8 @@ describe('Components render children', () => {
   });
 
   it('time with children renders', () => {
-    var q = createQuestionnaire(creatNestedItem('time'));
-    var wrapper = createWrapper(q);
+    const q = createQuestionnaire(creatNestedItem('time'));
+    const wrapper = createWrapper(q);
 
     wrapper.render();
 
@@ -64,8 +64,8 @@ describe('Components render children', () => {
   });
 
   it('dateTime with children renders', () => {
-    var q = createQuestionnaire(creatNestedItem('dateTime'));
-    var wrapper = createWrapper(q);
+    const q = createQuestionnaire(creatNestedItem('dateTime'));
+    const wrapper = createWrapper(q);
 
     wrapper.render();
 
@@ -73,8 +73,8 @@ describe('Components render children', () => {
   });
 
   it('decimal with children renders', () => {
-    var q = createQuestionnaire(creatNestedItem('decimal'));
-    var wrapper = createWrapper(q);
+    const q = createQuestionnaire(creatNestedItem('decimal'));
+    const wrapper = createWrapper(q);
 
     wrapper.render();
 
@@ -82,8 +82,8 @@ describe('Components render children', () => {
   });
 
   it('integer with children renders', () => {
-    var q = createQuestionnaire(creatNestedItem('integer'));
-    var wrapper = createWrapper(q);
+    const q = createQuestionnaire(creatNestedItem('integer'));
+    const wrapper = createWrapper(q);
 
     wrapper.render();
 
@@ -91,8 +91,8 @@ describe('Components render children', () => {
   });
 
   it('quantity with children renders', () => {
-    var q = createQuestionnaire(creatNestedItem('quantity'));
-    var wrapper = createWrapper(q);
+    const q = createQuestionnaire(creatNestedItem('quantity'));
+    const wrapper = createWrapper(q);
 
     wrapper.render();
 
@@ -100,8 +100,8 @@ describe('Components render children', () => {
   });
 
   it('string with children renders', () => {
-    var q = createQuestionnaire(creatNestedItem('string'));
-    var wrapper = createWrapper(q);
+    const q = createQuestionnaire(creatNestedItem('string'));
+    const wrapper = createWrapper(q);
 
     wrapper.render();
 
@@ -109,8 +109,8 @@ describe('Components render children', () => {
   });
 
   it('text with children renders', () => {
-    var q = createQuestionnaire(creatNestedItem('text'));
-    var wrapper = createWrapper(q);
+    const q = createQuestionnaire(creatNestedItem('text'));
+    const wrapper = createWrapper(q);
 
     wrapper.render();
 
@@ -118,9 +118,9 @@ describe('Components render children', () => {
   });
 
   it('radio-button choice with children renders', () => {
-    var item = createNestedChoiceItem('choice', createItemControlExtension('radio-button'));
-    var q = createQuestionnaire(item);
-    var wrapper = createWrapper(q);
+    const item = createNestedChoiceItem('choice', createItemControlExtension('radio-button'));
+    const q = createQuestionnaire(item);
+    const wrapper = createWrapper(q);
 
     wrapper.render();
 
@@ -128,9 +128,9 @@ describe('Components render children', () => {
   });
 
   it('check-box choice with children renders', () => {
-    var item = createNestedChoiceItem('choice', createItemControlExtension('check-box'));
-    var q = createQuestionnaire(item);
-    var wrapper = createWrapper(q);
+    const item = createNestedChoiceItem('choice', createItemControlExtension('check-box'));
+    const q = createQuestionnaire(item);
+    const wrapper = createWrapper(q);
 
     wrapper.render();
 
@@ -138,9 +138,9 @@ describe('Components render children', () => {
   });
 
   it('drop-down choice with children renders', () => {
-    var item = createNestedChoiceItem('choice', createItemControlExtension('drop-down'));
-    var q = createQuestionnaire(item);
-    var wrapper = createWrapper(q);
+    const item = createNestedChoiceItem('choice', createItemControlExtension('drop-down'));
+    const q = createQuestionnaire(item);
+    const wrapper = createWrapper(q);
 
     wrapper.render();
 
@@ -148,9 +148,9 @@ describe('Components render children', () => {
   });
 
   it('radio-button open-choice with children renders', () => {
-    var item = createNestedChoiceItem('open-choice', createItemControlExtension('radio-button'));
-    var q = createQuestionnaire(item);
-    var wrapper = createWrapper(q);
+    const item = createNestedChoiceItem('open-choice', createItemControlExtension('radio-button'));
+    const q = createQuestionnaire(item);
+    const wrapper = createWrapper(q);
 
     wrapper.render();
 
@@ -158,9 +158,9 @@ describe('Components render children', () => {
   });
 
   it('check-box open-choice with children renders', () => {
-    var item = createNestedChoiceItem('open-choice', createItemControlExtension('check-box'));
-    var q = createQuestionnaire(item);
-    var wrapper = createWrapper(q);
+    const item = createNestedChoiceItem('open-choice', createItemControlExtension('check-box'));
+    const q = createQuestionnaire(item);
+    const wrapper = createWrapper(q);
 
     wrapper.render();
 
@@ -168,9 +168,9 @@ describe('Components render children', () => {
   });
 
   it('drop-down open-choice with children renders', () => {
-    var item = createNestedChoiceItem('open-choice', createItemControlExtension('drop-down'));
-    var q = createQuestionnaire(item);
-    var wrapper = createWrapper(q);
+    const item = createNestedChoiceItem('open-choice', createItemControlExtension('drop-down'));
+    const q = createQuestionnaire(item);
+    const wrapper = createWrapper(q);
 
     wrapper.render();
 
@@ -205,7 +205,7 @@ function creatNestedItem(type: QuestionnaireItemTypeList, ...withExtensions: Ext
 }
 
 function createNestedChoiceItem(type: QuestionnaireItemTypeList, ...withExtensions: Extension[]): QuestionnaireItem {
-  var reference = { reference: '#8459' } as Reference;
+  const reference = { reference: '#8459' } as Reference;
   return createItem(
     type,
     '1',
@@ -241,7 +241,7 @@ function createItem(
 }
 
 function createWrapper(q: Questionnaire) {
-  let store: Store<{}> = createStore(rootReducer);
+  const store: Store<{}> = createStore(rootReducer);
   return mount(
     <Provider store={store}>
       <SkjemautfyllerContainer

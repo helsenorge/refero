@@ -29,7 +29,7 @@ export const dataModel: GlobalState = {
     form: {
       Language: 'nb-NO',
       FormDefinition: {
-        Content: <Questionnaire>{
+        Content: {
           contained: [Valueset],
           status: {
             value: 'draft',
@@ -297,10 +297,10 @@ export const dataModel: GlobalState = {
               },
             },
           ],
-        },
+        } as Questionnaire,
       },
       FormData: {
-        Content: <QuestionnaireResponse>{
+        Content: {
           status: 'completed',
           item: [
             {
@@ -576,7 +576,7 @@ export const dataModel: GlobalState = {
               ],
             },
           ],
-        },
+        } as QuestionnaireResponse,
       },
       InitialFormData: {
         Content: undefined,
@@ -686,39 +686,41 @@ describe('get answer from questionnareReponse', () => {
 
 describe('hasAnswer', () => {
   it('should return no answer on invalid input', () => {
-    expect(hasAnswer(<QuestionnaireResponseAnswer>{})).toEqual(false);
-    expect(hasAnswer(<QuestionnaireResponseAnswer>{ valueCoding: {} })).toEqual(false);
-    expect(hasAnswer(<QuestionnaireResponseAnswer>{ valueDate: undefined })).toEqual(false);
-    expect(hasAnswer(<QuestionnaireResponseAnswer>{ valueDateTime: undefined })).toEqual(false);
-    expect(hasAnswer(<QuestionnaireResponseAnswer>{ valueDecimal: undefined })).toEqual(false);
-    expect(hasAnswer(<QuestionnaireResponseAnswer>{ valueInteger: undefined })).toEqual(false);
-    expect(hasAnswer(<QuestionnaireResponseAnswer>{ valueString: '' })).toEqual(false);
-    expect(hasAnswer(<QuestionnaireResponseAnswer>{ valueString: undefined })).toEqual(false);
-    expect(hasAnswer(<QuestionnaireResponseAnswer>{ valueTime: undefined })).toEqual(false);
+    expect(hasAnswer({} as QuestionnaireResponseAnswer)).toEqual(false);
+    expect(hasAnswer({ valueCoding: {} } as QuestionnaireResponseAnswer)).toEqual(false);
+    expect(hasAnswer({ valueDate: undefined } as QuestionnaireResponseAnswer)).toEqual(false);
+    expect(hasAnswer({ valueDateTime: undefined } as QuestionnaireResponseAnswer)).toEqual(false);
+    expect(hasAnswer({ valueDecimal: undefined } as QuestionnaireResponseAnswer)).toEqual(false);
+    expect(hasAnswer({ valueInteger: undefined } as QuestionnaireResponseAnswer)).toEqual(false);
+    expect(hasAnswer({ valueString: '' } as QuestionnaireResponseAnswer)).toEqual(false);
+    expect(hasAnswer({ valueString: undefined } as QuestionnaireResponseAnswer)).toEqual(false);
+    expect(hasAnswer({ valueTime: undefined } as QuestionnaireResponseAnswer)).toEqual(false);
   });
 
   it('should return true if any answer type is given', () => {
-    expect(hasAnswer(<QuestionnaireResponseAnswer>{ valueBoolean: true })).toEqual(true);
-    expect(hasAnswer(<QuestionnaireResponseAnswer>{ valueBoolean: false })).toEqual(true);
-    expect(hasAnswer(<QuestionnaireResponseAnswer>{ valueString: 'asdf' })).toEqual(true);
+    expect(hasAnswer({ valueBoolean: true } as QuestionnaireResponseAnswer)).toEqual(true);
+    expect(hasAnswer({ valueBoolean: false } as QuestionnaireResponseAnswer)).toEqual(true);
+    expect(hasAnswer({ valueString: 'asdf' } as QuestionnaireResponseAnswer)).toEqual(true);
   });
 });
 
 describe('item path', () => {
   it('should create path correct', () => {
-    expect(createPathForItem([], <QuestionnaireItem>{ linkId: 'qwe' }, <QuestionnaireResponseItem>{ linkId: 'qwe^1' })).toEqual([
+    expect(createPathForItem([], { linkId: 'qwe' } as QuestionnaireItem, { linkId: 'qwe^1' } as QuestionnaireResponseItem)).toEqual([
       { linkId: 'qwe^1' },
     ]);
-    expect(createPathForItem([], <QuestionnaireItem>{ linkId: 'qwe' }, <QuestionnaireResponseItem>{ linkId: 'qwe^2' })).toEqual([
+    expect(createPathForItem([], { linkId: 'qwe' } as QuestionnaireItem, { linkId: 'qwe^2' } as QuestionnaireResponseItem)).toEqual([
       { linkId: 'qwe^2' },
     ]);
     let response = [{ linkId: 'test' }, { linkId: 'abc^2' }];
     expect(
-      createPathForItem([{ linkId: 'test' }], <QuestionnaireItem>{ linkId: 'abc' }, <QuestionnaireResponseItem>{ linkId: 'abc^2' })
+      createPathForItem([{ linkId: 'test' }], { linkId: 'abc' } as QuestionnaireItem, { linkId: 'abc^2' } as QuestionnaireResponseItem)
     ).toEqual(response);
-    let path = [{ linkId: 'test' }, { linkId: 'test2' }];
+    const path = [{ linkId: 'test' }, { linkId: 'test2' }];
     response = [{ linkId: 'test' }, { linkId: 'test2' }, { linkId: 'abc^3' }];
-    expect(createPathForItem(path, <QuestionnaireItem>{ linkId: 'abc' }, <QuestionnaireResponseItem>{ linkId: 'abc^3' })).toEqual(response);
+    expect(createPathForItem(path, { linkId: 'abc' } as QuestionnaireItem, { linkId: 'abc^3' } as QuestionnaireResponseItem)).toEqual(
+      response
+    );
   });
 });
 

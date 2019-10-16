@@ -23,7 +23,7 @@ describe('Given a questionnaire with multiple repeatable booleans', () => {
     });
 
     it('Then repeated item should have an answer with 3 items', () => {
-      let repeatedResponseItem = getResponseItem('1.0.4^1', newState) as QuestionnaireResponseItem;
+      const repeatedResponseItem = getResponseItem('1.0.4^1', newState) as QuestionnaireResponseItem;
 
       if (!repeatedResponseItem || !repeatedResponseItem.answer) return fail();
 

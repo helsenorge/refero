@@ -6,10 +6,10 @@ import itemControlConstants from '../constants/itemcontrol';
 export function getGroupItemControl(item: QuestionnaireItem): Coding[] {
   if (item.type !== itemType.GROUP) return [];
 
-  let itemControl = getItemControlExtensionValue(item);
+  const itemControl = getItemControlExtensionValue(item);
   if (!itemControl) return [];
 
-  let groups = itemControlConstants.Group;
-  let valid = Object.keys(groups).map(k => groups[k]);
+  const groups = itemControlConstants.Group;
+  const valid = Object.keys(groups).map(k => groups[k]);
   return itemControl.filter(i => valid.indexOf(i.code) != -1);
 }

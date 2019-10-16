@@ -10,7 +10,7 @@ interface Props {
 const pdf: React.SFC<Props> = ({ item, checked, children }) => {
   return (
     <div>
-      {/* tslint:disable: jsx-no-unlocalized */}
+      {/* eslint-disable react/jsx-no-literals */}
       {checked ? <b>[ X ]</b> : <b>[&nbsp;&nbsp;&nbsp;&nbsp;]</b>} {`${renderPrefix(item)} ${getText(item)}`}
       {children ? (
         <span>
@@ -20,7 +20,6 @@ const pdf: React.SFC<Props> = ({ item, checked, children }) => {
       ) : null}
       <br />
       <br />
-      {/* tslint:enable: jsx-no-unlocalized */}
     </div>
   );
 };

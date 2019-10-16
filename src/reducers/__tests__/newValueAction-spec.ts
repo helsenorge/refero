@@ -1,6 +1,6 @@
 import state from './data/newValueAction';
 import { Form } from '../form';
-import { QuestionnaireItem, QuestionnaireResponseAnswer, uri } from '../../types/fhir';
+import { QuestionnaireItem, QuestionnaireResponseAnswer } from '../../types/fhir';
 import { getDefinitionItems, getQuestionnaireDefinitionItem } from '../../util/skjemautfyller-core';
 import {
   getResponseItem,
@@ -33,18 +33,19 @@ describe('QuestionnaireResponseAnswer shall reflect user input', () => {
 
   beforeEach(() => {
     newState = state.skjemautfyller.form;
-    let dItems = getDefinitionItems(newState.FormDefinition);
+    const dItems = getDefinitionItems(newState.FormDefinition);
     if (!dItems || dItems.length === 0) {
       return fail();
     }
     definitionItems = dItems;
 
-    let mockedUuid = uuid as jest.Mocked<typeof uuid>;
+    const mockedUuid = uuid as jest.Mocked<typeof uuid>;
+    //@ts-ignore
     mockedUuid.v4.mockReturnValue('uuid');
   });
 
   it('When the user enters a text, then removes the content of a text input field, answer should be undefined', () => {
-    let linkId = '1.1';
+    const linkId = '1.1';
     newState = enterText(newState, pathify('1', linkId), 'hello');
     verifyAnswer(linkId, newState, it => it.toEqual([{ valueString: 'hello' }]));
 
@@ -56,7 +57,7 @@ describe('QuestionnaireResponseAnswer shall reflect user input', () => {
   });
 
   it('When the user enters a string, then removes the content of a string input field, answer should be undefined', () => {
-    let linkId = '1.2';
+    const linkId = '1.2';
     newState = enterText(newState, pathify('1', linkId), 'hello');
     verifyAnswer(linkId, newState, it => it.toEqual([{ valueString: 'hello' }]));
 
@@ -68,7 +69,7 @@ describe('QuestionnaireResponseAnswer shall reflect user input', () => {
   });
 
   it('When the user enters a quantity, then removes the content of a quantity input field, answer should be undefined', () => {
-    let linkId = '1.3';
+    const linkId = '1.3';
     newState = enterQuantity(newState, pathify('1', linkId), createQuantity(10.0, 'cm', 'lengths'));
     verifyAnswer(linkId, newState, it => it.toEqual([{ valueQuantity: createQuantity(10.0, 'cm', 'lengths') }]));
 
@@ -80,7 +81,7 @@ describe('QuestionnaireResponseAnswer shall reflect user input', () => {
   });
 
   it('When the user enters an integer, then removes the content of an integer input field, answer should be undefined', () => {
-    let linkId = '1.4';
+    const linkId = '1.4';
     newState = enterInteger(newState, pathify('1', linkId), 42);
     verifyAnswer(linkId, newState, it => it.toEqual([{ valueInteger: 42 }]));
 
@@ -92,7 +93,7 @@ describe('QuestionnaireResponseAnswer shall reflect user input', () => {
   });
 
   it('When the user enters a decimal, then removes the content of a decimal input field, answer should be undefined', () => {
-    let linkId = '1.5';
+    const linkId = '1.5';
     newState = enterDecimal(newState, pathify('1', linkId), 42.0);
     verifyAnswer(linkId, newState, it => it.toEqual([{ valueDecimal: 42.0 }]));
 
@@ -104,7 +105,7 @@ describe('QuestionnaireResponseAnswer shall reflect user input', () => {
   });
 
   it('When the user enters a date, then removes the content of a date input field, answer should be undefined', () => {
-    let linkId = '1.6';
+    const linkId = '1.6';
     newState = enterDate(newState, pathify('1', linkId), '2019-08-30');
     verifyAnswer(linkId, newState, it => it.toEqual([{ valueDate: '2019-08-30' }]));
 
@@ -116,7 +117,7 @@ describe('QuestionnaireResponseAnswer shall reflect user input', () => {
   });
 
   it('When the user enters a time, then removes the content of a time input field, answer should be undefined', () => {
-    let linkId = '1.7';
+    const linkId = '1.7';
     newState = enterTime(newState, pathify('1', linkId), '10:11');
     verifyAnswer(linkId, newState, it => it.toEqual([{ valueTime: '10:11' }]));
 
@@ -128,7 +129,7 @@ describe('QuestionnaireResponseAnswer shall reflect user input', () => {
   });
 
   it('When the user enters a dateTime, then removes the content of a dateTime input field, answer should be undefined', () => {
-    let linkId = '1.8';
+    const linkId = '1.8';
     newState = enterDateTime(newState, pathify('1', linkId), '2019-07-30T23:02:00+00:00');
     verifyAnswer(linkId, newState, it => it.toEqual([{ valueDateTime: '2019-07-30T23:02:00+00:00' }]));
 
@@ -140,7 +141,7 @@ describe('QuestionnaireResponseAnswer shall reflect user input', () => {
   });
 
   it('When the user enters a boolean, then removes the content of a boolean input field, answer should be undefined', () => {
-    let linkId = '1.9';
+    const linkId = '1.9';
     newState = enterBoolean(newState, pathify('1', linkId), true);
     verifyAnswer(linkId, newState, it => it.toEqual([{ valueBoolean: true }]));
 
@@ -152,7 +153,7 @@ describe('QuestionnaireResponseAnswer shall reflect user input', () => {
   });
 
   it('When the user uploads a file, then removes the content of an attachment input field, answer should be undefined', () => {
-    let linkId = '1.10';
+    const linkId = '1.10';
     newState = uploadAttachment(newState, pathify('1', linkId), createAttachment('1', 'fil1'));
     verifyAnswer(linkId, newState, it => it.toEqual([{ valueAttachment: createAttachment('1', 'fil1') }]));
 
@@ -164,7 +165,7 @@ describe('QuestionnaireResponseAnswer shall reflect user input', () => {
   });
 
   it('When the user uploads many files, then removes the content of an attachment input field, answer should be undefined', () => {
-    let linkId = '1.10';
+    const linkId = '1.10';
     newState = uploadAttachment(newState, pathify('1', linkId), createAttachment('1', 'fil1'), undefined, true);
     verifyAnswer(linkId, newState, it => it.toEqual([{ valueAttachment: createAttachment('1', 'fil1') }]));
 
@@ -181,8 +182,8 @@ describe('QuestionnaireResponseAnswer shall reflect user input', () => {
   });
 
   it('When the user selects a radio-button, the answer should be the selected item', () => {
-    let linkId = '1.11';
-    let qItem = getQuestionnaireDefinitionItem(linkId, definitionItems);
+    const linkId = '1.11';
+    const qItem = getQuestionnaireDefinitionItem(linkId, definitionItems);
     if (!qItem) return fail();
 
     newState = selectChoice(newState, pathify('1', linkId), createCoding('1', 'foo'), qItem, false);
@@ -193,8 +194,8 @@ describe('QuestionnaireResponseAnswer shall reflect user input', () => {
   });
 
   it('When the user selects checkboxes, then removes the content of the checkbox input fields, answer should be undefined', () => {
-    let linkId = '1.12';
-    let qItem = getQuestionnaireDefinitionItem(linkId, definitionItems);
+    const linkId = '1.12';
+    const qItem = getQuestionnaireDefinitionItem(linkId, definitionItems);
     if (!qItem) return fail();
 
     newState = selectChoice(newState, pathify('1', linkId), createCoding('1', 'foo'), qItem, true);
@@ -213,8 +214,8 @@ describe('QuestionnaireResponseAnswer shall reflect user input', () => {
   });
 
   it('When the user selects an open-choice radio-button, the answer should be the selected item', () => {
-    let linkId = '1.13';
-    let qItem = getQuestionnaireDefinitionItem(linkId, definitionItems);
+    const linkId = '1.13';
+    const qItem = getQuestionnaireDefinitionItem(linkId, definitionItems);
     if (!qItem) return fail();
 
     newState = selectChoice(newState, pathify('1', linkId), createCoding('1', 'foo'), qItem, false);
@@ -231,8 +232,8 @@ describe('QuestionnaireResponseAnswer shall reflect user input', () => {
   });
 
   it('When the user selects an open-choice checkbox, then removes the content of the open-choice checkbox input fields, answer should be undefined', () => {
-    let linkId = '1.14';
-    let qItem = getQuestionnaireDefinitionItem(linkId, definitionItems);
+    const linkId = '1.14';
+    const qItem = getQuestionnaireDefinitionItem(linkId, definitionItems);
     if (!qItem) return fail();
 
     newState = selectChoice(newState, pathify('1', linkId), createCoding('1', 'foo'), qItem, true);
@@ -259,8 +260,8 @@ describe('QuestionnaireResponseAnswer shall reflect user input', () => {
   });
 });
 
-function verifyAnswer(linkId: string, state: Form, test: (it: jest.Matchers<QuestionnaireResponseAnswer[] | undefined>) => any) {
-  let r = getResponseItem(linkId, state);
+function verifyAnswer(linkId: string, state: Form, test: (it: jest.Matchers<QuestionnaireResponseAnswer[] | undefined | void>) => unknown) {
+  const r = getResponseItem(linkId, state);
   if (!r) return fail();
-  test(expect(r.answer));
+  return test(expect(r.answer));
 }

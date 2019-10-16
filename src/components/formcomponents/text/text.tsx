@@ -86,7 +86,11 @@ export class Text extends React.Component<Props & ValidationProps, {}> {
     }
 
     if (pdf || isReadOnly(item)) {
-      return <TextView item={item} value={getPDFStringValue(answer)} children={this.props.children} />;
+      return (
+        <TextView item={item} value={getPDFStringValue(answer)}>
+          {this.props.children}
+        </TextView>
+      );
     }
     return (
       <div className="page_skjemautfyller__component page_skjemautfyller__component_text">

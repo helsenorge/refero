@@ -2,7 +2,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import * as moment from 'moment';
 import 'moment/locale/nb';
-import withCommonFunctions, { Props as CommonProps } from '../../with-common-functions';
+import withCommonFunctions from '../../with-common-functions';
 import DateTimeInput from '@helsenorge/toolkit/components/atoms/date-time-input';
 import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
 import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
@@ -126,7 +126,11 @@ class DateTime extends React.Component<Props & ValidationProps> {
   render(): JSX.Element | null {
     const { item, pdf, id, ...other } = this.props;
     if (pdf || isReadOnly(item)) {
-      return <TextView item={item} value={this.getStringValue()} children={this.props.children} />;
+      return (
+        <TextView item={item} value={this.getStringValue()}>
+          {this.props.children}
+        </TextView>
+      );
     }
     return (
       <div className="page_skjemautfyller__component page_skjemautfyller__component_datetime">

@@ -151,7 +151,11 @@ class DateComponent extends React.Component<Props & ValidationProps> {
     const date = this.getValue();
     if (this.props.pdf || isReadOnly(this.props.item)) {
       if (this.props.renderLabel) {
-        return <TextView item={this.props.item} value={this.getPdfValue()} children={this.props.children} />;
+        return (
+          <TextView item={this.props.item} value={this.getPdfValue()}>
+            {this.props.children}
+          </TextView>
+        );
       } else {
         return <span>{this.getPdfValue()}</span>;
       }
@@ -177,6 +181,7 @@ class DateComponent extends React.Component<Props & ValidationProps> {
             isNullable={true}
             isRequired={isRequired(this.props.item)}
             placeholder={getPlaceholder(this.props.item)}
+            /* eslint-disable react/no-string-refs */
             ref="datepicker"
             maxDate={this.getMaxDate()}
             minDate={this.getMinDate()}
