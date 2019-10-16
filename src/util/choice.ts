@@ -32,7 +32,7 @@ export function getOptions(item: QuestionnaireItem, containedResources?: Resourc
     return undefined;
   }
 
-  var options;
+  let options;
   if (item.options && item.options.reference) {
     if (item.options.reference.startsWith('#')) {
       options = getContainedOptions(item, containedResources);
@@ -209,7 +209,7 @@ export function shouldShowExtraChoice(answer: Array<QuestionnaireResponseAnswer>
 
   if (Array.isArray(answer)) {
     for (let i = 0; i < answer.length; i++) {
-      let el = answer[i] as QuestionnaireResponseAnswer;
+      const el = answer[i] as QuestionnaireResponseAnswer;
       if (el.valueCoding && el.valueCoding.code === OPEN_CHOICE_ID) {
         return true;
       }

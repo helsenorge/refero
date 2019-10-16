@@ -9,7 +9,7 @@ import {
   wrappedByRepeatItem,
   shouldRenderDeleteButton,
 } from '../util/skjemautfyller-core';
-import { Resource, QuestionnaireResponseItem, QuestionnaireItem, QuestionnaireResponseAnswer, Attachment, integer } from '../types/fhir';
+import { Resource, QuestionnaireResponseItem, QuestionnaireItem, QuestionnaireResponseAnswer, Attachment } from '../types/fhir';
 import { Resources } from '../util/resources';
 import { getComponentForItem, getChildHeaderTag, shouldRenderRepeatButton, getText } from '../util/index';
 import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
@@ -144,12 +144,12 @@ export default function withCommonFunctions<T>(WrappedComponent: React.Component
       const { item, onRequestHelpButton } = this.props;
 
       if (!item) return;
-      let qItem = item as QuestionnaireItem;
+      const qItem = item as QuestionnaireItem;
 
-      var helpItem = findHelpItem(qItem);
+      const helpItem = findHelpItem(qItem);
       if (!helpItem) return;
 
-      var helpItemType = getHelpItemType(helpItem) || itemControlConstants.HELP;
+      const helpItemType = getHelpItemType(helpItem) || itemControlConstants.HELP;
 
       if (onRequestHelpButton) {
         return (
@@ -168,12 +168,12 @@ export default function withCommonFunctions<T>(WrappedComponent: React.Component
     renderHelpElement = () => {
       const { item, onRequestHelpElement } = this.props;
       if (!item) return;
-      let qItem = item as QuestionnaireItem;
+      const qItem = item as QuestionnaireItem;
 
-      var helpItem = findHelpItem(qItem);
+      const helpItem = findHelpItem(qItem);
       if (!helpItem) return;
 
-      var helpItemType = getHelpItemType(helpItem) || itemControlConstants.HELP;
+      const helpItemType = getHelpItemType(helpItem) || itemControlConstants.HELP;
 
       if (onRequestHelpElement) {
         return onRequestHelpElement(qItem, helpItem, helpItemType, getText(helpItem), this.state.isHelpVisible);
@@ -199,11 +199,11 @@ export default function withCommonFunctions<T>(WrappedComponent: React.Component
       // let suffix = repeatIndex === undefined ? '' : '^' + repeatIndex.toString();
 
       if (responseItem) {
-        let childItem = responseItem.item;
-        let childAnswer = responseItem.answer;
+        const childItem = responseItem.item;
+        const childAnswer = responseItem.answer;
 
         let linkId = item.linkId;
-        let isWrappedByRepeatItem = wrappedByRepeatItem(this.props.path);
+        const isWrappedByRepeatItem = wrappedByRepeatItem(this.props.path);
         linkId += isWrappedByRepeatItem ? '^' + responseItem.linkId.split('^')[1] : '';
 
         if (childItem) {
@@ -212,7 +212,7 @@ export default function withCommonFunctions<T>(WrappedComponent: React.Component
           response = getItemWithIdFromResponseItemArray(linkId, childAnswer[0].item, !isWrappedByRepeatItem);
         }
       }
-      let renderedItems: Array<JSX.Element | undefined> = [];
+      const renderedItems: Array<JSX.Element | undefined> = [];
 
       if (response && response.length > 0) {
         response.forEach((responseItem, index) => {
@@ -265,9 +265,9 @@ export default function withCommonFunctions<T>(WrappedComponent: React.Component
       if (!item || !item.item) {
         return undefined;
       }
-      let renderedItems = new Array();
+      const renderedItems: Array<JSX.Element | undefined> = [];
       item.item.forEach(i => {
-        renderedItems.push(this.renderItem(i));
+        renderedItems.push(...this.renderItem(i));
       });
       return renderedItems;
     };
@@ -277,16 +277,17 @@ export default function withCommonFunctions<T>(WrappedComponent: React.Component
         return null;
       } else {
         return (
-          /* tslint:disable no-any */
           <WrappedComponent
-            children={this.renderChildrenItems()}
             renderChildrenItems={this.renderChildrenItems}
             renderDeleteButton={this.renderDeleteButton}
             renderRepeatButton={this.renderRepeatButton}
             renderHelpButton={this.renderHelpButton}
             renderHelpElement={this.renderHelpElement}
+            /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
             {...this.props as any}
-          />
+          >
+            {this.renderChildrenItems()}
+          </WrappedComponent>
         );
       }
     }

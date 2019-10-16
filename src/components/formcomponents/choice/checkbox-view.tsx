@@ -76,7 +76,7 @@ const CheckboxView: React.SFC<Props> = ({
 
 function isSelected(el: Options, selected?: Array<string | undefined>) {
   if (selected) {
-    for (var i = 0; i < selected.length; i++) {
+    for (let i = 0; i < selected.length; i++) {
       if (el.type === selected[i]) {
         return true;
       }

@@ -140,7 +140,7 @@ class Skjemautfyller extends React.Component<StateProps & DispatchProps & Props,
       return undefined;
     }
     const contained = formDefinition.Content.contained;
-    let renderedItems = new Array();
+    const renderedItems: Array<JSX.Element> | undefined = [];
     formDefinition.Content.item.map(item => {
       const Comp = getComponentForItem(item.type);
       if (!Comp) {
@@ -208,7 +208,7 @@ class Skjemautfyller extends React.Component<StateProps & DispatchProps & Props,
       return this.renderFormItems(true);
     }
 
-    let form = this.props.authorized ? this.renderFormWhenAuthorized() : this.renderFormWhenNotAuthorized();
+    const form = this.props.authorized ? this.renderFormWhenAuthorized() : this.renderFormWhenNotAuthorized();
 
     return (
       <div className="page_skjemautfyller__content">
@@ -219,7 +219,7 @@ class Skjemautfyller extends React.Component<StateProps & DispatchProps & Props,
   };
 
   renderFormWhenNotAuthorized = () => {
-    let { resources } = this.props;
+    const { resources } = this.props;
     if (!resources) {
       return;
     }
@@ -247,7 +247,7 @@ class Skjemautfyller extends React.Component<StateProps & DispatchProps & Props,
   };
 
   renderFormWhenAuthorized = () => {
-    let { resources } = this.props;
+    const { resources } = this.props;
     if (!resources) {
       return;
     }

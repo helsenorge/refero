@@ -10,7 +10,7 @@ describe('update enable when action', () => {
 
   beforeEach(() => {
     newState = enableWhenDataModel.skjemautfyller.form;
-    let dItems = getDefinitionItems(newState.FormDefinition);
+    const dItems = getDefinitionItems(newState.FormDefinition);
     if (!dItems || dItems.length === 0) {
       return fail();
     }
@@ -19,11 +19,11 @@ describe('update enable when action', () => {
 
   it('should remove added repeats and clear answers when collapsing enableWhens', () => {
     // select "Fra en eller flere avdelinger" (3)
-    let choice = <Coding>{ code: '3', system: { value: 'http://ehelse.no/JournalDeler' } };
+    let choice = { code: '3', system: { value: 'http://ehelse.no/JournalDeler' } } as Coding;
     newState = selectChoice(newState, pathify('7', '7.1'), choice, { linkId: '7.1', type: 'choice' });
 
     // add repeat item
-    let item = getQuestionnaireDefinitionItem('7.1.2', definitionItems);
+    const item = getQuestionnaireDefinitionItem('7.1.2', definitionItems);
     if (!item) return fail();
     newState = clickRepeat(newState, pathify('7', '7.1'), item, [{ linkId: '7.1.2^0' }]);
 
@@ -41,7 +41,7 @@ describe('update enable when action', () => {
     expect(r2.answer).toMatchObject([{ valueString: 'world' }]);
 
     // select "Fra alle innleggelser/konsultasjoner" (4)
-    choice = <Coding>{ code: '4', system: { value: 'http://ehelse.no/JournalDeler' } };
+    choice = { code: '4', system: { value: 'http://ehelse.no/JournalDeler' } } as Coding;
     newState = selectChoice(newState, pathify('7', '7.1'), choice, { linkId: '7.1', type: 'choice' });
 
     r1 = getResponseItem('7.1.2^0', newState);

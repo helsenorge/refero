@@ -9,7 +9,7 @@ const dataModel: GlobalState = {
       },
       Language: 'no',
       FormDefinition: {
-        Content: <Questionnaire>{
+        Content: {
           status: {
             value: 'draft',
           },
@@ -153,10 +153,10 @@ const dataModel: GlobalState = {
               ],
             },
           ],
-        },
+        } as Questionnaire,
       },
       FormData: {
-        Content: <QuestionnaireResponse>{
+        Content: {
           questionnaire: {
             reference: 'fakeurl',
           },
@@ -308,7 +308,7 @@ const dataModel: GlobalState = {
               ],
             },
           ],
-        },
+        } as QuestionnaireResponse,
       },
     },
   },

@@ -1,6 +1,4 @@
 import { createNarrative } from '../createNarrative';
-import { GlobalState } from '../../reducers';
-import { Questionnaire, QuestionnaireResponse } from '../../types/fhir';
 import { dataModel } from './skjemautfyller-core-spec';
 describe('generateNarrative', () => {
   it('should not fail on empty input', () => {

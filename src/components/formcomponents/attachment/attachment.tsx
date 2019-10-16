@@ -48,7 +48,7 @@ class AttachmentComponent extends React.Component<Props & ValidationProps> {
   onUpload = (files: File[], cb: (success: boolean, errormessage: TextMessage | null, uploadedFile?: UploadedFile) => void) => {
     const { uploadAttachment } = this.props;
     if (uploadAttachment) {
-      for (let file of files) {
+      for (const file of files) {
         const onSuccess = (uploadedFile: UploadedFile, attachment: Attachment) => {
           if (this.props.dispatch && attachment) {
             this.props.dispatch(newAttachment(this.props.path, attachment, this.props.item, isRepeat(this.props.item)));
@@ -131,7 +131,11 @@ class AttachmentComponent extends React.Component<Props & ValidationProps> {
   render(): JSX.Element | null {
     const { pdf, id, item, resources, onOpenAttachment, ...other } = this.props;
     if (pdf || isReadOnly(item)) {
-      return <TextView item={item} value={this.getPdfValue()} children={this.props.children} />;
+      return (
+        <TextView item={item} value={this.getPdfValue()}>
+          {this.props.children}
+        </TextView>
+      );
     } else {
       return (
         <AttachmentHtml

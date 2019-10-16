@@ -107,7 +107,7 @@ function getErrorMessage(
     }
   }
 
-  let validationText = getValidationTextExtension(item);
+  const validationText = getValidationTextExtension(item);
   if (validationText) {
     return validationText;
   }

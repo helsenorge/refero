@@ -15,7 +15,11 @@ interface Props {
 }
 const textField: React.SFC<Props & ValidationProps> = ({ id, pdf, item, answer, handleStringChange, children, ...other }) => {
   if (pdf) {
-    return <Pdf item={item} value={getPDFStringValue(answer)} children={children} />;
+    return (
+      <Pdf item={item} value={getPDFStringValue(answer)}>
+        {children}
+      </Pdf>
+    );
   }
   return (
     <Validation {...other}>

@@ -8,9 +8,12 @@ import { Path } from '../../util/skjemautfyller-core';
 import { Group } from '../formcomponents/group/group';
 import StringComponent from '../../components/formcomponents/string/string';
 import Extensions from '../../constants/extensions';
+import { ThunkDispatch } from 'redux-thunk';
+import { GlobalState } from '../../reducers/index';
+import { NewValueAction } from '../../actions/newValue';
 
 describe('Group component renders with correct classes', () => {
-  let defaultClasses = ['.page_skjemautfyller__component', '.page_skjemautfyller__component_group'];
+  const defaultClasses = ['.page_skjemautfyller__component', '.page_skjemautfyller__component_group'];
   beforeEach(() => {
     window.matchMedia = jest.fn().mockImplementation(_ => {
       return {};
@@ -18,45 +21,45 @@ describe('Group component renders with correct classes', () => {
   });
 
   it('renders with table-class when extension is table', () => {
-    let extension = createItemControlExtension('table');
-    let item = createItemWithExtensions('group', extension);
-    let wrapper = createWrapperForGroupItem(item);
+    const extension = createItemControlExtension('table');
+    const item = createItemWithExtensions('group', extension);
+    const wrapper = createWrapperForGroupItem(item);
     wrapper.render();
 
     expectToFindClasses(wrapper, ...defaultClasses, '.page_skjemautfyller__itemControl_table');
   });
 
   it('renders with htable-class when extension is htable', () => {
-    let extension = createItemControlExtension('htable');
-    let item = createItemWithExtensions('group', extension);
-    let wrapper = createWrapperForGroupItem(item);
+    const extension = createItemControlExtension('htable');
+    const item = createItemWithExtensions('group', extension);
+    const wrapper = createWrapperForGroupItem(item);
     wrapper.render();
 
     expectToFindClasses(wrapper, ...defaultClasses, '.page_skjemautfyller__itemControl_htable');
   });
 
   it('renders with gtable-class when extension is gtable', () => {
-    let extension = createItemControlExtension('gtable');
-    let item = createItemWithExtensions('group', extension);
-    let wrapper = createWrapperForGroupItem(item);
+    const extension = createItemControlExtension('gtable');
+    const item = createItemWithExtensions('group', extension);
+    const wrapper = createWrapperForGroupItem(item);
     wrapper.render();
 
     expectToFindClasses(wrapper, ...defaultClasses, '.page_skjemautfyller__itemControl_gtable');
   });
 
   it('renders with atable-class when extension is atable', () => {
-    let extension = createItemControlExtension('atable');
-    let item = createItemWithExtensions('group', extension);
-    let wrapper = createWrapperForGroupItem(item);
+    const extension = createItemControlExtension('atable');
+    const item = createItemWithExtensions('group', extension);
+    const wrapper = createWrapperForGroupItem(item);
     wrapper.render();
 
     expectToFindClasses(wrapper, ...defaultClasses, '.page_skjemautfyller__itemControl_atable');
   });
 
   it('other items with group item control types, does not get tagged with a class', () => {
-    let extension = createItemControlExtension('gtable');
-    let item = createItemWithExtensions('string', extension);
-    let wrapper = createWrapperForStringItem(item);
+    const extension = createItemControlExtension('gtable');
+    const item = createItemWithExtensions('string', extension);
+    const wrapper = createWrapperForStringItem(item);
     wrapper.render();
 
     expectToNotFindClasses(wrapper, '.page_skjemautfyller__itemControl_gtable');
@@ -64,13 +67,13 @@ describe('Group component renders with correct classes', () => {
 });
 
 function expectToNotFindClasses(wrapper: ReactWrapper<{}, {}>, ...classes: string[]) {
-  for (let c of classes) {
+  for (const c of classes) {
     expect(wrapper.find(c)).toHaveLength(0);
   }
 }
 
 function expectToFindClasses(wrapper: ReactWrapper<{}, {}>, ...classes: string[]) {
-  for (let c of classes) {
+  for (const c of classes) {
     expect(wrapper.find(c)).toHaveLength(1);
   }
 }
@@ -90,11 +93,11 @@ function createItemControlExtension(code: string) {
 }
 
 function createWrapperForGroupItem(item: QuestionnaireItem): ReactWrapper<{}, {}> {
-  let store: Store<{}> = createStore(rootReducer);
+  const store: Store<{}> = createStore(rootReducer);
   return mount(
     <Provider store={store}>
       <Group
-        dispatch={() => undefined as any}
+        dispatch={() => (undefined as unknown) as ThunkDispatch<GlobalState, void, NewValueAction>}
         answer={{} as QuestionnaireResponseAnswer}
         item={item}
         path={{} as Path[]}
@@ -109,11 +112,11 @@ function createWrapperForGroupItem(item: QuestionnaireItem): ReactWrapper<{}, {}
 }
 
 function createWrapperForStringItem(item: QuestionnaireItem): ReactWrapper<{}, {}> {
-  let store: Store<{}> = createStore(rootReducer);
+  const store: Store<{}> = createStore(rootReducer);
   return mount(
     <Provider store={store}>
       <StringComponent
-        dispatch={() => undefined as any}
+        dispatch={() => (undefined as unknown) as ThunkDispatch<GlobalState, void, NewValueAction>}
         answer={{} as QuestionnaireResponseAnswer}
         item={item}
         path={{} as Path[]}

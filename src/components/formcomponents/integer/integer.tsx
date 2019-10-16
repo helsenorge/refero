@@ -70,7 +70,11 @@ class Integer extends React.Component<Props & ValidationProps, {}> {
 
   render(): JSX.Element | null {
     if (this.props.pdf || isReadOnly(this.props.item)) {
-      return <TextView item={this.props.item} value={this.getPDFValue()} children={this.props.children} />;
+      return (
+        <TextView item={this.props.item} value={this.getPDFValue()}>
+          {this.props.children}
+        </TextView>
+      );
     }
     const value = this.getValue();
     return (
@@ -97,7 +101,7 @@ class Integer extends React.Component<Props & ValidationProps, {}> {
             inputProps={{
               step: '1',
               onKeyPress: (e: React.KeyboardEvent<{}>) => {
-                let key = String.fromCharCode(e.which);
+                const key = String.fromCharCode(e.which);
                 if ('0123456789-'.indexOf(key) === -1) {
                   e.preventDefault();
                 }

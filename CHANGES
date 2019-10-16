@@ -1,3 +1,9 @@
+3.4.0
+-----
+* Use @helsenorge/toolkit version 8.4.2
+* Use @helsenorge/core-build 8.1.0
+* New rules for eslint og tslint
+
 3.2.1
 -----
 * Added support for itemControl-extension inline. Using av expandable block for child items 

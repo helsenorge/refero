@@ -63,8 +63,8 @@ class OpenChoice extends React.Component<Props & ValidationProps> {
       return text;
     }
 
-    let displayValues = value.filter(el => el !== OPEN_CHOICE_ID).map(el => getDisplay(getOptions(item, containedResources), el));
-    let openValue = this.getOpenValue(answer);
+    const displayValues = value.filter(el => el !== OPEN_CHOICE_ID).map(el => getDisplay(getOptions(item, containedResources), el));
+    const openValue = this.getOpenValue(answer);
     if (openValue) {
       displayValues.push(openValue);
     }
@@ -75,7 +75,7 @@ class OpenChoice extends React.Component<Props & ValidationProps> {
   getOpenValue = (answer: Array<QuestionnaireResponseAnswer> | QuestionnaireResponseAnswer): string | undefined => {
     if (Array.isArray(answer)) {
       for (let i = 0; i < answer.length; i++) {
-        let el = answer[i];
+        const el = answer[i];
         if (el.valueString) {
           return el.valueString;
         }
@@ -125,9 +125,9 @@ class OpenChoice extends React.Component<Props & ValidationProps> {
   handleCheckboxChange = (code?: string): void => {
     const { dispatch, answer, promptLoginMessage, item } = this.props;
     if (dispatch && code) {
-      let display = getDisplay(getOptions(item, this.props.containedResources), code);
+      const display = getDisplay(getOptions(item, this.props.containedResources), code);
       const system = getSystem(item, this.props.containedResources);
-      let coding = { code, display, system } as Coding;
+      const coding = { code, display, system } as Coding;
       if (getIndexOfAnswer(code, answer) > -1) {
         dispatch(removeCodingValue(this.props.path, coding, item));
 
@@ -183,7 +183,7 @@ class OpenChoice extends React.Component<Props & ValidationProps> {
     const { dispatch, item, path, answer } = this.props;
 
     if (dispatch) {
-      var isShown = shouldShowExtraChoice(answer);
+      const isShown = shouldShowExtraChoice(answer);
 
       if (isShown && coding.code === OPEN_CHOICE_ID) {
         dispatch(removeCodingStringValue(path, item));
@@ -197,7 +197,7 @@ class OpenChoice extends React.Component<Props & ValidationProps> {
     let a = answer;
     if (Array.isArray(answer)) {
       for (let i = 0; i < answer.length; i++) {
-        let el = answer[i] as QuestionnaireResponseAnswer;
+        const el = answer[i] as QuestionnaireResponseAnswer;
         if (el.valueString) {
           a = el;
           break;
@@ -216,11 +216,12 @@ class OpenChoice extends React.Component<Props & ValidationProps> {
         id={this.props.id}
         handleChange={this.handleCheckboxChange}
         selected={this.getValue(this.props.item, this.props.answer)}
-        children={this.props.children}
         repeatButton={this.props.repeatButton}
         renderOpenField={() => this.renderTextField()}
         {...this.props}
-      />
+      >
+        {this.props.children}
+      </CheckboxView>
     );
   };
 
@@ -234,11 +235,12 @@ class OpenChoice extends React.Component<Props & ValidationProps> {
         selected={this.getValue(this.props.item, this.props.answer)}
         validateInput={(value: string) => validateInput(this.props.item, value, this.props.containedResources)}
         resources={this.props.resources}
-        children={this.props.children}
         repeatButton={this.props.repeatButton}
         renderOpenField={() => this.renderTextField()}
         {...this.props}
-      />
+      >
+        {this.props.children}
+      </DropdownView>
     );
   };
 
@@ -249,7 +251,6 @@ class OpenChoice extends React.Component<Props & ValidationProps> {
         options={options}
         item={item}
         getErrorMessage={(value: string) => getErrorMessage(item, value, resources, containedResources)}
-        children={children}
         handleChange={this.handleChange}
         validateInput={(value: string) => validateInput(item, value, containedResources)}
         id={id}
@@ -258,14 +259,20 @@ class OpenChoice extends React.Component<Props & ValidationProps> {
         renderOpenField={() => this.renderTextField()}
         answer={answer}
         {...rest}
-      />
+      >
+        {children}
+      </RadioView>
     );
   };
 
   render(): JSX.Element | null {
     const { item, pdf, answer, containedResources, children } = this.props;
     if (pdf || isReadOnly(item)) {
-      return <TextView item={item} value={this.getPDFValue(item, answer)} children={children} />;
+      return (
+        <TextView item={item} value={this.getPDFValue(item, answer)}>
+          {children}
+        </TextView>
+      );
     }
 
     return (

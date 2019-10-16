@@ -179,8 +179,8 @@ class Time extends React.Component<Props & ValidationProps> {
     if (value) {
       const values = value.split(':');
       let retVal = '';
-      for (var i = 0; i < values.length; i++) {
-        var timeString = '';
+      for (let i = 0; i < values.length; i++) {
+        let timeString = '';
         if (parseInt(values[i], 10) < 10 && values[i].length === 1) {
           timeString += '0';
         }
@@ -208,7 +208,11 @@ class Time extends React.Component<Props & ValidationProps> {
     if (pdf || isReadOnly(this.props.item)) {
       const value = this.getPDFValue();
       if (renderFieldset) {
-        return <TextView item={this.props.item} value={this.padNumber(value)} children={this.props.children} />;
+        return (
+          <TextView item={this.props.item} value={this.padNumber(value)}>
+            {this.props.children}
+          </TextView>
+        );
       } else if (value) {
         return (
           <span>
@@ -240,6 +244,7 @@ class Time extends React.Component<Props & ValidationProps> {
             maxMinute={this.getMaxMinute()}
             minMinute={this.getMinMinute()}
             onBlur={this.onTimeChange}
+            /* eslint-disable react/no-string-refs */
             ref="timeInput"
             className={this.props.className + ' page_skjemautfyller__input'}
             renderFieldset={this.props.renderFieldset}

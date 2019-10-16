@@ -1,10 +1,4 @@
-import {
-  QuestionnaireResponseItem,
-  QuestionnaireResponseAnswer,
-  QuestionnaireItem,
-  QuestionnaireEnableWhen,
-  QuestionnaireResponse,
-} from '../types/fhir';
+import { QuestionnaireResponseItem, QuestionnaireResponseAnswer, QuestionnaireItem, QuestionnaireEnableWhen } from '../types/fhir';
 
 import { FormData, FormDefinition } from '../reducers/form';
 import { parseDate } from '@helsenorge/toolkit/components/atoms/time-input/date-core';
@@ -36,9 +30,9 @@ export function getAllResponseItemsWithLinkid(
   if (!responseItems) {
     return [];
   }
-  let relatedResponseItems: QuestionnaireResponseItem[] = [];
+  const relatedResponseItems: QuestionnaireResponseItem[] = [];
 
-  var getResponseItemsWithLinkid = function(
+  const getResponseItemsWithLinkid = function(
     definitionLinkId: string,
     responseItem: QuestionnaireResponseItem | QuestionnaireResponseAnswer
   ): void {
@@ -167,7 +161,7 @@ export function getQuestionnaireResponseItemsWithLinkId(
     return answers.concat(...collectAnswerItems(subItems));
   }
 
-  let answers = collectAnswerItems(responseItems);
+  const answers = collectAnswerItems(responseItems);
   let items: Array<QuestionnaireResponseItem> = [];
   items = items.concat(...answers.map(a => a.item || []));
   itemsWithLinkId = getItemsWithIdFromResponseItemArray(linkId, items, false, removeSuffix);
@@ -178,16 +172,16 @@ export function getArrayContainingResponseItemFromItems(
   linkId: string,
   items: Array<QuestionnaireResponseItem>
 ): Array<QuestionnaireResponseItem> | undefined {
-  for (let item of items) {
+  for (const item of items) {
     if (item.linkId === linkId) {
       return items;
     }
     if (item.item) {
-      let result = getArrayContainingResponseItemFromItems(linkId, item.item);
+      const result = getArrayContainingResponseItemFromItems(linkId, item.item);
       if (result) return result;
     }
     if (item.answer) {
-      let result = getArrayContainingResponseItemFromAnswers(linkId, item.answer);
+      const result = getArrayContainingResponseItemFromAnswers(linkId, item.answer);
       if (result) return result;
     }
   }
@@ -199,9 +193,9 @@ function getArrayContainingResponseItemFromAnswers(
   linkId: string,
   answers: Array<QuestionnaireResponseAnswer>
 ): Array<QuestionnaireResponseItem> | undefined {
-  for (let answer of answers) {
+  for (const answer of answers) {
     if (answer.item) {
-      let result = getArrayContainingResponseItemFromItems(linkId, answer.item);
+      const result = getArrayContainingResponseItemFromItems(linkId, answer.item);
       if (result) return result;
     }
   }
@@ -281,7 +275,7 @@ export function getItemsWithIdFromResponseItemArray(
   });
 
   if (recurse) {
-    var reducer = (acc: Array<QuestionnaireResponseItem>, val: QuestionnaireResponseItem) => {
+    const reducer = (acc: Array<QuestionnaireResponseItem>, val: QuestionnaireResponseItem) => {
       if (val.item) {
         acc.push(...getItemsWithIdFromResponseItemArray(linkId, val.item, recurse, removeSuffix));
       }
@@ -534,7 +528,7 @@ export function shouldRenderDeleteButton(item: QuestionnaireItem, index: number)
   if (index === 0) {
     return false;
   }
-  let minOccurs = getMinOccursExtensionValue(item);
+  const minOccurs = getMinOccursExtensionValue(item);
   if (minOccurs) {
     if (index >= minOccurs) {
       return true;
@@ -561,7 +555,7 @@ export function getResponseItemWithPath(path: Array<Path> | undefined, formData:
     return undefined;
   }
 
-  let items: Array<QuestionnaireResponseItem> | undefined = getQuestionnaireResponseItemFromData(path[0].linkId, formData);
+  const items: Array<QuestionnaireResponseItem> | undefined = getQuestionnaireResponseItemFromData(path[0].linkId, formData);
   if (!items || items.length === 0) {
     return undefined;
   }

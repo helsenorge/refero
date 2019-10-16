@@ -1,12 +1,19 @@
 import { createQuestionnaireResponseAnswer } from '../util/createQuestionnaireResponseAnswer';
 import StatusConstants from '../constants/status';
-import { QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItem, QuestionnaireResponseAnswer, Reference } from '../types/fhir';
+import {
+  QuestionnaireItem,
+  QuestionnaireResponse,
+  QuestionnaireResponseItem,
+  QuestionnaireResponseAnswer,
+  Reference,
+  Questionnaire,
+} from '../types/fhir';
 
 import Constants from '../constants/index';
 import { getMinOccursExtensionValue } from '../util/extension';
 import itemType from '../constants/itemType';
 
-export function generateQuestionnaireResponse(questionnaire: any): QuestionnaireResponse | undefined {
+export function generateQuestionnaireResponse(questionnaire: Questionnaire): QuestionnaireResponse | undefined {
   const response: QuestionnaireResponse = {
     resourceType: Constants.QUESTIONNAIRE_RESPONSE_RESOURCE_TYPE,
     status: StatusConstants.questionnaireResponse.IN_PROGRESS,
@@ -20,7 +27,7 @@ export function generateQuestionnaireResponse(questionnaire: any): Questionnaire
     response.questionnaire.reference = questionnaire.url;
   }
 
-  questionnaire.item.forEach((i: any) => {
+  questionnaire.item.forEach(i => {
     if (!response.item) {
       response.item = [];
     }
@@ -112,7 +119,7 @@ function addResponseItemtoResponse(
 }
 
 function createQuestionnaireResponseItem(item: QuestionnaireItem): QuestionnaireResponseItem {
-  let responseItem = {
+  const responseItem = {
     linkId: item.linkId,
     text: item.text,
   } as QuestionnaireResponseItem;

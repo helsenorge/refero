@@ -8,7 +8,7 @@ import { Resources } from '../../util/resources';
 import { Questionnaire, QuestionnaireItem, uri, Extension, QuestionnaireEnableWhen } from '../../types/fhir';
 import HelpButton from '../help-button/help-button';
 import itemControlConstants from '../../constants/itemcontrol';
-import RepeatButton, { RepeatButton as RepeatButtonInstance } from '../../components/formcomponents/repeat/repeat-button';
+import { RepeatButton as RepeatButtonInstance } from '../../components/formcomponents/repeat/repeat-button';
 import Boolean from '../../components/formcomponents/boolean/boolean';
 import SafeInputField from '@helsenorge/toolkit/components/atoms/safe-input-field';
 
@@ -22,28 +22,28 @@ describe('Component renders help items', () => {
   it('help button should be visible and control the help element', () => {
     let expectedOpeningStatus: boolean = false;
 
-    let helpButtonCb = (item: QuestionnaireItem, helpItem: QuestionnaireItem, helpType: string, helpText: string, opening: boolean) => {
+    const helpButtonCb = (item: QuestionnaireItem, helpItem: QuestionnaireItem, helpType: string, helpText: string, opening: boolean) => {
       expect(item.linkId).toBe('1');
       expect(helpItem.linkId).toBe('1.1');
       expect(helpText).toBe('help text');
       expect(helpType).toBe(itemControlConstants.HELP);
       expect(opening).toBe(expectedOpeningStatus);
 
-      return <div className="helpButton">help button</div>;
+      return <div className="helpButton">{'help button'}</div>;
     };
 
-    let helpElementCb = (item: QuestionnaireItem, helpItem: QuestionnaireItem, helpType: string, helpText: string, opening: boolean) => {
+    const helpElementCb = (item: QuestionnaireItem, helpItem: QuestionnaireItem, helpType: string, helpText: string, opening: boolean) => {
       expect(item.linkId).toBe('1');
       expect(helpItem.linkId).toBe('1.1');
       expect(helpText).toBe('help text');
       expect(helpType).toBe(itemControlConstants.HELP);
       expect(opening).toBe(expectedOpeningStatus);
 
-      return opening ? <div className="helpElement">help element</div> : <React.Fragment />;
+      return opening ? <div className="helpElement">{'help element'}</div> : <React.Fragment />;
     };
 
     // Render schema with 1 help button
-    let wrapper = createWrapper(questionnaireWithHelp(), helpButtonCb, helpElementCb);
+    const wrapper = createWrapper(questionnaireWithHelp(), helpButtonCb, helpElementCb);
     wrapper.render();
 
     expect(wrapper.find('.helpButton')).toHaveLength(1);
@@ -69,7 +69,7 @@ describe('repeat with enableWhen', () => {
   });
 
   it('When we add a section with repeat, the enableWhen component should be hidden per default', () => {
-    let wrapper = createWrapper(questionnaireWithRepeatedEnableWhens());
+    const wrapper = createWrapper(questionnaireWithRepeatedEnableWhens());
     wrapper.render();
 
     // clicking the repeat button, repeats the elements
@@ -102,7 +102,7 @@ function createWrapper(
   helpButtonCb?: (item: QuestionnaireItem, helpItem: QuestionnaireItem, helpType: string, help: string, opening: boolean) => JSX.Element,
   helpElementCb?: (item: QuestionnaireItem, helpItem: QuestionnaireItem, helpType: string, help: string, opening: boolean) => JSX.Element
 ) {
-  let store: Store<{}> = createStore(rootReducer);
+  const store: Store<{}> = createStore(rootReducer);
   return mount(
     <Provider store={store}>
       <SkjemautfyllerContainer

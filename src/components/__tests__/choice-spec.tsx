@@ -8,6 +8,9 @@ import { Provider, Store } from 'react-redux';
 import { Choice } from '../formcomponents/choice/choice';
 import { QuestionnaireItem, QuestionnaireOption, QuestionnaireResponseAnswer, integer, date, time, Extension } from '../../types/fhir';
 import { Path } from '../../util/skjemautfyller-core';
+import { ThunkDispatch } from 'redux-thunk';
+import { GlobalState } from '../../reducers/index';
+import { NewValueAction } from '../../actions/newValue';
 
 describe('Choice component renders item.option[]', () => {
   beforeEach(() => {
@@ -17,19 +20,19 @@ describe('Choice component renders item.option[]', () => {
   });
 
   it('should render options from extension optionreference', () => {
-    let extensions = createExtensionReferenceOption(
+    const extensions = createExtensionReferenceOption(
       { key: 'HV', value: 'http://some.end/point1' },
       { key: 'HSØ', value: 'http://some.end/point2' }
     );
-    let item = createItemWithExtensions(...extensions);
-    let wrapper = createWrapperWithItem(item);
+    const item = createItemWithExtensions(...extensions);
+    const wrapper = createWrapperWithItem(item);
     wrapper.render();
 
     expectToFind(wrapper, ['http://some.end/point1', 'http://some.end/point2'], ['HV', 'HSØ']);
   });
 
   it('should render valueReferences', () => {
-    let option = createValueReferenceOption(
+    const option = createValueReferenceOption(
       {
         key: 'https://nde-fhir-ehelse.azurewebsites.net/fhir/Endpoint/3',
         value: 'Org01',
@@ -39,8 +42,8 @@ describe('Choice component renders item.option[]', () => {
         value: 'Org02',
       }
     );
-    let item = createItemWithOption(...option);
-    let wrapper = createWrapperWithItem(item);
+    const item = createItemWithOption(...option);
+    const wrapper = createWrapperWithItem(item);
     wrapper.render();
 
     expectToFind(
@@ -51,65 +54,65 @@ describe('Choice component renders item.option[]', () => {
   });
 
   it('should render valueStrings', () => {
-    let option = createValueStringOption('dog', 'cat');
-    let item = createItemWithOption(...option);
-    let wrapper = createWrapperWithItem(item);
+    const option = createValueStringOption('dog', 'cat');
+    const item = createItemWithOption(...option);
+    const wrapper = createWrapperWithItem(item);
     wrapper.render();
 
     expectToFind(wrapper, ['dog', 'cat'], ['dog', 'cat']);
   });
 
   it('should render valueInteger', () => {
-    let option = createValueIntegerOption(42, 1729);
-    let item = createItemWithOption(...option);
-    let wrapper = createWrapperWithItem(item);
+    const option = createValueIntegerOption(42, 1729);
+    const item = createItemWithOption(...option);
+    const wrapper = createWrapperWithItem(item);
     wrapper.render();
 
     expectToFind(wrapper, ['42', '1729'], ['42', '1729']);
   });
 
   it('should render valueDate', () => {
-    let option = createValueDateOption('2018-01-01', '2018-08-22');
-    let item = createItemWithOption(...option);
-    let wrapper = createWrapperWithItem(item);
+    const option = createValueDateOption('2018-01-01', '2018-08-22');
+    const item = createItemWithOption(...option);
+    const wrapper = createWrapperWithItem(item);
     wrapper.render();
 
     expectToFind(wrapper, ['2018-01-01', '2018-08-22'], ['2018-01-01', '2018-08-22']);
   });
 
   it('should render valueTime', () => {
-    let option = createValueTimeOption('14:23:11', '03:30');
-    let item = createItemWithOption(...option);
-    let wrapper = createWrapperWithItem(item);
+    const option = createValueTimeOption('14:23:11', '03:30');
+    const item = createItemWithOption(...option);
+    const wrapper = createWrapperWithItem(item);
     wrapper.render();
 
     expectToFind(wrapper, ['14:23:11', '03:30'], ['14:23:11', '03:30']);
   });
 
   it('should render valueCoding', () => {
-    let option = createValueCodingOption({ key: 'OSL', value: 'Gardermoen' }, { key: 'LAX', value: 'LA' });
-    let item = createItemWithOption(...option);
-    let wrapper = createWrapperWithItem(item);
+    const option = createValueCodingOption({ key: 'OSL', value: 'Gardermoen' }, { key: 'LAX', value: 'LA' });
+    const item = createItemWithOption(...option);
+    const wrapper = createWrapperWithItem(item);
     wrapper.render();
 
     expectToFind(wrapper, ['OSL', 'LAX'], ['Gardermoen', 'LA']);
   });
 
   it('should render different types', () => {
-    let referenceOption = createValueReferenceOption({
+    const referenceOption = createValueReferenceOption({
       key: 'valueReference',
       value: 'ref',
     });
-    let codingOption = createValueCodingOption({
+    const codingOption = createValueCodingOption({
       key: 'valueCoding',
       value: 'code',
     });
-    let stringOption = createValueStringOption('foo');
-    let integerOption = createValueIntegerOption(42);
-    let dateOption = createValueDateOption('2018-12-31');
-    let timeOption = createValueTimeOption('00:00');
-    let item = createItemWithOption(...referenceOption, ...codingOption, ...stringOption, ...integerOption, ...dateOption, ...timeOption);
-    let wrapper = createWrapperWithItem(item);
+    const stringOption = createValueStringOption('foo');
+    const integerOption = createValueIntegerOption(42);
+    const dateOption = createValueDateOption('2018-12-31');
+    const timeOption = createValueTimeOption('00:00');
+    const item = createItemWithOption(...referenceOption, ...codingOption, ...stringOption, ...integerOption, ...dateOption, ...timeOption);
+    const wrapper = createWrapperWithItem(item);
     wrapper.render();
 
     expectToFind(
@@ -120,12 +123,12 @@ describe('Choice component renders item.option[]', () => {
   });
 
   it('should be clickable', () => {
-    let referenceOption = createValueReferenceOption({
+    const referenceOption = createValueReferenceOption({
       key: 'valueReference',
       value: 'ref',
     });
-    let item = createItemWithOption(...referenceOption);
-    let wrapper = createWrapperWithItem(item);
+    const item = createItemWithOption(...referenceOption);
+    const wrapper = createWrapperWithItem(item);
 
     let input = wrapper.find('input[aria-checked=false]').length;
     expect(input).toBe(1);
@@ -136,17 +139,17 @@ describe('Choice component renders item.option[]', () => {
 });
 
 function expectToFind(wrapper: ReactWrapper<{}, {}>, keys: string[], values: string[]) {
-  let choices = wrapper.find('input');
+  const choices = wrapper.find('input');
   expect(choices.length).toBe(keys.length);
   keys.forEach((e, i) => {
-    let choice = choices.at(i);
+    const choice = choices.at(i);
     expect(choice.props().value).toBe(e);
   });
 
-  let labels = wrapper.find('label');
+  const labels = wrapper.find('label');
   expect(labels.length).toBe(values.length);
   values.forEach((e, i) => {
-    let label = labels.at(i);
+    const label = labels.at(i);
     expect(label.text()).toBe(e);
   });
 }
@@ -218,11 +221,11 @@ function createValueTimeOption(...options: string[]): QuestionnaireOption[] {
 }
 
 function createWrapperWithItem(item: QuestionnaireItem): ReactWrapper<{}, {}> {
-  let store: Store<{}> = createStore(rootReducer);
+  const store: Store<{}> = createStore(rootReducer);
   return mount(
     <Provider store={store}>
       <Choice
-        dispatch={() => undefined as any}
+        dispatch={() => (undefined as unknown) as ThunkDispatch<GlobalState, void, NewValueAction>}
         answer={{} as QuestionnaireResponseAnswer}
         item={item}
         path={{} as Path[]}

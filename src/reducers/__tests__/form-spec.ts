@@ -146,12 +146,12 @@ describe('new value action', () => {
   });
 
   it('should update datetime value', () => {
-    let action: NewValueAction = newDateTimeValue([{ linkId: 'dt' }], '2018-05-11T10:28:45Z', undefined);
-    let newState: Form | undefined = reducer(dataModel.skjemautfyller.form, action);
+    const action: NewValueAction = newDateTimeValue([{ linkId: 'dt' }], '2018-05-11T10:28:45Z', undefined);
+    const newState: Form | undefined = reducer(dataModel.skjemautfyller.form, action);
     if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
       return fail();
     }
-    let item = newState.FormData.Content.item[5];
+    const item = newState.FormData.Content.item[5];
     if (!item || item.answer === undefined || item.answer === null || !item.answer[0]) {
       return fail();
     }
@@ -273,7 +273,7 @@ describe('new value action', () => {
     if (!item || item.answer === undefined || item.answer === null || !item.answer[0]) {
       return fail();
     }
-    let answer = item.answer[0];
+    const answer = item.answer[0];
     if (!answer || !answer.valueCoding) {
       return fail();
     }
@@ -294,20 +294,20 @@ describe('new value action', () => {
     expect(item.answer[1]).toMatchSnapshot();
   });
   it('should update attachment fields', () => {
-    let action: NewValueAction = newAttachment(
+    const action: NewValueAction = newAttachment(
       [{ linkId: 'attachment' }],
       { url: 'y', title: 'display', data: { value: '123' } as base64Binary, contentType: { value: 'image/jpg' } as code } as Attachment,
       undefined
     );
-    let newState: Form | undefined = reducer(dataModel.skjemautfyller.form, action);
+    const newState: Form | undefined = reducer(dataModel.skjemautfyller.form, action);
     if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
       return fail();
     }
-    let item = newState.FormData.Content.item[10];
+    const item = newState.FormData.Content.item[10];
     if (!item || item.answer === undefined || item.answer === null || !item.answer[0]) {
       return fail();
     }
-    let answer = item.answer[0];
+    const answer = item.answer[0];
     if (!answer || !answer.valueAttachment) {
       return fail();
     }
@@ -362,7 +362,7 @@ describe('new value action', () => {
     if (!item || item.answer === undefined || item.answer === null || !item.answer[0]) {
       return fail();
     }
-    let answer = item.answer[0];
+    const answer = item.answer[0];
     if (!answer || !answer.valueAttachment) {
       return fail();
     }
@@ -385,8 +385,8 @@ describe('new value action', () => {
 
 describe('new value action', () => {
   it('should not copy non existing item', () => {
-    let action: NewValueAction = addRepeatItem([{ linkId: 'foobar' }], { linkId: 'foobar', type: 'group' }, undefined);
-    let newState: Form | undefined = reducer(dataModel.skjemautfyller.form, action);
+    const action: NewValueAction = addRepeatItem([{ linkId: 'foobar' }], { linkId: 'foobar', type: 'group' }, undefined);
+    const newState: Form | undefined = reducer(dataModel.skjemautfyller.form, action);
     if (!newState || !newState.FormData.Content || !newState.FormData.Content.item) {
       return fail();
     }
@@ -394,11 +394,11 @@ describe('new value action', () => {
   });
 
   it('should add group', () => {
-    let action: NewValueAction = addRepeatItem([], { linkId: 'addGroupTest1', type: 'group' }, [
+    const action: NewValueAction = addRepeatItem([], { linkId: 'addGroupTest1', type: 'group' }, [
       {
         linkId: 'addGroupTest1^0',
         item: [
-          <QuestionnaireResponseItem>{
+          {
             linkId: 'addGroupTest11^0',
             item: [
               {
@@ -406,7 +406,7 @@ describe('new value action', () => {
                 answer: [{ valueString: 'testSvar' }],
               },
             ],
-          },
+          } as QuestionnaireResponseItem,
           {
             linkId: 'addGroupTest12^0',
           },
@@ -417,27 +417,27 @@ describe('new value action', () => {
       return fail();
     }
     expect(dataModel.skjemautfyller.form.FormData.Content.item.length).toEqual(12);
-    let newState: Form | undefined = reducer(dataModel.skjemautfyller.form, action);
+    const newState: Form | undefined = reducer(dataModel.skjemautfyller.form, action);
     if (!newState || (!newState.FormData.Content || !newState.FormData.Content.item)) {
       return fail();
     }
     expect(newState.FormData.Content.item.length).toEqual(13);
     expect(dataModel.skjemautfyller.form.FormData.Content.item.length).toEqual(12);
 
-    let repeatGroupResponseItems = getItemWithIdFromResponseItemArray('addGroupTest1', newState.FormData.Content.item, true);
+    const repeatGroupResponseItems = getItemWithIdFromResponseItemArray('addGroupTest1', newState.FormData.Content.item, true);
     should.exist(repeatGroupResponseItems);
     if (repeatGroupResponseItems) {
       expect(repeatGroupResponseItems.length).toEqual(2);
     }
 
-    let addedGroup = newState.FormData.Content.item[12];
+    const addedGroup = newState.FormData.Content.item[12];
     should.exist(addedGroup);
 
     if (!addedGroup || !addedGroup.item) {
       return fail();
     }
     expect(addedGroup.item[0].linkId).toEqual('addGroupTest11^1');
-    let items = addedGroup.item[0].item;
+    const items = addedGroup.item[0].item;
     if (!items) {
       return fail();
     }
@@ -509,10 +509,10 @@ describe('new value action', () => {
     if (!newState || (!newState.FormData.Content || !newState.FormData.Content.item)) {
       return fail();
     }
-    let deletedGroup = getQuestionnaireResponseItemWithLinkid('group110.1^2', newState.FormData.Content.item[11]);
+    const deletedGroup = getQuestionnaireResponseItemWithLinkid('group110.1^2', newState.FormData.Content.item[11]);
     expect(deletedGroup).toEqual(undefined);
 
-    let groupMovedForward = getQuestionnaireResponseItemWithLinkid('group110.1^1', newState.FormData.Content.item[11]);
+    const groupMovedForward = getQuestionnaireResponseItemWithLinkid('group110.1^1', newState.FormData.Content.item[11]);
 
     if (!groupMovedForward || !groupMovedForward.item) {
       return fail();
@@ -565,7 +565,7 @@ describe('update enable when action', () => {
     if (!answerItem || !answerItem.answer) {
       return fail();
     }
-    let integerAnswer = answerItem.answer;
+    const integerAnswer = answerItem.answer;
     const integer = getQuestionnaireDefinitionItem('i', definitionItems);
     if (!integer) {
       return fail();

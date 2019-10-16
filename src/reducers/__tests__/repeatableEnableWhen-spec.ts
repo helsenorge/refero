@@ -10,7 +10,7 @@ describe('update enable when action', () => {
 
   beforeEach(() => {
     newState = enableWhenDataModel.skjemautfyller.form;
-    let dItems = getDefinitionItems(newState.FormDefinition);
+    const dItems = getDefinitionItems(newState.FormDefinition);
     if (!dItems || dItems.length === 0) {
       return fail();
     }
@@ -19,8 +19,8 @@ describe('update enable when action', () => {
 
   it('should remove added repeats and clear answers when collapsing enableWhens', () => {
     // add repeat item
-    let qItem = getQuestionnaireDefinitionItem('8.1', definitionItems);
-    let qrItem = getResponseItem('8.1^0', newState);
+    const qItem = getQuestionnaireDefinitionItem('8.1', definitionItems);
+    const qrItem = getResponseItem('8.1^0', newState);
     if (!qItem || !qrItem) return fail();
     newState = clickRepeat(newState, pathify('8'), qItem, [qrItem]);
 
