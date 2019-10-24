@@ -1,3 +1,7 @@
+3.4.1
+-----
+* Fixed bug when multple enableWhen items are dependent. Now all answers are cleared.
+
 3.4.0
 -----
 * Use @helsenorge/toolkit version 8.4.2
@@ -6,7 +10,7 @@
 
 3.2.1
 -----
-* Added support for itemControl-extension inline. Using av expandable block for child items 
+* Added support for itemControl-extension inline. Using expandable block for child items 
 * when item type text has itemControl code == inline.
 
 3.2.0
@@ -16,7 +20,7 @@
 3.1.0
 -----
 * Added validation of text and string input. If the new prop validateScriptInjection = true then
-* html tags are allowed. Added resource validationNotAllowed (er ikke tillatt)
+* html tags in input fields will give a validation error. Added resource validationNotAllowed (er ikke tillatt)
 
 3.0.3
 -----
