@@ -17,7 +17,7 @@ describe('questionnaire with multiple dependent enable when items', () => {
     definitionItems = dItems;
   });
 
-  it('should clear all amswers when item is removed from the form by enable when', () => {
+  it('should clear all answers when enable when parent enableWhen is false', () => {
     // check first checkbox
     newState = clickCheckbox(newState, pathify('1', '1.1'), true, getQuestionnaireDefinitionItem('1.1', definitionItems));
     newState = clickCheckbox(newState, pathify('2', '2.1'), true, getQuestionnaireDefinitionItem('2.1', definitionItems));
