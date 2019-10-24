@@ -1,0 +1,135 @@
+{
+  "resourceType": "Questionnaire",
+  "id": "test-enablewhen",
+  "meta": {
+    "versionId": "19",
+    "lastUpdated": "2019-10-17T12:12:08.8076697+00:00",
+    "profile": ["http://ehelse.no/fhir/StructureDefinition/sdf-Questionnaire"],
+    "tag": [
+      {
+        "system": "urn:ietf:bcp:47",
+        "code": "nb-NO",
+        "display": "Norsk bokmål"
+      }
+    ]
+  },
+  "language": "nb-NO",
+  "contained": [],
+  "extension": [],
+  "url": "https://skjemakatalog-dev-fhir-apimgmt.azure-api.net/api/v1/Questionnaire/42",
+  "version": "0.1",
+  "name": "SIO-Psykolog",
+  "title": "Noen å snakke med",
+  "status": "draft",
+  "date": "2019-09-23",
+  "publisher": "Direktoratet for e-helse",
+  "useContext": [
+    {
+      "code": {
+        "system": "http://hl7.org/fhir/ValueSet/usage-context-type",
+        "code": "focus",
+        "display": "Clinical Focus"
+      },
+      "valueCodeableConcept": {
+        "coding": [
+          {
+            "system": "urn:oid:2.16.578.1.12.4.1.1.8655",
+            "code": "P",
+            "display": "Psykisk helsevern"
+          }
+        ]
+      }
+    }
+  ],
+  "contact": [
+    {
+      "name": "https://sio.no/helse"
+    }
+  ],
+  "subjectType": ["Patient"],
+  "item": [
+    {
+      "linkId": "1",
+      "text": "Hva trenger du nå",
+      "type": "group",
+      "repeats": false,
+      "item": [
+        {
+          "linkId": "1.1",
+          "text": "Vet du hva du trenger nå?",
+          "type": "boolean",
+
+          "repeats": false,
+          "readOnly": false
+        }
+      ]
+    },
+
+    {
+      "linkId": "2",
+      "text": "Selvhjelp",
+      "type": "group",
+      "enableWhen": [
+        {
+          "question": "1.1",
+          "answerBoolean": true
+        }
+      ],
+      "repeats": false,
+      "item": [
+        {
+          "linkId": "2.1",
+          "text": "Er selvhjelpsverkøy noe du ønsker å forsøke?",
+          "type": "boolean",
+          "repeats": false,
+          "readOnly": false
+        }
+      ]
+    },
+    {
+      "linkId": "3",
+      "text": "Rådgiving og psykolog",
+      "type": "group",
+      "enableWhen": [
+        {
+          "question": "2.1",
+          "answerBoolean": true
+        }
+      ],
+      "repeats": false,
+      "item": [
+        {
+          "linkId": "3.1",
+          "text": "Sliter med en eller flere av disse utfordringene?",
+          "type": "boolean",
+
+          "repeats": false,
+          "readOnly": false
+        }
+      ]
+    },
+    {
+      "linkId": "4",
+      "text": "Din psykiske helse",
+      "type": "group",
+
+      "enableWhen": [
+        {
+          "question": "3.1",
+          "answerBoolean": true
+        }
+      ],
+      "repeats": false,
+      "item": [
+        {
+          "linkId": "5",
+          "text": "Opplever du at du er engstelig eller redd?",
+          "type": "text",
+          "required": true,
+          "repeats": false,
+          "readOnly": false
+        }
+      ]
+    }
+  ]
+}

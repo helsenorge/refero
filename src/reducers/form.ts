@@ -582,6 +582,8 @@ function updateEnableWhenItemsIteration(items: QuestionnaireItem[], formData: Fo
     }
   }
   updateEnableWhenItemsIteration(qitemsWithEnableWhen, formData, formDefinition);
+
+  qitemsWithEnableWhen.forEach(i => i.item && updateEnableWhenItemsIteration(i.item, formData, formDefinition));
 }
 
 export function getFormDefinition(state: GlobalState): FormDefinition | null {

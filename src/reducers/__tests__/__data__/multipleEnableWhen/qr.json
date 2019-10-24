@@ -1,0 +1,23 @@
+{
+  "resourceType": "QuestionnaireResponse",
+  "status": "in-progress",
+  "questionnaire": { "reference": "https://skjemakatalog-dev-fhir-apimgmt.azure-api.net/api/v1/Questionnaire/42" },
+  "item": [
+    {
+      "linkId": "1",
+      "text": "Hva trenger du nå",
+      "item": [{ "linkId": "1.1", "text": "Vet du hva du trenger nå?", "answer": [{ "valueBoolean": false }] }]
+    },
+    {
+      "linkId": "2",
+      "text": "Selvhjelp",
+      "item": [{ "linkId": "2.1", "text": "Er selvhjelpsverkøy noe du ønsker å forsøke?", "answer": [{ "valueBoolean": false }] }]
+    },
+    {
+      "linkId": "3",
+      "text": "Rådgiving og psykolog",
+      "item": [{ "linkId": "3.1", "text": "Sliter med en eller flere av disse utfordringene?", "answer": [{ "valueBoolean": false }] }]
+    },
+    { "linkId": "4", "text": "Din psykiske helse", "item": [{ "linkId": "5", "text": "Opplever du at du er engstelig eller redd?" }] }
+  ]
+}
