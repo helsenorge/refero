@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { GlobalState } from '../../../reducers';
 import { NewValueAction } from '../../../actions/newValue';
+import { debounce } from '@helsenorge/toolkit/utils/debounce';
 import { SafeTextarea } from '@helsenorge/toolkit/components/atoms/safe-textarea';
 import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
 import ExpandableBlock from '@helsenorge/toolkit/components/atoms/expandable-block';
@@ -53,7 +54,7 @@ export class Text extends React.Component<Props & ValidationProps, {}> {
     return false;
   }
 
-  handleChange = (event: React.FormEvent<{}>) => {
+  handleChange = (event: React.FormEvent<{}>): void => {
     const { dispatch, promptLoginMessage } = this.props;
     const value = (event.target as HTMLInputElement).value;
     if (dispatch) {
@@ -64,6 +65,8 @@ export class Text extends React.Component<Props & ValidationProps, {}> {
       promptLoginMessage();
     }
   };
+
+  debouncedHandleChange: (event: React.FormEvent<{}>) => void = debounce(this.handleChange, 250, false);
 
   validateText = (value: string): boolean => {
     return validateText(value, this.props.validateScriptInjection);
@@ -106,7 +109,10 @@ export class Text extends React.Component<Props & ValidationProps, {}> {
             maxlength={getMaxLength(item)}
             minlength={getMinLengthExtensionValue(item)}
             counter={this.showCounter()}
-            onBlur={this.handleChange}
+            onChange={(event: React.FormEvent<{}>): void => {
+              event.persist();
+              this.debouncedHandleChange(event);
+            }}
             validator={this.validateText}
             errorMessage={this.getValidationErrorMessage}
             allowInputOverMaxLength
