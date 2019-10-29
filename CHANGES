@@ -1,3 +1,7 @@
+3.5.1
+-----
+* Update the redux state after typing in a text area (250ms debounce) without leaving (blur) the text area.
+
 3.5.0
 -----
 * Added @helsenorge/toolkit version ^9.0.0 as peerDependency
