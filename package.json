@@ -1,6 +1,6 @@
 {
   "name": "@helsenorge/skjemautfyller",
-  "version": "3.4.1",
+  "version": "3.5.0",
   "main": "index.js",
   "author": "helsenorge",
   "license": "UNLICENSED",
@@ -24,7 +24,7 @@
     }
   },
   "peerDependencies": {
-    "@helsenorge/toolkit": "^8.0.1",
+    "@helsenorge/toolkit": "^8.0.1 || ^9.0.0",
     "react": "^16.8.4",
     "react-dom": "^16.8.4",
     "react-redux": "^7.1.0",
@@ -33,7 +33,7 @@
   },
   "devDependencies": {
     "@helsenorge/core-build": "8.1.0",
-    "@helsenorge/toolkit": "^8.4.2",
+    "@helsenorge/toolkit": "^9.0.0",
     "@types/chai": "^3.5.2",
     "@types/marked": "^0.3.0",
     "@types/react-redux": "5.0.7",

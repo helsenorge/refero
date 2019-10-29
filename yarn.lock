@@ -107,10 +107,10 @@
     prettier "1.16.4"
     pretty-quick "1.10.0"
 
-"@helsenorge/toolkit@^8.4.2":
-  version "8.4.2"
-  resolved "https://tfs.ehelse.no/Ehelse/_packaging/Helsenorge/npm/registry/@helsenorge/toolkit/-/toolkit-8.4.2.tgz#7f73b5e0ed5387dc6e58a8c02455bf4119ecdf99"
-  integrity sha1-f3O14O1Th9xuWKjAJFW/QRns35k=
+"@helsenorge/toolkit@^9.0.0":
+  version "9.0.0"
+  resolved "https://tfs.ehelse.no/Ehelse/_packaging/Helsenorge/npm/registry/@helsenorge/toolkit/-/toolkit-9.0.0.tgz#11d6981c7289637c9105e0bce8d40b820e99f589"
+  integrity sha1-EdaYHHKJY3yRBeC86NQLgg6Z9Yk=
   dependencies:
     "@types/jss" "^9.5.8"
     ical.js "^1.2.2"
