@@ -1,3 +1,8 @@
+
+3.5.2
+-----
+* Update the redux state after typing in a text input (250ms debounce) without leaving (blur) the text input.
+
 3.5.1
 -----
 * Update the redux state after typing in a text area (250ms debounce) without leaving (blur) the text area.

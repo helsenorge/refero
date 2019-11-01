@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { GlobalState } from '../../../reducers';
 import { NewValueAction } from '../../../actions/newValue';
+import { debounce } from '@helsenorge/toolkit/utils/debounce';
 import SafeInputField from '@helsenorge/toolkit/components/atoms/safe-input-field';
 import layoutChange from '@helsenorge/toolkit/higher-order-components/layoutChange';
 import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
@@ -59,6 +60,8 @@ export class String extends React.Component<Props & ValidationProps, {}> {
     }
   };
 
+  debouncedHandleChange: (event: React.FormEvent<{}>) => void = debounce(this.handleChange, 250, false);
+
   validateText = (value: string): boolean => {
     return validateText(value, this.props.validateScriptInjection);
   };
@@ -96,7 +99,10 @@ export class String extends React.Component<Props & ValidationProps, {}> {
             placeholder={getPlaceholder(item)}
             minLength={getMinLengthExtensionValue(item)}
             maxLength={getMaxLength(item)}
-            onBlur={this.handleChange}
+            onChange={(event: React.FormEvent<{}>): void => {
+              event.persist();
+              this.debouncedHandleChange(event);
+            }}
             pattern={getRegexExtension(item)}
             errorMessage={this.getValidationErrorMessage}
             className="page_skjemautfyller__input"
