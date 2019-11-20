@@ -3,13 +3,13 @@ import { connect } from 'react-redux';
 import * as moment from 'moment';
 import 'moment/locale/nb';
 import withCommonFunctions from '../../with-common-functions';
-import DateTimeInput from '@helsenorge/toolkit/components/atoms/date-time-input';
+import DateTimeInput from '@helsenorge/toolkit/components/molecules/date-time-input';
 import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
 import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
 import layoutChange from '@helsenorge/toolkit/higher-order-components/layoutChange';
 import { Path } from '../../../util/skjemautfyller-core';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
-import { parseDate } from '@helsenorge/toolkit/components/atoms/time-input/date-core';
+import { parseDate } from '@helsenorge/toolkit/components/molecules/time-input/date-core';
 import Constants from '../../../constants/index';
 import ExtensionConstants from '../../../constants/extensions';
 import { newDateTimeValue, NewValueAction } from '../../../actions/newValue';
@@ -174,9 +174,5 @@ class DateTime extends React.Component<Props & ValidationProps> {
 }
 
 const withCommonFunctionsComponent = withCommonFunctions(DateTime);
-const connectedComponent = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-  mergeProps
-)(layoutChange(withCommonFunctionsComponent));
+const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(layoutChange(withCommonFunctionsComponent));
 export default connectedComponent;

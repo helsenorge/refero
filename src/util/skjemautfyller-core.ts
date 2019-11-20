@@ -1,7 +1,7 @@
 import { QuestionnaireResponseItem, QuestionnaireResponseAnswer, QuestionnaireItem, QuestionnaireEnableWhen } from '../types/fhir';
 
 import { FormData, FormDefinition } from '../reducers/form';
-import { parseDate } from '@helsenorge/toolkit/components/atoms/time-input/date-core';
+import { parseDate } from '@helsenorge/toolkit/components/molecules/time-input/date-core';
 import * as moment from 'moment';
 
 import ItemType from '../constants/itemType';
