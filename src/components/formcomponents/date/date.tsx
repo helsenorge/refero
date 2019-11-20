@@ -2,11 +2,11 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import * as moment from 'moment';
 import { FormChild } from '@helsenorge/toolkit/components/molecules/form';
-import { DatePicker, DatePickerResources } from '@helsenorge/toolkit/components/atoms/datepicker';
+import { DatePicker, DatePickerResources } from '@helsenorge/toolkit/components/molecules/datepicker';
 import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
 import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
 import ExtensionConstants from '../../../constants/extensions';
-import { parseDate } from '@helsenorge/toolkit/components/atoms/time-input/date-core';
+import { parseDate } from '@helsenorge/toolkit/components/molecules/time-input/date-core';
 import { Path } from '../../../util/skjemautfyller-core';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import Constants from '../../../constants/index';
@@ -207,9 +207,5 @@ class DateComponent extends React.Component<Props & ValidationProps> {
 }
 
 const withCommonFunctionsComponent = withCommonFunctions(DateComponent);
-const connectedComponent = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-  mergeProps
-)(withCommonFunctionsComponent);
+const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(withCommonFunctionsComponent);
 export default connectedComponent;

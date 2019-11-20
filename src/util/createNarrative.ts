@@ -1,5 +1,5 @@
 import { QuestionnaireResponse, QuestionnaireResponseItem, QuestionnaireResponseAnswer } from '../types/fhir';
-import { parseDate } from '@helsenorge/toolkit/components/atoms/time-input/date-core';
+import { parseDate } from '@helsenorge/toolkit/components/molecules/time-input/date-core';
 import { OPEN_CHOICE_ID } from '../constants';
 
 export const createNarrative = (qr: QuestionnaireResponse | null | undefined): string => {

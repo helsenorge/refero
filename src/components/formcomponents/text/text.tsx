@@ -6,7 +6,7 @@ import { NewValueAction } from '../../../actions/newValue';
 import { debounce } from '@helsenorge/toolkit/utils/debounce';
 import { SafeTextarea } from '@helsenorge/toolkit/components/atoms/safe-textarea';
 import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
-import ExpandableBlock from '@helsenorge/toolkit/components/atoms/expandable-block';
+import ExpandableBlock from '@helsenorge/toolkit/components/molecules/expandable-block';
 import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
 import Constants from '../../../constants/index';
 import { Path } from '../../../util/skjemautfyller-core';
@@ -131,9 +131,5 @@ export class Text extends React.Component<Props & ValidationProps, {}> {
 }
 
 const withCommonFunctionsComponent = withCommonFunctions(Text);
-const connectedComponent = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-  mergeProps
-)(withCommonFunctionsComponent);
+const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(withCommonFunctionsComponent);
 export default connectedComponent;

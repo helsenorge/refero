@@ -65,7 +65,7 @@ class DropdownView extends React.Component<Props, {}> {
 
     return (
       <div className="page_skjemautfyller__component page_skjemautfyller__component_openchoice page_skjemautfyller__component_openchoice_dropdown">
-        <Collapse isOpened hasNestedCollapse={true}>
+        <Collapse isOpened>
           <Validation {...other}>
             <SafeSelect
               id={getId(id)}

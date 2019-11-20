@@ -48,7 +48,7 @@ const RadioView: React.SFC<Props> = ({
   }
   return (
     <div className="page_skjemautfyller__component page_skjemautfyller__component_openchoice page_skjemautfyller__component_openchoice_radiobutton">
-      <Collapse isOpened hasNestedCollapse={true}>
+      <Collapse isOpened>
         <Validation {...other}>
           <RadioGroup
             legend={
