@@ -45,7 +45,11 @@ class Time extends React.Component<Props & ValidationProps> {
     renderFieldset: true,
     path: [],
   };
-
+  timeinput: React.RefObject<TimeInput>;
+  constructor(props: Props) {
+    super(props);
+    this.timeinput = React.createRef();
+  }
   getValue(props: Props): string | undefined {
     const { value, answer } = props;
     if (value) {
@@ -244,8 +248,7 @@ class Time extends React.Component<Props & ValidationProps> {
             maxMinute={this.getMaxMinute()}
             minMinute={this.getMinMinute()}
             onBlur={this.onTimeChange}
-            /* eslint-disable react/no-string-refs */
-            ref="timeInput"
+            ref={this.timeinput}
             className={this.props.className + ' page_skjemautfyller__input'}
             renderFieldset={this.props.renderFieldset}
             errorMessage={getValidationTextExtension(item)}
@@ -267,5 +270,9 @@ class Time extends React.Component<Props & ValidationProps> {
   }
 }
 const withCommonFunctionsComponent = withCommonFunctions(Time);
-const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(withCommonFunctionsComponent);
+const connectedComponent = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+  mergeProps
+)(withCommonFunctionsComponent);
 export default connectedComponent;

@@ -46,10 +46,11 @@ class DateComponent extends React.Component<Props & ValidationProps> {
     renderLabel: true,
     path: [],
   };
-
-  public refs: {
-    datepicker: FormChild;
-  };
+  datepicker: React.RefObject<DatePicker>;
+  constructor(props: Props) {
+    super(props);
+    this.datepicker = React.createRef();
+  }
 
   createDatePickerResources(): DatePickerResources {
     const { resources, item } = this.props;
@@ -181,8 +182,7 @@ class DateComponent extends React.Component<Props & ValidationProps> {
             isNullable={true}
             isRequired={isRequired(this.props.item)}
             placeholder={getPlaceholder(this.props.item)}
-            /* eslint-disable react/no-string-refs */
-            ref="datepicker"
+            ref={this.datepicker}
             maxDate={this.getMaxDate()}
             minDate={this.getMinDate()}
             defaultDate={date}
@@ -207,5 +207,9 @@ class DateComponent extends React.Component<Props & ValidationProps> {
 }
 
 const withCommonFunctionsComponent = withCommonFunctions(DateComponent);
-const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(withCommonFunctionsComponent);
+const connectedComponent = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+  mergeProps
+)(withCommonFunctionsComponent);
 export default connectedComponent;
