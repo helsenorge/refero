@@ -49,7 +49,7 @@ const CheckboxView: React.SFC<Props> = ({
   });
   return (
     <div className="page_skjemautfyller__component page_skjemautfyller__component_openchoice page_skjemautfyller__component_openchoice_checkbox">
-      <Collapse isOpened hasNestedCollapse={true}>
+      <Collapse isOpened>
         <Validation {...other}>
           <CheckBoxGroup
             legend={
