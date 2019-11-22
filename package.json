@@ -1,6 +1,6 @@
 {
   "name": "@helsenorge/skjemautfyller",
-  "version": "3.5.2",
+  "version": "3.5.3",
   "main": "index.js",
   "author": "helsenorge",
   "license": "UNLICENSED",
@@ -32,11 +32,12 @@
     "redux-thunk": "^2.3.0"
   },
   "devDependencies": {
-    "@helsenorge/core-build": "8.1.0",
-    "@helsenorge/toolkit": "^9.0.0",
+    "@helsenorge/core-build": "9.0.0",
+    "@helsenorge/toolkit": "^9.5.2",
     "@types/chai": "^3.5.2",
     "@types/marked": "^0.3.0",
     "@types/react-redux": "5.0.7",
+    "@types/react-collapse": "5.0.0",
     "@types/react-router-dom": "4.0.7",
     "@types/redux-mock-store": "0.0.7",
     "@types/uuid": "^2.0.29",
