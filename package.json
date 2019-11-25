@@ -33,7 +33,7 @@
   },
   "devDependencies": {
     "@helsenorge/core-build": "9.0.0",
-    "@helsenorge/toolkit": "^10.0.0-beta14",
+    "@helsenorge/toolkit": "^10.0.0",
     "@types/chai": "^3.5.2",
     "@types/marked": "^0.3.0",
     "@types/react-redux": "5.0.7",
