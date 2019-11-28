@@ -1,5 +1,5 @@
 import reducer, { Form } from '../form';
-import { Path, getResponseItems, getQuestionnaireResponseItemWithLinkid } from '../../util/skjemautfyller-core';
+import { Path, getResponseItems, getQuestionnaireResponseItemWithLinkid, getResponseItemWithPath } from '../../util/skjemautfyller-core';
 import {
   Coding,
   QuestionnaireItem,
@@ -33,7 +33,7 @@ import { GlobalState } from '..';
 import { code } from '../../types/fhir';
 
 export function pathify(...linkIds: string[]): Path[] {
-  return linkIds.map(id => ({ linkId: id } as Path));
+  return linkIds.map(id => ({ linkId: id.split('^')[0], ...(id.includes('^') && { index: id.split('^')[1] }) } as Path));
 }
 
 export function selectChoice(state: Form, path: Path[], coding: Coding, qItem: QuestionnaireItem, multi: boolean = false): Form {
@@ -165,16 +165,8 @@ function reduce(state: Form, action: NewValueAction): Form {
   return newState;
 }
 
-export function getResponseItem(linkId: string, state: Form): QuestionnaireResponseItem | undefined {
-  const items = getResponseItems(state.FormData);
-  if (!items) return;
-
-  for (const item of items) {
-    const result = getQuestionnaireResponseItemWithLinkid(linkId, item, true);
-    if (result) return result;
-  }
-
-  return;
+export function getResponseItem(linkId: string, state: Form, path: Array<Path>): QuestionnaireResponseItem | undefined {
+  if (linkId === path[path.length - 1].linkId) return getResponseItemWithPath(path, state.FormData);
 }
 
 export function createGlobalStateWithQuestionnaire(q: Questionnaire, qr: QuestionnaireResponse): GlobalState {

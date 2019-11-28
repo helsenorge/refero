@@ -6,8 +6,8 @@ import {
   getAnswerFromResponseItem,
   getItemWithIdFromResponseItemArray,
   createPathForItem,
-  wrappedByRepeatItem,
   shouldRenderDeleteButton,
+  createIdSuffix,
 } from '../util/skjemautfyller-core';
 import { Resource, QuestionnaireResponseItem, QuestionnaireItem, QuestionnaireResponseAnswer, Attachment } from '../types/fhir';
 import { Resources } from '../util/resources';
@@ -196,20 +196,16 @@ export default function withCommonFunctions<T>(WrappedComponent: React.Component
       }
 
       let response: Array<QuestionnaireResponseItem> | undefined;
-      // let suffix = repeatIndex === undefined ? '' : '^' + repeatIndex.toString();
 
       if (responseItem) {
         const childItem = responseItem.item;
         const childAnswer = responseItem.answer;
-
-        let linkId = item.linkId;
-        const isWrappedByRepeatItem = wrappedByRepeatItem(this.props.path);
-        linkId += isWrappedByRepeatItem ? '^' + responseItem.linkId.split('^')[1] : '';
+        const linkId = item.linkId;
 
         if (childItem) {
-          response = getItemWithIdFromResponseItemArray(linkId, childItem, !isWrappedByRepeatItem);
+          response = getItemWithIdFromResponseItemArray(linkId, childItem);
         } else if (childAnswer) {
-          response = getItemWithIdFromResponseItemArray(linkId, childAnswer[0].item, !isWrappedByRepeatItem);
+          response = getItemWithIdFromResponseItemArray(linkId, childAnswer[0].item);
         }
       }
       const renderedItems: Array<JSX.Element | undefined> = [];
@@ -218,22 +214,16 @@ export default function withCommonFunctions<T>(WrappedComponent: React.Component
         response.forEach((responseItem, index) => {
           renderedItems.push(
             <Comp
-              key={`item_${responseItem.linkId}`}
+              key={'item_' + responseItem.linkId + createIdSuffix(path, index, item.repeats)}
               pdf={pdf}
               promptLoginMessage={promptLoginMessage}
-              id={`item_${responseItem.linkId}`}
+              id={'item_' + responseItem.linkId + createIdSuffix(path, index, item.repeats)}
               item={item}
               responseItem={responseItem}
               answer={getAnswerFromResponseItem(responseItem)}
-              ref={(c: React.Component<Props>) => {
-                if (!this.state.childComponents) {
-                  return;
-                }
-                this.state.childComponents.push(c);
-              }}
               resources={resources}
               containedResources={containedResources}
-              path={createPathForItem(path, item, responseItem)}
+              path={createPathForItem(path, item, responseItem, index)}
               headerTag={getChildHeaderTag(this.props.item, headerTag)}
               onValidated={this.props.onValidated}
               validateScriptInjection={this.props.validateScriptInjection}

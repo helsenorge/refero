@@ -9,7 +9,7 @@ import {
   REMOVE_ATTACHMENT_VALUE,
 } from '../actions/newValue';
 import { GlobalState } from '../reducers/index';
-import { isStringEmpty, removeLinkIdSuffix } from '../util/index';
+import { isStringEmpty } from '../util/index';
 
 import {
   Questionnaire,
@@ -30,6 +30,7 @@ import {
   enableWhenMatchesAnswer,
   getQuestionnaireResponseItemsWithLinkId,
   getArrayContainingResponseItemFromItems,
+  Path,
 } from '../util/skjemautfyller-core';
 import { getMinOccursExtensionValue } from '../util/extension';
 import { Languages } from '@helsenorge/toolkit/constants';
@@ -147,14 +148,14 @@ function processAddRepeatItemAction(action: NewValueAction, state: Form): Form {
     return newState;
   }
 
-  const repeatSuffix = '^' + action.responseItems.length.toString();
-
-  const newItem = copyItem(action.responseItems[0], undefined, repeatSuffix);
+  const newItem = copyItem(action.responseItems[0], undefined);
   if (!newItem) {
     return newState;
   }
 
-  arrayToAddItemTo.push(newItem);
+  const indexToInsert = arrayToAddItemTo.map(o => o.linkId).lastIndexOf(newItem.linkId);
+  arrayToAddItemTo.splice(indexToInsert + 1, 0, newItem);
+
   return newState;
 }
 
@@ -183,46 +184,18 @@ function processDeleteRepeatItemAction(action: NewValueAction, state: Form): For
     return newState;
   }
   const definitionLinkId = action.item.linkId;
-
-  for (let i = arrayToDeleteItem.length - 1; i >= 0; i--) {
-    if (arrayToDeleteItem[i].linkId.includes(definitionLinkId)) {
-      if (arrayToDeleteItem[i].linkId === responseItemLinkId) {
+  const index = action.itemPath[action.itemPath.length - 1].index;
+  let itemIndexInArray = 0;
+  for (let i = 0; i <= arrayToDeleteItem.length - 1; i++) {
+    if (arrayToDeleteItem[i].linkId === definitionLinkId) {
+      if (itemIndexInArray === index) {
         arrayToDeleteItem.splice(i, 1);
         break;
-      } else {
-        minusRepeatId(arrayToDeleteItem[i]);
       }
+      itemIndexInArray++;
     }
   }
   return newState;
-}
-
-function minusRepeatId(responseItem?: QuestionnaireResponseItem): void {
-  if (!responseItem) {
-    return;
-  }
-  let repeatSuffix = 0;
-  repeatSuffix = parseInt(responseItem.linkId.split('^')[1], 10);
-  responseItem.linkId = responseItem.linkId.split('^')[0] + '^' + (repeatSuffix - 1).toString();
-
-  if (responseItem.answer && responseItem.answer.length > 0) {
-    responseItem.answer.forEach(answer => {
-      if (answer.item && answer.item.length > 0) {
-        answer.item.forEach(element => {
-          minusRepeatId(element);
-        });
-      }
-    });
-  }
-
-  const hasItems = responseItem.item && responseItem.item.length > 0;
-  if (!hasItems) {
-    return;
-  }
-
-  for (let i = 0; responseItem.item && i < responseItem.item.length; i++) {
-    minusRepeatId(responseItem.item[i]);
-  }
 }
 
 function copyItem(
@@ -231,7 +204,7 @@ function copyItem(
   repeatedId = ''
 ): QuestionnaireResponseItem {
   if (!target) {
-    target = { linkId: removeLinkIdSuffix(source.linkId, '^') + repeatedId } as QuestionnaireResponseItem;
+    target = { linkId: source.linkId } as QuestionnaireResponseItem;
   }
 
   for (let i = 0; source.item && i < source.item.length; i++) {
@@ -239,7 +212,7 @@ function copyItem(
       target.item = [];
     }
     const newResponseItem = {
-      linkId: removeLinkIdSuffix(source.item[i].linkId, '^') + repeatedId,
+      linkId: source.item[i].linkId,
     } as QuestionnaireResponseItem;
     target.item.push(newResponseItem);
     copyItem(source.item[i], newResponseItem, repeatedId);
@@ -256,7 +229,7 @@ function copyItem(
 
     for (let j = 0; answer && answer.item && j < answer.item.length; j++) {
       const newResponseItem = {
-        linkId: removeLinkIdSuffix(answer.item[j].linkId, '^') + repeatedId,
+        linkId: answer.item[j].linkId,
       } as QuestionnaireResponseItem;
       (targetAnswer.item as QuestionnaireResponseItem[]).push(newResponseItem);
 
@@ -272,7 +245,7 @@ function copyItem(
 
 function processRemoveCodingValueAction(action: NewValueAction, state: Form) {
   const newState: Form = copyObject(state) as Form;
-  const responseItem = getResponseItemWithPath(action.itemPath, newState.FormData);
+  const responseItem = getResponseItemWithPath(action.itemPath || [], newState.FormData);
   if (!responseItem || !responseItem.answer || !responseItem.answer.length) {
     return newState;
   }
@@ -294,7 +267,7 @@ function processRemoveCodingValueAction(action: NewValueAction, state: Form) {
 
 function processRemoveCodingStringValueAction(action: NewValueAction, state: Form) {
   const newState: Form = copyObject(state) as Form;
-  const responseItem = getResponseItemWithPath(action.itemPath, newState.FormData);
+  const responseItem = getResponseItemWithPath(action.itemPath || [], newState.FormData);
   if (!responseItem || !responseItem.answer || !responseItem.answer.length) {
     return newState;
   }
@@ -315,7 +288,7 @@ function processRemoveCodingStringValueAction(action: NewValueAction, state: For
 
 function processRemoveAttachmentValueAction(action: NewValueAction, state: Form) {
   const newstate: Form = copyObject(state) as Form;
-  const responseItem = getResponseItemWithPath(action.itemPath, newstate.FormData);
+  const responseItem = getResponseItemWithPath(action.itemPath || [], newstate.FormData);
   if (!responseItem || !responseItem.answer || !responseItem.answer.length) {
     return newstate;
   }
@@ -334,7 +307,7 @@ function processRemoveAttachmentValueAction(action: NewValueAction, state: Form)
 
 function processNewValueAction(action: NewValueAction, state: Form): Form {
   const newState: Form = copyObject(state) as Form;
-  const responseItem = getResponseItemWithPath(action.itemPath, newState.FormData);
+  const responseItem = getResponseItemWithPath(action.itemPath || [], newState.FormData);
   if (!responseItem) {
     return newState;
   }
@@ -430,27 +403,23 @@ function processNewValueAction(action: NewValueAction, state: Form): Form {
       answer.valueAttachment = attachment;
     }
   }
-
   if (!hasAnswer) {
     nullAnswerValue(answer);
-
     if (Object.keys(answer).filter(prop => !prop.startsWith('value')).length === 0) {
       if (responseItem.answer && responseItem.answer.length === 1) {
         delete responseItem.answer;
       }
     }
   }
-
   if (action.item) {
-    updateEnableWhenItemsIteration([action.item], newState.FormData, newState.FormDefinition);
+    updateEnableWhenItemsIteration([action.item], newState.FormData, newState.FormDefinition, action.itemPath);
   }
-
   return newState;
 }
 
 function processNewCodingStringValueAction(action: NewValueAction, state: Form): Form {
   const newState: Form = copyObject(state) as Form;
-  const responseItem = getResponseItemWithPath(action.itemPath, newState.FormData);
+  const responseItem = getResponseItemWithPath(action.itemPath || [], newState.FormData);
   if (!responseItem) {
     return newState;
   }
@@ -484,30 +453,28 @@ function processNewCodingStringValueAction(action: NewValueAction, state: Form):
 
 function getResponseItemWithLinkIdPossiblyContainingRepeat(
   linkId: string,
-  repeatId: string,
-  items: Array<QuestionnaireResponseItem>
+  items: Array<QuestionnaireResponseItem>,
+  path: Array<Path> | undefined
 ): QuestionnaireResponseItem | undefined {
   const findResponseItem = (linkId: string, items: Array<QuestionnaireResponseItem>): QuestionnaireResponseItem | undefined => {
     for (const item of items) {
-      result = getQuestionnaireResponseItemWithLinkid(linkId, item, true);
+      const result = getQuestionnaireResponseItemWithLinkid(linkId, item, path || []);
       if (result) return result;
     }
   };
 
-  let result = findResponseItem(linkId, items);
-  if (!result && repeatId) {
-    linkId += repeatId;
-    result = findResponseItem(linkId, items);
-  }
-
-  return result;
+  return findResponseItem(linkId, items);
 }
 
-function updateEnableWhenItemsIteration(items: QuestionnaireItem[], formData: FormData, formDefinition: FormDefinition): void {
+function updateEnableWhenItemsIteration(
+  items: QuestionnaireItem[],
+  formData: FormData,
+  formDefinition: FormDefinition,
+  path: Array<Path> | undefined
+): void {
   if (!items) {
     return;
   }
-
   const definitionItems = getDefinitionItems(formDefinition);
   const responseItems = getResponseItems(formData);
   if (!responseItems || responseItems.length === 0) {
@@ -533,7 +500,7 @@ function updateEnableWhenItemsIteration(items: QuestionnaireItem[], formData: Fo
 
     // There may be several questionnaireResponseItemsWithEnableWhen corresponding to a questionnaireItemWithEnableWhen.
     // F.ex. if the questionnaireItemWithEnableWhen is repeatable
-    const qrItemsWithEnableWhen = getQuestionnaireResponseItemsWithLinkId(qItemWithEnableWhen.linkId, responseItems, true, true);
+    const qrItemsWithEnableWhen = getQuestionnaireResponseItemsWithLinkId(qItemWithEnableWhen.linkId, responseItems, true);
     for (const qrItemWithEnableWhen of qrItemsWithEnableWhen) {
       let enable = false;
       enableWhenClauses.forEach((enableWhen: QuestionnaireEnableWhen) => {
@@ -541,15 +508,10 @@ function updateEnableWhenItemsIteration(items: QuestionnaireItem[], formData: Fo
         if (!enableWhenQuestionItem) return;
 
         // find responseItem corresponding to enableWhen.question. Looks both for X.Y.Z and X.Y.Z^r
-        const responseItem = getResponseItemWithLinkIdPossiblyContainingRepeat(
-          enableWhen.question,
-          qrItemWithEnableWhen.linkId.substring(qrItemWithEnableWhen.linkId.indexOf('^')),
-          responseItems
-        );
+        const responseItem = getResponseItemWithLinkIdPossiblyContainingRepeat(enableWhen.question, responseItems, path);
 
         if (responseItem) {
-          const deactivated = enableWhenQuestionItem ? enableWhenQuestionItem.deactivated : false;
-          enable = enable || (enableWhenMatchesAnswer(enableWhen, responseItem.answer) && !deactivated);
+          enable = enable || enableWhenMatchesAnswer(enableWhen, responseItem.answer);
         }
       });
 
@@ -563,27 +525,25 @@ function updateEnableWhenItemsIteration(items: QuestionnaireItem[], formData: Fo
           const minOccurs = getMinOccursExtensionValue(qItemWithEnableWhen);
           if (arrayToDeleteItem) {
             const keepThreshold = minOccurs ? minOccurs : 1;
-            const prefix = qItemWithEnableWhen.linkId + '^';
-            for (let i = arrayToDeleteItem.length - 1; i >= 0; i--) {
+            let repeatingItemIndex = 0;
+            for (let i = 0; i < arrayToDeleteItem.length; i++) {
               const e = arrayToDeleteItem[i];
-              if (e.linkId.startsWith(prefix) && Number(e.linkId.replace(prefix, '')) >= keepThreshold) {
-                arrayToDeleteItem.splice(i, 1);
+              if (e.linkId === qItemWithEnableWhen.linkId) {
+                if (repeatingItemIndex++ >= keepThreshold) {
+                  arrayToDeleteItem.splice(i, 1);
+                }
+                repeatingItemIndex++;
               }
             }
           }
         }
-
         wipeAnswerItems(qrItemWithEnableWhen, qItemWithEnableWhen);
-
-        qItemWithEnableWhen.deactivated = true;
-      } else {
-        qItemWithEnableWhen.deactivated = false;
       }
     }
   }
-  updateEnableWhenItemsIteration(qitemsWithEnableWhen, formData, formDefinition);
+  updateEnableWhenItemsIteration(qitemsWithEnableWhen, formData, formDefinition, path);
 
-  qitemsWithEnableWhen.forEach(i => i.item && updateEnableWhenItemsIteration(i.item, formData, formDefinition));
+  qitemsWithEnableWhen.forEach(i => i.item && updateEnableWhenItemsIteration(i.item, formData, formDefinition, path));
 }
 
 export function getFormDefinition(state: GlobalState): FormDefinition | null {
@@ -614,7 +574,7 @@ function wipeAnswerItems(answerItem: QuestionnaireResponseItem | undefined, item
   }
 }
 
-function resetAnswerValue(answer: QuestionnaireResponseAnswer, item: QuestionnaireItem) {
+function resetAnswerValue(answer: QuestionnaireResponseAnswer, item: QuestionnaireItem): void {
   const initialAnswer = createQuestionnaireResponseAnswer(item);
   nullAnswerValue(answer, initialAnswer);
 }

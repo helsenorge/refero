@@ -7,10 +7,9 @@ import * as moment from 'moment';
 import ItemType from '../constants/itemType';
 import { getMinOccursExtensionValue } from './extension';
 
-export function getQuestionnaireResponseItemFromData(
+export function getRootQuestionnaireResponseItemFromData(
   definitionLinkId: string,
-  formData: FormData,
-  removeSuffix = false
+  formData: FormData
 ): Array<QuestionnaireResponseItem> | undefined {
   if (!formData || !formData.Content) {
     return undefined;
@@ -19,132 +18,69 @@ export function getQuestionnaireResponseItemFromData(
   if (!content.item || content.item.length === 0) {
     return undefined;
   }
-  return getItemWithIdFromResponseItemArray(definitionLinkId, content.item, removeSuffix);
+  return getItemWithIdFromResponseItemArray(definitionLinkId, content.item);
 }
 
-export function getAllResponseItemsWithLinkid(
-  definitionLinkId: string,
-  responseItems: QuestionnaireResponseItem[] | undefined,
-  removeSuffix = false
-): QuestionnaireResponseItem[] {
-  if (!responseItems) {
-    return [];
-  }
-  const relatedResponseItems: QuestionnaireResponseItem[] = [];
-
-  const getResponseItemsWithLinkid = function(
-    definitionLinkId: string,
-    responseItem: QuestionnaireResponseItem | QuestionnaireResponseAnswer
-  ): void {
-    if (!responseItem) {
-      return;
-    }
-    const responseAsAnswer = responseItem as QuestionnaireResponseItem;
-    const hasItems = responseItem.item && responseItem.item.length > 0;
-    const hasAnswers = responseAsAnswer.answer && responseAsAnswer.answer.length > 0;
-    if (!hasItems && !hasAnswers) {
-      return;
-    }
-
-    const itemsWithLinkId = getItemWithIdFromResponseItemArray(definitionLinkId, responseItem.item, removeSuffix);
-    if (itemsWithLinkId && itemsWithLinkId.length > 0) {
-      itemsWithLinkId.forEach(i => {
-        relatedResponseItems.push(i);
-      });
-    }
-
-    for (let i = 0; responseItem.item && i < responseItem.item.length; i++) {
-      getResponseItemsWithLinkid(definitionLinkId, responseItem.item[i]);
-    }
-
-    // linkId not found in items, check the answers for items
-    if (!hasAnswers) {
-      return;
-    }
-    for (let i = 0; responseAsAnswer.answer && i < responseAsAnswer.answer.length; i++) {
-      const answerWithLinkId = getItemWithIdFromResponseItemArray(definitionLinkId, responseAsAnswer.answer[i].item, removeSuffix);
-      if (answerWithLinkId && answerWithLinkId.length > 0) {
-        answerWithLinkId.forEach(i => {
-          relatedResponseItems.push(i);
-        });
-      }
-    }
-
-    // for (let i = 0; responseAsAnswer.answer && i < responseAsAnswer.answer.length; i++) {
-    //   getResponseItemsWithLinkid(definitionLinkId, responseAsAnswer.answer[i]);
-    // }
-  };
-
-  for (let k = 0; k < responseItems.length; k++) {
-    getResponseItemsWithLinkid(definitionLinkId, responseItems[k]);
+export function isInGroupContext(path: Path[], item: QuestionnaireResponseItem, items: QuestionnaireResponseItem[]): boolean {
+  const pathItem = path && path.find(p => p.linkId === item.linkId && p.index !== undefined);
+  if (!pathItem) {
+    return true;
   }
 
-  return relatedResponseItems;
+  const repeatingItems = getItemWithIdFromResponseItemArray(item.linkId, items) || [];
+  return repeatingItems.indexOf(item) === pathItem.index;
 }
 
 export function getQuestionnaireResponseItemWithLinkid(
   linkId: string,
-  responseItem: QuestionnaireResponseItem | QuestionnaireResponseAnswer | undefined,
-  recursive = false,
-  removeSuffix = false
+  responseItem: QuestionnaireResponseItem,
+  referencePath: Array<Path>
 ): QuestionnaireResponseItem | undefined {
   if (!responseItem) {
     return undefined;
   }
-  const responseAsAnswer = responseItem as QuestionnaireResponseItem;
-  const hasItems = responseItem.item && responseItem.item.length > 0;
-  const hasAnswers = responseAsAnswer.answer && responseAsAnswer.answer.length > 0;
-  if (!hasItems && !hasAnswers) {
-    return undefined;
+  if (responseItem.linkId === linkId) {
+    return responseItem;
   }
 
-  const itemsWithLinkId = getItemWithIdFromResponseItemArray(linkId, responseItem.item, removeSuffix);
-  if (itemsWithLinkId && itemsWithLinkId.length > 0) {
-    return itemsWithLinkId[0];
+  for (let i = 0; responseItem.item && i < responseItem.item.length; i++) {
+    if (!isInGroupContext(referencePath, responseItem.item[i], responseItem.item)) {
+      continue;
+    }
+
+    const item = getQuestionnaireResponseItemWithLinkid(linkId, responseItem.item[i], referencePath);
+    if (item) {
+      return item;
+    }
   }
 
-  if (recursive) {
-    for (let i = 0; responseItem.item && i < responseItem.item.length; i++) {
-      const item = getQuestionnaireResponseItemWithLinkid(linkId, responseItem.item[i], recursive, removeSuffix);
+  for (let i = 0; responseItem.answer && i < responseItem.answer.length; i++) {
+    const answer = responseItem.answer[i];
+    for (let j = 0; answer.item && j < answer.item.length; j++) {
+      if (!isInGroupContext(referencePath, answer.item[j], answer.item)) {
+        continue;
+      }
+
+      const item = getQuestionnaireResponseItemWithLinkid(linkId, answer.item[j], referencePath);
       if (item) {
         return item;
       }
     }
   }
 
-  // linkId not found in items, check the answers for items
-  if (!hasAnswers && !recursive) {
-    return undefined;
-  }
-  for (let i = 0; responseAsAnswer.answer && i < responseAsAnswer.answer.length; i++) {
-    const answerWithLinkId = getItemWithIdFromResponseItemArray(linkId, responseAsAnswer.answer[i].item, removeSuffix);
-    if (answerWithLinkId && answerWithLinkId.length >= 0) {
-      return answerWithLinkId[0];
-    }
-  }
-
-  if (recursive) {
-    for (let i = 0; responseAsAnswer.answer && i < responseAsAnswer.answer.length; i++) {
-      const answer = getQuestionnaireResponseItemWithLinkid(linkId, responseAsAnswer.answer[i], recursive, removeSuffix);
-      if (answer) {
-        return answer;
-      }
-    }
-  }
   return undefined;
 }
 
 export function getQuestionnaireResponseItemsWithLinkId(
   linkId: string,
   responseItems: Array<QuestionnaireResponseItem>,
-  recursive = false,
-  removeSuffix = false
+  recursive = false
 ): Array<QuestionnaireResponseItem> {
   if (!responseItems) {
     return [];
   }
 
-  let itemsWithLinkId = getItemsWithIdFromResponseItemArray(linkId, responseItems, recursive, removeSuffix);
+  let itemsWithLinkId = getItemsWithIdFromResponseItemArray(linkId, responseItems, recursive);
   if (itemsWithLinkId && itemsWithLinkId.length > 0) {
     return itemsWithLinkId;
   }
@@ -164,7 +100,7 @@ export function getQuestionnaireResponseItemsWithLinkId(
   const answers = collectAnswerItems(responseItems);
   let items: Array<QuestionnaireResponseItem> = [];
   items = items.concat(...answers.map(a => a.item || []));
-  itemsWithLinkId = getItemsWithIdFromResponseItemArray(linkId, items, false, removeSuffix);
+  itemsWithLinkId = getItemsWithIdFromResponseItemArray(linkId, items, false);
   return itemsWithLinkId;
 }
 
@@ -240,18 +176,12 @@ export function getDefinitionItems(formDefinition: FormDefinition | null): Array
 
 export function getItemWithIdFromResponseItemArray(
   linkId: string,
-  responseItems: Array<QuestionnaireResponseItem> | undefined,
-  removeSuffix = false
+  responseItems: Array<QuestionnaireResponseItem> | undefined
 ): Array<QuestionnaireResponseItem> | undefined {
   if (!responseItems || responseItems.length === 0) {
     return undefined;
   }
-  const filteredItems = responseItems.filter(i => {
-    if (removeSuffix) {
-      return i.linkId.split('^')[0] === linkId;
-    }
-    return i.linkId === linkId;
-  });
+  const filteredItems = responseItems.filter(i => i.linkId === linkId);
   if (!filteredItems || filteredItems.length === 0) {
     return undefined;
   }
@@ -261,23 +191,18 @@ export function getItemWithIdFromResponseItemArray(
 export function getItemsWithIdFromResponseItemArray(
   linkId: string,
   responseItems: Array<QuestionnaireResponseItem> | undefined,
-  recurse = false,
-  removeSuffix = false
+  recurse = false
 ): Array<QuestionnaireResponseItem> {
   if (!responseItems || responseItems.length === 0) {
     return [];
   }
-  const filteredItems = responseItems.filter(i => {
-    if (removeSuffix) {
-      return i.linkId.split('^')[0] === linkId;
-    }
-    return i.linkId === linkId;
-  });
+
+  const filteredItems = responseItems.filter(i => i.linkId === linkId);
 
   if (recurse) {
     const reducer = (acc: Array<QuestionnaireResponseItem>, val: QuestionnaireResponseItem) => {
       if (val.item) {
-        acc.push(...getItemsWithIdFromResponseItemArray(linkId, val.item, recurse, removeSuffix));
+        acc.push(...getItemsWithIdFromResponseItemArray(linkId, val.item, recurse));
       }
       return acc;
     };
@@ -478,32 +403,34 @@ export function enableWhenMatchesAnswer(
       matches = matches && enableWhenMatchesReferenceAnswer(enableWhen, answer);
     }
   });
-
   return matches && enableWhen.hasAnswer !== false;
 }
 
 export interface Path {
   linkId: string;
-  // repeatIndex?: number;
+  index?: number;
 }
 
-export function wrappedByRepeatItem(path: Array<Path> | undefined): boolean {
-  if (!path) {
-    return false;
+export function createIdSuffix(path: Array<Path> | undefined, index = 0, repeats: boolean | undefined): string {
+  let suffix = '';
+
+  if (path) {
+    path.forEach(p => {
+      if (p.index) {
+        suffix += '^' + p.index;
+      }
+    });
   }
-  let wrappedByRepeatItem = false;
-  path.forEach(path => {
-    if (path.linkId.includes('^')) {
-      wrappedByRepeatItem = true;
-    }
-  });
-  return wrappedByRepeatItem;
+  if (!repeats) return suffix;
+
+  return suffix + '^' + index;
 }
 
 export function createPathForItem(
   path: Array<Path> | undefined,
   item: QuestionnaireItem,
-  responseItem: QuestionnaireResponseItem
+  responseItem: QuestionnaireResponseItem,
+  index: number | undefined
 ): Array<Path> {
   let newPath: Array<Path>;
   if (path === null || path === undefined) {
@@ -512,9 +439,11 @@ export function createPathForItem(
     newPath = copyPath(path);
   }
 
+  index = item.repeats ? index : undefined;
   if (item && responseItem) {
     newPath.push({
       linkId: responseItem.linkId,
+      ...(item.repeats && { index }),
     });
   }
 
@@ -547,7 +476,7 @@ function copyPath(path: Array<Path>) {
   return newPath;
 }
 
-export function getResponseItemWithPath(path: Array<Path> | undefined, formData: FormData): QuestionnaireResponseItem | undefined {
+export function getResponseItemWithPath(path: Array<Path>, formData: FormData): QuestionnaireResponseItem | undefined {
   if (!path || path.length === 0) {
     return undefined;
   }
@@ -555,21 +484,24 @@ export function getResponseItemWithPath(path: Array<Path> | undefined, formData:
     return undefined;
   }
 
-  const items: Array<QuestionnaireResponseItem> | undefined = getQuestionnaireResponseItemFromData(path[0].linkId, formData);
-  if (!items || items.length === 0) {
+  const rootItems: Array<QuestionnaireResponseItem> | undefined = getRootQuestionnaireResponseItemFromData(path[0].linkId, formData);
+  if (!rootItems || rootItems.length === 0) {
     return undefined;
   }
 
-  if (path.length === 1) {
-    return items[0];
-  }
-
-  let item: QuestionnaireResponseItem | undefined = items[0];
+  let item: QuestionnaireResponseItem = rootItems[path[0].index || 0];
   for (let i = 1; i < path.length; i++) {
-    item = getQuestionnaireResponseItemWithLinkid(path[i].linkId, item, false);
-    if (!item) {
-      break;
+    let itemsWithLinkIdFromPath = getItemWithIdFromResponseItemArray(path[i].linkId, item.item);
+
+    if (!itemsWithLinkIdFromPath || itemsWithLinkIdFromPath.length === 0) {
+      const itemsFromAnswer = item.answer && item.answer.map(a => a.item).reduce((a, b) => (a || []).concat(b || []));
+
+      itemsWithLinkIdFromPath = getItemWithIdFromResponseItemArray(path[i].linkId, itemsFromAnswer);
+      if (!itemsWithLinkIdFromPath || itemsWithLinkIdFromPath.length === 0) {
+        break;
+      }
     }
+    item = itemsWithLinkIdFromPath[path[i].index || 0];
   }
   return item;
 }
@@ -582,7 +514,7 @@ export function getQuestionnaireDefinitionItem(
   for (let i = 0; definitionItems && i < definitionItems.length; i++) {
     definitionItem = definitionItems[i];
     if (definitionItem.linkId !== linkId) {
-      definitionItem = getQuestionnaireDefinitionItemWithLinkid(linkId, definitionItems[i], true);
+      definitionItem = getQuestionnaireDefinitionItemWithLinkid(linkId, definitionItems[i]);
     }
     if (definitionItem === undefined || definitionItem === null) {
       continue;
@@ -595,7 +527,6 @@ export function getQuestionnaireDefinitionItem(
 function getQuestionnaireDefinitionItemWithLinkid(
   linkId: string,
   definitionItem: QuestionnaireItem | undefined,
-  recursive = false,
   index = 0
 ): QuestionnaireItem | undefined {
   if (!definitionItem) {
@@ -611,19 +542,14 @@ function getQuestionnaireDefinitionItemWithLinkid(
     return itemsWithLinkId[index];
   }
 
-  if (recursive) {
-    for (let i = 0; definitionItem.item && i < definitionItem.item.length; i++) {
-      const item = getQuestionnaireDefinitionItemWithLinkid(linkId, definitionItem.item[i], recursive);
-      if (item) {
-        return item;
-      }
+  for (let i = 0; definitionItem.item && i < definitionItem.item.length; i++) {
+    const item = getQuestionnaireDefinitionItemWithLinkid(linkId, definitionItem.item[i]);
+    if (item) {
+      return item;
     }
   }
 
   // linkId not found in items, check the answers for items
-  if (!recursive) {
-    return undefined;
-  }
 }
 
 function getQuestionnaireItemWithIdFromArray(

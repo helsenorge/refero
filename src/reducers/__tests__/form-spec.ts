@@ -396,19 +396,19 @@ describe('new value action', () => {
   it('should add group', () => {
     const action: NewValueAction = addRepeatItem([], { linkId: 'addGroupTest1', type: 'group' }, [
       {
-        linkId: 'addGroupTest1^0',
+        linkId: 'addGroupTest1',
         item: [
           {
-            linkId: 'addGroupTest11^0',
+            linkId: 'addGroupTest11',
             item: [
               {
-                linkId: 'addGroupTest111^0',
+                linkId: 'addGroupTest111',
                 answer: [{ valueString: 'testSvar' }],
               },
             ],
           } as QuestionnaireResponseItem,
           {
-            linkId: 'addGroupTest12^0',
+            linkId: 'addGroupTest12',
           },
         ],
       },
@@ -418,25 +418,25 @@ describe('new value action', () => {
     }
     expect(dataModel.skjemautfyller.form.FormData.Content.item.length).toEqual(12);
     const newState: Form | undefined = reducer(dataModel.skjemautfyller.form, action);
-    if (!newState || (!newState.FormData.Content || !newState.FormData.Content.item)) {
+    if (!newState || !newState.FormData.Content || !newState.FormData.Content.item) {
       return fail();
     }
     expect(newState.FormData.Content.item.length).toEqual(13);
     expect(dataModel.skjemautfyller.form.FormData.Content.item.length).toEqual(12);
 
-    const repeatGroupResponseItems = getItemWithIdFromResponseItemArray('addGroupTest1', newState.FormData.Content.item, true);
+    const repeatGroupResponseItems = getItemWithIdFromResponseItemArray('addGroupTest1', newState.FormData.Content.item);
     should.exist(repeatGroupResponseItems);
     if (repeatGroupResponseItems) {
       expect(repeatGroupResponseItems.length).toEqual(2);
     }
 
-    const addedGroup = newState.FormData.Content.item[12];
+    const addedGroup = newState.FormData.Content.item[10];
     should.exist(addedGroup);
 
     if (!addedGroup || !addedGroup.item) {
       return fail();
     }
-    expect(addedGroup.item[0].linkId).toEqual('addGroupTest11^1');
+    expect(addedGroup.item[0].linkId).toEqual('addGroupTest11');
     const items = addedGroup.item[0].item;
     if (!items) {
       return fail();
@@ -444,19 +444,19 @@ describe('new value action', () => {
     expect(items.length).toEqual(1);
     should.exist(items[0]);
 
-    expect(items[0].linkId).toEqual('addGroupTest111^1');
+    expect(items[0].linkId).toEqual('addGroupTest111');
     // also check answer items are copied but not answer value
     expect(items[0].answer).toBeUndefined;
-    expect(addedGroup.item[1].linkId).toEqual('addGroupTest12^1');
+    expect(addedGroup.item[1].linkId).toEqual('addGroupTest12');
   });
 
   it('should add nested group', () => {
     let action: NewValueAction = addRepeatItem([{ linkId: 'group110' }], { linkId: 'group110.1', type: 'group' }, [
       {
-        linkId: 'group110.1^0',
+        linkId: 'group110.1',
         item: [
           {
-            linkId: 'group110.11^0',
+            linkId: 'group110.11',
           },
         ],
       },
@@ -464,60 +464,77 @@ describe('new value action', () => {
     if (!dataModel.skjemautfyller.form.FormData.Content || !dataModel.skjemautfyller.form.FormData.Content.item) {
       return fail();
     }
+
     expect(dataModel.skjemautfyller.form.FormData.Content.item.length).toEqual(12);
     let newState: Form | undefined = reducer(dataModel.skjemautfyller.form, action);
-    if (!newState || (!newState.FormData.Content || !newState.FormData.Content.item)) {
+
+    if (!newState || !newState.FormData.Content || !newState.FormData.Content.item) {
       return fail();
     }
 
-    let addedGroup = getQuestionnaireResponseItemWithLinkid('group110.1^1', newState.FormData.Content.item[11]);
+    let addedGroup = getQuestionnaireResponseItemWithLinkid('group110.1', newState.FormData.Content.item[11], [
+      { linkId: 'group110' },
+      { linkId: 'group110.1' },
+    ]);
     should.exist(addedGroup);
 
     if (!addedGroup || !addedGroup.item) {
       return fail();
     }
     expect(addedGroup.item.length).toEqual(1);
-    expect(addedGroup.item[0].linkId).toEqual('group110.11^1');
+    expect(addedGroup.item[0].linkId).toEqual('group110.11');
 
     action = addRepeatItem([{ linkId: 'group110' }], { linkId: 'group110.1', type: 'group' }, [
       {
-        linkId: 'group110.1^0',
+        linkId: 'group110.1',
         item: [
           {
-            linkId: 'group110.11^0',
+            linkId: 'group110.11',
           },
         ],
       },
       {
-        linkId: 'group110.1^1',
+        linkId: 'group110.1',
         item: [
           {
-            linkId: 'group110.11^1',
+            linkId: 'group110.11',
           },
         ],
       },
     ]);
     newState = reducer(newState, action);
-    if (!newState || (!newState.FormData.Content || !newState.FormData.Content.item)) {
+    if (!newState || !newState.FormData.Content || !newState.FormData.Content.item) {
       return fail();
     }
-    addedGroup = getQuestionnaireResponseItemWithLinkid('group110.1^2', newState.FormData.Content.item[11]);
+    addedGroup = getQuestionnaireResponseItemWithLinkid('group110.1', newState.FormData.Content.item[11], [
+      { linkId: 'group110' },
+      { linkId: 'group110.1', index: 1 },
+    ]);
     should.exist(addedGroup);
 
-    action = deleteRepeatItem([{ linkId: 'group110' }, { linkId: 'group110.1^1' }], { linkId: 'group110.1', type: 'group' });
+    action = deleteRepeatItem([{ linkId: 'group110' }, { linkId: 'group110.1', index: 1 }], { linkId: 'group110.1', type: 'group' });
+
     newState = reducer(newState, action);
-    if (!newState || (!newState.FormData.Content || !newState.FormData.Content.item)) {
+
+    if (!newState || !newState.FormData.Content || !newState.FormData.Content.item) {
       return fail();
     }
-    const deletedGroup = getQuestionnaireResponseItemWithLinkid('group110.1^2', newState.FormData.Content.item[11]);
+
+    const deletedGroup = getQuestionnaireResponseItemWithLinkid('group110.1', newState.FormData.Content.item[11], [
+      { linkId: 'group110' },
+      { linkId: 'group110.1', index: 2 },
+    ]);
     expect(deletedGroup).toEqual(undefined);
 
-    const groupMovedForward = getQuestionnaireResponseItemWithLinkid('group110.1^1', newState.FormData.Content.item[11]);
+    const groupMovedForward = getQuestionnaireResponseItemWithLinkid('group110.1', newState.FormData.Content.item[11], [
+      { linkId: 'group110' },
+      { linkId: 'group110.1', index: 1 },
+    ]);
 
     if (!groupMovedForward || !groupMovedForward.item) {
       return fail();
     }
-    expect(groupMovedForward.item[0].linkId).toEqual('group110.11^1');
+    expect(groupMovedForward.item[0].linkId).toEqual('group110.11');
   });
 });
 
@@ -554,7 +571,7 @@ describe('update enable when action', () => {
     for (let i = 0; responseItems && i < responseItems.length; i++) {
       let responseItem: QuestionnaireResponseItem | undefined = responseItems[i];
       if (responseItem && responseItem.linkId !== 'd') {
-        responseItem = getQuestionnaireResponseItemWithLinkid('d', responseItems[i], true);
+        responseItem = getQuestionnaireResponseItemWithLinkid('d', responseItems[i], []);
       }
       if (!responseItem) {
         continue;
@@ -572,6 +589,5 @@ describe('update enable when action', () => {
     }
     expect(integerAnswer[0]).toMatchObject({});
     expect(integerAnswer).toHaveLength(1);
-    expect(integer.deactivated).toEqual(true);
   });
 });

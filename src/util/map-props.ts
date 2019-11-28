@@ -1,54 +1,50 @@
 import { QuestionnaireResponseItem, QuestionnaireEnableWhen } from '../types/fhir';
 import { GlobalState } from '../reducers/index';
-import { getFormDefinition, getFormData } from '../reducers/form';
+import { getFormData } from '../reducers/form';
 import { Props } from '../components/with-common-functions';
 
 import {
   enableWhenMatchesAnswer,
   getQuestionnaireResponseItemWithLinkid,
-  wrappedByRepeatItem,
   getResponseItems,
-  getQuestionnaireDefinitionItem,
-  getDefinitionItems,
+  Path,
+  isInGroupContext,
 } from './skjemautfyller-core';
 import { ThunkDispatch } from 'redux-thunk';
 import { NewValueAction } from '../actions/newValue';
 
-export function mapStateToProps(state: GlobalState, originalProps: Props) {
+export function mapStateToProps(state: GlobalState, originalProps: Props): Props {
   if (!originalProps.item || !originalProps.item.enableWhen) {
     return { ...originalProps, enable: true } as Props;
   }
+  const enable = isEnableWhenEnabled(originalProps.item.enableWhen, originalProps.path || [], state);
+  return { ...originalProps, enable } as Props;
+}
+
+function isEnableWhenEnabled(enableWhen: QuestionnaireEnableWhen[], path: Path[], state: GlobalState): boolean {
   let enable = false;
-  originalProps.item.enableWhen.forEach((enableWhen: QuestionnaireEnableWhen) => {
-    const definitionItems = getDefinitionItems(getFormDefinition(state));
-    const enableWhenQuestionItem = getQuestionnaireDefinitionItem(enableWhen.question, definitionItems);
+  enableWhen.forEach((enableWhen: QuestionnaireEnableWhen) => {
     const responseItems = getResponseItems(getFormData(state));
-    let enableWhenQuestion = enableWhen.question;
-    let parentPath = undefined;
-    if (originalProps.path) {
-      parentPath = originalProps.path.slice(0, -1);
-    }
-
-    if (wrappedByRepeatItem(parentPath) && originalProps.id && originalProps.id.includes('^')) {
-      enableWhenQuestion += originalProps.id.substring(originalProps.id.indexOf('^'));
-    }
-
+    const enableWhenQuestion = enableWhen.question;
     for (let i = 0; responseItems && i < responseItems.length; i++) {
       let responseItem: QuestionnaireResponseItem | undefined = responseItems[i];
+      if (!isInGroupContext(path, responseItem, responseItems)) {
+        continue;
+      }
       if (responseItem.linkId !== enableWhen.question) {
-        responseItem = getQuestionnaireResponseItemWithLinkid(enableWhenQuestion, responseItems[i], true);
+        responseItem = getQuestionnaireResponseItemWithLinkid(enableWhenQuestion, responseItems[i], path);
       }
       if (!responseItem) {
         continue;
       }
-      const deactivated = enableWhenQuestionItem ? enableWhenQuestionItem.deactivated : false;
-      enable = enable || (enableWhenMatchesAnswer(enableWhen, responseItem.answer) && !deactivated);
+
+      enable = enable || enableWhenMatchesAnswer(enableWhen, responseItem.answer);
     }
   });
-  return { ...originalProps, enable } as Props;
+  return enable;
 }
 
-export function mergeProps(stateProps: Props, dispatchProps: Props, ownProps: Props) {
+export function mergeProps(stateProps: Props, dispatchProps: Props, ownProps: Props): Props {
   return Object.assign({}, ownProps, stateProps, dispatchProps);
 }
 

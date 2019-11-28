@@ -70,7 +70,7 @@ export class String extends React.Component<Props & ValidationProps, {}> {
     return getTextValidationErrorMessage(value, this.props.validateScriptInjection, this.props.item, this.props.resources);
   };
 
-  getLabel(item: QuestionnaireItem) {
+  getLabel(item: QuestionnaireItem): JSX.Element {
     return <span dangerouslySetInnerHTML={{ __html: `${renderPrefix(item)} ${getText(item)}` }} />;
   }
 
