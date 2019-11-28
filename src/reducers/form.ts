@@ -178,7 +178,6 @@ function processDeleteRepeatItemAction(action: NewValueAction, state: Form): For
   if (!arrayToDeleteItem || arrayToDeleteItem.length === 0) {
     return newState;
   }
-  const responseItemLinkId = action.itemPath[action.itemPath.length - 1].linkId;
 
   if (!action.item) {
     return newState;
@@ -214,6 +213,12 @@ function copyItem(
     const newResponseItem = {
       linkId: source.item[i].linkId,
     } as QuestionnaireResponseItem;
+
+    if (target.item.some(item => item.linkId === newResponseItem.linkId)) {
+      // TODO: Nå legges det bare til 1. Benytt getMinOccursExtensionValue(defItem);
+      continue;
+    }
+
     target.item.push(newResponseItem);
     copyItem(source.item[i], newResponseItem, repeatedId);
   }
@@ -516,27 +521,7 @@ function updateEnableWhenItemsIteration(
       });
 
       if (!enable) {
-        if (qItemWithEnableWhen.repeats) {
-          // This should remove repeated items, but not the original, so remove linkId 4.1^1, 4.1^2 etc.,
-          // but not 4.1^0 as it is the original. (So if you click add on a repeated item in an enableWhen,
-          // collapse the enableWhen and expand it again, the added items should be gone)
-          // Go through the array backwards and delete, so not to screw up the indices we're looping over.
-          const arrayToDeleteItem = getArrayContainingResponseItemFromItems(qrItemWithEnableWhen.linkId, responseItems);
-          const minOccurs = getMinOccursExtensionValue(qItemWithEnableWhen);
-          if (arrayToDeleteItem) {
-            const keepThreshold = minOccurs ? minOccurs : 1;
-            let repeatingItemIndex = 0;
-            for (let i = 0; i < arrayToDeleteItem.length; i++) {
-              const e = arrayToDeleteItem[i];
-              if (e.linkId === qItemWithEnableWhen.linkId) {
-                if (repeatingItemIndex++ >= keepThreshold) {
-                  arrayToDeleteItem.splice(i, 1);
-                }
-                repeatingItemIndex++;
-              }
-            }
-          }
-        }
+        removeAddedRepeatingItems(qItemWithEnableWhen, qrItemWithEnableWhen, responseItems);
         wipeAnswerItems(qrItemWithEnableWhen, qItemWithEnableWhen);
       }
     }
@@ -544,6 +529,35 @@ function updateEnableWhenItemsIteration(
   updateEnableWhenItemsIteration(qitemsWithEnableWhen, formData, formDefinition, path);
 
   qitemsWithEnableWhen.forEach(i => i.item && updateEnableWhenItemsIteration(i.item, formData, formDefinition, path));
+}
+
+// This should remove repeated items, but not the original, so remove index
+// 1 and 2 , but not 0 (remove 4.1^1 and 4.1^2, keep 4.1^0)
+// So if you click add on a repeated item in an enableWhen,
+// collapse the enableWhen and expand it again, the added items should be gone.
+// Go through the array backwards and delete, so not to screw up the indices we're looping over.
+function removeAddedRepeatingItems(
+  defItem: QuestionnaireItem,
+  repeatingItemLinkId: QuestionnaireResponseItem,
+  responseItems: QuestionnaireResponseItem[]
+): void {
+  if (defItem.repeats) {
+    const arrayToDeleteItem = getArrayContainingResponseItemFromItems(repeatingItemLinkId.linkId, responseItems);
+    const minOccurs = getMinOccursExtensionValue(defItem);
+    if (arrayToDeleteItem) {
+      const keepThreshold = minOccurs ? minOccurs : 1;
+      let repeatingItemIndex = arrayToDeleteItem.filter(item => item.linkId === repeatingItemLinkId.linkId).length;
+      for (let i = arrayToDeleteItem.length - 1; i >= 0; i--) {
+        const e = arrayToDeleteItem[i];
+        if (e.linkId === defItem.linkId) {
+          if (repeatingItemIndex > keepThreshold) {
+            arrayToDeleteItem.splice(i, 1);
+          }
+          repeatingItemIndex--;
+        }
+      }
+    }
+  }
 }
 
 export function getFormDefinition(state: GlobalState): FormDefinition | null {
