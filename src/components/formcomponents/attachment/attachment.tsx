@@ -45,11 +45,11 @@ export interface Props {
 }
 
 class AttachmentComponent extends React.Component<Props & ValidationProps> {
-  onUpload = (files: File[], cb: (success: boolean, errormessage: TextMessage | null, uploadedFile?: UploadedFile) => void) => {
+  onUpload = (files: File[], cb: (success: boolean, errormessage: TextMessage | null, uploadedFile?: UploadedFile) => void): void => {
     const { uploadAttachment } = this.props;
     if (uploadAttachment) {
       for (const file of files) {
-        const onSuccess = (uploadedFile: UploadedFile, attachment: Attachment) => {
+        const onSuccess = (uploadedFile: UploadedFile, attachment: Attachment): void => {
           if (this.props.dispatch && attachment) {
             this.props.dispatch(newAttachment(this.props.path, attachment, this.props.item, isRepeat(this.props.item)));
           }
@@ -57,7 +57,7 @@ class AttachmentComponent extends React.Component<Props & ValidationProps> {
           cb(true, null, uploadedFile);
         };
 
-        const onError = (errorMessage: TextMessage | null) => {
+        const onError = (errorMessage: TextMessage | null): void => {
           cb(false, errorMessage);
         };
 
@@ -66,11 +66,11 @@ class AttachmentComponent extends React.Component<Props & ValidationProps> {
     }
   };
 
-  onDelete = (fileId: string, cb: (success: boolean, errormessage: TextMessage | null) => void) => {
+  onDelete = (fileId: string, cb: (success: boolean, errormessage: TextMessage | null) => void): void => {
     const { onDeleteAttachment } = this.props;
 
     if (onDeleteAttachment) {
-      const onSuccess = () => {
+      const onSuccess = (): void => {
         if (this.props.dispatch) {
           this.props.dispatch(removeAttachment(this.props.path, { url: fileId } as Attachment, this.props.item));
         }
@@ -78,7 +78,7 @@ class AttachmentComponent extends React.Component<Props & ValidationProps> {
         cb(true, null);
       };
 
-      const onError = (errormessage: TextMessage | null) => {
+      const onError = (errormessage: TextMessage | null): void => {
         cb(false, errormessage);
       };
 
@@ -86,7 +86,7 @@ class AttachmentComponent extends React.Component<Props & ValidationProps> {
     }
   };
 
-  getButtonText = () => {
+  getButtonText = (): string => {
     let buttonText = '';
     const { resources } = this.props;
     if (resources && resources.uploadButtonText) {
@@ -117,7 +117,7 @@ class AttachmentComponent extends React.Component<Props & ValidationProps> {
     return [];
   };
 
-  getPdfValue = () => {
+  getPdfValue = (): string => {
     const attachments = this.getAttachment();
     if (attachments) {
       return attachments.map(v => v.name).join(', ');

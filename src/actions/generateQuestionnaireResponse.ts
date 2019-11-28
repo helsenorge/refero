@@ -35,31 +35,11 @@ export function generateQuestionnaireResponse(questionnaire: Questionnaire): Que
     for (let j = 0; j < getMinOccurs(i); j++) {
       const responseItem = createQuestionnaireResponseItem(i);
       addChildrenItemsToResponseItem(i, responseItem);
-      if (i.repeats) {
-        addRepeatSuffix(responseItem, j);
-      }
+
       response.item.push(responseItem);
     }
   });
   return response;
-}
-/* tslint:enable no-any */
-function addRepeatSuffix(responseItem: QuestionnaireResponseItem, index: number): void {
-  responseItem.linkId = responseItem.linkId + '^' + index.toString();
-  if (responseItem.item) {
-    responseItem.item.forEach((i: QuestionnaireResponseItem) => {
-      addRepeatSuffix(i, index);
-    });
-  }
-  if (responseItem.answer) {
-    responseItem.answer.forEach((a: QuestionnaireResponseAnswer) => {
-      if (a.item) {
-        a.item.forEach((i: QuestionnaireResponseItem) => {
-          addRepeatSuffix(i, index);
-        });
-      }
-    });
-  }
 }
 
 function addChildrenItemsToResponseItem(item: QuestionnaireItem, response: QuestionnaireResponseItem): void {
@@ -72,10 +52,6 @@ function addChildrenItemsToResponseItem(item: QuestionnaireItem, response: Quest
       const responseItem = createQuestionnaireResponseItem(i);
       addChildrenItemsToResponseItem(i, responseItem);
       addResponseItemtoResponse(item, response, responseItem);
-
-      if (i.repeats) {
-        addRepeatSuffix(responseItem, j);
-      }
     }
   });
 }

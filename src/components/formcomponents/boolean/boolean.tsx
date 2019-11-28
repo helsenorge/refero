@@ -43,7 +43,7 @@ class Boolean extends React.Component<Props & ValidationProps, {}> {
     return item.initialBoolean;
   }
 
-  handleChange = () => {
+  handleChange = (): void => {
     const { dispatch, promptLoginMessage } = this.props;
     const newValue = !this.getValue();
     if (dispatch) {
@@ -75,7 +75,7 @@ class Boolean extends React.Component<Props & ValidationProps, {}> {
           id={getId(this.props.id)}
           checked={this.getValue()}
           disabled
-          onChange={() => {
+          onChange={(): void => {
             /*kan ikke endres, er alltid disabled*/
           }}
           className="page_skjemautfyller__input"

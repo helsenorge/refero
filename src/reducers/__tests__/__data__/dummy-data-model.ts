@@ -272,18 +272,18 @@ const dataModel: GlobalState = {
               ],
             },
             {
-              linkId: 'addGroupTest1^0',
+              linkId: 'addGroupTest1',
               item: [
                 {
-                  linkId: 'addGroupTest11^0',
+                  linkId: 'addGroupTest11',
                   item: [
                     {
-                      linkId: 'addGroupTest111^0',
+                      linkId: 'addGroupTest111',
                     },
                   ],
                 },
                 {
-                  linkId: 'addGroupTest12^0',
+                  linkId: 'addGroupTest12',
                 },
               ],
             },
@@ -295,10 +295,10 @@ const dataModel: GlobalState = {
               linkId: 'group110',
               item: [
                 {
-                  linkId: 'group110.1^0',
+                  linkId: 'group110.1',
                   item: [
                     {
-                      linkId: 'group110.11^0',
+                      linkId: 'group110.11',
                     },
                   ],
                 },

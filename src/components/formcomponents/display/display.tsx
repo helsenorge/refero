@@ -7,7 +7,7 @@ import { getMarkdownExtensionValue } from '../../../util/extension';
 import * as marked from 'marked';
 
 const renderer = new marked.Renderer();
-renderer.link = (href: string, title: string, text: string) => {
+renderer.link = (href: string, title: string, text: string): string => {
   return `<a href=${href} title=${title} target="_blank" class="external">${text}</a>`;
 };
 

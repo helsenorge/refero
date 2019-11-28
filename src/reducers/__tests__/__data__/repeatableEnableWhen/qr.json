@@ -10,11 +10,11 @@
       "text": "Gruppe",
       "item": [
         {
-          "linkId": "8.1^0",
+          "linkId": "8.1",
           "text": "Something",
           "item": [
             {
-              "linkId": "8.1.1^0",
+              "linkId": "8.1.1",
               "text": "Checkbox",
               "answer": [
                 {
@@ -23,7 +23,7 @@
               ]
             },
             {
-              "linkId": "8.1.2^0",
+              "linkId": "8.1.2",
               "text": "Analyse"
             }
           ]

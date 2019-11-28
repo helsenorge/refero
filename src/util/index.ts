@@ -207,13 +207,6 @@ export function shouldRenderRepeatButton(
   return true;
 }
 
-export function removeLinkIdSuffix(linkId: string, suffix: string): string {
-  if (!linkId.includes(suffix)) {
-    return linkId;
-  }
-  return linkId.split(suffix)[0];
-}
-
 export function validateText(value: string, validateScriptInjection: boolean): boolean {
   if (!validateScriptInjection) {
     return true;

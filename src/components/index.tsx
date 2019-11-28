@@ -9,11 +9,12 @@ import { getFormDefinition, getFormData, getInitialFormData } from '../reducers/
 import { getComponentForItem, shouldRenderRepeatButton } from '../util/index';
 import Form from '@helsenorge/toolkit/components/molecules/form';
 import {
-  getQuestionnaireResponseItemFromData,
+  getRootQuestionnaireResponseItemFromData,
   Path,
   createPathForItem,
   getAnswerFromResponseItem,
   shouldRenderDeleteButton,
+  createIdSuffix,
 } from '../util/skjemautfyller-core';
 import { QuestionnaireResponseItem, Questionnaire, QuestionnaireResponse, Attachment, QuestionnaireItem } from '../types/fhir';
 import Constants from '../constants/index';
@@ -148,7 +149,7 @@ class Skjemautfyller extends React.Component<StateProps & DispatchProps & Props,
       }
       let responseItems: Array<QuestionnaireResponseItem> | undefined;
       if (formData) {
-        responseItems = getQuestionnaireResponseItemFromData(item.linkId, formData, true);
+        responseItems = getRootQuestionnaireResponseItemFromData(item.linkId, formData);
       }
 
       if (responseItems && responseItems.length > 0) {
@@ -165,18 +166,19 @@ class Skjemautfyller extends React.Component<StateProps & DispatchProps & Props,
             ) : (
               undefined
             );
+          const path = createPathForItem(this.props.path, item, responseItem, index);
           renderedItems.push(
             <Comp
               pdf={pdf}
               promptLoginMessage={promptLoginMessage}
               key={`item_${responseItem.linkId}_${index}`}
-              id={`item_${responseItem.linkId}`}
+              id={'item_' + responseItem.linkId + createIdSuffix(path, index, item.repeats)}
               item={item}
               responseItem={responseItem}
               answer={getAnswerFromResponseItem(responseItem)}
               resources={resources}
               containedResources={contained}
-              path={createPathForItem(this.props.path, item, responseItem)}
+              path={path}
               headerTag={Constants.DEFAULT_HEADER_TAG}
               visibleDeleteButton={shouldRenderDeleteButton(item, index)}
               repeatButton={repeatButton}

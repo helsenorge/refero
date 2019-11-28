@@ -8,26 +8,26 @@
       "text": "tittel",
       "item": [
         {
-          "linkId": "1.0^0",
+          "linkId": "1.0",
           "text": "Analyse",
           "item": [
             {
-              "linkId": "1.0.3^0",
+              "linkId": "1.0.3",
               "text": "Mor",
               "answer": [
-                { "valueBoolean": false, "item": [{ "linkId": "1.0.3.1^0", "text": "Fullblod", "answer": [{ "valueBoolean": false }] }] }
+                { "valueBoolean": false, "item": [{ "linkId": "1.0.3.1", "text": "Fullblod", "answer": [{ "valueBoolean": false }] }] }
               ]
             },
             {
-              "linkId": "1.0.4^0",
+              "linkId": "1.0.4",
               "text": "Far",
               "answer": [
                 {
                   "valueBoolean": false,
                   "item": [
-                    { "linkId": "1.0.4.0^0", "text": "Fullblod", "answer": [{ "valueBoolean": false }] },
-                    { "linkId": "1.0.4.1^0", "text": "Annet", "answer": [{ "valueBoolean": false }] },
-                    { "linkId": "1.0.4.2^0", "text": "Annet2", "answer": [{ "valueBoolean": false }] }
+                    { "linkId": "1.0.4.0", "text": "Fullblod", "answer": [{ "valueBoolean": false }] },
+                    { "linkId": "1.0.4.1", "text": "Annet", "answer": [{ "valueBoolean": false }] },
+                    { "linkId": "1.0.4.2", "text": "Annet2", "answer": [{ "valueBoolean": false }] }
                   ]
                 }
               ]

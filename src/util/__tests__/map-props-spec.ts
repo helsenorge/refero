@@ -1,8 +1,9 @@
 import { Props } from '../../components/with-common-functions';
 import * as chai from 'chai';
-import { dataModel } from './skjemautfyller-core-spec';
 import { mapStateToProps, mapDispatchToProps } from '../map-props';
 import { getQuestionnaireDefinitionItem } from '../skjemautfyller-core';
+import { pathify } from '../../reducers/__tests__/utils';
+import { dataModel } from './__data__/testDataModel';
 const should = chai.should();
 
 describe('mapStateToProps', () => {
@@ -25,8 +26,10 @@ describe('mapStateToProps', () => {
     ) {
       return;
     }
+    const item = dataModel.skjemautfyller.form.FormDefinition.Content.item[1];
     const result = mapStateToProps(dataModel, {
-      item: dataModel.skjemautfyller.form.FormDefinition.Content.item[1],
+      item,
+      path: pathify(item.linkId),
     } as Props);
 
     const enable = result.enable;
@@ -44,8 +47,10 @@ describe('mapStateToProps', () => {
     ) {
       return;
     }
+    const item = dataModel.skjemautfyller.form.FormDefinition.Content.item[2];
     const result = mapStateToProps(dataModel, {
-      item: dataModel.skjemautfyller.form.FormDefinition.Content.item[2],
+      item,
+      path: pathify(item.linkId),
     } as Props);
     const enable = result.enable;
     should.exist(enable);
@@ -62,8 +67,10 @@ describe('mapStateToProps', () => {
     ) {
       return;
     }
+    const item = dataModel.skjemautfyller.form.FormDefinition.Content.item[4];
     const result = mapStateToProps(dataModel, {
-      item: dataModel.skjemautfyller.form.FormDefinition.Content.item[4],
+      item,
+      path: pathify(item.linkId),
     } as Props);
 
     const enable = result.enable;
@@ -81,8 +88,10 @@ describe('mapStateToProps', () => {
     ) {
       return;
     }
+    const item = dataModel.skjemautfyller.form.FormDefinition.Content.item[6];
     const result = mapStateToProps(dataModel, {
-      item: dataModel.skjemautfyller.form.FormDefinition.Content.item[6],
+      item,
+      path: pathify(item.linkId),
     } as Props);
     const enable = result.enable;
     should.exist(enable);
@@ -99,8 +108,10 @@ describe('mapStateToProps', () => {
     ) {
       return;
     }
+    const item = dataModel.skjemautfyller.form.FormDefinition.Content.item[8];
     const result = mapStateToProps(dataModel, {
-      item: dataModel.skjemautfyller.form.FormDefinition.Content.item[8],
+      item,
+      path: pathify(item.linkId),
     } as Props);
     const enable = result.enable;
     should.exist(enable);
@@ -117,8 +128,10 @@ describe('mapStateToProps', () => {
     ) {
       return;
     }
+    const item = dataModel.skjemautfyller.form.FormDefinition.Content.item[10];
     const result = mapStateToProps(dataModel, {
-      item: dataModel.skjemautfyller.form.FormDefinition.Content.item[10],
+      item,
+      path: pathify(item.linkId),
     } as Props);
     const enable = result.enable;
     should.exist(enable);
@@ -135,8 +148,10 @@ describe('mapStateToProps', () => {
     ) {
       return;
     }
+    const item = dataModel.skjemautfyller.form.FormDefinition.Content.item[12];
     const result = mapStateToProps(dataModel, {
-      item: dataModel.skjemautfyller.form.FormDefinition.Content.item[12],
+      item,
+      path: pathify(item.linkId),
     } as Props);
 
     const enable = result.enable;
@@ -154,8 +169,10 @@ describe('mapStateToProps', () => {
     ) {
       return;
     }
+    const item = dataModel.skjemautfyller.form.FormDefinition.Content.item[14];
     const result = mapStateToProps(dataModel, {
-      item: dataModel.skjemautfyller.form.FormDefinition.Content.item[14],
+      item,
+      path: pathify(item.linkId),
     } as Props);
     const enable = result.enable;
     should.exist(enable);
@@ -172,8 +189,10 @@ describe('mapStateToProps', () => {
     ) {
       return;
     }
+    const item = dataModel.skjemautfyller.form.FormDefinition.Content.item[16];
     const result = mapStateToProps(dataModel, {
-      item: dataModel.skjemautfyller.form.FormDefinition.Content.item[16],
+      item,
+      path: pathify(item.linkId),
     } as Props);
 
     const enable = result.enable;
@@ -194,7 +213,8 @@ describe('mapStateToProps', () => {
 
     const item = dataModel.skjemautfyller.form.FormDefinition.Content.item[20];
     const result = mapStateToProps(dataModel, {
-      item: item,
+      item,
+      path: pathify(item.linkId),
     } as Props);
 
     const enable = result.enable;
@@ -215,14 +235,15 @@ describe('mapStateToProps', () => {
 
     const item = dataModel.skjemautfyller.form.FormDefinition.Content.item[22];
     const result = mapStateToProps(dataModel, {
-      item: item,
+      item,
+      path: pathify(item.linkId),
     } as Props);
 
     const enable = result.enable;
     should.exist(enable);
     expect(enable).toEqual(false);
   });
-
+  // TODO: Flere tester?
   it('should not enable component if has no answer', () => {
     if (
       !dataModel ||
@@ -236,7 +257,8 @@ describe('mapStateToProps', () => {
     const item = getQuestionnaireDefinitionItem('group1.2.2', dataModel.skjemautfyller.form.FormDefinition.Content.item);
     should.exist(item);
     const result = mapStateToProps(dataModel, {
-      item: item,
+      item,
+      path: pathify('group1^0', 'group1.2^0', 'group1.2.2'),
     } as Props);
     const enable = result.enable;
     should.exist(enable);
@@ -253,8 +275,11 @@ describe('mapStateToProps', () => {
     ) {
       return;
     }
+    const item = dataModel.skjemautfyller.form.FormDefinition.Content.item[18];
+
     const result = mapStateToProps(dataModel, {
-      item: dataModel.skjemautfyller.form.FormDefinition.Content.item[18],
+      item,
+      path: pathify(item.linkId),
     } as Props);
     const enable = result.enable;
     should.exist(enable);

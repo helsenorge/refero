@@ -22,18 +22,18 @@ describe('questionnaire with multiple dependent enable when items', () => {
     newState = clickCheckbox(newState, pathify('1', '1.1'), true, getQuestionnaireDefinitionItem('1.1', definitionItems));
     newState = clickCheckbox(newState, pathify('2', '2.1'), true, getQuestionnaireDefinitionItem('2.1', definitionItems));
     newState = clickCheckbox(newState, pathify('3', '3.1'), true, getQuestionnaireDefinitionItem('3.1', definitionItems));
-    let responseItem31 = getResponseItem('3.1', newState);
+    let responseItem31 = getResponseItem('3.1', newState, pathify('3', '3.1'));
 
     if (!responseItem31) return fail();
     expect(responseItem31.answer).toMatchObject([{ valueBoolean: true }]);
 
     newState = clickCheckbox(newState, pathify('1', '1.1'), false, getQuestionnaireDefinitionItem('1.1', definitionItems));
 
-    let responseItem21 = getResponseItem('2.1', newState);
+    let responseItem21 = getResponseItem('2.1', newState, pathify('2', '2.1'));
     if (!responseItem21) return fail();
     expect(responseItem21.answer).toMatchObject([{ valueBoolean: false }]);
 
-    responseItem31 = getResponseItem('3.1', newState);
+    responseItem31 = getResponseItem('3.1', newState, pathify('3', '3.1'));
     if (!responseItem31) return fail();
     expect(responseItem31.answer).toMatchObject([{ valueBoolean: false }]);
   });

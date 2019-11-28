@@ -4,9 +4,7 @@
   "meta": {
     "versionId": "1",
     "lastUpdated": "2019-06-18T11:02:04.337+00:00",
-    "profile": [
-      "http://ehelse.no/fhir/StructureDefinition/sdf-Questionnaire"
-    ],
+    "profile": ["http://ehelse.no/fhir/StructureDefinition/sdf-Questionnaire"],
     "tag": [
       {
         "system": "urn:ietf:bcp:47",
@@ -66,9 +64,7 @@
     }
   ],
   "copyright": "Er utviklet av Direktoratet for e-helse til fri benyttelse",
-  "subjectType": [
-    "Person"
-  ],
+  "subjectType": ["Person"],
   "item": [
     {
       "linkId": "7",
