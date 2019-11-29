@@ -228,27 +228,30 @@ function copyItem(
     target.item.push(newResponseItem);
     copyItem(source.item[i], newResponseItem, questionnaire);
   }
+  const defItem = getQuestionnaireDefinitionItem(source.linkId, questionnaire.item);
 
-  for (let i = 0; source.answer && i < source.answer.length; i++) {
-    if (!target.answer) {
-      target.answer = [];
+  if (defItem && defItem.type !== 'attachment') {
+    for (let i = 0; source.answer && i < source.answer.length; i++) {
+      if (!target.answer) {
+        target.answer = [];
+      }
+      const answer = source.answer[i];
+      const targetAnswer = {
+        item: [] as QuestionnaireResponseItem[],
+      } as QuestionnaireResponseAnswer;
+
+      for (let j = 0; answer && answer.item && j < answer.item.length; j++) {
+        const newResponseItem = {
+          linkId: answer.item[j].linkId,
+        } as QuestionnaireResponseItem;
+        (targetAnswer.item as QuestionnaireResponseItem[]).push(newResponseItem);
+
+        target.text = source.text;
+        copyItem(answer.item[j], newResponseItem, questionnaire);
+      }
+
+      target.answer.push(targetAnswer);
     }
-    const answer = source.answer[i];
-    const targetAnswer = {
-      item: [] as QuestionnaireResponseItem[],
-    } as QuestionnaireResponseAnswer;
-
-    for (let j = 0; answer && answer.item && j < answer.item.length; j++) {
-      const newResponseItem = {
-        linkId: answer.item[j].linkId,
-      } as QuestionnaireResponseItem;
-      (targetAnswer.item as QuestionnaireResponseItem[]).push(newResponseItem);
-
-      target.text = source.text;
-      copyItem(answer.item[j], newResponseItem, questionnaire);
-    }
-
-    target.answer.push(targetAnswer);
   }
 
   return target;
