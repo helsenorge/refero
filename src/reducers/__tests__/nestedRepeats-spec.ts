@@ -1,8 +1,8 @@
 import dataModel from './__data__/nestedRepeats';
 import { Form } from '../form';
-import { Coding, QuestionnaireItem } from '../../types/fhir';
+import { Coding, QuestionnaireItem, QuestionnaireResponseItem } from '../../types/fhir';
 import { getQuestionnaireDefinitionItem, getDefinitionItems, getResponseItemWithPath } from '../../util/skjemautfyller-core';
-import { pathify, selectChoice, getResponseItem, enterText, clickRepeat } from './utils';
+import { pathify, selectChoice, getResponseItem, enterText, clickRepeat, uploadAttachment, createAttachment } from './utils';
 
 describe('update enable when action', () => {
   let newState: Form;
@@ -17,7 +17,7 @@ describe('update enable when action', () => {
     definitionItems = dItems;
   });
 
-  it('should remove added repeats and clear answers when collapsing enableWhens', () => {
+  it('should add right number of items for nested repeats', () => {
     if (!newState.FormDefinition.Content) {
       return fail();
     }
@@ -49,5 +49,48 @@ describe('update enable when action', () => {
     }
 
     expect(secondRootItem.item.filter(i => i.linkId === '1.2').length).toBe(2);
+  });
+
+  it('should not copy answers from repeating items inside repeating group', () => {
+    if (!newState.FormDefinition.Content) {
+      return fail();
+    }
+
+    let firstRootItem = getResponseItemWithPath(pathify('1^0'), newState.FormData);
+    if (!firstRootItem || !firstRootItem.item) {
+      return fail();
+    }
+
+    newState = uploadAttachment(
+      newState,
+      pathify('1^0', '1.3^0'),
+      createAttachment('1', 'fil1'),
+      getQuestionnaireDefinitionItem('1.3', definitionItems),
+      true
+    );
+
+    newState = uploadAttachment(
+      newState,
+      pathify('1^0', '1.3^0'),
+      createAttachment('2', 'fil2'),
+      getQuestionnaireDefinitionItem('1.3', definitionItems),
+      true
+    );
+    firstRootItem = getResponseItemWithPath(pathify('1^0'), newState.FormData);
+    const answer = firstRootItem && firstRootItem.item && firstRootItem.item.filter(i => i.linkId === '1.3')[0].answer;
+    if (!answer) {
+      return fail();
+    }
+    expect(answer.length).toBe(2);
+
+    const rootDefItem = getQuestionnaireDefinitionItem('1', definitionItems);
+    if (!rootDefItem) return fail();
+    newState = clickRepeat(newState, [], rootDefItem, [firstRootItem as QuestionnaireResponseItem]);
+
+    let secondRootItem = getResponseItemWithPath(pathify('1^1'), newState.FormData);
+    if (!secondRootItem || !secondRootItem.item) {
+      return fail();
+    }
+    expect(secondRootItem.item.filter(i => i.linkId === '1.3')[0].answer).toBe(undefined);
   });
 });
