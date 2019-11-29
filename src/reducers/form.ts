@@ -148,7 +148,7 @@ function processAddRepeatItemAction(action: NewValueAction, state: Form): Form {
     return newState;
   }
 
-  const newItem = copyItem(action.responseItems[0], undefined);
+  const newItem = copyItem(action.responseItems[0], undefined, newState.FormDefinition.Content as Questionnaire);
   if (!newItem) {
     return newState;
   }
@@ -200,7 +200,7 @@ function processDeleteRepeatItemAction(action: NewValueAction, state: Form): For
 function copyItem(
   source: QuestionnaireResponseItem,
   target: QuestionnaireResponseItem | undefined,
-  repeatedId = ''
+  questionnaire: Questionnaire
 ): QuestionnaireResponseItem {
   if (!target) {
     target = { linkId: source.linkId } as QuestionnaireResponseItem;
@@ -214,13 +214,19 @@ function copyItem(
       linkId: source.item[i].linkId,
     } as QuestionnaireResponseItem;
 
-    if (target.item.some(item => item.linkId === newResponseItem.linkId)) {
-      // TODO: Nå legges det bare til 1. Benytt getMinOccursExtensionValue(defItem);
-      continue;
+    const numberOfItemsWithSameLinkId = target.item.filter(item => item.linkId === newResponseItem.linkId).length;
+
+    if (numberOfItemsWithSameLinkId > 0) {
+      const defItem = getQuestionnaireDefinitionItem(newResponseItem.linkId, questionnaire.item);
+
+      const minOccurs = defItem ? getMinOccursExtensionValue(defItem) || 1 : 1;
+      if (numberOfItemsWithSameLinkId >= minOccurs) {
+        continue;
+      }
     }
 
     target.item.push(newResponseItem);
-    copyItem(source.item[i], newResponseItem, repeatedId);
+    copyItem(source.item[i], newResponseItem, questionnaire);
   }
 
   for (let i = 0; source.answer && i < source.answer.length; i++) {
@@ -239,7 +245,7 @@ function copyItem(
       (targetAnswer.item as QuestionnaireResponseItem[]).push(newResponseItem);
 
       target.text = source.text;
-      copyItem(answer.item[j], newResponseItem, repeatedId);
+      copyItem(answer.item[j], newResponseItem, questionnaire);
     }
 
     target.answer.push(targetAnswer);

@@ -1,0 +1,75 @@
+{
+  "resourceType": "Questionnaire",
+  "id": "test-opplasting",
+  "meta": {
+    "versionId": "7",
+    "lastUpdated": "2019-11-01T13:47:04.304+00:00",
+    "profile": ["http://ehelse.no/fhir/StructureDefinition/sdf-Questionnaire"],
+    "tag": [{ "system": "urn:ietf:bcp:47", "code": "nb-NO", "display": "Norsk bokmål" }]
+  },
+  "language": "nb-NO",
+  "extension": [
+    {
+      "url": "http://ehelse.no/fhir/StructureDefinition/sdf-endpoint",
+      "valueReference": { "reference": "https://skjemakatalog-test-fhir-apimgmt.azure-api.net/api/v1/Endpoint/25" }
+    },
+    {
+      "url": "http://ehelse.no/fhir/StructureDefinition/sdf-authenticationrequirement",
+      "valueCoding": { "system": "http://ehelse.no/fhir/ValueSet/AuthenticationRequirement", "code": "3" }
+    },
+    {
+      "url": "http://ehelse.no/fhir/StructureDefinition/sdf-accessibilitytoresponse",
+      "valueCoding": { "system": "http://ehelse.no/fhir/ValueSet/AccessibilityToResponse", "code": "1" }
+    },
+    {
+      "url": "http://ehelse.no/fhir/StructureDefinition/sdf-canbeperformedby",
+      "valueCoding": { "system": "http://ehelse.no/fhir/ValueSet/CanBePerformedBy", "code": "1" }
+    },
+    {
+      "url": "http://ehelse.no/fhir/StructureDefinition/sdf-discretion",
+      "valueCoding": { "system": "http://ehelse.no/fhir/ValueSet/Discretion", "code": "0" }
+    }
+  ],
+  "url": "https://skjemakatalog-dev-fhir-apimgmt.azure-api.net/api/v1/Questionnaire/42",
+  "version": "0.1",
+  "name": "SIO-Psykolog",
+  "title": "Noen å snakke med",
+  "status": "draft",
+  "date": "2019-09-23",
+  "publisher": "Direktoratet for e-helse",
+  "useContext": [
+    {
+      "code": { "system": "http://hl7.org/fhir/ValueSet/usage-context-type", "code": "focus", "display": "Clinical Focus" },
+      "valueCodeableConcept": {
+        "coding": [{ "system": "urn:oid:2.16.578.1.12.4.1.1.8655", "code": "P", "display": "Psykisk helsevern" }]
+      }
+    }
+  ],
+  "contact": [{ "name": "https://sio.no/helse" }],
+  "subjectType": ["Patient"],
+  "item": [
+    {
+      "linkId": "1",
+      "text": "Hva trenger du nå",
+      "type": "group",
+      "repeats": true,
+      "item": [
+        { "linkId": "1.1", "text": "Tekst...", "type": "display", "repeats": false, "readOnly": false },
+        {
+          "linkId": "1.2",
+          "text": "Tekst...",
+          "type": "text",
+          "repeats": true,
+          "readOnly": false,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-minOccurs",
+              "valueInteger": 2
+            }
+          ]
+        },
+        { "linkId": "1.3", "text": "Opplasting", "type": "attachment", "repeats": true, "readOnly": false }
+      ]
+    }
+  ]
+}
