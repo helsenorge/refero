@@ -1,6 +1,6 @@
 {
   "name": "@helsenorge/skjemautfyller",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "main": "index.js",
   "author": "helsenorge",
   "license": "UNLICENSED",
@@ -55,7 +55,7 @@
   "dependencies": {
     "@types/react-collapse": "5.0.0",
     "isomorphic-fetch": "^2.2.1",
-    "marked": "^0.3.17",
+    "marked": "^0.7.0",
     "moment": "2.22.2",
     "tabbable": "^3.1.1",
     "uuid": "2.0.3"
