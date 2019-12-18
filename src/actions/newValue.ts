@@ -1,6 +1,8 @@
 import { Path } from '../util/skjemautfyller-core';
 import { Coding, QuestionnaireItem, Attachment, QuestionnaireResponseItem, Quantity } from '../types/fhir';
 import { Action } from 'redux';
+import { ThunkDispatch } from 'redux-thunk';
+import { GlobalState } from '../reducers';
 
 export type NEW_VALUE = 'skjemautfyller/NEW_VALUE';
 export const NEW_VALUE: NEW_VALUE = 'skjemautfyller/NEW_VALUE';
@@ -35,7 +37,12 @@ export interface NewValueAction extends Action {
   multipleAnswers?: boolean;
 }
 
-export function newAttachment(itemPath: Array<Path>, value: Attachment, item: QuestionnaireItem | undefined, multipleAnswers?: boolean): NewValueAction {
+export function newAttachment(
+  itemPath: Array<Path>,
+  value: Attachment,
+  item: QuestionnaireItem | undefined,
+  multipleAnswers?: boolean
+): NewValueAction {
   return {
     type: NEW_VALUE,
     itemPath,
@@ -63,18 +70,20 @@ export function newBooleanValue(itemPath: Array<Path>, value: boolean, item: Que
   };
 }
 
-export function newCodingValue(
-  itemPath: Array<Path>,
-  value: Coding,
-  item: QuestionnaireItem | undefined,
-  multipleAnswers?: boolean
-): NewValueAction {
+export function newCodingValue(itemPath: Array<Path>, value: Coding, item: QuestionnaireItem | undefined, multipleAnswers?: boolean) {
   return {
     type: NEW_VALUE,
     itemPath,
     valueCoding: value,
     item: item,
     multipleAnswers,
+  };
+}
+
+export function newCodingValueAsync(itemPath: Array<Path>, value: Coding, item: QuestionnaireItem | undefined, multipleAnswers?: boolean) {
+  return async (dispatch: ThunkDispatch<GlobalState, void, NewValueAction>, getState: () => GlobalState) => {
+    dispatch(newCodingValue(itemPath, value, item, multipleAnswers));
+    return await Promise.resolve(getState());
   };
 }
 
@@ -116,6 +125,13 @@ export function removeCodingValue(itemPath: Array<Path>, value: Coding, item: Qu
     itemPath,
     valueCoding: value,
     item: item,
+  };
+}
+
+export function removeCodingValueAsync(itemPath: Array<Path>, value: Coding, item: QuestionnaireItem | undefined) {
+  return async (dispatch: ThunkDispatch<GlobalState, void, NewValueAction>, getState: () => GlobalState) => {
+    dispatch(removeCodingValue(itemPath, value, item));
+    return await Promise.resolve(getState());
   };
 }
 
@@ -191,5 +207,12 @@ export function deleteRepeatItem(itemPath: Array<Path>, item: QuestionnaireItem)
     type: DELETE_REPEAT_ITEM,
     itemPath,
     item,
+  };
+}
+
+export function deleteRepeatItemAsync(itemPath: Array<Path>, item: QuestionnaireItem) {
+  return async (dispatch: ThunkDispatch<GlobalState, void, NewValueAction>, getState: () => GlobalState) => {
+    dispatch(deleteRepeatItem(itemPath, item));
+    return await Promise.resolve(getState());
   };
 }

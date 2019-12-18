@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Options } from '@helsenorge/toolkit/components/atoms/radio-group';
 import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
 import withCommonFunctions from '../../with-common-functions';
-import { newCodingValue, removeCodingValue, NewValueAction } from '../../../actions/newValue';
+import { NewValueAction, newCodingValueAsync, removeCodingValueAsync } from '../../../actions/newValue';
 import { Path } from '../../../util/skjemautfyller-core';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { QuestionnaireItem, QuestionnaireResponseAnswer, Resource, Coding, QuestionnaireResponseItem } from '../../../types/fhir';
@@ -40,9 +40,14 @@ export interface ChoiceProps {
   responseItem?: Array<QuestionnaireResponseItem>;
   renderDeleteButton: () => JSX.Element | undefined;
   repeatButton: JSX.Element;
-
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
+  onAnswerChange: (
+    newState: GlobalState,
+    path: Array<Path>,
+    item: QuestionnaireItem,
+    answer: QuestionnaireResponseAnswer | QuestionnaireResponseAnswer[]
+  ) => void;
 }
 
 interface ChoiceState {
@@ -95,19 +100,18 @@ export class Choice extends React.Component<ChoiceProps & ValidationProps, Choic
   };
 
   handleCheckboxChange = (code?: string): void => {
-    const { dispatch, answer, promptLoginMessage, item } = this.props;
+    const { dispatch, answer, promptLoginMessage, item, onAnswerChange, path } = this.props;
     if (dispatch && code) {
       const display = getDisplay(getOptions(item, this.props.containedResources), code);
       const system = getSystem(item, this.props.containedResources);
       const coding = { code, display, system } as Coding;
       if (getIndexOfAnswer(code, answer) > -1) {
-        dispatch(removeCodingValue(this.props.path, coding, item));
-
+        dispatch(removeCodingValueAsync(path, coding, item))?.then(newState => onAnswerChange(newState, path, item, coding));
         if (promptLoginMessage) {
           promptLoginMessage();
         }
       } else {
-        dispatch(newCodingValue(this.props.path, coding, this.props.item, true));
+        dispatch(newCodingValueAsync(path, coding, item, true))?.then(newState => onAnswerChange(newState, path, item, coding));
         if (promptLoginMessage) {
           promptLoginMessage();
         }
@@ -116,12 +120,12 @@ export class Choice extends React.Component<ChoiceProps & ValidationProps, Choic
   };
 
   handleChange = (code?: string): void => {
-    const { dispatch, promptLoginMessage, item } = this.props;
+    const { dispatch, promptLoginMessage, item, onAnswerChange, path } = this.props;
     if (dispatch && code) {
       const display = getDisplay(getOptions(item, this.props.containedResources), code);
       const system = getSystem(item, this.props.containedResources);
       const coding = { code, display, system } as Coding;
-      dispatch(newCodingValue(this.props.path, coding, item));
+      dispatch(newCodingValueAsync(path, coding, item))?.then(newState => onAnswerChange(newState, path, item, coding));
       if (promptLoginMessage) {
         promptLoginMessage();
       }
@@ -207,9 +211,5 @@ export class Choice extends React.Component<ChoiceProps & ValidationProps, Choic
 }
 
 const withCommonFunctionsComponent = withCommonFunctions(Choice);
-const connectedComponent = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-  mergeProps
-)(withCommonFunctionsComponent);
+const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(withCommonFunctionsComponent);
 export default connectedComponent;

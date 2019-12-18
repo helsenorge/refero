@@ -1,0 +1,652 @@
+{
+  "resourceType": "Questionnaire",
+  "id": "scoring",
+  "status": "draft",
+  "item": [
+    {
+      "linkId": "2",
+      "text": "Spørsmål om dine symptomer",
+      "type": "group",
+      "repeats": false,
+      "item": [
+        {
+          "linkId": "2.1",
+          "text": "symptomer I",
+          "type": "group",
+          "item": [
+            {
+              "linkId": "2.1.1",
+              "code": [
+                {
+                  "system": "http://ehelse.no/scoringFormulas",
+                  "code": "QS",
+                  "display": "QuestionScore"
+                }
+              ],
+              "text": "Vansker med å sovne, sove uten avbrudd eller sovet for mye",
+              "type": "choice",
+              "required": false,
+              "repeats": false,
+              "readOnly": false,
+              "option": [
+                {
+                  "valueCoding": {
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+                        "valueDecimal": 1.0
+                      }
+                    ],
+                    "code": "LA6568-5",
+                    "display": "Ikke i det hele tatt"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+                        "valueDecimal": 2.0
+                      }
+                    ],
+                    "code": "LA6569-3",
+                    "display": "Noen dager"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+                        "valueDecimal": 4.0
+                      }
+                    ],
+                    "code": "LA6570-1",
+                    "display": "Mer enn halvparten av dagene"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+                        "valueDecimal": 8.0
+                      }
+                    ],
+                    "code": "LA6571-9",
+                    "display": "Nesten hver dag"
+                  }
+                }
+              ]
+            },
+            {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                        "code": "check-box"
+                      }
+                    ]
+                  }
+                }
+              ],
+              "linkId": "2.1.2",
+              "code": [
+                {
+                  "system": "http://ehelse.no/scoringFormulas",
+                  "code": "QS",
+                  "display": "QuestionScore"
+                }
+              ],
+              "text": "Vansker med å sovne, sove uten avbrudd eller sovet for mye",
+              "type": "choice",
+              "required": false,
+              "repeats": false,
+              "readOnly": false,
+              "option": [
+                {
+                  "valueCoding": {
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+                        "valueDecimal": 1.0
+                      }
+                    ],
+                    "code": "a",
+                    "display": "Ikke i det hele tatt"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+                        "valueDecimal": 2.0
+                      }
+                    ],
+                    "code": "b",
+                    "display": "Noen dager"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+                        "valueDecimal": 4.0
+                      }
+                    ],
+                    "code": "c",
+                    "display": "Mer enn halvparten av dagene"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+                        "valueDecimal": 8.0
+                      }
+                    ],
+                    "code": "d",
+                    "display": "Nesten hver dag"
+                  }
+                }
+              ]
+            },
+            {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+                  "valueCoding": {
+                    "system": "http://ehelse.no/Score",
+                    "code": "score",
+                    "display": "score"
+                  }
+                }
+              ],
+              "linkId": "sectionscore_213",
+              "code": [
+                {
+                  "system": "http://ehelse.no/scoringFormulas",
+                  "code": "SS",
+                  "display": "Sectionscore"
+                }
+              ],
+              "text": "Sum",
+              "type": "quantity",
+              "required": false,
+              "repeats": false,
+              "readOnly": false
+            }
+          ]
+        },
+        {
+          "linkId": "2.2",
+          "text": "symptomer II",
+          "type": "group",
+          "item": [
+            {
+              "linkId": "2.2.1",
+              "code": [
+                {
+                  "system": "http://ehelse.no/scoringFormulas",
+                  "code": "QS",
+                  "display": "QuestionScore"
+                }
+              ],
+              "text": "Vansker med å sovne, sove uten avbrudd eller sovet for mye",
+              "type": "choice",
+              "required": false,
+              "repeats": false,
+              "readOnly": false,
+              "option": [
+                {
+                  "valueCoding": {
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+                        "valueDecimal": 1.0
+                      }
+                    ],
+                    "code": "LA6568-5",
+                    "display": "Ikke i det hele tatt"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+                        "valueDecimal": 2.0
+                      }
+                    ],
+                    "code": "LA6569-3",
+                    "display": "Noen dager"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+                        "valueDecimal": 4.0
+                      }
+                    ],
+                    "code": "LA6570-1",
+                    "display": "Mer enn halvparten av dagene"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+                        "valueDecimal": 8.0
+                      }
+                    ],
+                    "code": "LA6571-9",
+                    "display": "Nesten hver dag"
+                  }
+                }
+              ]
+            },
+            {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                        "code": "check-box"
+                      }
+                    ]
+                  }
+                }
+              ],
+              "linkId": "2.2.2",
+              "code": [
+                {
+                  "system": "http://ehelse.no/scoringFormulas",
+                  "code": "QS",
+                  "display": "QuestionScore"
+                }
+              ],
+              "text": "Vansker med å sovne, sove uten avbrudd eller sovet for mye",
+              "type": "choice",
+              "required": false,
+              "repeats": false,
+              "readOnly": false,
+              "option": [
+                {
+                  "valueCoding": {
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+                        "valueDecimal": 1.0
+                      }
+                    ],
+                    "code": "a",
+                    "display": "Ikke i det hele tatt"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+                        "valueDecimal": 2.0
+                      }
+                    ],
+                    "code": "b",
+                    "display": "Noen dager"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+                        "valueDecimal": 4.0
+                      }
+                    ],
+                    "code": "c",
+                    "display": "Mer enn halvparten av dagene"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+                        "valueDecimal": 8.0
+                      }
+                    ],
+                    "code": "d",
+                    "display": "Nesten hver dag"
+                  }
+                }
+              ]
+            },
+            {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+                  "valueCoding": {
+                    "system": "http://ehelse.no/Score",
+                    "code": "score",
+                    "display": "score"
+                  }
+                }
+              ],
+              "linkId": "sectionscore_223",
+              "code": [
+                {
+                  "system": "http://ehelse.no/scoringFormulas",
+                  "code": "SS",
+                  "display": "Sectionscore"
+                }
+              ],
+              "text": "Sum",
+              "type": "quantity",
+              "required": false,
+              "repeats": false,
+              "readOnly": false
+            }
+          ]
+        },
+        {
+          "linkId": "2.3",
+          "text": "En gruppe",
+          "type": "group",
+          "item": [
+            {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+                  "valueCoding": {
+                    "system": "http://ehelse.no/Score",
+                    "code": "score",
+                    "display": "score"
+                  }
+                }
+              ],
+              "linkId": "sectionscore_230",
+              "code": [
+                {
+                  "system": "http://ehelse.no/scoringFormulas",
+                  "code": "SS",
+                  "display": "Sectionscore"
+                }
+              ],
+              "text": "Sum",
+              "type": "quantity",
+              "required": false,
+              "repeats": false,
+              "readOnly": false
+            },
+            {
+              "linkId": "2.3.1",
+              "code": [
+                {
+                  "system": "http://ehelse.no/scoringFormulas",
+                  "code": "QS",
+                  "display": "QuestionScore"
+                }
+              ],
+              "text": "Vansker med å sovne, sove uten avbrudd eller sovet for mye",
+              "type": "choice",
+              "required": false,
+              "repeats": false,
+              "readOnly": false,
+              "option": [
+                {
+                  "valueCoding": {
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+                        "valueDecimal": 1.0
+                      }
+                    ],
+                    "code": "LA6568-5",
+                    "display": "Ikke i det hele tatt"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+                        "valueDecimal": 2.0
+                      }
+                    ],
+                    "code": "LA6569-3",
+                    "display": "Noen dager"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+                        "valueDecimal": 4.0
+                      }
+                    ],
+                    "code": "LA6570-1",
+                    "display": "Mer enn halvparten av dagene"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+                        "valueDecimal": 8.0
+                      }
+                    ],
+                    "code": "LA6571-9",
+                    "display": "Nesten hver dag"
+                  }
+                }
+              ]
+            },
+            {
+              "linkId": "2.3.2",
+              "text": "Subgruppe",
+              "type": "group",
+              "item": [
+                {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [
+                          {
+                            "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                            "code": "check-box"
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "linkId": "2.3.2.1",
+                  "code": [
+                    {
+                      "system": "http://ehelse.no/scoringFormulas",
+                      "code": "QS",
+                      "display": "QuestionScore"
+                    }
+                  ],
+                  "text": "Vansker med å sovne, sove uten avbrudd eller sovet for mye",
+                  "type": "choice",
+                  "required": false,
+                  "repeats": false,
+                  "readOnly": false,
+                  "option": [
+                    {
+                      "valueCoding": {
+                        "extension": [
+                          {
+                            "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+                            "valueDecimal": 1.0
+                          }
+                        ],
+                        "code": "a",
+                        "display": "Ikke i det hele tatt"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "extension": [
+                          {
+                            "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+                            "valueDecimal": 2.0
+                          }
+                        ],
+                        "code": "b",
+                        "display": "Noen dager"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "extension": [
+                          {
+                            "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+                            "valueDecimal": 4.0
+                          }
+                        ],
+                        "code": "c",
+                        "display": "Mer enn halvparten av dagene"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "extension": [
+                          {
+                            "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+                            "valueDecimal": 8.0
+                          }
+                        ],
+                        "code": "d",
+                        "display": "Nesten hver dag"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "linkId": "2.3.2.2",
+                  "text": "Sub-subgruppe",
+                  "type": "group",
+                  "item": [
+                    {
+                      "linkId": "2.3.2.2.1",
+                      "code": [
+                        {
+                          "system": "http://ehelse.no/scoringFormulas",
+                          "code": "QS",
+                          "display": "QuestionScore"
+                        }
+                      ],
+                      "text": "Vansker med å sovne, sove uten avbrudd eller sovet for mye",
+                      "type": "choice",
+                      "required": false,
+                      "repeats": false,
+                      "readOnly": false,
+                      "option": [
+                        {
+                          "valueCoding": {
+                            "extension": [
+                              {
+                                "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+                                "valueDecimal": 1.0
+                              }
+                            ],
+                            "code": "LA6568-5",
+                            "display": "Ikke i det hele tatt"
+                          }
+                        },
+                        {
+                          "valueCoding": {
+                            "extension": [
+                              {
+                                "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+                                "valueDecimal": 2.0
+                              }
+                            ],
+                            "code": "LA6569-3",
+                            "display": "Noen dager"
+                          }
+                        },
+                        {
+                          "valueCoding": {
+                            "extension": [
+                              {
+                                "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+                                "valueDecimal": 4.0
+                              }
+                            ],
+                            "code": "LA6570-1",
+                            "display": "Mer enn halvparten av dagene"
+                          }
+                        },
+                        {
+                          "valueCoding": {
+                            "extension": [
+                              {
+                                "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+                                "valueDecimal": 8.0
+                              }
+                            ],
+                            "code": "LA6571-9",
+                            "display": "Nesten hver dag"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "3",
+      "text": "Resultat",
+      "type": "group",
+      "repeats": false,
+      "item": [
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+              "valueCoding": {
+                "system": "http://ehelse.no/Score",
+                "code": "score",
+                "display": "score"
+              }
+            }
+          ],
+          "linkId": "totalscore_31",
+          "code": [
+            {
+              "system": "http://ehelse.no/scoringFormulas",
+              "code": "TS",
+              "display": "Totalscore"
+            }
+          ],
+          "text": "Sum",
+          "type": "quantity",
+          "required": false,
+          "repeats": false,
+          "readOnly": false
+        }
+      ]
+    }
+  ]
+}

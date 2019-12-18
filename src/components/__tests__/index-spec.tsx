@@ -1,6 +1,6 @@
 import * as React from 'react';
 import rootReducer from '../../reducers';
-import { createStore } from 'redux';
+import { createStore, applyMiddleware } from 'redux';
 import { mount } from 'enzyme';
 import { Provider, Store } from 'react-redux';
 import { SkjemautfyllerContainer } from '../index';
@@ -11,6 +11,7 @@ import itemControlConstants from '../../constants/itemcontrol';
 import { RepeatButton as RepeatButtonInstance } from '../../components/formcomponents/repeat/repeat-button';
 import Boolean from '../../components/formcomponents/boolean/boolean';
 import SafeInputField from '@helsenorge/toolkit/components/atoms/safe-input-field';
+import thunk from 'redux-thunk';
 
 describe('Component renders help items', () => {
   beforeEach(() => {
@@ -102,7 +103,7 @@ function createWrapper(
   helpButtonCb?: (item: QuestionnaireItem, helpItem: QuestionnaireItem, helpType: string, help: string, opening: boolean) => JSX.Element,
   helpElementCb?: (item: QuestionnaireItem, helpItem: QuestionnaireItem, helpType: string, help: string, opening: boolean) => JSX.Element
 ) {
-  const store: Store<{}> = createStore(rootReducer);
+  const store: any = createStore(rootReducer, applyMiddleware(thunk));
   return mount(
     <Provider store={store}>
       <SkjemautfyllerContainer

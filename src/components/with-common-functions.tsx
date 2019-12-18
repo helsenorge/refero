@@ -72,6 +72,7 @@ export interface Props {
     helpText: string,
     opening: boolean
   ) => JSX.Element;
+  onAnswerChange?: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseAnswer) => void;
 }
 
 interface EnhancedProps {
@@ -113,6 +114,7 @@ export default function withCommonFunctions<T>(WrappedComponent: React.Component
           path={this.props.path}
           resources={this.props.resources}
           mustShowConfirm={mustShowConfirm}
+          onAnswerChange={this.props.onAnswerChange}
         />
       );
     };
@@ -243,6 +245,7 @@ export default function withCommonFunctions<T>(WrappedComponent: React.Component
               onRequestHelpElement={this.props.onRequestHelpElement}
               attachmentMaxFileSize={this.props.attachmentMaxFileSize}
               attachmentValidTypes={this.props.attachmentValidTypes}
+              onAnswerChange={this.props.onAnswerChange}
             />
           );
         });
@@ -274,7 +277,7 @@ export default function withCommonFunctions<T>(WrappedComponent: React.Component
             renderHelpButton={this.renderHelpButton}
             renderHelpElement={this.renderHelpElement}
             /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-            {...this.props as any}
+            {...(this.props as any)}
           >
             {this.renderChildrenItems()}
           </WrappedComponent>

@@ -2,11 +2,11 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { GlobalState } from '../../../reducers';
-import { NewValueAction } from '../../../actions/newValue';
+import { NewValueAction, removeCodingValueAsync, newCodingValueAsync } from '../../../actions/newValue';
 import TextField from './text-field';
 import { Path } from '../../../util/skjemautfyller-core';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
-import { newCodingStringValue, removeCodingStringValue, removeCodingValue, newCodingValue } from '../../../actions/newValue';
+import { newCodingStringValue, removeCodingStringValue } from '../../../actions/newValue';
 import {
   hasOptions,
   renderOptions,
@@ -48,6 +48,12 @@ export interface Props {
 
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
+  onAnswerChange: (
+    newState: GlobalState,
+    path: Array<Path>,
+    item: QuestionnaireItem,
+    answer: QuestionnaireResponseAnswer | QuestionnaireResponseAnswer[]
+  ) => void;
 }
 
 class OpenChoice extends React.Component<Props & ValidationProps> {
@@ -123,19 +129,21 @@ class OpenChoice extends React.Component<Props & ValidationProps> {
   };
 
   handleCheckboxChange = (code?: string): void => {
-    const { dispatch, answer, promptLoginMessage, item } = this.props;
+    const { dispatch, answer, promptLoginMessage, item, onAnswerChange, path } = this.props;
     if (dispatch && code) {
       const display = getDisplay(getOptions(item, this.props.containedResources), code);
       const system = getSystem(item, this.props.containedResources);
       const coding = { code, display, system } as Coding;
       if (getIndexOfAnswer(code, answer) > -1) {
-        dispatch(removeCodingValue(this.props.path, coding, item));
+        dispatch(removeCodingValueAsync(this.props.path, coding, item))?.then(newState => onAnswerChange(newState, path, item, coding));
 
         if (promptLoginMessage) {
           promptLoginMessage();
         }
       } else {
-        dispatch(newCodingValue(this.props.path, coding, this.props.item, true));
+        dispatch(newCodingValueAsync(this.props.path, coding, this.props.item, true))?.then(newState =>
+          onAnswerChange(newState, path, item, coding)
+        );
         if (promptLoginMessage) {
           promptLoginMessage();
         }
@@ -146,12 +154,12 @@ class OpenChoice extends React.Component<Props & ValidationProps> {
   };
 
   handleChange = (code?: string): void => {
-    const { dispatch, promptLoginMessage, item } = this.props;
+    const { dispatch, promptLoginMessage, item, onAnswerChange, path } = this.props;
     if (dispatch && code) {
       const display = getDisplay(getOptions(item, this.props.containedResources), code);
       const system = getSystem(item, this.props.containedResources);
       const coding = { code, display, system } as Coding;
-      dispatch(newCodingValue(this.props.path, coding, item));
+      dispatch(newCodingValueAsync(this.props.path, coding, item))?.then(newState => onAnswerChange(newState, path, item, coding));
       if (promptLoginMessage) {
         promptLoginMessage();
       }
@@ -293,9 +301,5 @@ class OpenChoice extends React.Component<Props & ValidationProps> {
 }
 
 const withCommonFunctionsComponent = withCommonFunctions(OpenChoice);
-const connectedStringComponent = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-  mergeProps
-)(withCommonFunctionsComponent);
+const connectedStringComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(withCommonFunctionsComponent);
 export default connectedStringComponent;

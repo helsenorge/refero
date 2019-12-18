@@ -2,15 +2,14 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { Path } from '../../../util/skjemautfyller-core';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
-import { QuestionnaireItem } from '../../../types/fhir';
+import { QuestionnaireItem, QuestionnaireResponseAnswer } from '../../../types/fhir';
 import { Resources } from '../../../util/resources';
 import { ThunkDispatch } from 'redux-thunk';
 import { GlobalState } from '../../../reducers';
-import { NewValueAction } from '../../../actions/newValue';
+import { NewValueAction, deleteRepeatItemAsync } from '../../../actions/newValue';
 import { ConfirmBox } from '@helsenorge/toolkit/components/molecules/confirmbox';
 import { FunctionButton } from '@helsenorge/toolkit/components/atoms/buttons/function-button';
 import * as classNames from 'classnames';
-import { deleteRepeatItem } from '../../../actions/newValue';
 interface Props {
   item: QuestionnaireItem;
   path: Array<Path>;
@@ -18,6 +17,12 @@ interface Props {
   dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
   mustShowConfirm: boolean;
   className?: string;
+  onAnswerChange: (
+    newState: GlobalState,
+    path: Array<Path>,
+    item: QuestionnaireItem,
+    answer: QuestionnaireResponseAnswer | QuestionnaireResponseAnswer[]
+  ) => void;
 }
 
 interface State {
@@ -31,8 +36,10 @@ class DeleteButton extends React.Component<Props, State> {
   }
 
   onDeleteRepeatItemConfirmed = () => {
-    if (this.props.dispatch && this.props.item) {
-      this.props.dispatch(deleteRepeatItem(this.props.path, this.props.item));
+    if (this.props.dispatch && this.props.item && this.props.path) {
+      this.props
+        .dispatch(deleteRepeatItemAsync(this.props.path, this.props.item))
+        ?.then(newState => this.props.onAnswerChange(newState, this.props.path, this.props.item, []));
     }
     this.setState({ showConfirm: false });
   };
@@ -79,9 +86,5 @@ class DeleteButton extends React.Component<Props, State> {
     );
   }
 }
-const connectedComponent = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-  mergeProps
-)(DeleteButton);
+const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(DeleteButton);
 export default connectedComponent;

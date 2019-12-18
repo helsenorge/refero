@@ -1,12 +1,13 @@
 import * as React from 'react';
 import { connect, Store } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
-import { NewValueAction } from '../actions/newValue';
+import { NewValueAction, newQuantityValue } from '../actions/newValue';
 import { Resources } from '../util/resources';
 import { GlobalState } from '../reducers';
 import { getFormDefinition, getFormData, getInitialFormData } from '../reducers/form';
 
 import { getComponentForItem, shouldRenderRepeatButton } from '../util/index';
+import { ScoringCalculator } from '../util/scoringCalculator';
 import Form from '@helsenorge/toolkit/components/molecules/form';
 import {
   getRootQuestionnaireResponseItemFromData,
@@ -15,8 +16,21 @@ import {
   getAnswerFromResponseItem,
   shouldRenderDeleteButton,
   createIdSuffix,
+  getQuestionnaireDefinitionItem,
+  getResponseItemAndPathWithLinkId,
 } from '../util/skjemautfyller-core';
-import { QuestionnaireResponseItem, Questionnaire, QuestionnaireResponse, Attachment, QuestionnaireItem } from '../types/fhir';
+import {
+  QuestionnaireResponseItem,
+  Questionnaire,
+  QuestionnaireResponse,
+  Attachment,
+  QuestionnaireItem,
+  QuestionnaireResponseAnswer,
+  Quantity,
+  decimal,
+  code,
+  uri,
+} from '../types/fhir';
 import Constants from '../constants/index';
 import { FormDefinition, FormData } from '../reducers/form';
 import RepeatButton from '../components/formcomponents/repeat/repeat-button';
@@ -27,6 +41,7 @@ import { UploadedFile } from '@helsenorge/toolkit/components/atoms/dropzone';
 import { setSkjemaDefinition } from '../actions/form';
 import { TextMessage } from '../types/text-message';
 import { ValidationSummaryPlacement } from '@helsenorge/toolkit/components/molecules/form/validationSummaryPlacement';
+import { getQuestionnaireUnitExtensionValue } from '../util/extension';
 
 export interface QueryStringsInterface {
   MessageId: string;
@@ -99,6 +114,8 @@ interface State {
 }
 
 class Skjemautfyller extends React.Component<StateProps & DispatchProps & Props, State> {
+  scoringCalculator: ScoringCalculator | undefined;
+
   constructor(props: StateProps & DispatchProps & Props) {
     super(props);
 
@@ -134,6 +151,51 @@ class Skjemautfyller extends React.Component<StateProps & DispatchProps & Props,
       this.props.updateSkjema(nextProps.questionnaire, nextProps.questionnaireResponse, nextProps.language);
     }
   }
+
+  onAnswerChange = (
+    newState: GlobalState,
+    _path: Array<Path>,
+    _item: QuestionnaireItem,
+    _answer: QuestionnaireResponseAnswer | QuestionnaireResponseAnswer[]
+  ) => {
+    if (!this.scoringCalculator && this.props.formDefinition?.Content) {
+      this.scoringCalculator = new ScoringCalculator(this.props.formDefinition.Content);
+    }
+
+    if (
+      !this.scoringCalculator ||
+      !newState.skjemautfyller?.form?.FormData?.Content ||
+      !newState.skjemautfyller?.form?.FormDefinition?.Content
+    )
+      return;
+
+    let scores = this.scoringCalculator.calculate(newState.skjemautfyller.form.FormData.Content);
+    let actions: Array<NewValueAction> = [];
+    for (let linkId in scores) {
+      const templateItem = this.scoringCalculator.getCachedTotalOrSectionItem(linkId);
+      if (!templateItem) continue;
+
+      const extension = getQuestionnaireUnitExtensionValue(templateItem);
+      if (!extension) continue;
+
+      const quantity = {
+        value: (scores[linkId] as unknown) as decimal,
+        unit: extension.display,
+        system: extension.system,
+        code: extension.code,
+      } as Quantity;
+
+      const item = getQuestionnaireDefinitionItem(linkId, newState.skjemautfyller.form.FormDefinition.Content?.item);
+      const itemsAndPaths = getResponseItemAndPathWithLinkId(linkId, newState.skjemautfyller.form.FormData.Content!);
+      for (let itemAndPath of itemsAndPaths) {
+        actions.push(newQuantityValue(itemAndPath.path, quantity, item));
+      }
+    }
+
+    for (let a of actions) {
+      this.props.dispatch(a);
+    }
+  };
 
   renderFormItems(pdf?: boolean): Array<JSX.Element> | undefined {
     const { formDefinition, resources, formData, promptLoginMessage } = this.props;
@@ -191,6 +253,7 @@ class Skjemautfyller extends React.Component<StateProps & DispatchProps & Props,
               attachmentMaxFileSize={this.props.attachmentMaxFileSize}
               attachmentValidTypes={this.props.attachmentValidTypes}
               validateScriptInjection={this.props.validateScriptInjection}
+              onAnswerChange={this.onAnswerChange}
             />
           );
         });
@@ -317,8 +380,5 @@ function mapDispatchToProps(dispatch: ThunkDispatch<GlobalState, void, NewValueA
   };
 }
 
-const SkjemautfyllerContainer = connect<StateProps, DispatchProps, Props>(
-  mapStateToProps,
-  mapDispatchToProps
-)(Skjemautfyller);
+const SkjemautfyllerContainer = connect<StateProps, DispatchProps, Props>(mapStateToProps, mapDispatchToProps)(Skjemautfyller);
 export { SkjemautfyllerContainer };

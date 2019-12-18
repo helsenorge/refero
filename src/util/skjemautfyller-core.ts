@@ -1,4 +1,10 @@
-import { QuestionnaireResponseItem, QuestionnaireResponseAnswer, QuestionnaireItem, QuestionnaireEnableWhen } from '../types/fhir';
+import {
+  QuestionnaireResponseItem,
+  QuestionnaireResponseAnswer,
+  QuestionnaireItem,
+  QuestionnaireEnableWhen,
+  QuestionnaireResponse,
+} from '../types/fhir';
 
 import { FormData, FormDefinition } from '../reducers/form';
 import { parseDate } from '@helsenorge/toolkit/components/molecules/time-input/date-core';
@@ -474,6 +480,50 @@ function copyPath(path: Array<Path>) {
     newPath.push(Object.assign({}, path[i]));
   }
   return newPath;
+}
+
+export function getResponseItemAndPathWithLinkId(
+  linkId: string,
+  item: QuestionnaireResponse | QuestionnaireResponseItem,
+  currentPath: Path[] = []
+): Array<ItemAndPath> {
+  if (!item.item) return [];
+
+  let response: Array<ItemAndPath> = [];
+  let index = 0;
+  let seen: { [linkId: string]: number } = {};
+  for (let i of item.item) {
+    index = i.linkId in seen ? seen[i.linkId] : 0;
+    response.push(...getResponseItemAndPathWithLinkIdTraverse(linkId, i, currentPath, index));
+    seen[i.linkId] = index + 1;
+  }
+
+  return response;
+}
+
+export interface ItemAndPath {
+  item: QuestionnaireResponseItem;
+  path: Path[];
+}
+
+function getResponseItemAndPathWithLinkIdTraverse(
+  linkId: string,
+  item: QuestionnaireResponseItem,
+  currentPath: Path[],
+  currentIndex: number
+): Array<ItemAndPath> {
+  currentPath.push({ linkId: item.linkId, index: currentIndex });
+
+  let response: Array<ItemAndPath> = [];
+
+  if (item.linkId === linkId) {
+    response = [{ item: item, path: copyPath(currentPath) }];
+  } else {
+    response = getResponseItemAndPathWithLinkId(linkId, item, currentPath);
+  }
+
+  currentPath.pop();
+  return response;
 }
 
 export function getResponseItemWithPath(path: Array<Path>, formData: FormData): QuestionnaireResponseItem | undefined {

@@ -13,12 +13,13 @@ React component that consumes a [FHIR Questionnaire](https://www.hl7.org/fhir/qu
 
 ```tsx
 import React from 'react';
-import { Store, createStore } from 'redux';
+import { Store, createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
+import thunk from 'redux-thunk';
 import rootReducer from '@helsenorge/skjemautfyller/reducers';
 import { SkjemautfyllerContainer } from '@helsenorge/skjemautfyller/components';
 
-let store: Store<{}> = createStore(rootReducer);
+let store: Store<{}> = createStore(rootReducer, applyMiddleware(thunk));
 
 class App extends Component<{}, {}> {
   render() {
@@ -208,6 +209,7 @@ enum ValidationSummaryPlacement {
 // location: '@helsenorge/skjemautfyller/util/skjemautfyller-core'
 interface Path {
   linkId: string;
+  index?: number;
 }
 ```
 

@@ -1,0 +1,113 @@
+{
+  "resourceType": "Questionnaire",
+  "id": "scoring",
+  "status": "draft",
+  "item": [
+    {
+      "linkId": "2",
+      "text": "Spørsmål om dine symptomer",
+      "type": "group",
+      "repeats": false,
+      "item": [
+        {
+          "linkId": "2.1",
+          "code": [
+            {
+              "system": "http://ehelse.no/scoringFormulas",
+              "code": "QS",
+              "display": "QuestionScore"
+            }
+          ],
+          "text": "Vansker med å sovne, sove uten avbrudd eller sovet for mye",
+          "type": "choice",
+          "required": false,
+          "repeats": false,
+          "readOnly": false,
+          "option": [
+            {
+              "valueCoding": {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+                    "valueDecimal": 0.0
+                  }
+                ],
+                "code": "LA6568-5",
+                "display": "Ikke i det hele tatt"
+              }
+            },
+            {
+              "valueCoding": {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+                    "valueDecimal": 1.0
+                  }
+                ],
+                "code": "LA6569-3",
+                "display": "Noen dager"
+              }
+            },
+            {
+              "valueCoding": {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+                    "valueDecimal": 2.0
+                  }
+                ],
+                "code": "LA6570-1",
+                "display": "Mer enn halvparten av dagene"
+              }
+            },
+            {
+              "valueCoding": {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+                    "valueDecimal": 3.0
+                  }
+                ],
+                "code": "LA6571-9",
+                "display": "Nesten hver dag"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "3",
+      "text": "Resultat",
+      "type": "group",
+      "repeats": false,
+      "item": [
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+              "valueCoding": {
+                "system": "http://ehelse.no/Score",
+                "code": "score",
+                "display": "score"
+              }
+            }
+          ],
+          "linkId": "3.1",
+          "code": [
+            {
+              "system": "http://ehelse.no/scoringFormulas",
+              "code": "TS",
+              "display": "Totalscore"
+            }
+          ],
+          "text": "Sum",
+          "type": "quantity",
+          "required": false,
+          "repeats": false,
+          "readOnly": false
+        }
+      ]
+    }
+  ]
+}

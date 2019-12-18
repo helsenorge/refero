@@ -1,14 +1,12 @@
 import * as React from 'react';
 import rootReducer from '../../reducers';
-import { createStore } from 'redux';
+import { createStore, applyMiddleware } from 'redux';
 import { ReactWrapper, mount } from 'enzyme';
-
-import { Provider, Store } from 'react-redux';
-
+import { Provider } from 'react-redux';
 import { Choice } from '../formcomponents/choice/choice';
 import { QuestionnaireItem, QuestionnaireOption, QuestionnaireResponseAnswer, integer, date, time, Extension } from '../../types/fhir';
 import { Path } from '../../util/skjemautfyller-core';
-import { ThunkDispatch } from 'redux-thunk';
+import thunk, { ThunkDispatch } from 'redux-thunk';
 import { GlobalState } from '../../reducers/index';
 import { NewValueAction } from '../../actions/newValue';
 
@@ -221,7 +219,7 @@ function createValueTimeOption(...options: string[]): QuestionnaireOption[] {
 }
 
 function createWrapperWithItem(item: QuestionnaireItem): ReactWrapper<{}, {}> {
-  const store: Store<{}> = createStore(rootReducer);
+  const store: any = createStore(rootReducer, applyMiddleware(thunk));
   return mount(
     <Provider store={store}>
       <Choice
@@ -233,6 +231,7 @@ function createWrapperWithItem(item: QuestionnaireItem): ReactWrapper<{}, {}> {
         repeatButton={<React.Fragment />}
         renderHelpButton={() => <React.Fragment />}
         renderHelpElement={() => <React.Fragment />}
+        onAnswerChange={() => {}}
       />
     </Provider>
   );
