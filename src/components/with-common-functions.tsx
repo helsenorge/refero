@@ -11,7 +11,7 @@ import {
 } from '../util/skjemautfyller-core';
 import { Resource, QuestionnaireResponseItem, QuestionnaireItem, QuestionnaireResponseAnswer, Attachment } from '../types/fhir';
 import { Resources } from '../util/resources';
-import { getComponentForItem, getChildHeaderTag, shouldRenderRepeatButton, getText } from '../util/index';
+import { getComponentForItem, getChildHeaderTag, shouldRenderRepeatButton, getText, isHiddenItem } from '../util/index';
 import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
 import { FormChild } from '@helsenorge/toolkit/components/molecules/form';
 import RepeatButton from './formcomponents/repeat/repeat-button';
@@ -189,6 +189,7 @@ export default function withCommonFunctions<T>(WrappedComponent: React.Component
     renderItem = (item: QuestionnaireItem): Array<JSX.Element | undefined> => {
       const { resources, containedResources, responseItem, pdf, path, headerTag, promptLoginMessage } = this.props;
       if (isHelpItem(item)) return [];
+      if (isHiddenItem(item)) return [];
 
       const Comp = getComponentForItem(item.type);
       if (!Comp) {
@@ -274,7 +275,7 @@ export default function withCommonFunctions<T>(WrappedComponent: React.Component
             renderHelpButton={this.renderHelpButton}
             renderHelpElement={this.renderHelpElement}
             /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-            {...this.props as any}
+            {...(this.props as any)}
           >
             {this.renderChildrenItems()}
           </WrappedComponent>
