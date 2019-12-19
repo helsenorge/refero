@@ -1,3 +1,7 @@
+4.0.3
+-----
+* Fixes bug where empty answers where not pruned from the reponse tree.
+
 4.0.0
 -----
 * Removed ^ from QuestionnaireResponse for repeating items. 
