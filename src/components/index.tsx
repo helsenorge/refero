@@ -169,7 +169,7 @@ class Skjemautfyller extends React.Component<StateProps & DispatchProps & Props,
     )
       return;
 
-    let scores = this.scoringCalculator.calculate(newState.skjemautfyller.form.FormData.Content);
+    const scores = this.scoringCalculator.calculate(newState.skjemautfyller.form.FormData.Content);
     let actions: Array<NewValueAction> = [];
     for (let linkId in scores) {
       const templateItem = this.scoringCalculator.getCachedTotalOrSectionItem(linkId);

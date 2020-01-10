@@ -4,12 +4,12 @@ import { getItemsWithIdFromResponseItemArray } from './skjemautfyller-core';
 import { getExtension } from './extension';
 import ExtensionConstants from '../constants/extensions';
 
-class RetVal {
+class CalculatedScores {
   totalScores: Array<QuestionnaireItem> = [];
   sectionScores: Array<QuestionnaireItem> = [];
   questionScores: Array<QuestionnaireItem> = [];
 
-  public update(subRetVal: RetVal): void {
+  public update(subRetVal: CalculatedScores): void {
     this.totalScores.push(...subRetVal.totalScores);
     this.sectionScores.push(...subRetVal.sectionScores);
     this.questionScores.push(...subRetVal.questionScores);
@@ -46,20 +46,20 @@ export class ScoringCalculator {
     this.traverseQuestionnaire(questionnaire);
   }
 
-  private traverseQuestionnaire(qItem: Questionnaire | QuestionnaireItem, lvl: number = 0): RetVal {
-    let retVal: RetVal = new RetVal();
+  private traverseQuestionnaire(qItem: Questionnaire | QuestionnaireItem, level: number = 0): CalculatedScores {
+    let retVal: CalculatedScores = new CalculatedScores();
 
     if (qItem.item) {
       for (let subItem of qItem.item) {
-        let subRetVal = this.traverseQuestionnaire(subItem, lvl + 1);
+        let subRetVal = this.traverseQuestionnaire(subItem, level + 1);
         retVal.update(subRetVal);
       }
     }
 
     // Inject dummy section score at top to simulate total score
-    if (lvl === 0) {
+    if (level === 0) {
       this.totalScoreItem = createDummySectionScoreItem();
-      let subRetVal = this.traverseQuestionnaire(this.totalScoreItem, lvl + 1);
+      let subRetVal = this.traverseQuestionnaire(this.totalScoreItem, level + 1);
       retVal.update(subRetVal);
     }
 
@@ -82,7 +82,7 @@ export class ScoringCalculator {
         this.itemCache[sectionScore.linkId] = sectionScore;
       }
 
-      let newRetVal = new RetVal();
+      let newRetVal = new CalculatedScores();
       newRetVal.questionScores.push(firstSectionScore);
       return newRetVal;
     }
@@ -90,28 +90,28 @@ export class ScoringCalculator {
     if (this.isOfTypeQuestionnaireItem(qItem)) {
       // A section score item, only return self, as it doesn't have any children
       if (isSectionScoringItem(qItem)) {
-        let newRetVal = new RetVal();
+        let newRetVal = new CalculatedScores();
         newRetVal.sectionScores.push(qItem);
         return newRetVal;
       }
 
       // A total score item, only return self, as it doesn't have any children
       if (isTotalScoringItem(qItem)) {
-        let newRetVal = new RetVal();
+        let newRetVal = new CalculatedScores();
         newRetVal.totalScores.push(qItem);
         return newRetVal;
       }
 
       // A question score item, return self and children
       if (isQuestionScoringItem(qItem)) {
-        let newRetVal = new RetVal();
+        let newRetVal = new CalculatedScores();
         newRetVal.questionScores.push(qItem, ...retVal.questionScores);
         return newRetVal;
       }
     }
 
     // Not an item than contributes to scoring, just pass through
-    let newRetVal = new RetVal();
+    let newRetVal = new CalculatedScores();
     newRetVal.questionScores.push(...retVal.questionScores);
     return newRetVal;
   }
@@ -156,7 +156,7 @@ export class ScoringCalculator {
   }
 
   private valueOf(item: QuestionnaireItem, questionnaireResponse: QuestionnaireResponse, answerPad: { [linkId: string]: number }): number {
-    let linkId = item.linkId;
+    const linkId = item.linkId;
 
     if (isSectionScoringItem(item)) {
       // Return previously calculated section score
@@ -184,7 +184,7 @@ export class ScoringCalculator {
   }
 
   private getOptionScore(option: QuestionnaireOption): number {
-    let extension = getExtension(ExtensionConstants.ORDINAL_VALUE, option.valueCoding);
+    const extension = getExtension(ExtensionConstants.ORDINAL_VALUE, option.valueCoding);
     if (extension?.valueDecimal) {
       return (extension?.valueDecimal as unknown) as number;
     }

@@ -1,7 +1,7 @@
-import ChoiceRadioButtonDataModel from './__data__/scoringCalculator/choice-radio-button';
-import ChoiceCheckBoxDataModel from './__data__/scoringCalculator/choice-check-box';
-import OpenChoiceDataModel from './__data__/scoringCalculator/open-choice';
-import SectionScoreDataModel from './__data__/scoringCalculator/section-score';
+import ChoiceRadioButtonDataModel from './__data__/scoring/choice-radio-button';
+import ChoiceCheckBoxDataModel from './__data__/scoring/choice-check-box';
+import OpenChoiceDataModel from './__data__/scoring/open-choice';
+import SectionScoreDataModel from './__data__/scoring/section-score';
 import { Questionnaire } from '../../types/fhir';
 import * as React from 'react';
 import rootReducer from '../../reducers';
