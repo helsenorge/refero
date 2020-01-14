@@ -142,7 +142,7 @@ class Quantity extends React.Component<Props & ValidationProps, {}> {
             type="number"
             id={getId(this.props.id)}
             inputName={getId(this.props.id)}
-            value={value ? value + '' : ''}
+            value={value !== undefined ? value + '' : ''}
             showLabel={true}
             label={
               <span
@@ -173,9 +173,5 @@ class Quantity extends React.Component<Props & ValidationProps, {}> {
 }
 
 const withCommonFunctionsComponent = withCommonFunctions(Quantity);
-const connectedComponent = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-  mergeProps
-)(withCommonFunctionsComponent);
+const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(withCommonFunctionsComponent);
 export default connectedComponent;
