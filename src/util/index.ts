@@ -17,7 +17,12 @@ import * as uuid from 'uuid';
 import { QuestionnaireItem, QuestionnaireResponseAnswer } from '../types/fhir';
 import Constants from '../constants/index';
 import { Resources } from '../util/resources';
-import { getMaxOccursExtensionValue, getMarkdownExtensionValue, getValidationTextExtension } from './extension';
+import {
+  getMaxOccursExtensionValue,
+  getMarkdownExtensionValue,
+  getValidationTextExtension,
+  getQuestionnaireHiddenExtensionValue,
+} from './extension';
 import * as marked from 'marked';
 marked.setOptions({ sanitize: true });
 
@@ -93,6 +98,10 @@ export function isRepeat(item: QuestionnaireItem) {
     return item.repeats;
   }
   return false;
+}
+
+export function isHiddenItem(item: QuestionnaireItem) {
+  return getQuestionnaireHiddenExtensionValue(item);
 }
 
 export function getId(id?: string) {
