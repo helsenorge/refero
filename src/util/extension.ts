@@ -120,6 +120,14 @@ export function getMarkdownExtensionValue(item: QuestionnaireItem | Element) {
   return markdownExtension.valueMarkdown;
 }
 
+export function getQuestionnaireHiddenExtensionValue(item: QuestionnaireItem) {
+  const questionnaireHiddenExtension = getExtension(ExtensionConstants.QUESTIONNAIRE_HIDDEN, item);
+  if (!questionnaireHiddenExtension || !questionnaireHiddenExtension.valueBoolean) {
+    return false;
+  }
+  return questionnaireHiddenExtension.valueBoolean;
+}
+
 export function getAuthenticationRequirementValue(questionnaire: Questionnaire) {
   const itemAuthenticationRequirement = getExtension(ExtensionConstants.AUTHENTICATION_REQUIREMENT_URL, questionnaire);
   if (!itemAuthenticationRequirement || !itemAuthenticationRequirement.valueCoding || !itemAuthenticationRequirement.valueCoding.code) {

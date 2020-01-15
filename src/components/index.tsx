@@ -6,7 +6,7 @@ import { Resources } from '../util/resources';
 import { GlobalState } from '../reducers';
 import { getFormDefinition, getFormData, getInitialFormData } from '../reducers/form';
 
-import { getComponentForItem, shouldRenderRepeatButton } from '../util/index';
+import { getComponentForItem, shouldRenderRepeatButton, isHiddenItem } from '../util/index';
 import { ScoringCalculator } from '../util/scoringCalculator';
 import Form from '@helsenorge/toolkit/components/molecules/form';
 import {
@@ -204,6 +204,8 @@ class Skjemautfyller extends React.Component<StateProps & DispatchProps & Props,
     const contained = formDefinition.Content.contained;
     const renderedItems: Array<JSX.Element> | undefined = [];
     formDefinition.Content.item.map(item => {
+      if (isHiddenItem(item)) return [];
+
       const Comp = getComponentForItem(item.type);
       if (!Comp) {
         return undefined;
