@@ -1,6 +1,6 @@
 {
   "name": "@helsenorge/skjemautfyller",
-  "version": "5.0.0",
+  "version": "5.0.0-beta03",
   "main": "index.js",
   "author": "helsenorge",
   "license": "UNLICENSED",
@@ -32,7 +32,7 @@
     "redux-thunk": "^2.3.0"
   },
   "devDependencies": {
-    "@helsenorge/core-build": "10.0.0",
+    "@helsenorge/core-build": "10.0.2-beta01",
     "@helsenorge/toolkit": "^10.0.0",
     "@types/chai": "^3.5.2",
     "@types/jest": "21.1.10",
@@ -58,6 +58,7 @@
     "marked": "^0.7.0",
     "moment": "2.22.2",
     "tabbable": "^3.1.1",
-    "uuid": "2.0.3"
+    "uuid": "2.0.3",
+    "fhirpath": "^1.0.0"
   }
 }

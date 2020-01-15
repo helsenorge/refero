@@ -28,8 +28,6 @@ import {
   QuestionnaireResponseAnswer,
   Quantity,
   decimal,
-  code,
-  uri,
 } from '../types/fhir';
 import Constants from '../constants/index';
 import { FormDefinition, FormData } from '../reducers/form';
@@ -166,8 +164,9 @@ class Skjemautfyller extends React.Component<StateProps & DispatchProps & Props,
       !this.scoringCalculator ||
       !newState.skjemautfyller?.form?.FormData?.Content ||
       !newState.skjemautfyller?.form?.FormDefinition?.Content
-    )
+    ) {
       return;
+    }
 
     const scores = this.scoringCalculator.calculate(newState.skjemautfyller.form.FormData.Content);
     let actions: Array<NewValueAction> = [];

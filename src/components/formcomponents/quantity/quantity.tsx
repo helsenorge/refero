@@ -2,7 +2,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { GlobalState } from '../../../reducers';
-import { NewValueAction } from '../../../actions/newValue';
+import { NewValueAction, newQuantityValueAsync } from '../../../actions/newValue';
 import SafeInputField from '@helsenorge/toolkit/components/atoms/safe-input-field';
 import ExtensionConstants from '../../../constants/extensions';
 import { Extension } from '../../../types/fhir';
@@ -10,7 +10,6 @@ import Validation from '@helsenorge/toolkit/components/molecules/form/validation
 import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
 import { Path } from '../../../util/skjemautfyller-core';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
-import { newQuantityValue } from '../../../actions/newValue';
 import withCommonFunctions from '../../with-common-functions';
 import { isReadOnly, isRequired, getId, renderPrefix, getText } from '../../../util/index';
 import {
@@ -35,9 +34,14 @@ export interface Props {
   promptLoginMessage?: () => void;
   id?: string;
   repeatButton: JSX.Element;
-
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
+  onAnswerChange: (
+    newState: GlobalState,
+    path: Array<Path>,
+    item: QuestionnaireItem,
+    answer: QuestionnaireResponseAnswer | QuestionnaireResponseAnswer[]
+  ) => void;
 }
 interface QuantityInputFieldProps {
   step?: string;
@@ -65,7 +69,7 @@ class Quantity extends React.Component<Props & ValidationProps, {}> {
   }
 
   handleChange = (event: React.FormEvent<{}>) => {
-    const { dispatch, promptLoginMessage } = this.props;
+    const { dispatch, promptLoginMessage, path, item, onAnswerChange } = this.props;
     const extension = getQuestionnaireUnitExtensionValue(this.props.item);
     if (extension) {
       const value = Number(parseFloat((event.target as HTMLInputElement).value));
@@ -77,7 +81,9 @@ class Quantity extends React.Component<Props & ValidationProps, {}> {
         code: (code as unknown) as code,
       } as QuantityType;
       if (dispatch) {
-        dispatch(newQuantityValue(this.props.path, quantity, this.props.item));
+        dispatch(newQuantityValueAsync(this.props.path, quantity, this.props.item))?.then(newState =>
+          onAnswerChange(newState, path, item, { valueQuantity: quantity } as QuestionnaireResponseAnswer)
+        );
       }
 
       if (promptLoginMessage) {

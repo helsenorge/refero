@@ -155,3 +155,11 @@ export function getDiscretion(questionnaire: Questionnaire) {
 
   return parseInt(discretion.valueCoding.code, 10);
 }
+
+export function getCalculatedExpressionExtension(item: QuestionnaireItem): string | undefined {
+  const calculatedExpressionExtension = getExtension(ExtensionConstants.CALCULATED_EXPRESSION, item);
+  if (!calculatedExpressionExtension || !calculatedExpressionExtension.valueString) {
+    return undefined;
+  }
+  return calculatedExpressionExtension.valueString;
+}

@@ -2,7 +2,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { GlobalState } from '../../../reducers';
-import { NewValueAction } from '../../../actions/newValue';
+import { NewValueAction, newAttachmentAsync, removeAttachmentAsync } from '../../../actions/newValue';
 
 import withCommonFunctions from '../../with-common-functions';
 import AttachmentHtml from './attachmenthtml';
@@ -16,7 +16,6 @@ import { getValidationTextExtension, getMaxOccursExtensionValue, getMinOccursExt
 import { QuestionnaireItem, QuestionnaireResponseAnswer, Attachment } from '../../../types/fhir';
 import { Resources } from '../../../util/resources';
 import TextView from '../textview';
-import { newAttachment, removeAttachment } from '../../../actions/newValue';
 import { TextMessage } from '../../../types/text-message';
 
 export interface Props {
@@ -39,19 +38,26 @@ export interface Props {
   onDeleteAttachment?: (fileId: string, onSuccess: () => void, onError: (errorMessage: TextMessage | null) => void) => void;
   onOpenAttachment?: (fileId: string) => void;
   onRequestAttachmentLink?: (file: string) => string;
-
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
+  onAnswerChange: (
+    newState: GlobalState,
+    path: Array<Path>,
+    item: QuestionnaireItem,
+    answer: QuestionnaireResponseAnswer | QuestionnaireResponseAnswer[]
+  ) => void;
 }
 
 class AttachmentComponent extends React.Component<Props & ValidationProps> {
   onUpload = (files: File[], cb: (success: boolean, errormessage: TextMessage | null, uploadedFile?: UploadedFile) => void): void => {
-    const { uploadAttachment } = this.props;
+    const { uploadAttachment, path, item, onAnswerChange } = this.props;
     if (uploadAttachment) {
       for (const file of files) {
         const onSuccess = (uploadedFile: UploadedFile, attachment: Attachment): void => {
           if (this.props.dispatch && attachment) {
-            this.props.dispatch(newAttachment(this.props.path, attachment, this.props.item, isRepeat(this.props.item)));
+            this.props
+              .dispatch(newAttachmentAsync(this.props.path, attachment, this.props.item, isRepeat(this.props.item)))
+              ?.then(newState => onAnswerChange(newState, path, item, { valueAttachment: attachment } as QuestionnaireResponseAnswer));
           }
 
           cb(true, null, uploadedFile);
@@ -67,12 +73,15 @@ class AttachmentComponent extends React.Component<Props & ValidationProps> {
   };
 
   onDelete = (fileId: string, cb: (success: boolean, errormessage: TextMessage | null) => void): void => {
-    const { onDeleteAttachment } = this.props;
+    const { onDeleteAttachment, path, item, onAnswerChange } = this.props;
 
     if (onDeleteAttachment) {
       const onSuccess = (): void => {
         if (this.props.dispatch) {
-          this.props.dispatch(removeAttachment(this.props.path, { url: fileId } as Attachment, this.props.item));
+          const attachment = { url: fileId } as Attachment;
+          this.props
+            .dispatch(removeAttachmentAsync(this.props.path, attachment, this.props.item))
+            ?.then(newState => onAnswerChange(newState, path, item, { valueAttachment: attachment } as QuestionnaireResponseAnswer));
         }
 
         cb(true, null);
@@ -172,9 +181,5 @@ class AttachmentComponent extends React.Component<Props & ValidationProps> {
 }
 
 const withCommonFunctionsComponent = withCommonFunctions(AttachmentComponent);
-const connectedComponent = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-  mergeProps
-)(withCommonFunctionsComponent);
+const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(withCommonFunctionsComponent);
 export default connectedComponent;

@@ -12,7 +12,7 @@ import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/m
 import { parseDate } from '@helsenorge/toolkit/components/molecules/time-input/date-core';
 import Constants from '../../../constants/index';
 import ExtensionConstants from '../../../constants/extensions';
-import { newDateTimeValue, NewValueAction } from '../../../actions/newValue';
+import { NewValueAction, newDateTimeValueAsync } from '../../../actions/newValue';
 import { isRequired, getId, renderPrefix, getText, isReadOnly } from '../../../util/index';
 import { getValidationTextExtension, getExtension } from '../../../util/extension';
 import { QuestionnaireItem, QuestionnaireResponseAnswer } from '../../../types/fhir';
@@ -33,9 +33,14 @@ export interface Props {
   renderDeleteButton: (className?: string) => JSX.Element | undefined;
   repeatButton: JSX.Element;
   oneToTwoColumn: boolean;
-
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
+  onAnswerChange: (
+    newState: GlobalState,
+    path: Array<Path>,
+    item: QuestionnaireItem,
+    answer: QuestionnaireResponseAnswer | QuestionnaireResponseAnswer[]
+  ) => void;
 }
 
 class DateTime extends React.Component<Props & ValidationProps> {
@@ -86,13 +91,15 @@ class DateTime extends React.Component<Props & ValidationProps> {
   }
 
   dispatchNewDate = (date: Date) => {
-    const { dispatch, promptLoginMessage } = this.props;
+    const { dispatch, promptLoginMessage, onAnswerChange, path, item } = this.props;
     if (dispatch) {
       const momentDate = moment(date)
         .locale('nb')
         .utc()
         .format(Constants.DATE_TIME_FORMAT);
-      dispatch(newDateTimeValue(this.props.path, momentDate, this.props.item));
+      dispatch(newDateTimeValueAsync(this.props.path, momentDate, this.props.item))?.then(newState =>
+        onAnswerChange(newState, path, item, { valueDateTime: momentDate } as QuestionnaireResponseAnswer)
+      );
     }
 
     if (promptLoginMessage) {
@@ -174,9 +181,5 @@ class DateTime extends React.Component<Props & ValidationProps> {
 }
 
 const withCommonFunctionsComponent = withCommonFunctions(DateTime);
-const connectedComponent = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-  mergeProps
-)(layoutChange(withCommonFunctionsComponent));
+const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(layoutChange(withCommonFunctionsComponent));
 export default connectedComponent;

@@ -105,13 +105,14 @@ export class Choice extends React.Component<ChoiceProps & ValidationProps, Choic
       const display = getDisplay(getOptions(item, this.props.containedResources), code);
       const system = getSystem(item, this.props.containedResources);
       const coding = { code, display, system } as Coding;
+      const responseAnswer = { valueCoding: coding } as QuestionnaireResponseAnswer;
       if (getIndexOfAnswer(code, answer) > -1) {
-        dispatch(removeCodingValueAsync(path, coding, item))?.then(newState => onAnswerChange(newState, path, item, coding));
+        dispatch(removeCodingValueAsync(path, coding, item))?.then(newState => onAnswerChange(newState, path, item, responseAnswer));
         if (promptLoginMessage) {
           promptLoginMessage();
         }
       } else {
-        dispatch(newCodingValueAsync(path, coding, item, true))?.then(newState => onAnswerChange(newState, path, item, coding));
+        dispatch(newCodingValueAsync(path, coding, item, true))?.then(newState => onAnswerChange(newState, path, item, responseAnswer));
         if (promptLoginMessage) {
           promptLoginMessage();
         }
@@ -125,7 +126,8 @@ export class Choice extends React.Component<ChoiceProps & ValidationProps, Choic
       const display = getDisplay(getOptions(item, this.props.containedResources), code);
       const system = getSystem(item, this.props.containedResources);
       const coding = { code, display, system } as Coding;
-      dispatch(newCodingValueAsync(path, coding, item))?.then(newState => onAnswerChange(newState, path, item, coding));
+      const responseAnswer = { valueCoding: coding } as QuestionnaireResponseAnswer;
+      dispatch(newCodingValueAsync(path, coding, item))?.then(newState => onAnswerChange(newState, path, item, responseAnswer));
       if (promptLoginMessage) {
         promptLoginMessage();
       }

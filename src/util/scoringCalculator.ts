@@ -1,8 +1,11 @@
 import { Questionnaire, QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseAnswer, QuestionnaireOption } from '../types/fhir';
-import { isSectionScoringItem, isQuestionScoringItem, isTotalScoringItem, createDummySectionScoreItem } from './scoring';
+import { createDummySectionScoreItem, scoringItemType } from './scoring';
 import { getItemsWithIdFromResponseItemArray } from './skjemautfyller-core';
-import { getExtension } from './extension';
+import { getExtension, getCalculatedExpressionExtension } from './extension';
 import ExtensionConstants from '../constants/extensions';
+import { ScoringItemType } from '../constants/scoringItemType';
+import * as stu3 from 'fhirpath/fhir-context/stu3/choiceTypePaths.json';
+const fhirpath = require('fhirpath');
 
 class CalculatedScores {
   totalScores: Array<QuestionnaireItem> = [];
@@ -88,24 +91,29 @@ export class ScoringCalculator {
     }
 
     if (this.isOfTypeQuestionnaireItem(qItem)) {
-      // A section score item, only return self, as it doesn't have any children
-      if (isSectionScoringItem(qItem)) {
+      var type = scoringItemType(qItem);
+      if (type === ScoringItemType.SECTION_SCORE) {
+        // A section score item, only return self, as it doesn't have any children
         let newRetVal = new CalculatedScores();
         newRetVal.sectionScores.push(qItem);
         return newRetVal;
       }
 
-      // A total score item, only return self, as it doesn't have any children
-      if (isTotalScoringItem(qItem)) {
+      if (type === ScoringItemType.TOTAL_SCORE) {
+        // A total score item, only return self, as it doesn't have any children
         let newRetVal = new CalculatedScores();
         newRetVal.totalScores.push(qItem);
         return newRetVal;
       }
 
-      // A question score item, return self and children
-      if (isQuestionScoringItem(qItem)) {
+      if (type === ScoringItemType.QUESTION_SCORE || type === ScoringItemType.QUESTION_FHIRPATH_SCORE) {
         let newRetVal = new CalculatedScores();
         newRetVal.questionScores.push(qItem, ...retVal.questionScores);
+
+        if (type === ScoringItemType.QUESTION_FHIRPATH_SCORE) {
+          this.itemCache[qItem.linkId] = qItem;
+        }
+
         return newRetVal;
       }
     }
@@ -156,20 +164,46 @@ export class ScoringCalculator {
   }
 
   private valueOf(item: QuestionnaireItem, questionnaireResponse: QuestionnaireResponse, answerPad: { [linkId: string]: number }): number {
-    const linkId = item.linkId;
+    const scoringType = scoringItemType(item);
+    switch (scoringType) {
+      case ScoringItemType.SECTION_SCORE:
+        return this.valueOfSectionScoreItem(item, questionnaireResponse, answerPad);
+      case ScoringItemType.QUESTION_SCORE:
+        return this.valueOfQuestionScoreItem(item, questionnaireResponse, answerPad);
+      case ScoringItemType.QUESTION_FHIRPATH_SCORE:
+        return this.valueOfQuestionFhirpathScoreItem(item, questionnaireResponse, answerPad);
+      default:
+        return 0;
+    }
+  }
 
-    if (isSectionScoringItem(item)) {
-      // Return previously calculated section score
-      if (linkId in answerPad) {
-        return answerPad[linkId];
+  private valueOfQuestionFhirpathScoreItem(
+    item: QuestionnaireItem,
+    questionnaireResponse: QuestionnaireResponse,
+    answerPad: { [linkId: string]: number }
+  ): number {
+    const expression = getCalculatedExpressionExtension(item);
+    let value = 0;
+    if (expression) {
+      let result = fhirpath.evaluate(questionnaireResponse, expression, null, { choiceTypePaths: stu3 });
+      if (result.length) {
+        value = (result[0] as number) ?? 0;
       }
-
-      // Don't already know the answer, so calculate it
-      return this.calculateSectionScore(linkId, questionnaireResponse, answerPad);
     }
 
+    // value will become the new answer for this linkId
+    answerPad[item.linkId] = value;
+
+    return value;
+  }
+
+  private valueOfQuestionScoreItem(
+    item: QuestionnaireItem,
+    questionnaireResponse: QuestionnaireResponse,
+    _answerPad: { [linkId: string]: number }
+  ): number {
     let sum = 0;
-    let qrItems = getItemsWithIdFromResponseItemArray(linkId, questionnaireResponse.item, true);
+    let qrItems = getItemsWithIdFromResponseItemArray(item.linkId, questionnaireResponse.item, true);
     for (let qrItem of qrItems) {
       if (!qrItem.answer) continue;
 
@@ -180,7 +214,22 @@ export class ScoringCalculator {
         }
       }
     }
+
     return sum;
+  }
+
+  private valueOfSectionScoreItem(
+    item: QuestionnaireItem,
+    questionnaireResponse: QuestionnaireResponse,
+    answerPad: { [linkId: string]: number }
+  ): number {
+    if (item.linkId in answerPad) {
+      // return cached score
+      return answerPad[item.linkId];
+    }
+
+    // Don't already know the answer, so calculate it
+    return this.calculateSectionScore(item.linkId, questionnaireResponse, answerPad);
   }
 
   private getOptionScore(option: QuestionnaireOption): number {

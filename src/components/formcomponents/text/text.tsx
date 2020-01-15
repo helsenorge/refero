@@ -2,7 +2,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { GlobalState } from '../../../reducers';
-import { NewValueAction } from '../../../actions/newValue';
+import { NewValueAction, newStringValueAsync } from '../../../actions/newValue';
 import { debounce } from '@helsenorge/toolkit/utils/debounce';
 import { SafeTextarea } from '@helsenorge/toolkit/components/atoms/safe-textarea';
 import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
@@ -11,7 +11,6 @@ import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/v
 import Constants from '../../../constants/index';
 import { Path } from '../../../util/skjemautfyller-core';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
-import { newStringValue } from '../../../actions/newValue';
 import {
   isReadOnly,
   isRequired,
@@ -45,6 +44,12 @@ export interface Props {
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
   resources?: Resources;
+  onAnswerChange: (
+    newState: GlobalState,
+    path: Array<Path>,
+    item: QuestionnaireItem,
+    answer: QuestionnaireResponseAnswer | QuestionnaireResponseAnswer[]
+  ) => void;
 }
 export class Text extends React.Component<Props & ValidationProps, {}> {
   showCounter(): boolean {
@@ -55,10 +60,12 @@ export class Text extends React.Component<Props & ValidationProps, {}> {
   }
 
   handleChange = (event: React.FormEvent<{}>): void => {
-    const { dispatch, promptLoginMessage } = this.props;
+    const { dispatch, promptLoginMessage, path, item, onAnswerChange } = this.props;
     const value = (event.target as HTMLInputElement).value;
     if (dispatch) {
-      dispatch(newStringValue(this.props.path, value, this.props.item));
+      dispatch(newStringValueAsync(this.props.path, value, this.props.item))?.then(newState =>
+        onAnswerChange(newState, path, item, { valueString: value } as QuestionnaireResponseAnswer)
+      );
     }
 
     if (promptLoginMessage) {
@@ -131,9 +138,5 @@ export class Text extends React.Component<Props & ValidationProps, {}> {
 }
 
 const withCommonFunctionsComponent = withCommonFunctions(Text);
-const connectedComponent = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-  mergeProps
-)(withCommonFunctionsComponent);
+const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(withCommonFunctionsComponent);
 export default connectedComponent;

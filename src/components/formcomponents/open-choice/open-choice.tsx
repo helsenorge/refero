@@ -2,11 +2,16 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { GlobalState } from '../../../reducers';
-import { NewValueAction, removeCodingValueAsync, newCodingValueAsync } from '../../../actions/newValue';
+import {
+  NewValueAction,
+  removeCodingValueAsync,
+  newCodingValueAsync,
+  newCodingStringValueAsync,
+  removeCodingStringValueAsync,
+} from '../../../actions/newValue';
 import TextField from './text-field';
 import { Path } from '../../../util/skjemautfyller-core';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
-import { newCodingStringValue, removeCodingStringValue } from '../../../actions/newValue';
 import {
   hasOptions,
   renderOptions,
@@ -45,7 +50,6 @@ export interface Props {
   headerTag?: number;
   responseItem?: Array<QuestionnaireResponseItem>;
   repeatButton: JSX.Element;
-
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
   onAnswerChange: (
@@ -113,13 +117,17 @@ class OpenChoice extends React.Component<Props & ValidationProps> {
   };
 
   handleStringChange = (event: React.FormEvent<{}>): void => {
-    const { dispatch, promptLoginMessage } = this.props;
+    const { dispatch, promptLoginMessage, path, item, onAnswerChange } = this.props;
     const value = (event.target as HTMLInputElement).value;
     if (dispatch) {
       if (value.length > 0) {
-        dispatch(newCodingStringValue(this.props.path, value, this.props.item));
+        dispatch(newCodingStringValueAsync(this.props.path, value, this.props.item))?.then(newState =>
+          onAnswerChange(newState, path, item, { valueString: value } as QuestionnaireResponseAnswer)
+        );
       } else {
-        dispatch(removeCodingStringValue(this.props.path, this.props.item));
+        dispatch(removeCodingStringValueAsync(this.props.path, this.props.item))?.then(newState =>
+          onAnswerChange(newState, path, item, { valueString: '' } as QuestionnaireResponseAnswer)
+        );
       }
     }
 
@@ -134,15 +142,18 @@ class OpenChoice extends React.Component<Props & ValidationProps> {
       const display = getDisplay(getOptions(item, this.props.containedResources), code);
       const system = getSystem(item, this.props.containedResources);
       const coding = { code, display, system } as Coding;
+      const responseAnswer = { valueCoding: coding } as QuestionnaireResponseAnswer;
       if (getIndexOfAnswer(code, answer) > -1) {
-        dispatch(removeCodingValueAsync(this.props.path, coding, item))?.then(newState => onAnswerChange(newState, path, item, coding));
+        dispatch(removeCodingValueAsync(this.props.path, coding, item))?.then(newState =>
+          onAnswerChange(newState, path, item, responseAnswer)
+        );
 
         if (promptLoginMessage) {
           promptLoginMessage();
         }
       } else {
         dispatch(newCodingValueAsync(this.props.path, coding, this.props.item, true))?.then(newState =>
-          onAnswerChange(newState, path, item, coding)
+          onAnswerChange(newState, path, item, responseAnswer)
         );
         if (promptLoginMessage) {
           promptLoginMessage();
@@ -159,7 +170,8 @@ class OpenChoice extends React.Component<Props & ValidationProps> {
       const display = getDisplay(getOptions(item, this.props.containedResources), code);
       const system = getSystem(item, this.props.containedResources);
       const coding = { code, display, system } as Coding;
-      dispatch(newCodingValueAsync(this.props.path, coding, item))?.then(newState => onAnswerChange(newState, path, item, coding));
+      const responseAnswer = { valueCoding: coding } as QuestionnaireResponseAnswer;
+      dispatch(newCodingValueAsync(this.props.path, coding, item))?.then(newState => onAnswerChange(newState, path, item, responseAnswer));
       if (promptLoginMessage) {
         promptLoginMessage();
       }
@@ -178,23 +190,27 @@ class OpenChoice extends React.Component<Props & ValidationProps> {
   };
 
   singleValueHandler = (coding: Coding) => {
-    const { dispatch, item, path } = this.props;
+    const { dispatch, item, path, onAnswerChange } = this.props;
 
     if (dispatch) {
       if (coding.code !== OPEN_CHOICE_ID) {
-        dispatch(removeCodingStringValue(path, item));
+        dispatch(removeCodingStringValueAsync(path, item))?.then(newState =>
+          onAnswerChange(newState, path, item, { valueString: '' } as QuestionnaireResponseAnswer)
+        );
       }
     }
   };
 
   multiValueHandler = (coding: Coding) => {
-    const { dispatch, item, path, answer } = this.props;
+    const { dispatch, item, path, answer, onAnswerChange } = this.props;
 
     if (dispatch) {
       const isShown = shouldShowExtraChoice(answer);
 
       if (isShown && coding.code === OPEN_CHOICE_ID) {
-        dispatch(removeCodingStringValue(path, item));
+        dispatch(removeCodingStringValueAsync(path, item))?.then(newState =>
+          onAnswerChange(newState, path, item, { valueString: '' } as QuestionnaireResponseAnswer)
+        );
       }
     }
   };

@@ -1,7 +1,7 @@
 5.0.0
 -----
-* Support for scoring with total score (TS), section score (SS) and question score (QS).
-* Upgraded @helsenorge/core-build to v10.0.0.
+* Support for scoring with total score (TS), section score (SS) question score (QS) and fhirpath scoring.
+* Upgraded @helsenorge/core-build to v10.0.2.
 * redux-thunk as middleware is now required.
 
 4.0.0

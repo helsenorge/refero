@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import * as moment from 'moment';
-import { FormChild } from '@helsenorge/toolkit/components/molecules/form';
 import { DatePicker, DatePickerResources } from '@helsenorge/toolkit/components/molecules/datepicker';
 import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
 import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
@@ -10,7 +9,7 @@ import { parseDate } from '@helsenorge/toolkit/components/molecules/time-input/d
 import { Path } from '../../../util/skjemautfyller-core';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import Constants from '../../../constants/index';
-import { newDateValue, NewValueAction } from '../../../actions/newValue';
+import { NewValueAction, newDateValueAsync } from '../../../actions/newValue';
 import withCommonFunctions from '../../with-common-functions';
 import { isReadOnly, isRequired, getId, renderPrefix, getText } from '../../../util/index';
 import { getValidationTextExtension, getPlaceholder, getExtension } from '../../../util/extension';
@@ -36,9 +35,14 @@ export interface Props {
   validationErrorRenderer?: JSX.Element;
   renderDeleteButton: () => JSX.Element | undefined;
   repeatButton: JSX.Element;
-
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
+  onAnswerChange: (
+    newState: GlobalState,
+    path: Array<Path>,
+    item: QuestionnaireItem,
+    answer: QuestionnaireResponseAnswer | QuestionnaireResponseAnswer[]
+  ) => void;
 }
 
 class DateComponent extends React.Component<Props & ValidationProps> {
@@ -126,12 +130,14 @@ class DateComponent extends React.Component<Props & ValidationProps> {
   }
 
   onDateChange = (value?: Date): void => {
-    const { dispatch, promptLoginMessage } = this.props;
+    const { dispatch, promptLoginMessage, path, item, onAnswerChange } = this.props;
     const newValue = moment(value).format(Constants.DATE_FORMAT);
     if (this.props.onDateChange) {
       this.props.onDateChange(value);
     } else if (dispatch && value) {
-      dispatch(newDateValue(this.props.path, newValue, this.props.item));
+      dispatch(newDateValueAsync(this.props.path, newValue, this.props.item))?.then(newState =>
+        onAnswerChange(newState, path, item, { valueDate: newValue } as QuestionnaireResponseAnswer)
+      );
       if (promptLoginMessage) {
         promptLoginMessage();
       }
@@ -207,9 +213,5 @@ class DateComponent extends React.Component<Props & ValidationProps> {
 }
 
 const withCommonFunctionsComponent = withCommonFunctions(DateComponent);
-const connectedComponent = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-  mergeProps
-)(withCommonFunctionsComponent);
+const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(withCommonFunctionsComponent);
 export default connectedComponent;

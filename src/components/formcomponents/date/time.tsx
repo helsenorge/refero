@@ -10,7 +10,7 @@ import withCommonFunctions from '../../with-common-functions';
 import ExtensionConstants from '../../../constants/extensions';
 import { Path } from '../../../util/skjemautfyller-core';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
-import { newTimeValue, NewValueAction } from '../../../actions/newValue';
+import { NewValueAction, newTimeValueAsync } from '../../../actions/newValue';
 import { getExtension, getValidationTextExtension } from '../../../util/extension';
 import { isReadOnly, isRequired, getId, renderPrefix, getText } from '../../../util/index';
 import { QuestionnaireItem, QuestionnaireResponseAnswer } from '../../../types/fhir';
@@ -35,9 +35,14 @@ export interface Props {
   enable?: boolean;
   renderDeleteButton: (className?: string) => JSX.Element | undefined;
   repeatButton: JSX.Element;
-
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
+  onAnswerChange: (
+    newState: GlobalState,
+    path: Array<Path>,
+    item: QuestionnaireItem,
+    answer: QuestionnaireResponseAnswer | QuestionnaireResponseAnswer[]
+  ) => void;
 }
 
 class Time extends React.Component<Props & ValidationProps> {
@@ -139,9 +144,11 @@ class Time extends React.Component<Props & ValidationProps> {
   }
 
   dispatchNewTime(newTime: string): void {
-    const { dispatch, item, path } = this.props;
+    const { dispatch, item, path, onAnswerChange } = this.props;
     if (dispatch) {
-      dispatch(newTimeValue(path, newTime, item));
+      dispatch(newTimeValueAsync(path, newTime, item))?.then(newState =>
+        onAnswerChange(newState, path, item, { valueTime: newTime } as QuestionnaireResponseAnswer)
+      );
     }
   }
 
@@ -270,9 +277,5 @@ class Time extends React.Component<Props & ValidationProps> {
   }
 }
 const withCommonFunctionsComponent = withCommonFunctions(Time);
-const connectedComponent = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-  mergeProps
-)(withCommonFunctionsComponent);
+const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(withCommonFunctionsComponent);
 export default connectedComponent;

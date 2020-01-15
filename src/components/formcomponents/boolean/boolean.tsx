@@ -7,7 +7,7 @@ import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/v
 import withCommonFunctions from '../../with-common-functions';
 import { Path } from '../../../util/skjemautfyller-core';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
-import { newBooleanValue, NewValueAction } from '../../../actions/newValue';
+import { NewValueAction, newBooleanValueAsync } from '../../../actions/newValue';
 import { isReadOnly, isRequired, getId, renderPrefix, getText } from '../../../util/index';
 import { getValidationTextExtension } from '../../../util/extension';
 import layoutChange from '@helsenorge/toolkit/higher-order-components/layoutChange';
@@ -26,9 +26,14 @@ export interface Props {
   renderDeleteButton: (className?: string) => JSX.Element | undefined;
   repeatButton: JSX.Element;
   oneToTwoColumn: boolean;
-
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
+  onAnswerChange: (
+    newState: GlobalState,
+    path: Array<Path>,
+    item: QuestionnaireItem,
+    answer: QuestionnaireResponseAnswer | QuestionnaireResponseAnswer[]
+  ) => void;
 }
 
 class Boolean extends React.Component<Props & ValidationProps, {}> {
@@ -44,10 +49,12 @@ class Boolean extends React.Component<Props & ValidationProps, {}> {
   }
 
   handleChange = (): void => {
-    const { dispatch, promptLoginMessage } = this.props;
+    const { dispatch, promptLoginMessage, onAnswerChange, path, item } = this.props;
     const newValue = !this.getValue();
     if (dispatch) {
-      dispatch(newBooleanValue(this.props.path, newValue, this.props.item));
+      dispatch(newBooleanValueAsync(this.props.path, newValue, this.props.item))?.then(newState =>
+        onAnswerChange(newState, path, item, { valueBoolean: newValue } as QuestionnaireResponseAnswer)
+      );
     }
 
     if (promptLoginMessage) {
@@ -116,9 +123,5 @@ class Boolean extends React.Component<Props & ValidationProps, {}> {
   }
 }
 const withCommonFunctionsComponent = withCommonFunctions(Boolean);
-const connectedComponent = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-  mergeProps
-)(layoutChange(withCommonFunctionsComponent));
+const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(layoutChange(withCommonFunctionsComponent));
 export default connectedComponent;

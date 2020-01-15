@@ -2,6 +2,8 @@ import { QuestionnaireItem, Coding, uri, Extension } from '../types/fhir';
 import Scoring from '../constants/scoring';
 import ExtensionConstants from '../constants/extensions';
 import * as uuid from 'uuid';
+import { getCalculatedExpressionExtension } from './extension';
+import { ScoringItemType } from '../constants/scoringItemType';
 
 export function createDummySectionScoreItem(): QuestionnaireItem {
   return {
@@ -27,9 +29,25 @@ export function createDummySectionScoreItem(): QuestionnaireItem {
   };
 }
 
-export function isScoringItem(item: QuestionnaireItem): boolean {
-  const scoring = getCodingWithScoring(item);
-  return scoring ? true : false;
+export function scoringItemType(item: QuestionnaireItem): ScoringItemType {
+  if (item.code) {
+    const scoring = getCodingWithScoring(item);
+    switch (scoring?.code) {
+      case 'TS':
+        return ScoringItemType.TOTAL_SCORE;
+      case 'SS':
+        return ScoringItemType.SECTION_SCORE;
+      case 'QS':
+        return ScoringItemType.QUESTION_SCORE;
+      default:
+        return ScoringItemType.NONE;
+    }
+  } else if (item.extension) {
+    const scoring = getCalculatedExpressionExtension(item);
+    return scoring ? ScoringItemType.QUESTION_FHIRPATH_SCORE : ScoringItemType.NONE;
+  }
+
+  return ScoringItemType.NONE;
 }
 
 export function isSectionScoringItem(item: QuestionnaireItem): boolean {
@@ -45,11 +63,6 @@ export function isTotalScoringItem(item: QuestionnaireItem): boolean {
 export function isQuestionScoringItem(item: QuestionnaireItem): boolean {
   const scoring = getCodingWithScoring(item);
   return scoring ? scoring.code === Scoring.Type.QUESTION_SCORE : false;
-}
-
-export function getScoringType(item: QuestionnaireItem): string | undefined {
-  const scoring = getCodingWithScoring(item);
-  return scoring?.code;
 }
 
 function getCodingWithScoring(item: QuestionnaireItem): Coding | undefined {

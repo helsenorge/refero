@@ -52,6 +52,18 @@ export function newAttachment(
   };
 }
 
+export function newAttachmentAsync(
+  itemPath: Array<Path>,
+  value: Attachment,
+  item: QuestionnaireItem | undefined,
+  multipleAnswers?: boolean
+) {
+  return async (dispatch: ThunkDispatch<GlobalState, void, NewValueAction>, getState: () => GlobalState) => {
+    dispatch(newAttachment(itemPath, value, item, multipleAnswers));
+    return await Promise.resolve(getState());
+  };
+}
+
 export function removeAttachment(itemPath: Array<Path>, value: Attachment, item: QuestionnaireItem | undefined) {
   return {
     type: REMOVE_ATTACHMENT_VALUE,
@@ -61,12 +73,26 @@ export function removeAttachment(itemPath: Array<Path>, value: Attachment, item:
   };
 }
 
+export function removeAttachmentAsync(itemPath: Array<Path>, value: Attachment, item: QuestionnaireItem | undefined) {
+  return async (dispatch: ThunkDispatch<GlobalState, void, NewValueAction>, getState: () => GlobalState) => {
+    dispatch(removeAttachment(itemPath, value, item));
+    return await Promise.resolve(getState());
+  };
+}
+
 export function newBooleanValue(itemPath: Array<Path>, value: boolean, item: QuestionnaireItem | undefined): NewValueAction {
   return {
     type: NEW_VALUE,
     itemPath,
     valueBoolean: value,
     item: item,
+  };
+}
+
+export function newBooleanValueAsync(itemPath: Array<Path>, value: boolean, item: QuestionnaireItem | undefined) {
+  return async (dispatch: ThunkDispatch<GlobalState, void, NewValueAction>, getState: () => GlobalState) => {
+    dispatch(newBooleanValue(itemPath, value, item));
+    return await Promise.resolve(getState());
   };
 }
 
@@ -102,11 +128,30 @@ export function newCodingStringValue(
   };
 }
 
+export function newCodingStringValueAsync(
+  itemPath: Array<Path>,
+  value: string,
+  item: QuestionnaireItem | undefined,
+  multipleAnswers?: boolean
+) {
+  return async (dispatch: ThunkDispatch<GlobalState, void, NewValueAction>, getState: () => GlobalState) => {
+    dispatch(newCodingStringValue(itemPath, value, item, multipleAnswers));
+    return await Promise.resolve(getState());
+  };
+}
+
 export function removeCodingStringValue(itemPath: Array<Path>, item: QuestionnaireItem | undefined): NewValueAction {
   return {
     type: REMOVE_CODINGSTRING_VALUE,
     itemPath,
     item: item,
+  };
+}
+
+export function removeCodingStringValueAsync(itemPath: Array<Path>, item: QuestionnaireItem | undefined) {
+  return async (dispatch: ThunkDispatch<GlobalState, void, NewValueAction>, getState: () => GlobalState) => {
+    dispatch(removeCodingStringValue(itemPath, item));
+    return await Promise.resolve(getState());
   };
 }
 
@@ -116,6 +161,13 @@ export function newQuantityValue(itemPath: Array<Path>, value: Quantity, item: Q
     itemPath,
     valueQuantity: value,
     item: item,
+  };
+}
+
+export function newQuantityValueAsync(itemPath: Array<Path>, value: Quantity, item: QuestionnaireItem | undefined) {
+  return async (dispatch: ThunkDispatch<GlobalState, void, NewValueAction>, getState: () => GlobalState) => {
+    dispatch(newQuantityValue(itemPath, value, item));
+    return await Promise.resolve(getState());
   };
 }
 
@@ -144,12 +196,26 @@ export function newDecimalValue(itemPath: Array<Path>, value: number, item: Ques
   };
 }
 
+export function newDecimalValueAsync(itemPath: Array<Path>, value: number, item: QuestionnaireItem | undefined) {
+  return async (dispatch: ThunkDispatch<GlobalState, void, NewValueAction>, getState: () => GlobalState) => {
+    dispatch(newDecimalValue(itemPath, value, item));
+    return await Promise.resolve(getState());
+  };
+}
+
 export function newIntegerValue(itemPath: Array<Path>, value: number, item: QuestionnaireItem | undefined): NewValueAction {
   return {
     type: NEW_VALUE,
     itemPath,
     valueInteger: value,
     item: item,
+  };
+}
+
+export function newIntegerValueAsync(itemPath: Array<Path>, value: number, item: QuestionnaireItem | undefined) {
+  return async (dispatch: ThunkDispatch<GlobalState, void, NewValueAction>, getState: () => GlobalState) => {
+    dispatch(newIntegerValue(itemPath, value, item));
+    return await Promise.resolve(getState());
   };
 }
 
@@ -162,12 +228,26 @@ export function newStringValue(itemPath: Array<Path>, value: string, item: Quest
   };
 }
 
+export function newStringValueAsync(itemPath: Array<Path>, value: string, item: QuestionnaireItem | undefined) {
+  return async (dispatch: ThunkDispatch<GlobalState, void, NewValueAction>, getState: () => GlobalState) => {
+    dispatch(newStringValue(itemPath, value, item));
+    return await Promise.resolve(getState());
+  };
+}
+
 export function newDateValue(itemPath: Array<Path>, value: string, item: QuestionnaireItem | undefined): NewValueAction {
   return {
     type: NEW_VALUE,
     itemPath,
     valueDate: value,
     item: item,
+  };
+}
+
+export function newDateValueAsync(itemPath: Array<Path>, value: string, item: QuestionnaireItem | undefined) {
+  return async (dispatch: ThunkDispatch<GlobalState, void, NewValueAction>, getState: () => GlobalState) => {
+    dispatch(newDateValue(itemPath, value, item));
+    return await Promise.resolve(getState());
   };
 }
 
@@ -180,12 +260,26 @@ export function newTimeValue(itemPath: Array<Path>, value: string, item: Questio
   };
 }
 
+export function newTimeValueAsync(itemPath: Array<Path>, value: string, item: QuestionnaireItem | undefined) {
+  return async (dispatch: ThunkDispatch<GlobalState, void, NewValueAction>, getState: () => GlobalState) => {
+    dispatch(newTimeValue(itemPath, value, item));
+    return await Promise.resolve(getState());
+  };
+}
+
 export function newDateTimeValue(itemPath: Array<Path>, value: string, item: QuestionnaireItem | undefined): NewValueAction {
   return {
     type: NEW_VALUE,
     itemPath,
     valueDateTime: value,
     item: item,
+  };
+}
+
+export function newDateTimeValueAsync(itemPath: Array<Path>, value: string, item: QuestionnaireItem | undefined) {
+  return async (dispatch: ThunkDispatch<GlobalState, void, NewValueAction>, getState: () => GlobalState) => {
+    dispatch(newDateTimeValue(itemPath, value, item));
+    return await Promise.resolve(getState());
   };
 }
 

@@ -18,4 +18,5 @@ export default {
   DISCRETION: 'http://ehelse.no/fhir/StructureDefinition/sdf-discretion',
   OPTION_REFERENCE: 'http://ehelse.no/fhir/StructureDefinition/sdf-optionReference',
   ORDINAL_VALUE: 'http://hl7.org/fhir/StructureDefinition/ordinalValue',
+  CALCULATED_EXPRESSION: 'http://ehelse.no/fhir/StructureDefinition/sdf-calculatedExpression',
 };

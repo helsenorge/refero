@@ -2,14 +2,13 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { GlobalState } from '../../../reducers';
-import { NewValueAction } from '../../../actions/newValue';
+import { NewValueAction, newIntegerValueAsync } from '../../../actions/newValue';
 import SafeInputField from '@helsenorge/toolkit/components/atoms/safe-input-field';
 import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
 import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
 import layoutChange from '@helsenorge/toolkit/higher-order-components/layoutChange';
 import { Path } from '../../../util/skjemautfyller-core';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
-import { newIntegerValue } from '../../../actions/newValue';
 import withCommonFunctions from '../../with-common-functions';
 import { isReadOnly, isRequired, getId, renderPrefix, getText } from '../../../util/index';
 import { getValidationTextExtension, getPlaceholder, getMaxValueExtensionValue, getMinValueExtensionValue } from '../../../util/extension';
@@ -28,9 +27,14 @@ export interface Props {
   id?: string;
   repeatButton: JSX.Element;
   oneToTwoColumn: boolean;
-
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
+  onAnswerChange: (
+    newState: GlobalState,
+    path: Array<Path>,
+    item: QuestionnaireItem,
+    answer: QuestionnaireResponseAnswer | QuestionnaireResponseAnswer[]
+  ) => void;
 }
 
 class Integer extends React.Component<Props & ValidationProps, {}> {
@@ -57,10 +61,12 @@ class Integer extends React.Component<Props & ValidationProps, {}> {
   }
 
   handleChange = (event: React.FormEvent<{}>) => {
-    const { dispatch, promptLoginMessage } = this.props;
+    const { dispatch, promptLoginMessage, path, item, onAnswerChange } = this.props;
     const value = parseInt((event.target as HTMLInputElement).value, 10);
     if (dispatch) {
-      dispatch(newIntegerValue(this.props.path, value, this.props.item));
+      dispatch(newIntegerValueAsync(this.props.path, value, this.props.item))?.then(newState =>
+        onAnswerChange(newState, path, item, { valueInteger: value } as QuestionnaireResponseAnswer)
+      );
     }
 
     if (promptLoginMessage) {
@@ -130,9 +136,5 @@ class Integer extends React.Component<Props & ValidationProps, {}> {
 }
 
 const withCommonFunctionsComponent = withCommonFunctions(Integer);
-const connectedComponent = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-  mergeProps
-)(layoutChange(withCommonFunctionsComponent));
+const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(layoutChange(withCommonFunctionsComponent));
 export default connectedComponent;

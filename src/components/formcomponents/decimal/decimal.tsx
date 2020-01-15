@@ -2,7 +2,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { GlobalState } from '../../../reducers';
-import { NewValueAction } from '../../../actions/newValue';
+import { NewValueAction, newDecimalValueAsync } from '../../../actions/newValue';
 import SafeInputField from '@helsenorge/toolkit/components/atoms/safe-input-field';
 import layoutChange from '@helsenorge/toolkit/higher-order-components/layoutChange';
 import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
@@ -11,7 +11,6 @@ import ExtensionConstants from '../../../constants/extensions';
 import { Extension } from '../../../types/fhir';
 import { Path } from '../../../util/skjemautfyller-core';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
-import { newDecimalValue } from '../../../actions/newValue';
 import { QuestionnaireItem, QuestionnaireResponseAnswer } from '../../../types/fhir';
 import { Resources } from '../../../util/resources';
 import { isReadOnly, isRequired, getId, renderPrefix, getText } from '../../../util/index';
@@ -41,9 +40,14 @@ export interface Props {
   renderDeleteButton: (className?: string) => JSX.Element | undefined;
   repeatButton: JSX.Element;
   oneToTwoColumn: boolean;
-
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
+  onAnswerChange: (
+    newState: GlobalState,
+    path: Array<Path>,
+    item: QuestionnaireItem,
+    answer: QuestionnaireResponseAnswer | QuestionnaireResponseAnswer[]
+  ) => void;
 }
 
 class Decimal extends React.Component<Props & ValidationProps, {}> {
@@ -105,10 +109,12 @@ class Decimal extends React.Component<Props & ValidationProps, {}> {
   }
 
   handleChange = (event: React.FormEvent<{}>) => {
-    const { dispatch, path, item, promptLoginMessage } = this.props;
+    const { dispatch, path, item, promptLoginMessage, onAnswerChange } = this.props;
     const value = parseFloat((event.target as HTMLInputElement).value);
     if (dispatch) {
-      dispatch(newDecimalValue(path, value, item));
+      dispatch(newDecimalValueAsync(path, value, item))?.then(newState =>
+        onAnswerChange(newState, path, item, { valueDecimal: value } as QuestionnaireResponseAnswer)
+      );
     }
 
     if (promptLoginMessage) {
@@ -172,9 +178,5 @@ class Decimal extends React.Component<Props & ValidationProps, {}> {
 }
 
 const withCommonFunctionsComponent = withCommonFunctions(Decimal);
-const connectedComponent = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-  mergeProps
-)(layoutChange(withCommonFunctionsComponent));
+const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(layoutChange(withCommonFunctionsComponent));
 export default connectedComponent;

@@ -6,8 +6,15 @@
     "noUnusedParameters": true,
     "strictNullChecks": true,
     "module": "commonjs",
-    "declaration": true
+    "declaration": true,
+    "resolveJsonModule": true
   },
-  "include": ["../src/**/*.tsx", "../src/**/*.ts"],
-  "exclude": ["../src/**/__tests__*", "../lib/**/*.*"]
+  "include": [
+    "../src/**/*.tsx",
+    "../src/**/*.ts"
+  ],
+  "exclude": [
+    "../src/**/__tests__*",
+    "../lib/**/*.*"
+  ]
 }

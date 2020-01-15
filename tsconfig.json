@@ -1,7 +1,11 @@
 {
   "extends": "./node_modules/@helsenorge/core-build/lib/tsconfig.webpack.json",
-  "include": ["src/**/*.ts", "src/**/*.tsx"],
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx"
+  ],
   "compilerOptions": {
+    "resolveJsonModule": true,
     "noUnusedLocals": true,
     "strictNullChecks": true
   }
