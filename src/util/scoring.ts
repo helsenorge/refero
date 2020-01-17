@@ -43,8 +43,8 @@ export function scoringItemType(item: QuestionnaireItem): ScoringItemType {
         return ScoringItemType.NONE;
     }
   } else if (item.extension) {
-    const scoring = getCalculatedExpressionExtension(item);
-    return scoring ? ScoringItemType.QUESTION_FHIRPATH_SCORE : ScoringItemType.NONE;
+    const calculatedExpressionExtension = getCalculatedExpressionExtension(item);
+    return calculatedExpressionExtension ? ScoringItemType.QUESTION_FHIRPATH_SCORE : ScoringItemType.NONE;
   }
 
   return ScoringItemType.NONE;

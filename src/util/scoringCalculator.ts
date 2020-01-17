@@ -191,10 +191,10 @@ export class ScoringCalculator {
     questionnaireResponse: QuestionnaireResponse,
     answerPad: { [linkId: string]: number | undefined }
   ): number {
-    const expression = getCalculatedExpressionExtension(item);
+    const expressionExtension = getCalculatedExpressionExtension(item);
     let value = 0;
-    if (expression) {
-      let result = fhirpath.evaluate(questionnaireResponse, expression, null, { choiceTypePaths: stu3 });
+    if (expressionExtension) {
+      let result = fhirpath.evaluate(questionnaireResponse, expressionExtension.valueString, null, { choiceTypePaths: stu3 });
       if (result.length) {
         value = (result[0] as number) ?? 0;
       }

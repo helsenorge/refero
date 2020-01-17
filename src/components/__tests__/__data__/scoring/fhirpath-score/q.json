@@ -1,0 +1,76 @@
+{
+  "resourceType": "Questionnaire",
+  "id": "21",
+  "version": "0.1",
+  "name": "PHQ-9",
+  "title": "Testskjema for kalkulering av fhirpath",
+  "status": "draft",
+  "date": "2018-02-02",
+  "item": [
+    {
+      "linkId": "1",
+      "text": "Decimal",
+      "type": "decimal"
+    },
+    {
+      "linkId": "2",
+      "text": "Integer",
+      "type": "integer"
+    },
+    {
+      "linkId": "3",
+      "text": "Quantity",
+      "type": "quantity",
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+          "valueCoding": {
+            "code": "kg",
+            "display": "kg"
+          }
+        }
+      ]
+    },
+    {
+      "extension": [
+        {
+          "url": "http://ehelse.no/fhir/StructureDefinition/sdf-calculatedExpression",
+          "valueString": ""
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+          "valueCoding": {
+            "system": "http://ehelse.no/Score",
+            "code": "score",
+            "display": "score"
+          }
+        }
+      ],
+      "linkId": "4",
+      "text": "Fhir sum element",
+      "type": "quantity"
+    },
+    {
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+          "valueCoding": {
+            "system": "http://ehelse.no/Score",
+            "code": "score",
+            "display": "score"
+          }
+        }
+      ],
+      "linkId": "5",
+      "code": [
+        {
+          "system": "http://ehelse.no/scoringFormulas",
+          "code": "TS",
+          "display": "Totalscore"
+        }
+      ],
+      "text": "Sum",
+      "type": "quantity"
+    }
+  ]
+}
