@@ -58,6 +58,7 @@ function getStringWrapperWithChangedValue(validateScriptInjection: boolean, valu
       visibleDeleteButton
       renderHelpButton={() => <React.Fragment />}
       renderHelpElement={() => <React.Fragment />}
+      onAnswerChange={() => {}}
     />
   );
   wrapper.update();

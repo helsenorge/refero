@@ -76,7 +76,7 @@ describe('Component renders and calculates score', () => {
     await selectRadioButtonOption('2.1', 4, wrapper);
 
     ts = findItem('3.1', wrapper);
-    expect(ts.props().value).toBe('0');
+    expect(ts.props().value).toBe('');
   });
 
   it('total score and section score should be updated', async () => {
@@ -95,8 +95,8 @@ describe('Component renders and calculates score', () => {
 
     expectedScores.totalscore_31 = '4';
     expectedScores.sectionscore_213 = '4';
-    expectedScores.sectionscore_223 = '0';
-    expectedScores.sectionscore_230 = '0';
+    expectedScores.sectionscore_223 = '';
+    expectedScores.sectionscore_230 = '';
     expectScores(expectedScores, wrapper);
 
     await selectCheckBoxOption('2.2.2', 'd', wrapper);
@@ -134,7 +134,6 @@ describe('Component renders and calculates score', () => {
 
 function expectScores(scores: { [linkId: string]: string }, wrapper: ReactWrapper<{}, {}>) {
   for (let linkId in scores) {
-    console.log(linkId);
     const value = scores[linkId];
     const item = findItem(linkId, wrapper);
     expect(item.props().value).toBe(value);

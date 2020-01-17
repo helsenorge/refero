@@ -132,8 +132,8 @@ export class ScoringCalculator {
     return (<QuestionnaireItem>item).type !== undefined;
   }
 
-  public calculate(questionnaireResponse: QuestionnaireResponse): { [linkId: string]: number } {
-    let answerPad: { [linkId: string]: number } = {};
+  public calculate(questionnaireResponse: QuestionnaireResponse): { [linkId: string]: number | undefined } {
+    let answerPad: { [linkId: string]: number | undefined } = {};
 
     for (let sectionScoreLinkId in this.sectionScoreCache) {
       answerPad[sectionScoreLinkId] = this.calculateSectionScore(sectionScoreLinkId, questionnaireResponse, answerPad);
@@ -151,19 +151,28 @@ export class ScoringCalculator {
   private calculateSectionScore(
     linkId: string,
     questionnaireResponse: QuestionnaireResponse,
-    answerPad: { [linkId: string]: number }
-  ): number {
+    answerPad: { [linkId: string]: number | undefined }
+  ): number | undefined {
     let sum: number = 0;
+    let hasCalculatedAtLeastOneAnswer = false;
     let dependencies: Array<QuestionnaireItem> = this.sectionScoreCache[linkId];
 
     for (let item of dependencies) {
-      sum += this.valueOf(item, questionnaireResponse, answerPad);
+      const result = this.valueOf(item, questionnaireResponse, answerPad);
+      if (result !== undefined) {
+        sum += result;
+        hasCalculatedAtLeastOneAnswer = true;
+      }
     }
 
-    return sum;
+    return hasCalculatedAtLeastOneAnswer ? sum : undefined;
   }
 
-  private valueOf(item: QuestionnaireItem, questionnaireResponse: QuestionnaireResponse, answerPad: { [linkId: string]: number }): number {
+  private valueOf(
+    item: QuestionnaireItem,
+    questionnaireResponse: QuestionnaireResponse,
+    answerPad: { [linkId: string]: number | undefined }
+  ): number | undefined {
     const scoringType = scoringItemType(item);
     switch (scoringType) {
       case ScoringItemType.SECTION_SCORE:
@@ -173,14 +182,14 @@ export class ScoringCalculator {
       case ScoringItemType.QUESTION_FHIRPATH_SCORE:
         return this.valueOfQuestionFhirpathScoreItem(item, questionnaireResponse, answerPad);
       default:
-        return 0;
+        return;
     }
   }
 
   private valueOfQuestionFhirpathScoreItem(
     item: QuestionnaireItem,
     questionnaireResponse: QuestionnaireResponse,
-    answerPad: { [linkId: string]: number }
+    answerPad: { [linkId: string]: number | undefined }
   ): number {
     const expression = getCalculatedExpressionExtension(item);
     let value = 0;
@@ -200,9 +209,10 @@ export class ScoringCalculator {
   private valueOfQuestionScoreItem(
     item: QuestionnaireItem,
     questionnaireResponse: QuestionnaireResponse,
-    _answerPad: { [linkId: string]: number }
-  ): number {
-    let sum = 0;
+    _answerPad: { [linkId: string]: number | undefined }
+  ): number | undefined {
+    let sum: number = 0;
+    let hasCalculatedAtLeastOneAnswer = false;
     let qrItems = getItemsWithIdFromResponseItemArray(item.linkId, questionnaireResponse.item, true);
     for (let qrItem of qrItems) {
       if (!qrItem.answer) continue;
@@ -211,18 +221,19 @@ export class ScoringCalculator {
         let option = this.getAnswerMatch(answer, item);
         if (option) {
           sum += this.getOptionScore(option);
+          hasCalculatedAtLeastOneAnswer = true;
         }
       }
     }
 
-    return sum;
+    return hasCalculatedAtLeastOneAnswer ? sum : undefined;
   }
 
   private valueOfSectionScoreItem(
     item: QuestionnaireItem,
     questionnaireResponse: QuestionnaireResponse,
-    answerPad: { [linkId: string]: number }
-  ): number {
+    answerPad: { [linkId: string]: number | undefined }
+  ): number | undefined {
     if (item.linkId in answerPad) {
       // return cached score
       return answerPad[item.linkId];

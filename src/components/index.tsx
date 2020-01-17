@@ -177,6 +177,9 @@ class Skjemautfyller extends React.Component<StateProps & DispatchProps & Props,
       const extension = getQuestionnaireUnitExtensionValue(templateItem);
       if (!extension) continue;
 
+      const item = getQuestionnaireDefinitionItem(linkId, newState.skjemautfyller.form.FormDefinition.Content?.item);
+      const itemsAndPaths = getResponseItemAndPathWithLinkId(linkId, newState.skjemautfyller.form.FormData.Content!);
+
       const quantity = {
         value: (scores[linkId] as unknown) as decimal,
         unit: extension.display,
@@ -184,8 +187,6 @@ class Skjemautfyller extends React.Component<StateProps & DispatchProps & Props,
         code: extension.code,
       } as Quantity;
 
-      const item = getQuestionnaireDefinitionItem(linkId, newState.skjemautfyller.form.FormDefinition.Content?.item);
-      const itemsAndPaths = getResponseItemAndPathWithLinkId(linkId, newState.skjemautfyller.form.FormData.Content!);
       for (let itemAndPath of itemsAndPaths) {
         actions.push(newQuantityValue(itemAndPath.path, quantity, item));
       }
