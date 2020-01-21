@@ -17,4 +17,5 @@ export default {
   ACCESSIBILITY_TO_RESPONSE: 'http://ehelse.no/fhir/StructureDefinition/sdf-accessibilitytoresponse',
   DISCRETION: 'http://ehelse.no/fhir/StructureDefinition/sdf-discretion',
   OPTION_REFERENCE: 'http://ehelse.no/fhir/StructureDefinition/sdf-optionReference',
+  QUESTIONNAIRE_HIDDEN: 'http://hl7.org/fhir/StructureDefinition/questionnaire-hidden',
 };
