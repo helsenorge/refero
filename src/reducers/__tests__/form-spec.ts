@@ -549,10 +549,6 @@ describe('update enable when action', () => {
       return fail();
     }
 
-    action = newDecimalValue([{ linkId: 'd' }], 3, {
-      linkId: 'd',
-      type: 'decimal',
-    });
     action = newBooleanValue([{ linkId: 'b' }], false, {
       linkId: 'b',
       type: 'boolean',
@@ -587,7 +583,6 @@ describe('update enable when action', () => {
     if (!integer) {
       return fail();
     }
-    expect(integerAnswer[0]).toMatchObject({});
-    expect(integerAnswer).toHaveLength(1);
+    expect(integerAnswer).toHaveLength(0);
   });
 });

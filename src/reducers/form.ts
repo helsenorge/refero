@@ -585,6 +585,12 @@ function wipeAnswerItems(answerItem: QuestionnaireResponseItem | undefined, item
     answerItem.answer.forEach(answer => {
       resetAnswerValue(answer, item);
     });
+
+    // prune empty answers
+    for (let i = answerItem.answer.length - 1; i >= 0; i--) {
+      const a = answerItem.answer[i];
+      if (Object.keys(a).length === 0) answerItem.answer.splice(i, 1);
+    }
   }
 
   const hasItems = answerItem.item && answerItem.item.length > 0;

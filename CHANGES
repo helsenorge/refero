@@ -4,6 +4,10 @@
 * Upgraded @helsenorge/core-build to v10.0.2.
 * redux-thunk as middleware is now required.
 
+4.0.3
+-----
+* Fixes bug where empty answers where not pruned from the reponse tree.
+
 4.0.2
 -----
 * Added support for hidden items.
