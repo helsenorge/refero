@@ -3519,10 +3519,10 @@ fd-slicer@~1.1.0:
   dependencies:
     pend "~1.2.0"
 
-fhirpath@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/fhirpath/-/fhirpath-1.0.0.tgz#5f60aed093dcf5e20c826055add5a9409ac20535"
-  integrity sha512-OIxE9Oq66dM3anRWEpMj6Lo7vMruc//n14ZztZywOm5FxB9PmRQkQ7rHpyoE1KRVG+qJFdKkncokkANLNWSKhw==
+fhirpath@1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/fhirpath/-/fhirpath-1.0.1.tgz#a8ed2ad6ba72188edc63daf7557b6f999a9ecb25"
+  integrity sha512-+YLUcrD/b431nSaQGgT3kqLUh53zCkCWYLcz8E9G/HDzo7UaQlTujzuPxZKjPHm7fuqPLOonp4iV8o9NQNLl7w==
   dependencies:
     "@lhncbc/ucum-lhc" "^3.0.0"
     antlr4 "^4.7.1"

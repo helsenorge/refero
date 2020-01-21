@@ -1,6 +1,6 @@
 {
   "name": "@helsenorge/skjemautfyller",
-  "version": "5.0.0-beta05",
+  "version": "5.0.0-beta06",
   "main": "index.js",
   "author": "helsenorge",
   "license": "UNLICENSED",
@@ -59,6 +59,6 @@
     "moment": "2.22.2",
     "tabbable": "^3.1.1",
     "uuid": "2.0.3",
-    "fhirpath": "^1.0.0"
+    "fhirpath": "1.0.1"
   }
 }
