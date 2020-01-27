@@ -44,12 +44,7 @@ export interface Props {
   validateScriptInjection: boolean;
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
-  onAnswerChange: (
-    newState: GlobalState,
-    path: Array<Path>,
-    item: QuestionnaireItem,
-    answer: QuestionnaireResponseAnswer | QuestionnaireResponseAnswer[]
-  ) => void;
+  onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseAnswer) => void;
 }
 
 export class String extends React.Component<Props & ValidationProps, {}> {

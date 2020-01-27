@@ -17,12 +17,7 @@ interface Props {
   dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
   mustShowConfirm: boolean;
   className?: string;
-  onAnswerChange: (
-    newState: GlobalState,
-    path: Array<Path>,
-    item: QuestionnaireItem,
-    answer: QuestionnaireResponseAnswer | QuestionnaireResponseAnswer[]
-  ) => void;
+  onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseAnswer) => void;
 }
 
 interface State {
@@ -39,7 +34,7 @@ class DeleteButton extends React.Component<Props, State> {
     if (this.props.dispatch && this.props.item && this.props.path) {
       this.props
         .dispatch(deleteRepeatItemAsync(this.props.path, this.props.item))
-        ?.then(newState => this.props.onAnswerChange(newState, this.props.path, this.props.item, []));
+        ?.then(newState => this.props.onAnswerChange(newState, this.props.path, this.props.item, new QuestionnaireResponseAnswer()));
     }
     this.setState({ showConfirm: false });
   };
