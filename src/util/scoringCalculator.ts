@@ -4,7 +4,7 @@ import { getItemsWithIdFromResponseItemArray } from './skjemautfyller-core';
 import { getExtension, getCalculatedExpressionExtension } from './extension';
 import ExtensionConstants from '../constants/extensions';
 import { ScoringItemType } from '../constants/scoringItemType';
-import * as stu3 from 'fhirpath/fhir-context/stu3/choiceTypePaths.json';
+const stu3 = require('./fhirpathLoaderHelper');
 const fhirpath = require('fhirpath');
 
 class CalculatedScores {
@@ -194,7 +194,7 @@ export class ScoringCalculator {
     const expressionExtension = getCalculatedExpressionExtension(item);
     let value = 0;
     if (expressionExtension) {
-      let result = fhirpath.evaluate(questionnaireResponse, expressionExtension.valueString, null, { choiceTypePaths: stu3 });
+      let result = fhirpath.evaluate(questionnaireResponse, expressionExtension.valueString, null, stu3);
       if (result.length) {
         value = (result[0] as number) ?? 0;
       }
