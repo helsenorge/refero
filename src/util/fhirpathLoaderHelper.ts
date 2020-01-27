@@ -1,4 +1,7 @@
-module.exports = {
-  choiceTypePaths: require('fhirpath/fhir-context/stu3/choiceTypePaths.json'),
-  pathsDefinedElsewhere: require('fhirpath/fhir-context/stu3/pathsDefinedElsewhere.json'),
+import * as choiceTypePaths from 'fhirpath/fhir-context/stu3/choiceTypePaths.json';
+import * as pathsDefinedElsewhere from 'fhirpath/fhir-context/stu3/pathsDefinedElsewhere.json';
+
+export default {
+  choiceTypePaths: choiceTypePaths,
+  pathsDefinedElsewhere: pathsDefinedElsewhere
 };
