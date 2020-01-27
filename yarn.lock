@@ -25,10 +25,10 @@
   dependencies:
     regenerator-runtime "^0.13.2"
 
-"@helsenorge/core-build@10.0.2-beta01":
-  version "10.0.2-beta01"
-  resolved "https://tfs.ehelse.no/Ehelse/_packaging/Helsenorge/npm/registry/@helsenorge/core-build/-/core-build-10.0.2-beta01.tgz#46a6aef0707601fa4df614853a7f81e7a1e5ff99"
-  integrity sha1-Rqau8HB2AfpN9hSFOn+B56Hl/5k=
+"@helsenorge/core-build@10.0.2":
+  version "10.0.2"
+  resolved "https://tfs.ehelse.no/Ehelse/_packaging/Helsenorge/npm/registry/@helsenorge/core-build/-/core-build-10.0.2.tgz#c9670f07981abce93f6b19c87dbb735fb90ae67d"
+  integrity sha1-yWcPB5gavOk/axnIfbtzX7kK5n0=
   dependencies:
     "@helsenorge/eslint-config" "1.0.4"
     "@types/classnames" "2.2.6"
