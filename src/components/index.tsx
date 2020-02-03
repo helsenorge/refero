@@ -159,7 +159,7 @@ class Skjemautfyller extends React.Component<StateProps & DispatchProps & Props,
       );
       this.props.onChange(item, answer, actionRequester);
 
-      for (let action of actionRequester.actions()) {
+      for (let action of actionRequester.getActions()) {
         this.props.dispatch(action);
       }
     }

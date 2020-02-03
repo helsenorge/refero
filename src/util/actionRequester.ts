@@ -54,7 +54,7 @@ class ItemAndPath {
 }
 
 export class ActionRequester implements IActionRequester {
-  private _actions: Array<NewValueAction> = [];
+  private actions: Array<NewValueAction> = [];
   private questionnaire: Questionnaire;
   private questionnaireResponse: QuestionnaireResponse;
 
@@ -66,7 +66,7 @@ export class ActionRequester implements IActionRequester {
   public addIntegerAnswer(linkId: string, value: number, index: number = 0) {
     var itemAndPath = this.getItemAndPath(linkId, index);
     if (itemAndPath) {
-      this._actions.push(newIntegerValue(itemAndPath.path, value, itemAndPath.item));
+      this.actions.push(newIntegerValue(itemAndPath.path, value, itemAndPath.item));
     }
   }
 
@@ -77,7 +77,7 @@ export class ActionRequester implements IActionRequester {
   public addDecimalAnswer(linkId: string, value: number, index: number = 0) {
     var itemAndPath = this.getItemAndPath(linkId, index);
     if (itemAndPath) {
-      this._actions.push(newDecimalValue(itemAndPath.path, value, itemAndPath.item));
+      this.actions.push(newDecimalValue(itemAndPath.path, value, itemAndPath.item));
     }
   }
 
@@ -88,14 +88,14 @@ export class ActionRequester implements IActionRequester {
   public addChoiceAnswer(linkId: string, value: Coding, index: number = 0) {
     var itemAndPath = this.getItemAndPath(linkId, index);
     if (itemAndPath) {
-      this._actions.push(newCodingValue(itemAndPath.path, value, itemAndPath.item, this.isCheckbox(itemAndPath.item)));
+      this.actions.push(newCodingValue(itemAndPath.path, value, itemAndPath.item, this.isCheckbox(itemAndPath.item)));
     }
   }
 
   public removeChoiceAnswer(linkId: string, value: Coding, index: number = 0) {
     var itemAndPath = this.getItemAndPath(linkId, index);
     if (itemAndPath && this.isCheckbox(itemAndPath.item)) {
-      this._actions.push(removeCodingValue(itemAndPath.path, value, itemAndPath.item));
+      this.actions.push(removeCodingValue(itemAndPath.path, value, itemAndPath.item));
     }
   }
 
@@ -103,9 +103,9 @@ export class ActionRequester implements IActionRequester {
     var itemAndPath = this.getItemAndPath(linkId, index);
     if (itemAndPath) {
       if (typeof value === 'string') {
-        this._actions.push(newCodingStringValue(itemAndPath.path, value, itemAndPath.item));
+        this.actions.push(newCodingStringValue(itemAndPath.path, value, itemAndPath.item));
       } else {
-        this._actions.push(newCodingValue(itemAndPath.path, value, itemAndPath.item, this.isCheckbox(itemAndPath.item)));
+        this.actions.push(newCodingValue(itemAndPath.path, value, itemAndPath.item, this.isCheckbox(itemAndPath.item)));
       }
     }
   }
@@ -114,9 +114,9 @@ export class ActionRequester implements IActionRequester {
     var itemAndPath = this.getItemAndPath(linkId, index);
     if (itemAndPath) {
       if (typeof value === 'string') {
-        this._actions.push(removeCodingStringValue(itemAndPath.path, itemAndPath.item));
+        this.actions.push(removeCodingStringValue(itemAndPath.path, itemAndPath.item));
       } else if (this.isCheckbox(itemAndPath.item)) {
-        this._actions.push(removeCodingValue(itemAndPath.path, value, itemAndPath.item));
+        this.actions.push(removeCodingValue(itemAndPath.path, value, itemAndPath.item));
       }
     }
   }
@@ -124,7 +124,7 @@ export class ActionRequester implements IActionRequester {
   public addBooleanAnswer(linkId: string, value: boolean, index: number = 0) {
     var itemAndPath = this.getItemAndPath(linkId, index);
     if (itemAndPath) {
-      this._actions.push(newBooleanValue(itemAndPath.path, value, itemAndPath.item));
+      this.actions.push(newBooleanValue(itemAndPath.path, value, itemAndPath.item));
     }
   }
 
@@ -135,7 +135,7 @@ export class ActionRequester implements IActionRequester {
   public addDateAnswer(linkId: string, value: string, index: number = 0) {
     var itemAndPath = this.getItemAndPath(linkId, index);
     if (itemAndPath) {
-      this._actions.push(newDateValue(itemAndPath.path, value, itemAndPath.item));
+      this.actions.push(newDateValue(itemAndPath.path, value, itemAndPath.item));
     }
   }
 
@@ -146,7 +146,7 @@ export class ActionRequester implements IActionRequester {
   public addTimeAnswer(linkId: string, value: string, index: number = 0) {
     var itemAndPath = this.getItemAndPath(linkId, index);
     if (itemAndPath) {
-      this._actions.push(newTimeValue(itemAndPath.path, value, itemAndPath.item));
+      this.actions.push(newTimeValue(itemAndPath.path, value, itemAndPath.item));
     }
   }
 
@@ -157,7 +157,7 @@ export class ActionRequester implements IActionRequester {
   public addDateTimeAnswer(linkId: string, value: string, index: number = 0) {
     var itemAndPath = this.getItemAndPath(linkId, index);
     if (itemAndPath) {
-      this._actions.push(newDateTimeValue(itemAndPath.path, value, itemAndPath.item));
+      this.actions.push(newDateTimeValue(itemAndPath.path, value, itemAndPath.item));
     }
   }
 
@@ -168,7 +168,7 @@ export class ActionRequester implements IActionRequester {
   public addQuantityAnswer(linkId: string, value: Quantity, index: number = 0) {
     var itemAndPath = this.getItemAndPath(linkId, index);
     if (itemAndPath) {
-      this._actions.push(newQuantityValue(itemAndPath.path, value, itemAndPath.item));
+      this.actions.push(newQuantityValue(itemAndPath.path, value, itemAndPath.item));
     }
   }
 
@@ -179,7 +179,7 @@ export class ActionRequester implements IActionRequester {
   public addStringAnswer(linkId: string, value: string, index: number = 0) {
     var itemAndPath = this.getItemAndPath(linkId, index);
     if (itemAndPath) {
-      this._actions.push(newStringValue(itemAndPath.path, value, itemAndPath.item));
+      this.actions.push(newStringValue(itemAndPath.path, value, itemAndPath.item));
     }
   }
 
@@ -187,8 +187,8 @@ export class ActionRequester implements IActionRequester {
     this.addStringAnswer(linkId, '', index);
   }
 
-  public actions(): Array<NewValueAction> {
-    return this._actions;
+  public getActions(): Array<NewValueAction> {
+    return this.actions;
   }
 
   private getItemAndPath(linkId: string, index: number) {
