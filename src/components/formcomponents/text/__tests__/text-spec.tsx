@@ -23,6 +23,7 @@ describe('text with inline extension', () => {
         validateScriptInjection
         renderHelpButton={() => <React.Fragment />}
         renderHelpElement={() => <React.Fragment />}
+        onAnswerChange={() => {}}
       >
         {children}
       </Text>

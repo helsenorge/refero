@@ -3,17 +3,24 @@ import ChoiceCheckBoxDataModel from './__data__/scoring/choice-check-box';
 import OpenChoiceDataModel from './__data__/scoring/open-choice';
 import SectionScoreDataModel from './__data__/scoring/section-score';
 import FhirpathScoreDataModel from './__data__/scoring/fhirpath-score';
-import { Questionnaire, QuestionnaireItem } from '../../types/fhir';
+import { Questionnaire } from '../../types/fhir';
 import * as React from 'react';
 import rootReducer from '../../reducers';
 import { createStore, applyMiddleware } from 'redux';
 import { mount, ReactWrapper } from 'enzyme';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
-import { act } from 'react-dom/test-utils';
 import { Resources } from '../../util/resources';
 import { SkjemautfyllerContainer } from '..';
 import { getCalculatedExpressionExtension } from '../../util/extension';
+import {
+  inputAnswer,
+  selectRadioButtonOption,
+  unSelectCheckBoxOption,
+  selectCheckBoxOption,
+  findItem,
+  findQuestionnaireItem,
+} from './utils';
 
 describe('Component renders and calculates score', () => {
   beforeEach(() => {
@@ -208,77 +215,6 @@ function expectScores(scores: { [linkId: string]: string }, wrapper: ReactWrappe
     const value = scores[linkId];
     const item = findItem(linkId, wrapper);
     expect(item.props().value).toBe(value);
-  }
-}
-
-async function inputAnswer(linkId: string, answer: number, wrapper: ReactWrapper<{}, {}>) {
-  const id = 'item_' + linkId;
-  const input = wrapper.find('input[id="' + id + '"]');
-  act(() => {
-    input.simulate('change', { target: { value: answer } });
-  });
-
-  await new Promise(r => {
-    setTimeout(r);
-  });
-  wrapper.update();
-
-  act(() => {
-    input.simulate('blur');
-  });
-  await new Promise(r => {
-    setTimeout(r);
-  });
-  wrapper.update();
-}
-
-async function selectRadioButtonOption(linkId: string, index: number, wrapper: ReactWrapper<{}, {}>) {
-  act(() => {
-    const id = 'item_' + linkId + '-hn-' + index;
-    const input = wrapper.find('input[id="' + id + '"]');
-    input.simulate('click');
-  });
-
-  await new Promise(r => {
-    setTimeout(r);
-  });
-  wrapper.update();
-}
-
-async function selectCheckBoxOption(linkId: string, index: string, wrapper: ReactWrapper<{}, {}>) {
-  await changeCheckBoxOption(linkId, index, true, wrapper);
-}
-
-async function unSelectCheckBoxOption(linkId: string, index: string, wrapper: ReactWrapper<{}, {}>) {
-  await changeCheckBoxOption(linkId, index, false, wrapper);
-}
-
-async function changeCheckBoxOption(linkId: string, index: string, on: boolean, wrapper: ReactWrapper<{}, {}>) {
-  act(() => {
-    const id = 'item_' + linkId + '-' + index;
-    const input = wrapper.find('input[id="' + id + '"]');
-    input.simulate('change', { target: { checked: on } });
-  });
-
-  await new Promise(r => {
-    setTimeout(r);
-  });
-  wrapper.update();
-}
-
-function findItem(linkId: string, wrapper: ReactWrapper<{}, {}>) {
-  const id = 'item_' + linkId;
-  const input = wrapper.find('input[id="' + id + '"]');
-  return input.at(0);
-}
-
-function findQuestionnaireItem(linkId: string, items: QuestionnaireItem[] | undefined): QuestionnaireItem | undefined {
-  if (items === undefined) return;
-  for (let item of items) {
-    if (item.linkId === linkId) return item;
-
-    const found = findQuestionnaireItem(linkId, item.item);
-    if (found !== undefined) return found;
   }
 }
 

@@ -1,0 +1,28 @@
+{
+  "resourceType": "Questionnaire",
+  "id": "21",
+  "version": "0.1",
+  "name": "PHQ-9",
+  "title": "Testskjema for onChange",
+  "status": "draft",
+  "date": "2018-02-02",
+  "item": [
+    {
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-minOccurs",
+          "valueInteger": 3
+        }
+      ],
+      "linkId": "1",
+      "text": "Decimal",
+      "type": "decimal",
+      "repeats": true
+    },
+    {
+      "linkId": "2",
+      "text": "Integer",
+      "type": "integer"
+    }
+  ]
+}

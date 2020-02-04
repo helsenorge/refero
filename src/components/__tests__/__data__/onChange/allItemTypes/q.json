@@ -1,0 +1,151 @@
+{
+  "resourceType": "Questionnaire",
+  "id": "21",
+  "version": "0.1",
+  "name": "PHQ-9",
+  "title": "Testskjema for onChange",
+  "status": "draft",
+  "date": "2018-02-02",
+  "contained": [
+    {
+      "resourceType": "ValueSet",
+      "id": "1101",
+      "version": "1.0",
+      "name": "urn:oid:1101",
+      "title": "Ja / Nei",
+      "status": "draft",
+      "publisher": "Direktoratet for e-helse",
+      "compose": {
+        "include": [
+          {
+            "system": "urn:oid:2.16.578.1.12.4.1.1101",
+            "concept": [
+              {
+                "code": "1",
+                "display": "Ja"
+              },
+              {
+                "code": "2",
+                "display": "Nei"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "item": [
+    {
+      "linkId": "1",
+      "text": "Decimal",
+      "type": "decimal"
+    },
+    {
+      "linkId": "2",
+      "text": "Integer",
+      "type": "integer"
+    },
+    {
+      "linkId": "3",
+      "text": "Quantity",
+      "type": "quantity",
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+          "valueCoding": {
+            "code": "kg",
+            "display": "kg"
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "4",
+      "text": "Boolean",
+      "type": "boolean"
+    },
+    {
+      "linkId": "5a",
+      "text": "Choice - radio",
+      "type": "choice",
+      "options": {
+        "reference": "#1101"
+      }
+    },
+    {
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                "code": "check-box"
+              }
+            ]
+          }
+        }
+      ],
+      "linkId": "5b",
+      "text": "Choice - checkbox",
+      "type": "choice",
+      "options": {
+        "reference": "#1101"
+      }
+    },
+    {
+      "linkId": "6a",
+      "text": "OpenChoice - radio",
+      "type": "open-choice",
+      "options": {
+        "reference": "#1101"
+      }
+    },
+    {
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                "code": "check-box"
+              }
+            ]
+          }
+        }
+      ],
+      "linkId": "6b",
+      "text": "OpenChoice - checkbox",
+      "type": "open-choice",
+      "options": {
+        "reference": "#1101"
+      }
+    },
+    {
+      "linkId": "7a",
+      "text": "Date",
+      "type": "date"
+    },
+    {
+      "linkId": "7b",
+      "text": "Time",
+      "type": "time"
+    },
+    {
+      "linkId": "7c",
+      "text": "DateTime",
+      "type": "dateTime"
+    },
+    {
+      "linkId": "8",
+      "text": "String",
+      "type": "string"
+    },
+    {
+      "linkId": "9",
+      "text": "Text",
+      "type": "text"
+    }
+  ]
+}

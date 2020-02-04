@@ -44,12 +44,7 @@ export interface Props {
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
   resources?: Resources;
-  onAnswerChange: (
-    newState: GlobalState,
-    path: Array<Path>,
-    item: QuestionnaireItem,
-    answer: QuestionnaireResponseAnswer | QuestionnaireResponseAnswer[]
-  ) => void;
+  onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseAnswer) => void;
 }
 export class Text extends React.Component<Props & ValidationProps, {}> {
   showCounter(): boolean {
