@@ -40,6 +40,7 @@ import { setSkjemaDefinition } from '../actions/form';
 import { TextMessage } from '../types/text-message';
 import { ValidationSummaryPlacement } from '@helsenorge/toolkit/components/molecules/form/validationSummaryPlacement';
 import { getQuestionnaireUnitExtensionValue } from '../util/extension';
+import { ActionRequester, IActionRequester } from '../util/actionRequester';
 
 export interface QueryStringsInterface {
   MessageId: string;
@@ -82,7 +83,6 @@ interface Props {
     onSuccess: (uploadedFile: UploadedFile, attachment: Attachment) => void,
     onError: (errormessage: TextMessage | null) => void
   ) => void;
-
   questionnaire?: Questionnaire;
   questionnaireResponse?: QuestionnaireResponse;
   language?: string;
@@ -103,6 +103,7 @@ interface Props {
     helpText: string,
     opening: boolean
   ) => JSX.Element;
+  onChange?: (item: QuestionnaireItem, answer: QuestionnaireResponseAnswer, actionRequester: IActionRequester) => void;
 }
 
 interface State {
@@ -150,12 +151,23 @@ class Skjemautfyller extends React.Component<StateProps & DispatchProps & Props,
     }
   }
 
-  onAnswerChange = (
-    newState: GlobalState,
-    _path: Array<Path>,
-    _item: QuestionnaireItem,
-    _answer: QuestionnaireResponseAnswer | QuestionnaireResponseAnswer[]
-  ) => {
+  onAnswerChange = (newState: GlobalState, _path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseAnswer) => {
+    if (this.props.onChange) {
+      const actionRequester = new ActionRequester(
+        newState.skjemautfyller.form.FormDefinition.Content!,
+        newState.skjemautfyller.form.FormData.Content!
+      );
+      this.props.onChange(item, answer, actionRequester);
+
+      for (let action of actionRequester.getActions()) {
+        this.props.dispatch(action);
+      }
+    }
+
+    this.runScoringCalculator(newState);
+  };
+
+  runScoringCalculator = (newState: GlobalState) => {
     if (!this.scoringCalculator && this.props.formDefinition?.Content) {
       this.scoringCalculator = new ScoringCalculator(this.props.formDefinition.Content);
     }

@@ -1,3 +1,9 @@
+5.0.1
+-----
+* Added new property onChange, that gets triggered whenever a user answers a question.
+  The onChange callback is passed an instance of IActionRequester, that facilitate programmatic changes
+  to the questionnaire.
+
 5.0.0
 -----
 * Support for scoring with total score (TS), section score (SS) question score (QS) and fhirpath scoring.

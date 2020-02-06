@@ -35,12 +35,7 @@ export interface Props {
   oneToTwoColumn: boolean;
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
-  onAnswerChange: (
-    newState: GlobalState,
-    path: Array<Path>,
-    item: QuestionnaireItem,
-    answer: QuestionnaireResponseAnswer | QuestionnaireResponseAnswer[]
-  ) => void;
+  onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseAnswer) => void;
 }
 
 class DateTime extends React.Component<Props & ValidationProps> {

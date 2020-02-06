@@ -36,12 +36,7 @@ export interface Props {
   repeatButton: JSX.Element;
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
-  onAnswerChange: (
-    newState: GlobalState,
-    path: Array<Path>,
-    item: QuestionnaireItem,
-    answer: QuestionnaireResponseAnswer | QuestionnaireResponseAnswer[]
-  ) => void;
+  onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseAnswer) => void;
 }
 interface QuantityInputFieldProps {
   step?: string;

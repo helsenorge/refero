@@ -487,17 +487,24 @@ export function getResponseItemAndPathWithLinkId(
   item: QuestionnaireResponse | QuestionnaireResponseItem,
   currentPath: Path[] = []
 ): Array<ItemAndPath> {
-  if (!item.item) return [];
-
   let response: Array<ItemAndPath> = [];
   let index = 0;
   let seen: { [linkId: string]: number } = {};
-  for (let i of item.item) {
+  for (let i of item.item ?? []) {
     index = i.linkId in seen ? seen[i.linkId] : 0;
     response.push(...getResponseItemAndPathWithLinkIdTraverse(linkId, i, currentPath, index));
     seen[i.linkId] = index + 1;
   }
 
+  if (isOfTypeQuestionnaireResponseItem(item)) {
+    for (let a of item.answer ?? []) {
+      for (let i of a.item ?? []) {
+        index = i.linkId in seen ? seen[i.linkId] : 0;
+        response.push(...getResponseItemAndPathWithLinkIdTraverse(linkId, i, currentPath, index));
+        seen[i.linkId] = index + 1;
+      }
+    }
+  }
   return response;
 }
 
@@ -524,6 +531,10 @@ function getResponseItemAndPathWithLinkIdTraverse(
 
   currentPath.pop();
   return response;
+}
+
+function isOfTypeQuestionnaireResponseItem(item: QuestionnaireResponse | QuestionnaireResponseItem): item is QuestionnaireResponseItem {
+  return (<QuestionnaireResponseItem>item).answer !== undefined;
 }
 
 export function getResponseItemWithPath(path: Array<Path>, formData: FormData): QuestionnaireResponseItem | undefined {

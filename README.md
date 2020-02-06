@@ -47,6 +47,7 @@ class App extends Component<{}, {}> {
           attachmentMaxFileSize={...}
           attachmentValidTypes={...}
           validationSummaryPlacement={...}
+          onChange={...}
         />
       </Provider>
     );
@@ -77,6 +78,7 @@ class App extends Component<{}, {}> {
 | onRequestHelpButton        |          | callback                   | null    | Callback when the form needs to render a help button                                                          |
 | onRequestHelpElement       |          | callback                   | null    | Callback when the form needs to render a help element (help text)                                             |
 | validationSummaryPlacement |          | ValidationSummaryPlacement | null    | Controls the placement of the form validation summary                                                         |
+| onChange                   |          | callback                   | null    | Callback when user enters an answer                                                                           |
 
 ### `questionnaire: Questionnaire`
 
@@ -189,6 +191,14 @@ the items label. If this is not specified, a default implementation is provided.
 - `helpText: string` The help text, either as plain text or html (in the case the help item had markdown)
 - `opening: boolean` This boolean indicates whether the help text is visible or not (open or closed)
 
+### `onChange: (item: QuestionnaireItem, answer: QuestionnaireResponseAnswer, actionRequester: IActionRequester) => void`
+
+This callback is called when the user enters an answer. The callback is called with the following arguments:
+
+- `item: QuestionnaireItem` This is the item the user answered.
+- `answer: QuestionnaireResponseAnswer` This is the actual answer the user entered.
+- `actionRequester: IActionRequester` Instance that facilitates programmatic changes to the questionnaire response.
+
 # Enum definitions
 
 ## `ValidationSummaryPlacement`
@@ -202,6 +212,45 @@ enum ValidationSummaryPlacement {
 ```
 
 # Interface definitions
+
+## `IActionRequester`
+
+```ts
+// location '@helsenorge/skjemautfyller/util/actionRequester'
+interface IActionRequester {
+  addIntegerAnswer(linkId: string, value: number, index?: number): void;
+  addDecimalAnswer(linkId: string, value: number, index?: number): void;
+  addChoiceAnswer(linkId: string, value: Coding, index?: number): void;
+  addOpenChoiceAnswer(linkId: string, value: Coding | string, index?: number): void;
+  addBooleanAnswer(linkId: string, value: boolean, index?: number): void;
+  addDateAnswer(linkId: string, value: string, index?: number): void;
+  addTimeAnswer(linkId: string, value: string, index?: number): void;
+  addDateTimeAnswer(linkId: string, value: string, index?: number): void;
+  addQuantityAnswer(linkId: string, value: Quantity, index?: number): void;
+  addStringAnswer(linkId: string, value: string, index?: number): void;
+
+  clearIntegerAnswer(linkId: string, index?: number): void;
+  clearDecimalAnswer(linkId: string, index?: number): void;
+  clearBooleanAnswer(linkId: string, index?: number): void;
+  clearDateAnswer(linkId: string, index?: number): void;
+  clearTimeAnswer(linkId: string, index?: number): void;
+  clearDateTimeAnswer(linkId: string, index?: number): void;
+  clearQuantityAnswer(linkId: string, index?: number): void;
+  clearStringAnswer(linkId: string, index?: number): void;
+
+  removeChoiceAnswer(linkId: string, value: Coding, index?: number): void;
+  removeOpenChoiceAnswer(linkId: string, value: Coding | string, index?: number): void;
+}
+```
+
+`IActionRequester` facilitates programmatic updates of the `QuestionnaireResponse`. All the `add*`, `clear*` and `remove*` methods, will
+queue a change event when called. This queue will then be processed when the callback finishes.
+
+`linkId` is the linkId of the item to be updated. `value` is the value to update with. `index` is optional and defaults to `0`. It indicates
+which instance of an item should be updated in case it is a repeatable item.
+
+`removeChoiceAnswer` and `removeOpenChoiceAnswer` only removes answers in the case it is a check-box group. It is not possible to remove an
+answer from a radio-button group or drop-down group.
 
 ## `Path`
 
