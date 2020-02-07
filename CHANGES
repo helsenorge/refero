@@ -1,3 +1,7 @@
+5.0.2
+-----
+* Added support for enableWhen with quantity answers.
+
 5.0.1
 -----
 * Added new property onChange, that gets triggered whenever a user answers a question.

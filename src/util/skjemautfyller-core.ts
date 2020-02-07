@@ -317,6 +317,20 @@ function enableWhenMatchesCodeAnswer(enableWhen: QuestionnaireEnableWhen, answer
   return enableWhen.answerCoding.code === answer.valueCoding.code && enableWhen.answerCoding.system === answer.valueCoding.system;
 }
 
+function enableWhenMatchesQuantityAnswer(enableWhen: QuestionnaireEnableWhen, answer: QuestionnaireResponseAnswer): boolean {
+  if (enableWhen.answerQuantity === undefined) {
+    return false;
+  }
+  if (answer.valueQuantity === undefined) {
+    return false;
+  }
+  return (
+    enableWhen.answerQuantity.code === answer.valueQuantity.code &&
+    enableWhen.answerQuantity.system === answer.valueQuantity.system &&
+    enableWhen.answerQuantity.value === answer.valueQuantity.value
+  );
+}
+
 function enableWhenMatchesReferenceAnswer(enableWhen: QuestionnaireEnableWhen, answer: QuestionnaireResponseAnswer): boolean {
   if (enableWhen.answerReference === undefined) {
     return false;
@@ -342,6 +356,9 @@ export function hasAnswer(answer: QuestionnaireResponseAnswer): boolean {
   const coding = answer.valueCoding;
   const codingValue = coding && coding.code ? String(coding.code) : null;
   if (codingValue !== null && codingValue !== undefined && codingValue !== '') {
+    return true;
+  }
+  if (answer.valueQuantity && (answer.valueQuantity.value || answer.valueQuantity.value === 0)) {
     return true;
   }
   if (answer.valueDate) {
@@ -404,6 +421,9 @@ export function enableWhenMatchesAnswer(
     }
     if (enableWhen.answerCoding) {
       matches = matches && enableWhenMatchesCodeAnswer(enableWhen, answer);
+    }
+    if (enableWhen.answerQuantity) {
+      matches = matches && enableWhenMatchesQuantityAnswer(enableWhen, answer);
     }
     if (enableWhen.answerReference) {
       matches = matches && enableWhenMatchesReferenceAnswer(enableWhen, answer);
