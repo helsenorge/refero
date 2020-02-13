@@ -1,6 +1,7 @@
 {
-  "extends": "../node_modules/@helsenorge/core-build/lib/tsconfig.webpack.json",
+  "extends": "../node_modules/@helsenorge/core-build/config/tsconfig.global.json",
   "compilerOptions": {
+    "jsx": "react",
     "noUnusedLocals": false,
     "noUnusedParameters": true,
     "strictNullChecks": true,
@@ -8,12 +9,6 @@
     "declaration": true,
     "resolveJsonModule": true
   },
-  "include": [
-    "../src/**/*.tsx",
-    "../src/**/*.ts"
-  ],
-  "exclude": [
-    "../src/**/__tests__*",
-    "../lib/**/*.*"
-  ]
+  "include": ["../src/**/*.tsx", "../src/**/*.ts"],
+  "exclude": ["../src/**/__tests__*", "../lib/**/*.*"]
 }

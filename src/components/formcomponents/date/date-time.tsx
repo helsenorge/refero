@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import * as moment from 'moment';
+import moment from 'moment';
 import 'moment/locale/nb';
 import withCommonFunctions from '../../with-common-functions';
 import DateTimeInput from '@helsenorge/toolkit/components/molecules/date-time-input';

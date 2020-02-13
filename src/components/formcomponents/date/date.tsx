@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import * as moment from 'moment';
+import moment from 'moment';
 import { DatePicker, DatePickerResources } from '@helsenorge/toolkit/components/molecules/datepicker';
 import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
 import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
