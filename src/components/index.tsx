@@ -41,6 +41,7 @@ import { TextMessage } from '../types/text-message';
 import { ValidationSummaryPlacement } from '@helsenorge/toolkit/components/molecules/form/validationSummaryPlacement';
 import { getQuestionnaireUnitExtensionValue } from '../util/extension';
 import { ActionRequester, IActionRequester } from '../util/actionRequester';
+import { QuestionniareInspector, IQuestionnaireInspector } from '../util/questionnaireInspector';
 
 export interface QueryStringsInterface {
   MessageId: string;
@@ -103,7 +104,12 @@ interface Props {
     helpText: string,
     opening: boolean
   ) => JSX.Element;
-  onChange?: (item: QuestionnaireItem, answer: QuestionnaireResponseAnswer, actionRequester: IActionRequester) => void;
+  onChange?: (
+    item: QuestionnaireItem,
+    answer: QuestionnaireResponseAnswer,
+    actionRequester: IActionRequester,
+    questionnaireInspector: IQuestionnaireInspector
+  ) => void;
 }
 
 interface State {
@@ -157,7 +163,13 @@ class Skjemautfyller extends React.Component<StateProps & DispatchProps & Props,
         newState.skjemautfyller.form.FormDefinition.Content!,
         newState.skjemautfyller.form.FormData.Content!
       );
-      this.props.onChange(item, answer, actionRequester);
+
+      const questionnaireInspector = new QuestionniareInspector(
+        newState.skjemautfyller.form.FormDefinition.Content!,
+        newState.skjemautfyller.form.FormData.Content!
+      );
+
+      this.props.onChange(item, answer, actionRequester, questionnaireInspector);
 
       for (let action of actionRequester.getActions()) {
         this.props.dispatch(action);

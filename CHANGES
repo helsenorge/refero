@@ -1,3 +1,8 @@
+5.1.0
+-----
+* Changed the onChange public API to include an IQuestionnaireInspector, that supports querying
+  a questionnaire for QuestionnaireItems and QuestionnaireResponses using linkIds.
+
 5.0.1
 -----
 * Added new property onChange, that gets triggered whenever a user answers a question.
