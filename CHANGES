@@ -1,3 +1,7 @@
+5.2.0
+----
+* Upgrade @helsenorge/core-build and @helsenorge/toolkit 
+
 5.0.1
 -----
 * Added new property onChange, that gets triggered whenever a user answers a question.

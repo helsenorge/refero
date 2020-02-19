@@ -8,7 +8,7 @@ import {
 
 import { FormData, FormDefinition } from '../reducers/form';
 import { parseDate } from '@helsenorge/toolkit/components/molecules/time-input/date-core';
-import * as moment from 'moment';
+import moment from 'moment';
 
 import ItemType from '../constants/itemType';
 import { getMinOccursExtensionValue } from './extension';
@@ -475,7 +475,7 @@ export function shouldRenderDeleteButton(item: QuestionnaireItem, index: number)
 }
 
 function copyPath(path: Array<Path>) {
-  const newPath = [];
+  const newPath: Array<Path> = [];
   for (let i = 0; i < path.length; i++) {
     newPath.push(Object.assign({}, path[i]));
   }

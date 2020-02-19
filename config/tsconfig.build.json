@@ -1,20 +1,18 @@
 {
-  "extends": "../node_modules/@helsenorge/core-build/lib/tsconfig.webpack.json",
+  "extends": "../node_modules/@helsenorge/core-build/config/tsconfig.global.json",
   "compilerOptions": {
+    "jsx": "react",
     "outDir": "../lib",
     "noUnusedLocals": false,
     "noUnusedParameters": true,
     "strictNullChecks": true,
     "module": "commonjs",
+    "removeComments": true,
+    "allowSyntheticDefaultImports": true,
     "declaration": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "noEmit": false
   },
-  "include": [
-    "../src/**/*.tsx",
-    "../src/**/*.ts"
-  ],
-  "exclude": [
-    "../src/**/__tests__*",
-    "../lib/**/*.*"
-  ]
+  "include": ["../src/**/*.tsx", "../src/**/*.ts"],
+  "exclude": ["../src/**/__tests__*", "../lib/**/*.*"]
 }

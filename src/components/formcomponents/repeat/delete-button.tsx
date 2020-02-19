@@ -9,7 +9,7 @@ import { GlobalState } from '../../../reducers';
 import { NewValueAction, deleteRepeatItemAsync } from '../../../actions/newValue';
 import { ConfirmBox } from '@helsenorge/toolkit/components/molecules/confirmbox';
 import { FunctionButton } from '@helsenorge/toolkit/components/atoms/buttons/function-button';
-import * as classNames from 'classnames';
+import classNames from 'classnames';
 interface Props {
   item: QuestionnaireItem;
   path: Array<Path>;
@@ -34,7 +34,7 @@ class DeleteButton extends React.Component<Props, State> {
     if (this.props.dispatch && this.props.item && this.props.path) {
       this.props
         .dispatch(deleteRepeatItemAsync(this.props.path, this.props.item))
-        ?.then(newState => this.props.onAnswerChange(newState, this.props.path, this.props.item, new QuestionnaireResponseAnswer()));
+        ?.then(newState => this.props.onAnswerChange(newState, this.props.path, this.props.item, {} as QuestionnaireResponseAnswer));
     }
     this.setState({ showConfirm: false });
   };

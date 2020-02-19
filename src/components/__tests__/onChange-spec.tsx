@@ -13,7 +13,7 @@ import questionnaireWithRepeats from './__data__/onChange/repeats';
 import questionnaireWithNestedItems from './__data__/onChange/nestedItems';
 import { inputAnswer, findItem } from './utils';
 import DateTime from '@helsenorge/toolkit/components/molecules/date-time-input';
-import * as moment from 'moment';
+import moment from 'moment';
 import Constants, { OPEN_CHOICE_ID } from '../../constants/index';
 
 describe('onAnswerChange callback gets called and can request additional changes', () => {
