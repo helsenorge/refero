@@ -10,5 +10,6 @@ export default {
     HORIZONTAL_TABLE: 'htable',
     GROUP_TABLE: 'gtable',
     ANSWER_TABLE: 'atable',
+    GRID: 'grid',
   },
 };

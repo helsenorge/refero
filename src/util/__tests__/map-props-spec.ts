@@ -4,6 +4,7 @@ import { mapStateToProps, mapDispatchToProps } from '../map-props';
 import { getQuestionnaireDefinitionItem } from '../skjemautfyller-core';
 import { pathify } from '../../reducers/__tests__/utils';
 import { dataModel } from './__data__/testDataModel';
+import { RenderContext } from '../renderContext';
 const should = chai.should();
 
 describe('mapStateToProps', () => {
@@ -289,7 +290,7 @@ describe('mapStateToProps', () => {
 
 describe('mapDispatchToProps', () => {
   it('should return object', () => {
-    const props = mapDispatchToProps(() => {}, { path: [] });
+    const props = mapDispatchToProps(() => {}, { path: [], renderContext: new RenderContext() });
     should.exist(props.dispatch);
     should.exist(props.path);
   });

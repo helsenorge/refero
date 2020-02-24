@@ -1,0 +1,135 @@
+{
+  "resourceType": "Questionnaire",
+  "id": "test-grid",
+  "language": "nb-NO",
+  "url": "https://skjemakatalog-dev-fhir-apimgmt.azure-api.net/api/v1/Questionnaire/test-grid",
+  "version": "0.1",
+  "name": "test-grid",
+  "title": "Eksempelskjema Tabell - Førerrett",
+  "status": "draft",
+  "date": "2019-09-18",
+  "publisher": "Direktoratet for e-helse",
+  "purpose": "Test",
+  "approvalDate": "2018-02-02",
+  "lastReviewDate": "2018-02-02",
+  "copyright": "Er utviklet av Direktoratet for e-helse til fri benyttelse",
+  "item": [
+    {
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                "code": "grid"
+              }
+            ]
+          }
+        }
+      ],
+      "linkId": "1",
+      "text": "X",
+      "type": "group",
+      "repeats": false,
+      "item": [
+        {
+          "linkId": "1.1",
+          "text": "Rad 1",
+          "type": "group",
+          "repeats": false,
+          "item": [
+            {
+              "linkId": "1.1.1",
+              "text": "SpmA",
+              "type": "decimal",
+              "required": false,
+              "repeats": false,
+              "readOnly": false
+            },
+            {
+              "linkId": "1.1.2",
+              "text": "SpmB",
+              "type": "decimal",
+              "required": false,
+              "repeats": false,
+              "readOnly": false
+            },
+            {
+              "linkId": "1.1.3",
+              "text": "SpmC",
+              "type": "decimal",
+              "required": false,
+              "repeats": false,
+              "readOnly": false
+            }
+          ]
+        },
+        {
+          "linkId": "1.2",
+          "text": "Rad 2",
+          "type": "group",
+          "repeats": false,
+          "item": [
+            {
+              "linkId": "1.2.1",
+              "text": "SpmC",
+              "type": "decimal",
+              "required": false,
+              "repeats": false,
+              "readOnly": false
+            },
+            {
+              "linkId": "1.2.2",
+              "text": "SpmA",
+              "type": "decimal",
+              "required": false,
+              "repeats": false,
+              "readOnly": false
+            },
+            {
+              "linkId": "1.2.3",
+              "text": "SpmB",
+              "type": "decimal",
+              "required": false,
+              "repeats": false,
+              "readOnly": false
+            }
+          ]
+        },
+        {
+          "linkId": "1.3",
+          "text": "Rad 3",
+          "type": "group",
+          "repeats": false,
+          "item": [
+            {
+              "linkId": "1.3.1",
+              "text": "SpmD",
+              "type": "decimal",
+              "required": false,
+              "repeats": false,
+              "readOnly": false
+            }
+          ]
+        },
+        {
+          "linkId": "1.4",
+          "text": "Rad 4",
+          "type": "group",
+          "repeats": false,
+          "item": [
+            {
+              "linkId": "1.4.1",
+              "text": "SpmC",
+              "type": "decimal",
+              "required": false,
+              "repeats": false,
+              "readOnly": false
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

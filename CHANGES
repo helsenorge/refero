@@ -1,3 +1,7 @@
+5.2.1
+-----
+* Added support for questionnaire-item-control type "grid".
+
 5.2.0
 ----
 * Upgrade @helsenorge/core-build and @helsenorge/toolkit 

@@ -41,6 +41,7 @@ import { TextMessage } from '../types/text-message';
 import { ValidationSummaryPlacement } from '@helsenorge/toolkit/components/molecules/form/validationSummaryPlacement';
 import { getQuestionnaireUnitExtensionValue } from '../util/extension';
 import { ActionRequester, IActionRequester } from '../util/actionRequester';
+import { RenderContext } from '../util/renderContext';
 
 export interface QueryStringsInterface {
   MessageId: string;
@@ -238,6 +239,7 @@ class Skjemautfyller extends React.Component<StateProps & DispatchProps & Props,
                 item={item}
                 responseItems={responseItems}
                 parentPath={this.props.path}
+                renderContext={new RenderContext()}
               />
             ) : (
               undefined
@@ -268,6 +270,7 @@ class Skjemautfyller extends React.Component<StateProps & DispatchProps & Props,
               attachmentValidTypes={this.props.attachmentValidTypes}
               validateScriptInjection={this.props.validateScriptInjection}
               onAnswerChange={this.onAnswerChange}
+              renderContext={new RenderContext()}
             />
           );
         });
