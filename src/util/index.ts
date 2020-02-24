@@ -23,10 +23,8 @@ import {
   getValidationTextExtension,
   getQuestionnaireHiddenExtensionValue,
 } from './extension';
-import * as marked from 'marked';
+import marked from 'marked';
 marked.setOptions({ sanitize: true });
-
-import { ComponentClass } from 'react';
 import { isValid, invalidNodes } from '@helsenorge/toolkit/utils/validation';
 
 export function getComponentForItem(type: QuestionnaireItemTypeList) {

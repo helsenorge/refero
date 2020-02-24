@@ -268,7 +268,7 @@ function verifyAnswer(
   linkId: string,
   state: Form,
   path: Array<Path>,
-  test: (it: jest.Matchers<QuestionnaireResponseAnswer[] | undefined | void>) => unknown
+  test: (it: jest.Matchers<QuestionnaireResponseAnswer[] | undefined | void, undefined>) => unknown
 ) {
   const r = getResponseItem(linkId, state, path);
   if (!r) return fail();

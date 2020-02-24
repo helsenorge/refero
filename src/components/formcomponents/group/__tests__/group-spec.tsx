@@ -32,6 +32,6 @@ describe('group', () => {
         renderHelpElement={() => <React.Fragment />}
       />
     );
-    expect(group.find(CustomTag)).toMatchSnapshot();
+    expect(group.find(CustomTag).html()).toMatchSnapshot();
   });
 });

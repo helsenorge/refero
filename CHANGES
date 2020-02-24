@@ -1,6 +1,10 @@
-5.0.2
+5.2.1
 -----
 * Added support for enableWhen with quantity answers.
+
+5.2.0
+----
+* Upgrade @helsenorge/core-build and @helsenorge/toolkit 
 
 5.0.1
 -----
