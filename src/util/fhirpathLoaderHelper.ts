@@ -3,5 +3,5 @@ import * as pathsDefinedElsewhere from 'fhirpath/fhir-context/stu3/pathsDefinedE
 
 export default {
   choiceTypePaths: choiceTypePaths,
-  pathsDefinedElsewhere: pathsDefinedElsewhere
+  pathsDefinedElsewhere: pathsDefinedElsewhere,
 };

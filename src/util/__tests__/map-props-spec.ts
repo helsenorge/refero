@@ -200,6 +200,27 @@ describe('mapStateToProps', () => {
     expect(enable).toEqual(true);
   });
 
+  it('should enable component when correct quantity answer', () => {
+    if (
+      !dataModel ||
+      !dataModel.skjemautfyller ||
+      !dataModel.skjemautfyller.form.FormDefinition ||
+      !dataModel.skjemautfyller.form.FormDefinition.Content ||
+      !dataModel.skjemautfyller.form.FormDefinition.Content.item
+    ) {
+      return;
+    }
+    const item = dataModel.skjemautfyller.form.FormDefinition.Content.item[26];
+    const result = mapStateToProps(dataModel, {
+      item,
+      path: pathify(item.linkId),
+    } as Props);
+
+    const enable = result.enable;
+    should.exist(enable);
+    expect(enable).toEqual(true);
+  });
+
   it('should enable reference-component if has correct answer', () => {
     if (
       !dataModel ||

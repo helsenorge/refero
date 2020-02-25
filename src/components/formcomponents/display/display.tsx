@@ -4,7 +4,7 @@ import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/m
 import { renderPrefix, getText } from '../../../util/index';
 import { QuestionnaireItem } from '../../../types/fhir';
 import { getMarkdownExtensionValue } from '../../../util/extension';
-import * as marked from 'marked';
+import marked from 'marked';
 
 const renderer = new marked.Renderer();
 renderer.link = (href: string, title: string, text: string): string => {
@@ -26,7 +26,7 @@ const Display: React.SFC<Props> = ({ enable, pdf, item }) => {
   if (!enable) {
     return null;
   }
-  let value = undefined;
+  let value: JSX.Element | undefined = undefined;
   if (item) {
     const markdown = item._text ? getMarkdownExtensionValue(item._text) : undefined;
     if (markdown) {
@@ -51,9 +51,5 @@ const Display: React.SFC<Props> = ({ enable, pdf, item }) => {
   return <div className="page_skjemautfyller__component page_skjemautfyller__component_display">{value}</div>;
 };
 
-const connectedComponent = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-  mergeProps
-)(Display);
+const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(Display);
 export default connectedComponent;

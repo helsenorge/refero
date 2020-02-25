@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import * as moment from 'moment';
+import moment from 'moment';
 import { parseDate, getHoursFromTimeString, getMinutesFromTimeString } from '@helsenorge/toolkit/components/molecules/time-input/date-core';
 import TimeInput from '@helsenorge/toolkit/components/molecules/time-input';
 import DateTimeConstants from '@helsenorge/toolkit/constants/datetime';

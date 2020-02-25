@@ -124,10 +124,6 @@ export class ScoringCalculator {
     return newRetVal;
   }
 
-  private isOfTypeQuestionnaire(item: Questionnaire | QuestionnaireItem): item is Questionnaire {
-    return (<Questionnaire>item).status !== undefined;
-  }
-
   private isOfTypeQuestionnaireItem(item: Questionnaire | QuestionnaireItem): item is QuestionnaireItem {
     return (<QuestionnaireItem>item).type !== undefined;
   }
@@ -192,7 +188,7 @@ export class ScoringCalculator {
     answerPad: { [linkId: string]: number | undefined }
   ): number | undefined {
     const expressionExtension = getCalculatedExpressionExtension(item);
-    let value = undefined;
+    let value: number | undefined = undefined;
     if (expressionExtension) {
       let result = fhirpath.evaluate(questionnaireResponse, expressionExtension.valueString, null, stu3);
       if (result.length) {

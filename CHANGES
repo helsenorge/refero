@@ -1,7 +1,15 @@
-5.1.0
+5.2.2
 -----
 * Changed the onChange public API to include an IQuestionnaireInspector, that supports querying
   a questionnaire for QuestionnaireItems and QuestionnaireResponses using linkIds.
+
+5.2.1
+-----
+* Added support for enableWhen with quantity answers.
+
+5.2.0
+----
+* Upgrade @helsenorge/core-build and @helsenorge/toolkit 
 
 5.0.1
 -----
