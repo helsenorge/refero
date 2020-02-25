@@ -5,7 +5,7 @@ import { QuestionnaireItem } from '../../types/fhir';
 export async function inputAnswer(linkId: string, answer: number, wrapper: ReactWrapper<{}, {}>) {
   const id = 'item_' + linkId;
   const input = wrapper.find('input[id="' + id + '"]');
-  act(() => {
+  await act(async () => {
     input.simulate('change', { target: { value: answer } });
   });
 
@@ -14,7 +14,7 @@ export async function inputAnswer(linkId: string, answer: number, wrapper: React
   });
   wrapper.update();
 
-  act(() => {
+  await act(async () => {
     input.simulate('blur');
   });
   await new Promise(r => {
@@ -24,7 +24,7 @@ export async function inputAnswer(linkId: string, answer: number, wrapper: React
 }
 
 export async function selectRadioButtonOption(linkId: string, index: number, wrapper: ReactWrapper<{}, {}>) {
-  act(() => {
+  await act(async () => {
     const id = 'item_' + linkId + '-hn-' + index;
     const input = wrapper.find('input[id="' + id + '"]');
     input.simulate('click');
@@ -45,7 +45,7 @@ export async function unSelectCheckBoxOption(linkId: string, index: string, wrap
 }
 
 export async function changeCheckBoxOption(linkId: string, index: string, on: boolean, wrapper: ReactWrapper<{}, {}>) {
-  act(() => {
+  await act(async () => {
     const id = 'item_' + linkId + '-' + index;
     const input = wrapper.find('input[id="' + id + '"]');
     input.simulate('change', { target: { checked: on } });

@@ -1,3 +1,8 @@
+5.2.3
+-----
+* Support for extension maxDecimalPlaces on quantity types. Now also supports maxDecimalPlaces where
+  the value is 0, in which case the input field acts as an integer field. 
+
 5.2.2
 -----
 * Changed the onChange public API to include an IQuestionnaireInspector, that supports querying

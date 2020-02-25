@@ -16,12 +16,14 @@ import Quantity from '../components/formcomponents/quantity/quantity';
 import * as uuid from 'uuid';
 import { QuestionnaireItem, QuestionnaireResponseAnswer } from '../types/fhir';
 import Constants from '../constants/index';
+import ExtensionConstants from '../constants/extensions';
 import { Resources } from '../util/resources';
 import {
   getMaxOccursExtensionValue,
   getMarkdownExtensionValue,
   getValidationTextExtension,
   getQuestionnaireHiddenExtensionValue,
+  getExtension,
 } from './extension';
 import marked from 'marked';
 marked.setOptions({ sanitize: true });
@@ -236,4 +238,26 @@ export function getTextValidationErrorMessage(
   }
 
   return getValidationTextExtension(item) || '';
+}
+
+export function getDecimalPattern(item: QuestionnaireItem) {
+  const step = getExtension(ExtensionConstants.STEP_URL, item);
+
+  const integerPart = '[+-]?[0-9]+';
+  if (step && step.valueInteger != null) {
+    const value = Number(step.valueInteger);
+
+    if (value === 0) {
+      return `^${integerPart}$`;
+    }
+
+    let stepString = '';
+    if (value > 1) {
+      stepString = `1,${value}`;
+    } else if (value === 1) {
+      stepString = '1';
+    }
+
+    return `^${integerPart}(.[0-9]{${stepString}})?$`;
+  }
 }
