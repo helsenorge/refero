@@ -191,13 +191,15 @@ the items label. If this is not specified, a default implementation is provided.
 - `helpText: string` The help text, either as plain text or html (in the case the help item had markdown)
 - `opening: boolean` This boolean indicates whether the help text is visible or not (open or closed)
 
-### `onChange: (item: QuestionnaireItem, answer: QuestionnaireResponseAnswer, actionRequester: IActionRequester) => void`
+### `onChange: (item: QuestionnaireItem, answer: QuestionnaireResponseAnswer, actionRequester: IActionRequester, questionnaireInspector: IQuestionnaireInspector) => void`
 
 This callback is called when the user enters an answer. The callback is called with the following arguments:
 
 - `item: QuestionnaireItem` This is the item the user answered.
 - `answer: QuestionnaireResponseAnswer` This is the actual answer the user entered.
 - `actionRequester: IActionRequester` Instance that facilitates programmatic changes to the questionnaire response.
+- `questionnaireInspector: IQuestionnaireInspector` Instance that lets users query the questionnaire for questionnaire items and
+  questionnaireResponse items.
 
 # Enum definitions
 
@@ -251,6 +253,25 @@ which instance of an item should be updated in case it is a repeatable item.
 
 `removeChoiceAnswer` and `removeOpenChoiceAnswer` only removes answers in the case it is a check-box group. It is not possible to remove an
 answer from a radio-button group or drop-down group.
+
+## `IQuestionnaireInspector`
+
+```ts
+export interface IQuestionnaireInspector {
+  findItemWithLinkIds(linkIds: Array<string>): Array<QuestionnaireItemPair>;
+}
+```
+
+`IQuestionnaireInspector` lets the users query the state of the questionnaire for both `QuestionnaireItem` and `QuestionnaireResponse`.
+
+## `QuestionniareItemPair`
+
+```ts
+export interface QuestionnaireItemPair {
+  QuestionnaireItem: QuestionnaireItem;
+  QuestionnaireResponseItems: Array<QuestionnaireResponseItem>;
+}
+```
 
 ## `Path`
 
