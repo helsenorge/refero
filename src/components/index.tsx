@@ -8,6 +8,7 @@ import { getFormDefinition, getFormData, getInitialFormData } from '../reducers/
 
 import { getComponentForItem, shouldRenderRepeatButton, isHiddenItem } from '../util/index';
 import { ScoringCalculator } from '../util/scoringCalculator';
+import ExtensionConstants from '../constants/extensions';
 import Form from '@helsenorge/toolkit/components/molecules/form';
 import {
   getRootQuestionnaireResponseItemFromData,
@@ -39,7 +40,7 @@ import { UploadedFile } from '@helsenorge/toolkit/components/atoms/dropzone';
 import { setSkjemaDefinition } from '../actions/form';
 import { TextMessage } from '../types/text-message';
 import { ValidationSummaryPlacement } from '@helsenorge/toolkit/components/molecules/form/validationSummaryPlacement';
-import { getQuestionnaireUnitExtensionValue } from '../util/extension';
+import { getQuestionnaireUnitExtensionValue, getExtension } from '../util/extension';
 import { ActionRequester, IActionRequester } from '../util/actionRequester';
 import { QuestionniareInspector, IQuestionnaireInspector } from '../util/questionnaireInspector';
 
@@ -201,15 +202,25 @@ class Skjemautfyller extends React.Component<StateProps & DispatchProps & Props,
       const extension = getQuestionnaireUnitExtensionValue(templateItem);
       if (!extension) continue;
 
-      const item = getQuestionnaireDefinitionItem(linkId, newState.skjemautfyller.form.FormDefinition.Content?.item);
-      const itemsAndPaths = getResponseItemAndPathWithLinkId(linkId, newState.skjemautfyller.form.FormData.Content!);
-
       const quantity = {
-        value: (scores[linkId] as unknown) as decimal,
         unit: extension.display,
         system: extension.system,
         code: extension.code,
       } as Quantity;
+
+      const item = getQuestionnaireDefinitionItem(linkId, newState.skjemautfyller.form.FormDefinition.Content?.item);
+      const itemsAndPaths = getResponseItemAndPathWithLinkId(linkId, newState.skjemautfyller.form.FormData.Content!);
+
+      let value = scores[linkId];
+      if (item && value != null && !Number.isNaN(value) && Number.isFinite(value)) {
+        const decimalPlacesExtension = getExtension(ExtensionConstants.STEP_URL, item);
+        if (decimalPlacesExtension && decimalPlacesExtension.valueInteger != null) {
+          const places = Number(decimalPlacesExtension.valueInteger);
+          value = Number(value?.toFixed(places));
+        }
+
+        quantity.value = (value as unknown) as decimal;
+      }
 
       for (let itemAndPath of itemsAndPaths) {
         actions.push(newQuantityValue(itemAndPath.path, quantity, item));

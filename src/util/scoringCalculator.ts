@@ -193,6 +193,9 @@ export class ScoringCalculator {
       let result = fhirpath.evaluate(questionnaireResponse, expressionExtension.valueString, null, stu3);
       if (result.length) {
         value = (result[0] as number) ?? 0;
+        if (Number.isNaN(value) || !Number.isFinite(value)) {
+          value = undefined;
+        }
       }
     }
 

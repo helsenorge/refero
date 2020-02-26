@@ -1,3 +1,7 @@
+5.2.4
+-----
+* Bug fix for scoring. Don't propagate NaN and Infinite results.
+
 5.2.3
 -----
 * Support for extension maxDecimalPlaces on quantity types. Now also supports maxDecimalPlaces where
