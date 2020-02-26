@@ -62,9 +62,10 @@ export class Group extends React.Component<Props, State> {
   isDirectChildOfRenderContextOwner = (): boolean => {
     const { path, item, renderContext } = this.props;
 
-    let index = path.findIndex(p => p.linkId == item.linkId);
-    if (index > 0) {
-      return path[index - 1].linkId === renderContext.Owner;
+    const myIndex = path.findIndex(p => p.linkId === item.linkId);
+    if (myIndex > 0) {
+      const directParentLinkId = path[myIndex - 1].linkId;
+      return directParentLinkId === renderContext.Owner;
     }
 
     return false;
@@ -77,15 +78,15 @@ export class Group extends React.Component<Props, State> {
       childItems: QuestionnaireItem[],
       itemRenderer: (item: QuestionnaireItem, renderContext: RenderContext) => Array<JSX.Element | undefined>
     ): JSX.Element[] => {
-      let renderedChildItems = [];
+      const renderedChildItems = [];
       let counter = 1;
       for (let column of renderContext.Columns) {
-        let item = childItems.find(item => item.text === column);
+        let childItem = childItems.find(item => item.text === column);
 
-        if (item) {
+        if (childItem) {
           renderedChildItems.push(
             <td key={counter} className="page_skjemautfyller__grid--cell">
-              {...itemRenderer(item, renderContext)}
+              {...itemRenderer(childItem, renderContext)}
             </td>
           );
         } else {
@@ -117,7 +118,7 @@ export class Group extends React.Component<Props, State> {
     const headers = columns.map(c => <th key={item.linkId + '-' + c}>{c}</th>);
     headers.unshift(<th key={item.linkId + 'X'}>{item.text ? item.text : ''}</th>);
 
-    let newRenderContext = new RenderContext(RenderContextType.Grid, item.linkId, columns);
+    const newRenderContext = new RenderContext(RenderContextType.Grid, item.linkId, columns);
     return (
       <React.Fragment>
         <table id={getId(this.props.id)} className="page_skjemautfyller__grid">
@@ -145,9 +146,9 @@ export class Group extends React.Component<Props, State> {
   };
 
   getColumns = (): Array<string> => {
-    let item = this.props.item;
-    let seenColumns = {};
-    let columns: Array<string> = [];
+    const item = this.props.item;
+    const seenColumns = {};
+    const columns: Array<string> = [];
     if (!item.item || item.item.length === 0) return columns;
     for (let group of item.item) {
       if (group.item && group.item.length > 0) {
