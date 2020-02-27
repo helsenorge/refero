@@ -1,3 +1,7 @@
+5.2.4
+-----
+* Bug fix for date-fields. Previously it was not possible to clear a date-fields value.
+
 5.2.3
 -----
 * Support for extension maxDecimalPlaces on quantity types. Now also supports maxDecimalPlaces where

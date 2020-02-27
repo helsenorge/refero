@@ -2,7 +2,7 @@ import { act } from 'react-dom/test-utils';
 import { ReactWrapper } from 'enzyme';
 import { QuestionnaireItem } from '../../types/fhir';
 
-export async function inputAnswer(linkId: string, answer: number, wrapper: ReactWrapper<{}, {}>) {
+export async function inputAnswer(linkId: string, answer: number | string, wrapper: ReactWrapper<{}, {}>) {
   const id = 'item_' + linkId;
   const input = wrapper.find('input[id="' + id + '"]');
   await act(async () => {

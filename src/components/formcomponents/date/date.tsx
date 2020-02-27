@@ -18,14 +18,12 @@ import { Resources } from '../../../util/resources';
 import TextView from '../textview';
 import { ThunkDispatch } from 'redux-thunk';
 import { GlobalState } from '../../../reducers';
+
 export interface Props {
   item: QuestionnaireItem;
   answer: QuestionnaireResponseAnswer;
   resources?: Resources;
   dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
-  date?: Date;
-  onDateChange?: (newDate?: Date) => void;
-  onDateError?: (newDate?: Date) => void;
   path: Array<Path>;
   pdf?: boolean;
   promptLoginMessage?: () => void;
@@ -78,9 +76,6 @@ class DateComponent extends React.Component<Props & ValidationProps> {
   }
 
   getValue(): Date | undefined {
-    if (this.props.date) {
-      return this.props.date;
-    }
     const { item, answer } = this.props;
     if (answer && answer.valueDate) {
       return parseDate(String(answer.valueDate));
@@ -126,13 +121,12 @@ class DateComponent extends React.Component<Props & ValidationProps> {
 
   onDateChange = (value?: Date): void => {
     const { dispatch, promptLoginMessage, path, item, onAnswerChange } = this.props;
-    const newValue = moment(value).format(Constants.DATE_FORMAT);
-    if (this.props.onDateChange) {
-      this.props.onDateChange(value);
-    } else if (dispatch && value) {
+    const newValue = value ? moment(value).format(Constants.DATE_FORMAT) : '';
+    if (dispatch) {
       dispatch(newDateValueAsync(this.props.path, newValue, this.props.item))?.then(newState =>
         onAnswerChange(newState, path, item, { valueDate: newValue } as QuestionnaireResponseAnswer)
       );
+
       if (promptLoginMessage) {
         promptLoginMessage();
       }
@@ -192,7 +186,6 @@ class DateComponent extends React.Component<Props & ValidationProps> {
             className={this.props.className}
             inputClassName="page_skjemautfyller__input"
             onDateChange={this.onDateChange}
-            onDateError={this.props.onDateError}
             validationErrorRenderer={this.props.validationErrorRenderer}
             helpButton={this.props.renderHelpButton()}
             helpElement={this.props.renderHelpElement()}
