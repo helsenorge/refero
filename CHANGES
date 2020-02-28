@@ -1,3 +1,9 @@
+5.2.4
+-----
+* enableWhen now supports checkboxes where several answers may be given. It triggers when any of the
+  given answers matches the enableWhen answer. Previously it would only trigger when the answer exactly 
+  matched the enableWhen answer.
+
 5.2.3
 -----
 * Support for extension maxDecimalPlaces on quantity types. Now also supports maxDecimalPlaces where
