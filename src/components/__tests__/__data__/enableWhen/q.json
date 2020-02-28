@@ -1,0 +1,185 @@
+{
+  "resourceType": "Questionnaire",
+  "id": "test-enableWhen-checkbox",
+  "language": "nb-NO",
+  "contained": [
+    {
+      "resourceType": "ValueSet",
+      "id": "sykdommer",
+      "version": "1.0",
+      "name": "sykdommer",
+      "title": "sykdommer",
+      "status": "draft",
+      "publisher": "Helse Vest - Natus",
+      "compose": {
+        "include": [
+          {
+            "system": "http://ehelse.no/sykdommer",
+            "concept": [
+              {
+                "code": "1",
+                "display": "Ingen sykdommer"
+              },
+              {
+                "code": "2",
+                "display": "Allergi"
+              },
+              {
+                "code": "3",
+                "display": "Astma"
+              },
+              {
+                "code": "4",
+                "display": "Diabetes type 1"
+              },
+              {
+                "code": "5",
+                "display": "Diabetes type 2"
+              },
+              {
+                "code": "6",
+                "display": "Gynekologisk sykdom/operasjon"
+              },
+              {
+                "code": "7",
+                "display": "Gjentatte urinveisinfeksjoner"
+              },
+              {
+                "code": "8",
+                "display": "Hepatitt B"
+              },
+              {
+                "code": "9",
+                "display": "Hepatitt C"
+              },
+              {
+                "code": "10",
+                "display": "Hjertesykdom"
+              },
+              {
+                "code": "11",
+                "display": "Kronisk hypertensjon"
+              },
+              {
+                "code": "12",
+                "display": "Kronisk nyresykdom"
+              },
+              {
+                "code": "13",
+                "display": "Lungesykdom"
+              },
+              {
+                "code": "14",
+                "display": "Psykisk sykdom"
+              },
+              {
+                "code": "15",
+                "display": "Revmatoid artritt"
+              },
+              {
+                "code": "16",
+                "display": "Tidligere epilepsi"
+              },
+              {
+                "code": "17",
+                "display": "Vedvarende epilepsi"
+              },
+              {
+                "code": "18",
+                "display": "Andre sykdommer"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "url": "https://skjemakatalog-dev-fhir-apimgmt.azure-api.net/api/v1/Questionnaire/test-enableWhen-checkbox",
+  "version": "0.1",
+  "name": "fjas",
+  "title": "Eksempelskjema kalkulasjoner",
+  "status": "draft",
+  "date": "2019-09-18",
+  "publisher": "Direktoratet for e-helse",
+  "purpose": "Test",
+  "approvalDate": "2018-02-02",
+  "lastReviewDate": "2018-02-02",
+  "copyright": "Er utviklet av Direktoratet for e-helse til fri benyttelse",
+  "subjectType": [
+    "Person"
+  ],
+  "item": [
+    {
+      "linkId": "9",
+      "text": "Har du, eller har du hatt, noen av disse sykdommene?",
+      "type": "group",
+      "repeats": false,
+      "item": [
+        {
+          "extension": [
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
+              "valueString": "Du må velge minst ett av alternativene"
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "check-box"
+                  }
+                ]
+              }
+            }
+          ],
+          "linkId": "9_1",
+          "text": "Sett ett eller flere kryss",
+          "type": "choice",
+          "required": true,
+          "repeats": false,
+          "readOnly": false,
+          "options": {
+            "reference": "#sykdommer"
+          }
+        },
+        {
+          "extension": [
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
+              "valueString": "Du må fylle ut dette feltet med kun tall og bokstaver"
+            },
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/repeatstext",
+              "valueString": "Legg til flere sykdommer"
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-maxOccurs",
+              "valueInteger": 30
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/regex",
+              "valueString": "^[æøåÆØÅa-zA-Z0-9,.!?@()+\\-/* ]*$"
+            }
+          ],
+          "linkId": "9_2",
+          "text": "Andre sykdommer",
+          "type": "string",
+          "enableWhen": [
+            {
+              "question": "9_1",
+              "answerCoding": {
+                "system": "http://ehelse.no/sykdommer",
+                "code": "18"
+              }
+            }
+          ],
+          "required": false,
+          "repeats": false,
+          "readOnly": false,
+          "maxLength": 250
+        }
+      ]
+    }
+  ]
+}
