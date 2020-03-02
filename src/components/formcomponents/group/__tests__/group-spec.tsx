@@ -3,6 +3,8 @@ import { shallow } from 'enzyme';
 import { Group } from '../group';
 import { QuestionnaireItem, QuestionnaireResponseAnswer } from '../../../../types/fhir';
 import CustomTag from '@helsenorge/toolkit/utils/custom-tag';
+import { RenderContextType } from '../../../../constants/renderContextType';
+import { RenderContext } from '../../../../util/renderContext';
 
 describe('group', () => {
   it('should render correct tag', () => {
@@ -30,6 +32,7 @@ describe('group', () => {
         id="item_2"
         renderHelpButton={() => <React.Fragment />}
         renderHelpElement={() => <React.Fragment />}
+        renderContext={new RenderContext(RenderContextType.None)}
       />
     );
     expect(group.find(CustomTag).html()).toMatchSnapshot();

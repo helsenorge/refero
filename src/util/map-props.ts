@@ -52,5 +52,6 @@ export function mapDispatchToProps(dispatch: ThunkDispatch<GlobalState, void, Ne
   return {
     dispatch,
     path: props.path,
+    renderContext: props.renderContext,
   };
 }

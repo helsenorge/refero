@@ -10,6 +10,7 @@ import { GlobalState } from '../../../reducers';
 import { NewValueAction } from '../../../actions/newValue';
 import { FunctionButton } from '@helsenorge/toolkit/components/atoms/buttons/function-button';
 import { addRepeatItem } from '../../../actions/newValue';
+import { RenderContext } from '../../../util/renderContext';
 
 interface Props {
   item: QuestionnaireItem;
@@ -17,6 +18,7 @@ interface Props {
   responseItems?: Array<QuestionnaireResponseItem>;
   resources?: Resources;
   dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
+  renderContext: RenderContext;
 }
 
 export const RepeatButton: React.SFC<Props> = ({ item, resources, dispatch, parentPath, responseItems }) => {
@@ -27,7 +29,7 @@ export const RepeatButton: React.SFC<Props> = ({ item, resources, dispatch, pare
   };
 
   let text = getRepeatsTextExtension(item);
-  if (!text && (resources && resources.repeatButtonText)) {
+  if (!text && resources && resources.repeatButtonText) {
     text = resources.repeatButtonText;
   }
 
@@ -38,9 +40,5 @@ export const RepeatButton: React.SFC<Props> = ({ item, resources, dispatch, pare
   );
 };
 
-const connectedComponent = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-  mergeProps
-)(RepeatButton);
+const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(RepeatButton);
 export default connectedComponent;
