@@ -23,6 +23,27 @@ export async function inputAnswer(linkId: string, answer: number | string, wrapp
   wrapper.update();
 }
 
+export async function inputTextAnswer(linkId: string, answer: string, wrapper: ReactWrapper<{}, {}>) {
+  const textarea = wrapper.find('textarea#item_' + linkId);
+  await act(async () => {
+    textarea.simulate('change', { target: { value: answer } });
+  });
+
+  await new Promise(r => {
+    setTimeout(r);
+  });
+  wrapper.update();
+
+  await act(async () => {
+    textarea.simulate('blur');
+  });
+
+  await new Promise(r => {
+    setTimeout(r);
+  });
+  wrapper.update();
+}
+
 export async function selectRadioButtonOption(linkId: string, index: number, wrapper: ReactWrapper<{}, {}>) {
   await act(async () => {
     const id = 'item_' + linkId + '-hn-' + index;
@@ -72,4 +93,10 @@ export function findQuestionnaireItem(linkId: string, items: QuestionnaireItem[]
     const found = findQuestionnaireItem(linkId, item.item);
     if (found !== undefined) return found;
   }
+}
+
+export function submit(name: string, wrapper: ReactWrapper<{}, {}>) {
+  let submit = wrapper.findWhere(it => it.text() === name).find('button');
+  submit.simulate('click');
+  wrapper.update();
 }

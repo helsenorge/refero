@@ -1,0 +1,45 @@
+{
+  "resourceType": "Questionnaire",
+  "id": "test-validation",
+  "status": "draft",
+  "item": [
+    {
+      "linkId": "1",
+      "text": "Regex",
+      "type": "group",
+      "repeats": false,
+      "item": [
+        {
+          "extension": [
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
+              "valueString": "Validation text for text-field appears!"
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/regex",
+              "valueString": "^[æøåÆØÅa-zA-Z0-9,.!?@()+\\-/* ]*$"
+            }
+          ],
+          "linkId": "1_1",
+          "text": "Text regexp",
+          "type": "text"
+        },
+        {
+          "extension": [
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
+              "valueString": "Validation text for string-field appears!"
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/regex",
+              "valueString": "^[æøåÆØÅa-zA-Z0-9,.!?@()+\\-/* ]*$"
+            }
+          ],
+          "linkId": "1_2",
+          "text": "String regexp",
+          "type": "string"
+        }
+      ]
+    }
+  ]
+}
