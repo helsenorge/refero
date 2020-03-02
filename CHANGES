@@ -1,6 +1,10 @@
-5.2.4
+5.2.5
 -----
 * Added support for questionnaire-item-control type "grid".
+
+5.2.4
+-----
+* Bug fix for scoring. Don't propagate NaN and Infinite results.
 
 5.2.3
 -----
