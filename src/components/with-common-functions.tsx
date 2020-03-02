@@ -24,6 +24,8 @@ import { HelpTrigger } from '@helsenorge/toolkit/components/icons';
 import { Collapse } from 'react-collapse';
 import itemControlConstants from '../constants/itemcontrol';
 import { NewValueAction } from '../actions/newValue';
+import { RenderContext } from '../util/renderContext';
+import itemType from '../constants/itemType';
 
 export interface Props {
   resources?: Resources;
@@ -73,10 +75,11 @@ export interface Props {
     opening: boolean
   ) => JSX.Element;
   onAnswerChange?: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseAnswer) => void;
+  renderContext: RenderContext;
 }
 
 interface EnhancedProps {
-  renderChildrenItems?: (repeatIndex: number) => Array<JSX.Element> | undefined;
+  renderChildrenItems?: (renderContext: RenderContext) => Array<JSX.Element> | undefined;
   renderDeleteButton?: () => JSX.Element | undefined;
 }
 
@@ -115,6 +118,7 @@ export default function withCommonFunctions<T>(WrappedComponent: React.Component
           resources={this.props.resources}
           mustShowConfirm={mustShowConfirm}
           onAnswerChange={this.props.onAnswerChange}
+          renderContext={this.props.renderContext}
         />
       );
     };
@@ -130,6 +134,7 @@ export default function withCommonFunctions<T>(WrappedComponent: React.Component
           item={item}
           responseItems={response}
           parentPath={path}
+          renderContext={this.props.renderContext}
         />
       );
     };
@@ -188,7 +193,7 @@ export default function withCommonFunctions<T>(WrappedComponent: React.Component
       );
     };
 
-    renderItem = (item: QuestionnaireItem): Array<JSX.Element | undefined> => {
+    renderItem = (item: QuestionnaireItem, renderContext: RenderContext): Array<JSX.Element | undefined> => {
       const { resources, containedResources, responseItem, pdf, path, headerTag, promptLoginMessage } = this.props;
       if (isHelpItem(item)) return [];
       if (isHiddenItem(item)) return [];
@@ -247,6 +252,7 @@ export default function withCommonFunctions<T>(WrappedComponent: React.Component
               attachmentMaxFileSize={this.props.attachmentMaxFileSize}
               attachmentValidTypes={this.props.attachmentValidTypes}
               onAnswerChange={this.props.onAnswerChange}
+              renderContext={renderContext}
             />
           );
         });
@@ -254,15 +260,18 @@ export default function withCommonFunctions<T>(WrappedComponent: React.Component
       return renderedItems;
     };
 
-    renderChildrenItems = (): Array<JSX.Element | undefined> | undefined => {
+    renderChildrenItems = (renderContext: RenderContext): Array<JSX.Element | undefined> | undefined => {
       const { item } = this.props;
       if (!item || !item.item) {
         return undefined;
       }
+
+      if (item.type === itemType.GROUP && renderContext.RenderChildren) {
+        return renderContext.RenderChildren(item.item, this.renderItem);
+      }
+
       const renderedItems: Array<JSX.Element | undefined> = [];
-      item.item.forEach(i => {
-        renderedItems.push(...this.renderItem(i));
-      });
+      item.item.forEach(i => renderedItems.push(...this.renderItem(i, renderContext)));
       return renderedItems;
     };
 
@@ -280,7 +289,7 @@ export default function withCommonFunctions<T>(WrappedComponent: React.Component
             /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
             {...(this.props as any)}
           >
-            {this.renderChildrenItems()}
+            {this.renderChildrenItems(this.props.renderContext)}
           </WrappedComponent>
         );
       }

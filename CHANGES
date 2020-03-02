@@ -1,8 +1,20 @@
-5.2.4
+5.2.7
 -----
 * enableWhen now supports checkboxes where several answers may be given. It triggers when any of the
   given answers matches the enableWhen answer. Previously it would only trigger when the answer exactly 
   matched the enableWhen answer.
+
+5.2.6
+-----
+* Bug fix for date-fields. Previously it was not possible to clear a date-fields value.
+
+5.2.5
+-----
+* Added support for questionnaire-item-control type "grid".
+
+5.2.4
+-----
+* Bug fix for scoring. Don't propagate NaN and Infinite results.
 
 5.2.3
 -----

@@ -60,14 +60,17 @@ class Quantity extends React.Component<Props & ValidationProps, {}> {
     const { dispatch, promptLoginMessage, path, item, onAnswerChange } = this.props;
     const extension = getQuestionnaireUnitExtensionValue(this.props.item);
     if (extension) {
-      const value = Number(parseFloat((event.target as HTMLInputElement).value));
-      const code = extension.code;
       const quantity = {
-        value: (value as unknown) as decimal,
         unit: extension.display,
         system: extension.system,
-        code: (code as unknown) as code,
+        code: extension.code,
       } as QuantityType;
+
+      const value = Number(parseFloat((event.target as HTMLInputElement).value));
+      if (value != null && !Number.isNaN(value) && Number.isFinite(value)) {
+        quantity.value = (value as unknown) as decimal;
+      }
+
       if (dispatch) {
         dispatch(newQuantityValueAsync(this.props.path, quantity, this.props.item))?.then(newState =>
           onAnswerChange(newState, path, item, { valueQuantity: quantity } as QuestionnaireResponseAnswer)
