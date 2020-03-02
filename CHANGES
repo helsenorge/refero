@@ -1,3 +1,7 @@
+5.2.8
+-----
+* regex validation support for text fields.
+
 5.2.7
 -----
 * enableWhen now supports checkboxes where several answers may be given. It triggers when any of the

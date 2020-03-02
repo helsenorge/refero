@@ -23,7 +23,7 @@ import {
   validateText,
   getTextValidationErrorMessage,
 } from '../../../util/index';
-import { getPlaceholder, getMinLengthExtensionValue, getItemControlExtensionValue } from '../../../util/extension';
+import { getPlaceholder, getMinLengthExtensionValue, getItemControlExtensionValue, getRegexExtension } from '../../../util/extension';
 import { QuestionnaireItem, QuestionnaireResponseAnswer } from '../../../types/fhir';
 import withCommonFunctions from '../../with-common-functions';
 import TextView from '../textview';
@@ -71,7 +71,19 @@ export class Text extends React.Component<Props & ValidationProps, {}> {
   debouncedHandleChange: (event: React.FormEvent<{}>) => void = debounce(this.handleChange, 250, false);
 
   validateText = (value: string): boolean => {
-    return validateText(value, this.props.validateScriptInjection);
+    return this.validateWithRegex(value) && validateText(value, this.props.validateScriptInjection);
+  };
+
+  validateWithRegex = (value: string): boolean => {
+    const regexAsStr = getRegexExtension(this.props.item);
+    if (regexAsStr && value) {
+      const regexp = new RegExp(regexAsStr);
+      if (!regexp.test(value.toString())) {
+        return false;
+      }
+    }
+
+    return true;
   };
 
   getValidationErrorMessage = (value: string): string => {
