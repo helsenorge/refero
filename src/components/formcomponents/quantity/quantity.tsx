@@ -18,11 +18,18 @@ import {
   getQuestionnaireUnitExtensionValue,
 } from '../../../util/extension';
 
-import { QuestionnaireItem, QuestionnaireResponseAnswer, Quantity as QuantityType, decimal, code } from '../../../types/fhir';
+import {
+  QuestionnaireItem,
+  QuestionnaireResponseAnswer,
+  Quantity as QuantityType,
+  decimal,
+  QuestionnaireResponseItem,
+} from '../../../types/fhir';
 import { Resources } from '../../../util/resources';
 import TextView from '../textview';
 export interface Props {
   item: QuestionnaireItem;
+  responseItem: QuestionnaireResponseItem;
   answer: QuestionnaireResponseAnswer;
   resources?: Resources;
   dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
@@ -33,6 +40,7 @@ export interface Props {
   repeatButton: JSX.Element;
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
+  isHelpOpen?: boolean;
   onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseAnswer) => void;
 }
 
@@ -90,6 +98,13 @@ class Quantity extends React.Component<Props & ValidationProps, {}> {
     }
     return '';
   };
+
+  shouldComponentUpdate(nextProps: Props, _nextState: {}) {
+    const responseItemHasChanged = this.props.responseItem !== nextProps.responseItem;
+    const helpItemHasChanged = this.props.isHelpOpen !== nextProps.isHelpOpen;
+
+    return responseItemHasChanged || helpItemHasChanged;
+  }
 
   render(): JSX.Element | null {
     const { item } = this.props;

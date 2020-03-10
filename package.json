@@ -1,6 +1,6 @@
 {
   "name": "@helsenorge/skjemautfyller",
-  "version": "5.2.8",
+  "version": "5.2.9-beta01",
   "main": "index.js",
   "author": "helsenorge",
   "license": "UNLICENSED",
@@ -42,6 +42,7 @@
     "@types/react-router-dom": "4.0.7",
     "@types/redux-mock-store": "0.0.7",
     "@types/uuid": "^2.0.29",
+    "@types/dompurify": "^2.0.1",
     "chai": "^3.5.0",
     "fs-extra": "7.0.1",
     "npm-run-all": "^4.1.5",
@@ -55,10 +56,12 @@
   "dependencies": {
     "@types/react-collapse": "5.0.0",
     "isomorphic-fetch": "^2.2.1",
+    "dompurify": "^2.0.8",
     "marked": "^0.7.0",
     "moment": "2.22.2",
     "tabbable": "^3.1.1",
     "uuid": "2.0.3",
-    "fhirpath": "1.0.1"
+    "fhirpath": "1.0.1",
+    "immer": "^6.0.1"
   }
 }

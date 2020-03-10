@@ -18,6 +18,7 @@ import TextView from '../textview';
 
 export interface Props {
   item: QuestionnaireItem;
+  responseItem: QuestionnaireItem;
   answer: QuestionnaireResponseAnswer;
   resources?: Resources;
   dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
@@ -30,6 +31,7 @@ export interface Props {
   oneToTwoColumn: boolean;
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
+  isHelpOpen?: boolean;
   onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseAnswer) => void;
 }
 
@@ -69,6 +71,13 @@ class Decimal extends React.Component<Props & ValidationProps, {}> {
       promptLoginMessage();
     }
   };
+
+  shouldComponentUpdate(nextProps: Props, _nextState: {}) {
+    const responseItemHasChanged = this.props.responseItem !== nextProps.responseItem;
+    const helpItemHasChanged = this.props.isHelpOpen !== nextProps.isHelpOpen;
+
+    return responseItemHasChanged || helpItemHasChanged;
+  }
 
   render(): JSX.Element | null {
     const { item, pdf } = this.props;

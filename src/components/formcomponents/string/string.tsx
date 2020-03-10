@@ -24,12 +24,13 @@ import {
 } from '../../../util/index';
 import { getPlaceholder, getMinLengthExtensionValue, getRegexExtension } from '../../../util/extension';
 import withCommonFunctions from '../../with-common-functions';
-import { QuestionnaireItem, QuestionnaireResponseAnswer } from '../../../types/fhir';
+import { QuestionnaireItem, QuestionnaireResponseAnswer, QuestionnaireResponse } from '../../../types/fhir';
 import { Resources } from '../../../util/resources';
 import TextView from '../textview';
 
 export interface Props {
   item: QuestionnaireItem;
+  responseItem: QuestionnaireResponse;
   answer: QuestionnaireResponseAnswer;
   path: Array<Path>;
   dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
@@ -45,6 +46,7 @@ export interface Props {
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
   onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseAnswer) => void;
+  isHelpOpen?: boolean;
 }
 
 export class String extends React.Component<Props & ValidationProps, {}> {
@@ -63,6 +65,13 @@ export class String extends React.Component<Props & ValidationProps, {}> {
   };
 
   debouncedHandleChange: (event: React.FormEvent<{}>) => void = debounce(this.handleChange, 250, false);
+
+  shouldComponentUpdate(nextProps: Props, _nextState: {}) {
+    const responseItemHasChanged = this.props.responseItem !== nextProps.responseItem;
+    const helpItemHasChanged = this.props.isHelpOpen !== nextProps.isHelpOpen;
+
+    return responseItemHasChanged || helpItemHasChanged;
+  }
 
   validateText = (value: string): boolean => {
     return validateText(value, this.props.validateScriptInjection);

@@ -153,7 +153,7 @@ class Skjemautfyller extends React.Component<StateProps & DispatchProps & Props,
     IE11HackToWorkAroundBug187484();
   }
 
-  componentWillReceiveProps(nextProps: Props) {
+  UNSAFE_componentWillReceiveProps(nextProps: Props) {
     if (nextProps.questionnaire && nextProps.questionnaire !== this.props.questionnaire) {
       this.props.updateSkjema(nextProps.questionnaire, nextProps.questionnaireResponse, nextProps.language);
     }

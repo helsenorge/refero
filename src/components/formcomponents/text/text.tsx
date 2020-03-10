@@ -24,7 +24,7 @@ import {
   getTextValidationErrorMessage,
 } from '../../../util/index';
 import { getPlaceholder, getMinLengthExtensionValue, getItemControlExtensionValue, getRegexExtension } from '../../../util/extension';
-import { QuestionnaireItem, QuestionnaireResponseAnswer } from '../../../types/fhir';
+import { QuestionnaireItem, QuestionnaireResponseAnswer, QuestionnaireResponseItem } from '../../../types/fhir';
 import withCommonFunctions from '../../with-common-functions';
 import TextView from '../textview';
 import { Resources } from '../../../util/resources';
@@ -32,6 +32,7 @@ import itemControlConstants from '../../../constants/itemcontrol';
 
 export interface Props {
   item: QuestionnaireItem;
+  responseItem: QuestionnaireResponseItem;
   answer: QuestionnaireResponseAnswer;
   dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
   path: Array<Path>;
@@ -45,6 +46,7 @@ export interface Props {
   renderHelpElement: () => JSX.Element;
   resources?: Resources;
   onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseAnswer) => void;
+  isHelpOpen?: boolean;
 }
 export class Text extends React.Component<Props & ValidationProps, {}> {
   showCounter(): boolean {
@@ -89,6 +91,13 @@ export class Text extends React.Component<Props & ValidationProps, {}> {
   getValidationErrorMessage = (value: string): string => {
     return getTextValidationErrorMessage(value, this.props.validateScriptInjection, this.props.item, this.props.resources);
   };
+
+  shouldComponentUpdate(nextProps: Props, _nextState: {}) {
+    const responseItemHasChanged = this.props.responseItem !== nextProps.responseItem;
+    const helpItemHasChanged = this.props.isHelpOpen !== nextProps.isHelpOpen;
+
+    return responseItemHasChanged || helpItemHasChanged;
+  }
 
   render(): JSX.Element | null {
     const { item, answer, pdf, children, ...other } = this.props;

@@ -1,3 +1,7 @@
+5.2.9
+-----
+* Rendering optimalizations.
+
 5.2.8
 -----
 * regex validation support for text fields.

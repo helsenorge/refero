@@ -13,7 +13,7 @@ import { NewValueAction, newDateValueAsync } from '../../../actions/newValue';
 import withCommonFunctions from '../../with-common-functions';
 import { isReadOnly, isRequired, getId, renderPrefix, getText } from '../../../util/index';
 import { getValidationTextExtension, getPlaceholder, getExtension } from '../../../util/extension';
-import { QuestionnaireItem, QuestionnaireResponseAnswer } from '../../../types/fhir';
+import { QuestionnaireItem, QuestionnaireResponseAnswer, QuestionnaireResponseItem } from '../../../types/fhir';
 import { Resources } from '../../../util/resources';
 import TextView from '../textview';
 import { ThunkDispatch } from 'redux-thunk';
@@ -21,6 +21,7 @@ import { GlobalState } from '../../../reducers';
 
 export interface Props {
   item: QuestionnaireItem;
+  responseItem: QuestionnaireResponseItem;
   answer: QuestionnaireResponseAnswer;
   resources?: Resources;
   dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
@@ -35,6 +36,7 @@ export interface Props {
   repeatButton: JSX.Element;
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
+  isHelpOpen?: boolean;
   onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseAnswer) => void;
 }
 
@@ -142,6 +144,13 @@ class DateComponent extends React.Component<Props & ValidationProps> {
 
     return date ? moment(date).format('D. MMMM YYYY') : text;
   };
+
+  shouldComponentUpdate(nextProps: Props, _nextState: {}) {
+    const responseItemHasChanged = this.props.responseItem !== nextProps.responseItem;
+    const helpItemHasChanged = this.props.isHelpOpen !== nextProps.isHelpOpen;
+
+    return responseItemHasChanged || helpItemHasChanged;
+  }
 
   render(): JSX.Element | null {
     const date = this.getValue();
