@@ -3,7 +3,13 @@ import rootReducer from '../../reducers';
 import { createStore } from 'redux';
 import { ReactWrapper, mount } from 'enzyme';
 import { Provider, Store } from 'react-redux';
-import { QuestionnaireItem, QuestionnaireResponseAnswer, Extension, QuestionnaireItemTypeList } from '../../types/fhir';
+import {
+  QuestionnaireItem,
+  QuestionnaireResponseAnswer,
+  Extension,
+  QuestionnaireItemTypeList,
+  QuestionnaireResponseItem,
+} from '../../types/fhir';
 import { Path } from '../../util/skjemautfyller-core';
 import { Group } from '../formcomponents/group/group';
 import StringComponent from '../../components/formcomponents/string/string';
@@ -109,6 +115,7 @@ function createWrapperForGroupItem(item: QuestionnaireItem): ReactWrapper<{}, {}
         renderHelpElement={() => <React.Fragment />}
         renderChildrenItems={() => undefined}
         renderContext={new RenderContext(RenderContextType.None)}
+        responseItem={{} as QuestionnaireResponseItem}
       />
     </Provider>
   );

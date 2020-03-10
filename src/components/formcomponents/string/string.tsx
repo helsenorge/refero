@@ -24,13 +24,13 @@ import {
 } from '../../../util/index';
 import { getPlaceholder, getMinLengthExtensionValue, getRegexExtension } from '../../../util/extension';
 import withCommonFunctions from '../../with-common-functions';
-import { QuestionnaireItem, QuestionnaireResponseAnswer, QuestionnaireResponse } from '../../../types/fhir';
+import { QuestionnaireItem, QuestionnaireResponseAnswer, QuestionnaireResponseItem } from '../../../types/fhir';
 import { Resources } from '../../../util/resources';
 import TextView from '../textview';
 
 export interface Props {
   item: QuestionnaireItem;
-  responseItem: QuestionnaireResponse;
+  responseItem: QuestionnaireResponseItem;
   answer: QuestionnaireResponseAnswer;
   path: Array<Path>;
   dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;

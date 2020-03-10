@@ -4,7 +4,16 @@ import { createStore, applyMiddleware } from 'redux';
 import { ReactWrapper, mount } from 'enzyme';
 import { Provider } from 'react-redux';
 import { Choice } from '../formcomponents/choice/choice';
-import { QuestionnaireItem, QuestionnaireOption, QuestionnaireResponseAnswer, integer, date, time, Extension } from '../../types/fhir';
+import {
+  QuestionnaireItem,
+  QuestionnaireOption,
+  QuestionnaireResponseAnswer,
+  integer,
+  date,
+  time,
+  Extension,
+  QuestionnaireResponseItem,
+} from '../../types/fhir';
 import { Path } from '../../util/skjemautfyller-core';
 import thunk, { ThunkDispatch } from 'redux-thunk';
 import { GlobalState } from '../../reducers/index';
@@ -232,6 +241,7 @@ function createWrapperWithItem(item: QuestionnaireItem): ReactWrapper<{}, {}> {
         renderHelpButton={() => <React.Fragment />}
         renderHelpElement={() => <React.Fragment />}
         onAnswerChange={() => {}}
+        responseItem={{} as QuestionnaireResponseItem}
       />
     </Provider>
   );
