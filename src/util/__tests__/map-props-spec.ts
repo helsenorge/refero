@@ -4,6 +4,7 @@ import { mapStateToProps, mapDispatchToProps } from '../map-props';
 import { getQuestionnaireDefinitionItem } from '../skjemautfyller-core';
 import { pathify } from '../../reducers/__tests__/utils';
 import { dataModel } from './__data__/testDataModel';
+import { RenderContext } from '../renderContext';
 const should = chai.should();
 
 describe('mapStateToProps', () => {
@@ -200,6 +201,27 @@ describe('mapStateToProps', () => {
     expect(enable).toEqual(true);
   });
 
+  it('should enable component when correct quantity answer', () => {
+    if (
+      !dataModel ||
+      !dataModel.skjemautfyller ||
+      !dataModel.skjemautfyller.form.FormDefinition ||
+      !dataModel.skjemautfyller.form.FormDefinition.Content ||
+      !dataModel.skjemautfyller.form.FormDefinition.Content.item
+    ) {
+      return;
+    }
+    const item = dataModel.skjemautfyller.form.FormDefinition.Content.item[26];
+    const result = mapStateToProps(dataModel, {
+      item,
+      path: pathify(item.linkId),
+    } as Props);
+
+    const enable = result.enable;
+    should.exist(enable);
+    expect(enable).toEqual(true);
+  });
+
   it('should enable reference-component if has correct answer', () => {
     if (
       !dataModel ||
@@ -289,7 +311,7 @@ describe('mapStateToProps', () => {
 
 describe('mapDispatchToProps', () => {
   it('should return object', () => {
-    const props = mapDispatchToProps(() => {}, { path: [] });
+    const props = mapDispatchToProps(() => {}, { path: [], renderContext: new RenderContext() });
     should.exist(props.dispatch);
     should.exist(props.path);
   });

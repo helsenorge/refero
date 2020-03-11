@@ -10,6 +10,7 @@ import { NewValueAction, deleteRepeatItemAsync } from '../../../actions/newValue
 import { ConfirmBox } from '@helsenorge/toolkit/components/molecules/confirmbox';
 import { FunctionButton } from '@helsenorge/toolkit/components/atoms/buttons/function-button';
 import classNames from 'classnames';
+import { RenderContext } from '../../../util/renderContext';
 interface Props {
   item: QuestionnaireItem;
   path: Array<Path>;
@@ -18,6 +19,7 @@ interface Props {
   mustShowConfirm: boolean;
   className?: string;
   onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseAnswer) => void;
+  renderContext: RenderContext;
 }
 
 interface State {

@@ -30,6 +30,8 @@ import Text from '../formcomponents/text/text';
 import { GlobalState } from '../../reducers/index';
 import { NewValueAction } from '../../actions/newValue';
 import { ThunkDispatch } from 'redux-thunk';
+import { RenderContextType } from '../../constants/renderContextType';
+import { RenderContext } from '../../util/renderContext';
 
 describe('Component renders help items', () => {
   beforeEach(() => {
@@ -226,6 +228,7 @@ function createComponentText(extensions?: Extension[]): JSX.Element {
       repeatButton={<React.Fragment />}
       renderHelpButton={() => <div className="helpButton">{'help button'}</div>}
       renderHelpElement={() => <div className="helpText">{'help text'}</div>}
+      renderContext={new RenderContext(RenderContextType.None)}
     />
   );
 }
@@ -242,6 +245,7 @@ function createComponentQuantity(extensions?: Extension[]): JSX.Element {
       repeatButton={<React.Fragment />}
       renderHelpButton={() => <div className="helpButton">{'help button'}</div>}
       renderHelpElement={() => <div className="helpText">{'help text'}</div>}
+      renderContext={new RenderContext(RenderContextType.None)}
     />
   );
 }
@@ -260,6 +264,7 @@ function createComponentInteger(extensions?: Extension[]): JSX.Element {
       oneToTwoColumn={false}
       renderHelpButton={() => <div className="helpButton">{'help button'}</div>}
       renderHelpElement={() => <div className="helpText">{'help text'}</div>}
+      renderContext={new RenderContext(RenderContextType.None)}
     />
   );
 }
@@ -278,6 +283,7 @@ function createComponentDecimal(extensions?: Extension[]): JSX.Element {
       oneToTwoColumn={false}
       renderHelpButton={() => <div className="helpButton">{'help button'}</div>}
       renderHelpElement={() => <div className="helpText">{'help text'}</div>}
+      renderContext={new RenderContext(RenderContextType.None)}
     />
   );
 }
@@ -295,6 +301,7 @@ function createComponentTime(extensions?: Extension[]): JSX.Element {
       repeatButton={<React.Fragment />}
       renderHelpButton={() => <div className="helpButton">{'help button'}</div>}
       renderHelpElement={() => <div className="helpText">{'help text'}</div>}
+      renderContext={new RenderContext(RenderContextType.None)}
     />
   );
 }
@@ -313,6 +320,7 @@ function createComponentDateTime(extensions?: Extension[]): JSX.Element {
       oneToTwoColumn={false}
       renderHelpButton={() => <div className="helpButton">{'help button'}</div>}
       renderHelpElement={() => <div className="helpText">{'help text'}</div>}
+      renderContext={new RenderContext(RenderContextType.None)}
     />
   );
 }
@@ -330,6 +338,7 @@ function createComponentDate(extensions?: Extension[]): JSX.Element {
       repeatButton={<React.Fragment />}
       renderHelpButton={() => <div className="helpButton">{'help button'}</div>}
       renderHelpElement={() => <div className="helpText">{'help text'}</div>}
+      renderContext={new RenderContext(RenderContextType.None)}
     />
   );
 }
@@ -347,6 +356,7 @@ function createComponentAttachment(extensions?: Extension[]): JSX.Element {
       repeatButton={<React.Fragment />}
       renderHelpButton={() => <div className="helpButton">{'help button'}</div>}
       renderHelpElement={() => <div className="helpText">{'help text'}</div>}
+      renderContext={new RenderContext(RenderContextType.None)}
     />
   );
 }
@@ -366,6 +376,7 @@ function createComponentGroup(extensions?: Extension[]): JSX.Element {
       renderChildrenItems={() => []}
       renderHelpButton={() => <div className="helpButton">{'help button'}</div>}
       renderHelpElement={() => <div className="helpText">{'help text'}</div>}
+      renderContext={new RenderContext(RenderContextType.None)}
     />
   );
 }
@@ -384,6 +395,7 @@ function createComponentBoolean(extensions?: Extension[]): JSX.Element {
       oneToTwoColumn={false}
       renderHelpButton={() => <div className="helpButton">{'help button'}</div>}
       renderHelpElement={() => <div className="helpText">{'help text'}</div>}
+      renderContext={new RenderContext(RenderContextType.None)}
     />
   );
 }
@@ -403,6 +415,7 @@ function createComponentString(extensions?: Extension[]): JSX.Element {
       oneToTwoColumn={false}
       renderHelpButton={() => <div className="helpButton">{'help button'}</div>}
       renderHelpElement={() => <div className="helpText">{'help text'}</div>}
+      renderContext={new RenderContext(RenderContextType.None)}
     />
   );
 }
@@ -421,6 +434,7 @@ function createComponentChoice(extensions?: Extension[]): JSX.Element {
       repeatButton={<React.Fragment />}
       renderHelpButton={() => <div className="helpButton">{'help button'}</div>}
       renderHelpElement={() => <div className="helpText">{'help text'}</div>}
+      renderContext={new RenderContext(RenderContextType.None)}
     />
   );
 }
@@ -439,6 +453,7 @@ function createComponentOpenChoice(extensions?: Extension[]): JSX.Element {
       repeatButton={<React.Fragment />}
       renderHelpButton={() => <div className="helpButton">{'help button'}</div>}
       renderHelpElement={() => <div className="helpText">{'help text'}</div>}
+      renderContext={new RenderContext(RenderContextType.None)}
     />
   );
 }

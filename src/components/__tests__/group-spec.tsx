@@ -11,6 +11,8 @@ import Extensions from '../../constants/extensions';
 import { ThunkDispatch } from 'redux-thunk';
 import { GlobalState } from '../../reducers/index';
 import { NewValueAction } from '../../actions/newValue';
+import { RenderContextType } from '../../constants/renderContextType';
+import { RenderContext } from '../../util/renderContext';
 
 describe('Group component renders with correct classes', () => {
   const defaultClasses = ['.page_skjemautfyller__component', '.page_skjemautfyller__component_group'];
@@ -106,6 +108,7 @@ function createWrapperForGroupItem(item: QuestionnaireItem): ReactWrapper<{}, {}
         renderHelpButton={() => <React.Fragment />}
         renderHelpElement={() => <React.Fragment />}
         renderChildrenItems={() => undefined}
+        renderContext={new RenderContext(RenderContextType.None)}
       />
     </Provider>
   );
@@ -125,6 +128,7 @@ function createWrapperForStringItem(item: QuestionnaireItem): ReactWrapper<{}, {
         renderHelpButton={() => <React.Fragment />}
         renderHelpElement={() => <React.Fragment />}
         oneToTwoColumn={false}
+        renderContext={new RenderContext(RenderContextType.None)}
       />
     </Provider>
   );

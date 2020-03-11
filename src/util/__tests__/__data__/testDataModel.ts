@@ -284,6 +284,36 @@ export const dataModel: GlobalState = {
                 reference: '#8459',
               },
             },
+            // 25
+            {
+              extension: [
+                {
+                  url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-unit',
+                  valueCoding: {
+                    system: 'http://unitsofmeasure.org/',
+                    code: 'cm',
+                    display: 'centimeter',
+                  },
+                },
+              ],
+              linkId: 'quantity1',
+              type: 'quantity',
+            },
+            // 26
+            {
+              linkId: 'quantity2',
+              type: 'quantity',
+              enableWhen: [
+                {
+                  question: 'quantity1',
+                  answerQuantity: {
+                    value: 42.24,
+                    code: 'cm',
+                    system: 'http://unitsofmeasure.org/',
+                  },
+                },
+              ],
+            },
           ],
         } as Questionnaire,
       },
@@ -602,6 +632,25 @@ export const dataModel: GlobalState = {
                   valueString: 'foo',
                 },
               ],
+            },
+
+            // 25
+            {
+              linkId: 'quantity1',
+              text: 'Quantity',
+              answer: [
+                {
+                  valueQuantity: {
+                    value: 42.24,
+                    code: 'cm',
+                    system: 'http://unitsofmeasure.org/',
+                  },
+                },
+              ],
+            },
+            // 26
+            {
+              linkId: 'quantity2',
             },
           ],
         } as QuestionnaireResponse,

@@ -2,10 +2,10 @@ import { act } from 'react-dom/test-utils';
 import { ReactWrapper } from 'enzyme';
 import { QuestionnaireItem } from '../../types/fhir';
 
-export async function inputAnswer(linkId: string, answer: number, wrapper: ReactWrapper<{}, {}>) {
+export async function inputAnswer(linkId: string, answer: number | string, wrapper: ReactWrapper<{}, {}>) {
   const id = 'item_' + linkId;
   const input = wrapper.find('input[id="' + id + '"]');
-  act(() => {
+  await act(async () => {
     input.simulate('change', { target: { value: answer } });
   });
 
@@ -14,7 +14,7 @@ export async function inputAnswer(linkId: string, answer: number, wrapper: React
   });
   wrapper.update();
 
-  act(() => {
+  await act(async () => {
     input.simulate('blur');
   });
   await new Promise(r => {
@@ -23,8 +23,29 @@ export async function inputAnswer(linkId: string, answer: number, wrapper: React
   wrapper.update();
 }
 
+export async function inputTextAnswer(linkId: string, answer: string, wrapper: ReactWrapper<{}, {}>) {
+  const textarea = wrapper.find('textarea#item_' + linkId);
+  await act(async () => {
+    textarea.simulate('change', { target: { value: answer } });
+  });
+
+  await new Promise(r => {
+    setTimeout(r);
+  });
+  wrapper.update();
+
+  await act(async () => {
+    textarea.simulate('blur');
+  });
+
+  await new Promise(r => {
+    setTimeout(r);
+  });
+  wrapper.update();
+}
+
 export async function selectRadioButtonOption(linkId: string, index: number, wrapper: ReactWrapper<{}, {}>) {
-  act(() => {
+  await act(async () => {
     const id = 'item_' + linkId + '-hn-' + index;
     const input = wrapper.find('input[id="' + id + '"]');
     input.simulate('click');
@@ -45,7 +66,7 @@ export async function unSelectCheckBoxOption(linkId: string, index: string, wrap
 }
 
 export async function changeCheckBoxOption(linkId: string, index: string, on: boolean, wrapper: ReactWrapper<{}, {}>) {
-  act(() => {
+  await act(async () => {
     const id = 'item_' + linkId + '-' + index;
     const input = wrapper.find('input[id="' + id + '"]');
     input.simulate('change', { target: { checked: on } });
@@ -72,4 +93,10 @@ export function findQuestionnaireItem(linkId: string, items: QuestionnaireItem[]
     const found = findQuestionnaireItem(linkId, item.item);
     if (found !== undefined) return found;
   }
+}
+
+export function submit(name: string, wrapper: ReactWrapper<{}, {}>) {
+  let submit = wrapper.findWhere(it => it.text() === name).find('button');
+  submit.simulate('click');
+  wrapper.update();
 }

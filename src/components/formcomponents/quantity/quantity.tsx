@@ -4,18 +4,15 @@ import { ThunkDispatch } from 'redux-thunk';
 import { GlobalState } from '../../../reducers';
 import { NewValueAction, newQuantityValueAsync } from '../../../actions/newValue';
 import SafeInputField from '@helsenorge/toolkit/components/atoms/safe-input-field';
-import ExtensionConstants from '../../../constants/extensions';
-import { Extension } from '../../../types/fhir';
 import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
 import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
 import { Path } from '../../../util/skjemautfyller-core';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import withCommonFunctions from '../../with-common-functions';
-import { isReadOnly, isRequired, getId, renderPrefix, getText } from '../../../util/index';
+import { isReadOnly, isRequired, getId, renderPrefix, getText, getDecimalPattern } from '../../../util/index';
 import {
   getValidationTextExtension,
   getPlaceholder,
-  getExtension,
   getMaxValueExtensionValue,
   getMinValueExtensionValue,
   getQuestionnaireUnitExtensionValue,
@@ -37,10 +34,6 @@ export interface Props {
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
   onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseAnswer) => void;
-}
-interface QuantityInputFieldProps {
-  step?: string;
-  onKeyPress: (e: React.KeyboardEvent<{}>) => void;
 }
 
 class Quantity extends React.Component<Props & ValidationProps, {}> {
@@ -67,14 +60,17 @@ class Quantity extends React.Component<Props & ValidationProps, {}> {
     const { dispatch, promptLoginMessage, path, item, onAnswerChange } = this.props;
     const extension = getQuestionnaireUnitExtensionValue(this.props.item);
     if (extension) {
-      const value = Number(parseFloat((event.target as HTMLInputElement).value));
-      const code = extension.code;
       const quantity = {
-        value: (value as unknown) as decimal,
         unit: extension.display,
         system: extension.system,
-        code: (code as unknown) as code,
+        code: extension.code,
       } as QuantityType;
+
+      const value = Number(parseFloat((event.target as HTMLInputElement).value));
+      if (value != null && !Number.isNaN(value) && Number.isFinite(value)) {
+        quantity.value = (value as unknown) as decimal;
+      }
+
       if (dispatch) {
         dispatch(newQuantityValueAsync(this.props.path, quantity, this.props.item))?.then(newState =>
           onAnswerChange(newState, path, item, { valueQuantity: quantity } as QuestionnaireResponseAnswer)
@@ -94,36 +90,6 @@ class Quantity extends React.Component<Props & ValidationProps, {}> {
     }
     return '';
   };
-
-  inputProps() {
-    const props: QuantityInputFieldProps = {
-      onKeyPress: (e: React.KeyboardEvent<{}>) => {
-        const key = String.fromCharCode(e.which);
-        if ('0123456789-.,'.indexOf(key) === -1) {
-          e.preventDefault();
-        }
-      },
-    };
-    const step = getExtension(ExtensionConstants.STEP_URL, this.props.item);
-    if (step && step.valueInteger) {
-      props.step = this.getStepInputProp(step);
-    } else {
-      props.step = 'any';
-    }
-    return props;
-  }
-
-  getStepInputProp(stepExtension: Extension): string {
-    const step: number = Number(stepExtension.valueInteger);
-    if (step === 0) {
-      return '1';
-    }
-    let stepAsString = '';
-    for (let i = 1; i < step; i++) {
-      stepAsString += '0';
-    }
-    return `0.${stepAsString}1`;
-  }
 
   render(): JSX.Element | null {
     const { item } = this.props;
@@ -158,8 +124,8 @@ class Quantity extends React.Component<Props & ValidationProps, {}> {
             min={getMinValueExtensionValue(item)}
             onBlur={this.handleChange}
             errorMessage={getValidationTextExtension(item)}
+            pattern={getDecimalPattern(item)}
             className="page_skjemautfyller__quantity"
-            inputProps={this.inputProps()}
             helpButton={this.props.renderHelpButton()}
             helpElement={this.props.renderHelpElement()}
           >

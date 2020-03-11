@@ -14,7 +14,7 @@ module.exports = {
   rootDir: root,
   roots: ['<rootDir>/src'],
   preset: 'ts-jest',
-  setupTestFrameworkScriptFile: '<rootDir>/config/setupTests.js',
+  setupFilesAfterEnv: ['<rootDir>/config/setupTests.js'],
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'd.ts'],
   testMatch: ['**/__tests__/**/*-spec.js?(x)', '**/__tests__/**/*-spec.ts?(x)'],
   testPathIgnorePatterns: ['data'],

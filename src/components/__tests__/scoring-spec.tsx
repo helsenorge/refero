@@ -98,6 +98,32 @@ describe('Component renders and calculates score', () => {
     expect(fhirpathItem.props().value).toBe('42');
   });
 
+  it('fhirpath score should update with blank score when answer is NaN', async () => {
+    var model: Questionnaire = cloneQuestionnaire(FhirpathScoreDataModel);
+    setFhirpath('4', '0 / 0', model);
+
+    const wrapper = createWrapper(model);
+    wrapper.render();
+
+    await inputAnswer('1', 42, wrapper);
+
+    let fhirpathItem = findItem('4', wrapper);
+    expect(fhirpathItem.props().value).toBe('');
+  });
+
+  it('fhirpath score should upladte with blank score when answer is infinite', async () => {
+    var model: Questionnaire = cloneQuestionnaire(FhirpathScoreDataModel);
+    setFhirpath('4', '42 / 0', model);
+
+    const wrapper = createWrapper(model);
+    wrapper.render();
+
+    await inputAnswer('1', 42, wrapper);
+
+    let fhirpathItem = findItem('4', wrapper);
+    expect(fhirpathItem.props().value).toBe('');
+  });
+
   it('total score should be updated when options in choice item as radio-button is selected', async () => {
     const wrapper = createWrapper(ChoiceRadioButtonDataModel);
     wrapper.render();

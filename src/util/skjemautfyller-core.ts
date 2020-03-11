@@ -317,6 +317,20 @@ function enableWhenMatchesCodeAnswer(enableWhen: QuestionnaireEnableWhen, answer
   return enableWhen.answerCoding.code === answer.valueCoding.code && enableWhen.answerCoding.system === answer.valueCoding.system;
 }
 
+function enableWhenMatchesQuantityAnswer(enableWhen: QuestionnaireEnableWhen, answer: QuestionnaireResponseAnswer): boolean {
+  if (enableWhen.answerQuantity === undefined) {
+    return false;
+  }
+  if (answer.valueQuantity === undefined) {
+    return false;
+  }
+  return (
+    enableWhen.answerQuantity.code === answer.valueQuantity.code &&
+    enableWhen.answerQuantity.system === answer.valueQuantity.system &&
+    enableWhen.answerQuantity.value === answer.valueQuantity.value
+  );
+}
+
 function enableWhenMatchesReferenceAnswer(enableWhen: QuestionnaireEnableWhen, answer: QuestionnaireResponseAnswer): boolean {
   if (enableWhen.answerReference === undefined) {
     return false;
@@ -344,6 +358,9 @@ export function hasAnswer(answer: QuestionnaireResponseAnswer): boolean {
   if (codingValue !== null && codingValue !== undefined && codingValue !== '') {
     return true;
   }
+  if (answer.valueQuantity && (answer.valueQuantity.value || answer.valueQuantity.value === 0)) {
+    return true;
+  }
   if (answer.valueDate) {
     return true;
   }
@@ -369,47 +386,57 @@ export function enableWhenMatchesAnswer(
   enableWhen: QuestionnaireEnableWhen,
   answers: Array<QuestionnaireResponseAnswer> | undefined
 ): boolean {
-  if (!enableWhen || !answers || answers.length === 0) {
-    if (enableWhen.hasAnswer === false) {
-      return true;
-    }
+  if (!enableWhen) return false;
+
+  answers = answers || [];
+
+  // que-7: On Questionnaire.item.enableWhen: enableWhen must contain either a 'answer' or a 'hasAnswer' element (expression  on Questionnaire.item.enableWhen: hasAnswer.exists() xor answer.exists())
+  if (enableWhen.hasAnswer === false) {
+    return !answers.some(a => hasAnswer(a));
+  }
+
+  if (enableWhen.hasAnswer === true) {
+    return answers.some(a => hasAnswer(a));
+  }
+
+  if (answers.length === 0) {
     return false;
   }
-  let matches = true;
+
+  let matches = false;
   answers.forEach((answer: QuestionnaireResponseAnswer) => {
-    if (enableWhen.hasAnswer === true || enableWhen.hasAnswer === false) {
-      matches = matches && hasAnswer(answer);
-      return;
-    }
     if (enableWhen.answerBoolean !== undefined) {
-      matches = matches && enableWhenMatchesBooleanAnswer(enableWhen, answer);
+      matches = matches || enableWhenMatchesBooleanAnswer(enableWhen, answer);
     }
     if (enableWhen.answerDecimal) {
-      matches = matches && enableWhenMatchesDecimalAnswer(enableWhen, answer);
+      matches = matches || enableWhenMatchesDecimalAnswer(enableWhen, answer);
     }
     if (enableWhen.answerInteger) {
-      matches = matches && enableWhenMatchesIntegerAnswer(enableWhen, answer);
+      matches = matches || enableWhenMatchesIntegerAnswer(enableWhen, answer);
     }
     if (enableWhen.answerDate) {
-      matches = matches && enableWhenMatchesDateAnswer(enableWhen, answer);
+      matches = matches || enableWhenMatchesDateAnswer(enableWhen, answer);
     }
     if (enableWhen.answerDateTime) {
-      matches = matches && enableWhenMatchesDateTimeAnswer(enableWhen, answer);
+      matches = matches || enableWhenMatchesDateTimeAnswer(enableWhen, answer);
     }
     if (enableWhen.answerTime) {
-      matches = matches && enableWhenMatchesTimeAnswer(enableWhen, answer);
+      matches = matches || enableWhenMatchesTimeAnswer(enableWhen, answer);
     }
     if (enableWhen.answerString) {
-      matches = matches && enableWhenMatchesStringAnswer(enableWhen, answer);
+      matches = matches || enableWhenMatchesStringAnswer(enableWhen, answer);
     }
     if (enableWhen.answerCoding) {
-      matches = matches && enableWhenMatchesCodeAnswer(enableWhen, answer);
+      matches = matches || enableWhenMatchesCodeAnswer(enableWhen, answer);
+    }
+    if (enableWhen.answerQuantity) {
+      matches = matches || enableWhenMatchesQuantityAnswer(enableWhen, answer);
     }
     if (enableWhen.answerReference) {
-      matches = matches && enableWhenMatchesReferenceAnswer(enableWhen, answer);
+      matches = matches || enableWhenMatchesReferenceAnswer(enableWhen, answer);
     }
   });
-  return matches && enableWhen.hasAnswer !== false;
+  return matches;
 }
 
 export interface Path {
