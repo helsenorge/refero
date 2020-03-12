@@ -152,8 +152,6 @@ function processAddRepeatItemAction(action: NewValueAction, state: Form): Form {
 
     const indexToInsert = arrayToAddItemTo.map(o => o.linkId).lastIndexOf(newItem.linkId);
     arrayToAddItemTo.splice(indexToInsert + 1, 0, newItem);
-
-    return;
   });
 }
 
@@ -192,7 +190,6 @@ function processDeleteRepeatItemAction(action: NewValueAction, state: Form): For
         itemIndexInArray++;
       }
     }
-    return;
   });
 }
 
@@ -274,8 +271,6 @@ function processRemoveCodingValueAction(action: NewValueAction, state: Form) {
         delete responseItem.answer;
       }
     }
-
-    return;
   });
 }
 
@@ -296,8 +291,6 @@ function processRemoveCodingStringValueAction(action: NewValueAction, state: For
     if (responseItem.answer.length === 0) {
       delete responseItem.answer;
     }
-
-    return;
   });
 }
 
@@ -316,8 +309,6 @@ function processRemoveAttachmentValueAction(action: NewValueAction, state: Form)
     if (responseItem.answer.length === 0) {
       delete responseItem.answer;
     }
-
-    return;
   });
 }
 
@@ -430,7 +421,6 @@ function processNewValueAction(action: NewValueAction, state: Form): Form {
     if (action.item) {
       updateEnableWhenItemsIteration([action.item], draft.FormData, draft.FormDefinition, action.itemPath);
     }
-    return;
   });
 }
 
@@ -464,8 +454,6 @@ function processNewCodingStringValueAction(action: NewValueAction, state: Form):
         responseItem.answer.push(newAnswer);
       }
     }
-
-    return;
   });
 }
 
