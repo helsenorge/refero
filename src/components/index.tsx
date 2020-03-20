@@ -69,8 +69,8 @@ interface Props {
   store?: Store<{}>;
   authorized: boolean;
   blockSubmit?: boolean;
-  onSave: (questionnaireResponse: QuestionnaireResponse) => void;
-  onCancel: () => void;
+  onSave?: (questionnaireResponse: QuestionnaireResponse) => void;
+  onCancel?: () => void;
   onSubmit: (questionnaireResponse: QuestionnaireResponse) => void;
   loginButton: JSX.Element;
   resources?: Resources;
@@ -140,7 +140,7 @@ class Skjemautfyller extends React.Component<StateProps & DispatchProps & Props,
   };
 
   onSave = () => {
-    if (this.props.formData && this.props.formData.Content) {
+    if (this.props.onSave && this.props.formData && this.props.formData.Content) {
       this.props.onSave(this.props.formData.Content);
     }
   };
@@ -369,7 +369,7 @@ class Skjemautfyller extends React.Component<StateProps & DispatchProps & Props,
           optionalLabel={resources.formOptional}
           cancelButtonText={resources.formCancel}
           pauseButtonText={resources.formSave ? resources.formSave : 'Lagre'}
-          onPause={this.onSave}
+          onPause={this.props.onSave ? this.onSave : undefined}
           pauseButtonClasses={'page_skjemautfyller__pausebutton'}
           onCancel={this.props.onCancel}
           buttonClasses="page_skjemautfyller__saveblock"

@@ -1,3 +1,7 @@
+5.2.10
+------
+* Don't render the Save or Cancel buttons if their callbacks are not defined.
+
 5.2.9
 -----
 * Rendering optimalizations.
