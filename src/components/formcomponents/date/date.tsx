@@ -13,11 +13,12 @@ import { NewValueAction, newDateValueAsync } from '../../../actions/newValue';
 import withCommonFunctions from '../../with-common-functions';
 import { isReadOnly, isRequired, getId, renderPrefix, getText } from '../../../util/index';
 import { getValidationTextExtension, getPlaceholder, getExtension } from '../../../util/extension';
-import { QuestionnaireItem, QuestionnaireResponseAnswer, QuestionnaireResponseItem } from '../../../types/fhir';
+import { QuestionnaireItem, QuestionnaireResponseAnswer, QuestionnaireResponseItem, Extension } from '../../../types/fhir';
 import { Resources } from '../../../util/resources';
 import TextView from '../textview';
 import { ThunkDispatch } from 'redux-thunk';
 import { GlobalState } from '../../../reducers';
+import { evaluateFhirpathExpressionToGetDate } from '../../../util/fhirpathHelper';
 
 export interface Props {
   item: QuestionnaireItem;
@@ -98,6 +99,12 @@ class DateComponent extends React.Component<Props & ValidationProps> {
   }
 
   getMaxDate(): Date | undefined {
+    const maxDate = getExtension(ExtensionConstants.DATE_MAX_VALUE_URL, this.props.item);
+    if (maxDate && maxDate.valueString) return evaluateFhirpathExpressionToGetDate(this.props.item, maxDate.valueString);
+    return this.getMaxDateWithExtension();
+  }
+
+  getMaxDateWithExtension(): Date | undefined {
     const maxDate = getExtension(ExtensionConstants.MAX_VALUE_URL, this.props.item);
     if (maxDate && maxDate.valueDate) {
       return parseDate(String(maxDate.valueDate));
@@ -110,6 +117,12 @@ class DateComponent extends React.Component<Props & ValidationProps> {
   }
 
   getMinDate(): Date | undefined {
+    const minDate = getExtension(ExtensionConstants.DATE_MIN_VALUE_URL, this.props.item);
+    if (minDate && minDate.valueString) return evaluateFhirpathExpressionToGetDate(this.props.item, minDate.valueString);
+    return this.getMinDateWithExtension();
+  }
+
+  getMinDateWithExtension(): Date | undefined {
     const minDate = getExtension(ExtensionConstants.MIN_VALUE_URL, this.props.item);
     if (minDate && minDate.valueDate) {
       return parseDate(String(minDate.valueDate));
