@@ -1,5 +1,6 @@
 import { QuestionnaireItem, Extension, Element, Questionnaire } from '../types/fhir';
 import ExtensionConstants from '../constants/extensions';
+import { PresentationButtonsType } from '../constants/presentationButtonsType';
 
 export function getValidationTextExtension(item: QuestionnaireItem) {
   const validationTextExtension = getExtension(ExtensionConstants.VALIDATIONTEXT_URL, item);
@@ -7,6 +8,24 @@ export function getValidationTextExtension(item: QuestionnaireItem) {
     return undefined;
   }
   return validationTextExtension.valueString;
+}
+
+export function getPresentationButtonsExtension(questionniare: Questionnaire): PresentationButtonsType | null {
+  const extension = getExtension(ExtensionConstants.PRESENTATION_BUTTONS, questionniare);
+  if (!extension || !extension.valueCoding || !extension.valueCoding.code) {
+    return null;
+  }
+
+  switch (extension.valueCoding.code) {
+    case 'none':
+      return PresentationButtonsType.None;
+    case 'static':
+      return PresentationButtonsType.Static;
+    case 'sticky':
+      return PresentationButtonsType.Sticky;
+  }
+
+  return null;
 }
 
 export function getExtension(url: string, item: QuestionnaireItem | Element | Questionnaire) {

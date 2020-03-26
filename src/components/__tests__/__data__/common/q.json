@@ -1,0 +1,32 @@
+{
+  "resourceType": "Questionnaire",
+  "id": "test-common",
+  "language": "nb-NO",
+  "url": "https://skjemakatalog-dev-fhir-apimgmt.azure-api.net/api/v1/Questionnaire/test-common",
+  "version": "0.1",
+  "name": "fjas",
+  "title": "Eksempelskjema common",
+  "status": "draft",
+  "date": "2019-09-18",
+  "publisher": "Direktoratet for e-helse",
+  "purpose": "Test",
+  "approvalDate": "2018-02-02",
+  "lastReviewDate": "2018-02-02",
+  "copyright": "Er utviklet av Direktoratet for e-helse til fri benyttelse",
+  "subjectType": [
+    "Person"
+  ],
+  "item": [
+    {
+      "linkId": "1",
+      "text": "Er du syk?",
+      "type": "string",
+      "required": true
+    },
+    {
+      "linkId": "2",
+      "text": "Hvor gammel er du?",
+      "type": "integer"
+    }
+  ]
+}
