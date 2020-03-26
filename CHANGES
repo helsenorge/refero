@@ -1,3 +1,7 @@
+5.2.12
+------
+* Support for http://helsenorge.no/fhir/StructureDefinition/sdf-presentationbuttons
+
 5.2.11
 ------
 * Support for http://ehelse.no/fhir/StructureDefinition/sdf-maxvalue and 
