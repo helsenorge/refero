@@ -1,3 +1,7 @@
+5.3.0
+------
+* Change button placement & button types: save button is now a secondary Actionbutton, instead of a Functionbutton. Save button is now between Submit and Cancel buttons.
+
 5.2.12
 ------
 * Support for http://helsenorge.no/fhir/StructureDefinition/sdf-presentationbuttons
