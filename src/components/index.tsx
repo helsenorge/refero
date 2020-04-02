@@ -378,6 +378,9 @@ class Skjemautfyller extends React.Component<StateProps & DispatchProps & Props,
           pauseButtonText={resources.formSave ? resources.formSave : 'Lagre'}
           onPause={this.props.onSave ? this.onSave : undefined}
           pauseButtonClasses={'page_skjemautfyller__pausebutton'}
+          isPauseButtonOfTypeActionButton={true}
+          isPauseButtonSecondaryButton={true}
+          cancelButtonRight={true}
           onCancel={this.props.onCancel}
           buttonClasses={this.getButtonClasses(presentationButtonsType, ['page_skjemautfyller__saveblock'])}
           validationSummaryPlacement={this.props.validationSummaryPlacement}
