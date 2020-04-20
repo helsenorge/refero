@@ -8,6 +8,8 @@ React component that consumes a [FHIR Questionnaire](https://www.hl7.org/fhir/qu
 - [marked](https://www.npmjs.com/package/marked)
 - [moment](https://www.npmjs.com/package/moment)
 - [uuid](https://www.npmjs.com/package/uuid)
+- [dompurify](https://www.npmjs.com/package/dompurify)
+- [immer](https://www.npmjs.com/package/immer)
 
 ## Example usage
 

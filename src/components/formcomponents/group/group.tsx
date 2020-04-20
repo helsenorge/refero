@@ -17,7 +17,7 @@ import { RenderContext } from '../../../util/renderContext';
 export interface Props {
   item: QuestionnaireItem;
   answer: QuestionnaireResponseAnswer;
-  responseItem?: Array<QuestionnaireResponseItem>;
+  responseItem: QuestionnaireResponseItem;
   dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
   path: Array<Path>;
   pdf?: boolean;
@@ -31,6 +31,7 @@ export interface Props {
   renderContext: RenderContext;
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
+  isHelpOpen?: boolean;
 }
 interface State {
   counter?: number;
@@ -38,6 +39,13 @@ interface State {
 export class Group extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
+  }
+
+  shouldComponentUpdate(nextProps: Props, _nextState: {}) {
+    const responseItemHasChanged = this.props.responseItem !== nextProps.responseItem;
+    const helpItemHasChanged = this.props.isHelpOpen !== nextProps.isHelpOpen;
+
+    return responseItemHasChanged || helpItemHasChanged;
   }
 
   renderAllItems = (): JSX.Element => {

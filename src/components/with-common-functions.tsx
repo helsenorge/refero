@@ -76,6 +76,7 @@ export interface Props {
   ) => JSX.Element;
   onAnswerChange?: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseAnswer) => void;
   renderContext: RenderContext;
+  isHelpOpen?: boolean;
 }
 
 interface EnhancedProps {
@@ -286,6 +287,7 @@ export default function withCommonFunctions<T>(WrappedComponent: React.Component
             renderRepeatButton={this.renderRepeatButton}
             renderHelpButton={this.renderHelpButton}
             renderHelpElement={this.renderHelpElement}
+            isHelpOpen={this.state.isHelpVisible}
             /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
             {...(this.props as any)}
           >

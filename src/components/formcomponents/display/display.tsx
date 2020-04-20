@@ -1,20 +1,9 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
-import { renderPrefix, getText } from '../../../util/index';
+import { renderPrefix, getText, markdownToHtml } from '../../../util/index';
 import { QuestionnaireItem } from '../../../types/fhir';
 import { getMarkdownExtensionValue } from '../../../util/extension';
-import marked from 'marked';
-
-const renderer = new marked.Renderer();
-renderer.link = (href: string, title: string, text: string): string => {
-  return `<a href=${href} title=${title} target="_blank" class="external">${text}</a>`;
-};
-
-marked.setOptions({
-  sanitize: true,
-  renderer: renderer,
-});
 
 export interface Props {
   item?: QuestionnaireItem;
@@ -34,7 +23,7 @@ const Display: React.SFC<Props> = ({ enable, pdf, item }) => {
         <div
           className="page_skjemautfyller__markdown"
           dangerouslySetInnerHTML={{
-            __html: marked(markdown.toString(), { renderer }),
+            __html: markdownToHtml(markdown.toString()),
           }}
         />
       );

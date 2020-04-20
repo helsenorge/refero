@@ -15,14 +15,16 @@ import ExtensionConstants from '../../../constants/extensions';
 import { NewValueAction, newDateTimeValueAsync } from '../../../actions/newValue';
 import { isRequired, getId, renderPrefix, getText, isReadOnly } from '../../../util/index';
 import { getValidationTextExtension, getExtension } from '../../../util/extension';
-import { QuestionnaireItem, QuestionnaireResponseAnswer } from '../../../types/fhir';
+import { QuestionnaireItem, QuestionnaireResponseAnswer, QuestionnaireResponseItem } from '../../../types/fhir';
 import { Resources } from '../../../util/resources';
 import TextView from '../textview';
 import { ThunkDispatch } from 'redux-thunk';
 import { GlobalState } from '../../../reducers';
+import { evaluateFhirpathExpressionToGetDate } from '../../../util/fhirpathHelper';
 
 export interface Props {
   item: QuestionnaireItem;
+  responseItem: QuestionnaireResponseItem;
   answer: QuestionnaireResponseAnswer;
   resources?: Resources;
   dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
@@ -35,6 +37,7 @@ export interface Props {
   oneToTwoColumn: boolean;
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
+  isHelpOpen?: boolean;
   onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseAnswer) => void;
 }
 
@@ -60,6 +63,12 @@ class DateTime extends React.Component<Props & ValidationProps> {
   }
 
   getMaxDate(): Date | undefined {
+    const maxDate = getExtension(ExtensionConstants.DATE_MAX_VALUE_URL, this.props.item);
+    if (maxDate && maxDate.valueString) return evaluateFhirpathExpressionToGetDate(this.props.item, maxDate.valueString);
+    return this.getMaxDateWithExtension();
+  }
+
+  getMaxDateWithExtension(): Date | undefined {
     const maxDate = getExtension(ExtensionConstants.MAX_VALUE_URL, this.props.item);
     if (!maxDate) {
       return;
@@ -73,6 +82,12 @@ class DateTime extends React.Component<Props & ValidationProps> {
   }
 
   getMinDate(): Date | undefined {
+    const minDate = getExtension(ExtensionConstants.DATE_MIN_VALUE_URL, this.props.item);
+    if (minDate && minDate.valueString) return evaluateFhirpathExpressionToGetDate(this.props.item, minDate.valueString);
+    return this.getMinDateWithExtension();
+  }
+
+  getMinDateWithExtension(): Date | undefined {
     const minDate = getExtension(ExtensionConstants.MIN_VALUE_URL, this.props.item);
     if (!minDate) {
       return;
@@ -124,6 +139,13 @@ class DateTime extends React.Component<Props & ValidationProps> {
           .format('LLL')
       : text;
   };
+
+  shouldComponentUpdate(nextProps: Props, _nextState: {}) {
+    const responseItemHasChanged = this.props.responseItem !== nextProps.responseItem;
+    const helpItemHasChanged = this.props.isHelpOpen !== nextProps.isHelpOpen;
+
+    return responseItemHasChanged || helpItemHasChanged;
+  }
 
   render(): JSX.Element | null {
     const { item, pdf, id, ...other } = this.props;

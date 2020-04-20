@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { mount } from 'enzyme';
 import { Text } from '../text';
-import { QuestionnaireItem, QuestionnaireResponseAnswer } from '../../../../types/fhir';
+import { QuestionnaireItem, QuestionnaireResponseAnswer, QuestionnaireResponseItem } from '../../../../types/fhir';
 import * as fs from 'fs';
 
 describe('text with inline extension', () => {
@@ -24,6 +24,7 @@ describe('text with inline extension', () => {
         renderHelpButton={() => <React.Fragment />}
         renderHelpElement={() => <React.Fragment />}
         onAnswerChange={() => {}}
+        responseItem={{} as QuestionnaireResponseItem}
       >
         {children}
       </Text>

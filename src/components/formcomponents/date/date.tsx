@@ -13,14 +13,16 @@ import { NewValueAction, newDateValueAsync } from '../../../actions/newValue';
 import withCommonFunctions from '../../with-common-functions';
 import { isReadOnly, isRequired, getId, renderPrefix, getText } from '../../../util/index';
 import { getValidationTextExtension, getPlaceholder, getExtension } from '../../../util/extension';
-import { QuestionnaireItem, QuestionnaireResponseAnswer } from '../../../types/fhir';
+import { QuestionnaireItem, QuestionnaireResponseAnswer, QuestionnaireResponseItem, Extension } from '../../../types/fhir';
 import { Resources } from '../../../util/resources';
 import TextView from '../textview';
 import { ThunkDispatch } from 'redux-thunk';
 import { GlobalState } from '../../../reducers';
+import { evaluateFhirpathExpressionToGetDate } from '../../../util/fhirpathHelper';
 
 export interface Props {
   item: QuestionnaireItem;
+  responseItem: QuestionnaireResponseItem;
   answer: QuestionnaireResponseAnswer;
   resources?: Resources;
   dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
@@ -35,6 +37,7 @@ export interface Props {
   repeatButton: JSX.Element;
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
+  isHelpOpen?: boolean;
   onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseAnswer) => void;
 }
 
@@ -96,6 +99,12 @@ class DateComponent extends React.Component<Props & ValidationProps> {
   }
 
   getMaxDate(): Date | undefined {
+    const maxDate = getExtension(ExtensionConstants.DATE_MAX_VALUE_URL, this.props.item);
+    if (maxDate && maxDate.valueString) return evaluateFhirpathExpressionToGetDate(this.props.item, maxDate.valueString);
+    return this.getMaxDateWithExtension();
+  }
+
+  getMaxDateWithExtension(): Date | undefined {
     const maxDate = getExtension(ExtensionConstants.MAX_VALUE_URL, this.props.item);
     if (maxDate && maxDate.valueDate) {
       return parseDate(String(maxDate.valueDate));
@@ -108,6 +117,12 @@ class DateComponent extends React.Component<Props & ValidationProps> {
   }
 
   getMinDate(): Date | undefined {
+    const minDate = getExtension(ExtensionConstants.DATE_MIN_VALUE_URL, this.props.item);
+    if (minDate && minDate.valueString) return evaluateFhirpathExpressionToGetDate(this.props.item, minDate.valueString);
+    return this.getMinDateWithExtension();
+  }
+
+  getMinDateWithExtension(): Date | undefined {
     const minDate = getExtension(ExtensionConstants.MIN_VALUE_URL, this.props.item);
     if (minDate && minDate.valueDate) {
       return parseDate(String(minDate.valueDate));
@@ -142,6 +157,13 @@ class DateComponent extends React.Component<Props & ValidationProps> {
 
     return date ? moment(date).format('D. MMMM YYYY') : text;
   };
+
+  shouldComponentUpdate(nextProps: Props, _nextState: {}) {
+    const responseItemHasChanged = this.props.responseItem !== nextProps.responseItem;
+    const helpItemHasChanged = this.props.isHelpOpen !== nextProps.isHelpOpen;
+
+    return responseItemHasChanged || helpItemHasChanged;
+  }
 
   render(): JSX.Element | null {
     const date = this.getValue();

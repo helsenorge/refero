@@ -1,3 +1,24 @@
+5.3.0
+------
+* Change button placement & button types: save button is now a secondary Actionbutton, instead of a Functionbutton. Save button is now between Submit and Cancel buttons.
+
+5.2.12
+------
+* Support for http://helsenorge.no/fhir/StructureDefinition/sdf-presentationbuttons
+
+5.2.11
+------
+* Support for http://ehelse.no/fhir/StructureDefinition/sdf-maxvalue and 
+  http://ehelse.no/fhir/StructureDefinition/sdf-minvalue
+
+5.2.10
+------
+* Don't render the Save or Cancel buttons if their callbacks are not defined.
+
+5.2.9
+-----
+* Rendering optimalizations.
+
 5.2.8
 -----
 * regex validation support for text fields.

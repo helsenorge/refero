@@ -40,10 +40,11 @@ import { UploadedFile } from '@helsenorge/toolkit/components/atoms/dropzone';
 import { setSkjemaDefinition } from '../actions/form';
 import { TextMessage } from '../types/text-message';
 import { ValidationSummaryPlacement } from '@helsenorge/toolkit/components/molecules/form/validationSummaryPlacement';
-import { getQuestionnaireUnitExtensionValue, getExtension } from '../util/extension';
+import { getQuestionnaireUnitExtensionValue, getExtension, getPresentationButtonsExtension } from '../util/extension';
 import { ActionRequester, IActionRequester } from '../util/actionRequester';
 import { RenderContext } from '../util/renderContext';
 import { QuestionniareInspector, IQuestionnaireInspector } from '../util/questionnaireInspector';
+import { PresentationButtonsType } from '../constants/presentationButtonsType';
 
 export interface QueryStringsInterface {
   MessageId: string;
@@ -69,8 +70,8 @@ interface Props {
   store?: Store<{}>;
   authorized: boolean;
   blockSubmit?: boolean;
-  onSave: (questionnaireResponse: QuestionnaireResponse) => void;
-  onCancel: () => void;
+  onSave?: (questionnaireResponse: QuestionnaireResponse) => void;
+  onCancel?: () => void;
   onSubmit: (questionnaireResponse: QuestionnaireResponse) => void;
   loginButton: JSX.Element;
   resources?: Resources;
@@ -134,13 +135,15 @@ class Skjemautfyller extends React.Component<StateProps & DispatchProps & Props,
   }
 
   onSubmit = () => {
-    if (this.props.formData && this.props.formData.Content) {
-      this.props.onSubmit(this.props.formData.Content);
+    const { formData, onSubmit } = this.props;
+
+    if (formData && formData.Content && onSubmit) {
+      onSubmit(formData.Content);
     }
   };
 
   onSave = () => {
-    if (this.props.formData && this.props.formData.Content) {
+    if (this.props.onSave && this.props.formData && this.props.formData.Content) {
       this.props.onSave(this.props.formData.Content);
     }
   };
@@ -153,7 +156,7 @@ class Skjemautfyller extends React.Component<StateProps & DispatchProps & Props,
     IE11HackToWorkAroundBug187484();
   }
 
-  componentWillReceiveProps(nextProps: Props) {
+  UNSAFE_componentWillReceiveProps(nextProps: Props) {
     if (nextProps.questionnaire && nextProps.questionnaire !== this.props.questionnaire) {
       this.props.updateSkjema(nextProps.questionnaire, nextProps.questionnaireResponse, nextProps.language);
     }
@@ -313,7 +316,10 @@ class Skjemautfyller extends React.Component<StateProps & DispatchProps & Props,
       return this.renderFormItems(true);
     }
 
-    const form = this.props.authorized ? this.renderFormWhenAuthorized() : this.renderFormWhenNotAuthorized();
+    const presentationButtonsType = getPresentationButtonsExtension(formDefinition.Content);
+    const form = this.props.authorized
+      ? this.renderFormWhenAuthorized(presentationButtonsType)
+      : this.renderFormWhenNotAuthorized(presentationButtonsType);
 
     return (
       <div className="page_skjemautfyller__content">
@@ -323,7 +329,7 @@ class Skjemautfyller extends React.Component<StateProps & DispatchProps & Props,
     );
   };
 
-  renderFormWhenNotAuthorized = () => {
+  renderFormWhenNotAuthorized = (presentationButtonsType: PresentationButtonsType | null) => {
     const { resources } = this.props;
     if (!resources) {
       return;
@@ -343,6 +349,7 @@ class Skjemautfyller extends React.Component<StateProps & DispatchProps & Props,
             enable: true,
             header: resources.validationSummaryHeader,
           }}
+          buttonClasses={this.getButtonClasses(presentationButtonsType)}
         >
           {this.renderFormItems()}
         </Form>
@@ -351,7 +358,7 @@ class Skjemautfyller extends React.Component<StateProps & DispatchProps & Props,
     );
   };
 
-  renderFormWhenAuthorized = () => {
+  renderFormWhenAuthorized = (presentationButtonsType: PresentationButtonsType | null) => {
     const { resources } = this.props;
     if (!resources) {
       return;
@@ -369,22 +376,39 @@ class Skjemautfyller extends React.Component<StateProps & DispatchProps & Props,
           optionalLabel={resources.formOptional}
           cancelButtonText={resources.formCancel}
           pauseButtonText={resources.formSave ? resources.formSave : 'Lagre'}
-          onPause={this.onSave}
+          onPause={this.props.onSave ? this.onSave : undefined}
           pauseButtonClasses={'page_skjemautfyller__pausebutton'}
+          isPauseButtonOfTypeActionButton={true}
+          isPauseButtonSecondaryButton={true}
+          cancelButtonRight={true}
           onCancel={this.props.onCancel}
-          buttonClasses="page_skjemautfyller__saveblock"
+          buttonClasses={this.getButtonClasses(presentationButtonsType, ['page_skjemautfyller__saveblock'])}
           validationSummaryPlacement={this.props.validationSummaryPlacement}
           validationSummary={{
             enable: true,
             header: resources.validationSummaryHeader,
           }}
-          sticky={this.props.sticky}
+          sticky={this.getStickyStatus(presentationButtonsType)}
         >
           {this.renderFormItems()}
         </Form>
       </div>
     );
   };
+
+  getStickyStatus(presentationButtonsType: PresentationButtonsType | null): boolean | undefined {
+    if (presentationButtonsType === null) return this.props.sticky;
+    return presentationButtonsType === PresentationButtonsType.Sticky;
+  }
+
+  getButtonClasses(presentationButtonsType: PresentationButtonsType | null, defaultClasses?: string[]): string {
+    defaultClasses = defaultClasses ?? [];
+    if (presentationButtonsType === PresentationButtonsType.None) {
+      defaultClasses.push('page_skjemautfyller__hidden_buttons');
+    }
+
+    return defaultClasses.join(' ');
+  }
 
   render(): JSX.Element | null {
     const { resources } = this.props;

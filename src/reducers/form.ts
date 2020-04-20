@@ -37,6 +37,7 @@ import { Languages } from '@helsenorge/toolkit/constants';
 import { FormAction, SET_SKJEMA_DEFINITION } from '../actions/form';
 import { generateQuestionnaireResponse } from '../actions/generateQuestionnaireResponse';
 import { createQuestionnaireResponseAnswer } from '../util/createQuestionnaireResponseAnswer';
+import produce from 'immer';
 
 export interface FormData {
   Content: QuestionnaireResponse | null | undefined;
@@ -109,10 +110,6 @@ export function getInitialFormData(state: GlobalState): FormData | null {
   }
   return state.skjemautfyller.form.InitialFormData;
 }
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function copyObject(object: Record<string, any>): Record<string, any> {
-  return JSON.parse(JSON.stringify(object));
-}
 
 function getArrayToAddGroupTo(itemToAddTo: QuestionnaireResponseItem | undefined): Array<QuestionnaireResponseItem> | undefined {
   if (!itemToAddTo) {
@@ -126,75 +123,74 @@ function getArrayToAddGroupTo(itemToAddTo: QuestionnaireResponseItem | undefined
 }
 
 function processAddRepeatItemAction(action: NewValueAction, state: Form): Form {
-  if (!action.parentPath) {
-    return state;
-  }
-  const newState: Form = copyObject(state) as Form;
+  return produce(state, draft => {
+    if (!action.parentPath) {
+      return state;
+    }
 
-  let arrayToAddItemTo: Array<QuestionnaireResponseItem> | undefined = [];
-  if (action.parentPath.length === 0 && newState.FormData.Content) {
-    arrayToAddItemTo = newState.FormData.Content.item;
-  } else if (action.parentPath.length > 0) {
-    // length >1 means group wrapped in group
-    const itemToAddTo = getResponseItemWithPath(action.parentPath, newState.FormData);
-    arrayToAddItemTo = getArrayToAddGroupTo(itemToAddTo);
-  }
+    let arrayToAddItemTo: Array<QuestionnaireResponseItem> | undefined = [];
+    if (action.parentPath.length === 0 && draft.FormData.Content) {
+      arrayToAddItemTo = draft.FormData.Content.item;
+    } else if (action.parentPath.length > 0) {
+      // length >1 means group wrapped in group
+      const itemToAddTo = getResponseItemWithPath(action.parentPath, draft.FormData);
+      arrayToAddItemTo = getArrayToAddGroupTo(itemToAddTo);
+    }
 
-  if (!arrayToAddItemTo || arrayToAddItemTo.length === 0) {
-    return newState;
-  }
+    if (!arrayToAddItemTo || arrayToAddItemTo.length === 0) {
+      return;
+    }
 
-  if (!action.responseItems || action.responseItems.length === 0) {
-    return newState;
-  }
+    if (!action.responseItems || action.responseItems.length === 0) {
+      return;
+    }
 
-  const newItem = copyItem(action.responseItems[0], undefined, newState.FormDefinition.Content as Questionnaire);
-  if (!newItem) {
-    return newState;
-  }
+    const newItem = copyItem(action.responseItems[0], undefined, draft.FormDefinition.Content as Questionnaire);
+    if (!newItem) {
+      return;
+    }
 
-  const indexToInsert = arrayToAddItemTo.map(o => o.linkId).lastIndexOf(newItem.linkId);
-  arrayToAddItemTo.splice(indexToInsert + 1, 0, newItem);
-
-  return newState;
+    const indexToInsert = arrayToAddItemTo.map(o => o.linkId).lastIndexOf(newItem.linkId);
+    arrayToAddItemTo.splice(indexToInsert + 1, 0, newItem);
+  });
 }
 
 function processDeleteRepeatItemAction(action: NewValueAction, state: Form): Form {
-  if (!action.itemPath) {
-    return state;
-  }
-  const newState: Form = copyObject(state) as Form;
-
-  let arrayToDeleteItem: Array<QuestionnaireResponseItem> | undefined = [];
-  if (action.itemPath.length === 1 && newState.FormData.Content) {
-    arrayToDeleteItem = newState.FormData.Content.item;
-  } else if (action.itemPath.length > 0) {
-    // length >1 means group wrapped in group
-    const parentPath = action.itemPath.slice(0, -1);
-    const itemToAddTo = getResponseItemWithPath(parentPath, newState.FormData);
-    arrayToDeleteItem = getArrayToAddGroupTo(itemToAddTo);
-  }
-
-  if (!arrayToDeleteItem || arrayToDeleteItem.length === 0) {
-    return newState;
-  }
-
-  if (!action.item) {
-    return newState;
-  }
-  const definitionLinkId = action.item.linkId;
-  const index = action.itemPath[action.itemPath.length - 1].index;
-  let itemIndexInArray = 0;
-  for (let i = 0; i <= arrayToDeleteItem.length - 1; i++) {
-    if (arrayToDeleteItem[i].linkId === definitionLinkId) {
-      if (itemIndexInArray === index) {
-        arrayToDeleteItem.splice(i, 1);
-        break;
-      }
-      itemIndexInArray++;
+  return produce(state, draft => {
+    if (!action.itemPath) {
+      return state;
     }
-  }
-  return newState;
+
+    let arrayToDeleteItem: Array<QuestionnaireResponseItem> | undefined = [];
+    if (action.itemPath.length === 1 && draft.FormData.Content) {
+      arrayToDeleteItem = draft.FormData.Content.item;
+    } else if (action.itemPath.length > 0) {
+      // length >1 means group wrapped in group
+      const parentPath = action.itemPath.slice(0, -1);
+      const itemToAddTo = getResponseItemWithPath(parentPath, draft.FormData);
+      arrayToDeleteItem = getArrayToAddGroupTo(itemToAddTo);
+    }
+
+    if (!arrayToDeleteItem || arrayToDeleteItem.length === 0) {
+      return;
+    }
+
+    if (!action.item) {
+      return;
+    }
+    const definitionLinkId = action.item.linkId;
+    const index = action.itemPath[action.itemPath.length - 1].index;
+    let itemIndexInArray = 0;
+    for (let i = 0; i <= arrayToDeleteItem.length - 1; i++) {
+      if (arrayToDeleteItem[i].linkId === definitionLinkId) {
+        if (itemIndexInArray === index) {
+          arrayToDeleteItem.splice(i, 1);
+          break;
+        }
+        itemIndexInArray++;
+      }
+    }
+  });
 }
 
 function copyItem(
@@ -258,15 +254,36 @@ function copyItem(
 }
 
 function processRemoveCodingValueAction(action: NewValueAction, state: Form) {
-  const newState: Form = copyObject(state) as Form;
-  const responseItem = getResponseItemWithPath(action.itemPath || [], newState.FormData);
-  if (!responseItem || !responseItem.answer || !responseItem.answer.length) {
-    return newState;
-  }
-  if (action.valueCoding) {
+  return produce(state, draft => {
+    const responseItem = getResponseItemWithPath(action.itemPath || [], draft.FormData);
+    if (!responseItem || !responseItem.answer || !responseItem.answer.length) {
+      return;
+    }
+    if (action.valueCoding) {
+      responseItem.answer = responseItem.answer.filter(el => {
+        if (el && el.valueCoding && el.valueCoding.code && action.valueCoding) {
+          return el.valueCoding.code !== action.valueCoding.code;
+        }
+        return true;
+      });
+
+      if (responseItem.answer.length === 0) {
+        delete responseItem.answer;
+      }
+    }
+  });
+}
+
+function processRemoveCodingStringValueAction(action: NewValueAction, state: Form) {
+  return produce(state, draft => {
+    const responseItem = getResponseItemWithPath(action.itemPath || [], draft.FormData);
+    if (!responseItem || !responseItem.answer || !responseItem.answer.length) {
+      return;
+    }
+
     responseItem.answer = responseItem.answer.filter(el => {
-      if (el && el.valueCoding && el.valueCoding.code && action.valueCoding) {
-        return el.valueCoding.code !== action.valueCoding.code;
+      if (el && el.valueString) {
+        return false;
       }
       return true;
     });
@@ -274,195 +291,170 @@ function processRemoveCodingValueAction(action: NewValueAction, state: Form) {
     if (responseItem.answer.length === 0) {
       delete responseItem.answer;
     }
-  }
-
-  return newState;
-}
-
-function processRemoveCodingStringValueAction(action: NewValueAction, state: Form) {
-  const newState: Form = copyObject(state) as Form;
-  const responseItem = getResponseItemWithPath(action.itemPath || [], newState.FormData);
-  if (!responseItem || !responseItem.answer || !responseItem.answer.length) {
-    return newState;
-  }
-
-  responseItem.answer = responseItem.answer.filter(el => {
-    if (el && el.valueString) {
-      return false;
-    }
-    return true;
   });
-
-  if (responseItem.answer.length === 0) {
-    delete responseItem.answer;
-  }
-
-  return newState;
 }
 
 function processRemoveAttachmentValueAction(action: NewValueAction, state: Form) {
-  const newstate: Form = copyObject(state) as Form;
-  const responseItem = getResponseItemWithPath(action.itemPath || [], newstate.FormData);
-  if (!responseItem || !responseItem.answer || !responseItem.answer.length) {
-    return newstate;
-  }
+  return produce(state, draft => {
+    const responseItem = getResponseItemWithPath(action.itemPath || [], draft.FormData);
+    if (!responseItem || !responseItem.answer || !responseItem.answer.length) {
+      return;
+    }
 
-  if (action.valueAttachment) {
-    const attachmentToRemove = action.valueAttachment.url;
-    responseItem.answer = responseItem.answer.filter(el => el && el.valueAttachment && el.valueAttachment.url !== attachmentToRemove);
-  }
+    if (action.valueAttachment) {
+      const attachmentToRemove = action.valueAttachment.url;
+      responseItem.answer = responseItem.answer.filter(el => el && el.valueAttachment && el.valueAttachment.url !== attachmentToRemove);
+    }
 
-  if (responseItem.answer.length === 0) {
-    delete responseItem.answer;
-  }
-
-  return newstate;
+    if (responseItem.answer.length === 0) {
+      delete responseItem.answer;
+    }
+  });
 }
 
 function processNewValueAction(action: NewValueAction, state: Form): Form {
-  const newState: Form = copyObject(state) as Form;
-  const responseItem = getResponseItemWithPath(action.itemPath || [], newState.FormData);
-  if (!responseItem) {
-    return newState;
-  }
+  return produce(state, draft => {
+    const responseItem = getResponseItemWithPath(action.itemPath || [], draft.FormData);
+    if (!responseItem) {
+      return;
+    }
 
-  let hasAnswer = false;
+    let hasAnswer = false;
 
-  if (!responseItem.answer) {
-    responseItem.answer = [];
-  }
+    if (!responseItem.answer) {
+      responseItem.answer = [];
+    }
 
-  let answer = responseItem.answer[0];
-  if (!answer) {
-    answer = {} as QuestionnaireResponseAnswer;
-    responseItem.answer.push(answer);
-  }
+    let answer = responseItem.answer[0];
+    if (!answer) {
+      answer = {} as QuestionnaireResponseAnswer;
+      responseItem.answer.push(answer);
+    }
 
-  if (action.valueBoolean !== undefined) {
-    hasAnswer = true;
-    answer.valueBoolean = action.valueBoolean;
-  }
-  if (action.valueDecimal !== undefined && !isNaN(action.valueDecimal)) {
-    hasAnswer = true;
-    answer.valueDecimal = action.valueDecimal;
-  }
-  if (action.valueInteger !== undefined && !isNaN(action.valueInteger)) {
-    hasAnswer = true;
-    answer.valueInteger = action.valueInteger;
-  }
-  if (!isStringEmpty(action.valueDate)) {
-    hasAnswer = true;
-    answer.valueDate = action.valueDate;
-  }
-  if (!isStringEmpty(action.valueDateTime)) {
-    hasAnswer = true;
-    answer.valueDateTime = action.valueDateTime;
-  }
-  if (!isStringEmpty(action.valueTime)) {
-    hasAnswer = true;
-    answer.valueTime = action.valueTime;
-  }
-  if (!isStringEmpty(action.valueString)) {
-    hasAnswer = true;
-    answer.valueString = action.valueString;
-  }
-  if (action.valueQuantity && action.valueQuantity.value !== undefined) {
-    hasAnswer = true;
-    answer.valueQuantity = action.valueQuantity;
-  }
-  if (action.valueCoding) {
-    hasAnswer = true;
+    if (action.valueBoolean !== undefined) {
+      hasAnswer = true;
+      answer.valueBoolean = action.valueBoolean;
+    }
+    if (action.valueDecimal !== undefined && !isNaN(action.valueDecimal)) {
+      hasAnswer = true;
+      answer.valueDecimal = action.valueDecimal;
+    }
+    if (action.valueInteger !== undefined && !isNaN(action.valueInteger)) {
+      hasAnswer = true;
+      answer.valueInteger = action.valueInteger;
+    }
+    if (!isStringEmpty(action.valueDate)) {
+      hasAnswer = true;
+      answer.valueDate = action.valueDate;
+    }
+    if (!isStringEmpty(action.valueDateTime)) {
+      hasAnswer = true;
+      answer.valueDateTime = action.valueDateTime;
+    }
+    if (!isStringEmpty(action.valueTime)) {
+      hasAnswer = true;
+      answer.valueTime = action.valueTime;
+    }
+    if (!isStringEmpty(action.valueString)) {
+      hasAnswer = true;
+      answer.valueString = action.valueString;
+    }
+    if (action.valueQuantity && action.valueQuantity.value !== undefined) {
+      hasAnswer = true;
+      answer.valueQuantity = action.valueQuantity;
+    }
+    if (action.valueCoding) {
+      hasAnswer = true;
 
-    const coding = {
-      system: action.valueCoding.system,
-      code: action.valueCoding.code,
-      display: action.valueCoding.display,
-    } as Coding;
+      const coding = {
+        system: action.valueCoding.system,
+        code: action.valueCoding.code,
+        display: action.valueCoding.display,
+      } as Coding;
 
-    if (action.multipleAnswers) {
-      if (Object.keys(answer).length === 0) {
+      if (action.multipleAnswers) {
+        if (Object.keys(answer).length === 0) {
+          answer.valueCoding = coding;
+        } else {
+          const newAnswer = {} as QuestionnaireResponseAnswer;
+          newAnswer.valueCoding = coding;
+          responseItem.answer.push(newAnswer);
+        }
+      } else {
         answer.valueCoding = coding;
-      } else {
-        const newAnswer = {} as QuestionnaireResponseAnswer;
-        newAnswer.valueCoding = coding;
-        responseItem.answer.push(newAnswer);
       }
-    } else {
-      answer.valueCoding = coding;
     }
-  }
-  if (action.valueAttachment && Object.keys(action.valueAttachment).length > 0) {
-    hasAnswer = true;
+    if (action.valueAttachment && Object.keys(action.valueAttachment).length > 0) {
+      hasAnswer = true;
 
-    const attachment = {
-      url: action.valueAttachment.url,
-      title: action.valueAttachment.title,
-      data: action.valueAttachment.data,
-      contentType: action.valueAttachment.contentType,
-      creation: action.valueAttachment.creation,
-      hash: action.valueAttachment.hash,
-      size: action.valueAttachment.size,
-      language: action.valueAttachment.language,
-    } as Attachment;
+      const attachment = {
+        url: action.valueAttachment.url,
+        title: action.valueAttachment.title,
+        data: action.valueAttachment.data,
+        contentType: action.valueAttachment.contentType,
+        creation: action.valueAttachment.creation,
+        hash: action.valueAttachment.hash,
+        size: action.valueAttachment.size,
+        language: action.valueAttachment.language,
+      } as Attachment;
 
-    if (action.multipleAnswers) {
-      if (Object.keys(answer).length === 0) {
+      if (action.multipleAnswers) {
+        if (Object.keys(answer).length === 0) {
+          answer.valueAttachment = attachment;
+        } else {
+          const newAnswer = {} as QuestionnaireResponseAnswer;
+          newAnswer.valueAttachment = attachment;
+          responseItem.answer.push(newAnswer);
+        }
+      } else {
         answer.valueAttachment = attachment;
-      } else {
-        const newAnswer = {} as QuestionnaireResponseAnswer;
-        newAnswer.valueAttachment = attachment;
-        responseItem.answer.push(newAnswer);
-      }
-    } else {
-      answer.valueAttachment = attachment;
-    }
-  }
-  if (!hasAnswer) {
-    nullAnswerValue(answer);
-    if (Object.keys(answer).filter(prop => !prop.startsWith('value')).length === 0) {
-      if (responseItem.answer && responseItem.answer.length === 1) {
-        delete responseItem.answer;
       }
     }
-  }
-  if (action.item) {
-    updateEnableWhenItemsIteration([action.item], newState.FormData, newState.FormDefinition, action.itemPath);
-  }
-  return newState;
+    if (!hasAnswer) {
+      nullAnswerValue(answer);
+      if (Object.keys(answer).filter(prop => !prop.startsWith('value')).length === 0) {
+        if (responseItem.answer && responseItem.answer.length === 1) {
+          delete responseItem.answer;
+        }
+      }
+    }
+    if (action.item) {
+      updateEnableWhenItemsIteration([action.item], draft.FormData, draft.FormDefinition, action.itemPath);
+    }
+  });
 }
 
 function processNewCodingStringValueAction(action: NewValueAction, state: Form): Form {
-  const newState: Form = copyObject(state) as Form;
-  const responseItem = getResponseItemWithPath(action.itemPath || [], newState.FormData);
-  if (!responseItem) {
-    return newState;
-  }
+  return produce(state, draft => {
+    const responseItem = getResponseItemWithPath(action.itemPath || [], draft.FormData);
+    if (!responseItem) {
+      return;
+    }
 
-  if (!responseItem.answer) {
-    responseItem.answer = [];
-  }
+    if (!responseItem.answer) {
+      responseItem.answer = [];
+    }
 
-  if (!isStringEmpty(action.valueString)) {
-    let found = -1;
-    for (let i = 0; i < responseItem.answer.length; i++) {
-      if (!isStringEmpty(responseItem.answer[i].valueString)) {
-        found = i;
-        break;
+    if (!isStringEmpty(action.valueString)) {
+      let found = -1;
+      for (let i = 0; i < responseItem.answer.length; i++) {
+        if (!isStringEmpty(responseItem.answer[i].valueString)) {
+          found = i;
+          break;
+        }
+      }
+
+      const newAnswer = {
+        valueString: action.valueString,
+      } as QuestionnaireResponseAnswer;
+
+      if (found >= 0) {
+        responseItem.answer[found] = newAnswer;
+      } else {
+        responseItem.answer.push(newAnswer);
       }
     }
-
-    const newAnswer = {
-      valueString: action.valueString,
-    } as QuestionnaireResponseAnswer;
-
-    if (found >= 0) {
-      responseItem.answer[found] = newAnswer;
-    } else {
-      responseItem.answer.push(newAnswer);
-    }
-  }
-
-  return newState;
+  });
 }
 
 function getResponseItemWithLinkIdPossiblyContainingRepeat(

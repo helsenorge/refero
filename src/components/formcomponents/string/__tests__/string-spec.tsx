@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { String } from '../string';
-import { QuestionnaireItem, QuestionnaireResponseAnswer } from '../../../../types/fhir';
+import { QuestionnaireItem, QuestionnaireResponseAnswer, QuestionnaireResponseItem } from '../../../../types/fhir';
 import { mount } from 'enzyme';
 
 describe('string', () => {
@@ -59,6 +59,7 @@ function getStringWrapperWithChangedValue(validateScriptInjection: boolean, valu
       renderHelpButton={() => <React.Fragment />}
       renderHelpElement={() => <React.Fragment />}
       onAnswerChange={() => {}}
+      responseItem={{} as QuestionnaireResponseItem}
     />
   );
   wrapper.update();

@@ -13,7 +13,7 @@ import { Path } from '../../../util/skjemautfyller-core';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { isRequired, getId, renderPrefix, getText, isReadOnly, isRepeat } from '../../../util/index';
 import { getValidationTextExtension, getMaxOccursExtensionValue, getMinOccursExtensionValue } from '../../../util/extension';
-import { QuestionnaireItem, QuestionnaireResponseAnswer, Attachment } from '../../../types/fhir';
+import { QuestionnaireItem, QuestionnaireResponseAnswer, Attachment, QuestionnaireResponseItem } from '../../../types/fhir';
 import { Resources } from '../../../util/resources';
 import TextView from '../textview';
 import { TextMessage } from '../../../types/text-message';
@@ -22,6 +22,7 @@ export interface Props {
   dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
   path: Array<Path>;
   item: QuestionnaireItem;
+  responseItem: QuestionnaireResponseItem;
   answer: Array<QuestionnaireResponseAnswer> | QuestionnaireResponseAnswer;
   pdf?: boolean;
   id?: string;
@@ -40,6 +41,7 @@ export interface Props {
   onRequestAttachmentLink?: (file: string) => string;
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
+  isHelpOpen?: boolean;
   onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseAnswer) => void;
 }
 
@@ -131,6 +133,13 @@ class AttachmentComponent extends React.Component<Props & ValidationProps> {
 
     return '';
   };
+
+  shouldComponentUpdate(nextProps: Props, _nextState: {}) {
+    const responseItemHasChanged = this.props.responseItem !== nextProps.responseItem;
+    const helpItemHasChanged = this.props.isHelpOpen !== nextProps.isHelpOpen;
+
+    return responseItemHasChanged || helpItemHasChanged;
+  }
 
   render(): JSX.Element | null {
     const { pdf, id, item, resources, onOpenAttachment, ...other } = this.props;

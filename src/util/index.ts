@@ -26,7 +26,13 @@ import {
   getExtension,
 } from './extension';
 import marked from 'marked';
-marked.setOptions({ sanitize: true });
+import DOMPurify from 'dompurify';
+
+const renderer = new marked.Renderer();
+renderer.link = (href: string, title: string, text: string): string => {
+  return `<a href=${href} title=${title} target="_blank" class="external">${text}</a>`;
+};
+marked.setOptions({ renderer: renderer });
 import { isValid, invalidNodes } from '@helsenorge/toolkit/utils/validation';
 
 export function getComponentForItem(type: QuestionnaireItemTypeList) {
@@ -123,12 +129,17 @@ export function getText(item: QuestionnaireItem) {
     const markdown = item._text ? getMarkdownExtensionValue(item._text) : undefined;
 
     if (markdown) {
-      return marked(markdown.toString());
+      return markdownToHtml(markdown.toString());
     } else if (item.text) {
       return item.text;
     }
   }
   return '';
+}
+
+export function markdownToHtml(markdown: string) {
+  const generatedHtml = marked(markdown);
+  return DOMPurify.sanitize(generatedHtml);
 }
 
 export function getChildHeaderTag(item?: QuestionnaireItem, headerTag?: number): number {
@@ -260,4 +271,13 @@ export function getDecimalPattern(item: QuestionnaireItem) {
 
     return `^${integerPart}(.[0-9]{${stepString}})?$`;
   }
+}
+
+export function profile(tag: string, func: () => void) {
+  let start = performance.now();
+  console.log('START: ', tag, start, 'ms');
+  func();
+  let end = performance.now();
+  console.log('END: ', tag, end, 'ms');
+  console.log('TOTAL: ', tag, end - start, 'ms');
 }
