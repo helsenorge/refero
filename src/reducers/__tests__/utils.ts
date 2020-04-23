@@ -1,5 +1,6 @@
+import '../../util/defineFetch';
 import reducer, { Form } from '../form';
-import { Path, getResponseItems, getQuestionnaireResponseItemWithLinkid, getResponseItemWithPath } from '../../util/skjemautfyller-core';
+import { Path, getResponseItemWithPath } from '../../util/skjemautfyller-core';
 import {
   Coding,
   QuestionnaireItem,
@@ -33,7 +34,7 @@ import { GlobalState } from '..';
 import { code } from '../../types/fhir';
 
 export function pathify(...linkIds: string[]): Path[] {
-  return linkIds.map(id => ({ linkId: id.split('^')[0], ...(id.includes('^') && { index: id.split('^')[1] }) } as Path));
+  return linkIds.map(id => ({ linkId: id.split('^')[0], ...(id.includes('^') && { index: Number(id.split('^')[1]) }) } as Path));
 }
 
 export function selectChoice(state: Form, path: Path[], coding: Coding, qItem: QuestionnaireItem, multi: boolean = false): Form {

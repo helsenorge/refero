@@ -1,3 +1,4 @@
+import '../../util/defineFetch';
 import { Props } from '../../components/with-common-functions';
 import * as chai from 'chai';
 import { mapStateToProps, mapDispatchToProps } from '../map-props';

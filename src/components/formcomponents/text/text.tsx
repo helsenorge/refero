@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { GlobalState } from '../../../reducers';
 import { NewValueAction, newStringValueAsync } from '../../../actions/newValue';
-import { debounce } from '@helsenorge/toolkit/utils/debounce';
+import { debounce } from '@helsenorge/core-utils/debounce';
 import { SafeTextarea } from '@helsenorge/toolkit/components/atoms/safe-textarea';
 import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
 import ExpandableBlock from '@helsenorge/toolkit/components/molecules/expandable-block';

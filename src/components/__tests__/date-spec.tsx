@@ -1,3 +1,4 @@
+import '../../util/defineFetch';
 import * as React from 'react';
 import rootReducer from '../../reducers';
 import { createStore, applyMiddleware } from 'redux';

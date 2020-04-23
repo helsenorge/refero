@@ -5,7 +5,7 @@ import { GlobalState } from '../../../reducers';
 import { NewValueAction } from '../../../actions/newValue';
 import { Path } from '../../../util/skjemautfyller-core';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
-import CustomTag from '@helsenorge/toolkit/utils/custom-tag';
+import CustomTag from '@helsenorge/core-utils/custom-tag';
 import { renderPrefix, getText, getId } from '../../../util/index';
 import { QuestionnaireItem, QuestionnaireResponseAnswer, QuestionnaireResponseItem } from '../../../types/fhir';
 import withCommonFunctions from '../../with-common-functions';

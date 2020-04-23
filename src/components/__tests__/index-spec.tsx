@@ -1,8 +1,9 @@
+import '../../util/defineFetch';
 import * as React from 'react';
 import rootReducer from '../../reducers';
 import { createStore, applyMiddleware } from 'redux';
 import { mount } from 'enzyme';
-import { Provider, Store } from 'react-redux';
+import { Provider } from 'react-redux';
 import { SkjemautfyllerContainer } from '../index';
 import { Resources } from '../../util/resources';
 import { Questionnaire, QuestionnaireItem, uri, Extension, QuestionnaireEnableWhen } from '../../types/fhir';
