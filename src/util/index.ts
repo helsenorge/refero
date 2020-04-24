@@ -33,7 +33,7 @@ renderer.link = (href: string, title: string, text: string): string => {
   return `<a href=${href} title=${title} target="_blank" class="external">${text}</a>`;
 };
 marked.setOptions({ renderer: renderer });
-import { isValid, invalidNodes } from '@helsenorge/toolkit/utils/validation';
+import { isValid, invalidNodes } from '@helsenorge/core-utils/validation';
 
 export function getComponentForItem(type: QuestionnaireItemTypeList) {
   if (String(type) === 'group') {

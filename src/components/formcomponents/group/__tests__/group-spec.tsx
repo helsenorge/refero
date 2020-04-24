@@ -1,8 +1,9 @@
+import '../../../../util/defineFetch';
 import * as React from 'react';
 import { shallow } from 'enzyme';
 import { Group } from '../group';
 import { QuestionnaireItem, QuestionnaireResponseAnswer, QuestionnaireResponseItem } from '../../../../types/fhir';
-import CustomTag from '@helsenorge/toolkit/utils/custom-tag';
+import CustomTag from '@helsenorge/core-utils/custom-tag';
 import { RenderContextType } from '../../../../constants/renderContextType';
 import { RenderContext } from '../../../../util/renderContext';
 

@@ -1,4 +1,5 @@
 /* tslint:disable */
+import '../../util/defineFetch';
 import * as chai from 'chai';
 import reducer, { Form } from '../form';
 import { Coding, QuestionnaireResponseItem, Attachment, base64Binary, code } from '../../types/fhir';

@@ -1,3 +1,4 @@
+import '../../../../util/defineFetch';
 import * as React from 'react';
 import { String } from '../string';
 import { QuestionnaireItem, QuestionnaireResponseAnswer, QuestionnaireResponseItem } from '../../../../types/fhir';

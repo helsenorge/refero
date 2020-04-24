@@ -1,3 +1,4 @@
+import '../../util/defineFetch';
 import * as React from 'react';
 import rootReducer from '../../reducers';
 import { createStore, applyMiddleware } from 'redux';
@@ -15,7 +16,7 @@ import { inputAnswer, findItem } from './utils';
 import DateTime from '@helsenorge/toolkit/components/molecules/date-time-input';
 import moment from 'moment';
 import Constants, { OPEN_CHOICE_ID } from '../../constants/index';
-import { IQuestionnaireInspector, QuestionnaireItemPair, QuestionniareInspector } from '../../util/questionnaireInspector';
+import { IQuestionnaireInspector, QuestionnaireItemPair } from '../../util/questionnaireInspector';
 
 describe('onAnswerChange callback gets called and can request additional changes', () => {
   beforeEach(() => {

@@ -1,3 +1,4 @@
+import '../../util/defineFetch';
 import { mount } from 'enzyme';
 import rootReducer from '../../reducers';
 import { createStore } from 'redux';

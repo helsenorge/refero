@@ -1,9 +1,10 @@
+import '../../util/defineFetch';
 import DataModel from './__data__/common/';
 import { Questionnaire, Extension, uri } from '../../types/fhir';
 import * as React from 'react';
 import rootReducer from '../../reducers';
 import { createStore, applyMiddleware } from 'redux';
-import { mount, ReactWrapper } from 'enzyme';
+import { mount } from 'enzyme';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { Resources } from '../../util/resources';
