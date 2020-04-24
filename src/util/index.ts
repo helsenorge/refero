@@ -27,6 +27,7 @@ import {
 } from './extension';
 import marked from 'marked';
 import DOMPurify from 'dompurify';
+DOMPurify.setConfig({ ADD_ATTR: ['target'] });
 
 const renderer = new marked.Renderer();
 renderer.link = (href: string, title: string, text: string): string => {
