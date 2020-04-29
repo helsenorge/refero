@@ -6,7 +6,7 @@ import { NewValueAction, newStringValueAsync } from '../../../actions/newValue';
 import { debounce } from '@helsenorge/core-utils/debounce';
 import { SafeTextarea } from '@helsenorge/toolkit/components/atoms/safe-textarea';
 import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
-import ExpandableBlock from '@helsenorge/toolkit/components/molecules/expandable-block';
+import { ExpandableSection } from '@helsenorge/toolkit/components/molecules/expandable-section';
 import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
 import Constants from '../../../constants/index';
 import { Path } from '../../../util/skjemautfyller-core';
@@ -105,15 +105,15 @@ export class Text extends React.Component<Props & ValidationProps, {}> {
 
     if (itemControls && itemControls.some(itemControl => itemControl.code === itemControlConstants.INLINE)) {
       return (
-        <ExpandableBlock expandButtonText={item.text}>
+        <ExpandableSection label={item.text} inlineButton rightArrow>
           <React.Fragment>{children}</React.Fragment>
-        </ExpandableBlock>
+        </ExpandableSection>
       );
     }
 
     if (pdf || isReadOnly(item)) {
       return (
-        <TextView item={item} value={getPDFStringValue(answer)}>
+        <TextView item={item} value={getPDFStringValue(answer)} textClass="page_skjemautfyller__component_readonlytext">
           {this.props.children}
         </TextView>
       );
