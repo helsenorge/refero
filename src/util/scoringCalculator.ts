@@ -1,6 +1,6 @@
 import { Questionnaire, QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseAnswer, QuestionnaireOption } from '../types/fhir';
 import { createDummySectionScoreItem, scoringItemType } from './scoring';
-import { getItemsWithIdFromResponseItemArray } from './skjemautfyller-core';
+import { getQuestionnaireResponseItemsWithLinkId } from './skjemautfyller-core';
 import { getExtension, getCalculatedExpressionExtension } from './extension';
 import ExtensionConstants from '../constants/extensions';
 import { ScoringItemType } from '../constants/scoringItemType';
@@ -212,7 +212,7 @@ export class ScoringCalculator {
   ): number | undefined {
     let sum: number = 0;
     let hasCalculatedAtLeastOneAnswer = false;
-    let qrItems = getItemsWithIdFromResponseItemArray(item.linkId, questionnaireResponse.item, true);
+    let qrItems = getQuestionnaireResponseItemsWithLinkId(item.linkId, questionnaireResponse.item || [], true);
     for (let qrItem of qrItems) {
       if (!qrItem.answer) continue;
 
