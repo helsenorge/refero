@@ -37,7 +37,9 @@ import { Languages } from '@helsenorge/toolkit/constants';
 import { FormAction, SET_SKJEMA_DEFINITION } from '../actions/form';
 import { generateQuestionnaireResponse } from '../actions/generateQuestionnaireResponse';
 import { createQuestionnaireResponseAnswer } from '../util/createQuestionnaireResponseAnswer';
-import produce from 'immer';
+import produce, { enableES5 } from 'immer';
+
+enableES5();
 
 export interface FormData {
   Content: QuestionnaireResponse | null | undefined;
