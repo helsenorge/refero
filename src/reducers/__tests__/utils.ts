@@ -37,6 +37,17 @@ export function pathify(...linkIds: string[]): Path[] {
   return linkIds.map(id => ({ linkId: id.split('^')[0], ...(id.includes('^') && { index: Number(id.split('^')[1]) }) } as Path));
 }
 
+export function pathifyExpand(linkId: string): Path[] {
+  let paths = [];
+  let currentPath = [];
+  let parts = linkId.split('.');
+  for (let part of parts) {
+    currentPath.push(part);
+    paths.push({ linkId: currentPath.join('.'), index: 0 });
+  }
+  return paths;
+}
+
 export function selectChoice(state: Form, path: Path[], coding: Coding, qItem: QuestionnaireItem, multi: boolean = false): Form {
   const action = newCodingValue(path, coding, qItem, multi);
   return reduce(state, action);

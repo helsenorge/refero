@@ -28,9 +28,9 @@ import {
   getResponseItems,
   getDefinitionItems,
   enableWhenMatchesAnswer,
-  getQuestionnaireResponseItemsWithLinkId,
   getArrayContainingResponseItemFromItems,
   Path,
+  getResponseItemAndPathWithLinkId,
 } from '../util/skjemautfyller-core';
 import { getMinOccursExtensionValue } from '../util/extension';
 import { Languages } from '@helsenorge/toolkit/constants';
@@ -508,7 +508,7 @@ function updateEnableWhenItemsIteration(
 
     // There may be several questionnaireResponseItemsWithEnableWhen corresponding to a questionnaireItemWithEnableWhen.
     // F.ex. if the questionnaireItemWithEnableWhen is repeatable
-    const qrItemsWithEnableWhen = getQuestionnaireResponseItemsWithLinkId(qItemWithEnableWhen.linkId, responseItems, true);
+    const qrItemsWithEnableWhen = getResponseItemAndPathWithLinkId(qItemWithEnableWhen.linkId, formData.Content!);
     for (const qrItemWithEnableWhen of qrItemsWithEnableWhen) {
       let enable = false;
       enableWhenClauses.forEach((enableWhen: QuestionnaireEnableWhen) => {
@@ -524,8 +524,8 @@ function updateEnableWhenItemsIteration(
       });
 
       if (!enable) {
-        removeAddedRepeatingItems(qItemWithEnableWhen, qrItemWithEnableWhen, responseItems);
-        wipeAnswerItems(qrItemWithEnableWhen, qItemWithEnableWhen);
+        removeAddedRepeatingItems(qItemWithEnableWhen, qrItemWithEnableWhen.item, responseItems);
+        wipeAnswerItems(qrItemWithEnableWhen.item, qItemWithEnableWhen);
       }
     }
   }
@@ -587,13 +587,17 @@ function wipeAnswerItems(answerItem: QuestionnaireResponseItem | undefined, item
     }
   }
 
-  const hasItems = answerItem.item && answerItem.item.length > 0;
-  if (!hasItems) {
-    return undefined;
-  }
-
   for (let i = 0; answerItem.item && item.item && i < answerItem.item.length; i++) {
     wipeAnswerItems(answerItem.item[i], item.item[i]);
+  }
+
+  for (let i = 0; answerItem.answer && item.item && i < answerItem.answer.length; i++) {
+    const nestedItems = answerItem.answer[i].item;
+    if (nestedItems && nestedItems.length > 0) {
+      for (let j = 0; j < nestedItems.length; j++) {
+        wipeAnswerItems(nestedItems[j], item.item[i]);
+      }
+    }
   }
 }
 

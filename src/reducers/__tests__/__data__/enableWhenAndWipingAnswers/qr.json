@@ -1,0 +1,54 @@
+{
+  "resourceType": "QuestionnaireResponse",
+  "status": "in-progress",
+  "item": [
+    {
+      "linkId": "1",
+      "text": "Klikk for å åpne",
+      "answer": [
+        {
+          "item": [
+            {
+              "linkId": "1.1",
+              "text": "skriv noe",
+              "answer": [
+                {
+                  "item": [
+                    {
+                      "linkId": "1.1.1",
+                      "text": "nested enable when",
+                      "answer": [
+                        {
+                          "item": [
+                            {
+                              "linkId": "1.1.1.1",
+                              "text": "turtles all the way down"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "2",
+      "text": "unrelated",
+      "answer": [
+        {
+          "item": [
+            {
+              "linkId": "2.1",
+              "text": "unrelated nested"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,8 +1,8 @@
 import dataModel from './__data__/nestedRepeats';
 import { Form } from '../form';
-import { Coding, QuestionnaireItem, QuestionnaireResponseItem } from '../../types/fhir';
+import { QuestionnaireItem, QuestionnaireResponseItem } from '../../types/fhir';
 import { getQuestionnaireDefinitionItem, getDefinitionItems, getResponseItemWithPath } from '../../util/skjemautfyller-core';
-import { pathify, selectChoice, getResponseItem, enterText, clickRepeat, uploadAttachment, createAttachment } from './utils';
+import { pathify, clickRepeat, uploadAttachment, createAttachment } from './utils';
 
 describe('update enable when action', () => {
   let newState: Form;

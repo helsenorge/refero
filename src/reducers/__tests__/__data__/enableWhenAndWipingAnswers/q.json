@@ -1,0 +1,99 @@
+{
+  "resourceType": "Questionnaire",
+  "id": "test-nested-enablewhen",
+  "contained": [
+    {
+      "resourceType": "ValueSet",
+      "id": "1101",
+      "version": "1.0",
+      "name": "urn:oid:1101",
+      "title": "Ja / Nei",
+      "status": "draft",
+      "publisher": "Direktoratet for e-helse",
+      "compose": {
+        "include": [
+          {
+            "system": "urn:oid:2.16.578.1.12.4.1.1101",
+            "concept": [
+              {
+                "code": "1",
+                "display": "Ja"
+              },
+              {
+                "code": "2",
+                "display": "Nei"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "item": [
+    {
+      "linkId": "1",
+      "text": "Klikk for å åpne",
+      "type": "boolean",
+      "item": [
+        {
+          "linkId": "1.1",
+          "text": "skriv noe",
+          "type": "string",
+          "enableWhen": [
+            {
+              "question": "1",
+              "answerBoolean": true
+            }
+          ],
+          "item": [
+            {
+              "linkId": "1.1.1",
+              "text": "nested enable when",
+              "type": "text",
+              "enableWhen": [
+                {
+                  "question": "1.1",
+                  "hasAnswer": true
+                }
+              ],
+              "item": [
+                {
+                  "linkId": "1.1.1.1",
+                  "text": "turtles all the way down",
+                  "type": "choice",
+                  "enableWhen": [
+                    {
+                      "question": "1.1.1",
+                      "hasAnswer": true
+                    }
+                  ],
+                  "options": {
+                    "reference": "#1101"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "2",
+      "text": "unrelated",
+      "type": "boolean",
+      "item": [
+        {
+          "linkId": "2.1",
+          "text": "urelated nested",
+          "type": "string",
+          "enableWhen": [
+            {
+              "question": "2",
+              "answerBoolean": true
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
