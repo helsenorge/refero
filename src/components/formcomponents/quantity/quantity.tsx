@@ -75,7 +75,7 @@ class Quantity extends React.Component<Props & ValidationProps, {}> {
       } as QuantityType;
 
       const value = Number(parseFloat((event.target as HTMLInputElement).value));
-      if (value != null && !Number.isNaN(value) && Number.isFinite(value)) {
+      if (value != null && !isNaN(value) && isFinite(value)) {
         quantity.value = (value as unknown) as decimal;
       }
 

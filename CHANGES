@@ -1,3 +1,8 @@
+6.1.2
+------
+* Enable immer for ES5 to support IE11.
+* Replace Number.isNaN(...) and Number.isFinite(...) with window.isNaN(...) and window.isFinite(...) to support IE11.
+
 6.1.1
 ------
 * Add target attribute to list of valid DOMPurify attributes, so lnks can be opened in new tabs.

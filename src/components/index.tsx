@@ -216,7 +216,7 @@ class Skjemautfyller extends React.Component<StateProps & DispatchProps & Props,
       const itemsAndPaths = getResponseItemAndPathWithLinkId(linkId, newState.skjemautfyller.form.FormData.Content!);
 
       let value = scores[linkId];
-      if (item && value != null && !Number.isNaN(value) && Number.isFinite(value)) {
+      if (item && value != null && !isNaN(value) && isFinite(value)) {
         const decimalPlacesExtension = getExtension(ExtensionConstants.STEP_URL, item);
         if (decimalPlacesExtension && decimalPlacesExtension.valueInteger != null) {
           const places = Number(decimalPlacesExtension.valueInteger);
