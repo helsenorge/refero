@@ -131,20 +131,15 @@ export function getText(item: QuestionnaireItem, onRenderMarkdown?: (item: Quest
 
     if (markdown) {
       if (onRenderMarkdown) {
-        return onRenderMarkdown(item, markdown.toString());
+        return DOMPurify.sanitize(onRenderMarkdown(item, markdown.toString()));
       } else {
-        return markdownToHtml(markdown.toString());
+        return DOMPurify.sanitize(marked(markdown.toString()));
       }
     } else if (item.text) {
       return item.text;
     }
   }
   return '';
-}
-
-export function markdownToHtml(markdown: string) {
-  const generatedHtml = marked(markdown);
-  return DOMPurify.sanitize(generatedHtml);
 }
 
 export function getChildHeaderTag(item?: QuestionnaireItem, headerTag?: number): number {
