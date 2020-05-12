@@ -113,6 +113,7 @@ interface Props {
     actionRequester: IActionRequester,
     questionnaireInspector: IQuestionnaireInspector
   ) => void;
+  onRenderMarkdown?: (item: QuestionnaireItem, markup: string) => string;
 }
 
 interface State {
@@ -297,6 +298,7 @@ class Skjemautfyller extends React.Component<StateProps & DispatchProps & Props,
               validateScriptInjection={this.props.validateScriptInjection}
               onAnswerChange={this.onAnswerChange}
               renderContext={new RenderContext()}
+              onRenderMarkdown={this.props.onRenderMarkdown}
             />
           );
         });

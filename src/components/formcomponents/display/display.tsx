@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
-import { renderPrefix, getText, markdownToHtml } from '../../../util/index';
+import { renderPrefix, getText } from '../../../util/index';
 import { QuestionnaireItem } from '../../../types/fhir';
 import { getMarkdownExtensionValue } from '../../../util/extension';
 
@@ -9,9 +9,10 @@ export interface Props {
   item?: QuestionnaireItem;
   enable?: boolean;
   pdf?: boolean;
+  onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
 }
 
-const Display: React.SFC<Props> = ({ enable, pdf, item }) => {
+const Display: React.SFC<Props> = ({ enable, pdf, item, onRenderMarkdown }) => {
   if (!enable) {
     return null;
   }
@@ -23,12 +24,12 @@ const Display: React.SFC<Props> = ({ enable, pdf, item }) => {
         <div
           className="page_skjemautfyller__markdown"
           dangerouslySetInnerHTML={{
-            __html: markdownToHtml(markdown.toString()),
+            __html: getText(item, onRenderMarkdown),
           }}
         />
       );
     } else {
-      value = <p>{`${renderPrefix(item)} ${getText(item)}`}</p>;
+      value = <p>{`${renderPrefix(item)} ${getText(item, onRenderMarkdown)}`}</p>;
     }
   }
   if (pdf) {

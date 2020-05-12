@@ -42,6 +42,7 @@ export interface Props {
   renderHelpElement: () => JSX.Element;
   isHelpOpen?: boolean;
   onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseAnswer) => void;
+  onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
 }
 
 class Quantity extends React.Component<Props & ValidationProps, {}> {
@@ -107,10 +108,10 @@ class Quantity extends React.Component<Props & ValidationProps, {}> {
   }
 
   render(): JSX.Element | null {
-    const { item } = this.props;
+    const { item, onRenderMarkdown } = this.props;
     if (this.props.pdf || isReadOnly(item)) {
       return (
-        <TextView item={this.props.item} value={this.getPDFValue()}>
+        <TextView item={this.props.item} value={this.getPDFValue()} onRenderMarkdown={onRenderMarkdown}>
           {this.props.children}
         </TextView>
       );
@@ -129,7 +130,7 @@ class Quantity extends React.Component<Props & ValidationProps, {}> {
             label={
               <span
                 dangerouslySetInnerHTML={{
-                  __html: `${renderPrefix(item)} ${getText(item)}`,
+                  __html: `${renderPrefix(item)} ${getText(item, onRenderMarkdown)}`,
                 }}
               />
             }

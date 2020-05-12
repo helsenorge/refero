@@ -32,6 +32,7 @@ export interface Props {
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
   isHelpOpen?: boolean;
+  onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
 }
 interface State {
   counter?: number;
@@ -199,15 +200,14 @@ export class Group extends React.Component<Props, State> {
   };
 
   renderGroupHeader = (): JSX.Element | null => {
-    if (!getText(this.props.item)) {
+    if (!getText(this.props.item, this.props.onRenderMarkdown)) {
       return null;
     }
     const tagName = `h${this.props.headerTag}`;
-
     return (
       <React.Fragment>
         <CustomTag tagName={tagName} className={'page_skjemautfyller__heading'}>
-          {renderPrefix(this.props.item) + ' ' + getText(this.props.item)}
+          {renderPrefix(this.props.item) + ' ' + getText(this.props.item, this.props.onRenderMarkdown)}
         </CustomTag>
         {this.props.renderHelpButton()}
       </React.Fragment>

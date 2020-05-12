@@ -47,6 +47,7 @@ export interface Props {
   renderHelpElement: () => JSX.Element;
   onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseAnswer) => void;
   isHelpOpen?: boolean;
+  onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
 }
 
 export class String extends React.Component<Props & ValidationProps, {}> {
@@ -81,15 +82,20 @@ export class String extends React.Component<Props & ValidationProps, {}> {
     return getTextValidationErrorMessage(value, this.props.validateScriptInjection, this.props.item, this.props.resources);
   };
 
-  getLabel(item: QuestionnaireItem): JSX.Element {
-    return <span dangerouslySetInnerHTML={{ __html: `${renderPrefix(item)} ${getText(item)}` }} />;
+  getLabel(item: QuestionnaireItem, onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string): JSX.Element {
+    return <span dangerouslySetInnerHTML={{ __html: `${renderPrefix(item)} ${getText(item, onRenderMarkdown)}` }} />;
   }
 
   render(): JSX.Element | null {
-    const { item, pdf, resources, answer } = this.props;
+    const { item, pdf, resources, answer, onRenderMarkdown } = this.props;
     if (pdf || isReadOnly(item)) {
       return (
-        <TextView item={item} value={getPDFStringValue(answer, resources)} textClass="page_skjemautfyller__component_readonlytext">
+        <TextView
+          item={item}
+          value={getPDFStringValue(answer, resources)}
+          onRenderMarkdown={onRenderMarkdown}
+          textClass="page_skjemautfyller__component_readonlytext"
+        >
           {this.props.children}
         </TextView>
       );
@@ -105,7 +111,7 @@ export class String extends React.Component<Props & ValidationProps, {}> {
             value={getStringValue(answer)}
             onChangeValidator={this.validateText}
             showLabel={true}
-            label={this.getLabel(item)}
+            label={this.getLabel(item, onRenderMarkdown)}
             isRequired={isRequired(item)}
             placeholder={getPlaceholder(item)}
             minLength={getMinLengthExtensionValue(item)}

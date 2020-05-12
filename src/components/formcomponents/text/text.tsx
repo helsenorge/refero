@@ -47,6 +47,7 @@ export interface Props {
   resources?: Resources;
   onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseAnswer) => void;
   isHelpOpen?: boolean;
+  onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
 }
 export class Text extends React.Component<Props & ValidationProps, {}> {
   showCounter(): boolean {
@@ -100,7 +101,7 @@ export class Text extends React.Component<Props & ValidationProps, {}> {
   }
 
   render(): JSX.Element | null {
-    const { item, answer, pdf, children, ...other } = this.props;
+    const { item, answer, pdf, children, onRenderMarkdown, ...other } = this.props;
     const itemControls = getItemControlExtensionValue(item);
 
     if (itemControls && itemControls.some(itemControl => itemControl.code === itemControlConstants.INLINE)) {
@@ -113,7 +114,12 @@ export class Text extends React.Component<Props & ValidationProps, {}> {
 
     if (pdf || isReadOnly(item)) {
       return (
-        <TextView item={item} value={getPDFStringValue(answer)} textClass="page_skjemautfyller__component_readonlytext">
+        <TextView
+          item={item}
+          value={getPDFStringValue(answer)}
+          onRenderMarkdown={onRenderMarkdown}
+          textClass="page_skjemautfyller__component_readonlytext"
+        >
           {this.props.children}
         </TextView>
       );
@@ -127,7 +133,7 @@ export class Text extends React.Component<Props & ValidationProps, {}> {
             value={getStringValue(answer)}
             isRequired={isRequired(item)}
             showLabel={true}
-            label={`${renderPrefix(item)} ${getText(item)}`}
+            label={`${renderPrefix(item)} ${getText(item, onRenderMarkdown)}`}
             placeholder={getPlaceholder(item)}
             maxlength={getMaxLength(item)}
             minlength={getMinLengthExtensionValue(item)}

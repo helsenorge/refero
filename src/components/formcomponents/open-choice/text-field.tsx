@@ -12,8 +12,18 @@ interface Props {
   item: QuestionnaireItem;
   answer: QuestionnaireResponseAnswer;
   handleStringChange: (event: React.FormEvent<{}>) => void;
+  onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
 }
-const textField: React.SFC<Props & ValidationProps> = ({ id, pdf, item, answer, handleStringChange, children, ...other }) => {
+const textField: React.SFC<Props & ValidationProps> = ({
+  id,
+  pdf,
+  item,
+  answer,
+  handleStringChange,
+  children,
+  onRenderMarkdown,
+  ...other
+}) => {
   if (pdf) {
     return (
       <Pdf item={item} value={getPDFStringValue(answer)}>
@@ -32,7 +42,7 @@ const textField: React.SFC<Props & ValidationProps> = ({ id, pdf, item, answer, 
         label={
           <span
             dangerouslySetInnerHTML={{
-              __html: `${renderPrefix(item)} ${getText(item)}`,
+              __html: `${renderPrefix(item)} ${getText(item, onRenderMarkdown)}`,
             }}
           />
         }

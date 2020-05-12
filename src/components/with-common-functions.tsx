@@ -77,6 +77,7 @@ export interface Props {
   onAnswerChange?: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseAnswer) => void;
   renderContext: RenderContext;
   isHelpOpen?: boolean;
+  onRenderMarkdown?: (item: QuestionnaireItem, markup: string) => string;
 }
 
 interface EnhancedProps {
@@ -195,7 +196,7 @@ export default function withCommonFunctions<T>(WrappedComponent: React.Component
     };
 
     renderItem = (item: QuestionnaireItem, renderContext: RenderContext): Array<JSX.Element | undefined> => {
-      const { resources, containedResources, responseItem, pdf, path, headerTag, promptLoginMessage } = this.props;
+      const { resources, containedResources, responseItem, pdf, path, headerTag, promptLoginMessage, onRenderMarkdown } = this.props;
       if (isHelpItem(item)) return [];
       if (isHiddenItem(item)) return [];
 
@@ -254,6 +255,7 @@ export default function withCommonFunctions<T>(WrappedComponent: React.Component
               attachmentValidTypes={this.props.attachmentValidTypes}
               onAnswerChange={this.props.onAnswerChange}
               renderContext={renderContext}
+              onRenderMarkdown={onRenderMarkdown}
             />
           );
         });
@@ -288,6 +290,7 @@ export default function withCommonFunctions<T>(WrappedComponent: React.Component
             renderHelpButton={this.renderHelpButton}
             renderHelpElement={this.renderHelpElement}
             isHelpOpen={this.state.isHelpVisible}
+            onRenderMarkdown={this.props.onRenderMarkdown}
             /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
             {...(this.props as any)}
           >

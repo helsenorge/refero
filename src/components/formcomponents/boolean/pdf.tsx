@@ -5,13 +5,14 @@ import { QuestionnaireItem } from '../../../types/fhir';
 interface Props {
   item: QuestionnaireItem;
   checked: boolean;
+  onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
 }
 
-const pdf: React.SFC<Props> = ({ item, checked, children }) => {
+const pdf: React.SFC<Props> = ({ item, checked, children, onRenderMarkdown }) => {
   return (
     <div>
       {/* eslint-disable react/jsx-no-literals */}
-      {checked ? <b>[ X ]</b> : <b>[&nbsp;&nbsp;&nbsp;&nbsp;]</b>} {`${renderPrefix(item)} ${getText(item)}`}
+      {checked ? <b>[ X ]</b> : <b>[&nbsp;&nbsp;&nbsp;&nbsp;]</b>} {`${renderPrefix(item)} ${getText(item, onRenderMarkdown)}`}
       {children ? (
         <span>
           <br />

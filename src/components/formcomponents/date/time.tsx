@@ -40,6 +40,7 @@ export interface Props {
   renderHelpElement: () => JSX.Element;
   isHelpOpen?: boolean;
   onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseAnswer) => void;
+  onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
 }
 
 class Time extends React.Component<Props & ValidationProps> {
@@ -218,13 +219,13 @@ class Time extends React.Component<Props & ValidationProps> {
   }
 
   render(): JSX.Element | null {
-    const { pdf, item, renderFieldset, id } = this.props;
+    const { pdf, item, renderFieldset, id, onRenderMarkdown } = this.props;
 
     if (pdf || isReadOnly(this.props.item)) {
       const value = this.getPDFValue();
       if (renderFieldset) {
         return (
-          <TextView item={this.props.item} value={this.padNumber(value)}>
+          <TextView item={this.props.item} value={this.padNumber(value)} onRenderMarkdown={onRenderMarkdown}>
             {this.props.children}
           </TextView>
         );
@@ -247,7 +248,7 @@ class Time extends React.Component<Props & ValidationProps> {
             legend={
               <span
                 dangerouslySetInnerHTML={{
-                  __html: `${renderPrefix(item)} ${getText(item)}`,
+                  __html: `${renderPrefix(item)} ${getText(item, onRenderMarkdown)}`,
                 }}
               />
             }

@@ -43,6 +43,7 @@ export interface Props {
   renderHelpElement: () => JSX.Element;
   isHelpOpen?: boolean;
   onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseAnswer) => void;
+  onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
 }
 
 class AttachmentComponent extends React.Component<Props & ValidationProps> {
@@ -142,10 +143,10 @@ class AttachmentComponent extends React.Component<Props & ValidationProps> {
   }
 
   render(): JSX.Element | null {
-    const { pdf, id, item, resources, onOpenAttachment, ...other } = this.props;
+    const { pdf, id, item, resources, onOpenAttachment, onRenderMarkdown, ...other } = this.props;
     if (pdf || isReadOnly(item)) {
       return (
-        <TextView item={item} value={this.getPdfValue()}>
+        <TextView item={item} value={this.getPdfValue()} onRenderMarkdown={onRenderMarkdown}>
           {this.props.children}
         </TextView>
       );
@@ -159,7 +160,7 @@ class AttachmentComponent extends React.Component<Props & ValidationProps> {
           label={
             <span
               dangerouslySetInnerHTML={{
-                __html: `${renderPrefix(item)} ${getText(item)}`,
+                __html: `${renderPrefix(item)} ${getText(item, onRenderMarkdown)}`,
               }}
             />
           }

@@ -125,12 +125,16 @@ export function renderPrefix(item: QuestionnaireItem) {
   return item.prefix;
 }
 
-export function getText(item: QuestionnaireItem) {
+export function getText(item: QuestionnaireItem, onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string) {
   if (item) {
     const markdown = item._text ? getMarkdownExtensionValue(item._text) : undefined;
 
     if (markdown) {
-      return markdownToHtml(markdown.toString());
+      if (onRenderMarkdown) {
+        return onRenderMarkdown(item, markdown.toString());
+      } else {
+        return markdownToHtml(markdown.toString());
+      }
     } else if (item.text) {
       return item.text;
     }

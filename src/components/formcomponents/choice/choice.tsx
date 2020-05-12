@@ -44,6 +44,7 @@ export interface ChoiceProps {
   renderHelpElement: () => JSX.Element;
   isHelpOpen?: boolean;
   onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseAnswer) => void;
+  onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
 }
 
 interface ChoiceState {
@@ -139,6 +140,7 @@ export class Choice extends React.Component<ChoiceProps & ValidationProps, Choic
         handleChange={this.handleCheckboxChange}
         selected={this.getValue(this.props.item, this.props.answer)}
         repeatButton={this.props.repeatButton}
+        onRenderMarkdown={this.props.onRenderMarkdown}
         {...this.props}
       >
         {this.props.children}
@@ -157,6 +159,7 @@ export class Choice extends React.Component<ChoiceProps & ValidationProps, Choic
         validateInput={(value: string) => validateInput(this.props.item, value, this.props.containedResources)}
         resources={this.props.resources}
         repeatButton={this.props.repeatButton}
+        onRenderMarkdown={this.props.onRenderMarkdown}
         {...this.props}
       >
         {this.props.children}
@@ -175,6 +178,7 @@ export class Choice extends React.Component<ChoiceProps & ValidationProps, Choic
         id={this.props.id}
         selected={this.getValue(this.props.item, this.props.answer)}
         repeatButton={this.props.repeatButton}
+        onRenderMarkdown={this.props.onRenderMarkdown}
         {...this.props}
       >
         {this.props.children}
@@ -190,10 +194,10 @@ export class Choice extends React.Component<ChoiceProps & ValidationProps, Choic
   }
 
   render(): JSX.Element | null {
-    const { item, pdf, answer, containedResources, children } = this.props;
+    const { item, pdf, answer, containedResources, children, onRenderMarkdown } = this.props;
     if (pdf || isReadOnly(item)) {
       return (
-        <TextView item={item} value={this.getPDFValue(item, answer)}>
+        <TextView item={item} value={this.getPDFValue(item, answer)} onRenderMarkdown={onRenderMarkdown}>
           {children}
         </TextView>
       );

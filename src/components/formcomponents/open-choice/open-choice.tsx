@@ -54,6 +54,7 @@ export interface Props {
   renderHelpElement: () => JSX.Element;
   isHelpOpen?: boolean;
   onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseAnswer) => void;
+  onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
 }
 
 class OpenChoice extends React.Component<Props & ValidationProps> {
@@ -212,7 +213,7 @@ class OpenChoice extends React.Component<Props & ValidationProps> {
   };
 
   renderTextField() {
-    const { id, pdf, item, answer, ...other } = this.props;
+    const { id, pdf, item, answer, onRenderMarkdown, ...other } = this.props;
 
     let a = answer;
     if (Array.isArray(answer)) {
@@ -225,7 +226,17 @@ class OpenChoice extends React.Component<Props & ValidationProps> {
       }
     }
 
-    return <TextField id={id} pdf={pdf} item={item} answer={a} handleStringChange={this.handleStringChange} {...other} />;
+    return (
+      <TextField
+        id={id}
+        pdf={pdf}
+        item={item}
+        answer={a}
+        handleStringChange={this.handleStringChange}
+        onRenderMarkdown={onRenderMarkdown}
+        {...other}
+      />
+    );
   }
 
   renderCheckbox = (options: Array<Options> | undefined) => {
@@ -238,6 +249,7 @@ class OpenChoice extends React.Component<Props & ValidationProps> {
         selected={this.getValue(this.props.item, this.props.answer)}
         repeatButton={this.props.repeatButton}
         renderOpenField={() => this.renderTextField()}
+        onRenderMarkdown={this.props.onRenderMarkdown}
         {...this.props}
       >
         {this.props.children}
@@ -257,6 +269,7 @@ class OpenChoice extends React.Component<Props & ValidationProps> {
         resources={this.props.resources}
         repeatButton={this.props.repeatButton}
         renderOpenField={() => this.renderTextField()}
+        onRenderMarkdown={this.props.onRenderMarkdown}
         {...this.props}
       >
         {this.props.children}
@@ -278,6 +291,7 @@ class OpenChoice extends React.Component<Props & ValidationProps> {
         repeatButton={repeatButton}
         renderOpenField={() => this.renderTextField()}
         answer={answer}
+        onRenderMarkdown={this.props.onRenderMarkdown}
         {...rest}
       >
         {children}
@@ -293,10 +307,10 @@ class OpenChoice extends React.Component<Props & ValidationProps> {
   }
 
   render(): JSX.Element | null {
-    const { item, pdf, answer, containedResources, children } = this.props;
+    const { item, pdf, answer, containedResources, children, onRenderMarkdown } = this.props;
     if (pdf || isReadOnly(item)) {
       return (
-        <TextView item={item} value={this.getPDFValue(item, answer)}>
+        <TextView item={item} value={this.getPDFValue(item, answer)} onRenderMarkdown={onRenderMarkdown}>
           {children}
         </TextView>
       );

@@ -23,6 +23,7 @@ interface Props {
 
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
+  onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
 }
 
 const CheckboxView: React.SFC<Props> = ({
@@ -38,6 +39,7 @@ const CheckboxView: React.SFC<Props> = ({
   renderOpenField,
   renderHelpButton,
   renderHelpElement,
+  onRenderMarkdown,
   ...other
 }) => {
   if (!options) {
@@ -55,7 +57,7 @@ const CheckboxView: React.SFC<Props> = ({
             legend={
               <span
                 dangerouslySetInnerHTML={{
-                  __html: `${renderPrefix(item)} ${getText(item)}`,
+                  __html: `${renderPrefix(item)} ${getText(item, onRenderMarkdown)}`,
                 }}
               />
             }

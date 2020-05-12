@@ -24,6 +24,7 @@ interface Props {
 
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
+  onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
 }
 
 class DropdownView extends React.Component<Props, {}> {
@@ -42,6 +43,7 @@ class DropdownView extends React.Component<Props, {}> {
       oneToTwoColumn,
       renderHelpButton,
       renderHelpElement,
+      onRenderMarkdown,
       ...other
     } = this.props;
     if (!options) {
@@ -69,7 +71,7 @@ class DropdownView extends React.Component<Props, {}> {
               label={
                 <span
                   dangerouslySetInnerHTML={{
-                    __html: `${renderPrefix(item)} ${getText(item)}`,
+                    __html: `${renderPrefix(item)} ${getText(item, onRenderMarkdown)}`,
                   }}
                 />
               }

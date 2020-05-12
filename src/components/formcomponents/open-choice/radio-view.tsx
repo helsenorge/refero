@@ -24,6 +24,7 @@ interface Props {
 
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
+  onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
 }
 
 const RadioView: React.SFC<Props> = ({
@@ -41,6 +42,7 @@ const RadioView: React.SFC<Props> = ({
   answer,
   renderHelpButton,
   renderHelpElement,
+  onRenderMarkdown,
   ...other
 }) => {
   if (!options) {
@@ -54,7 +56,7 @@ const RadioView: React.SFC<Props> = ({
             legend={
               <span
                 dangerouslySetInnerHTML={{
-                  __html: `${renderPrefix(item)} ${getText(item)}`,
+                  __html: `${renderPrefix(item)} ${getText(item, onRenderMarkdown)}`,
                 }}
               />
             }

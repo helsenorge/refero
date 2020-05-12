@@ -39,6 +39,7 @@ export interface Props {
   renderHelpElement: () => JSX.Element;
   isHelpOpen?: boolean;
   onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseAnswer) => void;
+  onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
 }
 
 class DateComponent extends React.Component<Props & ValidationProps> {
@@ -170,7 +171,7 @@ class DateComponent extends React.Component<Props & ValidationProps> {
     if (this.props.pdf || isReadOnly(this.props.item)) {
       if (this.props.renderLabel) {
         return (
-          <TextView item={this.props.item} value={this.getPdfValue()}>
+          <TextView item={this.props.item} value={this.getPdfValue()} onRenderMarkdown={this.props.onRenderMarkdown}>
             {this.props.children}
           </TextView>
         );
@@ -189,7 +190,7 @@ class DateComponent extends React.Component<Props & ValidationProps> {
               this.props.renderLabel ? (
                 <span
                   dangerouslySetInnerHTML={{
-                    __html: `${renderPrefix(this.props.item)} ${getText(this.props.item)}`,
+                    __html: `${renderPrefix(this.props.item)} ${getText(this.props.item, this.props.onRenderMarkdown)}`,
                   }}
                 />
               ) : (

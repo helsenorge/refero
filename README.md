@@ -5,6 +5,7 @@ React component that consumes a [FHIR Questionnaire](https://www.hl7.org/fhir/qu
 ## Dependencies
 
 - @helsenorge/toolkit
+- @helsenorge/core-utils
 - [marked](https://www.npmjs.com/package/marked)
 - [moment](https://www.npmjs.com/package/moment)
 - [uuid](https://www.npmjs.com/package/uuid)
@@ -50,6 +51,7 @@ class App extends Component<{}, {}> {
           attachmentValidTypes={...}
           validationSummaryPlacement={...}
           onChange={...}
+          onRenderMarkdown={...}
         />
       </Provider>
     );
@@ -81,6 +83,7 @@ class App extends Component<{}, {}> {
 | onRequestHelpElement       |          | callback                   | null    | Callback when the form needs to render a help element (help text)                                             |
 | validationSummaryPlacement |          | ValidationSummaryPlacement | null    | Controls the placement of the form validation summary                                                         |
 | onChange                   |          | callback                   | null    | Callback when user enters an answer                                                                           |
+| onRenderMarkdown           |          | callback                   | null    | Callback when the form needs to render markdown                                                               |
 
 ### `questionnaire: Questionnaire`
 
@@ -202,6 +205,14 @@ This callback is called when the user enters an answer. The callback is called w
 - `actionRequester: IActionRequester` Instance that facilitates programmatic changes to the questionnaire response.
 - `questionnaireInspector: IQuestionnaireInspector` Instance that lets users query the questionnaire for questionnaire items and
   questionnaireResponse items.
+
+### `onRenderMarkdown: (item: QuestionnaireItem, markdown: string) => string`
+
+This callback is called when the form needs to render markdown. It should return a HTML string representation of the markup. The callback is
+called with the following arguments:
+
+- `item: QuestionnaireItem` This is the item with the markdown.
+- `markdown: string` The actual markdown.
 
 # Enum definitions
 

@@ -28,7 +28,6 @@ describe('wipe answers when collapsing enable whens', () => {
     if (!qItem) return;
     state = clickCheckbox(state, pathifyExpand('1'), false, qItem);
 
-    //  console.log(JSON.stringify(state, null, 4));
     let i1 = getResponseItem('1', state, pathifyExpand('1'));
     let i11 = getResponseItem('1.1', state, pathifyExpand('1.1'));
     let i111 = getResponseItem('1.1.1', state, pathifyExpand('1.1.1'));

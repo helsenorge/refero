@@ -31,6 +31,7 @@ export interface Props {
   renderHelpElement: () => JSX.Element;
   isHelpOpen?: boolean;
   onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseAnswer) => void;
+  onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
 }
 
 class Boolean extends React.Component<Props & ValidationProps, {}> {
@@ -63,7 +64,7 @@ class Boolean extends React.Component<Props & ValidationProps, {}> {
     return (
       <span
         dangerouslySetInnerHTML={{
-          __html: `${renderPrefix(this.props.item)} ${getText(this.props.item)}`,
+          __html: `${renderPrefix(this.props.item)} ${getText(this.props.item, this.props.onRenderMarkdown)}`,
         }}
       />
     );
@@ -78,7 +79,7 @@ class Boolean extends React.Component<Props & ValidationProps, {}> {
 
   render(): JSX.Element | null {
     if (this.props.pdf) {
-      return <Pdf item={this.props.item} checked={this.getValue()} />;
+      return <Pdf item={this.props.item} checked={this.getValue()} onRenderMarkdown={this.props.onRenderMarkdown} />;
     } else if (isReadOnly(this.props.item)) {
       return (
         <CheckBox

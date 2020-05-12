@@ -33,6 +33,7 @@ export interface Props {
   renderHelpElement: () => JSX.Element;
   isHelpOpen?: boolean;
   onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseAnswer) => void;
+  onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
 }
 
 class Decimal extends React.Component<Props & ValidationProps, {}> {
@@ -80,11 +81,11 @@ class Decimal extends React.Component<Props & ValidationProps, {}> {
   }
 
   render(): JSX.Element | null {
-    const { item, pdf } = this.props;
+    const { item, pdf, onRenderMarkdown } = this.props;
     const value = this.getValue();
     if (pdf || isReadOnly(item)) {
       return (
-        <TextView item={item} value={this.getPDFValue()}>
+        <TextView item={item} value={this.getPDFValue()} onRenderMarkdown={onRenderMarkdown}>
           {this.props.children}
         </TextView>
       );
@@ -101,7 +102,7 @@ class Decimal extends React.Component<Props & ValidationProps, {}> {
             label={
               <span
                 dangerouslySetInnerHTML={{
-                  __html: `${renderPrefix(item)} ${getText(item)}`,
+                  __html: `${renderPrefix(item)} ${getText(item, onRenderMarkdown)}`,
                 }}
               />
             }

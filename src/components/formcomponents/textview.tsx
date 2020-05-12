@@ -6,12 +6,13 @@ interface Props {
   item: QuestionnaireItem;
   value?: string | number;
   textClass?: string;
+  onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
 }
 
-const textView: React.SFC<Props> = ({ item, value, textClass, children }) => {
+const textView: React.SFC<Props> = ({ item, value, textClass, children, onRenderMarkdown }) => {
   return (
     <div>
-      <b dangerouslySetInnerHTML={{ __html: `${renderPrefix(item)} ${getText(item)} ` }} />
+      <b dangerouslySetInnerHTML={{ __html: `${renderPrefix(item)} ${getText(item, onRenderMarkdown)} ` }} />
       <div className={textClass || ''}>{value}</div>
       {children ? (
         <span>
