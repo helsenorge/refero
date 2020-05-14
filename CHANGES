@@ -1,3 +1,7 @@
+6.2.1
+-----
+* Fix bug where it was possible to type '000' in hours and minutes fields of time input.
+
 6.2.0
 -----
 * Support for external rendering of markdown using the new onRenderMarkdown property.

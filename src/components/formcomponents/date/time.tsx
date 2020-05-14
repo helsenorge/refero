@@ -167,14 +167,15 @@ class Time extends React.Component<Props & ValidationProps> {
   };
 
   makeValidTime(time: string) {
-    const values = time.split(':');
+    const parsedTime = time.replace(/000/g, '00');
+    const values = parsedTime.split(':');
     if (values.length === 2 && values[1] === '' && values[0] !== '') {
       return `${values[0]}:00`;
     }
     if (values.length === 2 && values[0] === '' && values[1] !== '') {
       return `00:${values[1]}`;
     }
-    return this.addSeconds(time);
+    return this.addSeconds(parsedTime);
   }
 
   addSeconds(time: string) {
