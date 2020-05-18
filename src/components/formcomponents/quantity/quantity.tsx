@@ -144,6 +144,7 @@ class Quantity extends React.Component<Props & ValidationProps, {}> {
             className="page_skjemautfyller__quantity"
             helpButton={this.props.renderHelpButton()}
             helpElement={this.props.renderHelpElement()}
+            validateOnExternalUpdate={true}
           >
             <span className="page_skjemautfyller__unit">{this.getUnit()}</span>
           </SafeInputField>

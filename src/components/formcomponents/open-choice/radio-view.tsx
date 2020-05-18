@@ -69,6 +69,7 @@ const RadioView: React.SFC<Props> = ({
             getErrorMessage={getErrorMessage}
             helpButton={renderHelpButton()}
             helpElement={renderHelpElement()}
+            validateOnExternalUpdate={true}
           />
         </Validation>
         {shouldShowExtraChoice(answer) ? (

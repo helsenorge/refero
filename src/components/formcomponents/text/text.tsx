@@ -147,6 +147,7 @@ export class Text extends React.Component<Props & ValidationProps, {}> {
             allowInputOverMaxLength
             helpButton={this.props.renderHelpButton()}
             helpElement={this.props.renderHelpElement()}
+            validateOnExternalUpdate={true}
           />
         </Validation>
         <div>

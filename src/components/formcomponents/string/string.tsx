@@ -126,6 +126,7 @@ export class String extends React.Component<Props & ValidationProps, {}> {
             allowInputOverMaxLength
             helpButton={this.props.renderHelpButton()}
             helpElement={this.props.renderHelpElement()}
+            validateOnExternalUpdate={true}
           >
             {!this.props.oneToTwoColumn ? this.props.renderDeleteButton() : null}
           </SafeInputField>

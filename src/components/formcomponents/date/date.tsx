@@ -13,7 +13,7 @@ import { NewValueAction, newDateValueAsync } from '../../../actions/newValue';
 import withCommonFunctions from '../../with-common-functions';
 import { isReadOnly, isRequired, getId, renderPrefix, getText } from '../../../util/index';
 import { getValidationTextExtension, getPlaceholder, getExtension } from '../../../util/extension';
-import { QuestionnaireItem, QuestionnaireResponseAnswer, QuestionnaireResponseItem, Extension } from '../../../types/fhir';
+import { QuestionnaireItem, QuestionnaireResponseAnswer, QuestionnaireResponseItem } from '../../../types/fhir';
 import { Resources } from '../../../util/resources';
 import TextView from '../textview';
 import { ThunkDispatch } from 'redux-thunk';
@@ -212,6 +212,7 @@ class DateComponent extends React.Component<Props & ValidationProps> {
             validationErrorRenderer={this.props.validationErrorRenderer}
             helpButton={this.props.renderHelpButton()}
             helpElement={this.props.renderHelpElement()}
+            validateOnExternalUpdate={true}
           >
             {this.props.renderDeleteButton()}
           </DatePicker>

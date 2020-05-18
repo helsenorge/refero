@@ -70,6 +70,7 @@ const CheckboxView: React.SFC<Props> = ({
             errorMessage={getValidationTextExtension(item)}
             helpButton={renderHelpButton()}
             helpElement={renderHelpElement()}
+            validateOnExternalUpdate={true}
           />
         </Validation>
         {shouldShowExtraChoice(answer) ? (

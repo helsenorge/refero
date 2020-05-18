@@ -55,6 +55,7 @@ const textField: React.SFC<Props & ValidationProps> = ({
         pattern={getRegexExtension(item)}
         errorMessage={getValidationTextExtension(item)}
         allowInputOverMaxLength
+        validateOnExternalUpdate={true}
       />
     </Validation>
   );

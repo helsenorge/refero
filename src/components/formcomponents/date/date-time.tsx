@@ -180,6 +180,7 @@ class DateTime extends React.Component<Props & ValidationProps> {
             timeClassName="page_skjemautfyller__input"
             helpButton={this.props.renderHelpButton()}
             helpElement={this.props.renderHelpElement()}
+            validateOnExternalUpdate={true}
           >
             {!this.props.oneToTwoColumn ? this.props.renderDeleteButton('page_skjemautfyller__deletebutton--datetime') : null}
           </DateTimeInput>

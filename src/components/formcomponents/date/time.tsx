@@ -271,6 +271,7 @@ class Time extends React.Component<Props & ValidationProps> {
             }}
             helpButton={this.props.renderHelpButton()}
             helpElement={this.props.renderHelpElement()}
+            validateOnExternalUpdate={true}
           />
         </Validation>
         <div>

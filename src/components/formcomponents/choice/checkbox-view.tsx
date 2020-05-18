@@ -66,6 +66,7 @@ const CheckboxView: React.SFC<Props> = ({
             errorMessage={getValidationTextExtension(item)}
             helpButton={renderHelpButton()}
             helpElement={renderHelpElement()}
+            validateOnExternalUpdate={true}
           />
         </Validation>
         {renderDeleteButton('page_skjemautfyller__deletebutton--margin-top')}

@@ -122,6 +122,7 @@ class Integer extends React.Component<Props & ValidationProps, {}> {
             onBlur={this.handleChange}
             helpButton={this.props.renderHelpButton()}
             helpElement={this.props.renderHelpElement()}
+            validateOnExternalUpdate={true}
           >
             {!this.props.oneToTwoColumn ? this.props.renderDeleteButton() : null}
           </SafeInputField>

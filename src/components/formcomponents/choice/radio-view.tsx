@@ -64,6 +64,7 @@ const RadioView: React.SFC<Props> = ({
             getErrorMessage={getErrorMessage}
             helpButton={renderHelpButton()}
             helpElement={renderHelpElement()}
+            validateOnExternalUpdate={true}
           />
         </Validation>
         {renderDeleteButton('page_skjemautfyller__deletebutton--margin-top')}
