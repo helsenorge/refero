@@ -27,4 +27,5 @@ export default {
   GUIDANCE_PARAMETER: 'http://helsenorge.no/fhir/StructureDefinition/sdf-guidanceparameter',
   GUIDANCE_ACTION: 'http://helsenorge.no/fhir/StructureDefinition/sdf-guidanceaction',
   PRESENTATION_BUTTONS: 'http://helsenorge.no/fhir/StructureDefinition/sdf-presentationbuttons',
+  SAVE_TO_DOCUMENT_ARCHIVE: 'http://helsenorge.no/fhir/StructureDefinition/sdf-save-to-document-archive',
 };
