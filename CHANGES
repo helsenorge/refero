@@ -1,3 +1,7 @@
+6.2.3
+-----
+* Add class 'page_skjemautfyller__helpComponent--open' to help component content when content is expanded.
+
 6.2.2
 -----
 * Repeat-buttons would be rendered on all repeated response items. Now only renders on last response item.
