@@ -93,6 +93,10 @@ export class Text extends React.Component<Props & ValidationProps, {}> {
     return getTextValidationErrorMessage(value, this.props.validateScriptInjection, this.props.item, this.props.resources);
   };
 
+  getRequiredErrorMessage = (item: QuestionnaireItem): string | undefined => {
+    return isRequired(item) ? this.props.resources?.formRequiredErrorMessage : undefined;
+  }
+
   shouldComponentUpdate(nextProps: Props, _nextState: {}) {
     const responseItemHasChanged = this.props.responseItem !== nextProps.responseItem;
     const helpItemHasChanged = this.props.isHelpOpen !== nextProps.isHelpOpen;
@@ -145,6 +149,7 @@ export class Text extends React.Component<Props & ValidationProps, {}> {
             }}
             validator={this.validateText}
             errorMessage={this.getValidationErrorMessage}
+            requiredErrorMessage={this.getRequiredErrorMessage(item)}
             allowInputOverMaxLength
             helpButton={this.props.renderHelpButton()}
             helpElement={this.props.renderHelpElement()}

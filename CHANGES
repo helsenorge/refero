@@ -1,3 +1,7 @@
+6.3.0
+-----
+* Support for error message when required string or text field is empty. Added resource formRequiredErrorMessage ("Du må fylle ut dette feltet")
+
 6.2.4
 -----
 * Support for extension SaveToDocumentArchive on questionnaire to determine where QuestionnaireResponse is saved.

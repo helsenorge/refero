@@ -83,6 +83,10 @@ export class String extends React.Component<Props & ValidationProps, {}> {
     return getTextValidationErrorMessage(value, this.props.validateScriptInjection, this.props.item, this.props.resources);
   };
 
+  getRequiredErrorMessage = (item: QuestionnaireItem): string | undefined => {
+    return isRequired(item) ? this.props.resources?.formRequiredErrorMessage : undefined;
+  }
+
   getLabel(item: QuestionnaireItem, onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string): JSX.Element {
     return <span dangerouslySetInnerHTML={{ __html: `${renderPrefix(item)} ${getText(item, onRenderMarkdown)}` }} />;
   }
@@ -123,6 +127,7 @@ export class String extends React.Component<Props & ValidationProps, {}> {
             }}
             pattern={getRegexExtension(item)}
             errorMessage={this.getValidationErrorMessage}
+            requiredErrorMessage={this.getRequiredErrorMessage(item)}
             className="page_skjemautfyller__input"
             allowInputOverMaxLength
             helpButton={this.props.renderHelpButton()}
