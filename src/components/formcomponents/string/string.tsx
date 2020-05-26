@@ -85,7 +85,7 @@ export class String extends React.Component<Props & ValidationProps, {}> {
 
   getRequiredErrorMessage = (item: QuestionnaireItem): string | undefined => {
     return isRequired(item) ? this.props.resources?.formRequiredErrorMessage : undefined;
-  }
+  };
 
   getLabel(item: QuestionnaireItem, onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string): JSX.Element {
     return <span dangerouslySetInnerHTML={{ __html: `${renderPrefix(item)} ${getText(item, onRenderMarkdown)}` }} />;

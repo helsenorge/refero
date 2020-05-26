@@ -95,7 +95,7 @@ export class Text extends React.Component<Props & ValidationProps, {}> {
 
   getRequiredErrorMessage = (item: QuestionnaireItem): string | undefined => {
     return isRequired(item) ? this.props.resources?.formRequiredErrorMessage : undefined;
-  }
+  };
 
   shouldComponentUpdate(nextProps: Props, _nextState: {}) {
     const responseItemHasChanged = this.props.responseItem !== nextProps.responseItem;
