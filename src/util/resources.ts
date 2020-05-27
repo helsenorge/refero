@@ -159,4 +159,8 @@ export interface Resources {
    * er ikke tillatt
    */
   validationNotAllowed: string;
+  /**
+   * Du må fylle ut dette feltet
+   */
+  formRequiredErrorMessage?: string;
 }

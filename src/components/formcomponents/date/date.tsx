@@ -162,8 +162,9 @@ class DateComponent extends React.Component<Props & ValidationProps> {
   shouldComponentUpdate(nextProps: Props, _nextState: {}) {
     const responseItemHasChanged = this.props.responseItem !== nextProps.responseItem;
     const helpItemHasChanged = this.props.isHelpOpen !== nextProps.isHelpOpen;
+    const repeats = this.props.item.repeats ?? false;
 
-    return responseItemHasChanged || helpItemHasChanged;
+    return responseItemHasChanged || helpItemHasChanged || repeats;
   }
 
   render(): JSX.Element | null {

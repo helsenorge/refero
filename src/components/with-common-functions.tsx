@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { ThunkDispatch } from 'redux-thunk';
+import classNames from 'classnames';
 import { GlobalState } from '../reducers';
 import {
   Path,
@@ -188,9 +189,13 @@ export default function withCommonFunctions<T>(WrappedComponent: React.Component
         return onRequestHelpElement(qItem, helpItem, helpItemType, getText(helpItem), this.state.isHelpVisible);
       }
 
+      const collapseClasses: string = classNames({
+        page_skjemautfyller__helpComponent: true,
+        'page_skjemautfyller__helpComponent--open': this.state.isHelpVisible,
+      });
       return (
         <Collapse isOpened={this.state.isHelpVisible}>
-          <div className="page_skjemautfyller__helpComponent" dangerouslySetInnerHTML={{ __html: `${getText(helpItem)}` }} />
+          <div className={collapseClasses} dangerouslySetInnerHTML={{ __html: `${getText(helpItem)}` }} />
         </Collapse>
       );
     };

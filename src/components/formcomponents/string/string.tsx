@@ -70,8 +70,9 @@ export class String extends React.Component<Props & ValidationProps, {}> {
   shouldComponentUpdate(nextProps: Props, _nextState: {}) {
     const responseItemHasChanged = this.props.responseItem !== nextProps.responseItem;
     const helpItemHasChanged = this.props.isHelpOpen !== nextProps.isHelpOpen;
+    const repeats = this.props.item.repeats ?? false;
 
-    return responseItemHasChanged || helpItemHasChanged;
+    return responseItemHasChanged || helpItemHasChanged || repeats;
   }
 
   validateText = (value: string): boolean => {
@@ -80,6 +81,10 @@ export class String extends React.Component<Props & ValidationProps, {}> {
 
   getValidationErrorMessage = (value: string): string => {
     return getTextValidationErrorMessage(value, this.props.validateScriptInjection, this.props.item, this.props.resources);
+  };
+
+  getRequiredErrorMessage = (item: QuestionnaireItem): string | undefined => {
+    return isRequired(item) ? this.props.resources?.formRequiredErrorMessage : undefined;
   };
 
   getLabel(item: QuestionnaireItem, onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string): JSX.Element {
@@ -122,6 +127,7 @@ export class String extends React.Component<Props & ValidationProps, {}> {
             }}
             pattern={getRegexExtension(item)}
             errorMessage={this.getValidationErrorMessage}
+            requiredErrorMessage={this.getRequiredErrorMessage(item)}
             className="page_skjemautfyller__input"
             allowInputOverMaxLength
             helpButton={this.props.renderHelpButton()}
