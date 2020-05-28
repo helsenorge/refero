@@ -1,3 +1,8 @@
+6.4.1
+-----
+* Remove extension sdf-save-to-document-archive.
+* Support for extension sdf-endpoint on questionnaire to determine the recipient url (if any) of questionnaire.
+
 6.4.0
 -----
 * Revalidate components when they are updated via props. Requires @helsenorge/toolkit v12.0.8

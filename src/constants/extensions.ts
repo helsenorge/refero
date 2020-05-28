@@ -23,9 +23,9 @@ export default {
   CALCULATED_EXPRESSION: 'http://ehelse.no/fhir/StructureDefinition/sdf-calculatedExpression',
   DATE_MAX_VALUE_URL: 'http://ehelse.no/fhir/StructureDefinition/sdf-maxvalue',
   DATE_MIN_VALUE_URL: 'http://ehelse.no/fhir/StructureDefinition/sdf-minvalue',
+  RECIPIENT_URL: 'http://ehelse.no/fhir/StructureDefinition/sdf-endpoint',
 
   GUIDANCE_PARAMETER: 'http://helsenorge.no/fhir/StructureDefinition/sdf-guidanceparameter',
   GUIDANCE_ACTION: 'http://helsenorge.no/fhir/StructureDefinition/sdf-guidanceaction',
   PRESENTATION_BUTTONS: 'http://helsenorge.no/fhir/StructureDefinition/sdf-presentationbuttons',
-  SAVE_TO_DOCUMENT_ARCHIVE: 'http://helsenorge.no/fhir/StructureDefinition/sdf-save-to-document-archive',
 };

@@ -28,12 +28,9 @@ export function getPresentationButtonsExtension(questionniare: Questionnaire): P
   return null;
 }
 
-export function getSaveToDocumentArchiveExtensionValue(questionniare: Questionnaire) {
-  const saveToDocumentArchive = getExtension(ExtensionConstants.SAVE_TO_DOCUMENT_ARCHIVE, questionniare);
-  if (!saveToDocumentArchive || !saveToDocumentArchive.valueBoolean) {
-    return false;
-  }
-  return saveToDocumentArchive.valueBoolean;
+export function getRecipientUrl(questionniare: Questionnaire): string | undefined {
+  const recipientUrl = getExtension(ExtensionConstants.RECIPIENT_URL, questionniare);
+  return recipientUrl?.valueReference?.reference;
 }
 
 export function getExtension(url: string, item: QuestionnaireItem | Element | Questionnaire) {
