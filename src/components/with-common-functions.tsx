@@ -114,15 +114,17 @@ export default function withCommonFunctions<T>(WrappedComponent: React.Component
       }
 
       return (
-        <DeleteButton
-          className={className}
-          item={this.props.item}
-          path={this.props.path}
-          resources={this.props.resources}
-          mustShowConfirm={mustShowConfirm}
-          onAnswerChange={this.props.onAnswerChange}
-          renderContext={this.props.renderContext}
-        />
+        <div className="page_skjemautfyller__deletebutton-wrapper">
+          <DeleteButton
+            className={className}
+            item={this.props.item}
+            path={this.props.path}
+            resources={this.props.resources}
+            mustShowConfirm={mustShowConfirm}
+            onAnswerChange={this.props.onAnswerChange}
+            renderContext={this.props.renderContext}
+          />
+        </div>
       );
     };
 
@@ -131,14 +133,16 @@ export default function withCommonFunctions<T>(WrappedComponent: React.Component
         return undefined;
       }
       return (
-        <RepeatButton
-          key={`item_${item.linkId}_add_repeat_item`}
-          resources={this.props.resources}
-          item={item}
-          responseItems={response}
-          parentPath={path}
-          renderContext={this.props.renderContext}
-        />
+        <div className="page_skjemautfyller__repeatbutton-wrapper">
+          <RepeatButton
+            key={`item_${item.linkId}_add_repeat_item`}
+            resources={this.props.resources}
+            item={item}
+            responseItems={response}
+            parentPath={path}
+            renderContext={this.props.renderContext}
+          />
+        </div>
       );
     };
 

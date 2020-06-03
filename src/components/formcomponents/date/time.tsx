@@ -275,10 +275,8 @@ class Time extends React.Component<Props & ValidationProps> {
             validateOnExternalUpdate={true}
           />
         </Validation>
-        <div>
-          {this.props.renderDeleteButton('page_skjemautfyller__deletebutton--margin-top')}
-          {this.props.repeatButton}
-        </div>
+        {this.props.renderDeleteButton('page_skjemautfyller__deletebutton--margin-top')}
+        {this.props.repeatButton}
         {this.props.children ? <div className="nested-fieldset nested-fieldset--full-height">{this.props.children}</div> : null}
       </div>
     );

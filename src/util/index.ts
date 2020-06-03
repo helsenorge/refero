@@ -31,7 +31,7 @@ DOMPurify.setConfig({ ADD_ATTR: ['target'] });
 
 const renderer = new marked.Renderer();
 renderer.link = (href: string, title: string, text: string): string => {
-  return `<a href=${href} title=${title} target="_blank" class="external">${text}</a>`;
+  return `<a href=${href} ${title ? `title=${title}` : ''} target="_blank" class="external">${text}</a>`;
 };
 marked.setOptions({ renderer: renderer });
 import { isValid, invalidNodes } from '@helsenorge/core-utils/validation';

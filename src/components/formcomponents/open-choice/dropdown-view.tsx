@@ -97,15 +97,8 @@ class DropdownView extends React.Component<Props, {}> {
           ) : (
             <React.Fragment />
           )}
-          {!oneToTwoColumn ? renderDeleteButton('page_skjemautfyller__deletebutton--margin-left') : null}
-          {oneToTwoColumn ? (
-            <div>
-              {renderDeleteButton('page_skjemautfyller__deletebutton--margin-top')}
-              {repeatButton}
-            </div>
-          ) : (
-            <div>{repeatButton}</div>
-          )}
+          {renderDeleteButton('page_skjemautfyller__deletebutton--margin-top')}
+          {repeatButton}
           {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
         </Collapse>
       </div>

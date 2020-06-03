@@ -1,4 +1,9 @@
-﻿6.4.2
+﻿6.4.3
+-----
+* Render add and delete buttons of repeatable fields on separate lines for all field types.
+* Remove title attribute of anchor tags rendered from markdown when title is null.
+
+6.4.2
 -----
 * Fix bug for revalidate of textarea. Requires @helsenorge/toolkit v12.0.12
 

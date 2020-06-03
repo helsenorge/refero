@@ -260,14 +260,16 @@ class Skjemautfyller extends React.Component<StateProps & DispatchProps & Props,
         responseItems.forEach((responseItem, index) => {
           const repeatButton =
             item.repeats && shouldRenderRepeatButton(item, responseItems, index) ? (
-              <RepeatButton
-                key={`item_${item.linkId}_add_repeat_item`}
-                resources={this.props.resources}
-                item={item}
-                responseItems={responseItems}
-                parentPath={this.props.path}
-                renderContext={new RenderContext()}
-              />
+              <div className="page_skjemautfyller__repeatbutton-wrapper">
+                <RepeatButton
+                  key={`item_${item.linkId}_add_repeat_item`}
+                  resources={this.props.resources}
+                  item={item}
+                  responseItems={responseItems}
+                  parentPath={this.props.path}
+                  renderContext={new RenderContext()}
+                />
+              </div>
             ) : (
               undefined
             );

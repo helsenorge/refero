@@ -113,17 +113,8 @@ class Boolean extends React.Component<Props & ValidationProps, {}> {
             validateOnExternalUpdate={true}
           />
         </Validation>
-        {this.props.oneToTwoColumn ? (
-          <div>
-            {this.props.renderDeleteButton('page_skjemautfyller__deletebutton--margin-top')}
-            {this.props.repeatButton}
-          </div>
-        ) : (
-          <React.Fragment>
-            {this.props.renderDeleteButton()}
-            <div>{this.props.repeatButton}</div>
-          </React.Fragment>
-        )}
+        {this.props.renderDeleteButton('page_skjemautfyller__deletebutton--margin-top')}
+        {this.props.repeatButton}
         {this.props.children ? <div className="nested-fieldset nested-fieldset--full-height">{this.props.children}</div> : null}
       </div>
     );

@@ -75,7 +75,7 @@ class DeleteButton extends React.Component<Props, State> {
             onCancel={this.onConfirmCancel}
             small
           >
-            <h3 tabIndex={0}>{resources.confirmDeleteHeading}</h3>
+            <h3>{resources.confirmDeleteHeading}</h3>
             <p>{resources.confirmDeleteDescription}</p>
           </ConfirmBox>
         ) : null}

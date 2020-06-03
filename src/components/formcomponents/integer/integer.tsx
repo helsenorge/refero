@@ -124,18 +124,10 @@ class Integer extends React.Component<Props & ValidationProps, {}> {
             helpButton={this.props.renderHelpButton()}
             helpElement={this.props.renderHelpElement()}
             validateOnExternalUpdate={true}
-          >
-            {!this.props.oneToTwoColumn ? this.props.renderDeleteButton() : null}
-          </SafeInputField>
+          />
         </Validation>
-        {this.props.oneToTwoColumn ? (
-          <div>
-            {this.props.renderDeleteButton('page_skjemautfyller__deletebutton--margin-top')}
-            {this.props.repeatButton}
-          </div>
-        ) : (
-          <div>{this.props.repeatButton}</div>
-        )}
+        {this.props.renderDeleteButton('page_skjemautfyller__deletebutton--margin-top')}
+        {this.props.repeatButton}
         {this.props.children ? <div className="nested-fieldset nested-fieldset--full-height">{this.props.children}</div> : null}
       </div>
     );
