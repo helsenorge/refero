@@ -1,4 +1,8 @@
-﻿6.5.0
+﻿6.5.1
+-----
+* Fix styling of static buttonbar.
+
+6.5.0
 -----
 * Upgrade components to new version of @helsenorge/toolkit. Requires @helsenorge/toolkit v13.0.0
 
