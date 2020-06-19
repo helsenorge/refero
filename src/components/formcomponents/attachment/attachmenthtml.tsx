@@ -1,7 +1,7 @@
 import * as React from 'react';
 import constants, { VALID_FILE_TYPES } from '../../../constants';
 import { Resources } from '../../../util/resources';
-import MultiDropzone from '@helsenorge/toolkit/components/atoms/multi-dropzone';
+import Dropzone from '@helsenorge/toolkit/components/atoms/dropzone';
 import Validation, { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
 import { sizeIsValid, mimeTypeIsValid } from '@helsenorge/toolkit/components/atoms/dropzone/validation';
 import { UploadedFile } from '@helsenorge/toolkit/components/atoms/dropzone';
@@ -16,7 +16,7 @@ interface Props {
   uploadButtonText: string;
   label: string | JSX.Element;
   id: string;
-  getComponentToValidate?: (el: MultiDropzone) => void;
+  getComponentToValidate?: (el: Dropzone) => void;
   resources?: Resources;
   isRequired?: boolean;
   multiple?: boolean;
@@ -62,7 +62,7 @@ const attachmentHtml: React.SFC<Props & ValidationProps> = ({
   return (
     <div className="page_skjemautfyller__component page_skjemautfyller__component_attachment">
       <Validation {...other}>
-        <MultiDropzone
+        <Dropzone
           id={id}
           label={label}
           onDrop={onUpload}
@@ -73,7 +73,7 @@ const attachmentHtml: React.SFC<Props & ValidationProps> = ({
           maxFileSize={maxFilesize}
           validMimeTypes={validFileTypes}
           supportedFileFormatsText={resources ? resources.supportedFileFormats : undefined}
-          errorMessage={file => {
+          errorMessage={(file: File) => {
             return getErrorMessage(validFileTypes, maxFilesize, item, errorText, file, resources);
           }}
           isRequired={isRequired}
@@ -81,7 +81,7 @@ const attachmentHtml: React.SFC<Props & ValidationProps> = ({
           onRequestLink={onRequestAttachmentLink}
           helpButton={helpButton}
           helpElement={helpElement}
-          multiple={multiple}
+          shouldUploadMultiple={multiple}
           maxFiles={maxFiles}
           minFiles={minFiles}
         />

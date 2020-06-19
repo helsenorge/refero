@@ -1,4 +1,8 @@
-﻿6.4.3
+﻿6.5.0
+-----
+* Upgrade components to new version of @helsenorge/toolkit. Requires @helsenorge/toolkit v13.0.0
+
+6.4.3
 -----
 * Render add and delete buttons of repeatable fields on separate lines for all field types.
 * Remove title attribute of anchor tags rendered from markdown when title is null.

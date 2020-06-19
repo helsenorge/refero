@@ -357,7 +357,7 @@ class Skjemautfyller extends React.Component<StateProps & DispatchProps & Props,
         >
           {this.renderFormItems()}
         </Form>
-        <div className="mol_actionconfirmationprompt page_skjemautfyller__saveblock">{this.props.loginButton}</div>
+        <div className="page_skjemautfyller__buttonwrapper page_skjemautfyller__saveblock">{this.props.loginButton}</div>
       </div>
     );
   };
@@ -409,6 +409,9 @@ class Skjemautfyller extends React.Component<StateProps & DispatchProps & Props,
     defaultClasses = defaultClasses ?? [];
     if (presentationButtonsType === PresentationButtonsType.None) {
       defaultClasses.push('page_skjemautfyller__hidden_buttons');
+    }
+    if (this.props.sticky) {
+      defaultClasses.push('page_skjemautfyller__stickybar');
     }
 
     return defaultClasses.join(' ');
