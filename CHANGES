@@ -1,4 +1,8 @@
-﻿6.5.1
+﻿6.5.2
+-----
+* Do not set system in Coding object in processNewValueAction(...) if system is undefined or null.
+
+6.5.1
 -----
 * Fix styling of static buttonbar.
 

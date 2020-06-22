@@ -369,10 +369,13 @@ function processNewValueAction(action: NewValueAction, state: Form): Form {
       hasAnswer = true;
 
       const coding = {
-        system: action.valueCoding.system,
         code: action.valueCoding.code,
         display: action.valueCoding.display,
       } as Coding;
+
+      if (action.valueCoding.system !== undefined && action.valueCoding.system !== null) {
+        coding.system = action.valueCoding.system;
+      }
 
       if (action.multipleAnswers) {
         if (Object.keys(answer).length === 0) {
