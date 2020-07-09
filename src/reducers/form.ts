@@ -56,6 +56,11 @@ export interface Form {
   Language: string;
 }
 
+interface QrItemsToClear {
+  qItemWithEnableWhen: QuestionnaireItem; 
+  linkId: string;
+}
+
 const initialState: Form = {
   FormData: {
     Content: null,
@@ -424,7 +429,19 @@ function processNewValueAction(action: NewValueAction, state: Form): Form {
       }
     }
     if (action.item) {
-      updateEnableWhenItemsIteration([action.item], draft.FormData, draft.FormDefinition, action.itemPath);
+      const qrItemsToClear: Array<QrItemsToClear> = [];
+      calculateEnableWhenItemsToClear([action.item], state.FormData, state.FormDefinition, action.itemPath, qrItemsToClear);
+
+      const responseItems = getResponseItems(draft.FormData);
+      if (responseItems && responseItems.length > 0) {
+        for (var w = 0; w < qrItemsToClear.length; w++) {
+          const qrItemWithEnableWhen = getResponseItemAndPathWithLinkId(qrItemsToClear[w].linkId, draft.FormData.Content!);
+          for (var r = 0; r < qrItemWithEnableWhen.length; r++) {
+            removeAddedRepeatingItems(qrItemsToClear[w].qItemWithEnableWhen, qrItemWithEnableWhen[r].item, responseItems);
+            wipeAnswerItems(qrItemWithEnableWhen[r].item, qrItemsToClear[w].qItemWithEnableWhen);
+          }
+        } 
+      }
     }
   });
 }
@@ -477,11 +494,12 @@ function getResponseItemWithLinkIdPossiblyContainingRepeat(
   return findResponseItem(linkId, items);
 }
 
-function updateEnableWhenItemsIteration(
+function calculateEnableWhenItemsToClear(
   items: QuestionnaireItem[],
   formData: FormData,
   formDefinition: FormDefinition,
-  path: Array<Path> | undefined
+  path: Array<Path> | undefined,
+  qrItemsToClear: Array<QrItemsToClear>
 ): void {
   if (!items) {
     return;
@@ -527,14 +545,16 @@ function updateEnableWhenItemsIteration(
       });
 
       if (!enable) {
-        removeAddedRepeatingItems(qItemWithEnableWhen, qrItemWithEnableWhen.item, responseItems);
-        wipeAnswerItems(qrItemWithEnableWhen.item, qItemWithEnableWhen);
+        qrItemsToClear.push({ 
+          qItemWithEnableWhen: qItemWithEnableWhen, 
+          linkId: qrItemWithEnableWhen.item.linkId,
+        });
       }
     }
   }
-  updateEnableWhenItemsIteration(qitemsWithEnableWhen, formData, formDefinition, path);
+  calculateEnableWhenItemsToClear(qitemsWithEnableWhen, formData, formDefinition, path, qrItemsToClear);
 
-  qitemsWithEnableWhen.forEach(i => i.item && updateEnableWhenItemsIteration(i.item, formData, formDefinition, path));
+  qitemsWithEnableWhen.forEach(i => i.item && calculateEnableWhenItemsToClear(i.item, formData, formDefinition, path, qrItemsToClear));
 }
 
 // This should remove repeated items, but not the original, so remove index
