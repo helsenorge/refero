@@ -1,6 +1,12 @@
 import * as React from 'react';
 import { ThunkDispatch } from 'redux-thunk';
 import classNames from 'classnames';
+import { Collapse } from 'react-collapse';
+import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
+import { FormChild } from '@helsenorge/toolkit/components/molecules/form';
+import { UploadedFile } from '@helsenorge/toolkit/components/atoms/dropzone';
+import { HelpTrigger } from '@helsenorge/toolkit/components/icons';
+
 import { GlobalState } from '../reducers';
 import {
   Path,
@@ -10,19 +16,14 @@ import {
   shouldRenderDeleteButton,
   createIdSuffix,
 } from '../util/skjemautfyller-core';
-import { Resource, QuestionnaireResponseItem, QuestionnaireItem, QuestionnaireResponseAnswer, Attachment } from '../types/fhir';
+import { Resource, QuestionnaireResponseItem, QuestionnaireItem, QuestionnaireResponseItemAnswer, Attachment } from '../types/fhir';
 import { Resources } from '../util/resources';
 import { getComponentForItem, getChildHeaderTag, shouldRenderRepeatButton, getText, isHiddenItem } from '../util/index';
-import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
-import { FormChild } from '@helsenorge/toolkit/components/molecules/form';
 import RepeatButton from './formcomponents/repeat/repeat-button';
 import DeleteButton from './formcomponents/repeat/delete-button';
-import { UploadedFile } from '@helsenorge/toolkit/components/atoms/dropzone';
 import { TextMessage } from '../types/text-message';
 import { findHelpItem, isHelpItem, getHelpItemType } from '../util/help';
 import HelpButton from './help-button/help-button';
-import { HelpTrigger } from '@helsenorge/toolkit/components/icons';
-import { Collapse } from 'react-collapse';
 import itemControlConstants from '../constants/itemcontrol';
 import { NewValueAction } from '../actions/newValue';
 import { RenderContext } from '../util/renderContext';
@@ -39,7 +40,7 @@ export interface Props {
   path?: Array<Path>;
   enable?: boolean;
   id?: string;
-  answer?: QuestionnaireResponseAnswer | Array<QuestionnaireResponseAnswer>;
+  answer?: QuestionnaireResponseItemAnswer | Array<QuestionnaireResponseItemAnswer>;
   addFormComponent?: (component: FormChild) => void;
   removeFormComponent?: (component: FormChild) => void;
   onValidated?: (valid: boolean | undefined) => void;
@@ -75,7 +76,7 @@ export interface Props {
     helpText: string,
     opening: boolean
   ) => JSX.Element;
-  onAnswerChange?: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseAnswer) => void;
+  onAnswerChange?: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
   renderContext: RenderContext;
   isHelpOpen?: boolean;
   onRenderMarkdown?: (item: QuestionnaireItem, markup: string) => string;
@@ -146,7 +147,7 @@ export default function withCommonFunctions<T>(WrappedComponent: React.Component
       );
     };
 
-    hasAnwer(answer: QuestionnaireResponseAnswer | QuestionnaireResponseAnswer[] | undefined): boolean {
+    hasAnwer(answer: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[] | undefined): boolean {
       return !!answer && Object.keys(answer as object).length > 0;
     }
 

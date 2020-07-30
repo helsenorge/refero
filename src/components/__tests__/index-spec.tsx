@@ -1,18 +1,19 @@
-import '../../util/defineFetch';
 import * as React from 'react';
-import rootReducer from '../../reducers';
 import { createStore, applyMiddleware } from 'redux';
-import { mount } from 'enzyme';
 import { Provider } from 'react-redux';
+import thunk from 'redux-thunk';
+import { mount } from 'enzyme';
+import SafeInputField from '@helsenorge/toolkit/components/atoms/safe-input-field';
+
+import '../../util/defineFetch';
+import rootReducer from '../../reducers';
 import { SkjemautfyllerContainer } from '../index';
 import { Resources } from '../../util/resources';
-import { Questionnaire, QuestionnaireItem, uri, Extension, QuestionnaireEnableWhen } from '../../types/fhir';
+import { Questionnaire, QuestionnaireItem, Extension, QuestionnaireItemEnableWhen } from '../../types/fhir';
 import HelpButton from '../help-button/help-button';
 import itemControlConstants from '../../constants/itemcontrol';
 import { RepeatButton as RepeatButtonInstance } from '../../components/formcomponents/repeat/repeat-button';
 import Boolean from '../../components/formcomponents/boolean/boolean';
-import SafeInputField from '@helsenorge/toolkit/components/atoms/safe-input-field';
-import thunk from 'redux-thunk';
 
 describe('Component renders help items', () => {
   beforeEach(() => {
@@ -125,8 +126,8 @@ function createWrapper(
 
 function questionnaireWithRepeatedEnableWhens(): Questionnaire {
   return {
-    resourceType: 'questionnaire',
-    status: { value: 'active' },
+    resourceType: 'Questionnaire',
+    status: 'active',
     item: [
       {
         linkId: '8',
@@ -152,7 +153,7 @@ function questionnaireWithRepeatedEnableWhens(): Questionnaire {
                   {
                     question: '8.1.1',
                     answerBoolean: true,
-                  } as QuestionnaireEnableWhen,
+                  } as QuestionnaireItemEnableWhen,
                 ],
               },
             ],
@@ -165,8 +166,8 @@ function questionnaireWithRepeatedEnableWhens(): Questionnaire {
 
 function questionnaireWithHelp(): Questionnaire {
   return {
-    resourceType: 'questionnaire',
-    status: { value: 'active' },
+    resourceType: 'Questionnaire',
+    status: 'active',
     item: [
       {
         linkId: '1',
@@ -191,7 +192,7 @@ function helpExtension(): Extension {
     valueCodeableConcept: {
       coding: [
         {
-          system: { value: 'http://hl7.org/fhir/ValueSet/questionnaire-item-control' } as uri,
+          system: 'http://hl7.org/fhir/ValueSet/questionnaire-item-control',
           code: 'help',
         },
       ],

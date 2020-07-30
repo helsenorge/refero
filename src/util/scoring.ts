@@ -1,4 +1,4 @@
-import { QuestionnaireItem, Coding, uri, Extension } from '../types/fhir';
+import { QuestionnaireItem, Coding, Extension } from '../types/fhir';
 import Scoring from '../constants/scoring';
 import ExtensionConstants from '../constants/extensions';
 import * as uuid from 'uuid';
@@ -13,7 +13,7 @@ export function createDummySectionScoreItem(): QuestionnaireItem {
       {
         url: ExtensionConstants.QUESTIONNAIRE_UNIT,
         valueCoding: {
-          system: ('http://ehelse.no/Score' as unknown) as uri,
+          system: 'http://ehelse.no/Score',
           code: 'score',
           display: 'score',
         },

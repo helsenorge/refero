@@ -1,13 +1,13 @@
 import * as React from 'react';
-import { getValidationTextExtension, getPlaceholder } from '../../../util/extension';
-import { Options } from '@helsenorge/toolkit/components/atoms/radio-group';
-import { isRequired, getId, renderPrefix, getText } from '../../../util/index';
 import { Collapse } from 'react-collapse';
+import layoutChange from '@helsenorge/core-utils/hoc/layoutChange';
+import { Options } from '@helsenorge/toolkit/components/atoms/radio-group';
 import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
 import SafeSelect from '@helsenorge/toolkit/components/atoms/safe-select';
-import { Resources } from '../../../util/resources';
-import layoutChange from '@helsenorge/core-utils/hoc/layoutChange';
 
+import { isRequired, getId, renderPrefix, getText } from '../../../util/index';
+import { getValidationTextExtension, getPlaceholder } from '../../../util/extension';
+import { Resources } from '../../../util/resources';
 import { QuestionnaireItem } from '../../../types/fhir';
 
 interface Props {

@@ -1,12 +1,13 @@
-import '../../util/defineFetch';
+import * as React from 'react';
 import { mount } from 'enzyme';
-import rootReducer from '../../reducers';
 import { createStore } from 'redux';
 import { Store, Provider } from 'react-redux';
-import { SkjemautfyllerContainer } from '../../components';
-import * as React from 'react';
+
+import rootReducer from '../../reducers';
+import '../../util/defineFetch';
 import { Resources } from '../../util/resources';
-import { Questionnaire, QuestionnaireItem, QuestionnaireItemTypeList, Extension, Coding, uri, Reference } from '../../types/fhir';
+import { SkjemautfyllerContainer } from '../../components';
+import { Questionnaire, QuestionnaireItem, Extension, Coding, Reference } from '../../types/fhir';
 import Choice from '../formcomponents/choice/choice';
 import Boolean from '../formcomponents/boolean/boolean';
 import Decimal from '../formcomponents/decimal/decimal';
@@ -348,15 +349,15 @@ function createItemControlExtension(code: string): Extension {
 function createItemControlCoding(code: string): Coding {
   return {
     code: code,
-    system: { value: 'http://hl7.org/fhir/ValueSet/questionnaire-item-control' } as uri,
+    system: 'http://hl7.org/fhir/ValueSet/questionnaire-item-control',
   } as Coding;
 }
 
-function createItem(type: QuestionnaireItemTypeList, ...withExtensions: Extension[]): QuestionnaireItem {
+function createItem(type: string, ...withExtensions: Extension[]): QuestionnaireItem {
   return _createItem(type, '1', withExtensions, undefined);
 }
 
-function createChoiceItem(type: QuestionnaireItemTypeList, ...withExtensions: Extension[]): QuestionnaireItem {
+function createChoiceItem(type: string, ...withExtensions: Extension[]): QuestionnaireItem {
   const reference = { reference: '#8459' } as Reference;
   return _createItem(type, '1', withExtensions, reference);
 }
@@ -370,7 +371,7 @@ function createQuestionnaire(...items: QuestionnaireItem[]): Questionnaire {
 }
 
 function _createItem(
-  type: QuestionnaireItemTypeList,
+  type: string,
   text: string,
   extensions: Extension[],
   options: Reference | undefined,

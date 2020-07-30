@@ -1,7 +1,7 @@
-import { QuestionnaireItem, QuestionnaireResponseAnswer } from '../types/fhir';
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from '../types/fhir';
 
-export function createQuestionnaireResponseAnswer(item: QuestionnaireItem): QuestionnaireResponseAnswer | undefined {
-  const answer = {} as QuestionnaireResponseAnswer;
+export function createQuestionnaireResponseAnswer(item: QuestionnaireItem): QuestionnaireResponseItemAnswer | undefined {
+  const answer = {} as QuestionnaireResponseItemAnswer;
   let hasInitialAnswer = false;
 
   if (item.initialBoolean !== undefined) {

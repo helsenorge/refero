@@ -1,22 +1,20 @@
-import '../../util/defineFetch';
 import * as React from 'react';
-import rootReducer from '../../reducers';
 import { createStore, applyMiddleware } from 'redux';
-import { ReactWrapper, mount } from 'enzyme';
 import { Provider } from 'react-redux';
+import thunk, { ThunkDispatch } from 'redux-thunk';
+import { ReactWrapper, mount } from 'enzyme';
+
+import '../../util/defineFetch';
+import rootReducer from '../../reducers';
 import { Choice } from '../formcomponents/choice/choice';
 import {
   QuestionnaireItem,
-  QuestionnaireOption,
-  QuestionnaireResponseAnswer,
-  integer,
-  date,
-  time,
+  QuestionnaireItemAnswerOption,
+  QuestionnaireResponseItemAnswer,
   Extension,
   QuestionnaireResponseItem,
 } from '../../types/fhir';
 import { Path } from '../../util/skjemautfyller-core';
-import thunk, { ThunkDispatch } from 'redux-thunk';
 import { GlobalState } from '../../reducers/index';
 import { NewValueAction } from '../../actions/newValue';
 
@@ -174,57 +172,57 @@ function createExtensionReferenceOption(...options: { key: string; value: string
   });
 }
 
-function createValueReferenceOption(...options: { key: string; value: string }[]): QuestionnaireOption[] {
+function createValueReferenceOption(...options: { key: string; value: string }[]): QuestionnaireItemAnswerOption[] {
   return options.map(o => {
     return {
       valueReference: {
         reference: o.key,
         display: o.value,
       },
-    } as QuestionnaireOption;
+    } as QuestionnaireItemAnswerOption;
   });
 }
 
-function createValueCodingOption(...options: { key: string; value: string }[]): QuestionnaireOption[] {
+function createValueCodingOption(...options: { key: string; value: string }[]): QuestionnaireItemAnswerOption[] {
   return options.map(o => {
     return {
       valueCoding: {
         code: o.key,
         display: o.value,
       },
-    } as QuestionnaireOption;
+    } as QuestionnaireItemAnswerOption;
   });
 }
 
-function createValueStringOption(...options: string[]): QuestionnaireOption[] {
+function createValueStringOption(...options: string[]): QuestionnaireItemAnswerOption[] {
   return options.map(o => {
     return {
       valueString: o,
-    } as QuestionnaireOption;
+    } as QuestionnaireItemAnswerOption;
   });
 }
 
-function createValueIntegerOption(...options: number[]): QuestionnaireOption[] {
+function createValueIntegerOption(...options: number[]): QuestionnaireItemAnswerOption[] {
   return options.map(o => {
     return {
-      valueInteger: (o as {}) as integer,
-    } as QuestionnaireOption;
+      valueInteger: (o as {}) as number,
+    } as QuestionnaireItemAnswerOption;
   });
 }
 
-function createValueDateOption(...options: string[]): QuestionnaireOption[] {
+function createValueDateOption(...options: string[]): QuestionnaireItemAnswerOption[] {
   return options.map(o => {
     return {
-      valueDate: (o as {}) as date,
-    } as QuestionnaireOption;
+      valueDate: (o as {}) as string,
+    } as QuestionnaireItemAnswerOption;
   });
 }
 
-function createValueTimeOption(...options: string[]): QuestionnaireOption[] {
+function createValueTimeOption(...options: string[]): QuestionnaireItemAnswerOption[] {
   return options.map(o => {
     return {
-      valueTime: (o as {}) as time,
-    } as QuestionnaireOption;
+      valueTime: (o as {}) as string,
+    } as QuestionnaireItemAnswerOption;
   });
 }
 
@@ -234,7 +232,7 @@ function createWrapperWithItem(item: QuestionnaireItem): ReactWrapper<{}, {}> {
     <Provider store={store}>
       <Choice
         dispatch={() => (undefined as unknown) as ThunkDispatch<GlobalState, void, NewValueAction>}
-        answer={{} as QuestionnaireResponseAnswer}
+        answer={{} as QuestionnaireResponseItemAnswer}
         item={item}
         path={{} as Path[]}
         renderDeleteButton={() => undefined}
@@ -248,7 +246,7 @@ function createWrapperWithItem(item: QuestionnaireItem): ReactWrapper<{}, {}> {
   );
 }
 
-function createItemWithOption(...options: QuestionnaireOption[]): QuestionnaireItem {
+function createItemWithOption(...options: QuestionnaireItemAnswerOption[]): QuestionnaireItem {
   return {
     linkId: '1',
     type: 'choice',

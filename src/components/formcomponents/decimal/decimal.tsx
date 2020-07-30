@@ -1,15 +1,16 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
-import { GlobalState } from '../../../reducers';
-import { NewValueAction, newDecimalValueAsync } from '../../../actions/newValue';
 import SafeInputField from '@helsenorge/toolkit/components/atoms/safe-input-field';
 import layoutChange from '@helsenorge/core-utils/hoc/layoutChange';
 import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
 import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
+
+import { GlobalState } from '../../../reducers';
+import { NewValueAction, newDecimalValueAsync } from '../../../actions/newValue';
 import { Path } from '../../../util/skjemautfyller-core';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
-import { QuestionnaireItem, QuestionnaireResponseAnswer } from '../../../types/fhir';
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from '../../../types/fhir';
 import { Resources } from '../../../util/resources';
 import { isReadOnly, isRequired, getId, renderPrefix, getText, getDecimalPattern } from '../../../util/index';
 import { getValidationTextExtension, getPlaceholder, getMaxValueExtensionValue, getMinValueExtensionValue } from '../../../util/extension';
@@ -19,7 +20,7 @@ import TextView from '../textview';
 export interface Props {
   item: QuestionnaireItem;
   responseItem: QuestionnaireItem;
-  answer: QuestionnaireResponseAnswer;
+  answer: QuestionnaireResponseItemAnswer;
   resources?: Resources;
   dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
   path: Array<Path>;
@@ -32,7 +33,7 @@ export interface Props {
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
   isHelpOpen?: boolean;
-  onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseAnswer) => void;
+  onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
 }
 
@@ -64,7 +65,7 @@ class Decimal extends React.Component<Props & ValidationProps, {}> {
     const value = parseFloat((event.target as HTMLInputElement).value);
     if (dispatch) {
       dispatch(newDecimalValueAsync(path, value, item))?.then(newState =>
-        onAnswerChange(newState, path, item, { valueDecimal: value } as QuestionnaireResponseAnswer)
+        onAnswerChange(newState, path, item, { valueDecimal: value } as QuestionnaireResponseItemAnswer)
       );
     }
 

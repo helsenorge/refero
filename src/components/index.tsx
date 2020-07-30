@@ -1,15 +1,17 @@
 import * as React from 'react';
 import { connect, Store } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
+import Form from '@helsenorge/toolkit/components/molecules/form';
+import { UploadedFile } from '@helsenorge/toolkit/components/atoms/dropzone';
+import { ValidationSummaryPlacement } from '@helsenorge/toolkit/components/molecules/form/validationSummaryPlacement';
+
 import { NewValueAction, newQuantityValue } from '../actions/newValue';
 import { Resources } from '../util/resources';
 import { GlobalState } from '../reducers';
 import { getFormDefinition, getFormData, getInitialFormData } from '../reducers/form';
-
 import { getComponentForItem, shouldRenderRepeatButton, isHiddenItem } from '../util/index';
 import { ScoringCalculator } from '../util/scoringCalculator';
 import ExtensionConstants from '../constants/extensions';
-import Form from '@helsenorge/toolkit/components/molecules/form';
 import {
   getRootQuestionnaireResponseItemFromData,
   Path,
@@ -26,20 +28,15 @@ import {
   QuestionnaireResponse,
   Attachment,
   QuestionnaireItem,
-  QuestionnaireResponseAnswer,
+  QuestionnaireResponseItemAnswer,
   Quantity,
-  decimal,
 } from '../types/fhir';
 import Constants from '../constants/index';
 import { FormDefinition, FormData } from '../reducers/form';
 import RepeatButton from '../components/formcomponents/repeat/repeat-button';
-
 import { IE11HackToWorkAroundBug187484 } from '../util/hacks';
-import 'redux-thunk';
-import { UploadedFile } from '@helsenorge/toolkit/components/atoms/dropzone';
 import { setSkjemaDefinition } from '../actions/form';
 import { TextMessage } from '../types/text-message';
-import { ValidationSummaryPlacement } from '@helsenorge/toolkit/components/molecules/form/validationSummaryPlacement';
 import { getQuestionnaireUnitExtensionValue, getExtension, getPresentationButtonsExtension } from '../util/extension';
 import { ActionRequester, IActionRequester } from '../util/actionRequester';
 import { RenderContext } from '../util/renderContext';
@@ -109,7 +106,7 @@ interface Props {
   ) => JSX.Element;
   onChange?: (
     item: QuestionnaireItem,
-    answer: QuestionnaireResponseAnswer,
+    answer: QuestionnaireResponseItemAnswer,
     actionRequester: IActionRequester,
     questionnaireInspector: IQuestionnaireInspector
   ) => void;
@@ -163,7 +160,7 @@ class Skjemautfyller extends React.Component<StateProps & DispatchProps & Props,
     }
   }
 
-  onAnswerChange = (newState: GlobalState, _path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseAnswer) => {
+  onAnswerChange = (newState: GlobalState, _path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => {
     if (this.props.onChange) {
       const actionRequester = new ActionRequester(
         newState.skjemautfyller.form.FormDefinition.Content!,
@@ -224,7 +221,7 @@ class Skjemautfyller extends React.Component<StateProps & DispatchProps & Props,
           value = Number(value?.toFixed(places));
         }
 
-        quantity.value = (value as unknown) as decimal;
+        quantity.value = value;
       }
 
       for (let itemAndPath of itemsAndPaths) {

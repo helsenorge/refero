@@ -1,21 +1,16 @@
-import '../../util/defineFetch';
 import * as React from 'react';
-import rootReducer from '../../reducers';
 import { createStore } from 'redux';
-import { ReactWrapper, mount } from 'enzyme';
 import { Provider, Store } from 'react-redux';
-import {
-  QuestionnaireItem,
-  QuestionnaireResponseAnswer,
-  Extension,
-  QuestionnaireItemTypeList,
-  QuestionnaireResponseItem,
-} from '../../types/fhir';
+import { ThunkDispatch } from 'redux-thunk';
+import { ReactWrapper, mount } from 'enzyme';
+
+import '../../util/defineFetch';
+import rootReducer from '../../reducers';
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer, Extension, QuestionnaireResponseItem } from '../../types/fhir';
 import { Path } from '../../util/skjemautfyller-core';
 import { Group } from '../formcomponents/group/group';
 import StringComponent from '../../components/formcomponents/string/string';
 import Extensions from '../../constants/extensions';
-import { ThunkDispatch } from 'redux-thunk';
 import { GlobalState } from '../../reducers/index';
 import { NewValueAction } from '../../actions/newValue';
 import { RenderContextType } from '../../constants/renderContextType';
@@ -87,13 +82,13 @@ function expectToFindClasses(wrapper: ReactWrapper<{}, {}>, ...classes: string[]
   }
 }
 
-function createItemControlExtension(code: string) {
+function createItemControlExtension(code: string): Extension {
   return {
     url: Extensions.ITEMCONTROL_URL,
     valueCodeableConcept: {
       coding: [
         {
-          system: { value: 'http://hl7.org/fhir/ValueSet/questionnaire-item-control' },
+          system: 'http://hl7.org/fhir/ValueSet/questionnaire-item-control',
           code: code,
         },
       ],
@@ -107,7 +102,7 @@ function createWrapperForGroupItem(item: QuestionnaireItem): ReactWrapper<{}, {}
     <Provider store={store}>
       <Group
         dispatch={() => (undefined as unknown) as ThunkDispatch<GlobalState, void, NewValueAction>}
-        answer={{} as QuestionnaireResponseAnswer}
+        answer={{} as QuestionnaireResponseItemAnswer}
         item={item}
         path={{} as Path[]}
         renderDeleteButton={() => undefined}
@@ -128,7 +123,7 @@ function createWrapperForStringItem(item: QuestionnaireItem): ReactWrapper<{}, {
     <Provider store={store}>
       <StringComponent
         dispatch={() => (undefined as unknown) as ThunkDispatch<GlobalState, void, NewValueAction>}
-        answer={{} as QuestionnaireResponseAnswer}
+        answer={{} as QuestionnaireResponseItemAnswer}
         item={item}
         path={{} as Path[]}
         renderDeleteButton={() => undefined}
@@ -142,7 +137,7 @@ function createWrapperForStringItem(item: QuestionnaireItem): ReactWrapper<{}, {
   );
 }
 
-function createItemWithExtensions(itemType: QuestionnaireItemTypeList, ...extensions: Extension[]): QuestionnaireItem {
+function createItemWithExtensions(itemType: string, ...extensions: Extension[]): QuestionnaireItem {
   return {
     linkId: '1',
     type: itemType,

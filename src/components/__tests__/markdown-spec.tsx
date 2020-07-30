@@ -1,10 +1,11 @@
-import '../../util/defineFetch';
 import * as React from 'react';
-import rootReducer from '../../reducers';
 import { createStore, applyMiddleware } from 'redux';
-import { mount } from 'enzyme';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
+import { mount } from 'enzyme';
+
+import '../../util/defineFetch';
+import rootReducer from '../../reducers';
 import { Questionnaire, QuestionnaireItem } from '../../types/fhir';
 import { SkjemautfyllerContainer } from '..';
 import { Resources } from '../../util/resources';

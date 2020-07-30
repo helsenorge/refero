@@ -1,9 +1,10 @@
-import '../../../../util/defineFetch';
 import * as React from 'react';
 import { shallow } from 'enzyme';
-import { Group } from '../group';
-import { QuestionnaireItem, QuestionnaireResponseAnswer, QuestionnaireResponseItem } from '../../../../types/fhir';
 import CustomTag from '@helsenorge/core-utils/custom-tag';
+
+import '../../../../util/defineFetch';
+import { Group } from '../group';
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem } from '../../../../types/fhir';
 import { RenderContextType } from '../../../../constants/renderContextType';
 import { RenderContext } from '../../../../util/renderContext';
 
@@ -16,7 +17,7 @@ describe('group', () => {
       type: 'group',
       text: 'Overskrift',
     };
-    const answer: QuestionnaireResponseAnswer = {} as QuestionnaireResponseAnswer;
+    const answer: QuestionnaireResponseItemAnswer = {} as QuestionnaireResponseItemAnswer;
     const group = shallow(
       <Group
         item={item}

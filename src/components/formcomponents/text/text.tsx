@@ -1,15 +1,16 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
-import { GlobalState } from '../../../reducers';
-import { NewValueAction, newStringValueAsync } from '../../../actions/newValue';
 import { debounce } from '@helsenorge/core-utils/debounce';
 import { SafeTextarea } from '@helsenorge/toolkit/components/atoms/safe-textarea';
 import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
 import { ExpandableSection } from '@helsenorge/toolkit/components/molecules/expandable-section';
 import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
+
 import Constants from '../../../constants/index';
 import { Path } from '../../../util/skjemautfyller-core';
+import { GlobalState } from '../../../reducers';
+import { NewValueAction, newStringValueAsync } from '../../../actions/newValue';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import {
   isReadOnly,
@@ -24,7 +25,7 @@ import {
   getTextValidationErrorMessage,
 } from '../../../util/index';
 import { getPlaceholder, getMinLengthExtensionValue, getItemControlExtensionValue, getRegexExtension } from '../../../util/extension';
-import { QuestionnaireItem, QuestionnaireResponseAnswer, QuestionnaireResponseItem } from '../../../types/fhir';
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem } from '../../../types/fhir';
 import withCommonFunctions from '../../with-common-functions';
 import TextView from '../textview';
 import { Resources } from '../../../util/resources';
@@ -33,7 +34,7 @@ import itemControlConstants from '../../../constants/itemcontrol';
 export interface Props {
   item: QuestionnaireItem;
   responseItem: QuestionnaireResponseItem;
-  answer: QuestionnaireResponseAnswer;
+  answer: QuestionnaireResponseItemAnswer;
   dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
   path: Array<Path>;
   pdf?: boolean;
@@ -45,7 +46,7 @@ export interface Props {
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
   resources?: Resources;
-  onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseAnswer) => void;
+  onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
   isHelpOpen?: boolean;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
 }
@@ -62,7 +63,7 @@ export class Text extends React.Component<Props & ValidationProps, {}> {
     const value = (event.target as HTMLInputElement).value;
     if (dispatch) {
       dispatch(newStringValueAsync(this.props.path, value, this.props.item))?.then(newState =>
-        onAnswerChange(newState, path, item, { valueString: value } as QuestionnaireResponseAnswer)
+        onAnswerChange(newState, path, item, { valueString: value } as QuestionnaireResponseItemAnswer)
       );
     }
 

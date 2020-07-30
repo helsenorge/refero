@@ -1,19 +1,18 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
-import { GlobalState } from '../../../reducers';
-import { NewValueAction, newAttachmentAsync, removeAttachmentAsync } from '../../../actions/newValue';
-
-import withCommonFunctions from '../../with-common-functions';
-import AttachmentHtml from './attachmenthtml';
 import { UploadedFile } from '@helsenorge/toolkit/components/atoms/dropzone';
 import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
 
+import { GlobalState } from '../../../reducers';
+import { NewValueAction, newAttachmentAsync, removeAttachmentAsync } from '../../../actions/newValue';
+import withCommonFunctions from '../../with-common-functions';
+import AttachmentHtml from './attachmenthtml';
 import { Path } from '../../../util/skjemautfyller-core';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { isRequired, getId, renderPrefix, getText, isReadOnly, isRepeat } from '../../../util/index';
 import { getValidationTextExtension, getMaxOccursExtensionValue, getMinOccursExtensionValue } from '../../../util/extension';
-import { QuestionnaireItem, QuestionnaireResponseAnswer, Attachment, QuestionnaireResponseItem } from '../../../types/fhir';
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer, Attachment, QuestionnaireResponseItem } from '../../../types/fhir';
 import { Resources } from '../../../util/resources';
 import TextView from '../textview';
 import { TextMessage } from '../../../types/text-message';
@@ -23,7 +22,7 @@ export interface Props {
   path: Array<Path>;
   item: QuestionnaireItem;
   responseItem: QuestionnaireResponseItem;
-  answer: Array<QuestionnaireResponseAnswer> | QuestionnaireResponseAnswer;
+  answer: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer;
   pdf?: boolean;
   id?: string;
   resources?: Resources;
@@ -42,7 +41,7 @@ export interface Props {
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
   isHelpOpen?: boolean;
-  onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseAnswer) => void;
+  onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
 }
 
@@ -55,7 +54,7 @@ class AttachmentComponent extends React.Component<Props & ValidationProps> {
           if (this.props.dispatch && attachment) {
             this.props
               .dispatch(newAttachmentAsync(this.props.path, attachment, this.props.item, isRepeat(this.props.item)))
-              ?.then(newState => onAnswerChange(newState, path, item, { valueAttachment: attachment } as QuestionnaireResponseAnswer));
+              ?.then(newState => onAnswerChange(newState, path, item, { valueAttachment: attachment } as QuestionnaireResponseItemAnswer));
           }
 
           cb(true, null, uploadedFile);
@@ -79,7 +78,7 @@ class AttachmentComponent extends React.Component<Props & ValidationProps> {
           const attachment = { url: fileId } as Attachment;
           this.props
             .dispatch(removeAttachmentAsync(this.props.path, attachment, this.props.item))
-            ?.then(newState => onAnswerChange(newState, path, item, { valueAttachment: attachment } as QuestionnaireResponseAnswer));
+            ?.then(newState => onAnswerChange(newState, path, item, { valueAttachment: attachment } as QuestionnaireResponseItemAnswer));
         }
 
         cb(true, null);

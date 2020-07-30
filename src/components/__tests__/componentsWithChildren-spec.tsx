@@ -1,12 +1,13 @@
-import '../../util/defineFetch';
-import { mount } from 'enzyme';
-import rootReducer from '../../reducers';
+import * as React from 'react';
 import { createStore } from 'redux';
 import { Store, Provider } from 'react-redux';
+import { mount } from 'enzyme';
+
+import '../../util/defineFetch';
+import rootReducer from '../../reducers';
 import { SkjemautfyllerContainer } from '../../components';
-import * as React from 'react';
 import { Resources } from '../../util/resources';
-import { Questionnaire, QuestionnaireItem, QuestionnaireItemTypeList, Extension, Coding, uri, Reference } from '../../types/fhir';
+import { Questionnaire, QuestionnaireItem, Extension, Coding, Reference } from '../../types/fhir';
 import Choice from '../formcomponents/choice/choice';
 import Boolean from '../formcomponents/boolean/boolean';
 import Decimal from '../formcomponents/decimal/decimal';
@@ -191,11 +192,11 @@ function createItemControlExtension(code: string): Extension {
 function createItemControlCoding(code: string): Coding {
   return {
     code: code,
-    system: { value: 'http://hl7.org/fhir/ValueSet/questionnaire-item-control' } as uri,
+    system: 'http://hl7.org/fhir/ValueSet/questionnaire-item-control',
   } as Coding;
 }
 
-function creatNestedItem(type: QuestionnaireItemTypeList, ...withExtensions: Extension[]): QuestionnaireItem {
+function creatNestedItem(type: string, ...withExtensions: Extension[]): QuestionnaireItem {
   return createItem(
     type,
     '1',
@@ -205,7 +206,7 @@ function creatNestedItem(type: QuestionnaireItemTypeList, ...withExtensions: Ext
   );
 }
 
-function createNestedChoiceItem(type: QuestionnaireItemTypeList, ...withExtensions: Extension[]): QuestionnaireItem {
+function createNestedChoiceItem(type: string, ...withExtensions: Extension[]): QuestionnaireItem {
   const reference = { reference: '#8459' } as Reference;
   return createItem(
     type,
@@ -225,7 +226,7 @@ function createQuestionnaire(...items: QuestionnaireItem[]): Questionnaire {
 }
 
 function createItem(
-  type: QuestionnaireItemTypeList,
+  type: string,
   text: string,
   extensions: Extension[],
   options: Reference | undefined,

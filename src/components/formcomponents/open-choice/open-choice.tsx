@@ -1,6 +1,9 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
+import { Options } from '@helsenorge/toolkit/components/atoms/radio-group';
+import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
+
 import { GlobalState } from '../../../reducers';
 import {
   NewValueAction,
@@ -24,10 +27,8 @@ import {
   getIndexOfAnswer,
   getItemControlValue,
 } from '../../../util/choice';
-import { QuestionnaireItem, QuestionnaireResponseAnswer, Resource, Coding, QuestionnaireResponseItem } from '../../../types/fhir';
-import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer, Resource, Coding, QuestionnaireResponseItem } from '../../../types/fhir';
 import ItemControlConstants from '../../../constants/itemcontrol';
-import { Options } from '@helsenorge/toolkit/components/atoms/radio-group';
 import { Resources } from '../../../util/resources';
 import withCommonFunctions from '../../with-common-functions';
 import CheckboxView from './checkbox-view';
@@ -36,9 +37,10 @@ import DropdownView from './dropdown-view';
 import { OPEN_CHOICE_ID } from '../../../constants';
 import { isReadOnly } from '../../../util';
 import TextView from '../textview';
+
 export interface Props {
   item: QuestionnaireItem;
-  answer: QuestionnaireResponseAnswer;
+  answer: QuestionnaireResponseItemAnswer;
   path: Array<Path>;
   id?: string;
   pdf?: boolean;
@@ -53,12 +55,12 @@ export interface Props {
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
   isHelpOpen?: boolean;
-  onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseAnswer) => void;
+  onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
 }
 
 class OpenChoice extends React.Component<Props & ValidationProps> {
-  getPDFValue = (item: QuestionnaireItem, answer: Array<QuestionnaireResponseAnswer> | QuestionnaireResponseAnswer): string => {
+  getPDFValue = (item: QuestionnaireItem, answer: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer): string => {
     const { resources, containedResources } = this.props;
 
     const value = this.getValue(item, answer);
@@ -79,7 +81,7 @@ class OpenChoice extends React.Component<Props & ValidationProps> {
     return displayValues.join(', ');
   };
 
-  getOpenValue = (answer: Array<QuestionnaireResponseAnswer> | QuestionnaireResponseAnswer): string | undefined => {
+  getOpenValue = (answer: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer): string | undefined => {
     if (Array.isArray(answer)) {
       for (let i = 0; i < answer.length; i++) {
         const el = answer[i];
@@ -94,10 +96,10 @@ class OpenChoice extends React.Component<Props & ValidationProps> {
 
   getValue = (
     item: QuestionnaireItem,
-    answer: Array<QuestionnaireResponseAnswer> | QuestionnaireResponseAnswer
+    answer: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer
   ): (string | undefined)[] | undefined => {
     if (answer && Array.isArray(answer)) {
-      return answer.map((el: QuestionnaireResponseAnswer) => {
+      return answer.map((el: QuestionnaireResponseItemAnswer) => {
         if (el) {
           if (el.valueCoding && el.valueCoding.code) {
             return el.valueCoding.code;
@@ -119,11 +121,11 @@ class OpenChoice extends React.Component<Props & ValidationProps> {
     if (dispatch) {
       if (value.length > 0) {
         dispatch(newCodingStringValueAsync(this.props.path, value, this.props.item))?.then(newState =>
-          onAnswerChange(newState, path, item, { valueString: value } as QuestionnaireResponseAnswer)
+          onAnswerChange(newState, path, item, { valueString: value } as QuestionnaireResponseItemAnswer)
         );
       } else {
         dispatch(removeCodingStringValueAsync(this.props.path, this.props.item))?.then(newState =>
-          onAnswerChange(newState, path, item, { valueString: '' } as QuestionnaireResponseAnswer)
+          onAnswerChange(newState, path, item, { valueString: '' } as QuestionnaireResponseItemAnswer)
         );
       }
     }
@@ -139,7 +141,7 @@ class OpenChoice extends React.Component<Props & ValidationProps> {
       const display = getDisplay(getOptions(item, this.props.containedResources), code);
       const system = getSystem(item, this.props.containedResources);
       const coding = { code, display, system } as Coding;
-      const responseAnswer = { valueCoding: coding } as QuestionnaireResponseAnswer;
+      const responseAnswer = { valueCoding: coding } as QuestionnaireResponseItemAnswer;
       if (getIndexOfAnswer(code, answer) > -1) {
         dispatch(removeCodingValueAsync(this.props.path, coding, item))?.then(newState =>
           onAnswerChange(newState, path, item, responseAnswer)
@@ -167,7 +169,7 @@ class OpenChoice extends React.Component<Props & ValidationProps> {
       const display = getDisplay(getOptions(item, this.props.containedResources), code);
       const system = getSystem(item, this.props.containedResources);
       const coding = { code, display, system } as Coding;
-      const responseAnswer = { valueCoding: coding } as QuestionnaireResponseAnswer;
+      const responseAnswer = { valueCoding: coding } as QuestionnaireResponseItemAnswer;
       dispatch(newCodingValueAsync(this.props.path, coding, item))?.then(newState => onAnswerChange(newState, path, item, responseAnswer));
       if (promptLoginMessage) {
         promptLoginMessage();
@@ -192,7 +194,7 @@ class OpenChoice extends React.Component<Props & ValidationProps> {
     if (dispatch) {
       if (coding.code !== OPEN_CHOICE_ID) {
         dispatch(removeCodingStringValueAsync(path, item))?.then(newState =>
-          onAnswerChange(newState, path, item, { valueString: '' } as QuestionnaireResponseAnswer)
+          onAnswerChange(newState, path, item, { valueString: '' } as QuestionnaireResponseItemAnswer)
         );
       }
     }
@@ -206,7 +208,7 @@ class OpenChoice extends React.Component<Props & ValidationProps> {
 
       if (isShown && coding.code === OPEN_CHOICE_ID) {
         dispatch(removeCodingStringValueAsync(path, item))?.then(newState =>
-          onAnswerChange(newState, path, item, { valueString: '' } as QuestionnaireResponseAnswer)
+          onAnswerChange(newState, path, item, { valueString: '' } as QuestionnaireResponseItemAnswer)
         );
       }
     }
@@ -218,7 +220,7 @@ class OpenChoice extends React.Component<Props & ValidationProps> {
     let a = answer;
     if (Array.isArray(answer)) {
       for (let i = 0; i < answer.length; i++) {
-        const el = answer[i] as QuestionnaireResponseAnswer;
+        const el = answer[i] as QuestionnaireResponseItemAnswer;
         if (el.valueString) {
           a = el;
           break;

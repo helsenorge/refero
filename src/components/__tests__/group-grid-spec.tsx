@@ -1,14 +1,15 @@
-import '../../util/defineFetch';
 import * as React from 'react';
-import rootReducer from '../../reducers';
 import { createStore, applyMiddleware } from 'redux';
-import { mount, ReactWrapper } from 'enzyme';
 import { Provider } from 'react-redux';
+import thunk from 'redux-thunk';
+import { mount, ReactWrapper } from 'enzyme';
+
+import '../../util/defineFetch';
+import rootReducer from '../../reducers';
 import { Questionnaire } from '../../types/fhir';
 import Decimal from '../formcomponents/decimal/decimal';
 import { SkjemautfyllerContainer } from '..';
 import { Resources } from '../../util/resources';
-import thunk from 'redux-thunk';
 import GroupGridModel from './__data__/group-grid';
 
 describe('Group-grid component renders correctly', () => {

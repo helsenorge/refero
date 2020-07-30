@@ -1,10 +1,10 @@
 import * as React from 'react';
-import constants, { VALID_FILE_TYPES } from '../../../constants';
-import { Resources } from '../../../util/resources';
 import Dropzone from '@helsenorge/toolkit/components/atoms/dropzone';
 import Validation, { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
 import { sizeIsValid, mimeTypeIsValid } from '@helsenorge/toolkit/components/atoms/dropzone/validation';
 import { UploadedFile } from '@helsenorge/toolkit/components/atoms/dropzone';
+import constants, { VALID_FILE_TYPES } from '../../../constants';
+import { Resources } from '../../../util/resources';
 import { TextMessage } from '../../../types/text-message';
 import { QuestionnaireItem } from '../../../types/fhir';
 import { getValidationTextExtension } from '../../../util/extension';

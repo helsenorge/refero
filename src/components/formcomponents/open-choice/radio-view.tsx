@@ -1,11 +1,11 @@
 import * as React from 'react';
-import { RadioGroup, Options } from '@helsenorge/toolkit/components/atoms/radio-group';
-import { isRequired, getId, renderPrefix, getText } from '../../../util/index';
 import { Collapse } from 'react-collapse';
+import { RadioGroup, Options } from '@helsenorge/toolkit/components/atoms/radio-group';
 import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
+
+import { isRequired, getId, renderPrefix, getText } from '../../../util/index';
 import { Resources } from '../../../util/resources';
-import { QuestionnaireItem } from '../../../types/fhir';
-import { QuestionnaireResponseAnswer } from '../../../types/fhir';
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from '../../../types/fhir';
 import { shouldShowExtraChoice } from '../../../util/choice';
 
 interface Props {
@@ -20,7 +20,7 @@ interface Props {
   renderDeleteButton: (className: string) => JSX.Element | undefined;
   renderOpenField: () => JSX.Element | undefined;
   repeatButton: JSX.Element;
-  answer: Array<QuestionnaireResponseAnswer> | QuestionnaireResponseAnswer;
+  answer: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer;
 
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;

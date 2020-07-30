@@ -1,4 +1,4 @@
-import { QuestionnaireResponseItem, QuestionnaireEnableWhen } from '../types/fhir';
+import { QuestionnaireResponseItem, QuestionnaireItemEnableWhen } from '../types/fhir';
 import { GlobalState } from '../reducers/index';
 import { getFormData } from '../reducers/form';
 import { Props } from '../components/with-common-functions';
@@ -21,9 +21,9 @@ export function mapStateToProps(state: GlobalState, originalProps: Props): Props
   return { ...originalProps, enable } as Props;
 }
 
-function isEnableWhenEnabled(enableWhen: QuestionnaireEnableWhen[], path: Path[], state: GlobalState): boolean {
+function isEnableWhenEnabled(enableWhen: QuestionnaireItemEnableWhen[], path: Path[], state: GlobalState): boolean {
   let enable = false;
-  enableWhen.forEach((enableWhen: QuestionnaireEnableWhen) => {
+  enableWhen.forEach((enableWhen: QuestionnaireItemEnableWhen) => {
     const responseItems = getResponseItems(getFormData(state));
     const enableWhenQuestion = enableWhen.question;
     for (let i = 0; responseItems && i < responseItems.length; i++) {

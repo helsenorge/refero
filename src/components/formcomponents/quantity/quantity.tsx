@@ -1,11 +1,12 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
-import { GlobalState } from '../../../reducers';
-import { NewValueAction, newQuantityValueAsync } from '../../../actions/newValue';
 import SafeInputField from '@helsenorge/toolkit/components/atoms/safe-input-field';
 import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
 import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
+
+import { GlobalState } from '../../../reducers';
+import { NewValueAction, newQuantityValueAsync } from '../../../actions/newValue';
 import { Path } from '../../../util/skjemautfyller-core';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import withCommonFunctions from '../../with-common-functions';
@@ -17,20 +18,19 @@ import {
   getMinValueExtensionValue,
   getQuestionnaireUnitExtensionValue,
 } from '../../../util/extension';
-
 import {
   QuestionnaireItem,
-  QuestionnaireResponseAnswer,
+  QuestionnaireResponseItemAnswer,
   Quantity as QuantityType,
-  decimal,
   QuestionnaireResponseItem,
 } from '../../../types/fhir';
 import { Resources } from '../../../util/resources';
 import TextView from '../textview';
+
 export interface Props {
   item: QuestionnaireItem;
   responseItem: QuestionnaireResponseItem;
-  answer: QuestionnaireResponseAnswer;
+  answer: QuestionnaireResponseItemAnswer;
   resources?: Resources;
   dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
   path: Array<Path>;
@@ -41,7 +41,7 @@ export interface Props {
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
   isHelpOpen?: boolean;
-  onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseAnswer) => void;
+  onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
 }
 
@@ -77,12 +77,12 @@ class Quantity extends React.Component<Props & ValidationProps, {}> {
 
       const value = Number(parseFloat((event.target as HTMLInputElement).value));
       if (value != null && !isNaN(value) && isFinite(value)) {
-        quantity.value = (value as unknown) as decimal;
+        quantity.value = value;
       }
 
       if (dispatch) {
         dispatch(newQuantityValueAsync(this.props.path, quantity, this.props.item))?.then(newState =>
-          onAnswerChange(newState, path, item, { valueQuantity: quantity } as QuestionnaireResponseAnswer)
+          onAnswerChange(newState, path, item, { valueQuantity: quantity } as QuestionnaireResponseItemAnswer)
         );
       }
 

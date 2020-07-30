@@ -1,12 +1,13 @@
-import '../../util/defineFetch';
-import DataModel from './__data__/common/';
-import { Questionnaire, Extension, uri } from '../../types/fhir';
 import * as React from 'react';
-import rootReducer from '../../reducers';
-import { createStore, applyMiddleware } from 'redux';
-import { mount } from 'enzyme';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
+import { mount } from 'enzyme';
+
+import '../../util/defineFetch';
+import DataModel from './__data__/common/';
+import { Questionnaire, Extension } from '../../types/fhir';
+import rootReducer from '../../reducers';
+import { createStore, applyMiddleware } from 'redux';
 import { Resources } from '../../util/resources';
 import { SkjemautfyllerContainer } from '..';
 import ExtensionConstants from '../../constants/extensions';
@@ -159,7 +160,7 @@ function setPresentationButtons(q: Questionnaire, presenttationType: Presentatio
   const extension = {
     url: ExtensionConstants.PRESENTATION_BUTTONS,
     valueCoding: {
-      system: ('http://helsenorge.no/fhir/ValueSet/presentationbuttons' as any) as uri,
+      system: 'http://helsenorge.no/fhir/ValueSet/presentationbuttons',
       code: presenttationType.toLowerCase(),
       display: presenttationType,
     },

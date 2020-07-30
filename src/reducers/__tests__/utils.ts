@@ -9,6 +9,7 @@ import {
   QuestionnaireResponse,
   Quantity,
   Attachment,
+  code,
   decimal,
   uri,
 } from '../../types/fhir';
@@ -31,7 +32,6 @@ import {
   removeCodingStringValue,
 } from '../../actions/newValue';
 import { GlobalState } from '..';
-import { code } from '../../types/fhir';
 
 export function pathify(...linkIds: string[]): Path[] {
   return linkIds.map(id => ({ linkId: id.split('^')[0], ...(id.includes('^') && { index: Number(id.split('^')[1]) }) } as Path));

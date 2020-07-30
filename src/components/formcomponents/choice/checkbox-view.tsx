@@ -1,11 +1,11 @@
 import * as React from 'react';
+import { Collapse } from 'react-collapse';
 import { Options } from '@helsenorge/toolkit/components/atoms/radio-group';
 import CheckBoxGroup from '@helsenorge/toolkit/components/atoms/checkbox-group';
-import { renderPrefix, getText, isRequired, getId } from '../../../util/index';
-import { Collapse } from 'react-collapse';
 import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
-import { Resources } from '../../../util/resources';
 
+import { renderPrefix, getText, isRequired, getId } from '../../../util/index';
+import { Resources } from '../../../util/resources';
 import { QuestionnaireItem } from '../../../types/fhir';
 import { getMaxOccursExtensionValue, getMinOccursExtensionValue, getValidationTextExtension } from '../../../util/extension';
 

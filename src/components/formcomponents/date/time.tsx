@@ -1,11 +1,13 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
+import { ThunkDispatch } from 'redux-thunk';
 import moment from 'moment';
 import { parseDate, getHoursFromTimeString, getMinutesFromTimeString } from '@helsenorge/toolkit/components/molecules/time-input/date-core';
 import TimeInput from '@helsenorge/toolkit/components/molecules/time-input';
 import DateTimeConstants from '@helsenorge/toolkit/constants/datetime';
 import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
 import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
+
 import withCommonFunctions from '../../with-common-functions';
 import ExtensionConstants from '../../../constants/extensions';
 import { Path } from '../../../util/skjemautfyller-core';
@@ -13,15 +15,14 @@ import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/m
 import { NewValueAction, newTimeValueAsync } from '../../../actions/newValue';
 import { getExtension, getValidationTextExtension } from '../../../util/extension';
 import { isReadOnly, isRequired, getId, renderPrefix, getText } from '../../../util/index';
-import { QuestionnaireItem, QuestionnaireResponseAnswer, QuestionnaireResponseItem } from '../../../types/fhir';
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem } from '../../../types/fhir';
 import { Resources } from '../../../util/resources';
 import TextView from '../textview';
-import { ThunkDispatch } from 'redux-thunk';
 import { GlobalState } from '../../../reducers';
 
 export interface Props {
   value?: string;
-  answer: QuestionnaireResponseAnswer;
+  answer: QuestionnaireResponseItemAnswer;
   item: QuestionnaireItem;
   responseItem: QuestionnaireResponseItem;
   resources?: Resources;
@@ -39,7 +40,7 @@ export interface Props {
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
   isHelpOpen?: boolean;
-  onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseAnswer) => void;
+  onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
 }
 
@@ -145,7 +146,7 @@ class Time extends React.Component<Props & ValidationProps> {
     const { dispatch, item, path, onAnswerChange } = this.props;
     if (dispatch) {
       dispatch(newTimeValueAsync(path, newTime, item))?.then(newState =>
-        onAnswerChange(newState, path, item, { valueTime: newTime } as QuestionnaireResponseAnswer)
+        onAnswerChange(newState, path, item, { valueTime: newTime } as QuestionnaireResponseItemAnswer)
       );
     }
   }

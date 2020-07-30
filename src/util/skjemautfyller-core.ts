@@ -1,8 +1,8 @@
 import {
   QuestionnaireResponseItem,
-  QuestionnaireResponseAnswer,
+  QuestionnaireResponseItemAnswer,
   QuestionnaireItem,
-  QuestionnaireEnableWhen,
+  QuestionnaireItemEnableWhen,
   QuestionnaireResponse,
 } from '../types/fhir';
 
@@ -91,10 +91,10 @@ export function getQuestionnaireResponseItemsWithLinkId(
     return itemsWithLinkId;
   }
 
-  function collectAnswerItems(items: Array<QuestionnaireResponseItem>): Array<QuestionnaireResponseAnswer> {
+  function collectAnswerItems(items: Array<QuestionnaireResponseItem>): Array<QuestionnaireResponseItemAnswer> {
     if (items.length === 0) return [];
 
-    let answers: Array<QuestionnaireResponseAnswer> = [];
+    let answers: Array<QuestionnaireResponseItemAnswer> = [];
     answers = answers.concat(...items.map(i => i.answer || []));
 
     let subItems: Array<QuestionnaireResponseItem> = [];
@@ -133,7 +133,7 @@ export function getArrayContainingResponseItemFromItems(
 
 function getArrayContainingResponseItemFromAnswers(
   linkId: string,
-  answers: Array<QuestionnaireResponseAnswer>
+  answers: Array<QuestionnaireResponseItemAnswer>
 ): Array<QuestionnaireResponseItem> | undefined {
   for (const answer of answers) {
     if (answer.item) {
@@ -237,7 +237,7 @@ export function getItemWithTypeFromArray(
   return filteredItems;
 }
 
-function enableWhenMatchesBooleanAnswer(enableWhen: QuestionnaireEnableWhen, answer: QuestionnaireResponseAnswer): boolean {
+function enableWhenMatchesBooleanAnswer(enableWhen: QuestionnaireItemEnableWhen, answer: QuestionnaireResponseItemAnswer): boolean {
   if (enableWhen.answerBoolean === undefined) {
     return false;
   }
@@ -247,7 +247,7 @@ function enableWhenMatchesBooleanAnswer(enableWhen: QuestionnaireEnableWhen, ans
   return enableWhen.answerBoolean === answer.valueBoolean;
 }
 
-function enableWhenMatchesDecimalAnswer(enableWhen: QuestionnaireEnableWhen, answer: QuestionnaireResponseAnswer): boolean {
+function enableWhenMatchesDecimalAnswer(enableWhen: QuestionnaireItemEnableWhen, answer: QuestionnaireResponseItemAnswer): boolean {
   if (enableWhen.answerDecimal === undefined) {
     return false;
   }
@@ -257,7 +257,7 @@ function enableWhenMatchesDecimalAnswer(enableWhen: QuestionnaireEnableWhen, ans
   return enableWhen.answerDecimal === answer.valueDecimal;
 }
 
-function enableWhenMatchesIntegerAnswer(enableWhen: QuestionnaireEnableWhen, answer: QuestionnaireResponseAnswer): boolean {
+function enableWhenMatchesIntegerAnswer(enableWhen: QuestionnaireItemEnableWhen, answer: QuestionnaireResponseItemAnswer): boolean {
   if (enableWhen.answerInteger === undefined) {
     return false;
   }
@@ -267,7 +267,7 @@ function enableWhenMatchesIntegerAnswer(enableWhen: QuestionnaireEnableWhen, ans
   return enableWhen.answerInteger === answer.valueInteger;
 }
 
-function enableWhenMatchesDateAnswer(enableWhen: QuestionnaireEnableWhen, answer: QuestionnaireResponseAnswer): boolean {
+function enableWhenMatchesDateAnswer(enableWhen: QuestionnaireItemEnableWhen, answer: QuestionnaireResponseItemAnswer): boolean {
   if (enableWhen.answerDate === undefined) {
     return false;
   }
@@ -277,7 +277,7 @@ function enableWhenMatchesDateAnswer(enableWhen: QuestionnaireEnableWhen, answer
   return moment(parseDate(String(enableWhen.answerDate))).isSame(parseDate(String(answer.valueDate)));
 }
 
-function enableWhenMatchesDateTimeAnswer(enableWhen: QuestionnaireEnableWhen, answer: QuestionnaireResponseAnswer): boolean {
+function enableWhenMatchesDateTimeAnswer(enableWhen: QuestionnaireItemEnableWhen, answer: QuestionnaireResponseItemAnswer): boolean {
   if (enableWhen.answerDateTime === undefined) {
     return false;
   }
@@ -287,7 +287,7 @@ function enableWhenMatchesDateTimeAnswer(enableWhen: QuestionnaireEnableWhen, an
   return moment(parseDate(String(enableWhen.answerDateTime))).isSame(parseDate(String(answer.valueDateTime)));
 }
 
-function enableWhenMatchesTimeAnswer(enableWhen: QuestionnaireEnableWhen, answer: QuestionnaireResponseAnswer): boolean {
+function enableWhenMatchesTimeAnswer(enableWhen: QuestionnaireItemEnableWhen, answer: QuestionnaireResponseItemAnswer): boolean {
   if (enableWhen.answerTime === undefined) {
     return false;
   }
@@ -297,7 +297,7 @@ function enableWhenMatchesTimeAnswer(enableWhen: QuestionnaireEnableWhen, answer
   return enableWhen.answerTime === answer.valueTime;
 }
 
-function enableWhenMatchesStringAnswer(enableWhen: QuestionnaireEnableWhen, answer: QuestionnaireResponseAnswer): boolean {
+function enableWhenMatchesStringAnswer(enableWhen: QuestionnaireItemEnableWhen, answer: QuestionnaireResponseItemAnswer): boolean {
   if (enableWhen.answerString === undefined) {
     return false;
   }
@@ -307,7 +307,7 @@ function enableWhenMatchesStringAnswer(enableWhen: QuestionnaireEnableWhen, answ
   return enableWhen.answerString === answer.valueString;
 }
 
-function enableWhenMatchesCodeAnswer(enableWhen: QuestionnaireEnableWhen, answer: QuestionnaireResponseAnswer): boolean {
+function enableWhenMatchesCodeAnswer(enableWhen: QuestionnaireItemEnableWhen, answer: QuestionnaireResponseItemAnswer): boolean {
   if (enableWhen.answerCoding === undefined) {
     return false;
   }
@@ -317,7 +317,7 @@ function enableWhenMatchesCodeAnswer(enableWhen: QuestionnaireEnableWhen, answer
   return enableWhen.answerCoding.code === answer.valueCoding.code && enableWhen.answerCoding.system === answer.valueCoding.system;
 }
 
-function enableWhenMatchesQuantityAnswer(enableWhen: QuestionnaireEnableWhen, answer: QuestionnaireResponseAnswer): boolean {
+function enableWhenMatchesQuantityAnswer(enableWhen: QuestionnaireItemEnableWhen, answer: QuestionnaireResponseItemAnswer): boolean {
   if (enableWhen.answerQuantity === undefined) {
     return false;
   }
@@ -331,7 +331,7 @@ function enableWhenMatchesQuantityAnswer(enableWhen: QuestionnaireEnableWhen, an
   );
 }
 
-function enableWhenMatchesReferenceAnswer(enableWhen: QuestionnaireEnableWhen, answer: QuestionnaireResponseAnswer): boolean {
+function enableWhenMatchesReferenceAnswer(enableWhen: QuestionnaireItemEnableWhen, answer: QuestionnaireResponseItemAnswer): boolean {
   if (enableWhen.answerReference === undefined) {
     return false;
   }
@@ -346,7 +346,7 @@ function enableWhenMatchesReferenceAnswer(enableWhen: QuestionnaireEnableWhen, a
   return false;
 }
 
-export function hasAnswer(answer: QuestionnaireResponseAnswer): boolean {
+export function hasAnswer(answer: QuestionnaireResponseItemAnswer): boolean {
   if (!answer) {
     return false;
   }
@@ -383,13 +383,14 @@ export function hasAnswer(answer: QuestionnaireResponseAnswer): boolean {
 }
 
 export function enableWhenMatchesAnswer(
-  enableWhen: QuestionnaireEnableWhen,
-  answers: Array<QuestionnaireResponseAnswer> | undefined
+  enableWhen: QuestionnaireItemEnableWhen,
+  answers: Array<QuestionnaireResponseItemAnswer> | undefined
 ): boolean {
   if (!enableWhen) return false;
 
   answers = answers || [];
 
+  // TODO!
   // que-7: On Questionnaire.item.enableWhen: enableWhen must contain either a 'answer' or a 'hasAnswer' element (expression  on Questionnaire.item.enableWhen: hasAnswer.exists() xor answer.exists())
   if (enableWhen.hasAnswer === false) {
     return !answers.some(a => hasAnswer(a));
@@ -404,7 +405,7 @@ export function enableWhenMatchesAnswer(
   }
 
   let matches = false;
-  answers.forEach((answer: QuestionnaireResponseAnswer) => {
+  answers.forEach((answer: QuestionnaireResponseItemAnswer) => {
     if (enableWhen.answerBoolean !== undefined) {
       matches = matches || enableWhenMatchesBooleanAnswer(enableWhen, answer);
     }

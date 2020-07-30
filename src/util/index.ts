@@ -1,4 +1,5 @@
-import { QuestionnaireItemTypeList, QuestionnaireResponseItem } from '../types/fhir';
+import { QuestionnaireResponseItem, QuestionnaireItem, QuestionnaireResponseItemAnswer } from '../types/fhir';
+import ItemType from '../constants/itemType';
 import Group from '../components/formcomponents/group/group';
 import Choice from '../components/formcomponents/choice/choice';
 import Boolean from '../components/formcomponents/boolean/boolean';
@@ -14,7 +15,6 @@ import OpenChoice from '../components/formcomponents/open-choice/open-choice';
 import Attachment from '../components/formcomponents/attachment/attachment';
 import Quantity from '../components/formcomponents/quantity/quantity';
 import * as uuid from 'uuid';
-import { QuestionnaireItem, QuestionnaireResponseAnswer } from '../types/fhir';
 import Constants from '../constants/index';
 import ExtensionConstants from '../constants/extensions';
 import { Resources } from '../util/resources';
@@ -36,47 +36,47 @@ renderer.link = (href: string, title: string, text: string): string => {
 marked.setOptions({ renderer: renderer });
 import { isValid, invalidNodes } from '@helsenorge/core-utils/validation';
 
-export function getComponentForItem(type: QuestionnaireItemTypeList) {
-  if (String(type) === 'group') {
+export function getComponentForItem(type: string) {
+  if (String(type) === ItemType.GROUP) {
     return Group;
   }
-  if (String(type) === 'display') {
+  if (String(type) === ItemType.DISPLAY) {
     return Display;
   }
-  if (String(type) === 'boolean') {
+  if (String(type) === ItemType.BOOLEAN) {
     return Boolean;
   }
-  if (String(type) === 'decimal') {
+  if (String(type) === ItemType.DECIMAL) {
     return Decimal;
   }
-  if (String(type) === 'integer') {
+  if (String(type) === ItemType.INTEGER) {
     return Integer;
   }
-  if (String(type) === 'date') {
+  if (String(type) === ItemType.DATE) {
     return Date;
   }
-  if (String(type) === 'dateTime') {
+  if (String(type) === ItemType.DATETIME) {
     return DateTime;
   }
-  if (String(type) === 'time') {
+  if (String(type) === ItemType.TIME) {
     return Time;
   }
-  if (String(type) === 'string') {
+  if (String(type) === ItemType.STRING) {
     return StringComponent;
   }
-  if (String(type) === 'text') {
+  if (String(type) === ItemType.TEXT) {
     return Text;
   }
-  if (String(type) === 'choice') {
+  if (String(type) === ItemType.CHOICE) {
     return Choice;
   }
-  if (String(type) === 'open-choice') {
+  if (String(type) === ItemType.OPENCHOICE) {
     return OpenChoice;
   }
-  if (String(type) === 'attachment') {
+  if (String(type) === ItemType.ATTATCHMENT) {
     return Attachment;
   }
-  if (String(type) === 'quantity') {
+  if (String(type) === ItemType.QUANTITY) {
     return Quantity;
   }
   return undefined;
@@ -166,14 +166,14 @@ export function getLinkId(item: QuestionnaireItem) {
   return uuid.v4();
 }
 
-export function getStringValue(answer: QuestionnaireResponseAnswer) {
+export function getStringValue(answer: QuestionnaireResponseItemAnswer) {
   if (answer && answer.valueString) {
     return answer.valueString;
   }
   return '';
 }
 
-export function getPDFStringValue(answer: QuestionnaireResponseAnswer, resources?: Resources) {
+export function getPDFStringValue(answer: QuestionnaireResponseItemAnswer, resources?: Resources) {
   const value = getStringValue(answer);
   if (!value) {
     let text = '';
@@ -205,6 +205,7 @@ export function shouldRenderRepeatButton(
   index?: number
 ): boolean {
   if (item.deactivated) {
+    // TODO
     return false;
   }
 

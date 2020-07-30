@@ -1,11 +1,12 @@
 import * as React from 'react';
+import { Collapse } from 'react-collapse';
 import { Options } from '@helsenorge/toolkit/components/atoms/radio-group';
 import CheckBoxGroup from '@helsenorge/toolkit/components/atoms/checkbox-group';
-import { renderPrefix, getText, isRequired, getId } from '../../../util/index';
-import { Collapse } from 'react-collapse';
 import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
+
+import { renderPrefix, getText, isRequired, getId } from '../../../util/index';
 import { Resources } from '../../../util/resources';
-import { QuestionnaireItem, QuestionnaireResponseAnswer } from '../../../types/fhir';
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from '../../../types/fhir';
 import { getMaxOccursExtensionValue, getMinOccursExtensionValue, getValidationTextExtension } from '../../../util/extension';
 import { shouldShowExtraChoice } from '../../../util/choice';
 
@@ -19,7 +20,7 @@ interface Props {
   repeatButton: JSX.Element;
   renderDeleteButton: (className?: string) => JSX.Element | undefined;
   renderOpenField: () => JSX.Element | undefined;
-  answer: Array<QuestionnaireResponseAnswer> | QuestionnaireResponseAnswer;
+  answer: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer;
 
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;

@@ -1,7 +1,8 @@
-import { Path } from '../util/skjemautfyller-core';
-import { Coding, QuestionnaireItem, Attachment, QuestionnaireResponseItem, Quantity } from '../types/fhir';
 import { Action } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
+
+import { Path } from '../util/skjemautfyller-core';
+import { Coding, QuestionnaireItem, Attachment, QuestionnaireResponseItem, Quantity } from '../types/fhir';
 import { GlobalState } from '../reducers';
 
 export type NEW_VALUE = 'skjemautfyller/NEW_VALUE';

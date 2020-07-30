@@ -4,7 +4,7 @@ import {
   QuestionnaireItem,
   QuestionnaireResponse,
   QuestionnaireResponseItem,
-  QuestionnaireResponseAnswer,
+  QuestionnaireResponseItemAnswer,
   Reference,
   Questionnaire,
 } from '../types/fhir';
@@ -22,6 +22,7 @@ export function generateQuestionnaireResponse(questionnaire: Questionnaire): Que
     return response;
   }
 
+  // TODO
   if (questionnaire.url) {
     response.questionnaire = {} as Reference;
     response.questionnaire.reference = questionnaire.url;
@@ -84,7 +85,7 @@ function addResponseItemtoResponse(
       responseItemForQuestionnaire.answer = [];
     }
     if (responseItemForQuestionnaire.answer.length === 0) {
-      responseItemForQuestionnaire.answer.push({} as QuestionnaireResponseAnswer);
+      responseItemForQuestionnaire.answer.push({} as QuestionnaireResponseItemAnswer);
     }
     const answer = responseItemForQuestionnaire.answer[0];
     if (!answer.item) {

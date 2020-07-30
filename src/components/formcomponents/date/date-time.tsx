@@ -1,15 +1,17 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
+import { ThunkDispatch } from 'redux-thunk';
 import moment from 'moment';
 import 'moment/locale/nb';
-import withCommonFunctions from '../../with-common-functions';
 import DateTimeInput from '@helsenorge/toolkit/components/molecules/date-time-input';
 import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
 import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
 import layoutChange from '@helsenorge/core-utils/hoc/layoutChange';
+import { parseDate } from '@helsenorge/toolkit/components/molecules/time-input/date-core';
+
+import withCommonFunctions from '../../with-common-functions';
 import { Path } from '../../../util/skjemautfyller-core';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
-import { parseDate } from '@helsenorge/toolkit/components/molecules/time-input/date-core';
 import Constants from '../../../constants/index';
 import ExtensionConstants from '../../../constants/extensions';
 import { NewValueAction, newDateTimeValueAsync } from '../../../actions/newValue';
@@ -18,7 +20,6 @@ import { getValidationTextExtension, getExtension } from '../../../util/extensio
 import { QuestionnaireItem, QuestionnaireResponseAnswer, QuestionnaireResponseItem } from '../../../types/fhir';
 import { Resources } from '../../../util/resources';
 import TextView from '../textview';
-import { ThunkDispatch } from 'redux-thunk';
 import { GlobalState } from '../../../reducers';
 import { evaluateFhirpathExpressionToGetDate } from '../../../util/fhirpathHelper';
 

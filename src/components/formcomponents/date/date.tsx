@@ -1,11 +1,13 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
+import { ThunkDispatch } from 'redux-thunk';
 import moment from 'moment';
 import { DatePicker, DatePickerResources } from '@helsenorge/toolkit/components/molecules/datepicker';
 import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
 import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
-import ExtensionConstants from '../../../constants/extensions';
 import { parseDate } from '@helsenorge/toolkit/components/molecules/time-input/date-core';
+
+import ExtensionConstants from '../../../constants/extensions';
 import { Path } from '../../../util/skjemautfyller-core';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import Constants from '../../../constants/index';
@@ -13,17 +15,16 @@ import { NewValueAction, newDateValueAsync } from '../../../actions/newValue';
 import withCommonFunctions from '../../with-common-functions';
 import { isReadOnly, isRequired, getId, renderPrefix, getText } from '../../../util/index';
 import { getValidationTextExtension, getPlaceholder, getExtension } from '../../../util/extension';
-import { QuestionnaireItem, QuestionnaireResponseAnswer, QuestionnaireResponseItem } from '../../../types/fhir';
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem } from '../../../types/fhir';
 import { Resources } from '../../../util/resources';
 import TextView from '../textview';
-import { ThunkDispatch } from 'redux-thunk';
 import { GlobalState } from '../../../reducers';
 import { evaluateFhirpathExpressionToGetDate } from '../../../util/fhirpathHelper';
 
 export interface Props {
   item: QuestionnaireItem;
   responseItem: QuestionnaireResponseItem;
-  answer: QuestionnaireResponseAnswer;
+  answer: QuestionnaireResponseItemAnswer;
   resources?: Resources;
   dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
   path: Array<Path>;
@@ -38,7 +39,7 @@ export interface Props {
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
   isHelpOpen?: boolean;
-  onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseAnswer) => void;
+  onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
 }
 
@@ -140,7 +141,7 @@ class DateComponent extends React.Component<Props & ValidationProps> {
     const newValue = value ? moment(value).format(Constants.DATE_FORMAT) : '';
     if (dispatch) {
       dispatch(newDateValueAsync(this.props.path, newValue, this.props.item))?.then(newState =>
-        onAnswerChange(newState, path, item, { valueDate: newValue } as QuestionnaireResponseAnswer)
+        onAnswerChange(newState, path, item, { valueDate: newValue } as QuestionnaireResponseItemAnswer)
       );
 
       if (promptLoginMessage) {

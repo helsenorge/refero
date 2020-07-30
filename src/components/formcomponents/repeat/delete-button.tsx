@@ -1,16 +1,18 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { Path } from '../../../util/skjemautfyller-core';
-import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
-import { QuestionnaireItem, QuestionnaireResponseAnswer } from '../../../types/fhir';
-import { Resources } from '../../../util/resources';
 import { ThunkDispatch } from 'redux-thunk';
-import { GlobalState } from '../../../reducers';
-import { NewValueAction, deleteRepeatItemAsync } from '../../../actions/newValue';
+import classNames from 'classnames';
 import { ConfirmBox } from '@helsenorge/toolkit/components/molecules/confirmbox';
 import { FunctionButton } from '@helsenorge/toolkit/components/atoms/buttons/function-button';
-import classNames from 'classnames';
+
+import { Path } from '../../../util/skjemautfyller-core';
+import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from '../../../types/fhir';
+import { Resources } from '../../../util/resources';
+import { GlobalState } from '../../../reducers';
+import { NewValueAction, deleteRepeatItemAsync } from '../../../actions/newValue';
 import { RenderContext } from '../../../util/renderContext';
+
 interface Props {
   item: QuestionnaireItem;
   path: Array<Path>;
@@ -18,7 +20,7 @@ interface Props {
   dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
   mustShowConfirm: boolean;
   className?: string;
-  onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseAnswer) => void;
+  onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
   renderContext: RenderContext;
 }
 
@@ -36,7 +38,7 @@ class DeleteButton extends React.Component<Props, State> {
     if (this.props.dispatch && this.props.item && this.props.path) {
       this.props
         .dispatch(deleteRepeatItemAsync(this.props.path, this.props.item))
-        ?.then(newState => this.props.onAnswerChange(newState, this.props.path, this.props.item, {} as QuestionnaireResponseAnswer));
+        ?.then(newState => this.props.onAnswerChange(newState, this.props.path, this.props.item, {} as QuestionnaireResponseItemAnswer));
     }
     this.setState({ showConfirm: false });
   };

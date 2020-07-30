@@ -1,13 +1,14 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
+import CustomTag from '@helsenorge/core-utils/custom-tag';
+
 import { GlobalState } from '../../../reducers';
 import { NewValueAction } from '../../../actions/newValue';
 import { Path } from '../../../util/skjemautfyller-core';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
-import CustomTag from '@helsenorge/core-utils/custom-tag';
 import { renderPrefix, getText, getId } from '../../../util/index';
-import { QuestionnaireItem, QuestionnaireResponseAnswer, QuestionnaireResponseItem } from '../../../types/fhir';
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem } from '../../../types/fhir';
 import withCommonFunctions from '../../with-common-functions';
 import { Resources } from '../../../util/resources';
 import { getGroupItemControl } from '../../../util/group-item-control';
@@ -16,7 +17,7 @@ import { RenderContext } from '../../../util/renderContext';
 
 export interface Props {
   item: QuestionnaireItem;
-  answer: QuestionnaireResponseAnswer;
+  answer: QuestionnaireResponseItemAnswer;
   responseItem: QuestionnaireResponseItem;
   dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
   path: Array<Path>;

@@ -1,3 +1,6 @@
+import produce, { enableES5 } from 'immer';
+import { Languages } from '@helsenorge/toolkit/constants';
+
 import {
   NEW_VALUE,
   REMOVE_CODING_VALUE,
@@ -14,9 +17,9 @@ import { isStringEmpty } from '../util/index';
 import {
   Questionnaire,
   QuestionnaireResponseItem,
-  QuestionnaireResponseAnswer,
+  QuestionnaireResponseItemAnswer,
   QuestionnaireItem,
-  QuestionnaireEnableWhen,
+  QuestionnaireItemEnableWhen,
   QuestionnaireResponse,
   Coding,
   Attachment,
@@ -33,11 +36,9 @@ import {
   getResponseItemAndPathWithLinkId,
 } from '../util/skjemautfyller-core';
 import { getMinOccursExtensionValue } from '../util/extension';
-import { Languages } from '@helsenorge/toolkit/constants';
 import { FormAction, SET_SKJEMA_DEFINITION } from '../actions/form';
 import { generateQuestionnaireResponse } from '../actions/generateQuestionnaireResponse';
 import { createQuestionnaireResponseAnswer } from '../util/createQuestionnaireResponseAnswer';
-import produce, { enableES5 } from 'immer';
 
 enableES5();
 
@@ -236,7 +237,7 @@ function copyItem(
       const answer = source.answer[i];
       const targetAnswer = {
         item: [] as QuestionnaireResponseItem[],
-      } as QuestionnaireResponseAnswer;
+      } as QuestionnaireResponseItemAnswer;
 
       for (let j = 0; answer && answer.item && j < answer.item.length; j++) {
         const newResponseItem = {
@@ -329,7 +330,7 @@ function processNewValueAction(action: NewValueAction, state: Form): Form {
 
     let answer = responseItem.answer[0];
     if (!answer) {
-      answer = {} as QuestionnaireResponseAnswer;
+      answer = {} as QuestionnaireResponseItemAnswer;
       responseItem.answer.push(answer);
     }
 
@@ -381,7 +382,7 @@ function processNewValueAction(action: NewValueAction, state: Form): Form {
         if (Object.keys(answer).length === 0) {
           answer.valueCoding = coding;
         } else {
-          const newAnswer = {} as QuestionnaireResponseAnswer;
+          const newAnswer = {} as QuestionnaireResponseItemAnswer;
           newAnswer.valueCoding = coding;
           responseItem.answer.push(newAnswer);
         }
@@ -407,7 +408,7 @@ function processNewValueAction(action: NewValueAction, state: Form): Form {
         if (Object.keys(answer).length === 0) {
           answer.valueAttachment = attachment;
         } else {
-          const newAnswer = {} as QuestionnaireResponseAnswer;
+          const newAnswer = {} as QuestionnaireResponseItemAnswer;
           newAnswer.valueAttachment = attachment;
           responseItem.answer.push(newAnswer);
         }
@@ -451,7 +452,7 @@ function processNewCodingStringValueAction(action: NewValueAction, state: Form):
 
       const newAnswer = {
         valueString: action.valueString,
-      } as QuestionnaireResponseAnswer;
+      } as QuestionnaireResponseItemAnswer;
 
       if (found >= 0) {
         responseItem.answer[found] = newAnswer;
@@ -514,7 +515,7 @@ function updateEnableWhenItemsIteration(
     const qrItemsWithEnableWhen = getResponseItemAndPathWithLinkId(qItemWithEnableWhen.linkId, formData.Content!);
     for (const qrItemWithEnableWhen of qrItemsWithEnableWhen) {
       let enable = false;
-      enableWhenClauses.forEach((enableWhen: QuestionnaireEnableWhen) => {
+      enableWhenClauses.forEach((enableWhen: QuestionnaireItemEnableWhen) => {
         const enableWhenQuestionItem = getQuestionnaireDefinitionItem(enableWhen.question, definitionItems);
         if (!enableWhenQuestionItem) return;
 
@@ -604,14 +605,14 @@ function wipeAnswerItems(answerItem: QuestionnaireResponseItem | undefined, item
   }
 }
 
-function resetAnswerValue(answer: QuestionnaireResponseAnswer, item: QuestionnaireItem): void {
+function resetAnswerValue(answer: QuestionnaireResponseItemAnswer, item: QuestionnaireItem): void {
   const initialAnswer = createQuestionnaireResponseAnswer(item);
   nullAnswerValue(answer, initialAnswer);
 }
 
 export function nullAnswerValue(
-  answer: QuestionnaireResponseAnswer,
-  initialAnswer: QuestionnaireResponseAnswer | undefined = undefined
+  answer: QuestionnaireResponseItemAnswer,
+  initialAnswer: QuestionnaireResponseItemAnswer | undefined = undefined
 ): undefined {
   if (!answer) {
     return undefined;

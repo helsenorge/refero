@@ -1,12 +1,14 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
+import { ThunkDispatch } from 'redux-thunk';
 import { Options } from '@helsenorge/toolkit/components/atoms/radio-group';
 import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
+
 import withCommonFunctions from '../../with-common-functions';
 import { NewValueAction, newCodingValueAsync, removeCodingValueAsync } from '../../../actions/newValue';
 import { Path } from '../../../util/skjemautfyller-core';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
-import { QuestionnaireItem, QuestionnaireResponseAnswer, Resource, Coding, QuestionnaireResponseItem } from '../../../types/fhir';
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer, Resource, Coding, QuestionnaireResponseItem } from '../../../types/fhir';
 import { Resources } from '../../../util/resources';
 import { isReadOnly } from '../../../util/index';
 import {
@@ -23,12 +25,11 @@ import TextView from '../textview';
 import DropdownView from './dropdown-view';
 import RadioView from './radio-view';
 import CheckboxView from './checkbox-view';
-import { ThunkDispatch } from 'redux-thunk';
 import { GlobalState } from '../../../reducers';
 
 export interface ChoiceProps {
   item: QuestionnaireItem;
-  answer: Array<QuestionnaireResponseAnswer> | QuestionnaireResponseAnswer;
+  answer: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer;
   resources?: Resources;
   containedResources?: Resource[];
   dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
@@ -43,7 +44,7 @@ export interface ChoiceProps {
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
   isHelpOpen?: boolean;
-  onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseAnswer) => void;
+  onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
 }
 
@@ -64,10 +65,10 @@ export class Choice extends React.Component<ChoiceProps & ValidationProps, Choic
 
   getValue = (
     item: QuestionnaireItem,
-    answer: Array<QuestionnaireResponseAnswer> | QuestionnaireResponseAnswer
+    answer: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer
   ): (string | undefined)[] | undefined => {
     if (answer && Array.isArray(answer)) {
-      return answer.map((el: QuestionnaireResponseAnswer) => {
+      return answer.map((el: QuestionnaireResponseItemAnswer) => {
         if (el && el.valueCoding && el.valueCoding.code) {
           return el.valueCoding.code;
         }
@@ -81,7 +82,7 @@ export class Choice extends React.Component<ChoiceProps & ValidationProps, Choic
     return [String(item.initialCoding.code)];
   };
 
-  getPDFValue = (item: QuestionnaireItem, answer: Array<QuestionnaireResponseAnswer> | QuestionnaireResponseAnswer): string => {
+  getPDFValue = (item: QuestionnaireItem, answer: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer): string => {
     const { resources, containedResources } = this.props;
 
     const value = this.getValue(item, answer);
@@ -102,7 +103,7 @@ export class Choice extends React.Component<ChoiceProps & ValidationProps, Choic
       const display = getDisplay(getOptions(item, this.props.containedResources), code);
       const system = getSystem(item, this.props.containedResources);
       const coding = { code, display, system } as Coding;
-      const responseAnswer = { valueCoding: coding } as QuestionnaireResponseAnswer;
+      const responseAnswer = { valueCoding: coding } as QuestionnaireResponseItemAnswer;
       if (getIndexOfAnswer(code, answer) > -1) {
         dispatch(removeCodingValueAsync(path, coding, item))?.then(newState => onAnswerChange(newState, path, item, responseAnswer));
         if (promptLoginMessage) {
@@ -123,7 +124,7 @@ export class Choice extends React.Component<ChoiceProps & ValidationProps, Choic
       const display = getDisplay(getOptions(item, this.props.containedResources), code);
       const system = getSystem(item, this.props.containedResources);
       const coding = { code, display, system } as Coding;
-      const responseAnswer = { valueCoding: coding } as QuestionnaireResponseAnswer;
+      const responseAnswer = { valueCoding: coding } as QuestionnaireResponseItemAnswer;
       dispatch(newCodingValueAsync(path, coding, item))?.then(newState => onAnswerChange(newState, path, item, responseAnswer));
       if (promptLoginMessage) {
         promptLoginMessage();

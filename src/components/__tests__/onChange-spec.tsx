@@ -1,11 +1,14 @@
-import '../../util/defineFetch';
 import * as React from 'react';
-import rootReducer from '../../reducers';
 import { createStore, applyMiddleware } from 'redux';
-import { mount } from 'enzyme';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
-import { Questionnaire, QuestionnaireItem, QuestionnaireResponseAnswer, Quantity, decimal, code, uri, Coding } from '../../types/fhir';
+import { mount } from 'enzyme';
+import moment from 'moment';
+import DateTime from '@helsenorge/toolkit/components/molecules/date-time-input';
+
+import '../../util/defineFetch';
+import rootReducer from '../../reducers';
+import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer, Quantity, Coding } from '../../types/fhir';
 import { SkjemautfyllerContainer } from '..';
 import { Resources } from '../../util/resources';
 import { IActionRequester } from '../../util/actionRequester';
@@ -13,8 +16,6 @@ import questionnaireWithAllItemTypes from './__data__/onChange/allItemTypes';
 import questionnaireWithRepeats from './__data__/onChange/repeats';
 import questionnaireWithNestedItems from './__data__/onChange/nestedItems';
 import { inputAnswer, findItem } from './utils';
-import DateTime from '@helsenorge/toolkit/components/molecules/date-time-input';
-import moment from 'moment';
 import Constants, { OPEN_CHOICE_ID } from '../../constants/index';
 import { IQuestionnaireInspector, QuestionnaireItemPair } from '../../util/questionnaireInspector';
 
@@ -509,17 +510,17 @@ function toCoding(code: string, system?: string): Coding {
 
 function toQuantity(value: number, code: string, unit: string, system?: string): Quantity {
   return {
-    value: (value as unknown) as decimal,
-    code: (code as unknown) as code,
+    value: value,
+    code: code,
     unit: unit,
-    system: (system as unknown) as uri,
+    system: system,
   } as Quantity;
 }
 
 function createOnChangeFuncForActionRequester(actions: (actionRequester: IActionRequester) => void) {
   return (
     _item: QuestionnaireItem,
-    _answer: QuestionnaireResponseAnswer,
+    _answer: QuestionnaireResponseItemAnswer,
     actionRequester: IActionRequester,
     _questionnaireInspector: IQuestionnaireInspector
   ) => {
@@ -530,7 +531,7 @@ function createOnChangeFuncForActionRequester(actions: (actionRequester: IAction
 function createOnChangeFuncForQuestionnaireInspector(actions: (questionnaireInspector: IQuestionnaireInspector) => void) {
   return (
     _item: QuestionnaireItem,
-    _answer: QuestionnaireResponseAnswer,
+    _answer: QuestionnaireResponseItemAnswer,
     _actionRequester: IActionRequester,
     questionnaireInspector: IQuestionnaireInspector
   ) => {
@@ -542,7 +543,7 @@ function createWrapper(
   questionnaire: Questionnaire,
   onChange: (
     item: QuestionnaireItem,
-    answer: QuestionnaireResponseAnswer,
+    answer: QuestionnaireResponseItemAnswer,
     actionRequester: IActionRequester,
     questionnaireInspector: IQuestionnaireInspector
   ) => void

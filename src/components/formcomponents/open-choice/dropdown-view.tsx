@@ -1,14 +1,14 @@
 import * as React from 'react';
-import { getValidationTextExtension, getPlaceholder } from '../../../util/extension';
-import { Options } from '@helsenorge/toolkit/components/atoms/radio-group';
-import { isRequired, getId, renderPrefix, getText } from '../../../util/index';
 import { Collapse } from 'react-collapse';
+import { Options } from '@helsenorge/toolkit/components/atoms/radio-group';
 import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
 import SafeSelect from '@helsenorge/toolkit/components/atoms/safe-select';
-import { Resources } from '../../../util/resources';
 import layoutChange from '@helsenorge/core-utils/hoc/layoutChange';
 
-import { QuestionnaireItem, QuestionnaireResponseAnswer } from '../../../types/fhir';
+import { isRequired, getId, renderPrefix, getText } from '../../../util/index';
+import { getValidationTextExtension, getPlaceholder } from '../../../util/extension';
+import { Resources } from '../../../util/resources';
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from '../../../types/fhir';
 import { shouldShowExtraChoice } from '../../../util/choice';
 
 interface Props {
@@ -23,7 +23,7 @@ interface Props {
   repeatButton: JSX.Element;
   oneToTwoColumn?: boolean;
   renderOpenField: () => JSX.Element | undefined;
-  answer: Array<QuestionnaireResponseAnswer> | QuestionnaireResponseAnswer;
+  answer: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer;
 
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;

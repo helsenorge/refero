@@ -1,15 +1,16 @@
-import '../../../../util/defineFetch';
 import * as React from 'react';
 import { mount } from 'enzyme';
-import { Text } from '../text';
-import { QuestionnaireItem, QuestionnaireResponseAnswer, QuestionnaireResponseItem } from '../../../../types/fhir';
 import * as fs from 'fs';
+
+import '../../../../util/defineFetch';
+import { Text } from '../text';
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem } from '../../../../types/fhir';
 
 describe('text with inline extension', () => {
   it('should render correct tag', () => {
     const item = JSON.parse(fs.readFileSync(__dirname + '/__data__/inline-item.json').toString()) as QuestionnaireItem;
 
-    const answer: QuestionnaireResponseAnswer = {} as QuestionnaireResponseAnswer;
+    const answer: QuestionnaireResponseItemAnswer = {} as QuestionnaireResponseItemAnswer;
     const children = <div>{'Tekst'}</div>;
     const text = mount(
       <Text

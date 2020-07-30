@@ -1,14 +1,15 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
+import { ThunkDispatch } from 'redux-thunk';
+import { FunctionButton } from '@helsenorge/toolkit/components/atoms/buttons/function-button';
+
 import { Path } from '../../../util/skjemautfyller-core';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { QuestionnaireItem, QuestionnaireResponseItem } from '../../../types/fhir';
 import { getRepeatsTextExtension } from '../../../util/extension';
 import { Resources } from '../../../util/resources';
-import { ThunkDispatch } from 'redux-thunk';
 import { GlobalState } from '../../../reducers';
 import { NewValueAction } from '../../../actions/newValue';
-import { FunctionButton } from '@helsenorge/toolkit/components/atoms/buttons/function-button';
 import { addRepeatItem } from '../../../actions/newValue';
 import { RenderContext } from '../../../util/renderContext';
 

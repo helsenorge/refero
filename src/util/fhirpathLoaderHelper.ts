@@ -1,3 +1,4 @@
+// TODO: bruk r4
 import * as choiceTypePaths from 'fhirpath/fhir-context/stu3/choiceTypePaths.json';
 import * as pathsDefinedElsewhere from 'fhirpath/fhir-context/stu3/pathsDefinedElsewhere.json';
 

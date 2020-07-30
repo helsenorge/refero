@@ -1,19 +1,12 @@
-import '../../util/defineFetch';
 import * as React from 'react';
-import rootReducer from '../../reducers';
 import { createStore } from 'redux';
-import { ReactWrapper, mount } from 'enzyme';
 import { Provider, Store } from 'react-redux';
+import { ThunkDispatch } from 'redux-thunk';
+import { ReactWrapper, mount } from 'enzyme';
 
-import {
-  QuestionnaireItem,
-  QuestionnaireItemTypeList,
-  Extension,
-  Coding,
-  uri,
-  QuestionnaireResponseAnswer,
-  QuestionnaireOption,
-} from '../../types/fhir';
+import '../../util/defineFetch';
+import rootReducer from '../../reducers';
+import { QuestionnaireItem, Extension, Coding, QuestionnaireResponseItemAnswer, QuestionnaireItemAnswerOption } from '../../types/fhir';
 import { Path } from '../../util/skjemautfyller-core';
 import String from '../formcomponents/string/string';
 import Choice from '../formcomponents/choice/choice';
@@ -30,7 +23,6 @@ import Quantity from '../formcomponents/quantity/quantity';
 import Text from '../formcomponents/text/text';
 import { GlobalState } from '../../reducers/index';
 import { NewValueAction } from '../../actions/newValue';
-import { ThunkDispatch } from 'redux-thunk';
 import { RenderContextType } from '../../constants/renderContextType';
 import { RenderContext } from '../../util/renderContext';
 
@@ -121,7 +113,7 @@ enum HelpElement {
   HelpButtonAndText = 2,
 }
 
-function runTest(itemType: QuestionnaireItemTypeList, expect: HelpElement, extensions?: Extension[]) {
+function runTest(itemType: string, expect: HelpElement, extensions?: Extension[]) {
   const component = createComponentOfType(itemType, extensions);
   const wrapper = createWrapperWithComponent(component);
   wrapper.render();
@@ -136,7 +128,7 @@ function expectToFind(wrapper: ReactWrapper<{}, {}>, helpElement: HelpElement) {
   expect(wrapper.find('.helpText')).toHaveLength(helpElement == HelpElement.HelpButtonAndText ? 1 : 0);
 }
 
-function createItemWithOption(extensions?: Extension[], ...options: QuestionnaireOption[]): QuestionnaireItem {
+function createItemWithOption(extensions?: Extension[], ...options: QuestionnaireItemAnswerOption[]): QuestionnaireItem {
   return {
     linkId: '1',
     type: 'choice',
@@ -145,15 +137,15 @@ function createItemWithOption(extensions?: Extension[], ...options: Questionnair
   };
 }
 
-function createValueStringOption(...options: string[]): QuestionnaireOption[] {
+function createValueStringOption(...options: string[]): QuestionnaireItemAnswerOption[] {
   return options.map(o => {
     return {
       valueString: o,
-    } as QuestionnaireOption;
+    } as QuestionnaireItemAnswerOption;
   });
 }
 
-function createItem(itemType: QuestionnaireItemTypeList, extensions?: Extension[]): QuestionnaireItem {
+function createItem(itemType: string, extensions?: Extension[]): QuestionnaireItem {
   return {
     linkId: '1',
     type: itemType,
@@ -174,7 +166,7 @@ function createItemControlExtension(code: string): Extension {
 function createItemControlCoding(code: string): Coding {
   return {
     code: code,
-    system: { value: 'http://hl7.org/fhir/ValueSet/questionnaire-item-control' } as uri,
+    system: 'http://hl7.org/fhir/ValueSet/questionnaire-item-control',
   } as Coding;
 }
 
@@ -183,7 +175,7 @@ function createWrapperWithComponent(component: JSX.Element): ReactWrapper<{}, {}
   return mount(<Provider store={store}>{component}</Provider>);
 }
 
-function createComponentOfType(itemType: QuestionnaireItemTypeList, extensions?: Extension[]): JSX.Element {
+function createComponentOfType(itemType: string, extensions?: Extension[]): JSX.Element {
   switch (itemType) {
     case 'choice':
       return createComponentChoice(extensions);
@@ -222,7 +214,7 @@ function createComponentText(extensions?: Extension[]): JSX.Element {
   return (
     <Text
       dispatch={() => (undefined as unknown) as ThunkDispatch<GlobalState, void, NewValueAction>}
-      answer={{} as QuestionnaireResponseAnswer}
+      answer={{} as QuestionnaireResponseItemAnswer}
       item={item}
       path={{} as Path[]}
       renderDeleteButton={() => undefined}
@@ -240,7 +232,7 @@ function createComponentQuantity(extensions?: Extension[]): JSX.Element {
   return (
     <Quantity
       dispatch={() => (undefined as unknown) as ThunkDispatch<GlobalState, void, NewValueAction>}
-      answer={{} as QuestionnaireResponseAnswer}
+      answer={{} as QuestionnaireResponseItemAnswer}
       item={item}
       path={{} as Path[]}
       repeatButton={<React.Fragment />}
@@ -257,7 +249,7 @@ function createComponentInteger(extensions?: Extension[]): JSX.Element {
   return (
     <Integer
       dispatch={() => (undefined as unknown) as ThunkDispatch<GlobalState, void, NewValueAction>}
-      answer={{} as QuestionnaireResponseAnswer}
+      answer={{} as QuestionnaireResponseItemAnswer}
       item={item}
       path={{} as Path[]}
       renderDeleteButton={() => undefined}
@@ -276,7 +268,7 @@ function createComponentDecimal(extensions?: Extension[]): JSX.Element {
   return (
     <Decimal
       dispatch={() => (undefined as unknown) as ThunkDispatch<GlobalState, void, NewValueAction>}
-      answer={{} as QuestionnaireResponseAnswer}
+      answer={{} as QuestionnaireResponseItemAnswer}
       item={item}
       path={{} as Path[]}
       renderDeleteButton={() => undefined}
@@ -295,7 +287,7 @@ function createComponentTime(extensions?: Extension[]): JSX.Element {
   return (
     <Time
       dispatch={() => (undefined as unknown) as ThunkDispatch<GlobalState, void, NewValueAction>}
-      answer={{} as QuestionnaireResponseAnswer}
+      answer={{} as QuestionnaireResponseItemAnswer}
       item={item}
       path={{} as Path[]}
       renderDeleteButton={() => undefined}
@@ -313,7 +305,7 @@ function createComponentDateTime(extensions?: Extension[]): JSX.Element {
   return (
     <DateTime
       dispatch={() => (undefined as unknown) as ThunkDispatch<GlobalState, void, NewValueAction>}
-      answer={{} as QuestionnaireResponseAnswer}
+      answer={{} as QuestionnaireResponseItemAnswer}
       item={item}
       path={{} as Path[]}
       renderDeleteButton={() => undefined}
@@ -332,7 +324,7 @@ function createComponentDate(extensions?: Extension[]): JSX.Element {
   return (
     <Date
       dispatch={() => (undefined as unknown) as ThunkDispatch<GlobalState, void, NewValueAction>}
-      answer={{} as QuestionnaireResponseAnswer}
+      answer={{} as QuestionnaireResponseItemAnswer}
       item={item}
       path={{} as Path[]}
       renderDeleteButton={() => undefined}
@@ -350,7 +342,7 @@ function createComponentAttachment(extensions?: Extension[]): JSX.Element {
   return (
     <Attachment
       dispatch={() => (undefined as unknown) as ThunkDispatch<GlobalState, void, NewValueAction>}
-      answer={{} as QuestionnaireResponseAnswer}
+      answer={{} as QuestionnaireResponseItemAnswer}
       item={item}
       path={{} as Path[]}
       renderDeleteButton={() => undefined}
@@ -368,7 +360,7 @@ function createComponentGroup(extensions?: Extension[]): JSX.Element {
   return (
     <Group
       dispatch={() => (undefined as unknown) as ThunkDispatch<GlobalState, void, NewValueAction>}
-      answer={{} as QuestionnaireResponseAnswer}
+      answer={{} as QuestionnaireResponseItemAnswer}
       item={item}
       path={{} as Path[]}
       headerTag={1}
@@ -388,7 +380,7 @@ function createComponentBoolean(extensions?: Extension[]): JSX.Element {
   return (
     <Boolean
       dispatch={() => (undefined as unknown) as ThunkDispatch<GlobalState, void, NewValueAction>}
-      answer={{} as QuestionnaireResponseAnswer}
+      answer={{} as QuestionnaireResponseItemAnswer}
       item={item}
       path={{} as Path[]}
       renderDeleteButton={() => undefined}
@@ -407,7 +399,7 @@ function createComponentString(extensions?: Extension[]): JSX.Element {
   return (
     <String
       dispatch={() => (undefined as unknown) as ThunkDispatch<GlobalState, void, NewValueAction>}
-      answer={{} as QuestionnaireResponseAnswer}
+      answer={{} as QuestionnaireResponseItemAnswer}
       item={item}
       path={{} as Path[]}
       renderDeleteButton={() => undefined}
@@ -428,7 +420,7 @@ function createComponentChoice(extensions?: Extension[]): JSX.Element {
   return (
     <Choice
       dispatch={() => (undefined as unknown) as ThunkDispatch<GlobalState, void, NewValueAction>}
-      answer={{} as QuestionnaireResponseAnswer}
+      answer={{} as QuestionnaireResponseItemAnswer}
       item={item}
       path={{} as Path[]}
       renderDeleteButton={() => undefined}
@@ -447,7 +439,7 @@ function createComponentOpenChoice(extensions?: Extension[]): JSX.Element {
   return (
     <OpenChoice
       dispatch={() => (undefined as unknown) as ThunkDispatch<GlobalState, void, NewValueAction>}
-      answer={{} as QuestionnaireResponseAnswer}
+      answer={{} as QuestionnaireResponseItemAnswer}
       item={item}
       path={{} as Path[]}
       renderDeleteButton={() => undefined}

@@ -1,11 +1,13 @@
+import * as chai from 'chai';
+
 import '../../util/defineFetch';
 import { Props } from '../../components/with-common-functions';
-import * as chai from 'chai';
 import { mapStateToProps, mapDispatchToProps } from '../map-props';
 import { getQuestionnaireDefinitionItem } from '../skjemautfyller-core';
 import { pathify } from '../../reducers/__tests__/utils';
 import { dataModel } from './__data__/testDataModel';
 import { RenderContext } from '../renderContext';
+
 const should = chai.should();
 
 describe('mapStateToProps', () => {

@@ -1,8 +1,9 @@
-import '../../../../util/defineFetch';
 import * as React from 'react';
-import { String } from '../string';
-import { QuestionnaireItem, QuestionnaireResponseAnswer, QuestionnaireResponseItem } from '../../../../types/fhir';
 import { mount } from 'enzyme';
+
+import '../../../../util/defineFetch';
+import { String } from '../string';
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem } from '../../../../types/fhir';
 
 describe('string', () => {
   describe('When input has html and validateScriptInjection = true', () => {
@@ -47,7 +48,7 @@ function getStringWrapperWithChangedValue(validateScriptInjection: boolean, valu
   const wrapper = mount(
     <String
       item={item}
-      answer={{} as QuestionnaireResponseAnswer}
+      answer={{} as QuestionnaireResponseItemAnswer}
       path={[]}
       id="item_2"
       oneToTwoColumn
