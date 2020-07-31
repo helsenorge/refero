@@ -4,44 +4,44 @@ export function createQuestionnaireResponseAnswer(item: QuestionnaireItem): Ques
   const answer = {} as QuestionnaireResponseItemAnswer;
   let hasInitialAnswer = false;
 
-  if (item.initialBoolean !== undefined) {
-    answer.valueBoolean = item.initialBoolean;
+  if (item.initial && item.initial.length > 0 && item.initial[0].valueBoolean !== undefined) {
+    answer.valueBoolean = item.initial[0].valueBoolean;
     hasInitialAnswer = true;
   } else if (item.type === 'boolean') {
     hasInitialAnswer = true;
     answer.valueBoolean = false;
   }
-  if (item.initialDecimal !== undefined) {
+  if (item.initial && item.initial.length > 0 && item.initial[0].valueDecimal !== undefined) {
     hasInitialAnswer = true;
-    answer.valueDecimal = Number(item.initialDecimal);
+    answer.valueDecimal = Number(item.initial[0].valueDecimal);
   }
-  if (item.initialInteger !== undefined) {
+  if (item.initial && item.initial.length > 0 && item.initial[0].valueInteger !== undefined) {
     hasInitialAnswer = true;
-    answer.valueInteger = Number(item.initialInteger);
+    answer.valueInteger = Number(item.initial[0].valueInteger);
   }
-  if (item.initialDate !== undefined) {
+  if (item.initial && item.initial.length > 0 && item.initial[0].valueDate !== undefined) {
     hasInitialAnswer = true;
-    answer.valueDate = String(item.initialDate);
+    answer.valueDate = String(item.initial[0].valueDate);
   }
-  if (item.initialDateTime !== undefined) {
+  if (item.initial && item.initial.length > 0 && item.initial[0].valueDateTime !== undefined) {
     hasInitialAnswer = true;
-    answer.valueDateTime = String(item.initialDateTime);
+    answer.valueDateTime = String(item.initial[0].valueDateTime);
   }
-  if (item.initialTime !== undefined) {
+  if (item.initial && item.initial.length > 0 && item.initial[0].valueTime !== undefined) {
     hasInitialAnswer = true;
-    answer.valueTime = String(item.initialTime);
+    answer.valueTime = String(item.initial[0].valueTime);
   }
-  if (item.initialString !== undefined) {
+  if (item.initial && item.initial.length > 0 && item.initial[0].valueString !== undefined) {
     hasInitialAnswer = true;
-    answer.valueString = item.initialString;
+    answer.valueString = item.initial[0].valueString;
   }
-  if (item.initialCoding !== undefined) {
+  if (item.initial && item.initial.length > 0 && item.initial[0].valueCoding !== undefined) {
     hasInitialAnswer = true;
-    answer.valueCoding = item.initialCoding;
+    answer.valueCoding = item.initial[0].valueCoding;
   }
-  if (item.initialAttachment !== undefined) {
+  if (item.initial && item.initial.length > 0 && item.initial[0].valueAttachment !== undefined) {
     hasInitialAnswer = true;
-    answer.valueAttachment = item.initialAttachment;
+    answer.valueAttachment = item.initial[0].valueAttachment;
   }
 
   return hasInitialAnswer ? answer : undefined;

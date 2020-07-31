@@ -23,7 +23,7 @@
           "required": false,
           "repeats": false,
           "readOnly": false,
-          "option": [
+          "answerOption": [
             {
               "valueCoding": {
                 "extension": [

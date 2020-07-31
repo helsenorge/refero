@@ -1,10 +1,16 @@
-import { Questionnaire, QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseAnswer, QuestionnaireOption } from '../types/fhir';
+import {
+  Questionnaire,
+  QuestionnaireItem,
+  QuestionnaireResponse,
+  QuestionnaireResponseItemAnswer,
+  QuestionnaireItemAnswerOption,
+} from '../types/fhir';
 import { createDummySectionScoreItem, scoringItemType } from './scoring';
 import { getQuestionnaireResponseItemsWithLinkId } from './skjemautfyller-core';
 import { getExtension, getCalculatedExpressionExtension } from './extension';
 import ExtensionConstants from '../constants/extensions';
 import { ScoringItemType } from '../constants/scoringItemType';
-import stu3 from './fhirpathLoaderHelper';
+import r4 from './fhirpathLoaderHelper';
 const fhirpath = require('fhirpath');
 
 class CalculatedScores {
@@ -190,7 +196,7 @@ export class ScoringCalculator {
     const expressionExtension = getCalculatedExpressionExtension(item);
     let value: number | undefined = undefined;
     if (expressionExtension) {
-      let result = fhirpath.evaluate(questionnaireResponse, expressionExtension.valueString, null, stu3);
+      let result = fhirpath.evaluate(questionnaireResponse, expressionExtension.valueString, null, r4);
       if (result.length) {
         value = (result[0] as number) ?? 0;
         if (isNaN(value) || !isFinite(value)) {
@@ -242,7 +248,7 @@ export class ScoringCalculator {
     return this.calculateSectionScore(item.linkId, questionnaireResponse, answerPad);
   }
 
-  private getOptionScore(option: QuestionnaireOption): number {
+  private getOptionScore(option: QuestionnaireItemAnswerOption): number {
     const extension = getExtension(ExtensionConstants.ORDINAL_VALUE, option.valueCoding);
     if (extension?.valueDecimal) {
       return (extension?.valueDecimal as unknown) as number;
@@ -251,10 +257,10 @@ export class ScoringCalculator {
     return 0;
   }
 
-  private getAnswerMatch(answer: QuestionnaireResponseAnswer, item: QuestionnaireItem): QuestionnaireOption | undefined {
+  private getAnswerMatch(answer: QuestionnaireResponseItemAnswer, item: QuestionnaireItem): QuestionnaireItemAnswerOption | undefined {
     if (answer.valueCoding) {
-      if (item.option) {
-        for (let o of item.option) {
+      if (item.answerOption) {
+        for (let o of item.answerOption) {
           if (o.valueCoding.code === answer.valueCoding.code && o.valueCoding.system === answer.valueCoding.system) {
             return o;
           }

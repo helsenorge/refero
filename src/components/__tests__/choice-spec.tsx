@@ -250,7 +250,7 @@ function createItemWithOption(...options: QuestionnaireItemAnswerOption[]): Ques
   return {
     linkId: '1',
     type: 'choice',
-    option: options,
+    answerOption: options,
   };
 }
 

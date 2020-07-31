@@ -1,8 +1,9 @@
+import { ThunkDispatch } from 'redux-thunk';
+
 import { QuestionnaireResponseItem, QuestionnaireItemEnableWhen } from '../types/fhir';
 import { GlobalState } from '../reducers/index';
 import { getFormData } from '../reducers/form';
 import { Props } from '../components/with-common-functions';
-
 import {
   enableWhenMatchesAnswer,
   getQuestionnaireResponseItemWithLinkid,
@@ -10,7 +11,6 @@ import {
   Path,
   isInGroupContext,
 } from './skjemautfyller-core';
-import { ThunkDispatch } from 'redux-thunk';
 import { NewValueAction } from '../actions/newValue';
 
 export function mapStateToProps(state: GlobalState, originalProps: Props): Props {

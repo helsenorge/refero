@@ -13,9 +13,7 @@ export const dataModel: GlobalState = {
       FormDefinition: {
         Content: {
           contained: [Valueset],
-          status: {
-            value: 'draft',
-          },
+          status: 'draft',
           item: [
             {
               linkId: 'string1',
@@ -206,7 +204,7 @@ export const dataModel: GlobalState = {
                       enableWhen: [
                         {
                           question: 'group1.2',
-                          hasAnswer: true,
+                          operator: 'exists',
                         },
                       ],
                     },
@@ -216,7 +214,7 @@ export const dataModel: GlobalState = {
                       enableWhen: [
                         {
                           question: 'group1.1',
-                          hasAnswer: true,
+                          operator: 'exists',
                         },
                       ],
                     },

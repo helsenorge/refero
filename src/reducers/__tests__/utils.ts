@@ -9,9 +9,6 @@ import {
   QuestionnaireResponse,
   Quantity,
   Attachment,
-  code,
-  decimal,
-  uri,
 } from '../../types/fhir';
 import {
   newCodingValue,
@@ -150,9 +147,9 @@ export function createQuantity(
   system: string | undefined = undefined
 ): Quantity {
   return {
-    value: (value as unknown) as decimal | undefined,
-    system: (system as unknown) as uri | undefined,
-    code: (code as unknown) as code | undefined,
+    value: value,
+    system: system,
+    code: code,
   } as Quantity;
 }
 
@@ -164,7 +161,7 @@ export function createAttachment(url: string, title: string): Attachment {
 }
 
 export function createCoding(code: string, system: string): Coding {
-  return { code: code, system: { value: system } } as Coding;
+  return { code: code, system: system } as Coding;
 }
 
 function reduce(state: Form, action: NewValueAction): Form {

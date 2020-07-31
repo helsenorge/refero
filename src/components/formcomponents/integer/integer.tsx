@@ -43,7 +43,7 @@ class Integer extends React.Component<Props & ValidationProps, {}> {
     if (answer && answer.valueInteger !== undefined && answer.valueInteger !== null) {
       return answer.valueInteger;
     }
-    if (!item || !item.initialInteger) {
+    if (!item || !item.initial || item.initial.length === 0 || !item.initial[0].valueInteger) {
       return '';
     }
   }

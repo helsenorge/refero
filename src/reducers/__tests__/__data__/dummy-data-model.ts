@@ -10,9 +10,7 @@ const dataModel: GlobalState = {
       Language: 'no',
       FormDefinition: {
         Content: {
-          status: {
-            value: 'draft',
-          },
+          status: 'draft',
           resourceType: 'Questionnaire',
           url: 'bundle1Url',
           item: [
@@ -157,9 +155,7 @@ const dataModel: GlobalState = {
       },
       FormData: {
         Content: {
-          questionnaire: {
-            reference: 'fakeurl',
-          },
+          questionnaire: 'fakeurl',
           status: 'completed',
           item: [
             {

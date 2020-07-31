@@ -79,9 +79,7 @@
           "required": true,
           "repeats": false,
           "readOnly": false,
-          "options": {
-            "reference": "#JournalDeler"
-          },
+          "answerValueSet": "#JournalDeler",
           "item": [
             {
               "linkId": "7.1.1",

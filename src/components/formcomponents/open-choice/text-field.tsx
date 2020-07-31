@@ -6,8 +6,8 @@ import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/v
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from '../../../types/fhir';
 import { isReadOnly, isRequired, getId, renderPrefix, getText, getStringValue, getPDFStringValue, getMaxLength } from '../../../util/index';
 import { getValidationTextExtension, getPlaceholder, getMinLengthExtensionValue, getRegexExtension } from '../../../util/extension';
-
 import Pdf from '../textview';
+
 interface Props {
   id?: string;
   pdf?: boolean;

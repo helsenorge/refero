@@ -43,7 +43,7 @@ class Decimal extends React.Component<Props & ValidationProps, {}> {
     if (answer && answer.valueDecimal) {
       return Number(answer.valueDecimal);
     }
-    if (!item || !item.initialDecimal) {
+    if (!item || !item.initial || item.initial.length === 0 || !item.initial[0].valueDecimal) {
       return '';
     }
   }

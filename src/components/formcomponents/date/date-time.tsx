@@ -17,7 +17,7 @@ import ExtensionConstants from '../../../constants/extensions';
 import { NewValueAction, newDateTimeValueAsync } from '../../../actions/newValue';
 import { isRequired, getId, renderPrefix, getText, isReadOnly } from '../../../util/index';
 import { getValidationTextExtension, getExtension } from '../../../util/extension';
-import { QuestionnaireItem, QuestionnaireResponseAnswer, QuestionnaireResponseItem } from '../../../types/fhir';
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem } from '../../../types/fhir';
 import { Resources } from '../../../util/resources';
 import TextView from '../textview';
 import { GlobalState } from '../../../reducers';
@@ -26,7 +26,7 @@ import { evaluateFhirpathExpressionToGetDate } from '../../../util/fhirpathHelpe
 export interface Props {
   item: QuestionnaireItem;
   responseItem: QuestionnaireResponseItem;
-  answer: QuestionnaireResponseAnswer;
+  answer: QuestionnaireResponseItemAnswer;
   resources?: Resources;
   dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
   path: Array<Path>;
@@ -39,7 +39,7 @@ export interface Props {
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
   isHelpOpen?: boolean;
-  onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseAnswer) => void;
+  onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
 }
 
@@ -52,16 +52,16 @@ class DateTime extends React.Component<Props & ValidationProps> {
     if (answer && answer.valueDate) {
       return parseDate(String(answer.valueDate));
     }
-    if (!item) {
+    if (!item || !item.initial || item.initial.length === 0) {
       return undefined;
     }
-    if (!item.initialDate && !item.initialDateTime) {
+    if (!item.initial[0].valueDate && !item.initial[0].valueDateTime) {
       return undefined;
     }
-    if (item.initialDateTime) {
-      return parseDate(String(item.initialDateTime));
+    if (item.initial[0].valueDateTime) {
+      return parseDate(String(item.initial[0].valueDateTime));
     }
-    return parseDate(String(item.initialDate));
+    return parseDate(String(item.initial[0].valueDate));
   }
 
   getMaxDate(): Date | undefined {
@@ -110,7 +110,7 @@ class DateTime extends React.Component<Props & ValidationProps> {
         .utc()
         .format(Constants.DATE_TIME_FORMAT);
       dispatch(newDateTimeValueAsync(this.props.path, momentDate, this.props.item))?.then(newState =>
-        onAnswerChange(newState, path, item, { valueDateTime: momentDate } as QuestionnaireResponseAnswer)
+        onAnswerChange(newState, path, item, { valueDateTime: momentDate } as QuestionnaireResponseItemAnswer)
       );
     }
 

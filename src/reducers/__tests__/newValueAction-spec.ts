@@ -1,6 +1,8 @@
+import * as uuid from 'uuid';
+
 import state from './data/newValueAction';
 import { Form } from '../form';
-import { QuestionnaireItem, QuestionnaireResponseAnswer } from '../../types/fhir';
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from '../../types/fhir';
 import { getDefinitionItems, getQuestionnaireDefinitionItem, Path } from '../../util/skjemautfyller-core';
 import {
   getResponseItem,
@@ -23,7 +25,6 @@ import {
   enterOpenChoiceText,
   removeOpenChoiceText,
 } from './utils';
-import * as uuid from 'uuid';
 
 jest.mock('uuid');
 
@@ -268,7 +269,7 @@ function verifyAnswer(
   linkId: string,
   state: Form,
   path: Array<Path>,
-  test: (it: jest.Matchers<QuestionnaireResponseAnswer[] | undefined | void, undefined>) => unknown
+  test: (it: jest.Matchers<QuestionnaireResponseItemAnswer[] | undefined | void, undefined>) => unknown
 ) {
   const r = getResponseItem(linkId, state, path);
   if (!r) return fail();

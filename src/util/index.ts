@@ -1,3 +1,6 @@
+import marked from 'marked';
+import DOMPurify from 'dompurify';
+
 import { QuestionnaireResponseItem, QuestionnaireItem, QuestionnaireResponseItemAnswer } from '../types/fhir';
 import ItemType from '../constants/itemType';
 import Group from '../components/formcomponents/group/group';
@@ -25,8 +28,6 @@ import {
   getQuestionnaireHiddenExtensionValue,
   getExtension,
 } from './extension';
-import marked from 'marked';
-import DOMPurify from 'dompurify';
 DOMPurify.setConfig({ ADD_ATTR: ['target'] });
 
 const renderer = new marked.Renderer();
@@ -55,7 +56,7 @@ export function getComponentForItem(type: string) {
   if (String(type) === ItemType.DATE) {
     return Date;
   }
-  if (String(type) === ItemType.DATETIME) {
+  if (String(type) === 'dateTime') {
     return DateTime;
   }
   if (String(type) === ItemType.TIME) {
@@ -204,11 +205,6 @@ export function shouldRenderRepeatButton(
   response: Array<QuestionnaireResponseItem> | undefined,
   index?: number
 ): boolean {
-  if (item.deactivated) {
-    // TODO
-    return false;
-  }
-
   if (!repeats(item)) {
     return false;
   }

@@ -109,10 +109,14 @@ class OpenChoice extends React.Component<Props & ValidationProps> {
     } else if (answer && !Array.isArray(answer) && answer.valueCoding && answer.valueCoding.code) {
       return [answer.valueCoding.code];
     }
-    if (!item || !item.initialCoding || !item.initialCoding.code) {
+    const initialSelectedOption = item.answerOption?.filter(x => x.initialSelected);
+    if (initialSelectedOption && initialSelectedOption.length > 0) {
+      return [initialSelectedOption[0].valueCoding?.code];
+    }
+    if (!item || !item.initial || item.initial.length === 0 || !item.initial[0].valueCoding || !item.initial[0].valueCoding.code) {
       return undefined;
     }
-    return [String(item.initialCoding.code)];
+    return [String(item.initial[0].valueCoding.code)];
   };
 
   handleStringChange = (event: React.FormEvent<{}>): void => {
@@ -245,11 +249,9 @@ class OpenChoice extends React.Component<Props & ValidationProps> {
     return (
       <CheckboxView
         options={options}
-        item={this.props.item}
         id={this.props.id}
         handleChange={this.handleCheckboxChange}
         selected={this.getValue(this.props.item, this.props.answer)}
-        repeatButton={this.props.repeatButton}
         renderOpenField={() => this.renderTextField()}
         onRenderMarkdown={this.props.onRenderMarkdown}
         {...this.props}
@@ -263,13 +265,11 @@ class OpenChoice extends React.Component<Props & ValidationProps> {
     return (
       <DropdownView
         options={options}
-        item={this.props.item}
         id={this.props.id}
         handleChange={this.handleChange}
         selected={this.getValue(this.props.item, this.props.answer)}
         validateInput={(value: string) => validateInput(this.props.item, value, this.props.containedResources)}
         resources={this.props.resources}
-        repeatButton={this.props.repeatButton}
         renderOpenField={() => this.renderTextField()}
         onRenderMarkdown={this.props.onRenderMarkdown}
         {...this.props}

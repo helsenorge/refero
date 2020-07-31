@@ -1,4 +1,4 @@
-import { QuestionnaireResponse, QuestionnaireResponseItem, QuestionnaireResponseAnswer } from '../types/fhir';
+import { QuestionnaireResponse, QuestionnaireResponseItem, QuestionnaireResponseItemAnswer } from '../types/fhir';
 import { parseDate } from '@helsenorge/toolkit/components/molecules/time-input/date-core';
 import { OPEN_CHOICE_ID } from '../constants';
 
@@ -24,7 +24,7 @@ const createNarrativeForItem = (qi: QuestionnaireResponseItem): string => {
   }
   if (qi.answer) {
     narrative += '</p>';
-    qi.answer.forEach((a: QuestionnaireResponseAnswer) => {
+    qi.answer.forEach((a: QuestionnaireResponseItemAnswer) => {
       narrative += `<p>${encode(getAnswerAsString(a))}</p>`;
       if (a.item && a.item.length > 0) {
         a.item.forEach((ai: QuestionnaireResponseItem) => {
@@ -54,7 +54,7 @@ const encode = (s: string): string => {
     .replace(/'/g, '&apos;');
 };
 
-const getAnswerAsString = (answer: QuestionnaireResponseAnswer): string => {
+const getAnswerAsString = (answer: QuestionnaireResponseItemAnswer): string => {
   if (!answer) {
     return '';
   }

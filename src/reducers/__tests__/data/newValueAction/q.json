@@ -86,9 +86,7 @@
           "linkId": "1.11",
           "text": "Choice - Radio",
           "type": "choice",
-          "options": {
-            "reference": "#MyOptions"
-          },
+          "answerValueSet": "#MyOptions",
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
@@ -107,9 +105,7 @@
           "linkId": "1.12",
           "text": "Choice - Checkbox",
           "type": "choice",
-          "options": {
-            "reference": "#MyOptions"
-          },
+          "answerValueSet": "#MyOptions",
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
@@ -128,9 +124,7 @@
           "linkId": "1.13",
           "text": "OpenChoice - Radio",
           "type": "open-choice",
-          "options": {
-            "reference": "#MyOptions"
-          },
+          "answerValueSet": "#MyOptions",
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
@@ -149,9 +143,7 @@
           "linkId": "1.14",
           "text": "OpenChoice - Checkbox",
           "type": "open-choice",
-          "options": {
-            "reference": "#MyOptions"
-          },
+          "answerValueSet": "#MyOptions",
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",

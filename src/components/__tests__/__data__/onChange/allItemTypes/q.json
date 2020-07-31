@@ -68,9 +68,7 @@
       "linkId": "5a",
       "text": "Choice - radio",
       "type": "choice",
-      "options": {
-        "reference": "#1101"
-      }
+      "answerValueSet": "#1101"
     },
     {
       "extension": [
@@ -89,17 +87,13 @@
       "linkId": "5b",
       "text": "Choice - checkbox",
       "type": "choice",
-      "options": {
-        "reference": "#1101"
-      }
+      "answerValueSet": "#1101"
     },
     {
       "linkId": "6a",
       "text": "OpenChoice - radio",
       "type": "open-choice",
-      "options": {
-        "reference": "#1101"
-      }
+      "answerValueSet": "#1101"
     },
     {
       "extension": [
@@ -118,9 +112,7 @@
       "linkId": "6b",
       "text": "OpenChoice - checkbox",
       "type": "open-choice",
-      "options": {
-        "reference": "#1101"
-      }
+      "answerValueSet": "#1101"
     },
     {
       "linkId": "7a",

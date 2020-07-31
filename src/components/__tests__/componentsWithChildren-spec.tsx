@@ -7,7 +7,7 @@ import '../../util/defineFetch';
 import rootReducer from '../../reducers';
 import { SkjemautfyllerContainer } from '../../components';
 import { Resources } from '../../util/resources';
-import { Questionnaire, QuestionnaireItem, Extension, Coding, Reference } from '../../types/fhir';
+import { Questionnaire, QuestionnaireItem, Extension, Coding } from '../../types/fhir';
 import Choice from '../formcomponents/choice/choice';
 import Boolean from '../formcomponents/boolean/boolean';
 import Decimal from '../formcomponents/decimal/decimal';
@@ -124,6 +124,7 @@ describe('Components render children', () => {
     const q = createQuestionnaire(item);
     const wrapper = createWrapper(q);
 
+    console.log(q);
     wrapper.render();
 
     expect(wrapper.find(Choice)).toHaveLength(3);
@@ -207,7 +208,7 @@ function creatNestedItem(type: string, ...withExtensions: Extension[]): Question
 }
 
 function createNestedChoiceItem(type: string, ...withExtensions: Extension[]): QuestionnaireItem {
-  const reference = { reference: '#8459' } as Reference;
+  const reference = '#8459';
   return createItem(
     type,
     '1',
@@ -229,7 +230,7 @@ function createItem(
   type: string,
   text: string,
   extensions: Extension[],
-  options: Reference | undefined,
+  options: string | undefined,
   ...children: QuestionnaireItem[]
 ): QuestionnaireItem {
   return {
@@ -238,7 +239,7 @@ function createItem(
     text: text,
     item: children,
     extension: extensions,
-    options: options,
+    answerValueSet: options,
   } as QuestionnaireItem;
 }
 

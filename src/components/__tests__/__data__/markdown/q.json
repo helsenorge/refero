@@ -121,9 +121,7 @@
             ]
           },
           "type": "choice",
-          "options": {
-            "reference": "#1101"
-          }
+          "answerValueSet": "#1101"
         },
         {
           "extension": [
@@ -150,9 +148,7 @@
             ]
           },
           "type": "choice",
-          "options": {
-            "reference": "#1101"
-          }
+          "answerValueSet": "#1101"
         },
         {
           "extension": [
@@ -179,9 +175,7 @@
             ]
           },
           "type": "choice",
-          "options": {
-            "reference": "#1101"
-          }
+          "answerValueSet": "#1101"
         },
         {
           "linkId": "6a",
@@ -195,9 +189,7 @@
             ]
           },
           "type": "open-choice",
-          "options": {
-            "reference": "#1101"
-          }
+          "answerValueSet": "#1101"
         },
         {
           "extension": [
@@ -224,9 +216,7 @@
             ]
           },
           "type": "open-choice",
-          "options": {
-            "reference": "#1101"
-          }
+          "answerValueSet": "#1101"
         },
         {
           "extension": [
@@ -253,9 +243,7 @@
             ]
           },
           "type": "open-choice",
-          "options": {
-            "reference": "#1101"
-          }
+          "answerValueSet": "#1101"
         },
         {
           "linkId": "7a",

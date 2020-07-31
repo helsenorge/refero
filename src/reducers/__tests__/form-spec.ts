@@ -1,8 +1,9 @@
 /* tslint:disable */
-import '../../util/defineFetch';
 import * as chai from 'chai';
+
+import '../../util/defineFetch';
 import reducer, { Form } from '../form';
-import { Coding, QuestionnaireResponseItem, Attachment, base64Binary, code } from '../../types/fhir';
+import { Coding, QuestionnaireResponseItem, Attachment } from '../../types/fhir';
 import {
   newStringValue,
   newBooleanValue,
@@ -297,7 +298,7 @@ describe('new value action', () => {
   it('should update attachment fields', () => {
     const action: NewValueAction = newAttachment(
       [{ linkId: 'attachment' }],
-      { url: 'y', title: 'display', data: { value: '123' } as base64Binary, contentType: { value: 'image/jpg' } as code } as Attachment,
+      { url: 'y', title: 'display', data: '123', contentType: 'image/jpg' } as Attachment,
       undefined
     );
     const newState: Form | undefined = reducer(dataModel.skjemautfyller.form, action);
@@ -314,8 +315,8 @@ describe('new value action', () => {
     }
     expect(answer.valueAttachment.url).toEqual('y');
     expect(answer.valueAttachment.title).toEqual('display');
-    expect((answer.valueAttachment.data as base64Binary).value).toEqual('123');
-    expect((answer.valueAttachment.contentType as code).value).toEqual('image/jpg');
+    expect(answer.valueAttachment.data).toEqual('123');
+    expect(answer.valueAttachment.contentType).toEqual('image/jpg');
     expect(answer.valueAttachment.hash).toBeUndefined();
   });
 

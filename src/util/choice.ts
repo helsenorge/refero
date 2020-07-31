@@ -34,11 +34,11 @@ export function getOptions(item: QuestionnaireItem, containedResources?: Resourc
   }
 
   let options;
-  if (item.options && item.options.reference) {
-    if (item.options.reference.startsWith('#')) {
+  if (item.answerValueSet) {
+    if (item.answerValueSet.startsWith('#')) {
       options = getContainedOptions(item, containedResources);
     }
-  } else if (item.option) {
+  } else if (item.answerOption) {
     options = getInlineOptions(item, isReadOnly(item));
   } else if (hasExtensionOptions(item)) {
     options = getExtensionOptions(item, isReadOnly(item));
@@ -58,11 +58,11 @@ export function getOptions(item: QuestionnaireItem, containedResources?: Resourc
 }
 
 export function getSystem(item: QuestionnaireItem, containedResources?: Resource[]) {
-  if (!item || !item.options || !item.options.reference) {
+  if (!item || !item.answerValueSet) {
     return undefined;
   }
-  if (item.options.reference.startsWith('#')) {
-    const id: string = item.options.reference.replace('#', '');
+  if (item.answerValueSet.startsWith('#')) {
+    const id: string = item.answerValueSet.replace('#', '');
     const resource = getContainedResource(id, containedResources);
     if (resource && resource.compose) {
       return resource.compose.include[0].system;
@@ -166,7 +166,7 @@ export function isAllowedValue(item: QuestionnaireItem, value: string | undefine
     return true;
   }
 
-  if (item.options || item.options) {
+  if (item.answerValueSet || item.answerValueSet) {
     const allowedValues: Array<Options> | undefined = getOptions(item, containedResources);
     if (!allowedValues || allowedValues.length === 0) {
       return true;
@@ -241,11 +241,11 @@ function getExtensionOptions(item: QuestionnaireItem, readOnly: boolean): Array<
 }
 
 function getInlineOptions(item: QuestionnaireItem, readOnly: boolean): Array<Options> | undefined {
-  if (!item || !item.option) {
+  if (!item || !item.answerOption) {
     return undefined;
   }
 
-  return item.option
+  return item.answerOption
     .map((it: QuestionnaireItemAnswerOption) => createRadiogroupOptionFromQuestionnaireOption(it, readOnly))
     .filter((it: Options | undefined) => it !== undefined) as Options[];
 }
@@ -301,10 +301,10 @@ function createRadiogroupOptionFromValueString(value: string, readOnly: boolean)
 }
 
 function getContainedOptions(item: QuestionnaireItem, containedResources?: Resource[]): Array<Options> | undefined {
-  if (!item || !item.options || !item.options.reference) {
+  if (!item || !item.answerValueSet) {
     return undefined;
   }
-  const id: string = item.options.reference.replace('#', '');
+  const id: string = item.answerValueSet.replace('#', '');
   const resource = getContainedResource(id, containedResources);
   if (!resource) {
     return undefined;

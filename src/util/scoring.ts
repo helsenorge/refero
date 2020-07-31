@@ -1,7 +1,8 @@
+import * as uuid from 'uuid';
+
 import { QuestionnaireItem, Coding, Extension } from '../types/fhir';
 import Scoring from '../constants/scoring';
 import ExtensionConstants from '../constants/extensions';
-import * as uuid from 'uuid';
 import { getCalculatedExpressionExtension } from './extension';
 import { ScoringItemType } from '../constants/scoringItemType';
 

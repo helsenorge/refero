@@ -19,7 +19,7 @@ describe('update enable when action', () => {
 
   it('should remove added repeats and clear answers when collapsing enableWhens', () => {
     // select "Fra en eller flere avdelinger" (3)
-    let choice = { code: '3', system: { value: 'http://ehelse.no/JournalDeler' } } as Coding;
+    let choice = { code: '3', system: 'http://ehelse.no/JournalDeler' } as Coding;
     if (!newState.FormDefinition.Content) {
       return fail();
     }
@@ -78,7 +78,7 @@ describe('update enable when action', () => {
     expect(r2.answer).toMatchObject([{ valueString: 'world' }]);
 
     // select "Fra alle innleggelser/konsultasjoner" (4)
-    choice = { code: '4', system: { value: 'http://ehelse.no/JournalDeler' } } as Coding;
+    choice = { code: '4', system: 'http://ehelse.no/JournalDeler' } as Coding;
     newState = selectChoice(newState, pathify('7', '7.1'), choice, { linkId: '7.1', type: 'choice' });
 
     r1 = getResponseItem('7.1.2', newState, pathify('7', '7.1', '7.1.2^0'));

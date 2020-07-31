@@ -88,16 +88,16 @@ class DateComponent extends React.Component<Props & ValidationProps> {
     if (answer && answer.valueDateTime) {
       return parseDate(String(answer.valueDateTime));
     }
-    if (!item) {
+    if (!item || !item.initial || item.initial.length === 0) {
       return undefined;
     }
-    if (!item.initialDate && !item.initialDateTime) {
+    if (!item.initial[0].valueDate && !item.initial[0].valueDateTime) {
       return undefined;
     }
-    if (item.initialDate) {
-      return parseDate(String(item.initialDate));
+    if (item.initial[0].valueDate) {
+      return parseDate(String(item.initial[0].valueDate));
     }
-    return parseDate(String(item.initialDateTime));
+    return parseDate(String(item.initial[0].valueDateTime));
   }
 
   getMaxDate(): Date | undefined {

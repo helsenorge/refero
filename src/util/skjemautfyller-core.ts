@@ -1,3 +1,6 @@
+import moment from 'moment';
+import { parseDate } from '@helsenorge/toolkit/components/molecules/time-input/date-core';
+
 import {
   QuestionnaireResponseItem,
   QuestionnaireResponseItemAnswer,
@@ -5,11 +8,7 @@ import {
   QuestionnaireItemEnableWhen,
   QuestionnaireResponse,
 } from '../types/fhir';
-
 import { FormData, FormDefinition } from '../reducers/form';
-import { parseDate } from '@helsenorge/toolkit/components/molecules/time-input/date-core';
-import moment from 'moment';
-
 import ItemType from '../constants/itemType';
 import { getMinOccursExtensionValue } from './extension';
 
@@ -389,7 +388,7 @@ export function enableWhenMatchesAnswer(
   if (!enableWhen) return false;
 
   answers = answers || [];
-
+  /*
   // TODO!
   // que-7: On Questionnaire.item.enableWhen: enableWhen must contain either a 'answer' or a 'hasAnswer' element (expression  on Questionnaire.item.enableWhen: hasAnswer.exists() xor answer.exists())
   if (enableWhen.hasAnswer === false) {
@@ -397,6 +396,10 @@ export function enableWhenMatchesAnswer(
   }
 
   if (enableWhen.hasAnswer === true) {
+    return answers.some(a => hasAnswer(a));
+  }
+*/
+  if (enableWhen.operator === 'exists') {
     return answers.some(a => hasAnswer(a));
   }
 

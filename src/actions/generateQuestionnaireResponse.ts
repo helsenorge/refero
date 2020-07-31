@@ -5,7 +5,6 @@ import {
   QuestionnaireResponse,
   QuestionnaireResponseItem,
   QuestionnaireResponseItemAnswer,
-  Reference,
   Questionnaire,
 } from '../types/fhir';
 
@@ -22,10 +21,8 @@ export function generateQuestionnaireResponse(questionnaire: Questionnaire): Que
     return response;
   }
 
-  // TODO
   if (questionnaire.url) {
-    response.questionnaire = {} as Reference;
-    response.questionnaire.reference = questionnaire.url;
+    response.questionnaire = questionnaire.url;
   }
 
   questionnaire.item.forEach(i => {

@@ -2,7 +2,7 @@ import enableWhenDataModel from './__data__/multipleEnableWhen';
 import { Form } from '../form';
 import { QuestionnaireItem } from '../../types/fhir';
 import { getQuestionnaireDefinitionItem, getDefinitionItems } from '../../util/skjemautfyller-core';
-import { getResponseItem, clickRepeat, pathify, clickCheckbox, enterText } from './utils';
+import { getResponseItem, pathify, clickCheckbox } from './utils';
 
 describe('questionnaire with multiple dependent enable when items', () => {
   let newState: Form;

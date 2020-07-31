@@ -132,7 +132,7 @@ function createItemWithOption(extensions?: Extension[], ...options: Questionnair
   return {
     linkId: '1',
     type: 'choice',
-    option: options,
+    answerOption: options,
     extension: extensions,
   };
 }
