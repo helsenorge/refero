@@ -57,7 +57,7 @@ export interface Form {
 }
 
 interface QrItemsToClear {
-  qItemWithEnableWhen: QuestionnaireItem; 
+  qItemWithEnableWhen: QuestionnaireItem;
   linkId: string;
 }
 
@@ -430,6 +430,12 @@ function processNewValueAction(action: NewValueAction, state: Form): Form {
     }
     if (action.item) {
       const qrItemsToClear: Array<QrItemsToClear> = [];
+      /*
+       * immer lager javascript proxy-objekt av "draft"-variablen i produce, og dersom man oppretter nye variabler eller utleder
+       * noe fra draft, blir disse også proxy-objekter, og denne opprettelsen går tregt. Det beste er å bruke "state"-variablen
+       * for beregninger der det lar seg gjøre, for det går raskt. Koden under regner ut hva som må endres ved å bruke state, og
+       * så gjøres endringen på draft. På skjema med mange enableWhen kan man da spare flere sekunder når noe fylles ut.
+       */
       calculateEnableWhenItemsToClear([action.item], state.FormData, state.FormDefinition, action.itemPath, qrItemsToClear);
 
       const responseItems = getResponseItems(draft.FormData);
@@ -440,7 +446,7 @@ function processNewValueAction(action: NewValueAction, state: Form): Form {
             removeAddedRepeatingItems(qrItemsToClear[w].qItemWithEnableWhen, qrItemWithEnableWhen[r].item, responseItems);
             wipeAnswerItems(qrItemWithEnableWhen[r].item, qrItemsToClear[w].qItemWithEnableWhen);
           }
-        } 
+        }
       }
     }
   });
@@ -545,8 +551,8 @@ function calculateEnableWhenItemsToClear(
       });
 
       if (!enable) {
-        qrItemsToClear.push({ 
-          qItemWithEnableWhen: qItemWithEnableWhen, 
+        qrItemsToClear.push({
+          qItemWithEnableWhen: qItemWithEnableWhen,
           linkId: qrItemWithEnableWhen.item.linkId,
         });
       }
