@@ -1,4 +1,8 @@
-﻿6.5.2
+﻿6.5.3
+-----
+* Improve processing time when clearing answers of items which will hidden by enableWhen.
+
+6.5.2
 -----
 * Do not set system in Coding object in processNewValueAction(...) if system is undefined or null.
 
