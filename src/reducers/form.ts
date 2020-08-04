@@ -437,9 +437,18 @@ function processNewValueAction(action: NewValueAction, state: Form): Form {
        * for beregninger der det lar seg gjøre, for det går raskt. Koden under regner ut hva som må endres ved å bruke state, og
        * så gjøres endringen på draft. På skjema med mange enableWhen kan man da spare flere sekunder når noe fylles ut.
        */
-      calculateEnableWhenItemsToClear([action.item], state.FormData, state.FormDefinition, action.itemPath, qrItemsToClear);
-
       const responseItems = getResponseItems(draft.FormData);
+      // lag en kopi som kan oppdateres underveis, for å beregne multiple dependent enableWhen items
+      const calculatedResponseItems = JSON.parse(JSON.stringify(responseItems));
+      calculateEnableWhenItemsToClear(
+        [action.item],
+        state.FormData,
+        state.FormDefinition,
+        action.itemPath,
+        qrItemsToClear,
+        calculatedResponseItems
+      );
+
       if (responseItems && responseItems.length > 0) {
         for (var w = 0; w < qrItemsToClear.length; w++) {
           const qrItemWithEnableWhen = getResponseItemAndPathWithLinkId(qrItemsToClear[w].linkId, draft.FormData.Content!);
@@ -506,13 +515,13 @@ function calculateEnableWhenItemsToClear(
   formData: FormData,
   formDefinition: FormDefinition,
   path: Array<Path> | undefined,
-  qrItemsToClear: Array<QrItemsToClear>
+  qrItemsToClear: Array<QrItemsToClear>,
+  responseItems: QuestionnaireResponseItem[] | undefined
 ): void {
   if (!items) {
     return;
   }
   const definitionItems = getDefinitionItems(formDefinition);
-  const responseItems = getResponseItems(formData);
   if (!responseItems || responseItems.length === 0) {
     return;
   }
@@ -552,6 +561,12 @@ function calculateEnableWhenItemsToClear(
       });
 
       if (!enable) {
+        const item = getResponseItemWithLinkIdPossiblyContainingRepeat(qrItemWithEnableWhen.item.linkId, responseItems, path);
+        if (item) {
+          // fjern svar i responseItems som brukes for å beregne hvilke felter som skal tømmes til slutt
+          removeAddedRepeatingItems(qItemWithEnableWhen, item, responseItems);
+          wipeAnswerItems(item, qItemWithEnableWhen);
+        }
         qrItemsToClear.push({
           qItemWithEnableWhen: qItemWithEnableWhen,
           linkId: qrItemWithEnableWhen.item.linkId,
@@ -559,9 +574,11 @@ function calculateEnableWhenItemsToClear(
       }
     }
   }
-  calculateEnableWhenItemsToClear(qitemsWithEnableWhen, formData, formDefinition, path, qrItemsToClear);
+  calculateEnableWhenItemsToClear(qitemsWithEnableWhen, formData, formDefinition, path, qrItemsToClear, responseItems);
 
-  qitemsWithEnableWhen.forEach(i => i.item && calculateEnableWhenItemsToClear(i.item, formData, formDefinition, path, qrItemsToClear));
+  qitemsWithEnableWhen.forEach(
+    i => i.item && calculateEnableWhenItemsToClear(i.item, formData, formDefinition, path, qrItemsToClear, responseItems)
+  );
 }
 
 // This should remove repeated items, but not the original, so remove index
