@@ -1,6 +1,5 @@
 ﻿6.5.5
 -----
-* Use v13.3.2 of @helsenorge/toolkit as peerDependency.
 * Use v1.6.22 of @helsenorge/core-utils as peerDependency.
 
 6.5.4

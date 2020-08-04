@@ -27,7 +27,7 @@
     }
   },
   "peerDependencies": {
-    "@helsenorge/toolkit": "13.3.2",
+    "@helsenorge/toolkit": "13.0.0",
     "@helsenorge/core-utils": "1.6.22",
     "react": "^16.8.4",
     "react-dom": "^16.8.4",
