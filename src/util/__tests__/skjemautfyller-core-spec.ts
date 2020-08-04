@@ -338,16 +338,19 @@ describe('getItemWithTypeFromArray', () => {
     expect(response).toMatchSnapshot();
   });
 });
-describe('Given a Questionnaire with operator exists', () => {
-  it('When an item does not have an answer then enablewhen should return false', () => {
-    const result = enableWhenMatchesAnswer({ question: '1.0.0', operator: 'exists' } as QuestionnaireItemEnableWhen, undefined);
-    expect(result).toBe(false);
+describe('Given a Questionnaire with operator="exists" and answerBoolean=false', () => {
+  it('When an item does not have an answer then enablewhen should return true', () => {
+    const result = enableWhenMatchesAnswer(
+      { question: '1.0.0', operator: 'exists', answerBoolean: false } as QuestionnaireItemEnableWhen,
+      undefined
+    );
+    expect(result).toBe(true);
   });
 
-  it('When an item does have an answer then enablewhen should return true', () => {
-    const result = enableWhenMatchesAnswer({ question: '1.0.0', operator: 'exists' } as QuestionnaireItemEnableWhen, [
+  it('When an item does have an answer then enablewhen should return false', () => {
+    const result = enableWhenMatchesAnswer({ question: '1.0.0', operator: 'exists', answerBoolean: false } as QuestionnaireItemEnableWhen, [
       { valueString: 'et svar' } as QuestionnaireResponseItemAnswer,
     ]);
-    expect(result).toBe(true);
+    expect(result).toBe(false);
   });
 });

@@ -205,6 +205,7 @@ export const dataModel: GlobalState = {
                         {
                           question: 'group1.2',
                           operator: 'exists',
+                          answerBoolean: true,
                         },
                       ],
                     },
@@ -215,6 +216,7 @@ export const dataModel: GlobalState = {
                         {
                           question: 'group1.1',
                           operator: 'exists',
+                          answerBoolean: true,
                         },
                       ],
                     },

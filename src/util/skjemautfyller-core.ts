@@ -388,18 +388,12 @@ export function enableWhenMatchesAnswer(
   if (!enableWhen) return false;
 
   answers = answers || [];
-  /*
-  // TODO!
   // que-7: On Questionnaire.item.enableWhen: enableWhen must contain either a 'answer' or a 'hasAnswer' element (expression  on Questionnaire.item.enableWhen: hasAnswer.exists() xor answer.exists())
-  if (enableWhen.hasAnswer === false) {
+  if (enableWhen.operator === 'exists' && enableWhen.answerBoolean === false) {
     return !answers.some(a => hasAnswer(a));
   }
 
-  if (enableWhen.hasAnswer === true) {
-    return answers.some(a => hasAnswer(a));
-  }
-*/
-  if (enableWhen.operator === 'exists') {
+  if (enableWhen.operator === 'exists' && enableWhen.answerBoolean === true) {
     return answers.some(a => hasAnswer(a));
   }
 

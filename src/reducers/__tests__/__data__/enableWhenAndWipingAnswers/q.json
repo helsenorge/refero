@@ -53,7 +53,8 @@
               "enableWhen": [
                 {
                   "question": "1.1",
-                  "operator": "exists"
+                  "operator": "exists",
+                  "answerBoolean": true
                 }
               ],
               "item": [
@@ -64,7 +65,8 @@
                   "enableWhen": [
                     {
                       "question": "1.1.1",
-                      "operator": "exists"
+                      "operator": "exists",
+                      "answerBoolean": true
                     }
                   ],
                   "answerValueSet": "#1101"
