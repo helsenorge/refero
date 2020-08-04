@@ -2,7 +2,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 import SafeInputField from '@helsenorge/toolkit/components/atoms/safe-input-field';
-import layoutChange from '@helsenorge/core-utils/hoc/layoutChange';
+import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
 import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
 

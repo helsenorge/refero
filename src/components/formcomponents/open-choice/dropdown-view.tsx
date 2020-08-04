@@ -3,7 +3,7 @@ import { Collapse } from 'react-collapse';
 import { Options } from '@helsenorge/toolkit/components/atoms/radio-group';
 import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
 import SafeSelect from '@helsenorge/toolkit/components/atoms/safe-select';
-import layoutChange from '@helsenorge/core-utils/hoc/layoutChange';
+import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 
 import { isRequired, getId, renderPrefix, getText } from '../../../util/index';
 import { getValidationTextExtension, getPlaceholder } from '../../../util/extension';

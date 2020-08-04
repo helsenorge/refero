@@ -1,4 +1,8 @@
-﻿6.5.4
+﻿6.5.5
+-----
+* Use v1.6.22 of @helsenorge/core-utils as peerDependency.
+
+6.5.4
 -----
 * Fix issue with clearing answers of items multiple dependent enableWhen items.
 

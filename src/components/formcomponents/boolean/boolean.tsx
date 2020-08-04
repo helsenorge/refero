@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { CheckBox } from '@helsenorge/toolkit/components/atoms/checkbox';
 import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
-import layoutChange from '@helsenorge/core-utils/hoc/layoutChange';
+import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
 
 import withCommonFunctions from '../../with-common-functions';

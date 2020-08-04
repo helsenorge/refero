@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Collapse } from 'react-collapse';
-import layoutChange from '@helsenorge/core-utils/hoc/layoutChange';
+import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 import { Options } from '@helsenorge/toolkit/components/atoms/radio-group';
 import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
 import SafeSelect from '@helsenorge/toolkit/components/atoms/safe-select';

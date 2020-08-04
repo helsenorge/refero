@@ -6,7 +6,7 @@ import 'moment/locale/nb';
 import DateTimeInput from '@helsenorge/toolkit/components/molecules/date-time-input';
 import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
 import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
-import layoutChange from '@helsenorge/core-utils/hoc/layoutChange';
+import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 import { parseDate } from '@helsenorge/toolkit/components/molecules/time-input/date-core';
 
 import withCommonFunctions from '../../with-common-functions';
