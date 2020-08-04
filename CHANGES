@@ -1,4 +1,8 @@
-﻿6.5.3
+﻿6.5.4
+-----
+* Fix issue with clearing answers of items multiple dependent enableWhen items.
+
+6.5.3
 -----
 * Improve processing time when clearing answers of items which will hidden by enableWhen.
 
