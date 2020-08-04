@@ -10,7 +10,7 @@ import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/m
 import { NewValueAction, newBooleanValueAsync } from '../../../actions/newValue';
 import { isReadOnly, isRequired, getId, renderPrefix, getText } from '../../../util/index';
 import { getValidationTextExtension } from '../../../util/extension';
-import layoutChange from '@helsenorge/core-utils/hoc/layoutChange';
+import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 import Pdf from './pdf';
 import { ThunkDispatch } from 'redux-thunk';
 import { GlobalState } from '../../../reducers';

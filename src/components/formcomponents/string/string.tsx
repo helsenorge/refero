@@ -5,7 +5,7 @@ import { GlobalState } from '../../../reducers';
 import { NewValueAction, newStringValueAsync } from '../../../actions/newValue';
 import { debounce } from '@helsenorge/core-utils/debounce';
 import SafeInputField from '@helsenorge/toolkit/components/atoms/safe-input-field';
-import layoutChange from '@helsenorge/core-utils/hoc/layoutChange';
+import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
 import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
 import { Path } from '../../../util/skjemautfyller-core';

@@ -6,7 +6,7 @@ import withCommonFunctions from '../../with-common-functions';
 import DateTimeInput from '@helsenorge/toolkit/components/molecules/date-time-input';
 import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
 import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
-import layoutChange from '@helsenorge/core-utils/hoc/layoutChange';
+import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 import { Path } from '../../../util/skjemautfyller-core';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { parseDate } from '@helsenorge/toolkit/components/molecules/time-input/date-core';
