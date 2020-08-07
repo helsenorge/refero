@@ -85,6 +85,7 @@
               "linkId": "7.1.1",
               "text": "Oppgi tidsrom for innleggelse/periode/konsultasjon du ønsker kopi av journal fra:",
               "type": "group",
+              "enableBehavior": "any",
               "enableWhen": [
                 {
                   "question": "7.1",
@@ -100,6 +101,7 @@
               "linkId": "7.1.2",
               "text": "Oppgi avdeling(er) du ønsker kopi av journal fra:",
               "type": "text",
+              "enableBehavior": "any",
               "enableWhen": [
                 {
                   "question": "7.1",

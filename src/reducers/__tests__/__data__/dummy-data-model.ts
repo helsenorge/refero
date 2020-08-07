@@ -25,6 +25,7 @@ const dataModel: GlobalState = {
             {
               linkId: 'd',
               type: 'decimal',
+              enableBehavior: 'any',
               enableWhen: [
                 {
                   question: 'b',
@@ -35,6 +36,7 @@ const dataModel: GlobalState = {
             {
               linkId: 'i',
               type: 'integer',
+              enableBehavior: 'any',
               enableWhen: [
                 {
                   question: 'd',
@@ -81,6 +83,7 @@ const dataModel: GlobalState = {
                             {
                               linkId: 't41',
                               type: 'string',
+                              enableBehavior: 'any',
                               enableWhen: [
                                 {
                                   question: 'i',

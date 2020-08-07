@@ -23,6 +23,7 @@ import {
   QuestionnaireResponse,
   Coding,
   Attachment,
+  QuestionnaireItemEnableBehaviorCodes,
 } from '../types/fhir';
 import {
   getResponseItemWithPath,
@@ -548,6 +549,8 @@ function calculateEnableWhenItemsToClear(
     const qrItemsWithEnableWhen = getResponseItemAndPathWithLinkId(qItemWithEnableWhen.linkId, formData.Content!);
     for (const qrItemWithEnableWhen of qrItemsWithEnableWhen) {
       let enable = false;
+      const enableBehavior = qItemWithEnableWhen.enableBehavior;
+
       enableWhenClauses.forEach((enableWhen: QuestionnaireItemEnableWhen) => {
         const enableWhenQuestionItem = getQuestionnaireDefinitionItem(enableWhen.question, definitionItems);
         if (!enableWhenQuestionItem) return;
@@ -556,7 +559,12 @@ function calculateEnableWhenItemsToClear(
         const responseItem = getResponseItemWithLinkIdPossiblyContainingRepeat(enableWhen.question, responseItems, path);
 
         if (responseItem) {
-          enable = enable || enableWhenMatchesAnswer(enableWhen, responseItem.answer);
+          const matchesAnswer = enableWhenMatchesAnswer(enableWhen, responseItem.answer);
+          if (enableBehavior === QuestionnaireItemEnableBehaviorCodes.ANY) {
+            enable = enable || matchesAnswer;
+          } else if (enableBehavior === QuestionnaireItemEnableBehaviorCodes.ALL) {
+            enable = enable && matchesAnswer;
+          }
         }
       });
 

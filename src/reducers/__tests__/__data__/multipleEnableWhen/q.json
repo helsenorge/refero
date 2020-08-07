@@ -69,6 +69,7 @@
       "linkId": "2",
       "text": "Selvhjelp",
       "type": "group",
+      "enableBehavior": "any",
       "enableWhen": [
         {
           "question": "1.1",
@@ -90,6 +91,7 @@
       "linkId": "3",
       "text": "Rådgiving og psykolog",
       "type": "group",
+      "enableBehavior": "any",
       "enableWhen": [
         {
           "question": "2.1",
@@ -112,7 +114,7 @@
       "linkId": "4",
       "text": "Din psykiske helse",
       "type": "group",
-
+      "enableBehavior": "any",
       "enableWhen": [
         {
           "question": "3.1",

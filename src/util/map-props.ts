@@ -1,6 +1,6 @@
 import { ThunkDispatch } from 'redux-thunk';
 
-import { QuestionnaireResponseItem, QuestionnaireItemEnableWhen } from '../types/fhir';
+import { QuestionnaireResponseItem, QuestionnaireItemEnableWhen, QuestionnaireItemEnableBehaviorCodes } from '../types/fhir';
 import { GlobalState } from '../reducers/index';
 import { getFormData } from '../reducers/form';
 import { Props } from '../components/with-common-functions';
@@ -17,11 +17,16 @@ export function mapStateToProps(state: GlobalState, originalProps: Props): Props
   if (!originalProps.item || !originalProps.item.enableWhen) {
     return { ...originalProps, enable: true } as Props;
   }
-  const enable = isEnableWhenEnabled(originalProps.item.enableWhen, originalProps.path || [], state);
+  const enable = isEnableWhenEnabled(originalProps.item.enableWhen, originalProps.item.enableBehavior, originalProps.path || [], state);
   return { ...originalProps, enable } as Props;
 }
 
-function isEnableWhenEnabled(enableWhen: QuestionnaireItemEnableWhen[], path: Path[], state: GlobalState): boolean {
+function isEnableWhenEnabled(
+  enableWhen: QuestionnaireItemEnableWhen[],
+  enableBehavior: string | undefined,
+  path: Path[],
+  state: GlobalState
+): boolean {
   let enable = false;
   enableWhen.forEach((enableWhen: QuestionnaireItemEnableWhen) => {
     const responseItems = getResponseItems(getFormData(state));
@@ -38,7 +43,12 @@ function isEnableWhenEnabled(enableWhen: QuestionnaireItemEnableWhen[], path: Pa
         continue;
       }
 
-      enable = enable || enableWhenMatchesAnswer(enableWhen, responseItem.answer);
+      const matchesAnswer = enableWhenMatchesAnswer(enableWhen, responseItem.answer);
+      if (enableBehavior === QuestionnaireItemEnableBehaviorCodes.ANY) {
+        enable = enable || matchesAnswer;
+      } else if (enableBehavior === QuestionnaireItemEnableBehaviorCodes.ALL) {
+        enable = enable && matchesAnswer;
+      }
     }
   });
   return enable;

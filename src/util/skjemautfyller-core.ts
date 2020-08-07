@@ -1,6 +1,3 @@
-import moment from 'moment';
-import { parseDate } from '@helsenorge/toolkit/components/molecules/time-input/date-core';
-
 import {
   QuestionnaireResponseItem,
   QuestionnaireResponseItemAnswer,
@@ -11,6 +8,7 @@ import {
 import { FormData, FormDefinition } from '../reducers/form';
 import ItemType from '../constants/itemType';
 import { getMinOccursExtensionValue } from './extension';
+import { enableWhenMatches } from '../util/enableWhenMatcher';
 
 export function getRootQuestionnaireResponseItemFromData(
   definitionLinkId: string,
@@ -236,115 +234,6 @@ export function getItemWithTypeFromArray(
   return filteredItems;
 }
 
-function enableWhenMatchesBooleanAnswer(enableWhen: QuestionnaireItemEnableWhen, answer: QuestionnaireResponseItemAnswer): boolean {
-  if (enableWhen.answerBoolean === undefined) {
-    return false;
-  }
-  if (answer.valueBoolean === undefined) {
-    return false;
-  }
-  return enableWhen.answerBoolean === answer.valueBoolean;
-}
-
-function enableWhenMatchesDecimalAnswer(enableWhen: QuestionnaireItemEnableWhen, answer: QuestionnaireResponseItemAnswer): boolean {
-  if (enableWhen.answerDecimal === undefined) {
-    return false;
-  }
-  if (answer.valueDecimal === undefined) {
-    return false;
-  }
-  return enableWhen.answerDecimal === answer.valueDecimal;
-}
-
-function enableWhenMatchesIntegerAnswer(enableWhen: QuestionnaireItemEnableWhen, answer: QuestionnaireResponseItemAnswer): boolean {
-  if (enableWhen.answerInteger === undefined) {
-    return false;
-  }
-  if (answer.valueInteger === undefined) {
-    return false;
-  }
-  return enableWhen.answerInteger === answer.valueInteger;
-}
-
-function enableWhenMatchesDateAnswer(enableWhen: QuestionnaireItemEnableWhen, answer: QuestionnaireResponseItemAnswer): boolean {
-  if (enableWhen.answerDate === undefined) {
-    return false;
-  }
-  if (answer.valueDate === undefined) {
-    return false;
-  }
-  return moment(parseDate(String(enableWhen.answerDate))).isSame(parseDate(String(answer.valueDate)));
-}
-
-function enableWhenMatchesDateTimeAnswer(enableWhen: QuestionnaireItemEnableWhen, answer: QuestionnaireResponseItemAnswer): boolean {
-  if (enableWhen.answerDateTime === undefined) {
-    return false;
-  }
-  if (answer.valueDateTime === undefined) {
-    return false;
-  }
-  return moment(parseDate(String(enableWhen.answerDateTime))).isSame(parseDate(String(answer.valueDateTime)));
-}
-
-function enableWhenMatchesTimeAnswer(enableWhen: QuestionnaireItemEnableWhen, answer: QuestionnaireResponseItemAnswer): boolean {
-  if (enableWhen.answerTime === undefined) {
-    return false;
-  }
-  if (answer.valueTime === undefined) {
-    return false;
-  }
-  return enableWhen.answerTime === answer.valueTime;
-}
-
-function enableWhenMatchesStringAnswer(enableWhen: QuestionnaireItemEnableWhen, answer: QuestionnaireResponseItemAnswer): boolean {
-  if (enableWhen.answerString === undefined) {
-    return false;
-  }
-  if (answer.valueString === undefined) {
-    return false;
-  }
-  return enableWhen.answerString === answer.valueString;
-}
-
-function enableWhenMatchesCodeAnswer(enableWhen: QuestionnaireItemEnableWhen, answer: QuestionnaireResponseItemAnswer): boolean {
-  if (enableWhen.answerCoding === undefined) {
-    return false;
-  }
-  if (answer.valueCoding === undefined) {
-    return false;
-  }
-  return enableWhen.answerCoding.code === answer.valueCoding.code && enableWhen.answerCoding.system === answer.valueCoding.system;
-}
-
-function enableWhenMatchesQuantityAnswer(enableWhen: QuestionnaireItemEnableWhen, answer: QuestionnaireResponseItemAnswer): boolean {
-  if (enableWhen.answerQuantity === undefined) {
-    return false;
-  }
-  if (answer.valueQuantity === undefined) {
-    return false;
-  }
-  return (
-    enableWhen.answerQuantity.code === answer.valueQuantity.code &&
-    enableWhen.answerQuantity.system === answer.valueQuantity.system &&
-    enableWhen.answerQuantity.value === answer.valueQuantity.value
-  );
-}
-
-function enableWhenMatchesReferenceAnswer(enableWhen: QuestionnaireItemEnableWhen, answer: QuestionnaireResponseItemAnswer): boolean {
-  if (enableWhen.answerReference === undefined) {
-    return false;
-  }
-
-  if (answer.valueCoding) {
-    return enableWhen.answerReference.reference === answer.valueCoding.code;
-  }
-  if (answer.valueReference) {
-    return enableWhen.answerReference.reference === answer.valueReference.reference;
-  }
-
-  return false;
-}
-
 export function hasAnswer(answer: QuestionnaireResponseItemAnswer): boolean {
   if (!answer) {
     return false;
@@ -403,36 +292,7 @@ export function enableWhenMatchesAnswer(
 
   let matches = false;
   answers.forEach((answer: QuestionnaireResponseItemAnswer) => {
-    if (enableWhen.answerBoolean !== undefined) {
-      matches = matches || enableWhenMatchesBooleanAnswer(enableWhen, answer);
-    }
-    if (enableWhen.answerDecimal) {
-      matches = matches || enableWhenMatchesDecimalAnswer(enableWhen, answer);
-    }
-    if (enableWhen.answerInteger) {
-      matches = matches || enableWhenMatchesIntegerAnswer(enableWhen, answer);
-    }
-    if (enableWhen.answerDate) {
-      matches = matches || enableWhenMatchesDateAnswer(enableWhen, answer);
-    }
-    if (enableWhen.answerDateTime) {
-      matches = matches || enableWhenMatchesDateTimeAnswer(enableWhen, answer);
-    }
-    if (enableWhen.answerTime) {
-      matches = matches || enableWhenMatchesTimeAnswer(enableWhen, answer);
-    }
-    if (enableWhen.answerString) {
-      matches = matches || enableWhenMatchesStringAnswer(enableWhen, answer);
-    }
-    if (enableWhen.answerCoding) {
-      matches = matches || enableWhenMatchesCodeAnswer(enableWhen, answer);
-    }
-    if (enableWhen.answerQuantity) {
-      matches = matches || enableWhenMatchesQuantityAnswer(enableWhen, answer);
-    }
-    if (enableWhen.answerReference) {
-      matches = matches || enableWhenMatchesReferenceAnswer(enableWhen, answer);
-    }
+    matches = matches || enableWhenMatches(enableWhen, answer);
   });
   return matches;
 }

@@ -39,6 +39,7 @@
           "linkId": "1.1",
           "text": "skriv noe",
           "type": "string",
+          "enableBehavior": "any",
           "enableWhen": [
             {
               "question": "1",
@@ -50,6 +51,7 @@
               "linkId": "1.1.1",
               "text": "nested enable when",
               "type": "text",
+              "enableBehavior": "any",
               "enableWhen": [
                 {
                   "question": "1.1",
@@ -62,6 +64,7 @@
                   "linkId": "1.1.1.1",
                   "text": "turtles all the way down",
                   "type": "choice",
+                  "enableBehavior": "any",
                   "enableWhen": [
                     {
                       "question": "1.1.1",
@@ -86,6 +89,7 @@
           "linkId": "2.1",
           "text": "urelated nested",
           "type": "string",
+          "enableBehavior": "any",
           "enableWhen": [
             {
               "question": "2",

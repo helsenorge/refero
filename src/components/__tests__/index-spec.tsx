@@ -149,6 +149,7 @@ function questionnaireWithRepeatedEnableWhens(): Questionnaire {
                 linkId: '8.1.2',
                 text: 'enableWhen',
                 type: 'string',
+                enableBehavior: 'any',
                 enableWhen: [
                   {
                     question: '8.1.1',

@@ -22,6 +22,7 @@ export const dataModel: GlobalState = {
             {
               linkId: 'string2',
               type: 'string',
+              enableBehavior: 'any',
               enableWhen: [
                 {
                   question: 'string1',
@@ -32,6 +33,7 @@ export const dataModel: GlobalState = {
             {
               linkId: 'string3',
               type: 'string',
+              enableBehavior: 'any',
               enableWhen: [
                 {
                   question: 'string1',
@@ -46,6 +48,7 @@ export const dataModel: GlobalState = {
             {
               linkId: 'boolean2',
               type: 'boolean',
+              enableBehavior: 'any',
               enableWhen: [
                 {
                   question: 'boolean1',
@@ -60,6 +63,7 @@ export const dataModel: GlobalState = {
             {
               linkId: 'decimal2',
               type: 'decimal',
+              enableBehavior: 'any',
               enableWhen: [
                 {
                   question: 'decimal1',
@@ -74,6 +78,7 @@ export const dataModel: GlobalState = {
             {
               linkId: 'integer2',
               type: 'integer',
+              enableBehavior: 'any',
               enableWhen: [
                 {
                   question: 'integer1',
@@ -92,6 +97,7 @@ export const dataModel: GlobalState = {
             {
               linkId: 'date2',
               type: 'date',
+              enableBehavior: 'any',
               enableWhen: [
                 {
                   question: 'date1',
@@ -106,6 +112,7 @@ export const dataModel: GlobalState = {
             {
               linkId: 'datetime2',
               type: 'dateTime',
+              enableBehavior: 'any',
               enableWhen: [
                 {
                   question: 'datetime1',
@@ -120,6 +127,7 @@ export const dataModel: GlobalState = {
             {
               linkId: 'time2',
               type: 'time',
+              enableBehavior: 'any',
               enableWhen: [
                 {
                   question: 'time1',
@@ -134,6 +142,7 @@ export const dataModel: GlobalState = {
             {
               linkId: 'code2',
               type: 'code',
+              enableBehavior: 'any',
               enableWhen: [
                 {
                   question: 'code1',
@@ -201,6 +210,7 @@ export const dataModel: GlobalState = {
                     {
                       linkId: 'group1.2.1',
                       type: 'string',
+                      enableBehavior: 'any',
                       enableWhen: [
                         {
                           question: 'group1.2',
@@ -212,6 +222,7 @@ export const dataModel: GlobalState = {
                     {
                       linkId: 'group1.2.2',
                       type: 'string',
+                      enableBehavior: 'any',
                       enableWhen: [
                         {
                           question: 'group1.1',
@@ -237,6 +248,7 @@ export const dataModel: GlobalState = {
             {
               linkId: 'reference2',
               type: 'code',
+              enableBehavior: 'any',
               enableWhen: [
                 {
                   question: 'reference1',
@@ -257,6 +269,7 @@ export const dataModel: GlobalState = {
             {
               linkId: 'reference2.1',
               type: 'code',
+              enableBehavior: 'any',
               enableWhen: [
                 {
                   question: 'reference1.1',
@@ -303,6 +316,7 @@ export const dataModel: GlobalState = {
             {
               linkId: 'quantity2',
               type: 'quantity',
+              enableBehavior: 'any',
               enableWhen: [
                 {
                   question: 'quantity1',
