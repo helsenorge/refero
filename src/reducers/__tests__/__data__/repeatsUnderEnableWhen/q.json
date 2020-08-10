@@ -89,6 +89,7 @@
               "enableWhen": [
                 {
                   "question": "7.1",
+                  "operator": "=",
                   "answerCoding": {
                     "system": "http://ehelse.no/JournalDeler",
                     "code": "2"
@@ -105,6 +106,7 @@
               "enableWhen": [
                 {
                   "question": "7.1",
+                  "operator": "=",
                   "answerCoding": {
                     "system": "http://ehelse.no/JournalDeler",
                     "code": "3"

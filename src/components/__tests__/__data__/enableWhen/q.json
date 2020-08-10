@@ -165,6 +165,7 @@
           "enableWhen": [
             {
               "question": "9_1",
+              "operator": "=",
               "answerCoding": {
                 "system": "http://ehelse.no/sykdommer",
                 "code": "18"

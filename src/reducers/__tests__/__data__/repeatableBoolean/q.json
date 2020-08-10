@@ -44,7 +44,7 @@
                   "text": "Fullblod",
                   "type": "boolean",
                   "enableBehavior": "any",
-                  "enableWhen": [{ "question": "1.0.3", "answerBoolean": true }]
+                  "enableWhen": [{ "question": "1.0.3", "answerBoolean": true, "operator": "=" }]
                 }
               ]
             },

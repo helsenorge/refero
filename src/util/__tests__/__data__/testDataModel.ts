@@ -27,6 +27,7 @@ export const dataModel: GlobalState = {
                 {
                   question: 'string1',
                   answerString: 'test svar',
+                  operator: '=',
                 },
               ],
             },
@@ -38,6 +39,7 @@ export const dataModel: GlobalState = {
                 {
                   question: 'string1',
                   answerString: 'test feil',
+                  operator: '=',
                 },
               ],
             },
@@ -53,6 +55,7 @@ export const dataModel: GlobalState = {
                 {
                   question: 'boolean1',
                   answerBoolean: true,
+                  operator: '=',
                 },
               ],
             },
@@ -68,6 +71,7 @@ export const dataModel: GlobalState = {
                 {
                   question: 'decimal1',
                   answerDecimal: 2.5,
+                  operator: '=',
                 },
               ],
             },
@@ -83,10 +87,12 @@ export const dataModel: GlobalState = {
                 {
                   question: 'integer1',
                   answerInteger: 2,
+                  operator: '=',
                 },
                 {
                   question: 'decimal2',
                   answerInteger: 888,
+                  operator: '=',
                 },
               ],
             },
@@ -102,6 +108,7 @@ export const dataModel: GlobalState = {
                 {
                   question: 'date1',
                   answerDate: '2018',
+                  operator: '=',
                 },
               ],
             },
@@ -117,6 +124,7 @@ export const dataModel: GlobalState = {
                 {
                   question: 'datetime1',
                   answerDateTime: '2018-05-18T10:28:45Z',
+                  operator: '=',
                 },
               ],
             },
@@ -132,6 +140,7 @@ export const dataModel: GlobalState = {
                 {
                   question: 'time1',
                   answerTime: '10:28',
+                  operator: '=',
                 },
               ],
             },
@@ -146,6 +155,7 @@ export const dataModel: GlobalState = {
               enableWhen: [
                 {
                   question: 'code1',
+                  operator: '=',
                   answerCoding: {
                     code: 'code1answer',
                   },
@@ -252,6 +262,7 @@ export const dataModel: GlobalState = {
               enableWhen: [
                 {
                   question: 'reference1',
+                  operator: '=',
                   answerReference: {
                     reference: 'http://ehelse.no/Endpoint/1',
                     display: 'my endpoint',
@@ -273,6 +284,7 @@ export const dataModel: GlobalState = {
               enableWhen: [
                 {
                   question: 'reference1.1',
+                  operator: '=',
                   answerReference: {
                     reference: 'http://ehelse.no/Endpoint/1',
                     display: 'my endpoint',
@@ -320,6 +332,7 @@ export const dataModel: GlobalState = {
               enableWhen: [
                 {
                   question: 'quantity1',
+                  operator: '=',
                   answerQuantity: {
                     value: 42.24,
                     code: 'cm',

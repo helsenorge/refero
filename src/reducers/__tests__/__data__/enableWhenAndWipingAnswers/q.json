@@ -43,6 +43,7 @@
           "enableWhen": [
             {
               "question": "1",
+              "operator": "=",
               "answerBoolean": true
             }
           ],
@@ -93,7 +94,8 @@
           "enableWhen": [
             {
               "question": "2",
-              "answerBoolean": true
+              "answerBoolean": true,
+              "operator": "="
             }
           ]
         }

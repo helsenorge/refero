@@ -4,6 +4,7 @@ import {
   QuestionnaireItem,
   QuestionnaireItemEnableWhen,
   QuestionnaireResponse,
+  QuestionnaireEnableOperator,
 } from '../types/fhir';
 import { FormData, FormDefinition } from '../reducers/form';
 import ItemType from '../constants/itemType';
@@ -278,11 +279,11 @@ export function enableWhenMatchesAnswer(
 
   answers = answers || [];
   // que-7: On Questionnaire.item.enableWhen: enableWhen must contain either a 'answer' or a 'hasAnswer' element (expression  on Questionnaire.item.enableWhen: hasAnswer.exists() xor answer.exists())
-  if (enableWhen.operator === 'exists' && enableWhen.answerBoolean === false) {
+  if (enableWhen.operator === QuestionnaireEnableOperator.Exists.code && enableWhen.answerBoolean === false) {
     return !answers.some(a => hasAnswer(a));
   }
 
-  if (enableWhen.operator === 'exists' && enableWhen.answerBoolean === true) {
+  if (enableWhen.operator === QuestionnaireEnableOperator.Exists.code && enableWhen.answerBoolean === true) {
     return answers.some(a => hasAnswer(a));
   }
 

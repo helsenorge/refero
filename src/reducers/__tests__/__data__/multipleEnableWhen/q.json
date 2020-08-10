@@ -73,7 +73,8 @@
       "enableWhen": [
         {
           "question": "1.1",
-          "answerBoolean": true
+          "answerBoolean": true,
+          "operator": "="
         }
       ],
       "repeats": false,
@@ -95,7 +96,8 @@
       "enableWhen": [
         {
           "question": "2.1",
-          "answerBoolean": true
+          "answerBoolean": true,
+          "operator": "="
         }
       ],
       "repeats": false,
@@ -118,7 +120,8 @@
       "enableWhen": [
         {
           "question": "3.1",
-          "answerBoolean": true
+          "answerBoolean": true,
+          "operator": "="
         }
       ],
       "repeats": false,

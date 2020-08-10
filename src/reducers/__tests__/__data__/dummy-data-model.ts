@@ -30,6 +30,7 @@ const dataModel: GlobalState = {
                 {
                   question: 'b',
                   answerBoolean: true,
+                  operator: '=',
                 },
               ],
             },
@@ -41,6 +42,7 @@ const dataModel: GlobalState = {
                 {
                   question: 'd',
                   answerDecimal: 2.5,
+                  operator: '=',
                 },
               ],
             },
@@ -88,6 +90,7 @@ const dataModel: GlobalState = {
                                 {
                                   question: 'i',
                                   answerInteger: 2,
+                                  operator: '=',
                                 },
                               ],
                             },

@@ -154,6 +154,7 @@ function questionnaireWithRepeatedEnableWhens(): Questionnaire {
                   {
                     question: '8.1.1',
                     answerBoolean: true,
+                    operator: '=',
                   } as QuestionnaireItemEnableWhen,
                 ],
               },
