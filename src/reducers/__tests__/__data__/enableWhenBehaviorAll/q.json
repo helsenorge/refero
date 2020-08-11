@@ -1,0 +1,80 @@
+{
+  "resourceType": "Questionnaire",
+  "id": "test-enablewhen",
+  "meta": {
+    "versionId": "19",
+    "lastUpdated": "2019-10-17T12:12:08.8076697+00:00",
+    "profile": ["http://ehelse.no/fhir/StructureDefinition/sdf-Questionnaire"],
+    "tag": [
+      {
+        "system": "urn:ietf:bcp:47",
+        "code": "nb-NO",
+        "display": "Norsk bokmål"
+      }
+    ]
+  },
+  "language": "nb-NO",
+  "contained": [],
+  "extension": [],
+  "url": "https://skjemakatalog-dev-fhir-apimgmt.azure-api.net/api/v1/Questionnaire/x11",
+  "version": "0.1",
+  "name": "enableWhen-any",
+  "title": "enableWhen-any",
+  "status": "draft",
+  "date": "2019-09-23",
+  "publisher": "Direktoratet for e-helse",
+  "subjectType": ["Patient"],
+  "item": [
+    {
+      "linkId": "1",
+      "text": "Gruppe",
+      "type": "group",
+      "repeats": false,
+      "item": [
+        {
+          "linkId": "1.1",
+          "text": "Spørsmål 1.1",
+          "type": "boolean",
+          "repeats": false,
+          "readOnly": false
+        },
+        {
+          "linkId": "1.2",
+          "text": "Spørsmål 1.2",
+          "type": "boolean",
+          "repeats": false,
+          "readOnly": false
+        }
+      ]
+    },
+
+    {
+      "linkId": "2",
+      "text": "Selvhjelp",
+      "type": "group",
+      "enableBehavior": "all",
+      "enableWhen": [
+        {
+          "question": "1.1",
+          "answerBoolean": true,
+          "operator": "="
+        },
+        {
+          "question": "1.2",
+          "answerBoolean": true,
+          "operator": "="
+        }
+      ],
+      "repeats": false,
+      "item": [
+        {
+          "linkId": "2.1",
+          "text": "Vises bare dersom alle over er krysset av",
+          "type": "boolean",
+          "repeats": false,
+          "readOnly": false
+        }
+      ]
+    }
+  ]
+}

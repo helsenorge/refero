@@ -1,0 +1,20 @@
+{
+  "resourceType": "QuestionnaireResponse",
+  "status": "in-progress",
+  "questionnaire": { "reference": "https://skjemakatalog-dev-fhir-apimgmt.azure-api.net/api/v1/Questionnaire/x11" },
+  "item": [
+    {
+      "linkId": "1",
+      "text": "Gruppe",
+      "item": [
+        { "linkId": "1.1", "text": "Spørsmål 1.1", "answer": [{ "valueBoolean": false }] },
+        { "linkId": "1.2", "text": "Spørsmål 1.2", "answer": [{ "valueBoolean": false }] }
+      ]
+    },
+    {
+      "linkId": "2",
+      "text": "Selvhjelp",
+      "item": [{ "linkId": "2.1", "text": "Vises bare dersom alle over er krysset av", "answer": [{ "valueBoolean": false }] }]
+    }
+  ]
+}
