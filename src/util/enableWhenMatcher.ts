@@ -118,11 +118,11 @@ function enableWhenMatchesDecimalAnswer(
     case OPERATOR_GREATEROREQUALS:
       return equals(answerValueDecimal, enableWhenAnswerDecimal) || greaterThan(answerValueDecimal, enableWhenAnswerDecimal);
     case OPERATOR_GREATERTHAN:
-      return !equals(answerValueDecimal, enableWhenAnswerDecimal) || greaterThan(answerValueDecimal, enableWhenAnswerDecimal);
+      return !equals(answerValueDecimal, enableWhenAnswerDecimal) && greaterThan(answerValueDecimal, enableWhenAnswerDecimal);
     case OPERATOR_LESSOREQUALS:
       return equals(answerValueDecimal, enableWhenAnswerDecimal) || lessThan(answerValueDecimal, enableWhenAnswerDecimal);
     case OPERATOR_LESSTHAN:
-      return !equals(answerValueDecimal, enableWhenAnswerDecimal) || lessThan(answerValueDecimal, enableWhenAnswerDecimal);
+      return !equals(answerValueDecimal, enableWhenAnswerDecimal) && lessThan(answerValueDecimal, enableWhenAnswerDecimal);
     default:
       return false;
   }
