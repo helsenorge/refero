@@ -56,7 +56,7 @@ export function getComponentForItem(type: string) {
   if (String(type) === ItemType.DATE) {
     return Date;
   }
-  if (String(type) === 'dateTime') {
+  if (String(type) === ItemType.DATETIME) {
     return DateTime;
   }
   if (String(type) === ItemType.TIME) {

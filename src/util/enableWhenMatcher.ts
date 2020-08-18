@@ -175,11 +175,11 @@ function enableWhenMatchesDateAnswer(
     case OPERATOR_GREATEROREQUALS:
       return moment(aValueDate).isSameOrAfter(ewAnswerDate);
     case OPERATOR_GREATERTHAN:
-      return !moment(aValueDate).isSame(ewAnswerDate) && moment(aValueDate).isAfter(ewAnswerDate);
+      return moment(aValueDate).isAfter(ewAnswerDate);
     case OPERATOR_LESSOREQUALS:
       return moment(aValueDate).isSameOrBefore(ewAnswerDate);
     case OPERATOR_LESSTHAN:
-      return !moment(aValueDate).isSame(ewAnswerDate) && moment(aValueDate).isBefore(ewAnswerDate);
+      return moment(aValueDate).isBefore(ewAnswerDate);
     default:
       return false;
   }
@@ -205,11 +205,11 @@ function enableWhenMatchesDateTimeAnswer(
     case OPERATOR_GREATEROREQUALS:
       return moment(aValueDateTime).isSameOrAfter(ewAnswerDateTime);
     case OPERATOR_GREATERTHAN:
-      return !moment(aValueDateTime).isSame(ewAnswerDateTime) && moment(aValueDateTime).isAfter(ewAnswerDateTime);
+      return moment(aValueDateTime).isAfter(ewAnswerDateTime);
     case OPERATOR_LESSOREQUALS:
       return moment(aValueDateTime).isSameOrBefore(ewAnswerDateTime);
     case OPERATOR_LESSTHAN:
-      return !moment(aValueDateTime).isSame(ewAnswerDateTime) && moment(aValueDateTime).isBefore(ewAnswerDateTime);
+      return moment(aValueDateTime).isBefore(ewAnswerDateTime);
     default:
       return false;
   }

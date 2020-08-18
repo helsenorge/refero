@@ -124,7 +124,6 @@ describe('Components render children', () => {
     const q = createQuestionnaire(item);
     const wrapper = createWrapper(q);
 
-    console.log(q);
     wrapper.render();
 
     expect(wrapper.find(Choice)).toHaveLength(3);
