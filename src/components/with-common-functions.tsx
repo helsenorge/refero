@@ -21,7 +21,7 @@ import { UploadedFile } from '@helsenorge/toolkit/components/atoms/dropzone';
 import { TextMessage } from '../types/text-message';
 import { findHelpItem, isHelpItem, getHelpItemType } from '../util/help';
 import HelpButton from './help-button/help-button';
-import { HelpTrigger } from '@helsenorge/toolkit/components/icons';
+import HelpTrigger from '@helsenorge/toolkit/components/icons/HelpTrigger';
 import { Collapse } from 'react-collapse';
 import itemControlConstants from '../constants/itemcontrol';
 import { NewValueAction } from '../actions/newValue';
