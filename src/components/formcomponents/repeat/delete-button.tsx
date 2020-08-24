@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
+import Title from '@helsenorge/designsystem-react/components/Title';
 import { Path } from '../../../util/skjemautfyller-core';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { QuestionnaireItem, QuestionnaireResponseAnswer } from '../../../types/fhir';
@@ -75,7 +76,9 @@ class DeleteButton extends React.Component<Props, State> {
             onCancel={this.onConfirmCancel}
             small
           >
-            <h3>{resources.confirmDeleteHeading}</h3>
+            <Title htmlMarkup="h3" appearance="title3">
+              {resources.confirmDeleteHeading}
+            </Title>
             <p>{resources.confirmDeleteDescription}</p>
           </ConfirmBox>
         ) : null}
