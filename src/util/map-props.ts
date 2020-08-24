@@ -44,7 +44,7 @@ function isEnableWhenEnabled(
       }
 
       const matchesAnswer = enableWhenMatchesAnswer(enableWhen, responseItem.answer);
-      if (enableBehavior === QuestionnaireItemEnableBehaviorCodes.ANY) {
+      if (!enableBehavior || enableBehavior === QuestionnaireItemEnableBehaviorCodes.ANY) {
         enable = enable || matchesAnswer;
       } else if (enableBehavior === QuestionnaireItemEnableBehaviorCodes.ALL) {
         enable = enable && matchesAnswer;
