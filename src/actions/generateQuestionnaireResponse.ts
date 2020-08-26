@@ -94,7 +94,7 @@ function addResponseItemtoResponse(
   }
 }
 
-function createQuestionnaireResponseItem(item: QuestionnaireItem): QuestionnaireResponseItem {
+export function createQuestionnaireResponseItem(item: QuestionnaireItem): QuestionnaireResponseItem {
   const responseItem = {
     linkId: item.linkId,
     text: item.text,
