@@ -58,6 +58,7 @@ const attachmentHtml: React.SFC<Props & ValidationProps> = ({
 }) => {
   const maxFilesize = attachmentMaxFileSize ? attachmentMaxFileSize : constants.MAX_FILE_SIZE;
   const validFileTypes = attachmentValidTypes ? attachmentValidTypes : VALID_FILE_TYPES;
+  const deleteText = resources ? resources.deleteAttachmentText : undefined;
 
   return (
     <div className="page_skjemautfyller__component page_skjemautfyller__component_attachment">
@@ -72,6 +73,8 @@ const attachmentHtml: React.SFC<Props & ValidationProps> = ({
           uploadedFiles={uploadedFiles}
           maxFileSize={maxFilesize}
           validMimeTypes={validFileTypes}
+          dontShowHardcodedText={!!deleteText}
+          deleteText={deleteText}
           supportedFileFormatsText={resources ? resources.supportedFileFormats : undefined}
           errorMessage={(file: File) => {
             return getErrorMessage(validFileTypes, maxFilesize, item, errorText, file, resources);

@@ -163,4 +163,8 @@ export interface Resources {
    * Du må fylle ut dette feltet
    */
   formRequiredErrorMessage?: string;
+  /**
+   * Slett
+   */
+  deleteAttachmentText?: string;
 }
