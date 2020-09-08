@@ -100,8 +100,12 @@ function synQuestionnaireResponseItem(qItem: QuestionnaireItem, qrItem: Question
     delete qrItem.item;
   }
   if (qrAnswerItemCopy.length > 0) {
-    if (!qrItem.answer) qrItem.answer = [];
-    if (!qrItem.answer[0]) qrItem.answer.push({} as QuestionnaireResponseAnswer);
+    if (!qrItem.answer) {
+      qrItem.answer = [];
+    }
+    if (!qrItem.answer[0]) {
+      qrItem.answer.push({} as QuestionnaireResponseAnswer);
+    }
     qrItem.answer[0].item = qrAnswerItemCopy;
   } else {
     if (qrItem.answer && qrItem.answer.length > 0) {
@@ -115,7 +119,9 @@ function hasChanged(qItem: QuestionnaireItem, qrItems: QuestionnaireResponseItem
   if (!qrItemWithAnswer || !qrItemWithAnswer.answer) return false;
 
   var answer = qrItemWithAnswer.answer.find(it => hasAnswer(it));
-  if (!answer) return false;
+  if (!answer) {
+    return false;
+  }
 
   return !itemTypeMatchesAnswerValue(qItem.type, answer);
 }
