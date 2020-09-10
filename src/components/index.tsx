@@ -407,7 +407,7 @@ class Skjemautfyller extends React.Component<StateProps & DispatchProps & Props,
     if (presentationButtonsType === PresentationButtonsType.None) {
       defaultClasses.push('page_skjemautfyller__hidden_buttons');
     }
-    if (this.props.sticky && presentationButtonsType !== PresentationButtonsType.Static) {
+    if (presentationButtonsType === PresentationButtonsType.Sticky || (this.props.sticky && !presentationButtonsType)) {
       defaultClasses.push('page_skjemautfyller__stickybar');
     }
 
