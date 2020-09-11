@@ -1,0 +1,55 @@
+{
+  "resourceType": "Questionnaire",
+  "id": "test-syncQuestionnaireResponse",
+  "status": "draft",
+  "item": [
+    {
+      "linkId": "1",
+      "text": "A group",
+      "type": "group",
+      "item": [
+        {
+          "linkId": "1.1",
+          "text": "string field in group",
+          "type": "string",
+          "item": [
+            {
+              "linkId": "1.1.1",
+              "text": "nested string field in group",
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "linkId": "1.2",
+          "text": "group in group",
+          "type": "group",
+          "item": [
+            {
+              "linkId": "1.2.1",
+              "text": "nested string field in group",
+              "type": "string"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "2",
+      "text": "A field",
+      "type": "string",
+      "item": [
+        {
+          "linkId": "2.1",
+          "text": "nested string field in group",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "linkId": "3",
+      "text": "untouched field that should be copied",
+      "type": "integer"
+    }
+  ]
+}

@@ -4,7 +4,7 @@ export default {
   DISPLAY: 'display',
   DECIMAL: 'decimal',
   DATE: 'date',
-  DATETIME: 'datetime',
+  DATETIME: 'dateTime',
   TIME: 'time',
   TEXT: 'text',
   STRING: 'string',

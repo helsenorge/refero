@@ -1,4 +1,15 @@
-﻿6.5.5
+﻿6.5.7
+-----
+* Introduce new prop 'syncQuestionnaireResponse' to give limited assistance in synchronizing
+  a Questionnaire and a QuestionnaireResponse object. It supports adding and deleting items,
+  and very limited support for changed items. It does not support any extensions. In addition,
+  it will convert old linkIds of the form X^Y into new linkIds of the form X.
+
+6.5.6
+-----
+* Support for setting custom text on delete attachment button (deleteAttachmentText), instead of hardcoded 'Slett'.
+
+6.5.5
 -----
 * Use v1.6.22 of @helsenorge/core-utils as peerDependency.
 

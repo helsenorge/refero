@@ -8,18 +8,21 @@ export interface FormAction {
   questionnaire: Questionnaire;
   questionnaireResponse?: QuestionnaireResponse;
   language?: string;
+  syncQuestionnaireResponse?: boolean;
   type: string;
 }
 
 export function setSkjemaDefinition(
   skjemaDefinition: Questionnaire,
   questionnaireResponse?: QuestionnaireResponse,
-  language?: string
+  language?: string,
+  syncQuestionnaireResponse?: boolean
 ): FormAction {
   return {
     type: SET_SKJEMA_DEFINITION,
     questionnaire: skjemaDefinition,
     questionnaireResponse: questionnaireResponse,
     language: language,
+    syncQuestionnaireResponse: syncQuestionnaireResponse,
   };
 }

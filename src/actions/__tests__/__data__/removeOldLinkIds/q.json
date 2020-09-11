@@ -1,0 +1,42 @@
+{
+  "resourceType": "Questionnaire",
+  "id": "test-syncQuestionnaireResponse",
+  "status": "draft",
+  "item": [
+    {
+      "linkId": "1",
+      "text": "A group",
+      "type": "group",
+      "item": [
+        {
+          "linkId": "1.1",
+          "text": "string field in group",
+          "type": "string",
+          "repeats": true,
+          "item": [
+            {
+              "linkId": "1.1.1",
+              "text": "nested string field in group",
+              "type": "string",
+              "repeats": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "2",
+      "text": "A field",
+      "type": "string",
+      "repeats": true,
+      "item": [
+        {
+          "linkId": "2.1",
+          "text": "nested string field in group",
+          "type": "string",
+          "repeats": true
+        }
+      ]
+    }
+  ]
+}
