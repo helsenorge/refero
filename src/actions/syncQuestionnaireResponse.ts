@@ -162,12 +162,17 @@ function itemTypeMatchesAnswerValue(type: QuestionnaireItemTypeList, answer: Que
 function createDictionary(qrItems: QuestionnaireResponseItem[]): Dictionary<QuestionnaireResponseItem> {
   let dictionary: Dictionary<QuestionnaireResponseItem> = {};
   for (let item of qrItems) {
-    if (!dictionary[item.linkId]) {
-      dictionary[item.linkId] = [];
+    var linkId = transform(item.linkId);
+    if (!dictionary[linkId]) {
+      dictionary[linkId] = [];
     }
 
-    dictionary[item.linkId].push(item);
+    dictionary[linkId].push({ ...item, linkId: linkId });
   }
 
   return dictionary;
+}
+
+function transform(linkId: string) {
+  return linkId.split('^')[0];
 }

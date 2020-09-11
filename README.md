@@ -135,6 +135,9 @@ item has been removed from the Questionnaire, it will be removed from the Questi
 has changed its type, but only in the case where an answer element is provided in the QuestionnaireResponse item. It does not take any
 extension into consideration when creating new items.
 
+In addition it will convert old linkIds for repeated items containing a caret (^) into new linkIds without. Eg. it will transform linkIds of
+the form X^Y into just X, by stripping everything from the caret to the end of the linkId.
+
 ## Callback API
 
 ### `onSubmit: () => void`
