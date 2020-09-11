@@ -548,7 +548,7 @@ function calculateEnableWhenItemsToClear(
     // F.ex. if the questionnaireItemWithEnableWhen is repeatable
     const qrItemsWithEnableWhen = getResponseItemAndPathWithLinkId(qItemWithEnableWhen.linkId, formData.Content!);
     for (const qrItemWithEnableWhen of qrItemsWithEnableWhen) {
-      let enable = false;
+      let enableMatches: Array<boolean> = [];
       const enableBehavior = qItemWithEnableWhen.enableBehavior;
 
       enableWhenClauses.forEach((enableWhen: QuestionnaireItemEnableWhen) => {
@@ -560,13 +560,14 @@ function calculateEnableWhenItemsToClear(
 
         if (responseItem) {
           const matchesAnswer = enableWhenMatchesAnswer(enableWhen, responseItem.answer);
-          if (!enableBehavior || enableBehavior === QuestionnaireItemEnableBehaviorCodes.ANY) {
-            enable = enable || matchesAnswer;
-          } else if (enableBehavior === QuestionnaireItemEnableBehaviorCodes.ALL) {
-            enable = enable && matchesAnswer;
-          }
+          enableMatches.push(matchesAnswer);
         }
       });
+
+      const enable =
+        enableBehavior === QuestionnaireItemEnableBehaviorCodes.ALL
+          ? enableMatches.every(x => x === true)
+          : enableMatches.some(x => x === true);
 
       if (!enable) {
         const item = getResponseItemWithLinkIdPossiblyContainingRepeat(qrItemWithEnableWhen.item.linkId, responseItems, path);

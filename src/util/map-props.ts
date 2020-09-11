@@ -27,7 +27,7 @@ function isEnableWhenEnabled(
   path: Path[],
   state: GlobalState
 ): boolean {
-  let enable = false;
+  let enableMatches: Array<boolean> = [];
   enableWhen.forEach((enableWhen: QuestionnaireItemEnableWhen) => {
     const responseItems = getResponseItems(getFormData(state));
     const enableWhenQuestion = enableWhen.question;
@@ -44,14 +44,12 @@ function isEnableWhenEnabled(
       }
 
       const matchesAnswer = enableWhenMatchesAnswer(enableWhen, responseItem.answer);
-      if (!enableBehavior || enableBehavior === QuestionnaireItemEnableBehaviorCodes.ANY) {
-        enable = enable || matchesAnswer;
-      } else if (enableBehavior === QuestionnaireItemEnableBehaviorCodes.ALL) {
-        enable = enable && matchesAnswer;
-      }
+      enableMatches.push(matchesAnswer);
     }
   });
-  return enable;
+  return enableBehavior === QuestionnaireItemEnableBehaviorCodes.ALL
+    ? enableMatches.every(x => x === true)
+    : enableMatches.some(x => x === true);
 }
 
 export function mergeProps(stateProps: Props, dispatchProps: Props, ownProps: Props): Props {
