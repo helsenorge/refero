@@ -1,4 +1,8 @@
-﻿6.5.7
+﻿6.6.0
+-----
+* Upgrade components to new version of @helsenorge/toolkit. Requires @helsenorge/toolkit v14.0.0 
+
+6.5.7
 -----
 * Introduce new prop 'syncQuestionnaireResponse' to give limited assistance in synchronizing
   a Questionnaire and a QuestionnaireResponse object. It supports adding and deleting items,

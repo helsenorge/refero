@@ -21,6 +21,7 @@ interface Props {
   renderDeleteButton: (className?: string) => JSX.Element | undefined;
   repeatButton: JSX.Element;
   oneToTwoColumn?: boolean;
+  children?: JSX.Element;
 
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
