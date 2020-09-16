@@ -254,46 +254,46 @@ export function hasAnswer(answer: QuestionnaireResponseItemAnswer): boolean {
   );
 }
 
-export function hasBooleanAnswer(answer: QuestionnaireResponseAnswer): boolean {
+export function hasBooleanAnswer(answer: QuestionnaireResponseItemAnswer): boolean {
   return answer.valueBoolean === true || answer.valueBoolean === false;
 }
 
-export function hasCodingAnswer(answer: QuestionnaireResponseAnswer): boolean {
+export function hasCodingAnswer(answer: QuestionnaireResponseItemAnswer): boolean {
   const coding = answer.valueCoding;
   const codingValue = coding && coding.code ? String(coding.code) : null;
 
   return codingValue !== null && codingValue !== undefined && codingValue !== '';
 }
 
-export function hasQuantityAnswer(answer: QuestionnaireResponseAnswer): boolean {
+export function hasQuantityAnswer(answer: QuestionnaireResponseItemAnswer): boolean {
   return answer.valueQuantity != null && (!!answer.valueQuantity.value || answer.valueQuantity.value === 0);
 }
 
-export function hasDateAnswer(answer: QuestionnaireResponseAnswer): boolean {
+export function hasDateAnswer(answer: QuestionnaireResponseItemAnswer): boolean {
   return !!answer.valueDate;
 }
 
-export function hasDateTimeAnswer(answer: QuestionnaireResponseAnswer): boolean {
+export function hasDateTimeAnswer(answer: QuestionnaireResponseItemAnswer): boolean {
   return !!answer.valueDateTime;
 }
 
-export function hasDecimalAnswer(answer: QuestionnaireResponseAnswer): boolean {
+export function hasDecimalAnswer(answer: QuestionnaireResponseItemAnswer): boolean {
   return !!answer.valueDecimal || answer.valueDecimal === 0;
 }
 
-export function hasIntegerAnswer(answer: QuestionnaireResponseAnswer): boolean {
+export function hasIntegerAnswer(answer: QuestionnaireResponseItemAnswer): boolean {
   return !!answer.valueInteger || answer.valueInteger === 0;
 }
 
-export function hasStringAnswer(answer: QuestionnaireResponseAnswer): boolean {
+export function hasStringAnswer(answer: QuestionnaireResponseItemAnswer): boolean {
   return !!answer.valueString;
 }
 
-export function hasTimeAnswer(answer: QuestionnaireResponseAnswer): boolean {
+export function hasTimeAnswer(answer: QuestionnaireResponseItemAnswer): boolean {
   return !!answer.valueTime;
 }
 
-export function hasAttachmentAnswer(answer: QuestionnaireResponseAnswer): boolean {
+export function hasAttachmentAnswer(answer: QuestionnaireResponseItemAnswer): boolean {
   return answer.valueAttachment != null && !!answer.valueAttachment.id;
 }
 

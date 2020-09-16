@@ -5,7 +5,7 @@ import { Collapse } from 'react-collapse';
 import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
 import { FormChild } from '@helsenorge/toolkit/components/molecules/form';
 import { UploadedFile } from '@helsenorge/toolkit/components/atoms/dropzone';
-import { HelpTrigger } from '@helsenorge/toolkit/components/icons';
+import HelpTrigger from '@helsenorge/toolkit/components/icons/HelpTrigger';
 
 import { GlobalState } from '../reducers';
 import {
@@ -24,7 +24,6 @@ import DeleteButton from './formcomponents/repeat/delete-button';
 import { TextMessage } from '../types/text-message';
 import { findHelpItem, isHelpItem, getHelpItemType } from '../util/help';
 import HelpButton from './help-button/help-button';
-import HelpTrigger from '@helsenorge/toolkit/components/icons/HelpTrigger';
 import itemControlConstants from '../constants/itemcontrol';
 import { NewValueAction } from '../actions/newValue';
 import { RenderContext } from '../util/renderContext';

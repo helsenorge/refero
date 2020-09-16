@@ -3,8 +3,7 @@ import {
   Questionnaire,
   QuestionnaireItem,
   QuestionnaireResponseItem,
-  QuestionnaireItemTypeList,
-  QuestionnaireResponseAnswer,
+  QuestionnaireResponseItemAnswer,
 } from '../types/fhir';
 import { createQuestionnaireResponseItem } from './generateQuestionnaireResponse';
 import {
@@ -104,7 +103,7 @@ function synQuestionnaireResponseItem(qItem: QuestionnaireItem, qrItem: Question
       qrItem.answer = [];
     }
     if (!qrItem.answer[0]) {
-      qrItem.answer.push({} as QuestionnaireResponseAnswer);
+      qrItem.answer.push({} as QuestionnaireResponseItemAnswer);
     }
     qrItem.answer[0].item = qrAnswerItemCopy;
   } else {
@@ -126,7 +125,7 @@ function hasChanged(qItem: QuestionnaireItem, qrItems: QuestionnaireResponseItem
   return !itemTypeMatchesAnswerValue(qItem.type, answer);
 }
 
-function itemTypeMatchesAnswerValue(type: QuestionnaireItemTypeList, answer: QuestionnaireResponseAnswer): boolean {
+function itemTypeMatchesAnswerValue(type: string, answer: QuestionnaireResponseItemAnswer): boolean {
   switch (type) {
     case ItemType.ATTATCHMENT:
       return hasAttachmentAnswer(answer);
