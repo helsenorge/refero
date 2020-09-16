@@ -13,7 +13,6 @@ import {
 } from '../actions/newValue';
 import { GlobalState } from '../reducers/index';
 import { isStringEmpty } from '../util/index';
-
 import {
   Questionnaire,
   QuestionnaireResponseItem,
@@ -40,6 +39,7 @@ import { getMinOccursExtensionValue } from '../util/extension';
 import { FormAction, SET_SKJEMA_DEFINITION } from '../actions/form';
 import { generateQuestionnaireResponse } from '../actions/generateQuestionnaireResponse';
 import { createQuestionnaireResponseAnswer } from '../util/createQuestionnaireResponseAnswer';
+import { syncQuestionnaireResponse } from '../actions/syncQuestionnaireResponse';
 
 enableES5();
 
@@ -759,7 +759,9 @@ function processSetSkjemaDefinition(action: FormAction, state: Form): Form {
   };
 
   let formData: FormData;
-  if (action.questionnaireResponse) {
+  if (action.questionnaireResponse && action.syncQuestionnaireResponse) {
+    formData = { Content: syncQuestionnaireResponse(action.questionnaire, action.questionnaireResponse) };
+  } else if (action.questionnaireResponse) {
     formData = { Content: action.questionnaireResponse };
   } else if (state.FormData === initialState.FormData) {
     formData = { Content: generateQuestionnaireResponse(action.questionnaire) };

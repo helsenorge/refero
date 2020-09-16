@@ -239,36 +239,62 @@ export function hasAnswer(answer: QuestionnaireResponseItemAnswer): boolean {
   if (!answer) {
     return false;
   }
-  if (answer.valueBoolean === true || answer.valueBoolean === false) {
-    return true;
-  }
+
+  return (
+    hasBooleanAnswer(answer) ||
+    hasCodingAnswer(answer) ||
+    hasQuantityAnswer(answer) ||
+    hasDateAnswer(answer) ||
+    hasDateTimeAnswer(answer) ||
+    hasDateTimeAnswer(answer) ||
+    hasDecimalAnswer(answer) ||
+    hasIntegerAnswer(answer) ||
+    hasStringAnswer(answer) ||
+    hasAttachmentAnswer(answer)
+  );
+}
+
+export function hasBooleanAnswer(answer: QuestionnaireResponseAnswer): boolean {
+  return answer.valueBoolean === true || answer.valueBoolean === false;
+}
+
+export function hasCodingAnswer(answer: QuestionnaireResponseAnswer): boolean {
   const coding = answer.valueCoding;
   const codingValue = coding && coding.code ? String(coding.code) : null;
-  if (codingValue !== null && codingValue !== undefined && codingValue !== '') {
-    return true;
-  }
-  if (answer.valueQuantity && (answer.valueQuantity.value || answer.valueQuantity.value === 0)) {
-    return true;
-  }
-  if (answer.valueDate) {
-    return true;
-  }
-  if (answer.valueDateTime) {
-    return true;
-  }
-  if (answer.valueDecimal) {
-    return true;
-  }
-  if (answer.valueInteger || answer.valueInteger === 0) {
-    return true;
-  }
-  if (answer.valueString) {
-    return true;
-  }
-  if (answer.valueTime) {
-    return true;
-  }
-  return false;
+
+  return codingValue !== null && codingValue !== undefined && codingValue !== '';
+}
+
+export function hasQuantityAnswer(answer: QuestionnaireResponseAnswer): boolean {
+  return answer.valueQuantity != null && (!!answer.valueQuantity.value || answer.valueQuantity.value === 0);
+}
+
+export function hasDateAnswer(answer: QuestionnaireResponseAnswer): boolean {
+  return !!answer.valueDate;
+}
+
+export function hasDateTimeAnswer(answer: QuestionnaireResponseAnswer): boolean {
+  return !!answer.valueDateTime;
+}
+
+export function hasDecimalAnswer(answer: QuestionnaireResponseAnswer): boolean {
+  return !!answer.valueDecimal || answer.valueDecimal === 0;
+}
+
+export function hasIntegerAnswer(answer: QuestionnaireResponseAnswer): boolean {
+  return !!answer.valueInteger || answer.valueInteger === 0;
+}
+
+export function hasStringAnswer(answer: QuestionnaireResponseAnswer): boolean {
+  return !!answer.valueString;
+}
+
+export function hasTimeAnswer(answer: QuestionnaireResponseAnswer): boolean {
+  return !!answer.valueTime;
+}
+
+export function hasAttachmentAnswer(answer: QuestionnaireResponseAnswer): boolean {
+  return answer.valueAttachment != null && !!answer.valueAttachment.id;
 }
 
 export function enableWhenMatchesAnswer(

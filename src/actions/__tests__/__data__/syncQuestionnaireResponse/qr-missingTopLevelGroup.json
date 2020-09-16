@@ -1,0 +1,30 @@
+{
+  "resourceType": "QuestionnaireResponse",
+  "id": "test-syncQuestionnaireResponse",
+  "status": "draft",
+  "item": [
+    {
+      "linkId": "2",
+      "text": "A field",
+      "answer": [
+        {
+          "item": [
+            {
+              "linkId": "2.1",
+              "text": "nested string field in group"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "3",
+      "text": "Untouched field that should be copied",
+      "answer": [
+        {
+          "valueInteger": 42
+        }
+      ]
+    }
+  ]
+}

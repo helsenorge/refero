@@ -69,7 +69,6 @@ class DeleteButton extends React.Component<Props, State> {
         </FunctionButton>
         {this.state.showConfirm && resources ? (
           <ConfirmBox
-            energize
             onConfirm={this.onDeleteRepeatItemConfirmed}
             confirmText={resources.confirmDeleteButtonText}
             onClose={this.onConfirmCancel}

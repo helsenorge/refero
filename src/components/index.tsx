@@ -59,7 +59,12 @@ interface StateProps {
 interface DispatchProps {
   dispatch: ThunkDispatch<GlobalState, void, NewValueAction>;
   mount: () => void;
-  updateSkjema: (questionnaire: Questionnaire, questionnaireResponse?: QuestionnaireResponse, language?: string) => void;
+  updateSkjema: (
+    questionnaire: Questionnaire,
+    questionnaireResponse?: QuestionnaireResponse,
+    language?: string,
+    syncQuestionnaireResponse?: boolean
+  ) => void;
   path: Array<Path>;
 }
 
@@ -111,6 +116,7 @@ interface Props {
     questionnaireInspector: IQuestionnaireInspector
   ) => void;
   onRenderMarkdown?: (item: QuestionnaireItem, markup: string) => string;
+  syncQuestionnaireResponse?: boolean;
 }
 
 interface State {
@@ -156,7 +162,12 @@ class Skjemautfyller extends React.Component<StateProps & DispatchProps & Props,
 
   UNSAFE_componentWillReceiveProps(nextProps: Props) {
     if (nextProps.questionnaire && nextProps.questionnaire !== this.props.questionnaire) {
-      this.props.updateSkjema(nextProps.questionnaire, nextProps.questionnaireResponse, nextProps.language);
+      this.props.updateSkjema(
+        nextProps.questionnaire,
+        nextProps.questionnaireResponse,
+        nextProps.language,
+        nextProps.syncQuestionnaireResponse
+      );
     }
   }
 
@@ -435,12 +446,17 @@ function mapStateToProps(state: GlobalState): StateProps {
 
 function mapDispatchToProps(dispatch: ThunkDispatch<GlobalState, void, NewValueAction>, props: Props): DispatchProps {
   return {
-    updateSkjema: (questionnaire: Questionnaire, questionnaireResponse: QuestionnaireResponse, language: string): void => {
-      dispatch(setSkjemaDefinition(questionnaire, questionnaireResponse, language));
+    updateSkjema: (
+      questionnaire: Questionnaire,
+      questionnaireResponse: QuestionnaireResponse,
+      language: string,
+      syncQuestionnaireResponse: boolean
+    ): void => {
+      dispatch(setSkjemaDefinition(questionnaire, questionnaireResponse, language, syncQuestionnaireResponse));
     },
     mount: (): void => {
       if (props.questionnaire) {
-        dispatch(setSkjemaDefinition(props.questionnaire, props.questionnaireResponse, props.language));
+        dispatch(setSkjemaDefinition(props.questionnaire, props.questionnaireResponse, props.language, props.syncQuestionnaireResponse));
       }
     },
     dispatch,

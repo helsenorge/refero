@@ -1,0 +1,95 @@
+{
+  "resourceType": "QuestionnaireResponse",
+  "id": "test-syncQuestionnaireResponse",
+  "status": "draft",
+  "item": [
+    {
+      "linkId": "1",
+      "text": "A group",
+      "item": [
+        {
+          "linkId": "1.1",
+          "text": "string field",
+          "answer": [
+            {
+              "item": [
+                {
+                  "linkId": "1.1.1",
+                  "text": "nested string field",
+                  "answer": [
+                    {
+                      "valueString": "a1"
+                    }
+                  ]
+                },
+                {
+                  "linkId": "1.1.1",
+                  "text": "nested string field",
+                  "answer": [
+                    {
+                      "valueString": "a2"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "linkId": "1.1",
+          "text": "string field",
+          "answer": [
+            {
+              "item": [
+                {
+                  "linkId": "1.1.1",
+                  "text": "nested string field",
+                  "answer": [
+                    {
+                      "valueString": "a3"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "2",
+      "text": "A field",
+      "answer": [
+        {
+          "item": [
+            {
+              "linkId": "2.1",
+              "text": "nested string field",
+              "answer": [
+                {
+                  "valueString": "b1"
+                }
+              ]
+            }
+          ],
+          "valueString": "x1"
+        }
+      ]
+    },
+    {
+      "linkId": "2",
+      "text": "A field",
+      "answer": [
+        {
+          "item": [
+            {
+              "linkId": "2.1",
+              "text": "nested string field"
+            }
+          ],
+          "valueString": "x2"
+        }
+      ]
+    }
+  ]
+}

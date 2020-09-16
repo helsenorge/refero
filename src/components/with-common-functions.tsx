@@ -24,6 +24,7 @@ import DeleteButton from './formcomponents/repeat/delete-button';
 import { TextMessage } from '../types/text-message';
 import { findHelpItem, isHelpItem, getHelpItemType } from '../util/help';
 import HelpButton from './help-button/help-button';
+import HelpTrigger from '@helsenorge/toolkit/components/icons/HelpTrigger';
 import itemControlConstants from '../constants/itemcontrol';
 import { NewValueAction } from '../actions/newValue';
 import { RenderContext } from '../util/renderContext';

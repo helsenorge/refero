@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
+import designsystemtypography from '@helsenorge/designsystem-react/scss/typography.module.scss';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { renderPrefix, getText } from '../../../util/index';
 import { QuestionnaireItem } from '../../../types/fhir';
@@ -22,7 +23,7 @@ const Display: React.SFC<Props> = ({ enable, pdf, item, onRenderMarkdown }) => {
     if (markdown) {
       value = (
         <div
-          className="page_skjemautfyller__markdown"
+          className={`page_skjemautfyller__markdown ${designsystemtypography['anchorlink-wrapper']}`}
           dangerouslySetInnerHTML={{
             __html: getText(item, onRenderMarkdown),
           }}

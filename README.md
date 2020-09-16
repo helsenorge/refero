@@ -52,6 +52,7 @@ class App extends Component<{}, {}> {
           validationSummaryPlacement={...}
           onChange={...}
           onRenderMarkdown={...}
+          syncQuestionnaireResponse
         />
       </Provider>
     );
@@ -84,6 +85,7 @@ class App extends Component<{}, {}> {
 | validationSummaryPlacement |          | ValidationSummaryPlacement | null    | Controls the placement of the form validation summary                                                         |
 | onChange                   |          | callback                   | null    | Callback when user enters an answer                                                                           |
 | onRenderMarkdown           |          | callback                   | null    | Callback when the form needs to render markdown                                                               |
+| syncQuestionnaireResponse  |          | boolean                    | false   | Will try to synchronize a Questionnaire and QuestionnaireResponse object                                      |
 
 ### `questionnaire: Questionnaire`
 
@@ -124,6 +126,17 @@ List of allowed mime types for attachments. Default allowed types are image/jpeg
 
 Controls the placement of the form validation summary. See ['ValidationSummaryPlacement'](#ValidationSummaryPlacement) for possible values.
 If not specified, it defaults to ValidationSummaryPlacement.Top
+
+### `syncQuestionnaireResponse: boolean`
+
+Provides limited assistance with synchronizing a Questionnaire and QuestionnaireResponse object. If an item is declared in the
+Questionnaire, but is missing from the QuestionnaireResponse, it will try to synthesize an item with any potential children. Likewise, if an
+item has been removed from the Questionnaire, it will be removed from the QuestionnaireResponse. It also supports limited help when an item
+has changed its type, but only in the case where an answer element is provided in the QuestionnaireResponse item. It does not take any
+extension into consideration when creating new items.
+
+In addition it will convert old linkIds for repeated items containing a caret (^) into new linkIds without. Eg. it will transform linkIds of
+the form X^Y into just X, by stripping everything from the caret to the end of the linkId.
 
 ## Callback API
 
