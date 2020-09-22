@@ -45,9 +45,11 @@ export class Group extends React.Component<Props, State> {
   shouldComponentUpdate(nextProps: Props, _nextState: {}) {
     const responseItemHasChanged = this.props.responseItem !== nextProps.responseItem;
     const helpItemHasChanged = this.props.isHelpOpen !== nextProps.isHelpOpen;
+    const repeatButtonHasChanged = this.props.repeatButton !== nextProps.repeatButton;
+    const resourcesHasChanged = this.props.resources !== nextProps.resources;
     const repeats = this.props.item.repeats ?? false;
 
-    return responseItemHasChanged || helpItemHasChanged || repeats;
+    return responseItemHasChanged || helpItemHasChanged || repeatButtonHasChanged || resourcesHasChanged || repeats;
   }
 
   renderAllItems = (): JSX.Element => {

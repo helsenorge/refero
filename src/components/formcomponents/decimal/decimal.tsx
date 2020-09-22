@@ -76,9 +76,10 @@ class Decimal extends React.Component<Props & ValidationProps, {}> {
   shouldComponentUpdate(nextProps: Props, _nextState: {}) {
     const responseItemHasChanged = this.props.responseItem !== nextProps.responseItem;
     const helpItemHasChanged = this.props.isHelpOpen !== nextProps.isHelpOpen;
+    const resourcesHasChanged = this.props.resources !== nextProps.resources;
     const repeats = this.props.item.repeats ?? false;
 
-    return responseItemHasChanged || helpItemHasChanged || repeats;
+    return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats;
   }
 
   render(): JSX.Element | null {
