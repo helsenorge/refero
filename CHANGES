@@ -1,4 +1,8 @@
-﻿6.6.0
+﻿6.6.1
+-----
+* Update components if new resource prop is set after first render.
+
+6.6.0
 -----
 * Upgrade components to new version of @helsenorge/toolkit. Requires @helsenorge/toolkit v14.0.0 
 
