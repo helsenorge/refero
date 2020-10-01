@@ -1,4 +1,8 @@
-﻿6.6.1
+﻿7.0.0
+-----
+* Upgrade from FHIR STU3 to FHIR R4.
+
+6.6.1
 -----
 * Update components if new resource prop is set after first render.
 
