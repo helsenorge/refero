@@ -30,6 +30,7 @@ import {
   QuestionnaireItem,
   QuestionnaireResponseItemAnswer,
   Quantity,
+  ValueSet,
 } from '../types/fhir';
 import Constants from '../constants/index';
 import { FormDefinition, FormData } from '../reducers/form';
@@ -42,6 +43,7 @@ import { ActionRequester, IActionRequester } from '../util/actionRequester';
 import { RenderContext } from '../util/renderContext';
 import { QuestionniareInspector, IQuestionnaireInspector } from '../util/questionnaireInspector';
 import { PresentationButtonsType } from '../constants/presentationButtonsType';
+import { AutoSuggestProps } from '../types/autoSuggestProps';
 
 export interface QueryStringsInterface {
   MessageId: string;
@@ -117,6 +119,13 @@ interface Props {
   ) => void;
   onRenderMarkdown?: (item: QuestionnaireItem, markup: string) => string;
   syncQuestionnaireResponse?: boolean;
+  fetchValueSet?: (
+    searchString: string,
+    item: QuestionnaireItem,
+    successCallback: (valueSet: ValueSet) => void,
+    errorCallback: (error: string) => void
+  ) => void;
+  autoSuggestProps?: AutoSuggestProps;
 }
 
 interface State {
@@ -309,6 +318,8 @@ class Skjemautfyller extends React.Component<StateProps & DispatchProps & Props,
               onAnswerChange={this.onAnswerChange}
               renderContext={new RenderContext()}
               onRenderMarkdown={this.props.onRenderMarkdown}
+              fetchValueSet={this.props.fetchValueSet}
+              autoSuggestProps={this.props.autoSuggestProps}
             />
           );
         });

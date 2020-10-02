@@ -91,7 +91,8 @@ export function renderOptions(
   options: Array<Options> | undefined,
   renderRadio: (o: Array<Options> | undefined) => JSX.Element,
   renderCheckbox: (o: Array<Options> | undefined) => JSX.Element,
-  renderDropdown: (o: Array<Options> | undefined) => JSX.Element
+  renderDropdown: (o: Array<Options> | undefined) => JSX.Element,
+  renderAutosuggest: (o: Array<Options> | undefined) => JSX.Element
 ): JSX.Element {
   const itemControlValue = getItemControlValue(item);
   if (itemControlValue) {
@@ -102,6 +103,8 @@ export function renderOptions(
         return renderCheckbox(options);
       case itemControlConstants.RADIOBUTTON:
         return renderRadio(options);
+      case itemControlConstants.AUTOCOMPLETE:
+        return renderAutosuggest(options);
       default:
         break;
     }
@@ -132,6 +135,9 @@ export function getItemControlValue(item: QuestionnaireItem) {
         }
         if (itemControl[i].code === itemControlConstants.RADIOBUTTON) {
           return itemControlConstants.RADIOBUTTON;
+        }
+        if (itemControl[i].code === itemControlConstants.AUTOCOMPLETE) {
+          return itemControlConstants.AUTOCOMPLETE;
         }
       }
     }

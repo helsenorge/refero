@@ -16,7 +16,14 @@ import {
   shouldRenderDeleteButton,
   createIdSuffix,
 } from '../util/skjemautfyller-core';
-import { Resource, QuestionnaireResponseItem, QuestionnaireItem, QuestionnaireResponseItemAnswer, Attachment } from '../types/fhir';
+import {
+  Resource,
+  QuestionnaireResponseItem,
+  QuestionnaireItem,
+  QuestionnaireResponseItemAnswer,
+  Attachment,
+  ValueSet,
+} from '../types/fhir';
 import { Resources } from '../util/resources';
 import { getComponentForItem, getChildHeaderTag, shouldRenderRepeatButton, getText, isHiddenItem } from '../util/index';
 import RepeatButton from './formcomponents/repeat/repeat-button';
@@ -28,6 +35,7 @@ import itemControlConstants from '../constants/itemcontrol';
 import { NewValueAction } from '../actions/newValue';
 import { RenderContext } from '../util/renderContext';
 import itemType from '../constants/itemType';
+import { AutoSuggestProps } from '../types/autoSuggestProps';
 
 export interface Props {
   resources?: Resources;
@@ -80,6 +88,13 @@ export interface Props {
   renderContext: RenderContext;
   isHelpOpen?: boolean;
   onRenderMarkdown?: (item: QuestionnaireItem, markup: string) => string;
+  fetchValueSet?: (
+    searchString: string,
+    item: QuestionnaireItem,
+    successCallback: (valueSet: ValueSet) => void,
+    errorCallback: (error: string) => void
+  ) => void;
+  autoSuggestProps?: AutoSuggestProps;
 }
 
 interface EnhancedProps {
@@ -266,6 +281,8 @@ export default function withCommonFunctions<T>(WrappedComponent: React.Component
               onAnswerChange={this.props.onAnswerChange}
               renderContext={renderContext}
               onRenderMarkdown={onRenderMarkdown}
+              fetchValueSet={this.props.fetchValueSet}
+              autoSuggestProps={this.props.autoSuggestProps}
             />
           );
         });

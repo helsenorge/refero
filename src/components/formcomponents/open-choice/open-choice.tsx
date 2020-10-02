@@ -37,6 +37,7 @@ import DropdownView from './dropdown-view';
 import { OPEN_CHOICE_ID } from '../../../constants';
 import { isReadOnly } from '../../../util';
 import TextView from '../textview';
+import AutosuggestView from '../choice/autosuggest-view';
 
 export interface Props {
   item: QuestionnaireItem;
@@ -301,6 +302,20 @@ class OpenChoice extends React.Component<Props & ValidationProps> {
     );
   };
 
+  renderAutosuggest = (): JSX.Element => {
+    return (
+      <AutosuggestView
+        handleChange={this.handleChange}
+        id={this.props.id}
+        selected={this.getValue(this.props.item, this.props.answer)}
+        onRenderMarkdown={this.props.onRenderMarkdown}
+        {...this.props}
+      >
+        {this.props.children}
+      </AutosuggestView>
+    );
+  };
+
   shouldComponentUpdate(nextProps: Props, _nextState: {}) {
     const responseItemHasChanged = this.props.responseItem !== nextProps.responseItem;
     const helpItemHasChanged = this.props.isHelpOpen !== nextProps.isHelpOpen;
@@ -329,7 +344,8 @@ class OpenChoice extends React.Component<Props & ValidationProps> {
               getOptions(item, containedResources),
               this.renderRadio,
               this.renderCheckbox,
-              this.renderDropdown
+              this.renderDropdown,
+              this.renderAutosuggest
             )
           : null}
       </React.Fragment>

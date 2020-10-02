@@ -8,7 +8,14 @@ import withCommonFunctions from '../../with-common-functions';
 import { NewValueAction, newCodingValueAsync, removeCodingValueAsync } from '../../../actions/newValue';
 import { Path } from '../../../util/skjemautfyller-core';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
-import { QuestionnaireItem, QuestionnaireResponseItemAnswer, Resource, Coding, QuestionnaireResponseItem } from '../../../types/fhir';
+import {
+  QuestionnaireItem,
+  QuestionnaireResponseItemAnswer,
+  Resource,
+  Coding,
+  QuestionnaireResponseItem,
+  ValueSet,
+} from '../../../types/fhir';
 import { Resources } from '../../../util/resources';
 import { isReadOnly } from '../../../util/index';
 import {
@@ -26,6 +33,8 @@ import DropdownView from './dropdown-view';
 import RadioView from './radio-view';
 import CheckboxView from './checkbox-view';
 import { GlobalState } from '../../../reducers';
+import AutosuggestView from './autosuggest-view';
+import { AutoSuggestProps } from '../../../types/autoSuggestProps';
 
 export interface ChoiceProps {
   item: QuestionnaireItem;
@@ -46,6 +55,13 @@ export interface ChoiceProps {
   isHelpOpen?: boolean;
   onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
+  fetchValueSet?: (
+    searchString: string,
+    item: QuestionnaireItem,
+    successCallback: (valueSet: ValueSet) => void,
+    errorCallback: (error: string) => void
+  ) => void;
+  autoSuggestProps?: AutoSuggestProps;
 }
 
 interface ChoiceState {
@@ -122,11 +138,11 @@ export class Choice extends React.Component<ChoiceProps & ValidationProps, Choic
     }
   };
 
-  handleChange = (code?: string): void => {
+  handleChange = (code?: string, systemArg?: string, displayArg?: string): void => {
     const { dispatch, promptLoginMessage, item, onAnswerChange, path } = this.props;
     if (dispatch && code) {
-      const display = getDisplay(getOptions(item, this.props.containedResources), code);
-      const system = getSystem(item, this.props.containedResources);
+      const display = displayArg ? displayArg : getDisplay(getOptions(item, this.props.containedResources), code);
+      const system = systemArg ? systemArg : getSystem(item, this.props.containedResources);
       const coding = { code, display, system } as Coding;
       const responseAnswer = { valueCoding: coding } as QuestionnaireResponseItemAnswer;
       dispatch(newCodingValueAsync(path, coding, item))?.then(newState => onAnswerChange(newState, path, item, responseAnswer));
@@ -185,6 +201,20 @@ export class Choice extends React.Component<ChoiceProps & ValidationProps, Choic
     );
   };
 
+  renderAutosuggest = (): JSX.Element => {
+    return (
+      <AutosuggestView
+        handleChange={this.handleChange}
+        id={this.props.id}
+        selected={this.getValue(this.props.item, this.props.answer)}
+        onRenderMarkdown={this.props.onRenderMarkdown}
+        {...this.props}
+      >
+        {this.props.children}
+      </AutosuggestView>
+    );
+  };
+
   shouldComponentUpdate(nextProps: ChoiceProps, _nextState: {}) {
     const responseItemHasChanged = this.props.responseItem !== nextProps.responseItem;
     const helpItemHasChanged = this.props.isHelpOpen !== nextProps.isHelpOpen;
@@ -212,7 +242,8 @@ export class Choice extends React.Component<ChoiceProps & ValidationProps, Choic
               getOptions(item, containedResources),
               this.renderRadio,
               this.renderCheckbox,
-              this.renderDropdown
+              this.renderDropdown,
+              this.renderAutosuggest
             )
           : null}
       </React.Fragment>

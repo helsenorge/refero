@@ -167,4 +167,8 @@ export interface Resources {
    * Slett
    */
   deleteAttachmentText?: string;
+  /**
+   * Teknisk feil
+   */
+  autoSuggestLoadError?: string;
 }
