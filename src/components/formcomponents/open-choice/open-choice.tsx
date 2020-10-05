@@ -307,6 +307,9 @@ class OpenChoice extends React.Component<Props & ValidationProps> {
       <AutosuggestView
         handleChange={this.handleChange}
         id={this.props.id}
+        clearCodingAnswer={() => {
+          /* */
+        }}
         selected={this.getValue(this.props.item, this.props.answer)}
         onRenderMarkdown={this.props.onRenderMarkdown}
         {...this.props}

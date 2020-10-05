@@ -138,6 +138,17 @@ export class Choice extends React.Component<ChoiceProps & ValidationProps, Choic
     }
   };
 
+  clearCodingAnswer = (coding: Coding): void => {
+    const { dispatch, promptLoginMessage, item, onAnswerChange, path } = this.props;
+    if (dispatch) {
+      const responseAnswer = { valueCoding: coding } as QuestionnaireResponseItemAnswer;
+      dispatch(removeCodingValueAsync(path, coding, item))?.then(newState => onAnswerChange(newState, path, item, responseAnswer));
+      if (promptLoginMessage) {
+        promptLoginMessage();
+      }
+    }
+  };
+
   handleChange = (code?: string, systemArg?: string, displayArg?: string): void => {
     const { dispatch, promptLoginMessage, item, onAnswerChange, path } = this.props;
     if (dispatch && code) {
@@ -206,7 +217,7 @@ export class Choice extends React.Component<ChoiceProps & ValidationProps, Choic
       <AutosuggestView
         handleChange={this.handleChange}
         id={this.props.id}
-        selected={this.getValue(this.props.item, this.props.answer)}
+        clearCodingAnswer={this.clearCodingAnswer}
         onRenderMarkdown={this.props.onRenderMarkdown}
         {...this.props}
       >
