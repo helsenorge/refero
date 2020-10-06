@@ -27,7 +27,6 @@ interface AutosuggestProps {
 
   item: QuestionnaireItem;
   id?: string;
-  selected?: Array<string | undefined>;
   resources?: Resources;
   renderDeleteButton: (className?: string) => JSX.Element | undefined;
   repeatButton: JSX.Element;
@@ -69,7 +68,7 @@ class AutosuggestView extends React.Component<AutosuggestProps, AutosuggestState
   }
 
   onSubmitValidator(): boolean {
-    return !!this.getAnswer();
+    return isRequired(this.props.item) ? !!this.getAnswer() : true;
   }
 
   onSuggestionSelected(_event: React.FormEvent<HTMLInputElement>, { suggestion }: { suggestion: Suggestion }): void {
