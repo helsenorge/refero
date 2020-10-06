@@ -18,16 +18,7 @@ import {
 } from '../../../types/fhir';
 import { Resources } from '../../../util/resources';
 import { isReadOnly } from '../../../util/index';
-import {
-  getOptions,
-  hasOptions,
-  getSystem,
-  getErrorMessage,
-  validateInput,
-  getIndexOfAnswer,
-  getDisplay,
-  renderOptions,
-} from '../../../util/choice';
+import { getOptions, getSystem, getErrorMessage, validateInput, getIndexOfAnswer, getDisplay, renderOptions } from '../../../util/choice';
 import TextView from '../textview';
 import DropdownView from './dropdown-view';
 import RadioView from './radio-view';
@@ -246,17 +237,7 @@ export class Choice extends React.Component<ChoiceProps & ValidationProps, Choic
     }
     return (
       <React.Fragment>
-        {hasOptions(item, containedResources)
-          ? renderOptions(
-              item,
-              containedResources,
-              getOptions(item, containedResources),
-              this.renderRadio,
-              this.renderCheckbox,
-              this.renderDropdown,
-              this.renderAutosuggest
-            )
-          : null}
+        {renderOptions(item, containedResources, this.renderRadio, this.renderCheckbox, this.renderDropdown, this.renderAutosuggest)}
       </React.Fragment>
     );
   }

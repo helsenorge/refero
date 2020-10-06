@@ -20,12 +20,13 @@ import itemControlConstants from '../constants/itemcontrol';
 import { Resources } from './resources';
 import ItemType from '../constants/itemType';
 
+export function hasCanonicalValueSet(item: QuestionnaireItem): boolean {
+  return !!item.answerValueSet && item.answerValueSet.substr(0, 4) === 'http';
+}
+
 export function hasOptions(item: QuestionnaireItem, containedResources?: Resource[]): boolean {
   const options = getOptions(item, containedResources);
-  if (!options) {
-    return false;
-  }
-  return options !== null && options.length > 0;
+  return !!options && options.length > 0;
 }
 
 export function getOptions(item: QuestionnaireItem, containedResources?: Resource[]): Array<Options> | undefined {
@@ -88,34 +89,36 @@ export function getDisplay(options: Array<Options> | undefined, value: string | 
 export function renderOptions(
   item: QuestionnaireItem,
   containedResources: Resource[] | undefined,
-  options: Array<Options> | undefined,
   renderRadio: (o: Array<Options> | undefined) => JSX.Element,
   renderCheckbox: (o: Array<Options> | undefined) => JSX.Element,
   renderDropdown: (o: Array<Options> | undefined) => JSX.Element,
-  renderAutosuggest: (o: Array<Options> | undefined) => JSX.Element
-): JSX.Element {
+  renderAutosuggest: () => JSX.Element
+): JSX.Element | null {
   const itemControlValue = getItemControlValue(item);
-  if (itemControlValue) {
-    switch (itemControlValue) {
-      case itemControlConstants.DROPDOWN:
-        return renderDropdown(options);
-      case itemControlConstants.CHECKBOX:
-        return renderCheckbox(options);
-      case itemControlConstants.RADIOBUTTON:
-        return renderRadio(options);
-      case itemControlConstants.AUTOCOMPLETE:
-        return renderAutosuggest(options);
-      default:
-        break;
+  const options = getOptions(item, containedResources);
+  if (hasOptions(item, containedResources)) {
+    if (itemControlValue) {
+      switch (itemControlValue) {
+        case itemControlConstants.DROPDOWN:
+          return renderDropdown(options);
+        case itemControlConstants.CHECKBOX:
+          return renderCheckbox(options);
+        case itemControlConstants.RADIOBUTTON:
+          return renderRadio(options);
+        default:
+          break;
+      }
+    } else if (isAboveDropdownThreshold(options)) {
+      return renderDropdown(options);
     }
-  } else if (isAboveDropdownThreshold(item, containedResources)) {
-    return renderDropdown(options);
+    return renderRadio(options);
+  } else if (hasCanonicalValueSet(item) && itemControlValue === itemControlConstants.AUTOCOMPLETE) {
+    return renderAutosuggest();
   }
-  return renderRadio(options);
+  return null;
 }
 
-export function isAboveDropdownThreshold(item: QuestionnaireItem, containedResources?: Resource[]): boolean {
-  const options = getOptions(item, containedResources);
+function isAboveDropdownThreshold(options: Array<Options> | undefined): boolean {
   if (!options) {
     return false;
   }

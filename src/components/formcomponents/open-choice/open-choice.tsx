@@ -16,7 +16,6 @@ import TextField from './text-field';
 import { Path } from '../../../util/skjemautfyller-core';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import {
-  hasOptions,
   renderOptions,
   getOptions,
   getErrorMessage,
@@ -340,17 +339,7 @@ class OpenChoice extends React.Component<Props & ValidationProps> {
 
     return (
       <React.Fragment>
-        {hasOptions(item, containedResources)
-          ? renderOptions(
-              item,
-              containedResources,
-              getOptions(item, containedResources),
-              this.renderRadio,
-              this.renderCheckbox,
-              this.renderDropdown,
-              this.renderAutosuggest
-            )
-          : null}
+        {renderOptions(item, containedResources, this.renderRadio, this.renderCheckbox, this.renderDropdown, this.renderAutosuggest)}
       </React.Fragment>
     );
   }
