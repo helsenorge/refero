@@ -1,4 +1,8 @@
-﻿7.0.0
+﻿7.0.1
+-----
+* Performance improvement: Fix componentShouldUpdate check for when resources prop changes
+
+7.0.0
 -----
 * Upgrade from FHIR STU3 to FHIR R4.
 
