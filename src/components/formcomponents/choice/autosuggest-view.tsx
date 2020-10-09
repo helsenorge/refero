@@ -79,17 +79,24 @@ class AutosuggestView extends React.Component<AutosuggestProps, AutosuggestState
   }
 
   successCallback(valueSet: ValueSet): void {
-    if (!valueSet.compose || !valueSet.compose.include) {
+    if (
+      !valueSet.compose ||
+      !valueSet.compose.include ||
+      valueSet.compose.include.length === 0 ||
+      !valueSet.compose.include[0].concept ||
+      !valueSet.compose.include[0].system
+    ) {
+      this.setState({
+        isLoading: false,
+        suggestions: [],
+      });
       return;
     }
-    const include = valueSet.compose.include;
-    if (!include || include.length === 0 || !include[0].concept || !include[0].system) {
-      return;
-    }
+
     this.setState({
       isLoading: false,
-      system: include[0].system || '',
-      suggestions: include[0].concept?.map(x => {
+      system: valueSet.compose.include[0].system || '',
+      suggestions: valueSet.compose.include[0].concept.map(x => {
         return { label: x.display || '', value: x.code };
       }),
     });
