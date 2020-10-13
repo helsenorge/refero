@@ -89,6 +89,13 @@ describe('Given a Questionnaire item with type decimal', () => {
     );
     expect(result).toBe(false);
   });
+  it('Should return true when operator is ">" and answerDecimal is 0', () => {
+    const result = enableWhenMatches(
+      { question: '1.0.0', operator: '>', answerDecimal: 0 } as QuestionnaireItemEnableWhen,
+      { valueDecimal: 2.1 } as QuestionnaireResponseItemAnswer
+    );
+    expect(result).toBe(true);
+  });
   it('Should return true when operator is "<=" ', () => {
     const result = enableWhenMatches(
       { question: '1.0.0', operator: '<=', answerDecimal: 2.1 } as QuestionnaireItemEnableWhen,
@@ -161,6 +168,13 @@ describe('Given a Questionnaire item with type integer', () => {
       { valueInteger: 1 } as QuestionnaireResponseItemAnswer
     );
     expect(result).toBe(false);
+  });
+  it('Should return true when operator is ">" when answerInteger is 0', () => {
+    const result = enableWhenMatches(
+      { question: '1.0.0', operator: '>', answerInteger: 0 } as QuestionnaireItemEnableWhen,
+      { valueInteger: 1 } as QuestionnaireResponseItemAnswer
+    );
+    expect(result).toBe(true);
   });
   it('Should return true when operator is "<=" ', () => {
     const result = enableWhenMatches(
@@ -361,6 +375,13 @@ describe('Given a Questionnaire item with type string', () => {
   it('Should return true when operator is ">" ', () => {
     const result = enableWhenMatches(
       { question: '1.0.0', operator: '>', answerString: 'bbbb' } as QuestionnaireItemEnableWhen,
+      { valueString: 'cccc' } as QuestionnaireResponseItemAnswer
+    );
+    expect(result).toBe(true);
+  });
+  it('Should return true when operator is ">" and answerString is the empty string', () => {
+    const result = enableWhenMatches(
+      { question: '1.0.0', operator: '>', answerString: '' } as QuestionnaireItemEnableWhen,
       { valueString: 'cccc' } as QuestionnaireResponseItemAnswer
     );
     expect(result).toBe(true);
