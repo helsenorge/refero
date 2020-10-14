@@ -15,5 +15,6 @@ export default {
 
 export const VALID_FILE_TYPES: Array<MimeTypes> = ['image/jpeg', 'image/png', 'application/pdf'];
 
-export const OPEN_CHOICE_ID: string = '933ee59a-54bc-4ca1-a5a9-331ecd446b49';
+export const OPEN_CHOICE_ID: string = 'other';
+export const OPEN_CHOICE_SYSTEM: string = 'http://helsenorge.no/fhir/CodeSystem/open-choice';
 export const OPEN_CHOICE_LABEL: string = 'annet';

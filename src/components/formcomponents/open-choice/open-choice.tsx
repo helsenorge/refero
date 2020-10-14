@@ -33,7 +33,7 @@ import withCommonFunctions from '../../with-common-functions';
 import CheckboxView from './checkbox-view';
 import RadioView from './radio-view';
 import DropdownView from './dropdown-view';
-import { OPEN_CHOICE_ID } from '../../../constants';
+import { OPEN_CHOICE_ID, OPEN_CHOICE_SYSTEM } from '../../../constants';
 import { isReadOnly } from '../../../util';
 import TextView from '../textview';
 import AutosuggestView from '../choice/autosuggest-view';
@@ -143,7 +143,7 @@ class OpenChoice extends React.Component<Props & ValidationProps> {
     const { dispatch, answer, promptLoginMessage, item, onAnswerChange, path } = this.props;
     if (dispatch && code) {
       const display = getDisplay(getOptions(item, this.props.containedResources), code);
-      const system = getSystem(item, this.props.containedResources);
+      const system = code === OPEN_CHOICE_ID ? OPEN_CHOICE_SYSTEM : getSystem(item, this.props.containedResources);
       const coding = { code, display, system } as Coding;
       const responseAnswer = { valueCoding: coding } as QuestionnaireResponseItemAnswer;
       if (getIndexOfAnswer(code, answer) > -1) {
@@ -171,7 +171,7 @@ class OpenChoice extends React.Component<Props & ValidationProps> {
     const { dispatch, promptLoginMessage, item, onAnswerChange, path } = this.props;
     if (dispatch && code) {
       const display = getDisplay(getOptions(item, this.props.containedResources), code);
-      const system = getSystem(item, this.props.containedResources);
+      const system = code === OPEN_CHOICE_ID ? OPEN_CHOICE_SYSTEM : getSystem(item, this.props.containedResources);
       const coding = { code, display, system } as Coding;
       const responseAnswer = { valueCoding: coding } as QuestionnaireResponseItemAnswer;
       dispatch(newCodingValueAsync(this.props.path, coding, item))?.then(newState => onAnswerChange(newState, path, item, responseAnswer));
