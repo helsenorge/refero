@@ -12,6 +12,7 @@ import { getValidationTextExtension, getPlaceholder } from '../../../util/extens
 import { ValueSet, QuestionnaireItem, Coding, QuestionnaireResponseItemAnswer } from '../../../types/fhir';
 import { Resources } from '../../../util/resources';
 import { AutoSuggestProps } from '../../../types/autoSuggestProps';
+import { OPEN_CHOICE_ID, OPEN_CHOICE_SYSTEM, OPEN_CHOICE_LABEL } from '../../../constants';
 
 interface AutosuggestProps {
   handleChange: (code?: string, systemArg?: string, displayArg?: string) => void;
@@ -32,6 +33,7 @@ interface AutosuggestProps {
   repeatButton: JSX.Element;
   children?: JSX.Element;
 
+  handleStringChange: (value: string) => void;
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
@@ -44,6 +46,7 @@ interface AutosuggestState {
   suggestions: Array<Suggestion>;
   isLoading: boolean;
   hasLoadError: boolean;
+  isDirty: boolean;
 }
 
 class AutosuggestView extends React.Component<AutosuggestProps, AutosuggestState> {
@@ -57,6 +60,7 @@ class AutosuggestView extends React.Component<AutosuggestProps, AutosuggestState
       suggestions: [],
       isLoading: false,
       hasLoadError: false,
+      isDirty: false,
     };
 
     this.debouncedOnSuggestionsFetchRequested = this.debouncedOnSuggestionsFetchRequested.bind(this);
@@ -65,17 +69,11 @@ class AutosuggestView extends React.Component<AutosuggestProps, AutosuggestState
     this.successCallback = this.successCallback.bind(this);
     this.onSubmitValidator = this.onSubmitValidator.bind(this);
     this.onChangeInput = this.onChangeInput.bind(this);
+    this.onBlur = this.onBlur.bind(this);
   }
 
   onSubmitValidator(): boolean {
-    return isRequired(this.props.item) ? !!this.getAnswer() : true;
-  }
-
-  onSuggestionSelected(_event: React.FormEvent<HTMLInputElement>, { suggestion }: { suggestion: Suggestion }): void {
-    this.setState({
-      lastSearchValue: suggestion.label,
-    });
-    this.props.handleChange(suggestion.value, this.state.system, suggestion.label);
+    return isRequired(this.props.item) ? !!this.getCodingAnswer() || !!this.getStringAnswer() : true;
   }
 
   successCallback(valueSet: ValueSet): void {
@@ -109,9 +107,10 @@ class AutosuggestView extends React.Component<AutosuggestProps, AutosuggestState
     });
   }
 
-  clearAnswerIfExists(): void {
-    const hasExistingAnswer = this.getAnswer();
-    if (hasExistingAnswer) {
+  clearCodingAnswerIfExists(): void {
+    const hasExistingAnswer = this.getCodingAnswer();
+    const hasStringAnswer = this.getStringAnswer();
+    if (hasExistingAnswer && !hasStringAnswer) {
       this.props.clearCodingAnswer(hasExistingAnswer);
     }
   }
@@ -133,17 +132,18 @@ class AutosuggestView extends React.Component<AutosuggestProps, AutosuggestState
         suggestions: [],
         lastSearchValue: value,
       });
-      this.clearAnswerIfExists();
+      this.clearCodingAnswerIfExists();
       this.props.fetchValueSet(value, this.props.item, this.successCallback, this.errorCallback);
     }
   }
 
   onChangeInput(_event: React.FormEvent<HTMLInputElement>, { newValue }: { newValue: string; method: string }): void {
     if (newValue === '') {
-      this.clearAnswerIfExists();
+      this.clearCodingAnswerIfExists();
     }
     this.setState({
       inputValue: newValue,
+      isDirty: true,
       hasLoadError: this.state.hasLoadError && !newValue,
     });
   }
@@ -154,7 +154,32 @@ class AutosuggestView extends React.Component<AutosuggestProps, AutosuggestState
     false
   );
 
-  getAnswer(): Coding | undefined {
+  onSuggestionSelected(_event: React.FormEvent<HTMLInputElement>, { suggestion }: { suggestion: Suggestion }): void {
+    this.setState({
+      lastSearchValue: suggestion.label,
+      isDirty: false,
+    });
+    this.props.handleChange(suggestion.value, this.state.system, suggestion.label);
+  }
+
+  onBlur() {
+    if (this.state.isDirty) {
+      this.setState({
+        isDirty: false,
+      });
+      if (this.state.inputValue) {
+        this.props.handleChange(OPEN_CHOICE_ID, OPEN_CHOICE_SYSTEM, OPEN_CHOICE_LABEL);
+        this.props.handleStringChange(this.state.inputValue);
+      }
+    }
+  }
+
+  getStringAnswer(): string | undefined {
+    const answer = Array.isArray(this.props.answer) ? this.props.answer[0] : this.props.answer;
+    return answer ? answer.valueString : '';
+  }
+
+  getCodingAnswer(): Coding | undefined {
     const answer = Array.isArray(this.props.answer) ? this.props.answer[0] : this.props.answer;
     return answer ? answer.valueCoding : undefined;
   }
@@ -164,7 +189,8 @@ class AutosuggestView extends React.Component<AutosuggestProps, AutosuggestState
     if (!placeholder && this.props.resources) {
       placeholder = this.props.resources.selectDefaultPlaceholder;
     }
-    const answer = this.getAnswer();
+    const codingAnswer = this.getCodingAnswer();
+    const stringAnswer = this.getStringAnswer();
     return (
       <div className="page_skjemautfyller__component page_skjemautfyller__component_choice page_skjemautfyller__component_choice_autosuggest">
         <Collapse isOpened>
@@ -193,6 +219,7 @@ class AutosuggestView extends React.Component<AutosuggestProps, AutosuggestState
               onSubmitValidator={this.onSubmitValidator}
               onSuggestionSelected={this.onSuggestionSelected}
               onChange={this.onChangeInput}
+              onBlur={this.onBlur}
               value={this.state.inputValue}
             />
           </Validation>
@@ -201,7 +228,8 @@ class AutosuggestView extends React.Component<AutosuggestProps, AutosuggestState
               <Spinner inline mini />
             </div>
           )}
-          {answer && <EmphasisBox color={colors.Blue}>{`Valgt verdi: ${answer.display}`}</EmphasisBox>}
+          {stringAnswer && <div>{`Du har skrevet inn ${stringAnswer}`}</div>}
+          {codingAnswer && <EmphasisBox color={colors.Blue}>{`Du har valgt ${codingAnswer.display} fra listen`}</EmphasisBox>}
           {this.state.hasLoadError && <MessageBox type="error" title={this.props.resources?.autoSuggestLoadError} />}
           {this.props.renderDeleteButton('page_skjemautfyller__deletebutton--margin-top')}
           {this.props.repeatButton}

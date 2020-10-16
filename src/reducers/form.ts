@@ -269,12 +269,22 @@ function processRemoveCodingValueAction(action: NewValueAction, state: Form) {
       return;
     }
     if (action.valueCoding) {
-      responseItem.answer = responseItem.answer.filter(el => {
-        if (el && el.valueCoding && el.valueCoding.code && action.valueCoding) {
-          return el.valueCoding.code !== action.valueCoding.code;
-        }
-        return true;
-      });
+      responseItem.answer = responseItem.answer
+        .map(el => {
+          if (el && el.item && el.valueCoding && el.valueCoding.code && action.valueCoding) {
+            return {
+              // fjern valueCoding, men behold item
+              item: el.item,
+            };
+          }
+          return el;
+        })
+        .filter(el => {
+          if (el && el.valueCoding && el.valueCoding.code && action.valueCoding) {
+            return el.valueCoding.code !== action.valueCoding.code;
+          }
+          return true;
+        });
 
       if (responseItem.answer.length === 0) {
         delete responseItem.answer;
@@ -291,10 +301,7 @@ function processRemoveCodingStringValueAction(action: NewValueAction, state: For
     }
 
     responseItem.answer = responseItem.answer.filter(el => {
-      if (el && el.valueString) {
-        return false;
-      }
-      return true;
+      return el && el.valueString ? false : true;
     });
 
     if (responseItem.answer.length === 0) {

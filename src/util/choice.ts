@@ -96,7 +96,7 @@ export function renderOptions(
 ): JSX.Element | null {
   const itemControlValue = getItemControlValue(item);
   const options = getOptions(item, containedResources);
-  if (hasOptions(item, containedResources)) {
+  if (hasOptions(item, containedResources) && !hasCanonicalValueSet(item)) {
     if (itemControlValue) {
       switch (itemControlValue) {
         case itemControlConstants.DROPDOWN:

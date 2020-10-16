@@ -26,7 +26,14 @@ import {
   getIndexOfAnswer,
   getItemControlValue,
 } from '../../../util/choice';
-import { QuestionnaireItem, QuestionnaireResponseItemAnswer, Resource, Coding, QuestionnaireResponseItem } from '../../../types/fhir';
+import {
+  QuestionnaireItem,
+  QuestionnaireResponseItemAnswer,
+  Resource,
+  Coding,
+  QuestionnaireResponseItem,
+  ValueSet,
+} from '../../../types/fhir';
 import ItemControlConstants from '../../../constants/itemcontrol';
 import { Resources } from '../../../util/resources';
 import withCommonFunctions from '../../with-common-functions';
@@ -36,7 +43,8 @@ import DropdownView from './dropdown-view';
 import { OPEN_CHOICE_ID, OPEN_CHOICE_SYSTEM } from '../../../constants';
 import { isReadOnly } from '../../../util';
 import TextView from '../textview';
-import AutosuggestView from '../choice/autosuggest-view';
+import AutosuggestView from './autosuggest-view';
+import { AutoSuggestProps } from '../../../types/autoSuggestProps';
 
 export interface Props {
   item: QuestionnaireItem;
@@ -57,6 +65,13 @@ export interface Props {
   isHelpOpen?: boolean;
   onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
+  fetchValueSet?: (
+    searchString: string,
+    item: QuestionnaireItem,
+    successCallback: (valueSet: ValueSet) => void,
+    errorCallback: (error: string) => void
+  ) => void;
+  autoSuggestProps?: AutoSuggestProps;
 }
 
 class OpenChoice extends React.Component<Props & ValidationProps> {
@@ -119,9 +134,13 @@ class OpenChoice extends React.Component<Props & ValidationProps> {
     return [String(item.initial[0].valueCoding.code)];
   };
 
-  handleStringChange = (event: React.FormEvent<{}>): void => {
-    const { dispatch, promptLoginMessage, path, item, onAnswerChange } = this.props;
+  handleStringChangeEvent = (event: React.FormEvent<{}>): void => {
     const value = (event.target as HTMLInputElement).value;
+    this.handleStringChange(value);
+  };
+
+  handleStringChange = (value: string): void => {
+    const { dispatch, promptLoginMessage, path, item, onAnswerChange } = this.props;
     if (dispatch) {
       if (value.length > 0) {
         dispatch(newCodingStringValueAsync(this.props.path, value, this.props.item))?.then(newState =>
@@ -167,11 +186,23 @@ class OpenChoice extends React.Component<Props & ValidationProps> {
     }
   };
 
-  handleChange = (code?: string): void => {
+  clearCodingAnswer = (coding: Coding): void => {
+    const { dispatch, promptLoginMessage, item, onAnswerChange, path } = this.props;
+    if (dispatch) {
+      const responseAnswer = { valueCoding: coding } as QuestionnaireResponseItemAnswer;
+      dispatch(removeCodingValueAsync(path, coding, item))?.then(newState => onAnswerChange(newState, path, item, responseAnswer));
+      if (promptLoginMessage) {
+        promptLoginMessage();
+      }
+    }
+  };
+
+  handleChange = (code?: string, systemArg?: string, displayArg?: string): void => {
     const { dispatch, promptLoginMessage, item, onAnswerChange, path } = this.props;
     if (dispatch && code) {
-      const display = getDisplay(getOptions(item, this.props.containedResources), code);
-      const system = code === OPEN_CHOICE_ID ? OPEN_CHOICE_SYSTEM : getSystem(item, this.props.containedResources);
+      const valueSetSystem = code === OPEN_CHOICE_ID ? OPEN_CHOICE_SYSTEM : getSystem(item, this.props.containedResources);
+      const display = displayArg ? displayArg : getDisplay(getOptions(item, this.props.containedResources), code);
+      const system = systemArg ? systemArg : valueSetSystem;
       const coding = { code, display, system } as Coding;
       const responseAnswer = { valueCoding: coding } as QuestionnaireResponseItemAnswer;
       dispatch(newCodingValueAsync(this.props.path, coding, item))?.then(newState => onAnswerChange(newState, path, item, responseAnswer));
@@ -238,7 +269,7 @@ class OpenChoice extends React.Component<Props & ValidationProps> {
         pdf={pdf}
         item={item}
         answer={a}
-        handleStringChange={this.handleStringChange}
+        handleStringChange={this.handleStringChangeEvent}
         onRenderMarkdown={onRenderMarkdown}
         {...other}
       />
@@ -306,10 +337,9 @@ class OpenChoice extends React.Component<Props & ValidationProps> {
       <AutosuggestView
         handleChange={this.handleChange}
         id={this.props.id}
-        clearCodingAnswer={() => {
-          /* */
-        }}
+        clearCodingAnswer={this.clearCodingAnswer}
         onRenderMarkdown={this.props.onRenderMarkdown}
+        handleStringChange={this.handleStringChange}
         {...this.props}
       >
         {this.props.children}
