@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { shallow } from 'enzyme';
-import { EmphasisBox } from '@helsenorge/toolkit/components/atoms/emphasisbox';
 import Autosuggest from '@helsenorge/toolkit/components/molecules/autosuggest';
 import { Spinner } from '@helsenorge/toolkit/components/atoms/spinner';
 
@@ -68,32 +67,6 @@ describe('autosuggest-view', () => {
     jest.runAllTimers();
 
     expect(fetchValueSetFn).toHaveBeenCalled();
-  });
-
-  it('skal vise valgt verdi dersom en verdi er valgt', () => {
-    const wrapper = shallow(
-      <AutosuggestView
-        handleChange={jest.fn()}
-        clearCodingAnswer={jest.fn()}
-        fetchValueSet={jest.fn()}
-        answer={[
-          {
-            valueCoding: {
-              code: '1',
-              system: 'http://autosuggest.system',
-              display: 'Answer',
-            },
-          },
-        ]}
-        item={{} as QuestionnaireItem}
-        resources={{} as Resources}
-        renderDeleteButton={jest.fn()}
-        repeatButton={<></>}
-        renderHelpButton={jest.fn()}
-        renderHelpElement={jest.fn()}
-      />
-    );
-    expect(wrapper.find(EmphasisBox).length).toBe(1);
   });
 
   it('skal vise valg etter ValueSet er lastet', () => {

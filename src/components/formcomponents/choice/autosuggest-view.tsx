@@ -4,7 +4,6 @@ import Autosuggest, { Suggestion } from '@helsenorge/toolkit/components/molecule
 import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
 import { Spinner } from '@helsenorge/toolkit/components/atoms/spinner';
 import MessageBox from '@helsenorge/toolkit/components/atoms/message-box';
-import { EmphasisBox, colors } from '@helsenorge/toolkit/components/atoms/emphasisbox';
 import { debounce } from '@helsenorge/core-utils/debounce';
 
 import { isRequired, getId, renderPrefix, getText } from '../../../util/index';
@@ -164,7 +163,6 @@ class AutosuggestView extends React.Component<AutosuggestProps, AutosuggestState
     if (!placeholder && this.props.resources) {
       placeholder = this.props.resources.selectDefaultPlaceholder;
     }
-    const answer = this.getAnswer();
     return (
       <div className="page_skjemautfyller__component page_skjemautfyller__component_choice page_skjemautfyller__component_choice_autosuggest">
         <Collapse isOpened>
@@ -201,7 +199,6 @@ class AutosuggestView extends React.Component<AutosuggestProps, AutosuggestState
               <Spinner inline mini />
             </div>
           )}
-          {answer && <EmphasisBox color={colors.Blue}>{`Valgt verdi: ${answer.display}`}</EmphasisBox>}
           {this.state.hasLoadError && <MessageBox type="error" title={this.props.resources?.autoSuggestLoadError} />}
           {this.props.renderDeleteButton('page_skjemautfyller__deletebutton--margin-top')}
           {this.props.repeatButton}

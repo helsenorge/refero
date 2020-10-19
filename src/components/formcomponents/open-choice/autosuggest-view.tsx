@@ -4,7 +4,6 @@ import Autosuggest, { Suggestion } from '@helsenorge/toolkit/components/molecule
 import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
 import { Spinner } from '@helsenorge/toolkit/components/atoms/spinner';
 import MessageBox from '@helsenorge/toolkit/components/atoms/message-box';
-import { EmphasisBox, colors } from '@helsenorge/toolkit/components/atoms/emphasisbox';
 import { debounce } from '@helsenorge/core-utils/debounce';
 
 import { isRequired, getId, renderPrefix, getText } from '../../../util/index';
@@ -12,6 +11,7 @@ import { getValidationTextExtension, getPlaceholder } from '../../../util/extens
 import { ValueSet, QuestionnaireItem, Coding, QuestionnaireResponseItemAnswer } from '../../../types/fhir';
 import { Resources } from '../../../util/resources';
 import { AutoSuggestProps } from '../../../types/autoSuggestProps';
+import { hasStringAnswer, hasCodingAnswer } from '../../../util/skjemautfyller-core';
 import { OPEN_CHOICE_ID, OPEN_CHOICE_SYSTEM, OPEN_CHOICE_LABEL } from '../../../constants';
 
 interface AutosuggestProps {
@@ -73,7 +73,7 @@ class AutosuggestView extends React.Component<AutosuggestProps, AutosuggestState
   }
 
   onSubmitValidator(): boolean {
-    return isRequired(this.props.item) ? !!this.getCodingAnswer() || !!this.getStringAnswer() : true;
+    return isRequired(this.props.item) ? !!this.hasCodingAnswer() || !!this.hasStringAnswer() : true;
   }
 
   successCallback(valueSet: ValueSet): void {
@@ -108,10 +108,10 @@ class AutosuggestView extends React.Component<AutosuggestProps, AutosuggestState
   }
 
   clearCodingAnswerIfExists(): void {
-    const hasExistingAnswer = this.getCodingAnswer();
-    const hasStringAnswer = this.getStringAnswer();
-    if (hasExistingAnswer && !hasStringAnswer) {
-      this.props.clearCodingAnswer(hasExistingAnswer);
+    const codingAnswer = this.getCodingAnswer();
+    const hasStringAnswer = this.hasStringAnswer();
+    if (codingAnswer && !hasStringAnswer) {
+      this.props.clearCodingAnswer(codingAnswer);
     }
   }
 
@@ -167,16 +167,27 @@ class AutosuggestView extends React.Component<AutosuggestProps, AutosuggestState
       this.setState({
         isDirty: false,
       });
+      const codingAnswer = this.getCodingAnswer();
       if (this.state.inputValue) {
         this.props.handleChange(OPEN_CHOICE_ID, OPEN_CHOICE_SYSTEM, OPEN_CHOICE_LABEL);
         this.props.handleStringChange(this.state.inputValue);
+      } else if (codingAnswer) {
+        this.props.clearCodingAnswer(codingAnswer);
+        this.props.handleStringChange('');
       }
     }
   }
 
-  getStringAnswer(): string | undefined {
-    const answer = Array.isArray(this.props.answer) ? this.props.answer[0] : this.props.answer;
-    return answer ? answer.valueString : '';
+  hasStringAnswer(): boolean {
+    return Array.isArray(this.props.answer)
+      ? this.props.answer.reduce((acc, x) => acc || hasStringAnswer(x), false)
+      : hasStringAnswer(this.props.answer);
+  }
+
+  hasCodingAnswer(): boolean {
+    return Array.isArray(this.props.answer)
+      ? this.props.answer.reduce((acc, x) => acc || hasCodingAnswer(x), false)
+      : hasCodingAnswer(this.props.answer);
   }
 
   getCodingAnswer(): Coding | undefined {
@@ -189,8 +200,7 @@ class AutosuggestView extends React.Component<AutosuggestProps, AutosuggestState
     if (!placeholder && this.props.resources) {
       placeholder = this.props.resources.selectDefaultPlaceholder;
     }
-    const codingAnswer = this.getCodingAnswer();
-    const stringAnswer = this.getStringAnswer();
+
     return (
       <div className="page_skjemautfyller__component page_skjemautfyller__component_choice page_skjemautfyller__component_choice_autosuggest">
         <Collapse isOpened>
@@ -228,8 +238,6 @@ class AutosuggestView extends React.Component<AutosuggestProps, AutosuggestState
               <Spinner inline mini />
             </div>
           )}
-          {stringAnswer && <div>{`Du har skrevet inn ${stringAnswer}`}</div>}
-          {codingAnswer && <EmphasisBox color={colors.Blue}>{`Du har valgt ${codingAnswer.display} fra listen`}</EmphasisBox>}
           {this.state.hasLoadError && <MessageBox type="error" title={this.props.resources?.autoSuggestLoadError} />}
           {this.props.renderDeleteButton('page_skjemautfyller__deletebutton--margin-top')}
           {this.props.repeatButton}
