@@ -24,7 +24,7 @@ import DropdownView from './dropdown-view';
 import RadioView from './radio-view';
 import CheckboxView from './checkbox-view';
 import { GlobalState } from '../../../reducers';
-import AutosuggestView from './autosuggest-view';
+import AutosuggestView from '../choice-common/autosuggest-view';
 import { AutoSuggestProps } from '../../../types/autoSuggestProps';
 
 export interface ChoiceProps {

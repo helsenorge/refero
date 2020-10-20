@@ -43,7 +43,7 @@ import DropdownView from './dropdown-view';
 import { OPEN_CHOICE_ID, OPEN_CHOICE_SYSTEM } from '../../../constants';
 import { isReadOnly } from '../../../util';
 import TextView from '../textview';
-import AutosuggestView from './autosuggest-view';
+import AutosuggestView from '../choice-common/autosuggest-view';
 import { AutoSuggestProps } from '../../../types/autoSuggestProps';
 
 export interface Props {

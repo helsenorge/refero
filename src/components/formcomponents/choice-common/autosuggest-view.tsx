@@ -33,7 +33,7 @@ interface AutosuggestProps {
   repeatButton: JSX.Element;
   children?: JSX.Element;
 
-  handleStringChange: (value: string) => void;
+  handleStringChange?: (value: string) => void;
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
@@ -163,7 +163,8 @@ class AutosuggestView extends React.Component<AutosuggestProps, AutosuggestState
   }
 
   onBlur() {
-    if (this.state.isDirty) {
+    // det er bare open-choice som sender handleStringChange som prop. Bruker dette for å skille choice og open-choice
+    if (this.state.isDirty && !!this.props.handleStringChange) {
       this.setState({
         isDirty: false,
       });
@@ -179,15 +180,21 @@ class AutosuggestView extends React.Component<AutosuggestProps, AutosuggestState
   }
 
   hasStringAnswer(): boolean {
-    return Array.isArray(this.props.answer)
-      ? this.props.answer.reduce((acc, x) => acc || hasStringAnswer(x), false)
-      : hasStringAnswer(this.props.answer);
+    if (Array.isArray(this.props.answer)) {
+      return this.props.answer.reduce((acc, x) => acc || hasStringAnswer(x), false);
+    } else if (this.props.answer) {
+      return hasStringAnswer(this.props.answer);
+    }
+    return false;
   }
 
   hasCodingAnswer(): boolean {
-    return Array.isArray(this.props.answer)
-      ? this.props.answer.reduce((acc, x) => acc || hasCodingAnswer(x), false)
-      : hasCodingAnswer(this.props.answer);
+    if (Array.isArray(this.props.answer)) {
+      return this.props.answer.reduce((acc, x) => acc || hasCodingAnswer(x), false);
+    } else if (this.props.answer) {
+      return hasCodingAnswer(this.props.answer);
+    }
+    return false;
   }
 
   getCodingAnswer(): Coding | undefined {
