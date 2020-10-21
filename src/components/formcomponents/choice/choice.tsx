@@ -220,7 +220,7 @@ export class Choice extends React.Component<ChoiceProps & ValidationProps, Choic
   shouldComponentUpdate(nextProps: ChoiceProps, _nextState: {}) {
     const responseItemHasChanged = this.props.responseItem !== nextProps.responseItem;
     const helpItemHasChanged = this.props.isHelpOpen !== nextProps.isHelpOpen;
-    const resourcesHasChanged = this.props.resources !== nextProps.resources;
+    const resourcesHasChanged = JSON.stringify(this.props.resources) !== JSON.stringify(nextProps.resources);
     const repeats = this.props.item.repeats ?? false;
 
     return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats;

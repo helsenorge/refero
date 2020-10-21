@@ -1,4 +1,12 @@
-﻿7.0.0
+﻿7.0.2
+-----
+* Fix for 'false' values in enableWhen: run enableWhen matching when answerDecimal and answerInteger is the number 0, and answerString is the empty string.
+
+7.0.1
+-----
+* Performance improvement: Fix componentShouldUpdate check for when resources prop changes
+
+7.0.0
 -----
 * Upgrade from FHIR STU3 to FHIR R4.
 

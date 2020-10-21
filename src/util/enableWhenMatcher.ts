@@ -15,10 +15,10 @@ export function enableWhenMatches(enableWhen: QuestionnaireItemEnableWhen, answe
   if (enableWhen.answerBoolean !== undefined) {
     return enableWhenMatchesBooleanAnswer(answer.valueBoolean, enableWhen.answerBoolean, enableWhen.operator);
   }
-  if (enableWhen.answerDecimal) {
+  if (enableWhen.answerDecimal || enableWhen.answerDecimal === 0) {
     return enableWhenMatchesDecimalAnswer(answer.valueDecimal, enableWhen.answerDecimal, enableWhen.operator);
   }
-  if (enableWhen.answerInteger) {
+  if (enableWhen.answerInteger || enableWhen.answerInteger === 0) {
     return enableWhenMatchesIntegerAnswer(answer.valueInteger, enableWhen.answerInteger, enableWhen.operator);
   }
   if (enableWhen.answerDate) {
@@ -30,7 +30,7 @@ export function enableWhenMatches(enableWhen: QuestionnaireItemEnableWhen, answe
   if (enableWhen.answerTime) {
     return enableWhenMatchesStringAnswer(answer.valueTime, enableWhen.answerTime, enableWhen.operator);
   }
-  if (enableWhen.answerString) {
+  if (enableWhen.answerString || enableWhen.answerString === '') {
     return enableWhenMatchesStringAnswer(answer.valueString, enableWhen.answerString, enableWhen.operator);
   }
   if (enableWhen.answerCoding) {
