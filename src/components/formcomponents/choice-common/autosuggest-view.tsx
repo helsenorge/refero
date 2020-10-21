@@ -237,6 +237,7 @@ class AutosuggestView extends React.Component<AutosuggestProps, AutosuggestState
               onSuggestionSelected={this.onSuggestionSelected}
               onChange={this.onChangeInput}
               onBlur={this.onBlur}
+              focusInputOnSuggestionClick={true}
               value={this.state.inputValue}
             />
           </Validation>
