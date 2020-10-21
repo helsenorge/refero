@@ -35,7 +35,7 @@ renderer.link = (href: string, title: string, text: string): string => {
   return `<a href=${href} ${title ? `title=${title}` : ''} target="_blank" class="external">${text}</a>`;
 };
 marked.setOptions({ renderer: renderer });
-import { isValid, invalidNodes } from '@helsenorge/core-utils/validation';
+import { isValid, invalidNodes } from '@helsenorge/core-utils/string-utils';
 
 export function getComponentForItem(type: string) {
   if (String(type) === ItemType.GROUP) {
