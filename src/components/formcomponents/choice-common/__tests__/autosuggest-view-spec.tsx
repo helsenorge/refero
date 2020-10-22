@@ -7,6 +7,7 @@ import AutosuggestView from '../autosuggest-view';
 import { QuestionnaireItem, ValueSet } from '../../../../types/fhir';
 import { Resources } from '../../../../util/resources';
 import MessageBox from '@helsenorge/toolkit/components/atoms/message-box';
+import { OPEN_CHOICE_ID, OPEN_CHOICE_SYSTEM, OPEN_CHOICE_LABEL } from '../../../../constants';
 
 describe('autosuggest-view', () => {
   it('skal vise spinner mens valg lastes', () => {
@@ -383,5 +384,87 @@ describe('autosuggest-view', () => {
     );
 
     expect(wrapper.find(Autosuggest).props().onSubmitValidator!()).toBeTruthy();
+  });
+
+  it('skal kalle handleStringChange med feltverdi når feltet mister fokus', () => {
+    const handleStringChangeFn = jest.fn();
+    const handleChangeFn = jest.fn();
+    const wrapper = shallow(
+      <AutosuggestView
+        handleChange={handleChangeFn}
+        handleStringChange={handleStringChangeFn}
+        clearCodingAnswer={jest.fn()}
+        fetchValueSet={(
+          _searchString: string,
+          _item: QuestionnaireItem,
+          _successCallback: (valueSet: ValueSet) => void,
+          errorCallback: (error: string) => void
+        ) => {
+          errorCallback('feil');
+        }}
+        answer={[]}
+        item={{} as QuestionnaireItem}
+        resources={{} as Resources}
+        renderDeleteButton={jest.fn()}
+        repeatButton={<></>}
+        renderHelpButton={jest.fn()}
+        renderHelpElement={jest.fn()}
+      />
+    );
+
+    wrapper
+      .find(Autosuggest)
+      .props()
+      .onChange({} as React.FormEvent<HTMLInputElement>, { newValue: 'test', method: 'type' });
+
+    wrapper.find(Autosuggest).props().onBlur!({} as React.FormEvent<HTMLInputElement>, { highlightedSuggestion: { value: '', label: '' } });
+
+    expect(handleChangeFn).toHaveBeenCalledWith(OPEN_CHOICE_ID, OPEN_CHOICE_SYSTEM, OPEN_CHOICE_LABEL);
+    expect(handleStringChangeFn).toHaveBeenCalledWith('test');
+  });
+
+  it('skal kalle handleStringChange med tom verdi når feltet settes til tom string', () => {
+    const handleStringChangeFn = jest.fn();
+    const clearCodingAnswerFn = jest.fn();
+    const wrapper = shallow(
+      <AutosuggestView
+        handleChange={jest.fn()}
+        handleStringChange={handleStringChangeFn}
+        clearCodingAnswer={clearCodingAnswerFn}
+        fetchValueSet={(
+          _searchString: string,
+          _item: QuestionnaireItem,
+          _successCallback: (valueSet: ValueSet) => void,
+          errorCallback: (error: string) => void
+        ) => {
+          errorCallback('feil');
+        }}
+        answer={[
+          {
+            valueCoding: {
+              code: OPEN_CHOICE_ID,
+              system: OPEN_CHOICE_SYSTEM,
+              display: OPEN_CHOICE_LABEL,
+            },
+          },
+        ]}
+        item={{} as QuestionnaireItem}
+        resources={{} as Resources}
+        renderDeleteButton={jest.fn()}
+        repeatButton={<></>}
+        renderHelpButton={jest.fn()}
+        renderHelpElement={jest.fn()}
+      />
+    );
+
+    wrapper
+      .find(Autosuggest)
+      .props()
+      .onChange({} as React.FormEvent<HTMLInputElement>, { newValue: '', method: 'type' });
+
+    wrapper.find(Autosuggest).props().onBlur!({} as React.FormEvent<HTMLInputElement>, { highlightedSuggestion: { value: '', label: '' } });
+
+    expect(clearCodingAnswerFn).toHaveBeenCalled();
+    expect(handleStringChangeFn).toHaveBeenCalledWith('');
   });
 });
