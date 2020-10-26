@@ -4,6 +4,7 @@ import { ThunkDispatch } from 'redux-thunk';
 import classNames from 'classnames';
 import { ConfirmBox } from '@helsenorge/toolkit/components/molecules/confirmbox';
 import { FunctionButton } from '@helsenorge/toolkit/components/atoms/buttons/function-button';
+import Delete from '@helsenorge/toolkit/components/icons/Delete';
 
 import { Path } from '../../../util/skjemautfyller-core';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
@@ -61,7 +62,7 @@ class DeleteButton extends React.Component<Props, State> {
     return (
       <React.Fragment>
         <FunctionButton
-          iconType="delete"
+          svgIcon={<Delete variant="error" />}
           onClick={this.onDeleteRepeatItem}
           className={classNames('page_skjemautfyller__deletebutton', this.props.className)}
         >

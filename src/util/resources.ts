@@ -167,4 +167,16 @@ export interface Resources {
    * Slett
    */
   deleteAttachmentText?: string;
+  /**
+   * Du har skrevet for mange tegn. Gjør teksten kortere.
+   */
+  stringOverMaxLengthError?: string;
+  /**
+   * Maksimum {0} tegn
+   */
+  maxLengthText?: string;
+  /**
+   * Velg filer
+   */
+  chooseFilesText?: string;
 }
