@@ -1,4 +1,8 @@
-﻿7.1.0
+﻿7.1.1
+-----
+* Support for extension sdf-questionnaire-print-version on questionnaire to determine the url (if any) of the binary file representing the paper version of this questionnaire.
+
+7.1.0
 -----
 * Upgrade components to new version of @helsenorge/toolkit and @helsenorge/core-utils. Requires @helsenorge/toolkit v15.0.1 and @helsenorge/core-utils v3.0.0
 

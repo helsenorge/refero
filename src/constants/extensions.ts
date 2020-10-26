@@ -24,6 +24,7 @@ export default {
   DATE_MAX_VALUE_URL: 'http://ehelse.no/fhir/StructureDefinition/sdf-maxvalue',
   DATE_MIN_VALUE_URL: 'http://ehelse.no/fhir/StructureDefinition/sdf-minvalue',
   RECIPIENT_URL: 'http://ehelse.no/fhir/StructureDefinition/sdf-endpoint',
+  PRINT_VERSION: 'http://helsenorge.no/fhir/StructureDefinition/sdf-questionnaire-print-version',
 
   GUIDANCE_PARAMETER: 'http://helsenorge.no/fhir/StructureDefinition/sdf-guidanceparameter',
   GUIDANCE_ACTION: 'http://helsenorge.no/fhir/StructureDefinition/sdf-guidanceaction',
