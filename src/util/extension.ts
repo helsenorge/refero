@@ -28,6 +28,11 @@ export function getPresentationButtonsExtension(questionniare: Questionnaire): P
   return null;
 }
 
+export function getPrintVersion(questionniare: Questionnaire): string | undefined {
+  const recipientUrl = getExtension(ExtensionConstants.PRINT_VERSION, questionniare);
+  return recipientUrl?.valueReference?.reference;
+}
+
 export function getRecipientUrl(questionniare: Questionnaire): string | undefined {
   const recipientUrl = getExtension(ExtensionConstants.RECIPIENT_URL, questionniare);
   return recipientUrl?.valueReference?.reference;
