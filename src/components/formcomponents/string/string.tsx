@@ -135,6 +135,7 @@ export class String extends React.Component<Props & ValidationProps, {}> {
             helpButton={this.props.renderHelpButton()}
             helpElement={this.props.renderHelpElement()}
             validateOnExternalUpdate={true}
+            stringOverMaxLengthError={resources?.stringOverMaxLengthError}
           />
         </Validation>
         {this.props.renderDeleteButton('page_skjemautfyller__deletebutton--margin-top')}

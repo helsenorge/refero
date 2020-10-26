@@ -108,7 +108,7 @@ export class Text extends React.Component<Props & ValidationProps, {}> {
   }
 
   render(): JSX.Element | null {
-    const { item, answer, pdf, children, onRenderMarkdown, ...other } = this.props;
+    const { item, answer, pdf, children, resources, onRenderMarkdown, ...other } = this.props;
     const itemControls = getItemControlExtensionValue(item);
 
     if (itemControls && itemControls.some(itemControl => itemControl.code === itemControlConstants.INLINE)) {
@@ -156,6 +156,8 @@ export class Text extends React.Component<Props & ValidationProps, {}> {
             helpButton={this.props.renderHelpButton()}
             helpElement={this.props.renderHelpElement()}
             validateOnExternalUpdate={true}
+            stringOverMaxLengthError={resources?.stringOverMaxLengthError}
+            maxLengthText={resources?.maxLengthText}
           />
         </Validation>
         {this.props.renderDeleteButton('page_skjemautfyller__deletebutton--margin-top')}

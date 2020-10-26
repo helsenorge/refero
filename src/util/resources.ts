@@ -171,4 +171,16 @@ export interface Resources {
    * Teknisk feil
    */
   autoSuggestLoadError?: string;
+  /**
+   * Du har skrevet for mange tegn. Gjør teksten kortere.
+   */
+  stringOverMaxLengthError?: string;
+  /**
+   * Maksimum {0} tegn
+   */
+  maxLengthText?: string;
+  /**
+   * Velg filer
+   */
+  chooseFilesText?: string;
 }

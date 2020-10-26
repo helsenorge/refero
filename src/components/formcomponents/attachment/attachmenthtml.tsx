@@ -87,6 +87,7 @@ const attachmentHtml: React.SFC<Props & ValidationProps> = ({
           shouldUploadMultiple={multiple}
           maxFiles={maxFiles}
           minFiles={minFiles}
+          chooseFilesText={resources?.chooseFilesText}
         />
       </Validation>
       {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}

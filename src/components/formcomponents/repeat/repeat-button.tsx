@@ -2,6 +2,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { FunctionButton } from '@helsenorge/toolkit/components/atoms/buttons/function-button';
+import Add from '@helsenorge/toolkit/components/icons/Add';
 
 import { Path } from '../../../util/skjemautfyller-core';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
@@ -35,7 +36,7 @@ export const RepeatButton: React.SFC<Props> = ({ item, resources, dispatch, pare
   }
 
   return (
-    <FunctionButton iconType="add" className=" page_skjemautfyller__repeatbutton" onClick={onAddRepeatItem}>
+    <FunctionButton svgIcon={<Add />} className=" page_skjemautfyller__repeatbutton" onClick={onAddRepeatItem}>
       {text}
     </FunctionButton>
   );

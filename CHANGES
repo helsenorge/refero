@@ -1,4 +1,8 @@
-﻿7.0.2
+﻿7.1.0
+-----
+* Upgrade components to new version of @helsenorge/toolkit and @helsenorge/core-utils. Requires @helsenorge/toolkit v15.0.1 and @helsenorge/core-utils v3.0.0
+
+7.0.2
 -----
 * Fix for 'false' values in enableWhen: run enableWhen matching when answerDecimal and answerInteger is the number 0, and answerString is the empty string.
 
