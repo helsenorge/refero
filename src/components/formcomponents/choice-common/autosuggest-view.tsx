@@ -162,12 +162,18 @@ class AutosuggestView extends React.Component<AutosuggestProps, AutosuggestState
     this.props.handleChange(suggestion.value, this.state.system, suggestion.label);
   }
 
-  onBlur() {
-    // det er bare open-choice som sender handleStringChange som prop. Bruker dette for å skille choice og open-choice
-    if (this.state.isDirty && !!this.props.handleStringChange) {
+  onBlur(_e: React.FormEvent<{}>, { highlightedSuggestion }: { highlightedSuggestion: Suggestion | null }) {
+    if (this.state.isDirty && highlightedSuggestion) {
+      this.setState({
+        lastSearchValue: highlightedSuggestion.label,
+        isDirty: false,
+      });
+      this.props.handleChange(highlightedSuggestion.value, this.state.system, highlightedSuggestion.label);
+    } else if (this.state.isDirty && !!this.props.handleStringChange) {
       this.setState({
         isDirty: false,
       });
+      // det er bare open-choice som sender handleStringChange som prop. Bruker dette for å skille choice og open-choice
       const codingAnswer = this.getCodingAnswer();
       if (this.state.inputValue) {
         this.props.handleChange(OPEN_CHOICE_ID, OPEN_CHOICE_SYSTEM, OPEN_CHOICE_LABEL);

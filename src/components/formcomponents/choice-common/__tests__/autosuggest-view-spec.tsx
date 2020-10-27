@@ -417,7 +417,11 @@ describe('autosuggest-view', () => {
       .props()
       .onChange({} as React.FormEvent<HTMLInputElement>, { newValue: 'test', method: 'type' });
 
-    wrapper.find(Autosuggest).props().onBlur!({} as React.FormEvent<HTMLInputElement>, { highlightedSuggestion: { value: '', label: '' } });
+    // feil i react-autosuggest typings: highlightedSuggestion kan ikke være null, men i følge koden og dokumentasjonen kan den være null.
+    //eslint-disable-next-line
+    //@ts-ignore
+    //eslint-disable-next-line
+    wrapper.find(Autosuggest).props().onBlur!({} as React.FormEvent<HTMLInputElement>, { highlightedSuggestion: null });
 
     expect(handleChangeFn).toHaveBeenCalledWith(OPEN_CHOICE_ID, OPEN_CHOICE_SYSTEM, OPEN_CHOICE_LABEL);
     expect(handleStringChangeFn).toHaveBeenCalledWith('test');
@@ -462,9 +466,58 @@ describe('autosuggest-view', () => {
       .props()
       .onChange({} as React.FormEvent<HTMLInputElement>, { newValue: '', method: 'type' });
 
-    wrapper.find(Autosuggest).props().onBlur!({} as React.FormEvent<HTMLInputElement>, { highlightedSuggestion: { value: '', label: '' } });
+    // feil i react-autosuggest typings: highlightedSuggestion kan ikke være null, men i følge koden og dokumentasjonen kan den være null.
+    //eslint-disable-next-line
+    //@ts-ignore
+    //eslint-disable-next-line
+    wrapper.find(Autosuggest).props().onBlur!({} as React.FormEvent<HTMLInputElement>, { highlightedSuggestion: null });
 
     expect(clearCodingAnswerFn).toHaveBeenCalled();
     expect(handleStringChangeFn).toHaveBeenCalledWith('');
+  });
+
+  it('skal kalle handleChange ved blur dersom en suggstion er highlighted', () => {
+    const handleChangeFn = jest.fn();
+    const wrapper = shallow(
+      <AutosuggestView
+        handleChange={handleChangeFn}
+        handleStringChange={jest.fn()}
+        clearCodingAnswer={jest.fn()}
+        fetchValueSet={(
+          _searchString: string,
+          _item: QuestionnaireItem,
+          _successCallback: (valueSet: ValueSet) => void,
+          errorCallback: (error: string) => void
+        ) => {
+          errorCallback('feil');
+        }}
+        answer={[
+          {
+            valueCoding: {
+              code: OPEN_CHOICE_ID,
+              system: OPEN_CHOICE_SYSTEM,
+              display: OPEN_CHOICE_LABEL,
+            },
+          },
+        ]}
+        item={{} as QuestionnaireItem}
+        resources={{} as Resources}
+        renderDeleteButton={jest.fn()}
+        repeatButton={<></>}
+        renderHelpButton={jest.fn()}
+        renderHelpElement={jest.fn()}
+      />
+    );
+
+    wrapper
+      .find(Autosuggest)
+      .props()
+      .onChange({} as React.FormEvent<HTMLInputElement>, { newValue: '', method: 'type' });
+
+    wrapper.find(Autosuggest).props().onBlur!({} as React.FormEvent<HTMLInputElement>, {
+      highlightedSuggestion: { value: 'a', label: 'b' },
+    });
+
+    expect(handleChangeFn).toHaveBeenCalled();
   });
 });
