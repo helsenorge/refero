@@ -172,6 +172,10 @@ export interface Resources {
    */
   autoSuggestLoadError?: string;
   /**
+   * “Ingen treff på "{0}". Prøv med et annet ord eller sjekk for skrivefeil.”
+   */
+  autosuggestNoSuggestions?: string;
+  /**
    * Du har skrevet for mange tegn. Gjør teksten kortere.
    */
   stringOverMaxLengthError?: string;

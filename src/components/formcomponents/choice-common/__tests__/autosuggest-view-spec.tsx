@@ -120,6 +120,51 @@ describe('autosuggest-view', () => {
     expect(wrapper.find(Autosuggest).props().suggestions.length).toBe(1);
   });
 
+  it('skal vise spesiell melding dersom listen over valg som lastes er tom', () => {
+    jest.useFakeTimers();
+    const wrapper = shallow(
+      <AutosuggestView
+        handleChange={jest.fn()}
+        clearCodingAnswer={jest.fn()}
+        fetchValueSet={(
+          _searchString: string,
+          _item: QuestionnaireItem,
+          successCallback: (valueSet: ValueSet) => void,
+          _errorCallback: (error: string) => void
+        ) => {
+          successCallback({
+            resourceType: 'ValueSet',
+            status: 'draft',
+            compose: {
+              include: [
+                {
+                  system: '',
+                  concept: [],
+                },
+              ],
+            },
+          });
+        }}
+        answer={[]}
+        item={{} as QuestionnaireItem}
+        resources={{} as Resources}
+        renderDeleteButton={jest.fn()}
+        repeatButton={<></>}
+        renderHelpButton={jest.fn()}
+        renderHelpElement={jest.fn()}
+      />
+    );
+
+    wrapper
+      .find(Autosuggest)
+      .props()
+      .onSuggestionsFetchRequested({ value: 'test', reason: 'input-changed' });
+
+    jest.runAllTimers();
+
+    expect(wrapper.find('.page_skjemautfyller__no-suggestions').length).toBe(1);
+  });
+
   it('skal kalle handleChange når bruker velger noe i listen', () => {
     const handleChangeFn = jest.fn();
     jest.useFakeTimers();

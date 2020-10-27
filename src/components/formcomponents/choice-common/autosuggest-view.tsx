@@ -44,6 +44,7 @@ interface AutosuggestState {
   lastSearchValue: string;
   system: string;
   suggestions: Array<Suggestion>;
+  noSuggestionsToShow: boolean;
   isLoading: boolean;
   hasLoadError: boolean;
   isDirty: boolean;
@@ -58,6 +59,7 @@ class AutosuggestView extends React.Component<AutosuggestProps, AutosuggestState
       lastSearchValue: '',
       system: '',
       suggestions: [],
+      noSuggestionsToShow: false,
       isLoading: false,
       hasLoadError: false,
       isDirty: false,
@@ -86,6 +88,7 @@ class AutosuggestView extends React.Component<AutosuggestProps, AutosuggestState
     ) {
       this.setState({
         isLoading: false,
+        noSuggestionsToShow: true,
         suggestions: [],
       });
       return;
@@ -144,6 +147,7 @@ class AutosuggestView extends React.Component<AutosuggestProps, AutosuggestState
     this.setState({
       inputValue: newValue,
       isDirty: true,
+      noSuggestionsToShow: false,
       hasLoadError: this.state.hasLoadError && !newValue,
     });
   }
@@ -250,6 +254,11 @@ class AutosuggestView extends React.Component<AutosuggestProps, AutosuggestState
           {this.state.isLoading && (
             <div>
               <Spinner inline mini />
+            </div>
+          )}
+          {this.state.noSuggestionsToShow && (
+            <div className="page_skjemautfyller__no-suggestions">
+              {this.props.resources?.autosuggestNoSuggestions?.replace('{0}', this.state.inputValue)}
             </div>
           )}
           {this.state.hasLoadError && <MessageBox type="error" title={this.props.resources?.autoSuggestLoadError} />}
