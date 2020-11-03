@@ -2,6 +2,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 import CustomTag from '@helsenorge/core-utils/custom-tag';
+import AnchorLink from '@helsenorge/designsystem-react/components/AnchorLink';
 
 import { GlobalState } from '../../../reducers';
 import { NewValueAction } from '../../../actions/newValue';
@@ -22,6 +23,7 @@ export interface Props {
   dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
   path: Array<Path>;
   pdf?: boolean;
+  includeSkipLink?: boolean;
   className?: string;
   resources?: Resources;
   headerTag?: number;
@@ -148,10 +150,17 @@ export class Group extends React.Component<Props, State> {
 
   renderGroup = (): JSX.Element => {
     return (
-      <section id={getId(this.props.id)}>
+      <section id={getId(this.props.id)} data-sectionname={this.getHeaderText()}>
         {this.renderGroupHeader()}
         {this.props.renderHelpElement()}
-        <div className={this.getClassNames()}>{this.props.renderChildrenItems(new RenderContext())}</div>
+        <div id={`${getId(this.props.id)}-navanchor`} className={this.getClassNames()}>
+          {this.props.renderChildrenItems(new RenderContext())}
+        </div>
+        {this.props.includeSkipLink && this.props.path.length === 1 && (
+          <AnchorLink className="page_skjemautfyller__skiplink" href="#navigator-button">
+            {this.props.resources?.skipLinkText}
+          </AnchorLink>
+        )}
         {this.props.renderDeleteButton('page_skjemautfyller__deletebutton--margin-top')}
         {this.props.repeatButton}
       </section>
@@ -203,6 +212,10 @@ export class Group extends React.Component<Props, State> {
     return undefined;
   };
 
+  getHeaderText = (): string => {
+    return renderPrefix(this.props.item) + ' ' + getText(this.props.item, this.props.onRenderMarkdown);
+  };
+
   renderGroupHeader = (): JSX.Element | null => {
     if (!getText(this.props.item, this.props.onRenderMarkdown)) {
       return null;
@@ -211,7 +224,7 @@ export class Group extends React.Component<Props, State> {
     return (
       <React.Fragment>
         <CustomTag tagName={tagName} className={'page_skjemautfyller__heading'}>
-          {renderPrefix(this.props.item) + ' ' + getText(this.props.item, this.props.onRenderMarkdown)}
+          {this.getHeaderText()}
         </CustomTag>
         {this.props.renderHelpButton()}
       </React.Fragment>

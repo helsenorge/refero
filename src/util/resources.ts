@@ -179,4 +179,8 @@ export interface Resources {
    * Velg filer
    */
   chooseFilesText?: string;
+  /**
+   * Hopp til navigator
+   */
+  skipLinkText?: string;
 }

@@ -1,4 +1,12 @@
-﻿7.1.1
+﻿7.2.1
+-----
+* Add support for scroll navigator. Can be enabled with extension sdf-questionnaire-navgiator-state.
+
+7.2.0
+-----
+* Skipped, published as beta version only.
+
+7.1.1
 -----
 * Support for extension sdf-questionnaire-print-version on questionnaire to determine the url (if any) of the binary file representing the paper version of this questionnaire.
 
