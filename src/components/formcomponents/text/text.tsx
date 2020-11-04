@@ -119,6 +119,10 @@ export class Text extends React.Component<Props & ValidationProps, {}> {
       );
     }
 
+    if (itemControls && itemControls.some(itemControl => itemControl.code === itemControlConstants.HIGHLIGHT)) {
+      return <div className="page_skjemautfyller__component page_skjemautfyller__component_highlight">{item.text}</div>;
+    }
+
     if (pdf || isReadOnly(item)) {
       return (
         <TextView

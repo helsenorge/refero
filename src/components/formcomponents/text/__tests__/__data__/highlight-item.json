@@ -1,0 +1,22 @@
+{
+  "extension": [
+    {
+      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+      "valueCodeableConcept": {
+        "coding": [
+          {
+            "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+            "code": "highlight"
+          }
+        ]
+      }
+    }
+  ],
+  "linkId": "highlight",
+  "prefix": "I skjema Først i PDF",
+  "text": "I forbindelse med det pågående koronautbruddet, ønsker vi at du sender inn skjemaet før du møter på sykehuset. Har du spørsmål til skjemaet, ta kontakt med behandlingsstedet.\r\n\r\nNB! Husk å svare på eventuelle andre skjema i forbindelse med timen din.",
+  "type": "text",
+  "required": false,
+  "repeats": false,
+  "readOnly": false
+}
