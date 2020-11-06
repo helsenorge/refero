@@ -243,6 +243,7 @@ class AutosuggestView extends React.Component<AutosuggestProps, AutosuggestState
               onSuggestionsClearRequested={() => {
                 // vis samme resultatsett neste gang feltet får fokus
               }}
+              noCharacterValidation
               onSubmitValidator={this.onSubmitValidator}
               onSuggestionSelected={this.onSuggestionSelected}
               onChange={this.onChangeInput}
