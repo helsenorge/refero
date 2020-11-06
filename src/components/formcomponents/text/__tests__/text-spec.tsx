@@ -33,4 +33,28 @@ describe('text with inline extension', () => {
     );
     expect(text.html()).toContain('<div>Tekst</div>');
   });
+
+  it('should render highlight correct', () => {
+    const item = JSON.parse(fs.readFileSync(__dirname + '/__data__/highlight-item.json').toString()) as QuestionnaireItem;
+
+    const answer: QuestionnaireResponseItemAnswer = {} as QuestionnaireResponseItemAnswer;
+    const text = mount(
+      <Text
+        item={item}
+        answer={answer}
+        path={[]}
+        repeatButton={<div />}
+        renderDeleteButton={() => {
+          return undefined;
+        }}
+        id="item_highlight"
+        validateScriptInjection
+        renderHelpButton={() => <React.Fragment />}
+        renderHelpElement={() => <React.Fragment />}
+        onAnswerChange={() => {}}
+        responseItem={{} as QuestionnaireResponseItem}
+      />
+    );
+    expect(text.find('.page_skjemautfyller__component_highlight').length).toBe(1);
+  });
 });

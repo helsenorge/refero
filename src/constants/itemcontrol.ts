@@ -6,6 +6,7 @@ export default {
   HELP: 'help',
   HELPLINK: 'help-link',
   INLINE: 'inline',
+  HIGHLIGHT: 'highlight',
   Group: {
     VERTICAL_TABLE: 'table',
     HORIZONTAL_TABLE: 'htable',
