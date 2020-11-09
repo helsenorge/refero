@@ -1,4 +1,4 @@
-import { QuestionnaireItem, Extension, Element, Questionnaire } from '../types/fhir';
+import { QuestionnaireItem, Extension, Element, Questionnaire, Coding } from '../types/fhir';
 import ExtensionConstants from '../constants/extensions';
 import { PresentationButtonsType } from '../constants/presentationButtonsType';
 
@@ -26,6 +26,11 @@ export function getPresentationButtonsExtension(questionniare: Questionnaire): P
   }
 
   return null;
+}
+
+export function getNavigatorExtension(questionniare: Questionnaire): Array<Coding> | undefined {
+  const navigatorExtension = getExtension(ExtensionConstants.NAVIGATOR, questionniare);
+  return navigatorExtension?.valueCodeableConcept?.coding;
 }
 
 export function getPrintVersion(questionniare: Questionnaire): string | undefined {

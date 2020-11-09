@@ -1,4 +1,16 @@
-﻿7.1.2
+7.2.1
+-----
+* Export function isIE11() from utils.
+
+7.2.1
+-----
+* Add support for scroll navigator. Can be enabled with extension sdf-questionnaire-navgiator-state.
+
+7.2.0
+-----
+* Skipped, published as beta version only.
+
+7.1.2
 -----
 * Added support for questionnaire-item-control "highlight" for item type = "text.
 

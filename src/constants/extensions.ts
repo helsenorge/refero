@@ -25,6 +25,7 @@ export default {
   DATE_MIN_VALUE_URL: 'http://ehelse.no/fhir/StructureDefinition/sdf-minvalue',
   RECIPIENT_URL: 'http://ehelse.no/fhir/StructureDefinition/sdf-endpoint',
   PRINT_VERSION: 'http://helsenorge.no/fhir/StructureDefinition/sdf-questionnaire-print-version',
+  NAVIGATOR: 'http://helsenorge.no/fhir/StructureDefinition/sdf-questionnaire-navgiator-state',
 
   GUIDANCE_PARAMETER: 'http://helsenorge.no/fhir/StructureDefinition/sdf-guidanceparameter',
   GUIDANCE_ACTION: 'http://helsenorge.no/fhir/StructureDefinition/sdf-guidanceaction',

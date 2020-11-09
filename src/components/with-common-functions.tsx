@@ -44,6 +44,7 @@ export interface Props {
   item?: QuestionnaireItem;
   headerTag?: number;
   pdf?: boolean;
+  includeSkipLink?: boolean;
   promptLoginMessage?: () => void;
   path?: Array<Path>;
   enable?: boolean;
@@ -251,6 +252,7 @@ export default function withCommonFunctions<T>(WrappedComponent: React.Component
             <Comp
               key={'item_' + responseItem.linkId + createIdSuffix(path, index, item.repeats)}
               pdf={pdf}
+              includeSkipLink={this.props.includeSkipLink}
               promptLoginMessage={promptLoginMessage}
               id={'item_' + responseItem.linkId + createIdSuffix(path, index, item.repeats)}
               item={item}

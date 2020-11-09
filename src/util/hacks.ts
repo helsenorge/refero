@@ -1,3 +1,5 @@
+import { isIE11 } from './index';
+
 // Purpose: Workaround for buggy IE11 behaviour.
 //
 // Description of buggy behaviour: See bug #187484
@@ -20,9 +22,4 @@ export function IE11HackToWorkAroundBug187484() {
       elem.style.lineHeight = newHeight;
     });
   }
-}
-
-function isIE11() {
-  // tslint:disable-next-line:no-string-literal
-  return !!window['MSInputMethodContext'] && !!document['documentMode'];
 }

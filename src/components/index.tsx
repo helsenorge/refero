@@ -33,12 +33,18 @@ import {
   ValueSet,
 } from '../types/fhir';
 import Constants from '../constants/index';
+import ItemType from '../constants/itemType';
 import { FormDefinition, FormData } from '../reducers/form';
 import RepeatButton from '../components/formcomponents/repeat/repeat-button';
 import { IE11HackToWorkAroundBug187484 } from '../util/hacks';
 import { setSkjemaDefinition } from '../actions/form';
 import { TextMessage } from '../types/text-message';
-import { getQuestionnaireUnitExtensionValue, getExtension, getPresentationButtonsExtension } from '../util/extension';
+import {
+  getQuestionnaireUnitExtensionValue,
+  getExtension,
+  getPresentationButtonsExtension,
+  getNavigatorExtension,
+} from '../util/extension';
 import { ActionRequester, IActionRequester } from '../util/actionRequester';
 import { RenderContext } from '../util/renderContext';
 import { QuestionniareInspector, IQuestionnaireInspector } from '../util/questionnaireInspector';
@@ -261,6 +267,8 @@ class Skjemautfyller extends React.Component<StateProps & DispatchProps & Props,
     }
     const contained = formDefinition.Content.contained;
     const renderedItems: Array<JSX.Element> | undefined = [];
+    const isNavigatorEnabled = !!getNavigatorExtension(formDefinition.Content);
+    let isNavigatorBlindzoneInitiated = false;
     formDefinition.Content.item.map(item => {
       if (isHiddenItem(item)) return [];
 
@@ -291,9 +299,15 @@ class Skjemautfyller extends React.Component<StateProps & DispatchProps & Props,
               undefined
             );
           const path = createPathForItem(this.props.path, item, responseItem, index);
+          // legg på blindzone rett over den første seksjonen
+          if (isNavigatorEnabled && item.type === ItemType.GROUP && !isNavigatorBlindzoneInitiated) {
+            isNavigatorBlindzoneInitiated = true;
+            renderedItems.push(<section id="navigator_blindzone"></section>);
+          }
           renderedItems.push(
             <Comp
               pdf={pdf}
+              includeSkipLink={isNavigatorEnabled && item.type === ItemType.GROUP}
               promptLoginMessage={promptLoginMessage}
               key={`item_${responseItem.linkId}_${index}`}
               id={'item_' + responseItem.linkId + createIdSuffix(path, index, item.repeats)}
