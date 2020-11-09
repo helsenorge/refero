@@ -278,3 +278,8 @@ export function profile(tag: string, func: () => void) {
   console.log('END: ', tag, end, 'ms');
   console.log('TOTAL: ', tag, end - start, 'ms');
 }
+
+export function isIE11(): boolean {
+  // tslint:disable-next-line:no-string-literal
+  return !!window['MSInputMethodContext'] && !!document['documentMode'];
+}
