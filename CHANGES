@@ -1,4 +1,8 @@
-7.2.1
+7.3.0
+-----
+* Add support for questionnaire-item-control "autocomplete" for choice and open-choice. Support url in answerValueSet for choice and open-choice.
+
+7.2.2
 -----
 * Export function isIE11() from utils.
 
