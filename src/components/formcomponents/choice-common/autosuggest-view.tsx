@@ -171,11 +171,13 @@ class AutosuggestView extends React.Component<AutosuggestProps, AutosuggestState
       this.setState({
         lastSearchValue: highlightedSuggestion.label,
         isDirty: false,
+        noSuggestionsToShow: false,
       });
       this.props.handleChange(highlightedSuggestion.value, this.state.system, highlightedSuggestion.label);
     } else if (this.state.isDirty && !!this.props.handleStringChange) {
       this.setState({
         isDirty: false,
+        noSuggestionsToShow: false,
       });
       // det er bare open-choice som sender handleStringChange som prop. Bruker dette for å skille choice og open-choice
       const codingAnswer = this.getCodingAnswer();
@@ -186,6 +188,10 @@ class AutosuggestView extends React.Component<AutosuggestProps, AutosuggestState
         this.props.clearCodingAnswer(codingAnswer);
         this.props.handleStringChange('');
       }
+    } else {
+      this.setState({
+        noSuggestionsToShow: false,
+      });
     }
   }
 
