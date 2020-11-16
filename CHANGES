@@ -1,3 +1,8 @@
+7.3.1
+-----
+* Hide no-suggestions message of autocomplete field when autocomplete field lose focus. Never show no-suggestions for open-choice autocomplete.
+* Remove default placeholder of autocomplete field.
+
 7.3.0
 -----
 * Add support for questionnaire-item-control "autocomplete" for choice and open-choice. Support url in answerValueSet for choice and open-choice.

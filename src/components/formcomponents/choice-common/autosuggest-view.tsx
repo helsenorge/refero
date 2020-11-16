@@ -74,6 +74,11 @@ class AutosuggestView extends React.Component<AutosuggestProps, AutosuggestState
     this.onBlur = this.onBlur.bind(this);
   }
 
+  isOpenChoice(): boolean {
+    // det er bare open-choice som sender handleStringChange som prop. Bruker dette for å skille choice og open-choice
+    return !!this.props.handleStringChange;
+  }
+
   onSubmitValidator(): boolean {
     return isRequired(this.props.item) ? !!this.hasCodingAnswer() || !!this.hasStringAnswer() : true;
   }
@@ -88,7 +93,7 @@ class AutosuggestView extends React.Component<AutosuggestProps, AutosuggestState
     ) {
       this.setState({
         isLoading: false,
-        noSuggestionsToShow: true,
+        noSuggestionsToShow: !this.isOpenChoice(),
         suggestions: [],
       });
       return;
@@ -174,12 +179,12 @@ class AutosuggestView extends React.Component<AutosuggestProps, AutosuggestState
         noSuggestionsToShow: false,
       });
       this.props.handleChange(highlightedSuggestion.value, this.state.system, highlightedSuggestion.label);
-    } else if (this.state.isDirty && !!this.props.handleStringChange) {
+    } else if (this.state.isDirty && this.isOpenChoice() && this.props.handleStringChange) {
       this.setState({
         isDirty: false,
         noSuggestionsToShow: false,
       });
-      // det er bare open-choice som sender handleStringChange som prop. Bruker dette for å skille choice og open-choice
+
       const codingAnswer = this.getCodingAnswer();
       if (this.state.inputValue) {
         this.props.handleChange(OPEN_CHOICE_ID, OPEN_CHOICE_SYSTEM, OPEN_CHOICE_LABEL);
@@ -219,11 +224,6 @@ class AutosuggestView extends React.Component<AutosuggestProps, AutosuggestState
   }
 
   render(): JSX.Element {
-    let placeholder = getPlaceholder(this.props.item);
-    if (!placeholder && this.props.resources) {
-      placeholder = this.props.resources.selectDefaultPlaceholder;
-    }
-
     return (
       <div className="page_skjemautfyller__component page_skjemautfyller__component_choice page_skjemautfyller__component_choice_autosuggest">
         <Collapse isOpened>
@@ -240,7 +240,7 @@ class AutosuggestView extends React.Component<AutosuggestProps, AutosuggestState
               className="page_skjemautfyller__autosuggest"
               type="search"
               isRequired={isRequired(this.props.item)}
-              placeholder={placeholder}
+              placeholder={getPlaceholder(this.props.item)}
               errorMessage={getValidationTextExtension(this.props.item)}
               helpButton={this.props.renderHelpButton()}
               helpElement={this.props.renderHelpElement()}
