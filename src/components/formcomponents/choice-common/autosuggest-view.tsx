@@ -13,6 +13,7 @@ import { Resources } from '../../../util/resources';
 import { AutoSuggestProps } from '../../../types/autoSuggestProps';
 import { hasStringAnswer, hasCodingAnswer } from '../../../util/skjemautfyller-core';
 import { OPEN_CHOICE_ID, OPEN_CHOICE_SYSTEM, OPEN_CHOICE_LABEL } from '../../../constants';
+import ItemType from '../../../constants/itemType';
 
 interface AutosuggestProps {
   handleChange: (code?: string, systemArg?: string, displayArg?: string) => void;
@@ -75,8 +76,7 @@ class AutosuggestView extends React.Component<AutosuggestProps, AutosuggestState
   }
 
   isOpenChoice(): boolean {
-    // det er bare open-choice som sender handleStringChange som prop. Bruker dette for å skille choice og open-choice
-    return !!this.props.handleStringChange;
+    return this.props.item.type === ItemType.OPENCHOICE;
   }
 
   onSubmitValidator(): boolean {

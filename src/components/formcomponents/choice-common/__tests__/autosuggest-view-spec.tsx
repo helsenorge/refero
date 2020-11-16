@@ -499,7 +499,11 @@ describe('autosuggest-view', () => {
           errorCallback('feil');
         }}
         answer={[]}
-        item={{} as QuestionnaireItem}
+        item={
+          {
+            type: 'open-choice',
+          } as QuestionnaireItem
+        }
         resources={{} as Resources}
         renderDeleteButton={jest.fn()}
         repeatButton={<></>}
@@ -548,7 +552,11 @@ describe('autosuggest-view', () => {
             },
           },
         ]}
-        item={{} as QuestionnaireItem}
+        item={
+          {
+            type: 'open-choice',
+          } as QuestionnaireItem
+        }
         resources={{} as Resources}
         renderDeleteButton={jest.fn()}
         repeatButton={<></>}
@@ -596,7 +604,11 @@ describe('autosuggest-view', () => {
             },
           },
         ]}
-        item={{} as QuestionnaireItem}
+        item={
+          {
+            type: 'open-choice',
+          } as QuestionnaireItem
+        }
         resources={{} as Resources}
         renderDeleteButton={jest.fn()}
         repeatButton={<></>}
