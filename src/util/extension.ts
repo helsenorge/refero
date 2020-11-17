@@ -1,6 +1,10 @@
 import { QuestionnaireItem, Extension, Element, Questionnaire, Coding } from '../types/fhir';
 import ExtensionConstants from '../constants/extensions';
 import { PresentationButtonsType } from '../constants/presentationButtonsType';
+import { SidebarItem } from '../types/sidebar';
+import { getText } from '../util/index';
+import itemControlConstants from '../constants/itemcontrol';
+import itemType from '../constants/itemType';
 
 export function getValidationTextExtension(item: QuestionnaireItem) {
   const validationTextExtension = getExtension(ExtensionConstants.VALIDATIONTEXT_URL, item);
@@ -41,6 +45,33 @@ export function getPrintVersion(questionniare: Questionnaire): string | undefine
 export function getRecipientUrl(questionniare: Questionnaire): string | undefined {
   const recipientUrl = getExtension(ExtensionConstants.RECIPIENT_URL, questionniare);
   return recipientUrl?.valueReference?.reference;
+}
+
+export function getSidebarSections(
+  questionniare: Questionnaire,
+  onRenderMarkdown?: (item: QuestionnaireItem, markup: string) => string
+): Array<SidebarItem> {
+  const items: Array<SidebarItem> = [];
+  const getSidebarItems = (currentItem: QuestionnaireItem, currentItems: Array<SidebarItem>) => {
+    const itemControls = getItemControlExtensionValue(currentItem);
+    if (
+      currentItem.type === itemType.TEXT &&
+      itemControls &&
+      itemControls.some(itemControl => itemControl.code === itemControlConstants.SIDEBAR)
+    ) {
+      items.push({
+        item: currentItem,
+        markdownText: getText(currentItem, onRenderMarkdown),
+      });
+    }
+    currentItem.item?.forEach((item: QuestionnaireItem) => {
+      getSidebarItems(item, currentItems);
+    });
+  };
+  questionniare.item?.forEach((item: QuestionnaireItem) => {
+    getSidebarItems(item, items);
+  });
+  return items;
 }
 
 export function getExtension(url: string, item: QuestionnaireItem | Element | Questionnaire) {

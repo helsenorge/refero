@@ -7,6 +7,7 @@ export default {
   HELPLINK: 'help-link',
   INLINE: 'inline',
   HIGHLIGHT: 'highlight',
+  SIDEBAR: 'sidebar',
   Group: {
     VERTICAL_TABLE: 'table',
     HORIZONTAL_TABLE: 'htable',

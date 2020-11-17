@@ -111,6 +111,10 @@ export class Text extends React.Component<Props & ValidationProps, {}> {
     const { item, answer, pdf, children, resources, onRenderMarkdown, ...other } = this.props;
     const itemControls = getItemControlExtensionValue(item);
 
+    if (itemControls && itemControls.some(itemControl => itemControl.code === itemControlConstants.SIDEBAR)) {
+      return null;
+    }
+
     if (itemControls && itemControls.some(itemControl => itemControl.code === itemControlConstants.INLINE)) {
       return (
         <ExpandableSection label={item.text} inlineButton rightArrow>
