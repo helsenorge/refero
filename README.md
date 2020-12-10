@@ -86,6 +86,8 @@ class App extends Component<{}, {}> {
 | onChange                   |          | callback                   | null    | Callback when user enters an answer                                                                           |
 | onRenderMarkdown           |          | callback                   | null    | Callback when the form needs to render markdown                                                               |
 | syncQuestionnaireResponse  |          | boolean                    | false   | Will try to synchronize a Questionnaire and QuestionnaireResponse object                                      |
+| fetchValueSet              |          | callback                   | null    | Callback when an autosuggest field will fetch data                                                            |
+| autoSuggestProps           |          | AutoSuggestProps           | null    | Config for when and autosuggest field will call fetchValueSet                                                 |
 
 ### `questionnaire: Questionnaire`
 
@@ -137,6 +139,12 @@ extension into consideration when creating new items.
 
 In addition it will convert old linkIds for repeated items containing a caret (^) into new linkIds without. Eg. it will transform linkIds of
 the form X^Y into just X, by stripping everything from the caret to the end of the linkId.
+
+### `autoSuggestProps: AutoSuggestProps`
+
+Configuration for when autosuggest fields should call `fetchValueSet`. `minSearchCharacters` is the minumum number of letters which must be
+typed before `fetchValueSet` will be called. Default value is 0. `typingSearchDelay` is the amount of milliseconds to wait after the user
+stop typing before calling `fetchValueSet`. Default value is 500.
 
 ## Callback API
 
@@ -226,6 +234,18 @@ called with the following arguments:
 
 - `item: QuestionnaireItem` This is the item with the markdown.
 - `markdown: string` The actual markdown.
+
+### `fetchValueSet: fetchValueSet: (searchString: string, item: QuestionnaireItem, successCallback: (valueSet: ValueSet) => void, errorCallback(error: string) => void) => void;`
+
+This callback is called when an autosuggest field need to load data. It should call either successCallback with a valueSet, or errorCallback
+with an error message.
+
+- `searchString: string` The value currently typed in the autosuggest field.
+- `item: QuestionnaireItem` This is the choice or open-choice item to load data for.
+- `successCallback: (valueSet: ValueSet) => void` The function to call to return a list of values to the autosuggest field, which will be
+  displayed as a list to the user.
+- `errorCallback(error: string) => void)` The function to call to return an error message to the autosuggest field, which will be displayed
+  to the user.
 
 # Enum definitions
 
@@ -372,5 +392,15 @@ interface Resources {
   filterDateErrorDateFormat: string;
   filterDateErrorBeforeMinDate: string;
   filterDateErrorAfterMaxDate: string;
+}
+```
+
+## `AutoSuggestProps`
+
+```ts
+// location: '@helsenorge/skjemautfyller/types/autoSuggestProps'
+interface AutoSuggestProps {
+  minSearchCharacters: number;
+  typingSearchDelay: number;
 }
 ```
