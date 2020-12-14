@@ -11,7 +11,6 @@ import { getValidationTextExtension, getPlaceholder } from '../../../util/extens
 import { ValueSet, QuestionnaireItem, Coding, QuestionnaireResponseItemAnswer } from '../../../types/fhir';
 import { Resources } from '../../../util/resources';
 import { AutoSuggestProps } from '../../../types/autoSuggestProps';
-import { hasStringAnswer, hasCodingAnswer } from '../../../util/skjemautfyller-core';
 import { OPEN_CHOICE_ID, OPEN_CHOICE_SYSTEM, OPEN_CHOICE_LABEL } from '../../../constants';
 import ItemType from '../../../constants/itemType';
 
@@ -55,8 +54,12 @@ class AutosuggestView extends React.Component<AutosuggestProps, AutosuggestState
   constructor(props: AutosuggestProps) {
     super(props);
 
+    const codingAnswer = this.getCodingAnswer();
+    const initialInputValue =
+      codingAnswer?.code === OPEN_CHOICE_ID && codingAnswer?.system === OPEN_CHOICE_SYSTEM ? this.getStringAnswer() : codingAnswer?.display;
+
     this.state = {
-      inputValue: '',
+      inputValue: initialInputValue || '',
       lastSearchValue: '',
       system: '',
       suggestions: [],
@@ -201,26 +204,28 @@ class AutosuggestView extends React.Component<AutosuggestProps, AutosuggestState
   }
 
   hasStringAnswer(): boolean {
-    if (Array.isArray(this.props.answer)) {
-      return this.props.answer.reduce((acc, x) => acc || hasStringAnswer(x), false);
-    } else if (this.props.answer) {
-      return hasStringAnswer(this.props.answer);
-    }
-    return false;
+    return !!this.getStringAnswer();
   }
 
   hasCodingAnswer(): boolean {
-    if (Array.isArray(this.props.answer)) {
-      return this.props.answer.reduce((acc, x) => acc || hasCodingAnswer(x), false);
-    } else if (this.props.answer) {
-      return hasCodingAnswer(this.props.answer);
-    }
-    return false;
+    return !!this.getCodingAnswer();
   }
 
   getCodingAnswer(): Coding | undefined {
-    const answer = Array.isArray(this.props.answer) ? this.props.answer[0] : this.props.answer;
-    return answer ? answer.valueCoding : undefined;
+    if (Array.isArray(this.props.answer)) {
+      return this.props.answer.reduce((acc, x) => acc || x.valueCoding, undefined);
+    } else if (this.props.answer) {
+      return this.props.answer.valueCoding;
+    }
+    return undefined;
+  }
+
+  getStringAnswer(): string | undefined {
+    if (Array.isArray(this.props.answer)) {
+      return this.props.answer.reduce((acc, x) => acc || x.valueString, undefined);
+    } else if (this.props.answer) {
+      return this.props.answer.valueString;
+    }
   }
 
   render(): JSX.Element {

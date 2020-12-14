@@ -1,3 +1,9 @@
+7.3.3
+-----
+* Show existing answer in autocomplete field when the component is mounted.
+* When evaluating enableWhen for a repeated item, search for condition question in repeated parent before searching the rest of the questionnaire.
+* Fix agressive defauting added zeroes in time and date-time input fields.
+
 7.3.2
 -----
 * Add function to get item and markdown text for all items with questionnaire-item-control "sidebar".

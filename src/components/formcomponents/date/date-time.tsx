@@ -183,7 +183,6 @@ class DateTime extends React.Component<Props & ValidationProps> {
             timeClassName="page_skjemautfyller__input"
             helpButton={this.props.renderHelpButton()}
             helpElement={this.props.renderHelpElement()}
-            validateOnExternalUpdate={true}
           />
         </Validation>
         {this.props.renderDeleteButton('page_skjemautfyller__deletebutton--margin-top')}

@@ -459,10 +459,22 @@ function processNewValueAction(action: NewValueAction, state: Form): Form {
 
       if (responseItems && responseItems.length > 0) {
         for (var w = 0; w < qrItemsToClear.length; w++) {
-          const qrItemWithEnableWhen = getResponseItemAndPathWithLinkId(qrItemsToClear[w].linkId, draft.FormData.Content!);
-          for (var r = 0; r < qrItemWithEnableWhen.length; r++) {
-            removeAddedRepeatingItems(qrItemsToClear[w].qItemWithEnableWhen, qrItemWithEnableWhen[r].item, responseItems);
-            wipeAnswerItems(qrItemWithEnableWhen[r].item, qrItemsToClear[w].qItemWithEnableWhen);
+          const qrItemWithEnableWhen = getResponseItemWithLinkIdPossiblyContainingRepeat(
+            qrItemsToClear[w].linkId,
+            responseItems,
+            action.itemPath
+          );
+          if (qrItemWithEnableWhen) {
+            // prøv å finne linkId for item som skal cleares i barn først. (for repeterende elementer som må cleare riktig barn).
+            removeAddedRepeatingItems(qrItemsToClear[w].qItemWithEnableWhen, qrItemWithEnableWhen, responseItems);
+            wipeAnswerItems(qrItemWithEnableWhen, qrItemsToClear[w].qItemWithEnableWhen);
+          } else {
+            // let gjennom hele skjema, og clear riktig item. Hvis vi havner her er item som skal cleares ikke et barn under action.itemPath
+            const qrItemWithEnableWhen = getResponseItemAndPathWithLinkId(qrItemsToClear[w].linkId, draft.FormData.Content!);
+            for (var r = 0; r < qrItemWithEnableWhen.length; r++) {
+              removeAddedRepeatingItems(qrItemsToClear[w].qItemWithEnableWhen, qrItemWithEnableWhen[r].item, responseItems);
+              wipeAnswerItems(qrItemWithEnableWhen[r].item, qrItemsToClear[w].qItemWithEnableWhen);
+            }
           }
         }
       }
