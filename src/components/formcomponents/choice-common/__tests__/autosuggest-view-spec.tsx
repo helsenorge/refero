@@ -628,4 +628,79 @@ describe('autosuggest-view', () => {
 
     expect(handleChangeFn).toHaveBeenCalled();
   });
+
+  it('skal vise valgt verdi som allerede er satt i autosuggest når choice-komponenten lastes', () => {
+    const options = {
+      lifecycleExperimental: true,
+      disableLifecycleMethods: false,
+    };
+    const wrapper = shallow(
+      <AutosuggestView
+        handleChange={jest.fn()}
+        clearCodingAnswer={jest.fn()}
+        fetchValueSet={jest.fn()}
+        answer={[
+          {
+            valueCoding: {
+              code: '1',
+              system: 'http://autosuggest.system',
+              display: 'Existing answer',
+            },
+          },
+        ]}
+        item={
+          {
+            type: 'choice',
+          } as QuestionnaireItem
+        }
+        resources={{} as Resources}
+        renderDeleteButton={jest.fn()}
+        repeatButton={<></>}
+        renderHelpButton={jest.fn()}
+        renderHelpElement={jest.fn()}
+      />,
+      options
+    );
+
+    expect(wrapper.find(Autosuggest).props().value).toBe('Existing answer');
+  });
+
+  it('skal vise valgt verdi som allerede er satt i autosuggest når open-choice-komponenten lastes', () => {
+    const options = {
+      lifecycleExperimental: true,
+      disableLifecycleMethods: false,
+    };
+    const wrapper = shallow(
+      <AutosuggestView
+        handleChange={jest.fn()}
+        clearCodingAnswer={jest.fn()}
+        fetchValueSet={jest.fn()}
+        answer={[
+          {
+            valueString: 'Typed value',
+          },
+          {
+            valueCoding: {
+              code: OPEN_CHOICE_ID,
+              system: OPEN_CHOICE_SYSTEM,
+              display: OPEN_CHOICE_LABEL,
+            },
+          },
+        ]}
+        item={
+          {
+            type: 'open-choice',
+          } as QuestionnaireItem
+        }
+        resources={{} as Resources}
+        renderDeleteButton={jest.fn()}
+        repeatButton={<></>}
+        renderHelpButton={jest.fn()}
+        renderHelpElement={jest.fn()}
+      />,
+      options
+    );
+
+    expect(wrapper.find(Autosuggest).props().value).toBe('Typed value');
+  });
 });

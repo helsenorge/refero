@@ -28,7 +28,6 @@ export interface Props {
   resources?: Resources;
   dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
   path: Array<Path>;
-  onTimeChange?: (newTime: string) => void;
   pdf?: boolean;
   promptLoginMessage?: () => void;
   id?: string;
@@ -49,13 +48,16 @@ class Time extends React.Component<Props & ValidationProps> {
     renderFieldset: true,
     path: [],
   };
-  timeinput: React.RefObject<TimeInput>;
+
   constructor(props: Props) {
     super(props);
-    this.timeinput = React.createRef();
+
+    this.onTimeChange = this.onTimeChange.bind(this);
+    this.getValue = this.getValue.bind(this);
   }
-  getValue(props: Props): string | undefined {
-    const { value, answer } = props;
+
+  getValue(): string | undefined {
+    const { value, answer } = this.props;
     if (value) {
       return value;
     }
@@ -72,7 +74,7 @@ class Time extends React.Component<Props & ValidationProps> {
   }
 
   getPDFValue() {
-    const value = this.getValue(this.props);
+    const value = this.getValue();
     if (!value) {
       let text = '';
       if (this.props.resources && this.props.resources.ikkeBesvart) {
@@ -151,35 +153,23 @@ class Time extends React.Component<Props & ValidationProps> {
     }
   }
 
-  onTimeChange = (newTime = '') => {
+  onTimeChange(newTime: string = ''): void {
     const validTime = this.makeValidTime(newTime);
-    const { promptLoginMessage } = this.props;
-    if (this.props.onTimeChange) {
-      this.props.onTimeChange(validTime);
-      if (promptLoginMessage) {
-        promptLoginMessage();
-      }
-    } else {
-      this.dispatchNewTime(validTime);
-      if (promptLoginMessage) {
-        promptLoginMessage();
-      }
-    }
-  };
 
-  makeValidTime(time: string) {
-    const parsedTime = time.replace(/000/g, '00');
-    const values = parsedTime.split(':');
-    if (values.length === 2 && values[1] === '' && values[0] !== '') {
-      return `${values[0]}:00`;
+    this.dispatchNewTime(validTime);
+    if (this.props.promptLoginMessage) {
+      this.props.promptLoginMessage();
     }
-    if (values.length === 2 && values[0] === '' && values[1] !== '') {
-      return `00:${values[1]}`;
-    }
-    return this.addSeconds(parsedTime);
   }
 
-  addSeconds(time: string) {
+  makeValidTime(time: string) {
+    const values = time.split(':');
+    let hours = values[0] || '00';
+    let minutes = values[1] || '00';
+    return this.addSeconds(`${hours.slice(-2)}:${minutes.slice(-2)}`);
+  }
+
+  addSeconds(time: string): string {
     if (time !== '' && time.split(':').length === 2) {
       return (time += ':00');
     }
@@ -248,7 +238,7 @@ class Time extends React.Component<Props & ValidationProps> {
         <Validation {...this.props}>
           <TimeInput
             id={getId(id)}
-            value={this.getValue(this.props)}
+            value={this.getValue()}
             legend={
               <span
                 dangerouslySetInnerHTML={{
@@ -264,7 +254,6 @@ class Time extends React.Component<Props & ValidationProps> {
             maxMinute={this.getMaxMinute()}
             minMinute={this.getMinMinute()}
             onBlur={this.onTimeChange}
-            ref={this.timeinput}
             className={this.props.className + ' page_skjemautfyller__input'}
             renderFieldset={this.props.renderFieldset}
             errorMessage={getValidationTextExtension(item)}
@@ -274,7 +263,6 @@ class Time extends React.Component<Props & ValidationProps> {
             }}
             helpButton={this.props.renderHelpButton()}
             helpElement={this.props.renderHelpElement()}
-            validateOnExternalUpdate={true}
           />
         </Validation>
         {this.props.renderDeleteButton('page_skjemautfyller__deletebutton--margin-top')}
