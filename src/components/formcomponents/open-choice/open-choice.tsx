@@ -162,7 +162,7 @@ class OpenChoice extends React.Component<Props & ValidationProps> {
     const { dispatch, answer, promptLoginMessage, item, onAnswerChange, path } = this.props;
     if (dispatch && code) {
       const display = getDisplay(getOptions(item, this.props.containedResources), code);
-      const system = code === OPEN_CHOICE_ID ? OPEN_CHOICE_SYSTEM : getSystem(item, this.props.containedResources);
+      const system = code === OPEN_CHOICE_ID ? OPEN_CHOICE_SYSTEM : getSystem(item, code, this.props.containedResources);
       const coding = { code, display, system } as Coding;
       const responseAnswer = { valueCoding: coding } as QuestionnaireResponseItemAnswer;
       if (getIndexOfAnswer(code, answer) > -1) {
@@ -200,7 +200,7 @@ class OpenChoice extends React.Component<Props & ValidationProps> {
   handleChange = (code?: string, systemArg?: string, displayArg?: string): void => {
     const { dispatch, promptLoginMessage, item, onAnswerChange, path } = this.props;
     if (dispatch && code) {
-      const valueSetSystem = code === OPEN_CHOICE_ID ? OPEN_CHOICE_SYSTEM : getSystem(item, this.props.containedResources);
+      const valueSetSystem = code === OPEN_CHOICE_ID ? OPEN_CHOICE_SYSTEM : getSystem(item, code, this.props.containedResources);
       const display = displayArg ? displayArg : getDisplay(getOptions(item, this.props.containedResources), code);
       const system = systemArg ? systemArg : valueSetSystem;
       const coding = { code, display, system } as Coding;

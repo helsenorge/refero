@@ -58,16 +58,16 @@ export function getOptions(item: QuestionnaireItem, containedResources?: Resourc
   return options;
 }
 
-export function getSystem(item: QuestionnaireItem, containedResources?: Resource[]) {
-  if (!item || !item.answerValueSet) {
-    return undefined;
-  }
-  if (item.answerValueSet.startsWith('#')) {
+export function getSystem(item: QuestionnaireItem, code: string, containedResources?: Resource[]) {
+  if (item.answerValueSet && item.answerValueSet.startsWith('#')) {
     const id: string = item.answerValueSet.replace('#', '');
     const resource = getContainedResource(id, containedResources);
     if (resource && resource.compose) {
       return resource.compose.include[0].system;
     }
+  } else if (item.answerOption && code) {
+    const matchingCode = item.answerOption.filter(x => x.valueCoding && x.valueCoding.code === code);
+    return matchingCode.length > 0 ? matchingCode[0].valueCoding.system : undefined;
   }
   return undefined;
 }

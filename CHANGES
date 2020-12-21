@@ -1,3 +1,7 @@
+7.3.4
+-----
+* When dispatching new value event for choice and open-choice, also send system in valueCoding if item use answerOption instead of answerValueSet.
+
 7.3.3
 -----
 * Show existing answer in autocomplete field when the component is mounted.
