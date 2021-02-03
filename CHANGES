@@ -1,3 +1,7 @@
+7.4.0
+-----
+* Upgrade components to new version of @helsenorge/toolkit and @helsenorge/core-utils. Requires @helsenorge/toolkit v18.0.0 and @helsenorge/core-utils v5.4.0
+
 7.3.4
 -----
 * When dispatching new value event for choice and open-choice, also send system in valueCoding if item use answerOption instead of answerValueSet.
