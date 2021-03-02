@@ -1,3 +1,7 @@
+7.4.1
+-----
+* Run enableWhen logic when Coding value is removed (most common when checkbox is un-checked).
+
 7.4.0
 -----
 * Upgrade components to new version of @helsenorge/toolkit and @helsenorge/core-utils. Requires @helsenorge/toolkit v18.0.0 and @helsenorge/core-utils v5.4.0

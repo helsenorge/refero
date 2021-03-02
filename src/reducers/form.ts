@@ -262,6 +262,51 @@ function copyItem(
   return target;
 }
 
+function runEnableWhen(action: NewValueAction, state: Form, draft: Form) {
+  if (action.item) {
+    const qrItemsToClear: Array<QrItemsToClear> = [];
+    /*
+     * immer lager javascript proxy-objekt av "draft"-variablen i produce, og dersom man oppretter nye variabler eller utleder
+     * noe fra draft, blir disse også proxy-objekter, og denne opprettelsen går tregt. Det beste er å bruke "state"-variablen
+     * for beregninger der det lar seg gjøre, for det går raskt. Koden under regner ut hva som må endres ved å bruke state, og
+     * så gjøres endringen på draft. På skjema med mange enableWhen kan man da spare flere sekunder når noe fylles ut.
+     */
+    const responseItems = getResponseItems(draft.FormData);
+    // lag en kopi som kan oppdateres underveis, for å beregne multiple dependent enableWhen items
+    const calculatedResponseItems = JSON.parse(JSON.stringify(responseItems));
+    calculateEnableWhenItemsToClear(
+      [action.item],
+      state.FormData,
+      state.FormDefinition,
+      action.itemPath,
+      qrItemsToClear,
+      calculatedResponseItems
+    );
+
+    if (responseItems && responseItems.length > 0) {
+      for (var w = 0; w < qrItemsToClear.length; w++) {
+        const qrItemWithEnableWhen = getResponseItemWithLinkIdPossiblyContainingRepeat(
+          qrItemsToClear[w].linkId,
+          responseItems,
+          action.itemPath
+        );
+        if (qrItemWithEnableWhen) {
+          // prøv å finne linkId for item som skal cleares i barn først. (for repeterende elementer som må cleare riktig barn).
+          removeAddedRepeatingItems(qrItemsToClear[w].qItemWithEnableWhen, qrItemWithEnableWhen, responseItems);
+          wipeAnswerItems(qrItemWithEnableWhen, qrItemsToClear[w].qItemWithEnableWhen);
+        } else {
+          // let gjennom hele skjema, og clear riktig item. Hvis vi havner her er item som skal cleares ikke et barn under action.itemPath
+          const qrItemWithEnableWhen = getResponseItemAndPathWithLinkId(qrItemsToClear[w].linkId, draft.FormData.Content!);
+          for (var r = 0; r < qrItemWithEnableWhen.length; r++) {
+            removeAddedRepeatingItems(qrItemsToClear[w].qItemWithEnableWhen, qrItemWithEnableWhen[r].item, responseItems);
+            wipeAnswerItems(qrItemWithEnableWhen[r].item, qrItemsToClear[w].qItemWithEnableWhen);
+          }
+        }
+      }
+    }
+  }
+}
+
 function processRemoveCodingValueAction(action: NewValueAction, state: Form) {
   return produce(state, draft => {
     const responseItem = getResponseItemWithPath(action.itemPath || [], draft.FormData);
@@ -290,6 +335,9 @@ function processRemoveCodingValueAction(action: NewValueAction, state: Form) {
         delete responseItem.answer;
       }
     }
+
+    // run enableWhen to clear fields
+    runEnableWhen(action, state, draft);
   });
 }
 
@@ -307,6 +355,9 @@ function processRemoveCodingStringValueAction(action: NewValueAction, state: For
     if (responseItem.answer.length === 0) {
       delete responseItem.answer;
     }
+
+    // run enableWhen to clear fields
+    runEnableWhen(action, state, draft);
   });
 }
 
@@ -437,48 +488,7 @@ function processNewValueAction(action: NewValueAction, state: Form): Form {
         }
       }
     }
-    if (action.item) {
-      const qrItemsToClear: Array<QrItemsToClear> = [];
-      /*
-       * immer lager javascript proxy-objekt av "draft"-variablen i produce, og dersom man oppretter nye variabler eller utleder
-       * noe fra draft, blir disse også proxy-objekter, og denne opprettelsen går tregt. Det beste er å bruke "state"-variablen
-       * for beregninger der det lar seg gjøre, for det går raskt. Koden under regner ut hva som må endres ved å bruke state, og
-       * så gjøres endringen på draft. På skjema med mange enableWhen kan man da spare flere sekunder når noe fylles ut.
-       */
-      const responseItems = getResponseItems(draft.FormData);
-      // lag en kopi som kan oppdateres underveis, for å beregne multiple dependent enableWhen items
-      const calculatedResponseItems = JSON.parse(JSON.stringify(responseItems));
-      calculateEnableWhenItemsToClear(
-        [action.item],
-        state.FormData,
-        state.FormDefinition,
-        action.itemPath,
-        qrItemsToClear,
-        calculatedResponseItems
-      );
-
-      if (responseItems && responseItems.length > 0) {
-        for (var w = 0; w < qrItemsToClear.length; w++) {
-          const qrItemWithEnableWhen = getResponseItemWithLinkIdPossiblyContainingRepeat(
-            qrItemsToClear[w].linkId,
-            responseItems,
-            action.itemPath
-          );
-          if (qrItemWithEnableWhen) {
-            // prøv å finne linkId for item som skal cleares i barn først. (for repeterende elementer som må cleare riktig barn).
-            removeAddedRepeatingItems(qrItemsToClear[w].qItemWithEnableWhen, qrItemWithEnableWhen, responseItems);
-            wipeAnswerItems(qrItemWithEnableWhen, qrItemsToClear[w].qItemWithEnableWhen);
-          } else {
-            // let gjennom hele skjema, og clear riktig item. Hvis vi havner her er item som skal cleares ikke et barn under action.itemPath
-            const qrItemWithEnableWhen = getResponseItemAndPathWithLinkId(qrItemsToClear[w].linkId, draft.FormData.Content!);
-            for (var r = 0; r < qrItemWithEnableWhen.length; r++) {
-              removeAddedRepeatingItems(qrItemsToClear[w].qItemWithEnableWhen, qrItemWithEnableWhen[r].item, responseItems);
-              wipeAnswerItems(qrItemWithEnableWhen[r].item, qrItemsToClear[w].qItemWithEnableWhen);
-            }
-          }
-        }
-      }
-    }
+    runEnableWhen(action, state, draft);
   });
 }
 
@@ -789,7 +799,7 @@ function processSetSkjemaDefinition(action: FormAction, state: Form): Form {
   }
 
   let initialFormData: FormData;
-  if (state.InitialFormData === initialState.InitialFormData) {
+  if (JSON.stringify(state.InitialFormData) === JSON.stringify(initialState.InitialFormData)) {
     initialFormData = formData;
   } else {
     initialFormData = state.InitialFormData;
