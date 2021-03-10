@@ -1,3 +1,10 @@
+7.5.0
+-----
+* Upgrade components to new version of @helsenorge/toolkit and @helsenorge/core-utils. Requires @helsenorge/toolkit v19.0.0 and @helsenorge/core-utils v6.0.0
+* New datepicker component. Will use languge from questionnaire to set month and day names.
+* Change checked color of checkboxes and radio buttons from purple to teal.
+* Form button types changed from ActionButton to DisplayButton
+
 7.4.1
 -----
 * Run enableWhen logic when Coding value is removed (most common when checkbox is un-checked).

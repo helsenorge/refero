@@ -3,7 +3,8 @@ import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 import moment from 'moment';
 import 'moment/locale/nb';
-import DateTimeInput from '@helsenorge/toolkit/components/molecules/date-time-input';
+import DateTimePicker from '@helsenorge/toolkit/components/molecules/date-time-picker';
+import { getFullMomentDate } from '@helsenorge/toolkit/components/molecules/date-time-picker/date-time-picker-utils';
 import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
 import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
 import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
@@ -102,15 +103,18 @@ class DateTime extends React.Component<Props & ValidationProps> {
     return undefined;
   }
 
-  dispatchNewDate = (date: Date) => {
+  dispatchNewDate = (date: moment.Moment | undefined, time: string | undefined) => {
     const { dispatch, promptLoginMessage, onAnswerChange, path, item } = this.props;
     if (dispatch) {
-      const momentDate = moment(date)
-        .locale('nb')
-        .utc()
-        .format(Constants.DATE_TIME_FORMAT);
-      dispatch(newDateTimeValueAsync(this.props.path, momentDate, this.props.item))?.then(newState =>
-        onAnswerChange(newState, path, item, { valueDateTime: momentDate } as QuestionnaireResponseItemAnswer)
+      const momentDate = getFullMomentDate(date, time);
+      const dateTimeString = momentDate
+        ? momentDate
+            .locale('nb')
+            .utc()
+            .format(Constants.DATE_TIME_FORMAT)
+        : '';
+      dispatch(newDateTimeValueAsync(this.props.path, dateTimeString, this.props.item))?.then(newState =>
+        onAnswerChange(newState, path, item, { valueDateTime: dateTimeString } as QuestionnaireResponseItemAnswer)
       );
     }
 
@@ -160,16 +164,20 @@ class DateTime extends React.Component<Props & ValidationProps> {
         </TextView>
       );
     }
+    const valueDateTime = this.getDefaultDate(this.props);
+    const maxDateTime = this.getMaxDate();
+    const minDateTime = this.getMinDate();
+
     return (
       <div className="page_skjemautfyller__component page_skjemautfyller__component_datetime">
         <Validation {...other}>
-          <DateTimeInput
+          <DateTimePicker
             id={getId(id)}
-            value={this.getDefaultDate(this.props)}
-            maxDate={this.getMaxDate()}
-            minDate={this.getMinDate()}
+            //locale={this.getLocaleFromLanguage()} // TODO: støtt andre språk
+            value={valueDateTime ? moment(valueDateTime) : undefined}
+            maximumDateTime={maxDateTime ? moment(maxDateTime) : undefined}
+            minimumDateTime={minDateTime ? moment(minDateTime) : undefined}
             onChange={this.dispatchNewDate}
-            promptLogin={this.promptLogin}
             onBlur={this.onBlur}
             legend={
               <span

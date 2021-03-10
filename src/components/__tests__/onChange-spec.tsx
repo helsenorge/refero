@@ -4,7 +4,7 @@ import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import { mount } from 'enzyme';
 import moment from 'moment';
-import DateTime from '@helsenorge/toolkit/components/molecules/date-time-input';
+import DateTimePicker from '@helsenorge/toolkit/components/molecules/date-time-picker';
 
 import '../../util/defineFetch';
 import rootReducer from '../../reducers';
@@ -264,7 +264,7 @@ describe('onAnswerChange callback gets called and can request additional changes
     const wrapper = createWrapper(questionnaireWithAllItemTypes, onChange);
     await inputAnswer('1', 0.1, wrapper);
 
-    let item = wrapper.find(DateTime);
+    let item = wrapper.find(DateTimePicker);
     let date = item.props().value;
     let dateString = moment(date)
       .locale('nb')
@@ -281,7 +281,7 @@ describe('onAnswerChange callback gets called and can request additional changes
     const wrapper = createWrapper(questionnaireWithAllItemTypes, onChange);
     await inputAnswer('1', 0.1, wrapper);
 
-    let item = wrapper.find(DateTime);
+    let item = wrapper.find(DateTimePicker);
     let date = item.props().value;
     expect(date).toBe(undefined);
   });

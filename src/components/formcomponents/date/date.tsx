@@ -1,11 +1,13 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
-import moment from 'moment';
-import { DatePicker, DatePickerResources } from '@helsenorge/toolkit/components/molecules/datepicker';
+import moment, { Moment } from 'moment';
+import { DateRangePicker } from '@helsenorge/toolkit/components/molecules/date-range-picker';
+import { DatePickerErrorPhrases } from '@helsenorge/toolkit/components/molecules/date-range-picker/date-range-picker-types';
 import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
 import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
 import { parseDate } from '@helsenorge/toolkit/components/molecules/time-input/date-core';
+import { LanguageLocales } from '@helsenorge/core-utils/constants/languages';
 
 import ExtensionConstants from '../../../constants/extensions';
 import { Path } from '../../../util/skjemautfyller-core';
@@ -29,6 +31,7 @@ export interface Props {
   dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
   path: Array<Path>;
   pdf?: boolean;
+  language?: string;
   promptLoginMessage?: () => void;
   renderLabel?: boolean;
   className?: string;
@@ -48,35 +51,25 @@ class DateComponent extends React.Component<Props & ValidationProps> {
     renderLabel: true,
     path: [],
   };
-  datepicker: React.RefObject<DatePicker>;
+  datepicker: React.RefObject<DateRangePicker>;
   constructor(props: Props) {
     super(props);
     this.datepicker = React.createRef();
   }
 
-  createDatePickerResources(): DatePickerResources {
+  getDatepickerErrorPhrases(): DatePickerErrorPhrases {
     const { resources, item } = this.props;
-    if (!resources || !resources) {
-      return {
-        calendarButton: '',
-        navigateForward: '',
-        navigateBackward: '',
-        errorInvalidDate: '',
-        errorAfterMaxDate: '',
-        errorBeforeMinDate: '',
-      };
-    }
     // Vi får maks én valideringstekst, derfor settes alle til denne.
     const validationErrorText = getValidationTextExtension(item);
 
     return {
-      calendarButton: resources.filterDateCalendarButton,
-      navigateForward: resources.filterDateNavigateForward,
-      navigateBackward: resources.filterDateNavigateBackward,
-      errorInvalidDate: validationErrorText ? validationErrorText : resources.filterDateErrorDateFormat,
-      errorAfterMaxDate: validationErrorText ? validationErrorText : resources.errorAfterMaxDate,
-      errorBeforeMinDate: validationErrorText ? validationErrorText : resources.errorBeforeMinDate,
-      dateRequired: validationErrorText ? validationErrorText : resources.dateRequired,
+      errorInvalidDate: validationErrorText ? validationErrorText : resources?.filterDateErrorDateFormat || '',
+      errorAfterMaxDate: resources?.errorAfterMaxDate || '',
+      errorBeforeMinDate: resources?.errorBeforeMinDate || '',
+      errorInvalidDateRange: '',
+      errorRequiredDate: resources?.dateRequired || '',
+      errorRequiredDateRange: '',
+      errorInvalidMinimumNights: '',
     };
   }
 
@@ -100,10 +93,14 @@ class DateComponent extends React.Component<Props & ValidationProps> {
     return parseDate(String(item.initial[0].valueDateTime));
   }
 
-  getMaxDate(): Date | undefined {
+  getMaxDate(): Moment | undefined {
     const maxDate = getExtension(ExtensionConstants.DATE_MAX_VALUE_URL, this.props.item);
-    if (maxDate && maxDate.valueString) return evaluateFhirpathExpressionToGetDate(this.props.item, maxDate.valueString);
-    return this.getMaxDateWithExtension();
+    if (maxDate && maxDate.valueString) {
+      const fhirPathExpression = evaluateFhirpathExpressionToGetDate(this.props.item, maxDate.valueString);
+      return fhirPathExpression ? moment(fhirPathExpression) : undefined;
+    }
+    const maxDateWithExtension = this.getMaxDateWithExtension();
+    return maxDateWithExtension ? moment(maxDateWithExtension) : undefined;
   }
 
   getMaxDateWithExtension(): Date | undefined {
@@ -118,10 +115,14 @@ class DateComponent extends React.Component<Props & ValidationProps> {
     return undefined;
   }
 
-  getMinDate(): Date | undefined {
+  getMinDate(): Moment | undefined {
     const minDate = getExtension(ExtensionConstants.DATE_MIN_VALUE_URL, this.props.item);
-    if (minDate && minDate.valueString) return evaluateFhirpathExpressionToGetDate(this.props.item, minDate.valueString);
-    return this.getMinDateWithExtension();
+    if (minDate && minDate.valueString) {
+      const fhirPathExpression = evaluateFhirpathExpressionToGetDate(this.props.item, minDate.valueString);
+      return fhirPathExpression ? moment(fhirPathExpression) : undefined;
+    }
+    const minDateWithExtension = this.getMinDateWithExtension();
+    return minDateWithExtension ? moment(minDateWithExtension) : undefined;
   }
 
   getMinDateWithExtension(): Date | undefined {
@@ -136,7 +137,7 @@ class DateComponent extends React.Component<Props & ValidationProps> {
     return undefined;
   }
 
-  onDateChange = (value?: Date): void => {
+  onDateChange = (value: Moment | null): void => {
     const { dispatch, promptLoginMessage, path, item, onAnswerChange } = this.props;
     const newValue = value ? moment(value).format(Constants.DATE_FORMAT) : '';
     if (dispatch) {
@@ -158,6 +159,14 @@ class DateComponent extends React.Component<Props & ValidationProps> {
     }
 
     return date ? moment(date).format('D. MMMM YYYY') : text;
+  };
+
+  getLocaleFromLanguage = () => {
+    if (this.props.language?.toLowerCase() === 'en-gb') {
+      return LanguageLocales.ENGLISH;
+    }
+
+    return LanguageLocales.NORWEGIAN;
   };
 
   shouldComponentUpdate(nextProps: Props, _nextState: {}) {
@@ -185,10 +194,11 @@ class DateComponent extends React.Component<Props & ValidationProps> {
     return (
       <div className="page_skjemautfyller__component page_skjemautfyller__component_date">
         <Validation {...this.props}>
-          <DatePicker
-            id={getId(this.props.id)}
-            datepickerId={`${getId(this.props.id)}-datepicker`}
-            resources={this.createDatePickerResources()}
+          <DateRangePicker
+            type="single"
+            id={`${getId(this.props.id)}-datepicker_input`}
+            locale={this.getLocaleFromLanguage()} // TODO: må støtte nynorsk og samisk også
+            errorResources={this.getDatepickerErrorPhrases()}
             label={
               this.props.renderLabel ? (
                 <span
@@ -200,22 +210,18 @@ class DateComponent extends React.Component<Props & ValidationProps> {
                 undefined
               )
             }
-            isNullable={true}
             isRequired={isRequired(this.props.item)}
             placeholder={getPlaceholder(this.props.item)}
             ref={this.datepicker}
-            maxDate={this.getMaxDate()}
-            minDate={this.getMinDate()}
-            defaultDate={date}
-            value={date}
-            returnInvalidDate
+            maximumDate={this.getMaxDate()}
+            minimumDate={this.getMinDate()}
+            initialDate={date ? moment(date) : undefined}
+            singleDateValue={date ? moment(date) : undefined}
             className={this.props.className}
-            inputClassName="page_skjemautfyller__input"
             onDateChange={this.onDateChange}
             validationErrorRenderer={this.props.validationErrorRenderer}
             helpButton={this.props.renderHelpButton()}
             helpElement={this.props.renderHelpElement()}
-            validateOnExternalUpdate={true}
           />
         </Validation>
         {this.props.renderDeleteButton('page_skjemautfyller__deletebutton--margin-top')}

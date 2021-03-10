@@ -306,6 +306,7 @@ class Skjemautfyller extends React.Component<StateProps & DispatchProps & Props,
           }
           renderedItems.push(
             <Comp
+              language={formDefinition.Content?.language}
               pdf={pdf}
               includeSkipLink={isNavigatorEnabled && item.type === ItemType.GROUP}
               promptLoginMessage={promptLoginMessage}
@@ -354,26 +355,24 @@ class Skjemautfyller extends React.Component<StateProps & DispatchProps & Props,
     }
 
     const presentationButtonsType = getPresentationButtonsExtension(formDefinition.Content);
-    const form = this.props.authorized
-      ? this.renderFormWhenAuthorized(presentationButtonsType)
-      : this.renderFormWhenNotAuthorized(presentationButtonsType);
+    const form = this.props.authorized ? this.renderFormWhenAuthorized() : this.renderFormWhenNotAuthorized();
 
     return (
-      <div className="page_skjemautfyller__content">
+      <div className={this.getButtonClasses(presentationButtonsType, ['page_skjemautfyller__content'])}>
         <div className="page_skjemautfyller__messageboxes" />
         {form}
       </div>
     );
   };
 
-  renderFormWhenNotAuthorized = (presentationButtonsType: PresentationButtonsType | null) => {
+  renderFormWhenNotAuthorized = () => {
     const { resources } = this.props;
     if (!resources) {
       return;
     }
 
     return (
-      <div>
+      <>
         <Form
           action="#"
           disabled={this.props.blockSubmit}
@@ -386,23 +385,22 @@ class Skjemautfyller extends React.Component<StateProps & DispatchProps & Props,
             enable: true,
             header: resources.validationSummaryHeader,
           }}
-          buttonClasses={this.getButtonClasses(presentationButtonsType)}
         >
           {this.renderFormItems()}
         </Form>
         <div className="page_skjemautfyller__buttonwrapper page_skjemautfyller__saveblock">{this.props.loginButton}</div>
-      </div>
+      </>
     );
   };
 
-  renderFormWhenAuthorized = (presentationButtonsType: PresentationButtonsType | null) => {
+  renderFormWhenAuthorized = () => {
     const { resources } = this.props;
     if (!resources) {
       return;
     }
 
     return (
-      <div>
+      <>
         <Form
           action="#"
           disabled={this.props.blockSubmit}
@@ -415,28 +413,24 @@ class Skjemautfyller extends React.Component<StateProps & DispatchProps & Props,
           pauseButtonText={resources.formSave ? resources.formSave : 'Lagre'}
           onPause={this.props.onSave ? this.onSave : undefined}
           pauseButtonClasses={'page_skjemautfyller__pausebutton'}
-          isPauseButtonOfTypeActionButton={true}
-          isPauseButtonSecondaryButton={true}
+          pauseButtonType="display"
+          submitButtonType="display"
+          cancelButtonType="display"
+          pauseButtonLevel="secondary"
           cancelButtonRight={true}
           onCancel={this.props.onCancel}
-          buttonClasses={this.getButtonClasses(presentationButtonsType, ['page_skjemautfyller__saveblock'])}
+          buttonClasses="page_skjemautfyller__saveblock"
           validationSummaryPlacement={this.props.validationSummaryPlacement}
           validationSummary={{
             enable: true,
             header: resources.validationSummaryHeader,
           }}
-          sticky={this.getStickyStatus(presentationButtonsType)}
         >
           {this.renderFormItems()}
         </Form>
-      </div>
+      </>
     );
   };
-
-  getStickyStatus(presentationButtonsType: PresentationButtonsType | null): boolean | undefined {
-    if (presentationButtonsType === null) return this.props.sticky;
-    return presentationButtonsType === PresentationButtonsType.Sticky;
-  }
 
   getButtonClasses(presentationButtonsType: PresentationButtonsType | null, defaultClasses?: string[]): string {
     defaultClasses = defaultClasses ?? [];

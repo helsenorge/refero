@@ -90,6 +90,7 @@ class Boolean extends React.Component<Props & ValidationProps, {}> {
           id={getId(this.props.id)}
           checked={this.getValue()}
           disabled
+          isStyleBlue
           onChange={(): void => {
             /*kan ikke endres, er alltid disabled*/
           }}
@@ -113,6 +114,7 @@ class Boolean extends React.Component<Props & ValidationProps, {}> {
             helpButton={this.props.renderHelpButton()}
             helpElement={this.props.renderHelpElement()}
             validateOnExternalUpdate={true}
+            isStyleBlue
           />
         </Validation>
         {this.props.renderDeleteButton('page_skjemautfyller__deletebutton--margin-top')}

@@ -70,6 +70,7 @@ const RadioView: React.SFC<Props> = ({
             helpButton={renderHelpButton()}
             helpElement={renderHelpElement()}
             validateOnExternalUpdate={true}
+            isStyleBlue
           />
         </Validation>
         {shouldShowExtraChoice(answer) ? (

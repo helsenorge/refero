@@ -26,8 +26,7 @@ describe('component respects sdf-presentationbuttons', () => {
     const wrapper = createWrapper(model, true);
     wrapper.render();
 
-    const buttonDiv = wrapper.find('form > div').last();
-    expect(buttonDiv.at(0).props().className).toEqual(expect.stringContaining('sticky'));
+    expect(wrapper.find('.page_skjemautfyller__content').props().className).toEqual(expect.stringContaining('sticky'));
   });
 
   it('questionnaire without presentationbuttons default to non-sticky, when sticky is set to false', () => {
@@ -36,8 +35,7 @@ describe('component respects sdf-presentationbuttons', () => {
     const wrapper = createWrapper(model, false);
     wrapper.render();
 
-    const buttonDiv = wrapper.find('form > div').last();
-    expect(buttonDiv.at(0).props().className).not.toEqual(expect.stringContaining('sticky'));
+    expect(wrapper.find('.page_skjemautfyller__content').props().className).not.toEqual(expect.stringContaining('sticky'));
   });
 
   it('questionnaire without presentationbuttons default to non-sticky, when sticky is not set', () => {
@@ -46,8 +44,7 @@ describe('component respects sdf-presentationbuttons', () => {
     const wrapper = createWrapper(model);
     wrapper.render();
 
-    const buttonDiv = wrapper.find('form > div').last();
-    expect(buttonDiv.at(0).props().className).not.toEqual(expect.stringContaining('sticky'));
+    expect(wrapper.find('.page_skjemautfyller__content').props().className).not.toEqual(expect.stringContaining('sticky'));
   });
 
   it('questionnaire with presentationbuttons = none, should be none even when sticky is true', () => {
@@ -57,8 +54,7 @@ describe('component respects sdf-presentationbuttons', () => {
     const wrapper = createWrapper(model, true);
     wrapper.render();
 
-    const buttonDiv = wrapper.find('form > div').last();
-    expect(buttonDiv.at(0).props().className).toEqual(expect.stringContaining('hidden_buttons'));
+    expect(wrapper.find('.page_skjemautfyller__content').props().className).toEqual(expect.stringContaining('hidden_buttons'));
   });
 
   it('questionnaire with presentationbuttons = none, should be none even when sticky is false', () => {
@@ -68,9 +64,8 @@ describe('component respects sdf-presentationbuttons', () => {
     const wrapper = createWrapper(model, false);
     wrapper.render();
 
-    const buttonDiv = wrapper.find('form > div').last();
-    expect(buttonDiv.at(0).props().className).toEqual(expect.stringContaining('hidden_buttons'));
-    expect(buttonDiv.at(0).props().className).not.toEqual(expect.stringContaining('sticky'));
+    expect(wrapper.find('.page_skjemautfyller__content').props().className).toEqual(expect.stringContaining('hidden_buttons'));
+    expect(wrapper.find('.page_skjemautfyller__content').props().className).not.toEqual(expect.stringContaining('sticky'));
   });
 
   it('questionnaire with presentationbuttons = none, should be none even when sticky is not set', () => {
@@ -80,9 +75,8 @@ describe('component respects sdf-presentationbuttons', () => {
     const wrapper = createWrapper(model);
     wrapper.render();
 
-    const buttonDiv = wrapper.find('form > div').last();
-    expect(buttonDiv.at(0).props().className).toEqual(expect.stringContaining('hidden_buttons'));
-    expect(buttonDiv.at(0).props().className).not.toEqual(expect.stringContaining('sticky'));
+    expect(wrapper.find('.page_skjemautfyller__content').props().className).toEqual(expect.stringContaining('hidden_buttons'));
+    expect(wrapper.find('.page_skjemautfyller__content').props().className).not.toEqual(expect.stringContaining('sticky'));
   });
 
   it('questionnaire with presentationbuttons = static, should be static even when sticky is true', () => {
@@ -92,8 +86,7 @@ describe('component respects sdf-presentationbuttons', () => {
     const wrapper = createWrapper(model, true);
     wrapper.render();
 
-    const buttonDiv = wrapper.find('form > div').last();
-    expect(buttonDiv.at(0).props().className).not.toEqual(expect.stringContaining('sticky'));
+    expect(wrapper.find('.page_skjemautfyller__content').props().className).not.toEqual(expect.stringContaining('sticky'));
   });
 
   it('questionnaire with presentationbuttons = static, should be static even when sticky is false', () => {
@@ -103,8 +96,7 @@ describe('component respects sdf-presentationbuttons', () => {
     const wrapper = createWrapper(model, false);
     wrapper.render();
 
-    const buttonDiv = wrapper.find('form > div').last();
-    expect(buttonDiv.at(0).props().className).not.toEqual(expect.stringContaining('sticky'));
+    expect(wrapper.find('.page_skjemautfyller__content').props().className).not.toEqual(expect.stringContaining('sticky'));
   });
 
   it('questionnaire with presentationbuttons = static, should be static even when sticky is not set', () => {
@@ -114,8 +106,7 @@ describe('component respects sdf-presentationbuttons', () => {
     const wrapper = createWrapper(model);
     wrapper.render();
 
-    const buttonDiv = wrapper.find('form > div').last();
-    expect(buttonDiv.at(0).props().className).not.toEqual(expect.stringContaining('sticky'));
+    expect(wrapper.find('.page_skjemautfyller__content').props().className).not.toEqual(expect.stringContaining('sticky'));
   });
 
   it('questionnaire with presentationbuttons = sticky, should be sticky even when sticky is true', () => {
@@ -125,8 +116,7 @@ describe('component respects sdf-presentationbuttons', () => {
     const wrapper = createWrapper(model, true);
     wrapper.render();
 
-    const buttonDiv = wrapper.find('form > div').last();
-    expect(buttonDiv.at(0).props().className).toEqual(expect.stringContaining('sticky'));
+    expect(wrapper.find('.page_skjemautfyller__content').props().className).toEqual(expect.stringContaining('sticky'));
   });
 
   it('questionnaire with presentationbuttons = sticky, should be sticky even when sticky is false', () => {
@@ -136,8 +126,7 @@ describe('component respects sdf-presentationbuttons', () => {
     const wrapper = createWrapper(model, false);
     wrapper.render();
 
-    const buttonDiv = wrapper.find('form > div').last();
-    expect(buttonDiv.at(0).props().className).toEqual(expect.stringContaining('sticky'));
+    expect(wrapper.find('.page_skjemautfyller__content').props().className).toEqual(expect.stringContaining('sticky'));
   });
 
   it('questionnaire with presentationbuttons = sticky, should be sticky even when sticky is not set', () => {
@@ -147,8 +136,7 @@ describe('component respects sdf-presentationbuttons', () => {
     const wrapper = createWrapper(model);
     wrapper.render();
 
-    const buttonDiv = wrapper.find('form > div').last();
-    expect(buttonDiv.at(0).props().className).toEqual(expect.stringContaining('sticky'));
+    expect(wrapper.find('.page_skjemautfyller__content').props().className).toEqual(expect.stringContaining('sticky'));
   });
 });
 

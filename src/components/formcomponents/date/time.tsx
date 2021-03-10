@@ -2,7 +2,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 import moment from 'moment';
-import { parseDate, getHoursFromTimeString, getMinutesFromTimeString } from '@helsenorge/toolkit/components/molecules/time-input/date-core';
+import { parseDate } from '@helsenorge/toolkit/components/molecules/time-input/date-core';
 import TimeInput from '@helsenorge/toolkit/components/molecules/time-input';
 import DateTimeConstants from '@helsenorge/toolkit/constants/datetime';
 import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
@@ -90,27 +90,13 @@ class Time extends React.Component<Props & ValidationProps> {
     return `${momentDate.hours()}${DateTimeConstants.TIME_SEPARATOR}${momentDate.minutes()}`;
   }
 
-  getMaxTime(): Date {
-    return moment(new Date())
-      .hours(this.getMaxHour())
-      .minutes(this.getMaxMinute())
-      .toDate();
-  }
-
-  getMinTime(): Date {
-    return moment(new Date())
-      .hours(this.getMinHour())
-      .minutes(this.getMinMinute())
-      .toDate();
-  }
-
   getMaxHour(): number {
     const maxTime = getExtension(ExtensionConstants.MAX_VALUE_URL, this.props.item);
     if (!maxTime) {
       return 23;
     }
     const maxTimeString = String(maxTime.valueTime);
-    const hoursString = getHoursFromTimeString(maxTimeString);
+    const hoursString = (maxTimeString || '').split(DateTimeConstants.TIME_SEPARATOR)[0];
     return parseInt(hoursString, 10);
   }
 
@@ -120,7 +106,7 @@ class Time extends React.Component<Props & ValidationProps> {
       return 59;
     }
     const maxTimeString = String(maxTime.valueTime);
-    const minuteString = getMinutesFromTimeString(maxTimeString);
+    const minuteString = (maxTimeString || '').split(DateTimeConstants.TIME_SEPARATOR)[1];
     return parseInt(minuteString, 10);
   }
 
@@ -130,7 +116,7 @@ class Time extends React.Component<Props & ValidationProps> {
       return 0;
     }
     const minTimeString = String(minTime.valueTime);
-    const hoursString = getHoursFromTimeString(minTimeString);
+    const hoursString = (minTimeString || '').split(DateTimeConstants.TIME_SEPARATOR)[0];
     return parseInt(hoursString, 10);
   }
 
@@ -140,7 +126,7 @@ class Time extends React.Component<Props & ValidationProps> {
       return 0;
     }
     const minTimeString = String(minTime.valueTime);
-    const minuteString = getMinutesFromTimeString(minTimeString);
+    const minuteString = (minTimeString || '').split(DateTimeConstants.TIME_SEPARATOR)[1];
     return parseInt(minuteString, 10);
   }
 
@@ -247,8 +233,6 @@ class Time extends React.Component<Props & ValidationProps> {
               />
             }
             isRequired={isRequired(item)}
-            msgInvalidTime={this.props.resources && this.props.resources.ugyldigTid ? this.props.resources.ugyldigTid : undefined}
-            msgMissingTime={this.props.resources && this.props.resources.oppgiTid ? this.props.resources.oppgiTid : undefined}
             maxHour={this.getMaxHour()}
             minHour={this.getMinHour()}
             maxMinute={this.getMaxMinute()}

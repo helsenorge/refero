@@ -24,7 +24,7 @@ describe('date fields gets set and cleared properly', () => {
 
     await inputAnswer('7a-datepicker_input', '2020-12-23', wrapper);
     let item = findItem('7a-datepicker_input', wrapper);
-    expect(item.props().value).toBe('2020-12-23');
+    expect(item.props().value).toBe('23.12.2020');
 
     await inputAnswer('7a-datepicker_input', '', wrapper);
     item = findItem('7a-datepicker_input', wrapper);
