@@ -1,3 +1,9 @@
+7.5.1
+-----
+* Fix crash when using date component with english locale.
+* Set month opened in date component to current month (unless a date is set in date component)
+* Remove depenency to moment. moment is included as depenency in @helsenorge/toolkit.
+
 7.5.0
 -----
 * Upgrade components to new version of @helsenorge/toolkit and @helsenorge/core-utils. Requires @helsenorge/toolkit v19.0.0 and @helsenorge/core-utils v19.0.0

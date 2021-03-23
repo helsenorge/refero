@@ -1,6 +1,6 @@
 {
   "name": "@helsenorge/skjemautfyller",
-  "version": "7.5.0",
+  "version": "7.5.1",
   "main": "index.js",
   "author": "helsenorge",
   "maintainers": [
@@ -63,7 +63,6 @@
     "isomorphic-fetch": "^2.2.1",
     "dompurify": "^2.0.8",
     "marked": "^0.7.0",
-    "moment": "2.22.2",
     "tabbable": "^3.1.1",
     "uuid": "2.0.3",
     "fhirpath": "2.7.3",

@@ -177,6 +177,7 @@ class DateTime extends React.Component<Props & ValidationProps> {
             value={valueDateTime ? moment(valueDateTime) : undefined}
             maximumDateTime={maxDateTime ? moment(maxDateTime) : undefined}
             minimumDateTime={minDateTime ? moment(minDateTime) : undefined}
+            initialDate={moment(new Date())}
             onChange={this.dispatchNewDate}
             onBlur={this.onBlur}
             legend={

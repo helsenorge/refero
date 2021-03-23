@@ -178,6 +178,10 @@ class DateComponent extends React.Component<Props & ValidationProps> {
     return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats;
   }
 
+  toLocaleDate(moment: Moment | undefined): Moment | undefined {
+    return moment ? moment.locale(this.getLocaleFromLanguage()) : undefined;
+  }
+
   render(): JSX.Element | null {
     const date = this.getValue();
     if (this.props.pdf || isReadOnly(this.props.item)) {
@@ -213,10 +217,10 @@ class DateComponent extends React.Component<Props & ValidationProps> {
             isRequired={isRequired(this.props.item)}
             placeholder={getPlaceholder(this.props.item)}
             ref={this.datepicker}
-            maximumDate={this.getMaxDate()}
-            minimumDate={this.getMinDate()}
-            initialDate={date ? moment(date) : undefined}
-            singleDateValue={date ? moment(date) : undefined}
+            maximumDate={this.toLocaleDate(this.getMaxDate())}
+            minimumDate={this.toLocaleDate(this.getMinDate())}
+            initialDate={this.toLocaleDate(moment(new Date()))}
+            singleDateValue={date ? this.toLocaleDate(moment(date)) : undefined}
             className={this.props.className}
             onDateChange={this.onDateChange}
             validationErrorRenderer={this.props.validationErrorRenderer}
