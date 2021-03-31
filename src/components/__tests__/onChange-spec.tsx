@@ -265,7 +265,7 @@ describe('onAnswerChange callback gets called and can request additional changes
     await inputAnswer('1', 0.1, wrapper);
 
     let item = wrapper.find(DateTimePicker);
-    let date = item.props().value;
+    let date = item.props().dateValue;
     let dateString = moment(date)
       .locale('nb')
       .utc()
@@ -282,7 +282,7 @@ describe('onAnswerChange callback gets called and can request additional changes
     await inputAnswer('1', 0.1, wrapper);
 
     let item = wrapper.find(DateTimePicker);
-    let date = item.props().value;
+    let date = item.props().dateValue;
     expect(date).toBe(undefined);
   });
 

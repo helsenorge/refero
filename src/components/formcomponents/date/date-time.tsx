@@ -1,14 +1,14 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
-import moment from 'moment';
-import 'moment/locale/nb';
+import moment, { Moment } from 'moment';
 import DateTimePicker from '@helsenorge/toolkit/components/molecules/date-time-picker';
 import { getFullMomentDate } from '@helsenorge/toolkit/components/molecules/date-time-picker/date-time-picker-utils';
 import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
 import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
 import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 import { parseDate } from '@helsenorge/toolkit/components/molecules/time-input/date-core';
+import { LanguageLocales } from '@helsenorge/core-utils/constants/languages';
 
 import withCommonFunctions from '../../with-common-functions';
 import { Path } from '../../../util/skjemautfyller-core';
@@ -32,6 +32,7 @@ export interface Props {
   dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
   path: Array<Path>;
   pdf?: boolean;
+  language?: string;
   promptLoginMessage?: () => void;
   id?: string;
   renderDeleteButton: (className?: string) => JSX.Element | undefined;
@@ -103,7 +104,7 @@ class DateTime extends React.Component<Props & ValidationProps> {
     return undefined;
   }
 
-  dispatchNewDate = (date: moment.Moment | undefined, time: string | undefined) => {
+  dispatchNewDate = (date: Moment | undefined, time: string | undefined) => {
     const { dispatch, promptLoginMessage, onAnswerChange, path, item } = this.props;
     if (dispatch) {
       const momentDate = getFullMomentDate(date, time);
@@ -155,6 +156,18 @@ class DateTime extends React.Component<Props & ValidationProps> {
     return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats;
   }
 
+  getLocaleFromLanguage = () => {
+    if (this.props.language?.toLowerCase() === 'en-gb') {
+      return LanguageLocales.ENGLISH;
+    }
+
+    return LanguageLocales.NORWEGIAN;
+  };
+
+  toLocaleDate(moment: Moment | undefined): Moment | undefined {
+    return moment ? moment.locale(this.getLocaleFromLanguage()) : undefined;
+  }
+
   render(): JSX.Element | null {
     const { item, pdf, id, onRenderMarkdown, ...other } = this.props;
     if (pdf || isReadOnly(item)) {
@@ -173,11 +186,12 @@ class DateTime extends React.Component<Props & ValidationProps> {
         <Validation {...other}>
           <DateTimePicker
             id={getId(id)}
-            //locale={this.getLocaleFromLanguage()} // TODO: støtt andre språk
-            value={valueDateTime ? moment(valueDateTime) : undefined}
-            maximumDateTime={maxDateTime ? moment(maxDateTime) : undefined}
-            minimumDateTime={minDateTime ? moment(minDateTime) : undefined}
-            initialDate={moment(new Date())}
+            locale={this.getLocaleFromLanguage()}
+            dateValue={valueDateTime ? this.toLocaleDate(moment(valueDateTime)) : undefined}
+            timeValue={valueDateTime ? moment(valueDateTime).format('HH:mm') : undefined}
+            maximumDateTime={maxDateTime ? this.toLocaleDate(moment(maxDateTime)) : undefined}
+            minimumDateTime={minDateTime ? this.toLocaleDate(moment(minDateTime)) : undefined}
+            initialDate={this.toLocaleDate(moment(new Date()))}
             onChange={this.dispatchNewDate}
             onBlur={this.onBlur}
             legend={
