@@ -209,6 +209,10 @@ function copyItem(
 ): QuestionnaireResponseItem {
   if (!target) {
     target = { linkId: source.linkId } as QuestionnaireResponseItem;
+
+    if (source.text) {
+      target.text = source.text;
+    }
   }
 
   for (let i = 0; source.item && i < source.item.length; i++) {
@@ -218,6 +222,9 @@ function copyItem(
     const newResponseItem = {
       linkId: source.item[i].linkId,
     } as QuestionnaireResponseItem;
+    if (source.item[i].text) {
+      newResponseItem.text = source.item[i].text;
+    }
 
     const numberOfItemsWithSameLinkId = target.item.filter(item => item.linkId === newResponseItem.linkId).length;
 

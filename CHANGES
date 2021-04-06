@@ -1,3 +1,7 @@
+7.6.1
+-----
+* Set "text" property in QuestionnaireResponse for repeated groups.
+
 7.6.0
 -----
 * Upgrade components to new version of @helsenorge/toolkits. Requires @helsenorge/toolkit v19.1.0
