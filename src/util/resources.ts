@@ -191,4 +191,96 @@ export interface Resources {
    * Hopp til navigator
    */
   skipLinkText?: string;
+  /**
+   * Fjern dato
+   */
+  clearDate?: string;
+  /**
+   * Kalender
+   */
+  calendarLabel?: string;
+  /**
+   * Lukk
+   */
+  closeDatePicker?: string;
+  /**
+   * Bruk kalenderen og velg dato.
+   */
+  focusStartDate: string;
+  /**
+   * Gå bakover til forrige måned
+   */
+  jumpToPrevMonth?: string;
+  /**
+   * Gå fremover til neste måned
+   */
+  jumpToNextMonth?: string;
+  /**
+   * Tastatursnarveier
+   */
+  keyboardShortcuts?: string;
+  /**
+   * Åpne panelet med tastatursnarveier
+   */
+  showKeyboardShortcutsPanel?: string;
+  /**
+   * Lukk panelet med tastatursnarveier
+   */
+  hideKeyboardShortcutsPanel?: string;
+  /**
+   * Enter tast
+   */
+  enterKey?: string;
+  /**
+   * Høyre og venstre piltast
+   */
+  leftArrowRightArrow?: string;
+  /**
+   * Opp og ned piltast
+   */
+  upArrowDownArrow?: string;
+  /**
+   * Side opp og Side ned tast
+   */
+  pageUpPageDown?: string;
+  /**
+   * Hjem og Slutt tast
+   */
+  homeEnd?: string;
+  /**
+   * Escape tast
+   */
+  escape?: string;
+  /**
+   * Spørsmålstegn
+   */
+  questionMark?: string;
+  /**
+   * Åpne dette panelet
+   */
+  openThisPanel?: string;
+  /**
+   * Velg datoen som har fokus
+   */
+  selectFocusedDate?: string;
+  /**
+   * Flytt en dag bakover (venstre) og fremover (høyre)
+   */
+  moveFocusByOneDay?: string;
+  /**
+   * Flytt en uke bakover (opp) og fremover (ned)
+   */
+  moveFocusByOneWeek?: string;
+  /**
+   * Skifte måned
+   */
+  moveFocusByOneMonth?: string;
+  /**
+   * Gå til første eller siste dag av uken
+   */
+  moveFocustoStartAndEndOfWeek?: string;
+  /**
+   * Gå tilbake til datoen i inputfeltet
+   */
+  returnFocusToInput?: string;
 }

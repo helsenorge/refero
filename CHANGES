@@ -1,3 +1,7 @@
+7.6.2
+-----
+* Translate resources for datepicker component.
+
 7.6.1
 -----
 * Set "text" property in QuestionnaireResponse for repeated groups.

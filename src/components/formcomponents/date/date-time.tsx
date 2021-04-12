@@ -186,6 +186,7 @@ class DateTime extends React.Component<Props & ValidationProps> {
         <Validation {...other}>
           <DateTimePicker
             id={getId(id)}
+            resources={{ dateResources: this.props.resources }}
             locale={this.getLocaleFromLanguage()}
             dateValue={valueDateTime ? this.toLocaleDate(moment(valueDateTime)) : undefined}
             timeValue={valueDateTime ? moment(valueDateTime).format('HH:mm') : undefined}

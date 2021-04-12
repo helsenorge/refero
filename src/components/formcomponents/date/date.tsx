@@ -203,6 +203,7 @@ class DateComponent extends React.Component<Props & ValidationProps> {
             id={`${getId(this.props.id)}-datepicker_input`}
             locale={this.getLocaleFromLanguage()} // TODO: må støtte nynorsk og samisk også
             errorResources={this.getDatepickerErrorPhrases()}
+            resources={this.props.resources}
             label={
               this.props.renderLabel ? (
                 <span
