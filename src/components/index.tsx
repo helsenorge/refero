@@ -87,6 +87,7 @@ interface Props {
   resources?: Resources;
   pdf?: boolean;
   promptLoginMessage?: () => void;
+  attachmentErrorMessage?: string;
   attachmentMaxFileSize?: number;
   attachmentValidTypes?: Array<string>;
   onRequestAttachmentLink?: (fileId: string) => string;
@@ -327,6 +328,7 @@ class Skjemautfyller extends React.Component<StateProps & DispatchProps & Props,
               uploadAttachment={this.props.uploadAttachment}
               onRequestHelpButton={this.props.onRequestHelpButton}
               onRequestHelpElement={this.props.onRequestHelpElement}
+              attachmentErrorMessage={this.props.attachmentErrorMessage}
               attachmentMaxFileSize={this.props.attachmentMaxFileSize}
               attachmentValidTypes={this.props.attachmentValidTypes}
               validateScriptInjection={this.props.validateScriptInjection}

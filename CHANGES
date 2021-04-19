@@ -1,3 +1,7 @@
+7.6.3
+-----
+* Add prop attachmentErrorMessage, which will be shown in a red messagebox on all attachment fields if set.
+
 7.6.2
 -----
 * Translate resources for datepicker component.

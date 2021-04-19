@@ -62,6 +62,7 @@ export interface Props {
   dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
   visibleDeleteButton?: boolean;
   repeatButton?: JSX.Element;
+  attachmentErrorMessage?: string;
   attachmentMaxFileSize?: number;
   attachmentValidTypes?: Array<string>;
   onRequestAttachmentLink?: (file: string) => string;
@@ -280,6 +281,7 @@ export default function withCommonFunctions<T>(WrappedComponent: React.Component
               uploadAttachment={this.props.uploadAttachment}
               onRequestHelpButton={this.props.onRequestHelpButton}
               onRequestHelpElement={this.props.onRequestHelpElement}
+              attachmentErrorMessage={this.props.attachmentErrorMessage}
               attachmentMaxFileSize={this.props.attachmentMaxFileSize}
               attachmentValidTypes={this.props.attachmentValidTypes}
               onAnswerChange={this.props.onAnswerChange}

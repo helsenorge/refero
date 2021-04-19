@@ -28,6 +28,7 @@ export interface Props {
   resources?: Resources;
   renderDeleteButton: () => JSX.Element | undefined;
   repeatButton: JSX.Element;
+  attachmentErrorMessage?: string;
   attachmentMaxFileSize?: number;
   attachmentValidTypes?: Array<string>;
   uploadAttachment?: (
@@ -138,9 +139,10 @@ class AttachmentComponent extends React.Component<Props & ValidationProps> {
     const responseItemHasChanged = this.props.responseItem !== nextProps.responseItem;
     const helpItemHasChanged = this.props.isHelpOpen !== nextProps.isHelpOpen;
     const resourcesHasChanged = JSON.stringify(this.props.resources) !== JSON.stringify(nextProps.resources);
+    const attachmentErrorMessageHasChanged = this.props.attachmentErrorMessage !== nextProps.attachmentErrorMessage;
     const repeats = this.props.item.repeats ?? false;
 
-    return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats;
+    return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || attachmentErrorMessageHasChanged || repeats;
   }
 
   render(): JSX.Element | null {
@@ -153,34 +155,37 @@ class AttachmentComponent extends React.Component<Props & ValidationProps> {
       );
     } else {
       return (
-        <AttachmentHtml
-          onUpload={this.onUpload}
-          onDelete={this.onDelete}
-          onOpen={onOpenAttachment}
-          id={getId(id)}
-          label={
-            <span
-              dangerouslySetInnerHTML={{
-                __html: `${renderPrefix(item)} ${getText(item, onRenderMarkdown)}`,
-              }}
-            />
-          }
-          uploadButtonText={this.getButtonText()}
-          resources={resources}
-          isRequired={isRequired(item)}
-          multiple={isRepeat(item)}
-          errorText={getValidationTextExtension(item)}
-          uploadedFiles={this.getAttachment()}
-          onRequestAttachmentLink={this.props.onRequestAttachmentLink}
-          helpButton={this.props.renderHelpButton()}
-          helpElement={this.props.renderHelpElement()}
-          maxFiles={getMaxOccursExtensionValue(item)}
-          minFiles={getMinOccursExtensionValue(item)}
-          attachmentMaxFileSize={this.props.attachmentMaxFileSize}
-          attachmentValidTypes={this.props.attachmentValidTypes}
-          item={item}
-          {...other}
-        />
+        <>
+          <AttachmentHtml
+            onUpload={this.onUpload}
+            onDelete={this.onDelete}
+            onOpen={onOpenAttachment}
+            id={getId(id)}
+            label={
+              <span
+                dangerouslySetInnerHTML={{
+                  __html: `${renderPrefix(item)} ${getText(item, onRenderMarkdown)}`,
+                }}
+              />
+            }
+            uploadButtonText={this.getButtonText()}
+            resources={resources}
+            isRequired={isRequired(item)}
+            multiple={isRepeat(item)}
+            errorText={getValidationTextExtension(item)}
+            uploadedFiles={this.getAttachment()}
+            onRequestAttachmentLink={this.props.onRequestAttachmentLink}
+            helpButton={this.props.renderHelpButton()}
+            helpElement={this.props.renderHelpElement()}
+            maxFiles={getMaxOccursExtensionValue(item)}
+            minFiles={getMinOccursExtensionValue(item)}
+            attachmentMaxFileSize={this.props.attachmentMaxFileSize}
+            attachmentValidTypes={this.props.attachmentValidTypes}
+            item={item}
+            attachmentErrorMessage={this.props.attachmentErrorMessage}
+            {...other}
+          />
+        </>
       );
     }
   }

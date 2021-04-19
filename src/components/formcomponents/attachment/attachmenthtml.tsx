@@ -1,4 +1,5 @@
 import * as React from 'react';
+import MessageBox from '@helsenorge/toolkit/components/atoms/message-box';
 import Dropzone from '@helsenorge/toolkit/components/atoms/dropzone';
 import Validation, { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
 import { sizeIsValid, mimeTypeIsValid } from '@helsenorge/toolkit/components/atoms/dropzone/validation';
@@ -16,6 +17,7 @@ interface Props {
   uploadButtonText: string;
   label: string | JSX.Element;
   id: string;
+  attachmentErrorMessage?: string;
   getComponentToValidate?: (el: Dropzone) => void;
   resources?: Resources;
   isRequired?: boolean;
@@ -45,6 +47,7 @@ const attachmentHtml: React.SFC<Props & ValidationProps> = ({
   errorText,
   uploadedFiles,
   onRequestAttachmentLink,
+  attachmentErrorMessage,
   helpButton,
   helpElement,
   multiple,
@@ -90,6 +93,7 @@ const attachmentHtml: React.SFC<Props & ValidationProps> = ({
           chooseFilesText={resources?.chooseFilesText}
         />
       </Validation>
+      {attachmentErrorMessage && <MessageBox type="error" title={attachmentErrorMessage} />}
       {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
     </div>
   );

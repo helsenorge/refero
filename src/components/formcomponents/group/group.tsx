@@ -27,6 +27,7 @@ export interface Props {
   className?: string;
   resources?: Resources;
   headerTag?: number;
+  attachmentErrorMessage?: string;
   renderDeleteButton: (className?: string) => JSX.Element | undefined;
   renderChildrenItems: (renderContext: RenderContext) => Array<JSX.Element> | undefined;
   repeatButton: JSX.Element;
@@ -49,10 +50,19 @@ export class Group extends React.Component<Props, State> {
     const responseItemHasChanged = this.props.responseItem !== nextProps.responseItem;
     const helpItemHasChanged = this.props.isHelpOpen !== nextProps.isHelpOpen;
     const repeatButtonHasChanged = this.props.repeatButton !== nextProps.repeatButton;
+    const attachmentErrorMessageHasChanged = this.props.attachmentErrorMessage !== nextProps.attachmentErrorMessage;
     const resourcesHasChanged = JSON.stringify(this.props.resources) !== JSON.stringify(nextProps.resources);
+
     const repeats = this.props.item.repeats ?? false;
 
-    return responseItemHasChanged || helpItemHasChanged || repeatButtonHasChanged || resourcesHasChanged || repeats;
+    return (
+      responseItemHasChanged ||
+      helpItemHasChanged ||
+      repeatButtonHasChanged ||
+      attachmentErrorMessageHasChanged ||
+      resourcesHasChanged ||
+      repeats
+    );
   }
 
   renderAllItems = (): JSX.Element => {
