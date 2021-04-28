@@ -2,9 +2,10 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 import classNames from 'classnames';
-import { ConfirmBox } from '@helsenorge/toolkit/components/molecules/confirmbox';
+import { Lightbox } from '@helsenorge/toolkit/components/molecules/lightbox';
 import { FunctionButton } from '@helsenorge/toolkit/components/atoms/buttons/function-button';
 import Delete from '@helsenorge/toolkit/components/icons/Delete';
+import { DisplayButton } from '@helsenorge/toolkit/components/atoms/buttons/display-button';
 
 import { Path } from '../../../util/skjemautfyller-core';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
@@ -69,17 +70,18 @@ class DeleteButton extends React.Component<Props, State> {
           {resources && resources.deleteButtonText ? resources.deleteButtonText : ''}
         </FunctionButton>
         {this.state.showConfirm && resources ? (
-          <ConfirmBox
-            onConfirm={this.onDeleteRepeatItemConfirmed}
-            confirmText={resources.confirmDeleteButtonText}
-            onClose={this.onConfirmCancel}
-            closeText={resources.confirmDeleteCancelButtonText}
-            onCancel={this.onConfirmCancel}
-            small
-          >
+          <Lightbox onClose={this.onConfirmCancel} isVisible noCloseButton>
             <h3>{resources.confirmDeleteHeading}</h3>
             <p>{resources.confirmDeleteDescription}</p>
-          </ConfirmBox>
+            <div className="page_skjemautfyller__buttonwrapper">
+              <DisplayButton onClick={this.onDeleteRepeatItemConfirmed} primary>
+                {resources.confirmDeleteButtonText}
+              </DisplayButton>
+              <DisplayButton onClick={this.onConfirmCancel} tertiary>
+                {resources.confirmDeleteCancelButtonText}
+              </DisplayButton>
+            </div>
+          </Lightbox>
         ) : null}
       </React.Fragment>
     );

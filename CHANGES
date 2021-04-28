@@ -1,3 +1,8 @@
+7.6.4
+-----
+* Replace MessageBox component with NotificationPanel.
+* Change button types in confirm delete repeated item dialog from ActionButton to DisplayButton.
+
 7.6.3
 -----
 * Add prop attachmentErrorMessage, which will be shown in a red messagebox on all attachment fields if set.

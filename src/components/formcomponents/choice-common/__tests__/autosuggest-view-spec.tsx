@@ -6,7 +6,7 @@ import { Spinner } from '@helsenorge/toolkit/components/atoms/spinner';
 import AutosuggestView from '../autosuggest-view';
 import { QuestionnaireItem, ValueSet } from '../../../../types/fhir';
 import { Resources } from '../../../../util/resources';
-import MessageBox from '@helsenorge/toolkit/components/atoms/message-box';
+import NotificationPanel from '@helsenorge/designsystem-react/components/NotificationPanel';
 import { OPEN_CHOICE_ID, OPEN_CHOICE_SYSTEM, OPEN_CHOICE_LABEL } from '../../../../constants';
 
 describe('autosuggest-view', () => {
@@ -310,7 +310,7 @@ describe('autosuggest-view', () => {
 
     jest.runAllTimers();
 
-    expect(wrapper.find(MessageBox).length).toBe(1);
+    expect(wrapper.find(NotificationPanel).length).toBe(1);
   });
 
   it('skal fjerne svar dersom det finnes når ValueSet lastes', () => {

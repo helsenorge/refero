@@ -1,5 +1,5 @@
 import * as React from 'react';
-import MessageBox from '@helsenorge/toolkit/components/atoms/message-box';
+import NotificationPanel from '@helsenorge/designsystem-react/components/NotificationPanel';
 import Dropzone from '@helsenorge/toolkit/components/atoms/dropzone';
 import Validation, { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
 import { sizeIsValid, mimeTypeIsValid } from '@helsenorge/toolkit/components/atoms/dropzone/validation';
@@ -93,7 +93,7 @@ const attachmentHtml: React.SFC<Props & ValidationProps> = ({
           chooseFilesText={resources?.chooseFilesText}
         />
       </Validation>
-      {attachmentErrorMessage && <MessageBox type="error" title={attachmentErrorMessage} />}
+      {attachmentErrorMessage && <NotificationPanel variant="alert">{attachmentErrorMessage}</NotificationPanel>}
       {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
     </div>
   );

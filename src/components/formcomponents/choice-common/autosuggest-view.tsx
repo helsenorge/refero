@@ -3,7 +3,7 @@ import { Collapse } from 'react-collapse';
 import Autosuggest, { Suggestion } from '@helsenorge/toolkit/components/molecules/autosuggest';
 import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
 import { Spinner } from '@helsenorge/toolkit/components/atoms/spinner';
-import MessageBox from '@helsenorge/toolkit/components/atoms/message-box';
+import NotificationPanel from '@helsenorge/designsystem-react/components/NotificationPanel';
 import { debounce } from '@helsenorge/core-utils/debounce';
 
 import { isRequired, getId, renderPrefix, getText } from '../../../util/index';
@@ -273,7 +273,7 @@ class AutosuggestView extends React.Component<AutosuggestProps, AutosuggestState
               {this.props.resources?.autosuggestNoSuggestions?.replace('{0}', this.state.inputValue)}
             </div>
           )}
-          {this.state.hasLoadError && <MessageBox type="error" title={this.props.resources?.autoSuggestLoadError} />}
+          {this.state.hasLoadError && <NotificationPanel variant="alert">{this.props.resources?.autoSuggestLoadError}</NotificationPanel>}
           {this.props.renderDeleteButton('page_skjemautfyller__deletebutton--margin-top')}
           {this.props.repeatButton}
           {this.props.children ? <div className="nested-fieldset nested-fieldset--full-height">{this.props.children}</div> : null}
