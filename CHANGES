@@ -1,3 +1,7 @@
+7.6.5
+-----
+* Add function to get value of sdf-generatepdf Questionnaire extension.
+
 7.6.4
 -----
 * Replace MessageBox component with NotificationPanel.

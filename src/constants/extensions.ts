@@ -26,6 +26,7 @@ export default {
   RECIPIENT_URL: 'http://ehelse.no/fhir/StructureDefinition/sdf-endpoint',
   PRINT_VERSION: 'http://helsenorge.no/fhir/StructureDefinition/sdf-questionnaire-print-version',
   NAVIGATOR: 'http://helsenorge.no/fhir/StructureDefinition/sdf-questionnaire-navgiator-state',
+  GENERATE_PDF: 'http://ehelse.no/fhir/StructureDefinition/sdf-generatepdf',
 
   GUIDANCE_PARAMETER: 'http://helsenorge.no/fhir/StructureDefinition/sdf-guidanceparameter',
   GUIDANCE_ACTION: 'http://helsenorge.no/fhir/StructureDefinition/sdf-guidanceaction',

@@ -47,6 +47,11 @@ export function getRecipientUrl(questionniare: Questionnaire): string | undefine
   return recipientUrl?.valueReference?.reference;
 }
 
+export function getGeneratePdfExtensionValue(questionnaire: Questionnaire): boolean | undefined {
+  const generatepdf = getExtension(ExtensionConstants.GENERATE_PDF, questionnaire);
+  return generatepdf?.valueBoolean;
+}
+
 export function getSidebarSections(
   questionniare: Questionnaire,
   onRenderMarkdown?: (item: QuestionnaireItem, markup: string) => string
