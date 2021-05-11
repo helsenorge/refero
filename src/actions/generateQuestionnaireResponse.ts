@@ -95,7 +95,7 @@ function addResponseItemtoResponse(
 export function createQuestionnaireResponseItem(item: QuestionnaireItem): QuestionnaireResponseItem {
   const responseItem = {
     linkId: item.linkId,
-    text: item.text,
+    ...(item.text && { text: item.text }),
   } as QuestionnaireResponseItem;
 
   const answer = createQuestionnaireResponseAnswer(item);

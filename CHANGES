@@ -1,3 +1,7 @@
+7.6.6
+-----
+* Do not set empty "text" property for items in QuestionnaireResponse if the item does not have "text" property.
+
 7.6.5
 -----
 * Add function to get value of sdf-generatepdf Questionnaire extension.
