@@ -6,6 +6,7 @@ import Validation from '@helsenorge/toolkit/components/molecules/form/validation
 import { isRequired, getId, renderPrefix, getText, getSublabelText } from '../../../util/index';
 import { Resources } from '../../../util/resources';
 import { QuestionnaireItem } from '../../../types/fhir';
+import SubLabel from '../sublabel';
 
 interface Props {
   options?: Array<Options>;
@@ -43,6 +44,8 @@ const RadioView: React.SFC<Props> = ({
   if (!options) {
     return null;
   }
+  const subLabelText = getSublabelText(item, onRenderMarkdown);
+
   return (
     <div className="page_skjemautfyller__component page_skjemautfyller__component_choice page_skjemautfyller__component_choice_radiobutton">
       <Collapse isOpened>
@@ -55,14 +58,7 @@ const RadioView: React.SFC<Props> = ({
                 }}
               />
             }
-            subLabel={
-              <span
-                className="page_skjemautfyller__sublabel"
-                dangerouslySetInnerHTML={{
-                  __html: getSublabelText(item, onRenderMarkdown),
-                }}
-              />
-            }
+            subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
             id={getId(id)}
             options={options}
             onChange={handleChange}

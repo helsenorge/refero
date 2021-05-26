@@ -4,19 +4,11 @@ import Validation from '@helsenorge/toolkit/components/molecules/form/validation
 import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from '../../../types/fhir';
-import {
-  isReadOnly,
-  isRequired,
-  getId,
-  renderPrefix,
-  getText,
-  getStringValue,
-  getPDFStringValue,
-  getMaxLength,
-  getSublabelText,
-} from '../../../util/index';
+import { isReadOnly, isRequired, getId, getStringValue, getPDFStringValue, getMaxLength, getSublabelText } from '../../../util/index';
 import { getValidationTextExtension, getPlaceholder, getMinLengthExtensionValue, getRegexExtension } from '../../../util/extension';
 import Pdf from '../textview';
+import SubLabel from '../sublabel';
+import Label from '../label';
 
 interface Props {
   id?: string;
@@ -43,6 +35,8 @@ const textField: React.SFC<Props & ValidationProps> = ({
       </Pdf>
     );
   }
+  const subLabelText = getSublabelText(item, onRenderMarkdown);
+
   return (
     <Validation {...other}>
       <SafeInputField
@@ -51,21 +45,8 @@ const textField: React.SFC<Props & ValidationProps> = ({
         inputName={getId(id)}
         value={getStringValue(answer)}
         showLabel={false}
-        label={
-          <span
-            dangerouslySetInnerHTML={{
-              __html: `${renderPrefix(item)} ${getText(item, onRenderMarkdown)}`,
-            }}
-          />
-        }
-        subLabel={
-          <span
-            className="page_skjemautfyller__sublabel"
-            dangerouslySetInnerHTML={{
-              __html: getSublabelText(item, onRenderMarkdown),
-            }}
-          />
-        }
+        label={<Label item={item} onRenderMarkdown={onRenderMarkdown} />}
+        subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
         isRequired={isRequired(item)}
         placeholder={getPlaceholder(item)}
         minLength={getMinLengthExtensionValue(item)}

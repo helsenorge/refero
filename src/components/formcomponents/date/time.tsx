@@ -14,11 +14,13 @@ import { Path } from '../../../util/skjemautfyller-core';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { NewValueAction, newTimeValueAsync } from '../../../actions/newValue';
 import { getExtension, getValidationTextExtension } from '../../../util/extension';
-import { isReadOnly, isRequired, getId, renderPrefix, getText, getSublabelText } from '../../../util/index';
+import { isReadOnly, isRequired, getId, getSublabelText } from '../../../util/index';
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem } from '../../../types/fhir';
 import { Resources } from '../../../util/resources';
 import TextView from '../textview';
 import { GlobalState } from '../../../reducers';
+import SubLabel from '../sublabel';
+import Label from '../label';
 
 export interface Props {
   value?: string;
@@ -200,6 +202,7 @@ class Time extends React.Component<Props & ValidationProps> {
 
   render(): JSX.Element | null {
     const { pdf, item, renderFieldset, id, onRenderMarkdown } = this.props;
+    const subLabelText = getSublabelText(this.props.item, this.props.onRenderMarkdown);
 
     if (pdf || isReadOnly(this.props.item)) {
       const value = this.getPDFValue();
@@ -225,21 +228,8 @@ class Time extends React.Component<Props & ValidationProps> {
           <TimeInput
             id={getId(id)}
             value={this.getValue()}
-            legend={
-              <span
-                dangerouslySetInnerHTML={{
-                  __html: `${renderPrefix(item)} ${getText(item, onRenderMarkdown)}`,
-                }}
-              />
-            }
-            subLabel={
-              <span
-                className="page_skjemautfyller__sublabel"
-                dangerouslySetInnerHTML={{
-                  __html: getSublabelText(item, onRenderMarkdown),
-                }}
-              />
-            }
+            legend={<Label item={this.props.item} onRenderMarkdown={this.props.onRenderMarkdown} />}
+            subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
             isRequired={isRequired(item)}
             maxHour={this.getMaxHour()}
             minHour={this.getMinHour()}

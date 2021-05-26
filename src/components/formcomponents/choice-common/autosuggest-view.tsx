@@ -6,13 +6,15 @@ import { Spinner } from '@helsenorge/toolkit/components/atoms/spinner';
 import NotificationPanel from '@helsenorge/designsystem-react/components/NotificationPanel';
 import { debounce } from '@helsenorge/core-utils/debounce';
 
-import { isRequired, getId, renderPrefix, getText, getSublabelText } from '../../../util/index';
+import { isRequired, getId, getSublabelText } from '../../../util/index';
 import { getValidationTextExtension, getPlaceholder } from '../../../util/extension';
 import { ValueSet, QuestionnaireItem, Coding, QuestionnaireResponseItemAnswer } from '../../../types/fhir';
 import { Resources } from '../../../util/resources';
 import { AutoSuggestProps } from '../../../types/autoSuggestProps';
 import { OPEN_CHOICE_ID, OPEN_CHOICE_SYSTEM, OPEN_CHOICE_LABEL } from '../../../constants';
 import ItemType from '../../../constants/itemType';
+import SubLabel from '../sublabel';
+import Label from '../label';
 
 interface AutosuggestProps {
   handleChange: (code?: string, systemArg?: string, displayArg?: string) => void;
@@ -229,27 +231,16 @@ class AutosuggestView extends React.Component<AutosuggestProps, AutosuggestState
   }
 
   render(): JSX.Element {
+    const subLabelText = getSublabelText(this.props.item, this.props.onRenderMarkdown);
+
     return (
       <div className="page_skjemautfyller__component page_skjemautfyller__component_choice page_skjemautfyller__component_choice_autosuggest">
         <Collapse isOpened>
           <Validation {...this.props}>
             <Autosuggest
               id={getId(this.props.id)}
-              label={
-                <span
-                  dangerouslySetInnerHTML={{
-                    __html: `${renderPrefix(this.props.item)} ${getText(this.props.item, this.props.onRenderMarkdown)}`,
-                  }}
-                />
-              }
-              subLabel={
-                <span
-                  className="page_skjemautfyller__sublabel"
-                  dangerouslySetInnerHTML={{
-                    __html: getSublabelText(this.props.item, this.props.onRenderMarkdown),
-                  }}
-                />
-              }
+              label={<Label item={this.props.item} onRenderMarkdown={this.props.onRenderMarkdown} />}
+              subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
               className="page_skjemautfyller__autosuggest"
               type="search"
               isRequired={isRequired(this.props.item)}

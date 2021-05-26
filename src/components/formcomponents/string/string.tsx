@@ -15,8 +15,6 @@ import {
   isReadOnly,
   isRequired,
   getId,
-  renderPrefix,
-  getText,
   getStringValue,
   getMaxLength,
   getPDFStringValue,
@@ -29,6 +27,8 @@ import withCommonFunctions from '../../with-common-functions';
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem } from '../../../types/fhir';
 import { Resources } from '../../../util/resources';
 import TextView from '../textview';
+import SubLabel from '../sublabel';
+import Label from '../label';
 
 export interface Props {
   item: QuestionnaireItem;
@@ -104,6 +104,7 @@ export class String extends React.Component<Props & ValidationProps, {}> {
         </TextView>
       );
     }
+    const subLabelText = getSublabelText(item, onRenderMarkdown);
 
     return (
       <div className="page_skjemautfyller__component page_skjemautfyller__component_string">
@@ -115,21 +116,8 @@ export class String extends React.Component<Props & ValidationProps, {}> {
             value={getStringValue(answer)}
             onChangeValidator={this.validateText}
             showLabel={true}
-            label={
-              <span
-                dangerouslySetInnerHTML={{
-                  __html: `${renderPrefix(item)} ${getText(item, onRenderMarkdown)}`,
-                }}
-              />
-            }
-            subLabel={
-              <span
-                className="page_skjemautfyller__sublabel"
-                dangerouslySetInnerHTML={{
-                  __html: getSublabelText(item, onRenderMarkdown),
-                }}
-              />
-            }
+            label={<Label item={item} onRenderMarkdown={onRenderMarkdown} />}
+            subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
             isRequired={isRequired(item)}
             placeholder={getPlaceholder(item)}
             minLength={getMinLengthExtensionValue(item)}

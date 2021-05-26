@@ -10,11 +10,12 @@ import withCommonFunctions from '../../with-common-functions';
 import { Path } from '../../../util/skjemautfyller-core';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { NewValueAction, newBooleanValueAsync } from '../../../actions/newValue';
-import { isReadOnly, isRequired, getId, renderPrefix, getText } from '../../../util/index';
+import { isReadOnly, isRequired, getId } from '../../../util/index';
 import { getValidationTextExtension } from '../../../util/extension';
 import Pdf from './pdf';
 import { GlobalState } from '../../../reducers';
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem } from '../../../types/fhir';
+import Label from '../label';
 
 export interface Props {
   item: QuestionnaireItem;
@@ -63,13 +64,7 @@ class Boolean extends React.Component<Props & ValidationProps, {}> {
   };
 
   getLabel = (): JSX.Element => {
-    return (
-      <span
-        dangerouslySetInnerHTML={{
-          __html: `${renderPrefix(this.props.item)} ${getText(this.props.item, this.props.onRenderMarkdown)}`,
-        }}
-      />
-    );
+    return <Label item={this.props.item} onRenderMarkdown={this.props.onRenderMarkdown} />;
   };
 
   shouldComponentUpdate(nextProps: Props, _nextState: {}) {

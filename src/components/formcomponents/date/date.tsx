@@ -15,13 +15,15 @@ import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/m
 import Constants from '../../../constants/index';
 import { NewValueAction, newDateValueAsync } from '../../../actions/newValue';
 import withCommonFunctions from '../../with-common-functions';
-import { isReadOnly, isRequired, getId, renderPrefix, getText, getSublabelText } from '../../../util/index';
+import { isReadOnly, isRequired, getId, getSublabelText } from '../../../util/index';
 import { getValidationTextExtension, getPlaceholder, getExtension } from '../../../util/extension';
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem } from '../../../types/fhir';
 import { Resources } from '../../../util/resources';
 import TextView from '../textview';
 import { GlobalState } from '../../../reducers';
 import { evaluateFhirpathExpressionToGetDate } from '../../../util/fhirpathHelper';
+import SubLabel from '../sublabel';
+import Label from '../label';
 
 export interface Props {
   item: QuestionnaireItem;
@@ -184,6 +186,8 @@ class DateComponent extends React.Component<Props & ValidationProps> {
 
   render(): JSX.Element | null {
     const date = this.getValue();
+    const subLabelText = getSublabelText(this.props.item, this.props.onRenderMarkdown);
+
     if (this.props.pdf || isReadOnly(this.props.item)) {
       if (this.props.renderLabel) {
         return (
@@ -204,25 +208,8 @@ class DateComponent extends React.Component<Props & ValidationProps> {
             locale={this.getLocaleFromLanguage()} // TODO: må støtte nynorsk og samisk også
             errorResources={this.getDatepickerErrorPhrases()}
             resources={this.props.resources}
-            label={
-              this.props.renderLabel ? (
-                <span
-                  dangerouslySetInnerHTML={{
-                    __html: `${renderPrefix(this.props.item)} ${getText(this.props.item, this.props.onRenderMarkdown)}`,
-                  }}
-                />
-              ) : (
-                undefined
-              )
-            }
-            subLabel={
-              <span
-                className="page_skjemautfyller__sublabel"
-                dangerouslySetInnerHTML={{
-                  __html: getSublabelText(this.props.item, this.props.onRenderMarkdown),
-                }}
-              />
-            }
+            label={this.props.renderLabel ? <Label item={this.props.item} onRenderMarkdown={this.props.onRenderMarkdown} /> : undefined}
+            subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
             isRequired={isRequired(this.props.item)}
             placeholder={getPlaceholder(this.props.item)}
             ref={this.datepicker}

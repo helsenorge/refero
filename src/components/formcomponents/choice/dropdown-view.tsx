@@ -5,10 +5,12 @@ import { Options } from '@helsenorge/toolkit/components/atoms/radio-group';
 import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
 import SafeSelect from '@helsenorge/toolkit/components/atoms/safe-select';
 
-import { isRequired, getId, renderPrefix, getText, getSublabelText } from '../../../util/index';
+import { isRequired, getId, getSublabelText } from '../../../util/index';
 import { getValidationTextExtension, getPlaceholder } from '../../../util/extension';
 import { Resources } from '../../../util/resources';
 import { QuestionnaireItem } from '../../../types/fhir';
+import SubLabel from '../sublabel';
+import Label from '../label';
 
 interface Props {
   options?: Array<Options>;
@@ -53,6 +55,7 @@ class DropdownView extends React.Component<Props, {}> {
     const dropdownOptions: HTMLOptionElement[] = options.map((o: Options) => {
       return new Option(o.label, o.type);
     });
+    const subLabelText = getSublabelText(item, onRenderMarkdown);
 
     let placeholder;
     if (getPlaceholder(item)) {
@@ -69,21 +72,8 @@ class DropdownView extends React.Component<Props, {}> {
               id={getId(id)}
               selectName={getId(id)}
               showLabel={true}
-              label={
-                <span
-                  dangerouslySetInnerHTML={{
-                    __html: `${renderPrefix(item)} ${getText(item, onRenderMarkdown)}`,
-                  }}
-                />
-              }
-              subLabel={
-                <span
-                  className="page_skjemautfyller__sublabel"
-                  dangerouslySetInnerHTML={{
-                    __html: getSublabelText(item, onRenderMarkdown),
-                  }}
-                />
-              }
+              label={<Label item={item} onRenderMarkdown={onRenderMarkdown} />}
+              subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
               isRequired={isRequired(item)}
               onChange={evt => handleChange((evt.target as HTMLInputElement).value)}
               options={dropdownOptions}

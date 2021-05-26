@@ -10,12 +10,14 @@ import withCommonFunctions from '../../with-common-functions';
 import AttachmentHtml from './attachmenthtml';
 import { Path } from '../../../util/skjemautfyller-core';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
-import { isRequired, getId, renderPrefix, getText, isReadOnly, isRepeat, getSublabelText } from '../../../util/index';
+import { isRequired, getId, isReadOnly, isRepeat, getSublabelText } from '../../../util/index';
 import { getValidationTextExtension, getMaxOccursExtensionValue, getMinOccursExtensionValue } from '../../../util/extension';
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, Attachment, QuestionnaireResponseItem } from '../../../types/fhir';
 import { Resources } from '../../../util/resources';
 import TextView from '../textview';
 import { TextMessage } from '../../../types/text-message';
+import SubLabel from '../sublabel';
+import Label from '../label';
 
 export interface Props {
   dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
@@ -147,6 +149,8 @@ class AttachmentComponent extends React.Component<Props & ValidationProps> {
 
   render(): JSX.Element | null {
     const { pdf, id, item, resources, onOpenAttachment, onRenderMarkdown, ...other } = this.props;
+    const subLabelText = getSublabelText(item, onRenderMarkdown);
+
     if (pdf || isReadOnly(item)) {
       return (
         <TextView item={item} value={this.getPdfValue()} onRenderMarkdown={onRenderMarkdown}>
@@ -161,21 +165,8 @@ class AttachmentComponent extends React.Component<Props & ValidationProps> {
             onDelete={this.onDelete}
             onOpen={onOpenAttachment}
             id={getId(id)}
-            label={
-              <span
-                dangerouslySetInnerHTML={{
-                  __html: `${renderPrefix(item)} ${getText(item, onRenderMarkdown)}`,
-                }}
-              />
-            }
-            subLabel={
-              <span
-                className="page_skjemautfyller__sublabel"
-                dangerouslySetInnerHTML={{
-                  __html: getSublabelText(item, onRenderMarkdown),
-                }}
-              />
-            }
+            label={<Label item={item} onRenderMarkdown={onRenderMarkdown} />}
+            subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
             uploadButtonText={this.getButtonText()}
             resources={resources}
             isRequired={isRequired(item)}

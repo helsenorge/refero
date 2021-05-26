@@ -31,6 +31,7 @@ import withCommonFunctions from '../../with-common-functions';
 import TextView from '../textview';
 import { Resources } from '../../../util/resources';
 import itemControlConstants from '../../../constants/itemcontrol';
+import SubLabel from '../sublabel';
 
 export interface Props {
   item: QuestionnaireItem;
@@ -147,6 +148,8 @@ export class Text extends React.Component<Props & ValidationProps, {}> {
         </TextView>
       );
     }
+    const subLabelText = getSublabelText(item, onRenderMarkdown);
+
     return (
       <div className="page_skjemautfyller__component page_skjemautfyller__component_text">
         <Validation {...other}>
@@ -157,14 +160,7 @@ export class Text extends React.Component<Props & ValidationProps, {}> {
             isRequired={isRequired(item)}
             showLabel={true}
             label={`${renderPrefix(item)} ${getText(item, onRenderMarkdown)}`}
-            subLabel={
-              <span
-                className="page_skjemautfyller__sublabel"
-                dangerouslySetInnerHTML={{
-                  __html: getSublabelText(item, onRenderMarkdown),
-                }}
-              />
-            }
+            subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
             placeholder={getPlaceholder(item)}
             maxlength={getMaxLength(item)}
             minlength={getMinLengthExtensionValue(item)}

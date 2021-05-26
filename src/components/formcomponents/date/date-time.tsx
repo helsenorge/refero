@@ -16,13 +16,15 @@ import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/m
 import Constants from '../../../constants/index';
 import ExtensionConstants from '../../../constants/extensions';
 import { NewValueAction, newDateTimeValueAsync } from '../../../actions/newValue';
-import { isRequired, getId, renderPrefix, getText, isReadOnly, getSublabelText } from '../../../util/index';
+import { isRequired, getId, isReadOnly, getSublabelText } from '../../../util/index';
 import { getValidationTextExtension, getExtension } from '../../../util/extension';
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem } from '../../../types/fhir';
 import { Resources } from '../../../util/resources';
 import TextView from '../textview';
 import { GlobalState } from '../../../reducers';
 import { evaluateFhirpathExpressionToGetDate } from '../../../util/fhirpathHelper';
+import SubLabel from '../sublabel';
+import Label from '../label';
 
 export interface Props {
   item: QuestionnaireItem;
@@ -180,6 +182,7 @@ class DateTime extends React.Component<Props & ValidationProps> {
     const valueDateTime = this.getDefaultDate(this.props);
     const maxDateTime = this.getMaxDate();
     const minDateTime = this.getMinDate();
+    const subLabelText = getSublabelText(this.props.item, this.props.onRenderMarkdown);
 
     return (
       <div className="page_skjemautfyller__component page_skjemautfyller__component_datetime">
@@ -195,21 +198,8 @@ class DateTime extends React.Component<Props & ValidationProps> {
             initialDate={this.toLocaleDate(moment(new Date()))}
             onChange={this.dispatchNewDate}
             onBlur={this.onBlur}
-            legend={
-              <span
-                dangerouslySetInnerHTML={{
-                  __html: `${renderPrefix(item)} ${getText(item, onRenderMarkdown)}`,
-                }}
-              />
-            }
-            subLabel={
-              <span
-                className="page_skjemautfyller__sublabel"
-                dangerouslySetInnerHTML={{
-                  __html: getSublabelText(item, onRenderMarkdown),
-                }}
-              />
-            }
+            legend={<Label item={this.props.item} onRenderMarkdown={this.props.onRenderMarkdown} />}
+            subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
             isRequired={isRequired(item)}
             errorMessage={getValidationTextExtension(item)}
             timeClassName="page_skjemautfyller__input"

@@ -12,10 +12,12 @@ import { Path } from '../../../util/skjemautfyller-core';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from '../../../types/fhir';
 import { Resources } from '../../../util/resources';
-import { isReadOnly, isRequired, getId, renderPrefix, getText, getDecimalPattern, getSublabelText } from '../../../util/index';
+import { isReadOnly, isRequired, getId, getDecimalPattern, getSublabelText } from '../../../util/index';
 import { getValidationTextExtension, getPlaceholder, getMaxValueExtensionValue, getMinValueExtensionValue } from '../../../util/extension';
 import withCommonFunctions from '../../with-common-functions';
 import TextView from '../textview';
+import SubLabel from '../sublabel';
+import Label from '../label';
 
 export interface Props {
   item: QuestionnaireItem;
@@ -86,6 +88,8 @@ class Decimal extends React.Component<Props & ValidationProps, {}> {
   render(): JSX.Element | null {
     const { item, pdf, onRenderMarkdown } = this.props;
     const value = this.getValue();
+    const subLabelText = getSublabelText(this.props.item, this.props.onRenderMarkdown);
+
     if (pdf || isReadOnly(item)) {
       return (
         <TextView item={item} value={this.getPDFValue()} onRenderMarkdown={onRenderMarkdown}>
@@ -102,21 +106,8 @@ class Decimal extends React.Component<Props & ValidationProps, {}> {
             inputName={getId(this.props.id)}
             value={value ? value + '' : ''}
             showLabel={true}
-            label={
-              <span
-                dangerouslySetInnerHTML={{
-                  __html: `${renderPrefix(item)} ${getText(item, onRenderMarkdown)}`,
-                }}
-              />
-            }
-            subLabel={
-              <span
-                className="page_skjemautfyller__sublabel"
-                dangerouslySetInnerHTML={{
-                  __html: getSublabelText(item, onRenderMarkdown),
-                }}
-              />
-            }
+            label={<Label item={item} onRenderMarkdown={onRenderMarkdown} />}
+            subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
             isRequired={isRequired(item)}
             placeholder={getPlaceholder(item)}
             max={getMaxValueExtensionValue(item)}

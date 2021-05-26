@@ -11,11 +11,13 @@ import { NewValueAction, newIntegerValueAsync } from '../../../actions/newValue'
 import { Path } from '../../../util/skjemautfyller-core';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import withCommonFunctions from '../../with-common-functions';
-import { isReadOnly, isRequired, getId, renderPrefix, getText, getSublabelText } from '../../../util/index';
+import { isReadOnly, isRequired, getId, getSublabelText } from '../../../util/index';
 import { getValidationTextExtension, getPlaceholder, getMaxValueExtensionValue, getMinValueExtensionValue } from '../../../util/extension';
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem } from '../../../types/fhir';
 import { Resources } from '../../../util/resources';
 import TextView from '../textview';
+import SubLabel from '../sublabel';
+import Label from '../label';
 
 export interface Props {
   item: QuestionnaireItem;
@@ -92,6 +94,8 @@ class Integer extends React.Component<Props & ValidationProps, {}> {
       );
     }
     const value = this.getValue();
+    const subLabelText = getSublabelText(this.props.item, this.props.onRenderMarkdown);
+
     return (
       <div className="page_skjemautfyller__component page_skjemautfyller__component_integer">
         <Validation {...this.props}>
@@ -101,21 +105,8 @@ class Integer extends React.Component<Props & ValidationProps, {}> {
             inputName={getId(this.props.id)}
             value={value !== undefined && value !== null ? value + '' : ''}
             showLabel={true}
-            label={
-              <span
-                dangerouslySetInnerHTML={{
-                  __html: `${renderPrefix(this.props.item)} ${getText(this.props.item, this.props.onRenderMarkdown)}`,
-                }}
-              />
-            }
-            subLabel={
-              <span
-                className="page_skjemautfyller__sublabel"
-                dangerouslySetInnerHTML={{
-                  __html: getSublabelText(this.props.item, this.props.onRenderMarkdown),
-                }}
-              />
-            }
+            label={<Label item={this.props.item} onRenderMarkdown={this.props.onRenderMarkdown} />}
+            subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
             isRequired={isRequired(this.props.item)}
             placeholder={getPlaceholder(this.props.item)}
             max={getMaxValueExtensionValue(this.props.item)}

@@ -4,11 +4,13 @@ import { Options } from '@helsenorge/toolkit/components/atoms/radio-group';
 import CheckBoxGroup from '@helsenorge/toolkit/components/atoms/checkbox-group';
 import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
 
-import { renderPrefix, getText, isRequired, getId, getSublabelText } from '../../../util/index';
+import { isRequired, getId, getSublabelText } from '../../../util/index';
 import { Resources } from '../../../util/resources';
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from '../../../types/fhir';
 import { getMaxOccursExtensionValue, getMinOccursExtensionValue, getValidationTextExtension } from '../../../util/extension';
 import { shouldShowExtraChoice } from '../../../util/choice';
+import SubLabel from '../sublabel';
+import Label from '../label';
 
 interface Props {
   options?: Array<Options>;
@@ -50,26 +52,15 @@ const CheckboxView: React.SFC<Props> = ({
   const checkboxes = options.map(el => {
     return { label: el.label, id: el.type, checked: isSelected(el, selected) };
   });
+  const subLabelText = getSublabelText(item, onRenderMarkdown);
+
   return (
     <div className="page_skjemautfyller__component page_skjemautfyller__component_openchoice page_skjemautfyller__component_openchoice_checkbox">
       <Collapse isOpened>
         <Validation {...other}>
           <CheckBoxGroup
-            legend={
-              <span
-                dangerouslySetInnerHTML={{
-                  __html: `${renderPrefix(item)} ${getText(item, onRenderMarkdown)}`,
-                }}
-              />
-            }
-            subLabel={
-              <span
-                className="page_skjemautfyller__sublabel"
-                dangerouslySetInnerHTML={{
-                  __html: getSublabelText(item, onRenderMarkdown),
-                }}
-              />
-            }
+            legend={<Label item={item} onRenderMarkdown={onRenderMarkdown} />}
+            subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
             checkboxes={checkboxes}
             handleChange={handleChange}
             isRequired={isRequired(item)}

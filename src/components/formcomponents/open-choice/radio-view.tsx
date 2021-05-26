@@ -3,10 +3,12 @@ import { Collapse } from 'react-collapse';
 import { RadioGroup, Options } from '@helsenorge/toolkit/components/atoms/radio-group';
 import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
 
-import { isRequired, getId, renderPrefix, getText, getSublabelText } from '../../../util/index';
+import { isRequired, getId, getSublabelText } from '../../../util/index';
 import { Resources } from '../../../util/resources';
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from '../../../types/fhir';
 import { shouldShowExtraChoice } from '../../../util/choice';
+import SubLabel from '../sublabel';
+import Label from '../label';
 
 interface Props {
   options?: Array<Options>;
@@ -48,26 +50,15 @@ const RadioView: React.SFC<Props> = ({
   if (!options) {
     return null;
   }
+  const subLabelText = getSublabelText(item, onRenderMarkdown);
+
   return (
     <div className="page_skjemautfyller__component page_skjemautfyller__component_openchoice page_skjemautfyller__component_openchoice_radiobutton">
       <Collapse isOpened>
         <Validation {...other}>
           <RadioGroup
-            legend={
-              <span
-                dangerouslySetInnerHTML={{
-                  __html: `${renderPrefix(item)} ${getText(item, onRenderMarkdown)}`,
-                }}
-              />
-            }
-            subLabel={
-              <span
-                className="page_skjemautfyller__sublabel"
-                dangerouslySetInnerHTML={{
-                  __html: getSublabelText(item, onRenderMarkdown),
-                }}
-              />
-            }
+            legend={<Label item={item} onRenderMarkdown={onRenderMarkdown} />}
+            subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
             id={getId(id)}
             options={options}
             onChange={handleChange}
