@@ -190,6 +190,14 @@ export function getMarkdownExtensionValue(item: QuestionnaireItem | Element) {
   return markdownExtension.valueMarkdown;
 }
 
+export function getSublabelExtensionValue(item: QuestionnaireItem | Element) {
+  const markdownExtension = getExtension(ExtensionConstants.SUBLABEL, item);
+  if (!markdownExtension || !markdownExtension.valueMarkdown) {
+    return undefined;
+  }
+  return markdownExtension.valueMarkdown;
+}
+
 export function getQuestionnaireHiddenExtensionValue(item: QuestionnaireItem) {
   const questionnaireHiddenExtension = getExtension(ExtensionConstants.QUESTIONNAIRE_HIDDEN, item);
   if (!questionnaireHiddenExtension || !questionnaireHiddenExtension.valueBoolean) {

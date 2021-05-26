@@ -11,7 +11,7 @@ import { NewValueAction, newIntegerValueAsync } from '../../../actions/newValue'
 import { Path } from '../../../util/skjemautfyller-core';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import withCommonFunctions from '../../with-common-functions';
-import { isReadOnly, isRequired, getId, renderPrefix, getText } from '../../../util/index';
+import { isReadOnly, isRequired, getId, renderPrefix, getText, getSublabelText } from '../../../util/index';
 import { getValidationTextExtension, getPlaceholder, getMaxValueExtensionValue, getMinValueExtensionValue } from '../../../util/extension';
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem } from '../../../types/fhir';
 import { Resources } from '../../../util/resources';
@@ -105,6 +105,14 @@ class Integer extends React.Component<Props & ValidationProps, {}> {
               <span
                 dangerouslySetInnerHTML={{
                   __html: `${renderPrefix(this.props.item)} ${getText(this.props.item, this.props.onRenderMarkdown)}`,
+                }}
+              />
+            }
+            subLabel={
+              <span
+                className="page_skjemautfyller__sublabel"
+                dangerouslySetInnerHTML={{
+                  __html: getSublabelText(this.props.item, this.props.onRenderMarkdown),
                 }}
               />
             }

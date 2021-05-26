@@ -4,7 +4,7 @@ import { Options } from '@helsenorge/toolkit/components/atoms/radio-group';
 import CheckBoxGroup from '@helsenorge/toolkit/components/atoms/checkbox-group';
 import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
 
-import { renderPrefix, getText, isRequired, getId } from '../../../util/index';
+import { renderPrefix, getText, isRequired, getId, getSublabelText } from '../../../util/index';
 import { Resources } from '../../../util/resources';
 import { QuestionnaireItem } from '../../../types/fhir';
 import { getMaxOccursExtensionValue, getMinOccursExtensionValue, getValidationTextExtension } from '../../../util/extension';
@@ -54,6 +54,14 @@ const CheckboxView: React.SFC<Props> = ({
               <span
                 dangerouslySetInnerHTML={{
                   __html: `${renderPrefix(item)} ${getText(item, onRenderMarkdown)}`,
+                }}
+              />
+            }
+            subLabel={
+              <span
+                className="page_skjemautfyller__sublabel"
+                dangerouslySetInnerHTML={{
+                  __html: getSublabelText(item, onRenderMarkdown),
                 }}
               />
             }

@@ -27,6 +27,7 @@ import {
   getValidationTextExtension,
   getQuestionnaireHiddenExtensionValue,
   getExtension,
+  getSublabelExtensionValue,
 } from './extension';
 DOMPurify.setConfig({ ADD_ATTR: ['target'] });
 
@@ -126,21 +127,37 @@ export function renderPrefix(item: QuestionnaireItem) {
   return item.prefix;
 }
 
-export function getText(item: QuestionnaireItem, onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string) {
+export function getSublabelText(item: QuestionnaireItem, onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string): string {
+  if (item) {
+    const markdown = getSublabelExtensionValue(item) || '';
+    return markdown ? getMarkdownValue(markdown, item, onRenderMarkdown) : '';
+  }
+  return '';
+}
+
+export function getText(item: QuestionnaireItem, onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string): string {
   if (item) {
     const markdown = item._text ? getMarkdownExtensionValue(item._text) : undefined;
 
     if (markdown) {
-      if (onRenderMarkdown) {
-        return DOMPurify.sanitize(onRenderMarkdown(item, markdown.toString()));
-      } else {
-        return DOMPurify.sanitize(marked(markdown.toString()));
-      }
+      return getMarkdownValue(markdown, item, onRenderMarkdown);
     } else if (item.text) {
       return item.text;
     }
   }
   return '';
+}
+
+function getMarkdownValue(
+  markdownText: string,
+  item: QuestionnaireItem,
+  onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string
+): string {
+  if (onRenderMarkdown) {
+    return DOMPurify.sanitize(onRenderMarkdown(item, markdownText.toString()));
+  } else {
+    return DOMPurify.sanitize(marked(markdownText.toString()));
+  }
 }
 
 export function getChildHeaderTag(item?: QuestionnaireItem, headerTag?: number): number {

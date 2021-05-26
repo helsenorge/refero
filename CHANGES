@@ -1,3 +1,7 @@
+7.7.0
+-----
+* Add support for sublabel-extension for all components with label.
+
 7.6.6
 -----
 * Do not set empty "text" property for items in QuestionnaireResponse if the item does not have "text" property.

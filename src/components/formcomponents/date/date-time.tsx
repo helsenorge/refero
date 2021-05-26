@@ -16,7 +16,7 @@ import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/m
 import Constants from '../../../constants/index';
 import ExtensionConstants from '../../../constants/extensions';
 import { NewValueAction, newDateTimeValueAsync } from '../../../actions/newValue';
-import { isRequired, getId, renderPrefix, getText, isReadOnly } from '../../../util/index';
+import { isRequired, getId, renderPrefix, getText, isReadOnly, getSublabelText } from '../../../util/index';
 import { getValidationTextExtension, getExtension } from '../../../util/extension';
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem } from '../../../types/fhir';
 import { Resources } from '../../../util/resources';
@@ -199,6 +199,14 @@ class DateTime extends React.Component<Props & ValidationProps> {
               <span
                 dangerouslySetInnerHTML={{
                   __html: `${renderPrefix(item)} ${getText(item, onRenderMarkdown)}`,
+                }}
+              />
+            }
+            subLabel={
+              <span
+                className="page_skjemautfyller__sublabel"
+                dangerouslySetInnerHTML={{
+                  __html: getSublabelText(item, onRenderMarkdown),
                 }}
               />
             }

@@ -10,7 +10,7 @@ import { NewValueAction, newQuantityValueAsync } from '../../../actions/newValue
 import { Path } from '../../../util/skjemautfyller-core';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import withCommonFunctions from '../../with-common-functions';
-import { isReadOnly, isRequired, getId, renderPrefix, getText, getDecimalPattern } from '../../../util/index';
+import { isReadOnly, isRequired, getId, renderPrefix, getText, getDecimalPattern, getSublabelText } from '../../../util/index';
 import {
   getValidationTextExtension,
   getPlaceholder,
@@ -133,6 +133,14 @@ class Quantity extends React.Component<Props & ValidationProps, {}> {
               <span
                 dangerouslySetInnerHTML={{
                   __html: `${renderPrefix(item)} ${getText(item, onRenderMarkdown)}`,
+                }}
+              />
+            }
+            subLabel={
+              <span
+                className="page_skjemautfyller__sublabel"
+                dangerouslySetInnerHTML={{
+                  __html: getSublabelText(item, onRenderMarkdown),
                 }}
               />
             }

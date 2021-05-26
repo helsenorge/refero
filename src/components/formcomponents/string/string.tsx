@@ -22,6 +22,7 @@ import {
   getPDFStringValue,
   validateText,
   getTextValidationErrorMessage,
+  getSublabelText,
 } from '../../../util/index';
 import { getPlaceholder, getMinLengthExtensionValue, getRegexExtension } from '../../../util/extension';
 import withCommonFunctions from '../../with-common-functions';
@@ -89,10 +90,6 @@ export class String extends React.Component<Props & ValidationProps, {}> {
     return isRequired(item) ? this.props.resources?.formRequiredErrorMessage : undefined;
   };
 
-  getLabel(item: QuestionnaireItem, onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string): JSX.Element {
-    return <span dangerouslySetInnerHTML={{ __html: `${renderPrefix(item)} ${getText(item, onRenderMarkdown)}` }} />;
-  }
-
   render(): JSX.Element | null {
     const { item, pdf, resources, answer, onRenderMarkdown } = this.props;
     if (pdf || isReadOnly(item)) {
@@ -118,7 +115,21 @@ export class String extends React.Component<Props & ValidationProps, {}> {
             value={getStringValue(answer)}
             onChangeValidator={this.validateText}
             showLabel={true}
-            label={this.getLabel(item, onRenderMarkdown)}
+            label={
+              <span
+                dangerouslySetInnerHTML={{
+                  __html: `${renderPrefix(item)} ${getText(item, onRenderMarkdown)}`,
+                }}
+              />
+            }
+            subLabel={
+              <span
+                className="page_skjemautfyller__sublabel"
+                dangerouslySetInnerHTML={{
+                  __html: getSublabelText(item, onRenderMarkdown),
+                }}
+              />
+            }
             isRequired={isRequired(item)}
             placeholder={getPlaceholder(item)}
             minLength={getMinLengthExtensionValue(item)}

@@ -16,6 +16,7 @@ interface Props {
   onOpen?: (fileId: string) => void;
   uploadButtonText: string;
   label: string | JSX.Element;
+  subLabel?: string | JSX.Element;
   id: string;
   attachmentErrorMessage?: string;
   getComponentToValidate?: (el: Dropzone) => void;
@@ -42,6 +43,7 @@ const attachmentHtml: React.SFC<Props & ValidationProps> = ({
   onOpen,
   uploadButtonText,
   label,
+  subLabel,
   resources,
   isRequired,
   errorText,
@@ -69,6 +71,7 @@ const attachmentHtml: React.SFC<Props & ValidationProps> = ({
         <Dropzone
           id={id}
           label={label}
+          subLabel={subLabel}
           onDrop={onUpload}
           onDelete={onDelete}
           onOpenFile={onOpen}

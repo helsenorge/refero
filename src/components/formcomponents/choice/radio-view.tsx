@@ -3,7 +3,7 @@ import { Collapse } from 'react-collapse';
 import { RadioGroup, Options } from '@helsenorge/toolkit/components/atoms/radio-group';
 import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
 
-import { isRequired, getId, renderPrefix, getText } from '../../../util/index';
+import { isRequired, getId, renderPrefix, getText, getSublabelText } from '../../../util/index';
 import { Resources } from '../../../util/resources';
 import { QuestionnaireItem } from '../../../types/fhir';
 
@@ -52,6 +52,14 @@ const RadioView: React.SFC<Props> = ({
               <span
                 dangerouslySetInnerHTML={{
                   __html: `${renderPrefix(item)} ${getText(item, onRenderMarkdown)}`,
+                }}
+              />
+            }
+            subLabel={
+              <span
+                className="page_skjemautfyller__sublabel"
+                dangerouslySetInnerHTML={{
+                  __html: getSublabelText(item, onRenderMarkdown),
                 }}
               />
             }

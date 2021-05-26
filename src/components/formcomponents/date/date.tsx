@@ -15,7 +15,7 @@ import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/m
 import Constants from '../../../constants/index';
 import { NewValueAction, newDateValueAsync } from '../../../actions/newValue';
 import withCommonFunctions from '../../with-common-functions';
-import { isReadOnly, isRequired, getId, renderPrefix, getText } from '../../../util/index';
+import { isReadOnly, isRequired, getId, renderPrefix, getText, getSublabelText } from '../../../util/index';
 import { getValidationTextExtension, getPlaceholder, getExtension } from '../../../util/extension';
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem } from '../../../types/fhir';
 import { Resources } from '../../../util/resources';
@@ -214,6 +214,14 @@ class DateComponent extends React.Component<Props & ValidationProps> {
               ) : (
                 undefined
               )
+            }
+            subLabel={
+              <span
+                className="page_skjemautfyller__sublabel"
+                dangerouslySetInnerHTML={{
+                  __html: getSublabelText(this.props.item, this.props.onRenderMarkdown),
+                }}
+              />
             }
             isRequired={isRequired(this.props.item)}
             placeholder={getPlaceholder(this.props.item)}

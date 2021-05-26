@@ -4,7 +4,17 @@ import Validation from '@helsenorge/toolkit/components/molecules/form/validation
 import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from '../../../types/fhir';
-import { isReadOnly, isRequired, getId, renderPrefix, getText, getStringValue, getPDFStringValue, getMaxLength } from '../../../util/index';
+import {
+  isReadOnly,
+  isRequired,
+  getId,
+  renderPrefix,
+  getText,
+  getStringValue,
+  getPDFStringValue,
+  getMaxLength,
+  getSublabelText,
+} from '../../../util/index';
 import { getValidationTextExtension, getPlaceholder, getMinLengthExtensionValue, getRegexExtension } from '../../../util/extension';
 import Pdf from '../textview';
 
@@ -45,6 +55,14 @@ const textField: React.SFC<Props & ValidationProps> = ({
           <span
             dangerouslySetInnerHTML={{
               __html: `${renderPrefix(item)} ${getText(item, onRenderMarkdown)}`,
+            }}
+          />
+        }
+        subLabel={
+          <span
+            className="page_skjemautfyller__sublabel"
+            dangerouslySetInnerHTML={{
+              __html: getSublabelText(item, onRenderMarkdown),
             }}
           />
         }

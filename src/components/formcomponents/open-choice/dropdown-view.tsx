@@ -5,7 +5,7 @@ import Validation from '@helsenorge/toolkit/components/molecules/form/validation
 import SafeSelect from '@helsenorge/toolkit/components/atoms/safe-select';
 import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 
-import { isRequired, getId, renderPrefix, getText } from '../../../util/index';
+import { isRequired, getId, renderPrefix, getText, getSublabelText } from '../../../util/index';
 import { getValidationTextExtension, getPlaceholder } from '../../../util/extension';
 import { Resources } from '../../../util/resources';
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from '../../../types/fhir';
@@ -78,6 +78,14 @@ class DropdownView extends React.Component<Props, {}> {
                 <span
                   dangerouslySetInnerHTML={{
                     __html: `${renderPrefix(item)} ${getText(item, onRenderMarkdown)}`,
+                  }}
+                />
+              }
+              subLabel={
+                <span
+                  className="page_skjemautfyller__sublabel"
+                  dangerouslySetInnerHTML={{
+                    __html: getSublabelText(item, onRenderMarkdown),
                   }}
                 />
               }

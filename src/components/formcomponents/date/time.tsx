@@ -14,7 +14,7 @@ import { Path } from '../../../util/skjemautfyller-core';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { NewValueAction, newTimeValueAsync } from '../../../actions/newValue';
 import { getExtension, getValidationTextExtension } from '../../../util/extension';
-import { isReadOnly, isRequired, getId, renderPrefix, getText } from '../../../util/index';
+import { isReadOnly, isRequired, getId, renderPrefix, getText, getSublabelText } from '../../../util/index';
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem } from '../../../types/fhir';
 import { Resources } from '../../../util/resources';
 import TextView from '../textview';
@@ -229,6 +229,14 @@ class Time extends React.Component<Props & ValidationProps> {
               <span
                 dangerouslySetInnerHTML={{
                   __html: `${renderPrefix(item)} ${getText(item, onRenderMarkdown)}`,
+                }}
+              />
+            }
+            subLabel={
+              <span
+                className="page_skjemautfyller__sublabel"
+                dangerouslySetInnerHTML={{
+                  __html: getSublabelText(item, onRenderMarkdown),
                 }}
               />
             }

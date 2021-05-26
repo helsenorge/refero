@@ -6,7 +6,7 @@ import { Spinner } from '@helsenorge/toolkit/components/atoms/spinner';
 import NotificationPanel from '@helsenorge/designsystem-react/components/NotificationPanel';
 import { debounce } from '@helsenorge/core-utils/debounce';
 
-import { isRequired, getId, renderPrefix, getText } from '../../../util/index';
+import { isRequired, getId, renderPrefix, getText, getSublabelText } from '../../../util/index';
 import { getValidationTextExtension, getPlaceholder } from '../../../util/extension';
 import { ValueSet, QuestionnaireItem, Coding, QuestionnaireResponseItemAnswer } from '../../../types/fhir';
 import { Resources } from '../../../util/resources';
@@ -239,6 +239,14 @@ class AutosuggestView extends React.Component<AutosuggestProps, AutosuggestState
                 <span
                   dangerouslySetInnerHTML={{
                     __html: `${renderPrefix(this.props.item)} ${getText(this.props.item, this.props.onRenderMarkdown)}`,
+                  }}
+                />
+              }
+              subLabel={
+                <span
+                  className="page_skjemautfyller__sublabel"
+                  dangerouslySetInnerHTML={{
+                    __html: getSublabelText(this.props.item, this.props.onRenderMarkdown),
                   }}
                 />
               }

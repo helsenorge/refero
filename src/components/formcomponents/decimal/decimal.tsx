@@ -12,7 +12,7 @@ import { Path } from '../../../util/skjemautfyller-core';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from '../../../types/fhir';
 import { Resources } from '../../../util/resources';
-import { isReadOnly, isRequired, getId, renderPrefix, getText, getDecimalPattern } from '../../../util/index';
+import { isReadOnly, isRequired, getId, renderPrefix, getText, getDecimalPattern, getSublabelText } from '../../../util/index';
 import { getValidationTextExtension, getPlaceholder, getMaxValueExtensionValue, getMinValueExtensionValue } from '../../../util/extension';
 import withCommonFunctions from '../../with-common-functions';
 import TextView from '../textview';
@@ -106,6 +106,14 @@ class Decimal extends React.Component<Props & ValidationProps, {}> {
               <span
                 dangerouslySetInnerHTML={{
                   __html: `${renderPrefix(item)} ${getText(item, onRenderMarkdown)}`,
+                }}
+              />
+            }
+            subLabel={
+              <span
+                className="page_skjemautfyller__sublabel"
+                dangerouslySetInnerHTML={{
+                  __html: getSublabelText(item, onRenderMarkdown),
                 }}
               />
             }

@@ -23,6 +23,7 @@ import {
   getPDFStringValue,
   validateText,
   getTextValidationErrorMessage,
+  getSublabelText,
 } from '../../../util/index';
 import { getPlaceholder, getMinLengthExtensionValue, getItemControlExtensionValue, getRegexExtension } from '../../../util/extension';
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem } from '../../../types/fhir';
@@ -156,6 +157,14 @@ export class Text extends React.Component<Props & ValidationProps, {}> {
             isRequired={isRequired(item)}
             showLabel={true}
             label={`${renderPrefix(item)} ${getText(item, onRenderMarkdown)}`}
+            subLabel={
+              <span
+                className="page_skjemautfyller__sublabel"
+                dangerouslySetInnerHTML={{
+                  __html: getSublabelText(item, onRenderMarkdown),
+                }}
+              />
+            }
             placeholder={getPlaceholder(item)}
             maxlength={getMaxLength(item)}
             minlength={getMinLengthExtensionValue(item)}
