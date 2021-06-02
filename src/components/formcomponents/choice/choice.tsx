@@ -1,13 +1,14 @@
 import * as React from 'react';
+
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
+
 import { Options } from '@helsenorge/toolkit/components/atoms/radio-group';
 import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
 
-import withCommonFunctions from '../../with-common-functions';
 import { NewValueAction, newCodingValueAsync, removeCodingValueAsync } from '../../../actions/newValue';
-import { Path } from '../../../util/skjemautfyller-core';
-import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
+import { GlobalState } from '../../../reducers';
+import { AutoSuggestProps } from '../../../types/autoSuggestProps';
 import {
   QuestionnaireItem,
   QuestionnaireResponseItemAnswer,
@@ -16,16 +17,17 @@ import {
   QuestionnaireResponseItem,
   ValueSet,
 } from '../../../types/fhir';
-import { Resources } from '../../../util/resources';
-import { isReadOnly } from '../../../util/index';
 import { getOptions, getSystem, getErrorMessage, validateInput, getIndexOfAnswer, getDisplay, renderOptions } from '../../../util/choice';
+import { isReadOnly } from '../../../util/index';
+import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
+import { Resources } from '../../../util/resources';
+import { Path } from '../../../util/skjemautfyller-core';
+import withCommonFunctions from '../../with-common-functions';
+import AutosuggestView from '../choice-common/autosuggest-view';
 import TextView from '../textview';
+import CheckboxView from './checkbox-view';
 import DropdownView from './dropdown-view';
 import RadioView from './radio-view';
-import CheckboxView from './checkbox-view';
-import { GlobalState } from '../../../reducers';
-import AutosuggestView from '../choice-common/autosuggest-view';
-import { AutoSuggestProps } from '../../../types/autoSuggestProps';
 
 export interface ChoiceProps {
   item: QuestionnaireItem;
@@ -154,7 +156,7 @@ export class Choice extends React.Component<ChoiceProps & ValidationProps, Choic
     }
   };
 
-  renderCheckbox = (options: Array<Options> | undefined) => {
+  renderCheckbox = (options: Array<Options> | undefined): JSX.Element => {
     return (
       <CheckboxView
         options={options}
@@ -169,14 +171,14 @@ export class Choice extends React.Component<ChoiceProps & ValidationProps, Choic
     );
   };
 
-  renderDropdown = (options: Array<Options> | undefined) => {
+  renderDropdown = (options: Array<Options> | undefined): JSX.Element => {
     return (
       <DropdownView
         options={options}
         id={this.props.id}
         handleChange={this.handleChange}
         selected={this.getValue(this.props.item, this.props.answer)}
-        validateInput={(value: string) => validateInput(this.props.item, value, this.props.containedResources)}
+        validateInput={(value: string): boolean => validateInput(this.props.item, value, this.props.containedResources)}
         resources={this.props.resources}
         onRenderMarkdown={this.props.onRenderMarkdown}
         {...this.props}
@@ -186,13 +188,15 @@ export class Choice extends React.Component<ChoiceProps & ValidationProps, Choic
     );
   };
 
-  renderRadio = (options: Array<Options> | undefined) => {
+  renderRadio = (options: Array<Options> | undefined): JSX.Element => {
     return (
       <RadioView
         options={options}
-        getErrorMessage={(value: string) => getErrorMessage(this.props.item, value, this.props.resources, this.props.containedResources)}
+        getErrorMessage={(value: string): string =>
+          getErrorMessage(this.props.item, value, this.props.resources, this.props.containedResources)
+        }
         handleChange={this.handleChange}
-        validateInput={(value: string) => validateInput(this.props.item, value, this.props.containedResources)}
+        validateInput={(value: string): boolean => validateInput(this.props.item, value, this.props.containedResources)}
         id={this.props.id}
         selected={this.getValue(this.props.item, this.props.answer)}
         onRenderMarkdown={this.props.onRenderMarkdown}
@@ -217,7 +221,7 @@ export class Choice extends React.Component<ChoiceProps & ValidationProps, Choic
     );
   };
 
-  shouldComponentUpdate(nextProps: ChoiceProps, _nextState: {}) {
+  shouldComponentUpdate(nextProps: ChoiceProps): boolean {
     const responseItemHasChanged = this.props.responseItem !== nextProps.responseItem;
     const helpItemHasChanged = this.props.isHelpOpen !== nextProps.isHelpOpen;
     const resourcesHasChanged = JSON.stringify(this.props.resources) !== JSON.stringify(nextProps.resources);

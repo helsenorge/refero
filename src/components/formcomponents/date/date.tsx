@@ -1,27 +1,30 @@
 import * as React from 'react';
+
+import moment, { Moment } from 'moment';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
-import moment, { Moment } from 'moment';
+
 import { DateRangePicker } from '@helsenorge/toolkit/components/molecules/date-range-picker';
 import { DatePickerErrorPhrases } from '@helsenorge/toolkit/components/molecules/date-range-picker/date-range-picker-types';
 import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
 import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
 import { parseDate } from '@helsenorge/toolkit/components/molecules/time-input/date-core';
+
 import { LanguageLocales } from '@helsenorge/core-utils/constants/languages';
 
-import ExtensionConstants from '../../../constants/extensions';
-import { Path } from '../../../util/skjemautfyller-core';
-import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
-import Constants from '../../../constants/index';
 import { NewValueAction, newDateValueAsync } from '../../../actions/newValue';
-import withCommonFunctions from '../../with-common-functions';
-import { isReadOnly, isRequired, getId, renderPrefix, getText } from '../../../util/index';
-import { getValidationTextExtension, getPlaceholder, getExtension } from '../../../util/extension';
-import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem } from '../../../types/fhir';
-import { Resources } from '../../../util/resources';
-import TextView from '../textview';
+import ExtensionConstants from '../../../constants/extensions';
+import Constants from '../../../constants/index';
 import { GlobalState } from '../../../reducers';
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem } from '../../../types/fhir';
+import { getValidationTextExtension, getPlaceholder, getExtension } from '../../../util/extension';
 import { evaluateFhirpathExpressionToGetDate } from '../../../util/fhirpathHelper';
+import { isReadOnly, isRequired, getId, renderPrefix, getText } from '../../../util/index';
+import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
+import { Resources } from '../../../util/resources';
+import { Path } from '../../../util/skjemautfyller-core';
+import withCommonFunctions from '../../with-common-functions';
+import TextView from '../textview';
 
 export interface Props {
   item: QuestionnaireItem;
@@ -151,7 +154,7 @@ class DateComponent extends React.Component<Props & ValidationProps> {
     }
   };
 
-  getPdfValue = () => {
+  getPdfValue = (): string => {
     const date = this.getValue();
     let text = '';
     if (this.props.resources && this.props.resources.ikkeBesvart) {
@@ -161,7 +164,7 @@ class DateComponent extends React.Component<Props & ValidationProps> {
     return date ? moment(date).format('D. MMMM YYYY') : text;
   };
 
-  getLocaleFromLanguage = () => {
+  getLocaleFromLanguage = (): LanguageLocales.ENGLISH | LanguageLocales.NORWEGIAN => {
     if (this.props.language?.toLowerCase() === 'en-gb') {
       return LanguageLocales.ENGLISH;
     }
@@ -169,7 +172,7 @@ class DateComponent extends React.Component<Props & ValidationProps> {
     return LanguageLocales.NORWEGIAN;
   };
 
-  shouldComponentUpdate(nextProps: Props, _nextState: {}) {
+  shouldComponentUpdate(nextProps: Props): boolean {
     const responseItemHasChanged = this.props.responseItem !== nextProps.responseItem;
     const helpItemHasChanged = this.props.isHelpOpen !== nextProps.isHelpOpen;
     const resourcesHasChanged = JSON.stringify(this.props.resources) !== JSON.stringify(nextProps.resources);

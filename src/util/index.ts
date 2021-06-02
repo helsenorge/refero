@@ -1,25 +1,27 @@
-import marked from 'marked';
 import DOMPurify from 'dompurify';
+import marked from 'marked';
+import * as uuid from 'uuid';
 
-import { QuestionnaireResponseItem, QuestionnaireItem, QuestionnaireResponseItemAnswer } from '../types/fhir';
-import ItemType from '../constants/itemType';
-import Group from '../components/formcomponents/group/group';
-import Choice from '../components/formcomponents/choice/choice';
+import { isValid, invalidNodes } from '@helsenorge/core-utils/string-utils';
+
+import Attachment from '../components/formcomponents/attachment/attachment';
 import Boolean from '../components/formcomponents/boolean/boolean';
-import Decimal from '../components/formcomponents/decimal/decimal';
-import Integer from '../components/formcomponents/integer/integer';
+import Choice from '../components/formcomponents/choice/choice';
 import Date from '../components/formcomponents/date/date';
-import Time from '../components/formcomponents/date/time';
 import DateTime from '../components/formcomponents/date/date-time';
+import Time from '../components/formcomponents/date/time';
+import Decimal from '../components/formcomponents/decimal/decimal';
 import Display from '../components/formcomponents/display/display';
+import Group from '../components/formcomponents/group/group';
+import Integer from '../components/formcomponents/integer/integer';
+import OpenChoice from '../components/formcomponents/open-choice/open-choice';
+import Quantity from '../components/formcomponents/quantity/quantity';
 import StringComponent from '../components/formcomponents/string/string';
 import Text from '../components/formcomponents/text/text';
-import OpenChoice from '../components/formcomponents/open-choice/open-choice';
-import Attachment from '../components/formcomponents/attachment/attachment';
-import Quantity from '../components/formcomponents/quantity/quantity';
-import * as uuid from 'uuid';
-import Constants from '../constants/index';
 import ExtensionConstants from '../constants/extensions';
+import Constants from '../constants/index';
+import ItemType from '../constants/itemType';
+import { QuestionnaireResponseItem, QuestionnaireItem, QuestionnaireResponseItemAnswer } from '../types/fhir';
 import { Resources } from '../util/resources';
 import {
   getMaxOccursExtensionValue,
@@ -35,8 +37,8 @@ renderer.link = (href: string, title: string, text: string): string => {
   return `<a href=${href} ${title ? `title=${title}` : ''} target="_blank" class="external">${text}</a>`;
 };
 marked.setOptions({ renderer: renderer });
-import { isValid, invalidNodes } from '@helsenorge/core-utils/string-utils';
 
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function getComponentForItem(type: string) {
   if (String(type) === ItemType.GROUP) {
     return Group;
@@ -87,46 +89,46 @@ export function isStringEmpty(string: string | undefined): boolean {
   return string === '' || string === null || string === undefined;
 }
 
-export function isReadOnly(item: QuestionnaireItem) {
+export function isReadOnly(item: QuestionnaireItem): boolean {
   if (item && item.readOnly) {
     return item.readOnly;
   }
   return false;
 }
 
-export function isRequired(item: QuestionnaireItem) {
+export function isRequired(item: QuestionnaireItem): boolean {
   if (item && item.required) {
     return item.required;
   }
   return false;
 }
 
-export function isRepeat(item: QuestionnaireItem) {
+export function isRepeat(item: QuestionnaireItem): boolean {
   if (item && item.repeats) {
     return item.repeats;
   }
   return false;
 }
 
-export function isHiddenItem(item: QuestionnaireItem) {
+export function isHiddenItem(item: QuestionnaireItem): boolean | undefined {
   return getQuestionnaireHiddenExtensionValue(item);
 }
 
-export function getId(id?: string) {
+export function getId(id?: string): string {
   if (id) {
     return id;
   }
   return uuid.v4();
 }
 
-export function renderPrefix(item: QuestionnaireItem) {
+export function renderPrefix(item: QuestionnaireItem): string {
   if (!item || !item.prefix) {
     return '';
   }
   return item.prefix;
 }
 
-export function getText(item: QuestionnaireItem, onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string) {
+export function getText(item: QuestionnaireItem, onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string): string {
   if (item) {
     const markdown = item._text ? getMarkdownExtensionValue(item._text) : undefined;
 
@@ -160,21 +162,21 @@ function hasHeader(item: QuestionnaireItem): boolean {
   return true;
 }
 
-export function getLinkId(item: QuestionnaireItem) {
+export function getLinkId(item: QuestionnaireItem): string {
   if (item && item.linkId) {
     return item.linkId;
   }
   return uuid.v4();
 }
 
-export function getStringValue(answer: QuestionnaireResponseItemAnswer) {
+export function getStringValue(answer: QuestionnaireResponseItemAnswer): string {
   if (answer && answer.valueString) {
     return answer.valueString;
   }
   return '';
 }
 
-export function getPDFStringValue(answer: QuestionnaireResponseItemAnswer, resources?: Resources) {
+export function getPDFStringValue(answer: QuestionnaireResponseItemAnswer, resources?: Resources): string {
   const value = getStringValue(answer);
   if (!value) {
     let text = '';
@@ -248,7 +250,7 @@ export function getTextValidationErrorMessage(
   return getValidationTextExtension(item) || '';
 }
 
-export function getDecimalPattern(item: QuestionnaireItem) {
+export function getDecimalPattern(item: QuestionnaireItem): string | undefined {
   const step = getExtension(ExtensionConstants.STEP_URL, item);
 
   const integerPart = '[+-]?[0-9]+';
@@ -268,15 +270,6 @@ export function getDecimalPattern(item: QuestionnaireItem) {
 
     return `^${integerPart}(.[0-9]{${stepString}})?$`;
   }
-}
-
-export function profile(tag: string, func: () => void) {
-  let start = performance.now();
-  console.log('START: ', tag, start, 'ms');
-  func();
-  let end = performance.now();
-  console.log('END: ', tag, end, 'ms');
-  console.log('TOTAL: ', tag, end - start, 'ms');
 }
 
 export function isIE11(): boolean {

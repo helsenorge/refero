@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { useState } from 'react';
+
 import { QuestionnaireItem } from '../../types/fhir';
 
 interface Props {
@@ -9,7 +10,7 @@ interface Props {
 
 const HelpButton: React.SFC<Props> = ({ item, children, callback }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const handleToggle = () => {
+  const handleToggle = (): void => {
     setIsOpen(!isOpen);
     callback(!isOpen);
   };

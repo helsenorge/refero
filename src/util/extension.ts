@@ -1,12 +1,12 @@
-import { QuestionnaireItem, Extension, Element, Questionnaire, Coding } from '../types/fhir';
 import ExtensionConstants from '../constants/extensions';
-import { PresentationButtonsType } from '../constants/presentationButtonsType';
-import { SidebarItem } from '../types/sidebar';
-import { getText } from '../util/index';
 import itemControlConstants from '../constants/itemcontrol';
 import itemType from '../constants/itemType';
+import { PresentationButtonsType } from '../constants/presentationButtonsType';
+import { QuestionnaireItem, Extension, Element, Questionnaire, Coding } from '../types/fhir';
+import { SidebarItem } from '../types/sidebar';
+import { getText } from '../util/index';
 
-export function getValidationTextExtension(item: QuestionnaireItem) {
+export function getValidationTextExtension(item: QuestionnaireItem): string | undefined {
   const validationTextExtension = getExtension(ExtensionConstants.VALIDATIONTEXT_URL, item);
   if (!validationTextExtension || !validationTextExtension.valueString) {
     return undefined;
@@ -57,7 +57,7 @@ export function getSidebarSections(
   onRenderMarkdown?: (item: QuestionnaireItem, markup: string) => string
 ): Array<SidebarItem> {
   const items: Array<SidebarItem> = [];
-  const getSidebarItems = (currentItem: QuestionnaireItem, currentItems: Array<SidebarItem>) => {
+  const getSidebarItems = (currentItem: QuestionnaireItem, currentItems: Array<SidebarItem>): void => {
     const itemControls = getItemControlExtensionValue(currentItem);
     if (
       currentItem.type === itemType.TEXT &&
@@ -79,7 +79,7 @@ export function getSidebarSections(
   return items;
 }
 
-export function getExtension(url: string, item: QuestionnaireItem | Element | Questionnaire) {
+export function getExtension(url: string, item: QuestionnaireItem | Element | Questionnaire): Extension | undefined {
   if (!item || !item.extension || item.extension.length === 0) {
     return undefined;
   }
@@ -90,7 +90,7 @@ export function getExtension(url: string, item: QuestionnaireItem | Element | Qu
   return filteredExtension[0];
 }
 
-export function getPlaceholder(item: QuestionnaireItem) {
+export function getPlaceholder(item: QuestionnaireItem): string | undefined {
   if (!item || !item.extension || item.extension.length === 0) {
     return undefined;
   }
@@ -101,7 +101,7 @@ export function getPlaceholder(item: QuestionnaireItem) {
   return extension.valueString;
 }
 
-export function getQuestionnaireUnitExtensionValue(item: QuestionnaireItem) {
+export function getQuestionnaireUnitExtensionValue(item: QuestionnaireItem): Coding | undefined {
   if (!item || !item.extension || item.extension.length === 0) {
     return undefined;
   }
@@ -174,7 +174,7 @@ export function getRepeatsTextExtension(item: QuestionnaireItem): string | undef
   return repeatsTextExtension.valueString;
 }
 
-export function getItemControlExtensionValue(item: QuestionnaireItem) {
+export function getItemControlExtensionValue(item: QuestionnaireItem): Coding[] | undefined {
   const itemControlExtension = getExtension(ExtensionConstants.ITEMCONTROL_URL, item);
   if (!itemControlExtension || !itemControlExtension.valueCodeableConcept || !itemControlExtension.valueCodeableConcept.coding) {
     return undefined;
@@ -182,7 +182,7 @@ export function getItemControlExtensionValue(item: QuestionnaireItem) {
   return itemControlExtension.valueCodeableConcept.coding;
 }
 
-export function getMarkdownExtensionValue(item: QuestionnaireItem | Element) {
+export function getMarkdownExtensionValue(item: QuestionnaireItem | Element): string | undefined {
   const markdownExtension = getExtension(ExtensionConstants.MARKDOWN_URL, item);
   if (!markdownExtension || !markdownExtension.valueMarkdown) {
     return undefined;
@@ -190,7 +190,7 @@ export function getMarkdownExtensionValue(item: QuestionnaireItem | Element) {
   return markdownExtension.valueMarkdown;
 }
 
-export function getQuestionnaireHiddenExtensionValue(item: QuestionnaireItem) {
+export function getQuestionnaireHiddenExtensionValue(item: QuestionnaireItem): boolean | undefined {
   const questionnaireHiddenExtension = getExtension(ExtensionConstants.QUESTIONNAIRE_HIDDEN, item);
   if (!questionnaireHiddenExtension || !questionnaireHiddenExtension.valueBoolean) {
     return false;
@@ -198,7 +198,7 @@ export function getQuestionnaireHiddenExtensionValue(item: QuestionnaireItem) {
   return questionnaireHiddenExtension.valueBoolean;
 }
 
-export function getAuthenticationRequirementValue(questionnaire: Questionnaire) {
+export function getAuthenticationRequirementValue(questionnaire: Questionnaire): number | undefined {
   const itemAuthenticationRequirement = getExtension(ExtensionConstants.AUTHENTICATION_REQUIREMENT_URL, questionnaire);
   if (!itemAuthenticationRequirement || !itemAuthenticationRequirement.valueCoding || !itemAuthenticationRequirement.valueCoding.code) {
     return undefined;
@@ -207,7 +207,7 @@ export function getAuthenticationRequirementValue(questionnaire: Questionnaire) 
   return parseInt(itemAuthenticationRequirement.valueCoding.code, 10);
 }
 
-export function getCanBePerformedByValue(questionnaire: Questionnaire) {
+export function getCanBePerformedByValue(questionnaire: Questionnaire): number | undefined {
   const itemCanBePerfomedBy = getExtension(ExtensionConstants.CAN_BE_PERFORMED_BY_URL, questionnaire);
   if (!itemCanBePerfomedBy || !itemCanBePerfomedBy.valueCoding || !itemCanBePerfomedBy.valueCoding.code) {
     return undefined;
@@ -216,7 +216,7 @@ export function getCanBePerformedByValue(questionnaire: Questionnaire) {
   return parseInt(itemCanBePerfomedBy.valueCoding.code, 10);
 }
 
-export function getAccessibilityToResponse(questionnaire: Questionnaire) {
+export function getAccessibilityToResponse(questionnaire: Questionnaire): number | undefined {
   const accessibilityToResponse = getExtension(ExtensionConstants.ACCESSIBILITY_TO_RESPONSE, questionnaire);
   if (!accessibilityToResponse || !accessibilityToResponse.valueCoding || !accessibilityToResponse.valueCoding.code) {
     return undefined;
@@ -225,7 +225,7 @@ export function getAccessibilityToResponse(questionnaire: Questionnaire) {
   return parseInt(accessibilityToResponse.valueCoding.code, 10);
 }
 
-export function getDiscretion(questionnaire: Questionnaire) {
+export function getDiscretion(questionnaire: Questionnaire): number | undefined {
   const discretion = getExtension(ExtensionConstants.DISCRETION, questionnaire);
   if (!discretion || !discretion.valueCoding || !discretion.valueCoding.code) {
     return undefined;

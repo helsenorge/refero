@@ -1,3 +1,5 @@
+import ItemType from '../constants/itemType';
+import { FormData, FormDefinition } from '../reducers/form';
 import {
   QuestionnaireResponseItem,
   QuestionnaireResponseItemAnswer,
@@ -6,10 +8,8 @@ import {
   QuestionnaireResponse,
   QuestionnaireEnableOperator,
 } from '../types/fhir';
-import { FormData, FormDefinition } from '../reducers/form';
-import ItemType from '../constants/itemType';
-import { getMinOccursExtensionValue } from './extension';
 import { enableWhenMatches } from '../util/enableWhenMatcher';
+import { getMinOccursExtensionValue } from './extension';
 
 export function getRootQuestionnaireResponseItemFromData(
   definitionLinkId: string,
@@ -143,7 +143,9 @@ function getArrayContainingResponseItemFromAnswers(
   return undefined;
 }
 
-export function getAnswerFromResponseItem(responseItem: QuestionnaireResponseItem | undefined) {
+export function getAnswerFromResponseItem(
+  responseItem: QuestionnaireResponseItem | undefined
+): QuestionnaireResponseItemAnswer[] | QuestionnaireResponseItemAnswer | undefined {
   if (!responseItem) {
     return undefined;
   }
@@ -204,7 +206,7 @@ export function getItemsWithIdFromResponseItemArray(
   const filteredItems = responseItems.filter(i => i.linkId === linkId);
 
   if (recurse) {
-    const reducer = (acc: Array<QuestionnaireResponseItem>, val: QuestionnaireResponseItem) => {
+    const reducer = (acc: Array<QuestionnaireResponseItem>, val: QuestionnaireResponseItem): QuestionnaireResponseItem[] => {
       if (val.item) {
         acc.push(...getItemsWithIdFromResponseItemArray(linkId, val.item, recurse));
       }
@@ -386,7 +388,7 @@ export function shouldRenderDeleteButton(item: QuestionnaireItem, index: number)
   return false;
 }
 
-function copyPath(path: Array<Path>) {
+function copyPath(path: Array<Path>): Array<Path> {
   const newPath: Array<Path> = [];
   for (let i = 0; i < path.length; i++) {
     newPath.push(Object.assign({}, path[i]));
@@ -399,18 +401,18 @@ export function getResponseItemAndPathWithLinkId(
   item: QuestionnaireResponse | QuestionnaireResponseItem,
   currentPath: Path[] = []
 ): Array<ItemAndPath> {
-  let response: Array<ItemAndPath> = [];
+  const response: Array<ItemAndPath> = [];
   let index = 0;
-  let seen: { [linkId: string]: number } = {};
-  for (let i of item.item ?? []) {
+  const seen: { [linkId: string]: number } = {};
+  for (const i of item.item ?? []) {
     index = i.linkId in seen ? seen[i.linkId] : 0;
     response.push(...getResponseItemAndPathWithLinkIdTraverse(linkId, i, currentPath, index));
     seen[i.linkId] = index + 1;
   }
 
   if (isOfTypeQuestionnaireResponseItem(item)) {
-    for (let a of item.answer ?? []) {
-      for (let i of a.item ?? []) {
+    for (const a of item.answer ?? []) {
+      for (const i of a.item ?? []) {
         index = i.linkId in seen ? seen[i.linkId] : 0;
         response.push(...getResponseItemAndPathWithLinkIdTraverse(linkId, i, currentPath, index));
         seen[i.linkId] = index + 1;
@@ -446,7 +448,7 @@ function getResponseItemAndPathWithLinkIdTraverse(
 }
 
 function isOfTypeQuestionnaireResponseItem(item: QuestionnaireResponse | QuestionnaireResponseItem): item is QuestionnaireResponseItem {
-  return (<QuestionnaireResponseItem>item).answer !== undefined;
+  return (item as QuestionnaireResponseItem).answer !== undefined;
 }
 
 export function getResponseItemWithPath(path: Array<Path>, formData: FormData): QuestionnaireResponseItem | undefined {

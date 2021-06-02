@@ -1,9 +1,10 @@
 import { ThunkDispatch } from 'redux-thunk';
 
-import { QuestionnaireResponseItem, QuestionnaireItemEnableWhen, QuestionnaireItemEnableBehaviorCodes } from '../types/fhir';
-import { GlobalState } from '../reducers/index';
-import { getFormData } from '../reducers/form';
+import { NewValueAction } from '../actions/newValue';
 import { Props } from '../components/with-common-functions';
+import { getFormData } from '../reducers/form';
+import { GlobalState } from '../reducers/index';
+import { QuestionnaireResponseItem, QuestionnaireItemEnableWhen, QuestionnaireItemEnableBehaviorCodes } from '../types/fhir';
 import {
   enableWhenMatchesAnswer,
   getQuestionnaireResponseItemWithLinkid,
@@ -11,7 +12,6 @@ import {
   Path,
   isInGroupContext,
 } from './skjemautfyller-core';
-import { NewValueAction } from '../actions/newValue';
 
 export function mapStateToProps(state: GlobalState, originalProps: Props): Props {
   if (!originalProps.item || !originalProps.item.enableWhen) {
@@ -27,7 +27,7 @@ function isEnableWhenEnabled(
   path: Path[],
   state: GlobalState
 ): boolean {
-  let enableMatches: Array<boolean> = [];
+  const enableMatches: Array<boolean> = [];
   enableWhen.forEach((enableWhen: QuestionnaireItemEnableWhen) => {
     const responseItems = getResponseItems(getFormData(state));
     const enableWhenQuestion = enableWhen.question;

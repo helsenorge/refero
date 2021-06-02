@@ -1,14 +1,17 @@
 import * as React from 'react';
+
 import NotificationPanel from '@helsenorge/designsystem-react/components/NotificationPanel';
+
 import Dropzone from '@helsenorge/toolkit/components/atoms/dropzone';
-import Validation, { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
-import { sizeIsValid, mimeTypeIsValid } from '@helsenorge/toolkit/components/atoms/dropzone/validation';
 import { UploadedFile } from '@helsenorge/toolkit/components/atoms/dropzone';
+import { sizeIsValid, mimeTypeIsValid } from '@helsenorge/toolkit/components/atoms/dropzone/validation';
+import Validation, { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
+
 import constants, { VALID_FILE_TYPES } from '../../../constants';
-import { Resources } from '../../../util/resources';
-import { TextMessage } from '../../../types/text-message';
 import { QuestionnaireItem } from '../../../types/fhir';
+import { TextMessage } from '../../../types/text-message';
 import { getValidationTextExtension } from '../../../util/extension';
+import { Resources } from '../../../util/resources';
 
 interface Props {
   onUpload: (files: Array<File>, cb: (success: boolean, errormessage: TextMessage | null, uploadedFile?: UploadedFile) => void) => void;
@@ -79,7 +82,7 @@ const attachmentHtml: React.SFC<Props & ValidationProps> = ({
           dontShowHardcodedText={!!deleteText}
           deleteText={deleteText}
           supportedFileFormatsText={resources ? resources.supportedFileFormats : undefined}
-          errorMessage={(file: File) => {
+          errorMessage={(file: File): string => {
             return getErrorMessage(validFileTypes, maxFilesize, item, errorText, file, resources);
           }}
           isRequired={isRequired}
@@ -106,7 +109,7 @@ function getErrorMessage(
   genericErrorText?: string,
   file?: File,
   resources?: Resources
-) {
+): string {
   if (file && resources) {
     if (!mimeTypeIsValid(file, validFileTypes)) {
       return resources.validationFileType;

@@ -6,6 +6,7 @@ export interface QuestionnaireItemPair {
   QuestionnaireResponseItems: Array<ItemAndPath>;
 }
 
+// eslint-disable-next-line @typescript-eslint/interface-name-prefix
 export interface IQuestionnaireInspector {
   findItemWithLinkIds(...linkIds: string[]): Array<QuestionnaireItemPair>;
 }
@@ -20,9 +21,9 @@ export class QuestionniareInspector implements IQuestionnaireInspector {
   }
 
   public findItemWithLinkIds(...linkIds: string[]): Array<QuestionnaireItemPair> {
-    let questionnaireItemPairs = [];
-    for (let linkId of linkIds) {
-      let pair = this.findItemWithLinkId(linkId);
+    const questionnaireItemPairs = [];
+    for (const linkId of linkIds) {
+      const pair = this.findItemWithLinkId(linkId);
       if (pair) {
         questionnaireItemPairs.push(pair);
       }
@@ -31,10 +32,10 @@ export class QuestionniareInspector implements IQuestionnaireInspector {
   }
 
   private findItemWithLinkId(linkId: string): QuestionnaireItemPair | null {
-    let qItem = getQuestionnaireDefinitionItem(linkId, this.questionnaire.item);
+    const qItem = getQuestionnaireDefinitionItem(linkId, this.questionnaire.item);
     if (!qItem) return null;
 
-    let qrItems = getResponseItemAndPathWithLinkId(linkId, this.questionnaireResponse);
+    const qrItems = getResponseItemAndPathWithLinkId(linkId, this.questionnaireResponse);
 
     return {
       QuestionnaireItem: qItem,

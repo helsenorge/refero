@@ -1,4 +1,5 @@
-import { createQuestionnaireResponseAnswer } from '../util/createQuestionnaireResponseAnswer';
+import Constants from '../constants/index';
+import itemType from '../constants/itemType';
 import StatusConstants from '../constants/status';
 import {
   QuestionnaireItem,
@@ -7,10 +8,8 @@ import {
   QuestionnaireResponseItemAnswer,
   Questionnaire,
 } from '../types/fhir';
-
-import Constants from '../constants/index';
+import { createQuestionnaireResponseAnswer } from '../util/createQuestionnaireResponseAnswer';
 import { getMinOccursExtensionValue } from '../util/extension';
-import itemType from '../constants/itemType';
 
 export function generateQuestionnaireResponse(questionnaire: Questionnaire): QuestionnaireResponse | undefined {
   const response: QuestionnaireResponse = {
@@ -54,7 +53,7 @@ function addChildrenItemsToResponseItem(item: QuestionnaireItem, response: Quest
   });
 }
 
-function getMinOccurs(i: QuestionnaireItem) {
+function getMinOccurs(i: QuestionnaireItem): number {
   // Attachment handles "repeats" itself
   if (i.type === itemType.ATTATCHMENT) {
     return 1;

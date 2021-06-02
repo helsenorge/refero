@@ -61,7 +61,6 @@ describe('extensions', () => {
 
   describe('getMaxValueExtensionValue', () => {
     it('should return max value', () => {
-      /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
       const valueInteger = 2;
       const extension: Extension = {
         url: extensionConstants.MAX_VALUE_URL,
@@ -78,7 +77,6 @@ describe('extensions', () => {
 
   describe('getMinValueExtensionValue', () => {
     it('should return min value', () => {
-      /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
       const valueInteger = 2;
       const extension: Extension = {
         url: extensionConstants.MIN_VALUE_URL,
@@ -95,7 +93,6 @@ describe('extensions', () => {
 
   describe('getMinOccursExtensionValue', () => {
     it('should return min occurs value', () => {
-      /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
       const valueInteger = 2;
       const extension: Extension = {
         url: extensionConstants.MIN_OCCURS_URL,
@@ -112,7 +109,6 @@ describe('extensions', () => {
 
   describe('getMaxOccursExtensionValue', () => {
     it('should return max occurs value', () => {
-      /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
       const valueInteger = 2;
       const extension: Extension = {
         url: extensionConstants.MAX_OCCURS_URL,
@@ -129,7 +125,6 @@ describe('extensions', () => {
 
   describe('getMinLengthExtensionValue', () => {
     it('should return min length value', () => {
-      /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
       const valueInteger = 2;
       const extension: Extension = {
         url: extensionConstants.MIN_LENGTH_URL,

@@ -1,10 +1,11 @@
 import * as React from 'react';
+
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
+
 import { Options } from '@helsenorge/toolkit/components/atoms/radio-group';
 import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
 
-import { GlobalState } from '../../../reducers';
 import {
   NewValueAction,
   removeCodingValueAsync,
@@ -12,9 +13,19 @@ import {
   newCodingStringValueAsync,
   removeCodingStringValueAsync,
 } from '../../../actions/newValue';
-import TextField from './text-field';
-import { Path } from '../../../util/skjemautfyller-core';
-import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
+import { OPEN_CHOICE_ID, OPEN_CHOICE_SYSTEM } from '../../../constants';
+import ItemControlConstants from '../../../constants/itemcontrol';
+import { GlobalState } from '../../../reducers';
+import { AutoSuggestProps } from '../../../types/autoSuggestProps';
+import {
+  QuestionnaireItem,
+  QuestionnaireResponseItemAnswer,
+  Resource,
+  Coding,
+  QuestionnaireResponseItem,
+  ValueSet,
+} from '../../../types/fhir';
+import { isReadOnly } from '../../../util';
 import {
   renderOptions,
   getOptions,
@@ -26,25 +37,16 @@ import {
   getIndexOfAnswer,
   getItemControlValue,
 } from '../../../util/choice';
-import {
-  QuestionnaireItem,
-  QuestionnaireResponseItemAnswer,
-  Resource,
-  Coding,
-  QuestionnaireResponseItem,
-  ValueSet,
-} from '../../../types/fhir';
-import ItemControlConstants from '../../../constants/itemcontrol';
+import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Resources } from '../../../util/resources';
+import { Path } from '../../../util/skjemautfyller-core';
 import withCommonFunctions from '../../with-common-functions';
-import CheckboxView from './checkbox-view';
-import RadioView from './radio-view';
-import DropdownView from './dropdown-view';
-import { OPEN_CHOICE_ID, OPEN_CHOICE_SYSTEM } from '../../../constants';
-import { isReadOnly } from '../../../util';
-import TextView from '../textview';
 import AutosuggestView from '../choice-common/autosuggest-view';
-import { AutoSuggestProps } from '../../../types/autoSuggestProps';
+import TextView from '../textview';
+import CheckboxView from './checkbox-view';
+import DropdownView from './dropdown-view';
+import RadioView from './radio-view';
+import TextField from './text-field';
 
 export interface Props {
   item: QuestionnaireItem;
@@ -223,7 +225,7 @@ class OpenChoice extends React.Component<Props & ValidationProps> {
     }
   };
 
-  singleValueHandler = (coding: Coding) => {
+  singleValueHandler = (coding: Coding): void => {
     const { dispatch, item, path, onAnswerChange } = this.props;
 
     if (dispatch) {
@@ -235,7 +237,7 @@ class OpenChoice extends React.Component<Props & ValidationProps> {
     }
   };
 
-  multiValueHandler = (coding: Coding) => {
+  multiValueHandler = (coding: Coding): void => {
     const { dispatch, item, path, answer, onAnswerChange } = this.props;
 
     if (dispatch) {
@@ -249,7 +251,7 @@ class OpenChoice extends React.Component<Props & ValidationProps> {
     }
   };
 
-  renderTextField() {
+  renderTextField(): JSX.Element {
     const { id, pdf, item, answer, onRenderMarkdown, ...other } = this.props;
 
     let a = answer;
@@ -276,14 +278,14 @@ class OpenChoice extends React.Component<Props & ValidationProps> {
     );
   }
 
-  renderCheckbox = (options: Array<Options> | undefined) => {
+  renderCheckbox = (options: Array<Options> | undefined): JSX.Element => {
     return (
       <CheckboxView
         options={options}
         id={this.props.id}
         handleChange={this.handleCheckboxChange}
         selected={this.getValue(this.props.item, this.props.answer)}
-        renderOpenField={() => this.renderTextField()}
+        renderOpenField={(): JSX.Element => this.renderTextField()}
         onRenderMarkdown={this.props.onRenderMarkdown}
         {...this.props}
       >
@@ -292,16 +294,16 @@ class OpenChoice extends React.Component<Props & ValidationProps> {
     );
   };
 
-  renderDropdown = (options: Array<Options> | undefined) => {
+  renderDropdown = (options: Array<Options> | undefined): JSX.Element => {
     return (
       <DropdownView
         options={options}
         id={this.props.id}
         handleChange={this.handleChange}
         selected={this.getValue(this.props.item, this.props.answer)}
-        validateInput={(value: string) => validateInput(this.props.item, value, this.props.containedResources)}
+        validateInput={(value: string): boolean => validateInput(this.props.item, value, this.props.containedResources)}
         resources={this.props.resources}
-        renderOpenField={() => this.renderTextField()}
+        renderOpenField={(): JSX.Element => this.renderTextField()}
         onRenderMarkdown={this.props.onRenderMarkdown}
         {...this.props}
       >
@@ -310,19 +312,19 @@ class OpenChoice extends React.Component<Props & ValidationProps> {
     );
   };
 
-  renderRadio = (options: Array<Options> | undefined) => {
-    const { item, resources, containedResources, children, id, answer, repeatButton, optionalLabel, ...rest } = this.props;
+  renderRadio = (options: Array<Options> | undefined): JSX.Element => {
+    const { item, resources, containedResources, children, id, answer, repeatButton, ...rest } = this.props;
     return (
       <RadioView
         options={options}
         item={item}
-        getErrorMessage={(value: string) => getErrorMessage(item, value, resources, containedResources)}
+        getErrorMessage={(value: string): string => getErrorMessage(item, value, resources, containedResources)}
         handleChange={this.handleChange}
-        validateInput={(value: string) => validateInput(item, value, containedResources)}
+        validateInput={(value: string): boolean => validateInput(item, value, containedResources)}
         id={id}
         selected={this.getValue(item, answer)}
         repeatButton={repeatButton}
-        renderOpenField={() => this.renderTextField()}
+        renderOpenField={(): JSX.Element => this.renderTextField()}
         answer={answer}
         onRenderMarkdown={this.props.onRenderMarkdown}
         {...rest}
@@ -347,7 +349,7 @@ class OpenChoice extends React.Component<Props & ValidationProps> {
     );
   };
 
-  shouldComponentUpdate(nextProps: Props, _nextState: {}) {
+  shouldComponentUpdate(nextProps: Props): boolean {
     const responseItemHasChanged = this.props.responseItem !== nextProps.responseItem;
     const helpItemHasChanged = this.props.isHelpOpen !== nextProps.isHelpOpen;
     const resourcesHasChanged = JSON.stringify(this.props.resources) !== JSON.stringify(nextProps.resources);

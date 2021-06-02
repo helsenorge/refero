@@ -1,14 +1,17 @@
 import * as React from 'react';
-import { Collapse } from 'react-collapse';
-import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
-import { Options } from '@helsenorge/toolkit/components/atoms/radio-group';
-import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
-import SafeSelect from '@helsenorge/toolkit/components/atoms/safe-select';
 
-import { isRequired, getId, renderPrefix, getText } from '../../../util/index';
-import { getValidationTextExtension, getPlaceholder } from '../../../util/extension';
-import { Resources } from '../../../util/resources';
+import { Collapse } from 'react-collapse';
+
+import { Options } from '@helsenorge/toolkit/components/atoms/radio-group';
+import SafeSelect from '@helsenorge/toolkit/components/atoms/safe-select';
+import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
+
+import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
+
 import { QuestionnaireItem } from '../../../types/fhir';
+import { getValidationTextExtension, getPlaceholder } from '../../../util/extension';
+import { isRequired, getId, renderPrefix, getText } from '../../../util/index';
+import { Resources } from '../../../util/resources';
 
 interface Props {
   options?: Array<Options>;
@@ -29,7 +32,7 @@ interface Props {
 }
 
 class DropdownView extends React.Component<Props, {}> {
-  render() {
+  render(): JSX.Element | null {
     const {
       options,
       item,
@@ -41,7 +44,6 @@ class DropdownView extends React.Component<Props, {}> {
       children,
       repeatButton,
       renderDeleteButton,
-      oneToTwoColumn,
       renderHelpButton,
       renderHelpElement,
       onRenderMarkdown,
@@ -77,7 +79,7 @@ class DropdownView extends React.Component<Props, {}> {
                 />
               }
               isRequired={isRequired(item)}
-              onChange={evt => handleChange((evt.target as HTMLInputElement).value)}
+              onChange={(evt): void => handleChange((evt.target as HTMLInputElement).value)}
               options={dropdownOptions}
               selected={selected ? selected[0] : undefined}
               placeholder={placeholder}

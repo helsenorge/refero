@@ -1,4 +1,5 @@
 import { combineReducers, Reducer } from 'redux';
+
 import form, { Form } from '../reducers/form';
 
 export interface GlobalState {

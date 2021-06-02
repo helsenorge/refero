@@ -1,21 +1,23 @@
 import * as React from 'react';
+
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
+
 import { UploadedFile } from '@helsenorge/toolkit/components/atoms/dropzone';
 import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
 
-import { GlobalState } from '../../../reducers';
 import { NewValueAction, newAttachmentAsync, removeAttachmentAsync } from '../../../actions/newValue';
-import withCommonFunctions from '../../with-common-functions';
-import AttachmentHtml from './attachmenthtml';
-import { Path } from '../../../util/skjemautfyller-core';
-import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
-import { isRequired, getId, renderPrefix, getText, isReadOnly, isRepeat } from '../../../util/index';
-import { getValidationTextExtension, getMaxOccursExtensionValue, getMinOccursExtensionValue } from '../../../util/extension';
+import { GlobalState } from '../../../reducers';
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, Attachment, QuestionnaireResponseItem } from '../../../types/fhir';
-import { Resources } from '../../../util/resources';
-import TextView from '../textview';
 import { TextMessage } from '../../../types/text-message';
+import { getValidationTextExtension, getMaxOccursExtensionValue, getMinOccursExtensionValue } from '../../../util/extension';
+import { isRequired, getId, renderPrefix, getText, isReadOnly, isRepeat } from '../../../util/index';
+import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
+import { Resources } from '../../../util/resources';
+import { Path } from '../../../util/skjemautfyller-core';
+import withCommonFunctions from '../../with-common-functions';
+import TextView from '../textview';
+import AttachmentHtml from './attachmenthtml';
 
 export interface Props {
   dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
@@ -135,7 +137,7 @@ class AttachmentComponent extends React.Component<Props & ValidationProps> {
     return '';
   };
 
-  shouldComponentUpdate(nextProps: Props, _nextState: {}) {
+  shouldComponentUpdate(nextProps: Props): boolean {
     const responseItemHasChanged = this.props.responseItem !== nextProps.responseItem;
     const helpItemHasChanged = this.props.isHelpOpen !== nextProps.isHelpOpen;
     const resourcesHasChanged = JSON.stringify(this.props.resources) !== JSON.stringify(nextProps.resources);

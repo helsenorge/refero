@@ -1,11 +1,13 @@
 import * as React from 'react';
+
 import { Collapse } from 'react-collapse';
+
 import { RadioGroup, Options } from '@helsenorge/toolkit/components/atoms/radio-group';
 import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
 
+import { QuestionnaireItem } from '../../../types/fhir';
 import { isRequired, getId, renderPrefix, getText } from '../../../util/index';
 import { Resources } from '../../../util/resources';
-import { QuestionnaireItem } from '../../../types/fhir';
 
 interface Props {
   options?: Array<Options>;

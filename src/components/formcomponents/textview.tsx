@@ -1,6 +1,7 @@
 import * as React from 'react';
-import { renderPrefix, getText } from '../../util/index';
+
 import { QuestionnaireItem } from '../../types/fhir';
+import { renderPrefix, getText } from '../../util/index';
 
 interface Props {
   item: QuestionnaireItem;

@@ -10,7 +10,7 @@ import { isIE11 } from './index';
 //   will be invoked several times. However, Assigning lineHeight a value it
 //   already has does not trigger a re-render, so we have to make sure we
 //   assign it a new value each time it is called.
-export function IE11HackToWorkAroundBug187484() {
+export function IE11HackToWorkAroundBug187484(): void {
   if (isIE11()) {
     window.setTimeout(function() {
       const heights = ['1.51', '1.5'];

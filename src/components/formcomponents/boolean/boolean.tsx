@@ -1,20 +1,23 @@
 import * as React from 'react';
+
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
+
 import { CheckBox } from '@helsenorge/toolkit/components/atoms/checkbox';
 import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
-import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
 
-import withCommonFunctions from '../../with-common-functions';
-import { Path } from '../../../util/skjemautfyller-core';
-import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
+import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
+
 import { NewValueAction, newBooleanValueAsync } from '../../../actions/newValue';
-import { isReadOnly, isRequired, getId, renderPrefix, getText } from '../../../util/index';
-import { getValidationTextExtension } from '../../../util/extension';
-import Pdf from './pdf';
 import { GlobalState } from '../../../reducers';
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem } from '../../../types/fhir';
+import { getValidationTextExtension } from '../../../util/extension';
+import { isReadOnly, isRequired, getId, renderPrefix, getText } from '../../../util/index';
+import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
+import { Path } from '../../../util/skjemautfyller-core';
+import withCommonFunctions from '../../with-common-functions';
+import Pdf from './pdf';
 
 export interface Props {
   item: QuestionnaireItem;
@@ -72,7 +75,7 @@ class Boolean extends React.Component<Props & ValidationProps, {}> {
     );
   };
 
-  shouldComponentUpdate(nextProps: Props, _nextState: {}) {
+  shouldComponentUpdate(nextProps: Props): boolean {
     const responseItemHasChanged = this.props.responseItem !== nextProps.responseItem;
     const helpItemHasChanged = this.props.isHelpOpen !== nextProps.isHelpOpen;
     const repeats = this.props.item.repeats ?? false;

@@ -1,11 +1,12 @@
 import * as React from 'react';
+
 import SafeInputField from '@helsenorge/toolkit/components/atoms/safe-input-field';
 import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
 import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from '../../../types/fhir';
-import { isReadOnly, isRequired, getId, renderPrefix, getText, getStringValue, getPDFStringValue, getMaxLength } from '../../../util/index';
 import { getValidationTextExtension, getPlaceholder, getMinLengthExtensionValue, getRegexExtension } from '../../../util/extension';
+import { isReadOnly, isRequired, getId, renderPrefix, getText, getStringValue, getPDFStringValue, getMaxLength } from '../../../util/index';
 import Pdf from '../textview';
 
 interface Props {
@@ -56,7 +57,6 @@ const textField: React.SFC<Props & ValidationProps> = ({
         onBlur={handleStringChange}
         pattern={getRegexExtension(item)}
         errorMessage={getValidationTextExtension(item)}
-        allowInputOverMaxLength
         validateOnExternalUpdate={true}
       />
     </Validation>

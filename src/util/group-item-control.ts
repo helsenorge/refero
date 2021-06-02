@@ -1,7 +1,7 @@
-import { getItemControlExtensionValue } from './extension';
-import { QuestionnaireItem, Coding } from '../types/fhir';
-import itemType from '../constants/itemType';
 import itemControlConstants from '../constants/itemcontrol';
+import itemType from '../constants/itemType';
+import { QuestionnaireItem, Coding } from '../types/fhir';
+import { getItemControlExtensionValue } from './extension';
 
 export function getGroupItemControl(item: QuestionnaireItem): Coding[] {
   if (item.type !== itemType.GROUP) return [];

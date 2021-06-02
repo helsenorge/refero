@@ -1,10 +1,10 @@
 import * as uuid from 'uuid';
 
-import { QuestionnaireItem, Coding, Extension } from '../types/fhir';
-import Scoring from '../constants/scoring';
 import ExtensionConstants from '../constants/extensions';
-import { getCalculatedExpressionExtension } from './extension';
+import Scoring from '../constants/scoring';
 import { ScoringItemType } from '../constants/scoringItemType';
+import { QuestionnaireItem, Coding, Extension } from '../types/fhir';
+import { getCalculatedExpressionExtension } from './extension';
 
 export function createDummySectionScoreItem(): QuestionnaireItem {
   return {
@@ -69,9 +69,9 @@ export function isQuestionScoringItem(item: QuestionnaireItem): boolean {
 function getCodingWithScoring(item: QuestionnaireItem): Coding | undefined {
   if (!item.code) return;
 
-  let scoringTypes = [Scoring.Type.QUESTION_SCORE, Scoring.Type.SECTION_SCORE, Scoring.Type.TOTAL_SCORE];
-  for (let coding of item.code) {
-    let system: string = (coding.system as unknown) as string;
+  const scoringTypes = [Scoring.Type.QUESTION_SCORE, Scoring.Type.SECTION_SCORE, Scoring.Type.TOTAL_SCORE];
+  for (const coding of item.code) {
+    const system: string = (coding.system as unknown) as string;
     if (system === Scoring.SCORING_FORMULAS && scoringTypes.filter(s => s === coding.code).length > 0) {
       return coding;
     }

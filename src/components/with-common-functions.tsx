@@ -1,21 +1,19 @@
 import * as React from 'react';
-import { ThunkDispatch } from 'redux-thunk';
+
 import classNames from 'classnames';
 import { Collapse } from 'react-collapse';
-import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
-import { FormChild } from '@helsenorge/toolkit/components/molecules/form';
+import { ThunkDispatch } from 'redux-thunk';
+
 import { UploadedFile } from '@helsenorge/toolkit/components/atoms/dropzone';
 import HelpTrigger from '@helsenorge/toolkit/components/icons/HelpTrigger';
+import { FormChild } from '@helsenorge/toolkit/components/molecules/form';
+import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
 
+import { NewValueAction } from '../actions/newValue';
+import itemControlConstants from '../constants/itemcontrol';
+import itemType from '../constants/itemType';
 import { GlobalState } from '../reducers';
-import {
-  Path,
-  getAnswerFromResponseItem,
-  getItemWithIdFromResponseItemArray,
-  createPathForItem,
-  shouldRenderDeleteButton,
-  createIdSuffix,
-} from '../util/skjemautfyller-core';
+import { AutoSuggestProps } from '../types/autoSuggestProps';
 import {
   Resource,
   QuestionnaireResponseItem,
@@ -24,18 +22,22 @@ import {
   Attachment,
   ValueSet,
 } from '../types/fhir';
-import { Resources } from '../util/resources';
-import { getComponentForItem, getChildHeaderTag, shouldRenderRepeatButton, getText, isHiddenItem } from '../util/index';
-import RepeatButton from './formcomponents/repeat/repeat-button';
-import DeleteButton from './formcomponents/repeat/delete-button';
 import { TextMessage } from '../types/text-message';
 import { findHelpItem, isHelpItem, getHelpItemType } from '../util/help';
-import HelpButton from './help-button/help-button';
-import itemControlConstants from '../constants/itemcontrol';
-import { NewValueAction } from '../actions/newValue';
+import { getComponentForItem, getChildHeaderTag, shouldRenderRepeatButton, getText, isHiddenItem } from '../util/index';
 import { RenderContext } from '../util/renderContext';
-import itemType from '../constants/itemType';
-import { AutoSuggestProps } from '../types/autoSuggestProps';
+import { Resources } from '../util/resources';
+import {
+  Path,
+  getAnswerFromResponseItem,
+  getItemWithIdFromResponseItemArray,
+  createPathForItem,
+  shouldRenderDeleteButton,
+  createIdSuffix,
+} from '../util/skjemautfyller-core';
+import DeleteButton from './formcomponents/repeat/delete-button';
+import RepeatButton from './formcomponents/repeat/repeat-button';
+import HelpButton from './help-button/help-button';
 
 export interface Props {
   resources?: Resources;
@@ -110,6 +112,7 @@ interface State {
   isHelpVisible: boolean;
 }
 
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export default function withCommonFunctions<T>(WrappedComponent: React.ComponentClass<T & EnhancedProps>) {
   return class WithCommonFunctions extends React.Component<T & ValidationProps & Props, State> {
     constructor(props: T & ValidationProps & Props) {
@@ -147,7 +150,12 @@ export default function withCommonFunctions<T>(WrappedComponent: React.Component
       );
     };
 
-    renderRepeatButton = (item: QuestionnaireItem, index: number, path?: Array<Path>, response?: Array<QuestionnaireResponseItem>) => {
+    renderRepeatButton = (
+      item: QuestionnaireItem,
+      index: number,
+      path?: Array<Path>,
+      response?: Array<QuestionnaireResponseItem>
+    ): JSX.Element | undefined => {
       if (!item.repeats || !shouldRenderRepeatButton(item, response, index)) {
         return undefined;
       }
@@ -169,11 +177,11 @@ export default function withCommonFunctions<T>(WrappedComponent: React.Component
       return !!answer && Object.keys(answer as object).length > 0;
     }
 
-    toggleHelp = (isOpen: boolean) => {
+    toggleHelp = (isOpen: boolean): void => {
       this.setState({ isHelpVisible: isOpen });
     };
 
-    renderHelpButton = () => {
+    renderHelpButton = (): JSX.Element | undefined => {
       const { item, onRequestHelpButton } = this.props;
 
       if (!item) return;
@@ -198,13 +206,17 @@ export default function withCommonFunctions<T>(WrappedComponent: React.Component
       );
     };
 
-    renderHelpElement = () => {
+    renderHelpElement = (): JSX.Element | undefined => {
       const { item, onRequestHelpElement } = this.props;
-      if (!item) return;
+      if (!item) {
+        return;
+      }
       const qItem = item as QuestionnaireItem;
 
       const helpItem = findHelpItem(qItem);
-      if (!helpItem) return;
+      if (!helpItem) {
+        return;
+      }
 
       const helpItemType = getHelpItemType(helpItem) || itemControlConstants.HELP;
 
@@ -311,7 +323,7 @@ export default function withCommonFunctions<T>(WrappedComponent: React.Component
       return renderedItems;
     };
 
-    render() {
+    render(): JSX.Element | null {
       if (!this.props.enable) {
         return null;
       } else {
