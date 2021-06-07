@@ -1,23 +1,27 @@
 import * as React from 'react';
+
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
+
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from '../../../types/fhir';
+
 import SafeInputField from '@helsenorge/toolkit/components/atoms/safe-input-field';
-import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
 import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
 
-import { GlobalState } from '../../../reducers';
+import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
+
 import { NewValueAction, newDecimalValueAsync } from '../../../actions/newValue';
-import { Path } from '../../../util/skjemautfyller-core';
-import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
-import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from '../../../types/fhir';
-import { Resources } from '../../../util/resources';
-import { isReadOnly, isRequired, getId, getDecimalPattern, getSublabelText } from '../../../util/index';
+import { GlobalState } from '../../../reducers';
 import { getValidationTextExtension, getPlaceholder, getMaxValueExtensionValue, getMinValueExtensionValue } from '../../../util/extension';
+import { isReadOnly, isRequired, getId, getDecimalPattern, getSublabelText } from '../../../util/index';
+import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
+import { Resources } from '../../../util/resources';
+import { Path } from '../../../util/skjemautfyller-core';
 import withCommonFunctions from '../../with-common-functions';
-import TextView from '../textview';
-import SubLabel from '../sublabel';
 import Label from '../label';
+import SubLabel from '../sublabel';
+import TextView from '../textview';
 
 export interface Props {
   item: QuestionnaireItem;
@@ -50,7 +54,7 @@ class Decimal extends React.Component<Props & ValidationProps, {}> {
     }
   }
 
-  getPDFValue() {
+  getPDFValue(): string | number {
     const value = this.getValue();
     if (!value) {
       let text = '';
@@ -62,7 +66,7 @@ class Decimal extends React.Component<Props & ValidationProps, {}> {
     return value;
   }
 
-  handleChange = (event: React.FormEvent<{}>) => {
+  handleChange = (event: React.FormEvent<{}>): void => {
     const { dispatch, path, item, promptLoginMessage, onAnswerChange } = this.props;
     const value = parseFloat((event.target as HTMLInputElement).value);
     if (dispatch) {
@@ -76,7 +80,7 @@ class Decimal extends React.Component<Props & ValidationProps, {}> {
     }
   };
 
-  shouldComponentUpdate(nextProps: Props, _nextState: {}) {
+  shouldComponentUpdate(nextProps: Props): boolean {
     const responseItemHasChanged = this.props.responseItem !== nextProps.responseItem;
     const helpItemHasChanged = this.props.isHelpOpen !== nextProps.isHelpOpen;
     const resourcesHasChanged = JSON.stringify(this.props.resources) !== JSON.stringify(nextProps.resources);

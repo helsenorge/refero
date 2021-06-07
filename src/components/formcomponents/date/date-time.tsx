@@ -1,30 +1,34 @@
 import * as React from 'react';
+
+import moment, { Moment } from 'moment';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
-import moment, { Moment } from 'moment';
+
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem } from '../../../types/fhir';
+
 import DateTimePicker from '@helsenorge/toolkit/components/molecules/date-time-picker';
 import { getFullMomentDate } from '@helsenorge/toolkit/components/molecules/date-time-picker/date-time-picker-utils';
 import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
 import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
-import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 import { parseDate } from '@helsenorge/toolkit/components/molecules/time-input/date-core';
-import { LanguageLocales } from '@helsenorge/core-utils/constants/languages';
 
-import withCommonFunctions from '../../with-common-functions';
-import { Path } from '../../../util/skjemautfyller-core';
-import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
-import Constants from '../../../constants/index';
-import ExtensionConstants from '../../../constants/extensions';
+import { LanguageLocales } from '@helsenorge/core-utils/constants/languages';
+import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
+
 import { NewValueAction, newDateTimeValueAsync } from '../../../actions/newValue';
-import { isRequired, getId, isReadOnly, getSublabelText } from '../../../util/index';
-import { getValidationTextExtension, getExtension } from '../../../util/extension';
-import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem } from '../../../types/fhir';
-import { Resources } from '../../../util/resources';
-import TextView from '../textview';
+import ExtensionConstants from '../../../constants/extensions';
+import Constants from '../../../constants/index';
 import { GlobalState } from '../../../reducers';
+import { getValidationTextExtension, getExtension } from '../../../util/extension';
 import { evaluateFhirpathExpressionToGetDate } from '../../../util/fhirpathHelper';
-import SubLabel from '../sublabel';
+import { isRequired, getId, isReadOnly, getSublabelText } from '../../../util/index';
+import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
+import { Resources } from '../../../util/resources';
+import { Path } from '../../../util/skjemautfyller-core';
+import withCommonFunctions from '../../with-common-functions';
 import Label from '../label';
+import SubLabel from '../sublabel';
+import TextView from '../textview';
 
 export interface Props {
   item: QuestionnaireItem;
@@ -106,7 +110,7 @@ class DateTime extends React.Component<Props & ValidationProps> {
     return undefined;
   }
 
-  dispatchNewDate = (date: Moment | undefined, time: string | undefined) => {
+  dispatchNewDate = (date: Moment | undefined, time: string | undefined): void => {
     const { dispatch, promptLoginMessage, onAnswerChange, path, item } = this.props;
     if (dispatch) {
       const momentDate = getFullMomentDate(date, time);
@@ -126,17 +130,17 @@ class DateTime extends React.Component<Props & ValidationProps> {
     }
   };
 
-  promptLogin = () => {
+  promptLogin = (): void => {
     if (this.props.promptLoginMessage) {
       this.props.promptLoginMessage();
     }
   };
 
-  onBlur = () => {
+  onBlur = (): boolean => {
     return true;
   };
 
-  getStringValue = () => {
+  getStringValue = (): string => {
     const date = this.getDefaultDate(this.props);
     let text = '';
     if (this.props.resources && this.props.resources.ikkeBesvart) {
@@ -149,7 +153,7 @@ class DateTime extends React.Component<Props & ValidationProps> {
       : text;
   };
 
-  shouldComponentUpdate(nextProps: Props, _nextState: {}) {
+  shouldComponentUpdate(nextProps: Props): boolean {
     const responseItemHasChanged = this.props.responseItem !== nextProps.responseItem;
     const helpItemHasChanged = this.props.isHelpOpen !== nextProps.isHelpOpen;
     const resourcesHasChanged = JSON.stringify(this.props.resources) !== JSON.stringify(nextProps.resources);
@@ -158,7 +162,7 @@ class DateTime extends React.Component<Props & ValidationProps> {
     return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats;
   }
 
-  getLocaleFromLanguage = () => {
+  getLocaleFromLanguage = (): LanguageLocales.NORWEGIAN | LanguageLocales.ENGLISH => {
     if (this.props.language?.toLowerCase() === 'en-gb') {
       return LanguageLocales.ENGLISH;
     }

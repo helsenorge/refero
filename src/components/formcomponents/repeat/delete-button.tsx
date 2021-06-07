@@ -1,19 +1,21 @@
 import * as React from 'react';
+
+import classNames from 'classnames';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
-import classNames from 'classnames';
-import { Lightbox } from '@helsenorge/toolkit/components/molecules/lightbox';
+
+import { DisplayButton } from '@helsenorge/toolkit/components/atoms/buttons/display-button';
 import { FunctionButton } from '@helsenorge/toolkit/components/atoms/buttons/function-button';
 import Delete from '@helsenorge/toolkit/components/icons/Delete';
-import { DisplayButton } from '@helsenorge/toolkit/components/atoms/buttons/display-button';
+import { Lightbox } from '@helsenorge/toolkit/components/molecules/lightbox';
 
-import { Path } from '../../../util/skjemautfyller-core';
-import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
-import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from '../../../types/fhir';
-import { Resources } from '../../../util/resources';
-import { GlobalState } from '../../../reducers';
 import { NewValueAction, deleteRepeatItemAsync } from '../../../actions/newValue';
+import { GlobalState } from '../../../reducers';
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from '../../../types/fhir';
+import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { RenderContext } from '../../../util/renderContext';
+import { Resources } from '../../../util/resources';
+import { Path } from '../../../util/skjemautfyller-core';
 
 interface Props {
   item: QuestionnaireItem;
@@ -36,7 +38,7 @@ class DeleteButton extends React.Component<Props, State> {
     this.state = { showConfirm: false };
   }
 
-  onDeleteRepeatItemConfirmed = () => {
+  onDeleteRepeatItemConfirmed = (): void => {
     if (this.props.dispatch && this.props.item && this.props.path) {
       this.props
         .dispatch(deleteRepeatItemAsync(this.props.path, this.props.item))
@@ -45,7 +47,7 @@ class DeleteButton extends React.Component<Props, State> {
     this.setState({ showConfirm: false });
   };
 
-  onDeleteRepeatItem = () => {
+  onDeleteRepeatItem = (): void => {
     if (this.props.mustShowConfirm) {
       this.setState({ showConfirm: true });
     } else {
@@ -53,7 +55,7 @@ class DeleteButton extends React.Component<Props, State> {
     }
   };
 
-  onConfirmCancel = () => {
+  onConfirmCancel = (): void => {
     this.setState({ showConfirm: false });
   };
 

@@ -1,16 +1,19 @@
 import * as React from 'react';
+
 import { Collapse } from 'react-collapse';
-import { Options } from '@helsenorge/toolkit/components/atoms/radio-group';
+
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from '../../../types/fhir';
+
 import CheckBoxGroup from '@helsenorge/toolkit/components/atoms/checkbox-group';
+import { Options } from '@helsenorge/toolkit/components/atoms/radio-group';
 import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
 
+import { shouldShowExtraChoice } from '../../../util/choice';
+import { getMaxOccursExtensionValue, getMinOccursExtensionValue, getValidationTextExtension } from '../../../util/extension';
 import { isRequired, getId, getSublabelText } from '../../../util/index';
 import { Resources } from '../../../util/resources';
-import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from '../../../types/fhir';
-import { getMaxOccursExtensionValue, getMinOccursExtensionValue, getValidationTextExtension } from '../../../util/extension';
-import { shouldShowExtraChoice } from '../../../util/choice';
-import SubLabel from '../sublabel';
 import Label from '../label';
+import SubLabel from '../sublabel';
 
 interface Props {
   options?: Array<Options>;
@@ -87,7 +90,7 @@ const CheckboxView: React.SFC<Props> = ({
   );
 };
 
-function isSelected(el: Options, selected?: Array<string | undefined>) {
+function isSelected(el: Options, selected?: Array<string | undefined>): boolean {
   if (selected) {
     for (let i = 0; i < selected.length; i++) {
       if (el.type === selected[i]) {

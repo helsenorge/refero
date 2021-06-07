@@ -1,14 +1,16 @@
 import * as React from 'react';
+
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from '../../../types/fhir';
+
 import SafeInputField from '@helsenorge/toolkit/components/atoms/safe-input-field';
 import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
 import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
 
-import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from '../../../types/fhir';
-import { isReadOnly, isRequired, getId, getStringValue, getPDFStringValue, getMaxLength, getSublabelText } from '../../../util/index';
 import { getValidationTextExtension, getPlaceholder, getMinLengthExtensionValue, getRegexExtension } from '../../../util/extension';
-import Pdf from '../textview';
-import SubLabel from '../sublabel';
+import { isReadOnly, isRequired, getId, getStringValue, getPDFStringValue, getMaxLength, getSublabelText } from '../../../util/index';
 import Label from '../label';
+import SubLabel from '../sublabel';
+import Pdf from '../textview';
 
 interface Props {
   id?: string;
@@ -55,7 +57,6 @@ const textField: React.SFC<Props & ValidationProps> = ({
         onBlur={handleStringChange}
         pattern={getRegexExtension(item)}
         errorMessage={getValidationTextExtension(item)}
-        allowInputOverMaxLength
         validateOnExternalUpdate={true}
       />
     </Validation>

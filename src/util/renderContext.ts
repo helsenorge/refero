@@ -1,5 +1,6 @@
-import { RenderContextType } from '../constants/renderContextType';
 import { QuestionnaireItem } from '../types/fhir';
+
+import { RenderContextType } from '../constants/renderContextType';
 
 export class RenderContext {
   public RenderContextType: RenderContextType;

@@ -1,4 +1,3 @@
-import { getResponseItemAndPathWithLinkId, getQuestionnaireDefinitionItem, Path } from './skjemautfyller-core';
 import {
   newIntegerValue,
   NewValueAction,
@@ -14,10 +13,12 @@ import {
   removeCodingValue,
   removeCodingStringValue,
 } from '../actions/newValue';
+import itemControlConstants from '../constants/itemcontrol';
 import { Questionnaire, QuestionnaireResponse, QuestionnaireItem, Coding, Quantity } from '../types/fhir';
 import { getItemControlValue } from './choice';
-import itemControlConstants from '../constants/itemcontrol';
+import { getResponseItemAndPathWithLinkId, getQuestionnaireDefinitionItem, Path } from './skjemautfyller-core';
 
+// eslint-disable-next-line @typescript-eslint/interface-name-prefix
 export interface IActionRequester {
   addIntegerAnswer(linkId: string, value: number, index?: number): void;
   addDecimalAnswer(linkId: string, value: number, index?: number): void;
@@ -63,44 +64,44 @@ export class ActionRequester implements IActionRequester {
     this.questionnaireResponse = questionnaireResponse;
   }
 
-  public addIntegerAnswer(linkId: string, value: number, index: number = 0) {
-    var itemAndPath = this.getItemAndPath(linkId, index);
+  public addIntegerAnswer(linkId: string, value: number, index: number = 0): void {
+    const itemAndPath = this.getItemAndPath(linkId, index);
     if (itemAndPath) {
       this.actions.push(newIntegerValue(itemAndPath.path, value, itemAndPath.item));
     }
   }
 
-  public clearIntegerAnswer(linkId: string, index: number = 0) {
+  public clearIntegerAnswer(linkId: string, index: number = 0): void {
     this.addIntegerAnswer(linkId, Number.NaN, index);
   }
 
-  public addDecimalAnswer(linkId: string, value: number, index: number = 0) {
-    var itemAndPath = this.getItemAndPath(linkId, index);
+  public addDecimalAnswer(linkId: string, value: number, index: number = 0): void {
+    const itemAndPath = this.getItemAndPath(linkId, index);
     if (itemAndPath) {
       this.actions.push(newDecimalValue(itemAndPath.path, value, itemAndPath.item));
     }
   }
 
-  public clearDecimalAnswer(linkId: string, index: number = 0) {
+  public clearDecimalAnswer(linkId: string, index: number = 0): void {
     this.addDecimalAnswer(linkId, Number.NaN, index);
   }
 
-  public addChoiceAnswer(linkId: string, value: Coding, index: number = 0) {
-    var itemAndPath = this.getItemAndPath(linkId, index);
+  public addChoiceAnswer(linkId: string, value: Coding, index: number = 0): void {
+    const itemAndPath = this.getItemAndPath(linkId, index);
     if (itemAndPath) {
       this.actions.push(newCodingValue(itemAndPath.path, value, itemAndPath.item, this.isCheckbox(itemAndPath.item)));
     }
   }
 
-  public removeChoiceAnswer(linkId: string, value: Coding, index: number = 0) {
-    var itemAndPath = this.getItemAndPath(linkId, index);
+  public removeChoiceAnswer(linkId: string, value: Coding, index: number = 0): void {
+    const itemAndPath = this.getItemAndPath(linkId, index);
     if (itemAndPath && this.isCheckbox(itemAndPath.item)) {
       this.actions.push(removeCodingValue(itemAndPath.path, value, itemAndPath.item));
     }
   }
 
-  public addOpenChoiceAnswer(linkId: string, value: Coding | string, index: number = 0) {
-    var itemAndPath = this.getItemAndPath(linkId, index);
+  public addOpenChoiceAnswer(linkId: string, value: Coding | string, index: number = 0): void {
+    const itemAndPath = this.getItemAndPath(linkId, index);
     if (itemAndPath) {
       if (typeof value === 'string') {
         this.actions.push(newCodingStringValue(itemAndPath.path, value, itemAndPath.item));
@@ -110,8 +111,8 @@ export class ActionRequester implements IActionRequester {
     }
   }
 
-  public removeOpenChoiceAnswer(linkId: string, value: Coding | string, index: number = 0) {
-    var itemAndPath = this.getItemAndPath(linkId, index);
+  public removeOpenChoiceAnswer(linkId: string, value: Coding | string, index: number = 0): void {
+    const itemAndPath = this.getItemAndPath(linkId, index);
     if (itemAndPath) {
       if (typeof value === 'string') {
         this.actions.push(removeCodingStringValue(itemAndPath.path, itemAndPath.item));
@@ -121,69 +122,69 @@ export class ActionRequester implements IActionRequester {
     }
   }
 
-  public addBooleanAnswer(linkId: string, value: boolean, index: number = 0) {
-    var itemAndPath = this.getItemAndPath(linkId, index);
+  public addBooleanAnswer(linkId: string, value: boolean, index: number = 0): void {
+    const itemAndPath = this.getItemAndPath(linkId, index);
     if (itemAndPath) {
       this.actions.push(newBooleanValue(itemAndPath.path, value, itemAndPath.item));
     }
   }
 
-  public clearBooleanAnswer(linkId: string, index: number = 0) {
+  public clearBooleanAnswer(linkId: string, index: number = 0): void {
     this.addBooleanAnswer(linkId, false, index);
   }
 
-  public addDateAnswer(linkId: string, value: string, index: number = 0) {
-    var itemAndPath = this.getItemAndPath(linkId, index);
+  public addDateAnswer(linkId: string, value: string, index: number = 0): void {
+    const itemAndPath = this.getItemAndPath(linkId, index);
     if (itemAndPath) {
       this.actions.push(newDateValue(itemAndPath.path, value, itemAndPath.item));
     }
   }
 
-  public clearDateAnswer(linkId: string, index: number = 0) {
+  public clearDateAnswer(linkId: string, index: number = 0): void {
     this.addDateAnswer(linkId, '', index);
   }
 
-  public addTimeAnswer(linkId: string, value: string, index: number = 0) {
-    var itemAndPath = this.getItemAndPath(linkId, index);
+  public addTimeAnswer(linkId: string, value: string, index: number = 0): void {
+    const itemAndPath = this.getItemAndPath(linkId, index);
     if (itemAndPath) {
       this.actions.push(newTimeValue(itemAndPath.path, value, itemAndPath.item));
     }
   }
 
-  public clearTimeAnswer(linkId: string, index: number = 0) {
+  public clearTimeAnswer(linkId: string, index: number = 0): void {
     this.addTimeAnswer(linkId, '', index);
   }
 
-  public addDateTimeAnswer(linkId: string, value: string, index: number = 0) {
-    var itemAndPath = this.getItemAndPath(linkId, index);
+  public addDateTimeAnswer(linkId: string, value: string, index: number = 0): void {
+    const itemAndPath = this.getItemAndPath(linkId, index);
     if (itemAndPath) {
       this.actions.push(newDateTimeValue(itemAndPath.path, value, itemAndPath.item));
     }
   }
 
-  public clearDateTimeAnswer(linkId: string, index: number = 0) {
+  public clearDateTimeAnswer(linkId: string, index: number = 0): void {
     this.addDateTimeAnswer(linkId, '', index);
   }
 
-  public addQuantityAnswer(linkId: string, value: Quantity, index: number = 0) {
-    var itemAndPath = this.getItemAndPath(linkId, index);
+  public addQuantityAnswer(linkId: string, value: Quantity, index: number = 0): void {
+    const itemAndPath = this.getItemAndPath(linkId, index);
     if (itemAndPath) {
       this.actions.push(newQuantityValue(itemAndPath.path, value, itemAndPath.item));
     }
   }
 
-  public clearQuantityAnswer(linkId: string, index: number = 0) {
+  public clearQuantityAnswer(linkId: string, index: number = 0): void {
     this.addQuantityAnswer(linkId, {} as Quantity, index);
   }
 
-  public addStringAnswer(linkId: string, value: string, index: number = 0) {
-    var itemAndPath = this.getItemAndPath(linkId, index);
+  public addStringAnswer(linkId: string, value: string, index: number = 0): void {
+    const itemAndPath = this.getItemAndPath(linkId, index);
     if (itemAndPath) {
       this.actions.push(newStringValue(itemAndPath.path, value, itemAndPath.item));
     }
   }
 
-  public clearStringAnswer(linkId: string, index: number = 0) {
+  public clearStringAnswer(linkId: string, index: number = 0): void {
     this.addStringAnswer(linkId, '', index);
   }
 
@@ -191,7 +192,7 @@ export class ActionRequester implements IActionRequester {
     return this.actions;
   }
 
-  private getItemAndPath(linkId: string, index: number) {
+  private getItemAndPath(linkId: string, index: number): ItemAndPath | undefined {
     const item = getQuestionnaireDefinitionItem(linkId, this.questionnaire.item);
     const itemsAndPaths = getResponseItemAndPathWithLinkId(linkId, this.questionnaireResponse);
 

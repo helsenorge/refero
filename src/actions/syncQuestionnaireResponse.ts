@@ -1,3 +1,4 @@
+import ItemType from '../constants/itemType';
 import {
   QuestionnaireResponse,
   Questionnaire,
@@ -5,7 +6,6 @@ import {
   QuestionnaireResponseItem,
   QuestionnaireResponseItemAnswer,
 } from '../types/fhir';
-import { createQuestionnaireResponseItem } from './generateQuestionnaireResponse';
 import {
   hasAnswer,
   hasAttachmentAnswer,
@@ -19,14 +19,14 @@ import {
   hasQuantityAnswer,
   hasTimeAnswer,
 } from '../util/skjemautfyller-core';
-import ItemType from '../constants/itemType';
+import { createQuestionnaireResponseItem } from './generateQuestionnaireResponse';
 
 interface Dictionary<T> {
   [linkId: string]: T[];
 }
 
 function createNewItem(qItem: QuestionnaireItem): QuestionnaireResponseItem {
-  var qrItem = createQuestionnaireResponseItem(qItem);
+  const qrItem = createQuestionnaireResponseItem(qItem);
   synQuestionnaireResponseItem(qItem, qrItem);
   return qrItem;
 }
@@ -36,17 +36,17 @@ function copyItem(qItem: QuestionnaireItem, qrItem: QuestionnaireResponseItem): 
   return qrItem;
 }
 
-export function syncQuestionnaireResponse(q: Questionnaire, qr: QuestionnaireResponse) {
-  let qrItemCopy: QuestionnaireResponseItem[] = [];
-  let qrItems = createDictionary(qr.item || []);
-  for (let qItem of q.item || []) {
-    let linkId = qItem.linkId;
+export function syncQuestionnaireResponse(q: Questionnaire, qr: QuestionnaireResponse): QuestionnaireResponse {
+  const qrItemCopy: QuestionnaireResponseItem[] = [];
+  const qrItems = createDictionary(qr.item || []);
+  for (const qItem of q.item || []) {
+    const linkId = qItem.linkId;
 
     if (qrItems[linkId]) {
       if (hasChanged(qItem, qrItems[linkId])) {
         qrItemCopy.push(createNewItem(qItem));
       } else {
-        for (let qrItem of qrItems[linkId]) {
+        for (const qrItem of qrItems[linkId]) {
           qrItemCopy.push(copyItem(qItem, qrItem));
         }
       }
@@ -59,19 +59,19 @@ export function syncQuestionnaireResponse(q: Questionnaire, qr: QuestionnaireRes
   return qr;
 }
 
-function synQuestionnaireResponseItem(qItem: QuestionnaireItem, qrItem: QuestionnaireResponseItem) {
-  var qrItemCopy: QuestionnaireResponseItem[] = [];
-  var qrAnswerItemCopy: QuestionnaireResponseItem[] = [];
-  var qrItems = createDictionary(qrItem.item || []);
-  var qrAnswerItems = createDictionary(qrItem.answer && qrItem.answer[0].item ? qrItem.answer[0].item : []);
-  for (let subQItem of qItem.item || []) {
-    let linkId = subQItem.linkId;
+function synQuestionnaireResponseItem(qItem: QuestionnaireItem, qrItem: QuestionnaireResponseItem): void {
+  const qrItemCopy: QuestionnaireResponseItem[] = [];
+  const qrAnswerItemCopy: QuestionnaireResponseItem[] = [];
+  const qrItems = createDictionary(qrItem.item || []);
+  const qrAnswerItems = createDictionary(qrItem.answer && qrItem.answer[0].item ? qrItem.answer[0].item : []);
+  for (const subQItem of qItem.item || []) {
+    const linkId = subQItem.linkId;
 
     if (qrItems[linkId]) {
       if (hasChanged(subQItem, qrItems[linkId])) {
         qrItemCopy.push(createNewItem(subQItem));
       } else {
-        for (let subQrItem of qrItems[linkId]) {
+        for (const subQrItem of qrItems[linkId]) {
           qrItemCopy.push(copyItem(subQItem, subQrItem));
         }
       }
@@ -79,12 +79,12 @@ function synQuestionnaireResponseItem(qItem: QuestionnaireItem, qrItem: Question
       if (hasChanged(subQItem, qrAnswerItems[linkId])) {
         qrAnswerItemCopy.push(createNewItem(subQItem));
       } else {
-        for (let subQrItem of qrAnswerItems[linkId]) {
+        for (const subQrItem of qrAnswerItems[linkId]) {
           qrAnswerItemCopy.push(copyItem(subQItem, subQrItem));
         }
       }
     } else {
-      let newQrItem = createNewItem(subQItem);
+      const newQrItem = createNewItem(subQItem);
       if (qItem.type == ItemType.GROUP) {
         qrItemCopy.push(newQrItem);
       } else {
@@ -114,10 +114,10 @@ function synQuestionnaireResponseItem(qItem: QuestionnaireItem, qrItem: Question
 }
 
 function hasChanged(qItem: QuestionnaireItem, qrItems: QuestionnaireResponseItem[]): boolean {
-  var qrItemWithAnswer = qrItems.find(it => it.answer && it.answer.some(a => hasAnswer(a)));
+  const qrItemWithAnswer = qrItems.find(it => it.answer && it.answer.some(a => hasAnswer(a)));
   if (!qrItemWithAnswer || !qrItemWithAnswer.answer) return false;
 
-  var answer = qrItemWithAnswer.answer.find(it => hasAnswer(it));
+  const answer = qrItemWithAnswer.answer.find(it => hasAnswer(it));
   if (!answer) {
     return false;
   }
@@ -159,9 +159,9 @@ function itemTypeMatchesAnswerValue(type: string, answer: QuestionnaireResponseI
 }
 
 function createDictionary(qrItems: QuestionnaireResponseItem[]): Dictionary<QuestionnaireResponseItem> {
-  let dictionary: Dictionary<QuestionnaireResponseItem> = {};
-  for (let item of qrItems) {
-    var linkId = transform(item.linkId);
+  const dictionary: Dictionary<QuestionnaireResponseItem> = {};
+  for (const item of qrItems) {
+    const linkId = transform(item.linkId);
     if (!dictionary[linkId]) {
       dictionary[linkId] = [];
     }
@@ -172,6 +172,6 @@ function createDictionary(qrItems: QuestionnaireResponseItem[]): Dictionary<Ques
   return dictionary;
 }
 
-function transform(linkId: string) {
+function transform(linkId: string): string {
   return linkId.split('^')[0];
 }

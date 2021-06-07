@@ -1,3 +1,9 @@
+import { Options } from '@helsenorge/toolkit/components/atoms/radio-group';
+
+import ExtensionConstants from '../constants/extensions';
+import Constants, { OPEN_CHOICE_ID, OPEN_CHOICE_LABEL } from '../constants/index';
+import itemControlConstants from '../constants/itemcontrol';
+import ItemType from '../constants/itemType';
 import {
   QuestionnaireItem,
   QuestionnaireItemAnswerOption,
@@ -11,14 +17,10 @@ import {
   ValueSetComposeIncludeConcept,
   ValueSetComposeInclude,
 } from '../types/fhir';
-import { Options } from '@helsenorge/toolkit/components/atoms/radio-group';
-import { isReadOnly, isRequired } from './index';
-import ExtensionConstants from '../constants/extensions';
-import Constants, { OPEN_CHOICE_ID, OPEN_CHOICE_LABEL } from '../constants/index';
 import { getItemControlExtensionValue, getValidationTextExtension } from './extension';
-import itemControlConstants from '../constants/itemcontrol';
 import { Resources } from './resources';
-import ItemType from '../constants/itemType';
+
+import { isReadOnly, isRequired } from './index';
 
 export function hasCanonicalValueSet(item: QuestionnaireItem): boolean {
   return !!item.answerValueSet && item.answerValueSet.substr(0, 4) === 'http';
@@ -58,7 +60,7 @@ export function getOptions(item: QuestionnaireItem, containedResources?: Resourc
   return options;
 }
 
-export function getSystem(item: QuestionnaireItem, code: string, containedResources?: Resource[]) {
+export function getSystem(item: QuestionnaireItem, code: string, containedResources?: Resource[]): string | undefined {
   if (item.answerValueSet && item.answerValueSet.startsWith('#')) {
     const id: string = item.answerValueSet.replace('#', '');
     const resource = getContainedResource(id, containedResources);
@@ -125,7 +127,7 @@ function isAboveDropdownThreshold(options: Array<Options> | undefined): boolean 
   return options.length > Constants.CHOICE_DROPDOWN_TRESHOLD;
 }
 
-export function getItemControlValue(item: QuestionnaireItem) {
+export function getItemControlValue(item: QuestionnaireItem): string | undefined {
   const itemControl = getItemControlExtensionValue(item);
   if (itemControl) {
     for (let i = 0; i < itemControl.length; i++) {
@@ -188,7 +190,7 @@ export function isAllowedValue(item: QuestionnaireItem, value: string | undefine
   return true;
 }
 
-export function validateInput(item: QuestionnaireItem, value: string | undefined, containedResources: Resource[] | undefined) {
+export function validateInput(item: QuestionnaireItem, value: string | undefined, containedResources: Resource[] | undefined): boolean {
   if (isRequired(item) && !value) {
     return false;
   }
@@ -198,7 +200,7 @@ export function validateInput(item: QuestionnaireItem, value: string | undefined
   return true;
 }
 
-export function getIndexOfAnswer(code: string, answer: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer) {
+export function getIndexOfAnswer(code: string, answer: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer): number {
   if (answer && Array.isArray(answer)) {
     return answer.findIndex(el => {
       if (el && el.valueCoding && el.valueCoding.code) {
@@ -285,27 +287,27 @@ function createRadiogroupOptionFromQuestionnaireOption(option: QuestionnaireItem
   return undefined;
 }
 
-function createRadiogroupOptionFromValueCoding(coding: Coding, readOnly: boolean) {
+function createRadiogroupOptionFromValueCoding(coding: Coding, readOnly: boolean): Options {
   return createRadiogroupOption(String(coding.code), String(coding.display), readOnly);
 }
 
-function createRadiogroupOptionFromValueReference(reference: Reference, readOnly: boolean) {
+function createRadiogroupOptionFromValueReference(reference: Reference, readOnly: boolean): Options {
   return createRadiogroupOption(String(reference.reference), String(reference.display), readOnly);
 }
 
-function createRadiogroupOptionFromValueDate(value: string, readOnly: boolean) {
+function createRadiogroupOptionFromValueDate(value: string, readOnly: boolean): Options {
   return createRadiogroupOption(String(value), String(value), readOnly);
 }
 
-function createRadiogroupOptionFromValueTime(value: string, readOnly: boolean) {
+function createRadiogroupOptionFromValueTime(value: string, readOnly: boolean): Options {
   return createRadiogroupOption(String(value), String(value), readOnly);
 }
 
-function createRadiogroupOptionFromValueInteger(value: number, readOnly: boolean) {
+function createRadiogroupOptionFromValueInteger(value: number, readOnly: boolean): Options {
   return createRadiogroupOption(String(value), String(value), readOnly);
 }
 
-function createRadiogroupOptionFromValueString(value: string, readOnly: boolean) {
+function createRadiogroupOptionFromValueString(value: string, readOnly: boolean): Options {
   return createRadiogroupOption(value, value, readOnly);
 }
 

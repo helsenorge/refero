@@ -1,17 +1,22 @@
 import * as React from 'react';
+
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
-import { debounce } from '@helsenorge/core-utils/debounce';
+
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem } from '../../../types/fhir';
+
 import { SafeTextarea } from '@helsenorge/toolkit/components/atoms/safe-textarea';
-import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
 import { ExpandableSection } from '@helsenorge/toolkit/components/molecules/expandable-section';
+import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
 import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
 
-import Constants from '../../../constants/index';
-import { Path } from '../../../util/skjemautfyller-core';
-import { GlobalState } from '../../../reducers';
+import { debounce } from '@helsenorge/core-utils/debounce';
+
 import { NewValueAction, newStringValueAsync } from '../../../actions/newValue';
-import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
+import Constants from '../../../constants/index';
+import itemControlConstants from '../../../constants/itemcontrol';
+import { GlobalState } from '../../../reducers';
+import { getPlaceholder, getMinLengthExtensionValue, getItemControlExtensionValue, getRegexExtension } from '../../../util/extension';
 import {
   isReadOnly,
   isRequired,
@@ -25,13 +30,12 @@ import {
   getTextValidationErrorMessage,
   getSublabelText,
 } from '../../../util/index';
-import { getPlaceholder, getMinLengthExtensionValue, getItemControlExtensionValue, getRegexExtension } from '../../../util/extension';
-import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem } from '../../../types/fhir';
-import withCommonFunctions from '../../with-common-functions';
-import TextView from '../textview';
+import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Resources } from '../../../util/resources';
-import itemControlConstants from '../../../constants/itemcontrol';
+import { Path } from '../../../util/skjemautfyller-core';
+import withCommonFunctions from '../../with-common-functions';
 import SubLabel from '../sublabel';
+import TextView from '../textview';
 
 export interface Props {
   item: QuestionnaireItem;
@@ -100,7 +104,7 @@ export class Text extends React.Component<Props & ValidationProps, {}> {
     return isRequired(item) ? this.props.resources?.formRequiredErrorMessage : undefined;
   };
 
-  shouldComponentUpdate(nextProps: Props, _nextState: {}) {
+  shouldComponentUpdate(nextProps: Props): boolean {
     const responseItemHasChanged = this.props.responseItem !== nextProps.responseItem;
     const helpItemHasChanged = this.props.isHelpOpen !== nextProps.isHelpOpen;
     const resourcesHasChanged = JSON.stringify(this.props.resources) !== JSON.stringify(nextProps.resources);
@@ -172,7 +176,6 @@ export class Text extends React.Component<Props & ValidationProps, {}> {
             validator={this.validateText}
             errorMessage={this.getValidationErrorMessage}
             requiredErrorMessage={this.getRequiredErrorMessage(item)}
-            allowInputOverMaxLength
             helpButton={this.props.renderHelpButton()}
             helpElement={this.props.renderHelpElement()}
             validateOnExternalUpdate={true}

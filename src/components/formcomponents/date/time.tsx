@@ -1,26 +1,29 @@
 import * as React from 'react';
+
+import moment from 'moment';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
-import moment from 'moment';
-import { parseDate } from '@helsenorge/toolkit/components/molecules/time-input/date-core';
-import TimeInput from '@helsenorge/toolkit/components/molecules/time-input';
-import DateTimeConstants from '@helsenorge/toolkit/constants/datetime';
+
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem } from '../../../types/fhir';
+
 import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
 import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
+import TimeInput from '@helsenorge/toolkit/components/molecules/time-input';
+import { parseDate } from '@helsenorge/toolkit/components/molecules/time-input/date-core';
+import DateTimeConstants from '@helsenorge/toolkit/constants/datetime';
 
-import withCommonFunctions from '../../with-common-functions';
-import ExtensionConstants from '../../../constants/extensions';
-import { Path } from '../../../util/skjemautfyller-core';
-import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { NewValueAction, newTimeValueAsync } from '../../../actions/newValue';
+import ExtensionConstants from '../../../constants/extensions';
+import { GlobalState } from '../../../reducers';
 import { getExtension, getValidationTextExtension } from '../../../util/extension';
 import { isReadOnly, isRequired, getId, getSublabelText } from '../../../util/index';
-import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem } from '../../../types/fhir';
+import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Resources } from '../../../util/resources';
-import TextView from '../textview';
-import { GlobalState } from '../../../reducers';
-import SubLabel from '../sublabel';
+import { Path } from '../../../util/skjemautfyller-core';
+import withCommonFunctions from '../../with-common-functions';
 import Label from '../label';
+import SubLabel from '../sublabel';
+import TextView from '../textview';
 
 export interface Props {
   value?: string;
@@ -75,7 +78,7 @@ class Time extends React.Component<Props & ValidationProps> {
     return '';
   }
 
-  getPDFValue() {
+  getPDFValue(): string {
     const value = this.getValue();
     if (!value) {
       let text = '';
@@ -150,10 +153,10 @@ class Time extends React.Component<Props & ValidationProps> {
     }
   }
 
-  makeValidTime(time: string) {
+  makeValidTime(time: string): string {
     const values = time.split(':');
-    let hours = values[0] || '00';
-    let minutes = values[1] || '00';
+    const hours = values[0] || '00';
+    const minutes = values[1] || '00';
     return this.addSeconds(`${hours.slice(-2)}:${minutes.slice(-2)}`);
   }
 
@@ -164,7 +167,7 @@ class Time extends React.Component<Props & ValidationProps> {
     return time;
   }
 
-  padNumber(value?: string) {
+  padNumber(value?: string): string {
     if (value) {
       const values = value.split(':');
       let retVal = '';
@@ -181,17 +184,17 @@ class Time extends React.Component<Props & ValidationProps> {
       }
       return retVal;
     }
-    return;
+    return '';
   }
 
-  getResetButtonText() {
+  getResetButtonText(): string {
     if (this.props.resources && this.props.resources.resetTime) {
       return this.props.resources.resetTime;
     }
     return '';
   }
 
-  shouldComponentUpdate(nextProps: Props, _nextState: {}) {
+  shouldComponentUpdate(nextProps: Props): boolean {
     const responseItemHasChanged = this.props.responseItem !== nextProps.responseItem;
     const helpItemHasChanged = this.props.isHelpOpen !== nextProps.isHelpOpen;
     const resourcesHasChanged = JSON.stringify(this.props.resources) !== JSON.stringify(nextProps.resources);

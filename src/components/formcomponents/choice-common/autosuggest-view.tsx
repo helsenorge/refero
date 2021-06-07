@@ -1,20 +1,25 @@
 import * as React from 'react';
+
 import { Collapse } from 'react-collapse';
+
+import { AutoSuggestProps } from '../../../types/autoSuggestProps';
+import { ValueSet, QuestionnaireItem, Coding, QuestionnaireResponseItemAnswer } from '../../../types/fhir';
+
+import NotificationPanel from '@helsenorge/designsystem-react/components/NotificationPanel';
+
+import { Spinner } from '@helsenorge/toolkit/components/atoms/spinner';
 import Autosuggest, { Suggestion } from '@helsenorge/toolkit/components/molecules/autosuggest';
 import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
-import { Spinner } from '@helsenorge/toolkit/components/atoms/spinner';
-import NotificationPanel from '@helsenorge/designsystem-react/components/NotificationPanel';
+
 import { debounce } from '@helsenorge/core-utils/debounce';
 
-import { isRequired, getId, getSublabelText } from '../../../util/index';
-import { getValidationTextExtension, getPlaceholder } from '../../../util/extension';
-import { ValueSet, QuestionnaireItem, Coding, QuestionnaireResponseItemAnswer } from '../../../types/fhir';
-import { Resources } from '../../../util/resources';
-import { AutoSuggestProps } from '../../../types/autoSuggestProps';
 import { OPEN_CHOICE_ID, OPEN_CHOICE_SYSTEM, OPEN_CHOICE_LABEL } from '../../../constants';
 import ItemType from '../../../constants/itemType';
-import SubLabel from '../sublabel';
+import { getValidationTextExtension, getPlaceholder } from '../../../util/extension';
+import { isRequired, getId, getSublabelText } from '../../../util/index';
+import { Resources } from '../../../util/resources';
 import Label from '../label';
+import SubLabel from '../sublabel';
 
 interface AutosuggestProps {
   handleChange: (code?: string, systemArg?: string, displayArg?: string) => void;
@@ -113,7 +118,7 @@ class AutosuggestView extends React.Component<AutosuggestProps, AutosuggestState
     });
   }
 
-  errorCallback(_error: string): void {
+  errorCallback(): void {
     this.setState({
       isLoading: false,
       hasLoadError: true,
@@ -176,7 +181,7 @@ class AutosuggestView extends React.Component<AutosuggestProps, AutosuggestState
     this.props.handleChange(suggestion.value, this.state.system, suggestion.label);
   }
 
-  onBlur(_e: React.FormEvent<{}>, { highlightedSuggestion }: { highlightedSuggestion: Suggestion | null }) {
+  onBlur(_e: React.FormEvent<{}>, { highlightedSuggestion }: { highlightedSuggestion: Suggestion | null }): void {
     if (this.state.isDirty && highlightedSuggestion) {
       this.setState({
         lastSearchValue: highlightedSuggestion.label,
@@ -250,7 +255,7 @@ class AutosuggestView extends React.Component<AutosuggestProps, AutosuggestState
               helpElement={this.props.renderHelpElement()}
               suggestions={this.state.suggestions}
               onSuggestionsFetchRequested={this.debouncedOnSuggestionsFetchRequested}
-              onSuggestionsClearRequested={() => {
+              onSuggestionsClearRequested={(): void => {
                 // vis samme resultatsett neste gang feltet får fokus
               }}
               noCharacterValidation

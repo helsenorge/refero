@@ -1,9 +1,9 @@
 import { Action } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 
-import { Path } from '../util/skjemautfyller-core';
-import { Coding, QuestionnaireItem, Attachment, QuestionnaireResponseItem, Quantity } from '../types/fhir';
 import { GlobalState } from '../reducers';
+import { Coding, QuestionnaireItem, Attachment, QuestionnaireResponseItem, Quantity } from '../types/fhir';
+import { Path } from '../util/skjemautfyller-core';
 
 export type NEW_VALUE = 'skjemautfyller/NEW_VALUE';
 export const NEW_VALUE: NEW_VALUE = 'skjemautfyller/NEW_VALUE';
@@ -58,13 +58,13 @@ export function newAttachmentAsync(
   item: QuestionnaireItem | undefined,
   multipleAnswers?: boolean
 ) {
-  return async (dispatch: ThunkDispatch<GlobalState, void, NewValueAction>, getState: () => GlobalState) => {
+  return async (dispatch: ThunkDispatch<GlobalState, void, NewValueAction>, getState: () => GlobalState): Promise<GlobalState> => {
     dispatch(newAttachment(itemPath, value, item, multipleAnswers));
     return await Promise.resolve(getState());
   };
 }
 
-export function removeAttachment(itemPath: Array<Path>, value: Attachment, item: QuestionnaireItem | undefined) {
+export function removeAttachment(itemPath: Array<Path>, value: Attachment, item: QuestionnaireItem | undefined): NewValueAction {
   return {
     type: REMOVE_ATTACHMENT_VALUE,
     itemPath,
@@ -74,7 +74,7 @@ export function removeAttachment(itemPath: Array<Path>, value: Attachment, item:
 }
 
 export function removeAttachmentAsync(itemPath: Array<Path>, value: Attachment, item: QuestionnaireItem | undefined) {
-  return async (dispatch: ThunkDispatch<GlobalState, void, NewValueAction>, getState: () => GlobalState) => {
+  return async (dispatch: ThunkDispatch<GlobalState, void, NewValueAction>, getState: () => GlobalState): Promise<GlobalState> => {
     dispatch(removeAttachment(itemPath, value, item));
     return await Promise.resolve(getState());
   };
@@ -90,13 +90,18 @@ export function newBooleanValue(itemPath: Array<Path>, value: boolean, item: Que
 }
 
 export function newBooleanValueAsync(itemPath: Array<Path>, value: boolean, item: QuestionnaireItem | undefined) {
-  return async (dispatch: ThunkDispatch<GlobalState, void, NewValueAction>, getState: () => GlobalState) => {
+  return async (dispatch: ThunkDispatch<GlobalState, void, NewValueAction>, getState: () => GlobalState): Promise<GlobalState> => {
     dispatch(newBooleanValue(itemPath, value, item));
     return await Promise.resolve(getState());
   };
 }
 
-export function newCodingValue(itemPath: Array<Path>, value: Coding, item: QuestionnaireItem | undefined, multipleAnswers?: boolean) {
+export function newCodingValue(
+  itemPath: Array<Path>,
+  value: Coding,
+  item: QuestionnaireItem | undefined,
+  multipleAnswers?: boolean
+): NewValueAction {
   return {
     type: NEW_VALUE,
     itemPath,
@@ -107,7 +112,7 @@ export function newCodingValue(itemPath: Array<Path>, value: Coding, item: Quest
 }
 
 export function newCodingValueAsync(itemPath: Array<Path>, value: Coding, item: QuestionnaireItem | undefined, multipleAnswers?: boolean) {
-  return async (dispatch: ThunkDispatch<GlobalState, void, NewValueAction>, getState: () => GlobalState) => {
+  return async (dispatch: ThunkDispatch<GlobalState, void, NewValueAction>, getState: () => GlobalState): Promise<GlobalState> => {
     dispatch(newCodingValue(itemPath, value, item, multipleAnswers));
     return await Promise.resolve(getState());
   };
@@ -134,7 +139,7 @@ export function newCodingStringValueAsync(
   item: QuestionnaireItem | undefined,
   multipleAnswers?: boolean
 ) {
-  return async (dispatch: ThunkDispatch<GlobalState, void, NewValueAction>, getState: () => GlobalState) => {
+  return async (dispatch: ThunkDispatch<GlobalState, void, NewValueAction>, getState: () => GlobalState): Promise<GlobalState> => {
     dispatch(newCodingStringValue(itemPath, value, item, multipleAnswers));
     return await Promise.resolve(getState());
   };
@@ -149,7 +154,7 @@ export function removeCodingStringValue(itemPath: Array<Path>, item: Questionnai
 }
 
 export function removeCodingStringValueAsync(itemPath: Array<Path>, item: QuestionnaireItem | undefined) {
-  return async (dispatch: ThunkDispatch<GlobalState, void, NewValueAction>, getState: () => GlobalState) => {
+  return async (dispatch: ThunkDispatch<GlobalState, void, NewValueAction>, getState: () => GlobalState): Promise<GlobalState> => {
     dispatch(removeCodingStringValue(itemPath, item));
     return await Promise.resolve(getState());
   };
@@ -165,7 +170,7 @@ export function newQuantityValue(itemPath: Array<Path>, value: Quantity, item: Q
 }
 
 export function newQuantityValueAsync(itemPath: Array<Path>, value: Quantity, item: QuestionnaireItem | undefined) {
-  return async (dispatch: ThunkDispatch<GlobalState, void, NewValueAction>, getState: () => GlobalState) => {
+  return async (dispatch: ThunkDispatch<GlobalState, void, NewValueAction>, getState: () => GlobalState): Promise<GlobalState> => {
     dispatch(newQuantityValue(itemPath, value, item));
     return await Promise.resolve(getState());
   };
@@ -181,7 +186,7 @@ export function removeCodingValue(itemPath: Array<Path>, value: Coding, item: Qu
 }
 
 export function removeCodingValueAsync(itemPath: Array<Path>, value: Coding, item: QuestionnaireItem | undefined) {
-  return async (dispatch: ThunkDispatch<GlobalState, void, NewValueAction>, getState: () => GlobalState) => {
+  return async (dispatch: ThunkDispatch<GlobalState, void, NewValueAction>, getState: () => GlobalState): Promise<GlobalState> => {
     dispatch(removeCodingValue(itemPath, value, item));
     return await Promise.resolve(getState());
   };
@@ -197,7 +202,7 @@ export function newDecimalValue(itemPath: Array<Path>, value: number, item: Ques
 }
 
 export function newDecimalValueAsync(itemPath: Array<Path>, value: number, item: QuestionnaireItem | undefined) {
-  return async (dispatch: ThunkDispatch<GlobalState, void, NewValueAction>, getState: () => GlobalState) => {
+  return async (dispatch: ThunkDispatch<GlobalState, void, NewValueAction>, getState: () => GlobalState): Promise<GlobalState> => {
     dispatch(newDecimalValue(itemPath, value, item));
     return await Promise.resolve(getState());
   };
@@ -213,7 +218,7 @@ export function newIntegerValue(itemPath: Array<Path>, value: number, item: Ques
 }
 
 export function newIntegerValueAsync(itemPath: Array<Path>, value: number, item: QuestionnaireItem | undefined) {
-  return async (dispatch: ThunkDispatch<GlobalState, void, NewValueAction>, getState: () => GlobalState) => {
+  return async (dispatch: ThunkDispatch<GlobalState, void, NewValueAction>, getState: () => GlobalState): Promise<GlobalState> => {
     dispatch(newIntegerValue(itemPath, value, item));
     return await Promise.resolve(getState());
   };
@@ -229,7 +234,7 @@ export function newStringValue(itemPath: Array<Path>, value: string, item: Quest
 }
 
 export function newStringValueAsync(itemPath: Array<Path>, value: string, item: QuestionnaireItem | undefined) {
-  return async (dispatch: ThunkDispatch<GlobalState, void, NewValueAction>, getState: () => GlobalState) => {
+  return async (dispatch: ThunkDispatch<GlobalState, void, NewValueAction>, getState: () => GlobalState): Promise<GlobalState> => {
     dispatch(newStringValue(itemPath, value, item));
     return await Promise.resolve(getState());
   };
@@ -245,7 +250,7 @@ export function newDateValue(itemPath: Array<Path>, value: string, item: Questio
 }
 
 export function newDateValueAsync(itemPath: Array<Path>, value: string, item: QuestionnaireItem | undefined) {
-  return async (dispatch: ThunkDispatch<GlobalState, void, NewValueAction>, getState: () => GlobalState) => {
+  return async (dispatch: ThunkDispatch<GlobalState, void, NewValueAction>, getState: () => GlobalState): Promise<GlobalState> => {
     dispatch(newDateValue(itemPath, value, item));
     return await Promise.resolve(getState());
   };
@@ -261,7 +266,7 @@ export function newTimeValue(itemPath: Array<Path>, value: string, item: Questio
 }
 
 export function newTimeValueAsync(itemPath: Array<Path>, value: string, item: QuestionnaireItem | undefined) {
-  return async (dispatch: ThunkDispatch<GlobalState, void, NewValueAction>, getState: () => GlobalState) => {
+  return async (dispatch: ThunkDispatch<GlobalState, void, NewValueAction>, getState: () => GlobalState): Promise<GlobalState> => {
     dispatch(newTimeValue(itemPath, value, item));
     return await Promise.resolve(getState());
   };
@@ -277,7 +282,7 @@ export function newDateTimeValue(itemPath: Array<Path>, value: string, item: Que
 }
 
 export function newDateTimeValueAsync(itemPath: Array<Path>, value: string, item: QuestionnaireItem | undefined) {
-  return async (dispatch: ThunkDispatch<GlobalState, void, NewValueAction>, getState: () => GlobalState) => {
+  return async (dispatch: ThunkDispatch<GlobalState, void, NewValueAction>, getState: () => GlobalState): Promise<GlobalState> => {
     dispatch(newDateTimeValue(itemPath, value, item));
     return await Promise.resolve(getState());
   };
@@ -305,7 +310,7 @@ export function deleteRepeatItem(itemPath: Array<Path>, item: QuestionnaireItem)
 }
 
 export function deleteRepeatItemAsync(itemPath: Array<Path>, item: QuestionnaireItem) {
-  return async (dispatch: ThunkDispatch<GlobalState, void, NewValueAction>, getState: () => GlobalState) => {
+  return async (dispatch: ThunkDispatch<GlobalState, void, NewValueAction>, getState: () => GlobalState): Promise<GlobalState> => {
     dispatch(deleteRepeatItem(itemPath, item));
     return await Promise.resolve(getState());
   };

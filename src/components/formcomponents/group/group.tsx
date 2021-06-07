@@ -1,20 +1,23 @@
 import * as React from 'react';
+
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
-import CustomTag from '@helsenorge/core-utils/custom-tag';
+
 import AnchorLink from '@helsenorge/designsystem-react/components/AnchorLink';
 
-import { GlobalState } from '../../../reducers';
+import CustomTag from '@helsenorge/core-utils/custom-tag';
+
 import { NewValueAction } from '../../../actions/newValue';
-import { Path } from '../../../util/skjemautfyller-core';
-import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
-import { renderPrefix, getText, getId } from '../../../util/index';
-import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem } from '../../../types/fhir';
-import withCommonFunctions from '../../with-common-functions';
-import { Resources } from '../../../util/resources';
-import { getGroupItemControl } from '../../../util/group-item-control';
 import { RenderContextType } from '../../../constants/renderContextType';
+import { GlobalState } from '../../../reducers';
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem } from '../../../types/fhir';
+import { getGroupItemControl } from '../../../util/group-item-control';
+import { renderPrefix, getText, getId } from '../../../util/index';
+import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { RenderContext } from '../../../util/renderContext';
+import { Resources } from '../../../util/resources';
+import { Path } from '../../../util/skjemautfyller-core';
+import withCommonFunctions from '../../with-common-functions';
 
 export interface Props {
   item: QuestionnaireItem;
@@ -46,7 +49,7 @@ export class Group extends React.Component<Props, State> {
     super(props);
   }
 
-  shouldComponentUpdate(nextProps: Props, _nextState: {}) {
+  shouldComponentUpdate(nextProps: Props): boolean {
     const responseItemHasChanged = this.props.responseItem !== nextProps.responseItem;
     const helpItemHasChanged = this.props.isHelpOpen !== nextProps.isHelpOpen;
     const repeatButtonHasChanged = this.props.repeatButton !== nextProps.repeatButton;
@@ -105,8 +108,8 @@ export class Group extends React.Component<Props, State> {
     ): JSX.Element[] => {
       const renderedChildItems = [];
       let counter = 1;
-      for (let column of renderContext.Columns) {
-        let childItem = childItems.find(item => item.text === column);
+      for (const column of renderContext.Columns) {
+        const childItem = childItems.find(item => item.text === column);
 
         if (childItem) {
           renderedChildItems.push(
@@ -116,9 +119,7 @@ export class Group extends React.Component<Props, State> {
           );
         } else {
           renderedChildItems.push(
-            <td key={counter} className="page_skjemautfyller__grid--cell page_skjemautfyller__grid--cell-empty">
-              &nbsp;
-            </td>
+            <td key={counter} className="page_skjemautfyller__grid--cell page_skjemautfyller__grid--cell-empty">{` `}</td>
           );
         }
 
@@ -182,9 +183,9 @@ export class Group extends React.Component<Props, State> {
     const seenColumns = {};
     const columns: Array<string> = [];
     if (!item.item || item.item.length === 0) return columns;
-    for (let group of item.item) {
+    for (const group of item.item) {
       if (group.item && group.item.length > 0) {
-        for (let cell of group.item) {
+        for (const cell of group.item) {
           const key = cell.text || '';
           if (key in seenColumns) continue;
 
@@ -198,7 +199,7 @@ export class Group extends React.Component<Props, State> {
   };
 
   getLocalRenderContextType = (): RenderContextType => {
-    var coding = getGroupItemControl(this.props.item);
+    const coding = getGroupItemControl(this.props.item);
     if (coding.length > 0) {
       switch (coding[0].code) {
         case 'grid':

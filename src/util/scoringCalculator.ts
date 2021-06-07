@@ -1,3 +1,5 @@
+import ExtensionConstants from '../constants/extensions';
+import { ScoringItemType } from '../constants/scoringItemType';
 import {
   Questionnaire,
   QuestionnaireItem,
@@ -5,12 +7,12 @@ import {
   QuestionnaireResponseItemAnswer,
   QuestionnaireItemAnswerOption,
 } from '../types/fhir';
+import { getExtension, getCalculatedExpressionExtension } from './extension';
+import r4 from './fhirpathLoaderHelper';
 import { createDummySectionScoreItem, scoringItemType } from './scoring';
 import { getQuestionnaireResponseItemsWithLinkId } from './skjemautfyller-core';
-import { getExtension, getCalculatedExpressionExtension } from './extension';
-import ExtensionConstants from '../constants/extensions';
-import { ScoringItemType } from '../constants/scoringItemType';
-import r4 from './fhirpathLoaderHelper';
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const fhirpath = require('fhirpath');
 
 class CalculatedScores {
@@ -56,11 +58,11 @@ export class ScoringCalculator {
   }
 
   private traverseQuestionnaire(qItem: Questionnaire | QuestionnaireItem, level: number = 0): CalculatedScores {
-    let retVal: CalculatedScores = new CalculatedScores();
+    const retVal: CalculatedScores = new CalculatedScores();
 
     if (qItem.item) {
-      for (let subItem of qItem.item) {
-        let subRetVal = this.traverseQuestionnaire(subItem, level + 1);
+      for (const subItem of qItem.item) {
+        const subRetVal = this.traverseQuestionnaire(subItem, level + 1);
         retVal.update(subRetVal);
       }
     }
@@ -68,12 +70,12 @@ export class ScoringCalculator {
     // Inject dummy section score at top to simulate total score
     if (level === 0) {
       this.totalScoreItem = createDummySectionScoreItem();
-      let subRetVal = this.traverseQuestionnaire(this.totalScoreItem, level + 1);
+      const subRetVal = this.traverseQuestionnaire(this.totalScoreItem, level + 1);
       retVal.update(subRetVal);
     }
 
     if (retVal.hasTotalScores()) {
-      for (let totalScore of retVal.totalScores) {
+      for (const totalScore of retVal.totalScores) {
         this.totalScoreCache.push(totalScore.linkId);
         this.itemCache[totalScore.linkId] = totalScore;
       }
@@ -81,39 +83,40 @@ export class ScoringCalculator {
 
     if (retVal.hasSectionScores()) {
       // Define first sectionScore that is a child-item of us, in terms of all its siblings
-      let firstSectionScore = retVal.sectionScores.shift()!;
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const firstSectionScore = retVal.sectionScores.shift()!;
       this.sectionScoreCache[firstSectionScore.linkId] = retVal.questionScores;
       this.itemCache[firstSectionScore.linkId] = firstSectionScore;
 
       // Define subsequent sectionScores as aliases to the first sectionScore
-      for (let sectionScore of retVal.sectionScores) {
+      for (const sectionScore of retVal.sectionScores) {
         this.sectionScoreCache[sectionScore.linkId] = [firstSectionScore];
         this.itemCache[sectionScore.linkId] = sectionScore;
       }
 
-      let newRetVal = new CalculatedScores();
+      const newRetVal = new CalculatedScores();
       newRetVal.questionScores.push(firstSectionScore);
       return newRetVal;
     }
 
     if (this.isOfTypeQuestionnaireItem(qItem)) {
-      var type = scoringItemType(qItem);
+      const type = scoringItemType(qItem);
       if (type === ScoringItemType.SECTION_SCORE) {
         // A section score item, only return self, as it doesn't have any children
-        let newRetVal = new CalculatedScores();
+        const newRetVal = new CalculatedScores();
         newRetVal.sectionScores.push(qItem);
         return newRetVal;
       }
 
       if (type === ScoringItemType.TOTAL_SCORE) {
         // A total score item, only return self, as it doesn't have any children
-        let newRetVal = new CalculatedScores();
+        const newRetVal = new CalculatedScores();
         newRetVal.totalScores.push(qItem);
         return newRetVal;
       }
 
       if (type === ScoringItemType.QUESTION_SCORE || type === ScoringItemType.QUESTION_FHIRPATH_SCORE) {
-        let newRetVal = new CalculatedScores();
+        const newRetVal = new CalculatedScores();
         newRetVal.questionScores.push(qItem, ...retVal.questionScores);
 
         if (type === ScoringItemType.QUESTION_FHIRPATH_SCORE) {
@@ -125,26 +128,28 @@ export class ScoringCalculator {
     }
 
     // Not an item than contributes to scoring, just pass through
-    let newRetVal = new CalculatedScores();
+    const newRetVal = new CalculatedScores();
     newRetVal.questionScores.push(...retVal.questionScores);
     return newRetVal;
   }
 
   private isOfTypeQuestionnaireItem(item: Questionnaire | QuestionnaireItem): item is QuestionnaireItem {
-    return (<QuestionnaireItem>item).type !== undefined;
+    return (item as QuestionnaireItem).type !== undefined;
   }
 
   public calculate(questionnaireResponse: QuestionnaireResponse): { [linkId: string]: number | undefined } {
-    let answerPad: { [linkId: string]: number | undefined } = {};
+    const answerPad: { [linkId: string]: number | undefined } = {};
 
-    for (let sectionScoreLinkId in this.sectionScoreCache) {
+    for (const sectionScoreLinkId in this.sectionScoreCache) {
       answerPad[sectionScoreLinkId] = this.calculateSectionScore(sectionScoreLinkId, questionnaireResponse, answerPad);
     }
 
-    for (let totalScoreLinkId of this.totalScoreCache) {
+    for (const totalScoreLinkId of this.totalScoreCache) {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       answerPad[totalScoreLinkId] = this.calculateSectionScore(this.totalScoreItem!.linkId, questionnaireResponse, answerPad);
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     delete answerPad[this.totalScoreItem!.linkId];
 
     return answerPad;
@@ -157,9 +162,9 @@ export class ScoringCalculator {
   ): number | undefined {
     let sum: number = 0;
     let hasCalculatedAtLeastOneAnswer = false;
-    let dependencies: Array<QuestionnaireItem> = this.sectionScoreCache[linkId];
+    const dependencies: Array<QuestionnaireItem> = this.sectionScoreCache[linkId];
 
-    for (let item of dependencies) {
+    for (const item of dependencies) {
       const result = this.valueOf(item, questionnaireResponse, answerPad);
       if (result !== undefined) {
         sum += result;
@@ -180,7 +185,7 @@ export class ScoringCalculator {
       case ScoringItemType.SECTION_SCORE:
         return this.valueOfSectionScoreItem(item, questionnaireResponse, answerPad);
       case ScoringItemType.QUESTION_SCORE:
-        return this.valueOfQuestionScoreItem(item, questionnaireResponse, answerPad);
+        return this.valueOfQuestionScoreItem(item, questionnaireResponse);
       case ScoringItemType.QUESTION_FHIRPATH_SCORE:
         return this.valueOfQuestionFhirpathScoreItem(item, questionnaireResponse, answerPad);
       default:
@@ -196,7 +201,7 @@ export class ScoringCalculator {
     const expressionExtension = getCalculatedExpressionExtension(item);
     let value: number | undefined = undefined;
     if (expressionExtension) {
-      let result = fhirpath.evaluate(questionnaireResponse, expressionExtension.valueString, null, r4);
+      const result = fhirpath.evaluate(questionnaireResponse, expressionExtension.valueString, null, r4);
       if (result.length) {
         value = (result[0] as number) ?? 0;
         if (isNaN(value) || !isFinite(value)) {
@@ -211,19 +216,15 @@ export class ScoringCalculator {
     return value;
   }
 
-  private valueOfQuestionScoreItem(
-    item: QuestionnaireItem,
-    questionnaireResponse: QuestionnaireResponse,
-    _answerPad: { [linkId: string]: number | undefined }
-  ): number | undefined {
+  private valueOfQuestionScoreItem(item: QuestionnaireItem, questionnaireResponse: QuestionnaireResponse): number | undefined {
     let sum: number = 0;
     let hasCalculatedAtLeastOneAnswer = false;
-    let qrItems = getQuestionnaireResponseItemsWithLinkId(item.linkId, questionnaireResponse.item || [], true);
-    for (let qrItem of qrItems) {
+    const qrItems = getQuestionnaireResponseItemsWithLinkId(item.linkId, questionnaireResponse.item || [], true);
+    for (const qrItem of qrItems) {
       if (!qrItem.answer) continue;
 
-      for (let answer of qrItem.answer) {
-        let option = this.getAnswerMatch(answer, item);
+      for (const answer of qrItem.answer) {
+        const option = this.getAnswerMatch(answer, item);
         if (option) {
           sum += this.getOptionScore(option);
           hasCalculatedAtLeastOneAnswer = true;
@@ -260,7 +261,7 @@ export class ScoringCalculator {
   private getAnswerMatch(answer: QuestionnaireResponseItemAnswer, item: QuestionnaireItem): QuestionnaireItemAnswerOption | undefined {
     if (answer.valueCoding) {
       if (item.answerOption) {
-        for (let o of item.answerOption) {
+        for (const o of item.answerOption) {
           if (o.valueCoding.code === answer.valueCoding.code && o.valueCoding.system === answer.valueCoding.system) {
             return o;
           }

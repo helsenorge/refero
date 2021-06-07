@@ -1,16 +1,21 @@
 import * as React from 'react';
+
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
+
+import {
+  QuestionnaireItem,
+  QuestionnaireResponseItemAnswer,
+  Quantity as QuantityType,
+  QuestionnaireResponseItem,
+} from '../../../types/fhir';
+
 import SafeInputField from '@helsenorge/toolkit/components/atoms/safe-input-field';
 import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
 import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
 
-import { GlobalState } from '../../../reducers';
 import { NewValueAction, newQuantityValueAsync } from '../../../actions/newValue';
-import { Path } from '../../../util/skjemautfyller-core';
-import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
-import withCommonFunctions from '../../with-common-functions';
-import { isReadOnly, isRequired, getId, getDecimalPattern, getSublabelText } from '../../../util/index';
+import { GlobalState } from '../../../reducers';
 import {
   getValidationTextExtension,
   getPlaceholder,
@@ -18,16 +23,14 @@ import {
   getMinValueExtensionValue,
   getQuestionnaireUnitExtensionValue,
 } from '../../../util/extension';
-import {
-  QuestionnaireItem,
-  QuestionnaireResponseItemAnswer,
-  Quantity as QuantityType,
-  QuestionnaireResponseItem,
-} from '../../../types/fhir';
+import { isReadOnly, isRequired, getId, getDecimalPattern, getSublabelText } from '../../../util/index';
+import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Resources } from '../../../util/resources';
-import TextView from '../textview';
-import SubLabel from '../sublabel';
+import { Path } from '../../../util/skjemautfyller-core';
+import withCommonFunctions from '../../with-common-functions';
 import Label from '../label';
+import SubLabel from '../sublabel';
+import TextView from '../textview';
 
 export interface Props {
   item: QuestionnaireItem;
@@ -48,14 +51,14 @@ export interface Props {
 }
 
 class Quantity extends React.Component<Props & ValidationProps, {}> {
-  getValue() {
+  getValue(): number | undefined {
     const { answer } = this.props;
     if (answer && answer.valueQuantity !== undefined && answer.valueQuantity !== null) {
       return answer.valueQuantity.value;
     }
   }
 
-  getPDFValue() {
+  getPDFValue(): string {
     const value = this.getValue();
     if (value === undefined || value === null) {
       let text = '';
@@ -67,7 +70,7 @@ class Quantity extends React.Component<Props & ValidationProps, {}> {
     return `${value} ${this.getUnit()}`;
   }
 
-  handleChange = (event: React.FormEvent<{}>) => {
+  handleChange = (event: React.FormEvent<{}>): void => {
     const { dispatch, promptLoginMessage, path, item, onAnswerChange } = this.props;
     const extension = getQuestionnaireUnitExtensionValue(this.props.item);
     if (extension) {
@@ -94,7 +97,7 @@ class Quantity extends React.Component<Props & ValidationProps, {}> {
     }
   };
 
-  getUnit = () => {
+  getUnit = (): string => {
     const valueCoding = getQuestionnaireUnitExtensionValue(this.props.item);
     if (valueCoding && valueCoding.display) {
       return valueCoding.display;
@@ -102,7 +105,7 @@ class Quantity extends React.Component<Props & ValidationProps, {}> {
     return '';
   };
 
-  shouldComponentUpdate(nextProps: Props, _nextState: {}) {
+  shouldComponentUpdate(nextProps: Props): boolean {
     const responseItemHasChanged = this.props.responseItem !== nextProps.responseItem;
     const helpItemHasChanged = this.props.isHelpOpen !== nextProps.isHelpOpen;
     const resourcesHasChanged = JSON.stringify(this.props.resources) !== JSON.stringify(nextProps.resources);

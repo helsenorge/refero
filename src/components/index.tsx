@@ -1,27 +1,23 @@
 import * as React from 'react';
+
 import { connect, Store } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
-import Form from '@helsenorge/toolkit/components/molecules/form';
+
 import { UploadedFile } from '@helsenorge/toolkit/components/atoms/dropzone';
+import Form from '@helsenorge/toolkit/components/molecules/form';
 import { ValidationSummaryPlacement } from '@helsenorge/toolkit/components/molecules/form/validationSummaryPlacement';
 
+import { setSkjemaDefinition } from '../actions/form';
 import { NewValueAction, newQuantityValue } from '../actions/newValue';
-import { Resources } from '../util/resources';
+import RepeatButton from '../components/formcomponents/repeat/repeat-button';
+import ExtensionConstants from '../constants/extensions';
+import Constants from '../constants/index';
+import ItemType from '../constants/itemType';
+import { PresentationButtonsType } from '../constants/presentationButtonsType';
 import { GlobalState } from '../reducers';
 import { getFormDefinition, getFormData, getInitialFormData } from '../reducers/form';
-import { getComponentForItem, shouldRenderRepeatButton, isHiddenItem } from '../util/index';
-import { ScoringCalculator } from '../util/scoringCalculator';
-import ExtensionConstants from '../constants/extensions';
-import {
-  getRootQuestionnaireResponseItemFromData,
-  Path,
-  createPathForItem,
-  getAnswerFromResponseItem,
-  shouldRenderDeleteButton,
-  createIdSuffix,
-  getQuestionnaireDefinitionItem,
-  getResponseItemAndPathWithLinkId,
-} from '../util/skjemautfyller-core';
+import { FormDefinition, FormData } from '../reducers/form';
+import { AutoSuggestProps } from '../types/autoSuggestProps';
 import {
   QuestionnaireResponseItem,
   Questionnaire,
@@ -32,24 +28,30 @@ import {
   Quantity,
   ValueSet,
 } from '../types/fhir';
-import Constants from '../constants/index';
-import ItemType from '../constants/itemType';
-import { FormDefinition, FormData } from '../reducers/form';
-import RepeatButton from '../components/formcomponents/repeat/repeat-button';
-import { IE11HackToWorkAroundBug187484 } from '../util/hacks';
-import { setSkjemaDefinition } from '../actions/form';
 import { TextMessage } from '../types/text-message';
+import { ActionRequester, IActionRequester } from '../util/actionRequester';
 import {
   getQuestionnaireUnitExtensionValue,
   getExtension,
   getPresentationButtonsExtension,
   getNavigatorExtension,
 } from '../util/extension';
-import { ActionRequester, IActionRequester } from '../util/actionRequester';
-import { RenderContext } from '../util/renderContext';
+import { IE11HackToWorkAroundBug187484 } from '../util/hacks';
+import { getComponentForItem, shouldRenderRepeatButton, isHiddenItem } from '../util/index';
 import { QuestionniareInspector, IQuestionnaireInspector } from '../util/questionnaireInspector';
-import { PresentationButtonsType } from '../constants/presentationButtonsType';
-import { AutoSuggestProps } from '../types/autoSuggestProps';
+import { RenderContext } from '../util/renderContext';
+import { Resources } from '../util/resources';
+import { ScoringCalculator } from '../util/scoringCalculator';
+import {
+  getRootQuestionnaireResponseItemFromData,
+  Path,
+  createPathForItem,
+  getAnswerFromResponseItem,
+  shouldRenderDeleteButton,
+  createIdSuffix,
+  getQuestionnaireDefinitionItem,
+  getResponseItemAndPathWithLinkId,
+} from '../util/skjemautfyller-core';
 
 export interface QueryStringsInterface {
   MessageId: string;
@@ -154,7 +156,7 @@ class Skjemautfyller extends React.Component<StateProps & DispatchProps & Props,
     };
   }
 
-  onSubmit = () => {
+  onSubmit = (): void => {
     const { formData, onSubmit } = this.props;
 
     if (formData && formData.Content && onSubmit) {
@@ -162,7 +164,7 @@ class Skjemautfyller extends React.Component<StateProps & DispatchProps & Props,
     }
   };
 
-  onSave = () => {
+  onSave = (): void => {
     if (this.props.onSave && this.props.formData && this.props.formData.Content) {
       this.props.onSave(this.props.formData.Content);
     }
@@ -176,7 +178,7 @@ class Skjemautfyller extends React.Component<StateProps & DispatchProps & Props,
     IE11HackToWorkAroundBug187484();
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps: Props) {
+  UNSAFE_componentWillReceiveProps(nextProps: Props): void {
     if (nextProps.questionnaire && nextProps.questionnaire !== this.props.questionnaire) {
       this.props.updateSkjema(
         nextProps.questionnaire,
@@ -187,21 +189,21 @@ class Skjemautfyller extends React.Component<StateProps & DispatchProps & Props,
     }
   }
 
-  onAnswerChange = (newState: GlobalState, _path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => {
-    if (this.props.onChange) {
+  onAnswerChange = (newState: GlobalState, _path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer): void => {
+    if (this.props.onChange && newState.skjemautfyller.form.FormDefinition.Content && newState.skjemautfyller.form.FormData.Content) {
       const actionRequester = new ActionRequester(
-        newState.skjemautfyller.form.FormDefinition.Content!,
-        newState.skjemautfyller.form.FormData.Content!
+        newState.skjemautfyller.form.FormDefinition.Content,
+        newState.skjemautfyller.form.FormData.Content
       );
 
       const questionnaireInspector = new QuestionniareInspector(
-        newState.skjemautfyller.form.FormDefinition.Content!,
-        newState.skjemautfyller.form.FormData.Content!
+        newState.skjemautfyller.form.FormDefinition.Content,
+        newState.skjemautfyller.form.FormData.Content
       );
 
       this.props.onChange(item, answer, actionRequester, questionnaireInspector);
 
-      for (let action of actionRequester.getActions()) {
+      for (const action of actionRequester.getActions()) {
         this.props.dispatch(action);
       }
     }
@@ -209,7 +211,7 @@ class Skjemautfyller extends React.Component<StateProps & DispatchProps & Props,
     this.runScoringCalculator(newState);
   };
 
-  runScoringCalculator = (newState: GlobalState) => {
+  runScoringCalculator = (newState: GlobalState): void => {
     if (!this.scoringCalculator && this.props.formDefinition?.Content) {
       this.scoringCalculator = new ScoringCalculator(this.props.formDefinition.Content);
     }
@@ -223,8 +225,8 @@ class Skjemautfyller extends React.Component<StateProps & DispatchProps & Props,
     }
 
     const scores = this.scoringCalculator.calculate(newState.skjemautfyller.form.FormData.Content);
-    let actions: Array<NewValueAction> = [];
-    for (let linkId in scores) {
+    const actions: Array<NewValueAction> = [];
+    for (const linkId in scores) {
       const templateItem = this.scoringCalculator.getCachedTotalOrSectionItem(linkId);
       if (!templateItem) continue;
 
@@ -238,7 +240,7 @@ class Skjemautfyller extends React.Component<StateProps & DispatchProps & Props,
       } as Quantity;
 
       const item = getQuestionnaireDefinitionItem(linkId, newState.skjemautfyller.form.FormDefinition.Content?.item);
-      const itemsAndPaths = getResponseItemAndPathWithLinkId(linkId, newState.skjemautfyller.form.FormData.Content!);
+      const itemsAndPaths = getResponseItemAndPathWithLinkId(linkId, newState.skjemautfyller.form.FormData.Content);
 
       let value = scores[linkId];
       if (item && value != null && !isNaN(value) && isFinite(value)) {
@@ -251,12 +253,12 @@ class Skjemautfyller extends React.Component<StateProps & DispatchProps & Props,
         quantity.value = value;
       }
 
-      for (let itemAndPath of itemsAndPaths) {
+      for (const itemAndPath of itemsAndPaths) {
         actions.push(newQuantityValue(itemAndPath.path, quantity, item));
       }
     }
 
-    for (let a of actions) {
+    for (const a of actions) {
       this.props.dispatch(a);
     }
   };
@@ -345,7 +347,7 @@ class Skjemautfyller extends React.Component<StateProps & DispatchProps & Props,
     return renderedItems;
   }
 
-  renderSkjema = (pdf?: boolean) => {
+  renderSkjema = (pdf?: boolean): Array<JSX.Element> | JSX.Element | null | undefined => {
     const { formDefinition, resources } = this.props;
 
     if (!formDefinition || !formDefinition.Content || !resources) {
@@ -367,7 +369,7 @@ class Skjemautfyller extends React.Component<StateProps & DispatchProps & Props,
     );
   };
 
-  renderFormWhenNotAuthorized = () => {
+  renderFormWhenNotAuthorized = (): JSX.Element | undefined => {
     const { resources } = this.props;
     if (!resources) {
       return;
@@ -395,7 +397,7 @@ class Skjemautfyller extends React.Component<StateProps & DispatchProps & Props,
     );
   };
 
-  renderFormWhenAuthorized = () => {
+  renderFormWhenAuthorized = (): JSX.Element | undefined => {
     const { resources } = this.props;
     if (!resources) {
       return;

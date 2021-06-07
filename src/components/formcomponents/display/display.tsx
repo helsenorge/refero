@@ -1,10 +1,13 @@
 import * as React from 'react';
+
 import { connect } from 'react-redux';
+
 import designsystemtypography from '@helsenorge/designsystem-react/scss/typography.module.scss';
-import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
-import { renderPrefix, getText } from '../../../util/index';
+
 import { QuestionnaireItem } from '../../../types/fhir';
 import { getMarkdownExtensionValue } from '../../../util/extension';
+import { renderPrefix, getText } from '../../../util/index';
+import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 
 export interface Props {
   item?: QuestionnaireItem;

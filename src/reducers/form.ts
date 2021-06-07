@@ -1,6 +1,9 @@
 import produce, { enableES5 } from 'immer';
+
 import { Languages } from '@helsenorge/toolkit/constants';
 
+import { FormAction, SET_SKJEMA_DEFINITION } from '../actions/form';
+import { generateQuestionnaireResponse } from '../actions/generateQuestionnaireResponse';
 import {
   NEW_VALUE,
   REMOVE_CODING_VALUE,
@@ -11,8 +14,8 @@ import {
   REMOVE_CODINGSTRING_VALUE,
   REMOVE_ATTACHMENT_VALUE,
 } from '../actions/newValue';
+import { syncQuestionnaireResponse } from '../actions/syncQuestionnaireResponse';
 import { GlobalState } from '../reducers/index';
-import { isStringEmpty } from '../util/index';
 import {
   Questionnaire,
   QuestionnaireResponseItem,
@@ -24,6 +27,9 @@ import {
   Attachment,
   QuestionnaireItemEnableBehaviorCodes,
 } from '../types/fhir';
+import { createQuestionnaireResponseAnswer } from '../util/createQuestionnaireResponseAnswer';
+import { getMinOccursExtensionValue } from '../util/extension';
+import { isStringEmpty } from '../util/index';
 import {
   getResponseItemWithPath,
   getQuestionnaireDefinitionItem,
@@ -35,11 +41,6 @@ import {
   Path,
   getResponseItemAndPathWithLinkId,
 } from '../util/skjemautfyller-core';
-import { getMinOccursExtensionValue } from '../util/extension';
-import { FormAction, SET_SKJEMA_DEFINITION } from '../actions/form';
-import { generateQuestionnaireResponse } from '../actions/generateQuestionnaireResponse';
-import { createQuestionnaireResponseAnswer } from '../util/createQuestionnaireResponseAnswer';
-import { syncQuestionnaireResponse } from '../actions/syncQuestionnaireResponse';
 
 enableES5();
 
@@ -269,8 +270,8 @@ function copyItem(
   return target;
 }
 
-function runEnableWhen(action: NewValueAction, state: Form, draft: Form) {
-  if (action.item) {
+function runEnableWhen(action: NewValueAction, state: Form, draft: Form): void {
+  if (action.item && draft.FormData.Content) {
     const qrItemsToClear: Array<QrItemsToClear> = [];
     /*
      * immer lager javascript proxy-objekt av "draft"-variablen i produce, og dersom man oppretter nye variabler eller utleder
@@ -291,7 +292,7 @@ function runEnableWhen(action: NewValueAction, state: Form, draft: Form) {
     );
 
     if (responseItems && responseItems.length > 0) {
-      for (var w = 0; w < qrItemsToClear.length; w++) {
+      for (let w = 0; w < qrItemsToClear.length; w++) {
         const qrItemWithEnableWhen = getResponseItemWithLinkIdPossiblyContainingRepeat(
           qrItemsToClear[w].linkId,
           responseItems,
@@ -303,8 +304,8 @@ function runEnableWhen(action: NewValueAction, state: Form, draft: Form) {
           wipeAnswerItems(qrItemWithEnableWhen, qrItemsToClear[w].qItemWithEnableWhen);
         } else {
           // let gjennom hele skjema, og clear riktig item. Hvis vi havner her er item som skal cleares ikke et barn under action.itemPath
-          const qrItemWithEnableWhen = getResponseItemAndPathWithLinkId(qrItemsToClear[w].linkId, draft.FormData.Content!);
-          for (var r = 0; r < qrItemWithEnableWhen.length; r++) {
+          const qrItemWithEnableWhen = getResponseItemAndPathWithLinkId(qrItemsToClear[w].linkId, draft.FormData.Content);
+          for (let r = 0; r < qrItemWithEnableWhen.length; r++) {
             removeAddedRepeatingItems(qrItemsToClear[w].qItemWithEnableWhen, qrItemWithEnableWhen[r].item, responseItems);
             wipeAnswerItems(qrItemWithEnableWhen[r].item, qrItemsToClear[w].qItemWithEnableWhen);
           }
@@ -314,7 +315,7 @@ function runEnableWhen(action: NewValueAction, state: Form, draft: Form) {
   }
 }
 
-function processRemoveCodingValueAction(action: NewValueAction, state: Form) {
+function processRemoveCodingValueAction(action: NewValueAction, state: Form): Form {
   return produce(state, draft => {
     const responseItem = getResponseItemWithPath(action.itemPath || [], draft.FormData);
     if (!responseItem || !responseItem.answer || !responseItem.answer.length) {
@@ -348,7 +349,7 @@ function processRemoveCodingValueAction(action: NewValueAction, state: Form) {
   });
 }
 
-function processRemoveCodingStringValueAction(action: NewValueAction, state: Form) {
+function processRemoveCodingStringValueAction(action: NewValueAction, state: Form): Form {
   return produce(state, draft => {
     const responseItem = getResponseItemWithPath(action.itemPath || [], draft.FormData);
     if (!responseItem || !responseItem.answer || !responseItem.answer.length) {
@@ -368,7 +369,7 @@ function processRemoveCodingStringValueAction(action: NewValueAction, state: For
   });
 }
 
-function processRemoveAttachmentValueAction(action: NewValueAction, state: Form) {
+function processRemoveAttachmentValueAction(action: NewValueAction, state: Form): Form {
   return produce(state, draft => {
     const responseItem = getResponseItemWithPath(action.itemPath || [], draft.FormData);
     if (!responseItem || !responseItem.answer || !responseItem.answer.length) {
@@ -555,7 +556,7 @@ function calculateEnableWhenItemsToClear(
   qrItemsToClear: Array<QrItemsToClear>,
   responseItems: QuestionnaireResponseItem[] | undefined
 ): void {
-  if (!items) {
+  if (!items || !formData.Content) {
     return;
   }
   const definitionItems = getDefinitionItems(formDefinition);
@@ -582,9 +583,9 @@ function calculateEnableWhenItemsToClear(
 
     // There may be several questionnaireResponseItemsWithEnableWhen corresponding to a questionnaireItemWithEnableWhen.
     // F.ex. if the questionnaireItemWithEnableWhen is repeatable
-    const qrItemsWithEnableWhen = getResponseItemAndPathWithLinkId(qItemWithEnableWhen.linkId, formData.Content!);
+    const qrItemsWithEnableWhen = getResponseItemAndPathWithLinkId(qItemWithEnableWhen.linkId, formData.Content);
     for (const qrItemWithEnableWhen of qrItemsWithEnableWhen) {
-      let enableMatches: Array<boolean> = [];
+      const enableMatches: Array<boolean> = [];
       const enableBehavior = qItemWithEnableWhen.enableBehavior;
 
       enableWhenClauses.forEach((enableWhen: QuestionnaireItemEnableWhen) => {
@@ -766,7 +767,7 @@ function getItemsWithEnableWhen(linkId: string, definitionItems: QuestionnaireIt
   return relatedItems;
 }
 
-function getItemEnableWhenQuestionMatchIdFromArray(linkId: string, definitionItems: QuestionnaireItem[] | undefined) {
+function getItemEnableWhenQuestionMatchIdFromArray(linkId: string, definitionItems: QuestionnaireItem[] | undefined): QuestionnaireItem[] {
   if (!definitionItems) {
     return [];
   }

@@ -1,17 +1,21 @@
 import * as React from 'react';
+
 import { Collapse } from 'react-collapse';
+
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from '../../../types/fhir';
+
 import { Options } from '@helsenorge/toolkit/components/atoms/radio-group';
-import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
 import SafeSelect from '@helsenorge/toolkit/components/atoms/safe-select';
+import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
+
 import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 
-import { isRequired, getId, getSublabelText } from '../../../util/index';
-import { getValidationTextExtension, getPlaceholder } from '../../../util/extension';
-import { Resources } from '../../../util/resources';
-import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from '../../../types/fhir';
 import { shouldShowExtraChoice } from '../../../util/choice';
-import SubLabel from '../sublabel';
+import { getValidationTextExtension, getPlaceholder } from '../../../util/extension';
+import { isRequired, getId, getSublabelText } from '../../../util/index';
+import { Resources } from '../../../util/resources';
 import Label from '../label';
+import SubLabel from '../sublabel';
 
 interface Props {
   options?: Array<Options>;
@@ -34,7 +38,7 @@ interface Props {
 }
 
 class DropdownView extends React.Component<Props, {}> {
-  render() {
+  render(): JSX.Element | null {
     const {
       options,
       item,
@@ -48,7 +52,6 @@ class DropdownView extends React.Component<Props, {}> {
       repeatButton,
       renderDeleteButton,
       renderOpenField,
-      oneToTwoColumn,
       renderHelpButton,
       renderHelpElement,
       onRenderMarkdown,
@@ -80,7 +83,7 @@ class DropdownView extends React.Component<Props, {}> {
               label={<Label item={item} onRenderMarkdown={onRenderMarkdown} />}
               subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
               isRequired={isRequired(item)}
-              onChange={evt => handleChange((evt.target as HTMLInputElement).value)}
+              onChange={(evt): void => handleChange((evt.target as HTMLInputElement).value)}
               options={dropdownOptions}
               selected={selected ? selected[0] : undefined}
               placeholder={placeholder}

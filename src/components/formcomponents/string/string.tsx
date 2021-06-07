@@ -1,16 +1,19 @@
 import * as React from 'react';
+
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
-import { debounce } from '@helsenorge/core-utils/debounce';
+
 import SafeInputField from '@helsenorge/toolkit/components/atoms/safe-input-field';
-import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
 import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
 
-import { Path } from '../../../util/skjemautfyller-core';
-import { GlobalState } from '../../../reducers';
+import { debounce } from '@helsenorge/core-utils/debounce';
+import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
+
 import { NewValueAction, newStringValueAsync } from '../../../actions/newValue';
-import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
+import { GlobalState } from '../../../reducers';
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem } from '../../../types/fhir';
+import { getPlaceholder, getMinLengthExtensionValue, getRegexExtension } from '../../../util/extension';
 import {
   isReadOnly,
   isRequired,
@@ -22,10 +25,10 @@ import {
   getTextValidationErrorMessage,
   getSublabelText,
 } from '../../../util/index';
-import { getPlaceholder, getMinLengthExtensionValue, getRegexExtension } from '../../../util/extension';
-import withCommonFunctions from '../../with-common-functions';
-import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem } from '../../../types/fhir';
+import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Resources } from '../../../util/resources';
+import { Path } from '../../../util/skjemautfyller-core';
+import withCommonFunctions from '../../with-common-functions';
 import TextView from '../textview';
 import SubLabel from '../sublabel';
 import Label from '../label';
@@ -69,7 +72,7 @@ export class String extends React.Component<Props & ValidationProps, {}> {
 
   debouncedHandleChange: (event: React.FormEvent<{}>) => void = debounce(this.handleChange, 250, false);
 
-  shouldComponentUpdate(nextProps: Props, _nextState: {}) {
+  shouldComponentUpdate(nextProps: Props): boolean {
     const responseItemHasChanged = this.props.responseItem !== nextProps.responseItem;
     const helpItemHasChanged = this.props.isHelpOpen !== nextProps.isHelpOpen;
     const resourcesHasChanged = JSON.stringify(this.props.resources) !== JSON.stringify(nextProps.resources);
@@ -130,7 +133,6 @@ export class String extends React.Component<Props & ValidationProps, {}> {
             errorMessage={this.getValidationErrorMessage}
             requiredErrorMessage={this.getRequiredErrorMessage(item)}
             className="page_skjemautfyller__input"
-            allowInputOverMaxLength
             helpButton={this.props.renderHelpButton()}
             helpElement={this.props.renderHelpElement()}
             validateOnExternalUpdate={true}

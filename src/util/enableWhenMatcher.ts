@@ -1,4 +1,5 @@
 import moment from 'moment';
+
 import { parseDate } from '@helsenorge/toolkit/components/molecules/time-input/date-core';
 
 import { QuestionnaireItemEnableWhen, QuestionnaireResponseItemAnswer, QuestionnaireEnableOperator } from '../types/fhir';
