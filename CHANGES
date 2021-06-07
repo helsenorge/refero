@@ -1,3 +1,7 @@
+7.7.0
+-----
+* Upgrade components to new version of @helsenorge/toolkit and @helsenorge/core-utils. Requires @helsenorge/toolkit v20.0.0 and @helsenorge/core-utils v20.0.0
+
 7.6.6
 -----
 * Do not set empty "text" property for items in QuestionnaireResponse if the item does not have "text" property.
