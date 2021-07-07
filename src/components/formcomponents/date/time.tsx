@@ -207,7 +207,7 @@ class Time extends React.Component<Props & ValidationProps> {
       const value = this.getPDFValue();
       if (renderFieldset) {
         return (
-          <TextView item={this.props.item} value={this.padNumber(value)} onRenderMarkdown={onRenderMarkdown}>
+          <TextView id={id} item={this.props.item} value={this.padNumber(value)} onRenderMarkdown={onRenderMarkdown}>
             {this.props.children}
           </TextView>
         );

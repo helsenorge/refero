@@ -112,10 +112,10 @@ class Quantity extends React.Component<Props & ValidationProps, {}> {
   }
 
   render(): JSX.Element | null {
-    const { item, onRenderMarkdown } = this.props;
+    const { id, item, onRenderMarkdown } = this.props;
     if (this.props.pdf || isReadOnly(item)) {
       return (
-        <TextView item={this.props.item} value={this.getPDFValue()} onRenderMarkdown={onRenderMarkdown}>
+        <TextView id={id} item={this.props.item} value={this.getPDFValue()} onRenderMarkdown={onRenderMarkdown}>
           {this.props.children}
         </TextView>
       );

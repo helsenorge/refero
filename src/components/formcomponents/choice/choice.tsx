@@ -231,10 +231,10 @@ export class Choice extends React.Component<ChoiceProps & ValidationProps, Choic
   }
 
   render(): JSX.Element | null {
-    const { item, pdf, answer, containedResources, children, onRenderMarkdown } = this.props;
+    const { id, item, pdf, answer, containedResources, children, onRenderMarkdown } = this.props;
     if (pdf || isReadOnly(item)) {
       return (
-        <TextView item={item} value={this.getPDFValue(item, answer)} onRenderMarkdown={onRenderMarkdown}>
+        <TextView id={id} item={item} value={this.getPDFValue(item, answer)} onRenderMarkdown={onRenderMarkdown}>
           {children}
         </TextView>
       );

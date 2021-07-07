@@ -111,7 +111,7 @@ export class Text extends React.Component<Props & ValidationProps, {}> {
   }
 
   render(): JSX.Element | null {
-    const { item, answer, pdf, children, resources, onRenderMarkdown, ...other } = this.props;
+    const { id, item, answer, pdf, children, resources, onRenderMarkdown, ...other } = this.props;
     const itemControls = getItemControlExtensionValue(item);
 
     if (itemControls && itemControls.some(itemControl => itemControl.code === itemControlConstants.SIDEBAR)) {
@@ -120,15 +120,18 @@ export class Text extends React.Component<Props & ValidationProps, {}> {
 
     if (itemControls && itemControls.some(itemControl => itemControl.code === itemControlConstants.INLINE)) {
       return (
-        <ExpandableSection label={item.text} inlineButton rightArrow>
-          <React.Fragment>{children}</React.Fragment>
-        </ExpandableSection>
+        <div id={id} className="page_skjemautfyller__component page_skjemautfyller__component_expandabletext">
+          <ExpandableSection label={item.text} inlineButton rightArrow>
+            <React.Fragment>{children}</React.Fragment>
+          </ExpandableSection>
+        </div>
       );
     }
 
     if (itemControls && itemControls.some(itemControl => itemControl.code === itemControlConstants.HIGHLIGHT)) {
       return (
         <div
+          id={id}
           className="page_skjemautfyller__component page_skjemautfyller__component_highlight"
           dangerouslySetInnerHTML={{
             __html: `${getText(item, onRenderMarkdown)}`,
@@ -140,6 +143,7 @@ export class Text extends React.Component<Props & ValidationProps, {}> {
     if (pdf || isReadOnly(item)) {
       return (
         <TextView
+          id={id}
           item={item}
           value={getPDFStringValue(answer)}
           onRenderMarkdown={onRenderMarkdown}

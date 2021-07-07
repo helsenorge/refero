@@ -190,7 +190,7 @@ class DateComponent extends React.Component<Props & ValidationProps> {
     if (this.props.pdf || isReadOnly(this.props.item)) {
       if (this.props.renderLabel) {
         return (
-          <TextView item={this.props.item} value={this.getPdfValue()} onRenderMarkdown={this.props.onRenderMarkdown}>
+          <TextView id={this.props.id} item={this.props.item} value={this.getPdfValue()} onRenderMarkdown={this.props.onRenderMarkdown}>
             {this.props.children}
           </TextView>
         );

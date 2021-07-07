@@ -151,7 +151,7 @@ class AttachmentComponent extends React.Component<Props & ValidationProps> {
     const { pdf, id, item, resources, onOpenAttachment, onRenderMarkdown, ...other } = this.props;
     if (pdf || isReadOnly(item)) {
       return (
-        <TextView item={item} value={this.getPdfValue()} onRenderMarkdown={onRenderMarkdown}>
+        <TextView id={id} item={item} value={this.getPdfValue()} onRenderMarkdown={onRenderMarkdown}>
           {this.props.children}
         </TextView>
       );

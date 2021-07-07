@@ -97,10 +97,11 @@ export class String extends React.Component<Props & ValidationProps, {}> {
   }
 
   render(): JSX.Element | null {
-    const { item, pdf, resources, answer, onRenderMarkdown } = this.props;
+    const { id, item, pdf, resources, answer, onRenderMarkdown } = this.props;
     if (pdf || isReadOnly(item)) {
       return (
         <TextView
+          id={id}
           item={item}
           value={getPDFStringValue(answer, resources)}
           onRenderMarkdown={onRenderMarkdown}
