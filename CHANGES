@@ -2,6 +2,10 @@
 -----
 * Add support for sublabel-extension for all components with label.
 
+7.7.1
+-----
+* Add id-attribute to markup of all form HTML elements.
+
 7.7.0
 -----
 * Upgrade components to new version of @helsenorge/toolkit and @helsenorge/core-utils. Requires @helsenorge/toolkit v20.0.0 and @helsenorge/core-utils v20.0.0

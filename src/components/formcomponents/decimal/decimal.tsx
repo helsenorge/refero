@@ -90,13 +90,13 @@ class Decimal extends React.Component<Props & ValidationProps, {}> {
   }
 
   render(): JSX.Element | null {
-    const { item, pdf, onRenderMarkdown } = this.props;
+    const { id, item, pdf, onRenderMarkdown } = this.props;
     const value = this.getValue();
     const subLabelText = getSublabelText(this.props.item, this.props.onRenderMarkdown);
 
     if (pdf || isReadOnly(item)) {
       return (
-        <TextView item={item} value={this.getPDFValue()} onRenderMarkdown={onRenderMarkdown}>
+        <TextView id={id} item={item} value={this.getPDFValue()} onRenderMarkdown={onRenderMarkdown}>
           {this.props.children}
         </TextView>
       );

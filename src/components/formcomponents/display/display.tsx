@@ -6,17 +6,18 @@ import designsystemtypography from '@helsenorge/designsystem-react/scss/typograp
 
 import { QuestionnaireItem } from '../../../types/fhir';
 import { getMarkdownExtensionValue } from '../../../util/extension';
-import { renderPrefix, getText } from '../../../util/index';
+import { renderPrefix, getText, getId } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 
 export interface Props {
+  id?: string;
   item?: QuestionnaireItem;
   enable?: boolean;
   pdf?: boolean;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
 }
 
-const Display: React.SFC<Props> = ({ enable, pdf, item, onRenderMarkdown }) => {
+const Display: React.SFC<Props> = ({ id, enable, pdf, item, onRenderMarkdown }) => {
   if (!enable) {
     return null;
   }
@@ -26,6 +27,7 @@ const Display: React.SFC<Props> = ({ enable, pdf, item, onRenderMarkdown }) => {
     if (markdown) {
       value = (
         <div
+          id={getId(id)}
           className={`page_skjemautfyller__markdown ${designsystemtypography['anchorlink-wrapper']}`}
           dangerouslySetInnerHTML={{
             __html: getText(item, onRenderMarkdown),
@@ -33,7 +35,7 @@ const Display: React.SFC<Props> = ({ enable, pdf, item, onRenderMarkdown }) => {
         />
       );
     } else {
-      value = <p>{`${renderPrefix(item)} ${getText(item, onRenderMarkdown)}`}</p>;
+      value = <p id={getId(id)}>{`${renderPrefix(item)} ${getText(item, onRenderMarkdown)}`}</p>;
     }
   }
   if (pdf) {
