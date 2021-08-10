@@ -1,9 +1,3 @@
-import { Options } from '@helsenorge/toolkit/components/atoms/radio-group';
-
-import ExtensionConstants from '../constants/extensions';
-import Constants, { OPEN_CHOICE_ID, OPEN_CHOICE_LABEL } from '../constants/index';
-import itemControlConstants from '../constants/itemcontrol';
-import ItemType from '../constants/itemType';
 import {
   QuestionnaireItem,
   QuestionnaireItemAnswerOption,
@@ -17,6 +11,13 @@ import {
   ValueSetComposeIncludeConcept,
   ValueSetComposeInclude,
 } from '../types/fhir';
+
+import { Options } from '@helsenorge/toolkit/components/atoms/radio-group';
+
+import ExtensionConstants from '../constants/extensions';
+import Constants, { OPEN_CHOICE_ID, OPEN_CHOICE_LABEL } from '../constants/index';
+import itemControlConstants from '../constants/itemcontrol';
+import ItemType from '../constants/itemType';
 import { getItemControlExtensionValue, getValidationTextExtension } from './extension';
 import { Resources } from './resources';
 

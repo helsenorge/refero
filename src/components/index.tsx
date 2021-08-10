@@ -3,6 +3,19 @@ import * as React from 'react';
 import { connect, Store } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
+import { AutoSuggestProps } from '../types/autoSuggestProps';
+import {
+  QuestionnaireResponseItem,
+  Questionnaire,
+  QuestionnaireResponse,
+  Attachment,
+  QuestionnaireItem,
+  QuestionnaireResponseItemAnswer,
+  Quantity,
+  ValueSet,
+} from '../types/fhir';
+import { TextMessage } from '../types/text-message';
+
 import { UploadedFile } from '@helsenorge/toolkit/components/atoms/dropzone';
 import Form from '@helsenorge/toolkit/components/molecules/form';
 import { ValidationSummaryPlacement } from '@helsenorge/toolkit/components/molecules/form/validationSummaryPlacement';
@@ -17,18 +30,6 @@ import { PresentationButtonsType } from '../constants/presentationButtonsType';
 import { GlobalState } from '../reducers';
 import { getFormDefinition, getFormData, getInitialFormData } from '../reducers/form';
 import { FormDefinition, FormData } from '../reducers/form';
-import { AutoSuggestProps } from '../types/autoSuggestProps';
-import {
-  QuestionnaireResponseItem,
-  Questionnaire,
-  QuestionnaireResponse,
-  Attachment,
-  QuestionnaireItem,
-  QuestionnaireResponseItemAnswer,
-  Quantity,
-  ValueSet,
-} from '../types/fhir';
-import { TextMessage } from '../types/text-message';
 import { ActionRequester, IActionRequester } from '../util/actionRequester';
 import {
   getQuestionnaireUnitExtensionValue,

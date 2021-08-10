@@ -1,10 +1,11 @@
 import { ThunkDispatch } from 'redux-thunk';
 
+import { QuestionnaireResponseItem, QuestionnaireItemEnableWhen, QuestionnaireItemEnableBehaviorCodes } from '../types/fhir';
+
 import { NewValueAction } from '../actions/newValue';
 import { Props } from '../components/with-common-functions';
 import { getFormData } from '../reducers/form';
 import { GlobalState } from '../reducers/index';
-import { QuestionnaireResponseItem, QuestionnaireItemEnableWhen, QuestionnaireItemEnableBehaviorCodes } from '../types/fhir';
 import {
   enableWhenMatchesAnswer,
   getQuestionnaireResponseItemWithLinkid,

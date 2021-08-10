@@ -1,6 +1,3 @@
-import Constants from '../constants/index';
-import itemType from '../constants/itemType';
-import StatusConstants from '../constants/status';
 import {
   QuestionnaireItem,
   QuestionnaireResponse,
@@ -8,6 +5,10 @@ import {
   QuestionnaireResponseItemAnswer,
   Questionnaire,
 } from '../types/fhir';
+
+import Constants from '../constants/index';
+import itemType from '../constants/itemType';
+import StatusConstants from '../constants/status';
 import { createQuestionnaireResponseAnswer } from '../util/createQuestionnaireResponseAnswer';
 import { getMinOccursExtensionValue } from '../util/extension';
 

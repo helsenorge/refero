@@ -1,5 +1,3 @@
-import ItemType from '../constants/itemType';
-import { FormData, FormDefinition } from '../reducers/form';
 import {
   QuestionnaireResponseItem,
   QuestionnaireResponseItemAnswer,
@@ -8,6 +6,9 @@ import {
   QuestionnaireResponse,
   QuestionnaireEnableOperator,
 } from '../types/fhir';
+
+import ItemType from '../constants/itemType';
+import { FormData, FormDefinition } from '../reducers/form';
 import { enableWhenMatches } from '../util/enableWhenMatcher';
 import { getMinOccursExtensionValue } from './extension';
 

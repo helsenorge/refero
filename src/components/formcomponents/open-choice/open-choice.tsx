@@ -3,6 +3,16 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
+import { AutoSuggestProps } from '../../../types/autoSuggestProps';
+import {
+  QuestionnaireItem,
+  QuestionnaireResponseItemAnswer,
+  Resource,
+  Coding,
+  QuestionnaireResponseItem,
+  ValueSet,
+} from '../../../types/fhir';
+
 import { Options } from '@helsenorge/toolkit/components/atoms/radio-group';
 import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
 
@@ -16,15 +26,6 @@ import {
 import { OPEN_CHOICE_ID, OPEN_CHOICE_SYSTEM } from '../../../constants';
 import ItemControlConstants from '../../../constants/itemcontrol';
 import { GlobalState } from '../../../reducers';
-import { AutoSuggestProps } from '../../../types/autoSuggestProps';
-import {
-  QuestionnaireItem,
-  QuestionnaireResponseItemAnswer,
-  Resource,
-  Coding,
-  QuestionnaireResponseItem,
-  ValueSet,
-} from '../../../types/fhir';
 import { isReadOnly } from '../../../util';
 import {
   renderOptions,

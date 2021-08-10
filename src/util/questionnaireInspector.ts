@@ -1,4 +1,5 @@
 import { QuestionnaireItem, Questionnaire, QuestionnaireResponse } from '../types/fhir';
+
 import { getQuestionnaireDefinitionItem, getResponseItemAndPathWithLinkId, ItemAndPath } from './skjemautfyller-core';
 
 export interface QuestionnaireItemPair {

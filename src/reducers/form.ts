@@ -1,5 +1,17 @@
 import produce, { enableES5 } from 'immer';
 
+import {
+  Questionnaire,
+  QuestionnaireResponseItem,
+  QuestionnaireResponseItemAnswer,
+  QuestionnaireItem,
+  QuestionnaireItemEnableWhen,
+  QuestionnaireResponse,
+  Coding,
+  Attachment,
+  QuestionnaireItemEnableBehaviorCodes,
+} from '../types/fhir';
+
 import { Languages } from '@helsenorge/toolkit/constants';
 
 import { FormAction, SET_SKJEMA_DEFINITION } from '../actions/form';
@@ -16,17 +28,6 @@ import {
 } from '../actions/newValue';
 import { syncQuestionnaireResponse } from '../actions/syncQuestionnaireResponse';
 import { GlobalState } from '../reducers/index';
-import {
-  Questionnaire,
-  QuestionnaireResponseItem,
-  QuestionnaireResponseItemAnswer,
-  QuestionnaireItem,
-  QuestionnaireItemEnableWhen,
-  QuestionnaireResponse,
-  Coding,
-  Attachment,
-  QuestionnaireItemEnableBehaviorCodes,
-} from '../types/fhir';
 import { createQuestionnaireResponseAnswer } from '../util/createQuestionnaireResponseAnswer';
 import { getMinOccursExtensionValue } from '../util/extension';
 import { isStringEmpty } from '../util/index';

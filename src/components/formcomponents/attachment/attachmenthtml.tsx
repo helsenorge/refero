@@ -1,5 +1,8 @@
 import * as React from 'react';
 
+import { QuestionnaireItem } from '../../../types/fhir';
+import { TextMessage } from '../../../types/text-message';
+
 import NotificationPanel from '@helsenorge/designsystem-react/components/NotificationPanel';
 
 import Dropzone from '@helsenorge/toolkit/components/atoms/dropzone';
@@ -8,8 +11,6 @@ import { sizeIsValid, mimeTypeIsValid } from '@helsenorge/toolkit/components/ato
 import Validation, { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
 
 import constants, { VALID_FILE_TYPES } from '../../../constants';
-import { QuestionnaireItem } from '../../../types/fhir';
-import { TextMessage } from '../../../types/text-message';
 import { getValidationTextExtension } from '../../../util/extension';
 import { Resources } from '../../../util/resources';
 

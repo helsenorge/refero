@@ -4,6 +4,8 @@ import classNames from 'classnames';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from '../../../types/fhir';
+
 import { DisplayButton } from '@helsenorge/toolkit/components/atoms/buttons/display-button';
 import { FunctionButton } from '@helsenorge/toolkit/components/atoms/buttons/function-button';
 import Delete from '@helsenorge/toolkit/components/icons/Delete';
@@ -11,7 +13,6 @@ import { Lightbox } from '@helsenorge/toolkit/components/molecules/lightbox';
 
 import { NewValueAction, deleteRepeatItemAsync } from '../../../actions/newValue';
 import { GlobalState } from '../../../reducers';
-import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from '../../../types/fhir';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { RenderContext } from '../../../util/renderContext';
 import { Resources } from '../../../util/resources';

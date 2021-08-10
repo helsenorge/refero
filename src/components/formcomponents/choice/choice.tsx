@@ -3,11 +3,6 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
-import { Options } from '@helsenorge/toolkit/components/atoms/radio-group';
-import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
-
-import { NewValueAction, newCodingValueAsync, removeCodingValueAsync } from '../../../actions/newValue';
-import { GlobalState } from '../../../reducers';
 import { AutoSuggestProps } from '../../../types/autoSuggestProps';
 import {
   QuestionnaireItem,
@@ -17,6 +12,12 @@ import {
   QuestionnaireResponseItem,
   ValueSet,
 } from '../../../types/fhir';
+
+import { Options } from '@helsenorge/toolkit/components/atoms/radio-group';
+import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
+
+import { NewValueAction, newCodingValueAsync, removeCodingValueAsync } from '../../../actions/newValue';
+import { GlobalState } from '../../../reducers';
 import { getOptions, getSystem, getErrorMessage, validateInput, getIndexOfAnswer, getDisplay, renderOptions } from '../../../util/choice';
 import { isReadOnly } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';

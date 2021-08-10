@@ -1,4 +1,3 @@
-import ItemType from '../constants/itemType';
 import {
   QuestionnaireResponse,
   Questionnaire,
@@ -6,6 +5,8 @@ import {
   QuestionnaireResponseItem,
   QuestionnaireResponseItemAnswer,
 } from '../types/fhir';
+
+import ItemType from '../constants/itemType';
 import {
   hasAnswer,
   hasAttachmentAnswer,

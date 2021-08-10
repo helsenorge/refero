@@ -1,9 +1,10 @@
 import * as uuid from 'uuid';
 
+import { QuestionnaireItem, Coding, Extension } from '../types/fhir';
+
 import ExtensionConstants from '../constants/extensions';
 import Scoring from '../constants/scoring';
 import { ScoringItemType } from '../constants/scoringItemType';
-import { QuestionnaireItem, Coding, Extension } from '../types/fhir';
 import { getCalculatedExpressionExtension } from './extension';
 
 export function createDummySectionScoreItem(): QuestionnaireItem {

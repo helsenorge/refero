@@ -1,5 +1,3 @@
-import ExtensionConstants from '../constants/extensions';
-import { ScoringItemType } from '../constants/scoringItemType';
 import {
   Questionnaire,
   QuestionnaireItem,
@@ -7,6 +5,9 @@ import {
   QuestionnaireResponseItemAnswer,
   QuestionnaireItemAnswerOption,
 } from '../types/fhir';
+
+import ExtensionConstants from '../constants/extensions';
+import { ScoringItemType } from '../constants/scoringItemType';
 import { getExtension, getCalculatedExpressionExtension } from './extension';
 import r4 from './fhirpathLoaderHelper';
 import { createDummySectionScoreItem, scoringItemType } from './scoring';

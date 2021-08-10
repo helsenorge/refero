@@ -4,15 +4,6 @@ import classNames from 'classnames';
 import { Collapse } from 'react-collapse';
 import { ThunkDispatch } from 'redux-thunk';
 
-import { UploadedFile } from '@helsenorge/toolkit/components/atoms/dropzone';
-import HelpTrigger from '@helsenorge/toolkit/components/icons/HelpTrigger';
-import { FormChild } from '@helsenorge/toolkit/components/molecules/form';
-import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
-
-import { NewValueAction } from '../actions/newValue';
-import itemControlConstants from '../constants/itemcontrol';
-import itemType from '../constants/itemType';
-import { GlobalState } from '../reducers';
 import { AutoSuggestProps } from '../types/autoSuggestProps';
 import {
   Resource,
@@ -23,6 +14,16 @@ import {
   ValueSet,
 } from '../types/fhir';
 import { TextMessage } from '../types/text-message';
+
+import { UploadedFile } from '@helsenorge/toolkit/components/atoms/dropzone';
+import HelpTrigger from '@helsenorge/toolkit/components/icons/HelpTrigger';
+import { FormChild } from '@helsenorge/toolkit/components/molecules/form';
+import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
+
+import { NewValueAction } from '../actions/newValue';
+import itemControlConstants from '../constants/itemcontrol';
+import itemType from '../constants/itemType';
+import { GlobalState } from '../reducers';
 import { findHelpItem, isHelpItem, getHelpItemType } from '../util/help';
 import { getComponentForItem, getChildHeaderTag, shouldRenderRepeatButton, getText, isHiddenItem } from '../util/index';
 import { RenderContext } from '../util/renderContext';

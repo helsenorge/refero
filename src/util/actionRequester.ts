@@ -1,3 +1,5 @@
+import { Questionnaire, QuestionnaireResponse, QuestionnaireItem, Coding, Quantity } from '../types/fhir';
+
 import {
   newIntegerValue,
   NewValueAction,
@@ -14,7 +16,6 @@ import {
   removeCodingStringValue,
 } from '../actions/newValue';
 import itemControlConstants from '../constants/itemcontrol';
-import { Questionnaire, QuestionnaireResponse, QuestionnaireItem, Coding, Quantity } from '../types/fhir';
 import { getItemControlValue } from './choice';
 import { getResponseItemAndPathWithLinkId, getQuestionnaireDefinitionItem, Path } from './skjemautfyller-core';
 

@@ -3,6 +3,8 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem } from '../../../types/fhir';
+
 import AnchorLink from '@helsenorge/designsystem-react/components/AnchorLink';
 
 import CustomTag from '@helsenorge/core-utils/custom-tag';
@@ -10,7 +12,6 @@ import CustomTag from '@helsenorge/core-utils/custom-tag';
 import { NewValueAction } from '../../../actions/newValue';
 import { RenderContextType } from '../../../constants/renderContextType';
 import { GlobalState } from '../../../reducers';
-import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem } from '../../../types/fhir';
 import { getGroupItemControl } from '../../../util/group-item-control';
 import { renderPrefix, getText, getId } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
