@@ -7,8 +7,9 @@ import { QuestionnaireItem } from '../../../types/fhir';
 import { RadioGroup, Options } from '@helsenorge/toolkit/components/atoms/radio-group';
 import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
 
-import { isRequired, getId, renderPrefix, getText, getSublabelText } from '../../../util/index';
+import { isRequired, getId, getSublabelText } from '../../../util/index';
 import { Resources } from '../../../util/resources';
+import Label from '../label';
 import SubLabel from '../sublabel';
 
 interface Props {
@@ -54,13 +55,7 @@ const RadioView: React.SFC<Props> = ({
       <Collapse isOpened>
         <Validation {...other}>
           <RadioGroup
-            legend={
-              <span
-                dangerouslySetInnerHTML={{
-                  __html: `${renderPrefix(item)} ${getText(item, onRenderMarkdown)}`,
-                }}
-              />
-            }
+            legend={<Label item={item} onRenderMarkdown={onRenderMarkdown} />}
             subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
             id={getId(id)}
             options={options}
