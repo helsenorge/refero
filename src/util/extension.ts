@@ -38,21 +38,6 @@ export function getNavigatorExtension(questionniare: Questionnaire): Array<Codin
   return navigatorExtension?.valueCodeableConcept?.coding;
 }
 
-export function getPrintVersion(questionniare: Questionnaire): string | undefined {
-  const recipientUrl = getExtension(ExtensionConstants.PRINT_VERSION, questionniare);
-  return recipientUrl?.valueReference?.reference;
-}
-
-export function getRecipientUrl(questionniare: Questionnaire): string | undefined {
-  const recipientUrl = getExtension(ExtensionConstants.RECIPIENT_URL, questionniare);
-  return recipientUrl?.valueReference?.reference;
-}
-
-export function getGeneratePdfExtensionValue(questionnaire: Questionnaire): boolean | undefined {
-  const generatepdf = getExtension(ExtensionConstants.GENERATE_PDF, questionnaire);
-  return generatepdf?.valueBoolean;
-}
-
 export function getSidebarSections(
   questionniare: Questionnaire,
   onRenderMarkdown?: (item: QuestionnaireItem, markup: string) => string
@@ -205,42 +190,6 @@ export function getQuestionnaireHiddenExtensionValue(item: QuestionnaireItem): b
     return false;
   }
   return questionnaireHiddenExtension.valueBoolean;
-}
-
-export function getAuthenticationRequirementValue(questionnaire: Questionnaire): number | undefined {
-  const itemAuthenticationRequirement = getExtension(ExtensionConstants.AUTHENTICATION_REQUIREMENT_URL, questionnaire);
-  if (!itemAuthenticationRequirement || !itemAuthenticationRequirement.valueCoding || !itemAuthenticationRequirement.valueCoding.code) {
-    return undefined;
-  }
-
-  return parseInt(itemAuthenticationRequirement.valueCoding.code, 10);
-}
-
-export function getCanBePerformedByValue(questionnaire: Questionnaire): number | undefined {
-  const itemCanBePerfomedBy = getExtension(ExtensionConstants.CAN_BE_PERFORMED_BY_URL, questionnaire);
-  if (!itemCanBePerfomedBy || !itemCanBePerfomedBy.valueCoding || !itemCanBePerfomedBy.valueCoding.code) {
-    return undefined;
-  }
-
-  return parseInt(itemCanBePerfomedBy.valueCoding.code, 10);
-}
-
-export function getAccessibilityToResponse(questionnaire: Questionnaire): number | undefined {
-  const accessibilityToResponse = getExtension(ExtensionConstants.ACCESSIBILITY_TO_RESPONSE, questionnaire);
-  if (!accessibilityToResponse || !accessibilityToResponse.valueCoding || !accessibilityToResponse.valueCoding.code) {
-    return undefined;
-  }
-
-  return parseInt(accessibilityToResponse.valueCoding.code, 10);
-}
-
-export function getDiscretion(questionnaire: Questionnaire): number | undefined {
-  const discretion = getExtension(ExtensionConstants.DISCRETION, questionnaire);
-  if (!discretion || !discretion.valueCoding || !discretion.valueCoding.code) {
-    return undefined;
-  }
-
-  return parseInt(discretion.valueCoding.code, 10);
 }
 
 export function getCalculatedExpressionExtension(item: QuestionnaireItem): Extension | undefined {

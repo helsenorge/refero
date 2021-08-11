@@ -15,21 +15,14 @@ export default {
 
   VALIDATIONTEXT_URL: 'http://ehelse.no/fhir/StructureDefinition/validationtext',
   REPEATSTEXT_URL: 'http://ehelse.no/fhir/StructureDefinition/repeatstext',
-  AUTHENTICATION_REQUIREMENT_URL: 'http://ehelse.no/fhir/StructureDefinition/sdf-authenticationrequirement',
-  CAN_BE_PERFORMED_BY_URL: 'http://ehelse.no/fhir/StructureDefinition/sdf-canbeperformedby',
-  ACCESSIBILITY_TO_RESPONSE: 'http://ehelse.no/fhir/StructureDefinition/sdf-accessibilitytoresponse',
-  DISCRETION: 'http://ehelse.no/fhir/StructureDefinition/sdf-discretion',
   OPTION_REFERENCE: 'http://ehelse.no/fhir/StructureDefinition/sdf-optionReference',
   CALCULATED_EXPRESSION: 'http://ehelse.no/fhir/StructureDefinition/sdf-calculatedExpression',
   DATE_MAX_VALUE_URL: 'http://ehelse.no/fhir/StructureDefinition/sdf-maxvalue',
   DATE_MIN_VALUE_URL: 'http://ehelse.no/fhir/StructureDefinition/sdf-minvalue',
-  RECIPIENT_URL: 'http://ehelse.no/fhir/StructureDefinition/sdf-endpoint',
-  GENERATE_PDF: 'http://ehelse.no/fhir/StructureDefinition/sdf-generatepdf',
 
   GUIDANCE_PARAMETER: 'http://helsenorge.no/fhir/StructureDefinition/sdf-guidanceparameter',
   GUIDANCE_ACTION: 'http://helsenorge.no/fhir/StructureDefinition/sdf-guidanceaction',
   PRESENTATION_BUTTONS: 'http://helsenorge.no/fhir/StructureDefinition/sdf-presentationbuttons',
   NAVIGATOR: 'http://helsenorge.no/fhir/StructureDefinition/sdf-questionnaire-navgiator-state',
-  PRINT_VERSION: 'http://helsenorge.no/fhir/StructureDefinition/sdf-questionnaire-print-version',
   SUBLABEL: 'http://helsenorge.no/fhir/StructureDefinition/sdf-sublabel',
 };
