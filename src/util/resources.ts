@@ -283,4 +283,48 @@ export interface Resources {
    * Gå tilbake til datoen i inputfeltet
    */
   returnFocusToInput?: string;
+  /**
+   * Du må skrive inn et gyldig årstall
+   */
+  year_field_invalid?: string;
+  /**
+   * Årstall er etter det eldste tillatte år
+   */
+  year_field_maxdate?: string;
+  /**
+   * Årstall er før det minste tillatte år
+   */
+  year_field_mindate?: string;
+  /**
+   * Årstall er påkrevd
+   */
+  year_field_required?: string;
+  /**
+   * Ugyldig verdi
+   */
+  yearmonth_field_invalid?: string;
+  /**
+   * Du må skrive inn et gyldig årstall
+   */
+  yearmonth_field_invalid_year?: string;
+  /**
+   * Tidspunkt er etter eldste tillatte tidspunkt
+   */
+  yearmonth_field_maxdate?: string;
+  /**
+   * Tidspunkt er før minste tillatte tidspunkt
+   */
+  yearmonth_field_mindate?: string;
+  /**
+   * Velg måned
+   */
+  yearmonth_field_month_placeholder?: string;
+  /**
+   * Årstall og måned er påkrevd
+   */
+  yearmonth_field_required?: string;
+  /**
+   * Velg år
+   */
+  yearmonth_field_year_placeholder?: string;
 }

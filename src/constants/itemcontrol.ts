@@ -8,6 +8,8 @@ export default {
   INLINE: 'inline',
   HIGHLIGHT: 'highlight',
   SIDEBAR: 'sidebar',
+  YEAR: 'year',
+  YEARMONTH: 'yearMonth',
   Group: {
     VERTICAL_TABLE: 'table',
     HORIZONTAL_TABLE: 'htable',

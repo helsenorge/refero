@@ -7,8 +7,6 @@ import { ThunkDispatch } from 'redux-thunk';
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem } from '../../../types/fhir';
 
 import { DateRangePicker } from '@helsenorge/toolkit/components/molecules/date-range-picker';
-import { DatePickerErrorPhrases } from '@helsenorge/toolkit/components/molecules/date-range-picker/date-range-picker-types';
-import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
 import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
 import { parseDate } from '@helsenorge/toolkit/components/molecules/time-input/date-core';
 
@@ -16,11 +14,11 @@ import { LanguageLocales } from '@helsenorge/core-utils/constants/languages';
 
 import { NewValueAction, newDateValueAsync } from '../../../actions/newValue';
 import ExtensionConstants from '../../../constants/extensions';
-import Constants from '../../../constants/index';
+import itemControlConstants from '../../../constants/itemcontrol';
 import { GlobalState } from '../../../reducers';
-import { getValidationTextExtension, getPlaceholder, getExtension } from '../../../util/extension';
+import { getExtension, getItemControlExtensionValue } from '../../../util/extension';
 import { evaluateFhirpathExpressionToGetDate } from '../../../util/fhirpathHelper';
-import { isReadOnly, isRequired, getId, getSublabelText } from '../../../util/index';
+import { isReadOnly, getSublabelText } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Resources } from '../../../util/resources';
 import { Path } from '../../../util/skjemautfyller-core';
@@ -28,6 +26,9 @@ import withCommonFunctions from '../../with-common-functions';
 import Label from '../label';
 import SubLabel from '../sublabel';
 import TextView from '../textview';
+import { DateDayInput } from './date-day-input';
+import { DateYearMonthInput } from './date-month-input';
+import { DateYearInput } from './date-year-input';
 
 export interface Props {
   item: QuestionnaireItem;
@@ -63,20 +64,14 @@ class DateComponent extends React.Component<Props & ValidationProps> {
     this.datepicker = React.createRef();
   }
 
-  getDatepickerErrorPhrases(): DatePickerErrorPhrases {
-    const { resources, item } = this.props;
-    // Vi får maks én valideringstekst, derfor settes alle til denne.
-    const validationErrorText = getValidationTextExtension(item);
-
-    return {
-      errorInvalidDate: validationErrorText ? validationErrorText : resources?.filterDateErrorDateFormat || '',
-      errorAfterMaxDate: resources?.errorAfterMaxDate || '',
-      errorBeforeMinDate: resources?.errorBeforeMinDate || '',
-      errorInvalidDateRange: '',
-      errorRequiredDate: resources?.dateRequired || '',
-      errorRequiredDateRange: '',
-      errorInvalidMinimumNights: '',
-    };
+  getStringValue(): string | undefined {
+    const { answer } = this.props;
+    if (answer && answer.valueDate) {
+      return answer.valueDate;
+    }
+    if (answer && answer.valueDateTime) {
+      return answer.valueDateTime;
+    }
   }
 
   getValue(): Date | undefined {
@@ -143,9 +138,8 @@ class DateComponent extends React.Component<Props & ValidationProps> {
     return undefined;
   }
 
-  onDateChange = (value: Moment | null): void => {
+  onDateValueChange = (newValue: string): void => {
     const { dispatch, promptLoginMessage, path, item, onAnswerChange } = this.props;
-    const newValue = value ? moment(value).format(Constants.DATE_FORMAT) : '';
     if (dispatch) {
       dispatch(newDateValueAsync(this.props.path, newValue, this.props.item))?.then(newState =>
         onAnswerChange(newState, path, item, { valueDate: newValue } as QuestionnaireResponseItemAnswer)
@@ -157,7 +151,7 @@ class DateComponent extends React.Component<Props & ValidationProps> {
     }
   };
 
-  getPdfValue = (): string => {
+  getReadonlyValue = (): string => {
     const date = this.getValue();
     let text = '';
     if (this.props.resources && this.props.resources.ikkeBesvart) {
@@ -184,10 +178,6 @@ class DateComponent extends React.Component<Props & ValidationProps> {
     return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats;
   }
 
-  toLocaleDate(moment: Moment | undefined): Moment | undefined {
-    return moment ? moment.locale(this.getLocaleFromLanguage()) : undefined;
-  }
-
   render(): JSX.Element | null {
     const date = this.getValue();
     const subLabelText = getSublabelText(this.props.item, this.props.onRenderMarkdown);
@@ -195,39 +185,86 @@ class DateComponent extends React.Component<Props & ValidationProps> {
     if (this.props.pdf || isReadOnly(this.props.item)) {
       if (this.props.renderLabel) {
         return (
-          <TextView id={this.props.id} item={this.props.item} value={this.getPdfValue()} onRenderMarkdown={this.props.onRenderMarkdown}>
+          <TextView
+            id={this.props.id}
+            item={this.props.item}
+            value={this.getReadonlyValue()}
+            onRenderMarkdown={this.props.onRenderMarkdown}
+          >
             {this.props.children}
           </TextView>
         );
       } else {
-        return <span>{this.getPdfValue()}</span>;
+        return <span>{this.getReadonlyValue()}</span>;
       }
     }
+    const itemControls = getItemControlExtensionValue(this.props.item);
+    const labelEl = this.props.renderLabel ? <Label item={this.props.item} onRenderMarkdown={this.props.onRenderMarkdown} /> : undefined;
+    const subLabelEl = subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined;
+
+    let element: JSX.Element | undefined = undefined;
+
+    if (itemControls && itemControls.some(itemControl => itemControl.code === itemControlConstants.YEAR)) {
+      element = (
+        <DateYearInput
+          id={this.props.id}
+          resources={this.props.resources}
+          label={labelEl}
+          subLabel={subLabelEl}
+          helpButton={this.props.renderHelpButton()}
+          helpElement={this.props.renderHelpElement()}
+          onDateValueChange={this.onDateValueChange}
+          className={this.props.className}
+          yearValue={date ? date.getFullYear() : undefined}
+          maxDate={this.getMaxDate()}
+          minDate={this.getMinDate()}
+          {...this.props}
+        />
+      );
+    } else if (itemControls && itemControls.some(itemControl => itemControl.code === itemControlConstants.YEARMONTH)) {
+      const stringDate = this.getStringValue();
+      element = (
+        <DateYearMonthInput
+          id={this.props.id}
+          resources={this.props.resources}
+          label={labelEl}
+          locale={this.getLocaleFromLanguage()}
+          subLabel={subLabelEl}
+          helpButton={this.props.renderHelpButton()}
+          helpElement={this.props.renderHelpElement()}
+          onDateValueChange={this.onDateValueChange}
+          className={this.props.className}
+          yearMonthValue={stringDate}
+          maxDate={this.getMaxDate()}
+          minDate={this.getMinDate()}
+          {...this.props}
+        />
+      );
+    } else {
+      element = (
+        <DateDayInput
+          id={this.props.id}
+          resources={this.props.resources}
+          locale={this.getLocaleFromLanguage()}
+          label={labelEl}
+          subLabel={subLabelEl}
+          datepickerRef={this.datepicker}
+          helpButton={this.props.renderHelpButton()}
+          helpElement={this.props.renderHelpElement()}
+          onDateValueChange={this.onDateValueChange}
+          validationErrorRenderer={this.props.validationErrorRenderer}
+          className={this.props.className}
+          dateValue={date}
+          maxDate={this.getMaxDate()}
+          minDate={this.getMinDate()}
+          {...this.props}
+        />
+      );
+    }
+
     return (
       <div className="page_skjemautfyller__component page_skjemautfyller__component_date">
-        <Validation {...this.props}>
-          <DateRangePicker
-            type="single"
-            id={`${getId(this.props.id)}-datepicker_input`}
-            locale={this.getLocaleFromLanguage()} // TODO: må støtte nynorsk og samisk også
-            errorResources={this.getDatepickerErrorPhrases()}
-            resources={this.props.resources}
-            label={this.props.renderLabel ? <Label item={this.props.item} onRenderMarkdown={this.props.onRenderMarkdown} /> : undefined}
-            subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
-            isRequired={isRequired(this.props.item)}
-            placeholder={getPlaceholder(this.props.item)}
-            ref={this.datepicker}
-            maximumDate={this.toLocaleDate(this.getMaxDate())}
-            minimumDate={this.toLocaleDate(this.getMinDate())}
-            initialDate={this.toLocaleDate(moment(new Date()))}
-            singleDateValue={date ? this.toLocaleDate(moment(date)) : undefined}
-            className={this.props.className}
-            onDateChange={this.onDateChange}
-            validationErrorRenderer={this.props.validationErrorRenderer}
-            helpButton={this.props.renderHelpButton()}
-            helpElement={this.props.renderHelpElement()}
-          />
-        </Validation>
+        {element}
         {this.props.renderDeleteButton('page_skjemautfyller__deletebutton--margin-top')}
         {this.props.repeatButton}
         {this.props.children ? <div className="nested-fieldset nested-fieldset--full-height">{this.props.children}</div> : null}
