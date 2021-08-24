@@ -139,8 +139,9 @@ class DateComponent extends React.Component<Props & ValidationProps> {
   }
 
   onDateValueChange = (newValue: string): void => {
-    const { dispatch, promptLoginMessage, path, item, onAnswerChange } = this.props;
-    if (dispatch) {
+    const { dispatch, promptLoginMessage, path, item, answer, onAnswerChange } = this.props;
+    const existingAnswer = answer?.valueDate || '';
+    if (dispatch && newValue !== existingAnswer) {
       dispatch(newDateValueAsync(this.props.path, newValue, this.props.item))?.then(newState =>
         onAnswerChange(newState, path, item, { valueDate: newValue } as QuestionnaireResponseItemAnswer)
       );
