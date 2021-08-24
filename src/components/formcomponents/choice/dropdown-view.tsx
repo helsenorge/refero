@@ -81,6 +81,7 @@ class DropdownView extends React.Component<Props, {}> {
               onChange={(evt): void => handleChange((evt.target as HTMLInputElement).value)}
               options={dropdownOptions}
               selected={selected ? selected[0] : undefined}
+              value={selected ? selected[0] : undefined}
               placeholder={placeholder}
               onChangeValidator={validateInput}
               errorMessage={getValidationTextExtension(item)}
