@@ -18,14 +18,13 @@ import itemControlConstants from '../../../constants/itemcontrol';
 import { GlobalState } from '../../../reducers';
 import { getExtension, getItemControlExtensionValue } from '../../../util/extension';
 import { evaluateFhirpathExpressionToGetDate } from '../../../util/fhirpathHelper';
-import { isReadOnly, getSublabelText } from '../../../util/index';
+import { getSublabelText } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Resources } from '../../../util/resources';
 import { Path } from '../../../util/skjemautfyller-core';
 import withCommonFunctions from '../../with-common-functions';
 import Label from '../label';
 import SubLabel from '../sublabel';
-import TextView from '../textview';
 import { DateDayInput } from './date-day-input';
 import { DateYearMonthInput } from './date-month-input';
 import { DateYearInput } from './date-year-input';
@@ -40,7 +39,6 @@ export interface Props {
   pdf?: boolean;
   language?: string;
   promptLoginMessage?: () => void;
-  renderLabel?: boolean;
   className?: string;
   id?: string;
   validationErrorRenderer?: JSX.Element;
@@ -55,7 +53,6 @@ export interface Props {
 
 class DateComponent extends React.Component<Props & ValidationProps> {
   static defaultProps: Partial<Props> = {
-    renderLabel: true,
     path: [],
   };
   datepicker: React.RefObject<DateRangePicker>;
@@ -152,16 +149,6 @@ class DateComponent extends React.Component<Props & ValidationProps> {
     }
   };
 
-  getReadonlyValue = (): string => {
-    const date = this.getValue();
-    let text = '';
-    if (this.props.resources && this.props.resources.ikkeBesvart) {
-      text = this.props.resources.ikkeBesvart;
-    }
-
-    return date ? moment(date).format('D. MMMM YYYY') : text;
-  };
-
   getLocaleFromLanguage = (): LanguageLocales.ENGLISH | LanguageLocales.NORWEGIAN => {
     if (this.props.language?.toLowerCase() === 'en-gb') {
       return LanguageLocales.ENGLISH;
@@ -183,24 +170,8 @@ class DateComponent extends React.Component<Props & ValidationProps> {
     const date = this.getValue();
     const subLabelText = getSublabelText(this.props.item, this.props.onRenderMarkdown);
 
-    if (this.props.pdf || isReadOnly(this.props.item)) {
-      if (this.props.renderLabel) {
-        return (
-          <TextView
-            id={this.props.id}
-            item={this.props.item}
-            value={this.getReadonlyValue()}
-            onRenderMarkdown={this.props.onRenderMarkdown}
-          >
-            {this.props.children}
-          </TextView>
-        );
-      } else {
-        return <span>{this.getReadonlyValue()}</span>;
-      }
-    }
     const itemControls = getItemControlExtensionValue(this.props.item);
-    const labelEl = this.props.renderLabel ? <Label item={this.props.item} onRenderMarkdown={this.props.onRenderMarkdown} /> : undefined;
+    const labelEl = <Label item={this.props.item} onRenderMarkdown={this.props.onRenderMarkdown} />;
     const subLabelEl = subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined;
 
     let element: JSX.Element | undefined = undefined;
@@ -209,6 +180,7 @@ class DateComponent extends React.Component<Props & ValidationProps> {
       element = (
         <DateYearInput
           id={this.props.id}
+          pdf={this.props.pdf}
           resources={this.props.resources}
           label={labelEl}
           subLabel={subLabelEl}

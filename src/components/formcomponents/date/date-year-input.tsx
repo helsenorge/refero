@@ -7,12 +7,14 @@ import { QuestionnaireItem } from '../../../types/fhir';
 import { Validation } from '@helsenorge/toolkit/components/molecules/form/validation';
 import { YearErrorResources, YearInput } from '@helsenorge/toolkit/components/molecules/year-input';
 
-import { getId, isRequired } from '../../../util';
+import { getId, isReadOnly, isRequired } from '../../../util';
 import { getPlaceholder, getValidationTextExtension } from '../../../util/extension';
 import { Resources } from '../../../util/resources';
+import TextView from '../textview';
 
 interface Props {
   id?: string;
+  pdf?: boolean;
   item: QuestionnaireItem;
   resources?: Resources;
   label?: JSX.Element;
@@ -20,6 +22,7 @@ interface Props {
   helpButton?: JSX.Element;
   helpElement?: JSX.Element;
   onDateValueChange: (newValue: string) => void;
+  onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
   className?: string;
   yearValue?: number;
   maxDate?: Moment;
@@ -44,7 +47,20 @@ export class DateYearInput extends React.Component<Props, {}> {
     this.props.onDateValueChange(year === 0 ? '' : year.toString());
   };
 
+  getReadonlyValue = (): string => {
+    const ikkeBesvartText = this.props.resources?.ikkeBesvart || '';
+    return this.props.yearValue?.toString() || ikkeBesvartText;
+  };
+
   render(): JSX.Element {
+    if (this.props.pdf || isReadOnly(this.props.item)) {
+      return (
+        <TextView id={this.props.id} item={this.props.item} value={this.getReadonlyValue()} onRenderMarkdown={this.props.onRenderMarkdown}>
+          {this.props.children}
+        </TextView>
+      );
+    }
+
     return (
       <Validation {...this.props}>
         <YearInput

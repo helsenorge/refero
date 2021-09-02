@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { Moment } from 'moment';
+import moment, { Moment } from 'moment';
 
 import { QuestionnaireItem } from '../../../types/fhir';
 
@@ -9,12 +9,14 @@ import { YearMonthResources, YearMonthInput, YearMonthValue } from '@helsenorge/
 
 import { LanguageLocales } from '@helsenorge/core-utils/constants/languages';
 
-import { getId, isRequired } from '../../../util';
+import { getId, isReadOnly, isRequired } from '../../../util';
 import { getPlaceholder, getValidationTextExtension } from '../../../util/extension';
 import { Resources } from '../../../util/resources';
+import TextView from '../textview';
 
 interface Props {
   id?: string;
+  pdf?: boolean;
   item: QuestionnaireItem;
   resources?: Resources;
   locale: LanguageLocales.ENGLISH | LanguageLocales.NORWEGIAN;
@@ -23,6 +25,7 @@ interface Props {
   helpButton?: JSX.Element;
   helpElement?: JSX.Element;
   onDateValueChange: (newValue: string) => void;
+  onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
   className?: string;
   yearMonthValue?: string;
   maxDate?: Moment;
@@ -78,7 +81,24 @@ export class DateYearMonthInput extends React.Component<Props, {}> {
       : undefined;
   };
 
+  getReadonlyValue = (): string => {
+    const ikkeBesvartText = this.props.resources?.ikkeBesvart || '';
+    return this.props.yearMonthValue
+      ? moment(this.props.yearMonthValue)
+          .locale(this.props.locale)
+          .format('MMMM YYYY')
+      : ikkeBesvartText;
+  };
+
   render(): JSX.Element {
+    if (this.props.pdf || isReadOnly(this.props.item)) {
+      return (
+        <TextView id={this.props.id} item={this.props.item} value={this.getReadonlyValue()} onRenderMarkdown={this.props.onRenderMarkdown}>
+          {this.props.children}
+        </TextView>
+      );
+    }
+
     return (
       <Validation {...this.props}>
         <YearMonthInput

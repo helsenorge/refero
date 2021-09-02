@@ -13,10 +13,13 @@ import { LanguageLocales } from '@helsenorge/core-utils/constants/languages';
 import Constants from '../../../constants/index';
 import { getId, isRequired } from '../../../util';
 import { getPlaceholder, getValidationTextExtension } from '../../../util/extension';
+import { isReadOnly } from '../../../util/index';
 import { Resources } from '../../../util/resources';
+import TextView from '../textview';
 
 interface Props {
   id?: string;
+  pdf?: boolean;
   item: QuestionnaireItem;
   resources?: Resources;
   locale: LanguageLocales.ENGLISH | LanguageLocales.NORWEGIAN;
@@ -26,6 +29,7 @@ interface Props {
   helpButton?: JSX.Element;
   helpElement?: JSX.Element;
   onDateValueChange: (newValue: string) => void;
+  onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
   validationErrorRenderer?: JSX.Element;
   className?: string;
   dateValue?: Date;
@@ -59,7 +63,22 @@ export class DateDayInput extends React.Component<Props, {}> {
     this.props.onDateValueChange(newValue);
   };
 
+  getReadonlyValue = (): string => {
+    const date = this.props.dateValue;
+    const ikkeBesvartText = this.props.resources?.ikkeBesvart || '';
+
+    return date ? moment(date).format('D. MMMM YYYY') : ikkeBesvartText;
+  };
+
   render(): JSX.Element {
+    if (this.props.pdf || isReadOnly(this.props.item)) {
+      return (
+        <TextView id={this.props.id} item={this.props.item} value={this.getReadonlyValue()} onRenderMarkdown={this.props.onRenderMarkdown}>
+          {this.props.children}
+        </TextView>
+      );
+    }
+
     return (
       <Validation {...this.props}>
         <DateRangePicker
