@@ -136,6 +136,8 @@ interface Props {
     errorCallback: (error: string) => void
   ) => void;
   autoSuggestProps?: AutoSuggestProps;
+  submitButtonDisabled?: boolean;
+  saveButtonDisabled?: boolean;
 }
 
 interface State {
@@ -390,6 +392,8 @@ class Skjemautfyller extends React.Component<StateProps & DispatchProps & Props,
             enable: true,
             header: resources.validationSummaryHeader,
           }}
+          submitButtonDisabled={this.props.submitButtonDisabled}
+          pauseButtonDisabled={this.props.saveButtonDisabled}
         >
           {this.renderFormItems()}
         </Form>
@@ -430,6 +434,8 @@ class Skjemautfyller extends React.Component<StateProps & DispatchProps & Props,
             enable: true,
             header: resources.validationSummaryHeader,
           }}
+          submitButtonDisabled={this.props.submitButtonDisabled}
+          pauseButtonDisabled={this.props.saveButtonDisabled}
         >
           {this.renderFormItems()}
         </Form>

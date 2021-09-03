@@ -1,3 +1,7 @@
+7.9.2
+-----
+* Add new props to disable submit and save buttons in <Form>-component: submitButtonDisabled, saveButtonDisabled
+
 7.9.1
 -----
 * Show correct value for readonly year and year + month field with initial value.
