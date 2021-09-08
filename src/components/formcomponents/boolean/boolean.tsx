@@ -16,6 +16,7 @@ import { GlobalState } from '../../../reducers';
 import { getValidationTextExtension } from '../../../util/extension';
 import { isReadOnly, isRequired, getId } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
+import { Resources } from '../../../util/resources';
 import { Path } from '../../../util/skjemautfyller-core';
 import withCommonFunctions from '../../with-common-functions';
 import Label from '../label';
@@ -25,6 +26,7 @@ export interface Props {
   item: QuestionnaireItem;
   responseItem: QuestionnaireResponseItem;
   answer: QuestionnaireResponseItemAnswer;
+  resources?: Resources;
   dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
   path: Array<Path>;
   pdf?: boolean;
@@ -74,9 +76,10 @@ class Boolean extends React.Component<Props & ValidationProps, {}> {
   shouldComponentUpdate(nextProps: Props): boolean {
     const responseItemHasChanged = this.props.responseItem !== nextProps.responseItem;
     const helpItemHasChanged = this.props.isHelpOpen !== nextProps.isHelpOpen;
+    const resourcesHasChanged = JSON.stringify(this.props.resources) !== JSON.stringify(nextProps.resources);
     const repeats = this.props.item.repeats ?? false;
 
-    return responseItemHasChanged || helpItemHasChanged || repeats;
+    return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats;
   }
 
   render(): JSX.Element | null {
