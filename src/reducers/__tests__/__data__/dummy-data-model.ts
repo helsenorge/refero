@@ -4,9 +4,6 @@ import { GlobalState } from '../..';
 const dataModel: GlobalState = {
   skjemautfyller: {
     form: {
-      InitialFormData: {
-        Content: undefined,
-      },
       Language: 'no',
       FormDefinition: {
         Content: {

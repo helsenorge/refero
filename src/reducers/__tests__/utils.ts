@@ -182,9 +182,6 @@ export function createGlobalStateWithQuestionnaire(q: Questionnaire, qr: Questio
   return {
     skjemautfyller: {
       form: {
-        InitialFormData: {
-          Content: undefined,
-        },
         Language: 'no',
         FormDefinition: {
           Content: q,

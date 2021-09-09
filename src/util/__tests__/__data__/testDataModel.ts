@@ -682,9 +682,6 @@ export const dataModel: GlobalState = {
           ],
         } as QuestionnaireResponse,
       },
-      InitialFormData: {
-        Content: undefined,
-      },
     },
   },
 };

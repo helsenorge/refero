@@ -55,7 +55,6 @@ export interface FormDefinition {
 
 export interface Form {
   FormData: FormData;
-  InitialFormData: FormData;
   FormDefinition: FormDefinition;
   Language: string;
 }
@@ -67,9 +66,6 @@ interface QrItemsToClear {
 
 const initialState: Form = {
   FormData: {
-    Content: null,
-  },
-  InitialFormData: {
     Content: null,
   },
   FormDefinition: {
@@ -113,13 +109,6 @@ export function getFormData(state: GlobalState): FormData | null {
     return null;
   }
   return state.skjemautfyller.form.FormData;
-}
-
-export function getInitialFormData(state: GlobalState): FormData | null {
-  if (!state.skjemautfyller.form.InitialFormData) {
-    return null;
-  }
-  return state.skjemautfyller.form.InitialFormData;
 }
 
 function getArrayToAddGroupTo(itemToAddTo: QuestionnaireResponseItem | undefined): Array<QuestionnaireResponseItem> | undefined {
@@ -807,17 +796,10 @@ function processSetSkjemaDefinition(action: FormAction, state: Form): Form {
     formData = state.FormData;
   }
 
-  let initialFormData: FormData;
-  if (JSON.stringify(state.InitialFormData) === JSON.stringify(initialState.InitialFormData)) {
-    initialFormData = formData;
-  } else {
-    initialFormData = state.InitialFormData;
-  }
   return {
     ...state,
     FormDefinition: formDefinition,
     FormData: formData,
     Language: action.language || state.Language,
-    InitialFormData: initialFormData,
   };
 }

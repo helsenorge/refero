@@ -28,7 +28,7 @@ import Constants from '../constants/index';
 import ItemType from '../constants/itemType';
 import { PresentationButtonsType } from '../constants/presentationButtonsType';
 import { GlobalState } from '../reducers';
-import { getFormDefinition, getFormData, getInitialFormData } from '../reducers/form';
+import { getFormDefinition, getFormData } from '../reducers/form';
 import { FormDefinition, FormData } from '../reducers/form';
 import { ActionRequester, IActionRequester } from '../util/actionRequester';
 import {
@@ -64,7 +64,6 @@ export interface QueryStringsInterface {
 interface StateProps {
   formDefinition?: FormDefinition | null;
   formData?: FormData | null;
-  initialFormData?: FormData | null;
 }
 
 interface DispatchProps {
@@ -470,7 +469,6 @@ function mapStateToProps(state: GlobalState): StateProps {
   return {
     formDefinition: getFormDefinition(state),
     formData: getFormData(state),
-    initialFormData: getInitialFormData(state),
   };
 }
 

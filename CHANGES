@@ -1,3 +1,7 @@
+7.9.4
+-----
+* Remove "InitialFormData" from store.
+
 7.9.3
 -----
 * Re-render boolean component when resources prop is changed.
