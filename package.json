@@ -55,6 +55,7 @@
     "redux": "^4.0.4",
     "redux-mock-store": "^1.1.4",
     "redux-thunk": "^2.3.0",
+    "tabbable": "^3.1.1",
     "ts-jest": "^23.10.5",
     "whatwg-fetch": "2.0.4"
   },
