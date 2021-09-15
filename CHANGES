@@ -1,3 +1,10 @@
+7.10.0
+-----
+* Upgrade components to new version of @helsenorge/toolkit and @helsenorge/core-utils. Requires @helsenorge/toolkit v21.0.0 and @helsenorge/core-utils v21.0.0
+* Upgrade package immer to 9.0.6
+* Upgrade package uuid to 8.3.2
+* Remove package tabbable
+
 7.9.3
 -----
 * Re-render boolean component when resources prop is changed.
