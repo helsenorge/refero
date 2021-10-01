@@ -95,7 +95,8 @@ export function renderOptions(
   renderRadio: (o: Array<Options> | undefined) => JSX.Element,
   renderCheckbox: (o: Array<Options> | undefined) => JSX.Element,
   renderDropdown: (o: Array<Options> | undefined) => JSX.Element,
-  renderAutosuggest: () => JSX.Element
+  renderAutosuggest: () => JSX.Element,
+  renderReceiverComponent?: () => JSX.Element
 ): JSX.Element | null {
   const itemControlValue = getItemControlValue(item);
   const options = getOptions(item, containedResources);
@@ -117,6 +118,8 @@ export function renderOptions(
     return renderRadio(options);
   } else if (hasCanonicalValueSet(item) && itemControlValue === itemControlConstants.AUTOCOMPLETE) {
     return renderAutosuggest();
+  } else if (renderReceiverComponent && itemControlValue === itemControlConstants.RECEIVERCOMPONENT) {
+    return renderReceiverComponent();
   }
   return null;
 }
@@ -144,6 +147,9 @@ export function getItemControlValue(item: QuestionnaireItem): string | undefined
         }
         if (itemControl[i].code === itemControlConstants.AUTOCOMPLETE) {
           return itemControlConstants.AUTOCOMPLETE;
+        }
+        if (itemControl[i].code === itemControlConstants.RECEIVERCOMPONENT) {
+          return itemControlConstants.RECEIVERCOMPONENT;
         }
       }
     }

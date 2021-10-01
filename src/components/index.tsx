@@ -14,6 +14,7 @@ import {
   Quantity,
   ValueSet,
 } from '../types/fhir';
+import { TreeNode } from '../types/receiverTreeNode';
 import { TextMessage } from '../types/text-message';
 
 import { UploadedFile } from '@helsenorge/toolkit/components/atoms/dropzone';
@@ -137,6 +138,7 @@ interface Props {
   autoSuggestProps?: AutoSuggestProps;
   submitButtonDisabled?: boolean;
   saveButtonDisabled?: boolean;
+  receiverTreeNodes?: Array<TreeNode>;
 }
 
 interface State {
@@ -341,6 +343,7 @@ class Skjemautfyller extends React.Component<StateProps & DispatchProps & Props,
               onRenderMarkdown={this.props.onRenderMarkdown}
               fetchValueSet={this.props.fetchValueSet}
               autoSuggestProps={this.props.autoSuggestProps}
+              receiverTreeNodes={this.props.receiverTreeNodes}
             />
           );
         });

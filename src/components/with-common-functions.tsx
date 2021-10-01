@@ -13,6 +13,7 @@ import {
   Attachment,
   ValueSet,
 } from '../types/fhir';
+import { TreeNode } from '../types/receiverTreeNode';
 import { TextMessage } from '../types/text-message';
 
 import { UploadedFile } from '@helsenorge/toolkit/components/atoms/dropzone';
@@ -101,6 +102,7 @@ export interface Props {
     errorCallback: (error: string) => void
   ) => void;
   autoSuggestProps?: AutoSuggestProps;
+  receiverTreeNodes?: Array<TreeNode>;
 }
 
 interface EnhancedProps {
@@ -302,6 +304,7 @@ export default function withCommonFunctions<T>(WrappedComponent: React.Component
               onRenderMarkdown={onRenderMarkdown}
               fetchValueSet={this.props.fetchValueSet}
               autoSuggestProps={this.props.autoSuggestProps}
+              receiverTreeNodes={this.props.receiverTreeNodes}
             />
           );
         });

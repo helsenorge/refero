@@ -12,6 +12,7 @@ import {
   QuestionnaireResponseItem,
   ValueSet,
 } from '../../../types/fhir';
+import { TreeNode } from '../../../types/receiverTreeNode';
 
 import { Options } from '@helsenorge/toolkit/components/atoms/radio-group';
 import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
@@ -25,6 +26,7 @@ import { Resources } from '../../../util/resources';
 import { Path } from '../../../util/skjemautfyller-core';
 import withCommonFunctions from '../../with-common-functions';
 import AutosuggestView from '../choice-common/autosuggest-view';
+import ReceiverComponent from '../receiver-component/receiver-component';
 import TextView from '../textview';
 import CheckboxView from './checkbox-view';
 import DropdownView from './dropdown-view';
@@ -56,6 +58,7 @@ export interface ChoiceProps {
     errorCallback: (error: string) => void
   ) => void;
   autoSuggestProps?: AutoSuggestProps;
+  receiverTreeNodes?: Array<TreeNode>;
 }
 
 interface ChoiceState {
@@ -222,6 +225,21 @@ export class Choice extends React.Component<ChoiceProps & ValidationProps, Choic
     );
   };
 
+  renderReceiverComponent = (): JSX.Element => {
+    return (
+      <ReceiverComponent
+        handleChange={this.handleChange}
+        id={this.props.id}
+        selected={this.getValue(this.props.item, this.props.answer)}
+        clearCodingAnswer={this.clearCodingAnswer}
+        receiverTreeNodes={this.props.receiverTreeNodes || []}
+        {...this.props}
+      >
+        {this.props.children}
+      </ReceiverComponent>
+    );
+  };
+
   shouldComponentUpdate(nextProps: ChoiceProps): boolean {
     const responseItemHasChanged = this.props.responseItem !== nextProps.responseItem;
     const helpItemHasChanged = this.props.isHelpOpen !== nextProps.isHelpOpen;
@@ -242,7 +260,15 @@ export class Choice extends React.Component<ChoiceProps & ValidationProps, Choic
     }
     return (
       <React.Fragment>
-        {renderOptions(item, containedResources, this.renderRadio, this.renderCheckbox, this.renderDropdown, this.renderAutosuggest)}
+        {renderOptions(
+          item,
+          containedResources,
+          this.renderRadio,
+          this.renderCheckbox,
+          this.renderDropdown,
+          this.renderAutosuggest,
+          this.renderReceiverComponent
+        )}
       </React.Fragment>
     );
   }
