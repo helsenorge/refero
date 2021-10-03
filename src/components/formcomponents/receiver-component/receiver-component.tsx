@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { Coding, QuestionnaireItem } from '../../../types/fhir';
+import { Coding } from '../../../types/fhir';
 import { NodeType, TreeNode } from '../../../types/receiverTreeNode';
 
 import SafeSelect from '@helsenorge/toolkit/components/atoms/safe-select';
@@ -9,12 +9,11 @@ import { getId } from '../../../util';
 import { Resources } from '../../../util/resources';
 
 interface ReceiverComponentProps {
-  item: QuestionnaireItem;
   selected?: Array<string | undefined>;
   id?: string;
   resources?: Resources;
   receiverTreeNodes: Array<TreeNode>;
-  handleChange: (newValue: string) => void;
+  handleChange: (code?: string, systemArg?: string, displayArg?: string) => void;
   clearCodingAnswer: (coding: Coding) => void;
 }
 
@@ -27,13 +26,26 @@ class ReceiverComponent extends React.Component<ReceiverComponentProps, Receiver
   constructor(props: ReceiverComponentProps) {
     super(props);
 
-    // TODO: regn ut path til valgt verdi (hvis valgt verdi finnes)
+    const selectedPath = this.props.selected ? this.findSelectedPath(this.props.receiverTreeNodes, this.props.selected[0] || '') : [];
+
     this.state = {
-      selectedPath: [],
-      selectedReceiver: '',
+      selectedPath: selectedPath,
+      selectedReceiver: this.getReadableReceiver(this.props.receiverTreeNodes, selectedPath),
     };
 
     this.onChangeDropdownValue = this.onChangeDropdownValue.bind(this);
+  }
+
+  findSelectedPath(nodes: Array<TreeNode>, target: string, currentPath: Array<string> = [], finalPath: Array<string> = []): Array<string> {
+    nodes.forEach(node => {
+      if (node.endepunkt === target && finalPath.length === 0) {
+        finalPath.push(...currentPath, node.nodeId);
+      } else {
+        this.findSelectedPath(node.barn, target, [...currentPath, node.nodeId], finalPath);
+      }
+    });
+
+    return finalPath;
   }
 
   onChangeDropdownValue(level: number, selectedNode: TreeNode): void {
@@ -50,7 +62,7 @@ class ReceiverComponent extends React.Component<ReceiverComponentProps, Receiver
 
     if (isLeafNode) {
       // set answer selected when leaf node is selected
-      this.props.handleChange(selectedNode.endepunkt || '');
+      this.props.handleChange(selectedNode.endepunkt || '', '', selectedNode.navn);
     } else if (this.props.selected) {
       // clear previous answer when another node than a leaf node is selected
       this.props.clearCodingAnswer({ code: this.props.selected[0] });
