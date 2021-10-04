@@ -1,18 +1,22 @@
 import * as React from 'react';
 
+import classNames from 'classnames';
+
 import { Coding } from '../../../types/fhir';
 import { NodeType, TreeNode } from '../../../types/receiverTreeNode';
 
 import SafeSelect from '@helsenorge/toolkit/components/atoms/safe-select';
+import ValidationError from '@helsenorge/toolkit/components/molecules/form/validation-error';
 
 import { getId } from '../../../util';
 import { Resources } from '../../../util/resources';
 
-interface ReceiverComponentProps {
+export interface ReceiverComponentProps {
   selected?: Array<string | undefined>;
   id?: string;
   resources?: Resources;
   receiverTreeNodes: Array<TreeNode>;
+  label?: string;
   handleChange: (code?: string, systemArg?: string, displayArg?: string) => void;
   clearCodingAnswer: (coding: Coding) => void;
 }
@@ -20,28 +24,38 @@ interface ReceiverComponentProps {
 interface ReceiverComponentState {
   selectedPath: Array<string>;
   selectedReceiver: string;
+  isValid: boolean;
+  isValidated: boolean;
 }
 
 class ReceiverComponent extends React.Component<ReceiverComponentProps, ReceiverComponentState> {
   constructor(props: ReceiverComponentProps) {
     super(props);
 
-    const selectedPath = this.props.selected ? this.findSelectedPath(this.props.receiverTreeNodes, this.props.selected[0] || '') : [];
+    const selectedPath = this.props.selected ? this.findPathToEndpointNode(this.props.receiverTreeNodes, this.props.selected[0] || '') : [];
+    const selectedReceiver = this.getReceiverName(this.props.receiverTreeNodes, selectedPath);
 
     this.state = {
       selectedPath: selectedPath,
-      selectedReceiver: this.getReadableReceiver(this.props.receiverTreeNodes, selectedPath),
+      selectedReceiver: selectedReceiver,
+      isValid: !!selectedReceiver,
+      isValidated: false,
     };
 
     this.onChangeDropdownValue = this.onChangeDropdownValue.bind(this);
   }
 
-  findSelectedPath(nodes: Array<TreeNode>, target: string, currentPath: Array<string> = [], finalPath: Array<string> = []): Array<string> {
+  findPathToEndpointNode(
+    nodes: Array<TreeNode>,
+    target: string,
+    currentPath: Array<string> = [],
+    finalPath: Array<string> = []
+  ): Array<string> {
     nodes.forEach(node => {
       if (node.endepunkt === target && finalPath.length === 0) {
         finalPath.push(...currentPath, node.nodeId);
       } else {
-        this.findSelectedPath(node.barn, target, [...currentPath, node.nodeId], finalPath);
+        this.findPathToEndpointNode(node.barn, target, [...currentPath, node.nodeId], finalPath);
       }
     });
 
@@ -54,9 +68,11 @@ class ReceiverComponent extends React.Component<ReceiverComponentProps, Receiver
     this.setState((prevState: ReceiverComponentState) => {
       const prevSelectedValues = prevState.selectedPath.filter((_x, index) => index < level);
       const newSelectedPath = [...prevSelectedValues, selectedNode.nodeId];
+      const selectedReceiver = isLeafNode ? this.getReceiverName(this.props.receiverTreeNodes, newSelectedPath) : '';
       return {
         selectedPath: newSelectedPath,
-        selectedReceiver: isLeafNode ? this.getReadableReceiver(this.props.receiverTreeNodes, newSelectedPath) : '',
+        selectedReceiver: selectedReceiver,
+        isValid: !!selectedReceiver,
       };
     });
 
@@ -82,12 +98,36 @@ class ReceiverComponent extends React.Component<ReceiverComponentProps, Receiver
     return this.findTreeNodeFromPath(currentSearchNode.barn, newSearchPath);
   }
 
-  getReadableReceiver(searchData: Array<TreeNode>, searchPath: Array<string>): string {
-    return searchPath
-      .map((_x, index) => {
-        return this.findTreeNodeFromPath(searchData, searchPath.slice(0, index + 1))?.navn;
-      })
-      .join(' / ');
+  getReceiverName(searchData: Array<TreeNode>, searchPath: Array<string>): string {
+    const receiverNodes = searchPath.map((_x, index) => {
+      return this.findTreeNodeFromPath(searchData, searchPath.slice(0, index + 1));
+    });
+    // if a leaf node the last selected node, a valid receiver is selected
+    if (receiverNodes[receiverNodes.length - 1]?.barn.length !== 0) {
+      return '';
+    } else {
+      return receiverNodes.map(receiverNode => receiverNode?.navn).join(' / ');
+    }
+  }
+
+  // this function is called on form submit
+  validateField(): Promise<void> {
+    return new Promise<void>((resolve: () => void) => {
+      this.setState(
+        {
+          isValid: !!this.getReceiverName(this.props.receiverTreeNodes, this.state.selectedPath),
+          isValidated: true,
+        },
+        () => {
+          resolve();
+        }
+      );
+    });
+  }
+
+  // this function is used to get validation state for validation summary component
+  isValid(): boolean {
+    return this.state.isValid;
   }
 
   getLabelText(nodeType: NodeType): string | undefined {
@@ -126,7 +166,6 @@ class ReceiverComponent extends React.Component<ReceiverComponentProps, Receiver
         selected={this.state.selectedPath[level] || ''}
         value={this.state.selectedPath[level] || ''}
         placeholder={new Option(this.props.resources?.selectDefaultPlaceholder, '')}
-        //errorMessage={getValidationTextExtension(item)}
         wrapperClasses="page_skjemautfyller__receiverselect"
         className="page_skjemautfyller__input"
       />
@@ -152,17 +191,31 @@ class ReceiverComponent extends React.Component<ReceiverComponentProps, Receiver
     );
   }
 
+  renderErrorMessage(): JSX.Element | null {
+    if (!this.state.isValid && this.state.isValidated) {
+      return <ValidationError isValid={this.state.isValid} error={this.props.resources?.adresseKomponent_feilmelding || ''} />;
+    }
+    return null;
+  }
+
   render(): JSX.Element {
+    const wrapperClasses = classNames({
+      mol_validation: true,
+      'mol_validation--active': !this.state.isValid && this.state.isValidated,
+    });
     return (
-      <div className="page_skjemautfyller__component page_skjemautfyller__receivercomponent">
+      <div className={wrapperClasses} id={`${this.props.id}-wrapper`}>
+        {this.renderErrorMessage()}
         <h2>{this.props.resources?.adresseKomponent_header}</h2>
         <div className="page_skjemautfyller__sublabel">{this.props.resources?.adresseKomponent_sublabel}</div>
 
         {this.renderSelects()}
-        <div>
-          <span>{`${this.props.resources?.adresseKomponent_skjemaSendesTil} `}</span>
-          <strong>{this.state.selectedReceiver}</strong>
-        </div>
+        {this.state.selectedReceiver && (
+          <div>
+            <span>{`${this.props.resources?.adresseKomponent_skjemaSendesTil} `}</span>
+            <strong>{this.state.selectedReceiver}</strong>
+          </div>
+        )}
       </div>
     );
   }

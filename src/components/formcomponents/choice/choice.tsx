@@ -26,7 +26,7 @@ import { Resources } from '../../../util/resources';
 import { Path } from '../../../util/skjemautfyller-core';
 import withCommonFunctions from '../../with-common-functions';
 import AutosuggestView from '../choice-common/autosuggest-view';
-import ReceiverComponent from '../receiver-component/receiver-component';
+import ReceiverComponentWrapper from '../receiver-component/receiver-component-wrapper';
 import TextView from '../textview';
 import CheckboxView from './checkbox-view';
 import DropdownView from './dropdown-view';
@@ -227,16 +227,17 @@ export class Choice extends React.Component<ChoiceProps & ValidationProps, Choic
 
   renderReceiverComponent = (): JSX.Element => {
     return (
-      <ReceiverComponent
+      <ReceiverComponentWrapper
         handleChange={this.handleChange}
         id={this.props.id}
         selected={this.getValue(this.props.item, this.props.answer)}
         clearCodingAnswer={this.clearCodingAnswer}
         receiverTreeNodes={this.props.receiverTreeNodes || []}
+        label={this.props.resources?.adresseKomponent_header} // validtion summary requires label or legend prop
         {...this.props}
       >
         {this.props.children}
-      </ReceiverComponent>
+      </ReceiverComponentWrapper>
     );
   };
 

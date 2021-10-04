@@ -355,4 +355,8 @@ export interface Resources {
    * Velg sykehus/behandlingssted
    */
   adresseKomponent_velgSykehus?: string;
+  /**
+   * Du må velge en mottaker
+   */
+  adresseKomponent_feilmelding?: string;
 }
