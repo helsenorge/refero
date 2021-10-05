@@ -102,7 +102,7 @@ export interface Props {
     errorCallback: (error: string) => void
   ) => void;
   autoSuggestProps?: AutoSuggestProps;
-  receiverTreeNodes?: Array<TreeNode>;
+  fetchReceivers?: (successCallback: (receivers: Array<TreeNode>) => void, errorCallback: () => void) => void;
 }
 
 interface EnhancedProps {
@@ -304,7 +304,7 @@ export default function withCommonFunctions<T>(WrappedComponent: React.Component
               onRenderMarkdown={onRenderMarkdown}
               fetchValueSet={this.props.fetchValueSet}
               autoSuggestProps={this.props.autoSuggestProps}
-              receiverTreeNodes={this.props.receiverTreeNodes}
+              fetchReceivers={this.props.fetchReceivers}
             />
           );
         });

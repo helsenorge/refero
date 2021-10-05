@@ -359,4 +359,8 @@ export interface Resources {
    * Du må velge en mottaker
    */
   adresseKomponent_feilmelding?: string;
+  /**
+   * Teknisk feil: kunne ikke laste liste over mottakere
+   */
+  adresseKomponent_loadError?: string;
 }

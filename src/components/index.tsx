@@ -138,7 +138,7 @@ interface Props {
   autoSuggestProps?: AutoSuggestProps;
   submitButtonDisabled?: boolean;
   saveButtonDisabled?: boolean;
-  receiverTreeNodes?: Array<TreeNode>;
+  fetchReceivers?: (successCallback: (receivers: Array<TreeNode>) => void, errorCallback: () => void) => void;
 }
 
 interface State {
@@ -343,7 +343,7 @@ class Skjemautfyller extends React.Component<StateProps & DispatchProps & Props,
               onRenderMarkdown={this.props.onRenderMarkdown}
               fetchValueSet={this.props.fetchValueSet}
               autoSuggestProps={this.props.autoSuggestProps}
-              receiverTreeNodes={this.props.receiverTreeNodes}
+              fetchReceivers={this.props.fetchReceivers}
             />
           );
         });

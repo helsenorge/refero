@@ -5,7 +5,10 @@ import classNames from 'classnames';
 import { Coding } from '../../../types/fhir';
 import { NodeType, TreeNode } from '../../../types/receiverTreeNode';
 
+import NotificationPanel from '@helsenorge/designsystem-react/components/NotificationPanel';
+
 import SafeSelect from '@helsenorge/toolkit/components/atoms/safe-select';
+import { Spinner } from '@helsenorge/toolkit/components/atoms/spinner';
 import ValidationError from '@helsenorge/toolkit/components/molecules/form/validation-error';
 
 import { getId } from '../../../util';
@@ -15,8 +18,8 @@ export interface ReceiverComponentProps {
   selected?: Array<string | undefined>;
   id?: string;
   resources?: Resources;
-  receiverTreeNodes: Array<TreeNode>;
   label?: string;
+  fetchReceivers?: (successCallback: (receivers: Array<TreeNode>) => void, errorCallback: () => void) => void;
   handleChange: (code?: string, systemArg?: string, displayArg?: string) => void;
   clearCodingAnswer: (coding: Coding) => void;
 }
@@ -26,23 +29,55 @@ interface ReceiverComponentState {
   selectedReceiver: string;
   isValid: boolean;
   isValidated: boolean;
+  receiverTreeNodes: Array<TreeNode>;
+  isLoading: boolean;
+  hasLoadError: boolean;
 }
 
 class ReceiverComponent extends React.Component<ReceiverComponentProps, ReceiverComponentState> {
   constructor(props: ReceiverComponentProps) {
     super(props);
 
-    const selectedPath = this.props.selected ? this.findPathToEndpointNode(this.props.receiverTreeNodes, this.props.selected[0] || '') : [];
-    const selectedReceiver = this.getReceiverName(this.props.receiverTreeNodes, selectedPath);
-
     this.state = {
-      selectedPath: selectedPath,
-      selectedReceiver: selectedReceiver,
-      isValid: !!selectedReceiver,
+      receiverTreeNodes: [],
+      selectedPath: [],
+      selectedReceiver: '',
+      isValid: false,
       isValidated: false,
+      isLoading: true,
+      hasLoadError: false,
     };
 
     this.onChangeDropdownValue = this.onChangeDropdownValue.bind(this);
+    this.loadSuccessCallback = this.loadSuccessCallback.bind(this);
+    this.loadErrorCallback = this.loadErrorCallback.bind(this);
+  }
+
+  componentDidMount(): void {
+    if (this.props.fetchReceivers) {
+      this.props.fetchReceivers(this.loadSuccessCallback, this.loadErrorCallback);
+    }
+  }
+
+  loadSuccessCallback(receivers: Array<TreeNode>): void {
+    const selectedPath = this.props.selected ? this.findPathToEndpointNode(receivers, this.props.selected[0] || '') : [];
+    const selectedReceiver = this.getReceiverName(receivers, selectedPath);
+
+    this.setState({
+      isLoading: false,
+      receiverTreeNodes: receivers,
+      selectedPath: selectedPath,
+      selectedReceiver: selectedReceiver,
+      isValid: !!selectedReceiver,
+      hasLoadError: receivers.length === 0, // show error if there are no receivers
+    });
+  }
+
+  loadErrorCallback(): void {
+    this.setState({
+      isLoading: false,
+      hasLoadError: true,
+    });
   }
 
   findPathToEndpointNode(
@@ -68,7 +103,7 @@ class ReceiverComponent extends React.Component<ReceiverComponentProps, Receiver
     this.setState((prevState: ReceiverComponentState) => {
       const prevSelectedValues = prevState.selectedPath.filter((_x, index) => index < level);
       const newSelectedPath = [...prevSelectedValues, selectedNode.nodeId];
-      const selectedReceiver = isLeafNode ? this.getReceiverName(this.props.receiverTreeNodes, newSelectedPath) : '';
+      const selectedReceiver = isLeafNode ? this.getReceiverName(this.state.receiverTreeNodes, newSelectedPath) : '';
       return {
         selectedPath: newSelectedPath,
         selectedReceiver: selectedReceiver,
@@ -102,7 +137,7 @@ class ReceiverComponent extends React.Component<ReceiverComponentProps, Receiver
     const receiverNodes = searchPath.map((_x, index) => {
       return this.findTreeNodeFromPath(searchData, searchPath.slice(0, index + 1));
     });
-    // if a leaf node the last selected node, a valid receiver is selected
+    // if a leaf node is the last selected node, a valid receiver is selected
     if (receiverNodes[receiverNodes.length - 1]?.barn.length !== 0) {
       return '';
     } else {
@@ -115,7 +150,7 @@ class ReceiverComponent extends React.Component<ReceiverComponentProps, Receiver
     return new Promise<void>((resolve: () => void) => {
       this.setState(
         {
-          isValid: !!this.getReceiverName(this.props.receiverTreeNodes, this.state.selectedPath),
+          isValid: !!this.getReceiverName(this.state.receiverTreeNodes, this.state.selectedPath),
           isValidated: true,
         },
         () => {
@@ -173,10 +208,10 @@ class ReceiverComponent extends React.Component<ReceiverComponentProps, Receiver
   }
 
   renderSelects(): JSX.Element {
-    const selectConfigs = [{ key: 'root', selectOptions: this.props.receiverTreeNodes }];
+    const selectConfigs = [{ key: 'root', selectOptions: this.state.receiverTreeNodes }];
     this.state.selectedPath.forEach((_x, index) => {
       const searchPath = this.state.selectedPath.slice(0, index + 1);
-      const treeNodes = this.findTreeNodeFromPath(this.props.receiverTreeNodes, searchPath)?.barn;
+      const treeNodes = this.findTreeNodeFromPath(this.state.receiverTreeNodes, searchPath)?.barn;
       if (treeNodes && treeNodes.length > 0) {
         return selectConfigs.push({ key: searchPath.toString(), selectOptions: treeNodes });
       }
@@ -209,7 +244,16 @@ class ReceiverComponent extends React.Component<ReceiverComponentProps, Receiver
         <h2>{this.props.resources?.adresseKomponent_header}</h2>
         <div className="page_skjemautfyller__sublabel">{this.props.resources?.adresseKomponent_sublabel}</div>
 
-        {this.renderSelects()}
+        {this.state.isLoading && (
+          <div>
+            <Spinner inline />
+          </div>
+        )}
+        {this.state.hasLoadError && (
+          <NotificationPanel variant="alert">{this.props.resources?.adresseKomponent_loadError}</NotificationPanel>
+        )}
+
+        {this.state.receiverTreeNodes.length > 0 && this.renderSelects()}
         {this.state.selectedReceiver && (
           <div>
             <span>{`${this.props.resources?.adresseKomponent_skjemaSendesTil} `}</span>

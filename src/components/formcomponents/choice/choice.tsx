@@ -58,7 +58,7 @@ export interface ChoiceProps {
     errorCallback: (error: string) => void
   ) => void;
   autoSuggestProps?: AutoSuggestProps;
-  receiverTreeNodes?: Array<TreeNode>;
+  fetchReceivers?: (successCallback: (receivers: Array<TreeNode>) => void, errorCallback: () => void) => void;
 }
 
 interface ChoiceState {
@@ -232,8 +232,8 @@ export class Choice extends React.Component<ChoiceProps & ValidationProps, Choic
         id={this.props.id}
         selected={this.getValue(this.props.item, this.props.answer)}
         clearCodingAnswer={this.clearCodingAnswer}
-        receiverTreeNodes={this.props.receiverTreeNodes || []}
-        label={this.props.resources?.adresseKomponent_header} // validtion summary requires label or legend prop
+        label={this.props.resources?.adresseKomponent_header} // validation summary requires label or legend prop
+        fetchReceivers={this.props.fetchReceivers}
         {...this.props}
       >
         {this.props.children}
