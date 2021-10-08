@@ -111,15 +111,16 @@ class DateTime extends React.Component<Props & ValidationProps> {
   }
 
   dispatchNewDate = (date: Moment | undefined, time: string | undefined): void => {
-    const { dispatch, promptLoginMessage, onAnswerChange, path, item } = this.props;
-    if (dispatch) {
-      const momentDate = getFullMomentDate(date, time);
-      const dateTimeString = momentDate
-        ? momentDate
-            .locale('nb')
-            .utc()
-            .format(Constants.DATE_TIME_FORMAT)
-        : '';
+    const { dispatch, promptLoginMessage, onAnswerChange, answer, path, item } = this.props;
+    const momentDate = getFullMomentDate(date, time);
+    const dateTimeString = momentDate
+      ? momentDate
+          .locale('nb')
+          .utc()
+          .format(Constants.DATE_TIME_FORMAT)
+      : '';
+    const existingAnswer = answer?.valueDateTime || '';
+    if (dispatch && existingAnswer !== dateTimeString) {
       dispatch(newDateTimeValueAsync(this.props.path, dateTimeString, this.props.item))?.then(newState =>
         onAnswerChange(newState, path, item, { valueDateTime: dateTimeString } as QuestionnaireResponseItemAnswer)
       );
