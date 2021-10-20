@@ -356,6 +356,26 @@ export interface Resources {
    */
   adresseKomponent_velgSykehus?: string;
   /**
+   * Velg klinikk
+   */
+  adresseKomponent_velgKlinikk?: string;
+  /**
+   * Velg seksjon
+   */
+  adresseKomponent_velgSeksjon?: string;
+  /**
+   * Velg sengepost
+   */
+  adresseKomponent_velgSengepost?: string;
+  /**
+   * Velg poliklinikk
+   */
+  adresseKomponent_velgPoliklinikk?: string;
+  /**
+   * Velg tjeneste
+   */
+  adresseKomponent_velgTjeneste?: string;
+  /**
    * Du må velge en mottaker
    */
   adresseKomponent_feilmelding?: string;

@@ -3,7 +3,7 @@ import * as React from 'react';
 import classNames from 'classnames';
 
 import { Coding } from '../../../types/fhir';
-import { NodeType, TreeNode } from '../../../types/receiverTreeNode';
+import { EnhetType, OrgenhetHierarki } from '../../../types/orgenhetHierarki';
 
 import NotificationPanel from '@helsenorge/designsystem-react/components/NotificationPanel';
 
@@ -19,7 +19,7 @@ export interface ReceiverComponentProps {
   id?: string;
   resources?: Resources;
   label?: string;
-  fetchReceivers?: (successCallback: (receivers: Array<TreeNode>) => void, errorCallback: () => void) => void;
+  fetchReceivers?: (successCallback: (receivers: Array<OrgenhetHierarki>) => void, errorCallback: () => void) => void;
   handleChange: (code?: string, systemArg?: string, displayArg?: string) => void;
   clearCodingAnswer: (coding: Coding) => void;
 }
@@ -29,7 +29,7 @@ interface ReceiverComponentState {
   selectedReceiver: string;
   isValid: boolean;
   isValidated: boolean;
-  receiverTreeNodes: Array<TreeNode>;
+  receiverTreeNodes: Array<OrgenhetHierarki>;
   isLoading: boolean;
   hasLoadError: boolean;
 }
@@ -59,8 +59,9 @@ class ReceiverComponent extends React.Component<ReceiverComponentProps, Receiver
     }
   }
 
-  loadSuccessCallback(receivers: Array<TreeNode>): void {
-    const selectedPath = this.props.selected ? this.findPathToEndpointNode(receivers, this.props.selected[0] || '') : [];
+  loadSuccessCallback(receivers: Array<OrgenhetHierarki>): void {
+    const pathsToEndPoint = this.props.selected ? this.findPathToEndpointNode(receivers, this.props.selected[0] || '') : [];
+    const selectedPath = pathsToEndPoint.length === 1 ? pathsToEndPoint[0] : [];
     const selectedReceiver = this.getReceiverName(receivers, selectedPath);
 
     this.setState({
@@ -71,6 +72,11 @@ class ReceiverComponent extends React.Component<ReceiverComponentProps, Receiver
       isValid: !!selectedReceiver,
       hasLoadError: receivers.length === 0, // show error if there are no receivers
     });
+
+    // clear answer if more than one receiver match the selected endpoint
+    if (selectedPath.length === 0 && this.props.selected && this.props.selected.length > 0) {
+      this.props.clearCodingAnswer({ code: this.props.selected[0] });
+    }
   }
 
   loadErrorCallback(): void {
@@ -81,28 +87,28 @@ class ReceiverComponent extends React.Component<ReceiverComponentProps, Receiver
   }
 
   findPathToEndpointNode(
-    nodes: Array<TreeNode>,
+    nodes: Array<OrgenhetHierarki>,
     target: string,
     currentPath: Array<string> = [],
-    finalPath: Array<string> = []
-  ): Array<string> {
+    finalPaths: Array<Array<string>> = []
+  ): Array<Array<string>> {
     nodes.forEach(node => {
-      if (node.endepunkt === target && finalPath.length === 0) {
-        finalPath.push(...currentPath, node.nodeId);
+      if (node.EndepunktId === target) {
+        finalPaths.push([...currentPath, node.OrgenhetId]);
       } else {
-        this.findPathToEndpointNode(node.barn, target, [...currentPath, node.nodeId], finalPath);
+        this.findPathToEndpointNode(node.UnderOrgenheter, target, [...currentPath, node.OrgenhetId], finalPaths);
       }
     });
 
-    return finalPath;
+    return finalPaths;
   }
 
-  onChangeDropdownValue(level: number, selectedNode: TreeNode): void {
-    const isLeafNode = selectedNode.barn.length === 0;
+  onChangeDropdownValue(level: number, selectedNode: OrgenhetHierarki): void {
+    const isLeafNode = selectedNode.UnderOrgenheter.length === 0;
 
     this.setState((prevState: ReceiverComponentState) => {
       const prevSelectedValues = prevState.selectedPath.filter((_x, index) => index < level);
-      const newSelectedPath = [...prevSelectedValues, selectedNode.nodeId];
+      const newSelectedPath = [...prevSelectedValues, selectedNode.OrgenhetId];
       const selectedReceiver = isLeafNode ? this.getReceiverName(this.state.receiverTreeNodes, newSelectedPath) : '';
       return {
         selectedPath: newSelectedPath,
@@ -113,15 +119,15 @@ class ReceiverComponent extends React.Component<ReceiverComponentProps, Receiver
 
     if (isLeafNode) {
       // set answer selected when leaf node is selected
-      this.props.handleChange(selectedNode.endepunkt || '', '', selectedNode.navn);
+      this.props.handleChange(selectedNode.EndepunktId || '', '', selectedNode.Navn);
     } else if (this.props.selected) {
       // clear previous answer when another node than a leaf node is selected
       this.props.clearCodingAnswer({ code: this.props.selected[0] });
     }
   }
 
-  findTreeNodeFromPath(searchData: Array<TreeNode>, searchPath: Array<string>): TreeNode | undefined {
-    const currentSearchNode = searchData.find(x => x.nodeId === searchPath[0]);
+  findTreeNodeFromPath(searchData: Array<OrgenhetHierarki>, searchPath: Array<string>): OrgenhetHierarki | undefined {
+    const currentSearchNode = searchData.find(x => x.OrgenhetId === searchPath[0]);
     if (!currentSearchNode) {
       return undefined; // this should never happen
     }
@@ -130,18 +136,18 @@ class ReceiverComponent extends React.Component<ReceiverComponentProps, Receiver
     }
     const newSearchPath = [...searchPath];
     newSearchPath.shift();
-    return this.findTreeNodeFromPath(currentSearchNode.barn, newSearchPath);
+    return this.findTreeNodeFromPath(currentSearchNode.UnderOrgenheter, newSearchPath);
   }
 
-  getReceiverName(searchData: Array<TreeNode>, searchPath: Array<string>): string {
+  getReceiverName(searchData: Array<OrgenhetHierarki>, searchPath: Array<string>): string {
     const receiverNodes = searchPath.map((_x, index) => {
       return this.findTreeNodeFromPath(searchData, searchPath.slice(0, index + 1));
     });
     // if a leaf node is the last selected node, a valid receiver is selected
-    if (receiverNodes[receiverNodes.length - 1]?.barn.length !== 0) {
+    if (receiverNodes[receiverNodes.length - 1]?.UnderOrgenheter.length !== 0) {
       return '';
     } else {
-      return receiverNodes.map(receiverNode => receiverNode?.navn).join(' / ');
+      return receiverNodes.map(receiverNode => receiverNode?.Navn).join(' / ');
     }
   }
 
@@ -165,22 +171,32 @@ class ReceiverComponent extends React.Component<ReceiverComponentProps, Receiver
     return this.state.isValid;
   }
 
-  getLabelText(nodeType: NodeType): string | undefined {
-    if (nodeType === NodeType.Region) {
+  getLabelText(enhetType: EnhetType): string | undefined {
+    if (enhetType === EnhetType.Region) {
       return this.props.resources?.adresseKomponent_velgHelseregion;
-    } else if (nodeType === NodeType.Helseforetak) {
+    } else if (enhetType === EnhetType.Foretak) {
       return this.props.resources?.adresseKomponent_velgHelseforetak;
-    } else if (nodeType === NodeType.Sykehus) {
+    } else if (enhetType === EnhetType.Sykehus) {
       return this.props.resources?.adresseKomponent_velgSykehus;
-    } else if (nodeType === NodeType.Avdeling) {
+    } else if (enhetType === EnhetType.Klinikk) {
+      return this.props.resources?.adresseKomponent_velgKlinikk;
+    } else if (enhetType === EnhetType.Avdeling) {
       return this.props.resources?.adresseKomponent_velgAvdeling;
+    } else if (enhetType === EnhetType.Seksjon) {
+      return this.props.resources?.adresseKomponent_velgSeksjon;
+    } else if (enhetType === EnhetType.Sengepost) {
+      return this.props.resources?.adresseKomponent_velgSengepost;
+    } else if (enhetType === EnhetType.Poliklinikk) {
+      return this.props.resources?.adresseKomponent_velgPoliklinikk;
+    } else if (enhetType === EnhetType.Tjeneste) {
+      return this.props.resources?.adresseKomponent_velgTjeneste;
     }
     return '';
   }
 
-  createSelect(treeNodes: Array<TreeNode>, level: number, selectKey: string): JSX.Element {
-    const selectOptions = treeNodes.map(node => new Option(node.navn, node.nodeId));
-    const label = this.getLabelText(treeNodes[0].type);
+  createSelect(treeNodes: Array<OrgenhetHierarki>, level: number, selectKey: string): JSX.Element {
+    const selectOptions = treeNodes.map(node => new Option(node.Navn, node.OrgenhetId));
+    const label = this.getLabelText(treeNodes[0].EnhetType);
 
     return (
       <SafeSelect
@@ -192,7 +208,7 @@ class ReceiverComponent extends React.Component<ReceiverComponentProps, Receiver
         isRequired={true}
         onChange={(evt): void => {
           const newValue = (evt.target as HTMLInputElement).value;
-          const node = treeNodes.find(x => x.nodeId === newValue);
+          const node = treeNodes.find(x => x.OrgenhetId === newValue);
           if (node) {
             this.onChangeDropdownValue(level, node);
           }
@@ -211,7 +227,7 @@ class ReceiverComponent extends React.Component<ReceiverComponentProps, Receiver
     const selectConfigs = [{ key: 'root', selectOptions: this.state.receiverTreeNodes }];
     this.state.selectedPath.forEach((_x, index) => {
       const searchPath = this.state.selectedPath.slice(0, index + 1);
-      const treeNodes = this.findTreeNodeFromPath(this.state.receiverTreeNodes, searchPath)?.barn;
+      const treeNodes = this.findTreeNodeFromPath(this.state.receiverTreeNodes, searchPath)?.UnderOrgenheter;
       if (treeNodes && treeNodes.length > 0) {
         return selectConfigs.push({ key: searchPath.toString(), selectOptions: treeNodes });
       }

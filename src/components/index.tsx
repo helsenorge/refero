@@ -14,7 +14,7 @@ import {
   Quantity,
   ValueSet,
 } from '../types/fhir';
-import { TreeNode } from '../types/receiverTreeNode';
+import { OrgenhetHierarki } from '../types/orgenhetHierarki';
 import { TextMessage } from '../types/text-message';
 
 import { UploadedFile } from '@helsenorge/toolkit/components/atoms/dropzone';
@@ -138,7 +138,7 @@ interface Props {
   autoSuggestProps?: AutoSuggestProps;
   submitButtonDisabled?: boolean;
   saveButtonDisabled?: boolean;
-  fetchReceivers?: (successCallback: (receivers: Array<TreeNode>) => void, errorCallback: () => void) => void;
+  fetchReceivers?: (successCallback: (receivers: Array<OrgenhetHierarki>) => void, errorCallback: () => void) => void;
 }
 
 interface State {

@@ -1,3 +1,7 @@
+7.10.3
+-----
+* Add support for questionnaire-item-control "receiver-component"
+
 7.10.2
 -----
 * Fix focus bug in dateTime field when touch events is enabled in browser and date is entered by keyboard.

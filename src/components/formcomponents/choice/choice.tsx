@@ -12,7 +12,7 @@ import {
   QuestionnaireResponseItem,
   ValueSet,
 } from '../../../types/fhir';
-import { TreeNode } from '../../../types/receiverTreeNode';
+import { OrgenhetHierarki } from '../../../types/orgenhetHierarki';
 
 import { Options } from '@helsenorge/toolkit/components/atoms/radio-group';
 import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
@@ -58,7 +58,7 @@ export interface ChoiceProps {
     errorCallback: (error: string) => void
   ) => void;
   autoSuggestProps?: AutoSuggestProps;
-  fetchReceivers?: (successCallback: (receivers: Array<TreeNode>) => void, errorCallback: () => void) => void;
+  fetchReceivers?: (successCallback: (receivers: Array<OrgenhetHierarki>) => void, errorCallback: () => void) => void;
 }
 
 interface ChoiceState {
