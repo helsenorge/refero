@@ -93,7 +93,7 @@ class ReceiverComponent extends React.Component<ReceiverComponentProps, Receiver
     finalPaths: Array<Array<string>> = []
   ): Array<Array<string>> {
     nodes.forEach(node => {
-      if (node.EndepunktId === target) {
+      if (node.EndepunktId === target && node.UnderOrgenheter.length === 0) {
         finalPaths.push([...currentPath, node.OrgenhetId]);
       } else {
         this.findPathToEndpointNode(node.UnderOrgenheter, target, [...currentPath, node.OrgenhetId], finalPaths);
