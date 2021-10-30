@@ -3,7 +3,7 @@ export interface OrgenhetHierarki {
   Navn: string;
   EnhetType: EnhetType;
   EndepunktId: string | null;
-  UnderOrgenheter: Array<OrgenhetHierarki>;
+  UnderOrgenheter: Array<OrgenhetHierarki> | null;
 }
 
 export enum EnhetType {

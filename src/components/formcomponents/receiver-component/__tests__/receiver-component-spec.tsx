@@ -16,8 +16,8 @@ const receivers = [
     Navn: 'Region 1',
     EnhetType: EnhetType.Region,
     UnderOrgenheter: [
-      { OrgenhetId: 11, EndepunktId: 'Endpoint/1', Navn: 'Receiver 1', EnhetType: EnhetType.Foretak, UnderOrgenheter: [] },
-      { OrgenhetId: 12, EndepunktId: 'Endpoint/11', Navn: 'Receiver 11', EnhetType: EnhetType.Foretak, UnderOrgenheter: [] },
+      { OrgenhetId: 11, EndepunktId: 'Endpoint/1', Navn: 'Receiver 1', EnhetType: EnhetType.Foretak, UnderOrgenheter: null },
+      { OrgenhetId: 12, EndepunktId: 'Endpoint/11', Navn: 'Receiver 11', EnhetType: EnhetType.Foretak, UnderOrgenheter: null },
     ],
   },
   {
@@ -25,7 +25,9 @@ const receivers = [
     EndepunktId: null,
     Navn: 'Region 1',
     EnhetType: EnhetType.Region,
-    UnderOrgenheter: [{ OrgenhetId: 21, EndepunktId: 'Endpoint/2', Navn: 'Receiver 2', EnhetType: EnhetType.Foretak, UnderOrgenheter: [] }],
+    UnderOrgenheter: [
+      { OrgenhetId: 21, EndepunktId: 'Endpoint/2', Navn: 'Receiver 2', EnhetType: EnhetType.Foretak, UnderOrgenheter: null },
+    ],
   },
 ];
 
@@ -76,7 +78,7 @@ describe('ReceiverComponent', () => {
           EndepunktId: 'Endpoint/1',
           Navn: 'Region 1',
           EnhetType: EnhetType.Foretak,
-          UnderOrgenheter: [],
+          UnderOrgenheter: null,
         },
       ]);
     };

@@ -87,13 +87,13 @@ class ReceiverComponent extends React.Component<ReceiverComponentProps, Receiver
   }
 
   findPathToEndpointNode(
-    nodes: Array<OrgenhetHierarki>,
+    nodes: Array<OrgenhetHierarki> | null,
     target: string,
     currentPath: Array<number> = [],
     finalPaths: Array<Array<number>> = []
   ): Array<Array<number>> {
-    nodes.forEach(node => {
-      if (node.EndepunktId === target && node.UnderOrgenheter.length === 0) {
+    (nodes || []).forEach(node => {
+      if (node.EndepunktId === target && (node.UnderOrgenheter === null || node.UnderOrgenheter.length === 0)) {
         finalPaths.push([...currentPath, node.OrgenhetId]);
       } else {
         this.findPathToEndpointNode(node.UnderOrgenheter, target, [...currentPath, node.OrgenhetId], finalPaths);
@@ -104,7 +104,7 @@ class ReceiverComponent extends React.Component<ReceiverComponentProps, Receiver
   }
 
   onChangeDropdownValue(level: number, selectedNode: OrgenhetHierarki): void {
-    const isLeafNode = selectedNode.UnderOrgenheter.length === 0;
+    const isLeafNode = selectedNode.UnderOrgenheter === null || selectedNode.UnderOrgenheter.length === 0;
 
     this.setState((prevState: ReceiverComponentState) => {
       const prevSelectedValues = prevState.selectedPath.filter((_x, index) => index < level);
@@ -126,8 +126,8 @@ class ReceiverComponent extends React.Component<ReceiverComponentProps, Receiver
     }
   }
 
-  findTreeNodeFromPath(searchData: Array<OrgenhetHierarki>, searchPath: Array<number>): OrgenhetHierarki | undefined {
-    const currentSearchNode = searchData.find(x => x.OrgenhetId === searchPath[0]);
+  findTreeNodeFromPath(searchData: Array<OrgenhetHierarki> | null, searchPath: Array<number>): OrgenhetHierarki | undefined {
+    const currentSearchNode = (searchData || []).find(x => x.OrgenhetId === searchPath[0]);
     if (!currentSearchNode) {
       return undefined; // this should never happen
     }
@@ -144,7 +144,7 @@ class ReceiverComponent extends React.Component<ReceiverComponentProps, Receiver
       return this.findTreeNodeFromPath(searchData, searchPath.slice(0, index + 1));
     });
     // if a leaf node is the last selected node, a valid receiver is selected
-    if (receiverNodes[receiverNodes.length - 1]?.UnderOrgenheter.length !== 0) {
+    if (receiverNodes[receiverNodes.length - 1]?.UnderOrgenheter?.length !== 0) {
       return '';
     } else {
       return receiverNodes.map(receiverNode => receiverNode?.Navn).join(' / ');
