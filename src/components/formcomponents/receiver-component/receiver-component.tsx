@@ -25,7 +25,7 @@ export interface ReceiverComponentProps {
 }
 
 interface ReceiverComponentState {
-  selectedPath: Array<string>;
+  selectedPath: Array<number>;
   selectedReceiver: string;
   isValid: boolean;
   isValidated: boolean;
@@ -89,9 +89,9 @@ class ReceiverComponent extends React.Component<ReceiverComponentProps, Receiver
   findPathToEndpointNode(
     nodes: Array<OrgenhetHierarki>,
     target: string,
-    currentPath: Array<string> = [],
-    finalPaths: Array<Array<string>> = []
-  ): Array<Array<string>> {
+    currentPath: Array<number> = [],
+    finalPaths: Array<Array<number>> = []
+  ): Array<Array<number>> {
     nodes.forEach(node => {
       if (node.EndepunktId === target && node.UnderOrgenheter.length === 0) {
         finalPaths.push([...currentPath, node.OrgenhetId]);
@@ -126,7 +126,7 @@ class ReceiverComponent extends React.Component<ReceiverComponentProps, Receiver
     }
   }
 
-  findTreeNodeFromPath(searchData: Array<OrgenhetHierarki>, searchPath: Array<string>): OrgenhetHierarki | undefined {
+  findTreeNodeFromPath(searchData: Array<OrgenhetHierarki>, searchPath: Array<number>): OrgenhetHierarki | undefined {
     const currentSearchNode = searchData.find(x => x.OrgenhetId === searchPath[0]);
     if (!currentSearchNode) {
       return undefined; // this should never happen
@@ -139,7 +139,7 @@ class ReceiverComponent extends React.Component<ReceiverComponentProps, Receiver
     return this.findTreeNodeFromPath(currentSearchNode.UnderOrgenheter, newSearchPath);
   }
 
-  getReceiverName(searchData: Array<OrgenhetHierarki>, searchPath: Array<string>): string {
+  getReceiverName(searchData: Array<OrgenhetHierarki>, searchPath: Array<number>): string {
     const receiverNodes = searchPath.map((_x, index) => {
       return this.findTreeNodeFromPath(searchData, searchPath.slice(0, index + 1));
     });
@@ -195,7 +195,7 @@ class ReceiverComponent extends React.Component<ReceiverComponentProps, Receiver
   }
 
   createSelect(treeNodes: Array<OrgenhetHierarki>, level: number, selectKey: string): JSX.Element {
-    const selectOptions = treeNodes.map(node => new Option(node.Navn, node.OrgenhetId));
+    const selectOptions = treeNodes.map(node => new Option(node.Navn, node.OrgenhetId.toString()));
     const label = this.getLabelText(treeNodes[0].EnhetType);
 
     return (
@@ -208,14 +208,14 @@ class ReceiverComponent extends React.Component<ReceiverComponentProps, Receiver
         isRequired={true}
         onChange={(evt): void => {
           const newValue = (evt.target as HTMLInputElement).value;
-          const node = treeNodes.find(x => x.OrgenhetId === newValue);
+          const node = treeNodes.find(x => x.OrgenhetId === parseInt(newValue));
           if (node) {
             this.onChangeDropdownValue(level, node);
           }
         }}
         options={selectOptions}
-        selected={this.state.selectedPath[level] || ''}
-        value={this.state.selectedPath[level] || ''}
+        selected={this.state.selectedPath[level] ? this.state.selectedPath[level].toString() : ''}
+        value={this.state.selectedPath[level] ? this.state.selectedPath[level].toString() : ''}
         placeholder={new Option(this.props.resources?.selectDefaultPlaceholder, '')}
         wrapperClasses="page_skjemautfyller__receiverselect"
         className="page_skjemautfyller__input"

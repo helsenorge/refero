@@ -1,5 +1,5 @@
 export interface OrgenhetHierarki {
-  OrgenhetId: string;
+  OrgenhetId: number;
   Navn: string;
   EnhetType: EnhetType;
   EndepunktId: string | null;

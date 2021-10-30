@@ -11,23 +11,21 @@ import { Resources } from '../../../../util/resources';
 
 const receivers = [
   {
-    OrgenhetId: '1',
+    OrgenhetId: 1,
     EndepunktId: null,
     Navn: 'Region 1',
     EnhetType: EnhetType.Region,
     UnderOrgenheter: [
-      { OrgenhetId: '1.1', EndepunktId: 'Endpoint/1', Navn: 'Receiver 1', EnhetType: EnhetType.Foretak, UnderOrgenheter: [] },
-      { OrgenhetId: '1.2', EndepunktId: 'Endpoint/11', Navn: 'Receiver 11', EnhetType: EnhetType.Foretak, UnderOrgenheter: [] },
+      { OrgenhetId: 11, EndepunktId: 'Endpoint/1', Navn: 'Receiver 1', EnhetType: EnhetType.Foretak, UnderOrgenheter: [] },
+      { OrgenhetId: 12, EndepunktId: 'Endpoint/11', Navn: 'Receiver 11', EnhetType: EnhetType.Foretak, UnderOrgenheter: [] },
     ],
   },
   {
-    OrgenhetId: '2',
+    OrgenhetId: 2,
     EndepunktId: null,
     Navn: 'Region 1',
     EnhetType: EnhetType.Region,
-    UnderOrgenheter: [
-      { OrgenhetId: '2.1', EndepunktId: 'Endpoint/2', Navn: 'Receiver 2', EnhetType: EnhetType.Foretak, UnderOrgenheter: [] },
-    ],
+    UnderOrgenheter: [{ OrgenhetId: 21, EndepunktId: 'Endpoint/2', Navn: 'Receiver 2', EnhetType: EnhetType.Foretak, UnderOrgenheter: [] }],
   },
 ];
 
@@ -74,7 +72,7 @@ describe('ReceiverComponent', () => {
       successCallback([
         ...receivers,
         {
-          OrgenhetId: '2',
+          OrgenhetId: 2,
           EndepunktId: 'Endpoint/1',
           Navn: 'Region 1',
           EnhetType: EnhetType.Foretak,
@@ -184,7 +182,7 @@ describe('ReceiverComponent', () => {
     wrapper
       .find(SafeSelectField)
       .at(1)
-      .props().onChange!({ target: { value: '1.2' } as unknown } as React.FormEvent<HTMLInputElement>, '1.2');
+      .props().onChange!({ target: { value: '12' } as unknown } as React.FormEvent<HTMLInputElement>, '1.2');
 
     expect(handleChangeFn).toHaveBeenCalled();
   });
