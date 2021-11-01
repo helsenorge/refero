@@ -144,10 +144,13 @@ class ReceiverComponent extends React.Component<ReceiverComponentProps, Receiver
       return this.findTreeNodeFromPath(searchData, searchPath.slice(0, index + 1));
     });
     // if a leaf node is the last selected node, a valid receiver is selected
-    if (receiverNodes[receiverNodes.length - 1]?.UnderOrgenheter?.length !== 0) {
-      return '';
-    } else {
+    if (
+      receiverNodes[receiverNodes.length - 1]?.UnderOrgenheter === null ||
+      receiverNodes[receiverNodes.length - 1]?.UnderOrgenheter?.length === 0
+    ) {
       return receiverNodes.map(receiverNode => receiverNode?.Navn).join(' / ');
+    } else {
+      return '';
     }
   }
 
