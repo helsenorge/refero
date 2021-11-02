@@ -232,7 +232,6 @@ export class Choice extends React.Component<ChoiceProps & ValidationProps, Choic
         id={this.props.id}
         selected={this.getValue(this.props.item, this.props.answer)}
         clearCodingAnswer={this.clearCodingAnswer}
-        label={this.props.resources?.adresseKomponent_header} // validation summary requires label or legend prop
         fetchReceivers={this.props.fetchReceivers}
         {...this.props}
       >

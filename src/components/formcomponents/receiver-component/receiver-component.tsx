@@ -18,7 +18,6 @@ export interface ReceiverComponentProps {
   selected?: Array<string | undefined>;
   id?: string;
   resources?: Resources;
-  label?: string;
   fetchReceivers?: (successCallback: (receivers: Array<OrgenhetHierarki>) => void, errorCallback: () => void) => void;
   handleChange: (code?: string, systemArg?: string, displayArg?: string) => void;
   clearCodingAnswer: (coding: Coding) => void;
@@ -75,7 +74,7 @@ class ReceiverComponent extends React.Component<ReceiverComponentProps, Receiver
 
     // clear answer if more than one receiver match the selected endpoint
     if (selectedPath.length === 0 && this.props.selected && this.props.selected.length > 0) {
-      this.props.clearCodingAnswer({ code: this.props.selected[0] });
+      this.props.clearCodingAnswer({ code: this.getEndepunktVerdi(this.props.selected[0]) });
     }
   }
 
@@ -93,7 +92,7 @@ class ReceiverComponent extends React.Component<ReceiverComponentProps, Receiver
     finalPaths: Array<Array<number>> = []
   ): Array<Array<number>> {
     (nodes || []).forEach(node => {
-      if (node.EndepunktId === target && (node.UnderOrgenheter === null || node.UnderOrgenheter.length === 0)) {
+      if (this.getEndepunktVerdi(node.EndepunktId) === target && (node.UnderOrgenheter === null || node.UnderOrgenheter.length === 0)) {
         finalPaths.push([...currentPath, node.OrgenhetId]);
       } else {
         this.findPathToEndpointNode(node.UnderOrgenheter, target, [...currentPath, node.OrgenhetId], finalPaths);
@@ -119,10 +118,10 @@ class ReceiverComponent extends React.Component<ReceiverComponentProps, Receiver
 
     if (isLeafNode) {
       // set answer selected when leaf node is selected
-      this.props.handleChange(selectedNode.EndepunktId || '', '', selectedNode.Navn);
+      this.props.handleChange(this.getEndepunktVerdi(selectedNode.EndepunktId) || '', '', selectedNode.Navn);
     } else if (this.props.selected) {
       // clear previous answer when another node than a leaf node is selected
-      this.props.clearCodingAnswer({ code: this.props.selected[0] });
+      this.props.clearCodingAnswer({ code: this.getEndepunktVerdi(this.props.selected[0]) });
     }
   }
 
@@ -152,6 +151,10 @@ class ReceiverComponent extends React.Component<ReceiverComponentProps, Receiver
     } else {
       return '';
     }
+  }
+
+  getEndepunktVerdi(endepunktId: string | null | undefined): string {
+    return `Endpoint/${endepunktId}`;
   }
 
   // this function is called on form submit
@@ -258,7 +261,7 @@ class ReceiverComponent extends React.Component<ReceiverComponentProps, Receiver
       'mol_validation--active': !this.state.isValid && this.state.isValidated,
     });
     return (
-      <div className={wrapperClasses} id={`${this.props.id}-wrapper`}>
+      <div className={wrapperClasses} id={getId(this.props.id)}>
         {this.renderErrorMessage()}
         <h2>{this.props.resources?.adresseKomponent_header}</h2>
         <div className="page_skjemautfyller__sublabel">{this.props.resources?.adresseKomponent_sublabel}</div>
