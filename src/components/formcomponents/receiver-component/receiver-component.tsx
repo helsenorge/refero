@@ -18,6 +18,7 @@ export interface ReceiverComponentProps {
   selected?: Array<string | undefined>;
   id?: string;
   resources?: Resources;
+  label?: string;
   fetchReceivers?: (successCallback: (receivers: Array<OrgenhetHierarki>) => void, errorCallback: () => void) => void;
   handleChange: (code?: string, systemArg?: string, displayArg?: string) => void;
   clearCodingAnswer: (coding: Coding) => void;

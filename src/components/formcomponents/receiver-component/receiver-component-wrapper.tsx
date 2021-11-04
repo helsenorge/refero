@@ -10,7 +10,7 @@ class ReceiverComponentWrapper extends React.Component<ReceiverComponentProps> {
     return (
       <div className="page_skjemautfyller__component page_skjemautfyller__receivercomponent" id={`${getId(this.props.id)}-wrapper`}>
         <Validation {...this.props}>
-          <ReceiverComponent {...this.props} />
+          <ReceiverComponent {...this.props} label={this.props.resources?.adresseKomponent_header} />
         </Validation>
       </div>
     );
