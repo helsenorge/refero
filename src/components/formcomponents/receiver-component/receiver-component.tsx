@@ -75,7 +75,7 @@ class ReceiverComponent extends React.Component<ReceiverComponentProps, Receiver
 
     // clear answer if more than one receiver match the selected endpoint
     if (selectedPath.length === 0 && this.props.selected && this.props.selected.length > 0) {
-      this.props.clearCodingAnswer({ code: this.getEndepunktVerdi(this.props.selected[0]) });
+      this.props.clearCodingAnswer({ code: this.props.selected[0] });
     }
   }
 
@@ -122,7 +122,7 @@ class ReceiverComponent extends React.Component<ReceiverComponentProps, Receiver
       this.props.handleChange(this.getEndepunktVerdi(selectedNode.EndepunktId) || '', '', selectedNode.Navn);
     } else if (this.props.selected) {
       // clear previous answer when another node than a leaf node is selected
-      this.props.clearCodingAnswer({ code: this.getEndepunktVerdi(this.props.selected[0]) });
+      this.props.clearCodingAnswer({ code: this.props.selected[0] });
     }
   }
 
