@@ -9,7 +9,8 @@ import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from '../../../typ
 import { DisplayButton } from '@helsenorge/toolkit/components/atoms/buttons/display-button';
 import { FunctionButton } from '@helsenorge/toolkit/components/atoms/buttons/function-button';
 import Delete from '@helsenorge/toolkit/components/icons/Delete';
-import { Lightbox } from '@helsenorge/toolkit/components/molecules/lightbox';
+
+import Modal from '@helsenorge/designsystem-react/components/Modal';
 
 import { NewValueAction, deleteRepeatItemAsync } from '../../../actions/newValue';
 import { GlobalState } from '../../../reducers';
@@ -73,8 +74,12 @@ class DeleteButton extends React.Component<Props, State> {
           {resources && resources.deleteButtonText ? resources.deleteButtonText : ''}
         </FunctionButton>
         {this.state.showConfirm && resources ? (
-          <Lightbox onClose={this.onConfirmCancel} isVisible noCloseButton>
-            <h3>{resources.confirmDeleteHeading}</h3>
+          <Modal
+            onClose={this.onConfirmCancel}
+            title={resources.confirmDeleteHeading}
+            description={resources.confirmDeleteDescription}
+            large
+          >
             <p>{resources.confirmDeleteDescription}</p>
             <div className="page_skjemautfyller__buttonwrapper">
               <DisplayButton onClick={this.onDeleteRepeatItemConfirmed} primary>
@@ -84,7 +89,7 @@ class DeleteButton extends React.Component<Props, State> {
                 {resources.confirmDeleteCancelButtonText}
               </DisplayButton>
             </div>
-          </Lightbox>
+          </Modal>
         ) : null}
       </React.Fragment>
     );
