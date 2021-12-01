@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { shallow } from 'enzyme';
 import Autosuggest from '@helsenorge/toolkit/components/molecules/autosuggest';
-import { Spinner } from '@helsenorge/toolkit/components/atoms/spinner';
+import Loader from '@helsenorge/designsystem-react/components/Loader';
 
 import AutosuggestView from '../autosuggest-view';
 import { QuestionnaireItem, ValueSet } from '../../../../types/fhir';
@@ -10,7 +10,7 @@ import NotificationPanel from '@helsenorge/designsystem-react/components/Notific
 import { OPEN_CHOICE_ID, OPEN_CHOICE_SYSTEM, OPEN_CHOICE_LABEL } from '../../../../constants';
 
 describe('autosuggest-view', () => {
-  it('skal vise spinner mens valg lastes', () => {
+  it('skal vise loader mens valg lastes', () => {
     jest.useFakeTimers();
     const wrapper = shallow(
       <AutosuggestView
@@ -39,7 +39,7 @@ describe('autosuggest-view', () => {
 
     jest.runAllTimers();
 
-    expect(wrapper.find(Spinner).length).toBe(1);
+    expect(wrapper.find(Loader).length).toBe(1);
   });
 
   it('skal kalle fetchValueSet når input endres', () => {

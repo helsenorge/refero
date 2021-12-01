@@ -6,8 +6,8 @@ import { AutoSuggestProps } from '../../../types/autoSuggestProps';
 import { ValueSet, QuestionnaireItem, Coding, QuestionnaireResponseItemAnswer } from '../../../types/fhir';
 
 import NotificationPanel from '@helsenorge/designsystem-react/components/NotificationPanel';
+import Loader from '@helsenorge/designsystem-react/components/Loader';
 
-import { Spinner } from '@helsenorge/toolkit/components/atoms/spinner';
 import Autosuggest, { Suggestion } from '@helsenorge/toolkit/components/molecules/autosuggest';
 import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
 
@@ -269,7 +269,7 @@ class AutosuggestView extends React.Component<AutosuggestProps, AutosuggestState
           </Validation>
           {this.state.isLoading && (
             <div>
-              <Spinner inline mini />
+              <Loader size={'tiny'} />
             </div>
           )}
           {this.state.noSuggestionsToShow && (
