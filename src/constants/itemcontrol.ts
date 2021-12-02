@@ -10,6 +10,7 @@ export default {
   SIDEBAR: 'sidebar',
   YEAR: 'year',
   YEARMONTH: 'yearMonth',
+  RECEIVERCOMPONENT: 'receiver-component',
   Group: {
     VERTICAL_TABLE: 'table',
     HORIZONTAL_TABLE: 'htable',

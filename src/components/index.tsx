@@ -14,6 +14,7 @@ import {
   Quantity,
   ValueSet,
 } from '../types/fhir';
+import { OrgenhetHierarki } from '../types/orgenhetHierarki';
 import { TextMessage } from '../types/text-message';
 
 import { UploadedFile } from '@helsenorge/toolkit/components/atoms/dropzone';
@@ -137,6 +138,7 @@ interface Props {
   autoSuggestProps?: AutoSuggestProps;
   submitButtonDisabled?: boolean;
   saveButtonDisabled?: boolean;
+  fetchReceivers?: (successCallback: (receivers: Array<OrgenhetHierarki>) => void, errorCallback: () => void) => void;
 }
 
 interface State {
@@ -341,6 +343,7 @@ class Skjemautfyller extends React.Component<StateProps & DispatchProps & Props,
               onRenderMarkdown={this.props.onRenderMarkdown}
               fetchValueSet={this.props.fetchValueSet}
               autoSuggestProps={this.props.autoSuggestProps}
+              fetchReceivers={this.props.fetchReceivers}
             />
           );
         });

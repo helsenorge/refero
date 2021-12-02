@@ -327,4 +327,60 @@ export interface Resources {
    * Velg år
    */
   yearmonth_field_year_placeholder?: string;
+  /**
+   * Hvem er mottaker av skjemaet?
+   */
+  adresseKomponent_header?: string;
+  /**
+   * Skjemaet sendes til:
+   */
+  adresseKomponent_skjemaSendesTil?: string;
+  /**
+   * Du må velge mottaker før du sender skjemaet.
+   */
+  adresseKomponent_sublabel?: string;
+  /**
+   * Velg avdeling
+   */
+  adresseKomponent_velgAvdeling?: string;
+  /**
+   * Velg helseforetak
+   */
+  adresseKomponent_velgHelseforetak?: string;
+  /**
+   * Velg helseregion
+   */
+  adresseKomponent_velgHelseregion?: string;
+  /**
+   * Velg sykehus/behandlingssted
+   */
+  adresseKomponent_velgSykehus?: string;
+  /**
+   * Velg klinikk
+   */
+  adresseKomponent_velgKlinikk?: string;
+  /**
+   * Velg seksjon
+   */
+  adresseKomponent_velgSeksjon?: string;
+  /**
+   * Velg sengepost
+   */
+  adresseKomponent_velgSengepost?: string;
+  /**
+   * Velg poliklinikk
+   */
+  adresseKomponent_velgPoliklinikk?: string;
+  /**
+   * Velg tjeneste
+   */
+  adresseKomponent_velgTjeneste?: string;
+  /**
+   * Du må velge en mottaker
+   */
+  adresseKomponent_feilmelding?: string;
+  /**
+   * Teknisk feil: kunne ikke laste liste over mottakere
+   */
+  adresseKomponent_loadError?: string;
 }
