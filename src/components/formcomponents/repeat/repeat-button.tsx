@@ -5,8 +5,9 @@ import { ThunkDispatch } from 'redux-thunk';
 
 import { QuestionnaireItem, QuestionnaireResponseItem } from '../../../types/fhir';
 
-import { FunctionButton } from '@helsenorge/toolkit/components/atoms/buttons/function-button';
-import Add from '@helsenorge/toolkit/components/icons/Add';
+import Button from '@helsenorge/designsystem-react/components/Button';
+import Icon from '@helsenorge/designsystem-react/components/Icons';
+import PlusLarge from '@helsenorge/designsystem-react/components/Icons/PlusLarge';
 
 import { NewValueAction } from '../../../actions/newValue';
 import { addRepeatItem } from '../../../actions/newValue';
@@ -39,9 +40,10 @@ export const RepeatButton: React.SFC<Props> = ({ item, resources, dispatch, pare
   }
 
   return (
-    <FunctionButton svgIcon={<Add />} className=" page_skjemautfyller__repeatbutton" onClick={onAddRepeatItem}>
+    <Button onClick={onAddRepeatItem} variant="borderless">
+      <Icon svgIcon={PlusLarge} />
       {text}
-    </FunctionButton>
+    </Button>
   );
 };
 

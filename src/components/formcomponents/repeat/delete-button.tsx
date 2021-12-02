@@ -1,16 +1,14 @@
 import * as React from 'react';
 
-import classNames from 'classnames';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from '../../../types/fhir';
 
-import { DisplayButton } from '@helsenorge/toolkit/components/atoms/buttons/display-button';
-import { FunctionButton } from '@helsenorge/toolkit/components/atoms/buttons/function-button';
-import Delete from '@helsenorge/toolkit/components/icons/Delete';
-
 import Modal from '@helsenorge/designsystem-react/components/Modal';
+import Button from '@helsenorge/designsystem-react/components/Button';
+import Icon from '@helsenorge/designsystem-react/components/Icons';
+import TrashCan from '@helsenorge/designsystem-react/components/Icons/TrashCan';
 
 import { NewValueAction, deleteRepeatItemAsync } from '../../../actions/newValue';
 import { GlobalState } from '../../../reducers';
@@ -66,30 +64,20 @@ class DeleteButton extends React.Component<Props, State> {
 
     return (
       <React.Fragment>
-        <FunctionButton
-          svgIcon={<Delete variant="error" />}
-          onClick={this.onDeleteRepeatItem}
-          className={classNames('page_skjemautfyller__deletebutton', this.props.className)}
-        >
+        <Button variant="outline" intent="danger" onClick={this.onDeleteRepeatItem}>
+          <Icon svgIcon={TrashCan} />
           {resources && resources.deleteButtonText ? resources.deleteButtonText : ''}
-        </FunctionButton>
+        </Button>
         {this.state.showConfirm && resources ? (
           <Modal
             onClose={this.onConfirmCancel}
             title={resources.confirmDeleteHeading}
             description={resources.confirmDeleteDescription}
+            onSuccess={this.onDeleteRepeatItemConfirmed}
+            primaryButtonText={resources.confirmDeleteButtonText}
+            secondaryButtonText={resources.confirmDeleteCancelButtonText}
             large
-          >
-            <p>{resources.confirmDeleteDescription}</p>
-            <div className="page_skjemautfyller__buttonwrapper">
-              <DisplayButton onClick={this.onDeleteRepeatItemConfirmed} primary>
-                {resources.confirmDeleteButtonText}
-              </DisplayButton>
-              <DisplayButton onClick={this.onConfirmCancel} tertiary>
-                {resources.confirmDeleteCancelButtonText}
-              </DisplayButton>
-            </div>
-          </Modal>
+          />
         ) : null}
       </React.Fragment>
     );
