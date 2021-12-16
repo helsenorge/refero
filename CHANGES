@@ -1,4 +1,8 @@
-## 7.10.5-beta.1
+## 7.10.6
+
+- Fix publish fault
+
+## 7.10.5
 
 - Replaced Lightbox component with Modal from designsystem-react
 - Replaced Spinner component with Loader from designsystem-react
