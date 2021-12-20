@@ -2,8 +2,8 @@ import * as React from 'react';
 import { mount } from 'enzyme';
 
 import NotificationPanel from '@helsenorge/designsystem-react/components/NotificationPanel';
+import Loader from '@helsenorge/designsystem-react/components/Loader';
 import SafeSelectField from '@helsenorge/toolkit/components/atoms/safe-select';
-import { Spinner } from '@helsenorge/toolkit/components/atoms/spinner';
 
 import ReceiverComponent from '../receiver-component';
 import { EnhetType, OrgenhetHierarki } from '../../../../types/orgenhetHierarki';
@@ -30,10 +30,10 @@ const receivers = [
 ];
 
 describe('ReceiverComponent', () => {
-  it('Should show spinner while loading receivers', () => {
+  it('Should show Loader while loading receivers', () => {
     const wrapper = mount(<ReceiverComponent handleChange={jest.fn()} clearCodingAnswer={jest.fn()} fetchReceivers={jest.fn()} />);
 
-    expect(wrapper.find(Spinner).length).toBe(1);
+    expect(wrapper.find(Loader).length).toBe(1);
   });
   it('Should call function to load receivers on mount', () => {
     const fetchReceiversFn = jest.fn();

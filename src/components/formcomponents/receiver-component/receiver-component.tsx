@@ -6,9 +6,9 @@ import { Coding } from '../../../types/fhir';
 import { EnhetType, OrgenhetHierarki } from '../../../types/orgenhetHierarki';
 
 import NotificationPanel from '@helsenorge/designsystem-react/components/NotificationPanel';
+import Loader from '@helsenorge/designsystem-react/components/Loader';
 
 import SafeSelect from '@helsenorge/toolkit/components/atoms/safe-select';
-import { Spinner } from '@helsenorge/toolkit/components/atoms/spinner';
 import ValidationError from '@helsenorge/toolkit/components/molecules/form/validation-error';
 
 import { getId } from '../../../util';
@@ -269,7 +269,7 @@ class ReceiverComponent extends React.Component<ReceiverComponentProps, Receiver
 
         {this.state.isLoading && (
           <div>
-            <Spinner inline />
+            <Loader />
           </div>
         )}
         {this.state.hasLoadError && (
