@@ -76,7 +76,6 @@ class DeleteButton extends React.Component<Props, State> {
             onSuccess={this.onDeleteRepeatItemConfirmed}
             primaryButtonText={resources.confirmDeleteButtonText}
             secondaryButtonText={resources.confirmDeleteCancelButtonText}
-            large
           />
         ) : null}
       </React.Fragment>

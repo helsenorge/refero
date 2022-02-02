@@ -25,5 +25,6 @@
     "statusBarItem.hoverBackground": "#32bbda",
     "statusBar.foreground": "#15202b"
   },
-  "peacock.color": "#5dc9e2"
+  "peacock.color": "#5dc9e2",
+  "eslint.runtime": "node"
 }
