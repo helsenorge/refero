@@ -1,27 +1,25 @@
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const path = require('path');
 const root = path.resolve(__dirname, '../');
 
 module.exports = {
   globals: {
     'ts-jest': {
-      tsConfig: '<rootDir>/config/tsconfig.json',
+      tsconfig: '<rootDir>/config/tsconfig.json',
       diagnostics: {
         ignoreCodes: [151001],
       },
     },
   },
-
   rootDir: root,
   roots: ['<rootDir>/src'],
-  preset: 'ts-jest',
   setupFilesAfterEnv: ['<rootDir>/config/setupTests.js'],
-  moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'd.ts'],
+  moduleFileExtensions: ['d.ts', 'js', 'json', 'jsx', 'ts', 'tsx'],
   testMatch: ['**/__tests__/**/*-spec.js?(x)', '**/__tests__/**/*-spec.ts?(x)'],
   testPathIgnorePatterns: ['data'],
   transform: {
-    '^.+\\.js?$': 'babel-jest',
-    '\\.m?js?$': 'esm',
-    '.(ts|tsx)': 'ts-jest',
+    '^.+\\.ts?$': 'ts-jest',
+    '^.+\\.tsx?$': 'ts-jest',
   },
   transformIgnorePatterns: ['[/\\\\]node_modules[/\\\\](?!(@helsenorge)[/\\\\])'],
   moduleNameMapper: {
