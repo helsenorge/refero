@@ -115,7 +115,7 @@ export class Group extends React.Component<Props, State> {
         if (childItem) {
           renderedChildItems.push(
             <td key={counter} className="page_skjemautfyller__grid--cell">
-              {...itemRenderer(childItem, renderContext)}
+              {itemRenderer(childItem, renderContext)}
             </td>
           );
         } else {

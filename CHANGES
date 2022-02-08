@@ -1,3 +1,12 @@
+## 8.0.0-beta.1
+
+---
+
+- Upgrade to 22.x.x version of @helsenorge packages
+- Added @helsenorge/designsystem-react as a peerDependency
+- Upgraded to use Node 16.13.2
+- Removed TS-Jest in favour of Babel for tests
+
 ## 7.10.7
 
 ---

@@ -1,6 +1,7 @@
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const parentBabelConfig = require('./node_modules/@helsenorge/core-build/config/babel.config.js');
 
-module.exports = function(api) {
+module.exports = function (api) {
   api.cache(true);
 
   return {
