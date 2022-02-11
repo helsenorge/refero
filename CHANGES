@@ -1,3 +1,9 @@
+## 7.10.8 
+
+---
+
+- Removed InitialDate prop from DateRangePicker used in date-day-input.tsx
+
 ## 7.10.7
 
 ---
