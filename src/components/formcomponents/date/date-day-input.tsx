@@ -94,7 +94,6 @@ export class DateDayInput extends React.Component<Props, {}> {
           ref={this.props.datepickerRef}
           maximumDate={this.toLocaleDate(this.props.maxDate)}
           minimumDate={this.toLocaleDate(this.props.minDate)}
-          initialDate={this.toLocaleDate(moment(new Date()))}
           singleDateValue={this.props.dateValue ? this.toLocaleDate(moment(this.props.dateValue)) : undefined}
           className={this.props.className}
           onDateChange={this.onDateChange}
