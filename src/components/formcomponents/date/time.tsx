@@ -4,7 +4,7 @@ import moment from 'moment';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
-import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem } from '../../../types/fhir';
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem, Questionnaire } from '../../../types/fhir';
 
 import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
 import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
@@ -29,6 +29,7 @@ export interface Props {
   value?: string;
   answer: QuestionnaireResponseItemAnswer;
   item: QuestionnaireItem;
+  questionnaire?: Questionnaire;
   responseItem: QuestionnaireResponseItem;
   resources?: Resources;
   dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
@@ -205,7 +206,7 @@ class Time extends React.Component<Props & ValidationProps> {
 
   render(): JSX.Element | null {
     const { pdf, item, renderFieldset, id, onRenderMarkdown } = this.props;
-    const subLabelText = getSublabelText(this.props.item, this.props.onRenderMarkdown);
+    const subLabelText = getSublabelText(this.props.item, this.props.onRenderMarkdown, this.props.questionnaire);
 
     if (pdf || isReadOnly(this.props.item)) {
       const value = this.getPDFValue();
@@ -231,7 +232,9 @@ class Time extends React.Component<Props & ValidationProps> {
           <TimeInput
             id={getId(id)}
             value={this.getValue()}
-            legend={<Label item={this.props.item} onRenderMarkdown={this.props.onRenderMarkdown} />}
+            legend={
+              <Label item={this.props.item} onRenderMarkdown={this.props.onRenderMarkdown} questionnaire={this.props.questionnaire} />
+            }
             subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
             isRequired={isRequired(item)}
             maxHour={this.getMaxHour()}

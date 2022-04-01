@@ -2,6 +2,7 @@ import { QuestionnaireItem, Extension, Element, Questionnaire, Coding } from '..
 import { SidebarItem } from '../types/sidebar';
 
 import ExtensionConstants from '../constants/extensions';
+import { HyperlinkTarget } from '../constants/hyperlinkTarget';
 import itemControlConstants from '../constants/itemcontrol';
 import itemType from '../constants/itemType';
 import { PresentationButtonsType } from '../constants/presentationButtonsType';
@@ -202,4 +203,12 @@ export function getCalculatedExpressionExtension(item: QuestionnaireItem): Exten
     return;
   }
   return calculatedExpressionExtension;
+}
+
+export function getHyperlinkExtensionValue(item: QuestionnaireItem | Element | Questionnaire): number | undefined {
+  const hyperlinkExtension = getExtension(ExtensionConstants.HYPERLINK, item);
+  if (hyperlinkExtension && hyperlinkExtension.valueCoding && hyperlinkExtension.valueCoding.code) {
+    return parseInt(hyperlinkExtension.valueCoding.code);
+  }
+  return undefined;
 }

@@ -3,7 +3,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
-import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem } from '../../../types/fhir';
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem, Questionnaire } from '../../../types/fhir';
 
 import { CheckBox } from '@helsenorge/toolkit/components/atoms/checkbox';
 import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
@@ -24,6 +24,7 @@ import Pdf from './pdf';
 
 export interface Props {
   item: QuestionnaireItem;
+  questionnaire?: Questionnaire;
   responseItem: QuestionnaireResponseItem;
   answer: QuestionnaireResponseItemAnswer;
   resources?: Resources;
@@ -70,7 +71,7 @@ class Boolean extends React.Component<Props & ValidationProps, {}> {
   };
 
   getLabel = (): JSX.Element => {
-    return <Label item={this.props.item} onRenderMarkdown={this.props.onRenderMarkdown} />;
+    return <Label item={this.props.item} onRenderMarkdown={this.props.onRenderMarkdown} questionnaire={this.props.questionnaire} />;
   };
 
   shouldComponentUpdate(nextProps: Props): boolean {

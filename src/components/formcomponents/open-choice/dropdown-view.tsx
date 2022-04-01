@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { Collapse } from 'react-collapse';
 
-import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from '../../../types/fhir';
+import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer } from '../../../types/fhir';
 
 import { Options } from '@helsenorge/toolkit/components/atoms/radio-group';
 import SafeSelect from '@helsenorge/toolkit/components/atoms/safe-select';
@@ -20,6 +20,7 @@ import SubLabel from '../sublabel';
 interface Props {
   options?: Array<Options>;
   item: QuestionnaireItem;
+  questionnaire?: Questionnaire;
   id?: string;
   handleChange: (code: string) => void;
   selected?: Array<string | undefined>;
@@ -42,6 +43,7 @@ class DropdownView extends React.Component<Props, {}> {
     const {
       options,
       item,
+      questionnaire,
       id,
       answer,
       handleChange,
@@ -63,7 +65,7 @@ class DropdownView extends React.Component<Props, {}> {
     const dropdownOptions: HTMLOptionElement[] = options.map((o: Options) => {
       return new Option(o.label, o.type);
     });
-    const subLabelText = getSublabelText(item, onRenderMarkdown);
+    const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire);
 
     let placeholder;
     if (getPlaceholder(item)) {
@@ -80,7 +82,7 @@ class DropdownView extends React.Component<Props, {}> {
               id={getId(id)}
               selectName={getId(id)}
               showLabel={true}
-              label={<Label item={item} onRenderMarkdown={onRenderMarkdown} />}
+              label={<Label item={item} onRenderMarkdown={onRenderMarkdown} questionnaire={questionnaire} />}
               subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
               isRequired={isRequired(item)}
               onChange={(evt): void => handleChange((evt.target as HTMLInputElement).value)}

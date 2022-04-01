@@ -5,8 +5,8 @@ import classNames from 'classnames';
 import { Coding } from '../../../types/fhir';
 import { EnhetType, OrgenhetHierarki } from '../../../types/orgenhetHierarki';
 
-import NotificationPanel from '@helsenorge/designsystem-react/components/NotificationPanel';
 import Loader from '@helsenorge/designsystem-react/components/Loader';
+import NotificationPanel from '@helsenorge/designsystem-react/components/NotificationPanel';
 
 import SafeSelect from '@helsenorge/toolkit/components/atoms/safe-select';
 import ValidationError from '@helsenorge/toolkit/components/molecules/form/validation-error';

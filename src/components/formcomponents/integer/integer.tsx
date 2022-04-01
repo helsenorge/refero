@@ -3,7 +3,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
-import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem } from '../../../types/fhir';
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem, Questionnaire } from '../../../types/fhir';
 
 import SafeInputField from '@helsenorge/toolkit/components/atoms/safe-input-field';
 import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
@@ -25,6 +25,7 @@ import TextView from '../textview';
 
 export interface Props {
   item: QuestionnaireItem;
+  questionnaire?: Questionnaire;
   responseItem: QuestionnaireResponseItem;
   answer: QuestionnaireResponseItemAnswer;
   resources?: Resources;
@@ -98,7 +99,7 @@ class Integer extends React.Component<Props & ValidationProps, {}> {
       );
     }
     const value = this.getValue();
-    const subLabelText = getSublabelText(this.props.item, this.props.onRenderMarkdown);
+    const subLabelText = getSublabelText(this.props.item, this.props.onRenderMarkdown, this.props.questionnaire);
 
     return (
       <div className="page_skjemautfyller__component page_skjemautfyller__component_integer">
@@ -109,7 +110,7 @@ class Integer extends React.Component<Props & ValidationProps, {}> {
             inputName={getId(this.props.id)}
             value={value !== undefined && value !== null ? value + '' : ''}
             showLabel={true}
-            label={<Label item={this.props.item} onRenderMarkdown={this.props.onRenderMarkdown} />}
+            label={<Label item={this.props.item} onRenderMarkdown={this.props.onRenderMarkdown} questionnaire={this.props.questionnaire} />}
             subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
             isRequired={isRequired(this.props.item)}
             placeholder={getPlaceholder(this.props.item)}

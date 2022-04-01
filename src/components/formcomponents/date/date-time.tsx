@@ -4,7 +4,7 @@ import moment, { Moment } from 'moment';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
-import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem } from '../../../types/fhir';
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem, Questionnaire } from '../../../types/fhir';
 
 import DateTimePicker from '@helsenorge/toolkit/components/molecules/date-time-picker';
 import { getFullMomentDate } from '@helsenorge/toolkit/components/molecules/date-time-picker/date-time-picker-utils';
@@ -32,6 +32,7 @@ import TextView from '../textview';
 
 export interface Props {
   item: QuestionnaireItem;
+  questionnaire?: Questionnaire;
   responseItem: QuestionnaireResponseItem;
   answer: QuestionnaireResponseItemAnswer;
   resources?: Resources;
@@ -113,12 +114,7 @@ class DateTime extends React.Component<Props & ValidationProps> {
   dispatchNewDate = (date: Moment | undefined, time: string | undefined): void => {
     const { dispatch, promptLoginMessage, onAnswerChange, answer, path, item } = this.props;
     const momentDate = getFullMomentDate(date, time);
-    const dateTimeString = momentDate
-      ? momentDate
-          .locale('nb')
-          .utc()
-          .format(Constants.DATE_TIME_FORMAT)
-      : '';
+    const dateTimeString = momentDate ? momentDate.locale('nb').utc().format(Constants.DATE_TIME_FORMAT) : '';
     const existingAnswer = answer?.valueDateTime || '';
     if (dispatch && existingAnswer !== dateTimeString) {
       dispatch(newDateTimeValueAsync(this.props.path, dateTimeString, this.props.item))?.then(newState =>
@@ -147,11 +143,7 @@ class DateTime extends React.Component<Props & ValidationProps> {
     if (this.props.resources && this.props.resources.ikkeBesvart) {
       text = this.props.resources.ikkeBesvart;
     }
-    return date
-      ? moment(date)
-          .locale('nb')
-          .format('LLL')
-      : text;
+    return date ? moment(date).locale('nb').format('LLL') : text;
   };
 
   shouldComponentUpdate(nextProps: Props): boolean {
@@ -187,7 +179,7 @@ class DateTime extends React.Component<Props & ValidationProps> {
     const valueDateTime = this.getDefaultDate(this.props);
     const maxDateTime = this.getMaxDate();
     const minDateTime = this.getMinDate();
-    const subLabelText = getSublabelText(this.props.item, this.props.onRenderMarkdown);
+    const subLabelText = getSublabelText(this.props.item, this.props.onRenderMarkdown, this.props.questionnaire);
 
     return (
       <div className="page_skjemautfyller__component page_skjemautfyller__component_datetime">
@@ -203,7 +195,9 @@ class DateTime extends React.Component<Props & ValidationProps> {
             initialDate={this.toLocaleDate(moment(new Date()))}
             onChange={this.dispatchNewDate}
             onBlur={this.onBlur}
-            legend={<Label item={this.props.item} onRenderMarkdown={this.props.onRenderMarkdown} />}
+            legend={
+              <Label item={this.props.item} onRenderMarkdown={this.props.onRenderMarkdown} questionnaire={this.props.questionnaire} />
+            }
             subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
             isRequired={isRequired(item)}
             errorMessage={getValidationTextExtension(item)}

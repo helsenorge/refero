@@ -7,6 +7,7 @@ import { ThunkDispatch } from 'redux-thunk';
 import { AutoSuggestProps } from '../types/autoSuggestProps';
 import {
   Resource,
+  Questionnaire,
   QuestionnaireResponseItem,
   QuestionnaireItem,
   QuestionnaireResponseItemAnswer,
@@ -46,6 +47,7 @@ export interface Props {
   responseItem?: QuestionnaireResponseItem;
   containedResources?: Resource[];
   item?: QuestionnaireItem;
+  questionnaire?: Questionnaire | null;
   headerTag?: number;
   pdf?: boolean;
   language?: string;
@@ -274,6 +276,7 @@ export default function withCommonFunctions<T>(WrappedComponent: React.Component
               promptLoginMessage={promptLoginMessage}
               id={'item_' + responseItem.linkId + createIdSuffix(path, index, item.repeats)}
               item={item}
+              questionnaire={this.props.questionnaire}
               responseItem={responseItem}
               answer={getAnswerFromResponseItem(responseItem)}
               resources={resources}

@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { connect } from 'react-redux';
 
-import { QuestionnaireItem } from '../../../types/fhir';
+import { Questionnaire, QuestionnaireItem } from '../../../types/fhir';
 
 import designsystemtypography from '@helsenorge/designsystem-react/scss/typography.module.scss';
 
@@ -14,12 +14,13 @@ import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/m
 export interface Props {
   id?: string;
   item?: QuestionnaireItem;
+  questionnaire?: Questionnaire | null;
   enable?: boolean;
   pdf?: boolean;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
 }
 
-const Display: React.SFC<Props> = ({ id, enable, pdf, item, onRenderMarkdown }) => {
+const Display: React.SFC<Props> = ({ id, enable, pdf, item, questionnaire, onRenderMarkdown }) => {
   const itemControls = item ? getItemControlExtensionValue(item) : null;
   const highlightClass =
     itemControls && itemControls.some(itemControl => itemControl.code === itemControlConstants.HIGHLIGHT)
@@ -38,12 +39,12 @@ const Display: React.SFC<Props> = ({ id, enable, pdf, item, onRenderMarkdown }) 
           id={getId(id)}
           className={`page_skjemautfyller__markdown ${designsystemtypography['anchorlink-wrapper']}`}
           dangerouslySetInnerHTML={{
-            __html: getText(item, onRenderMarkdown),
+            __html: getText(item, onRenderMarkdown, questionnaire),
           }}
         />
       );
     } else {
-      value = <p id={getId(id)}>{`${renderPrefix(item)} ${getText(item, onRenderMarkdown)}`}</p>;
+      value = <p id={getId(id)}>{`${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire)}`}</p>;
     }
   }
   if (pdf) {

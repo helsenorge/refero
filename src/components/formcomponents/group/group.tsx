@@ -3,7 +3,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
-import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem } from '../../../types/fhir';
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem, Questionnaire } from '../../../types/fhir';
 
 import AnchorLink from '@helsenorge/designsystem-react/components/AnchorLink';
 
@@ -22,6 +22,7 @@ import withCommonFunctions from '../../with-common-functions';
 
 export interface Props {
   item: QuestionnaireItem;
+  questionnaire?: Questionnaire;
   answer: QuestionnaireResponseItemAnswer;
   responseItem: QuestionnaireResponseItem;
   dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
@@ -225,7 +226,7 @@ export class Group extends React.Component<Props, State> {
   };
 
   getHeaderText = (): string => {
-    return renderPrefix(this.props.item) + ' ' + getText(this.props.item, this.props.onRenderMarkdown);
+    return renderPrefix(this.props.item) + ' ' + getText(this.props.item, this.props.onRenderMarkdown, this.props.questionnaire);
   };
 
   renderGroupHeader = (): JSX.Element | null => {

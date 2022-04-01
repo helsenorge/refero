@@ -5,10 +5,10 @@ import { ThunkDispatch } from 'redux-thunk';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from '../../../types/fhir';
 
-import Modal from '@helsenorge/designsystem-react/components/Modal';
 import Button from '@helsenorge/designsystem-react/components/Button';
 import Icon from '@helsenorge/designsystem-react/components/Icons';
 import TrashCan from '@helsenorge/designsystem-react/components/Icons/TrashCan';
+import Modal from '@helsenorge/designsystem-react/components/Modal';
 
 import { NewValueAction, deleteRepeatItemAsync } from '../../../actions/newValue';
 import { GlobalState } from '../../../reducers';

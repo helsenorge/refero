@@ -302,9 +302,7 @@ class Skjemautfyller extends React.Component<StateProps & DispatchProps & Props,
                   renderContext={new RenderContext()}
                 />
               </div>
-            ) : (
-              undefined
-            );
+            ) : undefined;
           const path = createPathForItem(this.props.path, item, responseItem, index);
           // legg på blindzone rett over den første seksjonen
           if (isNavigatorEnabled && item.type === ItemType.GROUP && !isNavigatorBlindzoneInitiated) {
@@ -320,6 +318,7 @@ class Skjemautfyller extends React.Component<StateProps & DispatchProps & Props,
               key={`item_${responseItem.linkId}_${index}`}
               id={'item_' + responseItem.linkId + createIdSuffix(path, index, item.repeats)}
               item={item}
+              questionnaire={formDefinition.Content}
               responseItem={responseItem}
               answer={getAnswerFromResponseItem(responseItem)}
               resources={resources}

@@ -3,10 +3,10 @@ import * as React from 'react';
 import { Collapse } from 'react-collapse';
 
 import { AutoSuggestProps } from '../../../types/autoSuggestProps';
-import { ValueSet, QuestionnaireItem, Coding, QuestionnaireResponseItemAnswer } from '../../../types/fhir';
+import { ValueSet, QuestionnaireItem, Questionnaire, Coding, QuestionnaireResponseItemAnswer } from '../../../types/fhir';
 
-import NotificationPanel from '@helsenorge/designsystem-react/components/NotificationPanel';
 import Loader from '@helsenorge/designsystem-react/components/Loader';
+import NotificationPanel from '@helsenorge/designsystem-react/components/NotificationPanel';
 
 import Autosuggest, { Suggestion } from '@helsenorge/toolkit/components/molecules/autosuggest';
 import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
@@ -34,6 +34,7 @@ interface AutosuggestProps {
   answer: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer;
 
   item: QuestionnaireItem;
+  questionnaire?: Questionnaire;
   id?: string;
   resources?: Resources;
   renderDeleteButton: (className?: string) => JSX.Element | undefined;
@@ -236,7 +237,7 @@ class AutosuggestView extends React.Component<AutosuggestProps, AutosuggestState
   }
 
   render(): JSX.Element {
-    const subLabelText = getSublabelText(this.props.item, this.props.onRenderMarkdown);
+    const subLabelText = getSublabelText(this.props.item, this.props.onRenderMarkdown, this.props.questionnaire);
 
     return (
       <div className="page_skjemautfyller__component page_skjemautfyller__component_choice page_skjemautfyller__component_choice_autosuggest">
@@ -244,7 +245,9 @@ class AutosuggestView extends React.Component<AutosuggestProps, AutosuggestState
           <Validation {...this.props}>
             <Autosuggest
               id={getId(this.props.id)}
-              label={<Label item={this.props.item} onRenderMarkdown={this.props.onRenderMarkdown} />}
+              label={
+                <Label item={this.props.item} onRenderMarkdown={this.props.onRenderMarkdown} questionnaire={this.props.questionnaire} />
+              }
               subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
               className="page_skjemautfyller__autosuggest"
               type="search"
