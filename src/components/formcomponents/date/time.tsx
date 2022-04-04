@@ -6,11 +6,11 @@ import { ThunkDispatch } from 'redux-thunk';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem } from '../../../types/fhir';
 
-import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
-import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
-import TimeInput from '@helsenorge/toolkit/components/molecules/time-input';
-import { parseDate } from '@helsenorge/toolkit/components/molecules/time-input/date-core';
-import DateTimeConstants from '@helsenorge/toolkit/constants/datetime';
+import TimeInput from '@helsenorge/date-time/components/time-input';
+import { parseDate } from '@helsenorge/date-time/components/time-input/date-core';
+import DateTimeConstants from '@helsenorge/date-time/constants/datetime';
+import { ValidationProps } from '@helsenorge/form/components/form/validation';
+import Validation from '@helsenorge/form/components/form/validation';
 
 import { NewValueAction, newTimeValueAsync } from '../../../actions/newValue';
 import ExtensionConstants from '../../../constants/extensions';

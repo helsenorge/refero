@@ -5,10 +5,10 @@ import { TextMessage } from '../../../types/text-message';
 
 import NotificationPanel from '@helsenorge/designsystem-react/components/NotificationPanel';
 
-import Dropzone from '@helsenorge/toolkit/components/atoms/dropzone';
-import { UploadedFile } from '@helsenorge/toolkit/components/atoms/dropzone';
-import { sizeIsValid, mimeTypeIsValid } from '@helsenorge/toolkit/components/atoms/dropzone/validation';
-import Validation, { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
+import Dropzone from '@helsenorge/file-upload/components/dropzone';
+import { UploadedFile } from '@helsenorge/file-upload/components/dropzone';
+import { sizeIsValid, mimeTypeIsValid } from '@helsenorge/file-upload/components/dropzone/validation';
+import Validation, { ValidationProps } from '@helsenorge/form/components/form/validation';
 
 import constants, { VALID_FILE_TYPES } from '../../../constants';
 import { getValidationTextExtension } from '../../../util/extension';

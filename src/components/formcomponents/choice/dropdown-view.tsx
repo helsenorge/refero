@@ -4,11 +4,10 @@ import { Collapse } from 'react-collapse';
 
 import { QuestionnaireItem } from '../../../types/fhir';
 
-import { Options } from '@helsenorge/toolkit/components/atoms/radio-group';
-import SafeSelect from '@helsenorge/toolkit/components/atoms/safe-select';
-import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
-
 import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
+import Validation from '@helsenorge/form/components/form/validation';
+import { Options } from '@helsenorge/form/components/radio-group';
+import SafeSelect from '@helsenorge/form/components/safe-select';
 
 import { getValidationTextExtension, getPlaceholder } from '../../../util/extension';
 import { isRequired, getId, getSublabelText } from '../../../util/index';

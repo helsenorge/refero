@@ -5,13 +5,12 @@ import { Collapse } from 'react-collapse';
 import { AutoSuggestProps } from '../../../types/autoSuggestProps';
 import { ValueSet, QuestionnaireItem, Coding, QuestionnaireResponseItemAnswer } from '../../../types/fhir';
 
-import NotificationPanel from '@helsenorge/designsystem-react/components/NotificationPanel';
 import Loader from '@helsenorge/designsystem-react/components/Loader';
+import NotificationPanel from '@helsenorge/designsystem-react/components/NotificationPanel';
 
-import Autosuggest, { Suggestion } from '@helsenorge/toolkit/components/molecules/autosuggest';
-import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
-
+import Autosuggest, { Suggestion } from '@helsenorge/autosuggest/components/autosuggest';
 import { debounce } from '@helsenorge/core-utils/debounce';
+import Validation from '@helsenorge/form/components/form/validation';
 
 import { OPEN_CHOICE_ID, OPEN_CHOICE_SYSTEM, OPEN_CHOICE_LABEL } from '../../../constants';
 import ItemType from '../../../constants/itemType';

@@ -5,12 +5,12 @@ import { ThunkDispatch } from 'redux-thunk';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem } from '../../../types/fhir';
 
-import { SafeTextarea } from '@helsenorge/toolkit/components/atoms/safe-textarea';
-import { ExpandableSection } from '@helsenorge/toolkit/components/molecules/expandable-section';
-import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
-import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
+import Expander from '@helsenorge/designsystem-react/components/Expander';
 
 import { debounce } from '@helsenorge/core-utils/debounce';
+import Validation from '@helsenorge/form/components/form/validation';
+import { ValidationProps } from '@helsenorge/form/components/form/validation';
+import { SafeTextarea } from '@helsenorge/form/components/safe-textarea';
 
 import { NewValueAction, newStringValueAsync } from '../../../actions/newValue';
 import Constants from '../../../constants/index';
@@ -124,9 +124,9 @@ export class Text extends React.Component<Props & ValidationProps, {}> {
     if (itemControls && itemControls.some(itemControl => itemControl.code === itemControlConstants.INLINE)) {
       return (
         <div id={id} className="page_skjemautfyller__component page_skjemautfyller__component_expandabletext">
-          <ExpandableSection label={item.text} inlineButton rightArrow>
+          <Expander title={item.text ? item.text : ''}>
             <React.Fragment>{children}</React.Fragment>
-          </ExpandableSection>
+          </Expander>
         </div>
       );
     }

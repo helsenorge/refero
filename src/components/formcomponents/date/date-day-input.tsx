@@ -4,11 +4,10 @@ import moment, { Moment } from 'moment';
 
 import { QuestionnaireItem } from '../../../types/fhir';
 
-import { DateRangePicker } from '@helsenorge/toolkit/components/molecules/date-range-picker';
-import { DatePickerErrorPhrases } from '@helsenorge/toolkit/components/molecules/date-range-picker/date-range-picker-types';
-import { Validation } from '@helsenorge/toolkit/components/molecules/form/validation';
-
 import { LanguageLocales } from '@helsenorge/core-utils/constants/languages';
+import { DateRangePicker } from '@helsenorge/date-time/components/date-range-picker';
+import { DatePickerErrorPhrases } from '@helsenorge/date-time/components/date-range-picker/date-range-picker-types';
+import { Validation } from '@helsenorge/form/components/form/validation';
 
 import Constants from '../../../constants/index';
 import { getId, isRequired } from '../../../util';

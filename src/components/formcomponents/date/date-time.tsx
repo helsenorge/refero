@@ -6,14 +6,13 @@ import { ThunkDispatch } from 'redux-thunk';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem } from '../../../types/fhir';
 
-import DateTimePicker from '@helsenorge/toolkit/components/molecules/date-time-picker';
-import { getFullMomentDate } from '@helsenorge/toolkit/components/molecules/date-time-picker/date-time-picker-utils';
-import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
-import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
-import { parseDate } from '@helsenorge/toolkit/components/molecules/time-input/date-core';
-
 import { LanguageLocales } from '@helsenorge/core-utils/constants/languages';
 import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
+import DateTimePicker from '@helsenorge/date-time/components/date-time-picker';
+import { getFullMomentDate } from '@helsenorge/date-time/components/date-time-picker/date-time-picker-utils';
+import { parseDate } from '@helsenorge/date-time/components/time-input/date-core';
+import Validation from '@helsenorge/form/components/form/validation';
+import { ValidationProps } from '@helsenorge/form/components/form/validation';
 
 import { NewValueAction, newDateTimeValueAsync } from '../../../actions/newValue';
 import ExtensionConstants from '../../../constants/extensions';
@@ -113,12 +112,7 @@ class DateTime extends React.Component<Props & ValidationProps> {
   dispatchNewDate = (date: Moment | undefined, time: string | undefined): void => {
     const { dispatch, promptLoginMessage, onAnswerChange, answer, path, item } = this.props;
     const momentDate = getFullMomentDate(date, time);
-    const dateTimeString = momentDate
-      ? momentDate
-          .locale('nb')
-          .utc()
-          .format(Constants.DATE_TIME_FORMAT)
-      : '';
+    const dateTimeString = momentDate ? momentDate.locale('nb').utc().format(Constants.DATE_TIME_FORMAT) : '';
     const existingAnswer = answer?.valueDateTime || '';
     if (dispatch && existingAnswer !== dateTimeString) {
       dispatch(newDateTimeValueAsync(this.props.path, dateTimeString, this.props.item))?.then(newState =>
@@ -147,11 +141,7 @@ class DateTime extends React.Component<Props & ValidationProps> {
     if (this.props.resources && this.props.resources.ikkeBesvart) {
       text = this.props.resources.ikkeBesvart;
     }
-    return date
-      ? moment(date)
-          .locale('nb')
-          .format('LLL')
-      : text;
+    return date ? moment(date).locale('nb').format('LLL') : text;
   };
 
   shouldComponentUpdate(nextProps: Props): boolean {

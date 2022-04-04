@@ -14,8 +14,8 @@ import {
 } from '../../../types/fhir';
 import { OrgenhetHierarki } from '../../../types/orgenhetHierarki';
 
-import { Options } from '@helsenorge/toolkit/components/atoms/radio-group';
-import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
+import { ValidationProps } from '@helsenorge/form/components/form/validation';
+import { Options } from '@helsenorge/form/components/radio-group';
 
 import { NewValueAction, newCodingValueAsync, removeCodingValueAsync } from '../../../actions/newValue';
 import { GlobalState } from '../../../reducers';

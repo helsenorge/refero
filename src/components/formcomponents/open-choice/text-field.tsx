@@ -2,9 +2,9 @@ import * as React from 'react';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from '../../../types/fhir';
 
-import SafeInputField from '@helsenorge/toolkit/components/atoms/safe-input-field';
-import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
-import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
+import Validation from '@helsenorge/form/components/form/validation';
+import { ValidationProps } from '@helsenorge/form/components/form/validation';
+import SafeInputField from '@helsenorge/form/components/safe-input-field';
 
 import { getValidationTextExtension, getPlaceholder, getMinLengthExtensionValue, getRegexExtension } from '../../../util/extension';
 import { isReadOnly, isRequired, getId, getStringValue, getPDFStringValue, getMaxLength, getSublabelText } from '../../../util/index';

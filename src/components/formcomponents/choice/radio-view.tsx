@@ -4,8 +4,8 @@ import { Collapse } from 'react-collapse';
 
 import { QuestionnaireItem } from '../../../types/fhir';
 
-import { RadioGroup, Options } from '@helsenorge/toolkit/components/atoms/radio-group';
-import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
+import Validation from '@helsenorge/form/components/form/validation';
+import { RadioGroup, Options } from '@helsenorge/form/components/radio-group';
 
 import { isRequired, getId, getSublabelText } from '../../../util/index';
 import { Resources } from '../../../util/resources';
