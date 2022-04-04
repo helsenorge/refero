@@ -41,6 +41,8 @@
     "@helsenorge/core-utils": "23.1.0",
     "@helsenorge/framework-utils": "23.1.0",
     "@helsenorge/toolkit": "23.1.0",
+    "@helsenorge/file-upload": "23.1.0",
+    "@helsenorge/form": "23.1.0",
     "@helsenorge/autosuggest": "23.1.0",
     "@helsenorge/date-time": "23.1.0",
     "@types/chai": "^3.5.2",
