@@ -1,3 +1,10 @@
+## 8.1.0
+
+---
+
+- Added support for internal linking based on sdf-hyperlink-target extension on all components
+- Added DOMPurifier render with target="\_self"
+
 ## 8.0.0
 
 ---
