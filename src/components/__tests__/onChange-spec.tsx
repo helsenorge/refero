@@ -1,23 +1,26 @@
 import * as React from 'react';
-import { createStore, applyMiddleware } from 'redux';
-import { Provider } from 'react-redux';
-import thunk from 'redux-thunk';
+
 import { mount } from 'enzyme';
 import moment from 'moment';
-import DateTimePicker from '@helsenorge/toolkit/components/molecules/date-time-picker';
+import { Provider } from 'react-redux';
+import { createStore, applyMiddleware } from 'redux';
+import thunk from 'redux-thunk';
+
+import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer, Quantity, Coding } from '../../types/fhir';
+
+import DateTimePicker from '@helsenorge/date-time/components/date-time-picker';
 
 import '../../util/defineFetch';
-import rootReducer from '../../reducers';
-import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer, Quantity, Coding } from '../../types/fhir';
 import { SkjemautfyllerContainer } from '..';
-import { Resources } from '../../util/resources';
-import { IActionRequester } from '../../util/actionRequester';
-import questionnaireWithAllItemTypes from './__data__/onChange/allItemTypes';
-import questionnaireWithRepeats from './__data__/onChange/repeats';
-import questionnaireWithNestedItems from './__data__/onChange/nestedItems';
-import { inputAnswer, findItem } from './utils';
 import Constants, { OPEN_CHOICE_ID } from '../../constants/index';
+import rootReducer from '../../reducers';
+import { IActionRequester } from '../../util/actionRequester';
 import { IQuestionnaireInspector, QuestionnaireItemPair } from '../../util/questionnaireInspector';
+import { Resources } from '../../util/resources';
+import questionnaireWithAllItemTypes from './__data__/onChange/allItemTypes';
+import questionnaireWithNestedItems from './__data__/onChange/nestedItems';
+import questionnaireWithRepeats from './__data__/onChange/repeats';
+import { inputAnswer, findItem } from './utils';
 
 describe('onAnswerChange callback gets called and can request additional changes', () => {
   beforeEach(() => {
@@ -26,19 +29,19 @@ describe('onAnswerChange callback gets called and can request additional changes
     });
   });
   it('integers gets updated', async () => {
-    let onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
+    const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
       actionRequester.addIntegerAnswer('2', 42);
     });
 
     const wrapper = createWrapper(questionnaireWithAllItemTypes, onChange);
     await inputAnswer('1', 0.1, wrapper);
 
-    let item = findItem('2', wrapper);
+    const item = findItem('2', wrapper);
     expect(item.props().value).toBe('42');
   });
 
   it('integers gets cleared', async () => {
-    let onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
+    const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
       actionRequester.addIntegerAnswer('2', 42);
       actionRequester.clearIntegerAnswer('2');
     });
@@ -46,24 +49,24 @@ describe('onAnswerChange callback gets called and can request additional changes
     const wrapper = createWrapper(questionnaireWithAllItemTypes, onChange);
     await inputAnswer('1', 0.1, wrapper);
 
-    let item = findItem('2', wrapper);
+    const item = findItem('2', wrapper);
     expect(item.props().value).toBe('');
   });
 
   it('decimals gets updated', async () => {
-    let onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
+    const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
       actionRequester.addDecimalAnswer('1', 42);
     });
 
     const wrapper = createWrapper(questionnaireWithAllItemTypes, onChange);
     await inputAnswer('2', 1, wrapper);
 
-    let item = findItem('1', wrapper);
+    const item = findItem('1', wrapper);
     expect(item.props().value).toBe('42');
   });
 
   it('decimals gets cleared', async () => {
-    let onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
+    const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
       actionRequester.addDecimalAnswer('1', 42);
       actionRequester.clearDecimalAnswer('1');
     });
@@ -71,24 +74,24 @@ describe('onAnswerChange callback gets called and can request additional changes
     const wrapper = createWrapper(questionnaireWithAllItemTypes, onChange);
     await inputAnswer('2', 1, wrapper);
 
-    let item = findItem('1', wrapper);
+    const item = findItem('1', wrapper);
     expect(item.props().value).toBe('');
   });
 
   it('quantity gets updated', async () => {
-    let onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
+    const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
       actionRequester.addQuantityAnswer('3', toQuantity(42, 'kg', 'kilogram', 'http://unitsofmeasure.org'));
     });
 
     const wrapper = createWrapper(questionnaireWithAllItemTypes, onChange);
     await inputAnswer('1', 0.1, wrapper);
 
-    let item = findItem('3', wrapper);
+    const item = findItem('3', wrapper);
     expect(item.props().value).toBe('42');
   });
 
   it('quantity gets cleared', async () => {
-    let onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
+    const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
       actionRequester.addQuantityAnswer('3', toQuantity(42, 'kg', 'kilogram', 'http://unitsofmeasure.org'));
       actionRequester.clearQuantityAnswer('3');
     });
@@ -96,24 +99,24 @@ describe('onAnswerChange callback gets called and can request additional changes
     const wrapper = createWrapper(questionnaireWithAllItemTypes, onChange);
     await inputAnswer('1', 0.1, wrapper);
 
-    let item = findItem('3', wrapper);
+    const item = findItem('3', wrapper);
     expect(item.props().value).toBe('');
   });
 
   it('boolean gets updated', async () => {
-    let onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
+    const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
       actionRequester.addBooleanAnswer('4', true);
     });
 
     const wrapper = createWrapper(questionnaireWithAllItemTypes, onChange);
     await inputAnswer('1', 0.1, wrapper);
 
-    let item = findItem('4', wrapper);
+    const item = findItem('4', wrapper);
     expect(item.props().checked).toBe(true);
   });
 
   it('boolean gets cleared', async () => {
-    let onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
+    const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
       actionRequester.addBooleanAnswer('4', true);
       actionRequester.clearBooleanAnswer('4');
     });
@@ -121,12 +124,12 @@ describe('onAnswerChange callback gets called and can request additional changes
     const wrapper = createWrapper(questionnaireWithAllItemTypes, onChange);
     await inputAnswer('1', 0.1, wrapper);
 
-    let item = findItem('4', wrapper);
+    const item = findItem('4', wrapper);
     expect(item.props().checked).toBe(false);
   });
 
   it('choice (radiobuttons) gets updated', async () => {
-    let onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
+    const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
       actionRequester.addChoiceAnswer('5a', toCoding('2', 'urn:oid:2.16.578.1.12.4.1.1101'));
     });
 
@@ -134,12 +137,12 @@ describe('onAnswerChange callback gets called and can request additional changes
     await inputAnswer('1', 0.1, wrapper);
 
     // radiobuttons are 0-based
-    let item = findItem('5a-hn-1', wrapper);
+    const item = findItem('5a-hn-1', wrapper);
     expect(item.props().checked).toBe(true);
   });
 
   it('choice (radiobuttons) does not get cleared', async () => {
-    let onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
+    const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
       actionRequester.addChoiceAnswer('5a', toCoding('2', 'urn:oid:2.16.578.1.12.4.1.1101'));
       actionRequester.removeChoiceAnswer('5a', toCoding('2', 'urn:oid:2.16.578.1.12.4.1.1101'));
     });
@@ -147,12 +150,12 @@ describe('onAnswerChange callback gets called and can request additional changes
     const wrapper = createWrapper(questionnaireWithAllItemTypes, onChange);
     await inputAnswer('1', 0.1, wrapper);
 
-    let item = findItem('5a-hn-1', wrapper);
+    const item = findItem('5a-hn-1', wrapper);
     expect(item.props().checked).toBe(true);
   });
 
   it('choice (checkboxes) gets updated', async () => {
-    let onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
+    const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
       actionRequester.addChoiceAnswer('5b', toCoding('2', 'urn:oid:2.16.578.1.12.4.1.1101'));
     });
 
@@ -160,12 +163,12 @@ describe('onAnswerChange callback gets called and can request additional changes
     await inputAnswer('1', 0.1, wrapper);
 
     // checkboxes are 1-based
-    let item = findItem('5b-2', wrapper);
+    const item = findItem('5b-2', wrapper);
     expect(item.props().checked).toBe(true);
   });
 
   it('choice (checkboxes) gets cleared', async () => {
-    let onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
+    const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
       actionRequester.addChoiceAnswer('5b', toCoding('2', 'urn:oid:2.16.578.1.12.4.1.1101'));
       actionRequester.removeChoiceAnswer('5b', toCoding('2', 'urn:oid:2.16.578.1.12.4.1.1101'));
     });
@@ -173,48 +176,48 @@ describe('onAnswerChange callback gets called and can request additional changes
     const wrapper = createWrapper(questionnaireWithAllItemTypes, onChange);
     await inputAnswer('1', 0.1, wrapper);
 
-    let item = findItem('5b-2', wrapper);
+    const item = findItem('5b-2', wrapper);
     expect(item.props().checked).toBe(false);
   });
 
   it('openchoice (radiobuttons) gets updated', async () => {
-    let onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
+    const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
       actionRequester.addOpenChoiceAnswer('6a', toCoding('2', 'urn:oid:2.16.578.1.12.4.1.1101'));
     });
 
     const wrapper = createWrapper(questionnaireWithAllItemTypes, onChange);
     await inputAnswer('1', 0.1, wrapper);
 
-    let item = findItem('6a-hn-1', wrapper);
+    const item = findItem('6a-hn-1', wrapper);
     expect(item.props().checked).toBe(true);
   });
 
   it('openchoice (checkboxes) gets updated', async () => {
-    let onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
+    const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
       actionRequester.addOpenChoiceAnswer('6b', toCoding('2', 'urn:oid:2.16.578.1.12.4.1.1101'));
     });
 
     const wrapper = createWrapper(questionnaireWithAllItemTypes, onChange);
     await inputAnswer('1', 0.1, wrapper);
 
-    let item = findItem('6b-2', wrapper);
+    const item = findItem('6b-2', wrapper);
     expect(item.props().checked).toBe(true);
   });
 
   it('date gets updated', async () => {
-    let onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
+    const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
       actionRequester.addDateAnswer('7a', '2020-05-17');
     });
 
     const wrapper = createWrapper(questionnaireWithAllItemTypes, onChange);
     await inputAnswer('1', 0.1, wrapper);
 
-    let item = findItem('7a-datepicker_input', wrapper);
+    const item = findItem('7a-datepicker_input', wrapper);
     expect(item.props().value).toBe('17.05.2020');
   });
 
   it('date gets cleared', async () => {
-    let onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
+    const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
       actionRequester.addDateAnswer('7a', '2020-05-17');
       actionRequester.clearDateAnswer('7a');
     });
@@ -222,12 +225,12 @@ describe('onAnswerChange callback gets called and can request additional changes
     const wrapper = createWrapper(questionnaireWithAllItemTypes, onChange);
     await inputAnswer('1', 0.1, wrapper);
 
-    let item = findItem('7a-datepicker_input', wrapper);
+    const item = findItem('7a-datepicker_input', wrapper);
     expect(item.props().value).toBe('');
   });
 
   it('time gets updated', async () => {
-    let onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
+    const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
       actionRequester.addTimeAnswer('7b', '12:01');
     });
 
@@ -242,7 +245,7 @@ describe('onAnswerChange callback gets called and can request additional changes
   });
 
   it('time gets cleared', async () => {
-    let onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
+    const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
       actionRequester.addTimeAnswer('7b', '12:01');
       actionRequester.clearTimeAnswer('7b');
     });
@@ -258,48 +261,45 @@ describe('onAnswerChange callback gets called and can request additional changes
   });
 
   it('dateTime gets updated', async () => {
-    let onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
+    const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
       actionRequester.addDateTimeAnswer('7c', '2020-05-17T12:01:00Z');
     });
     const wrapper = createWrapper(questionnaireWithAllItemTypes, onChange);
     await inputAnswer('1', 0.1, wrapper);
 
-    let item = wrapper.find(DateTimePicker);
-    let date = item.props().dateValue;
-    let dateString = moment(date)
-      .locale('nb')
-      .utc()
-      .format(Constants.DATE_TIME_FORMAT);
+    const item = wrapper.find(DateTimePicker);
+    const date = item.props().dateValue;
+    const dateString = moment(date).locale('nb').utc().format(Constants.DATE_TIME_FORMAT);
     expect(dateString).toBe('2020-05-17T12:01:00+00:00');
   });
 
   it('dateTime gets cleared', async () => {
-    let onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
+    const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
       actionRequester.addDateTimeAnswer('7c', '2020-05-17T12:01:00Z');
       actionRequester.clearDateTimeAnswer('7c');
     });
     const wrapper = createWrapper(questionnaireWithAllItemTypes, onChange);
     await inputAnswer('1', 0.1, wrapper);
 
-    let item = wrapper.find(DateTimePicker);
-    let date = item.props().dateValue;
+    const item = wrapper.find(DateTimePicker);
+    const date = item.props().dateValue;
     expect(date).toBe(undefined);
   });
 
   it('string gets updated', async () => {
-    let onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
+    const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
       actionRequester.addStringAnswer('8', 'Hello World!');
     });
 
     const wrapper = createWrapper(questionnaireWithAllItemTypes, onChange);
     await inputAnswer('1', 0.1, wrapper);
 
-    let item = findItem('8', wrapper);
+    const item = findItem('8', wrapper);
     expect(item.props().value).toBe('Hello World!');
   });
 
   it('string gets cleared', async () => {
-    let onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
+    const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
       actionRequester.addStringAnswer('8', 'Hello World!');
       actionRequester.clearStringAnswer('8');
     });
@@ -307,24 +307,24 @@ describe('onAnswerChange callback gets called and can request additional changes
     const wrapper = createWrapper(questionnaireWithAllItemTypes, onChange);
     await inputAnswer('1', 0.1, wrapper);
 
-    let item = findItem('8', wrapper);
+    const item = findItem('8', wrapper);
     expect(item.props().value).toBe('');
   });
 
   it('text gets updated', async () => {
-    let onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
+    const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
       actionRequester.addStringAnswer('9', 'Hello\nWorld!');
     });
 
     const wrapper = createWrapper(questionnaireWithAllItemTypes, onChange);
     await inputAnswer('1', 0.1, wrapper);
 
-    let item = wrapper.find('textarea#item_9');
+    const item = wrapper.find('textarea#item_9');
     expect(item.props().value).toBe('Hello\nWorld!');
   });
 
   it('can request many changes', async () => {
-    let onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
+    const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
       actionRequester.addStringAnswer('8', 'Hello World!');
       actionRequester.addIntegerAnswer('2', 42);
     });
@@ -340,7 +340,7 @@ describe('onAnswerChange callback gets called and can request additional changes
   });
 
   it('opencboice other option can be updated', async () => {
-    let onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
+    const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
       actionRequester.addOpenChoiceAnswer('6a', toCoding(OPEN_CHOICE_ID));
       actionRequester.addOpenChoiceAnswer('6a', 'Hello World!');
     });
@@ -356,7 +356,7 @@ describe('onAnswerChange callback gets called and can request additional changes
   });
 
   it('can select multiple checkboxes', async () => {
-    let onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
+    const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
       actionRequester.addChoiceAnswer('5b', toCoding('2', 'urn:oid:2.16.578.1.12.4.1.1101'));
       actionRequester.addChoiceAnswer('5b', toCoding('1', 'urn:oid:2.16.578.1.12.4.1.1101'));
     });
@@ -372,7 +372,7 @@ describe('onAnswerChange callback gets called and can request additional changes
   });
 
   it('can select and unselect multiple checkboxes', async () => {
-    let onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
+    const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
       actionRequester.addChoiceAnswer('5b', toCoding('2', 'urn:oid:2.16.578.1.12.4.1.1101'));
       actionRequester.addChoiceAnswer('5b', toCoding('1', 'urn:oid:2.16.578.1.12.4.1.1101'));
       actionRequester.removeChoiceAnswer('5b', toCoding('2', 'urn:oid:2.16.578.1.12.4.1.1101'));
@@ -389,7 +389,7 @@ describe('onAnswerChange callback gets called and can request additional changes
   });
 
   it('can update repeated items', async () => {
-    let onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
+    const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
       actionRequester.addDecimalAnswer('1', 0.1, 0);
       actionRequester.addDecimalAnswer('1', 1.1, 1);
       actionRequester.addDecimalAnswer('1', 2.1, 2);
@@ -409,32 +409,32 @@ describe('onAnswerChange callback gets called and can request additional changes
   });
 
   it('can update nested items', async () => {
-    let onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
+    const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
       actionRequester.addStringAnswer('1.3.1', 'Hello');
     });
 
     const wrapper = createWrapper(questionnaireWithNestedItems, onChange);
     await inputAnswer('1.1', 0.1, wrapper);
 
-    let item = findItem('1.3.1', wrapper);
+    const item = findItem('1.3.1', wrapper);
     expect(item.props().value).toBe('Hello');
   });
 
   it('can update items nested under answer', async () => {
-    let onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
+    const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
       actionRequester.addIntegerAnswer('1.3.1.1', 42);
     });
 
     const wrapper = createWrapper(questionnaireWithNestedItems, onChange);
     await inputAnswer('1.1', 0.1, wrapper);
 
-    let item = findItem('1.3.1.1', wrapper);
+    const item = findItem('1.3.1.1', wrapper);
     expect(item.props().value).toBe('42');
   });
 
   it('can query to get both questionnaire and questionnaire response', async () => {
     let result: QuestionnaireItemPair[] = [];
-    let onChange = createOnChangeFuncForQuestionnaireInspector((questionnaireInspector: IQuestionnaireInspector) => {
+    const onChange = createOnChangeFuncForQuestionnaireInspector((questionnaireInspector: IQuestionnaireInspector) => {
       result = questionnaireInspector.findItemWithLinkIds('1.3.1.1');
     });
 
@@ -450,7 +450,7 @@ describe('onAnswerChange callback gets called and can request additional changes
 
   it('querying non-existant linkIds returns nothing', async () => {
     let result: QuestionnaireItemPair[] = [];
-    let onChange = createOnChangeFuncForQuestionnaireInspector((questionnaireInspector: IQuestionnaireInspector) => {
+    const onChange = createOnChangeFuncForQuestionnaireInspector((questionnaireInspector: IQuestionnaireInspector) => {
       result = questionnaireInspector.findItemWithLinkIds('xxx');
     });
 
@@ -462,7 +462,7 @@ describe('onAnswerChange callback gets called and can request additional changes
 
   it('can query several linkIds', async () => {
     let result: QuestionnaireItemPair[] = [];
-    let onChange = createOnChangeFuncForQuestionnaireInspector((questionnaireInspector: IQuestionnaireInspector) => {
+    const onChange = createOnChangeFuncForQuestionnaireInspector((questionnaireInspector: IQuestionnaireInspector) => {
       result = questionnaireInspector.findItemWithLinkIds('1.3.1.1', '1.1');
     });
 
@@ -483,7 +483,7 @@ describe('onAnswerChange callback gets called and can request additional changes
 
   it('querying for repeated items returns all responseitems', async () => {
     let result: QuestionnaireItemPair[] = [];
-    let onChange = createOnChangeFuncForQuestionnaireInspector((questionnaireInspector: IQuestionnaireInspector) => {
+    const onChange = createOnChangeFuncForQuestionnaireInspector((questionnaireInspector: IQuestionnaireInspector) => {
       result = questionnaireInspector.findItemWithLinkIds('1');
     });
 

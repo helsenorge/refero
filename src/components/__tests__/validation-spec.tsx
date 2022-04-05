@@ -1,13 +1,15 @@
 import * as React from 'react';
-import { createStore, applyMiddleware } from 'redux';
-import { Provider } from 'react-redux';
-import thunk from 'redux-thunk';
+
 import { mount } from 'enzyme';
+import { Provider } from 'react-redux';
+import { createStore, applyMiddleware } from 'redux';
+import thunk from 'redux-thunk';
 
 import '../../util/defineFetch';
-import rootReducer from '../../reducers';
 import { Questionnaire } from '../../types/fhir';
+
 import { SkjemautfyllerContainer } from '..';
+import rootReducer from '../../reducers';
 import { Resources } from '../../util/resources';
 import questionnaireWithRegex from './__data__/validation';
 import { inputAnswer, inputTextAnswer, submit } from './utils';

@@ -1,19 +1,22 @@
 import * as React from 'react';
-import { createStore, applyMiddleware } from 'redux';
-import { Provider } from 'react-redux';
-import thunk from 'redux-thunk';
+
 import { mount } from 'enzyme';
-import SafeInputField from '@helsenorge/toolkit/components/atoms/safe-input-field';
+import { Provider } from 'react-redux';
+import { createStore, applyMiddleware } from 'redux';
+import thunk from 'redux-thunk';
+
+import { Questionnaire, QuestionnaireItem, Extension, QuestionnaireItemEnableWhen } from '../../types/fhir';
+
+import SafeInputField from '@helsenorge/form/components/safe-input-field';
 
 import '../../util/defineFetch';
-import rootReducer from '../../reducers';
-import { SkjemautfyllerContainer } from '../index';
-import { Resources } from '../../util/resources';
-import { Questionnaire, QuestionnaireItem, Extension, QuestionnaireItemEnableWhen } from '../../types/fhir';
-import HelpButton from '../help-button/help-button';
-import itemControlConstants from '../../constants/itemcontrol';
-import { RepeatButton as RepeatButtonInstance } from '../../components/formcomponents/repeat/repeat-button';
 import Boolean from '../../components/formcomponents/boolean/boolean';
+import { RepeatButton as RepeatButtonInstance } from '../../components/formcomponents/repeat/repeat-button';
+import itemControlConstants from '../../constants/itemcontrol';
+import rootReducer from '../../reducers';
+import { Resources } from '../../util/resources';
+import HelpButton from '../help-button/help-button';
+import { SkjemautfyllerContainer } from '../index';
 
 describe('Component renders help items', () => {
   beforeEach(() => {

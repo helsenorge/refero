@@ -1,13 +1,17 @@
 import * as React from 'react';
-import { shallow } from 'enzyme';
-import Autosuggest from '@helsenorge/toolkit/components/molecules/autosuggest';
-import Loader from '@helsenorge/designsystem-react/components/Loader';
 
-import AutosuggestView from '../autosuggest-view';
+import { shallow } from 'enzyme';
+
 import { QuestionnaireItem, ValueSet } from '../../../../types/fhir';
-import { Resources } from '../../../../util/resources';
+
+import Loader from '@helsenorge/designsystem-react/components/Loader';
 import NotificationPanel from '@helsenorge/designsystem-react/components/NotificationPanel';
+
+import Autosuggest from '@helsenorge/autosuggest/components/autosuggest';
+
 import { OPEN_CHOICE_ID, OPEN_CHOICE_SYSTEM, OPEN_CHOICE_LABEL } from '../../../../constants';
+import { Resources } from '../../../../util/resources';
+import AutosuggestView from '../autosuggest-view';
 
 describe('autosuggest-view', () => {
   it('skal vise loader mens valg lastes', () => {
@@ -32,10 +36,7 @@ describe('autosuggest-view', () => {
         renderHelpElement={jest.fn()}
       />
     );
-    wrapper
-      .find(Autosuggest)
-      .props()
-      .onSuggestionsFetchRequested({ value: 'test', reason: 'input-changed' });
+    wrapper.find(Autosuggest).props().onSuggestionsFetchRequested({ value: 'test', reason: 'input-changed' });
 
     jest.runAllTimers();
 
@@ -60,10 +61,7 @@ describe('autosuggest-view', () => {
       />
     );
 
-    wrapper
-      .find(Autosuggest)
-      .props()
-      .onSuggestionsFetchRequested({ value: 'test', reason: 'input-changed' });
+    wrapper.find(Autosuggest).props().onSuggestionsFetchRequested({ value: 'test', reason: 'input-changed' });
 
     jest.runAllTimers();
 
@@ -110,10 +108,7 @@ describe('autosuggest-view', () => {
       />
     );
 
-    wrapper
-      .find(Autosuggest)
-      .props()
-      .onSuggestionsFetchRequested({ value: 'test', reason: 'input-changed' });
+    wrapper.find(Autosuggest).props().onSuggestionsFetchRequested({ value: 'test', reason: 'input-changed' });
 
     jest.runAllTimers();
 
@@ -155,10 +150,7 @@ describe('autosuggest-view', () => {
       />
     );
 
-    wrapper
-      .find(Autosuggest)
-      .props()
-      .onSuggestionsFetchRequested({ value: 'test', reason: 'input-changed' });
+    wrapper.find(Autosuggest).props().onSuggestionsFetchRequested({ value: 'test', reason: 'input-changed' });
 
     jest.runAllTimers();
 
@@ -200,10 +192,7 @@ describe('autosuggest-view', () => {
       />
     );
 
-    wrapper
-      .find(Autosuggest)
-      .props()
-      .onSuggestionsFetchRequested({ value: 'test', reason: 'input-changed' });
+    wrapper.find(Autosuggest).props().onSuggestionsFetchRequested({ value: 'test', reason: 'input-changed' });
 
     jest.runAllTimers();
 
@@ -257,10 +246,7 @@ describe('autosuggest-view', () => {
       />
     );
 
-    wrapper
-      .find(Autosuggest)
-      .props()
-      .onSuggestionsFetchRequested({ value: 'test', reason: 'input-changed' });
+    wrapper.find(Autosuggest).props().onSuggestionsFetchRequested({ value: 'test', reason: 'input-changed' });
 
     jest.runAllTimers();
 
@@ -269,7 +255,7 @@ describe('autosuggest-view', () => {
       suggestionValue: '',
       suggestionIndex: 0,
       sectionIndex: 0,
-      method: 'click' as 'click',
+      method: 'click' as const,
     };
     wrapper
       .find(Autosuggest)
@@ -303,10 +289,7 @@ describe('autosuggest-view', () => {
       />
     );
 
-    wrapper
-      .find(Autosuggest)
-      .props()
-      .onSuggestionsFetchRequested({ value: 'test', reason: 'input-changed' });
+    wrapper.find(Autosuggest).props().onSuggestionsFetchRequested({ value: 'test', reason: 'input-changed' });
 
     jest.runAllTimers();
 
@@ -362,10 +345,7 @@ describe('autosuggest-view', () => {
       />
     );
 
-    wrapper
-      .find(Autosuggest)
-      .props()
-      .onSuggestionsFetchRequested({ value: 'test', reason: 'input-changed' });
+    wrapper.find(Autosuggest).props().onSuggestionsFetchRequested({ value: 'test', reason: 'input-changed' });
 
     jest.runAllTimers();
 
