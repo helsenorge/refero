@@ -235,6 +235,8 @@ function copyItem(
 
   if (defItem && defItem.type !== 'attachment') {
     for (let i = 0; source.answer && i < source.answer.length; i++) {
+      if (!source.answer[i].item || source.answer[i].item?.length === 0) continue;
+
       if (!target.answer) {
         target.answer = [];
       }
@@ -718,7 +720,7 @@ export function nullAnswerValue(
 
 function getItemsWithEnableWhen(linkId: string, definitionItems: QuestionnaireItem[]): QuestionnaireItem[] {
   const relatedItems: QuestionnaireItem[] = [];
-  const getQuestionnaireItemHasEnableWhenLinkid = function(linkId: string, definitionItem: QuestionnaireItem | undefined): void {
+  const getQuestionnaireItemHasEnableWhenLinkid = function (linkId: string, definitionItem: QuestionnaireItem | undefined): void {
     if (!definitionItem) {
       return undefined;
     }

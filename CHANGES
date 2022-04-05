@@ -1,3 +1,10 @@
+## 8.0.1
+
+---
+
+- Fixed a bug when duplicating an item for repeat, where the duplicated item
+  sometimes would contain an empty answer block.
+
 ## 8.0.0
 
 ---
