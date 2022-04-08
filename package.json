@@ -1,6 +1,6 @@
 {
   "name": "@helsenorge/skjemautfyller",
-  "version": "9.0.0-beta01",
+  "version": "9.0.0-beta04",
   "main": "index.js",
   "author": "helsenorge",
   "maintainers": [
@@ -30,7 +30,7 @@
     "@helsenorge/core-utils": "23.1.0",
     "@helsenorge/date-time": "23.1.0",
     "@helsenorge/autosuggest": "23.1.0",
-    "@helsenorge/designsystem-react": "1.0.0-formlayout01",
+    "@helsenorge/designsystem-react": "1.0.0-formlayoutiphone.0",
     "@helsenorge/toolkit": "23.1.0",
     "react": "17.0.2",
     "react-dom": "17.0.2",

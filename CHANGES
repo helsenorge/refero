@@ -1,4 +1,4 @@
-## 9.0.0
+## 9.0.0 
 
 ---
 
@@ -10,6 +10,7 @@
 - Added @helsenorge/file-upload as devDependency
 - Added @helsenorge/form as devDependency
 - Upgraded enzyme-adapter-react-16 to enzyme-adapter-react-17
+- Upgraded designsystem-react to 1.0.0-formlayoutiphone.0
 - Replaced ExpanderSection from Toolkit with Expander from designsystem
 - Replaced icons from Toolkit with icons from designsystem
 - Temporarily removed validation-spec.tsx. The behaviour tested for seems to work, but test won't run.
