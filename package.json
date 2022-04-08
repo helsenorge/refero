@@ -1,6 +1,6 @@
 {
   "name": "@helsenorge/skjemautfyller",
-  "version": "9.0.0-beta04",
+  "version": "9.0.0",
   "main": "index.js",
   "author": "helsenorge",
   "maintainers": [
