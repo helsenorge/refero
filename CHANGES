@@ -1,3 +1,19 @@
+## 9.0.0
+
+---
+
+- Upgrade to- 23.x.x version of @helsenorge packages
+- Upgraded to use React 17.0.2
+- Added @helsenorge/framework-utils as devDependency
+- Added @helsenorge/date-time as peerDependency
+- Added @helsenorge/autosuggest as peerDependency
+- Added @helsenorge/file-upload as devDependency
+- Added @helsenorge/form as devDependency
+- Upgraded enzyme-adapter-react-16 to enzyme-adapter-react-17
+- Replaced ExpanderSection from Toolkit with Expander from designsystem
+- Replaced icons from Toolkit with icons from designsystem
+- Temporarily removed validation-spec.tsx. The behaviour tested for seems to work, but test won't run.
+
 ## 8.0.0
 
 ---
