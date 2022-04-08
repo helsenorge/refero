@@ -14,6 +14,12 @@
 - Replaced ExpanderSection from Toolkit with Expander from designsystem
 - Replaced icons from Toolkit with icons from designsystem
 - Temporarily removed validation-spec.tsx. The behaviour tested for seems to work, but test won't run.
+## 8.0.1
+
+---
+
+- Fixed a bug when duplicating an item for repeat, where the duplicated item
+  sometimes would contain an empty answer block.
 
 ## 8.0.0
 
