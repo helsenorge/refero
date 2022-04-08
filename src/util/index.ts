@@ -2,7 +2,7 @@ import DOMPurify from 'dompurify';
 import marked from 'marked';
 import * as uuid from 'uuid';
 
-import { QuestionnaireResponseItem, QuestionnaireItem, QuestionnaireResponseItemAnswer } from '../types/fhir';
+import { Questionnaire, QuestionnaireResponseItem, QuestionnaireItem, QuestionnaireResponseItemAnswer } from '../types/fhir';
 
 import { isValid, invalidNodes } from '@helsenorge/core-utils/string-utils';
 
@@ -21,6 +21,7 @@ import Quantity from '../components/formcomponents/quantity/quantity';
 import StringComponent from '../components/formcomponents/string/string';
 import Text from '../components/formcomponents/text/text';
 import ExtensionConstants from '../constants/extensions';
+import { HyperlinkTarget } from '../constants/hyperlinkTarget';
 import Constants from '../constants/index';
 import ItemType from '../constants/itemType';
 import { Resources } from '../util/resources';
@@ -31,6 +32,7 @@ import {
   getQuestionnaireHiddenExtensionValue,
   getExtension,
   getSublabelExtensionValue,
+  getHyperlinkExtensionValue,
 } from './extension';
 DOMPurify.setConfig({ ADD_ATTR: ['target'] });
 
@@ -38,7 +40,10 @@ const renderer = new marked.Renderer();
 renderer.link = (href: string, title: string, text: string): string => {
   return `<a href=${href} ${title ? `title=${title}` : ''} target="_blank" class="external">${text}</a>`;
 };
-marked.setOptions({ renderer: renderer });
+const rendererSameWindow = new marked.Renderer();
+rendererSameWindow.link = (href: string, title: string, text: string): string => {
+  return `<a href=${href} ${title ? `title=${title}` : ''} target="_self" class="internal">${text}</a>`;
+};
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function getComponentForItem(type: string) {
@@ -130,20 +135,28 @@ export function renderPrefix(item: QuestionnaireItem): string {
   return item.prefix;
 }
 
-export function getSublabelText(item: QuestionnaireItem, onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string): string {
+export function getSublabelText(
+  item: QuestionnaireItem,
+  onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string,
+  questionnaire?: Questionnaire | null
+): string {
   if (item) {
     const markdown = getSublabelExtensionValue(item) || '';
-    return markdown ? getMarkdownValue(markdown, item, onRenderMarkdown) : '';
+    return markdown ? getMarkdownValue(markdown, item, onRenderMarkdown, questionnaire) : '';
   }
   return '';
 }
 
-export function getText(item: QuestionnaireItem, onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string): string {
+export function getText(
+  item: QuestionnaireItem,
+  onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string,
+  questionnaire?: Questionnaire | null
+): string {
   if (item) {
     const markdown = item._text ? getMarkdownExtensionValue(item._text) : undefined;
 
     if (markdown) {
-      return getMarkdownValue(markdown, item, onRenderMarkdown);
+      return getMarkdownValue(markdown, item, onRenderMarkdown, questionnaire);
     } else if (item.text) {
       return item.text;
     }
@@ -154,13 +167,22 @@ export function getText(item: QuestionnaireItem, onRenderMarkdown?: (item: Quest
 function getMarkdownValue(
   markdownText: string,
   item: QuestionnaireItem,
-  onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string
+  onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string,
+  questionnaire?: Questionnaire | null
 ): string {
+  const itemValue = getHyperlinkExtensionValue(item);
+  const questionnaireValue = questionnaire ? getHyperlinkExtensionValue(questionnaire) : undefined;
+
   if (onRenderMarkdown) {
     return DOMPurify.sanitize(onRenderMarkdown(item, markdownText.toString()));
-  } else {
+  }
+  if (itemValue === HyperlinkTarget.SAME_WINDOW || (!itemValue && questionnaireValue === HyperlinkTarget.SAME_WINDOW)) {
+    marked.setOptions({ renderer: rendererSameWindow });
     return DOMPurify.sanitize(marked(markdownText.toString()));
   }
+
+  marked.setOptions({ renderer: renderer });
+  return DOMPurify.sanitize(marked(markdownText.toString()));
 }
 
 export function getChildHeaderTag(item?: QuestionnaireItem, headerTag?: number): number {

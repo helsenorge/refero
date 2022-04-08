@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from '../../../types/fhir';
+import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer } from '../../../types/fhir';
 
 import SafeInputField from '@helsenorge/toolkit/components/atoms/safe-input-field';
 import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
@@ -16,6 +16,7 @@ interface Props {
   id?: string;
   pdf?: boolean;
   item: QuestionnaireItem;
+  questionnaire?: Questionnaire;
   answer: QuestionnaireResponseItemAnswer;
   handleStringChange: (event: React.FormEvent<{}>) => void;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
@@ -24,6 +25,7 @@ const textField: React.SFC<Props & ValidationProps> = ({
   id,
   pdf,
   item,
+  questionnaire,
   answer,
   handleStringChange,
   children,
@@ -37,7 +39,7 @@ const textField: React.SFC<Props & ValidationProps> = ({
       </Pdf>
     );
   }
-  const subLabelText = getSublabelText(item, onRenderMarkdown);
+  const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire);
 
   return (
     <Validation {...other}>
@@ -47,7 +49,7 @@ const textField: React.SFC<Props & ValidationProps> = ({
         inputName={getId(id)}
         value={getStringValue(answer)}
         showLabel={false}
-        label={<Label item={item} onRenderMarkdown={onRenderMarkdown} />}
+        label={<Label item={item} onRenderMarkdown={onRenderMarkdown} questionnaire={questionnaire} />}
         subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
         isRequired={isRequired(item)}
         placeholder={getPlaceholder(item)}

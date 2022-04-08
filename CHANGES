@@ -1,9 +1,15 @@
-## 8.0.1
+## 8.1.0
 
 ---
 
-- Fixed a bug when duplicating an item for repeat, where the duplicated item
-  sometimes would contain an empty answer block.
+- Added support for internal linking based on sdf-hyperlink-target extension on all components
+- Added DOMPurifier render with target="\_self"
+
+## 8.0.2
+
+---
+
+- Fixed a bug when duplicating an item for repeat, where the duplicated item sometimes would contain an empty answer block.
 
 ## 8.0.0
 

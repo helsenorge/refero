@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { Collapse } from 'react-collapse';
 
-import { QuestionnaireItem } from '../../../types/fhir';
+import { QuestionnaireItem, Questionnaire } from '../../../types/fhir';
 
 import CheckBoxGroup from '@helsenorge/toolkit/components/atoms/checkbox-group';
 import { Options } from '@helsenorge/toolkit/components/atoms/radio-group';
@@ -17,6 +17,7 @@ import SubLabel from '../sublabel';
 interface Props {
   options?: Array<Options>;
   item: QuestionnaireItem;
+  questionnaire?: Questionnaire;
   id?: string;
   handleChange: (radioButton: string) => void;
   selected?: Array<string | undefined>;
@@ -32,6 +33,7 @@ interface Props {
 const CheckboxView: React.SFC<Props> = ({
   options,
   item,
+  questionnaire,
   id,
   handleChange,
   selected,
@@ -50,14 +52,14 @@ const CheckboxView: React.SFC<Props> = ({
   const checkboxes = options.map(el => {
     return { label: el.label, id: el.type, checked: isSelected(el, selected) };
   });
-  const subLabelText = getSublabelText(item, onRenderMarkdown);
+  const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire);
 
   return (
     <div className="page_skjemautfyller__component page_skjemautfyller__component_choice page_skjemautfyller__component_choice_checkbox">
       <Collapse isOpened>
         <Validation {...other}>
           <CheckBoxGroup
-            legend={<Label item={item} onRenderMarkdown={onRenderMarkdown} />}
+            legend={<Label item={item} onRenderMarkdown={onRenderMarkdown} questionnaire={questionnaire} />}
             subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
             checkboxes={checkboxes}
             handleChange={handleChange}

@@ -3,7 +3,13 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
-import { QuestionnaireItem, QuestionnaireResponseItemAnswer, Attachment, QuestionnaireResponseItem } from '../../../types/fhir';
+import {
+  QuestionnaireItem,
+  QuestionnaireResponseItemAnswer,
+  Attachment,
+  QuestionnaireResponseItem,
+  Questionnaire,
+} from '../../../types/fhir';
 import { TextMessage } from '../../../types/text-message';
 
 import { UploadedFile } from '@helsenorge/toolkit/components/atoms/dropzone';
@@ -26,6 +32,7 @@ export interface Props {
   dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
   path: Array<Path>;
   item: QuestionnaireItem;
+  questionnaire?: Questionnaire;
   responseItem: QuestionnaireResponseItem;
   answer: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer;
   pdf?: boolean;
@@ -151,8 +158,8 @@ class AttachmentComponent extends React.Component<Props & ValidationProps> {
   }
 
   render(): JSX.Element | null {
-    const { pdf, id, item, resources, onOpenAttachment, onRenderMarkdown, ...other } = this.props;
-    const subLabelText = getSublabelText(item, onRenderMarkdown);
+    const { pdf, id, item, resources, onOpenAttachment, onRenderMarkdown, questionnaire, ...other } = this.props;
+    const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire);
 
     if (pdf || isReadOnly(item)) {
       return (
@@ -168,7 +175,7 @@ class AttachmentComponent extends React.Component<Props & ValidationProps> {
             onDelete={this.onDelete}
             onOpen={onOpenAttachment}
             id={getId(id)}
-            label={<Label item={item} onRenderMarkdown={onRenderMarkdown} />}
+            label={<Label item={item} onRenderMarkdown={onRenderMarkdown} questionnaire={questionnaire} />}
             subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
             uploadButtonText={this.getButtonText()}
             resources={resources}

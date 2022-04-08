@@ -4,7 +4,7 @@ import moment, { Moment } from 'moment';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
-import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem } from '../../../types/fhir';
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem, Questionnaire } from '../../../types/fhir';
 
 import { DateRangePicker } from '@helsenorge/toolkit/components/molecules/date-range-picker';
 import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
@@ -31,6 +31,7 @@ import { DateYearInput } from './date-year-input';
 
 export interface Props {
   item: QuestionnaireItem;
+  questionnaire?: Questionnaire;
   responseItem: QuestionnaireResponseItem;
   answer: QuestionnaireResponseItemAnswer;
   resources?: Resources;
@@ -168,10 +169,12 @@ class DateComponent extends React.Component<Props & ValidationProps> {
 
   render(): JSX.Element | null {
     const date = this.getValue();
-    const subLabelText = getSublabelText(this.props.item, this.props.onRenderMarkdown);
+    const subLabelText = getSublabelText(this.props.item, this.props.onRenderMarkdown, this.props.questionnaire);
 
     const itemControls = getItemControlExtensionValue(this.props.item);
-    const labelEl = <Label item={this.props.item} onRenderMarkdown={this.props.onRenderMarkdown} />;
+    const labelEl = (
+      <Label item={this.props.item} onRenderMarkdown={this.props.onRenderMarkdown} questionnaire={this.props.questionnaire} />
+    );
     const subLabelEl = subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined;
 
     let element: JSX.Element | undefined = undefined;

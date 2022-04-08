@@ -3,7 +3,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
-import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem } from '../../../types/fhir';
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem, Questionnaire } from '../../../types/fhir';
 
 import SafeInputField from '@helsenorge/toolkit/components/atoms/safe-input-field';
 import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
@@ -36,6 +36,7 @@ import TextView from '../textview';
 
 export interface Props {
   item: QuestionnaireItem;
+  questionnaire?: Questionnaire;
   responseItem: QuestionnaireResponseItem;
   answer: QuestionnaireResponseItemAnswer;
   path: Array<Path>;
@@ -95,7 +96,7 @@ export class String extends React.Component<Props & ValidationProps, {}> {
   };
 
   render(): JSX.Element | null {
-    const { id, item, pdf, resources, answer, onRenderMarkdown } = this.props;
+    const { id, item, questionnaire, pdf, resources, answer, onRenderMarkdown } = this.props;
     if (pdf || isReadOnly(item)) {
       return (
         <TextView
@@ -109,7 +110,7 @@ export class String extends React.Component<Props & ValidationProps, {}> {
         </TextView>
       );
     }
-    const subLabelText = getSublabelText(item, onRenderMarkdown);
+    const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire);
 
     return (
       <div className="page_skjemautfyller__component page_skjemautfyller__component_string">
@@ -121,7 +122,7 @@ export class String extends React.Component<Props & ValidationProps, {}> {
             value={getStringValue(answer)}
             onChangeValidator={this.validateText}
             showLabel={true}
-            label={<Label item={item} onRenderMarkdown={onRenderMarkdown} />}
+            label={<Label item={item} onRenderMarkdown={onRenderMarkdown} questionnaire={questionnaire} />}
             subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
             isRequired={isRequired(item)}
             placeholder={getPlaceholder(item)}

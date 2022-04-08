@@ -3,7 +3,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
-import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem } from '../../../types/fhir';
+import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem } from '../../../types/fhir';
 
 import { SafeTextarea } from '@helsenorge/toolkit/components/atoms/safe-textarea';
 import { ExpandableSection } from '@helsenorge/toolkit/components/molecules/expandable-section';
@@ -39,6 +39,7 @@ import TextView from '../textview';
 
 export interface Props {
   item: QuestionnaireItem;
+  questionnaire?: Questionnaire;
   responseItem: QuestionnaireResponseItem;
   answer: QuestionnaireResponseItemAnswer;
   dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
@@ -114,7 +115,7 @@ export class Text extends React.Component<Props & ValidationProps, {}> {
   }
 
   render(): JSX.Element | null {
-    const { id, item, answer, pdf, children, resources, onRenderMarkdown, ...other } = this.props;
+    const { id, item, answer, pdf, children, resources, onRenderMarkdown, questionnaire, ...other } = this.props;
     const itemControls = getItemControlExtensionValue(item);
 
     if (itemControls && itemControls.some(itemControl => itemControl.code === itemControlConstants.SIDEBAR)) {
@@ -137,7 +138,7 @@ export class Text extends React.Component<Props & ValidationProps, {}> {
           id={id}
           className="page_skjemautfyller__component page_skjemautfyller__component_highlight"
           dangerouslySetInnerHTML={{
-            __html: `${getText(item, onRenderMarkdown)}`,
+            __html: `${getText(item, onRenderMarkdown, questionnaire)}`,
           }}
         />
       );
@@ -156,7 +157,7 @@ export class Text extends React.Component<Props & ValidationProps, {}> {
         </TextView>
       );
     }
-    const subLabelText = getSublabelText(item, onRenderMarkdown);
+    const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire);
 
     return (
       <div className="page_skjemautfyller__component page_skjemautfyller__component_text">
@@ -167,7 +168,7 @@ export class Text extends React.Component<Props & ValidationProps, {}> {
             value={getStringValue(answer)}
             isRequired={isRequired(item)}
             showLabel={true}
-            label={`${renderPrefix(item)} ${getText(item, onRenderMarkdown)}`}
+            label={`${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire)}`}
             subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
             placeholder={getPlaceholder(item)}
             maxlength={getMaxLength(item)}

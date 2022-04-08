@@ -25,4 +25,6 @@ export default {
   PRESENTATION_BUTTONS: 'http://helsenorge.no/fhir/StructureDefinition/sdf-presentationbuttons',
   NAVIGATOR: 'http://helsenorge.no/fhir/StructureDefinition/sdf-questionnaire-navgiator-state',
   SUBLABEL: 'http://helsenorge.no/fhir/StructureDefinition/sdf-sublabel',
+
+  HYPERLINK: 'http://helsenorge.no/fhir/StructureDefinition/sdf-hyperlink-target',
 };

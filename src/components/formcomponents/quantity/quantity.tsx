@@ -8,6 +8,7 @@ import {
   QuestionnaireResponseItemAnswer,
   Quantity as QuantityType,
   QuestionnaireResponseItem,
+  Questionnaire,
 } from '../../../types/fhir';
 
 import SafeInputField from '@helsenorge/toolkit/components/atoms/safe-input-field';
@@ -34,6 +35,7 @@ import TextView from '../textview';
 
 export interface Props {
   item: QuestionnaireItem;
+  questionnaire?: Questionnaire;
   responseItem: QuestionnaireResponseItem;
   answer: QuestionnaireResponseItemAnswer;
   resources?: Resources;
@@ -115,7 +117,7 @@ class Quantity extends React.Component<Props & ValidationProps, {}> {
   }
 
   render(): JSX.Element | null {
-    const { id, item, onRenderMarkdown } = this.props;
+    const { id, item, questionnaire, onRenderMarkdown } = this.props;
     if (this.props.pdf || isReadOnly(item)) {
       return (
         <TextView id={id} item={this.props.item} value={this.getPDFValue()} onRenderMarkdown={onRenderMarkdown}>
@@ -124,7 +126,7 @@ class Quantity extends React.Component<Props & ValidationProps, {}> {
       );
     }
     const value = this.getValue();
-    const subLabelText = getSublabelText(item, onRenderMarkdown);
+    const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire);
 
     return (
       <div className="page_skjemautfyller__component page_skjemautfyller__component_quantity">
@@ -136,7 +138,7 @@ class Quantity extends React.Component<Props & ValidationProps, {}> {
             inputName={getId(this.props.id)}
             value={value !== undefined ? value + '' : ''}
             showLabel={true}
-            label={<Label item={item} onRenderMarkdown={onRenderMarkdown} />}
+            label={<Label item={item} onRenderMarkdown={onRenderMarkdown} questionnaire={questionnaire} />}
             subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
             isRequired={isRequired(item)}
             placeholder={getPlaceholder(item)}
