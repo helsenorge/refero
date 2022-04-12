@@ -4,6 +4,7 @@
 
 - Added support for internal linking based on sdf-hyperlink-target extension on all components
 - Added DOMPurifier render with target="\_self"
+- Added same-site url builder for links that open in the same window
 
 ## 8.0.2
 

@@ -42,7 +42,22 @@ renderer.link = (href: string, title: string, text: string): string => {
 };
 const rendererSameWindow = new marked.Renderer();
 rendererSameWindow.link = (href: string, title: string, text: string): string => {
-  return `<a href=${href} ${title ? `title=${title}` : ''} target="_self" class="internal">${text}</a>`;
+  return `<a href=${sameSiteUrlBuilder(href)} ${title ? `title=${title}` : ''} target="_self" class="internal">${text}</a>`;
+};
+
+function removeAbsolutePathStart(url: string): string {
+  const regex = new RegExp('^(?:[a-z+]+:)?//', 'i');
+  if (regex.test(url)) {
+    return url.replace(regex, '');
+  }
+  return url;
+}
+
+export const sameSiteUrlBuilder = (url: string): string => {
+  const baseUrl = window.location;
+  const relativeUrl = removeAbsolutePathStart(url);
+  if (relativeUrl.startsWith('/')) return `${baseUrl.protocol}//${baseUrl.host}${relativeUrl}`;
+  return `${baseUrl.protocol}//${baseUrl.host}/${relativeUrl}`;
 };
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
