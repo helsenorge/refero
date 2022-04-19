@@ -1,3 +1,9 @@
+## 9.0.1
+
+---
+
+- Fix handling of initial values for quantity fields.
+
 ## 9.0.0 
 
 ---
