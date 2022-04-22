@@ -1,13 +1,16 @@
 import * as React from 'react';
+
 import { mount } from 'enzyme';
 
-import NotificationPanel from '@helsenorge/designsystem-react/components/NotificationPanel';
-import Loader from '@helsenorge/designsystem-react/components/Loader';
-import SafeSelectField from '@helsenorge/toolkit/components/atoms/safe-select';
-
-import ReceiverComponent from '../receiver-component';
 import { EnhetType, OrgenhetHierarki } from '../../../../types/orgenhetHierarki';
+
+import Loader from '@helsenorge/designsystem-react/components/Loader';
+import NotificationPanel from '@helsenorge/designsystem-react/components/NotificationPanel';
+
+import SafeSelectField from '@helsenorge/form/components/safe-select';
+
 import { Resources } from '../../../../util/resources';
+import ReceiverComponent from '../receiver-component';
 
 const receivers = [
   {
@@ -129,18 +132,8 @@ describe('ReceiverComponent', () => {
       />
     );
 
-    expect(
-      wrapper
-        .find(SafeSelectField)
-        .at(0)
-        .props().label
-    ).toBe('Velg region');
-    expect(
-      wrapper
-        .find(SafeSelectField)
-        .at(1)
-        .props().label
-    ).toBe('Velg helseforetak');
+    expect(wrapper.find(SafeSelectField).at(0).props().label).toBe('Velg region');
+    expect(wrapper.find(SafeSelectField).at(1).props().label).toBe('Velg helseforetak');
   });
 
   it('Should call clearCodingAnswer when dropdown value is changed to a non-leaf node', () => {
@@ -157,10 +150,7 @@ describe('ReceiverComponent', () => {
       />
     );
 
-    wrapper
-      .find(SafeSelectField)
-      .at(0)
-      .props().onChange!({ target: { value: '2' } as unknown } as React.FormEvent<HTMLInputElement>, '2');
+    wrapper.find(SafeSelectField).at(0).props().onChange!({ target: { value: '2' } as unknown } as React.FormEvent<HTMLInputElement>, '2');
 
     expect(clearCodingAnswerFn).toHaveBeenCalled();
   });
@@ -179,10 +169,10 @@ describe('ReceiverComponent', () => {
       />
     );
 
-    wrapper
-      .find(SafeSelectField)
-      .at(1)
-      .props().onChange!({ target: { value: '12' } as unknown } as React.FormEvent<HTMLInputElement>, '1.2');
+    wrapper.find(SafeSelectField).at(1).props().onChange!(
+      { target: { value: '12' } as unknown } as React.FormEvent<HTMLInputElement>,
+      '1.2'
+    );
 
     expect(handleChangeFn).toHaveBeenCalled();
   });

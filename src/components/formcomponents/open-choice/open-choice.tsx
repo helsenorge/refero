@@ -13,8 +13,8 @@ import {
   ValueSet,
 } from '../../../types/fhir';
 
-import { Options } from '@helsenorge/toolkit/components/atoms/radio-group';
-import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
+import { ValidationProps } from '@helsenorge/form/components/form/validation';
+import { Options } from '@helsenorge/form/components/radio-group';
 
 import {
   NewValueAction,

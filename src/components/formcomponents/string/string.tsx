@@ -5,12 +5,11 @@ import { ThunkDispatch } from 'redux-thunk';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem, Questionnaire } from '../../../types/fhir';
 
-import SafeInputField from '@helsenorge/toolkit/components/atoms/safe-input-field';
-import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
-import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
-
 import { debounce } from '@helsenorge/core-utils/debounce';
 import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
+import Validation from '@helsenorge/form/components/form/validation';
+import { ValidationProps } from '@helsenorge/form/components/form/validation';
+import SafeInputField from '@helsenorge/form/components/safe-input-field';
 
 import { NewValueAction, newStringValueAsync } from '../../../actions/newValue';
 import { GlobalState } from '../../../reducers';

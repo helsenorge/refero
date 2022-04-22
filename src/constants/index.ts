@@ -1,4 +1,4 @@
-import { MimeTypes } from '@helsenorge/toolkit/components/atoms/dropzone';
+import { MimeTypes } from '@helsenorge/file-upload/components/dropzone';
 
 export default {
   DATE_TIME_FORMAT: 'YYYY-MM-DDTHH:mm:ssZ',

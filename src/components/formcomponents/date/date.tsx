@@ -6,11 +6,10 @@ import { ThunkDispatch } from 'redux-thunk';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem, Questionnaire } from '../../../types/fhir';
 
-import { DateRangePicker } from '@helsenorge/toolkit/components/molecules/date-range-picker';
-import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
-import { parseDate } from '@helsenorge/toolkit/components/molecules/time-input/date-core';
-
 import { LanguageLocales } from '@helsenorge/core-utils/constants/languages';
+import { DateRangePicker } from '@helsenorge/date-time/components/date-range-picker';
+import { parseDate } from '@helsenorge/date-time/components/time-input/date-core';
+import { ValidationProps } from '@helsenorge/form/components/form/validation';
 
 import { NewValueAction, newDateValueAsync } from '../../../actions/newValue';
 import ExtensionConstants from '../../../constants/extensions';

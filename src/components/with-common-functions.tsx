@@ -17,10 +17,12 @@ import {
 import { OrgenhetHierarki } from '../types/orgenhetHierarki';
 import { TextMessage } from '../types/text-message';
 
-import { UploadedFile } from '@helsenorge/toolkit/components/atoms/dropzone';
-import HelpTrigger from '@helsenorge/toolkit/components/icons/HelpTrigger';
-import { FormChild } from '@helsenorge/toolkit/components/molecules/form';
-import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
+import Icon from '@helsenorge/designsystem-react/components/Icons';
+import HelpSign from '@helsenorge/designsystem-react/components/Icons/HelpSign';
+
+import { UploadedFile } from '@helsenorge/file-upload/components/dropzone';
+import { FormChild } from '@helsenorge/form/components/form';
+import { ValidationProps } from '@helsenorge/form/components/form/validation';
 
 import { NewValueAction } from '../actions/newValue';
 import itemControlConstants from '../constants/itemcontrol';
@@ -206,7 +208,7 @@ export default function withCommonFunctions<T>(WrappedComponent: React.Component
       }
       return (
         <HelpButton item={helpItem} callback={this.toggleHelp}>
-          <HelpTrigger />
+          <Icon svgIcon={HelpSign} />
         </HelpButton>
       );
     };

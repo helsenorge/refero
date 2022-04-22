@@ -12,7 +12,7 @@ import {
   ValueSetComposeInclude,
 } from '../types/fhir';
 
-import { Options } from '@helsenorge/toolkit/components/atoms/radio-group';
+import { Options } from '@helsenorge/form/components/radio-group';
 
 import ExtensionConstants from '../constants/extensions';
 import Constants, { OPEN_CHOICE_ID, OPEN_CHOICE_LABEL } from '../constants/index';

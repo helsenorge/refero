@@ -19,6 +19,10 @@ export function createQuestionnaireResponseAnswer(item: QuestionnaireItem): Ques
     hasInitialAnswer = true;
     answer.valueInteger = Number(item.initial[0].valueInteger);
   }
+  if (item.initial && item.initial.length > 0 && item.initial[0].valueQuantity !== undefined) {
+    hasInitialAnswer = true;
+    answer.valueQuantity = item.initial[0].valueQuantity;
+  }
   if (item.initial && item.initial.length > 0 && item.initial[0].valueDate !== undefined) {
     hasInitialAnswer = true;
     answer.valueDate = String(item.initial[0].valueDate);

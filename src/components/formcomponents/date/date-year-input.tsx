@@ -4,8 +4,8 @@ import { Moment } from 'moment';
 
 import { QuestionnaireItem } from '../../../types/fhir';
 
-import { Validation } from '@helsenorge/toolkit/components/molecules/form/validation';
-import { YearErrorResources, YearInput } from '@helsenorge/toolkit/components/molecules/year-input';
+import { YearErrorResources, YearInput } from '@helsenorge/date-time/components/year-input';
+import { Validation } from '@helsenorge/form/components/form/validation';
 
 import { getId, isReadOnly, isRequired } from '../../../util';
 import { getPlaceholder, getValidationTextExtension } from '../../../util/extension';

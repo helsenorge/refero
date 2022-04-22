@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
+import Validation from '@helsenorge/form/components/form/validation';
 
 import { getId } from '../../../util';
 import ReceiverComponent, { ReceiverComponentProps } from './receiver-component';

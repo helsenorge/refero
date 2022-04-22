@@ -4,9 +4,9 @@ import { Collapse } from 'react-collapse';
 
 import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer } from '../../../types/fhir';
 
-import CheckBoxGroup from '@helsenorge/toolkit/components/atoms/checkbox-group';
-import { Options } from '@helsenorge/toolkit/components/atoms/radio-group';
-import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
+import CheckBoxGroup from '@helsenorge/form/components/checkbox-group';
+import Validation from '@helsenorge/form/components/form/validation';
+import { Options } from '@helsenorge/form/components/radio-group';
 
 import { shouldShowExtraChoice } from '../../../util/choice';
 import { getMaxOccursExtensionValue, getMinOccursExtensionValue, getValidationTextExtension } from '../../../util/extension';

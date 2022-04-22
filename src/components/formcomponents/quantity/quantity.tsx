@@ -11,9 +11,9 @@ import {
   Questionnaire,
 } from '../../../types/fhir';
 
-import SafeInputField from '@helsenorge/toolkit/components/atoms/safe-input-field';
-import Validation from '@helsenorge/toolkit/components/molecules/form/validation';
-import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
+import Validation from '@helsenorge/form/components/form/validation';
+import { ValidationProps } from '@helsenorge/form/components/form/validation';
+import SafeInputField from '@helsenorge/form/components/safe-input-field';
 
 import { NewValueAction, newQuantityValueAsync } from '../../../actions/newValue';
 import { GlobalState } from '../../../reducers';

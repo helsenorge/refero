@@ -17,9 +17,9 @@ import {
 import { OrgenhetHierarki } from '../types/orgenhetHierarki';
 import { TextMessage } from '../types/text-message';
 
-import { UploadedFile } from '@helsenorge/toolkit/components/atoms/dropzone';
-import Form from '@helsenorge/toolkit/components/molecules/form';
-import { ValidationSummaryPlacement } from '@helsenorge/toolkit/components/molecules/form/validationSummaryPlacement';
+import { UploadedFile } from '@helsenorge/file-upload/components/dropzone';
+import Form from '@helsenorge/form/components/form';
+import { ValidationSummaryPlacement } from '@helsenorge/form/components/form/validationSummaryPlacement';
 
 import { setSkjemaDefinition } from '../actions/form';
 import { NewValueAction, newQuantityValue } from '../actions/newValue';

@@ -4,10 +4,9 @@ import moment, { Moment } from 'moment';
 
 import { QuestionnaireItem } from '../../../types/fhir';
 
-import { Validation } from '@helsenorge/toolkit/components/molecules/form/validation';
-import { YearMonthResources, YearMonthInput, YearMonthValue } from '@helsenorge/toolkit/components/molecules/year-month-input';
-
 import { LanguageLocales } from '@helsenorge/core-utils/constants/languages';
+import { YearMonthResources, YearMonthInput, YearMonthValue } from '@helsenorge/date-time/components/year-month-input';
+import { Validation } from '@helsenorge/form/components/form/validation';
 
 import { getId, isReadOnly, isRequired } from '../../../util';
 import { getPlaceholder, getValidationTextExtension } from '../../../util/extension';
@@ -83,11 +82,7 @@ export class DateYearMonthInput extends React.Component<Props, {}> {
 
   getReadonlyValue = (): string => {
     const ikkeBesvartText = this.props.resources?.ikkeBesvart || '';
-    return this.props.yearMonthValue
-      ? moment(this.props.yearMonthValue)
-          .locale(this.props.locale)
-          .format('MMMM YYYY')
-      : ikkeBesvartText;
+    return this.props.yearMonthValue ? moment(this.props.yearMonthValue).locale(this.props.locale).format('MMMM YYYY') : ikkeBesvartText;
   };
 
   render(): JSX.Element {

@@ -13,7 +13,7 @@ module.exports = {
   testMatch: ['**/__tests__/**/*-spec.js?(x)', '**/__tests__/**/*-spec.ts?(x)'],
   transform: {
     '^.+\\.js?$': 'babel-jest',
-    '\\.m?js?$': 'esm',
+    // '\\.m?js?$': 'esm',
     '^.+\\.(js|jsx|ts|tsx)$': 'babel-jest',
     '^.+\\.css$': '@helsenorge/core-build/config/jest/cssTransform.js',
     '^(?!.*\\.(js|jsx|ts|tsx|css|json)$)': '@helsenorge/core-build/config/jest/fileTransform.js',

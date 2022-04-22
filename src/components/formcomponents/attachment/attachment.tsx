@@ -12,8 +12,8 @@ import {
 } from '../../../types/fhir';
 import { TextMessage } from '../../../types/text-message';
 
-import { UploadedFile } from '@helsenorge/toolkit/components/atoms/dropzone';
-import { ValidationProps } from '@helsenorge/toolkit/components/molecules/form/validation';
+import { UploadedFile } from '@helsenorge/file-upload/components/dropzone';
+import { ValidationProps } from '@helsenorge/form/components/form/validation';
 
 import { NewValueAction, newAttachmentAsync, removeAttachmentAsync } from '../../../actions/newValue';
 import { GlobalState } from '../../../reducers';

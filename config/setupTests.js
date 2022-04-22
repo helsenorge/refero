@@ -4,8 +4,8 @@
 // eslint-disable-next-line @typescript-eslint/no-empty-function
 global.define = () => {};
 
+var _enzymeAdapterReact = require('@wojtekmaj/enzyme-adapter-react-17');
 var _enzyme = require('enzyme');
-var _enzymeAdapterReact = require('enzyme-adapter-react-16');
 var _enzymeAdapterReact2 = _interopRequireDefault(_enzymeAdapterReact);
 
 // Setting up enzyme for use with react 16

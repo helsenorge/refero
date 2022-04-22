@@ -8,8 +8,8 @@ import { EnhetType, OrgenhetHierarki } from '../../../types/orgenhetHierarki';
 import Loader from '@helsenorge/designsystem-react/components/Loader';
 import NotificationPanel from '@helsenorge/designsystem-react/components/NotificationPanel';
 
-import SafeSelect from '@helsenorge/toolkit/components/atoms/safe-select';
-import ValidationError from '@helsenorge/toolkit/components/molecules/form/validation-error';
+import ValidationError from '@helsenorge/form/components/form/validation-error';
+import SafeSelect from '@helsenorge/form/components/safe-select';
 
 import { getId } from '../../../util';
 import { Resources } from '../../../util/resources';

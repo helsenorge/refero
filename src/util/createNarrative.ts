@@ -1,6 +1,6 @@
 import { QuestionnaireResponse, QuestionnaireResponseItem, QuestionnaireResponseItemAnswer } from '../types/fhir';
 
-import { parseDate } from '@helsenorge/toolkit/components/molecules/time-input/date-core';
+import { parseDate } from '@helsenorge/date-time/components/time-input/date-core';
 
 import { OPEN_CHOICE_ID } from '../constants';
 
@@ -48,12 +48,7 @@ const createNarrativeForItem = (qi: QuestionnaireResponseItem): string => {
 };
 
 const encode = (s: string): string => {
-  return s
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&apos;');
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;');
 };
 
 const getAnswerAsString = (answer: QuestionnaireResponseItemAnswer): string => {
