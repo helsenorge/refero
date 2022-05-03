@@ -15,8 +15,8 @@ module.exports = {
     '^.+\\.js?$': 'babel-jest',
     // '\\.m?js?$': 'esm',
     '^.+\\.(js|jsx|ts|tsx)$': 'babel-jest',
-    '^.+\\.css$': '@helsenorge/core-build/config/jest/cssTransform.js',
-    '^(?!.*\\.(js|jsx|ts|tsx|css|json)$)': '@helsenorge/core-build/config/jest/fileTransform.js',
+    '^.+\\.css$': '<rootDir>/config/cssTransform.js',
+    '^(?!.*\\.(js|jsx|ts|tsx|css|json)$)': '<rootDir>/config/fileTransform.js',
   },
   transformIgnorePatterns: [
     '[/\\\\]node_modules[/\\\\](?!(@helsenorge)[/\\\\])',
@@ -29,6 +29,6 @@ module.exports = {
   transformIgnorePatterns: ['[/\\\\]node_modules[/\\\\](?!(@helsenorge)[/\\\\])'],
   moduleNameMapper: {
     '\\.(css|scss)$': 'identity-obj-proxy',
-    '\\.(png|svg)$': '@helsenorge/core-build/lib/empty.js',
+    '\\.(png|svg)$': '<rootDir>/config/empty.js',
   },
 };
