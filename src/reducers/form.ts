@@ -12,7 +12,7 @@ import {
   QuestionnaireItemEnableBehaviorCodes,
 } from '../types/fhir';
 
-import { Languages } from '@helsenorge/toolkit/constants';
+import { LanguageLocales } from '@helsenorge/core-utils/constants/languages';
 
 import { FormAction, SET_SKJEMA_DEFINITION } from '../actions/form';
 import { generateQuestionnaireResponse } from '../actions/generateQuestionnaireResponse';
@@ -71,7 +71,7 @@ const initialState: Form = {
   FormDefinition: {
     Content: null,
   },
-  Language: Languages.NORWEGIAN.toLowerCase(),
+  Language: LanguageLocales.NORWEGIAN.toLowerCase(),
 };
 
 export default function reducer(state: Form = initialState, action: NewValueAction | FormAction): Form | undefined {
