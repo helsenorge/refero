@@ -1,16 +1,14 @@
 {
   "name": "@helsenorge/skjemautfyller",
-  "version": "9.1.0",
+  "version": "10.0.0-beta01",
   "main": "index.js",
   "author": "helsenorge",
-  "maintainers": [
-    "VAK"
-  ],
-  "license": "UNLICENSED",
+  "license": "MIT",
   "files": [
     "lib",
     "README.md",
-    "CHANGES"
+    "CHANGES",
+    "LICENSE"
   ],
   "scripts": {
     "lint": "eslint 'src/**/*.ts{,x}' --quiet",
@@ -27,9 +25,6 @@
     }
   },
   "peerDependencies": {
-    "@helsenorge/date-time": "23.1.0",
-    "@helsenorge/autosuggest": "23.1.0",
-    "@helsenorge/designsystem-react": "1.0.0-formlayoutiphone.0",
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-redux": "^7.1.0",
@@ -37,8 +32,6 @@
     "redux-thunk": "^2.3.0"
   },
   "devDependencies": {
-    "@helsenorge/file-upload": "23.1.0",
-    "@helsenorge/form": "23.1.0",
     "@types/chai": "^3.5.2",
     "@types/dompurify": "^2.0.1",
     "@types/jest": "27.4.0",
@@ -50,13 +43,13 @@
     "chai": "^3.5.0",
     "react": "17.0.2",
     "react-dom": "17.0.2",
+    "react-redux": "^7.1.0",
+    "redux": "^4.0.4",
+    "redux-thunk": "^2.3.0",
     "enzyme": "^3.11.0",
     "@wojtekmaj/enzyme-adapter-react-17": "^0.6.7",
     "fs-extra": "7.0.1",
     "npm-run-all": "^4.1.5",
-    "react-redux": "^7.1.0",
-    "redux": "^4.0.4",
-    "redux-thunk": "^2.3.0",
     "tabbable": "^3.1.1",
     "whatwg-fetch": "2.0.4",
     "@babel/core": "^7.16.0",
@@ -111,6 +104,12 @@
     "pretty-quick": "3.1.3"
   },
   "dependencies": {
+    "@helsenorge/core-utils": "23.1.0",
+    "@helsenorge/file-upload": "23.1.0",
+    "@helsenorge/form": "23.1.0",
+    "@helsenorge/date-time": "23.1.0",
+    "@helsenorge/autosuggest": "23.1.0",
+    "@helsenorge/designsystem-react": "1.0.0-formlayoutiphone.0",
     "@types/react-collapse": "5.0.0",
     "dompurify": "^2.0.8",
     "fhirpath": "2.7.3",
