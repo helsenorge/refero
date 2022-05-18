@@ -127,21 +127,6 @@ describe('Choice component renders item.option[]', () => {
       ['ref', 'code', 'foo', '42', '2018-12-31', '00:00']
     );
   });
-
-  it('should be clickable', () => {
-    const referenceOption = createValueReferenceOption({
-      key: 'valueReference',
-      value: 'ref',
-    });
-    const item = createItemWithOption(...referenceOption);
-    const wrapper = createWrapperWithItem(item);
-
-    let input = wrapper.find('input[aria-checked=false]').length;
-    expect(input).toBe(1);
-    wrapper.find('input').simulate('click');
-    input = wrapper.find('input[aria-checked=true]').length;
-    expect(input).toBe(1);
-  });
 });
 
 function expectToFind(wrapper: ReactWrapper<{}, {}>, keys: string[], values: string[]) {
@@ -205,7 +190,7 @@ function createValueStringOption(...options: string[]): QuestionnaireItemAnswerO
 function createValueIntegerOption(...options: number[]): QuestionnaireItemAnswerOption[] {
   return options.map(o => {
     return {
-      valueInteger: (o as {}) as number,
+      valueInteger: o as {} as number,
     } as QuestionnaireItemAnswerOption;
   });
 }
@@ -213,7 +198,7 @@ function createValueIntegerOption(...options: number[]): QuestionnaireItemAnswer
 function createValueDateOption(...options: string[]): QuestionnaireItemAnswerOption[] {
   return options.map(o => {
     return {
-      valueDate: (o as {}) as string,
+      valueDate: o as {} as string,
     } as QuestionnaireItemAnswerOption;
   });
 }
@@ -221,7 +206,7 @@ function createValueDateOption(...options: string[]): QuestionnaireItemAnswerOpt
 function createValueTimeOption(...options: string[]): QuestionnaireItemAnswerOption[] {
   return options.map(o => {
     return {
-      valueTime: (o as {}) as string,
+      valueTime: o as {} as string,
     } as QuestionnaireItemAnswerOption;
   });
 }
@@ -231,7 +216,7 @@ function createWrapperWithItem(item: QuestionnaireItem): ReactWrapper<{}, {}> {
   return mount(
     <Provider store={store}>
       <Choice
-        dispatch={() => (undefined as unknown) as ThunkDispatch<GlobalState, void, NewValueAction>}
+        dispatch={() => undefined as unknown as ThunkDispatch<GlobalState, void, NewValueAction>}
         answer={{} as QuestionnaireResponseItemAnswer}
         item={item}
         path={{} as Path[]}

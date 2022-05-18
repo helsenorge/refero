@@ -144,7 +144,7 @@ class Quantity extends React.Component<Props & ValidationProps, {}> {
             placeholder={getPlaceholder(item)}
             max={getMaxValueExtensionValue(item)}
             min={getMinValueExtensionValue(item)}
-            onBlur={this.handleChange}
+            onChange={this.handleChange}
             errorMessage={getValidationTextExtension(item)}
             pattern={getDecimalPattern(item)}
             className="page_skjemautfyller__quantity"

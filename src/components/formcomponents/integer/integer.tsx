@@ -126,7 +126,7 @@ class Integer extends React.Component<Props & ValidationProps, {}> {
               },
             }}
             className="page_skjemautfyller__input"
-            onBlur={this.handleChange}
+            onChange={this.handleChange}
             helpButton={this.props.renderHelpButton()}
             helpElement={this.props.renderHelpElement()}
             validateOnExternalUpdate={true}

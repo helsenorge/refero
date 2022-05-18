@@ -116,13 +116,13 @@ class Decimal extends React.Component<Props & ValidationProps, {}> {
             placeholder={getPlaceholder(item)}
             max={getMaxValueExtensionValue(item)}
             min={getMinValueExtensionValue(item)}
-            onBlur={this.handleChange}
             errorMessage={getValidationTextExtension(item)}
             pattern={getDecimalPattern(item)}
             className="page_skjemautfyller__input"
             helpButton={this.props.renderHelpButton()}
             helpElement={this.props.renderHelpElement()}
             validateOnExternalUpdate={true}
+            onChange={this.handleChange}
           />
         </Validation>
         {this.props.renderDeleteButton('page_skjemautfyller__deletebutton--margin-top')}

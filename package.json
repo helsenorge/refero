@@ -1,6 +1,6 @@
 {
   "name": "@helsenorge/skjemautfyller",
-  "version": "10.0.0-beta01",
+  "version": "10.0.0-beta06",
   "main": "index.js",
   "author": "helsenorge",
   "license": "MIT",
@@ -29,7 +29,13 @@
     "react-dom": "17.0.2",
     "react-redux": "^7.1.0",
     "redux": "^4.0.4",
-    "redux-thunk": "^2.3.0"
+    "redux-thunk": "^2.3.0",
+    "@helsenorge/core-utils": "^24.1.0",
+    "@helsenorge/file-upload": "^24.1.0",
+    "@helsenorge/form": "^24.1.0",
+    "@helsenorge/date-time": "^24.1.0",
+    "@helsenorge/autosuggest": "^24.1.0",
+    "@helsenorge/designsystem-react": "^1.0.0-beta131"
   },
   "devDependencies": {
     "@types/chai": "^3.5.2",
@@ -104,12 +110,6 @@
     "pretty-quick": "3.1.3"
   },
   "dependencies": {
-    "@helsenorge/core-utils": "23.1.0",
-    "@helsenorge/file-upload": "23.1.0",
-    "@helsenorge/form": "23.1.0",
-    "@helsenorge/date-time": "23.1.0",
-    "@helsenorge/autosuggest": "23.1.0",
-    "@helsenorge/designsystem-react": "1.0.0-formlayoutiphone.0",
     "@types/react-collapse": "5.0.0",
     "dompurify": "^2.0.8",
     "fhirpath": "2.7.3",
