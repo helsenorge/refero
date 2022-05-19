@@ -2,7 +2,7 @@ var path = require('path');
 var fse = require('fs-extra');
 
 //Files to copy
-const files = ['.npmrc', 'README.md', 'CHANGES', 'LICENSE'];
+const files = ['README.md', 'CHANGES', 'LICENSE'];
 
 Promise.all(files.map(file => copyFile(file))).then(() => createPackageFile());
 

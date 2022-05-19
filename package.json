@@ -107,7 +107,13 @@
     "eslint-plugin-react": "7.28.0",
     "eslint-plugin-testing-library": "5.0.5",
     "prettier": "2.5.1",
-    "pretty-quick": "3.1.3"
+    "pretty-quick": "3.1.3",
+    "@helsenorge/core-utils": "^24.1.0",
+    "@helsenorge/file-upload": "^24.1.0",
+    "@helsenorge/form": "^24.1.0",
+    "@helsenorge/date-time": "^24.1.0",
+    "@helsenorge/autosuggest": "^24.1.0",
+    "@helsenorge/designsystem-react": "^1.0.0-beta131"
   },
   "dependencies": {
     "@types/react-collapse": "5.0.0",
