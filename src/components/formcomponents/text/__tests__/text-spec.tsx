@@ -7,6 +7,12 @@ import { Text } from '../text';
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem } from '../../../../types/fhir';
 
 describe('text with inline extension', () => {
+  beforeEach(() => {
+    window.matchMedia = jest.fn().mockImplementation(_ => {
+      return {};
+    });
+  });
+
   it('should render correct tag', () => {
     const item = JSON.parse(fs.readFileSync(__dirname + '/__data__/inline-item.json').toString()) as QuestionnaireItem;
 
