@@ -29,6 +29,9 @@ jobs:
           registry-url: https://registry.npmjs.org/
       - run: npm ci
       - run: npm run prepare
-      - run: npm publish lib
+      - run: npm publish
+        with:
+          package: ./lib/package.json
+          dry-run: true
         env:
           NODE_AUTH_TOKEN: ${{secrets.PUBLISH_HELSENORGE_PACKAGES_TO_NPMJS}}
