@@ -6,13 +6,7 @@ import { NewValueAction } from '../actions/newValue';
 import { Props } from '../components/with-common-functions';
 import { getFormData } from '../reducers/form';
 import { GlobalState } from '../reducers/index';
-import {
-  enableWhenMatchesAnswer,
-  getQuestionnaireResponseItemWithLinkid,
-  getResponseItems,
-  Path,
-  isInGroupContext,
-} from './skjemautfyller-core';
+import { enableWhenMatchesAnswer, getQuestionnaireResponseItemWithLinkid, getResponseItems, Path, isInGroupContext } from './refero-core';
 
 export function mapStateToProps(state: GlobalState, originalProps: Props): Props {
   if (!originalProps.item || !originalProps.item.enableWhen) {

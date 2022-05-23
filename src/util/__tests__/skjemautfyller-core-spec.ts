@@ -9,7 +9,7 @@ import {
   enableWhenMatchesAnswer,
   createPathForItem,
   Path,
-} from '../skjemautfyller-core';
+} from '../refero-core';
 import {
   QuestionnaireResponseItem,
   QuestionnaireResponseItemAnswer,
@@ -30,7 +30,7 @@ describe('getQuestionnaireResponseItemFromData', () => {
     expect(response).toEqual(undefined);
   });
   it('should return response item', () => {
-    const item = getRootQuestionnaireResponseItemFromData('decimal2', dataModel.skjemautfyller.form.FormData);
+    const item = getRootQuestionnaireResponseItemFromData('decimal2', dataModel.refero.form.FormData);
     should.exist(item);
   });
 });
@@ -194,15 +194,15 @@ describe('item path', () => {
 
 describe('get item with path', () => {
   it('should return undefined on invalid data', () => {
-    expect(getResponseItemWithPath([], dataModel.skjemautfyller.form.FormData)).toBeUndefined();
+    expect(getResponseItemWithPath([], dataModel.refero.form.FormData)).toBeUndefined();
   });
 
   it('should return undefined on non existent path', () => {
-    expect(getResponseItemWithPath([{ linkId: 'markus' }], dataModel.skjemautfyller.form.FormData)).toBeUndefined();
+    expect(getResponseItemWithPath([{ linkId: 'markus' }], dataModel.refero.form.FormData)).toBeUndefined();
   });
 
   it('should return data', () => {
-    let item = getResponseItemWithPath([{ linkId: 't0' }], dataModel.skjemautfyller.form.FormData);
+    let item = getResponseItemWithPath([{ linkId: 't0' }], dataModel.refero.form.FormData);
     should.exist(item);
     if (!item) {
       fail();
@@ -221,7 +221,7 @@ describe('get item with path', () => {
         linkId: 't21',
       },
     ];
-    item = getResponseItemWithPath(path, dataModel.skjemautfyller.form.FormData);
+    item = getResponseItemWithPath(path, dataModel.refero.form.FormData);
     should.exist(item);
     if (!item) {
       fail();
@@ -243,7 +243,7 @@ describe('get item with path', () => {
         linkId: 't31.abc',
       },
     ];
-    item = getResponseItemWithPath(path, dataModel.skjemautfyller.form.FormData);
+    item = getResponseItemWithPath(path, dataModel.refero.form.FormData);
     should.exist(item);
     if (!item) {
       fail();
@@ -268,7 +268,7 @@ describe('get item with path', () => {
         linkId: 't41',
       },
     ];
-    item = getResponseItemWithPath(path, dataModel.skjemautfyller.form.FormData);
+    item = getResponseItemWithPath(path, dataModel.refero.form.FormData);
     should.exist(item);
     if (!item) {
       fail();
@@ -281,7 +281,7 @@ describe('get item with path', () => {
         linkId: 't0',
       },
     ];
-    item = getResponseItemWithPath(path, dataModel.skjemautfyller.form.FormData);
+    item = getResponseItemWithPath(path, dataModel.refero.form.FormData);
     should.exist(item);
     if (!item) {
       fail();
@@ -297,7 +297,7 @@ describe('get item with path', () => {
         linkId: 'group1.1',
       },
     ];
-    item = getResponseItemWithPath(path, dataModel.skjemautfyller.form.FormData);
+    item = getResponseItemWithPath(path, dataModel.refero.form.FormData);
     should.exist(item);
     if (!item) {
       fail();

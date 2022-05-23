@@ -154,7 +154,7 @@ describe('autosuggest-view', () => {
 
     jest.runAllTimers();
 
-    expect(wrapper.find('.page_skjemautfyller__no-suggestions').length).toBe(1);
+    expect(wrapper.find('.page_refero__no-suggestions').length).toBe(1);
   });
 
   it('skal fjerne spesiell melding dersom listen over valg som lastes er tom ved blur av feltet', () => {
@@ -202,7 +202,7 @@ describe('autosuggest-view', () => {
     //eslint-disable-next-line
     wrapper.find(Autosuggest).props().onBlur!({} as React.FormEvent<HTMLInputElement>, { highlightedSuggestion: null });
 
-    expect(wrapper.find('.page_skjemautfyller__no-suggestions').length).toBe(0);
+    expect(wrapper.find('.page_refero__no-suggestions').length).toBe(0);
   });
 
   it('skal kalle handleChange når bruker velger noe i listen', () => {

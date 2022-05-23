@@ -19,7 +19,7 @@ import {
   hasStringAnswer,
   hasQuantityAnswer,
   hasTimeAnswer,
-} from '../util/skjemautfyller-core';
+} from '../util/refero-core';
 import { createQuestionnaireResponseItem } from './generateQuestionnaireResponse';
 
 interface Dictionary<T> {

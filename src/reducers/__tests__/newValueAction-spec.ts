@@ -3,7 +3,7 @@ import * as uuid from 'uuid';
 import state from './data/newValueAction';
 import { Form } from '../form';
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from '../../types/fhir';
-import { getDefinitionItems, getQuestionnaireDefinitionItem, Path } from '../../util/skjemautfyller-core';
+import { getDefinitionItems, getQuestionnaireDefinitionItem, Path } from '../../util/refero-core';
 import {
   getResponseItem,
   pathify,
@@ -33,7 +33,7 @@ describe('QuestionnaireResponseAnswer shall reflect user input', () => {
   let definitionItems: QuestionnaireItem[];
 
   beforeEach(() => {
-    newState = state.skjemautfyller.form;
+    newState = state.refero.form;
     const dItems = getDefinitionItems(newState.FormDefinition);
     if (!dItems || dItems.length === 0) {
       return fail();

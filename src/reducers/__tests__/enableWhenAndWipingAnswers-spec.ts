@@ -1,7 +1,7 @@
 import dataModel from './__data__/enableWhenAndWipingAnswers';
 import { Form } from '../form';
 import { QuestionnaireItem } from '../../types/fhir';
-import { getQuestionnaireDefinitionItem, getDefinitionItems } from '../../util/skjemautfyller-core';
+import { getQuestionnaireDefinitionItem, getDefinitionItems } from '../../util/refero-core';
 import { getResponseItem, clickCheckbox, enterText, selectChoice, createCoding, pathifyExpand } from './utils';
 
 describe('wipe answers when collapsing enable whens', () => {
@@ -9,7 +9,7 @@ describe('wipe answers when collapsing enable whens', () => {
   let definitionItems: QuestionnaireItem[];
 
   beforeEach(() => {
-    newState = dataModel.skjemautfyller.form;
+    newState = dataModel.refero.form;
     const dItems = getDefinitionItems(newState.FormDefinition);
     if (!dItems || dItems.length === 0) {
       return fail();

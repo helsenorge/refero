@@ -39,7 +39,7 @@ import {
   createPathForItem,
   shouldRenderDeleteButton,
   createIdSuffix,
-} from '../util/skjemautfyller-core';
+} from '../util/refero-core';
 import DeleteButton from './formcomponents/repeat/delete-button';
 import RepeatButton from './formcomponents/repeat/repeat-button';
 import HelpButton from './help-button/help-button';
@@ -143,7 +143,7 @@ export default function withCommonFunctions<T>(WrappedComponent: React.Component
       }
 
       return (
-        <div className="page_skjemautfyller__deletebutton-wrapper">
+        <div className="page_refero__deletebutton-wrapper">
           <DeleteButton
             className={className}
             item={this.props.item}
@@ -167,7 +167,7 @@ export default function withCommonFunctions<T>(WrappedComponent: React.Component
         return undefined;
       }
       return (
-        <div className="page_skjemautfyller__repeatbutton-wrapper">
+        <div className="page_refero__repeatbutton-wrapper">
           <RepeatButton
             key={`item_${item.linkId}_add_repeat_item`}
             resources={this.props.resources}
@@ -232,8 +232,8 @@ export default function withCommonFunctions<T>(WrappedComponent: React.Component
       }
 
       const collapseClasses: string = classNames({
-        page_skjemautfyller__helpComponent: true,
-        'page_skjemautfyller__helpComponent--open': this.state.isHelpVisible,
+        page_refero__helpComponent: true,
+        'page_refero__helpComponent--open': this.state.isHelpVisible,
       });
       return (
         <Collapse isOpened={this.state.isHelpVisible}>

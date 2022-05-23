@@ -23,7 +23,7 @@ import { getOptions, getSystem, getErrorMessage, validateInput, getIndexOfAnswer
 import { isReadOnly } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Resources } from '../../../util/resources';
-import { Path } from '../../../util/skjemautfyller-core';
+import { Path } from '../../../util/refero-core';
 import withCommonFunctions from '../../with-common-functions';
 import AutosuggestView from '../choice-common/autosuggest-view';
 import ReceiverComponentWrapper from '../receiver-component/receiver-component-wrapper';

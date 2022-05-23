@@ -7,7 +7,7 @@ import { mount } from 'enzyme';
 import '../../util/defineFetch';
 import rootReducer from '../../reducers';
 import { Questionnaire } from '../../types/fhir';
-import { SkjemautfyllerContainer } from '..';
+import { ReferoContainer } from '..';
 import { Resources } from '../../util/resources';
 import questionnaireWithEnableWhen from './__data__/enableWhen';
 import { selectCheckBoxOption } from './utils';
@@ -48,7 +48,7 @@ function createWrapper(questionnaire: Questionnaire) {
   const store: any = createStore(rootReducer, applyMiddleware(thunk));
   return mount(
     <Provider store={store}>
-      <SkjemautfyllerContainer
+      <ReferoContainer
         loginButton={<React.Fragment />}
         store={store}
         authorized={true}

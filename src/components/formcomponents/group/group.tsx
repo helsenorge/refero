@@ -17,7 +17,7 @@ import { renderPrefix, getText, getId } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { RenderContext } from '../../../util/renderContext';
 import { Resources } from '../../../util/resources';
-import { Path } from '../../../util/skjemautfyller-core';
+import { Path } from '../../../util/refero-core';
 import withCommonFunctions from '../../with-common-functions';
 
 export interface Props {
@@ -115,14 +115,12 @@ export class Group extends React.Component<Props, State> {
 
         if (childItem) {
           renderedChildItems.push(
-            <td key={counter} className="page_skjemautfyller__grid--cell">
+            <td key={counter} className="page_refero__grid--cell">
               {itemRenderer(childItem, renderContext)}
             </td>
           );
         } else {
-          renderedChildItems.push(
-            <td key={counter} className="page_skjemautfyller__grid--cell page_skjemautfyller__grid--cell-empty">{` `}</td>
-          );
+          renderedChildItems.push(<td key={counter} className="page_refero__grid--cell page_refero__grid--cell-empty">{` `}</td>);
         }
 
         counter++;
@@ -132,8 +130,8 @@ export class Group extends React.Component<Props, State> {
     };
 
     return (
-      <tr key={item.linkId} className="page_skjemautfyller__grid--row">
-        <td className="page_skjemautfyller__grid--cell page_skjemautfyller__grid--cell-first">{this.renderGroupHeader()}</td>
+      <tr key={item.linkId} className="page_refero__grid--row">
+        <td className="page_refero__grid--cell page_refero__grid--cell-first">{this.renderGroupHeader()}</td>
         {this.props.renderChildrenItems(renderContext)}
       </tr>
     );
@@ -149,13 +147,13 @@ export class Group extends React.Component<Props, State> {
     const newRenderContext = new RenderContext(RenderContextType.Grid, item.linkId, columns);
     return (
       <React.Fragment>
-        <table id={getId(this.props.id)} className="page_skjemautfyller__grid">
+        <table id={getId(this.props.id)} className="page_refero__grid">
           <thead>
             <tr>{headers}</tr>
           </thead>
           <tbody>{this.props.renderChildrenItems(newRenderContext)}</tbody>
         </table>
-        {this.props.renderDeleteButton('page_skjemautfyller__deletebutton--margin-top')}
+        {this.props.renderDeleteButton('page_refero__deletebutton--margin-top')}
         {this.props.repeatButton}
       </React.Fragment>
     );
@@ -170,11 +168,11 @@ export class Group extends React.Component<Props, State> {
           {this.props.renderChildrenItems(new RenderContext())}
         </div>
         {this.props.includeSkipLink && this.props.path.length === 1 && (
-          <AnchorLink className="page_skjemautfyller__skiplink" href="#navigator-button">
+          <AnchorLink className="page_refero__skiplink" href="#navigator-button">
             {this.props.resources?.skipLinkText}
           </AnchorLink>
         )}
-        {this.props.renderDeleteButton('page_skjemautfyller__deletebutton--margin-top')}
+        {this.props.renderDeleteButton('page_refero__deletebutton--margin-top')}
         {this.props.repeatButton}
       </section>
     );
@@ -212,10 +210,10 @@ export class Group extends React.Component<Props, State> {
   };
 
   getClassNames = (): string => {
-    const classNames = ['page_skjemautfyller__component', 'page_skjemautfyller__component_group'];
+    const classNames = ['page_refero__component', 'page_refero__component_group'];
     const coding = getGroupItemControl(this.props.item);
     if (coding.length > 0) {
-      classNames.push('page_skjemautfyller__itemControl_' + coding[0].code);
+      classNames.push('page_refero__itemControl_' + coding[0].code);
     }
 
     return classNames.join(' ');
@@ -236,7 +234,7 @@ export class Group extends React.Component<Props, State> {
     const tagName = `h${this.props.headerTag}`;
     return (
       <React.Fragment>
-        <CustomTag tagName={tagName} className={'page_skjemautfyller__heading'}>
+        <CustomTag tagName={tagName} className={'page_refero__heading'}>
           {this.getHeaderText()}
         </CustomTag>
         {this.props.renderHelpButton()}

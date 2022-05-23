@@ -27,7 +27,7 @@ import {
 import { isReadOnly, isRequired, getId, getDecimalPattern, getSublabelText } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Resources } from '../../../util/resources';
-import { Path } from '../../../util/skjemautfyller-core';
+import { Path } from '../../../util/refero-core';
 import withCommonFunctions from '../../with-common-functions';
 import Label from '../label';
 import SubLabel from '../sublabel';
@@ -129,7 +129,7 @@ class Quantity extends React.Component<Props & ValidationProps, {}> {
     const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire);
 
     return (
-      <div className="page_skjemautfyller__component page_skjemautfyller__component_quantity">
+      <div className="page_refero__component page_refero__component_quantity">
         <Validation {...this.props}>
           <SafeInputField
             size="xSmall"
@@ -147,12 +147,12 @@ class Quantity extends React.Component<Props & ValidationProps, {}> {
             onChange={this.handleChange}
             errorMessage={getValidationTextExtension(item)}
             pattern={getDecimalPattern(item)}
-            className="page_skjemautfyller__quantity"
+            className="page_refero__quantity"
             helpButton={this.props.renderHelpButton()}
             helpElement={this.props.renderHelpElement()}
             validateOnExternalUpdate={true}
           >
-            <span className="page_skjemautfyller__unit">{this.getUnit()}</span>
+            <span className="page_refero__unit">{this.getUnit()}</span>
           </SafeInputField>
         </Validation>
         <div>{this.props.repeatButton}</div>

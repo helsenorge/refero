@@ -1,6 +1,6 @@
 {
-  "name": "@helsenorge/skjemautfyller",
-  "version": "10.0.0",
+  "name": "@helsenorge/refero",
+  "version": "10.0.0-beta01",
   "main": "index.js",
   "author": "helsenorge",
   "license": "MIT",
@@ -10,7 +10,7 @@
     "CHANGES",
     "LICENSE"
   ],
-  "repository": "github:helsenorge/skjemautfyller",
+  "repository": "github:helsenorge/refero",
   "scripts": {
     "lint": "eslint 'src/**/*.ts{,x}' --quiet",
     "build:js": "tsc --p config/tsconfig.build.json",

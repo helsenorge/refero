@@ -16,7 +16,7 @@ import { getValidationTextExtension } from '../../../util/extension';
 import { isReadOnly, isRequired, getId } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Resources } from '../../../util/resources';
-import { Path } from '../../../util/skjemautfyller-core';
+import { Path } from '../../../util/refero-core';
 import withCommonFunctions from '../../with-common-functions';
 import Label from '../label';
 import Pdf from './pdf';
@@ -96,13 +96,13 @@ class Boolean extends React.Component<Props & ValidationProps, {}> {
           onChange={(): void => {
             /*kan ikke endres, er alltid disabled*/
           }}
-          className="page_skjemautfyller__input"
+          className="page_refero__input"
         />
       );
     }
     return (
       // Dette er en hack for FHI-skjema. TODO: fjern hack
-      <div className="page_skjemautfyller__component page_skjemautfyller__component_boolean">
+      <div className="page_refero__component page_refero__component_boolean">
         <Validation {...this.props}>
           <CheckBox
             label={this.getLabel()}
@@ -112,14 +112,14 @@ class Boolean extends React.Component<Props & ValidationProps, {}> {
             checked={this.getValue()}
             onChange={this.handleChange}
             disabled={isReadOnly(this.props.item)}
-            className="page_skjemautfyller__input"
+            className="page_refero__input"
             helpButton={this.props.renderHelpButton()}
             helpElement={this.props.renderHelpElement()}
             validateOnExternalUpdate={true}
             isStyleBlue
           />
         </Validation>
-        {this.props.renderDeleteButton('page_skjemautfyller__deletebutton--margin-top')}
+        {this.props.renderDeleteButton('page_refero__deletebutton--margin-top')}
         {this.props.repeatButton}
         {this.props.children ? <div className="nested-fieldset nested-fieldset--full-height">{this.props.children}</div> : null}
       </div>

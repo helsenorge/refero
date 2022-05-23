@@ -16,7 +16,7 @@ import { getRepeatsTextExtension } from '../../../util/extension';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { RenderContext } from '../../../util/renderContext';
 import { Resources } from '../../../util/resources';
-import { Path } from '../../../util/skjemautfyller-core';
+import { Path } from '../../../util/refero-core';
 
 interface Props {
   item: QuestionnaireItem;

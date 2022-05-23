@@ -14,7 +14,7 @@ import {
   Extension,
   QuestionnaireResponseItem,
 } from '../../types/fhir';
-import { Path } from '../../util/skjemautfyller-core';
+import { Path } from '../../util/refero-core';
 import { GlobalState } from '../../reducers/index';
 import { NewValueAction } from '../../actions/newValue';
 

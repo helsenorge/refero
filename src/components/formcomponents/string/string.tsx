@@ -27,7 +27,7 @@ import {
 } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Resources } from '../../../util/resources';
-import { Path } from '../../../util/skjemautfyller-core';
+import { Path } from '../../../util/refero-core';
 import withCommonFunctions from '../../with-common-functions';
 import Label from '../label';
 import SubLabel from '../sublabel';
@@ -103,7 +103,7 @@ export class String extends React.Component<Props & ValidationProps, {}> {
           item={item}
           value={getPDFStringValue(answer, resources)}
           onRenderMarkdown={onRenderMarkdown}
-          textClass="page_skjemautfyller__component_readonlytext"
+          textClass="page_refero__component_readonlytext"
         >
           {this.props.children}
         </TextView>
@@ -112,7 +112,7 @@ export class String extends React.Component<Props & ValidationProps, {}> {
     const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire);
 
     return (
-      <div className="page_skjemautfyller__component page_skjemautfyller__component_string">
+      <div className="page_refero__component page_refero__component_string">
         <Validation {...this.props}>
           <SafeInputField
             type="text"
@@ -134,14 +134,14 @@ export class String extends React.Component<Props & ValidationProps, {}> {
             pattern={getRegexExtension(item)}
             errorMessage={this.getValidationErrorMessage}
             requiredErrorMessage={this.getRequiredErrorMessage(item)}
-            className="page_skjemautfyller__input"
+            className="page_refero__input"
             helpButton={this.props.renderHelpButton()}
             helpElement={this.props.renderHelpElement()}
             validateOnExternalUpdate={true}
             stringOverMaxLengthError={resources?.stringOverMaxLengthError}
           />
         </Validation>
-        {this.props.renderDeleteButton('page_skjemautfyller__deletebutton--margin-top')}
+        {this.props.renderDeleteButton('page_refero__deletebutton--margin-top')}
         {this.props.repeatButton}
         {this.props.children ? <div className="nested-fieldset nested-fieldset--full-height">{this.props.children}</div> : null}
       </div>

@@ -24,7 +24,7 @@ const Display: React.SFC<Props> = ({ id, enable, pdf, item, questionnaire, onRen
   const itemControls = item ? getItemControlExtensionValue(item) : null;
   const highlightClass =
     itemControls && itemControls.some(itemControl => itemControl.code === itemControlConstants.HIGHLIGHT)
-      ? 'page_skjemautfyller__component_highlight'
+      ? 'page_refero__component_highlight'
       : '';
 
   if (!enable) {
@@ -37,7 +37,7 @@ const Display: React.SFC<Props> = ({ id, enable, pdf, item, questionnaire, onRen
       value = (
         <div
           id={getId(id)}
-          className={`page_skjemautfyller__markdown ${designsystemtypography['anchorlink-wrapper']}`}
+          className={`page_refero__markdown ${designsystemtypography['anchorlink-wrapper']}`}
           dangerouslySetInnerHTML={{
             __html: getText(item, onRenderMarkdown, questionnaire),
           }}
@@ -54,7 +54,7 @@ const Display: React.SFC<Props> = ({ id, enable, pdf, item, questionnaire, onRen
     return <div>{value}</div>;
   }
 
-  return <div className={`page_skjemautfyller__component page_skjemautfyller__component_display ${highlightClass}`}>{value}</div>;
+  return <div className={`page_refero__component page_refero__component_display ${highlightClass}`}>{value}</div>;
 };
 
 const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(Display);

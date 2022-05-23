@@ -9,7 +9,7 @@ import { Questionnaire, Extension } from '../../types/fhir';
 import rootReducer from '../../reducers';
 import { createStore, applyMiddleware } from 'redux';
 import { Resources } from '../../util/resources';
-import { SkjemautfyllerContainer } from '..';
+import { ReferoContainer } from '..';
 import ExtensionConstants from '../../constants/extensions';
 import { PresentationButtonsType } from '../../constants/presentationButtonsType';
 
@@ -26,7 +26,7 @@ describe('component respects sdf-presentationbuttons', () => {
     const wrapper = createWrapper(model, true);
     wrapper.render();
 
-    expect(wrapper.find('.page_skjemautfyller__content').props().className).toEqual(expect.stringContaining('sticky'));
+    expect(wrapper.find('.page_refero__content').props().className).toEqual(expect.stringContaining('sticky'));
   });
 
   it('questionnaire without presentationbuttons default to non-sticky, when sticky is set to false', () => {
@@ -35,7 +35,7 @@ describe('component respects sdf-presentationbuttons', () => {
     const wrapper = createWrapper(model, false);
     wrapper.render();
 
-    expect(wrapper.find('.page_skjemautfyller__content').props().className).not.toEqual(expect.stringContaining('sticky'));
+    expect(wrapper.find('.page_refero__content').props().className).not.toEqual(expect.stringContaining('sticky'));
   });
 
   it('questionnaire without presentationbuttons default to non-sticky, when sticky is not set', () => {
@@ -44,7 +44,7 @@ describe('component respects sdf-presentationbuttons', () => {
     const wrapper = createWrapper(model);
     wrapper.render();
 
-    expect(wrapper.find('.page_skjemautfyller__content').props().className).not.toEqual(expect.stringContaining('sticky'));
+    expect(wrapper.find('.page_refero__content').props().className).not.toEqual(expect.stringContaining('sticky'));
   });
 
   it('questionnaire with presentationbuttons = none, should be none even when sticky is true', () => {
@@ -54,7 +54,7 @@ describe('component respects sdf-presentationbuttons', () => {
     const wrapper = createWrapper(model, true);
     wrapper.render();
 
-    expect(wrapper.find('.page_skjemautfyller__content').props().className).toEqual(expect.stringContaining('hidden_buttons'));
+    expect(wrapper.find('.page_refero__content').props().className).toEqual(expect.stringContaining('hidden_buttons'));
   });
 
   it('questionnaire with presentationbuttons = none, should be none even when sticky is false', () => {
@@ -64,8 +64,8 @@ describe('component respects sdf-presentationbuttons', () => {
     const wrapper = createWrapper(model, false);
     wrapper.render();
 
-    expect(wrapper.find('.page_skjemautfyller__content').props().className).toEqual(expect.stringContaining('hidden_buttons'));
-    expect(wrapper.find('.page_skjemautfyller__content').props().className).not.toEqual(expect.stringContaining('sticky'));
+    expect(wrapper.find('.page_refero__content').props().className).toEqual(expect.stringContaining('hidden_buttons'));
+    expect(wrapper.find('.page_refero__content').props().className).not.toEqual(expect.stringContaining('sticky'));
   });
 
   it('questionnaire with presentationbuttons = none, should be none even when sticky is not set', () => {
@@ -75,8 +75,8 @@ describe('component respects sdf-presentationbuttons', () => {
     const wrapper = createWrapper(model);
     wrapper.render();
 
-    expect(wrapper.find('.page_skjemautfyller__content').props().className).toEqual(expect.stringContaining('hidden_buttons'));
-    expect(wrapper.find('.page_skjemautfyller__content').props().className).not.toEqual(expect.stringContaining('sticky'));
+    expect(wrapper.find('.page_refero__content').props().className).toEqual(expect.stringContaining('hidden_buttons'));
+    expect(wrapper.find('.page_refero__content').props().className).not.toEqual(expect.stringContaining('sticky'));
   });
 
   it('questionnaire with presentationbuttons = static, should be static even when sticky is true', () => {
@@ -86,7 +86,7 @@ describe('component respects sdf-presentationbuttons', () => {
     const wrapper = createWrapper(model, true);
     wrapper.render();
 
-    expect(wrapper.find('.page_skjemautfyller__content').props().className).not.toEqual(expect.stringContaining('sticky'));
+    expect(wrapper.find('.page_refero__content').props().className).not.toEqual(expect.stringContaining('sticky'));
   });
 
   it('questionnaire with presentationbuttons = static, should be static even when sticky is false', () => {
@@ -96,7 +96,7 @@ describe('component respects sdf-presentationbuttons', () => {
     const wrapper = createWrapper(model, false);
     wrapper.render();
 
-    expect(wrapper.find('.page_skjemautfyller__content').props().className).not.toEqual(expect.stringContaining('sticky'));
+    expect(wrapper.find('.page_refero__content').props().className).not.toEqual(expect.stringContaining('sticky'));
   });
 
   it('questionnaire with presentationbuttons = static, should be static even when sticky is not set', () => {
@@ -106,7 +106,7 @@ describe('component respects sdf-presentationbuttons', () => {
     const wrapper = createWrapper(model);
     wrapper.render();
 
-    expect(wrapper.find('.page_skjemautfyller__content').props().className).not.toEqual(expect.stringContaining('sticky'));
+    expect(wrapper.find('.page_refero__content').props().className).not.toEqual(expect.stringContaining('sticky'));
   });
 
   it('questionnaire with presentationbuttons = sticky, should be sticky even when sticky is true', () => {
@@ -116,7 +116,7 @@ describe('component respects sdf-presentationbuttons', () => {
     const wrapper = createWrapper(model, true);
     wrapper.render();
 
-    expect(wrapper.find('.page_skjemautfyller__content').props().className).toEqual(expect.stringContaining('sticky'));
+    expect(wrapper.find('.page_refero__content').props().className).toEqual(expect.stringContaining('sticky'));
   });
 
   it('questionnaire with presentationbuttons = sticky, should be sticky even when sticky is false', () => {
@@ -126,7 +126,7 @@ describe('component respects sdf-presentationbuttons', () => {
     const wrapper = createWrapper(model, false);
     wrapper.render();
 
-    expect(wrapper.find('.page_skjemautfyller__content').props().className).toEqual(expect.stringContaining('sticky'));
+    expect(wrapper.find('.page_refero__content').props().className).toEqual(expect.stringContaining('sticky'));
   });
 
   it('questionnaire with presentationbuttons = sticky, should be sticky even when sticky is not set', () => {
@@ -136,7 +136,7 @@ describe('component respects sdf-presentationbuttons', () => {
     const wrapper = createWrapper(model);
     wrapper.render();
 
-    expect(wrapper.find('.page_skjemautfyller__content').props().className).toEqual(expect.stringContaining('sticky'));
+    expect(wrapper.find('.page_refero__content').props().className).toEqual(expect.stringContaining('sticky'));
   });
 });
 
@@ -165,7 +165,7 @@ function createWrapper(questionnaire: Questionnaire, sticky?: boolean) {
   const store: any = createStore(rootReducer, applyMiddleware(thunk));
   return mount(
     <Provider store={store}>
-      <SkjemautfyllerContainer
+      <ReferoContainer
         loginButton={<React.Fragment />}
         store={store}
         authorized={true}

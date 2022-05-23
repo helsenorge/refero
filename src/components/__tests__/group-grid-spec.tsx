@@ -8,7 +8,7 @@ import '../../util/defineFetch';
 import rootReducer from '../../reducers';
 import { Questionnaire } from '../../types/fhir';
 import Decimal from '../formcomponents/decimal/decimal';
-import { SkjemautfyllerContainer } from '..';
+import { ReferoContainer } from '..';
 import { Resources } from '../../util/resources';
 import GroupGridModel from './__data__/group-grid';
 
@@ -27,7 +27,7 @@ describe('Group-grid component renders correctly', () => {
     expect(wrapper.find('th')).toHaveLength(5);
     expect(wrapper.find('th').map(it => it.text())).toEqual(['X', 'SpmA', 'SpmB', 'SpmC', 'SpmD']);
 
-    const rows = wrapper.find('.page_skjemautfyller__grid--row');
+    const rows = wrapper.find('.page_refero__grid--row');
     expect(rows).toHaveLength(4);
 
     let expectedItemsPerRow = [['1.1.1', '1.1.2', '1.1.3'], ['1.2.2', '1.2.3', '1.2.1'], ['1.3.1'], ['1.4.1']];
@@ -51,7 +51,7 @@ function createWrapper(questionnaire: Questionnaire) {
   const store: any = createStore(rootReducer, applyMiddleware(thunk));
   return mount(
     <Provider store={store}>
-      <SkjemautfyllerContainer
+      <ReferoContainer
         loginButton={<React.Fragment />}
         store={store}
         authorized={true}

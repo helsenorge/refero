@@ -224,8 +224,8 @@ class ReceiverComponent extends React.Component<ReceiverComponentProps, Receiver
         selected={this.state.selectedPath[level] ? this.state.selectedPath[level].toString() : ''}
         value={this.state.selectedPath[level] ? this.state.selectedPath[level].toString() : ''}
         placeholder={new Option(this.props.resources?.selectDefaultPlaceholder, '')}
-        wrapperClasses="page_skjemautfyller__receiverselect"
-        className="page_skjemautfyller__input"
+        wrapperClasses="page_refero__receiverselect"
+        className="page_refero__input"
       />
     );
   }
@@ -265,7 +265,7 @@ class ReceiverComponent extends React.Component<ReceiverComponentProps, Receiver
       <div className={wrapperClasses} id={getId(this.props.id)}>
         {this.renderErrorMessage()}
         <h2>{this.props.resources?.adresseKomponent_header}</h2>
-        <div className="page_skjemautfyller__sublabel">{this.props.resources?.adresseKomponent_sublabel}</div>
+        <div className="page_refero__sublabel">{this.props.resources?.adresseKomponent_sublabel}</div>
 
         {this.state.isLoading && (
           <div>

@@ -3,15 +3,15 @@ import { combineReducers, Reducer } from 'redux';
 import form, { Form } from '../reducers/form';
 
 export interface GlobalState {
-  skjemautfyller: SkjemautfyllerState;
+  refero: ReferoState;
 }
 
-export interface SkjemautfyllerState {
+export interface ReferoState {
   form: Form;
 }
-// Benyttes kun for tester eller hvis skjemautfyller kjøres utenfor helsenorge
+// Benyttes kun for tester eller hvis Refero kjøres utenfor helsenorge
 const rootReducer: Reducer<{}> = combineReducers({
-  skjemautfyller: combineReducers({ form }),
+  refero: combineReducers({ form }),
 });
 
 export default rootReducer;

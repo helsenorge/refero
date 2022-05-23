@@ -4,21 +4,21 @@ import { ThunkDispatch } from 'redux-thunk';
 import { Coding, QuestionnaireItem, Attachment, QuestionnaireResponseItem, Quantity } from '../types/fhir';
 
 import { GlobalState } from '../reducers';
-import { Path } from '../util/skjemautfyller-core';
+import { Path } from '../util/refero-core';
 
-export type NEW_VALUE = 'skjemautfyller/NEW_VALUE';
-export const NEW_VALUE: NEW_VALUE = 'skjemautfyller/NEW_VALUE';
-export type NEW_CODINGSTRING_VALUE = 'skjemautfyller/NEW_CODINGSTRING_VALUE';
-export const NEW_CODINGSTRING_VALUE: NEW_CODINGSTRING_VALUE = 'skjemautfyller/NEW_CODINGSTRING_VALUE';
-export type REMOVE_CODINGSTRING_VALUE = 'skjemautfyller/REMOVE_CODINGSTRING_VALUE';
-export const REMOVE_CODINGSTRING_VALUE: REMOVE_CODINGSTRING_VALUE = 'skjemautfyller/REMOVE_CODINGSTRING_VALUE';
-export const REMOVE_CODING_VALUE = 'skjemautfyller/REMOVE_CODING_VALUE';
-export type ADD_REPEAT_ITEM = 'skjemautfyller/ADD_REPEAT_ITEM';
-export const ADD_REPEAT_ITEM: ADD_REPEAT_ITEM = 'skjemautfyller/ADD_REPEAT_ITEM';
-export type DELETE_REPEAT_ITEM = 'skjemautfyller/DELETE_REPEAT_ITEM';
-export const DELETE_REPEAT_ITEM: DELETE_REPEAT_ITEM = 'skjemautfyller/DELETE_REPEAT_ITEM';
-export type REMOVE_ATTACHMENT_VALUE = 'skjemautfyller/REMOVE_ATTACHMENT_VALUE';
-export const REMOVE_ATTACHMENT_VALUE: REMOVE_ATTACHMENT_VALUE = 'skjemautfyller/REMOVE_ATTACHMENT_VALUE';
+export type NEW_VALUE = 'refero/NEW_VALUE';
+export const NEW_VALUE: NEW_VALUE = 'refero/NEW_VALUE';
+export type NEW_CODINGSTRING_VALUE = 'refero/NEW_CODINGSTRING_VALUE';
+export const NEW_CODINGSTRING_VALUE: NEW_CODINGSTRING_VALUE = 'refero/NEW_CODINGSTRING_VALUE';
+export type REMOVE_CODINGSTRING_VALUE = 'refero/REMOVE_CODINGSTRING_VALUE';
+export const REMOVE_CODINGSTRING_VALUE: REMOVE_CODINGSTRING_VALUE = 'refero/REMOVE_CODINGSTRING_VALUE';
+export const REMOVE_CODING_VALUE = 'refero/REMOVE_CODING_VALUE';
+export type ADD_REPEAT_ITEM = 'refero/ADD_REPEAT_ITEM';
+export const ADD_REPEAT_ITEM: ADD_REPEAT_ITEM = 'refero/ADD_REPEAT_ITEM';
+export type DELETE_REPEAT_ITEM = 'refero/DELETE_REPEAT_ITEM';
+export const DELETE_REPEAT_ITEM: DELETE_REPEAT_ITEM = 'refero/DELETE_REPEAT_ITEM';
+export type REMOVE_ATTACHMENT_VALUE = 'refero/REMOVE_ATTACHMENT_VALUE';
+export const REMOVE_ATTACHMENT_VALUE: REMOVE_ATTACHMENT_VALUE = 'refero/REMOVE_ATTACHMENT_VALUE';
 
 export interface NewValueAction extends Action {
   itemPath?: Array<Path>;

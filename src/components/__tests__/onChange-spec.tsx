@@ -11,7 +11,7 @@ import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer, Quan
 import DateTimePicker from '@helsenorge/date-time/components/date-time-picker';
 
 import '../../util/defineFetch';
-import { SkjemautfyllerContainer } from '..';
+import { ReferoContainer } from '..';
 import Constants, { OPEN_CHOICE_ID } from '../../constants/index';
 import rootReducer from '../../reducers';
 import { IActionRequester } from '../../util/actionRequester';
@@ -551,7 +551,7 @@ function createWrapper(
   const store: any = createStore(rootReducer, applyMiddleware(thunk));
   return mount(
     <Provider store={store}>
-      <SkjemautfyllerContainer
+      <ReferoContainer
         loginButton={<React.Fragment />}
         store={store}
         authorized={true}

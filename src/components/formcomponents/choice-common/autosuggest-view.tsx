@@ -239,7 +239,7 @@ class AutosuggestView extends React.Component<AutosuggestProps, AutosuggestState
     const subLabelText = getSublabelText(this.props.item, this.props.onRenderMarkdown, this.props.questionnaire);
 
     return (
-      <div className="page_skjemautfyller__component page_skjemautfyller__component_choice page_skjemautfyller__component_choice_autosuggest">
+      <div className="page_refero__component page_refero__component_choice page_refero__component_choice_autosuggest">
         <Collapse isOpened>
           <Validation {...this.props}>
             <Autosuggest
@@ -248,7 +248,7 @@ class AutosuggestView extends React.Component<AutosuggestProps, AutosuggestState
                 <Label item={this.props.item} onRenderMarkdown={this.props.onRenderMarkdown} questionnaire={this.props.questionnaire} />
               }
               subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
-              className="page_skjemautfyller__autosuggest"
+              className="page_refero__autosuggest"
               type="search"
               isRequired={isRequired(this.props.item)}
               placeholder={getPlaceholder(this.props.item)}
@@ -275,12 +275,12 @@ class AutosuggestView extends React.Component<AutosuggestProps, AutosuggestState
             </div>
           )}
           {this.state.noSuggestionsToShow && (
-            <div className="page_skjemautfyller__no-suggestions">
+            <div className="page_refero__no-suggestions">
               {this.props.resources?.autosuggestNoSuggestions?.replace('{0}', this.state.inputValue)}
             </div>
           )}
           {this.state.hasLoadError && <NotificationPanel variant="alert">{this.props.resources?.autoSuggestLoadError}</NotificationPanel>}
-          {this.props.renderDeleteButton('page_skjemautfyller__deletebutton--margin-top')}
+          {this.props.renderDeleteButton('page_refero__deletebutton--margin-top')}
           {this.props.repeatButton}
           {this.props.children ? <div className="nested-fieldset nested-fieldset--full-height">{this.props.children}</div> : null}
         </Collapse>

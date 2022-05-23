@@ -70,7 +70,7 @@ const attachmentHtml: React.SFC<Props & ValidationProps> = ({
   const deleteText = resources ? resources.deleteAttachmentText : undefined;
 
   return (
-    <div className="page_skjemautfyller__component page_skjemautfyller__component_attachment">
+    <div className="page_refero__component page_refero__component_attachment">
       <Validation {...other}>
         <Dropzone
           id={id}
@@ -90,7 +90,7 @@ const attachmentHtml: React.SFC<Props & ValidationProps> = ({
             return getErrorMessage(validFileTypes, maxFilesize, item, errorText, file, resources);
           }}
           isRequired={isRequired}
-          wrapperClasses="page_skjemautfyller__input"
+          wrapperClasses="page_refero__input"
           onRequestLink={onRequestAttachmentLink}
           helpButton={helpButton}
           helpElement={helpElement}

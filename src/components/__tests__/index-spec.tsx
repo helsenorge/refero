@@ -16,7 +16,7 @@ import itemControlConstants from '../../constants/itemcontrol';
 import rootReducer from '../../reducers';
 import { Resources } from '../../util/resources';
 import HelpButton from '../help-button/help-button';
-import { SkjemautfyllerContainer } from '../index';
+import { ReferoContainer } from '../index';
 
 describe('Component renders help items', () => {
   beforeEach(() => {
@@ -111,7 +111,7 @@ function createWrapper(
   const store: any = createStore(rootReducer, applyMiddleware(thunk));
   return mount(
     <Provider store={store}>
-      <SkjemautfyllerContainer
+      <ReferoContainer
         loginButton={<React.Fragment />}
         store={store}
         authorized={true}

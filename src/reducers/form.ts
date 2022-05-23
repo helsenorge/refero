@@ -41,7 +41,7 @@ import {
   getArrayContainingResponseItemFromItems,
   Path,
   getResponseItemAndPathWithLinkId,
-} from '../util/skjemautfyller-core';
+} from '../util/refero-core';
 
 enableES5();
 
@@ -105,10 +105,10 @@ export default function reducer(state: Form = initialState, action: NewValueActi
 }
 
 export function getFormData(state: GlobalState): FormData | null {
-  if (!state.skjemautfyller.form.FormData) {
+  if (!state.refero.form.FormData) {
     return null;
   }
-  return state.skjemautfyller.form.FormData;
+  return state.refero.form.FormData;
 }
 
 function getArrayToAddGroupTo(itemToAddTo: QuestionnaireResponseItem | undefined): Array<QuestionnaireResponseItem> | undefined {
@@ -649,10 +649,10 @@ function removeAddedRepeatingItems(
 }
 
 export function getFormDefinition(state: GlobalState): FormDefinition | null {
-  if (!state.skjemautfyller.form.FormDefinition) {
+  if (!state.refero.form.FormDefinition) {
     return null;
   }
-  return state.skjemautfyller.form.FormDefinition;
+  return state.refero.form.FormDefinition;
 }
 
 function wipeAnswerItems(answerItem: QuestionnaireResponseItem | undefined, item: QuestionnaireItem | undefined): undefined {

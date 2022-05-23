@@ -3,7 +3,7 @@ import * as chai from 'chai';
 import '../../util/defineFetch';
 import { Props } from '../../components/with-common-functions';
 import { mapStateToProps, mapDispatchToProps } from '../map-props';
-import { getQuestionnaireDefinitionItem } from '../skjemautfyller-core';
+import { getQuestionnaireDefinitionItem } from '../refero-core';
 import { pathify } from '../../reducers/__tests__/utils';
 import { dataModel } from './__data__/testDataModel';
 import { RenderContext } from '../renderContext';
@@ -23,14 +23,14 @@ describe('mapStateToProps', () => {
   it('should enable component when correct string answer', () => {
     if (
       !dataModel ||
-      !dataModel.skjemautfyller ||
-      !dataModel.skjemautfyller.form.FormDefinition ||
-      !dataModel.skjemautfyller.form.FormDefinition.Content ||
-      !dataModel.skjemautfyller.form.FormDefinition.Content.item
+      !dataModel.refero ||
+      !dataModel.refero.form.FormDefinition ||
+      !dataModel.refero.form.FormDefinition.Content ||
+      !dataModel.refero.form.FormDefinition.Content.item
     ) {
       return;
     }
-    const item = dataModel.skjemautfyller.form.FormDefinition.Content.item[1];
+    const item = dataModel.refero.form.FormDefinition.Content.item[1];
     const result = mapStateToProps(dataModel, {
       item,
       path: pathify(item.linkId),
@@ -44,14 +44,14 @@ describe('mapStateToProps', () => {
   it('should not enable component when incorrect answer', () => {
     if (
       !dataModel ||
-      !dataModel.skjemautfyller ||
-      !dataModel.skjemautfyller.form.FormDefinition ||
-      !dataModel.skjemautfyller.form.FormDefinition.Content ||
-      !dataModel.skjemautfyller.form.FormDefinition.Content.item
+      !dataModel.refero ||
+      !dataModel.refero.form.FormDefinition ||
+      !dataModel.refero.form.FormDefinition.Content ||
+      !dataModel.refero.form.FormDefinition.Content.item
     ) {
       return;
     }
-    const item = dataModel.skjemautfyller.form.FormDefinition.Content.item[2];
+    const item = dataModel.refero.form.FormDefinition.Content.item[2];
     const result = mapStateToProps(dataModel, {
       item,
       path: pathify(item.linkId),
@@ -64,14 +64,14 @@ describe('mapStateToProps', () => {
   it('should enable component when correct boolean answer', () => {
     if (
       !dataModel ||
-      !dataModel.skjemautfyller ||
-      !dataModel.skjemautfyller.form.FormDefinition ||
-      !dataModel.skjemautfyller.form.FormDefinition.Content ||
-      !dataModel.skjemautfyller.form.FormDefinition.Content.item
+      !dataModel.refero ||
+      !dataModel.refero.form.FormDefinition ||
+      !dataModel.refero.form.FormDefinition.Content ||
+      !dataModel.refero.form.FormDefinition.Content.item
     ) {
       return;
     }
-    const item = dataModel.skjemautfyller.form.FormDefinition.Content.item[4];
+    const item = dataModel.refero.form.FormDefinition.Content.item[4];
     const result = mapStateToProps(dataModel, {
       item,
       path: pathify(item.linkId),
@@ -85,14 +85,14 @@ describe('mapStateToProps', () => {
   it('should enable component when correct decimal answer', () => {
     if (
       !dataModel ||
-      !dataModel.skjemautfyller ||
-      !dataModel.skjemautfyller.form.FormDefinition ||
-      !dataModel.skjemautfyller.form.FormDefinition.Content ||
-      !dataModel.skjemautfyller.form.FormDefinition.Content.item
+      !dataModel.refero ||
+      !dataModel.refero.form.FormDefinition ||
+      !dataModel.refero.form.FormDefinition.Content ||
+      !dataModel.refero.form.FormDefinition.Content.item
     ) {
       return;
     }
-    const item = dataModel.skjemautfyller.form.FormDefinition.Content.item[6];
+    const item = dataModel.refero.form.FormDefinition.Content.item[6];
     const result = mapStateToProps(dataModel, {
       item,
       path: pathify(item.linkId),
@@ -105,14 +105,14 @@ describe('mapStateToProps', () => {
   it('should not enable component when wrong integer answer', () => {
     if (
       !dataModel ||
-      !dataModel.skjemautfyller ||
-      !dataModel.skjemautfyller.form.FormDefinition ||
-      !dataModel.skjemautfyller.form.FormDefinition.Content ||
-      !dataModel.skjemautfyller.form.FormDefinition.Content.item
+      !dataModel.refero ||
+      !dataModel.refero.form.FormDefinition ||
+      !dataModel.refero.form.FormDefinition.Content ||
+      !dataModel.refero.form.FormDefinition.Content.item
     ) {
       return;
     }
-    const item = dataModel.skjemautfyller.form.FormDefinition.Content.item[8];
+    const item = dataModel.refero.form.FormDefinition.Content.item[8];
     const result = mapStateToProps(dataModel, {
       item,
       path: pathify(item.linkId),
@@ -125,14 +125,14 @@ describe('mapStateToProps', () => {
   it('should enable component when correct date answer', () => {
     if (
       !dataModel ||
-      !dataModel.skjemautfyller ||
-      !dataModel.skjemautfyller.form.FormDefinition ||
-      !dataModel.skjemautfyller.form.FormDefinition.Content ||
-      !dataModel.skjemautfyller.form.FormDefinition.Content.item
+      !dataModel.refero ||
+      !dataModel.refero.form.FormDefinition ||
+      !dataModel.refero.form.FormDefinition.Content ||
+      !dataModel.refero.form.FormDefinition.Content.item
     ) {
       return;
     }
-    const item = dataModel.skjemautfyller.form.FormDefinition.Content.item[10];
+    const item = dataModel.refero.form.FormDefinition.Content.item[10];
     const result = mapStateToProps(dataModel, {
       item,
       path: pathify(item.linkId),
@@ -145,14 +145,14 @@ describe('mapStateToProps', () => {
   it('should enable component when correct datetime answer', () => {
     if (
       !dataModel ||
-      !dataModel.skjemautfyller ||
-      !dataModel.skjemautfyller.form.FormDefinition ||
-      !dataModel.skjemautfyller.form.FormDefinition.Content ||
-      !dataModel.skjemautfyller.form.FormDefinition.Content.item
+      !dataModel.refero ||
+      !dataModel.refero.form.FormDefinition ||
+      !dataModel.refero.form.FormDefinition.Content ||
+      !dataModel.refero.form.FormDefinition.Content.item
     ) {
       return;
     }
-    const item = dataModel.skjemautfyller.form.FormDefinition.Content.item[12];
+    const item = dataModel.refero.form.FormDefinition.Content.item[12];
     const result = mapStateToProps(dataModel, {
       item,
       path: pathify(item.linkId),
@@ -166,14 +166,14 @@ describe('mapStateToProps', () => {
   it('should enable component when correct time answer', () => {
     if (
       !dataModel ||
-      !dataModel.skjemautfyller ||
-      !dataModel.skjemautfyller.form.FormDefinition ||
-      !dataModel.skjemautfyller.form.FormDefinition.Content ||
-      !dataModel.skjemautfyller.form.FormDefinition.Content.item
+      !dataModel.refero ||
+      !dataModel.refero.form.FormDefinition ||
+      !dataModel.refero.form.FormDefinition.Content ||
+      !dataModel.refero.form.FormDefinition.Content.item
     ) {
       return;
     }
-    const item = dataModel.skjemautfyller.form.FormDefinition.Content.item[14];
+    const item = dataModel.refero.form.FormDefinition.Content.item[14];
     const result = mapStateToProps(dataModel, {
       item,
       path: pathify(item.linkId),
@@ -186,14 +186,14 @@ describe('mapStateToProps', () => {
   it('should enable component when correct code answer', () => {
     if (
       !dataModel ||
-      !dataModel.skjemautfyller ||
-      !dataModel.skjemautfyller.form.FormDefinition ||
-      !dataModel.skjemautfyller.form.FormDefinition.Content ||
-      !dataModel.skjemautfyller.form.FormDefinition.Content.item
+      !dataModel.refero ||
+      !dataModel.refero.form.FormDefinition ||
+      !dataModel.refero.form.FormDefinition.Content ||
+      !dataModel.refero.form.FormDefinition.Content.item
     ) {
       return;
     }
-    const item = dataModel.skjemautfyller.form.FormDefinition.Content.item[16];
+    const item = dataModel.refero.form.FormDefinition.Content.item[16];
     const result = mapStateToProps(dataModel, {
       item,
       path: pathify(item.linkId),
@@ -207,14 +207,14 @@ describe('mapStateToProps', () => {
   it('should enable component when correct quantity answer', () => {
     if (
       !dataModel ||
-      !dataModel.skjemautfyller ||
-      !dataModel.skjemautfyller.form.FormDefinition ||
-      !dataModel.skjemautfyller.form.FormDefinition.Content ||
-      !dataModel.skjemautfyller.form.FormDefinition.Content.item
+      !dataModel.refero ||
+      !dataModel.refero.form.FormDefinition ||
+      !dataModel.refero.form.FormDefinition.Content ||
+      !dataModel.refero.form.FormDefinition.Content.item
     ) {
       return;
     }
-    const item = dataModel.skjemautfyller.form.FormDefinition.Content.item[26];
+    const item = dataModel.refero.form.FormDefinition.Content.item[26];
     const result = mapStateToProps(dataModel, {
       item,
       path: pathify(item.linkId),
@@ -228,15 +228,15 @@ describe('mapStateToProps', () => {
   it('should enable reference-component if has correct answer', () => {
     if (
       !dataModel ||
-      !dataModel.skjemautfyller ||
-      !dataModel.skjemautfyller.form.FormDefinition ||
-      !dataModel.skjemautfyller.form.FormDefinition.Content ||
-      !dataModel.skjemautfyller.form.FormDefinition.Content.item
+      !dataModel.refero ||
+      !dataModel.refero.form.FormDefinition ||
+      !dataModel.refero.form.FormDefinition.Content ||
+      !dataModel.refero.form.FormDefinition.Content.item
     ) {
       return;
     }
 
-    const item = dataModel.skjemautfyller.form.FormDefinition.Content.item[20];
+    const item = dataModel.refero.form.FormDefinition.Content.item[20];
     const result = mapStateToProps(dataModel, {
       item,
       path: pathify(item.linkId),
@@ -250,15 +250,15 @@ describe('mapStateToProps', () => {
   it('should not enable reference-component if has incorrect answer', () => {
     if (
       !dataModel ||
-      !dataModel.skjemautfyller ||
-      !dataModel.skjemautfyller.form.FormDefinition ||
-      !dataModel.skjemautfyller.form.FormDefinition.Content ||
-      !dataModel.skjemautfyller.form.FormDefinition.Content.item
+      !dataModel.refero ||
+      !dataModel.refero.form.FormDefinition ||
+      !dataModel.refero.form.FormDefinition.Content ||
+      !dataModel.refero.form.FormDefinition.Content.item
     ) {
       return;
     }
 
-    const item = dataModel.skjemautfyller.form.FormDefinition.Content.item[22];
+    const item = dataModel.refero.form.FormDefinition.Content.item[22];
     const result = mapStateToProps(dataModel, {
       item,
       path: pathify(item.linkId),
@@ -272,14 +272,14 @@ describe('mapStateToProps', () => {
   it('should not enable component if has no answer', () => {
     if (
       !dataModel ||
-      !dataModel.skjemautfyller ||
-      !dataModel.skjemautfyller.form.FormDefinition ||
-      !dataModel.skjemautfyller.form.FormDefinition.Content ||
-      !dataModel.skjemautfyller.form.FormDefinition.Content.item
+      !dataModel.refero ||
+      !dataModel.refero.form.FormDefinition ||
+      !dataModel.refero.form.FormDefinition.Content ||
+      !dataModel.refero.form.FormDefinition.Content.item
     ) {
       return;
     }
-    const item = getQuestionnaireDefinitionItem('group1.2.2', dataModel.skjemautfyller.form.FormDefinition.Content.item);
+    const item = getQuestionnaireDefinitionItem('group1.2.2', dataModel.refero.form.FormDefinition.Content.item);
     should.exist(item);
     const result = mapStateToProps(dataModel, {
       item,
@@ -293,14 +293,14 @@ describe('mapStateToProps', () => {
   it('should not enable component if has answer', () => {
     if (
       !dataModel ||
-      !dataModel.skjemautfyller ||
-      !dataModel.skjemautfyller.form.FormDefinition ||
-      !dataModel.skjemautfyller.form.FormDefinition.Content ||
-      !dataModel.skjemautfyller.form.FormDefinition.Content.item
+      !dataModel.refero ||
+      !dataModel.refero.form.FormDefinition ||
+      !dataModel.refero.form.FormDefinition.Content ||
+      !dataModel.refero.form.FormDefinition.Content.item
     ) {
       return;
     }
-    const item = dataModel.skjemautfyller.form.FormDefinition.Content.item[18];
+    const item = dataModel.refero.form.FormDefinition.Content.item[18];
 
     const result = mapStateToProps(dataModel, {
       item,

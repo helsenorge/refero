@@ -1,11 +1,15 @@
-# @helsenorge/skjemautfyller
+# @helsenorge/refero
 
 React component that consumes a [FHIR Questionnaire](https://www.hl7.org/fhir/questionnaire.html) object and renders it as a form.
 
 ## Dependencies
 
-- @helsenorge/toolkit
-- @helsenorge/core-utils
+- [@helsenorge/core-utils](https://www.npmjs.com/package/@helsenorge/core-utils)
+- [@helsenorge/file-upload](https://www.npmjs.com/package/@helsenorge/file-upload)
+- [@helsenorge/form](https://www.npmjs.com/package/@helsenorge/form)
+- [@helsenorge/date-time](https://www.npmjs.com/package/@helsenorge/date-time)
+- [@helsenorge/autosuggest](https://www.npmjs.com/package/@helsenorge/autosuggest)
+- [@helsenorge/designsystem-react](https://www.npmjs.com/package/@helsenorge/designsystem-react)
 - [marked](https://www.npmjs.com/package/marked)
 - [moment](https://www.npmjs.com/package/moment)
 - [uuid](https://www.npmjs.com/package/uuid)
@@ -19,8 +23,8 @@ import React from 'react';
 import { Store, createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
-import rootReducer from '@helsenorge/skjemautfyller/reducers';
-import { SkjemautfyllerContainer } from '@helsenorge/skjemautfyller/components';
+import rootReducer from '@helsenorge/refero/reducers';
+import { ReferoContainer } from '@helsenorge/refero/components';
 
 let store: Store<{}> = createStore(rootReducer, applyMiddleware(thunk));
 
@@ -28,7 +32,7 @@ class App extends Component<{}, {}> {
   render() {
     return (
       <Provider store={store}>
-        <SkjemautfyllerContainer
+        <ReferoContainer
           store={store}
           questionnaire={...}
           questionnaireResponse={...}
@@ -264,7 +268,7 @@ enum ValidationSummaryPlacement {
 ## `IActionRequester`
 
 ```ts
-// location '@helsenorge/skjemautfyller/util/actionRequester'
+// location '@helsenorge/refero/util/actionRequester'
 interface IActionRequester {
   addIntegerAnswer(linkId: string, value: number, index?: number): void;
   addDecimalAnswer(linkId: string, value: number, index?: number): void;
@@ -322,7 +326,7 @@ export interface QuestionnaireItemPair {
 ## `Path`
 
 ```ts
-// location: '@helsenorge/skjemautfyller/util/skjemautfyller-core'
+// location: '@helsenorge/refero/util/refero-core'
 interface Path {
   linkId: string;
   index?: number;
@@ -332,7 +336,7 @@ interface Path {
 ## `TextMessage`
 
 ```ts
-// location: '@helsenorge/skjemautfyller/types/text-message'
+// location: '@helsenorge/refero/types/text-message'
 interface TextMessage {
   Title: string;
   Body: string;
@@ -352,7 +356,7 @@ interface UploadedFile {
 ## `Resources`
 
 ```ts
-// location: '@helsenorge/skjemautfyller/util/resources'
+// location: '@helsenorge/refero/util/resources'
 interface Resources {
   deleteButtonText: string;
   validationSummaryHeader: string;
@@ -398,7 +402,7 @@ interface Resources {
 ## `AutoSuggestProps`
 
 ```ts
-// location: '@helsenorge/skjemautfyller/types/autoSuggestProps'
+// location: '@helsenorge/refero/types/autoSuggestProps'
 interface AutoSuggestProps {
   minSearchCharacters: number;
   typingSearchDelay: number;

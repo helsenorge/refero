@@ -17,7 +17,7 @@ import {
 } from '../actions/newValue';
 import itemControlConstants from '../constants/itemcontrol';
 import { getItemControlValue } from './choice';
-import { getResponseItemAndPathWithLinkId, getQuestionnaireDefinitionItem, Path } from './skjemautfyller-core';
+import { getResponseItemAndPathWithLinkId, getQuestionnaireDefinitionItem, Path } from './refero-core';
 
 // eslint-disable-next-line @typescript-eslint/interface-name-prefix
 export interface IActionRequester {

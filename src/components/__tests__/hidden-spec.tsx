@@ -6,7 +6,7 @@ import { Store, Provider } from 'react-redux';
 import rootReducer from '../../reducers';
 import '../../util/defineFetch';
 import { Resources } from '../../util/resources';
-import { SkjemautfyllerContainer } from '../../components';
+import { ReferoContainer } from '../../components';
 import { Questionnaire, QuestionnaireItem, Extension, Coding, Reference } from '../../types/fhir';
 import Choice from '../formcomponents/choice/choice';
 import Boolean from '../formcomponents/boolean/boolean';
@@ -391,7 +391,7 @@ function createWrapper(q: Questionnaire) {
   const store: Store<{}> = createStore(rootReducer);
   return mount(
     <Provider store={store}>
-      <SkjemautfyllerContainer
+      <ReferoContainer
         loginButton={<React.Fragment />}
         store={store}
         authorized={true}
