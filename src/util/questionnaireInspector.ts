@@ -1,6 +1,6 @@
 import { QuestionnaireItem, Questionnaire, QuestionnaireResponse } from '../types/fhir';
 
-import { getQuestionnaireDefinitionItem, getResponseItemAndPathWithLinkId, ItemAndPath } from './skjemautfyller-core';
+import { getQuestionnaireDefinitionItem, getResponseItemAndPathWithLinkId, ItemAndPath } from './refero-core';
 
 export interface QuestionnaireItemPair {
   QuestionnaireItem: QuestionnaireItem;

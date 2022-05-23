@@ -13,7 +13,7 @@ import FhirpathScoreDataModel from './__data__/scoring/fhirpath-score';
 import { Questionnaire } from '../../types/fhir';
 import rootReducer from '../../reducers';
 import { Resources } from '../../util/resources';
-import { SkjemautfyllerContainer } from '..';
+import { ReferoContainer } from '..';
 import { getCalculatedExpressionExtension } from '../../util/extension';
 import {
   inputAnswer,
@@ -264,7 +264,7 @@ function createWrapper(questionnaire: Questionnaire) {
   const store: any = createStore(rootReducer, applyMiddleware(thunk));
   return mount(
     <Provider store={store}>
-      <SkjemautfyllerContainer
+      <ReferoContainer
         loginButton={<React.Fragment />}
         store={store}
         authorized={true}

@@ -18,7 +18,7 @@ const HelpButton: React.SFC<Props> = ({ item, children, callback }) => {
   if (!item) return null;
 
   return (
-    <span className="page_skjemautfyller__helpButton" onClick={handleToggle}>
+    <span className="page_refero__helpButton" onClick={handleToggle}>
       {children}
     </span>
   );

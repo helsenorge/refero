@@ -11,7 +11,7 @@ import { ScoringItemType } from '../constants/scoringItemType';
 import { getExtension, getCalculatedExpressionExtension } from './extension';
 import r4 from './fhirpathLoaderHelper';
 import { createDummySectionScoreItem, scoringItemType } from './scoring';
-import { getQuestionnaireResponseItemsWithLinkId } from './skjemautfyller-core';
+import { getQuestionnaireResponseItemsWithLinkId } from './refero-core';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const fhirpath = require('fhirpath');
@@ -253,7 +253,7 @@ export class ScoringCalculator {
   private getOptionScore(option: QuestionnaireItemAnswerOption): number {
     const extension = getExtension(ExtensionConstants.ORDINAL_VALUE, option.valueCoding);
     if (extension?.valueDecimal) {
-      return (extension?.valueDecimal as unknown) as number;
+      return extension?.valueDecimal as unknown as number;
     }
 
     return 0;

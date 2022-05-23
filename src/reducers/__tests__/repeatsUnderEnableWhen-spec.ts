@@ -1,7 +1,7 @@
 import enableWhenDataModel from './__data__/repeatsUnderEnableWhen';
 import { Form } from '../form';
 import { Coding, QuestionnaireItem } from '../../types/fhir';
-import { getQuestionnaireDefinitionItem, getDefinitionItems, getResponseItemWithPath } from '../../util/skjemautfyller-core';
+import { getQuestionnaireDefinitionItem, getDefinitionItems, getResponseItemWithPath } from '../../util/refero-core';
 import { pathify, selectChoice, getResponseItem, enterText, clickRepeat } from './utils';
 
 describe('update enable when action', () => {
@@ -9,7 +9,7 @@ describe('update enable when action', () => {
   let definitionItems: QuestionnaireItem[];
 
   beforeEach(() => {
-    newState = enableWhenDataModel.skjemautfyller.form;
+    newState = enableWhenDataModel.refero.form;
     const dItems = getDefinitionItems(newState.FormDefinition);
     if (!dItems || dItems.length === 0) {
       return fail();

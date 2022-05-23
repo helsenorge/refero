@@ -2,7 +2,12 @@
 
 ---
 
+- Rename project to refero
+- 'SkjameutfyllerContainer' is now 'ReferoContainer'
+- All css-classes with 'skjemautfyller' now renamed to 'refero'
+- File skjemautfyller-core.ts renamed to refero-core.ts
 - Upgrade to 24.1.x of @helsenorge packages
+
 
 ## 9.1.0
 

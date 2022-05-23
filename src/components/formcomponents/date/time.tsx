@@ -19,7 +19,7 @@ import { getExtension, getValidationTextExtension } from '../../../util/extensio
 import { isReadOnly, isRequired, getId, getSublabelText } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Resources } from '../../../util/resources';
-import { Path } from '../../../util/skjemautfyller-core';
+import { Path } from '../../../util/refero-core';
 import withCommonFunctions from '../../with-common-functions';
 import Label from '../label';
 import SubLabel from '../sublabel';
@@ -227,7 +227,7 @@ class Time extends React.Component<Props & ValidationProps> {
     }
 
     return (
-      <div className="page_skjemautfyller__component page_skjemautfyller__component_time">
+      <div className="page_refero__component page_refero__component_time">
         <Validation {...this.props}>
           <TimeInput
             id={getId(id)}
@@ -242,7 +242,7 @@ class Time extends React.Component<Props & ValidationProps> {
             maxMinute={this.getMaxMinute()}
             minMinute={this.getMinMinute()}
             onBlur={this.onTimeChange}
-            className={this.props.className + ' page_skjemautfyller__input'}
+            className={this.props.className + ' page_refero__input'}
             renderFieldset={this.props.renderFieldset}
             errorMessage={getValidationTextExtension(item)}
             resetButton={{
@@ -253,7 +253,7 @@ class Time extends React.Component<Props & ValidationProps> {
             helpElement={this.props.renderHelpElement()}
           />
         </Validation>
-        {this.props.renderDeleteButton('page_skjemautfyller__deletebutton--margin-top')}
+        {this.props.renderDeleteButton('page_refero__deletebutton--margin-top')}
         {this.props.repeatButton}
         {this.props.children ? <div className="nested-fieldset nested-fieldset--full-height">{this.props.children}</div> : null}
       </div>

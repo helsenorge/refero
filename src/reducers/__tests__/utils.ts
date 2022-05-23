@@ -1,6 +1,6 @@
 import '../../util/defineFetch';
 import reducer, { Form } from '../form';
-import { Path, getResponseItemWithPath } from '../../util/skjemautfyller-core';
+import { Path, getResponseItemWithPath } from '../../util/refero-core';
 import {
   Coding,
   QuestionnaireItem,
@@ -180,7 +180,7 @@ export function getResponseItem(linkId: string, state: Form, path: Array<Path>):
 
 export function createGlobalStateWithQuestionnaire(q: Questionnaire, qr: QuestionnaireResponse): GlobalState {
   return {
-    skjemautfyller: {
+    refero: {
       form: {
         Language: 'no',
         FormDefinition: {

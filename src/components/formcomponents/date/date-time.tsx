@@ -23,7 +23,7 @@ import { evaluateFhirpathExpressionToGetDate } from '../../../util/fhirpathHelpe
 import { isRequired, getId, isReadOnly, getSublabelText } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Resources } from '../../../util/resources';
-import { Path } from '../../../util/skjemautfyller-core';
+import { Path } from '../../../util/refero-core';
 import withCommonFunctions from '../../with-common-functions';
 import Label from '../label';
 import SubLabel from '../sublabel';
@@ -181,7 +181,7 @@ class DateTime extends React.Component<Props & ValidationProps> {
     const subLabelText = getSublabelText(this.props.item, this.props.onRenderMarkdown, this.props.questionnaire);
 
     return (
-      <div className="page_skjemautfyller__component page_skjemautfyller__component_datetime">
+      <div className="page_refero__component page_refero__component_datetime">
         <Validation {...other}>
           <DateTimePicker
             id={getId(id)}
@@ -200,12 +200,12 @@ class DateTime extends React.Component<Props & ValidationProps> {
             subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
             isRequired={isRequired(item)}
             errorMessage={getValidationTextExtension(item)}
-            timeClassName="page_skjemautfyller__input"
+            timeClassName="page_refero__input"
             helpButton={this.props.renderHelpButton()}
             helpElement={this.props.renderHelpElement()}
           />
         </Validation>
-        {this.props.renderDeleteButton('page_skjemautfyller__deletebutton--margin-top')}
+        {this.props.renderDeleteButton('page_refero__deletebutton--margin-top')}
         {this.props.repeatButton}
         {this.props.children ? <div className="nested-fieldset nested-fieldset--full-height">{this.props.children}</div> : null}
       </div>

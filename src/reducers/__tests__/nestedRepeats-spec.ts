@@ -1,7 +1,7 @@
 import dataModel from './__data__/nestedRepeats';
 import { Form } from '../form';
 import { QuestionnaireItem, QuestionnaireResponseItem } from '../../types/fhir';
-import { getQuestionnaireDefinitionItem, getDefinitionItems, getResponseItemWithPath } from '../../util/skjemautfyller-core';
+import { getQuestionnaireDefinitionItem, getDefinitionItems, getResponseItemWithPath } from '../../util/refero-core';
 import { pathify, clickRepeat, uploadAttachment, createAttachment } from './utils';
 
 describe('update enable when action', () => {
@@ -9,7 +9,7 @@ describe('update enable when action', () => {
   let definitionItems: QuestionnaireItem[];
 
   beforeEach(() => {
-    newState = dataModel.skjemautfyller.form;
+    newState = dataModel.refero.form;
     const dItems = getDefinitionItems(newState.FormDefinition);
     if (!dItems || dItems.length === 0) {
       return fail();

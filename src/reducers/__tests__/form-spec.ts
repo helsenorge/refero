@@ -24,7 +24,7 @@ import {
   getResponseItems,
   getQuestionnaireResponseItemWithLinkid,
   getItemWithIdFromResponseItemArray,
-} from '../../util/skjemautfyller-core';
+} from '../../util/refero-core';
 import dataModel from './__data__/dummy-data-model';
 
 const should = chai.should();
@@ -32,7 +32,7 @@ const should = chai.should();
 describe('new value action', () => {
   it('should update string value', () => {
     let action: NewValueAction = newStringValue([{ linkId: '1' }], 'ny string', undefined);
-    let newState: Form | undefined = reducer(dataModel.skjemautfyller.form, action);
+    let newState: Form | undefined = reducer(dataModel.refero.form, action);
     if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
       return fail();
     }
@@ -43,7 +43,7 @@ describe('new value action', () => {
     expect(item.answer[0].valueString).toEqual('ny string');
 
     action = newStringValue([{ linkId: '1' }], '', undefined);
-    newState = reducer(dataModel.skjemautfyller.form, action);
+    newState = reducer(dataModel.refero.form, action);
     if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
       return fail();
     }
@@ -53,7 +53,7 @@ describe('new value action', () => {
 
   it('should update boolean value', () => {
     let action: NewValueAction = newBooleanValue([{ linkId: 'b' }], true, undefined);
-    let newState: Form | undefined = reducer(dataModel.skjemautfyller.form, action);
+    let newState: Form | undefined = reducer(dataModel.refero.form, action);
     if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
       return fail();
     }
@@ -64,7 +64,7 @@ describe('new value action', () => {
     expect(item.answer[0].valueBoolean).toEqual(true);
 
     action = newBooleanValue([{ linkId: 'b' }], false, undefined);
-    newState = reducer(dataModel.skjemautfyller.form, action);
+    newState = reducer(dataModel.refero.form, action);
     if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
       return fail();
     }
@@ -77,7 +77,7 @@ describe('new value action', () => {
 
   it('should update decimal value', () => {
     let action: NewValueAction = newDecimalValue([{ linkId: 'd' }], 1.5, undefined);
-    let newState: Form | undefined = reducer(dataModel.skjemautfyller.form, action);
+    let newState: Form | undefined = reducer(dataModel.refero.form, action);
     if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
       return fail();
     }
@@ -88,7 +88,7 @@ describe('new value action', () => {
     expect(item.answer[0].valueDecimal).toEqual(1.5);
 
     action = newDecimalValue([{ linkId: 'd' }], 2.5, undefined);
-    newState = reducer(dataModel.skjemautfyller.form, action);
+    newState = reducer(dataModel.refero.form, action);
     if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
       return fail();
     }
@@ -101,7 +101,7 @@ describe('new value action', () => {
 
   it('should update integer value', () => {
     let action: NewValueAction = newIntegerValue([{ linkId: 'i' }], 3, undefined);
-    let newState: Form | undefined = reducer(dataModel.skjemautfyller.form, action);
+    let newState: Form | undefined = reducer(dataModel.refero.form, action);
     if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
       return fail();
     }
@@ -112,7 +112,7 @@ describe('new value action', () => {
     expect(item.answer[0].valueInteger).toEqual(3);
 
     action = newIntegerValue([{ linkId: 'i' }], 4, undefined);
-    newState = reducer(dataModel.skjemautfyller.form, action);
+    newState = reducer(dataModel.refero.form, action);
     if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
       return fail();
     }
@@ -125,7 +125,7 @@ describe('new value action', () => {
 
   it('should update date value', () => {
     let action: NewValueAction = newDateValue([{ linkId: 'date' }], '2018-05-18T10:28:45Z', undefined);
-    let newState: Form | undefined = reducer(dataModel.skjemautfyller.form, action);
+    let newState: Form | undefined = reducer(dataModel.refero.form, action);
     if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
       return fail();
     }
@@ -136,7 +136,7 @@ describe('new value action', () => {
     expect(item.answer[0].valueDate).toEqual('2018-05-18T10:28:45Z');
 
     action = newDateValue([{ linkId: 'date' }], '2017-05-18T10:28:45Z', undefined);
-    newState = reducer(dataModel.skjemautfyller.form, action);
+    newState = reducer(dataModel.refero.form, action);
     if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
       return fail();
     }
@@ -149,7 +149,7 @@ describe('new value action', () => {
 
   it('should update datetime value', () => {
     const action: NewValueAction = newDateTimeValue([{ linkId: 'dt' }], '2018-05-11T10:28:45Z', undefined);
-    const newState: Form | undefined = reducer(dataModel.skjemautfyller.form, action);
+    const newState: Form | undefined = reducer(dataModel.refero.form, action);
     if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
       return fail();
     }
@@ -161,7 +161,7 @@ describe('new value action', () => {
   });
   it('should update datetime value', () => {
     let action: NewValueAction = newDateTimeValue([{ linkId: 'dt' }], '2018-05-11T10:28:45Z', undefined);
-    let newState: Form | undefined = reducer(dataModel.skjemautfyller.form, action);
+    let newState: Form | undefined = reducer(dataModel.refero.form, action);
     if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
       return fail();
     }
@@ -172,7 +172,7 @@ describe('new value action', () => {
     expect(item.answer[0].valueDateTime).toEqual('2018-05-11T10:28:45Z');
 
     action = newDateTimeValue([{ linkId: 'dt' }], '2017-05-18T10:28:45Z', undefined);
-    newState = reducer(dataModel.skjemautfyller.form, action);
+    newState = reducer(dataModel.refero.form, action);
     if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
       return fail();
     }
@@ -185,7 +185,7 @@ describe('new value action', () => {
 
   it('should update time value', () => {
     let action: NewValueAction = newTimeValue([{ linkId: 't' }], '09:00', undefined);
-    let newState: Form | undefined = reducer(dataModel.skjemautfyller.form, action);
+    let newState: Form | undefined = reducer(dataModel.refero.form, action);
     if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
       return fail();
     }
@@ -196,7 +196,7 @@ describe('new value action', () => {
     expect(item.answer[0].valueTime).toEqual('09:00');
 
     action = newTimeValue([{ linkId: 't' }], '17:00', undefined);
-    newState = reducer(dataModel.skjemautfyller.form, action);
+    newState = reducer(dataModel.refero.form, action);
     if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
       return fail();
     }
@@ -209,7 +209,7 @@ describe('new value action', () => {
 
   it('should update string value', () => {
     let action: NewValueAction = newStringValue([{ linkId: 't0' }], 'test', undefined);
-    let newState: Form | undefined = reducer(dataModel.skjemautfyller.form, action);
+    let newState: Form | undefined = reducer(dataModel.refero.form, action);
     if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
       return fail();
     }
@@ -220,7 +220,7 @@ describe('new value action', () => {
     expect(item.answer[0].valueString).toEqual('test');
 
     action = newStringValue([{ linkId: 't0' }], 'test2', undefined);
-    newState = reducer(dataModel.skjemautfyller.form, action);
+    newState = reducer(dataModel.refero.form, action);
     if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
       return fail();
     }
@@ -233,7 +233,7 @@ describe('new value action', () => {
 
   it('should update coding value', () => {
     let action: NewValueAction = newCodingValue([{ linkId: 'c' }], { code: 'y', display: 'displayy' } as Coding, undefined);
-    let newState: Form | undefined = reducer(dataModel.skjemautfyller.form, action);
+    let newState: Form | undefined = reducer(dataModel.refero.form, action);
     if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
       return fail();
     }
@@ -249,7 +249,7 @@ describe('new value action', () => {
     expect(answer.valueCoding.display).toEqual('displayy');
 
     action = newCodingValue([{ linkId: 'c' }], { code: 'n', display: 'new display' } as Coding, undefined);
-    newState = reducer(dataModel.skjemautfyller.form, action);
+    newState = reducer(dataModel.refero.form, action);
     if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
       return fail();
     }
@@ -267,7 +267,7 @@ describe('new value action', () => {
 
   it('should update coding value with multiple answers', () => {
     let action: NewValueAction = newCodingValue([{ linkId: 'c' }], { code: 'y', display: 'displayy' } as Coding, undefined, true);
-    let newState: Form | undefined = reducer(dataModel.skjemautfyller.form, action);
+    let newState: Form | undefined = reducer(dataModel.refero.form, action);
     if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
       return fail();
     }
@@ -283,7 +283,7 @@ describe('new value action', () => {
     expect(answer.valueCoding.display).toMatchSnapshot();
 
     action = newCodingValue([{ linkId: 'c' }], { code: 'n', display: 'new display' } as Coding, undefined, true);
-    newState = reducer(dataModel.skjemautfyller.form, action);
+    newState = reducer(dataModel.refero.form, action);
     if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
       return fail();
     }
@@ -301,7 +301,7 @@ describe('new value action', () => {
       { url: 'y', title: 'display', data: '123', contentType: 'image/jpg' } as Attachment,
       undefined
     );
-    const newState: Form | undefined = reducer(dataModel.skjemautfyller.form, action);
+    const newState: Form | undefined = reducer(dataModel.refero.form, action);
     if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
       return fail();
     }
@@ -322,7 +322,7 @@ describe('new value action', () => {
 
   it('should update attachment value', () => {
     let action: NewValueAction = newAttachment([{ linkId: 'attachment' }], { url: 'y', title: 'displayy' } as Attachment, undefined);
-    let newState: Form | undefined = reducer(dataModel.skjemautfyller.form, action);
+    let newState: Form | undefined = reducer(dataModel.refero.form, action);
     if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
       return fail();
     }
@@ -338,7 +338,7 @@ describe('new value action', () => {
     expect(answer.valueAttachment.title).toEqual('displayy');
 
     action = newAttachment([{ linkId: 'attachment' }], { url: 'n', title: 'new display' } as Attachment, undefined);
-    newState = reducer(dataModel.skjemautfyller.form, action);
+    newState = reducer(dataModel.refero.form, action);
     if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
       return fail();
     }
@@ -356,7 +356,7 @@ describe('new value action', () => {
 
   it('should be able to remove attachment value', () => {
     let action: NewValueAction = newAttachment([{ linkId: 'attachment' }], { url: 'y', title: 'display' } as Attachment, undefined);
-    let newState: Form | undefined = reducer(dataModel.skjemautfyller.form, action);
+    let newState: Form | undefined = reducer(dataModel.refero.form, action);
     if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
       return fail();
     }
@@ -372,7 +372,7 @@ describe('new value action', () => {
     expect(answer.valueAttachment.title).toEqual('display');
 
     action = newAttachment([{ linkId: 'attachment' }], {} as Attachment, undefined);
-    newState = reducer(dataModel.skjemautfyller.form, action);
+    newState = reducer(dataModel.refero.form, action);
     if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
       return fail();
     }
@@ -388,7 +388,7 @@ describe('new value action', () => {
 describe('new value action', () => {
   it('should not copy non existing item', () => {
     const action: NewValueAction = addRepeatItem([{ linkId: 'foobar' }], { linkId: 'foobar', type: 'group' }, undefined);
-    const newState: Form | undefined = reducer(dataModel.skjemautfyller.form, action);
+    const newState: Form | undefined = reducer(dataModel.refero.form, action);
     if (!newState || !newState.FormData.Content || !newState.FormData.Content.item) {
       return fail();
     }
@@ -415,16 +415,16 @@ describe('new value action', () => {
         ],
       },
     ]);
-    if (!dataModel.skjemautfyller.form.FormData.Content || !dataModel.skjemautfyller.form.FormData.Content.item) {
+    if (!dataModel.refero.form.FormData.Content || !dataModel.refero.form.FormData.Content.item) {
       return fail();
     }
-    expect(dataModel.skjemautfyller.form.FormData.Content.item.length).toEqual(12);
-    const newState: Form | undefined = reducer(dataModel.skjemautfyller.form, action);
+    expect(dataModel.refero.form.FormData.Content.item.length).toEqual(12);
+    const newState: Form | undefined = reducer(dataModel.refero.form, action);
     if (!newState || !newState.FormData.Content || !newState.FormData.Content.item) {
       return fail();
     }
     expect(newState.FormData.Content.item.length).toEqual(13);
-    expect(dataModel.skjemautfyller.form.FormData.Content.item.length).toEqual(12);
+    expect(dataModel.refero.form.FormData.Content.item.length).toEqual(12);
 
     const repeatGroupResponseItems = getItemWithIdFromResponseItemArray('addGroupTest1', newState.FormData.Content.item);
     should.exist(repeatGroupResponseItems);
@@ -463,12 +463,12 @@ describe('new value action', () => {
         ],
       },
     ]);
-    if (!dataModel.skjemautfyller.form.FormData.Content || !dataModel.skjemautfyller.form.FormData.Content.item) {
+    if (!dataModel.refero.form.FormData.Content || !dataModel.refero.form.FormData.Content.item) {
       return fail();
     }
 
-    expect(dataModel.skjemautfyller.form.FormData.Content.item.length).toEqual(12);
-    let newState: Form | undefined = reducer(dataModel.skjemautfyller.form, action);
+    expect(dataModel.refero.form.FormData.Content.item.length).toEqual(12);
+    let newState: Form | undefined = reducer(dataModel.refero.form, action);
 
     if (!newState || !newState.FormData.Content || !newState.FormData.Content.item) {
       return fail();
@@ -546,7 +546,7 @@ describe('update enable when action', () => {
       linkId: 'b',
       type: 'boolean',
     });
-    let newState: Form | undefined = reducer(dataModel.skjemautfyller.form, action);
+    let newState: Form | undefined = reducer(dataModel.refero.form, action);
     if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
       return fail();
     }
@@ -555,7 +555,7 @@ describe('update enable when action', () => {
       linkId: 'b',
       type: 'boolean',
     });
-    newState = reducer(dataModel.skjemautfyller.form, action);
+    newState = reducer(dataModel.refero.form, action);
     if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
       return fail();
     }

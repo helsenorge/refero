@@ -53,7 +53,7 @@ import {
   createIdSuffix,
   getQuestionnaireDefinitionItem,
   getResponseItemAndPathWithLinkId,
-} from '../util/skjemautfyller-core';
+} from '../util/refero-core';
 
 export interface QueryStringsInterface {
   MessageId: string;
@@ -147,7 +147,7 @@ interface State {
   showCancelLightbox?: boolean;
 }
 
-class Skjemautfyller extends React.Component<StateProps & DispatchProps & Props, State> {
+class Refero extends React.Component<StateProps & DispatchProps & Props, State> {
   scoringCalculator: ScoringCalculator | undefined;
 
   constructor(props: StateProps & DispatchProps & Props) {
@@ -194,15 +194,12 @@ class Skjemautfyller extends React.Component<StateProps & DispatchProps & Props,
   }
 
   onAnswerChange = (newState: GlobalState, _path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer): void => {
-    if (this.props.onChange && newState.skjemautfyller.form.FormDefinition.Content && newState.skjemautfyller.form.FormData.Content) {
-      const actionRequester = new ActionRequester(
-        newState.skjemautfyller.form.FormDefinition.Content,
-        newState.skjemautfyller.form.FormData.Content
-      );
+    if (this.props.onChange && newState.refero.form.FormDefinition.Content && newState.refero.form.FormData.Content) {
+      const actionRequester = new ActionRequester(newState.refero.form.FormDefinition.Content, newState.refero.form.FormData.Content);
 
       const questionnaireInspector = new QuestionniareInspector(
-        newState.skjemautfyller.form.FormDefinition.Content,
-        newState.skjemautfyller.form.FormData.Content
+        newState.refero.form.FormDefinition.Content,
+        newState.refero.form.FormData.Content
       );
 
       this.props.onChange(item, answer, actionRequester, questionnaireInspector);
@@ -220,15 +217,11 @@ class Skjemautfyller extends React.Component<StateProps & DispatchProps & Props,
       this.scoringCalculator = new ScoringCalculator(this.props.formDefinition.Content);
     }
 
-    if (
-      !this.scoringCalculator ||
-      !newState.skjemautfyller?.form?.FormData?.Content ||
-      !newState.skjemautfyller?.form?.FormDefinition?.Content
-    ) {
+    if (!this.scoringCalculator || !newState.refero?.form?.FormData?.Content || !newState.refero?.form?.FormDefinition?.Content) {
       return;
     }
 
-    const scores = this.scoringCalculator.calculate(newState.skjemautfyller.form.FormData.Content);
+    const scores = this.scoringCalculator.calculate(newState.refero.form.FormData.Content);
     const actions: Array<NewValueAction> = [];
     for (const linkId in scores) {
       const templateItem = this.scoringCalculator.getCachedTotalOrSectionItem(linkId);
@@ -243,8 +236,8 @@ class Skjemautfyller extends React.Component<StateProps & DispatchProps & Props,
         code: extension.code,
       } as Quantity;
 
-      const item = getQuestionnaireDefinitionItem(linkId, newState.skjemautfyller.form.FormDefinition.Content?.item);
-      const itemsAndPaths = getResponseItemAndPathWithLinkId(linkId, newState.skjemautfyller.form.FormData.Content);
+      const item = getQuestionnaireDefinitionItem(linkId, newState.refero.form.FormDefinition.Content?.item);
+      const itemsAndPaths = getResponseItemAndPathWithLinkId(linkId, newState.refero.form.FormData.Content);
 
       let value = scores[linkId];
       if (item && value != null && !isNaN(value) && isFinite(value)) {
@@ -292,7 +285,7 @@ class Skjemautfyller extends React.Component<StateProps & DispatchProps & Props,
         responseItems.forEach((responseItem, index) => {
           const repeatButton =
             item.repeats && shouldRenderRepeatButton(item, responseItems, index) ? (
-              <div className="page_skjemautfyller__repeatbutton-wrapper">
+              <div className="page_refero__repeatbutton-wrapper">
                 <RepeatButton
                   key={`item_${item.linkId}_add_repeat_item`}
                   resources={this.props.resources}
@@ -366,8 +359,8 @@ class Skjemautfyller extends React.Component<StateProps & DispatchProps & Props,
     const form = this.props.authorized ? this.renderFormWhenAuthorized() : this.renderFormWhenNotAuthorized();
 
     return (
-      <div className={this.getButtonClasses(presentationButtonsType, ['page_skjemautfyller__content'])}>
-        <div className="page_skjemautfyller__messageboxes" />
+      <div className={this.getButtonClasses(presentationButtonsType, ['page_refero__content'])}>
+        <div className="page_refero__messageboxes" />
         {form}
       </div>
     );
@@ -398,7 +391,7 @@ class Skjemautfyller extends React.Component<StateProps & DispatchProps & Props,
         >
           {this.renderFormItems()}
         </Form>
-        <div className="page_skjemautfyller__buttonwrapper page_skjemautfyller__saveblock">{this.props.loginButton}</div>
+        <div className="page_refero__buttonwrapper page_refero__saveblock">{this.props.loginButton}</div>
       </>
     );
   };
@@ -422,14 +415,14 @@ class Skjemautfyller extends React.Component<StateProps & DispatchProps & Props,
           cancelButtonText={resources.formCancel}
           pauseButtonText={resources.formSave ? resources.formSave : 'Lagre'}
           onPause={this.props.onSave ? this.onSave : undefined}
-          pauseButtonClasses={'page_skjemautfyller__pausebutton'}
+          pauseButtonClasses={'page_refero__pausebutton'}
           pauseButtonType="display"
           submitButtonType="display"
           cancelButtonType="display"
           pauseButtonLevel="secondary"
           cancelButtonRight={true}
           onCancel={this.props.onCancel}
-          buttonClasses="page_skjemautfyller__saveblock"
+          buttonClasses="page_refero__saveblock"
           validationSummaryPlacement={this.props.validationSummaryPlacement}
           validationSummary={{
             enable: true,
@@ -447,10 +440,10 @@ class Skjemautfyller extends React.Component<StateProps & DispatchProps & Props,
   getButtonClasses(presentationButtonsType: PresentationButtonsType | null, defaultClasses?: string[]): string {
     defaultClasses = defaultClasses ?? [];
     if (presentationButtonsType === PresentationButtonsType.None) {
-      defaultClasses.push('page_skjemautfyller__hidden_buttons');
+      defaultClasses.push('page_refero__hidden_buttons');
     }
     if (presentationButtonsType === PresentationButtonsType.Sticky || (this.props.sticky && !presentationButtonsType)) {
-      defaultClasses.push('page_skjemautfyller__stickybar');
+      defaultClasses.push('page_refero__stickybar');
     }
 
     return defaultClasses.join(' ');
@@ -494,5 +487,5 @@ function mapDispatchToProps(dispatch: ThunkDispatch<GlobalState, void, NewValueA
   };
 }
 
-const SkjemautfyllerContainer = connect<StateProps, DispatchProps, Props>(mapStateToProps, mapDispatchToProps)(Skjemautfyller);
-export { SkjemautfyllerContainer };
+const ReferoContainer = connect<StateProps, DispatchProps, Props>(mapStateToProps, mapDispatchToProps)(Refero);
+export { ReferoContainer };

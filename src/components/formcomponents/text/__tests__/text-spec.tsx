@@ -61,6 +61,6 @@ describe('text with inline extension', () => {
         responseItem={{} as QuestionnaireResponseItem}
       />
     );
-    expect(text.find('.page_skjemautfyller__component_highlight').length).toBe(1);
+    expect(text.find('.page_refero__component_highlight').length).toBe(1);
   });
 });

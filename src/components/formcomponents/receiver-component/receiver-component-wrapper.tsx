@@ -8,7 +8,7 @@ import ReceiverComponent, { ReceiverComponentProps } from './receiver-component'
 class ReceiverComponentWrapper extends React.Component<ReceiverComponentProps> {
   render(): JSX.Element {
     return (
-      <div className="page_skjemautfyller__component page_skjemautfyller__receivercomponent" id={`${getId(this.props.id)}-wrapper`}>
+      <div className="page_refero__component page_refero__receivercomponent" id={`${getId(this.props.id)}-wrapper`}>
         <Validation {...this.props}>
           <ReceiverComponent {...this.props} label={this.props.resources?.adresseKomponent_header} />
         </Validation>

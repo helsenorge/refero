@@ -32,7 +32,7 @@ import {
 } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Resources } from '../../../util/resources';
-import { Path } from '../../../util/skjemautfyller-core';
+import { Path } from '../../../util/refero-core';
 import withCommonFunctions from '../../with-common-functions';
 import SubLabel from '../sublabel';
 import TextView from '../textview';
@@ -124,7 +124,7 @@ export class Text extends React.Component<Props & ValidationProps, {}> {
 
     if (itemControls && itemControls.some(itemControl => itemControl.code === itemControlConstants.INLINE)) {
       return (
-        <div id={id} className="page_skjemautfyller__component page_skjemautfyller__component_expandabletext">
+        <div id={id} className="page_refero__component page_refero__component_expandabletext">
           <Expander title={item.text ? item.text : ''}>
             <React.Fragment>{children}</React.Fragment>
           </Expander>
@@ -136,7 +136,7 @@ export class Text extends React.Component<Props & ValidationProps, {}> {
       return (
         <div
           id={id}
-          className="page_skjemautfyller__component page_skjemautfyller__component_highlight"
+          className="page_refero__component page_refero__component_highlight"
           dangerouslySetInnerHTML={{
             __html: `${getText(item, onRenderMarkdown, questionnaire)}`,
           }}
@@ -151,7 +151,7 @@ export class Text extends React.Component<Props & ValidationProps, {}> {
           item={item}
           value={getPDFStringValue(answer)}
           onRenderMarkdown={onRenderMarkdown}
-          textClass="page_skjemautfyller__component_readonlytext"
+          textClass="page_refero__component_readonlytext"
         >
           {this.props.children}
         </TextView>
@@ -160,7 +160,7 @@ export class Text extends React.Component<Props & ValidationProps, {}> {
     const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire);
 
     return (
-      <div className="page_skjemautfyller__component page_skjemautfyller__component_text">
+      <div className="page_refero__component page_refero__component_text">
         <Validation {...other}>
           <SafeTextarea
             id={getId(this.props.id)}
@@ -188,7 +188,7 @@ export class Text extends React.Component<Props & ValidationProps, {}> {
             maxLengthText={resources?.maxLengthText}
           />
         </Validation>
-        {this.props.renderDeleteButton('page_skjemautfyller__deletebutton--margin-top')}
+        {this.props.renderDeleteButton('page_refero__deletebutton--margin-top')}
         {this.props.repeatButton}
         {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
       </div>

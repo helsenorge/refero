@@ -7,7 +7,7 @@ import { mount } from 'enzyme';
 import '../../util/defineFetch';
 import rootReducer from '../../reducers';
 import { Questionnaire, QuestionnaireItem } from '../../types/fhir';
-import { SkjemautfyllerContainer } from '..';
+import { ReferoContainer } from '..';
 import { Resources } from '../../util/resources';
 import questionnaireWithMarkdown from './__data__/markdown';
 
@@ -52,7 +52,7 @@ function createWrapper(questionnaire: Questionnaire, markdownCb: (q: Questionnai
   const store: any = createStore(rootReducer, applyMiddleware(thunk));
   return mount(
     <Provider store={store}>
-      <SkjemautfyllerContainer
+      <ReferoContainer
         loginButton={<React.Fragment />}
         store={store}
         authorized={true}

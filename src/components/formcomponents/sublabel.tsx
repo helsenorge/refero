@@ -7,7 +7,7 @@ interface Props {
 const SubLabel = ({ subLabelText }: Props): JSX.Element | null => {
   return (
     <span
-      className="page_skjemautfyller__sublabel"
+      className="page_refero__sublabel"
       dangerouslySetInnerHTML={{
         __html: subLabelText,
       }}

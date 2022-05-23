@@ -7,7 +7,7 @@ import { ReactWrapper, mount } from 'enzyme';
 import '../../util/defineFetch';
 import rootReducer from '../../reducers';
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, Extension, QuestionnaireResponseItem } from '../../types/fhir';
-import { Path } from '../../util/skjemautfyller-core';
+import { Path } from '../../util/refero-core';
 import { Group } from '../formcomponents/group/group';
 import StringComponent from '../../components/formcomponents/string/string';
 import Extensions from '../../constants/extensions';
@@ -17,7 +17,7 @@ import { RenderContextType } from '../../constants/renderContextType';
 import { RenderContext } from '../../util/renderContext';
 
 describe('Group component renders with correct classes', () => {
-  const defaultClasses = ['.page_skjemautfyller__component', '.page_skjemautfyller__component_group'];
+  const defaultClasses = ['.page_refero__component', '.page_refero__component_group'];
   beforeEach(() => {
     window.matchMedia = jest.fn().mockImplementation(_ => {
       return {};
@@ -30,7 +30,7 @@ describe('Group component renders with correct classes', () => {
     const wrapper = createWrapperForGroupItem(item);
     wrapper.render();
 
-    expectToFindClasses(wrapper, ...defaultClasses, '.page_skjemautfyller__itemControl_table');
+    expectToFindClasses(wrapper, ...defaultClasses, '.page_refero__itemControl_table');
   });
 
   it('renders with htable-class when extension is htable', () => {
@@ -39,7 +39,7 @@ describe('Group component renders with correct classes', () => {
     const wrapper = createWrapperForGroupItem(item);
     wrapper.render();
 
-    expectToFindClasses(wrapper, ...defaultClasses, '.page_skjemautfyller__itemControl_htable');
+    expectToFindClasses(wrapper, ...defaultClasses, '.page_refero__itemControl_htable');
   });
 
   it('renders with gtable-class when extension is gtable', () => {
@@ -48,7 +48,7 @@ describe('Group component renders with correct classes', () => {
     const wrapper = createWrapperForGroupItem(item);
     wrapper.render();
 
-    expectToFindClasses(wrapper, ...defaultClasses, '.page_skjemautfyller__itemControl_gtable');
+    expectToFindClasses(wrapper, ...defaultClasses, '.page_refero__itemControl_gtable');
   });
 
   it('renders with atable-class when extension is atable', () => {
@@ -57,7 +57,7 @@ describe('Group component renders with correct classes', () => {
     const wrapper = createWrapperForGroupItem(item);
     wrapper.render();
 
-    expectToFindClasses(wrapper, ...defaultClasses, '.page_skjemautfyller__itemControl_atable');
+    expectToFindClasses(wrapper, ...defaultClasses, '.page_refero__itemControl_atable');
   });
 
   it('other items with group item control types, does not get tagged with a class', () => {
@@ -66,7 +66,7 @@ describe('Group component renders with correct classes', () => {
     const wrapper = createWrapperForStringItem(item);
     wrapper.render();
 
-    expectToNotFindClasses(wrapper, '.page_skjemautfyller__itemControl_gtable');
+    expectToNotFindClasses(wrapper, '.page_refero__itemControl_gtable');
   });
 });
 
@@ -101,7 +101,7 @@ function createWrapperForGroupItem(item: QuestionnaireItem): ReactWrapper<{}, {}
   return mount(
     <Provider store={store}>
       <Group
-        dispatch={() => (undefined as unknown) as ThunkDispatch<GlobalState, void, NewValueAction>}
+        dispatch={() => undefined as unknown as ThunkDispatch<GlobalState, void, NewValueAction>}
         answer={{} as QuestionnaireResponseItemAnswer}
         item={item}
         path={{} as Path[]}
@@ -122,7 +122,7 @@ function createWrapperForStringItem(item: QuestionnaireItem): ReactWrapper<{}, {
   return mount(
     <Provider store={store}>
       <StringComponent
-        dispatch={() => (undefined as unknown) as ThunkDispatch<GlobalState, void, NewValueAction>}
+        dispatch={() => undefined as unknown as ThunkDispatch<GlobalState, void, NewValueAction>}
         answer={{} as QuestionnaireResponseItemAnswer}
         item={item}
         path={{} as Path[]}

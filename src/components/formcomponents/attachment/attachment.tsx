@@ -21,7 +21,7 @@ import { getValidationTextExtension, getMaxOccursExtensionValue, getMinOccursExt
 import { isRequired, getId, isReadOnly, isRepeat, getSublabelText } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Resources } from '../../../util/resources';
-import { Path } from '../../../util/skjemautfyller-core';
+import { Path } from '../../../util/refero-core';
 import withCommonFunctions from '../../with-common-functions';
 import Label from '../label';
 import SubLabel from '../sublabel';

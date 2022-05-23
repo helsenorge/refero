@@ -1,14 +1,14 @@
 import repeatableBooleanDataModel from './__data__/repeatableBoolean';
 import { Form } from '../form';
 import { QuestionnaireItem, QuestionnaireResponseItem } from '../../types/fhir';
-import { getDefinitionItems } from '../../util/skjemautfyller-core';
+import { getDefinitionItems } from '../../util/refero-core';
 import { pathify, getResponseItem, clickRepeat } from './utils';
 
 describe('Given a questionnaire with multiple repeatable booleans', () => {
   let newState: Form;
 
   beforeEach(() => {
-    newState = repeatableBooleanDataModel.skjemautfyller.form;
+    newState = repeatableBooleanDataModel.refero.form;
     const dItems = getDefinitionItems(newState.FormDefinition);
     if (!dItems || dItems.length === 0) {
       return fail();

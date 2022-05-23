@@ -16,7 +16,7 @@ import { getValidationTextExtension, getPlaceholder, getMaxValueExtensionValue, 
 import { isReadOnly, isRequired, getId, getDecimalPattern, getSublabelText } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Resources } from '../../../util/resources';
-import { Path } from '../../../util/skjemautfyller-core';
+import { Path } from '../../../util/refero-core';
 import withCommonFunctions from '../../with-common-functions';
 import Label from '../label';
 import SubLabel from '../sublabel';
@@ -102,7 +102,7 @@ class Decimal extends React.Component<Props & ValidationProps, {}> {
       );
     }
     return (
-      <div className="page_skjemautfyller__component page_skjemautfyller__component_decimal">
+      <div className="page_refero__component page_refero__component_decimal">
         <Validation {...this.props}>
           <SafeInputField
             type="number"
@@ -118,14 +118,14 @@ class Decimal extends React.Component<Props & ValidationProps, {}> {
             min={getMinValueExtensionValue(item)}
             errorMessage={getValidationTextExtension(item)}
             pattern={getDecimalPattern(item)}
-            className="page_skjemautfyller__input"
+            className="page_refero__input"
             helpButton={this.props.renderHelpButton()}
             helpElement={this.props.renderHelpElement()}
             validateOnExternalUpdate={true}
             onChange={this.handleChange}
           />
         </Validation>
-        {this.props.renderDeleteButton('page_skjemautfyller__deletebutton--margin-top')}
+        {this.props.renderDeleteButton('page_refero__deletebutton--margin-top')}
         {this.props.repeatButton}
         {this.props.children ? <div className="nested-fieldset nested-fieldset--full-height">{this.props.children}</div> : null}
       </div>

@@ -35,7 +35,7 @@ function createPackageFile() {
       const { author, version, peerDependencies, license, dependencies } = packageData;
 
       const minimalPackage = {
-        name: '@helsenorge/skjemautfyller',
+        name: '@helsenorge/refero',
         author,
         version,
         main: './index.js',

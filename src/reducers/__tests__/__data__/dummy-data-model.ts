@@ -2,7 +2,7 @@ import { Questionnaire, QuestionnaireResponse } from '../../../types/fhir';
 import { GlobalState } from '../..';
 
 const dataModel: GlobalState = {
-  skjemautfyller: {
+  refero: {
     form: {
       Language: 'no',
       FormDefinition: {

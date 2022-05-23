@@ -40,7 +40,7 @@ import {
 } from '../../../util/choice';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Resources } from '../../../util/resources';
-import { Path } from '../../../util/skjemautfyller-core';
+import { Path } from '../../../util/refero-core';
 import withCommonFunctions from '../../with-common-functions';
 import AutosuggestView from '../choice-common/autosuggest-view';
 import TextView from '../textview';

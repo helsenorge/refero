@@ -53,7 +53,7 @@ const RadioView: React.SFC<Props> = ({
   const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire);
 
   return (
-    <div className="page_skjemautfyller__component page_skjemautfyller__component_choice page_skjemautfyller__component_choice_radiobutton">
+    <div className="page_refero__component page_refero__component_choice page_refero__component_choice_radiobutton">
       <Collapse isOpened>
         <Validation {...other}>
           <RadioGroup
@@ -72,7 +72,7 @@ const RadioView: React.SFC<Props> = ({
             isStyleBlue
           />
         </Validation>
-        {renderDeleteButton('page_skjemautfyller__deletebutton--margin-top')}
+        {renderDeleteButton('page_refero__deletebutton--margin-top')}
         {repeatButton}
         {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : undefined}
       </Collapse>

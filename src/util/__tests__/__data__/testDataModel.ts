@@ -7,7 +7,7 @@ import { Questionnaire, QuestionnaireResponse } from '../../../types/fhir';
 import { OPEN_CHOICE_ID, OPEN_CHOICE_LABEL } from '../../../constants';
 
 export const dataModel: GlobalState = {
-  skjemautfyller: {
+  refero: {
     form: {
       Language: 'nb-NO',
       FormDefinition: {

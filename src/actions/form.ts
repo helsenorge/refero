@@ -1,7 +1,7 @@
 import { Questionnaire, QuestionnaireResponse } from '../types/fhir';
 
-export type SET_SKJEMA_DEFINITION = 'skjemautfyller/SET_SKJEMA_DEFINITION';
-export const SET_SKJEMA_DEFINITION: SET_SKJEMA_DEFINITION = 'skjemautfyller/SET_SKJEMA_DEFINITION';
+export type SET_SKJEMA_DEFINITION = 'refero/SET_SKJEMA_DEFINITION';
+export const SET_SKJEMA_DEFINITION: SET_SKJEMA_DEFINITION = 'refero/SET_SKJEMA_DEFINITION';
 
 export interface FormAction {
   questionnaire: Questionnaire;

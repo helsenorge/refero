@@ -7,7 +7,7 @@ import { ReactWrapper, mount } from 'enzyme';
 import '../../util/defineFetch';
 import rootReducer from '../../reducers';
 import { QuestionnaireItem, Extension, Coding, QuestionnaireResponseItemAnswer, QuestionnaireItemAnswerOption } from '../../types/fhir';
-import { Path } from '../../util/skjemautfyller-core';
+import { Path } from '../../util/refero-core';
 import String from '../formcomponents/string/string';
 import Choice from '../formcomponents/choice/choice';
 import Boolean from '../formcomponents/boolean/boolean';
@@ -213,7 +213,7 @@ function createComponentText(extensions?: Extension[]): JSX.Element {
 
   return (
     <Text
-      dispatch={() => (undefined as unknown) as ThunkDispatch<GlobalState, void, NewValueAction>}
+      dispatch={() => undefined as unknown as ThunkDispatch<GlobalState, void, NewValueAction>}
       answer={{} as QuestionnaireResponseItemAnswer}
       item={item}
       path={{} as Path[]}
@@ -231,7 +231,7 @@ function createComponentQuantity(extensions?: Extension[]): JSX.Element {
 
   return (
     <Quantity
-      dispatch={() => (undefined as unknown) as ThunkDispatch<GlobalState, void, NewValueAction>}
+      dispatch={() => undefined as unknown as ThunkDispatch<GlobalState, void, NewValueAction>}
       answer={{} as QuestionnaireResponseItemAnswer}
       item={item}
       path={{} as Path[]}
@@ -248,7 +248,7 @@ function createComponentInteger(extensions?: Extension[]): JSX.Element {
 
   return (
     <Integer
-      dispatch={() => (undefined as unknown) as ThunkDispatch<GlobalState, void, NewValueAction>}
+      dispatch={() => undefined as unknown as ThunkDispatch<GlobalState, void, NewValueAction>}
       answer={{} as QuestionnaireResponseItemAnswer}
       item={item}
       path={{} as Path[]}
@@ -267,7 +267,7 @@ function createComponentDecimal(extensions?: Extension[]): JSX.Element {
 
   return (
     <Decimal
-      dispatch={() => (undefined as unknown) as ThunkDispatch<GlobalState, void, NewValueAction>}
+      dispatch={() => undefined as unknown as ThunkDispatch<GlobalState, void, NewValueAction>}
       answer={{} as QuestionnaireResponseItemAnswer}
       item={item}
       path={{} as Path[]}
@@ -286,7 +286,7 @@ function createComponentTime(extensions?: Extension[]): JSX.Element {
 
   return (
     <Time
-      dispatch={() => (undefined as unknown) as ThunkDispatch<GlobalState, void, NewValueAction>}
+      dispatch={() => undefined as unknown as ThunkDispatch<GlobalState, void, NewValueAction>}
       answer={{} as QuestionnaireResponseItemAnswer}
       item={item}
       path={{} as Path[]}
@@ -304,7 +304,7 @@ function createComponentDateTime(extensions?: Extension[]): JSX.Element {
 
   return (
     <DateTime
-      dispatch={() => (undefined as unknown) as ThunkDispatch<GlobalState, void, NewValueAction>}
+      dispatch={() => undefined as unknown as ThunkDispatch<GlobalState, void, NewValueAction>}
       answer={{} as QuestionnaireResponseItemAnswer}
       item={item}
       path={{} as Path[]}
@@ -323,7 +323,7 @@ function createComponentDate(extensions?: Extension[]): JSX.Element {
 
   return (
     <Date
-      dispatch={() => (undefined as unknown) as ThunkDispatch<GlobalState, void, NewValueAction>}
+      dispatch={() => undefined as unknown as ThunkDispatch<GlobalState, void, NewValueAction>}
       answer={{} as QuestionnaireResponseItemAnswer}
       item={item}
       path={{} as Path[]}
@@ -341,7 +341,7 @@ function createComponentAttachment(extensions?: Extension[]): JSX.Element {
 
   return (
     <Attachment
-      dispatch={() => (undefined as unknown) as ThunkDispatch<GlobalState, void, NewValueAction>}
+      dispatch={() => undefined as unknown as ThunkDispatch<GlobalState, void, NewValueAction>}
       answer={{} as QuestionnaireResponseItemAnswer}
       item={item}
       path={{} as Path[]}
@@ -359,7 +359,7 @@ function createComponentGroup(extensions?: Extension[]): JSX.Element {
 
   return (
     <Group
-      dispatch={() => (undefined as unknown) as ThunkDispatch<GlobalState, void, NewValueAction>}
+      dispatch={() => undefined as unknown as ThunkDispatch<GlobalState, void, NewValueAction>}
       answer={{} as QuestionnaireResponseItemAnswer}
       item={item}
       path={{} as Path[]}
@@ -379,7 +379,7 @@ function createComponentBoolean(extensions?: Extension[]): JSX.Element {
 
   return (
     <Boolean
-      dispatch={() => (undefined as unknown) as ThunkDispatch<GlobalState, void, NewValueAction>}
+      dispatch={() => undefined as unknown as ThunkDispatch<GlobalState, void, NewValueAction>}
       answer={{} as QuestionnaireResponseItemAnswer}
       item={item}
       path={{} as Path[]}
@@ -398,7 +398,7 @@ function createComponentString(extensions?: Extension[]): JSX.Element {
 
   return (
     <String
-      dispatch={() => (undefined as unknown) as ThunkDispatch<GlobalState, void, NewValueAction>}
+      dispatch={() => undefined as unknown as ThunkDispatch<GlobalState, void, NewValueAction>}
       answer={{} as QuestionnaireResponseItemAnswer}
       item={item}
       path={{} as Path[]}
@@ -419,7 +419,7 @@ function createComponentChoice(extensions?: Extension[]): JSX.Element {
 
   return (
     <Choice
-      dispatch={() => (undefined as unknown) as ThunkDispatch<GlobalState, void, NewValueAction>}
+      dispatch={() => undefined as unknown as ThunkDispatch<GlobalState, void, NewValueAction>}
       answer={{} as QuestionnaireResponseItemAnswer}
       item={item}
       path={{} as Path[]}
@@ -438,7 +438,7 @@ function createComponentOpenChoice(extensions?: Extension[]): JSX.Element {
 
   return (
     <OpenChoice
-      dispatch={() => (undefined as unknown) as ThunkDispatch<GlobalState, void, NewValueAction>}
+      dispatch={() => undefined as unknown as ThunkDispatch<GlobalState, void, NewValueAction>}
       answer={{} as QuestionnaireResponseItemAnswer}
       item={item}
       path={{} as Path[]}
