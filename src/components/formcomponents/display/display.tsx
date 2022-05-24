@@ -1,5 +1,6 @@
 import * as React from 'react';
 
+import DOMPurify from 'dompurify';
 import { connect } from 'react-redux';
 
 import { Questionnaire, QuestionnaireItem } from '../../../types/fhir';
@@ -39,7 +40,7 @@ const Display: React.SFC<Props> = ({ id, enable, pdf, item, questionnaire, onRen
           id={getId(id)}
           className={`page_refero__markdown ${designsystemtypography['anchorlink-wrapper']}`}
           dangerouslySetInnerHTML={{
-            __html: getText(item, onRenderMarkdown, questionnaire),
+            __html: DOMPurify.sanitize(getText(item, onRenderMarkdown, questionnaire)),
           }}
         />
       );
