@@ -53,10 +53,19 @@ class App extends Component<{}, {}> {
           onRequestHelpElement={...}
           attachmentMaxFileSize={...}
           attachmentValidTypes={...}
+          attachmentErrorMessage={...}
           validationSummaryPlacement={...}
           onChange={...}
           onRenderMarkdown={...}
           syncQuestionnaireResponse
+          blockSubmit={...}
+          language={...}
+          validateScriptInjection={...}
+          autoSuggestProps={...}
+          submitButtonDisabled={...}
+          saveButtonDisabled={...}
+          fetchValueSet={...}
+          fetchReceivers={...}
         />
       </Provider>
     );
@@ -79,6 +88,7 @@ class App extends Component<{}, {}> {
 | onRequestAttachmentLink    |          | callback                   | null    | Callback when the form needs to render a link to an attachment                                                |
 | attachmentMaxFileSize      |          | number                     | 25M     | Max allowed file size for attachments in bytes. Default is 25M                                                |
 | attachmentValidTypes       |          | Array<string>              | ...     | List of allowed mime types for attachments. Default allowed types are: image/jpeg, image/png, application/pdf |
+| attachmentErrorMessage     |          | string                     | null    | Text shown when file-upload fails to validate                                                                 |
 | promptLoginMessage         |          | callback                   | null    | Callback when the form needs to notify the user about authentication                                          |
 | loginButton                | true     | JSX.Element                |         | JSX for when the form needs to render a login button                                                          |
 | authorized                 | true     | boolean                    |         | Whether or not the user is authorized/authenticated                                                           |
@@ -92,6 +102,13 @@ class App extends Component<{}, {}> {
 | syncQuestionnaireResponse  |          | boolean                    | false   | Will try to synchronize a Questionnaire and QuestionnaireResponse object                                      |
 | fetchValueSet              |          | callback                   | null    | Callback when an autosuggest field will fetch data                                                            |
 | autoSuggestProps           |          | AutoSuggestProps           | null    | Config for when and autosuggest field will call fetchValueSet                                                 |
+| blockSubmit                |          | boolean                    | false   | Whether the form is disabled or not                                                                           |
+| language                   |          | string                     | null    | Which locale is used for date related components (only en-gb and nb-no are supported)                         |
+| validateScriptInjection    |          | boolean                    | false   | Whether script injection validation should be performed for string and text inputs                            |
+| submitButtonDisabled       |          | boolean                    | false   | Whenther the submit button should be disabled or not                                                          |
+| saveButtonDisabled         |          | boolean                    | false   | Whenther the save button should be disabled or not                                                            |
+| fetchValueSet              |          | callback                   |         | Callback when user triggers autosuggest fields                                                                |
+| fetchReceivers             |          | callback                   |         | Callback when the receiver component is mounted                                                               |
 
 ### `questionnaire: Questionnaire`
 
@@ -239,7 +256,7 @@ called with the following arguments:
 - `item: QuestionnaireItem` This is the item with the markdown.
 - `markdown: string` The actual markdown.
 
-### `fetchValueSet: fetchValueSet: (searchString: string, item: QuestionnaireItem, successCallback: (valueSet: ValueSet) => void, errorCallback(error: string) => void) => void;`
+### `fetchValueSet: (searchString: string, item: QuestionnaireItem, successCallback: (valueSet: ValueSet) => void, errorCallback(error: string) => void) => void`
 
 This callback is called when an autosuggest field need to load data. It should call either successCallback with a valueSet, or errorCallback
 with an error message.
@@ -251,12 +268,22 @@ with an error message.
 - `errorCallback(error: string) => void)` The function to call to return an error message to the autosuggest field, which will be displayed
   to the user.
 
+### `fetchReceivers: (successCallback: (receivers: Array<OrgenhetHierarki>) => void, errorCallback: () => void) => void`
+
+This callback is called when a receiver component needs to load data. It should call either successCallback with a list of OrgenhetHierarki
+objects, or errorCallback with an error message.
+
+- `successCallback: (receivers: Array<OrgenhetHierarki>) => void` The function to call to return a list of OrgenhetHierarki objects to the
+  receiver component, which will be displayed as a set of choices to the user.
+- `errorCallback(error: string) => void)` The function to call to return an error message to the receiver component, which will be displayed
+  to the user.
+
 # Enum definitions
 
 ## `ValidationSummaryPlacement`
 
 ```ts
-// location: '@helsenorge/toolkit/components/molecules/form/validationSummaryPlacement'
+// location: '@helsenorge/form/components/form/validationSummaryPlacement'
 enum ValidationSummaryPlacement {
   Top = 'Top',
   Bottom = 'Bottom',
@@ -307,21 +334,12 @@ answer from a radio-button group or drop-down group.
 ## `IQuestionnaireInspector`
 
 ```ts
-export interface IQuestionnaireInspector {
+interface IQuestionnaireInspector {
   findItemWithLinkIds(linkIds: Array<string>): Array<QuestionnaireItemPair>;
 }
 ```
 
 `IQuestionnaireInspector` lets the users query the state of the questionnaire for both `QuestionnaireItem` and `QuestionnaireResponse`.
-
-## `QuestionniareItemPair`
-
-```ts
-export interface QuestionnaireItemPair {
-  QuestionnaireItem: QuestionnaireItem;
-  QuestionnaireResponseItems: Array<QuestionnaireResponseItem>;
-}
-```
 
 ## `Path`
 
@@ -330,6 +348,20 @@ export interface QuestionnaireItemPair {
 interface Path {
   linkId: string;
   index?: number;
+}
+```
+
+## `QuestionniareItemPair`
+
+```ts
+interface QuestionnaireItemPair {
+  QuestionnaireItem: QuestionnaireItem;
+  QuestionnaireResponseItems: Array<ItemAndPath>;
+}
+
+interface ItemAndPath {
+  item: QuestionnaireResponseItem;
+  path: Path[];
 }
 ```
 
@@ -346,7 +378,7 @@ interface TextMessage {
 ## `UploadedFile`
 
 ```ts
-// location: '@helsenorge/toolkit/components/atoms/multi-dropzone'
+// location: '@helsenorge/file-upload/components/dropzone'
 interface UploadedFile {
   id?: string;
   name: string;
@@ -376,6 +408,7 @@ interface Resources {
   oppgiGyldigVerdi: string;
   formCancel: string;
   formSend: string;
+  formSave: string;
   formError: string;
   formOptional: string;
   formRequired: string;
@@ -396,6 +429,63 @@ interface Resources {
   filterDateErrorDateFormat: string;
   filterDateErrorBeforeMinDate: string;
   filterDateErrorAfterMaxDate: string;
+  validationNotAllowed: string;
+  formRequiredErrorMessage?: string;
+  deleteAttachmentText?: string;
+  autoSuggestLoadError?: string;
+  autosuggestNoSuggestions?: string;
+  stringOverMaxLengthError?: string;
+  maxLengthText?: string;
+  chooseFilesText?: string;
+  skipLinkText?: string;
+  clearDate?: string;
+  calendarLabel?: string;
+  closeDatePicker?: string;
+  focusStartDate: string;
+  jumpToPrevMonth?: string;
+  jumpToNextMonth?: string;
+  keyboardShortcuts?: string;
+  showKeyboardShortcutsPanel?: string;
+  hideKeyboardShortcutsPanel?: string;
+  enterKey?: string;
+  leftArrowRightArrow?: string;
+  upArrowDownArrow?: string;
+  pageUpPageDown?: string;
+  homeEnd?: string;
+  escape?: string;
+  questionMark?: string;
+  openThisPanel?: string;
+  selectFocusedDate?: string;
+  moveFocusByOneDay?: string;
+  moveFocusByOneWeek?: string;
+  moveFocusByOneMonth?: string;
+  moveFocustoStartAndEndOfWeek?: string;
+  returnFocusToInput?: string;
+  year_field_invalid?: string;
+  year_field_maxdate?: string;
+  year_field_mindate?: string;
+  year_field_required?: string;
+  yearmonth_field_invalid?: string;
+  yearmonth_field_invalid_year?: string;
+  yearmonth_field_maxdate?: string;
+  yearmonth_field_mindate?: string;
+  yearmonth_field_month_placeholder?: string;
+  yearmonth_field_required?: string;
+  yearmonth_field_year_placeholder?: string;
+  adresseKomponent_header?: string;
+  adresseKomponent_skjemaSendesTil?: string;
+  adresseKomponent_sublabel?: string;
+  adresseKomponent_velgAvdeling?: string;
+  adresseKomponent_velgHelseforetak?: string;
+  adresseKomponent_velgHelseregion?: string;
+  adresseKomponent_velgSykehus?: string;
+  adresseKomponent_velgKlinikk?: string;
+  adresseKomponent_velgSeksjon?: string;
+  adresseKomponent_velgSengepost?: string;
+  adresseKomponent_velgPoliklinikk?: string;
+  adresseKomponent_velgTjeneste?: string;
+  adresseKomponent_feilmelding?: string;
+  adresseKomponent_loadError?: string;
 }
 ```
 
@@ -406,5 +496,39 @@ interface Resources {
 interface AutoSuggestProps {
   minSearchCharacters: number;
   typingSearchDelay: number;
+}
+```
+
+## `ValueSet`
+
+```ts
+// location: '@helsenorge/refero/types/fhir'
+interface ValueSet extends DomainResource {
+  // ValueSet as defined by the FHIR standard
+}
+```
+
+## `OrgenhetHierarki`
+
+```ts
+// location: '@helsenorge/refero/types/orgenhetHierarki'
+interface OrgenhetHierarki {
+  OrgenhetId: number;
+  Navn: string;
+  EnhetType: EnhetType;
+  EndepunktId: string | null;
+  UnderOrgenheter: Array<OrgenhetHierarki> | null;
+}
+
+enum EnhetType {
+  Region = 1,
+  Foretak = 2,
+  Sykehus = 3,
+  Klinikk = 4,
+  Avdeling = 5,
+  Seksjon = 6,
+  Sengepost = 7,
+  Poliklinikk = 8,
+  Tjeneste = 9,
 }
 ```
