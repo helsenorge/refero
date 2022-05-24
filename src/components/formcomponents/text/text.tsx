@@ -1,5 +1,6 @@
 import * as React from 'react';
 
+import DOMPurify from 'dompurify';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
@@ -31,8 +32,8 @@ import {
   getSublabelText,
 } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
-import { Resources } from '../../../util/resources';
 import { Path } from '../../../util/refero-core';
+import { Resources } from '../../../util/resources';
 import withCommonFunctions from '../../with-common-functions';
 import SubLabel from '../sublabel';
 import TextView from '../textview';
@@ -138,7 +139,7 @@ export class Text extends React.Component<Props & ValidationProps, {}> {
           id={id}
           className="page_refero__component page_refero__component_highlight"
           dangerouslySetInnerHTML={{
-            __html: `${getText(item, onRenderMarkdown, questionnaire)}`,
+            __html: DOMPurify.sanitize(`${getText(item, onRenderMarkdown, questionnaire)}`),
           }}
         />
       );

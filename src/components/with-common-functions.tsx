@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import classNames from 'classnames';
+import DOMPurify from 'dompurify';
 import { Collapse } from 'react-collapse';
 import { ThunkDispatch } from 'redux-thunk';
 
@@ -30,8 +31,6 @@ import itemType from '../constants/itemType';
 import { GlobalState } from '../reducers';
 import { findHelpItem, isHelpItem, getHelpItemType } from '../util/help';
 import { getComponentForItem, getChildHeaderTag, shouldRenderRepeatButton, getText, isHiddenItem } from '../util/index';
-import { RenderContext } from '../util/renderContext';
-import { Resources } from '../util/resources';
 import {
   Path,
   getAnswerFromResponseItem,
@@ -40,6 +39,8 @@ import {
   shouldRenderDeleteButton,
   createIdSuffix,
 } from '../util/refero-core';
+import { RenderContext } from '../util/renderContext';
+import { Resources } from '../util/resources';
 import DeleteButton from './formcomponents/repeat/delete-button';
 import RepeatButton from './formcomponents/repeat/repeat-button';
 import HelpButton from './help-button/help-button';
@@ -237,7 +238,7 @@ export default function withCommonFunctions<T>(WrappedComponent: React.Component
       });
       return (
         <Collapse isOpened={this.state.isHelpVisible}>
-          <div className={collapseClasses} dangerouslySetInnerHTML={{ __html: `${getText(helpItem)}` }} />
+          <div className={collapseClasses} dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(`${getText(helpItem)}`) }} />
         </Collapse>
       );
     };
