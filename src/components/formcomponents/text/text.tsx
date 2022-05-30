@@ -177,7 +177,7 @@ export class Text extends React.Component<Props & ValidationProps, {}> {
             counter={this.showCounter()}
             onChange={(event: React.FormEvent<{}>): void => {
               event.persist();
-              this.handleChange(event);
+              this.debouncedHandleChange(event);
             }}
             validator={this.validateText}
             errorMessage={this.getValidationErrorMessage}
