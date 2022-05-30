@@ -129,7 +129,7 @@ export class String extends React.Component<Props & ValidationProps, {}> {
             maxLength={getMaxLength(item)}
             onChange={(event: React.FormEvent<{}>): void => {
               event.persist();
-              this.handleChange(event);
+              this.debouncedHandleChange(event);
             }}
             pattern={getRegexExtension(item)}
             errorMessage={this.getValidationErrorMessage}
