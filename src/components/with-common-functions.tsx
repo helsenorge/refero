@@ -238,7 +238,7 @@ export default function withCommonFunctions<T>(WrappedComponent: React.Component
       });
       return (
         <Collapse isOpened={this.state.isHelpVisible}>
-          <div className={collapseClasses} dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(`${getText(helpItem)}`) }} />
+          <div className={collapseClasses} dangerouslySetInnerHTML={{ __html: `${getText(helpItem)}` }} />
         </Collapse>
       );
     };

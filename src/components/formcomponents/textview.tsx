@@ -17,7 +17,7 @@ interface Props {
 const textView: React.SFC<Props> = ({ id, item, value, textClass, children, onRenderMarkdown }) => {
   return (
     <div id={getId(id)}>
-      <b dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(`${renderPrefix(item)} ${getText(item, onRenderMarkdown)} `) }} />
+      <b dangerouslySetInnerHTML={{ __html: `${renderPrefix(item)} ${getText(item, onRenderMarkdown)}` }} />
       <div className={textClass || ''}>{value}</div>
       {children ? (
         <span>

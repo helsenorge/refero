@@ -39,9 +39,7 @@ const Display: React.SFC<Props> = ({ id, enable, pdf, item, questionnaire, onRen
         <div
           id={getId(id)}
           className={`page_refero__markdown ${designsystemtypography['anchorlink-wrapper']}`}
-          dangerouslySetInnerHTML={{
-            __html: DOMPurify.sanitize(getText(item, onRenderMarkdown, questionnaire)),
-          }}
+          dangerouslySetInnerHTML={{ __html: getText(item, onRenderMarkdown, questionnaire) }}
         />
       );
     } else {

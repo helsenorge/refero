@@ -138,9 +138,7 @@ export class Text extends React.Component<Props & ValidationProps, {}> {
         <div
           id={id}
           className="page_refero__component page_refero__component_highlight"
-          dangerouslySetInnerHTML={{
-            __html: DOMPurify.sanitize(`${getText(item, onRenderMarkdown, questionnaire)}`),
-          }}
+          dangerouslySetInnerHTML={{ __html: `${getText(item, onRenderMarkdown, questionnaire)}` }}
         />
       );
     }

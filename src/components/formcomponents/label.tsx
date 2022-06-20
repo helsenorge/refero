@@ -13,13 +13,7 @@ interface Props {
 }
 
 const Label = ({ item, onRenderMarkdown, questionnaire }: Props): JSX.Element | null => {
-  return (
-    <span
-      dangerouslySetInnerHTML={{
-        __html: DOMPurify.sanitize(`${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire)}`),
-      }}
-    />
-  );
+  return <span dangerouslySetInnerHTML={{ __html: `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire)}` }} />;
 };
 
 export default Label;
