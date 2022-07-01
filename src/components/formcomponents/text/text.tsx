@@ -1,6 +1,5 @@
 import * as React from 'react';
 
-import DOMPurify from 'dompurify';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
@@ -139,7 +138,7 @@ export class Text extends React.Component<Props & ValidationProps, {}> {
           id={id}
           className="page_refero__component page_refero__component_highlight"
           dangerouslySetInnerHTML={{
-            __html: DOMPurify.sanitize(`${getText(item, onRenderMarkdown, questionnaire)}`),
+            __html: `${getText(item, onRenderMarkdown, questionnaire)}`,
           }}
         />
       );

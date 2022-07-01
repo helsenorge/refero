@@ -1,7 +1,5 @@
 import * as React from 'react';
 
-import DOMPurify from 'dompurify';
-
 import { QuestionnaireItem, Questionnaire } from '../../types/fhir';
 
 import { getText, renderPrefix } from '../../util/index';
@@ -16,7 +14,7 @@ const Label = ({ item, onRenderMarkdown, questionnaire }: Props): JSX.Element | 
   return (
     <span
       dangerouslySetInnerHTML={{
-        __html: DOMPurify.sanitize(`${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire)}`),
+        __html: `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire)}`,
       }}
     />
   );
