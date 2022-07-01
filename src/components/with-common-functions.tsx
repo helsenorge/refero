@@ -1,7 +1,6 @@
 import * as React from 'react';
 
 import classNames from 'classnames';
-import DOMPurify from 'dompurify';
 import { Collapse } from 'react-collapse';
 import { ThunkDispatch } from 'redux-thunk';
 
@@ -238,7 +237,7 @@ export default function withCommonFunctions<T>(WrappedComponent: React.Component
       });
       return (
         <Collapse isOpened={this.state.isHelpVisible}>
-          <div className={collapseClasses} dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(`${getText(helpItem)}`) }} />
+          <div className={collapseClasses} dangerouslySetInnerHTML={{ __html: `${getText(helpItem)}` }} />
         </Collapse>
       );
     };
