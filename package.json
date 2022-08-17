@@ -31,12 +31,12 @@
     "react-redux": "^7.1.0",
     "redux": "^4.0.4",
     "redux-thunk": "^2.3.0",
-    "@helsenorge/core-utils": "^24.1.0",
-    "@helsenorge/file-upload": "^24.1.0",
-    "@helsenorge/form": "^24.1.0",
-    "@helsenorge/date-time": "^24.1.0",
-    "@helsenorge/autosuggest": "^24.1.0",
-    "@helsenorge/designsystem-react": "^1.0.0-beta131"
+    "@helsenorge/core-utils": "^25.0.0",
+    "@helsenorge/file-upload": "^25.0.0",
+    "@helsenorge/form": "^25.0.0",
+    "@helsenorge/date-time": "^25.0.0",
+    "@helsenorge/autosuggest": "^25.0.0",
+    "@helsenorge/designsystem-react": "^1.0.1"
   },
   "devDependencies": {
     "@types/chai": "^3.5.2",
@@ -109,12 +109,12 @@
     "eslint-plugin-testing-library": "5.0.5",
     "prettier": "2.5.1",
     "pretty-quick": "3.1.3",
-    "@helsenorge/core-utils": "^24.1.0",
-    "@helsenorge/file-upload": "^24.1.0",
-    "@helsenorge/form": "^24.1.0",
-    "@helsenorge/date-time": "^24.1.0",
-    "@helsenorge/autosuggest": "^24.1.0",
-    "@helsenorge/designsystem-react": "^1.0.0-beta131"
+    "@helsenorge/core-utils": "^25.0.0",
+    "@helsenorge/file-upload": "^25.0.0",
+    "@helsenorge/form": "^25.0.0",
+    "@helsenorge/date-time": "^25.0.0",
+    "@helsenorge/autosuggest": "^25.0.0",
+    "@helsenorge/designsystem-react": "^1.0.1"
   },
   "dependencies": {
     "@types/react-collapse": "5.0.0",
