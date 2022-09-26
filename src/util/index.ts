@@ -37,12 +37,17 @@ import {
 DOMPurify.setConfig({ ADD_ATTR: ['target'] });
 
 const renderer = new marked.Renderer();
+let resources: Resources;
 renderer.link = (href: string, title: string, text: string): string => {
-  return `<a href=${href} ${title ? `title=${title}` : ''} target="_blank" class="external">${text}</a>`;
+  return `<a href=${href} ${title ? `title=${title}` : ''} target="_blank" aria-label=${
+    resources.linkOpensInNewTab
+  } class="external">${text}</a>`;
 };
 const rendererSameWindow = new marked.Renderer();
 rendererSameWindow.link = (href: string, title: string, text: string): string => {
-  return `<a href=${href} ${title ? `title=${title}` : ''} target="${openNewIfAbsolute(href)}">${text}</a>`;
+  return `<a href=${href} ${title ? `title=${title}` : ''} target="${openNewIfAbsolute(href)}" ${
+    openNewIfAbsolute(href) === '_blank' ? `aria-label=${resources.linkOpensInNewTab}` : ''
+  }>${text}</a>`;
 };
 
 function openNewIfAbsolute(url: string): string {
