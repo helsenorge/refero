@@ -486,6 +486,7 @@ interface Resources {
   adresseKomponent_velgTjeneste?: string;
   adresseKomponent_feilmelding?: string;
   adresseKomponent_loadError?: string;
+  linkOpensInNewTab?: string;
 }
 ```
 

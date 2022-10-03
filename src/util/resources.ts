@@ -386,5 +386,5 @@ export interface Resources {
   /**
    * Åpnes i ny fane
    */
-  linkOpensInNewTab: string;
+  linkOpensInNewTab?: string;
 }
