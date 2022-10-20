@@ -171,25 +171,22 @@ function getMarkdownValue(
   questionnaire?: Questionnaire | null,
   srLinkText?: string
 ): string {
-  const srSpan = `<span style="position: absolute !important; height: 1px; width: 1px; overflow: hidden; clip: rect(1px, 1px, 1px, 1px);">${
+  const srLinkTextSpan = `<span style="position: absolute !important; height: 1px; width: 1px; overflow: hidden; clip: rect(1px, 1px, 1px, 1px);">${
     srLinkText ? srLinkText : 'The link opens in a new tab'
   }</span>`;
+  const itemValue = getHyperlinkExtensionValue(item);
+  const questionnaireValue = questionnaire ? getHyperlinkExtensionValue(questionnaire) : undefined;
 
   const renderer = new marked.Renderer();
   renderer.link = (href: string, title: string, text: string): string => {
-    return `<a href=${href} ${title ? `title=${title}` : ''} target="_blank" class="external">${
-      text + srLinkText ? srLinkText : 'The link opens in a new tab'
-    }${srSpan}</a>`;
+    return `<a href=${href} ${title ? `title=${title}` : ''} target="_blank" class="external">${text}${srLinkTextSpan}</a>`;
   };
   const rendererSameWindow = new marked.Renderer();
   rendererSameWindow.link = (href: string, title: string, text: string): string => {
-    return `<a href=${href} ${title ? `title=${title}` : ''} target="${openNewIfAbsolute(href)}">${
-      text + srLinkText ? srLinkText : 'The link opens in a new tab'
-    }${openNewIfAbsolute(href) === '_blank' ? srSpan : ''}</a>`;
+    return `<a href=${href} ${title ? `title=${title}` : ''} target="${openNewIfAbsolute(href)}">${text}${
+      openNewIfAbsolute(href) === '_blank' ? srLinkTextSpan : ''
+    }</a>`;
   };
-
-  const itemValue = getHyperlinkExtensionValue(item);
-  const questionnaireValue = questionnaire ? getHyperlinkExtensionValue(questionnaire) : undefined;
 
   if (onRenderMarkdown) {
     return DOMPurify.sanitize(onRenderMarkdown(item, markdownText.toString()));
