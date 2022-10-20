@@ -2,7 +2,6 @@ import { QuestionnaireItem, Extension, Element, Questionnaire, Coding } from '..
 import { SidebarItem } from '../types/sidebar';
 
 import ExtensionConstants from '../constants/extensions';
-import { HyperlinkTarget } from '../constants/hyperlinkTarget';
 import itemControlConstants from '../constants/itemcontrol';
 import itemType from '../constants/itemType';
 import { PresentationButtonsType } from '../constants/presentationButtonsType';
