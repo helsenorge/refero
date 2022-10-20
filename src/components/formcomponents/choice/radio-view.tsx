@@ -38,6 +38,7 @@ const RadioView: React.SFC<Props> = ({
   handleChange,
   selected,
   validateInput,
+  resources,
   children,
   getErrorMessage,
   repeatButton,
@@ -50,14 +51,14 @@ const RadioView: React.SFC<Props> = ({
   if (!options) {
     return null;
   }
-  const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire);
+  const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
 
   return (
     <div className="page_refero__component page_refero__component_choice page_refero__component_choice_radiobutton">
       <Collapse isOpened>
         <Validation {...other}>
           <RadioGroup
-            legend={<Label item={item} onRenderMarkdown={onRenderMarkdown} questionnaire={questionnaire} />}
+            legend={<Label item={item} onRenderMarkdown={onRenderMarkdown} questionnaire={questionnaire} resources={resources} />}
             subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
             id={getId(id)}
             options={options}

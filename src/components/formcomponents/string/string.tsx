@@ -109,7 +109,7 @@ export class String extends React.Component<Props & ValidationProps, {}> {
         </TextView>
       );
     }
-    const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire);
+    const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
 
     return (
       <div className="page_refero__component page_refero__component_string">
@@ -121,7 +121,7 @@ export class String extends React.Component<Props & ValidationProps, {}> {
             value={getStringValue(answer)}
             onChangeValidator={this.validateText}
             showLabel={true}
-            label={<Label item={item} onRenderMarkdown={onRenderMarkdown} questionnaire={questionnaire} />}
+            label={<Label item={item} onRenderMarkdown={onRenderMarkdown} questionnaire={questionnaire} resources={resources} />}
             subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
             isRequired={isRequired(item)}
             placeholder={getPlaceholder(item)}

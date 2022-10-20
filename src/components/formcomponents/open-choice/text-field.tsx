@@ -11,6 +11,7 @@ import { isReadOnly, isRequired, getId, getStringValue, getPDFStringValue, getMa
 import Label from '../label';
 import SubLabel from '../sublabel';
 import Pdf from '../textview';
+import { Resources } from '../../../util/resources';
 
 interface Props {
   id?: string;
@@ -20,6 +21,7 @@ interface Props {
   answer: QuestionnaireResponseItemAnswer;
   handleStringChange: (event: React.FormEvent<{}>) => void;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
+  resources?: Resources;
 }
 const textField: React.SFC<Props & ValidationProps> = ({
   id,
@@ -30,6 +32,7 @@ const textField: React.SFC<Props & ValidationProps> = ({
   handleStringChange,
   children,
   onRenderMarkdown,
+  resources,
   ...other
 }) => {
   if (pdf) {
@@ -39,7 +42,7 @@ const textField: React.SFC<Props & ValidationProps> = ({
       </Pdf>
     );
   }
-  const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire);
+  const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
 
   return (
     <Validation {...other}>
@@ -49,7 +52,7 @@ const textField: React.SFC<Props & ValidationProps> = ({
         inputName={getId(id)}
         value={getStringValue(answer)}
         showLabel={false}
-        label={<Label item={item} onRenderMarkdown={onRenderMarkdown} questionnaire={questionnaire} />}
+        label={<Label item={item} onRenderMarkdown={onRenderMarkdown} questionnaire={questionnaire} resources={resources} />}
         subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
         isRequired={isRequired(item)}
         placeholder={getPlaceholder(item)}

@@ -70,7 +70,14 @@ class Boolean extends React.Component<Props & ValidationProps, {}> {
   };
 
   getLabel = (): JSX.Element => {
-    return <Label item={this.props.item} onRenderMarkdown={this.props.onRenderMarkdown} questionnaire={this.props.questionnaire} />;
+    return (
+      <Label
+        item={this.props.item}
+        onRenderMarkdown={this.props.onRenderMarkdown}
+        questionnaire={this.props.questionnaire}
+        resources={this.props.resources}
+      />
+    );
   };
 
   shouldComponentUpdate(nextProps: Props): boolean {

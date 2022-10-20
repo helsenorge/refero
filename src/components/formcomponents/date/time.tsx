@@ -206,7 +206,7 @@ class Time extends React.Component<Props & ValidationProps> {
 
   render(): JSX.Element | null {
     const { pdf, item, renderFieldset, id, onRenderMarkdown } = this.props;
-    const subLabelText = getSublabelText(this.props.item, this.props.onRenderMarkdown, this.props.questionnaire);
+    const subLabelText = getSublabelText(this.props.item, this.props.onRenderMarkdown, this.props.questionnaire, this.props.resources);
 
     if (pdf || isReadOnly(this.props.item)) {
       const value = this.getPDFValue();
@@ -233,7 +233,12 @@ class Time extends React.Component<Props & ValidationProps> {
             id={getId(id)}
             value={this.getValue()}
             legend={
-              <Label item={this.props.item} onRenderMarkdown={this.props.onRenderMarkdown} questionnaire={this.props.questionnaire} />
+              <Label
+                item={this.props.item}
+                onRenderMarkdown={this.props.onRenderMarkdown}
+                questionnaire={this.props.questionnaire}
+                resources={this.props.resources}
+              />
             }
             subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
             isRequired={isRequired(item)}

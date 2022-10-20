@@ -36,20 +36,6 @@ import {
 } from './extension';
 DOMPurify.setConfig({ ADD_ATTR: ['target'] });
 
-const renderer = new marked.Renderer();
-let resources: Resources;
-renderer.link = (href: string, title: string, text: string): string => {
-  return `<a href=${href} ${title ? `title=${title}` : ''} target="_blank" ${
-    resources.linkOpensInNewTab ? `aria-label=${resources.linkOpensInNewTab}` : ''
-  } class="external">${text}</a>`;
-};
-const rendererSameWindow = new marked.Renderer();
-rendererSameWindow.link = (href: string, title: string, text: string): string => {
-  return `<a href=${href} ${title ? `title=${title}` : ''} target="${openNewIfAbsolute(href)}" ${
-    openNewIfAbsolute(href) === '_blank' && resources.linkOpensInNewTab ? `aria-label=${resources.linkOpensInNewTab}` : ''
-  }>${text}</a>`;
-};
-
 function openNewIfAbsolute(url: string): string {
   const regex = new RegExp('^(([a-z][a-z0-9+.-]*):.*)');
   if (regex.test(url)) {
@@ -151,11 +137,12 @@ export function renderPrefix(item: QuestionnaireItem): string {
 export function getSublabelText(
   item: QuestionnaireItem,
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string,
-  questionnaire?: Questionnaire | null
+  questionnaire?: Questionnaire | null,
+  resources?: Resources
 ): string {
   if (item) {
     const markdown = getSublabelExtensionValue(item) || '';
-    return markdown ? getMarkdownValue(markdown, item, onRenderMarkdown, questionnaire) : '';
+    return markdown ? getMarkdownValue(markdown, item, onRenderMarkdown, questionnaire, resources?.linkOpensInNewTab) : '';
   }
   return '';
 }
@@ -163,13 +150,13 @@ export function getSublabelText(
 export function getText(
   item: QuestionnaireItem,
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string,
-  questionnaire?: Questionnaire | null
+  questionnaire?: Questionnaire | null,
+  resources?: Resources
 ): string {
   if (item) {
     const markdown = item._text ? getMarkdownExtensionValue(item._text) : undefined;
-
     if (markdown) {
-      return getMarkdownValue(markdown, item, onRenderMarkdown, questionnaire);
+      return getMarkdownValue(markdown, item, onRenderMarkdown, questionnaire, resources?.linkOpensInNewTab);
     } else if (item.text) {
       return item.text;
     }
@@ -181,8 +168,26 @@ function getMarkdownValue(
   markdownText: string,
   item: QuestionnaireItem,
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string,
-  questionnaire?: Questionnaire | null
+  questionnaire?: Questionnaire | null,
+  srLinkText?: string
 ): string {
+  const srSpan = `<span style="position: absolute !important; height: 1px; width: 1px; overflow: hidden; clip: rect(1px, 1px, 1px, 1px);">${
+    srLinkText ? srLinkText : 'The link opens in a new tab'
+  }</span>`;
+
+  const renderer = new marked.Renderer();
+  renderer.link = (href: string, title: string, text: string): string => {
+    return `<a href=${href} ${title ? `title=${title}` : ''} target="_blank" class="external">${
+      text + srLinkText ? srLinkText : 'The link opens in a new tab'
+    }${srSpan}</a>`;
+  };
+  const rendererSameWindow = new marked.Renderer();
+  rendererSameWindow.link = (href: string, title: string, text: string): string => {
+    return `<a href=${href} ${title ? `title=${title}` : ''} target="${openNewIfAbsolute(href)}">${
+      text + srLinkText ? srLinkText : 'The link opens in a new tab'
+    }${openNewIfAbsolute(href) === '_blank' ? srSpan : ''}</a>`;
+  };
+
   const itemValue = getHyperlinkExtensionValue(item);
   const questionnaireValue = questionnaire ? getHyperlinkExtensionValue(questionnaire) : undefined;
 

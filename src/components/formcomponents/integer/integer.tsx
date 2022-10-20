@@ -98,7 +98,7 @@ class Integer extends React.Component<Props & ValidationProps, {}> {
       );
     }
     const value = this.getValue();
-    const subLabelText = getSublabelText(this.props.item, this.props.onRenderMarkdown, this.props.questionnaire);
+    const subLabelText = getSublabelText(this.props.item, this.props.onRenderMarkdown, this.props.questionnaire, this.props.resources);
 
     return (
       <div className="page_refero__component page_refero__component_integer">
@@ -109,7 +109,14 @@ class Integer extends React.Component<Props & ValidationProps, {}> {
             inputName={getId(this.props.id)}
             value={value !== undefined && value !== null ? value + '' : ''}
             showLabel={true}
-            label={<Label item={this.props.item} onRenderMarkdown={this.props.onRenderMarkdown} questionnaire={this.props.questionnaire} />}
+            label={
+              <Label
+                item={this.props.item}
+                onRenderMarkdown={this.props.onRenderMarkdown}
+                questionnaire={this.props.questionnaire}
+                resources={this.props.resources}
+              />
+            }
             subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
             isRequired={isRequired(this.props.item)}
             placeholder={getPlaceholder(this.props.item)}

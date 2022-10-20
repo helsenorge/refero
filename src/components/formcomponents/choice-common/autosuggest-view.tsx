@@ -236,7 +236,7 @@ class AutosuggestView extends React.Component<AutosuggestProps, AutosuggestState
   }
 
   render(): JSX.Element {
-    const subLabelText = getSublabelText(this.props.item, this.props.onRenderMarkdown, this.props.questionnaire);
+    const subLabelText = getSublabelText(this.props.item, this.props.onRenderMarkdown, this.props.questionnaire, this.props.resources);
 
     return (
       <div className="page_refero__component page_refero__component_choice page_refero__component_choice_autosuggest">
@@ -245,7 +245,12 @@ class AutosuggestView extends React.Component<AutosuggestProps, AutosuggestState
             <Autosuggest
               id={getId(this.props.id)}
               label={
-                <Label item={this.props.item} onRenderMarkdown={this.props.onRenderMarkdown} questionnaire={this.props.questionnaire} />
+                <Label
+                  item={this.props.item}
+                  onRenderMarkdown={this.props.onRenderMarkdown}
+                  questionnaire={this.props.questionnaire}
+                  resources={this.props.resources}
+                />
               }
               subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
               className="page_refero__autosuggest"

@@ -274,6 +274,7 @@ class OpenChoice extends React.Component<Props & ValidationProps> {
         answer={a}
         handleStringChange={this.handleStringChangeEvent}
         onRenderMarkdown={onRenderMarkdown}
+        resources={this.props.resources}
         {...other}
       />
     );

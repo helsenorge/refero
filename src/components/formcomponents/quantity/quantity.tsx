@@ -126,7 +126,7 @@ class Quantity extends React.Component<Props & ValidationProps, {}> {
       );
     }
     const value = this.getValue();
-    const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire);
+    const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, this.props.resources);
 
     return (
       <div className="page_refero__component page_refero__component_quantity">
@@ -138,7 +138,7 @@ class Quantity extends React.Component<Props & ValidationProps, {}> {
             inputName={getId(this.props.id)}
             value={value !== undefined ? value + '' : ''}
             showLabel={true}
-            label={<Label item={item} onRenderMarkdown={onRenderMarkdown} questionnaire={questionnaire} />}
+            label={<Label item={item} onRenderMarkdown={onRenderMarkdown} questionnaire={questionnaire} resources={this.props.resources} />}
             subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
             isRequired={isRequired(item)}
             placeholder={getPlaceholder(item)}
