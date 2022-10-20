@@ -140,7 +140,7 @@ export class Text extends React.Component<Props & ValidationProps, {}> {
           id={id}
           className="page_refero__component page_refero__component_highlight"
           dangerouslySetInnerHTML={{
-            __html: DOMPurify.sanitize(`${getText(item, onRenderMarkdown, questionnaire)}`, {
+            __html: DOMPurify.sanitize(`${getText(item, onRenderMarkdown, questionnaire, resources)}`, {
               RETURN_TRUSTED_TYPE: true,
             }) as unknown as string,
           }}
@@ -161,7 +161,7 @@ export class Text extends React.Component<Props & ValidationProps, {}> {
         </TextView>
       );
     }
-    const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire);
+    const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
 
     return (
       <div className="page_refero__component page_refero__component_text">
@@ -172,7 +172,7 @@ export class Text extends React.Component<Props & ValidationProps, {}> {
             value={getStringValue(answer)}
             isRequired={isRequired(item)}
             showLabel={true}
-            label={`${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire)}`}
+            label={`${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`}
             subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
             placeholder={getPlaceholder(item)}
             maxlength={getMaxLength(item)}

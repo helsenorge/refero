@@ -178,7 +178,7 @@ class DateTime extends React.Component<Props & ValidationProps> {
     const valueDateTime = this.getDefaultDate(this.props);
     const maxDateTime = this.getMaxDate();
     const minDateTime = this.getMinDate();
-    const subLabelText = getSublabelText(this.props.item, this.props.onRenderMarkdown, this.props.questionnaire);
+    const subLabelText = getSublabelText(this.props.item, this.props.onRenderMarkdown, this.props.questionnaire, this.props.resources);
 
     return (
       <div className="page_refero__component page_refero__component_datetime">
@@ -195,7 +195,12 @@ class DateTime extends React.Component<Props & ValidationProps> {
             onChange={this.dispatchNewDate}
             onBlur={this.onBlur}
             legend={
-              <Label item={this.props.item} onRenderMarkdown={this.props.onRenderMarkdown} questionnaire={this.props.questionnaire} />
+              <Label
+                item={this.props.item}
+                onRenderMarkdown={this.props.onRenderMarkdown}
+                questionnaire={this.props.questionnaire}
+                resources={this.props.resources}
+              />
             }
             subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
             isRequired={isRequired(item)}

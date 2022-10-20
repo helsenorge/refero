@@ -64,7 +64,7 @@ class DropdownView extends React.Component<Props, {}> {
     const dropdownOptions: HTMLOptionElement[] = options.map((o: Options) => {
       return new Option(o.label, o.type);
     });
-    const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire);
+    const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
 
     let placeholder;
     if (getPlaceholder(item)) {
@@ -81,7 +81,7 @@ class DropdownView extends React.Component<Props, {}> {
               id={getId(id)}
               selectName={getId(id)}
               showLabel={true}
-              label={<Label item={item} onRenderMarkdown={onRenderMarkdown} questionnaire={questionnaire} />}
+              label={<Label item={item} onRenderMarkdown={onRenderMarkdown} questionnaire={questionnaire} resources={resources} />}
               subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
               isRequired={isRequired(item)}
               onChange={(evt): void => handleChange((evt.target as HTMLInputElement).value)}

@@ -12,6 +12,7 @@ import itemControlConstants from '../../../constants/itemcontrol';
 import { getItemControlExtensionValue, getMarkdownExtensionValue } from '../../../util/extension';
 import { renderPrefix, getText, getId } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
+import { Resources } from '../../../util/resources';
 
 export interface Props {
   id?: string;
@@ -20,9 +21,10 @@ export interface Props {
   enable?: boolean;
   pdf?: boolean;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
+  resources?: Resources;
 }
 
-const Display: React.SFC<Props> = ({ id, enable, pdf, item, questionnaire, onRenderMarkdown }) => {
+const Display: React.SFC<Props> = ({ id, enable, pdf, item, questionnaire, onRenderMarkdown, resources }) => {
   const itemControls = item ? getItemControlExtensionValue(item) : null;
   const highlightClass =
     itemControls && itemControls.some(itemControl => itemControl.code === itemControlConstants.HIGHLIGHT)
@@ -41,12 +43,14 @@ const Display: React.SFC<Props> = ({ id, enable, pdf, item, questionnaire, onRen
           id={getId(id)}
           className={`page_refero__markdown ${designsystemtypography['anchorlink-wrapper']}`}
           dangerouslySetInnerHTML={{
-            __html: DOMPurify.sanitize(getText(item, onRenderMarkdown, questionnaire), { RETURN_TRUSTED_TYPE: true }) as unknown as string,
+            __html: DOMPurify.sanitize(getText(item, onRenderMarkdown, questionnaire, resources), {
+              RETURN_TRUSTED_TYPE: true,
+            }) as unknown as string,
           }}
         />
       );
     } else {
-      value = <p id={getId(id)}>{`${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire)}`}</p>;
+      value = <p id={getId(id)}>{`${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`}</p>;
     }
   }
   if (pdf) {

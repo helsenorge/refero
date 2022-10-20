@@ -92,7 +92,7 @@ class Decimal extends React.Component<Props & ValidationProps, {}> {
   render(): JSX.Element | null {
     const { id, item, pdf, onRenderMarkdown } = this.props;
     const value = this.getValue();
-    const subLabelText = getSublabelText(this.props.item, this.props.onRenderMarkdown, this.props.questionnaire);
+    const subLabelText = getSublabelText(this.props.item, this.props.onRenderMarkdown, this.props.questionnaire, this.props.resources);
 
     if (pdf || isReadOnly(item)) {
       return (
@@ -110,7 +110,14 @@ class Decimal extends React.Component<Props & ValidationProps, {}> {
             inputName={getId(this.props.id)}
             value={value ? value + '' : ''}
             showLabel={true}
-            label={<Label item={item} onRenderMarkdown={onRenderMarkdown} questionnaire={this.props.questionnaire} />}
+            label={
+              <Label
+                item={item}
+                onRenderMarkdown={onRenderMarkdown}
+                questionnaire={this.props.questionnaire}
+                resources={this.props.resources}
+              />
+            }
             subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
             isRequired={isRequired(item)}
             placeholder={getPlaceholder(item)}

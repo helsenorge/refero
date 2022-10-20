@@ -168,11 +168,16 @@ class DateComponent extends React.Component<Props & ValidationProps> {
 
   render(): JSX.Element | null {
     const date = this.getValue();
-    const subLabelText = getSublabelText(this.props.item, this.props.onRenderMarkdown, this.props.questionnaire);
+    const subLabelText = getSublabelText(this.props.item, this.props.onRenderMarkdown, this.props.questionnaire, this.props.resources);
 
     const itemControls = getItemControlExtensionValue(this.props.item);
     const labelEl = (
-      <Label item={this.props.item} onRenderMarkdown={this.props.onRenderMarkdown} questionnaire={this.props.questionnaire} />
+      <Label
+        item={this.props.item}
+        onRenderMarkdown={this.props.onRenderMarkdown}
+        questionnaire={this.props.questionnaire}
+        resources={this.props.resources}
+      />
     );
     const subLabelEl = subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined;
 

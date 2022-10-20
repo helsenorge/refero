@@ -159,7 +159,7 @@ class AttachmentComponent extends React.Component<Props & ValidationProps> {
 
   render(): JSX.Element | null {
     const { pdf, id, item, resources, onOpenAttachment, onRenderMarkdown, questionnaire, ...other } = this.props;
-    const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire);
+    const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
 
     if (pdf || isReadOnly(item)) {
       return (
@@ -175,7 +175,7 @@ class AttachmentComponent extends React.Component<Props & ValidationProps> {
             onDelete={this.onDelete}
             onOpen={onOpenAttachment}
             id={getId(id)}
-            label={<Label item={item} onRenderMarkdown={onRenderMarkdown} questionnaire={questionnaire} />}
+            label={<Label item={item} onRenderMarkdown={onRenderMarkdown} questionnaire={questionnaire} resources={resources} />}
             subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
             uploadButtonText={this.getButtonText()}
             resources={resources}

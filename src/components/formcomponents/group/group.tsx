@@ -224,7 +224,11 @@ export class Group extends React.Component<Props, State> {
   };
 
   getHeaderText = (): string => {
-    return renderPrefix(this.props.item) + ' ' + getText(this.props.item, this.props.onRenderMarkdown, this.props.questionnaire);
+    return (
+      renderPrefix(this.props.item) +
+      ' ' +
+      getText(this.props.item, this.props.onRenderMarkdown, this.props.questionnaire, this.props.resources)
+    );
   };
 
   renderGroupHeader = (): JSX.Element | null => {
