@@ -17,6 +17,7 @@ import rootReducer from '../../reducers';
 import { Resources } from '../../util/resources';
 import HelpButton from '../help-button/help-button';
 import { ReferoContainer } from '../index';
+import RenderingOptionsData from './__data__/renderingOptions';
 
 describe('Component renders help items', () => {
   beforeEach(() => {
@@ -100,6 +101,27 @@ describe('repeat with enableWhen', () => {
       .last()
       .simulate('change', { target: { checked: true } });
     expect(wrapper.find(SafeInputField)).toHaveLength(2);
+  });
+});
+
+describe('Coding system (RenderingOptions)', () => {
+  it('Only displayes items that have system code as KunSkjemautfyll or Default', () => {
+    const wrapper = createWrapper(RenderingOptionsData);
+    wrapper.render();
+
+    expect(wrapper.find('#item_group1_default').exists()).toBeTruthy();
+    expect(wrapper.find('#item_group1_default_text').exists()).toBeTruthy();
+    expect(wrapper.find('#item_group1_default_checkbox').exists()).toBeTruthy();
+    expect(wrapper.find('#item_group2').exists()).toBeTruthy();
+    expect(wrapper.find('#item_group2_kunskjemautfyll_text').exists()).toBeTruthy();
+    expect(wrapper.find('#item_group4_kunskjemautfyll').exists()).toBeTruthy();
+    expect(wrapper.find('#item_group4_kunskjemautfyll_text').exists()).toBeTruthy();
+    expect(wrapper.find('#item_group4_kunskjemautfyll_checkbox').exists()).toBeTruthy();
+
+    expect(wrapper.find('#item_group2_kunpdf_checkbox').exists()).toBeFalsy();
+    expect(wrapper.find('#item_group3_kunpdf').exists()).toBeFalsy();
+    expect(wrapper.find('#item_group3_kunpdf_text').exists()).toBeFalsy();
+    expect(wrapper.find('#item_group3_kunpdf_checkbox').exists()).toBeFalsy();
   });
 });
 
