@@ -94,9 +94,9 @@ class DateComponent extends React.Component<Props & ValidationProps> {
   getYear() {
     const { item, answer } = this.props;
     if (answer && answer.valueDate) {
-      return new Date(Number(answer.valueDate), 1);
+      return new Date(answer.valueDate.toString() + 'T11:11');
     } else if (item.initial && item.initial[0].valueDate) {
-      return new Date(Number(item.initial[0].valueDate), 1);
+      return new Date(item.initial[0].valueDate.toString() + 'T11:11');
     } else {
       return undefined;
     }
