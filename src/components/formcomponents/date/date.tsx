@@ -91,6 +91,17 @@ class DateComponent extends React.Component<Props & ValidationProps> {
     return parseDate(String(item.initial[0].valueDateTime));
   }
 
+  getYear() {
+    const { item, answer } = this.props;
+    if (answer && answer.valueDate) {
+      return new Date(Number(answer.valueDate), 1);
+    } else if (item.initial && item.initial[0].valueDate) {
+      return new Date(Number(item.initial[0].valueDate), 1);
+    } else {
+      return undefined;
+    }
+  }
+
   getMaxDate(): Moment | undefined {
     const maxDate = getExtension(ExtensionConstants.DATE_MAX_VALUE_URL, this.props.item);
     if (maxDate && maxDate.valueString) {
@@ -168,6 +179,7 @@ class DateComponent extends React.Component<Props & ValidationProps> {
 
   render(): JSX.Element | null {
     const date = this.getValue();
+    const year = this.getYear();
     const subLabelText = getSublabelText(this.props.item, this.props.onRenderMarkdown, this.props.questionnaire, this.props.resources);
 
     const itemControls = getItemControlExtensionValue(this.props.item);
@@ -195,7 +207,7 @@ class DateComponent extends React.Component<Props & ValidationProps> {
           helpElement={this.props.renderHelpElement()}
           onDateValueChange={this.onDateValueChange}
           className={this.props.className}
-          yearValue={date ? date.getFullYear() : undefined}
+          yearValue={year ? year.getFullYear() : undefined}
           maxDate={this.getMaxDate()}
           minDate={this.getMinDate()}
           {...this.props}
