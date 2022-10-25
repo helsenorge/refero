@@ -31,7 +31,7 @@ import itemControlConstants from '../constants/itemcontrol';
 import itemType from '../constants/itemType';
 import { GlobalState } from '../reducers';
 import { findHelpItem, isHelpItem, getHelpItemType } from '../util/help';
-import { getComponentForItem, getChildHeaderTag, shouldRenderRepeatButton, getText, isHiddenItem } from '../util/index';
+import { getComponentForItem, getChildHeaderTag, shouldRenderRepeatButton, getText, isHiddenItem, mostHideItem } from '../util/index';
 import {
   Path,
   getAnswerFromResponseItem,
@@ -253,6 +253,7 @@ export default function withCommonFunctions<T>(WrappedComponent: React.Component
       const { resources, containedResources, responseItem, pdf, path, headerTag, promptLoginMessage, onRenderMarkdown } = this.props;
       if (isHelpItem(item)) return [];
       if (isHiddenItem(item)) return [];
+      if (mostHideItem(item)) return [];
 
       const Comp = getComponentForItem(item.type);
       if (!Comp) {

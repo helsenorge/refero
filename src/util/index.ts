@@ -21,6 +21,7 @@ import Quantity from '../components/formcomponents/quantity/quantity';
 import StringComponent from '../components/formcomponents/string/string';
 import Text from '../components/formcomponents/text/text';
 import ExtensionConstants from '../constants/extensions';
+import { RenderOptionCode } from '../constants/renderOptionCode';
 import { HyperlinkTarget } from '../constants/hyperlinkTarget';
 import Constants from '../constants/index';
 import ItemType from '../constants/itemType';
@@ -34,6 +35,7 @@ import {
   getSublabelExtensionValue,
   getHyperlinkExtensionValue,
 } from './extension';
+import { getQuestionnaireItemCodeValue } from './codingsystem';
 DOMPurify.setConfig({ ADD_ATTR: ['target'] });
 
 function openNewIfAbsolute(url: string): string {
@@ -118,6 +120,11 @@ export function isRepeat(item: QuestionnaireItem): boolean {
 
 export function isHiddenItem(item: QuestionnaireItem): boolean | undefined {
   return getQuestionnaireHiddenExtensionValue(item);
+}
+
+export function mostHideItem(item: QuestionnaireItem): boolean | undefined {
+  const code = getQuestionnaireItemCodeValue(item);
+  return code === RenderOptionCode.KunPdf;
 }
 
 export function getId(id?: string): string {

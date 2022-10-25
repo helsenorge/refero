@@ -1,0 +1,192 @@
+{
+  "resourceType": "Questionnaire",
+  "language": "en-GB",
+  "id": "0101",
+  "title": "Skjemautfyll",
+  "status": "active",
+  "publisher": "NHN",
+  "meta": {
+    "profile": ["http://ehelse.no/fhir/StructureDefinition/sdf-Questionnaire"],
+    "tag": [
+      {
+        "system": "urn:ietf:bcp:47",
+        "code": "en-GB",
+        "display": "English"
+      }
+    ]
+  },
+  "useContext": [
+    {
+      "code": {
+        "system": "http://hl7.org/fhir/ValueSet/usage-context-type",
+        "code": "focus",
+        "display": "Clinical Focus"
+      },
+      "valueCodeableConcept": {
+        "coding": [
+          {
+            "system": "urn:oid:2.16.578.1.12.4.1.1.8655",
+            "display": "Skjemautfyll"
+          }
+        ]
+      }
+    }
+  ],
+  "contact": [
+    {
+      "name": "http://www.nhn.no"
+    }
+  ],
+  "subjectType": ["Patient"],
+  "extension": [
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sidebar",
+      "valueCoding": {
+        "system": "http://helsenorge.no/fhir/ValueSet/sdf-sidebar",
+        "code": "1"
+      }
+    },
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-information-message",
+      "valueCoding": {
+        "system": "http://helsenorge.no/fhir/ValueSet/sdf-information-message",
+        "code": "1"
+      }
+    },
+    {
+      "url": "http://ehelse.no/fhir/StructureDefinition/sdf-endpoint",
+      "valueReference": {
+        "reference": "Endpoint/2"
+      }
+    }
+  ],
+  "url": "Questionnaire/renderingoption",
+  "item": [
+    {
+      "linkId": "group1_default",
+      "type": "group",
+      "text": "Group 1: Default",
+      "code": [
+        {
+          "code": "1",
+          "display": "Default",
+          "system": "http://helsenorge.no/fhir/CodeSystem/RenderOptions",
+          "id": "4c948616-7e10-49db-854b-ca8278766931"
+        }
+      ],
+      "required": false,
+      "item": [
+        {
+          "linkId": "group1_default_text",
+          "type": "string",
+          "text": "Text",
+          "required": false
+        },
+        {
+          "linkId": "group1_default_checkbox",
+          "type": "boolean",
+          "text": "Confirmation",
+          "required": false
+        }
+      ]
+    },
+    {
+      "linkId": "group2",
+      "type": "group",
+      "text": "Group 2",
+      "required": false,
+      "item": [
+        {
+          "linkId": "group2_kunskjemautfyll_text",
+          "type": "string",
+          "text": "Text kun skjemautfyll",
+          "code": [
+            {
+              "code": "3",
+              "display": "KunSkjemautfyll",
+              "system": "http://helsenorge.no/fhir/CodeSystem/RenderOptions",
+              "id": "26cbee4b-52df-43e5-b7ca-80d8f72f2727"
+            }
+          ],
+          "required": false
+        },
+        {
+          "linkId": "group2_kunpdf_checkbox",
+          "type": "boolean",
+          "text": "Confirmation kun pdf",
+          "code": [
+            {
+              "code": "2",
+              "display": "KunPdf",
+              "system": "http://helsenorge.no/fhir/CodeSystem/RenderOptions",
+              "id": "e9bf6b70-6de9-473d-e247-a0f708c8a0c6"
+            }
+          ],
+          "required": false
+        }
+      ]
+    },
+    {
+      "linkId": "group3_kunpdf",
+      "type": "group",
+      "text": "Group 3: Kun Pdf",
+      "code": [
+        {
+          "code": "2",
+          "display": "KunPdf",
+          "system": "http://helsenorge.no/fhir/CodeSystem/RenderOptions",
+          "id": "b51057bf-d64b-4a53-8cd7-e6fa8643e2ac"
+        }
+      ],
+      "required": false,
+      "item": [
+        {
+          "linkId": "group3_kunpdf_text",
+          "type": "string",
+          "text": "Text kun pdf",
+          "required": false
+        },
+        {
+          "linkId": "group3_kunpdf_checkbox",
+          "type": "boolean",
+          "text": "Confirmation kun pdf",
+          "required": false
+        }
+      ]
+    },
+    {
+      "linkId": "group4_kunskjemautfyll",
+      "type": "group",
+      "text": "Group 4: Kun skjemautfyll",
+      "code": [
+        {
+          "code": "3",
+          "display": "KunSkjemautfyll",
+          "system": "http://helsenorge.no/fhir/CodeSystem/RenderOptions",
+          "id": "d5d833f0-4bdd-4e83-9426-4c8f0b0c9a76"
+        }
+      ],
+      "required": false,
+      "item": [
+        {
+          "linkId": "group4_kunskjemautfyll_text",
+          "type": "string",
+          "text": "Text kun skjemautfyll",
+          "required": false
+        },
+        {
+          "linkId": "group4_kunskjemautfyll_checkbox",
+          "type": "boolean",
+          "text": "Confirmation kun skjemautfyll",
+          "required": false
+        }
+      ]
+    },
+    {
+      "linkId": "date",
+      "type": "date",
+      "text": "Choose date",
+      "required": false
+    }
+  ]
+}

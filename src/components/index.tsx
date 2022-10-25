@@ -39,7 +39,7 @@ import {
   getNavigatorExtension,
 } from '../util/extension';
 import { IE11HackToWorkAroundBug187484 } from '../util/hacks';
-import { getComponentForItem, shouldRenderRepeatButton, isHiddenItem } from '../util/index';
+import { getComponentForItem, shouldRenderRepeatButton, isHiddenItem, mostHideItem } from '../util/index';
 import { QuestionniareInspector, IQuestionnaireInspector } from '../util/questionnaireInspector';
 import { RenderContext } from '../util/renderContext';
 import { Resources } from '../util/resources';
@@ -271,6 +271,7 @@ class Refero extends React.Component<StateProps & DispatchProps & Props, State> 
     let isNavigatorBlindzoneInitiated = false;
     formDefinition.Content.item.map(item => {
       if (isHiddenItem(item)) return [];
+      if (mostHideItem(item)) return [];
 
       const Comp = getComponentForItem(item.type);
       if (!Comp) {
