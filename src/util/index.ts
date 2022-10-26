@@ -23,6 +23,7 @@ import Text from '../components/formcomponents/text/text';
 import ExtensionConstants from '../constants/extensions';
 import { RenderOptionCode } from '../constants/renderOptionCode';
 import { HyperlinkTarget } from '../constants/hyperlinkTarget';
+import CodingSystemConstants from '../constants/codingsystems';
 import Constants from '../constants/index';
 import ItemType from '../constants/itemType';
 import { Resources } from '../util/resources';
@@ -119,12 +120,10 @@ export function isRepeat(item: QuestionnaireItem): boolean {
 }
 
 export function isHiddenItem(item: QuestionnaireItem): boolean | undefined {
-  return getQuestionnaireHiddenExtensionValue(item);
-}
-
-export function mostHideItem(item: QuestionnaireItem): boolean | undefined {
-  const code = getQuestionnaireItemCodeValue(item);
-  return code === RenderOptionCode.KunPdf;
+  return (
+    getQuestionnaireHiddenExtensionValue(item) ||
+    getQuestionnaireItemCodeValue(item, CodingSystemConstants.RenderingOptions) === RenderOptionCode.KunPdf
+  );
 }
 
 export function getId(id?: string): string {
