@@ -1,7 +1,6 @@
 import { QuestionnaireItem, Coding } from '../types/fhir';
-import CodingSystemConstants from '../constants/codingsystems';
 
-export function getCode(system: string, item: QuestionnaireItem): Coding | undefined {
+export function getCode(item: QuestionnaireItem, system: string): Coding | undefined {
   if (!item || !item.code || item.code.length === 0) {
     return undefined;
   }
@@ -12,8 +11,8 @@ export function getCode(system: string, item: QuestionnaireItem): Coding | undef
   return filteredCode[0];
 }
 
-export function getQuestionnaireItemCodeValue(item: QuestionnaireItem): string | undefined {
-  const codingSystem = getCode(CodingSystemConstants.RenderingOptions, item);
+export function getQuestionnaireItemCodeValue(item: QuestionnaireItem, codesytem: string): string | undefined {
+  const codingSystem = getCode(item, codesytem);
   if (!codingSystem) {
     return undefined;
   }
