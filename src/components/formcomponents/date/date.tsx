@@ -27,6 +27,7 @@ import SubLabel from '../sublabel';
 import { DateDayInput } from './date-day-input';
 import { DateYearMonthInput } from './date-month-input';
 import { DateYearInput } from './date-year-input';
+import { createDateFromYear } from '../../../util/createDateFromYear';
 
 export interface Props {
   item: QuestionnaireItem;
@@ -89,17 +90,6 @@ class DateComponent extends React.Component<Props & ValidationProps> {
       return parseDate(String(item.initial[0].valueDate));
     }
     return parseDate(String(item.initial[0].valueDateTime));
-  }
-
-  getYear(): Date | undefined {
-    const { item, answer } = this.props;
-    if (answer && answer.valueDate) {
-      return new Date(answer.valueDate.toString() + 'T00:00Z');
-    } else if (item.initial && item.initial[0].valueDate) {
-      return new Date(item.initial[0].valueDate.toString() + 'T00:00Z');
-    } else {
-      return undefined;
-    }
   }
 
   getMaxDate(): Moment | undefined {
@@ -179,7 +169,7 @@ class DateComponent extends React.Component<Props & ValidationProps> {
 
   render(): JSX.Element | null {
     const date = this.getValue();
-    const year = this.getYear();
+    const year = createDateFromYear(this.props.item, this.props.answer);
     const subLabelText = getSublabelText(this.props.item, this.props.onRenderMarkdown, this.props.questionnaire, this.props.resources);
 
     const itemControls = getItemControlExtensionValue(this.props.item);
