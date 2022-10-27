@@ -64,7 +64,7 @@ class DeleteButton extends React.Component<Props, State> {
 
     return (
       <React.Fragment>
-        <Button variant="outline" concept="destructive" onClick={this.onDeleteRepeatItem}>
+        <Button variant="outline" intent="danger" onClick={this.onDeleteRepeatItem}>
           <Icon svgIcon={TrashCan} />
           {resources && resources.deleteButtonText ? resources.deleteButtonText : ''}
         </Button>
