@@ -1,3 +1,40 @@
+## 10.2.0
+
+---
+
+- Added sanitizing for dangerouslySetInnerHTML in form components with DomPurify
+- utils/index.ts: Moved renderer functions inside getMarkdownValue function so that they can access resources
+- getText and getSublabelText now takes inn resources as an optional prop
+- getMarkdownValue takes in srLinkText as an optional prop
+- Fixed bug in date-year-input by creating a seperate function to get the year value
+- Created a test suite for date components
+- Created a test to check that date-year-input converts the string input to the correct date
+- Moved getYear function to a new util file called "createDateFromYear"
+
+## 10.1.3
+
+---
+
+- Made screenreader resource-text optional and added checks for undefined, to prevent error if it's undefined
+
+## 10.1.2
+
+---
+
+- Added screenreader resource-text for links opening in new tab
+
+## 10.1.1
+
+---
+
+- Upgraded helsenorge packages to version 25
+
+## 10.0.1
+
+---
+
+- Removed sanitizing from dangerouslySetInnerHTML, because it caused error
+
 ## 10.0.0
 
 ---
