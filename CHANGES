@@ -1,3 +1,10 @@
+## 10.3.0-beta01
+
+---
+
+- Added more sanitizing on getText function on display.tsx
+- Handling whether or not elements should be visible in the form
+
 ## 10.2.0
 
 ---
@@ -44,7 +51,6 @@
 - All css-classes with 'skjemautfyller' now renamed to 'refero'
 - File skjemautfyller-core.ts renamed to refero-core.ts
 - Upgrade to 24.1.x of @helsenorge packages
-
 
 ## 9.1.0
 
