@@ -1,9 +1,8 @@
-## 10.3.0-beta02
+## 10.3.0-beta03
 
 ---
 
-- Added more sanitizing on getText function on display.tsx
-- Handling whether or not elements should be visible in the form
+- Removed redundant load of dompurify to fix trusted types error
 
 ## 10.2.0
 
