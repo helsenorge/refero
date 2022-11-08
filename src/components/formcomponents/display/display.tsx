@@ -50,11 +50,7 @@ const Display: React.SFC<Props> = ({ id, enable, pdf, item, questionnaire, onRen
         />
       );
     } else {
-      value = (
-        <p id={getId(id)}>{`${renderPrefix(item)} ${
-          DOMPurify.sanitize(getText(item, onRenderMarkdown, questionnaire, resources), { RETURN_TRUSTED_TYPE: true }) as unknown as string
-        }`}</p>
-      );
+      value = <p id={getId(id)}>{`${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`}</p>;
     }
   }
   if (pdf) {

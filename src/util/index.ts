@@ -37,7 +37,6 @@ import {
   getHyperlinkExtensionValue,
 } from './extension';
 import { getQuestionnaireItemCodeValue } from './codingsystem';
-DOMPurify.setConfig({ ADD_ATTR: ['target'] });
 
 function openNewIfAbsolute(url: string): string {
   const regex = new RegExp('^(([a-z][a-z0-9+.-]*):.*)');
