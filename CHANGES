@@ -1,9 +1,10 @@
-## 10.3.0-beta04
+## 10.3.0-beta05
 
 ---
 
 - Removed redundant load of dompurify to fix trusted types error
 - Returning trusted types in sanitize functions where it was missing
+- Sanitizing more texts with Dompurify
 
 ## 10.2.0
 
