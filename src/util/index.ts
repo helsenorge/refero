@@ -147,9 +147,13 @@ export function getSublabelText(
 ): string {
   if (item) {
     const markdown = getSublabelExtensionValue(item) || '';
-    return markdown ? getMarkdownValue(markdown, item, onRenderMarkdown, questionnaire, resources?.linkOpensInNewTab) : '';
+    return markdown
+      ? getMarkdownValue(markdown, item, onRenderMarkdown, questionnaire, resources?.linkOpensInNewTab)
+      : window.trustedTypes
+      ? (window.trustedTypes.emptyHTML as unknown as string)
+      : '';
   }
-  return '';
+  return window.trustedTypes ? (window.trustedTypes.emptyHTML as unknown as string) : '';
 }
 
 export function getText(
@@ -163,10 +167,10 @@ export function getText(
     if (markdown) {
       return getMarkdownValue(markdown, item, onRenderMarkdown, questionnaire, resources?.linkOpensInNewTab);
     } else if (item.text) {
-      return item.text;
+      return DOMPurify.sanitize(item.text, { RETURN_TRUSTED_TYPE: true }) as unknown as string;
     }
   }
-  return '';
+  return window.trustedTypes ? (window.trustedTypes.emptyHTML as unknown as string) : '';
 }
 
 function getMarkdownValue(
