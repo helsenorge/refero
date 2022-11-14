@@ -31,7 +31,7 @@ import itemControlConstants from '../constants/itemcontrol';
 import itemType from '../constants/itemType';
 import { GlobalState } from '../reducers';
 import { findHelpItem, isHelpItem, getHelpItemType } from '../util/help';
-import { getComponentForItem, getChildHeaderTag, shouldRenderRepeatButton, getText, isHiddenItem } from '../util/index';
+import { getComponentForItem, getChildHeaderTag, shouldRenderRepeatButton, getText, isHiddenItem, getCopyValue } from '../util/index';
 import {
   Path,
   getAnswerFromResponseItem,
@@ -274,6 +274,7 @@ export default function withCommonFunctions<T>(WrappedComponent: React.Component
       }
       const renderedItems: Array<JSX.Element | undefined> = [];
       if (response && response.length > 0) {
+        response = getCopyValue(item, this.props.responseItem) ?? response;
         response.forEach((responseItem, index) => {
           renderedItems.push(
             <Comp
