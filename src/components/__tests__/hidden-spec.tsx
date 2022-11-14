@@ -7,7 +7,7 @@ import rootReducer from '../../reducers';
 import '../../util/defineFetch';
 import { Resources } from '../../util/resources';
 import { ReferoContainer } from '../../components';
-import { Questionnaire, QuestionnaireItem, Extension, Coding, Reference } from '../../types/fhir';
+import { Questionnaire, QuestionnaireItem, Extension, Reference } from '../../types/fhir';
 import Choice from '../formcomponents/choice/choice';
 import Boolean from '../formcomponents/boolean/boolean';
 import Decimal from '../formcomponents/decimal/decimal';
@@ -21,6 +21,7 @@ import OpenChoice from '../formcomponents/open-choice/open-choice';
 import Attachment from '../formcomponents/attachment/attachment';
 import Quantity from '../formcomponents/quantity/quantity';
 import Valueset from '../../util/__tests__/__data__/valuesets/valueset-8459';
+import { createItemControlExtension } from '../__tests__/utils';
 
 describe('Hidden components should not render', () => {
   beforeEach(() => {
@@ -335,22 +336,6 @@ function createQuestionnaireHiddenExtension(value: boolean): Extension {
     url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-hidden',
     valueBoolean: value,
   } as Extension;
-}
-
-function createItemControlExtension(code: string): Extension {
-  return {
-    url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl',
-    valueCodeableConcept: {
-      coding: [createItemControlCoding(code)],
-    },
-  } as Extension;
-}
-
-function createItemControlCoding(code: string): Coding {
-  return {
-    code: code,
-    system: 'http://hl7.org/fhir/ValueSet/questionnaire-item-control',
-  } as Coding;
 }
 
 function createItem(type: string, ...withExtensions: Extension[]): QuestionnaireItem {

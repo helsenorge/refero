@@ -1,6 +1,6 @@
 import { act } from 'react-dom/test-utils';
 import { ReactWrapper } from 'enzyme';
-import { QuestionnaireItem } from '../../types/fhir';
+import { QuestionnaireItem, Extension, Coding } from '../../types/fhir';
 
 export async function inputAnswer(linkId: string, answer: number | string, wrapper: ReactWrapper<{}, {}>) {
   const id = 'item_' + linkId;
@@ -99,4 +99,20 @@ export function submit(name: string, wrapper: ReactWrapper<{}, {}>) {
   let submit = wrapper.findWhere(it => it.text() === name).find('button');
   submit.simulate('click');
   wrapper.update();
+}
+
+export function createItemControlExtension(code: string): Extension {
+  return {
+    url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl',
+    valueCodeableConcept: {
+      coding: [createItemControlCoding(code)],
+    },
+  } as Extension;
+}
+
+function createItemControlCoding(code: string): Coding {
+  return {
+    code: code,
+    system: 'http://hl7.org/fhir/ValueSet/questionnaire-item-control',
+  } as Coding;
 }
