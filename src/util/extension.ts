@@ -160,6 +160,14 @@ export function getRepeatsTextExtension(item: QuestionnaireItem): string | undef
   return repeatsTextExtension.valueString;
 }
 
+export function getCopyExtension(item: QuestionnaireItem): string | undefined {
+  const extension = getExtension(ExtensionConstants.Copy_EXPRESSION, item);
+  if (!extension || !extension.valueString) {
+    return undefined;
+  }
+  return extension.valueString;
+}
+
 export function getItemControlExtensionValue(item: QuestionnaireItem): Coding[] | undefined {
   const itemControlExtension = getExtension(ExtensionConstants.ITEMCONTROL_URL, item);
   if (!itemControlExtension || !itemControlExtension.valueCodeableConcept || !itemControlExtension.valueCodeableConcept.coding) {
@@ -210,4 +218,16 @@ export function getHyperlinkExtensionValue(item: QuestionnaireItem | Element | Q
     return parseInt(hyperlinkExtension.valueCoding.code);
   }
   return undefined;
+}
+
+export function getLinkIdFromCopyExpression(item: QuestionnaireItem): string | undefined {
+  const extensionValueString = getCopyExtension(item) ?? '';
+  const startIndex = extensionValueString.indexOf("'") + 1;
+  const endIndex = extensionValueString.indexOf("')");
+  return extensionValueString.substring(startIndex, endIndex);
+}
+
+export function isDataReceiver(item: QuestionnaireItem): boolean | undefined {
+  const itemControll = getItemControlExtensionValue(item);
+  return itemControll?.some(s => s.code === itemControlConstants.DATARECEIVER);
 }
