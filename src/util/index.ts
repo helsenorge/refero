@@ -35,6 +35,8 @@ import {
   getExtension,
   getSublabelExtensionValue,
   getHyperlinkExtensionValue,
+  isDataReceiver,
+  getLinkIdFromCopyExpression,
 } from './extension';
 import { getQuestionnaireItemCodeValue } from './codingsystem';
 
@@ -123,6 +125,17 @@ export function isHiddenItem(item: QuestionnaireItem): boolean | undefined {
     getQuestionnaireHiddenExtensionValue(item) ||
     getQuestionnaireItemCodeValue(item, CodingSystemConstants.RenderingOptions) === RenderOptionCode.KunPdf
   );
+}
+
+export function getCopyValue(
+  item: QuestionnaireItem,
+  response: QuestionnaireResponseItem | undefined
+): QuestionnaireResponseItem[] | undefined {
+  if (isDataReceiver(item)) {
+    const linkid = getLinkIdFromCopyExpression(item);
+    return response?.item?.filter(f => f.linkId === linkid);
+  }
+  return undefined;
 }
 
 export function getId(id?: string): string {

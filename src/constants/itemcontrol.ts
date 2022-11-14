@@ -11,6 +11,7 @@ export default {
   YEAR: 'year',
   YEARMONTH: 'yearMonth',
   RECEIVERCOMPONENT: 'receiver-component',
+  DATARECEIVER: 'data-receiver',
   Group: {
     VERTICAL_TABLE: 'table',
     HORIZONTAL_TABLE: 'htable',
