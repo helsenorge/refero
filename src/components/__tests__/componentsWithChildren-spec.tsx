@@ -7,7 +7,7 @@ import '../../util/defineFetch';
 import rootReducer from '../../reducers';
 import { ReferoContainer } from '../../components';
 import { Resources } from '../../util/resources';
-import { Questionnaire, QuestionnaireItem, Extension, Coding } from '../../types/fhir';
+import { Questionnaire, QuestionnaireItem, Extension } from '../../types/fhir';
 import Choice from '../formcomponents/choice/choice';
 import Boolean from '../formcomponents/boolean/boolean';
 import Decimal from '../formcomponents/decimal/decimal';
@@ -21,6 +21,7 @@ import OpenChoice from '../formcomponents/open-choice/open-choice';
 import Attachment from '../formcomponents/attachment/attachment';
 import Quantity from '../formcomponents/quantity/quantity';
 import Valueset from '../../util/__tests__/__data__/valuesets/valueset-8459';
+import { createItemControlExtension } from '../__tests__/utils';
 
 describe('Components render children', () => {
   beforeEach(() => {
@@ -179,22 +180,6 @@ describe('Components render children', () => {
     expect(wrapper.find(OpenChoice)).toHaveLength(3);
   });
 });
-
-function createItemControlExtension(code: string): Extension {
-  return {
-    url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl',
-    valueCodeableConcept: {
-      coding: [createItemControlCoding(code)],
-    },
-  } as Extension;
-}
-
-function createItemControlCoding(code: string): Coding {
-  return {
-    code: code,
-    system: 'http://hl7.org/fhir/ValueSet/questionnaire-item-control',
-  } as Coding;
-}
 
 function creatNestedItem(type: string, ...withExtensions: Extension[]): QuestionnaireItem {
   return createItem(

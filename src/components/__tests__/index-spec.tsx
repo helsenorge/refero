@@ -5,7 +5,7 @@ import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 
-import { Questionnaire, QuestionnaireItem, Extension, QuestionnaireItemEnableWhen } from '../../types/fhir';
+import { Questionnaire, QuestionnaireItem, QuestionnaireItemEnableWhen } from '../../types/fhir';
 
 import SafeInputField from '@helsenorge/form/components/safe-input-field';
 
@@ -18,6 +18,8 @@ import { Resources } from '../../util/resources';
 import HelpButton from '../help-button/help-button';
 import { ReferoContainer } from '../index';
 import RenderingOptionsData from './__data__/renderingOptions';
+import { createItemControlExtension } from '../__tests__/utils';
+import itemcontrol from '../../constants/itemcontrol';
 
 describe('Component renders help items', () => {
   beforeEach(() => {
@@ -205,24 +207,10 @@ function questionnaireWithHelp(): Questionnaire {
             linkId: '1.1',
             type: 'text',
             text: 'help text',
-            extension: [helpExtension()],
+            extension: [createItemControlExtension(itemcontrol.HELP)],
           },
         ],
       } as QuestionnaireItem,
     ],
   };
-}
-
-function helpExtension(): Extension {
-  return {
-    url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl',
-    valueCodeableConcept: {
-      coding: [
-        {
-          system: 'http://hl7.org/fhir/ValueSet/questionnaire-item-control',
-          code: 'help',
-        },
-      ],
-    },
-  } as Extension;
 }

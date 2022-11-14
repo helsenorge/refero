@@ -10,11 +10,11 @@ import { QuestionnaireItem, QuestionnaireResponseItemAnswer, Extension, Question
 import { Path } from '../../util/refero-core';
 import { Group } from '../formcomponents/group/group';
 import StringComponent from '../../components/formcomponents/string/string';
-import Extensions from '../../constants/extensions';
 import { GlobalState } from '../../reducers/index';
 import { NewValueAction } from '../../actions/newValue';
 import { RenderContextType } from '../../constants/renderContextType';
 import { RenderContext } from '../../util/renderContext';
+import { createItemControlExtension } from '../__tests__/utils';
 
 describe('Group component renders with correct classes', () => {
   const defaultClasses = ['.page_refero__component', '.page_refero__component_group'];
@@ -80,20 +80,6 @@ function expectToFindClasses(wrapper: ReactWrapper<{}, {}>, ...classes: string[]
   for (const c of classes) {
     expect(wrapper.find(c)).toHaveLength(1);
   }
-}
-
-function createItemControlExtension(code: string): Extension {
-  return {
-    url: Extensions.ITEMCONTROL_URL,
-    valueCodeableConcept: {
-      coding: [
-        {
-          system: 'http://hl7.org/fhir/ValueSet/questionnaire-item-control',
-          code: code,
-        },
-      ],
-    },
-  } as Extension;
 }
 
 function createWrapperForGroupItem(item: QuestionnaireItem): ReactWrapper<{}, {}> {

@@ -6,7 +6,7 @@ import { ReactWrapper, mount } from 'enzyme';
 
 import '../../util/defineFetch';
 import rootReducer from '../../reducers';
-import { QuestionnaireItem, Extension, Coding, QuestionnaireResponseItemAnswer, QuestionnaireItemAnswerOption } from '../../types/fhir';
+import { QuestionnaireItem, Extension, QuestionnaireResponseItemAnswer, QuestionnaireItemAnswerOption } from '../../types/fhir';
 import { Path } from '../../util/refero-core';
 import String from '../formcomponents/string/string';
 import Choice from '../formcomponents/choice/choice';
@@ -25,6 +25,7 @@ import { GlobalState } from '../../reducers/index';
 import { NewValueAction } from '../../actions/newValue';
 import { RenderContextType } from '../../constants/renderContextType';
 import { RenderContext } from '../../util/renderContext';
+import { createItemControlExtension } from '../__tests__/utils';
 
 describe('Component renders help items', () => {
   beforeEach(() => {
@@ -152,22 +153,6 @@ function createItem(itemType: string, extensions?: Extension[]): QuestionnaireIt
     text: 'item av type ' + itemType,
     extension: extensions,
   };
-}
-
-function createItemControlExtension(code: string): Extension {
-  return {
-    url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl',
-    valueCodeableConcept: {
-      coding: [createItemControlCoding(code)],
-    },
-  } as Extension;
-}
-
-function createItemControlCoding(code: string): Coding {
-  return {
-    code: code,
-    system: 'http://hl7.org/fhir/ValueSet/questionnaire-item-control',
-  } as Coding;
 }
 
 function createWrapperWithComponent(component: JSX.Element): ReactWrapper<{}, {}> {
