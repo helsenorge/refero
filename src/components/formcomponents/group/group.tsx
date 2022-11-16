@@ -1,5 +1,6 @@
 import * as React from 'react';
 
+import DOMPurify from 'dompurify';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
@@ -236,10 +237,13 @@ export class Group extends React.Component<Props, State> {
       return null;
     }
     const tagName = `h${this.props.headerTag}`;
+    const headerText = DOMPurify.sanitize(this.getHeaderText(), {
+      RETURN_TRUSTED_TYPE: true,
+    }) as unknown as string;
     return (
       <React.Fragment>
         <CustomTag tagName={tagName} className={'page_refero__heading'}>
-          {this.getHeaderText()}
+          {headerText}
         </CustomTag>
         {this.props.renderHelpButton()}
       </React.Fragment>
