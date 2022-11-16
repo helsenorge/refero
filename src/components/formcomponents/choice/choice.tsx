@@ -20,7 +20,7 @@ import { Options } from '@helsenorge/form/components/radio-group';
 import { NewValueAction, newCodingValueAsync, removeCodingValueAsync } from '../../../actions/newValue';
 import { GlobalState } from '../../../reducers';
 import { getOptions, getSystem, getErrorMessage, validateInput, getIndexOfAnswer, getDisplay, renderOptions } from '../../../util/choice';
-import { isReadOnly } from '../../../util/index';
+import { isReadOnly, isDataReciever } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Resources } from '../../../util/resources';
 import { Path } from '../../../util/refero-core';
@@ -99,10 +99,22 @@ export class Choice extends React.Component<ChoiceProps & ValidationProps, Choic
     return [String(item.initial[0].valueCoding.code)];
   };
 
+  getDataRecieverValue = (
+    answer: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer
+  ): (string | undefined)[] | string | undefined => {
+    return !Array.isArray(answer)
+      ? answer.valueCoding?.display
+      : answer.map((el: QuestionnaireResponseItemAnswer) => {
+          if (el && el.valueCoding && el.valueCoding.display) {
+            return el.valueCoding.display;
+          }
+        });
+  };
+
   getPDFValue = (item: QuestionnaireItem, answer: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer): string => {
     const { resources, containedResources } = this.props;
 
-    const value = this.getValue(item, answer);
+    const value = isDataReciever(item) ? this.getDataRecieverValue(answer) : this.getValue(item, answer);
     if (!value) {
       let text = '';
       if (resources && resources.ikkeBesvart) {
@@ -111,7 +123,7 @@ export class Choice extends React.Component<ChoiceProps & ValidationProps, Choic
       return text;
     }
 
-    return value.map(el => getDisplay(getOptions(item, containedResources), el)).join(', ');
+    return Array.isArray(value) ? value.map(el => getDisplay(getOptions(item, containedResources), el)).join(', ') : value;
   };
 
   handleCheckboxChange = (code?: string): void => {
