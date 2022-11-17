@@ -14,6 +14,7 @@ import { GlobalState } from '../reducers/index';
 import { enableWhenMatchesAnswer, getQuestionnaireResponseItemWithLinkid, getResponseItems, Path, isInGroupContext } from './refero-core';
 import { getCopyExtension } from '../util/extension';
 import { evaluateFhirpathExpressionToGetString } from '../util/fhirpathHelper';
+import ItemType from '../constants/itemType';
 
 export function mapStateToProps(state: GlobalState, originalProps: Props): Props {
   getValueIfDataReciever(state, originalProps);
@@ -67,21 +68,21 @@ function getValueIfDataReciever(state: GlobalState, originalProps: Props): void 
 }
 
 function getQuestionnaireResponseItemAnswer(type: string, result: any): QuestionnaireResponseItemAnswer {
-  switch (type) {
-    case 'text':
-    case 'string':
+  switch (String(type)) {
+    case ItemType.TEXT:
+    case ItemType.STRING:
       return { valueString: result };
-    case 'integer':
+    case ItemType.INTEGER:
       return { valueInteger: result };
-    case 'decimal':
+    case ItemType.DECIMAL:
       return { valueDecimal: result };
-    case 'dateTime':
+    case ItemType.DATETIME:
       return { valueDateTime: result };
-    case 'date':
+    case ItemType.DATE:
       return { valueDate: result };
-    case 'boolean':
+    case ItemType.BOOLEAN:
       return { valueBoolean: result };
-    case 'quantity':
+    case ItemType.QUANTITY:
       return { valueQuantity: result };
     default:
       return { valueCoding: result };
