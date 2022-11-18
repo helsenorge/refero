@@ -67,25 +67,33 @@ function getValueIfDataReciever(state: GlobalState, originalProps: Props): void 
   }
 }
 
-function getQuestionnaireResponseItemAnswer(type: string, result: any): QuestionnaireResponseItemAnswer {
+function getQuestionnaireResponseItemAnswer(
+  type: string,
+  result: any
+): QuestionnaireResponseItemAnswer | Array<QuestionnaireResponseItemAnswer> {
   switch (String(type)) {
     case ItemType.TEXT:
     case ItemType.STRING:
-      return { valueString: result };
+      return { valueString: result[0] };
     case ItemType.INTEGER:
-      return { valueInteger: result };
+      return { valueInteger: result[0] };
     case ItemType.DECIMAL:
-      return { valueDecimal: result };
+      return { valueDecimal: result[0] };
     case ItemType.DATETIME:
-      return { valueDateTime: result };
+      return { valueDateTime: result[0] };
     case ItemType.DATE:
-      return { valueDate: result };
+      return { valueDate: result[0] };
     case ItemType.BOOLEAN:
-      return { valueBoolean: result };
+      return { valueBoolean: result[0] };
     case ItemType.QUANTITY:
-      return { valueQuantity: result };
-    default:
-      return { valueCoding: result };
+      return { valueQuantity: result[0] };
+    default: {
+      let codingArray: Array<QuestionnaireResponseItemAnswer> = [];
+      result.forEach((coding: any) => {
+        codingArray.push({ valueCoding: coding });
+      });
+      return codingArray;
+    }
   }
 }
 

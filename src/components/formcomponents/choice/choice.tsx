@@ -99,22 +99,22 @@ export class Choice extends React.Component<ChoiceProps & ValidationProps, Choic
     return [String(item.initial[0].valueCoding.code)];
   };
 
-  getDataRecieverValue = (
-    answer: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer
-  ): (string | undefined)[] | string | undefined => {
-    return !Array.isArray(answer)
-      ? answer.valueCoding?.display
-      : answer.map((el: QuestionnaireResponseItemAnswer) => {
-          if (el && el.valueCoding && el.valueCoding.display) {
-            return el.valueCoding.display;
-          }
-        });
+  getDataRecieverValue = (answer: Array<QuestionnaireResponseItemAnswer>): (string | undefined)[] => {
+    return answer.map((el: QuestionnaireResponseItemAnswer) => {
+      if (el && el.valueCoding && el.valueCoding.display) {
+        return el.valueCoding.display;
+      }
+    });
   };
 
   getPDFValue = (item: QuestionnaireItem, answer: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer): string => {
     const { resources, containedResources } = this.props;
 
-    const value = isDataReciever(item) ? this.getDataRecieverValue(answer) : this.getValue(item, answer);
+    if (isDataReciever(item)) {
+      return this.getDataRecieverValue(answer as Array<QuestionnaireResponseItemAnswer>).join(', ');
+    }
+
+    const value = this.getValue(item, answer);
     if (!value) {
       let text = '';
       if (resources && resources.ikkeBesvart) {
