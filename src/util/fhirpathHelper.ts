@@ -18,11 +18,6 @@ export function evaluateFhirpathExpressionToGetDate(item: QuestionnaireItem, fhi
 export function evaluateFhirpathExpressionToGetString(
   questionnare: QuestionnaireResponse | null | undefined,
   fhirExtension: Extension
-): string | undefined {
-  const result = fhirpath.evaluate(questionnare, fhirExtension.valueString, null, fhirpath_r4_model);
-  if (result.length > 0) {
-    return result[0];
-  }
-
-  return;
+): any {
+  return fhirpath.evaluate(questionnare, fhirExtension.valueString, null, fhirpath_r4_model);
 }
