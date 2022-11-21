@@ -204,14 +204,6 @@ export function getCalculatedExpressionExtension(item: QuestionnaireItem): Exten
   return calculatedExpressionExtension;
 }
 
-export function getCopyExtension(item: QuestionnaireItem): Extension | undefined {
-  const extension = getExtension(ExtensionConstants.Copy_EXPRESSION, item);
-  if (!extension || !extension.valueString) {
-    return;
-  }
-  return extension;
-}
-
 export function getHyperlinkExtensionValue(item: QuestionnaireItem | Element | Questionnaire): number | undefined {
   const hyperlinkExtension = getExtension(ExtensionConstants.HYPERLINK, item);
   if (hyperlinkExtension && hyperlinkExtension.valueCoding && hyperlinkExtension.valueCoding.code) {

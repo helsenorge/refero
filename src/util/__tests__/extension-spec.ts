@@ -11,7 +11,6 @@ import {
   getMinLengthExtensionValue,
   getRepeatsTextExtension,
   getRegexExtension,
-  getCopyExtension,
 } from '../extension';
 
 describe('extensions', () => {
@@ -167,21 +166,6 @@ describe('extensions', () => {
         extension: [extension],
       };
       expect(getRegexExtension(item)).toMatchSnapshot();
-    });
-  });
-
-  describe('getCopyExtension', () => {
-    it('should return extension', () => {
-      const extension: Extension = {
-        url: extensionConstants.Copy_EXPRESSION,
-        valueString: 'Du må fylle ut feltet',
-      } as Extension;
-      const item: QuestionnaireItem = {
-        linkId: '2.1',
-        type: 'group',
-        extension: [extension],
-      };
-      expect(getCopyExtension(item)).toEqual(extension);
     });
   });
 });

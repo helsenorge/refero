@@ -35,7 +35,6 @@ import {
   getExtension,
   getSublabelExtensionValue,
   getHyperlinkExtensionValue,
-  getCopyExtension,
 } from './extension';
 import { getQuestionnaireItemCodeValue } from './codingsystem';
 
@@ -117,10 +116,6 @@ export function isRepeat(item: QuestionnaireItem): boolean {
     return item.repeats;
   }
   return false;
-}
-
-export function isDataReciever(item: QuestionnaireItem): boolean {
-  return getCopyExtension(item) !== undefined;
 }
 
 export function isHiddenItem(item: QuestionnaireItem): boolean | undefined {
