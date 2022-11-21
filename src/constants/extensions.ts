@@ -17,7 +17,6 @@ export default {
   REPEATSTEXT_URL: 'http://ehelse.no/fhir/StructureDefinition/repeatstext',
   OPTION_REFERENCE: 'http://ehelse.no/fhir/StructureDefinition/sdf-optionReference',
   CALCULATED_EXPRESSION: 'http://ehelse.no/fhir/StructureDefinition/sdf-calculatedExpression',
-  Copy_EXPRESSION: 'http://hl7.org/fhir/StructureDefinition/cqf-expression',
   DATE_MAX_VALUE_URL: 'http://ehelse.no/fhir/StructureDefinition/sdf-maxvalue',
   DATE_MIN_VALUE_URL: 'http://ehelse.no/fhir/StructureDefinition/sdf-minvalue',
 
