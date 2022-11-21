@@ -1,0 +1,171 @@
+{
+  "resourceType": "Questionnaire",
+  "language": "nb-NO",
+  "status": "draft",
+  "publisher": "NHN",
+  "meta": {
+    "profile": ["http://ehelse.no/fhir/StructureDefinition/sdf-Questionnaire"],
+    "tag": [
+      {
+        "system": "urn:ietf:bcp:47",
+        "code": "nb-NO",
+        "display": "Norsk Bokmål"
+      }
+    ]
+  },
+  "useContext": [
+    {
+      "code": {
+        "system": "http://hl7.org/fhir/ValueSet/usage-context-type",
+        "code": "focus",
+        "display": "Clinical Focus"
+      },
+      "valueCodeableConcept": {
+        "coding": [
+          {
+            "system": "urn:oid:2.16.578.1.12.4.1.1.8655"
+          }
+        ]
+      }
+    }
+  ],
+  "contact": [
+    {
+      "name": "http://www.nhn.no"
+    }
+  ],
+  "subjectType": ["Patient"],
+  "extension": [
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sidebar",
+      "valueCoding": {
+        "system": "http://helsenorge.no/fhir/ValueSet/sdf-sidebar",
+        "code": "1"
+      }
+    },
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-information-message",
+      "valueCoding": {
+        "system": "http://helsenorge.no/fhir/ValueSet/sdf-information-message",
+        "code": "1"
+      }
+    },
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefintion/sdf-itemControl-visibility",
+      "valueCodeableConcept": {
+        "coding": [
+          {
+            "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
+            "code": "hide-help",
+            "display": "Hide help texts"
+          },
+          {
+            "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
+            "code": "hide-sublabel",
+            "display": "Hide sublabel texts"
+          }
+        ]
+      }
+    }
+  ],
+  "item": [
+    {
+      "linkId": "2994fc4f-7c44-40a9-8935-3cc0f78c4949",
+      "type": "group",
+      "text": "Group",
+      "item": [
+        {
+          "linkId": "parent-choice-id",
+          "type": "choice",
+          "text": "Avsender",
+          "required": false,
+          "answerOption": [
+            {
+              "valueCoding": {
+                "id": "03efaaf9-b0fe-47e8-8af6-692c1fb0a5a6",
+                "code": "option-1",
+                "system": "urn:uuid:7452dbbb-26be-4aa0-8ab0-69573726b9ef",
+                "display": "Option 1"
+              }
+            },
+            {
+              "valueCoding": {
+                "id": "42036373-ce58-467b-8de1-be09004760e0",
+                "code": "option-2",
+                "system": "urn:uuid:7452dbbb-26be-4aa0-8ab0-69573726b9ef",
+                "display": "Option 2"
+              }
+            },
+            {
+              "valueCoding": {
+                "id": "cbb2dc4d-d93d-4ae7-8917-15be81af4a2c",
+                "code": "option-3",
+                "system": "urn:uuid:7452dbbb-26be-4aa0-8ab0-69573726b9ef",
+                "display": "Option 3"
+              }
+            }
+          ],
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "check-box"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "data-reciever-choice-id",
+          "type": "choice",
+          "text": "Mottaker",
+          "required": false,
+          "answerOption": [
+            {
+              "valueCoding": {
+                "id": "8f9d4a7f-e25a-4ace-af8b-8fe7d5add49a",
+                "system": "urn:uuid:d307fa0e-8431-41f7-cc53-a1b2b17f6142"
+              }
+            },
+            {
+              "valueCoding": {
+                "id": "618fd450-5a45-4abc-8e12-f85eaa2784d6",
+                "system": "urn:uuid:d307fa0e-8431-41f7-cc53-a1b2b17f6142"
+              }
+            }
+          ],
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "parent-choice-id",
+              "operator": "exists"
+            }
+          ],
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "data-receiver"
+                  }
+                ]
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueString": "QuestionnaireResponse.descendants().where(linkId='parent-choice-id').answer.value"
+            }
+          ],
+          "readOnly": true
+        }
+      ],
+      "required": false
+    }
+  ]
+}

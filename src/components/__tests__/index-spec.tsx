@@ -16,9 +16,11 @@ import itemControlConstants from '../../constants/itemcontrol';
 import rootReducer from '../../reducers';
 import { Resources } from '../../util/resources';
 import HelpButton from '../help-button/help-button';
+import TextView from '../formcomponents/textview';
 import { ReferoContainer } from '../index';
 import RenderingOptionsData from './__data__/renderingOptions';
-import { createItemControlExtension } from '../__tests__/utils';
+import ChoiceCopyFrom from './__data__/copyFrom/choice';
+import { createItemControlExtension, selectCheckBoxOption } from '../__tests__/utils';
 import itemcontrol from '../../constants/itemcontrol';
 
 describe('Component renders help items', () => {
@@ -124,6 +126,21 @@ describe('Coding system (RenderingOptions)', () => {
     expect(wrapper.find('#item_group3_kunpdf').exists()).toBeFalsy();
     expect(wrapper.find('#item_group3_kunpdf_text').exists()).toBeFalsy();
     expect(wrapper.find('#item_group3_kunpdf_checkbox').exists()).toBeFalsy();
+  });
+});
+
+describe('Copying from ...', () => {
+  describe('Choice', () => {
+    it('Choice selected options displays in data-reciever element', () => {
+      const wrapper = createWrapper(ChoiceCopyFrom);
+      wrapper.render();
+      selectCheckBoxOption('parent-choice-id', 'option-1', wrapper);
+      wrapper.update();
+
+      const textView = wrapper.find(TextView);
+      expect(textView).toHaveLength(1);
+      expect(textView.find('#item_data-reciever-choice-id').exists()).toBeTruthy();
+    });
   });
 });
 
