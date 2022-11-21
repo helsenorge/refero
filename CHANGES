@@ -1,10 +1,11 @@
-## 10.3.0-beta06
+## 10.3.0
 
 ---
 
-- Removed redundant load of dompurify to fix trusted types error
-- Returning trusted types in sanitize functions where it was missing
-- Sanitizing more texts with Dompurify
+- Removed redundant load of Dompurify
+- Returned Trusted Types in sanitize functions where it was missing
+- Sanitized more texts with Dompurify
+- Removed use of external CustomTag
 
 ## 10.2.0
 
