@@ -119,7 +119,7 @@ export function isRepeat(item: QuestionnaireItem): boolean {
   return false;
 }
 
-export function isDataReciever(item: QuestionnaireItem): boolean {
+export function isDataReceiver(item: QuestionnaireItem): boolean {
   return getCopyExtension(item) !== undefined;
 }
 

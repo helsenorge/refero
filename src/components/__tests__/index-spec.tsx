@@ -131,7 +131,7 @@ describe('Coding system (RenderingOptions)', () => {
 
 describe('Copying from ...', () => {
   describe('Choice', () => {
-    it('Choice selected options displays in data-reciever element', () => {
+    it('Choice selected options displays in data-receiver element', () => {
       const wrapper = createWrapper(ChoiceCopyFrom);
       wrapper.render();
       selectCheckBoxOption('parent-choice-id', 'option-1', wrapper);
@@ -139,7 +139,7 @@ describe('Copying from ...', () => {
 
       const textView = wrapper.find(TextView);
       expect(textView).toHaveLength(1);
-      expect(textView.find('#item_data-reciever-choice-id').exists()).toBeTruthy();
+      expect(textView.find('#item_data-receiver-choice-id').exists()).toBeTruthy();
     });
   });
 });

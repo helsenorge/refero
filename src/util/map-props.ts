@@ -17,7 +17,7 @@ import { evaluateFhirpathExpressionToGetString } from '../util/fhirpathHelper';
 import ItemType from '../constants/itemType';
 
 export function mapStateToProps(state: GlobalState, originalProps: Props): Props {
-  getValueIfDataReciever(state, originalProps);
+  getValueIfDataReceiver(state, originalProps);
   if (!originalProps.item || !originalProps.item.enableWhen) {
     return { ...originalProps, enable: true } as Props;
   }
@@ -56,7 +56,7 @@ function isEnableWhenEnabled(
     : enableMatches.some(x => x === true);
 }
 
-function getValueIfDataReciever(state: GlobalState, originalProps: Props): void {
+function getValueIfDataReceiver(state: GlobalState, originalProps: Props): void {
   if (originalProps.item) {
     const extension = getCopyExtension(originalProps.item);
     if (extension) {

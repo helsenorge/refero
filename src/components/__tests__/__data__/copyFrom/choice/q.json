@@ -120,7 +120,7 @@
           ]
         },
         {
-          "linkId": "data-reciever-choice-id",
+          "linkId": "data-receiver-choice-id",
           "type": "choice",
           "text": "Mottaker",
           "required": false,
