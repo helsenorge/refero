@@ -20,7 +20,7 @@ import { Options } from '@helsenorge/form/components/radio-group';
 import { NewValueAction, newCodingValueAsync, removeCodingValueAsync } from '../../../actions/newValue';
 import { GlobalState } from '../../../reducers';
 import { getOptions, getSystem, getErrorMessage, validateInput, getIndexOfAnswer, getDisplay, renderOptions } from '../../../util/choice';
-import { isReadOnly, isDataReciever } from '../../../util/index';
+import { isReadOnly, isDataReceiver } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Resources } from '../../../util/resources';
 import { Path } from '../../../util/refero-core';
@@ -99,7 +99,7 @@ export class Choice extends React.Component<ChoiceProps & ValidationProps, Choic
     return [String(item.initial[0].valueCoding.code)];
   };
 
-  getDataRecieverValue = (answer: Array<QuestionnaireResponseItemAnswer>): (string | undefined)[] => {
+  getDataReceiverValue = (answer: Array<QuestionnaireResponseItemAnswer>): (string | undefined)[] => {
     return answer.map((el: QuestionnaireResponseItemAnswer) => {
       if (el && el.valueCoding && el.valueCoding.display) {
         return el.valueCoding.display;
@@ -110,8 +110,8 @@ export class Choice extends React.Component<ChoiceProps & ValidationProps, Choic
   getPDFValue = (item: QuestionnaireItem, answer: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer): string => {
     const { resources, containedResources } = this.props;
 
-    if (isDataReciever(item)) {
-      return this.getDataRecieverValue(answer as Array<QuestionnaireResponseItemAnswer>).join(', ');
+    if (isDataReceiver(item)) {
+      return this.getDataReceiverValue(answer as Array<QuestionnaireResponseItemAnswer>).join(', ');
     }
 
     const value = this.getValue(item, answer);
