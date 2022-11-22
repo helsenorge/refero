@@ -1,6 +1,6 @@
 {
   "name": "@helsenorge/refero",
-  "version": "10.3.0-beta04",
+  "version": "10.3.0",
   "main": "index.js",
   "author": "helsenorge",
   "license": "MIT",

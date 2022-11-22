@@ -152,9 +152,13 @@ export function getSublabelText(
 ): string {
   if (item) {
     const markdown = getSublabelExtensionValue(item) || '';
-    return markdown ? getMarkdownValue(markdown, item, onRenderMarkdown, questionnaire, resources?.linkOpensInNewTab) : '';
+    return markdown
+      ? getMarkdownValue(markdown, item, onRenderMarkdown, questionnaire, resources?.linkOpensInNewTab)
+      : window.trustedTypes
+      ? (window.trustedTypes.emptyHTML as unknown as string)
+      : '';
   }
-  return '';
+  return window.trustedTypes ? (window.trustedTypes.emptyHTML as unknown as string) : '';
 }
 
 export function getText(
@@ -168,10 +172,10 @@ export function getText(
     if (markdown) {
       return getMarkdownValue(markdown, item, onRenderMarkdown, questionnaire, resources?.linkOpensInNewTab);
     } else if (item.text) {
-      return item.text;
+      return DOMPurify.sanitize(item.text, { RETURN_TRUSTED_TYPE: true }) as unknown as string;
     }
   }
-  return '';
+  return window.trustedTypes ? (window.trustedTypes.emptyHTML as unknown as string) : '';
 }
 
 function getMarkdownValue(
@@ -189,13 +193,15 @@ function getMarkdownValue(
 
   const renderer = new marked.Renderer();
   renderer.link = (href: string, title: string, text: string): string => {
-    return `<a href=${href} ${title ? `title=${title}` : ''} target="_blank" class="external">${text}${srLinkTextSpan}</a>`;
+    const urlString = `<a href=${href} ${title ? `title=${title}` : ''} target="_blank" class="external">${text}${srLinkTextSpan}</a>`;
+    return DOMPurify.sanitize(urlString, { RETURN_TRUSTED_TYPE: true }) as unknown as string;
   };
   const rendererSameWindow = new marked.Renderer();
   rendererSameWindow.link = (href: string, title: string, text: string): string => {
-    return `<a href=${href} ${title ? `title=${title}` : ''} target="${openNewIfAbsolute(href)}">${text}${
+    const urlString = `<a href=${href} ${title ? `title=${title}` : ''} target="${openNewIfAbsolute(href)}">${text}${
       openNewIfAbsolute(href) === '_blank' ? srLinkTextSpan : ''
     }</a>`;
+    return DOMPurify.sanitize(urlString, { RETURN_TRUSTED_TYPE: true }) as unknown as string;
   };
 
   if (onRenderMarkdown) {

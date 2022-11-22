@@ -1,13 +1,12 @@
 import * as React from 'react';
 
+import DOMPurify from 'dompurify';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem, Questionnaire } from '../../../types/fhir';
 
 import AnchorLink from '@helsenorge/designsystem-react/components/AnchorLink';
-
-import CustomTag from '@helsenorge/core-utils/custom-tag';
 
 import { NewValueAction } from '../../../actions/newValue';
 import { RenderContextType } from '../../../constants/renderContextType';
@@ -235,12 +234,14 @@ export class Group extends React.Component<Props, State> {
     if (!getText(this.props.item, this.props.onRenderMarkdown)) {
       return null;
     }
-    const tagName = `h${this.props.headerTag}`;
+
+    const HeaderTag = `h${this.props.headerTag}` as 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
+    const headerText = DOMPurify.sanitize(this.getHeaderText(), {
+      RETURN_TRUSTED_TYPE: true,
+    }) as unknown as string;
     return (
       <React.Fragment>
-        <CustomTag tagName={tagName} className={'page_refero__heading'}>
-          {this.getHeaderText()}
-        </CustomTag>
+        <HeaderTag className={'page_refero__heading'} dangerouslySetInnerHTML={{ __html: headerText }} />
         {this.props.renderHelpButton()}
       </React.Fragment>
     );

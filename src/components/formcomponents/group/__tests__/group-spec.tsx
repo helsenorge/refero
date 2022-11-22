@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { shallow } from 'enzyme';
-import CustomTag from '@helsenorge/core-utils/custom-tag';
 
 import '../../../../util/defineFetch';
 import { Group } from '../group';
@@ -38,6 +37,6 @@ describe('group', () => {
         responseItem={{} as QuestionnaireResponseItem}
       />
     );
-    expect(group.find(CustomTag).html()).toMatchSnapshot();
+    expect(group.find('h3').html()).toMatchSnapshot();
   });
 });
