@@ -1,3 +1,11 @@
+## 11.0.0-beta01
+
+---
+
+- Upgraded helsenorge packages to version 26.x.x
+- Upgraded third party libraries to the same versions used in the helsenorge v26 packages
+- Replaced deprecated prop in an instance of the Button component
+
 ## 10.4.0-beta01
 
 ---
