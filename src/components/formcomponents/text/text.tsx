@@ -128,7 +128,7 @@ export class Text extends React.Component<Props & ValidationProps, {}> {
     if (itemControls && itemControls.some(itemControl => itemControl.code === itemControlConstants.INLINE)) {
       return (
         <div id={id} className="page_refero__component page_refero__component_expandabletext">
-          <Expander title={item.text ? item.text : ''}>
+          <Expander title={item.text ? item.text : ''} renderChildrenWhenClosed>
             <React.Fragment>{children}</React.Fragment>
           </Expander>
         </div>
