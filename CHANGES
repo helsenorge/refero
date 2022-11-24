@@ -5,6 +5,8 @@
 - Upgraded helsenorge packages to version 26.x.x
 - Upgraded third party libraries to the same versions used in the helsenorge v26 packages
 - Replaced deprecated prop in an instance of the Button component
+- Created a new prop in Text.tsx: "shouldExpanderRenderChildrenWhenClosed". It is used in the Expander component to decide if it's children
+  should be rendered if the Expander is closed.
 
 ## 10.4.0-beta01
 
