@@ -58,6 +58,7 @@ export interface Props {
   onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
   isHelpOpen?: boolean;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
+  shouldExpanderRenderChildrenWhenClosed?: boolean;
 }
 export class Text extends React.Component<Props & ValidationProps, {}> {
   showCounter(): boolean {
@@ -128,7 +129,10 @@ export class Text extends React.Component<Props & ValidationProps, {}> {
     if (itemControls && itemControls.some(itemControl => itemControl.code === itemControlConstants.INLINE)) {
       return (
         <div id={id} className="page_refero__component page_refero__component_expandabletext">
-          <Expander title={item.text ? item.text : ''} renderChildrenWhenClosed>
+          <Expander
+            title={item.text ? item.text : ''}
+            renderChildrenWhenClosed={this.props.shouldExpanderRenderChildrenWhenClosed ? true : false}
+          >
             <React.Fragment>{children}</React.Fragment>
           </Expander>
         </div>

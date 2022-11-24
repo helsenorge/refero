@@ -33,6 +33,7 @@ describe('text with inline extension', () => {
         renderHelpElement={() => <React.Fragment />}
         onAnswerChange={() => {}}
         responseItem={{} as QuestionnaireResponseItem}
+        shouldExpanderRenderChildrenWhenClosed={true}
       >
         {children}
       </Text>
