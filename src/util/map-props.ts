@@ -83,6 +83,8 @@ function getQuestionnaireResponseItemAnswer(
       return { valueDateTime: result[0] };
     case ItemType.DATE:
       return { valueDate: result[0] };
+    case ItemType.TIME:
+      return { valueTime: result[0] };
     case ItemType.BOOLEAN:
       return { valueBoolean: result[0] };
     case ItemType.QUANTITY:

@@ -249,7 +249,7 @@ export function hasAnswer(answer: QuestionnaireResponseItemAnswer): boolean {
     hasQuantityAnswer(answer) ||
     hasDateAnswer(answer) ||
     hasDateTimeAnswer(answer) ||
-    hasDateTimeAnswer(answer) ||
+    hasTimeAnswer(answer) ||
     hasDecimalAnswer(answer) ||
     hasIntegerAnswer(answer) ||
     hasStringAnswer(answer) ||
@@ -280,6 +280,10 @@ export function hasDateTimeAnswer(answer: QuestionnaireResponseItemAnswer): bool
   return !!answer.valueDateTime;
 }
 
+export function hasTimeAnswer(answer: QuestionnaireResponseItemAnswer): boolean {
+  return !!answer.valueTime;
+}
+
 export function hasDecimalAnswer(answer: QuestionnaireResponseItemAnswer): boolean {
   return !!answer.valueDecimal || answer.valueDecimal === 0;
 }
@@ -290,10 +294,6 @@ export function hasIntegerAnswer(answer: QuestionnaireResponseItemAnswer): boole
 
 export function hasStringAnswer(answer: QuestionnaireResponseItemAnswer): boolean {
   return !!answer.valueString;
-}
-
-export function hasTimeAnswer(answer: QuestionnaireResponseItemAnswer): boolean {
-  return !!answer.valueTime;
 }
 
 export function hasAttachmentAnswer(answer: QuestionnaireResponseItemAnswer): boolean {
