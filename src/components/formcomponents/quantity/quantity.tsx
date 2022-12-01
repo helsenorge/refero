@@ -53,8 +53,11 @@ export interface Props {
 }
 
 class Quantity extends React.Component<Props & ValidationProps, {}> {
-  getValue(): number | undefined {
+  getValue(): number | number[] | undefined {
     const { answer } = this.props;
+    if (answer && Array.isArray(answer)) {
+      return answer.map((m) => m.valueQuantity);
+    }
     if (answer && answer.valueQuantity !== undefined && answer.valueQuantity !== null) {
       return answer.valueQuantity.value;
     }
@@ -68,6 +71,9 @@ class Quantity extends React.Component<Props & ValidationProps, {}> {
         text = this.props.resources.ikkeBesvart;
       }
       return text;
+    }
+    if (Array.isArray(value)) {
+      return value.map((m) => `${m} ${this.getUnit()}`).join(', ');
     }
     return `${value} ${this.getUnit()}`;
   }

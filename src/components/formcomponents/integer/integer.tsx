@@ -44,8 +44,11 @@ export interface Props {
 }
 
 class Integer extends React.Component<Props & ValidationProps, {}> {
-  getValue(): string | number | undefined {
+  getValue(): string | number | number[] | undefined {
     const { item, answer } = this.props;
+    if (answer && Array.isArray(answer)) {
+      return answer.map((m) => m.valueInteger);
+    }
     if (answer && answer.valueInteger !== undefined && answer.valueInteger !== null) {
       return answer.valueInteger;
     }
@@ -62,6 +65,9 @@ class Integer extends React.Component<Props & ValidationProps, {}> {
         text = this.props.resources.ikkeBesvart;
       }
       return text;
+    }
+    if (Array.isArray(value)) {
+      return value.join(', ');
     }
     return value;
   }

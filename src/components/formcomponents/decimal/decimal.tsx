@@ -44,8 +44,11 @@ export interface Props {
 }
 
 class Decimal extends React.Component<Props & ValidationProps, {}> {
-  getValue(): string | number | undefined {
+  getValue(): string | number | number[] | undefined {
     const { item, answer } = this.props;
+    if (answer && Array.isArray(answer)) {
+      return answer.map((m) => Number(m));
+    }
     if (answer && answer.valueDecimal) {
       return Number(answer.valueDecimal);
     }
@@ -62,6 +65,9 @@ class Decimal extends React.Component<Props & ValidationProps, {}> {
         text = this.props.resources.ikkeBesvart;
       }
       return text;
+    }
+    if (Array.isArray(value)) {
+      return value.join(', ');
     }
     return value;
   }
