@@ -75,6 +75,15 @@ function getQuestionnaireResponseItemAnswer(
   if (type === ItemType.BOOLEAN) {
     return { valueBoolean: result[0] };
   }
+  if (type === ItemType.DATETIME) {
+    return { valueDateTime: result[0] };
+  }
+  if (type === ItemType.DATE) {
+    return { valueDate: result[0] }
+  }
+  if (type === ItemType.TIME) {
+    return { valueTime: result[0] }
+  }
 
   result.forEach((answer: any) => {
     switch (String(type)) {
@@ -87,15 +96,6 @@ function getQuestionnaireResponseItemAnswer(
         break;
       case ItemType.DECIMAL:
         answerArray.push({ valueDecimal: answer });
-        break;
-      case ItemType.DATETIME:
-        answerArray.push({ valueDateTime: answer });
-        break;
-      case ItemType.DATE:
-        answerArray.push({ valueDate: answer });
-        break;
-      case ItemType.TIME:
-        answerArray.push({ valueTime: answer });
         break;
       case ItemType.QUANTITY:
         answerArray.push({ valueQuantity: answer });

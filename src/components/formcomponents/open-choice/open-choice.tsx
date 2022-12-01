@@ -26,7 +26,7 @@ import {
 import { OPEN_CHOICE_ID, OPEN_CHOICE_SYSTEM } from '../../../constants';
 import ItemControlConstants from '../../../constants/itemcontrol';
 import { GlobalState } from '../../../reducers';
-import { isReadOnly } from '../../../util';
+import { isReadOnly, isDataReceiver } from '../../../util';
 import {
   renderOptions,
   getOptions,
@@ -78,8 +78,20 @@ export interface Props {
 }
 
 class OpenChoice extends React.Component<Props & ValidationProps> {
+  getDataReceiverValue = (answer: Array<QuestionnaireResponseItemAnswer>): (string | undefined)[] => {
+    return answer.map((el: QuestionnaireResponseItemAnswer) => {
+      if (el && el.valueCoding && el.valueCoding.display) {
+        return el.valueCoding.display;
+      }
+    });
+  };
+
   getPDFValue = (item: QuestionnaireItem, answer: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer): string => {
     const { resources, containedResources } = this.props;
+
+    if (isDataReceiver(item)) {
+      return this.getDataReceiverValue(answer as Array<QuestionnaireResponseItemAnswer>).join(', ');
+    }
 
     const value = this.getValue(item, answer);
     if (!value) {
@@ -355,9 +367,10 @@ class OpenChoice extends React.Component<Props & ValidationProps> {
     const responseItemHasChanged = this.props.responseItem !== nextProps.responseItem;
     const helpItemHasChanged = this.props.isHelpOpen !== nextProps.isHelpOpen;
     const resourcesHasChanged = JSON.stringify(this.props.resources) !== JSON.stringify(nextProps.resources);
+    const answerHasChanged = this.props.answer !== nextProps.answer;
     const repeats = this.props.item.repeats ?? false;
 
-    return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats;
+    return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats || answerHasChanged;
   }
 
   render(): JSX.Element | null {
