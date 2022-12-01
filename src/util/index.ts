@@ -240,14 +240,14 @@ export function getLinkId(item: QuestionnaireItem): string {
   return uuid.v4();
 }
 
-export function getStringValue(answer: QuestionnaireResponseItemAnswer): string {
-  if (answer && answer.valueString) {
-    return answer.valueString;
-  }
-  return '';
+export function getStringValue(answer: QuestionnaireResponseItemAnswer | Array<QuestionnaireResponseItemAnswer>): string {
+  if (answer && Array.isArray(answer)) {
+    return answer.length > 0 ? answer.map((m) => m.valueString).join(', ') : '';
+  }  
+  return answer?.valueString ?? '';
 }
 
-export function getPDFStringValue(answer: QuestionnaireResponseItemAnswer, resources?: Resources): string {
+export function getPDFStringValue(answer: QuestionnaireResponseItemAnswer | Array<QuestionnaireResponseItemAnswer>, resources?: Resources): string {
   const value = getStringValue(answer);
   if (!value) {
     let text = '';

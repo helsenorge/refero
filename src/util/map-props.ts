@@ -71,32 +71,40 @@ function getQuestionnaireResponseItemAnswer(
   type: string,
   result: any
 ): QuestionnaireResponseItemAnswer | Array<QuestionnaireResponseItemAnswer> {
-  switch (String(type)) {
-    case ItemType.TEXT:
-    case ItemType.STRING:
-      return { valueString: result[0] };
-    case ItemType.INTEGER:
-      return { valueInteger: result[0] };
-    case ItemType.DECIMAL:
-      return { valueDecimal: result[0] };
-    case ItemType.DATETIME:
-      return { valueDateTime: result[0] };
-    case ItemType.DATE:
-      return { valueDate: result[0] };
-    case ItemType.TIME:
-      return { valueTime: result[0] };
-    case ItemType.BOOLEAN:
-      return { valueBoolean: result[0] };
-    case ItemType.QUANTITY:
-      return { valueQuantity: result[0] };
-    default: {
-      let codingArray: Array<QuestionnaireResponseItemAnswer> = [];
-      result.forEach((coding: any) => {
-        codingArray.push({ valueCoding: coding });
-      });
-      return codingArray;
-    }
+  let answerArray: Array<QuestionnaireResponseItemAnswer> = [];
+  if (type === ItemType.BOOLEAN) {
+    return { valueBoolean: result[0] };
   }
+
+  result.forEach((answer: any) => {
+    switch (String(type)) {
+      case ItemType.TEXT:
+      case ItemType.STRING:
+        answerArray.push({ valueString: answer });
+        break;
+      case ItemType.INTEGER:
+        answerArray.push({ valueInteger: answer });
+        break;
+      case ItemType.DECIMAL:
+        answerArray.push({ valueDecimal: answer });
+        break;
+      case ItemType.DATETIME:
+        answerArray.push({ valueDateTime: answer });
+        break;
+      case ItemType.DATE:
+        answerArray.push({ valueDate: answer });
+        break;
+      case ItemType.TIME:
+        answerArray.push({ valueTime: answer });
+        break;
+      case ItemType.QUANTITY:
+        answerArray.push({ valueQuantity: answer });
+        break;
+      default:
+        answerArray.push({ valueCoding: answer });
+    }
+  });
+  return answerArray;  
 }
 
 export function mergeProps(stateProps: Props, dispatchProps: Props, ownProps: Props): Props {
