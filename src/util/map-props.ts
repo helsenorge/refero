@@ -100,8 +100,13 @@ function getQuestionnaireResponseItemAnswer(
       case ItemType.QUANTITY:
         answerArray.push({ valueQuantity: answer });
         break;
-      default:
-        answerArray.push({ valueCoding: answer });
+      default: {
+        if ((typeof answer) === 'string') {
+          answerArray.push({ valueString: answer });
+        } else {
+          answerArray.push({ valueCoding: answer });
+        }
+      }
     }
   });
   return answerArray;  
