@@ -83,14 +83,17 @@ class OpenChoice extends React.Component<Props & ValidationProps> {
       if (el && el.valueCoding && el.valueCoding.display) {
         return el.valueCoding.display;
       }
+      if (el && el.valueString) {
+        return el.valueString;
+      }
     });
   };
 
   getPDFValue = (item: QuestionnaireItem, answer: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer): string => {
     const { resources, containedResources } = this.props;
-
+  
     if (isDataReceiver(item)) {
-      return this.getDataReceiverValue(answer as Array<QuestionnaireResponseItemAnswer>).join(', ');
+      return this.getDataReceiverValue(answer as Array<QuestionnaireResponseItemAnswer>).join(', ');      
     }
 
     const value = this.getValue(item, answer);
@@ -373,7 +376,7 @@ class OpenChoice extends React.Component<Props & ValidationProps> {
     return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats || answerHasChanged;
   }
 
-  render(): JSX.Element | null {
+  render(): JSX.Element | null {    
     const { id, item, pdf, answer, containedResources, children, onRenderMarkdown } = this.props;
     if (pdf || isReadOnly(item)) {
       return (
