@@ -240,9 +240,10 @@ export function getLinkId(item: QuestionnaireItem): string {
   return uuid.v4();
 }
 
-export function getStringValue(answer: QuestionnaireResponseItemAnswer | Array<QuestionnaireResponseItemAnswer>): string {
+export function getStringValue(answer: QuestionnaireResponseItemAnswer | Array<QuestionnaireResponseItemAnswer>): string {  
   if (answer && Array.isArray(answer)) {
-    return answer.length > 0 ? answer.map((m) => m.valueString).join(', ') : '';
+    const stringAnswer = answer.filter((f) => f.valueString);
+    return stringAnswer.length > 0 ? stringAnswer.map((m) => m.valueString).join(', ') : '';
   }  
   return answer?.valueString ?? '';
 }
