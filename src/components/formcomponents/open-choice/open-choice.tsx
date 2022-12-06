@@ -79,20 +79,22 @@ export interface Props {
 
 class OpenChoice extends React.Component<Props & ValidationProps> {
   getDataReceiverValue = (answer: Array<QuestionnaireResponseItemAnswer>): (string | undefined)[] => {
-    return answer.map((el: QuestionnaireResponseItemAnswer) => {
-      if (el && el.valueCoding && el.valueCoding.display) {
-        return el.valueCoding.display;
-      }
-      if (el && el.valueString) {
-        return el.valueString;
-      }
-    });
+    return answer
+      .filter((f) => f.valueCoding?.code !== OPEN_CHOICE_ID)
+      .map((el: QuestionnaireResponseItemAnswer) => {
+        if (el && el.valueCoding) {
+          return el.valueCoding.display;
+        }
+        if (el && el.valueString) {
+          return el.valueString;
+        }
+      });
   };
 
   getPDFValue = (item: QuestionnaireItem, answer: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer): string => {
     const { resources, containedResources } = this.props;
   
-    if (isDataReceiver(item)) {
+    if (isDataReceiver(item)) {      
       return this.getDataReceiverValue(answer as Array<QuestionnaireResponseItemAnswer>).join(', ');      
     }
 
