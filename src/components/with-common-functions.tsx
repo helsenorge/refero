@@ -109,6 +109,7 @@ export interface Props {
   ) => void;
   autoSuggestProps?: AutoSuggestProps;
   fetchReceivers?: (successCallback: (receivers: Array<OrgenhetHierarki>) => void, errorCallback: () => void) => void;
+  onFieldsNotCorrectlyFilledOut?: () => void;
 }
 
 interface EnhancedProps {
@@ -316,6 +317,7 @@ export default function withCommonFunctions<T>(WrappedComponent: React.Component
               fetchValueSet={this.props.fetchValueSet}
               autoSuggestProps={this.props.autoSuggestProps}
               fetchReceivers={this.props.fetchReceivers}
+              onFieldsNotCorrectlyFilledOut={this.props.onFieldsNotCorrectlyFilledOut}
             />
           );
         });

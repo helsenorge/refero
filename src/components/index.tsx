@@ -139,6 +139,7 @@ interface Props {
   submitButtonDisabled?: boolean;
   saveButtonDisabled?: boolean;
   fetchReceivers?: (successCallback: (receivers: Array<OrgenhetHierarki>) => void, errorCallback: () => void) => void;
+  onFieldsNotCorrectlyFilledOut?: () => void;
 }
 
 interface State {
@@ -336,6 +337,7 @@ class Refero extends React.Component<StateProps & DispatchProps & Props, State> 
               fetchValueSet={this.props.fetchValueSet}
               autoSuggestProps={this.props.autoSuggestProps}
               fetchReceivers={this.props.fetchReceivers}
+              onFieldsNotCorrectlyFilledOut={this.props.onFieldsNotCorrectlyFilledOut}
             />
           );
         });
@@ -388,6 +390,7 @@ class Refero extends React.Component<StateProps & DispatchProps & Props, State> 
           }}
           submitButtonDisabled={this.props.submitButtonDisabled}
           pauseButtonDisabled={this.props.saveButtonDisabled}
+          onFieldsNotCorrectlyFilledOut={this.props.onFieldsNotCorrectlyFilledOut}
         >
           {this.renderFormItems()}
         </Form>
