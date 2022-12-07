@@ -1,3 +1,10 @@
+## 11.2.0-beta01
+
+---
+
+- Added new callback prop to ReferoContainer called onFieldsNotCorrectlyFilledOut. It is called when a required field is not filled out, or
+  if a field is incorrectly filled out.
+
 ## 11.0.0
 
 ---

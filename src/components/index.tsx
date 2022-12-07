@@ -433,6 +433,7 @@ class Refero extends React.Component<StateProps & DispatchProps & Props, State> 
           }}
           submitButtonDisabled={this.props.submitButtonDisabled}
           pauseButtonDisabled={this.props.saveButtonDisabled}
+          onFieldsNotCorrectlyFilledOut={this.props.onFieldsNotCorrectlyFilledOut}
         >
           {this.renderFormItems()}
         </Form>
