@@ -66,6 +66,7 @@ class App extends Component<{}, {}> {
           saveButtonDisabled={...}
           fetchValueSet={...}
           fetchReceivers={...}
+          onFieldsNotCorrectlyFilledOut={...}
         />
       </Provider>
     );
@@ -73,42 +74,44 @@ class App extends Component<{}, {}> {
 
 ## Props
 
-| Name                       | Required | Type                       | Default | Description                                                                                                   |
-| -------------------------- | -------- | -------------------------- | ------- | ------------------------------------------------------------------------------------------------------------- |
-| store                      |          | Store<{}>                  | null    | Redux store                                                                                                   |
-| questionnaire              |          | Questionnaire              | null    | FHIR Questionnaire object                                                                                     |
-| questionnaireResponse      |          | QuestionnaireResponse      | null    | FHIR QuestionnaireResponse object                                                                             |
-| resources                  |          | Resources                  | null    | Resources object                                                                                              |
-| onSubmit                   | true     | callback                   |         | Callback when user submits the form                                                                           |
-| onSave                     | true     | callback                   |         | Callback when user saves the form                                                                             |
-| onCancel                   | true     | callback                   |         | Callback when user cancels the form                                                                           |
-| uploadAttachment           |          | callback                   | null    | Callback when user uploads attachment                                                                         |
-| onDeleteAttachment         |          | callback                   | null    | Callback when user deletes attachment                                                                         |
-| onOpenAttachment           |          | callback                   | null    | Callback when user opens attachment                                                                           |
-| onRequestAttachmentLink    |          | callback                   | null    | Callback when the form needs to render a link to an attachment                                                |
-| attachmentMaxFileSize      |          | number                     | 25M     | Max allowed file size for attachments in bytes. Default is 25M                                                |
-| attachmentValidTypes       |          | Array<string>              | ...     | List of allowed mime types for attachments. Default allowed types are: image/jpeg, image/png, application/pdf |
-| attachmentErrorMessage     |          | string                     | null    | Text shown when file-upload fails to validate                                                                 |
-| promptLoginMessage         |          | callback                   | null    | Callback when the form needs to notify the user about authentication                                          |
-| loginButton                | true     | JSX.Element                |         | JSX for when the form needs to render a login button                                                          |
-| authorized                 | true     | boolean                    |         | Whether or not the user is authorized/authenticated                                                           |
-| pdf                        |          | boolean                    | false   | Renders the form without interactive elements                                                                 |
-| sticky                     |          | boolean                    | false   | Whether the actionbar (bar with buttons send/save) should be sticky                                           |
-| onRequestHelpButton        |          | callback                   | null    | Callback when the form needs to render a help button                                                          |
-| onRequestHelpElement       |          | callback                   | null    | Callback when the form needs to render a help element (help text)                                             |
-| validationSummaryPlacement |          | ValidationSummaryPlacement | null    | Controls the placement of the form validation summary                                                         |
-| onChange                   |          | callback                   | null    | Callback when user enters an answer                                                                           |
-| onRenderMarkdown           |          | callback                   | null    | Callback when the form needs to render markdown                                                               |
-| syncQuestionnaireResponse  |          | boolean                    | false   | Will try to synchronize a Questionnaire and QuestionnaireResponse object                                      |
-| fetchValueSet              |          | callback                   | null    | Callback when an autosuggest field will fetch data                                                            |
-| autoSuggestProps           |          | AutoSuggestProps           | null    | Config for when and autosuggest field will call fetchValueSet                                                 |
-| blockSubmit                |          | boolean                    | false   | Whether the form is disabled or not                                                                           |
-| language                   |          | string                     | null    | Which locale is used for date related components (only en-gb and nb-no are supported)                         |
-| validateScriptInjection    |          | boolean                    | false   | Whether script injection validation should be performed for string and text inputs                            |
-| submitButtonDisabled       |          | boolean                    | false   | Whenther the submit button should be disabled or not                                                          |
-| saveButtonDisabled         |          | boolean                    | false   | Whenther the save button should be disabled or not                                                            |
-| fetchValueSet              |          | callback                   |         | Callback when user triggers autosuggest fields                                                                |
-| fetchReceivers             |          | callback                   |         | Callback when the receiver component is mounted                                                               |
+| Name                          | Required | Type                       | Default | Description                                                                                                   |
+| ----------------------------- | -------- | -------------------------- | ------- | ------------------------------------------------------------------------------------------------------------- |
+| store                         |          | Store<{}>                  | null    | Redux store                                                                                                   |
+| questionnaire                 |          | Questionnaire              | null    | FHIR Questionnaire object                                                                                     |
+| questionnaireResponse         |          | QuestionnaireResponse      | null    | FHIR QuestionnaireResponse object                                                                             |
+| resources                     |          | Resources                  | null    | Resources object                                                                                              |
+| onSubmit                      | true     | callback                   |         | Callback when user submits the form                                                                           |
+| onSave                        | true     | callback                   |         | Callback when user saves the form                                                                             |
+| onCancel                      | true     | callback                   |         | Callback when user cancels the form                                                                           |
+| uploadAttachment              |          | callback                   | null    | Callback when user uploads attachment                                                                         |
+| onDeleteAttachment            |          | callback                   | null    | Callback when user deletes attachment                                                                         |
+| onOpenAttachment              |          | callback                   | null    | Callback when user opens attachment                                                                           |
+| onRequestAttachmentLink       |          | callback                   | null    | Callback when the form needs to render a link to an attachment                                                |
+| attachmentMaxFileSize         |          | number                     | 25M     | Max allowed file size for attachments in bytes. Default is 25M                                                |
+| attachmentValidTypes          |          | Array<string>              | ...     | List of allowed mime types for attachments. Default allowed types are: image/jpeg, image/png, application/pdf |
+| attachmentErrorMessage        |          | string                     | null    | Text shown when file-upload fails to validate                                                                 |
+| promptLoginMessage            |          | callback                   | null    | Callback when the form needs to notify the user about authentication                                          |
+| loginButton                   | true     | JSX.Element                |         | JSX for when the form needs to render a login button                                                          |
+| authorized                    | true     | boolean                    |         | Whether or not the user is authorized/authenticated                                                           |
+| pdf                           |          | boolean                    | false   | Renders the form without interactive elements                                                                 |
+| sticky                        |          | boolean                    | false   | Whether the actionbar (bar with buttons send/save) should be sticky                                           |
+| onRequestHelpButton           |          | callback                   | null    | Callback when the form needs to render a help button                                                          |
+| onRequestHelpElement          |          | callback                   | null    | Callback when the form needs to render a help element (help text)                                             |
+| validationSummaryPlacement    |          | ValidationSummaryPlacement | null    | Controls the placement of the form validation summary                                                         |
+| onChange                      |          | callback                   | null    | Callback when user enters an answer                                                                           |
+| onRenderMarkdown              |          | callback                   | null    | Callback when the form needs to render markdown                                                               |
+| syncQuestionnaireResponse     |          | boolean                    | false   | Will try to synchronize a Questionnaire and QuestionnaireResponse object                                      |
+| fetchValueSet                 |          | callback                   | null    | Callback when an autosuggest field will fetch data                                                            |
+| autoSuggestProps              |          | AutoSuggestProps           | null    | Config for when and autosuggest field will call fetchValueSet                                                 |
+| blockSubmit                   |          | boolean                    | false   | Whether the form is disabled or not                                                                           |
+| language                      |          | string                     | null    | Which locale is used for date related components (only en-gb and nb-no are supported)                         |
+| validateScriptInjection       |          | boolean                    | false   | Whether script injection validation should be performed for string and text inputs                            |
+| submitButtonDisabled          |          | boolean                    | false   | Whenther the submit button should be disabled or not                                                          |
+| saveButtonDisabled            |          | boolean                    | false   | Whenther the save button should be disabled or not                                                            |
+| fetchValueSet                 |          | callback                   |         | Callback when user triggers autosuggest fields                                                                |
+| fetchReceivers                |          | callback                   |         | Callback when the receiver component is mounted                                                               |
+| onFieldsNotCorrectlyFilledOut |          | callback                   |         | Callback when a field is incorrectly filled out                                                               |
+
 
 ### `questionnaire: Questionnaire`
 
@@ -277,6 +280,10 @@ objects, or errorCallback with an error message.
   receiver component, which will be displayed as a set of choices to the user.
 - `errorCallback(error: string) => void)` The function to call to return an error message to the receiver component, which will be displayed
   to the user.
+
+### `onFieldsNotCorrectlyFilledOut: () => void`
+
+This callback is called when a required field is not filled out, or if a field is incorrectly filled out.
 
 # Enum definitions
 
