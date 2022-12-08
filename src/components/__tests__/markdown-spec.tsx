@@ -10,6 +10,7 @@ import { Questionnaire, QuestionnaireItem } from '../../types/fhir';
 import { ReferoContainer } from '..';
 import { Resources } from '../../util/resources';
 import questionnaireWithMarkdown from './__data__/markdown';
+import ItemType from '../../constants/itemType';
 
 describe('support for external markdown', () => {
   beforeEach(() => {
@@ -27,24 +28,24 @@ describe('support for external markdown', () => {
     const wrapper = createWrapper(questionnaireWithMarkdown, cb);
     wrapper.render();
 
-    expect(visited['0']).toBe('group');
-    expect(visited['1']).toBe('decimal');
-    expect(visited['2']).toBe('integer');
-    expect(visited['3']).toBe('quantity');
-    expect(visited['4']).toBe('boolean');
-    expect(visited['5a']).toBe('choice');
-    expect(visited['5b']).toBe('choice');
-    expect(visited['5c']).toBe('choice');
-    expect(visited['6a']).toBe('open-choice');
-    expect(visited['6b']).toBe('open-choice');
-    expect(visited['6c']).toBe('open-choice');
-    expect(visited['7a']).toBe('date');
-    expect(visited['7b']).toBe('time');
-    expect(visited['7c']).toBe('dateTime');
-    expect(visited['8']).toBe('string');
-    expect(visited['9']).toBe('text');
-    expect(visited['10']).toBe('attachment');
-    expect(visited['11']).toBe('display');
+    expect(visited['0']).toBe(ItemType.GROUP);
+    expect(visited['1']).toBe(ItemType.DECIMAL);
+    expect(visited['2']).toBe(ItemType.INTEGER);
+    expect(visited['3']).toBe(ItemType.QUANTITY);
+    expect(visited['4']).toBe(ItemType.BOOLEAN);
+    expect(visited['5a']).toBe(ItemType.CHOICE);
+    expect(visited['5b']).toBe(ItemType.CHOICE);
+    expect(visited['5c']).toBe(ItemType.CHOICE);
+    expect(visited['6a']).toBe(ItemType.OPENCHOICE);
+    expect(visited['6b']).toBe(ItemType.OPENCHOICE);
+    expect(visited['6c']).toBe(ItemType.OPENCHOICE);
+    expect(visited['7a']).toBe(ItemType.DATE);
+    expect(visited['7b']).toBe(ItemType.TIME);
+    expect(visited['7c']).toBe(ItemType.DATETIME);
+    expect(visited['8']).toBe(ItemType.STRING);
+    expect(visited['9']).toBe(ItemType.TEXT);
+    expect(visited['10']).toBe(ItemType.ATTATCHMENT);
+    expect(visited['11']).toBe(ItemType.DISPLAY);
   });
 });
 

@@ -22,6 +22,7 @@ import Attachment from '../formcomponents/attachment/attachment';
 import Quantity from '../formcomponents/quantity/quantity';
 import Valueset from '../../util/__tests__/__data__/valuesets/valueset-8459';
 import { createItemControlExtension } from '../__tests__/utils';
+import ItemType from '../../constants/itemType';
 
 describe('Hidden components should not render', () => {
   beforeEach(() => {
@@ -31,7 +32,7 @@ describe('Hidden components should not render', () => {
   });
 
   it('unhidden attachment renders', () => {
-    const q = createQuestionnaire(createItem('attachment', createQuestionnaireHiddenExtension(false)));
+    const q = createQuestionnaire(createItem(ItemType.ATTATCHMENT, createQuestionnaireHiddenExtension(false)));
     const wrapper = createWrapper(q);
 
     wrapper.render();
@@ -40,7 +41,7 @@ describe('Hidden components should not render', () => {
   });
 
   it('hidden attachment does not render', () => {
-    const q = createQuestionnaire(createItem('attachment', createQuestionnaireHiddenExtension(true)));
+    const q = createQuestionnaire(createItem(ItemType.ATTATCHMENT, createQuestionnaireHiddenExtension(true)));
     const wrapper = createWrapper(q);
 
     wrapper.render();
@@ -49,7 +50,7 @@ describe('Hidden components should not render', () => {
   });
 
   it('unhidden boolean renders', () => {
-    const q = createQuestionnaire(createItem('boolean', createQuestionnaireHiddenExtension(false)));
+    const q = createQuestionnaire(createItem(ItemType.BOOLEAN, createQuestionnaireHiddenExtension(false)));
     const wrapper = createWrapper(q);
 
     wrapper.render();
@@ -58,7 +59,7 @@ describe('Hidden components should not render', () => {
   });
 
   it('hidden boolean does not render', () => {
-    const q = createQuestionnaire(createItem('boolean', createQuestionnaireHiddenExtension(true)));
+    const q = createQuestionnaire(createItem(ItemType.BOOLEAN, createQuestionnaireHiddenExtension(true)));
     const wrapper = createWrapper(q);
 
     wrapper.render();
@@ -67,7 +68,7 @@ describe('Hidden components should not render', () => {
   });
 
   it('unhidden date renders', () => {
-    const q = createQuestionnaire(createItem('date', createQuestionnaireHiddenExtension(false)));
+    const q = createQuestionnaire(createItem(ItemType.DATE, createQuestionnaireHiddenExtension(false)));
     const wrapper = createWrapper(q);
 
     wrapper.render();
@@ -76,7 +77,7 @@ describe('Hidden components should not render', () => {
   });
 
   it('hidden date does not render', () => {
-    const q = createQuestionnaire(createItem('date', createQuestionnaireHiddenExtension(true)));
+    const q = createQuestionnaire(createItem(ItemType.DATE, createQuestionnaireHiddenExtension(true)));
     const wrapper = createWrapper(q);
 
     wrapper.render();
@@ -85,7 +86,7 @@ describe('Hidden components should not render', () => {
   });
 
   it('unhidden time renders', () => {
-    const q = createQuestionnaire(createItem('time', createQuestionnaireHiddenExtension(false)));
+    const q = createQuestionnaire(createItem(ItemType.TIME, createQuestionnaireHiddenExtension(false)));
     const wrapper = createWrapper(q);
 
     wrapper.render();
@@ -94,7 +95,7 @@ describe('Hidden components should not render', () => {
   });
 
   it('hidden time does not render', () => {
-    const q = createQuestionnaire(createItem('time', createQuestionnaireHiddenExtension(true)));
+    const q = createQuestionnaire(createItem(ItemType.TIME, createQuestionnaireHiddenExtension(true)));
     const wrapper = createWrapper(q);
 
     wrapper.render();
@@ -103,7 +104,7 @@ describe('Hidden components should not render', () => {
   });
 
   it('unhidden dateTime renders', () => {
-    const q = createQuestionnaire(createItem('dateTime', createQuestionnaireHiddenExtension(false)));
+    const q = createQuestionnaire(createItem(ItemType.DATETIME, createQuestionnaireHiddenExtension(false)));
     const wrapper = createWrapper(q);
 
     wrapper.render();
@@ -112,7 +113,7 @@ describe('Hidden components should not render', () => {
   });
 
   it('hidden dateTime does not render', () => {
-    const q = createQuestionnaire(createItem('dateTime', createQuestionnaireHiddenExtension(true)));
+    const q = createQuestionnaire(createItem(ItemType.DATETIME, createQuestionnaireHiddenExtension(true)));
     const wrapper = createWrapper(q);
 
     wrapper.render();
@@ -121,7 +122,7 @@ describe('Hidden components should not render', () => {
   });
 
   it('unhidden decimal renders', () => {
-    const q = createQuestionnaire(createItem('decimal', createQuestionnaireHiddenExtension(false)));
+    const q = createQuestionnaire(createItem(ItemType.DECIMAL, createQuestionnaireHiddenExtension(false)));
     const wrapper = createWrapper(q);
 
     wrapper.render();
@@ -130,7 +131,7 @@ describe('Hidden components should not render', () => {
   });
 
   it('hidden decimal does not render', () => {
-    const q = createQuestionnaire(createItem('decimal', createQuestionnaireHiddenExtension(true)));
+    const q = createQuestionnaire(createItem(ItemType.DECIMAL, createQuestionnaireHiddenExtension(true)));
     const wrapper = createWrapper(q);
 
     wrapper.render();
@@ -139,7 +140,7 @@ describe('Hidden components should not render', () => {
   });
 
   it('unhidden integer renders', () => {
-    const q = createQuestionnaire(createItem('integer', createQuestionnaireHiddenExtension(false)));
+    const q = createQuestionnaire(createItem(ItemType.INTEGER, createQuestionnaireHiddenExtension(false)));
     const wrapper = createWrapper(q);
 
     wrapper.render();
@@ -148,7 +149,7 @@ describe('Hidden components should not render', () => {
   });
 
   it('hidden integer does not render', () => {
-    const q = createQuestionnaire(createItem('integer', createQuestionnaireHiddenExtension(true)));
+    const q = createQuestionnaire(createItem(ItemType.INTEGER, createQuestionnaireHiddenExtension(true)));
     const wrapper = createWrapper(q);
 
     wrapper.render();
@@ -157,7 +158,7 @@ describe('Hidden components should not render', () => {
   });
 
   it('unhidden quantity renders', () => {
-    const q = createQuestionnaire(createItem('quantity', createQuestionnaireHiddenExtension(false)));
+    const q = createQuestionnaire(createItem(ItemType.QUANTITY, createQuestionnaireHiddenExtension(false)));
     const wrapper = createWrapper(q);
 
     wrapper.render();
@@ -166,7 +167,7 @@ describe('Hidden components should not render', () => {
   });
 
   it('hidden quantity does not render', () => {
-    const q = createQuestionnaire(createItem('quantity', createQuestionnaireHiddenExtension(true)));
+    const q = createQuestionnaire(createItem(ItemType.QUANTITY, createQuestionnaireHiddenExtension(true)));
     const wrapper = createWrapper(q);
 
     wrapper.render();
@@ -175,7 +176,7 @@ describe('Hidden components should not render', () => {
   });
 
   it('unhidden string renders', () => {
-    const q = createQuestionnaire(createItem('string', createQuestionnaireHiddenExtension(false)));
+    const q = createQuestionnaire(createItem(ItemType.STRING, createQuestionnaireHiddenExtension(false)));
     const wrapper = createWrapper(q);
 
     wrapper.render();
@@ -184,7 +185,7 @@ describe('Hidden components should not render', () => {
   });
 
   it('hidden string does not render', () => {
-    const q = createQuestionnaire(createItem('string', createQuestionnaireHiddenExtension(true)));
+    const q = createQuestionnaire(createItem(ItemType.STRING, createQuestionnaireHiddenExtension(true)));
     const wrapper = createWrapper(q);
 
     wrapper.render();
@@ -193,7 +194,7 @@ describe('Hidden components should not render', () => {
   });
 
   it('unhidden text renders', () => {
-    const q = createQuestionnaire(createItem('text', createQuestionnaireHiddenExtension(false)));
+    const q = createQuestionnaire(createItem(ItemType.TEXT, createQuestionnaireHiddenExtension(false)));
     const wrapper = createWrapper(q);
 
     wrapper.render();
@@ -202,7 +203,7 @@ describe('Hidden components should not render', () => {
   });
 
   it('hidden text does not render', () => {
-    const q = createQuestionnaire(createItem('text', createQuestionnaireHiddenExtension(true)));
+    const q = createQuestionnaire(createItem(ItemType.TEXT, createQuestionnaireHiddenExtension(true)));
     const wrapper = createWrapper(q);
 
     wrapper.render();
@@ -211,7 +212,7 @@ describe('Hidden components should not render', () => {
   });
 
   it('unhidden radio-button choice renders', () => {
-    const item = createChoiceItem('choice', createItemControlExtension('radio-button'), createQuestionnaireHiddenExtension(false));
+    const item = createChoiceItem(ItemType.CHOICE, createItemControlExtension('radio-button'), createQuestionnaireHiddenExtension(false));
     const q = createQuestionnaire(item);
     const wrapper = createWrapper(q);
 
@@ -221,7 +222,7 @@ describe('Hidden components should not render', () => {
   });
 
   it('hidden radio-button choice does not render', () => {
-    const item = createChoiceItem('choice', createItemControlExtension('radio-button'), createQuestionnaireHiddenExtension(true));
+    const item = createChoiceItem(ItemType.CHOICE, createItemControlExtension('radio-button'), createQuestionnaireHiddenExtension(true));
     const q = createQuestionnaire(item);
     const wrapper = createWrapper(q);
 
@@ -231,7 +232,7 @@ describe('Hidden components should not render', () => {
   });
 
   it('unhidden check-box choice renders', () => {
-    const item = createChoiceItem('choice', createItemControlExtension('check-box'), createQuestionnaireHiddenExtension(false));
+    const item = createChoiceItem(ItemType.CHOICE, createItemControlExtension('check-box'), createQuestionnaireHiddenExtension(false));
     const q = createQuestionnaire(item);
     const wrapper = createWrapper(q);
 
@@ -241,7 +242,7 @@ describe('Hidden components should not render', () => {
   });
 
   it('hidden check-box choice does not render', () => {
-    const item = createChoiceItem('choice', createItemControlExtension('check-box'), createQuestionnaireHiddenExtension(true));
+    const item = createChoiceItem(ItemType.CHOICE, createItemControlExtension('check-box'), createQuestionnaireHiddenExtension(true));
     const q = createQuestionnaire(item);
     const wrapper = createWrapper(q);
 
@@ -251,7 +252,7 @@ describe('Hidden components should not render', () => {
   });
 
   it('unhidden drop-down choice renders', () => {
-    const item = createChoiceItem('choice', createItemControlExtension('drop-down'), createQuestionnaireHiddenExtension(false));
+    const item = createChoiceItem(ItemType.CHOICE, createItemControlExtension('drop-down'), createQuestionnaireHiddenExtension(false));
     const q = createQuestionnaire(item);
     const wrapper = createWrapper(q);
 
@@ -261,7 +262,7 @@ describe('Hidden components should not render', () => {
   });
 
   it('hidden drop-down choice does not render', () => {
-    const item = createChoiceItem('choice', createItemControlExtension('drop-down'), createQuestionnaireHiddenExtension(true));
+    const item = createChoiceItem(ItemType.CHOICE, createItemControlExtension('drop-down'), createQuestionnaireHiddenExtension(true));
     const q = createQuestionnaire(item);
     const wrapper = createWrapper(q);
 
@@ -271,7 +272,7 @@ describe('Hidden components should not render', () => {
   });
 
   it('unhidden radio-button open-choice renders', () => {
-    const item = createChoiceItem('open-choice', createItemControlExtension('radio-button'), createQuestionnaireHiddenExtension(false));
+    const item = createChoiceItem(ItemType.OPENCHOICE, createItemControlExtension('radio-button'), createQuestionnaireHiddenExtension(false));
     const q = createQuestionnaire(item);
     const wrapper = createWrapper(q);
 
@@ -281,7 +282,7 @@ describe('Hidden components should not render', () => {
   });
 
   it('hidden radio-button open-choice does not render', () => {
-    const item = createChoiceItem('open-choice', createItemControlExtension('radio-button'), createQuestionnaireHiddenExtension(true));
+    const item = createChoiceItem(ItemType.OPENCHOICE, createItemControlExtension('radio-button'), createQuestionnaireHiddenExtension(true));
     const q = createQuestionnaire(item);
     const wrapper = createWrapper(q);
 
@@ -291,7 +292,7 @@ describe('Hidden components should not render', () => {
   });
 
   it('unhidden check-box open-choice renders', () => {
-    const item = createChoiceItem('open-choice', createItemControlExtension('check-box'), createQuestionnaireHiddenExtension(false));
+    const item = createChoiceItem(ItemType.OPENCHOICE, createItemControlExtension('check-box'), createQuestionnaireHiddenExtension(false));
     const q = createQuestionnaire(item);
     const wrapper = createWrapper(q);
 
@@ -301,7 +302,7 @@ describe('Hidden components should not render', () => {
   });
 
   it('hidden check-box open-choice does not render', () => {
-    const item = createChoiceItem('open-choice', createItemControlExtension('check-box'), createQuestionnaireHiddenExtension(true));
+    const item = createChoiceItem(ItemType.OPENCHOICE, createItemControlExtension('check-box'), createQuestionnaireHiddenExtension(true));
     const q = createQuestionnaire(item);
     const wrapper = createWrapper(q);
 
@@ -311,7 +312,7 @@ describe('Hidden components should not render', () => {
   });
 
   it('unhidden drop-down open-choice renders', () => {
-    const item = createChoiceItem('open-choice', createItemControlExtension('drop-down'), createQuestionnaireHiddenExtension(false));
+    const item = createChoiceItem(ItemType.OPENCHOICE, createItemControlExtension('drop-down'), createQuestionnaireHiddenExtension(false));
     const q = createQuestionnaire(item);
     const wrapper = createWrapper(q);
 
@@ -321,7 +322,7 @@ describe('Hidden components should not render', () => {
   });
 
   it('hidden drop-down open-choice does not render', () => {
-    const item = createChoiceItem('open-choice', createItemControlExtension('drop-down'), createQuestionnaireHiddenExtension(true));
+    const item = createChoiceItem(ItemType.OPENCHOICE, createItemControlExtension('drop-down'), createQuestionnaireHiddenExtension(true));
     const q = createQuestionnaire(item);
     const wrapper = createWrapper(q);
 

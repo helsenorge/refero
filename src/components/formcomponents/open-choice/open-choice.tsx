@@ -51,7 +51,7 @@ import TextField from './text-field';
 
 export interface Props {
   item: QuestionnaireItem;
-  answer: QuestionnaireResponseItemAnswer;
+  answer: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[];
   path: Array<Path>;
   id?: string;
   pdf?: boolean;
@@ -77,7 +77,7 @@ export interface Props {
   autoSuggestProps?: AutoSuggestProps;
 }
 
-class OpenChoice extends React.Component<Props & ValidationProps> {
+export class OpenChoice extends React.Component<Props & ValidationProps> {
   getDataReceiverValue = (answer: Array<QuestionnaireResponseItemAnswer>): (string | undefined)[] => {
     return answer
       .filter((f) => f.valueCoding?.code !== OPEN_CHOICE_ID)
@@ -271,8 +271,8 @@ class OpenChoice extends React.Component<Props & ValidationProps> {
 
   renderTextField(): JSX.Element {
     const { id, pdf, item, answer, onRenderMarkdown, ...other } = this.props;
-
-    let a = answer;
+    
+   let a: QuestionnaireResponseItemAnswer = {};
     if (Array.isArray(answer)) {
       for (let i = 0; i < answer.length; i++) {
         const el = answer[i] as QuestionnaireResponseItemAnswer;
@@ -281,6 +281,8 @@ class OpenChoice extends React.Component<Props & ValidationProps> {
           break;
         }
       }
+    } else {
+      a = answer;
     }
 
     return (

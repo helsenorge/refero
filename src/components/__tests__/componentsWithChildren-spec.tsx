@@ -22,6 +22,8 @@ import Attachment from '../formcomponents/attachment/attachment';
 import Quantity from '../formcomponents/quantity/quantity';
 import Valueset from '../../util/__tests__/__data__/valuesets/valueset-8459';
 import { createItemControlExtension } from '../__tests__/utils';
+import itemControlConstants from '../../constants/itemcontrol';
+import itemType from '../../constants/itemType';
 
 describe('Components render children', () => {
   beforeEach(() => {
@@ -31,7 +33,7 @@ describe('Components render children', () => {
   });
 
   it('attachments with children renders', () => {
-    const q = createQuestionnaire(creatNestedItem('attachment'));
+    const q = createQuestionnaire(creatNestedItem(itemType.ATTATCHMENT));
     const wrapper = createWrapper(q);
 
     wrapper.render();
@@ -40,7 +42,7 @@ describe('Components render children', () => {
   });
 
   it('booleans with children renders', () => {
-    const q = createQuestionnaire(creatNestedItem('boolean'));
+    const q = createQuestionnaire(creatNestedItem(itemType.BOOLEAN));
     const wrapper = createWrapper(q);
 
     wrapper.render();
@@ -49,7 +51,7 @@ describe('Components render children', () => {
   });
 
   it('date with children renders', () => {
-    const q = createQuestionnaire(creatNestedItem('date'));
+    const q = createQuestionnaire(creatNestedItem(itemType.DATE));
     const wrapper = createWrapper(q);
 
     wrapper.render();
@@ -58,7 +60,7 @@ describe('Components render children', () => {
   });
 
   it('time with children renders', () => {
-    const q = createQuestionnaire(creatNestedItem('time'));
+    const q = createQuestionnaire(creatNestedItem(itemType.TIME));
     const wrapper = createWrapper(q);
 
     wrapper.render();
@@ -67,7 +69,7 @@ describe('Components render children', () => {
   });
 
   it('dateTime with children renders', () => {
-    const q = createQuestionnaire(creatNestedItem('dateTime'));
+    const q = createQuestionnaire(creatNestedItem(itemType.DATETIME));
     const wrapper = createWrapper(q);
 
     wrapper.render();
@@ -76,7 +78,7 @@ describe('Components render children', () => {
   });
 
   it('decimal with children renders', () => {
-    const q = createQuestionnaire(creatNestedItem('decimal'));
+    const q = createQuestionnaire(creatNestedItem(itemType.DECIMAL));
     const wrapper = createWrapper(q);
 
     wrapper.render();
@@ -85,7 +87,7 @@ describe('Components render children', () => {
   });
 
   it('integer with children renders', () => {
-    const q = createQuestionnaire(creatNestedItem('integer'));
+    const q = createQuestionnaire(creatNestedItem(itemType.INTEGER));
     const wrapper = createWrapper(q);
 
     wrapper.render();
@@ -94,7 +96,7 @@ describe('Components render children', () => {
   });
 
   it('quantity with children renders', () => {
-    const q = createQuestionnaire(creatNestedItem('quantity'));
+    const q = createQuestionnaire(creatNestedItem(itemType.QUANTITY));
     const wrapper = createWrapper(q);
 
     wrapper.render();
@@ -103,7 +105,7 @@ describe('Components render children', () => {
   });
 
   it('string with children renders', () => {
-    const q = createQuestionnaire(creatNestedItem('string'));
+    const q = createQuestionnaire(creatNestedItem(itemType.STRING));
     const wrapper = createWrapper(q);
 
     wrapper.render();
@@ -112,7 +114,7 @@ describe('Components render children', () => {
   });
 
   it('text with children renders', () => {
-    const q = createQuestionnaire(creatNestedItem('text'));
+    const q = createQuestionnaire(creatNestedItem(itemType.TEXT));
     const wrapper = createWrapper(q);
 
     wrapper.render();
@@ -121,7 +123,7 @@ describe('Components render children', () => {
   });
 
   it('radio-button choice with children renders', () => {
-    const item = createNestedChoiceItem('choice', createItemControlExtension('radio-button'));
+    const item = createNestedChoiceItem(itemType.CHOICE, createItemControlExtension(itemControlConstants.RADIOBUTTON));
     const q = createQuestionnaire(item);
     const wrapper = createWrapper(q);
 
@@ -131,7 +133,7 @@ describe('Components render children', () => {
   });
 
   it('check-box choice with children renders', () => {
-    const item = createNestedChoiceItem('choice', createItemControlExtension('check-box'));
+    const item = createNestedChoiceItem(itemType.CHOICE, createItemControlExtension(itemControlConstants.CHECKBOX));
     const q = createQuestionnaire(item);
     const wrapper = createWrapper(q);
 
@@ -141,7 +143,7 @@ describe('Components render children', () => {
   });
 
   it('drop-down choice with children renders', () => {
-    const item = createNestedChoiceItem('choice', createItemControlExtension('drop-down'));
+    const item = createNestedChoiceItem(itemType.CHOICE, createItemControlExtension(itemControlConstants.DROPDOWN));
     const q = createQuestionnaire(item);
     const wrapper = createWrapper(q);
 
@@ -151,7 +153,7 @@ describe('Components render children', () => {
   });
 
   it('radio-button open-choice with children renders', () => {
-    const item = createNestedChoiceItem('open-choice', createItemControlExtension('radio-button'));
+    const item = createNestedChoiceItem(itemType.OPENCHOICE, createItemControlExtension(itemControlConstants.RADIOBUTTON));
     const q = createQuestionnaire(item);
     const wrapper = createWrapper(q);
 
@@ -161,7 +163,7 @@ describe('Components render children', () => {
   });
 
   it('check-box open-choice with children renders', () => {
-    const item = createNestedChoiceItem('open-choice', createItemControlExtension('check-box'));
+    const item = createNestedChoiceItem(itemType.OPENCHOICE, createItemControlExtension(itemControlConstants.CHECKBOX));
     const q = createQuestionnaire(item);
     const wrapper = createWrapper(q);
 
@@ -171,7 +173,7 @@ describe('Components render children', () => {
   });
 
   it('drop-down open-choice with children renders', () => {
-    const item = createNestedChoiceItem('open-choice', createItemControlExtension('drop-down'));
+    const item = createNestedChoiceItem(itemType.OPENCHOICE, createItemControlExtension(itemControlConstants.DROPDOWN));
     const q = createQuestionnaire(item);
     const wrapper = createWrapper(q);
 

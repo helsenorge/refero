@@ -26,6 +26,7 @@ import { NewValueAction } from '../../actions/newValue';
 import { RenderContextType } from '../../constants/renderContextType';
 import { RenderContext } from '../../util/renderContext';
 import { createItemControlExtension } from '../__tests__/utils';
+import ItemType from '../../constants/itemType';
 
 describe('Component renders help items', () => {
   beforeEach(() => {
@@ -36,76 +37,76 @@ describe('Component renders help items', () => {
 
   it('should render help button and text for choice component of type radio-button', () => {
     const extension = createItemControlExtension('radio-button');
-    runTest('choice', HelpElement.HelpButtonAndText, [extension]);
+    runTest(ItemType.CHOICE, HelpElement.HelpButtonAndText, [extension]);
   });
 
   it('should render help button and text for choice component of type check-box', () => {
     const extension = createItemControlExtension('check-box');
-    runTest('choice', HelpElement.HelpButtonAndText, [extension]);
+    runTest(ItemType.CHOICE, HelpElement.HelpButtonAndText, [extension]);
   });
 
   it('should render help button and text for choice component of type drop-down', () => {
     const extension = createItemControlExtension('drop-down');
-    runTest('choice', HelpElement.HelpButtonAndText, [extension]);
+    runTest(ItemType.CHOICE, HelpElement.HelpButtonAndText, [extension]);
   });
 
   it('should render help button and text for string component', () => {
-    runTest('string', HelpElement.HelpButtonAndText);
+    runTest(ItemType.STRING, HelpElement.HelpButtonAndText);
   });
 
   it('should render help button and text for boolean component', () => {
-    runTest('boolean', HelpElement.HelpButtonAndText);
+    runTest(ItemType.BOOLEAN, HelpElement.HelpButtonAndText);
   });
 
   it('should render help button and text for group component', () => {
-    runTest('group', HelpElement.HelpButtonAndText);
+    runTest(ItemType.GROUP, HelpElement.HelpButtonAndText);
   });
 
   it('should render help button and text for attachment component', () => {
-    runTest('attachment', HelpElement.HelpButtonAndText);
+    runTest(ItemType.ATTATCHMENT, HelpElement.HelpButtonAndText);
   });
 
   it('should render help button and text for date component', () => {
-    runTest('date', HelpElement.HelpButtonAndText);
+    runTest(ItemType.DATE, HelpElement.HelpButtonAndText);
   });
 
   it('should render help button and text for dateTime component', () => {
-    runTest('dateTime', HelpElement.HelpButtonAndText);
+    runTest(ItemType.DATETIME, HelpElement.HelpButtonAndText);
   });
 
   it('should render help button and text for time component', () => {
-    runTest('time', HelpElement.HelpButtonAndText);
+    runTest(ItemType.TIME, HelpElement.HelpButtonAndText);
   });
 
   it('should render help button and text for decimal component', () => {
-    runTest('decimal', HelpElement.HelpButtonAndText);
+    runTest(ItemType.DECIMAL, HelpElement.HelpButtonAndText);
   });
 
   it('should render help button and text for integer component', () => {
-    runTest('integer', HelpElement.HelpButtonAndText);
+    runTest(ItemType.INTEGER, HelpElement.HelpButtonAndText);
   });
 
   it('should render help button and text for quantity component', () => {
-    runTest('quantity', HelpElement.HelpButtonAndText);
+    runTest(ItemType.QUANTITY, HelpElement.HelpButtonAndText);
   });
 
   it('should render help button and text for text component', () => {
-    runTest('text', HelpElement.HelpButtonAndText);
+    runTest(ItemType.TEXT, HelpElement.HelpButtonAndText);
   });
 
   it('should render help button and text for open-choice component of type radio-button', () => {
     const extension = createItemControlExtension('radio-button');
-    runTest('open-choice', HelpElement.HelpButtonAndText, [extension]);
+    runTest(ItemType.OPENCHOICE, HelpElement.HelpButtonAndText, [extension]);
   });
 
   it('should render help button and text for open-choice component of type check-box', () => {
     const extension = createItemControlExtension('check-box');
-    runTest('open-choice', HelpElement.HelpButtonAndText, [extension]);
+    runTest(ItemType.OPENCHOICE, HelpElement.HelpButtonAndText, [extension]);
   });
 
   it('should render help button and text for open-choice component of type drop-down', () => {
     const extension = createItemControlExtension('drop-down');
-    runTest('open-choice', HelpElement.HelpButtonAndText, [extension]);
+    runTest(ItemType.OPENCHOICE, HelpElement.HelpButtonAndText, [extension]);
   });
 });
 
@@ -160,33 +161,33 @@ function createWrapperWithComponent(component: JSX.Element): ReactWrapper<{}, {}
   return mount(<Provider store={store}>{component}</Provider>);
 }
 
-function createComponentOfType(itemType: string, extensions?: Extension[]): JSX.Element {
-  switch (itemType) {
-    case 'choice':
+function createComponentOfType(type: string, extensions?: Extension[]): JSX.Element {
+  switch (type) {
+    case ItemType.CHOICE:
       return createComponentChoice(extensions);
-    case 'string':
+    case ItemType.STRING:
       return createComponentString(extensions);
-    case 'boolean':
+    case ItemType.BOOLEAN:
       return createComponentBoolean(extensions);
-    case 'group':
+    case ItemType.GROUP:
       return createComponentGroup(extensions);
-    case 'attachment':
+    case ItemType.ATTATCHMENT:
       return createComponentAttachment(extensions);
-    case 'date':
+    case ItemType.DATE:
       return createComponentDate(extensions);
-    case 'dateTime':
+    case ItemType.DATETIME:
       return createComponentDateTime(extensions);
-    case 'time':
+    case ItemType.TIME:
       return createComponentTime(extensions);
-    case 'decimal':
+    case ItemType.DECIMAL:
       return createComponentDecimal(extensions);
-    case 'integer':
+    case ItemType.INTEGER:
       return createComponentInteger(extensions);
-    case 'quantity':
+    case ItemType.QUANTITY:
       return createComponentQuantity(extensions);
-    case 'text':
+    case ItemType.TEXT:
       return createComponentText(extensions);
-    case 'open-choice':
+    case ItemType.OPENCHOICE:
       return createComponentOpenChoice(extensions);
     default:
       return <React.Fragment />;
@@ -194,7 +195,7 @@ function createComponentOfType(itemType: string, extensions?: Extension[]): JSX.
 }
 
 function createComponentText(extensions?: Extension[]): JSX.Element {
-  const item = createItem('text', extensions);
+  const item = createItem(ItemType.TEXT, extensions);
 
   return (
     <Text
@@ -212,7 +213,7 @@ function createComponentText(extensions?: Extension[]): JSX.Element {
 }
 
 function createComponentQuantity(extensions?: Extension[]): JSX.Element {
-  const item = createItem('quantity', extensions);
+  const item = createItem(ItemType.QUANTITY, extensions);
 
   return (
     <Quantity
@@ -229,7 +230,7 @@ function createComponentQuantity(extensions?: Extension[]): JSX.Element {
 }
 
 function createComponentInteger(extensions?: Extension[]): JSX.Element {
-  const item = createItem('integer', extensions);
+  const item = createItem(ItemType.INTEGER, extensions);
 
   return (
     <Integer
@@ -248,7 +249,7 @@ function createComponentInteger(extensions?: Extension[]): JSX.Element {
 }
 
 function createComponentDecimal(extensions?: Extension[]): JSX.Element {
-  const item = createItem('decimal', extensions);
+  const item = createItem(ItemType.DECIMAL, extensions);
 
   return (
     <Decimal
@@ -267,7 +268,7 @@ function createComponentDecimal(extensions?: Extension[]): JSX.Element {
 }
 
 function createComponentTime(extensions?: Extension[]): JSX.Element {
-  const item = createItem('time', extensions);
+  const item = createItem(ItemType.TIME, extensions);
 
   return (
     <Time
@@ -285,7 +286,7 @@ function createComponentTime(extensions?: Extension[]): JSX.Element {
 }
 
 function createComponentDateTime(extensions?: Extension[]): JSX.Element {
-  const item = createItem('dateTime', extensions);
+  const item = createItem(ItemType.DATETIME, extensions);
 
   return (
     <DateTime
@@ -304,7 +305,7 @@ function createComponentDateTime(extensions?: Extension[]): JSX.Element {
 }
 
 function createComponentDate(extensions?: Extension[]): JSX.Element {
-  const item = createItem('date', extensions);
+  const item = createItem(ItemType.DATE, extensions);
 
   return (
     <Date
@@ -322,7 +323,7 @@ function createComponentDate(extensions?: Extension[]): JSX.Element {
 }
 
 function createComponentAttachment(extensions?: Extension[]): JSX.Element {
-  const item = createItem('attachment', extensions);
+  const item = createItem(ItemType.ATTATCHMENT, extensions);
 
   return (
     <Attachment
@@ -340,7 +341,7 @@ function createComponentAttachment(extensions?: Extension[]): JSX.Element {
 }
 
 function createComponentGroup(extensions?: Extension[]): JSX.Element {
-  const item = createItem('group', extensions);
+  const item = createItem(ItemType.GROUP, extensions);
 
   return (
     <Group
@@ -360,7 +361,7 @@ function createComponentGroup(extensions?: Extension[]): JSX.Element {
 }
 
 function createComponentBoolean(extensions?: Extension[]): JSX.Element {
-  const item = createItem('boolean', extensions);
+  const item = createItem(ItemType.BOOLEAN, extensions);
 
   return (
     <Boolean
@@ -379,7 +380,7 @@ function createComponentBoolean(extensions?: Extension[]): JSX.Element {
 }
 
 function createComponentString(extensions?: Extension[]): JSX.Element {
-  const item = createItem('string', extensions);
+  const item = createItem(ItemType.STRING, extensions);
 
   return (
     <String

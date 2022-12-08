@@ -17,6 +17,11 @@ import {
 import { Path } from '../../util/refero-core';
 import { GlobalState } from '../../reducers/index';
 import { NewValueAction } from '../../actions/newValue';
+import { createIDataReceiverExpressionExtension } from '../__tests__/utils';
+import itemType from '../../constants/itemType';
+import TextView from '../formcomponents/textview';
+
+const initAnswer: QuestionnaireResponseItemAnswer[] = [{}];
 
 describe('Choice component renders item.option[]', () => {
   beforeEach(() => {
@@ -127,6 +132,20 @@ describe('Choice component renders item.option[]', () => {
       ['ref', 'code', 'foo', '42', '2018-12-31', '00:00']
     );
   });
+
+  it('should render data-receiver item as readonly text', () => {
+    const extensions = [createIDataReceiverExpressionExtension('Test')];
+    const item = createItemWithExtensions(...extensions);
+    item.readOnly = true;
+    const answer = [
+      { valueCoding: { code:"3", display:"Usikker", system:"urn:oid:2.16.578.1.12.4.1.9523" }}
+    ] as QuestionnaireResponseItemAnswer[];
+    const wrapper = createWrapperWithItem(item, answer);
+    wrapper.render();
+
+    const textView = wrapper.find(TextView);
+    expect(textView.props().value).toBe('Usikker');
+  });
 });
 
 function expectToFind(wrapper: ReactWrapper<{}, {}>, keys: string[], values: string[]) {
@@ -211,13 +230,14 @@ function createValueTimeOption(...options: string[]): QuestionnaireItemAnswerOpt
   });
 }
 
-function createWrapperWithItem(item: QuestionnaireItem): ReactWrapper<{}, {}> {
+function createWrapperWithItem(item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer[] = initAnswer): ReactWrapper<{}, {}> {
   const store: any = createStore(rootReducer, applyMiddleware(thunk));
   return mount(
     <Provider store={store}>
       <Choice
+        id={item.linkId}
         dispatch={() => undefined as unknown as ThunkDispatch<GlobalState, void, NewValueAction>}
-        answer={{} as QuestionnaireResponseItemAnswer}
+        answer={answer}
         item={item}
         path={{} as Path[]}
         renderDeleteButton={() => undefined}
@@ -234,7 +254,7 @@ function createWrapperWithItem(item: QuestionnaireItem): ReactWrapper<{}, {}> {
 function createItemWithOption(...options: QuestionnaireItemAnswerOption[]): QuestionnaireItem {
   return {
     linkId: '1',
-    type: 'choice',
+    type: itemType.CHOICE,
     answerOption: options,
   };
 }
@@ -242,7 +262,7 @@ function createItemWithOption(...options: QuestionnaireItemAnswerOption[]): Ques
 function createItemWithExtensions(...extensions: Extension[]): QuestionnaireItem {
   return {
     linkId: '1',
-    type: 'choice',
+    type: itemType.CHOICE,
     extension: extensions,
   };
 }
