@@ -147,6 +147,7 @@ export class Text extends React.Component<Props & ValidationProps, {}> {
           dangerouslySetInnerHTML={{
             __html: DOMPurify.sanitize(`${getText(item, onRenderMarkdown, questionnaire, resources)}`, {
               RETURN_TRUSTED_TYPE: true,
+              ADD_ATTR: ['target'],
             }) as unknown as string,
           }}
         />
