@@ -193,15 +193,15 @@ function getMarkdownValue(
 
   const renderer = new marked.Renderer();
   renderer.link = (href: string, title: string, text: string): string => {
-    const urlString = `<a href=${href} ${title ? `title=${title}` : ''} target="_blank" class="external">${text}${srLinkTextSpan}</a>`;
-    return DOMPurify.sanitize(urlString, { RETURN_TRUSTED_TYPE: true }) as unknown as string;
+    const urlString = `<a href=${href} ${title ? `title=${title}` : ''} target="_blank" rel="noopener noreferrer" class="external">${text}${srLinkTextSpan}</a>`;
+    return DOMPurify.sanitize(urlString, { RETURN_TRUSTED_TYPE: true, ADD_ATTR: ['target'] }) as unknown as string;
   };
   const rendererSameWindow = new marked.Renderer();
   rendererSameWindow.link = (href: string, title: string, text: string): string => {
-    const urlString = `<a href=${href} ${title ? `title=${title}` : ''} target="${openNewIfAbsolute(href)}">${text}${
+    const urlString = `<a href=${href} ${title ? `title=${title}` : ''} target="${openNewIfAbsolute(href)}" rel="noopener noreferrer">${text}${
       openNewIfAbsolute(href) === '_blank' ? srLinkTextSpan : ''
     }</a>`;
-    return DOMPurify.sanitize(urlString, { RETURN_TRUSTED_TYPE: true }) as unknown as string;
+    return DOMPurify.sanitize(urlString, { RETURN_TRUSTED_TYPE: true, ADD_ATTR: ['target'] }) as unknown as string;
   };
 
   if (onRenderMarkdown) {
