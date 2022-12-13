@@ -21,6 +21,7 @@ const textView: React.SFC<Props> = ({ id, item, value, textClass, children, onRe
         dangerouslySetInnerHTML={{
           __html: DOMPurify.sanitize(`${renderPrefix(item)} ${getText(item, onRenderMarkdown)} `, {
             RETURN_TRUSTED_TYPE: true,
+            ADD_ATTR: ['target'],
           }) as unknown as string,
         }}
       />

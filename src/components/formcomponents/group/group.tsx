@@ -238,6 +238,7 @@ export class Group extends React.Component<Props, State> {
     const HeaderTag = `h${this.props.headerTag}` as 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
     const headerText = DOMPurify.sanitize(this.getHeaderText(), {
       RETURN_TRUSTED_TYPE: true,
+      ADD_ATTR: ['target'],
     }) as unknown as string;
     return (
       <React.Fragment>
