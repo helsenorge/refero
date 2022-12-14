@@ -205,7 +205,7 @@ function getMarkdownValue(
   };
 
   if (onRenderMarkdown) {
-    return DOMPurify.sanitize(onRenderMarkdown(item, markdownText.toString()), { RETURN_TRUSTED_TYPE: true }) as unknown as string;
+    return DOMPurify.sanitize(onRenderMarkdown(item, markdownText.toString()), { RETURN_TRUSTED_TYPE: true, ADD_ATTR: ['target'], }) as unknown as string;
   }
   if (itemValue === HyperlinkTarget.SAME_WINDOW || (!itemValue && questionnaireValue === HyperlinkTarget.SAME_WINDOW)) {
     marked.setOptions({ renderer: rendererSameWindow });
@@ -213,7 +213,7 @@ function getMarkdownValue(
   }
 
   marked.setOptions({ renderer: renderer });
-  return DOMPurify.sanitize(marked(markdownText.toString()), { RETURN_TRUSTED_TYPE: true }) as unknown as string;
+  return DOMPurify.sanitize(marked(markdownText.toString()), { RETURN_TRUSTED_TYPE: true, ADD_ATTR: ['target'], }) as unknown as string;
 }
 
 export function getChildHeaderTag(item?: QuestionnaireItem, headerTag?: number): number {
