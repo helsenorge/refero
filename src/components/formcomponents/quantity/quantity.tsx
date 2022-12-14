@@ -43,6 +43,7 @@ export interface Props {
   path: Array<Path>;
   pdf?: boolean;
   promptLoginMessage?: () => void;
+  renderDeleteButton: (className?: string) => JSX.Element | undefined;
   id?: string;
   repeatButton: JSX.Element;
   renderHelpButton: () => JSX.Element;
@@ -56,7 +57,7 @@ class Quantity extends React.Component<Props & ValidationProps, {}> {
   getValue(): number | number[] | undefined {
     const { answer } = this.props;
     if (answer && Array.isArray(answer)) {
-      return answer.map((m) => m.valueQuantity);
+      return answer.map(m => m.valueQuantity);
     }
     if (answer && answer.valueQuantity !== undefined && answer.valueQuantity !== null) {
       return answer.valueQuantity.value;
@@ -73,7 +74,7 @@ class Quantity extends React.Component<Props & ValidationProps, {}> {
       return text;
     }
     if (Array.isArray(value)) {
-      return value.map((m) => `${m} ${this.getUnit()}`).join(', ');
+      return value.map(m => `${m} ${this.getUnit()}`).join(', ');
     }
     return `${value} ${this.getUnit()}`;
   }
@@ -162,6 +163,7 @@ class Quantity extends React.Component<Props & ValidationProps, {}> {
             <span className="page_refero__unit">{this.getUnit()}</span>
           </SafeInputField>
         </Validation>
+        {this.props.renderDeleteButton('page_refero__deletebutton--margin-top')}
         <div>{this.props.repeatButton}</div>
         {this.props.children ? <div className="nested-fieldset nested-fieldset--full-height">{this.props.children}</div> : null}
       </div>
