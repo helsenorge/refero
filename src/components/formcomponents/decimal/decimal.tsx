@@ -47,10 +47,10 @@ class Decimal extends React.Component<Props & ValidationProps, {}> {
   getValue(): string | number | number[] | undefined {
     const { item, answer } = this.props;
     if (answer && Array.isArray(answer)) {
-      return answer.map((m) => Number(m));
+      return answer.map(m => m.valueDecimal);
     }
     if (answer && answer.valueDecimal) {
-      return Number(answer.valueDecimal);
+      return answer.valueDecimal;
     }
     if (!item || !item.initial || item.initial.length === 0 || !item.initial[0].valueDecimal) {
       return '';
