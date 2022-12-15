@@ -58,7 +58,7 @@ describe('createQuestionnaireResponseAnswer', () => {
         valueCoding: {
           system: 'urn:uuid:434e611a-95a0-456d-8363-c797f4adf646',
           code: 'option-2',
-          display: 'Option 2',
+          display: 'Option 3',
         },
       },
     ] as QuestionnaireItemInitial[];
