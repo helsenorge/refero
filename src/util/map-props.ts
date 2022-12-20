@@ -76,7 +76,7 @@ function getQuestionnaireResponseItemAnswer(
   type: string,
   result: any
 ): QuestionnaireResponseItemAnswer | Array<QuestionnaireResponseItemAnswer> {
-  let answerArray: Array<QuestionnaireResponseItemAnswer> = [];  
+  let answerArray: Array<QuestionnaireResponseItemAnswer> = [];
   if (type === ItemType.BOOLEAN) {
     return { valueBoolean: result[0] };
   }
