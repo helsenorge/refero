@@ -62,11 +62,7 @@ class Time extends React.Component<Props & ValidationProps> {
     this.getValue = this.getValue.bind(this);
   }
 
-  getValue(): string | undefined {
-    const { value, answer } = this.props;
-    if (value) {
-      return value;
-    }
+  convertAnswerToString(answer: QuestionnaireResponseItemAnswer): string {  
     if (answer && answer.valueTime) {
       return answer.valueTime;
     }
@@ -77,6 +73,17 @@ class Time extends React.Component<Props & ValidationProps> {
       return this.getTimeStringFromDate(parseDate(String(answer.valueDateTime)));
     }
     return '';
+  };
+
+  getValue(): string | undefined {
+    const { value, answer } = this.props;
+    if (value) {
+      return value;
+    }
+    if (Array.isArray(answer)) {
+      return answer.map(m => this.convertAnswerToString(m)).join(', ');
+    }
+    return  this.convertAnswerToString(answer);
   }
 
   getPDFValue(): string {

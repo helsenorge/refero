@@ -52,8 +52,7 @@ export interface Props {
 }
 
 class DateTime extends React.Component<Props & ValidationProps> {
-  getDefaultDate(props: Props): Date | undefined {
-    const { item, answer } = props;
+  getDefaultDate(item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer): Date | undefined {
     if (answer && answer.valueDateTime) {
       return parseDate(String(answer.valueDateTime));
     }
@@ -136,13 +135,25 @@ class DateTime extends React.Component<Props & ValidationProps> {
     return true;
   };
 
+  convertDateToString = (item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer): string | undefined => {
+    const date = this.getDefaultDate(item, answer);
+    if (date) {
+      return  moment(date).locale('nb').format('LLL');
+    } 
+    return undefined;
+  }
+
   getStringValue = (): string => {
-    const date = this.getDefaultDate(this.props);
+    const { item, answer } = this.props;
+    if (Array.isArray(answer)) {
+      return answer.map(m => this.convertDateToString(item, m)).join(', ');
+    }
+    const date = this.convertDateToString(item, answer);
     let text = '';
     if (this.props.resources && this.props.resources.ikkeBesvart) {
       text = this.props.resources.ikkeBesvart;
     }
-    return date ? moment(date).locale('nb').format('LLL') : text;
+    return date ?? text;
   };
 
   shouldComponentUpdate(nextProps: Props): boolean {
@@ -176,7 +187,7 @@ class DateTime extends React.Component<Props & ValidationProps> {
         </TextView>
       );
     }
-    const valueDateTime = this.getDefaultDate(this.props);
+    const valueDateTime = this.getDefaultDate(this.props.item, this.props.answer);
     const maxDateTime = this.getMaxDate();
     const minDateTime = this.getMinDate();
     const subLabelText = getSublabelText(this.props.item, this.props.onRenderMarkdown, this.props.questionnaire, this.props.resources);
