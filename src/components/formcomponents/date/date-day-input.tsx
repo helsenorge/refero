@@ -68,6 +68,9 @@ export class DateDayInput extends React.Component<Props, {}> {
     if (Array.isArray(item.initial)) {
       return item.initial.map((m) => parseDate(String(this.getDateAnswerValue(m))));
     }
+    if (answer) {
+      return [parseDate(String(this.getDateAnswerValue(answer)))];
+    }    
   }
 
   toLocaleDate(moment: Moment | undefined): Moment | undefined {
