@@ -1,16 +1,13 @@
 import * as React from 'react';
-
 import { Moment } from 'moment';
-
-import { QuestionnaireItem } from '../../../types/fhir';
-
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from '../../../types/fhir';
 import { YearErrorResources, YearInput } from '@helsenorge/date-time/components/year-input';
 import { Validation } from '@helsenorge/form/components/form/validation';
-
 import { getId, isReadOnly, isRequired } from '../../../util';
 import { getPlaceholder, getValidationTextExtension } from '../../../util/extension';
 import { Resources } from '../../../util/resources';
 import TextView from '../textview';
+import { createDateFromYear } from '../../../util/createDateFromYear';
 
 interface Props {
   id?: string;
@@ -24,12 +21,18 @@ interface Props {
   onDateValueChange: (newValue: string) => void;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
   className?: string;
-  yearValue?: number;
   maxDate?: Moment;
   minDate?: Moment;
+  answer: QuestionnaireResponseItemAnswer;
 }
 
 export class DateYearInput extends React.Component<Props, {}> {
+  getYear = (): (number | undefined)[] | undefined => {
+    if (Array.isArray(this.props.answer)) {      
+      return this.props.answer.map(m => createDateFromYear(this.props.item, m)?.getFullYear());
+    }
+  };
+
   getYearInputResources(): YearErrorResources {
     const { resources, item } = this.props;
     // Vi får maks én valideringstekst, derfor settes alle til denne.
@@ -47,15 +50,15 @@ export class DateYearInput extends React.Component<Props, {}> {
     this.props.onDateValueChange(year === 0 ? '' : year.toString());
   };
 
-  getReadonlyValue = (): string => {
+  getPDFValue = (): string => {
     const ikkeBesvartText = this.props.resources?.ikkeBesvart || '';
-    return this.props.yearValue?.toString() || ikkeBesvartText;
+    return this.getYear()?.map(m => m?.toString()).join(', ') || ikkeBesvartText;
   };
 
   render(): JSX.Element {
     if (this.props.pdf || isReadOnly(this.props.item)) {
       return (
-        <TextView id={this.props.id} item={this.props.item} value={this.getReadonlyValue()} onRenderMarkdown={this.props.onRenderMarkdown}>
+        <TextView id={this.props.id} item={this.props.item} value={this.getPDFValue()} onRenderMarkdown={this.props.onRenderMarkdown}>
           {this.props.children}
         </TextView>
       );
@@ -72,7 +75,7 @@ export class DateYearInput extends React.Component<Props, {}> {
           placeholder={getPlaceholder(this.props.item)}
           maximumYear={this.props.maxDate?.year()}
           minimumYear={this.props.minDate?.year()}
-          value={this.props.yearValue}
+          value={this.getYear()?.[0]}
           className={this.props.className}
           onChange={this.onYearChange}
           helpButton={this.props.helpButton}

@@ -1,16 +1,12 @@
 import * as React from 'react';
-
 import moment, { Moment } from 'moment';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
-
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem, Questionnaire } from '../../../types/fhir';
-
 import { LanguageLocales } from '@helsenorge/core-utils/constants/languages';
 import { DateRangePicker } from '@helsenorge/date-time/components/date-range-picker';
 import { parseDate } from '@helsenorge/date-time/components/time-input/date-core';
 import { ValidationProps } from '@helsenorge/form/components/form/validation';
-
 import { NewValueAction, newDateValueAsync } from '../../../actions/newValue';
 import ExtensionConstants from '../../../constants/extensions';
 import itemControlConstants from '../../../constants/itemcontrol';
@@ -27,7 +23,6 @@ import SubLabel from '../sublabel';
 import { DateDayInput } from './date-day-input';
 import { DateYearMonthInput } from './date-month-input';
 import { DateYearInput } from './date-year-input';
-import { createDateFromYear } from '../../../util/createDateFromYear';
 
 export interface Props {
   item: QuestionnaireItem;
@@ -139,7 +134,6 @@ class DateComponent extends React.Component<Props & ValidationProps> {
   }
 
   render(): JSX.Element | null {   
-    const year = createDateFromYear(this.props.item, this.props.answer);
     const subLabelText = getSublabelText(this.props.item, this.props.onRenderMarkdown, this.props.questionnaire, this.props.resources);
 
     const itemControls = getItemControlExtensionValue(this.props.item);
@@ -158,16 +152,11 @@ class DateComponent extends React.Component<Props & ValidationProps> {
     if (itemControls && itemControls.some(itemControl => itemControl.code === itemControlConstants.YEAR)) {
       element = (
         <DateYearInput
-          id={this.props.id}
-          pdf={this.props.pdf}
-          resources={this.props.resources}
           label={labelEl}
           subLabel={subLabelEl}
           helpButton={this.props.renderHelpButton()}
           helpElement={this.props.renderHelpElement()}
           onDateValueChange={this.onDateValueChange}
-          className={this.props.className}
-          yearValue={year ? year.getFullYear() : undefined}
           maxDate={this.getMaxDate()}
           minDate={this.getMinDate()}
           {...this.props}
