@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import moment, { Moment } from 'moment';
 
-import { QuestionnaireItem } from '../../../types/fhir';
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from '../../../types/fhir';
 
 import { LanguageLocales } from '@helsenorge/core-utils/constants/languages';
 import { YearMonthResources, YearMonthInput, YearMonthValue } from '@helsenorge/date-time/components/year-month-input';
@@ -26,9 +26,9 @@ interface Props {
   onDateValueChange: (newValue: string) => void;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
   className?: string;
-  yearMonthValue?: string;
   maxDate?: Moment;
   minDate?: Moment;
+  answer: QuestionnaireResponseItemAnswer;
 }
 
 export class DateYearMonthInput extends React.Component<Props, {}> {
@@ -57,13 +57,25 @@ export class DateYearMonthInput extends React.Component<Props, {}> {
     }
   };
 
+  getDateValueFromAnswer = (answer: QuestionnaireResponseItemAnswer): string | undefined => {
+    if (answer && answer.valueDate) {
+      return answer.valueDate;
+    }
+    if (answer && answer.valueDateTime) {
+      return answer.valueDateTime;
+    }
+  };
+
   getValue = (): YearMonthValue | undefined => {
-    if (!this.props.yearMonthValue) {
+    const { answer } = this.props;    
+    const stringValue = this.getDateValueFromAnswer(answer);
+
+    if (!stringValue) {
       return undefined;
     } else {
-      const monthPart = this.props.yearMonthValue.split('-')[1];
-      const yearValue = parseInt(this.props.yearMonthValue.split('-')[0]) || 0;
-      const monthValue = monthPart === '' || monthPart === undefined ? null : parseInt(this.props.yearMonthValue.split('-')[1]) - 1;
+      const monthPart = stringValue.split('-')[1];
+      const yearValue = parseInt(stringValue.split('-')[0]) || 0;
+      const monthValue = monthPart === '' || monthPart === undefined ? null : parseInt(stringValue.split('-')[1]) - 1;
       return {
         year: yearValue,
         month: monthValue,
@@ -80,15 +92,23 @@ export class DateYearMonthInput extends React.Component<Props, {}> {
       : undefined;
   };
 
-  getReadonlyValue = (): string => {
+  convertToPDFValue = (answer: QuestionnaireResponseItemAnswer): string => {
+    const value = this.getDateValueFromAnswer(answer);
+    return moment(value).locale(this.props.locale).format('MMMM YYYY')
+  };
+
+  getPDFValue = (): string => {
     const ikkeBesvartText = this.props.resources?.ikkeBesvart || '';
-    return this.props.yearMonthValue ? moment(this.props.yearMonthValue).locale(this.props.locale).format('MMMM YYYY') : ikkeBesvartText;
+    if (Array.isArray(this.props.answer)) {
+      return this.props.answer.map(m => this.convertToPDFValue(m)).join(', ');
+    }
+    return ikkeBesvartText;
   };
 
   render(): JSX.Element {
     if (this.props.pdf || isReadOnly(this.props.item)) {
       return (
-        <TextView id={this.props.id} item={this.props.item} value={this.getReadonlyValue()} onRenderMarkdown={this.props.onRenderMarkdown}>
+        <TextView id={this.props.id} item={this.props.item} value={this.getPDFValue()} onRenderMarkdown={this.props.onRenderMarkdown}>
           {this.props.children}
         </TextView>
       );

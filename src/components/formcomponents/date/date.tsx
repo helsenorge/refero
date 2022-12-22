@@ -62,8 +62,7 @@ class DateComponent extends React.Component<Props & ValidationProps> {
     this.datepicker = React.createRef();
   }
 
-  getStringValue(): string | undefined {
-    const { answer } = this.props;
+  getDateAnswerValue(answer: QuestionnaireResponseItemAnswer): string | undefined {
     if (answer && answer.valueDate) {
       return answer.valueDate;
     }
@@ -74,11 +73,8 @@ class DateComponent extends React.Component<Props & ValidationProps> {
 
   getValue(): Date | undefined {
     const { item, answer } = this.props;
-    if (answer && answer.valueDate) {
-      return parseDate(String(answer.valueDate));
-    }
-    if (answer && answer.valueDateTime) {
-      return parseDate(String(answer.valueDateTime));
+    if (answer && (answer.valueDateTime || answer.valueDate)) {
+      return parseDate(String(this.getDateAnswerValue(answer)));
     }
     if (!item || !item.initial || item.initial.length === 0) {
       return undefined;
@@ -168,7 +164,7 @@ class DateComponent extends React.Component<Props & ValidationProps> {
     return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats || answerHasChanged;
   }
 
-  render(): JSX.Element | null {
+  render(): JSX.Element | null {   
     const date = this.getValue();
     const year = createDateFromYear(this.props.item, this.props.answer);
     const subLabelText = getSublabelText(this.props.item, this.props.onRenderMarkdown, this.props.questionnaire, this.props.resources);
@@ -205,21 +201,16 @@ class DateComponent extends React.Component<Props & ValidationProps> {
         />
       );
     } else if (itemControls && itemControls.some(itemControl => itemControl.code === itemControlConstants.YEARMONTH)) {
-      const stringDate = this.getStringValue();
       element = (
         <DateYearMonthInput
-          id={this.props.id}
-          resources={this.props.resources}
           label={labelEl}
           locale={this.getLocaleFromLanguage()}
           subLabel={subLabelEl}
           helpButton={this.props.renderHelpButton()}
           helpElement={this.props.renderHelpElement()}
           onDateValueChange={this.onDateValueChange}
-          className={this.props.className}
-          yearMonthValue={stringDate}
           maxDate={this.getMaxDate()}
-          minDate={this.getMinDate()}
+          minDate={this.getMinDate()}          
           {...this.props}
         />
       );
