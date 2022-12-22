@@ -1,14 +1,11 @@
 import * as React from 'react';
-
 import moment, { Moment } from 'moment';
-
-import { QuestionnaireItem } from '../../../types/fhir';
-
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireItemInitial } from '../../../types/fhir';
 import { LanguageLocales } from '@helsenorge/core-utils/constants/languages';
 import { DateRangePicker } from '@helsenorge/date-time/components/date-range-picker';
 import { DatePickerErrorPhrases } from '@helsenorge/date-time/components/date-range-picker/date-range-picker-types';
 import { Validation } from '@helsenorge/form/components/form/validation';
-
+import { parseDate } from '@helsenorge/date-time/components/time-input/date-core';
 import Constants from '../../../constants/index';
 import { getId, isRequired } from '../../../util';
 import { getPlaceholder, getValidationTextExtension } from '../../../util/extension';
@@ -31,9 +28,9 @@ interface Props {
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
   validationErrorRenderer?: JSX.Element;
   className?: string;
-  dateValue?: Date;
   maxDate?: Moment;
   minDate?: Moment;
+  answer: QuestionnaireResponseItemAnswer;
 }
 
 export class DateDayInput extends React.Component<Props, {}> {
@@ -53,6 +50,26 @@ export class DateDayInput extends React.Component<Props, {}> {
     };
   }
 
+  getDateAnswerValue(answer: QuestionnaireResponseItemAnswer | QuestionnaireItemInitial): string | undefined {
+    if (answer && answer.valueDate) {
+      return answer.valueDate;
+    }
+    if (answer && answer.valueDateTime) {
+      return answer.valueDateTime;
+    }
+  }
+
+  getValue(): Date[] | undefined {
+    const { item, answer } = this.props;
+
+    if (Array.isArray(answer)) {
+      return answer.map((m) => parseDate(String(this.getDateAnswerValue(m))));
+    }
+    if (Array.isArray(item.initial)) {
+      return item.initial.map((m) => parseDate(String(this.getDateAnswerValue(m))));
+    }
+  }
+
   toLocaleDate(moment: Moment | undefined): Moment | undefined {
     return moment ? moment.locale(this.props.locale) : undefined;
   }
@@ -62,17 +79,22 @@ export class DateDayInput extends React.Component<Props, {}> {
     this.props.onDateValueChange(newValue);
   };
 
-  getReadonlyValue = (): string => {
-    const date = this.props.dateValue;
+  getPDFValue = (): string => {
+    const date = this.getValue();
     const ikkeBesvartText = this.props.resources?.ikkeBesvart || '';
 
-    return date ? moment(date).format('D. MMMM YYYY') : ikkeBesvartText;
+    return date ? date.map(m => moment(m).format('D. MMMM YYYY')).join(', ') : ikkeBesvartText;
+  };
+
+  getSingleDateValue = ():  moment.Moment | undefined => {
+    const date = this.getValue();
+    return date ? this.toLocaleDate(moment(date[0])) : undefined;
   };
 
   render(): JSX.Element {
     if (this.props.pdf || isReadOnly(this.props.item)) {
       return (
-        <TextView id={this.props.id} item={this.props.item} value={this.getReadonlyValue()} onRenderMarkdown={this.props.onRenderMarkdown}>
+        <TextView id={this.props.id} item={this.props.item} value={this.getPDFValue()} onRenderMarkdown={this.props.onRenderMarkdown}>
           {this.props.children}
         </TextView>
       );
@@ -93,7 +115,7 @@ export class DateDayInput extends React.Component<Props, {}> {
           ref={this.props.datepickerRef}
           maximumDate={this.toLocaleDate(this.props.maxDate)}
           minimumDate={this.toLocaleDate(this.props.minDate)}
-          singleDateValue={this.props.dateValue ? this.toLocaleDate(moment(this.props.dateValue)) : undefined}
+          singleDateValue={this.getSingleDateValue()}
           className={this.props.className}
           onDateChange={this.onDateChange}
           validationErrorRenderer={this.props.validationErrorRenderer}
