@@ -62,32 +62,6 @@ class DateComponent extends React.Component<Props & ValidationProps> {
     this.datepicker = React.createRef();
   }
 
-  getDateAnswerValue(answer: QuestionnaireResponseItemAnswer): string | undefined {
-    if (answer && answer.valueDate) {
-      return answer.valueDate;
-    }
-    if (answer && answer.valueDateTime) {
-      return answer.valueDateTime;
-    }
-  }
-
-  getValue(): Date | undefined {
-    const { item, answer } = this.props;
-    if (answer && (answer.valueDateTime || answer.valueDate)) {
-      return parseDate(String(this.getDateAnswerValue(answer)));
-    }
-    if (!item || !item.initial || item.initial.length === 0) {
-      return undefined;
-    }
-    if (!item.initial[0].valueDate && !item.initial[0].valueDateTime) {
-      return undefined;
-    }
-    if (item.initial[0].valueDate) {
-      return parseDate(String(item.initial[0].valueDate));
-    }
-    return parseDate(String(item.initial[0].valueDateTime));
-  }
-
   getMaxDate(): Moment | undefined {
     const maxDate = getExtension(ExtensionConstants.DATE_MAX_VALUE_URL, this.props.item);
     if (maxDate && maxDate.valueString) {
@@ -165,7 +139,6 @@ class DateComponent extends React.Component<Props & ValidationProps> {
   }
 
   render(): JSX.Element | null {   
-    const date = this.getValue();
     const year = createDateFromYear(this.props.item, this.props.answer);
     const subLabelText = getSublabelText(this.props.item, this.props.onRenderMarkdown, this.props.questionnaire, this.props.resources);
 
@@ -217,8 +190,6 @@ class DateComponent extends React.Component<Props & ValidationProps> {
     } else {
       element = (
         <DateDayInput
-          id={this.props.id}
-          resources={this.props.resources}
           locale={this.getLocaleFromLanguage()}
           label={labelEl}
           subLabel={subLabelEl}
@@ -226,9 +197,6 @@ class DateComponent extends React.Component<Props & ValidationProps> {
           helpButton={this.props.renderHelpButton()}
           helpElement={this.props.renderHelpElement()}
           onDateValueChange={this.onDateValueChange}
-          validationErrorRenderer={this.props.validationErrorRenderer}
-          className={this.props.className}
-          dateValue={date}
           maxDate={this.getMaxDate()}
           minDate={this.getMinDate()}
           {...this.props}
