@@ -303,6 +303,11 @@ export function shouldRenderRepeatButton(
   if (response && max && response.length && Number(max) <= response.length) {
     return false;
   }
+
+  if (item.readOnly) {
+    return false;
+  }
+
   return true;
 }
 
