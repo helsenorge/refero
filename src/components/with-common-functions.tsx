@@ -243,7 +243,7 @@ export default function withCommonFunctions<T>(WrappedComponent: React.Component
           <div
             className={collapseClasses}
             dangerouslySetInnerHTML={{
-              __html: DOMPurify.sanitize(`${getText(helpItem)}`, { RETURN_TRUSTED_TYPE: true }) as unknown as string,
+              __html: DOMPurify.sanitize(`${getText(helpItem)}`, { RETURN_TRUSTED_TYPE: true, ADD_ATTR: ['target'], }) as unknown as string,
             }}
           />
         </Collapse>

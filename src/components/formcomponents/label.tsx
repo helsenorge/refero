@@ -20,6 +20,7 @@ const Label = ({ item, onRenderMarkdown, questionnaire, resources }: Props): JSX
       dangerouslySetInnerHTML={{
         __html: DOMPurify.sanitize(`${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`, {
           RETURN_TRUSTED_TYPE: true,
+          ADD_ATTR: ['target'],
         }) as unknown as string,
       }}
     />
