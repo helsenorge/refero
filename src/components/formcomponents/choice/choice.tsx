@@ -81,7 +81,7 @@ export class Choice extends React.Component<ChoiceProps & ValidationProps, Choic
     answer: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer
   ): (string | undefined)[] | undefined => {
     if (answer && Array.isArray(answer)) {
-      return answer.map((el: QuestionnaireResponseItemAnswer) => {     
+      return answer.map((el: QuestionnaireResponseItemAnswer) => {
         if (el && el.valueCoding && el.valueCoding.code) {
           return el.valueCoding.code;
         }
@@ -92,7 +92,7 @@ export class Choice extends React.Component<ChoiceProps & ValidationProps, Choic
       }
       return [answer.valueCoding.code];
     }
-    const initialSelectedOption = item.answerOption?.filter(x => x.initialSelected);    
+    const initialSelectedOption = item.answerOption?.filter(x => x.initialSelected);
     if (initialSelectedOption && initialSelectedOption.length > 0) {
       return [initialSelectedOption[0].valueCoding?.code];
     }
