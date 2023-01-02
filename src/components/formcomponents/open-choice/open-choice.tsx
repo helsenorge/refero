@@ -142,6 +142,9 @@ export class OpenChoice extends React.Component<Props & ValidationProps> {
         }
       });
     } else if (answer && !Array.isArray(answer) && answer.valueCoding && answer.valueCoding.code) {
+      if (answer.valueCoding?.code === item.initial?.[0].valueCoding.code && answer.valueCoding?.display === undefined) {
+        this.resetInitialAnswer(answer.valueCoding.code);      
+      }
       return [answer.valueCoding.code];
     }
     const initialSelectedOption = item.answerOption?.filter(x => x.initialSelected);
@@ -178,12 +181,35 @@ export class OpenChoice extends React.Component<Props & ValidationProps> {
     }
   };
 
+  getAnswerValueCoding = (code: string, systemArg?: string, displayArg?: string): Coding => {
+    const display = displayArg ? displayArg : getDisplay(getOptions(this.props.item, this.props.containedResources), code);
+    const valueSetSystem = code === OPEN_CHOICE_ID ? OPEN_CHOICE_SYSTEM : getSystem(this.props.item, code, this.props.containedResources);
+    const system = systemArg ? systemArg : valueSetSystem;
+    return { code, display, system } as Coding;
+  }
+
+  resetInitialAnswer = (code: string): void => {
+    const { dispatch, answer, promptLoginMessage, item, onAnswerChange, path } = this.props;
+    if (dispatch && code) {
+      const coding = this.getAnswerValueCoding(code);
+      const responseAnswer = { valueCoding: coding  } as QuestionnaireResponseItemAnswer;
+      if (getIndexOfAnswer(code, answer) > -1) {
+        dispatch(removeCodingValueAsync(path, coding, item))?.then(newState => onAnswerChange(newState, path, item, responseAnswer));
+        if (promptLoginMessage) {
+          promptLoginMessage();
+        }
+      }
+      dispatch(newCodingValueAsync(path, coding, item, true))?.then(newState => onAnswerChange(newState, path, item, responseAnswer));
+      if (promptLoginMessage) {
+        promptLoginMessage();
+      }
+    }
+  };
+
   handleCheckboxChange = (code?: string): void => {
     const { dispatch, answer, promptLoginMessage, item, onAnswerChange, path } = this.props;
     if (dispatch && code) {
-      const display = getDisplay(getOptions(item, this.props.containedResources), code);
-      const system = code === OPEN_CHOICE_ID ? OPEN_CHOICE_SYSTEM : getSystem(item, code, this.props.containedResources);
-      const coding = { code, display, system } as Coding;
+      const coding = this.getAnswerValueCoding(code);
       const responseAnswer = { valueCoding: coding } as QuestionnaireResponseItemAnswer;
       if (getIndexOfAnswer(code, answer) > -1) {
         dispatch(removeCodingValueAsync(this.props.path, coding, item))?.then(newState =>
@@ -220,10 +246,7 @@ export class OpenChoice extends React.Component<Props & ValidationProps> {
   handleChange = (code?: string, systemArg?: string, displayArg?: string): void => {
     const { dispatch, promptLoginMessage, item, onAnswerChange, path } = this.props;
     if (dispatch && code) {
-      const valueSetSystem = code === OPEN_CHOICE_ID ? OPEN_CHOICE_SYSTEM : getSystem(item, code, this.props.containedResources);
-      const display = displayArg ? displayArg : getDisplay(getOptions(item, this.props.containedResources), code);
-      const system = systemArg ? systemArg : valueSetSystem;
-      const coding = { code, display, system } as Coding;
+      const coding = this.getAnswerValueCoding(code, systemArg, displayArg);
       const responseAnswer = { valueCoding: coding } as QuestionnaireResponseItemAnswer;
       dispatch(newCodingValueAsync(this.props.path, coding, item))?.then(newState => onAnswerChange(newState, path, item, responseAnswer));
       if (promptLoginMessage) {

@@ -81,15 +81,18 @@ export class Choice extends React.Component<ChoiceProps & ValidationProps, Choic
     answer: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer
   ): (string | undefined)[] | undefined => {
     if (answer && Array.isArray(answer)) {
-      return answer.map((el: QuestionnaireResponseItemAnswer) => {
+      return answer.map((el: QuestionnaireResponseItemAnswer) => {     
         if (el && el.valueCoding && el.valueCoding.code) {
           return el.valueCoding.code;
         }
       });
     } else if (answer && !Array.isArray(answer) && answer.valueCoding && answer.valueCoding.code) {
+      if (answer.valueCoding?.code === item.initial?.[0].valueCoding.code && answer.valueCoding?.display === undefined) {
+        this.resetInitialAnswer(answer.valueCoding.code);      
+      }
       return [answer.valueCoding.code];
     }
-    const initialSelectedOption = item.answerOption?.filter(x => x.initialSelected);
+    const initialSelectedOption = item.answerOption?.filter(x => x.initialSelected);    
     if (initialSelectedOption && initialSelectedOption.length > 0) {
       return [initialSelectedOption[0].valueCoding?.code];
     }
@@ -126,13 +129,35 @@ export class Choice extends React.Component<ChoiceProps & ValidationProps, Choic
     return Array.isArray(value) ? value.map(el => getDisplay(getOptions(item, containedResources), el)).join(', ') : value;
   };
 
+  getAnswerValueCoding = (code: string, systemArg?: string, displayArg?: string): Coding => {
+    const display = displayArg ? displayArg : getDisplay(getOptions(this.props.item, this.props.containedResources), code);
+    const system = systemArg ? systemArg : getSystem(this.props.item, code, this.props.containedResources);
+    return { code, display, system } as Coding;
+  }
+
+  resetInitialAnswer = (code: string): void => {
+    const { dispatch, answer, promptLoginMessage, item, onAnswerChange, path } = this.props;
+    if (dispatch && code) {
+      const coding = this.getAnswerValueCoding(code);
+      const responseAnswer = { valueCoding: coding  } as QuestionnaireResponseItemAnswer;
+      if (getIndexOfAnswer(code, answer) > -1) {
+        dispatch(removeCodingValueAsync(path, coding, item))?.then(newState => onAnswerChange(newState, path, item, responseAnswer));
+        if (promptLoginMessage) {
+          promptLoginMessage();
+        }
+      }
+      dispatch(newCodingValueAsync(path, coding, item, true))?.then(newState => onAnswerChange(newState, path, item, responseAnswer));
+      if (promptLoginMessage) {
+        promptLoginMessage();
+      }
+    }
+  };
+
   handleCheckboxChange = (code?: string): void => {
     const { dispatch, answer, promptLoginMessage, item, onAnswerChange, path } = this.props;
     if (dispatch && code) {
-      const display = getDisplay(getOptions(item, this.props.containedResources), code);
-      const system = getSystem(item, code, this.props.containedResources);
-      const coding = { code, display, system } as Coding;
-      const responseAnswer = { valueCoding: coding } as QuestionnaireResponseItemAnswer;
+      const coding = this.getAnswerValueCoding(code);
+      const responseAnswer = { valueCoding: coding  } as QuestionnaireResponseItemAnswer;
       if (getIndexOfAnswer(code, answer) > -1) {
         dispatch(removeCodingValueAsync(path, coding, item))?.then(newState => onAnswerChange(newState, path, item, responseAnswer));
         if (promptLoginMessage) {
@@ -161,9 +186,7 @@ export class Choice extends React.Component<ChoiceProps & ValidationProps, Choic
   handleChange = (code?: string, systemArg?: string, displayArg?: string): void => {
     const { dispatch, promptLoginMessage, item, onAnswerChange, path } = this.props;
     if (dispatch && code) {
-      const display = displayArg ? displayArg : getDisplay(getOptions(item, this.props.containedResources), code);
-      const system = systemArg ? systemArg : getSystem(item, code, this.props.containedResources);
-      const coding = { code, display, system } as Coding;
+      const coding = this.getAnswerValueCoding(code, systemArg, displayArg);
       const responseAnswer = { valueCoding: coding } as QuestionnaireResponseItemAnswer;
       dispatch(newCodingValueAsync(path, coding, item))?.then(newState => onAnswerChange(newState, path, item, responseAnswer));
       if (promptLoginMessage) {
