@@ -337,7 +337,6 @@ class Refero extends React.Component<StateProps & DispatchProps & Props, State> 
               fetchValueSet={this.props.fetchValueSet}
               autoSuggestProps={this.props.autoSuggestProps}
               fetchReceivers={this.props.fetchReceivers}
-              onFieldsNotCorrectlyFilledOut={this.props.onFieldsNotCorrectlyFilledOut}
             />
           );
         });
