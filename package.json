@@ -1,6 +1,6 @@
 {
   "name": "@helsenorge/refero",
-  "version": "11.2.2",
+  "version": "11.3.0",
   "main": "index.js",
   "author": "helsenorge",
   "license": "MIT",
@@ -33,7 +33,7 @@
     "redux-thunk": "^2.3.0",
     "@helsenorge/core-utils": "^26.3.2",
     "@helsenorge/file-upload": "^26.3.2",
-    "@helsenorge/form": "^26.3.2",
+    "@helsenorge/form": "^26.4.0",
     "@helsenorge/date-time": "^26.3.2",
     "@helsenorge/autosuggest": "^26.3.2",
     "@helsenorge/designsystem-react": "^2.6.2"
