@@ -139,9 +139,9 @@ export function getId(id?: string): string {
 
 export function renderPrefix(item: QuestionnaireItem): string {
   if (!item || !item.prefix) {
-    return '';
+    return window.trustedTypes ? (window.trustedTypes.emptyHTML as unknown as string) : '';
   }
-  return item.prefix;
+  return DOMPurify.sanitize(item.prefix, { RETURN_TRUSTED_TYPE: true }) as unknown as string;
 }
 
 export function getSublabelText(
@@ -193,19 +193,24 @@ function getMarkdownValue(
 
   const renderer = new marked.Renderer();
   renderer.link = (href: string, title: string, text: string): string => {
-    const urlString = `<a href=${href} ${title ? `title=${title}` : ''} target="_blank" rel="noopener noreferrer" class="external">${text}${srLinkTextSpan}</a>`;
-    return DOMPurify.sanitize(urlString, { RETURN_TRUSTED_TYPE: true, ADD_ATTR: ['target'], }) as unknown as string;
+    const urlString = `<a href=${href} ${
+      title ? `title=${title}` : ''
+    } target="_blank" rel="noopener noreferrer" class="external">${text}${srLinkTextSpan}</a>`;
+    return DOMPurify.sanitize(urlString, { RETURN_TRUSTED_TYPE: true, ADD_ATTR: ['target'] }) as unknown as string;
   };
   const rendererSameWindow = new marked.Renderer();
   rendererSameWindow.link = (href: string, title: string, text: string): string => {
-    const urlString = `<a href=${href} ${title ? `title=${title}` : ''} target="${openNewIfAbsolute(href)}" rel="noopener noreferrer">${text}${
-      openNewIfAbsolute(href) === '_blank' ? srLinkTextSpan : ''
-    }</a>`;
-    return DOMPurify.sanitize(urlString, { RETURN_TRUSTED_TYPE: true, ADD_ATTR: ['target'], }) as unknown as string;
+    const urlString = `<a href=${href} ${title ? `title=${title}` : ''} target="${openNewIfAbsolute(
+      href
+    )}" rel="noopener noreferrer">${text}${openNewIfAbsolute(href) === '_blank' ? srLinkTextSpan : ''}</a>`;
+    return DOMPurify.sanitize(urlString, { RETURN_TRUSTED_TYPE: true, ADD_ATTR: ['target'] }) as unknown as string;
   };
 
   if (onRenderMarkdown) {
-    return DOMPurify.sanitize(onRenderMarkdown(item, markdownText.toString()), { RETURN_TRUSTED_TYPE: true, ADD_ATTR: ['target'], }) as unknown as string;
+    return DOMPurify.sanitize(onRenderMarkdown(item, markdownText.toString()), {
+      RETURN_TRUSTED_TYPE: true,
+      ADD_ATTR: ['target'],
+    }) as unknown as string;
   }
   if (itemValue === HyperlinkTarget.SAME_WINDOW || (!itemValue && questionnaireValue === HyperlinkTarget.SAME_WINDOW)) {
     marked.setOptions({ renderer: rendererSameWindow });
@@ -213,7 +218,7 @@ function getMarkdownValue(
   }
 
   marked.setOptions({ renderer: renderer });
-  return DOMPurify.sanitize(marked(markdownText.toString()), { RETURN_TRUSTED_TYPE: true, ADD_ATTR: ['target'], }) as unknown as string;
+  return DOMPurify.sanitize(marked(markdownText.toString()), { RETURN_TRUSTED_TYPE: true, ADD_ATTR: ['target'] }) as unknown as string;
 }
 
 export function getChildHeaderTag(item?: QuestionnaireItem, headerTag?: number): number {
@@ -240,15 +245,18 @@ export function getLinkId(item: QuestionnaireItem): string {
   return uuid.v4();
 }
 
-export function getStringValue(answer: QuestionnaireResponseItemAnswer | Array<QuestionnaireResponseItemAnswer>): string {  
+export function getStringValue(answer: QuestionnaireResponseItemAnswer | Array<QuestionnaireResponseItemAnswer>): string {
   if (answer && Array.isArray(answer)) {
-    const stringAnswer = answer.filter((f) => f.valueString);
-    return stringAnswer.length > 0 ? stringAnswer.map((m) => m.valueString).join(', ') : '';
-  }  
+    const stringAnswer = answer.filter(f => f.valueString);
+    return stringAnswer.length > 0 ? stringAnswer.map(m => m.valueString).join(', ') : '';
+  }
   return answer?.valueString ?? '';
 }
 
-export function getPDFStringValue(answer: QuestionnaireResponseItemAnswer | Array<QuestionnaireResponseItemAnswer>, resources?: Resources): string {
+export function getPDFStringValue(
+  answer: QuestionnaireResponseItemAnswer | Array<QuestionnaireResponseItemAnswer>,
+  resources?: Resources
+): string {
   const value = getStringValue(answer);
   if (!value) {
     let text = '';

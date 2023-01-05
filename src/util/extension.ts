@@ -6,6 +6,7 @@ import itemControlConstants from '../constants/itemcontrol';
 import itemType from '../constants/itemType';
 import { PresentationButtonsType } from '../constants/presentationButtonsType';
 import { getText } from '../util/index';
+import DOMPurify from 'dompurify';
 
 export function getValidationTextExtension(item: QuestionnaireItem): string | undefined {
   const validationTextExtension = getExtension(ExtensionConstants.VALIDATIONTEXT_URL, item);
@@ -173,7 +174,7 @@ export function getMarkdownExtensionValue(item: QuestionnaireItem | Element): st
   if (!markdownExtension || !markdownExtension.valueMarkdown) {
     return undefined;
   }
-  return markdownExtension.valueMarkdown;
+  return DOMPurify.sanitize(markdownExtension.valueMarkdown, { RETURN_TRUSTED_TYPE: true }) as unknown as string;;
 }
 
 export function getSublabelExtensionValue(item: QuestionnaireItem | Element): string | undefined {
@@ -181,7 +182,7 @@ export function getSublabelExtensionValue(item: QuestionnaireItem | Element): st
   if (!markdownExtension || !markdownExtension.valueMarkdown) {
     return undefined;
   }
-  return markdownExtension.valueMarkdown;
+  return DOMPurify.sanitize(markdownExtension.valueMarkdown, { RETURN_TRUSTED_TYPE: true }) as unknown as string;
 }
 
 export function getQuestionnaireHiddenExtensionValue(item: QuestionnaireItem): boolean | undefined {
