@@ -12,7 +12,7 @@ import { Props } from '../components/with-common-functions';
 import { getFormData } from '../reducers/form';
 import { GlobalState } from '../reducers/index';
 import { enableWhenMatchesAnswer, getQuestionnaireResponseItemWithLinkid, getResponseItems, Path, isInGroupContext } from './refero-core';
-import { getCopyExtension } from '../util/extension';
+import { getCopyExtension, getCalculatedExpressionExtension } from '../util/extension';
 import { evaluateFhirpathExpressionToGetString } from '../util/fhirpathHelper';
 import ItemType from '../constants/itemType';
 
@@ -61,7 +61,12 @@ function getValueIfDataReceiver(state: GlobalState, originalProps: Props): void 
     const extension = getCopyExtension(originalProps.item);
     if (extension) {
       const formData = getFormData(state);
-      const result = evaluateFhirpathExpressionToGetString(formData?.Content, extension);
+      let result = evaluateFhirpathExpressionToGetString(formData?.Content, extension);
+
+      if (!!getCalculatedExpressionExtension(originalProps.item)) {
+        result = result.map((m: any) => m.value as number);
+      }
+
       originalProps.answer = getQuestionnaireResponseItemAnswer(originalProps.item.type, result);
     }
   }
