@@ -1,16 +1,12 @@
 import * as React from 'react';
-
 import moment, { Moment } from 'moment';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
-
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem, Questionnaire } from '../../../types/fhir';
-
 import { LanguageLocales } from '@helsenorge/core-utils/constants/languages';
 import { DateRangePicker } from '@helsenorge/date-time/components/date-range-picker';
 import { parseDate } from '@helsenorge/date-time/components/time-input/date-core';
 import { ValidationProps } from '@helsenorge/form/components/form/validation';
-
 import { NewValueAction, newDateValueAsync } from '../../../actions/newValue';
 import ExtensionConstants from '../../../constants/extensions';
 import itemControlConstants from '../../../constants/itemcontrol';
@@ -27,7 +23,6 @@ import SubLabel from '../sublabel';
 import { DateDayInput } from './date-day-input';
 import { DateYearMonthInput } from './date-month-input';
 import { DateYearInput } from './date-year-input';
-import { createDateFromYear } from '../../../util/createDateFromYear';
 
 export interface Props {
   item: QuestionnaireItem;
@@ -60,36 +55,6 @@ class DateComponent extends React.Component<Props & ValidationProps> {
   constructor(props: Props) {
     super(props);
     this.datepicker = React.createRef();
-  }
-
-  getStringValue(): string | undefined {
-    const { answer } = this.props;
-    if (answer && answer.valueDate) {
-      return answer.valueDate;
-    }
-    if (answer && answer.valueDateTime) {
-      return answer.valueDateTime;
-    }
-  }
-
-  getValue(): Date | undefined {
-    const { item, answer } = this.props;
-    if (answer && answer.valueDate) {
-      return parseDate(String(answer.valueDate));
-    }
-    if (answer && answer.valueDateTime) {
-      return parseDate(String(answer.valueDateTime));
-    }
-    if (!item || !item.initial || item.initial.length === 0) {
-      return undefined;
-    }
-    if (!item.initial[0].valueDate && !item.initial[0].valueDateTime) {
-      return undefined;
-    }
-    if (item.initial[0].valueDate) {
-      return parseDate(String(item.initial[0].valueDate));
-    }
-    return parseDate(String(item.initial[0].valueDateTime));
   }
 
   getMaxDate(): Moment | undefined {
@@ -168,9 +133,7 @@ class DateComponent extends React.Component<Props & ValidationProps> {
     return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats || answerHasChanged;
   }
 
-  render(): JSX.Element | null {
-    const date = this.getValue();
-    const year = createDateFromYear(this.props.item, this.props.answer);
+  render(): JSX.Element | null {   
     const subLabelText = getSublabelText(this.props.item, this.props.onRenderMarkdown, this.props.questionnaire, this.props.resources);
 
     const itemControls = getItemControlExtensionValue(this.props.item);
@@ -189,45 +152,33 @@ class DateComponent extends React.Component<Props & ValidationProps> {
     if (itemControls && itemControls.some(itemControl => itemControl.code === itemControlConstants.YEAR)) {
       element = (
         <DateYearInput
-          id={this.props.id}
-          pdf={this.props.pdf}
-          resources={this.props.resources}
           label={labelEl}
           subLabel={subLabelEl}
           helpButton={this.props.renderHelpButton()}
           helpElement={this.props.renderHelpElement()}
           onDateValueChange={this.onDateValueChange}
-          className={this.props.className}
-          yearValue={year ? year.getFullYear() : undefined}
           maxDate={this.getMaxDate()}
           minDate={this.getMinDate()}
           {...this.props}
         />
       );
     } else if (itemControls && itemControls.some(itemControl => itemControl.code === itemControlConstants.YEARMONTH)) {
-      const stringDate = this.getStringValue();
       element = (
         <DateYearMonthInput
-          id={this.props.id}
-          resources={this.props.resources}
           label={labelEl}
           locale={this.getLocaleFromLanguage()}
           subLabel={subLabelEl}
           helpButton={this.props.renderHelpButton()}
           helpElement={this.props.renderHelpElement()}
           onDateValueChange={this.onDateValueChange}
-          className={this.props.className}
-          yearMonthValue={stringDate}
           maxDate={this.getMaxDate()}
-          minDate={this.getMinDate()}
+          minDate={this.getMinDate()}          
           {...this.props}
         />
       );
     } else {
       element = (
         <DateDayInput
-          id={this.props.id}
-          resources={this.props.resources}
           locale={this.getLocaleFromLanguage()}
           label={labelEl}
           subLabel={subLabelEl}
@@ -235,9 +186,6 @@ class DateComponent extends React.Component<Props & ValidationProps> {
           helpButton={this.props.renderHelpButton()}
           helpElement={this.props.renderHelpElement()}
           onDateValueChange={this.onDateValueChange}
-          validationErrorRenderer={this.props.validationErrorRenderer}
-          className={this.props.className}
-          dateValue={date}
           maxDate={this.getMaxDate()}
           minDate={this.getMinDate()}
           {...this.props}
