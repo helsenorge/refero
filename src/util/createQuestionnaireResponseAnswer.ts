@@ -41,8 +41,7 @@ export function createQuestionnaireResponseAnswer(item: QuestionnaireItem): Ques
   }
   if (item.initial && item.initial.length > 0 && item.initial[0].valueCoding !== undefined) {
     hasInitialAnswer = true;
-    const option = item.answerOption?.filter(f => f.valueCoding.code === item.initial?.[0].valueCoding.code);
-    answer.valueCoding = option?.[0]?.valueCoding ?? item.initial[0].valueCoding;
+    answer.valueCoding = item.initial[0].valueCoding;
   }
   if (item.initial && item.initial.length > 0 && item.initial[0].valueAttachment !== undefined) {
     hasInitialAnswer = true;

@@ -35,7 +35,7 @@ describe('createQuestionnaireResponseAnswer', () => {
     ] as QuestionnaireItemInitial[],
   };
 
-  it('Choice initial without display, gets display from answerOption', () => {
+  it('Choice initial without display', () => {
     item.initial = [
       {
         valueCoding: {
@@ -48,29 +48,10 @@ describe('createQuestionnaireResponseAnswer', () => {
     const answer = createQuestionnaireResponseAnswer(item);
 
     expect(answer?.valueCoding?.code).toBe('option-2');
-    expect(answer?.valueCoding?.display).toBe('Option 2');
     expect(answer?.valueCoding?.system).toBe('urn:uuid:434e611a-95a0-456d-8363-c797f4adf646');
   });
 
-  it('Choice initial with display, gets display from answerOption', () => {
-    item.initial = [
-      {
-        valueCoding: {
-          system: 'urn:uuid:434e611a-95a0-456d-8363-c797f4adf646',
-          code: 'option-2',
-          display: 'Option 3',
-        },
-      },
-    ] as QuestionnaireItemInitial[];
-
-    const answer = createQuestionnaireResponseAnswer(item);
-
-    expect(answer?.valueCoding?.code).toBe('option-2');
-    expect(answer?.valueCoding?.display).toBe('Option 2');
-    expect(answer?.valueCoding?.system).toBe('urn:uuid:434e611a-95a0-456d-8363-c797f4adf646');
-  });
-
-  it('Choice initial with display that does not exist in answerOption, gets display from initial', () => {
+  it('Choice initial with display', () => {
     item.initial = [
       {
         valueCoding: {
