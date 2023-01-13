@@ -190,6 +190,14 @@ function getMarkdownValue(
   }</span>`;
   const itemValue = getHyperlinkExtensionValue(item);
   const questionnaireValue = questionnaire ? getHyperlinkExtensionValue(questionnaire) : undefined;
+  const markdownTextAsHTML = marked(markdownText.toString());
+
+  marked.Renderer.prototype.paragraph = (text) => {
+    if (markdownTextAsHTML.startsWith("<p>")) {
+      return text + "\n";
+    }
+    return "<p>" + text + "</p>";
+  };
 
   const renderer = new marked.Renderer();
   renderer.link = (href: string, title: string, text: string): string => {
