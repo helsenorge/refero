@@ -151,7 +151,7 @@ export function getSublabelText(
   resources?: Resources
 ): string {
   if (item) {
-    const markdown = getSublabelExtensionValue(item) || '';
+    const markdown = getSublabelExtensionValue(item) || (window.trustedTypes ? (window.trustedTypes.emptyHTML as unknown as string) : '');
     return markdown
       ? getMarkdownValue(markdown, item, onRenderMarkdown, questionnaire, resources?.linkOpensInNewTab)
       : window.trustedTypes
@@ -192,11 +192,11 @@ function getMarkdownValue(
   const questionnaireValue = questionnaire ? getHyperlinkExtensionValue(questionnaire) : undefined;
   const markdownTextAsHTML = marked(markdownText.toString());
 
-  marked.Renderer.prototype.paragraph = (text) => {
-    if (markdownTextAsHTML.startsWith("<p>")) {
-      return text + "\n";
+  marked.Renderer.prototype.paragraph = text => {
+    if (markdownTextAsHTML.startsWith('<p>')) {
+      return text + '\n';
     }
-    return "<p>" + text + "</p>";
+    return '<p>' + text + '</p>';
   };
 
   const renderer = new marked.Renderer();
