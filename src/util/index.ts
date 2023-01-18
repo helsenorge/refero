@@ -1,4 +1,3 @@
-import DOMPurify from 'dompurify';
 import marked from 'marked';
 import * as uuid from 'uuid';
 
@@ -141,7 +140,7 @@ export function renderPrefix(item: QuestionnaireItem): string {
   if (!item || !item.prefix) {
     return window.trustedTypes ? (window.trustedTypes.emptyHTML as unknown as string) : '';
   }
-  return DOMPurify.sanitize(item.prefix, { RETURN_TRUSTED_TYPE: true }) as unknown as string;
+  return item.prefix;
 }
 
 export function getSublabelText(
@@ -172,7 +171,7 @@ export function getText(
     if (markdown) {
       return getMarkdownValue(markdown, item, onRenderMarkdown, questionnaire, resources?.linkOpensInNewTab);
     } else if (item.text) {
-      return DOMPurify.sanitize(item.text, { RETURN_TRUSTED_TYPE: true }) as unknown as string;
+      return item.text;
     }
   }
   return window.trustedTypes ? (window.trustedTypes.emptyHTML as unknown as string) : '';
@@ -204,29 +203,26 @@ function getMarkdownValue(
     const urlString = `<a href=${href} ${
       title ? `title=${title}` : ''
     } target="_blank" rel="noopener noreferrer" class="external">${text}${srLinkTextSpan}</a>`;
-    return DOMPurify.sanitize(urlString, { RETURN_TRUSTED_TYPE: true, ADD_ATTR: ['target'] }) as unknown as string;
+    return urlString;
   };
   const rendererSameWindow = new marked.Renderer();
   rendererSameWindow.link = (href: string, title: string, text: string): string => {
     const urlString = `<a href=${href} ${title ? `title=${title}` : ''} target="${openNewIfAbsolute(
       href
     )}" rel="noopener noreferrer">${text}${openNewIfAbsolute(href) === '_blank' ? srLinkTextSpan : ''}</a>`;
-    return DOMPurify.sanitize(urlString, { RETURN_TRUSTED_TYPE: true, ADD_ATTR: ['target'] }) as unknown as string;
+    return urlString;
   };
 
   if (onRenderMarkdown) {
-    return DOMPurify.sanitize(onRenderMarkdown(item, markdownText.toString()), {
-      RETURN_TRUSTED_TYPE: true,
-      ADD_ATTR: ['target'],
-    }) as unknown as string;
+    return onRenderMarkdown(item, markdownText.toString());
   }
   if (itemValue === HyperlinkTarget.SAME_WINDOW || (!itemValue && questionnaireValue === HyperlinkTarget.SAME_WINDOW)) {
     marked.setOptions({ renderer: rendererSameWindow });
-    return DOMPurify.sanitize(marked(markdownText.toString()), { RETURN_TRUSTED_TYPE: true }) as unknown as string;
+    return marked(markdownText.toString());
   }
 
   marked.setOptions({ renderer: renderer });
-  return DOMPurify.sanitize(marked(markdownText.toString()), { RETURN_TRUSTED_TYPE: true, ADD_ATTR: ['target'] }) as unknown as string;
+  return marked(markdownText.toString());
 }
 
 export function getChildHeaderTag(item?: QuestionnaireItem, headerTag?: number): number {
