@@ -178,7 +178,11 @@ export class Text extends React.Component<Props & ValidationProps, {}> {
             value={getStringValue(answer)}
             isRequired={isRequired(item)}
             showLabel={true}
-            label={`${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`}
+            label={
+              DOMPurify.sanitize(`${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`, {
+                RETURN_TRUSTED_TYPE: true,
+              }) as unknown as string
+            }
             subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
             placeholder={getPlaceholder(item)}
             maxlength={getMaxLength(item)}
