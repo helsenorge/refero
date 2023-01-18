@@ -1,6 +1,6 @@
 {
   "name": "@helsenorge/refero",
-  "version": "11.3.4",
+  "version": "11.3.5-beta01",
   "main": "index.js",
   "author": "helsenorge",
   "license": "MIT",
@@ -42,7 +42,7 @@
     "@types/chai": "^3.5.2",
     "@types/dompurify": "^2.0.1",
     "@types/jest": "27.4.0",
-    "@types/marked": "^4.0.8",
+    "@types/marked": "^0.3.0",
     "@types/react-collapse": "5.0.0",
     "@types/react-redux": "5.0.7",
     "@types/react-router-dom": "4.0.7",
@@ -122,7 +122,7 @@
     "fhirpath": "2.7.3",
     "immer": "^9.0.6",
     "isomorphic-fetch": "^2.2.1",
-    "marked": "^4.2.5",
+    "marked": "^0.7.0",
     "react-collapse": "^5.1.1",
     "uuid": "9.0.0"
   },
