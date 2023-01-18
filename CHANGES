@@ -1,3 +1,11 @@
+## 11.3.5-beta01
+
+---
+
+- Fixed referenceerror caused by the marked package by reverting to an older version
+- Sanitized a prop sent to SafeTextArea imported from the form package, that contains html
+- Removed redundant sanitizing
+
 ## 11.3.4
 
 ---
