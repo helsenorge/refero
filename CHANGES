@@ -1,3 +1,9 @@
+## 11.3.6
+
+---
+
+- Fixed bug on date-day-input component to handle cases where answer does not contain a valid date
+
 ## 11.3.5
 
 ---
@@ -43,7 +49,7 @@
 ---
 
 - Made Dompurify accept the target attribute when sanitizing links
-- Gave links with target="_blank" the attribute rel="noopener noreferrer" for better security
+- Gave links with target="\_blank" the attribute rel="noopener noreferrer" for better security
 
 ## 11.2.1
 
