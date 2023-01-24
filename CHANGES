@@ -49,7 +49,7 @@
 ---
 
 - Made Dompurify accept the target attribute when sanitizing links
-- Gave links with target="\_blank" the attribute rel="noopener noreferrer" for better security
+- Gave links with target="_blank" the attribute rel="noopener noreferrer" for better security
 
 ## 11.2.1
 
