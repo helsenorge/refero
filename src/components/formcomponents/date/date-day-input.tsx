@@ -66,7 +66,7 @@ export class DateDayInput extends React.Component<Props, {}> {
       return answer.map(m => parseDate(String(this.getDateAnswerValue(m))));
     }
 
-    if (answer && Array.isArray(item.initial)) {
+    if (Array.isArray(item.initial)) {
       return item.initial.map(m => parseDate(String(this.getDateAnswerValue(m))));
     }
 
