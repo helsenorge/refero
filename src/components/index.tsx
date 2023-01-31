@@ -54,6 +54,8 @@ import {
   getQuestionnaireDefinitionItem,
   getResponseItemAndPathWithLinkId,
 } from '../util/refero-core';
+import { shouldFormBeDisplayedAsStepView } from '../util/shouldFormBeDisplayedAsStepView';
+import StepView from './stepView';
 
 export interface QueryStringsInterface {
   MessageId: string;
@@ -79,7 +81,7 @@ interface DispatchProps {
   path: Array<Path>;
 }
 
-interface Props {
+export interface ReferoProps {
   store?: Store<{}>;
   authorized: boolean;
   blockSubmit?: boolean;
@@ -148,10 +150,10 @@ interface State {
   showCancelLightbox?: boolean;
 }
 
-class Refero extends React.Component<StateProps & DispatchProps & Props, State> {
+class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, State> {
   scoringCalculator: ScoringCalculator | undefined;
 
-  constructor(props: StateProps & DispatchProps & Props) {
+  constructor(props: StateProps & DispatchProps & ReferoProps) {
     super(props);
 
     this.state = {
@@ -183,7 +185,7 @@ class Refero extends React.Component<StateProps & DispatchProps & Props, State> 
     IE11HackToWorkAroundBug187484();
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps: Props): void {
+  UNSAFE_componentWillReceiveProps(nextProps: ReferoProps): void {
     if (nextProps.questionnaire && nextProps.questionnaire !== this.props.questionnaire) {
       this.props.updateSkjema(
         nextProps.questionnaire,
@@ -270,6 +272,7 @@ class Refero extends React.Component<StateProps & DispatchProps & Props, State> 
     const renderedItems: Array<JSX.Element> | undefined = [];
     const isNavigatorEnabled = !!getNavigatorExtension(formDefinition.Content);
     let isNavigatorBlindzoneInitiated = false;
+
     formDefinition.Content.item.map(item => {
       if (isHiddenItem(item)) return [];
 
@@ -304,6 +307,7 @@ class Refero extends React.Component<StateProps & DispatchProps & Props, State> 
             isNavigatorBlindzoneInitiated = true;
             renderedItems.push(<section id="navigator_blindzone"></section>);
           }
+
           renderedItems.push(
             <Comp
               language={formDefinition.Content?.language}
@@ -376,25 +380,32 @@ class Refero extends React.Component<StateProps & DispatchProps & Props, State> 
 
     return (
       <>
-        <Form
-          action="#"
-          disabled={this.props.blockSubmit}
-          errorMessage={resources.formError}
-          requiredLabel={resources.formRequired}
-          optionalLabel={resources.formOptional}
-          triggerPreventDefaultOnSubmit
-          validationSummaryPlacement={this.props.validationSummaryPlacement}
-          validationSummary={{
-            enable: true,
-            header: resources.validationSummaryHeader,
-          }}
-          submitButtonDisabled={this.props.submitButtonDisabled}
-          pauseButtonDisabled={this.props.saveButtonDisabled}
-          onFieldsNotCorrectlyFilledOut={this.props.onFieldsNotCorrectlyFilledOut}
-        >
-          {this.renderFormItems()}
-        </Form>
-        <div className="page_refero__buttonwrapper page_refero__saveblock">{this.props.loginButton}</div>
+        {this.props.formDefinition && shouldFormBeDisplayedAsStepView(this.props.formDefinition) ? (
+          <StepView referoProps={this.props} resources={resources} renderFormItems={this.renderFormItems} />
+        ) : (
+          <>
+            <Form
+              action="#"
+              disabled={this.props.blockSubmit}
+              errorMessage={resources.formError}
+              requiredLabel={resources.formRequired}
+              optionalLabel={resources.formOptional}
+              triggerPreventDefaultOnSubmit
+              validationSummaryPlacement={this.props.validationSummaryPlacement}
+              validationSummary={{
+                enable: true,
+                header: resources.validationSummaryHeader,
+              }}
+              submitButtonDisabled={this.props.submitButtonDisabled}
+              pauseButtonDisabled={this.props.saveButtonDisabled}
+              onFieldsNotCorrectlyFilledOut={this.props.onFieldsNotCorrectlyFilledOut}
+            >
+              {/*NAGEL*/}
+              {this.renderFormItems()}
+            </Form>
+            <div className="page_refero__buttonwrapper page_refero__saveblock">{this.props.loginButton}</div>
+          </>
+        )}
       </>
     );
   };
@@ -435,6 +446,7 @@ class Refero extends React.Component<StateProps & DispatchProps & Props, State> 
           pauseButtonDisabled={this.props.saveButtonDisabled}
           onFieldsNotCorrectlyFilledOut={this.props.onFieldsNotCorrectlyFilledOut}
         >
+          {/*NAGEL*/}
           {this.renderFormItems()}
         </Form>
       </>
@@ -471,7 +483,7 @@ function mapStateToProps(state: GlobalState): StateProps {
   };
 }
 
-function mapDispatchToProps(dispatch: ThunkDispatch<GlobalState, void, NewValueAction>, props: Props): DispatchProps {
+function mapDispatchToProps(dispatch: ThunkDispatch<GlobalState, void, NewValueAction>, props: ReferoProps): DispatchProps {
   return {
     updateSkjema: (
       questionnaire: Questionnaire,
@@ -491,5 +503,5 @@ function mapDispatchToProps(dispatch: ThunkDispatch<GlobalState, void, NewValueA
   };
 }
 
-const ReferoContainer = connect<StateProps, DispatchProps, Props>(mapStateToProps, mapDispatchToProps)(Refero);
+const ReferoContainer = connect<StateProps, DispatchProps, ReferoProps>(mapStateToProps, mapDispatchToProps)(Refero);
 export { ReferoContainer };
