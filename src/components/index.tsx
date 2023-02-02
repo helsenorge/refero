@@ -56,6 +56,8 @@ import {
 } from '../util/refero-core';
 import { shouldFormBeDisplayedAsStepView } from '../util/shouldFormBeDisplayedAsStepView';
 import StepView from './stepView';
+import { getGroupsWithCodeStep } from '../util/getGroupsWithCodeStep';
+import { qItemIndexByGroup } from '../util/qItemIndexByGroup';
 
 export interface QueryStringsInterface {
   MessageId: string;
@@ -263,18 +265,23 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
     }
   };
 
-  renderFormItems(pdf?: boolean): Array<JSX.Element> | undefined {
+  renderFormItems(pdf?: boolean): Array<JSX.Element> |  Array<Array<JSX.Element>> | undefined {
     const { formDefinition, resources, formData, promptLoginMessage } = this.props;
     if (!formDefinition || !formDefinition.Content || !formDefinition.Content.item) {
       return undefined;
     }
     const contained = formDefinition.Content.contained;
     const renderedItems: Array<JSX.Element> | undefined = [];
+    const renderedItemsStepView: Array<Array<JSX.Element>> | undefined = [];
     const isNavigatorEnabled = !!getNavigatorExtension(formDefinition.Content);
     let isNavigatorBlindzoneInitiated = false;
 
-    formDefinition.Content.item.map(item => {
+    const questionnaireItemArray: QuestionnaireItem[] | undefined = shouldFormBeDisplayedAsStepView(formDefinition) ? getGroupsWithCodeStep(formDefinition) : formDefinition.Content.item;
+
+    questionnaireItemArray?.map(item => {
       if (isHiddenItem(item)) return [];
+
+      const stepIndex = qItemIndexByGroup(formDefinition, item.linkId);
 
       const Comp = getComponentForItem(item.type);
       if (!Comp) {
@@ -308,7 +315,7 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
             renderedItems.push(<section id="navigator_blindzone"></section>);
           }
 
-          renderedItems.push(
+          shouldFormBeDisplayedAsStepView(formDefinition) ? renderedItems.push : renderedItemsStepView[stepIndex].push (
             <Comp
               language={formDefinition.Content?.language}
               pdf={pdf}
@@ -350,7 +357,7 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
     return renderedItems;
   }
 
-  renderSkjema = (pdf?: boolean): Array<JSX.Element> | JSX.Element | null | undefined => {
+  renderSkjema = (pdf?: boolean): Array<JSX.Element> | Array<Array<JSX.Element>> | JSX.Element | null | undefined => {
     const { formDefinition, resources } = this.props;
 
     if (!formDefinition || !formDefinition.Content || !resources) {
@@ -381,7 +388,7 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
     return (
       <>
         {this.props.formDefinition && shouldFormBeDisplayedAsStepView(this.props.formDefinition) ? (
-          <StepView referoProps={this.props} resources={resources} renderFormItems={this.renderFormItems} />
+          <StepView referoProps={this.props} resources={resources} renderFormItems={this.renderFormItems}></StepView>
         ) : (
           <>
             <Form

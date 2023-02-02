@@ -2,22 +2,17 @@ import * as React from 'react';
 import Form from '@helsenorge/form/components/form';
 import { ReferoProps } from '../components/index';
 import { Resources } from '../util/resources';
-import { FormDefinition } from '../reducers/form';
 
 interface StepViewProps {
   referoProps: ReferoProps;
   resources: Resources;
-  renderFormItems: () => Array<JSX.Element> | undefined;
+  renderFormItems: () => Array<JSX.Element> | Array<Array<JSX.Element>> | undefined;
 }
 
 const StepView = ({ referoProps, resources, renderFormItems }: StepViewProps) => {
 
-  const getGroupsWithCodeStep = (formDefinition: FormDefinition) => {
-    const groupArray = formDefinition.Content?.item?.filter(qItem =>
-      qItem.extension?.find(extension => extension.valueCodeableConcept?.coding?.find(coding => coding.code === 'step'))
-    );
-    return groupArray;
-  }
+  const stepIndex = 0;
+  const formItems = renderFormItems();
 
   return (
     <>
@@ -37,7 +32,7 @@ const StepView = ({ referoProps, resources, renderFormItems }: StepViewProps) =>
         pauseButtonDisabled={referoProps.saveButtonDisabled}
         onFieldsNotCorrectlyFilledOut={referoProps.onFieldsNotCorrectlyFilledOut}
       >
-        {renderFormItems()}
+        {formItems && formItems[0][stepIndex]}
       </Form>
     </>
   );
