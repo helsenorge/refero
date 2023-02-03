@@ -38,6 +38,7 @@ import { Resources } from '../../../util/resources';
 import withCommonFunctions from '../../with-common-functions';
 import SubLabel from '../sublabel';
 import TextView from '../textview';
+import { SanitizeText } from '../../../util/sanitize/domPurifyHelper';
 
 export interface Props {
   item: QuestionnaireItem;
@@ -178,11 +179,7 @@ export class Text extends React.Component<Props & ValidationProps, {}> {
             value={getStringValue(answer)}
             isRequired={isRequired(item)}
             showLabel={true}
-            label={
-              DOMPurify.sanitize(`${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`, {
-                RETURN_TRUSTED_TYPE: true,
-              }) as unknown as string
-            }
+            label={SanitizeText(`${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`)}
             subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
             placeholder={getPlaceholder(item)}
             maxlength={getMaxLength(item)}
