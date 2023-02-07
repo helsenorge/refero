@@ -57,23 +57,21 @@ const RadioView: React.SFC<Props> = ({
     <div className="page_refero__component page_refero__component_choice page_refero__component_choice_radiobutton">
       <Collapse isOpened>
         <Validation {...other}>
-          <fieldset style={{ border: 0, margin: 0, padding: 0 }}>
-            <RadioGroup
-              legend={<Label item={item} onRenderMarkdown={onRenderMarkdown} questionnaire={questionnaire} resources={resources} />}
-              subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
-              id={getId(id)}
-              options={options}
-              onChange={handleChange}
-              selected={selected ? selected[0] : undefined}
-              isRequired={isRequired(item)}
-              validator={validateInput}
-              getErrorMessage={getErrorMessage}
-              helpButton={renderHelpButton()}
-              helpElement={renderHelpElement()}
-              validateOnExternalUpdate={true}
-              isStyleBlue
-            />
-          </fieldset>
+          <RadioGroup
+            legend={<Label item={item} onRenderMarkdown={onRenderMarkdown} questionnaire={questionnaire} resources={resources} />}
+            subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
+            id={getId(id)}
+            options={options}
+            onChange={handleChange}
+            selected={selected ? selected[0] : undefined}
+            isRequired={isRequired(item)}
+            validator={validateInput}
+            getErrorMessage={getErrorMessage}
+            helpButton={renderHelpButton()}
+            helpElement={renderHelpElement()}
+            validateOnExternalUpdate={true}
+            isStyleBlue
+          />
         </Validation>
         {renderDeleteButton('page_refero__deletebutton--margin-top')}
         {repeatButton}
