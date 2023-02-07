@@ -57,7 +57,7 @@ const RadioView: React.SFC<Props> = ({
     <div className="page_refero__component page_refero__component_choice page_refero__component_choice_radiobutton">
       <Collapse isOpened>
         <Validation {...other}>
-          <fieldset>
+          <fieldset style={{ border: 0, margin: 0, padding: 0 }}>
             <RadioGroup
               legend={<Label item={item} onRenderMarkdown={onRenderMarkdown} questionnaire={questionnaire} resources={resources} />}
               subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
