@@ -1,12 +1,13 @@
-import { FormDefinition } from "../reducers/form";
-import { getGroupsWithCodeStep } from "./getGroupsWithCodeStep";
+import { FormDefinition } from '../reducers/form';
+import { getGroupsWithCodeStep } from './getGroupsWithCodeStep';
 
 export const qItemIndexByGroup = (formDefinition: FormDefinition, qItemLinkId: string): number => {
+  let indexToReturn: number = 50;
   const groupsWithCodeStep = getGroupsWithCodeStep(formDefinition);
-  groupsWithCodeStep?.find((group) => {
+  groupsWithCodeStep?.find(group => {
     if (group.linkId === qItemLinkId) {
-      return groupsWithCodeStep.indexOf(group)
+      indexToReturn = groupsWithCodeStep.indexOf(group);
     }
   });
-  return 0;
-}
+  return indexToReturn;
+};

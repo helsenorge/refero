@@ -265,18 +265,19 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
     }
   };
 
-  renderFormItems(pdf?: boolean): Array<JSX.Element> |  Array<Array<JSX.Element>> | undefined {
+  renderFormItems(pdf?: boolean): Array<JSX.Element> | undefined {
     const { formDefinition, resources, formData, promptLoginMessage } = this.props;
     if (!formDefinition || !formDefinition.Content || !formDefinition.Content.item) {
       return undefined;
     }
     const contained = formDefinition.Content.contained;
     const renderedItems: Array<JSX.Element> | undefined = [];
-    const renderedItemsStepView: Array<Array<JSX.Element>> | undefined = [];
     const isNavigatorEnabled = !!getNavigatorExtension(formDefinition.Content);
     let isNavigatorBlindzoneInitiated = false;
 
-    const questionnaireItemArray: QuestionnaireItem[] | undefined = shouldFormBeDisplayedAsStepView(formDefinition) ? getGroupsWithCodeStep(formDefinition) : formDefinition.Content.item;
+    const questionnaireItemArray: QuestionnaireItem[] | undefined = shouldFormBeDisplayedAsStepView(formDefinition)
+      ? getGroupsWithCodeStep(formDefinition)
+      : formDefinition.Content.item;
 
     questionnaireItemArray?.map(item => {
       if (isHiddenItem(item)) return [];
@@ -315,13 +316,13 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
             renderedItems.push(<section id="navigator_blindzone"></section>);
           }
 
-          shouldFormBeDisplayedAsStepView(formDefinition) ? renderedItems.push : renderedItemsStepView[stepIndex].push (
+          renderedItems.push(
             <Comp
               language={formDefinition.Content?.language}
               pdf={pdf}
               includeSkipLink={isNavigatorEnabled && item.type === ItemType.GROUP}
               promptLoginMessage={promptLoginMessage}
-              key={`item_${responseItem.linkId}_${index}`}
+              key={`${responseItem.linkId}`}
               id={'item_' + responseItem.linkId + createIdSuffix(path, index, item.repeats)}
               item={item}
               questionnaire={formDefinition.Content}
@@ -380,15 +381,22 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
   };
 
   renderFormWhenNotAuthorized = (): JSX.Element | undefined => {
-    const { resources } = this.props;
+    const { resources, formDefinition, blockSubmit, validationSummaryPlacement, submitButtonDisabled, saveButtonDisabled, onFieldsNotCorrectlyFilledOut } = this.props;
     if (!resources) {
       return;
     }
 
+    const referoProps = { blockSubmit, validationSummaryPlacement, submitButtonDisabled, saveButtonDisabled, onFieldsNotCorrectlyFilledOut };
+
     return (
       <>
-        {this.props.formDefinition && shouldFormBeDisplayedAsStepView(this.props.formDefinition) ? (
-          <StepView referoProps={this.props} resources={resources} renderFormItems={this.renderFormItems}></StepView>
+        {formDefinition && shouldFormBeDisplayedAsStepView(formDefinition) ? (
+          <StepView
+            referoProps={referoProps}
+            resources={resources}
+            formDefinition={formDefinition}
+            formItems={this.renderFormItems()}
+          ></StepView>
         ) : (
           <>
             <Form
@@ -408,7 +416,7 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
               onFieldsNotCorrectlyFilledOut={this.props.onFieldsNotCorrectlyFilledOut}
             >
               {/*NAGEL*/}
-              {this.renderFormItems()}
+              <h1>{'huden per'}</h1>
             </Form>
             <div className="page_refero__buttonwrapper page_refero__saveblock">{this.props.loginButton}</div>
           </>
@@ -418,44 +426,55 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
   };
 
   renderFormWhenAuthorized = (): JSX.Element | undefined => {
-    const { resources } = this.props;
+    const { resources, formDefinition, blockSubmit, validationSummaryPlacement, submitButtonDisabled, saveButtonDisabled, onFieldsNotCorrectlyFilledOut } = this.props;
     if (!resources) {
       return;
     }
 
+    const referoProps = { blockSubmit, validationSummaryPlacement, submitButtonDisabled, saveButtonDisabled, onFieldsNotCorrectlyFilledOut };
+
     return (
       <>
-        <Form
-          action="#"
-          disabled={this.props.blockSubmit}
-          submitButtonText={resources.formSend}
-          errorMessage={resources.formError}
-          onSubmit={this.onSubmit}
-          requiredLabel={resources.formRequired}
-          optionalLabel={resources.formOptional}
-          cancelButtonText={resources.formCancel}
-          pauseButtonText={resources.formSave ? resources.formSave : 'Lagre'}
-          onPause={this.props.onSave ? this.onSave : undefined}
-          pauseButtonClasses={'page_refero__pausebutton'}
-          pauseButtonType="display"
-          submitButtonType="display"
-          cancelButtonType="display"
-          pauseButtonLevel="secondary"
-          cancelButtonRight={true}
-          onCancel={this.props.onCancel}
-          buttonClasses="page_refero__saveblock"
-          validationSummaryPlacement={this.props.validationSummaryPlacement}
-          validationSummary={{
-            enable: true,
-            header: resources.validationSummaryHeader,
-          }}
-          submitButtonDisabled={this.props.submitButtonDisabled}
-          pauseButtonDisabled={this.props.saveButtonDisabled}
-          onFieldsNotCorrectlyFilledOut={this.props.onFieldsNotCorrectlyFilledOut}
-        >
-          {/*NAGEL*/}
-          {this.renderFormItems()}
-        </Form>
+        {formDefinition && shouldFormBeDisplayedAsStepView(formDefinition) ? (
+          <StepView
+            referoProps={referoProps}
+            resources={resources}
+            formDefinition={formDefinition}
+            formItems={this.renderFormItems()}
+          ></StepView>
+        ) : (
+          <Form
+            action="#"
+            disabled={this.props.blockSubmit}
+            submitButtonText={resources.formSend}
+            errorMessage={resources.formError}
+            onSubmit={this.onSubmit}
+            requiredLabel={resources.formRequired}
+            optionalLabel={resources.formOptional}
+            cancelButtonText={resources.formCancel}
+            pauseButtonText={resources.formSave ? resources.formSave : 'Lagre'}
+            onPause={this.props.onSave ? this.onSave : undefined}
+            pauseButtonClasses={'page_refero__pausebutton'}
+            pauseButtonType="display"
+            submitButtonType="display"
+            cancelButtonType="display"
+            pauseButtonLevel="secondary"
+            cancelButtonRight={true}
+            onCancel={this.props.onCancel}
+            buttonClasses="page_refero__saveblock"
+            validationSummaryPlacement={this.props.validationSummaryPlacement}
+            validationSummary={{
+              enable: true,
+              header: resources.validationSummaryHeader,
+            }}
+            submitButtonDisabled={this.props.submitButtonDisabled}
+            pauseButtonDisabled={this.props.saveButtonDisabled}
+            onFieldsNotCorrectlyFilledOut={this.props.onFieldsNotCorrectlyFilledOut}
+          >
+            {/*NAGEL*/}
+            {this.renderFormItems()}
+          </Form>
+        )}
       </>
     );
   };

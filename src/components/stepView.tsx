@@ -1,18 +1,30 @@
 import * as React from 'react';
 import Form from '@helsenorge/form/components/form';
-import { ReferoProps } from '../components/index';
 import { Resources } from '../util/resources';
+import { getGroupsWithCodeStep } from '../util/getGroupsWithCodeStep';
+import { FormDefinition } from '../reducers/form';
 
 interface StepViewProps {
-  referoProps: ReferoProps;
+  referoProps: any;
   resources: Resources;
-  renderFormItems: () => Array<JSX.Element> | Array<Array<JSX.Element>> | undefined;
+  formItems: Array<JSX.Element> | undefined;
+  formDefinition: FormDefinition;
 }
 
-const StepView = ({ referoProps, resources, renderFormItems }: StepViewProps) => {
+const StepView = ({ referoProps, resources, formItems, formDefinition }: StepViewProps) => {
+  const [stepIndex, setStepIndex] = React.useState(0);
+  const emptyArrat: Array<JSX.Element> | undefined = [];
 
-  const stepIndex = 0;
-  const formItems = renderFormItems();
+  const test = getGroupsWithCodeStep(formDefinition);
+  formItems?.filter(object =>
+    test?.find(group => {
+      if (group.linkId === object.key) {
+        emptyArrat.push(object);
+      }
+    })
+  );
+
+  console.log("STEPVIEW KALT");
 
   return (
     <>
@@ -32,8 +44,10 @@ const StepView = ({ referoProps, resources, renderFormItems }: StepViewProps) =>
         pauseButtonDisabled={referoProps.saveButtonDisabled}
         onFieldsNotCorrectlyFilledOut={referoProps.onFieldsNotCorrectlyFilledOut}
       >
-        {formItems && formItems[0][stepIndex]}
+        {emptyArrat && emptyArrat[stepIndex]}
       </Form>
+      <button onClick={() => setStepIndex(1)}>{'Neste'}</button>
+      <button onClick={() => setStepIndex(0)}>{'Forrige'}</button>
     </>
   );
 };

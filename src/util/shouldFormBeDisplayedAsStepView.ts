@@ -1,9 +1,12 @@
 import { FormDefinition } from "../reducers/form";
 
 export const shouldFormBeDisplayedAsStepView = (formDefinition: FormDefinition): boolean => {
-  return formDefinition.Content?.item?.find(qItem =>
-    qItem.extension?.find(extension => extension.valueCodeableConcept?.coding?.find(coding => coding.code === 'step'))
+  let test = false;
+  formDefinition.Content?.item?.find(qItem =>
+    qItem.extension?.find(extension => extension.valueCodeableConcept?.coding?.find(coding => {if (coding.code === 'step') {
+      test = true;
+      console.log(test);
+    }}))
   )
-    ? true
-    : false;
+    return test;
 };
