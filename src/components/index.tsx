@@ -392,6 +392,7 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
       <>
         {formDefinition && shouldFormBeDisplayedAsStepView(formDefinition) ? (
           <StepView
+            isAuthorized = {false}
             referoProps={referoProps}
             resources={resources}
             formDefinition={formDefinition}
@@ -426,17 +427,18 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
   };
 
   renderFormWhenAuthorized = (): JSX.Element | undefined => {
-    const { resources, formDefinition, blockSubmit, validationSummaryPlacement, submitButtonDisabled, saveButtonDisabled, onFieldsNotCorrectlyFilledOut } = this.props;
+    const { resources, formDefinition, blockSubmit, validationSummaryPlacement, submitButtonDisabled, saveButtonDisabled, onFieldsNotCorrectlyFilledOut, onSubmit, onSave, onCancel, } = this.props;
     if (!resources) {
       return;
     }
 
-    const referoProps = { blockSubmit, validationSummaryPlacement, submitButtonDisabled, saveButtonDisabled, onFieldsNotCorrectlyFilledOut };
+    const referoProps = { blockSubmit, validationSummaryPlacement, submitButtonDisabled, saveButtonDisabled, onFieldsNotCorrectlyFilledOut, onSubmit, onSave, onCancel };
 
     return (
       <>
         {formDefinition && shouldFormBeDisplayedAsStepView(formDefinition) ? (
           <StepView
+            isAuthorized={true}
             referoProps={referoProps}
             resources={resources}
             formDefinition={formDefinition}
