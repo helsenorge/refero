@@ -25,9 +25,10 @@ interface Props {
   resources?: Resources;
   dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
   renderContext: RenderContext;
+  disabled: boolean;
 }
 
-export const RepeatButton: React.SFC<Props> = ({ item, resources, dispatch, parentPath, responseItems }) => {
+export const RepeatButton: React.SFC<Props> = ({ item, resources, dispatch, parentPath, responseItems, disabled }) => {
   const onAddRepeatItem = (): void => {
     if (dispatch && item) {
       dispatch(addRepeatItem(parentPath, item, responseItems));
@@ -40,7 +41,7 @@ export const RepeatButton: React.SFC<Props> = ({ item, resources, dispatch, pare
   }
 
   return (
-    <Button onClick={onAddRepeatItem} variant="borderless">
+    <Button onClick={onAddRepeatItem} variant="borderless" disabled={disabled}>
       <Icon svgIcon={PlusLarge} />
       {text}
     </Button>

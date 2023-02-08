@@ -294,6 +294,7 @@ class Refero extends React.Component<StateProps & DispatchProps & Props, State> 
                   responseItems={responseItems}
                   parentPath={this.props.path}
                   renderContext={new RenderContext()}
+                  disabled={!responseItem.answer}
                 />
               </div>
             ) : undefined;

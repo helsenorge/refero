@@ -177,6 +177,7 @@ export default function withCommonFunctions<T>(WrappedComponent: React.Component
             responseItems={response}
             parentPath={path}
             renderContext={this.props.renderContext}
+            disabled={false}
           />
         </div>
       );
