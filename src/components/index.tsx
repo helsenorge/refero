@@ -57,7 +57,6 @@ import {
 import { shouldFormBeDisplayedAsStepView } from '../util/shouldFormBeDisplayedAsStepView';
 import StepView from './stepView';
 import { getGroupsWithCodeStep } from '../util/getGroupsWithCodeStep';
-import { qItemIndexByGroup } from '../util/qItemIndexByGroup';
 
 export interface QueryStringsInterface {
   MessageId: string;
@@ -282,8 +281,6 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
     questionnaireItemArray?.map(item => {
       if (isHiddenItem(item)) return [];
 
-      const stepIndex = qItemIndexByGroup(formDefinition, item.linkId);
-
       const Comp = getComponentForItem(item.type);
       if (!Comp) {
         return undefined;
@@ -381,18 +378,32 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
   };
 
   renderFormWhenNotAuthorized = (): JSX.Element | undefined => {
-    const { resources, formDefinition, blockSubmit, validationSummaryPlacement, submitButtonDisabled, saveButtonDisabled, onFieldsNotCorrectlyFilledOut } = this.props;
+    const {
+      resources,
+      formDefinition,
+      blockSubmit,
+      validationSummaryPlacement,
+      submitButtonDisabled,
+      saveButtonDisabled,
+      onFieldsNotCorrectlyFilledOut,
+    } = this.props;
     if (!resources) {
       return;
     }
 
-    const referoProps = { blockSubmit, validationSummaryPlacement, submitButtonDisabled, saveButtonDisabled, onFieldsNotCorrectlyFilledOut };
+    const referoProps = {
+      blockSubmit,
+      validationSummaryPlacement,
+      submitButtonDisabled,
+      saveButtonDisabled,
+      onFieldsNotCorrectlyFilledOut,
+    };
 
     return (
       <>
         {formDefinition && shouldFormBeDisplayedAsStepView(formDefinition) ? (
           <StepView
-            isAuthorized = {false}
+            isAuthorized={false}
             referoProps={referoProps}
             resources={resources}
             formDefinition={formDefinition}
@@ -415,10 +426,7 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
               submitButtonDisabled={this.props.submitButtonDisabled}
               pauseButtonDisabled={this.props.saveButtonDisabled}
               onFieldsNotCorrectlyFilledOut={this.props.onFieldsNotCorrectlyFilledOut}
-            >
-              {/*NAGEL*/}
-              <h1>{'huden per'}</h1>
-            </Form>
+            ></Form>
             <div className="page_refero__buttonwrapper page_refero__saveblock">{this.props.loginButton}</div>
           </>
         )}
@@ -427,12 +435,32 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
   };
 
   renderFormWhenAuthorized = (): JSX.Element | undefined => {
-    const { resources, formDefinition, blockSubmit, validationSummaryPlacement, submitButtonDisabled, saveButtonDisabled, onFieldsNotCorrectlyFilledOut, onSubmit, onSave, onCancel, } = this.props;
+    const {
+      resources,
+      formDefinition,
+      blockSubmit,
+      validationSummaryPlacement,
+      submitButtonDisabled,
+      saveButtonDisabled,
+      onFieldsNotCorrectlyFilledOut,
+      onSubmit,
+      onSave,
+      onCancel,
+    } = this.props;
     if (!resources) {
       return;
     }
 
-    const referoProps = { blockSubmit, validationSummaryPlacement, submitButtonDisabled, saveButtonDisabled, onFieldsNotCorrectlyFilledOut, onSubmit, onSave, onCancel };
+    const referoProps = {
+      blockSubmit,
+      validationSummaryPlacement,
+      submitButtonDisabled,
+      saveButtonDisabled,
+      onFieldsNotCorrectlyFilledOut,
+      onSubmit,
+      onSave,
+      onCancel,
+    };
 
     return (
       <>
@@ -473,7 +501,6 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
             pauseButtonDisabled={this.props.saveButtonDisabled}
             onFieldsNotCorrectlyFilledOut={this.props.onFieldsNotCorrectlyFilledOut}
           >
-            {/*NAGEL*/}
             {this.renderFormItems()}
           </Form>
         )}
