@@ -225,6 +225,7 @@ function createComponentQuantity(extensions?: Extension[]): JSX.Element {
       renderHelpButton={() => <div className="helpButton">{'help button'}</div>}
       renderHelpElement={() => <div className="helpText">{'help text'}</div>}
       renderContext={new RenderContext(RenderContextType.None)}
+      renderDeleteButton={jest.fn()}
     />
   );
 }
