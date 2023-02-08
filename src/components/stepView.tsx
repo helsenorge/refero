@@ -14,78 +14,82 @@ interface StepViewProps {
 }
 
 const StepView = ({ isAuthorized, referoProps, resources, formItems, formDefinition }: StepViewProps) => {
+  const stepArray: Array<JSX.Element> | undefined = [];
   const [stepIndex, setStepIndex] = React.useState(0);
-  const emptyArrat: Array<JSX.Element> | undefined = [];
 
-  const test = getGroupsWithCodeStep(formDefinition);
+  const groupsWithCodeStep = getGroupsWithCodeStep(formDefinition);
   formItems?.filter(object =>
-    test?.find(group => {
+    groupsWithCodeStep?.find(group => {
       if (group.linkId === object.key) {
-        emptyArrat.push(object);
+        stepArray.push(object);
       }
     })
   );
 
-  console.log("STEPVIEW KALT");
+  const stepArrayLength = stepArray.length -1;
+  const nextStep = (): void => {
+    setStepIndex(stepIndex < stepArrayLength ? stepIndex + 1 : stepIndex);
+  }
+  const previousStep = (): void => {
+    setStepIndex(stepIndex < stepArrayLength ? stepIndex + 1 : stepIndex);
+  }
 
   return (
     <>
-    <Progressbar value={stepIndex} max={emptyArrat.length}></Progressbar>
-    {
-      isAuthorized ? (
+      <Progressbar value={stepIndex} max={stepArray.length - 1}></Progressbar>
+      {isAuthorized ? (
         <Form
-            action="#"
-            disabled={referoProps.blockSubmit}
-            submitButtonText={resources.formSend}
-            errorMessage={resources.formError}
-            onSubmit={referoProps.onSubmit}
-            requiredLabel={resources.formRequired}
-            optionalLabel={resources.formOptional}
-            cancelButtonText={resources.formCancel}
-            pauseButtonText={resources.formSave ? resources.formSave : 'Lagre'}
-            onPause={referoProps.onSave ? referoProps.onSave : undefined}
-            pauseButtonClasses={'page_refero__pausebutton'}
-            pauseButtonType="display"
-            submitButtonType="display"
-            cancelButtonType="display"
-            pauseButtonLevel="secondary"
-            cancelButtonRight={true}
-            onCancel={referoProps.onCancel}
-            buttonClasses="page_refero__saveblock"
-            validationSummaryPlacement={referoProps.validationSummaryPlacement}
-            validationSummary={{
-              enable: true,
-              header: resources.validationSummaryHeader,
-            }}
-            submitButtonDisabled={referoProps.submitButtonDisabled}
-            pauseButtonDisabled={referoProps.saveButtonDisabled}
-            onFieldsNotCorrectlyFilledOut={referoProps.onFieldsNotCorrectlyFilledOut}
-          >
-            {emptyArrat && emptyArrat[stepIndex]}
-          </Form>
+          action="#"
+          disabled={referoProps.blockSubmit}
+          submitButtonText={stepIndex !== stepArrayLength ? 'Neste' : resources.formSend}
+          errorMessage={resources.formError}
+          onSubmit={stepIndex !== stepArrayLength ? nextStep : referoProps.onSubmit}
+          requiredLabel={resources.formRequired}
+          optionalLabel={resources.formOptional}
+          cancelButtonText={resources.formCancel}
+          pauseButtonText={resources.formSave ? resources.formSave : 'Lagre'}
+          onPause={referoProps.onSave ? referoProps.onSave : undefined}
+          pauseButtonClasses={'page_refero__pausebutton'}
+          pauseButtonType="display"
+          submitButtonType="display"
+          cancelButtonType="display"
+          pauseButtonLevel="secondary"
+          cancelButtonRight={true}
+          onCancel={referoProps.onCancel}
+          buttonClasses="page_refero__saveblock"
+          validationSummaryPlacement={referoProps.validationSummaryPlacement}
+          validationSummary={{
+            enable: true,
+            header: resources.validationSummaryHeader,
+          }}
+          submitButtonDisabled={referoProps.submitButtonDisabled}
+          pauseButtonDisabled={referoProps.saveButtonDisabled}
+          onFieldsNotCorrectlyFilledOut={referoProps.onFieldsNotCorrectlyFilledOut}
+        >
+          {stepArray && stepArray[stepIndex]}
+        </Form>
       ) : (
         <Form
-        action="#"
-        disabled={referoProps.blockSubmit}
-        errorMessage={resources.formError}
-        requiredLabel={resources.formRequired}
-        optionalLabel={resources.formOptional}
-        triggerPreventDefaultOnSubmit
-        validationSummaryPlacement={referoProps.validationSummaryPlacement}
-        validationSummary={{
-          enable: true,
-          header: resources.validationSummaryHeader,
-        }}
-        submitButtonDisabled={referoProps.submitButtonDisabled}
-        pauseButtonDisabled={referoProps.saveButtonDisabled}
-        onFieldsNotCorrectlyFilledOut={referoProps.onFieldsNotCorrectlyFilledOut}
-      >
-        {emptyArrat && emptyArrat[stepIndex]}
-      </Form>
-      )
-    }
-      <button onClick={() => setStepIndex(1)}>{'Neste'}</button>
-      <button onClick={() => setStepIndex(0)}>{'Forrige'}</button>
+          action="#"
+          disabled={referoProps.blockSubmit}
+          errorMessage={resources.formError}
+          requiredLabel={resources.formRequired}
+          optionalLabel={resources.formOptional}
+          triggerPreventDefaultOnSubmit
+          validationSummaryPlacement={referoProps.validationSummaryPlacement}
+          validationSummary={{
+            enable: true,
+            header: resources.validationSummaryHeader,
+          }}
+          submitButtonDisabled={referoProps.submitButtonDisabled}
+          pauseButtonDisabled={referoProps.saveButtonDisabled}
+          onFieldsNotCorrectlyFilledOut={referoProps.onFieldsNotCorrectlyFilledOut}
+        >
+          {stepArray && stepArray[stepIndex]}
+        </Form>
+      )}
+      <button onClick={() => setStepIndex(stepIndex < stepArrayLength ? stepIndex + 1 : stepIndex)}>{'Neste'}</button>
+      <button onClick={() => setStepIndex(stepIndex > 0 ? stepIndex - 1 : stepIndex)}>{'Forrige'}</button>
     </>
   );
 };
