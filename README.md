@@ -67,6 +67,7 @@ class App extends Component<{}, {}> {
           fetchValueSet={...}
           fetchReceivers={...}
           onFieldsNotCorrectlyFilledOut={...}
+          onStepChange={...}
         />
       </Provider>
     );
@@ -111,6 +112,7 @@ class App extends Component<{}, {}> {
 | fetchValueSet                 |          | callback                   |         | Callback when user triggers autosuggest fields                                                                |
 | fetchReceivers                |          | callback                   |         | Callback when the receiver component is mounted                                                               |
 | onFieldsNotCorrectlyFilledOut |          | callback                   |         | Callback when a field is incorrectly filled out                                                               |
+| onStepChange                  |          | callback                   |         | Callback when the current step in step-views changes                                                          |
 
 
 ### `questionnaire: Questionnaire`
@@ -284,6 +286,11 @@ objects, or errorCallback with an error message.
 ### `onFieldsNotCorrectlyFilledOut: () => void`
 
 This callback is called when a required field is not filled out, or if a field is incorrectly filled out.
+
+### `onStepChange: (newIndex: number) => void`
+
+This callback is called when the current step in a step-view changes. It takes in the parameter newIndex, which contains the new index that the current index will be updated to.
+This can be used to make progress indicators display the correct step.
 
 # Enum definitions
 
