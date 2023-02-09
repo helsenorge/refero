@@ -143,6 +143,7 @@ export interface ReferoProps {
   saveButtonDisabled?: boolean;
   fetchReceivers?: (successCallback: (receivers: Array<OrgenhetHierarki>) => void, errorCallback: () => void) => void;
   onFieldsNotCorrectlyFilledOut?: () => void;
+  onStepChange?: (newIndex: number) => void;
 }
 
 interface State {
@@ -386,6 +387,7 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
       submitButtonDisabled,
       saveButtonDisabled,
       onFieldsNotCorrectlyFilledOut,
+      onStepChange
     } = this.props;
     if (!resources) {
       return;
@@ -397,6 +399,7 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
       submitButtonDisabled,
       saveButtonDisabled,
       onFieldsNotCorrectlyFilledOut,
+      onStepChange
     };
 
     return (
@@ -408,6 +411,7 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
             resources={resources}
             formDefinition={formDefinition}
             formItems={this.renderFormItems()}
+            onStepChange={onStepChange}
           ></StepView>
         ) : (
           <>
@@ -446,6 +450,7 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
       onSubmit,
       onSave,
       onCancel,
+      onStepChange
     } = this.props;
     if (!resources) {
       return;
@@ -460,6 +465,7 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
       onSubmit,
       onSave,
       onCancel,
+      onStepChange
     };
 
     return (
@@ -471,6 +477,7 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
             resources={resources}
             formDefinition={formDefinition}
             formItems={this.renderFormItems()}
+            onStepChange={this.props.onStepChange}
           ></StepView>
         ) : (
           <Form

@@ -3,7 +3,6 @@ import Form from '@helsenorge/form/components/form';
 import { Resources } from '../util/resources';
 import { getGroupsWithCodeStep } from '../util/getGroupsWithCodeStep';
 import { FormDefinition } from '../reducers/form';
-import Progressbar from '@helsenorge/designsystem-react/components/Progressbar';
 
 interface StepViewProps {
   isAuthorized: boolean;
@@ -11,17 +10,18 @@ interface StepViewProps {
   resources: Resources;
   formItems: Array<JSX.Element> | undefined;
   formDefinition: FormDefinition;
+  onStepChange?: (stepIndex: number) => void;
 }
 
-const StepView = ({ isAuthorized, referoProps, resources, formItems, formDefinition }: StepViewProps) => {
+const StepView = ({ isAuthorized, referoProps, resources, formItems, formDefinition, onStepChange }: StepViewProps) => {
   const stepArray: Array<JSX.Element> | undefined = [];
   const [stepIndex, setStepIndex] = React.useState(0);
 
   const groupsWithCodeStep = getGroupsWithCodeStep(formDefinition);
-  formItems?.filter(object =>
+  formItems?.filter(formItem =>
     groupsWithCodeStep?.find(group => {
-      if (group.linkId === object.key) {
-        stepArray.push(object);
+      if (group.linkId === formItem.key) {
+        stepArray.push(formItem);
       }
     })
   );
@@ -31,12 +31,15 @@ const StepView = ({ isAuthorized, referoProps, resources, formItems, formDefinit
     setStepIndex(stepIndex < stepArrayLength ? stepIndex + 1 : stepIndex);
   }
   const previousStep = (): void => {
-    setStepIndex(stepIndex < stepArrayLength ? stepIndex + 1 : stepIndex);
+    setStepIndex(stepIndex > 0 ? stepIndex - 1 : stepIndex);
   }
+
+  React.useEffect(() => {
+    onStepChange && onStepChange(stepIndex);
+  }, [stepIndex]);
 
   return (
     <>
-      <Progressbar value={stepIndex} max={stepArray.length - 1}></Progressbar>
       {isAuthorized ? (
         <Form
           action="#"
@@ -88,8 +91,7 @@ const StepView = ({ isAuthorized, referoProps, resources, formItems, formDefinit
           {stepArray && stepArray[stepIndex]}
         </Form>
       )}
-      <button onClick={() => setStepIndex(stepIndex < stepArrayLength ? stepIndex + 1 : stepIndex)}>{'Neste'}</button>
-      <button onClick={() => setStepIndex(stepIndex > 0 ? stepIndex - 1 : stepIndex)}>{'Forrige'}</button>
+      <button onClick={previousStep}>{'Forrige'}</button>
     </>
   );
 };
