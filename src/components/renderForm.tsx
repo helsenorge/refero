@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Form from '@helsenorge/form/components/form';
 import { Resources } from '../util/resources';
-import { ReferoProps } from '.';
+import { ReferoProps } from '../types/referoProps';
 
 interface RenderFormProps {
   isAuthorized: boolean;
