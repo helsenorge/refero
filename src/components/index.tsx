@@ -57,6 +57,7 @@ import {
 import { shouldFormBeDisplayedAsStepView } from '../util/shouldFormBeDisplayedAsStepView';
 import StepView from './stepView';
 import { getGroupsWithCodeStep } from '../util/getGroupsWithCodeStep';
+import RenderForm from './renderForm';
 
 export interface QueryStringsInterface {
   MessageId: string;
@@ -368,148 +369,73 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
     }
 
     const presentationButtonsType = getPresentationButtonsExtension(formDefinition.Content);
-    const form = this.props.authorized ? this.renderFormWhenAuthorized() : this.renderFormWhenNotAuthorized();
+    const isStepView = shouldFormBeDisplayedAsStepView(formDefinition);
 
     return (
       <div className={this.getButtonClasses(presentationButtonsType, ['page_refero__content'])}>
         <div className="page_refero__messageboxes" />
-        {form}
+        {this.renderForm(isStepView)}
       </div>
     );
   };
 
-  renderFormWhenNotAuthorized = (): JSX.Element | undefined => {
+  renderForm = (isStepView?: boolean): JSX.Element | undefined => {
     const {
-      resources,
       formDefinition,
+      resources,
+      authorized,
       blockSubmit,
+      onSave,
+      onCancel,
+      onSubmit,
+      loginButton,
       validationSummaryPlacement,
       submitButtonDisabled,
       saveButtonDisabled,
       onFieldsNotCorrectlyFilledOut,
-      onStepChange
+      onStepChange,
     } = this.props;
-    if (!resources) {
+    if (!formDefinition || !resources) {
       return;
     }
 
     const referoProps = {
+      authorized,
       blockSubmit,
+      onSave,
+      onCancel,
+      onSubmit,
+      loginButton,
       validationSummaryPlacement,
       submitButtonDisabled,
       saveButtonDisabled,
       onFieldsNotCorrectlyFilledOut,
-      onStepChange
+      onStepChange,
     };
 
     return (
       <>
-        {formDefinition && shouldFormBeDisplayedAsStepView(formDefinition) ? (
-          <StepView
-            isAuthorized={false}
-            referoProps={referoProps}
-            resources={resources}
-            formDefinition={formDefinition}
-            formItems={this.renderFormItems()}
-            onStepChange={onStepChange}
-          ></StepView>
-        ) : (
-          <>
-            <Form
-              action="#"
-              disabled={this.props.blockSubmit}
-              errorMessage={resources.formError}
-              requiredLabel={resources.formRequired}
-              optionalLabel={resources.formOptional}
-              triggerPreventDefaultOnSubmit
-              validationSummaryPlacement={this.props.validationSummaryPlacement}
-              validationSummary={{
-                enable: true,
-                header: resources.validationSummaryHeader,
-              }}
-              submitButtonDisabled={this.props.submitButtonDisabled}
-              pauseButtonDisabled={this.props.saveButtonDisabled}
-              onFieldsNotCorrectlyFilledOut={this.props.onFieldsNotCorrectlyFilledOut}
-            ></Form>
-            <div className="page_refero__buttonwrapper page_refero__saveblock">{this.props.loginButton}</div>
-          </>
-        )}
-      </>
-    );
-  };
-
-  renderFormWhenAuthorized = (): JSX.Element | undefined => {
-    const {
-      resources,
-      formDefinition,
-      blockSubmit,
-      validationSummaryPlacement,
-      submitButtonDisabled,
-      saveButtonDisabled,
-      onFieldsNotCorrectlyFilledOut,
-      onSubmit,
-      onSave,
-      onCancel,
-      onStepChange
-    } = this.props;
-    if (!resources) {
-      return;
-    }
-
-    const referoProps = {
-      blockSubmit,
-      validationSummaryPlacement,
-      submitButtonDisabled,
-      saveButtonDisabled,
-      onFieldsNotCorrectlyFilledOut,
-      onSubmit,
-      onSave,
-      onCancel,
-      onStepChange
-    };
-
-    return (
-      <>
-        {formDefinition && shouldFormBeDisplayedAsStepView(formDefinition) ? (
-          <StepView
-            isAuthorized={true}
-            referoProps={referoProps}
-            resources={resources}
-            formDefinition={formDefinition}
-            formItems={this.renderFormItems()}
-            onStepChange={this.props.onStepChange}
-          ></StepView>
-        ) : (
-          <Form
-            action="#"
-            disabled={this.props.blockSubmit}
-            submitButtonText={resources.formSend}
-            errorMessage={resources.formError}
-            onSubmit={this.onSubmit}
-            requiredLabel={resources.formRequired}
-            optionalLabel={resources.formOptional}
-            cancelButtonText={resources.formCancel}
-            pauseButtonText={resources.formSave ? resources.formSave : 'Lagre'}
-            onPause={this.props.onSave ? this.onSave : undefined}
-            pauseButtonClasses={'page_refero__pausebutton'}
-            pauseButtonType="display"
-            submitButtonType="display"
-            cancelButtonType="display"
-            pauseButtonLevel="secondary"
-            cancelButtonRight={true}
-            onCancel={this.props.onCancel}
-            buttonClasses="page_refero__saveblock"
-            validationSummaryPlacement={this.props.validationSummaryPlacement}
-            validationSummary={{
-              enable: true,
-              header: resources.validationSummaryHeader,
-            }}
-            submitButtonDisabled={this.props.submitButtonDisabled}
-            pauseButtonDisabled={this.props.saveButtonDisabled}
-            onFieldsNotCorrectlyFilledOut={this.props.onFieldsNotCorrectlyFilledOut}
-          >
-            {this.renderFormItems()}
-          </Form>
+        {isStepView ? (
+        <StepView 
+          isAuthorized={authorized}
+          referoProps={referoProps}
+          resources={resources}
+          formItems={this.renderFormItems()}
+          formDefinition={formDefinition}
+          onSave={this.onSave}
+          onSubmit={this.onSubmit}
+          onStepChange={onStepChange}
+        />
+         ) : (
+        <RenderForm
+          isAuthorized={authorized}
+          isStepView={false}
+          referoProps={referoProps}
+          resources={resources}
+          formItemsToBeRendered={this.renderFormItems()}
+          onSave={this.onSave}
+          onSubmit={this.onSubmit}
+        />
         )}
       </>
     );
