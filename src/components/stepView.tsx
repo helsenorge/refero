@@ -45,14 +45,12 @@ const StepView = ({ isAuthorized, referoProps, resources, formItems, formDefinit
     <>
       <RenderForm
         isAuthorized={isAuthorized}
-        isStepView={true}
         referoProps={referoProps}
         resources={resources}
         formItemsToBeRendered={stepArray[stepIndex]}
         onSave={onSave}
         onSubmit={onSubmit}
-        stepIndex={stepIndex}
-        stepArrayLength={stepArrayLength}
+        displayNextButton = {stepIndex !== stepArrayLength}
         nextStep={nextStep}
         previousStep={previousStep}
       />

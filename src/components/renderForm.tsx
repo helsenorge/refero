@@ -5,33 +5,27 @@ import { ReferoProps } from '.';
 
 interface RenderFormProps {
   isAuthorized: boolean;
-  isStepView: boolean;
   referoProps: ReferoProps;
   resources: Resources;
   formItemsToBeRendered: Array<JSX.Element> | JSX.Element | undefined;
   onSave: () => void;
   onSubmit: () => void;
-  stepIndex?: number;
-  stepArrayLength?: number;
+  displayNextButton?: boolean;
   nextStep?: () => void;
   previousStep?: () => void;
 }
 
 const RenderForm = ({
   isAuthorized,
-  isStepView,
   referoProps,
   resources,
   formItemsToBeRendered,
   onSave,
   onSubmit,
-  stepIndex,
-  stepArrayLength,
+  displayNextButton,
   nextStep,
   previousStep,
 }: RenderFormProps) => {
-  const doNextOrSubmit = stepIndex !== stepArrayLength ? nextStep : onSubmit;
-  const showNextOrSubmit = stepIndex !== stepArrayLength ? 'Neste' : resources.formSend;
 
   return (
     <>
@@ -40,9 +34,9 @@ const RenderForm = ({
           <Form
             action="#"
             disabled={referoProps.blockSubmit}
-            submitButtonText={isStepView ? showNextOrSubmit : resources.formSend}
+            submitButtonText={displayNextButton ? 'Neste' : resources.formSend}
             errorMessage={resources.formError}
-            onSubmit={isStepView ? doNextOrSubmit : onSubmit}
+            onSubmit={displayNextButton ? nextStep : onSubmit}
             requiredLabel={resources.formRequired}
             optionalLabel={resources.formOptional}
             cancelButtonText={resources.formCancel}
