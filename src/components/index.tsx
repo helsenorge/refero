@@ -429,7 +429,6 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
          ) : (
         <RenderForm
           isAuthorized={authorized}
-          isStepView={false}
           referoProps={referoProps}
           resources={resources}
           formItemsToBeRendered={this.renderFormItems()}
