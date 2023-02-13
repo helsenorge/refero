@@ -1,25 +1,16 @@
 import * as React from 'react';
 
-import { connect, Store } from 'react-redux';
+import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
-import { AutoSuggestProps } from '../types/autoSuggestProps';
 import {
   QuestionnaireResponseItem,
   Questionnaire,
   QuestionnaireResponse,
-  Attachment,
   QuestionnaireItem,
   QuestionnaireResponseItemAnswer,
   Quantity,
-  ValueSet,
 } from '../types/fhir';
-import { OrgenhetHierarki } from '../types/orgenhetHierarki';
-import { TextMessage } from '../types/text-message';
-
-import { UploadedFile } from '@helsenorge/file-upload/components/dropzone';
-import Form from '@helsenorge/form/components/form';
-import { ValidationSummaryPlacement } from '@helsenorge/form/components/form/validationSummaryPlacement';
 
 import { setSkjemaDefinition } from '../actions/form';
 import { NewValueAction, newQuantityValue } from '../actions/newValue';
@@ -31,7 +22,7 @@ import { PresentationButtonsType } from '../constants/presentationButtonsType';
 import { GlobalState } from '../reducers';
 import { getFormDefinition, getFormData } from '../reducers/form';
 import { FormDefinition, FormData } from '../reducers/form';
-import { ActionRequester, IActionRequester } from '../util/actionRequester';
+import { ActionRequester } from '../util/actionRequester';
 import {
   getQuestionnaireUnitExtensionValue,
   getExtension,
@@ -40,9 +31,8 @@ import {
 } from '../util/extension';
 import { IE11HackToWorkAroundBug187484 } from '../util/hacks';
 import { getComponentForItem, shouldRenderRepeatButton, isHiddenItem } from '../util/index';
-import { QuestionniareInspector, IQuestionnaireInspector } from '../util/questionnaireInspector';
+import { QuestionniareInspector } from '../util/questionnaireInspector';
 import { RenderContext } from '../util/renderContext';
-import { Resources } from '../util/resources';
 import { ScoringCalculator } from '../util/scoringCalculator';
 import {
   getRootQuestionnaireResponseItemFromData,
@@ -58,99 +48,13 @@ import { shouldFormBeDisplayedAsStepView } from '../util/shouldFormBeDisplayedAs
 import StepView from './stepView';
 import { getGroupsWithCodeStep } from '../util/getGroupsWithCodeStep';
 import RenderForm from './renderForm';
-
-export interface QueryStringsInterface {
-  MessageId: string;
-  ExternalId: string;
-  Query?: string;
-  ContentType?: string;
-}
+import { DispatchProps } from '../types/dispatchProps';
+import { State } from '../types/state';
+import { ReferoProps } from '../types/referoProps';
 
 interface StateProps {
   formDefinition?: FormDefinition | null;
   formData?: FormData | null;
-}
-
-interface DispatchProps {
-  dispatch: ThunkDispatch<GlobalState, void, NewValueAction>;
-  mount: () => void;
-  updateSkjema: (
-    questionnaire: Questionnaire,
-    questionnaireResponse?: QuestionnaireResponse,
-    language?: string,
-    syncQuestionnaireResponse?: boolean
-  ) => void;
-  path: Array<Path>;
-}
-
-export interface ReferoProps {
-  store?: Store<{}>;
-  authorized: boolean;
-  blockSubmit?: boolean;
-  onSave?: (questionnaireResponse: QuestionnaireResponse) => void;
-  onCancel?: () => void;
-  onSubmit: (questionnaireResponse: QuestionnaireResponse) => void;
-  loginButton: JSX.Element;
-  resources?: Resources;
-  pdf?: boolean;
-  promptLoginMessage?: () => void;
-  attachmentErrorMessage?: string;
-  attachmentMaxFileSize?: number;
-  attachmentValidTypes?: Array<string>;
-  onRequestAttachmentLink?: (fileId: string) => string;
-  onOpenAttachment?: (fileId: string) => void;
-  onDeleteAttachment?: (fileId: string, onSuccess: () => void, onError: (errormessage: TextMessage | null) => void) => void;
-  uploadAttachment?: (
-    files: File[],
-    onSuccess: (uploadedFile: UploadedFile, attachment: Attachment) => void,
-    onError: (errormessage: TextMessage | null) => void
-  ) => void;
-  questionnaire?: Questionnaire;
-  questionnaireResponse?: QuestionnaireResponse;
-  language?: string;
-  sticky?: boolean;
-  validateScriptInjection?: boolean;
-  validationSummaryPlacement?: ValidationSummaryPlacement;
-  onRequestHelpButton?: (
-    item: QuestionnaireItem,
-    itemHelp: QuestionnaireItem,
-    helpType: string,
-    helpText: string,
-    opening: boolean
-  ) => JSX.Element;
-  onRequestHelpElement?: (
-    item: QuestionnaireItem,
-    itemHelp: QuestionnaireItem,
-    helpType: string,
-    helpText: string,
-    opening: boolean
-  ) => JSX.Element;
-  onChange?: (
-    item: QuestionnaireItem,
-    answer: QuestionnaireResponseItemAnswer,
-    actionRequester: IActionRequester,
-    questionnaireInspector: IQuestionnaireInspector
-  ) => void;
-  onRenderMarkdown?: (item: QuestionnaireItem, markup: string) => string;
-  syncQuestionnaireResponse?: boolean;
-  fetchValueSet?: (
-    searchString: string,
-    item: QuestionnaireItem,
-    successCallback: (valueSet: ValueSet) => void,
-    errorCallback: (error: string) => void
-  ) => void;
-  autoSuggestProps?: AutoSuggestProps;
-  submitButtonDisabled?: boolean;
-  saveButtonDisabled?: boolean;
-  fetchReceivers?: (successCallback: (receivers: Array<OrgenhetHierarki>) => void, errorCallback: () => void) => void;
-  onFieldsNotCorrectlyFilledOut?: () => void;
-  onStepChange?: (newIndex: number) => void;
-}
-
-interface State {
-  valid: boolean;
-  validated: boolean;
-  showCancelLightbox?: boolean;
 }
 
 class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, State> {

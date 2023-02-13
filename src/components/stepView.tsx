@@ -3,7 +3,7 @@ import { Resources } from '../util/resources';
 import { getGroupsWithCodeStep } from '../util/getGroupsWithCodeStep';
 import { FormDefinition } from '../reducers/form';
 import RenderForm from './renderForm';
-import { ReferoProps } from '.';
+import { ReferoProps } from '../types/referoProps';
 
 interface StepViewProps {
   isAuthorized: boolean;
