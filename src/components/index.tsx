@@ -320,25 +320,26 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
     return (
       <>
         {isStepView ? (
-        <StepView 
-          isAuthorized={authorized}
-          referoProps={referoProps}
-          resources={resources}
-          formItems={this.renderFormItems()}
-          formDefinition={formDefinition}
-          onSave={this.onSave}
-          onSubmit={this.onSubmit}
-          onStepChange={onStepChange}
-        />
-         ) : (
-        <RenderForm
-          isAuthorized={authorized}
-          referoProps={referoProps}
-          resources={resources}
-          formItemsToBeRendered={this.renderFormItems()}
-          onSave={this.onSave}
-          onSubmit={this.onSubmit}
-        />
+          <StepView
+            isAuthorized={authorized}
+            referoProps={referoProps}
+            resources={resources}
+            formItems={this.renderFormItems()}
+            formDefinition={formDefinition}
+            onSave={this.onSave}
+            onSubmit={this.onSubmit}
+            onStepChange={onStepChange}
+          />
+        ) : (
+          <RenderForm
+            isAuthorized={authorized}
+            isStepView={false}
+            referoProps={referoProps}
+            resources={resources}
+            formItemsToBeRendered={this.renderFormItems()}
+            onSave={this.onSave}
+            onSubmit={this.onSubmit}
+          />
         )}
       </>
     );
