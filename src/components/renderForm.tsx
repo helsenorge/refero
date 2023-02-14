@@ -5,24 +5,28 @@ import { ReferoProps } from '../types/referoProps';
 
 interface RenderFormProps {
   isAuthorized: boolean;
+  isStepView: boolean;
   referoProps: ReferoProps;
   resources: Resources;
   formItemsToBeRendered: Array<JSX.Element> | JSX.Element | undefined;
   onSave: () => void;
   onSubmit: () => void;
   displayNextButton?: boolean;
+  displayPreviousButton?: boolean;
   nextStep?: () => void;
   previousStep?: () => void;
 }
 
 const RenderForm = ({
   isAuthorized,
+  isStepView,
   referoProps,
   resources,
   formItemsToBeRendered,
   onSave,
   onSubmit,
   displayNextButton,
+  displayPreviousButton,
   nextStep,
   previousStep,
 }: RenderFormProps) => {
@@ -40,14 +44,15 @@ const RenderForm = ({
             requiredLabel={resources.formRequired}
             optionalLabel={resources.formOptional}
             cancelButtonText={resources.formCancel}
-            pauseButtonText={resources.formSave ? resources.formSave : 'Lagre'}
-            onPause={referoProps.onSave ? onSave : undefined}
+            pauseButtonText={displayPreviousButton ? 'Forrige' : resources.formSave}
+            onPause={isStepView ? (displayPreviousButton ? previousStep : undefined) : onSave}
             pauseButtonClasses={'page_refero__pausebutton'}
             pauseButtonType="display"
             submitButtonType="display"
             cancelButtonType="display"
             pauseButtonLevel="secondary"
             cancelButtonRight={true}
+            pauseButtonLeft={true}
             onCancel={referoProps.onCancel}
             buttonClasses="page_refero__saveblock"
             validationSummaryPlacement={referoProps.validationSummaryPlacement}
@@ -61,7 +66,6 @@ const RenderForm = ({
           >
             {formItemsToBeRendered}
           </Form>
-          <button onClick={previousStep}>{'Forrige'}</button>
         </>
       )}
       {!isAuthorized && (
