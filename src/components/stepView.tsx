@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Resources } from '../util/resources';
-import { getGroupsWithCodeStep } from '../util/getGroupsWithCodeStep';
+import { getTopLevelElements } from '../util/getTopLevelElements';
 import { FormDefinition } from '../reducers/form';
 import RenderForm from './renderForm';
 import { ReferoProps } from '../types/referoProps';
@@ -20,10 +20,10 @@ const StepView = ({ isAuthorized, referoProps, resources, formItems, formDefinit
   const stepArray: Array<JSX.Element> | undefined = [];
   const [stepIndex, setStepIndex] = React.useState(0);
 
-  const groupsWithCodeStep = getGroupsWithCodeStep(formDefinition);
+  const topLevelElements = getTopLevelElements(formDefinition);
   formItems?.filter(formItem =>
-    groupsWithCodeStep?.find(group => {
-      if (group.linkId === formItem.key) {
+    topLevelElements?.find(element => {
+      if (element.linkId === formItem.key) {
         stepArray.push(formItem);
       }
     })
