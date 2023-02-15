@@ -46,7 +46,7 @@ import {
 } from '../util/refero-core';
 import { shouldFormBeDisplayedAsStepView } from '../util/shouldFormBeDisplayedAsStepView';
 import StepView from './stepView';
-import { getGroupsWithCodeStep } from '../util/getGroupsWithCodeStep';
+import { getTopLevelElements } from '../util/getTopLevelElements';
 import RenderForm from './renderForm';
 import { DispatchProps } from '../types/dispatchProps';
 import { State } from '../types/state';
@@ -181,7 +181,7 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
     let isNavigatorBlindzoneInitiated = false;
 
     const questionnaireItemArray: QuestionnaireItem[] | undefined = shouldFormBeDisplayedAsStepView(formDefinition)
-      ? getGroupsWithCodeStep(formDefinition)
+      ? getTopLevelElements(formDefinition)
       : formDefinition.Content.item;
 
     questionnaireItemArray?.map(item => {
