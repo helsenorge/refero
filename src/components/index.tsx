@@ -11,10 +11,15 @@ import {
   QuestionnaireResponseItemAnswer,
   Quantity,
 } from '../types/fhir';
+import { ReferoProps } from '../types/referoProps';
+import { State } from '../types/state';
+import { DispatchProps } from '../types/dispatchProps';
 
 import { setSkjemaDefinition } from '../actions/form';
 import { NewValueAction, newQuantityValue } from '../actions/newValue';
 import RepeatButton from '../components/formcomponents/repeat/repeat-button';
+import RenderForm from './renderForm';
+import StepView from './stepView';
 import ExtensionConstants from '../constants/extensions';
 import Constants from '../constants/index';
 import ItemType from '../constants/itemType';
@@ -45,12 +50,7 @@ import {
   getResponseItemAndPathWithLinkId,
 } from '../util/refero-core';
 import { shouldFormBeDisplayedAsStepView } from '../util/shouldFormBeDisplayedAsStepView';
-import StepView from './stepView';
 import { getTopLevelElements } from '../util/getTopLevelElements';
-import RenderForm from './renderForm';
-import { DispatchProps } from '../types/dispatchProps';
-import { State } from '../types/state';
-import { ReferoProps } from '../types/referoProps';
 
 interface StateProps {
   formDefinition?: FormDefinition | null;
