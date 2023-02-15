@@ -225,7 +225,7 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
               pdf={pdf}
               includeSkipLink={isNavigatorEnabled && item.type === ItemType.GROUP}
               promptLoginMessage={promptLoginMessage}
-              key={`${responseItem.linkId}`}
+              key={`item_${responseItem.linkId}_${index}`}
               id={'item_' + responseItem.linkId + createIdSuffix(path, index, item.repeats)}
               item={item}
               questionnaire={formDefinition.Content}
