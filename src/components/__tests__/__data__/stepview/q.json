@@ -1,0 +1,215 @@
+{
+  "resourceType": "Questionnaire",
+  "language": "nb-NO",
+  "status": "draft",
+  "publisher": "NHN",
+  "meta": {
+    "profile": [
+      "http://ehelse.no/fhir/StructureDefinition/sdf-Questionnaire"
+    ],
+    "tag": [
+      {
+        "system": "urn:ietf:bcp:47",
+        "code": "nb-NO",
+        "display": "Norsk Bokmål"
+      }
+    ]
+  },
+  "useContext": [
+    {
+      "code": {
+        "system": "http://hl7.org/fhir/ValueSet/usage-context-type",
+        "code": "focus",
+        "display": "Clinical Focus"
+      },
+      "valueCodeableConcept": {
+        "coding": [
+          {
+            "system": "urn:oid:2.16.578.1.12.4.1.1.8655"
+          }
+        ]
+      }
+    }
+  ],
+  "contact": [
+    {
+      "name": "http://www.nhn.no"
+    }
+  ],
+  "subjectType": [
+    "Patient"
+  ],
+  "extension": [
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sidebar",
+      "valueCoding": {
+        "system": "http://helsenorge.no/fhir/ValueSet/sdf-sidebar",
+        "code": "1"
+      }
+    },
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-information-message",
+      "valueCoding": {
+        "system": "http://helsenorge.no/fhir/ValueSet/sdf-information-message",
+        "code": "1"
+      }
+    },
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefintion/sdf-itemControl-visibility",
+      "valueCodeableConcept": {
+        "coding": [
+          {
+            "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
+            "code": "hide-help",
+            "display": "Hide help texts"
+          },
+          {
+            "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
+            "code": "hide-sublabel",
+            "display": "Hide sublabel texts"
+          }
+        ]
+      }
+    }
+  ],
+  "item": [
+    {
+      "linkId": "f3866e47-51da-4ec2-8f0b-e10269bbdc1e",
+      "type": "group",
+      "text": "Gruppe 1",
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                "code": "step"
+              }
+            ]
+          }
+        }
+      ],
+      "item": [
+        {
+          "linkId": "f21daf96-658a-4591-808c-e64fe9b3ed28",
+          "type": "display",
+          "text": "Dette er et stegvisningsskjema. Trykk på neste eller tilbake for å navigere frem og tilbake mellom stegene. Lykke til! :-)",
+          "required": false,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "highlight"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ],
+      "required": false
+    },
+    {
+      "linkId": "bc8b56ee-fc46-404d-dde4-2cfa4d3606db",
+      "type": "group",
+      "text": "Gruppe 2",
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                "code": "step"
+              }
+            ]
+          }
+        }
+      ],
+      "item": [
+        {
+          "linkId": "19ddaddc-3974-481f-c3fc-213d5790f5aa",
+          "type": "choice",
+          "text": "Er du en mann eller kvinne?",
+          "required": true,
+          "answerOption": [
+            {
+              "valueCoding": {
+                "id": "73dafada-3bdd-4734-dcf2-740f8ad771e0",
+                "code": "mann",
+                "system": "urn:uuid:04ab0147-0526-4e32-fe64-f10b874eed90",
+                "display": "Mann"
+              }
+            },
+            {
+              "valueCoding": {
+                "id": "7b82a7aa-9758-446b-9c06-9871e944d4f9",
+                "code": "kvinne",
+                "system": "urn:uuid:04ab0147-0526-4e32-fe64-f10b874eed90",
+                "display": "Kvinne"
+              }
+            }
+          ],
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "radio-button"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ],
+      "required": false
+    },
+    {
+      "linkId": "50a9ea8d-23b3-47db-97e5-ffdd16949594",
+      "type": "group",
+      "text": "Gruppe 3",
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                "code": "step"
+              }
+            ]
+          }
+        }
+      ],
+      "item": [
+        {
+          "linkId": "96b69288-4450-4bcb-b6ec-725c4d2c749a",
+          "type": "date",
+          "text": "Når er første gangen du innså at livet er vanskelig? (Oppgi i år)",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "year"
+                  }
+                ]
+              }
+            }
+          ],
+          "required": false
+        }
+      ],
+      "required": false
+    }
+  ]
+}
