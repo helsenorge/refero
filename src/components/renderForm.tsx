@@ -38,13 +38,13 @@ const RenderForm = ({
           <Form
             action="#"
             disabled={referoProps.blockSubmit}
-            submitButtonText={displayNextButton ? 'Neste' : resources.formSend}
+            submitButtonText={displayNextButton ? resources.nextStep : resources.formSend}
             errorMessage={resources.formError}
             onSubmit={displayNextButton ? nextStep : onSubmit}
             requiredLabel={resources.formRequired}
             optionalLabel={resources.formOptional}
             cancelButtonText={resources.formCancel}
-            pauseButtonText={displayPreviousButton ? 'Forrige' : resources.formSave}
+            pauseButtonText={displayPreviousButton ? resources.previousStep : resources.formSave}
             onPause={isStepView ? (displayPreviousButton ? previousStep : undefined) : onSave}
             pauseButtonClasses={'page_refero__pausebutton'}
             pauseButtonType="display"
