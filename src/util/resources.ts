@@ -387,4 +387,12 @@ export interface Resources {
    * Åpnes i ny fane
    */
   linkOpensInNewTab?: string;
+  /**
+   * Neste
+   */
+  nextStep?: string;
+  /**
+   * Forrige
+   */
+  previousStep?: string;
 }

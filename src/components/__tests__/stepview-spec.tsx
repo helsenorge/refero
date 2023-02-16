@@ -47,7 +47,7 @@ function createWrapper(
         onCancel={() => {}}
         onSave={() => {}}
         onSubmit={onSubmitMock}
-        resources={{formSend: 'Send inn'} as Resources}
+        resources={{formSend: 'Send inn', nextStep: "Neste", previousStep: "Forrige"} as Resources}
         questionnaire={questionnaire}
         onRequestHelpButton={helpButtonCb}
         onRequestHelpElement={helpElementCb}

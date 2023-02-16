@@ -501,6 +501,8 @@ interface Resources {
   adresseKomponent_feilmelding?: string;
   adresseKomponent_loadError?: string;
   linkOpensInNewTab?: string;
+  nextStep?: string;
+  previousStep?: string;
 }
 ```
 
