@@ -1,3 +1,11 @@
+## 11.4.0
+
+---
+
+- Added functionality to render a form as a step-view
+- Added new prop onStepChange. It is called when the step updates, and returns the new step value
+- Upgraded form package to version 26.7.1
+
 ## 11.3.11
 
 ---
