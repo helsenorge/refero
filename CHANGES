@@ -5,12 +5,8 @@
 - Added functionality to render a form as a step-view
 - Added new prop onStepChange. It is called when the step updates, and returns the new step value
 - Upgraded form package to version 26.7.1
-
-## 11.3.11
-
----
-
 - Removed redundant fieldset tag
+- Repeat button is now disabled when item has no answer
 
 ## 11.3.10
 
