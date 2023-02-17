@@ -23,7 +23,7 @@ const StepView = ({ isAuthorized, referoProps, resources, formItems, formDefinit
   const topLevelElements = getTopLevelElements(formDefinition);
   formItems?.filter(formItem =>
     topLevelElements?.find(element => {
-      if (formItem.key && formItem.key.toString().includes(element.linkId)) {
+      if (formItem.props.item.linkId === element.linkId) {
         stepArray.push(formItem);
       }
     })
