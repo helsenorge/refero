@@ -717,6 +717,8 @@ export function nullAnswerValue(
     initialAnswer ? (answer.valueTime = initialAnswer.valueTime) : delete answer.valueTime;
   } else if (answer.valueQuantity !== undefined) {
     initialAnswer ? (answer.valueQuantity = initialAnswer.valueQuantity) : delete answer.valueQuantity;
+  } else if (answer.valueAttachment !== undefined) {
+    initialAnswer ? (answer.valueAttachment = initialAnswer.valueAttachment) : delete answer.valueAttachment;
   }
 }
 
