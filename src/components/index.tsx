@@ -208,7 +208,7 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
                   responseItems={responseItems}
                   parentPath={this.props.path}
                   renderContext={new RenderContext()}
-                  disabled={!responseItem.answer}
+                  disabled={item.type !== ItemType.GROUP && !responseItem.answer}
                 />
               </div>
             ) : undefined;
