@@ -15,7 +15,7 @@ import {
 import { Options } from '@helsenorge/form/components/radio-group';
 
 import ExtensionConstants from '../constants/extensions';
-import Constants, { OPEN_CHOICE_ID, OPEN_CHOICE_LABEL } from '../constants/index';
+import Constants, { OPEN_CHOICE_ID } from '../constants/index';
 import itemControlConstants from '../constants/itemcontrol';
 import ItemType from '../constants/itemType';
 import { getItemControlExtensionValue, getValidationTextExtension } from './extension';
@@ -27,12 +27,20 @@ export function hasCanonicalValueSet(item: QuestionnaireItem): boolean {
   return !!item.answerValueSet && item.answerValueSet.substr(0, 4) === 'http';
 }
 
-export function hasOptions(item: QuestionnaireItem, containedResources?: Resource[]): boolean {
-  const options = getOptions(item, containedResources);
+export function hasOptions(
+  resources: Resources | undefined,
+  item: QuestionnaireItem,
+  containedResources?: Resource[]
+): boolean {
+  const options = getOptions(resources, item, containedResources);
   return !!options && options.length > 0;
 }
 
-export function getOptions(item: QuestionnaireItem, containedResources?: Resource[]): Array<Options> | undefined {
+export function getOptions(
+  resources: Resources | undefined,
+  item: QuestionnaireItem,
+  containedResources?: Resource[]
+): Array<Options> | undefined {
   if (!item) {
     return undefined;
   }
@@ -53,7 +61,7 @@ export function getOptions(item: QuestionnaireItem, containedResources?: Resourc
       options = [] as Options[];
     }
     options.push({
-      label: OPEN_CHOICE_LABEL,
+      label: resources?.openChoiceOption,
       type: OPEN_CHOICE_ID,
     } as Options);
   }
@@ -95,12 +103,13 @@ export function renderOptions(
   renderRadio: (o: Array<Options> | undefined) => JSX.Element,
   renderCheckbox: (o: Array<Options> | undefined) => JSX.Element,
   renderDropdown: (o: Array<Options> | undefined) => JSX.Element,
+  resources: Resources | undefined,
   renderAutosuggest: () => JSX.Element,
   renderReceiverComponent?: () => JSX.Element
 ): JSX.Element | null {
   const itemControlValue = getItemControlValue(item);
-  const options = getOptions(item, containedResources);
-  if (hasOptions(item, containedResources) && !hasCanonicalValueSet(item)) {
+  const options = getOptions(resources, item, containedResources);
+  if (hasOptions(resources, item, containedResources) && !hasCanonicalValueSet(item)) {
     if (itemControlValue) {
       switch (itemControlValue) {
         case itemControlConstants.DROPDOWN:
@@ -173,19 +182,24 @@ export function getErrorMessage(
   if (!value && isRequired(item) && resources) {
     return resources.oppgiVerdi;
   }
-  if (!isAllowedValue(item, value, containedResources)) {
+  if (!isAllowedValue(item, value, containedResources, resources)) {
     return resources.oppgiGyldigVerdi;
   }
   return '';
 }
 
-export function isAllowedValue(item: QuestionnaireItem, value: string | undefined, containedResources: Resource[] | undefined): boolean {
+export function isAllowedValue(
+  item: QuestionnaireItem,
+  value: string | undefined,
+  containedResources: Resource[] | undefined,
+  resources: Resources | undefined
+): boolean {
   if (!item) {
     return true;
   }
 
   if (item.answerValueSet || item.answerValueSet) {
-    const allowedValues: Array<Options> | undefined = getOptions(item, containedResources);
+    const allowedValues: Array<Options> | undefined = getOptions(resources, item, containedResources);
     if (!allowedValues || allowedValues.length === 0) {
       return true;
     }
@@ -197,11 +211,16 @@ export function isAllowedValue(item: QuestionnaireItem, value: string | undefine
   return true;
 }
 
-export function validateInput(item: QuestionnaireItem, value: string | undefined, containedResources: Resource[] | undefined): boolean {
+export function validateInput(
+  item: QuestionnaireItem,
+  value: string | undefined,
+  containedResources: Resource[] | undefined,
+  resources: Resources | undefined
+): boolean {
   if (isRequired(item) && !value) {
     return false;
   }
-  if (!isAllowedValue(item, value, containedResources)) {
+  if (!isAllowedValue(item, value, containedResources, resources)) {
     return false;
   }
   return true;

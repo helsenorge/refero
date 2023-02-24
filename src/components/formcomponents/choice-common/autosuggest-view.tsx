@@ -12,7 +12,7 @@ import Autosuggest, { Suggestion } from '@helsenorge/autosuggest/components/auto
 import { debounce } from '@helsenorge/core-utils/debounce';
 import Validation from '@helsenorge/form/components/form/validation';
 
-import { OPEN_CHOICE_ID, OPEN_CHOICE_SYSTEM, OPEN_CHOICE_LABEL } from '../../../constants';
+import { OPEN_CHOICE_ID, OPEN_CHOICE_SYSTEM } from '../../../constants';
 import ItemType from '../../../constants/itemType';
 import { getValidationTextExtension, getPlaceholder } from '../../../util/extension';
 import { isRequired, getId, getSublabelText } from '../../../util/index';
@@ -197,7 +197,7 @@ class AutosuggestView extends React.Component<AutosuggestProps, AutosuggestState
 
       const codingAnswer = this.getCodingAnswer();
       if (this.state.inputValue) {
-        this.props.handleChange(OPEN_CHOICE_ID, OPEN_CHOICE_SYSTEM, OPEN_CHOICE_LABEL);
+        this.props.handleChange(OPEN_CHOICE_ID, OPEN_CHOICE_SYSTEM, this.props.resources?.openChoiceOption);
         this.props.handleStringChange(this.state.inputValue);
       } else if (codingAnswer) {
         this.props.clearCodingAnswer(codingAnswer);
