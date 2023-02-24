@@ -126,11 +126,11 @@ export class Choice extends React.Component<ChoiceProps & ValidationProps, Choic
       return text;
     }
 
-    return Array.isArray(value) ? value.map(el => getDisplay(getOptions(item, containedResources), el)).join(', ') : value;
+    return Array.isArray(value) ? value.map(el => getDisplay(getOptions(this.props.resources, item, containedResources), el)).join(', ') : value;
   };
 
   getAnswerValueCoding = (code: string, systemArg?: string, displayArg?: string): Coding => {
-    const display = displayArg ? displayArg : getDisplay(getOptions(this.props.item, this.props.containedResources), code);
+    const display = displayArg ? displayArg : getDisplay(getOptions(this.props.resources, this.props.item, this.props.containedResources), code);
     const system = systemArg ? systemArg : getSystem(this.props.item, code, this.props.containedResources);
     return { code, display, system } as Coding;
   }
@@ -217,7 +217,7 @@ export class Choice extends React.Component<ChoiceProps & ValidationProps, Choic
         id={this.props.id}
         handleChange={this.handleChange}
         selected={this.getValue(this.props.item, this.props.answer)}
-        validateInput={(value: string): boolean => validateInput(this.props.item, value, this.props.containedResources)}
+        validateInput={(value: string): boolean => validateInput(this.props.item, value, this.props.containedResources, this.props.resources)}
         resources={this.props.resources}
         onRenderMarkdown={this.props.onRenderMarkdown}
         {...this.props}
@@ -235,7 +235,7 @@ export class Choice extends React.Component<ChoiceProps & ValidationProps, Choic
           getErrorMessage(this.props.item, value, this.props.resources, this.props.containedResources)
         }
         handleChange={this.handleChange}
-        validateInput={(value: string): boolean => validateInput(this.props.item, value, this.props.containedResources)}
+        validateInput={(value: string): boolean => validateInput(this.props.item, value, this.props.containedResources, this.props.resources)}
         id={this.props.id}
         selected={this.getValue(this.props.item, this.props.answer)}
         onRenderMarkdown={this.props.onRenderMarkdown}
@@ -302,6 +302,7 @@ export class Choice extends React.Component<ChoiceProps & ValidationProps, Choic
           this.renderRadio,
           this.renderCheckbox,
           this.renderDropdown,
+          this.props.resources,
           this.renderAutosuggest,
           this.renderReceiverComponent
         )}

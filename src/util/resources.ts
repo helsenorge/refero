@@ -393,6 +393,10 @@ export interface Resources {
   nextStep?: string;
   /**
    * Forrige
-   */
+  */
   previousStep?: string;
+  /**
+  * Annet
+  */
+  openChoiceOption?: string
 }

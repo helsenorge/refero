@@ -107,7 +107,7 @@ export class OpenChoice extends React.Component<Props & ValidationProps> {
       return text;
     }
 
-    const displayValues = value.filter(el => el !== OPEN_CHOICE_ID).map(el => getDisplay(getOptions(item, containedResources), el));
+    const displayValues = value.filter(el => el !== OPEN_CHOICE_ID).map(el => getDisplay(getOptions(resources, item, containedResources), el));
     const openValue = this.getOpenValue(answer);
     if (openValue) {
       displayValues.push(openValue);
@@ -182,7 +182,7 @@ export class OpenChoice extends React.Component<Props & ValidationProps> {
   };
 
   getAnswerValueCoding = (code: string, systemArg?: string, displayArg?: string): Coding => {
-    const display = displayArg ? displayArg : getDisplay(getOptions(this.props.item, this.props.containedResources), code);
+    const display = displayArg ? displayArg : getDisplay(getOptions(this.props.resources, this.props.item, this.props.containedResources), code);
     const valueSetSystem = code === OPEN_CHOICE_ID ? OPEN_CHOICE_SYSTEM : getSystem(this.props.item, code, this.props.containedResources);
     const system = systemArg ? systemArg : valueSetSystem;
     return { code, display, system } as Coding;
@@ -345,7 +345,7 @@ export class OpenChoice extends React.Component<Props & ValidationProps> {
         id={this.props.id}
         handleChange={this.handleChange}
         selected={this.getValue(this.props.item, this.props.answer)}
-        validateInput={(value: string): boolean => validateInput(this.props.item, value, this.props.containedResources)}
+        validateInput={(value: string): boolean => validateInput(this.props.item, value, this.props.containedResources, this.props.resources)}
         resources={this.props.resources}
         renderOpenField={(): JSX.Element => this.renderTextField()}
         onRenderMarkdown={this.props.onRenderMarkdown}
@@ -364,7 +364,7 @@ export class OpenChoice extends React.Component<Props & ValidationProps> {
         item={item}
         getErrorMessage={(value: string): string => getErrorMessage(item, value, resources, containedResources)}
         handleChange={this.handleChange}
-        validateInput={(value: string): boolean => validateInput(item, value, containedResources)}
+        validateInput={(value: string): boolean => validateInput(item, value, containedResources, resources)}
         id={id}
         selected={this.getValue(item, answer)}
         repeatButton={repeatButton}
@@ -415,7 +415,7 @@ export class OpenChoice extends React.Component<Props & ValidationProps> {
 
     return (
       <React.Fragment>
-        {renderOptions(item, containedResources, this.renderRadio, this.renderCheckbox, this.renderDropdown, this.renderAutosuggest)}
+        {renderOptions(item, containedResources, this.renderRadio, this.renderCheckbox, this.renderDropdown, this.props.resources, this.renderAutosuggest)}
       </React.Fragment>
     );
   }
