@@ -484,7 +484,7 @@ describe('autosuggest-view', () => {
             type: 'open-choice',
           } as QuestionnaireItem
         }
-        resources={{} as Resources}
+        resources={{openChoiceOption: 'annet'} as Resources}
         renderDeleteButton={jest.fn()}
         repeatButton={<></>}
         renderHelpButton={jest.fn()}
