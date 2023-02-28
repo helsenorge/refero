@@ -26,15 +26,22 @@ interface Props {
   answer: QuestionnaireResponseItemAnswer;
 }
 
-export class DateYearInput extends React.Component<Props, {}> {
-  getYear = (): (number | undefined)[] | undefined => {
-    if (Array.isArray(this.props.answer)) {      
-      return this.props.answer.map(m => createDateFromYear(this.props.item, m)?.getFullYear());
+export const DateYearInput = (props: Props): JSX.Element => {
+
+  const [answerState, setAnswerState] = React.useState<number | undefined>(0);
+
+  const getYear = (): (number | undefined)[] | undefined => {
+    if (Array.isArray(props.answer)) {
+      return props.answer.map(m => createDateFromYear(props.item, m)?.getFullYear());
     }
   };
 
-  getYearInputResources(): YearErrorResources {
-    const { resources, item } = this.props;
+  React.useEffect(() => {
+    props.answer ? setAnswerState(Number(props.answer.valueDate)) : setAnswerState(getYear()?.[0])
+  }, [props.answer]);
+
+  function getYearInputResources(): YearErrorResources {
+    const { resources, item } = props;
     // Vi får maks én valideringstekst, derfor settes alle til denne.
     const validationErrorText = getValidationTextExtension(item);
 
@@ -46,42 +53,44 @@ export class DateYearInput extends React.Component<Props, {}> {
     };
   }
 
-  onYearChange = (year: number): void => {
-    this.props.onDateValueChange(year === 0 ? '' : year.toString());
+  const onYearChange = (year: number): void => {
+    props.onDateValueChange(year === 0 ? '' : year.toString());
   };
 
-  getPDFValue = (): string => {
-    const ikkeBesvartText = this.props.resources?.ikkeBesvart || '';
-    return this.getYear()?.map(m => m?.toString()).join(', ') || ikkeBesvartText;
-  };
-
-  render(): JSX.Element {
-    if (this.props.pdf || isReadOnly(this.props.item)) {
-      return (
-        <TextView id={this.props.id} item={this.props.item} value={this.getPDFValue()} onRenderMarkdown={this.props.onRenderMarkdown}>
-          {this.props.children}
-        </TextView>
-      );
-    }
-
+  const getPDFValue = (): string => {
+    const ikkeBesvartText = props.resources?.ikkeBesvart || '';
     return (
-      <Validation {...this.props}>
-        <YearInput
-          id={`${getId(this.props.id)}-year_input`}
-          errorResources={this.getYearInputResources()}
-          label={this.props.label}
-          subLabel={this.props.subLabel}
-          isRequired={isRequired(this.props.item)}
-          placeholder={getPlaceholder(this.props.item)}
-          maximumYear={this.props.maxDate?.year()}
-          minimumYear={this.props.minDate?.year()}
-          value={this.getYear()?.[0]}
-          className={this.props.className}
-          onChange={this.onYearChange}
-          helpButton={this.props.helpButton}
-          helpElement={this.props.helpElement}
-        />
-      </Validation>
+      getYear()
+        ?.map(m => m?.toString())
+        .join(', ') || ikkeBesvartText
+    );
+  };
+
+  if (props.pdf || isReadOnly(props.item)) {
+    return (
+      <TextView id={props.id} item={props.item} value={getPDFValue()} onRenderMarkdown={props.onRenderMarkdown}>
+        {props}
+      </TextView>
     );
   }
-}
+
+  return (
+    <Validation {...props}>
+      <YearInput
+        id={`${getId(props.id)}-year_input`}
+        errorResources={getYearInputResources()}
+        label={props.label}
+        subLabel={props.subLabel}
+        isRequired={isRequired(props.item)}
+        placeholder={getPlaceholder(props.item)}
+        maximumYear={props.maxDate?.year()}
+        minimumYear={props.minDate?.year()}
+        value={answerState}
+        className={props.className}
+        onChange={onYearChange}
+        helpButton={props.helpButton}
+        helpElement={props.helpElement}
+      />
+    </Validation>
+  );
+};
