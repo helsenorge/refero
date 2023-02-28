@@ -1,4 +1,11 @@
+## 11.4.3
+
+---
+
+- Fixed bug where date-year was emptied if the component re-rendered
+
 ## 11.4.2
+
 ---
 
 - Fixed bug where repeat button diactivated when item is group
