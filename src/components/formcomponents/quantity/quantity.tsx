@@ -75,7 +75,7 @@ class Quantity extends React.Component<Props & ValidationProps, {}> {
     }
     if (Array.isArray(value)) {
       return value.map(m => `${m}`).join(', ');
-    }    
+    }
     return `${value} ${this.getUnit()}`;
   }
 
