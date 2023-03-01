@@ -500,7 +500,7 @@ export function getQuestionnaireDefinitionItem(
   return definitionItem;
 }
 
-function getQuestionnaireDefinitionItemWithLinkid(
+export function getQuestionnaireDefinitionItemWithLinkid(
   linkId: string,
   definitionItem: QuestionnaireItem | undefined,
   index = 0
