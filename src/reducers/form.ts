@@ -41,6 +41,7 @@ import {
   getArrayContainingResponseItemFromItems,
   Path,
   getResponseItemAndPathWithLinkId,
+  getQuestionnaireDefinitionItemWithLinkid,
 } from '../util/refero-core';
 
 enableES5();
@@ -145,7 +146,12 @@ function processAddRepeatItemAction(action: NewValueAction, state: Form): Form {
       return;
     }
 
-    const newItem = copyItem(action.responseItems[0], undefined, draft.FormDefinition.Content as Questionnaire);
+    const newItem = copyItem(
+      action.responseItems[0],
+      undefined,
+      draft.FormDefinition.Content as Questionnaire,
+      state.FormDefinition.Content as Questionnaire
+    );
     if (!newItem) {
       return;
     }
@@ -196,6 +202,7 @@ function processDeleteRepeatItemAction(action: NewValueAction, state: Form): For
 function copyItem(
   source: QuestionnaireResponseItem,
   target: QuestionnaireResponseItem | undefined,
+  questionnaireDraft: Questionnaire,
   questionnaire: Questionnaire
 ): QuestionnaireResponseItem {
   if (!target) {
@@ -220,7 +227,7 @@ function copyItem(
     const numberOfItemsWithSameLinkId = target.item.filter(item => item.linkId === newResponseItem.linkId).length;
 
     if (numberOfItemsWithSameLinkId > 0) {
-      const defItem = getQuestionnaireDefinitionItem(newResponseItem.linkId, questionnaire.item);
+      const defItem = getQuestionnaireDefinitionItem(newResponseItem.linkId, questionnaireDraft.item);
 
       const minOccurs = defItem ? getMinOccursExtensionValue(defItem) || 1 : 1;
       if (numberOfItemsWithSameLinkId >= minOccurs) {
@@ -229,9 +236,9 @@ function copyItem(
     }
 
     target.item.push(newResponseItem);
-    copyItem(source.item[i], newResponseItem, questionnaire);
+    copyItem(source.item[i], newResponseItem, questionnaireDraft, questionnaire);
   }
-  const defItem = getQuestionnaireDefinitionItem(source.linkId, questionnaire.item);
+  const defItem = getQuestionnaireDefinitionItem(source.linkId, questionnaireDraft.item);
 
   if (defItem && defItem.type !== 'attachment') {
     for (let i = 0; source.answer && i < source.answer.length; i++) {
@@ -245,14 +252,16 @@ function copyItem(
         item: [] as QuestionnaireResponseItem[],
       } as QuestionnaireResponseItemAnswer;
 
-      for (let j = 0; answer && answer.item && j < answer.item.length; j++) {
+      for (let j = 0; answer && answer.item && j < answer.item.length; j++) {      
         const newResponseItem = {
           linkId: answer.item[j].linkId,
+          answer: getInitialAnswerForCopyItem(source, questionnaire, answer.item[j]),
+          text: answer.item[j]?.text,
         } as QuestionnaireResponseItem;
         (targetAnswer.item as QuestionnaireResponseItem[]).push(newResponseItem);
-
+  
         target.text = source.text;
-        copyItem(answer.item[j], newResponseItem, questionnaire);
+        copyItem(answer.item[j], newResponseItem, questionnaireDraft, questionnaire);
       }
 
       target.answer.push(targetAnswer);
@@ -260,6 +269,18 @@ function copyItem(
   }
 
   return target;
+}
+
+function getInitialAnswerForCopyItem(source: QuestionnaireResponseItem, questionnaire: Questionnaire, qrItem: QuestionnaireResponseItem): QuestionnaireResponseItemAnswer[] {
+  let initialAnswer = undefined;
+  const item = getQuestionnaireDefinitionItem(source.linkId, questionnaire.item);
+  if (item) {
+    const qitem = getQuestionnaireDefinitionItemWithLinkid(qrItem.linkId, item);
+    if (qitem) {
+      initialAnswer = createQuestionnaireResponseAnswer(qitem);
+    }
+  }
+  return initialAnswer !== undefined ? [initialAnswer] : [];
 }
 
 function runEnableWhen(action: NewValueAction, state: Form, draft: Form): void {
