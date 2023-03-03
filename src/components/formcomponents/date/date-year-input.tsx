@@ -26,7 +26,7 @@ interface Props {
   answer: QuestionnaireResponseItemAnswer;
 }
 
-export const DateYearInput = (props: Props): JSX.Element => {
+export const DateYearInput = (props: React.PropsWithChildren<Props>): JSX.Element => {
 
   const [answerState, setAnswerState] = React.useState<number | undefined>(0);
 
@@ -69,7 +69,7 @@ export const DateYearInput = (props: Props): JSX.Element => {
   if (props.pdf || isReadOnly(props.item)) {
     return (
       <TextView id={props.id} item={props.item} value={getPDFValue()} onRenderMarkdown={props.onRenderMarkdown}>
-        {props}
+        {props.children}
       </TextView>
     );
   }
