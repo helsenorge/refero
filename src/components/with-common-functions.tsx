@@ -163,7 +163,8 @@ export default function withCommonFunctions<T>(WrappedComponent: React.Component
       item: QuestionnaireItem,
       index: number,
       path?: Array<Path>,
-      response?: Array<QuestionnaireResponseItem>
+      response?: Array<QuestionnaireResponseItem>,
+      responseItem?: QuestionnaireResponseItem
     ): JSX.Element | undefined => {
       if (!item.repeats || !shouldRenderRepeatButton(item, response, index)) {
         return undefined;
@@ -177,7 +178,7 @@ export default function withCommonFunctions<T>(WrappedComponent: React.Component
             responseItems={response}
             parentPath={path}
             renderContext={this.props.renderContext}
-            disabled={false}
+            disabled={item.type !== itemType.GROUP && !responseItem?.answer}
           />
         </div>
       );
@@ -301,7 +302,7 @@ export default function withCommonFunctions<T>(WrappedComponent: React.Component
               showOptionalLabel={this.props.showOptionalLabel}
               showRequiredLabel={this.props.showRequiredLabel}
               visibleDeleteButton={shouldRenderDeleteButton(item, index)}
-              repeatButton={this.renderRepeatButton(item, index, path, response)}
+              repeatButton={this.renderRepeatButton(item, index, path, response, responseItem)}
               onRequestAttachmentLink={this.props.onRequestAttachmentLink}
               onOpenAttachment={this.props.onOpenAttachment}
               onDeleteAttachment={this.props.onDeleteAttachment}
