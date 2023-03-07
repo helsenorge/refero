@@ -57,7 +57,7 @@ class Quantity extends React.Component<Props & ValidationProps, {}> {
   getValue(): number | number[] | undefined {
     const { answer } = this.props;
     if (answer && Array.isArray(answer)) {
-      return answer.map(m => m.valueQuantity);
+      return answer.map(m => m.valueQuantity.value);
     }
     if (answer && answer.valueQuantity !== undefined && answer.valueQuantity !== null) {
       return answer.valueQuantity.value;
