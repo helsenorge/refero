@@ -252,14 +252,13 @@ function copyItem(
         item: [] as QuestionnaireResponseItem[],
       } as QuestionnaireResponseItemAnswer;
 
-      for (let j = 0; answer && answer.item && j < answer.item.length; j++) {      
+      for (let j = 0; answer && answer.item && j < answer.item.length; j++) {
         const newResponseItem = {
           linkId: answer.item[j].linkId,
           answer: getInitialAnswerForCopyItem(source, questionnaire, answer.item[j]),
           text: answer.item[j]?.text,
         } as QuestionnaireResponseItem;
         (targetAnswer.item as QuestionnaireResponseItem[]).push(newResponseItem);
-  
         target.text = source.text;
         copyItem(answer.item[j], newResponseItem, questionnaireDraft, questionnaire);
       }
