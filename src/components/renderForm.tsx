@@ -30,6 +30,8 @@ const RenderForm = ({
   nextStep,
   previousStep,
 }: RenderFormProps) => {
+  const displayPauseButtonInNormalView = referoProps.onSave ? onSave : undefined;
+  const displayPauseButtonInStepView = displayPreviousButton ? previousStep : undefined;
 
   return (
     <>
@@ -45,7 +47,7 @@ const RenderForm = ({
             optionalLabel={resources.formOptional}
             cancelButtonText={resources.formCancel}
             pauseButtonText={displayPreviousButton ? resources.previousStep : resources.formSave}
-            onPause={isStepView ? (displayPreviousButton ? previousStep : undefined) : onSave}
+            onPause={isStepView ? displayPauseButtonInStepView : displayPauseButtonInNormalView}
             pauseButtonClasses={'page_refero__pausebutton'}
             pauseButtonType="display"
             submitButtonType="display"
@@ -86,6 +88,7 @@ const RenderForm = ({
             pauseButtonDisabled={referoProps.saveButtonDisabled}
             onFieldsNotCorrectlyFilledOut={referoProps.onFieldsNotCorrectlyFilledOut}
           ></Form>
+          {formItemsToBeRendered}
           <div className="page_refero__buttonwrapper page_refero__saveblock">{referoProps.loginButton}</div>
         </>
       )}
