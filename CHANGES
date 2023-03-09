@@ -1,3 +1,9 @@
+## 11.5.0
+
+---
+
+- Fixing markdown bug where display elements will not use new line when formatting is used
+
 ## 11.4.9
 
 ---
