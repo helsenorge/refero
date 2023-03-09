@@ -191,12 +191,15 @@ function getMarkdownValue(
   const questionnaireValue = questionnaire ? getHyperlinkExtensionValue(questionnaire) : undefined;
   const markdownTextAsHTML = marked(markdownText.toString());
 
-  marked.Renderer.prototype.paragraph = text => {
-    if (markdownTextAsHTML.startsWith('<p>')) {
-      return text + '\n';
-    }
-    return '<p>' + text + '</p>';
-  };
+  // Testing for not display to avoid removing line breaks for display elements that use markdown formatting
+  if (item.type !== 'display') {
+    marked.Renderer.prototype.paragraph = text => {
+      if (markdownTextAsHTML.startsWith('<p>')) {
+        return text + '\n';
+      }
+      return '<p>' + text + '</p>';
+    };
+  }
 
   const renderer = new marked.Renderer();
   renderer.link = (href: string, title: string, text: string): string => {
