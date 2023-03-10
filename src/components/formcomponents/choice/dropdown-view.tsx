@@ -22,7 +22,7 @@ interface Props {
   id?: string;
   handleChange: (code: string) => void;
   selected?: Array<string | undefined>;
-  validateInput: (value: string) => boolean;
+  validateInput: (value: string | undefined) => boolean;
   resources?: Resources;
   renderDeleteButton: (className?: string) => JSX.Element | undefined;
   repeatButton: JSX.Element;

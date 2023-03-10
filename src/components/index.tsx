@@ -21,7 +21,7 @@ import RepeatButton from '../components/formcomponents/repeat/repeat-button';
 import RenderForm from './renderForm';
 import StepView from './stepView';
 import ExtensionConstants from '../constants/extensions';
-import Constants from '../constants/index';
+import Constants, { NAVIGATOR_BLINDZONE_ID } from '../constants/index';
 import ItemType from '../constants/itemType';
 import { PresentationButtonsType } from '../constants/presentationButtonsType';
 import { GlobalState } from '../reducers';
@@ -216,7 +216,7 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
           // legg på blindzone rett over den første seksjonen
           if (isNavigatorEnabled && item.type === ItemType.GROUP && !isNavigatorBlindzoneInitiated) {
             isNavigatorBlindzoneInitiated = true;
-            renderedItems.push(<section id="navigator_blindzone"></section>);
+            renderedItems.push(<section id={NAVIGATOR_BLINDZONE_ID}></section>);
           }
 
           renderedItems.push(
@@ -379,9 +379,9 @@ function mapDispatchToProps(dispatch: ThunkDispatch<GlobalState, void, NewValueA
   return {
     updateSkjema: (
       questionnaire: Questionnaire,
-      questionnaireResponse: QuestionnaireResponse,
-      language: string,
-      syncQuestionnaireResponse: boolean
+      questionnaireResponse: QuestionnaireResponse | undefined,
+      language: string | undefined,
+      syncQuestionnaireResponse: boolean | undefined
     ): void => {
       dispatch(setSkjemaDefinition(questionnaire, questionnaireResponse, language, syncQuestionnaireResponse));
     },
