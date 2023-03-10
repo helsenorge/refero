@@ -4,6 +4,7 @@ import { getTopLevelElements } from '../util/getTopLevelElements';
 import { FormDefinition } from '../reducers/form';
 import RenderForm from './renderForm';
 import { ReferoProps } from '../types/referoProps';
+import { NAVIGATOR_BLINDZONE_ID } from '../constants';
 
 interface StepViewProps {
   isAuthorized: boolean;
@@ -23,7 +24,7 @@ const StepView = ({ isAuthorized, referoProps, resources, formItems, formDefinit
   const topLevelElements = getTopLevelElements(formDefinition);
   formItems?.filter(formItem =>
     topLevelElements?.find(element => {
-      if (formItem.props.item.linkId === element.linkId) {
+      if (formItem.props.id !== NAVIGATOR_BLINDZONE_ID && formItem.props.item.linkId === element.linkId) {
         stepArray.push(formItem);
       }
     })

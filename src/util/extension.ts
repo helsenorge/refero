@@ -65,6 +65,11 @@ export function getSidebarSections(
   return items;
 }
 
+export function isItemSidebar(item: QuestionnaireItem): boolean {
+  const itemControls = getItemControlExtensionValue(item);
+  return itemControls !== undefined && itemControls.some(itemControl => itemControl.code === itemControlConstants.SIDEBAR);
+}
+
 export function getExtension(url: string, item: QuestionnaireItem | Element | Questionnaire): Extension | undefined {
   if (!item || !item.extension || item.extension.length === 0) {
     return undefined;

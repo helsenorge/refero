@@ -18,3 +18,5 @@ export const VALID_FILE_TYPES: Array<MimeTypes> = ['image/jpeg', 'image/png', 'a
 export const OPEN_CHOICE_ID: string = 'other';
 export const OPEN_CHOICE_SYSTEM: string = 'http://helsenorge.no/fhir/CodeSystem/open-choice';
 export const OPEN_CHOICE_LABEL: string = 'annet';
+export const NAVIGATOR_BLINDZONE_ID: string = 'navigator_blindzone'
+
