@@ -1,3 +1,9 @@
+## 11.5.1
+
+---
+
+- Fixed bug that made forms with step-view crash.
+
 ## 11.5.0
 
 ---
