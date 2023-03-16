@@ -84,7 +84,7 @@ export function getQuestionnaireResponseItemsWithLinkId(
   if (!responseItems) {
     return [];
   }
-
+ 
   let itemsWithLinkId = getItemsWithIdFromResponseItemArray(linkId, responseItems, recursive);
   if (itemsWithLinkId && itemsWithLinkId.length > 0) {
     return itemsWithLinkId;
@@ -540,4 +540,21 @@ function getQuestionnaireItemWithIdFromArray(
     return undefined;
   }
   return filteredItems;
+}
+
+export function getQuestionnaireItemsWithType(type: string, items: Array<QuestionnaireItem> | undefined, itemsWithType?: Array<QuestionnaireItem>): Array<QuestionnaireItem> | undefined {
+  if (items === undefined) return;
+  if (!itemsWithType) itemsWithType = [];
+
+  getItemLinkIdsWithType(type, items, itemsWithType);
+  items.forEach(item => getQuestionnaireItemsWithType(type, item.item, itemsWithType));
+  return itemsWithType;
+}
+
+function getItemLinkIdsWithType(type: string, items: QuestionnaireItem[] | undefined, itemsWithType: Array<QuestionnaireItem>): void {
+  if (items !== undefined) {
+    items
+      .filter(f => f.type === type)
+      .forEach(f => itemsWithType.push(f));
+  }
 }
