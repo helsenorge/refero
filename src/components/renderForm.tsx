@@ -1,5 +1,5 @@
 import * as React from 'react';
-import Form from '@helsenorge/form/components/form';
+import Form, { ButtonType } from '@helsenorge/form/components/form';
 import { Resources } from '../util/resources';
 import { ReferoProps } from '../types/referoProps';
 
@@ -33,6 +33,9 @@ const RenderForm = ({
   const displayPauseButtonInNormalView = referoProps.onSave ? onSave : undefined;
   const displayPauseButtonInStepView = displayPreviousButton ? previousStep : undefined;
 
+  const buttonOrderStepView = { 1: ButtonType.pauseButton, 2: ButtonType.submitButton, 3: ButtonType.cancelButton, 4: ButtonType.draftButton};
+  const buttonOrderNormalView = { 1: ButtonType.submitButton, 2: ButtonType.draftButton, 3: ButtonType.cancelButton, 4: ButtonType.pauseButton };
+
   return (
     <>
       {isAuthorized && (
@@ -53,8 +56,7 @@ const RenderForm = ({
             submitButtonType="display"
             cancelButtonType="display"
             pauseButtonLevel="secondary"
-            cancelButtonRight={true}
-            pauseButtonLeft={true}
+            buttonOrder={isStepView ? buttonOrderStepView : buttonOrderNormalView}
             onCancel={referoProps.onCancel}
             buttonClasses="page_refero__saveblock"
             validationSummaryPlacement={referoProps.validationSummaryPlacement}
@@ -78,6 +80,7 @@ const RenderForm = ({
             errorMessage={resources.formError}
             requiredLabel={resources.formRequired}
             optionalLabel={resources.formOptional}
+            buttonOrder={isStepView ? buttonOrderStepView : buttonOrderNormalView}
             triggerPreventDefaultOnSubmit
             validationSummaryPlacement={referoProps.validationSummaryPlacement}
             validationSummary={{
