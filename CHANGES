@@ -1,14 +1,9 @@
-## 12.0.0-beta01
+## 12.0.0
 
 ---
 
 - Upgraded helsenorge packages to v27.x.x
 - Replaced old button position props in the Form component with new prop buttonOrder
-
-## 11.5.2
-
----
-
 - Created method for getting all QuestionnaireItems that have type
 
 ## 11.5.1
