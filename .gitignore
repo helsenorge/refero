@@ -4,3 +4,4 @@ lib/
 .jest-cache/
 coverage/
 test-report.xml
+.npmrc
