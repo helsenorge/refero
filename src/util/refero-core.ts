@@ -412,11 +412,17 @@ export function getResponseItemAndPathWithLinkId(
   }
 
   if (isOfTypeQuestionnaireResponseItem(item)) {
-    for (const a of item.answer ?? []) {
-      for (const i of a.item ?? []) {
-        index = i.linkId in seen ? seen[i.linkId] : 0;
-        response.push(...getResponseItemAndPathWithLinkIdTraverse(linkId, i, currentPath, index));
-        seen[i.linkId] = index + 1;
+    for (const answer of item.answer ?? []) {
+      if (answer.item) {
+        for (const i of answer.item) {
+          index = i.linkId in seen ? seen[i.linkId] : 0;
+          response.push(...getResponseItemAndPathWithLinkIdTraverse(linkId, i, currentPath, index));
+          seen[i.linkId] = index + 1;
+        }
+      } else {
+        if (item.linkId === linkId) {
+          response.push(...[{ item: item, path: copyPath(currentPath) }]);
+        }
       }
     }
   }
