@@ -34,7 +34,7 @@ const RenderForm = ({
   const displayPauseButtonInStepView = displayPreviousButton ? previousStep : undefined;
 
   const buttonOrderStepView = { 1: ButtonType.pauseButton, 2: ButtonType.submitButton, 3: ButtonType.cancelButton, 4: ButtonType.draftButton};
-  const buttonOrderNormalView = { 1: ButtonType.submitButton, 2: ButtonType.draftButton, 3: ButtonType.cancelButton, 4: ButtonType.pauseButton };
+  const buttonOrderNormalView = { 1: ButtonType.submitButton, 2: ButtonType.pauseButton, 3: ButtonType.cancelButton, 4: ButtonType.draftButton };
 
   return (
     <>
