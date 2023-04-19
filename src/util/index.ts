@@ -37,6 +37,7 @@ import {
   getCopyExtension,
 } from './extension';
 import { getQuestionnaireItemCodeValue } from './codingsystem';
+import itemcontrol from '../constants/itemcontrol';
 
 function openNewIfAbsolute(url: string): string {
   const regex = new RegExp('^(([a-z][a-z0-9+.-]*):.*)');
@@ -189,16 +190,16 @@ function getMarkdownValue(
   }</span>`;
   const itemValue = getHyperlinkExtensionValue(item);
   const questionnaireValue = questionnaire ? getHyperlinkExtensionValue(questionnaire) : undefined;
-  const markdownTextAsHTML = marked(markdownText.toString());
 
-  // Testing for not display to avoid removing line breaks for display elements that use markdown formatting
-  if (item.type !== 'display') {
-    marked.Renderer.prototype.paragraph = text => {
-      if (markdownTextAsHTML.startsWith('<p>')) {
-        return text + '\n';
-      }
-      return '<p>' + text + '</p>';
-    };
+  // To avoid issue with line break on help button when formatting ( markdown ) is on in structor
+  // we remove the paragraph for the help button spesifically when we render
+  if (item && item.extension && item.extension?.length > 0) {
+    const hasHelp = item.extension.find(v => v.valueCodeableConcept?.coding?.find(coding => coding.code === itemcontrol.HELP));
+    if (hasHelp !== undefined) {
+      marked.Renderer.prototype.paragraph = (text: string): string => {
+        return text;
+      };
+    }
   }
 
   const renderer = new marked.Renderer();
