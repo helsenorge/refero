@@ -6,6 +6,8 @@ import { ThunkDispatch } from 'redux-thunk';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem, Questionnaire } from '../../../types/fhir';
 
+import AnchorLink from '@helsenorge/designsystem-react/components/AnchorLink';
+
 import { NewValueAction } from '../../../actions/newValue';
 import { RenderContextType } from '../../../constants/renderContextType';
 import { GlobalState } from '../../../reducers';
@@ -25,6 +27,7 @@ export interface Props {
   dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
   path: Array<Path>;
   pdf?: boolean;
+  includeSkipLink?: boolean;
   className?: string;
   resources?: Resources;
   headerTag?: number;
@@ -76,7 +79,7 @@ export class Group extends React.Component<Props, State> {
           return this.renderContextTypeGrid();
       }
     }
-  
+
     switch (renderContext.RenderContextType) {
       case RenderContextType.Grid:
         return this.isDirectChildOfRenderContextOwner() ? this.renderContextTypeGridRow() : this.renderGroup();
@@ -163,6 +166,11 @@ export class Group extends React.Component<Props, State> {
         <div id={`${getId(this.props.id)}-navanchor`} className={this.getClassNames()}>
           {this.props.renderChildrenItems(new RenderContext())}
         </div>
+        {this.props.includeSkipLink && this.props.path.length === 1 && (
+          <AnchorLink className="page_refero__skiplink" href="#navigator-button">
+            {this.props.resources?.skipLinkText}
+          </AnchorLink>
+        )}
         {this.props.renderDeleteButton('page_refero__deletebutton--margin-top')}
         {this.props.repeatButton}
       </section>
