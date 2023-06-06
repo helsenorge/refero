@@ -195,7 +195,7 @@ function getMarkdownValue(
   // we remove the paragraph for the help button spesifically when we render
   if (item && item.extension && item.extension?.length > 0) {
     const hasHelp = item.extension.find(v => v.valueCodeableConcept?.coding?.find(coding => coding.code === itemcontrol.HELP));
-    if (hasHelp !== undefined) {      
+    if (hasHelp !== undefined) {
       marked.Renderer.prototype.paragraph = (text: string): string => {
         return text;
       };
