@@ -1,4 +1,3 @@
-import marked from 'marked';
 import * as uuid from 'uuid';
 
 import { Questionnaire, QuestionnaireResponseItem, QuestionnaireItem, QuestionnaireResponseItemAnswer } from '../types/fhir';
@@ -38,6 +37,7 @@ import {
 } from './extension';
 import { getQuestionnaireItemCodeValue } from './codingsystem';
 import itemcontrol from '../constants/itemcontrol';
+import marked from 'marked';
 
 function openNewIfAbsolute(url: string): string {
   const regex = new RegExp('^(([a-z][a-z0-9+.-]*):.*)');
@@ -195,7 +195,7 @@ function getMarkdownValue(
   // we remove the paragraph for the help button spesifically when we render
   if (item && item.extension && item.extension?.length > 0) {
     const hasHelp = item.extension.find(v => v.valueCodeableConcept?.coding?.find(coding => coding.code === itemcontrol.HELP));
-    if (hasHelp !== undefined) {
+    if (hasHelp !== undefined) {      
       marked.Renderer.prototype.paragraph = (text: string): string => {
         return text;
       };
@@ -222,11 +222,11 @@ function getMarkdownValue(
   }
   if (itemValue === HyperlinkTarget.SAME_WINDOW || (!itemValue && questionnaireValue === HyperlinkTarget.SAME_WINDOW)) {
     marked.setOptions({ renderer: rendererSameWindow });
-    return marked(markdownText.toString());
+    return marked.parse(markdownText.toString());
   }
 
   marked.setOptions({ renderer: renderer });
-  return marked(markdownText.toString());
+  return marked.parse(markdownText.toString());
 }
 
 export function getChildHeaderTag(item?: QuestionnaireItem, headerTag?: number): number {
