@@ -1,6 +1,6 @@
 {
   "name": "@helsenorge/refero",
-  "version": "12.1.0-beta01",
+  "version": "12.1.0-beta02",
   "main": "index.js",
   "author": "helsenorge",
   "license": "MIT",
@@ -122,7 +122,7 @@
     "fhirpath": "2.7.3",
     "immer": "^9.0.6",
     "isomorphic-fetch": "^3.0.0",
-    "marked": "^5.0.4",
+    "marked": "^4.3.0",
     "react-collapse": "^5.1.1",
     "uuid": "9.0.0"
   },
