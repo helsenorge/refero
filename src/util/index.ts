@@ -37,7 +37,7 @@ import {
 } from './extension';
 import { getQuestionnaireItemCodeValue } from './codingsystem';
 import itemcontrol from '../constants/itemcontrol';
-import marked from 'marked';
+import { marked } from 'marked';
 
 function openNewIfAbsolute(url: string): string {
   const regex = new RegExp('^(([a-z][a-z0-9+.-]*):.*)');
