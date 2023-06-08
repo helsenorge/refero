@@ -1,6 +1,6 @@
 {
   "name": "@helsenorge/refero",
-  "version": "12.1.0-beta02",
+  "version": "12.1.0-beta03",
   "main": "index.js",
   "author": "helsenorge",
   "license": "MIT",
@@ -57,7 +57,7 @@
     "@types/enzyme-to-json": "^1.5.4",
     "@types/fs-extra": "^9.0.13",
     "@types/jest": "27.4.0",
-    "@types/marked": "^0.3.0",
+    "@types/marked": "^4.0.8",
     "@types/mocha": "^9.1.0",
     "@types/node": "^16.11.25",
     "@types/prettier": "2.4.4",
