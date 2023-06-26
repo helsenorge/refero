@@ -40,6 +40,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",
+    "@babel/plugin-proposal-object-rest-spread": "^7.20.7",
     "@helsenorge/autosuggest": "^27.1.1",
     "@helsenorge/core-utils": "^27.1.1",
     "@helsenorge/date-time": "^27.1.1",
