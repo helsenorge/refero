@@ -3,6 +3,7 @@
   "version": "12.1.0-beta03",
   "main": "index.js",
   "author": "helsenorge",
+  "homepage": "",
   "license": "MIT",
   "files": [
     "lib",
