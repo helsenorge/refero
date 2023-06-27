@@ -37,7 +37,7 @@ import {
 } from './extension';
 import { getQuestionnaireItemCodeValue } from './codingsystem';
 import itemcontrol from '../constants/itemcontrol';
-import { marked } from 'marked';
+import marked from 'marked';
 
 function openNewIfAbsolute(url: string): string {
   const regex = new RegExp('^(([a-z][a-z0-9+.-]*):.*)');
@@ -222,11 +222,11 @@ function getMarkdownValue(
   }
   if (itemValue === HyperlinkTarget.SAME_WINDOW || (!itemValue && questionnaireValue === HyperlinkTarget.SAME_WINDOW)) {
     marked.setOptions({ renderer: rendererSameWindow });
-    return marked.parse(markdownText.toString());
+    return marked(markdownText.toString());
   }
 
   marked.setOptions({ renderer: renderer });
-  return marked.parse(markdownText.toString());
+  return marked(markdownText.toString());
 }
 
 export function getChildHeaderTag(item?: QuestionnaireItem, headerTag?: number): number {

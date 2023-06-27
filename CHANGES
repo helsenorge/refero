@@ -1,3 +1,10 @@
+## 12.1.0
+
+---
+
+- Added different classname for styling of pauseButton in step-view
+- Reverted marked version to temporarily fix bug
+
 ## 12.0.5
 
 ---
