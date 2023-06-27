@@ -33,8 +33,18 @@ const RenderForm = ({
   const displayPauseButtonInNormalView = referoProps.onSave ? onSave : undefined;
   const displayPauseButtonInStepView = displayPreviousButton ? previousStep : undefined;
 
-  const buttonOrderStepView = { 1: ButtonType.pauseButton, 2: ButtonType.submitButton, 3: ButtonType.cancelButton, 4: ButtonType.draftButton};
-  const buttonOrderNormalView = { 1: ButtonType.submitButton, 2: ButtonType.pauseButton, 3: ButtonType.cancelButton, 4: ButtonType.draftButton };
+  const buttonOrderStepView = {
+    1: ButtonType.pauseButton,
+    2: ButtonType.submitButton,
+    3: ButtonType.cancelButton,
+    4: ButtonType.draftButton,
+  };
+  const buttonOrderNormalView = {
+    1: ButtonType.submitButton,
+    2: ButtonType.pauseButton,
+    3: ButtonType.cancelButton,
+    4: ButtonType.draftButton,
+  };
 
   return (
     <>
@@ -51,7 +61,7 @@ const RenderForm = ({
             cancelButtonText={resources.formCancel}
             pauseButtonText={displayPreviousButton ? resources.previousStep : resources.formSave}
             onPause={isStepView ? displayPauseButtonInStepView : displayPauseButtonInNormalView}
-            pauseButtonClasses={'page_refero__pausebutton'}
+            pauseButtonClasses={`${isStepView ? 'page_refero__pausebutton_stepView' : 'page_refero__pausebutton'}`}
             pauseButtonType="display"
             submitButtonType="display"
             cancelButtonType="display"
