@@ -33,6 +33,7 @@ const StepView = ({ isAuthorized, referoProps, resources, formItems, formDefinit
   const stepArrayLength = stepArray.length - 1;
   const nextStep = (): void => {
     setStepIndex(stepIndex < stepArrayLength ? stepIndex + 1 : stepIndex);
+    window.scrollTo(0,0);
   };
   const previousStep = (): void => {
     setStepIndex(stepIndex > 0 ? stepIndex - 1 : stepIndex);
@@ -40,6 +41,7 @@ const StepView = ({ isAuthorized, referoProps, resources, formItems, formDefinit
 
   React.useEffect(() => {
     onStepChange && onStepChange(stepIndex);
+    window.scrollTo(0,0);
   }, [stepIndex]);
 
   return (
