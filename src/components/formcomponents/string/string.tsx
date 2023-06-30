@@ -105,6 +105,8 @@ export class String extends React.Component<Props & ValidationProps, {}> {
           value={getPDFStringValue(answer, resources)}
           onRenderMarkdown={onRenderMarkdown}
           textClass="page_refero__component_readonlytext"
+          helpButton={this.props.renderHelpButton()}
+          helpElement={this.props.renderHelpElement()}
         >
           {this.props.children}
         </TextView>
