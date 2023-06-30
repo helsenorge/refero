@@ -103,7 +103,14 @@ class Decimal extends React.Component<Props & ValidationProps, {}> {
 
     if (pdf || isReadOnly(item)) {
       return (
-        <TextView id={id} item={item} value={this.getPDFValue()} onRenderMarkdown={onRenderMarkdown}>
+        <TextView
+          id={id}
+          item={item}
+          value={this.getPDFValue()}
+          onRenderMarkdown={onRenderMarkdown}
+          helpButton={this.props.renderHelpButton()}
+          helpElement={this.props.renderHelpElement()}
+        >
           {this.props.children}
         </TextView>
       );
