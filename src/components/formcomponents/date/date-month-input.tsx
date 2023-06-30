@@ -108,7 +108,14 @@ export class DateYearMonthInput extends React.Component<Props, {}> {
   render(): JSX.Element {
     if (this.props.pdf || isReadOnly(this.props.item)) {
       return (
-        <TextView id={this.props.id} item={this.props.item} value={this.getPDFValue()} onRenderMarkdown={this.props.onRenderMarkdown}>
+        <TextView
+          id={this.props.id}
+          item={this.props.item}
+          value={this.getPDFValue()}
+          onRenderMarkdown={this.props.onRenderMarkdown}
+          helpButton={this.props.helpButton}
+          helpElement={this.props.helpElement}
+        >
           {this.props.children}
         </TextView>
       );

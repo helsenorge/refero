@@ -182,7 +182,14 @@ class DateTime extends React.Component<Props & ValidationProps> {
     const { item, pdf, id, onRenderMarkdown, ...other } = this.props;
     if (pdf || isReadOnly(item)) {
       return (
-        <TextView id={id} item={item} value={this.getStringValue()} onRenderMarkdown={onRenderMarkdown}>
+        <TextView
+          id={id}
+          item={item}
+          value={this.getStringValue()}
+          onRenderMarkdown={onRenderMarkdown}
+          helpButton={this.props.renderHelpButton()}
+          helpElement={this.props.renderHelpElement()}
+        >
           {this.props.children}
         </TextView>
       );

@@ -68,7 +68,14 @@ export const DateYearInput = (props: React.PropsWithChildren<Props>): JSX.Elemen
 
   if (props.pdf || isReadOnly(props.item)) {
     return (
-      <TextView id={props.id} item={props.item} value={getPDFValue()} onRenderMarkdown={props.onRenderMarkdown}>
+      <TextView
+        id={props.id}
+        item={props.item}
+        value={getPDFValue()}
+        onRenderMarkdown={props.onRenderMarkdown}
+        helpButton={props.helpButton}
+        helpElement={props.helpElement}
+      >
         {props.children}
       </TextView>
     );
