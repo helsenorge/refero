@@ -191,17 +191,6 @@ function getMarkdownValue(
   const itemValue = getHyperlinkExtensionValue(item);
   const questionnaireValue = questionnaire ? getHyperlinkExtensionValue(questionnaire) : undefined;
 
-  // To avoid issue with line break on help button when formatting ( markdown ) is on in structor
-  // we remove the paragraph for the help button spesifically when we render
-  if (item && item.extension && item.extension?.length > 0) {
-    const hasHelp = item.extension.find(v => v.valueCodeableConcept?.coding?.find(coding => coding.code === itemcontrol.HELP));
-    if (hasHelp !== undefined) {
-      marked.Renderer.prototype.paragraph = (text: string): string => {
-        return text;
-      };
-    }
-  }
-
   const renderer = new marked.Renderer();
   renderer.link = (href: string, title: string, text: string): string => {
     const urlString = `<a href=${href} ${
