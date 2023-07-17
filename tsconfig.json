@@ -11,7 +11,6 @@
     "sourceMap": true,
     "jsx": "preserve",
     "noImplicitAny": true,
-    "suppressImplicitAnyIndexErrors": true,
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
     "esModuleInterop": true,
