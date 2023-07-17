@@ -1,6 +1,10 @@
 {
   "name": "@helsenorge/refero",
   "version": "12.2.0",
+  "engines": {
+    "node": "^18.0.0",
+    "npm": ">=9.0.0"
+  },
   "main": "index.js",
   "author": "helsenorge",
   "license": "MIT",
@@ -26,12 +30,12 @@
     }
   },
   "peerDependencies": {
-    "@helsenorge/autosuggest": "^27.1.1",
-    "@helsenorge/core-utils": "^27.1.1",
-    "@helsenorge/date-time": "^27.1.1",
-    "@helsenorge/designsystem-react": "^3.0.0",
-    "@helsenorge/file-upload": "^27.1.1",
-    "@helsenorge/form": "^27.1.1",
+    "@helsenorge/autosuggest": "^28.2.1",
+    "@helsenorge/core-utils": "^28.2.1",
+    "@helsenorge/date-time": "^28.2.1",
+    "@helsenorge/designsystem-react": "^4.2.2",
+    "@helsenorge/file-upload": "^28.2.1",
+    "@helsenorge/form": "^28.2.1",
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-redux": "^7.1.0",
@@ -40,12 +44,12 @@
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",
-    "@helsenorge/autosuggest": "^27.1.1",
-    "@helsenorge/core-utils": "^27.1.1",
-    "@helsenorge/date-time": "^27.1.1",
-    "@helsenorge/designsystem-react": "^3.0.0",
-    "@helsenorge/file-upload": "^27.1.1",
-    "@helsenorge/form": "^27.1.1",
+    "@helsenorge/autosuggest": "^28.2.1",
+    "@helsenorge/core-utils": "^28.2.1",
+    "@helsenorge/date-time": "^28.2.1",
+    "@helsenorge/designsystem-react": "^4.2.2",
+    "@helsenorge/file-upload": "^28.2.1",
+    "@helsenorge/form": "^28.2.1",
     "@teamsupercell/typings-for-css-modules-loader": "^2.5.1",
     "@testing-library/jest-dom": "^5.16.2",
     "@testing-library/react": "^12.1.3",
