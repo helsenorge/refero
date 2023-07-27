@@ -5,19 +5,29 @@ import {
   QuestionnaireItemEnableWhen,
   QuestionnaireItemEnableBehaviorCodes,
   QuestionnaireResponseItemAnswer,
+  Quantity,
 } from '../types/fhir';
 
 import { NewValueAction } from '../actions/newValue';
 import { Props } from '../components/with-common-functions';
 import { getFormData } from '../reducers/form';
 import { GlobalState } from '../reducers/index';
-import { enableWhenMatchesAnswer, getQuestionnaireResponseItemWithLinkid, getResponseItems, Path, isInGroupContext } from './refero-core';
-import { getCopyExtension, getCalculatedExpressionExtension } from '../util/extension';
+import {
+  enableWhenMatchesAnswer,
+  getQuestionnaireResponseItemWithLinkid,
+  getResponseItems,
+  Path,
+  isInGroupContext,
+} from './refero-core';
+import { getCopyExtension, getCalculatedExpressionExtension, getQuestionnaireUnitExtensionValue } from '../util/extension';
 import { evaluateFhirpathExpressionToGetString } from '../util/fhirpathHelper';
 import ItemType from '../constants/itemType';
+import { ScoringCalculator } from '../util/scoringCalculator';
+import { isSectionScoringItem, isTotalScoringItem } from '../util/scoring';
 
 export function mapStateToProps(state: GlobalState, originalProps: Props): Props {
   getValueIfDataReceiver(state, originalProps);
+  getScoring(state, originalProps);
   if (!originalProps.item || !originalProps.item.enableWhen) {
     return { ...originalProps, enable: true } as Props;
   }
@@ -115,6 +125,42 @@ function getQuestionnaireResponseItemAnswer(
     }
   });
   return answerArray;  
+}
+
+function getScoring(state: GlobalState, originalProps: Props): void {
+  if (originalProps
+    && originalProps.item
+    && (isSectionScoringItem(originalProps.item) || isTotalScoringItem(originalProps.item))) {
+    const questionnaire = state.refero?.form?.FormDefinition?.Content;
+    if (!questionnaire) return;
+    const scoringCalculator = new ScoringCalculator(questionnaire);
+    if (!scoringCalculator || !state.refero?.form?.FormData?.Content) {
+      return;
+    }
+    const scores = scoringCalculator.calculate(state.refero.form.FormData.Content);
+    const value = scores[originalProps.item.linkId];
+    if (!value) return;
+
+    switch (String(originalProps.item.type)) {
+      case ItemType.INTEGER:
+        originalProps.answer = { valueInteger: value };
+        break;
+      case ItemType.DECIMAL:
+        originalProps.answer = { valueDecimal: value };
+        break;
+      case ItemType.QUANTITY:
+        const extension = getQuestionnaireUnitExtensionValue(originalProps.item);          
+        originalProps.answer = {
+          valueQuantity: {
+            unit: extension?.display,
+            system: extension?.system,
+            code: extension?.code,
+            value: value
+          } as Quantity
+        };
+        break;
+    }
+  }
 }
 
 export function mergeProps(stateProps: Props, dispatchProps: Props, ownProps: Props): Props {

@@ -10,7 +10,7 @@ import ExtensionConstants from '../constants/extensions';
 import { ScoringItemType } from '../constants/scoringItemType';
 import { getExtension, getCalculatedExpressionExtension } from './extension';
 import r4 from './fhirpathLoaderHelper';
-import { createDummySectionScoreItem, scoringItemType } from './scoring';
+import { createDummySectionScoreItem, hasItemScoreCoding, scoringItemType } from './scoring';
 import { getQuestionnaireResponseItemsWithLinkId } from './refero-core';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -100,7 +100,7 @@ export class ScoringCalculator {
       return newRetVal;
     }
 
-    if (this.isOfTypeQuestionnaireItem(qItem)) {
+    if (this.isOfTypeQuestionnaireItem(qItem)) {      
       const type = scoringItemType(qItem);
       if (type === ScoringItemType.SECTION_SCORE) {
         // A section score item, only return self, as it doesn't have any children
@@ -116,7 +116,7 @@ export class ScoringCalculator {
         return newRetVal;
       }
 
-      if (type === ScoringItemType.QUESTION_SCORE || type === ScoringItemType.QUESTION_FHIRPATH_SCORE) {
+      if (type === ScoringItemType.QUESTION_SCORE || type === ScoringItemType.QUESTION_FHIRPATH_SCORE || hasItemScoreCoding(qItem) ) {
         const newRetVal = new CalculatedScores();
         newRetVal.questionScores.push(qItem, ...retVal.questionScores);
 
@@ -140,7 +140,7 @@ export class ScoringCalculator {
 
   public calculate(questionnaireResponse: QuestionnaireResponse): { [linkId: string]: number | undefined } {
     const answerPad: { [linkId: string]: number | undefined } = {};
-
+    
     for (const sectionScoreLinkId in this.sectionScoreCache) {
       answerPad[sectionScoreLinkId] = this.calculateSectionScore(sectionScoreLinkId, questionnaireResponse, answerPad);
     }
@@ -149,7 +149,7 @@ export class ScoringCalculator {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       answerPad[totalScoreLinkId] = this.calculateSectionScore(this.totalScoreItem!.linkId, questionnaireResponse, answerPad);
     }
-
+  
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     delete answerPad[this.totalScoreItem!.linkId];
 
@@ -190,7 +190,7 @@ export class ScoringCalculator {
       case ScoringItemType.QUESTION_FHIRPATH_SCORE:
         return this.valueOfQuestionFhirpathScoreItem(item, questionnaireResponse, answerPad);
       default:
-        return;
+        return this.valueOfScoreItem(item, questionnaireResponse);
     }
   }
 
@@ -228,6 +228,25 @@ export class ScoringCalculator {
         const option = this.getAnswerMatch(answer, item);
         if (option) {
           sum += this.getOptionScore(option);
+          hasCalculatedAtLeastOneAnswer = true;
+        }
+      }
+    }
+
+    return hasCalculatedAtLeastOneAnswer ? sum : undefined;
+  }
+
+  private valueOfScoreItem(item: QuestionnaireItem, questionnaireResponse: QuestionnaireResponse): number | undefined {
+    let sum: number = 0;
+    let hasCalculatedAtLeastOneAnswer = false;
+    const qrItems = getQuestionnaireResponseItemsWithLinkId(item.linkId, questionnaireResponse.item || [], true);
+    for (const qrItem of qrItems) {
+      if (!qrItem.answer) continue;
+
+      for (const answer of qrItem.answer) {
+        const itemAnswer = answer.valueDecimal || answer.valueInteger || answer.valueQuantity?.value;
+        if (itemAnswer) {
+          sum += itemAnswer;
           hasCalculatedAtLeastOneAnswer = true;
         }
       }

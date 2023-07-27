@@ -15,8 +15,8 @@ export function createDummySectionScoreItem(): QuestionnaireItem {
       {
         url: ExtensionConstants.QUESTIONNAIRE_UNIT,
         valueCoding: {
-          system: 'http://ehelse.no/Score',
-          code: 'score',
+          system: Scoring.SCORING,
+          code: Scoring.SCORING_CODE,
           display: 'score',
         },
       } as Extension,
@@ -65,6 +65,10 @@ export function isTotalScoringItem(item: QuestionnaireItem): boolean {
 export function isQuestionScoringItem(item: QuestionnaireItem): boolean {
   const scoring = getCodingWithScoring(item);
   return scoring ? scoring.code === Scoring.Type.QUESTION_SCORE : false;
+}
+
+export function hasItemScoreCoding(item: QuestionnaireItem): boolean {
+  return (item.code && item.code.findIndex(f => f.system === Scoring.SCORING && f.code === Scoring.SCORING_CODE) > -1) || false;
 }
 
 function getCodingWithScoring(item: QuestionnaireItem): Coding | undefined {
