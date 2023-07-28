@@ -6,11 +6,12 @@ import ExtensionConstants from '../constants/extensions';
 import Scoring from '../constants/scoring';
 import { ScoringItemType } from '../constants/scoringItemType';
 import { getCalculatedExpressionExtension } from './extension';
+import ItemType from '../constants/itemType';
 
 export function createDummySectionScoreItem(): QuestionnaireItem {
   return {
     linkId: uuid.v4(),
-    type: 'quantity',
+    type: ItemType.QUANTITY,
     extension: [
       {
         url: ExtensionConstants.QUESTIONNAIRE_UNIT,
@@ -35,11 +36,11 @@ export function scoringItemType(item: QuestionnaireItem): ScoringItemType {
   if (item.code) {
     const scoring = getCodingWithScoring(item);
     switch (scoring?.code) {
-      case 'TS':
+      case Scoring.Type.TOTAL_SCORE:
         return ScoringItemType.TOTAL_SCORE;
-      case 'SS':
+      case Scoring.Type.SECTION_SCORE:
         return ScoringItemType.SECTION_SCORE;
-      case 'QS':
+      case Scoring.Type.QUESTION_SCORE:
         return ScoringItemType.QUESTION_SCORE;
       default:
         return ScoringItemType.NONE;

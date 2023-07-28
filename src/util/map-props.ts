@@ -24,10 +24,11 @@ import { evaluateFhirpathExpressionToGetString } from '../util/fhirpathHelper';
 import ItemType from '../constants/itemType';
 import { ScoringCalculator } from '../util/scoringCalculator';
 import { isSectionScoringItem, isTotalScoringItem } from '../util/scoring';
+import { getDecimalValue } from '.';
 
 export function mapStateToProps(state: GlobalState, originalProps: Props): Props {
   getValueIfDataReceiver(state, originalProps);
-  getScoring(state, originalProps);
+  getScoringValue(state, originalProps);
   if (!originalProps.item || !originalProps.item.enableWhen) {
     return { ...originalProps, enable: true } as Props;
   }
@@ -98,13 +99,13 @@ function getQuestionnaireResponseItemAnswer(
         answerArray.push({ valueString: answer });
         break;
       case ItemType.INTEGER:
-        answerArray.push({ valueInteger: answer });
+        answerArray.push(integerAnswer(answer));
         break;
       case ItemType.DECIMAL:
-        answerArray.push({ valueDecimal: answer });
+        answerArray.push(decimalAnswer(answer));
         break;
       case ItemType.QUANTITY:
-        answerArray.push({ valueQuantity: answer });
+        answerArray.push(quantityAnswer(answer));
         break;
       case ItemType.DATETIME:
         answerArray.push({ valueDateTime: answer });
@@ -127,40 +128,50 @@ function getQuestionnaireResponseItemAnswer(
   return answerArray;  
 }
 
-function getScoring(state: GlobalState, originalProps: Props): void {
+function getScoringValue(state: GlobalState, originalProps: Props): void {
   if (originalProps
     && originalProps.item
     && (isSectionScoringItem(originalProps.item) || isTotalScoringItem(originalProps.item))) {
     const questionnaire = state.refero?.form?.FormDefinition?.Content;
-    if (!questionnaire) return;
+    const questionnaireResponse = state.refero?.form?.FormData?.Content;
+    if (!questionnaire || !questionnaireResponse) return;
     const scoringCalculator = new ScoringCalculator(questionnaire);
-    if (!scoringCalculator || !state.refero?.form?.FormData?.Content) {
-      return;
-    }
-    const scores = scoringCalculator.calculate(state.refero.form.FormData.Content);
+    if (!scoringCalculator) return;
+    const scores = scoringCalculator.calculate(questionnaireResponse);
     const value = scores[originalProps.item.linkId];
     if (!value) return;
 
     switch (String(originalProps.item.type)) {
       case ItemType.INTEGER:
-        originalProps.answer = { valueInteger: value };
+        originalProps.answer = integerAnswer(value);
         break;
       case ItemType.DECIMAL:
-        originalProps.answer = { valueDecimal: value };
+        originalProps.answer = decimalAnswer(getDecimalValue(originalProps.item, value));
         break;
       case ItemType.QUANTITY:
-        const extension = getQuestionnaireUnitExtensionValue(originalProps.item);          
-        originalProps.answer = {
-          valueQuantity: {
-            unit: extension?.display,
-            system: extension?.system,
-            code: extension?.code,
-            value: value
-          } as Quantity
-        };
+        const extension = getQuestionnaireUnitExtensionValue(originalProps.item);
+        const quantity = {
+          unit: extension?.display,
+          system: extension?.system,
+          code: extension?.code,
+          value: getDecimalValue(originalProps.item, value),
+        } as Quantity;
+        originalProps.answer = quantityAnswer(quantity);
         break;
     }
   }
+}
+
+function integerAnswer(value: number): QuestionnaireResponseItemAnswer {
+  return { valueInteger: value };
+}
+
+function decimalAnswer(value: number): QuestionnaireResponseItemAnswer {
+  return { valueDecimal: value };
+}
+
+function quantityAnswer(value: Quantity): QuestionnaireResponseItemAnswer {
+  return { valueQuantity: value };
 }
 
 export function mergeProps(stateProps: Props, dispatchProps: Props, ownProps: Props): Props {

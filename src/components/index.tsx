@@ -20,7 +20,6 @@ import { NewValueAction, newQuantityValue } from '../actions/newValue';
 import RepeatButton from '../components/formcomponents/repeat/repeat-button';
 import RenderForm from './renderForm';
 import StepView from './stepView';
-import ExtensionConstants from '../constants/extensions';
 import Constants, { NAVIGATOR_BLINDZONE_ID } from '../constants/index';
 import ItemType from '../constants/itemType';
 import { PresentationButtonsType } from '../constants/presentationButtonsType';
@@ -30,12 +29,11 @@ import { FormDefinition, FormData } from '../reducers/form';
 import { ActionRequester } from '../util/actionRequester';
 import {
   getQuestionnaireUnitExtensionValue,
-  getExtension,
   getPresentationButtonsExtension,
   getNavigatorExtension,
 } from '../util/extension';
 import { IE11HackToWorkAroundBug187484 } from '../util/hacks';
-import { getComponentForItem, shouldRenderRepeatButton, isHiddenItem } from '../util/index';
+import { getComponentForItem, shouldRenderRepeatButton, isHiddenItem, getDecimalValue } from '../util/index';
 import { QuestionniareInspector } from '../util/questionnaireInspector';
 import { RenderContext } from '../util/renderContext';
 import { ScoringCalculator } from '../util/scoringCalculator';
@@ -151,13 +149,7 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
 
       let value = scores[linkId];
       if (item && value != null && !isNaN(value) && isFinite(value)) {
-        const decimalPlacesExtension = getExtension(ExtensionConstants.STEP_URL, item);
-        if (decimalPlacesExtension && decimalPlacesExtension.valueInteger != null) {
-          const places = Number(decimalPlacesExtension.valueInteger);
-          value = Number(value?.toFixed(places));
-        }
-
-        quantity.value = value;
+        quantity.value = getDecimalValue(item, value);
       }
 
       for (const itemAndPath of itemsAndPaths) {
