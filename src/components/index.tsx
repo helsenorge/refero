@@ -257,7 +257,7 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
               onRenderMarkdown={this.props.onRenderMarkdown}
               fetchValueSet={this.props.fetchValueSet}
               autoSuggestProps={this.props.autoSuggestProps}
-              fetchReceivers={this.props.fetchReceivers}              
+              fetchReceivers={this.props.fetchReceivers}
             />
           );
         });

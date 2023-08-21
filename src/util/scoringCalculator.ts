@@ -140,7 +140,7 @@ export class ScoringCalculator {
 
   public calculate(questionnaireResponse: QuestionnaireResponse): { [linkId: string]: number | undefined } {
     const answerPad: { [linkId: string]: number | undefined } = {};
-    
+
     for (const sectionScoreLinkId in this.sectionScoreCache) {
       answerPad[sectionScoreLinkId] = this.calculateSectionScore(sectionScoreLinkId, questionnaireResponse, answerPad);
     }
@@ -149,7 +149,7 @@ export class ScoringCalculator {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       answerPad[totalScoreLinkId] = this.calculateSectionScore(this.totalScoreItem!.linkId, questionnaireResponse, answerPad);
     }
-  
+
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     delete answerPad[this.totalScoreItem!.linkId];
 
