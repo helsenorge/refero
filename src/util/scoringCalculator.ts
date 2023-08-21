@@ -10,7 +10,7 @@ import ExtensionConstants from '../constants/extensions';
 import { ScoringItemType } from '../constants/scoringItemType';
 import { getExtension, getCalculatedExpressionExtension } from './extension';
 import r4 from './fhirpathLoaderHelper';
-import { createDummySectionScoreItem, hasItemScoreCoding, scoringItemType } from './scoring';
+import { createDummySectionScoreItem, scoringItemType } from './scoring';
 import { getQuestionnaireResponseItemsWithLinkId } from './refero-core';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires

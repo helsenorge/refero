@@ -5,7 +5,6 @@ import {
   QuestionnaireItemEnableWhen,
   QuestionnaireItemEnableBehaviorCodes,
   QuestionnaireResponseItemAnswer,
-  Quantity,
 } from '../types/fhir';
 
 import { NewValueAction } from '../actions/newValue';
@@ -19,17 +18,12 @@ import {
   Path,
   isInGroupContext,
 } from './refero-core';
-import { getCopyExtension, getCalculatedExpressionExtension, getQuestionnaireUnitExtensionValue } from '../util/extension';
+import { getCopyExtension, getCalculatedExpressionExtension } from '../util/extension';
 import { evaluateFhirpathExpressionToGetString } from '../util/fhirpathHelper';
 import ItemType from '../constants/itemType';
-import { ScoringCalculator } from '../util/scoringCalculator';
-import { scoringItemType } from '../util/scoring';
-import { getDecimalValue } from '.';
-import { ScoringItemType } from '../constants/scoringItemType';
 
 export function mapStateToProps(state: GlobalState, originalProps: Props): Props {
   getValueIfDataReceiver(state, originalProps);
-  getScoringValue(state, originalProps);
   if (!originalProps.item || !originalProps.item.enableWhen) {
     return { ...originalProps, enable: true } as Props;
   }
@@ -100,13 +94,13 @@ function getQuestionnaireResponseItemAnswer(
         answerArray.push({ valueString: answer });
         break;
       case ItemType.INTEGER:
-        answerArray.push(integerAnswer(answer));
+        answerArray.push({ valueInteger: answer });
         break;
       case ItemType.DECIMAL:
-        answerArray.push(decimalAnswer(answer));
+        answerArray.push({ valueDecimal: answer });
         break;
       case ItemType.QUANTITY:
-        answerArray.push(quantityAnswer(answer));
+        answerArray.push({ valueQuantity: answer });
         break;
       case ItemType.DATETIME:
         answerArray.push({ valueDateTime: answer });
@@ -127,58 +121,6 @@ function getQuestionnaireResponseItemAnswer(
     }
   });
   return answerArray;  
-}
-
-function getScoringValue(state: GlobalState, originalProps: Props): void {
-  if (originalProps && originalProps.item) {
-    const scoringType = scoringItemType(originalProps.item);
-
-    if (scoringType === ScoringItemType.QUESTION_FHIRPATH_SCORE ||
-        scoringType === ScoringItemType.SECTION_SCORE ||
-        scoringType === ScoringItemType.TOTAL_SCORE) {
-      const questionnaire = state.refero?.form?.FormDefinition?.Content;
-      const questionnaireResponse = state.refero?.form?.FormData?.Content;
-
-      if (!questionnaire || !questionnaireResponse) return;
-      const scoringCalculator = new ScoringCalculator(questionnaire);
-      if (!scoringCalculator) return;
-
-      const scores = scoringCalculator.calculate(questionnaireResponse);
-      const value = scores[originalProps.item.linkId];
-      if (!value) return;
-  
-      switch (String(originalProps.item.type)) {
-        case ItemType.INTEGER:  
-          originalProps.answer = integerAnswer(Math.floor(value));
-          break;
-        case ItemType.DECIMAL:
-          originalProps.answer = decimalAnswer(getDecimalValue(originalProps.item, value));
-          break;
-        case ItemType.QUANTITY:
-          const extension = getQuestionnaireUnitExtensionValue(originalProps.item);
-          const quantity = {
-            unit: extension?.display,
-            system: extension?.system,
-            code: extension?.code,
-            value: getDecimalValue(originalProps.item, value),
-          } as Quantity;
-          originalProps.answer = quantityAnswer(quantity);
-          break;
-      }
-    }
-  }
-}
-
-function integerAnswer(value: number): QuestionnaireResponseItemAnswer {
-  return { valueInteger: value };
-}
-
-function decimalAnswer(value: number): QuestionnaireResponseItemAnswer {
-  return { valueDecimal: value };
-}
-
-function quantityAnswer(value: Quantity): QuestionnaireResponseItemAnswer {
-  return { valueQuantity: value };
 }
 
 export function mergeProps(stateProps: Props, dispatchProps: Props, ownProps: Props): Props {

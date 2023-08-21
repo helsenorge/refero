@@ -283,9 +283,8 @@ describe('Code Scoring', () => {
 
     const sectionScoreItem = wrapper.find(TextView);
     expect(sectionScoreItem.at(3).props().id).toBe('item_3.3');
-    expect(sectionScoreItem.at(3).props().value).toBe("210.47 ");
+    expect(sectionScoreItem.at(3).props().value).toBe("210.47 centimeter");
   });
-
   
   it('Section scoring on multiple choice grouping, with section scoring quantity extention kilo. Select one', async () => {
     var model: Questionnaire = cloneQuestionnaire(CodeScoreDataModel);
@@ -322,7 +321,7 @@ describe('Code Scoring', () => {
 
     const sectionScoreItem = wrapper.find(TextView);
     expect(sectionScoreItem.at(5).props().id).toBe('item_5.2');
-    expect(sectionScoreItem.at(5).props().value).toBe("50 ");
+    expect(sectionScoreItem.at(5).props().value).toBe("50 score");
   });
 
   it('Total QS scoring', async () => {
@@ -335,7 +334,7 @@ describe('Code Scoring', () => {
 
     const sectionScoreItem = wrapper.find(TextView);
     expect(sectionScoreItem.at(6).props().id).toBe('item_7.1');
-    expect(sectionScoreItem.at(6).props().value).toBe("35 ");
+    expect(sectionScoreItem.at(6).props().value).toBe("35 score");
   });
 });
 

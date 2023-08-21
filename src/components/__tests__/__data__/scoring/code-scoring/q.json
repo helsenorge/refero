@@ -178,8 +178,8 @@
             {
               "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
               "valueCoding": {
-                "code": "kg",
-                "display": "kilo",
+                "code": "cm",
+                "display": "centimeter",
                 "system": "http://unitsofmeasure.org"
               }
             }
@@ -200,6 +200,14 @@
             {
               "url": "http://ehelse.no/fhir/StructureDefinition/sdf-calculatedExpression",
               "valueString": "QuestionnaireResponse.descendants().where(linkId='3.1').answer.value.value + QuestionnaireResponse.descendants().where(linkId='3.2').answer.value.value"
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+              "valueCoding": {
+                "code": "cm",
+                "display": "centimeter",
+                "system": "http://unitsofmeasure.org"
+              }
             }
           ]
         }
@@ -404,6 +412,16 @@
           "linkId": "5.2",
           "type": "quantity",
           "text": "Seksjonssum",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+              "valueCoding": {
+                "code": "score",
+                "display": "score",
+                "system": "http://ehelse.no/Score"
+              }
+            }
+          ],
           "code": [
             {
               "system": "http://ehelse.no/Score",
@@ -497,6 +515,16 @@
           "linkId": "7.1",
           "type": "quantity",
           "text": "Totalsum fra alle QS",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+              "valueCoding": {
+                "code": "score",
+                "display": "score",
+                "system": "http://ehelse.no/Score"
+              }
+            }
+          ],
           "code": [
             {
               "system": "http://ehelse.no/Score",
