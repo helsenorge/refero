@@ -23,8 +23,9 @@ import { getCopyExtension, getCalculatedExpressionExtension, getQuestionnaireUni
 import { evaluateFhirpathExpressionToGetString } from '../util/fhirpathHelper';
 import ItemType from '../constants/itemType';
 import { ScoringCalculator } from '../util/scoringCalculator';
-import { isSectionScoringItem, isTotalScoringItem } from '../util/scoring';
+import { scoringItemType } from '../util/scoring';
 import { getDecimalValue } from '.';
+import { ScoringItemType } from '../constants/scoringItemType';
 
 export function mapStateToProps(state: GlobalState, originalProps: Props): Props {
   getValueIfDataReceiver(state, originalProps);
@@ -129,35 +130,41 @@ function getQuestionnaireResponseItemAnswer(
 }
 
 function getScoringValue(state: GlobalState, originalProps: Props): void {
-  if (originalProps
-    && originalProps.item
-    && (isSectionScoringItem(originalProps.item) || isTotalScoringItem(originalProps.item))) {
-    const questionnaire = state.refero?.form?.FormDefinition?.Content;
-    const questionnaireResponse = state.refero?.form?.FormData?.Content;
-    if (!questionnaire || !questionnaireResponse) return;
-    const scoringCalculator = new ScoringCalculator(questionnaire);
-    if (!scoringCalculator) return;
-    const scores = scoringCalculator.calculate(questionnaireResponse);
-    const value = scores[originalProps.item.linkId];
-    if (!value) return;
+  if (originalProps && originalProps.item) {
+    const scoringType = scoringItemType(originalProps.item);
 
-    switch (String(originalProps.item.type)) {
-      case ItemType.INTEGER:
-        originalProps.answer = integerAnswer(value);
-        break;
-      case ItemType.DECIMAL:
-        originalProps.answer = decimalAnswer(getDecimalValue(originalProps.item, value));
-        break;
-      case ItemType.QUANTITY:
-        const extension = getQuestionnaireUnitExtensionValue(originalProps.item);
-        const quantity = {
-          unit: extension?.display,
-          system: extension?.system,
-          code: extension?.code,
-          value: getDecimalValue(originalProps.item, value),
-        } as Quantity;
-        originalProps.answer = quantityAnswer(quantity);
-        break;
+    if (scoringType === ScoringItemType.QUESTION_FHIRPATH_SCORE ||
+        scoringType === ScoringItemType.SECTION_SCORE ||
+        scoringType === ScoringItemType.TOTAL_SCORE) {
+      const questionnaire = state.refero?.form?.FormDefinition?.Content;
+      const questionnaireResponse = state.refero?.form?.FormData?.Content;
+
+      if (!questionnaire || !questionnaireResponse) return;
+      const scoringCalculator = new ScoringCalculator(questionnaire);
+      if (!scoringCalculator) return;
+
+      const scores = scoringCalculator.calculate(questionnaireResponse);
+      const value = scores[originalProps.item.linkId];
+      if (!value) return;
+  
+      switch (String(originalProps.item.type)) {
+        case ItemType.INTEGER:  
+          originalProps.answer = integerAnswer(Math.floor(value));
+          break;
+        case ItemType.DECIMAL:
+          originalProps.answer = decimalAnswer(getDecimalValue(originalProps.item, value));
+          break;
+        case ItemType.QUANTITY:
+          const extension = getQuestionnaireUnitExtensionValue(originalProps.item);
+          const quantity = {
+            unit: extension?.display,
+            system: extension?.system,
+            code: extension?.code,
+            value: getDecimalValue(originalProps.item, value),
+          } as Quantity;
+          originalProps.answer = quantityAnswer(quantity);
+          break;
+      }
     }
   }
 }

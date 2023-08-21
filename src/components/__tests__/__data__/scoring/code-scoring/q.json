@@ -75,49 +75,40 @@
           "linkId": "1.1",
           "type": "decimal",
           "text": "Decimal 1",
-          "code": [
-            {
-              "system": "http://ehelse.no/Score",
-              "code": "score",
-              "display": "score"
-            }
-          ],
           "required": false
         },
         {
           "linkId": "1.2",
           "type": "decimal",
           "text": "Decimal 2",
-          "code": [
-            {
-              "system": "http://ehelse.no/Score",
-              "code": "score",
-              "display": "score"
-            }
-          ],
           "required": false
         },
         {
           "linkId": "1.3",
           "type": "decimal",
-          "text": "Decimal seksjonscore",
-          "code": [
-            {
-              "system": "http://ehelse.no/Score",
-              "code": "score",
-              "display": "score"
-            },
-            {
-              "system": "http://ehelse.no/scoringFormulas",
-              "code": "SS",
-              "display": "Section score"
-            }
-          ],
+          "text": "Decimal summeringsfelt",
           "required": false,
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/maxDecimalPlaces",
               "valueInteger": 2
+            },
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-calculatedExpression",
+              "valueString": "QuestionnaireResponse.descendants().where(linkId='1.1').answer.value + QuestionnaireResponse.descendants().where(linkId='1.2').answer.value"
+            }
+          ],
+          "readOnly": true
+        },
+        {
+          "linkId": "1.4",
+          "type": "integer",
+          "text": "Integer summeringsfelt",
+          "required": false,
+          "extension": [
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-calculatedExpression",
+              "valueString": "QuestionnaireResponse.descendants().where(linkId='1.1').answer.value + QuestionnaireResponse.descendants().where(linkId='1.2').answer.value"
             }
           ],
           "readOnly": true
@@ -127,60 +118,41 @@
     {
       "linkId": "2",
       "type": "group",
-      "text": "Group Integer (2)",
+      "text": "Group Integer",
+      "required": false,
       "item": [
         {
           "linkId": "2.1",
           "type": "integer",
           "text": "Integer 1",
-          "code": [
-            {
-              "system": "http://ehelse.no/Score",
-              "code": "score",
-              "display": "score"
-            }
-          ],
           "required": false
         },
         {
           "linkId": "2.2",
           "type": "integer",
           "text": "Integer 2",
-          "code": [
-            {
-              "system": "http://ehelse.no/Score",
-              "code": "score",
-              "display": "score"
-            }
-          ],
           "required": false
         },
         {
           "linkId": "2.3",
           "type": "integer",
-          "text": "Integer summeringsfelt for skåring",
-          "code": [
+          "text": "Integer summeringsfelt",
+          "required": false,
+          "extension": [
             {
-              "system": "http://ehelse.no/Score",
-              "code": "score",
-              "display": "score"
-            },
-            {
-              "system": "http://ehelse.no/scoringFormulas",
-              "code": "SS",
-              "display": "Section Score"
+              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-calculatedExpression",
+              "valueString": "QuestionnaireResponse.descendants().where(linkId='2.1').answer.value + QuestionnaireResponse.descendants().where(linkId='2.2').answer.value"
             }
           ],
-          "required": false,
           "readOnly": true
         }
-      ],
-      "required": false
+      ]
     },
     {
       "linkId": "3",
       "type": "group",
       "text": "Group Quantity (3)",
+      "required": false,
       "item": [
         {
           "linkId": "3.1",
@@ -194,13 +166,6 @@
                 "display": "centimeter",
                 "system": "http://unitsofmeasure.org"
               }
-            }
-          ],
-          "code": [
-            {
-              "system": "http://ehelse.no/Score",
-              "code": "score",
-              "display": "score"
             }
           ],
           "required": false
@@ -219,47 +184,32 @@
               }
             }
           ],
-          "code": [
-            {
-              "system": "http://ehelse.no/Score",
-              "code": "score",
-              "display": "score"
-            }
-          ],
           "required": false
         },
         {
           "linkId": "3.3",
           "type": "quantity",
           "text": "Seksjonssum",
-          "code": [
-            {
-              "system": "http://ehelse.no/Score",
-              "code": "score",
-              "display": "score"
-            },
-            {
-              "system": "http://ehelse.no/scoringFormulas",
-              "code": "SS",
-              "display": "SS"
-            }
-          ],
           "required": false,
           "readOnly": true,
-		  "extension": [
+          "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/maxDecimalPlaces",
               "valueInteger": 2
+            },
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-calculatedExpression",
+              "valueString": "QuestionnaireResponse.descendants().where(linkId='3.1').answer.value.value + QuestionnaireResponse.descendants().where(linkId='3.2').answer.value.value"
             }
           ]
         }
-      ],
-      "required": false
+      ]
     },
     {
       "linkId": "4",
       "type": "group",
       "text": "Group Choice (4)",
+      "required": false,
       "item": [
         {
           "linkId": "4.1",
@@ -289,12 +239,12 @@
           "answerOption": [
             {
               "valueCoding": {
-                 "extension": [
-                 {
-                   "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
-                   "valueDecimal": 50
-                 }
-               ],
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+                    "valueDecimal": 50
+                  }
+                ],
                 "code": "1",
                 "display": "Svært medtatt, vansker med å ta til deg væske eller næring"
               }
@@ -302,11 +252,11 @@
             {
               "valueCoding": {
                 "extension": [
-                 {
-                   "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
-                   "valueDecimal": 50
-                 }
-               ],
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+                    "valueDecimal": 50
+                  }
+                ],
                 "code": "50",
                 "display": "Alvorlige pustevansker"
               }
@@ -314,11 +264,11 @@
             {
               "valueCoding": {
                 "extension": [
-                 {
-                   "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
-                   "valueDecimal": 50
-                 }
-               ],
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+                    "valueDecimal": 50
+                  }
+                ],
                 "code": "3",
                 "display": "Brått fall i allmenntilstand"
               }
@@ -326,11 +276,11 @@
             {
               "valueCoding": {
                 "extension": [
-                 {
-                   "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
-                   "valueDecimal": 50
-                 }
-               ],
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+                    "valueDecimal": 50
+                  }
+                ],
                 "code": "4",
                 "display": "Petekkier (utslett som ikke lar seg avbleke)"
               }
@@ -338,11 +288,11 @@
             {
               "valueCoding": {
                 "extension": [
-                 {
-                   "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
-                   "valueDecimal": 50
-                 }
-               ],
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+                    "valueDecimal": 50
+                  }
+                ],
                 "code": "5",
                 "display": "Nyoppståtte brystsmerter"
               }
@@ -378,13 +328,13 @@
           "required": false,
           "readOnly": true
         }
-      ],
-      "required": false
+      ]
     },
     {
       "linkId": "5",
       "type": "group",
       "text": "Group Choice (5)",
+      "required": false,
       "item": [
         {
           "linkId": "5.1",
@@ -402,11 +352,11 @@
             {
               "valueCoding": {
                 "extension": [
-                 {
-                   "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
-                   "valueDecimal": 25
-                 }
-               ],
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+                    "valueDecimal": 25
+                  }
+                ],
                 "code": "1",
                 "display": "Astma"
               }
@@ -414,11 +364,11 @@
             {
               "valueCoding": {
                 "extension": [
-                 {
-                   "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
-                   "valueDecimal": 25
-                 }
-               ],
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+                    "valueDecimal": 25
+                  }
+                ],
                 "code": "2",
                 "display": "Kols"
               }
@@ -426,11 +376,11 @@
             {
               "valueCoding": {
                 "extension": [
-                 {
-                   "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
-                   "valueDecimal": 25
-                 }
-               ],
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+                    "valueDecimal": 25
+                  }
+                ],
                 "code": "3",
                 "display": "Annen lungesykdom"
               }
@@ -469,13 +419,13 @@
           "required": false,
           "readOnly": true
         }
-      ],
-      "required": false
+      ]
     },
     {
       "linkId": "6",
       "type": "group",
       "text": "Group Choice (6)",
+      "required": false,
       "item": [
         {
           "linkId": "6.1",
@@ -493,11 +443,11 @@
             {
               "valueCoding": {
                 "extension": [
-                 {
-                   "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
-                   "valueDecimal": 10
-                 }
-               ],
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+                    "valueDecimal": 10
+                  }
+                ],
                 "code": "1",
                 "display": "Feber"
               }
@@ -505,11 +455,11 @@
             {
               "valueCoding": {
                 "extension": [
-                 {
-                   "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
-                   "valueDecimal": 10
-                 }
-               ],
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+                    "valueDecimal": 10
+                  }
+                ],
                 "code": "2",
                 "display": "Tørrhoste"
               }
@@ -517,11 +467,11 @@
             {
               "valueCoding": {
                 "extension": [
-                 {
-                   "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
-                   "valueDecimal": 10
-                 }
-               ],
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+                    "valueDecimal": 10
+                  }
+                ],
                 "code": "3",
                 "display": "Tungpust"
               }
@@ -535,8 +485,7 @@
           "required": false,
           "readOnly": false
         }
-      ],
-      "required": false
+      ]
     },
     {
       "linkId": "7",
@@ -547,7 +496,7 @@
         {
           "linkId": "7.1",
           "type": "quantity",
-          "text": "Totalsum fra alle grupper, om det er seksjonsnummer som skal legges sammen",
+          "text": "Totalsum fra alle QS",
           "code": [
             {
               "system": "http://ehelse.no/Score",

@@ -184,10 +184,10 @@ describe('Component renders and calculates score', () => {
     ts = findItem('3.1', wrapper);
     expect(ts.props().value).toBe('2');
 
-    await selectRadioButtonOption('2.1', 4, wrapper);
+    await selectRadioButtonOption('2.1', 3, wrapper);
 
     ts = findItem('3.1', wrapper);
-    expect(ts.props().value).toBe('');
+    expect(ts.props().value).toBe('3');
   });
 
   it('total score and section score should be updated', async () => {
@@ -255,6 +255,9 @@ describe('Code Scoring', () => {
     const sectionScoreItem = wrapper.find(TextView);
     expect(sectionScoreItem.at(0).props().id).toBe('item_1.3');
     expect(sectionScoreItem.at(0).props().value).toBe(43.49);
+
+    expect(sectionScoreItem.at(1).props().id).toBe('item_1.4');
+    expect(sectionScoreItem.at(1).props().value).toBe(43);
   });
 
   it('Section scoring on integer grouping', async () => {
@@ -263,11 +266,11 @@ describe('Code Scoring', () => {
     wrapper.render();
 
     await inputAnswer('2.1', 42, wrapper);
-    await inputAnswer('2.2', 1, wrapper);
+    await inputAnswer('2.2', 2, wrapper);
 
     const sectionScoreItem = wrapper.find(TextView);
-    expect(sectionScoreItem.at(1).props().id).toBe('item_2.3');
-    expect(sectionScoreItem.at(1).props().value).toBe(43);
+    expect(sectionScoreItem.at(2).props().id).toBe('item_2.3');
+    expect(sectionScoreItem.at(2).props().value).toBe(44);
   });
 
   it('Section scoring on quantity grouping', async () => {
@@ -279,8 +282,8 @@ describe('Code Scoring', () => {
     await inputAnswer('3.2', 45.234, wrapper);
 
     const sectionScoreItem = wrapper.find(TextView);
-    expect(sectionScoreItem.at(2).props().id).toBe('item_3.3');
-    expect(sectionScoreItem.at(2).props().value).toBe("210.47 ");
+    expect(sectionScoreItem.at(3).props().id).toBe('item_3.3');
+    expect(sectionScoreItem.at(3).props().value).toBe("210.47 ");
   });
 
   
@@ -292,8 +295,8 @@ describe('Code Scoring', () => {
     await selectCheckBoxOption('4.1', '1', wrapper);
 
     const sectionScoreItem = wrapper.find(TextView);
-    expect(sectionScoreItem.at(3).props().id).toBe('item_4.2');
-    expect(sectionScoreItem.at(3).props().value).toBe("50 kilo");
+    expect(sectionScoreItem.at(4).props().id).toBe('item_4.2');
+    expect(sectionScoreItem.at(4).props().value).toBe("50 kilo");
   });
 
   it('Section scoring on multiple choice grouping, with section scoring quantity extention kilo. Select multiple', async () => {
@@ -305,8 +308,8 @@ describe('Code Scoring', () => {
     await selectCheckBoxOption('4.1', '3', wrapper);
 
     const sectionScoreItem = wrapper.find(TextView);
-    expect(sectionScoreItem.at(3).props().id).toBe('item_4.2');
-    expect(sectionScoreItem.at(3).props().value).toBe("100 kilo");
+    expect(sectionScoreItem.at(4).props().id).toBe('item_4.2');
+    expect(sectionScoreItem.at(4).props().value).toBe("100 kilo");
   });
 
   it('Section scoring on multiple choice grouping, with section scoring quantity without extension. Select multiple', async () => {
@@ -318,24 +321,21 @@ describe('Code Scoring', () => {
     await selectCheckBoxOption('5.1', '2', wrapper);
 
     const sectionScoreItem = wrapper.find(TextView);
-    expect(sectionScoreItem.at(4).props().id).toBe('item_5.2');
-    expect(sectionScoreItem.at(4).props().value).toBe("50 ");
+    expect(sectionScoreItem.at(5).props().id).toBe('item_5.2');
+    expect(sectionScoreItem.at(5).props().value).toBe("50 ");
   });
 
-  it('Total scoring', async () => {
+  it('Total QS scoring', async () => {
     var model: Questionnaire = cloneQuestionnaire(CodeScoreDataModel);
     const wrapper = createWrapper(model);
     wrapper.render();
 
-    await inputAnswer('1.1', 42.451, wrapper);
-    await inputAnswer('2.2', 1, wrapper);
-    await inputAnswer('3.2', 45.234, wrapper);
     await selectCheckBoxOption('5.1', '1', wrapper);
     await selectRadioButtonOption('6.1', 2, wrapper);
 
     const sectionScoreItem = wrapper.find(TextView);
-    expect(sectionScoreItem.at(5).props().id).toBe('item_7.1');
-    expect(sectionScoreItem.at(5).props().value).toBe("123.685 ");
+    expect(sectionScoreItem.at(6).props().id).toBe('item_7.1');
+    expect(sectionScoreItem.at(6).props().value).toBe("35 ");
   });
 });
 

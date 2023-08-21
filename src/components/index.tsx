@@ -9,14 +9,13 @@ import {
   QuestionnaireResponse,
   QuestionnaireItem,
   QuestionnaireResponseItemAnswer,
-  Quantity,
 } from '../types/fhir';
 import { ReferoProps } from '../types/referoProps';
 import { State } from '../types/state';
 import { DispatchProps } from '../types/dispatchProps';
 
 import { setSkjemaDefinition } from '../actions/form';
-import { NewValueAction, newQuantityValue } from '../actions/newValue';
+import { NewValueAction } from '../actions/newValue';
 import RepeatButton from '../components/formcomponents/repeat/repeat-button';
 import RenderForm from './renderForm';
 import StepView from './stepView';
@@ -28,15 +27,13 @@ import { getFormDefinition, getFormData } from '../reducers/form';
 import { FormDefinition, FormData } from '../reducers/form';
 import { ActionRequester } from '../util/actionRequester';
 import {
-  getQuestionnaireUnitExtensionValue,
   getPresentationButtonsExtension,
   getNavigatorExtension,
 } from '../util/extension';
 import { IE11HackToWorkAroundBug187484 } from '../util/hacks';
-import { getComponentForItem, shouldRenderRepeatButton, isHiddenItem, getDecimalValue } from '../util/index';
+import { getComponentForItem, shouldRenderRepeatButton, isHiddenItem } from '../util/index';
 import { QuestionniareInspector } from '../util/questionnaireInspector';
 import { RenderContext } from '../util/renderContext';
-import { ScoringCalculator } from '../util/scoringCalculator';
 import {
   getRootQuestionnaireResponseItemFromData,
   Path,
@@ -44,8 +41,6 @@ import {
   getAnswerFromResponseItem,
   shouldRenderDeleteButton,
   createIdSuffix,
-  getQuestionnaireDefinitionItem,
-  getResponseItemAndPathWithLinkId,
 } from '../util/refero-core';
 import { shouldFormBeDisplayedAsStepView } from '../util/shouldFormBeDisplayedAsStepView';
 import { getTopLevelElements } from '../util/getTopLevelElements';
@@ -56,7 +51,6 @@ interface StateProps {
 }
 
 class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, State> {
-  scoringCalculator: ScoringCalculator | undefined;
 
   constructor(props: StateProps & DispatchProps & ReferoProps) {
     super(props);
@@ -115,50 +109,6 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
       for (const action of actionRequester.getActions()) {
         this.props.dispatch(action);
       }
-    }
-
-    this.runScoringCalculator(newState);
-  };
-
-  runScoringCalculator = (newState: GlobalState): void => {
-    if (!this.scoringCalculator && this.props.formDefinition?.Content) {
-      this.scoringCalculator = new ScoringCalculator(this.props.formDefinition.Content);
-    }
-
-    if (!this.scoringCalculator || !newState.refero?.form?.FormData?.Content || !newState.refero?.form?.FormDefinition?.Content) {
-      return;
-    }
-
-    const scores = this.scoringCalculator.calculate(newState.refero.form.FormData.Content);
-    const actions: Array<NewValueAction> = [];
-    for (const linkId in scores) {
-      const templateItem = this.scoringCalculator.getCachedTotalOrSectionItem(linkId);
-      if (!templateItem) continue;
-
-      const extension = getQuestionnaireUnitExtensionValue(templateItem);
-      if (!extension) continue;
-
-      const quantity = {
-        unit: extension.display,
-        system: extension.system,
-        code: extension.code,
-      } as Quantity;
-
-      const item = getQuestionnaireDefinitionItem(linkId, newState.refero.form.FormDefinition.Content?.item);
-      const itemsAndPaths = getResponseItemAndPathWithLinkId(linkId, newState.refero.form.FormData.Content);
-
-      let value = scores[linkId];
-      if (item && value != null && !isNaN(value) && isFinite(value)) {
-        quantity.value = getDecimalValue(item, value);
-      }
-
-      for (const itemAndPath of itemsAndPaths) {
-        actions.push(newQuantityValue(itemAndPath.path, quantity, item));
-      }
-    }
-
-    for (const a of actions) {
-      this.props.dispatch(a);
     }
   };
 
@@ -244,7 +194,7 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
               onRenderMarkdown={this.props.onRenderMarkdown}
               fetchValueSet={this.props.fetchValueSet}
               autoSuggestProps={this.props.autoSuggestProps}
-              fetchReceivers={this.props.fetchReceivers}
+              fetchReceivers={this.props.fetchReceivers}              
             />
           );
         });

@@ -100,7 +100,7 @@ export class ScoringCalculator {
       return newRetVal;
     }
 
-    if (this.isOfTypeQuestionnaireItem(qItem)) {      
+    if (this.isOfTypeQuestionnaireItem(qItem)) {
       const type = scoringItemType(qItem);
       if (type === ScoringItemType.SECTION_SCORE) {
         // A section score item, only return self, as it doesn't have any children
@@ -116,7 +116,7 @@ export class ScoringCalculator {
         return newRetVal;
       }
 
-      if (type === ScoringItemType.QUESTION_SCORE || type === ScoringItemType.QUESTION_FHIRPATH_SCORE || hasItemScoreCoding(qItem) ) {
+      if (type === ScoringItemType.QUESTION_SCORE || type === ScoringItemType.QUESTION_FHIRPATH_SCORE ) {
         const newRetVal = new CalculatedScores();
         newRetVal.questionScores.push(qItem, ...retVal.questionScores);
 
