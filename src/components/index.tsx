@@ -115,7 +115,7 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
         this.props.dispatch(action);
       }
     }
-  
+
     this.runScoringCalculator(newState);
   };
 
