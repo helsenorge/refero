@@ -134,35 +134,36 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
       const item = getQuestionnaireDefinitionItem(linkId, newState.refero.form.FormDefinition.Content?.item);
       if (!item) continue;
       const itemsAndPaths = getResponseItemAndPathWithLinkId(linkId, newState.refero.form.FormData.Content);
-      let value = scores[linkId];
+      const value = scores[linkId];
 
-      if (value && item) {
+      if (value) {
         switch (item.type) {
           case ItemType.QUANTITY: {
             const extension = getQuestionnaireUnitExtensionValue(item);
             if (!extension) continue;
-      
+
             const quantity = {
               unit: extension.display,
               system: extension.system,
               code: extension.code,
-              value: getDecimalValue(item, value)
+              value: getDecimalValue(item, value),
             } as Quantity;
-    
             for (const itemAndPath of itemsAndPaths) {
               actions.push(newQuantityValue(itemAndPath.path, quantity, item));
             }
             break;
           }
           case ItemType.DECIMAL: {
+            const decimalValue = getDecimalValue(item, value);
             for (const itemAndPath of itemsAndPaths) {
-              actions.push(newDecimalValue(itemAndPath.path, getDecimalValue(item, value), item));
+              actions.push(newDecimalValue(itemAndPath.path, decimalValue, item));
             }
             break;
           }
           case ItemType.INTEGER: {
+            const intValue = Math.floor(value);
             for (const itemAndPath of itemsAndPaths) {
-              actions.push(newIntegerValue(itemAndPath.path, Math.floor(value), item));
+              actions.push(newIntegerValue(itemAndPath.path, intValue, item));
             }
             break;
           }
