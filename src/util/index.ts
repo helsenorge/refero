@@ -353,16 +353,17 @@ export function getDecimalPattern(item: QuestionnaireItem): string | undefined {
   }
 }
 
+export function getDecimalValue(item: QuestionnaireItem, value: number | undefined): number | undefined {
+  const decimalPlacesExtension = getExtension(ExtensionConstants.STEP_URL, item);
+  if (value && decimalPlacesExtension && decimalPlacesExtension.valueInteger != null) {
+    const places = Number(decimalPlacesExtension.valueInteger);
+    return Number(value.toFixed(places));
+  }
+  return value;
+}
+
 export function isIE11(): boolean {
   // tslint:disable-next-line:no-string-literal
   return !!window['MSInputMethodContext'] && !!document['documentMode'];
 }
 
-export function getDecimalValue(item: QuestionnaireItem, value: number): number {
-  const decimalPlacesExtension = getExtension(ExtensionConstants.STEP_URL, item);
-  if (decimalPlacesExtension && decimalPlacesExtension.valueInteger != null) {
-    const places = Number(decimalPlacesExtension.valueInteger);
-    return Number(value?.toFixed(places));
-  }
-  return value;
-}

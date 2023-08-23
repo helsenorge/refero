@@ -9,12 +9,9 @@ import {
 import ExtensionConstants from '../constants/extensions';
 import { ScoringItemType } from '../constants/scoringItemType';
 import { getExtension, getCalculatedExpressionExtension } from './extension';
-import r4 from './fhirpathLoaderHelper';
 import { createDummySectionScoreItem, scoringItemType } from './scoring';
 import { getQuestionnaireResponseItemsWithLinkId } from './refero-core';
-
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const fhirpath = require('fhirpath');
+import { evaluateFhirpathExpressionToGetString } from './fhirpathHelper';
 
 class CalculatedScores {
   totalScores: Array<QuestionnaireItem> = [];
@@ -116,7 +113,7 @@ export class ScoringCalculator {
         return newRetVal;
       }
 
-      if (type === ScoringItemType.QUESTION_SCORE || type === ScoringItemType.QUESTION_FHIRPATH_SCORE ) {
+      if (type === ScoringItemType.QUESTION_SCORE || type === ScoringItemType.QUESTION_FHIRPATH_SCORE) {
         const newRetVal = new CalculatedScores();
         newRetVal.questionScores.push(qItem, ...retVal.questionScores);
 
@@ -190,7 +187,7 @@ export class ScoringCalculator {
       case ScoringItemType.QUESTION_FHIRPATH_SCORE:
         return this.valueOfQuestionFhirpathScoreItem(item, questionnaireResponse, answerPad);
       default:
-        return this.valueOfScoreItem(item, questionnaireResponse);
+        return;
     }
   }
 
@@ -202,7 +199,7 @@ export class ScoringCalculator {
     const expressionExtension = getCalculatedExpressionExtension(item);
     let value: number | undefined = undefined;
     if (expressionExtension) {
-      const result = fhirpath.evaluate(questionnaireResponse, expressionExtension.valueString, null, r4);
+      const result = evaluateFhirpathExpressionToGetString(questionnaireResponse, expressionExtension);
       if (result.length) {
         value = (result[0] as number) ?? 0;
         if (isNaN(value) || !isFinite(value)) {
@@ -210,7 +207,7 @@ export class ScoringCalculator {
         }
       }
     }
-
+  
     // value will become the new answer for this linkId
     answerPad[item.linkId] = value;
 
@@ -228,25 +225,6 @@ export class ScoringCalculator {
         const option = this.getAnswerMatch(answer, item);
         if (option) {
           sum += this.getOptionScore(option);
-          hasCalculatedAtLeastOneAnswer = true;
-        }
-      }
-    }
-
-    return hasCalculatedAtLeastOneAnswer ? sum : undefined;
-  }
-
-  private valueOfScoreItem(item: QuestionnaireItem, questionnaireResponse: QuestionnaireResponse): number | undefined {
-    let sum: number = 0;
-    let hasCalculatedAtLeastOneAnswer = false;
-    const qrItems = getQuestionnaireResponseItemsWithLinkId(item.linkId, questionnaireResponse.item || [], true);
-    for (const qrItem of qrItems) {
-      if (!qrItem.answer) continue;
-
-      for (const answer of qrItem.answer) {
-        const itemAnswer = answer.valueDecimal || answer.valueInteger || answer.valueQuantity?.value;
-        if (itemAnswer) {
-          sum += itemAnswer;
           hasCalculatedAtLeastOneAnswer = true;
         }
       }

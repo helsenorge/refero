@@ -56,7 +56,6 @@ interface StateProps {
 }
 
 class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, State> {
-  scoringCalculator: ScoringCalculator | undefined;
   constructor(props: StateProps & DispatchProps & ReferoProps) {
     super(props);
 
@@ -120,55 +119,51 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
   };
 
   runScoringCalculator = (newState: GlobalState): void => {
-    if (!this.scoringCalculator && this.props.formDefinition?.Content) {
-      this.scoringCalculator = new ScoringCalculator(this.props.formDefinition.Content);
-    }
+    const questionnaireResponse = newState.refero?.form?.FormData?.Content;
+    const questionnaire = newState.refero.form.FormDefinition?.Content;
+    if (!questionnaire || !questionnaireResponse) return;
 
-    if (!this.scoringCalculator || !newState.refero?.form?.FormData?.Content || !newState.refero?.form?.FormDefinition?.Content) {
-      return;
-    }
+    const scoringCalculator = new ScoringCalculator(questionnaire);
+    const scores = scoringCalculator.calculate(questionnaireResponse);
 
-    const scores = this.scoringCalculator.calculate(newState.refero.form.FormData.Content);
     const actions: Array<NewValueAction> = [];
     for (const linkId in scores) {
-      const item = getQuestionnaireDefinitionItem(linkId, newState.refero.form.FormDefinition.Content?.item);
+      const item = getQuestionnaireDefinitionItem(linkId, questionnaire.item);
       if (!item) continue;
-      const itemsAndPaths = getResponseItemAndPathWithLinkId(linkId, newState.refero.form.FormData.Content);
+      const itemsAndPaths = getResponseItemAndPathWithLinkId(linkId, questionnaireResponse);
       const value = scores[linkId];
 
-      if (value) {
-        switch (item.type) {
-          case ItemType.QUANTITY: {
-            const extension = getQuestionnaireUnitExtensionValue(item);
-            if (!extension) continue;
+      switch (item.type) {
+        case ItemType.QUANTITY: {
+          const extension = getQuestionnaireUnitExtensionValue(item);
+          if (!extension) continue;
 
-            const quantity = {
-              unit: extension.display,
-              system: extension.system,
-              code: extension.code,
-              value: getDecimalValue(item, value),
-            } as Quantity;
-            for (const itemAndPath of itemsAndPaths) {
-              actions.push(newQuantityValue(itemAndPath.path, quantity, item));
-            }
-            break;
+          const quantity = {
+            unit: extension.display,
+            system: extension.system,
+            code: extension.code,
+            value: getDecimalValue(item, value),
+          } as Quantity;
+          for (const itemAndPath of itemsAndPaths) {
+            actions.push(newQuantityValue(itemAndPath.path, quantity, item));
           }
-          case ItemType.DECIMAL: {
-            const decimalValue = getDecimalValue(item, value);
-            for (const itemAndPath of itemsAndPaths) {
-              actions.push(newDecimalValue(itemAndPath.path, decimalValue, item));
-            }
-            break;
-          }
-          case ItemType.INTEGER: {
-            const intValue = Math.floor(value);
-            for (const itemAndPath of itemsAndPaths) {
-              actions.push(newIntegerValue(itemAndPath.path, intValue, item));
-            }
-            break;
-          }
+          break;
         }
-      }
+        case ItemType.DECIMAL: {
+          const decimalValue = getDecimalValue(item, value);
+          for (const itemAndPath of itemsAndPaths) {
+            actions.push(newDecimalValue(itemAndPath.path, decimalValue, item));
+          }
+          break;
+        }
+        case ItemType.INTEGER: {
+          const intValue = value ? Math.floor(value) : undefined;
+          for (const itemAndPath of itemsAndPaths) {
+            actions.push(newIntegerValue(itemAndPath.path, intValue, item));
+          }
+          break;
+        }
+      }    
     }
 
     for (const a of actions) {
