@@ -156,8 +156,8 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
           }
           break;
         }
-        case ItemType.INTEGER: {
-          const intValue = value ? Math.floor(value) : undefined;
+        case ItemType.INTEGER: {          
+          const intValue = value !== undefined ? Math.floor(value) : undefined;
           for (const itemAndPath of itemsAndPaths) {
             actions.push(newIntegerValue(itemAndPath.path, intValue, item));
           }
