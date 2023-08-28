@@ -1,6 +1,6 @@
 {
   "name": "@helsenorge/refero",
-  "version": "13.1.0-beta06",
+  "version": "13.1.0-beta07",
   "engines": {
     "node": "^18.0.0",
     "npm": ">=9.0.0"

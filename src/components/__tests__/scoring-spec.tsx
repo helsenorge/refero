@@ -244,7 +244,7 @@ describe('Component renders and calculates score', () => {
 });
 
 describe('Code Scoring', () => {
-  it('Section scoring on decimal grouping with limit 2 digit in decimal', async () => {
+  it('Section scoring on decimal grouping with limit 2 digit in decimal. Round decimal to integer less than 5', async () => {
     var model: Questionnaire = cloneQuestionnaire(CodeScoreDataModel);
     const wrapper = createWrapper(model);
     wrapper.render();
@@ -258,6 +258,22 @@ describe('Code Scoring', () => {
 
     expect(sectionScoreItem.at(1).props().id).toBe('item_1.4');
     expect(sectionScoreItem.at(1).props().value).toBe(43);
+  });
+
+  it('Section scoring on decimal grouping with limit 2 digit in decimal. Round decimal to integer more than 5', async () => {
+    var model: Questionnaire = cloneQuestionnaire(CodeScoreDataModel);
+    const wrapper = createWrapper(model);
+    wrapper.render();
+
+    await inputAnswer('1.1', 42.551, wrapper);
+    await inputAnswer('1.2', 1.041, wrapper);
+
+    const sectionScoreItem = wrapper.find(TextView);
+    expect(sectionScoreItem.at(0).props().id).toBe('item_1.3');
+    expect(sectionScoreItem.at(0).props().value).toBe(43.59);
+
+    expect(sectionScoreItem.at(1).props().id).toBe('item_1.4');
+    expect(sectionScoreItem.at(1).props().value).toBe(44);
   });
 
   it('Section scoring on integer grouping', async () => {

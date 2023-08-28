@@ -12,6 +12,7 @@ import { getExtension, getCalculatedExpressionExtension } from './extension';
 import { createDummySectionScoreItem, scoringItemType } from './scoring';
 import { getQuestionnaireResponseItemsWithLinkId } from './refero-core';
 import { evaluateFhirpathExpressionToGetString } from './fhirpathHelper';
+import itemType from '../constants/itemType';
 
 class CalculatedScores {
   totalScores: Array<QuestionnaireItem> = [];
@@ -202,6 +203,8 @@ export class ScoringCalculator {
       const result = evaluateFhirpathExpressionToGetString(questionnaireResponse, expressionExtension);
       if (result.length) {
         value = (result[0] as number) ?? 0;
+        // Round up decimal to integer
+        value = item.type === itemType.INTEGER ? Math.round(value) : value;
         if (isNaN(value) || !isFinite(value)) {
           value = undefined;
         }
