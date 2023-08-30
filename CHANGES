@@ -1,3 +1,10 @@
+## 13.1.0
+
+---
+
+- Total Score, Seciton Score and BMI calculator can be displayed not only in fields with Quantity type,
+  but also can be displayed in fields with Decimal and Integer types
+
 ## 13.0.0
 
 ---
