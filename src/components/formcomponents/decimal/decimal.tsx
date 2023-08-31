@@ -49,7 +49,7 @@ class Decimal extends React.Component<Props & ValidationProps, {}> {
     if (answer && Array.isArray(answer)) {
       return answer.map(m => m.valueDecimal);
     }
-    if (answer && answer.valueDecimal) {
+    if (answer && answer.valueDecimal !== undefined && answer.valueDecimal !== null) {
       return answer.valueDecimal;
     }
     if (!item || !item.initial || item.initial.length === 0 || !item.initial[0].valueDecimal) {
@@ -59,7 +59,7 @@ class Decimal extends React.Component<Props & ValidationProps, {}> {
 
   getPDFValue(): string | number {
     const value = this.getValue();
-    if (!value) {
+    if (value === undefined || value === null || value === '') {
       let text = '';
       if (this.props.resources && this.props.resources.ikkeBesvart) {
         text = this.props.resources.ikkeBesvart;

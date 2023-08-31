@@ -9,12 +9,10 @@ import {
 import ExtensionConstants from '../constants/extensions';
 import { ScoringItemType } from '../constants/scoringItemType';
 import { getExtension, getCalculatedExpressionExtension } from './extension';
-import r4 from './fhirpathLoaderHelper';
 import { createDummySectionScoreItem, scoringItemType } from './scoring';
 import { getQuestionnaireResponseItemsWithLinkId } from './refero-core';
-
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const fhirpath = require('fhirpath');
+import { evaluateFhirpathExpressionToGetString } from './fhirpathHelper';
+import itemType from '../constants/itemType';
 
 class CalculatedScores {
   totalScores: Array<QuestionnaireItem> = [];
@@ -202,9 +200,11 @@ export class ScoringCalculator {
     const expressionExtension = getCalculatedExpressionExtension(item);
     let value: number | undefined = undefined;
     if (expressionExtension) {
-      const result = fhirpath.evaluate(questionnaireResponse, expressionExtension.valueString, null, r4);
+      const result = evaluateFhirpathExpressionToGetString(questionnaireResponse, expressionExtension);
       if (result.length) {
         value = (result[0] as number) ?? 0;
+        // Round up decimal to integer
+        value = item.type === itemType.INTEGER ? Math.round(value) : value;
         if (isNaN(value) || !isFinite(value)) {
           value = undefined;
         }

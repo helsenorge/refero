@@ -36,7 +36,6 @@ import {
   getCopyExtension,
 } from './extension';
 import { getQuestionnaireItemCodeValue } from './codingsystem';
-import itemcontrol from '../constants/itemcontrol';
 import marked from 'marked';
 
 function openNewIfAbsolute(url: string): string {
@@ -352,6 +351,15 @@ export function getDecimalPattern(item: QuestionnaireItem): string | undefined {
 
     return `^${integerPart}(.[0-9]{${stepString}})?$`;
   }
+}
+
+export function getDecimalValue(item: QuestionnaireItem, value: number | undefined): number | undefined {
+  const decimalPlacesExtension = getExtension(ExtensionConstants.STEP_URL, item);
+  if (value && decimalPlacesExtension && decimalPlacesExtension.valueInteger != null) {
+    const places = Number(decimalPlacesExtension.valueInteger);
+    return Number(value.toFixed(places));
+  }
+  return value;
 }
 
 export function isIE11(): boolean {
