@@ -10,6 +10,7 @@ import ChoiceCheckBoxDataModel from './__data__/scoring/choice-check-box';
 import OpenChoiceDataModel from './__data__/scoring/open-choice';
 import SectionScoreDataModel from './__data__/scoring/section-score';
 import FhirpathScoreDataModel from './__data__/scoring/fhirpath-score';
+import CodeScoreDataModel from './__data__/scoring/code-scoring';
 import { Questionnaire } from '../../types/fhir';
 import rootReducer from '../../reducers';
 import { Resources } from '../../util/resources';
@@ -23,6 +24,7 @@ import {
   findItem,
   findQuestionnaireItem,
 } from './utils';
+import TextView from '../formcomponents/textview';
 
 describe('Component renders and calculates score', () => {
   beforeEach(() => {
@@ -44,6 +46,9 @@ describe('Component renders and calculates score', () => {
 
     let fhirpathItem = findItem('4', wrapper);
     expect(fhirpathItem.props().value).toBe('42');
+
+    let totalScoreItem = findItem('5', wrapper);
+    expect(totalScoreItem.props().value).toBe('42');
   });
 
   it('fhirpath score should be updated when integer questions are answered', async () => {
@@ -179,10 +184,10 @@ describe('Component renders and calculates score', () => {
     ts = findItem('3.1', wrapper);
     expect(ts.props().value).toBe('2');
 
-    await selectRadioButtonOption('2.1', 4, wrapper);
+    await selectRadioButtonOption('2.1', 3, wrapper);
 
     ts = findItem('3.1', wrapper);
-    expect(ts.props().value).toBe('');
+    expect(ts.props().value).toBe('3');
   });
 
   it('total score and section score should be updated', async () => {
@@ -235,6 +240,117 @@ describe('Component renders and calculates score', () => {
     expectedScores.sectionscore_213 = '12';
     expectedScores.totalscore_31 = '26';
     expectScores(expectedScores, wrapper);
+  });
+});
+
+describe('Code Scoring', () => {
+  it('Section scoring on decimal grouping with limit 2 digit in decimal. Round decimal to integer less than 5', async () => {
+    var model: Questionnaire = cloneQuestionnaire(CodeScoreDataModel);
+    const wrapper = createWrapper(model);
+    wrapper.render();
+
+    await inputAnswer('1.1', 42.451, wrapper);
+    await inputAnswer('1.2', 1.041, wrapper);
+
+    const sectionScoreItem = wrapper.find(TextView);
+    expect(sectionScoreItem.at(0).props().id).toBe('item_1.3');
+    expect(sectionScoreItem.at(0).props().value).toBe(43.49);
+
+    expect(sectionScoreItem.at(1).props().id).toBe('item_1.4');
+    expect(sectionScoreItem.at(1).props().value).toBe(43);
+  });
+
+  it('Section scoring on decimal grouping with limit 2 digit in decimal. Round decimal to integer more than 5', async () => {
+    var model: Questionnaire = cloneQuestionnaire(CodeScoreDataModel);
+    const wrapper = createWrapper(model);
+    wrapper.render();
+
+    await inputAnswer('1.1', 42.551, wrapper);
+    await inputAnswer('1.2', 1.041, wrapper);
+
+    const sectionScoreItem = wrapper.find(TextView);
+    expect(sectionScoreItem.at(0).props().id).toBe('item_1.3');
+    expect(sectionScoreItem.at(0).props().value).toBe(43.59);
+
+    expect(sectionScoreItem.at(1).props().id).toBe('item_1.4');
+    expect(sectionScoreItem.at(1).props().value).toBe(44);
+  });
+
+  it('Section scoring on integer grouping', async () => {
+    var model: Questionnaire = cloneQuestionnaire(CodeScoreDataModel);
+    const wrapper = createWrapper(model);
+    wrapper.render();
+
+    await inputAnswer('2.1', 42, wrapper);
+    await inputAnswer('2.2', 2, wrapper);
+
+    const sectionScoreItem = wrapper.find(TextView);
+    expect(sectionScoreItem.at(2).props().id).toBe('item_2.3');
+    expect(sectionScoreItem.at(2).props().value).toBe(44);
+  });
+
+  it('Section scoring on quantity grouping', async () => {
+    var model: Questionnaire = cloneQuestionnaire(CodeScoreDataModel);
+    const wrapper = createWrapper(model);
+    wrapper.render();
+
+    await inputAnswer('3.1', 165.234, wrapper);
+    await inputAnswer('3.2', 45.234, wrapper);
+
+    const sectionScoreItem = wrapper.find(TextView);
+    expect(sectionScoreItem.at(3).props().id).toBe('item_3.3');
+    expect(sectionScoreItem.at(3).props().value).toBe("210.47 centimeter");
+  });
+
+  it('Section scoring on multiple choice grouping, with section scoring quantity extention kilo. Select one', async () => {
+    var model: Questionnaire = cloneQuestionnaire(CodeScoreDataModel);
+    const wrapper = createWrapper(model);
+    wrapper.render();
+
+    await selectCheckBoxOption('4.1', '1', wrapper);
+
+    const sectionScoreItem = wrapper.find(TextView);
+    expect(sectionScoreItem.at(4).props().id).toBe('item_4.2');
+    expect(sectionScoreItem.at(4).props().value).toBe("50 kilo");
+  });
+
+  it('Section scoring on multiple choice grouping, with section scoring quantity extention kilo. Select multiple', async () => {
+    var model: Questionnaire = cloneQuestionnaire(CodeScoreDataModel);
+    const wrapper = createWrapper(model);
+    wrapper.render();
+
+    await selectCheckBoxOption('4.1', '1', wrapper);
+    await selectCheckBoxOption('4.1', '3', wrapper);
+
+    const sectionScoreItem = wrapper.find(TextView);
+    expect(sectionScoreItem.at(4).props().id).toBe('item_4.2');
+    expect(sectionScoreItem.at(4).props().value).toBe("100 kilo");
+  });
+
+  it('Section scoring on multiple choice grouping, with section scoring quantity without extension. Select multiple', async () => {
+    var model: Questionnaire = cloneQuestionnaire(CodeScoreDataModel);
+    const wrapper = createWrapper(model);
+    wrapper.render();
+
+    await selectCheckBoxOption('5.1', '1', wrapper);
+    await selectCheckBoxOption('5.1', '2', wrapper);
+
+    const sectionScoreItem = wrapper.find(TextView);
+    expect(sectionScoreItem.at(5).props().id).toBe('item_5.2');
+    expect(sectionScoreItem.at(5).props().value).toBe("50 score");
+  });
+
+  it('Total QS scoring', async () => {
+    var model: Questionnaire = cloneQuestionnaire(CodeScoreDataModel);
+    const wrapper = createWrapper(model);
+    wrapper.render();
+
+    await selectCheckBoxOption('5.1', '1', wrapper);
+    await selectRadioButtonOption('6.1', 2, wrapper);
+
+    const sectionScoreItem = wrapper.find(TextView);
+    expect(sectionScoreItem.at(6).props().id).toBe('item_7.1');
+    expect(sectionScoreItem.at(6).props().value).toBe("35 score");
   });
 });
 

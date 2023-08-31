@@ -5,4 +5,6 @@ export default {
     SECTION_SCORE: 'SS',
     TOTAL_SCORE: 'TS',
   },
+  SCORING: 'http://ehelse.no/Score',
+  SCORING_CODE: 'score',
 };

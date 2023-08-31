@@ -16,11 +16,10 @@ import { State } from '../types/state';
 import { DispatchProps } from '../types/dispatchProps';
 
 import { setSkjemaDefinition } from '../actions/form';
-import { NewValueAction, newQuantityValue } from '../actions/newValue';
+import { NewValueAction, newQuantityValue, newDecimalValue, newIntegerValue } from '../actions/newValue';
 import RepeatButton from '../components/formcomponents/repeat/repeat-button';
 import RenderForm from './renderForm';
 import StepView from './stepView';
-import ExtensionConstants from '../constants/extensions';
 import Constants, { NAVIGATOR_BLINDZONE_ID } from '../constants/index';
 import ItemType from '../constants/itemType';
 import { PresentationButtonsType } from '../constants/presentationButtonsType';
@@ -30,12 +29,11 @@ import { FormDefinition, FormData } from '../reducers/form';
 import { ActionRequester } from '../util/actionRequester';
 import {
   getQuestionnaireUnitExtensionValue,
-  getExtension,
   getPresentationButtonsExtension,
   getNavigatorExtension,
 } from '../util/extension';
+import { getComponentForItem, shouldRenderRepeatButton, isHiddenItem, getDecimalValue } from '../util/index';
 import { IE11HackToWorkAroundBug187484 } from '../util/hacks';
-import { getComponentForItem, shouldRenderRepeatButton, isHiddenItem } from '../util/index';
 import { QuestionniareInspector } from '../util/questionnaireInspector';
 import { RenderContext } from '../util/renderContext';
 import { ScoringCalculator } from '../util/scoringCalculator';
@@ -58,8 +56,6 @@ interface StateProps {
 }
 
 class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, State> {
-  scoringCalculator: ScoringCalculator | undefined;
-
   constructor(props: StateProps & DispatchProps & ReferoProps) {
     super(props);
 
@@ -123,46 +119,51 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
   };
 
   runScoringCalculator = (newState: GlobalState): void => {
-    if (!this.scoringCalculator && this.props.formDefinition?.Content) {
-      this.scoringCalculator = new ScoringCalculator(this.props.formDefinition.Content);
-    }
+    const questionnaireResponse = newState.refero?.form?.FormData?.Content;
+    const questionnaire = newState.refero.form.FormDefinition?.Content;
+    if (!questionnaire || !questionnaireResponse) return;
 
-    if (!this.scoringCalculator || !newState.refero?.form?.FormData?.Content || !newState.refero?.form?.FormDefinition?.Content) {
-      return;
-    }
+    const scoringCalculator = new ScoringCalculator(questionnaire);
+    const scores = scoringCalculator.calculate(questionnaireResponse);
 
-    const scores = this.scoringCalculator.calculate(newState.refero.form.FormData.Content);
     const actions: Array<NewValueAction> = [];
     for (const linkId in scores) {
-      const templateItem = this.scoringCalculator.getCachedTotalOrSectionItem(linkId);
-      if (!templateItem) continue;
+      const item = getQuestionnaireDefinitionItem(linkId, questionnaire.item);
+      if (!item) continue;
+      const itemsAndPaths = getResponseItemAndPathWithLinkId(linkId, questionnaireResponse);
+      const value = scores[linkId];
 
-      const extension = getQuestionnaireUnitExtensionValue(templateItem);
-      if (!extension) continue;
+      switch (item.type) {
+        case ItemType.QUANTITY: {
+          const extension = getQuestionnaireUnitExtensionValue(item);
+          if (!extension) continue;
 
-      const quantity = {
-        unit: extension.display,
-        system: extension.system,
-        code: extension.code,
-      } as Quantity;
-
-      const item = getQuestionnaireDefinitionItem(linkId, newState.refero.form.FormDefinition.Content?.item);
-      const itemsAndPaths = getResponseItemAndPathWithLinkId(linkId, newState.refero.form.FormData.Content);
-
-      let value = scores[linkId];
-      if (item && value != null && !isNaN(value) && isFinite(value)) {
-        const decimalPlacesExtension = getExtension(ExtensionConstants.STEP_URL, item);
-        if (decimalPlacesExtension && decimalPlacesExtension.valueInteger != null) {
-          const places = Number(decimalPlacesExtension.valueInteger);
-          value = Number(value?.toFixed(places));
+          const quantity = {
+            unit: extension.display,
+            system: extension.system,
+            code: extension.code,
+            value: getDecimalValue(item, value),
+          } as Quantity;
+          for (const itemAndPath of itemsAndPaths) {
+            actions.push(newQuantityValue(itemAndPath.path, quantity, item));
+          }
+          break;
         }
-
-        quantity.value = value;
-      }
-
-      for (const itemAndPath of itemsAndPaths) {
-        actions.push(newQuantityValue(itemAndPath.path, quantity, item));
-      }
+        case ItemType.DECIMAL: {
+          const decimalValue = getDecimalValue(item, value);
+          for (const itemAndPath of itemsAndPaths) {
+            actions.push(newDecimalValue(itemAndPath.path, decimalValue, item));
+          }
+          break;
+        }
+        case ItemType.INTEGER: {          
+          const intValue = value !== undefined ? Math.round(value) : undefined;
+          for (const itemAndPath of itemsAndPaths) {
+            actions.push(newIntegerValue(itemAndPath.path, intValue, item));
+          }
+          break;
+        }
+      }    
     }
 
     for (const a of actions) {

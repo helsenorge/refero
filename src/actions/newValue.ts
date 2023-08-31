@@ -193,7 +193,7 @@ export function removeCodingValueAsync(itemPath: Array<Path>, value: Coding, ite
   };
 }
 
-export function newDecimalValue(itemPath: Array<Path>, value: number, item: QuestionnaireItem | undefined): NewValueAction {
+export function newDecimalValue(itemPath: Array<Path>, value: number | undefined, item: QuestionnaireItem | undefined): NewValueAction {
   return {
     type: NEW_VALUE,
     itemPath,
@@ -209,7 +209,7 @@ export function newDecimalValueAsync(itemPath: Array<Path>, value: number, item:
   };
 }
 
-export function newIntegerValue(itemPath: Array<Path>, value: number, item: QuestionnaireItem | undefined): NewValueAction {
+export function newIntegerValue(itemPath: Array<Path>, value: number | undefined, item: QuestionnaireItem | undefined): NewValueAction {
   return {
     type: NEW_VALUE,
     itemPath,
