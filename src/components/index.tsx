@@ -124,8 +124,19 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
     if (!questionnaire || !questionnaireResponse) return;
 
     const scoringCalculator = new ScoringCalculator(questionnaire);
-    const scores = scoringCalculator.calculate(questionnaireResponse);
+    
+    const scores = scoringCalculator.calculateScore(questionnaireResponse);
+    this.updateQuestionnaireResponseWithScore(scores, questionnaire, questionnaireResponse);
 
+    const fhirScores = scoringCalculator.calculateFhir(questionnaireResponse);
+    this.updateQuestionnaireResponseWithScore(fhirScores, questionnaire, questionnaireResponse);
+  };
+
+  updateQuestionnaireResponseWithScore = (
+    scores: { [linkId: string]: number | undefined },
+    questionnaire: Questionnaire,
+    questionnaireResponse: QuestionnaireResponse,
+  ): void => {
     const actions: Array<NewValueAction> = [];
     for (const linkId in scores) {
       const item = getQuestionnaireDefinitionItem(linkId, questionnaire.item);
@@ -169,7 +180,7 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
     for (const a of actions) {
       this.props.dispatch(a);
     }
-  };
+  }
 
   renderFormItems(pdf?: boolean): Array<JSX.Element> | undefined {
     const { formDefinition, resources, formData, promptLoginMessage } = this.props;
