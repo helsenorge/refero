@@ -43,6 +43,7 @@ export class ScoringCalculator {
   private totalScoreCache: Array<string> = [];
   private totalScoreItem: QuestionnaireItem | undefined;
   private itemCache: { [linkId: string]: QuestionnaireItem } = {};
+  private fhirScoreCache: { [linkId: string]: QuestionnaireItem } = {};
 
   constructor(questionnaire: Questionnaire) {
     this.updateQuestionnaire(questionnaire);
@@ -52,6 +53,7 @@ export class ScoringCalculator {
     this.sectionScoreCache = {};
     this.totalScoreCache = [];
     this.itemCache = {};
+    this.fhirScoreCache = {};
     this.totalScoreItem = undefined;
     this.traverseQuestionnaire(questionnaire);
   }
@@ -114,15 +116,14 @@ export class ScoringCalculator {
         return newRetVal;
       }
 
-      if (type === ScoringItemType.QUESTION_SCORE || type === ScoringItemType.QUESTION_FHIRPATH_SCORE) {
+      if (type === ScoringItemType.QUESTION_SCORE) {
         const newRetVal = new CalculatedScores();
         newRetVal.questionScores.push(qItem, ...retVal.questionScores);
-
-        if (type === ScoringItemType.QUESTION_FHIRPATH_SCORE) {
-          this.itemCache[qItem.linkId] = qItem;
-        }
-
         return newRetVal;
+      }
+
+      if (type === ScoringItemType.QUESTION_FHIRPATH_SCORE) {
+        this.fhirScoreCache[qItem.linkId] = qItem;
       }
     }
 
@@ -136,7 +137,7 @@ export class ScoringCalculator {
     return (item as QuestionnaireItem).type !== undefined;
   }
 
-  public calculate(questionnaireResponse: QuestionnaireResponse): { [linkId: string]: number | undefined } {
+  public calculateScore(questionnaireResponse: QuestionnaireResponse): { [linkId: string]: number | undefined } {
     const answerPad: { [linkId: string]: number | undefined } = {};
 
     for (const sectionScoreLinkId in this.sectionScoreCache) {
@@ -150,6 +151,17 @@ export class ScoringCalculator {
 
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     delete answerPad[this.totalScoreItem!.linkId];
+
+    return answerPad;
+  }
+
+  public calculateFhir(questionnaireResponse: QuestionnaireResponse): { [linkId: string]: number | undefined } {
+    const answerPad: { [linkId: string]: number | undefined } = {};
+
+    for (const fhirScoreLinkId in this.fhirScoreCache) {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      answerPad[fhirScoreLinkId] = this.valueOfQuestionFhirpathScoreItem(this.fhirScoreCache[fhirScoreLinkId], questionnaireResponse);
+    }
 
     return answerPad;
   }
@@ -185,8 +197,6 @@ export class ScoringCalculator {
         return this.valueOfSectionScoreItem(item, questionnaireResponse, answerPad);
       case ScoringItemType.QUESTION_SCORE:
         return this.valueOfQuestionScoreItem(item, questionnaireResponse);
-      case ScoringItemType.QUESTION_FHIRPATH_SCORE:
-        return this.valueOfQuestionFhirpathScoreItem(item, questionnaireResponse, answerPad);
       default:
         return;
     }
@@ -195,7 +205,6 @@ export class ScoringCalculator {
   private valueOfQuestionFhirpathScoreItem(
     item: QuestionnaireItem,
     questionnaireResponse: QuestionnaireResponse,
-    answerPad: { [linkId: string]: number | undefined }
   ): number | undefined {
     const expressionExtension = getCalculatedExpressionExtension(item);
     let value: number | undefined = undefined;
@@ -210,9 +219,6 @@ export class ScoringCalculator {
         }
       }
     }
-
-    // value will become the new answer for this linkId
-    answerPad[item.linkId] = value;
 
     return value;
   }
