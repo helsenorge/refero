@@ -58,11 +58,12 @@ interface StateProps {
 class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, State> {
   constructor(props: StateProps & DispatchProps & ReferoProps) {
     super(props);
-
+    const questionnaire = this.props.questionnaire ? this.props.questionnaire : this.props.formDefinition?.Content;
     this.state = {
       valid: true,
       validated: false,
-      showCancelLightbox: false,
+      showCancelLightbox: false,  
+      scoringCalculator: questionnaire ? this.getScoringCalculator(questionnaire) : undefined
     };
   }
 
@@ -118,18 +119,22 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
     this.runScoringCalculator(newState);
   };
 
+  getScoringCalculator = (questionnaire: Questionnaire): ScoringCalculator => {
+    return new ScoringCalculator(questionnaire);
+  };
+
   runScoringCalculator = (newState: GlobalState): void => {
     const questionnaireResponse = newState.refero?.form?.FormData?.Content;
     const questionnaire = newState.refero.form.FormDefinition?.Content;
     if (!questionnaire || !questionnaireResponse) return;
 
-    const scoringCalculator = new ScoringCalculator(questionnaire);
-    
-    const scores = scoringCalculator.calculateScore(questionnaireResponse);
-    this.updateQuestionnaireResponseWithScore(scores, questionnaire, questionnaireResponse);
+    if (this.state.scoringCalculator) {
+      const scores = this.state.scoringCalculator.calculateScore(questionnaireResponse);
+      this.updateQuestionnaireResponseWithScore(scores, questionnaire, questionnaireResponse);
 
-    const fhirScores = scoringCalculator.calculateFhir(questionnaireResponse);
-    this.updateQuestionnaireResponseWithScore(fhirScores, questionnaire, questionnaireResponse);
+      const fhirScores = this.state.scoringCalculator.calculateFhirScore(questionnaireResponse);
+      this.updateQuestionnaireResponseWithScore(fhirScores, questionnaire, questionnaireResponse);
+    }
   };
 
   updateQuestionnaireResponseWithScore = (
