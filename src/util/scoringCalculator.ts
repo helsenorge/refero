@@ -155,7 +155,7 @@ export class ScoringCalculator {
     return answerPad;
   }
 
-  public calculateFhir(questionnaireResponse: QuestionnaireResponse): { [linkId: string]: number | undefined } {
+  public calculateFhirScore(questionnaireResponse: QuestionnaireResponse): { [linkId: string]: number | undefined } {
     const answerPad: { [linkId: string]: number | undefined } = {};
 
     for (const fhirScoreLinkId in this.fhirScoreCache) {

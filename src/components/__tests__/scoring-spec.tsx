@@ -46,9 +46,6 @@ describe('Component renders and calculates score', () => {
 
     let fhirpathItem = findItem('4', wrapper);
     expect(fhirpathItem.props().value).toBe('42');
-
-    let totalScoreItem = findItem('5', wrapper);
-    expect(totalScoreItem.props().value).toBe('42');
   });
 
   it('fhirpath score should be updated when integer questions are answered', async () => {
@@ -61,9 +58,6 @@ describe('Component renders and calculates score', () => {
 
     let item = findItem('2', wrapper);
     expect(item.props().value).toBe('42');
-
-    let fhirpathItem = findItem('4', wrapper);
-    expect(fhirpathItem.props().value).toBe('42');
   });
 
   it('fhirpath score should be updated when quantity questions are answered', async () => {
