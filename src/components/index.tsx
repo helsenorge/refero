@@ -97,6 +97,7 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
         nextProps.language,
         nextProps.syncQuestionnaireResponse
       );
+      this.setState({scoringCalculator: this.getScoringCalculator(nextProps.questionnaire)});
     }
   }
 
