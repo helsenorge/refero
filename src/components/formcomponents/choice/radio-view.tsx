@@ -3,9 +3,10 @@ import * as React from 'react';
 import { Collapse } from 'react-collapse';
 
 import { QuestionnaireItem, Questionnaire } from '../../../types/fhir';
+import { Options } from '../../../types/form types/radioGroupOptions';
 
 import Validation from '@helsenorge/form/components/form/validation';
-import { RadioGroup, Options } from '@helsenorge/form/components/radio-group';
+import { RadioGroup } from '@helsenorge/form/components/radio-group';
 
 import { isRequired, getId, getSublabelText } from '../../../util/index';
 import { Resources } from '../../../util/resources';

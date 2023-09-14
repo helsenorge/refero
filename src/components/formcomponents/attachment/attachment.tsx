@@ -13,7 +13,6 @@ import {
 import { TextMessage } from '../../../types/text-message';
 
 import { UploadedFile } from '@helsenorge/file-upload/components/dropzone';
-import { ValidationProps } from '@helsenorge/form/components/form/validation';
 
 import { NewValueAction, newAttachmentAsync, removeAttachmentAsync } from '../../../actions/newValue';
 import { GlobalState } from '../../../reducers';
@@ -27,6 +26,7 @@ import Label from '../label';
 import SubLabel from '../sublabel';
 import TextView from '../textview';
 import AttachmentHtml from './attachmenthtml';
+import { ValidationProps } from '../../../types/form types/validation';
 
 export interface Props {
   dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;

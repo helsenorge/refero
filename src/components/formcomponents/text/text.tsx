@@ -6,12 +6,12 @@ import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
 import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem } from '../../../types/fhir';
+import { ValidationProps } from '../../../types/form types/validation';
 
 import Expander from '@helsenorge/designsystem-react/components/Expander';
 
 import { debounce } from '@helsenorge/core-utils/debounce';
 import Validation from '@helsenorge/form/components/form/validation';
-import { ValidationProps } from '@helsenorge/form/components/form/validation';
 import { SafeTextarea } from '@helsenorge/form/components/safe-textarea';
 
 import { NewValueAction, newStringValueAsync } from '../../../actions/newValue';

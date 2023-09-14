@@ -13,9 +13,8 @@ import {
   ValueSet,
 } from '../../../types/fhir';
 import { OrgenhetHierarki } from '../../../types/orgenhetHierarki';
-
-import { ValidationProps } from '@helsenorge/form/components/form/validation';
-import { Options } from '@helsenorge/form/components/radio-group';
+import { ValidationProps } from '../../../types/form types/validation';
+import { Options } from '../../../types/form types/radioGroupOptions';
 
 import { NewValueAction, newCodingValueAsync, removeCodingValueAsync } from '../../../actions/newValue';
 import { GlobalState } from '../../../reducers';

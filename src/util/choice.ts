@@ -11,8 +11,7 @@ import {
   ValueSetComposeIncludeConcept,
   ValueSetComposeInclude,
 } from '../types/fhir';
-
-import { Options } from '@helsenorge/form/components/radio-group';
+import { Options } from '../types/form types/radioGroupOptions';
 
 import ExtensionConstants from '../constants/extensions';
 import Constants, { OPEN_CHOICE_ID } from '../constants/index';

@@ -1,5 +1,5 @@
 import { UploadedFile } from "@helsenorge/file-upload/components/dropzone";
-import { ValidationSummaryPlacement } from "@helsenorge/form/components/form/validationSummaryPlacement";
+import { ValidationSummaryPlacement } from "./form types/validationSummaryPlacement";
 import { Store } from "react-redux";
 import { IActionRequester } from "../util/actionRequester";
 import { IQuestionnaireInspector } from "../util/questionnaireInspector";

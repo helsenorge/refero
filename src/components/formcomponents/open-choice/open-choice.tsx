@@ -12,9 +12,8 @@ import {
   QuestionnaireResponseItem,
   ValueSet,
 } from '../../../types/fhir';
-
-import { ValidationProps } from '@helsenorge/form/components/form/validation';
-import { Options } from '@helsenorge/form/components/radio-group';
+import { ValidationProps } from '../../../types/form types/validation';
+import { Options } from '../../../types/form types/radioGroupOptions';
 
 import {
   NewValueAction,

@@ -2,13 +2,14 @@ import * as React from 'react';
 
 import { QuestionnaireItem } from '../../../types/fhir';
 import { TextMessage } from '../../../types/text-message';
+import { ValidationProps } from '../../../types/form types/validation';
 
 import NotificationPanel from '@helsenorge/designsystem-react/components/NotificationPanel';
 
 import Dropzone from '@helsenorge/file-upload/components/dropzone';
 import { UploadedFile } from '@helsenorge/file-upload/components/dropzone';
 import { sizeIsValid, mimeTypeIsValid } from '@helsenorge/file-upload/components/dropzone/validation';
-import Validation, { ValidationProps } from '@helsenorge/form/components/form/validation';
+import Validation from '@helsenorge/form/components/form/validation';
 
 import constants, { VALID_FILE_TYPES } from '../../../constants';
 import { getValidationTextExtension } from '../../../util/extension';

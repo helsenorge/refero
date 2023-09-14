@@ -18,13 +18,13 @@ import {
 } from '../types/fhir';
 import { OrgenhetHierarki } from '../types/orgenhetHierarki';
 import { TextMessage } from '../types/text-message';
+import { FormChild } from '../types/form types/formChild';
+import { ValidationProps } from '../types/form types/validation';
 
 import Icon from '@helsenorge/designsystem-react/components/Icons';
 import HelpSign from '@helsenorge/designsystem-react/components/Icons/HelpSign';
 
 import { UploadedFile } from '@helsenorge/file-upload/components/dropzone';
-import { FormChild } from '@helsenorge/form/components/form';
-import { ValidationProps } from '@helsenorge/form/components/form/validation';
 
 import { NewValueAction } from '../actions/newValue';
 import itemControlConstants from '../constants/itemcontrol';

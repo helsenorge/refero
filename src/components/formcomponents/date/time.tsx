@@ -5,11 +5,11 @@ import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem, Questionnaire } from '../../../types/fhir';
+import { ValidationProps } from '../../../types/form types/validation';
 
 import TimeInput from '@helsenorge/date-time/components/time-input';
 import { parseDate } from '@helsenorge/date-time/components/time-input/date-core';
 import DateTimeConstants from '@helsenorge/date-time/constants/datetime';
-import { ValidationProps } from '@helsenorge/form/components/form/validation';
 import Validation from '@helsenorge/form/components/form/validation';
 
 import { NewValueAction, newTimeValueAsync } from '../../../actions/newValue';

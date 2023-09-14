@@ -8,7 +8,6 @@ import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireRespon
 import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 import { CheckBox } from '@helsenorge/form/components/checkbox';
 import Validation from '@helsenorge/form/components/form/validation';
-import { ValidationProps } from '@helsenorge/form/components/form/validation';
 
 import { NewValueAction, newBooleanValueAsync } from '../../../actions/newValue';
 import { GlobalState } from '../../../reducers';
@@ -20,6 +19,7 @@ import { Path } from '../../../util/refero-core';
 import withCommonFunctions from '../../with-common-functions';
 import Label from '../label';
 import Pdf from './pdf';
+import { ValidationProps } from '../../../types/form types/validation';
 
 export interface Props {
   item: QuestionnaireItem;

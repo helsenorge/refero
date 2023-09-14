@@ -3,10 +3,10 @@ import * as React from 'react';
 import { Collapse } from 'react-collapse';
 
 import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer } from '../../../types/fhir';
+import { Options } from '../../../types/form types/radioGroupOptions';
 
 import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 import Validation from '@helsenorge/form/components/form/validation';
-import { Options } from '@helsenorge/form/components/radio-group';
 import SafeSelect from '@helsenorge/form/components/safe-select';
 
 import { shouldShowExtraChoice } from '../../../util/choice';

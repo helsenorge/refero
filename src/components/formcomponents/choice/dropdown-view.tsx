@@ -6,8 +6,8 @@ import { QuestionnaireItem, Questionnaire } from '../../../types/fhir';
 
 import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 import Validation from '@helsenorge/form/components/form/validation';
-import { Options } from '@helsenorge/form/components/radio-group';
 import SafeSelect from '@helsenorge/form/components/safe-select';
+import { Options } from '../../../types/form types/radioGroupOptions';
 
 import { getValidationTextExtension, getPlaceholder } from '../../../util/extension';
 import { isRequired, getId, getSublabelText } from '../../../util/index';
