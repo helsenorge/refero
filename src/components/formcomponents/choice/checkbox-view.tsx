@@ -6,7 +6,7 @@ import { QuestionnaireItem, Questionnaire } from '../../../types/fhir';
 import { Options } from '../../../types/form types/radioGroupOptions';
 
 import CheckBoxGroup from '@helsenorge/form/components/checkbox-group';
-import Validation from '@helsenorge/form/components/form/validation';
+import { Validation } from '@helsenorge/designsystem-react/components/Validation';
 
 import { getMaxOccursExtensionValue, getMinOccursExtensionValue, getValidationTextExtension } from '../../../util/extension';
 import { isRequired, getId, getSublabelText } from '../../../util/index';

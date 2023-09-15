@@ -11,7 +11,7 @@ import { ValidationProps } from '../../../types/form types/validation';
 import Expander from '@helsenorge/designsystem-react/components/Expander';
 
 import { debounce } from '@helsenorge/core-utils/debounce';
-import Validation from '@helsenorge/form/components/form/validation';
+import { Validation } from '@helsenorge/designsystem-react/components/Validation';
 import { SafeTextarea } from '@helsenorge/form/components/safe-textarea';
 
 import { NewValueAction, newStringValueAsync } from '../../../actions/newValue';

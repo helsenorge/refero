@@ -3,7 +3,7 @@ import * as React from 'react';
 import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer } from '../../../types/fhir';
 import { ValidationProps } from '../../../types/form types/validation';
 
-import Validation from '@helsenorge/form/components/form/validation';
+import { Validation } from '@helsenorge/designsystem-react/components/Validation';
 import SafeInputField from '@helsenorge/form/components/safe-input-field';
 
 import { getValidationTextExtension, getPlaceholder, getMinLengthExtensionValue, getRegexExtension } from '../../../util/extension';

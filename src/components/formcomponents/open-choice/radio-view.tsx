@@ -5,7 +5,7 @@ import { Collapse } from 'react-collapse';
 import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer } from '../../../types/fhir';
 import { Options } from '../../../types/form types/radioGroupOptions';
 
-import Validation from '@helsenorge/form/components/form/validation';
+import { Validation } from '@helsenorge/designsystem-react/components/Validation';
 import { RadioGroup } from '@helsenorge/form/components/radio-group';
 
 import { shouldShowExtraChoice } from '../../../util/choice';

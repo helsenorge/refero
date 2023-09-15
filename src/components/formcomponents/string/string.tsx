@@ -8,7 +8,7 @@ import { ValidationProps } from '../../../types/form types/validation';
 
 import { debounce } from '@helsenorge/core-utils/debounce';
 import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
-import Validation from '@helsenorge/form/components/form/validation';
+import { Validation } from '@helsenorge/designsystem-react/components/Validation';
 import SafeInputField from '@helsenorge/form/components/safe-input-field';
 
 import { NewValueAction, newStringValueAsync } from '../../../actions/newValue';
