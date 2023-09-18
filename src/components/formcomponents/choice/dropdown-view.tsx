@@ -5,7 +5,7 @@ import { Collapse } from 'react-collapse';
 import { QuestionnaireItem, Questionnaire } from '../../../types/fhir';
 
 import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
-import { Validation } from '@helsenorge/designsystem-react/components/Validation';
+import Validation from '@helsenorge/designsystem-react/components/Validation';
 import SafeSelect from '@helsenorge/form/components/safe-select';
 import { Options } from '../../../types/form types/radioGroupOptions';
 

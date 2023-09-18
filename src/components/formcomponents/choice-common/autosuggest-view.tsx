@@ -10,7 +10,7 @@ import NotificationPanel from '@helsenorge/designsystem-react/components/Notific
 
 import Autosuggest, { Suggestion } from '@helsenorge/autosuggest/components/autosuggest';
 import { debounce } from '@helsenorge/core-utils/debounce';
-import { Validation } from '@helsenorge/designsystem-react/components/Validation';
+import Validation from '@helsenorge/designsystem-react/components/Validation';
 
 import { OPEN_CHOICE_ID, OPEN_CHOICE_SYSTEM } from '../../../constants';
 import ItemType from '../../../constants/itemType';

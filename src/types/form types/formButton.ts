@@ -4,7 +4,7 @@ export declare enum ButtonType {
   cancelButton = "cancelButton",
   pauseButton = "pauseButton"
 }
-interface ButtonOrder {
+export interface ButtonOrder {
   1: ButtonType;
   2: ButtonType;
   3: ButtonType;

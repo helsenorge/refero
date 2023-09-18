@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Moment } from 'moment';
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from '../../../types/fhir';
 import { YearErrorResources, YearInput } from '@helsenorge/date-time/components/year-input';
-import { Validation } from '@helsenorge/designsystem-react/components/Validation';
+import Validation from '@helsenorge/designsystem-react/components/Validation';
 import { getId, isReadOnly, isRequired } from '../../../util';
 import { getPlaceholder, getValidationTextExtension } from '../../../util/extension';
 import { Resources } from '../../../util/resources';

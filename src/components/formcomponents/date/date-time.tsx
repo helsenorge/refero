@@ -12,7 +12,7 @@ import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 import DateTimePicker from '@helsenorge/date-time/components/date-time-picker';
 import { getFullMomentDate } from '@helsenorge/date-time/components/date-time-picker/date-time-picker-utils';
 import { parseDate } from '@helsenorge/date-time/components/time-input/date-core';
-import { Validation } from '@helsenorge/designsystem-react/components/Validation';
+import Validation from '@helsenorge/designsystem-react/components/Validation';
 
 import { NewValueAction, newDateTimeValueAsync } from '../../../actions/newValue';
 import ExtensionConstants from '../../../constants/extensions';

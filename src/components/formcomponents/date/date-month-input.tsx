@@ -6,7 +6,7 @@ import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from '../../../typ
 
 import { LanguageLocales } from '@helsenorge/core-utils/constants/languages';
 import { YearMonthResources, YearMonthInput, YearMonthValue } from '@helsenorge/date-time/components/year-month-input';
-import { Validation } from '@helsenorge/designsystem-react/components/Validation';
+import Validation from '@helsenorge/designsystem-react/components/Validation';
 
 import { getId, isReadOnly, isRequired } from '../../../util';
 import { getPlaceholder, getValidationTextExtension } from '../../../util/extension';

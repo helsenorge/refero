@@ -6,13 +6,12 @@ import { ThunkDispatch } from 'redux-thunk';
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem, Questionnaire } from '../../../types/fhir';
 
 import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
-import { CheckBox } from '@helsenorge/form/components/checkbox';
-import Validation from '@helsenorge/form/components/form/validation';
+import Checkbox from '@helsenorge/designsystem-react/components/Checkbox';
+import Validation from '@helsenorge/designsystem-react/components/Validation';
 
 import { NewValueAction, newBooleanValueAsync } from '../../../actions/newValue';
 import { GlobalState } from '../../../reducers';
-import { getValidationTextExtension } from '../../../util/extension';
-import { isReadOnly, isRequired, getId } from '../../../util/index';
+import { isReadOnly } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Resources } from '../../../util/resources';
 import { Path } from '../../../util/refero-core';
@@ -95,12 +94,10 @@ class Boolean extends React.Component<Props & ValidationProps, {}> {
       return <Pdf item={this.props.item} checked={this.getValue()} onRenderMarkdown={this.props.onRenderMarkdown} />;
     } else if (isReadOnly(this.props.item)) {
       return (
-        <CheckBox
+        <Checkbox
           label={this.getLabel()}
-          id={getId(this.props.id)}
           checked={this.getValue()}
           disabled
-          isStyleBlue
           onChange={(): void => {
             /*kan ikke endres, er alltid disabled*/
           }}
@@ -112,19 +109,12 @@ class Boolean extends React.Component<Props & ValidationProps, {}> {
       // Dette er en hack for FHI-skjema. TODO: fjern hack
       <div className="page_refero__component page_refero__component_boolean">
         <Validation {...this.props}>
-          <CheckBox
+          <Checkbox
             label={this.getLabel()}
-            id={getId(this.props.id)}
-            isRequired={isRequired(this.props.item)}
-            errorMessage={getValidationTextExtension(this.props.item)}
             checked={this.getValue()}
             onChange={this.handleChange}
             disabled={isReadOnly(this.props.item)}
             className="page_refero__input"
-            helpButton={this.props.renderHelpButton()}
-            helpElement={this.props.renderHelpElement()}
-            validateOnExternalUpdate={true}
-            isStyleBlue
           />
         </Validation>
         {this.props.renderDeleteButton('page_refero__deletebutton--margin-top')}

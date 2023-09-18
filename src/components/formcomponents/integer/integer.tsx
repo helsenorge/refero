@@ -7,7 +7,7 @@ import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireRespon
 import { ValidationProps } from '../../../types/form types/validation';
 
 import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
-import { Validation } from '@helsenorge/designsystem-react/components/Validation';
+import Validation from '@helsenorge/designsystem-react/components/Validation';
 import SafeInputField from '@helsenorge/form/components/safe-input-field';
 
 import { NewValueAction, newIntegerValueAsync } from '../../../actions/newValue';

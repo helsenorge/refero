@@ -10,7 +10,7 @@ import { ValidationProps } from '../../../types/form types/validation';
 import TimeInput from '@helsenorge/date-time/components/time-input';
 import { parseDate } from '@helsenorge/date-time/components/time-input/date-core';
 import DateTimeConstants from '@helsenorge/date-time/constants/datetime';
-import { Validation } from '@helsenorge/designsystem-react/components/Validation';
+import Validation from '@helsenorge/designsystem-react/components/Validation';
 
 import { NewValueAction, newTimeValueAsync } from '../../../actions/newValue';
 import ExtensionConstants from '../../../constants/extensions';

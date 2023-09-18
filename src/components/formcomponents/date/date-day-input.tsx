@@ -4,7 +4,7 @@ import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireItemIn
 import { LanguageLocales } from '@helsenorge/core-utils/constants/languages';
 import { DateRangePicker } from '@helsenorge/date-time/components/date-range-picker';
 import { DatePickerErrorPhrases } from '@helsenorge/date-time/components/date-range-picker/date-range-picker-types';
-import { Validation } from '@helsenorge/designsystem-react/components/Validation';
+import Validation from '@helsenorge/designsystem-react/components/Validation';
 import { parseDate } from '@helsenorge/date-time/components/time-input/date-core';
 import Constants from '../../../constants/index';
 import { getId, isRequired } from '../../../util';

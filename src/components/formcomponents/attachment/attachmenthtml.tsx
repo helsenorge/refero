@@ -9,7 +9,7 @@ import NotificationPanel from '@helsenorge/designsystem-react/components/Notific
 import Dropzone from '@helsenorge/file-upload/components/dropzone';
 import { UploadedFile } from '@helsenorge/file-upload/components/dropzone';
 import { sizeIsValid, mimeTypeIsValid } from '@helsenorge/file-upload/components/dropzone/validation';
-import { Validation } from '@helsenorge/designsystem-react/components/Validation';
+import Validation from '@helsenorge/designsystem-react/components/Validation';
 
 import constants, { VALID_FILE_TYPES } from '../../../constants';
 import { getValidationTextExtension } from '../../../util/extension';

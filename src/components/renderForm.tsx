@@ -2,7 +2,7 @@ import * as React from 'react';
 import Form from '@helsenorge/form/components/form';
 import { Resources } from '../util/resources';
 import { ReferoProps } from '../types/referoProps';
-import { ButtonType } from '../types/form types/formButton';
+import { ButtonOrder, ButtonType } from '../types/form types/formButton';
 
 interface RenderFormProps {
   isAuthorized: boolean;
@@ -34,13 +34,13 @@ const RenderForm = ({
   const displayPauseButtonInNormalView = referoProps.onSave ? onSave : undefined;
   const displayPauseButtonInStepView = displayPreviousButton ? previousStep : undefined;
 
-  const buttonOrderStepView = {
+  const buttonOrderStepView: ButtonOrder = {
     1: ButtonType.pauseButton,
     2: ButtonType.submitButton,
     3: ButtonType.cancelButton,
     4: ButtonType.draftButton,
   };
-  const buttonOrderNormalView = {
+  const buttonOrderNormalView: ButtonOrder = {
     1: ButtonType.submitButton,
     2: ButtonType.pauseButton,
     3: ButtonType.cancelButton,
