@@ -8,7 +8,7 @@ import { ValidationProps } from '../../../types/form types/validation';
 
 import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 import Validation from '@helsenorge/designsystem-react/components/Validation';
-import SafeInputField from '@helsenorge/form/components/safe-input-field';
+import Input from '@helsenorge/designsystem-react/components/Input';
 
 import { NewValueAction, newIntegerValueAsync } from '../../../actions/newValue';
 import { GlobalState } from '../../../reducers';
@@ -112,17 +112,33 @@ class Integer extends React.Component<Props & ValidationProps, {}> {
       );
     }
     const value = this.getValue();
-    const subLabelText = getSublabelText(this.props.item, this.props.onRenderMarkdown, this.props.questionnaire, this.props.resources);
+    // const subLabelText = getSublabelText(this.props.item, this.props.onRenderMarkdown, this.props.questionnaire, this.props.resources);
+
+    //showLabel={true}
+    //subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
+    //helpButton={this.props.renderHelpButton()}
+    // helpElement={this.props.renderHelpElement()}
+    // validateOnExternalUpdate={true}
+    //
+    //inputProps={{
+    //   step: '1',
+    //   onKeyPress: (e: React.KeyboardEvent<{}>): void => {
+    //     const key = String.fromCharCode(e.which);
+    //     if ('0123456789-'.indexOf(key) === -1) {
+    //       e.preventDefault();
+    //     }
+    //   },
+    // }}
 
     return (
       <div className="page_refero__component page_refero__component_integer">
         <Validation {...this.props}>
-          <SafeInputField
+          <Input
             type="number"
-            id={getId(this.props.id)}
-            inputName={getId(this.props.id)}
+            inputId={getId(this.props.id)}
+            name={getId(this.props.id)}
             value={value !== undefined && value !== null ? value + '' : ''}
-            showLabel={true}
+            
             label={
               <Label
                 item={this.props.item}
@@ -131,26 +147,13 @@ class Integer extends React.Component<Props & ValidationProps, {}> {
                 resources={this.props.resources}
               />
             }
-            subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
-            isRequired={isRequired(this.props.item)}
+            required={isRequired(this.props.item)}
             placeholder={getPlaceholder(this.props.item)}
             max={getMaxValueExtensionValue(this.props.item)}
             min={getMinValueExtensionValue(this.props.item)}
-            errorMessage={getValidationTextExtension(this.props.item)}
-            inputProps={{
-              step: '1',
-              onKeyPress: (e: React.KeyboardEvent<{}>): void => {
-                const key = String.fromCharCode(e.which);
-                if ('0123456789-'.indexOf(key) === -1) {
-                  e.preventDefault();
-                }
-              },
-            }}
+            errorText={getValidationTextExtension(this.props.item)}
             className="page_refero__input"
             onChange={this.handleChange}
-            helpButton={this.props.renderHelpButton()}
-            helpElement={this.props.renderHelpElement()}
-            validateOnExternalUpdate={true}
           />
         </Validation>
         {this.props.renderDeleteButton('page_refero__deletebutton--margin-top')}

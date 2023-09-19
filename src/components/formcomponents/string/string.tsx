@@ -9,7 +9,7 @@ import { ValidationProps } from '../../../types/form types/validation';
 import { debounce } from '@helsenorge/core-utils/debounce';
 import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 import Validation from '@helsenorge/designsystem-react/components/Validation';
-import SafeInputField from '@helsenorge/form/components/safe-input-field';
+import Input from '@helsenorge/designsystem-react/components/Input';
 
 import { NewValueAction, newStringValueAsync } from '../../../actions/newValue';
 import { GlobalState } from '../../../reducers';
@@ -112,36 +112,38 @@ export class String extends React.Component<Props & ValidationProps, {}> {
         </TextView>
       );
     }
-    const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
+    // const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
+
+    //onChangeValidator={this.validateText}
+    //showLabel={true}
+    //subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
+    //pattern={getRegexExtension(item)}
+    //requiredErrorMessage={this.getRequiredErrorMessage(item)}
+    //helpButton={this.props.renderHelpButton()}
+    //helpElement={this.props.renderHelpElement()}
+    //validateOnExternalUpdate={true}
+    //stringOverMaxLengthError={resources?.stringOverMaxLengthError}
+    //errorText={this.getValidationErrorMessage()}
+    
 
     return (
       <div className="page_refero__component page_refero__component_string">
         <Validation {...this.props}>
-          <SafeInputField
+          <Input
             type="text"
-            id={getId(this.props.id)}
-            inputName={getId(this.props.id)}
+            inputId={getId(this.props.id)}
+            name={getId(this.props.id)}
             value={getStringValue(answer)}
-            onChangeValidator={this.validateText}
-            showLabel={true}
             label={<Label item={item} onRenderMarkdown={onRenderMarkdown} questionnaire={questionnaire} resources={resources} />}
-            subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
-            isRequired={isRequired(item)}
+            required={isRequired(item)}
             placeholder={getPlaceholder(item)}
-            minLength={getMinLengthExtensionValue(item)}
-            maxLength={getMaxLength(item)}
+            min={getMinLengthExtensionValue(item)}
+            max={getMaxLength(item)}
             onChange={(event: React.FormEvent<{}>): void => {
               event.persist();
               this.debouncedHandleChange(event);
             }}
-            pattern={getRegexExtension(item)}
-            errorMessage={this.getValidationErrorMessage}
-            requiredErrorMessage={this.getRequiredErrorMessage(item)}
             className="page_refero__input"
-            helpButton={this.props.renderHelpButton()}
-            helpElement={this.props.renderHelpElement()}
-            validateOnExternalUpdate={true}
-            stringOverMaxLengthError={resources?.stringOverMaxLengthError}
           />
         </Validation>
         {this.props.renderDeleteButton('page_refero__deletebutton--margin-top')}

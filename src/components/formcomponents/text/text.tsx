@@ -12,7 +12,7 @@ import Expander from '@helsenorge/designsystem-react/components/Expander';
 
 import { debounce } from '@helsenorge/core-utils/debounce';
 import Validation from '@helsenorge/designsystem-react/components/Validation';
-import { SafeTextarea } from '@helsenorge/form/components/safe-textarea';
+import Textarea from '@helsenorge/designsystem-react/components/Textarea';
 
 import { NewValueAction, newStringValueAsync } from '../../../actions/newValue';
 import Constants from '../../../constants/index';
@@ -170,35 +170,38 @@ export class Text extends React.Component<Props & ValidationProps, {}> {
         </TextView>
       );
     }
-    const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
+    // const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
+
+    //BYTTA ROWS TIL MAXROWS
+    //Fjernet min og max length, HVA SKAL DETTE BYTTES MED??
+    //value={getStringValue(answer)}
+    //showLabel={true}
+    //subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
+    //max={getMaxLength(item)}
+    //min={getMinLengthExtensionValue(item)}
+    //counter={this.showCounter()}
+    //validator={this.validateText}
+    //errorText={this.getValidationErrorMessage}
+    //requiredErrorMessage={this.getRequiredErrorMessage(item)}
+    //helpButton={this.props.renderHelpButton()}
+    //helpElement={this.props.renderHelpElement()}
+    //validateOnExternalUpdate={true}
+    //stringOverMaxLengthError={resources?.stringOverMaxLengthError}
 
     return (
       <div className="page_refero__component page_refero__component_text">
         <Validation {...other}>
-          <SafeTextarea
-            id={getId(this.props.id)}
-            rows={Constants.DEFAULT_TEXTAREA_HEIGHT}
-            value={getStringValue(answer)}
-            isRequired={isRequired(item)}
-            showLabel={true}
+          <Textarea
+            textareaId={getId(this.props.id)}
+            maxRows={Constants.DEFAULT_TEXTAREA_HEIGHT}
+            required={isRequired(item)}
             label={SanitizeText(`${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`)}
-            subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
             placeholder={getPlaceholder(item)}
-            maxlength={getMaxLength(item)}
-            minlength={getMinLengthExtensionValue(item)}
-            counter={this.showCounter()}
             onChange={(event: React.FormEvent<{}>): void => {
               event.persist();
               this.debouncedHandleChange(event);
             }}
-            validator={this.validateText}
-            errorMessage={this.getValidationErrorMessage}
-            requiredErrorMessage={this.getRequiredErrorMessage(item)}
-            helpButton={this.props.renderHelpButton()}
-            helpElement={this.props.renderHelpElement()}
-            validateOnExternalUpdate={true}
-            stringOverMaxLengthError={resources?.stringOverMaxLengthError}
-            maxLengthText={resources?.maxLengthText}
+            maxText={resources?.maxLengthText}
           />
         </Validation>
         {this.props.renderDeleteButton('page_refero__deletebutton--margin-top')}

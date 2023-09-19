@@ -4,7 +4,7 @@ import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer } fro
 import { ValidationProps } from '../../../types/form types/validation';
 
 import Validation from '@helsenorge/designsystem-react/components/Validation';
-import SafeInputField from '@helsenorge/form/components/safe-input-field';
+import Input from '@helsenorge/designsystem-react/components/Input'
 
 import { getValidationTextExtension, getPlaceholder, getMinLengthExtensionValue, getRegexExtension } from '../../../util/extension';
 import { isReadOnly, isRequired, getId, getStringValue, getPDFStringValue, getMaxLength, getSublabelText } from '../../../util/index';
@@ -42,27 +42,29 @@ const textField: React.SFC<Props & ValidationProps> = ({
       </Pdf>
     );
   }
-  const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
+  // const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
+
+  //showLabel={false}
+  //subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
+  //pattern={getRegexExtension(item)}
+  //validateOnExternalUpdate={true}
+  //FORANDRET ONBLUR TIL ONCHANGE
 
   return (
     <Validation {...other}>
-      <SafeInputField
+      <Input
         type="text"
-        id={getId(id)}
-        inputName={getId(id)}
+        inputId={getId(id)}
+        name={getId(id)}
         value={getStringValue(answer)}
-        showLabel={false}
         label={<Label item={item} onRenderMarkdown={onRenderMarkdown} questionnaire={questionnaire} resources={resources} />}
-        subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
-        isRequired={isRequired(item)}
+        required={isRequired(item)}
         placeholder={getPlaceholder(item)}
-        minLength={getMinLengthExtensionValue(item)}
-        maxLength={getMaxLength(item)}
+        min={getMinLengthExtensionValue(item)}
+        max={getMaxLength(item)}
         readOnly={isReadOnly(item)}
-        onBlur={handleStringChange}
-        pattern={getRegexExtension(item)}
-        errorMessage={getValidationTextExtension(item)}
-        validateOnExternalUpdate={true}
+        onChange={handleStringChange}
+        errorText={getValidationTextExtension(item)}
       />
     </Validation>
   );

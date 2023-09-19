@@ -6,14 +6,13 @@ import { QuestionnaireItem, Questionnaire } from '../../../types/fhir';
 
 import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 import Validation from '@helsenorge/designsystem-react/components/Validation';
-import SafeSelect from '@helsenorge/form/components/safe-select';
+import Select from '@helsenorge/designsystem-react/components/Select';
 import { Options } from '../../../types/form types/radioGroupOptions';
 
 import { getValidationTextExtension, getPlaceholder } from '../../../util/extension';
 import { isRequired, getId, getSublabelText } from '../../../util/index';
 import { Resources } from '../../../util/resources';
 import Label from '../label';
-import SubLabel from '../sublabel';
 
 interface Props {
   options?: Array<Options>;
@@ -59,7 +58,6 @@ class DropdownView extends React.Component<Props, {}> {
     const dropdownOptions: HTMLOptionElement[] = options.map((o: Options) => {
       return new Option(o.label, o.type);
     });
-    const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
 
     let placeholder;
     if (getPlaceholder(item)) {
@@ -68,28 +66,28 @@ class DropdownView extends React.Component<Props, {}> {
       placeholder = new Option(resources.selectDefaultPlaceholder, '');
     }
 
+    // const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
+    // onChange={(evt): void => handleChange((evt.target as HTMLInputElement).value)}
+    // onChangeValidator={validateInput}
+    // helpButton={renderHelpButton()}
+    // helpElement={renderHelpElement()}
+    // subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
+
     return (
       <div className="page_refero__component page_refero__component_choice page_refero__component_choice_dropdown">
         <Collapse isOpened>
           <Validation {...other}>
-            <SafeSelect
-              id={getId(id)}
-              selectName={getId(id)}
-              showLabel={true}
+            <Select
+              selectId={getId(id)}
+              name={getId(id)}
               label={<Label item={item} onRenderMarkdown={onRenderMarkdown} questionnaire={questionnaire} resources={resources} />}
-              subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
-              isRequired={isRequired(item)}
-              onChange={(evt): void => handleChange((evt.target as HTMLInputElement).value)}
-              options={dropdownOptions}
-              selected={selected ? selected[0] : undefined}
+              required={isRequired(item)}
               value={selected ? selected[0] : undefined}
-              placeholder={placeholder}
-              onChangeValidator={validateInput}
-              errorMessage={getValidationTextExtension(item)}
+              errorText={getValidationTextExtension(item)}
               className="page_refero__input"
-              helpButton={renderHelpButton()}
-              helpElement={renderHelpElement()}
-            />
+            >
+              {dropdownOptions}
+            </Select>
           </Validation>
           {renderDeleteButton('page_refero__deletebutton--margin-top')}
           {repeatButton}

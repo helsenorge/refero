@@ -7,7 +7,7 @@ import { EnhetType, OrgenhetHierarki } from '../../../../types/orgenhetHierarki'
 import Loader from '@helsenorge/designsystem-react/components/Loader';
 import NotificationPanel from '@helsenorge/designsystem-react/components/NotificationPanel';
 
-import SafeSelectField from '@helsenorge/form/components/safe-select';
+import Select from '@helsenorge/designsystem-react/components/Select';
 
 import { Resources } from '../../../../util/resources';
 import ReceiverComponent from '../receiver-component';
@@ -110,7 +110,7 @@ describe('ReceiverComponent', () => {
       />
     );
 
-    expect(wrapper.find(SafeSelectField).length).toBe(2);
+    expect(wrapper.find(Select).length).toBe(2);
   });
 
   it('Should show correct headers for select components after loading receivers', () => {
@@ -132,8 +132,8 @@ describe('ReceiverComponent', () => {
       />
     );
 
-    expect(wrapper.find(SafeSelectField).at(0).props().label).toBe('Velg region');
-    expect(wrapper.find(SafeSelectField).at(1).props().label).toBe('Velg helseforetak');
+    expect(wrapper.find(Select).at(0).props().label).toBe('Velg region');
+    expect(wrapper.find(Select).at(1).props().label).toBe('Velg helseforetak');
   });
 
   it('Should call clearCodingAnswer when dropdown value is changed to a non-leaf node', () => {
@@ -150,7 +150,7 @@ describe('ReceiverComponent', () => {
       />
     );
 
-    wrapper.find(SafeSelectField).at(0).props().onChange!({ target: { value: '2' } as unknown } as React.FormEvent<HTMLInputElement>, '2');
+    wrapper.find(Select).at(0).props().onChange!({ target: { value: '2' } as unknown } as React.FormEvent<HTMLInputElement>, '2');
 
     expect(clearCodingAnswerFn).toHaveBeenCalled();
   });
@@ -169,7 +169,7 @@ describe('ReceiverComponent', () => {
       />
     );
 
-    wrapper.find(SafeSelectField).at(1).props().onChange!(
+    wrapper.find(Select).at(1).props().onChange!(
       { target: { value: '12' } as unknown } as React.FormEvent<HTMLInputElement>,
       '1.2'
     );

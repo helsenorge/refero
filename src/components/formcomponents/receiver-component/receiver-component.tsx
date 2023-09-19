@@ -7,9 +7,9 @@ import { EnhetType, OrgenhetHierarki } from '../../../types/orgenhetHierarki';
 
 import Loader from '@helsenorge/designsystem-react/components/Loader';
 import NotificationPanel from '@helsenorge/designsystem-react/components/NotificationPanel';
+import Select from '@helsenorge/designsystem-react/components/Select';
 
 import ValidationError from '@helsenorge/form/components/form/validation-error';
-import SafeSelect from '@helsenorge/form/components/safe-select';
 
 import { getId } from '../../../util';
 import { Resources } from '../../../util/resources';
@@ -205,28 +205,30 @@ class ReceiverComponent extends React.Component<ReceiverComponentProps, Receiver
     const selectOptions = treeNodes.map(node => new Option(node.Navn, node.OrgenhetId.toString()));
     const label = this.getLabelText(treeNodes[0].EnhetType);
 
+    // showLabel={true}
+    // placeholder={new Option(this.props.resources?.selectDefaultPlaceholder, '')}
+    // wrapperClasses="page_refero__receiverselect"
+    //
+    // onChange={(evt): void => {
+    //   const newValue = (evt.target as HTMLInputElement).value;
+    //   const node = treeNodes.find(x => x.OrgenhetId === parseInt(newValue));
+    //   if (node) {
+    //     this.onChangeDropdownValue(level, node);
+    //   }
+    // }}
+
     return (
-      <SafeSelect
+      <Select
         key={selectKey}
-        id={`${getId(this.props.id)}-${selectKey}`}
-        selectName={`${getId(this.props.id)}-${selectKey}`}
-        showLabel={true}
+        selectId={`${getId(this.props.id)}-${selectKey}`}
+        name={`${getId(this.props.id)}-${selectKey}`}
         label={label}
-        isRequired={true}
-        onChange={(evt): void => {
-          const newValue = (evt.target as HTMLInputElement).value;
-          const node = treeNodes.find(x => x.OrgenhetId === parseInt(newValue));
-          if (node) {
-            this.onChangeDropdownValue(level, node);
-          }
-        }}
-        options={selectOptions}
-        selected={this.state.selectedPath[level] ? this.state.selectedPath[level].toString() : ''}
+        required={true}
         value={this.state.selectedPath[level] ? this.state.selectedPath[level].toString() : ''}
-        placeholder={new Option(this.props.resources?.selectDefaultPlaceholder, '')}
-        wrapperClasses="page_refero__receiverselect"
         className="page_refero__input"
-      />
+      >
+        {selectOptions}
+      </Select>
     );
   }
 

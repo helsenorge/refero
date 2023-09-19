@@ -13,7 +13,7 @@ import {
 import { ValidationProps } from '../../../types/form types/validation';
 
 import Validation from '@helsenorge/designsystem-react/components/Validation';
-import SafeInputField from '@helsenorge/form/components/safe-input-field';
+import Input from '@helsenorge/designsystem-react/components/Input';
 
 import { NewValueAction, newQuantityValueAsync } from '../../../actions/newValue';
 import { GlobalState } from '../../../reducers';
@@ -141,34 +141,34 @@ class Quantity extends React.Component<Props & ValidationProps, {}> {
       );
     }
     const value = this.getValue();
-    const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, this.props.resources);
+    // const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, this.props.resources);
+
+    //size="xSmall" ERSTATTE MED WIDTH???
+    //showLabel={true}
+    //subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
+    //pattern={getDecimalPattern(item)}'
+    //helpButton={this.props.renderHelpButton()}
+    //helpElement={this.props.renderHelpElement()}
+    //validateOnExternalUpdate={true}
+    //<span className="page_refero__unit">{this.getUnit()}</span> 
 
     return (
       <div className="page_refero__component page_refero__component_quantity">
         <Validation {...this.props}>
-          <SafeInputField
-            size="xSmall"
+          <Input
             type="number"
-            id={getId(this.props.id)}
-            inputName={getId(this.props.id)}
+            inputId={getId(this.props.id)}
+            name={getId(this.props.id)}
             value={value !== undefined ? value + '' : ''}
-            showLabel={true}
             label={<Label item={item} onRenderMarkdown={onRenderMarkdown} questionnaire={questionnaire} resources={this.props.resources} />}
-            subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
-            isRequired={isRequired(item)}
+            required={isRequired(item)}
             placeholder={getPlaceholder(item)}
             max={getMaxValueExtensionValue(item)}
             min={getMinValueExtensionValue(item)}
             onChange={this.handleChange}
-            errorMessage={getValidationTextExtension(item)}
-            pattern={getDecimalPattern(item)}
+            errorText={getValidationTextExtension(item)}
             className="page_refero__quantity"
-            helpButton={this.props.renderHelpButton()}
-            helpElement={this.props.renderHelpElement()}
-            validateOnExternalUpdate={true}
-          >
-            <span className="page_refero__unit">{this.getUnit()}</span>
-          </SafeInputField>
+          />
         </Validation>
         {this.props.renderDeleteButton('page_refero__deletebutton--margin-top')}
         <div>{this.props.repeatButton}</div>

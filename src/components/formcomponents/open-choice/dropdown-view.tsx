@@ -7,7 +7,7 @@ import { Options } from '../../../types/form types/radioGroupOptions';
 
 import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 import Validation from '@helsenorge/designsystem-react/components/Validation';
-import SafeSelect from '@helsenorge/form/components/safe-select';
+import Select from '@helsenorge/designsystem-react/components/Select';
 
 import { shouldShowExtraChoice } from '../../../util/choice';
 import { getValidationTextExtension, getPlaceholder } from '../../../util/extension';
@@ -73,27 +73,30 @@ class DropdownView extends React.Component<Props, {}> {
       placeholder = new Option(resources.selectDefaultPlaceholder, '');
     }
 
+    //showLabel={true}
+    //subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
+    //onChange={(evt): void => handleChange((evt.target as HTMLInputElement).value)}
+    //placeholder={placeholder}
+    //onChangeValidator={validateInput}
+    //helpButton={renderHelpButton()}
+    //helpElement={renderHelpElement()}
+
     return (
       <div className="page_refero__component page_refero__component_openchoice page_refero__component_openchoice_dropdown">
         <Collapse isOpened>
           <Validation {...other}>
-            <SafeSelect
-              id={getId(id)}
-              selectName={getId(id)}
-              showLabel={true}
+            <Select
+              selectId={getId(id)}
+              name={getId(id)}
               label={<Label item={item} onRenderMarkdown={onRenderMarkdown} questionnaire={questionnaire} resources={resources} />}
-              subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
-              isRequired={isRequired(item)}
-              onChange={(evt): void => handleChange((evt.target as HTMLInputElement).value)}
-              options={dropdownOptions}
-              selected={selected ? selected[0] : undefined}
-              placeholder={placeholder}
-              onChangeValidator={validateInput}
-              errorMessage={getValidationTextExtension(item)}
+              required={isRequired(item)}
+              value={selected ? selected[0] : undefined}
+              errorText={getValidationTextExtension(item)}
               className="page_refero__input"
-              helpButton={renderHelpButton()}
-              helpElement={renderHelpElement()}
-            />
+              
+            >
+              {dropdownOptions}
+            </Select>
           </Validation>
           {shouldShowExtraChoice(answer) ? (
             <div className="page_refero__component_openchoice_openfield">{renderOpenField()}</div>

@@ -1,8 +1,8 @@
 import * as React from 'react';
-import Form from '@helsenorge/form/components/form';
+import Form, { ButtonType } from '@helsenorge/form/components/form';
 import { Resources } from '../util/resources';
 import { ReferoProps } from '../types/referoProps';
-import { ButtonOrder, ButtonType } from '../types/form types/formButton';
+import { ButtonOrder } from '../types/form types/formButton';
 
 interface RenderFormProps {
   isAuthorized: boolean;

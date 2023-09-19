@@ -8,7 +8,7 @@ import { ValidationProps } from '../../../types/form types/validation';
 
 import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 import Validation from '@helsenorge/designsystem-react/components/Validation';
-import SafeInputField from '@helsenorge/form/components/safe-input-field';
+import Input from '@helsenorge/designsystem-react/components/Input';
 
 import { NewValueAction, newDecimalValueAsync } from '../../../actions/newValue';
 import { GlobalState } from '../../../reducers';
@@ -99,7 +99,7 @@ class Decimal extends React.Component<Props & ValidationProps, {}> {
   render(): JSX.Element | null {
     const { id, item, pdf, onRenderMarkdown } = this.props;
     const value = this.getValue();
-    const subLabelText = getSublabelText(this.props.item, this.props.onRenderMarkdown, this.props.questionnaire, this.props.resources);
+    // const subLabelText = getSublabelText(this.props.item, this.props.onRenderMarkdown, this.props.questionnaire, this.props.resources);
 
     if (pdf || isReadOnly(item)) {
       return (
@@ -115,15 +115,22 @@ class Decimal extends React.Component<Props & ValidationProps, {}> {
         </TextView>
       );
     }
+
+    //showLabel={true}
+    //subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
+    //pattern={getDecimalPattern(item)}
+    //helpButton={this.props.renderHelpButton()}
+    //helpElement={this.props.renderHelpElement()}
+    //validateOnExternalUpdate={true}
+
     return (
       <div className="page_refero__component page_refero__component_decimal">
         <Validation {...this.props}>
-          <SafeInputField
+          <Input
             type="number"
-            id={getId(this.props.id)}
-            inputName={getId(this.props.id)}
+            inputId={getId(this.props.id)}
+            name={getId(this.props.id)}
             value={value ? value + '' : ''}
-            showLabel={true}
             label={
               <Label
                 item={item}
@@ -132,17 +139,12 @@ class Decimal extends React.Component<Props & ValidationProps, {}> {
                 resources={this.props.resources}
               />
             }
-            subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
-            isRequired={isRequired(item)}
+            required={isRequired(item)}
             placeholder={getPlaceholder(item)}
             max={getMaxValueExtensionValue(item)}
             min={getMinValueExtensionValue(item)}
-            errorMessage={getValidationTextExtension(item)}
-            pattern={getDecimalPattern(item)}
+            errorText={getValidationTextExtension(item)}
             className="page_refero__input"
-            helpButton={this.props.renderHelpButton()}
-            helpElement={this.props.renderHelpElement()}
-            validateOnExternalUpdate={true}
             onChange={this.handleChange}
           />
         </Validation>

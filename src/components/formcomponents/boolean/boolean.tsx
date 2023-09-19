@@ -11,7 +11,7 @@ import Validation from '@helsenorge/designsystem-react/components/Validation';
 
 import { NewValueAction, newBooleanValueAsync } from '../../../actions/newValue';
 import { GlobalState } from '../../../reducers';
-import { isReadOnly } from '../../../util/index';
+import { isReadOnly, isRequired } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Resources } from '../../../util/resources';
 import { Path } from '../../../util/refero-core';
@@ -19,6 +19,7 @@ import withCommonFunctions from '../../with-common-functions';
 import Label from '../label';
 import Pdf from './pdf';
 import { ValidationProps } from '../../../types/form types/validation';
+import { getValidationTextExtension } from '../../../util/extension';
 
 export interface Props {
   item: QuestionnaireItem;
@@ -93,6 +94,10 @@ class Boolean extends React.Component<Props & ValidationProps, {}> {
     if (this.props.pdf) {
       return <Pdf item={this.props.item} checked={this.getValue()} onRenderMarkdown={this.props.onRenderMarkdown} />;
     } else if (isReadOnly(this.props.item)) {
+
+      //id={getId(this.props.id)}
+      //isStyleBlue
+
       return (
         <Checkbox
           label={this.getLabel()}
@@ -105,16 +110,25 @@ class Boolean extends React.Component<Props & ValidationProps, {}> {
         />
       );
     }
+
+    // id={getId(this.props.id)}
+    // helpButton={this.props.renderHelpButton()}
+    // helpElement={this.props.renderHelpElement()}
+    // validateOnExternalUpdate={true}
+    // isStyleBlue
+
     return (
       // Dette er en hack for FHI-skjema. TODO: fjern hack
       <div className="page_refero__component page_refero__component_boolean">
         <Validation {...this.props}>
           <Checkbox
             label={this.getLabel()}
+            required={isRequired(this.props.item)}
             checked={this.getValue()}
             onChange={this.handleChange}
             disabled={isReadOnly(this.props.item)}
             className="page_refero__input"
+            errorText={getValidationTextExtension(this.props.item)}
           />
         </Validation>
         {this.props.renderDeleteButton('page_refero__deletebutton--margin-top')}
