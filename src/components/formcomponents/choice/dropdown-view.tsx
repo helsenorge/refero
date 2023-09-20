@@ -7,12 +7,12 @@ import { QuestionnaireItem, Questionnaire } from '../../../types/fhir';
 import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 import Validation from '@helsenorge/designsystem-react/components/Validation';
 import Select from '@helsenorge/designsystem-react/components/Select';
+import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
 import { Options } from '../../../types/form types/radioGroupOptions';
 
 import { getValidationTextExtension, getPlaceholder } from '../../../util/extension';
-import { isRequired, getId, getSublabelText } from '../../../util/index';
+import { isRequired, getId, getSublabelText, getText } from '../../../util/index';
 import { Resources } from '../../../util/resources';
-import Label from '../label';
 
 interface Props {
   options?: Array<Options>;
@@ -66,12 +66,12 @@ class DropdownView extends React.Component<Props, {}> {
       placeholder = new Option(resources.selectDefaultPlaceholder, '');
     }
 
-    // const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
+    const labelText = getText(item, onRenderMarkdown, questionnaire, resources);
+    const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
     // onChange={(evt): void => handleChange((evt.target as HTMLInputElement).value)}
     // onChangeValidator={validateInput}
     // helpButton={renderHelpButton()}
     // helpElement={renderHelpElement()}
-    // subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
 
     return (
       <div className="page_refero__component page_refero__component_choice page_refero__component_choice_dropdown">
@@ -80,7 +80,19 @@ class DropdownView extends React.Component<Props, {}> {
             <Select
               selectId={getId(id)}
               name={getId(id)}
-              label={<Label item={item} onRenderMarkdown={onRenderMarkdown} questionnaire={questionnaire} resources={resources} />}
+              label={
+                <Label
+                  labelTexts={[{ text: labelText, type: 'semibold' }]}
+                  sublabel={
+                    <Sublabel
+                      id="select-sublabel"
+                      sublabelTexts={[
+                        { text: subLabelText, type: 'normal' },
+                      ]}
+                    />
+                  }
+                />
+              }
               required={isRequired(item)}
               value={selected ? selected[0] : undefined}
               errorText={getValidationTextExtension(item)}

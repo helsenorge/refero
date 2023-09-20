@@ -206,7 +206,6 @@ class ReceiverComponent extends React.Component<ReceiverComponentProps, Receiver
     const label = this.getLabelText(treeNodes[0].EnhetType);
 
     // showLabel={true}
-    // placeholder={new Option(this.props.resources?.selectDefaultPlaceholder, '')}
     // wrapperClasses="page_refero__receiverselect"
     //
     // onChange={(evt): void => {
