@@ -11,7 +11,7 @@ import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label
 import { Options } from '../../../types/formTypes/radioGroupOptions';
 
 import { getValidationTextExtension, getPlaceholder } from '../../../util/extension';
-import { isRequired, getId, getSublabelText, getText } from '../../../util/index';
+import { isRequired, getId, getSublabelText, getText, renderPrefix } from '../../../util/index';
 import { Resources } from '../../../util/resources';
 
 interface Props {
@@ -66,8 +66,9 @@ class DropdownView extends React.Component<Props, {}> {
       placeholder = new Option(resources.selectDefaultPlaceholder, '');
     }
 
-    const labelText = getText(item, onRenderMarkdown, questionnaire, resources);
+    const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`;
     const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
+
     // onChange={(evt): void => handleChange((evt.target as HTMLInputElement).value)}
     // onChangeValidator={validateInput}
     // helpButton={renderHelpButton()}
@@ -83,14 +84,7 @@ class DropdownView extends React.Component<Props, {}> {
               label={
                 <Label
                   labelTexts={[{ text: labelText, type: 'semibold' }]}
-                  sublabel={
-                    <Sublabel
-                      id="select-sublabel"
-                      sublabelTexts={[
-                        { text: subLabelText, type: 'normal' },
-                      ]}
-                    />
-                  }
+                  sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
                 />
               }
               required={isRequired(item)}

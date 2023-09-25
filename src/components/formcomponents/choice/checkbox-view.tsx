@@ -8,9 +8,10 @@ import { Options } from '../../../types/formTypes/radioGroupOptions';
 import Validation from '@helsenorge/designsystem-react/components/Validation';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Checkbox from '@helsenorge/designsystem-react/components/Checkbox';
+import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
 
 import { getValidationTextExtension } from '../../../util/extension';
-import { getText } from '../../../util/index';
+import { getSublabelText, getText } from '../../../util/index';
 import { Resources } from '../../../util/resources';
 
 interface Props {
@@ -52,10 +53,9 @@ const CheckboxView: React.SFC<Props> = ({
   const checkboxes = options.map(el => {
     return { label: el.label, id: el.type, checked: isSelected(el, selected) };
   });
-  // const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
+  const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
 
-  //CheckboxGroup:
-  // subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
+  // CheckboxGroup:
   // handleChange={handleChange}
   // required={isRequired(item)}
   // id={getId(id)}
@@ -75,7 +75,12 @@ const CheckboxView: React.SFC<Props> = ({
           <FormGroup legend={getText(item, onRenderMarkdown, questionnaire, resources)}>
             {checkboxes.map((checkbox, index) => (
               <Checkbox
-                label={checkbox.label}
+              label={
+                <Label
+                  labelTexts={[{ text: checkbox.label, type: 'semibold' }]}
+                  sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+                />
+              }
                 key={checkbox.id + index.toString()}
                 inputId={`${id}-${checkbox.id}`}
                 checked={checkbox.checked}

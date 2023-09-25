@@ -8,6 +8,7 @@ import { EnhetType, OrgenhetHierarki } from '../../../types/orgenhetHierarki';
 import Loader from '@helsenorge/designsystem-react/components/Loader';
 import NotificationPanel from '@helsenorge/designsystem-react/components/NotificationPanel';
 import Select from '@helsenorge/designsystem-react/components/Select';
+import Label from '@helsenorge/designsystem-react/components/Label';
 
 import ValidationError from '@helsenorge/form/components/form/validation-error';
 
@@ -203,7 +204,7 @@ class ReceiverComponent extends React.Component<ReceiverComponentProps, Receiver
 
   createSelect(treeNodes: Array<OrgenhetHierarki>, level: number, selectKey: string): JSX.Element {
     const selectOptions = treeNodes.map(node => new Option(node.Navn, node.OrgenhetId.toString()));
-    const label = this.getLabelText(treeNodes[0].EnhetType);
+    const label = this.getLabelText(treeNodes[0].EnhetType) || '';
 
     // showLabel={true}
     // wrapperClasses="page_refero__receiverselect"
@@ -221,7 +222,11 @@ class ReceiverComponent extends React.Component<ReceiverComponentProps, Receiver
         key={selectKey}
         selectId={`${getId(this.props.id)}-${selectKey}`}
         name={`${getId(this.props.id)}-${selectKey}`}
-        label={label}
+        label={
+          <Label
+            labelTexts={[{ text: label, type: 'semibold' }]}
+          />
+        }
         required={true}
         value={this.state.selectedPath[level] ? this.state.selectedPath[level].toString() : ''}
         className="page_refero__input"

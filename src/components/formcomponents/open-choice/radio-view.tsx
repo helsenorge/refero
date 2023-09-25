@@ -8,9 +8,10 @@ import { Options } from '../../../types/formTypes/radioGroupOptions';
 import Validation from '@helsenorge/designsystem-react/components/Validation';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import RadioButton from '@helsenorge/designsystem-react/components/RadioButton';
+import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
 
 import { shouldShowExtraChoice } from '../../../util/choice';
-import { getId, getText, isRequired } from '../../../util/index';
+import { getId, getSublabelText, getText, isRequired } from '../../../util/index';
 import { Resources } from '../../../util/resources';
 
 interface Props {
@@ -56,10 +57,9 @@ const RadioView: React.SFC<Props> = ({
   if (!options) {
     return null;
   }
-  // const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
+  const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
 
   // legend={<Label item={item} onRenderMarkdown={onRenderMarkdown} questionnaire={questionnaire} resources={resources} />}
-  // subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
   // id={getId(id)}
   // onChange={handleChange}
   // selected={selected ? selected[0] : undefined}
@@ -80,7 +80,12 @@ const RadioView: React.SFC<Props> = ({
               <RadioButton
                 inputId={getId(id)}
                 key={getId(id) + index.toString()}
-                label={option.label}
+                label={
+                  <Label
+                    labelTexts={[{ text: option.label, type: 'semibold' }]}
+                    sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+                  />
+                }
                 required={isRequired(item)}
                 value={option.type}
                 onChange={() => handleChange}

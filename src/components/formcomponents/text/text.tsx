@@ -13,6 +13,7 @@ import Expander from '@helsenorge/designsystem-react/components/Expander';
 import { debounce } from '@helsenorge/core-utils/debounce';
 import Validation from '@helsenorge/designsystem-react/components/Validation';
 import Textarea from '@helsenorge/designsystem-react/components/Textarea';
+import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
 
 import { NewValueAction, newStringValueAsync } from '../../../actions/newValue';
 import Constants from '../../../constants/index';
@@ -36,7 +37,6 @@ import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/m
 import { Path } from '../../../util/refero-core';
 import { Resources } from '../../../util/resources';
 import withCommonFunctions from '../../with-common-functions';
-import SubLabel from '../sublabel';
 import TextView from '../textview';
 import { SanitizeText } from '../../../util/sanitize/domPurifyHelper';
 
@@ -170,7 +170,8 @@ export class Text extends React.Component<Props & ValidationProps, {}> {
         </TextView>
       );
     }
-    // const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
+    const labelText = SanitizeText(`${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`) || '';
+    const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
 
     //BYTTA ROWS TIL MAXROWS
     //Fjernet min og max length, HVA SKAL DETTE BYTTES MED??
@@ -195,7 +196,12 @@ export class Text extends React.Component<Props & ValidationProps, {}> {
             textareaId={getId(this.props.id)}
             maxRows={Constants.DEFAULT_TEXTAREA_HEIGHT}
             required={isRequired(item)}
-            label={SanitizeText(`${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`)}
+            label={
+              <Label
+                labelTexts={[{ text: labelText, type: 'semibold' }]}
+                sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+              />
+            }
             placeholder={getPlaceholder(item)}
             onChange={(event: React.FormEvent<{}>): void => {
               event.persist();

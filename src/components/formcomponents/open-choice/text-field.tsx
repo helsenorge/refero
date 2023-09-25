@@ -4,12 +4,22 @@ import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer } fro
 import { ValidationProps } from '../../../types/formTypes/validation';
 
 import Validation from '@helsenorge/designsystem-react/components/Validation';
-import Input from '@helsenorge/designsystem-react/components/Input'
+import Input from '@helsenorge/designsystem-react/components/Input';
+import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
 
 import { getValidationTextExtension, getPlaceholder, getMinLengthExtensionValue, getRegexExtension } from '../../../util/extension';
-import { isReadOnly, isRequired, getId, getStringValue, getPDFStringValue, getMaxLength, getSublabelText, renderPrefix, getText } from '../../../util/index';
-import Label from '../label';
-import SubLabel from '../sublabel';
+import {
+  isReadOnly,
+  isRequired,
+  getId,
+  getStringValue,
+  getPDFStringValue,
+  getMaxLength,
+  getSublabelText,
+  renderPrefix,
+  getText,
+} from '../../../util/index';
+
 import Pdf from '../textview';
 import { Resources } from '../../../util/resources';
 
@@ -42,10 +52,11 @@ const textField: React.SFC<Props & ValidationProps> = ({
       </Pdf>
     );
   }
-  // const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
+
+  const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`;
+  const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
 
   //showLabel={false}
-  //subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
   //pattern={getRegexExtension(item)}
   //validateOnExternalUpdate={true}
   //FORANDRET ONBLUR TIL ONCHANGE
@@ -57,7 +68,12 @@ const textField: React.SFC<Props & ValidationProps> = ({
         inputId={getId(id)}
         name={getId(id)}
         value={getStringValue(answer)}
-        label={`${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`}
+        label={
+          <Label
+            labelTexts={[{ text: labelText, type: 'semibold' }]}
+            sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+          />
+        }
         required={isRequired(item)}
         placeholder={getPlaceholder(item)}
         min={getMinLengthExtensionValue(item)}

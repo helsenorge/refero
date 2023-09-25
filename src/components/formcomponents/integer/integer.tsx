@@ -9,6 +9,7 @@ import { ValidationProps } from '../../../types/formTypes/validation';
 import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 import Validation from '@helsenorge/designsystem-react/components/Validation';
 import Input from '@helsenorge/designsystem-react/components/Input';
+import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
 
 import { NewValueAction, newIntegerValueAsync } from '../../../actions/newValue';
 import { GlobalState } from '../../../reducers';
@@ -18,8 +19,6 @@ import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/m
 import { Resources } from '../../../util/resources';
 import { Path } from '../../../util/refero-core';
 import withCommonFunctions from '../../with-common-functions';
-import Label from '../label';
-import SubLabel from '../sublabel';
 import TextView from '../textview';
 
 export interface Props {
@@ -111,8 +110,15 @@ class Integer extends React.Component<Props & ValidationProps, {}> {
         </TextView>
       );
     }
+
     const value = this.getValue();
-    // const subLabelText = getSublabelText(this.props.item, this.props.onRenderMarkdown, this.props.questionnaire, this.props.resources);
+    const labelText = `${renderPrefix(this.props.item)} ${getText(
+      this.props.item,
+      this.props.onRenderMarkdown,
+      this.props.questionnaire,
+      this.props.resources
+    )}`;
+    const subLabelText = getSublabelText(this.props.item, this.props.onRenderMarkdown, this.props.questionnaire, this.props.resources);
 
     //showLabel={true}
     //subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
@@ -138,12 +144,12 @@ class Integer extends React.Component<Props & ValidationProps, {}> {
             inputId={getId(this.props.id)}
             name={getId(this.props.id)}
             value={value !== undefined && value !== null ? value + '' : ''}
-            label={`${renderPrefix(this.props.item)} ${getText(
-              this.props.item,
-              this.props.onRenderMarkdown,
-              this.props.questionnaire,
-              this.props.resources
-            )}`}
+            label={
+              <Label
+                labelTexts={[{ text: labelText, type: 'semibold' }]}
+                sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+              />
+            }
             required={isRequired(this.props.item)}
             placeholder={getPlaceholder(this.props.item)}
             max={getMaxValueExtensionValue(this.props.item)}

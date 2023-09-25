@@ -9,6 +9,7 @@ import { ValidationProps } from '../../../types/formTypes/validation';
 import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 import Validation from '@helsenorge/designsystem-react/components/Validation';
 import Input from '@helsenorge/designsystem-react/components/Input';
+import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
 
 import { NewValueAction, newDecimalValueAsync } from '../../../actions/newValue';
 import { GlobalState } from '../../../reducers';
@@ -18,8 +19,6 @@ import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/m
 import { Resources } from '../../../util/resources';
 import { Path } from '../../../util/refero-core';
 import withCommonFunctions from '../../with-common-functions';
-import Label from '../label';
-import SubLabel from '../sublabel';
 import TextView from '../textview';
 
 export interface Props {
@@ -99,7 +98,8 @@ class Decimal extends React.Component<Props & ValidationProps, {}> {
   render(): JSX.Element | null {
     const { id, item, pdf, onRenderMarkdown } = this.props;
     const value = this.getValue();
-    // const subLabelText = getSublabelText(this.props.item, this.props.onRenderMarkdown, this.props.questionnaire, this.props.resources);
+    const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, this.props.questionnaire, this.props.resources)}`;
+    const subLabelText = getSublabelText(this.props.item, this.props.onRenderMarkdown, this.props.questionnaire, this.props.resources);
 
     if (pdf || isReadOnly(item)) {
       return (
@@ -117,7 +117,6 @@ class Decimal extends React.Component<Props & ValidationProps, {}> {
     }
 
     //showLabel={true}
-    //subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
     //pattern={getDecimalPattern(item)}
     //helpButton={this.props.renderHelpButton()}
     //helpElement={this.props.renderHelpElement()}
@@ -131,7 +130,12 @@ class Decimal extends React.Component<Props & ValidationProps, {}> {
             inputId={getId(this.props.id)}
             name={getId(this.props.id)}
             value={value ? value + '' : ''}
-            label={`${renderPrefix(item)} ${getText(item, onRenderMarkdown, this.props.questionnaire, this.props.resources)}`}
+            label={
+              <Label
+                labelTexts={[{ text: labelText, type: 'semibold' }]}
+                sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+              />
+            }
             required={isRequired(item)}
             placeholder={getPlaceholder(item)}
             max={getMaxValueExtensionValue(item)}
