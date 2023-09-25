@@ -13,7 +13,6 @@ import { Resources } from '../../util/resources';
 import { ReferoContainer } from '../index';
 import StepViewQuestionnaire from './__data__/stepview';
 import StepView from '../stepView';
-import Form from '@helsenorge/form/components/form';
 import { act } from 'react-dom/test-utils';
 
 Object.defineProperty(window, 'matchMedia', {
@@ -69,7 +68,7 @@ describe('Step-view', () => {
     const wrapper = createWrapper(StepViewQuestionnaire);
     wrapper.render();
     act(() => {
-      (wrapper.find(Form).prop('onSubmit') as () => void)();
+      (wrapper.find('form').prop('onSubmit') as () => void)();
     });
     wrapper.update();
     expect(onStepChangeMock).toHaveBeenCalled();
@@ -81,33 +80,33 @@ describe('Step-view', () => {
     wrapper.render();
 
     // Step 1
-    expect(wrapper.find(Form).props().submitButtonText).toBe("Neste");
-    expect(wrapper.find(Form).props().pauseButtonText).toBe(undefined);
+    expect(wrapper.find('form').prop('submitButtonText')).toBe("Neste");
+    expect(wrapper.find('form').prop('pauseButtonText')).toBe(undefined);
     act(() => {
-      (wrapper.find(Form).prop('onSubmit') as () => void)();
+      (wrapper.find('form').prop('onSubmit') as () => void)();
     });
     wrapper.update();
     // Step 2
-    expect(wrapper.find(Form).props().pauseButtonText).toBe("Forrige");
+    expect(wrapper.find('form').prop('pauseButtonText')).toBe("Forrige");
     act(() => {
-      (wrapper.find(Form).prop('onPause') as () => void)();
+      (wrapper.find('form').prop('onPause') as () => void)();
     });
     wrapper.update();
     // Step 1
-    expect(wrapper.find(Form).props().pauseButtonText).toBe(undefined);
+    expect(wrapper.find('form').prop('pauseButtonText')).toBe(undefined);
     act(() => {
-      (wrapper.find(Form).prop('onSubmit') as () => void)();
+      (wrapper.find('form').prop('onSubmit') as () => void)();
     });
     wrapper.update();
     // Step 2
     act(() => {
-      (wrapper.find(Form).prop('onSubmit') as () => void)();
+      (wrapper.find('form').prop('onSubmit') as () => void)();
     });
     wrapper.update();
     // Step 3
-    expect(wrapper.find(Form).props().submitButtonText).toBe("Send inn");
+    expect(wrapper.find('form').prop('submitButtonText')).toBe("Send inn");
     act(() => {
-      (wrapper.find(Form).prop('onSubmit') as () => void)();
+      (wrapper.find('form').prop('onSubmit') as () => void)();
     });
     wrapper.update();
     expect(onSubmitMock).toHaveBeenCalled();
