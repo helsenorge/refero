@@ -24,7 +24,7 @@ import {
   getMinValueExtensionValue,
   getQuestionnaireUnitExtensionValue,
 } from '../../../util/extension';
-import { isReadOnly, isRequired, getId, getDecimalPattern, getSublabelText } from '../../../util/index';
+import { isReadOnly, isRequired, getId, getDecimalPattern, getSublabelText, renderPrefix, getText } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Resources } from '../../../util/resources';
 import { Path } from '../../../util/refero-core';
@@ -160,7 +160,7 @@ class Quantity extends React.Component<Props & ValidationProps, {}> {
             inputId={getId(this.props.id)}
             name={getId(this.props.id)}
             value={value !== undefined ? value + '' : ''}
-            label={<Label item={item} onRenderMarkdown={onRenderMarkdown} questionnaire={questionnaire} resources={this.props.resources} />}
+            label={`${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, this.props.resources)}`}
             required={isRequired(item)}
             placeholder={getPlaceholder(item)}
             max={getMaxValueExtensionValue(item)}

@@ -7,7 +7,7 @@ import Validation from '@helsenorge/designsystem-react/components/Validation';
 import Input from '@helsenorge/designsystem-react/components/Input'
 
 import { getValidationTextExtension, getPlaceholder, getMinLengthExtensionValue, getRegexExtension } from '../../../util/extension';
-import { isReadOnly, isRequired, getId, getStringValue, getPDFStringValue, getMaxLength, getSublabelText } from '../../../util/index';
+import { isReadOnly, isRequired, getId, getStringValue, getPDFStringValue, getMaxLength, getSublabelText, renderPrefix, getText } from '../../../util/index';
 import Label from '../label';
 import SubLabel from '../sublabel';
 import Pdf from '../textview';
@@ -57,7 +57,7 @@ const textField: React.SFC<Props & ValidationProps> = ({
         inputId={getId(id)}
         name={getId(id)}
         value={getStringValue(answer)}
-        label={<Label item={item} onRenderMarkdown={onRenderMarkdown} questionnaire={questionnaire} resources={resources} />}
+        label={`${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`}
         required={isRequired(item)}
         placeholder={getPlaceholder(item)}
         min={getMinLengthExtensionValue(item)}

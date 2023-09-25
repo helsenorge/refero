@@ -24,6 +24,8 @@ import {
   validateText,
   getTextValidationErrorMessage,
   getSublabelText,
+  renderPrefix,
+  getText,
 } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Resources } from '../../../util/resources';
@@ -124,7 +126,6 @@ export class String extends React.Component<Props & ValidationProps, {}> {
     //validateOnExternalUpdate={true}
     //stringOverMaxLengthError={resources?.stringOverMaxLengthError}
     //errorText={this.getValidationErrorMessage()}
-    
 
     return (
       <div className="page_refero__component page_refero__component_string">
@@ -134,7 +135,7 @@ export class String extends React.Component<Props & ValidationProps, {}> {
             inputId={getId(this.props.id)}
             name={getId(this.props.id)}
             value={getStringValue(answer)}
-            label={<Label item={item} onRenderMarkdown={onRenderMarkdown} questionnaire={questionnaire} resources={resources} />}
+            label={`${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`}
             required={isRequired(item)}
             placeholder={getPlaceholder(item)}
             min={getMinLengthExtensionValue(item)}

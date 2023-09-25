@@ -13,7 +13,7 @@ import Input from '@helsenorge/designsystem-react/components/Input';
 import { NewValueAction, newDecimalValueAsync } from '../../../actions/newValue';
 import { GlobalState } from '../../../reducers';
 import { getValidationTextExtension, getPlaceholder, getMaxValueExtensionValue, getMinValueExtensionValue } from '../../../util/extension';
-import { isReadOnly, isRequired, getId, getDecimalPattern, getSublabelText } from '../../../util/index';
+import { isReadOnly, isRequired, getId, getDecimalPattern, getSublabelText, renderPrefix, getText } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Resources } from '../../../util/resources';
 import { Path } from '../../../util/refero-core';
@@ -131,14 +131,7 @@ class Decimal extends React.Component<Props & ValidationProps, {}> {
             inputId={getId(this.props.id)}
             name={getId(this.props.id)}
             value={value ? value + '' : ''}
-            label={
-              <Label
-                item={item}
-                onRenderMarkdown={onRenderMarkdown}
-                questionnaire={this.props.questionnaire}
-                resources={this.props.resources}
-              />
-            }
+            label={`${renderPrefix(item)} ${getText(item, onRenderMarkdown, this.props.questionnaire, this.props.resources)}`}
             required={isRequired(item)}
             placeholder={getPlaceholder(item)}
             max={getMaxValueExtensionValue(item)}

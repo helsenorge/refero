@@ -13,7 +13,7 @@ import Input from '@helsenorge/designsystem-react/components/Input';
 import { NewValueAction, newIntegerValueAsync } from '../../../actions/newValue';
 import { GlobalState } from '../../../reducers';
 import { getValidationTextExtension, getPlaceholder, getMaxValueExtensionValue, getMinValueExtensionValue } from '../../../util/extension';
-import { isReadOnly, isRequired, getId, getSublabelText } from '../../../util/index';
+import { isReadOnly, isRequired, getId, getSublabelText, renderPrefix, getText } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Resources } from '../../../util/resources';
 import { Path } from '../../../util/refero-core';
@@ -47,7 +47,7 @@ class Integer extends React.Component<Props & ValidationProps, {}> {
   getValue(): string | number | number[] | undefined {
     const { item, answer } = this.props;
     if (answer && Array.isArray(answer)) {
-      return answer.map((m) => m.valueInteger);
+      return answer.map(m => m.valueInteger);
     }
     if (answer && answer.valueInteger !== undefined && answer.valueInteger !== null) {
       return answer.valueInteger;
@@ -138,15 +138,12 @@ class Integer extends React.Component<Props & ValidationProps, {}> {
             inputId={getId(this.props.id)}
             name={getId(this.props.id)}
             value={value !== undefined && value !== null ? value + '' : ''}
-            
-            label={
-              <Label
-                item={this.props.item}
-                onRenderMarkdown={this.props.onRenderMarkdown}
-                questionnaire={this.props.questionnaire}
-                resources={this.props.resources}
-              />
-            }
+            label={`${renderPrefix(this.props.item)} ${getText(
+              this.props.item,
+              this.props.onRenderMarkdown,
+              this.props.questionnaire,
+              this.props.resources
+            )}`}
             required={isRequired(this.props.item)}
             placeholder={getPlaceholder(this.props.item)}
             max={getMaxValueExtensionValue(this.props.item)}
