@@ -3,7 +3,7 @@ import * as React from 'react';
 import { Collapse } from 'react-collapse';
 
 import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer } from '../../../types/fhir';
-import { Options } from '../../../types/form types/radioGroupOptions';
+import { Options } from '../../../types/formTypes/radioGroupOptions';
 
 import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 import Validation from '@helsenorge/designsystem-react/components/Validation';

@@ -3,16 +3,15 @@ import * as React from 'react';
 import { Collapse } from 'react-collapse';
 
 import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer } from '../../../types/fhir';
-import { Options } from '../../../types/form types/radioGroupOptions';
+import { Options } from '../../../types/formTypes/radioGroupOptions';
 
 import Validation from '@helsenorge/designsystem-react/components/Validation';
-import { RadioGroup } from '@helsenorge/form/components/radio-group';
+import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
+import RadioButton from '@helsenorge/designsystem-react/components/RadioButton';
 
 import { shouldShowExtraChoice } from '../../../util/choice';
-import { isRequired, getId, getSublabelText } from '../../../util/index';
+import { getId, getText, isRequired } from '../../../util/index';
 import { Resources } from '../../../util/resources';
-import Label from '../label';
-import SubLabel from '../sublabel';
 
 interface Props {
   options?: Array<Options>;
@@ -57,27 +56,38 @@ const RadioView: React.SFC<Props> = ({
   if (!options) {
     return null;
   }
-  const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
+  // const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
+
+  // legend={<Label item={item} onRenderMarkdown={onRenderMarkdown} questionnaire={questionnaire} resources={resources} />}
+  // subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
+  // id={getId(id)}
+  // onChange={handleChange}
+  // selected={selected ? selected[0] : undefined}
+  // isRequired={isRequired(item)}
+  // validator={validateInput}
+  // getErrorMessage={getErrorMessage}
+  // helpButton={renderHelpButton()}
+  // helpElement={renderHelpElement()}
+  // validateOnExternalUpdate={true}
+  // isStyleBlue
 
   return (
     <div className="page_refero__component page_refero__component_openchoice page_refero__component_openchoice_radiobutton">
       <Collapse isOpened>
         <Validation {...other}>
-          <RadioGroup
-            legend={<Label item={item} onRenderMarkdown={onRenderMarkdown} questionnaire={questionnaire} resources={resources} />}
-            subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
-            id={getId(id)}
-            options={options}
-            onChange={handleChange}
-            selected={selected ? selected[0] : undefined}
-            isRequired={isRequired(item)}
-            validator={validateInput}
-            getErrorMessage={getErrorMessage}
-            helpButton={renderHelpButton()}
-            helpElement={renderHelpElement()}
-            validateOnExternalUpdate={true}
-            isStyleBlue
-          />
+          <FormGroup legend={getText(item, onRenderMarkdown, questionnaire, resources)}>
+            {options.map((option: Options, index: number) => (
+              <RadioButton
+                inputId={getId(id)}
+                key={getId(id) + index.toString()}
+                label={option.label}
+                required={isRequired(item)}
+                value={option.type}
+                onChange={() => handleChange}
+                disabled={option.disabled}
+              />
+            ))}
+          </FormGroup>
         </Validation>
         {shouldShowExtraChoice(answer) ? (
           <div className="page_refero__component_openchoice_openfield">{renderOpenField()}</div>

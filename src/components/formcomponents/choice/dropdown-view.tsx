@@ -8,7 +8,7 @@ import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 import Validation from '@helsenorge/designsystem-react/components/Validation';
 import Select from '@helsenorge/designsystem-react/components/Select';
 import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
-import { Options } from '../../../types/form types/radioGroupOptions';
+import { Options } from '../../../types/formTypes/radioGroupOptions';
 
 import { getValidationTextExtension, getPlaceholder } from '../../../util/extension';
 import { isRequired, getId, getSublabelText, getText } from '../../../util/index';

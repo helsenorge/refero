@@ -13,8 +13,8 @@ import {
   ValueSet,
 } from '../../../types/fhir';
 import { OrgenhetHierarki } from '../../../types/orgenhetHierarki';
-import { ValidationProps } from '../../../types/form types/validation';
-import { Options } from '../../../types/form types/radioGroupOptions';
+import { ValidationProps } from '../../../types/formTypes/validation';
+import { Options } from '../../../types/formTypes/radioGroupOptions';
 
 import { NewValueAction, newCodingValueAsync, removeCodingValueAsync } from '../../../actions/newValue';
 import { GlobalState } from '../../../reducers';

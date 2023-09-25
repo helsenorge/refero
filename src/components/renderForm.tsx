@@ -1,8 +1,10 @@
 import * as React from 'react';
-import Form, { ButtonType } from '@helsenorge/form/components/form';
+// import Form from '@helsenorge/form/components/form';
 import { Resources } from '../util/resources';
 import { ReferoProps } from '../types/referoProps';
-import { ButtonOrder } from '../types/form types/formButton';
+// import { buttonOrderStepView, buttonOrderNormalView } from '../types/formTypes/formButton';
+
+import { useForm, SubmitHandler } from 'react-hook-form';
 
 interface RenderFormProps {
   isAuthorized: boolean;
@@ -18,94 +20,28 @@ interface RenderFormProps {
   previousStep?: () => void;
 }
 
-const RenderForm = ({
-  isAuthorized,
-  isStepView,
-  referoProps,
-  resources,
-  formItemsToBeRendered,
-  onSave,
-  onSubmit,
-  displayNextButton,
-  displayPreviousButton,
-  nextStep,
-  previousStep,
-}: RenderFormProps) => {
-  const displayPauseButtonInNormalView = referoProps.onSave ? onSave : undefined;
-  const displayPauseButtonInStepView = displayPreviousButton ? previousStep : undefined;
+interface IFormInput {
+  example: string;
+}
 
-  const buttonOrderStepView: ButtonOrder = {
-    1: ButtonType.pauseButton,
-    2: ButtonType.submitButton,
-    3: ButtonType.cancelButton,
-    4: ButtonType.draftButton,
+const RenderForm = ({
+  formItemsToBeRendered,
+  onSubmit,
+}: RenderFormProps) => {
+  const { handleSubmit } = useForm<IFormInput>();
+  const onSubmitReactHookForm: SubmitHandler<IFormInput> = data => {
+    console.log(data);
+    onSubmit();
   };
-  const buttonOrderNormalView: ButtonOrder = {
-    1: ButtonType.submitButton,
-    2: ButtonType.pauseButton,
-    3: ButtonType.cancelButton,
-    4: ButtonType.draftButton,
-  };
+
+  // const displayPauseButtonInNormalView = referoProps.onSave ? onSave : undefined;
+  // const displayPauseButtonInStepView = displayPreviousButton ? previousStep : undefined;
 
   return (
     <>
-      {isAuthorized && (
-        <>
-          <Form
-            action="#"
-            disabled={referoProps.blockSubmit}
-            submitButtonText={displayNextButton ? resources.nextStep : resources.formSend}
-            errorMessage={resources.formError}
-            onSubmit={displayNextButton ? nextStep : onSubmit}
-            requiredLabel={resources.formRequired}
-            optionalLabel={resources.formOptional}
-            cancelButtonText={resources.formCancel}
-            pauseButtonText={displayPreviousButton ? resources.previousStep : resources.formSave}
-            onPause={isStepView ? displayPauseButtonInStepView : displayPauseButtonInNormalView}
-            pauseButtonClasses={`${isStepView ? 'page_refero__pausebutton_stepView' : 'page_refero__pausebutton'}`}
-            pauseButtonType="display"
-            submitButtonType="display"
-            cancelButtonType="display"
-            pauseButtonLevel="secondary"
-            buttonOrder={isStepView ? buttonOrderStepView : buttonOrderNormalView}
-            onCancel={referoProps.onCancel}
-            buttonClasses="page_refero__saveblock"
-            validationSummaryPlacement={referoProps.validationSummaryPlacement}
-            validationSummary={{
-              enable: true,
-              header: resources.validationSummaryHeader,
-            }}
-            submitButtonDisabled={referoProps.submitButtonDisabled}
-            pauseButtonDisabled={referoProps.saveButtonDisabled}
-            onFieldsNotCorrectlyFilledOut={referoProps.onFieldsNotCorrectlyFilledOut}
-          >
-            {formItemsToBeRendered}
-          </Form>
-        </>
-      )}
-      {!isAuthorized && (
-        <>
-          <Form
-            action="#"
-            disabled={referoProps.blockSubmit}
-            errorMessage={resources.formError}
-            requiredLabel={resources.formRequired}
-            optionalLabel={resources.formOptional}
-            buttonOrder={isStepView ? buttonOrderStepView : buttonOrderNormalView}
-            triggerPreventDefaultOnSubmit
-            validationSummaryPlacement={referoProps.validationSummaryPlacement}
-            validationSummary={{
-              enable: true,
-              header: resources.validationSummaryHeader,
-            }}
-            submitButtonDisabled={referoProps.submitButtonDisabled}
-            pauseButtonDisabled={referoProps.saveButtonDisabled}
-            onFieldsNotCorrectlyFilledOut={referoProps.onFieldsNotCorrectlyFilledOut}
-          ></Form>
-          {formItemsToBeRendered}
-          <div className="page_refero__buttonwrapper page_refero__saveblock">{referoProps.loginButton}</div>
-        </>
-      )}
+      <form onSubmit={handleSubmit(onSubmitReactHookForm)}>
+        {formItemsToBeRendered}
+      </form>
     </>
   );
 };

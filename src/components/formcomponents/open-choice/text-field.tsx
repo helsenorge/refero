@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer } from '../../../types/fhir';
-import { ValidationProps } from '../../../types/form types/validation';
+import { ValidationProps } from '../../../types/formTypes/validation';
 
 import Validation from '@helsenorge/designsystem-react/components/Validation';
 import Input from '@helsenorge/designsystem-react/components/Input'

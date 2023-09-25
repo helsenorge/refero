@@ -26,7 +26,7 @@ import Label from '../label';
 import SubLabel from '../sublabel';
 import TextView from '../textview';
 import AttachmentHtml from './attachmenthtml';
-import { ValidationProps } from '../../../types/form types/validation';
+import { ValidationProps } from '../../../types/formTypes/validation';
 
 export interface Props {
   dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;

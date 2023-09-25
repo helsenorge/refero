@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
 import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem } from '../../../types/fhir';
-import { ValidationProps } from '../../../types/form types/validation';
+import { ValidationProps } from '../../../types/formTypes/validation';
 
 import Expander from '@helsenorge/designsystem-react/components/Expander';
 

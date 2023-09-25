@@ -11,7 +11,7 @@ import {
   ValueSetComposeIncludeConcept,
   ValueSetComposeInclude,
 } from '../types/fhir';
-import { Options } from '../types/form types/radioGroupOptions';
+import { Options } from '../types/formTypes/radioGroupOptions';
 
 import ExtensionConstants from '../constants/extensions';
 import Constants, { OPEN_CHOICE_ID } from '../constants/index';

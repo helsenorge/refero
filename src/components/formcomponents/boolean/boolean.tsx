@@ -18,7 +18,7 @@ import { Path } from '../../../util/refero-core';
 import withCommonFunctions from '../../with-common-functions';
 import Label from '../label';
 import Pdf from './pdf';
-import { ValidationProps } from '../../../types/form types/validation';
+import { ValidationProps } from '../../../types/formTypes/validation';
 import { getValidationTextExtension } from '../../../util/extension';
 
 export interface Props {
