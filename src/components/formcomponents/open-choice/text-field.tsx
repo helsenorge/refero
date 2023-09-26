@@ -67,7 +67,7 @@ const textField: React.SFC<Props & ValidationProps> = ({
         type="text"
         inputId={getId(id)}
         name={getId(id)}
-        value={getStringValue(answer)}
+        defaultValue={getStringValue(answer)}
         label={
           <Label
             labelTexts={[{ text: labelText, type: 'semibold' }]}

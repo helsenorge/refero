@@ -159,7 +159,7 @@ class Quantity extends React.Component<Props & ValidationProps, {}> {
             type="number"
             inputId={getId(this.props.id)}
             name={getId(this.props.id)}
-            value={value !== undefined ? value + '' : ''}
+            defaultValue={value !== undefined ? value + '' : ''}
             label={
               <Label
                 labelTexts={[{ text: labelText, type: 'semibold' }]}

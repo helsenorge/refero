@@ -119,7 +119,6 @@ export class String extends React.Component<Props & ValidationProps, {}> {
 
     //onChangeValidator={this.validateText}
     //showLabel={true}
-    //subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
     //pattern={getRegexExtension(item)}
     //requiredErrorMessage={this.getRequiredErrorMessage(item)}
     //helpButton={this.props.renderHelpButton()}
@@ -135,7 +134,7 @@ export class String extends React.Component<Props & ValidationProps, {}> {
             type="text"
             inputId={getId(this.props.id)}
             name={getId(this.props.id)}
-            value={getStringValue(answer)}
+            defaultValue={getStringValue(answer)}
             label={
               <Label
                 labelTexts={[{ text: labelText, type: 'semibold' }]}

@@ -70,10 +70,10 @@ const RadioView: React.SFC<Props> = ({
             {options.map((option: Options, index: number) => (
               <RadioButton
                 inputId={getId(id)}
-                key={getId(id) + index.toString()}
+                key={`${getId(id)}-${index.toString()}`}
                 label={
                   <Label
-                    labelTexts={[{ text: option.label, type: 'semibold' }]}
+                    labelTexts={[{ text: option.label }]}
                     sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
                   />
                 }

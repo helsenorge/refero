@@ -101,7 +101,6 @@ class DropdownView extends React.Component<Props, {}> {
                   }
                 />
               }
-
               required={isRequired(item)}
               value={selected ? selected[0] : undefined}
               errorText={getValidationTextExtension(item)}

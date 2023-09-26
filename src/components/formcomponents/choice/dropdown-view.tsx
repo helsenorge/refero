@@ -92,7 +92,9 @@ class DropdownView extends React.Component<Props, {}> {
               errorText={getValidationTextExtension(item)}
               className="page_refero__input"
             >
-              {dropdownOptions}
+              {dropdownOptions.map(dropdownOption => (
+                <option value={dropdownOption.label}>{dropdownOption.label}</option>
+              ))}
             </Select>
           </Validation>
           {renderDeleteButton('page_refero__deletebutton--margin-top')}

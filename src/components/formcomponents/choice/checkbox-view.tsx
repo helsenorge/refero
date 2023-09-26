@@ -75,13 +75,13 @@ const CheckboxView: React.SFC<Props> = ({
           <FormGroup legend={getText(item, onRenderMarkdown, questionnaire, resources)}>
             {checkboxes.map((checkbox, index) => (
               <Checkbox
-              label={
-                <Label
-                  labelTexts={[{ text: checkbox.label, type: 'semibold' }]}
-                  sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
-                />
-              }
-                key={checkbox.id + index.toString()}
+                label={
+                  <Label
+                    labelTexts={[{ text: checkbox.label }]}
+                    sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+                  />
+                }
+                key={`${checkbox.id}-${index.toString()}`}
                 inputId={`${id}-${checkbox.id}`}
                 checked={checkbox.checked}
                 onChange={() => handleChange(checkbox.id)}
