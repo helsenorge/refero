@@ -8,15 +8,15 @@ import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireRespon
 import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 import Checkbox from '@helsenorge/designsystem-react/components/Checkbox';
 import Validation from '@helsenorge/designsystem-react/components/Validation';
+import Label from '@helsenorge/designsystem-react/components/Label';
 
 import { NewValueAction, newBooleanValueAsync } from '../../../actions/newValue';
 import { GlobalState } from '../../../reducers';
-import { isReadOnly, isRequired } from '../../../util/index';
+import { getText, isReadOnly, isRequired, renderPrefix } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Resources } from '../../../util/resources';
 import { Path } from '../../../util/refero-core';
 import withCommonFunctions from '../../with-common-functions';
-import Label from '../label';
 import Pdf from './pdf';
 import { ValidationProps } from '../../../types/formTypes/validation';
 import { getValidationTextExtension } from '../../../util/extension';
@@ -69,17 +69,6 @@ class Boolean extends React.Component<Props & ValidationProps, {}> {
     }
   };
 
-  getLabel = (): JSX.Element => {
-    return (
-      <Label
-        item={this.props.item}
-        onRenderMarkdown={this.props.onRenderMarkdown}
-        questionnaire={this.props.questionnaire}
-        resources={this.props.resources}
-      />
-    );
-  };
-
   shouldComponentUpdate(nextProps: Props): boolean {
     const responseItemHasChanged = this.props.responseItem !== nextProps.responseItem;
     const helpItemHasChanged = this.props.isHelpOpen !== nextProps.isHelpOpen;
@@ -91,6 +80,8 @@ class Boolean extends React.Component<Props & ValidationProps, {}> {
   }
 
   render(): JSX.Element | null {
+    const labelText = `${renderPrefix(this.props.item)} ${getText(this.props.item, this.props.onRenderMarkdown, this.props.questionnaire, this.props.resources)}`;
+    
     if (this.props.pdf) {
       return <Pdf item={this.props.item} checked={this.getValue()} onRenderMarkdown={this.props.onRenderMarkdown} />;
     } else if (isReadOnly(this.props.item)) {
@@ -100,7 +91,7 @@ class Boolean extends React.Component<Props & ValidationProps, {}> {
 
       return (
         <Checkbox
-          label={this.getLabel()}
+          label={labelText}
           checked={this.getValue()}
           disabled
           onChange={(): void => {
@@ -122,7 +113,7 @@ class Boolean extends React.Component<Props & ValidationProps, {}> {
       <div className="page_refero__component page_refero__component_boolean">
         <Validation {...this.props}>
           <Checkbox
-            label={this.getLabel()}
+            label={<Label labelTexts={[{text: labelText}]} />}
             required={isRequired(this.props.item)}
             checked={this.getValue()}
             onChange={this.handleChange}
