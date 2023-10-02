@@ -71,4 +71,5 @@ export interface ReferoProps {
   fetchReceivers?: (successCallback: (receivers: Array<OrgenhetHierarki>) => void, errorCallback: () => void) => void;
   onFieldsNotCorrectlyFilledOut?: () => void;
   onStepChange?: (newIndex: number) => void;
+  isHelsenorgeForm?: boolean;
 }

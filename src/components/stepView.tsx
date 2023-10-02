@@ -15,9 +15,10 @@ interface StepViewProps {
   onSave: () => void;
   onSubmit: () => void;
   onStepChange?: (stepIndex: number) => void;
+  isHelsenorgeForm?: boolean;
 }
 
-const StepView = ({ isAuthorized, referoProps, resources, formItems, formDefinition, onSave, onSubmit, onStepChange }: StepViewProps) => {
+const StepView = ({ isAuthorized, referoProps, resources, formItems, formDefinition, onSave, onSubmit, onStepChange, isHelsenorgeForm }: StepViewProps) => {
   const stepArray: Array<JSX.Element> | undefined = [];
   const [stepIndex, setStepIndex] = React.useState(0);
 
@@ -57,6 +58,7 @@ const StepView = ({ isAuthorized, referoProps, resources, formItems, formDefinit
         displayPreviousButton={stepIndex > 0}
         nextStep={nextStep}
         previousStep={previousStep}
+        isHelsenorgeForm={isHelsenorgeForm && isHelsenorgeForm}
       />
     </>
   );

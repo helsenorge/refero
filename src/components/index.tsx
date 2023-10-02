@@ -299,6 +299,7 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
       saveButtonDisabled,
       onFieldsNotCorrectlyFilledOut,
       onStepChange,
+      isHelsenorgeForm
     } = this.props;
     if (!formDefinition || !resources) {
       return;
@@ -316,6 +317,7 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
       saveButtonDisabled,
       onFieldsNotCorrectlyFilledOut,
       onStepChange,
+      isHelsenorgeForm
     };
 
     return (
@@ -330,6 +332,7 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
             onSave={this.onSave}
             onSubmit={this.onSubmit}
             onStepChange={onStepChange}
+            isHelsenorgeForm={isHelsenorgeForm}
           />
         ) : (
           <RenderForm
@@ -340,6 +343,7 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
             formItemsToBeRendered={this.renderFormItems()}
             onSave={this.onSave}
             onSubmit={this.onSubmit}
+            isHelsenorgeForm={isHelsenorgeForm}
           />
         )}
       </>

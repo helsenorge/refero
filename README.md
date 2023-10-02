@@ -68,9 +68,12 @@ class App extends Component<{}, {}> {
           fetchReceivers={...}
           onFieldsNotCorrectlyFilledOut={...}
           onStepChange={...}
+          isHelsenorgeForm={...}
         />
       </Provider>
-    );
+    )
+  }
+};
 ```
 
 ## Props
@@ -113,6 +116,7 @@ class App extends Component<{}, {}> {
 | fetchReceivers                |          | callback                   |         | Callback when the receiver component is mounted                                                               |
 | onFieldsNotCorrectlyFilledOut |          | callback                   |         | Callback when a field is incorrectly filled out                                                               |
 | onStepChange                  |          | callback                   |         | Callback when the current step in step-views changes                                                          |
+| isHelsenorgeForm              |          | boolean                    |         | Whether the form is a Helsenorge form or not                                                                  |
 
 
 ### `questionnaire: Questionnaire`
@@ -171,6 +175,10 @@ the form X^Y into just X, by stripping everything from the caret to the end of t
 Configuration for when autosuggest fields should call `fetchValueSet`. `minSearchCharacters` is the minumum number of letters which must be
 typed before `fetchValueSet` will be called. Default value is 0. `typingSearchDelay` is the amount of milliseconds to wait after the user
 stop typing before calling `fetchValueSet`. Default value is 500.
+
+### `isHelsenorgeForm: boolean`
+
+When this property is `true`, additional stylings for Helsenorge forms are applied.
 
 ## Callback API
 
