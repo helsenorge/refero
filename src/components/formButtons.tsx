@@ -15,9 +15,11 @@ interface FormButtonsInterface {
   submitButtonText: string;
   cancelButtonText: string;
   pauseButtonText: string;
-  onSubmitButtonClicked: (() => void) | undefined;
-  onCancelButtonClicked: (() => void) | undefined;
-  onPauseButtonClicked: (() => void) | undefined;
+  submitButtonDisabled?: boolean;
+  pauseButtonDisabled?: boolean;
+  onSubmitButtonClicked?: () => void;
+  onCancelButtonClicked?: () => void;
+  onPauseButtonClicked?: () => void;
   isHelsenorgeForm?: boolean;
 }
 
@@ -26,6 +28,8 @@ const FormButtons = ({
   submitButtonText,
   cancelButtonText,
   pauseButtonText,
+  submitButtonDisabled,
+  pauseButtonDisabled,
   onSubmitButtonClicked,
   onCancelButtonClicked,
   onPauseButtonClicked,
@@ -35,7 +39,7 @@ const FormButtons = ({
     //onsubmit og onformsubmit
     <div className="submitButtonStyle">
       <style>{submitButtonStyle}</style>
-      <Button type="submit" onClick={onSubmitButtonClicked}>
+      <Button type="submit" disabled={submitButtonDisabled} onClick={onSubmitButtonClicked}>
         {submitButtonText}
       </Button>
     </div>
@@ -44,7 +48,7 @@ const FormButtons = ({
     <div className="pauseButtonStyle">
       <style>{pauseButtonStyle}</style>
       <style>{isHelsenorgeForm ? hidePauseButtonOnSmallScreen : displayPauseButtonOnSmallScreen}</style>
-      <Button variant="outline" onClick={onPauseButtonClicked}>
+      <Button variant="outline" disabled={pauseButtonDisabled} onClick={onPauseButtonClicked}>
         {pauseButtonText}
       </Button>
     </div>

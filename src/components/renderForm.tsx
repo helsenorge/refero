@@ -6,6 +6,7 @@ import { buttonOrderStepView, buttonOrderNormalView } from '../types/formTypes/f
 
 import { useForm, SubmitHandler } from 'react-hook-form';
 import FormButtons from './formButtons';
+import Loader from '@helsenorge/designsystem-react/components/Loader';
 
 interface RenderFormProps {
   isAuthorized: boolean;
@@ -26,7 +27,19 @@ interface IFormInput {
   example: string;
 }
 
-const RenderForm = ({ isStepView, referoProps, resources, formItemsToBeRendered, onSave, onSubmit, displayNextButton, displayPreviousButton, nextStep, previousStep, isHelsenorgeForm}: RenderFormProps) => {
+const RenderForm = ({
+  isStepView,
+  referoProps,
+  resources,
+  formItemsToBeRendered,
+  onSave,
+  onSubmit,
+  displayNextButton,
+  displayPreviousButton,
+  nextStep,
+  previousStep,
+  isHelsenorgeForm,
+}: RenderFormProps) => {
   const { handleSubmit } = useForm<IFormInput>();
   const onSubmitReactHookForm: SubmitHandler<IFormInput> = data => {
     console.log(data);
@@ -36,15 +49,21 @@ const RenderForm = ({ isStepView, referoProps, resources, formItemsToBeRendered,
   const onPauseButtonClickedInNormalView = referoProps.onSave ? onSave : undefined;
   const onPauseButtonClickedInStepView = displayPreviousButton ? previousStep : undefined;
 
+  if (referoProps.blockSubmit) {
+    return <Loader size={'medium'} overlay={'parent'} />;
+  }
+
   return (
     <>
-      <form onSubmit={handleSubmit(onSubmitReactHookForm)}>
+      <form action="#" onSubmit={handleSubmit(onSubmitReactHookForm)}>
         {formItemsToBeRendered}
         <FormButtons
           buttonOrder={isStepView ? buttonOrderStepView : buttonOrderNormalView}
           submitButtonText={displayNextButton && resources.nextStep ? resources.nextStep : resources.formSend}
           cancelButtonText={resources.formCancel}
           pauseButtonText={displayPreviousButton && resources.previousStep ? resources.previousStep : resources.formSave}
+          submitButtonDisabled={referoProps.blockSubmit}
+          pauseButtonDisabled={referoProps.saveButtonDisabled}
           onSubmitButtonClicked={displayNextButton ? nextStep : onSubmit}
           onCancelButtonClicked={referoProps.onCancel}
           onPauseButtonClicked={isStepView ? onPauseButtonClickedInStepView : onPauseButtonClickedInNormalView}
