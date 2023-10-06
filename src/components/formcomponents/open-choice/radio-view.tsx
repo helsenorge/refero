@@ -58,14 +58,11 @@ const RadioView: React.SFC<Props> = ({
     return null;
   }
   const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
+  const selectedValue = (selected && selected[0]) || '';
 
-  // legend={<Label item={item} onRenderMarkdown={onRenderMarkdown} questionnaire={questionnaire} resources={resources} />}
+  // RadioButtonGroup:
   // id={getId(id)}
-  // onChange={handleChange}
-  // selected={selected ? selected[0] : undefined}
-  // isRequired={isRequired(item)}
   // validator={validateInput}
-  // getErrorMessage={getErrorMessage}
   // helpButton={renderHelpButton()}
   // helpElement={renderHelpElement()}
   // validateOnExternalUpdate={true}
@@ -75,10 +72,14 @@ const RadioView: React.SFC<Props> = ({
     <div className="page_refero__component page_refero__component_openchoice page_refero__component_openchoice_radiobutton">
       <Collapse isOpened>
         <Validation {...other}>
-          <FormGroup legend={getText(item, onRenderMarkdown, questionnaire, resources)}>
+          <FormGroup
+            legend={getText(item, onRenderMarkdown, questionnaire, resources)}
+            error={getErrorMessage(selectedValue) !== '' ? getErrorMessage(selectedValue) : undefined}
+          >
             {options.map((option: Options, index: number) => (
               <RadioButton
                 inputId={getId(id)}
+                testId='radioButton-openChoice'
                 key={`${getId(id)}-${index.toString()}`}
                 label={
                   <Label
@@ -86,10 +87,11 @@ const RadioView: React.SFC<Props> = ({
                     sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
                   />
                 }
-                required={isRequired(item)}
+                defaultChecked={selectedValue === option.type}
                 value={option.type}
                 onChange={() => handleChange}
                 disabled={option.disabled}
+                required={isRequired(item)}
               />
             ))}
           </FormGroup>

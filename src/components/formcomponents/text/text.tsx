@@ -26,7 +26,6 @@ import {
   getId,
   renderPrefix,
   getText,
-  getStringValue,
   getMaxLength,
   getPDFStringValue,
   validateText,
@@ -62,6 +61,16 @@ export interface Props {
   shouldExpanderRenderChildrenWhenClosed?: boolean;
 }
 export class Text extends React.Component<Props & ValidationProps, {}> {
+  state = {
+    inputValue: '',
+  };
+
+  setInputValue = (value: string) => {
+    this.setState({
+      inputValue: value,
+    });
+  };
+
   showCounter(): boolean {
     if (getMaxLength(this.props.item) || getMinLengthExtensionValue(this.props.item)) {
       return true;
@@ -173,21 +182,20 @@ export class Text extends React.Component<Props & ValidationProps, {}> {
     const labelText = SanitizeText(`${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`) || '';
     const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
 
-    //BYTTA ROWS TIL MAXROWS
-    //Fjernet min og max length, HVA SKAL DETTE BYTTES MED??
-    //value={getStringValue(answer)}
-    //showLabel={true}
-    //subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
-    //max={getMaxLength(item)}
-    //min={getMinLengthExtensionValue(item)}
-    //counter={this.showCounter()}
-    //validator={this.validateText}
-    //errorText={this.getValidationErrorMessage}
-    //requiredErrorMessage={this.getRequiredErrorMessage(item)}
-    //helpButton={this.props.renderHelpButton()}
-    //helpElement={this.props.renderHelpElement()}
-    //validateOnExternalUpdate={true}
-    //stringOverMaxLengthError={resources?.stringOverMaxLengthError}
+    // BYTTA ROWS TIL MAXROWS
+    // Fjernet min og max length, HVA SKAL DETTE BYTTES MED??
+    // value={getStringValue(answer)}
+    // showLabel={true}
+    // max={getMaxLength(item)}
+    // min={getMinLengthExtensionValue(item)}
+    // counter={this.showCounter()}
+    // validator={this.validateText}
+    // errorText={this.getValidationErrorMessage}
+    // requiredErrorMessage={this.getRequiredErrorMessage(item)}
+    // helpButton={this.props.renderHelpButton()}
+    // helpElement={this.props.renderHelpElement()}
+    // validateOnExternalUpdate={true}
+    // stringOverMaxLengthError={resources?.stringOverMaxLengthError}
 
     return (
       <div className="page_refero__component page_refero__component_text">
@@ -203,11 +211,13 @@ export class Text extends React.Component<Props & ValidationProps, {}> {
               />
             }
             placeholder={getPlaceholder(item)}
-            onChange={(event: React.FormEvent<{}>): void => {
+            onChange={(event: React.FormEvent<HTMLTextAreaElement>): void => {
               event.persist();
               this.debouncedHandleChange(event);
+              this.setInputValue(event.currentTarget.value);
             }}
             maxText={resources?.maxLengthText}
+            errorText={this.getValidationErrorMessage(this.state.inputValue)}
           />
         </Validation>
         {this.props.renderDeleteButton('page_refero__deletebutton--margin-top')}

@@ -14,7 +14,7 @@ import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label
 import { NewValueAction, newDecimalValueAsync } from '../../../actions/newValue';
 import { GlobalState } from '../../../reducers';
 import { getValidationTextExtension, getPlaceholder, getMaxValueExtensionValue, getMinValueExtensionValue } from '../../../util/extension';
-import { isReadOnly, isRequired, getId, getDecimalPattern, getSublabelText, renderPrefix, getText } from '../../../util/index';
+import { isReadOnly, isRequired, getId, getSublabelText, renderPrefix, getText } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Resources } from '../../../util/resources';
 import { Path } from '../../../util/refero-core';
@@ -116,11 +116,11 @@ class Decimal extends React.Component<Props & ValidationProps, {}> {
       );
     }
 
-    //showLabel={true}
-    //pattern={getDecimalPattern(item)}
-    //helpButton={this.props.renderHelpButton()}
-    //helpElement={this.props.renderHelpElement()}
-    //validateOnExternalUpdate={true}
+    // showLabel={true}
+    // pattern={getDecimalPattern(item)}
+    // helpButton={this.props.renderHelpButton()}
+    // helpElement={this.props.renderHelpElement()}
+    // validateOnExternalUpdate={true}
 
     return (
       <div className="page_refero__component page_refero__component_decimal">

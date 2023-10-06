@@ -7,7 +7,7 @@ import Validation from '@helsenorge/designsystem-react/components/Validation';
 import Input from '@helsenorge/designsystem-react/components/Input';
 import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
 
-import { getValidationTextExtension, getPlaceholder, getMinLengthExtensionValue, getRegexExtension } from '../../../util/extension';
+import { getValidationTextExtension, getPlaceholder, getMinLengthExtensionValue } from '../../../util/extension';
 import {
   isReadOnly,
   isRequired,
@@ -56,10 +56,10 @@ const textField: React.SFC<Props & ValidationProps> = ({
   const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`;
   const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
 
-  //showLabel={false}
-  //pattern={getRegexExtension(item)}
-  //validateOnExternalUpdate={true}
-  //FORANDRET ONBLUR TIL ONCHANGE
+  // showLabel={false}
+  // pattern={getRegexExtension(item)}
+  // validateOnExternalUpdate={true}
+  // FORANDRET ONBLUR TIL ONCHANGE
 
   return (
     <Validation {...other}>

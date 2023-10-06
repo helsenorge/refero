@@ -74,12 +74,11 @@ class DropdownView extends React.Component<Props, {}> {
       placeholder = new Option(resources.selectDefaultPlaceholder, '');
     }
 
-    //showLabel={true}
-    //onChange={(evt): void => handleChange((evt.target as HTMLInputElement).value)}
-    //placeholder={placeholder}
-    //onChangeValidator={validateInput}
-    //helpButton={renderHelpButton()}
-    //helpElement={renderHelpElement()}
+    // showLabel={true}
+    // onChange={(evt): void => handleChange((evt.target as HTMLInputElement).value)}
+    // onChangeValidator={validateInput}
+    // helpButton={renderHelpButton()}
+    // helpElement={renderHelpElement()}
 
     return (
       <div className="page_refero__component page_refero__component_openchoice page_refero__component_openchoice_dropdown">

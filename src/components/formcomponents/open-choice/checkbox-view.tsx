@@ -12,8 +12,7 @@ import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label
 
 import { shouldShowExtraChoice } from '../../../util/choice';
 import { Resources } from '../../../util/resources';
-import { getSublabelText, getText } from '../../../util';
-import { getValidationTextExtension } from '../../../util/extension';
+import { getSublabelText, getText, isRequired } from '../../../util';
 
 interface Props {
   options?: Array<Options>;
@@ -60,9 +59,7 @@ const CheckboxView: React.SFC<Props> = ({
   });
   const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
 
-  // checkboxes={checkboxes}
-  // handleChange={handleChange}
-  // isRequired={isRequired(item)}
+  // CheckboxGroup:
   // id={getId(id)}
   // max={getMaxOccursExtensionValue(item)}
   // min={getMinOccursExtensionValue(item)}
@@ -78,26 +75,20 @@ const CheckboxView: React.SFC<Props> = ({
           <FormGroup legend={getText(item, onRenderMarkdown, questionnaire, resources)}>
             {checkboxes.map((checkbox, index) => (
               <Checkbox
+                inputId={`${id}-${checkbox.id}`}
+                testId={`checkbox-openChoice`}
+                key={`${checkbox.id}-${index.toString()}`}
                 label={
                   <Label
                     labelTexts={[{ text: checkbox.label }]}
                     sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
                   />
                 }
-                key={`${checkbox.id}-${index.toString()}`}
-                inputId={`${id}-${checkbox.id}`}
                 checked={checkbox.checked}
                 onChange={() => handleChange(checkbox.id)}
-                testId={`${id}-${checkbox.id}`}
+                required={isRequired(item)}
               />
             ))}
-          </FormGroup>
-        </Validation>
-        <Validation>
-          <FormGroup>
-            <Checkbox label={'Heisann hopp'} key={Math.random().toString()} />
-            <Checkbox label={'Heisann hopp 2'} key={Math.random().toString()} />
-            <Checkbox label={'Heisann hopp 3'} key={Math.random().toString()} />
           </FormGroup>
         </Validation>
         {shouldShowExtraChoice(answer) ? (

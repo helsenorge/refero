@@ -25,7 +25,7 @@ import {
   getMinValueExtensionValue,
   getQuestionnaireUnitExtensionValue,
 } from '../../../util/extension';
-import { isReadOnly, isRequired, getId, getDecimalPattern, getSublabelText, renderPrefix, getText } from '../../../util/index';
+import { isReadOnly, isRequired, getId, getSublabelText, renderPrefix, getText } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Resources } from '../../../util/resources';
 import { Path } from '../../../util/refero-core';
@@ -144,13 +144,13 @@ class Quantity extends React.Component<Props & ValidationProps, {}> {
     const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, this.props.resources)}`;
     const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, this.props.resources);
 
-    //size="xSmall" ERSTATTE MED WIDTH???
-    //showLabel={true}
-    //pattern={getDecimalPattern(item)}'
-    //helpButton={this.props.renderHelpButton()}
-    //helpElement={this.props.renderHelpElement()}
-    //validateOnExternalUpdate={true}
-    //<span className="page_refero__unit">{this.getUnit()}</span>
+    // size="xSmall" ERSTATTE MED WIDTH???
+    // showLabel={true}
+    // pattern={getDecimalPattern(item)}'
+    // helpButton={this.props.renderHelpButton()}
+    // helpElement={this.props.renderHelpElement()}
+    // validateOnExternalUpdate={true}
+    // <span className="page_refero__unit">{this.getUnit()}</span>
 
     return (
       <div className="page_refero__component page_refero__component_quantity">

@@ -23,7 +23,7 @@ interface RenderFormProps {
   isHelsenorgeForm?: boolean;
 }
 
-interface IFormInput {
+interface Inputs {
   example: string;
 }
 
@@ -40,8 +40,8 @@ const RenderForm = ({
   previousStep,
   isHelsenorgeForm,
 }: RenderFormProps) => {
-  const { handleSubmit } = useForm<IFormInput>();
-  const onSubmitReactHookForm: SubmitHandler<IFormInput> = data => {
+  const { handleSubmit } = useForm();
+  const onSubmitReactHookForm: SubmitHandler<Inputs> = data => {
     console.log(data);
     onSubmit();
   };

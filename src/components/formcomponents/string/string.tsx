@@ -14,7 +14,7 @@ import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label
 
 import { NewValueAction, newStringValueAsync } from '../../../actions/newValue';
 import { GlobalState } from '../../../reducers';
-import { getPlaceholder, getMinLengthExtensionValue, getRegexExtension } from '../../../util/extension';
+import { getPlaceholder, getMinLengthExtensionValue } from '../../../util/extension';
 import {
   isReadOnly,
   isRequired,
@@ -58,6 +58,16 @@ export interface Props {
 }
 
 export class String extends React.Component<Props & ValidationProps, {}> {
+  state = {
+    inputValue: '',
+  };
+
+  setInputValue = (value: string) => {
+    this.setState({
+      inputValue: value,
+    });
+  };
+
   handleChange = (event: React.FormEvent<{}>): void => {
     const { dispatch, promptLoginMessage, path, item, onAnswerChange } = this.props;
     const value = (event.target as HTMLInputElement).value;
@@ -117,15 +127,14 @@ export class String extends React.Component<Props & ValidationProps, {}> {
     const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`;
     const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
 
-    //onChangeValidator={this.validateText}
-    //showLabel={true}
-    //pattern={getRegexExtension(item)}
-    //requiredErrorMessage={this.getRequiredErrorMessage(item)}
-    //helpButton={this.props.renderHelpButton()}
-    //helpElement={this.props.renderHelpElement()}
-    //validateOnExternalUpdate={true}
-    //stringOverMaxLengthError={resources?.stringOverMaxLengthError}
-    //errorText={this.getValidationErrorMessage()}
+    // onChangeValidator={this.validateText}
+    // showLabel={true}
+    // pattern={getRegexExtension(item)}
+    // requiredErrorMessage={this.getRequiredErrorMessage(item)}
+    // helpButton={this.props.renderHelpButton()}
+    // helpElement={this.props.renderHelpElement()}
+    // validateOnExternalUpdate={true}
+    // stringOverMaxLengthError={resources?.stringOverMaxLengthError}
 
     return (
       <div className="page_refero__component page_refero__component_string">
@@ -145,11 +154,13 @@ export class String extends React.Component<Props & ValidationProps, {}> {
             placeholder={getPlaceholder(item)}
             min={getMinLengthExtensionValue(item)}
             max={getMaxLength(item)}
-            onChange={(event: React.FormEvent<{}>): void => {
+            onChange={(event: React.FormEvent<HTMLInputElement>): void => {
               event.persist();
               this.debouncedHandleChange(event);
+              this.setInputValue(event.currentTarget.value);
             }}
             className="page_refero__input"
+            errorText={this.getValidationErrorMessage(this.state.inputValue)}
           />
         </Validation>
         {this.props.renderDeleteButton('page_refero__deletebutton--margin-top')}

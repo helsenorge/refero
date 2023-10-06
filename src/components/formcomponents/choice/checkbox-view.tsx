@@ -10,8 +10,7 @@ import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Checkbox from '@helsenorge/designsystem-react/components/Checkbox';
 import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
 
-import { getValidationTextExtension } from '../../../util/extension';
-import { getSublabelText, getText } from '../../../util/index';
+import { getSublabelText, getText, isRequired } from '../../../util/index';
 import { Resources } from '../../../util/resources';
 
 interface Props {
@@ -51,13 +50,11 @@ const CheckboxView: React.SFC<Props> = ({
   }
 
   const checkboxes = options.map(el => {
-    return { label: el.label, id: el.type, checked: isSelected(el, selected) };
+    return { label: el.label, id: el.type, checked: isSelected(el, selected), disabled: el.disabled };
   });
   const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
 
   // CheckboxGroup:
-  // handleChange={handleChange}
-  // required={isRequired(item)}
   // id={getId(id)}
   // max={getMaxOccursExtensionValue(item)}
   // min={getMinOccursExtensionValue(item)}
@@ -66,7 +63,6 @@ const CheckboxView: React.SFC<Props> = ({
 
   // Checkbox:
   // isStyleBlue={this.props.isStyleBlue}
-  // disabled={el.disabled}
 
   return (
     <div className="page_refero__component page_refero__component_choice page_refero__component_choice_checkbox">
@@ -75,17 +71,19 @@ const CheckboxView: React.SFC<Props> = ({
           <FormGroup legend={getText(item, onRenderMarkdown, questionnaire, resources)}>
             {checkboxes.map((checkbox, index) => (
               <Checkbox
+                inputId={`${id}-${checkbox.id}`}
+                testId={`checkbox-choice`}
+                key={`${checkbox.id}-${index.toString()}`}
                 label={
                   <Label
                     labelTexts={[{ text: checkbox.label }]}
                     sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
                   />
                 }
-                key={`${checkbox.id}-${index.toString()}`}
-                inputId={`${id}-${checkbox.id}`}
                 checked={checkbox.checked}
                 onChange={() => handleChange(checkbox.id)}
-                testId={`${id}-${checkbox.id}`}
+                disabled={checkbox.disabled}
+                required={isRequired(item)}
               />
             ))}
           </FormGroup>

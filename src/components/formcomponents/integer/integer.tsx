@@ -120,21 +120,10 @@ class Integer extends React.Component<Props & ValidationProps, {}> {
     )}`;
     const subLabelText = getSublabelText(this.props.item, this.props.onRenderMarkdown, this.props.questionnaire, this.props.resources);
 
-    //showLabel={true}
-    //subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
-    //helpButton={this.props.renderHelpButton()}
+    // showLabel={true}
+    // helpButton={this.props.renderHelpButton()}
     // helpElement={this.props.renderHelpElement()}
     // validateOnExternalUpdate={true}
-    //
-    //inputProps={{
-    //   step: '1',
-    //   onKeyPress: (e: React.KeyboardEvent<{}>): void => {
-    //     const key = String.fromCharCode(e.which);
-    //     if ('0123456789-'.indexOf(key) === -1) {
-    //       e.preventDefault();
-    //     }
-    //   },
-    // }}
 
     return (
       <div className="page_refero__component page_refero__component_integer">
