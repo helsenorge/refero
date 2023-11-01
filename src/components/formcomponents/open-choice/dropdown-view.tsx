@@ -75,7 +75,6 @@ class DropdownView extends React.Component<Props, {}> {
     }
 
     // showLabel={true}
-    // onChange={(evt): void => handleChange((evt.target as HTMLInputElement).value)}
     // onChangeValidator={validateInput}
     // helpButton={renderHelpButton()}
     // helpElement={renderHelpElement()}
@@ -104,7 +103,7 @@ class DropdownView extends React.Component<Props, {}> {
               value={selected ? selected[0] : undefined}
               errorText={getValidationTextExtension(item)}
               className="page_refero__input"
-              
+              onChange={(evt): void => handleChange(evt.target.value)}
             >
               {dropdownOptions}
             </Select>

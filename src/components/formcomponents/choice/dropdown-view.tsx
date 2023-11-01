@@ -8,6 +8,8 @@ import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 import Validation from '@helsenorge/designsystem-react/components/Validation';
 import Select from '@helsenorge/designsystem-react/components/Select';
 import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
+import Trigger from '@helsenorge/designsystem-react/components/Trigger';
+import HelpPanel from '@helsenorge/designsystem-react/components/HelpPanel';
 import { Options } from '../../../types/formTypes/radioGroupOptions';
 
 import { getValidationTextExtension, getPlaceholder } from '../../../util/extension';
@@ -69,7 +71,28 @@ class DropdownView extends React.Component<Props, {}> {
     const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`;
     const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
 
-    // onChange={(evt): void => handleChange((evt.target as HTMLInputElement).value)}
+    // const handleHelpClick = (event?: React.MouseEvent<{}>): void => {
+    //   if (stopPropagation && event) {
+    //     event.stopPropagation();
+    //   }
+    //   if (useCustomEvent) {
+    //     const helpElement = {
+    //       hjelpetekstId: hjelpetekstId,
+    //       tjenesteNavn,
+    //       triggerComponentId: hjelpetekstId, // denne skal egentlig være unik
+    //     } as HelpElement;
+    //     const triggerHelpItemEvent = new CustomEvent<HelpElement>(TriggerHelpItemEvent, {
+    //       detail: helpElement,
+    //     } as CustomEventInit<HelpElement>);
+
+    //     window.dispatchEvent(triggerHelpItemEvent);
+    //   }
+
+    //   if (onClick) {
+    //     onClick();
+    //   }
+    // };
+
     // onChangeValidator={validateInput}
     // helpButton={renderHelpButton()}
     // helpElement={renderHelpElement()}
@@ -85,12 +108,23 @@ class DropdownView extends React.Component<Props, {}> {
                 <Label
                   labelTexts={[{ text: labelText, type: 'semibold' }]}
                   sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+                  // afterLabelChildren={
+                  //   <Trigger
+                  //     ariaLabel="Hjelp"
+                  //     htmlMarkup="button"
+                  //     mode="onlight"
+                  //     onClick={handleHelpClick}
+                  //     size="medium"
+                  //     variant="help"
+                  //   />
+                  // }
                 />
               }
               required={isRequired(item)}
               value={selected ? selected[0] : undefined}
               errorText={getValidationTextExtension(item)}
               className="page_refero__input"
+              onChange={(evt): void => handleChange(evt.target.value)}
             >
               {dropdownOptions.map(dropdownOption => (
                 <option value={dropdownOption.label}>{dropdownOption.label}</option>

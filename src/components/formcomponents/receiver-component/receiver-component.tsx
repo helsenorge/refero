@@ -208,28 +208,23 @@ class ReceiverComponent extends React.Component<ReceiverComponentProps, Receiver
 
     // showLabel={true}
     // wrapperClasses="page_refero__receiverselect"
-    //
-    // onChange={(evt): void => {
-    //   const newValue = (evt.target as HTMLInputElement).value;
-    //   const node = treeNodes.find(x => x.OrgenhetId === parseInt(newValue));
-    //   if (node) {
-    //     this.onChangeDropdownValue(level, node);
-    //   }
-    // }}
 
     return (
       <Select
         key={selectKey}
         selectId={`${getId(this.props.id)}-${selectKey}`}
         name={`${getId(this.props.id)}-${selectKey}`}
-        label={
-          <Label
-            labelTexts={[{ text: label, type: 'semibold' }]}
-          />
-        }
+        label={<Label labelTexts={[{ text: label, type: 'semibold' }]} />}
         required={true}
         value={this.state.selectedPath[level] ? this.state.selectedPath[level].toString() : ''}
         className="page_refero__input"
+        onChange={(evt): void => {
+          const newValue = evt.target.value;
+          const node = treeNodes.find(x => x.OrgenhetId === parseInt(newValue));
+          if (node) {
+            this.onChangeDropdownValue(level, node);
+          }
+        }}
       >
         {selectOptions}
       </Select>
