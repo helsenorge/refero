@@ -7,6 +7,7 @@ import { buttonOrderStepView, buttonOrderNormalView } from '../types/formTypes/f
 import { useForm, SubmitHandler } from 'react-hook-form';
 import FormButtons from './formButtons';
 import Loader from '@helsenorge/designsystem-react/components/Loader';
+import { Inputs } from '../types/formTypes/formInputs';
 
 interface RenderFormProps {
   isAuthorized: boolean;
@@ -21,10 +22,6 @@ interface RenderFormProps {
   nextStep?: () => void;
   previousStep?: () => void;
   isHelsenorgeForm?: boolean;
-}
-
-interface Inputs {
-  example: string;
 }
 
 const RenderForm = ({

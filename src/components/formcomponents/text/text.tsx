@@ -38,6 +38,7 @@ import { Resources } from '../../../util/resources';
 import withCommonFunctions from '../../with-common-functions';
 import TextView from '../textview';
 import { SanitizeText } from '../../../util/sanitize/domPurifyHelper';
+import { useForm } from 'react-hook-form';
 
 export interface Props {
   item: QuestionnaireItem;
@@ -129,6 +130,7 @@ export class Text extends React.Component<Props & ValidationProps, {}> {
   }
 
   render(): JSX.Element | null {
+    const { register } = useForm();
     const { id, item, answer, pdf, children, resources, onRenderMarkdown, questionnaire, ...other } = this.props;
     const itemControls = getItemControlExtensionValue(item);
 
@@ -192,8 +194,6 @@ export class Text extends React.Component<Props & ValidationProps, {}> {
     // validator={this.validateText}
     // errorText={this.getValidationErrorMessage}
     // requiredErrorMessage={this.getRequiredErrorMessage(item)}
-    // helpButton={this.props.renderHelpButton()}
-    // helpElement={this.props.renderHelpElement()}
     // validateOnExternalUpdate={true}
     // stringOverMaxLengthError={resources?.stringOverMaxLengthError}
 
@@ -201,6 +201,7 @@ export class Text extends React.Component<Props & ValidationProps, {}> {
       <div className="page_refero__component page_refero__component_text">
         <Validation {...other}>
           <Textarea
+            {...register("text")}
             textareaId={getId(this.props.id)}
             maxRows={Constants.DEFAULT_TEXTAREA_HEIGHT}
             required={isRequired(item)}
@@ -208,6 +209,11 @@ export class Text extends React.Component<Props & ValidationProps, {}> {
               <Label
                 labelTexts={[{ text: labelText, type: 'semibold' }]}
                 sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+                afterLabelChildren={
+                  <>
+                    {this.props.renderHelpButton()}
+                  </>
+                }
               />
             }
             placeholder={getPlaceholder(item)}
@@ -223,6 +229,7 @@ export class Text extends React.Component<Props & ValidationProps, {}> {
         {this.props.renderDeleteButton('page_refero__deletebutton--margin-top')}
         {this.props.repeatButton}
         {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
+        {this.props.renderHelpElement()}
       </div>
     );
   }

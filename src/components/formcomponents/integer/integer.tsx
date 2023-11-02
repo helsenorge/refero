@@ -20,6 +20,7 @@ import { Resources } from '../../../util/resources';
 import { Path } from '../../../util/refero-core';
 import withCommonFunctions from '../../with-common-functions';
 import TextView from '../textview';
+import { useForm } from 'react-hook-form';
 
 export interface Props {
   item: QuestionnaireItem;
@@ -96,6 +97,8 @@ class Integer extends React.Component<Props & ValidationProps, {}> {
   }
 
   render(): JSX.Element | null {
+    const { register } = useForm();
+
     if (this.props.pdf || isReadOnly(this.props.item)) {
       return (
         <TextView
@@ -121,14 +124,13 @@ class Integer extends React.Component<Props & ValidationProps, {}> {
     const subLabelText = getSublabelText(this.props.item, this.props.onRenderMarkdown, this.props.questionnaire, this.props.resources);
 
     // showLabel={true}
-    // helpButton={this.props.renderHelpButton()}
-    // helpElement={this.props.renderHelpElement()}
     // validateOnExternalUpdate={true}
 
     return (
       <div className="page_refero__component page_refero__component_integer">
         <Validation {...this.props}>
           <Input
+            {...register("textField_openChoice")}
             type="number"
             inputId={getId(this.props.id)}
             name={getId(this.props.id)}
@@ -137,6 +139,11 @@ class Integer extends React.Component<Props & ValidationProps, {}> {
               <Label
                 labelTexts={[{ text: labelText, type: 'semibold' }]}
                 sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+                afterLabelChildren={
+                  <>
+                    {this.props.renderHelpButton()}
+                  </>
+                }
               />
             }
             required={isRequired(this.props.item)}
@@ -151,6 +158,7 @@ class Integer extends React.Component<Props & ValidationProps, {}> {
         {this.props.renderDeleteButton('page_refero__deletebutton--margin-top')}
         {this.props.repeatButton}
         {this.props.children ? <div className="nested-fieldset nested-fieldset--full-height">{this.props.children}</div> : null}
+        {this.props.renderHelpElement()}
       </div>
     );
   }

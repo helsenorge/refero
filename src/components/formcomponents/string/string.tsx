@@ -33,6 +33,7 @@ import { Resources } from '../../../util/resources';
 import { Path } from '../../../util/refero-core';
 import withCommonFunctions from '../../with-common-functions';
 import TextView from '../textview';
+import { useForm } from 'react-hook-form';
 
 export interface Props {
   item: QuestionnaireItem;
@@ -107,6 +108,7 @@ export class String extends React.Component<Props & ValidationProps, {}> {
   };
 
   render(): JSX.Element | null {
+    const { register } = useForm();
     const { id, item, questionnaire, pdf, resources, answer, onRenderMarkdown } = this.props;
     if (pdf || isReadOnly(item)) {
       return (
@@ -131,8 +133,6 @@ export class String extends React.Component<Props & ValidationProps, {}> {
     // showLabel={true}
     // pattern={getRegexExtension(item)}
     // requiredErrorMessage={this.getRequiredErrorMessage(item)}
-    // helpButton={this.props.renderHelpButton()}
-    // helpElement={this.props.renderHelpElement()}
     // validateOnExternalUpdate={true}
     // stringOverMaxLengthError={resources?.stringOverMaxLengthError}
 
@@ -140,6 +140,7 @@ export class String extends React.Component<Props & ValidationProps, {}> {
       <div className="page_refero__component page_refero__component_string">
         <Validation {...this.props}>
           <Input
+            {...register("string_formComponent")}
             type="text"
             inputId={getId(this.props.id)}
             name={getId(this.props.id)}
@@ -148,6 +149,11 @@ export class String extends React.Component<Props & ValidationProps, {}> {
               <Label
                 labelTexts={[{ text: labelText, type: 'semibold' }]}
                 sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+                afterLabelChildren={
+                  <>
+                    {this.props.renderHelpButton()}
+                  </>
+                }
               />
             }
             required={isRequired(item)}
@@ -166,6 +172,7 @@ export class String extends React.Component<Props & ValidationProps, {}> {
         {this.props.renderDeleteButton('page_refero__deletebutton--margin-top')}
         {this.props.repeatButton}
         {this.props.children ? <div className="nested-fieldset nested-fieldset--full-height">{this.props.children}</div> : null}
+        {this.props.renderHelpElement()}
       </div>
     );
   }

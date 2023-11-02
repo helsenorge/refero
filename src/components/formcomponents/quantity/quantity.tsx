@@ -31,6 +31,7 @@ import { Resources } from '../../../util/resources';
 import { Path } from '../../../util/refero-core';
 import withCommonFunctions from '../../with-common-functions';
 import TextView from '../textview';
+import { useForm } from 'react-hook-form';
 
 export interface Props {
   item: QuestionnaireItem;
@@ -124,6 +125,7 @@ class Quantity extends React.Component<Props & ValidationProps, {}> {
   }
 
   render(): JSX.Element | null {
+    const { register } = useForm();
     const { id, item, questionnaire, onRenderMarkdown } = this.props;
     if (this.props.pdf || isReadOnly(item)) {
       return (
@@ -147,8 +149,6 @@ class Quantity extends React.Component<Props & ValidationProps, {}> {
     // size="xSmall" ERSTATTE MED WIDTH???
     // showLabel={true}
     // pattern={getDecimalPattern(item)}'
-    // helpButton={this.props.renderHelpButton()}
-    // helpElement={this.props.renderHelpElement()}
     // validateOnExternalUpdate={true}
     // <span className="page_refero__unit">{this.getUnit()}</span>
 
@@ -156,6 +156,7 @@ class Quantity extends React.Component<Props & ValidationProps, {}> {
       <div className="page_refero__component page_refero__component_quantity">
         <Validation {...this.props}>
           <Input
+            {...register("quantity")}
             type="number"
             inputId={getId(this.props.id)}
             name={getId(this.props.id)}
@@ -164,6 +165,11 @@ class Quantity extends React.Component<Props & ValidationProps, {}> {
               <Label
                 labelTexts={[{ text: labelText, type: 'semibold' }]}
                 sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+                afterLabelChildren={
+                  <>
+                    {this.props.renderHelpButton()}
+                  </>
+                }
               />
             }
             required={isRequired(item)}
@@ -178,6 +184,7 @@ class Quantity extends React.Component<Props & ValidationProps, {}> {
         {this.props.renderDeleteButton('page_refero__deletebutton--margin-top')}
         <div>{this.props.repeatButton}</div>
         {this.props.children ? <div className="nested-fieldset nested-fieldset--full-height">{this.props.children}</div> : null}
+        {this.props.renderHelpElement()}
       </div>
     );
   }

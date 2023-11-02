@@ -20,6 +20,7 @@ import { Resources } from '../../../util/resources';
 import { Path } from '../../../util/refero-core';
 import withCommonFunctions from '../../with-common-functions';
 import TextView from '../textview';
+import { useForm } from 'react-hook-form';
 
 export interface Props {
   item: QuestionnaireItem;
@@ -96,6 +97,7 @@ class Decimal extends React.Component<Props & ValidationProps, {}> {
   }
 
   render(): JSX.Element | null {
+    const { register } = useForm();
     const { id, item, pdf, onRenderMarkdown } = this.props;
     const value = this.getValue();
     const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, this.props.questionnaire, this.props.resources)}`;
@@ -118,14 +120,13 @@ class Decimal extends React.Component<Props & ValidationProps, {}> {
 
     // showLabel={true}
     // pattern={getDecimalPattern(item)}
-    // helpButton={this.props.renderHelpButton()}
-    // helpElement={this.props.renderHelpElement()}
     // validateOnExternalUpdate={true}
 
     return (
       <div className="page_refero__component page_refero__component_decimal">
         <Validation {...this.props}>
           <Input
+            {...register("decimal")}
             type="number"
             inputId={getId(this.props.id)}
             name={getId(this.props.id)}
@@ -134,6 +135,11 @@ class Decimal extends React.Component<Props & ValidationProps, {}> {
               <Label
                 labelTexts={[{ text: labelText, type: 'semibold' }]}
                 sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+                afterLabelChildren={
+                  <>
+                    {this.props.renderHelpButton()}
+                  </>
+                }
               />
             }
             required={isRequired(item)}
@@ -148,6 +154,7 @@ class Decimal extends React.Component<Props & ValidationProps, {}> {
         {this.props.renderDeleteButton('page_refero__deletebutton--margin-top')}
         {this.props.repeatButton}
         {this.props.children ? <div className="nested-fieldset nested-fieldset--full-height">{this.props.children}</div> : null}
+        {this.props.renderHelpElement()}
       </div>
     );
   }

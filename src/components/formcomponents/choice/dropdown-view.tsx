@@ -15,6 +15,7 @@ import { Options } from '../../../types/formTypes/radioGroupOptions';
 import { getValidationTextExtension, getPlaceholder } from '../../../util/extension';
 import { isRequired, getId, getSublabelText, getText, renderPrefix } from '../../../util/index';
 import { Resources } from '../../../util/resources';
+import { useForm } from 'react-hook-form';
 
 interface Props {
   options?: Array<Options>;
@@ -57,6 +58,9 @@ class DropdownView extends React.Component<Props, {}> {
     if (!options) {
       return null;
     }
+
+    const { register } = useForm();
+
     const dropdownOptions: HTMLOptionElement[] = options.map((o: Options) => {
       return new Option(o.label, o.type);
     });
@@ -71,53 +75,25 @@ class DropdownView extends React.Component<Props, {}> {
     const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`;
     const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
 
-    // const handleHelpClick = (event?: React.MouseEvent<{}>): void => {
-    //   if (stopPropagation && event) {
-    //     event.stopPropagation();
-    //   }
-    //   if (useCustomEvent) {
-    //     const helpElement = {
-    //       hjelpetekstId: hjelpetekstId,
-    //       tjenesteNavn,
-    //       triggerComponentId: hjelpetekstId, // denne skal egentlig være unik
-    //     } as HelpElement;
-    //     const triggerHelpItemEvent = new CustomEvent<HelpElement>(TriggerHelpItemEvent, {
-    //       detail: helpElement,
-    //     } as CustomEventInit<HelpElement>);
-
-    //     window.dispatchEvent(triggerHelpItemEvent);
-    //   }
-
-    //   if (onClick) {
-    //     onClick();
-    //   }
-    // };
-
     // onChangeValidator={validateInput}
-    // helpButton={renderHelpButton()}
-    // helpElement={renderHelpElement()}
 
     return (
       <div className="page_refero__component page_refero__component_choice page_refero__component_choice_dropdown">
         <Collapse isOpened>
           <Validation {...other}>
             <Select
+              {...register('dropdownView_choice')}
               selectId={getId(id)}
               name={getId(id)}
               label={
                 <Label
                   labelTexts={[{ text: labelText, type: 'semibold' }]}
                   sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
-                  // afterLabelChildren={
-                  //   <Trigger
-                  //     ariaLabel="Hjelp"
-                  //     htmlMarkup="button"
-                  //     mode="onlight"
-                  //     onClick={handleHelpClick}
-                  //     size="medium"
-                  //     variant="help"
-                  //   />
-                  // }
+                  afterLabelChildren={
+                    <>
+                      {renderHelpButton()}
+                    </>
+                  }
                 />
               }
               required={isRequired(item)}
@@ -134,6 +110,7 @@ class DropdownView extends React.Component<Props, {}> {
           {renderDeleteButton('page_refero__deletebutton--margin-top')}
           {repeatButton}
           {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
+          {renderHelpElement()}
         </Collapse>
       </div>
     );

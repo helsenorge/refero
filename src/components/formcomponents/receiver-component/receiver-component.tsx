@@ -14,6 +14,7 @@ import ValidationError from '@helsenorge/form/components/form/validation-error';
 
 import { getId } from '../../../util';
 import { Resources } from '../../../util/resources';
+import { useForm } from 'react-hook-form';
 
 export interface ReceiverComponentProps {
   selected?: Array<string | undefined>;
@@ -203,6 +204,7 @@ class ReceiverComponent extends React.Component<ReceiverComponentProps, Receiver
   }
 
   createSelect(treeNodes: Array<OrgenhetHierarki>, level: number, selectKey: string): JSX.Element {
+    const { register } = useForm();
     const selectOptions = treeNodes.map(node => new Option(node.Navn, node.OrgenhetId.toString()));
     const label = this.getLabelText(treeNodes[0].EnhetType) || '';
 
@@ -211,6 +213,7 @@ class ReceiverComponent extends React.Component<ReceiverComponentProps, Receiver
 
     return (
       <Select
+        {...register("receiverComponent")}
         key={selectKey}
         selectId={`${getId(this.props.id)}-${selectKey}`}
         name={`${getId(this.props.id)}-${selectKey}`}

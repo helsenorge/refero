@@ -80,12 +80,16 @@ class Boolean extends React.Component<Props & ValidationProps, {}> {
   }
 
   render(): JSX.Element | null {
-    const labelText = `${renderPrefix(this.props.item)} ${getText(this.props.item, this.props.onRenderMarkdown, this.props.questionnaire, this.props.resources)}`;
-    
+    const labelText = `${renderPrefix(this.props.item)} ${getText(
+      this.props.item,
+      this.props.onRenderMarkdown,
+      this.props.questionnaire,
+      this.props.resources
+    )}`;
+
     if (this.props.pdf) {
       return <Pdf item={this.props.item} checked={this.getValue()} onRenderMarkdown={this.props.onRenderMarkdown} />;
     } else if (isReadOnly(this.props.item)) {
-
       //id={getId(this.props.id)}
       //isStyleBlue
 
@@ -113,7 +117,7 @@ class Boolean extends React.Component<Props & ValidationProps, {}> {
       <div className="page_refero__component page_refero__component_boolean">
         <Validation {...this.props}>
           <Checkbox
-            label={<Label labelTexts={[{text: labelText}]} />}
+            label={<Label labelTexts={[{ text: labelText }]} afterLabelChildren={<>{this.props.renderHelpButton()}</>} />}
             required={isRequired(this.props.item)}
             checked={this.getValue()}
             onChange={this.handleChange}
@@ -125,6 +129,7 @@ class Boolean extends React.Component<Props & ValidationProps, {}> {
         {this.props.renderDeleteButton('page_refero__deletebutton--margin-top')}
         {this.props.repeatButton}
         {this.props.children ? <div className="nested-fieldset nested-fieldset--full-height">{this.props.children}</div> : null}
+        {this.props.renderHelpElement()}
       </div>
     );
   }

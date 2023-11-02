@@ -79,6 +79,11 @@ const RadioView: React.SFC<Props> = ({
                   <Label
                     labelTexts={[{ text: option.label }]}
                     sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+                    afterLabelChildren={
+                      <>
+                        {renderHelpButton()}
+                      </>
+                    }
                   />
                 }
                 defaultChecked={selectedValue === option.type}
@@ -93,6 +98,7 @@ const RadioView: React.SFC<Props> = ({
         {renderDeleteButton('page_refero__deletebutton--margin-top')}
         {repeatButton}
         {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : undefined}
+        {renderHelpElement()}
       </Collapse>
     </div>
   );

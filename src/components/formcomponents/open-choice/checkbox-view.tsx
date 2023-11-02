@@ -82,6 +82,11 @@ const CheckboxView: React.SFC<Props> = ({
                   <Label
                     labelTexts={[{ text: checkbox.label }]}
                     sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+                    afterLabelChildren={
+                      <>
+                        {renderHelpButton()}
+                      </>
+                    }
                   />
                 }
                 checked={checkbox.checked}
@@ -99,6 +104,7 @@ const CheckboxView: React.SFC<Props> = ({
         {renderDeleteButton('page_refero__deletebutton--margin-top')}
         {repeatButton}
         {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
+        {renderHelpElement()}
       </Collapse>
     </div>
   );

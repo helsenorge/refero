@@ -14,7 +14,7 @@ import { shouldShowExtraChoice } from '../../../util/choice';
 import { getValidationTextExtension, getPlaceholder } from '../../../util/extension';
 import { isRequired, getId, getSublabelText, getText } from '../../../util/index';
 import { Resources } from '../../../util/resources';
-
+import { useForm } from 'react-hook-form';
 
 interface Props {
   options?: Array<Options>;
@@ -61,6 +61,9 @@ class DropdownView extends React.Component<Props, {}> {
     if (!options) {
       return null;
     }
+
+    const { register } = useForm();
+
     const dropdownOptions: HTMLOptionElement[] = options.map((o: Options) => {
       return new Option(o.label, o.type);
     });
@@ -76,26 +79,23 @@ class DropdownView extends React.Component<Props, {}> {
 
     // showLabel={true}
     // onChangeValidator={validateInput}
-    // helpButton={renderHelpButton()}
-    // helpElement={renderHelpElement()}
 
     return (
       <div className="page_refero__component page_refero__component_openchoice page_refero__component_openchoice_dropdown">
         <Collapse isOpened>
           <Validation {...other}>
             <Select
+              {...register("dropdownView_openChoice")}
               selectId={getId(id)}
               name={getId(id)}
               label={
                 <Label
                   labelTexts={[{ text: labelText, type: 'semibold' }]}
-                  sublabel={
-                    <Sublabel
-                      id="select-sublabel"
-                      sublabelTexts={[
-                        { text: subLabelText, type: 'normal' },
-                      ]}
-                    />
+                  sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+                  afterLabelChildren={
+                    <>
+                      {renderHelpButton()}
+                    </>
                   }
                 />
               }
@@ -116,6 +116,7 @@ class DropdownView extends React.Component<Props, {}> {
           {renderDeleteButton('page_refero__deletebutton--margin-top')}
           {repeatButton}
           {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
+          {this.props.renderHelpElement()}
         </Collapse>
       </div>
     );
