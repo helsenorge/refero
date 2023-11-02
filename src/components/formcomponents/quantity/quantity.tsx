@@ -146,7 +146,6 @@ class Quantity extends React.Component<Props & ValidationProps, {}> {
     const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, this.props.resources)}`;
     const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, this.props.resources);
 
-    // size="xSmall" ERSTATTE MED WIDTH???
     // showLabel={true}
     // pattern={getDecimalPattern(item)}'
     // validateOnExternalUpdate={true}
@@ -179,6 +178,7 @@ class Quantity extends React.Component<Props & ValidationProps, {}> {
             onChange={this.handleChange}
             errorText={getValidationTextExtension(item)}
             className="page_refero__quantity"
+            width={7}
           />
         </Validation>
         {this.props.renderDeleteButton('page_refero__deletebutton--margin-top')}

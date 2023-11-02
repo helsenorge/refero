@@ -81,6 +81,17 @@ class DropdownView extends React.Component<Props, {}> {
       <div className="page_refero__component page_refero__component_choice page_refero__component_choice_dropdown">
         <Collapse isOpened>
           <Validation {...other}>
+            <Label
+              htmlFor={getId(id)}
+              labelTexts={[{ text: labelText, type: 'semibold' }]}
+              sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+              afterLabelChildren={
+                <>
+                  {renderHelpButton()}
+                </>
+              }
+            />
+            {renderHelpElement()}
             <Select
               {...register('dropdownView_choice')}
               selectId={getId(id)}
@@ -89,11 +100,6 @@ class DropdownView extends React.Component<Props, {}> {
                 <Label
                   labelTexts={[{ text: labelText, type: 'semibold' }]}
                   sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
-                  afterLabelChildren={
-                    <>
-                      {renderHelpButton()}
-                    </>
-                  }
                 />
               }
               required={isRequired(item)}
@@ -110,7 +116,6 @@ class DropdownView extends React.Component<Props, {}> {
           {renderDeleteButton('page_refero__deletebutton--margin-top')}
           {repeatButton}
           {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
-          {renderHelpElement()}
         </Collapse>
       </div>
     );

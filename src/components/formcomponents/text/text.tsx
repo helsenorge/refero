@@ -185,7 +185,6 @@ export class Text extends React.Component<Props & ValidationProps, {}> {
     const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
 
     // BYTTA ROWS TIL MAXROWS
-    // Fjernet min og max length, HVA SKAL DETTE BYTTES MED??
     // value={getStringValue(answer)}
     // showLabel={true}
     // max={getMaxLength(item)}
@@ -222,7 +221,8 @@ export class Text extends React.Component<Props & ValidationProps, {}> {
               this.debouncedHandleChange(event);
               this.setInputValue(event.currentTarget.value);
             }}
-            maxText={resources?.maxLengthText}
+            maxCharacters={getMaxLength(item)}
+            maxText={"tegn"}
             errorText={this.getValidationErrorMessage(this.state.inputValue)}
           />
         </Validation>
