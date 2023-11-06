@@ -53,9 +53,9 @@ export interface Props {
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
 }
 
-class Quantity extends React.Component<Props & ValidationProps, {}> {
-  getValue(): number | number[] | undefined {
-    const { answer } = this.props;
+const Quantity: React.FC<Props & ValidationProps> = props => {
+  const getValue = (): number | number[] | undefined => {
+    const { answer } = props;
     if (answer && Array.isArray(answer)) {
       return answer.map(m => m.valueQuantity.value);
     }
@@ -64,24 +64,24 @@ class Quantity extends React.Component<Props & ValidationProps, {}> {
     }
   }
 
-  getPDFValue(): string {
-    const value = this.getValue();
+  const getPDFValue = (): string => {
+    const value = getValue();
     if (value === undefined || value === null) {
       let text = '';
-      if (this.props.resources && this.props.resources.ikkeBesvart) {
-        text = this.props.resources.ikkeBesvart;
+      if (props.resources && props.resources.ikkeBesvart) {
+        text = props.resources.ikkeBesvart;
       }
       return text;
     }
     if (Array.isArray(value)) {
-      return value.map(m => `${m} ${this.getUnit()}`).join(', ');
+      return value.map(m => `${m} ${getUnit()}`).join(', ');
     }
-    return `${value} ${this.getUnit()}`;
+    return `${value} ${getUnit()}`;
   }
 
-  handleChange = (event: React.FormEvent<{}>): void => {
-    const { dispatch, promptLoginMessage, path, item, onAnswerChange } = this.props;
-    const extension = getQuestionnaireUnitExtensionValue(this.props.item);
+  const handleChange = (event: React.FormEvent<{}>): void => {
+    const { dispatch, promptLoginMessage, path, item, onAnswerChange } = props;
+    const extension = getQuestionnaireUnitExtensionValue(props.item);
     if (extension) {
       const quantity = {
         unit: extension.display,
@@ -95,7 +95,7 @@ class Quantity extends React.Component<Props & ValidationProps, {}> {
       }
 
       if (dispatch) {
-        dispatch(newQuantityValueAsync(this.props.path, quantity, this.props.item))?.then(newState =>
+        dispatch(newQuantityValueAsync(props.path, quantity, props.item))?.then(newState =>
           onAnswerChange(newState, path, item, { valueQuantity: quantity } as QuestionnaireResponseItemAnswer)
         );
       }
@@ -106,45 +106,44 @@ class Quantity extends React.Component<Props & ValidationProps, {}> {
     }
   };
 
-  getUnit = (): string => {
-    const valueCoding = getQuestionnaireUnitExtensionValue(this.props.item);
+  const getUnit = (): string => {
+    const valueCoding = getQuestionnaireUnitExtensionValue(props.item);
     if (valueCoding && valueCoding.display) {
       return valueCoding.display;
     }
     return '';
   };
 
-  shouldComponentUpdate(nextProps: Props): boolean {
-    const responseItemHasChanged = this.props.responseItem !== nextProps.responseItem;
-    const helpItemHasChanged = this.props.isHelpOpen !== nextProps.isHelpOpen;
-    const answerHasChanged = this.props.answer !== nextProps.answer;
-    const resourcesHasChanged = JSON.stringify(this.props.resources) !== JSON.stringify(nextProps.resources);
-    const repeats = this.props.item.repeats ?? false;
+  React.useMemo(() => {
+    const responseItemHasChanged = props.responseItem !== props.responseItem;
+    const helpItemHasChanged = props.isHelpOpen !== props.isHelpOpen;
+    const answerHasChanged = props.answer !== props.answer;
+    const resourcesHasChanged = JSON.stringify(props.resources) !== JSON.stringify(props.resources);
+    const repeats = props.item.repeats ?? false;
 
     return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats || answerHasChanged;
-  }
+  }, [props.responseItem, props.isHelpOpen, props.answer, props.resources, props.item]);
 
-  render(): JSX.Element | null {
     const { register } = useForm();
-    const { id, item, questionnaire, onRenderMarkdown } = this.props;
-    if (this.props.pdf || isReadOnly(item)) {
+    const { id, item, questionnaire, onRenderMarkdown } = props;
+    if (props.pdf || isReadOnly(item)) {
       return (
         <TextView
           id={id}
-          item={this.props.item}
-          value={this.getPDFValue()}
+          item={props.item}
+          value={getPDFValue()}
           onRenderMarkdown={onRenderMarkdown}
-          helpButton={this.props.renderHelpButton()}
-          helpElement={this.props.renderHelpElement()}
+          helpButton={props.renderHelpButton()}
+          helpElement={props.renderHelpElement()}
         >
-          {this.props.children}
+          {props.children}
         </TextView>
       );
     }
 
-    const value = this.getValue();
-    const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, this.props.resources)}`;
-    const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, this.props.resources);
+    const value = getValue();
+    const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, props.resources)}`;
+    const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, props.resources);
 
     // showLabel={true}
     // pattern={getDecimalPattern(item)}'
@@ -153,12 +152,12 @@ class Quantity extends React.Component<Props & ValidationProps, {}> {
 
     return (
       <div className="page_refero__component page_refero__component_quantity">
-        <Validation {...this.props}>
+        <Validation {...props}>
           <Input
             {...register("quantity")}
             type="number"
-            inputId={getId(this.props.id)}
-            name={getId(this.props.id)}
+            inputId={getId(props.id)}
+            name={getId(props.id)}
             defaultValue={value !== undefined ? value + '' : ''}
             label={
               <Label
@@ -166,7 +165,7 @@ class Quantity extends React.Component<Props & ValidationProps, {}> {
                 sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
                 afterLabelChildren={
                   <>
-                    {this.props.renderHelpButton()}
+                    {props.renderHelpButton()}
                   </>
                 }
               />
@@ -175,19 +174,18 @@ class Quantity extends React.Component<Props & ValidationProps, {}> {
             placeholder={getPlaceholder(item)}
             max={getMaxValueExtensionValue(item)}
             min={getMinValueExtensionValue(item)}
-            onChange={this.handleChange}
+            onChange={handleChange}
             errorText={getValidationTextExtension(item)}
             className="page_refero__quantity"
             width={7}
           />
         </Validation>
-        {this.props.renderDeleteButton('page_refero__deletebutton--margin-top')}
-        <div>{this.props.repeatButton}</div>
-        {this.props.children ? <div className="nested-fieldset nested-fieldset--full-height">{this.props.children}</div> : null}
-        {this.props.renderHelpElement()}
+        {props.renderDeleteButton('page_refero__deletebutton--margin-top')}
+        <div>{props.repeatButton}</div>
+        {props.children ? <div className="nested-fieldset nested-fieldset--full-height">{props.children}</div> : null}
+        {props.renderHelpElement()}
       </div>
     );
-  }
 }
 
 const withCommonFunctionsComponent = withCommonFunctions(Quantity);

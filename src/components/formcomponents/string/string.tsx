@@ -58,22 +58,14 @@ export interface Props {
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
 }
 
-export class String extends React.Component<Props & ValidationProps, {}> {
-  state = {
-    inputValue: '',
-  };
+const String: React.FC<Props & ValidationProps> = props => {
+  const [inputValue, setInputValue] = React.useState('');
 
-  setInputValue = (value: string) => {
-    this.setState({
-      inputValue: value,
-    });
-  };
-
-  handleChange = (event: React.FormEvent<{}>): void => {
-    const { dispatch, promptLoginMessage, path, item, onAnswerChange } = this.props;
+  const handleChange = (event: React.FormEvent<{}>): void => {
+    const { dispatch, promptLoginMessage, path, item, onAnswerChange } = props;
     const value = (event.target as HTMLInputElement).value;
     if (dispatch) {
-      dispatch(newStringValueAsync(this.props.path, value, this.props.item))?.then(newState =>
+      dispatch(newStringValueAsync(props.path, value, props.item))?.then(newState =>
         onAnswerChange(newState, path, item, { valueString: value } as QuestionnaireResponseItemAnswer)
       );
     }
@@ -83,100 +75,94 @@ export class String extends React.Component<Props & ValidationProps, {}> {
     }
   };
 
-  debouncedHandleChange: (event: React.FormEvent<{}>) => void = debounce(this.handleChange, 250, false);
+  const debouncedHandleChange: (event: React.FormEvent<{}>) => void = debounce(handleChange, 250, false);
 
-  shouldComponentUpdate(nextProps: Props): boolean {
-    const responseItemHasChanged = this.props.responseItem !== nextProps.responseItem;
-    const helpItemHasChanged = this.props.isHelpOpen !== nextProps.isHelpOpen;
-    const answerHasChanged = this.props.answer !== nextProps.answer;
-    const resourcesHasChanged = JSON.stringify(this.props.resources) !== JSON.stringify(nextProps.resources);
-    const repeats = this.props.item.repeats ?? false;
+  React.useMemo(() => {
+    const responseItemHasChanged = props.responseItem !== props.responseItem;
+    const helpItemHasChanged = props.isHelpOpen !== props.isHelpOpen;
+    const answerHasChanged = props.answer !== props.answer;
+    const resourcesHasChanged = JSON.stringify(props.resources) !== JSON.stringify(props.resources);
+    const repeats = props.item.repeats ?? false;
 
     return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats || answerHasChanged;
-  }
+  }, [props.responseItem, props.isHelpOpen, props.answer, props.resources, props.item]);
 
-  validateText = (value: string): boolean => {
-    return validateText(value, this.props.validateScriptInjection);
+  const validateText2 = (value: string): boolean => {
+    return validateText(value, props.validateScriptInjection);
   };
 
-  getValidationErrorMessage = (value: string): string => {
-    return getTextValidationErrorMessage(value, this.props.validateScriptInjection, this.props.item, this.props.resources);
+  const getValidationErrorMessage = (value: string): string => {
+    return getTextValidationErrorMessage(value, props.validateScriptInjection, props.item, props.resources);
   };
 
-  getRequiredErrorMessage = (item: QuestionnaireItem): string | undefined => {
-    return isRequired(item) ? this.props.resources?.formRequiredErrorMessage : undefined;
+  const getRequiredErrorMessage = (item: QuestionnaireItem): string | undefined => {
+    return isRequired(item) ? props.resources?.formRequiredErrorMessage : undefined;
   };
 
-  render(): JSX.Element | null {
-    const { register } = useForm();
-    const { id, item, questionnaire, pdf, resources, answer, onRenderMarkdown } = this.props;
-    if (pdf || isReadOnly(item)) {
-      return (
-        <TextView
-          id={id}
-          item={item}
-          value={getPDFStringValue(answer, resources)}
-          onRenderMarkdown={onRenderMarkdown}
-          textClass="page_refero__component_readonlytext"
-          helpButton={this.props.renderHelpButton()}
-          helpElement={this.props.renderHelpElement()}
-        >
-          {this.props.children}
-        </TextView>
-      );
-    }
-
-    const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`;
-    const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
-
-    // onChangeValidator={this.validateText}
-    // showLabel={true}
-    // pattern={getRegexExtension(item)}
-    // requiredErrorMessage={this.getRequiredErrorMessage(item)}
-    // validateOnExternalUpdate={true}
-    // stringOverMaxLengthError={resources?.stringOverMaxLengthError}
-
+  const { register } = useForm();
+  const { id, item, questionnaire, pdf, resources, answer, onRenderMarkdown } = props;
+  if (pdf || isReadOnly(item)) {
     return (
-      <div className="page_refero__component page_refero__component_string">
-        <Validation {...this.props}>
-          <Input
-            {...register("string_formComponent")}
-            type="text"
-            inputId={getId(this.props.id)}
-            name={getId(this.props.id)}
-            defaultValue={getStringValue(answer)}
-            label={
-              <Label
-                labelTexts={[{ text: labelText, type: 'semibold' }]}
-                sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
-                afterLabelChildren={
-                  <>
-                    {this.props.renderHelpButton()}
-                  </>
-                }
-              />
-            }
-            required={isRequired(item)}
-            placeholder={getPlaceholder(item)}
-            min={getMinLengthExtensionValue(item)}
-            max={getMaxLength(item)}
-            onChange={(event: React.FormEvent<HTMLInputElement>): void => {
-              event.persist();
-              this.debouncedHandleChange(event);
-              this.setInputValue(event.currentTarget.value);
-            }}
-            className="page_refero__input"
-            errorText={this.getValidationErrorMessage(this.state.inputValue)}
-          />
-        </Validation>
-        {this.props.renderDeleteButton('page_refero__deletebutton--margin-top')}
-        {this.props.repeatButton}
-        {this.props.children ? <div className="nested-fieldset nested-fieldset--full-height">{this.props.children}</div> : null}
-        {this.props.renderHelpElement()}
-      </div>
+      <TextView
+        id={id}
+        item={item}
+        value={getPDFStringValue(answer, resources)}
+        onRenderMarkdown={onRenderMarkdown}
+        textClass="page_refero__component_readonlytext"
+        helpButton={props.renderHelpButton()}
+        helpElement={props.renderHelpElement()}
+      >
+        {props.children}
+      </TextView>
     );
   }
-}
+
+  const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`;
+  const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
+
+  // onChangeValidator={this.validateText}
+  // showLabel={true}
+  // pattern={getRegexExtension(item)}
+  // requiredErrorMessage={this.getRequiredErrorMessage(item)}
+  // validateOnExternalUpdate={true}
+  // stringOverMaxLengthError={resources?.stringOverMaxLengthError}
+
+  return (
+    <div className="page_refero__component page_refero__component_string">
+      <Validation {...props}>
+        <Input
+          {...register('string_formComponent')}
+          type="text"
+          inputId={getId(props.id)}
+          name={getId(props.id)}
+          defaultValue={getStringValue(answer)}
+          label={
+            <Label
+              labelTexts={[{ text: labelText, type: 'semibold' }]}
+              sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+              afterLabelChildren={<>{props.renderHelpButton()}</>}
+            />
+          }
+          required={isRequired(item)}
+          placeholder={getPlaceholder(item)}
+          min={getMinLengthExtensionValue(item)}
+          max={getMaxLength(item)}
+          onChange={(event: React.FormEvent<HTMLInputElement>): void => {
+            event.persist();
+            debouncedHandleChange(event);
+            setInputValue(event.currentTarget.value);
+          }}
+          className="page_refero__input"
+          errorText={getValidationErrorMessage(inputValue)}
+        />
+      </Validation>
+      {props.renderDeleteButton('page_refero__deletebutton--margin-top')}
+      {props.repeatButton}
+      {props.children ? <div className="nested-fieldset nested-fieldset--full-height">{props.children}</div> : null}
+      {props.renderHelpElement()}
+    </div>
+  );
+};
 const withCommonFunctionsComponent = withCommonFunctions(String);
 const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(layoutChange(withCommonFunctionsComponent));
 export default connectedComponent;

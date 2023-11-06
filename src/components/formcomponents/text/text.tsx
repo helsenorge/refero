@@ -61,29 +61,21 @@ export interface Props {
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
   shouldExpanderRenderChildrenWhenClosed?: boolean;
 }
-export class Text extends React.Component<Props & ValidationProps, {}> {
-  state = {
-    inputValue: '',
-  };
+const Text: React.FC<Props & ValidationProps> = props => {
+  const [inputValue, setInputValue] = React.useState('');
 
-  setInputValue = (value: string) => {
-    this.setState({
-      inputValue: value,
-    });
-  };
+  // const showCounter = (): boolean => {
+  //   if (getMaxLength(props.item) || getMinLengthExtensionValue(props.item)) {
+  //     return true;
+  //   }
+  //   return false;
+  // };
 
-  showCounter(): boolean {
-    if (getMaxLength(this.props.item) || getMinLengthExtensionValue(this.props.item)) {
-      return true;
-    }
-    return false;
-  }
-
-  handleChange = (event: React.FormEvent<{}>): void => {
-    const { dispatch, promptLoginMessage, path, item, onAnswerChange } = this.props;
+  const handleChange = (event: React.FormEvent<{}>): void => {
+    const { dispatch, promptLoginMessage, path, item, onAnswerChange } = props;
     const value = (event.target as HTMLInputElement).value;
     if (dispatch) {
-      dispatch(newStringValueAsync(this.props.path, value, this.props.item))?.then(newState =>
+      dispatch(newStringValueAsync(props.path, value, props.item))?.then(newState =>
         onAnswerChange(newState, path, item, { valueString: value } as QuestionnaireResponseItemAnswer)
       );
     }
@@ -93,14 +85,14 @@ export class Text extends React.Component<Props & ValidationProps, {}> {
     }
   };
 
-  debouncedHandleChange: (event: React.FormEvent<{}>) => void = debounce(this.handleChange, 250, false);
+  const debouncedHandleChange: (event: React.FormEvent<{}>) => void = debounce(handleChange, 250, false);
 
-  validateText = (value: string): boolean => {
-    return this.validateWithRegex(value) && validateText(value, this.props.validateScriptInjection);
+  const validateText2 = (value: string): boolean => {
+    return validateWithRegex(value) && validateText(value, props.validateScriptInjection);
   };
 
-  validateWithRegex = (value: string): boolean => {
-    const regexAsStr = getRegexExtension(this.props.item);
+  const validateWithRegex = (value: string): boolean => {
+    const regexAsStr = getRegexExtension(props.item);
     if (regexAsStr && value) {
       const regexp = new RegExp(regexAsStr);
       if (!regexp.test(value.toString())) {
@@ -111,129 +103,120 @@ export class Text extends React.Component<Props & ValidationProps, {}> {
     return true;
   };
 
-  getValidationErrorMessage = (value: string): string => {
-    return getTextValidationErrorMessage(value, this.props.validateScriptInjection, this.props.item, this.props.resources);
+  const getValidationErrorMessage = (value: string): string => {
+    return getTextValidationErrorMessage(value, props.validateScriptInjection, props.item, props.resources);
   };
 
-  getRequiredErrorMessage = (item: QuestionnaireItem): string | undefined => {
-    return isRequired(item) ? this.props.resources?.formRequiredErrorMessage : undefined;
+  const getRequiredErrorMessage = (item: QuestionnaireItem): string | undefined => {
+    return isRequired(item) ? props.resources?.formRequiredErrorMessage : undefined;
   };
 
-  shouldComponentUpdate(nextProps: Props): boolean {
-    const responseItemHasChanged = this.props.responseItem !== nextProps.responseItem;
-    const helpItemHasChanged = this.props.isHelpOpen !== nextProps.isHelpOpen;
-    const answerHasChanged = this.props.answer !== nextProps.answer;
-    const resourcesHasChanged = JSON.stringify(this.props.resources) !== JSON.stringify(nextProps.resources);
-    const repeats = this.props.item.repeats ?? false;
+  React.useMemo(() => {
+    const responseItemHasChanged = props.responseItem !== props.responseItem;
+    const helpItemHasChanged = props.isHelpOpen !== props.isHelpOpen;
+    const answerHasChanged = props.answer !== props.answer;
+    const resourcesHasChanged = JSON.stringify(props.resources) !== JSON.stringify(props.resources);
+    const repeats = props.item.repeats ?? false;
 
     return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats || answerHasChanged;
+  }, [props.responseItem, props.isHelpOpen, props.answer, props.resources, props.item]);
+
+  const { register } = useForm();
+  const { id, item, answer, pdf, children, resources, onRenderMarkdown, questionnaire, ...other } = props;
+  const itemControls = getItemControlExtensionValue(item);
+
+  if (itemControls && itemControls.some(itemControl => itemControl.code === itemControlConstants.SIDEBAR)) {
+    return null;
   }
 
-  render(): JSX.Element | null {
-    const { register } = useForm();
-    const { id, item, answer, pdf, children, resources, onRenderMarkdown, questionnaire, ...other } = this.props;
-    const itemControls = getItemControlExtensionValue(item);
-
-    if (itemControls && itemControls.some(itemControl => itemControl.code === itemControlConstants.SIDEBAR)) {
-      return null;
-    }
-
-    if (itemControls && itemControls.some(itemControl => itemControl.code === itemControlConstants.INLINE)) {
-      return (
-        <div id={id} className="page_refero__component page_refero__component_expandabletext">
-          <Expander
-            title={item.text ? item.text : ''}
-            renderChildrenWhenClosed={this.props.shouldExpanderRenderChildrenWhenClosed ? true : false}
-          >
-            <React.Fragment>{children}</React.Fragment>
-          </Expander>
-        </div>
-      );
-    }
-
-    if (itemControls && itemControls.some(itemControl => itemControl.code === itemControlConstants.HIGHLIGHT)) {
-      return (
-        <div
-          id={id}
-          className="page_refero__component page_refero__component_highlight"
-          dangerouslySetInnerHTML={{
-            __html: DOMPurify.sanitize(`${getText(item, onRenderMarkdown, questionnaire, resources)}`, {
-              RETURN_TRUSTED_TYPE: true,
-              ADD_ATTR: ['target'],
-            }) as unknown as string,
-          }}
-        />
-      );
-    }
-
-    if (pdf || isReadOnly(item)) {
-      return (
-        <TextView
-          id={id}
-          item={item}
-          value={getPDFStringValue(answer)}
-          onRenderMarkdown={onRenderMarkdown}
-          textClass="page_refero__component_readonlytext"
-          helpButton={this.props.renderHelpButton()}
-          helpElement={this.props.renderHelpElement()}
-        >
-          {this.props.children}
-        </TextView>
-      );
-    }
-    const labelText = SanitizeText(`${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`) || '';
-    const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
-
-    // BYTTA ROWS TIL MAXROWS
-    // value={getStringValue(answer)}
-    // showLabel={true}
-    // max={getMaxLength(item)}
-    // min={getMinLengthExtensionValue(item)}
-    // counter={this.showCounter()}
-    // validator={this.validateText}
-    // errorText={this.getValidationErrorMessage}
-    // requiredErrorMessage={this.getRequiredErrorMessage(item)}
-    // validateOnExternalUpdate={true}
-    // stringOverMaxLengthError={resources?.stringOverMaxLengthError}
-
+  if (itemControls && itemControls.some(itemControl => itemControl.code === itemControlConstants.INLINE)) {
     return (
-      <div className="page_refero__component page_refero__component_text">
-        <Validation {...other}>
-          <Textarea
-            {...register("text")}
-            textareaId={getId(this.props.id)}
-            maxRows={Constants.DEFAULT_TEXTAREA_HEIGHT}
-            required={isRequired(item)}
-            label={
-              <Label
-                labelTexts={[{ text: labelText, type: 'semibold' }]}
-                sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
-                afterLabelChildren={
-                  <>
-                    {this.props.renderHelpButton()}
-                  </>
-                }
-              />
-            }
-            placeholder={getPlaceholder(item)}
-            onChange={(event: React.FormEvent<HTMLTextAreaElement>): void => {
-              event.persist();
-              this.debouncedHandleChange(event);
-              this.setInputValue(event.currentTarget.value);
-            }}
-            maxCharacters={getMaxLength(item)}
-            maxText={"tegn"}
-            errorText={this.getValidationErrorMessage(this.state.inputValue)}
-          />
-        </Validation>
-        {this.props.renderDeleteButton('page_refero__deletebutton--margin-top')}
-        {this.props.repeatButton}
-        {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
-        {this.props.renderHelpElement()}
+      <div id={id} className="page_refero__component page_refero__component_expandabletext">
+        <Expander title={item.text ? item.text : ''} renderChildrenWhenClosed={props.shouldExpanderRenderChildrenWhenClosed ? true : false}>
+          <React.Fragment>{children}</React.Fragment>
+        </Expander>
       </div>
     );
   }
-}
+
+  if (itemControls && itemControls.some(itemControl => itemControl.code === itemControlConstants.HIGHLIGHT)) {
+    return (
+      <div
+        id={id}
+        className="page_refero__component page_refero__component_highlight"
+        dangerouslySetInnerHTML={{
+          __html: DOMPurify.sanitize(`${getText(item, onRenderMarkdown, questionnaire, resources)}`, {
+            RETURN_TRUSTED_TYPE: true,
+            ADD_ATTR: ['target'],
+          }) as unknown as string,
+        }}
+      />
+    );
+  }
+
+  if (pdf || isReadOnly(item)) {
+    return (
+      <TextView
+        id={id}
+        item={item}
+        value={getPDFStringValue(answer)}
+        onRenderMarkdown={onRenderMarkdown}
+        textClass="page_refero__component_readonlytext"
+        helpButton={props.renderHelpButton()}
+        helpElement={props.renderHelpElement()}
+      >
+        {props.children}
+      </TextView>
+    );
+  }
+  const labelText = SanitizeText(`${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`) || '';
+  const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
+
+  // BYTTA ROWS TIL MAXROWS
+  // value={getStringValue(answer)}
+  // showLabel={true}
+  // max={getMaxLength(item)}
+  // min={getMinLengthExtensionValue(item)}
+  // counter={this.showCounter()}
+  // validator={this.validateText}
+  // errorText={this.getValidationErrorMessage}
+  // requiredErrorMessage={this.getRequiredErrorMessage(item)}
+  // validateOnExternalUpdate={true}
+  // stringOverMaxLengthError={resources?.stringOverMaxLengthError}
+
+  return (
+    <div className="page_refero__component page_refero__component_text">
+      <Validation {...other}>
+        <Textarea
+          {...register('text')}
+          textareaId={getId(props.id)}
+          maxRows={Constants.DEFAULT_TEXTAREA_HEIGHT}
+          required={isRequired(item)}
+          label={
+            <Label
+              labelTexts={[{ text: labelText, type: 'semibold' }]}
+              sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+              afterLabelChildren={<>{props.renderHelpButton()}</>}
+            />
+          }
+          placeholder={getPlaceholder(item)}
+          onChange={(event: React.FormEvent<HTMLTextAreaElement>): void => {
+            event.persist();
+            debouncedHandleChange(event);
+            setInputValue(event.currentTarget.value);
+          }}
+          maxCharacters={getMaxLength(item)}
+          maxText={'tegn'}
+          errorText={getValidationErrorMessage(inputValue)}
+        />
+      </Validation>
+      {props.renderDeleteButton('page_refero__deletebutton--margin-top')}
+      {props.repeatButton}
+      {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
+      {props.renderHelpElement()}
+    </div>
+  );
+};
 
 const withCommonFunctionsComponent = withCommonFunctions(Text);
 const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(withCommonFunctionsComponent);

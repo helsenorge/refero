@@ -8,8 +8,6 @@ import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 import Validation from '@helsenorge/designsystem-react/components/Validation';
 import Select from '@helsenorge/designsystem-react/components/Select';
 import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
-import Trigger from '@helsenorge/designsystem-react/components/Trigger';
-import HelpPanel from '@helsenorge/designsystem-react/components/HelpPanel';
 import { Options } from '../../../types/formTypes/radioGroupOptions';
 
 import { getValidationTextExtension, getPlaceholder } from '../../../util/extension';
@@ -36,8 +34,7 @@ interface Props {
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
 }
 
-class DropdownView extends React.Component<Props, {}> {
-  render(): JSX.Element | null {
+const DropdownView: React.FC<Props> = (props) => {
     const {
       options,
       item,
@@ -54,7 +51,7 @@ class DropdownView extends React.Component<Props, {}> {
       renderHelpElement,
       onRenderMarkdown,
       ...other
-    } = this.props;
+    } = props;
     if (!options) {
       return null;
     }
@@ -85,11 +82,7 @@ class DropdownView extends React.Component<Props, {}> {
               htmlFor={getId(id)}
               labelTexts={[{ text: labelText, type: 'semibold' }]}
               sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
-              afterLabelChildren={
-                <>
-                  {renderHelpButton()}
-                </>
-              }
+              afterLabelChildren={renderHelpButton()}
             />
             {renderHelpElement()}
             <Select
@@ -119,7 +112,6 @@ class DropdownView extends React.Component<Props, {}> {
         </Collapse>
       </div>
     );
-  }
 }
 
 export default layoutChange(DropdownView);

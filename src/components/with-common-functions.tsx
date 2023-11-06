@@ -122,7 +122,7 @@ interface State {
 }
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export default function withCommonFunctions<T>(WrappedComponent: React.ComponentClass<T & EnhancedProps>) {
+export default function withCommonFunctions<T>(WrappedComponent: React.FC<Props & ValidationProps>) {
   return class WithCommonFunctions extends React.Component<T & ValidationProps & Props, State> {
     constructor(props: T & ValidationProps & Props) {
       super(props);

@@ -37,8 +37,7 @@ interface Props {
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
 }
 
-class DropdownView extends React.Component<Props, {}> {
-  render(): JSX.Element | null {
+const DropdownView: React.FC<Props> = (props) => {
     const {
       options,
       item,
@@ -57,7 +56,7 @@ class DropdownView extends React.Component<Props, {}> {
       renderHelpElement,
       onRenderMarkdown,
       ...other
-    } = this.props;
+    } = props;
     if (!options) {
       return null;
     }
@@ -116,11 +115,10 @@ class DropdownView extends React.Component<Props, {}> {
           {renderDeleteButton('page_refero__deletebutton--margin-top')}
           {repeatButton}
           {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
-          {this.props.renderHelpElement()}
+          {props.renderHelpElement()}
         </Collapse>
       </div>
     );
-  }
 }
 
 export default layoutChange(DropdownView);

@@ -43,9 +43,9 @@ export interface Props {
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
 }
 
-class Decimal extends React.Component<Props & ValidationProps, {}> {
-  getValue(): string | number | number[] | undefined {
-    const { item, answer } = this.props;
+const Decimal: React.FC<Props & ValidationProps> = props => {
+  const getValue = (): string | number | number[] | undefined => {
+    const { item, answer } = props;
     if (answer && Array.isArray(answer)) {
       return answer.map(m => m.valueDecimal);
     }
@@ -55,14 +55,14 @@ class Decimal extends React.Component<Props & ValidationProps, {}> {
     if (!item || !item.initial || item.initial.length === 0 || !item.initial[0].valueDecimal) {
       return '';
     }
-  }
+  };
 
-  getPDFValue(): string | number {
-    const value = this.getValue();
+  const getPDFValue = (): string | number => {
+    const value = getValue();
     if (value === undefined || value === null || value === '') {
       let text = '';
-      if (this.props.resources && this.props.resources.ikkeBesvart) {
-        text = this.props.resources.ikkeBesvart;
+      if (props.resources && props.resources.ikkeBesvart) {
+        text = props.resources.ikkeBesvart;
       }
       return text;
     }
@@ -70,10 +70,10 @@ class Decimal extends React.Component<Props & ValidationProps, {}> {
       return value.join(', ');
     }
     return value;
-  }
+  };
 
-  handleChange = (event: React.FormEvent<{}>): void => {
-    const { dispatch, path, item, promptLoginMessage, onAnswerChange } = this.props;
+  const handleChange = (event: React.FormEvent<{}>): void => {
+    const { dispatch, path, item, promptLoginMessage, onAnswerChange } = props;
     const value = parseFloat((event.target as HTMLInputElement).value);
     if (dispatch) {
       dispatch(newDecimalValueAsync(path, value, item))?.then(newState =>
@@ -86,79 +86,73 @@ class Decimal extends React.Component<Props & ValidationProps, {}> {
     }
   };
 
-  shouldComponentUpdate(nextProps: Props): boolean {
-    const responseItemHasChanged = this.props.responseItem !== nextProps.responseItem;
-    const helpItemHasChanged = this.props.isHelpOpen !== nextProps.isHelpOpen;
-    const answerHasChanged = this.props.answer !== nextProps.answer;
-    const resourcesHasChanged = JSON.stringify(this.props.resources) !== JSON.stringify(nextProps.resources);
-    const repeats = this.props.item.repeats ?? false;
+  React.useMemo(() => {
+    const responseItemHasChanged = props.responseItem !== props.responseItem;
+    const helpItemHasChanged = props.isHelpOpen !== props.isHelpOpen;
+    const answerHasChanged = props.answer !== props.answer;
+    const resourcesHasChanged = JSON.stringify(props.resources) !== JSON.stringify(props.resources);
+    const repeats = props.item.repeats ?? false;
 
     return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats || answerHasChanged;
-  }
+  }, [props.responseItem, props.isHelpOpen, props.answer, props.resources, props.item]);
 
-  render(): JSX.Element | null {
-    const { register } = useForm();
-    const { id, item, pdf, onRenderMarkdown } = this.props;
-    const value = this.getValue();
-    const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, this.props.questionnaire, this.props.resources)}`;
-    const subLabelText = getSublabelText(this.props.item, this.props.onRenderMarkdown, this.props.questionnaire, this.props.resources);
+  const { register } = useForm();
+  const { id, item, pdf, onRenderMarkdown } = props;
+  const value = getValue();
+  const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, props.questionnaire, props.resources)}`;
+  const subLabelText = getSublabelText(props.item, props.onRenderMarkdown, props.questionnaire, props.resources);
 
-    if (pdf || isReadOnly(item)) {
-      return (
-        <TextView
-          id={id}
-          item={item}
-          value={this.getPDFValue()}
-          onRenderMarkdown={onRenderMarkdown}
-          helpButton={this.props.renderHelpButton()}
-          helpElement={this.props.renderHelpElement()}
-        >
-          {this.props.children}
-        </TextView>
-      );
-    }
-
-    // showLabel={true}
-    // pattern={getDecimalPattern(item)}
-    // validateOnExternalUpdate={true}
-
+  if (pdf || isReadOnly(item)) {
     return (
-      <div className="page_refero__component page_refero__component_decimal">
-        <Validation {...this.props}>
-          <Input
-            {...register("decimal")}
-            type="number"
-            inputId={getId(this.props.id)}
-            name={getId(this.props.id)}
-            defaultValue={value ? value + '' : ''}
-            label={
-              <Label
-                labelTexts={[{ text: labelText, type: 'semibold' }]}
-                sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
-                afterLabelChildren={
-                  <>
-                    {this.props.renderHelpButton()}
-                  </>
-                }
-              />
-            }
-            required={isRequired(item)}
-            placeholder={getPlaceholder(item)}
-            max={getMaxValueExtensionValue(item)}
-            min={getMinValueExtensionValue(item)}
-            errorText={getValidationTextExtension(item)}
-            className="page_refero__input"
-            onChange={this.handleChange}
-          />
-        </Validation>
-        {this.props.renderDeleteButton('page_refero__deletebutton--margin-top')}
-        {this.props.repeatButton}
-        {this.props.children ? <div className="nested-fieldset nested-fieldset--full-height">{this.props.children}</div> : null}
-        {this.props.renderHelpElement()}
-      </div>
+      <TextView
+        id={id}
+        item={item}
+        value={getPDFValue()}
+        onRenderMarkdown={onRenderMarkdown}
+        helpButton={props.renderHelpButton()}
+        helpElement={props.renderHelpElement()}
+      >
+        {props.children}
+      </TextView>
     );
   }
-}
+
+  // showLabel={true}
+  // pattern={getDecimalPattern(item)}
+  // validateOnExternalUpdate={true}
+
+  return (
+    <div className="page_refero__component page_refero__component_decimal">
+      <Validation {...props}>
+        <Input
+          {...register('decimal')}
+          type="number"
+          inputId={getId(props.id)}
+          name={getId(props.id)}
+          defaultValue={value ? value + '' : ''}
+          label={
+            <Label
+              labelTexts={[{ text: labelText, type: 'semibold' }]}
+              sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+              afterLabelChildren={<>{props.renderHelpButton()}</>}
+            />
+          }
+          required={isRequired(item)}
+          placeholder={getPlaceholder(item)}
+          max={getMaxValueExtensionValue(item)}
+          min={getMinValueExtensionValue(item)}
+          errorText={getValidationTextExtension(item)}
+          className="page_refero__input"
+          onChange={handleChange}
+        />
+      </Validation>
+      {props.renderDeleteButton('page_refero__deletebutton--margin-top')}
+      {props.repeatButton}
+      {props.children ? <div className="nested-fieldset nested-fieldset--full-height">{props.children}</div> : null}
+      {props.renderHelpElement()}
+    </div>
+  );
+};
 
 const withCommonFunctionsComponent = withCommonFunctions(Decimal);
 const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(layoutChange(withCommonFunctionsComponent));

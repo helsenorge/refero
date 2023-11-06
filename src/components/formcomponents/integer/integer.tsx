@@ -43,9 +43,9 @@ export interface Props {
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
 }
 
-class Integer extends React.Component<Props & ValidationProps, {}> {
-  getValue(): string | number | number[] | undefined {
-    const { item, answer } = this.props;
+const Integer: React.FC<Props & ValidationProps> = (props) => {
+  const getValue = (): string | number | number[] | undefined => {
+    const { item, answer } = props;
     if (answer && Array.isArray(answer)) {
       return answer.map(m => m.valueInteger);
     }
@@ -57,12 +57,12 @@ class Integer extends React.Component<Props & ValidationProps, {}> {
     }
   }
 
-  getPDFValue(): string | number {
-    const value = this.getValue();
+  const getPDFValue = (): string | number => {
+    const value = getValue();
     if (value === undefined || value === null || value === '') {
       let text = '';
-      if (this.props.resources && this.props.resources.ikkeBesvart) {
-        text = this.props.resources.ikkeBesvart;
+      if (props.resources && props.resources.ikkeBesvart) {
+        text = props.resources.ikkeBesvart;
       }
       return text;
     }
@@ -72,11 +72,11 @@ class Integer extends React.Component<Props & ValidationProps, {}> {
     return value;
   }
 
-  handleChange = (event: React.FormEvent<{}>): void => {
-    const { dispatch, promptLoginMessage, path, item, onAnswerChange } = this.props;
+  const handleChange = (event: React.FormEvent<{}>): void => {
+    const { dispatch, promptLoginMessage, path, item, onAnswerChange } = props;
     const value = parseInt((event.target as HTMLInputElement).value, 10);
     if (dispatch) {
-      dispatch(newIntegerValueAsync(this.props.path, value, this.props.item))?.then(newState =>
+      dispatch(newIntegerValueAsync(props.path, value, props.item))?.then(newState =>
         onAnswerChange(newState, path, item, { valueInteger: value } as QuestionnaireResponseItemAnswer)
       );
     }
@@ -86,54 +86,53 @@ class Integer extends React.Component<Props & ValidationProps, {}> {
     }
   };
 
-  shouldComponentUpdate(nextProps: Props): boolean {
-    const responseItemHasChanged = this.props.responseItem !== nextProps.responseItem;
-    const helpItemHasChanged = this.props.isHelpOpen !== nextProps.isHelpOpen;
-    const answerHasChanged = this.props.answer !== nextProps.answer;
-    const resourcesHasChanged = JSON.stringify(this.props.resources) !== JSON.stringify(nextProps.resources);
-    const repeats = this.props.item.repeats ?? false;
+  React.useMemo(() => {
+    const responseItemHasChanged = props.responseItem !== props.responseItem;
+    const helpItemHasChanged = props.isHelpOpen !== props.isHelpOpen;
+    const answerHasChanged = props.answer !== props.answer;
+    const resourcesHasChanged = JSON.stringify(props.resources) !== JSON.stringify(props.resources);
+    const repeats = props.item.repeats ?? false;
 
     return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats || answerHasChanged;
-  }
+  }, [props.responseItem, props.isHelpOpen, props.answer, props.resources, props.item]);
 
-  render(): JSX.Element | null {
     const { register } = useForm();
 
-    if (this.props.pdf || isReadOnly(this.props.item)) {
+    if (props.pdf || isReadOnly(props.item)) {
       return (
         <TextView
-          id={this.props.id}
-          item={this.props.item}
-          value={this.getPDFValue()}
-          onRenderMarkdown={this.props.onRenderMarkdown}
-          helpButton={this.props.renderHelpButton()}
-          helpElement={this.props.renderHelpElement()}
+          id={props.id}
+          item={props.item}
+          value={getPDFValue()}
+          onRenderMarkdown={props.onRenderMarkdown}
+          helpButton={props.renderHelpButton()}
+          helpElement={props.renderHelpElement()}
         >
-          {this.props.children}
+          {props.children}
         </TextView>
       );
     }
 
-    const value = this.getValue();
-    const labelText = `${renderPrefix(this.props.item)} ${getText(
-      this.props.item,
-      this.props.onRenderMarkdown,
-      this.props.questionnaire,
-      this.props.resources
+    const value = getValue();
+    const labelText = `${renderPrefix(props.item)} ${getText(
+      props.item,
+      props.onRenderMarkdown,
+      props.questionnaire,
+      props.resources
     )}`;
-    const subLabelText = getSublabelText(this.props.item, this.props.onRenderMarkdown, this.props.questionnaire, this.props.resources);
+    const subLabelText = getSublabelText(props.item, props.onRenderMarkdown, props.questionnaire, props.resources);
 
     // showLabel={true}
     // validateOnExternalUpdate={true}
 
     return (
       <div className="page_refero__component page_refero__component_integer">
-        <Validation {...this.props}>
+        <Validation {...props}>
           <Input
             {...register("textField_openChoice")}
             type="number"
-            inputId={getId(this.props.id)}
-            name={getId(this.props.id)}
+            inputId={getId(props.id)}
+            name={getId(props.id)}
             defaultValue={value !== undefined && value !== null ? value + '' : ''}
             label={
               <Label
@@ -141,27 +140,26 @@ class Integer extends React.Component<Props & ValidationProps, {}> {
                 sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
                 afterLabelChildren={
                   <>
-                    {this.props.renderHelpButton()}
+                    {props.renderHelpButton()}
                   </>
                 }
               />
             }
-            required={isRequired(this.props.item)}
-            placeholder={getPlaceholder(this.props.item)}
-            max={getMaxValueExtensionValue(this.props.item)}
-            min={getMinValueExtensionValue(this.props.item)}
-            errorText={getValidationTextExtension(this.props.item)}
+            required={isRequired(props.item)}
+            placeholder={getPlaceholder(props.item)}
+            max={getMaxValueExtensionValue(props.item)}
+            min={getMinValueExtensionValue(props.item)}
+            errorText={getValidationTextExtension(props.item)}
             className="page_refero__input"
-            onChange={this.handleChange}
+            onChange={handleChange}
           />
         </Validation>
-        {this.props.renderDeleteButton('page_refero__deletebutton--margin-top')}
-        {this.props.repeatButton}
-        {this.props.children ? <div className="nested-fieldset nested-fieldset--full-height">{this.props.children}</div> : null}
-        {this.props.renderHelpElement()}
+        {props.renderDeleteButton('page_refero__deletebutton--margin-top')}
+        {props.repeatButton}
+        {props.children ? <div className="nested-fieldset nested-fieldset--full-height">{props.children}</div> : null}
+        {props.renderHelpElement()}
       </div>
     );
-  }
 }
 
 const withCommonFunctionsComponent = withCommonFunctions(Integer);
