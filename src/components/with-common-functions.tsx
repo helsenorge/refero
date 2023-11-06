@@ -46,7 +46,7 @@ import DeleteButton from './formcomponents/repeat/delete-button';
 import RepeatButton from './formcomponents/repeat/repeat-button';
 import HelpButton from './help-button/help-button';
 
-export interface Props {
+export interface WithCommonFunctionsProps {
   resources?: Resources;
   responseItem?: QuestionnaireResponseItem;
   containedResources?: Resource[];
@@ -111,20 +111,15 @@ export interface Props {
   fetchReceivers?: (successCallback: (receivers: Array<OrgenhetHierarki>) => void, errorCallback: () => void) => void;
 }
 
-interface EnhancedProps {
-  renderChildrenItems?: (renderContext: RenderContext) => Array<JSX.Element> | undefined;
-  renderDeleteButton?: () => JSX.Element | undefined;
-}
-
 interface State {
-  childComponents?: Array<React.Component<Props>>;
+  childComponents?: Array<React.Component<WithCommonFunctionsProps>>;
   isHelpVisible: boolean;
 }
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export default function withCommonFunctions<T>(WrappedComponent: React.FC<Props & ValidationProps>) {
-  return class WithCommonFunctions extends React.Component<T & ValidationProps & Props, State> {
-    constructor(props: T & ValidationProps & Props) {
+export default function withCommonFunctions<T>(WrappedComponent: React.FC<WithCommonFunctionsProps & ValidationProps>) {
+  return class WithCommonFunctions extends React.Component<T & ValidationProps & WithCommonFunctionsProps, State> {
+    constructor(props: T & ValidationProps & WithCommonFunctionsProps) {
       super(props);
 
       this.state = {

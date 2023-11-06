@@ -18,11 +18,11 @@ import { isReadOnly, isRequired, getId, getSublabelText, renderPrefix, getText }
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Resources } from '../../../util/resources';
 import { Path } from '../../../util/refero-core';
-import withCommonFunctions from '../../with-common-functions';
+import withCommonFunctions, { WithCommonFunctionsProps } from '../../with-common-functions';
 import TextView from '../textview';
 import { useForm } from 'react-hook-form';
 
-export interface Props {
+export interface DecimalProps extends WithCommonFunctionsProps {
   item: QuestionnaireItem;
   questionnaire?: Questionnaire;
   responseItem: QuestionnaireItem;
@@ -43,7 +43,7 @@ export interface Props {
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
 }
 
-const Decimal: React.FC<Props & ValidationProps> = props => {
+const Decimal: React.FC<DecimalProps & ValidationProps> = props => {
   const getValue = (): string | number | number[] | undefined => {
     const { item, answer } = props;
     if (answer && Array.isArray(answer)) {

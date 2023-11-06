@@ -16,7 +16,7 @@ import { isRequired, getId, getSublabelText, getText } from '../../../util/index
 import { Resources } from '../../../util/resources';
 import { useForm } from 'react-hook-form';
 
-interface Props {
+interface DropdownViewProps {
   options?: Array<Options>;
   item: QuestionnaireItem;
   questionnaire?: Questionnaire;
@@ -37,7 +37,7 @@ interface Props {
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
 }
 
-const DropdownView: React.FC<Props> = (props) => {
+const DropdownView: React.FC<DropdownViewProps> = (props) => {
     const {
       options,
       item,

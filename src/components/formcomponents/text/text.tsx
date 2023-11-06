@@ -35,12 +35,12 @@ import {
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
 import { Resources } from '../../../util/resources';
-import withCommonFunctions from '../../with-common-functions';
+import withCommonFunctions, { WithCommonFunctionsProps } from '../../with-common-functions';
 import TextView from '../textview';
 import { SanitizeText } from '../../../util/sanitize/domPurifyHelper';
 import { useForm } from 'react-hook-form';
 
-export interface Props {
+export interface TextProps extends WithCommonFunctionsProps {
   item: QuestionnaireItem;
   questionnaire?: Questionnaire;
   responseItem: QuestionnaireResponseItem;
@@ -61,7 +61,7 @@ export interface Props {
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
   shouldExpanderRenderChildrenWhenClosed?: boolean;
 }
-const Text: React.FC<Props & ValidationProps> = props => {
+const Text: React.FC<TextProps & ValidationProps> = props => {
   const [inputValue, setInputValue] = React.useState('');
 
   // const showCounter = (): boolean => {
