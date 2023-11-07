@@ -43,7 +43,7 @@ export interface IntegerProps extends WithCommonFunctionsProps {
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
 }
 
-const Integer: React.FC<IntegerProps & ValidationProps> = (props) => {
+const Integer: React.FC<IntegerProps & ValidationProps> = props => {
   const getValue = (): string | number | number[] | undefined => {
     const { item, answer } = props;
     if (answer && Array.isArray(answer)) {
@@ -55,7 +55,7 @@ const Integer: React.FC<IntegerProps & ValidationProps> = (props) => {
     if (!item || !item.initial || item.initial.length === 0 || !item.initial[0].valueInteger) {
       return '';
     }
-  }
+  };
 
   const getPDFValue = (): string | number => {
     const value = getValue();
@@ -70,7 +70,7 @@ const Integer: React.FC<IntegerProps & ValidationProps> = (props) => {
       return value.join(', ');
     }
     return value;
-  }
+  };
 
   const handleChange = (event: React.FormEvent<{}>): void => {
     const { dispatch, promptLoginMessage, path, item, onAnswerChange } = props;
@@ -96,71 +96,63 @@ const Integer: React.FC<IntegerProps & ValidationProps> = (props) => {
     return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats || answerHasChanged;
   }, [props.responseItem, props.isHelpOpen, props.answer, props.resources, props.item]);
 
-    const { register } = useForm();
+  const { register } = useForm();
 
-    if (props.pdf || isReadOnly(props.item)) {
-      return (
-        <TextView
-          id={props.id}
-          item={props.item}
-          value={getPDFValue()}
-          onRenderMarkdown={props.onRenderMarkdown}
-          helpButton={props.renderHelpButton()}
-          helpElement={props.renderHelpElement()}
-        >
-          {props.children}
-        </TextView>
-      );
-    }
+  const inputId = getId(props.id);
 
-    const value = getValue();
-    const labelText = `${renderPrefix(props.item)} ${getText(
-      props.item,
-      props.onRenderMarkdown,
-      props.questionnaire,
-      props.resources
-    )}`;
-    const subLabelText = getSublabelText(props.item, props.onRenderMarkdown, props.questionnaire, props.resources);
-
-    // showLabel={true}
-    // validateOnExternalUpdate={true}
-
+  if (props.pdf || isReadOnly(props.item)) {
     return (
-      <div className="page_refero__component page_refero__component_integer">
-        <Validation {...props}>
-          <Input
-            {...register("textField_openChoice")}
-            type="number"
-            inputId={getId(props.id)}
-            name={getId(props.id)}
-            defaultValue={value !== undefined && value !== null ? value + '' : ''}
-            label={
-              <Label
-                labelTexts={[{ text: labelText, type: 'semibold' }]}
-                sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
-                afterLabelChildren={
-                  <>
-                    {props.renderHelpButton()}
-                  </>
-                }
-              />
-            }
-            required={isRequired(props.item)}
-            placeholder={getPlaceholder(props.item)}
-            max={getMaxValueExtensionValue(props.item)}
-            min={getMinValueExtensionValue(props.item)}
-            errorText={getValidationTextExtension(props.item)}
-            className="page_refero__input"
-            onChange={handleChange}
-          />
-        </Validation>
-        {props.renderDeleteButton('page_refero__deletebutton--margin-top')}
-        {props.repeatButton}
-        {props.children ? <div className="nested-fieldset nested-fieldset--full-height">{props.children}</div> : null}
-        {props.renderHelpElement()}
-      </div>
+      <TextView
+        id={props.id}
+        item={props.item}
+        value={getPDFValue()}
+        onRenderMarkdown={props.onRenderMarkdown}
+        helpButton={props.renderHelpButton()}
+        helpElement={props.renderHelpElement()}
+      >
+        {props.children}
+      </TextView>
     );
-}
+  }
+
+  const value = getValue();
+  const labelText = `${renderPrefix(props.item)} ${getText(props.item, props.onRenderMarkdown, props.questionnaire, props.resources)}`;
+  const subLabelText = getSublabelText(props.item, props.onRenderMarkdown, props.questionnaire, props.resources);
+
+  // showLabel={true}
+  // validateOnExternalUpdate={true}
+
+  return (
+    <div className="page_refero__component page_refero__component_integer">
+      <Validation {...props}>
+        <Label
+          htmlFor={inputId}
+          labelTexts={[{ text: labelText, type: 'semibold' }]}
+          sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+          afterLabelChildren={props.renderHelpButton()}
+        />
+        {props.renderHelpElement()}
+        <Input
+          {...register('textField_openChoice')}
+          type="number"
+          inputId={inputId}
+          name={getId(props.id)}
+          defaultValue={value !== undefined && value !== null ? value + '' : ''}
+          required={isRequired(props.item)}
+          placeholder={getPlaceholder(props.item)}
+          max={getMaxValueExtensionValue(props.item)}
+          min={getMinValueExtensionValue(props.item)}
+          errorText={getValidationTextExtension(props.item)}
+          className="page_refero__input"
+          onChange={handleChange}
+        />
+      </Validation>
+      {props.renderDeleteButton('page_refero__deletebutton--margin-top')}
+      {props.repeatButton}
+      {props.children ? <div className="nested-fieldset nested-fieldset--full-height">{props.children}</div> : null}
+    </div>
+  );
+};
 
 const withCommonFunctionsComponent = withCommonFunctions(Integer);
 const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(layoutChange(withCommonFunctionsComponent));

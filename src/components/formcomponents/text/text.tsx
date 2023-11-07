@@ -124,6 +124,7 @@ const Text: React.FC<TextProps & ValidationProps> = props => {
   const { register } = useForm();
   const { id, item, answer, pdf, children, resources, onRenderMarkdown, questionnaire, ...other } = props;
   const itemControls = getItemControlExtensionValue(item);
+  const textAreaId = getId(props.id);
 
   if (itemControls && itemControls.some(itemControl => itemControl.code === itemControlConstants.SIDEBAR)) {
     return null;
@@ -187,18 +188,18 @@ const Text: React.FC<TextProps & ValidationProps> = props => {
   return (
     <div className="page_refero__component page_refero__component_text">
       <Validation {...other}>
+        <Label
+          htmlFor={textAreaId}
+          labelTexts={[{ text: labelText, type: 'semibold' }]}
+          sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+          afterLabelChildren={props.renderHelpButton()}
+        />
+        {props.renderHelpElement()}
         <Textarea
           {...register('text')}
-          textareaId={getId(props.id)}
+          textareaId={textAreaId}
           maxRows={Constants.DEFAULT_TEXTAREA_HEIGHT}
           required={isRequired(item)}
-          label={
-            <Label
-              labelTexts={[{ text: labelText, type: 'semibold' }]}
-              sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
-              afterLabelChildren={<>{props.renderHelpButton()}</>}
-            />
-          }
           placeholder={getPlaceholder(item)}
           onChange={(event: React.FormEvent<HTMLTextAreaElement>): void => {
             event.persist();
@@ -213,7 +214,6 @@ const Text: React.FC<TextProps & ValidationProps> = props => {
       {props.renderDeleteButton('page_refero__deletebutton--margin-top')}
       {props.repeatButton}
       {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
-      {props.renderHelpElement()}
     </div>
   );
 };

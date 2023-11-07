@@ -31,11 +31,11 @@ import {
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Resources } from '../../../util/resources';
 import { Path } from '../../../util/refero-core';
-import withCommonFunctions from '../../with-common-functions';
+import withCommonFunctions, { WithCommonFunctionsProps } from '../../with-common-functions';
 import TextView from '../textview';
 import { useForm } from 'react-hook-form';
 
-export interface Props {
+export interface StringProps extends WithCommonFunctionsProps {
   item: QuestionnaireItem;
   questionnaire?: Questionnaire;
   responseItem: QuestionnaireResponseItem;
@@ -58,7 +58,7 @@ export interface Props {
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
 }
 
-const String: React.FC<Props & ValidationProps> = props => {
+const String: React.FC<StringProps & ValidationProps> = props => {
   const [inputValue, setInputValue] = React.useState('');
 
   const handleChange = (event: React.FormEvent<{}>): void => {
@@ -117,6 +117,7 @@ const String: React.FC<Props & ValidationProps> = props => {
     );
   }
 
+  const inputId = getId(props.id);
   const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`;
   const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
 
@@ -130,19 +131,19 @@ const String: React.FC<Props & ValidationProps> = props => {
   return (
     <div className="page_refero__component page_refero__component_string">
       <Validation {...props}>
+        <Label
+          htmlFor={inputId}
+          labelTexts={[{ text: labelText, type: 'semibold' }]}
+          sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+          afterLabelChildren={props.renderHelpButton()}
+        />
+        {props.renderHelpElement()}
         <Input
           {...register('string_formComponent')}
           type="text"
-          inputId={getId(props.id)}
+          inputId={inputId}
           name={getId(props.id)}
           defaultValue={getStringValue(answer)}
-          label={
-            <Label
-              labelTexts={[{ text: labelText, type: 'semibold' }]}
-              sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
-              afterLabelChildren={<>{props.renderHelpButton()}</>}
-            />
-          }
           required={isRequired(item)}
           placeholder={getPlaceholder(item)}
           min={getMinLengthExtensionValue(item)}
@@ -159,7 +160,6 @@ const String: React.FC<Props & ValidationProps> = props => {
       {props.renderDeleteButton('page_refero__deletebutton--margin-top')}
       {props.repeatButton}
       {props.children ? <div className="nested-fieldset nested-fieldset--full-height">{props.children}</div> : null}
-      {props.renderHelpElement()}
     </div>
   );
 };

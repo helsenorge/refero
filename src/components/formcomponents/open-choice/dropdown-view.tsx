@@ -31,94 +31,89 @@ interface DropdownViewProps {
   renderOpenField: () => JSX.Element | undefined;
   answer: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer;
   children?: JSX.Element;
-
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
 }
 
-const DropdownView: React.FC<DropdownViewProps> = (props) => {
-    const {
-      options,
-      item,
-      questionnaire,
-      id,
-      answer,
-      handleChange,
-      selected,
-      validateInput,
-      resources,
-      children,
-      repeatButton,
-      renderDeleteButton,
-      renderOpenField,
-      renderHelpButton,
-      renderHelpElement,
-      onRenderMarkdown,
-      ...other
-    } = props;
-    if (!options) {
-      return null;
-    }
+const DropdownView: React.FC<DropdownViewProps> = props => {
+  const {
+    options,
+    item,
+    questionnaire,
+    id,
+    answer,
+    handleChange,
+    selected,
+    validateInput,
+    resources,
+    children,
+    repeatButton,
+    renderDeleteButton,
+    renderOpenField,
+    renderHelpButton,
+    renderHelpElement,
+    onRenderMarkdown,
+    ...other
+  } = props;
+  if (!options) {
+    return null;
+  }
 
-    const { register } = useForm();
+  const { register } = useForm();
 
-    const dropdownOptions: HTMLOptionElement[] = options.map((o: Options) => {
-      return new Option(o.label, o.type);
-    });
-    const labelText = getText(item, onRenderMarkdown, questionnaire, resources);
-    const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
+  const dropdownOptions: HTMLOptionElement[] = options.map((o: Options) => {
+    return new Option(o.label, o.type);
+  });
+  const selectId = getId(id);
+  const labelText = getText(item, onRenderMarkdown, questionnaire, resources);
+  const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
 
-    let placeholder;
-    if (getPlaceholder(item)) {
-      placeholder = new Option(getPlaceholder(item), '');
-    } else if (resources) {
-      placeholder = new Option(resources.selectDefaultPlaceholder, '');
-    }
+  let placeholder;
+  if (getPlaceholder(item)) {
+    placeholder = new Option(getPlaceholder(item), '');
+  } else if (resources) {
+    placeholder = new Option(resources.selectDefaultPlaceholder, '');
+  }
 
-    // showLabel={true}
-    // onChangeValidator={validateInput}
+  // showLabel={true}
+  // onChangeValidator={validateInput}
 
-    return (
-      <div className="page_refero__component page_refero__component_openchoice page_refero__component_openchoice_dropdown">
-        <Collapse isOpened>
-          <Validation {...other}>
-            <Select
-              {...register("dropdownView_openChoice")}
-              selectId={getId(id)}
-              name={getId(id)}
-              label={
-                <Label
-                  labelTexts={[{ text: labelText, type: 'semibold' }]}
-                  sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
-                  afterLabelChildren={
-                    <>
-                      {renderHelpButton()}
-                    </>
-                  }
-                />
-              }
-              required={isRequired(item)}
-              value={selected ? selected[0] : undefined}
-              errorText={getValidationTextExtension(item)}
-              className="page_refero__input"
-              onChange={(evt): void => handleChange(evt.target.value)}
-            >
-              {dropdownOptions}
-            </Select>
-          </Validation>
-          {shouldShowExtraChoice(answer) ? (
-            <div className="page_refero__component_openchoice_openfield">{renderOpenField()}</div>
-          ) : (
-            <React.Fragment />
-          )}
-          {renderDeleteButton('page_refero__deletebutton--margin-top')}
-          {repeatButton}
-          {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
-          {props.renderHelpElement()}
-        </Collapse>
-      </div>
-    );
-}
+  return (
+    <div className="page_refero__component page_refero__component_openchoice page_refero__component_openchoice_dropdown">
+      <Collapse isOpened>
+        <Validation {...other}>
+          <Label
+            htmlFor={selectId}
+            labelTexts={[{ text: labelText, type: 'semibold' }]}
+            sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+            afterLabelChildren={renderHelpButton()}
+          />
+          {renderHelpElement()}
+          <Select
+            {...register('dropdownView_openChoice')}
+            selectId={selectId}
+            name={getId(id)}
+            required={isRequired(item)}
+            value={selected ? selected[0] : undefined}
+            errorText={getValidationTextExtension(item)}
+            className="page_refero__input"
+            onChange={(evt): void => handleChange(evt.target.value)}
+          >
+            {dropdownOptions}
+          </Select>
+        </Validation>
+        {shouldShowExtraChoice(answer) ? (
+          <div className="page_refero__component_openchoice_openfield">{renderOpenField()}</div>
+        ) : (
+          <React.Fragment />
+        )}
+        {renderDeleteButton('page_refero__deletebutton--margin-top')}
+        {repeatButton}
+        {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
+      </Collapse>
+    </div>
+  );
+};
 
 export default layoutChange(DropdownView);

@@ -24,12 +24,12 @@ import { isRequired, getId, isReadOnly, getSublabelText } from '../../../util/in
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Resources } from '../../../util/resources';
 import { Path } from '../../../util/refero-core';
-import withCommonFunctions from '../../with-common-functions';
+import withCommonFunctions, { WithCommonFunctionsProps } from '../../with-common-functions';
 import Label from '../label';
 import SubLabel from '../sublabel';
 import TextView from '../textview';
 
-export interface Props {
+export interface DateTimeProps extends WithCommonFunctionsProps {
   item: QuestionnaireItem;
   questionnaire?: Questionnaire;
   responseItem: QuestionnaireResponseItem;
@@ -51,8 +51,8 @@ export interface Props {
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
 }
 
-class DateTime extends React.Component<Props & ValidationProps> {
-  getDefaultDate(item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer): Date | undefined {
+const DateTime: React.FC<DateTimeProps & ValidationProps> = props => {
+  const getDefaultDate = (item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer): Date | undefined => {
     if (answer && answer.valueDateTime) {
       return parseDate(String(answer.valueDateTime));
     }
@@ -71,14 +71,14 @@ class DateTime extends React.Component<Props & ValidationProps> {
     return parseDate(String(item.initial[0].valueDate));
   }
 
-  getMaxDate(): Date | undefined {
-    const maxDate = getExtension(ExtensionConstants.DATE_MAX_VALUE_URL, this.props.item);
-    if (maxDate && maxDate.valueString) return evaluateFhirpathExpressionToGetDate(this.props.item, maxDate.valueString);
-    return this.getMaxDateWithExtension();
+  const getMaxDate = (): Date | undefined => {
+    const maxDate = getExtension(ExtensionConstants.DATE_MAX_VALUE_URL, props.item);
+    if (maxDate && maxDate.valueString) return evaluateFhirpathExpressionToGetDate(props.item, maxDate.valueString);
+    return getMaxDateWithExtension();
   }
 
-  getMaxDateWithExtension(): Date | undefined {
-    const maxDate = getExtension(ExtensionConstants.MAX_VALUE_URL, this.props.item);
+  const getMaxDateWithExtension = (): Date | undefined => {
+    const maxDate = getExtension(ExtensionConstants.MAX_VALUE_URL, props.item);
     if (!maxDate) {
       return;
     }
@@ -90,14 +90,14 @@ class DateTime extends React.Component<Props & ValidationProps> {
     return undefined;
   }
 
-  getMinDate(): Date | undefined {
-    const minDate = getExtension(ExtensionConstants.DATE_MIN_VALUE_URL, this.props.item);
-    if (minDate && minDate.valueString) return evaluateFhirpathExpressionToGetDate(this.props.item, minDate.valueString);
-    return this.getMinDateWithExtension();
+  const getMinDate = (): Date | undefined => {
+    const minDate = getExtension(ExtensionConstants.DATE_MIN_VALUE_URL, props.item);
+    if (minDate && minDate.valueString) return evaluateFhirpathExpressionToGetDate(props.item, minDate.valueString);
+    return getMinDateWithExtension();
   }
 
-  getMinDateWithExtension(): Date | undefined {
-    const minDate = getExtension(ExtensionConstants.MIN_VALUE_URL, this.props.item);
+  const getMinDateWithExtension = (): Date | undefined => {
+    const minDate = getExtension(ExtensionConstants.MIN_VALUE_URL, props.item);
     if (!minDate) {
       return;
     }
@@ -109,13 +109,13 @@ class DateTime extends React.Component<Props & ValidationProps> {
     return undefined;
   }
 
-  dispatchNewDate = (date: Moment | undefined, time: string | undefined): void => {
-    const { dispatch, promptLoginMessage, onAnswerChange, answer, path, item } = this.props;
+  const dispatchNewDate = (date: Moment | undefined, time: string | undefined): void => {
+    const { dispatch, promptLoginMessage, onAnswerChange, answer, path, item } = props;
     const momentDate = getFullMomentDate(date, time);
     const dateTimeString = momentDate ? momentDate.locale('nb').utc().format(Constants.DATE_TIME_FORMAT) : '';
     const existingAnswer = answer?.valueDateTime || '';
     if (dispatch && existingAnswer !== dateTimeString) {
-      dispatch(newDateTimeValueAsync(this.props.path, dateTimeString, this.props.item))?.then(newState =>
+      dispatch(newDateTimeValueAsync(props.path, dateTimeString, props.item))?.then(newState =>
         onAnswerChange(newState, path, item, { valueDateTime: dateTimeString } as QuestionnaireResponseItemAnswer)
       );
     }
@@ -125,116 +125,114 @@ class DateTime extends React.Component<Props & ValidationProps> {
     }
   };
 
-  promptLogin = (): void => {
-    if (this.props.promptLoginMessage) {
-      this.props.promptLoginMessage();
+  const promptLogin = (): void => {
+    if (props.promptLoginMessage) {
+      props.promptLoginMessage();
     }
   };
 
-  onBlur = (): boolean => {
+  const onBlur = (): boolean => {
     return true;
   };
 
-  convertDateToString = (item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer): string | undefined => {
-    const date = this.getDefaultDate(item, answer);
+  const convertDateToString = (item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer): string | undefined => {
+    const date = getDefaultDate(item, answer);
     if (date) {
       return  moment(date).locale('nb').format('LLL');
     } 
     return undefined;
   }
 
-  getStringValue = (): string => {
-    const { item, answer } = this.props;
+  const getStringValue = (): string => {
+    const { item, answer } = props;
     if (Array.isArray(answer)) {
-      return answer.map(m => this.convertDateToString(item, m)).join(', ');
+      return answer.map(m => convertDateToString(item, m)).join(', ');
     }
-    const date = this.convertDateToString(item, answer);
+    const date = convertDateToString(item, answer);
     let text = '';
-    if (this.props.resources && this.props.resources.ikkeBesvart) {
-      text = this.props.resources.ikkeBesvart;
+    if (props.resources && props.resources.ikkeBesvart) {
+      text = props.resources.ikkeBesvart;
     }
     return date ?? text;
   };
 
-  shouldComponentUpdate(nextProps: Props): boolean {
-    const responseItemHasChanged = this.props.responseItem !== nextProps.responseItem;
-    const helpItemHasChanged = this.props.isHelpOpen !== nextProps.isHelpOpen;
-    const answerHasChanged = this.props.answer !== nextProps.answer;
-    const resourcesHasChanged = JSON.stringify(this.props.resources) !== JSON.stringify(nextProps.resources);
-    const repeats = this.props.item.repeats ?? false;
+  React.useMemo(() => {
+    const responseItemHasChanged = props.responseItem !== props.responseItem;
+    const helpItemHasChanged = props.isHelpOpen !== props.isHelpOpen;
+    const answerHasChanged = props.answer !== props.answer;
+    const resourcesHasChanged = JSON.stringify(props.resources) !== JSON.stringify(props.resources);
+    const repeats = props.item.repeats ?? false;
 
     return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats || answerHasChanged;
-  }
+  }, [props.responseItem, props.isHelpOpen, props.answer, props.resources, props.item]);
 
-  getLocaleFromLanguage = (): LanguageLocales.NORWEGIAN | LanguageLocales.ENGLISH => {
-    if (this.props.language?.toLowerCase() === 'en-gb') {
+  const getLocaleFromLanguage = (): LanguageLocales.NORWEGIAN | LanguageLocales.ENGLISH => {
+    if (props.language?.toLowerCase() === 'en-gb') {
       return LanguageLocales.ENGLISH;
     }
 
     return LanguageLocales.NORWEGIAN;
   };
 
-  toLocaleDate(moment: Moment | undefined): Moment | undefined {
-    return moment ? moment.locale(this.getLocaleFromLanguage()) : undefined;
+  const toLocaleDate = (moment: Moment | undefined): Moment | undefined => {
+    return moment ? moment.locale(getLocaleFromLanguage()) : undefined;
   }
 
-  render(): JSX.Element | null {
-    const { item, pdf, id, onRenderMarkdown, ...other } = this.props;
+    const { item, pdf, id, onRenderMarkdown, ...other } = props;
     if (pdf || isReadOnly(item)) {
       return (
         <TextView
           id={id}
           item={item}
-          value={this.getStringValue()}
+          value={getStringValue()}
           onRenderMarkdown={onRenderMarkdown}
-          helpButton={this.props.renderHelpButton()}
-          helpElement={this.props.renderHelpElement()}
+          helpButton={props.renderHelpButton()}
+          helpElement={props.renderHelpElement()}
         >
-          {this.props.children}
+          {props.children}
         </TextView>
       );
     }
-    const valueDateTime = this.getDefaultDate(this.props.item, this.props.answer);
-    const maxDateTime = this.getMaxDate();
-    const minDateTime = this.getMinDate();
-    const subLabelText = getSublabelText(this.props.item, this.props.onRenderMarkdown, this.props.questionnaire, this.props.resources);
+    const valueDateTime = getDefaultDate(props.item, props.answer);
+    const maxDateTime = getMaxDate();
+    const minDateTime = getMinDate();
+    const subLabelText = getSublabelText(props.item, props.onRenderMarkdown, props.questionnaire, props.resources);
 
     return (
       <div className="page_refero__component page_refero__component_datetime">
         <Validation {...other}>
           <DateTimePicker
             id={getId(id)}
-            resources={{ dateResources: this.props.resources }}
-            locale={this.getLocaleFromLanguage()}
-            dateValue={valueDateTime ? this.toLocaleDate(moment(valueDateTime)) : undefined}
+            resources={{ dateResources: props.resources }}
+            locale={getLocaleFromLanguage()}
+            dateValue={valueDateTime ? toLocaleDate(moment(valueDateTime)) : undefined}
             timeValue={valueDateTime ? moment(valueDateTime).format('HH:mm') : undefined}
-            maximumDateTime={maxDateTime ? this.toLocaleDate(moment(maxDateTime)) : undefined}
-            minimumDateTime={minDateTime ? this.toLocaleDate(moment(minDateTime)) : undefined}
-            initialDate={this.toLocaleDate(moment(new Date()))}
-            onChange={this.dispatchNewDate}
-            onBlur={this.onBlur}
+            maximumDateTime={maxDateTime ? toLocaleDate(moment(maxDateTime)) : undefined}
+            minimumDateTime={minDateTime ? toLocaleDate(moment(minDateTime)) : undefined}
+            initialDate={toLocaleDate(moment(new Date()))}
+            onChange={dispatchNewDate}
+            onBlur={onBlur}
             legend={
               <Label
-                item={this.props.item}
-                onRenderMarkdown={this.props.onRenderMarkdown}
-                questionnaire={this.props.questionnaire}
-                resources={this.props.resources}
+                item={props.item}
+                onRenderMarkdown={props.onRenderMarkdown}
+                questionnaire={props.questionnaire}
+                resources={props.resources}
               />
             }
             subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
             isRequired={isRequired(item)}
             errorMessage={getValidationTextExtension(item)}
             timeClassName="page_refero__input"
-            helpButton={this.props.renderHelpButton()}
-            helpElement={this.props.renderHelpElement()}
+            helpButton={props.renderHelpButton()}
+            helpElement={props.renderHelpElement()}
           />
         </Validation>
-        {this.props.renderDeleteButton('page_refero__deletebutton--margin-top')}
-        {this.props.repeatButton}
-        {this.props.children ? <div className="nested-fieldset nested-fieldset--full-height">{this.props.children}</div> : null}
+        {props.renderDeleteButton('page_refero__deletebutton--margin-top')}
+        {props.repeatButton}
+        {props.children ? <div className="nested-fieldset nested-fieldset--full-height">{props.children}</div> : null}
       </div>
     );
-  }
 }
 
 const withCommonFunctionsComponent = withCommonFunctions(DateTime);

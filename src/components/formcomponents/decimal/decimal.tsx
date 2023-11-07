@@ -99,6 +99,7 @@ const Decimal: React.FC<DecimalProps & ValidationProps> = props => {
   const { register } = useForm();
   const { id, item, pdf, onRenderMarkdown } = props;
   const value = getValue();
+  const inputId = getId(props.id);
   const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, props.questionnaire, props.resources)}`;
   const subLabelText = getSublabelText(props.item, props.onRenderMarkdown, props.questionnaire, props.resources);
 
@@ -124,19 +125,19 @@ const Decimal: React.FC<DecimalProps & ValidationProps> = props => {
   return (
     <div className="page_refero__component page_refero__component_decimal">
       <Validation {...props}>
+        <Label
+          htmlFor={inputId}
+          labelTexts={[{ text: labelText, type: 'semibold' }]}
+          sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+          afterLabelChildren={props.renderHelpButton()}
+        />
+        {props.renderHelpElement()}
         <Input
           {...register('decimal')}
           type="number"
-          inputId={getId(props.id)}
+          inputId={inputId}
           name={getId(props.id)}
           defaultValue={value ? value + '' : ''}
-          label={
-            <Label
-              labelTexts={[{ text: labelText, type: 'semibold' }]}
-              sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
-              afterLabelChildren={<>{props.renderHelpButton()}</>}
-            />
-          }
           required={isRequired(item)}
           placeholder={getPlaceholder(item)}
           max={getMaxValueExtensionValue(item)}
@@ -149,7 +150,6 @@ const Decimal: React.FC<DecimalProps & ValidationProps> = props => {
       {props.renderDeleteButton('page_refero__deletebutton--margin-top')}
       {props.repeatButton}
       {props.children ? <div className="nested-fieldset nested-fieldset--full-height">{props.children}</div> : null}
-      {props.renderHelpElement()}
     </div>
   );
 };
