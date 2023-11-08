@@ -51,7 +51,7 @@ export interface WithCommonFunctionsProps {
   responseItem?: QuestionnaireResponseItem;
   containedResources?: Resource[];
   item?: QuestionnaireItem;
-  questionnaire?: Questionnaire | null;
+  questionnaire?: Questionnaire;
   headerTag?: number;
   pdf?: boolean;
   language?: string;

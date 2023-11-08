@@ -19,14 +19,14 @@ import { getSublabelText } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Resources } from '../../../util/resources';
 import { Path } from '../../../util/refero-core';
-import withCommonFunctions from '../../with-common-functions';
+import withCommonFunctions, { WithCommonFunctionsProps } from '../../with-common-functions';
 import Label from '../label';
 import SubLabel from '../sublabel';
 import { DateDayInput } from './date-day-input';
 import { DateYearMonthInput } from './date-month-input';
 import { DateYearInput } from './date-year-input';
 
-export interface Props {
+export interface DateProps extends WithCommonFunctionsProps {
   item: QuestionnaireItem;
   questionnaire?: Questionnaire;
   responseItem: QuestionnaireResponseItem;
@@ -49,28 +49,22 @@ export interface Props {
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
 }
 
-class DateComponent extends React.Component<Props & ValidationProps> {
-  static defaultProps: Partial<Props> = {
-    path: [],
-  };
-  datepicker: React.RefObject<DateRangePicker>;
-  constructor(props: Props) {
-    super(props);
-    this.datepicker = React.createRef();
-  }
+const DateComponent: React.FC<DateProps & ValidationProps> = props => {
 
-  getMaxDate(): Moment | undefined {
-    const maxDate = getExtension(ExtensionConstants.DATE_MAX_VALUE_URL, this.props.item);
+  const [datepicker, setDatepicker] = React.useState<React.RefObject<DateRangePicker>>(React.createRef());
+
+  const getMaxDate = (): Moment | undefined => {
+    const maxDate = getExtension(ExtensionConstants.DATE_MAX_VALUE_URL, props.item);
     if (maxDate && maxDate.valueString) {
-      const fhirPathExpression = evaluateFhirpathExpressionToGetDate(this.props.item, maxDate.valueString);
+      const fhirPathExpression = evaluateFhirpathExpressionToGetDate(props.item, maxDate.valueString);
       return fhirPathExpression ? moment(fhirPathExpression) : undefined;
     }
-    const maxDateWithExtension = this.getMaxDateWithExtension();
+    const maxDateWithExtension = getMaxDateWithExtension();
     return maxDateWithExtension ? moment(maxDateWithExtension) : undefined;
   }
 
-  getMaxDateWithExtension(): Date | undefined {
-    const maxDate = getExtension(ExtensionConstants.MAX_VALUE_URL, this.props.item);
+  const getMaxDateWithExtension = (): Date | undefined => {
+    const maxDate = getExtension(ExtensionConstants.MAX_VALUE_URL, props.item);
     if (maxDate && maxDate.valueDate) {
       return parseDate(String(maxDate.valueDate));
     } else if (maxDate && maxDate.valueDateTime) {
@@ -81,18 +75,18 @@ class DateComponent extends React.Component<Props & ValidationProps> {
     return undefined;
   }
 
-  getMinDate(): Moment | undefined {
-    const minDate = getExtension(ExtensionConstants.DATE_MIN_VALUE_URL, this.props.item);
+  const getMinDate = (): Moment | undefined => {
+    const minDate = getExtension(ExtensionConstants.DATE_MIN_VALUE_URL, props.item);
     if (minDate && minDate.valueString) {
-      const fhirPathExpression = evaluateFhirpathExpressionToGetDate(this.props.item, minDate.valueString);
+      const fhirPathExpression = evaluateFhirpathExpressionToGetDate(props.item, minDate.valueString);
       return fhirPathExpression ? moment(fhirPathExpression) : undefined;
     }
-    const minDateWithExtension = this.getMinDateWithExtension();
+    const minDateWithExtension = getMinDateWithExtension();
     return minDateWithExtension ? moment(minDateWithExtension) : undefined;
   }
 
-  getMinDateWithExtension(): Date | undefined {
-    const minDate = getExtension(ExtensionConstants.MIN_VALUE_URL, this.props.item);
+  const getMinDateWithExtension = (): Date | undefined => {
+    const minDate = getExtension(ExtensionConstants.MIN_VALUE_URL, props.item);
     if (minDate && minDate.valueDate) {
       return parseDate(String(minDate.valueDate));
     } else if (minDate && minDate.valueDateTime) {
@@ -103,11 +97,11 @@ class DateComponent extends React.Component<Props & ValidationProps> {
     return undefined;
   }
 
-  onDateValueChange = (newValue: string): void => {
-    const { dispatch, promptLoginMessage, path, item, answer, onAnswerChange } = this.props;
+  const onDateValueChange = (newValue: string): void => {
+    const { dispatch, promptLoginMessage, path, item, answer, onAnswerChange } = props;
     const existingAnswer = answer?.valueDate || '';
     if (dispatch && newValue !== existingAnswer) {
-      dispatch(newDateValueAsync(this.props.path, newValue, this.props.item))?.then(newState =>
+      dispatch(newDateValueAsync(props.path, newValue, props.item))?.then(newState =>
         onAnswerChange(newState, path, item, { valueDate: newValue } as QuestionnaireResponseItemAnswer)
       );
 
@@ -117,34 +111,33 @@ class DateComponent extends React.Component<Props & ValidationProps> {
     }
   };
 
-  getLocaleFromLanguage = (): LanguageLocales.ENGLISH | LanguageLocales.NORWEGIAN => {
-    if (this.props.language?.toLowerCase() === 'en-gb') {
+  const getLocaleFromLanguage = (): LanguageLocales.ENGLISH | LanguageLocales.NORWEGIAN => {
+    if (props.language?.toLowerCase() === 'en-gb') {
       return LanguageLocales.ENGLISH;
     }
 
     return LanguageLocales.NORWEGIAN;
   };
 
-  shouldComponentUpdate(nextProps: Props): boolean {
-    const responseItemHasChanged = this.props.responseItem !== nextProps.responseItem;
-    const helpItemHasChanged = this.props.isHelpOpen !== nextProps.isHelpOpen;
-    const answerHasChanged = this.props.answer !== nextProps.answer;
-    const resourcesHasChanged = JSON.stringify(this.props.resources) !== JSON.stringify(nextProps.resources);
-    const repeats = this.props.item.repeats ?? false;
+  React.useMemo(() => {
+    const responseItemHasChanged = props.responseItem !== props.responseItem;
+    const helpItemHasChanged = props.isHelpOpen !== props.isHelpOpen;
+    const answerHasChanged = props.answer !== props.answer;
+    const resourcesHasChanged = JSON.stringify(props.resources) !== JSON.stringify(props.resources);
+    const repeats = props.item.repeats ?? false;
 
     return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats || answerHasChanged;
-  }
+  }, [props.responseItem, props.isHelpOpen, props.answer, props.resources, props.item]);
 
-  render(): JSX.Element | null {   
-    const subLabelText = getSublabelText(this.props.item, this.props.onRenderMarkdown, this.props.questionnaire, this.props.resources);
+    const subLabelText = getSublabelText(props.item, props.onRenderMarkdown, props.questionnaire, props.resources);
 
-    const itemControls = getItemControlExtensionValue(this.props.item);
+    const itemControls = getItemControlExtensionValue(props.item);
     const labelEl = (
       <Label
-        item={this.props.item}
-        onRenderMarkdown={this.props.onRenderMarkdown}
-        questionnaire={this.props.questionnaire}
-        resources={this.props.resources}
+        item={props.item}
+        onRenderMarkdown={props.onRenderMarkdown}
+        questionnaire={props.questionnaire}
+        resources={props.resources}
       />
     );
     const subLabelEl = subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined;
@@ -156,41 +149,41 @@ class DateComponent extends React.Component<Props & ValidationProps> {
         <DateYearInput
           label={labelEl}
           subLabel={subLabelEl}
-          helpButton={this.props.renderHelpButton()}
-          helpElement={this.props.renderHelpElement()}
-          onDateValueChange={this.onDateValueChange}
-          maxDate={this.getMaxDate()}
-          minDate={this.getMinDate()}
-          {...this.props}
+          helpButton={props.renderHelpButton()}
+          helpElement={props.renderHelpElement()}
+          onDateValueChange={onDateValueChange}
+          maxDate={getMaxDate()}
+          minDate={getMinDate()}
+          {...props}
         />
       );
     } else if (itemControls && itemControls.some(itemControl => itemControl.code === itemControlConstants.YEARMONTH)) {
       element = (
         <DateYearMonthInput
           label={labelEl}
-          locale={this.getLocaleFromLanguage()}
+          locale={getLocaleFromLanguage()}
           subLabel={subLabelEl}
-          helpButton={this.props.renderHelpButton()}
-          helpElement={this.props.renderHelpElement()}
-          onDateValueChange={this.onDateValueChange}
-          maxDate={this.getMaxDate()}
-          minDate={this.getMinDate()}          
-          {...this.props}
+          helpButton={props.renderHelpButton()}
+          helpElement={props.renderHelpElement()}
+          onDateValueChange={onDateValueChange}
+          maxDate={getMaxDate()}
+          minDate={getMinDate()}          
+          {...props}
         />
       );
     } else {
       element = (
         <DateDayInput
-          locale={this.getLocaleFromLanguage()}
+          locale={getLocaleFromLanguage()}
           label={labelEl}
           subLabel={subLabelEl}
-          datepickerRef={this.datepicker}
-          helpButton={this.props.renderHelpButton()}
-          helpElement={this.props.renderHelpElement()}
-          onDateValueChange={this.onDateValueChange}
-          maxDate={this.getMaxDate()}
-          minDate={this.getMinDate()}
-          {...this.props}
+          datepickerRef={datepicker}
+          helpButton={props.renderHelpButton()}
+          helpElement={props.renderHelpElement()}
+          onDateValueChange={onDateValueChange}
+          maxDate={getMaxDate()}
+          minDate={getMinDate()}
+          {...props}
         />
       );
     }
@@ -198,12 +191,11 @@ class DateComponent extends React.Component<Props & ValidationProps> {
     return (
       <div className="page_refero__component page_refero__component_date">
         {element}
-        {this.props.renderDeleteButton('page_refero__deletebutton--margin-top')}
-        {this.props.repeatButton}
-        {this.props.children ? <div className="nested-fieldset nested-fieldset--full-height">{this.props.children}</div> : null}
+        {props.renderDeleteButton('page_refero__deletebutton--margin-top')}
+        {props.repeatButton}
+        {props.children ? <div className="nested-fieldset nested-fieldset--full-height">{props.children}</div> : null}
       </div>
     );
-  }
 }
 
 const withCommonFunctionsComponent = withCommonFunctions(DateComponent);

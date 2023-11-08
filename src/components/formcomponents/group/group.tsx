@@ -17,9 +17,10 @@ import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/m
 import { RenderContext } from '../../../util/renderContext';
 import { Resources } from '../../../util/resources';
 import { Path } from '../../../util/refero-core';
-import withCommonFunctions from '../../with-common-functions';
+import withCommonFunctions, { WithCommonFunctionsProps } from '../../with-common-functions';
+import { ValidationProps } from '../../../types/formTypes/validation';
 
-export interface Props {
+export interface GroupProps extends WithCommonFunctionsProps {
   item: QuestionnaireItem;
   questionnaire?: Questionnaire;
   answer: QuestionnaireResponseItemAnswer;
@@ -42,54 +43,73 @@ export interface Props {
   isHelpOpen?: boolean;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
 }
-interface State {
-  counter?: number;
-}
-export class Group extends React.Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
-  }
 
-  shouldComponentUpdate(nextProps: Props): boolean {
-    const responseItemHasChanged = this.props.responseItem !== nextProps.responseItem;
-    const helpItemHasChanged = this.props.isHelpOpen !== nextProps.isHelpOpen;
-    const repeatButtonHasChanged = this.props.repeatButton !== nextProps.repeatButton;
-    const attachmentErrorMessageHasChanged = this.props.attachmentErrorMessage !== nextProps.attachmentErrorMessage;
-    const resourcesHasChanged = JSON.stringify(this.props.resources) !== JSON.stringify(nextProps.resources);
+const Group: React.FC<GroupProps & ValidationProps> = props => {
+  // constructor(props: Props) {
+  //   super(props);
+  // }
 
-    const repeats = this.props.item.repeats ?? false;
+  // shouldComponentUpdate(nextProps: Props): boolean {
+  //   const responseItemHasChanged = this.props.responseItem !== nextProps.responseItem;
+  //   const helpItemHasChanged = this.props.isHelpOpen !== nextProps.isHelpOpen;
+  //   const repeatButtonHasChanged = this.props.repeatButton !== nextProps.repeatButton;
+  //   const attachmentErrorMessageHasChanged = this.props.attachmentErrorMessage !== nextProps.attachmentErrorMessage;
+  //   const resourcesHasChanged = JSON.stringify(this.props.resources) !== JSON.stringify(nextProps.resources);
 
-    return (
-      responseItemHasChanged ||
-      helpItemHasChanged ||
-      repeatButtonHasChanged ||
-      attachmentErrorMessageHasChanged ||
-      resourcesHasChanged ||
-      repeats
-    );
-  }
+  //   const repeats = this.props.item.repeats ?? false;
 
-  renderAllItems = (): JSX.Element => {
-    const { renderContext } = this.props;
-    const localRenderContextType = this.getLocalRenderContextType();
+  //   return (
+  //     responseItemHasChanged ||
+  //     helpItemHasChanged ||
+  //     repeatButtonHasChanged ||
+  //     attachmentErrorMessageHasChanged ||
+  //     resourcesHasChanged ||
+  //     repeats
+  //   );
+  // }
+
+  React.useMemo(() => {
+    return (newProps: React.PropsWithChildren<GroupProps & ValidationProps>) => {
+      const responseItemHasChanged = props.responseItem !== newProps.responseItem;
+      const helpItemHasChanged = props.isHelpOpen !== newProps.isHelpOpen;
+      const repeatButtonHasChanged = props.repeatButton !== newProps.repeatButton;
+      const attachmentErrorMessageHasChanged = props.attachmentErrorMessage !== newProps.attachmentErrorMessage;
+      const resourcesHasChanged = JSON.stringify(props.resources) !== JSON.stringify(newProps.resources);
+
+      const repeats = props.item.repeats ?? false;
+
+      return (
+        responseItemHasChanged ||
+        helpItemHasChanged ||
+        repeatButtonHasChanged ||
+        attachmentErrorMessageHasChanged ||
+        resourcesHasChanged ||
+        repeats
+      );
+    };
+  }, [props]);
+
+  const renderAllItems = (): JSX.Element => {
+    const { renderContext } = props;
+    const localRenderContextType = getLocalRenderContextType();
 
     if (localRenderContextType) {
       switch (localRenderContextType) {
         case RenderContextType.Grid:
-          return this.renderContextTypeGrid();
+          return renderContextTypeGrid();
       }
     }
 
     switch (renderContext.RenderContextType) {
       case RenderContextType.Grid:
-        return this.isDirectChildOfRenderContextOwner() ? this.renderContextTypeGridRow() : this.renderGroup();
+        return isDirectChildOfRenderContextOwner() ? renderContextTypeGridRow() : renderGroup();
       default:
-        return this.renderGroup();
+        return renderGroup();
     }
   };
 
-  isDirectChildOfRenderContextOwner = (): boolean => {
-    const { path, item, renderContext } = this.props;
+  const isDirectChildOfRenderContextOwner = (): boolean => {
+    const { path, item, renderContext } = props;
 
     const myIndex = path.findIndex(p => p.linkId === item.linkId);
     if (myIndex > 0) {
@@ -100,8 +120,8 @@ export class Group extends React.Component<Props, State> {
     return false;
   };
 
-  renderContextTypeGridRow = (): JSX.Element => {
-    const { renderContext, item } = this.props;
+  const renderContextTypeGridRow = (): JSX.Element => {
+    const { renderContext, item } = props;
 
     renderContext.RenderChildren = (
       childItems: QuestionnaireItem[],
@@ -130,56 +150,56 @@ export class Group extends React.Component<Props, State> {
 
     return (
       <tr key={item.linkId} className="page_refero__grid--row">
-        <td className="page_refero__grid--cell page_refero__grid--cell-first">{this.renderGroupHeader()}</td>
-        {this.props.renderChildrenItems(renderContext)}
+        <td className="page_refero__grid--cell page_refero__grid--cell-first">{renderGroupHeader()}</td>
+        {props.renderChildrenItems(renderContext)}
       </tr>
     );
   };
 
-  renderContextTypeGrid = (): JSX.Element => {
-    const { item } = this.props;
+  const renderContextTypeGrid = (): JSX.Element => {
+    const { item } = props;
 
-    const columns = this.getColumns();
+    const columns = getColumns();
     const headers = columns.map(c => <th key={item.linkId + '-' + c}>{c}</th>);
     headers.unshift(<th key={item.linkId + 'X'}>{item.text ? item.text : ''}</th>);
 
     const newRenderContext = new RenderContext(RenderContextType.Grid, item.linkId, columns);
     return (
       <React.Fragment>
-        <table id={getId(this.props.id)} className="page_refero__grid">
+        <table id={getId(props.id)} className="page_refero__grid">
           <thead>
             <tr>{headers}</tr>
           </thead>
-          <tbody>{this.props.renderChildrenItems(newRenderContext)}</tbody>
+          <tbody>{props.renderChildrenItems(newRenderContext)}</tbody>
         </table>
-        {this.props.renderDeleteButton('page_refero__deletebutton--margin-top')}
-        {this.props.repeatButton}
+        {props.renderDeleteButton('page_refero__deletebutton--margin-top')}
+        {props.repeatButton}
       </React.Fragment>
     );
   };
 
-  renderGroup = (): JSX.Element => {
+  const renderGroup = (): JSX.Element => {
     return (
-      <section id={getId(this.props.id)} data-sectionname={this.getHeaderText()}>
-        {this.renderGroupHeader()}
-        {this.props.renderHelpElement()}
-        <div id={`${getId(this.props.id)}-navanchor`} className={this.getClassNames()}>
-          {this.props.renderChildrenItems(new RenderContext())}
+      <section id={getId(props.id)} data-sectionname={getHeaderText()}>
+        {renderGroupHeader()}
+        {props.renderHelpElement()}
+        <div id={`${getId(props.id)}-navanchor`} className={getClassNames()}>
+          {props.renderChildrenItems(new RenderContext())}
         </div>
-        {this.props.includeSkipLink && this.props.path.length === 1 && (
+        {props.includeSkipLink && props.path.length === 1 && (
           <AnchorLink className="page_refero__skiplink" href="#navigator-button">
-            {this.props.resources?.skipLinkText}
+            {props.resources?.skipLinkText}
           </AnchorLink>
         )}
-        {this.props.renderDeleteButton('page_refero__deletebutton--margin-top')}
-        {this.props.repeatButton}
+        {props.renderDeleteButton('page_refero__deletebutton--margin-top')}
+        {props.repeatButton}
       </section>
     );
   };
 
-  getColumns = (): Array<string> => {
-    const item = this.props.item;
-    const seenColumns = {};
+  const getColumns = (): Array<string> => {
+    const item = props.item;
+    const seenColumns: Record<string, number> = {};
     const columns: Array<string> = [];
     if (!item.item || item.item.length === 0) return columns;
     for (const group of item.item) {
@@ -197,8 +217,8 @@ export class Group extends React.Component<Props, State> {
     return columns;
   };
 
-  getLocalRenderContextType = (): RenderContextType => {
-    const coding = getGroupItemControl(this.props.item);
+  const getLocalRenderContextType = (): RenderContextType => {
+    const coding = getGroupItemControl(props.item);
     if (coding.length > 0) {
       switch (coding[0].code) {
         case 'grid':
@@ -208,9 +228,9 @@ export class Group extends React.Component<Props, State> {
     return RenderContextType.None;
   };
 
-  getClassNames = (): string => {
+  const getClassNames = (): string => {
     const classNames = ['page_refero__component', 'page_refero__component_group'];
-    const coding = getGroupItemControl(this.props.item);
+    const coding = getGroupItemControl(props.item);
     if (coding.length > 0) {
       classNames.push('page_refero__itemControl_' + coding[0].code);
     }
@@ -218,46 +238,40 @@ export class Group extends React.Component<Props, State> {
     return classNames.join(' ');
   };
 
-  getComponentToValidate = (): undefined => {
+  const getComponentToValidate = (): undefined => {
     return undefined;
   };
 
-  getHeaderText = (): string => {
-    return (
-      renderPrefix(this.props.item) +
-      ' ' +
-      getText(this.props.item, this.props.onRenderMarkdown, this.props.questionnaire, this.props.resources)
-    );
+  const getHeaderText = (): string => {
+    return renderPrefix(props.item) + ' ' + getText(props.item, props.onRenderMarkdown, props.questionnaire, props.resources);
   };
 
-  renderGroupHeader = (): JSX.Element | null => {
-    if (!getText(this.props.item, this.props.onRenderMarkdown)) {
+  const renderGroupHeader = (): JSX.Element | null => {
+    if (!getText(props.item, props.onRenderMarkdown)) {
       return null;
     }
 
-    const HeaderTag = `h${this.props.headerTag}` as 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
-    const headerText = DOMPurify.sanitize(this.getHeaderText(), {
+    const HeaderTag = `h${props.headerTag}` as 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
+    const headerText = DOMPurify.sanitize(getHeaderText(), {
       RETURN_TRUSTED_TYPE: true,
       ADD_ATTR: ['target'],
     }) as unknown as string;
     return (
       <React.Fragment>
         <HeaderTag className={'page_refero__heading'} dangerouslySetInnerHTML={{ __html: headerText }} />
-        {this.props.renderHelpButton()}
+        {props.renderHelpButton()}
       </React.Fragment>
     );
   };
 
-  render(): JSX.Element | null {
-    const { pdf } = this.props;
+  const { pdf } = props;
 
-    if (pdf) {
-      return <div>{this.renderAllItems()}</div>;
-    }
-
-    return this.renderAllItems();
+  if (pdf) {
+    return <div>{renderAllItems()}</div>;
   }
-}
+
+  return renderAllItems();
+};
 const withCommonFunctionsComponent = withCommonFunctions(Group);
 const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(withCommonFunctionsComponent);
 export default connectedComponent;

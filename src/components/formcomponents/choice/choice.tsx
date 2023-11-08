@@ -23,7 +23,7 @@ import { isReadOnly, isDataReceiver } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Resources } from '../../../util/resources';
 import { Path } from '../../../util/refero-core';
-import withCommonFunctions from '../../with-common-functions';
+import withCommonFunctions, { WithCommonFunctionsProps } from '../../with-common-functions';
 import AutosuggestView from '../choice-common/autosuggest-view';
 import ReceiverComponentWrapper from '../receiver-component/receiver-component-wrapper';
 import TextView from '../textview';
@@ -31,7 +31,7 @@ import CheckboxView from './checkbox-view';
 import DropdownView from './dropdown-view';
 import RadioView from './radio-view';
 
-export interface ChoiceProps {
+export interface ChoiceProps extends WithCommonFunctionsProps {
   item: QuestionnaireItem;
   answer: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer;
   resources?: Resources;
@@ -60,22 +60,11 @@ export interface ChoiceProps {
   fetchReceivers?: (successCallback: (receivers: Array<OrgenhetHierarki>) => void, errorCallback: () => void) => void;
 }
 
-interface ChoiceState {
-  valid: boolean;
-  validated: boolean;
-}
+const Choice: React.FC<ChoiceProps & ValidationProps> = props => {
+  // const [valid, setValid] = React.useState<boolean>(true);
+  // const [validated, setValidated] = React.useState<boolean>(false);
 
-export class Choice extends React.Component<ChoiceProps & ValidationProps, ChoiceState> {
-  constructor(props: ChoiceProps & ValidationProps) {
-    super(props);
-
-    this.state = {
-      valid: true,
-      validated: false,
-    };
-  }
-
-  getValue = (
+  const getValue = (
     item: QuestionnaireItem,
     answer: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer
   ): (string | undefined)[] | undefined => {
@@ -87,7 +76,7 @@ export class Choice extends React.Component<ChoiceProps & ValidationProps, Choic
       });
     } else if (answer && !Array.isArray(answer) && answer.valueCoding && answer.valueCoding.code) {
       if (answer.valueCoding?.code === item.initial?.[0].valueCoding.code && answer.valueCoding?.display === undefined) {
-        this.resetInitialAnswer(answer.valueCoding.code);      
+        resetInitialAnswer(answer.valueCoding.code);      
       }
       return [answer.valueCoding.code];
     }
@@ -101,7 +90,7 @@ export class Choice extends React.Component<ChoiceProps & ValidationProps, Choic
     return [String(item.initial[0].valueCoding.code)];
   };
 
-  getDataReceiverValue = (answer: Array<QuestionnaireResponseItemAnswer>): (string | undefined)[] => {
+  const getDataReceiverValue = (answer: Array<QuestionnaireResponseItemAnswer>): (string | undefined)[] => {
     return answer.map((el: QuestionnaireResponseItemAnswer) => {
       if (el && el.valueCoding && el.valueCoding.display) {
         return el.valueCoding.display;
@@ -109,14 +98,14 @@ export class Choice extends React.Component<ChoiceProps & ValidationProps, Choic
     });
   };
 
-  getPDFValue = (item: QuestionnaireItem, answer: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer): string => {
-    const { resources, containedResources } = this.props;
+  const getPDFValue = (item: QuestionnaireItem, answer: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer): string => {
+    const { resources, containedResources } = props;
 
     if (isDataReceiver(item)) {
-      return this.getDataReceiverValue(answer as Array<QuestionnaireResponseItemAnswer>).join(', ');
+      return getDataReceiverValue(answer as Array<QuestionnaireResponseItemAnswer>).join(', ');
     }
 
-    const value = this.getValue(item, answer);
+    const value = getValue(item, answer);
     if (!value) {
       let text = '';
       if (resources && resources.ikkeBesvart) {
@@ -125,19 +114,19 @@ export class Choice extends React.Component<ChoiceProps & ValidationProps, Choic
       return text;
     }
 
-    return Array.isArray(value) ? value.map(el => getDisplay(getOptions(this.props.resources, item, containedResources), el)).join(', ') : value;
+    return Array.isArray(value) ? value.map(el => getDisplay(getOptions(props.resources, item, containedResources), el)).join(', ') : value;
   };
 
-  getAnswerValueCoding = (code: string, systemArg?: string, displayArg?: string): Coding => {
-    const display = displayArg ? displayArg : getDisplay(getOptions(this.props.resources, this.props.item, this.props.containedResources), code);
-    const system = systemArg ? systemArg : getSystem(this.props.item, code, this.props.containedResources);
+  const getAnswerValueCoding = (code: string, systemArg?: string, displayArg?: string): Coding => {
+    const display = displayArg ? displayArg : getDisplay(getOptions(props.resources, props.item, props.containedResources), code);
+    const system = systemArg ? systemArg : getSystem(props.item, code, props.containedResources);
     return { code, display, system } as Coding;
   }
 
-  resetInitialAnswer = (code: string): void => {
-    const { dispatch, answer, promptLoginMessage, item, onAnswerChange, path } = this.props;
+  const resetInitialAnswer = (code: string): void => {
+    const { dispatch, answer, promptLoginMessage, item, onAnswerChange, path } = props;
     if (dispatch && code) {
-      const coding = this.getAnswerValueCoding(code);
+      const coding = getAnswerValueCoding(code);
       const responseAnswer = { valueCoding: coding  } as QuestionnaireResponseItemAnswer;
       if (getIndexOfAnswer(code, answer) > -1) {
         dispatch(removeCodingValueAsync(path, coding, item))?.then(newState => onAnswerChange(newState, path, item, responseAnswer));
@@ -152,10 +141,10 @@ export class Choice extends React.Component<ChoiceProps & ValidationProps, Choic
     }
   };
 
-  handleCheckboxChange = (code?: string): void => {
-    const { dispatch, answer, promptLoginMessage, item, onAnswerChange, path } = this.props;
+  const handleCheckboxChange = (code?: string): void => {
+    const { dispatch, answer, promptLoginMessage, item, onAnswerChange, path } = props;
     if (dispatch && code) {
-      const coding = this.getAnswerValueCoding(code);
+      const coding = getAnswerValueCoding(code);
       const responseAnswer = { valueCoding: coding  } as QuestionnaireResponseItemAnswer;
       if (getIndexOfAnswer(code, answer) > -1) {
         dispatch(removeCodingValueAsync(path, coding, item))?.then(newState => onAnswerChange(newState, path, item, responseAnswer));
@@ -171,8 +160,8 @@ export class Choice extends React.Component<ChoiceProps & ValidationProps, Choic
     }
   };
 
-  clearCodingAnswer = (coding: Coding): void => {
-    const { dispatch, promptLoginMessage, item, onAnswerChange, path } = this.props;
+  const clearCodingAnswer = (coding: Coding): void => {
+    const { dispatch, promptLoginMessage, item, onAnswerChange, path } = props;
     if (dispatch) {
       const responseAnswer = { valueCoding: coding } as QuestionnaireResponseItemAnswer;
       dispatch(removeCodingValueAsync(path, coding, item))?.then(newState => onAnswerChange(newState, path, item, responseAnswer));
@@ -182,10 +171,10 @@ export class Choice extends React.Component<ChoiceProps & ValidationProps, Choic
     }
   };
 
-  handleChange = (code?: string, systemArg?: string, displayArg?: string): void => {
-    const { dispatch, promptLoginMessage, item, onAnswerChange, path } = this.props;
+  const handleChange = (code?: string, systemArg?: string, displayArg?: string): void => {
+    const { dispatch, promptLoginMessage, item, onAnswerChange, path } = props;
     if (dispatch && code) {
-      const coding = this.getAnswerValueCoding(code, systemArg, displayArg);
+      const coding = getAnswerValueCoding(code, systemArg, displayArg);
       const responseAnswer = { valueCoding: coding } as QuestionnaireResponseItemAnswer;
       dispatch(newCodingValueAsync(path, coding, item))?.then(newState => onAnswerChange(newState, path, item, responseAnswer));
       if (promptLoginMessage) {
@@ -194,101 +183,100 @@ export class Choice extends React.Component<ChoiceProps & ValidationProps, Choic
     }
   };
 
-  renderCheckbox = (options: Array<Options> | undefined): JSX.Element => {
+  const renderCheckbox = (options: Array<Options> | undefined): JSX.Element => {
     return (
       <CheckboxView
         options={options}
-        id={this.props.id}
-        handleChange={this.handleCheckboxChange}
-        selected={this.getValue(this.props.item, this.props.answer)}
-        onRenderMarkdown={this.props.onRenderMarkdown}
-        {...this.props}
+        id={props.id}
+        handleChange={handleCheckboxChange}
+        selected={getValue(props.item, props.answer)}
+        onRenderMarkdown={props.onRenderMarkdown}
+        {...props}
       >
-        {this.props.children}
+        {props.children}
       </CheckboxView>
     );
   };
 
-  renderDropdown = (options: Array<Options> | undefined): JSX.Element => {
+  const renderDropdown = (options: Array<Options> | undefined): JSX.Element => {
     return (
       <DropdownView
         options={options}
-        id={this.props.id}
-        handleChange={this.handleChange}
-        selected={this.getValue(this.props.item, this.props.answer)}
-        validateInput={(value: string): boolean => validateInput(this.props.item, value, this.props.containedResources, this.props.resources)}
-        resources={this.props.resources}
-        onRenderMarkdown={this.props.onRenderMarkdown}
-        {...this.props}
+        id={props.id}
+        handleChange={handleChange}
+        selected={getValue(props.item, props.answer)}
+        validateInput={(value: string): boolean => validateInput(props.item, value, props.containedResources, props.resources)}
+        resources={props.resources}
+        onRenderMarkdown={props.onRenderMarkdown}
+        {...props}
       >
-        {this.props.children}
+        {props.children}
       </DropdownView>
     );
   };
 
-  renderRadio = (options: Array<Options> | undefined): JSX.Element => {
+  const renderRadio = (options: Array<Options> | undefined): JSX.Element => {
     return (
       <RadioView
         options={options}
         getErrorMessage={(value: string): string =>
-          getErrorMessage(this.props.item, value, this.props.resources, this.props.containedResources)
+          getErrorMessage(props.item, value, props.resources, props.containedResources)
         }
-        handleChange={this.handleChange}
-        validateInput={(value: string): boolean => validateInput(this.props.item, value, this.props.containedResources, this.props.resources)}
-        id={this.props.id}
-        selected={this.getValue(this.props.item, this.props.answer)}
-        onRenderMarkdown={this.props.onRenderMarkdown}
-        {...this.props}
+        handleChange={handleChange}
+        validateInput={(value: string): boolean => validateInput(props.item, value, props.containedResources, props.resources)}
+        id={props.id}
+        selected={getValue(props.item, props.answer)}
+        onRenderMarkdown={props.onRenderMarkdown}
+        {...props}
       >
-        {this.props.children}
+        {props.children}
       </RadioView>
     );
   };
 
-  renderAutosuggest = (): JSX.Element => {
+  const renderAutosuggest = (): JSX.Element => {
     return (
       <AutosuggestView
-        handleChange={this.handleChange}
-        id={this.props.id}
-        clearCodingAnswer={this.clearCodingAnswer}
-        onRenderMarkdown={this.props.onRenderMarkdown}
-        {...this.props}
+        handleChange={handleChange}
+        id={props.id}
+        clearCodingAnswer={clearCodingAnswer}
+        onRenderMarkdown={props.onRenderMarkdown}
+        {...props}
       >
-        {this.props.children}
+        {props.children}
       </AutosuggestView>
     );
   };
 
-  renderReceiverComponent = (): JSX.Element => {
+  const renderReceiverComponent = (): JSX.Element => {
     return (
       <ReceiverComponentWrapper
-        handleChange={this.handleChange}
-        id={this.props.id}
-        selected={this.getValue(this.props.item, this.props.answer)}
-        clearCodingAnswer={this.clearCodingAnswer}
-        fetchReceivers={this.props.fetchReceivers}
-        {...this.props}
+        handleChange={handleChange}
+        id={props.id}
+        selected={getValue(props.item, props.answer)}
+        clearCodingAnswer={clearCodingAnswer}
+        fetchReceivers={props.fetchReceivers}
+        {...props}
       >
-        {this.props.children}
+        {props.children}
       </ReceiverComponentWrapper>
     );
   };
 
-  shouldComponentUpdate(nextProps: ChoiceProps): boolean {
-    const responseItemHasChanged = this.props.responseItem !== nextProps.responseItem;
-    const helpItemHasChanged = this.props.isHelpOpen !== nextProps.isHelpOpen;
-    const answerHasChanged = this.props.answer !== nextProps.answer;
-    const resourcesHasChanged = JSON.stringify(this.props.resources) !== JSON.stringify(nextProps.resources);
-    const repeats = this.props.item.repeats ?? false;
+  React.useMemo(() => {
+    const responseItemHasChanged = props.responseItem !== props.responseItem;
+    const helpItemHasChanged = props.isHelpOpen !== props.isHelpOpen;
+    const answerHasChanged = props.answer !== props.answer;
+    const resourcesHasChanged = JSON.stringify(props.resources) !== JSON.stringify(props.resources);
+    const repeats = props.item.repeats ?? false;
 
     return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats || answerHasChanged;
-  }
+  }, [props.responseItem, props.isHelpOpen, props.answer, props.resources, props.item]);
 
-  render(): JSX.Element | null {
-    const { id, item, pdf, answer, containedResources, children, onRenderMarkdown } = this.props;
+    const { id, item, pdf, answer, containedResources, children, onRenderMarkdown } = props;
     if (pdf || isReadOnly(item)) {
       return (
-        <TextView id={id} item={item} value={this.getPDFValue(item, answer)} onRenderMarkdown={onRenderMarkdown}>
+        <TextView id={id} item={item} value={getPDFValue(item, answer)} onRenderMarkdown={onRenderMarkdown}>
           {children}
         </TextView>
       );
@@ -298,16 +286,15 @@ export class Choice extends React.Component<ChoiceProps & ValidationProps, Choic
         {renderOptions(
           item,
           containedResources,
-          this.renderRadio,
-          this.renderCheckbox,
-          this.renderDropdown,
-          this.props.resources,
-          this.renderAutosuggest,
-          this.renderReceiverComponent
+          renderRadio,
+          renderCheckbox,
+          renderDropdown,
+          props.resources,
+          renderAutosuggest,
+          renderReceiverComponent
         )}
       </React.Fragment>
     );
-  }
 }
 
 const withCommonFunctionsComponent = withCommonFunctions(Choice);
