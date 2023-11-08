@@ -97,7 +97,7 @@ const DropdownView: React.FC<DropdownViewProps> = props => {
             onChange={(evt): void => handleChange(evt.target.value)}
           >
             {dropdownOptions.map(dropdownOption => (
-              <option value={dropdownOption.label}>{dropdownOption.label}</option>
+              <option key={selectId + dropdownOption.label} value={dropdownOption.label}>{dropdownOption.label}</option>
             ))}
           </Select>
         </Validation>

@@ -37,7 +37,7 @@ const FormButtons = ({
 }: FormButtonsInterface) => {
   const submitButton = (
     //onsubmit og onformsubmit
-    <div className="submitButtonStyle">
+    <div key="submitButton" className="submitButtonStyle">
       <style>{submitButtonStyle}</style>
       <Button type="submit" disabled={submitButtonDisabled} onClick={onSubmitButtonClicked}>
         {submitButtonText}
@@ -45,7 +45,7 @@ const FormButtons = ({
     </div>
   );
   const pauseButton = (
-    <div className="pauseButtonStyle">
+    <div key="pauseButton" className="pauseButtonStyle">
       <style>{pauseButtonStyle}</style>
       <style>{isHelsenorgeForm ? hidePauseButtonOnSmallScreen : displayPauseButtonOnSmallScreen}</style>
       <Button variant="outline" disabled={pauseButtonDisabled} onClick={onPauseButtonClicked}>
@@ -54,7 +54,7 @@ const FormButtons = ({
     </div>
   );
   const cancelButton = (
-    <div className="cancelButtonStyle">
+    <div key="cancelButton" className="cancelButtonStyle">
       <style>{cancelButtonStyle}</style>
       <Button variant="borderless" onClick={onCancelButtonClicked}>
         {cancelButtonText}
