@@ -13,7 +13,7 @@ import { getPlaceholder, getValidationTextExtension } from '../../../util/extens
 import { Resources } from '../../../util/resources';
 import TextView from '../textview';
 
-interface Props {
+interface DateYearMonthInputProps {
   id?: string;
   pdf?: boolean;
   item: QuestionnaireItem;
@@ -31,9 +31,9 @@ interface Props {
   answer: QuestionnaireResponseItemAnswer;
 }
 
-export class DateYearMonthInput extends React.Component<Props, {}> {
-  getYearMonthInputResources(): YearMonthResources {
-    const { resources, item } = this.props;
+export const DateYearMonthInput: React.FC<DateYearMonthInputProps> = props => {
+  const getYearMonthInputResources = (): YearMonthResources => {
+    const { resources, item } = props;
     // Vi får maks én valideringstekst, derfor settes alle til denne.
     const validationErrorText = getValidationTextExtension(item);
 
@@ -46,18 +46,18 @@ export class DateYearMonthInput extends React.Component<Props, {}> {
       selectYearPlaceholder: resources?.yearmonth_field_year_placeholder || '',
       selectMonthPlaceholder: resources?.yearmonth_field_month_placeholder || '',
     };
-  }
+  };
 
-  onYearMonthChange = (newValue: YearMonthValue): void => {
+  const onYearMonthChange = (newValue: YearMonthValue): void => {
     if (!newValue.year && (newValue.month === -1 || newValue.month === null)) {
-      this.props.onDateValueChange('');
+      props.onDateValueChange('');
     } else {
       const newMonthValue = newValue.month === null || newValue.month === -1 ? '' : `0${newValue.month + 1}`.slice(-2);
-      this.props.onDateValueChange(`${newValue.year}-${newMonthValue}`);
+      props.onDateValueChange(`${newValue.year}-${newMonthValue}`);
     }
   };
 
-  getDateValueFromAnswer = (answer: QuestionnaireResponseItemAnswer): string | undefined => {
+  const getDateValueFromAnswer = (answer: QuestionnaireResponseItemAnswer): string | undefined => {
     if (answer && answer.valueDate) {
       return answer.valueDate;
     }
@@ -66,9 +66,9 @@ export class DateYearMonthInput extends React.Component<Props, {}> {
     }
   };
 
-  getValue = (): YearMonthValue | undefined => {
-    const { answer } = this.props;    
-    const stringValue = this.getDateValueFromAnswer(answer);
+  const getValue = (): YearMonthValue | undefined => {
+    const { answer } = props;
+    const stringValue = getDateValueFromAnswer(answer);
 
     if (!stringValue) {
       return undefined;
@@ -83,7 +83,7 @@ export class DateYearMonthInput extends React.Component<Props, {}> {
     }
   };
 
-  getMinMaxDate = (dateValue: Moment | undefined): YearMonthValue | undefined => {
+  const getMinMaxDate = (dateValue: Moment | undefined): YearMonthValue | undefined => {
     return dateValue
       ? {
           year: dateValue.year(),
@@ -92,54 +92,52 @@ export class DateYearMonthInput extends React.Component<Props, {}> {
       : undefined;
   };
 
-  convertToPDFValue = (answer: QuestionnaireResponseItemAnswer): string => {
-    const value = this.getDateValueFromAnswer(answer);
-    return moment(value).locale(this.props.locale).format('MMMM YYYY')
+  const convertToPDFValue = (answer: QuestionnaireResponseItemAnswer): string => {
+    const value = getDateValueFromAnswer(answer);
+    return moment(value).locale(props.locale).format('MMMM YYYY');
   };
 
-  getPDFValue = (): string => {
-    const ikkeBesvartText = this.props.resources?.ikkeBesvart || '';
-    if (Array.isArray(this.props.answer)) {
-      return this.props.answer.map(m => this.convertToPDFValue(m)).join(', ');
+  const getPDFValue = (): string => {
+    const ikkeBesvartText = props.resources?.ikkeBesvart || '';
+    if (Array.isArray(props.answer)) {
+      return props.answer.map(m => convertToPDFValue(m)).join(', ');
     }
     return ikkeBesvartText;
   };
 
-  render(): JSX.Element {
-    if (this.props.pdf || isReadOnly(this.props.item)) {
-      return (
-        <TextView
-          id={this.props.id}
-          item={this.props.item}
-          value={this.getPDFValue()}
-          onRenderMarkdown={this.props.onRenderMarkdown}
-          helpButton={this.props.helpButton}
-          helpElement={this.props.helpElement}
-        >
-          {this.props.children}
-        </TextView>
-      );
-    }
-
+  if (props.pdf || isReadOnly(props.item)) {
     return (
-      <Validation {...this.props}>
-        <YearMonthInput
-          id={`${getId(this.props.id)}-yearmonth_input`}
-          locale={this.props.locale} // TODO: må støtte nynorsk og samisk også
-          resources={this.getYearMonthInputResources()}
-          legend={this.props.label}
-          subLabel={this.props.subLabel}
-          isRequired={isRequired(this.props.item)}
-          placeholder={getPlaceholder(this.props.item)}
-          maximumYearMonth={this.getMinMaxDate(this.props.maxDate)}
-          minimumYearMonth={this.getMinMaxDate(this.props.minDate)}
-          value={this.getValue()}
-          className={this.props.className}
-          onChange={this.onYearMonthChange}
-          helpButton={this.props.helpButton}
-          helpElement={this.props.helpElement}
-        />
-      </Validation>
+      <TextView
+        id={props.id}
+        item={props.item}
+        value={getPDFValue()}
+        onRenderMarkdown={props.onRenderMarkdown}
+        helpButton={props.helpButton}
+        helpElement={props.helpElement}
+      >
+        {props.children}
+      </TextView>
     );
   }
-}
+
+  return (
+    <Validation {...props}>
+      <YearMonthInput
+        id={`${getId(props.id)}-yearmonth_input`}
+        locale={props.locale} // TODO: må støtte nynorsk og samisk også
+        resources={getYearMonthInputResources()}
+        legend={props.label}
+        subLabel={props.subLabel}
+        isRequired={isRequired(props.item)}
+        placeholder={getPlaceholder(props.item)}
+        maximumYearMonth={getMinMaxDate(props.maxDate)}
+        minimumYearMonth={getMinMaxDate(props.minDate)}
+        value={getValue()}
+        className={props.className}
+        onChange={onYearMonthChange}
+        helpButton={props.helpButton}
+        helpElement={props.helpElement}
+      />
+    </Validation>
+  );
+};
