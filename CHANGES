@@ -1,3 +1,9 @@
+## 13.2.1
+
+----
+
+- Added screen reader texts to aria-label instead of having them in hidden span-tags
+
 ## 13.2.0
 
 ----

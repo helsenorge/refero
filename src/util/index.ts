@@ -184,9 +184,6 @@ function getMarkdownValue(
   questionnaire?: Questionnaire | null,
   srLinkText?: string
 ): string {
-  const srLinkTextSpan = `<span style="position: absolute !important; height: 1px; width: 1px; overflow: hidden; clip: rect(1px, 1px, 1px, 1px);">${
-    srLinkText ? srLinkText : 'The link opens in a new tab'
-  }</span>`;
   const itemValue = getHyperlinkExtensionValue(item);
   const questionnaireValue = questionnaire ? getHyperlinkExtensionValue(questionnaire) : undefined;
 
@@ -194,14 +191,16 @@ function getMarkdownValue(
   renderer.link = (href: string, title: string, text: string): string => {
     const urlString = `<a href=${href} ${
       title ? `title=${title}` : ''
-    } target="_blank" rel="noopener noreferrer" class="external">${text}${srLinkTextSpan}</a>`;
+    } target="_blank" rel="noopener noreferrer" class="external" aria-label=${
+      openNewIfAbsolute(href) === '_blank' ? srLinkText : ''
+    }>${text}</a>`;
     return urlString;
   };
   const rendererSameWindow = new marked.Renderer();
   rendererSameWindow.link = (href: string, title: string, text: string): string => {
     const urlString = `<a href=${href} ${title ? `title=${title}` : ''} target="${openNewIfAbsolute(
       href
-    )}" rel="noopener noreferrer">${text}${openNewIfAbsolute(href) === '_blank' ? srLinkTextSpan : ''}</a>`;
+    )}" rel="noopener noreferrer" aria-label=${openNewIfAbsolute(href) === '_blank' ? srLinkText : ''}>${text}</a>`;
     return urlString;
   };
 
