@@ -151,11 +151,7 @@ export function getSublabelText(
 ): string {
   if (item) {
     const markdown = getSublabelExtensionValue(item) || '';
-    return markdown
-      ? getMarkdownValue(markdown, item, onRenderMarkdown, questionnaire, resources?.linkOpensInNewTab)
-      : window.trustedTypes
-      ? (window.trustedTypes.emptyHTML as unknown as string)
-      : '';
+    return markdown ? getMarkdownValue(markdown, item, onRenderMarkdown, questionnaire, resources?.linkOpensInNewTab) : '';
   }
   return '';
 }
