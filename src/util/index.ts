@@ -138,7 +138,7 @@ export function getId(id?: string): string {
 
 export function renderPrefix(item: QuestionnaireItem): string {
   if (!item || !item.prefix) {
-    return window.trustedTypes ? (window.trustedTypes.emptyHTML as unknown as string) : '';
+    return '';
   }
   return item.prefix;
 }
@@ -150,14 +150,14 @@ export function getSublabelText(
   resources?: Resources
 ): string {
   if (item) {
-    const markdown = getSublabelExtensionValue(item) || (window.trustedTypes ? (window.trustedTypes.emptyHTML as unknown as string) : '');
+    const markdown = getSublabelExtensionValue(item) || '';
     return markdown
       ? getMarkdownValue(markdown, item, onRenderMarkdown, questionnaire, resources?.linkOpensInNewTab)
       : window.trustedTypes
       ? (window.trustedTypes.emptyHTML as unknown as string)
       : '';
   }
-  return window.trustedTypes ? (window.trustedTypes.emptyHTML as unknown as string) : '';
+  return '';
 }
 
 export function getText(
@@ -174,7 +174,7 @@ export function getText(
       return item.text;
     }
   }
-  return window.trustedTypes ? (window.trustedTypes.emptyHTML as unknown as string) : '';
+  return '';
 }
 
 function getMarkdownValue(
