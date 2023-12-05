@@ -1,12 +1,18 @@
+## 13.2.2
+
+---
+
+- removed trustedHtml on empty strings in sidebar
+
 ## 13.2.1
 
-----
+---
 
 - Added screen reader texts to aria-label instead of having them in hidden span-tags
 
 ## 13.2.0
 
-----
+---
 
 - Total Score only calculates SS and not fields with calculated extentions
 
@@ -14,9 +20,9 @@
 
 ---
 
-- Total Score, Seciton Score and BMI calculator can be displayed not only in fields with Quantity type,
-  but also can be displayed in fields with Decimal and Integer types
-  
+- Total Score, Seciton Score and BMI calculator can be displayed not only in fields with Quantity type, but also can be displayed in fields
+  with Decimal and Integer types
+
 ## 13.0.0
 
 ---
@@ -146,19 +152,19 @@
 
 ---
 
-- Bug fix: Added sanitize helper to make sure we return an actual string result or undefined on form components 
+- Bug fix: Added sanitize helper to make sure we return an actual string result or undefined on form components
 
 ## 11.3.8
 
 ---
 
-- Small fix in date-day-input component: Removing misplaced undefined check 
+- Small fix in date-day-input component: Removing misplaced undefined check
 
 ## 11.3.7
 
 ---
 
-- Small fix in date-day-input component: Removing misplaced undefined check 
+- Small fix in date-day-input component: Removing misplaced undefined check
 
 ## 11.3.6
 
@@ -211,7 +217,7 @@
 ---
 
 - Made Dompurify accept the target attribute when sanitizing links
-- Gave links with target="_blank" the attribute rel="noopener noreferrer" for better security
+- Gave links with target="\_blank" the attribute rel="noopener noreferrer" for better security
 
 ## 11.2.1
 
