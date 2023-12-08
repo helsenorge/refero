@@ -27,11 +27,7 @@ import { GlobalState } from '../reducers';
 import { getFormDefinition, getFormData } from '../reducers/form';
 import { FormDefinition, FormData } from '../reducers/form';
 import { ActionRequester } from '../util/actionRequester';
-import {
-  getQuestionnaireUnitExtensionValue,
-  getPresentationButtonsExtension,
-  getNavigatorExtension,
-} from '../util/extension';
+import { getQuestionnaireUnitExtensionValue, getPresentationButtonsExtension, getNavigatorExtension } from '../util/extension';
 import { getComponentForItem, shouldRenderRepeatButton, isHiddenItem, getDecimalValue } from '../util/index';
 import { IE11HackToWorkAroundBug187484 } from '../util/hacks';
 import { QuestionniareInspector } from '../util/questionnaireInspector';
@@ -62,8 +58,8 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
     this.state = {
       valid: true,
       validated: false,
-      showCancelLightbox: false,  
-      scoringCalculator: questionnaire ? this.getScoringCalculator(questionnaire) : undefined
+      showCancelLightbox: false,
+      scoringCalculator: questionnaire ? this.getScoringCalculator(questionnaire) : undefined,
     };
   }
 
@@ -97,7 +93,7 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
         nextProps.language,
         nextProps.syncQuestionnaireResponse
       );
-      this.setState({scoringCalculator: this.getScoringCalculator(nextProps.questionnaire)});
+      this.setState({ scoringCalculator: this.getScoringCalculator(nextProps.questionnaire) });
     }
   }
 
@@ -141,7 +137,7 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
   updateQuestionnaireResponseWithScore = (
     scores: { [linkId: string]: number | undefined },
     questionnaire: Questionnaire,
-    questionnaireResponse: QuestionnaireResponse,
+    questionnaireResponse: QuestionnaireResponse
   ): void => {
     const actions: Array<NewValueAction> = [];
     for (const linkId in scores) {
@@ -173,20 +169,20 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
           }
           break;
         }
-        case ItemType.INTEGER: {          
+        case ItemType.INTEGER: {
           const intValue = value !== undefined ? Math.round(value) : undefined;
           for (const itemAndPath of itemsAndPaths) {
             actions.push(newIntegerValue(itemAndPath.path, intValue, item));
           }
           break;
         }
-      }    
+      }
     }
 
     for (const a of actions) {
       this.props.dispatch(a);
     }
-  }
+  };
 
   renderFormItems(pdf?: boolean): Array<JSX.Element> | undefined {
     const { formDefinition, resources, formData, promptLoginMessage } = this.props;

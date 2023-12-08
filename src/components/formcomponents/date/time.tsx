@@ -8,7 +8,7 @@ import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireRespon
 
 import TimeInput from '@helsenorge/date-time/components/time-input';
 import { parseDate } from '@helsenorge/date-time/components/time-input/date-core';
-import DateTimeConstants from '@helsenorge/date-time/constants/datetime';
+import * as DateTimeConstants from '@helsenorge/date-time/constants/datetime';
 import { ValidationProps } from '@helsenorge/form/components/form/validation';
 import Validation from '@helsenorge/form/components/form/validation';
 
@@ -62,7 +62,7 @@ class Time extends React.Component<Props & ValidationProps> {
     this.getValue = this.getValue.bind(this);
   }
 
-  convertAnswerToString(answer: QuestionnaireResponseItemAnswer): string {  
+  convertAnswerToString(answer: QuestionnaireResponseItemAnswer): string {
     if (answer && answer.valueTime) {
       return answer.valueTime;
     }
@@ -73,7 +73,7 @@ class Time extends React.Component<Props & ValidationProps> {
       return this.getTimeStringFromDate(parseDate(String(answer.valueDateTime)));
     }
     return '';
-  };
+  }
 
   getValue(): string | undefined {
     const { value, answer } = this.props;
@@ -83,7 +83,7 @@ class Time extends React.Component<Props & ValidationProps> {
     if (Array.isArray(answer)) {
       return answer.map(m => this.convertAnswerToString(m)).join(', ');
     }
-    return  this.convertAnswerToString(answer);
+    return this.convertAnswerToString(answer);
   }
 
   getPDFValue(): string {
@@ -221,7 +221,8 @@ class Time extends React.Component<Props & ValidationProps> {
       if (renderFieldset) {
         return (
           <TextView
-            id={id} item={this.props.item}
+            id={id}
+            item={this.props.item}
             value={this.padNumber(value)}
             onRenderMarkdown={onRenderMarkdown}
             helpButton={this.props.renderHelpButton()}
