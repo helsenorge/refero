@@ -17,6 +17,7 @@ import { OrgenhetHierarki } from '../../../types/orgenhetHierarki';
 import { ValidationProps } from '@helsenorge/form/components/form/validation';
 import { Options } from '@helsenorge/form/components/radio-group';
 
+import SliderView from './slider-view';
 import { NewValueAction, newCodingValueAsync, removeCodingValueAsync } from '../../../actions/newValue';
 import { GlobalState } from '../../../reducers';
 import { getOptions, getSystem, getErrorMessage, validateInput, getIndexOfAnswer, getDisplay, renderOptions } from '../../../util/choice';
@@ -88,7 +89,7 @@ export class Choice extends React.Component<ChoiceProps & ValidationProps, Choic
       });
     } else if (answer && !Array.isArray(answer) && answer.valueCoding && answer.valueCoding.code) {
       if (answer.valueCoding?.code === item.initial?.[0].valueCoding.code && answer.valueCoding?.display === undefined) {
-        this.resetInitialAnswer(answer.valueCoding.code);      
+        this.resetInitialAnswer(answer.valueCoding.code);
       }
       return [answer.valueCoding.code];
     }
@@ -126,20 +127,24 @@ export class Choice extends React.Component<ChoiceProps & ValidationProps, Choic
       return text;
     }
 
-    return Array.isArray(value) ? value.map(el => getDisplay(getOptions(this.props.resources, item, containedResources), el)).join(', ') : value;
+    return Array.isArray(value)
+      ? value.map(el => getDisplay(getOptions(this.props.resources, item, containedResources), el)).join(', ')
+      : value;
   };
 
   getAnswerValueCoding = (code: string, systemArg?: string, displayArg?: string): Coding => {
-    const display = displayArg ? displayArg : getDisplay(getOptions(this.props.resources, this.props.item, this.props.containedResources), code);
+    const display = displayArg
+      ? displayArg
+      : getDisplay(getOptions(this.props.resources, this.props.item, this.props.containedResources), code);
     const system = systemArg ? systemArg : getSystem(this.props.item, code, this.props.containedResources);
     return { code, display, system } as Coding;
-  }
+  };
 
   resetInitialAnswer = (code: string): void => {
     const { dispatch, answer, promptLoginMessage, item, onAnswerChange, path } = this.props;
     if (dispatch && code) {
       const coding = this.getAnswerValueCoding(code);
-      const responseAnswer = { valueCoding: coding  } as QuestionnaireResponseItemAnswer;
+      const responseAnswer = { valueCoding: coding } as QuestionnaireResponseItemAnswer;
       if (getIndexOfAnswer(code, answer) > -1) {
         dispatch(removeCodingValueAsync(path, coding, item))?.then(newState => onAnswerChange(newState, path, item, responseAnswer));
         if (promptLoginMessage) {
@@ -157,7 +162,7 @@ export class Choice extends React.Component<ChoiceProps & ValidationProps, Choic
     const { dispatch, answer, promptLoginMessage, item, onAnswerChange, path } = this.props;
     if (dispatch && code) {
       const coding = this.getAnswerValueCoding(code);
-      const responseAnswer = { valueCoding: coding  } as QuestionnaireResponseItemAnswer;
+      const responseAnswer = { valueCoding: coding } as QuestionnaireResponseItemAnswer;
       if (getIndexOfAnswer(code, answer) > -1) {
         dispatch(removeCodingValueAsync(path, coding, item))?.then(newState => onAnswerChange(newState, path, item, responseAnswer));
         if (promptLoginMessage) {
@@ -217,7 +222,9 @@ export class Choice extends React.Component<ChoiceProps & ValidationProps, Choic
         id={this.props.id}
         handleChange={this.handleChange}
         selected={this.getValue(this.props.item, this.props.answer)}
-        validateInput={(value: string): boolean => validateInput(this.props.item, value, this.props.containedResources, this.props.resources)}
+        validateInput={(value: string): boolean =>
+          validateInput(this.props.item, value, this.props.containedResources, this.props.resources)
+        }
         resources={this.props.resources}
         onRenderMarkdown={this.props.onRenderMarkdown}
         {...this.props}
@@ -235,7 +242,9 @@ export class Choice extends React.Component<ChoiceProps & ValidationProps, Choic
           getErrorMessage(this.props.item, value, this.props.resources, this.props.containedResources)
         }
         handleChange={this.handleChange}
-        validateInput={(value: string): boolean => validateInput(this.props.item, value, this.props.containedResources, this.props.resources)}
+        validateInput={(value: string): boolean =>
+          validateInput(this.props.item, value, this.props.containedResources, this.props.resources)
+        }
         id={this.props.id}
         selected={this.getValue(this.props.item, this.props.answer)}
         onRenderMarkdown={this.props.onRenderMarkdown}
@@ -244,6 +253,10 @@ export class Choice extends React.Component<ChoiceProps & ValidationProps, Choic
         {this.props.children}
       </RadioView>
     );
+  };
+
+  renderSlider = (): JSX.Element => {
+    return <SliderView item={this.props.item} handleChange={this.handleChange} />;
   };
 
   renderAutosuggest = (): JSX.Element => {
@@ -302,6 +315,7 @@ export class Choice extends React.Component<ChoiceProps & ValidationProps, Choic
           this.renderRadio,
           this.renderCheckbox,
           this.renderDropdown,
+          this.renderSlider,
           this.props.resources,
           this.renderAutosuggest,
           this.renderReceiverComponent
