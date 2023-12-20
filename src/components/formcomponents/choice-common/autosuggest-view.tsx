@@ -14,7 +14,7 @@ import Validation from '@helsenorge/form/components/form/validation';
 
 import { OPEN_CHOICE_ID, OPEN_CHOICE_SYSTEM } from '../../../constants';
 import ItemType from '../../../constants/itemType';
-import { getValidationTextExtension, getPlaceholder } from '../../../util/extension';
+import { getValidationTextExtension } from '../../../util/extension';
 import { isRequired, getId, getSublabelText } from '../../../util/index';
 import { Resources } from '../../../util/resources';
 import Label from '../label';
@@ -256,7 +256,6 @@ class AutosuggestView extends React.Component<AutosuggestProps, AutosuggestState
               className="page_refero__autosuggest"
               type="search"
               isRequired={isRequired(this.props.item)}
-              placeholder={getPlaceholder(this.props.item)}
               errorMessage={getValidationTextExtension(this.props.item)}
               helpButton={this.props.renderHelpButton()}
               helpElement={this.props.renderHelpElement()}
