@@ -42,6 +42,7 @@ import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/m
 import { Resources } from '../../../util/resources';
 import { Path } from '../../../util/refero-core';
 import withCommonFunctions from '../../with-common-functions';
+import SliderView from '../choice/slider-view';
 import AutosuggestView from '../choice-common/autosuggest-view';
 import TextView from '../textview';
 import CheckboxView from './checkbox-view';
@@ -80,7 +81,7 @@ export interface Props {
 export class OpenChoice extends React.Component<Props & ValidationProps> {
   getDataReceiverValue = (answer: Array<QuestionnaireResponseItemAnswer>): (string | undefined)[] => {
     return answer
-      .filter((f) => f.valueCoding?.code !== OPEN_CHOICE_ID)
+      .filter(f => f.valueCoding?.code !== OPEN_CHOICE_ID)
       .map((el: QuestionnaireResponseItemAnswer) => {
         if (el && el.valueCoding) {
           return el.valueCoding.display;
@@ -93,9 +94,9 @@ export class OpenChoice extends React.Component<Props & ValidationProps> {
 
   getPDFValue = (item: QuestionnaireItem, answer: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer): string => {
     const { resources, containedResources } = this.props;
-  
-    if (isDataReceiver(item)) {      
-      return this.getDataReceiverValue(answer as Array<QuestionnaireResponseItemAnswer>).join(', ');      
+
+    if (isDataReceiver(item)) {
+      return this.getDataReceiverValue(answer as Array<QuestionnaireResponseItemAnswer>).join(', ');
     }
 
     const value = this.getValue(item, answer);
@@ -107,7 +108,9 @@ export class OpenChoice extends React.Component<Props & ValidationProps> {
       return text;
     }
 
-    const displayValues = value.filter(el => el !== OPEN_CHOICE_ID).map(el => getDisplay(getOptions(resources, item, containedResources), el));
+    const displayValues = value
+      .filter(el => el !== OPEN_CHOICE_ID)
+      .map(el => getDisplay(getOptions(resources, item, containedResources), el));
     const openValue = this.getOpenValue(answer);
     if (openValue) {
       displayValues.push(openValue);
@@ -182,17 +185,19 @@ export class OpenChoice extends React.Component<Props & ValidationProps> {
   };
 
   getAnswerValueCoding = (code: string, systemArg?: string, displayArg?: string): Coding => {
-    const display = displayArg ? displayArg : getDisplay(getOptions(this.props.resources, this.props.item, this.props.containedResources), code);
+    const display = displayArg
+      ? displayArg
+      : getDisplay(getOptions(this.props.resources, this.props.item, this.props.containedResources), code);
     const valueSetSystem = code === OPEN_CHOICE_ID ? OPEN_CHOICE_SYSTEM : getSystem(this.props.item, code, this.props.containedResources);
     const system = systemArg ? systemArg : valueSetSystem;
     return { code, display, system } as Coding;
-  }
+  };
 
   resetInitialAnswer = (code: string): void => {
     const { dispatch, answer, promptLoginMessage, item, onAnswerChange, path } = this.props;
     if (dispatch && code) {
       const coding = this.getAnswerValueCoding(code);
-      const responseAnswer = { valueCoding: coding  } as QuestionnaireResponseItemAnswer;
+      const responseAnswer = { valueCoding: coding } as QuestionnaireResponseItemAnswer;
       if (getIndexOfAnswer(code, answer) > -1) {
         dispatch(removeCodingValueAsync(path, coding, item))?.then(newState => onAnswerChange(newState, path, item, responseAnswer));
         if (promptLoginMessage) {
@@ -294,8 +299,8 @@ export class OpenChoice extends React.Component<Props & ValidationProps> {
 
   renderTextField(): JSX.Element {
     const { id, pdf, item, answer, onRenderMarkdown, ...other } = this.props;
-    
-   let a: QuestionnaireResponseItemAnswer = {};
+
+    let a: QuestionnaireResponseItemAnswer = {};
     if (Array.isArray(answer)) {
       for (let i = 0; i < answer.length; i++) {
         const el = answer[i] as QuestionnaireResponseItemAnswer;
@@ -345,7 +350,9 @@ export class OpenChoice extends React.Component<Props & ValidationProps> {
         id={this.props.id}
         handleChange={this.handleChange}
         selected={this.getValue(this.props.item, this.props.answer)}
-        validateInput={(value: string): boolean => validateInput(this.props.item, value, this.props.containedResources, this.props.resources)}
+        validateInput={(value: string): boolean =>
+          validateInput(this.props.item, value, this.props.containedResources, this.props.resources)
+        }
         resources={this.props.resources}
         renderOpenField={(): JSX.Element => this.renderTextField()}
         onRenderMarkdown={this.props.onRenderMarkdown}
@@ -393,6 +400,10 @@ export class OpenChoice extends React.Component<Props & ValidationProps> {
     );
   };
 
+  renderSlider = (): JSX.Element => {
+    return <SliderView item={this.props.item} handleChange={this.handleChange} />;
+  };
+
   shouldComponentUpdate(nextProps: Props): boolean {
     const responseItemHasChanged = this.props.responseItem !== nextProps.responseItem;
     const helpItemHasChanged = this.props.isHelpOpen !== nextProps.isHelpOpen;
@@ -403,7 +414,7 @@ export class OpenChoice extends React.Component<Props & ValidationProps> {
     return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats || answerHasChanged;
   }
 
-  render(): JSX.Element | null {    
+  render(): JSX.Element | null {
     const { id, item, pdf, answer, containedResources, children, onRenderMarkdown } = this.props;
     if (pdf || isReadOnly(item)) {
       return (
@@ -415,7 +426,16 @@ export class OpenChoice extends React.Component<Props & ValidationProps> {
 
     return (
       <React.Fragment>
-        {renderOptions(item, containedResources, this.renderRadio, this.renderCheckbox, this.renderDropdown, this.props.resources, this.renderAutosuggest)}
+        {renderOptions(
+          item,
+          containedResources,
+          this.renderRadio,
+          this.renderCheckbox,
+          this.renderDropdown,
+          this.renderSlider,
+          this.props.resources,
+          this.renderAutosuggest
+        )}
       </React.Fragment>
     );
   }

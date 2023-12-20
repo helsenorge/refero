@@ -19,4 +19,5 @@ export default {
     ANSWER_TABLE: 'atable',
     GRID: 'grid',
   },
+  SLIDER: 'slider',
 };
