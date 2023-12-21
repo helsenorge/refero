@@ -6,6 +6,7 @@ import itemControlConstants from '../constants/itemcontrol';
 import itemType from '../constants/itemType';
 import { PresentationButtonsType } from '../constants/presentationButtonsType';
 import { getText } from '../util/index';
+import { TABLE_CODES_VALUES, TableCodes } from '../constants/tableTypes';
 
 export function getValidationTextExtension(item: QuestionnaireItem): string | undefined {
   const validationTextExtension = getExtension(ExtensionConstants.VALIDATIONTEXT_URL, item);
@@ -68,6 +69,10 @@ export function getSidebarSections(
 export function isItemSidebar(item: QuestionnaireItem): boolean {
   const itemControls = getItemControlExtensionValue(item);
   return itemControls !== undefined && itemControls.some(itemControl => itemControl.code === itemControlConstants.SIDEBAR);
+}
+
+export function getExtensions(item: QuestionnaireItem): Extension[] {
+  return item.extension ?? [];
 }
 
 export function getExtension(url: string, item: QuestionnaireItem | Element | Questionnaire): Extension | undefined {
@@ -172,6 +177,24 @@ export function getItemControlExtensionValue(item: QuestionnaireItem): Coding[] 
   }
   return itemControlExtension.valueCodeableConcept.coding;
 }
+
+const hasCode = (code: string | undefined): code is string => {
+  return !!code;
+};
+
+const isTableCode = (code: string): code is TableCodes => {
+  return TABLE_CODES_VALUES.includes(code as TableCodes);
+};
+
+export const getCodingTextTableValues = (item: QuestionnaireItem): TableCodes[] => {
+  const extension = getItemControlExtensionValue(item);
+  const codeValues =
+    extension
+      ?.map(x => x.code)
+      .filter(hasCode)
+      .filter(isTableCode) || [];
+  return codeValues;
+};
 
 export function getMarkdownExtensionValue(item: QuestionnaireItem | Element): string | undefined {
   const markdownExtension = getExtension(ExtensionConstants.MARKDOWN_URL, item);

@@ -7,10 +7,10 @@ import {
   QuestionnaireEnableOperator,
 } from '../types/fhir';
 
+import { getMinOccursExtensionValue } from './extension';
 import ItemType from '../constants/itemType';
 import { FormData, FormDefinition } from '../reducers/form';
 import { enableWhenMatches } from '../util/enableWhenMatcher';
-import { getMinOccursExtensionValue } from './extension';
 
 export function getRootQuestionnaireResponseItemFromData(
   definitionLinkId: string,
@@ -84,7 +84,7 @@ export function getQuestionnaireResponseItemsWithLinkId(
   if (!responseItems) {
     return [];
   }
- 
+
   let itemsWithLinkId = getItemsWithIdFromResponseItemArray(linkId, responseItems, recursive);
   if (itemsWithLinkId && itemsWithLinkId.length > 0) {
     return itemsWithLinkId;
@@ -548,7 +548,11 @@ function getQuestionnaireItemWithIdFromArray(
   return filteredItems;
 }
 
-export function getQuestionnaireItemsWithType(type: string, items: Array<QuestionnaireItem> | undefined, itemsWithType?: Array<QuestionnaireItem>): Array<QuestionnaireItem> | undefined {
+export function getQuestionnaireItemsWithType(
+  type: string,
+  items: Array<QuestionnaireItem> | undefined,
+  itemsWithType?: Array<QuestionnaireItem>
+): Array<QuestionnaireItem> | undefined {
   if (items === undefined) return;
   if (!itemsWithType) itemsWithType = [];
 
@@ -559,8 +563,6 @@ export function getQuestionnaireItemsWithType(type: string, items: Array<Questio
 
 function getItemLinkIdsWithType(type: string, items: QuestionnaireItem[] | undefined, itemsWithType: Array<QuestionnaireItem>): void {
   if (items !== undefined) {
-    items
-      .filter(f => f.type === type)
-      .forEach(f => itemsWithType.push(f));
+    items.filter(f => f.type === type).forEach(f => itemsWithType.push(f));
   }
 }

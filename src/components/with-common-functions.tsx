@@ -1,8 +1,7 @@
 import * as React from 'react';
 
-import DOMPurify from 'dompurify';
-
 import classNames from 'classnames';
+import DOMPurify from 'dompurify';
 import { Collapse } from 'react-collapse';
 import { ThunkDispatch } from 'redux-thunk';
 
@@ -26,10 +25,14 @@ import { UploadedFile } from '@helsenorge/file-upload/components/dropzone';
 import { FormChild } from '@helsenorge/form/components/form';
 import { ValidationProps } from '@helsenorge/form/components/form/validation';
 
+import DeleteButton from './formcomponents/repeat/delete-button';
+import RepeatButton from './formcomponents/repeat/repeat-button';
+import HelpButton from './help-button/help-button';
 import { NewValueAction } from '../actions/newValue';
 import itemControlConstants from '../constants/itemcontrol';
 import itemType from '../constants/itemType';
 import { GlobalState } from '../reducers';
+import { getCodingTextTableValues } from '../util/extension';
 import { findHelpItem, isHelpItem, getHelpItemType } from '../util/help';
 import { getComponentForItem, getChildHeaderTag, shouldRenderRepeatButton, getText, isHiddenItem } from '../util/index';
 import {
@@ -42,9 +45,6 @@ import {
 } from '../util/refero-core';
 import { RenderContext } from '../util/renderContext';
 import { Resources } from '../util/resources';
-import DeleteButton from './formcomponents/repeat/delete-button';
-import RepeatButton from './formcomponents/repeat/repeat-button';
-import HelpButton from './help-button/help-button';
 
 export interface Props {
   resources?: Resources;
@@ -244,7 +244,7 @@ export default function withCommonFunctions<T>(WrappedComponent: React.Component
           <div
             className={collapseClasses}
             dangerouslySetInnerHTML={{
-              __html: DOMPurify.sanitize(`${getText(helpItem)}`, { RETURN_TRUSTED_TYPE: true, ADD_ATTR: ['target'], }) as unknown as string,
+              __html: DOMPurify.sanitize(`${getText(helpItem)}`, { RETURN_TRUSTED_TYPE: true, ADD_ATTR: ['target'] }) as unknown as string,
             }}
           />
         </Collapse>
@@ -256,7 +256,8 @@ export default function withCommonFunctions<T>(WrappedComponent: React.Component
       if (isHelpItem(item)) return [];
       if (isHiddenItem(item)) return [];
 
-      const Comp = getComponentForItem(item.type);
+      const Comp = getComponentForItem(item.type, getCodingTextTableValues(item));
+
       if (!Comp) {
         return [];
       }
@@ -267,6 +268,7 @@ export default function withCommonFunctions<T>(WrappedComponent: React.Component
         const childItem = responseItem.item;
         const childAnswer = responseItem.answer;
         const linkId = item.linkId;
+        // console.log(childAnswer);
 
         if (childItem) {
           response = getItemWithIdFromResponseItemArray(linkId, childItem);
