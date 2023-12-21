@@ -1,7 +1,10 @@
 import * as React from 'react';
-import Form, { ButtonType } from '@helsenorge/form/components/form';
-import { Resources } from '../util/resources';
+
 import { ReferoProps } from '../types/referoProps';
+
+import Form, { ButtonType } from '@helsenorge/form/components/form';
+
+import { Resources } from '../util/resources';
 
 interface RenderFormProps {
   isAuthorized: boolean;
@@ -29,7 +32,7 @@ const RenderForm = ({
   displayPreviousButton,
   nextStep,
   previousStep,
-}: RenderFormProps) => {
+}: RenderFormProps): JSX.Element => {
   const displayPauseButtonInNormalView = referoProps.onSave ? onSave : undefined;
   const displayPauseButtonInStepView = displayPreviousButton ? previousStep : undefined;
 

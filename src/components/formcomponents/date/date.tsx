@@ -1,12 +1,19 @@
 import * as React from 'react';
+
 import moment, { Moment } from 'moment';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
+
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem, Questionnaire } from '../../../types/fhir';
+
 import { LanguageLocales } from '@helsenorge/core-utils/constants/languages';
 import { DateRangePicker } from '@helsenorge/date-time/components/date-range-picker';
 import { parseDate } from '@helsenorge/date-time/components/time-input/date-core';
 import { ValidationProps } from '@helsenorge/form/components/form/validation';
+
+import { DateDayInput } from './date-day-input';
+import { DateYearMonthInput } from './date-month-input';
+import { DateYearInput } from './date-year-input';
 import { NewValueAction, newDateValueAsync } from '../../../actions/newValue';
 import ExtensionConstants from '../../../constants/extensions';
 import itemControlConstants from '../../../constants/itemcontrol';
@@ -15,14 +22,11 @@ import { getExtension, getItemControlExtensionValue } from '../../../util/extens
 import { evaluateFhirpathExpressionToGetDate } from '../../../util/fhirpathHelper';
 import { getSublabelText } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
-import { Resources } from '../../../util/resources';
 import { Path } from '../../../util/refero-core';
+import { Resources } from '../../../util/resources';
 import withCommonFunctions from '../../with-common-functions';
 import Label from '../label';
 import SubLabel from '../sublabel';
-import { DateDayInput } from './date-day-input';
-import { DateYearMonthInput } from './date-month-input';
-import { DateYearInput } from './date-year-input';
 
 export interface Props {
   item: QuestionnaireItem;
@@ -133,7 +137,7 @@ class DateComponent extends React.Component<Props & ValidationProps> {
     return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats || answerHasChanged;
   }
 
-  render(): JSX.Element | null {   
+  render(): JSX.Element | null {
     const subLabelText = getSublabelText(this.props.item, this.props.onRenderMarkdown, this.props.questionnaire, this.props.resources);
 
     const itemControls = getItemControlExtensionValue(this.props.item);
@@ -172,7 +176,7 @@ class DateComponent extends React.Component<Props & ValidationProps> {
           helpElement={this.props.renderHelpElement()}
           onDateValueChange={this.onDateValueChange}
           maxDate={this.getMaxDate()}
-          minDate={this.getMinDate()}          
+          minDate={this.getMinDate()}
           {...this.props}
         />
       );

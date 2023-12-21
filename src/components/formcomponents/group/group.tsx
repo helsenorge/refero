@@ -8,15 +8,16 @@ import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireRespon
 
 import AnchorLink from '@helsenorge/designsystem-react/components/AnchorLink';
 
+import AsPdf from './AsPdf';
+import { getClassNames, getColumns, getHeaderText, getLocalRenderContextType, isDirectChildOfRenderContextOwner } from './helpers';
 import { NewValueAction } from '../../../actions/newValue';
 import { RenderContextType } from '../../../constants/renderContextType';
 import { GlobalState } from '../../../reducers';
-import { getGroupItemControl } from '../../../util/group-item-control';
-import { renderPrefix, getText, getId } from '../../../util/index';
+import { getText, getId } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
+import { Path } from '../../../util/refero-core';
 import { RenderContext } from '../../../util/renderContext';
 import { Resources } from '../../../util/resources';
-import { Path } from '../../../util/refero-core';
 import withCommonFunctions from '../../with-common-functions';
 
 export interface Props {
@@ -49,7 +50,6 @@ export class Group extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
   }
-
   shouldComponentUpdate(nextProps: Props): boolean {
     const responseItemHasChanged = this.props.responseItem !== nextProps.responseItem;
     const helpItemHasChanged = this.props.isHelpOpen !== nextProps.isHelpOpen;
@@ -58,7 +58,6 @@ export class Group extends React.Component<Props, State> {
     const resourcesHasChanged = JSON.stringify(this.props.resources) !== JSON.stringify(nextProps.resources);
 
     const repeats = this.props.item.repeats ?? false;
-
     return (
       responseItemHasChanged ||
       helpItemHasChanged ||
@@ -69,9 +68,9 @@ export class Group extends React.Component<Props, State> {
     );
   }
 
-  renderAllItems = (): JSX.Element => {
-    const { renderContext } = this.props;
-    const localRenderContextType = this.getLocalRenderContextType();
+  renderAllItems = (item: QuestionnaireItem): JSX.Element => {
+    const { path, renderContext } = this.props;
+    const localRenderContextType = getLocalRenderContextType(item);
 
     if (localRenderContextType) {
       switch (localRenderContextType) {
@@ -82,22 +81,10 @@ export class Group extends React.Component<Props, State> {
 
     switch (renderContext.RenderContextType) {
       case RenderContextType.Grid:
-        return this.isDirectChildOfRenderContextOwner() ? this.renderContextTypeGridRow() : this.renderGroup();
+        return isDirectChildOfRenderContextOwner(path, item, renderContext) ? this.renderContextTypeGridRow() : this.renderGroup();
       default:
         return this.renderGroup();
     }
-  };
-
-  isDirectChildOfRenderContextOwner = (): boolean => {
-    const { path, item, renderContext } = this.props;
-
-    const myIndex = path.findIndex(p => p.linkId === item.linkId);
-    if (myIndex > 0) {
-      const directParentLinkId = path[myIndex - 1].linkId;
-      return directParentLinkId === renderContext.Owner;
-    }
-
-    return false;
   };
 
   renderContextTypeGridRow = (): JSX.Element => {
@@ -137,125 +124,81 @@ export class Group extends React.Component<Props, State> {
   };
 
   renderContextTypeGrid = (): JSX.Element => {
-    const { item } = this.props;
+    const { item, renderChildrenItems, repeatButton, renderDeleteButton, id } = this.props;
 
-    const columns = this.getColumns();
+    const columns = getColumns(item);
     const headers = columns.map(c => <th key={item.linkId + '-' + c}>{c}</th>);
     headers.unshift(<th key={item.linkId + 'X'}>{item.text ? item.text : ''}</th>);
 
     const newRenderContext = new RenderContext(RenderContextType.Grid, item.linkId, columns);
     return (
-      <React.Fragment>
-        <table id={getId(this.props.id)} className="page_refero__grid">
+      <>
+        <table id={getId(id)} className="page_refero__grid">
           <thead>
             <tr>{headers}</tr>
           </thead>
-          <tbody>{this.props.renderChildrenItems(newRenderContext)}</tbody>
+          <tbody>{renderChildrenItems(newRenderContext)}</tbody>
         </table>
-        {this.props.renderDeleteButton('page_refero__deletebutton--margin-top')}
-        {this.props.repeatButton}
-      </React.Fragment>
+        {renderDeleteButton('page_refero__deletebutton--margin-top')}
+        {repeatButton}
+      </>
     );
   };
 
   renderGroup = (): JSX.Element => {
+    const {
+      repeatButton,
+      id,
+      includeSkipLink,
+      path,
+      renderDeleteButton,
+      item,
+      questionnaire,
+      onRenderMarkdown,
+      resources,
+      renderHelpElement,
+      renderChildrenItems,
+    } = this.props;
     return (
-      <section id={getId(this.props.id)} data-sectionname={this.getHeaderText()}>
+      <section id={getId(this.props.id)} data-sectionname={getHeaderText(item, questionnaire, resources, onRenderMarkdown)}>
         {this.renderGroupHeader()}
-        {this.props.renderHelpElement()}
-        <div id={`${getId(this.props.id)}-navanchor`} className={this.getClassNames()}>
-          {this.props.renderChildrenItems(new RenderContext())}
+        {renderHelpElement()}
+        <div id={`${getId(id)}-navanchor`} className={getClassNames(item)}>
+          {renderChildrenItems(new RenderContext())}
         </div>
-        {this.props.includeSkipLink && this.props.path.length === 1 && (
+        {includeSkipLink && path.length === 1 && (
           <AnchorLink className="page_refero__skiplink" href="#navigator-button">
-            {this.props.resources?.skipLinkText}
+            {resources?.skipLinkText}
           </AnchorLink>
         )}
-        {this.props.renderDeleteButton('page_refero__deletebutton--margin-top')}
-        {this.props.repeatButton}
+        {renderDeleteButton('page_refero__deletebutton--margin-top')}
+        {repeatButton}
       </section>
     );
   };
 
-  getColumns = (): Array<string> => {
-    const item = this.props.item;
-    const seenColumns = {};
-    const columns: Array<string> = [];
-    if (!item.item || item.item.length === 0) return columns;
-    for (const group of item.item) {
-      if (group.item && group.item.length > 0) {
-        for (const cell of group.item) {
-          const key = cell.text || '';
-          if (key in seenColumns) continue;
-
-          columns.push(key);
-          seenColumns[key] = 1;
-        }
-      }
-    }
-
-    return columns;
-  };
-
-  getLocalRenderContextType = (): RenderContextType => {
-    const coding = getGroupItemControl(this.props.item);
-    if (coding.length > 0) {
-      switch (coding[0].code) {
-        case 'grid':
-          return RenderContextType.Grid;
-      }
-    }
-    return RenderContextType.None;
-  };
-
-  getClassNames = (): string => {
-    const classNames = ['page_refero__component', 'page_refero__component_group'];
-    const coding = getGroupItemControl(this.props.item);
-    if (coding.length > 0) {
-      classNames.push('page_refero__itemControl_' + coding[0].code);
-    }
-
-    return classNames.join(' ');
-  };
-
-  getComponentToValidate = (): undefined => {
-    return undefined;
-  };
-
-  getHeaderText = (): string => {
-    return (
-      renderPrefix(this.props.item) +
-      ' ' +
-      getText(this.props.item, this.props.onRenderMarkdown, this.props.questionnaire, this.props.resources)
-    );
-  };
-
   renderGroupHeader = (): JSX.Element | null => {
-    if (!getText(this.props.item, this.props.onRenderMarkdown)) {
+    const { item, questionnaire, onRenderMarkdown, resources, headerTag, renderHelpButton } = this.props;
+
+    if (!getText(item, onRenderMarkdown)) {
       return null;
     }
 
-    const HeaderTag = `h${this.props.headerTag}` as 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
-    const headerText = DOMPurify.sanitize(this.getHeaderText(), {
+    const HeaderTag = `h${headerTag}` as 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
+    const headerText = DOMPurify.sanitize(getHeaderText(item, questionnaire, resources, onRenderMarkdown), {
       RETURN_TRUSTED_TYPE: true,
       ADD_ATTR: ['target'],
     }) as unknown as string;
     return (
-      <React.Fragment>
+      <>
         <HeaderTag className={'page_refero__heading'} dangerouslySetInnerHTML={{ __html: headerText }} />
-        {this.props.renderHelpButton()}
-      </React.Fragment>
+        {renderHelpButton()}
+      </>
     );
   };
-
   render(): JSX.Element | null {
-    const { pdf } = this.props;
-
-    if (pdf) {
-      return <div>{this.renderAllItems()}</div>;
-    }
-
-    return this.renderAllItems();
+    const { pdf, item } = this.props;
+    return <AsPdf pdf={!!pdf}>{this.renderAllItems(item)}</AsPdf>;
   }
 }
 const withCommonFunctionsComponent = withCommonFunctions(Group);

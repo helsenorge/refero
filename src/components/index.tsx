@@ -3,6 +3,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
+import { DispatchProps } from '../types/dispatchProps';
 import {
   QuestionnaireResponseItem,
   Questionnaire,
@@ -13,13 +14,12 @@ import {
 } from '../types/fhir';
 import { ReferoProps } from '../types/referoProps';
 import { State } from '../types/state';
-import { DispatchProps } from '../types/dispatchProps';
 
+import RenderForm from './renderForm';
+import StepView from './stepView';
 import { setSkjemaDefinition } from '../actions/form';
 import { NewValueAction, newQuantityValue, newDecimalValue, newIntegerValue } from '../actions/newValue';
 import RepeatButton from '../components/formcomponents/repeat/repeat-button';
-import RenderForm from './renderForm';
-import StepView from './stepView';
 import Constants, { NAVIGATOR_BLINDZONE_ID } from '../constants/index';
 import ItemType from '../constants/itemType';
 import { PresentationButtonsType } from '../constants/presentationButtonsType';
@@ -27,12 +27,16 @@ import { GlobalState } from '../reducers';
 import { getFormDefinition, getFormData } from '../reducers/form';
 import { FormDefinition, FormData } from '../reducers/form';
 import { ActionRequester } from '../util/actionRequester';
-import { getQuestionnaireUnitExtensionValue, getPresentationButtonsExtension, getNavigatorExtension } from '../util/extension';
-import { getComponentForItem, shouldRenderRepeatButton, isHiddenItem, getDecimalValue } from '../util/index';
+import {
+  getQuestionnaireUnitExtensionValue,
+  getPresentationButtonsExtension,
+  getNavigatorExtension,
+  getCodingTextTableValues,
+} from '../util/extension';
+import { getTopLevelElements } from '../util/getTopLevelElements';
 import { IE11HackToWorkAroundBug187484 } from '../util/hacks';
+import { getComponentForItem, shouldRenderRepeatButton, isHiddenItem, getDecimalValue } from '../util/index';
 import { QuestionniareInspector } from '../util/questionnaireInspector';
-import { RenderContext } from '../util/renderContext';
-import { ScoringCalculator } from '../util/scoringCalculator';
 import {
   getRootQuestionnaireResponseItemFromData,
   Path,
@@ -43,8 +47,9 @@ import {
   getQuestionnaireDefinitionItem,
   getResponseItemAndPathWithLinkId,
 } from '../util/refero-core';
+import { RenderContext } from '../util/renderContext';
+import { ScoringCalculator } from '../util/scoringCalculator';
 import { shouldFormBeDisplayedAsStepView } from '../util/shouldFormBeDisplayedAsStepView';
-import { getTopLevelElements } from '../util/getTopLevelElements';
 
 interface StateProps {
   formDefinition?: FormDefinition | null;
@@ -96,7 +101,6 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
       this.setState({ scoringCalculator: this.getScoringCalculator(nextProps.questionnaire) });
     }
   }
-
   onAnswerChange = (newState: GlobalState, _path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer): void => {
     if (this.props.onChange && newState.refero.form.FormDefinition.Content && newState.refero.form.FormData.Content) {
       const actionRequester = new ActionRequester(newState.refero.form.FormDefinition.Content, newState.refero.form.FormData.Content);
@@ -200,8 +204,7 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
 
     questionnaireItemArray?.map(item => {
       if (isHiddenItem(item)) return [];
-
-      const Comp = getComponentForItem(item.type);
+      const Comp = getComponentForItem(item.type, getCodingTextTableValues(item));
       if (!Comp) {
         return undefined;
       }
@@ -232,7 +235,9 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
             isNavigatorBlindzoneInitiated = true;
             renderedItems.push(<section id={NAVIGATOR_BLINDZONE_ID}></section>);
           }
-
+          // console.log('responseItem - index', item);
+          // if (ItemType.GROUP === item.type && getCodingTextTableValues(item) && isTableCode(getCodingTextTableValues(item))) {
+          // }
           renderedItems.push(
             <Comp
               language={formDefinition.Content?.language}

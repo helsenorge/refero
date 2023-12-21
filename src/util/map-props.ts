@@ -7,22 +7,27 @@ import {
   QuestionnaireResponseItemAnswer,
 } from '../types/fhir';
 
+import { enableWhenMatchesAnswer, getQuestionnaireResponseItemWithLinkid, getResponseItems, Path, isInGroupContext } from './refero-core';
 import { NewValueAction } from '../actions/newValue';
 import { Props } from '../components/with-common-functions';
+import ItemType from '../constants/itemType';
 import { getFormData } from '../reducers/form';
 import { GlobalState } from '../reducers/index';
-import { enableWhenMatchesAnswer, getQuestionnaireResponseItemWithLinkid, getResponseItems, Path, isInGroupContext } from './refero-core';
 import { getCopyExtension, getCalculatedExpressionExtension } from '../util/extension';
 import { evaluateFhirpathExpressionToGetString } from '../util/fhirpathHelper';
-import ItemType from '../constants/itemType';
 
 export function mapStateToProps(state: GlobalState, originalProps: Props): Props {
-  getValueIfDataReceiver(state, originalProps);
+  // if (originalProps.item?.type === 'group') {
+  //   console.log('map-props, originalProps.item', originalProps.item);
+  //   console.log('map-props, originalProps.responseItem', originalProps.responseItem);
+  // }
+  const newAnswer = getValueIfDataReceiver(state, originalProps);
   if (!originalProps.item || !originalProps.item.enableWhen) {
-    return { ...originalProps, enable: true } as Props;
+    return { ...originalProps, enable: true, ...(newAnswer !== undefined && { answer: newAnswer }) } as Props;
   }
   const enable = isEnableWhenEnabled(originalProps.item.enableWhen, originalProps.item.enableBehavior, originalProps.path || [], state);
-  return { ...originalProps, enable } as Props;
+
+  return { ...originalProps, enable, ...(newAnswer !== undefined && { answer: newAnswer }) } as Props;
 }
 
 function isEnableWhenEnabled(
@@ -56,27 +61,32 @@ function isEnableWhenEnabled(
     : enableMatches.some(x => x === true);
 }
 
-function getValueIfDataReceiver(state: GlobalState, originalProps: Props): void {
+function getValueIfDataReceiver(
+  state: GlobalState,
+  originalProps: Props
+): QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[] | undefined {
   if (originalProps.item) {
     const extension = getCopyExtension(originalProps.item);
     if (extension) {
       const formData = getFormData(state);
-      let result = evaluateFhirpathExpressionToGetString(formData?.Content, extension);
+      let result = evaluateFhirpathExpressionToGetString(extension, formData?.Content);
 
       if (!!getCalculatedExpressionExtension(originalProps.item)) {
         result = result.map((m: any) => m.value as number);
       }
 
-      originalProps.answer = getQuestionnaireResponseItemAnswer(originalProps.item.type, result);
+      return getQuestionnaireResponseItemAnswer(originalProps.item.type, result);
     }
+    return undefined;
   }
+  return undefined;
 }
 
 function getQuestionnaireResponseItemAnswer(
   type: string,
   result: any
 ): QuestionnaireResponseItemAnswer | Array<QuestionnaireResponseItemAnswer> {
-  let answerArray: Array<QuestionnaireResponseItemAnswer> = [];
+  const answerArray: Array<QuestionnaireResponseItemAnswer> = [];
   if (type === ItemType.BOOLEAN) {
     return { valueBoolean: result[0] };
   }
@@ -102,11 +112,11 @@ function getQuestionnaireResponseItemAnswer(
       case ItemType.DATE:
         answerArray.push({ valueDate: answer });
         break;
-      case ItemType.TIME: 
+      case ItemType.TIME:
         answerArray.push({ valueTime: answer });
         break;
       default: {
-        if ((typeof answer) === 'string') {
+        if (typeof answer === 'string') {
           answerArray.push({ valueString: answer });
         } else {
           answerArray.push({ valueCoding: answer });
@@ -114,7 +124,7 @@ function getQuestionnaireResponseItemAnswer(
       }
     }
   });
-  return answerArray;  
+  return answerArray;
 }
 
 export function mergeProps(stateProps: Props, dispatchProps: Props, ownProps: Props): Props {

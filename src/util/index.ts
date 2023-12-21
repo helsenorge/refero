@@ -1,9 +1,21 @@
+import marked from 'marked';
 import * as uuid from 'uuid';
 
 import { Questionnaire, QuestionnaireResponseItem, QuestionnaireItem, QuestionnaireResponseItemAnswer } from '../types/fhir';
 
 import { isValid, invalidNodes } from '@helsenorge/core-utils/string-utils';
 
+import { getQuestionnaireItemCodeValue } from './codingsystem';
+import {
+  getMaxOccursExtensionValue,
+  getMarkdownExtensionValue,
+  getValidationTextExtension,
+  getQuestionnaireHiddenExtensionValue,
+  getExtension,
+  getSublabelExtensionValue,
+  getHyperlinkExtensionValue,
+  getCopyExtension,
+} from './extension';
 import Attachment from '../components/formcomponents/attachment/attachment';
 import Boolean from '../components/formcomponents/boolean/boolean';
 import Choice from '../components/formcomponents/choice/choice';
@@ -17,26 +29,17 @@ import Integer from '../components/formcomponents/integer/integer';
 import OpenChoice from '../components/formcomponents/open-choice/open-choice';
 import Quantity from '../components/formcomponents/quantity/quantity';
 import StringComponent from '../components/formcomponents/string/string';
+import Table from '../components/formcomponents/table/Table';
 import Text from '../components/formcomponents/text/text';
-import ExtensionConstants from '../constants/extensions';
-import { RenderOptionCode } from '../constants/renderOptionCode';
-import { HyperlinkTarget } from '../constants/hyperlinkTarget';
 import CodingSystemConstants from '../constants/codingsystems';
+import ExtensionConstants from '../constants/extensions';
+import { HyperlinkTarget } from '../constants/hyperlinkTarget';
 import Constants from '../constants/index';
 import ItemType from '../constants/itemType';
+import itemType from '../constants/itemType';
+import { RenderOptionCode } from '../constants/renderOptionCode';
+import { TABLE_CODES_VALUES } from '../constants/tableTypes';
 import { Resources } from '../util/resources';
-import {
-  getMaxOccursExtensionValue,
-  getMarkdownExtensionValue,
-  getValidationTextExtension,
-  getQuestionnaireHiddenExtensionValue,
-  getExtension,
-  getSublabelExtensionValue,
-  getHyperlinkExtensionValue,
-  getCopyExtension,
-} from './extension';
-import { getQuestionnaireItemCodeValue } from './codingsystem';
-import marked from 'marked';
 
 function openNewIfAbsolute(url: string): string {
   const regex = new RegExp('^(([a-z][a-z0-9+.-]*):.*)');
@@ -45,10 +48,17 @@ function openNewIfAbsolute(url: string): string {
   }
   return '_self';
 }
-
+export const isTableCode = (extensionCode: string | string[]): boolean => {
+  const isTable = TABLE_CODES_VALUES.some(value => {
+    return extensionCode.indexOf(value) === -1 ? false : true;
+  });
+  return isTable;
+};
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function getComponentForItem(type: string) {
-  if (String(type) === ItemType.GROUP) {
+export function getComponentForItem(type: string, extensionCode?: string | string[]) {
+  if (String(type) === itemType.GROUP && !!extensionCode && isTableCode(extensionCode)) {
+    return Table;
+  } else if (String(type) === ItemType.GROUP) {
     return Group;
   }
   if (String(type) === ItemType.DISPLAY) {
