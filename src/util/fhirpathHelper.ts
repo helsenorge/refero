@@ -20,7 +20,7 @@ export function evaluateFhirpathExpressionToGetString(fhirExtension: Extension, 
   return fhirpath.evaluate(qCopy, fhirExtension.valueString, null, fhirpath_r4_model);
 }
 
-export function evaluateExtension(path: string | object, questionnare?: QuestionnaireResponse | null, context?: 'object'): any {
+export function evaluateExtension(path: string | object, questionnare?: QuestionnaireResponse | null, context?: 'object'): unknown {
   const qCopy = structuredClone(questionnare);
   /**
    *  Evaluates the "path" FHIRPath expression on the given resource or part of the resource,
