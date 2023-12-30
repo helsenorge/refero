@@ -13,17 +13,15 @@ import {
 } from '../../../types/fhir';
 
 import TableHn1 from './tables/TableHn1';
+import TableHn2 from './tables/TableHn2';
 import { NewValueAction } from '../../../actions/newValue';
 import { TableCodes } from '../../../constants/tableTypes';
 import { GlobalState } from '../../../reducers';
 import { getFormData } from '../../../reducers/form';
 import { getCodingTextTableValues } from '../../../util/extension';
-import { mapStateToProps as mstp } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
 import { RenderContext } from '../../../util/renderContext';
 import { Resources } from '../../../util/resources';
-import { Props as MstpProps } from '../../with-common-functions';
-import TableHn2 from './tables/TableHn2';
 
 export interface Props {
   item: QuestionnaireItem;
@@ -78,18 +76,12 @@ const Table = ({ tableCodes, items, headline, tableType, questionnaireResponse }
   }
 };
 
-const mapStateToProps = (state: GlobalState, props: Props): MstpProps & EnhancedProps => {
+const mapStateToProps = (state: GlobalState, props: Props): EnhancedProps => {
   const group = props.item;
   //TODO: Fix undefine and null checks
   const tableType = getCodingTextTableValues(group)[0];
 
-  console.log('group', group);
-  const groupChildren = group.item;
-  console.log('groupChildren', groupChildren);
-
-  const mappedProps = mstp(state, props);
   return {
-    ...mappedProps,
     headline: group.text ?? '',
     tableCodes: group.code ?? [],
     items: group.item ?? [],
@@ -98,38 +90,3 @@ const mapStateToProps = (state: GlobalState, props: Props): MstpProps & Enhanced
   };
 };
 export default connect(mapStateToProps)(Table);
-// const renderItem = (item: QuestionnaireItem, tableCodes: Coding[], headline: string): Array<JSX.Element | undefined> => {
-//   if (isHelpItem(item)) return [];
-//   if (isHiddenItem(item)) return [];
-
-//   const Comp = getComponentForItem(item.type, getCodingTextTableValues(item));
-
-//   if (!Comp) {
-//     return [];
-//   }
-
-//   let response: Array<QuestionnaireResponseItem> | undefined;
-
-//   if (responseItem) {
-//     const childItem = responseItem.item;
-//     const childAnswer = responseItem.answer;
-//     const linkId = item.linkId;
-//     // console.log('childItem', childItem);
-
-//     if (childItem) {
-//       response = getItemWithIdFromResponseItemArray(linkId, childItem);
-//       // console.log('response', response);
-//     } else if (childAnswer) {
-//       // console.log('childAnswer', childAnswer);
-
-//       response = getItemWithIdFromResponseItemArray(linkId, childAnswer[0].item);
-//     }
-//   }
-//   const renderedItems: Array<JSX.Element | undefined> = [];
-//   if (response && response.length > 0) {
-//     response.forEach((responseItem, index) => {
-//       console.log(responseItem);
-//     });
-//   }
-//   return renderedItems;
-// };

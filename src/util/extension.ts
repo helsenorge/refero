@@ -5,8 +5,8 @@ import ExtensionConstants from '../constants/extensions';
 import itemControlConstants from '../constants/itemcontrol';
 import itemType from '../constants/itemType';
 import { PresentationButtonsType } from '../constants/presentationButtonsType';
-import { getText } from '../util/index';
 import { TABLE_CODES_VALUES, TableCodes } from '../constants/tableTypes';
+import { getText } from '../util/index';
 
 export function getValidationTextExtension(item: QuestionnaireItem): string | undefined {
   const validationTextExtension = getExtension(ExtensionConstants.VALIDATIONTEXT_URL, item);

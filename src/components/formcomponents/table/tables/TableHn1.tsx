@@ -13,7 +13,7 @@ import {
   TableRow,
 } from '@helsenorge/designsystem-react/components/Table';
 
-import { findCodeForColumnToSortBy, getColumnNames, getValueIfDataReceiver } from './helpers';
+import { findCodeForColumnToSortBy, getColumnNames, getTableHN1bodyObject, getValueIfDataReceiver } from './helpers';
 
 interface Props {
   tableCodes: Coding[];
@@ -23,10 +23,12 @@ interface Props {
 const TableHn1 = ({ tableCodes, items, questionnaireResponse }: Props): JSX.Element => {
   const res = getValueIfDataReceiver(items[2], questionnaireResponse);
   const codeForColumnToSortBy = findCodeForColumnToSortBy(tableCodes);
-  console.log('questionnaireResponse', questionnaireResponse);
-  console.log('tableCodes', tableCodes);
+  // console.log('questionnaireResponse', questionnaireResponse);
+  // console.log('tableCodes', tableCodes);
   console.log('getValueIfDataReceiver', res);
-  console.log('item', items[2]);
+  // console.log('item', items[2]);
+  const answerValues = getTableHN1bodyObject(items);
+  console.log('answerValues', answerValues);
   return (
     <HnTable>
       <TableHead category={!!codeForColumnToSortBy ? HeaderCategory.sortable : HeaderCategory.normal}>
