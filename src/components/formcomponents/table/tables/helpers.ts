@@ -1,17 +1,20 @@
 import * as uuid from 'uuid';
+
 import {
   Coding,
+  Quantity,
   QuestionnaireItem,
   QuestionnaireResponse,
   QuestionnaireResponseItem,
   QuestionnaireResponseItemAnswer,
 } from '../../../../types/fhir';
 
+import { SortDirection } from '@helsenorge/designsystem-react/components/Table';
+
 import CodingSystems, { CodeSystemValues, TableColumnName, TableOrderingColum } from '../../../../constants/codingsystems';
 import ItemType from '../../../../constants/itemType';
 import { getCalculatedExpressionExtension, getCopyExtension } from '../../../../util/extension';
 import { evaluateFhirpathExpressionToGetString } from '../../../../util/fhirpathHelper';
-import { SortDirection } from '@helsenorge/designsystem-react/components/Table';
 
 export function getQuestionnaireResponseItemAnswer(
   type: string,
@@ -64,9 +67,8 @@ export const getValueIfDataReceiver = (
   const extension = getCopyExtension(item);
   if (extension) {
     let result = evaluateFhirpathExpressionToGetString(extension, questionnaireResponse);
-
     if (!!getCalculatedExpressionExtension(item)) {
-      result = result.map((m: any) => m.value as number);
+      result = result.map((m: { value: number }) => m.value);
     }
     3;
 
@@ -91,17 +93,17 @@ export const getColumnNames = (coding: Coding[]): string[] => {
   return findCodeBySystem(coding, TableColumnName).map(code => code.display ?? '');
 };
 
-type TableH2Row = {
+interface ITableH2Row {
   id: string;
   text: string;
-};
+}
 
-export type TableH2 = {
+export interface ITableH2 {
   id: string;
-  row: TableH2Row[];
-};
+  row: ITableH2Row[];
+}
 
-const sortTableRows = (table: TableH2[], columnIndex: number, sortOrder: SortDirection): TableH2[] => {
+const sortTableRows = (table: ITableH2[], columnIndex: number, sortOrder: SortDirection): ITableH2[] => {
   return table.sort((a, b) => {
     const aValue = a.row.length > columnIndex ? a.row[columnIndex]?.text || '' : '';
     const bValue = b.row.length > columnIndex ? b.row[columnIndex]?.text || '' : '';
@@ -110,18 +112,76 @@ const sortTableRows = (table: TableH2[], columnIndex: number, sortOrder: SortDir
   });
 };
 
+const getStringFromItemType = (
+  type: typeof ItemType[keyof typeof ItemType],
+  res: QuestionnaireResponseItemAnswer
+): string | number | Quantity => {
+  switch (type) {
+    case ItemType.TEXT:
+    case ItemType.STRING:
+      return res.valueString ?? '';
+    case ItemType.INTEGER:
+      return res.valueInteger ?? 0;
+    case ItemType.DECIMAL:
+      return res.valueDecimal ?? 0;
+    case ItemType.QUANTITY:
+      return res.valueQuantity ?? '';
+    case ItemType.DATETIME:
+      return res.valueDateTime ?? '';
+    case ItemType.DATE:
+      return res.valueDate ?? '';
+    case ItemType.TIME:
+      return res.valueTime ?? '';
+    case ItemType.CHOICE:
+      return res.valueCoding?.display ?? '';
+    default: {
+      return '';
+    }
+  }
+};
+const getValueFromDataReciever = (
+  type: typeof ItemType[keyof typeof ItemType],
+  questionnaireAnswer?: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]
+): Array<string | number | Quantity> => {
+  if (questionnaireAnswer === undefined) {
+    return [];
+  }
+  const answerArray: Array<string | number | Quantity> = [];
+  if (Array.isArray(questionnaireAnswer)) {
+    questionnaireAnswer.forEach(answer => {
+      const primetiveAnswerValue = getStringFromItemType(type, answer);
+      answerArray.push(primetiveAnswerValue);
+    });
+  } else {
+    const primetiveAnswerValue = getStringFromItemType(type, questionnaireAnswer);
+    answerArray.push(primetiveAnswerValue);
+  }
+  return answerArray;
+};
+
+const transformAnswersToString = (
+  type: typeof ItemType[keyof typeof ItemType],
+  answer: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]
+): string => {
+  const value = getValueFromDataReciever(type, answer);
+  if (value.length === 0) {
+    return '';
+  }
+  return getValueFromDataReciever(type, answer)[0].toString();
+};
+
 export const getTableHN2bodyObject = (
   items: QuestionnaireItem[],
   questionnaireResponse?: QuestionnaireResponse | null,
   sortColumnIndex?: number,
   sortOrder: SortDirection = SortDirection.asc
-): TableH2[] => {
+): ITableH2[] => {
   if (!questionnaireResponse || items.length === 0) {
     return [];
   }
-  const table = items.reduce((acc: TableH2[], item) => {
+  const table = items.reduce((acc: ITableH2[], item) => {
     const isDisplayType = item.type === ItemType.DISPLAY;
-    const newRow: TableH2Row = {
+    const newRow: ITableH2Row = {
       id: item.linkId,
       text: isDisplayType ? item.text ?? '' : '',
     };
@@ -140,7 +200,7 @@ export const getTableHN2bodyObject = (
       if (res) {
         acc[acc.length - 1].row.push({
           id: item.linkId,
-          text: Array.isArray(res) ? res[0]?.valueCoding?.code ?? '' : res?.valueCoding?.code ?? '',
+          text: transformAnswersToString(item.type, res),
         });
       }
     }
