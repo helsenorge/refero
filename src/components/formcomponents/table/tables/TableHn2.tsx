@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import ItemType from '../../../../constants/itemType';
+
 import { Coding, QuestionnaireItem, QuestionnaireResponse } from '../../../../types/fhir';
 
 import {
@@ -13,7 +13,7 @@ import {
   TableRow,
 } from '@helsenorge/designsystem-react/components/Table';
 
-import { TableH2, findCodeForColumnToSortBy, getColumnNames, getTableHN2bodyObject, getValueIfDataReceiver } from './helpers';
+import { ITableH2, findCodeForColumnToSortBy, getColumnNames, getTableHN2bodyObject } from './helpers';
 
 interface Props {
   tableCodes: Coding[];
@@ -24,7 +24,7 @@ const TableHn2 = ({ tableCodes, items, questionnaireResponse }: Props): JSX.Elem
   const [sortDir, setSortDir] = useState<SortDirection>(SortDirection.asc);
   const codeForColumnToSortBy = findCodeForColumnToSortBy(tableCodes);
   //TODO: find index to sort by
-  const [responseItems, setResponseItems] = useState<TableH2[]>(getTableHN2bodyObject(items, questionnaireResponse, 1, sortDir));
+  const [responseItems, setResponseItems] = useState<ITableH2[]>(getTableHN2bodyObject(items, questionnaireResponse, 1, sortDir));
 
   const handleSort = (): void => {
     setSortDir(prevState => (prevState === SortDirection.asc ? SortDirection.desc : SortDirection.asc));
