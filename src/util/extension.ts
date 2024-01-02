@@ -182,15 +182,15 @@ const hasCode = (code: string | undefined): code is string => {
   return !!code;
 };
 
-const isTableCode = (code: string): code is TableCodes => {
-  return TABLE_CODES_VALUES.includes(code as TableCodes);
+const isTableCode = (code: TABLE_CODES_VALUES): code is TABLE_CODES_VALUES => {
+  return Object.values(TableCodes).includes(code);
 };
 
-export const getCodingTextTableValues = (item: QuestionnaireItem): TableCodes[] => {
+export const getCodingTextTableValues = (item: QuestionnaireItem): TABLE_CODES_VALUES[] => {
   const extension = getItemControlExtensionValue(item);
   const codeValues =
     extension
-      ?.map(x => x.code)
+      ?.map(x => x.code as TABLE_CODES_VALUES)
       .filter(hasCode)
       .filter(isTableCode) || [];
   return codeValues;

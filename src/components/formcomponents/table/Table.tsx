@@ -15,7 +15,7 @@ import {
 import TableHn1 from './tables/TableHn1';
 import TableHn2 from './tables/TableHn2';
 import { NewValueAction } from '../../../actions/newValue';
-import { TableCodes } from '../../../constants/tableTypes';
+import { TABLE_CODES_VALUES, TableCodes } from '../../../constants/tableTypes';
 import { GlobalState } from '../../../reducers';
 import { getFormData } from '../../../reducers/form';
 import { getCodingTextTableValues } from '../../../util/extension';
@@ -47,27 +47,39 @@ export interface Props {
 
 interface EnhancedProps {
   headline: string;
-  tableCodes: Coding[];
+  tableCodesCoding: Coding[];
   items: QuestionnaireItem[];
-  tableType: TableCodes;
+  tableType: TABLE_CODES_VALUES;
   questionnaireResponse?: QuestionnaireResponse | null;
 }
 
-const Table = ({ tableCodes, items, headline, tableType, questionnaireResponse }: Props & EnhancedProps): JSX.Element => {
+const Table = ({ tableCodesCoding, items, headline, tableType, questionnaireResponse }: Props & EnhancedProps): JSX.Element => {
   {
     switch (tableType) {
-      case 'table-hn1':
+      case TableCodes.tableHn1:
         return (
           <>
             <h3>{headline}</h3>
-            <TableHn1 items={items} tableCodes={tableCodes} questionnaireResponse={questionnaireResponse} />
+            <TableHn1 items={items} tableCodesCoding={tableCodesCoding} questionnaireResponse={questionnaireResponse} />
           </>
         );
-      case 'table-HN2':
+      case TableCodes.tableHn2:
         return (
           <>
             <h3>{headline}</h3>
-            <TableHn2 items={items} tableCodes={tableCodes} questionnaireResponse={questionnaireResponse} />
+            <TableHn2 items={items} tableCodesCoding={tableCodesCoding} questionnaireResponse={questionnaireResponse} />
+          </>
+        );
+      case TableCodes.gtable:
+        return (
+          <>
+            <h3>{headline}</h3>
+          </>
+        );
+      case TableCodes.table:
+        return (
+          <>
+            <h3>{headline}</h3>
           </>
         );
       default:
@@ -83,7 +95,7 @@ const mapStateToProps = (state: GlobalState, props: Props): EnhancedProps => {
 
   return {
     headline: group.text ?? '',
-    tableCodes: group.code ?? [],
+    tableCodesCoding: group.code ?? [],
     items: group.item ?? [],
     tableType,
     questionnaireResponse: getFormData(state)?.Content,
