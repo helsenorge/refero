@@ -18,6 +18,17 @@ export function evaluateFhirpathExpressionToGetDate(item: QuestionnaireItem, fhi
 export function evaluateFhirpathExpressionToGetString(
   questionnare: QuestionnaireResponse | null | undefined,
   fhirExtension: Extension
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): any {
-  return fhirpath.evaluate(questionnare, fhirExtension.valueString, null, fhirpath_r4_model);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let result: any;
+  const qCopy = structuredClone(questionnare);
+  const extCopy = structuredClone(fhirExtension);
+  try {
+    result = fhirpath.evaluate(qCopy, extCopy.valueString, null, fhirpath_r4_model);
+  } catch (e) {
+    return [];
+  }
+
+  return result;
 }
