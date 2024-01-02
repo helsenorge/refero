@@ -38,7 +38,7 @@ import Constants from '../constants/index';
 import ItemType from '../constants/itemType';
 import itemType from '../constants/itemType';
 import { RenderOptionCode } from '../constants/renderOptionCode';
-import { TABLE_CODES_VALUES } from '../constants/tableTypes';
+import { TableCodes } from '../constants/tableTypes';
 import { Resources } from '../util/resources';
 
 function openNewIfAbsolute(url: string): string {
@@ -49,8 +49,14 @@ function openNewIfAbsolute(url: string): string {
   return '_self';
 }
 export const isTableCode = (extensionCode: string | string[]): boolean => {
-  const isTable = TABLE_CODES_VALUES.some(value => {
-    return extensionCode.indexOf(value) === -1 ? false : true;
+  let lowerCode: string | string[] = '';
+  if (Array.isArray(extensionCode)) {
+    lowerCode = extensionCode.map(code => code.toLocaleLowerCase());
+  } else {
+    lowerCode = extensionCode.toLowerCase();
+  }
+  const isTable = Object.values(TableCodes).some(value => {
+    return lowerCode.indexOf(value.toLocaleLowerCase()) === -1 ? false : true;
   });
   return isTable;
 };

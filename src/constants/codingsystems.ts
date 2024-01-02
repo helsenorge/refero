@@ -8,6 +8,5 @@ const codeSystems = {
   TableOrderingColum: 'http://helsenorge.no/fhir/CodeSystem/TableOrderingColumn',
   TableOrderingFunctions: 'http://helsenorge.no/fhir/CodeSystem/TableOrderingFunctions',
 };
-export type CodeSystems = keyof typeof codeSystems;
-export type CodeSystemValues = typeof codeSystems[keyof typeof codeSystems];
+
 export default codeSystems;
