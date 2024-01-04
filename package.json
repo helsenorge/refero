@@ -60,7 +60,7 @@
     "@types/enzyme": "^3.10.13",
     "@types/enzyme-to-json": "^1.5.4",
     "@types/fs-extra": "^9.0.13",
-    "@types/jest": "^27.4.0",
+    "@types/jest": "^29.5.11",
     "@types/marked": "^3.0.0",
     "@types/mocha": "^9.1.0",
     "@types/node": "^16.11.25",
@@ -75,6 +75,7 @@
     "@types/yargs": "^17.0.24",
     "@typescript-eslint/eslint-plugin": "^5.12.0",
     "@typescript-eslint/parser": "^5.12.0",
+    "@ungap/structured-clone": "^1.2.0",
     "@wojtekmaj/enzyme-adapter-react-17": "^0.8.0",
     "babel-jest": "^27.4.2",
     "babel-loader": "^8.2.3",
@@ -139,6 +140,11 @@
   "babel": {
     "presets": [
       "react-app"
+    ]
+  },
+  "jest": {
+    "setupFilesAfterEnv": [
+      "./jest.setup.js"
     ]
   }
 }
