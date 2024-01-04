@@ -1,16 +1,18 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-'use strict';
+import Enzyme from 'enzyme';
+import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 
-// eslint-disable-next-line @typescript-eslint/no-empty-function
-global.define = () => {};
+// Setting up enzyme for use with React based on node 18 requirements
+Enzyme.configure({
+  adapter: new Adapter(),
+  disableLifecycleMethods: true,
+});
 
-var _enzymeAdapterReact = require('@wojtekmaj/enzyme-adapter-react-17');
-var _enzyme = require('enzyme');
-var _enzymeAdapterReact2 = _interopRequireDefault(_enzymeAdapterReact);
+/*  The structured clone global is needed to fix error: "StructuredCopy is not defined"
+ *  Ended up using ungap npm package to resolve this:
+ *     1) It it is very similar to structuredClone ( which is needed for some of the tests that do actual deep copies )
+ *     2) Avoid complications using a hybrid of test environments for different tests
+ *     3) The package seems stable ( lot of downloads )
+ */
 
-// Setting up enzyme for use with react 16
-(0, _enzyme.configure)({ adapter: new _enzymeAdapterReact2.default(), disableLifecycleMethods: true });
-
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : { default: obj };
-}
+import structuredClone from '@ungap/structured-clone';
+global.structuredClone = global.structuredClone || structuredClone;
