@@ -263,6 +263,16 @@
     background-color: #efe4fd;
     padding: 1.75rem 2rem;
   }
+  &__table_hn1 {
+    &__heading {
+      font-weight: bold;
+    }
+  }
+  &__table_hn2 {
+    &__heading {
+      font-weight: bold;
+    }
+  }
 }
 
 .extra_savebutton_wrapper {

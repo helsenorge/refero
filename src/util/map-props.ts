@@ -17,10 +17,6 @@ import { getCopyExtension, getCalculatedExpressionExtension } from '../util/exte
 import { evaluateFhirpathExpressionToGetString } from '../util/fhirpathHelper';
 
 export function mapStateToProps(state: GlobalState, originalProps: Props): Props {
-  // if (originalProps.item?.type === 'group') {
-  //   console.log('map-props, originalProps.item', originalProps.item);
-  //   console.log('map-props, originalProps.responseItem', originalProps.responseItem);
-  // }
   const newAnswer = getValueIfDataReceiver(state, originalProps);
   if (!originalProps.item || !originalProps.item.enableWhen) {
     return { ...originalProps, enable: true, ...(newAnswer !== undefined && { answer: newAnswer }) } as Props;

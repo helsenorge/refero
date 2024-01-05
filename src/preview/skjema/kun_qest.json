@@ -1,6 +1,7 @@
 {
   "resourceType": "Questionnaire",
   "language": "nb-NO",
+  "id": "292c4322-20d3-4893-a249-a6753994dadd",
   "status": "draft",
   "publisher": "NHN",
   "meta": {
@@ -59,12 +60,12 @@
       }
     }
   ],
-  "id": "292c4322-20d3-4893-a249-a6753994dadd",
   "item": [
     {
       "linkId": "4233cb23-aff4-4e72-8c89-41cdc44f8939",
       "type": "group",
       "text": "Personalia",
+      "required": false,
       "item": [
         {
           "linkId": "855afb10-1dd5-46d4-ab56-d8b8587323a4",
@@ -78,13 +79,13 @@
           "text": "Hvor gammel er du?",
           "required": false
         }
-      ],
-      "required": false
+      ]
     },
     {
       "linkId": "f6764114-86d9-402d-8e05-aca25f980f5f",
       "type": "group",
       "text": "Sykdommer",
+      "required": false,
       "item": [
         {
           "linkId": "3cf13e1a-a775-42cc-8182-babde16743aa",
@@ -104,13 +105,13 @@
           "text": "Kan du si litt mer om sykdommen din?",
           "required": false
         }
-      ],
-      "required": false
+      ]
     },
     {
       "linkId": "2e71aeb8-aa1c-4bc4-b3a9-b82ed16acc28",
       "type": "group",
       "text": "Oppsummering",
+      "required": false,
       "item": [
         {
           "linkId": "2f566ffe-3f0c-4b3b-8b55-bdcb8aaea08b",
@@ -129,11 +130,25 @@
               }
             }
           ],
+          "required": false,
           "item": [
             {
               "linkId": "b0c00973-36bd-49ad-92cf-887bbcf6f9b6",
               "type": "group",
               "text": "Personalia",
+              "required": false,
+              "enableWhen": [
+                {
+                  "question": "855afb10-1dd5-46d4-ab56-d8b8587323a4",
+                  "operator": "exists",
+                  "answerBoolean": true
+                },
+                {
+                  "question": "314166c1-cb72-4c67-b0a9-d90581d658ad",
+                  "operator": "exists",
+                  "answerBoolean": true
+                }
+              ],
               "item": [
                 {
                   "linkId": "fd70929b-7421-4f59-8c0d-d86366d260c7",
@@ -197,13 +212,30 @@
                     }
                   ]
                 }
-              ],
-              "required": false
+              ]
             },
             {
               "linkId": "765cc891-f702-4361-8a5f-719bcb26ec34",
               "type": "group",
               "text": "Sykdommer",
+              "required": false,
+              "enableWhen": [
+                {
+                  "question": "3cf13e1a-a775-42cc-8182-babde16743aa",
+                  "operator": "exists",
+                  "answerBoolean": true
+                },
+                {
+                  "question": "e32a3b49-42df-4394-9560-2cf48155e182",
+                  "operator": "exists",
+                  "answerBoolean": true
+                },
+                {
+                  "question": "8caedfdb-dee1-47eb-8ee0-9c451fb4fb57",
+                  "operator": "exists",
+                  "answerBoolean": true
+                }
+              ],
               "item": [
                 {
                   "linkId": "0388ed83-02a8-4660-80e3-d05208bb1dea",
@@ -298,14 +330,11 @@
                     }
                   ]
                 }
-              ],
-              "required": false
+              ]
             }
-          ],
-          "required": false
+          ]
         }
-      ],
-      "required": false
+      ]
     }
   ]
 }

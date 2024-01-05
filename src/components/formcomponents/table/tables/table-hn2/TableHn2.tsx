@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import { Coding, QuestionnaireItem, QuestionnaireResponse } from '../../../../types/fhir';
+import { Coding, QuestionnaireItem, QuestionnaireResponse } from '../../../../../types/fhir';
 
 import {
   HeaderCategory,
@@ -13,7 +13,8 @@ import {
   TableRow,
 } from '@helsenorge/designsystem-react/components/Table';
 
-import { ITableH2, findCodeForColumnToSortBy, getColumnNames, getTableHN2bodyObject } from './helpers';
+import { ITableH2Row } from './interface';
+import { findCodeForColumnToSortBy, getColumnNames, getTableHN2bodyObject } from './utils';
 
 interface Props {
   tableCodesCoding: Coding[];
@@ -23,21 +24,21 @@ interface Props {
 const TableHn2 = ({ tableCodesCoding, items, questionnaireResponse }: Props): JSX.Element => {
   const [sortDir, setSortDir] = useState<SortDirection>(SortDirection.asc);
   const codeForColumnToSortBy = findCodeForColumnToSortBy(tableCodesCoding);
+  const tableHeader = getColumnNames(tableCodesCoding);
+
   //TODO: find index to sort by
-  const [responseItems, setResponseItems] = useState<ITableH2[]>(getTableHN2bodyObject(items, questionnaireResponse, 1, sortDir));
+  const [rows, setRows] = useState<ITableH2Row[]>(getTableHN2bodyObject(items, questionnaireResponse, 1, sortDir));
   const handleSort = (): void => {
     setSortDir(prevState => (prevState === SortDirection.asc ? SortDirection.desc : SortDirection.asc));
   };
-
   useEffect(() => {
-    setResponseItems(getTableHN2bodyObject(items, questionnaireResponse, 1, sortDir));
-  }, [sortDir, items, questionnaireResponse]);
-
-  return (
-    <HnTable>
+    setRows(getTableHN2bodyObject(items, questionnaireResponse, 1, sortDir));
+  }, [sortDir, items, questionnaireResponse, tableHeader.length]);
+  return rows.length ? (
+    <HnTable className="page_refero__table_hn2">
       <TableHead category={!!codeForColumnToSortBy ? HeaderCategory.sortable : HeaderCategory.normal}>
         <TableRow>
-          {getColumnNames(tableCodesCoding).map(column => (
+          {tableHeader.map(column => (
             <TableHeadCell
               onClick={codeForColumnToSortBy?.display === column ? handleSort : undefined}
               sortable={codeForColumnToSortBy?.display === column}
@@ -50,12 +51,12 @@ const TableHn2 = ({ tableCodesCoding, items, questionnaireResponse }: Props): JS
         </TableRow>
       </TableHead>
       <TableBody>
-        {responseItems.map(item => {
+        {rows.map(item => {
           return (
             <TableRow key={item.id}>
-              {item.row.map(row => (
-                <TableCell key={row.id} dataLabel={row.text}>
-                  {row.text}
+              {item.columns.map(column => (
+                <TableCell key={column.id} dataLabel={column.text}>
+                  {column.text}
                 </TableCell>
               ))}
             </TableRow>
@@ -63,6 +64,8 @@ const TableHn2 = ({ tableCodesCoding, items, questionnaireResponse }: Props): JS
         })}
       </TableBody>
     </HnTable>
+  ) : (
+    <></>
   );
 };
 

@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
 
 import { Provider } from 'react-redux';
-import { Store, createStore, applyMiddleware } from 'redux';
+import { Store, legacy_createStore as createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 
 import { QuestionnaireResponse } from '../types/fhir';
 
+import LanguageLocales from '@helsenorge/core-utils/constants/languages';
+
 import FormFillerSidebar from './FormFillerSidebar';
 import { emptyPropertyReplacer } from './helpers';
 import { getResources } from './resources/referoResources';
-import skjema from './skjema/kun_qest.json';
+import skjema from './skjema/kun_qest_repeatable.json';
 // import { getResources } from './resources/referoResources';
 import { ReferoContainer } from '../components';
 import rootReducer from '../reducers';
@@ -54,6 +56,7 @@ const FormFillerPreview = ({ showFormFiller }: Props): JSX.Element => {
                   loginButton={<button>{'Login'}</button>}
                   syncQuestionnaireResponse
                   validateScriptInjection
+                  language={LanguageLocales.NORWEGIAN}
                 />
               </div>
             ) : (
