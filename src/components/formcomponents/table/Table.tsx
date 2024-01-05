@@ -7,13 +7,16 @@ import {
   Coding,
   Questionnaire,
   QuestionnaireItem,
+  QuestionnaireItemEnableWhen,
   QuestionnaireResponse,
   QuestionnaireResponseItem,
   QuestionnaireResponseItemAnswer,
 } from '../../../types/fhir';
 
-import TableHn1 from './tables/TableHn1';
-import TableHn2 from './tables/TableHn2';
+import LanguageLocales from '@helsenorge/core-utils/constants/languages';
+
+import TableHn1 from './tables/table-hn1/TableHn1';
+import TableHn2 from './tables/table-hn2/TableHn2';
 import { NewValueAction } from '../../../actions/newValue';
 import { TABLE_CODES_VALUES, TableCodes } from '../../../constants/tableTypes';
 import { GlobalState } from '../../../reducers';
@@ -25,8 +28,8 @@ import { Resources } from '../../../util/resources';
 
 export interface Props {
   item: QuestionnaireItem;
-  questionnaire?: Questionnaire;
-  answer: QuestionnaireResponseItemAnswer;
+  questionnaire?: Questionnaire | null;
+  answer?: QuestionnaireResponseItemAnswer | null;
   responseItem: QuestionnaireResponseItem;
   dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
   path: Array<Path>;
@@ -36,7 +39,7 @@ export interface Props {
   resources?: Resources;
   headerTag?: number;
   attachmentErrorMessage?: string;
-  repeatButton: JSX.Element;
+  repeatButton?: JSX.Element;
   id?: string;
   renderContext: RenderContext;
   renderHelpButton: () => JSX.Element;
@@ -51,6 +54,7 @@ interface EnhancedProps {
   items: QuestionnaireItem[];
   tableType: TABLE_CODES_VALUES;
   questionnaireResponse?: QuestionnaireResponse | null;
+  language: LanguageLocales;
 }
 
 const Table = ({ tableCodesCoding, items, headline, tableType, questionnaireResponse }: Props & EnhancedProps): JSX.Element => {
@@ -60,7 +64,7 @@ const Table = ({ tableCodesCoding, items, headline, tableType, questionnaireResp
         return (
           <>
             <h3>{headline}</h3>
-            <TableHn1 items={items} tableCodesCoding={tableCodesCoding} questionnaireResponse={questionnaireResponse} />
+            <TableHn1 items={items} questionnaireResponse={questionnaireResponse} />
           </>
         );
       case TableCodes.tableHn2:
@@ -99,6 +103,7 @@ const mapStateToProps = (state: GlobalState, props: Props): EnhancedProps => {
     items: group.item ?? [],
     tableType,
     questionnaireResponse: getFormData(state)?.Content,
+    language: (state.refero.form.Language as LanguageLocales) || LanguageLocales.NORWEGIAN,
   };
 };
 export default connect(mapStateToProps)(Table);

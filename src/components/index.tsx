@@ -235,9 +235,6 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
             isNavigatorBlindzoneInitiated = true;
             renderedItems.push(<section id={NAVIGATOR_BLINDZONE_ID}></section>);
           }
-          // console.log('responseItem - index', item);
-          // if (ItemType.GROUP === item.type && getCodingTextTableValues(item) && isTableCode(getCodingTextTableValues(item))) {
-          // }
           renderedItems.push(
             <Comp
               language={formDefinition.Content?.language}

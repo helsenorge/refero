@@ -303,5 +303,6 @@ export const getResources = (language: string) => {
     linkOpensInNewTab: 'Åpnes i ny fane',
     nextStep: 'Neste',
     previousStep: 'Forrige',
+    openChoiceOption: 'Annet',
   };
 };

@@ -1,9 +1,11 @@
 import marked from 'marked';
+import { ComponentClass } from 'react-redux';
 import * as uuid from 'uuid';
 
 import { Questionnaire, QuestionnaireResponseItem, QuestionnaireItem, QuestionnaireResponseItemAnswer } from '../types/fhir';
 
 import { isValid, invalidNodes } from '@helsenorge/core-utils/string-utils';
+import { ValidationProps } from '@helsenorge/form/components/form/validation';
 
 import { getQuestionnaireItemCodeValue } from './codingsystem';
 import {
@@ -31,6 +33,7 @@ import Quantity from '../components/formcomponents/quantity/quantity';
 import StringComponent from '../components/formcomponents/string/string';
 import Table from '../components/formcomponents/table/Table';
 import Text from '../components/formcomponents/text/text';
+import { Props } from '../components/with-common-functions';
 import CodingSystemConstants from '../constants/codingsystems';
 import ExtensionConstants from '../constants/extensions';
 import { HyperlinkTarget } from '../constants/hyperlinkTarget';
@@ -60,10 +63,11 @@ export const isTableCode = (extensionCode: string | string[]): boolean => {
   });
   return isTable;
 };
+
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function getComponentForItem(type: string, extensionCode?: string | string[]) {
   if (String(type) === itemType.GROUP && !!extensionCode && isTableCode(extensionCode)) {
-    return Table;
+    return Table as ComponentClass<Omit<Props & ValidationProps & Props, keyof Props> & Props>;
   } else if (String(type) === ItemType.GROUP) {
     return Group;
   }
