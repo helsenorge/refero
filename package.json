@@ -1,6 +1,6 @@
 {
   "name": "@helsenorge/refero",
-  "version": "13.2.2-beta05",
+  "version": "13.2.2-beta06",
   "engines": {
     "node": "^18.0.0",
     "npm": ">=9.0.0"
@@ -76,6 +76,7 @@
     "@types/yargs": "^17.0.24",
     "@typescript-eslint/eslint-plugin": "^5.12.0",
     "@typescript-eslint/parser": "^5.12.0",
+    "@ungap/structured-clone": "^1.2.0",
     "@wojtekmaj/enzyme-adapter-react-17": "^0.8.0",
     "babel-jest": "^27.4.2",
     "babel-loader": "^8.2.3",

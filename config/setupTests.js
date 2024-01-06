@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 'use strict';
+import structuredClone from '@ungap/structured-clone';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-function
 global.define = () => {};
@@ -14,3 +15,4 @@ var _enzymeAdapterReact2 = _interopRequireDefault(_enzymeAdapterReact);
 function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : { default: obj };
 }
+global.structuredClone = global.structuredClone || structuredClone;
