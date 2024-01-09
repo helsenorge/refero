@@ -61,6 +61,7 @@ export const getTableHN2bodyObject = (
 };
 
 /* SORTING  */
+
 export const sortTableRows = (table: ITableH2Row[], columnIndex: number, sortOrder: SortDirection): ITableH2Row[] => {
   return table.sort((a, b) => {
     const aValue = a?.columns.length > columnIndex ? a?.columns[columnIndex]?.text || '' : '';
@@ -76,10 +77,31 @@ export const findCodeForColumnToSortBy = (coding: Coding[]): Coding | undefined 
   const columnToSortBy = columnsToDisplay?.find(coding => coding?.code === codeForSortedColumn);
   return columnToSortBy;
 };
-export const getColumnNames = (coding: Coding[]): string[] => {
-  return findCodeBySystem(coding, TableColumnName).map(code => code.display ?? '');
+
+type HeaderColumn = { display: string; code?: string };
+
+export const getHeaderColumns = (coding: Coding[]): HeaderColumn[] => {
+  return findCodeBySystem(coding, TableColumnName).map(code => ({
+    display: code.display || '',
+    code: code.code,
+  }));
+};
+export const getCodeFromCodingSystem = (coding: Coding[], codingSystem: string): string | undefined => {
+  const code = findCodeBySystem(coding, codingSystem);
+  return code[0]?.code;
 };
 //TODO: Dette finnes fra før, kan bruke eksisterende funksjonalitet
 export function findCodeBySystem<T extends { system?: string }>(coding: T[], system?: string): T[] {
   return coding.filter(code => code.system === system);
 }
+
+/* TABLE HEADER */
+export const transformCodingToSortDirection = (coding: Coding[]): SortDirection | undefined => {
+  const code = getCodeFromCodingSystem(coding, codeSystems.TableOrderingFunctions);
+  return !!code ? (code === 'ASC' ? SortDirection.asc : SortDirection.desc) : undefined;
+};
+
+export const getIndexToSortBy = (coding: Coding[]): number | undefined => {
+  const sortCode = getCodeFromCodingSystem(coding, codeSystems.TableOrderingColum);
+  return sortCode ? Number(sortCode) - 1 : undefined;
+};

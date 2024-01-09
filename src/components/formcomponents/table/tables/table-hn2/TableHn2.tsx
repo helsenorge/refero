@@ -2,19 +2,11 @@ import React, { useEffect, useState } from 'react';
 
 import { Coding, QuestionnaireItem, QuestionnaireResponse } from '../../../../../types/fhir';
 
-import {
-  HeaderCategory,
-  Table as HnTable,
-  SortDirection,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeadCell,
-  TableRow,
-} from '@helsenorge/designsystem-react/components/Table';
+import { Table as HnTable, SortDirection, TableBody, TableCell, TableRow } from '@helsenorge/designsystem-react/components/Table';
 
 import { ITableH2Row } from './interface';
-import { findCodeForColumnToSortBy, getColumnNames, getTableHN2bodyObject } from './utils';
+import TableHeadHn2 from './TableHeadHn2';
+import { getIndexToSortBy, getTableHN2bodyObject, transformCodingToSortDirection } from './utils';
 
 interface Props {
   tableCodesCoding: Coding[];
@@ -22,34 +14,16 @@ interface Props {
   questionnaireResponse?: QuestionnaireResponse | null;
 }
 const TableHn2 = ({ tableCodesCoding, items, questionnaireResponse }: Props): JSX.Element => {
-  const [sortDir, setSortDir] = useState<SortDirection>(SortDirection.asc);
-  const codeForColumnToSortBy = findCodeForColumnToSortBy(tableCodesCoding);
-  const tableHeader = getColumnNames(tableCodesCoding);
+  const sortIndex = getIndexToSortBy(tableCodesCoding);
+  const [sortDir, setSortDir] = useState<SortDirection | undefined>(transformCodingToSortDirection(tableCodesCoding));
+  const [rows, setRows] = useState<ITableH2Row[]>(getTableHN2bodyObject(items, questionnaireResponse, sortIndex, sortDir));
 
-  //TODO: find index to sort by
-  const [rows, setRows] = useState<ITableH2Row[]>(getTableHN2bodyObject(items, questionnaireResponse, 1, sortDir));
-  const handleSort = (): void => {
-    setSortDir(prevState => (prevState === SortDirection.asc ? SortDirection.desc : SortDirection.asc));
-  };
   useEffect(() => {
-    setRows(getTableHN2bodyObject(items, questionnaireResponse, 1, sortDir));
-  }, [sortDir, items, questionnaireResponse, tableHeader.length]);
+    setRows(getTableHN2bodyObject(items, questionnaireResponse, sortIndex, sortDir));
+  }, [sortDir, items, questionnaireResponse]);
   return rows.length ? (
     <HnTable className="page_refero__table_hn2">
-      <TableHead category={!!codeForColumnToSortBy ? HeaderCategory.sortable : HeaderCategory.normal}>
-        <TableRow>
-          {tableHeader.map(column => (
-            <TableHeadCell
-              onClick={codeForColumnToSortBy?.display === column ? handleSort : undefined}
-              sortable={codeForColumnToSortBy?.display === column}
-              sortDir={sortDir}
-              key={column}
-            >
-              {column}
-            </TableHeadCell>
-          ))}
-        </TableRow>
-      </TableHead>
+      <TableHeadHn2 sortable={!!sortIndex} setSortDir={setSortDir} sortDir={sortDir} tableCodesCoding={tableCodesCoding} />
       <TableBody>
         {rows.map(item => {
           return (

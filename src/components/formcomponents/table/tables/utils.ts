@@ -70,8 +70,7 @@ const extractValueFromDateTime = (inputValue?: string): string => {
   return moment(date).locale('nb').format(DATEFORMATS.DATETIME);
 };
 
-//TODO: make more cases
-const extractValueFromAttachment = (
+export const extractValueFromAttachment = (
   inputValue?: Attachment,
   field: keyof Pick<Attachment, 'data' | 'url' | 'title' | 'size' | 'contentType' | 'language' | 'id' | 'hash' | 'creation'> = 'url'
 ): string | number => {
@@ -198,7 +197,6 @@ export const extractValuesFromAnswer = (
   if (questionnaireAnswer === undefined) {
     return [];
   }
-
   return Array.isArray(questionnaireAnswer)
     ? questionnaireAnswer.map(answer => getPrimitiveValueFromItemType(type, answer))
     : [getPrimitiveValueFromItemType(type, questionnaireAnswer)];
@@ -223,7 +221,6 @@ export const findIndexByCode = (item: QuestionnaireItem, codesystem: CodeSystems
 /* ENABLE WHEN */
 export const filterEnabledQuestionnaireItems = (items: QuestionnaireItem[], response: QuestionnaireResponse): QuestionnaireItem[] => {
   const responseItems = response.item || [];
-
   const checkItemEnabled = (item: QuestionnaireItem, currentPath: Path[]): boolean => {
     if (!item.enableWhen) {
       return true;

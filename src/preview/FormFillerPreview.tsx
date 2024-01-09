@@ -11,7 +11,7 @@ import LanguageLocales from '@helsenorge/core-utils/constants/languages';
 import FormFillerSidebar from './FormFillerSidebar';
 import { emptyPropertyReplacer } from './helpers';
 import { getResources } from './resources/referoResources';
-import skjema from './skjema/kun_qest_repeatable.json';
+import skjema from './skjema/kun_qest_hn2.json';
 // import { getResources } from './resources/referoResources';
 import { ReferoContainer } from '../components';
 import rootReducer from '../reducers';
