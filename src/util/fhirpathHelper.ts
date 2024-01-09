@@ -17,8 +17,9 @@ export function evaluateFhirpathExpressionToGetDate(item: QuestionnaireItem, fhi
 
 export function evaluateFhirpathExpressionToGetString(fhirExtension: Extension, questionnare?: QuestionnaireResponse | null): any {
   const qCopy = structuredClone(questionnare);
+  const qExt = structuredClone(fhirExtension);
   try {
-    return fhirpath.evaluate(qCopy, fhirExtension.valueString, null, fhirpath_r4_model);
+    return fhirpath.evaluate(qCopy, qExt.valueString, null, fhirpath_r4_model);
   } catch (error) {
     return [];
   }
