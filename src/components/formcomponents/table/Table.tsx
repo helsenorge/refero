@@ -7,7 +7,6 @@ import {
   Coding,
   Questionnaire,
   QuestionnaireItem,
-  QuestionnaireItemEnableWhen,
   QuestionnaireResponse,
   QuestionnaireResponseItem,
   QuestionnaireResponseItemAnswer,

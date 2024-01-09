@@ -25,7 +25,7 @@ export const getTableHN1bodyObject = (items: QuestionnaireItem[], questionnaireR
   return processItems(answerItems);
 };
 
-const createColumnsFromAnswers = (item: QuestionnaireResponseItem): ITableH1Column[] => {
+export const createColumnsFromAnswers = (item: QuestionnaireResponseItem): ITableH1Column[] => {
   const combinedAnswer = transformAnswersToListOfStrings((item as QuestionnaireItem).type, item.answer || []).join(', ');
 
   const columns: ITableH1Column[] = [
@@ -43,7 +43,7 @@ const createColumnsFromAnswers = (item: QuestionnaireResponseItem): ITableH1Colu
 
   return columns;
 };
-const transformItemToHN1Row = (item: QuestionnaireResponseItem): ITableH1Row => {
+export const transformItemToHN1Row = (item: QuestionnaireResponseItem): ITableH1Row => {
   const columns = createColumnsFromAnswers(item);
 
   return {
