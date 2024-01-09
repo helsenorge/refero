@@ -28,4 +28,6 @@ export default {
   SUBLABEL: 'http://helsenorge.no/fhir/StructureDefinition/sdf-sublabel',
 
   HYPERLINK: 'http://helsenorge.no/fhir/StructureDefinition/sdf-hyperlink-target',
+
+  MAX_SIZE_URL: 'http://hl7.org/fhir/StructureDefinition/maxSize',
 };

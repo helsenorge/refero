@@ -81,6 +81,17 @@ export function getExtension(url: string, item: QuestionnaireItem | Element | Qu
   return filteredExtension[0];
 }
 
+export function getMaxSizeExtensionValue(item: QuestionnaireItem): number | undefined {
+  const maxValue = getExtension(ExtensionConstants.MAX_SIZE_URL, item);
+  if (maxValue && maxValue.valueDecimal !== null && maxValue.valueDecimal !== undefined) {
+    return Number(maxValue.valueDecimal);
+  }
+  if (maxValue && maxValue.valueInteger !== null && maxValue.valueInteger !== undefined) {
+    return Number(maxValue.valueInteger);
+  }
+  return undefined;
+}
+
 export function getPlaceholder(item: QuestionnaireItem): string | undefined {
   if (!item || !item.extension || item.extension.length === 0) {
     return undefined;
