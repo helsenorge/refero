@@ -124,7 +124,7 @@ function getErrorMessage(
     if (!mimeTypeIsValid(file, validFileTypes)) {
       return resources.validationFileType;
     } else if (!sizeIsValid(file, maxFileSize)) {
-      return resources.validationFileMax;
+      return resources.validationFileMax.replace('25', (maxFileSize / 1024 / 1024).toString());
     }
   }
 
