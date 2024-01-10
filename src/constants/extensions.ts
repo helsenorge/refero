@@ -12,6 +12,7 @@ export default {
   MARKDOWN_URL: 'http://hl7.org/fhir/StructureDefinition/rendering-markdown',
   QUESTIONNAIRE_HIDDEN: 'http://hl7.org/fhir/StructureDefinition/questionnaire-hidden',
   ORDINAL_VALUE: 'http://hl7.org/fhir/StructureDefinition/ordinalValue',
+  MAX_SIZE_URL: 'http://hl7.org/fhir/StructureDefinition/maxSize',
 
   VALIDATIONTEXT_URL: 'http://ehelse.no/fhir/StructureDefinition/validationtext',
   REPEATSTEXT_URL: 'http://ehelse.no/fhir/StructureDefinition/repeatstext',

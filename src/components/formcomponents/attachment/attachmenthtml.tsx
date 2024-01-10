@@ -11,7 +11,7 @@ import { sizeIsValid, mimeTypeIsValid } from '@helsenorge/file-upload/components
 import Validation, { ValidationProps } from '@helsenorge/form/components/form/validation';
 
 import constants, { VALID_FILE_TYPES } from '../../../constants';
-import { getValidationTextExtension } from '../../../util/extension';
+import { getMaxSizeExtensionValue, getValidationTextExtension } from '../../../util/extension';
 import { Resources } from '../../../util/resources';
 
 interface Props {
@@ -65,7 +65,12 @@ const attachmentHtml: React.SFC<Props & ValidationProps> = ({
   children,
   ...other
 }) => {
-  const maxFilesize = attachmentMaxFileSize ? attachmentMaxFileSize : constants.MAX_FILE_SIZE;
+  const maxValueFromQuestionaire = getMaxSizeExtensionValue(item);
+  const maxFilesize = maxValueFromQuestionaire
+    ? maxValueFromQuestionaire * 1024 * 1024
+    : attachmentMaxFileSize
+    ? attachmentMaxFileSize
+    : constants.MAX_FILE_SIZE;
   const validFileTypes = attachmentValidTypes ? attachmentValidTypes : VALID_FILE_TYPES;
   const deleteText = resources ? resources.deleteAttachmentText : undefined;
 
@@ -118,7 +123,7 @@ function getErrorMessage(
     if (!mimeTypeIsValid(file, validFileTypes)) {
       return resources.validationFileType;
     } else if (!sizeIsValid(file, maxFileSize)) {
-      return resources.validationFileMax;
+      return resources.validationFileMax.replace('25', (maxFileSize / 1024 / 1024).toString());
     }
   }
 

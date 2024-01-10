@@ -103,6 +103,17 @@ export function getQuestionnaireUnitExtensionValue(item: QuestionnaireItem): Cod
   return extension.valueCoding;
 }
 
+export function getMaxSizeExtensionValue(item: QuestionnaireItem): number | undefined {
+  const maxValue = getExtension(ExtensionConstants.MAX_SIZE_URL, item);
+  if (maxValue && maxValue.valueDecimal !== null && maxValue.valueDecimal !== undefined) {
+    return Number(maxValue.valueDecimal);
+  }
+  if (maxValue && maxValue.valueInteger !== null && maxValue.valueInteger !== undefined) {
+    return Number(maxValue.valueInteger);
+  }
+  return undefined;
+}
+
 export function getMaxValueExtensionValue(item: QuestionnaireItem): number | undefined {
   const maxValue = getExtension(ExtensionConstants.MAX_VALUE_URL, item);
   if (maxValue && maxValue.valueDecimal !== null && maxValue.valueDecimal !== undefined) {
