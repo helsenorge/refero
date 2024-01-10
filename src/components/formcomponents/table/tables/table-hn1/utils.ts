@@ -9,9 +9,7 @@ export const getTableHN1bodyObject = (items: QuestionnaireItem[], questionnaireR
     return [];
   }
   const itemsToShow = filterEnabledQuestionnaireItems(items, questionnaireResponse);
-
   const answerItems = addAnswerToItems(itemsToShow, questionnaireResponse);
-
   const processItems = (items: QuestionnaireResponseItem[]): ITableH1Row[] => {
     return items.reduce((acc: ITableH1Row[], item) => {
       const row = transformItemToHN1Row(item);

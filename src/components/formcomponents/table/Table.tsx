@@ -14,6 +14,7 @@ import {
 
 import LanguageLocales from '@helsenorge/core-utils/constants/languages';
 
+import GTable from './tables/gtable/GTable';
 import TableHn1 from './tables/table-hn1/TableHn1';
 import TableHn2 from './tables/table-hn2/TableHn2';
 import { NewValueAction } from '../../../actions/newValue';
@@ -77,6 +78,7 @@ const Table = ({ tableCodesCoding, items, headline, tableType, questionnaireResp
         return (
           <>
             <h3>{headline}</h3>
+            <GTable items={items} questionnaireResponse={questionnaireResponse} tableCodesCoding={tableCodesCoding} />
           </>
         );
       case TableCodes.table:
@@ -93,7 +95,6 @@ const Table = ({ tableCodesCoding, items, headline, tableType, questionnaireResp
 
 const mapStateToProps = (state: GlobalState, props: Props): EnhancedProps => {
   const group = props.item;
-  //TODO: Fix undefine and null checks
   const tableType = getCodingTextTableValues(group)[0];
 
   return {

@@ -16,6 +16,7 @@ import { parseDate } from '@helsenorge/date-time/components/time-input/date-core
 import * as DateTimeConstants from '@helsenorge/date-time/constants/datetime';
 
 import { DATEFORMATS } from './constants';
+import { OPEN_CHOICE_SYSTEM } from '../../../../constants';
 import { CodeSystems } from '../../../../constants/codingsystems';
 import ItemType from '../../../../constants/itemType';
 import { getQuestionnaireItemCodeValue } from '../../../../util/codingsystem';
@@ -27,10 +28,10 @@ function extractValueFromCoding(coding: Coding | undefined, field: keyof Pick<Co
   if (!coding) return '';
   return coding[field] ?? '';
 }
-function extractValueFromQuantity(
+const extractValueFromQuantity = (
   quantity: Quantity | undefined,
   field: keyof Pick<Quantity, 'value' | 'code' | 'system' | 'unit'> = 'value'
-): string | number {
+): string | number => {
   if (!quantity) return '';
   switch (field) {
     case 'value':
@@ -44,7 +45,7 @@ function extractValueFromQuantity(
     default:
       return '';
   }
-}
+};
 const extractValueFromDate = (inputValue?: string): string => {
   if (!inputValue) {
     return '';
@@ -69,7 +70,6 @@ const extractValueFromDateTime = (inputValue?: string): string => {
   //TODO: Check if we can use language from state here
   return moment(date).locale('nb').format(DATEFORMATS.DATETIME);
 };
-
 export const extractValueFromAttachment = (
   inputValue?: Attachment,
   field: keyof Pick<Attachment, 'data' | 'url' | 'title' | 'size' | 'contentType' | 'language' | 'id' | 'hash' | 'creation'> = 'url'
@@ -143,7 +143,18 @@ export function getQuestionnaireResponseItemAnswer(
       return result.map(bool => ({ valueBoolean: bool }));
     case ItemType.CHOICE:
     case ItemType.OPENCHOICE:
-      return result.map(coding => ({ valueCoding: coding }));
+      return result.map(coding => {
+        if (typeof coding === 'string') {
+          return {
+            valueCoding: {
+              display: coding,
+              code: '',
+              system: OPEN_CHOICE_SYSTEM,
+            },
+          };
+        }
+        return { valueCoding: coding };
+      });
     case ItemType.QUANTITY:
       return result.map(quantity => ({ valueQuantity: quantity }));
     case ItemType.TEXT:
@@ -180,8 +191,11 @@ export const getValueIfDataReceiver = (
 
   if (extension) {
     let result = evaluateFhirpathExpressionToGetString(extension, questionnaireResponse);
+
     if (!!getCalculatedExpressionExtension(item)) {
-      result = result.map((m: { value: number }) => m.value);
+      result = result.map((m: { value: number }) => {
+        return m.value;
+      });
     }
     return getQuestionnaireResponseItemAnswer(item.type, result);
   }
@@ -261,7 +275,14 @@ export const isConditionEnabled = (
   const conditionMatches = conditions.map(isSingleConditionMet);
   return behavior === QuestionnaireItemEnableBehaviorCodes.ALL ? conditionMatches.every(Boolean) : conditionMatches.some(Boolean);
 };
-
+export function findFirstDefinedProperty<T>(obj: T): T[Extract<keyof T, string>] | null {
+  for (const key in obj) {
+    if (Object.prototype.hasOwnProperty.call(obj, key) && obj[key] !== undefined) {
+      return obj[key];
+    }
+  }
+  return null;
+}
 export const addAnswerToItems = (
   items: QuestionnaireItem[],
   questionnaireResponse?: QuestionnaireResponse | null
