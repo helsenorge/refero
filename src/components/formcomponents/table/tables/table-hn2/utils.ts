@@ -10,8 +10,12 @@ import codeSystems from '../../../../../constants/codingsystems';
 import ItemType from '../../../../../constants/itemType';
 import { filterEnabledQuestionnaireItems, findIndexByCode, getValueIfDataReceiver, transformAnswersToListOfStrings } from '../utils';
 
-const getNumberOfColums = (items: QuestionnaireItem[]): number =>
-  Math.max(...items.map(item => findIndexByCode(item, codeSystems.TableColumn)));
+const getNumberOfColums = (items: QuestionnaireItem[]): number => {
+  if (items.length === 0) {
+    return 0;
+  }
+  return Math.max(...items.map(item => findIndexByCode(item, codeSystems.TableColumn)));
+};
 
 export const getTableHN2bodyObject = (
   items: QuestionnaireItem[],

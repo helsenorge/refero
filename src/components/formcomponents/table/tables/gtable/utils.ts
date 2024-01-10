@@ -1,28 +1,41 @@
 import * as uuid from 'uuid';
 
-import { QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItemAnswer } from '../../../../../types/fhir';
+import {
+  QuestionnaireItem,
+  QuestionnaireResponse,
+  QuestionnaireResponseItem,
+  QuestionnaireResponseItemAnswer,
+} from '../../../../../types/fhir';
 
-import { addAnswerToItems, filterEnabledQuestionnaireItems, findFirstDefinedProperty } from '../utils';
+import { IGTable, IGTableColumn, IGTableHeaderItem, IGTableRow } from './interface';
+import { findFirstDefinedProperty, getEnabledQuestionnaireItemsWithAnswers } from '../utils';
 
-interface IGTable {
-  id: string;
-  headerRow?: IGTableHeaderItem[];
-  rows: IGTableRow[];
-}
-interface IGTableHeaderItem {
-  id: string;
-  value: string;
-}
+const getNumberOfRowsGTable = (items: QuestionnaireResponseItem[]): number => {
+  if (items.length === 0) {
+    return 0;
+  }
+  const numbers = items.map(item => item.answer?.length || 0);
+  return Math.max(...numbers);
+};
+const getValueFromAnswer = (rowIdx: number, answer?: QuestionnaireResponseItemAnswer[]): string => {
+  const answerItem = answer?.[rowIdx];
 
-interface IGTableRow {
-  id: string;
-  columns: IGTableColumn[];
-}
+  if (!answerItem) {
+    return '';
+  }
+  if (!!answerItem?.item?.length && answerItem.item.length > 0) {
+    return '';
+  }
 
-interface IGTableColumn {
-  id: string;
-  value: string;
-}
+  return findFirstDefinedProperty<QuestionnaireResponseItemAnswer>(answerItem)?.toString() || '';
+};
+
+const columnsForRowIndex = (answerItems: QuestionnaireResponseItem[], rowIdx: number): IGTableColumn[] =>
+  answerItems.map((item, colIdx) => ({
+    id: `empty-${rowIdx}-${colIdx}`,
+    index: colIdx,
+    value: getValueFromAnswer(rowIdx, item.answer),
+  }));
 
 export const getGtablebodyObject = (items: QuestionnaireItem[], questionnaireResponse?: QuestionnaireResponse | null): IGTable => {
   if (!questionnaireResponse || items.length === 0) {
@@ -32,26 +45,24 @@ export const getGtablebodyObject = (items: QuestionnaireItem[], questionnaireRes
     };
   }
 
-  const itemsToShow = filterEnabledQuestionnaireItems(items, questionnaireResponse);
-  const answerItems = addAnswerToItems(itemsToShow, questionnaireResponse);
-  const rows = answerItems.reduce<IGTableRow[]>((acc, item) => {
-    const row = {
-      id: item.linkId,
-      columns:
-        item.answer?.map(answer => ({
-          id: uuid.v4(),
-          value: findFirstDefinedProperty<QuestionnaireResponseItemAnswer>(answer)?.toString() || '',
-        })) || [],
-    };
-    return acc.concat(row);
-  }, []);
+  const answerItems = getEnabledQuestionnaireItemsWithAnswers(items, questionnaireResponse);
+  const numberOfRows = getNumberOfRowsGTable(answerItems);
 
-  return {
+  const tableHeader: IGTableHeaderItem[] = answerItems.map(item => ({
+    id: item.linkId,
+    value: item.text || '',
+  }));
+  const tableRows: IGTableRow[] = Array.from({ length: numberOfRows }, (_, rowIdx) => ({
+    id: `empty-${rowIdx}`,
+    index: rowIdx,
+    columns: columnsForRowIndex(answerItems, rowIdx),
+  }));
+
+  const table: IGTable = {
     id: uuid.v4(),
-    headerRow: answerItems.map(item => ({
-      id: item.linkId,
-      value: item.text || '',
-    })),
-    rows: rows,
+    headerRow: tableHeader,
+    rows: tableRows,
   };
+
+  return table;
 };

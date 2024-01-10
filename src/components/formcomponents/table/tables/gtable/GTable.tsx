@@ -2,18 +2,49 @@ import React from 'react';
 
 import { Coding, QuestionnaireItem, QuestionnaireResponse } from '../../../../../types/fhir';
 
+import {
+  TableBody,
+  Table as HnTable,
+  TableRow,
+  TableCell,
+  TableHead,
+  HeaderCategory,
+  TableHeadCell,
+} from '@helsenorge/designsystem-react/components/Table';
+
 import { getGtablebodyObject } from './utils';
 
 interface Props {
   items: QuestionnaireItem[];
   questionnaireResponse?: QuestionnaireResponse | null;
-  tableCodesCoding: Coding[];
 }
 
-const GTable = ({ items, questionnaireResponse, tableCodesCoding }: Props): JSX.Element => {
-  const itemsToShow = getGtablebodyObject(items, questionnaireResponse);
-  console.log(itemsToShow);
-  return <>{questionnaireResponse?.item?.map(x => x.text + ' ')}</>;
+const GTable = ({ items, questionnaireResponse }: Props): JSX.Element => {
+  const gTable = getGtablebodyObject(items, questionnaireResponse);
+  return (
+    <HnTable className="page_refero__table_gtable">
+      <TableHead category={HeaderCategory.normal}>
+        <TableRow>
+          {gTable?.headerRow?.map(column => (
+            <TableHeadCell key={column.id}>{column.value}</TableHeadCell>
+          ))}
+        </TableRow>
+      </TableHead>
+      <TableBody>
+        {gTable.rows.map(item => {
+          return (
+            <TableRow key={item.id}>
+              {item.columns.map(column => (
+                <TableCell key={column.id} dataLabel={column.value}>
+                  {column.value}
+                </TableCell>
+              ))}
+            </TableRow>
+          );
+        })}
+      </TableBody>
+    </HnTable>
+  );
 };
 
 export default GTable;

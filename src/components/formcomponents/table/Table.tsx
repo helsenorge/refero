@@ -78,7 +78,7 @@ const Table = ({ tableCodesCoding, items, headline, tableType, questionnaireResp
         return (
           <>
             <h3>{headline}</h3>
-            <GTable items={items} questionnaireResponse={questionnaireResponse} tableCodesCoding={tableCodesCoding} />
+            <GTable items={items} questionnaireResponse={questionnaireResponse} />
           </>
         );
       case TableCodes.table:

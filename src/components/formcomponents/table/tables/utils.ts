@@ -275,14 +275,16 @@ export const isConditionEnabled = (
   const conditionMatches = conditions.map(isSingleConditionMet);
   return behavior === QuestionnaireItemEnableBehaviorCodes.ALL ? conditionMatches.every(Boolean) : conditionMatches.some(Boolean);
 };
-export function findFirstDefinedProperty<T>(obj: T): T[Extract<keyof T, string>] | null {
+
+export function findFirstDefinedProperty<T>(obj: T): T[Extract<keyof T, string>] | undefined {
   for (const key in obj) {
     if (Object.prototype.hasOwnProperty.call(obj, key) && obj[key] !== undefined) {
       return obj[key];
     }
   }
-  return null;
+  return undefined;
 }
+
 export const addAnswerToItems = (
   items: QuestionnaireItem[],
   questionnaireResponse?: QuestionnaireResponse | null
@@ -310,4 +312,12 @@ export const addAnswerToItems = (
   };
 
   return items.map(processItem);
+};
+
+export const getEnabledQuestionnaireItemsWithAnswers = (
+  items?: QuestionnaireItem[],
+  questionnaireResponse?: QuestionnaireResponse
+): QuestionnaireResponseItem[] => {
+  if (!items || !questionnaireResponse) return [];
+  return addAnswerToItems(filterEnabledQuestionnaireItems(items, questionnaireResponse), questionnaireResponse);
 };

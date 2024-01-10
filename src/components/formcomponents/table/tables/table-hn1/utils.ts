@@ -2,14 +2,13 @@ import { QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItem } f
 
 import { ITableH1, ITableH1Column, ITableH1Row, TABLE_HN1_TABLE_TYPES } from './interface';
 import ItemType from '../../../../../constants/itemType';
-import { addAnswerToItems, filterEnabledQuestionnaireItems, transformAnswersToListOfStrings } from '../utils';
+import { getEnabledQuestionnaireItemsWithAnswers, transformAnswersToListOfStrings } from '../utils';
 
 export const getTableHN1bodyObject = (items: QuestionnaireItem[], questionnaireResponse?: QuestionnaireResponse | null): ITableH1 => {
   if (!questionnaireResponse || items.length === 0) {
     return [];
   }
-  const itemsToShow = filterEnabledQuestionnaireItems(items, questionnaireResponse);
-  const answerItems = addAnswerToItems(itemsToShow, questionnaireResponse);
+  const answerItems = getEnabledQuestionnaireItemsWithAnswers(items, questionnaireResponse);
   const processItems = (items: QuestionnaireResponseItem[]): ITableH1Row[] => {
     return items.reduce((acc: ITableH1Row[], item) => {
       const row = transformItemToHN1Row(item);
