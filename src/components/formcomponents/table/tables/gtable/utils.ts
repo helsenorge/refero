@@ -1,14 +1,8 @@
-import {
-  QuestionnaireItem,
-  QuestionnaireResponse,
-  QuestionnaireResponseItem,
-  QuestionnaireResponseItemAnswer,
-} from '../../../../../types/fhir';
-
 import * as uuid from 'uuid';
 
-import { addAnswerToItems, extractValuesFromAnswer, filterEnabledQuestionnaireItems, findFirstDefinedProperty } from '../utils';
-import ItemType from '../../../../../constants/itemType';
+import { QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItemAnswer } from '../../../../../types/fhir';
+
+import { addAnswerToItems, filterEnabledQuestionnaireItems, findFirstDefinedProperty } from '../utils';
 
 interface IGTable {
   id: string;
