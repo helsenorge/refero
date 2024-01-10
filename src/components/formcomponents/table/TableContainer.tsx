@@ -25,6 +25,7 @@ import { getCodingTextTableValues } from '../../../util/extension';
 import { Path } from '../../../util/refero-core';
 import { RenderContext } from '../../../util/renderContext';
 import { Resources } from '../../../util/resources';
+import { StandardTable } from './tables/table/StandardTable';
 
 export interface Props {
   item: QuestionnaireItem;
@@ -57,7 +58,7 @@ interface EnhancedProps {
   language: LanguageLocales;
 }
 
-const Table = ({ tableCodesCoding, items, headline, tableType, questionnaireResponse }: Props & EnhancedProps): JSX.Element => {
+const TableContainer = ({ tableCodesCoding, items, headline, tableType, questionnaireResponse }: Props & EnhancedProps): JSX.Element => {
   {
     switch (tableType) {
       case TableCodes.tableHn1:
@@ -85,6 +86,7 @@ const Table = ({ tableCodesCoding, items, headline, tableType, questionnaireResp
         return (
           <>
             <h3>{headline}</h3>
+            <StandardTable items={items} />
           </>
         );
       default:
@@ -106,4 +108,4 @@ const mapStateToProps = (state: GlobalState, props: Props): EnhancedProps => {
     language: (state.refero.form.Language as LanguageLocales) || LanguageLocales.NORWEGIAN,
   };
 };
-export default connect(mapStateToProps)(Table);
+export default connect(mapStateToProps)(TableContainer);

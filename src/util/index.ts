@@ -31,7 +31,7 @@ import Integer from '../components/formcomponents/integer/integer';
 import OpenChoice from '../components/formcomponents/open-choice/open-choice';
 import Quantity from '../components/formcomponents/quantity/quantity';
 import StringComponent from '../components/formcomponents/string/string';
-import Table from '../components/formcomponents/table/Table';
+import TableContainer from '../components/formcomponents/table/TableContainer';
 import Text from '../components/formcomponents/text/text';
 import { Props } from '../components/with-common-functions';
 import CodingSystemConstants from '../constants/codingsystems';
@@ -67,7 +67,7 @@ export const isTableCode = (extensionCode: string | string[]): boolean => {
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function getComponentForItem(type: string, extensionCode?: string | string[]) {
   if (String(type) === itemType.GROUP && !!extensionCode && isTableCode(extensionCode)) {
-    return Table as ComponentClass<Omit<Props & ValidationProps & Props, keyof Props> & Props>;
+    return TableContainer as ComponentClass<Omit<Props & ValidationProps & Props, keyof Props> & Props>;
   } else if (String(type) === ItemType.GROUP) {
     return Group;
   }

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Coding, QuestionnaireItem, QuestionnaireResponse } from '../../../../../types/fhir';
+import { QuestionnaireItem, QuestionnaireResponse } from '../../../../../types/fhir';
 
 import {
   TableBody,
