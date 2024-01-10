@@ -8,13 +8,13 @@ export interface IGTableHeaderItem {
   value: string;
 }
 
-interface IGTableRow {
+export interface IGTableRow {
   id: string;
   index: number;
   columns: IGTableColumn[];
 }
 
-interface IGTableColumn {
+export interface IGTableColumn {
   id: string;
   index: number;
   value: string;
