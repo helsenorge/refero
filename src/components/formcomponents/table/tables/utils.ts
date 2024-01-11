@@ -303,7 +303,6 @@ export const addAnswerToItems = (
     } else {
       questionnaireResponseItem.answer = res;
     }
-
     if (item.item && item.item.length > 0) {
       questionnaireResponseItem.item = addAnswerToItems(item.item, questionnaireResponse);
     }

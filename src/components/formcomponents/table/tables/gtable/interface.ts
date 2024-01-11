@@ -1,6 +1,6 @@
 export interface IGTable {
   id: string;
-  headerRow?: IGTableHeaderItem[];
+  headerRow: IGTableHeaderItem[];
   rows: IGTableRow[];
 }
 export interface IGTableHeaderItem {

@@ -8,21 +8,16 @@ import {
 } from '../../../../../types/fhir';
 
 import { IGTable, IGTableColumn, IGTableHeaderItem, IGTableRow } from './interface';
-import {
-  findFirstDefinedProperty,
-  getEnabledQuestionnaireItemsWithAnswers,
-  getPrimitiveValueFromItemType,
-  transformAnswersToListOfStrings,
-} from '../utils';
+import { findFirstDefinedProperty, getEnabledQuestionnaireItemsWithAnswers } from '../utils';
 
-const getNumberOfRowsGTable = (items: QuestionnaireResponseItem[]): number => {
+export const getNumberOfRowsGTable = (items: QuestionnaireResponseItem[]): number => {
   if (items.length === 0) {
     return 0;
   }
   const numbers = items.map(item => item.answer?.length || 0);
   return Math.max(...numbers);
 };
-const getValueFromAnswer = (rowIdx: number, answer?: QuestionnaireResponseItemAnswer[]): string => {
+export const getValueFromAnswer = (rowIdx: number, answer?: QuestionnaireResponseItemAnswer[]): string => {
   const answerItem = answer?.[rowIdx];
 
   if (!answerItem) {
@@ -31,19 +26,19 @@ const getValueFromAnswer = (rowIdx: number, answer?: QuestionnaireResponseItemAn
   if (!!answerItem?.item?.length && answerItem.item.length > 0) {
     return '';
   }
-  return transformAnswersToListOfStrings((answerItem as QuestionnaireItem).type, answerItem).toString() || '';
-  //TODO: use existing functionality to get value from answer, also see if we can add the original item to the answer
-  // return findFirstDefinedProperty<QuestionnaireResponseItemAnswer>(answerItem)?.toString() || '';
+  // return transformAnswersToListOfStrings((answerItem as QuestionnaireItem).type, answerItem).toString() || '';
+  // TODO: use existing functionality to get value from answer, also see if we can add the original item to the answer
+  return findFirstDefinedProperty<QuestionnaireResponseItemAnswer>(answerItem)?.toString() || '';
 };
 
-const columnsForRowIndex = (answerItems: QuestionnaireResponseItem[], rowIdx: number): IGTableColumn[] =>
+export const columnsForRowIndex = (answerItems: QuestionnaireResponseItem[], rowIdx: number): IGTableColumn[] =>
   answerItems.map((item, colIdx) => ({
     id: `empty-${rowIdx}-${colIdx}`,
     index: colIdx,
     value: getValueFromAnswer(rowIdx, item.answer),
   }));
 
-const createTableRows = (items: QuestionnaireResponseItem[]): IGTableRow[] => {
+export const createTableRows = (items: QuestionnaireResponseItem[]): IGTableRow[] => {
   const numberOfRows = getNumberOfRowsGTable(items);
 
   return Array.from({ length: numberOfRows }, (_, rowIdx) => ({
@@ -53,7 +48,7 @@ const createTableRows = (items: QuestionnaireResponseItem[]): IGTableRow[] => {
   }));
 };
 
-const createTableHeader = (items: QuestionnaireResponseItem[]): IGTableHeaderItem[] =>
+export const createTableHeader = (items: QuestionnaireResponseItem[]): IGTableHeaderItem[] =>
   items.map(item => ({
     id: item.linkId,
     value: item.text || '',
@@ -63,10 +58,10 @@ export const getGtablebodyObject = (items: QuestionnaireItem[], questionnaireRes
   if (!questionnaireResponse || items.length === 0) {
     return {
       id: uuid.v4(),
+      headerRow: [],
       rows: [],
     };
   }
-
   const answerItems = getEnabledQuestionnaireItemsWithAnswers(items, questionnaireResponse);
 
   const table: IGTable = {
