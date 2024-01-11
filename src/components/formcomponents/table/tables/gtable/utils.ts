@@ -26,8 +26,6 @@ export const getValueFromAnswer = (rowIdx: number, answer?: QuestionnaireRespons
   if (!!answerItem?.item?.length && answerItem.item.length > 0) {
     return '';
   }
-  // return transformAnswersToListOfStrings((answerItem as QuestionnaireItem).type, answerItem).toString() || '';
-  // TODO: use existing functionality to get value from answer, also see if we can add the original item to the answer
   return findFirstDefinedProperty<QuestionnaireResponseItemAnswer>(answerItem)?.toString() || '';
 };
 
