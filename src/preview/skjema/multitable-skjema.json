@@ -66,16 +66,16 @@
     {
       "url": "http://ehelse.no/fhir/ValueSet/Predefined",
       "resourceType": "ValueSet",
-      "id": "1101",
+      "id": "1102",
       "version": "1.0",
-      "name": "urn:oid:1101",
-      "title": "Ja / Nei (structor)",
+      "name": "urn:oid:1102",
+      "title": "Ja / Nei / Vet ikke (structor)",
       "status": "draft",
-      "publisher": "NHN",
+      "publisher": "Direktoratet for e-helse",
       "compose": {
         "include": [
           {
-            "system": "urn:oid:2.16.578.1.12.4.1.1101",
+            "system": "urn:oid:2.16.578.1.12.4.1.1102",
             "concept": [
               {
                 "code": "1",
@@ -84,6 +84,10 @@
               {
                 "code": "2",
                 "display": "Nei"
+              },
+              {
+                "code": "3",
+                "display": "Vet ikke"
               }
             ]
           }
@@ -241,21 +245,39 @@
           "type": "choice",
           "text": "Er jordbær et bær?\n",
           "required": false,
-          "answerValueSet": "#1101"
+          "answerValueSet": "#1102"
         },
         {
           "linkId": "62e20b07-e7fe-4cdf-85dc-ef3e984751e0",
           "type": "choice",
           "required": false,
           "text": "Er bjørnebær et bær?",
-          "answerValueSet": "#1101"
+          "answerValueSet": "#1102"
         },
         {
           "linkId": "e3d7f6d9-14dd-4b7c-cf59-68963d7ccb1f",
           "type": "choice",
           "text": "Er eple et bær?",
           "required": false,
-          "answerValueSet": "#1101"
+          "answerValueSet": "#1102",
+          "item": [
+            {
+              "linkId": "46b2f4f4-779a-493d-d706-b601755fbc2d",
+              "type": "string",
+              "required": false,
+              "enableWhen": [
+                {
+                  "question": "e3d7f6d9-14dd-4b7c-cf59-68963d7ccb1f",
+                  "operator": "=",
+                  "answerCoding": {
+                    "system": "urn:oid:2.16.578.1.12.4.1.1102",
+                    "code": "1"
+                  }
+                }
+              ],
+              "text": "Forklar hvorfor"
+            }
+          ]
         }
       ]
     },
@@ -493,7 +515,7 @@
               "type": "choice",
               "text": "Er jordbær et bær?\n",
               "required": false,
-              "answerValueSet": "#1101",
+              "answerValueSet": "#1102",
               "extension": [
                 {
                   "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
@@ -525,7 +547,7 @@
               "type": "choice",
               "required": false,
               "text": "Er bjørnebær et bær?",
-              "answerValueSet": "#1101",
+              "answerValueSet": "#1102",
               "extension": [
                 {
                   "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
@@ -557,7 +579,7 @@
               "type": "choice",
               "text": "Er eple et bær?",
               "required": false,
-              "answerValueSet": "#1101",
+              "answerValueSet": "#1102",
               "extension": [
                 {
                   "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
@@ -581,6 +603,39 @@
                   "answerBoolean": true,
                   "question": "e3d7f6d9-14dd-4b7c-cf59-68963d7ccb1f",
                   "operator": "exists"
+                }
+              ],
+              "item": [
+                {
+                  "linkId": "d7ebbe31-49a4-4818-8a61-02d574629fa6",
+                  "type": "string",
+                  "required": false,
+                  "enableWhen": [
+                    {
+                      "answerBoolean": true,
+                      "question": "46b2f4f4-779a-493d-d706-b601755fbc2d",
+                      "operator": "exists"
+                    }
+                  ],
+                  "text": "Forklar hvorfor",
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [
+                          {
+                            "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                            "code": "data-receiver"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                      "valueString": "QuestionnaireResponse.descendants().where(linkId='46b2f4f4-779a-493d-d706-b601755fbc2d').answer.value"
+                    }
+                  ],
+                  "readOnly": true
                 }
               ]
             }

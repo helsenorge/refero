@@ -116,7 +116,7 @@ export const getPrimitiveValueFromItemType = (
     case ItemType.DECIMAL:
       return res.valueDecimal ?? 0;
     case ItemType.BOOLEAN:
-      return res.valueBoolean === true ? 'Ja' : 'Nei' ?? false;
+      return res.valueBoolean === true ? `[X]` : `[ ]` ?? false;
     case ItemType.DATE:
       return extractValueFromDate(res.valueDate);
     case ItemType.DATETIME:
@@ -309,8 +309,8 @@ export const addAnswerToItems = (
 
     return questionnaireResponseItem;
   };
-
-  return items.map(processItem);
+  const response = items.map(processItem);
+  return response;
 };
 
 export const getEnabledQuestionnaireItemsWithAnswers = (
@@ -318,5 +318,6 @@ export const getEnabledQuestionnaireItemsWithAnswers = (
   questionnaireResponse?: QuestionnaireResponse
 ): QuestionnaireResponseItem[] => {
   if (!items || !questionnaireResponse) return [];
-  return addAnswerToItems(filterEnabledQuestionnaireItems(items, questionnaireResponse), questionnaireResponse);
+  const filteredItems = filterEnabledQuestionnaireItems(items, questionnaireResponse);
+  return addAnswerToItems(filteredItems, questionnaireResponse);
 };

@@ -21,7 +21,7 @@ interface Props {
 
 const GTable = ({ items, questionnaireResponse }: Props): JSX.Element => {
   const gTable = getGtablebodyObject(items, questionnaireResponse);
-  return (
+  return gTable.rows.length > 0 ? (
     <HnTable className="page_refero__table_gtable">
       <TableHead category={HeaderCategory.normal}>
         <TableRow>
@@ -44,6 +44,8 @@ const GTable = ({ items, questionnaireResponse }: Props): JSX.Element => {
         })}
       </TableBody>
     </HnTable>
+  ) : (
+    <></>
   );
 };
 

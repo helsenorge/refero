@@ -12,10 +12,8 @@ import FormFillerSidebar from './FormFillerSidebar';
 import { emptyPropertyReplacer } from './helpers';
 import { getResources } from './resources/referoResources';
 import skjema from './skjema/multitable-skjema.json';
-// import { getResources } from './resources/referoResources';
 import { ReferoContainer } from '../components';
 import rootReducer from '../reducers';
-import { Resources } from '../util/resources';
 
 type Props = {
   showFormFiller: () => void;
@@ -50,7 +48,7 @@ const FormFillerPreview = ({ showFormFiller }: Props): JSX.Element => {
                   // eslint-disable-next-line no-console
                   onSubmit={(): void => console.log('onSubmit')}
                   authorized={true}
-                  resources={getResources('') as unknown as Resources}
+                  resources={getResources('')}
                   sticky={true}
                   saveButtonDisabled={false}
                   loginButton={<button>{'Login'}</button>}

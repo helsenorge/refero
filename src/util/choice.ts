@@ -27,11 +27,7 @@ export function hasCanonicalValueSet(item: QuestionnaireItem): boolean {
   return !!item.answerValueSet && item.answerValueSet.substr(0, 4) === 'http';
 }
 
-export function hasOptions(
-  resources: Resources | undefined,
-  item: QuestionnaireItem,
-  containedResources?: Resource[]
-): boolean {
+export function hasOptions(resources: Resources | undefined, item: QuestionnaireItem, containedResources?: Resource[]): boolean {
   const options = getOptions(resources, item, containedResources);
   return !!options && options.length > 0;
 }
@@ -337,7 +333,7 @@ function createRadiogroupOptionFromValueString(value: string, readOnly: boolean)
   return createRadiogroupOption(value, value, readOnly);
 }
 
-function getContainedOptions(item: QuestionnaireItem, containedResources?: Resource[]): Array<Options> | undefined {
+export function getContainedOptions(item: QuestionnaireItem, containedResources?: Resource[]): Array<Options> | undefined {
   if (!item || !item.answerValueSet) {
     return undefined;
   }

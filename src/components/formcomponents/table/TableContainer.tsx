@@ -10,22 +10,23 @@ import {
   QuestionnaireResponse,
   QuestionnaireResponseItem,
   QuestionnaireResponseItemAnswer,
+  Resource,
 } from '../../../types/fhir';
 
 import LanguageLocales from '@helsenorge/core-utils/constants/languages';
 
 import GTable from './tables/gtable/GTable';
+import { StandardTable } from './tables/table/StandardTable';
 import TableHn1 from './tables/table-hn1/TableHn1';
 import TableHn2 from './tables/table-hn2/TableHn2';
 import { NewValueAction } from '../../../actions/newValue';
 import { TABLE_CODES_VALUES, TableCodes } from '../../../constants/tableTypes';
 import { GlobalState } from '../../../reducers';
-import { getFormData } from '../../../reducers/form';
+import { getFormData, getFormDefinition } from '../../../reducers/form';
 import { getCodingTextTableValues } from '../../../util/extension';
 import { Path } from '../../../util/refero-core';
 import { RenderContext } from '../../../util/renderContext';
 import { Resources } from '../../../util/resources';
-import { StandardTable } from './tables/table/StandardTable';
 
 export interface Props {
   item: QuestionnaireItem;
@@ -56,9 +57,17 @@ interface EnhancedProps {
   tableType: TABLE_CODES_VALUES;
   questionnaireResponse?: QuestionnaireResponse | null;
   language: LanguageLocales;
+  resource: Resource[] | undefined;
 }
 
-const TableContainer = ({ tableCodesCoding, items, headline, tableType, questionnaireResponse }: Props & EnhancedProps): JSX.Element => {
+const TableContainer = ({
+  tableCodesCoding,
+  items,
+  headline,
+  tableType,
+  questionnaireResponse,
+  resource,
+}: Props & EnhancedProps): JSX.Element => {
   {
     switch (tableType) {
       case TableCodes.tableHn1:
@@ -86,7 +95,7 @@ const TableContainer = ({ tableCodesCoding, items, headline, tableType, question
         return (
           <>
             <h3>{headline}</h3>
-            <StandardTable items={items} />
+            <StandardTable items={items} questionnaireResponse={questionnaireResponse} resource={resource} />
           </>
         );
       default:
@@ -98,6 +107,7 @@ const TableContainer = ({ tableCodesCoding, items, headline, tableType, question
 const mapStateToProps = (state: GlobalState, props: Props): EnhancedProps => {
   const group = props.item;
   const tableType = getCodingTextTableValues(group)[0];
+  const resource = getFormDefinition(state)?.Content?.contained;
 
   return {
     headline: group.text ?? '',
@@ -106,6 +116,7 @@ const mapStateToProps = (state: GlobalState, props: Props): EnhancedProps => {
     tableType,
     questionnaireResponse: getFormData(state)?.Content,
     language: (state.refero.form.Language as LanguageLocales) || LanguageLocales.NORWEGIAN,
+    resource,
   };
 };
 export default connect(mapStateToProps)(TableContainer);

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 
 import { Coding, QuestionnaireItem, QuestionnaireResponse } from '../../../../../types/fhir';
 
-import { Table as HnTable, ModeType, SortDirection, TableBody, TableCell, TableRow } from '@helsenorge/designsystem-react/components/Table';
+import { Table as HnTable, SortDirection, TableBody, TableCell, TableRow } from '@helsenorge/designsystem-react/components/Table';
 
 import { ITableH2Row } from './interface';
 import TableHeadHn2 from './TableHeadHn2';
