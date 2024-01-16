@@ -154,7 +154,7 @@ describe('extractValuesFromAnswer', () => {
 
     const result = extractValuesFromAnswer(type, singleAnswer);
 
-    expect(result).toEqual(['Ja']); // Assuming true maps to 'Ja'
+    expect(result).toEqual(['[X]']);
   });
 
   it('should extract date value correctly', () => {
