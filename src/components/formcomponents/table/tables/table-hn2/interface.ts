@@ -12,3 +12,4 @@ export interface ITableH2Row {
 export interface ITableH2 {
   rows: ITableH2Row;
 }
+export type HeaderColumn = { display: string; code?: string };

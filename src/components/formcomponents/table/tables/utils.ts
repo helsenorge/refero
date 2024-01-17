@@ -35,7 +35,7 @@ const extractValueFromQuantity = (
   if (!quantity) return '';
   switch (field) {
     case 'value':
-      return quantity.value ?? 0;
+      return `${quantity.value ?? 0} ${quantity.unit ?? ''} `;
     case 'unit':
       return quantity.unit ?? '';
     case 'system':
@@ -51,23 +51,23 @@ const extractValueFromDate = (inputValue?: string): string => {
     return '';
   }
   const date = parseDate(String(inputValue));
-  //TODO: Check if we can use language from state here
   return moment(date).locale('nb').format(DATEFORMATS.DATE);
 };
-const extractValueFromTime = (inputDate?: string): string => {
-  if (!inputDate) {
+const extractValueFromTime = (inputTime?: string): string => {
+  if (!inputTime) {
     return '';
   }
-  const date = parseDate(String(inputDate));
-  const momentDate = moment(date);
-  return `${momentDate.hours()}${DateTimeConstants.TIME_SEPARATOR}${momentDate.minutes()}`;
+  const time = inputTime.split(DateTimeConstants.TIME_SEPARATOR);
+  if (time.length < 2) {
+    return '';
+  }
+  return `${time[0]}${DateTimeConstants.TIME_SEPARATOR}${time[1]}`;
 };
 const extractValueFromDateTime = (inputValue?: string): string => {
   if (!inputValue) {
     return '';
   }
   const date = parseDate(String(inputValue));
-  //TODO: Check if we can use language from state here
   return moment(date).locale('nb').format(DATEFORMATS.DATETIME);
 };
 export const extractValueFromAttachment = (
@@ -107,6 +107,7 @@ export const getPrimitiveValueFromItemType = (
   type: typeof ItemType[keyof typeof ItemType],
   res: QuestionnaireResponseItemAnswer
 ): string | number | never => {
+  console.log('getPrimitiveValueFromItemType', res);
   switch (type) {
     case ItemType.STRING:
     case ItemType.TEXT:

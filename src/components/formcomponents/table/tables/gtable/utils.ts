@@ -8,7 +8,7 @@ import {
 } from '../../../../../types/fhir';
 
 import { IGTable, IGTableColumn, IGTableHeaderItem, IGTableRow } from './interface';
-import { findFirstDefinedProperty, getEnabledQuestionnaireItemsWithAnswers } from '../utils';
+import { findFirstDefinedProperty, getEnabledQuestionnaireItemsWithAnswers, getPrimitiveValueFromItemType } from '../utils';
 
 export const getNumberOfRowsGTable = (items: QuestionnaireResponseItem[]): number => {
   if (items.length === 0) {
@@ -17,23 +17,22 @@ export const getNumberOfRowsGTable = (items: QuestionnaireResponseItem[]): numbe
   const numbers = items.map(item => item.answer?.length || 0);
   return Math.max(...numbers);
 };
-export const getValueFromAnswer = (rowIdx: number, answer?: QuestionnaireResponseItemAnswer[]): string => {
-  const answerItem = answer?.[rowIdx];
-
+export const getValueFromAnswer = (rowIdx: number, item?: QuestionnaireResponseItem): string => {
+  const answerItem = item?.answer?.[rowIdx];
   if (!answerItem) {
     return '';
   }
   if (!!answerItem?.item?.length && answerItem.item.length > 0) {
     return '';
   }
-  return findFirstDefinedProperty<QuestionnaireResponseItemAnswer>(answerItem)?.toString() || '';
+  return getPrimitiveValueFromItemType((item as QuestionnaireItem).type, answerItem).toString() || '';
 };
 
 export const columnsForRowIndex = (answerItems: QuestionnaireResponseItem[], rowIdx: number): IGTableColumn[] =>
   answerItems.map((item, colIdx) => ({
     id: `empty-${rowIdx}-${colIdx}`,
     index: colIdx,
-    value: getValueFromAnswer(rowIdx, item.answer),
+    value: getValueFromAnswer(rowIdx, item),
   }));
 
 export const createTableRows = (items: QuestionnaireResponseItem[]): IGTableRow[] => {

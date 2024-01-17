@@ -4,7 +4,7 @@ import { Coding, QuestionnaireItem, QuestionnaireResponse } from '../../../../..
 
 import { SortDirection } from '@helsenorge/designsystem-react/components/Table';
 
-import { ITableH2Row } from './interface';
+import { HeaderColumn, ITableH2Row } from './interface';
 import CodingSystems, { TableColumnName, TableOrderingColum } from '../../../../../constants/codingsystems';
 import codeSystems from '../../../../../constants/codingsystems';
 import ItemType from '../../../../../constants/itemType';
@@ -30,7 +30,7 @@ export const getTableHN2bodyObject = (
   const maxColumns = getNumberOfColums(items);
 
   const itemsToShow = filterEnabledQuestionnaireItems(items, questionnaireResponse);
-
+  console.log(maxColumns);
   const tableRows: ITableH2Row[] = itemsToShow.reduce<ITableH2Row[]>((acc, item) => {
     const columnIndex = findIndexByCode(item, codeSystems.TableColumn) - 1;
     const answer = getValueIfDataReceiver(item, questionnaireResponse) || [];
@@ -81,8 +81,6 @@ export const findCodeForColumnToSortBy = (coding: Coding[]): Coding | undefined 
   const columnToSortBy = columnsToDisplay?.find(coding => coding?.code === codeForSortedColumn);
   return columnToSortBy;
 };
-
-type HeaderColumn = { display: string; code?: string };
 
 export const getHeaderColumns = (coding: Coding[]): HeaderColumn[] => {
   return findCodeBySystem(coding, TableColumnName).map(code => ({
