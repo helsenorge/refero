@@ -327,7 +327,7 @@ describe('createColumnsFromAnswers', () => {
       { value: 'Question 1', index: 0, id: '1-question' },
       { value: '', index: 1, id: '1-1' },
       { value: '', index: 2, id: '2-2' },
-      { value: 'A, B', index: 3, id: '1-answer' },
+      { value: '', index: 3, id: '1-answer' },
     ]);
   });
 
@@ -566,14 +566,14 @@ describe('needsExtraColumn', () => {
     expect(extraColumnNeeded).toBe(true);
   });
 
-  it('should return false if all answers have an empty last column value', () => {
+  it('should return false if items have no children', () => {
     (tableUtils.getEnabledQuestionnaireItemsWithAnswers as jest.Mock).mockImplementation(() => {
       return [
         { linkId: '1', text: 'Question 1', answer: [{ valueCoding: { code: 'A' } }] },
         {
           linkId: '2',
           answer: [{ valueCoding: { code: 'B' } }],
-          item: [{ linkId: '3', text: 'Question 2', type: ItemType.STRING, answer: [{ valueString: '' }] }],
+          item: [],
         },
       ] as QuestionnaireResponseItem[];
     });
@@ -593,11 +593,7 @@ describe('needsExtraColumn', () => {
         { linkId: '2', answer: [{ valueCoding: { code: '2' } }] },
       ],
     };
-    const choiceValues: Options[] = [
-      { type: '1', label: 'Option A' },
-      { type: '2', label: 'Option B' },
-    ];
-    const extraColumnNeeded = needsExtraColumn(items, responseItems, choiceValues);
+    const extraColumnNeeded = needsExtraColumn(items, responseItems);
     expect(extraColumnNeeded).toBe(false);
   });
 });

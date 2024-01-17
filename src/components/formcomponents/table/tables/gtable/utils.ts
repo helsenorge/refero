@@ -1,14 +1,9 @@
 import * as uuid from 'uuid';
 
-import {
-  QuestionnaireItem,
-  QuestionnaireResponse,
-  QuestionnaireResponseItem,
-  QuestionnaireResponseItemAnswer,
-} from '../../../../../types/fhir';
+import { QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItem } from '../../../../../types/fhir';
 
 import { IGTable, IGTableColumn, IGTableHeaderItem, IGTableRow } from './interface';
-import { findFirstDefinedProperty, getEnabledQuestionnaireItemsWithAnswers, getPrimitiveValueFromItemType } from '../utils';
+import { getEnabledQuestionnaireItemsWithAnswers, getPrimitiveValueFromItemType } from '../utils';
 
 export const getNumberOfRowsGTable = (items: QuestionnaireResponseItem[]): number => {
   if (items.length === 0) {
