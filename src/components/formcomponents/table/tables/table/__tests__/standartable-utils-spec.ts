@@ -558,11 +558,8 @@ describe('needsExtraColumn', () => {
         },
       ],
     };
-    const choiceValues: Options[] = [
-      { type: '1', label: 'Option A' },
-      { type: '2', label: 'Option B' },
-    ];
-    const extraColumnNeeded = needsExtraColumn(items, responseItems, choiceValues);
+
+    const extraColumnNeeded = needsExtraColumn(items, responseItems);
     expect(extraColumnNeeded).toBe(true);
   });
 
