@@ -1,3 +1,10 @@
+## 13.2.4-beta05
+
+---
+
+- fix displaying the correct values in tables
+- fix standardtable to be displayed correct with child items
+
 ## 13.2.4-beta04
 
 ---
