@@ -54,7 +54,27 @@ export const createHeaderRow = (choiceValues: Options[], hasExtraColumn: boolean
       : []),
   ];
 };
+const processItem = (
+  item: QuestionnaireResponseItem,
+  index: number,
+  needsExtraColumn: boolean,
+  choiceValues?: Options[]
+): StandardTableRow[] => {
+  const columns = createColumnsFromAnswers(item, choiceValues);
+  const processedColumns = needsExtraColumn ? columns : columns.slice(0, -1);
 
+  const row: StandardTableRow = {
+    id: item.linkId,
+    index,
+    columns: processedColumns,
+  };
+
+  const childRows = item.item
+    ? item.item.flatMap((child, childIndex) => processItem(child, childIndex, needsExtraColumn, choiceValues))
+    : [];
+
+  return [row, ...childRows];
+};
 export const createBodyRows = (
   items: QuestionnaireItem[],
   responseItems: QuestionnaireResponse,
@@ -63,40 +83,28 @@ export const createBodyRows = (
 ): StandardTableRow[] => {
   const answers = getEnabledQuestionnaireItemsWithAnswers(items, responseItems);
 
-  return answers.map((item: QuestionnaireResponseItem, index: number) => {
-    let columns = createColumnsFromAnswers(item, choiceValues);
-
-    if (!needsExtraColumn) {
-      columns = columns.slice(0, -1);
-    }
-
-    return {
-      id: item.linkId,
-      index,
-      columns,
-    };
-  });
+  return answers.flatMap((item, index) => processItem(item, index, needsExtraColumn, choiceValues));
 };
-
 export const createRowsFromAnswersCodes = (item: QuestionnaireResponseItem, choiceValues?: Options[]): StandardTableColumn[] => {
-  const answerValue = item.answer?.[0]?.valueCoding?.code;
   return (
     choiceValues?.map(value => ({
       id: `${value.type}-${value.type}`,
       index: Number(value.type ?? 0),
-      value: answerValue === value.type ? 'X' : '',
+      value: item.answer?.some(x => {
+        return x.valueCoding?.code === value.type;
+      })
+        ? 'X'
+        : '',
     })) || []
   );
 };
 
 export const createColumnsFromAnswers = (item: QuestionnaireResponseItem, choiceValues?: Options[]): StandardTableColumn[] => {
-  const firstItem = item?.item?.[0];
-
-  const type = (firstItem as QuestionnaireItem)?.type;
-  const answer = firstItem?.answer;
-  const textAnswer = type && answer ? transformAnswersToListOfStrings(type, answer) : [];
+  const type = (item as QuestionnaireItem)?.type;
+  const answer = item?.answer;
   const choiceColumns = createRowsFromAnswersCodes(item, choiceValues);
 
+  const textAnswer = type && answer && choiceColumns.every(x => x.value === '') ? transformAnswersToListOfStrings(type, answer) : [];
   const columns: StandardTableColumn[] = [
     createTableColumn(item.text || '', 0, `${item.linkId}-question`),
     ...choiceColumns,
@@ -120,7 +128,7 @@ export const getStandardTableObject = (
   }
 
   const choiceValues = getContainedOptions(firstItem, resource) || [];
-  const extraColumnNeeded = needsExtraColumn(items, responseItems, choiceValues);
+  const extraColumnNeeded = needsExtraColumn(items, responseItems);
 
   const rows = createBodyRows(items, responseItems, extraColumnNeeded, choiceValues);
   const header = createHeaderRow(choiceValues, extraColumnNeeded);
@@ -136,11 +144,9 @@ export const findFirstChoiceItem = (items: QuestionnaireItem[]): QuestionnaireIt
   return items.find((item: QuestionnaireItem) => item.type === ItemType.CHOICE);
 };
 
-export const needsExtraColumn = (items: QuestionnaireItem[], responseItems: QuestionnaireResponse, choiceValues?: Options[]): boolean => {
+export const needsExtraColumn = (items: QuestionnaireItem[], responseItems: QuestionnaireResponse): boolean => {
   const answers = getEnabledQuestionnaireItemsWithAnswers(items, responseItems) || [];
-
   return answers.some(item => {
-    const lastColumnValue = createColumnsFromAnswers(item, choiceValues).slice(-1)[0]?.value;
-    return lastColumnValue !== '';
+    return item?.item?.length && item.item.length > 0;
   });
 };

@@ -107,7 +107,6 @@ export const getPrimitiveValueFromItemType = (
   type: typeof ItemType[keyof typeof ItemType],
   res: QuestionnaireResponseItemAnswer
 ): string | number | never => {
-  console.log('getPrimitiveValueFromItemType', res);
   switch (type) {
     case ItemType.STRING:
     case ItemType.TEXT:

@@ -21,14 +21,15 @@ const TableHeadHn2 = ({ tableCodesCoding, sortDir, setSortDir, sortable }: Props
   };
 
   return (
-    <TableHead category={sortable ? HeaderCategory.sortable : HeaderCategory.normal}>
-      <TableRow>
+    <TableHead category={sortable ? HeaderCategory.sortable : HeaderCategory.normal} className='className="page_refero__table_hn2__header'>
+      <TableRow className='className="page_refero__table_hn2__header__row'>
         {tableHeader.map(column => (
           <TableHeadCell
             onClick={sortable && codeForColumnToSortBy?.code === column.code ? handleSort : undefined}
             sortable={sortable && codeForColumnToSortBy?.code === column.code}
             sortDir={sortable ? sortDir : undefined}
             key={column.code}
+            className='className="page_refero__table_hn2__header__row__cell'
           >
             {column.display}
           </TableHeadCell>

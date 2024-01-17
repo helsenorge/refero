@@ -24,12 +24,12 @@ const TableHn2 = ({ tableCodesCoding, items, questionnaireResponse }: Props): JS
   return rows.length ? (
     <HnTable className="page_refero__table_hn2">
       <TableHeadHn2 sortable={!!sortIndex} setSortDir={setSortDir} sortDir={sortDir} tableCodesCoding={tableCodesCoding} />
-      <TableBody>
+      <TableBody className='className="page_refero__table_hn2__body'>
         {rows.map(item => {
           return (
-            <TableRow key={item.id}>
+            <TableRow key={item.id} className='className="page_refero__table_hn2__body__row'>
               {item.columns.map(column => (
-                <TableCell key={column.id} dataLabel={column.text}>
+                <TableCell key={column.id} dataLabel={column.text} className='className="page_refero__table_hn2__body__cell'>
                   {column.text}
                 </TableCell>
               ))}

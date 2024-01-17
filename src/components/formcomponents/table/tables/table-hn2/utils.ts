@@ -30,11 +30,14 @@ export const getTableHN2bodyObject = (
   const maxColumns = getNumberOfColums(items);
 
   const itemsToShow = filterEnabledQuestionnaireItems(items, questionnaireResponse);
-  console.log(maxColumns);
+
   const tableRows: ITableH2Row[] = itemsToShow.reduce<ITableH2Row[]>((acc, item) => {
     const columnIndex = findIndexByCode(item, codeSystems.TableColumn) - 1;
     const answer = getValueIfDataReceiver(item, questionnaireResponse) || [];
-    const columnText = item.type === ItemType.DISPLAY ? item.text || '' : transformAnswersToListOfStrings(item.type, answer).join(', ');
+    const columnText =
+      item.type === ItemType.DISPLAY || item.type === ItemType.GROUP
+        ? item.text || ''
+        : transformAnswersToListOfStrings(item.type, answer).join(', ');
 
     let row = acc.find(r => r.columns[columnIndex]?.text === '');
     if (!row) {
