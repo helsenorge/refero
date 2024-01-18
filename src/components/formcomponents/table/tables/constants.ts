@@ -1,4 +1,4 @@
 export const DATEFORMATS = {
-  DATE: 'LL',
-  DATETIME: 'LLL',
+  DATE: 'DD.MM.YYYY',
+  DATETIME: 'DD MM YYYY HH:mm',
 };

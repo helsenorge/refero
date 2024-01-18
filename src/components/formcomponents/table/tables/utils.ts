@@ -52,7 +52,7 @@ const extractValueFromDate = (inputValue?: string): string => {
     return '';
   }
   const date = parseDate(String(inputValue));
-  return moment(date).locale('nb').format(DATEFORMATS.DATE);
+  return moment(date).locale('nb').format(DATEFORMATS.DATETIME);
 };
 const extractValueFromTime = (inputTime?: string): string => {
   if (!inputTime) {

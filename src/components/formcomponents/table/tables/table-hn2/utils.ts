@@ -9,14 +9,14 @@ import ItemType from '../../../../../constants/itemType';
 import { QuestionnaireItemWithAnswers } from '../interface';
 import { findIndexByCode, getEnabledQuestionnaireItemsWithAnswers, transformAnswersToListOfStrings } from '../utils';
 
-export const createTableStructure = (items: QuestionnaireItem[], itemsToShow: QuestionnaireItemWithAnswers[]): ITableH2Row[] => {
-  const groupItemsByColumn = (items: QuestionnaireItem[]): Map<number, QuestionnaireItem[]> =>
-    items.reduce((acc, item) => {
-      const columnIndex = findIndexByCode(item, codeSystems.TableColumn);
-      const itemsInColumn = acc.get(columnIndex) || [];
-      return acc.set(columnIndex, [...itemsInColumn, item]);
-    }, new Map<number, QuestionnaireItem[]>());
+export const groupItemsByColumn = (items: QuestionnaireItem[]): Map<number, QuestionnaireItem[]> =>
+  items.reduce((acc, item) => {
+    const columnIndex = findIndexByCode(item, codeSystems.TableColumn);
+    const itemsInColumn = acc.get(columnIndex) || [];
+    return acc.set(columnIndex, [...itemsInColumn, item]);
+  }, new Map<number, QuestionnaireItem[]>());
 
+export const createTableStructure = (items: QuestionnaireItem[], itemsToShow: QuestionnaireItemWithAnswers[]): ITableH2Row[] => {
   const itemsByColumnIndex = groupItemsByColumn(items);
 
   const calculateNumberOfRows = (itemsMap: Map<number, QuestionnaireItem[]>): number =>
@@ -31,7 +31,7 @@ export const createTableStructure = (items: QuestionnaireItem[], itemsToShow: Qu
   }));
 };
 
-const createColumnsForRow = (
+export const createColumnsForRow = (
   rowIndex: number,
   numberOfColumns: number,
   itemsByColumnIndex: Map<number, QuestionnaireItem[]>,
@@ -54,7 +54,7 @@ const createColumnsForRow = (
     };
   });
 
-const getValueFromItemsToShow = (item: QuestionnaireItem | undefined, itemsToShow: QuestionnaireItemWithAnswers[]): string => {
+export const getValueFromItemsToShow = (item: QuestionnaireItem | undefined, itemsToShow: QuestionnaireItemWithAnswers[]): string => {
   const itemToShow = itemsToShow.find(itemToShow => itemToShow.linkId === item?.linkId);
   if (!itemToShow) {
     return '';
