@@ -1,26 +1,69 @@
-import * as uuid from 'uuid';
-
 import { Coding, QuestionnaireItem, QuestionnaireResponse } from '../../../../../types/fhir';
 
 import { SortDirection } from '@helsenorge/designsystem-react/components/Table';
 
-import { HeaderColumn, ITableH2Row } from './interface';
+import { HeaderColumn, ITableH2Column, ITableH2Row } from './interface';
 import CodingSystems, { TableColumnName, TableOrderingColum } from '../../../../../constants/codingsystems';
 import codeSystems from '../../../../../constants/codingsystems';
 import ItemType from '../../../../../constants/itemType';
-import {
-  filterEnabledQuestionnaireItems,
-  findIndexByCode,
-  getEnabledQuestionnaireItemsWithAnswers,
-  getValueIfDataReceiver,
-  transformAnswersToListOfStrings,
-} from '../utils';
+import { QuestionnaireItemWithAnswers } from '../interface';
+import { findIndexByCode, getEnabledQuestionnaireItemsWithAnswers, transformAnswersToListOfStrings } from '../utils';
 
-const getNumberOfColums = (items: QuestionnaireItem[]): number => {
-  if (items.length === 0) {
-    return 0;
+export const createTableStructure = (items: QuestionnaireItem[], itemsToShow: QuestionnaireItemWithAnswers[]): ITableH2Row[] => {
+  const groupItemsByColumn = (items: QuestionnaireItem[]): Map<number, QuestionnaireItem[]> =>
+    items.reduce((acc, item) => {
+      const columnIndex = findIndexByCode(item, codeSystems.TableColumn);
+      const itemsInColumn = acc.get(columnIndex) || [];
+      return acc.set(columnIndex, [...itemsInColumn, item]);
+    }, new Map<number, QuestionnaireItem[]>());
+
+  const itemsByColumnIndex = groupItemsByColumn(items);
+
+  const calculateNumberOfRows = (itemsMap: Map<number, QuestionnaireItem[]>): number =>
+    Math.max(...Array.from(itemsMap.values(), columnItems => columnItems.length));
+
+  const numberOfRows = calculateNumberOfRows(itemsByColumnIndex);
+  const numberOfColumns = itemsByColumnIndex.size;
+
+  return Array.from({ length: numberOfRows }, (_, rowIndex) => ({
+    id: `row-${rowIndex + 1}`,
+    columns: createColumnsForRow(rowIndex, numberOfColumns, itemsByColumnIndex, itemsToShow),
+  }));
+};
+
+const createColumnsForRow = (
+  rowIndex: number,
+  numberOfColumns: number,
+  itemsByColumnIndex: Map<number, QuestionnaireItem[]>,
+  itemsToShow: QuestionnaireItemWithAnswers[]
+): ITableH2Column[] =>
+  Array.from({ length: numberOfColumns }, (_, colIndex) => {
+    const itemsInColumn = itemsByColumnIndex.get(colIndex + 1) || [];
+    const item = itemsInColumn[rowIndex];
+    if (!item) {
+      return {
+        id: `empty-${rowIndex}-${colIndex}`,
+        index: colIndex + 1,
+        text: '',
+      };
+    }
+    return {
+      id: item.linkId,
+      index: findIndexByCode(item, codeSystems.TableColumn),
+      text: getValueFromItemsToShow(item, itemsToShow),
+    };
+  });
+
+const getValueFromItemsToShow = (item: QuestionnaireItem | undefined, itemsToShow: QuestionnaireItemWithAnswers[]): string => {
+  const itemToShow = itemsToShow.find(itemToShow => itemToShow.linkId === item?.linkId);
+  if (!itemToShow) {
+    return '';
   }
-  return Math.max(...items.map(item => findIndexByCode(item, codeSystems.TableColumn)));
+  const columnText =
+    itemToShow.type === ItemType.DISPLAY || itemToShow.type === ItemType.GROUP
+      ? itemToShow.text || ''
+      : transformAnswersToListOfStrings(itemToShow.type, itemToShow.answer).join(', ');
+  return columnText;
 };
 
 export const getTableHN2bodyObject = (
@@ -32,45 +75,14 @@ export const getTableHN2bodyObject = (
   if (!questionnaireResponse || items.length === 0) {
     return [];
   }
-
-  const maxColumns = getNumberOfColums(items);
-
   const itemsToShow = getEnabledQuestionnaireItemsWithAnswers(items, questionnaireResponse);
+  const structure = createTableStructure(items, itemsToShow);
+  const tableWithRemovedEmptyRows = structure.filter(row => row.columns.some(column => column.text !== ''));
 
-  const tableRows: ITableH2Row[] = itemsToShow.reduce<ITableH2Row[]>((acc, item) => {
-    const columnIndex = findIndexByCode(item, codeSystems.TableColumn) - 1;
-    const answer = getValueIfDataReceiver(item, questionnaireResponse) || [];
-    const columnText =
-      item.type === ItemType.DISPLAY || item.type === ItemType.GROUP
-        ? item.text || ''
-        : transformAnswersToListOfStrings(item.type, answer).join(', ');
-
-    let row = acc.find(r => r.columns[columnIndex]?.text === '');
-    if (!row) {
-      row = {
-        id: uuid.v4(),
-        columns: Array.from({ length: maxColumns }, (_, colIdx) => ({
-          id: `empty-${colIdx}`,
-          text: '',
-          index: colIdx + 1,
-        })),
-      };
-      acc.push(row);
-    }
-
-    row.columns[columnIndex] = {
-      id: item.linkId,
-      text: columnText,
-      index: columnIndex + 1,
-    };
-
-    return acc;
-  }, []);
   if (!!sortColumnIndex && !!sortOrder) {
-    return sortTableRows(tableRows, sortColumnIndex, sortOrder);
+    return sortTableRows(tableWithRemovedEmptyRows, sortColumnIndex, sortOrder);
   }
-
-  return tableRows;
+  return tableWithRemovedEmptyRows;
 };
 
 /* SORTING  */

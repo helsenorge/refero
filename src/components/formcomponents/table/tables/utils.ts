@@ -16,7 +16,7 @@ import { parseDate } from '@helsenorge/date-time/components/time-input/date-core
 import * as DateTimeConstants from '@helsenorge/date-time/constants/datetime';
 
 import { DATEFORMATS } from './constants';
-import { QuestionnaireItemAndResponseItemMerged } from './interface';
+import { QuestionnaireItemWithAnswers } from './interface';
 import { OPEN_CHOICE_SYSTEM } from '../../../../constants';
 import { CodeSystems } from '../../../../constants/codingsystems';
 import ItemType from '../../../../constants/itemType';
@@ -219,7 +219,7 @@ export const extractValuesFromAnswer = (
 
 export const transformAnswersToListOfStrings = (
   type: typeof ItemType[keyof typeof ItemType],
-  answer: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]
+  answer?: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]
 ): string[] => {
   const value = extractValuesFromAnswer(type, answer);
   if (value.length === 0) {
@@ -289,14 +289,14 @@ export function findFirstDefinedProperty<T>(obj: T): T[Extract<keyof T, string>]
 export const addAnswerToItems = (
   items: QuestionnaireItem[],
   questionnaireResponse?: QuestionnaireResponse | null
-): QuestionnaireItemAndResponseItemMerged[] => {
+): QuestionnaireItemWithAnswers[] => {
   if (!questionnaireResponse || items.length === 0) {
     return [];
   }
-  const processItem = (item: QuestionnaireItem): QuestionnaireItemAndResponseItemMerged => {
+  const processItem = (item: QuestionnaireItem): QuestionnaireItemWithAnswers => {
     const res = getValueIfDataReceiver(item, questionnaireResponse);
     const clonedItems = structuredClone(item);
-    const questionnaireResponseItem: QuestionnaireItemAndResponseItemMerged = {
+    const questionnaireResponseItem: QuestionnaireItemWithAnswers = {
       ...clonedItems,
     };
     if (!Array.isArray(res) && res !== undefined) {
@@ -317,7 +317,7 @@ export const addAnswerToItems = (
 export const getEnabledQuestionnaireItemsWithAnswers = (
   items?: QuestionnaireItem[],
   questionnaireResponse?: QuestionnaireResponse
-): QuestionnaireItemAndResponseItemMerged[] => {
+): QuestionnaireItemWithAnswers[] => {
   if (!items || !questionnaireResponse) return [];
   const filteredItems = filterEnabledQuestionnaireItems(items, questionnaireResponse);
   return addAnswerToItems(filteredItems, questionnaireResponse);

@@ -5,7 +5,7 @@ import { Options } from '@helsenorge/form/components/radio-group';
 import { StandardTable, StandardTableColumn, StandardTableRow } from './interface';
 import ItemType from '../../../../../constants/itemType';
 import { getContainedOptions } from '../../../../../util/choice';
-import { QuestionnaireItemAndResponseItemMerged } from '../interface';
+import { QuestionnaireItemWithAnswers } from '../interface';
 import { getEnabledQuestionnaireItemsWithAnswers, transformAnswersToListOfStrings } from '../utils';
 
 export const emptyTable = (): StandardTable => {
@@ -56,7 +56,7 @@ export const createHeaderRow = (choiceValues: Options[], hasExtraColumn: boolean
   ];
 };
 const processItem = (
-  item: QuestionnaireItemAndResponseItemMerged,
+  item: QuestionnaireItemWithAnswers,
   index: number,
   needsExtraColumn: boolean,
   choiceValues?: Options[]
@@ -102,7 +102,7 @@ export const createRowsFromAnswersCodes = (item: QuestionnaireResponseItem, choi
   );
 };
 
-export const createColumnsFromAnswers = (item: QuestionnaireItemAndResponseItemMerged, choiceValues?: Options[]): StandardTableColumn[] => {
+export const createColumnsFromAnswers = (item: QuestionnaireItemWithAnswers, choiceValues?: Options[]): StandardTableColumn[] => {
   const type = item?.type;
   const answer = item?.answer;
   const choiceColumns = createRowsFromAnswersCodes(item, choiceValues);

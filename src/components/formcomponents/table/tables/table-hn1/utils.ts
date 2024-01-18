@@ -2,11 +2,11 @@ import { QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItem } f
 
 import { ITableH1, ITableH1Column, ITableH1Row, TABLE_HN1_TABLE_TYPES } from './interface';
 import ItemType from '../../../../../constants/itemType';
-import { QuestionnaireItemAndResponseItemMerged } from '../interface';
+import { QuestionnaireItemWithAnswers } from '../interface';
 import { getEnabledQuestionnaireItemsWithAnswers, transformAnswersToListOfStrings } from '../utils';
 
 export const getTableHN1bodyObject = (
-  items: QuestionnaireItemAndResponseItemMerged[],
+  items: QuestionnaireItemWithAnswers[],
   questionnaireResponse?: QuestionnaireResponse | null
 ): ITableH1 => {
   if (!questionnaireResponse || items.length === 0) {

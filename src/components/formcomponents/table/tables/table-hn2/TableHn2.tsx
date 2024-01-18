@@ -15,6 +15,7 @@ interface Props {
 }
 const TableHn2 = ({ tableCodesCoding, items, questionnaireResponse }: Props): JSX.Element => {
   const sortIndex = getIndexToSortBy(tableCodesCoding);
+
   const [sortDir, setSortDir] = useState<SortDirection | undefined>(transformCodingToSortDirection(tableCodesCoding));
   const [rows, setRows] = useState<ITableH2Row[]>(getTableHN2bodyObject(items, questionnaireResponse, sortIndex, sortDir));
 
