@@ -5,6 +5,7 @@ import { Options } from '@helsenorge/form/components/radio-group';
 import { StandardTable, StandardTableColumn, StandardTableRow } from './interface';
 import ItemType from '../../../../../constants/itemType';
 import { getContainedOptions } from '../../../../../util/choice';
+import { QuestionnaireItemAndResponseItemMerged } from '../interface';
 import { getEnabledQuestionnaireItemsWithAnswers, transformAnswersToListOfStrings } from '../utils';
 
 export const emptyTable = (): StandardTable => {
@@ -55,7 +56,7 @@ export const createHeaderRow = (choiceValues: Options[], hasExtraColumn: boolean
   ];
 };
 const processItem = (
-  item: QuestionnaireResponseItem,
+  item: QuestionnaireItemAndResponseItemMerged,
   index: number,
   needsExtraColumn: boolean,
   choiceValues?: Options[]
@@ -75,6 +76,7 @@ const processItem = (
 
   return [row, ...childRows];
 };
+
 export const createBodyRows = (
   items: QuestionnaireItem[],
   responseItems: QuestionnaireResponse,
@@ -85,6 +87,7 @@ export const createBodyRows = (
 
   return answers.flatMap((item, index) => processItem(item, index, needsExtraColumn, choiceValues));
 };
+
 export const createRowsFromAnswersCodes = (item: QuestionnaireResponseItem, choiceValues?: Options[]): StandardTableColumn[] => {
   return (
     choiceValues?.map(value => ({
@@ -99,8 +102,8 @@ export const createRowsFromAnswersCodes = (item: QuestionnaireResponseItem, choi
   );
 };
 
-export const createColumnsFromAnswers = (item: QuestionnaireResponseItem, choiceValues?: Options[]): StandardTableColumn[] => {
-  const type = (item as QuestionnaireItem)?.type;
+export const createColumnsFromAnswers = (item: QuestionnaireItemAndResponseItemMerged, choiceValues?: Options[]): StandardTableColumn[] => {
+  const type = item?.type;
   const answer = item?.answer;
   const choiceColumns = createRowsFromAnswersCodes(item, choiceValues);
 

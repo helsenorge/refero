@@ -8,7 +8,13 @@ import { HeaderColumn, ITableH2Row } from './interface';
 import CodingSystems, { TableColumnName, TableOrderingColum } from '../../../../../constants/codingsystems';
 import codeSystems from '../../../../../constants/codingsystems';
 import ItemType from '../../../../../constants/itemType';
-import { filterEnabledQuestionnaireItems, findIndexByCode, getValueIfDataReceiver, transformAnswersToListOfStrings } from '../utils';
+import {
+  filterEnabledQuestionnaireItems,
+  findIndexByCode,
+  getEnabledQuestionnaireItemsWithAnswers,
+  getValueIfDataReceiver,
+  transformAnswersToListOfStrings,
+} from '../utils';
 
 const getNumberOfColums = (items: QuestionnaireItem[]): number => {
   if (items.length === 0) {
@@ -29,7 +35,7 @@ export const getTableHN2bodyObject = (
 
   const maxColumns = getNumberOfColums(items);
 
-  const itemsToShow = filterEnabledQuestionnaireItems(items, questionnaireResponse);
+  const itemsToShow = getEnabledQuestionnaireItemsWithAnswers(items, questionnaireResponse);
 
   const tableRows: ITableH2Row[] = itemsToShow.reduce<ITableH2Row[]>((acc, item) => {
     const columnIndex = findIndexByCode(item, codeSystems.TableColumn) - 1;

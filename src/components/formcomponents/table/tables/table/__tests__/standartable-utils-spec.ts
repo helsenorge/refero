@@ -17,6 +17,7 @@ import { QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItem, Re
 import * as choiceUtils from '../../../../../../util/choice';
 
 import * as tableUtils from '../../utils';
+import { QuestionnaireItemAndResponseItemMerged } from '../../interface';
 jest.mock('../../utils');
 jest.mock('../../../../../../util/choice');
 
@@ -300,19 +301,18 @@ describe('createColumnsFromAnswers', () => {
     (tableUtils.transformAnswersToListOfStrings as jest.Mock).mockImplementation(() => {
       return ['A', 'B'];
     });
-    const item: QuestionnaireResponseItem = {
+    const item: QuestionnaireItemAndResponseItemMerged = {
       linkId: '1',
       text: 'Question 1',
+      type: ItemType.CHOICE,
       item: [
         {
           linkId: '1.1',
-          //@ts-ignore
           type: ItemType.CHOICE,
           answer: [{ valueCoding: { code: '1' } }],
         },
         {
           linkId: '1.2',
-          //@ts-ignore
           type: ItemType.CHOICE,
           answer: [{ valueCoding: { code: '2' } }],
         },
@@ -335,17 +335,20 @@ describe('createColumnsFromAnswers', () => {
     (tableUtils.transformAnswersToListOfStrings as jest.Mock).mockImplementation(() => {
       return [];
     });
-    const item: QuestionnaireResponseItem = {
+    const item: QuestionnaireItemAndResponseItemMerged = {
       linkId: '1',
       text: 'Question 1',
+      type: ItemType.CHOICE,
       item: [
         {
           linkId: '1.1',
           answer: [{ valueCoding: { code: '1' } }],
+          type: ItemType.CHOICE,
         },
         {
           linkId: '1.2',
           answer: [{ valueCoding: { code: '2' } }],
+          type: ItemType.CHOICE,
         },
       ],
     };

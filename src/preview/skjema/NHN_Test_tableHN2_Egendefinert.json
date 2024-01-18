@@ -10,35 +10,79 @@
   "publisher": "NHN",
   "meta": {
     "profile": ["http://ehelse.no/fhir/StructureDefinition/sdf-Questionnaire"],
-    "tag": [{ "system": "urn:ietf:bcp:47", "code": "nb-NO", "display": "Bokmål" }],
+    "tag": [
+      {
+        "system": "urn:ietf:bcp:47",
+        "code": "nb-NO",
+        "display": "Bokmål"
+      }
+    ],
     "security": [
-      { "code": "3", "display": "Helsehjelp (Full)", "system": "urn:oid:2.16.578.1.12.4.1.1.7618" },
-      { "code": "1", "display": "Kun innbygger selv", "system": "http://helsenorge.no/fhir/KanUtforesAv" }
+      {
+        "code": "3",
+        "display": "Helsehjelp (Full)",
+        "system": "urn:oid:2.16.578.1.12.4.1.1.7618"
+      },
+      {
+        "code": "1",
+        "display": "Kun innbygger selv",
+        "system": "http://helsenorge.no/fhir/KanUtforesAv"
+      }
     ]
   },
   "useContext": [
     {
-      "code": { "system": "http://hl7.org/fhir/ValueSet/usage-context-type", "code": "focus", "display": "Clinical Focus" },
-      "valueCodeableConcept": { "coding": [{ "system": "urn:oid:2.16.578.1.12.4.1.1.8655", "display": "Egendefinerttabell tableHN2" }] }
+      "code": {
+        "system": "http://hl7.org/fhir/ValueSet/usage-context-type",
+        "code": "focus",
+        "display": "Clinical Focus"
+      },
+      "valueCodeableConcept": {
+        "coding": [
+          {
+            "system": "urn:oid:2.16.578.1.12.4.1.1.8655",
+            "display": "Egendefinerttabell tableHN2"
+          }
+        ]
+      }
     }
   ],
-  "contact": [{ "name": "http://www.nhn.no" }],
+  "contact": [
+    {
+      "name": "http://www.nhn.no"
+    }
+  ],
   "subjectType": ["Patient"],
   "extension": [
     {
       "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sidebar",
-      "valueCoding": { "system": "http://helsenorge.no/fhir/ValueSet/sdf-sidebar", "code": "1" }
+      "valueCoding": {
+        "system": "http://helsenorge.no/fhir/ValueSet/sdf-sidebar",
+        "code": "1"
+      }
     },
     {
       "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-information-message",
-      "valueCoding": { "system": "http://helsenorge.no/fhir/ValueSet/sdf-information-message", "code": "1" }
+      "valueCoding": {
+        "system": "http://helsenorge.no/fhir/ValueSet/sdf-information-message",
+        "code": "1"
+      }
     },
-    { "url": "http://ehelse.no/fhir/StructureDefinition/sdf-endpoint", "valueReference": { "reference": "Endpoint/1" } },
+    {
+      "url": "http://ehelse.no/fhir/StructureDefinition/sdf-endpoint",
+      "valueReference": {
+        "reference": "Endpoint/1"
+      }
+    },
     {
       "url": "http://helsenorge.no/fhir/StructureDefintion/sdf-itemControl-visibility",
       "valueCodeableConcept": {
         "coding": [
-          { "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions", "code": "hide-help", "display": "Hide help texts" },
+          {
+            "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
+            "code": "hide-help",
+            "display": "Hide help texts"
+          },
           {
             "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
             "code": "hide-sublabel",
@@ -52,7 +96,10 @@
         ]
       }
     },
-    { "url": "http://ehelse.no/fhir/StructureDefinition/sdf-generatepdf", "valueBoolean": true }
+    {
+      "url": "http://ehelse.no/fhir/StructureDefinition/sdf-generatepdf",
+      "valueBoolean": true
+    }
   ],
   "date": "2023-03-30T00:00:00+02:00",
   "contained": [
@@ -70,17 +117,61 @@
           {
             "system": "urn:uuid:b1924977-c27b-438e-89de-5593328c57be",
             "concept": [
-              { "id": "c05c31bf-4eba-478e-9c70-3f32349d2a05", "code": "lite-viktig---0-", "display": "Lite viktig - 0 " },
-              { "id": "4133b7b9-d3a0-439c-84a6-3121e0b3324e", "code": "1", "display": "1" },
-              { "id": "ad078dc0-ac85-40cf-82d5-7f6d8b4bbb7d", "code": "2", "display": "2" },
-              { "id": "4a51c6dc-849a-4e9f-83e0-479121effd76", "code": "3", "display": "3" },
-              { "id": "6b04acae-af9d-47e6-df64-fb1f78666df4", "code": "4", "display": "4" },
-              { "id": "50e5f8f0-db46-45f9-8fda-67039933756e", "code": "5", "display": "5" },
-              { "id": "ecc3398f-4c60-47e5-817a-3e3989482f03", "code": "6", "display": "6" },
-              { "id": "a47d3433-d5ec-4649-8b56-a550ffa0914a", "code": "7", "display": "7" },
-              { "id": "dc888467-ab8b-4412-82ca-0312edcc0695", "code": "8", "display": "8" },
-              { "id": "9689eab7-eee7-4a08-8f3c-86de76e29f93", "code": "9", "display": "9" },
-              { "id": "676e0284-0829-44c0-8084-a3e3a9424f4d", "code": "veldig-viktig-10-", "display": "Veldig viktig 10 " }
+              {
+                "id": "c05c31bf-4eba-478e-9c70-3f32349d2a05",
+                "code": "lite-viktig---0-",
+                "display": "Lite viktig - 0 "
+              },
+              {
+                "id": "4133b7b9-d3a0-439c-84a6-3121e0b3324e",
+                "code": "1",
+                "display": "1"
+              },
+              {
+                "id": "ad078dc0-ac85-40cf-82d5-7f6d8b4bbb7d",
+                "code": "2",
+                "display": "2"
+              },
+              {
+                "id": "4a51c6dc-849a-4e9f-83e0-479121effd76",
+                "code": "3",
+                "display": "3"
+              },
+              {
+                "id": "6b04acae-af9d-47e6-df64-fb1f78666df4",
+                "code": "4",
+                "display": "4"
+              },
+              {
+                "id": "50e5f8f0-db46-45f9-8fda-67039933756e",
+                "code": "5",
+                "display": "5"
+              },
+              {
+                "id": "ecc3398f-4c60-47e5-817a-3e3989482f03",
+                "code": "6",
+                "display": "6"
+              },
+              {
+                "id": "a47d3433-d5ec-4649-8b56-a550ffa0914a",
+                "code": "7",
+                "display": "7"
+              },
+              {
+                "id": "dc888467-ab8b-4412-82ca-0312edcc0695",
+                "code": "8",
+                "display": "8"
+              },
+              {
+                "id": "9689eab7-eee7-4a08-8f3c-86de76e29f93",
+                "code": "9",
+                "display": "9"
+              },
+              {
+                "id": "676e0284-0829-44c0-8084-a3e3a9424f4d",
+                "code": "veldig-viktig-10-",
+                "display": "Veldig viktig 10 "
+              }
             ]
           }
         ]
@@ -100,9 +191,18 @@
           {
             "system": "urn:oid:2.16.578.1.12.4.1.1102",
             "concept": [
-              { "code": "1", "display": "Ja" },
-              { "code": "2", "display": "Nei" },
-              { "code": "3", "display": "Vet ikke" }
+              {
+                "code": "1",
+                "display": "Ja"
+              },
+              {
+                "code": "2",
+                "display": "Nei"
+              },
+              {
+                "code": "3",
+                "display": "Vet ikke"
+              }
             ]
           }
         ]
@@ -121,6 +221,14 @@
           "type": "boolean",
           "text": "Hoven i beina",
           "required": false,
+          "_text": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                "valueMarkdown": "Hoven i beina"
+              }
+            ]
+          },
           "item": [
             {
               "linkId": "839ef2ed-66eb-462d-8ba0-0671885371c9",
@@ -169,7 +277,13 @@
                   }
                 }
               ],
-              "enableWhen": [{ "question": "147ab493-0186-4a4e-8167-c10c829c09ca", "operator": "=", "answerBoolean": true }]
+              "enableWhen": [
+                {
+                  "question": "147ab493-0186-4a4e-8167-c10c829c09ca",
+                  "operator": "=",
+                  "answerBoolean": true
+                }
+              ]
             },
             {
               "linkId": "ff11ec2f-ffc4-46fc-ee6e-537cd06e40f4",
@@ -183,7 +297,13 @@
               ],
               "required": true,
               "answerValueSet": "#5af64314-3dcd-47d9-89e6-3de83b51afff",
-              "enableWhen": [{ "question": "147ab493-0186-4a4e-8167-c10c829c09ca", "operator": "=", "answerBoolean": true }]
+              "enableWhen": [
+                {
+                  "question": "147ab493-0186-4a4e-8167-c10c829c09ca",
+                  "operator": "=",
+                  "answerBoolean": true
+                }
+              ]
             }
           ]
         },
@@ -240,7 +360,13 @@
                   }
                 }
               ],
-              "enableWhen": [{ "question": "c6cedf0b-70be-40ce-cc41-cff3cbcabc17", "operator": "=", "answerBoolean": true }]
+              "enableWhen": [
+                {
+                  "question": "c6cedf0b-70be-40ce-cc41-cff3cbcabc17",
+                  "operator": "=",
+                  "answerBoolean": true
+                }
+              ]
             },
             {
               "linkId": "f2b7dee9-ea56-490f-df8a-f4a58cb6b015",
@@ -254,7 +380,13 @@
               ],
               "required": true,
               "answerValueSet": "#5af64314-3dcd-47d9-89e6-3de83b51afff",
-              "enableWhen": [{ "question": "c6cedf0b-70be-40ce-cc41-cff3cbcabc17", "operator": "=", "answerBoolean": true }]
+              "enableWhen": [
+                {
+                  "question": "c6cedf0b-70be-40ce-cc41-cff3cbcabc17",
+                  "operator": "=",
+                  "answerBoolean": true
+                }
+              ]
             }
           ]
         }
@@ -264,8 +396,14 @@
       "linkId": "97a234d3-32f8-407d-8a8a-a50a6bf62e32",
       "type": "group",
       "text": "Datakilde 1: HNTable2 ",
+      "required": false,
       "item": [
-        { "linkId": "0f5f4c2f-7a29-4baf-83aa-ed7c9c325175", "type": "date", "text": "Dato 1", "required": false },
+        {
+          "linkId": "0f5f4c2f-7a29-4baf-83aa-ed7c9c325175",
+          "type": "date",
+          "text": "Dato 1",
+          "required": false
+        },
         {
           "linkId": "9e6a9b26-ec4f-4f9c-8012-77a501e2a59f",
           "type": "quantity",
@@ -273,13 +411,35 @@
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
-              "valueCoding": { "code": "cm", "display": "centimeter", "system": "http://unitsofmeasure.org" }
+              "valueCoding": {
+                "code": "cm",
+                "display": "centimeter",
+                "system": "http://unitsofmeasure.org"
+              }
             }
           ],
           "required": false
         },
-        { "linkId": "31186f65-2a61-49ef-85ac-82e304a4c501", "type": "integer", "text": "Tall 1", "required": false },
-        { "linkId": "4095e682-d3af-4844-8a2a-eda031b9f5f7", "type": "string", "text": "Tekstfelt 1", "required": false },
+        {
+          "linkId": "31186f65-2a61-49ef-85ac-82e304a4c501",
+          "type": "integer",
+          "text": "Tall 1",
+          "required": false
+        },
+        {
+          "linkId": "4095e682-d3af-4844-8a2a-eda031b9f5f7",
+          "type": "string",
+          "text": "Tekstfelt 1",
+          "required": false,
+          "_text": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                "valueMarkdown": "Tekstfelt 1"
+              }
+            ]
+          }
+        },
         {
           "linkId": "4aa538b8-355a-479f-84b3-4bfd87ca7080",
           "type": "choice",
@@ -287,19 +447,36 @@
           "required": false,
           "answerValueSet": "#1102"
         },
-        { "linkId": "162f308e-d743-4027-81e0-2c7067285711", "type": "boolean", "text": "Bekreftelse 1", "required": false }
-      ],
-      "required": false
+        {
+          "linkId": "162f308e-d743-4027-81e0-2c7067285711",
+          "type": "boolean",
+          "text": "Bekreftelse 1",
+          "required": false
+        }
+      ]
     },
     {
       "extension": [
         {
           "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-          "valueCodeableConcept": { "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "sidebar" }] }
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                "code": "sidebar"
+              }
+            ]
+          }
         }
       ],
       "linkId": "c5c27efb-76d7-4f1e-b7f9-cbe454846e8b",
-      "code": [{ "system": "http://ehelse.no/fhir/ValueSet/SOTHeaders", "code": "SOT-2", "display": "SOT-2" }],
+      "code": [
+        {
+          "system": "http://ehelse.no/fhir/ValueSet/SOTHeaders",
+          "code": "SOT-2",
+          "display": "SOT-2"
+        }
+      ],
       "_text": {
         "extension": [
           {
@@ -322,7 +499,12 @@
         {
           "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
           "valueCodeableConcept": {
-            "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "table-hn2" }]
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                "code": "table-hn2"
+              }
+            ]
           }
         }
       ],
@@ -364,7 +546,13 @@
           "type": "group",
           "text": "Hoven i beina",
           "required": false,
-          "enableWhen": [{ "question": "147ab493-0186-4a4e-8167-c10c829c09ca", "operator": "=", "answerBoolean": true }],
+          "enableWhen": [
+            {
+              "question": "147ab493-0186-4a4e-8167-c10c829c09ca",
+              "operator": "=",
+              "answerBoolean": true
+            }
+          ],
           "code": [
             {
               "code": "1",
@@ -378,11 +566,19 @@
           "linkId": "751e09be-da53-44bd-8e6c-cc4f7f7409f5",
           "type": "choice",
           "extension": [
-            { "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sublabel", "valueMarkdown": "Velg viktighet på en skala fra 0-10" },
+            {
+              "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sublabel",
+              "valueMarkdown": "Velg viktighet på en skala fra 0-10"
+            },
             {
               "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
               "valueCodeableConcept": {
-                "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "data-receiver"
+                  }
+                ]
               }
             },
             {
@@ -393,7 +589,13 @@
           "required": true,
           "answerValueSet": "#5af64314-3dcd-47d9-89e6-3de83b51afff",
           "readOnly": true,
-          "enableWhen": [{ "answerBoolean": true, "question": "ff11ec2f-ffc4-46fc-ee6e-537cd06e40f4", "operator": "exists" }],
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "ff11ec2f-ffc4-46fc-ee6e-537cd06e40f4",
+              "operator": "exists"
+            }
+          ],
           "text": "Viktighet",
           "code": [
             {
@@ -450,12 +652,23 @@
               }
             }
           ],
-          "enableWhen": [{ "answerBoolean": true, "question": "839ef2ed-66eb-462d-8ba0-0671885371c9", "operator": "exists" }],
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "839ef2ed-66eb-462d-8ba0-0671885371c9",
+              "operator": "exists"
+            }
+          ],
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
               "valueCodeableConcept": {
-                "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "data-receiver"
+                  }
+                ]
               }
             },
             {
@@ -479,7 +692,13 @@
           "type": "group",
           "text": "Kløe i huden",
           "required": false,
-          "enableWhen": [{ "question": "c6cedf0b-70be-40ce-cc41-cff3cbcabc17", "operator": "=", "answerBoolean": true }],
+          "enableWhen": [
+            {
+              "question": "c6cedf0b-70be-40ce-cc41-cff3cbcabc17",
+              "operator": "=",
+              "answerBoolean": true
+            }
+          ],
           "code": [
             {
               "code": "1",
@@ -493,11 +712,19 @@
           "linkId": "84650897-c339-4db7-8ff1-55a7c849bab5",
           "type": "choice",
           "extension": [
-            { "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sublabel", "valueMarkdown": "Velg viktighet på en skala fra 0-10" },
+            {
+              "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sublabel",
+              "valueMarkdown": "Velg viktighet på en skala fra 0-10"
+            },
             {
               "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
               "valueCodeableConcept": {
-                "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "data-receiver"
+                  }
+                ]
               }
             },
             {
@@ -508,7 +735,13 @@
           "required": true,
           "answerValueSet": "#5af64314-3dcd-47d9-89e6-3de83b51afff",
           "readOnly": true,
-          "enableWhen": [{ "answerBoolean": true, "question": "f2b7dee9-ea56-490f-df8a-f4a58cb6b015", "operator": "exists" }],
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "f2b7dee9-ea56-490f-df8a-f4a58cb6b015",
+              "operator": "exists"
+            }
+          ],
           "text": "Viktiget",
           "code": [
             {
@@ -565,12 +798,23 @@
               }
             }
           ],
-          "enableWhen": [{ "answerBoolean": true, "question": "926cc2a7-1853-46e6-8e98-cb3405730292", "operator": "exists" }],
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "926cc2a7-1853-46e6-8e98-cb3405730292",
+              "operator": "exists"
+            }
+          ],
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
               "valueCodeableConcept": {
-                "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "data-receiver"
+                  }
+                ]
               }
             },
             {
@@ -600,7 +844,12 @@
         {
           "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
           "valueCodeableConcept": {
-            "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "table-hn2" }]
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                "code": "table-hn2"
+              }
+            ]
           }
         }
       ],
@@ -650,17 +899,31 @@
             }
           ],
           "required": false,
-          "enableWhen": [{ "question": "147ab493-0186-4a4e-8167-c10c829c09ca", "operator": "=", "answerBoolean": true }]
+          "enableWhen": [
+            {
+              "question": "147ab493-0186-4a4e-8167-c10c829c09ca",
+              "operator": "=",
+              "answerBoolean": true
+            }
+          ]
         },
         {
           "linkId": "014001ef-0ec7-4bd5-81d0-61a4993ce603",
           "type": "choice",
           "extension": [
-            { "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sublabel", "valueMarkdown": "Velg viktighet på en skala fra 0-10" },
+            {
+              "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sublabel",
+              "valueMarkdown": "Velg viktighet på en skala fra 0-10"
+            },
             {
               "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
               "valueCodeableConcept": {
-                "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "data-receiver"
+                  }
+                ]
               }
             },
             {
@@ -671,7 +934,13 @@
           "required": true,
           "answerValueSet": "#5af64314-3dcd-47d9-89e6-3de83b51afff",
           "readOnly": true,
-          "enableWhen": [{ "answerBoolean": true, "question": "ff11ec2f-ffc4-46fc-ee6e-537cd06e40f4", "operator": "exists" }],
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "ff11ec2f-ffc4-46fc-ee6e-537cd06e40f4",
+              "operator": "exists"
+            }
+          ],
           "text": "Viktighet",
           "code": [
             {
@@ -728,12 +997,23 @@
               }
             }
           ],
-          "enableWhen": [{ "answerBoolean": true, "question": "839ef2ed-66eb-462d-8ba0-0671885371c9", "operator": "exists" }],
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "839ef2ed-66eb-462d-8ba0-0671885371c9",
+              "operator": "exists"
+            }
+          ],
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
               "valueCodeableConcept": {
-                "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "data-receiver"
+                  }
+                ]
               }
             },
             {
@@ -765,17 +1045,31 @@
           ],
           "required": false,
           "text": "Kløe i huden",
-          "enableWhen": [{ "question": "c6cedf0b-70be-40ce-cc41-cff3cbcabc17", "operator": "=", "answerBoolean": true }]
+          "enableWhen": [
+            {
+              "question": "c6cedf0b-70be-40ce-cc41-cff3cbcabc17",
+              "operator": "=",
+              "answerBoolean": true
+            }
+          ]
         },
         {
           "linkId": "8fc8fc3a-9f75-436f-f94e-eca94c3cc26f",
           "type": "choice",
           "extension": [
-            { "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sublabel", "valueMarkdown": "Velg viktighet på en skala fra 0-10" },
+            {
+              "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sublabel",
+              "valueMarkdown": "Velg viktighet på en skala fra 0-10"
+            },
             {
               "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
               "valueCodeableConcept": {
-                "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "data-receiver"
+                  }
+                ]
               }
             },
             {
@@ -786,7 +1080,13 @@
           "required": true,
           "answerValueSet": "#5af64314-3dcd-47d9-89e6-3de83b51afff",
           "readOnly": true,
-          "enableWhen": [{ "answerBoolean": true, "question": "f2b7dee9-ea56-490f-df8a-f4a58cb6b015", "operator": "exists" }],
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "f2b7dee9-ea56-490f-df8a-f4a58cb6b015",
+              "operator": "exists"
+            }
+          ],
           "text": "Viktiget",
           "code": [
             {
@@ -843,12 +1143,23 @@
               }
             }
           ],
-          "enableWhen": [{ "answerBoolean": true, "question": "926cc2a7-1853-46e6-8e98-cb3405730292", "operator": "exists" }],
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "926cc2a7-1853-46e6-8e98-cb3405730292",
+              "operator": "exists"
+            }
+          ],
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
               "valueCodeableConcept": {
-                "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "data-receiver"
+                  }
+                ]
               }
             },
             {
@@ -878,7 +1189,12 @@
         {
           "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
           "valueCodeableConcept": {
-            "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "table-hn2" }]
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                "code": "table-hn2"
+              }
+            ]
           }
         }
       ],
@@ -920,7 +1236,12 @@
             {
               "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
               "valueCodeableConcept": {
-                "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "data-receiver"
+                  }
+                ]
               }
             },
             {
@@ -929,7 +1250,13 @@
             }
           ],
           "readOnly": true,
-          "enableWhen": [{ "answerBoolean": true, "question": "0f5f4c2f-7a29-4baf-83aa-ed7c9c325175", "operator": "exists" }]
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "0f5f4c2f-7a29-4baf-83aa-ed7c9c325175",
+              "operator": "exists"
+            }
+          ]
         },
         {
           "linkId": "69b68cc7-e68a-47fc-8dea-c8f49ee9f8e4",
@@ -948,7 +1275,12 @@
             {
               "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
               "valueCodeableConcept": {
-                "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "data-receiver"
+                  }
+                ]
               }
             },
             {
@@ -957,11 +1289,21 @@
             },
             {
               "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
-              "valueCoding": { "code": "cm", "display": "centimeter", "system": "http://unitsofmeasure.org" }
+              "valueCoding": {
+                "code": "cm",
+                "display": "centimeter",
+                "system": "http://unitsofmeasure.org"
+              }
             }
           ],
           "readOnly": true,
-          "enableWhen": [{ "answerBoolean": true, "question": "9e6a9b26-ec4f-4f9c-8012-77a501e2a59f", "operator": "exists" }]
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "9e6a9b26-ec4f-4f9c-8012-77a501e2a59f",
+              "operator": "exists"
+            }
+          ]
         },
         {
           "linkId": "914d0fb8-1975-4e96-db62-4f695f817184",
@@ -980,7 +1322,12 @@
             {
               "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
               "valueCodeableConcept": {
-                "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "data-receiver"
+                  }
+                ]
               }
             },
             {
@@ -989,7 +1336,13 @@
             }
           ],
           "readOnly": true,
-          "enableWhen": [{ "answerBoolean": true, "question": "31186f65-2a61-49ef-85ac-82e304a4c501", "operator": "exists" }]
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "31186f65-2a61-49ef-85ac-82e304a4c501",
+              "operator": "exists"
+            }
+          ]
         },
         {
           "linkId": "8d423ca5-0cad-44a5-dff1-ad9df7c1eb72",
@@ -1008,7 +1361,12 @@
             {
               "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
               "valueCodeableConcept": {
-                "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "data-receiver"
+                  }
+                ]
               }
             },
             {
@@ -1017,7 +1375,13 @@
             }
           ],
           "readOnly": true,
-          "enableWhen": [{ "answerBoolean": true, "question": "4095e682-d3af-4844-8a2a-eda031b9f5f7", "operator": "exists" }]
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "4095e682-d3af-4844-8a2a-eda031b9f5f7",
+              "operator": "exists"
+            }
+          ]
         },
         {
           "linkId": "84e7463c-80f3-4f6d-87b5-1ba63c68ca08",
@@ -1037,7 +1401,12 @@
             {
               "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
               "valueCodeableConcept": {
-                "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "data-receiver"
+                  }
+                ]
               }
             },
             {
@@ -1046,7 +1415,13 @@
             }
           ],
           "readOnly": true,
-          "enableWhen": [{ "answerBoolean": true, "question": "4aa538b8-355a-479f-84b3-4bfd87ca7080", "operator": "exists" }]
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "4aa538b8-355a-479f-84b3-4bfd87ca7080",
+              "operator": "exists"
+            }
+          ]
         },
         {
           "linkId": "907acec2-46b4-4c79-8b67-c7d9d3392de2",
@@ -1065,7 +1440,12 @@
             {
               "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
               "valueCodeableConcept": {
-                "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "data-receiver"
+                  }
+                ]
               }
             },
             {
@@ -1074,7 +1454,13 @@
             }
           ],
           "readOnly": true,
-          "enableWhen": [{ "answerBoolean": true, "question": "162f308e-d743-4027-81e0-2c7067285711", "operator": "=" }]
+          "enableWhen": [
+            {
+              "answerBoolean": true,
+              "question": "162f308e-d743-4027-81e0-2c7067285711",
+              "operator": "="
+            }
+          ]
         }
       ]
     },
@@ -1082,11 +1468,24 @@
       "extension": [
         {
           "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-          "valueCodeableConcept": { "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "sidebar" }] }
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                "code": "sidebar"
+              }
+            ]
+          }
         }
       ],
       "linkId": "cf1c48a4-93a9-4a2d-fa5a-b5abfcc708d0",
-      "code": [{ "system": "http://ehelse.no/fhir/ValueSet/SOTHeaders", "code": "SOT-3", "display": "SOT-3" }],
+      "code": [
+        {
+          "system": "http://ehelse.no/fhir/ValueSet/SOTHeaders",
+          "code": "SOT-3",
+          "display": "SOT-3"
+        }
+      ],
       "_text": {
         "extension": [
           {

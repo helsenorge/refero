@@ -16,6 +16,7 @@ import { parseDate } from '@helsenorge/date-time/components/time-input/date-core
 import * as DateTimeConstants from '@helsenorge/date-time/constants/datetime';
 
 import { DATEFORMATS } from './constants';
+import { QuestionnaireItemAndResponseItemMerged } from './interface';
 import { OPEN_CHOICE_SYSTEM } from '../../../../constants';
 import { CodeSystems } from '../../../../constants/codingsystems';
 import ItemType from '../../../../constants/itemType';
@@ -288,14 +289,14 @@ export function findFirstDefinedProperty<T>(obj: T): T[Extract<keyof T, string>]
 export const addAnswerToItems = (
   items: QuestionnaireItem[],
   questionnaireResponse?: QuestionnaireResponse | null
-): QuestionnaireResponseItem[] => {
+): QuestionnaireItemAndResponseItemMerged[] => {
   if (!questionnaireResponse || items.length === 0) {
     return [];
   }
-  const processItem = (item: QuestionnaireItem): QuestionnaireResponseItem => {
+  const processItem = (item: QuestionnaireItem): QuestionnaireItemAndResponseItemMerged => {
     const res = getValueIfDataReceiver(item, questionnaireResponse);
     const clonedItems = structuredClone(item);
-    const questionnaireResponseItem: QuestionnaireResponseItem = {
+    const questionnaireResponseItem: QuestionnaireItemAndResponseItemMerged = {
       ...clonedItems,
     };
     if (!Array.isArray(res) && res !== undefined) {
@@ -316,7 +317,7 @@ export const addAnswerToItems = (
 export const getEnabledQuestionnaireItemsWithAnswers = (
   items?: QuestionnaireItem[],
   questionnaireResponse?: QuestionnaireResponse
-): QuestionnaireResponseItem[] => {
+): QuestionnaireItemAndResponseItemMerged[] => {
   if (!items || !questionnaireResponse) return [];
   const filteredItems = filterEnabledQuestionnaireItems(items, questionnaireResponse);
   return addAnswerToItems(filteredItems, questionnaireResponse);
