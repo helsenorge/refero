@@ -22,6 +22,7 @@ import { getItemControlExtensionValue, getValidationTextExtension } from './exte
 import { Resources } from './resources';
 
 import { isReadOnly, isRequired } from './index';
+import { option } from 'yargs';
 
 export function hasCanonicalValueSet(item: QuestionnaireItem): boolean {
   return !!item.answerValueSet && item.answerValueSet.substr(0, 4) === 'http';
@@ -99,6 +100,7 @@ export function renderOptions(
   renderRadio: (o: Array<Options> | undefined) => JSX.Element,
   renderCheckbox: (o: Array<Options> | undefined) => JSX.Element,
   renderDropdown: (o: Array<Options> | undefined) => JSX.Element,
+  renderSlider: () => JSX.Element,
   resources: Resources | undefined,
   renderAutosuggest: () => JSX.Element,
   renderReceiverComponent?: () => JSX.Element
@@ -114,6 +116,8 @@ export function renderOptions(
           return renderCheckbox(options);
         case itemControlConstants.RADIOBUTTON:
           return renderRadio(options);
+        case itemControlConstants.SLIDER:
+            return renderSlider()
         default:
           break;
       }
@@ -155,6 +159,9 @@ export function getItemControlValue(item: QuestionnaireItem): string | undefined
         }
         if (itemControl[i].code === itemControlConstants.RECEIVERCOMPONENT) {
           return itemControlConstants.RECEIVERCOMPONENT;
+        }
+        if (itemControl[i].code === itemControlConstants.SLIDER) {
+          return itemControlConstants.SLIDER;
         }
       }
     }
