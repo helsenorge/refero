@@ -1,3 +1,11 @@
+## 13.2.4-beta06
+
+---
+
+- fix HN2-TABLE bug with enablewhen
+- added type for QuestionnaireItemWithAnswers
+- fix datetime formatting
+
 ## 13.2.4-beta05
 
 ---
