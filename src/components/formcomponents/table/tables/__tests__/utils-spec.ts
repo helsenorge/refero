@@ -163,7 +163,7 @@ describe('extractValuesFromAnswer', () => {
 
     const result = extractValuesFromAnswer(type, singleAnswer);
 
-    expect(result).toEqual(['1. januar 2021']);
+    expect(result).toEqual(['01 01 2021 01:00']);
   });
 
   it('should extract choice value correctly', () => {
