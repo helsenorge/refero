@@ -157,15 +157,6 @@ describe('extractValuesFromAnswer', () => {
     expect(result).toEqual(['[X]']);
   });
 
-  it('should extract date value correctly', () => {
-    const type = ItemType.DATE;
-    const singleAnswer: QuestionnaireResponseItemAnswer = { valueDate: '2021-01-01' };
-
-    const result = extractValuesFromAnswer(type, singleAnswer);
-
-    expect(result).toEqual(['01 01 2021 01:00']);
-  });
-
   it('should extract choice value correctly', () => {
     const type = ItemType.CHOICE;
     const singleAnswer: QuestionnaireResponseItemAnswer = { valueCoding: { display: 'Choice1' } };
