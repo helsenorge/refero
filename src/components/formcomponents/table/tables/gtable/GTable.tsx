@@ -20,7 +20,9 @@ interface Props {
 }
 
 const GTable = ({ items, questionnaireResponse }: Props): JSX.Element => {
+
   const gTable = getGtablebodyObject(items, questionnaireResponse);
+
   return gTable.rows.length > 0 ? (
     <HnTable className="page_refero__table__gtable">
       <TableHead category={HeaderCategory.normal} className="page_refero__table__gtable__header">

@@ -13,6 +13,7 @@ export const getNumberOfRowsGTable = (items: QuestionnaireResponseItem[]): numbe
   const numbers = items.map(item => item.answer?.length || 0);
   return Math.max(...numbers);
 };
+
 export const getValueFromAnswer = (rowIdx: number, item?: QuestionnaireItemWithAnswers): string => {
   const answerItem = item?.answer?.[rowIdx];
   if (!answerItem) {
@@ -24,24 +25,35 @@ export const getValueFromAnswer = (rowIdx: number, item?: QuestionnaireItemWithA
   return getPrimitiveValueFromItemType(item.type, answerItem).toString() || '';
 };
 
-export const columnsForRowIndex = (answerItems: QuestionnaireItemWithAnswers[], rowIdx: number): IGTableColumn[] =>
-  answerItems.map((item, colIdx) => ({
-    id: `empty-${rowIdx}-${colIdx}`,
-    index: colIdx,
-    value: getValueFromAnswer(rowIdx, item),
-  }));
+export const columnsForRowIndex = (answerItems: QuestionnaireItemWithAnswers[], rowIdx: number): IGTableColumn[] => {
+  return Array.from({ length: answerItems.length }, (_, colIdx) => {
+    const item = answerItems[colIdx];
+    if (!item) {
+      return {
+        id: `empty-${rowIdx}-${colIdx}`,
+        index: colIdx,
+        value: '',
+      };
+    }
+    return {
+      id: item.linkId,
+      index: colIdx,
+      value: getValueFromAnswer(rowIdx, item),
+    };
+  });
+};
 
-export const createTableRows = (items: QuestionnaireItemWithAnswers[]): IGTableRow[] => {
-  const numberOfRows = getNumberOfRowsGTable(items);
+export const createTableRows = (answerItem: QuestionnaireItemWithAnswers[]): IGTableRow[] => {
+  const numberOfRows = getNumberOfRowsGTable(answerItem);
 
   return Array.from({ length: numberOfRows }, (_, rowIdx) => ({
     id: `empty-${rowIdx}`,
     index: rowIdx,
-    columns: columnsForRowIndex(items, rowIdx),
+    columns: columnsForRowIndex(answerItem, rowIdx),
   }));
 };
 
-export const createTableHeader = (items: QuestionnaireResponseItem[]): IGTableHeaderItem[] =>
+export const createTableHeader = (items: QuestionnaireItem[]): IGTableHeaderItem[] =>
   items.map(item => ({
     id: item.linkId,
     value: item.text || '',
@@ -56,7 +68,6 @@ export const getGtablebodyObject = (items: QuestionnaireItem[], questionnaireRes
     };
   }
   const answerItems = getEnabledQuestionnaireItemsWithAnswers(items, questionnaireResponse);
-
   const table: IGTable = {
     id: uuid.v4(),
     headerRow: createTableHeader(answerItems),

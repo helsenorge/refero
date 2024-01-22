@@ -14,6 +14,7 @@ import {
 } from '../utils';
 import ItemType from '../../../../../../constants/itemType';
 import { QuestionnaireItemWithAnswers } from '../../interface';
+
 type MockAnswerProps = Partial<QuestionnaireResponseItemAnswer>;
 type MockResponseItemProps = Partial<QuestionnaireResponseItem>;
 type MockQuestionnaireItemProps = Partial<Omit<QuestionnaireItem, 'type'>> & {
@@ -124,8 +125,8 @@ describe('gtable-utils-spec', () => {
       ];
       const columns = columnsForRowIndex(answerItems, 0);
       expect(columns).toEqual([
-        { id: 'empty-0-0', index: 0, value: 'Answer 1' },
-        { id: 'empty-0-1', index: 1, value: 'Another Answer 1' },
+        { id: 'default-question-linkId', index: 0, value: 'Answer 1' },
+        { id: 'default-question-linkId', index: 1, value: 'Another Answer 1' },
       ]);
     });
 
@@ -136,8 +137,8 @@ describe('gtable-utils-spec', () => {
       ];
       const columns = columnsForRowIndex(answerItems, 1);
       expect(columns).toEqual([
-        { id: 'empty-1-0', index: 0, value: '' },
-        { id: 'empty-1-1', index: 1, value: '' },
+        { id: 'default-question-linkId', index: 0, value: '' },
+        { id: 'default-question-linkId', index: 1, value: '' },
       ]);
     });
 
@@ -181,9 +182,9 @@ describe('gtable-utils-spec', () => {
   });
   describe('createTableHeader', () => {
     it('should create table headers from input items', () => {
-      const items: QuestionnaireResponseItem[] = [
-        generateMockResponseItem({ linkId: '1', text: 'First Question' }),
-        generateMockResponseItem({ linkId: '2', text: 'Second Question' }),
+      const items: QuestionnaireItem[] = [
+        generateMockQuestionnaireItem({ linkId: '1', text: 'First Question', type: 'string' }),
+        generateMockQuestionnaireItem({ linkId: '2', text: 'Second Question', type: 'string' }),
       ];
       const headers = createTableHeader(items);
       expect(headers).toEqual([
@@ -193,19 +194,19 @@ describe('gtable-utils-spec', () => {
     });
 
     it('should handle items with missing text correctly', () => {
-      const items: QuestionnaireResponseItem[] = [
-        generateMockResponseItem({ linkId: '1' }),
-        generateMockResponseItem({ linkId: '2', text: 'Second Question' }),
+      const items: QuestionnaireItem[] = [
+        generateMockQuestionnaireItem({ linkId: '1', type: 'string' }),
+        generateMockQuestionnaireItem({ linkId: '2', text: 'Second Question', type: 'string' }),
       ];
       const headers = createTableHeader(items);
       expect(headers).toEqual([
-        { id: '1', value: '' },
+        { id: '1', value: 'Default Question Text' },
         { id: '2', value: 'Second Question' },
       ]);
     });
 
     it('should handle empty items array correctly', () => {
-      const items: QuestionnaireResponseItem[] = [];
+      const items: QuestionnaireItem[] = [];
       const headers = createTableHeader(items);
       expect(headers).toEqual([]);
     });
@@ -246,8 +247,10 @@ describe('gtable-utils-spec', () => {
         ],
       });
       const gTable = getGtablebodyObject(questionnaireItems, questionnaireResponse);
+      console.log('gTable', gTable);
       expect(gTable.rows.length).toBe(1);
       expect(gTable.headerRow.length).toBe(2);
+      expect(gTable.rows[0].columns.length).toBe(2);
     });
 
     it('should handle empty questionnaire items correctly', () => {

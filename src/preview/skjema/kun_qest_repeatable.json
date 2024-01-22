@@ -1,62 +1,81 @@
 {
   "resourceType": "Questionnaire",
   "language": "nb-NO",
-  "id": "7c79c08e-492d-47fd-bc09-4964645974b5",
-  "name": "Table_HN1_MultiSvar",
-  "title": "Mutisvar Table-HN1 Oppsummering",
+  "id": "255e32d1-2cfc-4033-b714-31a6e15a2899",
+  "name": "NHN_Test_Repeterende_gtable",
+  "title": "Repeterende strukturer i tabell gtable",
+  "description": "Skjema før time for nyrepasient",
+  "version": "0.1",
   "status": "draft",
   "publisher": "NHN",
   "meta": {
     "profile": ["http://ehelse.no/fhir/StructureDefinition/sdf-Questionnaire"],
-    "tag": [
-      {
-        "system": "urn:ietf:bcp:47",
-        "code": "nb-NO",
-        "display": "Bokmål"
-      }
-    ],
+    "tag": [{ "system": "urn:ietf:bcp:47", "code": "nb-NO", "display": "Bokmål" }],
     "security": [
-      {
-        "code": "3",
-        "display": "Helsehjelp (Full)",
-        "system": "urn:oid:2.16.578.1.12.4.1.1.7618"
-      }
+      { "code": "3", "display": "Helsehjelp (Full)", "system": "urn:oid:2.16.578.1.12.4.1.1.7618" },
+      { "code": "1", "display": "Kun innbygger selv", "system": "http://helsenorge.no/fhir/KanUtforesAv" }
     ]
   },
-  "contact": [
+  "useContext": [
     {
-      "name": "http://www.nhn.no"
+      "code": { "system": "http://hl7.org/fhir/ValueSet/usage-context-type", "code": "focus", "display": "Clinical Focus" },
+      "valueCodeableConcept": {
+        "coding": [{ "system": "urn:oid:2.16.578.1.12.4.1.1.8655", "display": "Repeterende strukturer i tabell gtable" }]
+      }
     }
   ],
+  "contact": [{ "name": "http://www.nhn.no" }],
   "subjectType": ["Patient"],
   "extension": [
     {
       "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sidebar",
-      "valueCoding": {
-        "system": "http://helsenorge.no/fhir/ValueSet/sdf-sidebar",
-        "code": "1"
-      }
+      "valueCoding": { "system": "http://helsenorge.no/fhir/ValueSet/sdf-sidebar", "code": "1" }
     },
     {
       "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-information-message",
-      "valueCoding": {
-        "system": "http://helsenorge.no/fhir/ValueSet/sdf-information-message",
-        "code": "1"
-      }
+      "valueCoding": { "system": "http://helsenorge.no/fhir/ValueSet/sdf-information-message", "code": "1" }
     },
+    { "url": "http://ehelse.no/fhir/StructureDefinition/sdf-endpoint", "valueReference": { "reference": "Endpoint/1" } },
     {
       "url": "http://helsenorge.no/fhir/StructureDefintion/sdf-itemControl-visibility",
       "valueCodeableConcept": {
         "coding": [
-          {
-            "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
-            "code": "hide-help",
-            "display": "Hide help texts"
-          },
+          { "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions", "code": "hide-help", "display": "Hide help texts" },
           {
             "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
             "code": "hide-sublabel",
             "display": "Hide sublabel texts"
+          },
+          {
+            "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
+            "code": "hide-sidebar",
+            "display": "Hide sidebar texts"
+          }
+        ]
+      }
+    },
+    { "url": "http://ehelse.no/fhir/StructureDefinition/sdf-generatepdf", "valueBoolean": true }
+  ],
+  "date": "2023-03-30T00:00:00+02:00",
+  "contained": [
+    {
+      "url": "http://ehelse.no/fhir/ValueSet/Predefined",
+      "resourceType": "ValueSet",
+      "id": "1102",
+      "version": "1.0",
+      "name": "urn:oid:1102",
+      "title": "Ja / Nei / Vet ikke (structor)",
+      "status": "draft",
+      "publisher": "Direktoratet for e-helse",
+      "compose": {
+        "include": [
+          {
+            "system": "urn:oid:2.16.578.1.12.4.1.1102",
+            "concept": [
+              { "code": "1", "display": "Ja" },
+              { "code": "2", "display": "Nei" },
+              { "code": "3", "display": "Vet ikke" }
+            ]
           }
         ]
       }
@@ -64,556 +83,460 @@
   ],
   "item": [
     {
-      "linkId": "e849303c-293b-41c9-9900-1ea3e12b7492",
+      "linkId": "4c8b9272-16b7-4fe0-8e16-6f86077709cb",
       "type": "group",
-      "text": "Informasjon",
+      "text": "Datakilde 1: repeterende: GTable",
       "required": false,
       "item": [
         {
-          "linkId": "4ced67ca-c9e4-44fd-9339-26c3fe2741bf",
-          "type": "string",
-          "text": "Har du barn?",
-          "required": false
-        },
-        {
-          "linkId": "b8e63b95-baef-41bb-c141-19ccc1ebb5e2",
-          "type": "integer",
-          "text": "Hvor mange barn har du?",
-          "required": false
-        },
-        {
-          "linkId": "dc998a35-ee55-4715-85df-e68f117ece30",
-          "type": "string",
-          "text": "Skriv navn til barna?",
+          "linkId": "ba62ebba-244d-43b0-ac53-39dab184c953",
+          "type": "group",
+          "text": "Urin",
+          "extension": [{ "url": "http://ehelse.no/fhir/StructureDefinition/repeatstext", "valueString": "Legg til registering" }],
           "required": false,
-          "repeats": true
-        },
-        {
-          "linkId": "9b9ab38f-b887-4c68-8fc7-90b98d9f3cfe",
-          "type": "boolean",
-          "text": "Spiser dere grønnsaker?",
-          "required": false
-        },
-        {
-          "linkId": "70760537-890f-452e-aa60-07f8534088b0",
-          "type": "open-choice",
-          "required": false,
-          "answerOption": [
+          "repeats": true,
+          "item": [
+            { "linkId": "888738a0-7aaf-4b6e-b409-faca4ace258a", "type": "date", "text": "Dato", "required": false },
+            { "linkId": "bcc1eb7c-1db5-44fb-8b79-9118f676c48d", "type": "time", "text": "Klokkeslett", "required": false },
             {
-              "valueCoding": {
-                "id": "d3b04993-a61f-47c9-d5ba-3c5e539f6c47",
-                "code": "frukt",
-                "system": "urn:uuid:0a1f2a4c-6d67-41fd-8fed-7a434ede4f6b",
-                "display": "Frukt"
-              }
+              "linkId": "ae60e306-fb9a-460c-88a7-4aa4389f74fc",
+              "type": "quantity",
+              "text": "Milliliter urin",
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+                  "valueCoding": { "code": "ml", "display": "ml", "system": "urn:uuid:5d337475-47fb-4f5b-9201-af883c2aad49" }
+                }
+              ],
+              "required": false
             },
             {
-              "valueCoding": {
-                "id": "e95b7df4-0d53-4a16-c677-79dbaf6ab5f1",
-                "code": "salat",
-                "system": "urn:uuid:0a1f2a4c-6d67-41fd-8fed-7a434ede4f6b",
-                "display": "Salat"
-              }
-            },
-            {
-              "valueCoding": {
-                "id": "e36d6229-1aea-4826-81f7-4dafce056165",
-                "code": "asparges",
-                "system": "urn:uuid:0a1f2a4c-6d67-41fd-8fed-7a434ede4f6b",
-                "display": "Asparges"
-              }
-            },
-            {
-              "valueCoding": {
-                "id": "9b5f2c33-1d12-4874-8157-07ad382721c1",
-                "code": "gresskar",
-                "system": "urn:uuid:0a1f2a4c-6d67-41fd-8fed-7a434ede4f6b",
-                "display": "Gresskar"
-              }
-            },
-            {
-              "valueCoding": {
-                "id": "40a50872-07af-4ee9-9985-5c0670fed596",
-                "code": "gulrot",
-                "system": "urn:uuid:0a1f2a4c-6d67-41fd-8fed-7a434ede4f6b",
-                "display": "Gulrot"
-              }
-            }
-          ],
-          "enableWhen": [
-            {
-              "question": "9b9ab38f-b887-4c68-8fc7-90b98d9f3cfe",
-              "operator": "=",
-              "answerBoolean": true
-            }
-          ],
-          "text": "Hvilke grønnsaker spiser dere?",
-          "extension": [
-            {
-              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-              "valueCodeableConcept": {
-                "coding": [
-                  {
-                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
-                    "code": "check-box"
-                  }
-                ]
-              }
+              "linkId": "7b507e06-67f9-4c9f-9e1e-0cca76faecb4",
+              "type": "quantity",
+              "text": "Vekt våt bleie",
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+                  "valueCoding": { "code": "gram", "display": "gram", "system": "urn:uuid:28f031e2-70e4-41fa-92ee-c38757a17b2a" }
+                }
+              ],
+              "required": false
             }
           ]
         }
       ]
     },
     {
-      "linkId": "aff40185-28d7-4529-81c9-e73ed058c4c6",
+      "linkId": "72479ca2-444c-47e8-8288-1025194bfe51",
       "type": "group",
-      "text": "Oppsummering",
+      "text": "Datakilde 2: repeterende: GTable nr 2 alle datatyper",
       "required": false,
       "item": [
         {
-          "linkId": "9194f78d-7a87-46ba-815d-44d884139778",
+          "linkId": "0d28d6ec-729c-4915-8575-b71074c90c93",
           "type": "group",
-          "text": "Table Oppsummering",
+          "text": "Alt skal inn",
+          "extension": [{ "url": "http://ehelse.no/fhir/StructureDefinition/repeatstext", "valueString": "Legg til registering" }],
+          "required": false,
+          "repeats": true,
+          "item": [
+            {
+              "linkId": "20e024a7-98f4-46f7-8224-6d4dcf736a7e",
+              "type": "choice",
+              "text": "Alternativer",
+              "required": false,
+              "answerValueSet": "#1102"
+            },
+            { "linkId": "22bf506e-f446-46d2-8b00-3b264f6479b8", "type": "date", "text": "Dato", "required": false },
+            { "linkId": "522b65ef-02bc-4fcf-8041-1ca0872440ea", "type": "time", "text": "Klokkeslett", "required": false },
+            {
+              "linkId": "df1e8a08-f0e6-404b-a420-856a416c1e16",
+              "type": "quantity",
+              "text": "Quantity",
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+                  "valueCoding": { "code": "ml", "display": "ml", "system": "urn:uuid:5d337475-47fb-4f5b-9201-af883c2aad49" }
+                }
+              ],
+              "required": false
+            },
+            { "linkId": "a1c1db2b-2779-4e99-88d6-2d02c18d797c", "type": "integer", "text": "Tall", "required": false },
+            {
+              "linkId": "81b77ece-6d3f-49cd-8cbf-1ff14de07964",
+              "type": "decimal",
+              "text": "Desimaltall",
+              "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/maxDecimalPlaces", "valueInteger": 2 }],
+              "required": false
+            },
+            { "linkId": "df586ed5-0b3b-43eb-ae05-fa1f201d3730", "type": "boolean", "text": "Bekreftelse", "required": false }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "4d6ef3f2-423b-4aee-c43b-a5a37b460269",
+      "type": "group",
+      "text": "Oppsummering repeterende GTable Datakilde 1",
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": {
+            "coding": [
+              { "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "summary" },
+              { "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "summary-container" }
+            ]
+          }
+        }
+      ],
+      "required": false,
+      "code": [
+        {
+          "code": "1",
+          "display": "Default",
+          "system": "http://helsenorge.no/fhir/CodeSystem/RenderOptions",
+          "id": "160c445f-80c0-422e-e0c8-2b08354528bc"
+        }
+      ],
+      "item": [
+        {
+          "linkId": "0845d569-993b-418a-8a1d-7ce50400c65c",
+          "type": "group",
+          "text": "Oppsummering Her ligger kode for itemkontrol Gtable",
           "required": false,
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
               "valueCodeableConcept": {
-                "coding": [
-                  {
-                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
-                    "code": "table-hn1"
-                  }
-                ]
+                "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "gtable" }]
               }
             }
           ],
           "item": [
             {
-              "linkId": "a8d836c1-f893-43ff-a287-393057af2988",
-              "type": "string",
-              "text": "Har du barn?",
+              "linkId": "ab203143-488d-4757-946b-ddfad942205a",
+              "type": "date",
+              "text": "Dato",
               "required": false,
               "extension": [
                 {
                   "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
                   "valueCodeableConcept": {
-                    "coding": [
-                      {
-                        "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
-                        "code": "data-receiver"
-                      }
-                    ]
+                    "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
                   }
                 },
                 {
                   "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
-                  "valueString": "QuestionnaireResponse.descendants().where(linkId='4ced67ca-c9e4-44fd-9339-26c3fe2741bf').answer.value"
+                  "valueString": "QuestionnaireResponse.descendants().where(linkId='888738a0-7aaf-4b6e-b409-faca4ace258a').answer.value"
                 }
               ],
               "readOnly": true,
-              "enableWhen": [
-                {
-                  "answerBoolean": true,
-                  "question": "4ced67ca-c9e4-44fd-9339-26c3fe2741bf",
-                  "operator": "exists"
-                }
-              ]
+              "enableWhen": [{ "answerBoolean": true, "question": "888738a0-7aaf-4b6e-b409-faca4ace258a", "operator": "exists" }]
             },
             {
-              "linkId": "c2e09551-a465-4a1d-832d-0d0130a8665e",
-              "type": "integer",
-              "text": "Hvor mange barn har du?",
+              "linkId": "01f1e567-abdc-46ee-8a41-cd571e930738",
+              "type": "time",
+              "text": "Klokkeslett",
               "required": false,
               "extension": [
                 {
                   "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
                   "valueCodeableConcept": {
-                    "coding": [
-                      {
-                        "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
-                        "code": "data-receiver"
-                      }
-                    ]
+                    "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
                   }
                 },
                 {
                   "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
-                  "valueString": "QuestionnaireResponse.descendants().where(linkId='b8e63b95-baef-41bb-c141-19ccc1ebb5e2').answer.value"
+                  "valueString": "QuestionnaireResponse.descendants().where(linkId='bcc1eb7c-1db5-44fb-8b79-9118f676c48d').answer.value"
                 }
               ],
               "readOnly": true,
-              "enableWhen": [
-                {
-                  "answerBoolean": true,
-                  "question": "b8e63b95-baef-41bb-c141-19ccc1ebb5e2",
-                  "operator": "exists"
-                }
-              ]
+              "enableWhen": [{ "answerBoolean": true, "question": "bcc1eb7c-1db5-44fb-8b79-9118f676c48d", "operator": "exists" }]
             },
             {
-              "linkId": "93864380-1c99-489d-87c5-1e7e7af3a55d",
-              "type": "string",
-              "text": "Skriv navn til barna?",
-              "required": false,
-              "repeats": true,
+              "linkId": "7b1b5765-adb5-475b-a024-d9f68d5c9f8e",
+              "type": "quantity",
+              "text": "Vekt våt bleie",
               "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+                  "valueCoding": { "code": "gram", "display": "gram", "system": "urn:uuid:28f031e2-70e4-41fa-92ee-c38757a17b2a" }
+                },
                 {
                   "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
                   "valueCodeableConcept": {
-                    "coding": [
-                      {
-                        "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
-                        "code": "data-receiver"
-                      }
-                    ]
+                    "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
                   }
                 },
                 {
                   "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
-                  "valueString": "QuestionnaireResponse.descendants().where(linkId='dc998a35-ee55-4715-85df-e68f117ece30').answer.value"
+                  "valueString": "QuestionnaireResponse.descendants().where(linkId='7b507e06-67f9-4c9f-9e1e-0cca76faecb4').answer.value"
                 }
               ],
+              "required": false,
               "readOnly": true,
-              "enableWhen": [
-                {
-                  "answerBoolean": true,
-                  "question": "dc998a35-ee55-4715-85df-e68f117ece30",
-                  "operator": "exists"
-                }
-              ]
+              "enableWhen": [{ "answerBoolean": true, "question": "7b507e06-67f9-4c9f-9e1e-0cca76faecb4", "operator": "exists" }]
             },
             {
-              "linkId": "5e7bd964-bdc0-4152-a6f8-a9a2e698b45a",
-              "type": "boolean",
-              "text": "Spiser dere grønnsaker?",
-              "required": false,
+              "linkId": "5b9ef3a0-5b68-4cc1-8a98-565cee7ef5eb",
+              "type": "quantity",
+              "text": "Milliliter urin",
               "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+                  "valueCoding": { "code": "ml", "display": "ml", "system": "urn:uuid:5d337475-47fb-4f5b-9201-af883c2aad49" }
+                },
                 {
                   "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
                   "valueCodeableConcept": {
-                    "coding": [
-                      {
-                        "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
-                        "code": "data-receiver"
-                      }
-                    ]
+                    "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
                   }
                 },
                 {
                   "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
-                  "valueString": "QuestionnaireResponse.descendants().where(linkId='9b9ab38f-b887-4c68-8fc7-90b98d9f3cfe').answer.value"
+                  "valueString": "QuestionnaireResponse.descendants().where(linkId='ae60e306-fb9a-460c-88a7-4aa4389f74fc').answer.value"
                 }
               ],
+              "required": false,
               "readOnly": true,
-              "enableWhen": [
-                {
-                  "answerBoolean": true,
-                  "question": "9b9ab38f-b887-4c68-8fc7-90b98d9f3cfe",
-                  "operator": "="
-                }
-              ]
-            },
-            {
-              "linkId": "8b86be37-902e-4d6c-8af9-b7625f28c0df",
-              "type": "open-choice",
-              "required": false,
-              "answerOption": [
-                {
-                  "valueCoding": {
-                    "id": "d3b04993-a61f-47c9-d5ba-3c5e539f6c47",
-                    "code": "frukt",
-                    "system": "urn:uuid:0a1f2a4c-6d67-41fd-8fed-7a434ede4f6b",
-                    "display": "Frukt"
-                  }
-                },
-                {
-                  "valueCoding": {
-                    "id": "e95b7df4-0d53-4a16-c677-79dbaf6ab5f1",
-                    "code": "salat",
-                    "system": "urn:uuid:0a1f2a4c-6d67-41fd-8fed-7a434ede4f6b",
-                    "display": "Salat"
-                  }
-                },
-                {
-                  "valueCoding": {
-                    "id": "e36d6229-1aea-4826-81f7-4dafce056165",
-                    "code": "asparges",
-                    "system": "urn:uuid:0a1f2a4c-6d67-41fd-8fed-7a434ede4f6b",
-                    "display": "Asparges"
-                  }
-                },
-                {
-                  "valueCoding": {
-                    "id": "9b5f2c33-1d12-4874-8157-07ad382721c1",
-                    "code": "gresskar",
-                    "system": "urn:uuid:0a1f2a4c-6d67-41fd-8fed-7a434ede4f6b",
-                    "display": "Gresskar"
-                  }
-                },
-                {
-                  "valueCoding": {
-                    "id": "40a50872-07af-4ee9-9985-5c0670fed596",
-                    "code": "gulrot",
-                    "system": "urn:uuid:0a1f2a4c-6d67-41fd-8fed-7a434ede4f6b",
-                    "display": "Gulrot"
-                  }
-                }
-              ],
-              "enableWhen": [
-                {
-                  "question": "9b9ab38f-b887-4c68-8fc7-90b98d9f3cfe",
-                  "operator": "=",
-                  "answerBoolean": true
-                },
-                {
-                  "answerBoolean": true,
-                  "question": "70760537-890f-452e-aa60-07f8534088b0",
-                  "operator": "exists"
-                }
-              ],
-              "text": "Hvilke grønnsaker spiser dere?",
-              "extension": [
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                  "valueCodeableConcept": {
-                    "coding": [
-                      {
-                        "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
-                        "code": "check-box"
-                      },
-                      {
-                        "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
-                        "code": "data-receiver"
-                      }
-                    ]
-                  }
-                },
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
-                  "valueString": "QuestionnaireResponse.descendants().where(linkId='70760537-890f-452e-aa60-07f8534088b0').answer.value"
-                }
-              ],
-              "readOnly": true
+              "enableWhen": [{ "answerBoolean": true, "question": "ae60e306-fb9a-460c-88a7-4aa4389f74fc", "operator": "exists" }]
             }
           ]
         }
       ]
     },
     {
-      "linkId": "d9e5938b-f7fc-4f9e-8ba7-fd2e678f77e1",
+      "linkId": "b9431104-1af1-4de4-8b74-9188ec3e4479",
       "type": "group",
-      "text": "Vanlig oppsummering",
+      "text": "Oppsummering repeterende GTable Datakilde 2",
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": {
+            "coding": [
+              { "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "summary" },
+              { "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "summary-container" }
+            ]
+          }
+        }
+      ],
       "required": false,
+      "code": [
+        {
+          "code": "1",
+          "display": "Default",
+          "system": "http://helsenorge.no/fhir/CodeSystem/RenderOptions",
+          "id": "160c445f-80c0-422e-e0c8-2b08354528bc"
+        }
+      ],
       "item": [
         {
-          "linkId": "5e8bfa58-f5fc-43f2-cadb-460ae03f7886",
-          "type": "string",
-          "text": "Har du barn?",
+          "linkId": "e806447b-ab9c-49d1-8e16-0eef94235f73",
+          "type": "group",
+          "text": "Oppsummering Her ligger kode for itemkontrol Gtable",
           "required": false,
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
               "valueCodeableConcept": {
-                "coding": [
-                  {
-                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
-                    "code": "data-receiver"
-                  }
-                ]
+                "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "gtable" }]
               }
-            },
-            {
-              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
-              "valueString": "QuestionnaireResponse.descendants().where(linkId='4ced67ca-c9e4-44fd-9339-26c3fe2741bf').answer.value"
             }
           ],
-          "readOnly": true,
-          "enableWhen": [
+          "item": [
             {
-              "answerBoolean": true,
-              "question": "4ced67ca-c9e4-44fd-9339-26c3fe2741bf",
-              "operator": "exists"
+              "linkId": "3918616c-bf21-4c8b-8579-2a68979b4474",
+              "type": "choice",
+              "text": "Alternativer",
+              "required": false,
+              "answerValueSet": "#1102",
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                  "valueCodeableConcept": {
+                    "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                  }
+                },
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                  "valueString": "QuestionnaireResponse.descendants().where(linkId='20e024a7-98f4-46f7-8224-6d4dcf736a7e').answer.value"
+                }
+              ],
+              "readOnly": true,
+              "enableWhen": [{ "answerBoolean": true, "question": "20e024a7-98f4-46f7-8224-6d4dcf736a7e", "operator": "exists" }]
+            },
+            {
+              "linkId": "91f9a598-bb9f-4565-fa4a-518e3cbc65d4",
+              "type": "date",
+              "text": "Dato",
+              "required": false,
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                  "valueCodeableConcept": {
+                    "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                  }
+                },
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                  "valueString": "QuestionnaireResponse.descendants().where(linkId='22bf506e-f446-46d2-8b00-3b264f6479b8').answer.value"
+                }
+              ],
+              "readOnly": true,
+              "enableWhen": [{ "answerBoolean": true, "question": "22bf506e-f446-46d2-8b00-3b264f6479b8", "operator": "exists" }]
+            },
+            {
+              "linkId": "82976047-81e4-4b20-da7a-a3dd9f0e797a",
+              "type": "time",
+              "text": "Klokkeslett",
+              "required": false,
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                  "valueCodeableConcept": {
+                    "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                  }
+                },
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                  "valueString": "QuestionnaireResponse.descendants().where(linkId='522b65ef-02bc-4fcf-8041-1ca0872440ea').answer.value"
+                }
+              ],
+              "readOnly": true,
+              "enableWhen": [{ "answerBoolean": true, "question": "522b65ef-02bc-4fcf-8041-1ca0872440ea", "operator": "exists" }]
+            },
+            {
+              "linkId": "ec83212c-578f-4308-cdae-8be63d1d9889",
+              "type": "quantity",
+              "text": "Quantity",
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+                  "valueCoding": { "code": "ml", "display": "ml", "system": "urn:uuid:5d337475-47fb-4f5b-9201-af883c2aad49" }
+                },
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                  "valueCodeableConcept": {
+                    "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                  }
+                },
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                  "valueString": "QuestionnaireResponse.descendants().where(linkId='df1e8a08-f0e6-404b-a420-856a416c1e16').answer.value"
+                }
+              ],
+              "required": false,
+              "readOnly": true,
+              "enableWhen": [{ "answerBoolean": true, "question": "df1e8a08-f0e6-404b-a420-856a416c1e16", "operator": "exists" }]
+            },
+            {
+              "linkId": "6fee57b2-7f5d-4990-8608-f12540d2cdd6",
+              "type": "integer",
+              "text": "Tall",
+              "required": false,
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                  "valueCodeableConcept": {
+                    "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                  }
+                },
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                  "valueString": "QuestionnaireResponse.descendants().where(linkId='a1c1db2b-2779-4e99-88d6-2d02c18d797c').answer.value"
+                }
+              ],
+              "readOnly": true,
+              "enableWhen": [{ "answerBoolean": true, "question": "a1c1db2b-2779-4e99-88d6-2d02c18d797c", "operator": "exists" }]
+            },
+            {
+              "linkId": "25bbc49c-3bba-40b3-fb90-8684bcd176e2",
+              "type": "decimal",
+              "text": "Desimaltall",
+              "extension": [
+                { "url": "http://hl7.org/fhir/StructureDefinition/maxDecimalPlaces", "valueInteger": 2 },
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                  "valueCodeableConcept": {
+                    "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                  }
+                },
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                  "valueString": "QuestionnaireResponse.descendants().where(linkId='81b77ece-6d3f-49cd-8cbf-1ff14de07964').answer.value"
+                }
+              ],
+              "required": false,
+              "readOnly": true,
+              "enableWhen": [{ "answerBoolean": true, "question": "81b77ece-6d3f-49cd-8cbf-1ff14de07964", "operator": "exists" }]
+            },
+            {
+              "linkId": "1fd60768-94c6-4f19-8949-c4f1b9dfd50d",
+              "type": "boolean",
+              "text": "Bekreftelse",
+              "required": false,
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                  "valueCodeableConcept": {
+                    "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+                  }
+                },
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+                  "valueString": "QuestionnaireResponse.descendants().where(linkId='df586ed5-0b3b-43eb-ae05-fa1f201d3730').answer.value"
+                }
+              ],
+              "readOnly": true,
+              "enableWhen": [{ "answerBoolean": true, "question": "df586ed5-0b3b-43eb-ae05-fa1f201d3730", "operator": "=" }]
             }
           ]
-        },
-        {
-          "linkId": "54b75fe6-883e-43be-814e-b3b512fbb670",
-          "type": "integer",
-          "text": "Hvor mange barn har du?",
-          "required": false,
-          "extension": [
-            {
-              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-              "valueCodeableConcept": {
-                "coding": [
-                  {
-                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
-                    "code": "data-receiver"
-                  }
-                ]
-              }
-            },
-            {
-              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
-              "valueString": "QuestionnaireResponse.descendants().where(linkId='b8e63b95-baef-41bb-c141-19ccc1ebb5e2').answer.value"
-            }
-          ],
-          "readOnly": true,
-          "enableWhen": [
-            {
-              "answerBoolean": true,
-              "question": "b8e63b95-baef-41bb-c141-19ccc1ebb5e2",
-              "operator": "exists"
-            }
-          ]
-        },
-        {
-          "linkId": "d42eaddb-9233-4c48-f157-4898c1024cbf",
-          "type": "string",
-          "text": "Skriv navn til barna?",
-          "required": false,
-          "repeats": true,
-          "extension": [
-            {
-              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-              "valueCodeableConcept": {
-                "coding": [
-                  {
-                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
-                    "code": "data-receiver"
-                  }
-                ]
-              }
-            },
-            {
-              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
-              "valueString": "QuestionnaireResponse.descendants().where(linkId='dc998a35-ee55-4715-85df-e68f117ece30').answer.value"
-            }
-          ],
-          "readOnly": true,
-          "enableWhen": [
-            {
-              "answerBoolean": true,
-              "question": "dc998a35-ee55-4715-85df-e68f117ece30",
-              "operator": "exists"
-            }
-          ]
-        },
-        {
-          "linkId": "0f8f98c2-a329-4121-94ea-b0f176aad236",
-          "type": "boolean",
-          "text": "Spiser dere grønnsaker?",
-          "required": false,
-          "extension": [
-            {
-              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-              "valueCodeableConcept": {
-                "coding": [
-                  {
-                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
-                    "code": "data-receiver"
-                  }
-                ]
-              }
-            },
-            {
-              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
-              "valueString": "QuestionnaireResponse.descendants().where(linkId='9b9ab38f-b887-4c68-8fc7-90b98d9f3cfe').answer.value"
-            }
-          ],
-          "readOnly": true,
-          "enableWhen": [
-            {
-              "answerBoolean": true,
-              "question": "9b9ab38f-b887-4c68-8fc7-90b98d9f3cfe",
-              "operator": "="
-            }
-          ]
-        },
-        {
-          "linkId": "defe3dc7-8780-47ee-9f0e-b3e4640399fc",
-          "type": "open-choice",
-          "required": false,
-          "answerOption": [
-            {
-              "valueCoding": {
-                "id": "d3b04993-a61f-47c9-d5ba-3c5e539f6c47",
-                "code": "frukt",
-                "system": "urn:uuid:0a1f2a4c-6d67-41fd-8fed-7a434ede4f6b",
-                "display": "Frukt"
-              }
-            },
-            {
-              "valueCoding": {
-                "id": "e95b7df4-0d53-4a16-c677-79dbaf6ab5f1",
-                "code": "salat",
-                "system": "urn:uuid:0a1f2a4c-6d67-41fd-8fed-7a434ede4f6b",
-                "display": "Salat"
-              }
-            },
-            {
-              "valueCoding": {
-                "id": "e36d6229-1aea-4826-81f7-4dafce056165",
-                "code": "asparges",
-                "system": "urn:uuid:0a1f2a4c-6d67-41fd-8fed-7a434ede4f6b",
-                "display": "Asparges"
-              }
-            },
-            {
-              "valueCoding": {
-                "id": "9b5f2c33-1d12-4874-8157-07ad382721c1",
-                "code": "gresskar",
-                "system": "urn:uuid:0a1f2a4c-6d67-41fd-8fed-7a434ede4f6b",
-                "display": "Gresskar"
-              }
-            },
-            {
-              "valueCoding": {
-                "id": "40a50872-07af-4ee9-9985-5c0670fed596",
-                "code": "gulrot",
-                "system": "urn:uuid:0a1f2a4c-6d67-41fd-8fed-7a434ede4f6b",
-                "display": "Gulrot"
-              }
-            }
-          ],
-          "enableWhen": [
-            {
-              "question": "9b9ab38f-b887-4c68-8fc7-90b98d9f3cfe",
-              "operator": "=",
-              "answerBoolean": true
-            },
-            {
-              "answerBoolean": true,
-              "question": "70760537-890f-452e-aa60-07f8534088b0",
-              "operator": "exists"
-            }
-          ],
-          "text": "Hvilke grønnsaker spiser dere?",
-          "extension": [
-            {
-              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-              "valueCodeableConcept": {
-                "coding": [
-                  {
-                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
-                    "code": "check-box"
-                  },
-                  {
-                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
-                    "code": "data-receiver"
-                  }
-                ]
-              }
-            },
-            {
-              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
-              "valueString": "QuestionnaireResponse.descendants().where(linkId='70760537-890f-452e-aa60-07f8534088b0').answer.value"
-            }
-          ],
-          "readOnly": true
         }
       ]
+    },
+    {
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": { "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "sidebar" }] }
+        }
+      ],
+      "linkId": "c5c27efb-76d7-4f1e-b7f9-cbe454846e8b",
+      "code": [{ "system": "http://ehelse.no/fhir/ValueSet/SOTHeaders", "code": "SOT-2", "display": "SOT-2" }],
+      "_text": {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+            "valueMarkdown": "Helse Sør-Øst er ansvarlig for innholdet i skjemaet. Se kontaktinformasjon i innkallingsbrevet ved eventuelle spørsmål."
+          }
+        ]
+      },
+      "type": "text",
+      "required": false,
+      "repeats": false,
+      "readOnly": false
+    },
+    {
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": { "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "sidebar" }] }
+        }
+      ],
+      "linkId": "cf1c48a4-93a9-4a2d-fa5a-b5abfcc708d0",
+      "code": [{ "system": "http://ehelse.no/fhir/ValueSet/SOTHeaders", "code": "SOT-3", "display": "SOT-3" }],
+      "_text": {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+            "valueMarkdown": "Sykehuset du sender skjemaet til er dataansvarlig for personopplysningene oppgitt i skjemaet.  \n[Les mer om personvern hos mottaker her](https://www.helse-sorost.no/informasjonssikkerhet-og-personvern/personvernerklering)"
+          }
+        ]
+      },
+      "type": "text",
+      "required": false,
+      "repeats": false,
+      "readOnly": false
     }
   ]
 }
