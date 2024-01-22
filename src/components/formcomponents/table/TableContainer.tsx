@@ -95,7 +95,12 @@ const TableContainer = ({
         return (
           <>
             <h3>{headline}</h3>
-            <StandardTable items={items} questionnaireResponse={questionnaireResponse} resource={resource} />
+            <StandardTable
+              items={items}
+              questionnaireResponse={questionnaireResponse}
+              resource={resource}
+              tableCodesCoding={tableCodesCoding}
+            />
           </>
         );
       default:

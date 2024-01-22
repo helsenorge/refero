@@ -6,7 +6,8 @@ import { Table as HnTable, SortDirection, TableBody, TableCell, TableRow } from 
 
 import { ITableH2Row } from './interface';
 import TableHeadHn2 from './TableHeadHn2';
-import { getIndexToSortBy, getTableHN2bodyObject, transformCodingToSortDirection } from './utils';
+import { getTableHN2bodyObject } from './utils';
+import { getIndexToSortBy, transformCodingToSortDirection } from '../utils';
 
 interface Props {
   tableCodesCoding: Coding[];

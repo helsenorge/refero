@@ -7,7 +7,7 @@ import CodingSystems, { TableColumnName, TableOrderingColum } from '../../../../
 import codeSystems from '../../../../../constants/codingsystems';
 import ItemType from '../../../../../constants/itemType';
 import { QuestionnaireItemWithAnswers } from '../interface';
-import { findIndexByCode, getEnabledQuestionnaireItemsWithAnswers, transformAnswersToListOfStrings } from '../utils';
+import { findCodeBySystem, findIndexByCode, getEnabledQuestionnaireItemsWithAnswers, transformAnswersToListOfStrings } from '../utils';
 
 export const groupItemsByColumn = (items: QuestionnaireItem[]): Map<number, QuestionnaireItem[]> =>
   items.reduce((acc, item) => {
@@ -109,22 +109,5 @@ export const getHeaderColumns = (coding: Coding[]): HeaderColumn[] => {
     code: code.code,
   }));
 };
-export const getCodeFromCodingSystem = (coding: Coding[], codingSystem: string): string | undefined => {
-  const code = findCodeBySystem(coding, codingSystem);
-  return code[0]?.code;
-};
+
 //TODO: Dette finnes fra før, kan bruke eksisterende funksjonalitet
-export function findCodeBySystem<T extends { system?: string }>(coding: T[], system?: string): T[] {
-  return coding.filter(code => code.system === system);
-}
-
-/* TABLE HEADER */
-export const transformCodingToSortDirection = (coding: Coding[]): SortDirection | undefined => {
-  const code = getCodeFromCodingSystem(coding, codeSystems.TableOrderingFunctions);
-  return !!code ? (code === 'ASC' ? SortDirection.asc : SortDirection.desc) : undefined;
-};
-
-export const getIndexToSortBy = (coding: Coding[]): number | undefined => {
-  const sortCode = getCodeFromCodingSystem(coding, codeSystems.TableOrderingColum);
-  return sortCode ? Number(sortCode) - 1 : undefined;
-};

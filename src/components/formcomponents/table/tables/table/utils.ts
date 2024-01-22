@@ -1,14 +1,17 @@
-import { QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItem, Resource } from '../../../../../types/fhir';
+import { Coding, QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItem, Resource } from '../../../../../types/fhir';
+
+import { SortDirection } from '@helsenorge/designsystem-react/components/Table';
 
 import { Options } from '@helsenorge/form/components/radio-group';
 
-import { StandardTable, StandardTableColumn, StandardTableRow } from './interface';
+import { IStandardTable, IStandardTableColumn, IStandardTableRow } from './interface';
+import codeSystems from '../../../../../constants/codingsystems';
 import ItemType from '../../../../../constants/itemType';
 import { getContainedOptions } from '../../../../../util/choice';
 import { QuestionnaireItemWithAnswers } from '../interface';
-import { getEnabledQuestionnaireItemsWithAnswers, transformAnswersToListOfStrings } from '../utils';
+import { getDisplayFromCodingSystem, getEnabledQuestionnaireItemsWithAnswers, transformAnswersToListOfStrings } from '../utils';
 
-export const emptyTable = (): StandardTable => {
+export const emptyTable = (): IStandardTable => {
   return {
     headerRow: [],
     rows: [],
@@ -16,7 +19,7 @@ export const emptyTable = (): StandardTable => {
   };
 };
 
-export const emptyTableWithId = (id: string): StandardTable => {
+export const emptyTableWithId = (id: string): IStandardTable => {
   return {
     id: id || '',
     headerRow: [],
@@ -24,7 +27,7 @@ export const emptyTableWithId = (id: string): StandardTable => {
   };
 };
 
-export const createTableColumn = (value: string, index: number, id: string): StandardTableColumn => {
+export const createTableColumn = (value: string, index: number, id: string): IStandardTableColumn => {
   return {
     value,
     index,
@@ -32,7 +35,7 @@ export const createTableColumn = (value: string, index: number, id: string): Sta
   };
 };
 
-export const createHeaderRow = (choiceValues: Options[], hasExtraColumn: boolean): StandardTableColumn[] => {
+export const createHeaderRow = (choiceValues: Options[], hasExtraColumn: boolean): IStandardTableColumn[] => {
   return [
     {
       id: `quest-${0}`,
@@ -60,11 +63,11 @@ const processItem = (
   index: number,
   needsExtraColumn: boolean,
   choiceValues?: Options[]
-): StandardTableRow[] => {
+): IStandardTableRow[] => {
   const columns = createColumnsFromAnswers(item, choiceValues);
   const processedColumns = needsExtraColumn ? columns : columns.slice(0, -1);
 
-  const row: StandardTableRow = {
+  const row: IStandardTableRow = {
     id: item.linkId,
     index,
     columns: processedColumns,
@@ -82,13 +85,13 @@ export const createBodyRows = (
   responseItems: QuestionnaireResponse,
   needsExtraColumn: boolean,
   choiceValues?: Options[]
-): StandardTableRow[] => {
+): IStandardTableRow[] => {
   const answers = getEnabledQuestionnaireItemsWithAnswers(items, responseItems);
 
   return answers.flatMap((item, index) => processItem(item, index, needsExtraColumn, choiceValues));
 };
 
-export const createRowsFromAnswersCodes = (item: QuestionnaireResponseItem, choiceValues?: Options[]): StandardTableColumn[] => {
+export const createRowsFromAnswersCodes = (item: QuestionnaireResponseItem, choiceValues?: Options[]): IStandardTableColumn[] => {
   return (
     choiceValues?.map(value => ({
       id: `${value.type}-${value.type}`,
@@ -102,13 +105,13 @@ export const createRowsFromAnswersCodes = (item: QuestionnaireResponseItem, choi
   );
 };
 
-export const createColumnsFromAnswers = (item: QuestionnaireItemWithAnswers, choiceValues?: Options[]): StandardTableColumn[] => {
+export const createColumnsFromAnswers = (item: QuestionnaireItemWithAnswers, choiceValues?: Options[]): IStandardTableColumn[] => {
   const type = item?.type;
   const answer = item?.answer;
   const choiceColumns = createRowsFromAnswersCodes(item, choiceValues);
 
   const textAnswer = type && answer && choiceColumns.every(x => x.value === '') ? transformAnswersToListOfStrings(type, answer) : [];
-  const columns: StandardTableColumn[] = [
+  const columns: IStandardTableColumn[] = [
     createTableColumn(item.text || '', 0, `${item.linkId}-question`),
     ...choiceColumns,
     createTableColumn(textAnswer.join(', '), choiceColumns.length + 1, `${item.linkId}-answer`),
@@ -119,8 +122,10 @@ export const createColumnsFromAnswers = (item: QuestionnaireItemWithAnswers, cho
 export const getStandardTableObject = (
   items: QuestionnaireItem[],
   responseItems?: QuestionnaireResponse | null,
-  resource?: Resource[]
-): StandardTable => {
+  resource?: Resource[],
+  SortDirection?: SortDirection,
+  displayToSortBy?: string
+): IStandardTable => {
   if (!responseItems || items.length === 0) {
     return emptyTable();
   }
@@ -136,6 +141,10 @@ export const getStandardTableObject = (
   const rows = createBodyRows(items, responseItems, extraColumnNeeded, choiceValues);
   const header = createHeaderRow(choiceValues, extraColumnNeeded);
 
+  if (displayToSortBy !== undefined && SortDirection) {
+    const sortIndex = header.findIndex(header => header.value === displayToSortBy);
+    return sortTableRows({ id: responseItems.id || '', headerRow: header, rows: rows }, sortIndex, SortDirection);
+  }
   return {
     id: responseItems.id || '',
     headerRow: header,
@@ -152,4 +161,23 @@ export const needsExtraColumn = (items: QuestionnaireItem[], responseItems: Ques
   return answers.some(item => {
     return item?.item?.length && item.item.length > 0;
   });
+};
+
+export const sortTableRows = (table: IStandardTable, columnIndex: number, sortOrder: SortDirection): IStandardTable => {
+  const sortedTable = {
+    headerRow: table.headerRow,
+    id: table.id,
+    rows: table.rows.sort((a, b) => {
+      const aValue = a?.columns.length > columnIndex ? a?.columns[columnIndex]?.value || '' : '';
+      const bValue = b?.columns.length > columnIndex ? b?.columns[columnIndex]?.value || '' : '';
+
+      return sortOrder === SortDirection.asc ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
+    }),
+  };
+  return sortedTable;
+};
+
+export const getDisplayToSortBy = (coding: Coding[]): string | undefined => {
+  const sortDisplay = getDisplayFromCodingSystem(coding, codeSystems.TableOrderingColum);
+  return sortDisplay ? sortDisplay : undefined;
 };

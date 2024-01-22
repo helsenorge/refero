@@ -1,17 +1,17 @@
-export interface StandardTableColumn {
+export interface IStandardTableColumn {
   id: string;
   index: number;
   value: string;
 }
 
-export interface StandardTableRow {
+export interface IStandardTableRow {
   id: string;
   index: number;
-  columns: StandardTableColumn[];
+  columns: IStandardTableColumn[];
 }
 
-export interface StandardTable {
+export interface IStandardTable {
   id: string;
-  headerRow: StandardTableColumn[];
-  rows: StandardTableRow[];
+  headerRow: IStandardTableColumn[];
+  rows: IStandardTableRow[];
 }

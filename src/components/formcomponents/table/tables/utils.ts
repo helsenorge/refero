@@ -12,13 +12,15 @@ import {
   QuestionnaireResponseItemAnswer,
 } from '../../../../types/fhir';
 
+import { SortDirection } from '@helsenorge/designsystem-react/components/Table';
+
 import { parseDate } from '@helsenorge/date-time/components/time-input/date-core';
 import * as DateTimeConstants from '@helsenorge/date-time/constants/datetime';
 
 import { DATEFORMATS } from './constants';
 import { QuestionnaireItemWithAnswers } from './interface';
 import { OPEN_CHOICE_SYSTEM } from '../../../../constants';
-import { CodeSystems } from '../../../../constants/codingsystems';
+import codeSystems, { CodeSystems } from '../../../../constants/codingsystems';
 import ItemType from '../../../../constants/itemType';
 import { getQuestionnaireItemCodeValue } from '../../../../util/codingsystem';
 import { getCalculatedExpressionExtension, getCopyExtension } from '../../../../util/extension';
@@ -322,3 +324,25 @@ export const getEnabledQuestionnaireItemsWithAnswers = (
   const filteredItems = filterEnabledQuestionnaireItems(items, questionnaireResponse);
   return addAnswerToItems(filteredItems, questionnaireResponse);
 };
+
+/* TABLE HEADER */
+export const transformCodingToSortDirection = (coding: Coding[]): SortDirection | undefined => {
+  const code = getCodeFromCodingSystem(coding, codeSystems.TableOrderingFunctions);
+  return !!code ? (code === 'ASC' ? SortDirection.asc : SortDirection.desc) : undefined;
+};
+
+export const getIndexToSortBy = (coding: Coding[]): number | undefined => {
+  const sortCode = getCodeFromCodingSystem(coding, codeSystems.TableOrderingColum);
+  return sortCode ? Number(sortCode) - 1 : undefined;
+};
+export const getDisplayFromCodingSystem = (coding: Coding[], codingSystem: string): string | undefined => {
+  const code = findCodeBySystem(coding, codingSystem);
+  return code[0]?.display;
+};
+export const getCodeFromCodingSystem = (coding: Coding[], codingSystem: string): string | undefined => {
+  const code = findCodeBySystem(coding, codingSystem);
+  return code[0]?.code;
+};
+export function findCodeBySystem<T extends { system?: string }>(coding: T[], system?: string): T[] {
+  return coding.filter(code => code.system === system);
+}
