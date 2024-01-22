@@ -7,7 +7,13 @@ import CodingSystems, { TableColumnName, TableOrderingColum } from '../../../../
 import codeSystems from '../../../../../constants/codingsystems';
 import ItemType from '../../../../../constants/itemType';
 import { QuestionnaireItemWithAnswers } from '../interface';
-import { findCodeBySystem, findIndexByCode, getEnabledQuestionnaireItemsWithAnswers, transformAnswersToListOfStrings } from '../utils';
+import {
+  findCodeBySystem,
+  findIndexByCode,
+  getCodeFromCodingSystem,
+  getEnabledQuestionnaireItemsWithAnswers,
+  transformAnswersToListOfStrings,
+} from '../utils';
 
 export const groupItemsByColumn = (items: QuestionnaireItem[]): Map<number, QuestionnaireItem[]> =>
   items.reduce((acc, item) => {
@@ -86,6 +92,10 @@ export const getTableHN2bodyObject = (
 };
 
 /* SORTING  */
+export const getIndexToSortBy = (coding: Coding[]): number | undefined => {
+  const sortCode = getCodeFromCodingSystem(coding, codeSystems.TableOrderingColum);
+  return sortCode ? Number(sortCode) - 1 : undefined;
+};
 
 export const sortTableRows = (table: ITableH2Row[], columnIndex: number, sortOrder: SortDirection): ITableH2Row[] => {
   return table.sort((a, b) => {
@@ -109,5 +119,3 @@ export const getHeaderColumns = (coding: Coding[]): HeaderColumn[] => {
     code: code.code,
   }));
 };
-
-//TODO: Dette finnes fra før, kan bruke eksisterende funksjonalitet

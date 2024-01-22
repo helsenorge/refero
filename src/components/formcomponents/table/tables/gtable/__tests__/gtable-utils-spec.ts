@@ -13,6 +13,7 @@ import {
   getValueFromAnswer,
 } from '../utils';
 import ItemType from '../../../../../../constants/itemType';
+import { QuestionnaireItemWithAnswers } from '../../interface';
 type MockAnswerProps = Partial<QuestionnaireResponseItemAnswer>;
 type MockResponseItemProps = Partial<QuestionnaireResponseItem>;
 type MockQuestionnaireItemProps = Partial<Omit<QuestionnaireItem, 'type'>> & {
@@ -42,7 +43,16 @@ function generateMockQuestionnaireItem(props: MockQuestionnaireItemProps): Quest
     ...props,
   };
 }
-
+function generateMockQuestionnaireItemWithAnswers(
+  props: Partial<Omit<QuestionnaireItemWithAnswers, 'linkId'>>
+): QuestionnaireItemWithAnswers {
+  return {
+    linkId: 'default-question-linkId',
+    type: ItemType.TEXT,
+    answer: [],
+    ...props,
+  };
+}
 function generateMockQuestionnaireResponse(props: MockResponseProps = {}): QuestionnaireResponse {
   return {
     resourceType: 'QuestionnaireResponse',
@@ -75,10 +85,6 @@ describe('gtable-utils-spec', () => {
     });
   });
   describe('getValueFromAnswer', () => {
-    const generateMockQuestionnaireResponseItem = (answers?: QuestionnaireResponseItemAnswer[]): QuestionnaireResponseItem => {
-      return { answer: answers } as QuestionnaireResponseItem;
-    };
-
     it('should return an empty string if no answer is provided', () => {
       expect(getValueFromAnswer(0, undefined)).toBe('');
     });
@@ -88,33 +94,31 @@ describe('gtable-utils-spec', () => {
         generateMockResponseAnswer({ valueString: 'Answer 1' }),
         generateMockResponseAnswer({ valueString: 'Answer 2' }),
       ];
-      const item = generateMockQuestionnaireResponseItem(answers);
+      const item = generateMockQuestionnaireItemWithAnswers({ answer: answers });
       expect(getValueFromAnswer(1, { ...item, type: ItemType.TEXT })).toBe('Answer 2');
     });
 
     it('should return an empty string if the index is out of bounds', () => {
       const answers: QuestionnaireResponseItemAnswer[] = [generateMockResponseAnswer({ valueString: 'Answer 1' })];
-      const item = generateMockQuestionnaireResponseItem(answers);
+      const item = generateMockQuestionnaireItemWithAnswers({ answer: answers });
       expect(getValueFromAnswer(2, item)).toBe('');
     });
 
     it('should return an empty string if the answer at the index is empty', () => {
       const answers: QuestionnaireResponseItemAnswer[] = [generateMockResponseAnswer({ valueString: '' })];
-      const item = generateMockQuestionnaireResponseItem(answers);
+      const item = generateMockQuestionnaireItemWithAnswers({ answer: answers });
       expect(getValueFromAnswer(0, item)).toBe('');
     });
   });
   describe('columnsForRowIndex', () => {
     it('should create columns with correct values for a valid row index', () => {
-      const answerItems: QuestionnaireResponseItem[] = [
-        generateMockResponseItem({
+      const answerItems: QuestionnaireItemWithAnswers[] = [
+        generateMockQuestionnaireItemWithAnswers({
           answer: [generateMockResponseAnswer({ valueString: 'Answer 1' }), generateMockResponseAnswer({ valueString: 'Answer 2' })],
-          //@ts-ignore
           type: ItemType.TEXT,
         }),
-        generateMockResponseItem({
+        generateMockQuestionnaireItemWithAnswers({
           answer: [generateMockResponseAnswer({ valueString: 'Another Answer 1' })],
-          //@ts-ignore
           type: ItemType.TEXT,
         }),
       ];
@@ -126,9 +130,9 @@ describe('gtable-utils-spec', () => {
     });
 
     it('should create columns with empty values for a row index with no answers', () => {
-      const answerItems: QuestionnaireResponseItem[] = [
-        generateMockResponseItem({ answer: [generateMockResponseAnswer({ valueString: 'Answer 1' })] }),
-        generateMockResponseItem({ answer: [] }),
+      const answerItems: QuestionnaireItemWithAnswers[] = [
+        generateMockQuestionnaireItemWithAnswers({ answer: [generateMockResponseAnswer({ valueString: 'Answer 1' })] }),
+        generateMockQuestionnaireItemWithAnswers({ answer: [] }),
       ];
       const columns = columnsForRowIndex(answerItems, 1);
       expect(columns).toEqual([
@@ -138,18 +142,18 @@ describe('gtable-utils-spec', () => {
     });
 
     it('should handle empty answer items correctly', () => {
-      const answerItems: QuestionnaireResponseItem[] = [];
+      const answerItems: QuestionnaireItemWithAnswers[] = [];
       const columns = columnsForRowIndex(answerItems, 0);
       expect(columns).toEqual([]);
     });
   });
   describe('createTableRows', () => {
     it('should create table rows based on the input items', () => {
-      const items: QuestionnaireResponseItem[] = [
-        generateMockResponseItem({
+      const items: QuestionnaireItemWithAnswers[] = [
+        generateMockQuestionnaireItemWithAnswers({
           answer: [generateMockResponseAnswer({ valueString: 'Answer 1' }), generateMockResponseAnswer({ valueString: 'Answer 2' })],
         }),
-        generateMockResponseItem({
+        generateMockQuestionnaireItemWithAnswers({
           answer: [generateMockResponseAnswer({ valueString: 'Another Answer 1' })],
         }),
       ];
@@ -160,9 +164,9 @@ describe('gtable-utils-spec', () => {
     });
 
     it('should handle items with no answers correctly', () => {
-      const items: QuestionnaireResponseItem[] = [
-        generateMockResponseItem({ answer: [] }),
-        generateMockResponseItem({ answer: [generateMockResponseAnswer({ valueString: 'Only Answer' })] }),
+      const items: QuestionnaireItemWithAnswers[] = [
+        generateMockQuestionnaireItemWithAnswers({ answer: [] }),
+        generateMockQuestionnaireItemWithAnswers({ answer: [generateMockResponseAnswer({ valueString: 'Only Answer' })] }),
       ];
       const rows = createTableRows(items);
       expect(rows.length).toBe(1);
@@ -170,7 +174,7 @@ describe('gtable-utils-spec', () => {
     });
 
     it('should handle empty items correctly', () => {
-      const items: QuestionnaireResponseItem[] = [];
+      const items: QuestionnaireItemWithAnswers[] = [];
       const rows = createTableRows(items);
       expect(rows).toEqual([]);
     });
@@ -242,7 +246,6 @@ describe('gtable-utils-spec', () => {
         ],
       });
       const gTable = getGtablebodyObject(questionnaireItems, questionnaireResponse);
-      console.log('gTable', gTable);
       expect(gTable.rows.length).toBe(1);
       expect(gTable.headerRow.length).toBe(2);
     });

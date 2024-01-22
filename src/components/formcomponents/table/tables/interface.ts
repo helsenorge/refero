@@ -2,4 +2,5 @@ import { QuestionnaireItem, QuestionnaireResponseItem } from '../../../../types/
 
 export type QuestionnaireItemWithAnswers = QuestionnaireItem & {
   answer?: QuestionnaireResponseItem['answer'];
+  item?: QuestionnaireItemWithAnswers[];
 };

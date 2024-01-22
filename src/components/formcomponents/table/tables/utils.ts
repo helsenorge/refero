@@ -331,10 +331,6 @@ export const transformCodingToSortDirection = (coding: Coding[]): SortDirection 
   return !!code ? (code === 'ASC' ? SortDirection.asc : SortDirection.desc) : undefined;
 };
 
-export const getIndexToSortBy = (coding: Coding[]): number | undefined => {
-  const sortCode = getCodeFromCodingSystem(coding, codeSystems.TableOrderingColum);
-  return sortCode ? Number(sortCode) - 1 : undefined;
-};
 export const getDisplayFromCodingSystem = (coding: Coding[], codingSystem: string): string | undefined => {
   const code = findCodeBySystem(coding, codingSystem);
   return code[0]?.display;

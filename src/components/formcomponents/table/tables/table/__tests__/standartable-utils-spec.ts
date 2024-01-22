@@ -17,7 +17,7 @@ import { QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItem, Re
 import * as choiceUtils from '../../../../../../util/choice';
 
 import * as tableUtils from '../../utils';
-import { QuestionnaireItemAndResponseItemMerged } from '../../interface';
+import { QuestionnaireItemWithAnswers } from '../../interface';
 jest.mock('../../utils');
 jest.mock('../../../../../../util/choice');
 
@@ -301,7 +301,7 @@ describe('createColumnsFromAnswers', () => {
     (tableUtils.transformAnswersToListOfStrings as jest.Mock).mockImplementation(() => {
       return ['A', 'B'];
     });
-    const item: QuestionnaireItemAndResponseItemMerged = {
+    const item: QuestionnaireItemWithAnswers = {
       linkId: '1',
       text: 'Question 1',
       type: ItemType.CHOICE,
@@ -335,7 +335,7 @@ describe('createColumnsFromAnswers', () => {
     (tableUtils.transformAnswersToListOfStrings as jest.Mock).mockImplementation(() => {
       return [];
     });
-    const item: QuestionnaireItemAndResponseItemMerged = {
+    const item: QuestionnaireItemWithAnswers = {
       linkId: '1',
       text: 'Question 1',
       type: ItemType.CHOICE,
