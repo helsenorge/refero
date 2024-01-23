@@ -88,7 +88,7 @@ const TableContainer = ({
         return (
           <>
             <h3>{headline}</h3>
-            <GTable items={items} questionnaireResponse={questionnaireResponse} />
+            <GTable items={items} questionnaireResponse={questionnaireResponse} tableCodesCoding={tableCodesCoding} />
           </>
         );
       case TableCodes.table:

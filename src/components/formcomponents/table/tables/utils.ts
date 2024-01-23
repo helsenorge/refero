@@ -335,10 +335,12 @@ export const getDisplayFromCodingSystem = (coding: Coding[], codingSystem: strin
   const code = findCodeBySystem(coding, codingSystem);
   return code[0]?.display;
 };
+
 export const getCodeFromCodingSystem = (coding: Coding[], codingSystem: string): string | undefined => {
   const code = findCodeBySystem(coding, codingSystem);
   return code[0]?.code;
 };
+
 export function findCodeBySystem<T extends { system?: string }>(coding: T[], system?: string): T[] {
   return coding.filter(code => code.system === system);
 }

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { QuestionnaireItem, QuestionnaireResponse } from '../../../../../types/fhir';
+import { Coding, QuestionnaireItem, QuestionnaireResponse } from '../../../../../types/fhir';
 
 import {
   TableBody,
@@ -17,12 +17,12 @@ import { getGtablebodyObject } from './utils';
 interface Props {
   items: QuestionnaireItem[];
   questionnaireResponse?: QuestionnaireResponse | null;
+  tableCodesCoding: Coding[];
 }
 
-const GTable = ({ items, questionnaireResponse }: Props): JSX.Element => {
-
+const GTable = ({ items, questionnaireResponse, tableCodesCoding }: Props): JSX.Element => {
   const gTable = getGtablebodyObject(items, questionnaireResponse);
-
+  console.log(tableCodesCoding);
   return gTable.rows.length > 0 ? (
     <HnTable className="page_refero__table__gtable">
       <TableHead category={HeaderCategory.normal} className="page_refero__table__gtable__header">
