@@ -1,13 +1,15 @@
 import * as React from 'react';
-// import Form from '@helsenorge/form/components/form';
-import { Resources } from '../util/resources';
-import { ReferoProps } from '../types/referoProps';
-import { buttonOrderStepView, buttonOrderNormalView } from '../types/formTypes/formButton';
 
 import { useForm, SubmitHandler } from 'react-hook-form';
-import FormButtons from './formButtons';
-import Loader from '@helsenorge/designsystem-react/components/Loader';
+
+import { buttonOrderStepView, buttonOrderNormalView } from '../types/formTypes/formButton';
 import { Inputs } from '../types/formTypes/formInputs';
+import { ReferoProps } from '../types/referoProps';
+
+import Loader from '@helsenorge/designsystem-react/components/Loader';
+
+import FormButtons from './formButtons';
+import { Resources } from '../util/resources';
 
 interface RenderFormProps {
   isAuthorized: boolean;
@@ -36,7 +38,7 @@ const RenderForm = ({
   nextStep,
   previousStep,
   isHelsenorgeForm,
-}: RenderFormProps) => {
+}: RenderFormProps): JSX.Element | null => {
   const { handleSubmit } = useForm();
   const onSubmitReactHookForm: SubmitHandler<Inputs> = data => {
     console.log(data);

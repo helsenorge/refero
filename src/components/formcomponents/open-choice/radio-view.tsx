@@ -5,10 +5,10 @@ import { Collapse } from 'react-collapse';
 import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer } from '../../../types/fhir';
 import { Options } from '../../../types/formTypes/radioGroupOptions';
 
-import Validation from '@helsenorge/designsystem-react/components/Validation';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
-import RadioButton from '@helsenorge/designsystem-react/components/RadioButton';
 import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
+import RadioButton from '@helsenorge/designsystem-react/components/RadioButton';
+import Validation from '@helsenorge/designsystem-react/components/Validation';
 
 import { shouldShowExtraChoice } from '../../../util/choice';
 import { getId, getSublabelText, getText, isRequired } from '../../../util/index';
@@ -17,7 +17,7 @@ import { Resources } from '../../../util/resources';
 interface Props {
   options?: Array<Options>;
   item: QuestionnaireItem;
-  questionnaire?: Questionnaire;
+  questionnaire?: Questionnaire | null;
   id?: string;
   handleChange: (radioButton: string) => void;
   selected?: Array<string | undefined>;
@@ -41,7 +41,7 @@ const RadioView: React.SFC<Props> = ({
   id,
   handleChange,
   selected,
-  validateInput,
+  // validateInput,
   resources,
   children,
   getErrorMessage,
@@ -79,17 +79,13 @@ const RadioView: React.SFC<Props> = ({
             {options.map((option: Options, index: number) => (
               <RadioButton
                 inputId={getId(id)}
-                testId='radioButton-openChoice'
+                testId="radioButton-openChoice"
                 key={`${getId(id)}-${index.toString()}`}
                 label={
                   <Label
                     labelTexts={[{ text: option.label }]}
                     sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
-                    afterLabelChildren={
-                      <>
-                        {renderHelpButton()}
-                      </>
-                    }
+                    afterLabelChildren={<>{renderHelpButton()}</>}
                   />
                 }
                 defaultChecked={selectedValue === option.type}

@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem, Questionnaire } from '../../../types/fhir';
+import { ValidationProps } from '../../../types/formTypes/validation';
 
 import AnchorLink from '@helsenorge/designsystem-react/components/AnchorLink';
 
@@ -14,11 +15,10 @@ import { GlobalState } from '../../../reducers';
 import { getGroupItemControl } from '../../../util/group-item-control';
 import { renderPrefix, getText, getId } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
+import { Path } from '../../../util/refero-core';
 import { RenderContext } from '../../../util/renderContext';
 import { Resources } from '../../../util/resources';
-import { Path } from '../../../util/refero-core';
 import withCommonFunctions, { WithCommonFunctionsProps } from '../../with-common-functions';
-import { ValidationProps } from '../../../types/formTypes/validation';
 
 export interface GroupProps extends WithCommonFunctionsProps {
   item: QuestionnaireItem;
@@ -236,10 +236,6 @@ const Group: React.FC<GroupProps & ValidationProps> = props => {
     }
 
     return classNames.join(' ');
-  };
-
-  const getComponentToValidate = (): undefined => {
-    return undefined;
   };
 
   const getHeaderText = (): string => {

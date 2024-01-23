@@ -1,25 +1,26 @@
 import * as React from 'react';
 
 import { Collapse } from 'react-collapse';
+import { useForm } from 'react-hook-form';
 
 import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer } from '../../../types/fhir';
 import { Options } from '../../../types/formTypes/radioGroupOptions';
 
-import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
-import Validation from '@helsenorge/designsystem-react/components/Validation';
-import Select from '@helsenorge/designsystem-react/components/Select';
 import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
+import Select from '@helsenorge/designsystem-react/components/Select';
+import Validation from '@helsenorge/designsystem-react/components/Validation';
+
+import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 
 import { shouldShowExtraChoice } from '../../../util/choice';
-import { getValidationTextExtension, getPlaceholder } from '../../../util/extension';
+import { getValidationTextExtension } from '../../../util/extension';
 import { isRequired, getId, getSublabelText, getText } from '../../../util/index';
 import { Resources } from '../../../util/resources';
-import { useForm } from 'react-hook-form';
 
 interface DropdownViewProps {
   options?: Array<Options>;
   item: QuestionnaireItem;
-  questionnaire?: Questionnaire;
+  questionnaire?: Questionnaire | null;
   id?: string;
   handleChange: (code: string) => void;
   selected?: Array<string | undefined>;
@@ -45,7 +46,7 @@ const DropdownView: React.FC<DropdownViewProps> = props => {
     answer,
     handleChange,
     selected,
-    validateInput,
+    // validateInput,
     resources,
     children,
     repeatButton,
@@ -69,13 +70,6 @@ const DropdownView: React.FC<DropdownViewProps> = props => {
   const labelText = getText(item, onRenderMarkdown, questionnaire, resources);
   const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
 
-  let placeholder;
-  if (getPlaceholder(item)) {
-    placeholder = new Option(getPlaceholder(item), '');
-  } else if (resources) {
-    placeholder = new Option(resources.selectDefaultPlaceholder, '');
-  }
-
   // showLabel={true}
   // onChangeValidator={validateInput}
 
@@ -98,7 +92,7 @@ const DropdownView: React.FC<DropdownViewProps> = props => {
             value={selected ? selected[0] : undefined}
             errorText={getValidationTextExtension(item)}
             className="page_refero__input"
-            onChange={(evt): void => handleChange(evt.target.value)}
+            onChange={(evt: React.ChangeEvent<HTMLSelectElement>): void => handleChange(evt.target.value)}
           >
             {dropdownOptions}
           </Select>

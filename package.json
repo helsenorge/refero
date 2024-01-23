@@ -123,7 +123,6 @@
     "yargs": "^17.7.2"
   },
   "dependencies": {
-    "@types/react-collapse": "^5.0.1",
     "dompurify": "^2.0.8",
     "fhirpath": "2.7.3",
     "immer": "^9.0.6",

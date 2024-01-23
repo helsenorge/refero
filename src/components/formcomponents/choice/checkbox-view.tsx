@@ -5,10 +5,10 @@ import { Collapse } from 'react-collapse';
 import { QuestionnaireItem, Questionnaire } from '../../../types/fhir';
 import { Options } from '../../../types/formTypes/radioGroupOptions';
 
-import Validation from '@helsenorge/designsystem-react/components/Validation';
-import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Checkbox from '@helsenorge/designsystem-react/components/Checkbox';
+import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
+import Validation from '@helsenorge/designsystem-react/components/Validation';
 
 import { getSublabelText, getText, isRequired } from '../../../util/index';
 import { Resources } from '../../../util/resources';
@@ -16,7 +16,7 @@ import { Resources } from '../../../util/resources';
 interface Props {
   options?: Array<Options>;
   item: QuestionnaireItem;
-  questionnaire?: Questionnaire;
+  questionnaire?: Questionnaire | null;
   id?: string;
   handleChange: (radioButton: string) => void;
   selected?: Array<string | undefined>;
@@ -40,8 +40,8 @@ const CheckboxView: React.SFC<Props> = ({
   children,
   repeatButton,
   renderDeleteButton,
-  renderHelpButton,
-  renderHelpElement,
+  // renderHelpButton,
+  // renderHelpElement,
   onRenderMarkdown,
   ...other
 }) => {

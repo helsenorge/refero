@@ -1,6 +1,9 @@
 import * as React from 'react';
-import Button from '@helsenorge/designsystem-react/components/Button';
+
 import { ButtonOrder, ButtonType } from '../types/formTypes/formButton';
+
+import Button from '@helsenorge/designsystem-react/components/Button';
+
 import {
   cancelButtonStyle,
   displayPauseButtonOnSmallScreen,
@@ -34,7 +37,7 @@ const FormButtons = ({
   onCancelButtonClicked,
   onPauseButtonClicked,
   isHelsenorgeForm,
-}: FormButtonsInterface) => {
+}: FormButtonsInterface): JSX.Element | null => {
   const submitButton = (
     //onsubmit og onformsubmit
     <div key="submitButton" className="submitButtonStyle">

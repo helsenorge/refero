@@ -5,19 +5,19 @@ import { Collapse } from 'react-collapse';
 import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer } from '../../../types/fhir';
 import { Options } from '../../../types/formTypes/radioGroupOptions';
 
-import Validation from '@helsenorge/designsystem-react/components/Validation';
-import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Checkbox from '@helsenorge/designsystem-react/components/Checkbox';
+import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
+import Validation from '@helsenorge/designsystem-react/components/Validation';
 
+import { getSublabelText, getText, isRequired } from '../../../util';
 import { shouldShowExtraChoice } from '../../../util/choice';
 import { Resources } from '../../../util/resources';
-import { getSublabelText, getText, isRequired } from '../../../util';
 
 interface Props {
   options?: Array<Options>;
   item: QuestionnaireItem;
-  questionnaire?: Questionnaire;
+  questionnaire?: Questionnaire | null;
   id?: string;
   handleChange: (radioButton: string) => void;
   selected?: Array<string | undefined>;
@@ -82,11 +82,7 @@ const CheckboxView: React.SFC<Props> = ({
                   <Label
                     labelTexts={[{ text: checkbox.label }]}
                     sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
-                    afterLabelChildren={
-                      <>
-                        {renderHelpButton()}
-                      </>
-                    }
+                    afterLabelChildren={<>{renderHelpButton()}</>}
                   />
                 }
                 checked={checkbox.checked}

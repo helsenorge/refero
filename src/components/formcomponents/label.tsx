@@ -9,7 +9,7 @@ import { Resources } from '../../util/resources';
 
 interface Props {
   item: QuestionnaireItem;
-  questionnaire?: Questionnaire;
+  questionnaire?: Questionnaire | null;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
   resources?: Resources;
 }

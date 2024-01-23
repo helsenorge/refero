@@ -1,8 +1,7 @@
 import * as React from 'react';
 
-import DOMPurify from 'dompurify';
-
 import classNames from 'classnames';
+import DOMPurify from 'dompurify';
 import { Collapse } from 'react-collapse';
 import { ThunkDispatch } from 'redux-thunk';
 
@@ -16,16 +15,19 @@ import {
   Attachment,
   ValueSet,
 } from '../types/fhir';
-import { OrgenhetHierarki } from '../types/orgenhetHierarki';
-import { TextMessage } from '../types/text-message';
 import { FormChild } from '../types/formTypes/formChild';
 import { ValidationProps } from '../types/formTypes/validation';
+import { OrgenhetHierarki } from '../types/orgenhetHierarki';
+import { TextMessage } from '../types/text-message';
 
 import Icon from '@helsenorge/designsystem-react/components/Icons';
 import HelpSign from '@helsenorge/designsystem-react/components/Icons/HelpSign';
 
 import { UploadedFile } from '@helsenorge/file-upload/components/dropzone';
 
+import DeleteButton from './formcomponents/repeat/delete-button';
+import RepeatButton from './formcomponents/repeat/repeat-button';
+import HelpButton from './help-button/help-button';
 import { NewValueAction } from '../actions/newValue';
 import itemControlConstants from '../constants/itemcontrol';
 import itemType from '../constants/itemType';
@@ -42,16 +44,13 @@ import {
 } from '../util/refero-core';
 import { RenderContext } from '../util/renderContext';
 import { Resources } from '../util/resources';
-import DeleteButton from './formcomponents/repeat/delete-button';
-import RepeatButton from './formcomponents/repeat/repeat-button';
-import HelpButton from './help-button/help-button';
 
 export interface WithCommonFunctionsProps {
   resources?: Resources;
   responseItem?: QuestionnaireResponseItem;
   containedResources?: Resource[];
   item?: QuestionnaireItem;
-  questionnaire?: Questionnaire;
+  questionnaire?: Questionnaire | null;
   headerTag?: number;
   pdf?: boolean;
   language?: string;
@@ -113,7 +112,7 @@ export interface WithCommonFunctionsProps {
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export default function withCommonFunctions<T>(WrappedComponent: React.FC<WithCommonFunctionsProps & ValidationProps>) {
-  return function WithCommonFunctions(props: T & ValidationProps & WithCommonFunctionsProps) {
+  return function WithCommonFunctions(props: T & ValidationProps & WithCommonFunctionsProps): JSX.Element | null {
     const [isHelpVisible, setIsHelpVisible] = React.useState<boolean>(false);
 
     const renderDeleteButton = (className?: string): JSX.Element | undefined => {

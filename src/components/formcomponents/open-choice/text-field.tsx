@@ -3,9 +3,9 @@ import * as React from 'react';
 import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer } from '../../../types/fhir';
 import { ValidationProps } from '../../../types/formTypes/validation';
 
-import Validation from '@helsenorge/designsystem-react/components/Validation';
 import Input from '@helsenorge/designsystem-react/components/Input';
 import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
+import Validation from '@helsenorge/designsystem-react/components/Validation';
 
 import { getValidationTextExtension, getPlaceholder, getMinLengthExtensionValue } from '../../../util/extension';
 import {
@@ -19,15 +19,14 @@ import {
   renderPrefix,
   getText,
 } from '../../../util/index';
-
-import Pdf from '../textview';
 import { Resources } from '../../../util/resources';
+import Pdf from '../textview';
 
 interface Props {
   id?: string;
   pdf?: boolean;
   item: QuestionnaireItem;
-  questionnaire?: Questionnaire;
+  questionnaire?: Questionnaire | null;
   answer: QuestionnaireResponseItemAnswer;
   handleStringChange: (event: React.FormEvent<{}>) => void;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;

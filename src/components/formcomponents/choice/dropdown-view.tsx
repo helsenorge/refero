@@ -1,24 +1,25 @@
 import * as React from 'react';
 
 import { Collapse } from 'react-collapse';
+import { useForm } from 'react-hook-form';
 
 import { QuestionnaireItem, Questionnaire } from '../../../types/fhir';
+import { Options } from '../../../types/formTypes/radioGroupOptions';
+
+import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
+import Select from '@helsenorge/designsystem-react/components/Select';
+import Validation from '@helsenorge/designsystem-react/components/Validation';
 
 import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
-import Validation from '@helsenorge/designsystem-react/components/Validation';
-import Select from '@helsenorge/designsystem-react/components/Select';
-import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
-import { Options } from '../../../types/formTypes/radioGroupOptions';
 
 import { getValidationTextExtension, getPlaceholder } from '../../../util/extension';
 import { isRequired, getId, getSublabelText, getText, renderPrefix } from '../../../util/index';
 import { Resources } from '../../../util/resources';
-import { useForm } from 'react-hook-form';
 
 interface DropdownViewProps {
   options?: Array<Options>;
   item: QuestionnaireItem;
-  questionnaire?: Questionnaire;
+  questionnaire?: Questionnaire | null;
   id?: string;
   handleChange: (code: string) => void;
   selected?: Array<string | undefined>;
@@ -97,7 +98,9 @@ const DropdownView: React.FC<DropdownViewProps> = props => {
             onChange={(evt): void => handleChange(evt.target.value)}
           >
             {dropdownOptions.map(dropdownOption => (
-              <option key={selectId + dropdownOption.label} value={dropdownOption.label}>{dropdownOption.label}</option>
+              <option key={selectId + dropdownOption.label} value={dropdownOption.label}>
+                {dropdownOption.label}
+              </option>
             ))}
           </Select>
         </Validation>

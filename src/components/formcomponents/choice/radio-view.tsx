@@ -16,7 +16,7 @@ import { Resources } from '../../../util/resources';
 interface Props {
   options?: Array<Options>;
   item: QuestionnaireItem;
-  questionnaire?: Questionnaire;
+  questionnaire?: Questionnaire | null;
   id?: string;
   handleChange: (radioButton: string) => void;
   selected?: Array<string | undefined>;
@@ -53,7 +53,7 @@ const RadioView: React.SFC<Props> = ({
     return null;
   }
   const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
-  const selectedValue = selected && selected[0] || '';
+  const selectedValue = (selected && selected[0]) || '';
 
   // RadioButtonGroup:
   // validator={validateInput}
@@ -73,17 +73,13 @@ const RadioView: React.SFC<Props> = ({
             {options.map((option: Options, index: number) => (
               <RadioButton
                 inputId={getId(id)}
-                testId='radioButton-choice'
+                testId="radioButton-choice"
                 key={`${getId(id)}-${index.toString()}`}
                 label={
                   <Label
                     labelTexts={[{ text: option.label }]}
                     sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
-                    afterLabelChildren={
-                      <>
-                        {renderHelpButton()}
-                      </>
-                    }
+                    afterLabelChildren={<>{renderHelpButton()}</>}
                   />
                 }
                 defaultChecked={selectedValue === option.type}

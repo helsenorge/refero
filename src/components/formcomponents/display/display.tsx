@@ -1,7 +1,6 @@
 import * as React from 'react';
 
 import DOMPurify from 'dompurify';
-
 import { connect } from 'react-redux';
 
 import { Questionnaire, QuestionnaireItem } from '../../../types/fhir';
@@ -24,7 +23,7 @@ export interface Props {
   resources?: Resources;
 }
 
-const Display: React.SFC<Props> = ({ id, enable, pdf, item, questionnaire, onRenderMarkdown, resources }) => {
+const Display = ({ id, enable, pdf, item, questionnaire, onRenderMarkdown, resources }: Props): JSX.Element | null => {
   const itemControls = item ? getItemControlExtensionValue(item) : null;
   const highlightClass =
     itemControls && itemControls.some(itemControl => itemControl.code === itemControlConstants.HIGHLIGHT)
