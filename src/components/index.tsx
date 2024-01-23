@@ -58,11 +58,12 @@ interface StateProps {
 class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, State> {
   constructor(props: StateProps & DispatchProps & ReferoProps) {
     super(props);
-
+    const questionnaire = this.props.questionnaire ? this.props.questionnaire : this.props.formDefinition?.Content;
     this.state = {
       valid: true,
       validated: false,
-      showCancelLightbox: false,
+      showCancelLightbox: false,  
+      scoringCalculator: questionnaire ? this.getScoringCalculator(questionnaire) : undefined
     };
   }
 
@@ -96,6 +97,7 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
         nextProps.language,
         nextProps.syncQuestionnaireResponse
       );
+      this.setState({scoringCalculator: this.getScoringCalculator(nextProps.questionnaire)});
     }
   }
 
@@ -118,14 +120,29 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
     this.runScoringCalculator(newState);
   };
 
+  getScoringCalculator = (questionnaire: Questionnaire): ScoringCalculator => {
+    return new ScoringCalculator(questionnaire);
+  };
+
   runScoringCalculator = (newState: GlobalState): void => {
     const questionnaireResponse = newState.refero?.form?.FormData?.Content;
     const questionnaire = newState.refero.form.FormDefinition?.Content;
     if (!questionnaire || !questionnaireResponse) return;
 
-    const scoringCalculator = new ScoringCalculator(questionnaire);
-    const scores = scoringCalculator.calculate(questionnaireResponse);
+    if (this.state.scoringCalculator) {
+      const scores = this.state.scoringCalculator.calculateScore(questionnaireResponse);
+      this.updateQuestionnaireResponseWithScore(scores, questionnaire, questionnaireResponse);
 
+      const fhirScores = this.state.scoringCalculator.calculateFhirScore(questionnaireResponse);
+      this.updateQuestionnaireResponseWithScore(fhirScores, questionnaire, questionnaireResponse);
+    }
+  };
+
+  updateQuestionnaireResponseWithScore = (
+    scores: { [linkId: string]: number | undefined },
+    questionnaire: Questionnaire,
+    questionnaireResponse: QuestionnaireResponse,
+  ): void => {
     const actions: Array<NewValueAction> = [];
     for (const linkId in scores) {
       const item = getQuestionnaireDefinitionItem(linkId, questionnaire.item);
@@ -169,7 +186,7 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
     for (const a of actions) {
       this.props.dispatch(a);
     }
-  };
+  }
 
   renderFormItems(pdf?: boolean): Array<JSX.Element> | undefined {
     const { formDefinition, resources, formData, promptLoginMessage } = this.props;

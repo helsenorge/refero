@@ -12,9 +12,13 @@ import {
   QuestionnaireResponseItem,
   ValueSet,
 } from '../../../types/fhir';
-import { ValidationProps } from '../../../types/formTypes/validation';
 import { Options } from '../../../types/formTypes/radioGroupOptions';
+import { ValidationProps } from '../../../types/formTypes/validation';
 
+import CheckboxView from './checkbox-view';
+import DropdownView from './dropdown-view';
+import RadioView from './radio-view';
+import TextField from './text-field';
 import {
   NewValueAction,
   removeCodingValueAsync,
@@ -38,15 +42,12 @@ import {
   getItemControlValue,
 } from '../../../util/choice';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
-import { Resources } from '../../../util/resources';
 import { Path } from '../../../util/refero-core';
+import { Resources } from '../../../util/resources';
 import withCommonFunctions, { WithCommonFunctionsProps } from '../../with-common-functions';
+import SliderView from '../choice/slider-view';
 import AutosuggestView from '../choice-common/autosuggest-view';
 import TextView from '../textview';
-import CheckboxView from './checkbox-view';
-import DropdownView from './dropdown-view';
-import RadioView from './radio-view';
-import TextField from './text-field';
 
 export interface OpenChoiceProps extends WithCommonFunctionsProps {
   item: QuestionnaireItem;
@@ -79,7 +80,7 @@ export interface OpenChoiceProps extends WithCommonFunctionsProps {
 const OpenChoice: React.FC<OpenChoiceProps & ValidationProps> = props => {
   const getDataReceiverValue = (answer: Array<QuestionnaireResponseItemAnswer>): (string | undefined)[] => {
     return answer
-      .filter((f) => f.valueCoding?.code !== OPEN_CHOICE_ID)
+      .filter(f => f.valueCoding?.code !== OPEN_CHOICE_ID)
       .map((el: QuestionnaireResponseItemAnswer) => {
         if (el && el.valueCoding) {
           return el.valueCoding.display;
@@ -90,11 +91,14 @@ const OpenChoice: React.FC<OpenChoiceProps & ValidationProps> = props => {
       });
   };
 
-  const getPDFValue = (item: QuestionnaireItem, answer: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer): string => {
+  const getPDFValue = (
+    item: QuestionnaireItem,
+    answer: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer
+  ): string => {
     const { resources, containedResources } = props;
-  
-    if (isDataReceiver(item)) {      
-      return getDataReceiverValue(answer as Array<QuestionnaireResponseItemAnswer>).join(', ');      
+
+    if (isDataReceiver(item)) {
+      return getDataReceiverValue(answer as Array<QuestionnaireResponseItemAnswer>).join(', ');
     }
 
     const value = getValue(item, answer);
@@ -106,7 +110,9 @@ const OpenChoice: React.FC<OpenChoiceProps & ValidationProps> = props => {
       return text;
     }
 
-    const displayValues = value.filter(el => el !== OPEN_CHOICE_ID).map(el => getDisplay(getOptions(resources, item, containedResources), el));
+    const displayValues = value
+      .filter(el => el !== OPEN_CHOICE_ID)
+      .map(el => getDisplay(getOptions(resources, item, containedResources), el));
     const openValue = getOpenValue(answer);
     if (openValue) {
       displayValues.push(openValue);
@@ -185,13 +191,13 @@ const OpenChoice: React.FC<OpenChoiceProps & ValidationProps> = props => {
     const valueSetSystem = code === OPEN_CHOICE_ID ? OPEN_CHOICE_SYSTEM : getSystem(props.item, code, props.containedResources);
     const system = systemArg ? systemArg : valueSetSystem;
     return { code, display, system } as Coding;
-  }
+  };
 
   const resetInitialAnswer = (code: string): void => {
     const { dispatch, answer, promptLoginMessage, item, onAnswerChange, path } = props;
     if (dispatch && code) {
       const coding = getAnswerValueCoding(code);
-      const responseAnswer = { valueCoding: coding  } as QuestionnaireResponseItemAnswer;
+      const responseAnswer = { valueCoding: coding } as QuestionnaireResponseItemAnswer;
       if (getIndexOfAnswer(code, answer) > -1) {
         dispatch(removeCodingValueAsync(path, coding, item))?.then(newState => onAnswerChange(newState, path, item, responseAnswer));
         if (promptLoginMessage) {
@@ -211,9 +217,7 @@ const OpenChoice: React.FC<OpenChoiceProps & ValidationProps> = props => {
       const coding = getAnswerValueCoding(code);
       const responseAnswer = { valueCoding: coding } as QuestionnaireResponseItemAnswer;
       if (getIndexOfAnswer(code, answer) > -1) {
-        dispatch(removeCodingValueAsync(props.path, coding, item))?.then(newState =>
-          onAnswerChange(newState, path, item, responseAnswer)
-        );
+        dispatch(removeCodingValueAsync(props.path, coding, item))?.then(newState => onAnswerChange(newState, path, item, responseAnswer));
 
         if (promptLoginMessage) {
           promptLoginMessage();
@@ -293,8 +297,8 @@ const OpenChoice: React.FC<OpenChoiceProps & ValidationProps> = props => {
 
   const renderTextField = (): JSX.Element => {
     const { id, pdf, item, answer, onRenderMarkdown, ...other } = props;
-    
-   let a: QuestionnaireResponseItemAnswer = {};
+
+    let a: QuestionnaireResponseItemAnswer = {};
     if (Array.isArray(answer)) {
       for (let i = 0; i < answer.length; i++) {
         const el = answer[i] as QuestionnaireResponseItemAnswer;
@@ -319,7 +323,7 @@ const OpenChoice: React.FC<OpenChoiceProps & ValidationProps> = props => {
         {...other}
       />
     );
-  }
+  };
 
   const renderCheckbox = (options: Array<Options> | undefined): JSX.Element => {
     return (
@@ -391,32 +395,42 @@ const OpenChoice: React.FC<OpenChoiceProps & ValidationProps> = props => {
       </AutosuggestView>
     );
   };
-
+  const renderSlider = (): JSX.Element => {
+    return <SliderView item={props.item} handleChange={handleChange} />;
+  };
   React.useMemo(() => {
     const responseItemHasChanged = props.responseItem !== props.responseItem;
     const helpItemHasChanged = props.isHelpOpen !== props.isHelpOpen;
     const answerHasChanged = props.answer !== props.answer;
     const resourcesHasChanged = JSON.stringify(props.resources) !== JSON.stringify(props.resources);
     const repeats = props.item.repeats ?? false;
+    return responseItemHasChanged || helpItemHasChanged || answerHasChanged || resourcesHasChanged || repeats;
+  }, [props.responseItem, props.isHelpOpen, props.answer, props.resources]);
 
-    return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats || answerHasChanged;
-  }, [props.responseItem, props.isHelpOpen, props.answer, props.resources, props.item]);
-
-    const { id, item, pdf, answer, containedResources, children, onRenderMarkdown } = props;
-    if (pdf || isReadOnly(item)) {
-      return (
-        <TextView id={id} item={item} value={getPDFValue(item, answer)} onRenderMarkdown={onRenderMarkdown}>
-          {children}
-        </TextView>
-      );
-    }
-
+  const { id, item, pdf, answer, containedResources, children, onRenderMarkdown } = props;
+  if (pdf || isReadOnly(item)) {
     return (
-      <React.Fragment>
-        {renderOptions(item, containedResources, renderRadio, renderCheckbox, renderDropdown, props.resources, renderAutosuggest)}
-      </React.Fragment>
+      <TextView id={id} item={item} value={getPDFValue(item, answer)} onRenderMarkdown={onRenderMarkdown}>
+        {children}
+      </TextView>
     );
-}
+  }
+
+  return (
+    <React.Fragment>
+      {renderOptions(
+        item,
+        containedResources,
+        renderRadio,
+        renderCheckbox,
+        renderDropdown,
+        renderSlider,
+        props.resources,
+        renderAutosuggest
+      )}
+    </React.Fragment>
+  );
+};
 
 const withCommonFunctionsComponent = withCommonFunctions(OpenChoice);
 const connectedStringComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(withCommonFunctionsComponent);

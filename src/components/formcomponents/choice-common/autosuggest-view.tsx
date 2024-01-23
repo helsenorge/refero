@@ -13,7 +13,7 @@ import Validation from '@helsenorge/designsystem-react/components/Validation';
 
 import { OPEN_CHOICE_ID, OPEN_CHOICE_SYSTEM } from '../../../constants';
 import ItemType from '../../../constants/itemType';
-import { getValidationTextExtension, getPlaceholder } from '../../../util/extension';
+import { getValidationTextExtension } from '../../../util/extension';
 import { isRequired, getId, getSublabelText } from '../../../util/index';
 import { Resources } from '../../../util/resources';
 import Label from '../label';

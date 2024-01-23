@@ -49,28 +49,6 @@
       "linkId": "4",
       "text": "Fhir sum element",
       "type": "quantity"
-    },
-    {
-      "extension": [
-        {
-          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
-          "valueCoding": {
-            "system": "http://ehelse.no/Score",
-            "code": "score",
-            "display": "score"
-          }
-        }
-      ],
-      "linkId": "5",
-      "code": [
-        {
-          "system": "http://ehelse.no/scoringFormulas",
-          "code": "TS",
-          "display": "Totalscore"
-        }
-      ],
-      "text": "Sum",
-      "type": "quantity"
     }
   ]
 }
