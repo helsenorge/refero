@@ -2,14 +2,15 @@ import * as React from 'react';
 
 import { Collapse } from 'react-collapse';
 
+import { AutoSuggestProps } from '../../../types/autoSuggestProps';
 import { ValueSet, QuestionnaireItem, Questionnaire, Coding, QuestionnaireResponseItemAnswer } from '../../../types/fhir';
 
 import Loader from '@helsenorge/designsystem-react/components/Loader';
 import NotificationPanel from '@helsenorge/designsystem-react/components/NotificationPanel';
+import Validation from '@helsenorge/designsystem-react/components/Validation';
 
 import Autosuggest, { Suggestion } from '@helsenorge/autosuggest/components/autosuggest';
 import { debounce } from '@helsenorge/core-utils/debounce';
-import Validation from '@helsenorge/designsystem-react/components/Validation';
 
 import { OPEN_CHOICE_ID, OPEN_CHOICE_SYSTEM } from '../../../constants';
 import ItemType from '../../../constants/itemType';
@@ -18,7 +19,6 @@ import { isRequired, getId, getSublabelText } from '../../../util/index';
 import { Resources } from '../../../util/resources';
 import Label from '../label';
 import SubLabel from '../sublabel';
-import { AutoSuggestProps } from '../../../types/autoSuggestProps';
 
 interface AutosuggestViewProps {
   handleChange: (code?: string, systemArg?: string, displayArg?: string) => void;
@@ -211,7 +211,6 @@ const AutosuggestView: React.FC<AutosuggestViewProps> = props => {
             className="page_refero__autosuggest"
             type="search"
             isRequired={isRequired(props.item)}
-            placeholder={getPlaceholder(props.item)}
             errorMessage={getValidationTextExtension(props.item)}
             helpButton={props.renderHelpButton()}
             helpElement={props.renderHelpElement()}
