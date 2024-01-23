@@ -55,6 +55,7 @@ const DropdownView: React.FC<DropdownViewProps> = props => {
     renderHelpButton,
     renderHelpElement,
     onRenderMarkdown,
+
     ...other
   } = props;
   if (!options) {
@@ -85,9 +86,9 @@ const DropdownView: React.FC<DropdownViewProps> = props => {
           />
           {renderHelpElement()}
           <Select
-            {...register('dropdownView_openChoice')}
+            {...register(selectId)}
             selectId={selectId}
-            name={getId(id)}
+            name={selectId}
             required={isRequired(item)}
             value={selected ? selected[0] : undefined}
             errorText={getValidationTextExtension(item)}

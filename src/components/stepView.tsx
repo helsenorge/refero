@@ -1,10 +1,12 @@
 import * as React from 'react';
-import { Resources } from '../util/resources';
-import { getTopLevelElements } from '../util/getTopLevelElements';
-import { FormDefinition } from '../reducers/form';
-import RenderForm from './renderForm';
+
 import { ReferoProps } from '../types/referoProps';
+
+import RenderForm from './renderForm';
 import { NAVIGATOR_BLINDZONE_ID } from '../constants';
+import { FormDefinition } from '../reducers/form';
+import { getTopLevelElements } from '../util/getTopLevelElements';
+import { Resources } from '../util/resources';
 
 interface StepViewProps {
   isAuthorized: boolean;
@@ -18,7 +20,17 @@ interface StepViewProps {
   isHelsenorgeForm?: boolean;
 }
 
-const StepView = ({ isAuthorized, referoProps, resources, formItems, formDefinition, onSave, onSubmit, onStepChange, isHelsenorgeForm }: StepViewProps) => {
+const StepView = ({
+  isAuthorized,
+  referoProps,
+  resources,
+  formItems,
+  formDefinition,
+  onSave,
+  onSubmit,
+  onStepChange,
+  isHelsenorgeForm,
+}: StepViewProps): JSX.Element => {
   const stepArray: Array<JSX.Element> | undefined = [];
   const [stepIndex, setStepIndex] = React.useState(0);
 
@@ -41,7 +53,7 @@ const StepView = ({ isAuthorized, referoProps, resources, formItems, formDefinit
 
   React.useEffect(() => {
     onStepChange && onStepChange(stepIndex);
-    window.scrollTo(0,0);
+    window.scrollTo(0, 0);
   }, [stepIndex]);
 
   return (

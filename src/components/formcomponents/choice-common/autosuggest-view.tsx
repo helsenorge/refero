@@ -164,7 +164,7 @@ const AutosuggestView: React.FC<AutosuggestViewProps> = props => {
     props.handleChange(suggestion.value, system, suggestion.label);
   };
 
-  const onBlur = (_e: React.FormEvent<any>, { highlightedSuggestion }: { highlightedSuggestion: Suggestion | null }): void => {
+  const onBlur = (_e: React.FormEvent, { highlightedSuggestion }: { highlightedSuggestion: Suggestion | null }): void => {
     if (isDirty && highlightedSuggestion) {
       setLastSearchValue(highlightedSuggestion.label);
       setIsDirty(false);
