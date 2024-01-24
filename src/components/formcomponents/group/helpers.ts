@@ -1,5 +1,6 @@
-import { RenderContextType } from '../../../constants/renderContextType';
 import { Questionnaire, QuestionnaireItem } from '../../../types/fhir';
+
+import { RenderContextType } from '../../../constants/renderContextType';
 import { getText, renderPrefix } from '../../../util';
 import { getGroupItemControl } from '../../../util/group-item-control';
 import { Path } from '../../../util/refero-core';

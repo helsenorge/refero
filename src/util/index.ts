@@ -67,7 +67,9 @@ export const isTableCode = (extensionCode: string | string[]): boolean => {
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function getComponentForItem(type: string, extensionCode?: string | string[]) {
   if (String(type) === itemType.GROUP && !!extensionCode && isTableCode(extensionCode)) {
-    return TableContainer as ComponentClass<Omit<Props & ValidationProps & Props, keyof Props> & Props>;
+    return TableContainer as ComponentClass<
+      Omit<WithCommonFunctionsProps & ValidationProps & WithCommonFunctionsProps, keyof WithCommonFunctionsProps> & WithCommonFunctionsProps
+    >;
   } else if (String(type) === ItemType.GROUP) {
     return Group;
   }
