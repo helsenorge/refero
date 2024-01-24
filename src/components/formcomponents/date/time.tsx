@@ -7,10 +7,11 @@ import { ThunkDispatch } from 'redux-thunk';
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem, Questionnaire } from '../../../types/fhir';
 import { ValidationProps } from '../../../types/formTypes/validation';
 
+import Validation from '@helsenorge/designsystem-react/components/Validation';
+
 import TimeInput from '@helsenorge/date-time/components/time-input';
 import { parseDate } from '@helsenorge/date-time/components/time-input/date-core';
-import DateTimeConstants from '@helsenorge/date-time/constants/datetime';
-import Validation from '@helsenorge/designsystem-react/components/Validation';
+import * as DateTimeConstants from '@helsenorge/date-time/constants/datetime';
 
 import { NewValueAction, newTimeValueAsync } from '../../../actions/newValue';
 import ExtensionConstants from '../../../constants/extensions';
@@ -18,8 +19,8 @@ import { GlobalState } from '../../../reducers';
 import { getExtension, getValidationTextExtension } from '../../../util/extension';
 import { isReadOnly, isRequired, getId, getSublabelText } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
-import { Resources } from '../../../util/resources';
 import { Path } from '../../../util/refero-core';
+import { Resources } from '../../../util/resources';
 import withCommonFunctions, { WithCommonFunctionsProps } from '../../with-common-functions';
 import Label from '../label';
 import SubLabel from '../sublabel';

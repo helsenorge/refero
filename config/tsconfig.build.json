@@ -25,5 +25,5 @@
     "importHelpers": true
   },
   "include": ["../src/**/*.tsx", "../src/**/*.ts"],
-  "exclude": ["../**/node_modules", "../src/**/__tests__*", "../lib/**/*.*"]
+  "exclude": ["../**/node_modules", "../src/**/__tests__*", "../lib/**/*.*", "../src/preview"]
 }

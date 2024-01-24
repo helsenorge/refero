@@ -1,14 +1,19 @@
 import * as React from 'react';
+
 import moment, { Moment } from 'moment';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem, Questionnaire } from '../../../types/fhir';
-import { ValidationProps } from '../../../types/formTypes/validation';
 
 import { LanguageLocales } from '@helsenorge/core-utils/constants/languages';
 import { DateRangePicker } from '@helsenorge/date-time/components/date-range-picker';
 import { parseDate } from '@helsenorge/date-time/components/time-input/date-core';
+import { ValidationProps } from '@helsenorge/form/components/form/validation';
+
+import { DateDayInput } from './date-day-input';
+import { DateYearMonthInput } from './date-month-input';
+import { DateYearInput } from './date-year-input';
 import { NewValueAction, newDateValueAsync } from '../../../actions/newValue';
 import ExtensionConstants from '../../../constants/extensions';
 import itemControlConstants from '../../../constants/itemcontrol';
@@ -17,14 +22,12 @@ import { getExtension, getItemControlExtensionValue } from '../../../util/extens
 import { evaluateFhirpathExpressionToGetDate } from '../../../util/fhirpathHelper';
 import { getSublabelText } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
+import { Path } from '../../../util/refero-core';
 import { Resources } from '../../../util/resources';
 import { Path } from '../../../util/refero-core';
 import withCommonFunctions, { WithCommonFunctionsProps } from '../../with-common-functions';
 import Label from '../label';
 import SubLabel from '../sublabel';
-import { DateDayInput } from './date-day-input';
-import { DateYearMonthInput } from './date-month-input';
-import { DateYearInput } from './date-year-input';
 
 export interface DateProps extends WithCommonFunctionsProps {
   item: QuestionnaireItem;
@@ -50,7 +53,6 @@ export interface DateProps extends WithCommonFunctionsProps {
 }
 
 const DateComponent: React.FC<DateProps & ValidationProps> = props => {
-
   const [datepicker, setDatepicker] = React.useState<React.RefObject<DateRangePicker>>(React.createRef());
 
   const getMaxDate = (): Moment | undefined => {
@@ -61,7 +63,7 @@ const DateComponent: React.FC<DateProps & ValidationProps> = props => {
     }
     const maxDateWithExtension = getMaxDateWithExtension();
     return maxDateWithExtension ? moment(maxDateWithExtension) : undefined;
-  }
+  };
 
   const getMaxDateWithExtension = (): Date | undefined => {
     const maxDate = getExtension(ExtensionConstants.MAX_VALUE_URL, props.item);
@@ -73,7 +75,7 @@ const DateComponent: React.FC<DateProps & ValidationProps> = props => {
       return parseDate(String(maxDate.valueInstant));
     }
     return undefined;
-  }
+  };
 
   const getMinDate = (): Moment | undefined => {
     const minDate = getExtension(ExtensionConstants.DATE_MIN_VALUE_URL, props.item);
@@ -83,7 +85,7 @@ const DateComponent: React.FC<DateProps & ValidationProps> = props => {
     }
     const minDateWithExtension = getMinDateWithExtension();
     return minDateWithExtension ? moment(minDateWithExtension) : undefined;
-  }
+  };
 
   const getMinDateWithExtension = (): Date | undefined => {
     const minDate = getExtension(ExtensionConstants.MIN_VALUE_URL, props.item);
@@ -95,7 +97,7 @@ const DateComponent: React.FC<DateProps & ValidationProps> = props => {
       return parseDate(String(minDate.valueInstant));
     }
     return undefined;
-  }
+  };
 
   const onDateValueChange = (newValue: string): void => {
     const { dispatch, promptLoginMessage, path, item, answer, onAnswerChange } = props;
@@ -129,74 +131,69 @@ const DateComponent: React.FC<DateProps & ValidationProps> = props => {
     return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats || answerHasChanged;
   }, [props.responseItem, props.isHelpOpen, props.answer, props.resources, props.item]);
 
-    const subLabelText = getSublabelText(props.item, props.onRenderMarkdown, props.questionnaire, props.resources);
+  const subLabelText = getSublabelText(props.item, props.onRenderMarkdown, props.questionnaire, props.resources);
 
-    const itemControls = getItemControlExtensionValue(props.item);
-    const labelEl = (
-      <Label
-        item={props.item}
-        onRenderMarkdown={props.onRenderMarkdown}
-        questionnaire={props.questionnaire}
-        resources={props.resources}
+  const itemControls = getItemControlExtensionValue(props.item);
+  const labelEl = (
+    <Label item={props.item} onRenderMarkdown={props.onRenderMarkdown} questionnaire={props.questionnaire} resources={props.resources} />
+  );
+  const subLabelEl = subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined;
+
+  let element: JSX.Element | undefined = undefined;
+
+  if (itemControls && itemControls.some(itemControl => itemControl.code === itemControlConstants.YEAR)) {
+    element = (
+      <DateYearInput
+        label={labelEl}
+        subLabel={subLabelEl}
+        helpButton={props.renderHelpButton()}
+        helpElement={props.renderHelpElement()}
+        onDateValueChange={onDateValueChange}
+        maxDate={getMaxDate()}
+        minDate={getMinDate()}
+        {...props}
       />
     );
-    const subLabelEl = subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined;
-
-    let element: JSX.Element | undefined = undefined;
-
-    if (itemControls && itemControls.some(itemControl => itemControl.code === itemControlConstants.YEAR)) {
-      element = (
-        <DateYearInput
-          label={labelEl}
-          subLabel={subLabelEl}
-          helpButton={props.renderHelpButton()}
-          helpElement={props.renderHelpElement()}
-          onDateValueChange={onDateValueChange}
-          maxDate={getMaxDate()}
-          minDate={getMinDate()}
-          {...props}
-        />
-      );
-    } else if (itemControls && itemControls.some(itemControl => itemControl.code === itemControlConstants.YEARMONTH)) {
-      element = (
-        <DateYearMonthInput
-          label={labelEl}
-          locale={getLocaleFromLanguage()}
-          subLabel={subLabelEl}
-          helpButton={props.renderHelpButton()}
-          helpElement={props.renderHelpElement()}
-          onDateValueChange={onDateValueChange}
-          maxDate={getMaxDate()}
-          minDate={getMinDate()}          
-          {...props}
-        />
-      );
-    } else {
-      element = (
-        <DateDayInput
-          locale={getLocaleFromLanguage()}
-          label={labelEl}
-          subLabel={subLabelEl}
-          datepickerRef={datepicker}
-          helpButton={props.renderHelpButton()}
-          helpElement={props.renderHelpElement()}
-          onDateValueChange={onDateValueChange}
-          maxDate={getMaxDate()}
-          minDate={getMinDate()}
-          {...props}
-        />
-      );
-    }
-
-    return (
-      <div className="page_refero__component page_refero__component_date">
-        {element}
-        {props.renderDeleteButton('page_refero__deletebutton--margin-top')}
-        {props.repeatButton}
-        {props.children ? <div className="nested-fieldset nested-fieldset--full-height">{props.children}</div> : null}
-      </div>
+  } else if (itemControls && itemControls.some(itemControl => itemControl.code === itemControlConstants.YEARMONTH)) {
+    element = (
+      <DateYearMonthInput
+        label={labelEl}
+        locale={getLocaleFromLanguage()}
+        subLabel={subLabelEl}
+        helpButton={props.renderHelpButton()}
+        helpElement={props.renderHelpElement()}
+        onDateValueChange={onDateValueChange}
+        maxDate={getMaxDate()}
+        minDate={getMinDate()}
+        {...props}
+      />
     );
-}
+  } else {
+    element = (
+      <DateDayInput
+        locale={getLocaleFromLanguage()}
+        label={labelEl}
+        subLabel={subLabelEl}
+        datepickerRef={datepicker}
+        helpButton={props.renderHelpButton()}
+        helpElement={props.renderHelpElement()}
+        onDateValueChange={onDateValueChange}
+        maxDate={getMaxDate()}
+        minDate={getMinDate()}
+        {...props}
+      />
+    );
+  }
+
+  return (
+    <div className="page_refero__component page_refero__component_date">
+      {element}
+      {props.renderDeleteButton('page_refero__deletebutton--margin-top')}
+      {props.repeatButton}
+      {props.children ? <div className="nested-fieldset nested-fieldset--full-height">{props.children}</div> : null}
+    </div>
+  );
+};
 
 const withCommonFunctionsComponent = withCommonFunctions(DateComponent);
 const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(withCommonFunctionsComponent);

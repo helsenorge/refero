@@ -15,20 +15,31 @@ export function evaluateFhirpathExpressionToGetDate(item: QuestionnaireItem, fhi
   return;
 }
 
-export function evaluateFhirpathExpressionToGetString(
-  questionnare: QuestionnaireResponse | null | undefined,
-  fhirExtension: Extension
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-): any {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let result: any;
+export function evaluateFhirpathExpressionToGetString(fhirExtension: Extension, questionnare?: QuestionnaireResponse | null): any {
   const qCopy = structuredClone(questionnare);
-  const extCopy = structuredClone(fhirExtension);
+  const qExt = structuredClone(fhirExtension);
   try {
-    result = fhirpath.evaluate(qCopy, extCopy.valueString, null, fhirpath_r4_model);
-  } catch (e) {
+    return fhirpath.evaluate(qCopy, qExt.valueString, null, fhirpath_r4_model);
+  } catch (error) {
     return [];
   }
+}
 
-  return result;
+export function evaluateExtension(path: string | object, questionnare?: QuestionnaireResponse | null, context?: 'object'): unknown {
+  const qCopy = structuredClone(questionnare);
+  /**
+   *  Evaluates the "path" FHIRPath expression on the given resource or part of the resource,
+   *  using data from "context" for variables mentioned in the "path" expression.
+   * @param {(object|object[])} fhirData -  FHIR resource, part of a resource (in this case
+   *  path.base should be provided), bundle as js object or array of resources.
+   *  This object/array will be modified by this function to add type information.
+   * @param {string|object} path - string with fhirpath expression, sample 'Patient.name.given',
+   *  or object, if fhirData represents the part of the FHIR resource:
+   * @param {string} path.base - base path in resource from which fhirData was extracted
+   * @param {string} path.expression - fhirpath expression relative to path.base
+   * @param {object} context - a hash of variable name/value pairs.
+   * @param {object} model - The "model" data object specific to a domain, e.g. R4.
+   *  For example, you could pass in the result of require("fhirpath/fhir-context/r4");
+   */
+  return fhirpath.evaluate(qCopy, path, context, fhirpath_r4_model);
 }

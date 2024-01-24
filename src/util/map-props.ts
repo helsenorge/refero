@@ -17,12 +17,13 @@ import { getCopyExtension, getCalculatedExpressionExtension } from '../util/exte
 import { evaluateFhirpathExpressionToGetString } from '../util/fhirpathHelper';
 
 export function mapStateToProps(state: GlobalState, originalProps: WithCommonFunctionsProps): WithCommonFunctionsProps {
-  getValueIfDataReceiver(state, originalProps);
+  const newAnswer = getValueIfDataReceiver(state, originalProps);
   if (!originalProps.item || !originalProps.item.enableWhen) {
-    return { ...originalProps, enable: true } as WithCommonFunctionsProps;
+    return { ...originalProps, enable: true, ...(newAnswer !== undefined && { answer: newAnswer }) } as WithCommonFunctionsProps;
   }
   const enable = isEnableWhenEnabled(originalProps.item.enableWhen, originalProps.item.enableBehavior, originalProps.path || [], state);
-  return { ...originalProps, enable } as WithCommonFunctionsProps;
+
+  return { ...originalProps, enable, ...(newAnswer !== undefined && { answer: newAnswer }) } as WithCommonFunctionsProps;
 }
 
 function isEnableWhenEnabled(
@@ -56,20 +57,25 @@ function isEnableWhenEnabled(
     : enableMatches.some(x => x === true);
 }
 
-function getValueIfDataReceiver(state: GlobalState, originalProps: WithCommonFunctionsProps): void {
+function getValueIfDataReceiver(
+  state: GlobalState,
+  originalProps: WithCommonFunctionsProps
+): QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[] | undefined {
   if (originalProps.item) {
     const extension = getCopyExtension(originalProps.item);
     if (extension) {
       const formData = getFormData(state);
-      let result = evaluateFhirpathExpressionToGetString(formData?.Content, extension);
+      let result = evaluateFhirpathExpressionToGetString(extension, formData?.Content);
 
       if (!!getCalculatedExpressionExtension(originalProps.item)) {
         result = result.map((m: any) => m.value as number);
       }
 
-      originalProps.answer = getQuestionnaireResponseItemAnswer(originalProps.item.type, result);
+      return getQuestionnaireResponseItemAnswer(originalProps.item.type, result);
     }
+    return undefined;
   }
+  return undefined;
 }
 
 function getQuestionnaireResponseItemAnswer(

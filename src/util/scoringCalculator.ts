@@ -202,14 +202,11 @@ export class ScoringCalculator {
     }
   }
 
-  private valueOfQuestionFhirpathScoreItem(
-    item: QuestionnaireItem,
-    questionnaireResponse: QuestionnaireResponse,
-  ): number | undefined {
+  private valueOfQuestionFhirpathScoreItem(item: QuestionnaireItem, questionnaireResponse: QuestionnaireResponse): number | undefined {
     const expressionExtension = getCalculatedExpressionExtension(item);
     let value: number | undefined = undefined;
     if (expressionExtension) {
-      const result = evaluateFhirpathExpressionToGetString(questionnaireResponse, expressionExtension);
+      const result = evaluateFhirpathExpressionToGetString(expressionExtension, questionnaireResponse);
       if (result.length) {
         value = (result[0] as number) ?? 0;
         // Round up decimal to integer
