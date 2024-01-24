@@ -5,10 +5,10 @@ import { Collapse } from 'react-collapse';
 import { QuestionnaireItem, Questionnaire } from '../../../types/fhir';
 import { Options } from '../../../types/formTypes/radioGroupOptions';
 
-import Validation from '@helsenorge/designsystem-react/components/Validation';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
-import RadioButton from '@helsenorge/designsystem-react/components/RadioButton';
 import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
+import RadioButton from '@helsenorge/designsystem-react/components/RadioButton';
+import Validation from '@helsenorge/designsystem-react/components/Validation';
 
 import { isRequired, getText, getId, getSublabelText } from '../../../util/index';
 import { Resources } from '../../../util/resources';

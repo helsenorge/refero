@@ -1,16 +1,18 @@
 import * as React from 'react';
 
+import { useForm } from 'react-hook-form';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem, Questionnaire } from '../../../types/fhir';
 import { ValidationProps } from '../../../types/formTypes/validation';
 
-import { debounce } from '@helsenorge/core-utils/debounce';
-import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
-import Validation from '@helsenorge/designsystem-react/components/Validation';
 import Input from '@helsenorge/designsystem-react/components/Input';
 import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
+import Validation from '@helsenorge/designsystem-react/components/Validation';
+
+import { debounce } from '@helsenorge/core-utils/debounce';
+import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 
 import { NewValueAction, newStringValueAsync } from '../../../actions/newValue';
 import { GlobalState } from '../../../reducers';
@@ -29,11 +31,10 @@ import {
   getText,
 } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
-import { Resources } from '../../../util/resources';
 import { Path } from '../../../util/refero-core';
+import { Resources } from '../../../util/resources';
 import withCommonFunctions, { WithCommonFunctionsProps } from '../../with-common-functions';
 import TextView from '../textview';
-import { useForm } from 'react-hook-form';
 
 export interface StringProps extends WithCommonFunctionsProps {
   item: QuestionnaireItem;
@@ -130,32 +131,35 @@ const String: React.FC<StringProps & ValidationProps> = props => {
 
   return (
     <div className="page_refero__component page_refero__component_string">
-      <Validation {...props}>
-        <Label
-          htmlFor={inputId}
-          labelTexts={[{ text: labelText, type: 'semibold' }]}
-          sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
-          afterLabelChildren={props.renderHelpButton()}
-        />
-        {props.renderHelpElement()}
-        <Input
-          {...register('string_formComponent')}
-          type="text"
-          inputId={inputId}
-          name={getId(props.id)}
-          defaultValue={getStringValue(answer)}
-          required={isRequired(item)}
-          placeholder={getPlaceholder(item)}
-          min={getMinLengthExtensionValue(item)}
-          max={getMaxLength(item)}
-          onChange={(event: React.FormEvent<HTMLInputElement>): void => {
-            event.persist();
-            debouncedHandleChange(event);
-            setInputValue(event.currentTarget.value);
-          }}
-          className="page_refero__input"
-          errorText={getValidationErrorMessage(inputValue)}
-        />
+      <Validation errorSummary={false ? 'Sjekk at alt er riktig utfylt' : undefined}>
+        <>
+          <Label
+            htmlFor={inputId}
+            labelTexts={[{ text: labelText, type: 'semibold' }]}
+            sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+            afterLabelChildren={props.renderHelpButton()}
+          />
+          {props.renderHelpElement()}
+          <Input
+            {...register(getId(props.id))}
+            type="text"
+            width={25}
+            inputId={inputId}
+            name={getId(props.id)}
+            defaultValue={getStringValue(answer)}
+            required={isRequired(item)}
+            placeholder={getPlaceholder(item)}
+            min={getMinLengthExtensionValue(item)}
+            max={getMaxLength(item)}
+            onChange={(event: React.FormEvent<HTMLInputElement>): void => {
+              event.persist();
+              debouncedHandleChange(event);
+              setInputValue(event.currentTarget.value);
+            }}
+            className="page_refero__input"
+            errorText={getValidationErrorMessage(inputValue)}
+          />
+        </>
       </Validation>
       {props.renderDeleteButton('page_refero__deletebutton--margin-top')}
       {props.repeatButton}

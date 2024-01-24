@@ -1,11 +1,16 @@
 import * as React from 'react';
+
 import moment, { Moment } from 'moment';
+
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireItemInitial } from '../../../types/fhir';
+
+import Validation from '@helsenorge/designsystem-react/components/Validation';
+
 import { LanguageLocales } from '@helsenorge/core-utils/constants/languages';
 import { DateRangePicker } from '@helsenorge/date-time/components/date-range-picker';
 import { DatePickerErrorPhrases } from '@helsenorge/date-time/components/date-range-picker/date-range-picker-types';
-import Validation from '@helsenorge/designsystem-react/components/Validation';
 import { parseDate } from '@helsenorge/date-time/components/time-input/date-core';
+
 import Constants from '../../../constants/index';
 import { getId, isRequired } from '../../../util';
 import { getPlaceholder, getValidationTextExtension } from '../../../util/extension';
@@ -48,7 +53,7 @@ export const DateDayInput: React.FC<DateDayInputProps> = props => {
       errorRequiredDateRange: '',
       errorInvalidMinimumNights: '',
     };
-  }
+  };
 
   const getDateAnswerValue = (answer: QuestionnaireResponseItemAnswer | QuestionnaireItemInitial): string | undefined => {
     if (answer && answer.valueDate) {
@@ -57,7 +62,7 @@ export const DateDayInput: React.FC<DateDayInputProps> = props => {
     if (answer && answer.valueDateTime) {
       return answer.valueDateTime;
     }
-  }
+  };
 
   const getValue = (): Date[] | undefined => {
     const { item, answer } = props;
@@ -78,7 +83,7 @@ export const DateDayInput: React.FC<DateDayInputProps> = props => {
         return undefined;
       }
     }
-  }
+  };
 
   const isValidDate = (date: Date): boolean => {
     if (date instanceof Date) {
@@ -90,7 +95,7 @@ export const DateDayInput: React.FC<DateDayInputProps> = props => {
 
   const toLocaleDate = (moment: Moment | undefined): Moment | undefined => {
     return moment ? moment.locale(props.locale) : undefined;
-  }
+  };
 
   const onDateChange = (value: Moment | null): void => {
     const newValue = value ? moment(value).format(Constants.DATE_FORMAT) : '';
@@ -109,43 +114,43 @@ export const DateDayInput: React.FC<DateDayInputProps> = props => {
     return date ? toLocaleDate(moment(date[0])) : undefined;
   };
 
-    if (props.pdf || isReadOnly(props.item)) {
-      return (
-        <TextView
-          id={props.id}
-          item={props.item}
-          value={getPDFValue()}
-          onRenderMarkdown={props.onRenderMarkdown}
-          helpButton={props.helpButton}
-          helpElement={props.helpElement}
-        >
-          {props.children}
-        </TextView>
-      );
-    }
-
+  if (props.pdf || isReadOnly(props.item)) {
     return (
-      <Validation {...props}>
-        <DateRangePicker
-          type="single"
-          id={`${getId(props.id)}-datepicker_input`}
-          locale={props.locale} // TODO: må støtte nynorsk og samisk også
-          errorResources={getDatepickerErrorPhrases()}
-          resources={props.resources}
-          label={props.label}
-          subLabel={props.subLabel}
-          isRequired={isRequired(props.item)}
-          placeholder={getPlaceholder(props.item)}
-          ref={props.datepickerRef}
-          maximumDate={toLocaleDate(props.maxDate)}
-          minimumDate={toLocaleDate(props.minDate)}
-          singleDateValue={getSingleDateValue()}
-          className={props.className}
-          onDateChange={onDateChange}
-          validationErrorRenderer={props.validationErrorRenderer}
-          helpButton={props.helpButton}
-          helpElement={props.helpElement}
-        />
-      </Validation>
+      <TextView
+        id={props.id}
+        item={props.item}
+        value={getPDFValue()}
+        onRenderMarkdown={props.onRenderMarkdown}
+        helpButton={props.helpButton}
+        helpElement={props.helpElement}
+      >
+        {props.children}
+      </TextView>
     );
-}
+  }
+
+  return (
+    <Validation {...props}>
+      <DateRangePicker
+        type="single"
+        id={`${getId(props.id)}-datepicker_input`}
+        locale={props.locale} // TODO: må støtte nynorsk og samisk også
+        errorResources={getDatepickerErrorPhrases()}
+        resources={props.resources}
+        label={props.label}
+        subLabel={props.subLabel}
+        isRequired={isRequired(props.item)}
+        placeholder={getPlaceholder(props.item)}
+        ref={props.datepickerRef}
+        maximumDate={toLocaleDate(props.maxDate)}
+        minimumDate={toLocaleDate(props.minDate)}
+        singleDateValue={getSingleDateValue()}
+        className={props.className}
+        onDateChange={onDateChange}
+        validationErrorRenderer={props.validationErrorRenderer}
+        helpButton={props.helpButton}
+        helpElement={props.helpElement}
+      />
+    </Validation>
+  );
+};

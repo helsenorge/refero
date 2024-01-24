@@ -27,9 +27,10 @@ interface Props {
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
+  children: React.ReactNode;
 }
 
-const CheckboxView: React.SFC<Props> = ({
+const CheckboxView = ({
   options,
   item,
   questionnaire,
@@ -40,11 +41,9 @@ const CheckboxView: React.SFC<Props> = ({
   children,
   repeatButton,
   renderDeleteButton,
-  // renderHelpButton,
-  // renderHelpElement,
   onRenderMarkdown,
   ...other
-}) => {
+}: Props): JSX.Element | null => {
   if (!options) {
     return null;
   }
@@ -81,7 +80,7 @@ const CheckboxView: React.SFC<Props> = ({
                   />
                 }
                 checked={checkbox.checked}
-                onChange={() => handleChange(checkbox.id)}
+                onChange={(): void => handleChange(checkbox.id)}
                 disabled={checkbox.disabled}
                 required={isRequired(item)}
               />

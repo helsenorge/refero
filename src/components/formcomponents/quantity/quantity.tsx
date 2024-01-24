@@ -1,5 +1,6 @@
 import * as React from 'react';
 
+import { useForm } from 'react-hook-form';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
@@ -12,9 +13,9 @@ import {
 } from '../../../types/fhir';
 import { ValidationProps } from '../../../types/formTypes/validation';
 
-import Validation from '@helsenorge/designsystem-react/components/Validation';
 import Input from '@helsenorge/designsystem-react/components/Input';
 import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
+import Validation from '@helsenorge/designsystem-react/components/Validation';
 
 import { NewValueAction, newQuantityValueAsync } from '../../../actions/newValue';
 import { GlobalState } from '../../../reducers';
@@ -27,11 +28,10 @@ import {
 } from '../../../util/extension';
 import { isReadOnly, isRequired, getId, getSublabelText, renderPrefix, getText } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
-import { Resources } from '../../../util/resources';
 import { Path } from '../../../util/refero-core';
+import { Resources } from '../../../util/resources';
 import withCommonFunctions, { WithCommonFunctionsProps } from '../../with-common-functions';
 import TextView from '../textview';
-import { useForm } from 'react-hook-form';
 
 export interface QuantityProps extends WithCommonFunctionsProps {
   item: QuestionnaireItem;

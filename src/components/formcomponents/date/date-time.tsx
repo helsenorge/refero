@@ -7,12 +7,13 @@ import { ThunkDispatch } from 'redux-thunk';
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem, Questionnaire } from '../../../types/fhir';
 import { ValidationProps } from '../../../types/formTypes/validation';
 
+import Validation from '@helsenorge/designsystem-react/components/Validation';
+
 import { LanguageLocales } from '@helsenorge/core-utils/constants/languages';
 import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 import DateTimePicker from '@helsenorge/date-time/components/date-time-picker';
 import { getFullMomentDate } from '@helsenorge/date-time/components/date-time-picker/date-time-picker-utils';
 import { parseDate } from '@helsenorge/date-time/components/time-input/date-core';
-import Validation from '@helsenorge/designsystem-react/components/Validation';
 
 import { NewValueAction, newDateTimeValueAsync } from '../../../actions/newValue';
 import ExtensionConstants from '../../../constants/extensions';
@@ -22,8 +23,8 @@ import { getValidationTextExtension, getExtension } from '../../../util/extensio
 import { evaluateFhirpathExpressionToGetDate } from '../../../util/fhirpathHelper';
 import { isRequired, getId, isReadOnly, getSublabelText } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
-import { Resources } from '../../../util/resources';
 import { Path } from '../../../util/refero-core';
+import { Resources } from '../../../util/resources';
 import withCommonFunctions, { WithCommonFunctionsProps } from '../../with-common-functions';
 import Label from '../label';
 import SubLabel from '../sublabel';
@@ -69,13 +70,13 @@ const DateTime: React.FC<DateTimeProps & ValidationProps> = props => {
       return parseDate(String(item.initial[0].valueDateTime));
     }
     return parseDate(String(item.initial[0].valueDate));
-  }
+  };
 
   const getMaxDate = (): Date | undefined => {
     const maxDate = getExtension(ExtensionConstants.DATE_MAX_VALUE_URL, props.item);
     if (maxDate && maxDate.valueString) return evaluateFhirpathExpressionToGetDate(props.item, maxDate.valueString);
     return getMaxDateWithExtension();
-  }
+  };
 
   const getMaxDateWithExtension = (): Date | undefined => {
     const maxDate = getExtension(ExtensionConstants.MAX_VALUE_URL, props.item);
@@ -88,13 +89,13 @@ const DateTime: React.FC<DateTimeProps & ValidationProps> = props => {
       return parseDate(String(maxDate.valueDateTime));
     }
     return undefined;
-  }
+  };
 
   const getMinDate = (): Date | undefined => {
     const minDate = getExtension(ExtensionConstants.DATE_MIN_VALUE_URL, props.item);
     if (minDate && minDate.valueString) return evaluateFhirpathExpressionToGetDate(props.item, minDate.valueString);
     return getMinDateWithExtension();
-  }
+  };
 
   const getMinDateWithExtension = (): Date | undefined => {
     const minDate = getExtension(ExtensionConstants.MIN_VALUE_URL, props.item);
@@ -107,7 +108,7 @@ const DateTime: React.FC<DateTimeProps & ValidationProps> = props => {
       return parseDate(String(minDate.valueDateTime));
     }
     return undefined;
-  }
+  };
 
   const dispatchNewDate = (date: Moment | undefined, time: string | undefined): void => {
     const { dispatch, promptLoginMessage, onAnswerChange, answer, path, item } = props;
@@ -138,10 +139,10 @@ const DateTime: React.FC<DateTimeProps & ValidationProps> = props => {
   const convertDateToString = (item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer): string | undefined => {
     const date = getDefaultDate(item, answer);
     if (date) {
-      return  moment(date).locale('nb').format('LLL');
-    } 
+      return moment(date).locale('nb').format('LLL');
+    }
     return undefined;
-  }
+  };
 
   const getStringValue = (): string => {
     const { item, answer } = props;
@@ -176,64 +177,64 @@ const DateTime: React.FC<DateTimeProps & ValidationProps> = props => {
 
   const toLocaleDate = (moment: Moment | undefined): Moment | undefined => {
     return moment ? moment.locale(getLocaleFromLanguage()) : undefined;
-  }
+  };
 
-    const { item, pdf, id, onRenderMarkdown, ...other } = props;
-    if (pdf || isReadOnly(item)) {
-      return (
-        <TextView
-          id={id}
-          item={item}
-          value={getStringValue()}
-          onRenderMarkdown={onRenderMarkdown}
+  const { item, pdf, id, onRenderMarkdown, ...other } = props;
+  if (pdf || isReadOnly(item)) {
+    return (
+      <TextView
+        id={id}
+        item={item}
+        value={getStringValue()}
+        onRenderMarkdown={onRenderMarkdown}
+        helpButton={props.renderHelpButton()}
+        helpElement={props.renderHelpElement()}
+      >
+        {props.children}
+      </TextView>
+    );
+  }
+  const valueDateTime = getDefaultDate(props.item, props.answer);
+  const maxDateTime = getMaxDate();
+  const minDateTime = getMinDate();
+  const subLabelText = getSublabelText(props.item, props.onRenderMarkdown, props.questionnaire, props.resources);
+
+  return (
+    <div className="page_refero__component page_refero__component_datetime">
+      <Validation {...other}>
+        <DateTimePicker
+          id={getId(id)}
+          resources={{ dateResources: props.resources }}
+          locale={getLocaleFromLanguage()}
+          dateValue={valueDateTime ? toLocaleDate(moment(valueDateTime)) : undefined}
+          timeValue={valueDateTime ? moment(valueDateTime).format('HH:mm') : undefined}
+          maximumDateTime={maxDateTime ? toLocaleDate(moment(maxDateTime)) : undefined}
+          minimumDateTime={minDateTime ? toLocaleDate(moment(minDateTime)) : undefined}
+          initialDate={toLocaleDate(moment(new Date()))}
+          onChange={dispatchNewDate}
+          onBlur={onBlur}
+          legend={
+            <Label
+              item={props.item}
+              onRenderMarkdown={props.onRenderMarkdown}
+              questionnaire={props.questionnaire}
+              resources={props.resources}
+            />
+          }
+          subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
+          isRequired={isRequired(item)}
+          errorMessage={getValidationTextExtension(item)}
+          timeClassName="page_refero__input"
           helpButton={props.renderHelpButton()}
           helpElement={props.renderHelpElement()}
-        >
-          {props.children}
-        </TextView>
-      );
-    }
-    const valueDateTime = getDefaultDate(props.item, props.answer);
-    const maxDateTime = getMaxDate();
-    const minDateTime = getMinDate();
-    const subLabelText = getSublabelText(props.item, props.onRenderMarkdown, props.questionnaire, props.resources);
-
-    return (
-      <div className="page_refero__component page_refero__component_datetime">
-        <Validation {...other}>
-          <DateTimePicker
-            id={getId(id)}
-            resources={{ dateResources: props.resources }}
-            locale={getLocaleFromLanguage()}
-            dateValue={valueDateTime ? toLocaleDate(moment(valueDateTime)) : undefined}
-            timeValue={valueDateTime ? moment(valueDateTime).format('HH:mm') : undefined}
-            maximumDateTime={maxDateTime ? toLocaleDate(moment(maxDateTime)) : undefined}
-            minimumDateTime={minDateTime ? toLocaleDate(moment(minDateTime)) : undefined}
-            initialDate={toLocaleDate(moment(new Date()))}
-            onChange={dispatchNewDate}
-            onBlur={onBlur}
-            legend={
-              <Label
-                item={props.item}
-                onRenderMarkdown={props.onRenderMarkdown}
-                questionnaire={props.questionnaire}
-                resources={props.resources}
-              />
-            }
-            subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
-            isRequired={isRequired(item)}
-            errorMessage={getValidationTextExtension(item)}
-            timeClassName="page_refero__input"
-            helpButton={props.renderHelpButton()}
-            helpElement={props.renderHelpElement()}
-          />
-        </Validation>
-        {props.renderDeleteButton('page_refero__deletebutton--margin-top')}
-        {props.repeatButton}
-        {props.children ? <div className="nested-fieldset nested-fieldset--full-height">{props.children}</div> : null}
-      </div>
-    );
-}
+        />
+      </Validation>
+      {props.renderDeleteButton('page_refero__deletebutton--margin-top')}
+      {props.repeatButton}
+      {props.children ? <div className="nested-fieldset nested-fieldset--full-height">{props.children}</div> : null}
+    </div>
+  );
+};
 
 const withCommonFunctionsComponent = withCommonFunctions(DateTime);
 const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(layoutChange(withCommonFunctionsComponent));

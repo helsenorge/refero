@@ -13,9 +13,9 @@ import Modal from '@helsenorge/designsystem-react/components/Modal';
 import { NewValueAction, deleteRepeatItemAsync } from '../../../actions/newValue';
 import { GlobalState } from '../../../reducers';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
+import { Path } from '../../../util/refero-core';
 import { RenderContext } from '../../../util/renderContext';
 import { Resources } from '../../../util/resources';
-import { Path } from '../../../util/refero-core';
 
 interface DeleteButtonProps {
   item: QuestionnaireItem;
@@ -29,7 +29,6 @@ interface DeleteButtonProps {
 }
 
 const DeleteButton: React.FC<DeleteButtonProps> = props => {
-  
   const [showConfirm, setShowConfirm] = React.useState<boolean>(false);
 
   const onDeleteRepeatItemConfirmed = (): void => {
@@ -53,26 +52,26 @@ const DeleteButton: React.FC<DeleteButtonProps> = props => {
     setShowConfirm(false);
   };
 
-    const { resources } = props;
+  const { resources } = props;
 
-    return (
-      <React.Fragment>
-        <Button variant="outline" concept="destructive" onClick={onDeleteRepeatItem}>
-          <Icon svgIcon={TrashCan} />
-          {resources && resources.deleteButtonText ? resources.deleteButtonText : ''}
-        </Button>
-        {showConfirm && resources ? (
-          <Modal
-            onClose={onConfirmCancel}
-            title={resources.confirmDeleteHeading}
-            description={resources.confirmDeleteDescription}
-            onSuccess={onDeleteRepeatItemConfirmed}
-            primaryButtonText={resources.confirmDeleteButtonText}
-            secondaryButtonText={resources.confirmDeleteCancelButtonText}
-          />
-        ) : null}
-      </React.Fragment>
-    );
-}
+  return (
+    <React.Fragment>
+      <Button variant="outline" concept="destructive" onClick={onDeleteRepeatItem}>
+        <Icon svgIcon={TrashCan} />
+        {resources && resources.deleteButtonText ? resources.deleteButtonText : ''}
+      </Button>
+      {showConfirm && resources ? (
+        <Modal
+          onClose={onConfirmCancel}
+          title={resources.confirmDeleteHeading}
+          description={resources.confirmDeleteDescription}
+          onSuccess={onDeleteRepeatItemConfirmed}
+          primaryButtonText={resources.confirmDeleteButtonText}
+          secondaryButtonText={resources.confirmDeleteCancelButtonText}
+        />
+      ) : null}
+    </React.Fragment>
+  );
+};
 const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(DeleteButton);
 export default connectedComponent;

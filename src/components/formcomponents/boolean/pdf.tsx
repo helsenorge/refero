@@ -8,9 +8,10 @@ interface Props {
   item: QuestionnaireItem;
   checked: boolean;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
+  children?: React.ReactNode;
 }
 
-const pdf: React.SFC<Props> = ({ item, checked, children, onRenderMarkdown }) => {
+const pdf = ({ item, checked, children, onRenderMarkdown }: Props): JSX.Element => {
   return (
     <div>
       {/* eslint-disable react/jsx-no-literals */}

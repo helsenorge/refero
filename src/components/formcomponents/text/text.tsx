@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import DOMPurify from 'dompurify';
-
+import { useForm } from 'react-hook-form';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
@@ -9,11 +9,11 @@ import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer, Ques
 import { ValidationProps } from '../../../types/formTypes/validation';
 
 import Expander from '@helsenorge/designsystem-react/components/Expander';
+import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
+import Textarea from '@helsenorge/designsystem-react/components/Textarea';
+import Validation from '@helsenorge/designsystem-react/components/Validation';
 
 import { debounce } from '@helsenorge/core-utils/debounce';
-import Validation from '@helsenorge/designsystem-react/components/Validation';
-import Textarea from '@helsenorge/designsystem-react/components/Textarea';
-import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
 
 import { NewValueAction, newStringValueAsync } from '../../../actions/newValue';
 import Constants from '../../../constants/index';
@@ -35,10 +35,9 @@ import {
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
 import { Resources } from '../../../util/resources';
+import { SanitizeText } from '../../../util/sanitize/domPurifyHelper';
 import withCommonFunctions, { WithCommonFunctionsProps } from '../../with-common-functions';
 import TextView from '../textview';
-import { SanitizeText } from '../../../util/sanitize/domPurifyHelper';
-import { useForm } from 'react-hook-form';
 
 export interface TextProps extends WithCommonFunctionsProps {
   item: QuestionnaireItem;

@@ -12,25 +12,25 @@ import {
   QuestionnaireResponseItem,
   ValueSet,
 } from '../../../types/fhir';
-import { OrgenhetHierarki } from '../../../types/orgenhetHierarki';
-import { ValidationProps } from '../../../types/formTypes/validation';
 import { Options } from '../../../types/formTypes/radioGroupOptions';
+import { ValidationProps } from '../../../types/formTypes/validation';
+import { OrgenhetHierarki } from '../../../types/orgenhetHierarki';
 
+import CheckboxView from './checkbox-view';
+import DropdownView from './dropdown-view';
+import RadioView from './radio-view';
 import SliderView from './slider-view';
 import { NewValueAction, newCodingValueAsync, removeCodingValueAsync } from '../../../actions/newValue';
 import { GlobalState } from '../../../reducers';
 import { getOptions, getSystem, getErrorMessage, validateInput, getIndexOfAnswer, getDisplay, renderOptions } from '../../../util/choice';
 import { isReadOnly, isDataReceiver } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
-import { Resources } from '../../../util/resources';
 import { Path } from '../../../util/refero-core';
+import { Resources } from '../../../util/resources';
 import withCommonFunctions, { WithCommonFunctionsProps } from '../../with-common-functions';
 import AutosuggestView from '../choice-common/autosuggest-view';
 import ReceiverComponentWrapper from '../receiver-component/receiver-component-wrapper';
 import TextView from '../textview';
-import CheckboxView from './checkbox-view';
-import DropdownView from './dropdown-view';
-import RadioView from './radio-view';
 
 export interface ChoiceProps extends WithCommonFunctionsProps {
   item: QuestionnaireItem;

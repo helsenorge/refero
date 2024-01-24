@@ -9,6 +9,7 @@ import { ValidationProps } from '../../../types/formTypes/validation';
 
 import AnchorLink from '@helsenorge/designsystem-react/components/AnchorLink';
 
+import AsPdf from './AsPdf';
 import { NewValueAction } from '../../../actions/newValue';
 import { RenderContextType } from '../../../constants/renderContextType';
 import { GlobalState } from '../../../reducers';
@@ -261,12 +262,7 @@ const Group: React.FC<GroupProps & ValidationProps> = props => {
   };
 
   const { pdf } = props;
-
-  if (pdf) {
-    return <div>{renderAllItems()}</div>;
-  }
-
-  return renderAllItems();
+  return <AsPdf pdf={!!pdf}>{renderAllItems()}</AsPdf>;
 };
 const withCommonFunctionsComponent = withCommonFunctions(Group);
 const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(withCommonFunctionsComponent);

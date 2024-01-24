@@ -1,13 +1,18 @@
 import * as React from 'react';
+
 import { Moment } from 'moment';
+
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from '../../../types/fhir';
-import { YearErrorResources, YearInput } from '@helsenorge/date-time/components/year-input';
+
 import Validation from '@helsenorge/designsystem-react/components/Validation';
+
+import { YearErrorResources, YearInput } from '@helsenorge/date-time/components/year-input';
+
 import { getId, isReadOnly, isRequired } from '../../../util';
+import { createDateFromYear } from '../../../util/createDateFromYear';
 import { getPlaceholder, getValidationTextExtension } from '../../../util/extension';
 import { Resources } from '../../../util/resources';
 import TextView from '../textview';
-import { createDateFromYear } from '../../../util/createDateFromYear';
 
 interface Props {
   id?: string;
@@ -27,7 +32,6 @@ interface Props {
 }
 
 export const DateYearInput = (props: React.PropsWithChildren<Props>): JSX.Element => {
-
   const [answerState, setAnswerState] = React.useState<number | undefined>(0);
 
   const getYear = (): (number | undefined)[] | undefined => {
@@ -37,7 +41,7 @@ export const DateYearInput = (props: React.PropsWithChildren<Props>): JSX.Elemen
   };
 
   React.useEffect(() => {
-    props.answer ? setAnswerState(Number(props.answer.valueDate)) : setAnswerState(getYear()?.[0])
+    props.answer ? setAnswerState(Number(props.answer.valueDate)) : setAnswerState(getYear()?.[0]);
   }, [props.answer]);
 
   function getYearInputResources(): YearErrorResources {

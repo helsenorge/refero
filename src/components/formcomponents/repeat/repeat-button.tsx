@@ -14,9 +14,9 @@ import { addRepeatItem } from '../../../actions/newValue';
 import { GlobalState } from '../../../reducers';
 import { getRepeatsTextExtension } from '../../../util/extension';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
+import { Path } from '../../../util/refero-core';
 import { RenderContext } from '../../../util/renderContext';
 import { Resources } from '../../../util/resources';
-import { Path } from '../../../util/refero-core';
 
 interface Props {
   item: QuestionnaireItem;
