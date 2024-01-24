@@ -190,7 +190,7 @@ export const getCodingTextTableValues = (item: QuestionnaireItem): TABLE_CODES_V
   const extension = getItemControlExtensionValue(item);
   const codeValues =
     extension
-      ?.map(x => x.code as TABLE_CODES_VALUES)
+      ?.map(x => x.code?.toLocaleLowerCase() as TABLE_CODES_VALUES)
       .filter(hasCode)
       .filter(isTableCode) || [];
   return codeValues;

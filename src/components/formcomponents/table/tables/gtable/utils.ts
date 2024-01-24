@@ -1,10 +1,13 @@
 import * as uuid from 'uuid';
 
-import { QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItem } from '../../../../../types/fhir';
+import { Coding, QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItem } from '../../../../../types/fhir';
+
+import { SortDirection } from '@helsenorge/designsystem-react/components/Table';
 
 import { IGTable, IGTableColumn, IGTableHeaderItem, IGTableRow } from './interface';
+import codeSystems from '../../../../../constants/codingsystems';
 import { QuestionnaireItemWithAnswers } from '../interface';
-import { getEnabledQuestionnaireItemsWithAnswers, getPrimitiveValueFromItemType } from '../utils';
+import { getCodeFromCodingSystem, getEnabledQuestionnaireItemsWithAnswers, getPrimitiveValueFromItemType } from '../utils';
 
 export const getNumberOfRowsGTable = (items: QuestionnaireResponseItem[]): number => {
   if (items.length === 0) {
@@ -59,7 +62,12 @@ export const createTableHeader = (items: QuestionnaireItem[]): IGTableHeaderItem
     value: item.text || '',
   }));
 
-export const getGtablebodyObject = (items: QuestionnaireItem[], questionnaireResponse?: QuestionnaireResponse | null): IGTable => {
+export const getGtablebodyObject = (
+  items: QuestionnaireItem[],
+  questionnaireResponse?: QuestionnaireResponse | null,
+  sortDir?: SortDirection,
+  linkIdToSortBy?: string
+): IGTable => {
   if (!questionnaireResponse || items.length === 0) {
     return {
       id: uuid.v4(),
@@ -73,6 +81,31 @@ export const getGtablebodyObject = (items: QuestionnaireItem[], questionnaireRes
     headerRow: createTableHeader(answerItems),
     rows: createTableRows(answerItems),
   };
-
+  if (sortDir && linkIdToSortBy) {
+    return sortTableRows(
+      table,
+      table.headerRow.findIndex(header => header.id === linkIdToSortBy),
+      sortDir
+    );
+  }
   return table;
+};
+
+export const sortTableRows = (table: IGTable, columnIndex: number, sortOrder: SortDirection): IGTable => {
+  const sortedTable = {
+    headerRow: table.headerRow,
+    id: table.id,
+    rows: table.rows.sort((a, b) => {
+      const aValue = a?.columns.length > columnIndex ? a?.columns[columnIndex]?.value || '' : '';
+      const bValue = b?.columns.length > columnIndex ? b?.columns[columnIndex]?.value || '' : '';
+
+      return sortOrder === SortDirection.asc ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
+    }),
+  };
+  return sortedTable;
+};
+
+export const getLinkIdToSortBy = (coding: Coding[]): string | undefined => {
+  const sortDisplay = getCodeFromCodingSystem(coding, codeSystems.TableOrderingColum);
+  return sortDisplay ? sortDisplay : undefined;
 };

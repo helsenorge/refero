@@ -22,7 +22,7 @@ export const StandardTableHeader = ({ headerRow, setSortDir, sortDir, displayToS
       <TableRow className="page_refero__standard-table__header__row">
         {headerRow.map(column => (
           <TableHeadCell
-            onClick={handleSort}
+            onClick={column.value === displayToSortBy ? handleSort : undefined}
             sortable={sortable && column.value === displayToSortBy}
             sortDir={sortable ? sortDir : undefined}
             className="page_refero__standard-table__header__row__cell"

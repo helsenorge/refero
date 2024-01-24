@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import { Coding, QuestionnaireItem, QuestionnaireResponse } from '../../../../../types/fhir';
 
@@ -10,9 +10,11 @@ import {
   TableHead,
   HeaderCategory,
   TableHeadCell,
+  SortDirection,
 } from '@helsenorge/designsystem-react/components/Table';
 
-import { getGtablebodyObject } from './utils';
+import { getGtablebodyObject, getLinkIdToSortBy } from './utils';
+import { transformCodingToSortDirection } from '../utils';
 
 interface Props {
   items: QuestionnaireItem[];
@@ -21,14 +23,28 @@ interface Props {
 }
 
 const GTable = ({ items, questionnaireResponse, tableCodesCoding }: Props): JSX.Element => {
-  const gTable = getGtablebodyObject(items, questionnaireResponse);
-  console.log(tableCodesCoding);
+  const linkIdToSortBy = getLinkIdToSortBy(tableCodesCoding);
+  const [sortDir, setSortDir] = useState<SortDirection | undefined>(transformCodingToSortDirection(tableCodesCoding));
+  const sortable = linkIdToSortBy !== undefined ? true : false;
+
+  const handleSort = (): void => {
+    setSortDir(prevState => (prevState === SortDirection.asc ? SortDirection.desc : SortDirection.asc));
+  };
+
+  const gTable = getGtablebodyObject(items, questionnaireResponse, sortDir, linkIdToSortBy);
+
   return gTable.rows.length > 0 ? (
     <HnTable className="page_refero__table__gtable">
-      <TableHead category={HeaderCategory.normal} className="page_refero__table__gtable__header">
+      <TableHead category={sortable ? HeaderCategory.sortable : HeaderCategory.normal} className="page_refero__table__gtable__header">
         <TableRow className="page_refero__table__gtable__header__row">
           {gTable?.headerRow?.map(column => (
-            <TableHeadCell key={column.id} className="page_refero__table__gtable__header__row__cell">
+            <TableHeadCell
+              sortDir={sortDir}
+              sortable={column.id === linkIdToSortBy}
+              onClick={column.id === linkIdToSortBy ? handleSort : undefined}
+              key={column.id}
+              className="page_refero__table__gtable__header__row__cell"
+            >
               {column.value}
             </TableHeadCell>
           ))}
