@@ -38,7 +38,7 @@ const extractValueFromQuantity = (
   if (!quantity) return '';
   switch (field) {
     case 'value':
-      return `${quantity.value ?? 0} ${quantity.unit ?? ''} `;
+      return `${quantity.value ?? 0} ${quantity.unit ?? ''}`.replace(/'/g, '');
     case 'unit':
       return quantity.unit ?? '';
     case 'system':
@@ -54,7 +54,7 @@ const extractValueFromDate = (inputValue?: string): string => {
     return '';
   }
   const date = parseDate(String(inputValue));
-  return moment(date).locale('nb').format(DATEFORMATS.DATETIME);
+  return moment(date).locale('nb').format(DATEFORMATS.DATE);
 };
 const extractValueFromTime = (inputTime?: string): string => {
   if (!inputTime) {

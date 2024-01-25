@@ -28,7 +28,6 @@ export const getTableHN1bodyObject = (
 
 export const createColumnsFromAnswers = (item: QuestionnaireResponseItem): ITableH1Column[] => {
   const combinedAnswer = transformAnswersToListOfStrings((item as QuestionnaireItem).type, item.answer || []).join(', ');
-
   const columns: ITableH1Column[] = [
     {
       id: `${item.linkId}-question`,

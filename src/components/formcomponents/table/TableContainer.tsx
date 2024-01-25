@@ -113,7 +113,6 @@ const mapStateToProps = (state: GlobalState, props: Props): EnhancedProps => {
   const group = props.item;
   const tableType = getCodingTextTableValues(group)[0];
   const resource = getFormDefinition(state)?.Content?.contained;
-
   return {
     headline: group.text ?? '',
     tableCodesCoding: group.code ?? [],
