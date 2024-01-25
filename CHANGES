@@ -1,13 +1,22 @@
+## 14.0.1-beta01
+
+- removing singlequoutes from units on quantity in table
+- change the date output to norwegian format
+
+---
+
 ## 14.0.0-beta02
 
 - Added table feature to new major version
 
 ---
+
 ## 14.0.0-beta01
 
 - Added table feature to new major version
 
 ---
+
 ## 14.0.1
 
 ---
