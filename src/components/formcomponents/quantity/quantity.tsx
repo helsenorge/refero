@@ -79,7 +79,7 @@ const Quantity: React.FC<QuantityProps & ValidationProps> = props => {
     return `${value} ${getUnit()}`;
   };
 
-  const handleChange = (event: React.FormEvent<{}>): void => {
+  const handleChange = (event: React.FormEvent): void => {
     const { dispatch, promptLoginMessage, path, item, onAnswerChange } = props;
     const extension = getQuestionnaireUnitExtensionValue(props.item);
     if (extension) {
@@ -114,15 +114,15 @@ const Quantity: React.FC<QuantityProps & ValidationProps> = props => {
     return '';
   };
 
-  React.useMemo(() => {
-    const responseItemHasChanged = props.responseItem !== props.responseItem;
-    const helpItemHasChanged = props.isHelpOpen !== props.isHelpOpen;
-    const answerHasChanged = props.answer !== props.answer;
-    const resourcesHasChanged = JSON.stringify(props.resources) !== JSON.stringify(props.resources);
-    const repeats = props.item.repeats ?? false;
+  // React.useMemo(() => {
+  //   const responseItemHasChanged = props.responseItem !== props.responseItem;
+  //   const helpItemHasChanged = props.isHelpOpen !== props.isHelpOpen;
+  //   const answerHasChanged = props.answer !== props.answer;
+  //   const resourcesHasChanged = JSON.stringify(props.resources) !== JSON.stringify(props.resources);
+  //   const repeats = props.item.repeats ?? false;
 
-    return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats || answerHasChanged;
-  }, [props.responseItem, props.isHelpOpen, props.answer, props.resources, props.item]);
+  //   return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats || answerHasChanged;
+  // }, [props.responseItem, props.isHelpOpen, props.answer, props.resources, props.item]);
 
   const { register } = useForm();
   const { id, item, questionnaire, onRenderMarkdown } = props;
@@ -154,28 +154,30 @@ const Quantity: React.FC<QuantityProps & ValidationProps> = props => {
   return (
     <div className="page_refero__component page_refero__component_quantity">
       <Validation {...props}>
-        <Label
-          htmlFor={inputId}
-          labelTexts={[{ text: labelText, type: 'semibold' }]}
-          sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
-          afterLabelChildren={props.renderHelpButton()}
-        />
-        {props.renderHelpElement()}
-        <Input
-          {...register('quantity')}
-          type="number"
-          inputId={inputId}
-          name={inputId}
-          defaultValue={value !== undefined ? value + '' : ''}
-          required={isRequired(item)}
-          placeholder={getPlaceholder(item)}
-          max={getMaxValueExtensionValue(item)}
-          min={getMinValueExtensionValue(item)}
-          onChange={handleChange}
-          errorText={getValidationTextExtension(item)}
-          className="page_refero__quantity"
-          width={7}
-        />
+        <>
+          <Label
+            htmlFor={inputId}
+            labelTexts={[{ text: labelText, type: 'semibold' }]}
+            sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+            afterLabelChildren={props.renderHelpButton()}
+          />
+          {props.renderHelpElement()}
+          <Input
+            {...register('quantity')}
+            type="number"
+            inputId={inputId}
+            name={inputId}
+            defaultValue={value !== undefined ? value + '' : ''}
+            required={isRequired(item)}
+            placeholder={getPlaceholder(item)}
+            max={getMaxValueExtensionValue(item)}
+            min={getMinValueExtensionValue(item)}
+            onChange={handleChange}
+            errorText={getValidationTextExtension(item)}
+            className="page_refero__quantity"
+            width={7}
+          />
+        </>
       </Validation>
       {props.renderDeleteButton('page_refero__deletebutton--margin-top')}
       <div>{props.repeatButton}</div>

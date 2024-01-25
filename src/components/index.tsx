@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
@@ -13,7 +13,6 @@ import {
   Quantity,
 } from '../types/fhir';
 import { ReferoProps } from '../types/referoProps';
-import { State } from '../types/state';
 
 import RenderForm from './renderForm';
 import StepView from './stepView';
@@ -50,59 +49,91 @@ import {
 import { RenderContext } from '../util/renderContext';
 import { ScoringCalculator } from '../util/scoringCalculator';
 import { shouldFormBeDisplayedAsStepView } from '../util/shouldFormBeDisplayedAsStepView';
+import { RenderFormItems } from './RenderFormItems';
 
 interface StateProps {
   formDefinition?: FormDefinition | null;
   formData?: FormData | null;
 }
 
-class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, State> {
-  constructor(props: StateProps & DispatchProps & ReferoProps) {
-    super(props);
-    const questionnaire = this.props.questionnaire ? this.props.questionnaire : this.props.formDefinition?.Content;
-    this.state = {
-      valid: true,
-      validated: false,
-      showCancelLightbox: false,
-      scoringCalculator: questionnaire ? this.getScoringCalculator(questionnaire) : undefined,
-    };
-  }
+const Refero = ({
+  formData,
+  onSave,
+  onSubmit,
+  onChange,
+  onCancel,
+  sticky,
+  questionnaire,
+  formDefinition,
+  mount,
+  questionnaireResponse,
+  language,
+  syncQuestionnaireResponse,
+  updateSkjema,
+  dispatch,
+  promptLoginMessage,
+  path,
+  onRequestAttachmentLink,
+  onOpenAttachment,
+  onDeleteAttachment,
+  onRequestHelpButton,
+  onRequestHelpElement,
+  uploadAttachment,
+  attachmentErrorMessage,
+  attachmentMaxFileSize,
+  attachmentValidTypes,
+  validateScriptInjection,
+  onRenderMarkdown,
+  fetchValueSet,
+  autoSuggestProps,
+  fetchReceivers,
+  resources,
+  pdf,
+  authorized,
+  blockSubmit,
+  loginButton,
+  validationSummaryPlacement,
+  submitButtonDisabled,
+  saveButtonDisabled,
+  onFieldsNotCorrectlyFilledOut,
+  onStepChange,
+  isHelsenorgeForm,
+}: StateProps & DispatchProps & ReferoProps): JSX.Element | null => {
+  const qst = questionnaire ? questionnaire : formDefinition?.Content;
 
-  onSubmit = (): void => {
-    const { formData, onSubmit } = this.props;
+  const [scoringCalculator, setScoringCalculator] = useState<ScoringCalculator | undefined>(qst ? new ScoringCalculator(qst) : undefined);
 
+  const handleSubmit = (): void => {
     if (formData && formData.Content && onSubmit) {
       onSubmit(formData.Content);
     }
   };
 
-  onSave = (): void => {
-    if (this.props.onSave && this.props.formData && this.props.formData.Content) {
-      this.props.onSave(this.props.formData.Content);
+  const handleSave = (): void => {
+    if (onSave && formData && formData.Content) {
+      onSave(formData.Content);
     }
   };
+  IE11HackToWorkAroundBug187484();
 
-  componentDidMount(): void {
-    this.props.mount();
-  }
+  useEffect(() => {
+    mount();
+  }, []);
 
-  componentDidUpdate(): void {
-    IE11HackToWorkAroundBug187484();
-  }
-
-  UNSAFE_componentWillReceiveProps(nextProps: ReferoProps): void {
-    if (nextProps.questionnaire && nextProps.questionnaire !== this.props.questionnaire) {
-      this.props.updateSkjema(
-        nextProps.questionnaire,
-        nextProps.questionnaireResponse,
-        nextProps.language,
-        nextProps.syncQuestionnaireResponse
-      );
-      this.setState({ scoringCalculator: this.getScoringCalculator(nextProps.questionnaire) });
+  useEffect(() => {
+    if (questionnaire) {
+      updateSkjema(questionnaire, questionnaireResponse, language, syncQuestionnaireResponse);
+      setScoringCalculator(new ScoringCalculator(questionnaire));
     }
-  }
-  onAnswerChange = (newState: GlobalState, _path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer): void => {
-    if (this.props.onChange && newState.refero.form.FormDefinition.Content && newState.refero.form.FormData.Content) {
+  }, [questionnaire]);
+
+  const onAnswerChange = (
+    newState: GlobalState,
+    _path: Array<Path>,
+    item: QuestionnaireItem,
+    answer: QuestionnaireResponseItemAnswer
+  ): void => {
+    if (onChange && newState.refero.form.FormDefinition.Content && newState.refero.form.FormData.Content) {
       const actionRequester = new ActionRequester(newState.refero.form.FormDefinition.Content, newState.refero.form.FormData.Content);
 
       const questionnaireInspector = new QuestionniareInspector(
@@ -110,35 +141,28 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
         newState.refero.form.FormData.Content
       );
 
-      this.props.onChange(item, answer, actionRequester, questionnaireInspector);
+      onChange(item, answer, actionRequester, questionnaireInspector);
 
       for (const action of actionRequester.getActions()) {
-        this.props.dispatch(action);
+        dispatch(action);
       }
     }
-
-    this.runScoringCalculator(newState);
+    runScoringCalculator(newState);
   };
-
-  getScoringCalculator = (questionnaire: Questionnaire): ScoringCalculator => {
-    return new ScoringCalculator(questionnaire);
-  };
-
-  runScoringCalculator = (newState: GlobalState): void => {
+  const runScoringCalculator = (newState: GlobalState): void => {
     const questionnaireResponse = newState.refero?.form?.FormData?.Content;
     const questionnaire = newState.refero.form.FormDefinition?.Content;
     if (!questionnaire || !questionnaireResponse) return;
 
-    if (this.state.scoringCalculator) {
-      const scores = this.state.scoringCalculator.calculateScore(questionnaireResponse);
-      this.updateQuestionnaireResponseWithScore(scores, questionnaire, questionnaireResponse);
+    if (scoringCalculator) {
+      const scores = scoringCalculator.calculateScore(questionnaireResponse);
+      updateQuestionnaireResponseWithScore(scores, questionnaire, questionnaireResponse);
 
-      const fhirScores = this.state.scoringCalculator.calculateFhirScore(questionnaireResponse);
-      this.updateQuestionnaireResponseWithScore(fhirScores, questionnaire, questionnaireResponse);
+      const fhirScores = scoringCalculator.calculateFhirScore(questionnaireResponse);
+      updateQuestionnaireResponseWithScore(fhirScores, questionnaire, questionnaireResponse);
     }
   };
-
-  updateQuestionnaireResponseWithScore = (
+  const updateQuestionnaireResponseWithScore = (
     scores: { [linkId: string]: number | undefined },
     questionnaire: Questionnaire,
     questionnaireResponse: QuestionnaireResponse
@@ -184,12 +208,11 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
     }
 
     for (const a of actions) {
-      this.props.dispatch(a);
+      dispatch(a);
     }
   };
 
-  renderFormItems(pdf?: boolean): Array<JSX.Element> | undefined {
-    const { formDefinition, resources, formData, promptLoginMessage } = this.props;
+  const renderFormItems = (pdf?: boolean): Array<JSX.Element> | undefined => {
     if (!formDefinition || !formDefinition.Content || !formDefinition.Content.item) {
       return undefined;
     }
@@ -220,16 +243,16 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
               <div className="page_refero__repeatbutton-wrapper">
                 <RepeatButton
                   key={`item_${item.linkId}_add_repeat_item`}
-                  resources={this.props.resources}
+                  resources={resources}
                   item={item}
                   responseItems={responseItems}
-                  parentPath={this.props.path}
+                  parentPath={path}
                   renderContext={new RenderContext()}
                   disabled={item.type !== ItemType.GROUP && !responseItem.answer}
                 />
               </div>
             ) : undefined;
-          const path = createPathForItem(this.props.path, item, responseItem, index);
+          const pathForItem = createPathForItem(path, item, responseItem, index);
           // legg på blindzone rett over den første seksjonen
           if (isNavigatorEnabled && item.type === ItemType.GROUP && !isNavigatorBlindzoneInitiated) {
             isNavigatorBlindzoneInitiated = true;
@@ -242,151 +265,120 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
               includeSkipLink={isNavigatorEnabled && item.type === ItemType.GROUP}
               promptLoginMessage={promptLoginMessage}
               key={`item_${responseItem.linkId}_${index}`}
-              id={'item_' + responseItem.linkId + createIdSuffix(path, index, item.repeats)}
+              id={'item_' + responseItem.linkId + createIdSuffix(pathForItem, index, item.repeats)}
               item={item}
               questionnaire={formDefinition.Content}
               responseItem={responseItem}
               answer={getAnswerFromResponseItem(responseItem)}
               resources={resources}
               containedResources={contained}
-              path={path}
+              path={pathForItem}
               headerTag={Constants.DEFAULT_HEADER_TAG}
               visibleDeleteButton={shouldRenderDeleteButton(item, index)}
               repeatButton={repeatButton}
-              onRequestAttachmentLink={this.props.onRequestAttachmentLink}
-              onOpenAttachment={this.props.onOpenAttachment}
-              onDeleteAttachment={this.props.onDeleteAttachment}
-              uploadAttachment={this.props.uploadAttachment}
-              onRequestHelpButton={this.props.onRequestHelpButton}
-              onRequestHelpElement={this.props.onRequestHelpElement}
-              attachmentErrorMessage={this.props.attachmentErrorMessage}
-              attachmentMaxFileSize={this.props.attachmentMaxFileSize}
-              attachmentValidTypes={this.props.attachmentValidTypes}
-              validateScriptInjection={this.props.validateScriptInjection}
-              onAnswerChange={this.onAnswerChange}
+              onRequestAttachmentLink={onRequestAttachmentLink}
+              onOpenAttachment={onOpenAttachment}
+              onDeleteAttachment={onDeleteAttachment}
+              uploadAttachment={uploadAttachment}
+              onRequestHelpButton={onRequestHelpButton}
+              onRequestHelpElement={onRequestHelpElement}
+              attachmentErrorMessage={attachmentErrorMessage}
+              attachmentMaxFileSize={attachmentMaxFileSize}
+              attachmentValidTypes={attachmentValidTypes}
+              validateScriptInjection={validateScriptInjection}
+              onAnswerChange={onAnswerChange}
               renderContext={new RenderContext()}
-              onRenderMarkdown={this.props.onRenderMarkdown}
-              fetchValueSet={this.props.fetchValueSet}
-              autoSuggestProps={this.props.autoSuggestProps}
-              fetchReceivers={this.props.fetchReceivers}
+              onRenderMarkdown={onRenderMarkdown}
+              fetchValueSet={fetchValueSet}
+              autoSuggestProps={autoSuggestProps}
+              fetchReceivers={fetchReceivers}
             />
           );
         });
       }
     });
     return renderedItems;
-  }
-
-  renderSkjema = (pdf?: boolean): Array<JSX.Element> | Array<Array<JSX.Element>> | JSX.Element | null | undefined => {
-    const { formDefinition, resources } = this.props;
-
-    if (!formDefinition || !formDefinition.Content || !resources) {
-      return null;
-    }
-
-    if (pdf) {
-      return this.renderFormItems(true);
-    }
-
-    const presentationButtonsType = getPresentationButtonsExtension(formDefinition.Content);
-    const isStepView = shouldFormBeDisplayedAsStepView(formDefinition);
-
-    return (
-      <div className={this.getButtonClasses(presentationButtonsType, ['page_refero__content'])}>
-        <div className="page_refero__messageboxes" />
-        {this.renderForm(isStepView)}
-      </div>
-    );
   };
 
-  renderForm = (isStepView?: boolean): JSX.Element | undefined => {
-    const {
-      formDefinition,
-      resources,
-      authorized,
-      blockSubmit,
-      onSave,
-      onCancel,
-      onSubmit,
-      loginButton,
-      validationSummaryPlacement,
-      submitButtonDisabled,
-      saveButtonDisabled,
-      onFieldsNotCorrectlyFilledOut,
-      onStepChange,
-      isHelsenorgeForm,
-    } = this.props;
-    if (!formDefinition || !resources) {
-      return;
-    }
-
-    const referoProps = {
-      authorized,
-      blockSubmit,
-      onSave,
-      onCancel,
-      onSubmit,
-      loginButton,
-      validationSummaryPlacement,
-      submitButtonDisabled,
-      saveButtonDisabled,
-      onFieldsNotCorrectlyFilledOut,
-      onStepChange,
-      isHelsenorgeForm,
-    };
-
-    return (
-      <>
-        {isStepView ? (
-          <StepView
-            isAuthorized={authorized}
-            referoProps={referoProps}
-            resources={resources}
-            formItems={this.renderFormItems()}
-            formDefinition={formDefinition}
-            onSave={this.onSave}
-            onSubmit={this.onSubmit}
-            onStepChange={onStepChange}
-            isHelsenorgeForm={isHelsenorgeForm}
-          />
-        ) : (
-          <RenderForm
-            isAuthorized={authorized}
-            isStepView={false}
-            referoProps={referoProps}
-            resources={resources}
-            formItemsToBeRendered={this.renderFormItems()}
-            onSave={this.onSave}
-            onSubmit={this.onSubmit}
-            isHelsenorgeForm={isHelsenorgeForm}
-          />
-        )}
-      </>
-    );
-  };
-
-  getButtonClasses(presentationButtonsType: PresentationButtonsType | null, defaultClasses?: string[]): string {
+  const getButtonClasses = (presentationButtonsType: PresentationButtonsType | null, defaultClasses?: string[]): string => {
     defaultClasses = defaultClasses ?? [];
     if (presentationButtonsType === PresentationButtonsType.None) {
       defaultClasses.push('page_refero__hidden_buttons');
     }
-    if (presentationButtonsType === PresentationButtonsType.Sticky || (this.props.sticky && !presentationButtonsType)) {
+    if (presentationButtonsType === PresentationButtonsType.Sticky || (sticky && !presentationButtonsType)) {
       defaultClasses.push('page_refero__stickybar');
     }
 
     return defaultClasses.join(' ');
+  };
+
+  if (!formDefinition || !formDefinition.Content || !resources) {
+    return null;
   }
 
-  render(): JSX.Element | null {
-    const { resources } = this.props;
-
-    if (!resources) {
-      return null;
-    }
-
-    return <React.Fragment>{this.renderSkjema(this.props.pdf)}</React.Fragment>;
+  if (pdf) {
+    return <>{renderFormItems(true)}</>;
   }
-}
+
+  const presentationButtonsType = getPresentationButtonsExtension(formDefinition.Content);
+  const isStepView = shouldFormBeDisplayedAsStepView(formDefinition);
+
+  const referoProps: ReferoProps = {
+    authorized,
+    blockSubmit,
+    onSave,
+    onCancel,
+    onSubmit,
+    loginButton,
+    validationSummaryPlacement,
+    submitButtonDisabled,
+    saveButtonDisabled,
+    onFieldsNotCorrectlyFilledOut,
+    onStepChange,
+    isHelsenorgeForm,
+  };
+  return (
+    <div className={getButtonClasses(presentationButtonsType, ['page_refero__content'])}>
+      <div className="page_refero__messageboxes" />
+
+      {isStepView ? (
+        <StepView
+          isAuthorized={authorized}
+          referoProps={referoProps}
+          resources={resources}
+          formItems={renderFormItems()}
+          formDefinition={formDefinition}
+          onSave={handleSave}
+          onSubmit={handleSubmit}
+          onStepChange={onStepChange}
+          isHelsenorgeForm={isHelsenorgeForm}
+        />
+      ) : (
+        <RenderForm
+          isAuthorized={authorized}
+          isStepView={false}
+          referoProps={referoProps}
+          resources={resources}
+          formItemsToBeRendered={renderFormItems()}
+          onSave={handleSave}
+          onSubmit={handleSubmit}
+          isHelsenorgeForm={isHelsenorgeForm}
+        >
+          {/* <RenderFormItems
+            {...referoProps}
+            runScoringCalculator={}
+            dispatch={dispatch}
+            path={path}
+            formData={formData}
+            formDefinition={formDefinition}
+          /> */}
+        </RenderForm>
+      )}
+    </div>
+  );
+};
+
+/* REDUX utils */
 
 function mapStateToProps(state: GlobalState): StateProps {
   return {
@@ -396,6 +388,7 @@ function mapStateToProps(state: GlobalState): StateProps {
 }
 
 function mapDispatchToProps(dispatch: ThunkDispatch<GlobalState, void, NewValueAction>, props: ReferoProps): DispatchProps {
+  const { questionnaire, questionnaireResponse, language, syncQuestionnaireResponse } = props;
   return {
     updateSkjema: (
       questionnaire: Questionnaire,
@@ -406,8 +399,8 @@ function mapDispatchToProps(dispatch: ThunkDispatch<GlobalState, void, NewValueA
       dispatch(setSkjemaDefinition(questionnaire, questionnaireResponse, language, syncQuestionnaireResponse));
     },
     mount: (): void => {
-      if (props.questionnaire) {
-        dispatch(setSkjemaDefinition(props.questionnaire, props.questionnaireResponse, props.language, props.syncQuestionnaireResponse));
+      if (questionnaire) {
+        dispatch(setSkjemaDefinition(questionnaire, questionnaireResponse, language, syncQuestionnaireResponse));
       }
     },
     dispatch,

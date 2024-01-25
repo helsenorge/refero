@@ -13,15 +13,14 @@ import {
 } from '../types/fhir';
 import { Options } from '../types/formTypes/radioGroupOptions';
 
+import { getItemControlExtensionValue, getValidationTextExtension } from './extension';
+import { Resources } from './resources';
 import ExtensionConstants from '../constants/extensions';
 import Constants, { OPEN_CHOICE_ID } from '../constants/index';
 import itemControlConstants from '../constants/itemcontrol';
 import ItemType from '../constants/itemType';
-import { getItemControlExtensionValue, getValidationTextExtension } from './extension';
-import { Resources } from './resources';
 
 import { isReadOnly, isRequired } from './index';
-import { option } from 'yargs';
 
 export function hasCanonicalValueSet(item: QuestionnaireItem): boolean {
   return !!item.answerValueSet && item.answerValueSet.substr(0, 4) === 'http';
@@ -116,7 +115,7 @@ export function renderOptions(
         case itemControlConstants.RADIOBUTTON:
           return renderRadio(options);
         case itemControlConstants.SLIDER:
-            return renderSlider()
+          return renderSlider();
         default:
           break;
       }

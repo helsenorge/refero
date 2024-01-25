@@ -45,7 +45,7 @@ export interface GroupProps extends WithCommonFunctionsProps {
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
 }
 
-const Group: React.FC<GroupProps & ValidationProps> = props => {
+export const Group: React.FC<GroupProps & ValidationProps> = props => {
   // constructor(props: Props) {
   //   super(props);
   // }
@@ -69,26 +69,26 @@ const Group: React.FC<GroupProps & ValidationProps> = props => {
   //   );
   // }
 
-  React.useMemo(() => {
-    return (newProps: React.PropsWithChildren<GroupProps & ValidationProps>) => {
-      const responseItemHasChanged = props.responseItem !== newProps.responseItem;
-      const helpItemHasChanged = props.isHelpOpen !== newProps.isHelpOpen;
-      const repeatButtonHasChanged = props.repeatButton !== newProps.repeatButton;
-      const attachmentErrorMessageHasChanged = props.attachmentErrorMessage !== newProps.attachmentErrorMessage;
-      const resourcesHasChanged = JSON.stringify(props.resources) !== JSON.stringify(newProps.resources);
+  // React.useMemo(() => {
+  //   return (newProps: React.PropsWithChildren<GroupProps & ValidationProps>) => {
+  //     const responseItemHasChanged = props.responseItem !== newProps.responseItem;
+  //     const helpItemHasChanged = props.isHelpOpen !== newProps.isHelpOpen;
+  //     const repeatButtonHasChanged = props.repeatButton !== newProps.repeatButton;
+  //     const attachmentErrorMessageHasChanged = props.attachmentErrorMessage !== newProps.attachmentErrorMessage;
+  //     const resourcesHasChanged = JSON.stringify(props.resources) !== JSON.stringify(newProps.resources);
 
-      const repeats = props.item.repeats ?? false;
+  //     const repeats = props.item.repeats ?? false;
 
-      return (
-        responseItemHasChanged ||
-        helpItemHasChanged ||
-        repeatButtonHasChanged ||
-        attachmentErrorMessageHasChanged ||
-        resourcesHasChanged ||
-        repeats
-      );
-    };
-  }, [props]);
+  //     return (
+  //       responseItemHasChanged ||
+  //       helpItemHasChanged ||
+  //       repeatButtonHasChanged ||
+  //       attachmentErrorMessageHasChanged ||
+  //       resourcesHasChanged ||
+  //       repeats
+  //     );
+  //   };
+  // }, [props]);
 
   const renderAllItems = (): JSX.Element => {
     const { renderContext } = props;

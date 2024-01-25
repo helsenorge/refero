@@ -1,20 +1,20 @@
 import * as React from 'react';
 
 import classNames from 'classnames';
+import { useForm } from 'react-hook-form';
 
 import { Coding } from '../../../types/fhir';
 import { EnhetType, OrgenhetHierarki } from '../../../types/orgenhetHierarki';
 
+import Label from '@helsenorge/designsystem-react/components/Label';
 import Loader from '@helsenorge/designsystem-react/components/Loader';
 import NotificationPanel from '@helsenorge/designsystem-react/components/NotificationPanel';
 import Select from '@helsenorge/designsystem-react/components/Select';
-import Label from '@helsenorge/designsystem-react/components/Label';
 
 import ValidationError from '@helsenorge/form/components/form/validation-error';
 
 import { getId } from '../../../util';
 import { Resources } from '../../../util/resources';
-import { useForm } from 'react-hook-form';
 
 export interface ReceiverComponentProps {
   selected?: Array<string | undefined>;

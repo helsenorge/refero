@@ -191,15 +191,15 @@ const Time: React.FC<TimeProps & ValidationProps> = props => {
     return '';
   };
 
-  React.useMemo(() => {
-    const responseItemHasChanged = props.responseItem !== props.responseItem;
-    const helpItemHasChanged = props.isHelpOpen !== props.isHelpOpen;
-    const answerHasChanged = props.answer !== props.answer;
-    const resourcesHasChanged = JSON.stringify(props.resources) !== JSON.stringify(props.resources);
-    const repeats = props.item.repeats ?? false;
+  // React.useMemo(() => {
+  //   const responseItemHasChanged = props.responseItem !== props.responseItem;
+  //   const helpItemHasChanged = props.isHelpOpen !== props.isHelpOpen;
+  //   const answerHasChanged = props.answer !== props.answer;
+  //   const resourcesHasChanged = JSON.stringify(props.resources) !== JSON.stringify(props.resources);
+  //   const repeats = props.item.repeats ?? false;
 
-    return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats || answerHasChanged;
-  }, [props.responseItem, props.isHelpOpen, props.answer, props.resources, props.item]);
+  //   return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats || answerHasChanged;
+  // }, [props.responseItem, props.isHelpOpen, props.answer, props.resources, props.item]);
 
   const { pdf, item, renderFieldset, id, onRenderMarkdown } = props;
   const subLabelText = getSublabelText(props.item, props.onRenderMarkdown, props.questionnaire, props.resources);

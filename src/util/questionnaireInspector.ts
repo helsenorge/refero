@@ -7,7 +7,6 @@ export interface QuestionnaireItemPair {
   QuestionnaireResponseItems: Array<ItemAndPath>;
 }
 
-// eslint-disable-next-line @typescript-eslint/interface-name-prefix
 export interface IQuestionnaireInspector {
   findItemWithLinkIds(...linkIds: string[]): Array<QuestionnaireItemPair>;
 }

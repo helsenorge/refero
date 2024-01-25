@@ -20,7 +20,7 @@ interface FormButtonsInterface {
   pauseButtonText: string;
   submitButtonDisabled?: boolean;
   pauseButtonDisabled?: boolean;
-  onSubmitButtonClicked?: () => void;
+  onSubmitButtonClicked?: (() => void) | ((e: React.FormEvent) => void);
   onCancelButtonClicked?: () => void;
   onPauseButtonClicked?: () => void;
   isHelsenorgeForm?: boolean;

@@ -157,15 +157,15 @@ const DateTime: React.FC<DateTimeProps & ValidationProps> = props => {
     return date ?? text;
   };
 
-  React.useMemo(() => {
-    const responseItemHasChanged = props.responseItem !== props.responseItem;
-    const helpItemHasChanged = props.isHelpOpen !== props.isHelpOpen;
-    const answerHasChanged = props.answer !== props.answer;
-    const resourcesHasChanged = JSON.stringify(props.resources) !== JSON.stringify(props.resources);
-    const repeats = props.item.repeats ?? false;
+  // React.useMemo(() => {
+  //   const responseItemHasChanged = props.responseItem !== props.responseItem;
+  //   const helpItemHasChanged = props.isHelpOpen !== props.isHelpOpen;
+  //   const answerHasChanged = props.answer !== props.answer;
+  //   const resourcesHasChanged = JSON.stringify(props.resources) !== JSON.stringify(props.resources);
+  //   const repeats = props.item.repeats ?? false;
 
-    return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats || answerHasChanged;
-  }, [props.responseItem, props.isHelpOpen, props.answer, props.resources, props.item]);
+  //   return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats || answerHasChanged;
+  // }, [props.responseItem, props.isHelpOpen, props.answer, props.resources, props.item]);
 
   const getLocaleFromLanguage = (): LanguageLocales.NORWEGIAN | LanguageLocales.ENGLISH => {
     if (props.language?.toLowerCase() === 'en-gb') {

@@ -62,7 +62,7 @@ export interface StringProps extends WithCommonFunctionsProps {
 const String: React.FC<StringProps & ValidationProps> = props => {
   const [inputValue, setInputValue] = React.useState('');
 
-  const handleChange = (event: React.FormEvent<{}>): void => {
+  const handleChange = (event: React.FormEvent): void => {
     const { dispatch, promptLoginMessage, path, item, onAnswerChange } = props;
     const value = (event.target as HTMLInputElement).value;
     if (dispatch) {
@@ -76,17 +76,17 @@ const String: React.FC<StringProps & ValidationProps> = props => {
     }
   };
 
-  const debouncedHandleChange: (event: React.FormEvent<{}>) => void = debounce(handleChange, 250, false);
+  const debouncedHandleChange: (event: React.FormEvent) => void = debounce(handleChange, 250, false);
 
-  React.useMemo(() => {
-    const responseItemHasChanged = props.responseItem !== props.responseItem;
-    const helpItemHasChanged = props.isHelpOpen !== props.isHelpOpen;
-    const answerHasChanged = props.answer !== props.answer;
-    const resourcesHasChanged = JSON.stringify(props.resources) !== JSON.stringify(props.resources);
-    const repeats = props.item.repeats ?? false;
+  // React.useMemo(() => {
+  //   const responseItemHasChanged = props.responseItem !== props.responseItem;
+  //   const helpItemHasChanged = props.isHelpOpen !== props.isHelpOpen;
+  //   const answerHasChanged = props.answer !== props.answer;
+  //   const resourcesHasChanged = JSON.stringify(props.resources) !== JSON.stringify(props.resources);
+  //   const repeats = props.item.repeats ?? false;
 
-    return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats || answerHasChanged;
-  }, [props.responseItem, props.isHelpOpen, props.answer, props.resources, props.item]);
+  //   return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats || answerHasChanged;
+  // }, [props.responseItem, props.isHelpOpen, props.answer, props.resources, props.item]);
 
   const validateText2 = (value: string): boolean => {
     return validateText(value, props.validateScriptInjection);

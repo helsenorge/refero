@@ -6,13 +6,13 @@ import {
   QuestionnaireItemAnswerOption,
 } from '../types/fhir';
 
-import ExtensionConstants from '../constants/extensions';
-import { ScoringItemType } from '../constants/scoringItemType';
 import { getExtension, getCalculatedExpressionExtension } from './extension';
-import { createDummySectionScoreItem, scoringItemType } from './scoring';
-import { getQuestionnaireResponseItemsWithLinkId } from './refero-core';
 import { evaluateFhirpathExpressionToGetString } from './fhirpathHelper';
+import { getQuestionnaireResponseItemsWithLinkId } from './refero-core';
+import { createDummySectionScoreItem, scoringItemType } from './scoring';
+import ExtensionConstants from '../constants/extensions';
 import itemType from '../constants/itemType';
+import { ScoringItemType } from '../constants/scoringItemType';
 
 class CalculatedScores {
   totalScores: Array<QuestionnaireItem> = [];

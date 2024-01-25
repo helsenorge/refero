@@ -167,15 +167,15 @@ const AttachmentComponent = ({
     return '';
   };
 
-  React.useMemo(() => {
-    const responseItemHasChanged = responseItem !== responseItem;
-    const helpItemHasChanged = isHelpOpen !== isHelpOpen;
-    const answerHasChanged = answer !== answer;
-    const resourcesHasChanged = JSON.stringify(resources) !== JSON.stringify(resources);
-    const repeats = item.repeats ?? false;
+  // React.useMemo(() => {
+  //   const responseItemHasChanged = responseItem !== responseItem;
+  //   const helpItemHasChanged = isHelpOpen !== isHelpOpen;
+  //   const answerHasChanged = answer !== answer;
+  //   const resourcesHasChanged = JSON.stringify(resources) !== JSON.stringify(resources);
+  //   const repeats = item.repeats ?? false;
 
-    return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats || answerHasChanged;
-  }, [responseItem, isHelpOpen, answer, resources, item]);
+  //   return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats || answerHasChanged;
+  // }, [responseItem, isHelpOpen, answer, resources, item]);
 
   const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
 

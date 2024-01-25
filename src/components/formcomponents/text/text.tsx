@@ -70,7 +70,7 @@ const Text: React.FC<TextProps & ValidationProps> = props => {
   //   return false;
   // };
 
-  const handleChange = (event: React.FormEvent<{}>): void => {
+  const handleChange = (event: React.FormEvent): void => {
     const { dispatch, promptLoginMessage, path, item, onAnswerChange } = props;
     const value = (event.target as HTMLInputElement).value;
     if (dispatch) {
@@ -84,7 +84,7 @@ const Text: React.FC<TextProps & ValidationProps> = props => {
     }
   };
 
-  const debouncedHandleChange: (event: React.FormEvent<{}>) => void = debounce(handleChange, 250, false);
+  const debouncedHandleChange: (event: React.FormEvent) => void = debounce(handleChange, 250, false);
 
   const validateText2 = (value: string): boolean => {
     return validateWithRegex(value) && validateText(value, props.validateScriptInjection);
@@ -110,15 +110,15 @@ const Text: React.FC<TextProps & ValidationProps> = props => {
     return isRequired(item) ? props.resources?.formRequiredErrorMessage : undefined;
   };
 
-  React.useMemo(() => {
-    const responseItemHasChanged = props.responseItem !== props.responseItem;
-    const helpItemHasChanged = props.isHelpOpen !== props.isHelpOpen;
-    const answerHasChanged = props.answer !== props.answer;
-    const resourcesHasChanged = JSON.stringify(props.resources) !== JSON.stringify(props.resources);
-    const repeats = props.item.repeats ?? false;
+  // React.useMemo(() => {
+  //   const responseItemHasChanged = props.responseItem !== props.responseItem;
+  //   const helpItemHasChanged = props.isHelpOpen !== props.isHelpOpen;
+  //   const answerHasChanged = props.answer !== props.answer;
+  //   const resourcesHasChanged = JSON.stringify(props.resources) !== JSON.stringify(props.resources);
+  //   const repeats = props.item.repeats ?? false;
 
-    return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats || answerHasChanged;
-  }, [props.responseItem, props.isHelpOpen, props.answer, props.resources, props.item]);
+  //   return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats || answerHasChanged;
+  // }, [props.responseItem, props.isHelpOpen, props.answer, props.resources, props.item]);
 
   const { register } = useForm();
   const { id, item, answer, pdf, children, resources, onRenderMarkdown, questionnaire, ...other } = props;

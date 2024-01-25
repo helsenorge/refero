@@ -6,6 +6,7 @@ import {
   QuestionnaireResponseItemAnswer,
 } from '../types/fhir';
 
+import { createQuestionnaireResponseItem } from './generateQuestionnaireResponse';
 import ItemType from '../constants/itemType';
 import {
   hasAnswer,
@@ -20,7 +21,6 @@ import {
   hasQuantityAnswer,
   hasTimeAnswer,
 } from '../util/refero-core';
-import { createQuestionnaireResponseItem } from './generateQuestionnaireResponse';
 
 interface Dictionary<T> {
   [linkId: string]: T[];

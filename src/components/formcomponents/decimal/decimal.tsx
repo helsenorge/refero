@@ -73,7 +73,7 @@ const Decimal: React.FC<DecimalProps & ValidationProps> = props => {
     return value;
   };
 
-  const handleChange = (event: React.FormEvent<{}>): void => {
+  const handleChange = (event: React.FormEvent): void => {
     const { dispatch, path, item, promptLoginMessage, onAnswerChange } = props;
     const value = parseFloat((event.target as HTMLInputElement).value);
     if (dispatch) {
@@ -87,15 +87,15 @@ const Decimal: React.FC<DecimalProps & ValidationProps> = props => {
     }
   };
 
-  React.useMemo(() => {
-    const responseItemHasChanged = props.responseItem !== props.responseItem;
-    const helpItemHasChanged = props.isHelpOpen !== props.isHelpOpen;
-    const answerHasChanged = props.answer !== props.answer;
-    const resourcesHasChanged = JSON.stringify(props.resources) !== JSON.stringify(props.resources);
-    const repeats = props.item.repeats ?? false;
+  // React.useMemo(() => {
+  //   const responseItemHasChanged = props.responseItem !== props.responseItem;
+  //   const helpItemHasChanged = props.isHelpOpen !== props.isHelpOpen;
+  //   const answerHasChanged = props.answer !== props.answer;
+  //   const resourcesHasChanged = JSON.stringify(props.resources) !== JSON.stringify(props.resources);
+  //   const repeats = props.item.repeats ?? false;
 
-    return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats || answerHasChanged;
-  }, [props.responseItem, props.isHelpOpen, props.answer, props.resources, props.item]);
+  //   return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats || answerHasChanged;
+  // }, [props.responseItem, props.isHelpOpen, props.answer, props.resources, props.item]);
 
   const { register } = useForm();
   const { id, item, pdf, onRenderMarkdown } = props;
@@ -126,27 +126,30 @@ const Decimal: React.FC<DecimalProps & ValidationProps> = props => {
   return (
     <div className="page_refero__component page_refero__component_decimal">
       <Validation {...props}>
-        <Label
-          htmlFor={inputId}
-          labelTexts={[{ text: labelText, type: 'semibold' }]}
-          sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
-          afterLabelChildren={props.renderHelpButton()}
-        />
-        {props.renderHelpElement()}
-        <Input
-          {...register('decimal')}
-          type="number"
-          inputId={inputId}
-          name={getId(props.id)}
-          defaultValue={value ? value + '' : ''}
-          required={isRequired(item)}
-          placeholder={getPlaceholder(item)}
-          max={getMaxValueExtensionValue(item)}
-          min={getMinValueExtensionValue(item)}
-          errorText={getValidationTextExtension(item)}
-          className="page_refero__input"
-          onChange={handleChange}
-        />
+        <>
+          <Label
+            htmlFor={inputId}
+            labelTexts={[{ text: labelText, type: 'semibold' }]}
+            sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+            afterLabelChildren={props.renderHelpButton()}
+          />
+          {props.renderHelpElement()}
+          <Input
+            {...register('decimal')}
+            type="number"
+            inputId={inputId}
+            name={getId(props.id)}
+            defaultValue={value ? value + '' : ''}
+            required={isRequired(item)}
+            placeholder={getPlaceholder(item)}
+            max={getMaxValueExtensionValue(item)}
+            min={getMinValueExtensionValue(item)}
+            errorText={getValidationTextExtension(item)}
+            className="page_refero__input"
+            width={25}
+            onChange={handleChange}
+          />
+        </>
       </Validation>
       {props.renderDeleteButton('page_refero__deletebutton--margin-top')}
       {props.repeatButton}

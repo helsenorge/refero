@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { useForm, SubmitHandler } from 'react-hook-form';
+import { useForm, SubmitHandler, FormProvider } from 'react-hook-form';
 
 import { buttonOrderStepView, buttonOrderNormalView } from '../types/formTypes/formButton';
 import { Inputs } from '../types/formTypes/formInputs';
@@ -39,7 +39,7 @@ const RenderForm = ({
   previousStep,
   isHelsenorgeForm,
 }: RenderFormProps): JSX.Element | null => {
-  const { handleSubmit } = useForm();
+  const methods = useForm();
   const onSubmitReactHookForm: SubmitHandler<Inputs> = data => {
     console.log(data);
     onSubmit();
@@ -47,14 +47,17 @@ const RenderForm = ({
 
   const onPauseButtonClickedInNormalView = referoProps.onSave ? onSave : undefined;
   const onPauseButtonClickedInStepView = displayPreviousButton ? previousStep : undefined;
-
+  const handleSubmit = (e: React.FormEvent): void => {
+    e.preventDefault();
+    methods.handleSubmit(onSubmitReactHookForm);
+  };
   if (referoProps.blockSubmit) {
     return <Loader size={'medium'} overlay={'parent'} />;
   }
 
   return (
-    <>
-      <form action="#" onSubmit={handleSubmit(onSubmitReactHookForm)}>
+    <FormProvider {...methods}>
+      <form action="#" onSubmit={handleSubmit}>
         {formItemsToBeRendered}
         <FormButtons
           buttonOrder={isStepView ? buttonOrderStepView : buttonOrderNormalView}
@@ -63,13 +66,13 @@ const RenderForm = ({
           pauseButtonText={displayPreviousButton && resources.previousStep ? resources.previousStep : resources.formSave}
           submitButtonDisabled={referoProps.blockSubmit}
           pauseButtonDisabled={referoProps.saveButtonDisabled}
-          onSubmitButtonClicked={displayNextButton ? nextStep : onSubmit}
+          onSubmitButtonClicked={displayNextButton ? nextStep : handleSubmit}
           onCancelButtonClicked={referoProps.onCancel}
           onPauseButtonClicked={isStepView ? onPauseButtonClickedInStepView : onPauseButtonClickedInNormalView}
           isHelsenorgeForm={isHelsenorgeForm && isHelsenorgeForm}
         ></FormButtons>
       </form>
-    </>
+    </FormProvider>
   );
 };
 
