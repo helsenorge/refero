@@ -10,11 +10,12 @@ import { getExtension } from '../../../util/extension';
 interface SliderProps {
   item: QuestionnaireItem;
   handleChange: (sliderStep: string) => void;
+  children: React.ReactNode;
 }
 
 type LeftRightLabels = [leftLabel: string, rightLabel: string];
 
-const SliderView: React.FC<SliderProps> = ({ item, handleChange }) => {
+const SliderView: React.FC<SliderProps> = ({ item, handleChange, children }) => {
   const title = item.text;
   const [sliderSteps, setSliderSteps] = React.useState<SliderStep[] | undefined>(undefined);
   const [leftRightLabels, setleftRightLabels] = React.useState<LeftRightLabels | undefined>(undefined);
@@ -36,7 +37,14 @@ const SliderView: React.FC<SliderProps> = ({ item, handleChange }) => {
 
   return (
     <div className="page_refero__component page_refero__component_choice page_refero__component_choice_slider">
-      <Slider title={title} labelLeft={leftRightLabels?.[0]} labelRight={leftRightLabels?.[1]} onChange={onValueChange} steps={sliderSteps} />
+      <Slider
+        title={title}
+        labelLeft={leftRightLabels?.[0]}
+        labelRight={leftRightLabels?.[1]}
+        onChange={onValueChange}
+        steps={sliderSteps}
+      />
+      {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : undefined}
     </div>
   );
 };

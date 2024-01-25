@@ -256,7 +256,11 @@ export class Choice extends React.Component<ChoiceProps & ValidationProps, Choic
   };
 
   renderSlider = (): JSX.Element => {
-    return <SliderView item={this.props.item} handleChange={this.handleChange} />;
+    return (
+      <SliderView item={this.props.item} handleChange={this.handleChange}>
+        {this.props.children}
+      </SliderView>
+    );
   };
 
   renderAutosuggest = (): JSX.Element => {
