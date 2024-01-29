@@ -395,8 +395,13 @@ const OpenChoice: React.FC<OpenChoiceProps & ValidationProps> = props => {
       </AutosuggestView>
     );
   };
+
   const renderSlider = (): JSX.Element => {
-    return <SliderView item={props.item} handleChange={handleChange} />;
+    return (
+      <SliderView item={props.item} handleChange={handleChange}>
+        {props.children}
+      </SliderView>
+    );
   };
   // React.useMemo(() => {
   //   const responseItemHasChanged = props.responseItem !== props.responseItem;

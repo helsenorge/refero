@@ -237,7 +237,11 @@ const Choice: React.FC<ChoiceProps & ValidationProps> = props => {
   };
 
   const renderSlider = (): JSX.Element => {
-    return <SliderView item={props.item} handleChange={handleChange} />;
+    return (
+      <SliderView item={props.item} handleChange={handleChange}>
+        {props.children}
+      </SliderView>
+    );
   };
 
   const renderAutosuggest = (): JSX.Element => {
