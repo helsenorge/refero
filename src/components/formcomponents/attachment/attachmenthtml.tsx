@@ -10,8 +10,9 @@ import { UploadedFile } from '@helsenorge/file-upload/components/dropzone';
 import { sizeIsValid, mimeTypeIsValid } from '@helsenorge/file-upload/components/dropzone/validation';
 import Validation, { ValidationProps } from '@helsenorge/form/components/form/validation';
 
+import { convertBytesToMBString, convertMBToBytes } from './attachmentUtil';
 import constants, { VALID_FILE_TYPES } from '../../../constants';
-import { getValidationTextExtension } from '../../../util/extension';
+import { getMaxSizeExtensionValue, getValidationTextExtension } from '../../../util/extension';
 import { Resources } from '../../../util/resources';
 
 interface Props {
@@ -65,7 +66,8 @@ const attachmentHtml: React.SFC<Props & ValidationProps> = ({
   children,
   ...other
 }) => {
-  const maxFilesize = attachmentMaxFileSize ? attachmentMaxFileSize : constants.MAX_FILE_SIZE;
+  const getMaxValueBytes = getAttachmentMaxSizeBytesToUse(attachmentMaxFileSize, item);
+  const getMaxValueMBToReplace = convertBytesToMBString(getMaxValueBytes);
   const validFileTypes = attachmentValidTypes ? attachmentValidTypes : VALID_FILE_TYPES;
   const deleteText = resources ? resources.deleteAttachmentText : undefined;
 
@@ -81,13 +83,13 @@ const attachmentHtml: React.SFC<Props & ValidationProps> = ({
           onOpenFile={onOpen}
           uploadButtonText={uploadButtonText}
           uploadedFiles={uploadedFiles}
-          maxFileSize={maxFilesize}
+          maxFileSize={getMaxValueBytes}
           validMimeTypes={validFileTypes}
           dontShowHardcodedText={!!deleteText}
           deleteText={deleteText}
           supportedFileFormatsText={resources ? resources.supportedFileFormats : undefined}
           errorMessage={(file: File): string => {
-            return getErrorMessage(validFileTypes, maxFilesize, item, errorText, file, resources);
+            return getErrorMessage(validFileTypes, getMaxValueBytes, getMaxValueMBToReplace, item, errorText, file, resources);
           }}
           isRequired={isRequired}
           wrapperClasses="page_refero__input"
@@ -106,9 +108,23 @@ const attachmentHtml: React.SFC<Props & ValidationProps> = ({
   );
 };
 
+export function getAttachmentMaxSizeBytesToUse(defaultMaxProps: number | undefined, item: QuestionnaireItem): number {
+  if (item) {
+    const questionnaireMaxRuleSizeMB = getMaxSizeExtensionValue(item);
+    if (questionnaireMaxRuleSizeMB !== undefined) {
+      return convertMBToBytes(questionnaireMaxRuleSizeMB);
+    }
+  }
+  if (defaultMaxProps !== undefined) {
+    return defaultMaxProps;
+  }
+  return constants.MAX_FILE_SIZE;
+}
+
 function getErrorMessage(
   validFileTypes: Array<string>,
   maxFileSize: number,
+  maxFileSizeMBStringToReplace: string,
   item: QuestionnaireItem,
   genericErrorText?: string,
   file?: File,
@@ -118,7 +134,7 @@ function getErrorMessage(
     if (!mimeTypeIsValid(file, validFileTypes)) {
       return resources.validationFileType;
     } else if (!sizeIsValid(file, maxFileSize)) {
-      return resources.validationFileMax;
+      return resources.validationFileMax.replace('{0}', maxFileSizeMBStringToReplace);
     }
   }
 

@@ -15,18 +15,18 @@ import { TextMessage } from '../../../types/text-message';
 import { UploadedFile } from '@helsenorge/file-upload/components/dropzone';
 import { ValidationProps } from '@helsenorge/form/components/form/validation';
 
+import AttachmentHtml from './attachmenthtml';
 import { NewValueAction, newAttachmentAsync, removeAttachmentAsync } from '../../../actions/newValue';
 import { GlobalState } from '../../../reducers';
 import { getValidationTextExtension, getMaxOccursExtensionValue, getMinOccursExtensionValue } from '../../../util/extension';
 import { isRequired, getId, isReadOnly, isRepeat, getSublabelText } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
-import { Resources } from '../../../util/resources';
 import { Path } from '../../../util/refero-core';
+import { Resources } from '../../../util/resources';
 import withCommonFunctions from '../../with-common-functions';
 import Label from '../label';
 import SubLabel from '../sublabel';
 import TextView from '../textview';
-import AttachmentHtml from './attachmenthtml';
 
 export interface Props {
   dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
@@ -58,7 +58,7 @@ export interface Props {
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
 }
 
-class AttachmentComponent extends React.Component<Props & ValidationProps> {
+export class AttachmentComponent extends React.Component<Props & ValidationProps> {
   onUpload = (files: File[], cb: (success: boolean, errormessage: TextMessage | null, uploadedFile?: UploadedFile) => void): void => {
     const { uploadAttachment, path, item, onAnswerChange } = this.props;
     if (uploadAttachment) {
