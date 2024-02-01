@@ -21,6 +21,7 @@ import {
 } from '../../../util/index';
 import { Resources } from '../../../util/resources';
 import Pdf from '../textview';
+import { useFormContext } from 'react-hook-form';
 
 interface Props {
   id?: string;
@@ -59,10 +60,11 @@ const textField: React.SFC<Props & ValidationProps> = ({
   // pattern={getRegexExtension(item)}
   // validateOnExternalUpdate={true}
   // FORANDRET ONBLUR TIL ONCHANGE
-
+  const { register } = useFormContext();
   return (
     <Validation {...other}>
       <Input
+        {...register(item.linkId, { required: isRequired(item), onChange: handleStringChange })}
         type="text"
         inputId={getId(id)}
         name={getId(id)}

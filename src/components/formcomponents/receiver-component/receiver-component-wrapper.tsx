@@ -2,8 +2,8 @@ import * as React from 'react';
 
 import Validation from '@helsenorge/designsystem-react/components/Validation';
 
-import { getId } from '../../../util';
 import ReceiverComponent, { ReceiverComponentProps } from './receiver-component';
+import { getId } from '../../../util';
 
 const ReceiverComponentWrapper: React.FC<ReceiverComponentProps> = props => {
   return (

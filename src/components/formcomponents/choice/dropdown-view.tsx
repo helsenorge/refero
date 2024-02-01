@@ -64,12 +64,12 @@ const DropdownView: React.FC<DropdownViewProps> = props => {
   });
   const selectId = getId(id);
 
-  let placeholder;
-  if (getPlaceholder(item)) {
-    placeholder = new Option(getPlaceholder(item), '');
-  } else if (resources) {
-    placeholder = new Option(resources.selectDefaultPlaceholder, '');
-  }
+  // let placeholder;
+  // if (getPlaceholder(item)) {
+  //   placeholder = new Option(getPlaceholder(item), '');
+  // } else if (resources) {
+  //   placeholder = new Option(resources.selectDefaultPlaceholder, '');
+  // }
 
   const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`;
   const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
@@ -79,31 +79,29 @@ const DropdownView: React.FC<DropdownViewProps> = props => {
   return (
     <div className="page_refero__component page_refero__component_choice page_refero__component_choice_dropdown">
       <Collapse isOpened>
-        <Validation {...other}>
-          <Label
-            htmlFor={selectId}
-            labelTexts={[{ text: labelText, type: 'semibold' }]}
-            sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
-            afterLabelChildren={renderHelpButton()}
-          />
-          {renderHelpElement()}
-          <Select
-            {...register('dropdownView_choice')}
-            selectId={selectId}
-            name={getId(id)}
-            required={isRequired(item)}
-            value={selected ? selected[0] : undefined}
-            errorText={getValidationTextExtension(item)}
-            className="page_refero__input"
-            onChange={(evt): void => handleChange(evt.target.value)}
-          >
-            {dropdownOptions.map(dropdownOption => (
-              <option key={selectId + dropdownOption.label} value={dropdownOption.label}>
-                {dropdownOption.label}
-              </option>
-            ))}
-          </Select>
-        </Validation>
+        <Label
+          htmlFor={selectId}
+          labelTexts={[{ text: labelText, type: 'semibold' }]}
+          sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+          afterLabelChildren={renderHelpButton()}
+        />
+        {renderHelpElement()}
+        <Select
+          {...register('dropdownView_choice')}
+          selectId={selectId}
+          name={getId(id)}
+          required={isRequired(item)}
+          value={selected ? selected[0] : undefined}
+          errorText={getValidationTextExtension(item)}
+          className="page_refero__input"
+          onChange={(evt): void => handleChange(evt.target.value)}
+        >
+          {dropdownOptions.map(dropdownOption => (
+            <option key={selectId + dropdownOption.label} value={dropdownOption.label}>
+              {dropdownOption.label}
+            </option>
+          ))}
+        </Select>
         {renderDeleteButton('page_refero__deletebutton--margin-top')}
         {repeatButton}
         {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}

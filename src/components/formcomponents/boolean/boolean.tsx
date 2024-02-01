@@ -9,18 +9,19 @@ import { ValidationProps } from '../../../types/formTypes/validation';
 import Checkbox from '@helsenorge/designsystem-react/components/Checkbox';
 import Label from '@helsenorge/designsystem-react/components/Label';
 import Validation from '@helsenorge/designsystem-react/components/Validation';
-
 import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 
 import Pdf from './pdf';
+import { getBooleanValue } from './utils';
 import { NewValueAction, newBooleanValueAsync } from '../../../actions/newValue';
 import { GlobalState } from '../../../reducers';
 import { getValidationTextExtension } from '../../../util/extension';
-import { getText, isReadOnly, isRequired, renderPrefix } from '../../../util/index';
+import { getId, getText, isReadOnly, isRequired, renderPrefix } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
 import { Resources } from '../../../util/resources';
 import withCommonFunctions, { WithCommonFunctionsProps } from '../../with-common-functions';
+import { useFormContext } from 'react-hook-form';
 
 export interface BooleanProps extends WithCommonFunctionsProps {
   item: QuestionnaireItem;
@@ -63,18 +64,10 @@ const Boolean = ({
   renderHelpElement,
   renderHelpButton,
 }: BooleanProps & ValidationProps): JSX.Element => {
-  const getValue = (): boolean => {
-    if (answer && answer.valueBoolean !== undefined) {
-      return answer.valueBoolean;
-    }
-    if (!item || !item.initial || item.initial.length === 0 || !item.initial[0].valueBoolean) {
-      return false;
-    }
-    return item.initial[0].valueBoolean;
-  };
+  const { register } = useFormContext();
 
   const handleChange = (): void => {
-    const newValue = !getValue();
+    const newValue = !getBooleanValue(answer, item);
     if (dispatch) {
       dispatch(newBooleanValueAsync(path, newValue, item))?.then(newState =>
         onAnswerChange(newState, path, item, { valueBoolean: newValue } as QuestionnaireResponseItemAnswer)
@@ -86,28 +79,17 @@ const Boolean = ({
     }
   };
 
-  // React.useMemo(() => {
-  //   const responseItemHasChanged = responseItem !== responseItem;
-  //   const helpItemHasChanged = isHelpOpen !== isHelpOpen;
-  //   const answerHasChanged = answer !== answer;
-  //   const resourcesHasChanged = JSON.stringify(resources) !== JSON.stringify(resources);
-  //   const repeats = item.repeats ?? false;
-
-  //   return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats || answerHasChanged;
-  // }, [responseItem, isHelpOpen, answer, resources, item]);
-
   const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`;
 
   if (pdf) {
-    return <Pdf item={item} checked={getValue()} onRenderMarkdown={onRenderMarkdown} />;
+    return <Pdf item={item} checked={getBooleanValue(answer, item)} onRenderMarkdown={onRenderMarkdown} />;
   } else if (isReadOnly(item)) {
     //id={getId(this.props.id)}
-    //isStyleBlue
 
     return (
       <Checkbox
         label={labelText}
-        checked={getValue()}
+        checked={getBooleanValue(answer, item)}
         disabled
         onChange={(): void => {
           /*kan ikke endres, er alltid disabled*/
@@ -126,17 +108,16 @@ const Boolean = ({
   return (
     // Dette er en hack for FHI-skjema. TODO: fjern hack
     <div className="page_refero__component page_refero__component_boolean">
-      <Validation>
-        <Checkbox
-          label={<Label labelTexts={[{ text: labelText }]} afterLabelChildren={<>{renderHelpButton()}</>} />}
-          required={isRequired(item)}
-          checked={getValue()}
-          onChange={handleChange}
-          disabled={isReadOnly(item)}
-          className="page_refero__input"
-          errorText={getValidationTextExtension(item)}
-        />
-      </Validation>
+      <Checkbox
+        {...register(getId(item.linkId), { required: isRequired(item) })}
+        label={<Label labelTexts={[{ text: labelText }]} afterLabelChildren={<>{renderHelpButton()}</>} />}
+        required={isRequired(item)}
+        checked={getBooleanValue(answer, item)}
+        onChange={handleChange}
+        disabled={isReadOnly(item)}
+        className="page_refero__input"
+        errorText={getValidationTextExtension(item)}
+      />
       {renderDeleteButton('page_refero__deletebutton--margin-top')}
       {repeatButton}
       {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}

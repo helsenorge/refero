@@ -38,7 +38,6 @@ const RadioView: React.SFC<Props> = ({
   id,
   handleChange,
   selected,
-  validateInput,
   resources,
   children,
   getErrorMessage,
@@ -47,7 +46,6 @@ const RadioView: React.SFC<Props> = ({
   renderHelpButton,
   renderHelpElement,
   onRenderMarkdown,
-  ...other
 }) => {
   if (!options) {
     return null;
@@ -65,32 +63,30 @@ const RadioView: React.SFC<Props> = ({
   return (
     <div className="page_refero__component page_refero__component_choice page_refero__component_choice_radiobutton">
       <Collapse isOpened>
-        <Validation {...other}>
-          <FormGroup
-            legend={getText(item, onRenderMarkdown, questionnaire, resources)}
-            error={getErrorMessage(selectedValue) !== '' ? getErrorMessage(selectedValue) : undefined}
-          >
-            {options.map((option: Options, index: number) => (
-              <RadioButton
-                inputId={getId(id)}
-                testId="radioButton-choice"
-                key={`${getId(id)}-${index.toString()}`}
-                label={
-                  <Label
-                    labelTexts={[{ text: option.label }]}
-                    sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
-                    afterLabelChildren={<>{renderHelpButton()}</>}
-                  />
-                }
-                defaultChecked={selectedValue === option.type}
-                value={option.type}
-                onChange={() => handleChange}
-                disabled={option.disabled}
-                required={isRequired(item)}
-              />
-            ))}
-          </FormGroup>
-        </Validation>
+        <FormGroup
+          legend={getText(item, onRenderMarkdown, questionnaire, resources)}
+          error={getErrorMessage(selectedValue) !== '' ? getErrorMessage(selectedValue) : undefined}
+        >
+          {options.map((option: Options, index: number) => (
+            <RadioButton
+              inputId={getId(id)}
+              testId={getId(id)}
+              key={`${getId(id)}-${index.toString()}`}
+              label={
+                <Label
+                  labelTexts={[{ text: option.label }]}
+                  sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+                  afterLabelChildren={<>{renderHelpButton()}</>}
+                />
+              }
+              defaultChecked={selectedValue === option.type}
+              value={option.type}
+              onChange={() => handleChange}
+              disabled={option.disabled}
+              required={isRequired(item)}
+            />
+          ))}
+        </FormGroup>
         {renderDeleteButton('page_refero__deletebutton--margin-top')}
         {repeatButton}
         {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : undefined}

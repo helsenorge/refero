@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, ReactElement } from 'react';
 
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
@@ -98,7 +98,7 @@ const Refero = ({
   onFieldsNotCorrectlyFilledOut,
   onStepChange,
   isHelsenorgeForm,
-}: StateProps & DispatchProps & ReferoProps): JSX.Element | null => {
+}: StateProps & DispatchProps & ReferoProps): ReactElement | null => {
   const qst = questionnaire ? questionnaire : formDefinition?.Content;
 
   const [scoringCalculator, setScoringCalculator] = useState<ScoringCalculator | undefined>(qst ? new ScoringCalculator(qst) : undefined);
@@ -346,32 +346,25 @@ const Refero = ({
           isAuthorized={authorized}
           referoProps={referoProps}
           resources={resources}
-          formItems={renderFormItems()}
           formDefinition={formDefinition}
           onSave={handleSave}
           onSubmit={handleSubmit}
           onStepChange={onStepChange}
           isHelsenorgeForm={isHelsenorgeForm}
-        />
+        >
+          {renderFormItems()}
+        </StepView>
       ) : (
         <RenderForm
           isAuthorized={authorized}
           isStepView={false}
           referoProps={referoProps}
           resources={resources}
-          formItemsToBeRendered={renderFormItems()}
           onSave={handleSave}
           onSubmit={handleSubmit}
           isHelsenorgeForm={isHelsenorgeForm}
         >
-          {/* <RenderFormItems
-            {...referoProps}
-            runScoringCalculator={}
-            dispatch={dispatch}
-            path={path}
-            formData={formData}
-            formDefinition={formDefinition}
-          /> */}
+          {renderFormItems()}
         </RenderForm>
       )}
     </div>

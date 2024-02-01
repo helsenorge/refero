@@ -76,7 +76,6 @@ export const RenderFormItems = ({
     item: QuestionnaireItem,
     answer: QuestionnaireResponseItemAnswer
   ): void => {
-    console.log(newState.refero.form);
     if (onChange && newState.refero.form.FormDefinition.Content && newState.refero.form.FormData.Content) {
       const actionRequester = new ActionRequester(newState.refero.form.FormDefinition.Content, newState.refero.form.FormData.Content);
 

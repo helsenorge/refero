@@ -113,10 +113,10 @@ export interface WithCommonFunctionsProps {
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export default function withCommonFunctions<T>(WrappedComponent: React.FC<WithCommonFunctionsProps & ValidationProps>) {
-  return function WithCommonFunctions(props: T & ValidationProps & WithCommonFunctionsProps): JSX.Element | null {
+  return function WithCommonFunctions(props: T & ValidationProps & WithCommonFunctionsProps): React.ReactElement | null {
     const [isHelpVisible, setIsHelpVisible] = React.useState<boolean>(false);
 
-    const renderDeleteButton = (className?: string): JSX.Element | undefined => {
+    const renderDeleteButton = (className?: string): React.ReactElement | undefined => {
       if (!props.visibleDeleteButton) {
         return undefined;
       }
@@ -148,7 +148,7 @@ export default function withCommonFunctions<T>(WrappedComponent: React.FC<WithCo
       path?: Array<Path>,
       response?: Array<QuestionnaireResponseItem>,
       responseItem?: QuestionnaireResponseItem
-    ): JSX.Element | undefined => {
+    ): React.ReactElement | undefined => {
       if (!item.repeats || !shouldRenderRepeatButton(item, response, index)) {
         return undefined;
       }
@@ -175,7 +175,7 @@ export default function withCommonFunctions<T>(WrappedComponent: React.FC<WithCo
       setIsHelpVisible(isOpen);
     };
 
-    const renderHelpButton = (): JSX.Element | undefined => {
+    const renderHelpButton = (): React.ReactElement | undefined => {
       const { item, onRequestHelpButton } = props;
 
       if (!item) return;
@@ -200,7 +200,7 @@ export default function withCommonFunctions<T>(WrappedComponent: React.FC<WithCo
       );
     };
 
-    const renderHelpElement = (): JSX.Element | undefined => {
+    const renderHelpElement = (): React.ReactElement | undefined => {
       const { item, onRequestHelpElement } = props;
       if (!item) {
         return;

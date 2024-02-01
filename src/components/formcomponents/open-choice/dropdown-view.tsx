@@ -86,7 +86,9 @@ const DropdownView: React.FC<DropdownViewProps> = props => {
           />
           {renderHelpElement()}
           <Select
-            {...register(selectId)}
+            {...register(selectId, {
+              required: isRequired(item),
+            })}
             selectId={selectId}
             name={selectId}
             required={isRequired(item)}

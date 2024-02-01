@@ -13,6 +13,7 @@ import Validation from '@helsenorge/designsystem-react/components/Validation';
 import { shouldShowExtraChoice } from '../../../util/choice';
 import { getId, getSublabelText, getText, isRequired } from '../../../util/index';
 import { Resources } from '../../../util/resources';
+import { useFormContext } from 'react-hook-form';
 
 interface Props {
   options?: Array<Options>;
@@ -67,7 +68,7 @@ const RadioView: React.SFC<Props> = ({
   // helpElement={renderHelpElement()}
   // validateOnExternalUpdate={true}
   // isStyleBlue
-
+  const { register } = useFormContext();
   return (
     <div className="page_refero__component page_refero__component_openchoice page_refero__component_openchoice_radiobutton">
       <Collapse isOpened>
@@ -78,6 +79,7 @@ const RadioView: React.SFC<Props> = ({
           >
             {options.map((option: Options, index: number) => (
               <RadioButton
+                {...register(item.linkId, { required: isRequired(item) })}
                 inputId={getId(id)}
                 testId="radioButton-openChoice"
                 key={`${getId(id)}-${index.toString()}`}

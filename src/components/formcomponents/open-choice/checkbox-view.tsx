@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import { Collapse } from 'react-collapse';
+import { useFormContext } from 'react-hook-form';
 
 import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer } from '../../../types/fhir';
 import { Options } from '../../../types/formTypes/radioGroupOptions';
@@ -53,7 +54,7 @@ const CheckboxView: React.SFC<Props> = ({
   if (!options) {
     return null;
   }
-
+  const { register } = useFormContext();
   const checkboxes = options.map(el => {
     return { label: el.label, id: el.type, checked: isSelected(el, selected) };
   });
@@ -75,6 +76,9 @@ const CheckboxView: React.SFC<Props> = ({
           <FormGroup legend={getText(item, onRenderMarkdown, questionnaire, resources)}>
             {checkboxes.map((checkbox, index) => (
               <Checkbox
+                {...register(item.linkId, {
+                  required: isRequired(item),
+                })}
                 inputId={`${id}-${checkbox.id}`}
                 testId={`checkbox-openChoice`}
                 key={`${checkbox.id}-${index.toString()}`}

@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { useForm } from 'react-hook-form';
+import { useForm, useFormContext } from 'react-hook-form';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
@@ -61,6 +61,7 @@ export interface StringProps extends WithCommonFunctionsProps {
 
 const String: React.FC<StringProps & ValidationProps> = props => {
   const [inputValue, setInputValue] = React.useState('');
+  const { register } = useFormContext();
 
   const handleChange = (event: React.FormEvent): void => {
     const { dispatch, promptLoginMessage, path, item, onAnswerChange } = props;
@@ -100,7 +101,6 @@ const String: React.FC<StringProps & ValidationProps> = props => {
     return isRequired(item) ? props.resources?.formRequiredErrorMessage : undefined;
   };
 
-  const { register } = useForm();
   const { id, item, questionnaire, pdf, resources, answer, onRenderMarkdown } = props;
   if (pdf || isReadOnly(item)) {
     return (
@@ -128,7 +128,11 @@ const String: React.FC<StringProps & ValidationProps> = props => {
   // requiredErrorMessage={this.getRequiredErrorMessage(item)}
   // validateOnExternalUpdate={true}
   // stringOverMaxLengthError={resources?.stringOverMaxLengthError}
-
+  const handleInputChange = (event: React.FormEvent<HTMLInputElement>): void => {
+    event.persist();
+    debouncedHandleChange(event);
+    setInputValue(event.currentTarget.value);
+  };
   return (
     <div className="page_refero__component page_refero__component_string">
       <Validation errorSummary={false ? 'Sjekk at alt er riktig utfylt' : undefined}>
@@ -141,7 +145,7 @@ const String: React.FC<StringProps & ValidationProps> = props => {
           />
           {props.renderHelpElement()}
           <Input
-            {...register(getId(props.id))}
+            {...register(item.linkId, { required: isRequired(item), onChange: handleInputChange })}
             type="text"
             width={25}
             inputId={inputId}
@@ -151,11 +155,7 @@ const String: React.FC<StringProps & ValidationProps> = props => {
             placeholder={getPlaceholder(item)}
             min={getMinLengthExtensionValue(item)}
             max={getMaxLength(item)}
-            onChange={(event: React.FormEvent<HTMLInputElement>): void => {
-              event.persist();
-              debouncedHandleChange(event);
-              setInputValue(event.currentTarget.value);
-            }}
+            onChange={handleInputChange}
             className="page_refero__input"
             errorText={getValidationErrorMessage(inputValue)}
           />

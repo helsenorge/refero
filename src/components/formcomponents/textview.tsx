@@ -14,9 +14,10 @@ interface Props {
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
   helpButton?: JSX.Element;
   helpElement?: JSX.Element;
+  children: React.ReactNode;
 }
 
-const textView: React.SFC<Props> = ({ id, item, value, textClass, children, onRenderMarkdown, helpButton, helpElement }) => {
+const textView = ({ id, item, value, textClass, children, onRenderMarkdown, helpButton, helpElement }: Props): React.ReactElement => {
   return (
     <div id={getId(id)}>
       <>

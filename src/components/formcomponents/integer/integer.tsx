@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { useForm } from 'react-hook-form';
+import { useFormContext } from 'react-hook-form';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
@@ -44,7 +44,8 @@ export interface IntegerProps extends WithCommonFunctionsProps {
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
 }
 
-const Integer: React.FC<IntegerProps & ValidationProps> = props => {
+const Integer = (props: IntegerProps & ValidationProps): JSX.Element | null => {
+  const { register } = useFormContext();
   const getValue = (): string | number | number[] | undefined => {
     const { item, answer } = props;
     if (answer && Array.isArray(answer)) {
@@ -57,7 +58,6 @@ const Integer: React.FC<IntegerProps & ValidationProps> = props => {
       return '';
     }
   };
-
   const getPDFValue = (): string | number => {
     const value = getValue();
     if (value === undefined || value === null || value === '') {
@@ -97,8 +97,6 @@ const Integer: React.FC<IntegerProps & ValidationProps> = props => {
   //   return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats || answerHasChanged;
   // }, [props.responseItem, props.isHelpOpen, props.answer, props.resources, props.item]);
 
-  const { register } = useForm();
-
   const inputId = getId(props.id);
 
   if (props.pdf || isReadOnly(props.item)) {
@@ -125,32 +123,35 @@ const Integer: React.FC<IntegerProps & ValidationProps> = props => {
 
   return (
     <div className="page_refero__component page_refero__component_integer">
-      <Validation {...props}>
-        <>
-          <Label
-            htmlFor={inputId}
-            labelTexts={[{ text: labelText, type: 'semibold' }]}
-            sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
-            afterLabelChildren={props.renderHelpButton()}
-          />
-          {props.renderHelpElement()}
-          <Input
-            {...register('textField_openChoice')}
-            type="number"
-            inputId={inputId}
-            name={getId(props.id)}
-            defaultValue={value !== undefined && value !== null ? value + '' : ''}
-            required={isRequired(props.item)}
-            placeholder={getPlaceholder(props.item)}
-            max={getMaxValueExtensionValue(props.item)}
-            min={getMinValueExtensionValue(props.item)}
-            errorText={getValidationTextExtension(props.item)}
-            className="page_refero__input"
-            width={25}
-            onChange={handleChange}
-          />
-        </>
-      </Validation>
+      <>
+        <Label
+          htmlFor={inputId}
+          labelTexts={[{ text: labelText, type: 'semibold' }]}
+          sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+          afterLabelChildren={props.renderHelpButton()}
+        />
+        {props.renderHelpElement()}
+        <Input
+          {...register(getId(props.id), {
+            required: isRequired(props.item),
+            max: getMaxValueExtensionValue(props.item),
+            min: getMinValueExtensionValue(props.item),
+            valueAsNumber: true,
+          })}
+          type="number"
+          inputId={inputId}
+          name={getId(props.id)}
+          defaultValue={value !== undefined && value !== null ? value + '' : ''}
+          required={isRequired(props.item)}
+          placeholder={getPlaceholder(props.item)}
+          max={getMaxValueExtensionValue(props.item)}
+          min={getMinValueExtensionValue(props.item)}
+          errorText={getValidationTextExtension(props.item)}
+          className="page_refero__input"
+          width={25}
+          onChange={handleChange}
+        />
+      </>
       {props.renderDeleteButton('page_refero__deletebutton--margin-top')}
       {props.repeatButton}
       {props.children ? <div className="nested-fieldset nested-fieldset--full-height">{props.children}</div> : null}

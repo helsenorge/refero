@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import classNames from 'classnames';
-import { useForm } from 'react-hook-form';
+import { useForm, useFormContext } from 'react-hook-form';
 
 import { Coding } from '../../../types/fhir';
 import { EnhetType, OrgenhetHierarki } from '../../../types/orgenhetHierarki';
@@ -34,6 +34,8 @@ const ReceiverComponent: React.FC<ReceiverComponentProps> = props => {
   const [receiverTreeNodes, setReceiverTreeNodes] = React.useState<Array<OrgenhetHierarki>>([]);
   const [isLoading, setIsLoading] = React.useState<boolean>(true);
   const [hasLoadError, setHasLoadError] = React.useState<boolean>(false);
+  const { register } = useFormContext();
+  const safeId = getId(props.id);
 
   React.useEffect(() => {
     if (props.fetchReceivers) {
@@ -157,7 +159,6 @@ const ReceiverComponent: React.FC<ReceiverComponentProps> = props => {
   };
 
   const createSelect = (treeNodes: Array<OrgenhetHierarki>, level: number, selectKey: string): JSX.Element => {
-    const { register } = useForm();
     const selectOptions = treeNodes.map(node => new Option(node.Navn, node.OrgenhetId.toString()));
     const label = getLabelText(treeNodes[0].EnhetType) || '';
 
@@ -166,7 +167,7 @@ const ReceiverComponent: React.FC<ReceiverComponentProps> = props => {
 
     return (
       <Select
-        {...register('receiverComponent')}
+        {...register(safeId, { required: true })}
         key={selectKey}
         selectId={`${getId(props.id)}-${selectKey}`}
         name={`${getId(props.id)}-${selectKey}`}

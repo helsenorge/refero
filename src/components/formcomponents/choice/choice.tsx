@@ -61,10 +61,9 @@ export interface ChoiceProps extends WithCommonFunctionsProps {
   fetchReceivers?: (successCallback: (receivers: Array<OrgenhetHierarki>) => void, errorCallback: () => void) => void;
 }
 
-const Choice: React.FC<ChoiceProps & ValidationProps> = props => {
+const Choice = (props: ChoiceProps & ValidationProps): JSX.Element | null => {
   // const [valid, setValid] = React.useState<boolean>(true);
   // const [validated, setValidated] = React.useState<boolean>(false);
-
   const getValue = (
     item: QuestionnaireItem,
     answer: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer

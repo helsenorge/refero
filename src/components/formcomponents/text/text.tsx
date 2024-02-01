@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import DOMPurify from 'dompurify';
-import { useForm } from 'react-hook-form';
+import { useForm, useFormContext } from 'react-hook-form';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
@@ -60,8 +60,9 @@ export interface TextProps extends WithCommonFunctionsProps {
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
   shouldExpanderRenderChildrenWhenClosed?: boolean;
 }
-const Text: React.FC<TextProps & ValidationProps> = props => {
+const Text = (props: TextProps & ValidationProps): JSX.Element | null => {
   const [inputValue, setInputValue] = React.useState('');
+  const { register } = useFormContext();
 
   // const showCounter = (): boolean => {
   //   if (getMaxLength(props.item) || getMinLengthExtensionValue(props.item)) {
@@ -120,7 +121,6 @@ const Text: React.FC<TextProps & ValidationProps> = props => {
   //   return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats || answerHasChanged;
   // }, [props.responseItem, props.isHelpOpen, props.answer, props.resources, props.item]);
 
-  const { register } = useForm();
   const { id, item, answer, pdf, children, resources, onRenderMarkdown, questionnaire, ...other } = props;
   const itemControls = getItemControlExtensionValue(item);
   const textAreaId = getId(props.id);
@@ -157,6 +157,7 @@ const Text: React.FC<TextProps & ValidationProps> = props => {
   if (pdf || isReadOnly(item)) {
     return (
       <TextView
+        {...register(item.linkId, { required: isRequired(item) })}
         id={id}
         item={item}
         value={getPDFStringValue(answer)}
@@ -186,30 +187,29 @@ const Text: React.FC<TextProps & ValidationProps> = props => {
 
   return (
     <div className="page_refero__component page_refero__component_text">
-      <Validation {...other}>
-        <Label
-          htmlFor={textAreaId}
-          labelTexts={[{ text: labelText, type: 'semibold' }]}
-          sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
-          afterLabelChildren={props.renderHelpButton()}
-        />
-        {props.renderHelpElement()}
-        <Textarea
-          {...register('text')}
-          textareaId={textAreaId}
-          maxRows={Constants.DEFAULT_TEXTAREA_HEIGHT}
-          required={isRequired(item)}
-          placeholder={getPlaceholder(item)}
-          onChange={(event: React.FormEvent<HTMLTextAreaElement>): void => {
-            event.persist();
-            debouncedHandleChange(event);
-            setInputValue(event.currentTarget.value);
-          }}
-          maxCharacters={getMaxLength(item)}
-          maxText={'tegn'}
-          errorText={getValidationErrorMessage(inputValue)}
-        />
-      </Validation>
+      <Label
+        htmlFor={textAreaId}
+        labelTexts={[{ text: labelText, type: 'semibold' }]}
+        sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+        afterLabelChildren={props.renderHelpButton()}
+      />
+      {props.renderHelpElement()}
+      <Textarea
+        {...register('text')}
+        textareaId={textAreaId}
+        maxRows={Constants.DEFAULT_TEXTAREA_HEIGHT}
+        required={isRequired(item)}
+        placeholder={getPlaceholder(item)}
+        grow={true}
+        onChange={(event: React.FormEvent<HTMLTextAreaElement>): void => {
+          event.persist();
+          debouncedHandleChange(event);
+          setInputValue(event.currentTarget.value);
+        }}
+        maxCharacters={getMaxLength(item)}
+        maxText={'tegn'}
+        errorText={getValidationErrorMessage(inputValue)}
+      />
       {props.renderDeleteButton('page_refero__deletebutton--margin-top')}
       {props.repeatButton}
       {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}

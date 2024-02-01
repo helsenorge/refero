@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { FormEvent, useState } from 'react';
 
 import { Provider } from 'react-redux';
 import { Store, legacy_createStore as createStore, applyMiddleware } from 'redux';
@@ -11,7 +11,7 @@ import LanguageLocales from '@helsenorge/core-utils/constants/languages';
 import FormFillerSidebar from './FormFillerSidebar';
 import { emptyPropertyReplacer } from './helpers';
 import { getResources } from './resources/referoResources';
-import skjema from './skjema/NHN_Test_Repeterende_gtable-nb-NO-v0.1_sorterubg.json';
+import skjema from './skjema/kun_qest.json';
 import { ReferoContainer } from '../components';
 import rootReducer from '../reducers';
 
@@ -25,6 +25,15 @@ const FormFillerPreview = ({ showFormFiller }: Props): JSX.Element => {
   const questionnaireForPreview = JSON.parse(JSON.stringify(skjema ?? {}, emptyPropertyReplacer));
   const [questionnaireResponse, setQuestionnaireResponse] = useState<QuestionnaireResponse>();
   const [showResponse, setShowResponse] = useState<boolean>(false);
+  const handleSave = (response: QuestionnaireResponse): void => {
+    console.log('Save', response);
+  };
+  const handleSubmit = (questionnaireResponse: QuestionnaireResponse): void => {
+    console.log('Submit', questionnaireResponse);
+  };
+  const onCancel = (): void => {
+    console.log('avbryt');
+  };
   return (
     <Provider store={store}>
       <div className="overlay">
@@ -40,13 +49,14 @@ const FormFillerPreview = ({ showFormFiller }: Props): JSX.Element => {
                 <ReferoContainer
                   store={store}
                   questionnaire={questionnaireForPreview}
-                  onCancel={showFormFiller}
+                  onCancel={onCancel}
                   onSave={(questionnaireResponse: QuestionnaireResponse): void => {
-                    setQuestionnaireResponse(questionnaireResponse);
-                    setShowResponse(true);
+                    // setQuestionnaireResponse(questionnaireResponse);
+                    // setShowResponse(true)
+                    handleSave(questionnaireResponse);
                   }}
                   // eslint-disable-next-line no-console
-                  onSubmit={(): void => console.log('onSubmit')}
+                  onSubmit={handleSubmit}
                   authorized={true}
                   resources={getResources('')}
                   sticky={true}

@@ -10,7 +10,7 @@ import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
 import Validation from '@helsenorge/designsystem-react/components/Validation';
 
-import { getSublabelText, getText, isRequired } from '../../../util/index';
+import { getId, getSublabelText, getText, isRequired } from '../../../util/index';
 import { Resources } from '../../../util/resources';
 
 interface Props {
@@ -42,7 +42,6 @@ const CheckboxView = ({
   repeatButton,
   renderDeleteButton,
   onRenderMarkdown,
-  ...other
 }: Props): JSX.Element | null => {
   if (!options) {
     return null;
@@ -52,6 +51,9 @@ const CheckboxView = ({
     return { label: el.label, id: el.type, checked: isSelected(el, selected), disabled: el.disabled };
   });
   const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
+  const handleCheckboxChange = (checkboxId: string): void => {
+    handleChange(checkboxId);
+  };
 
   // CheckboxGroup:
   // id={getId(id)}
@@ -66,27 +68,25 @@ const CheckboxView = ({
   return (
     <div className="page_refero__component page_refero__component_choice page_refero__component_choice_checkbox">
       <Collapse isOpened>
-        <Validation {...other}>
-          <FormGroup legend={getText(item, onRenderMarkdown, questionnaire, resources)}>
-            {checkboxes.map((checkbox, index) => (
-              <Checkbox
-                inputId={`${id}-${checkbox.id}`}
-                testId={`checkbox-choice`}
-                key={`${checkbox.id}-${index.toString()}`}
-                label={
-                  <Label
-                    labelTexts={[{ text: checkbox.label }]}
-                    sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
-                  />
-                }
-                checked={checkbox.checked}
-                onChange={(): void => handleChange(checkbox.id)}
-                disabled={checkbox.disabled}
-                required={isRequired(item)}
-              />
-            ))}
-          </FormGroup>
-        </Validation>
+        <FormGroup legend={getText(item, onRenderMarkdown, questionnaire, resources)}>
+          {checkboxes.map((checkbox, index) => (
+            <Checkbox
+              inputId={`${id}-${checkbox.id}`}
+              testId={`checkbox-choice`}
+              key={`${checkbox.id}-${index.toString()}`}
+              label={
+                <Label
+                  labelTexts={[{ text: checkbox.label }]}
+                  sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+                />
+              }
+              checked={checkbox.checked}
+              onChange={(): void => handleChange(checkbox.id)}
+              disabled={checkbox.disabled}
+              required={isRequired(item)}
+            />
+          ))}
+        </FormGroup>
         {renderDeleteButton('page_refero__deletebutton--margin-top')}
         {repeatButton}
         {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
