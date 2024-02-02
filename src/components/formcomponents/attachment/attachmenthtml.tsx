@@ -5,7 +5,7 @@ import { ValidationProps } from '../../../types/formTypes/validation';
 import { TextMessage } from '../../../types/text-message';
 
 import NotificationPanel from '@helsenorge/designsystem-react/components/NotificationPanel';
-import Validation from '@helsenorge/designsystem-react/components/Validation';
+// import Validation from '@helsenorge/designsystem-react/components/Validation';
 
 import Dropzone from '@helsenorge/file-upload/components/dropzone';
 import { UploadedFile } from '@helsenorge/file-upload/components/dropzone';
@@ -64,7 +64,6 @@ const attachmentHtml = ({
   minFiles,
   item,
   children,
-  ...other
 }: Props & ValidationProps): JSX.Element => {
   const { register } = useFormContext();
   const maxFilesize = attachmentMaxFileSize ? attachmentMaxFileSize : constants.MAX_FILE_SIZE;

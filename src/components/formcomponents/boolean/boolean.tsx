@@ -1,5 +1,6 @@
 import * as React from 'react';
 
+import { useFormContext } from 'react-hook-form';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
@@ -8,7 +9,8 @@ import { ValidationProps } from '../../../types/formTypes/validation';
 
 import Checkbox from '@helsenorge/designsystem-react/components/Checkbox';
 import Label from '@helsenorge/designsystem-react/components/Label';
-import Validation from '@helsenorge/designsystem-react/components/Validation';
+
+// import Validation from '@helsenorge/designsystem-react/components/Validation';
 import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 
 import Pdf from './pdf';
@@ -21,7 +23,6 @@ import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/m
 import { Path } from '../../../util/refero-core';
 import { Resources } from '../../../util/resources';
 import withCommonFunctions, { WithCommonFunctionsProps } from '../../with-common-functions';
-import { useFormContext } from 'react-hook-form';
 
 export interface BooleanProps extends WithCommonFunctionsProps {
   item: QuestionnaireItem;
@@ -52,8 +53,8 @@ const Boolean = ({
   dispatch,
   promptLoginMessage,
   onAnswerChange,
-  responseItem,
-  isHelpOpen,
+  // responseItem,
+  // isHelpOpen,
   resources,
   onRenderMarkdown,
   questionnaire,

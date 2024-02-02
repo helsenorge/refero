@@ -6,6 +6,7 @@ import { CancelFormButton } from './CancelFormButton';
 import { PauseFormButton } from './PauseFormButton';
 import { SubmitFormButton } from './SubmitFormButton';
 import { formButtonsWrapper } from '../../styles/formButtonStyles';
+import { useFormContext } from 'react-hook-form';
 
 interface FormButtonsInterface {
   submitButtonText: string;
@@ -33,35 +34,43 @@ const FormButtons = ({
   isHelsenorgeForm,
 }: FormButtonsInterface): JSX.Element | null => {
   const buttonOrder = isStepView ? buttonOrderStepView : buttonOrderNormalView;
-
+  const { formState } = useFormContext();
+  const { errors } = formState;
+  console.log('errors', errors);
   return (
     <div className="formButtonsWrapper">
       <style>{formButtonsWrapper}</style>
-      {Object.values(buttonOrder).map((buttonType: ButtonType): ReactElement => {
-        switch (buttonType) {
-          case ButtonType.pauseButton:
-            return (
-              <PauseFormButton
-                pauseButtonText={pauseButtonText}
-                isHelsenorgeForm={isHelsenorgeForm}
-                onPauseButtonClicked={onPauseButtonClicked}
-                pauseButtonDisabled={pauseButtonDisabled}
-              />
-            );
-          case ButtonType.cancelButton:
-            return <CancelFormButton cancelButtonText={cancelButtonText} onCancelButtonClicked={onCancelButtonClicked} />;
-          case ButtonType.submitButton:
-            return (
-              <SubmitFormButton
-                onSubmitButtonClicked={onSubmitButtonClicked}
-                submitButtonDisabled={submitButtonDisabled}
-                submitButtonText={submitButtonText}
-              />
-            );
-          default:
-            return <></>;
-        }
-      })}
+      <>
+        {Object.values(buttonOrder).map((buttonType: ButtonType): ReactElement => {
+          switch (buttonType) {
+            case ButtonType.pauseButton:
+              return (
+                <PauseFormButton
+                  key={buttonType}
+                  pauseButtonText={pauseButtonText}
+                  isHelsenorgeForm={isHelsenorgeForm}
+                  onPauseButtonClicked={onPauseButtonClicked}
+                  pauseButtonDisabled={pauseButtonDisabled}
+                />
+              );
+            case ButtonType.cancelButton:
+              return (
+                <CancelFormButton key={buttonType} cancelButtonText={cancelButtonText} onCancelButtonClicked={onCancelButtonClicked} />
+              );
+            case ButtonType.submitButton:
+              return (
+                <SubmitFormButton
+                  key={buttonType}
+                  onSubmitButtonClicked={onSubmitButtonClicked}
+                  submitButtonDisabled={submitButtonDisabled}
+                  submitButtonText={submitButtonText}
+                />
+              );
+            default:
+              return <></>;
+          }
+        })}
+      </>
     </div>
   );
 };

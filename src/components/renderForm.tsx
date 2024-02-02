@@ -1,16 +1,14 @@
 import * as React from 'react';
 
-import { useForm, SubmitHandler, FormProvider, FieldValues } from 'react-hook-form';
+import { useForm, FormProvider, FieldValues } from 'react-hook-form';
 
-import { buttonOrderStepView, buttonOrderNormalView } from '../types/formTypes/formButton';
-import { Inputs } from '../types/formTypes/formInputs';
+import { QuestionnaireResponse } from '../types/fhir';
 import { ReferoProps } from '../types/referoProps';
 
 import Loader from '@helsenorge/designsystem-react/components/Loader';
 
 import FormButtons from './formButtons/formButtons';
 import { Resources } from '../util/resources';
-import { QuestionnaireResponse } from '../types/fhir';
 
 interface RenderFormProps {
   isAuthorized: boolean;
@@ -42,12 +40,16 @@ const RenderForm = ({
 }: RenderFormProps): JSX.Element | null => {
   const methods = useForm();
   const onSubmitReactHookForm = (data: QuestionnaireResponse): void => {
-    console.log('data', data);
-    console.log('onSubmitReactHookForm');
+    const d = data;
+    d;
+    // console.log('data', data);
+    // console.log('onSubmitReactHookForm');
     onSubmit();
   };
   const handleInvalidForm = (FieldValues: FieldValues): void => {
-    console.log(FieldValues);
+    const fieldValues = FieldValues;
+    fieldValues;
+    // console.log(FieldValues);
   };
   const onPauseButtonClickedInNormalView = referoProps.onSave ? onSave : undefined;
   const onPauseButtonClickedInStepView = displayPreviousButton ? previousStep : undefined;

@@ -157,7 +157,6 @@ const Text = (props: TextProps & ValidationProps): JSX.Element | null => {
   if (pdf || isReadOnly(item)) {
     return (
       <TextView
-        {...register(item.linkId, { required: isRequired(item) })}
         id={id}
         item={item}
         value={getPDFStringValue(answer)}
