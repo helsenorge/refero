@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { useForm, useFormContext } from 'react-hook-form';
+import { ValidationRule, useFormContext } from 'react-hook-form';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
@@ -12,10 +12,11 @@ import {
   Questionnaire,
 } from '../../../types/fhir';
 import { ValidationProps } from '../../../types/formTypes/validation';
+import { Resources } from '../../../types/resources';
 
+import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Input from '@helsenorge/designsystem-react/components/Input';
 import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
-import Validation from '@helsenorge/designsystem-react/components/Validation';
 
 import { NewValueAction, newQuantityValueAsync } from '../../../actions/newValue';
 import { GlobalState } from '../../../reducers';
@@ -26,10 +27,9 @@ import {
   getMinValueExtensionValue,
   getQuestionnaireUnitExtensionValue,
 } from '../../../util/extension';
-import { isReadOnly, isRequired, getId, getSublabelText, renderPrefix, getText } from '../../../util/index';
+import { isReadOnly, isRequired, getId, getSublabelText, renderPrefix, getText, getDecimalPattern } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
-import { Resources } from '../../../util/resources';
 import withCommonFunctions, { WithCommonFunctionsProps } from '../../with-common-functions';
 import TextView from '../textview';
 
@@ -113,17 +113,7 @@ const Quantity: React.FC<QuantityProps & ValidationProps> = props => {
     }
     return '';
   };
-
-  // React.useMemo(() => {
-  //   const responseItemHasChanged = props.responseItem !== props.responseItem;
-  //   const helpItemHasChanged = props.isHelpOpen !== props.isHelpOpen;
-  //   const answerHasChanged = props.answer !== props.answer;
-  //   const resourcesHasChanged = JSON.stringify(props.resources) !== JSON.stringify(props.resources);
-  //   const repeats = props.item.repeats ?? false;
-
-  //   return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats || answerHasChanged;
-  // }, [props.responseItem, props.isHelpOpen, props.answer, props.resources, props.item]);
-  const { register } = useFormContext();
+  const { register, getFieldState } = useFormContext();
 
   const { id, item, questionnaire, onRenderMarkdown } = props;
   if (props.pdf || isReadOnly(item)) {
@@ -146,42 +136,47 @@ const Quantity: React.FC<QuantityProps & ValidationProps> = props => {
   const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, props.resources)}`;
   const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, props.resources);
 
-  // showLabel={true}
-  // pattern={getDecimalPattern(item)}'
   // validateOnExternalUpdate={true}
-  // <span className="page_refero__unit">{this.getUnit()}</span>
-
+  const pattern: ValidationRule<RegExp> | undefined = getDecimalPattern(item)
+    ? new RegExp(getDecimalPattern(item) as string, 'g')
+    : undefined;
+  const minValue = getMinValueExtensionValue(item);
+  const maxValue = getMaxValueExtensionValue(item);
+  const validationText = getValidationTextExtension(item) ?? '';
+  const { error } = getFieldState(getId(item.linkId));
   return (
     <div className="page_refero__component page_refero__component_quantity">
-      <>
-        <Label
-          htmlFor={inputId}
-          labelTexts={[{ text: labelText, type: 'semibold' }]}
-          sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
-          afterLabelChildren={props.renderHelpButton()}
-        />
+      <FormGroup error={error?.message}>
         {props.renderHelpElement()}
         <Input
-          {...register(item.linkId, {
-            required: isRequired(item),
-            max: getMaxValueExtensionValue(item),
-            min: getMinValueExtensionValue(item),
+          {...register(getId(item.linkId), {
+            required: {
+              value: isRequired(item),
+              message: props.resources?.formRequiredErrorMessage || '',
+            },
+            max: maxValue && { value: maxValue, message: validationText },
+            min: minValue && { value: minValue, message: validationText },
             onChange: handleChange,
+            value: value,
+            pattern,
           })}
+          label={
+            <Label
+              labelTexts={[{ text: labelText, type: 'semibold' }]}
+              sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+              afterLabelChildren={props.renderHelpButton()}
+            />
+          }
           type="number"
           inputId={inputId}
           name={inputId}
           defaultValue={value !== undefined ? value + '' : ''}
-          required={isRequired(item)}
           placeholder={getPlaceholder(item)}
-          max={getMaxValueExtensionValue(item)}
-          min={getMinValueExtensionValue(item)}
-          onChange={handleChange}
-          errorText={getValidationTextExtension(item)}
           className="page_refero__quantity"
           width={7}
         />
-      </>
+        <span className="page_refero__unit">{getUnit()}</span>
+      </FormGroup>
       {props.renderDeleteButton('page_refero__deletebutton--margin-top')}
       <div>{props.repeatButton}</div>
       {props.children ? <div className="nested-fieldset nested-fieldset--full-height">{props.children}</div> : null}

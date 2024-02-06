@@ -9,9 +9,10 @@ import NotificationPanel from '@helsenorge/designsystem-react/components/Notific
 
 import Autosuggest from '@helsenorge/autosuggest/components/autosuggest';
 
-import { OPEN_CHOICE_ID, OPEN_CHOICE_SYSTEM, OPEN_CHOICE_LABEL } from '../../../../constants';
-import { Resources } from '../../../../util/resources';
+import { OPEN_CHOICE_ID, OPEN_CHOICE_LABEL } from '../../../../constants';
+import { Resources } from '../../../../types/resources';
 import AutosuggestView from '../autosuggest-view';
+import { OPEN_CHOICE_SYSTEM } from '../../../../constants/codingsystems';
 
 describe('autosuggest-view', () => {
   it('skal vise loader mens valg lastes', () => {
@@ -484,7 +485,7 @@ describe('autosuggest-view', () => {
             type: 'open-choice',
           } as QuestionnaireItem
         }
-        resources={{openChoiceOption: 'annet'} as Resources}
+        resources={{ openChoiceOption: 'annet' } as Resources}
         renderDeleteButton={jest.fn()}
         repeatButton={<></>}
         renderHelpButton={jest.fn()}

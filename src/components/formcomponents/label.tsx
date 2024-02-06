@@ -5,7 +5,7 @@ import DOMPurify from 'dompurify';
 import { QuestionnaireItem, Questionnaire } from '../../types/fhir';
 
 import { getText, renderPrefix } from '../../util/index';
-import { Resources } from '../../util/resources';
+import { Resources } from '../../types/resources';
 
 interface Props {
   item: QuestionnaireItem;

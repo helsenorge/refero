@@ -9,7 +9,7 @@ import { Questionnaire, QuestionnaireItem } from '../../types/fhir';
 
 import '../../util/defineFetch';
 import rootReducer from '../../reducers';
-import { Resources } from '../../util/resources';
+import { Resources } from '../../types/resources';
 import { ReferoContainer } from '../index';
 import StepViewQuestionnaire from './__data__/stepview';
 import StepView from '../stepView';
@@ -46,7 +46,7 @@ function createWrapper(
         onCancel={() => {}}
         onSave={() => {}}
         onSubmit={onSubmitMock}
-        resources={{formSend: 'Send inn', nextStep: "Neste", previousStep: "Forrige"} as Resources}
+        resources={{ formSend: 'Send inn', nextStep: 'Neste', previousStep: 'Forrige' } as Resources}
         questionnaire={questionnaire}
         onRequestHelpButton={helpButtonCb}
         onRequestHelpElement={helpElementCb}
@@ -80,14 +80,14 @@ describe('Step-view', () => {
     wrapper.render();
 
     // Step 1
-    expect(wrapper.find('form').prop('submitButtonText')).toBe("Neste");
+    expect(wrapper.find('form').prop('submitButtonText')).toBe('Neste');
     expect(wrapper.find('form').prop('pauseButtonText')).toBe(undefined);
     act(() => {
       (wrapper.find('form').prop('onSubmit') as () => void)();
     });
     wrapper.update();
     // Step 2
-    expect(wrapper.find('form').prop('pauseButtonText')).toBe("Forrige");
+    expect(wrapper.find('form').prop('pauseButtonText')).toBe('Forrige');
     act(() => {
       (wrapper.find('form').prop('onPause') as () => void)();
     });
@@ -104,7 +104,7 @@ describe('Step-view', () => {
     });
     wrapper.update();
     // Step 3
-    expect(wrapper.find('form').prop('submitButtonText')).toBe("Send inn");
+    expect(wrapper.find('form').prop('submitButtonText')).toBe('Send inn');
     act(() => {
       (wrapper.find('form').prop('onSubmit') as () => void)();
     });

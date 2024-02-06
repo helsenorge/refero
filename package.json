@@ -51,6 +51,7 @@
     "@helsenorge/designsystem-react": "^6.0.1",
     "@helsenorge/file-upload": "^30.0.2",
     "@helsenorge/form": "^30.0.2",
+    "@hookform/devtools": "^4.3.1",
     "@teamsupercell/typings-for-css-modules-loader": "^2.5.2",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^12.1.3",

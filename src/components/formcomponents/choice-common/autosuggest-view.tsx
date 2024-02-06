@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import { Collapse } from 'react-collapse';
+import { useFormContext } from 'react-hook-form';
 
 import { AutoSuggestProps } from '../../../types/autoSuggestProps';
 import { ValueSet, QuestionnaireItem, Questionnaire, Coding, QuestionnaireResponseItemAnswer } from '../../../types/fhir';
@@ -12,13 +13,14 @@ import Validation from '@helsenorge/designsystem-react/components/Validation';
 import Autosuggest, { Suggestion } from '@helsenorge/autosuggest/components/autosuggest';
 import { debounce } from '@helsenorge/core-utils/debounce';
 
-import { OPEN_CHOICE_ID, OPEN_CHOICE_SYSTEM } from '../../../constants';
+import { OPEN_CHOICE_ID } from '../../../constants';
 import ItemType from '../../../constants/itemType';
 import { getValidationTextExtension } from '../../../util/extension';
 import { isRequired, getId, getSublabelText } from '../../../util/index';
-import { Resources } from '../../../util/resources';
+import { Resources } from '../../../types/resources';
 import Label from '../label';
 import SubLabel from '../sublabel';
+import { OPEN_CHOICE_SYSTEM } from '../../../constants/codingsystems';
 
 interface AutosuggestViewProps {
   handleChange: (code?: string, systemArg?: string, displayArg?: string) => void;
@@ -47,6 +49,7 @@ interface AutosuggestViewProps {
 }
 
 const AutosuggestView: React.FC<AutosuggestViewProps> = props => {
+  const { register } = useFormContext();
   const getStringAnswer = (): string | undefined => {
     if (Array.isArray(props.answer)) {
       return props.answer.reduce((acc, x) => acc || x.valueString, undefined);
@@ -198,6 +201,11 @@ const AutosuggestView: React.FC<AutosuggestViewProps> = props => {
       <Collapse isOpened>
         <Validation {...props}>
           <Autosuggest
+            {...register(props.item.linkId, {
+              required: isRequired(props.item),
+              onChange: (e: React.FormEvent<HTMLInputElement>, params: { newValue: string; method: string }) => onChangeInput(e, params),
+              onBlur: onBlur,
+            })}
             id={getId(props.id)}
             label={
               <Label
@@ -222,7 +230,6 @@ const AutosuggestView: React.FC<AutosuggestViewProps> = props => {
             noCharacterValidation
             onSubmitValidator={onSubmitValidator}
             onSuggestionSelected={onSuggestionSelected}
-            onChange={onChangeInput}
             onBlur={onBlur}
             focusInputOnSuggestionClick={true}
             value={inputValue}

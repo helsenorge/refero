@@ -11,7 +11,7 @@ import itemControlConstants from '../../../constants/itemcontrol';
 import { getItemControlExtensionValue, getMarkdownExtensionValue } from '../../../util/extension';
 import { renderPrefix, getText, getId } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
-import { Resources } from '../../../util/resources';
+import { Resources } from '../../../types/resources';
 
 export interface Props {
   id?: string;

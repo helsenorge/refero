@@ -26,7 +26,7 @@ import {
   newCodingStringValueAsync,
   removeCodingStringValueAsync,
 } from '../../../actions/newValue';
-import { OPEN_CHOICE_ID, OPEN_CHOICE_SYSTEM } from '../../../constants';
+import { OPEN_CHOICE_ID } from '../../../constants';
 import ItemControlConstants from '../../../constants/itemcontrol';
 import { GlobalState } from '../../../reducers';
 import { isReadOnly, isDataReceiver } from '../../../util';
@@ -43,11 +43,12 @@ import {
 } from '../../../util/choice';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
-import { Resources } from '../../../util/resources';
+import { Resources } from '../../../types/resources';
 import withCommonFunctions, { WithCommonFunctionsProps } from '../../with-common-functions';
 import SliderView from '../choice/slider-view';
 import AutosuggestView from '../choice-common/autosuggest-view';
 import TextView from '../textview';
+import { OPEN_CHOICE_SYSTEM } from '../../../constants/codingsystems';
 
 export interface OpenChoiceProps extends WithCommonFunctionsProps {
   item: QuestionnaireItem;

@@ -1,5 +1,7 @@
 import * as React from 'react';
 
+import { useFormContext } from 'react-hook-form';
+
 import { QuestionnaireItem } from '../../../types/fhir';
 import { ValidationProps } from '../../../types/formTypes/validation';
 import { TextMessage } from '../../../types/text-message';
@@ -10,10 +12,11 @@ import NotificationPanel from '@helsenorge/designsystem-react/components/Notific
 import Dropzone from '@helsenorge/file-upload/components/dropzone';
 import { UploadedFile } from '@helsenorge/file-upload/components/dropzone';
 import { sizeIsValid, mimeTypeIsValid } from '@helsenorge/file-upload/components/dropzone/validation';
-import { useFormContext } from 'react-hook-form';
+
 import constants, { VALID_FILE_TYPES } from '../../../constants';
+import { getId } from '../../../util';
 import { getValidationTextExtension } from '../../../util/extension';
-import { Resources } from '../../../util/resources';
+import { Resources } from '../../../types/resources';
 
 interface Props {
   onUpload: (files: Array<File>, cb: (success: boolean, errormessage: TextMessage | null, uploadedFile?: UploadedFile) => void) => void;
@@ -73,7 +76,7 @@ const attachmentHtml = ({
   return (
     <div className="page_refero__component page_refero__component_attachment">
       <Dropzone
-        {...register(id, { required: isRequired })}
+        {...register(getId(item.linkId), { required: { value: !!isRequired, message: '' } })}
         id={id}
         label={label}
         subLabel={subLabel}

@@ -1,9 +1,11 @@
 import * as React from 'react';
 
 import { Collapse } from 'react-collapse';
+import { useFormContext } from 'react-hook-form';
 
 import { QuestionnaireItem, Questionnaire } from '../../../types/fhir';
 import { Options } from '../../../types/formTypes/radioGroupOptions';
+import { Resources } from '../../../types/resources';
 
 import Checkbox from '@helsenorge/designsystem-react/components/Checkbox';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
@@ -11,7 +13,6 @@ import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label
 import Validation from '@helsenorge/designsystem-react/components/Validation';
 
 import { getId, getSublabelText, getText, isRequired } from '../../../util/index';
-import { Resources } from '../../../util/resources';
 
 interface Props {
   options?: Array<Options>;
@@ -51,6 +52,7 @@ const CheckboxView = ({
     return { label: el.label, id: el.type, checked: isSelected(el, selected), disabled: el.disabled };
   });
   const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
+
   const handleCheckboxChange = (checkboxId: string): void => {
     handleChange(checkboxId);
   };
@@ -64,13 +66,21 @@ const CheckboxView = ({
 
   // Checkbox:
   // isStyleBlue={this.props.isStyleBlue}
-
+  const getRequiredErrorMessage = (item: QuestionnaireItem): string | undefined => {
+    return isRequired(item) ? resources?.formRequiredErrorMessage : undefined;
+  };
+  const { register, getFieldState } = useFormContext();
+  const { error } = getFieldState(getId(item.linkId));
   return (
     <div className="page_refero__component page_refero__component_choice page_refero__component_choice_checkbox">
       <Collapse isOpened>
-        <FormGroup legend={getText(item, onRenderMarkdown, questionnaire, resources)}>
+        <FormGroup legend={getText(item, onRenderMarkdown, questionnaire, resources)} error={error?.message}>
           {checkboxes.map((checkbox, index) => (
             <Checkbox
+              {...register(getId(item.linkId), {
+                required: { value: isRequired(item), message: getRequiredErrorMessage(item) || '' },
+                onChange: (): void => handleCheckboxChange(checkbox.id),
+              })}
               inputId={`${id}-${checkbox.id}`}
               testId={`checkbox-choice`}
               key={`${checkbox.id}-${index.toString()}`}
@@ -81,7 +91,6 @@ const CheckboxView = ({
                 />
               }
               checked={checkbox.checked}
-              onChange={(): void => handleChange(checkbox.id)}
               disabled={checkbox.disabled}
               required={isRequired(item)}
             />

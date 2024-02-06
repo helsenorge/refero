@@ -18,7 +18,7 @@ import { renderPrefix, getText, getId } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
 import { RenderContext } from '../../../util/renderContext';
-import { Resources } from '../../../util/resources';
+import { Resources } from '../../../types/resources';
 import withCommonFunctions, { WithCommonFunctionsProps } from '../../with-common-functions';
 
 export interface GroupProps extends WithCommonFunctionsProps {
@@ -46,50 +46,6 @@ export interface GroupProps extends WithCommonFunctionsProps {
 }
 
 export const Group: React.FC<GroupProps & ValidationProps> = props => {
-  // constructor(props: Props) {
-  //   super(props);
-  // }
-
-  // shouldComponentUpdate(nextProps: Props): boolean {
-  //   const responseItemHasChanged = this.props.responseItem !== nextProps.responseItem;
-  //   const helpItemHasChanged = this.props.isHelpOpen !== nextProps.isHelpOpen;
-  //   const repeatButtonHasChanged = this.props.repeatButton !== nextProps.repeatButton;
-  //   const attachmentErrorMessageHasChanged = this.props.attachmentErrorMessage !== nextProps.attachmentErrorMessage;
-  //   const resourcesHasChanged = JSON.stringify(this.props.resources) !== JSON.stringify(nextProps.resources);
-
-  //   const repeats = this.props.item.repeats ?? false;
-
-  //   return (
-  //     responseItemHasChanged ||
-  //     helpItemHasChanged ||
-  //     repeatButtonHasChanged ||
-  //     attachmentErrorMessageHasChanged ||
-  //     resourcesHasChanged ||
-  //     repeats
-  //   );
-  // }
-
-  // React.useMemo(() => {
-  //   return (newProps: React.PropsWithChildren<GroupProps & ValidationProps>) => {
-  //     const responseItemHasChanged = props.responseItem !== newProps.responseItem;
-  //     const helpItemHasChanged = props.isHelpOpen !== newProps.isHelpOpen;
-  //     const repeatButtonHasChanged = props.repeatButton !== newProps.repeatButton;
-  //     const attachmentErrorMessageHasChanged = props.attachmentErrorMessage !== newProps.attachmentErrorMessage;
-  //     const resourcesHasChanged = JSON.stringify(props.resources) !== JSON.stringify(newProps.resources);
-
-  //     const repeats = props.item.repeats ?? false;
-
-  //     return (
-  //       responseItemHasChanged ||
-  //       helpItemHasChanged ||
-  //       repeatButtonHasChanged ||
-  //       attachmentErrorMessageHasChanged ||
-  //       resourcesHasChanged ||
-  //       repeats
-  //     );
-  //   };
-  // }, [props]);
-
   const renderAllItems = (): JSX.Element => {
     const { renderContext } = props;
     const localRenderContextType = getLocalRenderContextType();

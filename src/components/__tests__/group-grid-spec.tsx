@@ -9,7 +9,7 @@ import rootReducer from '../../reducers';
 import { Questionnaire } from '../../types/fhir';
 import Decimal from '../formcomponents/decimal/decimal';
 import { ReferoContainer } from '..';
-import { Resources } from '../../util/resources';
+import { Resources } from '../../types/resources';
 import GroupGridModel from './__data__/group-grid';
 
 describe('Group-grid component renders correctly', () => {

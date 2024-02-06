@@ -15,7 +15,7 @@ import Constants from '../../../constants/index';
 import { getId, isRequired } from '../../../util';
 import { getPlaceholder, getValidationTextExtension } from '../../../util/extension';
 import { isReadOnly } from '../../../util/index';
-import { Resources } from '../../../util/resources';
+import { Resources } from '../../../types/resources';
 import TextView from '../textview';
 
 interface DateDayInputProps {

@@ -1,10 +1,13 @@
 import * as React from 'react';
 
+import { ChangeHandler, useFormContext } from 'react-hook-form';
+
 import { QuestionnaireItem, QuestionnaireItemAnswerOption } from '../../../types/fhir';
 
 import { Slider, SliderStep } from '@helsenorge/designsystem-react/components/Slider';
 
 import ExtensionConstants from '../../../constants/extensions';
+import { getId, isRequired } from '../../../util';
 import { getExtension } from '../../../util/extension';
 
 interface SliderProps {
@@ -17,6 +20,8 @@ type LeftRightLabels = [leftLabel: string, rightLabel: string];
 
 const SliderView: React.FC<SliderProps> = ({ item, handleChange, children }) => {
   const title = item.text;
+  const { register } = useFormContext();
+
   const [sliderSteps, setSliderSteps] = React.useState<SliderStep[] | undefined>(undefined);
   const [leftRightLabels, setleftRightLabels] = React.useState<LeftRightLabels | undefined>(undefined);
 
@@ -38,10 +43,10 @@ const SliderView: React.FC<SliderProps> = ({ item, handleChange, children }) => 
   return (
     <div className="page_refero__component page_refero__component_choice page_refero__component_choice_slider">
       <Slider
+        {...register(getId(item.linkId), { required: isRequired(item), onChange: onValueChange })}
         title={title}
         labelLeft={leftRightLabels?.[0]}
         labelRight={leftRightLabels?.[1]}
-        onChange={onValueChange}
         steps={sliderSteps}
       />
       {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : undefined}

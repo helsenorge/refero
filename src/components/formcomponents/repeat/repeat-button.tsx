@@ -16,7 +16,7 @@ import { getRepeatsTextExtension } from '../../../util/extension';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
 import { RenderContext } from '../../../util/renderContext';
-import { Resources } from '../../../util/resources';
+import { Resources } from '../../../types/resources';
 
 interface Props {
   item: QuestionnaireItem;

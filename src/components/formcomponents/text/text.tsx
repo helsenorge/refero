@@ -31,10 +31,11 @@ import {
   validateText,
   getTextValidationErrorMessage,
   getSublabelText,
+  getStringValue,
 } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
-import { Resources } from '../../../util/resources';
+import { Resources } from '../../../types/resources';
 import { SanitizeText } from '../../../util/sanitize/domPurifyHelper';
 import withCommonFunctions, { WithCommonFunctionsProps } from '../../with-common-functions';
 import TextView from '../textview';
@@ -183,29 +184,31 @@ const Text = (props: TextProps & ValidationProps): JSX.Element | null => {
   // requiredErrorMessage={this.getRequiredErrorMessage(item)}
   // validateOnExternalUpdate={true}
   // stringOverMaxLengthError={resources?.stringOverMaxLengthError}
-
+  const onTextAreaChange = (event: React.FormEvent<HTMLTextAreaElement>): void => {
+    event.persist();
+    debouncedHandleChange(event);
+    setInputValue(event.currentTarget.value);
+  };
   return (
     <div className="page_refero__component page_refero__component_text">
-      <Label
-        htmlFor={textAreaId}
-        labelTexts={[{ text: labelText, type: 'semibold' }]}
-        sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
-        afterLabelChildren={props.renderHelpButton()}
-      />
       {props.renderHelpElement()}
       <Textarea
-        {...register('text')}
+        {...register(getId(item.linkId), { required: isRequired(item), onChange: onTextAreaChange })}
         textareaId={textAreaId}
         maxRows={Constants.DEFAULT_TEXTAREA_HEIGHT}
         required={isRequired(item)}
         placeholder={getPlaceholder(item)}
+        label={
+          <Label
+            labelTexts={[{ text: labelText, type: 'semibold' }]}
+            sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+            afterLabelChildren={props.renderHelpButton()}
+          />
+        }
+        defaultValue={getStringValue(answer)}
         grow={true}
-        onChange={(event: React.FormEvent<HTMLTextAreaElement>): void => {
-          event.persist();
-          debouncedHandleChange(event);
-          setInputValue(event.currentTarget.value);
-        }}
-        maxCharacters={getMaxLength(item)}
+        onChange={onTextAreaChange}
+        maxCharacters={getMaxLength(item) || 1000}
         maxText={'tegn'}
         errorText={getValidationErrorMessage(inputValue)}
       />

@@ -14,7 +14,7 @@ import {
 import { Options } from '../types/formTypes/radioGroupOptions';
 
 import { getItemControlExtensionValue, getValidationTextExtension } from './extension';
-import { Resources } from './resources';
+import { Resources } from '../types/resources';
 import ExtensionConstants from '../constants/extensions';
 import Constants, { OPEN_CHOICE_ID } from '../constants/index';
 import itemControlConstants from '../constants/itemcontrol';

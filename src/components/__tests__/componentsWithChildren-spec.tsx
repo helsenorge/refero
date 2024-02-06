@@ -6,7 +6,7 @@ import { mount } from 'enzyme';
 import '../../util/defineFetch';
 import rootReducer from '../../reducers';
 import { ReferoContainer } from '../../components';
-import { Resources } from '../../util/resources';
+import { Resources } from '../../types/resources';
 import { Questionnaire, QuestionnaireItem, Extension } from '../../types/fhir';
 import Choice from '../formcomponents/choice/choice';
 import Boolean from '../formcomponents/boolean/boolean';

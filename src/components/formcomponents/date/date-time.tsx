@@ -6,6 +6,7 @@ import { ThunkDispatch } from 'redux-thunk';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem, Questionnaire } from '../../../types/fhir';
 import { ValidationProps } from '../../../types/formTypes/validation';
+import { Resources } from '../../../types/resources';
 
 import Validation from '@helsenorge/designsystem-react/components/Validation';
 
@@ -24,7 +25,6 @@ import { evaluateFhirpathExpressionToGetDate } from '../../../util/fhirpathHelpe
 import { isRequired, getId, isReadOnly, getSublabelText } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
-import { Resources } from '../../../util/resources';
 import withCommonFunctions, { WithCommonFunctionsProps } from '../../with-common-functions';
 import Label from '../label';
 import SubLabel from '../sublabel';
@@ -156,16 +156,6 @@ const DateTime: React.FC<DateTimeProps & ValidationProps> = props => {
     }
     return date ?? text;
   };
-
-  // React.useMemo(() => {
-  //   const responseItemHasChanged = props.responseItem !== props.responseItem;
-  //   const helpItemHasChanged = props.isHelpOpen !== props.isHelpOpen;
-  //   const answerHasChanged = props.answer !== props.answer;
-  //   const resourcesHasChanged = JSON.stringify(props.resources) !== JSON.stringify(props.resources);
-  //   const repeats = props.item.repeats ?? false;
-
-  //   return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats || answerHasChanged;
-  // }, [props.responseItem, props.isHelpOpen, props.answer, props.resources, props.item]);
 
   const getLocaleFromLanguage = (): LanguageLocales.NORWEGIAN | LanguageLocales.ENGLISH => {
     if (props.language?.toLowerCase() === 'en-gb') {

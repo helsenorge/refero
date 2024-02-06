@@ -1,12 +1,14 @@
 import * as React from 'react';
 
+import { FieldValues, UseFormReturn } from 'react-hook-form';
+
 import { ReferoProps } from '../types/referoProps';
 
 import RenderForm from './renderForm';
 import { NAVIGATOR_BLINDZONE_ID } from '../constants';
 import { FormDefinition } from '../reducers/form';
 import { getTopLevelElements } from '../util/getTopLevelElements';
-import { Resources } from '../util/resources';
+import { Resources } from '../types/resources';
 
 interface StepViewProps {
   isAuthorized: boolean;
@@ -18,6 +20,8 @@ interface StepViewProps {
   onSubmit: () => void;
   onStepChange?: (stepIndex: number) => void;
   isHelsenorgeForm?: boolean;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  methods: UseFormReturn<FieldValues, any, undefined>;
 }
 
 const StepView = ({
@@ -30,6 +34,7 @@ const StepView = ({
   onSubmit,
   onStepChange,
   isHelsenorgeForm,
+  methods,
 }: StepViewProps): JSX.Element => {
   const stepArray: Array<JSX.Element> | undefined = [];
   const [stepIndex, setStepIndex] = React.useState(0);
@@ -69,6 +74,7 @@ const StepView = ({
       nextStep={nextStep}
       previousStep={previousStep}
       isHelsenorgeForm={isHelsenorgeForm && isHelsenorgeForm}
+      methods={methods}
     >
       {stepArray[stepIndex]}
     </RenderForm>

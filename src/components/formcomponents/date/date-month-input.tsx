@@ -11,7 +11,7 @@ import { YearMonthResources, YearMonthInput, YearMonthValue } from '@helsenorge/
 
 import { getId, isReadOnly, isRequired } from '../../../util';
 import { getPlaceholder, getValidationTextExtension } from '../../../util/extension';
-import { Resources } from '../../../util/resources';
+import { Resources } from '../../../types/resources';
 import TextView from '../textview';
 
 interface DateYearMonthInputProps {

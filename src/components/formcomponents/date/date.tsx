@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem, Questionnaire } from '../../../types/fhir';
+import { Resources } from '../../../types/resources';
 
 import { LanguageLocales } from '@helsenorge/core-utils/constants/languages';
 import { DateRangePicker } from '@helsenorge/date-time/components/date-range-picker';
@@ -23,7 +24,6 @@ import { evaluateFhirpathExpressionToGetDate } from '../../../util/fhirpathHelpe
 import { getSublabelText } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
-import { Resources } from '../../../util/resources';
 import withCommonFunctions, { WithCommonFunctionsProps } from '../../with-common-functions';
 import Label from '../label';
 import SubLabel from '../sublabel';
@@ -120,31 +120,24 @@ const DateComponent: React.FC<DateProps & ValidationProps> = props => {
     return LanguageLocales.NORWEGIAN;
   };
 
-  // React.useMemo(() => {
-  //   const responseItemHasChanged = props.responseItem !== props.responseItem;
-  //   const helpItemHasChanged = props.isHelpOpen !== props.isHelpOpen;
-  //   const answerHasChanged = props.answer !== props.answer;
-  //   const resourcesHasChanged = JSON.stringify(props.resources) !== JSON.stringify(props.resources);
-  //   const repeats = props.item.repeats ?? false;
-
-  //   return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats || answerHasChanged;
-  // }, [props.responseItem, props.isHelpOpen, props.answer, props.resources, props.item]);
-
   const subLabelText = getSublabelText(props.item, props.onRenderMarkdown, props.questionnaire, props.resources);
 
   const itemControls = getItemControlExtensionValue(props.item);
-  const labelEl = (
-    <Label item={props.item} onRenderMarkdown={props.onRenderMarkdown} questionnaire={props.questionnaire} resources={props.resources} />
-  );
-  const subLabelEl = subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined;
 
   let element: JSX.Element | undefined = undefined;
 
   if (itemControls && itemControls.some(itemControl => itemControl.code === itemControlConstants.YEAR)) {
     element = (
       <DateYearInput
-        label={labelEl}
-        subLabel={subLabelEl}
+        label={
+          <Label
+            item={props.item}
+            onRenderMarkdown={props.onRenderMarkdown}
+            questionnaire={props.questionnaire}
+            resources={props.resources}
+          />
+        }
+        subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
         helpButton={props.renderHelpButton()}
         helpElement={props.renderHelpElement()}
         onDateValueChange={onDateValueChange}
@@ -156,9 +149,16 @@ const DateComponent: React.FC<DateProps & ValidationProps> = props => {
   } else if (itemControls && itemControls.some(itemControl => itemControl.code === itemControlConstants.YEARMONTH)) {
     element = (
       <DateYearMonthInput
-        label={labelEl}
+        label={
+          <Label
+            item={props.item}
+            onRenderMarkdown={props.onRenderMarkdown}
+            questionnaire={props.questionnaire}
+            resources={props.resources}
+          />
+        }
         locale={getLocaleFromLanguage()}
-        subLabel={subLabelEl}
+        subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
         helpButton={props.renderHelpButton()}
         helpElement={props.renderHelpElement()}
         onDateValueChange={onDateValueChange}
@@ -171,8 +171,15 @@ const DateComponent: React.FC<DateProps & ValidationProps> = props => {
     element = (
       <DateDayInput
         locale={getLocaleFromLanguage()}
-        label={labelEl}
-        subLabel={subLabelEl}
+        label={
+          <Label
+            item={props.item}
+            onRenderMarkdown={props.onRenderMarkdown}
+            questionnaire={props.questionnaire}
+            resources={props.resources}
+          />
+        }
+        subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
         datepickerRef={datepicker}
         helpButton={props.renderHelpButton()}
         helpElement={props.renderHelpElement()}

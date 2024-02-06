@@ -15,7 +15,7 @@ import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 import { shouldShowExtraChoice } from '../../../util/choice';
 import { getValidationTextExtension } from '../../../util/extension';
 import { isRequired, getId, getSublabelText, getText } from '../../../util/index';
-import { Resources } from '../../../util/resources';
+import { Resources } from '../../../types/resources';
 
 interface DropdownViewProps {
   options?: Array<Options>;
@@ -55,8 +55,6 @@ const DropdownView: React.FC<DropdownViewProps> = props => {
     renderHelpButton,
     renderHelpElement,
     onRenderMarkdown,
-
-    ...other
   } = props;
   if (!options) {
     return null;
@@ -73,38 +71,32 @@ const DropdownView: React.FC<DropdownViewProps> = props => {
 
   // showLabel={true}
   // onChangeValidator={validateInput}
-
+  const handleSelectChange = (evt: React.ChangeEvent<HTMLSelectElement>): void => handleChange(evt.target.value);
   return (
     <div className="page_refero__component page_refero__component_openchoice page_refero__component_openchoice_dropdown">
       <Collapse isOpened>
-        <Validation {...other}>
-          <Label
-            htmlFor={selectId}
-            labelTexts={[{ text: labelText, type: 'semibold' }]}
-            sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
-            afterLabelChildren={renderHelpButton()}
-          />
-          {renderHelpElement()}
-          <Select
-            {...register(selectId, {
-              required: isRequired(item),
-            })}
-            selectId={selectId}
-            name={selectId}
-            required={isRequired(item)}
-            value={selected ? selected[0] : undefined}
-            errorText={getValidationTextExtension(item)}
-            className="page_refero__input"
-            onChange={(evt: React.ChangeEvent<HTMLSelectElement>): void => handleChange(evt.target.value)}
-          >
-            {dropdownOptions}
-          </Select>
-        </Validation>
-        {shouldShowExtraChoice(answer) ? (
-          <div className="page_refero__component_openchoice_openfield">{renderOpenField()}</div>
-        ) : (
-          <React.Fragment />
-        )}
+        {renderHelpElement()}
+        <Select
+          {...register(getId(item.linkId), {
+            required: isRequired(item),
+            onChange: handleSelectChange,
+            value: selected ? selected[0] : undefined,
+          })}
+          selectId={selectId}
+          errorText={getValidationTextExtension(item)}
+          className="page_refero__input"
+          label={
+            <Label
+              htmlFor={selectId}
+              labelTexts={[{ text: labelText, type: 'semibold' }]}
+              sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+              afterLabelChildren={renderHelpButton()}
+            />
+          }
+        >
+          {dropdownOptions}
+        </Select>
+        {shouldShowExtraChoice(answer) && <div className="page_refero__component_openchoice_openfield">{renderOpenField()}</div>}
         {renderDeleteButton('page_refero__deletebutton--margin-top')}
         {repeatButton}
         {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}

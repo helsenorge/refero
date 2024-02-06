@@ -14,7 +14,7 @@ import Boolean from '../../components/formcomponents/boolean/boolean';
 import { RepeatButton as RepeatButtonInstance } from '../../components/formcomponents/repeat/repeat-button';
 import itemControlConstants from '../../constants/itemcontrol';
 import rootReducer from '../../reducers';
-import { Resources } from '../../util/resources';
+import { Resources } from '../../types/resources';
 import HelpButton from '../help-button/help-button';
 import TextView from '../formcomponents/textview';
 import { ReferoContainer } from '../index';

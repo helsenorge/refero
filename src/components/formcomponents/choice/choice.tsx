@@ -15,6 +15,7 @@ import {
 import { Options } from '../../../types/formTypes/radioGroupOptions';
 import { ValidationProps } from '../../../types/formTypes/validation';
 import { OrgenhetHierarki } from '../../../types/orgenhetHierarki';
+import { Resources } from '../../../types/resources';
 
 import CheckboxView from './checkbox-view';
 import DropdownView from './dropdown-view';
@@ -26,7 +27,6 @@ import { getOptions, getSystem, getErrorMessage, validateInput, getIndexOfAnswer
 import { isReadOnly, isDataReceiver } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
-import { Resources } from '../../../util/resources';
 import withCommonFunctions, { WithCommonFunctionsProps } from '../../with-common-functions';
 import AutosuggestView from '../choice-common/autosuggest-view';
 import ReceiverComponentWrapper from '../receiver-component/receiver-component-wrapper';
@@ -271,16 +271,6 @@ const Choice = (props: ChoiceProps & ValidationProps): JSX.Element | null => {
       </ReceiverComponentWrapper>
     );
   };
-
-  // React.useMemo(() => {
-  //   const responseItemHasChanged = props.responseItem !== props.responseItem;
-  //   const helpItemHasChanged = props.isHelpOpen !== props.isHelpOpen;
-  //   const answerHasChanged = props.answer !== props.answer;
-  //   const resourcesHasChanged = JSON.stringify(props.resources) !== JSON.stringify(props.resources);
-  //   const repeats = props.item.repeats ?? false;
-
-  //   return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats || answerHasChanged;
-  // }, [props.responseItem, props.isHelpOpen, props.answer, props.resources, props.item]);
 
   const { id, item, pdf, answer, containedResources, children, onRenderMarkdown } = props;
   if (pdf || isReadOnly(item)) {

@@ -42,7 +42,7 @@ import ItemType from '../constants/itemType';
 import itemType from '../constants/itemType';
 import { RenderOptionCode } from '../constants/renderOptionCode';
 import { TableCodes } from '../constants/tableTypes';
-import { Resources } from '../util/resources';
+import { Resources } from '../types/resources';
 
 function openNewIfAbsolute(url: string): string {
   const regex = new RegExp('^(([a-z][a-z0-9+.-]*):.*)');

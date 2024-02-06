@@ -10,9 +10,9 @@ import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label
 import RadioButton from '@helsenorge/designsystem-react/components/RadioButton';
 import Validation from '@helsenorge/designsystem-react/components/Validation';
 
-import { shouldShowExtraChoice } from '../../../util/choice';
+import { shouldShowExtraChoice, validateInput } from '../../../util/choice';
 import { getId, getSublabelText, getText, isRequired } from '../../../util/index';
-import { Resources } from '../../../util/resources';
+import { Resources } from '../../../types/resources';
 import { useFormContext } from 'react-hook-form';
 
 interface Props {
@@ -53,7 +53,6 @@ const RadioView: React.SFC<Props> = ({
   renderHelpButton,
   renderHelpElement,
   onRenderMarkdown,
-  ...other
 }) => {
   if (!options) {
     return null;
@@ -62,48 +61,42 @@ const RadioView: React.SFC<Props> = ({
   const selectedValue = (selected && selected[0]) || '';
 
   // RadioButtonGroup:
-  // id={getId(id)}
   // validator={validateInput}
   // helpButton={renderHelpButton()}
-  // helpElement={renderHelpElement()}
   // validateOnExternalUpdate={true}
-  // isStyleBlue
+
   const { register } = useFormContext();
   return (
     <div className="page_refero__component page_refero__component_openchoice page_refero__component_openchoice_radiobutton">
       <Collapse isOpened>
-        <Validation {...other}>
-          <FormGroup
-            legend={getText(item, onRenderMarkdown, questionnaire, resources)}
-            error={getErrorMessage(selectedValue) !== '' ? getErrorMessage(selectedValue) : undefined}
-          >
-            {options.map((option: Options, index: number) => (
-              <RadioButton
-                {...register(item.linkId, { required: isRequired(item) })}
-                inputId={getId(id)}
-                testId="radioButton-openChoice"
-                key={`${getId(id)}-${index.toString()}`}
-                label={
-                  <Label
-                    labelTexts={[{ text: option.label }]}
-                    sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
-                    afterLabelChildren={<>{renderHelpButton()}</>}
-                  />
-                }
-                defaultChecked={selectedValue === option.type}
-                value={option.type}
-                onChange={() => handleChange}
-                disabled={option.disabled}
-                required={isRequired(item)}
-              />
-            ))}
-          </FormGroup>
-        </Validation>
-        {shouldShowExtraChoice(answer) ? (
-          <div className="page_refero__component_openchoice_openfield">{renderOpenField()}</div>
-        ) : (
-          <React.Fragment />
-        )}
+        <FormGroup
+          legend={getText(item, onRenderMarkdown, questionnaire, resources)}
+          error={getErrorMessage(selectedValue) !== '' ? getErrorMessage(selectedValue) : undefined}
+        >
+          {options.map((option: Options, index: number) => (
+            <RadioButton
+              {...register(getId(item.linkId), { required: isRequired(item), onChange: handleChange })}
+              inputId={getId(id) + index.toLocaleString()}
+              size="medium"
+              testId="radioButton-openChoice"
+              key={`${getId(id)}-${index.toString()}`}
+              mode="onwhite"
+              label={
+                <Label
+                  labelTexts={[{ text: option.label }]}
+                  sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+                  afterLabelChildren={<>{renderHelpButton()}</>}
+                />
+              }
+              defaultChecked={selectedValue === option.type}
+              value={option.type}
+              onChange={() => handleChange}
+              disabled={option.disabled}
+              required={isRequired(item)}
+            />
+          ))}
+        </FormGroup>
+        {shouldShowExtraChoice(answer) && <div className="page_refero__component_openchoice_openfield">{renderOpenField()}</div>}
         {renderDeleteButton('page_refero__deletebutton--margin-top')}
         {repeatButton}
         {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : undefined}

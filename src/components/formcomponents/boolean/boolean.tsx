@@ -18,11 +18,12 @@ import { getBooleanValue } from './utils';
 import { NewValueAction, newBooleanValueAsync } from '../../../actions/newValue';
 import { GlobalState } from '../../../reducers';
 import { getValidationTextExtension } from '../../../util/extension';
-import { getId, getText, isReadOnly, isRequired, renderPrefix } from '../../../util/index';
+import { getId, getText, getTextValidationErrorMessage, isReadOnly, isRequired, renderPrefix } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
-import { Resources } from '../../../util/resources';
+import { Resources } from '../../../types/resources';
 import withCommonFunctions, { WithCommonFunctionsProps } from '../../with-common-functions';
+import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 
 export interface BooleanProps extends WithCommonFunctionsProps {
   item: QuestionnaireItem;
@@ -65,7 +66,7 @@ const Boolean = ({
   renderHelpElement,
   renderHelpButton,
 }: BooleanProps & ValidationProps): JSX.Element => {
-  const { register } = useFormContext();
+  const { register, getFieldState } = useFormContext();
 
   const handleChange = (): void => {
     const newValue = !getBooleanValue(answer, item);
@@ -79,7 +80,7 @@ const Boolean = ({
       promptLoginMessage();
     }
   };
-
+  const filedState = getFieldState(getId(item.linkId));
   const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`;
 
   if (pdf) {
@@ -105,19 +106,27 @@ const Boolean = ({
   // helpElement={this.props.renderHelpElement()}
   // validateOnExternalUpdate={true}
   // isStyleBlue
-
+  console.log('filedState', filedState);
+  console.log('getValidationTextExtension', getValidationTextExtension(item));
+  const getRequiredErrorMessage = (item: QuestionnaireItem): string | undefined => {
+    return isRequired(item) ? resources?.formRequiredErrorMessage : undefined;
+  };
   return (
-    // Dette er en hack for FHI-skjema. TODO: fjern hack
     <div className="page_refero__component page_refero__component_boolean">
       <Checkbox
-        {...register(getId(item.linkId), { required: isRequired(item) })}
+        {...register(getId(item.linkId), {
+          required: { value: isRequired(item), message: getRequiredErrorMessage(item) || '' },
+          disabled: isReadOnly(item),
+          onChange: handleChange,
+        })}
         label={<Label labelTexts={[{ text: labelText }]} afterLabelChildren={<>{renderHelpButton()}</>} />}
         required={isRequired(item)}
         checked={getBooleanValue(answer, item)}
         onChange={handleChange}
         disabled={isReadOnly(item)}
         className="page_refero__input"
-        errorText={getValidationTextExtension(item)}
+        errorText={filedState.error?.message}
+        error={filedState.invalid}
       />
       {renderDeleteButton('page_refero__deletebutton--margin-top')}
       {repeatButton}

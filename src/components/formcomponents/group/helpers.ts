@@ -5,7 +5,7 @@ import { getText, renderPrefix } from '../../../util';
 import { getGroupItemControl } from '../../../util/group-item-control';
 import { Path } from '../../../util/refero-core';
 import { RenderContext } from '../../../util/renderContext';
-import { Resources } from '../../../util/resources';
+import { Resources } from '../../../types/resources';
 
 export const getColumns = (item: QuestionnaireItem): Array<string> => {
   const seenColumns = {};

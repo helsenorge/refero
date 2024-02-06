@@ -19,8 +19,7 @@ import * as DateTimeConstants from '@helsenorge/date-time/constants/datetime';
 
 import { DATEFORMATS } from './constants';
 import { QuestionnaireItemWithAnswers } from './interface';
-import { OPEN_CHOICE_SYSTEM } from '../../../../constants';
-import codeSystems, { CodeSystems } from '../../../../constants/codingsystems';
+import codeSystems, { CodeSystems, OPEN_CHOICE_SYSTEM } from '../../../../constants/codingsystems';
 import ItemType from '../../../../constants/itemType';
 import { getQuestionnaireItemCodeValue } from '../../../../util/codingsystem';
 import { getCalculatedExpressionExtension, getCopyExtension } from '../../../../util/extension';

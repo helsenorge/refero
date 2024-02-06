@@ -11,6 +11,7 @@ import {
   Questionnaire,
 } from '../../../types/fhir';
 import { ValidationProps } from '../../../types/formTypes/validation';
+import { Resources } from '../../../types/resources';
 import { TextMessage } from '../../../types/text-message';
 
 import { UploadedFile } from '@helsenorge/file-upload/components/dropzone';
@@ -22,7 +23,6 @@ import { getValidationTextExtension, getMaxOccursExtensionValue, getMinOccursExt
 import { isRequired, getId, isReadOnly, isRepeat, getSublabelText } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
-import { Resources } from '../../../util/resources';
 import withCommonFunctions, { WithCommonFunctionsProps } from '../../with-common-functions';
 import Label from '../label';
 import SubLabel from '../sublabel';

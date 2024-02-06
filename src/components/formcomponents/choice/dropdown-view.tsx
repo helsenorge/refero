@@ -1,20 +1,21 @@
 import * as React from 'react';
 
 import { Collapse } from 'react-collapse';
-import { useForm } from 'react-hook-form';
+import { useFormContext } from 'react-hook-form';
 
 import { QuestionnaireItem, Questionnaire } from '../../../types/fhir';
 import { Options } from '../../../types/formTypes/radioGroupOptions';
+import { Resources } from '../../../types/resources';
 
+import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
 import Select from '@helsenorge/designsystem-react/components/Select';
 import Validation from '@helsenorge/designsystem-react/components/Validation';
 
 import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 
-import { getValidationTextExtension, getPlaceholder } from '../../../util/extension';
+import { getValidationTextExtension } from '../../../util/extension';
 import { isRequired, getId, getSublabelText, getText, renderPrefix } from '../../../util/index';
-import { Resources } from '../../../util/resources';
 
 interface DropdownViewProps {
   options?: Array<Options>;
@@ -51,13 +52,10 @@ const DropdownView: React.FC<DropdownViewProps> = props => {
     renderHelpButton,
     renderHelpElement,
     onRenderMarkdown,
-    ...other
   } = props;
   if (!options) {
     return null;
   }
-
-  const { register } = useForm();
 
   const dropdownOptions: HTMLOptionElement[] = options.map((o: Options) => {
     return new Option(o.label, o.type);
@@ -73,35 +71,40 @@ const DropdownView: React.FC<DropdownViewProps> = props => {
 
   const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`;
   const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
-
+  const handleSelectChange = (evt: React.ChangeEvent<HTMLSelectElement>): void => handleChange(evt.target.value);
   // onChangeValidator={validateInput}
-
+  const { register, getFieldState } = useFormContext();
+  const { error } = getFieldState(getId(item.linkId));
   return (
     <div className="page_refero__component page_refero__component_choice page_refero__component_choice_dropdown">
       <Collapse isOpened>
-        <Label
-          htmlFor={selectId}
-          labelTexts={[{ text: labelText, type: 'semibold' }]}
-          sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
-          afterLabelChildren={renderHelpButton()}
-        />
         {renderHelpElement()}
-        <Select
-          {...register('dropdownView_choice')}
-          selectId={selectId}
-          name={getId(id)}
-          required={isRequired(item)}
-          value={selected ? selected[0] : undefined}
-          errorText={getValidationTextExtension(item)}
-          className="page_refero__input"
-          onChange={(evt): void => handleChange(evt.target.value)}
-        >
-          {dropdownOptions.map(dropdownOption => (
-            <option key={selectId + dropdownOption.label} value={dropdownOption.label}>
-              {dropdownOption.label}
-            </option>
-          ))}
-        </Select>
+        <FormGroup error={error?.message}>
+          <Select
+            {...register(getId(item.linkId), {
+              required: { value: isRequired(item), message: getValidationTextExtension(item) || '' },
+              onChange: handleSelectChange,
+              value: selected ? selected[0] : undefined,
+            })}
+            label={
+              <Label
+                htmlFor={selectId}
+                labelTexts={[{ text: labelText, type: 'semibold' }]}
+                sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+                afterLabelChildren={renderHelpButton()}
+              />
+            }
+            selectId={selectId}
+            errorText={error?.message}
+            className="page_refero__input"
+          >
+            {dropdownOptions.map(dropdownOption => (
+              <option key={selectId + dropdownOption.label} value={dropdownOption.value}>
+                {dropdownOption.label}
+              </option>
+            ))}
+          </Select>
+        </FormGroup>
         {renderDeleteButton('page_refero__deletebutton--margin-top')}
         {repeatButton}
         {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}

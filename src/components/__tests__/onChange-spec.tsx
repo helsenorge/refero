@@ -16,7 +16,7 @@ import Constants, { OPEN_CHOICE_ID } from '../../constants/index';
 import rootReducer from '../../reducers';
 import { IActionRequester } from '../../util/actionRequester';
 import { IQuestionnaireInspector, QuestionnaireItemPair } from '../../util/questionnaireInspector';
-import { Resources } from '../../util/resources';
+import { Resources } from '../../types/resources';
 import questionnaireWithAllItemTypes from './__data__/onChange/allItemTypes';
 import questionnaireWithNestedItems from './__data__/onChange/nestedItems';
 import questionnaireWithRepeats from './__data__/onChange/repeats';

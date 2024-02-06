@@ -1,11 +1,12 @@
 import * as React from 'react';
 
-import { useForm } from 'react-hook-form';
+import { ValidationRule, useForm, useFormContext } from 'react-hook-form';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
 import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer } from '../../../types/fhir';
 import { ValidationProps } from '../../../types/formTypes/validation';
+import { Resources } from '../../../types/resources';
 
 import Input from '@helsenorge/designsystem-react/components/Input';
 import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
@@ -15,11 +16,16 @@ import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 
 import { NewValueAction, newDecimalValueAsync } from '../../../actions/newValue';
 import { GlobalState } from '../../../reducers';
-import { getValidationTextExtension, getPlaceholder, getMaxValueExtensionValue, getMinValueExtensionValue } from '../../../util/extension';
-import { isReadOnly, isRequired, getId, getSublabelText, renderPrefix, getText } from '../../../util/index';
+import {
+  getValidationTextExtension,
+  getPlaceholder,
+  getMaxValueExtensionValue,
+  getMinValueExtensionValue,
+  getRegexExtension,
+} from '../../../util/extension';
+import { isReadOnly, isRequired, getId, getSublabelText, renderPrefix, getText, getDecimalPattern } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
-import { Resources } from '../../../util/resources';
 import withCommonFunctions, { WithCommonFunctionsProps } from '../../with-common-functions';
 import TextView from '../textview';
 
@@ -87,17 +93,7 @@ const Decimal: React.FC<DecimalProps & ValidationProps> = props => {
     }
   };
 
-  // React.useMemo(() => {
-  //   const responseItemHasChanged = props.responseItem !== props.responseItem;
-  //   const helpItemHasChanged = props.isHelpOpen !== props.isHelpOpen;
-  //   const answerHasChanged = props.answer !== props.answer;
-  //   const resourcesHasChanged = JSON.stringify(props.resources) !== JSON.stringify(props.resources);
-  //   const repeats = props.item.repeats ?? false;
-
-  //   return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats || answerHasChanged;
-  // }, [props.responseItem, props.isHelpOpen, props.answer, props.resources, props.item]);
-
-  const { register } = useForm();
+  const { register, getFieldState } = useFormContext();
   const { id, item, pdf, onRenderMarkdown } = props;
   const value = getValue();
   const inputId = getId(props.id);
@@ -119,38 +115,43 @@ const Decimal: React.FC<DecimalProps & ValidationProps> = props => {
     );
   }
 
-  // showLabel={true}
-  // pattern={getDecimalPattern(item)}
   // validateOnExternalUpdate={true}
-
+  const pattern: ValidationRule<RegExp> | undefined = getRegexExtension(item)
+    ? new RegExp(getRegexExtension(item) as string, 'g')
+    : undefined;
+  const minValue = getMinValueExtensionValue(item);
+  const maxValue = getMaxValueExtensionValue(item);
+  const validationMessage = getValidationTextExtension(item) || '';
+  const { error } = getFieldState(getId(item.linkId));
   return (
     <div className="page_refero__component page_refero__component_decimal">
-      <Validation {...props}>
-        <>
-          <Label
-            htmlFor={inputId}
-            labelTexts={[{ text: labelText, type: 'semibold' }]}
-            sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
-            afterLabelChildren={props.renderHelpButton()}
-          />
-          {props.renderHelpElement()}
-          <Input
-            {...register('decimal')}
-            type="number"
-            inputId={inputId}
-            name={getId(props.id)}
-            defaultValue={value ? value + '' : ''}
-            required={isRequired(item)}
-            placeholder={getPlaceholder(item)}
-            max={getMaxValueExtensionValue(item)}
-            min={getMinValueExtensionValue(item)}
-            errorText={getValidationTextExtension(item)}
-            className="page_refero__input"
-            width={25}
-            onChange={handleChange}
-          />
-        </>
-      </Validation>
+      <>
+        {props.renderHelpElement()}
+        <Input
+          {...register(getId(item.linkId), {
+            pattern,
+            required: { value: isRequired(item), message: validationMessage },
+            max: maxValue && { value: maxValue, message: validationMessage },
+            min: minValue ? { value: minValue, message: validationMessage } : undefined,
+            onChange: handleChange,
+          })}
+          label={
+            <Label
+              htmlFor={inputId}
+              labelTexts={[{ text: labelText, type: 'semibold' }]}
+              sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+              afterLabelChildren={props.renderHelpButton()}
+            />
+          }
+          type="number"
+          inputId={inputId}
+          defaultValue={value ? value + '' : ''}
+          placeholder={getPlaceholder(item)}
+          errorText={error?.message}
+          className="page_refero__input"
+          width={25}
+        />
+      </>
       {props.renderDeleteButton('page_refero__deletebutton--margin-top')}
       {props.repeatButton}
       {props.children ? <div className="nested-fieldset nested-fieldset--full-height">{props.children}</div> : null}

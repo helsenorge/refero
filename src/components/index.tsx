@@ -1,5 +1,6 @@
 import React, { useState, useEffect, ReactElement } from 'react';
 
+import { FormProvider, useForm } from 'react-hook-form';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
@@ -49,7 +50,6 @@ import {
 import { RenderContext } from '../util/renderContext';
 import { ScoringCalculator } from '../util/scoringCalculator';
 import { shouldFormBeDisplayedAsStepView } from '../util/shouldFormBeDisplayedAsStepView';
-import { RenderFormItems } from './RenderFormItems';
 
 interface StateProps {
   formDefinition?: FormDefinition | null;
@@ -100,6 +100,7 @@ const Refero = ({
   isHelsenorgeForm,
 }: StateProps & DispatchProps & ReferoProps): ReactElement | null => {
   const qst = questionnaire ? questionnaire : formDefinition?.Content;
+  const methods = useForm({ mode: 'onChange' });
 
   const [scoringCalculator, setScoringCalculator] = useState<ScoringCalculator | undefined>(qst ? new ScoringCalculator(qst) : undefined);
 
@@ -338,36 +339,40 @@ const Refero = ({
     isHelsenorgeForm,
   };
   return (
-    <div className={getButtonClasses(presentationButtonsType, ['page_refero__content'])}>
-      <div className="page_refero__messageboxes" />
+    <FormProvider {...methods}>
+      <div className={getButtonClasses(presentationButtonsType, ['page_refero__content'])}>
+        <div className="page_refero__messageboxes" />
 
-      {isStepView ? (
-        <StepView
-          isAuthorized={authorized}
-          referoProps={referoProps}
-          resources={resources}
-          formDefinition={formDefinition}
-          onSave={handleSave}
-          onSubmit={handleSubmit}
-          onStepChange={onStepChange}
-          isHelsenorgeForm={isHelsenorgeForm}
-        >
-          {renderFormItems()}
-        </StepView>
-      ) : (
-        <RenderForm
-          isAuthorized={authorized}
-          isStepView={false}
-          referoProps={referoProps}
-          resources={resources}
-          onSave={handleSave}
-          onSubmit={handleSubmit}
-          isHelsenorgeForm={isHelsenorgeForm}
-        >
-          {renderFormItems()}
-        </RenderForm>
-      )}
-    </div>
+        {isStepView ? (
+          <StepView
+            isAuthorized={authorized}
+            referoProps={referoProps}
+            resources={resources}
+            formDefinition={formDefinition}
+            onSave={handleSave}
+            onSubmit={handleSubmit}
+            onStepChange={onStepChange}
+            isHelsenorgeForm={isHelsenorgeForm}
+            methods={methods}
+          >
+            {renderFormItems()}
+          </StepView>
+        ) : (
+          <RenderForm
+            isAuthorized={authorized}
+            isStepView={false}
+            referoProps={referoProps}
+            resources={resources}
+            onSave={handleSave}
+            onSubmit={handleSubmit}
+            isHelsenorgeForm={isHelsenorgeForm}
+            methods={methods}
+          >
+            {renderFormItems()}
+          </RenderForm>
+        )}
+      </div>
+    </FormProvider>
   );
 };
 

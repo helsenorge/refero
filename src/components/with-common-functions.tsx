@@ -18,6 +18,7 @@ import {
 import { FormChild } from '../types/formTypes/formChild';
 import { ValidationProps } from '../types/formTypes/validation';
 import { OrgenhetHierarki } from '../types/orgenhetHierarki';
+import { Resources } from '../types/resources';
 import { TextMessage } from '../types/text-message';
 
 import Icon from '@helsenorge/designsystem-react/components/Icon';
@@ -44,7 +45,6 @@ import {
   createIdSuffix,
 } from '../util/refero-core';
 import { RenderContext } from '../util/renderContext';
-import { Resources } from '../util/resources';
 
 export interface WithCommonFunctionsProps {
   resources?: Resources;

@@ -5,7 +5,7 @@ import { Store, Provider } from 'react-redux';
 
 import rootReducer from '../../reducers';
 import '../../util/defineFetch';
-import { Resources } from '../../util/resources';
+import { Resources } from '../../types/resources';
 import { ReferoContainer } from '../../components';
 import { Questionnaire, QuestionnaireItem, Extension, Reference } from '../../types/fhir';
 import Choice from '../formcomponents/choice/choice';
@@ -272,7 +272,11 @@ describe('Hidden components should not render', () => {
   });
 
   it('unhidden radio-button open-choice renders', () => {
-    const item = createChoiceItem(ItemType.OPENCHOICE, createItemControlExtension('radio-button'), createQuestionnaireHiddenExtension(false));
+    const item = createChoiceItem(
+      ItemType.OPENCHOICE,
+      createItemControlExtension('radio-button'),
+      createQuestionnaireHiddenExtension(false)
+    );
     const q = createQuestionnaire(item);
     const wrapper = createWrapper(q);
 
@@ -282,7 +286,11 @@ describe('Hidden components should not render', () => {
   });
 
   it('hidden radio-button open-choice does not render', () => {
-    const item = createChoiceItem(ItemType.OPENCHOICE, createItemControlExtension('radio-button'), createQuestionnaireHiddenExtension(true));
+    const item = createChoiceItem(
+      ItemType.OPENCHOICE,
+      createItemControlExtension('radio-button'),
+      createQuestionnaireHiddenExtension(true)
+    );
     const q = createQuestionnaire(item);
     const wrapper = createWrapper(q);
 

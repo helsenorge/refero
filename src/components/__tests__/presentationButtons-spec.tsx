@@ -8,7 +8,7 @@ import DataModel from './__data__/common/';
 import { Questionnaire, Extension } from '../../types/fhir';
 import rootReducer from '../../reducers';
 import { createStore, applyMiddleware } from 'redux';
-import { Resources } from '../../util/resources';
+import { Resources } from '../../types/resources';
 import { ReferoContainer } from '..';
 import ExtensionConstants from '../../constants/extensions';
 import { PresentationButtonsType } from '../../constants/presentationButtonsType';

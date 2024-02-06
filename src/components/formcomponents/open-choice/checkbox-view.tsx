@@ -11,9 +11,9 @@ import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
 import Validation from '@helsenorge/designsystem-react/components/Validation';
 
-import { getSublabelText, getText, isRequired } from '../../../util';
+import { getId, getSublabelText, getText, isRequired } from '../../../util';
 import { shouldShowExtraChoice } from '../../../util/choice';
-import { Resources } from '../../../util/resources';
+import { Resources } from '../../../types/resources';
 
 interface Props {
   options?: Array<Options>;
@@ -76,8 +76,9 @@ const CheckboxView: React.SFC<Props> = ({
           <FormGroup legend={getText(item, onRenderMarkdown, questionnaire, resources)}>
             {checkboxes.map((checkbox, index) => (
               <Checkbox
-                {...register(item.linkId, {
+                {...register(getId(item.linkId), {
                   required: isRequired(item),
+                  onChange: () => handleChange(checkbox.id),
                 })}
                 inputId={`${id}-${checkbox.id}`}
                 testId={`checkbox-openChoice`}
@@ -90,8 +91,6 @@ const CheckboxView: React.SFC<Props> = ({
                   />
                 }
                 checked={checkbox.checked}
-                onChange={() => handleChange(checkbox.id)}
-                required={isRequired(item)}
               />
             ))}
           </FormGroup>

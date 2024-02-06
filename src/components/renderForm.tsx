@@ -1,14 +1,15 @@
 import * as React from 'react';
 
-import { useForm, FormProvider, FieldValues } from 'react-hook-form';
+import { FieldValues, UseFormReturn } from 'react-hook-form';
 
 import { QuestionnaireResponse } from '../types/fhir';
 import { ReferoProps } from '../types/referoProps';
+import { Resources } from '../types/resources';
 
 import Loader from '@helsenorge/designsystem-react/components/Loader';
+import Validation from '@helsenorge/designsystem-react/components/Validation';
 
 import FormButtons from './formButtons/formButtons';
-import { Resources } from '../util/resources';
 
 interface RenderFormProps {
   isAuthorized: boolean;
@@ -23,6 +24,9 @@ interface RenderFormProps {
   previousStep?: () => void;
   isHelsenorgeForm?: boolean;
   children?: React.ReactNode;
+  onFieldsNotCorrectlyFilledOut?: () => void;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  methods: UseFormReturn<FieldValues, any, undefined>;
 }
 
 const RenderForm = ({
@@ -37,19 +41,19 @@ const RenderForm = ({
   previousStep,
   isHelsenorgeForm,
   children,
+  methods,
+  onFieldsNotCorrectlyFilledOut,
 }: RenderFormProps): JSX.Element | null => {
-  const methods = useForm();
-  const onSubmitReactHookForm = (data: QuestionnaireResponse): void => {
-    const d = data;
-    d;
-    // console.log('data', data);
-    // console.log('onSubmitReactHookForm');
+  const onSubmitReactHookForm = (data: QuestionnaireResponse, e: React.FormEvent): void => {
+    e.preventDefault();
+    console.log('onSubmitReactHookForm- data', data);
+    console.log('onSubmitReactHookForm');
     onSubmit();
   };
-  const handleInvalidForm = (FieldValues: FieldValues): void => {
-    const fieldValues = FieldValues;
-    fieldValues;
-    // console.log(FieldValues);
+  const handleInvalidForm = (FieldValues: FieldValues, e: React.FormEvent): void => {
+    e.preventDefault();
+    console.log('Invalid FieldValues', FieldValues);
+    onFieldsNotCorrectlyFilledOut && onFieldsNotCorrectlyFilledOut();
   };
   const onPauseButtonClickedInNormalView = referoProps.onSave ? onSave : undefined;
   const onPauseButtonClickedInStepView = displayPreviousButton ? previousStep : undefined;
@@ -57,25 +61,31 @@ const RenderForm = ({
   if (referoProps.blockSubmit) {
     return <Loader size={'medium'} overlay={'parent'} />;
   }
-
+  //             validationSummaryPlacement={referoProps.validationSummaryPlacement}
+  //             validationSummary={{
+  //               enable: true,
+  //               header: resources.validationSummaryHeader,
+  //             }}
   return (
-    <FormProvider {...methods}>
-      <form action="#" onSubmit={methods.handleSubmit(onSubmitReactHookForm, handleInvalidForm)}>
-        {children}
-        <FormButtons
-          isStepView={isStepView}
-          submitButtonText={displayNextButton && resources.nextStep ? resources.nextStep : resources.formSend}
-          cancelButtonText={resources.formCancel}
-          pauseButtonText={displayPreviousButton && resources.previousStep ? resources.previousStep : resources.formSave}
-          submitButtonDisabled={referoProps.blockSubmit}
-          pauseButtonDisabled={referoProps.saveButtonDisabled}
-          onSubmitButtonClicked={displayNextButton ? nextStep : methods.handleSubmit(onSubmitReactHookForm)}
-          onCancelButtonClicked={referoProps.onCancel}
-          onPauseButtonClicked={isStepView ? onPauseButtonClickedInStepView : onPauseButtonClickedInNormalView}
-          isHelsenorgeForm={isHelsenorgeForm && isHelsenorgeForm}
-        ></FormButtons>
-      </form>
-    </FormProvider>
+    <form onSubmit={methods.handleSubmit(onSubmitReactHookForm, handleInvalidForm)}>
+      <Validation errorSummary="test" />
+
+      {children}
+      <Validation />
+
+      <FormButtons
+        isStepView={isStepView}
+        submitButtonText={displayNextButton && resources.nextStep ? resources.nextStep : resources.formSend}
+        cancelButtonText={resources.formCancel}
+        pauseButtonText={displayPreviousButton && resources.previousStep ? resources.previousStep : resources.formSave}
+        submitButtonDisabled={referoProps.blockSubmit}
+        pauseButtonDisabled={referoProps.saveButtonDisabled}
+        onSubmitButtonClicked={displayNextButton ? nextStep : methods.handleSubmit(onSubmitReactHookForm)}
+        onCancelButtonClicked={referoProps.onCancel}
+        onPauseButtonClicked={isStepView ? onPauseButtonClickedInStepView : onPauseButtonClickedInNormalView}
+        isHelsenorgeForm={isHelsenorgeForm && isHelsenorgeForm}
+      ></FormButtons>
+    </form>
   );
 };
 

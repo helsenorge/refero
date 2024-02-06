@@ -1,20 +1,20 @@
 import * as React from 'react';
 
 import classNames from 'classnames';
-import { useForm, useFormContext } from 'react-hook-form';
+import { useFormContext } from 'react-hook-form';
 
 import { Coding } from '../../../types/fhir';
 import { EnhetType, OrgenhetHierarki } from '../../../types/orgenhetHierarki';
+import { Resources } from '../../../types/resources';
 
 import Label from '@helsenorge/designsystem-react/components/Label';
 import Loader from '@helsenorge/designsystem-react/components/Loader';
 import NotificationPanel from '@helsenorge/designsystem-react/components/NotificationPanel';
 import Select from '@helsenorge/designsystem-react/components/Select';
 
-import ValidationError from '@helsenorge/form/components/form/validation-error';
+// import ValidationError from '@helsenorge/form/components/form/validation-error';
 
 import { getId } from '../../../util';
-import { Resources } from '../../../util/resources';
 
 export interface ReceiverComponentProps {
   selected?: Array<string | undefined>;
@@ -207,12 +207,12 @@ const ReceiverComponent: React.FC<ReceiverComponentProps> = props => {
     );
   };
 
-  const renderErrorMessage = (): JSX.Element | null => {
-    if (!isValid && isValidated) {
-      return <ValidationError isValid={isValid ? isValid : false} error={props.resources?.adresseKomponent_feilmelding || ''} />;
-    }
-    return null;
-  };
+  // const renderErrorMessage = (): JSX.Element | null => {
+  //   if (!isValid && isValidated) {
+  //     return <ValidationError isValid={isValid ? isValid : false} error={props.resources?.adresseKomponent_feilmelding || ''} />;
+  //   }
+  //   return null;
+  // };
 
   const wrapperClasses = classNames({
     mol_validation: true,
@@ -220,7 +220,7 @@ const ReceiverComponent: React.FC<ReceiverComponentProps> = props => {
   });
   return (
     <div className={wrapperClasses} id={getId(props.id)}>
-      {renderErrorMessage()}
+      {/* {renderErrorMessage()} */}
       <h2>{props.resources?.adresseKomponent_header}</h2>
       <div className="page_refero__sublabel">{props.resources?.adresseKomponent_sublabel}</div>
 

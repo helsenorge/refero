@@ -1,12 +1,13 @@
 import React, { ReactElement } from 'react';
 
+import { useFormContext } from 'react-hook-form';
+
 import { ButtonType, buttonOrderNormalView, buttonOrderStepView } from '../../types/formTypes/formButton';
 
 import { CancelFormButton } from './CancelFormButton';
 import { PauseFormButton } from './PauseFormButton';
 import { SubmitFormButton } from './SubmitFormButton';
 import { formButtonsWrapper } from '../../styles/formButtonStyles';
-import { useFormContext } from 'react-hook-form';
 
 interface FormButtonsInterface {
   submitButtonText: string;
@@ -35,8 +36,9 @@ const FormButtons = ({
 }: FormButtonsInterface): JSX.Element | null => {
   const buttonOrder = isStepView ? buttonOrderStepView : buttonOrderNormalView;
   const { formState } = useFormContext();
-  const { errors } = formState;
+  const { errors, isSubmitted } = formState;
   console.log('errors', errors);
+  console.log('isSubmitted', isSubmitted);
   return (
     <div className="formButtonsWrapper">
       <style>{formButtonsWrapper}</style>

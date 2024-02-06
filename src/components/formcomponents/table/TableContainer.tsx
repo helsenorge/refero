@@ -26,7 +26,7 @@ import { getFormData, getFormDefinition } from '../../../reducers/form';
 import { getCodingTextTableValues } from '../../../util/extension';
 import { Path } from '../../../util/refero-core';
 import { RenderContext } from '../../../util/renderContext';
-import { Resources } from '../../../util/resources';
+import { Resources } from '../../../types/resources';
 
 export interface Props {
   item: QuestionnaireItem;

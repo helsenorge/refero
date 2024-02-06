@@ -1,13 +1,13 @@
-import { UploadedFile } from "@helsenorge/file-upload/components/dropzone";
-import { ValidationSummaryPlacement } from "./formTypes/validationSummaryPlacement";
-import { Store } from "react-redux";
-import { IActionRequester } from "../util/actionRequester";
-import { IQuestionnaireInspector } from "../util/questionnaireInspector";
-import { Resources } from "../util/resources";
-import { AutoSuggestProps } from "./autoSuggestProps";
-import { QuestionnaireResponse, Attachment, Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer, ValueSet } from "./fhir";
-import { OrgenhetHierarki } from "./orgenhetHierarki";
-import { TextMessage } from "./text-message";
+import { UploadedFile } from '@helsenorge/file-upload/components/dropzone';
+import { ValidationSummaryPlacement } from './formTypes/validationSummaryPlacement';
+import { Store } from 'react-redux';
+import { IActionRequester } from '../util/actionRequester';
+import { IQuestionnaireInspector } from '../util/questionnaireInspector';
+import { Resources } from './resources';
+import { AutoSuggestProps } from './autoSuggestProps';
+import { QuestionnaireResponse, Attachment, Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer, ValueSet } from './fhir';
+import { OrgenhetHierarki } from './orgenhetHierarki';
+import { TextMessage } from './text-message';
 
 export interface ReferoProps {
   store?: Store<{}>;

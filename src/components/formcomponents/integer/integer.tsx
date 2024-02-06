@@ -19,7 +19,7 @@ import { getValidationTextExtension, getPlaceholder, getMaxValueExtensionValue, 
 import { isReadOnly, isRequired, getId, getSublabelText, renderPrefix, getText } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
-import { Resources } from '../../../util/resources';
+import { Resources } from '../../../types/resources';
 import withCommonFunctions, { WithCommonFunctionsProps } from '../../with-common-functions';
 import TextView from '../textview';
 
@@ -45,7 +45,7 @@ export interface IntegerProps extends WithCommonFunctionsProps {
 }
 
 const Integer = (props: IntegerProps & ValidationProps): JSX.Element | null => {
-  const { register } = useFormContext();
+  const { register, getFieldState } = useFormContext();
   const getValue = (): string | number | number[] | undefined => {
     const { item, answer } = props;
     if (answer && Array.isArray(answer)) {
@@ -87,16 +87,6 @@ const Integer = (props: IntegerProps & ValidationProps): JSX.Element | null => {
     }
   };
 
-  // React.useMemo(() => {
-  //   const responseItemHasChanged = props.responseItem !== props.responseItem;
-  //   const helpItemHasChanged = props.isHelpOpen !== props.isHelpOpen;
-  //   const answerHasChanged = props.answer !== props.answer;
-  //   const resourcesHasChanged = JSON.stringify(props.resources) !== JSON.stringify(props.resources);
-  //   const repeats = props.item.repeats ?? false;
-
-  //   return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats || answerHasChanged;
-  // }, [props.responseItem, props.isHelpOpen, props.answer, props.resources, props.item]);
-
   const inputId = getId(props.id);
 
   if (props.pdf || isReadOnly(props.item)) {
@@ -120,36 +110,36 @@ const Integer = (props: IntegerProps & ValidationProps): JSX.Element | null => {
 
   // showLabel={true}
   // validateOnExternalUpdate={true}
-
+  const { error } = getFieldState(getId(props.item.linkId));
+  const maxValue = getMaxValueExtensionValue(props.item);
+  const minValue = getMinValueExtensionValue(props.item);
+  const validationMessage = getValidationTextExtension(props.item) ?? '';
   return (
     <div className="page_refero__component page_refero__component_integer">
       <>
-        <Label
-          htmlFor={inputId}
-          labelTexts={[{ text: labelText, type: 'semibold' }]}
-          sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
-          afterLabelChildren={props.renderHelpButton()}
-        />
         {props.renderHelpElement()}
         <Input
-          {...register(getId(props.id), {
+          {...register(getId(props.item.linkId), {
             required: isRequired(props.item),
-            max: getMaxValueExtensionValue(props.item),
-            min: getMinValueExtensionValue(props.item),
+            max: maxValue && { value: maxValue, message: validationMessage },
+            min: minValue && { value: minValue, message: validationMessage },
             valueAsNumber: true,
+            onChange: handleChange,
           })}
+          label={
+            <Label
+              labelTexts={[{ text: labelText, type: 'semibold' }]}
+              sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+              afterLabelChildren={props.renderHelpButton()}
+            />
+          }
           type="number"
           inputId={inputId}
-          name={getId(props.id)}
           defaultValue={value !== undefined && value !== null ? value + '' : ''}
-          required={isRequired(props.item)}
           placeholder={getPlaceholder(props.item)}
-          max={getMaxValueExtensionValue(props.item)}
-          min={getMinValueExtensionValue(props.item)}
-          errorText={getValidationTextExtension(props.item)}
+          errorText={error?.message}
           className="page_refero__input"
           width={25}
-          onChange={handleChange}
         />
       </>
       {props.renderDeleteButton('page_refero__deletebutton--margin-top')}

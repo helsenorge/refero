@@ -8,7 +8,7 @@ import '../../util/defineFetch';
 import rootReducer from '../../reducers';
 import { Questionnaire } from '../../types/fhir';
 import { ReferoContainer } from '..';
-import { Resources } from '../../util/resources';
+import { Resources } from '../../types/resources';
 import questionnaireWithAllItemTypes from './__data__/onChange/allItemTypes';
 import { inputAnswer, findItem } from './utils';
 

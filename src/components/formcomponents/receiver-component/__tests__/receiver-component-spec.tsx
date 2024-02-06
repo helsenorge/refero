@@ -9,7 +9,7 @@ import NotificationPanel from '@helsenorge/designsystem-react/components/Notific
 
 import Select from '@helsenorge/designsystem-react/components/Select';
 
-import { Resources } from '../../../../util/resources';
+import { Resources } from '../../../../types/resources';
 import ReceiverComponent from '../receiver-component';
 
 const receivers = [
@@ -169,10 +169,7 @@ describe('ReceiverComponent', () => {
       />
     );
 
-    wrapper.find(Select).at(1).props().onChange!(
-      { target: { value: '12' } as unknown } as React.FormEvent<HTMLInputElement>,
-      '1.2'
-    );
+    wrapper.find(Select).at(1).props().onChange!({ target: { value: '12' } as unknown } as React.FormEvent<HTMLInputElement>, '1.2');
 
     expect(handleChangeFn).toHaveBeenCalled();
   });

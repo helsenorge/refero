@@ -7,7 +7,7 @@ import Input from '@helsenorge/designsystem-react/components/Input';
 import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
 import Validation from '@helsenorge/designsystem-react/components/Validation';
 
-import { getValidationTextExtension, getPlaceholder, getMinLengthExtensionValue } from '../../../util/extension';
+import { getValidationTextExtension, getPlaceholder, getMinLengthExtensionValue, getRegexExtension } from '../../../util/extension';
 import {
   isReadOnly,
   isRequired,
@@ -19,9 +19,9 @@ import {
   renderPrefix,
   getText,
 } from '../../../util/index';
-import { Resources } from '../../../util/resources';
+import { Resources } from '../../../types/resources';
 import Pdf from '../textview';
-import { useFormContext } from 'react-hook-form';
+import { ValidationRule, useFormContext } from 'react-hook-form';
 
 interface Props {
   id?: string;
@@ -52,6 +52,7 @@ const textField: React.SFC<Props & ValidationProps> = ({
       </Pdf>
     );
   }
+  const { register } = useFormContext();
 
   const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`;
   const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
@@ -60,30 +61,30 @@ const textField: React.SFC<Props & ValidationProps> = ({
   // pattern={getRegexExtension(item)}
   // validateOnExternalUpdate={true}
   // FORANDRET ONBLUR TIL ONCHANGE
-  const { register } = useFormContext();
+  const pattern: ValidationRule<RegExp> | undefined = getRegexExtension(item)
+    ? new RegExp(getRegexExtension(item) as string, 'g')
+    : undefined;
   return (
-    <Validation {...other}>
-      <Input
-        {...register(item.linkId, { required: isRequired(item), onChange: handleStringChange })}
-        type="text"
-        inputId={getId(id)}
-        name={getId(id)}
-        defaultValue={getStringValue(answer)}
-        label={
-          <Label
-            labelTexts={[{ text: labelText, type: 'semibold' }]}
-            sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
-          />
-        }
-        required={isRequired(item)}
-        placeholder={getPlaceholder(item)}
-        min={getMinLengthExtensionValue(item)}
-        max={getMaxLength(item)}
-        readOnly={isReadOnly(item)}
-        onChange={handleStringChange}
-        errorText={getValidationTextExtension(item)}
-      />
-    </Validation>
+    <Input
+      {...register(getId(item.linkId), { required: isRequired(item), onChange: handleStringChange, onBlur: handleStringChange, pattern })}
+      type="text"
+      inputId={getId(id)}
+      name={getId(id)}
+      defaultValue={getStringValue(answer)}
+      label={
+        <Label
+          labelTexts={[{ text: labelText, type: 'semibold' }]}
+          sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+        />
+      }
+      required={isRequired(item)}
+      placeholder={getPlaceholder(item)}
+      min={getMinLengthExtensionValue(item)}
+      max={getMaxLength(item)}
+      readOnly={isReadOnly(item)}
+      onChange={handleStringChange}
+      errorText={getValidationTextExtension(item)}
+    />
   );
 };
 
