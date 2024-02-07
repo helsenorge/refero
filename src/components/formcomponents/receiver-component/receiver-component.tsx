@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import classNames from 'classnames';
-import { useFormContext } from 'react-hook-form';
+import { useFieldArray, useFormContext } from 'react-hook-form';
 
 import { Coding } from '../../../types/fhir';
 import { EnhetType, OrgenhetHierarki } from '../../../types/orgenhetHierarki';
@@ -13,6 +13,8 @@ import NotificationPanel from '@helsenorge/designsystem-react/components/Notific
 import Select from '@helsenorge/designsystem-react/components/Select';
 
 // import ValidationError from '@helsenorge/form/components/form/validation-error';
+
+import Validation from '@helsenorge/designsystem-react/components/Validation';
 
 import { getId } from '../../../util';
 
@@ -34,7 +36,7 @@ const ReceiverComponent: React.FC<ReceiverComponentProps> = props => {
   const [receiverTreeNodes, setReceiverTreeNodes] = React.useState<Array<OrgenhetHierarki>>([]);
   const [isLoading, setIsLoading] = React.useState<boolean>(true);
   const [hasLoadError, setHasLoadError] = React.useState<boolean>(false);
-  const { register } = useFormContext();
+  const { register, getFieldState, control } = useFormContext();
   const safeId = getId(props.id);
 
   React.useEffect(() => {
@@ -161,27 +163,27 @@ const ReceiverComponent: React.FC<ReceiverComponentProps> = props => {
   const createSelect = (treeNodes: Array<OrgenhetHierarki>, level: number, selectKey: string): JSX.Element => {
     const selectOptions = treeNodes.map(node => new Option(node.Navn, node.OrgenhetId.toString()));
     const label = getLabelText(treeNodes[0].EnhetType) || '';
-
+    const handleSelectChange = (evt: React.ChangeEvent<HTMLSelectElement>): void => {
+      const newValue = evt.target.value;
+      const node = treeNodes.find(x => x.OrgenhetId === parseInt(newValue));
+      if (node) {
+        onChangeDropdownValue(level, node);
+      }
+    };
     // showLabel={true}
     // wrapperClasses="page_refero__receiverselect"
 
     return (
       <Select
-        {...register(safeId, { required: true })}
+        {...register(`${safeId}.${level}}`, {
+          required: true,
+          onChange: handleSelectChange,
+          value: selectedPath[level] ? selectedPath[level].toString() : '',
+        })}
         key={selectKey}
         selectId={`${getId(props.id)}-${selectKey}`}
-        name={`${getId(props.id)}-${selectKey}`}
         label={<Label labelTexts={[{ text: label, type: 'semibold' }]} />}
-        required={true}
-        value={selectedPath[level] ? selectedPath[level].toString() : ''}
         className="page_refero__input"
-        onChange={(evt): void => {
-          const newValue = evt.target.value;
-          const node = treeNodes.find(x => x.OrgenhetId === parseInt(newValue));
-          if (node) {
-            onChangeDropdownValue(level, node);
-          }
-        }}
       >
         {selectOptions}
       </Select>
@@ -218,8 +220,10 @@ const ReceiverComponent: React.FC<ReceiverComponentProps> = props => {
     mol_validation: true,
     'mol_validation--active': !isValid && isValidated,
   });
+  const { error } = getFieldState(safeId);
   return (
-    <div className={wrapperClasses} id={getId(props.id)}>
+    <div className={wrapperClasses} id={safeId}>
+      <Validation errorSummary={error?.message} />
       {/* {renderErrorMessage()} */}
       <h2>{props.resources?.adresseKomponent_header}</h2>
       <div className="page_refero__sublabel">{props.resources?.adresseKomponent_sublabel}</div>

@@ -286,6 +286,147 @@
         }
       ],
       "required": true
+    },
+    {
+      "linkId": "49f0851b-6986-4d0b-b780-cd7370980f05",
+      "type": "display",
+      "text": "helloo !",
+      "required": false,
+      "_text": {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+            "valueMarkdown": "**helloo !**"
+          }
+        ]
+      }
+    },
+    {
+      "linkId": "4dcd36af-b58c-493b-81f3-b76de3dc4af6",
+      "type": "choice",
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                "code": "drop-down"
+              }
+            ]
+          }
+        }
+      ],
+      "code": [
+        {
+          "system": "http://ehelse.no/fhir/ValueSet/TQQC",
+          "code": "1",
+          "display": "Technical endpoint for receiving QuestionnaireResponse"
+        }
+      ],
+      "required": true,
+      "text": "Mottaker"
+    },
+    {
+      "linkId": "ad4e99a6-c4f3-498e-ee30-504221448db8",
+      "type": "choice",
+      "text": "Her er en glidebryter, denne skal vise med emojier",
+      "required": true,
+      "answerOption": [
+        {
+          "valueCoding": {
+            "id": "92af8ed3-c581-48ea-e045-71c278045672",
+            "code": "supert",
+            "system": "urn:uuid:622baa93-6976-4279-8e37-0ce1404a0b5c",
+            "display": "Supert",
+            "extension": [
+              { "url": "http://hl7.org/fhir/StructureDefinition/valueset-label", "valueString": "🤩" },
+              { "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue", "valueDecimal": 10 }
+            ]
+          }
+        },
+        {
+          "valueCoding": {
+            "id": "9f997649-599c-4264-8cc6-5db6ca53459d",
+            "code": "bra",
+            "system": "urn:uuid:622baa93-6976-4279-8e37-0ce1404a0b5c",
+            "display": "bra",
+            "extension": [
+              { "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue", "valueDecimal": 8 },
+              { "url": "http://hl7.org/fhir/StructureDefinition/valueset-label", "valueString": "😄" }
+            ]
+          }
+        },
+        {
+          "valueCoding": {
+            "id": "b7b113bd-a74b-41d0-848f-4b853d8860fb",
+            "code": "fantastisk",
+            "system": "urn:uuid:622baa93-6976-4279-8e37-0ce1404a0b5c",
+            "display": "fantastisk",
+            "extension": [
+              { "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue", "valueDecimal": 6 },
+              { "url": "http://hl7.org/fhir/StructureDefinition/valueset-label", "valueString": "🙂" }
+            ]
+          }
+        },
+        {
+          "valueCoding": {
+            "id": "951f6a9d-3352-48ed-844a-cd4e091eff10",
+            "code": "ok",
+            "system": "urn:uuid:622baa93-6976-4279-8e37-0ce1404a0b5c",
+            "display": "ok",
+            "extension": [
+              { "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue", "valueDecimal": 4 },
+              { "url": "http://hl7.org/fhir/StructureDefinition/valueset-label", "valueString": "😐" }
+            ]
+          }
+        },
+        {
+          "valueCoding": {
+            "id": "c224c78f-c792-45c3-8faa-8fe65c0838cb",
+            "code": "litt-dårlig",
+            "system": "urn:uuid:622baa93-6976-4279-8e37-0ce1404a0b5c",
+            "display": "litt dårlig",
+            "extension": [
+              { "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue", "valueDecimal": 2 },
+              { "url": "http://hl7.org/fhir/StructureDefinition/valueset-label", "valueString": "😠" }
+            ]
+          }
+        },
+        {
+          "valueCoding": {
+            "id": "766f3a45-e714-4f23-8180-0836d04db5e0",
+            "code": "forferdelig",
+            "system": "urn:uuid:622baa93-6976-4279-8e37-0ce1404a0b5c",
+            "display": "forferdelig",
+            "extension": [
+              { "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue", "valueDecimal": 1 },
+              { "url": "http://hl7.org/fhir/StructureDefinition/valueset-label", "valueString": "😡" }
+            ]
+          }
+        },
+        {
+          "valueCoding": {
+            "id": "95304f64-8a22-4413-8f28-cc9e57ca561a",
+            "code": "ubrukelig",
+            "system": "urn:uuid:622baa93-6976-4279-8e37-0ce1404a0b5c",
+            "display": "ubrukelig",
+            "extension": [
+              { "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue", "valueDecimal": 0 },
+              { "url": "http://hl7.org/fhir/StructureDefinition/valueset-label", "valueString": "🤬" }
+            ]
+          }
+        }
+      ],
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": {
+            "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "slider" }]
+          }
+        },
+        { "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sublabel", "valueMarkdown": "Hvordan fungerer jeg" }
+      ]
     }
   ]
 }

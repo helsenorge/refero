@@ -10,7 +10,6 @@ import { Resources } from '../../../types/resources';
 
 import Input from '@helsenorge/designsystem-react/components/Input';
 import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
-import Validation from '@helsenorge/designsystem-react/components/Validation';
 
 import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 

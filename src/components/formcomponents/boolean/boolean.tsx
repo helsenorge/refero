@@ -6,8 +6,10 @@ import { ThunkDispatch } from 'redux-thunk';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem, Questionnaire } from '../../../types/fhir';
 import { ValidationProps } from '../../../types/formTypes/validation';
+import { Resources } from '../../../types/resources';
 
 import Checkbox from '@helsenorge/designsystem-react/components/Checkbox';
+import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Label from '@helsenorge/designsystem-react/components/Label';
 
 // import Validation from '@helsenorge/designsystem-react/components/Validation';
@@ -21,9 +23,7 @@ import { getValidationTextExtension } from '../../../util/extension';
 import { getId, getText, getTextValidationErrorMessage, isReadOnly, isRequired, renderPrefix } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
-import { Resources } from '../../../types/resources';
 import withCommonFunctions, { WithCommonFunctionsProps } from '../../with-common-functions';
-import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 
 export interface BooleanProps extends WithCommonFunctionsProps {
   item: QuestionnaireItem;
@@ -80,7 +80,7 @@ const Boolean = ({
       promptLoginMessage();
     }
   };
-  const filedState = getFieldState(getId(item.linkId));
+  const { error } = getFieldState(getId(item.linkId));
   const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`;
 
   if (pdf) {
@@ -106,28 +106,25 @@ const Boolean = ({
   // helpElement={this.props.renderHelpElement()}
   // validateOnExternalUpdate={true}
   // isStyleBlue
-  console.log('filedState', filedState);
+  console.log('filedState', error);
   console.log('getValidationTextExtension', getValidationTextExtension(item));
   const getRequiredErrorMessage = (item: QuestionnaireItem): string | undefined => {
     return isRequired(item) ? resources?.formRequiredErrorMessage : undefined;
   };
   return (
     <div className="page_refero__component page_refero__component_boolean">
-      <Checkbox
-        {...register(getId(item.linkId), {
-          required: { value: isRequired(item), message: getRequiredErrorMessage(item) || '' },
-          disabled: isReadOnly(item),
-          onChange: handleChange,
-        })}
-        label={<Label labelTexts={[{ text: labelText }]} afterLabelChildren={<>{renderHelpButton()}</>} />}
-        required={isRequired(item)}
-        checked={getBooleanValue(answer, item)}
-        onChange={handleChange}
-        disabled={isReadOnly(item)}
-        className="page_refero__input"
-        errorText={filedState.error?.message}
-        error={filedState.invalid}
-      />
+      <FormGroup error={error?.message}>
+        <Checkbox
+          {...register(getId(item.linkId), {
+            required: { value: isRequired(item), message: getRequiredErrorMessage(item) || '' },
+            disabled: isReadOnly(item),
+            onChange: handleChange,
+          })}
+          label={<Label labelTexts={[{ text: labelText }]} afterLabelChildren={<>{renderHelpButton()}</>} />}
+          checked={getBooleanValue(answer, item)}
+          className="page_refero__input"
+        />
+      </FormGroup>
       {renderDeleteButton('page_refero__deletebutton--margin-top')}
       {repeatButton}
       {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}

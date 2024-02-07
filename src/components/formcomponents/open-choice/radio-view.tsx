@@ -1,9 +1,11 @@
 import * as React from 'react';
 
 import { Collapse } from 'react-collapse';
+import { useFormContext } from 'react-hook-form';
 
 import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer } from '../../../types/fhir';
 import { Options } from '../../../types/formTypes/radioGroupOptions';
+import { Resources } from '../../../types/resources';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
@@ -12,8 +14,6 @@ import Validation from '@helsenorge/designsystem-react/components/Validation';
 
 import { shouldShowExtraChoice, validateInput } from '../../../util/choice';
 import { getId, getSublabelText, getText, isRequired } from '../../../util/index';
-import { Resources } from '../../../types/resources';
-import { useFormContext } from 'react-hook-form';
 
 interface Props {
   options?: Array<Options>;
@@ -24,7 +24,6 @@ interface Props {
   selected?: Array<string | undefined>;
   validateInput: (value: string) => boolean;
   resources?: Resources;
-  getErrorMessage: (val: string) => string;
   renderDeleteButton: (className: string) => JSX.Element | undefined;
   renderOpenField: () => JSX.Element | undefined;
   repeatButton: JSX.Element;
@@ -45,7 +44,6 @@ const RadioView: React.SFC<Props> = ({
   // validateInput,
   resources,
   children,
-  getErrorMessage,
   repeatButton,
   renderDeleteButton,
   renderOpenField,
@@ -65,17 +63,23 @@ const RadioView: React.SFC<Props> = ({
   // helpButton={renderHelpButton()}
   // validateOnExternalUpdate={true}
 
-  const { register } = useFormContext();
+  const { register, getFieldState } = useFormContext();
+  const { error, invalid } = getFieldState(getId(item.linkId));
   return (
     <div className="page_refero__component page_refero__component_openchoice page_refero__component_openchoice_radiobutton">
       <Collapse isOpened>
-        <FormGroup
-          legend={getText(item, onRenderMarkdown, questionnaire, resources)}
-          error={getErrorMessage(selectedValue) !== '' ? getErrorMessage(selectedValue) : undefined}
-        >
+        <FormGroup legend={getText(item, onRenderMarkdown, questionnaire, resources)} error={invalid ? error?.message : undefined}>
           {options.map((option: Options, index: number) => (
             <RadioButton
-              {...register(getId(item.linkId), { required: isRequired(item), onChange: handleChange })}
+              {...register(getId(item.linkId), {
+                required: {
+                  message: resources?.oppgiVerdi || '',
+                  value: isRequired(item),
+                },
+                onChange: handleChange,
+                disabled: option.disabled,
+                value: option.type,
+              })}
               inputId={getId(id) + index.toLocaleString()}
               size="medium"
               testId="radioButton-openChoice"
@@ -89,10 +93,6 @@ const RadioView: React.SFC<Props> = ({
                 />
               }
               defaultChecked={selectedValue === option.type}
-              value={option.type}
-              onChange={() => handleChange}
-              disabled={option.disabled}
-              required={isRequired(item)}
             />
           ))}
         </FormGroup>

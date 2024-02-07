@@ -5,6 +5,7 @@ import { useFormContext } from 'react-hook-form';
 
 import { AutoSuggestProps } from '../../../types/autoSuggestProps';
 import { ValueSet, QuestionnaireItem, Questionnaire, Coding, QuestionnaireResponseItemAnswer } from '../../../types/fhir';
+import { Resources } from '../../../types/resources';
 
 import Loader from '@helsenorge/designsystem-react/components/Loader';
 import NotificationPanel from '@helsenorge/designsystem-react/components/NotificationPanel';
@@ -14,13 +15,12 @@ import Autosuggest, { Suggestion } from '@helsenorge/autosuggest/components/auto
 import { debounce } from '@helsenorge/core-utils/debounce';
 
 import { OPEN_CHOICE_ID } from '../../../constants';
+import { OPEN_CHOICE_SYSTEM } from '../../../constants/codingsystems';
 import ItemType from '../../../constants/itemType';
 import { getValidationTextExtension } from '../../../util/extension';
 import { isRequired, getId, getSublabelText } from '../../../util/index';
-import { Resources } from '../../../types/resources';
 import Label from '../label';
 import SubLabel from '../sublabel';
-import { OPEN_CHOICE_SYSTEM } from '../../../constants/codingsystems';
 
 interface AutosuggestViewProps {
   handleChange: (code?: string, systemArg?: string, displayArg?: string) => void;

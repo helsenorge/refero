@@ -4,6 +4,7 @@ import DOMPurify from 'dompurify';
 import { connect } from 'react-redux';
 
 import { Questionnaire, QuestionnaireItem } from '../../../types/fhir';
+import { Resources } from '../../../types/resources';
 
 import designsystemtypography from '@helsenorge/designsystem-react/scss/typography.module.scss';
 
@@ -11,7 +12,6 @@ import itemControlConstants from '../../../constants/itemcontrol';
 import { getItemControlExtensionValue, getMarkdownExtensionValue } from '../../../util/extension';
 import { renderPrefix, getText, getId } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
-import { Resources } from '../../../types/resources';
 
 export interface Props {
   id?: string;

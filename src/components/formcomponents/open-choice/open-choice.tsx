@@ -14,6 +14,7 @@ import {
 } from '../../../types/fhir';
 import { Options } from '../../../types/formTypes/radioGroupOptions';
 import { ValidationProps } from '../../../types/formTypes/validation';
+import { Resources } from '../../../types/resources';
 
 import CheckboxView from './checkbox-view';
 import DropdownView from './dropdown-view';
@@ -27,13 +28,13 @@ import {
   removeCodingStringValueAsync,
 } from '../../../actions/newValue';
 import { OPEN_CHOICE_ID } from '../../../constants';
+import { OPEN_CHOICE_SYSTEM } from '../../../constants/codingsystems';
 import ItemControlConstants from '../../../constants/itemcontrol';
 import { GlobalState } from '../../../reducers';
 import { isReadOnly, isDataReceiver } from '../../../util';
 import {
   renderOptions,
   getOptions,
-  getErrorMessage,
   validateInput,
   shouldShowExtraChoice,
   getDisplay,
@@ -43,12 +44,10 @@ import {
 } from '../../../util/choice';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
-import { Resources } from '../../../types/resources';
 import withCommonFunctions, { WithCommonFunctionsProps } from '../../with-common-functions';
 import SliderView from '../choice/slider-view';
 import AutosuggestView from '../choice-common/autosuggest-view';
 import TextView from '../textview';
-import { OPEN_CHOICE_SYSTEM } from '../../../constants/codingsystems';
 
 export interface OpenChoiceProps extends WithCommonFunctionsProps {
   item: QuestionnaireItem;
@@ -366,7 +365,6 @@ const OpenChoice: React.FC<OpenChoiceProps & ValidationProps> = props => {
       <RadioView
         options={options}
         item={item}
-        getErrorMessage={(value: string): string => getErrorMessage(item, value, resources, containedResources)}
         handleChange={handleChange}
         validateInput={(value: string): boolean => validateInput(item, value, containedResources, resources)}
         id={id}

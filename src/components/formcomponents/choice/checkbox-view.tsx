@@ -43,6 +43,7 @@ const CheckboxView = ({
   repeatButton,
   renderDeleteButton,
   onRenderMarkdown,
+  renderHelpButton,
 }: Props): JSX.Element | null => {
   if (!options) {
     return null;
@@ -88,6 +89,7 @@ const CheckboxView = ({
                 <Label
                   labelTexts={[{ text: checkbox.label }]}
                   sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+                  afterLabelChildren={<>{renderHelpButton()}</>}
                 />
               }
               checked={checkbox.checked}

@@ -33,8 +33,9 @@ const SliderView: React.FC<SliderProps> = ({ item, handleChange, children }) => 
   }, []);
 
   const onValueChange = (index: number): void => {
+    console.log('index', index);
     const code = item.answerOption?.[index]?.valueCoding.code;
-
+    console.log('code', code);
     if (code) {
       handleChange(code);
     }
@@ -43,11 +44,12 @@ const SliderView: React.FC<SliderProps> = ({ item, handleChange, children }) => 
   return (
     <div className="page_refero__component page_refero__component_choice page_refero__component_choice_slider">
       <Slider
-        {...register(getId(item.linkId), { required: isRequired(item), onChange: onValueChange })}
+        {...register(getId(item.linkId), { required: isRequired(item) })}
         title={title}
         labelLeft={leftRightLabels?.[0]}
         labelRight={leftRightLabels?.[1]}
         steps={sliderSteps}
+        onChange={onValueChange}
       />
       {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : undefined}
     </div>

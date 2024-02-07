@@ -157,7 +157,7 @@ const Quantity: React.FC<QuantityProps & ValidationProps> = props => {
             max: maxValue && { value: maxValue, message: validationText },
             min: minValue && { value: minValue, message: validationText },
             onChange: handleChange,
-            value: value,
+            value,
             pattern,
           })}
           label={
@@ -169,7 +169,6 @@ const Quantity: React.FC<QuantityProps & ValidationProps> = props => {
           }
           type="number"
           inputId={inputId}
-          name={inputId}
           defaultValue={value !== undefined ? value + '' : ''}
           placeholder={getPlaceholder(item)}
           className="page_refero__quantity"
