@@ -2,8 +2,7 @@ import * as React from 'react';
 
 import classNames from 'classnames';
 import DOMPurify from 'dompurify';
-import { Collapse } from 'react-collapse';
-import { ThunkDispatch } from 'redux-thunk';
+
 
 import { AutoSuggestProps } from '../types/autoSuggestProps';
 import {
@@ -14,7 +13,10 @@ import {
   QuestionnaireResponseItemAnswer,
   Attachment,
   ValueSet,
-} from '../types/fhir';
+} from 'fhir/r4';
+import { Collapse } from 'react-collapse';
+import { ThunkDispatch } from 'redux-thunk';
+
 import { OrgenhetHierarki } from '../types/orgenhetHierarki';
 import { TextMessage } from '../types/text-message';
 

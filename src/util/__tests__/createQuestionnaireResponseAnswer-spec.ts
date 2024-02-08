@@ -1,5 +1,5 @@
 import { createQuestionnaireResponseAnswer } from '../createQuestionnaireResponseAnswer';
-import { QuestionnaireItem, QuestionnaireItemAnswerOption, QuestionnaireItemInitial } from '../../types/fhir';
+import { QuestionnaireItem, QuestionnaireItemAnswerOption, QuestionnaireItemInitial } from 'fhir/r4';
 import itemType from '../../constants/itemType';
 
 describe('createQuestionnaireResponseAnswer', () => {

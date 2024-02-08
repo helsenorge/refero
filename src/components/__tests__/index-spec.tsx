@@ -5,7 +5,7 @@ import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 
-import { Questionnaire, QuestionnaireItem, QuestionnaireItemEnableWhen } from '../../types/fhir';
+import { Questionnaire, QuestionnaireItem, QuestionnaireItemEnableWhen } from 'fhir/r4';
 
 import SafeInputField from '@helsenorge/form/components/safe-input-field';
 

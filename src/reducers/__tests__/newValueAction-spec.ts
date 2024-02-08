@@ -2,7 +2,7 @@ import * as uuid from 'uuid';
 
 import state from './data/newValueAction';
 import { Form } from '../form';
-import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from '../../types/fhir';
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { getDefinitionItems, getQuestionnaireDefinitionItem, Path } from '../../util/refero-core';
 import {
   getResponseItem,

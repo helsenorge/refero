@@ -11,7 +11,8 @@ import {
   QuestionnaireItem,
   QuestionnaireResponseItemAnswer,
   Quantity,
-} from '../types/fhir';
+} from 'fhir/r4';
+
 import { ReferoProps } from '../types/referoProps';
 import { State } from '../types/state';
 

@@ -1,8 +1,7 @@
 import marked from 'marked';
 import { ComponentClass } from 'react-redux';
+import { Questionnaire, QuestionnaireResponseItem, QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import * as uuid from 'uuid';
-
-import { Questionnaire, QuestionnaireResponseItem, QuestionnaireItem, QuestionnaireResponseItemAnswer } from '../types/fhir';
 
 import { isValid, invalidNodes } from '@helsenorge/core-utils/string-utils';
 import { ValidationProps } from '@helsenorge/form/components/form/validation';
@@ -39,9 +38,9 @@ import ExtensionConstants from '../constants/extensions';
 import { HyperlinkTarget } from '../constants/hyperlinkTarget';
 import Constants from '../constants/index';
 import ItemType from '../constants/itemType';
-import itemType from '../constants/itemType';
 import { RenderOptionCode } from '../constants/renderOptionCode';
 import { TableCodes } from '../constants/tableTypes';
+import { RenderOptionCode } from '../constants/renderOptionCode';
 import { Resources } from '../util/resources';
 
 function openNewIfAbsolute(url: string): string {

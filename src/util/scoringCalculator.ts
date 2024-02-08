@@ -4,15 +4,15 @@ import {
   QuestionnaireResponse,
   QuestionnaireResponseItemAnswer,
   QuestionnaireItemAnswerOption,
-} from '../types/fhir';
+} from 'fhir/r4';
 
-import ExtensionConstants from '../constants/extensions';
-import { ScoringItemType } from '../constants/scoringItemType';
 import { getExtension, getCalculatedExpressionExtension } from './extension';
-import { createDummySectionScoreItem, scoringItemType } from './scoring';
-import { getQuestionnaireResponseItemsWithLinkId } from './refero-core';
 import { evaluateFhirpathExpressionToGetString } from './fhirpathHelper';
+import { getQuestionnaireResponseItemsWithLinkId } from './refero-core';
+import { createDummySectionScoreItem, scoringItemType } from './scoring';
+import ExtensionConstants from '../constants/extensions';
 import itemType from '../constants/itemType';
+import { ScoringItemType } from '../constants/scoringItemType';
 
 class CalculatedScores {
   totalScores: Array<QuestionnaireItem> = [];
@@ -266,7 +266,7 @@ export class ScoringCalculator {
     if (answer.valueCoding) {
       if (item.answerOption) {
         for (const o of item.answerOption) {
-          if (o.valueCoding.code === answer.valueCoding.code && o.valueCoding.system === answer.valueCoding.system) {
+          if (o.valueCoding?.code === answer.valueCoding.code && o.valueCoding?.system === answer.valueCoding.system) {
             return o;
           }
         }

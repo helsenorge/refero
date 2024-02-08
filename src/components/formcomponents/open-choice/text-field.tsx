@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer } from '../../../types/fhir';
+import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 
 import Validation from '@helsenorge/form/components/form/validation';
 import { ValidationProps } from '@helsenorge/form/components/form/validation';
@@ -8,10 +8,10 @@ import SafeInputField from '@helsenorge/form/components/safe-input-field';
 
 import { getValidationTextExtension, getPlaceholder, getMinLengthExtensionValue, getRegexExtension } from '../../../util/extension';
 import { isReadOnly, isRequired, getId, getStringValue, getPDFStringValue, getMaxLength, getSublabelText } from '../../../util/index';
+import { Resources } from '../../../util/resources';
 import Label from '../label';
 import SubLabel from '../sublabel';
 import Pdf from '../textview';
-import { Resources } from '../../../util/resources';
 
 interface Props {
   id?: string;
