@@ -8,12 +8,6 @@
 
 ---
 
-- Remove fhir.ts and added an npm package for the fhir typescript types
-
-## 14.0.3
-
----
-
 - bugfix: Render html tags in textarea label
 
 ## 14.0.1
