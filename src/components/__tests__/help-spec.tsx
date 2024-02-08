@@ -6,7 +6,7 @@ import { ReactWrapper, mount } from 'enzyme';
 
 import '../../util/defineFetch';
 import rootReducer from '../../reducers';
-import { QuestionnaireItem, Extension, QuestionnaireResponseItemAnswer, QuestionnaireItemAnswerOption } from '../../types/fhir';
+import { QuestionnaireItem, Extension, QuestionnaireResponseItemAnswer, QuestionnaireItemAnswerOption } from 'fhir/r4';
 import { Path } from '../../util/refero-core';
 import String from '../formcomponents/string/string';
 import Choice from '../formcomponents/choice/choice';

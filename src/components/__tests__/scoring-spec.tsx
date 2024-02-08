@@ -11,7 +11,7 @@ import OpenChoiceDataModel from './__data__/scoring/open-choice';
 import SectionScoreDataModel from './__data__/scoring/section-score';
 import FhirpathScoreDataModel from './__data__/scoring/fhirpath-score';
 import CodeScoreDataModel from './__data__/scoring/code-scoring';
-import { Questionnaire } from '../../types/fhir';
+import { Questionnaire } from 'fhir/r4';
 import rootReducer from '../../reducers';
 import { Resources } from '../../util/resources';
 import { ReferoContainer } from '..';
@@ -293,7 +293,7 @@ describe('Code Scoring', () => {
 
     const sectionScoreItem = wrapper.find(TextView);
     expect(sectionScoreItem.at(3).props().id).toBe('item_3.3');
-    expect(sectionScoreItem.at(3).props().value).toBe("210.47 centimeter");
+    expect(sectionScoreItem.at(3).props().value).toBe('210.47 centimeter');
   });
 
   it('Section scoring on multiple choice grouping, with section scoring quantity extention kilo. Select one', async () => {
@@ -305,7 +305,7 @@ describe('Code Scoring', () => {
 
     const sectionScoreItem = wrapper.find(TextView);
     expect(sectionScoreItem.at(4).props().id).toBe('item_4.2');
-    expect(sectionScoreItem.at(4).props().value).toBe("50 kilo");
+    expect(sectionScoreItem.at(4).props().value).toBe('50 kilo');
   });
 
   it('Section scoring on multiple choice grouping, with section scoring quantity extention kilo. Select multiple', async () => {
@@ -318,7 +318,7 @@ describe('Code Scoring', () => {
 
     const sectionScoreItem = wrapper.find(TextView);
     expect(sectionScoreItem.at(4).props().id).toBe('item_4.2');
-    expect(sectionScoreItem.at(4).props().value).toBe("100 kilo");
+    expect(sectionScoreItem.at(4).props().value).toBe('100 kilo');
   });
 
   it('Section scoring on multiple choice grouping, with section scoring quantity without extension. Select multiple', async () => {
@@ -331,7 +331,7 @@ describe('Code Scoring', () => {
 
     const sectionScoreItem = wrapper.find(TextView);
     expect(sectionScoreItem.at(5).props().id).toBe('item_5.2');
-    expect(sectionScoreItem.at(5).props().value).toBe("50 score");
+    expect(sectionScoreItem.at(5).props().value).toBe('50 score');
   });
 
   it('Total QS scoring', async () => {
@@ -344,7 +344,7 @@ describe('Code Scoring', () => {
 
     const sectionScoreItem = wrapper.find(TextView);
     expect(sectionScoreItem.at(6).props().id).toBe('item_7.1');
-    expect(sectionScoreItem.at(6).props().value).toBe("35 score");
+    expect(sectionScoreItem.at(6).props().value).toBe('35 score');
   });
 });
 

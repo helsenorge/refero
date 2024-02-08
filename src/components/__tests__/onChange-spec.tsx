@@ -6,7 +6,7 @@ import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 
-import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer, Quantity, Coding } from '../../types/fhir';
+import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer, Quantity, Coding } from 'fhir/r4';
 
 import DateTimePicker from '@helsenorge/date-time/components/date-time-picker';
 

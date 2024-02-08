@@ -1,9 +1,20 @@
+import { Questionnaire, QuestionnaireResponseItem, QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
+import marked from 'marked';
 import * as uuid from 'uuid';
-
-import { Questionnaire, QuestionnaireResponseItem, QuestionnaireItem, QuestionnaireResponseItemAnswer } from '../types/fhir';
 
 import { isValid, invalidNodes } from '@helsenorge/core-utils/string-utils';
 
+import { getQuestionnaireItemCodeValue } from './codingsystem';
+import {
+  getMaxOccursExtensionValue,
+  getMarkdownExtensionValue,
+  getValidationTextExtension,
+  getQuestionnaireHiddenExtensionValue,
+  getExtension,
+  getSublabelExtensionValue,
+  getHyperlinkExtensionValue,
+  getCopyExtension,
+} from './extension';
 import Attachment from '../components/formcomponents/attachment/attachment';
 import Boolean from '../components/formcomponents/boolean/boolean';
 import Choice from '../components/formcomponents/choice/choice';
@@ -18,25 +29,13 @@ import OpenChoice from '../components/formcomponents/open-choice/open-choice';
 import Quantity from '../components/formcomponents/quantity/quantity';
 import StringComponent from '../components/formcomponents/string/string';
 import Text from '../components/formcomponents/text/text';
-import ExtensionConstants from '../constants/extensions';
-import { RenderOptionCode } from '../constants/renderOptionCode';
-import { HyperlinkTarget } from '../constants/hyperlinkTarget';
 import CodingSystemConstants from '../constants/codingsystems';
+import ExtensionConstants from '../constants/extensions';
+import { HyperlinkTarget } from '../constants/hyperlinkTarget';
 import Constants from '../constants/index';
 import ItemType from '../constants/itemType';
+import { RenderOptionCode } from '../constants/renderOptionCode';
 import { Resources } from '../util/resources';
-import {
-  getMaxOccursExtensionValue,
-  getMarkdownExtensionValue,
-  getValidationTextExtension,
-  getQuestionnaireHiddenExtensionValue,
-  getExtension,
-  getSublabelExtensionValue,
-  getHyperlinkExtensionValue,
-  getCopyExtension,
-} from './extension';
-import { getQuestionnaireItemCodeValue } from './codingsystem';
-import marked from 'marked';
 
 function openNewIfAbsolute(url: string): string {
   const regex = new RegExp('^(([a-z][a-z0-9+.-]*):.*)');

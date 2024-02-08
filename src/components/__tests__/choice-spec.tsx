@@ -13,7 +13,7 @@ import {
   QuestionnaireResponseItemAnswer,
   Extension,
   QuestionnaireResponseItem,
-} from '../../types/fhir';
+} from 'fhir/r4';
 import { Path } from '../../util/refero-core';
 import { GlobalState } from '../../reducers/index';
 import { NewValueAction } from '../../actions/newValue';
@@ -138,7 +138,7 @@ describe('Choice component renders item.option[]', () => {
     const item = createItemWithExtensions(...extensions);
     item.readOnly = true;
     const answer = [
-      { valueCoding: { code:"3", display:"Usikker", system:"urn:oid:2.16.578.1.12.4.1.9523" }}
+      { valueCoding: { code: '3', display: 'Usikker', system: 'urn:oid:2.16.578.1.12.4.1.9523' } },
     ] as QuestionnaireResponseItemAnswer[];
     const wrapper = createWrapperWithItem(item, answer);
     wrapper.render();

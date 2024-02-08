@@ -1,9 +1,8 @@
 import * as React from 'react';
 
+import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
-
-import { QuestionnaireItem, QuestionnaireResponseItem } from '../../../types/fhir';
 
 import Button from '@helsenorge/designsystem-react/components/Button';
 import Icon from '@helsenorge/designsystem-react/components/Icons';
@@ -14,9 +13,9 @@ import { addRepeatItem } from '../../../actions/newValue';
 import { GlobalState } from '../../../reducers';
 import { getRepeatsTextExtension } from '../../../util/extension';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
+import { Path } from '../../../util/refero-core';
 import { RenderContext } from '../../../util/renderContext';
 import { Resources } from '../../../util/resources';
-import { Path } from '../../../util/refero-core';
 
 interface Props {
   item: QuestionnaireItem;

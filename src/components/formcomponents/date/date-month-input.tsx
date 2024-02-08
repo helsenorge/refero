@@ -1,8 +1,7 @@
 import * as React from 'react';
 
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import moment, { Moment } from 'moment';
-
-import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from '../../../types/fhir';
 
 import { LanguageLocales } from '@helsenorge/core-utils/constants/languages';
 import { YearMonthResources, YearMonthInput, YearMonthValue } from '@helsenorge/date-time/components/year-month-input';
@@ -67,7 +66,7 @@ export class DateYearMonthInput extends React.Component<Props, {}> {
   };
 
   getValue = (): YearMonthValue | undefined => {
-    const { answer } = this.props;    
+    const { answer } = this.props;
     const stringValue = this.getDateValueFromAnswer(answer);
 
     if (!stringValue) {
@@ -94,7 +93,7 @@ export class DateYearMonthInput extends React.Component<Props, {}> {
 
   convertToPDFValue = (answer: QuestionnaireResponseItemAnswer): string => {
     const value = this.getDateValueFromAnswer(answer);
-    return moment(value).locale(this.props.locale).format('MMMM YYYY')
+    return moment(value).locale(this.props.locale).format('MMMM YYYY');
   };
 
   getPDFValue = (): string => {

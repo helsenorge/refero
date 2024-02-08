@@ -1,4 +1,4 @@
-import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from '../../../../types/fhir';
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { createDateFromYear } from '../../../../util/createDateFromYear';
 
 describe('Date form component', () => {

@@ -5,7 +5,7 @@ import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 
-import { Questionnaire, QuestionnaireItem } from '../../types/fhir';
+import { Questionnaire, QuestionnaireItem } from 'fhir/r4';
 
 import '../../util/defineFetch';
 import rootReducer from '../../reducers';
@@ -47,7 +47,7 @@ function createWrapper(
         onCancel={() => {}}
         onSave={() => {}}
         onSubmit={onSubmitMock}
-        resources={{formSend: 'Send inn', nextStep: "Neste", previousStep: "Forrige"} as Resources}
+        resources={{ formSend: 'Send inn', nextStep: 'Neste', previousStep: 'Forrige' } as Resources}
         questionnaire={questionnaire}
         onRequestHelpButton={helpButtonCb}
         onRequestHelpElement={helpElementCb}
@@ -81,14 +81,14 @@ describe('Step-view', () => {
     wrapper.render();
 
     // Step 1
-    expect(wrapper.find(Form).props().submitButtonText).toBe("Neste");
+    expect(wrapper.find(Form).props().submitButtonText).toBe('Neste');
     expect(wrapper.find(Form).props().pauseButtonText).toBe(undefined);
     act(() => {
       (wrapper.find(Form).prop('onSubmit') as () => void)();
     });
     wrapper.update();
     // Step 2
-    expect(wrapper.find(Form).props().pauseButtonText).toBe("Forrige");
+    expect(wrapper.find(Form).props().pauseButtonText).toBe('Forrige');
     act(() => {
       (wrapper.find(Form).prop('onPause') as () => void)();
     });
@@ -105,7 +105,7 @@ describe('Step-view', () => {
     });
     wrapper.update();
     // Step 3
-    expect(wrapper.find(Form).props().submitButtonText).toBe("Send inn");
+    expect(wrapper.find(Form).props().submitButtonText).toBe('Send inn');
     act(() => {
       (wrapper.find(Form).prop('onSubmit') as () => void)();
     });
