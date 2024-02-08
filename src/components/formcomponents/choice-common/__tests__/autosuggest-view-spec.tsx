@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { shallow } from 'enzyme';
 
-import { QuestionnaireItem, ValueSet } from '../../../../types/fhir';
+import { QuestionnaireItem, ValueSet } from 'fhir/r4';
 
 import Loader from '@helsenorge/designsystem-react/components/Loader';
 import NotificationPanel from '@helsenorge/designsystem-react/components/NotificationPanel';
@@ -484,7 +484,7 @@ describe('autosuggest-view', () => {
             type: 'open-choice',
           } as QuestionnaireItem
         }
-        resources={{openChoiceOption: 'annet'} as Resources}
+        resources={{ openChoiceOption: 'annet' } as Resources}
         renderDeleteButton={jest.fn()}
         repeatButton={<></>}
         renderHelpButton={jest.fn()}

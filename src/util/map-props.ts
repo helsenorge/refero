@@ -1,20 +1,16 @@
+import { QuestionnaireResponseItem, QuestionnaireItemEnableWhen, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { ThunkDispatch } from 'redux-thunk';
 
-import {
-  QuestionnaireResponseItem,
-  QuestionnaireItemEnableWhen,
-  QuestionnaireItemEnableBehaviorCodes,
-  QuestionnaireResponseItemAnswer,
-} from '../types/fhir';
+import { QuestionnaireItemEnableBehaviorCodes } from '../types/fhirEnums';
 
+import { enableWhenMatchesAnswer, getQuestionnaireResponseItemWithLinkid, getResponseItems, Path, isInGroupContext } from './refero-core';
 import { NewValueAction } from '../actions/newValue';
 import { Props } from '../components/with-common-functions';
+import ItemType from '../constants/itemType';
 import { getFormData } from '../reducers/form';
 import { GlobalState } from '../reducers/index';
-import { enableWhenMatchesAnswer, getQuestionnaireResponseItemWithLinkid, getResponseItems, Path, isInGroupContext } from './refero-core';
 import { getCopyExtension, getCalculatedExpressionExtension } from '../util/extension';
 import { evaluateFhirpathExpressionToGetString } from '../util/fhirpathHelper';
-import ItemType from '../constants/itemType';
 
 export function mapStateToProps(state: GlobalState, originalProps: Props): Props {
   getValueIfDataReceiver(state, originalProps);
@@ -76,7 +72,7 @@ function getQuestionnaireResponseItemAnswer(
   type: string,
   result: any
 ): QuestionnaireResponseItemAnswer | Array<QuestionnaireResponseItemAnswer> {
-  let answerArray: Array<QuestionnaireResponseItemAnswer> = [];
+  const answerArray: Array<QuestionnaireResponseItemAnswer> = [];
   if (type === ItemType.BOOLEAN) {
     return { valueBoolean: result[0] };
   }
@@ -102,11 +98,11 @@ function getQuestionnaireResponseItemAnswer(
       case ItemType.DATE:
         answerArray.push({ valueDate: answer });
         break;
-      case ItemType.TIME: 
+      case ItemType.TIME:
         answerArray.push({ valueTime: answer });
         break;
       default: {
-        if ((typeof answer) === 'string') {
+        if (typeof answer === 'string') {
           answerArray.push({ valueString: answer });
         } else {
           answerArray.push({ valueCoding: answer });
@@ -114,7 +110,7 @@ function getQuestionnaireResponseItemAnswer(
       }
     }
   });
-  return answerArray;  
+  return answerArray;
 }
 
 export function mergeProps(stateProps: Props, dispatchProps: Props, ownProps: Props): Props {

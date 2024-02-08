@@ -13,4 +13,4 @@ export default {
   OPENCHOICE: 'open-choice',
   ATTATCHMENT: 'attachment',
   QUANTITY: 'quantity',
-};
+} as const;

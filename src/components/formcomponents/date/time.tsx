@@ -1,10 +1,9 @@
 import * as React from 'react';
 
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem, Questionnaire } from 'fhir/r4';
 import moment from 'moment';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
-
-import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem, Questionnaire } from '../../../types/fhir';
 
 import TimeInput from '@helsenorge/date-time/components/time-input';
 import { parseDate } from '@helsenorge/date-time/components/time-input/date-core';
@@ -18,8 +17,8 @@ import { GlobalState } from '../../../reducers';
 import { getExtension, getValidationTextExtension } from '../../../util/extension';
 import { isReadOnly, isRequired, getId, getSublabelText } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
-import { Resources } from '../../../util/resources';
 import { Path } from '../../../util/refero-core';
+import { Resources } from '../../../util/resources';
 import withCommonFunctions from '../../with-common-functions';
 import Label from '../label';
 import SubLabel from '../sublabel';
@@ -62,7 +61,7 @@ class Time extends React.Component<Props & ValidationProps> {
     this.getValue = this.getValue.bind(this);
   }
 
-  convertAnswerToString(answer: QuestionnaireResponseItemAnswer): string {  
+  convertAnswerToString(answer: QuestionnaireResponseItemAnswer): string {
     if (answer && answer.valueTime) {
       return answer.valueTime;
     }
@@ -73,7 +72,7 @@ class Time extends React.Component<Props & ValidationProps> {
       return this.getTimeStringFromDate(parseDate(String(answer.valueDateTime)));
     }
     return '';
-  };
+  }
 
   getValue(): string | undefined {
     const { value, answer } = this.props;
@@ -83,7 +82,7 @@ class Time extends React.Component<Props & ValidationProps> {
     if (Array.isArray(answer)) {
       return answer.map(m => this.convertAnswerToString(m)).join(', ');
     }
-    return  this.convertAnswerToString(answer);
+    return this.convertAnswerToString(answer);
   }
 
   getPDFValue(): string {
@@ -221,7 +220,8 @@ class Time extends React.Component<Props & ValidationProps> {
       if (renderFieldset) {
         return (
           <TextView
-            id={id} item={this.props.item}
+            id={id}
+            item={this.props.item}
             value={this.padNumber(value)}
             onRenderMarkdown={onRenderMarkdown}
             helpButton={this.props.renderHelpButton()}

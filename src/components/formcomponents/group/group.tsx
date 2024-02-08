@@ -1,10 +1,9 @@
 import * as React from 'react';
 
 import DOMPurify from 'dompurify';
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem, Questionnaire } from 'fhir/r4';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
-
-import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem, Questionnaire } from '../../../types/fhir';
 
 import AnchorLink from '@helsenorge/designsystem-react/components/AnchorLink';
 
@@ -14,9 +13,9 @@ import { GlobalState } from '../../../reducers';
 import { getGroupItemControl } from '../../../util/group-item-control';
 import { renderPrefix, getText, getId } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
+import { Path } from '../../../util/refero-core';
 import { RenderContext } from '../../../util/renderContext';
 import { Resources } from '../../../util/resources';
-import { Path } from '../../../util/refero-core';
 import withCommonFunctions from '../../with-common-functions';
 
 export interface Props {

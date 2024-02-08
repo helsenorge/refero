@@ -6,7 +6,7 @@ import { mount } from 'enzyme';
 
 import '../../util/defineFetch';
 import rootReducer from '../../reducers';
-import { Questionnaire } from '../../types/fhir';
+import { Questionnaire } from 'fhir/r4';
 import { ReferoContainer } from '..';
 import { Resources } from '../../util/resources';
 import questionnaireWithEnableWhen from './__data__/enableWhen';

@@ -1,10 +1,9 @@
 import * as React from 'react';
 
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem, Questionnaire } from 'fhir/r4';
 import moment, { Moment } from 'moment';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
-
-import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem, Questionnaire } from '../../../types/fhir';
 
 import { LanguageLocales } from '@helsenorge/core-utils/constants/languages';
 import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
@@ -22,8 +21,8 @@ import { getValidationTextExtension, getExtension } from '../../../util/extensio
 import { evaluateFhirpathExpressionToGetDate } from '../../../util/fhirpathHelper';
 import { isRequired, getId, isReadOnly, getSublabelText } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
-import { Resources } from '../../../util/resources';
 import { Path } from '../../../util/refero-core';
+import { Resources } from '../../../util/resources';
 import withCommonFunctions from '../../with-common-functions';
 import Label from '../label';
 import SubLabel from '../sublabel';
@@ -138,10 +137,10 @@ class DateTime extends React.Component<Props & ValidationProps> {
   convertDateToString = (item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer): string | undefined => {
     const date = this.getDefaultDate(item, answer);
     if (date) {
-      return  moment(date).locale('nb').format('LLL');
-    } 
+      return moment(date).locale('nb').format('LLL');
+    }
     return undefined;
-  }
+  };
 
   getStringValue = (): string => {
     const { item, answer } = this.props;
