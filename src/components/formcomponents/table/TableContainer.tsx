@@ -104,7 +104,7 @@ const TableContainer = ({
           </>
         );
       default:
-        return <>{'Nothing found'}</>;
+        return <br />;
     }
   }
 };
