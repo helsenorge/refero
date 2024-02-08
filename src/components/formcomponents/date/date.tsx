@@ -1,10 +1,10 @@
 import * as React from 'react';
 
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem, Questionnaire } from 'fhir/r4';
 import moment, { Moment } from 'moment';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
-import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem, Questionnaire } from '../../../types/fhir';
 
 import { LanguageLocales } from '@helsenorge/core-utils/constants/languages';
 import { DateRangePicker } from '@helsenorge/date-time/components/date-range-picker';

@@ -1,4 +1,4 @@
-import { QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItem } from '../../../../../types/fhir';
+import { QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r4';
 
 import { ITableH1, ITableH1Column, ITableH1Row, TABLE_HN1_TABLE_TYPES } from './interface';
 import ItemType from '../../../../../constants/itemType';

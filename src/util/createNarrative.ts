@@ -1,4 +1,4 @@
-import { QuestionnaireResponse, QuestionnaireResponseItem, QuestionnaireResponseItemAnswer } from '../types/fhir';
+import { QuestionnaireResponse, QuestionnaireResponseItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 
 import { parseDate } from '@helsenorge/date-time/components/time-input/date-core';
 

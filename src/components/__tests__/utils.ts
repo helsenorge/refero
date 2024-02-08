@@ -1,6 +1,6 @@
 import { act } from 'react-dom/test-utils';
 import { ReactWrapper } from 'enzyme';
-import { QuestionnaireItem, Extension, Coding } from '../../types/fhir';
+import { QuestionnaireItem, Extension, Coding } from 'fhir/r4';
 import ExtensionConstants from '../../constants/extensions';
 
 export async function inputAnswer(linkId: string, answer: number | string, wrapper: ReactWrapper<{}, {}>) {

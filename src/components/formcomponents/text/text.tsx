@@ -1,11 +1,9 @@
 import * as React from 'react';
 
 import DOMPurify from 'dompurify';
-
+import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem } from 'fhir/r4';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
-
-import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem } from '../../../types/fhir';
 
 import Expander from '@helsenorge/designsystem-react/components/Expander';
 
@@ -23,7 +21,6 @@ import {
   isReadOnly,
   isRequired,
   getId,
-  renderPrefix,
   getText,
   getStringValue,
   getMaxLength,
@@ -36,9 +33,9 @@ import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/m
 import { Path } from '../../../util/refero-core';
 import { Resources } from '../../../util/resources';
 import withCommonFunctions from '../../with-common-functions';
+import Label from '../label';
 import SubLabel from '../sublabel';
 import TextView from '../textview';
-import { SanitizeText } from '../../../util/sanitize/domPurifyHelper';
 
 export interface Props {
   item: QuestionnaireItem;
@@ -181,7 +178,7 @@ export class Text extends React.Component<Props & ValidationProps, {}> {
             value={getStringValue(answer)}
             isRequired={isRequired(item)}
             showLabel={true}
-            label={SanitizeText(`${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`)}
+            label={<Label item={item} onRenderMarkdown={onRenderMarkdown} questionnaire={questionnaire} resources={resources} />}
             subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
             placeholder={getPlaceholder(item)}
             maxlength={getMaxLength(item)}

@@ -1,10 +1,9 @@
 import * as React from 'react';
 
 import DOMPurify from 'dompurify';
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem, Questionnaire } from 'fhir/r4';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
-
-import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem, Questionnaire } from '../../../types/fhir';
 
 import AnchorLink from '@helsenorge/designsystem-react/components/AnchorLink';
 

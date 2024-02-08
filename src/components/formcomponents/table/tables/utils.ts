@@ -1,16 +1,16 @@
-import moment from 'moment';
-
 import {
   Attachment,
   Coding,
   Quantity,
   QuestionnaireItem,
-  QuestionnaireItemEnableBehaviorCodes,
   QuestionnaireItemEnableWhen,
   QuestionnaireResponse,
   QuestionnaireResponseItem,
   QuestionnaireResponseItemAnswer,
-} from '../../../../types/fhir';
+} from 'fhir/r4';
+import moment from 'moment';
+
+import { QuestionnaireItemEnableBehaviorCodes } from '../../../../types/fhirEnums';
 
 import { SortDirection } from '@helsenorge/designsystem-react/components/Table';
 
@@ -200,7 +200,7 @@ export const getValueIfDataReceiver = (
         return m.value;
       });
     }
-    return getQuestionnaireResponseItemAnswer(item.type, result);
+    return getQuestionnaireResponseItemAnswer(item.type as Exclude<typeof ItemType[keyof typeof ItemType], 'url'>, result);
   }
   return undefined;
 };

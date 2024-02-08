@@ -1,8 +1,5 @@
 import React from 'react';
 
-import { connect } from 'react-redux';
-import { ThunkDispatch } from 'redux-thunk';
-
 import {
   Coding,
   Questionnaire,
@@ -11,7 +8,9 @@ import {
   QuestionnaireResponseItem,
   QuestionnaireResponseItemAnswer,
   Resource,
-} from '../../../types/fhir';
+} from 'fhir/r4';
+import { connect } from 'react-redux';
+import { ThunkDispatch } from 'redux-thunk';
 
 import LanguageLocales from '@helsenorge/core-utils/constants/languages';
 

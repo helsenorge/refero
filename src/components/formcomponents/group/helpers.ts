@@ -1,5 +1,6 @@
+import { Questionnaire, QuestionnaireItem } from 'fhir/r4';
+
 import { RenderContextType } from '../../../constants/renderContextType';
-import { Questionnaire, QuestionnaireItem } from '../../../types/fhir';
 import { getText, renderPrefix } from '../../../util';
 import { getGroupItemControl } from '../../../util/group-item-control';
 import { Path } from '../../../util/refero-core';

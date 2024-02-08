@@ -1,5 +1,7 @@
-import { Questionnaire, QuestionnaireResponse, QuestionnaireItem, Coding, Quantity } from '../types/fhir';
+import { Questionnaire, QuestionnaireResponse, QuestionnaireItem, Coding, Quantity } from 'fhir/r4';
 
+import { getItemControlValue } from './choice';
+import { getResponseItemAndPathWithLinkId, getQuestionnaireDefinitionItem, Path } from './refero-core';
 import {
   newIntegerValue,
   NewValueAction,
@@ -16,8 +18,6 @@ import {
   removeCodingStringValue,
 } from '../actions/newValue';
 import itemControlConstants from '../constants/itemcontrol';
-import { getItemControlValue } from './choice';
-import { getResponseItemAndPathWithLinkId, getQuestionnaireDefinitionItem, Path } from './refero-core';
 
 // eslint-disable-next-line @typescript-eslint/interface-name-prefix
 export interface IActionRequester {

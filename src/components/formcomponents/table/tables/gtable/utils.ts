@@ -1,6 +1,5 @@
+import { Coding, QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r4';
 import * as uuid from 'uuid';
-
-import { Coding, QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItem } from '../../../../../types/fhir';
 
 import { SortDirection } from '@helsenorge/designsystem-react/components/Table';
 

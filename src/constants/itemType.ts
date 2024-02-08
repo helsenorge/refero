@@ -1,3 +1,5 @@
+// add all of thiese "string" | "boolean" | "group" | "display" | "decimal" | "date" | "dateTime" | "time" | "text" | "integer" | "choice" | "open-choice" | "attachment" | "quantity" | "question" | "url" | "reference"' is not assignable to parameter of type '"string" | "boolean" | "group" | "display" | "decimal" | "date" | "dateTime" | "time" | "text" | "integer" | "choice" | "open-choice" | "attachment" | "quantity"
+
 export default {
   BOOLEAN: 'boolean',
   GROUP: 'group',
@@ -13,4 +15,7 @@ export default {
   OPENCHOICE: 'open-choice',
   ATTATCHMENT: 'attachment',
   QUANTITY: 'quantity',
-};
+  REFERENCE: 'reference',
+  URL: 'url',
+  QUESTION: 'question',
+} as const;
