@@ -1,4 +1,4 @@
-import { Coding, QuestionnaireItem, QuestionnaireResponse } from '../../../../../types/fhir';
+import { Coding, QuestionnaireItem, QuestionnaireResponse } from 'fhir/r4';
 
 import { SortDirection } from '@helsenorge/designsystem-react/components/Table';
 

@@ -1,6 +1,6 @@
+import { Questionnaire, QuestionnaireResponseItem, QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import marked from 'marked';
 import { ComponentClass } from 'react-redux';
-import { Questionnaire, QuestionnaireResponseItem, QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import * as uuid from 'uuid';
 
 import { isValid, invalidNodes } from '@helsenorge/core-utils/string-utils';
@@ -40,7 +40,6 @@ import Constants from '../constants/index';
 import ItemType from '../constants/itemType';
 import { RenderOptionCode } from '../constants/renderOptionCode';
 import { TableCodes } from '../constants/tableTypes';
-import { RenderOptionCode } from '../constants/renderOptionCode';
 import { Resources } from '../util/resources';
 
 function openNewIfAbsolute(url: string): string {
@@ -65,7 +64,7 @@ export const isTableCode = (extensionCode: string | string[]): boolean => {
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function getComponentForItem(type: string, extensionCode?: string | string[]) {
-  if (String(type) === itemType.GROUP && !!extensionCode && isTableCode(extensionCode)) {
+  if (String(type) === ItemType.GROUP && !!extensionCode && isTableCode(extensionCode)) {
     return TableContainer as ComponentClass<Omit<Props & ValidationProps & Props, keyof Props> & Props>;
   } else if (String(type) === ItemType.GROUP) {
     return Group;

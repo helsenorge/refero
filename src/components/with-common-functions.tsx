@@ -2,9 +2,6 @@ import * as React from 'react';
 
 import classNames from 'classnames';
 import DOMPurify from 'dompurify';
-
-
-import { AutoSuggestProps } from '../types/autoSuggestProps';
 import {
   Resource,
   Questionnaire,
@@ -17,6 +14,7 @@ import {
 import { Collapse } from 'react-collapse';
 import { ThunkDispatch } from 'redux-thunk';
 
+import { AutoSuggestProps } from '../types/autoSuggestProps';
 import { OrgenhetHierarki } from '../types/orgenhetHierarki';
 import { TextMessage } from '../types/text-message';
 

@@ -1,9 +1,5 @@
 import * as React from 'react';
 
-import { connect } from 'react-redux';
-import { ThunkDispatch } from 'redux-thunk';
-
-import { DispatchProps } from '../types/dispatchProps';
 import {
   QuestionnaireResponseItem,
   Questionnaire,
@@ -12,7 +8,10 @@ import {
   QuestionnaireResponseItemAnswer,
   Quantity,
 } from 'fhir/r4';
+import { connect } from 'react-redux';
+import { ThunkDispatch } from 'redux-thunk';
 
+import { DispatchProps } from '../types/dispatchProps';
 import { ReferoProps } from '../types/referoProps';
 import { State } from '../types/state';
 

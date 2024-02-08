@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { Coding, QuestionnaireItem, QuestionnaireResponse } from '../../../../../types/fhir';
+import { Coding, QuestionnaireItem, QuestionnaireResponse } from 'fhir/r4';
 
 import { TableBody, Table as HnTable, TableRow, TableCell, SortDirection } from '@helsenorge/designsystem-react/components/Table';
 
