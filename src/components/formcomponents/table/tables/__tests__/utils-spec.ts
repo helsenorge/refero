@@ -1,15 +1,10 @@
-import {
-  QuestionnaireResponseItemAnswer,
-  QuestionnaireItemEnableWhen,
-  QuestionnaireItemEnableBehaviorCodes,
-  QuestionnaireItem,
-  QuestionnaireResponse,
-} from '../../../../../types/fhir';
+import { QuestionnaireResponseItemAnswer, QuestionnaireItemEnableWhen, QuestionnaireItem, QuestionnaireResponse } from 'fhir/r4';
 import ItemType from '../../../../../constants/itemType';
 import { extractValuesFromAnswer, getPrimitiveValueFromItemType, getQuestionnaireResponseItemAnswer, isConditionEnabled } from '../utils';
 import * as questionnaireFunctions from '../utils';
 
 import * as fhirUtils from '../../../../../util/refero-core';
+import { QuestionnaireItemEnableBehaviorCodes } from '../../../../../types/fhirEnums';
 
 jest.mock('../../../../../util/refero-core');
 
