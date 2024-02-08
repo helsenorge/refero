@@ -3,7 +3,7 @@ import { mount } from 'enzyme';
 
 import '../../../../util/defineFetch';
 import { String } from '../string';
-import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem } from '../../../../types/fhir';
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem } from 'fhir/r4';
 
 describe('string', () => {
   describe('When input has html and validateScriptInjection = true', () => {

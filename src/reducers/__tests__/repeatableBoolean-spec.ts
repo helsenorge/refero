@@ -1,6 +1,6 @@
 import repeatableBooleanDataModel from './__data__/repeatableBoolean';
 import { Form } from '../form';
-import { QuestionnaireItem, QuestionnaireResponseItem } from '../../types/fhir';
+import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { getDefinitionItems } from '../../util/refero-core';
 import { pathify, getResponseItem, clickRepeat } from './utils';
 

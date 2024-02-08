@@ -1,10 +1,8 @@
 import * as React from 'react';
 
 import DOMPurify from 'dompurify';
-
+import { Questionnaire, QuestionnaireItem } from 'fhir/r4';
 import { connect } from 'react-redux';
-
-import { Questionnaire, QuestionnaireItem } from '../../../types/fhir';
 
 import designsystemtypography from '@helsenorge/designsystem-react/scss/typography.module.scss';
 

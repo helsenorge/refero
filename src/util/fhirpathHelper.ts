@@ -1,4 +1,4 @@
-import { QuestionnaireItem, Extension, QuestionnaireResponse } from '../types/fhir';
+import { QuestionnaireItem, Extension, QuestionnaireResponse } from 'fhir/r4';
 
 import r4 from './fhirpathLoaderHelper';
 

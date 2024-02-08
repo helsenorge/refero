@@ -1,12 +1,7 @@
 import * as React from 'react';
 
-import DOMPurify from 'dompurify';
-
 import classNames from 'classnames';
-import { Collapse } from 'react-collapse';
-import { ThunkDispatch } from 'redux-thunk';
-
-import { AutoSuggestProps } from '../types/autoSuggestProps';
+import DOMPurify from 'dompurify';
 import {
   Resource,
   Questionnaire,
@@ -15,7 +10,11 @@ import {
   QuestionnaireResponseItemAnswer,
   Attachment,
   ValueSet,
-} from '../types/fhir';
+} from 'fhir/r4';
+import { Collapse } from 'react-collapse';
+import { ThunkDispatch } from 'redux-thunk';
+
+import { AutoSuggestProps } from '../types/autoSuggestProps';
 import { OrgenhetHierarki } from '../types/orgenhetHierarki';
 import { TextMessage } from '../types/text-message';
 
@@ -26,6 +25,9 @@ import { UploadedFile } from '@helsenorge/file-upload/components/dropzone';
 import { FormChild } from '@helsenorge/form/components/form';
 import { ValidationProps } from '@helsenorge/form/components/form/validation';
 
+import DeleteButton from './formcomponents/repeat/delete-button';
+import RepeatButton from './formcomponents/repeat/repeat-button';
+import HelpButton from './help-button/help-button';
 import { NewValueAction } from '../actions/newValue';
 import itemControlConstants from '../constants/itemcontrol';
 import itemType from '../constants/itemType';
@@ -42,9 +44,6 @@ import {
 } from '../util/refero-core';
 import { RenderContext } from '../util/renderContext';
 import { Resources } from '../util/resources';
-import DeleteButton from './formcomponents/repeat/delete-button';
-import RepeatButton from './formcomponents/repeat/repeat-button';
-import HelpButton from './help-button/help-button';
 
 export interface Props {
   resources?: Resources;
@@ -244,7 +243,7 @@ export default function withCommonFunctions<T>(WrappedComponent: React.Component
           <div
             className={collapseClasses}
             dangerouslySetInnerHTML={{
-              __html: DOMPurify.sanitize(`${getText(helpItem)}`, { RETURN_TRUSTED_TYPE: true, ADD_ATTR: ['target'], }) as unknown as string,
+              __html: DOMPurify.sanitize(`${getText(helpItem)}`, { RETURN_TRUSTED_TYPE: true, ADD_ATTR: ['target'] }) as unknown as string,
             }}
           />
         </Collapse>

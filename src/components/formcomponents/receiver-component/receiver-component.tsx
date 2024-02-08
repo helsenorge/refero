@@ -1,8 +1,8 @@
 import * as React from 'react';
 
 import classNames from 'classnames';
+import { Coding } from 'fhir/r4';
 
-import { Coding } from '../../../types/fhir';
 import { EnhetType, OrgenhetHierarki } from '../../../types/orgenhetHierarki';
 
 import Loader from '@helsenorge/designsystem-react/components/Loader';

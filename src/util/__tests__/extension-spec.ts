@@ -1,5 +1,5 @@
 import extensionConstants from '../../constants/extensions';
-import { QuestionnaireItem, Extension } from '../../types/fhir';
+import { QuestionnaireItem, Extension } from 'fhir/r4';
 import {
   getValidationTextExtension,
   getExtension,

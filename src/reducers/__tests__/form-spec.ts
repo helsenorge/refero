@@ -3,7 +3,7 @@ import * as chai from 'chai';
 
 import '../../util/defineFetch';
 import reducer, { Form } from '../form';
-import { Coding, QuestionnaireResponseItem, Attachment } from '../../types/fhir';
+import { Coding, QuestionnaireResponseItem, Attachment } from 'fhir/r4';
 import {
   newStringValue,
   newBooleanValue,
