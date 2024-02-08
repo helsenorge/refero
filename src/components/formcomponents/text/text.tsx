@@ -21,7 +21,6 @@ import {
   isReadOnly,
   isRequired,
   getId,
-  renderPrefix,
   getText,
   getStringValue,
   getMaxLength,
@@ -33,7 +32,6 @@ import {
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
 import { Resources } from '../../../util/resources';
-import { SanitizeText } from '../../../util/sanitize/domPurifyHelper';
 import withCommonFunctions from '../../with-common-functions';
 import Label from '../label';
 import SubLabel from '../sublabel';
