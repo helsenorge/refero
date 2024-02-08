@@ -1,4 +1,4 @@
-import { Questionnaire, QuestionnaireResponse } from '../../../types/fhir';
+import { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 import { GlobalState } from '../..';
 
 const dataModel: GlobalState = {

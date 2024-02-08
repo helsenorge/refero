@@ -2,7 +2,7 @@ import { GlobalState } from '../../../reducers';
 
 import Valueset from './valuesets/valueset-8459';
 
-import { Questionnaire, QuestionnaireResponse } from '../../../types/fhir';
+import { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 
 import { OPEN_CHOICE_ID, OPEN_CHOICE_LABEL } from '../../../constants';
 

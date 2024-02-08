@@ -1,25 +1,24 @@
 import * as React from 'react';
 
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem, Questionnaire } from 'fhir/r4';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
-
-import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem, Questionnaire } from '../../../types/fhir';
 
 import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 import { CheckBox } from '@helsenorge/form/components/checkbox';
 import Validation from '@helsenorge/form/components/form/validation';
 import { ValidationProps } from '@helsenorge/form/components/form/validation';
 
+import Pdf from './pdf';
 import { NewValueAction, newBooleanValueAsync } from '../../../actions/newValue';
 import { GlobalState } from '../../../reducers';
 import { getValidationTextExtension } from '../../../util/extension';
 import { isReadOnly, isRequired, getId } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
-import { Resources } from '../../../util/resources';
 import { Path } from '../../../util/refero-core';
+import { Resources } from '../../../util/resources';
 import withCommonFunctions from '../../with-common-functions';
 import Label from '../label';
-import Pdf from './pdf';
 
 export interface Props {
   item: QuestionnaireItem;

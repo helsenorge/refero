@@ -6,7 +6,7 @@ import { mount } from 'enzyme';
 
 import '../../util/defineFetch';
 import rootReducer from '../../reducers';
-import { Questionnaire, QuestionnaireItem } from '../../types/fhir';
+import { Questionnaire, QuestionnaireItem } from 'fhir/r4';
 import { ReferoContainer } from '..';
 import { Resources } from '../../util/resources';
 import questionnaireWithMarkdown from './__data__/markdown';

@@ -5,7 +5,7 @@ import { mount } from 'enzyme';
 
 import '../../util/defineFetch';
 import DataModel from './__data__/common/';
-import { Questionnaire, Extension } from '../../types/fhir';
+import { Questionnaire, Extension } from 'fhir/r4';
 import rootReducer from '../../reducers';
 import { createStore, applyMiddleware } from 'redux';
 import { Resources } from '../../util/resources';

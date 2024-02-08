@@ -1,4 +1,4 @@
-import { QuestionnaireItem, Questionnaire, QuestionnaireResponse } from '../types/fhir';
+import { QuestionnaireItem, Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 
 import { getQuestionnaireDefinitionItem, getResponseItemAndPathWithLinkId, ItemAndPath } from './refero-core';
 
@@ -7,7 +7,6 @@ export interface QuestionnaireItemPair {
   QuestionnaireResponseItems: Array<ItemAndPath>;
 }
 
-// eslint-disable-next-line @typescript-eslint/interface-name-prefix
 export interface IQuestionnaireInspector {
   findItemWithLinkIds(...linkIds: string[]): Array<QuestionnaireItemPair>;
 }

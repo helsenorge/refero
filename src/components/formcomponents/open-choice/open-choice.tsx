@@ -1,21 +1,18 @@
 import * as React from 'react';
 
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer, Resource, Coding, QuestionnaireResponseItem, ValueSet } from 'fhir/r4';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
 import { AutoSuggestProps } from '../../../types/autoSuggestProps';
-import {
-  QuestionnaireItem,
-  QuestionnaireResponseItemAnswer,
-  Resource,
-  Coding,
-  QuestionnaireResponseItem,
-  ValueSet,
-} from '../../../types/fhir';
 
 import { ValidationProps } from '@helsenorge/form/components/form/validation';
 import { Options } from '@helsenorge/form/components/radio-group';
 
+import CheckboxView from './checkbox-view';
+import DropdownView from './dropdown-view';
+import RadioView from './radio-view';
+import TextField from './text-field';
 import {
   NewValueAction,
   removeCodingValueAsync,
@@ -39,16 +36,12 @@ import {
   getItemControlValue,
 } from '../../../util/choice';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
-import { Resources } from '../../../util/resources';
 import { Path } from '../../../util/refero-core';
+import { Resources } from '../../../util/resources';
 import withCommonFunctions from '../../with-common-functions';
 import SliderView from '../choice/slider-view';
 import AutosuggestView from '../choice-common/autosuggest-view';
 import TextView from '../textview';
-import CheckboxView from './checkbox-view';
-import DropdownView from './dropdown-view';
-import RadioView from './radio-view';
-import TextField from './text-field';
 
 export interface Props {
   item: QuestionnaireItem;
@@ -145,7 +138,7 @@ export class OpenChoice extends React.Component<Props & ValidationProps> {
         }
       });
     } else if (answer && !Array.isArray(answer) && answer.valueCoding && answer.valueCoding.code) {
-      if (answer.valueCoding?.code === item.initial?.[0].valueCoding.code && answer.valueCoding?.display === undefined) {
+      if (answer.valueCoding?.code === item.initial?.[0].valueCoding?.code && answer.valueCoding?.display === undefined) {
         this.resetInitialAnswer(answer.valueCoding.code);
       }
       return [answer.valueCoding.code];
@@ -160,8 +153,8 @@ export class OpenChoice extends React.Component<Props & ValidationProps> {
     return [String(item.initial[0].valueCoding.code)];
   };
 
-  handleStringChangeEvent = (event: React.FormEvent<{}>): void => {
-    const value = (event.target as HTMLInputElement).value;
+  handleStringChangeEvent = (event: React.ChangeEvent<HTMLInputElement>): void => {
+    const value = event.target.value;
     this.handleStringChange(value);
   };
 

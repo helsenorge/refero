@@ -7,12 +7,12 @@ import rootReducer from '../../reducers';
 
 import { OpenChoice } from '../formcomponents/open-choice/open-choice';
 import {
-    QuestionnaireItem,
-    QuestionnaireItemAnswerOption,
-    QuestionnaireResponseItemAnswer,
-    Extension,
-    QuestionnaireResponseItem,
-  } from '../../types/fhir';
+  QuestionnaireItem,
+  QuestionnaireItemAnswerOption,
+  QuestionnaireResponseItemAnswer,
+  Extension,
+  QuestionnaireResponseItem,
+} from 'fhir/r4';
 import itemType from '../../constants/itemType';
 import '../../util/defineFetch';
 import { Path } from '../../util/refero-core';
@@ -25,117 +25,115 @@ import { OPEN_CHOICE_ID, OPEN_CHOICE_SYSTEM, OPEN_CHOICE_LABEL } from '../../con
 const initAnswer: QuestionnaireResponseItemAnswer[] = [{}];
 
 describe('Open-Choice component render', () => {
-    beforeEach(() => {
-        window.matchMedia = jest.fn().mockImplementation(_ => {
-            return {};
-        });
+  beforeEach(() => {
+    window.matchMedia = jest.fn().mockImplementation(_ => {
+      return {};
     });
+  });
 
-    it('should render data-receiver with coding answer as text', () => {
-        const extensions = [createIDataReceiverExpressionExtension('Test')];
-        const item = createItemWithExtensions(...extensions);
-        item.readOnly = true;
-        const answer = [
-          { valueCoding: { code:"3", display:"Usikker", system:"urn:oid:2.16.578.1.12.4.1.9523" }}
-        ] as QuestionnaireResponseItemAnswer[];
-        const wrapper = createWrapperWithItem(item, answer);
-        wrapper.render();
+  it('should render data-receiver with coding answer as text', () => {
+    const extensions = [createIDataReceiverExpressionExtension('Test')];
+    const item = createItemWithExtensions(...extensions);
+    item.readOnly = true;
+    const answer = [
+      { valueCoding: { code: '3', display: 'Usikker', system: 'urn:oid:2.16.578.1.12.4.1.9523' } },
+    ] as QuestionnaireResponseItemAnswer[];
+    const wrapper = createWrapperWithItem(item, answer);
+    wrapper.render();
 
-        const textView = wrapper.find(TextView);
-        expect(textView.props().value).toBe('Usikker');
-      });
+    const textView = wrapper.find(TextView);
+    expect(textView.props().value).toBe('Usikker');
+  });
 
-    it('should render data-receiver with coding and textvalue as text', () => {
-        const extensions = [createIDataReceiverExpressionExtension('Test')];
-        const item = createItemWithExtensions(...extensions);
-        item.readOnly = true;
-        const answer = [
-            { valueCoding: { code:"3", display:"Usikker", system:"urn:oid:2.16.578.1.12.4.1.9523" }},
-            { valueCoding: { code: OPEN_CHOICE_ID, display: OPEN_CHOICE_LABEL, system: OPEN_CHOICE_SYSTEM }},
-            { valueString: 'Free text' }
-        ] as QuestionnaireResponseItemAnswer[];
-        const wrapper = createWrapperWithItem(item, answer);
-        wrapper.render();
+  it('should render data-receiver with coding and textvalue as text', () => {
+    const extensions = [createIDataReceiverExpressionExtension('Test')];
+    const item = createItemWithExtensions(...extensions);
+    item.readOnly = true;
+    const answer = [
+      { valueCoding: { code: '3', display: 'Usikker', system: 'urn:oid:2.16.578.1.12.4.1.9523' } },
+      { valueCoding: { code: OPEN_CHOICE_ID, display: OPEN_CHOICE_LABEL, system: OPEN_CHOICE_SYSTEM } },
+      { valueString: 'Free text' },
+    ] as QuestionnaireResponseItemAnswer[];
+    const wrapper = createWrapperWithItem(item, answer);
+    wrapper.render();
 
-        const textView = wrapper.find(TextView);
-        expect(textView.props().value).toBe('Usikker, Free text');
-    });
+    const textView = wrapper.find(TextView);
+    expect(textView.props().value).toBe('Usikker, Free text');
+  });
 
-    it('should render valueStrings as input value', () => {
-        const option = createValueStringOption('Home', 'Car');
-        const item = createItemWithOption(...option);
-        const answer = [
-            { valueCoding: { code: OPEN_CHOICE_ID, display: OPEN_CHOICE_LABEL, system: OPEN_CHOICE_SYSTEM }},
-            { valueString: 'Free text' }
-        ] as QuestionnaireResponseItemAnswer[];
-        const wrapper = createWrapperWithItem(item, answer);
-        wrapper.render();
+  it('should render valueStrings as input value', () => {
+    const option = createValueStringOption('Home', 'Car');
+    const item = createItemWithOption(...option);
+    const answer = [
+      { valueCoding: { code: OPEN_CHOICE_ID, display: OPEN_CHOICE_LABEL, system: OPEN_CHOICE_SYSTEM } },
+      { valueString: 'Free text' },
+    ] as QuestionnaireResponseItemAnswer[];
+    const wrapper = createWrapperWithItem(item, answer);
+    wrapper.render();
 
-        const input = wrapper.find('input').at(3);
-        expect(input.props().type).toBe('text');
-        expect(input.props().readOnly).toBeFalsy();
-        expect(input.props().value).toBe('Free text');
-    });
+    const input = wrapper.find('input').at(3);
+    expect(input.props().type).toBe('text');
+    expect(input.props().readOnly).toBeFalsy();
+    expect(input.props().value).toBe('Free text');
+  });
 
-    it('should render empty valueString as empty input value', () => {
-        const option = createValueStringOption('Home', 'Car');
-        const item = createItemWithOption(...option);
-        const answer = [
-            { valueCoding: { code: OPEN_CHOICE_ID, display: OPEN_CHOICE_LABEL, system: OPEN_CHOICE_SYSTEM }},
-        ] as QuestionnaireResponseItemAnswer[];
-        const wrapper = createWrapperWithItem(item, answer);
-        wrapper.render();
+  it('should render empty valueString as empty input value', () => {
+    const option = createValueStringOption('Home', 'Car');
+    const item = createItemWithOption(...option);
+    const answer = [
+      { valueCoding: { code: OPEN_CHOICE_ID, display: OPEN_CHOICE_LABEL, system: OPEN_CHOICE_SYSTEM } },
+    ] as QuestionnaireResponseItemAnswer[];
+    const wrapper = createWrapperWithItem(item, answer);
+    wrapper.render();
 
-        const input = wrapper.find('input').at(3);
-        expect(input.props().type).toBe('text');
-        expect(input.props().readOnly).toBeFalsy();
-        expect(input.props().value).toBe('');
-    });
+    const input = wrapper.find('input').at(3);
+    expect(input.props().type).toBe('text');
+    expect(input.props().readOnly).toBeFalsy();
+    expect(input.props().value).toBe('');
+  });
 });
 
-
-
 function createWrapperWithItem(item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer[] = initAnswer): ReactWrapper<{}, {}> {
-    const store: any = createStore(rootReducer, applyMiddleware(thunk));
-    return mount(
-      <Provider store={store}>
-        <OpenChoice
-          id={item.linkId}
-          dispatch={() => undefined as unknown as ThunkDispatch<GlobalState, void, NewValueAction>}
-          answer={answer}
-          item={item}
-          path={{} as Path[]}
-          renderDeleteButton={() => undefined}
-          repeatButton={<React.Fragment />}
-          renderHelpButton={() => <React.Fragment />}
-          renderHelpElement={() => <React.Fragment />}
-          onAnswerChange={() => {}}
-          responseItem={{} as QuestionnaireResponseItem}
-        />
-      </Provider>
-    );
-  }
+  const store: any = createStore(rootReducer, applyMiddleware(thunk));
+  return mount(
+    <Provider store={store}>
+      <OpenChoice
+        id={item.linkId}
+        dispatch={() => undefined as unknown as ThunkDispatch<GlobalState, void, NewValueAction>}
+        answer={answer}
+        item={item}
+        path={{} as Path[]}
+        renderDeleteButton={() => undefined}
+        repeatButton={<React.Fragment />}
+        renderHelpButton={() => <React.Fragment />}
+        renderHelpElement={() => <React.Fragment />}
+        onAnswerChange={() => {}}
+        responseItem={{} as QuestionnaireResponseItem}
+      />
+    </Provider>
+  );
+}
 
 function createValueStringOption(...options: string[]): QuestionnaireItemAnswerOption[] {
-    return options.map(o => {
-      return {
-        valueCoding: { code: o, display: o },
-      } as QuestionnaireItemAnswerOption;
-    });
+  return options.map(o => {
+    return {
+      valueCoding: { code: o, display: o },
+    } as QuestionnaireItemAnswerOption;
+  });
 }
 
 function createItemWithOption(...options: QuestionnaireItemAnswerOption[]): QuestionnaireItem {
-    return {
-        linkId: '1',
-        type: itemType.OPENCHOICE,
-        answerOption: options,
-    };
+  return {
+    linkId: '1',
+    type: itemType.OPENCHOICE,
+    answerOption: options,
+  };
 }
-  
+
 function createItemWithExtensions(...extensions: Extension[]): QuestionnaireItem {
-    return {
-        linkId: '1',
-        type: itemType.OPENCHOICE,
-        extension: extensions,
-    };
+  return {
+    linkId: '1',
+    type: itemType.OPENCHOICE,
+    extension: extensions,
+  };
 }

@@ -1,4 +1,4 @@
-import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from '../types/fhir';
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 export function createDateFromYear(item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer): Date | undefined {
   if (answer && answer.valueDate) {
     return new Date(answer.valueDate.toString() + 'T00:00Z');

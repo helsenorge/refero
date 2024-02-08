@@ -1,6 +1,6 @@
 import enableWhenDataModel from './__data__/repeatsUnderEnableWhen';
 import { Form } from '../form';
-import { Coding, QuestionnaireItem } from '../../types/fhir';
+import { Coding, QuestionnaireItem } from 'fhir/r4';
 import { getQuestionnaireDefinitionItem, getDefinitionItems, getResponseItemWithPath } from '../../util/refero-core';
 import { pathify, selectChoice, getResponseItem, enterText, clickRepeat } from './utils';
 
