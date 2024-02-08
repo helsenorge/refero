@@ -1,4 +1,4 @@
-import { QuestionnaireItem } from '../types/fhir';
+import { QuestionnaireItem } from 'fhir/r4';
 
 import { RenderContextType } from '../constants/renderContextType';
 

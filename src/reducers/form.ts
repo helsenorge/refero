@@ -1,5 +1,3 @@
-import produce, { enableES5 } from 'immer';
-
 import {
   Questionnaire,
   QuestionnaireResponseItem,
@@ -9,8 +7,10 @@ import {
   QuestionnaireResponse,
   Coding,
   Attachment,
-  QuestionnaireItemEnableBehaviorCodes,
-} from '../types/fhir';
+} from 'fhir/r4';
+import produce, { enableES5 } from 'immer';
+
+import { QuestionnaireItemEnableBehaviorCodes } from '../types/fhirEnums';
 
 import { LanguageLocales } from '@helsenorge/core-utils/constants/languages';
 
@@ -270,7 +270,11 @@ function copyItem(
   return target;
 }
 
-function getInitialAnswerForCopyItem(source: QuestionnaireResponseItem, questionnaire: Questionnaire, qrItem: QuestionnaireResponseItem): QuestionnaireResponseItemAnswer[] {
+function getInitialAnswerForCopyItem(
+  source: QuestionnaireResponseItem,
+  questionnaire: Questionnaire,
+  qrItem: QuestionnaireResponseItem
+): QuestionnaireResponseItemAnswer[] {
   let initialAnswer = undefined;
   const item = getQuestionnaireDefinitionItem(source.linkId, questionnaire.item);
   if (item) {

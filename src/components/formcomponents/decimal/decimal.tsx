@@ -1,9 +1,8 @@
 import * as React from 'react';
 
+import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
-
-import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer } from '../../../types/fhir';
 
 import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 import Validation from '@helsenorge/form/components/form/validation';
@@ -15,8 +14,8 @@ import { GlobalState } from '../../../reducers';
 import { getValidationTextExtension, getPlaceholder, getMaxValueExtensionValue, getMinValueExtensionValue } from '../../../util/extension';
 import { isReadOnly, isRequired, getId, getDecimalPattern, getSublabelText } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
-import { Resources } from '../../../util/resources';
 import { Path } from '../../../util/refero-core';
+import { Resources } from '../../../util/resources';
 import withCommonFunctions from '../../with-common-functions';
 import Label from '../label';
 import SubLabel from '../sublabel';

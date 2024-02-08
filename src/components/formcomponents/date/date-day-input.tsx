@@ -1,11 +1,14 @@
 import * as React from 'react';
+
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireItemInitial } from 'fhir/r4';
 import moment, { Moment } from 'moment';
-import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireItemInitial } from '../../../types/fhir';
+
 import { LanguageLocales } from '@helsenorge/core-utils/constants/languages';
 import { DateRangePicker } from '@helsenorge/date-time/components/date-range-picker';
 import { DatePickerErrorPhrases } from '@helsenorge/date-time/components/date-range-picker/date-range-picker-types';
-import { Validation } from '@helsenorge/form/components/form/validation';
 import { parseDate } from '@helsenorge/date-time/components/time-input/date-core';
+import { Validation } from '@helsenorge/form/components/form/validation';
+
 import Constants from '../../../constants/index';
 import { getId, isRequired } from '../../../util';
 import { getPlaceholder, getValidationTextExtension } from '../../../util/extension';

@@ -3,7 +3,7 @@ import { shallow } from 'enzyme';
 
 import '../../../../util/defineFetch';
 import { Group } from '../group';
-import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem } from '../../../../types/fhir';
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem } from 'fhir/r4';
 import { RenderContextType } from '../../../../constants/renderContextType';
 import { RenderContext } from '../../../../util/renderContext';
 
