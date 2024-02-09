@@ -1,17 +1,16 @@
 import React, { useState } from 'react';
 
+import { QuestionnaireResponse } from 'fhir/r4';
 import { Provider } from 'react-redux';
 import { Store, legacy_createStore as createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
-
-import { QuestionnaireResponse } from '../types/fhir';
 
 import LanguageLocales from '@helsenorge/core-utils/constants/languages';
 
 import FormFillerSidebar from './FormFillerSidebar';
 import { emptyPropertyReplacer } from './helpers';
 import { getResources } from './resources/referoResources';
-import skjema from './skjema/kun_qest.json';
+import skjema from './skjema/NHN_Test_Table_SvaralternativerStyrer.json';
 import { ReferoContainer } from '../components';
 import rootReducer from '../reducers';
 

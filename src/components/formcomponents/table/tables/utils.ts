@@ -21,7 +21,7 @@ import { DATEFORMATS } from './constants';
 import { QuestionnaireItemWithAnswers } from './interface';
 import { OPEN_CHOICE_SYSTEM } from '../../../../constants';
 import codeSystems, { CodeSystems } from '../../../../constants/codingsystems';
-import ItemType from '../../../../constants/itemType';
+import ItemType, { IItemType } from '../../../../constants/itemType';
 import { getQuestionnaireItemCodeValue } from '../../../../util/codingsystem';
 import { getCalculatedExpressionExtension, getCopyExtension } from '../../../../util/extension';
 import { evaluateFhirpathExpressionToGetString } from '../../../../util/fhirpathHelper';
@@ -343,4 +343,50 @@ export const getCodeFromCodingSystem = (coding: Coding[], codingSystem: string):
 
 export function findCodeBySystem<T extends { system?: string }>(coding: T[], system?: string): T[] {
   return coding.filter(code => code.system === system);
+}
+
+export const sortByItemType = (aValue: string, bValue: string, sortOrder: SortDirection, type?: IItemType): number => {
+  switch (type) {
+    case 'date':
+      return compareDates(aValue, bValue, sortOrder);
+    case 'dateTime':
+      return compareDates(aValue, bValue, sortOrder);
+    case 'time':
+      return compareTimes(aValue, bValue, sortOrder);
+    case 'integer':
+    case 'decimal':
+      return compareNumbers(aValue, bValue, sortOrder);
+    default:
+      return sortOrder === SortDirection.asc ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
+  }
+};
+function compareDates(aValue: string, bValue: string, sortOrder: SortDirection): number {
+  const dateA = moment(aValue, DATEFORMATS.DATETIME);
+  const dateB = moment(bValue, DATEFORMATS.DATETIME);
+
+  let comparisonResult = 0;
+  if (dateA.isBefore(dateB)) {
+    comparisonResult = -1;
+  } else if (dateA.isAfter(dateB)) {
+    comparisonResult = 1;
+  }
+  return sortOrder === 'asc' ? comparisonResult : -comparisonResult;
+}
+
+function compareTimes(aValue: string, bValue: string, sortOrder: SortDirection): number {
+  const format = DATEFORMATS.TIME;
+  const timeA = moment(aValue, format);
+  const timeB = moment(bValue, format);
+
+  if (sortOrder === SortDirection.asc) {
+    return timeA.isBefore(timeB) ? -1 : timeA.isAfter(timeB) ? 1 : 0;
+  } else {
+    return timeA.isAfter(timeB) ? -1 : timeA.isBefore(timeB) ? 1 : 0;
+  }
+}
+
+function compareNumbers(aValue: string, bValue: string, sortOrder: SortDirection): number {
+  const numberA = parseFloat(aValue);
+  const numberB = parseFloat(bValue);
+  return sortOrder === SortDirection.asc ? numberA - numberB : numberB - numberA;
 }
