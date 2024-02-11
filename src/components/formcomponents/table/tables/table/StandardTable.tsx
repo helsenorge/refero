@@ -18,6 +18,7 @@ interface Props {
 
 export const StandardTable = ({ items, questionnaireResponse, resource, tableCodesCoding }: Props): JSX.Element => {
   const displayToSortBy = getDisplayToSortBy(tableCodesCoding);
+
   const [sortDir, setSortDir] = useState<SortDirection | undefined>(transformCodingToSortDirection(tableCodesCoding));
   const [table, setTable] = useState<IStandardTable>(
     getStandardTableObject(items, questionnaireResponse, resource, sortDir, displayToSortBy)
