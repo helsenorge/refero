@@ -1,3 +1,9 @@
+## 14.0.7
+
+---
+
+- Bugfix: Attachment Validation based on props max value, questionnaire item max attachment size rules and refero constant
+
 ## 14.0.5
 
 ---
