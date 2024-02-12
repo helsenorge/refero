@@ -125,8 +125,8 @@ describe('gtable-utils-spec', () => {
       ];
       const columns = columnsForRowIndex(answerItems, 0);
       expect(columns).toEqual([
-        { id: 'default-question-linkId', index: 0, value: 'Answer 1' },
-        { id: 'default-question-linkId', index: 1, value: 'Another Answer 1' },
+        { id: 'default-question-linkId', index: 0, value: 'Answer 1', type: ItemType.TEXT },
+        { id: 'default-question-linkId', index: 1, value: 'Another Answer 1', type: ItemType.TEXT },
       ]);
     });
 
@@ -137,8 +137,8 @@ describe('gtable-utils-spec', () => {
       ];
       const columns = columnsForRowIndex(answerItems, 1);
       expect(columns).toEqual([
-        { id: 'default-question-linkId', index: 0, value: '' },
-        { id: 'default-question-linkId', index: 1, value: '' },
+        { id: 'default-question-linkId', index: 0, value: '', type: ItemType.TEXT },
+        { id: 'default-question-linkId', index: 1, value: '', type: ItemType.TEXT },
       ]);
     });
 

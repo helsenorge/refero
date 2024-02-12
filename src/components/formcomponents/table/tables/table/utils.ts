@@ -7,7 +7,7 @@ import { Options } from '@helsenorge/form/components/radio-group';
 import { IStandardTable, IStandardTableColumn, IStandardTableRow } from './interface';
 import codeSystems from '../../../../../constants/codingsystems';
 import ItemType, { IItemType } from '../../../../../constants/itemType';
-import { getContainedOptions, getOptions, getSystemForItem } from '../../../../../util/choice';
+import { getContainedOptions, getSystemForItem } from '../../../../../util/choice';
 import { QuestionnaireItemWithAnswers } from '../interface';
 import {
   getDisplayFromCodingSystem,

@@ -12,12 +12,12 @@ import {
   getStandardTableObject,
   needsExtraColumn,
 } from '../utils';
-import { QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItem, Resource } from '../../../../../../types/fhir';
 
 import * as choiceUtils from '../../../../../../util/choice';
 
 import * as tableUtils from '../../utils';
 import { QuestionnaireItemWithAnswers } from '../../interface';
+import { QuestionnaireResponseItem, QuestionnaireItem, QuestionnaireResponse, Resource } from 'fhir/r4';
 jest.mock('../../utils');
 jest.mock('../../../../../../util/choice');
 
@@ -264,25 +264,44 @@ describe('createBodyRows', () => {
 });
 
 describe('createRowsFromAnswersCodes', () => {
+  beforeEach(() => {
+    jest.spyOn(choiceUtils, 'getSystemForItem');
+  });
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
   it('should create rows from the given response item and choice values', () => {
-    const item: QuestionnaireResponseItem = {
+    (choiceUtils.getSystemForItem as jest.Mock).mockImplementation(() => {
+      return 'sys';
+    });
+    const item: QuestionnaireItemWithAnswers = {
       linkId: '1',
+      type: ItemType.CHOICE,
       answer: [{ valueCoding: { code: '1' } }],
     };
+
     const choiceValues: Options[] = [
       { type: '1', label: 'Option A' },
       { type: '2', label: 'Option B' },
     ];
-    const rows = createRowsFromAnswersCodes(item, choiceValues);
+    const rows = createRowsFromAnswersCodes(item, choiceValues, 'sys', []);
     expect(rows).toEqual([
-      { id: '1-1', index: 1, value: 'X' },
-      { id: '2-2', index: 2, value: '' },
+      { id: '1-1', index: 1, value: 'X', type: ItemType.CHOICE },
+      { id: '2-2', index: 2, value: '', type: ItemType.CHOICE },
     ]);
   });
 
   it('should return an empty array if no choice values are provided', () => {
-    const item: QuestionnaireResponseItem = {
+    const item: QuestionnaireItemWithAnswers = {
       linkId: '1',
+      type: ItemType.CHOICE,
+      answerOption: [
+        {
+          valueCoding: {
+            system: 'sys',
+          },
+        },
+      ],
       answer: [{ valueCoding: { code: '1' } }],
     };
     const rows = createRowsFromAnswersCodes(item);
@@ -324,10 +343,10 @@ describe('createColumnsFromAnswers', () => {
     ];
     const columns = createColumnsFromAnswers(item, choiceValues);
     expect(columns).toEqual([
-      { value: 'Question 1', index: 0, id: '1-question' },
-      { value: '', index: 1, id: '1-1' },
-      { value: '', index: 2, id: '2-2' },
-      { value: '', index: 3, id: '1-answer' },
+      { value: 'Question 1', index: 0, id: '1-question', type: ItemType.CHOICE },
+      { value: '', index: 1, id: '1-1', type: ItemType.CHOICE },
+      { value: '', index: 2, id: '2-2', type: ItemType.CHOICE },
+      { value: '', index: 3, id: '1-answer', type: ItemType.CHOICE },
     ]);
   });
 
@@ -354,8 +373,8 @@ describe('createColumnsFromAnswers', () => {
     };
     const columns = createColumnsFromAnswers(item);
     expect(columns).toEqual([
-      { value: 'Question 1', index: 0, id: '1-question' },
-      { value: '', index: 1, id: '1-answer' },
+      { value: 'Question 1', index: 0, id: '1-question', type: ItemType.CHOICE },
+      { value: '', index: 1, id: '1-answer', type: ItemType.CHOICE },
     ]);
   });
 });

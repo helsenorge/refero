@@ -83,7 +83,6 @@ export function getSystemForItem(item: QuestionnaireItem, containedResources?: R
   if (item.answerValueSet && item.answerValueSet.startsWith('#')) {
     const id: string = item.answerValueSet.replace('#', '');
     const resource = getContainedResource(id, containedResources);
-    console.log(resource);
 
     if (resource && resource.compose) {
       return resource.compose.include[0].system;
