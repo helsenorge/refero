@@ -1,37 +1,30 @@
 import * as React from 'react';
 
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer, Resource, Coding, QuestionnaireResponseItem, ValueSet } from 'fhir/r4';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
 import { AutoSuggestProps } from '../../../types/autoSuggestProps';
-import {
-  QuestionnaireItem,
-  QuestionnaireResponseItemAnswer,
-  Resource,
-  Coding,
-  QuestionnaireResponseItem,
-  ValueSet,
-} from '../../../types/fhir';
 import { OrgenhetHierarki } from '../../../types/orgenhetHierarki';
 
 import { ValidationProps } from '@helsenorge/form/components/form/validation';
 import { Options } from '@helsenorge/form/components/radio-group';
 
+import CheckboxView from './checkbox-view';
+import DropdownView from './dropdown-view';
+import RadioView from './radio-view';
 import SliderView from './slider-view';
 import { NewValueAction, newCodingValueAsync, removeCodingValueAsync } from '../../../actions/newValue';
 import { GlobalState } from '../../../reducers';
 import { getOptions, getSystem, getErrorMessage, validateInput, getIndexOfAnswer, getDisplay, renderOptions } from '../../../util/choice';
 import { isReadOnly, isDataReceiver } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
-import { Resources } from '../../../util/resources';
 import { Path } from '../../../util/refero-core';
+import { Resources } from '../../../util/resources';
 import withCommonFunctions from '../../with-common-functions';
 import AutosuggestView from '../choice-common/autosuggest-view';
 import ReceiverComponentWrapper from '../receiver-component/receiver-component-wrapper';
 import TextView from '../textview';
-import CheckboxView from './checkbox-view';
-import DropdownView from './dropdown-view';
-import RadioView from './radio-view';
 
 export interface ChoiceProps {
   item: QuestionnaireItem;
@@ -88,7 +81,7 @@ export class Choice extends React.Component<ChoiceProps & ValidationProps, Choic
         }
       });
     } else if (answer && !Array.isArray(answer) && answer.valueCoding && answer.valueCoding.code) {
-      if (answer.valueCoding?.code === item.initial?.[0].valueCoding.code && answer.valueCoding?.display === undefined) {
+      if (answer.valueCoding?.code === item.initial?.[0]?.valueCoding?.code && answer.valueCoding?.display === undefined) {
         this.resetInitialAnswer(answer.valueCoding.code);
       }
       return [answer.valueCoding.code];

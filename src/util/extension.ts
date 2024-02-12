@@ -1,4 +1,5 @@
-import { QuestionnaireItem, Extension, Element, Questionnaire, Coding } from '../types/fhir';
+import { QuestionnaireItem, Extension, Element, Questionnaire, Coding } from 'fhir/r4';
+
 import { SidebarItem } from '../types/sidebar';
 
 import ExtensionConstants from '../constants/extensions';
@@ -70,7 +71,7 @@ export function isItemSidebar(item: QuestionnaireItem): boolean {
   return itemControls !== undefined && itemControls.some(itemControl => itemControl.code === itemControlConstants.SIDEBAR);
 }
 
-export function getExtension(url: string, item: QuestionnaireItem | Element | Questionnaire): Extension | undefined {
+export function getExtension(url: string, item?: QuestionnaireItem | Element | Questionnaire): Extension | undefined {
   if (!item || !item.extension || item.extension.length === 0) {
     return undefined;
   }

@@ -1,15 +1,7 @@
 import '../../util/defineFetch';
 import reducer, { Form } from '../form';
 import { Path, getResponseItemWithPath } from '../../util/refero-core';
-import {
-  Coding,
-  QuestionnaireItem,
-  QuestionnaireResponseItem,
-  Questionnaire,
-  QuestionnaireResponse,
-  Quantity,
-  Attachment,
-} from '../../types/fhir';
+import { Coding, QuestionnaireItem, QuestionnaireResponseItem, Questionnaire, QuestionnaireResponse, Quantity, Attachment } from 'fhir/r4';
 import {
   newCodingValue,
   addRepeatItem,

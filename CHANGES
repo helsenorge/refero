@@ -1,3 +1,27 @@
+## 14.0.6
+
+---
+
+- Bugfix: Attachment Validation based on props max value, questionnaire item max attachment size rules and refero constant
+
+## 14.0.5
+
+---
+
+- added enums to new fhirEnums.ts file
+
+## 14.0.4
+
+---
+
+- Remove fhir.ts and added an npm package for the fhir typescript types
+
+## 14.0.3
+
+---
+
+- bugfix: Render html tags in textarea label
+
 ## 14.0.1
 
 ---

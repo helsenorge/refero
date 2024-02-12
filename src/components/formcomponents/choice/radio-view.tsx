@@ -1,8 +1,7 @@
 import * as React from 'react';
 
+import { QuestionnaireItem, Questionnaire } from 'fhir/r4';
 import { Collapse } from 'react-collapse';
-
-import { QuestionnaireItem, Questionnaire } from '../../../types/fhir';
 
 import Validation from '@helsenorge/form/components/form/validation';
 import { RadioGroup, Options } from '@helsenorge/form/components/radio-group';

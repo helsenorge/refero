@@ -1,4 +1,4 @@
-import { Questionnaire, QuestionnaireResponse } from '../types/fhir';
+import { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 
 export type SET_SKJEMA_DEFINITION = 'refero/SET_SKJEMA_DEFINITION';
 export const SET_SKJEMA_DEFINITION: SET_SKJEMA_DEFINITION = 'refero/SET_SKJEMA_DEFINITION';

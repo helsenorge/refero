@@ -1,6 +1,7 @@
+import { QuestionnaireItemEnableWhen, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import moment from 'moment';
 
-import { QuestionnaireItemEnableWhen, QuestionnaireResponseItemAnswer, QuestionnaireEnableOperator } from '../types/fhir';
+import { QuestionnaireEnableOperator } from '../types/fhirEnums';
 
 import { parseDate } from '@helsenorge/date-time/components/time-input/date-core';
 

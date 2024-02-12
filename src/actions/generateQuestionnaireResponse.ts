@@ -4,7 +4,7 @@ import {
   QuestionnaireResponseItem,
   QuestionnaireResponseItemAnswer,
   Questionnaire,
-} from '../types/fhir';
+} from 'fhir/r4';
 
 import Constants from '../constants/index';
 import itemType from '../constants/itemType';

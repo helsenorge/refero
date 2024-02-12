@@ -1,13 +1,15 @@
 import * as React from 'react';
 
-import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItem } from '../../../types/fhir';
+import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
+
+import { QuestionnaireStatusCodes } from '../../../types/fhirEnums';
 
 import { Props } from './attachment';
 import { Resources } from '../../../util/resources';
 
 const mockQuestionnaire: Questionnaire = {
   resourceType: 'Questionnaire',
-  status: '',
+  status: QuestionnaireStatusCodes.ACTIVE,
 };
 
 const mockQuestionnaireResponseMock: QuestionnaireResponseItem = {

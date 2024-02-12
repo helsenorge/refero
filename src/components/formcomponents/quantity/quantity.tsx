@@ -1,15 +1,14 @@
 import * as React from 'react';
 
-import { connect } from 'react-redux';
-import { ThunkDispatch } from 'redux-thunk';
-
 import {
   QuestionnaireItem,
   QuestionnaireResponseItemAnswer,
   Quantity as QuantityType,
   QuestionnaireResponseItem,
   Questionnaire,
-} from '../../../types/fhir';
+} from 'fhir/r4';
+import { connect } from 'react-redux';
+import { ThunkDispatch } from 'redux-thunk';
 
 import Validation from '@helsenorge/form/components/form/validation';
 import { ValidationProps } from '@helsenorge/form/components/form/validation';
@@ -26,8 +25,8 @@ import {
 } from '../../../util/extension';
 import { isReadOnly, isRequired, getId, getDecimalPattern, getSublabelText } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
-import { Resources } from '../../../util/resources';
 import { Path } from '../../../util/refero-core';
+import { Resources } from '../../../util/resources';
 import withCommonFunctions from '../../with-common-functions';
 import Label from '../label';
 import SubLabel from '../sublabel';

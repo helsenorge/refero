@@ -1,5 +1,5 @@
 import { enableWhenMatches } from '../enableWhenMatcher';
-import { QuestionnaireResponseItemAnswer, QuestionnaireItemEnableWhen } from '../../types/fhir';
+import { QuestionnaireResponseItemAnswer, QuestionnaireItemEnableWhen } from 'fhir/r4';
 
 describe('Given a Questionnaire item with type boolean', () => {
   it('Should return true when operator is "=" ', () => {

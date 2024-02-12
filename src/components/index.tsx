@@ -1,8 +1,5 @@
 import * as React from 'react';
 
-import { connect } from 'react-redux';
-import { ThunkDispatch } from 'redux-thunk';
-
 import {
   QuestionnaireResponseItem,
   Questionnaire,
@@ -10,16 +7,19 @@ import {
   QuestionnaireItem,
   QuestionnaireResponseItemAnswer,
   Quantity,
-} from '../types/fhir';
+} from 'fhir/r4';
+import { connect } from 'react-redux';
+import { ThunkDispatch } from 'redux-thunk';
+
+import { DispatchProps } from '../types/dispatchProps';
 import { ReferoProps } from '../types/referoProps';
 import { State } from '../types/state';
-import { DispatchProps } from '../types/dispatchProps';
 
+import RenderForm from './renderForm';
+import StepView from './stepView';
 import { setSkjemaDefinition } from '../actions/form';
 import { NewValueAction, newQuantityValue, newDecimalValue, newIntegerValue } from '../actions/newValue';
 import RepeatButton from '../components/formcomponents/repeat/repeat-button';
-import RenderForm from './renderForm';
-import StepView from './stepView';
 import Constants, { NAVIGATOR_BLINDZONE_ID } from '../constants/index';
 import ItemType from '../constants/itemType';
 import { PresentationButtonsType } from '../constants/presentationButtonsType';
@@ -27,16 +27,11 @@ import { GlobalState } from '../reducers';
 import { getFormDefinition, getFormData } from '../reducers/form';
 import { FormDefinition, FormData } from '../reducers/form';
 import { ActionRequester } from '../util/actionRequester';
-import {
-  getQuestionnaireUnitExtensionValue,
-  getPresentationButtonsExtension,
-  getNavigatorExtension,
-} from '../util/extension';
-import { getComponentForItem, shouldRenderRepeatButton, isHiddenItem, getDecimalValue } from '../util/index';
+import { getQuestionnaireUnitExtensionValue, getPresentationButtonsExtension, getNavigatorExtension } from '../util/extension';
+import { getTopLevelElements } from '../util/getTopLevelElements';
 import { IE11HackToWorkAroundBug187484 } from '../util/hacks';
+import { getComponentForItem, shouldRenderRepeatButton, isHiddenItem, getDecimalValue } from '../util/index';
 import { QuestionniareInspector } from '../util/questionnaireInspector';
-import { RenderContext } from '../util/renderContext';
-import { ScoringCalculator } from '../util/scoringCalculator';
 import {
   getRootQuestionnaireResponseItemFromData,
   Path,
@@ -47,8 +42,9 @@ import {
   getQuestionnaireDefinitionItem,
   getResponseItemAndPathWithLinkId,
 } from '../util/refero-core';
+import { RenderContext } from '../util/renderContext';
+import { ScoringCalculator } from '../util/scoringCalculator';
 import { shouldFormBeDisplayedAsStepView } from '../util/shouldFormBeDisplayedAsStepView';
-import { getTopLevelElements } from '../util/getTopLevelElements';
 
 interface StateProps {
   formDefinition?: FormDefinition | null;
@@ -62,8 +58,8 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
     this.state = {
       valid: true,
       validated: false,
-      showCancelLightbox: false,  
-      scoringCalculator: questionnaire ? this.getScoringCalculator(questionnaire) : undefined
+      showCancelLightbox: false,
+      scoringCalculator: questionnaire ? this.getScoringCalculator(questionnaire) : undefined,
     };
   }
 
@@ -97,7 +93,7 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
         nextProps.language,
         nextProps.syncQuestionnaireResponse
       );
-      this.setState({scoringCalculator: this.getScoringCalculator(nextProps.questionnaire)});
+      this.setState({ scoringCalculator: this.getScoringCalculator(nextProps.questionnaire) });
     }
   }
 
@@ -141,7 +137,7 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
   updateQuestionnaireResponseWithScore = (
     scores: { [linkId: string]: number | undefined },
     questionnaire: Questionnaire,
-    questionnaireResponse: QuestionnaireResponse,
+    questionnaireResponse: QuestionnaireResponse
   ): void => {
     const actions: Array<NewValueAction> = [];
     for (const linkId in scores) {
@@ -173,20 +169,20 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
           }
           break;
         }
-        case ItemType.INTEGER: {          
+        case ItemType.INTEGER: {
           const intValue = value !== undefined ? Math.round(value) : undefined;
           for (const itemAndPath of itemsAndPaths) {
             actions.push(newIntegerValue(itemAndPath.path, intValue, item));
           }
           break;
         }
-      }    
+      }
     }
 
     for (const a of actions) {
       this.props.dispatch(a);
     }
-  }
+  };
 
   renderFormItems(pdf?: boolean): Array<JSX.Element> | undefined {
     const { formDefinition, resources, formData, promptLoginMessage } = this.props;

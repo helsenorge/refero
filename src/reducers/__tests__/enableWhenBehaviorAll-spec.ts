@@ -1,6 +1,6 @@
 import enableWhenDataModel from './__data__/enableWhenBehaviorAll';
 import { Form } from '../form';
-import { QuestionnaireItem } from '../../types/fhir';
+import { QuestionnaireItem } from 'fhir/r4';
 import { getQuestionnaireDefinitionItem, getDefinitionItems } from '../../util/refero-core';
 import { getResponseItem, pathify, clickCheckbox } from './utils';
 
