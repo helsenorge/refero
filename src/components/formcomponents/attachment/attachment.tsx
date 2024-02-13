@@ -52,7 +52,7 @@ export interface Props {
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
 }
 
-class AttachmentComponent extends React.Component<Props & ValidationProps> {
+export class AttachmentComponent extends React.Component<Props & ValidationProps> {
   onUpload = (files: File[], cb: (success: boolean, errormessage: TextMessage | null, uploadedFile?: UploadedFile) => void): void => {
     const { uploadAttachment, path, item, onAnswerChange } = this.props;
     if (uploadAttachment) {
