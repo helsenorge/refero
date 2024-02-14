@@ -10,7 +10,7 @@ import LanguageLocales from '@helsenorge/core-utils/constants/languages';
 import FormFillerSidebar from './FormFillerSidebar';
 import { emptyPropertyReplacer } from './helpers';
 import { getResources } from './resources/referoResources';
-import skjema from './skjema/NHN_Test_Table_SvaralternativerStyrer.json';
+import skjema from './skjema/NHNHelseopplysingerExtractTextOutput-nb-NO (3).json';
 import { ReferoContainer } from '../components';
 import rootReducer from '../reducers';
 

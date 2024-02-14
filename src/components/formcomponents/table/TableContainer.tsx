@@ -74,6 +74,7 @@ const TableContainer = ({
           <>
             <h3>{headline}</h3>
             <TableHn1 items={items} questionnaireResponse={questionnaireResponse} />
+            <br />
           </>
         );
       case TableCodes.tableHn2:
@@ -81,6 +82,7 @@ const TableContainer = ({
           <>
             <h3>{headline}</h3>
             <TableHn2 items={items} tableCodesCoding={tableCodesCoding} questionnaireResponse={questionnaireResponse} />
+            <br />
           </>
         );
       case TableCodes.gtable:
@@ -88,6 +90,7 @@ const TableContainer = ({
           <>
             <h3>{headline}</h3>
             <GTable items={items} questionnaireResponse={questionnaireResponse} tableCodesCoding={tableCodesCoding} />
+            <br />
           </>
         );
       case TableCodes.table:
@@ -100,10 +103,11 @@ const TableContainer = ({
               resource={resource}
               tableCodesCoding={tableCodesCoding}
             />
+            <br />
           </>
         );
       default:
-        return <br />;
+        return <></>;
     }
   }
 };

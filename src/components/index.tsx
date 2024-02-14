@@ -155,12 +155,12 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
           const extension = getQuestionnaireUnitExtensionValue(item);
           if (!extension) continue;
 
-          const quantity = {
+          const quantity: Quantity = {
             unit: extension.display,
             system: extension.system,
             code: extension.code,
             value: getDecimalValue(item, value),
-          } as Quantity;
+          };
           for (const itemAndPath of itemsAndPaths) {
             actions.push(newQuantityValue(itemAndPath.path, quantity, item));
           }

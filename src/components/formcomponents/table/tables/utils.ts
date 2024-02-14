@@ -25,7 +25,13 @@ import ItemType, { IItemType } from '../../../../constants/itemType';
 import { getQuestionnaireItemCodeValue } from '../../../../util/codingsystem';
 import { getCalculatedExpressionExtension, getCopyExtension } from '../../../../util/extension';
 import { evaluateFhirpathExpressionToGetString } from '../../../../util/fhirpathHelper';
-import { Path, enableWhenMatchesAnswer, getQuestionnaireResponseItemsWithLinkId, isInGroupContext } from '../../../../util/refero-core';
+import {
+  Path,
+  enableWhenMatchesAnswer,
+  getQuestionnaireResponseItemsWithLinkId,
+  getResponseItemAndPathWithLinkId,
+  isInGroupContext,
+} from '../../../../util/refero-core';
 
 function extractValueFromCoding(coding: Coding | undefined, field: keyof Pick<Coding, 'code' | 'display' | 'system'> = 'display'): string {
   if (!coding) return '';
@@ -190,16 +196,24 @@ export const getValueIfDataReceiver = (
   item: QuestionnaireItem,
   questionnaireResponse?: QuestionnaireResponse | null
 ): QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[] | undefined => {
-  const extension = getCopyExtension(item);
-
-  if (extension) {
-    let result = evaluateFhirpathExpressionToGetString(extension, questionnaireResponse);
+  const copyExtension = getCopyExtension(item);
+  const calculatedExpressionExtension = getCalculatedExpressionExtension(item);
+  if (calculatedExpressionExtension) {
+    if (questionnaireResponse) {
+      const res = getResponseItemAndPathWithLinkId(item.linkId, questionnaireResponse, []);
+      return res[0].item.answer;
+    }
+    return undefined;
+  }
+  if (copyExtension) {
+    let result = evaluateFhirpathExpressionToGetString(copyExtension, questionnaireResponse);
 
     if (!!getCalculatedExpressionExtension(item)) {
       result = result.map((m: { value: number }) => {
         return m.value;
       });
     }
+
     return getQuestionnaireResponseItemAnswer(item.type as Exclude<typeof ItemType[keyof typeof ItemType], 'url'>, result);
   }
   return undefined;
@@ -297,6 +311,7 @@ export const addAnswerToItems = (
   }
   const processItem = (item: QuestionnaireItem): QuestionnaireItemWithAnswers => {
     const res = getValueIfDataReceiver(item, questionnaireResponse);
+
     const clonedItems = structuredClone(item);
     const questionnaireResponseItem: QuestionnaireItemWithAnswers = {
       ...clonedItems,
