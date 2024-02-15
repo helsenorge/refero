@@ -372,9 +372,14 @@ export const sortByItemType = (aValue: string, bValue: string, sortOrder: SortDi
     case 'decimal':
       return compareNumbers(aValue, bValue, sortOrder);
     default:
-      return sortOrder === SortDirection.asc ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
+      return compareStrings(aValue, bValue, sortOrder);
   }
 };
+
+function compareStrings(aValue: string, bValue: string, sortOrder: SortDirection): number {
+  return sortOrder === SortDirection.asc ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
+}
+
 function compareDates(aValue: string, bValue: string, sortOrder: SortDirection): number {
   const dateA = moment(aValue, DATEFORMATS.DATETIME);
   const dateB = moment(bValue, DATEFORMATS.DATETIME);

@@ -104,8 +104,11 @@ export const sortTableRows = (table: IGTable, columnIndex: number, sortOrder: So
 
       const aColumn = a.columns[columnIndex];
       const bColumn = b.columns[columnIndex];
-      const aValue = aColumn.value || '';
-      const bValue = bColumn.value || '';
+      if (!aColumn || !bColumn) {
+        return 0;
+      }
+      const aValue = aColumn?.value || '';
+      const bValue = bColumn?.value || '';
 
       return sortByItemType(aValue, bValue, sortOrder, aColumn.type);
     }),
