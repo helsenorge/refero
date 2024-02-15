@@ -1,11 +1,7 @@
+import { QuestionnaireResponseItem, QuestionnaireItemEnableWhen, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { ThunkDispatch } from 'redux-thunk';
 
-import {
-  QuestionnaireResponseItem,
-  QuestionnaireItemEnableWhen,
-  QuestionnaireItemEnableBehaviorCodes,
-  QuestionnaireResponseItemAnswer,
-} from '../types/fhir';
+import { QuestionnaireItemEnableBehaviorCodes } from '../types/fhirEnums';
 
 import { enableWhenMatchesAnswer, getQuestionnaireResponseItemWithLinkid, getResponseItems, Path, isInGroupContext } from './refero-core';
 import { NewValueAction } from '../actions/newValue';

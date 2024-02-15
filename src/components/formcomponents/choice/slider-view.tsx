@@ -1,8 +1,7 @@
 import * as React from 'react';
 
+import { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
 import { ChangeHandler, useFormContext } from 'react-hook-form';
-
-import { QuestionnaireItem, QuestionnaireItemAnswerOption } from '../../../types/fhir';
 
 import { Slider, SliderStep } from '@helsenorge/designsystem-react/components/Slider';
 
@@ -34,7 +33,7 @@ const SliderView: React.FC<SliderProps> = ({ item, handleChange, children }) => 
 
   const onValueChange = (index: number): void => {
     console.log('index', index);
-    const code = item.answerOption?.[index]?.valueCoding.code;
+    const code = item.answerOption?.[index]?.valueCoding?.code;
     console.log('code', code);
     if (code) {
       handleChange(code);
@@ -66,7 +65,7 @@ function mapToSliderStep(answerOption: QuestionnaireItemAnswerOption): SliderSte
 }
 
 function getLeftRightLabels(answerOptions: QuestionnaireItemAnswerOption[]): LeftRightLabels | undefined {
-  const displayLabels = answerOptions.map(option => option.valueCoding.display).filter(display => display) as string[];
+  const displayLabels = answerOptions.map(option => option.valueCoding?.display).filter(display => display) as string[];
 
   if (displayLabels.length > 1) {
     const leftRightLabels: LeftRightLabels = [displayLabels[0], displayLabels[displayLabels.length - 1]];

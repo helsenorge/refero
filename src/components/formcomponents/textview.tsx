@@ -1,8 +1,7 @@
 import * as React from 'react';
 
 import DOMPurify from 'dompurify';
-
-import { QuestionnaireItem } from '../../types/fhir';
+import { QuestionnaireItem } from 'fhir/r4';
 
 import { renderPrefix, getText, getId } from '../../util/index';
 

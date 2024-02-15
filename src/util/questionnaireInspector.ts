@@ -1,4 +1,4 @@
-import { QuestionnaireItem, Questionnaire, QuestionnaireResponse } from '../types/fhir';
+import { QuestionnaireItem, Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 
 import { getQuestionnaireDefinitionItem, getResponseItemAndPathWithLinkId, ItemAndPath } from './refero-core';
 

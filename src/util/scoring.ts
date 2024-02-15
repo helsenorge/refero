@@ -1,6 +1,5 @@
+import { QuestionnaireItem, Coding, Extension } from 'fhir/r4';
 import * as uuid from 'uuid';
-
-import { QuestionnaireItem, Coding, Extension } from '../types/fhir';
 
 import { getCalculatedExpressionExtension } from './extension';
 import ExtensionConstants from '../constants/extensions';

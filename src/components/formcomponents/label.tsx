@@ -1,11 +1,11 @@
 import * as React from 'react';
 
 import DOMPurify from 'dompurify';
+import { QuestionnaireItem, Questionnaire } from 'fhir/r4';
 
-import { QuestionnaireItem, Questionnaire } from '../../types/fhir';
+import { Resources } from '../../types/resources';
 
 import { getText, renderPrefix } from '../../util/index';
-import { Resources } from '../../types/resources';
 
 interface Props {
   item: QuestionnaireItem;

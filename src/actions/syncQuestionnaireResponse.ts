@@ -4,7 +4,7 @@ import {
   QuestionnaireItem,
   QuestionnaireResponseItem,
   QuestionnaireResponseItemAnswer,
-} from '../types/fhir';
+} from 'fhir/r4';
 
 import { createQuestionnaireResponseItem } from './generateQuestionnaireResponse';
 import ItemType from '../constants/itemType';

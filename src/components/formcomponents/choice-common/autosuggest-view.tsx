@@ -1,10 +1,10 @@
 import * as React from 'react';
 
+import { ValueSet, QuestionnaireItem, Questionnaire, Coding, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { Collapse } from 'react-collapse';
 import { useFormContext } from 'react-hook-form';
 
 import { AutoSuggestProps } from '../../../types/autoSuggestProps';
-import { ValueSet, QuestionnaireItem, Questionnaire, Coding, QuestionnaireResponseItemAnswer } from '../../../types/fhir';
 import { Resources } from '../../../types/resources';
 
 import Loader from '@helsenorge/designsystem-react/components/Loader';
@@ -204,7 +204,6 @@ const AutosuggestView: React.FC<AutosuggestViewProps> = props => {
             {...register(props.item.linkId, {
               required: isRequired(props.item),
               onChange: (e: React.FormEvent<HTMLInputElement>, params: { newValue: string; method: string }) => onChangeInput(e, params),
-              onBlur: onBlur,
             })}
             id={getId(props.id)}
             label={

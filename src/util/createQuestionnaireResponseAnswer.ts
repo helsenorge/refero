@@ -1,4 +1,4 @@
-import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from '../types/fhir';
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 
 export function createQuestionnaireResponseAnswer(item: QuestionnaireItem): QuestionnaireResponseItemAnswer | undefined {
   const answer = {} as QuestionnaireResponseItemAnswer;

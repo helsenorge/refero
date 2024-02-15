@@ -4,7 +4,7 @@ import {
   QuestionnaireResponse,
   QuestionnaireResponseItemAnswer,
   QuestionnaireItemAnswerOption,
-} from '../types/fhir';
+} from 'fhir/r4';
 
 import { getExtension, getCalculatedExpressionExtension } from './extension';
 import { evaluateFhirpathExpressionToGetString } from './fhirpathHelper';
@@ -266,7 +266,7 @@ export class ScoringCalculator {
     if (answer.valueCoding) {
       if (item.answerOption) {
         for (const o of item.answerOption) {
-          if (o.valueCoding.code === answer.valueCoding.code && o.valueCoding.system === answer.valueCoding.system) {
+          if (o.valueCoding?.code === answer.valueCoding.code && o.valueCoding?.system === answer.valueCoding.system) {
             return o;
           }
         }

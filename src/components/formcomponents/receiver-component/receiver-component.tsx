@@ -1,9 +1,9 @@
 import * as React from 'react';
 
 import classNames from 'classnames';
+import { Coding } from 'fhir/r4';
 import { useFieldArray, useFormContext } from 'react-hook-form';
 
-import { Coding } from '../../../types/fhir';
 import { EnhetType, OrgenhetHierarki } from '../../../types/orgenhetHierarki';
 import { Resources } from '../../../types/resources';
 

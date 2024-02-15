@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { QuestionnaireItem } from '../../../types/fhir';
+import { QuestionnaireItem } from 'fhir/r4';
 
 import { renderPrefix, getText } from '../../../util/index';
 

@@ -1,7 +1,6 @@
+import { Coding, QuestionnaireItem, Attachment, QuestionnaireResponseItem, Quantity } from 'fhir/r4';
 import { Action } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
-
-import { Coding, QuestionnaireItem, Attachment, QuestionnaireResponseItem, Quantity } from '../types/fhir';
 
 import { GlobalState } from '../reducers';
 import { Path } from '../util/refero-core';

@@ -1,15 +1,9 @@
 import * as React from 'react';
 
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer, Attachment, QuestionnaireResponseItem, Questionnaire } from 'fhir/r4';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
-import {
-  QuestionnaireItem,
-  QuestionnaireResponseItemAnswer,
-  Attachment,
-  QuestionnaireResponseItem,
-  Questionnaire,
-} from '../../../types/fhir';
 import { ValidationProps } from '../../../types/formTypes/validation';
 import { Resources } from '../../../types/resources';
 import { TextMessage } from '../../../types/text-message';

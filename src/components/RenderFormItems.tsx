@@ -1,9 +1,9 @@
 import React from 'react';
 
+import { QuestionnaireItem, QuestionnaireResponseItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
-import { QuestionnaireItem, QuestionnaireResponseItem, QuestionnaireResponseItemAnswer } from '../types/fhir';
 import { ReferoProps } from '../types/referoProps';
 
 import { RepeatButton } from './formcomponents/repeat/repeat-button';

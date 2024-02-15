@@ -1,9 +1,9 @@
 import * as React from 'react';
 
+import { QuestionnaireItem, Questionnaire } from 'fhir/r4';
 import { Collapse } from 'react-collapse';
 import { useFormContext } from 'react-hook-form';
 
-import { QuestionnaireItem, Questionnaire } from '../../../types/fhir';
 import { Options } from '../../../types/formTypes/radioGroupOptions';
 import { Resources } from '../../../types/resources';
 
@@ -26,13 +26,13 @@ interface Props {
   getErrorMessage: (val: string) => string;
   renderDeleteButton: (className: string) => JSX.Element | undefined;
   repeatButton: JSX.Element;
-
+  children?: React.ReactNode;
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
 }
 
-const RadioView: React.SFC<Props> = ({
+const RadioView = ({
   options,
   item,
   questionnaire,
@@ -41,13 +41,12 @@ const RadioView: React.SFC<Props> = ({
   selected,
   resources,
   children,
-  getErrorMessage,
   repeatButton,
   renderDeleteButton,
   renderHelpButton,
   renderHelpElement,
   onRenderMarkdown,
-}) => {
+}: Props): JSX.Element | null => {
   if (!options) {
     return null;
   }

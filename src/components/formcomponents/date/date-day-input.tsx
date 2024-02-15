@@ -1,8 +1,9 @@
 import * as React from 'react';
 
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireItemInitial } from 'fhir/r4';
 import moment, { Moment } from 'moment';
 
-import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireItemInitial } from '../../../types/fhir';
+import { Resources } from '../../../types/resources';
 
 import Validation from '@helsenorge/designsystem-react/components/Validation';
 
@@ -15,7 +16,6 @@ import Constants from '../../../constants/index';
 import { getId, isRequired } from '../../../util';
 import { getPlaceholder, getValidationTextExtension } from '../../../util/extension';
 import { isReadOnly } from '../../../util/index';
-import { Resources } from '../../../types/resources';
 import TextView from '../textview';
 
 interface DateDayInputProps {

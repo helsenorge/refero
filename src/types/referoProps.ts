@@ -5,7 +5,7 @@ import { IActionRequester } from '../util/actionRequester';
 import { IQuestionnaireInspector } from '../util/questionnaireInspector';
 import { Resources } from './resources';
 import { AutoSuggestProps } from './autoSuggestProps';
-import { QuestionnaireResponse, Attachment, Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer, ValueSet } from './fhir';
+import { QuestionnaireResponse, Attachment, Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer, ValueSet } from 'fhir/r4';
 import { OrgenhetHierarki } from './orgenhetHierarki';
 import { TextMessage } from './text-message';
 

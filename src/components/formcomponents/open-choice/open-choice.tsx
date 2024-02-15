@@ -1,17 +1,10 @@
 import * as React from 'react';
 
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer, Resource, Coding, QuestionnaireResponseItem, ValueSet } from 'fhir/r4';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
 import { AutoSuggestProps } from '../../../types/autoSuggestProps';
-import {
-  QuestionnaireItem,
-  QuestionnaireResponseItemAnswer,
-  Resource,
-  Coding,
-  QuestionnaireResponseItem,
-  ValueSet,
-} from '../../../types/fhir';
 import { Options } from '../../../types/formTypes/radioGroupOptions';
 import { ValidationProps } from '../../../types/formTypes/validation';
 import { Resources } from '../../../types/resources';
@@ -147,7 +140,7 @@ const OpenChoice: React.FC<OpenChoiceProps & ValidationProps> = props => {
         }
       });
     } else if (answer && !Array.isArray(answer) && answer.valueCoding && answer.valueCoding.code) {
-      if (answer.valueCoding?.code === item.initial?.[0].valueCoding.code && answer.valueCoding?.display === undefined) {
+      if (answer.valueCoding?.code === item.initial?.[0].valueCoding?.code && answer.valueCoding?.display === undefined) {
         resetInitialAnswer(answer.valueCoding.code);
       }
       return [answer.valueCoding.code];

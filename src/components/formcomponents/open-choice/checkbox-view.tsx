@@ -1,10 +1,11 @@
 import * as React from 'react';
 
+import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { Collapse } from 'react-collapse';
 import { useFormContext } from 'react-hook-form';
 
-import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer } from '../../../types/fhir';
 import { Options } from '../../../types/formTypes/radioGroupOptions';
+import { Resources } from '../../../types/resources';
 
 import Checkbox from '@helsenorge/designsystem-react/components/Checkbox';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
@@ -13,7 +14,6 @@ import Validation from '@helsenorge/designsystem-react/components/Validation';
 
 import { getId, getSublabelText, getText, isRequired } from '../../../util';
 import { shouldShowExtraChoice } from '../../../util/choice';
-import { Resources } from '../../../types/resources';
 
 interface Props {
   options?: Array<Options>;

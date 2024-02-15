@@ -1,4 +1,4 @@
-import { QuestionnaireItem } from '../types/fhir';
+import { QuestionnaireItem } from 'fhir/r4';
 
 import { isItemSidebar } from './extension';
 import { FormDefinition } from '../reducers/form';

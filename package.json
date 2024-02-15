@@ -61,6 +61,7 @@
     "@types/dompurify": "^2.0.1",
     "@types/enzyme": "^3.10.13",
     "@types/enzyme-to-json": "^1.5.4",
+    "@types/fhir": "^0.0.41",
     "@types/fs-extra": "^9.0.13",
     "@types/jest": "^27.4.0",
     "@types/marked": "^3.0.0",

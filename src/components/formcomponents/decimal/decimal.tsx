@@ -1,10 +1,10 @@
 import * as React from 'react';
 
+import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { ValidationRule, useForm, useFormContext } from 'react-hook-form';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
-import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer } from '../../../types/fhir';
 import { ValidationProps } from '../../../types/formTypes/validation';
 import { Resources } from '../../../types/resources';
 

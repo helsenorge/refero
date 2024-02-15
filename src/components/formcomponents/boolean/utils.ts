@@ -1,4 +1,4 @@
-import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from '../../../types/fhir';
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 
 export const getBooleanValue = (answer: QuestionnaireResponseItemAnswer, item: QuestionnaireItem): boolean => {
   if (answer && answer.valueBoolean !== undefined) {

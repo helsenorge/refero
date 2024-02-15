@@ -1,9 +1,10 @@
 import * as React from 'react';
 
+import { QuestionnaireItem } from 'fhir/r4';
 import { useFormContext } from 'react-hook-form';
 
-import { QuestionnaireItem } from '../../../types/fhir';
 import { ValidationProps } from '../../../types/formTypes/validation';
+import { Resources } from '../../../types/resources';
 import { TextMessage } from '../../../types/text-message';
 
 import NotificationPanel from '@helsenorge/designsystem-react/components/NotificationPanel';
@@ -16,7 +17,6 @@ import { sizeIsValid, mimeTypeIsValid } from '@helsenorge/file-upload/components
 import constants, { VALID_FILE_TYPES } from '../../../constants';
 import { getId } from '../../../util';
 import { getValidationTextExtension } from '../../../util/extension';
-import { Resources } from '../../../types/resources';
 
 interface Props {
   onUpload: (files: Array<File>, cb: (success: boolean, errormessage: TextMessage | null, uploadedFile?: UploadedFile) => void) => void;

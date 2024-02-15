@@ -1,8 +1,8 @@
 import * as React from 'react';
 
+import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { ValidationRule, useFormContext } from 'react-hook-form';
 
-import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer } from '../../../types/fhir';
 import { ValidationProps } from '../../../types/formTypes/validation';
 import { Resources } from '../../../types/resources';
 

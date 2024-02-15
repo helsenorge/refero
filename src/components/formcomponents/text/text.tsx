@@ -1,12 +1,13 @@
 import * as React from 'react';
 
 import DOMPurify from 'dompurify';
-import { useForm, useFormContext } from 'react-hook-form';
+import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem } from 'fhir/r4';
+import { useFormContext } from 'react-hook-form';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
-import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem } from '../../../types/fhir';
 import { ValidationProps } from '../../../types/formTypes/validation';
+import { Resources } from '../../../types/resources';
 
 import Expander from '@helsenorge/designsystem-react/components/Expander';
 import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
@@ -35,7 +36,6 @@ import {
 } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
-import { Resources } from '../../../types/resources';
 import { SanitizeText } from '../../../util/sanitize/domPurifyHelper';
 import withCommonFunctions, { WithCommonFunctionsProps } from '../../with-common-functions';
 import TextView from '../textview';

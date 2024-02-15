@@ -1,8 +1,9 @@
 import * as React from 'react';
 
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { Moment } from 'moment';
 
-import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from '../../../types/fhir';
+import { Resources } from '../../../types/resources';
 
 import Validation from '@helsenorge/designsystem-react/components/Validation';
 
@@ -11,7 +12,6 @@ import { YearErrorResources, YearInput } from '@helsenorge/date-time/components/
 import { getId, isReadOnly, isRequired } from '../../../util';
 import { createDateFromYear } from '../../../util/createDateFromYear';
 import { getPlaceholder, getValidationTextExtension } from '../../../util/extension';
-import { Resources } from '../../../types/resources';
 import TextView from '../textview';
 
 interface Props {

@@ -10,11 +10,12 @@ import {
   Resource,
   ValueSetComposeIncludeConcept,
   ValueSetComposeInclude,
-} from '../types/fhir';
+} from 'fhir/r4';
+
 import { Options } from '../types/formTypes/radioGroupOptions';
+import { Resources } from '../types/resources';
 
 import { getItemControlExtensionValue, getValidationTextExtension } from './extension';
-import { Resources } from '../types/resources';
 import ExtensionConstants from '../constants/extensions';
 import Constants, { OPEN_CHOICE_ID } from '../constants/index';
 import itemControlConstants from '../constants/itemcontrol';
@@ -73,7 +74,7 @@ export function getSystem(item: QuestionnaireItem, code: string, containedResour
     }
   } else if (item.answerOption && code) {
     const matchingCode = item.answerOption.filter(x => x.valueCoding && x.valueCoding.code === code);
-    return matchingCode.length > 0 ? matchingCode[0].valueCoding.system : undefined;
+    return matchingCode.length > 0 ? matchingCode[0]?.valueCoding?.system : undefined;
   }
   return undefined;
 }

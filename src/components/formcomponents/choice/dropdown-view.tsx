@@ -1,9 +1,9 @@
 import * as React from 'react';
 
+import { QuestionnaireItem, Questionnaire } from 'fhir/r4';
 import { Collapse } from 'react-collapse';
 import { useFormContext } from 'react-hook-form';
 
-import { QuestionnaireItem, Questionnaire } from '../../../types/fhir';
 import { Options } from '../../../types/formTypes/radioGroupOptions';
 import { Resources } from '../../../types/resources';
 

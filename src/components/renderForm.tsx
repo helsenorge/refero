@@ -1,8 +1,8 @@
 import * as React from 'react';
 
+import { QuestionnaireResponse } from 'fhir/r4';
 import { FieldValues, UseFormReturn } from 'react-hook-form';
 
-import { QuestionnaireResponse } from '../types/fhir';
 import { ReferoProps } from '../types/referoProps';
 import { Resources } from '../types/resources';
 

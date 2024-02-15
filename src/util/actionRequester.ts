@@ -1,4 +1,4 @@
-import { Questionnaire, QuestionnaireResponse, QuestionnaireItem, Coding, Quantity } from '../types/fhir';
+import { Questionnaire, QuestionnaireResponse, QuestionnaireItem, Coding, Quantity } from 'fhir/r4';
 
 import { getItemControlValue } from './choice';
 import { getResponseItemAndPathWithLinkId, getQuestionnaireDefinitionItem, Path } from './refero-core';

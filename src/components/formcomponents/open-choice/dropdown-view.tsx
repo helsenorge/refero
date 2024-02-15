@@ -1,10 +1,11 @@
 import * as React from 'react';
 
+import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { Collapse } from 'react-collapse';
 import { useForm } from 'react-hook-form';
 
-import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer } from '../../../types/fhir';
 import { Options } from '../../../types/formTypes/radioGroupOptions';
+import { Resources } from '../../../types/resources';
 
 import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
 import Select from '@helsenorge/designsystem-react/components/Select';
@@ -15,7 +16,6 @@ import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 import { shouldShowExtraChoice } from '../../../util/choice';
 import { getValidationTextExtension } from '../../../util/extension';
 import { isRequired, getId, getSublabelText, getText } from '../../../util/index';
-import { Resources } from '../../../types/resources';
 
 interface DropdownViewProps {
   options?: Array<Options>;

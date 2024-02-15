@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useState } from 'react';
 
-import { QuestionnaireItem } from '../../types/fhir';
+import { QuestionnaireItem } from 'fhir/r4';
 
 interface Props {
   item: QuestionnaireItem | undefined;
