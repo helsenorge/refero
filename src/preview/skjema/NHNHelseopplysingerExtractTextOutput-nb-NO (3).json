@@ -1,0 +1,640 @@
+{
+  "resourceType": "Questionnaire",
+  "language": "nb-NO",
+  "id": "36af06fa-58ce-4e2f-84e4-070635fa86d1",
+  "name": "NHNHelseopplysingerExtractTextOutput",
+  "title": "Helseopplysinger",
+  "status": "draft",
+  "publisher": "NHN",
+  "meta": {
+    "profile": ["http://ehelse.no/fhir/StructureDefinition/sdf-Questionnaire"],
+    "tag": [{ "system": "urn:ietf:bcp:47", "code": "nb-NO", "display": "Bokmål" }],
+    "security": [{ "code": "1", "display": "Helseregister (Basis)", "system": "urn:oid:2.16.578.1.12.4.1.1.7618" }]
+  },
+  "contact": [{ "name": "http://www.nhn.no" }],
+  "subjectType": ["Patient"],
+  "extension": [
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sidebar",
+      "valueCoding": { "system": "http://helsenorge.no/fhir/ValueSet/sdf-sidebar", "code": "1" }
+    },
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-information-message",
+      "valueCoding": { "system": "http://helsenorge.no/fhir/ValueSet/sdf-information-message", "code": "1" }
+    },
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sidebar",
+      "valueCoding": { "system": "http://helsenorge.no/fhir/ValueSet/sdf-sidebar", "code": "2" }
+    },
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-information-message",
+      "valueCoding": { "system": "http://helsenorge.no/fhir/ValueSet/sdf-information-message", "code": "2" }
+    },
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefintion/sdf-itemControl-visibility",
+      "valueCodeableConcept": {
+        "coding": [
+          { "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions", "code": "hide-help", "display": "Hide help texts" },
+          {
+            "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
+            "code": "hide-sublabel",
+            "display": "Hide sublabel texts"
+          },
+          {
+            "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
+            "code": "hide-sidebar",
+            "display": "Hide sidebar texts"
+          }
+        ]
+      }
+    },
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-save-capabilities",
+      "valueCoding": { "system": "http://helsenorge.no/fhir/ValueSet/sdf-save-capabilities", "code": "3" }
+    },
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-presentationbuttons",
+      "valueCoding": { "system": "http://helsenorge.no/fhir/ValueSet/presentationbuttons", "code": "none" }
+    },
+    { "url": "http://ehelse.no/fhir/StructureDefinition/sdf-generatepdf", "valueBoolean": false }
+  ],
+  "date": "2023-09-27T00:00:00+02:00",
+  "contained": [
+    {
+      "url": "http://ehelse.no/fhir/ValueSet/Predefined",
+      "resourceType": "ValueSet",
+      "id": "1101",
+      "version": "1.0",
+      "name": "urn:oid:1101",
+      "title": "Ja / Nei (structor)",
+      "status": "draft",
+      "publisher": "NHN",
+      "compose": {
+        "include": [
+          {
+            "system": "urn:oid:2.16.578.1.12.4.1.1101",
+            "concept": [
+              { "code": "1", "display": "Ja" },
+              { "code": "2", "display": "Nei" }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "item": [
+    {
+      "linkId": "3fd5a056-f5a3-450e-ffaa-cbcb62f35a2e",
+      "type": "group",
+      "text": "Personopplysninger",
+      "required": false,
+      "item": [
+        {
+          "linkId": "f2af9ec6-0628-4ef2-86f1-d65601989e88",
+          "type": "string",
+          "text": "Fødselsnummer",
+          "required": false,
+          "extension": [
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+              "valueString": "Patient.identifier.where(use = 'official' and (system = 'urn:oid:2.16.578.1.12.4.1.4.1' or system = 'urn:oid:2.16.578.1.12.4.1.4.2')).value"
+            }
+          ],
+          "readOnly": true
+        },
+        {
+          "linkId": "ae72bbdd-73fb-44e3-81d1-b031e13ce7ff",
+          "type": "string",
+          "text": "Navn",
+          "required": false,
+          "extension": [
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+              "valueString": "Patient.name.where(use = 'official').select(given.join(' ') & ' ' & family)"
+            }
+          ],
+          "readOnly": true
+        },
+        {
+          "linkId": "7b441197-66c3-4580-8eaf-99996c242664",
+          "type": "string",
+          "text": "Alder",
+          "required": false,
+          "extension": [
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+              "valueString": "Patient.extension.where(url = 'http://helsenorge.no/fhir/StructureDefinition/sdf-age').value"
+            },
+            { "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-hidden", "valueBoolean": true }
+          ],
+          "readOnly": true
+        },
+        {
+          "linkId": "05eeb76d-9f28-4baa-a3b7-a94f9a1d4ee6",
+          "type": "string",
+          "text": "Kjønn",
+          "required": false,
+          "extension": [
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+              "valueString": "iif(%patient.gender.empty() or %patient.gender = 'other' or %patient.gender = 'unknown', 'Ukjent', iif(%patient.gender = 'female', 'Kvinne', 'Mann'))"
+            },
+            { "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-hidden", "valueBoolean": true }
+          ],
+          "readOnly": true
+        }
+      ]
+    },
+    {
+      "linkId": "1c774f61-44dc-4357-9b3f-949a172922b6",
+      "type": "group",
+      "text": "Pårørende",
+      "required": false,
+      "item": [
+        { "linkId": "c7b3a7e4-cca0-4641-997e-ccf40195f590", "type": "string", "text": "Navn", "required": false },
+        { "linkId": "cad026bd-22df-4d32-8985-dfe5828c7cbf", "type": "date", "text": "Fødselsdato", "required": false },
+        {
+          "linkId": "360030d1-2ab6-4598-e01f-c145389c7f3e",
+          "type": "string",
+          "text": "Telefonnummer",
+          "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/regex", "valueString": "^((\\+|00)(\\d{1,3}))?\\d{5,12}$" }],
+          "required": false
+        },
+        {
+          "linkId": "c01f89d9-f0b7-4fe8-878e-1c7d61431a74",
+          "type": "choice",
+          "text": "Relasjon",
+          "required": false,
+          "answerOption": [
+            {
+              "valueCoding": {
+                "id": "b409d91a-0d28-4266-8b02-f45f782ed21f",
+                "code": "ektefelle",
+                "system": "urn:uuid:a771df21-467f-4562-8320-c13069353a2a",
+                "display": "Ektefelle"
+              }
+            },
+            {
+              "valueCoding": {
+                "id": "b9416d91-1b44-4710-fcd4-7de4d57a350c",
+                "code": "samboer",
+                "system": "urn:uuid:a771df21-467f-4562-8320-c13069353a2a",
+                "display": "Samboer"
+              }
+            },
+            {
+              "valueCoding": {
+                "id": "096858a1-5169-4610-807d-7b8d0b5e8283",
+                "code": "sønn",
+                "system": "urn:uuid:a771df21-467f-4562-8320-c13069353a2a",
+                "display": "Sønn"
+              }
+            },
+            {
+              "valueCoding": {
+                "id": "f9ad92ef-bad3-48f7-852f-895c0c49714c",
+                "code": "datter",
+                "system": "urn:uuid:a771df21-467f-4562-8320-c13069353a2a",
+                "display": "Datter"
+              }
+            }
+          ],
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "radio-button" }]
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "a50dbc6e-4bc1-4e0c-b4f8-0dbb13c6407e",
+          "type": "choice",
+          "text": "Har du eneansvar for barn under 18 år eller andre med spesielle omsorgsbehov?",
+          "required": false,
+          "answerValueSet": "#1101"
+        }
+      ]
+    },
+    {
+      "linkId": "255d8642-52fe-4c09-841e-4c7e88be735e",
+      "type": "group",
+      "text": "Dine data",
+      "required": false,
+      "item": [
+        {
+          "linkId": "7987d763-6556-4f2c-d305-09c52b37a829",
+          "type": "choice",
+          "text": "Hvilke sykdommer har du?",
+          "required": false,
+          "answerOption": [
+            {
+              "valueCoding": {
+                "id": "cd610686-7405-44d0-9e03-625856bf573d",
+                "code": "hjertesykdom",
+                "system": "urn:uuid:ba095104-a956-4ffe-b5e6-b855f33cd87d",
+                "display": "Hjertesykdom"
+              }
+            },
+            {
+              "valueCoding": {
+                "id": "43ec43e0-49de-4858-89d5-8d21c5be8ab0",
+                "code": "lungesykdom",
+                "system": "urn:uuid:ba095104-a956-4ffe-b5e6-b855f33cd87d",
+                "display": "Lungesykdom"
+              }
+            },
+            {
+              "valueCoding": {
+                "id": "7ceef4d4-ecca-408a-8987-1f30864388b2",
+                "code": "mage-tarm-sykdom",
+                "system": "urn:uuid:ba095104-a956-4ffe-b5e6-b855f33cd87d",
+                "display": "Mage-tarm sykdom"
+              }
+            }
+          ],
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "check-box" }]
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "15657eda-6fe9-4b19-d26c-581315e35de1",
+          "type": "group",
+          "text": "Høyde, vekt og kroppsmasseindeks",
+          "required": false,
+          "item": [
+            {
+              "linkId": "Hoyde",
+              "type": "quantity",
+              "text": "Høyde",
+              "required": true,
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+                  "valueCoding": { "code": "cm", "display": "centimeter", "system": "http://unitsofmeasure.org" }
+                },
+                { "url": "http://hl7.org/fhir/StructureDefinition/minValue", "valueInteger": 10 },
+                { "url": "http://hl7.org/fhir/StructureDefinition/maxValue", "valueInteger": 250 },
+                { "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "Legg inn en verdi mellom 10 og 250" }
+              ]
+            },
+            {
+              "linkId": "Vekt",
+              "type": "quantity",
+              "text": "Vekt",
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+                  "valueCoding": { "code": "kg", "display": "kilo", "system": "http://unitsofmeasure.org" }
+                },
+                { "url": "http://hl7.org/fhir/StructureDefinition/minValue", "valueInteger": 1 },
+                { "url": "http://hl7.org/fhir/StructureDefinition/maxValue", "valueInteger": 750 },
+                { "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "Legg inn en verdi mellom 1 og 750" }
+              ],
+              "required": true
+            },
+            {
+              "linkId": "6f7c076a-9324-4bf7-8ef0-6424b1bb999e",
+              "type": "quantity",
+              "text": "Kroppsmasseindeks",
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+                  "valueCoding": { "code": "BMI", "display": "KMI", "system": "http://unitsofmeasure.org" }
+                },
+                { "url": "http://hl7.org/fhir/StructureDefinition/maxDecimalPlaces", "valueInteger": 2 },
+                {
+                  "url": "http://ehelse.no/fhir/StructureDefinition/sdf-calculatedExpression",
+                  "valueString": "QuestionnaireResponse.descendants().where(linkId='Vekt').answer.value.value / ((QuestionnaireResponse.descendants().where(linkId='Hoyde').answer.value.value/10000) * QuestionnaireResponse.descendants().where(linkId='Hoyde').answer.value.value)"
+                }
+              ],
+              "required": false,
+              "readOnly": true
+            },
+            {
+              "linkId": "281eda1b-4ca9-41c2-8ac5-9bc7983dfade",
+              "type": "display",
+              "text": "Du har fedme - grad 3 Du har høy risiko for flere helseproblemer, økt dødelighet og ytterligere økt helserisiko. En svakhet ved kroppsmasseindeks er at den ikke skiller mellom fett- og muskelmasse. For helsen har det dessuten betydning hvordan fettet er fordelt på kroppen. Fett som samles rundt de indre organene (innvollsfett), vurderes å være mer helseskadelig enn såkalt underhudsfett. Kilde: Folkehelseinstituttet",
+              "required": false,
+              "enableWhen": [
+                {
+                  "question": "6f7c076a-9324-4bf7-8ef0-6424b1bb999e",
+                  "operator": ">",
+                  "answerQuantity": { "value": 39.9, "system": "http://unitsofmeasure.org", "code": "BMI" }
+                }
+              ],
+              "_text": {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                    "valueMarkdown": "**Du har fedme - grad 3**\n\nDu har høy risiko for flere helseproblemer, økt dødelighet og ytterligere økt helserisiko.\n\nEn svakhet ved kroppsmasseindeks er at den **ikke skiller mellom fett- og muskelmasse**. For helsen har det dessuten betydning hvordan fettet er fordelt på kroppen. Fett som samles rundt de indre organene (innvollsfett), vurderes å være mer helseskadelig enn såkalt underhudsfett.\n\nKilde: Folkehelseinstituttet"
+                  }
+                ]
+              }
+            },
+            {
+              "linkId": "7de10210-1258-46df-80eb-2be4480297c3",
+              "type": "display",
+              "text": "Du har fedme - grad 2 Du har høy risiko for flere helseproblemer, og økt dødelighet. En svakhet ved kroppsmasseindeks er at den ikke skiller mellom fett- og muskelmasse. For helsen har det dessuten betydning hvordan fettet er fordelt på kroppen. Fett som samles rundt de indre organene (innvollsfett), vurderes å være mer helseskadelig enn såkalt underhudsfett. Kilde: Folkehelseinstituttet",
+              "required": false,
+              "enableWhen": [
+                {
+                  "question": "6f7c076a-9324-4bf7-8ef0-6424b1bb999e",
+                  "operator": ">",
+                  "answerQuantity": { "value": 34.9, "system": "http://unitsofmeasure.org", "code": "BMI" }
+                },
+                {
+                  "question": "6f7c076a-9324-4bf7-8ef0-6424b1bb999e",
+                  "operator": "<",
+                  "answerQuantity": { "value": 40, "system": "http://unitsofmeasure.org", "code": "BMI" }
+                }
+              ],
+              "enableBehavior": "all",
+              "_text": {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                    "valueMarkdown": "**Du har fedme - grad 2**\n\nDu har høy risiko for flere helseproblemer, og økt dødelighet.\n\nEn svakhet ved kroppsmasseindeks er at den **ikke skiller mellom fett- og muskelmasse**. For helsen har det dessuten betydning hvordan fettet er fordelt på kroppen. Fett som samles rundt de indre organene (innvollsfett), vurderes å være mer helseskadelig enn såkalt underhudsfett.\n\nKilde: Folkehelseinstituttet"
+                  }
+                ]
+              }
+            },
+            {
+              "linkId": "9b48c816-14be-48bc-826f-31702406553d",
+              "type": "display",
+              "text": "Du har fedme - grad 1 Du har økt for diabetes og økt dødelighet En svakhet ved kroppsmasseindeks er at den ikke skiller mellom fett- og muskelmasse. For helsen har det dessuten betydning hvordan fettet er fordelt på kroppen. Fett som samles rundt de indre organene (innvollsfett), vurderes å være mer helseskadelig enn såkalt underhudsfett. Kilde: Folkehelseinstituttet",
+              "required": false,
+              "enableWhen": [
+                {
+                  "question": "6f7c076a-9324-4bf7-8ef0-6424b1bb999e",
+                  "operator": ">",
+                  "answerQuantity": { "value": 29.9, "system": "http://unitsofmeasure.org", "code": "BMI" }
+                },
+                {
+                  "question": "6f7c076a-9324-4bf7-8ef0-6424b1bb999e",
+                  "operator": "<",
+                  "answerQuantity": { "value": 35, "system": "http://unitsofmeasure.org", "code": "BMI" }
+                }
+              ],
+              "enableBehavior": "all",
+              "_text": {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                    "valueMarkdown": "**Du har fedme - grad 1**\n\nDu har økt for diabetes og økt dødelighet\n\nEn svakhet ved kroppsmasseindeks er at den **ikke skiller mellom fett- og muskelmasse**. For helsen har det dessuten betydning hvordan fettet er fordelt på kroppen. Fett som samles rundt de indre organene (innvollsfett), vurderes å være mer helseskadelig enn såkalt underhudsfett.\n\nKilde: Folkehelseinstituttet"
+                  }
+                ]
+              }
+            },
+            {
+              "linkId": "9a7eece3-1542-4d30-918c-aac4177692b9",
+              "type": "display",
+              "text": "Du er overvektig Du har økt risiko for diabetes En svakhet ved kroppsmasseindeks er at den ikke skiller mellom fett- og muskelmasse. For helsen har det dessuten betydning hvordan fettet er fordelt på kroppen. Fett som samles rundt de indre organene (innvollsfett), vurderes å være mer helseskadelig enn såkalt underhudsfett. Kilde: Folkehelseinstituttet",
+              "required": false,
+              "enableWhen": [
+                {
+                  "question": "6f7c076a-9324-4bf7-8ef0-6424b1bb999e",
+                  "operator": "<",
+                  "answerQuantity": { "value": 30, "system": "http://unitsofmeasure.org", "code": "BMI" }
+                },
+                {
+                  "question": "6f7c076a-9324-4bf7-8ef0-6424b1bb999e",
+                  "operator": ">",
+                  "answerQuantity": { "value": 24.9, "system": "http://unitsofmeasure.org", "code": "BMI" }
+                }
+              ],
+              "enableBehavior": "all",
+              "_text": {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                    "valueMarkdown": "**Du er overvektig**\n\nDu har økt risiko for diabetes\n\nEn svakhet ved kroppsmasseindeks er at den **ikke skiller mellom fett- og muskelmasse**. For helsen har det dessuten betydning hvordan fettet er fordelt på kroppen. Fett som samles rundt de indre organene (innvollsfett), vurderes å være mer helseskadelig enn såkalt underhudsfett.\n\nKilde: Folkehelseinstituttet"
+                  }
+                ]
+              }
+            },
+            {
+              "linkId": "eb21a606-f887-463b-8e93-b6f401c58c78",
+              "type": "display",
+              "text": "Du har normalvektig En svakhet ved kroppsmasseindeks er at den ikke skiller mellom fett- og muskelmasse. For helsen har det dessuten betydning hvordan fettet er fordelt på kroppen. Fett som samles rundt de indre organene (innvollsfett), vurderes å være mer helseskadelig enn såkalt underhudsfett. Kilde: Folkehelseinstituttet",
+              "required": false,
+              "enableWhen": [
+                {
+                  "question": "6f7c076a-9324-4bf7-8ef0-6424b1bb999e",
+                  "operator": ">",
+                  "answerQuantity": { "value": 18.4, "system": "http://unitsofmeasure.org", "code": "BMI" }
+                },
+                {
+                  "question": "6f7c076a-9324-4bf7-8ef0-6424b1bb999e",
+                  "operator": "<",
+                  "answerQuantity": { "value": 25, "system": "http://unitsofmeasure.org", "code": "BMI" }
+                }
+              ],
+              "enableBehavior": "all",
+              "_text": {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                    "valueMarkdown": "**Du har normalvektig**\n\nEn svakhet ved kroppsmasseindeks er at den **ikke skiller mellom fett- og muskelmasse**. For helsen har det dessuten betydning hvordan fettet er fordelt på kroppen. Fett som samles rundt de indre organene (innvollsfett), vurderes å være mer helseskadelig enn såkalt underhudsfett.\n\nKilde: Folkehelseinstituttet"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "51c081da-0fd5-4cea-a90c-f6aa81a406d0",
+      "type": "display",
+      "text": "Du er undervektig. Du har lav risiko for diabetes, økt risiko for andre helseproblemer. En svakhet ved kroppsmasseindeks er at den ikke skiller mellom fett- og muskelmasse. For helsen har det dessuten betydning hvordan fettet er fordelt på kroppen. Fett som samles rundt de indre organene (innvollsfett), vurderes å være mer helseskadelig enn såkalt underhudsfett. Kilde: Folkehelseinstituttet",
+      "required": false,
+      "enableWhen": [
+        {
+          "question": "6f7c076a-9324-4bf7-8ef0-6424b1bb999e",
+          "operator": "<",
+          "answerQuantity": { "value": 18.4, "system": "http://unitsofmeasure.org", "code": "BMI" }
+        }
+      ],
+      "_text": {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+            "valueMarkdown": "**Du er undervektig.**\n\nDu har lav risiko for diabetes, økt risiko for andre helseproblemer.\n\nEn svakhet ved kroppsmasseindeks er at den **ikke skiller mellom fett- og muskelmasse**. For helsen har det dessuten betydning hvordan fettet er fordelt på kroppen. Fett som samles rundt de indre organene (innvollsfett), vurderes å være mer helseskadelig enn såkalt underhudsfett.\n\nKilde: Folkehelseinstituttet"
+          }
+        ]
+      }
+    },
+    {
+      "linkId": "e78c5d17-6f04-4f4e-c376-09e6a874ed8b",
+      "type": "group",
+      "text": "Oppsummering",
+      "code": [
+        {
+          "code": "1",
+          "display": "Default",
+          "system": "http://helsenorge.no/fhir/CodeSystem/RenderOptions",
+          "id": "16b354ef-6bd7-4724-8f2c-2cae678c654c"
+        }
+      ],
+      "required": false,
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": {
+            "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "table-hn1" }]
+          }
+        }
+      ],
+      "item": [
+        {
+          "linkId": "3aff8315-8bd0-4e24-8d81-f7f34b83c68c",
+          "type": "display",
+          "required": false,
+          "text": "Pasienten er en kvinne",
+          "enableWhen": [{ "question": "05eeb76d-9f28-4baa-a3b7-a94f9a1d4ee6", "operator": "=", "answerString": "Kvinne" }]
+        },
+        {
+          "linkId": "077e6da2-a354-4192-829b-57d2f379b909",
+          "type": "display",
+          "text": "Pasienten er en mann",
+          "required": false,
+          "enableWhen": [{ "question": "05eeb76d-9f28-4baa-a3b7-a94f9a1d4ee6", "operator": "=", "answerString": "Mann" }]
+        },
+        {
+          "linkId": "c156d21f-d2b3-4f5d-ca7e-0c0b8f7109b8",
+          "type": "string",
+          "text": "Pasienten har følgende alder: ",
+          "code": [
+            {
+              "code": "1",
+              "display": "Default",
+              "system": "http://helsenorge.no/fhir/CodeSystem/RenderOptions",
+              "id": "bad36938-1f23-41a2-887e-83bdf094ad92"
+            }
+          ],
+          "required": false,
+          "extension": [
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+              "valueString": "Patient.extension.where(url = 'http://helsenorge.no/fhir/StructureDefinition/sdf-age').value"
+            },
+            { "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-guidanceparameter", "valueString": "alder" }
+          ],
+          "readOnly": true
+        },
+        {
+          "linkId": "eb0c9151-acb9-47a6-e7eb-4f605bea45ad",
+          "type": "quantity",
+          "text": "Pasienten har en kroppsmasseindeks. Med re-kalkulasjon fra felter over. Virker uten tabell",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+              "valueCoding": { "code": "BMI", "display": "KMI", "system": "http://unitsofmeasure.org" }
+            },
+            { "url": "http://hl7.org/fhir/StructureDefinition/maxDecimalPlaces", "valueInteger": 2 },
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-calculatedExpression",
+              "valueString": "QuestionnaireResponse.descendants().where(linkId='Vekt').answer.value.value / ((QuestionnaireResponse.descendants().where(linkId='Hoyde').answer.value.value/10000) * QuestionnaireResponse.descendants().where(linkId='Hoyde').answer.value.value)"
+            }
+          ],
+          "required": false,
+          "readOnly": true
+        },
+        {
+          "linkId": "092af6eb-3680-438e-8f68-44fd402603b5",
+          "type": "quantity",
+          "text": "Pasienten har en kroppsmasseindeks UTEN kalkulasjon MED kopiering av data. Har fjernet det matematiske uttrykket manuelt- ",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+              "valueCoding": { "code": "BMI", "display": "KMI", "system": "http://unitsofmeasure.org" }
+            },
+            { "url": "http://hl7.org/fhir/StructureDefinition/maxDecimalPlaces", "valueInteger": 2 },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueString": "QuestionnaireResponse.descendants().where(linkId='6f7c076a-9324-4bf7-8ef0-6424b1bb999e').answer.value"
+            }
+          ],
+          "required": false,
+          "readOnly": true,
+          "enableWhen": [{ "answerBoolean": true, "question": "6f7c076a-9324-4bf7-8ef0-6424b1bb999e", "operator": "exists" }]
+        },
+        {
+          "linkId": "90b681c2-0064-47e5-8799-e9775b4b51e3",
+          "type": "choice",
+          "text": "Pasienten oppgir å ha følgende sykdommer:",
+          "required": false,
+          "answerOption": [
+            {
+              "valueCoding": {
+                "id": "cd610686-7405-44d0-9e03-625856bf573d",
+                "code": "hjertesykdom",
+                "system": "urn:uuid:ba095104-a956-4ffe-b5e6-b855f33cd87d",
+                "display": "Hjertesykdom"
+              }
+            },
+            {
+              "valueCoding": {
+                "id": "43ec43e0-49de-4858-89d5-8d21c5be8ab0",
+                "code": "lungesykdom",
+                "system": "urn:uuid:ba095104-a956-4ffe-b5e6-b855f33cd87d",
+                "display": "Lungesykdom"
+              }
+            },
+            {
+              "valueCoding": {
+                "id": "7ceef4d4-ecca-408a-8987-1f30864388b2",
+                "code": "mage-tarm-sykdom",
+                "system": "urn:uuid:ba095104-a956-4ffe-b5e6-b855f33cd87d",
+                "display": "Mage-tarm sykdom"
+              }
+            }
+          ],
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  { "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "check-box" },
+                  { "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }
+                ]
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueString": "QuestionnaireResponse.descendants().where(linkId='7987d763-6556-4f2c-d305-09c52b37a829').answer.value"
+            }
+          ],
+          "readOnly": true,
+          "enableWhen": [{ "answerBoolean": true, "question": "7987d763-6556-4f2c-d305-09c52b37a829", "operator": "exists" }]
+        },
+        {
+          "linkId": "8de0f72e-ab72-4d19-918b-fd41d8fb78c0",
+          "type": "display",
+          "text": "Pasienten har eneansvar for barn under 18 år eller andre med spesielle omsorgsbehov",
+          "required": false,
+          "enableWhen": [
+            {
+              "question": "a50dbc6e-4bc1-4e0c-b4f8-0dbb13c6407e",
+              "operator": "=",
+              "answerCoding": { "system": "urn:oid:2.16.578.1.12.4.1.1101", "code": "1" }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

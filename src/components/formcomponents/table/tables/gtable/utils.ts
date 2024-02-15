@@ -1,13 +1,12 @@
+import { Coding, QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r4';
 import * as uuid from 'uuid';
-
-import { Coding, QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItem } from '../../../../../types/fhir';
 
 import { SortDirection } from '@helsenorge/designsystem-react/components/Table';
 
 import { IGTable, IGTableColumn, IGTableHeaderItem, IGTableRow } from './interface';
 import codeSystems from '../../../../../constants/codingsystems';
 import { QuestionnaireItemWithAnswers } from '../interface';
-import { getCodeFromCodingSystem, getEnabledQuestionnaireItemsWithAnswers, getPrimitiveValueFromItemType } from '../utils';
+import { getCodeFromCodingSystem, getEnabledQuestionnaireItemsWithAnswers, getPrimitiveValueFromItemType, sortByItemType } from '../utils';
 
 export const getNumberOfRowsGTable = (items: QuestionnaireResponseItem[]): number => {
   if (items.length === 0) {
@@ -31,16 +30,19 @@ export const getValueFromAnswer = (rowIdx: number, item?: QuestionnaireItemWithA
 export const columnsForRowIndex = (answerItems: QuestionnaireItemWithAnswers[], rowIdx: number): IGTableColumn[] => {
   return Array.from({ length: answerItems.length }, (_, colIdx) => {
     const item = answerItems[colIdx];
+
     if (!item) {
       return {
         id: `empty-${rowIdx}-${colIdx}`,
         index: colIdx,
+        type: undefined,
         value: '',
       };
     }
     return {
       id: item.linkId,
       index: colIdx,
+      type: item.type,
       value: getValueFromAnswer(rowIdx, item),
     };
   });
@@ -96,10 +98,16 @@ export const sortTableRows = (table: IGTable, columnIndex: number, sortOrder: So
     headerRow: table.headerRow,
     id: table.id,
     rows: table.rows.sort((a, b) => {
-      const aValue = a?.columns.length > columnIndex ? a?.columns[columnIndex]?.value || '' : '';
-      const bValue = b?.columns.length > columnIndex ? b?.columns[columnIndex]?.value || '' : '';
+      if (a.columns.length <= columnIndex || b.columns.length <= columnIndex) {
+        return 0;
+      }
 
-      return sortOrder === SortDirection.asc ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
+      const aColumn = a.columns[columnIndex];
+      const bColumn = b.columns[columnIndex];
+      const aValue = aColumn.value || '';
+      const bValue = bColumn.value || '';
+
+      return sortByItemType(aValue, bValue, sortOrder, aColumn.type);
     }),
   };
   return sortedTable;

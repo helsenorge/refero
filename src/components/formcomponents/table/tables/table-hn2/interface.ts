@@ -1,6 +1,9 @@
+import { IItemType } from '../../../../../constants/itemType';
+
 export interface ITableH2Column {
   id: string;
   text: string;
+  type?: IItemType;
   index: number;
 }
 

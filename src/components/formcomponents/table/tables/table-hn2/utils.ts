@@ -1,4 +1,4 @@
-import { Coding, QuestionnaireItem, QuestionnaireResponse } from '../../../../../types/fhir';
+import { Coding, QuestionnaireItem, QuestionnaireResponse } from 'fhir/r4';
 
 import { SortDirection } from '@helsenorge/designsystem-react/components/Table';
 
@@ -12,6 +12,7 @@ import {
   findIndexByCode,
   getCodeFromCodingSystem,
   getEnabledQuestionnaireItemsWithAnswers,
+  sortByItemType,
   transformAnswersToListOfStrings,
 } from '../utils';
 
@@ -56,6 +57,7 @@ export const createColumnsForRow = (
     return {
       id: item.linkId,
       index: findIndexByCode(item, codeSystems.TableColumn),
+      type: item.type,
       text: getValueFromItemsToShow(item, itemsToShow),
     };
   });
@@ -101,8 +103,9 @@ export const sortTableRows = (table: ITableH2Row[], columnIndex: number, sortOrd
   return table.sort((a, b) => {
     const aValue = a?.columns.length > columnIndex ? a?.columns[columnIndex]?.text || '' : '';
     const bValue = b?.columns.length > columnIndex ? b?.columns[columnIndex]?.text || '' : '';
-
-    return sortOrder === SortDirection.asc ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
+    const aColumn = a.columns[columnIndex];
+    const type = aColumn?.type;
+    return sortByItemType(aValue, bValue, sortOrder, type);
   });
 };
 export const findCodeForColumnToSortBy = (coding: Coding[]): Coding | undefined => {

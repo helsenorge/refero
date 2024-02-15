@@ -2,10 +2,6 @@ import * as React from 'react';
 
 import classNames from 'classnames';
 import DOMPurify from 'dompurify';
-import { Collapse } from 'react-collapse';
-import { ThunkDispatch } from 'redux-thunk';
-
-import { AutoSuggestProps } from '../types/autoSuggestProps';
 import {
   Resource,
   Questionnaire,
@@ -14,7 +10,11 @@ import {
   QuestionnaireResponseItemAnswer,
   Attachment,
   ValueSet,
-} from '../types/fhir';
+} from 'fhir/r4';
+import { Collapse } from 'react-collapse';
+import { ThunkDispatch } from 'redux-thunk';
+
+import { AutoSuggestProps } from '../types/autoSuggestProps';
 import { FormChild } from '../types/formTypes/formChild';
 import { ValidationProps } from '../types/formTypes/validation';
 import { OrgenhetHierarki } from '../types/orgenhetHierarki';

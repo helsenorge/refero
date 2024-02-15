@@ -1,6 +1,9 @@
+import { IItemType } from '../../../../../constants/itemType';
+
 export interface IStandardTableColumn {
   id: string;
   index: number;
+  type?: IItemType;
   value: string;
 }
 

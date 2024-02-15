@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import { Coding, QuestionnaireItem, QuestionnaireResponse, Resource } from '../../../../../types/fhir';
+import { Coding, QuestionnaireItem, QuestionnaireResponse, Resource } from 'fhir/r4';
 
 import { Table as HnTable, ModeType, SortDirection, TableBody, TableCell, TableRow } from '@helsenorge/designsystem-react/components/Table';
 
@@ -18,6 +18,7 @@ interface Props {
 
 export const StandardTable = ({ items, questionnaireResponse, resource, tableCodesCoding }: Props): JSX.Element => {
   const displayToSortBy = getDisplayToSortBy(tableCodesCoding);
+
   const [sortDir, setSortDir] = useState<SortDirection | undefined>(transformCodingToSortDirection(tableCodesCoding));
   const [table, setTable] = useState<IStandardTable>(
     getStandardTableObject(items, questionnaireResponse, resource, sortDir, displayToSortBy)

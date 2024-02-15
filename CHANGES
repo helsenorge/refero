@@ -1,14 +1,40 @@
-## 14.0.1
+## 14.1.0-beta02
+
+---
+
+- Bugfix: fix calculated scoring fields being showed in tables, also added a linebreak after each table
+
+## 14.1.0-beta01
+
+---
+
+- fixed the sorting for tables and also changed logic for standardtable
+
+## 14.0.7
+
+---
+
+- Bugfix: Attachment Validation based on props max value, questionnaire item max attachment size rules and refero constant
+
+## 14.0.5
 
 ---
 
 - fixed slidercomponent not showing children
+
+## 14.0.1-beta01
+
+- removing singlequoutes from units on quantity in table
+- change the date output to norwegian format
+
+---
 
 ## 14.0.0-beta02
 
 - Added table feature to new major version
 
 ---
+
 ## 14.0.0-beta01
 
 - Added table feature to new major version

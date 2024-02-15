@@ -1,10 +1,5 @@
 import React, { useState, useEffect, ReactElement } from 'react';
 
-import { FormProvider, useForm } from 'react-hook-form';
-import { connect } from 'react-redux';
-import { ThunkDispatch } from 'redux-thunk';
-
-import { DispatchProps } from '../types/dispatchProps';
 import {
   QuestionnaireResponseItem,
   Questionnaire,
@@ -12,7 +7,12 @@ import {
   QuestionnaireItem,
   QuestionnaireResponseItemAnswer,
   Quantity,
-} from '../types/fhir';
+} from 'fhir/r4';
+import { FormProvider, useForm } from 'react-hook-form';
+import { connect } from 'react-redux';
+import { ThunkDispatch } from 'redux-thunk';
+
+import { DispatchProps } from '../types/dispatchProps';
 import { ReferoProps } from '../types/referoProps';
 
 import RenderForm from './renderForm';
@@ -180,12 +180,12 @@ const Refero = ({
           const extension = getQuestionnaireUnitExtensionValue(item);
           if (!extension) continue;
 
-          const quantity = {
+          const quantity: Quantity = {
             unit: extension.display,
             system: extension.system,
             code: extension.code,
             value: getDecimalValue(item, value),
-          } as Quantity;
+          };
           for (const itemAndPath of itemsAndPaths) {
             actions.push(newQuantityValue(itemAndPath.path, quantity, item));
           }

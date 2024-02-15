@@ -4,8 +4,9 @@ import {
   QuestionnaireItem,
   QuestionnaireItemEnableWhen,
   QuestionnaireResponse,
-  QuestionnaireEnableOperator,
-} from '../types/fhir';
+} from 'fhir/r4';
+
+import { QuestionnaireEnableOperator } from '../types/fhirEnums';
 
 import { getMinOccursExtensionValue } from './extension';
 import ItemType from '../constants/itemType';

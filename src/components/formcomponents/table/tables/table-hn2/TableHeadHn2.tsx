@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Coding } from '../../../../../types/fhir';
+import { Coding } from 'fhir/r4';
 
 import { HeaderCategory, SortDirection, TableHead, TableHeadCell, TableRow } from '@helsenorge/designsystem-react/components/Table';
 

@@ -1,8 +1,9 @@
+import { Questionnaire, QuestionnaireResponseItem, QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import marked from 'marked';
 import { ComponentClass } from 'react-redux';
 import * as uuid from 'uuid';
 
-import { Questionnaire, QuestionnaireResponseItem, QuestionnaireItem, QuestionnaireResponseItemAnswer } from '../types/fhir';
+import { Resources } from '../types/resources';
 
 import { isValid, invalidNodes } from '@helsenorge/core-utils/string-utils';
 import { ValidationProps } from '@helsenorge/form/components/form/validation';
@@ -39,10 +40,8 @@ import ExtensionConstants from '../constants/extensions';
 import { HyperlinkTarget } from '../constants/hyperlinkTarget';
 import Constants from '../constants/index';
 import ItemType from '../constants/itemType';
-import itemType from '../constants/itemType';
 import { RenderOptionCode } from '../constants/renderOptionCode';
 import { TableCodes } from '../constants/tableTypes';
-import { Resources } from '../types/resources';
 
 function openNewIfAbsolute(url: string): string {
   const regex = new RegExp('^(([a-z][a-z0-9+.-]*):.*)');
@@ -66,7 +65,7 @@ export const isTableCode = (extensionCode: string | string[]): boolean => {
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function getComponentForItem(type: string, extensionCode?: string | string[]) {
-  if (String(type) === itemType.GROUP && !!extensionCode && isTableCode(extensionCode)) {
+  if (String(type) === ItemType.GROUP && !!extensionCode && isTableCode(extensionCode)) {
     return TableContainer as ComponentClass<
       Omit<WithCommonFunctionsProps & ValidationProps & WithCommonFunctionsProps, keyof WithCommonFunctionsProps> & WithCommonFunctionsProps
     >;

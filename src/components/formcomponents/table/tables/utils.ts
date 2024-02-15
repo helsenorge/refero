@@ -1,16 +1,16 @@
-import moment from 'moment';
-
 import {
   Attachment,
   Coding,
   Quantity,
   QuestionnaireItem,
-  QuestionnaireItemEnableBehaviorCodes,
   QuestionnaireItemEnableWhen,
   QuestionnaireResponse,
   QuestionnaireResponseItem,
   QuestionnaireResponseItemAnswer,
-} from '../../../../types/fhir';
+} from 'fhir/r4';
+import moment from 'moment';
+
+import { QuestionnaireItemEnableBehaviorCodes } from '../../../../types/fhirEnums';
 
 import { SortDirection } from '@helsenorge/designsystem-react/components/Table';
 
@@ -20,11 +20,17 @@ import * as DateTimeConstants from '@helsenorge/date-time/constants/datetime';
 import { DATEFORMATS } from './constants';
 import { QuestionnaireItemWithAnswers } from './interface';
 import codeSystems, { CodeSystems, OPEN_CHOICE_SYSTEM } from '../../../../constants/codingsystems';
-import ItemType from '../../../../constants/itemType';
+import ItemType, { IItemType } from '../../../../constants/itemType';
 import { getQuestionnaireItemCodeValue } from '../../../../util/codingsystem';
 import { getCalculatedExpressionExtension, getCopyExtension } from '../../../../util/extension';
 import { evaluateFhirpathExpressionToGetString } from '../../../../util/fhirpathHelper';
-import { Path, enableWhenMatchesAnswer, getQuestionnaireResponseItemsWithLinkId, isInGroupContext } from '../../../../util/refero-core';
+import {
+  Path,
+  enableWhenMatchesAnswer,
+  getQuestionnaireResponseItemsWithLinkId,
+  getResponseItemAndPathWithLinkId,
+  isInGroupContext,
+} from '../../../../util/refero-core';
 
 function extractValueFromCoding(coding: Coding | undefined, field: keyof Pick<Coding, 'code' | 'display' | 'system'> = 'display'): string {
   if (!coding) return '';
@@ -37,7 +43,7 @@ const extractValueFromQuantity = (
   if (!quantity) return '';
   switch (field) {
     case 'value':
-      return `${quantity.value ?? 0} ${quantity.unit ?? ''} `;
+      return `${quantity.value ?? 0} ${quantity.unit ?? ''}`.replace(/'/g, '');
     case 'unit':
       return quantity.unit ?? '';
     case 'system':
@@ -53,7 +59,7 @@ const extractValueFromDate = (inputValue?: string): string => {
     return '';
   }
   const date = parseDate(String(inputValue));
-  return moment(date).locale('nb').format(DATEFORMATS.DATETIME);
+  return moment(date).locale('nb').format(DATEFORMATS.DATE);
 };
 const extractValueFromTime = (inputTime?: string): string => {
   if (!inputTime) {
@@ -189,17 +195,25 @@ export const getValueIfDataReceiver = (
   item: QuestionnaireItem,
   questionnaireResponse?: QuestionnaireResponse | null
 ): QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[] | undefined => {
-  const extension = getCopyExtension(item);
-
-  if (extension) {
-    let result = evaluateFhirpathExpressionToGetString(extension, questionnaireResponse);
+  const copyExtension = getCopyExtension(item);
+  const calculatedExpressionExtension = getCalculatedExpressionExtension(item);
+  if (calculatedExpressionExtension) {
+    if (questionnaireResponse) {
+      const res = getResponseItemAndPathWithLinkId(item.linkId, questionnaireResponse, []);
+      return res[0].item.answer;
+    }
+    return undefined;
+  }
+  if (copyExtension) {
+    let result = evaluateFhirpathExpressionToGetString(copyExtension, questionnaireResponse);
 
     if (!!getCalculatedExpressionExtension(item)) {
       result = result.map((m: { value: number }) => {
         return m.value;
       });
     }
-    return getQuestionnaireResponseItemAnswer(item.type, result);
+
+    return getQuestionnaireResponseItemAnswer(item.type as Exclude<typeof ItemType[keyof typeof ItemType], 'url'>, result);
   }
   return undefined;
 };
@@ -296,6 +310,7 @@ export const addAnswerToItems = (
   }
   const processItem = (item: QuestionnaireItem): QuestionnaireItemWithAnswers => {
     const res = getValueIfDataReceiver(item, questionnaireResponse);
+
     const clonedItems = structuredClone(item);
     const questionnaireResponseItem: QuestionnaireItemWithAnswers = {
       ...clonedItems,
@@ -342,4 +357,50 @@ export const getCodeFromCodingSystem = (coding: Coding[], codingSystem: string):
 
 export function findCodeBySystem<T extends { system?: string }>(coding: T[], system?: string): T[] {
   return coding.filter(code => code.system === system);
+}
+
+export const sortByItemType = (aValue: string, bValue: string, sortOrder: SortDirection, type?: IItemType): number => {
+  switch (type) {
+    case 'date':
+      return compareDates(aValue, bValue, sortOrder);
+    case 'dateTime':
+      return compareDates(aValue, bValue, sortOrder);
+    case 'time':
+      return compareTimes(aValue, bValue, sortOrder);
+    case 'integer':
+    case 'decimal':
+      return compareNumbers(aValue, bValue, sortOrder);
+    default:
+      return sortOrder === SortDirection.asc ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
+  }
+};
+function compareDates(aValue: string, bValue: string, sortOrder: SortDirection): number {
+  const dateA = moment(aValue, DATEFORMATS.DATETIME);
+  const dateB = moment(bValue, DATEFORMATS.DATETIME);
+
+  let comparisonResult = 0;
+  if (dateA.isBefore(dateB)) {
+    comparisonResult = -1;
+  } else if (dateA.isAfter(dateB)) {
+    comparisonResult = 1;
+  }
+  return sortOrder === 'asc' ? comparisonResult : -comparisonResult;
+}
+
+function compareTimes(aValue: string, bValue: string, sortOrder: SortDirection): number {
+  const format = DATEFORMATS.TIME;
+  const timeA = moment(aValue, format);
+  const timeB = moment(bValue, format);
+
+  if (sortOrder === SortDirection.asc) {
+    return timeA.isBefore(timeB) ? -1 : timeA.isAfter(timeB) ? 1 : 0;
+  } else {
+    return timeA.isAfter(timeB) ? -1 : timeA.isBefore(timeB) ? 1 : 0;
+  }
+}
+
+function compareNumbers(aValue: string, bValue: string, sortOrder: SortDirection): number {
+  const numberA = parseFloat(aValue);
+  const numberB = parseFloat(bValue);
+  return sortOrder === SortDirection.asc ? numberA - numberB : numberB - numberA;
 }

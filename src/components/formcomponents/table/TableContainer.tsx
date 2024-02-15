@@ -1,8 +1,5 @@
 import React from 'react';
 
-import { connect } from 'react-redux';
-import { ThunkDispatch } from 'redux-thunk';
-
 import {
   Coding,
   Questionnaire,
@@ -11,7 +8,9 @@ import {
   QuestionnaireResponseItem,
   QuestionnaireResponseItemAnswer,
   Resource,
-} from '../../../types/fhir';
+} from 'fhir/r4';
+import { connect } from 'react-redux';
+import { ThunkDispatch } from 'redux-thunk';
 
 import LanguageLocales from '@helsenorge/core-utils/constants/languages';
 
@@ -75,6 +74,7 @@ const TableContainer = ({
           <>
             <h3>{headline}</h3>
             <TableHn1 items={items} questionnaireResponse={questionnaireResponse} />
+            <br />
           </>
         );
       case TableCodes.tableHn2:
@@ -82,6 +82,7 @@ const TableContainer = ({
           <>
             <h3>{headline}</h3>
             <TableHn2 items={items} tableCodesCoding={tableCodesCoding} questionnaireResponse={questionnaireResponse} />
+            <br />
           </>
         );
       case TableCodes.gtable:
@@ -89,6 +90,7 @@ const TableContainer = ({
           <>
             <h3>{headline}</h3>
             <GTable items={items} questionnaireResponse={questionnaireResponse} tableCodesCoding={tableCodesCoding} />
+            <br />
           </>
         );
       case TableCodes.table:
@@ -101,10 +103,11 @@ const TableContainer = ({
               resource={resource}
               tableCodesCoding={tableCodesCoding}
             />
+            <br />
           </>
         );
       default:
-        return <>{'Nothing found'}</>;
+        return <></>;
     }
   }
 };
@@ -113,7 +116,6 @@ const mapStateToProps = (state: GlobalState, props: Props): EnhancedProps => {
   const group = props.item;
   const tableType = getCodingTextTableValues(group)[0];
   const resource = getFormDefinition(state)?.Content?.contained;
-
   return {
     headline: group.text ?? '',
     tableCodesCoding: group.code ?? [],

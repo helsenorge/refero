@@ -1,4 +1,4 @@
-import { Coding, QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItem, Resource } from '../../../../../types/fhir';
+import { Coding, QuestionnaireItem, QuestionnaireResponse, Resource } from 'fhir/r4';
 
 import { SortDirection } from '@helsenorge/designsystem-react/components/Table';
 
@@ -6,10 +6,15 @@ import { Options } from '@helsenorge/form/components/radio-group';
 
 import { IStandardTable, IStandardTableColumn, IStandardTableRow } from './interface';
 import codeSystems from '../../../../../constants/codingsystems';
-import ItemType from '../../../../../constants/itemType';
-import { getContainedOptions } from '../../../../../util/choice';
+import ItemType, { IItemType } from '../../../../../constants/itemType';
+import { getContainedOptions, getSystemForItem } from '../../../../../util/choice';
 import { QuestionnaireItemWithAnswers } from '../interface';
-import { getDisplayFromCodingSystem, getEnabledQuestionnaireItemsWithAnswers, transformAnswersToListOfStrings } from '../utils';
+import {
+  getDisplayFromCodingSystem,
+  getEnabledQuestionnaireItemsWithAnswers,
+  sortByItemType,
+  transformAnswersToListOfStrings,
+} from '../utils';
 
 export const emptyTable = (): IStandardTable => {
   return {
@@ -27,9 +32,10 @@ export const emptyTableWithId = (id: string): IStandardTable => {
   };
 };
 
-export const createTableColumn = (value: string, index: number, id: string): IStandardTableColumn => {
+export const createTableColumn = (value: string, index: number, id: string, type: IItemType | undefined): IStandardTableColumn => {
   return {
     value,
+    type,
     index,
     id,
   };
@@ -62,9 +68,11 @@ const processItem = (
   item: QuestionnaireItemWithAnswers,
   index: number,
   needsExtraColumn: boolean,
-  choiceValues?: Options[]
+  choiceValues?: Options[],
+  system?: string,
+  resource?: Resource[]
 ): IStandardTableRow[] => {
-  const columns = createColumnsFromAnswers(item, choiceValues);
+  const columns = createColumnsFromAnswers(item, choiceValues, system, resource);
   const processedColumns = needsExtraColumn ? columns : columns.slice(0, -1);
 
   const row: IStandardTableRow = {
@@ -74,7 +82,7 @@ const processItem = (
   };
 
   const childRows = item.item
-    ? item.item.flatMap((child, childIndex) => processItem(child, childIndex, needsExtraColumn, choiceValues))
+    ? item.item.flatMap((child, childIndex) => processItem(child, childIndex, needsExtraColumn, choiceValues, system, resource))
     : [];
 
   return [row, ...childRows];
@@ -84,37 +92,52 @@ export const createBodyRows = (
   items: QuestionnaireItem[],
   responseItems: QuestionnaireResponse,
   needsExtraColumn: boolean,
-  choiceValues?: Options[]
+  choiceValues?: Options[],
+  system?: string,
+  resource?: Resource[]
 ): IStandardTableRow[] => {
   const answers = getEnabledQuestionnaireItemsWithAnswers(items, responseItems);
 
-  return answers.flatMap((item, index) => processItem(item, index, needsExtraColumn, choiceValues));
+  return answers.flatMap((item, index) => processItem(item, index, needsExtraColumn, choiceValues, system, resource));
 };
 
-export const createRowsFromAnswersCodes = (item: QuestionnaireResponseItem, choiceValues?: Options[]): IStandardTableColumn[] => {
+export const createRowsFromAnswersCodes = (
+  item: QuestionnaireItemWithAnswers,
+  choiceValues?: Options[],
+  system?: string,
+  resource?: Resource[]
+): IStandardTableColumn[] => {
+  const itemSystem = getSystemForItem(item, resource);
   return (
     choiceValues?.map(value => ({
       id: `${value.type}-${value.type}`,
       index: Number(value.type ?? 0),
-      value: item.answer?.some(x => {
-        return x.valueCoding?.code === value.type;
-      })
-        ? 'X'
-        : '',
+      type: item.type,
+      value:
+        item.answer?.some(x => {
+          return x.valueCoding?.code === value.type;
+        }) && itemSystem === system
+          ? 'X'
+          : '',
     })) || []
   );
 };
 
-export const createColumnsFromAnswers = (item: QuestionnaireItemWithAnswers, choiceValues?: Options[]): IStandardTableColumn[] => {
+export const createColumnsFromAnswers = (
+  item: QuestionnaireItemWithAnswers,
+  choiceValues?: Options[],
+  system?: string,
+  resource?: Resource[]
+): IStandardTableColumn[] => {
   const type = item?.type;
   const answer = item?.answer;
-  const choiceColumns = createRowsFromAnswersCodes(item, choiceValues);
+  const choiceColumns = createRowsFromAnswersCodes(item, choiceValues, system, resource);
 
   const textAnswer = type && answer && choiceColumns.every(x => x.value === '') ? transformAnswersToListOfStrings(type, answer) : [];
   const columns: IStandardTableColumn[] = [
-    createTableColumn(item.text || '', 0, `${item.linkId}-question`),
+    createTableColumn(item.text || '', 0, `${item.linkId}-question`, type),
     ...choiceColumns,
-    createTableColumn(textAnswer.join(', '), choiceColumns.length + 1, `${item.linkId}-answer`),
+    createTableColumn(textAnswer.join(', '), choiceColumns.length + 1, `${item.linkId}-answer`, type),
   ];
   return columns;
 };
@@ -130,15 +153,15 @@ export const getStandardTableObject = (
     return emptyTable();
   }
 
-  const firstItem = findFirstChoiceItem(items);
-  if (!firstItem) {
+  const firstChoiceItem = findFirstChoiceItem(items);
+  if (!firstChoiceItem) {
     return emptyTableWithId(responseItems.id || '');
   }
-
-  const choiceValues = getContainedOptions(firstItem, resource) || [];
+  const system = getSystemForItem(firstChoiceItem, resource);
+  const choiceValues = getContainedOptions(firstChoiceItem, resource) || [];
   const extraColumnNeeded = needsExtraColumn(items, responseItems);
 
-  const rows = createBodyRows(items, responseItems, extraColumnNeeded, choiceValues);
+  const rows = createBodyRows(items, responseItems, extraColumnNeeded, choiceValues, system, resource);
   const header = createHeaderRow(choiceValues, extraColumnNeeded);
 
   if (displayToSortBy !== undefined && SortDirection) {
@@ -153,7 +176,21 @@ export const getStandardTableObject = (
 };
 
 export const findFirstChoiceItem = (items: QuestionnaireItem[]): QuestionnaireItem | undefined => {
-  return items.find((item: QuestionnaireItem) => item.type === ItemType.CHOICE);
+  const findChoice = (item: QuestionnaireItem): QuestionnaireItem | undefined => {
+    if (item.type === ItemType.CHOICE || item.type === ItemType.OPENCHOICE) {
+      return item;
+    }
+    return item.item?.reduce<QuestionnaireItem | undefined>((acc: QuestionnaireItem | undefined, currentItem: QuestionnaireItem) => {
+      return acc || findChoice(currentItem);
+    }, undefined);
+  };
+  for (const item of items) {
+    const result = findChoice(item);
+    if (result !== undefined) {
+      return result;
+    }
+  }
+  return undefined;
 };
 
 export const needsExtraColumn = (items: QuestionnaireItem[], responseItems: QuestionnaireResponse): boolean => {
@@ -171,7 +208,9 @@ export const sortTableRows = (table: IStandardTable, columnIndex: number, sortOr
       const aValue = a?.columns.length > columnIndex ? a?.columns[columnIndex]?.value || '' : '';
       const bValue = b?.columns.length > columnIndex ? b?.columns[columnIndex]?.value || '' : '';
 
-      return sortOrder === SortDirection.asc ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
+      const aColumn = a.columns[columnIndex];
+      const type = aColumn?.type;
+      return sortByItemType(aValue, bValue, sortOrder, type);
     }),
   };
   return sortedTable;

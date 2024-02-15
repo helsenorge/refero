@@ -1,3 +1,5 @@
+import { IItemType } from '../../../../../constants/itemType';
+
 export interface IGTable {
   id: string;
   headerRow: IGTableHeaderItem[];
@@ -17,5 +19,6 @@ export interface IGTableRow {
 export interface IGTableColumn {
   id: string;
   index: number;
+  type?: IItemType;
   value: string;
 }

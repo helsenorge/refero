@@ -1,11 +1,12 @@
-import { Questionnaire, QuestionnaireItem } from '../../../types/fhir';
+import { Questionnaire, QuestionnaireItem } from 'fhir/r4';
+
+import { Resources } from '../../../types/resources';
 
 import { RenderContextType } from '../../../constants/renderContextType';
 import { getText, renderPrefix } from '../../../util';
 import { getGroupItemControl } from '../../../util/group-item-control';
 import { Path } from '../../../util/refero-core';
 import { RenderContext } from '../../../util/renderContext';
-import { Resources } from '../../../types/resources';
 
 export const getColumns = (item: QuestionnaireItem): Array<string> => {
   const seenColumns = {};
