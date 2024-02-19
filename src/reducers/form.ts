@@ -155,7 +155,13 @@ function processAddRepeatItemAction(action: NewValueAction, state: Form): Form {
     if (!newItem) {
       return;
     }
-
+    if (item?.type === ItemType.BOOLEAN) {
+      if (item.initial && item.initial.length > 0 && item.initial[0].valueBoolean !== undefined) {
+        newItem.answer = [{ valueBoolean: item.initial[0]?.valueBoolean }];
+      } else {
+        newItem.answer = [{ valueBoolean: false }];
+      }
+    }
     const indexToInsert = arrayToAddItemTo.map(o => o.linkId).lastIndexOf(newItem.linkId);
     arrayToAddItemTo.splice(indexToInsert + 1, 0, newItem);
   });
