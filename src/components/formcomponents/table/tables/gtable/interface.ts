@@ -21,4 +21,5 @@ export interface IGTableColumn {
   index: number;
   type?: IItemType;
   value: string;
+  rawValue?: string | number | boolean;
 }

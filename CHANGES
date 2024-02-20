@@ -1,3 +1,9 @@
+## 14.1.0-beta03
+
+---
+
+- Bugfix: fix sorting of different itemtypes in tables, dates, quantity, string and numbers
+
 ## 14.1.0-beta02
 
 ---
@@ -9,6 +15,12 @@
 ---
 
 - fixed the sorting for tables and also changed logic for standardtable
+
+## 14.0.8
+
+---
+
+- Bugfix: When Confirmation is repeatable, the added items now have a initial value of false
 
 ## 14.0.7
 

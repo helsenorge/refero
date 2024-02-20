@@ -31,19 +31,21 @@ import {
   getResponseItemAndPathWithLinkId,
   isInGroupContext,
 } from '../../../../util/refero-core';
+type QuantityKeys = keyof Pick<Quantity, 'value' | 'code' | 'system' | 'unit'> | 'display';
+type Codingkeys = keyof Pick<Coding, 'code' | 'display' | 'system'>;
+type AttachmentKeys = keyof Pick<Attachment, 'data' | 'url' | 'title' | 'size' | 'contentType' | 'language' | 'id' | 'hash' | 'creation'>;
 
-function extractValueFromCoding(coding: Coding | undefined, field: keyof Pick<Coding, 'code' | 'display' | 'system'> = 'display'): string {
+function extractValueFromCoding(coding: Coding | undefined, field: Codingkeys = 'display'): string {
   if (!coding) return '';
   return coding[field] ?? '';
 }
-const extractValueFromQuantity = (
-  quantity: Quantity | undefined,
-  field: keyof Pick<Quantity, 'value' | 'code' | 'system' | 'unit'> = 'value'
-): string | number => {
+const extractValueFromQuantity = (quantity: Quantity | undefined, field: QuantityKeys): string | number => {
   if (!quantity) return '';
   switch (field) {
-    case 'value':
+    case 'display':
       return `${quantity.value ?? 0} ${quantity.unit ?? ''}`.replace(/'/g, '');
+    case 'value':
+      return quantity.value ?? 0;
     case 'unit':
       return quantity.unit ?? '';
     case 'system':
@@ -78,10 +80,8 @@ const extractValueFromDateTime = (inputValue?: string): string => {
   const date = parseDate(String(inputValue));
   return moment(date).locale('nb').format(DATEFORMATS.DATETIME);
 };
-export const extractValueFromAttachment = (
-  inputValue?: Attachment,
-  field: keyof Pick<Attachment, 'data' | 'url' | 'title' | 'size' | 'contentType' | 'language' | 'id' | 'hash' | 'creation'> = 'url'
-): string | number => {
+
+export const extractValueFromAttachment = (inputValue?: Attachment, field: AttachmentKeys = 'url'): string | number => {
   if (inputValue) {
     switch (field) {
       case 'data':
@@ -111,9 +111,30 @@ export const extractValueFromAttachment = (
   }
 };
 
-export const getPrimitiveValueFromItemType = (
-  type: typeof ItemType[keyof typeof ItemType],
-  res: QuestionnaireResponseItemAnswer
+/* Typeguards */
+function isQuantityKey(key?: string): key is QuantityKeys {
+  return ['value', 'code', 'system', 'unit', 'display'].includes(key ?? '');
+}
+function isCodingKey(key?: string): key is Codingkeys {
+  return ['code', 'display', 'system'].includes(key ?? '');
+}
+
+function isAttachmentKey(key?: string): key is AttachmentKeys {
+  return ['data', 'url', 'title', 'size', 'contentType', 'language', 'id', 'hash', 'creation'].includes(key ?? '');
+}
+
+type ItemTypeToDataTypeMap = {
+  Coding: Codingkeys;
+  Quantity: QuantityKeys;
+  Attachment: AttachmentKeys;
+};
+export const getPrimitiveValueFromItemType = <
+  ItemType extends keyof ItemTypeToDataTypeMap,
+  DisplayType extends ItemTypeToDataTypeMap[ItemType]
+>(
+  type: IItemType,
+  res: QuestionnaireResponseItemAnswer,
+  displayType?: DisplayType
 ): string | number | never => {
   switch (type) {
     case ItemType.STRING:
@@ -133,11 +154,11 @@ export const getPrimitiveValueFromItemType = (
       return extractValueFromTime(res.valueTime);
     case ItemType.CHOICE:
     case ItemType.OPENCHOICE:
-      return extractValueFromCoding(res.valueCoding, 'display');
+      return extractValueFromCoding(res.valueCoding, isCodingKey(displayType) ? displayType : 'display');
     case ItemType.QUANTITY:
-      return extractValueFromQuantity(res.valueQuantity);
+      return extractValueFromQuantity(res.valueQuantity, isQuantityKey(displayType) ? displayType : 'display');
     case ItemType.ATTATCHMENT:
-      return extractValueFromAttachment(res.valueAttachment, 'data');
+      return extractValueFromAttachment(res.valueAttachment, isAttachmentKey(displayType) ? displayType : 'data');
     default:
       return '';
   }
@@ -199,7 +220,7 @@ export const getValueIfDataReceiver = (
   const calculatedExpressionExtension = getCalculatedExpressionExtension(item);
   if (calculatedExpressionExtension) {
     if (questionnaireResponse) {
-      const res = getResponseItemAndPathWithLinkId(item.linkId, questionnaireResponse, []);
+      const res = getResponseItemAndPathWithLinkId(item.linkId, questionnaireResponse);
       return res[0].item.answer;
     }
     return undefined;
@@ -361,20 +382,43 @@ export function findCodeBySystem<T extends { system?: string }>(coding: T[], sys
 
 export const sortByItemType = (aValue: string, bValue: string, sortOrder: SortDirection, type?: IItemType): number => {
   switch (type) {
-    case 'date':
+    case ItemType.DATE:
       return compareDates(aValue, bValue, sortOrder);
-    case 'dateTime':
+    case ItemType.DATETIME:
       return compareDates(aValue, bValue, sortOrder);
-    case 'time':
+    case ItemType.TIME:
       return compareTimes(aValue, bValue, sortOrder);
-    case 'integer':
-    case 'decimal':
+    case ItemType.INTEGER:
+    case ItemType.DECIMAL:
       return compareNumbers(aValue, bValue, sortOrder);
+    case ItemType.QUANTITY:
+      return compareQuantities(aValue, bValue, sortOrder);
+    case ItemType.STRING:
+    case ItemType.TEXT:
+    case ItemType.OPENCHOICE:
+      return compareStrings(aValue, bValue, sortOrder);
     default:
-      return sortOrder === SortDirection.asc ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
+      return compareStrings(aValue, bValue, sortOrder);
   }
 };
-function compareDates(aValue: string, bValue: string, sortOrder: SortDirection): number {
+
+const extractNumber = (value: string | undefined): number => {
+  if (!value) return 0;
+  const match = value.match(/\d+(\.\d+)?/);
+  return match ? parseFloat(match[0]) : 0;
+};
+
+const compareQuantities = (aValue: string | undefined, bValue: string | undefined, sortOrder: SortDirection): number => {
+  const numberA = extractNumber(aValue);
+  const numberB = extractNumber(bValue);
+  return sortOrder === SortDirection.asc ? numberA - numberB : numberB - numberA;
+};
+
+const compareStrings = (aValue: string, bValue: string, sortOrder: SortDirection): number => {
+  return sortOrder === SortDirection.asc ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
+};
+
+const compareDates = (aValue: string, bValue: string, sortOrder: SortDirection): number => {
   const dateA = moment(aValue, DATEFORMATS.DATETIME);
   const dateB = moment(bValue, DATEFORMATS.DATETIME);
 
@@ -385,9 +429,9 @@ function compareDates(aValue: string, bValue: string, sortOrder: SortDirection):
     comparisonResult = 1;
   }
   return sortOrder === 'asc' ? comparisonResult : -comparisonResult;
-}
+};
 
-function compareTimes(aValue: string, bValue: string, sortOrder: SortDirection): number {
+const compareTimes = (aValue: string, bValue: string, sortOrder: SortDirection): number => {
   const format = DATEFORMATS.TIME;
   const timeA = moment(aValue, format);
   const timeB = moment(bValue, format);
@@ -397,10 +441,9 @@ function compareTimes(aValue: string, bValue: string, sortOrder: SortDirection):
   } else {
     return timeA.isAfter(timeB) ? -1 : timeA.isBefore(timeB) ? 1 : 0;
   }
-}
-
-function compareNumbers(aValue: string, bValue: string, sortOrder: SortDirection): number {
+};
+const compareNumbers = (aValue: string, bValue: string, sortOrder: SortDirection): number => {
   const numberA = parseFloat(aValue);
   const numberB = parseFloat(bValue);
   return sortOrder === SortDirection.asc ? numberA - numberB : numberB - numberA;
-}
+};

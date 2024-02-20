@@ -27,6 +27,7 @@ import {
   REMOVE_ATTACHMENT_VALUE,
 } from '../actions/newValue';
 import { syncQuestionnaireResponse } from '../actions/syncQuestionnaireResponse';
+import itemType from '../constants/itemType';
 import { GlobalState } from '../reducers/index';
 import { createQuestionnaireResponseAnswer } from '../util/createQuestionnaireResponseAnswer';
 import { getMinOccursExtensionValue } from '../util/extension';
@@ -124,17 +125,18 @@ function getArrayToAddGroupTo(itemToAddTo: QuestionnaireResponseItem | undefined
 }
 
 function processAddRepeatItemAction(action: NewValueAction, state: Form): Form {
+  const { parentPath, responseItems, item } = action;
   return produce(state, draft => {
-    if (!action.parentPath) {
+    if (!parentPath) {
       return state;
     }
 
     let arrayToAddItemTo: Array<QuestionnaireResponseItem> | undefined = [];
-    if (action.parentPath.length === 0 && draft.FormData.Content) {
+    if (parentPath.length === 0 && draft.FormData.Content) {
       arrayToAddItemTo = draft.FormData.Content.item;
-    } else if (action.parentPath.length > 0) {
+    } else if (parentPath.length > 0) {
       // length >1 means group wrapped in group
-      const itemToAddTo = getResponseItemWithPath(action.parentPath, draft.FormData);
+      const itemToAddTo = getResponseItemWithPath(parentPath, draft.FormData);
       arrayToAddItemTo = getArrayToAddGroupTo(itemToAddTo);
     }
 
@@ -142,12 +144,12 @@ function processAddRepeatItemAction(action: NewValueAction, state: Form): Form {
       return;
     }
 
-    if (!action.responseItems || action.responseItems.length === 0) {
+    if (!responseItems || responseItems.length === 0) {
       return;
     }
 
     const newItem = copyItem(
-      action.responseItems[0],
+      responseItems[0],
       undefined,
       draft.FormDefinition.Content as Questionnaire,
       state.FormDefinition.Content as Questionnaire
@@ -155,7 +157,13 @@ function processAddRepeatItemAction(action: NewValueAction, state: Form): Form {
     if (!newItem) {
       return;
     }
-
+    if (item?.type === itemType.BOOLEAN) {
+      if (item.initial && item.initial.length > 0 && item.initial[0].valueBoolean !== undefined) {
+        newItem.answer = [{ valueBoolean: item.initial[0]?.valueBoolean }];
+      } else {
+        newItem.answer = [{ valueBoolean: false }];
+      }
+    }
     const indexToInsert = arrayToAddItemTo.map(o => o.linkId).lastIndexOf(newItem.linkId);
     arrayToAddItemTo.splice(indexToInsert + 1, 0, newItem);
   });
