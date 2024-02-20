@@ -1,9 +1,3 @@
-## 14.1.0-beta03
-
----
-
-- Bugfix: fix sorting of different itemtypes in tables, dates, quantity, string and numbers
-
 ## 14.1.0-beta02
 
 ---
