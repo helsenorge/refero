@@ -1,3 +1,9 @@
+## 14.0.9
+
+---
+
+- Bugfix: When Confirmation is repeatable, the added items now have a initial value of false. Added same functionality for nested items.
+
 ## 14.0.8
 
 ---
