@@ -1,3 +1,9 @@
+## 14.0.10
+
+---
+
+- Bugfix: confirmation items did not update in repeating groups after fix
+
 ## 14.0.9
 
 ---
