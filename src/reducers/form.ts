@@ -207,6 +207,14 @@ function processDeleteRepeatItemAction(action: NewValueAction, state: Form): For
   });
 }
 
+function addInitialValueToBooleanItem(definitionItem: QuestionnaireItem): QuestionnaireResponseItemAnswer[] | undefined {
+  if (definitionItem.initial && definitionItem.initial.length > 0 && definitionItem.initial[0].valueBoolean !== undefined) {
+    return [{ valueBoolean: definitionItem.initial[0].valueBoolean }];
+  } else {
+    return [{ valueBoolean: false }];
+  }
+}
+
 function copyItem(
   source: QuestionnaireResponseItem,
   target: QuestionnaireResponseItem | undefined,
@@ -248,10 +256,15 @@ function copyItem(
   }
   const defItem = getQuestionnaireDefinitionItem(source.linkId, questionnaireDraft.item);
 
-  if (defItem && defItem.type !== 'attachment') {
+  if (defItem && defItem.type !== itemType.ATTATCHMENT) {
     for (let i = 0; source.answer && i < source.answer.length; i++) {
-      if (!source.answer[i].item || source.answer[i].item?.length === 0) continue;
-
+      if (!source.answer[i].item || source.answer[i].item?.length === 0) {
+        if (defItem.type === itemType.BOOLEAN) {
+          target.answer = addInitialValueToBooleanItem(defItem);
+        } else {
+          continue;
+        }
+      }
       if (!target.answer) {
         target.answer = [];
       }
