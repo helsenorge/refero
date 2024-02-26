@@ -259,11 +259,7 @@ function copyItem(
   if (defItem && defItem.type !== itemType.ATTATCHMENT) {
     for (let i = 0; source.answer && i < source.answer.length; i++) {
       if (!source.answer[i].item || source.answer[i].item?.length === 0) {
-        if (defItem.type === itemType.BOOLEAN) {
-          target.answer = addInitialValueToBooleanItem(defItem);
-        } else {
-          continue;
-        }
+        continue;
       }
       if (!target.answer) {
         target.answer = [];
@@ -287,7 +283,9 @@ function copyItem(
       target.answer.push(targetAnswer);
     }
   }
-
+  if (defItem?.type === itemType.BOOLEAN) {
+    target.answer = addInitialValueToBooleanItem(defItem);
+  }
   return target;
 }
 
