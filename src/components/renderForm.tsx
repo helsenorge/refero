@@ -69,10 +69,11 @@ const RenderForm = ({
   return (
     <form onSubmit={methods.handleSubmit(onSubmitReactHookForm, handleInvalidForm)}>
       <Validation errorSummary="test" />
-
-      {children}
-      <Validation />
-
+      {React.Children.map(children as JSX.Element[], child => {
+        return child && child.props && child?.props?.name
+          ? React.createElement(child.type, { ...child.props, register: methods.register, key: child.props?.name })
+          : child;
+      })}
       <FormButtons
         isStepView={isStepView}
         submitButtonText={displayNextButton && resources.nextStep ? resources.nextStep : resources.formSend}

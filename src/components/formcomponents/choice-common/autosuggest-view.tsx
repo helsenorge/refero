@@ -203,7 +203,6 @@ const AutosuggestView: React.FC<AutosuggestViewProps> = props => {
           <Autosuggest
             {...register(props.item.linkId, {
               required: isRequired(props.item),
-              onChange: (e: React.FormEvent<HTMLInputElement>, params: { newValue: string; method: string }) => onChangeInput(e, params),
             })}
             id={getId(props.id)}
             label={
