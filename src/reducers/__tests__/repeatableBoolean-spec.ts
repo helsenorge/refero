@@ -24,7 +24,9 @@ describe('Given a questionnaire with multiple repeatable booleans', () => {
 
     it('Then repeated item should have an answer with 3 items', () => {
       const repeatedResponseItem = getResponseItem('1.0.4', newState, pathify('1', '1.0^1', '1.0.4')) as QuestionnaireResponseItem;
+      console.log('newState', JSON.stringify(newState, null, 2));
 
+      console.log('repeatedResponseItem', repeatedResponseItem);
       if (!repeatedResponseItem) return fail();
 
       if (!repeatedResponseItem.answer) return fail();
@@ -32,7 +34,7 @@ describe('Given a questionnaire with multiple repeatable booleans', () => {
       expect(repeatedResponseItem.answer.length).toBe(1);
 
       const answer = repeatedResponseItem.answer[0];
-
+      console.log('answer', answer);
       if (!answer || !answer.item) return fail();
 
       expect(answer.item.length).toBe(3);

@@ -255,7 +255,12 @@ function copyItem(
     copyItem(source.item[i], newResponseItem, questionnaireDraft, questionnaire);
   }
   const defItem = getQuestionnaireDefinitionItem(source.linkId, questionnaireDraft.item);
-
+  if (defItem?.type === itemType.BOOLEAN) {
+    const answer = createQuestionnaireResponseAnswer(defItem);
+    if (answer) {
+      target.answer = [answer];
+    }
+  }
   if (defItem && defItem.type !== itemType.ATTATCHMENT) {
     for (let i = 0; source.answer && i < source.answer.length; i++) {
       if (!source.answer[i].item || source.answer[i].item?.length === 0) {
@@ -283,9 +288,7 @@ function copyItem(
       target.answer.push(targetAnswer);
     }
   }
-  if (defItem?.type === itemType.BOOLEAN) {
-    target.answer = addInitialValueToBooleanItem(defItem);
-  }
+
   return target;
 }
 
