@@ -5,6 +5,7 @@ import { ReferoProps } from '../types/referoProps';
 import Form, { ButtonType } from '@helsenorge/form/components/form';
 
 import { Resources } from '../util/resources';
+import { generateZodSchemaFromQuestionnaire } from '../validation/mainValidationFunctions';
 
 interface RenderFormProps {
   isAuthorized: boolean;

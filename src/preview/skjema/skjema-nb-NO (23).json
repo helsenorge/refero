@@ -1,0 +1,57 @@
+{
+  "resourceType": "Questionnaire",
+  "language": "nb-NO",
+  "status": "draft",
+  "publisher": "NHN",
+  "meta": {
+    "profile": ["http://ehelse.no/fhir/StructureDefinition/sdf-Questionnaire"],
+    "tag": [{ "system": "urn:ietf:bcp:47", "code": "nb-NO", "display": "Bokmål" }],
+    "security": [{ "code": "3", "display": "Helsehjelp (Full)", "system": "urn:oid:2.16.578.1.12.4.1.1.7618" }]
+  },
+  "contact": [{ "name": "http://www.nhn.no" }],
+  "subjectType": ["Patient"],
+  "extension": [
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sidebar",
+      "valueCoding": { "system": "http://helsenorge.no/fhir/ValueSet/sdf-sidebar", "code": "1" }
+    },
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-information-message",
+      "valueCoding": { "system": "http://helsenorge.no/fhir/ValueSet/sdf-information-message", "code": "1" }
+    },
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefintion/sdf-itemControl-visibility",
+      "valueCodeableConcept": {
+        "coding": [
+          { "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions", "code": "hide-help", "display": "Hide help texts" },
+          {
+            "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
+            "code": "hide-sublabel",
+            "display": "Hide sublabel texts"
+          }
+        ]
+      }
+    }
+  ],
+  "id": "c4c53834-7276-4c7d-f774-c5e8485ec4c5",
+  "item": [
+    {
+      "linkId": "475a525f-8dcf-4e60-8c16-494792e3117c",
+      "type": "group",
+      "text": "Gruppe",
+      "item": [
+        { "linkId": "9d194f73-0ab7-4b37-9a6f-e8362d5b3534", "type": "string", "text": "Testfelt", "required": false },
+        { "linkId": "94a44b78-e2bc-40d7-e40b-3e869efeb87a", "type": "boolean", "text": "bekreftelse", "required": false }
+      ],
+      "required": false,
+      "repeats": true
+    },
+    {
+      "linkId": "f01cd029-d813-4a40-ff42-b52b7c1a000e",
+      "type": "boolean",
+      "text": "Bekreftelse utenfor gruppe",
+      "required": false,
+      "repeats": true
+    }
+  ]
+}

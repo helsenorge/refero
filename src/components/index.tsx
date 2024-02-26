@@ -50,6 +50,7 @@ import {
 import { RenderContext } from '../util/renderContext';
 import { ScoringCalculator } from '../util/scoringCalculator';
 import { shouldFormBeDisplayedAsStepView } from '../util/shouldFormBeDisplayedAsStepView';
+import { createZodSchemaFromQuestionnaireItems, generateZodSchemaFromItems, inspectZodSchema } from '../validation/mainValidationFunctions';
 
 interface StateProps {
   formDefinition?: FormDefinition | null;
@@ -372,14 +373,21 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
 
     return defaultClasses.join(' ');
   }
+  getSchema(): void {
+    if (this.props.questionnaire?.item && this.props.questionnaire) {
+      const schema = createZodSchemaFromQuestionnaireItems(this.props.questionnaire.item, this.props.questionnaire, this.props.resources);
+
+      console.log(JSON.stringify(inspectZodSchema(schema), null, 2));
+    }
+    console.log(this.props.formDefinition);
+  }
 
   render(): JSX.Element | null {
     const { resources } = this.props;
-
     if (!resources) {
       return null;
     }
-
+    this.getSchema();
     return <React.Fragment>{this.renderSkjema(this.props.pdf)}</React.Fragment>;
   }
 }

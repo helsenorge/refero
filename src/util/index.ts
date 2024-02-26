@@ -337,7 +337,7 @@ export function getTextValidationErrorMessage(
     const invalid: string[] = invalidNodes(value);
 
     if (invalid && invalid.length > 0) {
-      return invalid.join(', ') + ' ' + (resources ? (resources as Resources).validationNotAllowed : 'er ikke tillatt');
+      return invalid.join(', ') + ' ' + (resources ? resources.validationNotAllowed : 'er ikke tillatt');
     }
   }
 

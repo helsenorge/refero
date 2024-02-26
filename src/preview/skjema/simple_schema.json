@@ -1,0 +1,229 @@
+{
+  "resourceType": "Questionnaire",
+  "language": "nb-NO",
+  "status": "draft",
+  "publisher": "NHN",
+  "meta": {
+    "profile": ["http://ehelse.no/fhir/StructureDefinition/sdf-Questionnaire"],
+    "tag": [
+      {
+        "system": "urn:ietf:bcp:47",
+        "code": "nb-NO",
+        "display": "Bokmål"
+      }
+    ],
+    "security": [
+      {
+        "code": "3",
+        "display": "Helsehjelp (Full)",
+        "system": "urn:oid:2.16.578.1.12.4.1.1.7618"
+      }
+    ]
+  },
+  "contact": [
+    {
+      "name": "http://www.nhn.no"
+    }
+  ],
+  "subjectType": ["Patient"],
+  "extension": [
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sidebar",
+      "valueCoding": {
+        "system": "http://helsenorge.no/fhir/ValueSet/sdf-sidebar",
+        "code": "1"
+      }
+    },
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-information-message",
+      "valueCoding": {
+        "system": "http://helsenorge.no/fhir/ValueSet/sdf-information-message",
+        "code": "1"
+      }
+    },
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefintion/sdf-itemControl-visibility",
+      "valueCodeableConcept": {
+        "coding": [
+          {
+            "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
+            "code": "hide-help",
+            "display": "Hide help texts"
+          },
+          {
+            "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
+            "code": "hide-sublabel",
+            "display": "Hide sublabel texts"
+          }
+        ]
+      }
+    }
+  ],
+  "id": "5907b645-240b-4f6e-825a-480a906c1500",
+  "contained": [
+    {
+      "url": "http://ehelse.no/fhir/ValueSet/Predefined",
+      "resourceType": "ValueSet",
+      "id": "1101",
+      "version": "1.0",
+      "name": "urn:oid:1101",
+      "title": "Ja / Nei (structor)",
+      "status": "draft",
+      "publisher": "NHN",
+      "compose": {
+        "include": [
+          {
+            "system": "urn:oid:2.16.578.1.12.4.1.1101",
+            "concept": [
+              {
+                "code": "1",
+                "display": "Ja"
+              },
+              {
+                "code": "2",
+                "display": "Nei"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "url": "http://ehelse.no/fhir/ValueSet/Predefined",
+      "resourceType": "ValueSet",
+      "id": "1102",
+      "version": "1.0",
+      "name": "urn:oid:1102",
+      "title": "Ja / Nei / Vet ikke (structor)",
+      "status": "draft",
+      "publisher": "Direktoratet for e-helse",
+      "compose": {
+        "include": [
+          {
+            "system": "urn:oid:2.16.578.1.12.4.1.1102",
+            "concept": [
+              {
+                "code": "1",
+                "display": "Ja"
+              },
+              {
+                "code": "2",
+                "display": "Nei"
+              },
+              {
+                "code": "3",
+                "display": "Vet ikke"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "url": "http://ehelse.no/fhir/ValueSet/Predefined",
+      "resourceType": "ValueSet",
+      "id": "9523",
+      "version": "1.0",
+      "name": "urn:oid:9523",
+      "title": "Ja / Nei / Usikker (structor)",
+      "status": "draft",
+      "publisher": "Direktoratet for e-helse",
+      "compose": {
+        "include": [
+          {
+            "system": "urn:oid:2.16.578.1.12.4.1.9523",
+            "concept": [
+              {
+                "code": "1",
+                "display": "Ja"
+              },
+              {
+                "code": "2",
+                "display": "Nei"
+              },
+              {
+                "code": "3",
+                "display": "Usikker"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "item": [
+    {
+      "linkId": "fc1e57a5-6c41-49bf-e8c8-f542ca776f5b",
+      "type": "open-choice",
+      "text": "CHOICE\n",
+      "required": false,
+      "answerValueSet": "#1102"
+    },
+    {
+      "linkId": "906470fe-9820-49f1-86d2-753ba03e48a5",
+      "type": "open-choice",
+      "text": "CHOICE - RADIO - ALOOW FREETEXT - USE PREDEFINED",
+      "required": false,
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                "code": "radio-button"
+              }
+            ]
+          }
+        }
+      ],
+      "answerValueSet": "#9523"
+    },
+    {
+      "linkId": "bdb54375-dde8-40b6-b17f-6d320593e5c8",
+      "type": "choice",
+      "text": "CHOICE - MANDETORY - DYNAMIC - CUSTOM VALUESET",
+      "required": true,
+      "answerOption": [
+        {
+          "valueCoding": {
+            "id": "6cd8fb6b-fa81-4aad-e8d1-07c87e0acc6c",
+            "code": "ja",
+            "system": "urn:uuid:03eee3c0-e2a5-45c1-cc3c-0ac9955e2deb",
+            "display": "ja"
+          }
+        },
+        {
+          "valueCoding": {
+            "id": "82eb8cbb-8580-4b7b-9077-15668353ec46",
+            "code": "nei",
+            "system": "urn:uuid:03eee3c0-e2a5-45c1-cc3c-0ac9955e2deb",
+            "display": "nei"
+          }
+        },
+        {
+          "valueCoding": {
+            "id": "6b891672-3b2d-4c39-8e1d-22a442bf2943",
+            "code": "hallo",
+            "system": "urn:uuid:03eee3c0-e2a5-45c1-cc3c-0ac9955e2deb",
+            "display": "hallo"
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "64719cac-cee2-462c-8e1d-9da5e80e7611",
+      "type": "open-choice",
+      "text": "CHOICE - DROPDOWN - ALLOW FREETEXT - USE PREDEFINED",
+      "required": false,
+      "answerValueSet": "#1101"
+    },
+    {
+      "linkId": "fdd6111c-b177-4601-862a-c007c678f121",
+      "type": "choice",
+      "text": "CHOICE - CHECKBOX - ALLOW FREETEXT - PREDEFINED",
+      "required": false,
+      "answerValueSet": "#1101"
+    }
+  ]
+}

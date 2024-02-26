@@ -4,6 +4,7 @@ import DOMPurify from 'dompurify';
 import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem } from 'fhir/r4';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
+import { z } from 'zod';
 
 import Expander from '@helsenorge/designsystem-react/components/Expander';
 
