@@ -1,3 +1,12 @@
+## 15.0.0
+
+---
+
+- Has possibility to display summary as table. Can support types Table, Table-HN1, Table-HN2 and GTable
+- Support for ordering in GTable, Table-HN2 og Table
+
+- Preview mode for development with vite.
+
 ## 14.0.10
 
 ---

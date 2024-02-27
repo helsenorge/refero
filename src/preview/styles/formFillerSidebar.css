@@ -1,0 +1,16 @@
+.formFillerSidebar-button {
+    position: absolute;
+    top: 0;
+    left: -38px;
+    padding: 0 9px;
+    font-size: 32px;
+    background-color: #fff;
+    border: 2px #aaa solid;
+    border-right-width: 0;
+    cursor: pointer;
+}
+
+.formFillerSidebar-content {
+    overflow: auto;
+    height: 100%;
+}

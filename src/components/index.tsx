@@ -27,7 +27,12 @@ import { GlobalState } from '../reducers';
 import { getFormDefinition, getFormData } from '../reducers/form';
 import { FormDefinition, FormData } from '../reducers/form';
 import { ActionRequester } from '../util/actionRequester';
-import { getQuestionnaireUnitExtensionValue, getPresentationButtonsExtension, getNavigatorExtension } from '../util/extension';
+import {
+  getQuestionnaireUnitExtensionValue,
+  getPresentationButtonsExtension,
+  getNavigatorExtension,
+  getCodingTextTableValues,
+} from '../util/extension';
 import { getTopLevelElements } from '../util/getTopLevelElements';
 import { IE11HackToWorkAroundBug187484 } from '../util/hacks';
 import { getComponentForItem, shouldRenderRepeatButton, isHiddenItem, getDecimalValue } from '../util/index';
@@ -96,7 +101,6 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
       this.setState({ scoringCalculator: this.getScoringCalculator(nextProps.questionnaire) });
     }
   }
-
   onAnswerChange = (newState: GlobalState, _path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer): void => {
     if (this.props.onChange && newState.refero.form.FormDefinition.Content && newState.refero.form.FormData.Content) {
       const actionRequester = new ActionRequester(newState.refero.form.FormDefinition.Content, newState.refero.form.FormData.Content);
@@ -151,12 +155,12 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
           const extension = getQuestionnaireUnitExtensionValue(item);
           if (!extension) continue;
 
-          const quantity = {
+          const quantity: Quantity = {
             unit: extension.display,
             system: extension.system,
             code: extension.code,
             value: getDecimalValue(item, value),
-          } as Quantity;
+          };
           for (const itemAndPath of itemsAndPaths) {
             actions.push(newQuantityValue(itemAndPath.path, quantity, item));
           }
@@ -200,8 +204,7 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
 
     questionnaireItemArray?.map(item => {
       if (isHiddenItem(item)) return [];
-
-      const Comp = getComponentForItem(item.type);
+      const Comp = getComponentForItem(item.type, getCodingTextTableValues(item));
       if (!Comp) {
         return undefined;
       }
@@ -232,7 +235,6 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
             isNavigatorBlindzoneInitiated = true;
             renderedItems.push(<section id={NAVIGATOR_BLINDZONE_ID}></section>);
           }
-
           renderedItems.push(
             <Comp
               language={formDefinition.Content?.language}
