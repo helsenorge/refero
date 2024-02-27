@@ -2,36 +2,14 @@
 
 ---
 
-- New group extensions table, table-hn1, table-hn2, gtable.
-
-  - Shows data as tables in different formats.
+- Has possibility to display summary as table. Can support types Table, Table-HN1, Table-HN2 and GTable
+- Support for ordering in GTable, Table-HN2 og Table
 
 - Preview mode for development with vite.
-
-## 14.1.0-beta03
-
----
-
-- Bugfix: fix sorting of different itemtypes in tables, dates, quantity, string and numbers
-
-## 14.1.0-beta02
-
----
-
-- Bugfix: fix calculated scoring fields being showed in tables, also added a linebreak after each table
-
-## 14.1.0-beta01
-
----
-
-- fixed the sorting for tables and also changed logic for standardtable
 
 ## 14.1.0
 
 ---
-
-- Has possibility to display summary as table. Can support types Table, Table-HN1, Table-HN2 and GTable
-- Support for ordering in GTable, Table-HN2 og Table
 
 ## 14.0.10
 
