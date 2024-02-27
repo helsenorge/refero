@@ -4,6 +4,10 @@
 
 - New group extensions table, table-hn1, table-hn2, gtable.
 
+  - Shows data as tables in different formats.
+
+- Preview mode for development with vite.
+
 ## 14.1.0-beta03
 
 ---
