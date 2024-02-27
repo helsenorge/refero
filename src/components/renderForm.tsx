@@ -32,7 +32,7 @@ const RenderForm = ({
   displayPreviousButton,
   nextStep,
   previousStep,
-}: RenderFormProps) => {
+}: RenderFormProps): JSX.Element => {
   const displayPauseButtonInNormalView = referoProps.onSave ? onSave : undefined;
   const displayPauseButtonInStepView = displayPreviousButton ? previousStep : undefined;
 

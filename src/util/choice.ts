@@ -79,6 +79,21 @@ export function getSystem(item: QuestionnaireItem, code: string, containedResour
   return undefined;
 }
 
+export function getSystemForItem(item: QuestionnaireItem, containedResources?: Resource[]): string | undefined {
+  if (item.answerValueSet && item.answerValueSet.startsWith('#')) {
+    const id: string = item.answerValueSet.replace('#', '');
+    const resource = getContainedResource(id, containedResources);
+
+    if (resource && resource.compose) {
+      return resource.compose.include[0].system;
+    }
+  } else if (item.answerOption) {
+    const foundOption = item.answerOption.find(option => option.valueCoding?.system);
+    return foundOption?.valueCoding?.system;
+  }
+  return undefined;
+}
+
 export function getDisplay(options: Array<Options> | undefined, value: string | undefined): string | undefined {
   if (!options || options.length === 0) {
     return undefined;
@@ -339,7 +354,7 @@ function createRadiogroupOptionFromValueString(value: string, readOnly: boolean)
   return createRadiogroupOption(value, value, readOnly);
 }
 
-function getContainedOptions(item: QuestionnaireItem, containedResources?: Resource[]): Array<Options> | undefined {
+export function getContainedOptions(item: QuestionnaireItem, containedResources?: Resource[]): Array<Options> | undefined {
   if (!item || !item.answerValueSet) {
     return undefined;
   }

@@ -1,8 +1,10 @@
 import { Questionnaire, QuestionnaireResponseItem, QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import marked from 'marked';
+import { ComponentClass } from 'react-redux';
 import * as uuid from 'uuid';
 
 import { isValid, invalidNodes } from '@helsenorge/core-utils/string-utils';
+import { ValidationProps } from '@helsenorge/form/components/form/validation';
 
 import { getQuestionnaireItemCodeValue } from './codingsystem';
 import {
@@ -28,13 +30,16 @@ import Integer from '../components/formcomponents/integer/integer';
 import OpenChoice from '../components/formcomponents/open-choice/open-choice';
 import Quantity from '../components/formcomponents/quantity/quantity';
 import StringComponent from '../components/formcomponents/string/string';
+import TableContainer from '../components/formcomponents/table/TableContainer';
 import Text from '../components/formcomponents/text/text';
+import { Props } from '../components/with-common-functions';
 import CodingSystemConstants from '../constants/codingsystems';
 import ExtensionConstants from '../constants/extensions';
 import { HyperlinkTarget } from '../constants/hyperlinkTarget';
 import Constants from '../constants/index';
 import ItemType from '../constants/itemType';
 import { RenderOptionCode } from '../constants/renderOptionCode';
+import { TableCodes } from '../constants/tableTypes';
 import { Resources } from '../util/resources';
 
 function openNewIfAbsolute(url: string): string {
@@ -44,10 +49,24 @@ function openNewIfAbsolute(url: string): string {
   }
   return '_self';
 }
+export const isTableCode = (extensionCode: string | string[]): boolean => {
+  let lowerCode: string | string[] = '';
+  if (Array.isArray(extensionCode)) {
+    lowerCode = extensionCode.map(code => code.toLocaleLowerCase());
+  } else {
+    lowerCode = extensionCode.toLowerCase();
+  }
+  const isTable = Object.values(TableCodes).some(value => {
+    return lowerCode.indexOf(value.toLocaleLowerCase()) === -1 ? false : true;
+  });
+  return isTable;
+};
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function getComponentForItem(type: string) {
-  if (String(type) === ItemType.GROUP) {
+export function getComponentForItem(type: string, extensionCode?: string | string[]) {
+  if (String(type) === ItemType.GROUP && !!extensionCode && isTableCode(extensionCode)) {
+    return TableContainer as ComponentClass<Omit<Props & ValidationProps & Props, keyof Props> & Props>;
+  } else if (String(type) === ItemType.GROUP) {
     return Group;
   }
   if (String(type) === ItemType.DISPLAY) {

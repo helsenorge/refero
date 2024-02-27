@@ -1,6 +1,6 @@
 {
   "name": "@helsenorge/refero",
-  "version": "14.0.10",
+  "version": "15.0.0",
   "engines": {
     "node": "^18.0.0",
     "npm": ">=9.0.0"
@@ -22,7 +22,8 @@
     "build:lib": "npm-run-all build:js build:copy-files",
     "prebuild:lib": "rimraf lib",
     "prepare": "npm run build:lib",
-    "test": "jest --config config/jest.config.js"
+    "test": "jest --config config/jest.config.js",
+    "dev": "vite"
   },
   "husky": {
     "hooks": {
@@ -118,9 +119,14 @@
     "rimraf": "^3.0.2",
     "tabbable": "^6.2.0",
     "typescript": "^4.8.3",
+    "vite": "^4.4.5",
+    "vite-plugin-require": "^1.1.13",
+    "vite-tsconfig-paths": "^4.2.1",
     "whatwg-fetch": "^2.0.4",
     "xml2js": "^0.6.2",
-    "yargs": "^17.7.2"
+    "yargs": "^17.7.2",
+    "@vitejs/plugin-react": "^4.2.1",
+    "sass": "^1.69.0"
   },
   "dependencies": {
     "@types/react-collapse": "^5.0.1",

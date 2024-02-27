@@ -7,7 +7,7 @@ import { ThunkDispatch } from 'redux-thunk';
 
 import TimeInput from '@helsenorge/date-time/components/time-input';
 import { parseDate } from '@helsenorge/date-time/components/time-input/date-core';
-import DateTimeConstants from '@helsenorge/date-time/constants/datetime';
+import * as DateTimeConstants from '@helsenorge/date-time/constants/datetime';
 import { ValidationProps } from '@helsenorge/form/components/form/validation';
 import Validation from '@helsenorge/form/components/form/validation';
 
