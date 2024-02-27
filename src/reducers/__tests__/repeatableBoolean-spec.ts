@@ -32,7 +32,6 @@ describe('Given a questionnaire with multiple repeatable booleans', () => {
       expect(repeatedResponseItem.answer.length).toBe(1);
 
       const answer = repeatedResponseItem.answer[0];
-
       if (!answer || !answer.item) return fail();
 
       expect(answer.item.length).toBe(3);

@@ -32,6 +32,7 @@ import { NewValueAction } from '../actions/newValue';
 import itemControlConstants from '../constants/itemcontrol';
 import itemType from '../constants/itemType';
 import { GlobalState } from '../reducers';
+import { getCodingTextTableValues } from '../util/extension';
 import { findHelpItem, isHelpItem, getHelpItemType } from '../util/help';
 import { getComponentForItem, getChildHeaderTag, shouldRenderRepeatButton, getText, isHiddenItem } from '../util/index';
 import {
@@ -255,7 +256,8 @@ export default function withCommonFunctions<T>(WrappedComponent: React.Component
       if (isHelpItem(item)) return [];
       if (isHiddenItem(item)) return [];
 
-      const Comp = getComponentForItem(item.type);
+      const Comp = getComponentForItem(item.type, getCodingTextTableValues(item));
+
       if (!Comp) {
         return [];
       }
@@ -266,6 +268,7 @@ export default function withCommonFunctions<T>(WrappedComponent: React.Component
         const childItem = responseItem.item;
         const childAnswer = responseItem.answer;
         const linkId = item.linkId;
+        // console.log(childAnswer);
 
         if (childItem) {
           response = getItemWithIdFromResponseItemArray(linkId, childItem);
