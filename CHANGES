@@ -23,6 +23,12 @@
 - Has possibility to display summary as table. Can support types Table, Table-HN1, Table-HN2 and GTable
 - Support for ordering in GTable, Table-HN2 og Table
 
+## 14.0.10
+
+---
+
+- Bugfix: confirmation items did not update in repeating groups after fix
+
 ## 14.0.9
 
 ---
