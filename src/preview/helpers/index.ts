@@ -1,4 +1,4 @@
-import { Extension, QuestionnaireItem } from '../../types/fhir';
+import { Extension, QuestionnaireItem } from 'fhir/r4';
 
 type Language = {
   code: string;
