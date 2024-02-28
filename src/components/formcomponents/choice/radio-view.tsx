@@ -51,7 +51,6 @@ const RadioView: React.SFC<Props> = ({
     return null;
   }
   const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
-
   return (
     <div className="page_refero__component page_refero__component_choice page_refero__component_choice_radiobutton">
       <Collapse isOpened>

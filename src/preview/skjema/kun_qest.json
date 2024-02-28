@@ -1,7 +1,6 @@
 {
   "resourceType": "Questionnaire",
   "language": "nb-NO",
-  "id": "c4c53834-7276-4c7d-f774-c5e8485ec4c5",
   "status": "draft",
   "publisher": "NHN",
   "meta": {
@@ -60,72 +59,195 @@
       }
     }
   ],
+  "id": "20d8aa9d-8f07-403c-d5fd-2ef0d50c3d6d",
+  "contained": [
+    {
+      "url": "http://ehelse.no/fhir/ValueSet/Predefined",
+      "resourceType": "ValueSet",
+      "id": "1102",
+      "version": "1.0",
+      "name": "urn:oid:1102",
+      "title": "Ja / Nei / Vet ikke (structor)",
+      "status": "draft",
+      "publisher": "Direktoratet for e-helse",
+      "compose": {
+        "include": [
+          {
+            "system": "urn:oid:2.16.578.1.12.4.1.1102",
+            "concept": [
+              {
+                "code": "1",
+                "display": "Ja"
+              },
+              {
+                "code": "2",
+                "display": "Nei"
+              },
+              {
+                "code": "3",
+                "display": "Vet ikke"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
   "item": [
     {
-      "linkId": "475a525f-8dcf-4e60-8c16-494792e3117c",
+      "linkId": "4784e926-7776-4fa3-8e61-43d75b23eacf",
       "type": "group",
-      "text": "Gruppe",
-      "required": false,
-      "repeats": true,
+      "text": "Gruppe med innhold\n",
       "item": [
         {
-          "linkId": "9d194f73-0ab7-4b37-9a6f-e8362d5b3534",
-          "type": "string",
-          "text": "Testfelt",
-          "required": false
-        },
-        {
-          "linkId": "94a44b78-e2bc-40d7-e40b-3e869efeb87a",
-          "type": "boolean",
-          "text": "bekreftelse",
-          "required": false
-        }
-      ]
-    },
-    {
-      "linkId": "f01cd029-d813-4a40-ff42-b52b7c1a000e",
-      "type": "boolean",
-      "text": "Bekreftelse utenfor gruppe",
-      "required": false,
-      "repeats": true,
-      "item": [
-        {
-          "linkId": "2c97b888-68eb-4787-bf00-1ea067849dd3",
-          "type": "boolean",
-          "text": "Bekreftelse i bekreftelse",
+          "linkId": "8e640b54-ef90-4141-f6be-5b1f164977a6",
+          "type": "choice",
+          "text": "Radio",
           "item": [
             {
-              "linkId": "7f282b22-5349-448d-a4e5-4ef5034ad1a2",
-              "type": "display",
-              "text": "TEXT",
-              "required": false
-            },
-            {
-              "linkId": "bc7a6728-6a99-4eb0-e1af-637484ef03a2",
-              "type": "boolean",
-              "text": "Bekreftelse i bekreftelse 2\n",
-              "item": [
-                {
-                  "linkId": "8ded194e-d349-4926-a9e7-62524e3b4442",
-                  "type": "display",
-                  "text": "TEXT",
-                  "required": false
-                }
-              ],
+              "linkId": "7bcb040c-a967-4ddb-ea12-19219ce043f4",
+              "type": "text",
               "required": false,
-              "repeats": true
+              "repeats": false,
+              "readOnly": true,
+              "maxLength": 250,
+              "_text": {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                    "valueMarkdown": "Hjelp meg hver så snill"
+                  }
+                ]
+              },
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                        "code": "help"
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          ],
+          "required": false,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "radio-button"
+                  }
+                ]
+              }
+            }
+          ],
+          "answerValueSet": "#1102"
+        },
+        {
+          "linkId": "24e385f4-9c64-4779-8caf-1ccde59bba4d",
+          "type": "open-choice",
+          "text": "Radio open test saadad  adsads",
+          "item": [
+            {
+              "linkId": "622bd747-78a5-4bdb-88e6-6ceb02a08610",
+              "type": "text",
+              "required": false,
+              "repeats": false,
+              "readOnly": true,
+              "maxLength": 250,
+              "_text": {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                    "valueMarkdown": "Hjelp meg hver så snill"
+                  }
+                ]
+              },
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                        "code": "help"
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          ],
+          "required": false,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "radio-button"
+                  }
+                ]
+              }
+            }
+          ],
+          "answerValueSet": "#1102",
+          "_text": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                "valueMarkdown": "**Radio open** test _saadad  **adsads**_"
+              }
+            ]
+          }
+        },
+        {
+          "linkId": "76ed02a3-a8c5-4ce9-8954-9faab4c021d0",
+          "type": "string",
+          "text": "Hei du!",
+          "item": [
+            {
+              "linkId": "6a4d16f9-7c43-4c8c-f314-c6d26e186059",
+              "type": "text",
+              "required": false,
+              "repeats": false,
+              "readOnly": true,
+              "maxLength": 250,
+              "_text": {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                    "valueMarkdown": "help"
+                  }
+                ]
+              },
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                        "code": "help"
+                      }
+                    ]
+                  }
+                }
+              ]
             }
           ],
           "required": false
         }
-      ]
-    },
-    {
-      "linkId": "37912976-37be-4659-888c-ce995913fc9e",
-      "type": "boolean",
-      "text": "confirmartion - standalone",
-      "required": false,
-      "repeats": true
+      ],
+      "required": false
     }
   ]
 }
