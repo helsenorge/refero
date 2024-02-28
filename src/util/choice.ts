@@ -94,21 +94,6 @@ export function getSystemForItem(item: QuestionnaireItem, containedResources?: R
   return undefined;
 }
 
-export function getSystemForItem(item: QuestionnaireItem, containedResources?: Resource[]): string | undefined {
-  if (item.answerValueSet && item.answerValueSet.startsWith('#')) {
-    const id: string = item.answerValueSet.replace('#', '');
-    const resource = getContainedResource(id, containedResources);
-
-    if (resource && resource.compose) {
-      return resource.compose.include[0].system;
-    }
-  } else if (item.answerOption) {
-    const foundOption = item.answerOption.find(option => option.valueCoding?.system);
-    return foundOption?.valueCoding?.system;
-  }
-  return undefined;
-}
-
 export function getDisplay(options: Array<Options> | undefined, value: string | undefined): string | undefined {
   if (!options || options.length === 0) {
     return undefined;
