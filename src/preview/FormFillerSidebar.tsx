@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Questionnaire } from '../types/fhir';
+import { Questionnaire } from 'fhir/r4';
 
 import { generateSectionContent, getSidebarElements } from './resources/referoSidebarResources';
 

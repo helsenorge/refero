@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { connect } from 'react-redux';
@@ -27,7 +27,7 @@ interface Props {
   disabled: boolean;
 }
 
-export const RepeatButton: React.SFC<Props> = ({ item, resources, dispatch, parentPath, responseItems, disabled }) => {
+export const RepeatButton = ({ item, resources, dispatch, parentPath, responseItems, disabled }: Props): JSX.Element => {
   const onAddRepeatItem = (): void => {
     if (dispatch && item) {
       dispatch(addRepeatItem(parentPath, item, responseItems));
