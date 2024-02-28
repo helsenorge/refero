@@ -1,24 +1,35 @@
 import * as React from 'react';
 
-import { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
+import { QuestionnaireItem, QuestionnaireItemAnswerOption, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 
 import { Slider, SliderStep } from '@helsenorge/designsystem-react/components/Slider';
 
 import ExtensionConstants from '../../../constants/extensions';
 import { getExtension } from '../../../util/extension';
+import { getValue } from '../../../util/itemHelper';
 
 interface SliderProps {
   item: QuestionnaireItem;
+  answer: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer;
   handleChange: (sliderStep: string) => void;
   children: React.ReactNode;
 }
 
 type LeftRightLabels = [leftLabel: string, rightLabel: string];
 
-const SliderView: React.FC<SliderProps> = ({ item, handleChange, children }) => {
+const SliderView: React.FC<SliderProps> = ({ item, answer, handleChange, children }) => {
   const title = item.text;
   const [sliderSteps, setSliderSteps] = React.useState<SliderStep[] | undefined>(undefined);
   const [leftRightLabels, setleftRightLabels] = React.useState<LeftRightLabels | undefined>(undefined);
+
+  const hasValue = () => {
+    if (Array.isArray(answer)) {
+      return false;
+    } else {
+      const value = getValue(item, answer);
+      return !!value;
+    }
+  };
 
   React.useEffect(() => {
     if (item.answerOption) {
@@ -43,6 +54,7 @@ const SliderView: React.FC<SliderProps> = ({ item, handleChange, children }) => 
         labelRight={leftRightLabels?.[1]}
         onChange={onValueChange}
         steps={sliderSteps}
+        selected={hasValue()}
       />
       {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : undefined}
     </div>
