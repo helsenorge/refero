@@ -1,20 +1,23 @@
-## 14.1.0-beta03
+## 15.0.0
 
 ---
 
-- Bugfix: fix sorting of different itemtypes in tables, dates, quantity, string and numbers
+- Has possibility to display summary as table. Can support types Table, Table-HN1, Table-HN2 and GTable
+- Support for ordering in GTable, Table-HN2 og Table
 
-## 14.1.0-beta02
+- Preview mode for development with vite.
 
----
-
-- Bugfix: fix calculated scoring fields being showed in tables, also added a linebreak after each table
-
-## 14.1.0-beta01
+## 14.0.10
 
 ---
 
-- fixed the sorting for tables and also changed logic for standardtable
+- Bugfix: confirmation items did not update in repeating groups after fix
+
+## 14.0.9
+
+---
+
+- Bugfix: When Confirmation is repeatable, the added items now have a initial value of false. Added same functionality for nested items.
 
 ## 14.0.8
 

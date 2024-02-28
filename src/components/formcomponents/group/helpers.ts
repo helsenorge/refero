@@ -9,17 +9,19 @@ import { Path } from '../../../util/refero-core';
 import { RenderContext } from '../../../util/renderContext';
 
 export const getColumns = (item: QuestionnaireItem): Array<string> => {
-  const seenColumns = {};
+  const seenColumns: Record<string, boolean> = {};
+
   const columns: Array<string> = [];
   if (!item.item || item.item.length === 0) return columns;
   for (const group of item.item) {
     if (group.item && group.item.length > 0) {
       for (const cell of group.item) {
         const key = cell.text || '';
-        if (key in seenColumns) continue;
+
+        if (seenColumns[key]) continue;
 
         columns.push(key);
-        seenColumns[key] = 1;
+        seenColumns[key] = true;
       }
     }
   }

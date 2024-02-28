@@ -127,7 +127,6 @@ const Refero = ({
       setScoringCalculator(new ScoringCalculator(questionnaire));
     }
   }, [questionnaire]);
-
   const onAnswerChange = (
     newState: GlobalState,
     _path: Array<Path>,

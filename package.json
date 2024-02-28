@@ -1,6 +1,6 @@
 {
   "name": "@helsenorge/refero",
-  "version": "14.1.0-beta03",
+  "version": "15.0.0",
   "engines": {
     "node": "^18.0.0",
     "npm": ">=9.0.0"
@@ -128,7 +128,9 @@
     "vite-tsconfig-paths": "^4.2.1",
     "whatwg-fetch": "^2.0.4",
     "xml2js": "^0.6.2",
-    "yargs": "^17.7.2"
+    "yargs": "^17.7.2",
+    "@vitejs/plugin-react": "^4.2.1",
+    "sass": "^1.69.0"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.4",

@@ -2,7 +2,15 @@ import React, { useEffect, useState } from 'react';
 
 import { Coding, QuestionnaireItem, QuestionnaireResponse, Resource } from 'fhir/r4';
 
-import { Table as HnTable, ModeType, SortDirection, TableBody, TableCell, TableRow } from '@helsenorge/designsystem-react/components/Table';
+import {
+  Table as HnTable,
+  ModeType,
+  SortDirection,
+  TableBody,
+  TableCell,
+  TableHeadCell,
+  TableRow,
+} from '@helsenorge/designsystem-react/components/Table';
 
 import { IStandardTable } from './interface';
 import { StandardTableHeader } from './StandardTableHeader';
@@ -33,13 +41,31 @@ export const StandardTable = ({ items, questionnaireResponse, resource, tableCod
       <TableBody className="page_refero__standard-table__body">
         {table.rows.map(item => (
           <TableRow key={item.id} className="page_refero__standard-table__body__row">
-            {item.columns.map(({ value, id }) => (
-              <React.Fragment key={id}>
-                <TableCell className="page_refero__standard-table__body__row__cell" dataLabel="Navn">
+            {item.columns.map(({ value, id }, colIndex) => {
+              if (colIndex === 0) {
+                return (
+                  <TableHeadCell key={id}>
+                    <span className="page_refero__standard-table__body__row__cell__value">{value}</span>
+                  </TableHeadCell>
+                );
+              }
+              if (colIndex === item.columns.length - 1) {
+                return (
+                  <TableCell key={id} className="page_refero__standard-table__body__row__cell" dataLabel={item.columns[0].value}>
+                    <span className="page_refero__standard-table__body__row__cell__value">{value}</span>
+                  </TableCell>
+                );
+              }
+              return (
+                <TableCell
+                  key={id}
+                  className="page_refero__standard-table__body__row__cell"
+                  dataLabel={table.headerRow[colIndex]?.value ?? ''}
+                >
                   <span className="page_refero__standard-table__body__row__cell__value">{value}</span>
                 </TableCell>
-              </React.Fragment>
-            ))}
+              );
+            })}
           </TableRow>
         ))}
       </TableBody>

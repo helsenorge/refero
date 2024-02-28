@@ -6,7 +6,7 @@ import { Table as HnTable, SortDirection, TableBody, TableCell, TableRow } from 
 
 import { ITableH2Row } from './interface';
 import TableHeadHn2 from './TableHeadHn2';
-import { getTableHN2bodyObject } from './utils';
+import { getHeaderColumns, getTableHN2bodyObject } from './utils';
 import { getIndexToSortBy } from './utils';
 import { transformCodingToSortDirection } from '../utils';
 
@@ -17,7 +17,7 @@ interface Props {
 }
 const TableHn2 = ({ tableCodesCoding, items, questionnaireResponse }: Props): JSX.Element => {
   const sortIndex = getIndexToSortBy(tableCodesCoding);
-
+  const tableHeader = getHeaderColumns(tableCodesCoding);
   const [sortDir, setSortDir] = useState<SortDirection | undefined>(transformCodingToSortDirection(tableCodesCoding));
   const [rows, setRows] = useState<ITableH2Row[]>(getTableHN2bodyObject(items, questionnaireResponse, sortIndex, sortDir));
 
@@ -28,11 +28,15 @@ const TableHn2 = ({ tableCodesCoding, items, questionnaireResponse }: Props): JS
     <HnTable className="page_refero__table_hn2">
       <TableHeadHn2 sortable={!!sortIndex} setSortDir={setSortDir} sortDir={sortDir} tableCodesCoding={tableCodesCoding} />
       <TableBody className='className="page_refero__table_hn2__body'>
-        {rows.map(item => {
+        {rows.map((item, index) => {
           return (
             <TableRow key={item.id} className='className="page_refero__table_hn2__body__row'>
               {item.columns.map(column => (
-                <TableCell key={column.id} dataLabel={column.text} className='className="page_refero__table_hn2__body__cell'>
+                <TableCell
+                  key={column.id}
+                  dataLabel={tableHeader[index]?.display ?? column.text}
+                  className='className="page_refero__table_hn2__body__cell'
+                >
                   {column.text}
                 </TableCell>
               ))}

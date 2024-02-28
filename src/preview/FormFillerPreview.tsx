@@ -1,4 +1,4 @@
-import React, { FormEvent, useState } from 'react';
+import React, { useState } from 'react';
 
 import { QuestionnaireResponse } from 'fhir/r4';
 import { Provider } from 'react-redux';
@@ -24,15 +24,6 @@ const FormFillerPreview = ({ showFormFiller }: Props): JSX.Element => {
   const questionnaireForPreview = JSON.parse(JSON.stringify(skjema ?? {}, emptyPropertyReplacer));
   const [questionnaireResponse, setQuestionnaireResponse] = useState<QuestionnaireResponse>();
   const [showResponse, setShowResponse] = useState<boolean>(false);
-  const handleSave = (response: QuestionnaireResponse): void => {
-    console.log('Save', response);
-  };
-  const handleSubmit = (questionnaireResponse: QuestionnaireResponse): void => {
-    console.log('Submit', questionnaireResponse);
-  };
-  const onCancel = (): void => {
-    console.log('avbryt');
-  };
   return (
     <Provider store={store}>
       <div className="overlay">
@@ -48,14 +39,13 @@ const FormFillerPreview = ({ showFormFiller }: Props): JSX.Element => {
                 <ReferoContainer
                   store={store}
                   questionnaire={questionnaireForPreview}
-                  onCancel={onCancel}
+                  onCancel={showFormFiller}
                   onSave={(questionnaireResponse: QuestionnaireResponse): void => {
-                    // setQuestionnaireResponse(questionnaireResponse);
-                    // setShowResponse(true)
-                    handleSave(questionnaireResponse);
+                    setQuestionnaireResponse(questionnaireResponse);
+                    setShowResponse(true);
                   }}
                   // eslint-disable-next-line no-console
-                  onSubmit={handleSubmit}
+                  onSubmit={(): void => console.log('onSubmit')}
                   authorized={true}
                   resources={getResources('')}
                   sticky={true}

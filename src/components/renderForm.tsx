@@ -50,13 +50,14 @@ const RenderForm = ({
     console.log('onSubmitReactHookForm');
     onSubmit();
   };
+  const displayPauseButtonInNormalView = referoProps.onSave ? onSave : undefined;
+  const displayPauseButtonInStepView = displayPreviousButton ? previousStep : undefined;
+
   const handleInvalidForm = (FieldValues: FieldValues, e: React.FormEvent): void => {
     e.preventDefault();
     console.log('Invalid FieldValues', FieldValues);
     onFieldsNotCorrectlyFilledOut && onFieldsNotCorrectlyFilledOut();
   };
-  const onPauseButtonClickedInNormalView = referoProps.onSave ? onSave : undefined;
-  const onPauseButtonClickedInStepView = displayPreviousButton ? previousStep : undefined;
 
   if (referoProps.blockSubmit) {
     return <Loader size={'medium'} overlay={'parent'} />;
@@ -83,7 +84,7 @@ const RenderForm = ({
         pauseButtonDisabled={referoProps.saveButtonDisabled}
         onSubmitButtonClicked={displayNextButton ? nextStep : methods.handleSubmit(onSubmitReactHookForm)}
         onCancelButtonClicked={referoProps.onCancel}
-        onPauseButtonClicked={isStepView ? onPauseButtonClickedInStepView : onPauseButtonClickedInNormalView}
+        onPauseButtonClicked={isStepView ? displayPauseButtonInStepView : displayPauseButtonInNormalView}
         isHelsenorgeForm={isHelsenorgeForm && isHelsenorgeForm}
       ></FormButtons>
     </form>

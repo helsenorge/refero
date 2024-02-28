@@ -175,7 +175,8 @@ function reduce(state: Form, action: NewValueAction): Form {
 }
 
 export function getResponseItem(linkId: string, state: Form, path: Array<Path>): QuestionnaireResponseItem | undefined {
-  if (linkId === path[path.length - 1].linkId) return getResponseItemWithPath(path, state.FormData);
+  const condition = linkId === path[path.length - 1].linkId;
+  if (condition) return getResponseItemWithPath(path, state.FormData);
 }
 
 export function createGlobalStateWithQuestionnaire(q: Questionnaire, qr: QuestionnaireResponse): GlobalState {

@@ -11,11 +11,12 @@ import { Resources } from '../../../types/resources';
 import AnchorLink from '@helsenorge/designsystem-react/components/AnchorLink';
 
 import AsPdf from './AsPdf';
+import { getClassNames, getColumns, getHeaderText, getLocalRenderContextType, isDirectChildOfRenderContextOwner } from './helpers';
 import { NewValueAction } from '../../../actions/newValue';
 import { RenderContextType } from '../../../constants/renderContextType';
 import { GlobalState } from '../../../reducers';
 import { getGroupItemControl } from '../../../util/group-item-control';
-import { renderPrefix, getText, getId } from '../../../util/index';
+import { getText, getId, renderPrefix } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
 import { RenderContext } from '../../../util/renderContext';
@@ -53,7 +54,7 @@ export const Group: React.FC<GroupProps & ValidationProps> = props => {
     if (localRenderContextType) {
       switch (localRenderContextType) {
         case RenderContextType.Grid:
-          return renderContextTypeGrid();
+          return renderContextTypeGrid(props.item);
       }
     }
 
@@ -113,10 +114,8 @@ export const Group: React.FC<GroupProps & ValidationProps> = props => {
     );
   };
 
-  const renderContextTypeGrid = (): JSX.Element => {
-    const { item } = props;
-
-    const columns = getColumns();
+  const renderContextTypeGrid = (item: QuestionnaireItem): JSX.Element => {
+    const columns = getColumns(item);
     const headers = columns.map(c => <th key={item.linkId + '-' + c}>{c}</th>);
     headers.unshift(<th key={item.linkId + 'X'}>{item.text ? item.text : ''}</th>);
 
@@ -154,19 +153,21 @@ export const Group: React.FC<GroupProps & ValidationProps> = props => {
     );
   };
 
-  const getColumns = (): Array<string> => {
-    const item = props.item;
-    const seenColumns: Record<string, number> = {};
+  const getColumns = (item: QuestionnaireItem): Array<string> => {
+    // Explicitly define seenColumns as a Record to improve type safety.
+    const seenColumns: Record<string, boolean> = {};
     const columns: Array<string> = [];
     if (!item.item || item.item.length === 0) return columns;
+
     for (const group of item.item) {
       if (group.item && group.item.length > 0) {
         for (const cell of group.item) {
           const key = cell.text || '';
-          if (key in seenColumns) continue;
+          // Use seenColumns as a map to track seen keys.
+          if (seenColumns[key]) continue;
 
           columns.push(key);
-          seenColumns[key] = 1;
+          seenColumns[key] = true; // Mark the key as seen.
         }
       }
     }
@@ -210,10 +211,10 @@ export const Group: React.FC<GroupProps & ValidationProps> = props => {
       ADD_ATTR: ['target'],
     }) as unknown as string;
     return (
-      <React.Fragment>
+      <>
         <HeaderTag className={'page_refero__heading'} dangerouslySetInnerHTML={{ __html: headerText }} />
         {props.renderHelpButton()}
-      </React.Fragment>
+      </>
     );
   };
 

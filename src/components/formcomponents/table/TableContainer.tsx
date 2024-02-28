@@ -12,6 +12,8 @@ import {
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
+import { Resources } from '../../../types/resources';
+
 import LanguageLocales from '@helsenorge/core-utils/constants/languages';
 
 import GTable from './tables/gtable/GTable';
@@ -25,7 +27,6 @@ import { getFormData, getFormDefinition } from '../../../reducers/form';
 import { getCodingTextTableValues } from '../../../util/extension';
 import { Path } from '../../../util/refero-core';
 import { RenderContext } from '../../../util/renderContext';
-import { Resources } from '../../../types/resources';
 
 export interface Props {
   item: QuestionnaireItem;
