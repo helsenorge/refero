@@ -17,6 +17,8 @@ interface Props {
 const Label = ({ item, onRenderMarkdown, questionnaire, resources }: Props): JSX.Element | null => {
   return (
     <span
+      style={{ display: 'inline-block' }}
+      className="page_refero__label"
       dangerouslySetInnerHTML={{
         __html: DOMPurify.sanitize(`${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`, {
           RETURN_TRUSTED_TYPE: true,

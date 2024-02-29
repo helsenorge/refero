@@ -1,3 +1,10 @@
+## 15.0.1
+
+---
+
+- Fix an issue where the delete button has no space after repeating an item
+- Fix an issue where the help icon got pushed down to a new line
+
 ## 15.0.0
 
 ---

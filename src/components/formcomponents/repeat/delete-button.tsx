@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState } from 'react';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { connect } from 'react-redux';
@@ -28,20 +28,19 @@ interface DeleteButtonProps {
   renderContext: RenderContext;
 }
 
-const DeleteButton: React.FC<DeleteButtonProps> = props => {
-  const [showConfirm, setShowConfirm] = React.useState<boolean>(false);
-
+const DeleteButton = ({ resources, dispatch, item, path, onAnswerChange, mustShowConfirm }: DeleteButtonProps): JSX.Element => {
+  const [showConfirm, setShowConfirm] = useState(false);
   const onDeleteRepeatItemConfirmed = (): void => {
-    if (props.dispatch && props.item && props.path) {
-      props
-        .dispatch(deleteRepeatItemAsync(props.path, props.item))
-        ?.then(newState => props.onAnswerChange(newState, props.path, props.item, {} as QuestionnaireResponseItemAnswer));
+    if (dispatch && item && path) {
+      dispatch(deleteRepeatItemAsync(path, item))?.then(newState =>
+        onAnswerChange(newState, path, item, {} as QuestionnaireResponseItemAnswer)
+      );
     }
     setShowConfirm(false);
   };
 
   const onDeleteRepeatItem = (): void => {
-    if (props.mustShowConfirm) {
+    if (mustShowConfirm) {
       setShowConfirm(true);
     } else {
       onDeleteRepeatItemConfirmed();
@@ -52,15 +51,14 @@ const DeleteButton: React.FC<DeleteButtonProps> = props => {
     setShowConfirm(false);
   };
 
-  const { resources } = props;
-
   return (
     <>
+      <br />
       <Button variant="outline" concept="destructive" onClick={onDeleteRepeatItem}>
         <Icon svgIcon={TrashCan} />
         {resources && resources.deleteButtonText ? resources.deleteButtonText : ''}
       </Button>
-      {showConfirm && resources ? (
+      {showConfirm && !!resources ? (
         <Modal
           onClose={onConfirmCancel}
           title={resources.confirmDeleteHeading}

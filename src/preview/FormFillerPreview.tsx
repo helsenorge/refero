@@ -1,16 +1,18 @@
 import React, { useState } from 'react';
 
-import { QuestionnaireResponse } from 'fhir/r4';
+import { Bundle, Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 import { Provider } from 'react-redux';
 import { Store, legacy_createStore as createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
+
+import { QuestionnaireStatusCodes } from '../types/fhirEnums';
 
 import LanguageLocales from '@helsenorge/core-utils/constants/languages';
 
 import FormFillerSidebar from './FormFillerSidebar';
 import { emptyPropertyReplacer } from './helpers';
 import { getResources } from './resources/referoResources';
-import skjema from './skjema/NHN_Test_Repeterende_gtable-nb-NO-v0.1 (9).json';
+import skjema from './skjema/kun_qest.json';
 import { ReferoContainer } from '../components';
 import rootReducer from '../reducers';
 
@@ -18,12 +20,26 @@ type Props = {
   showFormFiller: () => void;
 };
 
+const getQuestionnaireFromBubndle = (bundle: Bundle<Questionnaire> | Questionnaire): Questionnaire => {
+  if (bundle.resourceType === 'Questionnaire') {
+    return bundle;
+  } else {
+    return (
+      bundle?.entry?.[0].resource ?? {
+        resourceType: 'Questionnaire',
+        status: QuestionnaireStatusCodes.DRAFT,
+      }
+    );
+  }
+};
+
 const FormFillerPreview = ({ showFormFiller }: Props): JSX.Element => {
   const store: Store = createStore(rootReducer, applyMiddleware(thunk));
 
-  const questionnaireForPreview = JSON.parse(JSON.stringify(skjema ?? {}, emptyPropertyReplacer));
+  const questionnaireForPreview = JSON.parse(JSON.stringify(skjema ?? {}, emptyPropertyReplacer)) as Bundle<Questionnaire> | Questionnaire;
   const [questionnaireResponse, setQuestionnaireResponse] = useState<QuestionnaireResponse>();
   const [showResponse, setShowResponse] = useState<boolean>(false);
+
   return (
     <Provider store={store}>
       <div className="overlay">
@@ -31,14 +47,15 @@ const FormFillerPreview = ({ showFormFiller }: Props): JSX.Element => {
           <div className="title align-everything">
             <h1>{'Preview'}</h1>
           </div>
-          <FormFillerSidebar questionnaire={questionnaireForPreview} />
+          <FormFillerSidebar questionnaire={getQuestionnaireFromBubndle(questionnaireForPreview)} />
 
           <div className="referoContainer-div">
             {!showResponse ? (
               <div className="page_refero">
                 <ReferoContainer
+                  key={123}
                   store={store}
-                  questionnaire={questionnaireForPreview}
+                  questionnaire={getQuestionnaireFromBubndle(questionnaireForPreview)}
                   onCancel={showFormFiller}
                   onSave={(questionnaireResponse: QuestionnaireResponse): void => {
                     setQuestionnaireResponse(questionnaireResponse);
