@@ -5,6 +5,8 @@ import { Provider } from 'react-redux';
 import { Store, legacy_createStore as createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 
+import { QuestionnaireStatusCodes } from '../types/fhirEnums';
+
 import LanguageLocales from '@helsenorge/core-utils/constants/languages';
 
 import FormFillerSidebar from './FormFillerSidebar';
@@ -25,7 +27,7 @@ const getQuestionnaireFromBubndle = (bundle: Bundle<Questionnaire> | Questionnai
     return (
       bundle?.entry?.[0].resource ?? {
         resourceType: 'Questionnaire',
-        status: 'draft',
+        status: QuestionnaireStatusCodes.DRAFT,
       }
     );
   }
