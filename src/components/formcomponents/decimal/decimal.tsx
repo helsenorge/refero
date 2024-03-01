@@ -20,7 +20,6 @@ import withCommonFunctions from '../../with-common-functions';
 import Label from '../label';
 import SubLabel from '../sublabel';
 import TextView from '../textview';
-import { getValue } from '../../../util/itemHelper';
 
 export interface Props {
   item: QuestionnaireItem;
@@ -44,9 +43,20 @@ export interface Props {
 }
 
 class Decimal extends React.Component<Props & ValidationProps, {}> {
-  
+  getValue = (item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer): string | number | number[] | undefined => {
+    if (answer && Array.isArray(answer)) {
+      return answer.map(m => m.valueDecimal);
+    }
+    if (answer && answer.valueDecimal !== undefined && answer.valueDecimal !== null) {
+      return answer.valueDecimal;
+    }
+    if (!item || !item.initial || item.initial.length === 0 || !item.initial[0].valueDecimal) {
+      return '';
+    }
+  };
+
   getPDFValue(): string | number {
-    const value = getValue(this.props.item, this.props.answer);
+    const value = this.getValue(this.props.item, this.props.answer);
     if (value === undefined || value === null || value === '') {
       let text = '';
       if (this.props.resources && this.props.resources.ikkeBesvart) {
@@ -86,7 +96,7 @@ class Decimal extends React.Component<Props & ValidationProps, {}> {
 
   render(): JSX.Element | null {
     const { id, item, pdf, onRenderMarkdown } = this.props;
-    const value = getValue(this.props.item, this.props.answer);
+    const value = this.getValue(this.props.item, this.props.answer);
     const subLabelText = getSublabelText(this.props.item, this.props.onRenderMarkdown, this.props.questionnaire, this.props.resources);
 
     if (pdf || isReadOnly(item)) {
