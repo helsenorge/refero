@@ -395,7 +395,12 @@ export class OpenChoice extends React.Component<Props & ValidationProps> {
 
   renderSlider = (): JSX.Element => {
     return (
-      <SliderView item={this.props.item} handleChange={this.handleChange}>
+      <SliderView
+        item={this.props.item}
+        answer={this.props.answer}
+        handleChange={this.handleChange}
+        selected={this.getValue(this.props.item, this.props.answer)}
+      >
         {this.props.children}
       </SliderView>
     );

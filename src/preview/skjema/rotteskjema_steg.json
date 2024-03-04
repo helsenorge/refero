@@ -1,0 +1,195 @@
+{
+  "resourceType": "Questionnaire",
+  "language": "nb-NO",
+  "id": "16ac7414-2c06-4b5b-f0d2-1e0d4f2bceed",
+  "name": "Rotteskjema_Steg",
+  "title": "Rotteksjema stegvisning",
+  "status": "draft",
+  "publisher": "NHN",
+  "meta": {
+    "profile": [
+      "http://ehelse.no/fhir/StructureDefinition/sdf-Questionnaire"
+    ],
+    "tag": [
+      {
+        "system": "urn:ietf:bcp:47",
+        "code": "nb-NO",
+        "display": "Bokmål"
+      }
+    ],
+    "security": [
+      {
+        "code": "3",
+        "display": "Helsehjelp (Full)",
+        "system": "urn:oid:2.16.578.1.12.4.1.1.7618"
+      }
+    ]
+  },
+  "contact": [
+    {
+      "name": "http://www.nhn.no"
+    }
+  ],
+  "subjectType": [
+    "Patient"
+  ],
+  "extension": [
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sidebar",
+      "valueCoding": {
+        "system": "http://helsenorge.no/fhir/ValueSet/sdf-sidebar",
+        "code": "1"
+      }
+    },
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-information-message",
+      "valueCoding": {
+        "system": "http://helsenorge.no/fhir/ValueSet/sdf-information-message",
+        "code": "1"
+      }
+    },
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefintion/sdf-itemControl-visibility",
+      "valueCodeableConcept": {
+        "coding": [
+          {
+            "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
+            "code": "hide-help",
+            "display": "Hide help texts"
+          },
+          {
+            "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
+            "code": "hide-sublabel",
+            "display": "Hide sublabel texts"
+          }
+        ]
+      }
+    }
+  ],
+  "item": [
+    {
+      "linkId": "9aa2ec08-dea6-47c6-9ccc-d7c23452df56",
+      "type": "group",
+      "text": "Gruppe 1",
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                "code": "step"
+              }
+            ]
+          }
+        }
+      ],
+      "required": false,
+      "item": [
+        {
+          "linkId": "7427d5cf-4aab-4e0c-d000-d416dac8858d",
+          "type": "display",
+          "text": "Velkommen til rotteskjema i STEGVISNING :-)",
+          "required": false
+        }
+      ]
+    },
+    {
+      "linkId": "4f2c7f7a-e8a7-4f0e-e153-59b9626c1eaf",
+      "type": "group",
+      "text": "Gruppe 2",
+      "required": false,
+      "item": [
+        {
+          "linkId": "1f38dfe8-6c0a-4ff6-9dd9-8a22f090a46d",
+          "type": "choice",
+          "text": "Fantaserer du om rotter?",
+          "required": false,
+          "answerOption": [
+            {
+              "valueCoding": {
+                "id": "9c3badb3-502a-4a17-bed2-8c7701c53fb8",
+                "code": "litt",
+                "system": "urn:uuid:3103dcfb-e992-478b-a32b-8ac666f766ce",
+                "display": "Litt",
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+                    "valueDecimal": 1
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/valueset-label",
+                    "valueString": "🐁"
+                  }
+                ]
+              }
+            },
+            {
+              "valueCoding": {
+                "id": "39d8f47e-184a-41d6-99fd-990d2c022c0f",
+                "code": "litt-mer",
+                "system": "urn:uuid:3103dcfb-e992-478b-a32b-8ac666f766ce",
+                "display": "Litt mer",
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/valueset-label",
+                    "valueString": "🐀"
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+                    "valueDecimal": 2
+                  }
+                ]
+              }
+            },
+            {
+              "valueCoding": {
+                "id": "288dcd70-ae6d-4995-84ed-8a1f48b98c42",
+                "code": "ekstremt-mye",
+                "system": "urn:uuid:3103dcfb-e992-478b-a32b-8ac666f766ce",
+                "display": "Ekstremt mye",
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+                    "valueDecimal": 3
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/valueset-label",
+                    "valueString": "🧀🐀🐀🐀🧀"
+                  }
+                ]
+              }
+            }
+          ],
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "slider"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "c01c8aaf-b6f2-4fa1-c459-704c0b54ec18",
+      "type": "group",
+      "text": "Gruppe 3",
+      "required": false,
+      "item": [
+        {
+          "linkId": "48541e29-a560-4223-9cc4-6cf2083bd888",
+          "type": "display",
+          "text": "Takk for at du fylte ut rotteskjema. Vi ELSKER deg ^^",
+          "required": false
+        }
+      ]
+    }
+  ]
+}

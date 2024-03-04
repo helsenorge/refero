@@ -1,6 +1,6 @@
 {
   "name": "@helsenorge/refero",
-  "version": "15.0.1",
+  "version": "15.0.2",
   "engines": {
     "node": "^18.0.0",
     "npm": ">=9.0.0"
@@ -34,7 +34,7 @@
     "@helsenorge/autosuggest": "^29.5.2",
     "@helsenorge/core-utils": "^29.5.2",
     "@helsenorge/date-time": "^29.5.2",
-    "@helsenorge/designsystem-react": "^5.9.2",
+    "@helsenorge/designsystem-react": "^5.15.0",
     "@helsenorge/file-upload": "^29.5.2",
     "@helsenorge/form": "^29.5.2",
     "react": "^17.0.2",
@@ -48,7 +48,7 @@
     "@helsenorge/autosuggest": "^29.5.2",
     "@helsenorge/core-utils": "^29.5.2",
     "@helsenorge/date-time": "^29.5.2",
-    "@helsenorge/designsystem-react": "^5.9.2",
+    "@helsenorge/designsystem-react": "^5.15.0",
     "@helsenorge/file-upload": "^29.5.2",
     "@helsenorge/form": "^29.5.2",
     "@teamsupercell/typings-for-css-modules-loader": "^2.5.2",
