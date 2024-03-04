@@ -52,6 +52,7 @@ export interface DecimalProps extends WithCommonFunctionsProps {
 const Decimal: React.FC<DecimalProps & ValidationProps> = props => {
   const getValue = (): string | number | number[] | undefined => {
     const { item, answer } = props;
+
     if (answer && Array.isArray(answer)) {
       return answer.map(m => m.valueDecimal);
     }
@@ -65,6 +66,7 @@ const Decimal: React.FC<DecimalProps & ValidationProps> = props => {
 
   const getPDFValue = (): string | number => {
     const value = getValue();
+
     if (value === undefined || value === null || value === '') {
       let text = '';
       if (props.resources && props.resources.ikkeBesvart) {

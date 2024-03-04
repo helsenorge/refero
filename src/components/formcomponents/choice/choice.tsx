@@ -230,7 +230,13 @@ const Choice = (props: ChoiceProps & ValidationProps): JSX.Element | null => {
 
   const renderSlider = (): JSX.Element => {
     return (
-      <SliderView item={props.item} handleChange={handleChange}>
+
+      <SliderView
+        item={props.item}
+        answer={props.answer}
+        handleChange={handleChange}
+        selected={getValue(props.item, props.answer)}
+      >
         {props.children}
       </SliderView>
     );
