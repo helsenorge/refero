@@ -60,8 +60,8 @@ const DropdownView: React.FC<DropdownViewProps> = props => {
     return null;
   }
 
-  const { register } = useForm();
-
+  const { register, getFieldState } = useForm();
+  const { error } = getFieldState(getId(item.linkId));
   const dropdownOptions: HTMLOptionElement[] = options.map((o: Options) => {
     return new Option(o.label, o.type);
   });
@@ -76,27 +76,30 @@ const DropdownView: React.FC<DropdownViewProps> = props => {
     <div className="page_refero__component page_refero__component_openchoice page_refero__component_openchoice_dropdown">
       <Collapse isOpened>
         {renderHelpElement()}
-        <Select
-          {...register(getId(item.linkId), {
-            required: isRequired(item),
-            onChange: handleSelectChange,
-            value: selected ? selected[0] : undefined,
-          })}
-          selectId={selectId}
-          errorText={getValidationTextExtension(item)}
-          className="page_refero__input"
-          label={
-            <Label
-              htmlFor={selectId}
-              labelTexts={[{ text: labelText, type: 'semibold' }]}
-              sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
-              afterLabelChildren={renderHelpButton()}
-            />
-          }
-        >
-          {dropdownOptions}
-        </Select>
-        {shouldShowExtraChoice(answer) && <div className="page_refero__component_openchoice_openfield">{renderOpenField()}</div>}
+        <Validation errorSummary={error?.message}>
+          <Select
+            {...register(getId(item.linkId), {
+              required: isRequired(item),
+              onChange: handleSelectChange,
+              value: selected ? selected[0] : undefined,
+            })}
+            selectId={selectId}
+            errorText={getValidationTextExtension(item)}
+            className="page_refero__input"
+            label={
+              <Label
+                htmlFor={selectId}
+                labelTexts={[{ text: labelText, type: 'semibold' }]}
+                sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+                afterLabelChildren={renderHelpButton()}
+              />
+            }
+          >
+            {dropdownOptions}
+          </Select>
+          {shouldShowExtraChoice(answer) && <div className="page_refero__component_openchoice_openfield">{renderOpenField()}</div>}
+        </Validation>
+
         {renderDeleteButton('page_refero__deletebutton--margin-top')}
         {repeatButton}
         {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}

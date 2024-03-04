@@ -116,7 +116,7 @@ const String: React.FC<StringProps & ValidationProps> = props => {
 
   // validateOnExternalUpdate={true}
 
-  const fieldState = getFieldState(getId(item.linkId));
+  const { error, invalid } = getFieldState(getId(item.linkId));
   const handleInputChange = (event: React.FormEvent<HTMLInputElement>): void => {
     event.persist();
     debouncedHandleChange(event);
@@ -129,46 +129,48 @@ const String: React.FC<StringProps & ValidationProps> = props => {
   return (
     <div className="page_refero__component page_refero__component_string">
       {props.renderHelpElement()}
-      <Input
-        {...register(getId(item.linkId), {
-          required: isRequired(item) && {
-            value: isRequired(item),
-            message: getRequiredErrorMessage(item) || resources?.formRequiredErrorMessage || '',
-          },
-          minLength: getMinLengthExtensionValue(item) && {
-            value: getMinLengthExtensionValue(item) || 0,
-            message: getValidationErrorMessage(inputValue),
-          },
-          maxLength: getMaxLength(item) && {
-            value: getMaxLength(item) || 0,
-            message: resources?.stringOverMaxLengthError || '',
-          },
-          onChange: handleInputChange,
-          pattern: pattern && {
-            value: pattern,
-            message: getValidationErrorMessage(inputValue),
-          },
-          // validate: validateText2,
-        })}
-        label={
-          <Label
-            labelTexts={[{ text: labelText, type: 'semibold' }]}
-            sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
-            afterLabelChildren={props.renderHelpButton()}
-          />
-        }
-        type="text"
-        width={25}
-        inputId={inputId}
-        defaultValue={getStringValue(answer)}
-        required={isRequired(item)}
-        placeholder={getPlaceholder(item)}
-        min={getMinLengthExtensionValue(item)}
-        max={getMaxLength(item)}
-        className="page_refero__input"
-        errorText={fieldState.error?.message}
-        error={fieldState.invalid}
-      />
+      <Validation errorSummary={error?.message}>
+        <Input
+          {...register(getId(item.linkId), {
+            required: isRequired(item) && {
+              value: isRequired(item),
+              message: getRequiredErrorMessage(item) || resources?.formRequiredErrorMessage || '',
+            },
+            minLength: getMinLengthExtensionValue(item) && {
+              value: getMinLengthExtensionValue(item) || 0,
+              message: getValidationErrorMessage(inputValue),
+            },
+            maxLength: getMaxLength(item) && {
+              value: getMaxLength(item) || 0,
+              message: resources?.stringOverMaxLengthError || '',
+            },
+            onChange: handleInputChange,
+            pattern: pattern && {
+              value: pattern,
+              message: getValidationErrorMessage(inputValue),
+            },
+            // validate: validateText2,
+          })}
+          label={
+            <Label
+              labelTexts={[{ text: labelText, type: 'semibold' }]}
+              sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+              afterLabelChildren={props.renderHelpButton()}
+            />
+          }
+          type="text"
+          width={25}
+          inputId={inputId}
+          defaultValue={getStringValue(answer)}
+          required={isRequired(item)}
+          placeholder={getPlaceholder(item)}
+          min={getMinLengthExtensionValue(item)}
+          max={getMaxLength(item)}
+          className="page_refero__input"
+          errorText={error?.message}
+          error={invalid}
+        />
+      </Validation>
       {props.renderDeleteButton('page_refero__deletebutton--margin-top')}
       {props.repeatButton}
       {props.children ? <div className="nested-fieldset nested-fieldset--full-height">{props.children}</div> : null}

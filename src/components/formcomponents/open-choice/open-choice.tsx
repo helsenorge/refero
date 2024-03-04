@@ -395,14 +395,6 @@ const OpenChoice: React.FC<OpenChoiceProps & ValidationProps> = props => {
       </SliderView>
     );
   };
-  // React.useMemo(() => {
-  //   const responseItemHasChanged = props.responseItem !== props.responseItem;
-  //   const helpItemHasChanged = props.isHelpOpen !== props.isHelpOpen;
-  //   const answerHasChanged = props.answer !== props.answer;
-  //   const resourcesHasChanged = JSON.stringify(props.resources) !== JSON.stringify(props.resources);
-  //   const repeats = props.item.repeats ?? false;
-  //   return responseItemHasChanged || helpItemHasChanged || answerHasChanged || resourcesHasChanged || repeats;
-  // }, [props.responseItem, props.isHelpOpen, props.answer, props.resources]);
 
   const { id, item, pdf, answer, containedResources, children, onRenderMarkdown } = props;
   if (pdf || isReadOnly(item)) {

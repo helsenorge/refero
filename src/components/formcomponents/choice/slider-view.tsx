@@ -4,6 +4,7 @@ import { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
 import { ChangeHandler, useFormContext } from 'react-hook-form';
 
 import { Slider, SliderStep } from '@helsenorge/designsystem-react/components/Slider';
+import Validation from '@helsenorge/designsystem-react/components/Validation';
 
 import ExtensionConstants from '../../../constants/extensions';
 import { getId, isRequired } from '../../../util';
@@ -19,8 +20,8 @@ type LeftRightLabels = [leftLabel: string, rightLabel: string];
 
 const SliderView: React.FC<SliderProps> = ({ item, handleChange, children }) => {
   const title = item.text;
-  const { register } = useFormContext();
-
+  const { register, getFieldState } = useFormContext();
+  const { error } = getFieldState(getId(item.linkId));
   const [sliderSteps, setSliderSteps] = React.useState<SliderStep[] | undefined>(undefined);
   const [leftRightLabels, setleftRightLabels] = React.useState<LeftRightLabels | undefined>(undefined);
 
@@ -32,9 +33,7 @@ const SliderView: React.FC<SliderProps> = ({ item, handleChange, children }) => 
   }, []);
 
   const onValueChange = (index: number): void => {
-    console.log('index', index);
     const code = item.answerOption?.[index]?.valueCoding?.code;
-    console.log('code', code);
     if (code) {
       handleChange(code);
     }
@@ -42,14 +41,16 @@ const SliderView: React.FC<SliderProps> = ({ item, handleChange, children }) => 
 
   return (
     <div className="page_refero__component page_refero__component_choice page_refero__component_choice_slider">
-      <Slider
-        {...register(getId(item.linkId), { required: isRequired(item) })}
-        title={title}
-        labelLeft={leftRightLabels?.[0]}
-        labelRight={leftRightLabels?.[1]}
-        steps={sliderSteps}
-        onChange={onValueChange}
-      />
+      <Validation errorSummary={error?.message}>
+        <Slider
+          {...register(getId(item.linkId), { required: isRequired(item) })}
+          title={title}
+          labelLeft={leftRightLabels?.[0]}
+          labelRight={leftRightLabels?.[1]}
+          steps={sliderSteps}
+          onChange={onValueChange}
+        />
+      </Validation>
       {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : undefined}
     </div>
   );

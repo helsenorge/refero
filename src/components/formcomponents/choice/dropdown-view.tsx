@@ -79,32 +79,34 @@ const DropdownView: React.FC<DropdownViewProps> = props => {
     <div className="page_refero__component page_refero__component_choice page_refero__component_choice_dropdown">
       <Collapse isOpened>
         {renderHelpElement()}
-        <FormGroup error={error?.message}>
-          <Select
-            {...register(getId(item.linkId), {
-              required: { value: isRequired(item), message: getValidationTextExtension(item) || '' },
-              onChange: handleSelectChange,
-              value: selected ? selected[0] : undefined,
-            })}
-            label={
-              <Label
-                htmlFor={selectId}
-                labelTexts={[{ text: labelText, type: 'semibold' }]}
-                sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
-                afterLabelChildren={renderHelpButton()}
-              />
-            }
-            selectId={selectId}
-            errorText={error?.message}
-            className="page_refero__input"
-          >
-            {dropdownOptions.map(dropdownOption => (
-              <option key={selectId + dropdownOption.label} value={dropdownOption.value}>
-                {dropdownOption.label}
-              </option>
-            ))}
-          </Select>
-        </FormGroup>
+        <Validation errorSummary={error?.message}>
+          <FormGroup>
+            <Select
+              {...register(getId(item.linkId), {
+                required: { value: isRequired(item), message: getValidationTextExtension(item) || '' },
+                onChange: handleSelectChange,
+                value: selected ? selected[0] : undefined,
+              })}
+              label={
+                <Label
+                  htmlFor={selectId}
+                  labelTexts={[{ text: labelText, type: 'semibold' }]}
+                  sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+                  afterLabelChildren={renderHelpButton()}
+                />
+              }
+              selectId={selectId}
+              errorText={error?.message}
+              className="page_refero__input"
+            >
+              {dropdownOptions.map(dropdownOption => (
+                <option key={selectId + dropdownOption.label} value={dropdownOption.value}>
+                  {dropdownOption.label}
+                </option>
+              ))}
+            </Select>
+          </FormGroup>
+        </Validation>
         {renderDeleteButton('page_refero__deletebutton--margin-top')}
         {repeatButton}
         {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}

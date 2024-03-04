@@ -52,8 +52,8 @@ const textField: React.SFC<Props & ValidationProps> = ({
       </Pdf>
     );
   }
-  const { register } = useFormContext();
-
+  const { register, getFieldState } = useFormContext();
+  const { error } = getFieldState(getId(item.linkId));
   const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`;
   const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
 
@@ -67,27 +67,29 @@ const textField: React.SFC<Props & ValidationProps> = ({
   const maxLength = getMaxLength(item);
   const validationText = getValidationTextExtension(item) || '';
   return (
-    <Input
-      {...register(getId(item.linkId), {
-        required: isRequired(item),
-        onChange: handleStringChange,
-        onBlur: handleStringChange,
-        pattern,
-        disabled: isReadOnly(item),
-        min: minLength && { value: minLength, message: validationText },
-        max: maxLength && { value: maxLength, message: validationText },
-      })}
-      type="text"
-      inputId={getId(id)}
-      defaultValue={getStringValue(answer)}
-      label={
-        <Label
-          labelTexts={[{ text: labelText, type: 'semibold' }]}
-          sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
-        />
-      }
-      placeholder={getPlaceholder(item)}
-    />
+    <Validation errorSummary={error?.message}>
+      <Input
+        {...register(getId(item.linkId), {
+          required: isRequired(item),
+          onChange: handleStringChange,
+          onBlur: handleStringChange,
+          pattern,
+          disabled: isReadOnly(item),
+          min: minLength && { value: minLength, message: validationText },
+          max: maxLength && { value: maxLength, message: validationText },
+        })}
+        type="text"
+        inputId={getId(id)}
+        defaultValue={getStringValue(answer)}
+        label={
+          <Label
+            labelTexts={[{ text: labelText, type: 'semibold' }]}
+            sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+          />
+        }
+        placeholder={getPlaceholder(item)}
+      />
+    </Validation>
   );
 };
 

@@ -17,6 +17,7 @@ import { Resources } from '../../../types/resources';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Input from '@helsenorge/designsystem-react/components/Input';
 import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
+import Validation from '@helsenorge/designsystem-react/components/Validation';
 
 import { NewValueAction, newQuantityValueAsync } from '../../../actions/newValue';
 import { GlobalState } from '../../../reducers';
@@ -146,36 +147,38 @@ const Quantity: React.FC<QuantityProps & ValidationProps> = props => {
   const { error } = getFieldState(getId(item.linkId));
   return (
     <div className="page_refero__component page_refero__component_quantity">
-      <FormGroup error={error?.message}>
-        {props.renderHelpElement()}
-        <Input
-          {...register(getId(item.linkId), {
-            required: {
-              value: isRequired(item),
-              message: props.resources?.formRequiredErrorMessage || '',
-            },
-            max: maxValue && { value: maxValue, message: validationText },
-            min: minValue && { value: minValue, message: validationText },
-            onChange: handleChange,
-            value,
-            pattern,
-          })}
-          label={
-            <Label
-              labelTexts={[{ text: labelText, type: 'semibold' }]}
-              sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
-              afterLabelChildren={props.renderHelpButton()}
-            />
-          }
-          type="number"
-          inputId={inputId}
-          defaultValue={value !== undefined ? value + '' : ''}
-          placeholder={getPlaceholder(item)}
-          className="page_refero__quantity"
-          width={7}
-        />
-        <span className="page_refero__unit">{getUnit()}</span>
-      </FormGroup>
+      <Validation errorSummary={error?.message}>
+        <FormGroup>
+          {props.renderHelpElement()}
+          <Input
+            {...register(getId(item.linkId), {
+              required: {
+                value: isRequired(item),
+                message: props.resources?.formRequiredErrorMessage || '',
+              },
+              max: maxValue && { value: maxValue, message: validationText },
+              min: minValue && { value: minValue, message: validationText },
+              onChange: handleChange,
+              value,
+              pattern,
+            })}
+            label={
+              <Label
+                labelTexts={[{ text: labelText, type: 'semibold' }]}
+                sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+                afterLabelChildren={props.renderHelpButton()}
+              />
+            }
+            type="number"
+            inputId={inputId}
+            defaultValue={value !== undefined ? value + '' : ''}
+            placeholder={getPlaceholder(item)}
+            className="page_refero__quantity"
+            width={7}
+          />
+          <span className="page_refero__unit">{getUnit()}</span>
+        </FormGroup>
+      </Validation>
       {props.renderDeleteButton('page_refero__deletebutton--margin-top')}
       <div>{props.repeatButton}</div>
       {props.children ? <div className="nested-fieldset nested-fieldset--full-height">{props.children}</div> : null}

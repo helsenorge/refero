@@ -12,7 +12,7 @@ import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label
 import RadioButton from '@helsenorge/designsystem-react/components/RadioButton';
 import Validation from '@helsenorge/designsystem-react/components/Validation';
 
-import { shouldShowExtraChoice, validateInput } from '../../../util/choice';
+import { shouldShowExtraChoice } from '../../../util/choice';
 import { getId, getSublabelText, getText, isRequired } from '../../../util/index';
 
 interface Props {
@@ -41,7 +41,6 @@ const RadioView: React.SFC<Props> = ({
   id,
   handleChange,
   selected,
-  // validateInput,
   resources,
   children,
   repeatButton,
@@ -64,39 +63,41 @@ const RadioView: React.SFC<Props> = ({
   // validateOnExternalUpdate={true}
 
   const { register, getFieldState } = useFormContext();
-  const { error, invalid } = getFieldState(getId(item.linkId));
+  const { error } = getFieldState(getId(item.linkId));
   return (
     <div className="page_refero__component page_refero__component_openchoice page_refero__component_openchoice_radiobutton">
       <Collapse isOpened>
-        <FormGroup legend={getText(item, onRenderMarkdown, questionnaire, resources)} error={invalid ? error?.message : undefined}>
-          {options.map((option: Options, index: number) => (
-            <RadioButton
-              {...register(getId(item.linkId), {
-                required: {
-                  message: resources?.oppgiVerdi || '',
-                  value: isRequired(item),
-                },
-                onChange: handleChange,
-                disabled: option.disabled,
-                value: option.type,
-              })}
-              inputId={getId(id) + index.toLocaleString()}
-              size="medium"
-              testId="radioButton-openChoice"
-              key={`${getId(id)}-${index.toString()}`}
-              mode="onwhite"
-              label={
-                <Label
-                  labelTexts={[{ text: option.label }]}
-                  sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
-                  afterLabelChildren={<>{renderHelpButton()}</>}
-                />
-              }
-              defaultChecked={selectedValue === option.type}
-            />
-          ))}
-        </FormGroup>
-        {shouldShowExtraChoice(answer) && <div className="page_refero__component_openchoice_openfield">{renderOpenField()}</div>}
+        <Validation errorSummary={error?.message}>
+          <FormGroup legend={getText(item, onRenderMarkdown, questionnaire, resources)}>
+            {options.map((option: Options, index: number) => (
+              <RadioButton
+                {...register(getId(item.linkId), {
+                  required: {
+                    message: resources?.oppgiVerdi || '',
+                    value: isRequired(item),
+                  },
+                  onChange: handleChange,
+                  disabled: option.disabled,
+                  value: option.type,
+                })}
+                inputId={getId(id) + index.toLocaleString()}
+                size="medium"
+                testId="radioButton-openChoice"
+                key={`${getId(id)}-${index.toString()}`}
+                mode="onwhite"
+                label={
+                  <Label
+                    labelTexts={[{ text: option.label }]}
+                    sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+                    afterLabelChildren={<>{renderHelpButton()}</>}
+                  />
+                }
+                defaultChecked={selectedValue === option.type}
+              />
+            ))}
+          </FormGroup>
+          {shouldShowExtraChoice(answer) && <div className="page_refero__component_openchoice_openfield">{renderOpenField()}</div>}
+        </Validation>
         {renderDeleteButton('page_refero__deletebutton--margin-top')}
         {repeatButton}
         {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : undefined}

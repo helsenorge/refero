@@ -54,7 +54,8 @@ const CheckboxView: React.SFC<Props> = ({
   if (!options) {
     return null;
   }
-  const { register } = useFormContext();
+  const { register, getFieldState } = useFormContext();
+  const { error } = getFieldState(getId(item.linkId));
   const checkboxes = options.map(el => {
     return { label: el.label, id: el.type, checked: isSelected(el, selected) };
   });
@@ -72,7 +73,7 @@ const CheckboxView: React.SFC<Props> = ({
   return (
     <div className="page_refero__component page_refero__component_openchoice page_refero__component_openchoice_checkbox">
       <Collapse isOpened>
-        <Validation {...other}>
+        <Validation errorSummary={error?.message}>
           <FormGroup legend={getText(item, onRenderMarkdown, questionnaire, resources)}>
             {checkboxes.map((checkbox, index) => (
               <Checkbox
@@ -94,12 +95,9 @@ const CheckboxView: React.SFC<Props> = ({
               />
             ))}
           </FormGroup>
+          {shouldShowExtraChoice(answer) && <div className="page_refero__component_openchoice_openfield">{renderOpenField()}</div>}
         </Validation>
-        {shouldShowExtraChoice(answer) ? (
-          <div className="page_refero__component_openchoice_openfield">{renderOpenField()}</div>
-        ) : (
-          <React.Fragment />
-        )}
+
         {renderDeleteButton('page_refero__deletebutton--margin-top')}
         {repeatButton}
         {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
