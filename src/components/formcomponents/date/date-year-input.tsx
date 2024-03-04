@@ -2,6 +2,7 @@ import * as React from 'react';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { Moment } from 'moment';
+import { useFormContext } from 'react-hook-form';
 
 import { Resources } from '../../../types/resources';
 
@@ -61,6 +62,9 @@ export const DateYearInput = (props: React.PropsWithChildren<Props>): JSX.Elemen
     props.onDateValueChange(year === 0 ? '' : year.toString());
   };
 
+  const { register, getFieldState } = useFormContext();
+  const { error } = getFieldState(getId(props.id));
+
   const getPDFValue = (): string => {
     const ikkeBesvartText = props.resources?.ikkeBesvart || '';
     return (
@@ -86,22 +90,21 @@ export const DateYearInput = (props: React.PropsWithChildren<Props>): JSX.Elemen
   }
 
   return (
-    <Validation {...props}>
-      <YearInput
-        id={`${getId(props.id)}-year_input`}
-        errorResources={getYearInputResources()}
-        label={props.label}
-        subLabel={props.subLabel}
-        isRequired={isRequired(props.item)}
-        placeholder={getPlaceholder(props.item)}
-        maximumYear={props.maxDate?.year()}
-        minimumYear={props.minDate?.year()}
-        value={answerState}
-        className={props.className}
-        onChange={onYearChange}
-        helpButton={props.helpButton}
-        helpElement={props.helpElement}
-      />
-    </Validation>
+    <YearInput
+      {...register(getId(props.id), { required: { value: isRequired(props.item), message: props.resources?.dateRequired || '' } })}
+      id={`${getId(props.id)}-year_input`}
+      errorResources={getYearInputResources()}
+      label={props.label}
+      subLabel={props.subLabel}
+      isRequired={isRequired(props.item)}
+      placeholder={getPlaceholder(props.item)}
+      maximumYear={props.maxDate?.year()}
+      minimumYear={props.minDate?.year()}
+      value={answerState}
+      className={props.className}
+      onChange={onYearChange}
+      helpButton={props.helpButton}
+      helpElement={props.helpElement}
+    />
   );
 };

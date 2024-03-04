@@ -2,6 +2,7 @@ import * as React from 'react';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import moment, { Moment } from 'moment';
+import { useFormContext } from 'react-hook-form';
 
 import { Resources } from '../../../types/resources';
 
@@ -105,7 +106,8 @@ export const DateYearMonthInput: React.FC<DateYearMonthInputProps> = props => {
     }
     return ikkeBesvartText;
   };
-
+  const { register, getFieldState } = useFormContext();
+  const { error } = getFieldState(getId(props.id));
   if (props.pdf || isReadOnly(props.item)) {
     return (
       <TextView
@@ -122,23 +124,22 @@ export const DateYearMonthInput: React.FC<DateYearMonthInputProps> = props => {
   }
 
   return (
-    <Validation {...props}>
-      <YearMonthInput
-        id={`${getId(props.id)}-yearmonth_input`}
-        locale={props.locale} // TODO: må støtte nynorsk og samisk også
-        resources={getYearMonthInputResources()}
-        legend={props.label}
-        subLabel={props.subLabel}
-        isRequired={isRequired(props.item)}
-        placeholder={getPlaceholder(props.item)}
-        maximumYearMonth={getMinMaxDate(props.maxDate)}
-        minimumYearMonth={getMinMaxDate(props.minDate)}
-        value={getValue()}
-        className={props.className}
-        onChange={onYearMonthChange}
-        helpButton={props.helpButton}
-        helpElement={props.helpElement}
-      />
-    </Validation>
+    <YearMonthInput
+      {...register(getId(props.id), { required: { value: isRequired(props.item), message: props.resources?.dateRequired || '' } })}
+      id={`${getId(props.id)}-yearmonth_input`}
+      locale={props.locale} // TODO: må støtte nynorsk og samisk også
+      resources={getYearMonthInputResources()}
+      legend={props.label}
+      subLabel={props.subLabel}
+      isRequired={isRequired(props.item)}
+      placeholder={getPlaceholder(props.item)}
+      maximumYearMonth={getMinMaxDate(props.maxDate)}
+      minimumYearMonth={getMinMaxDate(props.minDate)}
+      value={getValue()}
+      className={props.className}
+      onChange={onYearMonthChange}
+      helpButton={props.helpButton}
+      helpElement={props.helpElement}
+    />
   );
 };

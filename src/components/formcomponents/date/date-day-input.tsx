@@ -2,6 +2,7 @@ import * as React from 'react';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireItemInitial } from 'fhir/r4';
 import moment, { Moment } from 'moment';
+import { useFormContext } from 'react-hook-form';
 
 import { Resources } from '../../../types/resources';
 
@@ -17,7 +18,6 @@ import { getId, isRequired } from '../../../util';
 import { getPlaceholder, getValidationTextExtension } from '../../../util/extension';
 import { isReadOnly } from '../../../util/index';
 import TextView from '../textview';
-
 interface DateDayInputProps {
   id?: string;
   pdf?: boolean;
@@ -113,7 +113,8 @@ export const DateDayInput: React.FC<DateDayInputProps> = props => {
     const date = getValue();
     return date ? toLocaleDate(moment(date[0])) : undefined;
   };
-
+  const { register, getFieldState } = useFormContext();
+  const { error } = getFieldState(getId(props.id));
   if (props.pdf || isReadOnly(props.item)) {
     return (
       <TextView
@@ -130,27 +131,26 @@ export const DateDayInput: React.FC<DateDayInputProps> = props => {
   }
 
   return (
-    <Validation {...props}>
-      <DateRangePicker
-        type="single"
-        id={`${getId(props.id)}-datepicker_input`}
-        locale={props.locale} // TODO: må støtte nynorsk og samisk også
-        errorResources={getDatepickerErrorPhrases()}
-        resources={props.resources}
-        label={props.label}
-        subLabel={props.subLabel}
-        isRequired={isRequired(props.item)}
-        placeholder={getPlaceholder(props.item)}
-        ref={props.datepickerRef}
-        maximumDate={toLocaleDate(props.maxDate)}
-        minimumDate={toLocaleDate(props.minDate)}
-        singleDateValue={getSingleDateValue()}
-        className={props.className}
-        onDateChange={onDateChange}
-        validationErrorRenderer={props.validationErrorRenderer}
-        helpButton={props.helpButton}
-        helpElement={props.helpElement}
-      />
-    </Validation>
+    <DateRangePicker
+      {...register(getId(props.id), { required: { value: isRequired(props.item), message: props.resources?.dateRequired || '' } })}
+      type="single"
+      id={`${getId(props.id)}-datepicker_input`}
+      locale={props.locale} // TODO: må støtte nynorsk og samisk også
+      errorResources={getDatepickerErrorPhrases()}
+      resources={props.resources}
+      label={props.label}
+      subLabel={props.subLabel}
+      isRequired={isRequired(props.item)}
+      placeholder={getPlaceholder(props.item)}
+      ref={props.datepickerRef}
+      maximumDate={toLocaleDate(props.maxDate)}
+      minimumDate={toLocaleDate(props.minDate)}
+      singleDateValue={getSingleDateValue()}
+      className={props.className}
+      onDateChange={onDateChange}
+      validationErrorRenderer={props.validationErrorRenderer}
+      helpButton={props.helpButton}
+      helpElement={props.helpElement}
+    />
   );
 };

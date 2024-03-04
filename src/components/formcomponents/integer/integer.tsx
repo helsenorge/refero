@@ -8,6 +8,7 @@ import { ThunkDispatch } from 'redux-thunk';
 import { ValidationProps } from '../../../types/formTypes/validation';
 import { Resources } from '../../../types/resources';
 
+import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Input from '@helsenorge/designsystem-react/components/Input';
 import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
 import Validation from '@helsenorge/designsystem-react/components/Validation';
@@ -110,14 +111,14 @@ const Integer = (props: IntegerProps & ValidationProps): JSX.Element | null => {
 
   // showLabel={true}
   // validateOnExternalUpdate={true}
-  const { error } = getFieldState(getId(props.item.linkId));
+  const { error, invalid } = getFieldState(getId(props.item.linkId));
   const maxValue = getMaxValueExtensionValue(props.item);
   const minValue = getMinValueExtensionValue(props.item);
   const validationMessage = getValidationTextExtension(props.item) ?? '';
   return (
     <div className="page_refero__component page_refero__component_integer">
-      <>
-        {props.renderHelpElement()}
+      {props.renderHelpElement()}
+      <FormGroup error={error?.message}>
         <Input
           {...register(getId(props.item.linkId), {
             required: isRequired(props.item),
@@ -138,10 +139,11 @@ const Integer = (props: IntegerProps & ValidationProps): JSX.Element | null => {
           defaultValue={value !== undefined && value !== null ? value + '' : ''}
           placeholder={getPlaceholder(props.item)}
           errorText={error?.message}
+          error={invalid}
           className="page_refero__input"
           width={25}
         />
-      </>
+      </FormGroup>
       {props.renderDeleteButton('page_refero__deletebutton--margin-top')}
       {props.repeatButton}
       {props.children ? <div className="nested-fieldset nested-fieldset--full-height">{props.children}</div> : null}

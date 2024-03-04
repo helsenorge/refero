@@ -6,6 +6,7 @@ import { ValidationRule, useFormContext } from 'react-hook-form';
 import { ValidationProps } from '../../../types/formTypes/validation';
 import { Resources } from '../../../types/resources';
 
+import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Input from '@helsenorge/designsystem-react/components/Input';
 import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
 import Validation from '@helsenorge/designsystem-react/components/Validation';
@@ -53,7 +54,7 @@ const textField: React.SFC<Props & ValidationProps> = ({
     );
   }
   const { register, getFieldState } = useFormContext();
-  const { error } = getFieldState(getId(item.linkId));
+  const { error, invalid } = getFieldState(getId(item.linkId));
   const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`;
   const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
 
@@ -67,7 +68,7 @@ const textField: React.SFC<Props & ValidationProps> = ({
   const maxLength = getMaxLength(item);
   const validationText = getValidationTextExtension(item) || '';
   return (
-    <Validation errorSummary={error?.message}>
+    <FormGroup error={error?.message}>
       <Input
         {...register(getId(item.linkId), {
           required: isRequired(item),
@@ -78,6 +79,7 @@ const textField: React.SFC<Props & ValidationProps> = ({
           min: minLength && { value: minLength, message: validationText },
           max: maxLength && { value: maxLength, message: validationText },
         })}
+        error={invalid}
         type="text"
         inputId={getId(id)}
         defaultValue={getStringValue(answer)}
@@ -89,7 +91,7 @@ const textField: React.SFC<Props & ValidationProps> = ({
         }
         placeholder={getPlaceholder(item)}
       />
-    </Validation>
+    </FormGroup>
   );
 };
 

@@ -70,11 +70,7 @@ const RenderForm = ({
   return (
     <form onSubmit={methods.handleSubmit(onSubmitReactHookForm, handleInvalidForm)}>
       <Validation errorSummary="test" />
-      {React.Children.map(children as JSX.Element[], child => {
-        return child && child.props && child?.props?.name
-          ? React.createElement(child.type, { ...child.props, register: methods.register, key: child.props?.name })
-          : child;
-      })}
+      {children}
       <FormButtons
         isStepView={isStepView}
         submitButtonText={displayNextButton && resources.nextStep ? resources.nextStep : resources.formSend}
@@ -86,7 +82,7 @@ const RenderForm = ({
         onCancelButtonClicked={referoProps.onCancel}
         onPauseButtonClicked={isStepView ? displayPauseButtonInStepView : displayPauseButtonInNormalView}
         isHelsenorgeForm={isHelsenorgeForm && isHelsenorgeForm}
-      ></FormButtons>
+      />
     </form>
   );
 };

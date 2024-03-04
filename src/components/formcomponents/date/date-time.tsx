@@ -2,6 +2,7 @@ import * as React from 'react';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem, Questionnaire } from 'fhir/r4';
 import moment, { Moment } from 'moment';
+import { useFormContext } from 'react-hook-form';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
@@ -169,7 +170,10 @@ const DateTime: React.FC<DateTimeProps & ValidationProps> = props => {
     return moment ? moment.locale(getLocaleFromLanguage()) : undefined;
   };
 
-  const { item, pdf, id, onRenderMarkdown, ...other } = props;
+  const { register, getFieldState } = useFormContext();
+  const { error } = getFieldState(getId(props.id));
+
+  const { item, pdf, id, onRenderMarkdown } = props;
   if (pdf || isReadOnly(item)) {
     return (
       <TextView
@@ -191,34 +195,33 @@ const DateTime: React.FC<DateTimeProps & ValidationProps> = props => {
 
   return (
     <div className="page_refero__component page_refero__component_datetime">
-      <Validation {...other}>
-        <DateTimePicker
-          id={getId(id)}
-          resources={{ dateResources: props.resources }}
-          locale={getLocaleFromLanguage()}
-          dateValue={valueDateTime ? toLocaleDate(moment(valueDateTime)) : undefined}
-          timeValue={valueDateTime ? moment(valueDateTime).format('HH:mm') : undefined}
-          maximumDateTime={maxDateTime ? toLocaleDate(moment(maxDateTime)) : undefined}
-          minimumDateTime={minDateTime ? toLocaleDate(moment(minDateTime)) : undefined}
-          initialDate={toLocaleDate(moment(new Date()))}
-          onChange={dispatchNewDate}
-          onBlur={onBlur}
-          legend={
-            <Label
-              item={props.item}
-              onRenderMarkdown={props.onRenderMarkdown}
-              questionnaire={props.questionnaire}
-              resources={props.resources}
-            />
-          }
-          subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
-          isRequired={isRequired(item)}
-          errorMessage={getValidationTextExtension(item)}
-          timeClassName="page_refero__input"
-          helpButton={props.renderHelpButton()}
-          helpElement={props.renderHelpElement()}
-        />
-      </Validation>
+      <DateTimePicker
+        {...register(getId(props.id), { required: { value: isRequired(props.item), message: props.resources?.dateRequired || '' } })}
+        id={getId(id)}
+        resources={{ dateResources: props.resources }}
+        locale={getLocaleFromLanguage()}
+        dateValue={valueDateTime ? toLocaleDate(moment(valueDateTime)) : undefined}
+        timeValue={valueDateTime ? moment(valueDateTime).format('HH:mm') : undefined}
+        maximumDateTime={maxDateTime ? toLocaleDate(moment(maxDateTime)) : undefined}
+        minimumDateTime={minDateTime ? toLocaleDate(moment(minDateTime)) : undefined}
+        initialDate={toLocaleDate(moment(new Date()))}
+        onChange={dispatchNewDate}
+        onBlur={onBlur}
+        legend={
+          <Label
+            item={props.item}
+            onRenderMarkdown={props.onRenderMarkdown}
+            questionnaire={props.questionnaire}
+            resources={props.resources}
+          />
+        }
+        subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
+        isRequired={isRequired(item)}
+        errorMessage={getValidationTextExtension(item)}
+        timeClassName="page_refero__input"
+        helpButton={props.renderHelpButton()}
+        helpElement={props.renderHelpElement()}
+      />
       {props.renderDeleteButton('page_refero__deletebutton--margin-top')}
       {props.repeatButton}
       {props.children ? <div className="nested-fieldset nested-fieldset--full-height">{props.children}</div> : null}

@@ -60,42 +60,36 @@ const RadioView = ({
   const { register, getFieldState } = useFormContext();
   const { error } = getFieldState(getId(item.linkId));
   const handleRadioChange = (option: Options): void => {
-    handleChange(option.type);
+    handleChange(option?.type);
   };
   return (
     <div className="page_refero__component page_refero__component_choice page_refero__component_choice_radiobutton">
       <Collapse isOpened>
-        <Validation errorSummary={error?.message}>
-          <FormGroup
-            legend={getText(item, onRenderMarkdown, questionnaire, resources)}
-
-            // error={getErrorMessage(selectedValue) !== '' ? getErrorMessage(selectedValue) : undefined}
-          >
-            {options.map((option: Options, index: number) => (
-              <RadioButton
-                {...register(getId(item.linkId), {
-                  required: { value: isRequired(item), message: resources?.formRequiredErrorMessage || '' },
-                  disabled: option.disabled,
-                  value: option.type,
-                  onChange: (): void => handleRadioChange(option),
-                })}
-                inputId={getId(id) + index}
-                testId={getId(id) + index}
-                key={`${getId(id)}-${index.toString()}`}
-                mode="ongrey"
-                size="medium"
-                label={
-                  <Label
-                    labelTexts={[{ text: option.label }]}
-                    sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
-                    afterLabelChildren={<>{renderHelpButton()}</>}
-                  />
-                }
-                defaultChecked={selectedValue === option.type}
-              />
-            ))}
-          </FormGroup>
-        </Validation>
+        <FormGroup legend={getText(item, onRenderMarkdown, questionnaire, resources)} error={error?.message}>
+          {options.map((option: Options, index: number) => (
+            <RadioButton
+              {...register(getId(item.linkId), {
+                required: { value: isRequired(item), message: resources?.formRequiredErrorMessage || '' },
+                disabled: option.disabled,
+                value: option?.type || '',
+                onChange: (): void => handleRadioChange(option),
+              })}
+              inputId={getId(id) + index}
+              testId={getId(id) + index}
+              key={`${getId(id)}-${index.toString()}`}
+              mode="ongrey"
+              size="medium"
+              label={
+                <Label
+                  labelTexts={[{ text: option.label }]}
+                  sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+                  afterLabelChildren={<>{renderHelpButton()}</>}
+                />
+              }
+              defaultChecked={selectedValue === option?.type}
+            />
+          ))}
+        </FormGroup>
 
         {renderDeleteButton('page_refero__deletebutton--margin-top')}
         {repeatButton}

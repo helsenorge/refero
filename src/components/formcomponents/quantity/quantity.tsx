@@ -54,7 +54,7 @@ export interface QuantityProps extends WithCommonFunctionsProps {
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
 }
 
-const Quantity: React.FC<QuantityProps & ValidationProps> = props => {
+const Quantity = (props: QuantityProps & ValidationProps): JSX.Element | null => {
   const getValue = (): number | number[] | undefined => {
     const { answer } = props;
     if (answer && Array.isArray(answer)) {
@@ -144,43 +144,47 @@ const Quantity: React.FC<QuantityProps & ValidationProps> = props => {
   const minValue = getMinValueExtensionValue(item);
   const maxValue = getMaxValueExtensionValue(item);
   const validationText = getValidationTextExtension(item) ?? '';
-  const { error } = getFieldState(getId(item.linkId));
+  const { error, invalid } = getFieldState(getId(item.linkId));
+
+  const getResourcevalueByKey = (resourceKey: keyof Resources, resources: Resources): string => {
+    return resources[resourceKey] ?? '';
+  };
+
   return (
     <div className="page_refero__component page_refero__component_quantity">
-      <Validation errorSummary={error?.message}>
-        <FormGroup>
-          {props.renderHelpElement()}
-          <Input
-            {...register(getId(item.linkId), {
-              required: {
-                value: isRequired(item),
-                message: props.resources?.formRequiredErrorMessage || '',
-              },
-              max: maxValue && { value: maxValue, message: validationText },
-              min: minValue && { value: minValue, message: validationText },
-              onChange: handleChange,
-              value,
-              pattern,
-            })}
-            label={
-              <Label
-                labelTexts={[{ text: labelText, type: 'semibold' }]}
-                sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
-                afterLabelChildren={props.renderHelpButton()}
-              />
-            }
-            type="number"
-            inputId={inputId}
-            defaultValue={value !== undefined ? value + '' : ''}
-            placeholder={getPlaceholder(item)}
-            className="page_refero__quantity"
-            width={7}
-          />
-          <span className="page_refero__unit">{getUnit()}</span>
-        </FormGroup>
-      </Validation>
-      {props.renderDeleteButton('page_refero__deletebutton--margin-top')}
-      <div>{props.repeatButton}</div>
+      <FormGroup error={error?.message}>
+        {props.renderHelpElement()}
+        <Input
+          error={invalid}
+          {...register(getId(item.linkId), {
+            required: {
+              value: isRequired(item),
+              message: props.resources?.formRequiredErrorMessage || '',
+            },
+            max: maxValue && { value: maxValue, message: validationText },
+            min: minValue && { value: minValue, message: validationText },
+            onChange: handleChange,
+            value,
+            pattern,
+          })}
+          label={
+            <Label
+              labelTexts={[{ text: labelText, type: 'semibold' }]}
+              sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+              afterLabelChildren={props.renderHelpButton()}
+            />
+          }
+          type="number"
+          inputId={inputId}
+          defaultValue={value !== undefined ? value + '' : ''}
+          placeholder={getPlaceholder(item)}
+          className="page_refero__quantity"
+          width={7}
+        />
+        <span className="page_refero__unit">{getUnit()}</span>
+        {props.renderDeleteButton('page_refero__deletebutton--margin-top')}
+        <div>{props.repeatButton}</div>
+      </FormGroup>
       {props.children ? <div className="nested-fieldset nested-fieldset--full-height">{props.children}</div> : null}
     </div>
   );

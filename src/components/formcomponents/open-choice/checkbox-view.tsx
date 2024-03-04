@@ -49,13 +49,12 @@ const CheckboxView: React.SFC<Props> = ({
   renderHelpButton,
   renderHelpElement,
   onRenderMarkdown,
-  ...other
 }) => {
   if (!options) {
     return null;
   }
   const { register, getFieldState } = useFormContext();
-  const { error } = getFieldState(getId(item.linkId));
+  const { error, invalid } = getFieldState(getId(item.linkId));
   const checkboxes = options.map(el => {
     return { label: el.label, id: el.type, checked: isSelected(el, selected) };
   });
@@ -73,30 +72,28 @@ const CheckboxView: React.SFC<Props> = ({
   return (
     <div className="page_refero__component page_refero__component_openchoice page_refero__component_openchoice_checkbox">
       <Collapse isOpened>
-        <Validation errorSummary={error?.message}>
-          <FormGroup legend={getText(item, onRenderMarkdown, questionnaire, resources)}>
-            {checkboxes.map((checkbox, index) => (
-              <Checkbox
-                {...register(getId(item.linkId), {
-                  required: isRequired(item),
-                  onChange: () => handleChange(checkbox.id),
-                })}
-                inputId={`${id}-${checkbox.id}`}
-                testId={`checkbox-openChoice`}
-                key={`${checkbox.id}-${index.toString()}`}
-                label={
-                  <Label
-                    labelTexts={[{ text: checkbox.label }]}
-                    sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
-                    afterLabelChildren={<>{renderHelpButton()}</>}
-                  />
-                }
-                checked={checkbox.checked}
-              />
-            ))}
-          </FormGroup>
-          {shouldShowExtraChoice(answer) && <div className="page_refero__component_openchoice_openfield">{renderOpenField()}</div>}
-        </Validation>
+        <FormGroup legend={getText(item, onRenderMarkdown, questionnaire, resources)} error={error?.message}>
+          {checkboxes.map((checkbox, index) => (
+            <Checkbox
+              {...register(getId(item.linkId), {
+                required: isRequired(item),
+                onChange: () => handleChange(checkbox.id),
+              })}
+              inputId={`${id}-${checkbox.id}`}
+              testId={`checkbox-openChoice`}
+              key={`${checkbox.id}-${index.toString()}`}
+              label={
+                <Label
+                  labelTexts={[{ text: checkbox.label }]}
+                  sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+                  afterLabelChildren={<>{renderHelpButton()}</>}
+                />
+              }
+              checked={checkbox.checked}
+            />
+          ))}
+        </FormGroup>
+        {shouldShowExtraChoice(answer) && <div className="page_refero__component_openchoice_openfield">{renderOpenField()}</div>}
 
         {renderDeleteButton('page_refero__deletebutton--margin-top')}
         {repeatButton}

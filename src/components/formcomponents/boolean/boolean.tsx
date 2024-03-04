@@ -106,8 +106,7 @@ const Boolean = ({
   // helpElement={this.props.renderHelpElement()}
   // validateOnExternalUpdate={true}
   // isStyleBlue
-  console.log('filedState', error);
-  console.log('getValidationTextExtension', getValidationTextExtension(item));
+
   const getRequiredErrorMessage = (item: QuestionnaireItem): string | undefined => {
     return isRequired(item) ? resources?.formRequiredErrorMessage : undefined;
   };

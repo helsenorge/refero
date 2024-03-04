@@ -28,7 +28,6 @@ interface Props {
   renderOpenField: () => JSX.Element | undefined;
   repeatButton: JSX.Element;
   answer: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer;
-
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
@@ -67,37 +66,35 @@ const RadioView: React.SFC<Props> = ({
   return (
     <div className="page_refero__component page_refero__component_openchoice page_refero__component_openchoice_radiobutton">
       <Collapse isOpened>
-        <Validation errorSummary={error?.message}>
-          <FormGroup legend={getText(item, onRenderMarkdown, questionnaire, resources)}>
-            {options.map((option: Options, index: number) => (
-              <RadioButton
-                {...register(getId(item.linkId), {
-                  required: {
-                    message: resources?.oppgiVerdi || '',
-                    value: isRequired(item),
-                  },
-                  onChange: handleChange,
-                  disabled: option.disabled,
-                  value: option.type,
-                })}
-                inputId={getId(id) + index.toLocaleString()}
-                size="medium"
-                testId="radioButton-openChoice"
-                key={`${getId(id)}-${index.toString()}`}
-                mode="onwhite"
-                label={
-                  <Label
-                    labelTexts={[{ text: option.label }]}
-                    sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
-                    afterLabelChildren={<>{renderHelpButton()}</>}
-                  />
-                }
-                defaultChecked={selectedValue === option.type}
-              />
-            ))}
-          </FormGroup>
-          {shouldShowExtraChoice(answer) && <div className="page_refero__component_openchoice_openfield">{renderOpenField()}</div>}
-        </Validation>
+        <FormGroup legend={getText(item, onRenderMarkdown, questionnaire, resources)} error={error?.message}>
+          {options.map((option: Options, index: number) => (
+            <RadioButton
+              {...register(getId(item.linkId), {
+                required: {
+                  message: resources?.oppgiVerdi || '',
+                  value: isRequired(item),
+                },
+                onChange: handleChange,
+                disabled: option.disabled,
+                value: option?.type,
+              })}
+              inputId={getId(id) + index.toLocaleString()}
+              size="medium"
+              testId="radioButton-openChoice"
+              key={`${getId(id)}-${index.toString()}`}
+              mode="onwhite"
+              label={
+                <Label
+                  labelTexts={[{ text: option?.label }]}
+                  sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+                  afterLabelChildren={<>{renderHelpButton()}</>}
+                />
+              }
+              defaultChecked={selectedValue === option?.type}
+            />
+          ))}
+        </FormGroup>
+        {shouldShowExtraChoice(answer) && <div className="page_refero__component_openchoice_openfield">{renderOpenField()}</div>}
         {renderDeleteButton('page_refero__deletebutton--margin-top')}
         {repeatButton}
         {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : undefined}

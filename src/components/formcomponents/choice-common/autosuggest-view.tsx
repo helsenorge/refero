@@ -9,7 +9,6 @@ import { Resources } from '../../../types/resources';
 
 import Loader from '@helsenorge/designsystem-react/components/Loader';
 import NotificationPanel from '@helsenorge/designsystem-react/components/NotificationPanel';
-import Validation from '@helsenorge/designsystem-react/components/Validation';
 
 import Autosuggest, { Suggestion } from '@helsenorge/autosuggest/components/autosuggest';
 import { debounce } from '@helsenorge/core-utils/debounce';
@@ -49,7 +48,7 @@ interface AutosuggestViewProps {
 }
 
 const AutosuggestView: React.FC<AutosuggestViewProps> = props => {
-  const { register } = useFormContext();
+  const { register, getFieldState } = useFormContext();
   const getStringAnswer = (): string | undefined => {
     if (Array.isArray(props.answer)) {
       return props.answer.reduce((acc, x) => acc || x.valueString, undefined);
@@ -195,44 +194,45 @@ const AutosuggestView: React.FC<AutosuggestViewProps> = props => {
   };
 
   const subLabelText = getSublabelText(props.item, props.onRenderMarkdown, props.questionnaire, props.resources);
-
+  const { error } = getFieldState(props.item.linkId);
   return (
     <div className="page_refero__component page_refero__component_choice page_refero__component_choice_autosuggest">
       <Collapse isOpened>
-        <Validation {...props}>
-          <Autosuggest
-            {...register(props.item.linkId, {
-              required: isRequired(props.item),
-            })}
-            id={getId(props.id)}
-            label={
-              <Label
-                item={props.item}
-                onRenderMarkdown={props.onRenderMarkdown}
-                questionnaire={props.questionnaire}
-                resources={props.resources}
-              />
-            }
-            subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
-            className="page_refero__autosuggest"
-            type="search"
-            isRequired={isRequired(props.item)}
-            errorMessage={getValidationTextExtension(props.item)}
-            helpButton={props.renderHelpButton()}
-            helpElement={props.renderHelpElement()}
-            suggestions={suggestions}
-            onSuggestionsFetchRequested={debouncedOnSuggestionsFetchRequested}
-            onSuggestionsClearRequested={(): void => {
-              // vis samme resultatsett neste gang feltet får fokus
-            }}
-            noCharacterValidation
-            onSubmitValidator={onSubmitValidator}
-            onSuggestionSelected={onSuggestionSelected}
-            onBlur={onBlur}
-            focusInputOnSuggestionClick={true}
-            value={inputValue}
-          />
-        </Validation>
+        <Autosuggest
+          {...register(getId(props.item.linkId), {
+            required: {
+              value: isRequired(props.item),
+              message: getValidationTextExtension(props.item) || '',
+            },
+          })}
+          id={getId(props.id)}
+          label={
+            <Label
+              item={props.item}
+              onRenderMarkdown={props.onRenderMarkdown}
+              questionnaire={props.questionnaire}
+              resources={props.resources}
+            />
+          }
+          subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
+          className="page_refero__autosuggest"
+          type="search"
+          isRequired={isRequired(props.item)}
+          errorMessage={error ? error.message : undefined}
+          helpButton={props.renderHelpButton()}
+          helpElement={props.renderHelpElement()}
+          suggestions={suggestions}
+          onSuggestionsFetchRequested={debouncedOnSuggestionsFetchRequested}
+          onSuggestionsClearRequested={(): void => {
+            // vis samme resultatsett neste gang feltet får fokus
+          }}
+          noCharacterValidation
+          onSubmitValidator={onSubmitValidator}
+          onSuggestionSelected={onSuggestionSelected}
+          onBlur={onBlur}
+          focusInputOnSuggestionClick={true}
+          value={inputValue}
+        />
         {isLoading && (
           <div>
             <Loader size={'tiny'} />

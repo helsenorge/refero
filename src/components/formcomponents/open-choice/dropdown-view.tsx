@@ -7,6 +7,7 @@ import { useForm } from 'react-hook-form';
 import { Options } from '../../../types/formTypes/radioGroupOptions';
 import { Resources } from '../../../types/resources';
 
+import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
 import Select from '@helsenorge/designsystem-react/components/Select';
 import Validation from '@helsenorge/designsystem-react/components/Validation';
@@ -61,7 +62,7 @@ const DropdownView: React.FC<DropdownViewProps> = props => {
   }
 
   const { register, getFieldState } = useForm();
-  const { error } = getFieldState(getId(item.linkId));
+  const { error, invalid } = getFieldState(getId(item.linkId));
   const dropdownOptions: HTMLOptionElement[] = options.map((o: Options) => {
     return new Option(o.label, o.type);
   });
@@ -76,13 +77,14 @@ const DropdownView: React.FC<DropdownViewProps> = props => {
     <div className="page_refero__component page_refero__component_openchoice page_refero__component_openchoice_dropdown">
       <Collapse isOpened>
         {renderHelpElement()}
-        <Validation errorSummary={error?.message}>
+        <FormGroup error={error?.message}>
           <Select
             {...register(getId(item.linkId), {
               required: isRequired(item),
               onChange: handleSelectChange,
               value: selected ? selected[0] : undefined,
             })}
+            error={invalid}
             selectId={selectId}
             errorText={getValidationTextExtension(item)}
             className="page_refero__input"
@@ -98,7 +100,7 @@ const DropdownView: React.FC<DropdownViewProps> = props => {
             {dropdownOptions}
           </Select>
           {shouldShowExtraChoice(answer) && <div className="page_refero__component_openchoice_openfield">{renderOpenField()}</div>}
-        </Validation>
+        </FormGroup>
 
         {renderDeleteButton('page_refero__deletebutton--margin-top')}
         {repeatButton}

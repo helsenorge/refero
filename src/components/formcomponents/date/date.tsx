@@ -51,7 +51,7 @@ export interface DateProps extends WithCommonFunctionsProps {
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
 }
 
-const DateComponent: React.FC<DateProps & ValidationProps> = props => {
+const DateComponent = (props: DateProps & ValidationProps): JSX.Element | null => {
   const [datepicker, setDatepicker] = React.useState<React.RefObject<DateRangePicker>>(React.createRef());
 
   const getMaxDate = (): Moment | undefined => {
