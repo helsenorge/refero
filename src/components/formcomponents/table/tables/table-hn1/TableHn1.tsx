@@ -20,7 +20,7 @@ const TableHn1 = ({ items, questionnaireResponse }: Props): JSX.Element => {
           <TableRow key={item.id} className="page_refero__table_hn1__body__row">
             {item.columns.map(({ value, id, type }) => (
               <React.Fragment key={id}>
-                <TableCell dataLabel="Navn" className="page_refero__table_hn1__body__row__cell">
+                <TableCell dataLabel={value ?? ''} className="page_refero__table_hn1__body__row__cell">
                   <span className={type === TABLE_HN1_TABLE_TYPES.HEADER ? 'page_refero__table_hn1__heading' : ''}>{value ?? ''}</span>
                 </TableCell>
               </React.Fragment>

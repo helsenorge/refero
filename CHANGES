@@ -1,4 +1,46 @@
-## 14.1.0-beta03
+## 15.0.3
+
+---
+
+- Bugfix: Calutation works if item has RenderOptions
+
+## 15.0.2
+
+---
+
+- Installed Designsystem v5.15.0 with slider bugfix and new slider props
+- Slider can now be marked as selected with the new prop "selected"
+- Slider now has an initial value with the new prop "value"
+
+## 15.0.1
+
+---
+
+- Fix an issue where the delete button has no space after repeating an item
+- Fix an issue where the help icon got pushed down to a new line
+
+## 15.0.0
+
+---
+
+- Has possibility to display summary as table. Can support types Table, Table-HN1, Table-HN2 and GTable
+- Support for ordering in GTable, Table-HN2 og Table
+
+- Preview mode for development with vite.
+
+## 14.0.10
+
+---
+
+- Bugfix: confirmation items did not update in repeating groups after fix
+
+## 14.0.9
+
+---
+
+- Bugfix: When Confirmation is repeatable, the added items now have a initial value of false. Added same functionality for nested items.
+
+## 14.0.8
 
 ---
 

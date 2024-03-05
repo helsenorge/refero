@@ -238,6 +238,12 @@ describe('Component renders and calculates score', () => {
 });
 
 describe('Code Scoring', () => {
+  beforeEach(() => {
+    window.matchMedia = jest.fn().mockImplementation(_ => {
+      return {};
+    });
+  });
+
   it('Section scoring on decimal grouping with limit 2 digit in decimal. Round decimal to integer less than 5', async () => {
     var model: Questionnaire = cloneQuestionnaire(CodeScoreDataModel);
     const wrapper = createWrapper(model);

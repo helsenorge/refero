@@ -1,7 +1,7 @@
 import React from 'react';
 
 import './Select.css';
-import { ValueSetComposeIncludeConcept } from '../../types/fhir';
+import { ValueSetComposeIncludeConcept } from 'fhir/r4';
 
 type Props = {
   options: ValueSetComposeIncludeConcept[];

@@ -6,9 +6,10 @@ import { QuestionnaireItem } from 'fhir/r4';
 interface Props {
   item: QuestionnaireItem | undefined;
   callback: (isOpen: boolean) => void;
+  children: React.ReactNode;
 }
 
-const HelpButton: React.SFC<Props> = ({ item, children, callback }) => {
+const HelpButton = ({ item, children, callback }: Props): JSX.Element | null => {
   const [isOpen, setIsOpen] = useState(false);
   const handleToggle = (): void => {
     setIsOpen(!isOpen);

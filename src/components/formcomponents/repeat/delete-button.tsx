@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState } from 'react';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { connect } from 'react-redux';
@@ -27,59 +27,48 @@ interface Props {
   renderContext: RenderContext;
 }
 
-interface State {
-  showConfirm: boolean;
-}
-
-class DeleteButton extends React.Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
-    this.state = { showConfirm: false };
-  }
-
-  onDeleteRepeatItemConfirmed = (): void => {
-    if (this.props.dispatch && this.props.item && this.props.path) {
-      this.props
-        .dispatch(deleteRepeatItemAsync(this.props.path, this.props.item))
-        ?.then(newState => this.props.onAnswerChange(newState, this.props.path, this.props.item, {} as QuestionnaireResponseItemAnswer));
+const DeleteButton = ({ resources, dispatch, item, path, onAnswerChange, mustShowConfirm }: Props): JSX.Element => {
+  const [showConfirm, setShowConfirm] = useState(false);
+  const onDeleteRepeatItemConfirmed = (): void => {
+    if (dispatch && item && path) {
+      dispatch(deleteRepeatItemAsync(path, item))?.then(newState =>
+        onAnswerChange(newState, path, item, {} as QuestionnaireResponseItemAnswer)
+      );
     }
-    this.setState({ showConfirm: false });
+    setShowConfirm(false);
   };
 
-  onDeleteRepeatItem = (): void => {
-    if (this.props.mustShowConfirm) {
-      this.setState({ showConfirm: true });
+  const onDeleteRepeatItem = (): void => {
+    if (mustShowConfirm) {
+      setShowConfirm(true);
     } else {
-      this.onDeleteRepeatItemConfirmed();
+      onDeleteRepeatItemConfirmed();
     }
   };
 
-  onConfirmCancel = (): void => {
-    this.setState({ showConfirm: false });
+  const onConfirmCancel = (): void => {
+    setShowConfirm(false);
   };
 
-  render(): JSX.Element {
-    const { resources } = this.props;
-
-    return (
-      <React.Fragment>
-        <Button variant="outline" concept="destructive" onClick={this.onDeleteRepeatItem}>
-          <Icon svgIcon={TrashCan} />
-          {resources && resources.deleteButtonText ? resources.deleteButtonText : ''}
-        </Button>
-        {this.state.showConfirm && resources ? (
-          <Modal
-            onClose={this.onConfirmCancel}
-            title={resources.confirmDeleteHeading}
-            description={resources.confirmDeleteDescription}
-            onSuccess={this.onDeleteRepeatItemConfirmed}
-            primaryButtonText={resources.confirmDeleteButtonText}
-            secondaryButtonText={resources.confirmDeleteCancelButtonText}
-          />
-        ) : null}
-      </React.Fragment>
-    );
-  }
-}
+  return (
+    <>
+      <br />
+      <Button variant="outline" concept="destructive" onClick={onDeleteRepeatItem}>
+        <Icon svgIcon={TrashCan} />
+        {resources && resources.deleteButtonText ? resources.deleteButtonText : ''}
+      </Button>
+      {showConfirm && !!resources ? (
+        <Modal
+          onClose={onConfirmCancel}
+          title={resources.confirmDeleteHeading}
+          description={resources.confirmDeleteDescription}
+          onSuccess={onDeleteRepeatItemConfirmed}
+          primaryButtonText={resources.confirmDeleteButtonText}
+          secondaryButtonText={resources.confirmDeleteCancelButtonText}
+        />
+      ) : null}
+    </>
+  );
+};
 const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(DeleteButton);
 export default connectedComponent;

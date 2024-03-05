@@ -4,8 +4,8 @@ import * as uuid from 'uuid';
 import { getCalculatedExpressionExtension } from './extension';
 import ExtensionConstants from '../constants/extensions';
 import ItemType from '../constants/itemType';
-import Scoring from '../constants/scoring';
 import { ScoringItemType } from '../constants/scoringItemType';
+import { SCORING, SCORING_CODE, SCORING_FORMULAS, ScoringTypes, Type } from '../constants/scoring';
 
 export function createDummySectionScoreItem(): QuestionnaireItem {
   return {
@@ -15,16 +15,16 @@ export function createDummySectionScoreItem(): QuestionnaireItem {
       {
         url: ExtensionConstants.QUESTIONNAIRE_UNIT,
         valueCoding: {
-          system: Scoring.SCORING,
-          code: Scoring.SCORING_CODE,
+          system: SCORING,
+          code: SCORING_CODE,
           display: 'score',
         },
       } as Extension,
     ],
     code: [
       {
-        system: Scoring.SCORING_FORMULAS,
-        code: Scoring.Type.SECTION_SCORE,
+        system: SCORING_FORMULAS,
+        code: Type.SECTION_SCORE,
         display: 'Sectionscore',
       } as unknown,
     ] as Coding[],
@@ -32,14 +32,14 @@ export function createDummySectionScoreItem(): QuestionnaireItem {
 }
 
 export function scoringItemType(item: QuestionnaireItem): ScoringItemType {
-  if (item.code) {
-    const scoring = getCodingWithScoring(item);
-    switch (scoring?.code) {
-      case Scoring.Type.TOTAL_SCORE:
+  const scoring = getCodingWithScoring(item);
+  if (scoring) {
+    switch (scoring.code) {
+      case Type.TOTAL_SCORE:
         return ScoringItemType.TOTAL_SCORE;
-      case Scoring.Type.SECTION_SCORE:
+      case Type.SECTION_SCORE:
         return ScoringItemType.SECTION_SCORE;
-      case Scoring.Type.QUESTION_SCORE:
+      case Type.QUESTION_SCORE:
         return ScoringItemType.QUESTION_SCORE;
       default:
         return ScoringItemType.NONE;
@@ -54,26 +54,25 @@ export function scoringItemType(item: QuestionnaireItem): ScoringItemType {
 
 export function isSectionScoringItem(item: QuestionnaireItem): boolean {
   const scoring = getCodingWithScoring(item);
-  return scoring ? scoring.code === Scoring.Type.SECTION_SCORE : false;
+  return scoring ? scoring.code === Type.SECTION_SCORE : false;
 }
 
 export function isTotalScoringItem(item: QuestionnaireItem): boolean {
   const scoring = getCodingWithScoring(item);
-  return scoring ? scoring.code === Scoring.Type.TOTAL_SCORE : false;
+  return scoring ? scoring.code === Type.TOTAL_SCORE : false;
 }
 
 export function isQuestionScoringItem(item: QuestionnaireItem): boolean {
   const scoring = getCodingWithScoring(item);
-  return scoring ? scoring.code === Scoring.Type.QUESTION_SCORE : false;
+  return scoring ? scoring.code === Type.QUESTION_SCORE : false;
 }
 
 function getCodingWithScoring(item: QuestionnaireItem): Coding | undefined {
   if (!item.code) return;
 
-  const scoringTypes = [Scoring.Type.QUESTION_SCORE, Scoring.Type.SECTION_SCORE, Scoring.Type.TOTAL_SCORE];
   for (const coding of item.code) {
     const system: string = coding.system as unknown as string;
-    if (system === Scoring.SCORING_FORMULAS && scoringTypes.filter(s => s === coding.code).length > 0) {
+    if (system === SCORING_FORMULAS && ScoringTypes.filter(s => s === coding.code).length > 0) {
       return coding;
     }
   }

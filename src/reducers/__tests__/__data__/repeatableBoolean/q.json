@@ -51,7 +51,7 @@
             {
               "linkId": "1.0.4",
               "text": "Far",
-              "type": "boolean",
+              "type": "group",
               "repeats": false,
               "item": [
                 { "linkId": "1.0.4.0", "text": "Fullblod", "type": "boolean" },
