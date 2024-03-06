@@ -252,9 +252,14 @@ export class Choice extends React.Component<ChoiceProps & ValidationProps, Choic
     return (
       <SliderView
         item={this.props.item}
-        answer={this.props.answer}
-        handleChange={this.handleChange}
         selected={this.getValue(this.props.item, this.props.answer)}
+        handleChange={this.handleChange}
+        validateInput={(value: string | undefined): boolean =>
+          validateInput(this.props.item, value, this.props.containedResources, this.props.resources)
+        }
+        getErrorMessage={(value: string | undefined): string =>
+          getErrorMessage(this.props.item, value, this.props.resources, this.props.containedResources)
+        }
       >
         {this.props.children}
       </SliderView>

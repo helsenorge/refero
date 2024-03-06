@@ -185,7 +185,7 @@ export function getItemControlValue(item: QuestionnaireItem): string | undefined
 
 export function getErrorMessage(
   item: QuestionnaireItem,
-  value: string,
+  value: string | undefined,
   resources: Resources | undefined,
   containedResources: Resource[] | undefined
 ): string {

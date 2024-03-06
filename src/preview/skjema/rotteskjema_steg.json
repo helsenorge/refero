@@ -104,7 +104,7 @@
           "linkId": "1f38dfe8-6c0a-4ff6-9dd9-8a22f090a46d",
           "type": "choice",
           "text": "Fantaserer du om rotter?",
-          "required": false,
+          "required": true,
           "answerOption": [
             {
               "valueCoding": {

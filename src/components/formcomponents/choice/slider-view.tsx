@@ -1,23 +1,25 @@
 import * as React from 'react';
 
-import { QuestionnaireItem, QuestionnaireItemAnswerOption, QuestionnaireResponseItemAnswer } from 'fhir/r4';
+import { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
 
 import { Slider, SliderStep } from '@helsenorge/designsystem-react/components/Slider';
 
 import ExtensionConstants from '../../../constants/extensions';
 import { getExtension } from '../../../util/extension';
+import ValidationError from '@helsenorge/form/components/form/validation-error';
 
 interface SliderProps {
   item: QuestionnaireItem;
-  answer: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer;
-  handleChange: (sliderStep: string) => void;
   selected?: Array<string | undefined>;
+  handleChange: (sliderStep: string) => void;
+  validateInput: (value: string | undefined) => boolean;
+  getErrorMessage: (value: string | undefined) => string;
   children: React.ReactNode;
 }
 
 type LeftRightLabels = [leftLabel: string, rightLabel: string];
 
-const SliderView: React.FC<SliderProps> = ({ item, handleChange, selected, children }) => {
+const SliderView: React.FC<SliderProps> = ({ item, selected, handleChange, validateInput, getErrorMessage, children, ...other }) => {
   const title = item.text;
   const [sliderSteps, setSliderSteps] = React.useState<SliderStep[] | undefined>(undefined);
   const [leftRightLabels, setleftRightLabels] = React.useState<LeftRightLabels | undefined>(undefined);
@@ -51,15 +53,19 @@ const SliderView: React.FC<SliderProps> = ({ item, handleChange, selected, child
     }
   };
 
+  const selectedStep = getSelectedStep();
+  const selectedStepAsString = selectedStep?.toString();
+
   return (
     <div className="page_refero__component page_refero__component_choice page_refero__component_choice_slider">
+      <ValidationError isValid={validateInput(selectedStepAsString)} error={getErrorMessage(selectedStepAsString)} />
       <Slider
         title={title}
         labelLeft={leftRightLabels?.[0]}
         labelRight={leftRightLabels?.[1]}
         onChange={onValueChange}
         steps={sliderSteps}
-        value={getSelectedStep()}
+        value={selectedStep}
         selected={selected && selected[0] ? true : false}
       />
       {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : undefined}
@@ -77,12 +83,12 @@ function mapToSliderStep(answerOptions: QuestionnaireItemAnswerOption): SliderSt
 }
 
 function getDisplay(answerOptions: QuestionnaireItemAnswerOption[]): string[] {
- return answerOptions.map(option => option.valueCoding?.display).filter(display => display) as string[];
+  return answerOptions.map(option => option.valueCoding?.display).filter(display => display) as string[];
 }
 
 function getCodes(answerOptions: QuestionnaireItemAnswerOption[]): string[] {
   return answerOptions.map(option => option.valueCoding?.code).filter(code => code) as string[];
- }
+}
 
 function getLeftRightLabels(answerOptions: QuestionnaireItemAnswerOption[]): LeftRightLabels | undefined {
   const displayLabels = getDisplay(answerOptions);
