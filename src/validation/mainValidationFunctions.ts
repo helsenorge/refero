@@ -4,7 +4,7 @@ import { ZodTypeAny, z } from 'zod';
 import { booleanValidation } from './booleanValidation';
 import { createChoiceSchema } from './choiceValidation';
 import { numberValidation } from './numberValidation';
-import { ZodFhirQuantity } from './quantityVaidation';
+import { ZodFhirQuantity, quantityValidation } from './quantityVaidation';
 import { stringValidation } from './stringValidation';
 import { textValidation } from './textValidation';
 import ItemType from '../constants/itemType';
@@ -41,12 +41,7 @@ const mapFhirTypeToZod = (item: QuestionnaireItem, questionnaire: Questionnaire,
     case ItemType.OPENCHOICE:
       return z.string(); // Adjust as needed for open choice types
     case ItemType.QUANTITY:
-      return z.object({
-        value: z.number(),
-        unit: z.string(),
-        code: z.string(),
-        system: z.string(),
-      });
+      return quantityValidation(item, resources);
     case ItemType.ATTATCHMENT:
       return z.object({
         contentType: z.string(),
