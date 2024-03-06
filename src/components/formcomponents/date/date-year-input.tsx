@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { Moment } from 'moment';
-import { useFormContext } from 'react-hook-form';
+import { ValidateResult, useFormContext } from 'react-hook-form';
 
 import { Resources } from '../../../types/resources';
 
@@ -88,11 +88,22 @@ export const DateYearInput = (props: React.PropsWithChildren<Props>): JSX.Elemen
       </TextView>
     );
   }
-
   return (
     <YearInput
-      {...register(getId(props.id), { required: { value: isRequired(props.item), message: props.resources?.dateRequired || '' } })}
-      id={`${getId(props.id)}-year_input`}
+      {...register(getId(props.item.linkId), {
+        required: { value: isRequired(props.item), message: props.resources?.dateRequired || '' },
+        onChange: onYearChange,
+        value: answerState,
+        validate: {
+          maximumYear: (value: number) => {
+            return (props.maxDate && value < props.maxDate.year()) || props.resources?.year_field_maxdate || '';
+          },
+          minimumYear: (value: number) => {
+            return (props.minDate && value > props.minDate.year()) || props.resources?.year_field_mindate || '';
+          },
+        },
+      })}
+      id={getId(props.id)}
       errorResources={getYearInputResources()}
       label={props.label}
       subLabel={props.subLabel}

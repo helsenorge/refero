@@ -193,7 +193,7 @@ const Text = (props: TextProps & ValidationProps): JSX.Element | null => {
     <div className="page_refero__component page_refero__component_text">
       {props.renderHelpElement()}
       <Textarea
-        {...register(getId(item.linkId), { required: isRequired(item), onChange: onTextAreaChange })}
+        {...register(getId(item.linkId), { onChange: onTextAreaChange })}
         textareaId={textAreaId}
         maxRows={Constants.DEFAULT_TEXTAREA_HEIGHT}
         required={isRequired(item)}

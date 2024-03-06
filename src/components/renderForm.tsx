@@ -1,7 +1,8 @@
 import * as React from 'react';
 
 import { QuestionnaireResponse } from 'fhir/r4';
-import { FieldValues, UseFormReturn } from 'react-hook-form';
+import { FieldValues, SubmitHandler, UseFormReturn } from 'react-hook-form';
+import { useFormContext } from 'react-hook-form';
 
 import { ReferoProps } from '../types/referoProps';
 import { Resources } from '../types/resources';
@@ -44,31 +45,21 @@ const RenderForm = ({
   methods,
   onFieldsNotCorrectlyFilledOut,
 }: RenderFormProps): JSX.Element | null => {
-  const onSubmitReactHookForm = (data: QuestionnaireResponse, e: React.FormEvent): void => {
-    e.preventDefault();
-    console.log('onSubmitReactHookForm- data', data);
-    console.log('onSubmitReactHookForm');
+  const { formState, getValues } = useFormContext();
+  const onSubmitReactHookForm: SubmitHandler<any> = (data: QuestionnaireResponse, e: React.FormEvent): void => {
+    console.log('data', JSON.stringify(data, null, 2));
+    return false;
     onSubmit();
   };
   const displayPauseButtonInNormalView = referoProps.onSave ? onSave : undefined;
   const displayPauseButtonInStepView = displayPreviousButton ? previousStep : undefined;
 
-  const handleInvalidForm = (FieldValues: FieldValues, e: React.FormEvent): void => {
-    e.preventDefault();
-    console.log('Invalid FieldValues', FieldValues);
-    onFieldsNotCorrectlyFilledOut && onFieldsNotCorrectlyFilledOut();
-  };
-
   if (referoProps.blockSubmit) {
     return <Loader size={'medium'} overlay={'parent'} />;
   }
-  //             validationSummaryPlacement={referoProps.validationSummaryPlacement}
-  //             validationSummary={{
-  //               enable: true,
-  //               header: resources.validationSummaryHeader,
-  //             }}
+
   return (
-    <form onSubmit={methods.handleSubmit(onSubmitReactHookForm, handleInvalidForm)}>
+    <form onSubmit={methods.handleSubmit(onSubmitReactHookForm)}>
       <Validation errorSummary="test" />
       {children}
       <FormButtons

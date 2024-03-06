@@ -106,18 +106,14 @@ const Boolean = ({
   // helpElement={this.props.renderHelpElement()}
   // validateOnExternalUpdate={true}
   // isStyleBlue
-
-  const getRequiredErrorMessage = (item: QuestionnaireItem): string | undefined => {
-    return isRequired(item) ? resources?.formRequiredErrorMessage : undefined;
-  };
+  console.log('getBooleanValue', getBooleanValue(answer, item));
   return (
     <div className="page_refero__component page_refero__component_boolean">
       <FormGroup error={error?.message}>
         <Checkbox
           {...register(getId(item.linkId), {
-            required: { value: isRequired(item), message: getRequiredErrorMessage(item) || '' },
             disabled: isReadOnly(item),
-            onChange: handleChange,
+            value: getBooleanValue(answer, item),
           })}
           label={<Label labelTexts={[{ text: labelText }]} afterLabelChildren={<>{renderHelpButton()}</>} />}
           checked={getBooleanValue(answer, item)}

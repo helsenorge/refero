@@ -138,17 +138,8 @@ const Quantity = (props: QuantityProps & ValidationProps): JSX.Element | null =>
   const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, props.resources);
 
   // validateOnExternalUpdate={true}
-  const pattern: ValidationRule<RegExp> | undefined = getDecimalPattern(item)
-    ? new RegExp(getDecimalPattern(item) as string, 'g')
-    : undefined;
-  const minValue = getMinValueExtensionValue(item);
-  const maxValue = getMaxValueExtensionValue(item);
-  const validationText = getValidationTextExtension(item) ?? '';
-  const { error, invalid } = getFieldState(getId(item.linkId));
 
-  const getResourcevalueByKey = (resourceKey: keyof Resources, resources: Resources): string => {
-    return resources[resourceKey] ?? '';
-  };
+  const { error, invalid } = getFieldState(getId(item.linkId));
 
   return (
     <div className="page_refero__component page_refero__component_quantity">
@@ -157,15 +148,7 @@ const Quantity = (props: QuantityProps & ValidationProps): JSX.Element | null =>
         <Input
           error={invalid}
           {...register(getId(item.linkId), {
-            required: {
-              value: isRequired(item),
-              message: props.resources?.formRequiredErrorMessage || '',
-            },
-            max: maxValue && { value: maxValue, message: validationText },
-            min: minValue && { value: minValue, message: validationText },
-            onChange: handleChange,
-            value,
-            pattern,
+            valueAsNumber: true,
           })}
           label={
             <Label

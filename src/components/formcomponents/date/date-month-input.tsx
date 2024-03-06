@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import moment, { Moment } from 'moment';
-import { useFormContext } from 'react-hook-form';
+import { ValidateResult, useFormContext } from 'react-hook-form';
 
 import { Resources } from '../../../types/resources';
 
@@ -125,8 +125,28 @@ export const DateYearMonthInput: React.FC<DateYearMonthInputProps> = props => {
 
   return (
     <YearMonthInput
-      {...register(getId(props.id), { required: { value: isRequired(props.item), message: props.resources?.dateRequired || '' } })}
-      id={`${getId(props.id)}-yearmonth_input`}
+      {...register(getId(props.item.linkId), {
+        required: { value: isRequired(props.item), message: props.resources?.dateRequired || '' },
+        onChange: onYearMonthChange,
+        value: getValue(),
+        validate: {
+          maximumYearMonth: (value: YearMonthValue) => {
+            return (
+              (props.maxDate && value.year && value.year > props.maxDate.year()) ||
+              (props.maxDate && value.year && value.year === props.maxDate.year() && value.month && value.month > props.maxDate.month()) ||
+              true
+            );
+          },
+          minimumYearMonth: (value: YearMonthValue) => {
+            return (
+              (props.minDate && value.year && value.year < props.minDate.year()) ||
+              (props.minDate && value.year && value.year === props.minDate.year() && value.month && value.month < props.minDate.month()) ||
+              true
+            );
+          },
+        },
+      })}
+      id={getId(props.id)}
       locale={props.locale} // TODO: må støtte nynorsk og samisk også
       resources={getYearMonthInputResources()}
       legend={props.label}

@@ -222,7 +222,30 @@ const Time: React.FC<TimeProps & ValidationProps> = props => {
   return (
     <div className="page_refero__component page_refero__component_time">
       <TimeInput
-        {...register(getId(props.id), { required: { value: isRequired(props.item), message: props.resources?.dateRequired || '' } })}
+        {...register(getId(props.item.linkId), {
+          required: { value: isRequired(props.item), message: props.resources?.dateRequired || '' },
+          onChange: onTimeChange,
+          onBlur: onTimeChange,
+          value: getValue(),
+          validate: {
+            maxHour: (value: string) => {
+              return (getMaxHour() && parseInt(value.split(':')[0], 10) <= getMaxHour()) || getValidationTextExtension(props.item) || '';
+            },
+            minHour: (value: string) => {
+              return (getMinHour() && parseInt(value.split(':')[0], 10) >= getMinHour()) || getValidationTextExtension(props.item) || '';
+            },
+            maxMinute: (value: string) => {
+              return (
+                (getMaxMinute() && parseInt(value.split(':')[1], 10) <= getMaxMinute()) || getValidationTextExtension(props.item) || ''
+              );
+            },
+            minMinute: (value: string) => {
+              return (
+                (getMinMinute() && parseInt(value.split(':')[1], 10) >= getMinMinute()) || getValidationTextExtension(props.item) || ''
+              );
+            },
+          },
+        })}
         id={getId(id)}
         value={getValue()}
         legend={

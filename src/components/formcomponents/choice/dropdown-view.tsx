@@ -69,7 +69,6 @@ const DropdownView: React.FC<DropdownViewProps> = props => {
 
   const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`;
   const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
-  const handleSelectChange = (evt: React.ChangeEvent<HTMLSelectElement>): void => handleChange(evt.target.value);
   // onChangeValidator={validateInput}
   const { register, getFieldState } = useFormContext();
   const { error } = getFieldState(getId(item.linkId));
@@ -80,11 +79,7 @@ const DropdownView: React.FC<DropdownViewProps> = props => {
 
         <FormGroup error={error?.message}>
           <Select
-            {...register(getId(item.linkId), {
-              required: { value: isRequired(item), message: getValidationTextExtension(item) || '' },
-              onChange: handleSelectChange,
-              value: selected ? selected[0] : undefined,
-            })}
+            {...register(getId(item.linkId))}
             label={
               <Label
                 htmlFor={selectId}

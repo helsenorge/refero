@@ -196,7 +196,19 @@ const DateTime: React.FC<DateTimeProps & ValidationProps> = props => {
   return (
     <div className="page_refero__component page_refero__component_datetime">
       <DateTimePicker
-        {...register(getId(props.id), { required: { value: isRequired(props.item), message: props.resources?.dateRequired || '' } })}
+        {...register(getId(props.item.linkId), {
+          required: { value: isRequired(props.item), message: props.resources?.dateRequired || '' },
+          onChange: (value: Moment | undefined) => dispatchNewDate(value, ''),
+          value: valueDateTime,
+          validate: {
+            maximumDateTime: (value: Moment | undefined) => {
+              return (maxDateTime && value && value.isAfter(maxDateTime)) || props.resources?.yearmonth_field_maxdate || '';
+            },
+            minimumDateTime: (value: Moment | undefined) => {
+              return (minDateTime && value && value.isBefore(minDateTime)) || props.resources?.yearmonth_field_mindate || '';
+            },
+          },
+        })}
         id={getId(id)}
         resources={{ dateResources: props.resources }}
         locale={getLocaleFromLanguage()}

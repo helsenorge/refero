@@ -114,12 +114,13 @@
     "pretty-quick": "^3.1.3",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "react-hook-form": "^7.46.2",
-    "react-redux": "^7.1.0",
+    "react-hook-form": "^7.51.0",
+    "react-redux": "^7.2.5",
     "redux": "^4.2.1",
     "redux-thunk": "^2.4.2",
     "resolve": "^1.22.2",
     "rimraf": "^3.0.2",
+    "sass": "^1.69.0",
     "tabbable": "^6.2.0",
     "typescript": "^4.8.3",
     "vite": "^4.4.5",
@@ -128,18 +129,17 @@
     "whatwg-fetch": "^2.0.4",
     "xml2js": "^0.6.2",
     "yargs": "^17.7.2",
-    "sass": "^1.69.0"
+    "@hookform/resolvers": "^3.3.4",
+    "zod": "^3.22.4"
   },
   "dependencies": {
-    "@hookform/resolvers": "^3.3.4",
     "dompurify": "^2.0.8",
     "fhirpath": "2.7.3",
     "immer": "^9.0.6",
     "isomorphic-fetch": "^3.0.0",
     "marked": "^3.0.8",
     "react-collapse": "^5.1.1",
-    "uuid": "^9.0.0",
-    "zod": "^3.22.4"
+    "uuid": "^9.0.0"
   },
   "browserslist": [
     "> 0.2% in NO",

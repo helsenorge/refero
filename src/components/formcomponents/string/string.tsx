@@ -131,26 +131,7 @@ const String: React.FC<StringProps & ValidationProps> = props => {
       {props.renderHelpElement()}
 
       <Input
-        {...register(getId(item.linkId), {
-          required: isRequired(item) && {
-            value: isRequired(item),
-            message: getRequiredErrorMessage(item) || resources?.formRequiredErrorMessage || '',
-          },
-          minLength: getMinLengthExtensionValue(item) && {
-            value: getMinLengthExtensionValue(item) || 0,
-            message: getValidationErrorMessage(inputValue),
-          },
-          maxLength: getMaxLength(item) && {
-            value: getMaxLength(item) || 0,
-            message: resources?.stringOverMaxLengthError || '',
-          },
-          onChange: handleInputChange,
-          pattern: pattern && {
-            value: pattern,
-            message: getValidationErrorMessage(inputValue),
-          },
-          // validate: validateText2,
-        })}
+        {...register(getId(item.linkId))}
         label={
           <Label
             labelTexts={[{ text: labelText, type: 'semibold' }]}

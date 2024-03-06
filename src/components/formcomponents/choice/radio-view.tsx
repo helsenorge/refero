@@ -37,7 +37,7 @@ const RadioView = ({
   item,
   questionnaire,
   id,
-  handleChange,
+  // handleChange,
   selected,
   resources,
   children,
@@ -57,23 +57,17 @@ const RadioView = ({
   // validator={validateInput}
   // validateOnExternalUpdate={true}
   // isStyleBlue
-  const { register, getFieldState } = useFormContext();
+  const { register, getFieldState, getValues } = useFormContext();
   const { error } = getFieldState(getId(item.linkId));
-  const handleRadioChange = (option: Options): void => {
-    handleChange(option?.type);
-  };
+  const values = getValues(item.linkId);
+  console.log('radio: ', values);
   return (
     <div className="page_refero__component page_refero__component_choice page_refero__component_choice_radiobutton">
       <Collapse isOpened>
         <FormGroup legend={getText(item, onRenderMarkdown, questionnaire, resources)} error={error?.message}>
           {options.map((option: Options, index: number) => (
             <RadioButton
-              {...register(getId(item.linkId), {
-                required: { value: isRequired(item), message: resources?.formRequiredErrorMessage || '' },
-                disabled: option.disabled,
-                value: option?.type || '',
-                onChange: (): void => handleRadioChange(option),
-              })}
+              {...register(getId(item.linkId))}
               inputId={getId(id) + index}
               testId={getId(id) + index}
               key={`${getId(id)}-${index.toString()}`}

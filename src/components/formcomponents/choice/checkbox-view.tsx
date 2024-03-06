@@ -10,7 +10,6 @@ import { Resources } from '../../../types/resources';
 import Checkbox from '@helsenorge/designsystem-react/components/Checkbox';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
-import Validation from '@helsenorge/designsystem-react/components/Validation';
 
 import { getId, getSublabelText, getText, isRequired } from '../../../util/index';
 
@@ -67,21 +66,18 @@ const CheckboxView = ({
 
   // Checkbox:
   // isStyleBlue={this.props.isStyleBlue}
-  const getRequiredErrorMessage = (item: QuestionnaireItem): string | undefined => {
-    return isRequired(item) ? resources?.formRequiredErrorMessage : undefined;
-  };
-  const { register, getFieldState } = useFormContext();
+
+  const { register, getFieldState, getValues } = useFormContext();
   const { error } = getFieldState(getId(item.linkId));
+  const values = getValues(item.linkId);
+  console.log('checkbox: ', values);
   return (
     <div className="page_refero__component page_refero__component_choice page_refero__component_choice_checkbox">
       <Collapse isOpened>
         <FormGroup legend={getText(item, onRenderMarkdown, questionnaire, resources)} error={error?.message}>
           {checkboxes.map((checkbox, index) => (
             <Checkbox
-              {...register(getId(item.linkId), {
-                required: { value: isRequired(item), message: getRequiredErrorMessage(item) || '' },
-                onChange: (): void => handleCheckboxChange(checkbox.id),
-              })}
+              {...register(getId(item.linkId), { disabled: checkbox.disabled })}
               inputId={`${id}-${checkbox.id}`}
               testId={`checkbox-choice`}
               key={`${checkbox.id}-${index.toString()}`}

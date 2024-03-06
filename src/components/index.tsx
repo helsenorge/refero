@@ -1,5 +1,6 @@
 import React, { useState, useEffect, ReactElement } from 'react';
 
+import { zodResolver } from '@hookform/resolvers/zod';
 import {
   QuestionnaireResponseItem,
   Questionnaire,
@@ -11,6 +12,7 @@ import {
 import { FormProvider, useForm } from 'react-hook-form';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
+import { z } from 'zod';
 
 import { DispatchProps } from '../types/dispatchProps';
 import { ReferoProps } from '../types/referoProps';
@@ -50,6 +52,7 @@ import {
 import { RenderContext } from '../util/renderContext';
 import { ScoringCalculator } from '../util/scoringCalculator';
 import { shouldFormBeDisplayedAsStepView } from '../util/shouldFormBeDisplayedAsStepView';
+import { createZodSchemaFromQuestionnaireItems } from '../validation/mainValidationFunctions';
 
 interface StateProps {
   formDefinition?: FormDefinition | null;
@@ -100,7 +103,9 @@ const Refero = ({
   isHelsenorgeForm,
 }: StateProps & DispatchProps & ReferoProps): ReactElement | null => {
   const qst = questionnaire ? questionnaire : formDefinition?.Content;
-  const methods = useForm({ mode: 'onChange' });
+  const schema = createZodSchemaFromQuestionnaireItems(qst?.item || [], qst ?? undefined, resources);
+
+  const methods = useForm<z.infer<typeof schema>>({ mode: 'onChange', resolver: zodResolver(schema) });
 
   const [scoringCalculator, setScoringCalculator] = useState<ScoringCalculator | undefined>(qst ? new ScoringCalculator(qst) : undefined);
 

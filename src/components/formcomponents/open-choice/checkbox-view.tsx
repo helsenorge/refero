@@ -53,7 +53,7 @@ const CheckboxView: React.SFC<Props> = ({
   if (!options) {
     return null;
   }
-  const { register, getFieldState } = useFormContext();
+  const { register, getFieldState, getValues } = useFormContext();
   const { error, invalid } = getFieldState(getId(item.linkId));
   const checkboxes = options.map(el => {
     return { label: el.label, id: el.type, checked: isSelected(el, selected) };
@@ -68,7 +68,8 @@ const CheckboxView: React.SFC<Props> = ({
   // helpElement={renderHelpElement()}
   // validateOnExternalUpdate={true}
   // isStyleBlue
-
+  const values = getValues(item.linkId);
+  console.log('checkbox: ', values);
   return (
     <div className="page_refero__component page_refero__component_openchoice page_refero__component_openchoice_checkbox">
       <Collapse isOpened>
@@ -77,7 +78,7 @@ const CheckboxView: React.SFC<Props> = ({
             <Checkbox
               {...register(getId(item.linkId), {
                 required: isRequired(item),
-                onChange: () => handleChange(checkbox.id),
+                onChange: e => console.log(e),
               })}
               inputId={`${id}-${checkbox.id}`}
               testId={`checkbox-openChoice`}

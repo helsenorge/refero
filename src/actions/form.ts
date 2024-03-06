@@ -20,8 +20,8 @@ export function setSkjemaDefinition(
   return {
     type: SET_SKJEMA_DEFINITION,
     questionnaire: skjemaDefinition,
-    questionnaireResponse: questionnaireResponse,
-    language: language,
-    syncQuestionnaireResponse: syncQuestionnaireResponse,
+    questionnaireResponse,
+    language,
+    syncQuestionnaireResponse,
   };
 }

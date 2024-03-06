@@ -132,9 +132,21 @@ export const DateDayInput: React.FC<DateDayInputProps> = props => {
 
   return (
     <DateRangePicker
-      {...register(getId(props.id), { required: { value: isRequired(props.item), message: props.resources?.dateRequired || '' } })}
+      {...register(getId(props.item.linkId), {
+        required: { value: isRequired(props.item), message: props.resources?.dateRequired || '' },
+        onChange: onDateChange,
+        value: getSingleDateValue(),
+        validate: {
+          maximumDate: (value: Moment | null) => {
+            return (props.maxDate && value && value.isAfter(props.maxDate)) || props.resources?.errorAfterMaxDate || '';
+          },
+          minimumDate: (value: Moment | null) => {
+            return (props.minDate && value && value.isBefore(props.minDate)) || props.resources?.errorBeforeMinDate || '';
+          },
+        },
+      })}
       type="single"
-      id={`${getId(props.id)}-datepicker_input`}
+      id={getId(props.id)}
       locale={props.locale} // TODO: må støtte nynorsk og samisk også
       errorResources={getDatepickerErrorPhrases()}
       resources={props.resources}
