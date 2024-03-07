@@ -39,9 +39,9 @@ const mapFhirTypeToZod = (item: QuestionnaireItem, questionnaire: Questionnaire,
     case ItemType.TIME:
       return z.date();
     case ItemType.CHOICE:
-      return createChoiceSchema(item, questionnaire);
+      return createChoiceSchema(item, resources);
     case ItemType.OPENCHOICE:
-      return z.string(); // Adjust as needed for open choice types
+      return createChoiceSchema(item, resources); // Adjust as needed for open choice types
     case ItemType.QUANTITY:
       return quantityValidation(item, resources);
     case ItemType.ATTATCHMENT:

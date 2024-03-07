@@ -37,7 +37,7 @@ const RadioView = ({
   item,
   questionnaire,
   id,
-  // handleChange,
+  handleChange,
   selected,
   resources,
   children,
@@ -60,36 +60,41 @@ const RadioView = ({
   const { register, getFieldState, getValues } = useFormContext();
   const { error } = getFieldState(getId(item.linkId));
   const values = getValues(item.linkId);
-  console.log('radio: ', values);
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    handleChange(e.target.value);
+  };
+  console.log(selected);
   return (
     <div className="page_refero__component page_refero__component_choice page_refero__component_choice_radiobutton">
-      <Collapse isOpened>
-        <FormGroup legend={getText(item, onRenderMarkdown, questionnaire, resources)} error={error?.message}>
-          {options.map((option: Options, index: number) => (
-            <RadioButton
-              {...register(getId(item.linkId))}
-              inputId={getId(id) + index}
-              testId={getId(id) + index}
-              key={`${getId(id)}-${index.toString()}`}
-              mode="ongrey"
-              size="medium"
-              label={
-                <Label
-                  labelTexts={[{ text: option.label }]}
-                  sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
-                  afterLabelChildren={<>{renderHelpButton()}</>}
-                />
-              }
-              defaultChecked={selectedValue === option?.type}
-            />
-          ))}
-        </FormGroup>
+      <FormGroup legend={getText(item, onRenderMarkdown, questionnaire, resources)} error={error?.message}>
+        {options.map((option: Options, index: number) => (
+          <RadioButton
+            {...register(getId(item.linkId), {
+              onChange,
+              value: selected,
+            })}
+            onChange={onChange}
+            inputId={getId(id) + index}
+            testId={getId(id) + index}
+            key={`${getId(id)}-${index.toString()}`}
+            mode="ongrey"
+            size="medium"
+            label={
+              <Label
+                labelTexts={[{ text: option.label }]}
+                sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+                afterLabelChildren={<>{renderHelpButton()}</>}
+              />
+            }
+            defaultChecked={selectedValue === option?.type}
+          />
+        ))}
+      </FormGroup>
 
-        {renderDeleteButton('page_refero__deletebutton--margin-top')}
-        {repeatButton}
-        {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : undefined}
-        {renderHelpElement()}
-      </Collapse>
+      {renderDeleteButton('page_refero__deletebutton--margin-top')}
+      {repeatButton}
+      {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : undefined}
+      {renderHelpElement()}
     </div>
   );
 };

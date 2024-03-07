@@ -54,13 +54,14 @@ const RadioView: React.SFC<Props> = ({
     return null;
   }
   const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
-  const selectedValue = (selected && selected[0]) || '';
 
   // RadioButtonGroup:
   // validator={validateInput}
   // helpButton={renderHelpButton()}
   // validateOnExternalUpdate={true}
-
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    handleChange(e.target.value);
+  };
   const { register, getFieldState } = useFormContext();
   const { error } = getFieldState(getId(item.linkId));
   return (
@@ -70,19 +71,15 @@ const RadioView: React.SFC<Props> = ({
           {options.map((option: Options, index: number) => (
             <RadioButton
               {...register(getId(item.linkId), {
-                required: {
-                  message: resources?.oppgiVerdi || '',
-                  value: isRequired(item),
-                },
-                onChange: handleChange,
-                disabled: option.disabled,
-                value: option?.type,
+                onChange,
+                value: selected,
               })}
               inputId={getId(id) + index.toLocaleString()}
               size="medium"
               testId="radioButton-openChoice"
               key={`${getId(id)}-${index.toString()}`}
               mode="onwhite"
+              onChange={onChange}
               label={
                 <Label
                   labelTexts={[{ text: option?.label }]}
@@ -90,7 +87,6 @@ const RadioView: React.SFC<Props> = ({
                   afterLabelChildren={<>{renderHelpButton()}</>}
                 />
               }
-              defaultChecked={selectedValue === option?.type}
             />
           ))}
         </FormGroup>

@@ -73,31 +73,29 @@ const CheckboxView = ({
   console.log('checkbox: ', values);
   return (
     <div className="page_refero__component page_refero__component_choice page_refero__component_choice_checkbox">
-      <Collapse isOpened>
-        <FormGroup legend={getText(item, onRenderMarkdown, questionnaire, resources)} error={error?.message}>
-          {checkboxes.map((checkbox, index) => (
-            <Checkbox
-              {...register(getId(item.linkId), { disabled: checkbox.disabled })}
-              inputId={`${id}-${checkbox.id}`}
-              testId={`checkbox-choice`}
-              key={`${checkbox.id}-${index.toString()}`}
-              label={
-                <Label
-                  labelTexts={[{ text: checkbox.label }]}
-                  sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
-                  afterLabelChildren={<>{renderHelpButton()}</>}
-                />
-              }
-              checked={checkbox.checked}
-              disabled={checkbox.disabled}
-              required={isRequired(item)}
-            />
-          ))}
-        </FormGroup>
-        {renderDeleteButton('page_refero__deletebutton--margin-top')}
-        {repeatButton}
-        {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
-      </Collapse>
+      <FormGroup legend={getText(item, onRenderMarkdown, questionnaire, resources)} error={error?.message}>
+        {checkboxes.map((checkbox, index) => (
+          <Checkbox
+            {...register(getId(item.linkId), { disabled: checkbox.disabled, onChange: e => console.log('checkbox', e) })}
+            inputId={`${id}-${checkbox.id}`}
+            testId={`checkbox-choice`}
+            key={`${checkbox.id}-${index.toString()}`}
+            label={
+              <Label
+                labelTexts={[{ text: checkbox.label }]}
+                sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+                afterLabelChildren={<>{renderHelpButton()}</>}
+              />
+            }
+            checked={checkbox.checked}
+            disabled={checkbox.disabled}
+            required={isRequired(item)}
+          />
+        ))}
+      </FormGroup>
+      {renderDeleteButton('page_refero__deletebutton--margin-top')}
+      {repeatButton}
+      {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
     </div>
   );
 };

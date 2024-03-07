@@ -116,7 +116,7 @@ const Choice = (props: ChoiceProps & ValidationProps): JSX.Element | null => {
   const getAnswerValueCoding = (code: string, systemArg?: string, displayArg?: string): Coding => {
     const display = displayArg ? displayArg : getDisplay(getOptions(props.resources, props.item, props.containedResources), code);
     const system = systemArg ? systemArg : getSystem(props.item, code, props.containedResources);
-    return { code, display, system } as Coding;
+    return { code, display, system };
   };
 
   const resetInitialAnswer = (code: string): void => {
@@ -230,13 +230,7 @@ const Choice = (props: ChoiceProps & ValidationProps): JSX.Element | null => {
 
   const renderSlider = (): JSX.Element => {
     return (
-
-      <SliderView
-        item={props.item}
-        answer={props.answer}
-        handleChange={handleChange}
-        selected={getValue(props.item, props.answer)}
-      >
+      <SliderView item={props.item} answer={props.answer} handleChange={handleChange} selected={getValue(props.item, props.answer)}>
         {props.children}
       </SliderView>
     );

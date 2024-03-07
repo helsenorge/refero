@@ -106,13 +106,12 @@ const Boolean = ({
   // helpElement={this.props.renderHelpElement()}
   // validateOnExternalUpdate={true}
   // isStyleBlue
-  console.log('getBooleanValue', getBooleanValue(answer, item));
+
   return (
     <div className="page_refero__component page_refero__component_boolean">
       <FormGroup error={error?.message}>
         <Checkbox
           {...register(getId(item.linkId), {
-            disabled: isReadOnly(item),
             value: getBooleanValue(answer, item),
           })}
           label={<Label labelTexts={[{ text: labelText }]} afterLabelChildren={<>{renderHelpButton()}</>} />}

@@ -18,7 +18,8 @@ import { Resources } from '../types/resources';
 import { getItemControlExtensionValue, getValidationTextExtension } from './extension';
 import ExtensionConstants from '../constants/extensions';
 import Constants, { OPEN_CHOICE_ID } from '../constants/index';
-import itemControlConstants from '../constants/itemcontrol';
+import itemControlConstants, { ItemControlValue } from '../constants/itemcontrol';
+import ItemControl from '../constants/itemcontrol';
 import ItemType from '../constants/itemType';
 
 import { isReadOnly, isRequired } from './index';
@@ -154,7 +155,7 @@ function isAboveDropdownThreshold(options: Array<Options> | undefined): boolean 
   return options.length > Constants.CHOICE_DROPDOWN_TRESHOLD;
 }
 
-export function getItemControlValue(item: QuestionnaireItem): string | undefined {
+export function getItemControlValue(item: QuestionnaireItem): ItemControlValue | undefined {
   const itemControl = getItemControlExtensionValue(item);
   if (itemControl) {
     for (let i = 0; i < itemControl.length; i++) {

@@ -78,7 +78,7 @@ const CheckboxView: React.SFC<Props> = ({
             <Checkbox
               {...register(getId(item.linkId), {
                 required: isRequired(item),
-                onChange: e => console.log(e),
+                onChange: e => console.log('e', e),
               })}
               inputId={`${id}-${checkbox.id}`}
               testId={`checkbox-openChoice`}
