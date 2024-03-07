@@ -22,7 +22,7 @@ type ZodSchemaType =
   | z.ZodArray<z.ZodTypeAny, 'many'>
   | z.ZodLiteral<true | false>;
 
-const mapFhirTypeToZod = (item: QuestionnaireItem, questionnaire: Questionnaire, resources?: Resources): ZodSchemaType | undefined => {
+const mapFhirTypeToZod = (item: QuestionnaireItem, resources?: Resources): ZodSchemaType | undefined => {
   switch (item.type) {
     case ItemType.STRING:
       return stringValidation(item, resources);
@@ -61,13 +61,9 @@ const mapFhirTypeToZod = (item: QuestionnaireItem, questionnaire: Questionnaire,
   }
 };
 
-export const generateZodSchemaFromItems = (
-  items: QuestionnaireItem[],
-  questionnair: Questionnaire,
-  resources?: Resources
-): Record<string, ZodSchemaType> => {
+export const generateZodSchemaFromItems = (items: QuestionnaireItem[], resources?: Resources): Record<string, ZodSchemaType> => {
   return items.reduce<Record<string, ZodSchemaType>>((acc, item) => {
-    const validator = mapFhirTypeToZod(item, questionnair, resources);
+    const validator = mapFhirTypeToZod(item, resources);
 
     if (validator !== undefined) {
       if (item.repeats) {
@@ -78,7 +74,7 @@ export const generateZodSchemaFromItems = (
     }
 
     if (item.item) {
-      const nestedValidators = generateZodSchemaFromItems(item.item, questionnair, resources);
+      const nestedValidators = generateZodSchemaFromItems(item.item, resources);
       Object.keys(nestedValidators).forEach(key => {
         acc[key] = nestedValidators[key];
       });
@@ -90,10 +86,9 @@ export const generateZodSchemaFromItems = (
 
 export const createZodSchemaFromQuestionnaireItems = (
   items: QuestionnaireItem[],
-  questionnair?: Questionnaire,
   resources?: Resources
 ): z.ZodObject<Record<string, ZodSchemaType>> => {
-  const schemaObject = questionnair ? generateZodSchemaFromItems(items, questionnair, resources) : {};
+  const schemaObject = generateZodSchemaFromItems(items, resources);
   return z.object(schemaObject).strict();
 };
 

@@ -5,8 +5,8 @@ import { createChoiceSchema } from './choiceValidation';
 import { OPEN_CHOICE_ID } from '../constants';
 import { OPEN_CHOICE_SYSTEM } from '../constants/codingsystems';
 
-export function createOpenChoiceSchema(item: QuestionnaireItem, questionnaire: Questionnaire): z.ZodTypeAny {
-  const predefinedOptionsSchema = createChoiceSchema(item, questionnaire) || z.any();
+export function createOpenChoiceSchema(item: QuestionnaireItem): z.ZodTypeAny {
+  const predefinedOptionsSchema = createChoiceSchema(item) || z.any();
 
   const openChoiceSchema = z.object({
     system: z.literal(OPEN_CHOICE_SYSTEM),

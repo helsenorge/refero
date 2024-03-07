@@ -37,7 +37,7 @@ export const createChoiceSchema = (item: QuestionnaireItem, resource?: Resources
   if (item.type === ItemType.CHOICE) {
     schema = z.array(z.enum(optionValues), {
       errorMap: (issue, ctx) => {
-        if (ctx.data === null || ctx.data === undefined) {
+        if (ctx.data === null || ctx.data === undefined || issue.code === 'invalid_enum_value') {
           const message = getValidationTextExtension(item);
           return { message: message || ctx.defaultError };
         }
