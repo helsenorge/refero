@@ -1,4 +1,4 @@
-import { Questionnaire, QuestionnaireItem } from 'fhir/r4';
+import { QuestionnaireItem } from 'fhir/r4';
 import { ZodTypeAny, z } from 'zod';
 
 import { Resources } from '../types/resources';
