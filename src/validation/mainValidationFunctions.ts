@@ -1,4 +1,4 @@
-import { Questionnaire, QuestionnaireItem } from 'fhir/r4';
+import { QuestionnaireItem } from 'fhir/r4';
 import { ZodBoolean, ZodTypeAny, z } from 'zod';
 
 import { Resources } from '../types/resources';
@@ -86,10 +86,9 @@ export const generateZodSchemaFromItems = (items: QuestionnaireItem[], resources
 
 export const createZodSchemaFromQuestionnaireItems = (
   items: QuestionnaireItem[],
-  questionnair?: Questionnaire,
   resources?: Resources
 ): z.ZodObject<Record<string, ZodSchemaType>> => {
-  const schemaObject = questionnair ? generateZodSchemaFromItems(items, resources) : {};
+  const schemaObject = generateZodSchemaFromItems(items, resources);
   return z.object(schemaObject).strict();
 };
 
