@@ -1,23 +1,12 @@
 import { QuestionnaireItem } from 'fhir/r4';
-import { ZodBoolean, ZodLiteral, z } from 'zod';
+import { ZodBoolean, ZodDefault, z } from 'zod';
 
 import { Resources } from '../types/resources';
 
-import { isRequired } from '../util';
-import { getValidationTextExtension } from '../util/extension';
-
-const getRequiredErrorMessage = (item: QuestionnaireItem, resources?: Resources): string | undefined => {
-  return isRequired(item) ? resources?.formRequiredErrorMessage : undefined;
-};
-export const booleanValidation = (item: QuestionnaireItem, resources?: Resources): ZodLiteral<boolean> => {
-  const customErrorMessage = getValidationTextExtension(item);
-  const schema = z.literal(true, {
-    required_error: customErrorMessage ?? getRequiredErrorMessage(item, resources),
+export const booleanValidation = (item: QuestionnaireItem, resources?: Resources): z.ZodEffects<ZodBoolean, boolean, boolean> => {
+  const schema = z.boolean().refine(value => value === true || value === false, {
+    message: 'Må være satt til true eller false', // Custom error message if the value is neither true nor false
   });
 
-  const required = isRequired(item);
-  if (!required) {
-    schema.optional();
-  }
   return schema;
 };
