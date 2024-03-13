@@ -12,7 +12,7 @@ import LanguageLocales from '@helsenorge/core-utils/constants/languages';
 import FormFillerSidebar from './FormFillerSidebar';
 import { emptyPropertyReplacer } from './helpers';
 import { getResources } from './resources/referoResources';
-import skjema from './skjema/skjema-open-choice.json';
+import skjema from './skjema/flere-variasjoner.json';
 import { ReferoContainer } from '../components';
 import rootReducer from '../reducers';
 

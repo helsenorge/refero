@@ -6,7 +6,6 @@ import { ThunkDispatch } from 'redux-thunk';
 
 import { AutoSuggestProps } from '../../../types/autoSuggestProps';
 import { Options } from '../../../types/formTypes/radioGroupOptions';
-import { ValidationProps } from '../../../types/formTypes/validation';
 import { Resources } from '../../../types/resources';
 
 import CheckboxView from './checkbox-view';
@@ -70,7 +69,7 @@ export interface OpenChoiceProps extends WithCommonFunctionsProps {
   autoSuggestProps?: AutoSuggestProps;
 }
 
-const OpenChoice: React.FC<OpenChoiceProps & ValidationProps> = props => {
+const OpenChoice = (props: OpenChoiceProps): JSX.Element | null => {
   const getDataReceiverValue = (answer: Array<QuestionnaireResponseItemAnswer>): (string | undefined)[] => {
     return answer
       .filter(f => f.valueCoding?.code !== OPEN_CHOICE_ID)
@@ -390,13 +389,7 @@ const OpenChoice: React.FC<OpenChoiceProps & ValidationProps> = props => {
 
   const renderSlider = (): JSX.Element => {
     return (
-
-      <SliderView
-        item={props.item}
-        answer={props.answer}
-        handleChange={handleChange}
-        selected={getValue(props.item, props.answer)}
-      >
+      <SliderView item={props.item} answer={props.answer} handleChange={handleChange} selected={getValue(props.item, props.answer)}>
         {props.children}
       </SliderView>
     );

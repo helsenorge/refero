@@ -1,15 +1,17 @@
-import { QuestionnaireItem } from 'fhir/r4';
-import { ZodBoolean, ZodTypeAny, z } from 'zod';
+import { Questionnaire, QuestionnaireItem, Resource } from 'fhir/r4';
+import { ZodNaN, ZodNumber, ZodOptional, ZodUnion, z } from 'zod';
 
 import { Resources } from '../types/resources';
 
 import { booleanValidation } from './booleanValidation';
 import { createChoiceSchema } from './choiceValidation';
-import { numberValidation } from './numberValidation';
+import { decimalValidation } from './decimalValidation';
+import { integerValidation, numberValidation } from './integerValidation';
 import { quantityValidation } from './quantityVaidation';
 import { stringValidation } from './stringValidation';
 import { textValidation } from './textValidation';
 import ItemType from '../constants/itemType';
+import { isRequired } from '../util';
 
 type ZodSchemaType =
   | z.ZodString
@@ -20,18 +22,19 @@ type ZodSchemaType =
   | z.ZodUnknown
   | z.ZodDate
   | z.ZodArray<z.ZodTypeAny, 'many'>
-  | z.ZodEffects<ZodBoolean, boolean, boolean>;
+  | z.ZodType<boolean, z.ZodTypeDef, boolean>
+  | ZodOptional<ZodUnion<[ZodNumber, ZodNaN]>>;
 
-const mapFhirTypeToZod = (item: QuestionnaireItem, resources?: Resources): ZodSchemaType | undefined => {
+const mapFhirTypeToZod = (item: QuestionnaireItem, resources?: Resources, contained?: Resource[]): ZodSchemaType | undefined => {
   switch (item.type) {
     case ItemType.STRING:
       return stringValidation(item, resources);
     case ItemType.TEXT:
       return textValidation(item, resources);
     case ItemType.INTEGER:
-      return numberValidation(item, resources);
+      return integerValidation(item, resources);
     case ItemType.DECIMAL:
-      return numberValidation(item, resources, true);
+      return decimalValidation(item, resources);
     case ItemType.BOOLEAN:
       return booleanValidation(item, resources);
     case ItemType.DATE:
@@ -39,9 +42,9 @@ const mapFhirTypeToZod = (item: QuestionnaireItem, resources?: Resources): ZodSc
     case ItemType.TIME:
       return z.date();
     case ItemType.CHOICE:
-      return createChoiceSchema(item, resources);
+      return createChoiceSchema(item, resources, contained);
     case ItemType.OPENCHOICE:
-      return createChoiceSchema(item, resources); // Adjust as needed for open choice types
+      return createChoiceSchema(item, resources, contained); // Adjust as needed for open choice types
     case ItemType.QUANTITY:
       return quantityValidation(item, resources);
     case ItemType.ATTATCHMENT:
@@ -52,20 +55,26 @@ const mapFhirTypeToZod = (item: QuestionnaireItem, resources?: Resources): ZodSc
     case ItemType.URL:
       return z.string().url();
     case ItemType.REFERENCE:
-      return z.string(); // Adjust as needed for reference types
-    case ItemType.DISPLAY:
-    case ItemType.GROUP:
-      return undefined;
+      return z.string();
     default:
-      return z.unknown(); // Adjust as needed for unsupported or complex types
+      return undefined;
   }
 };
 
-export const generateZodSchemaFromItems = (items: QuestionnaireItem[], resources?: Resources): Record<string, ZodSchemaType> => {
+const generateZodSchemaFromItems = (
+  items: QuestionnaireItem[],
+  resources?: Resources,
+  contained?: Resource[],
+  parentPath: string[] = []
+): Record<string, ZodSchemaType> => {
   return items.reduce<Record<string, ZodSchemaType>>((acc, item) => {
-    const validator = mapFhirTypeToZod(item, resources);
+    const validator = mapFhirTypeToZod(item, resources, contained);
 
+    //TODO:Add id logic for repeating items
+    const currentPath = [...parentPath, item.linkId];
+    const key = currentPath.join('.');
     if (validator !== undefined) {
+      console.log('validator key: ', key);
       if (item.repeats) {
         acc[item.linkId] = z.array(validator);
       } else {
@@ -74,9 +83,9 @@ export const generateZodSchemaFromItems = (items: QuestionnaireItem[], resources
     }
 
     if (item.item) {
-      const nestedValidators = generateZodSchemaFromItems(item.item, resources);
-      Object.keys(nestedValidators).forEach(key => {
-        acc[key] = nestedValidators[key];
+      const nestedValidators = generateZodSchemaFromItems(item.item, resources, contained, currentPath);
+      Object.keys(nestedValidators).forEach(nestedKey => {
+        acc[nestedKey] = nestedValidators[nestedKey];
       });
     }
 
@@ -85,35 +94,77 @@ export const generateZodSchemaFromItems = (items: QuestionnaireItem[], resources
 };
 
 export const createZodSchemaFromQuestionnaireItems = (
-  items: QuestionnaireItem[],
-  resources?: Resources
+  items?: QuestionnaireItem[],
+  resources?: Resources,
+  contained?: Resource[]
 ): z.ZodObject<Record<string, ZodSchemaType>> => {
-  const schemaObject = generateZodSchemaFromItems(items, resources);
+  const schemaObject = generateZodSchemaFromItems(items || [], resources, contained);
   return z.object(schemaObject).strict();
 };
-
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function inspectZodSchema(schema: ZodTypeAny): any {
-  // This is a very basic and not comprehensive way to inspect the schema.
-  // Zod schemas can be complex, and a more thorough approach might be necessary for complete inspection.
-  if ('_def' in schema) {
-    const def = schema._def;
-
-    if (def.typeName === 'ZodObject') {
-      const shape = def.shape();
-      return Object.keys(shape).reduce((acc, key) => {
-        acc[key] = inspectZodSchema(shape[key]);
-        return acc;
-      }, {});
-    } else if (def.typeName === 'ZodArray') {
-      return [inspectZodSchema(def.type)];
-    } else {
-      return def.typeName;
-    }
-  }
-  return 'Unknown Type';
-}
-
+export const createZodSchemaFromQuestionnaire = (
+  questionnaire?: Questionnaire | null,
+  resources?: Resources,
+  contained?: Resource[]
+): z.ZodObject<Record<string, ZodSchemaType>> => {
+  return createZodSchemaFromQuestionnaireItems(questionnaire?.item, resources, contained);
+};
 export const getResourcevalueByKey = (resourceKey: keyof Resources, resources: Resources): string => {
   return resources[resourceKey] ?? '';
+};
+
+export const createDefaultFormValuesFromQuestionnaire = (questionnaire?: Questionnaire | null): Record<string, unknown> => {
+  return createDefaultFormValues(questionnaire?.item || []);
+};
+export const createDefaultFormValues = (items?: QuestionnaireItem[]): Record<string, unknown> => {
+  if (!items) {
+    return {};
+  }
+  return items.reduce<Record<string, unknown>>((acc, item) => {
+    if (item.type === ItemType.GROUP) {
+      return { ...acc, ...createDefaultFormValues(item.item) };
+    }
+
+    if (item.repeats) {
+      acc[item.linkId] = [];
+    } else {
+      acc[item.linkId] = getDefaultFormValue(item);
+    }
+
+    return acc;
+  }, {});
+};
+
+const getDefaultFormValue = (item: QuestionnaireItem): unknown => {
+  // Check if the item is required
+  const isFieldRequired = isRequired(item);
+
+  switch (item.type) {
+    case ItemType.STRING:
+    case ItemType.TEXT:
+      return isFieldRequired ? '' : undefined; // Use undefined or null for optional text fields
+    case ItemType.INTEGER:
+    case ItemType.DECIMAL:
+      return isFieldRequired ? 0 : undefined; // Use undefined or null for optional number fields
+    case ItemType.BOOLEAN:
+      return false;
+    case ItemType.DATE:
+    case ItemType.DATETIME:
+    case ItemType.TIME:
+      return isFieldRequired ? '' : undefined;
+    case ItemType.CHOICE:
+      return isFieldRequired ? [] : undefined;
+    case ItemType.OPENCHOICE:
+      return isFieldRequired ? '' : undefined;
+    case ItemType.QUANTITY:
+      return isFieldRequired ? 0 : undefined;
+    case ItemType.ATTATCHMENT:
+      return isFieldRequired ? { contentType: '', data: '' } : undefined;
+    case ItemType.URL:
+      return isFieldRequired ? '' : undefined;
+    default:
+      return undefined;
+  }
+};
+export const getRequiredErrorMessage = (item: QuestionnaireItem, resources: Resources): string | undefined => {
+  return isRequired(item) ? resources?.formRequiredErrorMessage : undefined;
 };

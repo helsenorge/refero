@@ -6,7 +6,6 @@ import { useFormContext } from 'react-hook-form';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
-import { ValidationProps } from '../../../types/formTypes/validation';
 import { Resources } from '../../../types/resources';
 
 import TimeInput from '@helsenorge/date-time/components/time-input';
@@ -47,9 +46,10 @@ export interface TimeProps extends WithCommonFunctionsProps {
   isHelpOpen?: boolean;
   onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
+  children?: React.ReactNode;
 }
 
-const Time: React.FC<TimeProps & ValidationProps> = props => {
+const Time = (props: TimeProps): JSX.Element => {
   const convertAnswerToString = (answer: QuestionnaireResponseItemAnswer): string => {
     if (answer && answer.valueTime) {
       return answer.valueTime;

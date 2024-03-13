@@ -1,28 +1,17 @@
 import * as React from 'react';
 
 import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
-import { ValidationRule, useFormContext } from 'react-hook-form';
+import { useFormContext } from 'react-hook-form';
 
-import { ValidationProps } from '../../../types/formTypes/validation';
 import { Resources } from '../../../types/resources';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Input from '@helsenorge/designsystem-react/components/Input';
 import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
-import Validation from '@helsenorge/designsystem-react/components/Validation';
 
-import { getValidationTextExtension, getPlaceholder, getMinLengthExtensionValue, getRegexExtension } from '../../../util/extension';
-import {
-  isReadOnly,
-  isRequired,
-  getId,
-  getStringValue,
-  getPDFStringValue,
-  getMaxLength,
-  getSublabelText,
-  renderPrefix,
-  getText,
-} from '../../../util/index';
+import { getPlaceholder } from '../../../util/extension';
+import { getId, getStringValue, getPDFStringValue, getSublabelText, renderPrefix, getText } from '../../../util/index';
+import { Path, createFromIdFromPath } from '../../../util/refero-core';
 import Pdf from '../textview';
 
 interface Props {
@@ -34,8 +23,10 @@ interface Props {
   handleStringChange: (event: React.FormEvent<{}>) => void;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
   resources?: Resources;
+  path: Path[];
+  children?: React.ReactNode;
 }
-const textField: React.SFC<Props & ValidationProps> = ({
+const textField = ({
   id,
   pdf,
   item,
@@ -45,7 +36,8 @@ const textField: React.SFC<Props & ValidationProps> = ({
   children,
   onRenderMarkdown,
   resources,
-}) => {
+  path,
+}: Props): JSX.Element | null => {
   if (pdf) {
     return (
       <Pdf item={item} value={getPDFStringValue(answer)}>
@@ -53,35 +45,27 @@ const textField: React.SFC<Props & ValidationProps> = ({
       </Pdf>
     );
   }
-  const { register, getFieldState } = useFormContext();
-  const { error, invalid } = getFieldState(getId(item.linkId));
+
   const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`;
   const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
 
   // showLabel={false}
   // validateOnExternalUpdate={true}
   // FORANDRET ONBLUR TIL ONCHANGE
-  const pattern: ValidationRule<RegExp> | undefined = getRegexExtension(item)
-    ? new RegExp(getRegexExtension(item) as string, 'g')
-    : undefined;
-  const minLength = getMinLengthExtensionValue(item);
-  const maxLength = getMaxLength(item);
-  const validationText = getValidationTextExtension(item) || '';
+
+  const formId = createFromIdFromPath(path);
+  const { getFieldState, register } = useFormContext();
+  const { error } = getFieldState(formId);
   return (
-    <FormGroup error={error?.message}>
+    <FormGroup error={error?.message} mode="ongrey">
       <Input
-        {...register(getId(item.linkId), {
-          required: isRequired(item),
+        {...(register(formId),
+        {
           onChange: handleStringChange,
-          onBlur: handleStringChange,
-          pattern,
-          disabled: isReadOnly(item),
-          min: minLength && { value: minLength, message: validationText },
-          max: maxLength && { value: maxLength, message: validationText },
         })}
-        error={invalid}
         type="text"
         inputId={getId(id)}
+        value={getStringValue(answer)}
         defaultValue={getStringValue(answer)}
         label={
           <Label

@@ -6,7 +6,6 @@ import { ThunkDispatch } from 'redux-thunk';
 
 import { AutoSuggestProps } from '../../../types/autoSuggestProps';
 import { Options } from '../../../types/formTypes/radioGroupOptions';
-import { ValidationProps } from '../../../types/formTypes/validation';
 import { OrgenhetHierarki } from '../../../types/orgenhetHierarki';
 import { Resources } from '../../../types/resources';
 
@@ -52,9 +51,10 @@ export interface ChoiceProps extends WithCommonFunctionsProps {
   ) => void;
   autoSuggestProps?: AutoSuggestProps;
   fetchReceivers?: (successCallback: (receivers: Array<OrgenhetHierarki>) => void, errorCallback: () => void) => void;
+  children: React.ReactNode;
 }
 
-const Choice = (props: ChoiceProps & ValidationProps): JSX.Element | null => {
+const Choice = (props: ChoiceProps): JSX.Element | null => {
   // const [valid, setValid] = React.useState<boolean>(true);
   // const [validated, setValidated] = React.useState<boolean>(false);
   const getValue = (
@@ -230,7 +230,13 @@ const Choice = (props: ChoiceProps & ValidationProps): JSX.Element | null => {
 
   const renderSlider = (): JSX.Element => {
     return (
-      <SliderView item={props.item} answer={props.answer} handleChange={handleChange} selected={getValue(props.item, props.answer)}>
+      <SliderView
+        item={props.item}
+        answer={props.answer}
+        handleChange={handleChange}
+        selected={getValue(props.item, props.answer)}
+        path={props.path}
+      >
         {props.children}
       </SliderView>
     );

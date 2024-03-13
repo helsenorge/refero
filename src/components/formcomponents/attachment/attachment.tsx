@@ -4,7 +4,6 @@ import { QuestionnaireItem, QuestionnaireResponseItemAnswer, Attachment, Questio
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
-import { ValidationProps } from '../../../types/formTypes/validation';
 import { Resources } from '../../../types/resources';
 import { TextMessage } from '../../../types/text-message';
 
@@ -77,7 +76,7 @@ const AttachmentComponent = ({
   attachmentMaxFileSize,
   attachmentValidTypes,
   ...other
-}: AttachmentProps & ValidationProps): JSX.Element => {
+}: AttachmentProps): JSX.Element => {
   const onUpload = (files: File[], cb: (success: boolean, errormessage: TextMessage | null, uploadedFile?: UploadedFile) => void): void => {
     if (uploadAttachment) {
       for (const file of files) {

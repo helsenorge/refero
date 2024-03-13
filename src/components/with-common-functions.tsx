@@ -16,7 +16,6 @@ import { ThunkDispatch } from 'redux-thunk';
 
 import { AutoSuggestProps } from '../types/autoSuggestProps';
 import { FormChild } from '../types/formTypes/formChild';
-import { ValidationProps } from '../types/formTypes/validation';
 import { OrgenhetHierarki } from '../types/orgenhetHierarki';
 import { Resources } from '../types/resources';
 import { TextMessage } from '../types/text-message';
@@ -112,8 +111,8 @@ export interface WithCommonFunctionsProps {
 }
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export default function withCommonFunctions<T>(WrappedComponent: React.FC<WithCommonFunctionsProps & ValidationProps>) {
-  return function WithCommonFunctions(props: T & ValidationProps & WithCommonFunctionsProps): React.ReactElement | null {
+export default function withCommonFunctions<T>(WrappedComponent: React.FC<WithCommonFunctionsProps>) {
+  return function WithCommonFunctions(props: T & WithCommonFunctionsProps): React.ReactElement | null {
     const [isHelpVisible, setIsHelpVisible] = React.useState<boolean>(false);
 
     const renderDeleteButton = (className?: string): React.ReactElement | undefined => {

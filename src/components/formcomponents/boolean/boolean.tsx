@@ -1,11 +1,10 @@
 import * as React from 'react';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem, Questionnaire } from 'fhir/r4';
-import { useFormContext } from 'react-hook-form';
+import { Controller, useFormContext } from 'react-hook-form';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
-import { ValidationProps } from '../../../types/formTypes/validation';
 import { Resources } from '../../../types/resources';
 
 import Checkbox from '@helsenorge/designsystem-react/components/Checkbox';
@@ -19,10 +18,9 @@ import Pdf from './pdf';
 import { getBooleanValue } from './utils';
 import { NewValueAction, newBooleanValueAsync } from '../../../actions/newValue';
 import { GlobalState } from '../../../reducers';
-import { getValidationTextExtension } from '../../../util/extension';
-import { getId, getText, getTextValidationErrorMessage, isReadOnly, isRequired, renderPrefix } from '../../../util/index';
+import { getText, isReadOnly, renderPrefix } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
-import { Path } from '../../../util/refero-core';
+import { Path, createFromIdFromPath } from '../../../util/refero-core';
 import withCommonFunctions, { WithCommonFunctionsProps } from '../../with-common-functions';
 
 export interface BooleanProps extends WithCommonFunctionsProps {
@@ -45,6 +43,7 @@ export interface BooleanProps extends WithCommonFunctionsProps {
   isHelpOpen?: boolean;
   onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
+  children: React.ReactNode;
 }
 
 const Boolean = ({
@@ -65,8 +64,10 @@ const Boolean = ({
   children,
   renderHelpElement,
   renderHelpButton,
-}: BooleanProps & ValidationProps): JSX.Element => {
-  const { register, getFieldState } = useFormContext();
+}: BooleanProps): JSX.Element => {
+  const formId = createFromIdFromPath(path);
+  const { getFieldState, control } = useFormContext();
+  const { error } = getFieldState(formId);
 
   const handleChange = (): void => {
     const newValue = !getBooleanValue(answer, item);
@@ -80,7 +81,7 @@ const Boolean = ({
       promptLoginMessage();
     }
   };
-  const { error } = getFieldState(getId(item.linkId));
+
   const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`;
 
   if (pdf) {
@@ -101,22 +102,26 @@ const Boolean = ({
     );
   }
 
-  // id={getId(this.props.id)}
-  // helpButton={this.props.renderHelpButton()}
-  // helpElement={this.props.renderHelpElement()}
-  // validateOnExternalUpdate={true}
-  // isStyleBlue
-
   return (
     <div className="page_refero__component page_refero__component_boolean">
       <FormGroup error={error?.message}>
-        <Checkbox
-          {...register(getId(item.linkId), {
-            value: getBooleanValue(answer, item),
-          })}
-          label={<Label labelTexts={[{ text: labelText }]} afterLabelChildren={<>{renderHelpButton()}</>} />}
-          checked={getBooleanValue(answer, item)}
-          className="page_refero__input"
+        <Controller
+          control={control}
+          name={formId}
+          render={({ field: { onChange, value, ref } }): React.ReactElement => (
+            <Checkbox
+              label={<Label labelTexts={[{ text: labelText }]} afterLabelChildren={<>{renderHelpButton()}</>} />}
+              checked={value}
+              className="page_refero__input"
+              value={value}
+              ref={ref}
+              onChange={(): void => {
+                const newValue = !getBooleanValue(answer, item);
+                onChange(newValue);
+                handleChange();
+              }}
+            />
+          )}
         />
       </FormGroup>
       {renderDeleteButton('page_refero__deletebutton--margin-top')}

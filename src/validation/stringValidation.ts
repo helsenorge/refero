@@ -15,6 +15,8 @@ export const stringValidation = (item: QuestionnaireItem, resources?: Resources)
   const min = getMinLengthExtensionValue(item);
   if (min !== undefined) {
     schema = schema.min(min, { message: `Du må minst skrive ${min} tegn.` });
+  } else {
+    schema = schema.min(1, { message: resources?.formRequiredErrorMessage });
   }
   const max = getMaxLength(item);
   if (max !== undefined) {

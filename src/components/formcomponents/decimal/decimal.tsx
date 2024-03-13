@@ -1,13 +1,13 @@
 import * as React from 'react';
 
 import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
-import { ValidationRule, useForm, useFormContext } from 'react-hook-form';
+import { useFormContext } from 'react-hook-form';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
-import { ValidationProps } from '../../../types/formTypes/validation';
 import { Resources } from '../../../types/resources';
 
+import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Input from '@helsenorge/designsystem-react/components/Input';
 import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
 
@@ -15,16 +15,10 @@ import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 
 import { NewValueAction, newDecimalValueAsync } from '../../../actions/newValue';
 import { GlobalState } from '../../../reducers';
-import {
-  getValidationTextExtension,
-  getPlaceholder,
-  getMaxValueExtensionValue,
-  getMinValueExtensionValue,
-  getRegexExtension,
-} from '../../../util/extension';
-import { isReadOnly, isRequired, getId, getSublabelText, renderPrefix, getText, getDecimalPattern } from '../../../util/index';
+import { getPlaceholder } from '../../../util/extension';
+import { isReadOnly, getId, getSublabelText, renderPrefix, getText } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
-import { Path } from '../../../util/refero-core';
+import { Path, createFromIdFromPath } from '../../../util/refero-core';
 import withCommonFunctions, { WithCommonFunctionsProps } from '../../with-common-functions';
 import TextView from '../textview';
 
@@ -47,9 +41,10 @@ export interface DecimalProps extends WithCommonFunctionsProps {
   isHelpOpen?: boolean;
   onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
+  children?: React.ReactNode;
 }
 
-const Decimal: React.FC<DecimalProps & ValidationProps> = props => {
+const Decimal = (props: DecimalProps): JSX.Element => {
   const getValue = (): string | number | number[] | undefined => {
     const { item, answer } = props;
 
@@ -94,7 +89,6 @@ const Decimal: React.FC<DecimalProps & ValidationProps> = props => {
     }
   };
 
-  const { register, getFieldState } = useFormContext();
   const { id, item, pdf, onRenderMarkdown } = props;
   const value = getValue();
   const inputId = getId(props.id);
@@ -117,23 +111,15 @@ const Decimal: React.FC<DecimalProps & ValidationProps> = props => {
   }
 
   // validateOnExternalUpdate={true}
-  const pattern: ValidationRule<RegExp> | undefined = getRegexExtension(item)
-    ? new RegExp(getRegexExtension(item) as string, 'g')
-    : undefined;
-  const minValue = getMinValueExtensionValue(item);
-  const maxValue = getMaxValueExtensionValue(item);
-  const validationMessage = getValidationTextExtension(item) || '';
-  const { error } = getFieldState(getId(item.linkId));
+  const formId = createFromIdFromPath(props.path);
+  const { getFieldState, register } = useFormContext();
+  const { error } = getFieldState(formId);
   return (
     <div className="page_refero__component page_refero__component_decimal">
-      <>
+      <FormGroup error={error?.message} mode="ongrey">
         {props.renderHelpElement()}
         <Input
-          {...register(getId(item.linkId), {
-            pattern,
-            required: { value: isRequired(item), message: validationMessage },
-            max: maxValue && { value: maxValue, message: validationMessage },
-            min: minValue ? { value: minValue, message: validationMessage } : undefined,
+          {...register(formId, {
             onChange: handleChange,
           })}
           label={
@@ -142,17 +128,18 @@ const Decimal: React.FC<DecimalProps & ValidationProps> = props => {
               labelTexts={[{ text: labelText, type: 'semibold' }]}
               sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
               afterLabelChildren={props.renderHelpButton()}
+              statusDot={<div>{status}</div>}
             />
           }
           type="number"
+          value={value ? value + '' : ''}
           inputId={inputId}
           defaultValue={value ? value + '' : ''}
           placeholder={getPlaceholder(item)}
-          errorText={error?.message}
           className="page_refero__input"
           width={25}
         />
-      </>
+      </FormGroup>
       {props.renderDeleteButton('page_refero__deletebutton--margin-top')}
       {props.repeatButton}
       {props.children ? <div className="nested-fieldset nested-fieldset--full-height">{props.children}</div> : null}

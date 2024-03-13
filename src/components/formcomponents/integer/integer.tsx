@@ -5,22 +5,20 @@ import { useFormContext } from 'react-hook-form';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
-import { ValidationProps } from '../../../types/formTypes/validation';
 import { Resources } from '../../../types/resources';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Input from '@helsenorge/designsystem-react/components/Input';
 import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
-import Validation from '@helsenorge/designsystem-react/components/Validation';
 
 import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 
 import { NewValueAction, newIntegerValueAsync } from '../../../actions/newValue';
 import { GlobalState } from '../../../reducers';
-import { getValidationTextExtension, getPlaceholder, getMaxValueExtensionValue, getMinValueExtensionValue } from '../../../util/extension';
-import { isReadOnly, isRequired, getId, getSublabelText, renderPrefix, getText } from '../../../util/index';
+import { getPlaceholder } from '../../../util/extension';
+import { isReadOnly, getId, getSublabelText, renderPrefix, getText } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
-import { Path } from '../../../util/refero-core';
+import { Path, createFromIdFromPath } from '../../../util/refero-core';
 import withCommonFunctions, { WithCommonFunctionsProps } from '../../with-common-functions';
 import TextView from '../textview';
 
@@ -43,10 +41,10 @@ export interface IntegerProps extends WithCommonFunctionsProps {
   isHelpOpen?: boolean;
   onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
+  children?: React.ReactNode;
 }
 
-const Integer = (props: IntegerProps & ValidationProps): JSX.Element | null => {
-  const { register, getFieldState } = useFormContext();
+const Integer = (props: IntegerProps): JSX.Element | null => {
   const getValue = (): string | number | number[] | undefined => {
     const { item, answer } = props;
     if (answer && Array.isArray(answer)) {
@@ -111,19 +109,16 @@ const Integer = (props: IntegerProps & ValidationProps): JSX.Element | null => {
 
   // showLabel={true}
   // validateOnExternalUpdate={true}
-  const { error, invalid } = getFieldState(getId(props.item.linkId));
-  const maxValue = getMaxValueExtensionValue(props.item);
-  const minValue = getMinValueExtensionValue(props.item);
-  const validationMessage = getValidationTextExtension(props.item) ?? '';
+  const formId = createFromIdFromPath(props.path);
+  const { getFieldState, register } = useFormContext();
+  const { error } = getFieldState(formId);
+
   return (
     <div className="page_refero__component page_refero__component_integer">
       {props.renderHelpElement()}
-      <FormGroup error={error?.message}>
+      <FormGroup error={error?.message} mode="ongrey">
         <Input
-          {...register(getId(props.item.linkId), {
-            required: isRequired(props.item),
-            max: maxValue && { value: maxValue, message: validationMessage },
-            min: minValue && { value: minValue, message: validationMessage },
+          {...register(formId, {
             valueAsNumber: true,
             onChange: handleChange,
           })}
@@ -138,8 +133,6 @@ const Integer = (props: IntegerProps & ValidationProps): JSX.Element | null => {
           inputId={inputId}
           defaultValue={value !== undefined && value !== null ? value + '' : ''}
           placeholder={getPlaceholder(props.item)}
-          errorText={error?.message}
-          error={invalid}
           className="page_refero__input"
           width={25}
         />

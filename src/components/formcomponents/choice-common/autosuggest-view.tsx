@@ -1,12 +1,12 @@
 import * as React from 'react';
 
 import { ValueSet, QuestionnaireItem, Questionnaire, Coding, QuestionnaireResponseItemAnswer } from 'fhir/r4';
-import { Collapse } from 'react-collapse';
 import { useFormContext } from 'react-hook-form';
 
 import { AutoSuggestProps } from '../../../types/autoSuggestProps';
 import { Resources } from '../../../types/resources';
 
+import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Loader from '@helsenorge/designsystem-react/components/Loader';
 import NotificationPanel from '@helsenorge/designsystem-react/components/NotificationPanel';
 
@@ -16,8 +16,8 @@ import { debounce } from '@helsenorge/core-utils/debounce';
 import { OPEN_CHOICE_ID } from '../../../constants';
 import { OPEN_CHOICE_SYSTEM } from '../../../constants/codingsystems';
 import ItemType from '../../../constants/itemType';
-import { getValidationTextExtension } from '../../../util/extension';
 import { isRequired, getId, getSublabelText } from '../../../util/index';
+import { Path, createFromIdFromPath } from '../../../util/refero-core';
 import Label from '../label';
 import SubLabel from '../sublabel';
 
@@ -39,16 +39,15 @@ interface AutosuggestViewProps {
   resources?: Resources;
   renderDeleteButton: (className?: string) => JSX.Element | undefined;
   repeatButton: JSX.Element;
-  children?: JSX.Element;
-
+  path: Path[];
   handleStringChange?: (value: string) => void;
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
+  children: React.ReactNode;
 }
 
-const AutosuggestView: React.FC<AutosuggestViewProps> = props => {
-  const { register, getFieldState } = useFormContext();
+const AutosuggestView = (props: AutosuggestViewProps): JSX.Element => {
   const getStringAnswer = (): string | undefined => {
     if (Array.isArray(props.answer)) {
       return props.answer.reduce((acc, x) => acc || x.valueString, undefined);
@@ -192,19 +191,16 @@ const AutosuggestView: React.FC<AutosuggestViewProps> = props => {
   const hasCodingAnswer = (): boolean => {
     return !!getCodingAnswer();
   };
+  const formId = createFromIdFromPath(props.path);
+  const { getFieldState, register } = useFormContext();
+  const { error } = getFieldState(formId);
 
   const subLabelText = getSublabelText(props.item, props.onRenderMarkdown, props.questionnaire, props.resources);
-  const { error } = getFieldState(props.item.linkId);
   return (
     <div className="page_refero__component page_refero__component_choice page_refero__component_choice_autosuggest">
-      <Collapse isOpened>
+      <FormGroup mode="ongrey" error={error?.message}>
         <Autosuggest
-          {...register(getId(props.item.linkId), {
-            required: {
-              value: isRequired(props.item),
-              message: getValidationTextExtension(props.item) || '',
-            },
-          })}
+          {...register(formId)}
           id={getId(props.id)}
           label={
             <Label
@@ -245,7 +241,7 @@ const AutosuggestView: React.FC<AutosuggestViewProps> = props => {
         {props.renderDeleteButton('page_refero__deletebutton--margin-top')}
         {props.repeatButton}
         {props.children ? <div className="nested-fieldset nested-fieldset--full-height">{props.children}</div> : null}
-      </Collapse>
+      </FormGroup>
     </div>
   );
 };

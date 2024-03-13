@@ -1,12 +1,25 @@
 import { QuestionnaireItem } from 'fhir/r4';
-import { ZodBoolean, ZodDefault, z } from 'zod';
+import { z } from 'zod';
 
 import { Resources } from '../types/resources';
 
-export const booleanValidation = (item: QuestionnaireItem, resources?: Resources): z.ZodEffects<ZodBoolean, boolean, boolean> => {
-  const schema = z.boolean().refine(value => value === true || value === false, {
-    message: 'Må være satt til true eller false', // Custom error message if the value is neither true nor false
+import { isRequired } from '../util';
+
+export const booleanValidation = (item: QuestionnaireItem, resources?: Resources): z.ZodType<boolean> => {
+  const schema = z.boolean().transform(value => {
+    if (typeof value === 'string') {
+      const lowerCaseValue = (value as string | undefined)?.toLowerCase();
+      if (lowerCaseValue === 'true') return true;
+      if (lowerCaseValue === 'false') return false;
+    }
+    return value;
   });
 
-  return schema;
+  if (!!isRequired(item)) {
+    return schema.refine(value => value === true, {
+      message: 'Dette feltet må være huket av.',
+    }) as z.ZodType<boolean>;
+  }
+
+  return schema as z.ZodType<boolean>;
 };

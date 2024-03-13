@@ -35,10 +35,7 @@ const FormButtons = ({
   isHelsenorgeForm,
 }: FormButtonsInterface): JSX.Element | null => {
   const buttonOrder = isStepView ? buttonOrderStepView : buttonOrderNormalView;
-  const { formState } = useFormContext();
-  const { errors, isSubmitted } = formState;
-  console.log('errors', errors);
-  console.log('isSubmitted', isSubmitted);
+
   return (
     <div className="formButtonsWrapper">
       <style>{formButtonsWrapper}</style>

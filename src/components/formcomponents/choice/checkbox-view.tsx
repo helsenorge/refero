@@ -12,6 +12,7 @@ import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
 
 import { getId, getSublabelText, getText, isRequired } from '../../../util/index';
+import { Path, createFromIdFromPath } from '../../../util/refero-core';
 
 interface Props {
   options?: Array<Options>;
@@ -23,7 +24,7 @@ interface Props {
   resources?: Resources;
   repeatButton: JSX.Element;
   renderDeleteButton: (className?: string) => JSX.Element | undefined;
-
+  path: Path[];
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
@@ -43,6 +44,7 @@ const CheckboxView = ({
   renderDeleteButton,
   onRenderMarkdown,
   renderHelpButton,
+  path,
 }: Props): JSX.Element | null => {
   if (!options) {
     return null;
@@ -53,10 +55,6 @@ const CheckboxView = ({
   });
   const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
 
-  const handleCheckboxChange = (checkboxId: string): void => {
-    handleChange(checkboxId);
-  };
-
   // CheckboxGroup:
   // id={getId(id)}
   // max={getMaxOccursExtensionValue(item)}
@@ -66,20 +64,23 @@ const CheckboxView = ({
 
   // Checkbox:
   // isStyleBlue={this.props.isStyleBlue}
-
-  const { register, getFieldState, getValues } = useFormContext();
-  const { error } = getFieldState(getId(item.linkId));
-  const values = getValues(item.linkId);
-  console.log('checkbox: ', values);
+  const formId = createFromIdFromPath(path);
+  const { register, getFieldState } = useFormContext();
+  const { error } = getFieldState(formId);
   return (
     <div className="page_refero__component page_refero__component_choice page_refero__component_choice_checkbox">
-      <FormGroup legend={getText(item, onRenderMarkdown, questionnaire, resources)} error={error?.message}>
+      <FormGroup legend={getText(item, onRenderMarkdown, questionnaire, resources)} error={error?.message} mode="ongrey">
         {checkboxes.map((checkbox, index) => (
           <Checkbox
-            {...register(getId(item.linkId), { disabled: checkbox.disabled, onChange: e => console.log('checkbox', e) })}
+            {...register(formId, {
+              onChange: (): void => {
+                handleChange(checkbox.id);
+              },
+            })}
             inputId={`${id}-${checkbox.id}`}
             testId={`checkbox-choice`}
             key={`${checkbox.id}-${index.toString()}`}
+            value={checkbox.id}
             label={
               <Label
                 labelTexts={[{ text: checkbox.label }]}
@@ -89,7 +90,6 @@ const CheckboxView = ({
             }
             checked={checkbox.checked}
             disabled={checkbox.disabled}
-            required={isRequired(item)}
           />
         ))}
       </FormGroup>

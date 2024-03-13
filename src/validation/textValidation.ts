@@ -12,6 +12,8 @@ export const textValidation = (item: QuestionnaireItem, resources?: Resources): 
   const min = getMinLengthExtensionValue(item);
   if (min !== undefined) {
     schema = schema.min(min, { message: resources?.validationNotAllowed });
+  } else {
+    schema = schema.min(1, { message: resources?.formRequiredErrorMessage });
   }
   const max = getMaxLength(item);
   if (max !== undefined) {
@@ -21,6 +23,7 @@ export const textValidation = (item: QuestionnaireItem, resources?: Resources): 
   if (!required) {
     schema.optional();
   }
+
   const regex = getRegexExtension(item);
   const customErrorMessage = getValidationTextExtension(item);
   if (regex) {

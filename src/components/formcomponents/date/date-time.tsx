@@ -6,10 +6,7 @@ import { useFormContext } from 'react-hook-form';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
-import { ValidationProps } from '../../../types/formTypes/validation';
 import { Resources } from '../../../types/resources';
-
-import Validation from '@helsenorge/designsystem-react/components/Validation';
 
 import { LanguageLocales } from '@helsenorge/core-utils/constants/languages';
 import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
@@ -25,7 +22,7 @@ import { getValidationTextExtension, getExtension } from '../../../util/extensio
 import { evaluateFhirpathExpressionToGetDate } from '../../../util/fhirpathHelper';
 import { isRequired, getId, isReadOnly, getSublabelText } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
-import { Path } from '../../../util/refero-core';
+import { Path, createFromIdFromPath } from '../../../util/refero-core';
 import withCommonFunctions, { WithCommonFunctionsProps } from '../../with-common-functions';
 import Label from '../label';
 import SubLabel from '../sublabel';
@@ -51,9 +48,10 @@ export interface DateTimeProps extends WithCommonFunctionsProps {
   isHelpOpen?: boolean;
   onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
+  children: React.ReactNode;
 }
 
-const DateTime: React.FC<DateTimeProps & ValidationProps> = props => {
+const DateTime = (props: DateTimeProps): JSX.Element => {
   const getDefaultDate = (item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer): Date | undefined => {
     if (answer && answer.valueDateTime) {
       return parseDate(String(answer.valueDateTime));
@@ -170,9 +168,6 @@ const DateTime: React.FC<DateTimeProps & ValidationProps> = props => {
     return moment ? moment.locale(getLocaleFromLanguage()) : undefined;
   };
 
-  const { register, getFieldState } = useFormContext();
-  const { error } = getFieldState(getId(props.id));
-
   const { item, pdf, id, onRenderMarkdown } = props;
   if (pdf || isReadOnly(item)) {
     return (
@@ -188,26 +183,22 @@ const DateTime: React.FC<DateTimeProps & ValidationProps> = props => {
       </TextView>
     );
   }
+
   const valueDateTime = getDefaultDate(props.item, props.answer);
   const maxDateTime = getMaxDate();
   const minDateTime = getMinDate();
   const subLabelText = getSublabelText(props.item, props.onRenderMarkdown, props.questionnaire, props.resources);
+  const formId = createFromIdFromPath(props.path);
+  const { register, getFieldState } = useFormContext();
+  const { error } = getFieldState(formId);
 
   return (
     <div className="page_refero__component page_refero__component_datetime">
       <DateTimePicker
-        {...register(getId(props.item.linkId), {
-          required: { value: isRequired(props.item), message: props.resources?.dateRequired || '' },
+        {...(register(formId),
+        {
           onChange: (value: Moment | undefined) => dispatchNewDate(value, ''),
           value: valueDateTime,
-          validate: {
-            maximumDateTime: (value: Moment | undefined) => {
-              return (maxDateTime && value && value.isAfter(maxDateTime)) || props.resources?.yearmonth_field_maxdate || '';
-            },
-            minimumDateTime: (value: Moment | undefined) => {
-              return (minDateTime && value && value.isBefore(minDateTime)) || props.resources?.yearmonth_field_mindate || '';
-            },
-          },
         })}
         id={getId(id)}
         resources={{ dateResources: props.resources }}

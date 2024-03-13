@@ -1,8 +1,7 @@
 import * as React from 'react';
 
 import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
-import { Collapse } from 'react-collapse';
-import { useForm } from 'react-hook-form';
+import { useFormContext } from 'react-hook-form';
 
 import { Options } from '../../../types/formTypes/radioGroupOptions';
 import { Resources } from '../../../types/resources';
@@ -10,13 +9,12 @@ import { Resources } from '../../../types/resources';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
 import Select from '@helsenorge/designsystem-react/components/Select';
-import Validation from '@helsenorge/designsystem-react/components/Validation';
 
 import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 
 import { shouldShowExtraChoice } from '../../../util/choice';
-import { getValidationTextExtension } from '../../../util/extension';
-import { isRequired, getId, getSublabelText, getText } from '../../../util/index';
+import { getId, getSublabelText, getText } from '../../../util/index';
+import { Path, createFromIdFromPath } from '../../../util/refero-core';
 
 interface DropdownViewProps {
   options?: Array<Options>;
@@ -36,6 +34,7 @@ interface DropdownViewProps {
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
+  path: Path[];
 }
 
 const DropdownView: React.FC<DropdownViewProps> = props => {
@@ -47,7 +46,7 @@ const DropdownView: React.FC<DropdownViewProps> = props => {
     answer,
     handleChange,
     selected,
-    // validateInput,
+    path,
     resources,
     children,
     repeatButton,
@@ -61,8 +60,6 @@ const DropdownView: React.FC<DropdownViewProps> = props => {
     return null;
   }
 
-  const { register, getFieldState } = useForm();
-  const { error, invalid } = getFieldState(getId(item.linkId));
   const dropdownOptions: HTMLOptionElement[] = options.map((o: Options) => {
     return new Option(o.label, o.type);
   });
@@ -72,40 +69,35 @@ const DropdownView: React.FC<DropdownViewProps> = props => {
 
   // showLabel={true}
   // onChangeValidator={validateInput}
-  const handleSelectChange = (evt: React.ChangeEvent<HTMLSelectElement>): void => handleChange(evt.target.value);
+
+  const formId = createFromIdFromPath(path);
+  const { getFieldState, register } = useFormContext();
+  const { error } = getFieldState(formId);
   return (
     <div className="page_refero__component page_refero__component_openchoice page_refero__component_openchoice_dropdown">
-      <Collapse isOpened>
-        {renderHelpElement()}
-        <FormGroup error={error?.message}>
-          <Select
-            {...register(getId(item.linkId), {
-              required: isRequired(item),
-              onChange: handleSelectChange,
-              value: selected ? selected[0] : undefined,
-            })}
-            error={invalid}
-            selectId={selectId}
-            errorText={getValidationTextExtension(item)}
-            className="page_refero__input"
-            label={
-              <Label
-                htmlFor={selectId}
-                labelTexts={[{ text: labelText, type: 'semibold' }]}
-                sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
-                afterLabelChildren={renderHelpButton()}
-              />
-            }
-          >
-            {dropdownOptions}
-          </Select>
-          {shouldShowExtraChoice(answer) && <div className="page_refero__component_openchoice_openfield">{renderOpenField()}</div>}
-        </FormGroup>
+      {renderHelpElement()}
+      <FormGroup error={error?.message} mode="ongrey">
+        <Select
+          {...register(formId)}
+          selectId={selectId}
+          className="page_refero__input"
+          label={
+            <Label
+              htmlFor={selectId}
+              labelTexts={[{ text: labelText, type: 'semibold' }]}
+              sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+              afterLabelChildren={renderHelpButton()}
+            />
+          }
+        >
+          {dropdownOptions}
+        </Select>
+        {shouldShowExtraChoice(answer) && <div className="page_refero__component_openchoice_openfield">{renderOpenField()}</div>}
+      </FormGroup>
 
-        {renderDeleteButton('page_refero__deletebutton--margin-top')}
-        {repeatButton}
-        {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
-      </Collapse>
+      {renderDeleteButton('page_refero__deletebutton--margin-top')}
+      {repeatButton}
+      {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
     </div>
   );
 };

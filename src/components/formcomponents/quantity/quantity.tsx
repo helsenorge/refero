@@ -7,7 +7,7 @@ import {
   QuestionnaireResponseItem,
   Questionnaire,
 } from 'fhir/r4';
-import { ValidationRule, useFormContext } from 'react-hook-form';
+import { useFormContext } from 'react-hook-form';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
@@ -17,20 +17,13 @@ import { Resources } from '../../../types/resources';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Input from '@helsenorge/designsystem-react/components/Input';
 import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
-import Validation from '@helsenorge/designsystem-react/components/Validation';
 
 import { NewValueAction, newQuantityValueAsync } from '../../../actions/newValue';
 import { GlobalState } from '../../../reducers';
-import {
-  getValidationTextExtension,
-  getPlaceholder,
-  getMaxValueExtensionValue,
-  getMinValueExtensionValue,
-  getQuestionnaireUnitExtensionValue,
-} from '../../../util/extension';
-import { isReadOnly, isRequired, getId, getSublabelText, renderPrefix, getText, getDecimalPattern } from '../../../util/index';
+import { getPlaceholder, getQuestionnaireUnitExtensionValue } from '../../../util/extension';
+import { isReadOnly, getId, getSublabelText, renderPrefix, getText, getDecimalPattern } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
-import { Path } from '../../../util/refero-core';
+import { Path, createFromIdFromPath } from '../../../util/refero-core';
 import withCommonFunctions, { WithCommonFunctionsProps } from '../../with-common-functions';
 import TextView from '../textview';
 
@@ -52,9 +45,10 @@ export interface QuantityProps extends WithCommonFunctionsProps {
   isHelpOpen?: boolean;
   onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
+  children?: React.ReactNode;
 }
 
-const Quantity = (props: QuantityProps & ValidationProps): JSX.Element | null => {
+const Quantity = (props: QuantityProps): JSX.Element | null => {
   const getValue = (): number | number[] | undefined => {
     const { answer } = props;
     if (answer && Array.isArray(answer)) {
@@ -114,7 +108,6 @@ const Quantity = (props: QuantityProps & ValidationProps): JSX.Element | null =>
     }
     return '';
   };
-  const { register, getFieldState } = useFormContext();
 
   const { id, item, questionnaire, onRenderMarkdown } = props;
   if (props.pdf || isReadOnly(item)) {
@@ -139,16 +132,18 @@ const Quantity = (props: QuantityProps & ValidationProps): JSX.Element | null =>
 
   // validateOnExternalUpdate={true}
 
-  const { error, invalid } = getFieldState(getId(item.linkId));
+  const formId = createFromIdFromPath(props.path);
+  const { getFieldState, register } = useFormContext();
+  const { error } = getFieldState(formId);
 
   return (
     <div className="page_refero__component page_refero__component_quantity">
-      <FormGroup error={error?.message}>
+      <FormGroup error={error?.message} mode="ongrey">
         {props.renderHelpElement()}
         <Input
-          error={invalid}
-          {...register(getId(item.linkId), {
+          {...register(formId, {
             valueAsNumber: true,
+            onChange: handleChange,
           })}
           label={
             <Label

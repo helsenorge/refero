@@ -10,9 +10,9 @@ import { ValidationProps } from '../../../types/formTypes/validation';
 import { Resources } from '../../../types/resources';
 
 import Expander from '@helsenorge/designsystem-react/components/Expander';
+import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
 import Textarea from '@helsenorge/designsystem-react/components/Textarea';
-import Validation from '@helsenorge/designsystem-react/components/Validation';
 
 import { debounce } from '@helsenorge/core-utils/debounce';
 
@@ -20,7 +20,7 @@ import { NewValueAction, newStringValueAsync } from '../../../actions/newValue';
 import Constants from '../../../constants/index';
 import itemControlConstants from '../../../constants/itemcontrol';
 import { GlobalState } from '../../../reducers';
-import { getPlaceholder, getMinLengthExtensionValue, getItemControlExtensionValue, getRegexExtension } from '../../../util/extension';
+import { getPlaceholder, getItemControlExtensionValue } from '../../../util/extension';
 import {
   isReadOnly,
   isRequired,
@@ -29,13 +29,12 @@ import {
   getText,
   getMaxLength,
   getPDFStringValue,
-  validateText,
   getTextValidationErrorMessage,
   getSublabelText,
   getStringValue,
 } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
-import { Path } from '../../../util/refero-core';
+import { Path, createFromIdFromPath } from '../../../util/refero-core';
 import { SanitizeText } from '../../../util/sanitize/domPurifyHelper';
 import withCommonFunctions, { WithCommonFunctionsProps } from '../../with-common-functions';
 import TextView from '../textview';
@@ -61,22 +60,39 @@ export interface TextProps extends WithCommonFunctionsProps {
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
   shouldExpanderRenderChildrenWhenClosed?: boolean;
 }
-const Text = (props: TextProps & ValidationProps): JSX.Element | null => {
+const Text = ({
+  id,
+  item,
+  answer,
+  pdf,
+  children,
+  resources,
+  onRenderMarkdown,
+  questionnaire,
+  dispatch,
+  promptLoginMessage,
+  path,
+  validateScriptInjection,
+  onAnswerChange,
+  shouldExpanderRenderChildrenWhenClosed,
+  renderHelpButton,
+  renderHelpElement,
+  repeatButton,
+  renderDeleteButton,
+}: TextProps & ValidationProps): JSX.Element | null => {
   const [inputValue, setInputValue] = React.useState('');
-  const { register } = useFormContext();
 
   // const showCounter = (): boolean => {
-  //   if (getMaxLength(props.item) || getMinLengthExtensionValue(props.item)) {
+  //   if (getMaxLength(item) || getMinLengthExtensionValue(item)) {
   //     return true;
   //   }
   //   return false;
   // };
 
   const handleChange = (event: React.FormEvent): void => {
-    const { dispatch, promptLoginMessage, path, item, onAnswerChange } = props;
     const value = (event.target as HTMLInputElement).value;
     if (dispatch) {
-      dispatch(newStringValueAsync(props.path, value, props.item))?.then(newState =>
+      dispatch(newStringValueAsync(path, value, item))?.then(newState =>
         onAnswerChange(newState, path, item, { valueString: value } as QuestionnaireResponseItemAnswer)
       );
     }
@@ -88,43 +104,12 @@ const Text = (props: TextProps & ValidationProps): JSX.Element | null => {
 
   const debouncedHandleChange: (event: React.FormEvent) => void = debounce(handleChange, 250, false);
 
-  const validateText2 = (value: string): boolean => {
-    return validateWithRegex(value) && validateText(value, props.validateScriptInjection);
-  };
-
-  const validateWithRegex = (value: string): boolean => {
-    const regexAsStr = getRegexExtension(props.item);
-    if (regexAsStr && value) {
-      const regexp = new RegExp(regexAsStr);
-      if (!regexp.test(value.toString())) {
-        return false;
-      }
-    }
-
-    return true;
-  };
-
   const getValidationErrorMessage = (value: string): string => {
-    return getTextValidationErrorMessage(value, props.validateScriptInjection, props.item, props.resources);
+    return getTextValidationErrorMessage(value, validateScriptInjection, item, resources);
   };
 
-  const getRequiredErrorMessage = (item: QuestionnaireItem): string | undefined => {
-    return isRequired(item) ? props.resources?.formRequiredErrorMessage : undefined;
-  };
-
-  // React.useMemo(() => {
-  //   const responseItemHasChanged = props.responseItem !== props.responseItem;
-  //   const helpItemHasChanged = props.isHelpOpen !== props.isHelpOpen;
-  //   const answerHasChanged = props.answer !== props.answer;
-  //   const resourcesHasChanged = JSON.stringify(props.resources) !== JSON.stringify(props.resources);
-  //   const repeats = props.item.repeats ?? false;
-
-  //   return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats || answerHasChanged;
-  // }, [props.responseItem, props.isHelpOpen, props.answer, props.resources, props.item]);
-
-  const { id, item, answer, pdf, children, resources, onRenderMarkdown, questionnaire, ...other } = props;
   const itemControls = getItemControlExtensionValue(item);
-  const textAreaId = getId(props.id);
+  const textAreaId = getId(id);
 
   if (itemControls && itemControls.some(itemControl => itemControl.code === itemControlConstants.SIDEBAR)) {
     return null;
@@ -133,7 +118,7 @@ const Text = (props: TextProps & ValidationProps): JSX.Element | null => {
   if (itemControls && itemControls.some(itemControl => itemControl.code === itemControlConstants.INLINE)) {
     return (
       <div id={id} className="page_refero__component page_refero__component_expandabletext">
-        <Expander title={item.text ? item.text : ''} renderChildrenWhenClosed={props.shouldExpanderRenderChildrenWhenClosed ? true : false}>
+        <Expander title={item.text ? item.text : ''} renderChildrenWhenClosed={shouldExpanderRenderChildrenWhenClosed ? true : false}>
           <React.Fragment>{children}</React.Fragment>
         </Expander>
       </div>
@@ -163,10 +148,10 @@ const Text = (props: TextProps & ValidationProps): JSX.Element | null => {
         value={getPDFStringValue(answer)}
         onRenderMarkdown={onRenderMarkdown}
         textClass="page_refero__component_readonlytext"
-        helpButton={props.renderHelpButton()}
-        helpElement={props.renderHelpElement()}
+        helpButton={renderHelpButton()}
+        helpElement={renderHelpElement()}
       >
-        {props.children}
+        {children}
       </TextView>
     );
   }
@@ -179,9 +164,6 @@ const Text = (props: TextProps & ValidationProps): JSX.Element | null => {
   // max={getMaxLength(item)}
   // min={getMinLengthExtensionValue(item)}
   // counter={this.showCounter()}
-  // validator={this.validateText}
-  // errorText={this.getValidationErrorMessage}
-  // requiredErrorMessage={this.getRequiredErrorMessage(item)}
   // validateOnExternalUpdate={true}
   // stringOverMaxLengthError={resources?.stringOverMaxLengthError}
   const onTextAreaChange = (event: React.FormEvent<HTMLTextAreaElement>): void => {
@@ -189,31 +171,34 @@ const Text = (props: TextProps & ValidationProps): JSX.Element | null => {
     debouncedHandleChange(event);
     setInputValue(event.currentTarget.value);
   };
+  const formId = createFromIdFromPath(path);
+  const { getFieldState, register } = useFormContext();
+  const { error } = getFieldState(formId);
   return (
     <div className="page_refero__component page_refero__component_text">
-      {props.renderHelpElement()}
-      <Textarea
-        {...register(getId(item.linkId), { onChange: onTextAreaChange })}
-        textareaId={textAreaId}
-        maxRows={Constants.DEFAULT_TEXTAREA_HEIGHT}
-        required={isRequired(item)}
-        placeholder={getPlaceholder(item)}
-        label={
-          <Label
-            labelTexts={[{ text: labelText, type: 'semibold' }]}
-            sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
-            afterLabelChildren={props.renderHelpButton()}
-          />
-        }
-        defaultValue={getStringValue(answer)}
-        grow={true}
-        onChange={onTextAreaChange}
-        maxCharacters={getMaxLength(item) || 1000}
-        maxText={'tegn'}
-        errorText={getValidationErrorMessage(inputValue)}
-      />
-      {props.renderDeleteButton('page_refero__deletebutton--margin-top')}
-      {props.repeatButton}
+      <FormGroup error={error?.message} mode="ongrey">
+        {renderHelpElement()}
+        <Textarea
+          {...register(formId, { onChange: onTextAreaChange })}
+          textareaId={textAreaId}
+          maxRows={Constants.DEFAULT_TEXTAREA_HEIGHT}
+          placeholder={getPlaceholder(item)}
+          label={
+            <Label
+              labelTexts={[{ text: labelText, type: 'semibold' }]}
+              sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+              afterLabelChildren={renderHelpButton()}
+            />
+          }
+          defaultValue={getStringValue(answer)}
+          grow={true}
+          maxCharacters={getMaxLength(item)}
+          maxText={getMaxLength(item) ? resources?.maxLengthText?.replace('{0}', `${getMaxLength(item)}`) : ''}
+        />
+        {renderDeleteButton('page_refero__deletebutton--margin-top')}
+        {repeatButton}
+      </FormGroup>
+
       {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
     </div>
   );

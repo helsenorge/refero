@@ -5,13 +5,11 @@ import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireRespon
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
-import { ValidationProps } from '../../../types/formTypes/validation';
 import { Resources } from '../../../types/resources';
 
 import AnchorLink from '@helsenorge/designsystem-react/components/AnchorLink';
 
 import AsPdf from './AsPdf';
-import { getClassNames, getColumns, getHeaderText, getLocalRenderContextType, isDirectChildOfRenderContextOwner } from './helpers';
 import { NewValueAction } from '../../../actions/newValue';
 import { RenderContextType } from '../../../constants/renderContextType';
 import { GlobalState } from '../../../reducers';
@@ -44,9 +42,10 @@ export interface GroupProps extends WithCommonFunctionsProps {
   renderHelpElement: () => JSX.Element;
   isHelpOpen?: boolean;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
+  children?: React.ReactNode;
 }
 
-export const Group: React.FC<GroupProps & ValidationProps> = props => {
+export const Group = (props: GroupProps): JSX.Element => {
   const renderAllItems = (): JSX.Element => {
     const { renderContext } = props;
     const localRenderContextType = getLocalRenderContextType();

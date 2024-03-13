@@ -12,8 +12,9 @@ import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
 import Validation from '@helsenorge/designsystem-react/components/Validation';
 
-import { getId, getSublabelText, getText, isRequired } from '../../../util';
+import { getId, getSublabelText, getText } from '../../../util';
 import { shouldShowExtraChoice } from '../../../util/choice';
+import { Path, createFromIdFromPath } from '../../../util/refero-core';
 
 interface Props {
   options?: Array<Options>;
@@ -27,7 +28,7 @@ interface Props {
   renderDeleteButton: (className?: string) => JSX.Element | undefined;
   renderOpenField: () => JSX.Element | undefined;
   answer: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer;
-
+  path: Path[];
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
@@ -49,12 +50,12 @@ const CheckboxView: React.SFC<Props> = ({
   renderHelpButton,
   renderHelpElement,
   onRenderMarkdown,
+  path,
 }) => {
   if (!options) {
     return null;
   }
-  const { register, getFieldState, getValues } = useFormContext();
-  const { error, invalid } = getFieldState(getId(item.linkId));
+
   const checkboxes = options.map(el => {
     return { label: el.label, id: el.type, checked: isSelected(el, selected) };
   });
@@ -68,18 +69,17 @@ const CheckboxView: React.SFC<Props> = ({
   // helpElement={renderHelpElement()}
   // validateOnExternalUpdate={true}
   // isStyleBlue
-  const values = getValues(item.linkId);
-  console.log('checkbox: ', values);
+
+  const formId = createFromIdFromPath(path);
+  const { getFieldState, register } = useFormContext();
+  const { error } = getFieldState(formId);
   return (
     <div className="page_refero__component page_refero__component_openchoice page_refero__component_openchoice_checkbox">
       <Collapse isOpened>
-        <FormGroup legend={getText(item, onRenderMarkdown, questionnaire, resources)} error={error?.message}>
+        <FormGroup legend={getText(item, onRenderMarkdown, questionnaire, resources)} error={error?.message} mode="ongrey">
           {checkboxes.map((checkbox, index) => (
             <Checkbox
-              {...register(getId(item.linkId), {
-                required: isRequired(item),
-                onChange: e => console.log('e', e),
-              })}
+              {...register(formId)}
               inputId={`${id}-${checkbox.id}`}
               testId={`checkbox-openChoice`}
               key={`${checkbox.id}-${index.toString()}`}

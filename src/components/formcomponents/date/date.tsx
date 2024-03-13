@@ -10,7 +10,6 @@ import { Resources } from '../../../types/resources';
 import { LanguageLocales } from '@helsenorge/core-utils/constants/languages';
 import { DateRangePicker } from '@helsenorge/date-time/components/date-range-picker';
 import { parseDate } from '@helsenorge/date-time/components/time-input/date-core';
-import { ValidationProps } from '@helsenorge/form/components/form/validation';
 
 import { DateDayInput } from './date-day-input';
 import { DateYearMonthInput } from './date-month-input';
@@ -49,9 +48,10 @@ export interface DateProps extends WithCommonFunctionsProps {
   isHelpOpen?: boolean;
   onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
+  children: React.ReactNode;
 }
 
-const DateComponent = (props: DateProps & ValidationProps): JSX.Element | null => {
+const DateComponent = (props: DateProps): JSX.Element | null => {
   const [datepicker, setDatepicker] = React.useState<React.RefObject<DateRangePicker>>(React.createRef());
 
   const getMaxDate = (): Moment | undefined => {

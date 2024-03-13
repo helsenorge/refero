@@ -567,3 +567,6 @@ function getItemLinkIdsWithType(type: string, items: QuestionnaireItem[] | undef
     items.filter(f => f.type === type).forEach(f => itemsWithType.push(f));
   }
 }
+
+//export const createFromIdFromPath = (path: Path[]): string => path.map(p => (p.index ? `${p.linkId}.${p.index}` : p.linkId)).join('.');
+export const createFromIdFromPath = (path: Path[]): string => path[path.length - 1].linkId;

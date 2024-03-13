@@ -14,6 +14,7 @@ import Validation from '@helsenorge/designsystem-react/components/Validation';
 
 import { shouldShowExtraChoice } from '../../../util/choice';
 import { getId, getSublabelText, getText, isRequired } from '../../../util/index';
+import { Path, createFromIdFromPath } from '../../../util/refero-core';
 
 interface Props {
   options?: Array<Options>;
@@ -31,6 +32,7 @@ interface Props {
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
+  path: Path[];
 }
 
 const RadioView: React.SFC<Props> = ({
@@ -49,53 +51,48 @@ const RadioView: React.SFC<Props> = ({
   renderHelpButton,
   renderHelpElement,
   onRenderMarkdown,
+  path,
 }) => {
   if (!options) {
     return null;
   }
   const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
 
-  // RadioButtonGroup:
-  // validator={validateInput}
-  // helpButton={renderHelpButton()}
-  // validateOnExternalUpdate={true}
   const onChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     handleChange(e.target.value);
   };
-  const { register, getFieldState } = useFormContext();
-  const { error } = getFieldState(getId(item.linkId));
+  const formId = createFromIdFromPath(path);
+  const { getFieldState, register } = useFormContext();
+  const { error } = getFieldState(formId);
   return (
     <div className="page_refero__component page_refero__component_openchoice page_refero__component_openchoice_radiobutton">
-      <Collapse isOpened>
-        <FormGroup legend={getText(item, onRenderMarkdown, questionnaire, resources)} error={error?.message}>
-          {options.map((option: Options, index: number) => (
-            <RadioButton
-              {...register(getId(item.linkId), {
-                onChange,
-                value: selected,
-              })}
-              inputId={getId(id) + index.toLocaleString()}
-              size="medium"
-              testId="radioButton-openChoice"
-              key={`${getId(id)}-${index.toString()}`}
-              mode="onwhite"
-              onChange={onChange}
-              label={
-                <Label
-                  labelTexts={[{ text: option?.label }]}
-                  sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
-                  afterLabelChildren={<>{renderHelpButton()}</>}
-                />
-              }
-            />
-          ))}
-        </FormGroup>
-        {shouldShowExtraChoice(answer) && <div className="page_refero__component_openchoice_openfield">{renderOpenField()}</div>}
-        {renderDeleteButton('page_refero__deletebutton--margin-top')}
-        {repeatButton}
-        {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : undefined}
-        {renderHelpElement()}
-      </Collapse>
+      <FormGroup legend={getText(item, onRenderMarkdown, questionnaire, resources)} error={error?.message} mode="ongrey">
+        {options.map((option: Options, index: number) => (
+          <RadioButton
+            {...(register(formId),
+            {
+              onChange,
+            })}
+            inputId={getId(id) + index.toLocaleString()}
+            size="medium"
+            testId="radioButton-openChoice"
+            key={`${getId(id)}-${index.toString()}`}
+            mode="onwhite"
+            label={
+              <Label
+                labelTexts={[{ text: option?.label }]}
+                sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+                afterLabelChildren={<>{renderHelpButton()}</>}
+              />
+            }
+          />
+        ))}
+      </FormGroup>
+      {shouldShowExtraChoice(answer) && <div className="page_refero__component_openchoice_openfield">{renderOpenField()}</div>}
+      {renderDeleteButton('page_refero__deletebutton--margin-top')}
+      {repeatButton}
+      {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : undefined}
+      {renderHelpElement()}
     </div>
   );
 };

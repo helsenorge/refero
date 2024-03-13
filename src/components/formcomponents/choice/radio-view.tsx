@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { QuestionnaireItem, Questionnaire } from 'fhir/r4';
 import { Collapse } from 'react-collapse';
-import { useFormContext } from 'react-hook-form';
+import { Controller, useFormContext } from 'react-hook-form';
 
 import { Options } from '../../../types/formTypes/radioGroupOptions';
 import { Resources } from '../../../types/resources';
@@ -13,6 +13,7 @@ import RadioButton from '@helsenorge/designsystem-react/components/RadioButton';
 import Validation from '@helsenorge/designsystem-react/components/Validation';
 
 import { isRequired, getText, getId, getSublabelText } from '../../../util/index';
+import { Path, createFromIdFromPath } from '../../../util/refero-core';
 
 interface Props {
   options?: Array<Options>;
@@ -30,6 +31,7 @@ interface Props {
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
+  path: Path[];
 }
 
 const RadioView = ({
@@ -46,47 +48,52 @@ const RadioView = ({
   renderHelpButton,
   renderHelpElement,
   onRenderMarkdown,
+  path,
 }: Props): JSX.Element | null => {
   if (!options) {
     return null;
   }
+
   const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
   const selectedValue = (selected && selected[0]) || '';
-
   // RadioButtonGroup:
   // validator={validateInput}
   // validateOnExternalUpdate={true}
   // isStyleBlue
-  const { register, getFieldState, getValues } = useFormContext();
-  const { error } = getFieldState(getId(item.linkId));
-  const values = getValues(item.linkId);
-  const onChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    handleChange(e.target.value);
-  };
-  console.log(selected);
+  const formId = createFromIdFromPath(path);
+  const { getFieldState, control } = useFormContext();
+  const { error } = getFieldState(formId);
+
   return (
     <div className="page_refero__component page_refero__component_choice page_refero__component_choice_radiobutton">
-      <FormGroup legend={getText(item, onRenderMarkdown, questionnaire, resources)} error={error?.message}>
+      <FormGroup legend={getText(item, onRenderMarkdown, questionnaire, resources)} error={error?.message} mode="ongrey">
         {options.map((option: Options, index: number) => (
-          <RadioButton
-            {...register(getId(item.linkId), {
-              onChange,
-              value: selected,
-            })}
-            onChange={onChange}
-            inputId={getId(id) + index}
-            testId={getId(id) + index}
+          <Controller
+            name={formId}
             key={`${getId(id)}-${index.toString()}`}
-            mode="ongrey"
-            size="medium"
-            label={
-              <Label
-                labelTexts={[{ text: option.label }]}
-                sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
-                afterLabelChildren={<>{renderHelpButton()}</>}
+            control={control}
+            render={({ field }): JSX.Element => (
+              <RadioButton
+                {...field}
+                inputId={getId(id) + index}
+                testId={getId(id) + index}
+                mode="ongrey"
+                size="medium"
+                onChange={(): void => {
+                  handleChange(option.type);
+                  field.onChange(option.type);
+                }}
+                value={option.type}
+                label={
+                  <Label
+                    labelTexts={[{ text: option.label }]}
+                    sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+                    afterLabelChildren={<>{renderHelpButton()}</>}
+                  />
+                }
+                defaultChecked={selectedValue === option?.type}
               />
-            }
-            defaultChecked={selectedValue === option?.type}
+            )}
           />
         ))}
       </FormGroup>

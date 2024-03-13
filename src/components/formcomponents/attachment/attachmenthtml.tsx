@@ -3,7 +3,6 @@ import * as React from 'react';
 import { QuestionnaireItem } from 'fhir/r4';
 import { useFormContext } from 'react-hook-form';
 
-import { ValidationProps } from '../../../types/formTypes/validation';
 import { Resources } from '../../../types/resources';
 import { TextMessage } from '../../../types/text-message';
 
@@ -39,7 +38,7 @@ interface Props {
   item: QuestionnaireItem;
   attachmentMaxFileSize?: number;
   attachmentValidTypes?: Array<string>;
-
+  children?: React.ReactNode;
   helpButton?: JSX.Element;
   helpElement?: JSX.Element;
 }
@@ -67,7 +66,7 @@ const attachmentHtml = ({
   minFiles,
   item,
   children,
-}: Props & ValidationProps): JSX.Element => {
+}: Props): JSX.Element => {
   const { register } = useFormContext();
   const maxFilesize = attachmentMaxFileSize ? attachmentMaxFileSize : constants.MAX_FILE_SIZE;
   const validFileTypes = attachmentValidTypes ? attachmentValidTypes : VALID_FILE_TYPES;

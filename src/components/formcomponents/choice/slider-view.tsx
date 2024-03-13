@@ -3,12 +3,14 @@ import * as React from 'react';
 import { QuestionnaireItem, QuestionnaireItemAnswerOption, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { useFormContext } from 'react-hook-form';
 
+import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import { Slider, SliderStep } from '@helsenorge/designsystem-react/components/Slider';
 import Validation from '@helsenorge/designsystem-react/components/Validation';
 
 import ExtensionConstants from '../../../constants/extensions';
 import { getId, isRequired } from '../../../util';
 import { getExtension, getMaxValueExtensionValue, getMinValueExtensionValue } from '../../../util/extension';
+import { Path, createFromIdFromPath } from '../../../util/refero-core';
 
 interface SliderProps {
   item: QuestionnaireItem;
@@ -16,14 +18,17 @@ interface SliderProps {
   handleChange: (sliderStep: string) => void;
   selected?: Array<string | undefined>;
   children: React.ReactNode;
+  path: Path[];
 }
 
 type LeftRightLabels = [leftLabel: string, rightLabel: string];
 
-const SliderView: React.FC<SliderProps> = ({ item, handleChange, selected, children }) => {
+const SliderView: React.FC<SliderProps> = ({ item, handleChange, selected, children, path }) => {
   const title = item.text;
-  const { register, getFieldState } = useFormContext();
-  const { error } = getFieldState(getId(item.linkId));
+  const formId = createFromIdFromPath(path);
+  const { getFieldState, register } = useFormContext();
+  const { error } = getFieldState(formId);
+
   const [sliderSteps, setSliderSteps] = React.useState<SliderStep[] | undefined>(undefined);
   const [leftRightLabels, setleftRightLabels] = React.useState<LeftRightLabels | undefined>(undefined);
 
@@ -57,9 +62,9 @@ const SliderView: React.FC<SliderProps> = ({ item, handleChange, selected, child
 
   return (
     <div className="page_refero__component page_refero__component_choice page_refero__component_choice_slider">
-      <Validation errorSummary={error?.message}>
+      <FormGroup mode="ongrey">
         <Slider
-          {...register(getId(item.linkId), {
+          {...register(formId, {
             required: isRequired(item),
             max: { value: getMaxValueExtensionValue(item) ?? 0, message: 'Max value' },
             min: { value: getMinValueExtensionValue(item) ?? 0, message: 'Min value' },
@@ -74,7 +79,7 @@ const SliderView: React.FC<SliderProps> = ({ item, handleChange, selected, child
           selected={selected && selected[0] ? true : false}
           value={getSelectedStep()}
         />
-      </Validation>
+      </FormGroup>
 
       {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : undefined}
     </div>

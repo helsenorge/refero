@@ -11,9 +11,6 @@ import Label from '@helsenorge/designsystem-react/components/Label';
 import Loader from '@helsenorge/designsystem-react/components/Loader';
 import NotificationPanel from '@helsenorge/designsystem-react/components/NotificationPanel';
 import Select from '@helsenorge/designsystem-react/components/Select';
-
-// import ValidationError from '@helsenorge/form/components/form/validation-error';
-
 import Validation from '@helsenorge/designsystem-react/components/Validation';
 
 import { getId } from '../../../util';

@@ -52,7 +52,7 @@ import {
 import { RenderContext } from '../util/renderContext';
 import { ScoringCalculator } from '../util/scoringCalculator';
 import { shouldFormBeDisplayedAsStepView } from '../util/shouldFormBeDisplayedAsStepView';
-import { createZodSchemaFromQuestionnaireItems } from '../validation/mainValidationFunctions';
+import { createZodSchemaFromQuestionnaire } from '../validation/mainValidationFunctions';
 
 interface StateProps {
   formDefinition?: FormDefinition | null;
@@ -103,10 +103,11 @@ const Refero = ({
   isHelsenorgeForm,
 }: StateProps & DispatchProps & ReferoProps): ReactElement | null => {
   const qst = questionnaire ? questionnaire : formDefinition?.Content;
-  const schema = createZodSchemaFromQuestionnaireItems(qst?.item || [], qst ?? undefined, resources);
-
-  const methods = useForm<z.infer<typeof schema>>({ mode: 'onChange', resolver: zodResolver(schema) });
-
+  const schema = createZodSchemaFromQuestionnaire(qst, resources, formDefinition?.Content?.contained);
+  const methods = useForm<z.infer<typeof schema>>({
+    resolver: zodResolver(schema),
+    // defaultValues: createDefaultFormValuesFromQuestionnaire(qst),
+  });
   const [scoringCalculator, setScoringCalculator] = useState<ScoringCalculator | undefined>(qst ? new ScoringCalculator(qst) : undefined);
 
   const handleSubmit = (): void => {

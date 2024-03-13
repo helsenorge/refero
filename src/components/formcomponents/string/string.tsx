@@ -8,6 +8,7 @@ import { ThunkDispatch } from 'redux-thunk';
 import { ValidationProps } from '../../../types/formTypes/validation';
 import { Resources } from '../../../types/resources';
 
+import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Input from '@helsenorge/designsystem-react/components/Input';
 import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
 import Validation from '@helsenorge/designsystem-react/components/Validation';
@@ -32,7 +33,7 @@ import {
   getText,
 } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
-import { Path } from '../../../util/refero-core';
+import { Path, createFromIdFromPath } from '../../../util/refero-core';
 import withCommonFunctions, { WithCommonFunctionsProps } from '../../with-common-functions';
 import TextView from '../textview';
 
@@ -61,7 +62,6 @@ export interface StringProps extends WithCommonFunctionsProps {
 
 const String: React.FC<StringProps & ValidationProps> = props => {
   const [inputValue, setInputValue] = React.useState('');
-  const { register, getFieldState } = useFormContext();
 
   const handleChange = (event: React.FormEvent): void => {
     const { dispatch, promptLoginMessage, path, item, onAnswerChange } = props;
@@ -79,16 +79,8 @@ const String: React.FC<StringProps & ValidationProps> = props => {
 
   const debouncedHandleChange: (event: React.FormEvent) => void = debounce(handleChange, 250, false);
 
-  const validateText2 = (value: string): true | string => {
-    return validateText(value, props.validateScriptInjection) ? true : 'error';
-  };
-
   const getValidationErrorMessage = (value: string): string => {
     return getTextValidationErrorMessage(value, props.validateScriptInjection, props.item, props.resources);
-  };
-
-  const getRequiredErrorMessage = (item: QuestionnaireItem): string | undefined => {
-    return isRequired(item) ? props.resources?.formRequiredErrorMessage : undefined;
   };
 
   const { id, item, questionnaire, pdf, resources, answer, onRenderMarkdown } = props;
@@ -116,43 +108,42 @@ const String: React.FC<StringProps & ValidationProps> = props => {
 
   // validateOnExternalUpdate={true}
 
-  const { error, invalid } = getFieldState(getId(item.linkId));
   const handleInputChange = (event: React.FormEvent<HTMLInputElement>): void => {
     event.persist();
     debouncedHandleChange(event);
     setInputValue(event.currentTarget.value);
   };
-  const pattern: ValidationRule<RegExp> | undefined = getRegexExtension(item)
-    ? new RegExp(getRegexExtension(item) as string, 'g')
-    : undefined;
 
+  const formId = createFromIdFromPath(props.path);
+  const { getFieldState, register } = useFormContext();
+  const { error } = getFieldState(formId);
   return (
     <div className="page_refero__component page_refero__component_string">
       {props.renderHelpElement()}
-
-      <Input
-        {...register(getId(item.linkId))}
-        label={
-          <Label
-            labelTexts={[{ text: labelText, type: 'semibold' }]}
-            sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
-            afterLabelChildren={props.renderHelpButton()}
-          />
-        }
-        type="text"
-        width={25}
-        inputId={inputId}
-        defaultValue={getStringValue(answer)}
-        required={isRequired(item)}
-        placeholder={getPlaceholder(item)}
-        min={getMinLengthExtensionValue(item)}
-        max={getMaxLength(item)}
-        className="page_refero__input"
-        errorText={error?.message}
-        error={invalid}
-      />
-      {props.renderDeleteButton('page_refero__deletebutton--margin-top')}
-      {props.repeatButton}
+      <FormGroup error={error?.message} mode="ongrey">
+        <Input
+          {...register(formId, {
+            onChange: handleInputChange,
+            required: isRequired(item),
+          })}
+          label={
+            <Label
+              labelTexts={[{ text: labelText, type: 'semibold' }]}
+              sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+              afterLabelChildren={props.renderHelpButton()}
+            />
+          }
+          type="text"
+          width={25}
+          inputId={inputId}
+          defaultValue={getStringValue(answer)}
+          required={isRequired(item)}
+          placeholder={getPlaceholder(item)}
+          className="page_refero__input"
+        />
+        {props.renderDeleteButton('page_refero__deletebutton--margin-top')}
+        {props.repeatButton}
+      </FormGroup>
       {props.children ? <div className="nested-fieldset nested-fieldset--full-height">{props.children}</div> : null}
     </div>
   );
