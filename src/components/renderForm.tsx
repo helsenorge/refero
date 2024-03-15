@@ -71,7 +71,7 @@ const RenderForm = ({
         pauseButtonText={displayPreviousButton && resources.previousStep ? resources.previousStep : resources.formSave}
         submitButtonDisabled={referoProps.blockSubmit}
         pauseButtonDisabled={referoProps.saveButtonDisabled}
-        onSubmitButtonClicked={displayNextButton ? nextStep : methods.handleSubmit(onSubmitReactHookForm)}
+        onSubmitButtonClicked={displayNextButton ? nextStep : onSubmit}
         onCancelButtonClicked={(): void => {
           referoProps.onCancel && referoProps.onCancel();
           reset();

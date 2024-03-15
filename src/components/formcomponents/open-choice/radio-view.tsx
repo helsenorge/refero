@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { Collapse } from 'react-collapse';
-import { useFormContext } from 'react-hook-form';
+import { Controller, useFormContext } from 'react-hook-form';
 
 import { Options } from '../../../types/formTypes/radioGroupOptions';
 import { Resources } from '../../../types/resources';
@@ -33,9 +33,10 @@ interface Props {
   renderHelpElement: () => JSX.Element;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
   path: Path[];
+  children: React.ReactNode;
 }
 
-const RadioView: React.SFC<Props> = ({
+const RadioView = ({
   options,
   item,
   questionnaire,
@@ -52,39 +53,46 @@ const RadioView: React.SFC<Props> = ({
   renderHelpElement,
   onRenderMarkdown,
   path,
-}) => {
+}: Props): JSX.Element | null => {
   if (!options) {
     return null;
   }
   const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
 
-  const onChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    handleChange(e.target.value);
-  };
+  const selectedValue = (selected && selected[0]) || '';
   const formId = createFromIdFromPath(path);
-  const { getFieldState, register } = useFormContext();
+  const { getFieldState, control } = useFormContext();
   const { error } = getFieldState(formId);
   return (
     <div className="page_refero__component page_refero__component_openchoice page_refero__component_openchoice_radiobutton">
       <FormGroup legend={getText(item, onRenderMarkdown, questionnaire, resources)} error={error?.message} mode="ongrey">
         {options.map((option: Options, index: number) => (
-          <RadioButton
-            {...(register(formId),
-            {
-              onChange,
-            })}
-            inputId={getId(id) + index.toLocaleString()}
-            size="medium"
-            testId="radioButton-openChoice"
+          <Controller
+            name={formId}
             key={`${getId(id)}-${index.toString()}`}
-            mode="onwhite"
-            label={
-              <Label
-                labelTexts={[{ text: option?.label }]}
-                sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
-                afterLabelChildren={<>{renderHelpButton()}</>}
+            control={control}
+            render={({ field }): JSX.Element => (
+              <RadioButton
+                {...field}
+                inputId={getId(id) + index}
+                testId={getId(id) + index}
+                mode="ongrey"
+                size="medium"
+                onChange={(): void => {
+                  handleChange(option.type);
+                  field.onChange(option.type);
+                }}
+                value={option.type}
+                label={
+                  <Label
+                    labelTexts={[{ text: option.label }]}
+                    sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+                    afterLabelChildren={<>{renderHelpButton()}</>}
+                  />
+                }
+                defaultChecked={selectedValue === option?.type}
               />
-            }
+            )}
           />
         ))}
       </FormGroup>

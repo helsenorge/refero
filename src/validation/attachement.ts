@@ -1,14 +1,13 @@
-import { QuestionnaireItem } from 'fhir/r4';
+// import { QuestionnaireItem } from 'fhir/r4';
 import { z } from 'zod';
 
-import { Resources } from '../types/resources';
+// import { Resources } from '../types/resources';
 
 import { MimeTypes } from '@helsenorge/file-upload/components/dropzone';
 
 import { VALID_FILE_TYPES } from '../constants';
-
-export const attachmentValidation = (item: QuestionnaireItem, resources: Resources): z.ZodTypeAny => {
-  const maxFileSize = max(item);
+//item: QuestionnaireItem, resources: Resources
+export const attachmentValidation = (): z.ZodTypeAny => {
   const schema = z
     .custom<FileList>()
     .transform(val => {

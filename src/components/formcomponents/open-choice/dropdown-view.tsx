@@ -37,32 +37,28 @@ interface DropdownViewProps {
   path: Path[];
 }
 
-const DropdownView: React.FC<DropdownViewProps> = props => {
-  const {
-    options,
-    item,
-    questionnaire,
-    id,
-    answer,
-    handleChange,
-    selected,
-    path,
-    resources,
-    children,
-    repeatButton,
-    renderDeleteButton,
-    renderOpenField,
-    renderHelpButton,
-    renderHelpElement,
-    onRenderMarkdown,
-  } = props;
+const DropdownView = ({
+  options,
+  item,
+  questionnaire,
+  id,
+  answer,
+  handleChange,
+  selected,
+  path,
+  resources,
+  children,
+  repeatButton,
+  renderDeleteButton,
+  renderOpenField,
+  renderHelpButton,
+  renderHelpElement,
+  onRenderMarkdown,
+}: DropdownViewProps): JSX.Element | null => {
   if (!options) {
     return null;
   }
 
-  const dropdownOptions: HTMLOptionElement[] = options.map((o: Options) => {
-    return new Option(o.label, o.type);
-  });
   const selectId = getId(id);
   const labelText = getText(item, onRenderMarkdown, questionnaire, resources);
   const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
@@ -89,8 +85,17 @@ const DropdownView: React.FC<DropdownViewProps> = props => {
               afterLabelChildren={renderHelpButton()}
             />
           }
+          onChange={(e): void => {
+            handleChange(e.target.value);
+          }}
+          value={selected && selected[0] ? selected[0] : undefined}
         >
-          {dropdownOptions}
+          <option value={undefined}>{resources?.selectDefaultPlaceholder || ''}</option>
+          {options.map(option => (
+            <option key={selectId + option.label} value={option.type}>
+              {option.label}
+            </option>
+          ))}
         </Select>
         {shouldShowExtraChoice(answer) && <div className="page_refero__component_openchoice_openfield">{renderOpenField()}</div>}
       </FormGroup>

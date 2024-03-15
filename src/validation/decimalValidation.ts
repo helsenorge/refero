@@ -1,15 +1,13 @@
 import { QuestionnaireItem } from 'fhir/r4';
 import { ZodNaN, ZodNumber, ZodOptional, ZodUnion, z } from 'zod';
 
-import { Resources } from '../types/resources';
+// import { Resources } from '../types/resources';
+// resources?: Resources
 
 import { getDecimalPattern, isRequired } from '../util';
 import { getMaxValueExtensionValue, getMinValueExtensionValue, getValidationTextExtension } from '../util/extension';
 
-export const decimalValidation = (
-  item: QuestionnaireItem,
-  resources?: Resources
-): ZodNumber | ZodOptional<ZodUnion<[ZodNumber, ZodNaN]>> => {
+export const decimalValidation = (item: QuestionnaireItem): ZodNumber | ZodOptional<ZodUnion<[ZodNumber, ZodNaN]>> => {
   const customErrorMessage = getValidationTextExtension(item);
   const required = isRequired(item);
   const decimal = getDecimalPattern(item);

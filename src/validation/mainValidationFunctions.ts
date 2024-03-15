@@ -6,7 +6,7 @@ import { Resources } from '../types/resources';
 import { booleanValidation } from './booleanValidation';
 import { createChoiceSchema } from './choiceValidation';
 import { decimalValidation } from './decimalValidation';
-import { integerValidation, numberValidation } from './integerValidation';
+import { integerValidation } from './integerValidation';
 import { quantityValidation } from './quantityVaidation';
 import { stringValidation } from './stringValidation';
 import { textValidation } from './textValidation';
@@ -32,11 +32,11 @@ const mapFhirTypeToZod = (item: QuestionnaireItem, resources?: Resources, contai
     case ItemType.TEXT:
       return textValidation(item, resources);
     case ItemType.INTEGER:
-      return integerValidation(item, resources);
+      return integerValidation(item);
     case ItemType.DECIMAL:
-      return decimalValidation(item, resources);
+      return decimalValidation(item);
     case ItemType.BOOLEAN:
-      return booleanValidation(item, resources);
+      return booleanValidation(item);
     case ItemType.DATE:
     case ItemType.DATETIME:
     case ItemType.TIME:

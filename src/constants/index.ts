@@ -11,7 +11,7 @@ export default {
   DEFAULT_HEADER_TAG: 2,
   ITEM_TYPE_GROUP: 'group',
   MAX_FILE_SIZE: 25000000,
-};
+} as const;
 
 export const VALID_FILE_TYPES: Array<MimeTypes> = ['image/jpeg', 'image/png', 'application/pdf'];
 

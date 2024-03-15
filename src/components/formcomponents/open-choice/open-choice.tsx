@@ -67,6 +67,7 @@ export interface OpenChoiceProps extends WithCommonFunctionsProps {
     errorCallback: (error: string) => void
   ) => void;
   autoSuggestProps?: AutoSuggestProps;
+  children?: React.ReactNode;
 }
 
 const OpenChoice = (props: OpenChoiceProps): JSX.Element | null => {

@@ -12,7 +12,7 @@ import LanguageLocales from '@helsenorge/core-utils/constants/languages';
 import FormFillerSidebar from './FormFillerSidebar';
 import { emptyPropertyReplacer } from './helpers';
 import { getResources } from './resources/referoResources';
-import skjema from './skjema/flere-variasjoner.json';
+import skjema from './skjema/all_simple_fields.json';
 import { ReferoContainer } from '../components';
 import rootReducer from '../reducers';
 
@@ -39,7 +39,10 @@ const FormFillerPreview = ({ showFormFiller }: Props): JSX.Element => {
   const questionnaireForPreview = JSON.parse(JSON.stringify(skjema ?? {}, emptyPropertyReplacer)) as Bundle<Questionnaire> | Questionnaire;
   const [questionnaireResponse, setQuestionnaireResponse] = useState<QuestionnaireResponse>();
   const [showResponse, setShowResponse] = useState<boolean>(false);
-
+  const handleSubmit = (questionnaireResponse: QuestionnaireResponse): void => {
+    // eslint-disable-next-line no-console
+    console.log(JSON.stringify(questionnaireResponse));
+  };
   return (
     <Provider store={store}>
       <div className="overlay">
@@ -62,7 +65,7 @@ const FormFillerPreview = ({ showFormFiller }: Props): JSX.Element => {
                     setShowResponse(true);
                   }}
                   // eslint-disable-next-line no-console
-                  onSubmit={(): void => console.log('onSubmit')}
+                  onSubmit={handleSubmit}
                   authorized={true}
                   resources={getResources('')}
                   sticky={true}

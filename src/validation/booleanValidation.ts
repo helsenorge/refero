@@ -1,11 +1,11 @@
 import { QuestionnaireItem } from 'fhir/r4';
 import { z } from 'zod';
 
-import { Resources } from '../types/resources';
+// import { Resources } from '../types/resources';
 
 import { isRequired } from '../util';
-
-export const booleanValidation = (item: QuestionnaireItem, resources?: Resources): z.ZodType<boolean> => {
+//, resources?: Resources
+export const booleanValidation = (item: QuestionnaireItem): z.ZodType<boolean> => {
   const schema = z.boolean().transform(value => {
     if (typeof value === 'string') {
       const lowerCaseValue = (value as string | undefined)?.toLowerCase();

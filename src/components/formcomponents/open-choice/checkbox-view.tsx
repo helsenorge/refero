@@ -10,9 +10,8 @@ import { Resources } from '../../../types/resources';
 import Checkbox from '@helsenorge/designsystem-react/components/Checkbox';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
-import Validation from '@helsenorge/designsystem-react/components/Validation';
 
-import { getId, getSublabelText, getText } from '../../../util';
+import { getSublabelText, getText } from '../../../util';
 import { shouldShowExtraChoice } from '../../../util/choice';
 import { Path, createFromIdFromPath } from '../../../util/refero-core';
 
@@ -32,9 +31,10 @@ interface Props {
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
+  children: React.ReactNode;
 }
 
-const CheckboxView: React.SFC<Props> = ({
+const CheckboxView = ({
   options,
   item,
   questionnaire,
@@ -43,7 +43,6 @@ const CheckboxView: React.SFC<Props> = ({
   handleChange,
   selected,
   resources,
-  children,
   repeatButton,
   renderDeleteButton,
   renderOpenField,
@@ -51,7 +50,8 @@ const CheckboxView: React.SFC<Props> = ({
   renderHelpElement,
   onRenderMarkdown,
   path,
-}) => {
+  children,
+}: Props): JSX.Element | null => {
   if (!options) {
     return null;
   }
@@ -73,6 +73,7 @@ const CheckboxView: React.SFC<Props> = ({
   const formId = createFromIdFromPath(path);
   const { getFieldState, register } = useFormContext();
   const { error } = getFieldState(formId);
+  console.log('answer', answer);
   return (
     <div className="page_refero__component page_refero__component_openchoice page_refero__component_openchoice_checkbox">
       <Collapse isOpened>
@@ -83,6 +84,9 @@ const CheckboxView: React.SFC<Props> = ({
               inputId={`${id}-${checkbox.id}`}
               testId={`checkbox-openChoice`}
               key={`${checkbox.id}-${index.toString()}`}
+              onChange={(): void => {
+                handleChange(checkbox.id);
+              }}
               label={
                 <Label
                   labelTexts={[{ text: checkbox.label }]}
@@ -90,6 +94,7 @@ const CheckboxView: React.SFC<Props> = ({
                   afterLabelChildren={<>{renderHelpButton()}</>}
                 />
               }
+              value={checkbox.id}
               checked={checkbox.checked}
             />
           ))}

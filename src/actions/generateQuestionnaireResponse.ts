@@ -13,30 +13,29 @@ import { createQuestionnaireResponseAnswer } from '../util/createQuestionnaireRe
 import { getMinOccursExtensionValue } from '../util/extension';
 
 export function generateQuestionnaireResponse(questionnaire: Questionnaire): QuestionnaireResponse | undefined {
+  if (!questionnaire || !questionnaire.item || questionnaire.item.length === 0) {
+    return {
+      resourceType: Constants.QUESTIONNAIRE_RESPONSE_RESOURCE_TYPE,
+      status: StatusConstants.questionnaireResponse.IN_PROGRESS,
+    };
+  }
+
+  const responseItems = questionnaire.item.reduce<QuestionnaireResponseItem[]>((acc, item) => {
+    const minOccursItems = Array.from({ length: getMinOccurs(item) }, () => {
+      const responseItem = createQuestionnaireResponseItem(item);
+      addChildrenItemsToResponseItem(item, responseItem);
+      return responseItem;
+    });
+    return acc.concat(minOccursItems);
+  }, []);
+
   const response: QuestionnaireResponse = {
     resourceType: Constants.QUESTIONNAIRE_RESPONSE_RESOURCE_TYPE,
     status: StatusConstants.questionnaireResponse.IN_PROGRESS,
-  } as QuestionnaireResponse;
-  if (!questionnaire || !questionnaire.item || questionnaire.item.length === 0) {
-    return response;
-  }
+    questionnaire: questionnaire.url,
+    item: responseItems,
+  };
 
-  if (questionnaire.url) {
-    response.questionnaire = questionnaire.url;
-  }
-
-  questionnaire.item.forEach(i => {
-    if (!response.item) {
-      response.item = [];
-    }
-
-    for (let j = 0; j < getMinOccurs(i); j++) {
-      const responseItem = createQuestionnaireResponseItem(i);
-      addChildrenItemsToResponseItem(i, responseItem);
-
-      response.item.push(responseItem);
-    }
-  });
   return response;
 }
 
@@ -73,30 +72,23 @@ function addResponseItemtoResponse(
   itemToAdd: QuestionnaireResponseItem
 ): void {
   if (questionnaireItem.type === 'group') {
-    if (!responseItemForQuestionnaire.item) {
-      responseItemForQuestionnaire.item = [];
-    }
+    responseItemForQuestionnaire.item = responseItemForQuestionnaire.item || [];
     responseItemForQuestionnaire.item.push(itemToAdd);
   } else {
-    if (!responseItemForQuestionnaire.answer) {
-      responseItemForQuestionnaire.answer = [];
-    }
-    if (responseItemForQuestionnaire.answer.length === 0) {
-      responseItemForQuestionnaire.answer.push({} as QuestionnaireResponseItemAnswer);
-    }
-    const answer = responseItemForQuestionnaire.answer[0];
-    if (!answer.item) {
-      answer.item = [];
-    }
-    answer.item.push(itemToAdd);
+    const answer = (responseItemForQuestionnaire.answer = responseItemForQuestionnaire.answer || [{} as QuestionnaireResponseItemAnswer]);
+    answer[0].item = answer[0].item || [];
+    answer[0].item.push(itemToAdd);
   }
 }
 
 export function createQuestionnaireResponseItem(item: QuestionnaireItem): QuestionnaireResponseItem {
-  const responseItem = {
+  const responseItem: QuestionnaireResponseItem = {
     linkId: item.linkId,
-    ...(item.text && { text: item.text }),
-  } as QuestionnaireResponseItem;
+  };
+
+  if (item.text) {
+    responseItem.text = item.text;
+  }
 
   const answer = createQuestionnaireResponseAnswer(item);
   if (answer) {

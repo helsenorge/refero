@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem, Questionnaire } from 'fhir/r4';
-import { ValidationRule, useFormContext } from 'react-hook-form';
+import { useFormContext } from 'react-hook-form';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
@@ -11,23 +11,19 @@ import { Resources } from '../../../types/resources';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Input from '@helsenorge/designsystem-react/components/Input';
 import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
-import Validation from '@helsenorge/designsystem-react/components/Validation';
 
 import { debounce } from '@helsenorge/core-utils/debounce';
 import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 
 import { NewValueAction, newStringValueAsync } from '../../../actions/newValue';
 import { GlobalState } from '../../../reducers';
-import { getPlaceholder, getMinLengthExtensionValue, getRegexExtension } from '../../../util/extension';
+import { getPlaceholder } from '../../../util/extension';
 import {
   isReadOnly,
   isRequired,
   getId,
   getStringValue,
-  getMaxLength,
   getPDFStringValue,
-  validateText,
-  getTextValidationErrorMessage,
   getSublabelText,
   renderPrefix,
   getText,
@@ -35,6 +31,7 @@ import {
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path, createFromIdFromPath } from '../../../util/refero-core';
 import withCommonFunctions, { WithCommonFunctionsProps } from '../../with-common-functions';
+import SubLabel from '../sublabel';
 import TextView from '../textview';
 
 export interface StringProps extends WithCommonFunctionsProps {
@@ -79,9 +76,9 @@ const String: React.FC<StringProps & ValidationProps> = props => {
 
   const debouncedHandleChange: (event: React.FormEvent) => void = debounce(handleChange, 250, false);
 
-  const getValidationErrorMessage = (value: string): string => {
-    return getTextValidationErrorMessage(value, props.validateScriptInjection, props.item, props.resources);
-  };
+  // const getValidationErrorMessage = (value: string): string => {
+  //   return getTextValidationErrorMessage(value, props.validateScriptInjection, props.item, props.resources);
+  // };
 
   const { id, item, questionnaire, pdf, resources, answer, onRenderMarkdown } = props;
   if (pdf || isReadOnly(item)) {
@@ -129,7 +126,7 @@ const String: React.FC<StringProps & ValidationProps> = props => {
           label={
             <Label
               labelTexts={[{ text: labelText, type: 'semibold' }]}
-              sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+              sublabel={<SubLabel subLabelText={subLabelText} />}
               afterLabelChildren={props.renderHelpButton()}
             />
           }

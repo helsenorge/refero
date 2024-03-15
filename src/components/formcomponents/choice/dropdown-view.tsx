@@ -27,30 +27,28 @@ interface DropdownViewProps {
   renderDeleteButton: (className?: string) => JSX.Element | undefined;
   repeatButton: JSX.Element;
   oneToTwoColumn?: boolean;
-  children?: JSX.Element;
+  children?: React.ReactNode;
   path: Path[];
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
 }
 
-const DropdownView: React.FC<DropdownViewProps> = props => {
-  const {
-    options,
-    item,
-    questionnaire,
-    id,
-    handleChange,
-    selected,
-    resources,
-    children,
-    repeatButton,
-    renderDeleteButton,
-    renderHelpButton,
-    renderHelpElement,
-    onRenderMarkdown,
-    path,
-  } = props;
+const DropdownView = ({
+  options,
+  item,
+  questionnaire,
+  id,
+  handleChange,
+  resources,
+  children,
+  repeatButton,
+  renderDeleteButton,
+  renderHelpButton,
+  renderHelpElement,
+  onRenderMarkdown,
+  path,
+}: DropdownViewProps): JSX.Element | null => {
   if (!options) {
     return null;
   }
@@ -71,7 +69,6 @@ const DropdownView: React.FC<DropdownViewProps> = props => {
   const { register, getFieldState } = useFormContext();
   const { error } = getFieldState(formId);
   const onChange = (e: React.ChangeEvent<HTMLSelectElement>): void => {
-    console.log('dropdown', e.target.value);
     handleChange(e.target.value);
   };
   return (
@@ -94,6 +91,7 @@ const DropdownView: React.FC<DropdownViewProps> = props => {
           selectId={selectId}
           className="page_refero__input"
         >
+          <option value={undefined}>{resources?.selectDefaultPlaceholder || ''}</option>
           {options.map(dropdownOption => (
             <option key={selectId + dropdownOption.label} value={dropdownOption.type}>
               {dropdownOption.label}
