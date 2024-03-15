@@ -64,7 +64,6 @@ const DropdownView = ({
 
   const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`;
   const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
-  // onChangeValidator={validateInput}
   const formId = createFromIdFromPath(path);
   const { register, getFieldState } = useFormContext();
   const { error } = getFieldState(formId);

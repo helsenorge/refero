@@ -1,7 +1,6 @@
 import * as React from 'react';
 
 import { QuestionnaireItem, Questionnaire } from 'fhir/r4';
-import { Collapse } from 'react-collapse';
 import { Controller, useFormContext } from 'react-hook-form';
 
 import { Options } from '../../../types/formTypes/radioGroupOptions';
@@ -10,9 +9,8 @@ import { Resources } from '../../../types/resources';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
 import RadioButton from '@helsenorge/designsystem-react/components/RadioButton';
-import Validation from '@helsenorge/designsystem-react/components/Validation';
 
-import { isRequired, getText, getId, getSublabelText } from '../../../util/index';
+import { getText, getId, getSublabelText } from '../../../util/index';
 import { Path, createFromIdFromPath } from '../../../util/refero-core';
 
 interface Props {

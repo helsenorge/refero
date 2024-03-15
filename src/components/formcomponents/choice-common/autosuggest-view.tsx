@@ -200,7 +200,10 @@ const AutosuggestView = (props: AutosuggestViewProps): JSX.Element => {
     <div className="page_refero__component page_refero__component_choice page_refero__component_choice_autosuggest">
       <FormGroup mode="ongrey" error={error?.message}>
         <Autosuggest
-          {...register(formId)}
+          {...(register(formId),
+          {
+            onChange: onChangeInput,
+          })}
           id={getId(props.id)}
           label={
             <Label

@@ -31,7 +31,7 @@ import {
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path, createFromIdFromPath } from '../../../util/refero-core';
 import withCommonFunctions, { WithCommonFunctionsProps } from '../../with-common-functions';
-import SubLabel from '../sublabel';
+// import SubLabel from '../sublabel';
 import TextView from '../textview';
 
 export interface StringProps extends WithCommonFunctionsProps {
@@ -121,12 +121,13 @@ const String: React.FC<StringProps & ValidationProps> = props => {
         <Input
           {...register(formId, {
             onChange: handleInputChange,
-            required: isRequired(item),
           })}
           label={
             <Label
               labelTexts={[{ text: labelText, type: 'semibold' }]}
-              sublabel={<SubLabel subLabelText={subLabelText} />}
+              sublabel={
+                <Sublabel id={`${formId}_sublabel`} sublabelTexts={[{ text: subLabelText, hideFromScreenReader: false, type: 'normal' }]} />
+              }
               afterLabelChildren={props.renderHelpButton()}
             />
           }

@@ -61,8 +61,6 @@ const AttachmentComponent = ({
   onDeleteAttachment,
   resources,
   answer,
-  responseItem,
-  isHelpOpen,
   pdf,
   id,
   onOpenAttachment,
@@ -132,9 +130,9 @@ const AttachmentComponent = ({
     if (Array.isArray(answer)) {
       return answer.map(v => {
         return {
-          id: v.valueAttachment && v.valueAttachment.url ? v.valueAttachment.url : -1,
+          id: v.valueAttachment && v.valueAttachment.url ? v.valueAttachment.url : '-1',
           name: v.valueAttachment && v.valueAttachment.title ? v.valueAttachment.title : '',
-        } as UploadedFile;
+        };
       });
     } else {
       if (answer && answer.valueAttachment && answer.valueAttachment.url) {
@@ -142,7 +140,7 @@ const AttachmentComponent = ({
           {
             id: answer.valueAttachment.url,
             name: answer.valueAttachment.title ? answer.valueAttachment.title : '',
-          } as UploadedFile,
+          },
         ];
       }
     }

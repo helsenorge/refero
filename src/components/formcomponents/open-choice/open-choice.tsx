@@ -390,7 +390,13 @@ const OpenChoice = (props: OpenChoiceProps): JSX.Element | null => {
 
   const renderSlider = (): JSX.Element => {
     return (
-      <SliderView item={props.item} answer={props.answer} handleChange={handleChange} selected={getValue(props.item, props.answer)}>
+      <SliderView
+        item={props.item}
+        answer={props.answer}
+        handleChange={handleChange}
+        path={props.path}
+        selected={getValue(props.item, props.answer)}
+      >
         {props.children}
       </SliderView>
     );

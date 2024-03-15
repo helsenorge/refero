@@ -5,10 +5,9 @@ import { useFormContext } from 'react-hook-form';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import { Slider, SliderStep } from '@helsenorge/designsystem-react/components/Slider';
-import Validation from '@helsenorge/designsystem-react/components/Validation';
 
 import ExtensionConstants from '../../../constants/extensions';
-import { getId, isRequired } from '../../../util';
+import { isRequired } from '../../../util';
 import { getExtension, getMaxValueExtensionValue, getMinValueExtensionValue } from '../../../util/extension';
 import { Path, createFromIdFromPath } from '../../../util/refero-core';
 

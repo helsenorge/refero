@@ -62,50 +62,44 @@ const CheckboxView = ({
   const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
 
   // CheckboxGroup:
-  // id={getId(id)}
+
   // max={getMaxOccursExtensionValue(item)}
   // min={getMinOccursExtensionValue(item)}
-  // helpButton={renderHelpButton()}
-  // helpElement={renderHelpElement()}
   // validateOnExternalUpdate={true}
   // isStyleBlue
 
   const formId = createFromIdFromPath(path);
   const { getFieldState, register } = useFormContext();
   const { error } = getFieldState(formId);
-  console.log('answer', answer);
   return (
     <div className="page_refero__component page_refero__component_openchoice page_refero__component_openchoice_checkbox">
-      <Collapse isOpened>
-        <FormGroup legend={getText(item, onRenderMarkdown, questionnaire, resources)} error={error?.message} mode="ongrey">
-          {checkboxes.map((checkbox, index) => (
-            <Checkbox
-              {...register(formId)}
-              inputId={`${id}-${checkbox.id}`}
-              testId={`checkbox-openChoice`}
-              key={`${checkbox.id}-${index.toString()}`}
-              onChange={(): void => {
-                handleChange(checkbox.id);
-              }}
-              label={
-                <Label
-                  labelTexts={[{ text: checkbox.label }]}
-                  sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
-                  afterLabelChildren={<>{renderHelpButton()}</>}
-                />
-              }
-              value={checkbox.id}
-              checked={checkbox.checked}
-            />
-          ))}
-        </FormGroup>
-        {shouldShowExtraChoice(answer) && <div className="page_refero__component_openchoice_openfield">{renderOpenField()}</div>}
-
-        {renderDeleteButton('page_refero__deletebutton--margin-top')}
-        {repeatButton}
-        {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
-        {renderHelpElement()}
-      </Collapse>
+      <FormGroup legend={getText(item, onRenderMarkdown, questionnaire, resources)} error={error?.message} mode="ongrey">
+        {checkboxes.map((checkbox, index) => (
+          <Checkbox
+            {...register(formId)}
+            inputId={`${id}-${checkbox.id}`}
+            testId={`checkbox-openChoice`}
+            key={`${checkbox.id}-${index.toString()}`}
+            onChange={(): void => {
+              handleChange(checkbox.id);
+            }}
+            label={
+              <Label
+                labelTexts={[{ text: checkbox.label }]}
+                sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+                afterLabelChildren={<>{renderHelpButton()}</>}
+              />
+            }
+            value={checkbox.id}
+            checked={checkbox.checked}
+          />
+        ))}
+      </FormGroup>
+      {shouldShowExtraChoice(answer) && <div className="page_refero__component_openchoice_openfield">{renderOpenField()}</div>}
+      {renderDeleteButton('page_refero__deletebutton--margin-top')}
+      {repeatButton}
+      {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
+      {renderHelpElement()}
     </div>
   );
 };
