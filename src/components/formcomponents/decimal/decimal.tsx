@@ -94,7 +94,7 @@ const Decimal = (props: DecimalProps): JSX.Element => {
   const inputId = getId(props.id);
   const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, props.questionnaire, props.resources)}`;
   const subLabelText = getSublabelText(props.item, props.onRenderMarkdown, props.questionnaire, props.resources);
-
+  const inputValue = value ? value + '' : '';
   if (pdf || isReadOnly(item)) {
     return (
       <TextView
@@ -132,9 +132,9 @@ const Decimal = (props: DecimalProps): JSX.Element => {
             />
           }
           type="number"
-          value={value ? value + '' : ''}
+          value={inputValue}
           inputId={inputId}
-          defaultValue={value ? value + '' : ''}
+          defaultValue={inputValue}
           placeholder={getPlaceholder(item)}
           className="page_refero__input"
           width={25}

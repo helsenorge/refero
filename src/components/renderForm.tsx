@@ -60,8 +60,9 @@ const RenderForm = ({
   console.log('errors', errors);
   console.log('isSubmitted', isSubmitted);
   console.log('values: ', getValues());
+  //onSubmit={methods.handleSubmit(onSubmitReactHookForm)}
   return (
-    <form onSubmit={methods.handleSubmit(onSubmitReactHookForm)}>
+    <form action="#">
       <Validation errorSummary="test" />
       {children}
       <FormButtons
@@ -77,7 +78,7 @@ const RenderForm = ({
           reset();
         }}
         onPauseButtonClicked={isStepView ? displayPauseButtonInStepView : displayPauseButtonInNormalView}
-        isHelsenorgeForm={isHelsenorgeForm && isHelsenorgeForm}
+        isHelsenorgeForm={!!isHelsenorgeForm}
       />
     </form>
   );

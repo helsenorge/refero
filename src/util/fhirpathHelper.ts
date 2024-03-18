@@ -15,9 +15,16 @@ export function evaluateFhirpathExpressionToGetDate(item: QuestionnaireItem, fhi
   return;
 }
 
-export function evaluateFhirpathExpressionToGetString(fhirExtension: Extension, questionnare?: QuestionnaireResponse | null): any {
-  const qCopy = structuredClone(questionnare);
+export function evaluateFhirpathExpressionToGetString(fhirExtension: Extension, questionnaireResponse?: QuestionnaireResponse | null): any {
   const qExt = structuredClone(fhirExtension);
+
+  let qCopy = questionnaireResponse;
+
+  if (questionnaireResponse?.questionnaire === undefined) {
+    delete qCopy?.questionnaire;
+
+    qCopy = structuredClone(qCopy);
+  }
   try {
     return fhirpath.evaluate(qCopy, qExt.valueString, null, fhirpath_r4_model);
   } catch (error) {

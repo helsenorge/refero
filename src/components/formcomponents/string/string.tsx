@@ -82,6 +82,7 @@ const String: React.FC<StringProps & ValidationProps> = props => {
 
   const { id, item, questionnaire, pdf, resources, answer, onRenderMarkdown } = props;
   if (pdf || isReadOnly(item)) {
+    // console.log(getPDFStringValue(answer, resources));
     return (
       <TextView
         id={id}

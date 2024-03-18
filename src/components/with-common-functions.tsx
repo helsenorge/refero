@@ -15,7 +15,6 @@ import { Collapse } from 'react-collapse';
 import { ThunkDispatch } from 'redux-thunk';
 
 import { AutoSuggestProps } from '../types/autoSuggestProps';
-import { FormChild } from '../types/formTypes/formChild';
 import { OrgenhetHierarki } from '../types/orgenhetHierarki';
 import { Resources } from '../types/resources';
 import { TextMessage } from '../types/text-message';
@@ -24,6 +23,7 @@ import Icon from '@helsenorge/designsystem-react/components/Icon';
 import HelpSign from '@helsenorge/designsystem-react/components/Icons/HelpSign';
 
 import { UploadedFile } from '@helsenorge/file-upload/components/dropzone';
+import { FormChild } from '@helsenorge/form/components/form';
 
 import DeleteButton from './formcomponents/repeat/delete-button';
 import RepeatButton from './formcomponents/repeat/repeat-button';
@@ -110,12 +110,25 @@ export interface WithCommonFunctionsProps {
   fetchReceivers?: (successCallback: (receivers: Array<OrgenhetHierarki>) => void, errorCallback: () => void) => void;
 }
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export default function withCommonFunctions<T>(WrappedComponent: React.FC<WithCommonFunctionsProps>) {
-  return function WithCommonFunctions(props: T & WithCommonFunctionsProps): React.ReactElement | null {
-    const [isHelpVisible, setIsHelpVisible] = React.useState<boolean>(false);
+interface EnhancedProps extends WithCommonFunctionsProps {
+  renderChildrenItems?: (renderContext: RenderContext) => Array<JSX.Element> | undefined;
+  renderDeleteButton?: () => JSX.Element | undefined;
+  renderRepeatButton: (
+    item: QuestionnaireItem,
+    index: number,
+    path?: Array<Path>,
+    response?: Array<QuestionnaireResponseItem>,
+    responseItem?: QuestionnaireResponseItem
+  ) => JSX.Element | undefined;
+}
 
-    const renderDeleteButton = (className?: string): React.ReactElement | undefined => {
+export default function withCommonFunctions<T extends WithCommonFunctionsProps>(
+  WrappedComponent: React.ComponentType<T & EnhancedProps>
+): React.ComponentType<T> {
+  const WithCommonFunctions = (props: T): JSX.Element | null => {
+    const [isHelpVisible, setIsHelpVisible] = React.useState(false);
+
+    const renderDeleteButton = (className?: string): JSX.Element | undefined => {
       if (!props.visibleDeleteButton) {
         return undefined;
       }
@@ -123,7 +136,7 @@ export default function withCommonFunctions<T>(WrappedComponent: React.FC<WithCo
       let mustShowConfirm: boolean = hasAnwer(props.answer);
 
       if (!mustShowConfirm && props.responseItem && props.responseItem.item) {
-        mustShowConfirm = props.responseItem.item.some((item: QuestionnaireResponseItem) => (item ? hasAnwer(item.answer) : false));
+        mustShowConfirm = props.responseItem.item.some(item => (item ? hasAnwer(item.answer) : false));
       }
 
       return (
@@ -147,7 +160,7 @@ export default function withCommonFunctions<T>(WrappedComponent: React.FC<WithCo
       path?: Array<Path>,
       response?: Array<QuestionnaireResponseItem>,
       responseItem?: QuestionnaireResponseItem
-    ): React.ReactElement | undefined => {
+    ): JSX.Element | undefined => {
       if (!item.repeats || !shouldRenderRepeatButton(item, response, index)) {
         return undefined;
       }
@@ -167,14 +180,14 @@ export default function withCommonFunctions<T>(WrappedComponent: React.FC<WithCo
     };
 
     const hasAnwer = (answer: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[] | undefined): boolean => {
-      return !!answer && Object.keys(answer as object).length > 0;
+      return !!answer && Object.keys(answer).length > 0;
     };
 
     const toggleHelp = (isOpen: boolean): void => {
       setIsHelpVisible(isOpen);
     };
 
-    const renderHelpButton = (): React.ReactElement | undefined => {
+    const renderHelpButton = (): JSX.Element | undefined => {
       const { item, onRequestHelpButton } = props;
 
       if (!item) return;
@@ -199,7 +212,7 @@ export default function withCommonFunctions<T>(WrappedComponent: React.FC<WithCo
       );
     };
 
-    const renderHelpElement = (): React.ReactElement | undefined => {
+    const renderHelpElement = (): JSX.Element | undefined => {
       const { item, onRequestHelpElement } = props;
       if (!item) {
         return;
@@ -250,7 +263,6 @@ export default function withCommonFunctions<T>(WrappedComponent: React.FC<WithCo
         const childItem = responseItem.item;
         const childAnswer = responseItem.answer;
         const linkId = item.linkId;
-        // console.log(childAnswer);
 
         if (childItem) {
           response = getItemWithIdFromResponseItemArray(linkId, childItem);
@@ -308,20 +320,27 @@ export default function withCommonFunctions<T>(WrappedComponent: React.FC<WithCo
       }
       return renderedItems;
     };
-
-    const renderChildrenItems = (renderContext: RenderContext): Array<JSX.Element | undefined> | undefined => {
+    const renderChildrenItems = (renderContext: RenderContext): Array<JSX.Element> | undefined => {
       const { item } = props;
       if (!item || !item.item) {
         return undefined;
       }
 
+      let renderedItems: Array<JSX.Element> = [];
+
       if (item.type === itemType.GROUP && renderContext.RenderChildren) {
-        return renderContext.RenderChildren(item.item, renderItem);
+        const children = renderContext.RenderChildren(item.item, renderItem);
+        if (children) {
+          renderedItems = children.filter((child): child is JSX.Element => child !== undefined);
+        }
+      } else {
+        item.item.forEach(i => {
+          const items = renderItem(i, renderContext).filter((item): item is JSX.Element => item !== undefined);
+          renderedItems.push(...items);
+        });
       }
 
-      const renderedItems: Array<JSX.Element | undefined> = [];
-      item.item.forEach((i: QuestionnaireItem) => renderedItems.push(...renderItem(i, renderContext)));
-      return renderedItems;
+      return renderedItems.length > 0 ? renderedItems : undefined;
     };
 
     if (!props.enable) {
@@ -336,12 +355,15 @@ export default function withCommonFunctions<T>(WrappedComponent: React.FC<WithCo
           renderHelpElement={renderHelpElement}
           isHelpOpen={isHelpVisible}
           onRenderMarkdown={props.onRenderMarkdown}
-          /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-          {...(props as any)}
+          {...(props as T)}
         >
           {renderChildrenItems(props.renderContext)}
         </WrappedComponent>
       );
     }
   };
+  const displayName = WrappedComponent.displayName || WrappedComponent.name || 'WithCommonFunctions';
+
+  WithCommonFunctions.displayName = `WithCommonFunctions(${displayName})`;
+  return WithCommonFunctions;
 }

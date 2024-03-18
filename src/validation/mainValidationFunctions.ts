@@ -72,9 +72,9 @@ const generateZodSchemaFromItems = (
 
     //TODO:Add id logic for repeating items
     const currentPath = [...parentPath, item.linkId];
-    const key = currentPath.join('.');
+    // const key = currentPath.join('.');
     if (validator !== undefined) {
-      console.log('validator key: ', key);
+      // console.log('validator key: ', key);
       if (item.repeats) {
         acc[item.linkId] = z.array(validator);
       } else {

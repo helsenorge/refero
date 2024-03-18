@@ -16,6 +16,8 @@ import Textarea from '@helsenorge/designsystem-react/components/Textarea';
 
 import { debounce } from '@helsenorge/core-utils/debounce';
 
+import { HighlightComponent } from './HighlightComponent';
+import { InlineComponent } from './InlineComponent';
 import { NewValueAction, newStringValueAsync } from '../../../actions/newValue';
 import Constants from '../../../constants/index';
 import itemControlConstants from '../../../constants/itemcontrol';
@@ -58,6 +60,7 @@ export interface TextProps extends WithCommonFunctionsProps {
   isHelpOpen?: boolean;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
   shouldExpanderRenderChildrenWhenClosed?: boolean;
+  children: React.ReactNode;
 }
 const Text = ({
   id,
@@ -78,9 +81,7 @@ const Text = ({
   renderHelpElement,
   repeatButton,
   renderDeleteButton,
-}: TextProps & ValidationProps): JSX.Element | null => {
-  const [inputValue, setInputValue] = React.useState('');
-
+}: TextProps): JSX.Element | null => {
   // const showCounter = (): boolean => {
   //   if (getMaxLength(item) || getMinLengthExtensionValue(item)) {
   //     return true;
@@ -116,27 +117,14 @@ const Text = ({
 
   if (itemControls && itemControls.some(itemControl => itemControl.code === itemControlConstants.INLINE)) {
     return (
-      <div id={id} className="page_refero__component page_refero__component_expandabletext">
-        <Expander title={item.text ? item.text : ''} renderChildrenWhenClosed={shouldExpanderRenderChildrenWhenClosed ? true : false}>
-          <React.Fragment>{children}</React.Fragment>
-        </Expander>
-      </div>
+      <InlineComponent renderChildrenWhenClosed={shouldExpanderRenderChildrenWhenClosed ? true : false} title={item.text ? item.text : ''}>
+        {children}
+      </InlineComponent>
     );
   }
 
   if (itemControls && itemControls.some(itemControl => itemControl.code === itemControlConstants.HIGHLIGHT)) {
-    return (
-      <div
-        id={id}
-        className="page_refero__component page_refero__component_highlight"
-        dangerouslySetInnerHTML={{
-          __html: DOMPurify.sanitize(`${getText(item, onRenderMarkdown, questionnaire, resources)}`, {
-            RETURN_TRUSTED_TYPE: true,
-            ADD_ATTR: ['target'],
-          }) as unknown as string,
-        }}
-      />
-    );
+    return <HighlightComponent id={id} text={getText(item, onRenderMarkdown, questionnaire, resources)} />;
   }
 
   if (pdf || isReadOnly(item)) {
@@ -168,7 +156,6 @@ const Text = ({
   const onTextAreaChange = (event: React.FormEvent<HTMLTextAreaElement>): void => {
     event.persist();
     debouncedHandleChange(event);
-    setInputValue(event.currentTarget.value);
   };
   const formId = createFromIdFromPath(path);
   const { getFieldState, register } = useFormContext();
@@ -178,7 +165,7 @@ const Text = ({
       <FormGroup error={error?.message} mode="ongrey">
         {renderHelpElement()}
         <Textarea
-          {...register(formId, { onChange: onTextAreaChange })}
+          {...register(formId, { onChange: onTextAreaChange, value: getStringValue(answer) })}
           textareaId={textAreaId}
           maxRows={Constants.DEFAULT_TEXTAREA_HEIGHT}
           placeholder={getPlaceholder(item)}

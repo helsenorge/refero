@@ -14,12 +14,11 @@ import { evaluateFhirpathExpressionToGetString } from '../util/fhirpathHelper';
 
 export function mapStateToProps(state: GlobalState, originalProps: WithCommonFunctionsProps): WithCommonFunctionsProps {
   const newAnswer = getValueIfDataReceiver(state, originalProps);
-  // console.log(state.refero.form.FormData.Content);
   if (!originalProps.item || !originalProps.item.enableWhen) {
-    return { ...originalProps, enable: true, ...(newAnswer !== undefined && { answer: newAnswer }) } as WithCommonFunctionsProps;
+    return { ...originalProps, enable: true, ...(newAnswer !== undefined && { answer: newAnswer }) };
   }
   const enable = isEnableWhenEnabled(originalProps.item.enableWhen, originalProps.item.enableBehavior, originalProps.path || [], state);
-  return { ...originalProps, enable, ...(newAnswer !== undefined && { answer: newAnswer }) } as WithCommonFunctionsProps;
+  return { ...originalProps, enable, ...(newAnswer !== undefined && { answer: newAnswer }) };
 }
 
 function isEnableWhenEnabled(
@@ -60,9 +59,10 @@ function getValueIfDataReceiver(
   if (originalProps.item) {
     const extension = getCopyExtension(originalProps.item);
     if (extension) {
+      console.log('extension', extension);
       const formData = getFormData(state);
       let result = evaluateFhirpathExpressionToGetString(extension, formData?.Content);
-
+      console.log('result', result);
       if (!!getCalculatedExpressionExtension(originalProps.item)) {
         result = result.map((m: any) => m.value as number);
       }
