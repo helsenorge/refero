@@ -23,7 +23,6 @@ import { GlobalState } from '../../../reducers';
 import { getPlaceholder, getItemControlExtensionValue } from '../../../util/extension';
 import {
   isReadOnly,
-  isRequired,
   getId,
   renderPrefix,
   getText,
