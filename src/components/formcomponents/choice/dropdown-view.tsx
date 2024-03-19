@@ -12,6 +12,7 @@ import Select from '@helsenorge/designsystem-react/components/Select';
 
 import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 
+import { getPlaceholder } from '../../../util/extension';
 import { getId, getSublabelText, getText, renderPrefix } from '../../../util/index';
 import { Path, createFromIdFromPath } from '../../../util/refero-core';
 
@@ -55,12 +56,12 @@ const DropdownView = ({
 
   const selectId = getId(id);
 
-  // let placeholder;
-  // if (getPlaceholder(item)) {
-  //   placeholder = new Option(getPlaceholder(item), '');
-  // } else if (resources) {
-  //   placeholder = new Option(resources.selectDefaultPlaceholder, '');
-  // }
+  let placeholder;
+  if (getPlaceholder(item)) {
+    placeholder = <option value="">{getPlaceholder(item)}</option>;
+  } else if (resources) {
+    placeholder = <option value="">{resources.selectDefaultPlaceholder}</option>;
+  }
 
   const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`;
   const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
@@ -90,7 +91,7 @@ const DropdownView = ({
           selectId={selectId}
           className="page_refero__input"
         >
-          <option value={undefined}>{resources?.selectDefaultPlaceholder || ''}</option>
+          {placeholder}
           {options.map(dropdownOption => (
             <option key={selectId + dropdownOption.label} value={dropdownOption.type}>
               {dropdownOption.label}

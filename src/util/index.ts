@@ -1,6 +1,6 @@
 import { Questionnaire, QuestionnaireResponseItem, QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import marked from 'marked';
-import { ComponentClass } from 'react-redux';
+import { ConnectedComponent } from 'react-redux';
 import * as uuid from 'uuid';
 
 import { Resources } from '../types/resources';
@@ -66,8 +66,9 @@ export const isTableCode = (extensionCode: string | string[]): boolean => {
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function getComponentForItem(type: string, extensionCode?: string | string[]) {
   if (String(type) === ItemType.GROUP && !!extensionCode && isTableCode(extensionCode)) {
-    return TableContainer as ComponentClass<
-      Omit<WithCommonFunctionsProps & ValidationProps & WithCommonFunctionsProps, keyof WithCommonFunctionsProps> & WithCommonFunctionsProps
+    return TableContainer as ConnectedComponent<
+      any,
+      Omit<WithCommonFunctionsProps, keyof WithCommonFunctionsProps> & WithCommonFunctionsProps
     >;
   } else if (String(type) === ItemType.GROUP) {
     return Group;

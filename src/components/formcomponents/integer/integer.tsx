@@ -44,9 +44,25 @@ export interface IntegerProps extends WithCommonFunctionsProps {
   children?: React.ReactNode;
 }
 
-const Integer = (props: IntegerProps): JSX.Element | null => {
+const Integer = ({
+  children,
+  renderHelpElement,
+  resources,
+  dispatch,
+  promptLoginMessage,
+  path,
+  item,
+  onAnswerChange,
+  answer,
+  pdf,
+  id,
+  onRenderMarkdown,
+  renderHelpButton,
+  questionnaire,
+  renderDeleteButton,
+  repeatButton,
+}: IntegerProps): JSX.Element | null => {
   const getValue = (): string | number | number[] | undefined => {
-    const { item, answer } = props;
     if (answer && Array.isArray(answer)) {
       return answer.map(m => m.valueInteger);
     }
@@ -61,8 +77,8 @@ const Integer = (props: IntegerProps): JSX.Element | null => {
     const value = getValue();
     if (value === undefined || value === null || value === '') {
       let text = '';
-      if (props.resources && props.resources.ikkeBesvart) {
-        text = props.resources.ikkeBesvart;
+      if (resources && resources.ikkeBesvart) {
+        text = resources.ikkeBesvart;
       }
       return text;
     }
@@ -73,10 +89,9 @@ const Integer = (props: IntegerProps): JSX.Element | null => {
   };
 
   const handleChange = (event: React.FormEvent): void => {
-    const { dispatch, promptLoginMessage, path, item, onAnswerChange } = props;
     const value = parseInt((event.target as HTMLInputElement).value, 10);
     if (dispatch) {
-      dispatch(newIntegerValueAsync(props.path, value, props.item))?.then(newState =>
+      dispatch(newIntegerValueAsync(path, value, item))?.then(newState =>
         onAnswerChange(newState, path, item, { valueInteger: value } as QuestionnaireResponseItemAnswer)
       );
     }
@@ -86,36 +101,34 @@ const Integer = (props: IntegerProps): JSX.Element | null => {
     }
   };
 
-  const inputId = getId(props.id);
+  const inputId = getId(id);
 
-  if (props.pdf || isReadOnly(props.item)) {
+  if (pdf || isReadOnly(item)) {
     return (
       <TextView
-        id={props.id}
-        item={props.item}
+        id={id}
+        item={item}
         value={getPDFValue()}
-        onRenderMarkdown={props.onRenderMarkdown}
-        helpButton={props.renderHelpButton()}
-        helpElement={props.renderHelpElement()}
+        onRenderMarkdown={onRenderMarkdown}
+        helpButton={renderHelpButton()}
+        helpElement={renderHelpElement()}
       >
-        {props.children}
+        {children}
       </TextView>
     );
   }
 
   const value = getValue();
-  const labelText = `${renderPrefix(props.item)} ${getText(props.item, props.onRenderMarkdown, props.questionnaire, props.resources)}`;
-  const subLabelText = getSublabelText(props.item, props.onRenderMarkdown, props.questionnaire, props.resources);
+  const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`;
+  const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
 
-  // showLabel={true}
-  // validateOnExternalUpdate={true}
-  const formId = createFromIdFromPath(props.path);
+  const formId = createFromIdFromPath(path);
   const { getFieldState, register } = useFormContext();
   const { error } = getFieldState(formId);
 
   return (
     <div className="page_refero__component page_refero__component_integer">
-      {props.renderHelpElement()}
+      {renderHelpElement()}
       <FormGroup error={error?.message} mode="ongrey">
         <Input
           {...register(formId, {
@@ -126,20 +139,20 @@ const Integer = (props: IntegerProps): JSX.Element | null => {
             <Label
               labelTexts={[{ text: labelText, type: 'semibold' }]}
               sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
-              afterLabelChildren={props.renderHelpButton()}
+              afterLabelChildren={renderHelpButton()}
             />
           }
           type="number"
           inputId={inputId}
           defaultValue={value !== undefined && value !== null ? value + '' : ''}
-          placeholder={getPlaceholder(props.item)}
+          placeholder={getPlaceholder(item)}
           className="page_refero__input"
           width={25}
         />
       </FormGroup>
-      {props.renderDeleteButton('page_refero__deletebutton--margin-top')}
-      {props.repeatButton}
-      {props.children ? <div className="nested-fieldset nested-fieldset--full-height">{props.children}</div> : null}
+      {renderDeleteButton('page_refero__deletebutton--margin-top')}
+      {repeatButton}
+      {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
     </div>
   );
 };

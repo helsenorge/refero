@@ -16,7 +16,7 @@ interface Props {
   children: React.ReactNode;
 }
 
-const textView = ({ id, item, value, textClass, children, onRenderMarkdown, helpButton, helpElement }: Props): React.ReactElement => {
+const textView = ({ id, item, value, textClass, children, onRenderMarkdown, helpButton, helpElement }: Props): JSX.Element => {
   return (
     <div id={getId(id)}>
       <>

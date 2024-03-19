@@ -59,10 +59,8 @@ function getValueIfDataReceiver(
   if (originalProps.item) {
     const extension = getCopyExtension(originalProps.item);
     if (extension) {
-      console.log('extension', extension);
       const formData = getFormData(state);
       let result = evaluateFhirpathExpressionToGetString(extension, formData?.Content);
-      console.log('result', result);
       if (!!getCalculatedExpressionExtension(originalProps.item)) {
         result = result.map((m: any) => m.value as number);
       }

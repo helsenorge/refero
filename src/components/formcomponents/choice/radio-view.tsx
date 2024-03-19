@@ -54,10 +54,7 @@ const RadioView = ({
 
   const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
   const selectedValue = (selected && selected[0]) || '';
-  // RadioButtonGroup:
-  // validator={validateInput}
-  // validateOnExternalUpdate={true}
-  // isStyleBlue
+
   const formId = createFromIdFromPath(path);
   const { getFieldState, control } = useFormContext();
   const { error } = getFieldState(formId);

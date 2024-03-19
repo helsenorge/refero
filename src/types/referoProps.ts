@@ -1,6 +1,5 @@
 import { UploadedFile } from '@helsenorge/file-upload/components/dropzone';
 import { ValidationSummaryPlacement } from './formTypes/validationSummaryPlacement';
-import { Store } from 'react-redux';
 import { IActionRequester } from '../util/actionRequester';
 import { IQuestionnaireInspector } from '../util/questionnaireInspector';
 import { Resources } from './resources';
@@ -10,7 +9,7 @@ import { OrgenhetHierarki } from './orgenhetHierarki';
 import { TextMessage } from './text-message';
 
 export interface ReferoProps {
-  store?: Store<{}>;
+  store?: {};
   authorized: boolean;
   blockSubmit?: boolean;
   onSave?: (questionnaireResponse: QuestionnaireResponse) => void;

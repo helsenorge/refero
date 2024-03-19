@@ -55,16 +55,33 @@ export interface StringProps extends WithCommonFunctionsProps {
   onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
   isHelpOpen?: boolean;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
+  children: React.ReactNode;
 }
 
-const String: React.FC<StringProps & ValidationProps> = props => {
+const String = ({
+  id,
+  item,
+  questionnaire,
+  pdf,
+  resources,
+  answer,
+  onRenderMarkdown,
+  dispatch,
+  promptLoginMessage,
+  path,
+  onAnswerChange,
+  renderHelpElement,
+  renderHelpButton,
+  children,
+  renderDeleteButton,
+  repeatButton,
+}: StringProps): JSX.Element => {
   const [inputValue, setInputValue] = React.useState('');
 
   const handleChange = (event: React.FormEvent): void => {
-    const { dispatch, promptLoginMessage, path, item, onAnswerChange } = props;
     const value = (event.target as HTMLInputElement).value;
     if (dispatch) {
-      dispatch(newStringValueAsync(props.path, value, props.item))?.then(newState =>
+      dispatch(newStringValueAsync(path, value, item))?.then(newState =>
         onAnswerChange(newState, path, item, { valueString: value } as QuestionnaireResponseItemAnswer)
       );
     }
@@ -76,13 +93,7 @@ const String: React.FC<StringProps & ValidationProps> = props => {
 
   const debouncedHandleChange: (event: React.FormEvent) => void = debounce(handleChange, 250, false);
 
-  // const getValidationErrorMessage = (value: string): string => {
-  //   return getTextValidationErrorMessage(value, props.validateScriptInjection, props.item, props.resources);
-  // };
-
-  const { id, item, questionnaire, pdf, resources, answer, onRenderMarkdown } = props;
   if (pdf || isReadOnly(item)) {
-    // console.log(getPDFStringValue(answer, resources));
     return (
       <TextView
         id={id}
@@ -90,21 +101,17 @@ const String: React.FC<StringProps & ValidationProps> = props => {
         value={getPDFStringValue(answer, resources)}
         onRenderMarkdown={onRenderMarkdown}
         textClass="page_refero__component_readonlytext"
-        helpButton={props.renderHelpButton()}
-        helpElement={props.renderHelpElement()}
+        helpButton={renderHelpButton()}
+        helpElement={renderHelpElement()}
       >
-        {props.children}
+        {children}
       </TextView>
     );
   }
 
-  const inputId = getId(props.id);
+  const inputId = getId(id);
   const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`;
   const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
-
-  // onChangeValidator={this.validateText}
-
-  // validateOnExternalUpdate={true}
 
   const handleInputChange = (event: React.FormEvent<HTMLInputElement>): void => {
     event.persist();
@@ -112,12 +119,12 @@ const String: React.FC<StringProps & ValidationProps> = props => {
     setInputValue(event.currentTarget.value);
   };
 
-  const formId = createFromIdFromPath(props.path);
+  const formId = createFromIdFromPath(path);
   const { getFieldState, register } = useFormContext();
   const { error } = getFieldState(formId);
   return (
     <div className="page_refero__component page_refero__component_string">
-      {props.renderHelpElement()}
+      {renderHelpElement()}
       <FormGroup error={error?.message} mode="ongrey">
         <Input
           {...register(formId, {
@@ -129,7 +136,7 @@ const String: React.FC<StringProps & ValidationProps> = props => {
               sublabel={
                 <Sublabel id={`${formId}_sublabel`} sublabelTexts={[{ text: subLabelText, hideFromScreenReader: false, type: 'normal' }]} />
               }
-              afterLabelChildren={props.renderHelpButton()}
+              afterLabelChildren={renderHelpButton()}
             />
           }
           type="text"
@@ -140,10 +147,10 @@ const String: React.FC<StringProps & ValidationProps> = props => {
           placeholder={getPlaceholder(item)}
           className="page_refero__input"
         />
-        {props.renderDeleteButton('page_refero__deletebutton--margin-top')}
-        {props.repeatButton}
+        {renderDeleteButton('page_refero__deletebutton--margin-top')}
+        {repeatButton}
       </FormGroup>
-      {props.children ? <div className="nested-fieldset nested-fieldset--full-height">{props.children}</div> : null}
+      {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
     </div>
   );
 };

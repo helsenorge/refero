@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Bundle, Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 import { Provider } from 'react-redux';
 import { Store, legacy_createStore as createStore, applyMiddleware } from 'redux';
-import thunk from 'redux-thunk';
+import { thunk } from 'redux-thunk';
 
 import { QuestionnaireStatusCodes } from '../types/fhirEnums';
 

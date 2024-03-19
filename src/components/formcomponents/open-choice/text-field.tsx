@@ -49,10 +49,6 @@ const textField = ({
   const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`;
   const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
 
-  // showLabel={false}
-  // validateOnExternalUpdate={true}
-  // FORANDRET ONBLUR TIL ONCHANGE
-
   const formId = createFromIdFromPath(path);
   const { getFieldState, register } = useFormContext();
   const { error } = getFieldState(formId);

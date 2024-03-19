@@ -44,10 +44,25 @@ export interface DecimalProps extends WithCommonFunctionsProps {
   children?: React.ReactNode;
 }
 
-const Decimal = (props: DecimalProps): JSX.Element => {
+const Decimal = ({
+  item,
+  answer,
+  resources,
+  dispatch,
+  path,
+  promptLoginMessage,
+  onAnswerChange,
+  id,
+  pdf,
+  onRenderMarkdown,
+  questionnaire,
+  renderHelpButton,
+  renderHelpElement,
+  children,
+  renderDeleteButton,
+  repeatButton,
+}: DecimalProps): JSX.Element => {
   const getValue = (): string | number | number[] | undefined => {
-    const { item, answer } = props;
-
     if (answer && Array.isArray(answer)) {
       return answer.map(m => m.valueDecimal);
     }
@@ -64,8 +79,8 @@ const Decimal = (props: DecimalProps): JSX.Element => {
 
     if (value === undefined || value === null || value === '') {
       let text = '';
-      if (props.resources && props.resources.ikkeBesvart) {
-        text = props.resources.ikkeBesvart;
+      if (resources && resources.ikkeBesvart) {
+        text = resources.ikkeBesvart;
       }
       return text;
     }
@@ -76,7 +91,6 @@ const Decimal = (props: DecimalProps): JSX.Element => {
   };
 
   const handleChange = (event: React.FormEvent): void => {
-    const { dispatch, path, item, promptLoginMessage, onAnswerChange } = props;
     const value = parseFloat((event.target as HTMLInputElement).value);
     if (dispatch) {
       dispatch(newDecimalValueAsync(path, value, item))?.then(newState =>
@@ -89,11 +103,10 @@ const Decimal = (props: DecimalProps): JSX.Element => {
     }
   };
 
-  const { id, item, pdf, onRenderMarkdown } = props;
   const value = getValue();
-  const inputId = getId(props.id);
-  const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, props.questionnaire, props.resources)}`;
-  const subLabelText = getSublabelText(props.item, props.onRenderMarkdown, props.questionnaire, props.resources);
+  const inputId = getId(id);
+  const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`;
+  const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
   const inputValue = value ? value + '' : '';
   if (pdf || isReadOnly(item)) {
     return (
@@ -102,22 +115,22 @@ const Decimal = (props: DecimalProps): JSX.Element => {
         item={item}
         value={getPDFValue()}
         onRenderMarkdown={onRenderMarkdown}
-        helpButton={props.renderHelpButton()}
-        helpElement={props.renderHelpElement()}
+        helpButton={renderHelpButton()}
+        helpElement={renderHelpElement()}
       >
-        {props.children}
+        {children}
       </TextView>
     );
   }
 
   // validateOnExternalUpdate={true}
-  const formId = createFromIdFromPath(props.path);
+  const formId = createFromIdFromPath(path);
   const { getFieldState, register } = useFormContext();
   const { error } = getFieldState(formId);
   return (
     <div className="page_refero__component page_refero__component_decimal">
       <FormGroup error={error?.message} mode="ongrey">
-        {props.renderHelpElement()}
+        {renderHelpElement()}
         <Input
           {...register(formId, {
             onChange: handleChange,
@@ -127,7 +140,7 @@ const Decimal = (props: DecimalProps): JSX.Element => {
               htmlFor={inputId}
               labelTexts={[{ text: labelText, type: 'semibold' }]}
               sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
-              afterLabelChildren={props.renderHelpButton()}
+              afterLabelChildren={renderHelpButton()}
               statusDot={<div>{status}</div>}
             />
           }
@@ -140,9 +153,9 @@ const Decimal = (props: DecimalProps): JSX.Element => {
           width={25}
         />
       </FormGroup>
-      {props.renderDeleteButton('page_refero__deletebutton--margin-top')}
-      {props.repeatButton}
-      {props.children ? <div className="nested-fieldset nested-fieldset--full-height">{props.children}</div> : null}
+      {renderDeleteButton('page_refero__deletebutton--margin-top')}
+      {repeatButton}
+      {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
     </div>
   );
 };

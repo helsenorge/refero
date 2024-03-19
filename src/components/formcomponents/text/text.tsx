@@ -74,7 +74,6 @@ const Text = ({
   dispatch,
   promptLoginMessage,
   path,
-  validateScriptInjection,
   onAnswerChange,
   shouldExpanderRenderChildrenWhenClosed,
   renderHelpButton,
@@ -103,10 +102,6 @@ const Text = ({
   };
 
   const debouncedHandleChange: (event: React.FormEvent) => void = debounce(handleChange, 250, false);
-
-  const getValidationErrorMessage = (value: string): string => {
-    return getTextValidationErrorMessage(value, validateScriptInjection, item, resources);
-  };
 
   const itemControls = getItemControlExtensionValue(item);
   const textAreaId = getId(id);

@@ -11,7 +11,6 @@ import { useFormContext } from 'react-hook-form';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
-import { ValidationProps } from '../../../types/formTypes/validation';
 import { Resources } from '../../../types/resources';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
@@ -21,7 +20,7 @@ import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label
 import { NewValueAction, newQuantityValueAsync } from '../../../actions/newValue';
 import { GlobalState } from '../../../reducers';
 import { getPlaceholder, getQuestionnaireUnitExtensionValue } from '../../../util/extension';
-import { isReadOnly, getId, getSublabelText, renderPrefix, getText, getDecimalPattern } from '../../../util/index';
+import { isReadOnly, getId, getSublabelText, renderPrefix, getText } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path, createFromIdFromPath } from '../../../util/refero-core';
 import withCommonFunctions, { WithCommonFunctionsProps } from '../../with-common-functions';
@@ -48,9 +47,25 @@ export interface QuantityProps extends WithCommonFunctionsProps {
   children?: React.ReactNode;
 }
 
-const Quantity = (props: QuantityProps): JSX.Element | null => {
+const Quantity = ({
+  answer,
+  resources,
+  dispatch,
+  promptLoginMessage,
+  path,
+  item,
+  onAnswerChange,
+  id,
+  questionnaire,
+  onRenderMarkdown,
+  pdf,
+  renderHelpButton,
+  renderHelpElement,
+  children,
+  renderDeleteButton,
+  repeatButton,
+}: QuantityProps): JSX.Element | null => {
   const getValue = (): number | number[] | undefined => {
-    const { answer } = props;
     if (answer && Array.isArray(answer)) {
       return answer.map(m => m.valueQuantity.value);
     }
@@ -63,8 +78,8 @@ const Quantity = (props: QuantityProps): JSX.Element | null => {
     const value = getValue();
     if (value === undefined || value === null) {
       let text = '';
-      if (props.resources && props.resources.ikkeBesvart) {
-        text = props.resources.ikkeBesvart;
+      if (resources && resources.ikkeBesvart) {
+        text = resources.ikkeBesvart;
       }
       return text;
     }
@@ -75,8 +90,7 @@ const Quantity = (props: QuantityProps): JSX.Element | null => {
   };
 
   const handleChange = (event: React.FormEvent): void => {
-    const { dispatch, promptLoginMessage, path, item, onAnswerChange } = props;
-    const extension = getQuestionnaireUnitExtensionValue(props.item);
+    const extension = getQuestionnaireUnitExtensionValue(item);
     if (extension) {
       const quantity = {
         unit: extension.display,
@@ -90,7 +104,7 @@ const Quantity = (props: QuantityProps): JSX.Element | null => {
       }
 
       if (dispatch) {
-        dispatch(newQuantityValueAsync(props.path, quantity, props.item))?.then(newState =>
+        dispatch(newQuantityValueAsync(path, quantity, item))?.then(newState =>
           onAnswerChange(newState, path, item, { valueQuantity: quantity } as QuestionnaireResponseItemAnswer)
         );
       }
@@ -102,44 +116,41 @@ const Quantity = (props: QuantityProps): JSX.Element | null => {
   };
 
   const getUnit = (): string => {
-    const valueCoding = getQuestionnaireUnitExtensionValue(props.item);
+    const valueCoding = getQuestionnaireUnitExtensionValue(item);
     if (valueCoding && valueCoding.display) {
       return valueCoding.display;
     }
     return '';
   };
 
-  const { id, item, questionnaire, onRenderMarkdown } = props;
-  if (props.pdf || isReadOnly(item)) {
+  if (pdf || isReadOnly(item)) {
     return (
       <TextView
         id={id}
-        item={props.item}
+        item={item}
         value={getPDFValue()}
         onRenderMarkdown={onRenderMarkdown}
-        helpButton={props.renderHelpButton()}
-        helpElement={props.renderHelpElement()}
+        helpButton={renderHelpButton()}
+        helpElement={renderHelpElement()}
       >
-        {props.children}
+        {children}
       </TextView>
     );
   }
 
   const value = getValue();
-  const inputId = getId(props.id);
-  const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, props.resources)}`;
-  const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, props.resources);
+  const inputId = getId(id);
+  const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`;
+  const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
 
-  // validateOnExternalUpdate={true}
-
-  const formId = createFromIdFromPath(props.path);
+  const formId = createFromIdFromPath(path);
   const { getFieldState, register } = useFormContext();
   const { error } = getFieldState(formId);
 
   return (
     <div className="page_refero__component page_refero__component_quantity">
       <FormGroup error={error?.message} mode="ongrey">
-        {props.renderHelpElement()}
+        {renderHelpElement()}
         <Input
           {...register(formId, {
             valueAsNumber: true,
@@ -149,7 +160,7 @@ const Quantity = (props: QuantityProps): JSX.Element | null => {
             <Label
               labelTexts={[{ text: labelText, type: 'semibold' }]}
               sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
-              afterLabelChildren={props.renderHelpButton()}
+              afterLabelChildren={renderHelpButton()}
             />
           }
           type="number"
@@ -160,10 +171,10 @@ const Quantity = (props: QuantityProps): JSX.Element | null => {
           width={7}
         />
         <span className="page_refero__unit">{getUnit()}</span>
-        {props.renderDeleteButton('page_refero__deletebutton--margin-top')}
-        <div>{props.repeatButton}</div>
+        {renderDeleteButton('page_refero__deletebutton--margin-top')}
+        <div>{repeatButton}</div>
       </FormGroup>
-      {props.children ? <div className="nested-fieldset nested-fieldset--full-height">{props.children}</div> : null}
+      {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
     </div>
   );
 };

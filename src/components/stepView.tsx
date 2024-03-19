@@ -3,12 +3,12 @@ import * as React from 'react';
 import { FieldValues, UseFormReturn } from 'react-hook-form';
 
 import { ReferoProps } from '../types/referoProps';
+import { Resources } from '../types/resources';
 
 import RenderForm from './renderForm';
 import { NAVIGATOR_BLINDZONE_ID } from '../constants';
 import { FormDefinition } from '../reducers/form';
 import { getTopLevelElements } from '../util/getTopLevelElements';
-import { Resources } from '../types/resources';
 
 interface StepViewProps {
   isAuthorized: boolean;

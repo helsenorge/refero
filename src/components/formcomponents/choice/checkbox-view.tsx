@@ -54,15 +54,6 @@ const CheckboxView = ({
   });
   const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
 
-  // CheckboxGroup:
-  // id={getId(id)}
-  // max={getMaxOccursExtensionValue(item)}
-  // min={getMinOccursExtensionValue(item)}
-  // helpButton={el.hjelpetrigger}
-  // validateOnExternalUpdate={validateOnExternalUpdate}
-
-  // Checkbox:
-  // isStyleBlue={this.props.isStyleBlue}
   const formId = createFromIdFromPath(path);
   const { register, getFieldState } = useFormContext();
   const { error } = getFieldState(formId);

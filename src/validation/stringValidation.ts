@@ -5,7 +5,7 @@ import { Resources } from '../types/resources';
 
 import { getMaxLength, isRequired } from '../util';
 import { getMinLengthExtensionValue, getRegexExtension, getValidationTextExtension } from '../util/extension';
-
+//   return getTextValidationErrorMessage(value, props.validateScriptInjection, props.item, props.resources);
 export const stringValidation = (item: QuestionnaireItem, resources?: Resources): ZodString => {
   const customErrorMessage = getValidationTextExtension(item);
   let schema = z.string({

@@ -70,6 +70,7 @@ export const RenderFormItems = ({
   if (!formDefinition || !formDefinition.Content || !formDefinition.Content.item) {
     return null;
   }
+
   const onAnswerChange = (
     newState: GlobalState,
     _path: Array<Path>,

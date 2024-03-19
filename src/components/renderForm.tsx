@@ -42,27 +42,29 @@ const RenderForm = ({
   previousStep,
   isHelsenorgeForm,
   children,
-  methods,
-}: RenderFormProps): JSX.Element | null => {
-  const { formState, getValues, reset } = useFormContext();
-  const onSubmitReactHookForm: SubmitHandler<any> = (data: QuestionnaireResponse, e: React.FormEvent): void => {
-    console.log('data', JSON.stringify(data, null, 2));
-    return false;
-    onSubmit();
-  };
+}: // methods,
+RenderFormProps): JSX.Element | null => {
+  const { reset } = useFormContext();
+
+  // const onSubmitReactHookForm: SubmitHandler<any> = (data: QuestionnaireResponse, e: React.FormEvent): void => {
+  //   console.log('data', JSON.stringify(data, null, 2));
+  //   return false;
+  //   onSubmit();
+  // };
+
   const displayPauseButtonInNormalView = referoProps.onSave ? onSave : undefined;
   const displayPauseButtonInStepView = displayPreviousButton ? previousStep : undefined;
 
   if (referoProps.blockSubmit) {
     return <Loader size={'medium'} overlay={'parent'} />;
   }
-  const { errors, isSubmitted } = formState;
-  console.log('errors', errors);
-  console.log('isSubmitted', isSubmitted);
-  console.log('values: ', getValues());
+  // const { errors, isSubmitted } = formState;
+  // console.log('errors', errors);
+  // console.log('isSubmitted', isSubmitted);
+  // console.log('values: ', getValues());
   //onSubmit={methods.handleSubmit(onSubmitReactHookForm)}
   return (
-    <form action="#">
+    <form>
       <Validation errorSummary="test" />
       {children}
       <FormButtons

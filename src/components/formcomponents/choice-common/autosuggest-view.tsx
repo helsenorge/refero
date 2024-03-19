@@ -47,20 +47,38 @@ interface AutosuggestViewProps {
   children: React.ReactNode;
 }
 
-const AutosuggestView = (props: AutosuggestViewProps): JSX.Element => {
+const AutosuggestView = ({
+  answer,
+  item,
+  clearCodingAnswer,
+  autoSuggestProps,
+  fetchValueSet,
+  handleChange,
+  handleStringChange,
+  resources,
+  path,
+  onRenderMarkdown,
+  id,
+  renderDeleteButton,
+  repeatButton,
+  questionnaire,
+  children,
+  renderHelpButton,
+  renderHelpElement,
+}: AutosuggestViewProps): JSX.Element => {
   const getStringAnswer = (): string | undefined => {
-    if (Array.isArray(props.answer)) {
-      return props.answer.reduce((acc, x) => acc || x.valueString, undefined);
-    } else if (props.answer) {
-      return props.answer.valueString;
+    if (Array.isArray(answer)) {
+      return answer.reduce((acc, x) => acc || x.valueString, undefined);
+    } else if (answer) {
+      return answer.valueString;
     }
   };
 
   const getCodingAnswer = (): Coding | undefined => {
-    if (Array.isArray(props.answer)) {
-      return props.answer.reduce((acc, x) => acc || x.valueCoding, undefined);
-    } else if (props.answer) {
-      return props.answer.valueCoding;
+    if (Array.isArray(answer)) {
+      return answer.reduce((acc, x) => acc || x.valueCoding, undefined);
+    } else if (answer) {
+      return answer.valueCoding;
     }
     return undefined;
   };
@@ -83,11 +101,11 @@ const AutosuggestView = (props: AutosuggestViewProps): JSX.Element => {
   const [isDirty, setIsDirty] = React.useState<boolean>(false);
 
   const isOpenChoice = (): boolean => {
-    return props.item.type === ItemType.OPENCHOICE;
+    return item.type === ItemType.OPENCHOICE;
   };
 
   const onSubmitValidator = (): boolean => {
-    return isRequired(props.item) ? !!hasCodingAnswer() || !!hasStringAnswer() : true;
+    return isRequired(item) ? !!hasCodingAnswer() || !!hasStringAnswer() : true;
   };
 
   const successCallback = (valueSet: ValueSet): void => {
@@ -121,12 +139,12 @@ const AutosuggestView = (props: AutosuggestViewProps): JSX.Element => {
   const clearCodingAnswerIfExists = (): void => {
     const codingAnswer = getCodingAnswer();
     if (codingAnswer && !hasStringAnswer()) {
-      props.clearCodingAnswer(codingAnswer);
+      clearCodingAnswer(codingAnswer);
     }
   };
 
   const onSuggestionsFetchRequested = ({ value }: { value: string }): void => {
-    if (value.length < (props.autoSuggestProps?.minSearchCharacters || 0)) {
+    if (value.length < (autoSuggestProps?.minSearchCharacters || 0)) {
       setSuggestions([]);
       return;
     }
@@ -134,12 +152,12 @@ const AutosuggestView = (props: AutosuggestViewProps): JSX.Element => {
       return;
     }
 
-    if (props.fetchValueSet) {
+    if (fetchValueSet) {
       setIsLoading(true);
       setSuggestions([]);
       setLastSearchValue(value);
       clearCodingAnswerIfExists();
-      props.fetchValueSet(value, props.item, successCallback, errorCallback);
+      fetchValueSet(value, item, successCallback, errorCallback);
     }
   };
 
@@ -155,14 +173,14 @@ const AutosuggestView = (props: AutosuggestViewProps): JSX.Element => {
 
   const debouncedOnSuggestionsFetchRequested: ({ value }: { value: string }) => void = debounce(
     onSuggestionsFetchRequested,
-    props.autoSuggestProps?.typingSearchDelay || 500,
+    autoSuggestProps?.typingSearchDelay || 500,
     false
   );
 
   const onSuggestionSelected = (_event: React.FormEvent<HTMLInputElement>, { suggestion }: { suggestion: Suggestion }): void => {
     setLastSearchValue(suggestion.label);
     setIsDirty(false);
-    props.handleChange(suggestion.value, system, suggestion.label);
+    handleChange(suggestion.value, system, suggestion.label);
   };
 
   const onBlur = (_e: React.FormEvent, { highlightedSuggestion }: { highlightedSuggestion: Suggestion | null }): void => {
@@ -170,18 +188,18 @@ const AutosuggestView = (props: AutosuggestViewProps): JSX.Element => {
       setLastSearchValue(highlightedSuggestion.label);
       setIsDirty(false);
       setNoSuggestionsToShow(false);
-      props.handleChange(highlightedSuggestion.value, system, highlightedSuggestion.label);
-    } else if (isDirty && isOpenChoice() && props.handleStringChange) {
+      handleChange(highlightedSuggestion.value, system, highlightedSuggestion.label);
+    } else if (isDirty && isOpenChoice() && handleStringChange) {
       setIsDirty(false);
       setNoSuggestionsToShow(false);
 
       const codingAnswer = getCodingAnswer();
       if (inputValue) {
-        props.handleChange(OPEN_CHOICE_ID, OPEN_CHOICE_SYSTEM, props.resources?.openChoiceOption);
-        props.handleStringChange(inputValue);
+        handleChange(OPEN_CHOICE_ID, OPEN_CHOICE_SYSTEM, resources?.openChoiceOption);
+        handleStringChange(inputValue);
       } else if (codingAnswer) {
-        props.clearCodingAnswer(codingAnswer);
-        props.handleStringChange('');
+        clearCodingAnswer(codingAnswer);
+        handleStringChange('');
       }
     } else {
       setNoSuggestionsToShow(false);
@@ -191,11 +209,11 @@ const AutosuggestView = (props: AutosuggestViewProps): JSX.Element => {
   const hasCodingAnswer = (): boolean => {
     return !!getCodingAnswer();
   };
-  const formId = createFromIdFromPath(props.path);
+  const formId = createFromIdFromPath(path);
   const { getFieldState, register } = useFormContext();
   const { error } = getFieldState(formId);
 
-  const subLabelText = getSublabelText(props.item, props.onRenderMarkdown, props.questionnaire, props.resources);
+  const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
   return (
     <div className="page_refero__component page_refero__component_choice page_refero__component_choice_autosuggest">
       <FormGroup mode="ongrey" error={error?.message}>
@@ -204,22 +222,15 @@ const AutosuggestView = (props: AutosuggestViewProps): JSX.Element => {
           {
             onChange: onChangeInput,
           })}
-          id={getId(props.id)}
-          label={
-            <Label
-              item={props.item}
-              onRenderMarkdown={props.onRenderMarkdown}
-              questionnaire={props.questionnaire}
-              resources={props.resources}
-            />
-          }
+          id={getId(id)}
+          label={<Label item={item} onRenderMarkdown={onRenderMarkdown} questionnaire={questionnaire} resources={resources} />}
           subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
           className="page_refero__autosuggest"
           type="search"
-          isRequired={isRequired(props.item)}
+          isRequired={isRequired(item)}
           errorMessage={error ? error.message : undefined}
-          helpButton={props.renderHelpButton()}
-          helpElement={props.renderHelpElement()}
+          helpButton={renderHelpButton()}
+          helpElement={renderHelpElement()}
           suggestions={suggestions}
           onSuggestionsFetchRequested={debouncedOnSuggestionsFetchRequested}
           onSuggestionsClearRequested={(): void => {
@@ -238,12 +249,12 @@ const AutosuggestView = (props: AutosuggestViewProps): JSX.Element => {
           </div>
         )}
         {noSuggestionsToShow && (
-          <div className="page_refero__no-suggestions">{props.resources?.autosuggestNoSuggestions?.replace('{0}', inputValue)}</div>
+          <div className="page_refero__no-suggestions">{resources?.autosuggestNoSuggestions?.replace('{0}', inputValue)}</div>
         )}
-        {hasLoadError && <NotificationPanel variant="alert">{props.resources?.autoSuggestLoadError}</NotificationPanel>}
-        {props.renderDeleteButton('page_refero__deletebutton--margin-top')}
-        {props.repeatButton}
-        {props.children ? <div className="nested-fieldset nested-fieldset--full-height">{props.children}</div> : null}
+        {hasLoadError && <NotificationPanel variant="alert">{resources?.autoSuggestLoadError}</NotificationPanel>}
+        {renderDeleteButton('page_refero__deletebutton--margin-top')}
+        {repeatButton}
+        {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
       </FormGroup>
     </div>
   );

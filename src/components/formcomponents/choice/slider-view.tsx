@@ -61,12 +61,10 @@ const SliderView: React.FC<SliderProps> = ({ item, handleChange, selected, child
 
   return (
     <div className="page_refero__component page_refero__component_choice page_refero__component_choice_slider">
-      <FormGroup mode="ongrey">
+      <FormGroup mode="ongrey" error={error?.message}>
         <Slider
           {...register(formId, {
             required: isRequired(item),
-            max: { value: getMaxValueExtensionValue(item) ?? 0, message: 'Max value' },
-            min: { value: getMinValueExtensionValue(item) ?? 0, message: 'Min value' },
           })}
           maxValue={getMaxValueExtensionValue(item)}
           minValue={getMinValueExtensionValue(item)}
