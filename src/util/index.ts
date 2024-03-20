@@ -1,12 +1,12 @@
+import DOMPurify from 'dompurify';
 import { Questionnaire, QuestionnaireResponseItem, QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
-import marked from 'marked';
+import { marked } from 'marked';
 import { ConnectedComponent } from 'react-redux';
 import * as uuid from 'uuid';
 
 import { Resources } from '../types/resources';
 
 import { isValid, invalidNodes } from '@helsenorge/core-utils/string-utils';
-import { ValidationProps } from '@helsenorge/form/components/form/validation';
 
 import { getQuestionnaireItemCodeValue } from './codingsystem';
 import {
@@ -190,6 +190,13 @@ export function getText(
   return '';
 }
 
+function purifyHTML(html: string): string {
+  return DOMPurify.sanitize(html, {
+    RETURN_TRUSTED_TYPE: true,
+    ADD_ATTR: ['target'],
+  }) as unknown as string;
+}
+
 function getMarkdownValue(
   markdownText: string,
   item: QuestionnaireItem,
@@ -200,8 +207,8 @@ function getMarkdownValue(
   const itemValue = getHyperlinkExtensionValue(item);
   const questionnaireValue = questionnaire ? getHyperlinkExtensionValue(questionnaire) : undefined;
 
-  const renderer = new marked.Renderer();
-  renderer.link = (href: string, title: string, text: string): string => {
+  const rendererNewWindow = new marked.Renderer({ async: false });
+  rendererNewWindow.link = (href: string, title: string, text: string): string => {
     const urlString = `<a href=${href} ${
       title ? `title=${title}` : ''
     } target="_blank" rel="noopener noreferrer" class="external" aria-label=${
@@ -209,7 +216,8 @@ function getMarkdownValue(
     }>${text}</a>`;
     return urlString;
   };
-  const rendererSameWindow = new marked.Renderer();
+
+  const rendererSameWindow = new marked.Renderer({ async: false });
   rendererSameWindow.link = (href: string, title: string, text: string): string => {
     const urlString = `<a href=${href} ${title ? `title=${title}` : ''} target="${openNewIfAbsolute(
       href
@@ -218,15 +226,15 @@ function getMarkdownValue(
   };
 
   if (onRenderMarkdown) {
-    return onRenderMarkdown(item, markdownText.toString());
+    return onRenderMarkdown(item, markdownText);
   }
   if (itemValue === HyperlinkTarget.SAME_WINDOW || (!itemValue && questionnaireValue === HyperlinkTarget.SAME_WINDOW)) {
-    marked.setOptions({ renderer: rendererSameWindow });
-    return marked(markdownText.toString());
+    marked.use({ renderer: rendererSameWindow, hooks: { postprocess: purifyHTML }, async: false });
+    return marked.parse(markdownText).toString();
+  } else {
+    marked.use({ renderer: rendererNewWindow, hooks: { postprocess: purifyHTML }, async: false });
+    return marked.parse(markdownText).toString();
   }
-
-  marked.setOptions({ renderer: renderer });
-  return marked(markdownText.toString());
 }
 
 export function getChildHeaderTag(item?: QuestionnaireItem, headerTag?: number): number {

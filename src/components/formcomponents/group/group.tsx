@@ -10,9 +10,9 @@ import { Resources } from '../../../types/resources';
 import AnchorLink from '@helsenorge/designsystem-react/components/AnchorLink';
 
 import AsPdf from './AsPdf';
-import { NewValueAction } from '../../../actions/newValue';
 import { RenderContextType } from '../../../constants/renderContextType';
-import { GlobalState } from '../../../reducers';
+import { NewValueAction } from '../../../store/actions/newValue';
+import { GlobalState } from '../../../store/reducers';
 import { getGroupItemControl } from '../../../util/group-item-control';
 import { getText, getId, renderPrefix } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';

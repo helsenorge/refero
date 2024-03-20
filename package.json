@@ -40,7 +40,7 @@
     "react-dom": "^17.0.2",
     "react-redux": "^8.1.3",
     "redux": "^5.0.1",
-    "redux-thunk": "^2.4.2"
+    "redux-thunk": "^3.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.22.9",
@@ -50,6 +50,7 @@
     "@helsenorge/designsystem-react": "^6.4.0",
     "@helsenorge/file-upload": "^30.0.2",
     "@hookform/devtools": "^4.3.1",
+    "@hookform/resolvers": "^3.3.4",
     "@teamsupercell/typings-for-css-modules-loader": "^2.5.2",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^12.1.3",
@@ -127,15 +128,14 @@
     "whatwg-fetch": "^2.0.4",
     "xml2js": "^0.6.2",
     "yargs": "^17.7.2",
-    "@hookform/resolvers": "^3.3.4",
+    "@redux-devtools/extension": "^3.3.0",
     "zod": "^3.22.4"
   },
   "dependencies": {
     "dompurify": "^2.0.8",
     "fhirpath": "2.7.3",
     "immer": "^9.0.6",
-    "isomorphic-fetch": "^3.0.0",
-    "marked": "^3.0.8",
+    "marked": "^12.0.1",
     "react-collapse": "^5.1.1",
     "uuid": "^9.0.0"
   },

@@ -7,11 +7,11 @@ import { ThunkDispatch } from 'redux-thunk';
 import { ReferoProps } from '../types/referoProps';
 
 import { RepeatButton } from './formcomponents/repeat/repeat-button';
-import { NewValueAction } from '../actions/newValue';
 import constants, { NAVIGATOR_BLINDZONE_ID } from '../constants';
 import ItemType from '../constants/itemType';
-import { GlobalState } from '../reducers';
-import { FormData, FormDefinition, getFormData, getFormDefinition } from '../reducers/form';
+import { NewValueAction } from '../store/actions/newValue';
+import { GlobalState } from '../store/reducers';
+import { FormData, FormDefinition, getFormData, getFormDefinition } from '../store/reducers/form';
 import { getComponentForItem, isHiddenItem, shouldRenderRepeatButton } from '../util';
 import { ActionRequester } from '../util/actionRequester';
 import { getCodingTextTableValues, getNavigatorExtension } from '../util/extension';

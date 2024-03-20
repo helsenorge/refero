@@ -1,6 +1,6 @@
 import { ThunkDispatch } from 'redux-thunk';
-import { NewValueAction } from '../actions/newValue';
-import { GlobalState } from '../reducers';
+import { NewValueAction } from '../store/actions/newValue';
+import { GlobalState } from '../store/reducers';
 import { Path } from '../util/refero-core';
 import { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 

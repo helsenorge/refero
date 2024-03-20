@@ -7,7 +7,7 @@ import { Resources } from '../types/resources';
 
 import RenderForm from './renderForm';
 import { NAVIGATOR_BLINDZONE_ID } from '../constants';
-import { FormDefinition } from '../reducers/form';
+import { FormDefinition } from '../store/reducers/form';
 import { getTopLevelElements } from '../util/getTopLevelElements';
 
 interface StepViewProps {

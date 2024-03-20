@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 
+import { composeWithDevTools } from '@redux-devtools/extension';
 import { Bundle, Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 import { Provider } from 'react-redux';
 import { Store, legacy_createStore as createStore, applyMiddleware } from 'redux';
@@ -34,7 +35,7 @@ const getQuestionnaireFromBubndle = (bundle: Bundle<Questionnaire> | Questionnai
 };
 
 const FormFillerPreview = ({ showFormFiller }: Props): JSX.Element => {
-  const store: Store = createStore(rootReducer, applyMiddleware(thunk));
+  const store: Store = createStore(rootReducer, composeWithDevTools(applyMiddleware(thunk)));
 
   const questionnaireForPreview = JSON.parse(JSON.stringify(skjema ?? {}, emptyPropertyReplacer)) as Bundle<Questionnaire> | Questionnaire;
   const [questionnaireResponse, setQuestionnaireResponse] = useState<QuestionnaireResponse>();

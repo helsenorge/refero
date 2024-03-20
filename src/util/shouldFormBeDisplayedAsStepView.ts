@@ -1,4 +1,4 @@
-import { FormDefinition } from '../reducers/form';
+import { FormDefinition } from '../store/reducers/form';
 
 export const shouldFormBeDisplayedAsStepView = (formDefinition: FormDefinition): boolean => {
   let shouldDisplay = false;

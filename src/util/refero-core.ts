@@ -10,7 +10,7 @@ import { QuestionnaireEnableOperator } from '../types/fhirEnums';
 
 import { getMinOccursExtensionValue } from './extension';
 import ItemType from '../constants/itemType';
-import { FormData, FormDefinition } from '../reducers/form';
+import { FormData, FormDefinition } from '../store/reducers/form';
 import { enableWhenMatches } from '../util/enableWhenMatcher';
 
 export function getRootQuestionnaireResponseItemFromData(

@@ -2,8 +2,8 @@ import { Coding, QuestionnaireItem, Attachment, QuestionnaireResponseItem, Quant
 import { Action } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 
+import { Path } from '../../util/refero-core';
 import { GlobalState } from '../reducers';
-import { Path } from '../util/refero-core';
 
 export type NEW_VALUE = 'refero/NEW_VALUE';
 export const NEW_VALUE: NEW_VALUE = 'refero/NEW_VALUE';
