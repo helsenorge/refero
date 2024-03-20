@@ -172,11 +172,9 @@ const ReceiverComponent: React.FC<ReceiverComponentProps> = props => {
 
     return (
       <Select
-        {...register(`${safeId}.${level}}`, {
-          required: true,
-          onChange: handleSelectChange,
-          value: selectedPath[level] ? selectedPath[level].toString() : '',
-        })}
+        {...register(`${safeId}.${level}}`)}
+        onChange={handleSelectChange}
+        value={selectedPath[level] ? selectedPath[level].toString() : ''}
         key={selectKey}
         selectId={`${getId(props.id)}-${selectKey}`}
         label={<Label labelTexts={[{ text: label, type: 'semibold' }]} />}

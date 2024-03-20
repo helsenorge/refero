@@ -75,7 +75,7 @@ const attachmentHtml = ({
   return (
     <div className="page_refero__component page_refero__component_attachment">
       <Dropzone
-        {...register(getId(item.linkId), { required: { value: !!isRequired, message: '' } })}
+        {...register(getId(item.linkId))}
         id={id}
         label={label}
         subLabel={subLabel}

@@ -34,7 +34,6 @@ import Quantity from '../components/formcomponents/quantity/quantity';
 import StringComponent from '../components/formcomponents/string/string';
 import TableContainer from '../components/formcomponents/table/TableContainer';
 import Text from '../components/formcomponents/text/text';
-import { WithCommonFunctionsProps } from '../components/with-common-functions';
 import CodingSystemConstants from '../constants/codingsystems';
 import ExtensionConstants from '../constants/extensions';
 import { HyperlinkTarget } from '../constants/hyperlinkTarget';
@@ -63,13 +62,9 @@ export const isTableCode = (extensionCode: string | string[]): boolean => {
   return isTable;
 };
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function getComponentForItem(type: string, extensionCode?: string | string[]) {
+export function getComponentForItem(type: string, extensionCode?: string | string[]): ConnectedComponent<any, any> | undefined {
   if (String(type) === ItemType.GROUP && !!extensionCode && isTableCode(extensionCode)) {
-    return TableContainer as ConnectedComponent<
-      any,
-      Omit<WithCommonFunctionsProps, keyof WithCommonFunctionsProps> & WithCommonFunctionsProps
-    >;
+    return TableContainer;
   } else if (String(type) === ItemType.GROUP) {
     return Group;
   }

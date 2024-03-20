@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
-import { connect } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
 import { Resources } from '../../../types/resources';
@@ -13,27 +13,23 @@ import Modal from '@helsenorge/designsystem-react/components/Modal';
 
 import { NewValueAction, deleteRepeatItemAsync } from '../../../actions/newValue';
 import { GlobalState } from '../../../reducers';
-import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
-import { RenderContext } from '../../../util/renderContext';
 
 interface DeleteButtonProps {
-  item: QuestionnaireItem;
-  path: Array<Path>;
+  item?: QuestionnaireItem;
+  path?: Array<Path>;
   resources?: Resources;
-  dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
   mustShowConfirm: boolean;
   className?: string;
-  onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
-  renderContext: RenderContext;
+  onAnswerChange?: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
 }
-
-const DeleteButton = ({ resources, dispatch, item, path, onAnswerChange, mustShowConfirm }: DeleteButtonProps): JSX.Element => {
+const DeleteButton = ({ resources, item, path, onAnswerChange, mustShowConfirm }: DeleteButtonProps): JSX.Element => {
   const [showConfirm, setShowConfirm] = useState(false);
+  const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
   const onDeleteRepeatItemConfirmed = (): void => {
     if (dispatch && item && path) {
-      dispatch(deleteRepeatItemAsync(path, item))?.then(newState =>
-        onAnswerChange(newState, path, item, {} as QuestionnaireResponseItemAnswer)
+      dispatch(deleteRepeatItemAsync(path, item))?.then(
+        newState => onAnswerChange && onAnswerChange(newState, path, item, {} as QuestionnaireResponseItemAnswer)
       );
     }
     setShowConfirm(false);
@@ -71,5 +67,4 @@ const DeleteButton = ({ resources, dispatch, item, path, onAnswerChange, mustSho
     </>
   );
 };
-const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(DeleteButton);
-export default connectedComponent;
+export default DeleteButton;

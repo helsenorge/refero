@@ -48,7 +48,6 @@ const CheckboxView = ({
   if (!options) {
     return null;
   }
-
   const checkboxes = options.map(el => {
     return { label: el.label, id: el.type, checked: isSelected(el, selected), disabled: el.disabled };
   });

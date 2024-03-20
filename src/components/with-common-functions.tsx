@@ -148,7 +148,6 @@ export default function withCommonFunctions<T extends WithCommonFunctionsProps>(
             resources={props.resources}
             mustShowConfirm={mustShowConfirm}
             onAnswerChange={props.onAnswerChange}
-            renderContext={props.renderContext}
           />
         </div>
       );
@@ -172,7 +171,6 @@ export default function withCommonFunctions<T extends WithCommonFunctionsProps>(
             item={item}
             responseItems={response}
             parentPath={path}
-            renderContext={props.renderContext}
             disabled={item.type !== itemType.GROUP && !responseItem?.answer}
           />
         </div>
@@ -248,8 +246,7 @@ export default function withCommonFunctions<T extends WithCommonFunctionsProps>(
 
     const renderItem = (item: QuestionnaireItem, renderContext: RenderContext): Array<JSX.Element | undefined> => {
       const { resources, containedResources, responseItem, pdf, path, headerTag, promptLoginMessage, onRenderMarkdown } = props;
-      if (isHelpItem(item)) return [];
-      if (isHiddenItem(item)) return [];
+      if (isHelpItem(item) || isHiddenItem(item)) return [];
 
       const Comp = getComponentForItem(item.type, getCodingTextTableValues(item));
 

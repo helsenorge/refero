@@ -125,7 +125,6 @@ export const RenderFormItems = ({
                 item={item}
                 responseItems={responseItems}
                 parentPath={path}
-                renderContext={new RenderContext()}
                 disabled={item.type !== ItemType.GROUP && !responseItem.answer}
               />
             </div>

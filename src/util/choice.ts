@@ -19,13 +19,12 @@ import { getItemControlExtensionValue, getValidationTextExtension } from './exte
 import ExtensionConstants from '../constants/extensions';
 import Constants, { OPEN_CHOICE_ID } from '../constants/index';
 import itemControlConstants, { ItemControlValue } from '../constants/itemcontrol';
-import ItemControl from '../constants/itemcontrol';
 import ItemType from '../constants/itemType';
 
 import { isReadOnly, isRequired } from './index';
 
 export function hasCanonicalValueSet(item: QuestionnaireItem): boolean {
-  return !!item.answerValueSet && item.answerValueSet.substr(0, 4) === 'http';
+  return !!(item?.answerValueSet?.substring(0, 4) === 'http');
 }
 
 export function hasOptions(resources: Resources | undefined, item: QuestionnaireItem, containedResources?: Resource[]): boolean {
@@ -55,12 +54,12 @@ export function getOptions(
 
   if (item.type === ItemType.OPENCHOICE) {
     if (!options) {
-      options = [] as Options[];
+      options = [];
     }
     options.push({
       label: resources?.openChoiceOption,
       type: OPEN_CHOICE_ID,
-    } as Options);
+    });
   }
 
   return options;
@@ -108,17 +107,18 @@ export function getDisplay(options: Array<Options> | undefined, value: string | 
   });
   return display;
 }
+type RenderFunction = (o?: Options[]) => JSX.Element;
 
 export function renderOptions(
   item: QuestionnaireItem,
   containedResources: Resource[] | undefined,
-  renderRadio: (o: Array<Options> | undefined) => JSX.Element,
-  renderCheckbox: (o: Array<Options> | undefined) => JSX.Element,
-  renderDropdown: (o: Array<Options> | undefined) => JSX.Element,
-  renderSlider: () => JSX.Element,
+  renderRadio: RenderFunction,
+  renderCheckbox: RenderFunction,
+  renderDropdown: RenderFunction,
+  renderSlider: RenderFunction,
   resources: Resources | undefined,
-  renderAutosuggest: () => JSX.Element,
-  renderReceiverComponent?: () => JSX.Element
+  renderAutosuggest: RenderFunction,
+  renderReceiverComponent?: RenderFunction
 ): JSX.Element | null {
   const itemControlValue = getItemControlValue(item);
   const options = getOptions(resources, item, containedResources);
@@ -265,7 +265,7 @@ export function shouldShowExtraChoice(answer: Array<QuestionnaireResponseItemAns
 
   if (Array.isArray(answer)) {
     for (let i = 0; i < answer.length; i++) {
-      const el = answer[i] as QuestionnaireResponseItemAnswer;
+      const el = answer[i];
       if (el.valueCoding && el.valueCoding.code === OPEN_CHOICE_ID) {
         return true;
       }
@@ -292,7 +292,7 @@ function getExtensionOptions(item: QuestionnaireItem, readOnly: boolean): Array<
   return item.extension
     .filter((it: Extension) => it.url === ExtensionConstants.OPTION_REFERENCE)
     .map((it: Extension) => createRadiogroupOptionFromQuestionnaireExtension(it, readOnly))
-    .filter((it: Options | undefined) => it !== undefined) as Options[];
+    .filter((it: Options | undefined): it is Options => it !== undefined);
 }
 
 function getInlineOptions(item: QuestionnaireItem, readOnly: boolean): Array<Options> | undefined {
@@ -302,14 +302,13 @@ function getInlineOptions(item: QuestionnaireItem, readOnly: boolean): Array<Opt
 
   return item.answerOption
     .map((it: QuestionnaireItemAnswerOption) => createRadiogroupOptionFromQuestionnaireOption(it, readOnly))
-    .filter((it: Options | undefined) => it !== undefined) as Options[];
+    .filter((it: Options | undefined): it is Options => it !== undefined);
 }
 
 function createRadiogroupOptionFromQuestionnaireExtension(extension: Extension, readOnly: boolean): Options | undefined {
   if (extension.valueReference) {
     return createRadiogroupOptionFromValueReference(extension.valueReference, readOnly);
   }
-
   return undefined;
 }
 

@@ -76,8 +76,6 @@ const String = ({
   renderDeleteButton,
   repeatButton,
 }: StringProps): JSX.Element => {
-  const [inputValue, setInputValue] = React.useState('');
-
   const handleChange = (event: React.FormEvent): void => {
     const value = (event.target as HTMLInputElement).value;
     if (dispatch) {
@@ -116,7 +114,6 @@ const String = ({
   const handleInputChange = (event: React.FormEvent<HTMLInputElement>): void => {
     event.persist();
     debouncedHandleChange(event);
-    setInputValue(event.currentTarget.value);
   };
 
   const formId = createFromIdFromPath(path);
@@ -143,7 +140,6 @@ const String = ({
           width={25}
           inputId={inputId}
           defaultValue={getStringValue(answer)}
-          required={isRequired(item)}
           placeholder={getPlaceholder(item)}
           className="page_refero__input"
         />
