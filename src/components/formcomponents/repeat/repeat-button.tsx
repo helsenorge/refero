@@ -10,9 +10,9 @@ import Button from '@helsenorge/designsystem-react/components/Button';
 import Icon from '@helsenorge/designsystem-react/components/Icon';
 import PlusLarge from '@helsenorge/designsystem-react/components/Icons/PlusLarge';
 
-import { NewValueAction } from '../../../actions/newValue';
-import { addRepeatItem } from '../../../actions/newValue';
-import { GlobalState } from '../../../reducers';
+import { NewValueAction } from '../../../store/actions/newValue';
+import { addRepeatItem } from '../../../store/actions/newValue';
+import { GlobalState } from '../../../store/reducers';
 import { getRepeatsTextExtension } from '../../../util/extension';
 import { Path } from '../../../util/refero-core';
 

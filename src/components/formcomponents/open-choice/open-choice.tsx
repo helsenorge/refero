@@ -12,17 +12,17 @@ import CheckboxView from './checkbox-view';
 import DropdownView from './dropdown-view';
 import RadioView from './radio-view';
 import TextField from './text-field';
+import { OPEN_CHOICE_ID } from '../../../constants';
+import { OPEN_CHOICE_SYSTEM } from '../../../constants/codingsystems';
+import ItemControlConstants from '../../../constants/itemcontrol';
 import {
   NewValueAction,
   removeCodingValueAsync,
   newCodingValueAsync,
   newCodingStringValueAsync,
   removeCodingStringValueAsync,
-} from '../../../actions/newValue';
-import { OPEN_CHOICE_ID } from '../../../constants';
-import { OPEN_CHOICE_SYSTEM } from '../../../constants/codingsystems';
-import ItemControlConstants from '../../../constants/itemcontrol';
-import { GlobalState } from '../../../reducers';
+} from '../../../store/actions/newValue';
+import { GlobalState } from '../../../store/reducers';
 import { isReadOnly, isDataReceiver } from '../../../util';
 import {
   renderOptions,

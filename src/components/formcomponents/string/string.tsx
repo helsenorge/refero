@@ -5,7 +5,6 @@ import { useFormContext } from 'react-hook-form';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
-import { ValidationProps } from '../../../types/formTypes/validation';
 import { Resources } from '../../../types/resources';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
@@ -15,8 +14,8 @@ import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label
 import { debounce } from '@helsenorge/core-utils/debounce';
 import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 
-import { NewValueAction, newStringValueAsync } from '../../../actions/newValue';
-import { GlobalState } from '../../../reducers';
+import { NewValueAction, newStringValueAsync } from '../../../store/actions/newValue';
+import { GlobalState } from '../../../store/reducers';
 import { getPlaceholder } from '../../../util/extension';
 import {
   isReadOnly,

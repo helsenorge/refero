@@ -14,7 +14,7 @@ import { emptyPropertyReplacer } from './helpers';
 import { getResources } from './resources/referoResources';
 import skjema from './skjema/NHN_Testskjema_TextBox-nb-NO-v0.1.json';
 import { ReferoContainer } from '../components';
-import rootReducer from '../reducers';
+import rootReducer from '../store/reducers';
 
 type Props = {
   showFormFiller: () => void;

@@ -10,10 +10,26 @@ import {
 } from 'fhir/r4';
 import produce, { enableES5 } from 'immer';
 
-import { QuestionnaireItemEnableBehaviorCodes } from '../types/fhirEnums';
+import { QuestionnaireItemEnableBehaviorCodes } from '../../types/fhirEnums';
 
 import { LanguageLocales } from '@helsenorge/core-utils/constants/languages';
 
+import itemType from '../../constants/itemType';
+import { createQuestionnaireResponseAnswer } from '../../util/createQuestionnaireResponseAnswer';
+import { getMinOccursExtensionValue } from '../../util/extension';
+import { isStringEmpty } from '../../util/index';
+import {
+  getResponseItemWithPath,
+  getQuestionnaireDefinitionItem,
+  getQuestionnaireResponseItemWithLinkid,
+  getResponseItems,
+  getDefinitionItems,
+  enableWhenMatchesAnswer,
+  getArrayContainingResponseItemFromItems,
+  Path,
+  getResponseItemAndPathWithLinkId,
+  getQuestionnaireDefinitionItemWithLinkid,
+} from '../../util/refero-core';
 import { FormAction, SET_SKJEMA_DEFINITION } from '../actions/form';
 import { generateQuestionnaireResponse } from '../actions/generateQuestionnaireResponse';
 import {
@@ -27,23 +43,7 @@ import {
   REMOVE_ATTACHMENT_VALUE,
 } from '../actions/newValue';
 import { syncQuestionnaireResponse } from '../actions/syncQuestionnaireResponse';
-import itemType from '../constants/itemType';
 import { GlobalState } from '../reducers/index';
-import { createQuestionnaireResponseAnswer } from '../util/createQuestionnaireResponseAnswer';
-import { getMinOccursExtensionValue } from '../util/extension';
-import { isStringEmpty } from '../util/index';
-import {
-  getResponseItemWithPath,
-  getQuestionnaireDefinitionItem,
-  getQuestionnaireResponseItemWithLinkid,
-  getResponseItems,
-  getDefinitionItems,
-  enableWhenMatchesAnswer,
-  getArrayContainingResponseItemFromItems,
-  Path,
-  getResponseItemAndPathWithLinkId,
-  getQuestionnaireDefinitionItemWithLinkid,
-} from '../util/refero-core';
 
 enableES5();
 

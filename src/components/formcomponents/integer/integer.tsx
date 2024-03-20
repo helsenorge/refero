@@ -13,8 +13,8 @@ import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label
 
 import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 
-import { NewValueAction, newIntegerValueAsync } from '../../../actions/newValue';
-import { GlobalState } from '../../../reducers';
+import { NewValueAction, newIntegerValueAsync } from '../../../store/actions/newValue';
+import { GlobalState } from '../../../store/reducers';
 import { getPlaceholder } from '../../../util/extension';
 import { isReadOnly, getId, getSublabelText, renderPrefix, getText } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';

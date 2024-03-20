@@ -19,15 +19,15 @@ import { ReferoProps } from '../types/referoProps';
 
 import RenderForm from './renderForm';
 import StepView from './stepView';
-import { setSkjemaDefinition } from '../actions/form';
-import { NewValueAction, newQuantityValue, newDecimalValue, newIntegerValue } from '../actions/newValue';
 import RepeatButton from '../components/formcomponents/repeat/repeat-button';
 import Constants, { NAVIGATOR_BLINDZONE_ID } from '../constants/index';
 import ItemType from '../constants/itemType';
 import { PresentationButtonsType } from '../constants/presentationButtonsType';
-import { GlobalState } from '../reducers';
-import { getFormDefinition, getFormData } from '../reducers/form';
-import { FormDefinition, FormData } from '../reducers/form';
+import { setSkjemaDefinition } from '../store/actions/form';
+import { NewValueAction, newQuantityValue, newDecimalValue, newIntegerValue } from '../store/actions/newValue';
+import { GlobalState } from '../store/reducers';
+import { getFormDefinition, getFormData } from '../store/reducers/form';
+import { FormDefinition, FormData } from '../store/reducers/form';
 import { ActionRequester } from '../util/actionRequester';
 import {
   getQuestionnaireUnitExtensionValue,

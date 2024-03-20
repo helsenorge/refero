@@ -11,8 +11,8 @@ import Icon from '@helsenorge/designsystem-react/components/Icon';
 import TrashCan from '@helsenorge/designsystem-react/components/Icons/TrashCan';
 import Modal from '@helsenorge/designsystem-react/components/Modal';
 
-import { NewValueAction, deleteRepeatItemAsync } from '../../../actions/newValue';
-import { GlobalState } from '../../../reducers';
+import { NewValueAction, deleteRepeatItemAsync } from '../../../store/actions/newValue';
+import { GlobalState } from '../../../store/reducers';
 import { Path } from '../../../util/refero-core';
 
 interface DeleteButtonProps {

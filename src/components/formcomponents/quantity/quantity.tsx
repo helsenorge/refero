@@ -17,8 +17,8 @@ import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Input from '@helsenorge/designsystem-react/components/Input';
 import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
 
-import { NewValueAction, newQuantityValueAsync } from '../../../actions/newValue';
-import { GlobalState } from '../../../reducers';
+import { NewValueAction, newQuantityValueAsync } from '../../../store/actions/newValue';
+import { GlobalState } from '../../../store/reducers';
 import { getPlaceholder, getQuestionnaireUnitExtensionValue } from '../../../util/extension';
 import { isReadOnly, getId, getSublabelText, renderPrefix, getText } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';

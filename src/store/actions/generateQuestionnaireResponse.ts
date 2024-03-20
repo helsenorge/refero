@@ -6,11 +6,11 @@ import {
   Questionnaire,
 } from 'fhir/r4';
 
-import Constants from '../constants/index';
-import itemType from '../constants/itemType';
-import StatusConstants from '../constants/status';
-import { createQuestionnaireResponseAnswer } from '../util/createQuestionnaireResponseAnswer';
-import { getMinOccursExtensionValue } from '../util/extension';
+import Constants from '../../constants/index';
+import itemType from '../../constants/itemType';
+import StatusConstants from '../../constants/status';
+import { createQuestionnaireResponseAnswer } from '../../util/createQuestionnaireResponseAnswer';
+import { getMinOccursExtensionValue } from '../../util/extension';
 
 export function generateQuestionnaireResponse(questionnaire: Questionnaire): QuestionnaireResponse | undefined {
   if (!questionnaire || !questionnaire.item || questionnaire.item.length === 0) {

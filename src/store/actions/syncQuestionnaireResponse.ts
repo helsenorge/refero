@@ -7,7 +7,7 @@ import {
 } from 'fhir/r4';
 
 import { createQuestionnaireResponseItem } from './generateQuestionnaireResponse';
-import ItemType from '../constants/itemType';
+import ItemType from '../../constants/itemType';
 import {
   hasAnswer,
   hasAttachmentAnswer,
@@ -20,7 +20,7 @@ import {
   hasStringAnswer,
   hasQuantityAnswer,
   hasTimeAnswer,
-} from '../util/refero-core';
+} from '../../util/refero-core';
 
 interface Dictionary<T> {
   [linkId: string]: T[];

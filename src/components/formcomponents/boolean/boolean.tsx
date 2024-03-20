@@ -16,8 +16,8 @@ import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 
 import Pdf from './pdf';
 import { getBooleanValue } from './utils';
-import { NewValueAction, newBooleanValueAsync } from '../../../actions/newValue';
-import { GlobalState } from '../../../reducers';
+import { NewValueAction, newBooleanValueAsync } from '../../../store/actions/newValue';
+import { GlobalState } from '../../../store/reducers';
 import { getText, isReadOnly, renderPrefix } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path, createFromIdFromPath } from '../../../util/refero-core';

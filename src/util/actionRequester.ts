@@ -2,6 +2,7 @@ import { Questionnaire, QuestionnaireResponse, QuestionnaireItem, Coding, Quanti
 
 import { getItemControlValue } from './choice';
 import { getResponseItemAndPathWithLinkId, getQuestionnaireDefinitionItem, Path } from './refero-core';
+import itemControlConstants from '../constants/itemcontrol';
 import {
   newIntegerValue,
   NewValueAction,
@@ -16,8 +17,7 @@ import {
   newStringValue,
   removeCodingValue,
   removeCodingStringValue,
-} from '../actions/newValue';
-import itemControlConstants from '../constants/itemcontrol';
+} from '../store/actions/newValue';
 
 export interface IActionRequester {
   addIntegerAnswer(linkId: string, value: number, index?: number): void;

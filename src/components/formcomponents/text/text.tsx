@@ -1,15 +1,12 @@
 import * as React from 'react';
 
-import DOMPurify from 'dompurify';
 import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem } from 'fhir/r4';
 import { useFormContext } from 'react-hook-form';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
-import { ValidationProps } from '../../../types/formTypes/validation';
 import { Resources } from '../../../types/resources';
 
-import Expander from '@helsenorge/designsystem-react/components/Expander';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
 import Textarea from '@helsenorge/designsystem-react/components/Textarea';
@@ -18,10 +15,10 @@ import { debounce } from '@helsenorge/core-utils/debounce';
 
 import { HighlightComponent } from './HighlightComponent';
 import { InlineComponent } from './InlineComponent';
-import { NewValueAction, newStringValueAsync } from '../../../actions/newValue';
 import Constants from '../../../constants/index';
 import itemControlConstants from '../../../constants/itemcontrol';
-import { GlobalState } from '../../../reducers';
+import { NewValueAction, newStringValueAsync } from '../../../store/actions/newValue';
+import { GlobalState } from '../../../store/reducers';
 import { getPlaceholder, getItemControlExtensionValue } from '../../../util/extension';
 import {
   isReadOnly,

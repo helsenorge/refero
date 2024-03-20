@@ -4,11 +4,11 @@ import { ThunkDispatch } from 'redux-thunk';
 import { QuestionnaireItemEnableBehaviorCodes } from '../types/fhirEnums';
 
 import { enableWhenMatchesAnswer, getQuestionnaireResponseItemWithLinkid, getResponseItems, Path, isInGroupContext } from './refero-core';
-import { NewValueAction } from '../actions/newValue';
 import { WithCommonFunctionsProps } from '../components/with-common-functions';
 import ItemType from '../constants/itemType';
-import { getFormData } from '../reducers/form';
-import { GlobalState } from '../reducers/index';
+import { NewValueAction } from '../store/actions/newValue';
+import { getFormData } from '../store/reducers/form';
+import { GlobalState } from '../store/reducers/index';
 import { getCopyExtension, getCalculatedExpressionExtension } from '../util/extension';
 import { evaluateFhirpathExpressionToGetString } from '../util/fhirpathHelper';
 

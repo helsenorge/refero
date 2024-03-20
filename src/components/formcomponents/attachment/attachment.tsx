@@ -10,8 +10,8 @@ import { TextMessage } from '../../../types/text-message';
 import { UploadedFile } from '@helsenorge/file-upload/components/dropzone';
 
 import AttachmentHtml from './attachmenthtml';
-import { NewValueAction, newAttachmentAsync, removeAttachmentAsync } from '../../../actions/newValue';
-import { GlobalState } from '../../../reducers';
+import { NewValueAction, newAttachmentAsync, removeAttachmentAsync } from '../../../store/actions/newValue';
+import { GlobalState } from '../../../store/reducers';
 import { getValidationTextExtension, getMaxOccursExtensionValue, getMinOccursExtensionValue } from '../../../util/extension';
 import { isRequired, getId, isReadOnly, isRepeat, getSublabelText } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
