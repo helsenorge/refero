@@ -1,15 +1,15 @@
 import { QuestionnaireItem, Coding, Extension } from 'fhir/r4';
-import * as uuid from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 
 import { getCalculatedExpressionExtension } from './extension';
 import ExtensionConstants from '../constants/extensions';
 import ItemType from '../constants/itemType';
-import { ScoringItemType } from '../constants/scoringItemType';
 import { SCORING, SCORING_CODE, SCORING_FORMULAS, ScoringTypes, Type } from '../constants/scoring';
+import { ScoringItemType } from '../constants/scoringItemType';
 
 export function createDummySectionScoreItem(): QuestionnaireItem {
   return {
-    linkId: uuid.v4(),
+    linkId: uuidv4(),
     type: ItemType.QUANTITY,
     extension: [
       {

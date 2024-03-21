@@ -1,8 +1,7 @@
-import DOMPurify from 'dompurify';
 import { Questionnaire, QuestionnaireResponseItem, QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { marked } from 'marked';
 import { ConnectedComponent } from 'react-redux';
-import * as uuid from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 
 import { Resources } from '../types/resources';
 
@@ -62,52 +61,46 @@ export const isTableCode = (extensionCode: string | string[]): boolean => {
   return isTable;
 };
 
-export function getComponentForItem(type: string, extensionCode?: string | string[]): ConnectedComponent<any, any> | undefined {
-  if (String(type) === ItemType.GROUP && !!extensionCode && isTableCode(extensionCode)) {
-    return TableContainer;
-  } else if (String(type) === ItemType.GROUP) {
-    return Group;
+export function getComponentForItem(
+  type: QuestionnaireItem['type'],
+  extensionCode?: string | string[]
+): ConnectedComponent<any, any> | undefined {
+  switch (type) {
+    case ItemType.GROUP:
+      if (!!extensionCode && isTableCode(extensionCode)) {
+        return TableContainer;
+      } else {
+        return Group;
+      }
+    case ItemType.DISPLAY:
+      return Display;
+    case ItemType.BOOLEAN:
+      return Boolean;
+    case ItemType.DECIMAL:
+      return Decimal;
+    case ItemType.INTEGER:
+      return Integer;
+    case ItemType.DATE:
+      return Date;
+    case ItemType.DATETIME:
+      return DateTime;
+    case ItemType.TIME:
+      return Time;
+    case ItemType.STRING:
+      return StringComponent;
+    case ItemType.TEXT:
+      return Text;
+    case ItemType.CHOICE:
+      return Choice;
+    case ItemType.OPENCHOICE:
+      return OpenChoice;
+    case ItemType.ATTATCHMENT:
+      return Attachment;
+    case ItemType.QUANTITY:
+      return Quantity;
+    default:
+      return undefined;
   }
-  if (String(type) === ItemType.DISPLAY) {
-    return Display;
-  }
-  if (String(type) === ItemType.BOOLEAN) {
-    return Boolean;
-  }
-  if (String(type) === ItemType.DECIMAL) {
-    return Decimal;
-  }
-  if (String(type) === ItemType.INTEGER) {
-    return Integer;
-  }
-  if (String(type) === ItemType.DATE) {
-    return Date;
-  }
-  if (String(type) === ItemType.DATETIME) {
-    return DateTime;
-  }
-  if (String(type) === ItemType.TIME) {
-    return Time;
-  }
-  if (String(type) === ItemType.STRING) {
-    return StringComponent;
-  }
-  if (String(type) === ItemType.TEXT) {
-    return Text;
-  }
-  if (String(type) === ItemType.CHOICE) {
-    return Choice;
-  }
-  if (String(type) === ItemType.OPENCHOICE) {
-    return OpenChoice;
-  }
-  if (String(type) === ItemType.ATTATCHMENT) {
-    return Attachment;
-  }
-  if (String(type) === ItemType.QUANTITY) {
-    return Quantity;
-  }
-  return undefined;
 }
 
 export function isStringEmpty(string: string | undefined): boolean {
@@ -150,7 +143,7 @@ export function getId(id?: string): string {
   if (id) {
     return id;
   }
-  return uuid.v4();
+  return uuidv4();
 }
 
 export function renderPrefix(item: QuestionnaireItem): string {
@@ -190,13 +183,6 @@ export function getText(
   return '';
 }
 
-function purifyHTML(html: string): string {
-  return DOMPurify.sanitize(html, {
-    RETURN_TRUSTED_TYPE: true,
-    ADD_ATTR: ['target'],
-  }) as unknown as string;
-}
-
 function getMarkdownValue(
   markdownText: string,
   item: QuestionnaireItem,
@@ -229,11 +215,11 @@ function getMarkdownValue(
     return onRenderMarkdown(item, markdownText);
   }
   if (itemValue === HyperlinkTarget.SAME_WINDOW || (!itemValue && questionnaireValue === HyperlinkTarget.SAME_WINDOW)) {
-    marked.use({ renderer: rendererSameWindow, hooks: { postprocess: purifyHTML }, async: false });
-    return marked.parse(markdownText).toString();
+    marked.use({ renderer: rendererSameWindow, async: false });
+    return marked.parseInline(markdownText) as string;
   } else {
-    marked.use({ renderer: rendererNewWindow, hooks: { postprocess: purifyHTML }, async: false });
-    return marked.parse(markdownText).toString();
+    marked.use({ renderer: rendererNewWindow, async: false });
+    return marked.parseInline(markdownText) as string;
   }
 }
 
@@ -258,7 +244,7 @@ export function getLinkId(item: QuestionnaireItem): string {
   if (item && item.linkId) {
     return item.linkId;
   }
-  return uuid.v4();
+  return uuidv4();
 }
 
 export function getStringValue(answer: QuestionnaireResponseItemAnswer | Array<QuestionnaireResponseItemAnswer>): string {

@@ -12,7 +12,6 @@ import {
   ValueSet,
 } from 'fhir/r4';
 import { Collapse } from 'react-collapse';
-import { ThunkDispatch } from 'redux-thunk';
 
 import { AutoSuggestProps } from '../types/autoSuggestProps';
 import { OrgenhetHierarki } from '../types/orgenhetHierarki';
@@ -30,7 +29,6 @@ import RepeatButton from './formcomponents/repeat/repeat-button';
 import HelpButton from './help-button/help-button';
 import itemControlConstants from '../constants/itemcontrol';
 import itemType from '../constants/itemType';
-import { NewValueAction } from '../store/actions/newValue';
 import { GlobalState } from '../store/reducers';
 import { getCodingTextTableValues } from '../util/extension';
 import { findHelpItem, isHelpItem, getHelpItemType } from '../util/help';
@@ -68,7 +66,6 @@ export interface WithCommonFunctionsProps {
   validateScriptInjection?: boolean;
   showOptionalLabel?: boolean;
   showRequiredLabel?: boolean;
-  dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
   visibleDeleteButton?: boolean;
   repeatButton?: JSX.Element;
   attachmentErrorMessage?: string;
@@ -98,7 +95,6 @@ export interface WithCommonFunctionsProps {
   ) => JSX.Element;
   onAnswerChange?: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
   renderContext: RenderContext;
-  isHelpOpen?: boolean;
   onRenderMarkdown?: (item: QuestionnaireItem, markup: string) => string;
   fetchValueSet?: (
     searchString: string,
@@ -317,6 +313,7 @@ export default function withCommonFunctions<T extends WithCommonFunctionsProps>(
       }
       return renderedItems;
     };
+
     const renderChildrenItems = (renderContext: RenderContext): Array<JSX.Element> | undefined => {
       const { item } = props;
       if (!item || !item.item) {
@@ -350,8 +347,6 @@ export default function withCommonFunctions<T extends WithCommonFunctionsProps>(
           renderRepeatButton={renderRepeatButton}
           renderHelpButton={renderHelpButton}
           renderHelpElement={renderHelpElement}
-          isHelpOpen={isHelpVisible}
-          onRenderMarkdown={props.onRenderMarkdown}
           {...(props as T)}
         >
           {renderChildrenItems(props.renderContext)}

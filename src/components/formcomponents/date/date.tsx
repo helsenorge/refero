@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem, Questionnaire } from 'fhir/r4';
 import moment, { Moment } from 'moment';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
 import { Resources } from '../../../types/resources';
@@ -21,7 +21,7 @@ import { GlobalState } from '../../../store/reducers';
 import { getExtension, getItemControlExtensionValue } from '../../../util/extension';
 import { evaluateFhirpathExpressionToGetDate } from '../../../util/fhirpathHelper';
 import { getSublabelText } from '../../../util/index';
-import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
+import { mapStateToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
 import withCommonFunctions, { WithCommonFunctionsProps } from '../../with-common-functions';
 import Label from '../label';
@@ -33,7 +33,6 @@ export interface DateProps extends WithCommonFunctionsProps {
   responseItem: QuestionnaireResponseItem;
   answer: QuestionnaireResponseItemAnswer;
   resources?: Resources;
-  dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
   path: Array<Path>;
   pdf?: boolean;
   language?: string;
@@ -45,13 +44,13 @@ export interface DateProps extends WithCommonFunctionsProps {
   repeatButton: JSX.Element;
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
-  isHelpOpen?: boolean;
   onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
   children: React.ReactNode;
 }
 
 const DateComponent = (props: DateProps): JSX.Element | null => {
+  const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
   const [datepicker, setDatepicker] = React.useState<React.RefObject<DateRangePicker>>(React.createRef());
 
   const getMaxDate = (): Moment | undefined => {
@@ -99,7 +98,7 @@ const DateComponent = (props: DateProps): JSX.Element | null => {
   };
 
   const onDateValueChange = (newValue: string): void => {
-    const { dispatch, promptLoginMessage, path, item, answer, onAnswerChange } = props;
+    const { promptLoginMessage, path, item, answer, onAnswerChange } = props;
     const existingAnswer = answer?.valueDate || '';
     if (dispatch && newValue !== existingAnswer) {
       dispatch(newDateValueAsync(props.path, newValue, props.item))?.then(newState =>
@@ -202,5 +201,5 @@ const DateComponent = (props: DateProps): JSX.Element | null => {
 };
 
 const withCommonFunctionsComponent = withCommonFunctions(DateComponent);
-const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(withCommonFunctionsComponent);
+const connectedComponent = connect(mapStateToProps)(withCommonFunctionsComponent);
 export default connectedComponent;

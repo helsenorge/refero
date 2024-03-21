@@ -11,7 +11,7 @@ import designsystemtypography from '@helsenorge/designsystem-react/scss/typograp
 import itemControlConstants from '../../../constants/itemcontrol';
 import { getItemControlExtensionValue, getMarkdownExtensionValue } from '../../../util/extension';
 import { renderPrefix, getText, getId } from '../../../util/index';
-import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
+import { mapStateToProps } from '../../../util/map-props';
 
 export interface Props {
   id?: string;
@@ -63,5 +63,5 @@ const Display = ({ id, enable, pdf, item, questionnaire, onRenderMarkdown, resou
   return <div className={`page_refero__component page_refero__component_display ${highlightClass}`}>{value}</div>;
 };
 
-const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(Display);
+const connectedComponent = connect(mapStateToProps)(Display);
 export default connectedComponent;

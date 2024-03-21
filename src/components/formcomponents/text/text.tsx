@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem } from 'fhir/r4';
 import { useFormContext } from 'react-hook-form';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
 import { Resources } from '../../../types/resources';
@@ -31,7 +31,7 @@ import {
   getSublabelText,
   getStringValue,
 } from '../../../util/index';
-import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
+import { mapStateToProps } from '../../../util/map-props';
 import { Path, createFromIdFromPath } from '../../../util/refero-core';
 import { SanitizeText } from '../../../util/sanitize/domPurifyHelper';
 import withCommonFunctions, { WithCommonFunctionsProps } from '../../with-common-functions';
@@ -42,7 +42,6 @@ export interface TextProps extends WithCommonFunctionsProps {
   questionnaire?: Questionnaire;
   responseItem: QuestionnaireResponseItem;
   answer: QuestionnaireResponseItemAnswer;
-  dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
   path: Array<Path>;
   pdf?: boolean;
   promptLoginMessage?: () => void;
@@ -54,7 +53,6 @@ export interface TextProps extends WithCommonFunctionsProps {
   renderHelpElement: () => JSX.Element;
   resources?: Resources;
   onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
-  isHelpOpen?: boolean;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
   shouldExpanderRenderChildrenWhenClosed?: boolean;
   children: React.ReactNode;
@@ -68,7 +66,6 @@ const Text = ({
   resources,
   onRenderMarkdown,
   questionnaire,
-  dispatch,
   promptLoginMessage,
   path,
   onAnswerChange,
@@ -84,7 +81,7 @@ const Text = ({
   //   }
   //   return false;
   // };
-
+  const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
   const handleChange = (event: React.FormEvent): void => {
     const value = (event.target as HTMLInputElement).value;
     if (dispatch) {
@@ -183,5 +180,5 @@ const Text = ({
 };
 
 const withCommonFunctionsComponent = withCommonFunctions(Text);
-const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(withCommonFunctionsComponent);
+const connectedComponent = connect(mapStateToProps)(withCommonFunctionsComponent);
 export default connectedComponent;

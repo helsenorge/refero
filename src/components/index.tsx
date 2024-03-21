@@ -26,8 +26,8 @@ import { PresentationButtonsType } from '../constants/presentationButtonsType';
 import { setSkjemaDefinition } from '../store/actions/form';
 import { NewValueAction, newQuantityValue, newDecimalValue, newIntegerValue } from '../store/actions/newValue';
 import { GlobalState } from '../store/reducers';
-import { getFormDefinition, getFormData } from '../store/reducers/form';
 import { FormDefinition, FormData } from '../store/reducers/form';
+import { getFormDefinition, getFormData } from '../store/selectors/index';
 import { ActionRequester } from '../util/actionRequester';
 import {
   getQuestionnaireUnitExtensionValue,

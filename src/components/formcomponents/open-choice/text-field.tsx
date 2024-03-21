@@ -20,7 +20,7 @@ interface Props {
   item: QuestionnaireItem;
   questionnaire?: Questionnaire | null;
   answer: QuestionnaireResponseItemAnswer;
-  handleStringChange: (event: React.FormEvent<{}>) => void;
+  handleStringChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
   resources?: Resources;
   path: Path[];

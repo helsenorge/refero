@@ -6,8 +6,6 @@ import { useFormContext } from 'react-hook-form';
 
 import { Resources } from '../../../types/resources';
 
-import Validation from '@helsenorge/designsystem-react/components/Validation';
-
 import { LanguageLocales } from '@helsenorge/core-utils/constants/languages';
 import { DateRangePicker } from '@helsenorge/date-time/components/date-range-picker';
 import { DatePickerErrorPhrases } from '@helsenorge/date-time/components/date-range-picker/date-range-picker-types';

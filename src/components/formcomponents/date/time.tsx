@@ -3,7 +3,7 @@ import * as React from 'react';
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem, Questionnaire } from 'fhir/r4';
 import moment from 'moment';
 import { useFormContext } from 'react-hook-form';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
 import { Resources } from '../../../types/resources';
@@ -17,7 +17,7 @@ import { NewValueAction, newTimeValueAsync } from '../../../store/actions/newVal
 import { GlobalState } from '../../../store/reducers';
 import { getExtension, getValidationTextExtension } from '../../../util/extension';
 import { isReadOnly, isRequired, getId, getSublabelText } from '../../../util/index';
-import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
+import { mapStateToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
 import withCommonFunctions, { WithCommonFunctionsProps } from '../../with-common-functions';
 import Label from '../label';
@@ -31,7 +31,6 @@ export interface TimeProps extends WithCommonFunctionsProps {
   questionnaire?: Questionnaire;
   responseItem: QuestionnaireResponseItem;
   resources?: Resources;
-  dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
   path: Array<Path>;
   pdf?: boolean;
   promptLoginMessage?: () => void;
@@ -43,13 +42,13 @@ export interface TimeProps extends WithCommonFunctionsProps {
   repeatButton: JSX.Element;
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
-  isHelpOpen?: boolean;
   onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
   children?: React.ReactNode;
 }
 
 const Time = (props: TimeProps): JSX.Element => {
+  const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
   const convertAnswerToString = (answer: QuestionnaireResponseItemAnswer): string => {
     if (answer && answer.valueTime) {
       return answer.valueTime;
@@ -132,7 +131,7 @@ const Time = (props: TimeProps): JSX.Element => {
   };
 
   const dispatchNewTime = (newTime: string): void => {
-    const { dispatch, item, path, onAnswerChange } = props;
+    const { item, path, onAnswerChange } = props;
     if (dispatch) {
       dispatch(newTimeValueAsync(path, newTime, item))?.then(newState =>
         onAnswerChange(newState, path, item, { valueTime: newTime } as QuestionnaireResponseItemAnswer)
@@ -280,5 +279,5 @@ const Time = (props: TimeProps): JSX.Element => {
   );
 };
 const withCommonFunctionsComponent = withCommonFunctions(Time);
-const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(withCommonFunctionsComponent);
+const connectedComponent = connect(mapStateToProps)(withCommonFunctionsComponent);
 export default connectedComponent;

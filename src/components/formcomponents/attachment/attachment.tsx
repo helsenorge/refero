@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, Attachment, QuestionnaireResponseItem, Questionnaire } from 'fhir/r4';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
 import { Resources } from '../../../types/resources';
@@ -14,7 +14,7 @@ import { NewValueAction, newAttachmentAsync, removeAttachmentAsync } from '../..
 import { GlobalState } from '../../../store/reducers';
 import { getValidationTextExtension, getMaxOccursExtensionValue, getMinOccursExtensionValue } from '../../../util/extension';
 import { isRequired, getId, isReadOnly, isRepeat, getSublabelText } from '../../../util/index';
-import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
+import { mapStateToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
 import withCommonFunctions, { WithCommonFunctionsProps } from '../../with-common-functions';
 import Label from '../label';
@@ -22,7 +22,6 @@ import SubLabel from '../sublabel';
 import TextView from '../textview';
 
 export interface AttachmentProps extends WithCommonFunctionsProps {
-  dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
   path: Array<Path>;
   item: QuestionnaireItem;
   questionnaire?: Questionnaire;
@@ -57,7 +56,6 @@ const AttachmentComponent = ({
   path,
   item,
   onAnswerChange,
-  dispatch,
   onDeleteAttachment,
   resources,
   answer,
@@ -75,6 +73,7 @@ const AttachmentComponent = ({
   attachmentValidTypes,
   ...other
 }: AttachmentProps): JSX.Element => {
+  const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
   const onUpload = (files: File[], cb: (success: boolean, errormessage: TextMessage | null, uploadedFile?: UploadedFile) => void): void => {
     if (uploadAttachment) {
       for (const file of files) {
@@ -206,5 +205,5 @@ const AttachmentComponent = ({
 };
 
 const withCommonFunctionsComponent = withCommonFunctions(AttachmentComponent);
-const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(withCommonFunctionsComponent);
+const connectedComponent = connect(mapStateToProps)(withCommonFunctionsComponent);
 export default connectedComponent;

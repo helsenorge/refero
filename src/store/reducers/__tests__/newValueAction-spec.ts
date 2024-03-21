@@ -1,5 +1,4 @@
-import * as uuid from 'uuid';
-
+import { v4 as uuidv4 } from 'uuid';
 import state from './data/newValueAction';
 import { Form } from '../form';
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from '../../types/fhir';
@@ -40,9 +39,9 @@ describe('QuestionnaireResponseAnswer shall reflect user input', () => {
     }
     definitionItems = dItems;
 
-    const mockedUuid = uuid as jest.Mocked<typeof uuid>;
+    const mockedUuid = uuidv4 as jest.Mocked<typeof uuidv4>;
     //@ts-ignore
-    mockedUuid.v4.mockReturnValue('uuid');
+    mockedUuid.mockReturnValue('uuid');
   });
 
   it('When the user enters a text, then removes the content of a text input field, answer should be undefined', () => {

@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem, Questionnaire } from 'fhir/r4';
 import { Controller, useFormContext } from 'react-hook-form';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
 import { Resources } from '../../../types/resources';
@@ -19,7 +19,7 @@ import { getBooleanValue } from './utils';
 import { NewValueAction, newBooleanValueAsync } from '../../../store/actions/newValue';
 import { GlobalState } from '../../../store/reducers';
 import { getText, isReadOnly, renderPrefix } from '../../../util/index';
-import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
+import { mapStateToProps } from '../../../util/map-props';
 import { Path, createFromIdFromPath } from '../../../util/refero-core';
 import withCommonFunctions, { WithCommonFunctionsProps } from '../../with-common-functions';
 
@@ -29,7 +29,6 @@ export interface BooleanProps extends WithCommonFunctionsProps {
   responseItem: QuestionnaireResponseItem;
   answer: QuestionnaireResponseItemAnswer;
   resources?: Resources;
-  dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
   path: Array<Path>;
   pdf?: boolean;
   promptLoginMessage?: () => void;
@@ -40,7 +39,6 @@ export interface BooleanProps extends WithCommonFunctionsProps {
   oneToTwoColumn: boolean;
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
-  isHelpOpen?: boolean;
   onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
   children: React.ReactNode;
@@ -50,11 +48,9 @@ const Boolean = ({
   item,
   answer,
   path,
-  dispatch,
   promptLoginMessage,
   onAnswerChange,
   // responseItem,
-  // isHelpOpen,
   resources,
   onRenderMarkdown,
   questionnaire,
@@ -65,6 +61,8 @@ const Boolean = ({
   renderHelpElement,
   renderHelpButton,
 }: BooleanProps): JSX.Element => {
+  const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
+
   const formId = createFromIdFromPath(path);
   const { getFieldState, control } = useFormContext();
   const { error } = getFieldState(formId);
@@ -132,5 +130,5 @@ const Boolean = ({
   );
 };
 const withCommonFunctionsComponent = withCommonFunctions(Boolean);
-const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(layoutChange(withCommonFunctionsComponent));
+const connectedComponent = connect(mapStateToProps)(layoutChange(withCommonFunctionsComponent));
 export default connectedComponent;

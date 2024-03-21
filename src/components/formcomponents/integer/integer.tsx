@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem, Questionnaire } from 'fhir/r4';
 import { useFormContext } from 'react-hook-form';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
 import { Resources } from '../../../types/resources';
@@ -17,7 +17,7 @@ import { NewValueAction, newIntegerValueAsync } from '../../../store/actions/new
 import { GlobalState } from '../../../store/reducers';
 import { getPlaceholder } from '../../../util/extension';
 import { isReadOnly, getId, getSublabelText, renderPrefix, getText } from '../../../util/index';
-import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
+import { mapStateToProps } from '../../../util/map-props';
 import { Path, createFromIdFromPath } from '../../../util/refero-core';
 import withCommonFunctions, { WithCommonFunctionsProps } from '../../with-common-functions';
 import TextView from '../textview';
@@ -28,7 +28,6 @@ export interface IntegerProps extends WithCommonFunctionsProps {
   responseItem: QuestionnaireResponseItem;
   answer: QuestionnaireResponseItemAnswer;
   resources?: Resources;
-  dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
   path: Array<Path>;
   pdf?: boolean;
   promptLoginMessage?: () => void;
@@ -38,7 +37,6 @@ export interface IntegerProps extends WithCommonFunctionsProps {
   oneToTwoColumn: boolean;
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
-  isHelpOpen?: boolean;
   onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
   children?: React.ReactNode;
@@ -48,7 +46,6 @@ const Integer = ({
   children,
   renderHelpElement,
   resources,
-  dispatch,
   promptLoginMessage,
   path,
   item,
@@ -62,6 +59,8 @@ const Integer = ({
   renderDeleteButton,
   repeatButton,
 }: IntegerProps): JSX.Element | null => {
+  const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
+
   const getValue = (): string | number | number[] | undefined => {
     if (answer && Array.isArray(answer)) {
       return answer.map(m => m.valueInteger);
@@ -158,5 +157,5 @@ const Integer = ({
 };
 
 const withCommonFunctionsComponent = withCommonFunctions(Integer);
-const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(layoutChange(withCommonFunctionsComponent));
+const connectedComponent = connect(mapStateToProps)(layoutChange(withCommonFunctionsComponent));
 export default connectedComponent;

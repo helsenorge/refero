@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, Resource, Coding, QuestionnaireResponseItem, ValueSet } from 'fhir/r4';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
 import { AutoSuggestProps } from '../../../types/autoSuggestProps';
@@ -17,7 +17,7 @@ import { NewValueAction, newCodingValueAsync, removeCodingValueAsync } from '../
 import { GlobalState } from '../../../store/reducers';
 import { getOptions, getSystem, getErrorMessage, validateInput, getIndexOfAnswer, getDisplay, renderOptions } from '../../../util/choice';
 import { isReadOnly, isDataReceiver } from '../../../util/index';
-import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
+import { mapStateToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
 import withCommonFunctions, { WithCommonFunctionsProps } from '../../with-common-functions';
 import AutosuggestView from '../choice-common/autosuggest-view';
@@ -29,7 +29,6 @@ export interface ChoiceProps extends WithCommonFunctionsProps {
   answer: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer;
   resources?: Resources;
   containedResources?: Resource[];
-  dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
   path: Array<Path>;
   id?: string;
   pdf?: boolean;
@@ -40,7 +39,6 @@ export interface ChoiceProps extends WithCommonFunctionsProps {
   repeatButton: JSX.Element;
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
-  isHelpOpen?: boolean;
   onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
   fetchValueSet?: (
@@ -57,6 +55,8 @@ export interface ChoiceProps extends WithCommonFunctionsProps {
 const Choice = (props: ChoiceProps): JSX.Element | null => {
   // const [valid, setValid] = React.useState<boolean>(true);
   // const [validated, setValidated] = React.useState<boolean>(false);
+  const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
+
   const getValue = (
     item: QuestionnaireItem,
     answer: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer
@@ -120,7 +120,7 @@ const Choice = (props: ChoiceProps): JSX.Element | null => {
   };
 
   const resetInitialAnswer = (code: string): void => {
-    const { dispatch, answer, promptLoginMessage, item, onAnswerChange, path } = props;
+    const { answer, promptLoginMessage, item, onAnswerChange, path } = props;
     if (dispatch && code) {
       const coding = getAnswerValueCoding(code);
       const responseAnswer = { valueCoding: coding } as QuestionnaireResponseItemAnswer;
@@ -138,7 +138,7 @@ const Choice = (props: ChoiceProps): JSX.Element | null => {
   };
 
   const handleCheckboxChange = (code?: string): void => {
-    const { dispatch, answer, promptLoginMessage, item, onAnswerChange, path } = props;
+    const { answer, promptLoginMessage, item, onAnswerChange, path } = props;
     if (dispatch && code) {
       const coding = getAnswerValueCoding(code);
       const responseAnswer = { valueCoding: coding } as QuestionnaireResponseItemAnswer;
@@ -157,7 +157,7 @@ const Choice = (props: ChoiceProps): JSX.Element | null => {
   };
 
   const clearCodingAnswer = (coding: Coding): void => {
-    const { dispatch, promptLoginMessage, item, onAnswerChange, path } = props;
+    const { promptLoginMessage, item, onAnswerChange, path } = props;
     if (dispatch) {
       const responseAnswer = { valueCoding: coding } as QuestionnaireResponseItemAnswer;
       dispatch(removeCodingValueAsync(path, coding, item))?.then(newState => onAnswerChange(newState, path, item, responseAnswer));
@@ -168,7 +168,7 @@ const Choice = (props: ChoiceProps): JSX.Element | null => {
   };
 
   const handleChange = (code?: string, systemArg?: string, displayArg?: string): void => {
-    const { dispatch, promptLoginMessage, item, onAnswerChange, path } = props;
+    const { promptLoginMessage, item, onAnswerChange, path } = props;
     if (dispatch && code) {
       const coding = getAnswerValueCoding(code, systemArg, displayArg);
       const responseAnswer = { valueCoding: coding } as QuestionnaireResponseItemAnswer;
@@ -297,5 +297,5 @@ const Choice = (props: ChoiceProps): JSX.Element | null => {
 };
 
 const withCommonFunctionsComponent = withCommonFunctions(Choice);
-const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(withCommonFunctionsComponent);
+const connectedComponent = connect(mapStateToProps)(withCommonFunctionsComponent);
 export default connectedComponent;

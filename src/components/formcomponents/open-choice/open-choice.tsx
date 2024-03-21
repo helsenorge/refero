@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, Resource, Coding, QuestionnaireResponseItem, ValueSet } from 'fhir/r4';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
 import { AutoSuggestProps } from '../../../types/autoSuggestProps';
@@ -34,7 +34,7 @@ import {
   getIndexOfAnswer,
   getItemControlValue,
 } from '../../../util/choice';
-import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
+import { mapStateToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
 import withCommonFunctions, { WithCommonFunctionsProps } from '../../with-common-functions';
 import SliderView from '../choice/slider-view';
@@ -48,7 +48,6 @@ export interface OpenChoiceProps extends WithCommonFunctionsProps {
   id?: string;
   pdf?: boolean;
   promptLoginMessage?: () => void;
-  dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
   resources?: Resources;
   containedResources?: Resource[];
   renderDeleteButton: () => JSX.Element | undefined;
@@ -57,7 +56,6 @@ export interface OpenChoiceProps extends WithCommonFunctionsProps {
   repeatButton: JSX.Element;
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
-  isHelpOpen?: boolean;
   onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
   fetchValueSet?: (
@@ -71,6 +69,7 @@ export interface OpenChoiceProps extends WithCommonFunctionsProps {
 }
 
 const OpenChoice = (props: OpenChoiceProps): JSX.Element | null => {
+  const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
   const getDataReceiverValue = (answer: Array<QuestionnaireResponseItemAnswer>): (string | undefined)[] => {
     return answer
       .filter(f => f.valueCoding?.code !== OPEN_CHOICE_ID)
@@ -161,7 +160,7 @@ const OpenChoice = (props: OpenChoiceProps): JSX.Element | null => {
   };
 
   const handleStringChange = (value: string): void => {
-    const { dispatch, promptLoginMessage, path, item, onAnswerChange } = props;
+    const { promptLoginMessage, path, item, onAnswerChange } = props;
     if (dispatch) {
       if (value.length > 0) {
         dispatch(newCodingStringValueAsync(props.path, value, props.item))?.then(newState =>
@@ -187,7 +186,7 @@ const OpenChoice = (props: OpenChoiceProps): JSX.Element | null => {
   };
 
   const resetInitialAnswer = (code: string): void => {
-    const { dispatch, answer, promptLoginMessage, item, onAnswerChange, path } = props;
+    const { answer, promptLoginMessage, item, onAnswerChange, path } = props;
     if (dispatch && code) {
       const coding = getAnswerValueCoding(code);
       const responseAnswer = { valueCoding: coding } as QuestionnaireResponseItemAnswer;
@@ -205,7 +204,7 @@ const OpenChoice = (props: OpenChoiceProps): JSX.Element | null => {
   };
 
   const handleCheckboxChange = (code?: string): void => {
-    const { dispatch, answer, promptLoginMessage, item, onAnswerChange, path } = props;
+    const { answer, promptLoginMessage, item, onAnswerChange, path } = props;
     if (dispatch && code) {
       const coding = getAnswerValueCoding(code);
       const responseAnswer = { valueCoding: coding } as QuestionnaireResponseItemAnswer;
@@ -229,7 +228,7 @@ const OpenChoice = (props: OpenChoiceProps): JSX.Element | null => {
   };
 
   const clearCodingAnswer = (coding: Coding): void => {
-    const { dispatch, promptLoginMessage, item, onAnswerChange, path } = props;
+    const { promptLoginMessage, item, onAnswerChange, path } = props;
     if (dispatch) {
       const responseAnswer = { valueCoding: coding } as QuestionnaireResponseItemAnswer;
       dispatch(removeCodingValueAsync(path, coding, item))?.then(newState => onAnswerChange(newState, path, item, responseAnswer));
@@ -240,7 +239,7 @@ const OpenChoice = (props: OpenChoiceProps): JSX.Element | null => {
   };
 
   const handleChange = (code?: string, systemArg?: string, displayArg?: string): void => {
-    const { dispatch, promptLoginMessage, item, onAnswerChange, path } = props;
+    const { promptLoginMessage, item, onAnswerChange, path } = props;
     if (dispatch && code) {
       const coding = getAnswerValueCoding(code, systemArg, displayArg);
       const responseAnswer = { valueCoding: coding } as QuestionnaireResponseItemAnswer;
@@ -263,7 +262,7 @@ const OpenChoice = (props: OpenChoiceProps): JSX.Element | null => {
   };
 
   const singleValueHandler = (coding: Coding): void => {
-    const { dispatch, item, path, onAnswerChange } = props;
+    const { item, path, onAnswerChange } = props;
 
     if (dispatch) {
       if (coding.code !== OPEN_CHOICE_ID) {
@@ -275,7 +274,7 @@ const OpenChoice = (props: OpenChoiceProps): JSX.Element | null => {
   };
 
   const multiValueHandler = (coding: Coding): void => {
-    const { dispatch, item, path, answer, onAnswerChange } = props;
+    const { item, path, answer, onAnswerChange } = props;
 
     if (dispatch) {
       const isShown = shouldShowExtraChoice(answer);
@@ -428,5 +427,5 @@ const OpenChoice = (props: OpenChoiceProps): JSX.Element | null => {
 };
 
 const withCommonFunctionsComponent = withCommonFunctions(OpenChoice);
-const connectedStringComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(withCommonFunctionsComponent);
+const connectedStringComponent = connect(mapStateToProps)(withCommonFunctionsComponent);
 export default connectedStringComponent;

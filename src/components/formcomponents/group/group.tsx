@@ -3,7 +3,6 @@ import * as React from 'react';
 import DOMPurify from 'dompurify';
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem, Questionnaire } from 'fhir/r4';
 import { connect } from 'react-redux';
-import { ThunkDispatch } from 'redux-thunk';
 
 import { Resources } from '../../../types/resources';
 
@@ -11,11 +10,9 @@ import AnchorLink from '@helsenorge/designsystem-react/components/AnchorLink';
 
 import AsPdf from './AsPdf';
 import { RenderContextType } from '../../../constants/renderContextType';
-import { NewValueAction } from '../../../store/actions/newValue';
-import { GlobalState } from '../../../store/reducers';
 import { getGroupItemControl } from '../../../util/group-item-control';
 import { getText, getId, renderPrefix } from '../../../util/index';
-import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
+import { mapStateToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
 import { RenderContext } from '../../../util/renderContext';
 import withCommonFunctions, { WithCommonFunctionsProps } from '../../with-common-functions';
@@ -25,7 +22,6 @@ export interface GroupProps extends WithCommonFunctionsProps {
   questionnaire?: Questionnaire;
   answer: QuestionnaireResponseItemAnswer;
   responseItem: QuestionnaireResponseItem;
-  dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
   path: Array<Path>;
   pdf?: boolean;
   includeSkipLink?: boolean;
@@ -40,7 +36,6 @@ export interface GroupProps extends WithCommonFunctionsProps {
   renderContext: RenderContext;
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
-  isHelpOpen?: boolean;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
   children?: React.ReactNode;
 }
@@ -131,7 +126,7 @@ export const Group = ({
 
     const newRenderContext = new RenderContext(RenderContextType.Grid, item.linkId, columns);
     return (
-      <React.Fragment>
+      <>
         <table id={getId(id)} className="page_refero__grid">
           <thead>
             <tr>{headers}</tr>
@@ -140,7 +135,7 @@ export const Group = ({
         </table>
         {renderDeleteButton('page_refero__deletebutton--margin-top')}
         {repeatButton}
-      </React.Fragment>
+      </>
     );
   };
 
@@ -231,5 +226,5 @@ export const Group = ({
   return <AsPdf pdf={!!pdf}>{renderAllItems()}</AsPdf>;
 };
 const withCommonFunctionsComponent = withCommonFunctions(Group);
-const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(withCommonFunctionsComponent);
+const connectedComponent = connect(mapStateToProps)(withCommonFunctionsComponent);
 export default connectedComponent;

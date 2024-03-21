@@ -43,7 +43,6 @@ import {
   REMOVE_ATTACHMENT_VALUE,
 } from '../actions/newValue';
 import { syncQuestionnaireResponse } from '../actions/syncQuestionnaireResponse';
-import { GlobalState } from '../reducers/index';
 
 enableES5();
 
@@ -104,13 +103,6 @@ export default function reducer(state: Form = initialState, action: NewValueActi
     default:
       return state;
   }
-}
-
-export function getFormData(state: GlobalState): FormData | null {
-  if (!state.refero.form.FormData) {
-    return null;
-  }
-  return state.refero.form.FormData;
 }
 
 function getArrayToAddGroupTo(itemToAddTo: QuestionnaireResponseItem | undefined): Array<QuestionnaireResponseItem> | undefined {
@@ -692,13 +684,6 @@ function removeAddedRepeatingItems(
       }
     }
   }
-}
-
-export function getFormDefinition(state: GlobalState): FormDefinition | null {
-  if (!state.refero.form.FormDefinition) {
-    return null;
-  }
-  return state.refero.form.FormDefinition;
 }
 
 function wipeAnswerItems(answerItem: QuestionnaireResponseItem | undefined, item: QuestionnaireItem | undefined): undefined {

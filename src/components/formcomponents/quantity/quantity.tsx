@@ -8,7 +8,7 @@ import {
   Questionnaire,
 } from 'fhir/r4';
 import { useFormContext } from 'react-hook-form';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
 import { Resources } from '../../../types/resources';
@@ -21,7 +21,7 @@ import { NewValueAction, newQuantityValueAsync } from '../../../store/actions/ne
 import { GlobalState } from '../../../store/reducers';
 import { getPlaceholder, getQuestionnaireUnitExtensionValue } from '../../../util/extension';
 import { isReadOnly, getId, getSublabelText, renderPrefix, getText } from '../../../util/index';
-import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
+import { mapStateToProps } from '../../../util/map-props';
 import { Path, createFromIdFromPath } from '../../../util/refero-core';
 import withCommonFunctions, { WithCommonFunctionsProps } from '../../with-common-functions';
 import TextView from '../textview';
@@ -32,7 +32,6 @@ export interface QuantityProps extends WithCommonFunctionsProps {
   responseItem: QuestionnaireResponseItem;
   answer: QuestionnaireResponseItemAnswer;
   resources?: Resources;
-  dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
   path: Array<Path>;
   pdf?: boolean;
   promptLoginMessage?: () => void;
@@ -41,7 +40,6 @@ export interface QuantityProps extends WithCommonFunctionsProps {
   repeatButton: JSX.Element;
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
-  isHelpOpen?: boolean;
   onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
   children?: React.ReactNode;
@@ -50,7 +48,6 @@ export interface QuantityProps extends WithCommonFunctionsProps {
 const Quantity = ({
   answer,
   resources,
-  dispatch,
   promptLoginMessage,
   path,
   item,
@@ -65,6 +62,8 @@ const Quantity = ({
   renderDeleteButton,
   repeatButton,
 }: QuantityProps): JSX.Element | null => {
+  const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
+
   const getValue = (): number | number[] | undefined => {
     if (answer && Array.isArray(answer)) {
       return answer.map(m => m.valueQuantity.value);
@@ -180,5 +179,5 @@ const Quantity = ({
 };
 
 const withCommonFunctionsComponent = withCommonFunctions(Quantity);
-const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(withCommonFunctionsComponent);
+const connectedComponent = connect(mapStateToProps)(withCommonFunctionsComponent);
 export default connectedComponent;

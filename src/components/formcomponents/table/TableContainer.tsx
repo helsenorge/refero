@@ -10,7 +10,6 @@ import {
   Resource,
 } from 'fhir/r4';
 import { connect } from 'react-redux';
-import { ThunkDispatch } from 'redux-thunk';
 
 import { Resources } from '../../../types/resources';
 
@@ -21,9 +20,8 @@ import { StandardTable } from './tables/table/StandardTable';
 import TableHn1 from './tables/table-hn1/TableHn1';
 import TableHn2 from './tables/table-hn2/TableHn2';
 import { TABLE_CODES_VALUES, TableCodes } from '../../../constants/tableTypes';
-import { NewValueAction } from '../../../store/actions/newValue';
 import { GlobalState } from '../../../store/reducers';
-import { getFormData, getFormDefinition } from '../../../store/reducers/form';
+import { getFormData, getFormDefinition } from '../../../store/selectors/index';
 import { getCodingTextTableValues } from '../../../util/extension';
 import { Path } from '../../../util/refero-core';
 import { RenderContext } from '../../../util/renderContext';
@@ -33,7 +31,6 @@ export interface Props {
   questionnaire?: Questionnaire | null;
   answer?: QuestionnaireResponseItemAnswer | null;
   responseItem: QuestionnaireResponseItem;
-  dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
   path: Array<Path>;
   pdf?: boolean;
   includeSkipLink?: boolean;
@@ -46,7 +43,6 @@ export interface Props {
   renderContext: RenderContext;
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
-  isHelpOpen?: boolean;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
 }
 

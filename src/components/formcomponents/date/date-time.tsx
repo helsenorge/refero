@@ -3,7 +3,7 @@ import * as React from 'react';
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem, Questionnaire } from 'fhir/r4';
 import moment, { Moment } from 'moment';
 import { useFormContext } from 'react-hook-form';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
 import { Resources } from '../../../types/resources';
@@ -21,7 +21,7 @@ import { GlobalState } from '../../../store/reducers';
 import { getValidationTextExtension, getExtension } from '../../../util/extension';
 import { evaluateFhirpathExpressionToGetDate } from '../../../util/fhirpathHelper';
 import { isRequired, getId, isReadOnly, getSublabelText } from '../../../util/index';
-import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
+import { mapStateToProps } from '../../../util/map-props';
 import { Path, createFromIdFromPath } from '../../../util/refero-core';
 import withCommonFunctions, { WithCommonFunctionsProps } from '../../with-common-functions';
 import Label from '../label';
@@ -34,7 +34,6 @@ export interface DateTimeProps extends WithCommonFunctionsProps {
   responseItem: QuestionnaireResponseItem;
   answer: QuestionnaireResponseItemAnswer;
   resources?: Resources;
-  dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
   path: Array<Path>;
   pdf?: boolean;
   language?: string;
@@ -45,13 +44,13 @@ export interface DateTimeProps extends WithCommonFunctionsProps {
   oneToTwoColumn: boolean;
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
-  isHelpOpen?: boolean;
   onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
   children: React.ReactNode;
 }
 
 const DateTime = (props: DateTimeProps): JSX.Element => {
+  const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
   const getDefaultDate = (item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer): Date | undefined => {
     if (answer && answer.valueDateTime) {
       return parseDate(String(answer.valueDateTime));
@@ -110,7 +109,7 @@ const DateTime = (props: DateTimeProps): JSX.Element => {
   };
 
   const dispatchNewDate = (date: Moment | undefined, time: string | undefined): void => {
-    const { dispatch, promptLoginMessage, onAnswerChange, answer, path, item } = props;
+    const { promptLoginMessage, onAnswerChange, answer, path, item } = props;
     const momentDate = getFullMomentDate(date, time);
     const dateTimeString = momentDate ? momentDate.locale('nb').utc().format(Constants.DATE_TIME_FORMAT) : '';
     const existingAnswer = answer?.valueDateTime || '';
@@ -233,5 +232,5 @@ const DateTime = (props: DateTimeProps): JSX.Element => {
 };
 
 const withCommonFunctionsComponent = withCommonFunctions(DateTime);
-const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(layoutChange(withCommonFunctionsComponent));
+const connectedComponent = connect(mapStateToProps)(layoutChange(withCommonFunctionsComponent));
 export default connectedComponent;

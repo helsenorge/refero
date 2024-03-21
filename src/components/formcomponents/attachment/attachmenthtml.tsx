@@ -7,7 +7,6 @@ import { Resources } from '../../../types/resources';
 import { TextMessage } from '../../../types/text-message';
 
 import NotificationPanel from '@helsenorge/designsystem-react/components/NotificationPanel';
-// import Validation from '@helsenorge/designsystem-react/components/Validation';
 
 import Dropzone from '@helsenorge/file-upload/components/dropzone';
 import { UploadedFile } from '@helsenorge/file-upload/components/dropzone';

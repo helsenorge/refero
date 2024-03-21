@@ -32,7 +32,6 @@ interface AutosuggestViewProps {
   ) => void;
   autoSuggestProps?: AutoSuggestProps;
   answer: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer;
-
   item: QuestionnaireItem;
   questionnaire?: Questionnaire | null;
   id?: string;

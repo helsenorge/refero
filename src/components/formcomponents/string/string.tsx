@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem, Questionnaire } from 'fhir/r4';
 import { useFormContext } from 'react-hook-form';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
 import { Resources } from '../../../types/resources';
@@ -27,7 +27,7 @@ import {
   renderPrefix,
   getText,
 } from '../../../util/index';
-import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
+import { mapStateToProps } from '../../../util/map-props';
 import { Path, createFromIdFromPath } from '../../../util/refero-core';
 import withCommonFunctions, { WithCommonFunctionsProps } from '../../with-common-functions';
 // import SubLabel from '../sublabel';
@@ -39,7 +39,6 @@ export interface StringProps extends WithCommonFunctionsProps {
   responseItem: QuestionnaireResponseItem;
   answer: QuestionnaireResponseItemAnswer;
   path: Array<Path>;
-  dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
   pdf?: boolean;
   promptLoginMessage?: () => void;
   id?: string;
@@ -52,7 +51,6 @@ export interface StringProps extends WithCommonFunctionsProps {
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
   onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
-  isHelpOpen?: boolean;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
   children: React.ReactNode;
 }
@@ -65,7 +63,6 @@ const String = ({
   resources,
   answer,
   onRenderMarkdown,
-  dispatch,
   promptLoginMessage,
   path,
   onAnswerChange,
@@ -75,6 +72,8 @@ const String = ({
   renderDeleteButton,
   repeatButton,
 }: StringProps): JSX.Element => {
+  const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
+
   const handleChange = (event: React.FormEvent): void => {
     const value = (event.target as HTMLInputElement).value;
     if (dispatch) {
@@ -150,5 +149,5 @@ const String = ({
   );
 };
 const withCommonFunctionsComponent = withCommonFunctions(String);
-const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(layoutChange(withCommonFunctionsComponent));
+const connectedComponent = connect(mapStateToProps)(layoutChange(withCommonFunctionsComponent));
 export default connectedComponent;
