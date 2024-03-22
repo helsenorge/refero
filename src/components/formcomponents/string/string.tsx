@@ -76,11 +76,9 @@ const String = ({
 
   const handleChange = (event: React.FormEvent): void => {
     const value = (event.target as HTMLInputElement).value;
-    if (dispatch) {
-      dispatch(newStringValueAsync(path, value, item))?.then(newState =>
-        onAnswerChange(newState, path, item, { valueString: value } as QuestionnaireResponseItemAnswer)
-      );
-    }
+    dispatch(newStringValueAsync(path, value, item))?.then(newState =>
+      onAnswerChange(newState, path, item, { valueString: value } as QuestionnaireResponseItemAnswer)
+    );
 
     if (promptLoginMessage) {
       promptLoginMessage();

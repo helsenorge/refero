@@ -10,7 +10,7 @@ import {
   Quantity,
 } from 'fhir/r4';
 import { FormProvider, useForm } from 'react-hook-form';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { z } from 'zod';
 
@@ -73,9 +73,7 @@ const Refero = ({
   language,
   syncQuestionnaireResponse,
   updateSkjema,
-  dispatch,
   promptLoginMessage,
-  path,
   onRequestAttachmentLink,
   onOpenAttachment,
   onDeleteAttachment,
@@ -98,10 +96,11 @@ const Refero = ({
   validationSummaryPlacement,
   submitButtonDisabled,
   saveButtonDisabled,
-  onFieldsNotCorrectlyFilledOut,
   onStepChange,
   isHelsenorgeForm,
 }: StateProps & DispatchProps & ReferoProps): ReactElement | null => {
+  const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
+  const path: Path[] = [];
   const qst = questionnaire ? questionnaire : formDefinition?.Content;
   const schema = createZodSchemaFromQuestionnaire(qst, resources, formDefinition?.Content?.contained);
   const methods = useForm<z.infer<typeof schema>>({
@@ -338,7 +337,6 @@ const Refero = ({
     validationSummaryPlacement,
     submitButtonDisabled,
     saveButtonDisabled,
-    onFieldsNotCorrectlyFilledOut,
     onStepChange,
     isHelsenorgeForm,
   };
@@ -352,7 +350,6 @@ const Refero = ({
             isAuthorized={authorized}
             referoProps={referoProps}
             resources={resources}
-            formDefinition={formDefinition}
             onSave={handleSave}
             onSubmit={handleSubmit}
             onStepChange={onStepChange}
@@ -405,8 +402,6 @@ function mapDispatchToProps(dispatch: ThunkDispatch<GlobalState, void, NewValueA
         dispatch(setSkjemaDefinition(questionnaire, questionnaireResponse, language, syncQuestionnaireResponse));
       }
     },
-    dispatch,
-    path: [],
   };
 }
 

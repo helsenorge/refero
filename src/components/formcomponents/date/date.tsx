@@ -100,7 +100,7 @@ const DateComponent = (props: DateProps): JSX.Element | null => {
   const onDateValueChange = (newValue: string): void => {
     const { promptLoginMessage, path, item, answer, onAnswerChange } = props;
     const existingAnswer = answer?.valueDate || '';
-    if (dispatch && newValue !== existingAnswer) {
+    if (newValue !== existingAnswer) {
       dispatch(newDateValueAsync(props.path, newValue, props.item))?.then(newState =>
         onAnswerChange(newState, path, item, { valueDate: newValue } as QuestionnaireResponseItemAnswer)
       );

@@ -99,12 +99,10 @@ const AttachmentComponent = ({
   const onDelete = (fileId: string, cb: (success: boolean, errormessage: TextMessage | null) => void): void => {
     if (onDeleteAttachment) {
       const onSuccess = (): void => {
-        if (dispatch) {
-          const attachment = { url: fileId } as Attachment;
-          dispatch(removeAttachmentAsync(path, attachment, item))?.then(newState =>
-            onAnswerChange(newState, path, item, { valueAttachment: attachment } as QuestionnaireResponseItemAnswer)
-          );
-        }
+        const attachment = { url: fileId } as Attachment;
+        dispatch(removeAttachmentAsync(path, attachment, item))?.then(newState =>
+          onAnswerChange(newState, path, item, { valueAttachment: attachment } as QuestionnaireResponseItemAnswer)
+        );
 
         cb(true, null);
       };

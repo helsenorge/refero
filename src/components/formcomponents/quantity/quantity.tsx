@@ -102,11 +102,9 @@ const Quantity = ({
         quantity.value = value;
       }
 
-      if (dispatch) {
-        dispatch(newQuantityValueAsync(path, quantity, item))?.then(newState =>
-          onAnswerChange(newState, path, item, { valueQuantity: quantity } as QuestionnaireResponseItemAnswer)
-        );
-      }
+      dispatch(newQuantityValueAsync(path, quantity, item))?.then(newState =>
+        onAnswerChange(newState, path, item, { valueQuantity: quantity } as QuestionnaireResponseItemAnswer)
+      );
 
       if (promptLoginMessage) {
         promptLoginMessage();

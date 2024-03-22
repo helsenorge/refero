@@ -69,11 +69,9 @@ const Boolean = ({
 
   const handleChange = (): void => {
     const newValue = !getBooleanValue(answer, item);
-    if (dispatch) {
-      dispatch(newBooleanValueAsync(path, newValue, item))?.then(newState =>
-        onAnswerChange(newState, path, item, { valueBoolean: newValue } as QuestionnaireResponseItemAnswer)
-      );
-    }
+    dispatch(newBooleanValueAsync(path, newValue, item))?.then(newState =>
+      onAnswerChange(newState, path, item, { valueBoolean: newValue } as QuestionnaireResponseItemAnswer)
+    );
 
     if (promptLoginMessage) {
       promptLoginMessage();

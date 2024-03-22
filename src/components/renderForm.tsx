@@ -25,7 +25,6 @@ interface RenderFormProps {
   previousStep?: () => void;
   isHelsenorgeForm?: boolean;
   children?: React.ReactNode;
-  onFieldsNotCorrectlyFilledOut?: () => void;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   methods: UseFormReturn<FieldValues, any, undefined>;
 }

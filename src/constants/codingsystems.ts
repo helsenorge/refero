@@ -11,7 +11,7 @@ const codeSystems = {
   TableOrderingFunctions: 'http://helsenorge.no/fhir/CodeSystem/TableOrderingFunctions',
   TableColumn: 'http://helsenorge.no/fhir/CodeSystem/TableColumn',
   OPEN_CHOICE_SYSTEM: 'http://helsenorge.no/fhir/CodeSystem/open-choice',
-};
+} as const;
 
 export type CodeSystems = typeof codeSystems;
 

@@ -113,7 +113,7 @@ const DateTime = (props: DateTimeProps): JSX.Element => {
     const momentDate = getFullMomentDate(date, time);
     const dateTimeString = momentDate ? momentDate.locale('nb').utc().format(Constants.DATE_TIME_FORMAT) : '';
     const existingAnswer = answer?.valueDateTime || '';
-    if (dispatch && existingAnswer !== dateTimeString) {
+    if (existingAnswer !== dateTimeString) {
       dispatch(newDateTimeValueAsync(props.path, dateTimeString, props.item))?.then(newState =>
         onAnswerChange(newState, path, item, { valueDateTime: dateTimeString } as QuestionnaireResponseItemAnswer)
       );

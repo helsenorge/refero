@@ -161,16 +161,14 @@ const OpenChoice = (props: OpenChoiceProps): JSX.Element | null => {
 
   const handleStringChange = (value: string): void => {
     const { promptLoginMessage, path, item, onAnswerChange } = props;
-    if (dispatch) {
-      if (value.length > 0) {
-        dispatch(newCodingStringValueAsync(props.path, value, props.item))?.then(newState =>
-          onAnswerChange(newState, path, item, { valueString: value } as QuestionnaireResponseItemAnswer)
-        );
-      } else {
-        dispatch(removeCodingStringValueAsync(props.path, props.item))?.then(newState =>
-          onAnswerChange(newState, path, item, { valueString: '' } as QuestionnaireResponseItemAnswer)
-        );
-      }
+    if (value.length > 0) {
+      dispatch(newCodingStringValueAsync(props.path, value, props.item))?.then(newState =>
+        onAnswerChange(newState, path, item, { valueString: value } as QuestionnaireResponseItemAnswer)
+      );
+    } else {
+      dispatch(removeCodingStringValueAsync(props.path, props.item))?.then(newState =>
+        onAnswerChange(newState, path, item, { valueString: '' } as QuestionnaireResponseItemAnswer)
+      );
     }
 
     if (promptLoginMessage) {
@@ -187,7 +185,7 @@ const OpenChoice = (props: OpenChoiceProps): JSX.Element | null => {
 
   const resetInitialAnswer = (code: string): void => {
     const { answer, promptLoginMessage, item, onAnswerChange, path } = props;
-    if (dispatch && code) {
+    if (code) {
       const coding = getAnswerValueCoding(code);
       const responseAnswer = { valueCoding: coding } as QuestionnaireResponseItemAnswer;
       if (getIndexOfAnswer(code, answer) > -1) {
@@ -205,7 +203,7 @@ const OpenChoice = (props: OpenChoiceProps): JSX.Element | null => {
 
   const handleCheckboxChange = (code?: string): void => {
     const { answer, promptLoginMessage, item, onAnswerChange, path } = props;
-    if (dispatch && code) {
+    if (code) {
       const coding = getAnswerValueCoding(code);
       const responseAnswer = { valueCoding: coding } as QuestionnaireResponseItemAnswer;
       if (getIndexOfAnswer(code, answer) > -1) {
@@ -229,18 +227,16 @@ const OpenChoice = (props: OpenChoiceProps): JSX.Element | null => {
 
   const clearCodingAnswer = (coding: Coding): void => {
     const { promptLoginMessage, item, onAnswerChange, path } = props;
-    if (dispatch) {
-      const responseAnswer = { valueCoding: coding } as QuestionnaireResponseItemAnswer;
-      dispatch(removeCodingValueAsync(path, coding, item))?.then(newState => onAnswerChange(newState, path, item, responseAnswer));
-      if (promptLoginMessage) {
-        promptLoginMessage();
-      }
+    const responseAnswer = { valueCoding: coding } as QuestionnaireResponseItemAnswer;
+    dispatch(removeCodingValueAsync(path, coding, item))?.then(newState => onAnswerChange(newState, path, item, responseAnswer));
+    if (promptLoginMessage) {
+      promptLoginMessage();
     }
   };
 
   const handleChange = (code?: string, systemArg?: string, displayArg?: string): void => {
     const { promptLoginMessage, item, onAnswerChange, path } = props;
-    if (dispatch && code) {
+    if (code) {
       const coding = getAnswerValueCoding(code, systemArg, displayArg);
       const responseAnswer = { valueCoding: coding } as QuestionnaireResponseItemAnswer;
       dispatch(newCodingValueAsync(props.path, coding, item))?.then(newState => onAnswerChange(newState, path, item, responseAnswer));
@@ -264,26 +260,22 @@ const OpenChoice = (props: OpenChoiceProps): JSX.Element | null => {
   const singleValueHandler = (coding: Coding): void => {
     const { item, path, onAnswerChange } = props;
 
-    if (dispatch) {
-      if (coding.code !== OPEN_CHOICE_ID) {
-        dispatch(removeCodingStringValueAsync(path, item))?.then(newState =>
-          onAnswerChange(newState, path, item, { valueString: '' } as QuestionnaireResponseItemAnswer)
-        );
-      }
+    if (coding.code !== OPEN_CHOICE_ID) {
+      dispatch(removeCodingStringValueAsync(path, item))?.then(newState =>
+        onAnswerChange(newState, path, item, { valueString: '' } as QuestionnaireResponseItemAnswer)
+      );
     }
   };
 
   const multiValueHandler = (coding: Coding): void => {
     const { item, path, answer, onAnswerChange } = props;
 
-    if (dispatch) {
-      const isShown = shouldShowExtraChoice(answer);
+    const isShown = shouldShowExtraChoice(answer);
 
-      if (isShown && coding.code === OPEN_CHOICE_ID) {
-        dispatch(removeCodingStringValueAsync(path, item))?.then(newState =>
-          onAnswerChange(newState, path, item, { valueString: '' } as QuestionnaireResponseItemAnswer)
-        );
-      }
+    if (isShown && coding.code === OPEN_CHOICE_ID) {
+      dispatch(removeCodingStringValueAsync(path, item))?.then(newState =>
+        onAnswerChange(newState, path, item, { valueString: '' } as QuestionnaireResponseItemAnswer)
+      );
     }
   };
 

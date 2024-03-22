@@ -28,7 +28,6 @@ export interface DecimalProps extends WithFormComponentsProps {
   responseItem: QuestionnaireItem;
   answer: QuestionnaireResponseItemAnswer;
   resources?: Resources;
-  dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
   path: Array<Path>;
   id?: string;
   pdf?: boolean;
@@ -91,11 +90,9 @@ const Decimal = ({
 
   const handleChange = (event: React.FormEvent): void => {
     const value = parseFloat((event.target as HTMLInputElement).value);
-    if (dispatch) {
-      dispatch(newDecimalValueAsync(path, value, item))?.then(newState =>
-        onAnswerChange(newState, path, item, { valueDecimal: value } as QuestionnaireResponseItemAnswer)
-      );
-    }
+    dispatch(newDecimalValueAsync(path, value, item))?.then(newState =>
+      onAnswerChange(newState, path, item, { valueDecimal: value } as QuestionnaireResponseItemAnswer)
+    );
 
     if (promptLoginMessage) {
       promptLoginMessage();

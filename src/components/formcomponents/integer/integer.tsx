@@ -89,11 +89,9 @@ const Integer = ({
 
   const handleChange = (event: React.FormEvent): void => {
     const value = parseInt((event.target as HTMLInputElement).value, 10);
-    if (dispatch) {
-      dispatch(newIntegerValueAsync(path, value, item))?.then(newState =>
-        onAnswerChange(newState, path, item, { valueInteger: value } as QuestionnaireResponseItemAnswer)
-      );
-    }
+    dispatch(newIntegerValueAsync(path, value, item))?.then(newState =>
+      onAnswerChange(newState, path, item, { valueInteger: value } as QuestionnaireResponseItemAnswer)
+    );
 
     if (promptLoginMessage) {
       promptLoginMessage();

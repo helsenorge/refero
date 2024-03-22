@@ -1,7 +1,7 @@
 import { ComponentType } from 'react';
 
 import { Questionnaire, QuestionnaireResponseItem, QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
-import { marked } from 'marked';
+import { Renderer, marked } from 'marked';
 import { ConnectedComponent } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -198,7 +198,7 @@ function getMarkdownValue(
   const itemValue = getHyperlinkExtensionValue(item);
   const questionnaireValue = questionnaire ? getHyperlinkExtensionValue(questionnaire) : undefined;
 
-  const rendererNewWindow = new marked.Renderer({ async: false });
+  const rendererNewWindow = new Renderer({ async: false });
   rendererNewWindow.link = (href: string, title: string, text: string): string => {
     const urlString = `<a href=${href} ${
       title ? `title=${title}` : ''
@@ -208,7 +208,7 @@ function getMarkdownValue(
     return urlString;
   };
 
-  const rendererSameWindow = new marked.Renderer({ async: false });
+  const rendererSameWindow = new Renderer({ async: false });
   rendererSameWindow.link = (href: string, title: string, text: string): string => {
     const urlString = `<a href=${href} ${title ? `title=${title}` : ''} target="${openNewIfAbsolute(
       href

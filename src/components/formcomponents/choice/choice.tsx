@@ -121,7 +121,7 @@ const Choice = (props: ChoiceProps): JSX.Element | null => {
 
   const resetInitialAnswer = (code: string): void => {
     const { answer, promptLoginMessage, item, onAnswerChange, path } = props;
-    if (dispatch && code) {
+    if (code) {
       const coding = getAnswerValueCoding(code);
       const responseAnswer = { valueCoding: coding } as QuestionnaireResponseItemAnswer;
       if (getIndexOfAnswer(code, answer) > -1) {
@@ -139,7 +139,7 @@ const Choice = (props: ChoiceProps): JSX.Element | null => {
 
   const handleCheckboxChange = (code?: string): void => {
     const { answer, promptLoginMessage, item, onAnswerChange, path } = props;
-    if (dispatch && code) {
+    if (code) {
       const coding = getAnswerValueCoding(code);
       const responseAnswer = { valueCoding: coding } as QuestionnaireResponseItemAnswer;
       if (getIndexOfAnswer(code, answer) > -1) {
@@ -158,18 +158,16 @@ const Choice = (props: ChoiceProps): JSX.Element | null => {
 
   const clearCodingAnswer = (coding: Coding): void => {
     const { promptLoginMessage, item, onAnswerChange, path } = props;
-    if (dispatch) {
-      const responseAnswer = { valueCoding: coding } as QuestionnaireResponseItemAnswer;
-      dispatch(removeCodingValueAsync(path, coding, item))?.then(newState => onAnswerChange(newState, path, item, responseAnswer));
-      if (promptLoginMessage) {
-        promptLoginMessage();
-      }
+    const responseAnswer = { valueCoding: coding } as QuestionnaireResponseItemAnswer;
+    dispatch(removeCodingValueAsync(path, coding, item))?.then(newState => onAnswerChange(newState, path, item, responseAnswer));
+    if (promptLoginMessage) {
+      promptLoginMessage();
     }
   };
 
   const handleChange = (code?: string, systemArg?: string, displayArg?: string): void => {
     const { promptLoginMessage, item, onAnswerChange, path } = props;
-    if (dispatch && code) {
+    if (code) {
       const coding = getAnswerValueCoding(code, systemArg, displayArg);
       const responseAnswer = { valueCoding: coding } as QuestionnaireResponseItemAnswer;
       dispatch(newCodingValueAsync(path, coding, item))?.then(newState => onAnswerChange(newState, path, item, responseAnswer));

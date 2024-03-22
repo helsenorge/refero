@@ -27,7 +27,7 @@ const DeleteButton = ({ resources, item, path, onAnswerChange, mustShowConfirm }
   const [showConfirm, setShowConfirm] = useState(false);
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
   const onDeleteRepeatItemConfirmed = (): void => {
-    if (dispatch && item && path) {
+    if (item && path) {
       dispatch(deleteRepeatItemAsync(path, item))?.then(
         newState => onAnswerChange && onAnswerChange(newState, path, item, {} as QuestionnaireResponseItemAnswer)
       );

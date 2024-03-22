@@ -132,11 +132,9 @@ const Time = (props: TimeProps): JSX.Element => {
 
   const dispatchNewTime = (newTime: string): void => {
     const { item, path, onAnswerChange } = props;
-    if (dispatch) {
-      dispatch(newTimeValueAsync(path, newTime, item))?.then(newState =>
-        onAnswerChange(newState, path, item, { valueTime: newTime } as QuestionnaireResponseItemAnswer)
-      );
-    }
+    dispatch(newTimeValueAsync(path, newTime, item))?.then(newState =>
+      onAnswerChange(newState, path, item, { valueTime: newTime } as QuestionnaireResponseItemAnswer)
+    );
   };
 
   const onTimeChange = (newTime: string = ''): void => {

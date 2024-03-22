@@ -1,13 +1,14 @@
 import * as React from 'react';
 
 import { FieldValues, UseFormReturn } from 'react-hook-form';
+import { useSelector } from 'react-redux';
 
 import { ReferoProps } from '../types/referoProps';
 import { Resources } from '../types/resources';
 
 import RenderForm from './renderForm';
 import { NAVIGATOR_BLINDZONE_ID } from '../constants';
-import { FormDefinition } from '../store/reducers/form';
+import { getFormDefinition } from '../store/selectors';
 import { getTopLevelElements } from '../util/getTopLevelElements';
 
 interface StepViewProps {
@@ -15,7 +16,6 @@ interface StepViewProps {
   referoProps: ReferoProps;
   resources: Resources;
   children: Array<JSX.Element> | undefined;
-  formDefinition: FormDefinition;
   onSave: () => void;
   onSubmit: () => void;
   onStepChange?: (stepIndex: number) => void;
@@ -29,16 +29,18 @@ const StepView = ({
   referoProps,
   resources,
   children,
-  formDefinition,
   onSave,
   onSubmit,
   onStepChange,
   isHelsenorgeForm,
   methods,
-}: StepViewProps): JSX.Element => {
+}: StepViewProps): JSX.Element | null => {
   const stepArray: Array<JSX.Element> | undefined = [];
   const [stepIndex, setStepIndex] = React.useState(0);
-
+  const formDefinition = useSelector(getFormDefinition);
+  if (!formDefinition) {
+    return null;
+  }
   const topLevelElements = getTopLevelElements(formDefinition);
   children?.filter(formItem =>
     topLevelElements?.find(element => {

@@ -1,7 +1,5 @@
 import * as React from 'react';
 
-import classNames from 'classnames';
-import DOMPurify from 'dompurify';
 import {
   Resource,
   Questionnaire,
@@ -11,7 +9,6 @@ import {
   Attachment,
   ValueSet,
 } from 'fhir/r4';
-import { Collapse } from 'react-collapse';
 
 import { AutoSuggestProps } from '../types/autoSuggestProps';
 import { OrgenhetHierarki } from '../types/orgenhetHierarki';
@@ -27,6 +24,7 @@ import { FormChild } from '@helsenorge/form/components/form';
 import DeleteButton from './formcomponents/repeat/delete-button';
 import RepeatButton from './formcomponents/repeat/repeat-button';
 import HelpButton from './help-button/help-button';
+import { HelpElement } from './HelpElement';
 import itemControlConstants from '../constants/itemcontrol';
 import itemType from '../constants/itemType';
 import { GlobalState } from '../store/reducers';
@@ -117,7 +115,7 @@ export interface EnhancedWithCommonFunctionProps extends WithFormComponentsProps
     responseItem?: QuestionnaireResponseItem
   ) => JSX.Element | undefined;
   renderHelpButton: () => JSX.Element | undefined;
-  renderHelpElement: () => JSX.Element | undefined;
+  renderHelpElement: () => JSX.Element | null;
 }
 
 export default function withCommonFunctions<T extends WithFormComponentsProps>(
@@ -204,39 +202,9 @@ export default function withCommonFunctions<T extends WithFormComponentsProps>(
       );
     };
 
-    const renderHelpElement = (): JSX.Element | undefined => {
-      const { item, onRequestHelpElement } = props;
-      if (!item) {
-        return;
-      }
-      const qItem = item as QuestionnaireItem;
-
-      const helpItem = findHelpItem(qItem);
-      if (!helpItem) {
-        return;
-      }
-
-      const helpItemType = getHelpItemType(helpItem) || itemControlConstants.HELP;
-
-      if (onRequestHelpElement) {
-        return onRequestHelpElement(qItem, helpItem, helpItemType, getText(helpItem), isHelpVisible);
-      }
-
-      const collapseClasses: string = classNames({
-        page_refero__helpComponent: true,
-        'page_refero__helpComponent--open': isHelpVisible,
-      });
-      return (
-        <Collapse isOpened={isHelpVisible}>
-          <div
-            className={collapseClasses}
-            dangerouslySetInnerHTML={{
-              __html: DOMPurify.sanitize(`${getText(helpItem)}`, { RETURN_TRUSTED_TYPE: true, ADD_ATTR: ['target'] }) as unknown as string,
-            }}
-          />
-        </Collapse>
-      );
-    };
+    const renderHelpElement = (): JSX.Element | null => (
+      <HelpElement onRequestHelpElement={props.onRequestHelpElement} item={props.item} isHelpVisible={isHelpVisible} />
+    );
 
     const renderItem = (item: QuestionnaireItem, renderContext: RenderContext): Array<JSX.Element | undefined> => {
       const { resources, containedResources, responseItem, pdf, path, headerTag, promptLoginMessage, onRenderMarkdown } = props;
