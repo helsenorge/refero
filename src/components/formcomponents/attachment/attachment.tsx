@@ -16,12 +16,12 @@ import { getValidationTextExtension, getMaxOccursExtensionValue, getMinOccursExt
 import { isRequired, getId, isReadOnly, isRepeat, getSublabelText } from '../../../util/index';
 import { mapStateToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
-import withCommonFunctions, { WithCommonFunctionsProps } from '../../with-common-functions';
+import withCommonFunctions, { WithFormComponentsProps } from '../../with-common-functions';
 import Label from '../label';
 import SubLabel from '../sublabel';
 import TextView from '../textview';
 
-export interface AttachmentProps extends WithCommonFunctionsProps {
+export interface AttachmentProps extends WithFormComponentsProps {
   path: Array<Path>;
   item: QuestionnaireItem;
   questionnaire?: Questionnaire;

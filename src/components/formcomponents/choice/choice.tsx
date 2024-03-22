@@ -19,12 +19,12 @@ import { getOptions, getSystem, getErrorMessage, validateInput, getIndexOfAnswer
 import { isReadOnly, isDataReceiver } from '../../../util/index';
 import { mapStateToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
-import withCommonFunctions, { WithCommonFunctionsProps } from '../../with-common-functions';
+import withCommonFunctions, { WithFormComponentsProps } from '../../with-common-functions';
 import AutosuggestView from '../choice-common/autosuggest-view';
 import ReceiverComponentWrapper from '../receiver-component/receiver-component-wrapper';
 import TextView from '../textview';
 
-export interface ChoiceProps extends WithCommonFunctionsProps {
+export interface ChoiceProps extends WithFormComponentsProps {
   item: QuestionnaireItem;
   answer: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer;
   resources?: Resources;

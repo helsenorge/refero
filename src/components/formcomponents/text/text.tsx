@@ -34,10 +34,10 @@ import {
 import { mapStateToProps } from '../../../util/map-props';
 import { Path, createFromIdFromPath } from '../../../util/refero-core';
 import { SanitizeText } from '../../../util/sanitize/domPurifyHelper';
-import withCommonFunctions, { WithCommonFunctionsProps } from '../../with-common-functions';
+import withCommonFunctions, { EnhancedWithCommonFunctionProps } from '../../with-common-functions';
 import TextView from '../textview';
 
-export interface TextProps extends WithCommonFunctionsProps {
+export interface TextProps extends EnhancedWithCommonFunctionProps {
   item: QuestionnaireItem;
   questionnaire?: Questionnaire;
   responseItem: QuestionnaireResponseItem;

@@ -29,11 +29,11 @@ import {
 } from '../../../util/index';
 import { mapStateToProps } from '../../../util/map-props';
 import { Path, createFromIdFromPath } from '../../../util/refero-core';
-import withCommonFunctions, { WithCommonFunctionsProps } from '../../with-common-functions';
+import withCommonFunctions, { WithFormComponentsProps } from '../../with-common-functions';
 // import SubLabel from '../sublabel';
 import TextView from '../textview';
 
-export interface StringProps extends WithCommonFunctionsProps {
+export interface StringProps extends WithFormComponentsProps {
   item: QuestionnaireItem;
   questionnaire?: Questionnaire;
   responseItem: QuestionnaireResponseItem;

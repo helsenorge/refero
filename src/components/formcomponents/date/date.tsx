@@ -23,11 +23,11 @@ import { evaluateFhirpathExpressionToGetDate } from '../../../util/fhirpathHelpe
 import { getSublabelText } from '../../../util/index';
 import { mapStateToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
-import withCommonFunctions, { WithCommonFunctionsProps } from '../../with-common-functions';
+import withCommonFunctions, { WithFormComponentsProps } from '../../with-common-functions';
 import Label from '../label';
 import SubLabel from '../sublabel';
 
-export interface DateProps extends WithCommonFunctionsProps {
+export interface DateProps extends WithFormComponentsProps {
   item: QuestionnaireItem;
   questionnaire?: Questionnaire;
   responseItem: QuestionnaireResponseItem;

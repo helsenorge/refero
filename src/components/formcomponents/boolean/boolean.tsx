@@ -21,9 +21,9 @@ import { GlobalState } from '../../../store/reducers';
 import { getText, isReadOnly, renderPrefix } from '../../../util/index';
 import { mapStateToProps } from '../../../util/map-props';
 import { Path, createFromIdFromPath } from '../../../util/refero-core';
-import withCommonFunctions, { WithCommonFunctionsProps } from '../../with-common-functions';
+import withCommonFunctions, { WithFormComponentsProps } from '../../with-common-functions';
 
-export interface BooleanProps extends WithCommonFunctionsProps {
+export interface BooleanProps extends WithFormComponentsProps {
   item: QuestionnaireItem;
   questionnaire?: Questionnaire;
   responseItem: QuestionnaireResponseItem;

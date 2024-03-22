@@ -26,7 +26,7 @@ import { getCodingTextTableValues } from '../../../util/extension';
 import { Path } from '../../../util/refero-core';
 import { RenderContext } from '../../../util/renderContext';
 
-export interface Props {
+export interface TableContainerProps {
   item: QuestionnaireItem;
   questionnaire?: Questionnaire | null;
   answer?: QuestionnaireResponseItemAnswer | null;
@@ -45,8 +45,9 @@ export interface Props {
   renderHelpElement: () => JSX.Element;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
 }
+export type TableContainerAllProps = TableContainerEnhancedProps & TableContainerProps;
 
-interface EnhancedProps {
+interface TableContainerEnhancedProps {
   headline: string;
   tableCodesCoding: Coding[];
   items: QuestionnaireItem[];
@@ -63,7 +64,7 @@ const TableContainer = ({
   tableType,
   questionnaireResponse,
   resource,
-}: Props & EnhancedProps): JSX.Element => {
+}: TableContainerProps & TableContainerEnhancedProps): JSX.Element => {
   {
     switch (tableType) {
       case TableCodes.tableHn1:
@@ -109,7 +110,7 @@ const TableContainer = ({
   }
 };
 
-const mapStateToProps = (state: GlobalState, props: Props): EnhancedProps => {
+const mapStateToProps = (state: GlobalState, props: TableContainerProps): TableContainerEnhancedProps => {
   const group = props.item;
   const tableType = getCodingTextTableValues(group)[0];
   const resource = getFormDefinition(state)?.Content?.contained;

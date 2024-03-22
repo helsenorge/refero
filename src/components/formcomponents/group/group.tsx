@@ -15,9 +15,9 @@ import { getText, getId, renderPrefix } from '../../../util/index';
 import { mapStateToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
 import { RenderContext } from '../../../util/renderContext';
-import withCommonFunctions, { WithCommonFunctionsProps } from '../../with-common-functions';
+import withCommonFunctions, { WithFormComponentsProps } from '../../with-common-functions';
 
-export interface GroupProps extends WithCommonFunctionsProps {
+export interface GroupProps extends WithFormComponentsProps {
   item: QuestionnaireItem;
   questionnaire?: Questionnaire;
   answer: QuestionnaireResponseItemAnswer;

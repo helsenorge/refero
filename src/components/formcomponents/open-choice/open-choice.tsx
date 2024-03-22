@@ -36,12 +36,12 @@ import {
 } from '../../../util/choice';
 import { mapStateToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
-import withCommonFunctions, { WithCommonFunctionsProps } from '../../with-common-functions';
+import withCommonFunctions, { WithFormComponentsProps } from '../../with-common-functions';
 import SliderView from '../choice/slider-view';
 import AutosuggestView from '../choice-common/autosuggest-view';
 import TextView from '../textview';
 
-export interface OpenChoiceProps extends WithCommonFunctionsProps {
+export interface OpenChoiceProps extends WithFormComponentsProps {
   item: QuestionnaireItem;
   answer: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[];
   path: Array<Path>;

@@ -43,7 +43,7 @@ import {
 } from '../util/refero-core';
 import { RenderContext } from '../util/renderContext';
 
-export interface WithCommonFunctionsProps {
+export interface WithFormComponentsProps {
   resources?: Resources;
   responseItem?: QuestionnaireResponseItem;
   containedResources?: Resource[];
@@ -106,7 +106,7 @@ export interface WithCommonFunctionsProps {
   fetchReceivers?: (successCallback: (receivers: Array<OrgenhetHierarki>) => void, errorCallback: () => void) => void;
 }
 
-interface EnhancedProps extends WithCommonFunctionsProps {
+export interface EnhancedWithCommonFunctionProps extends WithFormComponentsProps {
   renderChildrenItems?: (renderContext: RenderContext) => Array<JSX.Element> | undefined;
   renderDeleteButton?: () => JSX.Element | undefined;
   renderRepeatButton: (
@@ -116,10 +116,12 @@ interface EnhancedProps extends WithCommonFunctionsProps {
     response?: Array<QuestionnaireResponseItem>,
     responseItem?: QuestionnaireResponseItem
   ) => JSX.Element | undefined;
+  renderHelpButton: () => JSX.Element | undefined;
+  renderHelpElement: () => JSX.Element | undefined;
 }
 
-export default function withCommonFunctions<T extends WithCommonFunctionsProps>(
-  WrappedComponent: React.ComponentType<T & EnhancedProps>
+export default function withCommonFunctions<T extends WithFormComponentsProps>(
+  WrappedComponent: React.ComponentType<T & EnhancedWithCommonFunctionProps>
 ): React.ComponentType<T> {
   const WithCommonFunctions = (props: T): JSX.Element | null => {
     const [isHelpVisible, setIsHelpVisible] = React.useState(false);
@@ -177,10 +179,6 @@ export default function withCommonFunctions<T extends WithCommonFunctionsProps>(
       return !!answer && Object.keys(answer).length > 0;
     };
 
-    const toggleHelp = (isOpen: boolean): void => {
-      setIsHelpVisible(isOpen);
-    };
-
     const renderHelpButton = (): JSX.Element | undefined => {
       const { item, onRequestHelpButton } = props;
 
@@ -194,13 +192,13 @@ export default function withCommonFunctions<T extends WithCommonFunctionsProps>(
 
       if (onRequestHelpButton) {
         return (
-          <HelpButton item={helpItem} callback={toggleHelp}>
+          <HelpButton item={helpItem} callback={setIsHelpVisible}>
             {onRequestHelpButton(qItem, helpItem, helpItemType, getText(helpItem), isHelpVisible)}
           </HelpButton>
         );
       }
       return (
-        <HelpButton item={helpItem} callback={toggleHelp}>
+        <HelpButton item={helpItem} callback={setIsHelpVisible}>
           <Icon svgIcon={HelpSign} />
         </HelpButton>
       );

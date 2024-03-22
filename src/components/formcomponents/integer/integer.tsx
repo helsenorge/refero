@@ -19,10 +19,10 @@ import { getPlaceholder } from '../../../util/extension';
 import { isReadOnly, getId, getSublabelText, renderPrefix, getText } from '../../../util/index';
 import { mapStateToProps } from '../../../util/map-props';
 import { Path, createFromIdFromPath } from '../../../util/refero-core';
-import withCommonFunctions, { WithCommonFunctionsProps } from '../../with-common-functions';
+import withCommonFunctions, { WithFormComponentsProps } from '../../with-common-functions';
 import TextView from '../textview';
 
-export interface IntegerProps extends WithCommonFunctionsProps {
+export interface IntegerProps extends WithFormComponentsProps {
   item: QuestionnaireItem;
   questionnaire?: Questionnaire;
   responseItem: QuestionnaireResponseItem;

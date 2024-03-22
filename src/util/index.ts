@@ -1,3 +1,5 @@
+import { ComponentType } from 'react';
+
 import { Questionnaire, QuestionnaireResponseItem, QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { marked } from 'marked';
 import { ConnectedComponent } from 'react-redux';
@@ -31,8 +33,9 @@ import Integer from '../components/formcomponents/integer/integer';
 import OpenChoice from '../components/formcomponents/open-choice/open-choice';
 import Quantity from '../components/formcomponents/quantity/quantity';
 import StringComponent from '../components/formcomponents/string/string';
-import TableContainer from '../components/formcomponents/table/TableContainer';
+import TableContainer, { TableContainerAllProps, TableContainerProps } from '../components/formcomponents/table/TableContainer';
 import Text from '../components/formcomponents/text/text';
+import { WithFormComponentsProps } from '../components/with-common-functions';
 import CodingSystemConstants from '../constants/codingsystems';
 import ExtensionConstants from '../constants/extensions';
 import { HyperlinkTarget } from '../constants/hyperlinkTarget';
@@ -64,7 +67,9 @@ export const isTableCode = (extensionCode: string | string[]): boolean => {
 export function getComponentForItem(
   type: QuestionnaireItem['type'],
   extensionCode?: string | string[]
-): ConnectedComponent<any, any> | undefined {
+):
+  | ConnectedComponent<ComponentType<WithFormComponentsProps | TableContainerAllProps>, WithFormComponentsProps | TableContainerProps>
+  | undefined {
   switch (type) {
     case ItemType.GROUP:
       if (!!extensionCode && isTableCode(extensionCode)) {

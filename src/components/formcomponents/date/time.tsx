@@ -19,12 +19,12 @@ import { getExtension, getValidationTextExtension } from '../../../util/extensio
 import { isReadOnly, isRequired, getId, getSublabelText } from '../../../util/index';
 import { mapStateToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
-import withCommonFunctions, { WithCommonFunctionsProps } from '../../with-common-functions';
+import withCommonFunctions, { WithFormComponentsProps } from '../../with-common-functions';
 import Label from '../label';
 import SubLabel from '../sublabel';
 import TextView from '../textview';
 
-export interface TimeProps extends WithCommonFunctionsProps {
+export interface TimeProps extends WithFormComponentsProps {
   value?: string;
   answer: QuestionnaireResponseItemAnswer;
   item: QuestionnaireItem;
