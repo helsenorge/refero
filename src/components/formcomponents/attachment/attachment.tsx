@@ -78,7 +78,7 @@ const AttachmentComponent = ({
     if (uploadAttachment) {
       for (const file of files) {
         const onSuccess = (uploadedFile: UploadedFile, attachment: Attachment): void => {
-          if (dispatch && attachment) {
+          if (attachment) {
             dispatch(newAttachmentAsync(path, attachment, item, isRepeat(item)))?.then(newState =>
               onAnswerChange(newState, path, item, { valueAttachment: attachment } as QuestionnaireResponseItemAnswer)
             );
