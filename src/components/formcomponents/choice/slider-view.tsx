@@ -6,6 +6,7 @@ import { Slider, SliderStep } from '@helsenorge/designsystem-react/components/Sl
 
 import ExtensionConstants from '../../../constants/extensions';
 import { getExtension } from '../../../util/extension';
+import { isString } from '../../../util/typeguards';
 
 interface SliderProps {
   item: QuestionnaireItem;
@@ -15,7 +16,7 @@ interface SliderProps {
   children: React.ReactNode;
 }
 
-type LeftRightLabels = [leftLabel: string, rightLabel: string];
+type LeftRightLabels = { leftLabel: string; rightLabel: string };
 
 const SliderView: React.FC<SliderProps> = ({ item, handleChange, selected, children }) => {
   const title = item.text;
@@ -47,8 +48,8 @@ const SliderView: React.FC<SliderProps> = ({ item, handleChange, selected, child
     <div className="page_refero__component page_refero__component_choice page_refero__component_choice_slider">
       <Slider
         title={title}
-        labelLeft={leftRightLabels?.[0]}
-        labelRight={leftRightLabels?.[1]}
+        labelLeft={leftRightLabels?.leftLabel}
+        labelRight={leftRightLabels?.rightLabel}
         onChange={onValueChange}
         steps={sliderSteps}
         value={getSelectedStep()}
@@ -60,15 +61,10 @@ const SliderView: React.FC<SliderProps> = ({ item, handleChange, selected, child
 };
 
 function mapToSliderStep(answerOptions: QuestionnaireItemAnswerOption): SliderStep {
-  const step: SliderStep = {
+  return {
     label: getStepLabel(answerOptions),
     emojiUniCode: getStepEmoji(answerOptions),
   };
-
-  return step;
-}
-function isString(value: unknown): value is string {
-  return typeof value === 'string';
 }
 
 function getDisplay(answerOptions?: QuestionnaireItemAnswerOption[]): string[] {
@@ -83,8 +79,7 @@ function getLeftRightLabels(answerOptions?: QuestionnaireItemAnswerOption[]): Le
   const displayLabels = getDisplay(answerOptions);
 
   if (displayLabels.length > 1) {
-    const leftRightLabels: LeftRightLabels = [displayLabels[0], displayLabels[displayLabels.length - 1]];
-    return leftRightLabels;
+    return { leftLabel: displayLabels[0], rightLabel: displayLabels[displayLabels.length - 1] };
   }
 
   return undefined;
