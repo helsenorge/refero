@@ -3,11 +3,11 @@ import { mount } from 'enzyme';
 import { createStore } from 'redux';
 import { Store, Provider } from 'react-redux';
 
-import rootReducer from '../../reducers';
+import rootReducer from '../../store/reducers';
 import '../../util/defineFetch';
 import { Resources } from '../../types/resources';
 import { ReferoContainer } from '../../components';
-import { Questionnaire, QuestionnaireItem, Extension, Reference } from '../../types/fhir';
+import { Questionnaire, QuestionnaireItem, Extension, Reference } from 'fhir/r4';
 import Choice from '../formcomponents/choice/choice';
 import Boolean from '../formcomponents/boolean/boolean';
 import Decimal from '../formcomponents/decimal/decimal';

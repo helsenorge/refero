@@ -5,10 +5,10 @@ import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 
-import { Questionnaire, QuestionnaireItem } from '../../types/fhir';
+import { Questionnaire, QuestionnaireItem } from 'fhir/r4';
 
 import '../../util/defineFetch';
-import rootReducer from '../../reducers';
+import rootReducer from '../../store/reducers';
 import { Resources } from '../../types/resources';
 import { ReferoContainer } from '../index';
 import StepViewQuestionnaire from './__data__/stepview';

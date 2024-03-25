@@ -5,7 +5,7 @@ import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 
-import { Questionnaire, QuestionnaireItem, QuestionnaireItemEnableWhen } from '../../types/fhir';
+import { Questionnaire, QuestionnaireItem, QuestionnaireItemEnableWhen } from 'fhir/r4';
 
 import Input from '@helsenorge/designsystem-react/components/Input';
 
@@ -13,7 +13,7 @@ import '../../util/defineFetch';
 import Boolean from '../../components/formcomponents/boolean/boolean';
 import { RepeatButton as RepeatButtonInstance } from '../../components/formcomponents/repeat/repeat-button';
 import itemControlConstants from '../../constants/itemcontrol';
-import rootReducer from '../../reducers';
+import rootReducer from '../../store/reducers';
 import { Resources } from '../../types/resources';
 import HelpButton from '../help-button/help-button';
 import TextView from '../formcomponents/textview';

@@ -3,7 +3,7 @@ import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import thunk, { ThunkDispatch } from 'redux-thunk';
 import { ReactWrapper, mount } from 'enzyme';
-import rootReducer from '../../reducers';
+import rootReducer from '../../store/reducers';
 
 import { OpenChoice } from '../formcomponents/open-choice/open-choice';
 import {
@@ -12,12 +12,12 @@ import {
   QuestionnaireResponseItemAnswer,
   Extension,
   QuestionnaireResponseItem,
-} from '../../types/fhir';
+} from 'fhir/r4';
 import itemType from '../../constants/itemType';
 import '../../util/defineFetch';
 import { Path } from '../../util/refero-core';
-import { GlobalState } from '../../reducers/index';
-import { NewValueAction } from '../../actions/newValue';
+import { GlobalState } from '../../store/reducers/index';
+import { NewValueAction } from '../../store/actions/newValue';
 import { createIDataReceiverExpressionExtension } from '../__tests__/utils';
 import TextView from '../formcomponents/textview';
 import { OPEN_CHOICE_ID, OPEN_CHOICE_LABEL } from '../../constants';

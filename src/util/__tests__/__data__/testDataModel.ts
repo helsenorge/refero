@@ -1,10 +1,8 @@
-import { GlobalState } from '../../../reducers';
-
 import Valueset from './valuesets/valueset-8459';
 
-import { Questionnaire, QuestionnaireResponse } from '../../../types/fhir';
-
 import { OPEN_CHOICE_ID, OPEN_CHOICE_LABEL } from '../../../constants';
+import { QuestionnaireResponse, Questionnaire } from 'fhir/r4';
+import { GlobalState } from '../../../store/reducers';
 
 export const dataModel: GlobalState = {
   refero: {

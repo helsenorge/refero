@@ -1,6 +1,6 @@
 import dataModel from './__data__/nestedRepeats';
 import { Form } from '../form';
-import { QuestionnaireItem, QuestionnaireResponseItem } from '../../types/fhir';
+import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { getQuestionnaireDefinitionItem, getDefinitionItems, getResponseItemWithPath } from '../../util/refero-core';
 import { pathify, clickRepeat, uploadAttachment, createAttachment } from './utils';
 

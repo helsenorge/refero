@@ -5,7 +5,7 @@ import thunk, { ThunkDispatch } from 'redux-thunk';
 import { ReactWrapper, mount } from 'enzyme';
 
 import '../../util/defineFetch';
-import rootReducer from '../../reducers';
+import rootReducer from '../../store/reducers';
 import { Choice } from '../formcomponents/choice/choice';
 import {
   QuestionnaireItem,
@@ -13,10 +13,10 @@ import {
   QuestionnaireResponseItemAnswer,
   Extension,
   QuestionnaireResponseItem,
-} from '../../types/fhir';
+} from 'fhir/r4';
 import { Path } from '../../util/refero-core';
-import { GlobalState } from '../../reducers/index';
-import { NewValueAction } from '../../actions/newValue';
+import { GlobalState } from '../../store/reducers/index';
+import { NewValueAction } from '../../store/actions/newValue';
 import { createIDataReceiverExpressionExtension } from '../__tests__/utils';
 import itemType from '../../constants/itemType';
 import TextView from '../formcomponents/textview';
@@ -138,7 +138,7 @@ describe('Choice component renders item.option[]', () => {
     const item = createItemWithExtensions(...extensions);
     item.readOnly = true;
     const answer = [
-      { valueCoding: { code:"3", display:"Usikker", system:"urn:oid:2.16.578.1.12.4.1.9523" }}
+      { valueCoding: { code: '3', display: 'Usikker', system: 'urn:oid:2.16.578.1.12.4.1.9523' } },
     ] as QuestionnaireResponseItemAnswer[];
     const wrapper = createWrapperWithItem(item, answer);
     wrapper.render();

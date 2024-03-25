@@ -4,10 +4,10 @@ import { Store, Provider } from 'react-redux';
 import { mount } from 'enzyme';
 
 import '../../util/defineFetch';
-import rootReducer from '../../reducers';
+import rootReducer from '../../store/reducers';
 import { ReferoContainer } from '../../components';
 import { Resources } from '../../types/resources';
-import { Questionnaire, QuestionnaireItem, Extension } from '../../types/fhir';
+import { Questionnaire, QuestionnaireItem, Extension } from 'fhir/r4';
 import Choice from '../formcomponents/choice/choice';
 import Boolean from '../formcomponents/boolean/boolean';
 import Decimal from '../formcomponents/decimal/decimal';

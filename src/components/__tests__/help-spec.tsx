@@ -5,8 +5,8 @@ import { ThunkDispatch } from 'redux-thunk';
 import { ReactWrapper, mount } from 'enzyme';
 
 import '../../util/defineFetch';
-import rootReducer from '../../reducers';
-import { QuestionnaireItem, Extension, QuestionnaireResponseItemAnswer, QuestionnaireItemAnswerOption } from '../../types/fhir';
+
+import { QuestionnaireItem, Extension, QuestionnaireResponseItemAnswer, QuestionnaireItemAnswerOption } from 'fhir/r4';
 import { Path } from '../../util/refero-core';
 import String from '../formcomponents/string/string';
 import Choice from '../formcomponents/choice/choice';
@@ -21,8 +21,8 @@ import Integer from '../formcomponents/integer/integer';
 import OpenChoice from '../formcomponents/open-choice/open-choice';
 import Quantity from '../formcomponents/quantity/quantity';
 import Text from '../formcomponents/text/text';
-import { GlobalState } from '../../reducers/index';
-import { NewValueAction } from '../../actions/newValue';
+import rootReducer, { GlobalState } from '../../store/reducers';
+import { NewValueAction } from '../../store/actions/newValue';
 import { RenderContextType } from '../../constants/renderContextType';
 import { RenderContext } from '../../util/renderContext';
 import { createItemControlExtension } from '../__tests__/utils';

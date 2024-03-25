@@ -10,15 +10,11 @@ import {
   createPathForItem,
   Path,
 } from '../refero-core';
-import {
-  QuestionnaireResponseItem,
-  QuestionnaireResponseItemAnswer,
-  QuestionnaireItemEnableWhen,
-  QuestionnaireItem,
-} from '../../types/fhir';
+import { QuestionnaireResponseItem, QuestionnaireResponseItemAnswer, QuestionnaireItemEnableWhen, QuestionnaireItem } from 'fhir/r4';
 import itemType from '../../constants/itemType';
-import { pathify } from '../../reducers/__tests__/utils';
+
 import { dataModel } from './__data__/testDataModel';
+import { pathify } from '../../store/reducers/__tests__/utils';
 
 const should = chai.should();
 

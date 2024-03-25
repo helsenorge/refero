@@ -4,7 +4,7 @@ import * as fs from 'fs';
 
 import '../../../../util/defineFetch';
 import { Text } from '../text';
-import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem } from '../../../../types/fhir';
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem } from 'fhir/r4';
 
 describe('text with inline extension', () => {
   beforeEach(() => {

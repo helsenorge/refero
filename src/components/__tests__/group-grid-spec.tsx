@@ -5,8 +5,8 @@ import thunk from 'redux-thunk';
 import { mount, ReactWrapper } from 'enzyme';
 
 import '../../util/defineFetch';
-import rootReducer from '../../reducers';
-import { Questionnaire } from '../../types/fhir';
+import rootReducer from '../../store/reducers';
+import { Questionnaire } from 'fhir/r4';
 import Decimal from '../formcomponents/decimal/decimal';
 import { ReferoContainer } from '..';
 import { Resources } from '../../types/resources';

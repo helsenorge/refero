@@ -6,14 +6,14 @@ import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 
-import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer, Quantity, Coding } from '../../types/fhir';
+import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer, Quantity, Coding } from 'fhir/r4';
 
 import DateTimePicker from '@helsenorge/date-time/components/date-time-picker';
 
 import '../../util/defineFetch';
 import { ReferoContainer } from '..';
 import Constants, { OPEN_CHOICE_ID } from '../../constants/index';
-import rootReducer from '../../reducers';
+import rootReducer from '../../store/reducers';
 import { IActionRequester } from '../../util/actionRequester';
 import { IQuestionnaireInspector, QuestionnaireItemPair } from '../../util/questionnaireInspector';
 import { Resources } from '../../types/resources';

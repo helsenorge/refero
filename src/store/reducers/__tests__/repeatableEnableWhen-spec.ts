@@ -1,6 +1,6 @@
 import enableWhenDataModel from './__data__/repeatableEnableWhen';
 import { Form } from '../form';
-import { QuestionnaireItem } from '../../types/fhir';
+import { QuestionnaireItem } from 'fhir/r4';
 import { getQuestionnaireDefinitionItem, getDefinitionItems } from '../../util/refero-core';
 import { getResponseItem, clickRepeat, pathify, clickCheckbox, enterText } from './utils';
 

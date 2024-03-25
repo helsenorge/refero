@@ -5,13 +5,13 @@ import { ThunkDispatch } from 'redux-thunk';
 import { ReactWrapper, mount } from 'enzyme';
 
 import '../../util/defineFetch';
-import rootReducer from '../../reducers';
-import { QuestionnaireItem, QuestionnaireResponseItemAnswer, Extension, QuestionnaireResponseItem } from '../../types/fhir';
+import rootReducer from '../../store/reducers';
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer, Extension, QuestionnaireResponseItem } from 'fhir/r4';
 import { Path } from '../../util/refero-core';
 import { Group } from '../formcomponents/group/group';
 import StringComponent from '../../components/formcomponents/string/string';
-import { GlobalState } from '../../reducers/index';
-import { NewValueAction } from '../../actions/newValue';
+import { GlobalState } from '../../store/reducers';
+import { NewValueAction } from '../../store/actions/newValue';
 import { RenderContextType } from '../../constants/renderContextType';
 import { RenderContext } from '../../util/renderContext';
 import { createItemControlExtension } from '../__tests__/utils';
