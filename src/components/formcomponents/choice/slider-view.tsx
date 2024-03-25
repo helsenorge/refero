@@ -10,6 +10,7 @@ import ExtensionConstants from '../../../constants/extensions';
 import { isRequired } from '../../../util';
 import { getExtension, getMaxValueExtensionValue, getMinValueExtensionValue } from '../../../util/extension';
 import { Path, createFromIdFromPath } from '../../../util/refero-core';
+import { isString } from '../../../util/typeguards';
 
 interface SliderProps {
   item: QuestionnaireItem;
@@ -20,23 +21,13 @@ interface SliderProps {
   path: Path[];
 }
 
-type LeftRightLabels = [leftLabel: string, rightLabel: string];
+type LeftRightLabels = { leftLabel: string; rightLabel: string };
 
 const SliderView: React.FC<SliderProps> = ({ item, handleChange, selected, children, path }) => {
   const title = item.text;
   const formId = createFromIdFromPath(path);
   const { getFieldState, register } = useFormContext();
   const { error } = getFieldState(formId);
-
-  const [sliderSteps, setSliderSteps] = React.useState<SliderStep[] | undefined>(undefined);
-  const [leftRightLabels, setleftRightLabels] = React.useState<LeftRightLabels | undefined>(undefined);
-
-  React.useEffect(() => {
-    if (item.answerOption) {
-      setSliderSteps(item.answerOption.map(option => mapToSliderStep(option)));
-      setleftRightLabels(getLeftRightLabels(item.answerOption));
-    }
-  }, []);
 
   const onValueChange = (index: number): void => {
     const code = item.answerOption?.[index]?.valueCoding?.code;
@@ -58,7 +49,8 @@ const SliderView: React.FC<SliderProps> = ({ item, handleChange, selected, child
       return undefined;
     }
   };
-
+  const sliderSteps = item?.answerOption?.map(option => mapToSliderStep(option));
+  const leftRightLabels = getLeftRightLabels(item?.answerOption);
   return (
     <div className="page_refero__component page_refero__component_choice page_refero__component_choice_slider">
       <FormGroup mode="ongrey" error={error?.message}>
@@ -69,8 +61,8 @@ const SliderView: React.FC<SliderProps> = ({ item, handleChange, selected, child
           maxValue={getMaxValueExtensionValue(item)}
           minValue={getMinValueExtensionValue(item)}
           title={title}
-          labelLeft={leftRightLabels?.[0]}
-          labelRight={leftRightLabels?.[1]}
+          labelLeft={leftRightLabels?.leftLabel}
+          labelRight={leftRightLabels?.rightLabel}
           steps={sliderSteps}
           onChange={onValueChange}
           selected={selected && selected[0] ? true : false}
@@ -84,28 +76,25 @@ const SliderView: React.FC<SliderProps> = ({ item, handleChange, selected, child
 };
 
 function mapToSliderStep(answerOptions: QuestionnaireItemAnswerOption): SliderStep {
-  const step: SliderStep = {
+  return {
     label: getStepLabel(answerOptions),
     emojiUniCode: getStepEmoji(answerOptions),
   };
-
-  return step;
 }
 
-function getDisplay(answerOptions: QuestionnaireItemAnswerOption[]): string[] {
-  return answerOptions.map(option => option.valueCoding?.display).filter(display => display) as string[];
+function getDisplay(answerOptions?: QuestionnaireItemAnswerOption[]): string[] {
+  return answerOptions?.map(option => option.valueCoding?.display).filter(isString) || [];
 }
 
-function getCodes(answerOptions: QuestionnaireItemAnswerOption[]): string[] {
-  return answerOptions.map(option => option.valueCoding?.code).filter(code => code) as string[];
+function getCodes(answerOptions?: QuestionnaireItemAnswerOption[]): string[] {
+  return answerOptions?.map(option => option.valueCoding?.code).filter(isString) || [];
 }
 
-function getLeftRightLabels(answerOptions: QuestionnaireItemAnswerOption[]): LeftRightLabels | undefined {
+function getLeftRightLabels(answerOptions?: QuestionnaireItemAnswerOption[]): LeftRightLabels | undefined {
   const displayLabels = getDisplay(answerOptions);
 
   if (displayLabels.length > 1) {
-    const leftRightLabels: LeftRightLabels = [displayLabels[0], displayLabels[displayLabels.length - 1]];
-    return leftRightLabels;
+    return { leftLabel: displayLabels[0], rightLabel: displayLabels[displayLabels.length - 1] };
   }
 
   return undefined;

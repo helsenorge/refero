@@ -1,3 +1,9 @@
+## 15.0.4
+
+---
+
+- Bugfix: Fix display language on slider
+
 ## 15.0.3
 
 ---
@@ -11,7 +17,6 @@
 - Installed Designsystem v5.15.0 with slider bugfix and new slider props
 - Slider can now be marked as selected with the new prop "selected"
 - Slider now has an initial value with the new prop "value"
-
 
 ## 15.0.1
 
