@@ -1,3 +1,9 @@
+## 15.0.1
+
+---
+
+- Bugfix: Fixed an issue where slider displays where not updated on language change
+
 ## 15.0.0
 
 ---

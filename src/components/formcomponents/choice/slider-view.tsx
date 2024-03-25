@@ -17,15 +17,6 @@ type LeftRightLabels = [leftLabel: string, rightLabel: string];
 
 const SliderView: React.FC<SliderProps> = ({ item, handleChange, children }) => {
   const title = item.text;
-  const [sliderSteps, setSliderSteps] = React.useState<SliderStep[] | undefined>(undefined);
-  const [leftRightLabels, setleftRightLabels] = React.useState<LeftRightLabels | undefined>(undefined);
-
-  React.useEffect(() => {
-    if (item.answerOption) {
-      setSliderSteps(item.answerOption.map(option => mapToSliderStep(option)));
-      setleftRightLabels(getLeftRightLabels(item.answerOption));
-    }
-  }, []);
 
   const onValueChange = (index: number): void => {
     const code = item.answerOption?.[index]?.valueCoding?.code;
@@ -34,7 +25,8 @@ const SliderView: React.FC<SliderProps> = ({ item, handleChange, children }) => 
       handleChange(code);
     }
   };
-
+  const leftRightLabels = getLeftRightLabels(item.answerOption);
+  const sliderSteps = item?.answerOption?.map(option => mapToSliderStep(option));
   return (
     <div className="page_refero__component page_refero__component_choice page_refero__component_choice_slider">
       <Slider
@@ -58,8 +50,8 @@ function mapToSliderStep(answerOption: QuestionnaireItemAnswerOption): SliderSte
   return step;
 }
 
-function getLeftRightLabels(answerOptions: QuestionnaireItemAnswerOption[]): LeftRightLabels | undefined {
-  const displayLabels = answerOptions.map(option => option.valueCoding?.display).filter(display => display) as string[];
+function getLeftRightLabels(answerOptions?: QuestionnaireItemAnswerOption[]): LeftRightLabels | undefined {
+  const displayLabels = answerOptions?.map(option => option.valueCoding?.display).filter(display => display) as string[];
 
   if (displayLabels.length > 1) {
     const leftRightLabels: LeftRightLabels = [displayLabels[0], displayLabels[displayLabels.length - 1]];
