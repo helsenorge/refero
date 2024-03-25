@@ -19,15 +19,6 @@ type LeftRightLabels = [leftLabel: string, rightLabel: string];
 
 const SliderView: React.FC<SliderProps> = ({ item, handleChange, selected, children }) => {
   const title = item.text;
-  const [sliderSteps, setSliderSteps] = React.useState<SliderStep[] | undefined>(undefined);
-  const [leftRightLabels, setleftRightLabels] = React.useState<LeftRightLabels | undefined>(undefined);
-
-  React.useEffect(() => {
-    if (item.answerOption) {
-      setSliderSteps(item.answerOption.map(option => mapToSliderStep(option)));
-      setleftRightLabels(getLeftRightLabels(item.answerOption));
-    }
-  }, []);
 
   const onValueChange = (index: number): void => {
     const code = item.answerOption?.[index]?.valueCoding?.code;
@@ -50,7 +41,8 @@ const SliderView: React.FC<SliderProps> = ({ item, handleChange, selected, child
       return undefined;
     }
   };
-
+  const sliderSteps = item?.answerOption?.map(option => mapToSliderStep(option));
+  const leftRightLabels = getLeftRightLabels(item?.answerOption);
   return (
     <div className="page_refero__component page_refero__component_choice page_refero__component_choice_slider">
       <Slider
@@ -75,16 +67,19 @@ function mapToSliderStep(answerOptions: QuestionnaireItemAnswerOption): SliderSt
 
   return step;
 }
-
-function getDisplay(answerOptions: QuestionnaireItemAnswerOption[]): string[] {
- return answerOptions.map(option => option.valueCoding?.display).filter(display => display) as string[];
+function isString(value: unknown): value is string {
+  return typeof value === 'string';
 }
 
-function getCodes(answerOptions: QuestionnaireItemAnswerOption[]): string[] {
-  return answerOptions.map(option => option.valueCoding?.code).filter(code => code) as string[];
- }
+function getDisplay(answerOptions?: QuestionnaireItemAnswerOption[]): string[] {
+  return answerOptions?.map(option => option.valueCoding?.display).filter(isString) || [];
+}
 
-function getLeftRightLabels(answerOptions: QuestionnaireItemAnswerOption[]): LeftRightLabels | undefined {
+function getCodes(answerOptions?: QuestionnaireItemAnswerOption[]): string[] {
+  return answerOptions?.map(option => option.valueCoding?.code).filter(isString) || [];
+}
+
+function getLeftRightLabels(answerOptions?: QuestionnaireItemAnswerOption[]): LeftRightLabels | undefined {
   const displayLabels = getDisplay(answerOptions);
 
   if (displayLabels.length > 1) {
