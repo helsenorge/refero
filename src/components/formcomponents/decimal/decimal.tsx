@@ -141,7 +141,6 @@ const Decimal = ({
             />
           }
           type="number"
-          value={inputValue}
           inputId={inputId}
           defaultValue={inputValue}
           placeholder={getPlaceholder(item)}

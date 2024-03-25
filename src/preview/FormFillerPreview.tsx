@@ -13,7 +13,7 @@ import LanguageLocales from '@helsenorge/core-utils/constants/languages';
 import FormFillerSidebar from './FormFillerSidebar';
 import { emptyPropertyReplacer } from './helpers';
 import { getResources } from './resources/referoResources';
-import skjema from './skjema/NHN_Testskjema_TextBox-nb-NO-v0.1.json';
+import skjema from './skjema/NHN_Testskjema_Tall-nb-NO-v0.1.json';
 import { ReferoContainer } from '../components';
 import rootReducer from '../store/reducers';
 
@@ -21,12 +21,12 @@ type Props = {
   showFormFiller: () => void;
 };
 
-const getQuestionnaireFromBubndle = (bundle: Bundle<Questionnaire> | Questionnaire): Questionnaire => {
+const getQuestionnaireFromBubndle = (bundle: Bundle<Questionnaire> | Questionnaire, lang: number = 0): Questionnaire => {
   if (bundle.resourceType === 'Questionnaire') {
     return bundle;
   } else {
     return (
-      bundle?.entry?.[0].resource ?? {
+      bundle?.entry?.[lang].resource ?? {
         resourceType: 'Questionnaire',
         status: QuestionnaireStatusCodes.DRAFT,
       }
@@ -44,14 +44,16 @@ const FormFillerPreview = ({ showFormFiller }: Props): JSX.Element => {
     // eslint-disable-next-line no-console
     console.log(JSON.stringify(questionnaireResponse));
   };
+  const [lang, setLang] = useState<number>(0);
   return (
     <Provider store={store}>
       <div className="overlay">
         <div className="preview-window">
           <div className="title align-everything">
             <h1>{'Preview'}</h1>
+            <button onClick={(): void => setLang(lang === 0 ? 1 : 0)}>{`Endre språk ${lang === 0 ? 'til engelsk' : 'til norsk'}`}</button>
           </div>
-          <FormFillerSidebar questionnaire={getQuestionnaireFromBubndle(questionnaireForPreview)} />
+          <FormFillerSidebar questionnaire={getQuestionnaireFromBubndle(questionnaireForPreview, lang)} />
 
           <div className="referoContainer-div">
             {!showResponse ? (
@@ -59,7 +61,7 @@ const FormFillerPreview = ({ showFormFiller }: Props): JSX.Element => {
                 <ReferoContainer
                   key={123}
                   store={store}
-                  questionnaire={getQuestionnaireFromBubndle(questionnaireForPreview)}
+                  questionnaire={getQuestionnaireFromBubndle(questionnaireForPreview, lang)}
                   onCancel={showFormFiller}
                   onSave={(questionnaireResponse: QuestionnaireResponse): void => {
                     setQuestionnaireResponse(questionnaireResponse);
