@@ -19,7 +19,6 @@ export interface ReceiverComponentProps {
   selected?: Array<string | undefined>;
   id?: string;
   resources?: Resources;
-  label?: string;
   fetchReceivers?: (successCallback: (receivers: Array<OrgenhetHierarki>) => void, errorCallback: () => void) => void;
   handleChange: (code?: string, systemArg?: string, displayArg?: string) => void;
   clearCodingAnswer: (coding: Coding) => void;
@@ -217,26 +216,28 @@ const ReceiverComponent: React.FC<ReceiverComponentProps> = props => {
   });
   const { error } = getFieldState(safeId);
   return (
-    <div className={wrapperClasses} id={safeId}>
-      <Validation errorSummary={error?.message} />
-      {/* {renderErrorMessage()} */}
-      <h2>{props.resources?.adresseKomponent_header}</h2>
-      <div className="page_refero__sublabel">{props.resources?.adresseKomponent_sublabel}</div>
+    <div className="page_refero__component page_refero__receivercomponent" id={`${getId(props.id)}-wrapper`}>
+      <div className={wrapperClasses} id={safeId}>
+        <Validation errorSummary={error?.message} />
+        {/* {renderErrorMessage()} */}
+        <h2>{props.resources?.adresseKomponent_header}</h2>
+        <div className="page_refero__sublabel">{props.resources?.adresseKomponent_sublabel}</div>
 
-      {isLoading && (
-        <div>
-          <Loader />
-        </div>
-      )}
-      {hasLoadError && <NotificationPanel variant="alert">{props.resources?.adresseKomponent_loadError}</NotificationPanel>}
+        {isLoading && (
+          <div>
+            <Loader />
+          </div>
+        )}
+        {hasLoadError && <NotificationPanel variant="alert">{props.resources?.adresseKomponent_loadError}</NotificationPanel>}
 
-      {receiverTreeNodes && receiverTreeNodes.length > 0 && renderSelects()}
-      {selectedReceiver && (
-        <div>
-          <span>{`${props.resources?.adresseKomponent_skjemaSendesTil} `}</span>
-          <strong>{selectedReceiver}</strong>
-        </div>
-      )}
+        {receiverTreeNodes && receiverTreeNodes.length > 0 && renderSelects()}
+        {selectedReceiver && (
+          <div>
+            <span>{`${props.resources?.adresseKomponent_skjemaSendesTil} `}</span>
+            <strong>{selectedReceiver}</strong>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

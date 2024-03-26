@@ -21,7 +21,7 @@ import { mapStateToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
 import withCommonFunctions, { WithFormComponentsProps } from '../../with-common-functions';
 import AutosuggestView from '../choice-common/autosuggest-view';
-import ReceiverComponentWrapper from '../receiver-component/receiver-component-wrapper';
+import ReceiverComponent from '../receiver-component/receiver-component';
 import TextView from '../textview';
 
 export interface ChoiceProps extends WithFormComponentsProps {
@@ -256,7 +256,7 @@ const Choice = (props: ChoiceProps): JSX.Element | null => {
 
   const renderReceiverComponent = (): JSX.Element => {
     return (
-      <ReceiverComponentWrapper
+      <ReceiverComponent
         handleChange={handleChange}
         id={props.id}
         selected={getValue(props.item, props.answer)}
@@ -265,7 +265,7 @@ const Choice = (props: ChoiceProps): JSX.Element | null => {
         {...props}
       >
         {props.children}
-      </ReceiverComponentWrapper>
+      </ReceiverComponent>
     );
   };
 

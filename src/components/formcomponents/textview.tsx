@@ -31,7 +31,7 @@ const textView = ({ id, item, value, textClass, children, onRenderMarkdown, help
         <>{helpButton}</>
         <>{helpElement}</>
       </>
-      <div className={textClass || ''}>{value}</div>
+      <div className={textClass}>{value}</div>
       {children ? (
         <span>
           <br />

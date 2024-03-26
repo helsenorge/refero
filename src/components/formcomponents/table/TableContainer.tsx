@@ -41,8 +41,6 @@ export interface TableContainerProps {
   repeatButton?: JSX.Element;
   id?: string;
   renderContext: RenderContext;
-  renderHelpButton: () => JSX.Element;
-  renderHelpElement: () => JSX.Element;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
 }
 export type TableContainerAllProps = TableContainerEnhancedProps & TableContainerProps;
