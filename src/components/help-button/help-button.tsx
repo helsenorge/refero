@@ -21,9 +21,9 @@ const HelpButton = ({ item, children, callback }: Props): JSX.Element | null => 
   if (!item) return null;
 
   return (
-    <Button className="page_refero__helpButton" onClick={handleToggle}>
+    <span className="page_refero__helpButton"  onClick={handleToggle}>
       {children}
-    </Button>
+    </span>
   );
 };
 

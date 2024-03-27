@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { QuestionnaireItem, Questionnaire } from 'fhir/r4';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 
 import { Resources } from '../../../types/resources';
 
@@ -13,6 +13,8 @@ import { ContextTypeGridRow } from './ContextTypeGridRow';
 import { GroupHeader } from './GroupHeader';
 import { getClassNames, getHeaderText, getLocalRenderContextType, isDirectChildOfRenderContextOwner } from './helpers';
 import { RenderContextType } from '../../../constants/renderContextType';
+import { GlobalState } from '../../../store/reducers';
+import { getFormDefinition } from '../../../store/selectors';
 import { getId } from '../../../util/index';
 import { mapStateToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
@@ -21,7 +23,6 @@ import withCommonFunctions, { WithFormComponentsProps } from '../../with-common-
 
 export interface GroupProps extends WithFormComponentsProps {
   item: QuestionnaireItem;
-  questionnaire?: Questionnaire;
   path: Array<Path>;
   pdf?: boolean;
   includeSkipLink?: boolean;
@@ -50,10 +51,10 @@ export const Group = ({
   includeSkipLink,
   resources,
   onRenderMarkdown,
-  questionnaire,
   renderHelpButton,
   headerTag,
 }: GroupProps): JSX.Element => {
+  const questionnaire = useSelector<GlobalState, Questionnaire | undefined | null>(state => getFormDefinition(state)?.Content);
   const headerText = getHeaderText(item, questionnaire, resources, onRenderMarkdown);
   const localRenderContextType = getLocalRenderContextType(item);
 

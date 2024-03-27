@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem, Questionnaire } from 'fhir/r4';
 import { Controller, useFormContext } from 'react-hook-form';
-import { connect, useDispatch } from 'react-redux';
+import { connect, useDispatch, useSelector } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
 import { Resources } from '../../../types/resources';
@@ -18,6 +18,7 @@ import Pdf from './pdf';
 import { getBooleanValue } from './utils';
 import { NewValueAction, newBooleanValueAsync } from '../../../store/actions/newValue';
 import { GlobalState } from '../../../store/reducers';
+import { getFormDefinition } from '../../../store/selectors';
 import { getText, isReadOnly, renderPrefix } from '../../../util/index';
 import { mapStateToProps } from '../../../util/map-props';
 import { Path, createFromIdFromPath } from '../../../util/refero-core';
@@ -25,7 +26,6 @@ import withCommonFunctions, { WithFormComponentsProps } from '../../with-common-
 
 export interface BooleanProps extends WithFormComponentsProps {
   item: QuestionnaireItem;
-  questionnaire?: Questionnaire;
   responseItem: QuestionnaireResponseItem;
   answer: QuestionnaireResponseItemAnswer;
   resources?: Resources;
@@ -53,7 +53,6 @@ const Boolean = ({
   // responseItem,
   resources,
   onRenderMarkdown,
-  questionnaire,
   pdf,
   renderDeleteButton,
   repeatButton,
@@ -62,7 +61,7 @@ const Boolean = ({
   renderHelpButton,
 }: BooleanProps): JSX.Element => {
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
-
+  const questionnaire = useSelector<GlobalState, Questionnaire | undefined | null>(state => getFormDefinition(state)?.Content);
   const formId = createFromIdFromPath(path);
   const { getFieldState, control } = useFormContext();
   const { error } = getFieldState(formId);

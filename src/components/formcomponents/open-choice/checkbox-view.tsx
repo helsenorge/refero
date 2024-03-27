@@ -3,6 +3,7 @@ import * as React from 'react';
 import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { Collapse } from 'react-collapse';
 import { useFormContext } from 'react-hook-form';
+import { useSelector } from 'react-redux';
 
 import { Options } from '../../../types/formTypes/radioGroupOptions';
 import { Resources } from '../../../types/resources';
@@ -11,6 +12,8 @@ import Checkbox from '@helsenorge/designsystem-react/components/Checkbox';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
 
+import { GlobalState } from '../../../store/reducers';
+import { getFormDefinition } from '../../../store/selectors';
 import { getSublabelText, getText } from '../../../util';
 import { shouldShowExtraChoice } from '../../../util/choice';
 import { Path, createFromIdFromPath } from '../../../util/refero-core';
@@ -18,7 +21,6 @@ import { Path, createFromIdFromPath } from '../../../util/refero-core';
 interface Props {
   options?: Array<Options>;
   item: QuestionnaireItem;
-  questionnaire?: Questionnaire | null;
   id?: string;
   handleChange: (radioButton: string) => void;
   selected?: Array<string | undefined>;
@@ -37,7 +39,6 @@ interface Props {
 const CheckboxView = ({
   options,
   item,
-  questionnaire,
   id,
   answer,
   handleChange,
@@ -55,6 +56,7 @@ const CheckboxView = ({
   if (!options) {
     return null;
   }
+  const questionnaire = useSelector<GlobalState, Questionnaire | undefined | null>(state => getFormDefinition(state)?.Content);
 
   const checkboxes = options.map(el => {
     return { label: el.label, id: el.type, checked: isSelected(el, selected) };

@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem } from 'fhir/r4';
 import { useFormContext } from 'react-hook-form';
-import { connect, useDispatch } from 'react-redux';
+import { connect, useDispatch, useSelector } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
 import { Resources } from '../../../types/resources';
@@ -19,6 +19,7 @@ import Constants from '../../../constants/index';
 import itemControlConstants from '../../../constants/itemcontrol';
 import { NewValueAction, newStringValueAsync } from '../../../store/actions/newValue';
 import { GlobalState } from '../../../store/reducers';
+import { getFormDefinition } from '../../../store/selectors';
 import { getPlaceholder, getItemControlExtensionValue } from '../../../util/extension';
 import {
   isReadOnly,
@@ -39,7 +40,6 @@ import TextView from '../textview';
 
 export interface TextProps extends EnhancedWithCommonFunctionProps {
   item: QuestionnaireItem;
-  questionnaire?: Questionnaire;
   responseItem: QuestionnaireResponseItem;
   answer: QuestionnaireResponseItemAnswer;
   path: Array<Path>;
@@ -65,7 +65,6 @@ const Text = ({
   children,
   resources,
   onRenderMarkdown,
-  questionnaire,
   promptLoginMessage,
   path,
   onAnswerChange,
@@ -82,6 +81,7 @@ const Text = ({
   //   return false;
   // };
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
+  const questionnaire = useSelector<GlobalState, Questionnaire | undefined | null>(state => getFormDefinition(state)?.Content);
   const handleChange = (event: React.FormEvent): void => {
     const value = (event.target as HTMLInputElement).value;
     dispatch(newStringValueAsync(path, value, item))?.then(newState =>

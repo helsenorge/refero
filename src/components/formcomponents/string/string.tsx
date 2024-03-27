@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem, Questionnaire } from 'fhir/r4';
 import { useFormContext } from 'react-hook-form';
-import { connect, useDispatch } from 'react-redux';
+import { connect, useDispatch, useSelector } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
 import { Resources } from '../../../types/resources';
@@ -16,6 +16,7 @@ import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 
 import { NewValueAction, newStringValueAsync } from '../../../store/actions/newValue';
 import { GlobalState } from '../../../store/reducers';
+import { getFormDefinition } from '../../../store/selectors';
 import { getPlaceholder } from '../../../util/extension';
 import {
   isReadOnly,
@@ -35,7 +36,6 @@ import TextView from '../textview';
 
 export interface StringProps extends WithFormComponentsProps {
   item: QuestionnaireItem;
-  questionnaire?: Questionnaire;
   responseItem: QuestionnaireResponseItem;
   answer: QuestionnaireResponseItemAnswer;
   path: Array<Path>;
@@ -58,7 +58,6 @@ export interface StringProps extends WithFormComponentsProps {
 const String = ({
   id,
   item,
-  questionnaire,
   pdf,
   resources,
   answer,
@@ -73,7 +72,7 @@ const String = ({
   repeatButton,
 }: StringProps): JSX.Element => {
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
-
+  const questionnaire = useSelector<GlobalState, Questionnaire | undefined | null>(state => getFormDefinition(state)?.Content);
   const handleChange = (event: React.FormEvent): void => {
     const value = (event.target as HTMLInputElement).value;
     dispatch(newStringValueAsync(path, value, item))?.then(newState =>

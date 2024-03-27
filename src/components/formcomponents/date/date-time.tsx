@@ -3,7 +3,7 @@ import * as React from 'react';
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem, Questionnaire } from 'fhir/r4';
 import moment, { Moment } from 'moment';
 import { useFormContext } from 'react-hook-form';
-import { connect, useDispatch } from 'react-redux';
+import { connect, useDispatch, useSelector } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
 import { Resources } from '../../../types/resources';
@@ -18,6 +18,7 @@ import ExtensionConstants from '../../../constants/extensions';
 import Constants from '../../../constants/index';
 import { NewValueAction, newDateTimeValueAsync } from '../../../store/actions/newValue';
 import { GlobalState } from '../../../store/reducers';
+import { getFormDefinition } from '../../../store/selectors';
 import { getValidationTextExtension, getExtension } from '../../../util/extension';
 import { evaluateFhirpathExpressionToGetDate } from '../../../util/fhirpathHelper';
 import { isRequired, getId, isReadOnly, getSublabelText } from '../../../util/index';
@@ -30,7 +31,6 @@ import TextView from '../textview';
 
 export interface DateTimeProps extends WithFormComponentsProps {
   item: QuestionnaireItem;
-  questionnaire?: Questionnaire;
   responseItem: QuestionnaireResponseItem;
   answer: QuestionnaireResponseItemAnswer;
   resources?: Resources;
@@ -51,6 +51,7 @@ export interface DateTimeProps extends WithFormComponentsProps {
 
 const DateTime = (props: DateTimeProps): JSX.Element => {
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
+  const questionnaire = useSelector<GlobalState, Questionnaire | undefined | null>(state => getFormDefinition(state)?.Content);
   const getDefaultDate = (item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer): Date | undefined => {
     if (answer && answer.valueDateTime) {
       return parseDate(String(answer.valueDateTime));
@@ -186,7 +187,7 @@ const DateTime = (props: DateTimeProps): JSX.Element => {
   const valueDateTime = getDefaultDate(props.item, props.answer);
   const maxDateTime = getMaxDate();
   const minDateTime = getMinDate();
-  const subLabelText = getSublabelText(props.item, props.onRenderMarkdown, props.questionnaire, props.resources);
+  const subLabelText = getSublabelText(props.item, props.onRenderMarkdown, questionnaire, props.resources);
   const formId = createFromIdFromPath(props.path);
   const { register, getFieldState } = useFormContext();
   const { error } = getFieldState(formId);
@@ -213,7 +214,7 @@ const DateTime = (props: DateTimeProps): JSX.Element => {
           <Label
             item={props.item}
             onRenderMarkdown={props.onRenderMarkdown}
-            questionnaire={props.questionnaire}
+            questionnaire={questionnaire}
             resources={props.resources}
           />
         }

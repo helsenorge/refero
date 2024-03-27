@@ -1,8 +1,6 @@
 import * as React from 'react';
 
 import {
-  Resource,
-  Questionnaire,
   QuestionnaireResponseItem,
   QuestionnaireItem,
   QuestionnaireResponseItemAnswer,
@@ -19,7 +17,6 @@ import Icon from '@helsenorge/designsystem-react/components/Icon';
 import HelpSign from '@helsenorge/designsystem-react/components/Icons/HelpSign';
 
 import { UploadedFile } from '@helsenorge/file-upload/components/dropzone';
-import { FormChild } from '@helsenorge/form/components/form';
 
 import DeleteButton from './formcomponents/repeat/delete-button';
 import RepeatButton from './formcomponents/repeat/repeat-button';
@@ -40,30 +37,21 @@ import {
   createIdSuffix,
 } from '../util/refero-core';
 import { RenderContext } from '../util/renderContext';
+import { isJsxElement } from '../util/typeguards';
 
 export interface WithFormComponentsProps {
   resources?: Resources;
   responseItem?: QuestionnaireResponseItem;
-  containedResources?: Resource[];
   item?: QuestionnaireItem;
-  questionnaire?: Questionnaire | null;
   headerTag?: number;
   pdf?: boolean;
-  language?: string;
   includeSkipLink?: boolean;
   promptLoginMessage?: () => void;
   path?: Array<Path>;
   enable?: boolean;
   id?: string;
   answer?: QuestionnaireResponseItemAnswer | Array<QuestionnaireResponseItemAnswer>;
-  addFormComponent?: (component: FormChild) => void;
-  removeFormComponent?: (component: FormChild) => void;
-  onValidated?: (valid: boolean | undefined) => void;
-  optionalLabel?: string;
-  requiredLabel?: string;
   validateScriptInjection?: boolean;
-  showOptionalLabel?: boolean;
-  showRequiredLabel?: boolean;
   visibleDeleteButton?: boolean;
   repeatButton?: JSX.Element;
   attachmentErrorMessage?: string;
@@ -207,7 +195,7 @@ export default function withCommonFunctions<T extends WithFormComponentsProps>(
     );
 
     const renderItem = (item: QuestionnaireItem, renderContext: RenderContext): Array<JSX.Element | undefined> => {
-      const { resources, containedResources, responseItem, pdf, path, headerTag, promptLoginMessage, onRenderMarkdown } = props;
+      const { resources, responseItem, pdf, path, headerTag, promptLoginMessage, onRenderMarkdown } = props;
       if (isHelpItem(item) || isHiddenItem(item)) return [];
 
       const Comp = getComponentForItem(item.type, getCodingTextTableValues(item));
@@ -236,26 +224,16 @@ export default function withCommonFunctions<T extends WithFormComponentsProps>(
             <Comp
               key={'item_' + responseItem.linkId + createIdSuffix(path, index, item.repeats)}
               pdf={pdf}
-              language={props.language}
               includeSkipLink={props.includeSkipLink}
               promptLoginMessage={promptLoginMessage}
               id={'item_' + responseItem.linkId + createIdSuffix(path, index, item.repeats)}
               item={item}
-              questionnaire={props.questionnaire}
               responseItem={responseItem}
               answer={getAnswerFromResponseItem(responseItem)}
               resources={resources}
-              containedResources={containedResources}
               path={createPathForItem(path, item, responseItem, index)}
               headerTag={getChildHeaderTag(props.item, headerTag)}
-              onValidated={props.onValidated}
               validateScriptInjection={props.validateScriptInjection}
-              addFormComponent={props.addFormComponent}
-              removeFormComponent={props.removeFormComponent}
-              optionalLabel={props.optionalLabel}
-              requiredLabel={props.requiredLabel}
-              showOptionalLabel={props.showOptionalLabel}
-              showRequiredLabel={props.showRequiredLabel}
               visibleDeleteButton={shouldRenderDeleteButton(item, index)}
               repeatButton={renderRepeatButton(item, index, path, response, responseItem)}
               onRequestAttachmentLink={props.onRequestAttachmentLink}
@@ -291,11 +269,11 @@ export default function withCommonFunctions<T extends WithFormComponentsProps>(
       if (item.type === itemType.GROUP && renderContext.RenderChildren) {
         const children = renderContext.RenderChildren(item.item, renderItem);
         if (children) {
-          renderedItems = children.filter((child): child is JSX.Element => child !== undefined);
+          renderedItems = children.filter(isJsxElement);
         }
       } else {
         item.item.forEach(i => {
-          const items = renderItem(i, renderContext).filter((item): item is JSX.Element => item !== undefined);
+          const items = renderItem(i, renderContext).filter(isJsxElement);
           renderedItems.push(...items);
         });
       }

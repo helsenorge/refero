@@ -2,13 +2,15 @@ import * as React from 'react';
 
 import DOMPurify from 'dompurify';
 import { Questionnaire, QuestionnaireItem } from 'fhir/r4';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 
 import { Resources } from '../../../types/resources';
 
 import designsystemtypography from '@helsenorge/designsystem-react/scss/typography.module.scss';
 
 import itemControlConstants from '../../../constants/itemcontrol';
+import { GlobalState } from '../../../store/reducers';
+import { getFormDefinition } from '../../../store/selectors';
 import { getItemControlExtensionValue, getMarkdownExtensionValue } from '../../../util/extension';
 import { renderPrefix, getText, getId } from '../../../util/index';
 import { mapStateToProps } from '../../../util/map-props';
@@ -16,14 +18,14 @@ import { mapStateToProps } from '../../../util/map-props';
 export interface Props {
   id?: string;
   item?: QuestionnaireItem;
-  questionnaire?: Questionnaire | null;
   enable?: boolean;
   pdf?: boolean;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
   resources?: Resources;
 }
 
-const Display = ({ id, enable, pdf, item, questionnaire, onRenderMarkdown, resources }: Props): JSX.Element | null => {
+const Display = ({ id, enable, pdf, item, onRenderMarkdown, resources }: Props): JSX.Element | null => {
+  const questionnaire = useSelector<GlobalState, Questionnaire | undefined | null>(state => getFormDefinition(state)?.Content);
   const itemControls = item ? getItemControlExtensionValue(item) : null;
   const highlightClass =
     itemControls && itemControls.some(itemControl => itemControl.code === itemControlConstants.HIGHLIGHT)

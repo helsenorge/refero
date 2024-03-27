@@ -2,6 +2,7 @@ import * as React from 'react';
 
 import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { useFormContext } from 'react-hook-form';
+import { useSelector } from 'react-redux';
 
 import { Options } from '../../../types/formTypes/radioGroupOptions';
 import { Resources } from '../../../types/resources';
@@ -12,6 +13,8 @@ import Select from '@helsenorge/designsystem-react/components/Select';
 
 import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 
+import { GlobalState } from '../../../store/reducers';
+import { getFormDefinition } from '../../../store/selectors';
 import { shouldShowExtraChoice } from '../../../util/choice';
 import { getId, getSublabelText, getText } from '../../../util/index';
 import { Path, createFromIdFromPath } from '../../../util/refero-core';
@@ -19,7 +22,6 @@ import { Path, createFromIdFromPath } from '../../../util/refero-core';
 interface DropdownViewProps {
   options?: Array<Options>;
   item: QuestionnaireItem;
-  questionnaire?: Questionnaire | null;
   id?: string;
   handleChange: (code: string) => void;
   selected?: Array<string | undefined>;
@@ -40,7 +42,6 @@ interface DropdownViewProps {
 const DropdownView = ({
   options,
   item,
-  questionnaire,
   id,
   answer,
   handleChange,
@@ -58,7 +59,7 @@ const DropdownView = ({
   if (!options) {
     return null;
   }
-
+  const questionnaire = useSelector<GlobalState, Questionnaire | undefined | null>(state => getFormDefinition(state)?.Content);
   const selectId = getId(id);
   const labelText = getText(item, onRenderMarkdown, questionnaire, resources);
   const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);

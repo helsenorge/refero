@@ -3,7 +3,7 @@ import * as React from 'react';
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem, Questionnaire } from 'fhir/r4';
 import moment from 'moment';
 import { useFormContext } from 'react-hook-form';
-import { connect, useDispatch } from 'react-redux';
+import { connect, useDispatch, useSelector } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
 import { Resources } from '../../../types/resources';
@@ -15,6 +15,7 @@ import * as DateTimeConstants from '@helsenorge/date-time/constants/datetime';
 import ExtensionConstants from '../../../constants/extensions';
 import { NewValueAction, newTimeValueAsync } from '../../../store/actions/newValue';
 import { GlobalState } from '../../../store/reducers';
+import { getFormDefinition } from '../../../store/selectors';
 import { getExtension, getValidationTextExtension } from '../../../util/extension';
 import { isReadOnly, isRequired, getId, getSublabelText } from '../../../util/index';
 import { mapStateToProps } from '../../../util/map-props';
@@ -28,7 +29,6 @@ export interface TimeProps extends WithFormComponentsProps {
   value?: string;
   answer: QuestionnaireResponseItemAnswer;
   item: QuestionnaireItem;
-  questionnaire?: Questionnaire;
   responseItem: QuestionnaireResponseItem;
   resources?: Resources;
   path: Array<Path>;
@@ -49,6 +49,7 @@ export interface TimeProps extends WithFormComponentsProps {
 
 const Time = (props: TimeProps): JSX.Element => {
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
+  const questionnaire = useSelector<GlobalState, Questionnaire | undefined | null>(state => getFormDefinition(state)?.Content);
   const convertAnswerToString = (answer: QuestionnaireResponseItemAnswer): string => {
     if (answer && answer.valueTime) {
       return answer.valueTime;
@@ -188,7 +189,7 @@ const Time = (props: TimeProps): JSX.Element => {
   };
 
   const { pdf, item, renderFieldset, id, onRenderMarkdown } = props;
-  const subLabelText = getSublabelText(props.item, props.onRenderMarkdown, props.questionnaire, props.resources);
+  const subLabelText = getSublabelText(props.item, props.onRenderMarkdown, questionnaire, props.resources);
   const { register, getFieldState } = useFormContext();
   const { error } = getFieldState(getId(props.id));
   if (pdf || isReadOnly(props.item)) {
@@ -249,7 +250,7 @@ const Time = (props: TimeProps): JSX.Element => {
           <Label
             item={props.item}
             onRenderMarkdown={props.onRenderMarkdown}
-            questionnaire={props.questionnaire}
+            questionnaire={questionnaire}
             resources={props.resources}
           />
         }

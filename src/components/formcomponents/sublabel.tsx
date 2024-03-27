@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import {sanitize } from 'dompurify';
+import DOMpurify from 'dompurify';
 
 
 interface Props {
@@ -12,7 +12,7 @@ const SubLabel = ({ subLabelText }: Props): JSX.Element | null => {
     <span
       className="page_refero__sublabel"
       dangerouslySetInnerHTML={{
-        __html: sanitize(subLabelText, { RETURN_TRUSTED_TYPE: true, ADD_ATTR: ['target'], }) as unknown as string,
+        __html: DOMpurify.sanitize(subLabelText, { RETURN_TRUSTED_TYPE: true, ADD_ATTR: ['target'], }) as unknown as string,
       }}
     />
   );

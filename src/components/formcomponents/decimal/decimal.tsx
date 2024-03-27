@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { useFormContext } from 'react-hook-form';
-import { connect, useDispatch } from 'react-redux';
+import { connect, useDispatch, useSelector } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
 import { Resources } from '../../../types/resources';
@@ -15,6 +15,7 @@ import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 
 import { NewValueAction, newDecimalValueAsync } from '../../../store/actions/newValue';
 import { GlobalState } from '../../../store/reducers';
+import { getFormDefinition } from '../../../store/selectors';
 import { getPlaceholder } from '../../../util/extension';
 import { isReadOnly, getId, getSublabelText, renderPrefix, getText } from '../../../util/index';
 import { mapStateToProps } from '../../../util/map-props';
@@ -24,7 +25,6 @@ import TextView from '../textview';
 
 export interface DecimalProps extends WithFormComponentsProps {
   item: QuestionnaireItem;
-  questionnaire?: Questionnaire;
   responseItem: QuestionnaireItem;
   answer: QuestionnaireResponseItemAnswer;
   resources?: Resources;
@@ -52,7 +52,6 @@ const Decimal = ({
   id,
   pdf,
   onRenderMarkdown,
-  questionnaire,
   renderHelpButton,
   renderHelpElement,
   children,
@@ -60,6 +59,8 @@ const Decimal = ({
   repeatButton,
 }: DecimalProps): JSX.Element => {
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
+  const questionnaire = useSelector<GlobalState, Questionnaire | undefined | null>(state => getFormDefinition(state)?.Content);
+
   const getValue = (): string | number | number[] | undefined => {
     if (answer && Array.isArray(answer)) {
       return answer.map(m => m.valueDecimal);

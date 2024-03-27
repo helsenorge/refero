@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, Attachment, QuestionnaireResponseItem, Questionnaire } from 'fhir/r4';
-import { connect, useDispatch } from 'react-redux';
+import { connect, useDispatch, useSelector } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
 import { Resources } from '../../../types/resources';
@@ -12,6 +12,7 @@ import { UploadedFile } from '@helsenorge/file-upload/components/dropzone';
 import AttachmentHtml from './attachmenthtml';
 import { NewValueAction, newAttachmentAsync, removeAttachmentAsync } from '../../../store/actions/newValue';
 import { GlobalState } from '../../../store/reducers';
+import { getFormDefinition } from '../../../store/selectors';
 import { getValidationTextExtension, getMaxOccursExtensionValue, getMinOccursExtensionValue } from '../../../util/extension';
 import { isRequired, getId, isReadOnly, isRepeat, getSublabelText } from '../../../util/index';
 import { mapStateToProps } from '../../../util/map-props';
@@ -24,7 +25,6 @@ import TextView from '../textview';
 export interface AttachmentProps extends WithFormComponentsProps {
   path: Array<Path>;
   item: QuestionnaireItem;
-  questionnaire?: Questionnaire;
   responseItem: QuestionnaireResponseItem;
   answer: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer;
   pdf?: boolean;
@@ -63,7 +63,6 @@ const AttachmentComponent = ({
   id,
   onOpenAttachment,
   onRenderMarkdown,
-  questionnaire,
   onRequestAttachmentLink,
   renderHelpButton,
   renderHelpElement,
@@ -74,6 +73,7 @@ const AttachmentComponent = ({
   ...other
 }: AttachmentProps): JSX.Element => {
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
+  const questionnaire = useSelector<GlobalState, Questionnaire | undefined | null>(state => getFormDefinition(state)?.Content);
   const onUpload = (files: File[], cb: (success: boolean, errormessage: TextMessage | null, uploadedFile?: UploadedFile) => void): void => {
     if (uploadAttachment) {
       for (const file of files) {

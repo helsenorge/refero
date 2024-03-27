@@ -2,6 +2,7 @@ import * as React from 'react';
 
 import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { useFormContext } from 'react-hook-form';
+import { useSelector } from 'react-redux';
 
 import { Resources } from '../../../types/resources';
 
@@ -9,6 +10,8 @@ import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Input from '@helsenorge/designsystem-react/components/Input';
 import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
 
+import { GlobalState } from '../../../store/reducers';
+import { getFormDefinition } from '../../../store/selectors';
 import { getPlaceholder } from '../../../util/extension';
 import { getId, getStringValue, getPDFStringValue, getSublabelText, renderPrefix, getText } from '../../../util/index';
 import { Path, createFromIdFromPath } from '../../../util/refero-core';
@@ -18,7 +21,6 @@ interface Props {
   id?: string;
   pdf?: boolean;
   item: QuestionnaireItem;
-  questionnaire?: Questionnaire | null;
   answer: QuestionnaireResponseItemAnswer;
   handleStringChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
@@ -30,7 +32,6 @@ const textField = ({
   id,
   pdf,
   item,
-  questionnaire,
   answer,
   handleStringChange,
   children,
@@ -45,6 +46,7 @@ const textField = ({
       </Pdf>
     );
   }
+  const questionnaire = useSelector<GlobalState, Questionnaire | undefined | null>(state => getFormDefinition(state)?.Content);
 
   const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`;
   const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);

@@ -2,6 +2,7 @@ import * as React from 'react';
 
 import { ValueSet, QuestionnaireItem, Questionnaire, Coding, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { useFormContext } from 'react-hook-form';
+import { useSelector } from 'react-redux';
 
 import { AutoSuggestProps } from '../../../types/autoSuggestProps';
 import { Resources } from '../../../types/resources';
@@ -16,6 +17,8 @@ import { debounce } from '@helsenorge/core-utils/debounce';
 import { OPEN_CHOICE_ID } from '../../../constants';
 import { OPEN_CHOICE_SYSTEM } from '../../../constants/codingsystems';
 import ItemType from '../../../constants/itemType';
+import { GlobalState } from '../../../store/reducers';
+import { getFormDefinition } from '../../../store/selectors';
 import { isRequired, getId, getSublabelText } from '../../../util/index';
 import { Path, createFromIdFromPath } from '../../../util/refero-core';
 import Label from '../label';
@@ -33,7 +36,6 @@ interface AutosuggestViewProps {
   autoSuggestProps?: AutoSuggestProps;
   answer: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer;
   item: QuestionnaireItem;
-  questionnaire?: Questionnaire | null;
   id?: string;
   resources?: Resources;
   renderDeleteButton: (className?: string) => JSX.Element | undefined;
@@ -60,11 +62,11 @@ const AutosuggestView = ({
   id,
   renderDeleteButton,
   repeatButton,
-  questionnaire,
   children,
   renderHelpButton,
   renderHelpElement,
 }: AutosuggestViewProps): JSX.Element => {
+  const questionnaire = useSelector<GlobalState, Questionnaire | undefined | null>(state => getFormDefinition(state)?.Content);
   const getStringAnswer = (): string | undefined => {
     if (Array.isArray(answer)) {
       return answer.reduce((acc, x) => acc || x.valueString, undefined);

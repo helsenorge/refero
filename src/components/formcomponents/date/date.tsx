@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem, Questionnaire } from 'fhir/r4';
 import moment, { Moment } from 'moment';
-import { connect, useDispatch } from 'react-redux';
+import { connect, useDispatch, useSelector } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
 import { Resources } from '../../../types/resources';
@@ -18,6 +18,7 @@ import ExtensionConstants from '../../../constants/extensions';
 import itemControlConstants from '../../../constants/itemcontrol';
 import { NewValueAction, newDateValueAsync } from '../../../store/actions/newValue';
 import { GlobalState } from '../../../store/reducers';
+import { getFormDefinition } from '../../../store/selectors';
 import { getExtension, getItemControlExtensionValue } from '../../../util/extension';
 import { evaluateFhirpathExpressionToGetDate } from '../../../util/fhirpathHelper';
 import { getSublabelText } from '../../../util/index';
@@ -29,7 +30,6 @@ import SubLabel from '../sublabel';
 
 export interface DateProps extends WithFormComponentsProps {
   item: QuestionnaireItem;
-  questionnaire?: Questionnaire;
   responseItem: QuestionnaireResponseItem;
   answer: QuestionnaireResponseItemAnswer;
   resources?: Resources;
@@ -50,7 +50,7 @@ export interface DateProps extends WithFormComponentsProps {
 }
 
 const DateComponent = (props: DateProps): JSX.Element | null => {
-  const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
+  const questionnaire = useSelector<GlobalState, Questionnaire | undefined | null>(state => getFormDefinition(state)?.Content);
   const [datepicker, setDatepicker] = React.useState<React.RefObject<DateRangePicker>>(React.createRef());
 
   const getMaxDate = (): Moment | undefined => {
@@ -119,7 +119,7 @@ const DateComponent = (props: DateProps): JSX.Element | null => {
     return LanguageLocales.NORWEGIAN;
   };
 
-  const subLabelText = getSublabelText(props.item, props.onRenderMarkdown, props.questionnaire, props.resources);
+  const subLabelText = getSublabelText(props.item, props.onRenderMarkdown, questionnaire, props.resources);
 
   const itemControls = getItemControlExtensionValue(props.item);
 
@@ -132,7 +132,7 @@ const DateComponent = (props: DateProps): JSX.Element | null => {
           <Label
             item={props.item}
             onRenderMarkdown={props.onRenderMarkdown}
-            questionnaire={props.questionnaire}
+            questionnaire={questionnaire}
             resources={props.resources}
           />
         }
@@ -152,7 +152,7 @@ const DateComponent = (props: DateProps): JSX.Element | null => {
           <Label
             item={props.item}
             onRenderMarkdown={props.onRenderMarkdown}
-            questionnaire={props.questionnaire}
+            questionnaire={questionnaire}
             resources={props.resources}
           />
         }
@@ -174,7 +174,7 @@ const DateComponent = (props: DateProps): JSX.Element | null => {
           <Label
             item={props.item}
             onRenderMarkdown={props.onRenderMarkdown}
-            questionnaire={props.questionnaire}
+            questionnaire={questionnaire}
             resources={props.resources}
           />
         }

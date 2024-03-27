@@ -1,7 +1,7 @@
 import * as React from 'react';
 
-import { QuestionnaireItem, QuestionnaireResponseItemAnswer, Resource, Coding, QuestionnaireResponseItem, ValueSet } from 'fhir/r4';
-import { connect, useDispatch } from 'react-redux';
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer, Coding, QuestionnaireResponseItem, ValueSet, FhirResource } from 'fhir/r4';
+import { connect, useDispatch, useSelector } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
 import { AutoSuggestProps } from '../../../types/autoSuggestProps';
@@ -23,6 +23,7 @@ import {
   removeCodingStringValueAsync,
 } from '../../../store/actions/newValue';
 import { GlobalState } from '../../../store/reducers';
+import { getFormDefinition } from '../../../store/selectors';
 import { isReadOnly, isDataReceiver } from '../../../util';
 import {
   renderOptions,
@@ -49,7 +50,6 @@ export interface OpenChoiceProps extends WithFormComponentsProps {
   pdf?: boolean;
   promptLoginMessage?: () => void;
   resources?: Resources;
-  containedResources?: Resource[];
   renderDeleteButton: () => JSX.Element | undefined;
   headerTag?: number;
   responseItem: QuestionnaireResponseItem;
@@ -70,6 +70,7 @@ export interface OpenChoiceProps extends WithFormComponentsProps {
 
 const OpenChoice = (props: OpenChoiceProps): JSX.Element | null => {
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
+  const { containedResources } = useSelector<GlobalState, { containedResources?: FhirResource[]}>(state => ({ containedResources: getFormDefinition(state)?.Content?.contained }));
   const getDataReceiverValue = (answer: Array<QuestionnaireResponseItemAnswer>): (string | undefined)[] => {
     return answer
       .filter(f => f.valueCoding?.code !== OPEN_CHOICE_ID)
@@ -87,7 +88,7 @@ const OpenChoice = (props: OpenChoiceProps): JSX.Element | null => {
     item: QuestionnaireItem,
     answer: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer
   ): string => {
-    const { resources, containedResources } = props;
+    const { resources } = props;
 
     if (isDataReceiver(item)) {
       return getDataReceiverValue(answer as Array<QuestionnaireResponseItemAnswer>).join(', ');
@@ -177,8 +178,8 @@ const OpenChoice = (props: OpenChoiceProps): JSX.Element | null => {
   };
 
   const getAnswerValueCoding = (code: string, systemArg?: string, displayArg?: string): Coding => {
-    const display = displayArg ? displayArg : getDisplay(getOptions(props.resources, props.item, props.containedResources), code);
-    const valueSetSystem = code === OPEN_CHOICE_ID ? OPEN_CHOICE_SYSTEM : getSystem(props.item, code, props.containedResources);
+    const display = displayArg ? displayArg : getDisplay(getOptions(props.resources, props.item, containedResources), code);
+    const valueSetSystem = code === OPEN_CHOICE_ID ? OPEN_CHOICE_SYSTEM : getSystem(props.item, code, containedResources);
     const system = systemArg ? systemArg : valueSetSystem;
     return { code, display, system } as Coding;
   };
@@ -332,7 +333,7 @@ const OpenChoice = (props: OpenChoiceProps): JSX.Element | null => {
         id={props.id}
         handleChange={handleChange}
         selected={getValue(props.item, props.answer)}
-        validateInput={(value: string): boolean => validateInput(props.item, value, props.containedResources, props.resources)}
+        validateInput={(value: string): boolean => validateInput(props.item, value, containedResources, props.resources)}
         resources={props.resources}
         renderOpenField={(): JSX.Element => renderTextField()}
         onRenderMarkdown={props.onRenderMarkdown}
@@ -344,7 +345,7 @@ const OpenChoice = (props: OpenChoiceProps): JSX.Element | null => {
   };
 
   const renderRadio = (options: Array<Options> | undefined): JSX.Element => {
-    const { item, resources, containedResources, children, id, answer, repeatButton, ...rest } = props;
+    const { item, resources, children, id, answer, repeatButton, ...rest } = props;
     return (
       <RadioView
         options={options}
@@ -393,7 +394,7 @@ const OpenChoice = (props: OpenChoiceProps): JSX.Element | null => {
     );
   };
 
-  const { id, item, pdf, answer, containedResources, children, onRenderMarkdown } = props;
+  const { id, item, pdf, answer, children, onRenderMarkdown } = props;
   if (pdf || isReadOnly(item)) {
     return (
       <TextView id={id} item={item} value={getPDFValue(item, answer)} onRenderMarkdown={onRenderMarkdown}>
