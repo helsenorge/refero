@@ -22,7 +22,6 @@ import Icon from '@helsenorge/designsystem-react/components/Icons';
 import HelpSign from '@helsenorge/designsystem-react/components/Icons/HelpSign';
 
 import { UploadedFile } from '@helsenorge/file-upload/components/dropzone';
-import { FormChild } from '@helsenorge/form/components/form';
 import { ValidationProps } from '@helsenorge/form/components/form/validation';
 
 import DeleteButton from './formcomponents/repeat/delete-button';
@@ -61,9 +60,6 @@ export interface Props {
   enable?: boolean;
   id?: string;
   answer?: QuestionnaireResponseItemAnswer | Array<QuestionnaireResponseItemAnswer>;
-  addFormComponent?: (component: FormChild) => void;
-  removeFormComponent?: (component: FormChild) => void;
-  onValidated?: (valid: boolean | undefined) => void;
   optionalLabel?: string;
   requiredLabel?: string;
   validateScriptInjection?: boolean;
@@ -295,10 +291,7 @@ export default function withCommonFunctions<T>(WrappedComponent: React.Component
               containedResources={containedResources}
               path={createPathForItem(path, item, responseItem, index)}
               headerTag={getChildHeaderTag(this.props.item, headerTag)}
-              onValidated={this.props.onValidated}
               validateScriptInjection={this.props.validateScriptInjection}
-              addFormComponent={this.props.addFormComponent}
-              removeFormComponent={this.props.removeFormComponent}
               optionalLabel={this.props.optionalLabel}
               requiredLabel={this.props.requiredLabel}
               showOptionalLabel={this.props.showOptionalLabel}
