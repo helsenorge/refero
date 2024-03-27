@@ -1,5 +1,6 @@
-import * as React from 'react';
+import React, { useState, useEffect, ReactElement } from 'react';
 
+import { zodResolver } from '@hookform/resolvers/zod';
 import {
   QuestionnaireResponseItem,
   Questionnaire,
@@ -8,24 +9,24 @@ import {
   QuestionnaireResponseItemAnswer,
   Quantity,
 } from 'fhir/r4';
-import { connect } from 'react-redux';
+import { FormProvider, useForm } from 'react-hook-form';
+import { useDispatch, useSelector } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
+import { z } from 'zod';
 
-import { DispatchProps } from '../types/dispatchProps';
 import { ReferoProps } from '../types/referoProps';
-import { State } from '../types/state';
 
 import RenderForm from './renderForm';
 import StepView from './stepView';
-import { setSkjemaDefinition } from '../actions/form';
-import { NewValueAction, newQuantityValue, newDecimalValue, newIntegerValue } from '../actions/newValue';
 import RepeatButton from '../components/formcomponents/repeat/repeat-button';
 import Constants, { NAVIGATOR_BLINDZONE_ID } from '../constants/index';
 import ItemType from '../constants/itemType';
 import { PresentationButtonsType } from '../constants/presentationButtonsType';
-import { GlobalState } from '../reducers';
-import { getFormDefinition, getFormData } from '../reducers/form';
-import { FormDefinition, FormData } from '../reducers/form';
+import { setSkjemaDefinition } from '../store/actions/form';
+import { NewValueAction, newQuantityValue, newDecimalValue, newIntegerValue } from '../store/actions/newValue';
+import { GlobalState } from '../store/reducers';
+import { FormDefinition, FormData } from '../store/reducers/form';
+import { getFormDefinition, getFormData } from '../store/selectors/index';
 import { ActionRequester } from '../util/actionRequester';
 import {
   getQuestionnaireUnitExtensionValue,
@@ -50,59 +51,103 @@ import {
 import { RenderContext } from '../util/renderContext';
 import { ScoringCalculator } from '../util/scoringCalculator';
 import { shouldFormBeDisplayedAsStepView } from '../util/shouldFormBeDisplayedAsStepView';
+import { createZodSchemaFromQuestionnaire } from '../validation/mainValidationFunctions';
 
-interface StateProps {
-  formDefinition?: FormDefinition | null;
-  formData?: FormData | null;
-}
-
-class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, State> {
-  constructor(props: StateProps & DispatchProps & ReferoProps) {
-    super(props);
-    const questionnaire = this.props.questionnaire ? this.props.questionnaire : this.props.formDefinition?.Content;
-    this.state = {
-      valid: true,
-      validated: false,
-      showCancelLightbox: false,
-      scoringCalculator: questionnaire ? this.getScoringCalculator(questionnaire) : undefined,
-    };
+const getButtonClasses = (presentationButtonsType: PresentationButtonsType | null, defaultClasses?: string[], sticky?: boolean): string => {
+  defaultClasses = defaultClasses ?? [];
+  if (presentationButtonsType === PresentationButtonsType.None) {
+    defaultClasses.push('page_refero__hidden_buttons');
+  }
+  if (presentationButtonsType === PresentationButtonsType.Sticky || (sticky && !presentationButtonsType)) {
+    defaultClasses.push('page_refero__stickybar');
   }
 
-  onSubmit = (): void => {
-    const { formData, onSubmit } = this.props;
+  return defaultClasses.join(' ');
+};
 
+type ReferoContainerSelectorTypes = {
+  formDefinition: FormDefinition | null;
+  formData: FormData | null;
+}
+
+
+
+const Refero = ({
+  onSave,
+  onSubmit,
+  onChange,
+  onCancel,
+  sticky,
+  questionnaire,
+  questionnaireResponse,
+  language,
+  syncQuestionnaireResponse,
+  promptLoginMessage,
+  onRequestAttachmentLink,
+  onOpenAttachment,
+  onDeleteAttachment,
+  onRequestHelpButton,
+  onRequestHelpElement,
+  uploadAttachment,
+  attachmentErrorMessage,
+  attachmentMaxFileSize,
+  attachmentValidTypes,
+  validateScriptInjection,
+  onRenderMarkdown,
+  fetchValueSet,
+  autoSuggestProps,
+  fetchReceivers,
+  resources,
+  pdf,
+  authorized,
+  blockSubmit,
+  loginButton,
+  validationSummaryPlacement,
+  submitButtonDisabled,
+  saveButtonDisabled,
+  onStepChange,
+  isHelsenorgeForm,
+}: ReferoProps): ReactElement | null => {
+  const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
+  const formData = useSelector<GlobalState, FormData | null>(state => getFormData(state));
+  const formDefinition = useSelector<GlobalState, FormDefinition | null>(state => getFormDefinition(state));
+  const path: Path[] = [];
+  const schema = createZodSchemaFromQuestionnaire(formDefinition?.Content, resources, formDefinition?.Content?.contained);
+  const methods = useForm<z.infer<typeof schema>>({
+    resolver: zodResolver(schema),
+    // defaultValues: createDefaultFormValuesFromQuestionnaire(qst),
+  });
+  const [scoringCalculator, setScoringCalculator] = useState<ScoringCalculator | undefined>(undefined);
+
+  const handleSubmit = (): void => {
     if (formData && formData.Content && onSubmit) {
       onSubmit(formData.Content);
     }
   };
 
-  onSave = (): void => {
-    if (this.props.onSave && this.props.formData && this.props.formData.Content) {
-      this.props.onSave(this.props.formData.Content);
+  const handleSave = (): void => {
+    if (onSave && formData && formData.Content) {
+      onSave(formData.Content);
     }
   };
+  IE11HackToWorkAroundBug187484();
 
-  componentDidMount(): void {
-    this.props.mount();
-  }
-
-  componentDidUpdate(): void {
-    IE11HackToWorkAroundBug187484();
-  }
-
-  UNSAFE_componentWillReceiveProps(nextProps: ReferoProps): void {
-    if (nextProps.questionnaire && nextProps.questionnaire !== this.props.questionnaire) {
-      this.props.updateSkjema(
-        nextProps.questionnaire,
-        nextProps.questionnaireResponse,
-        nextProps.language,
-        nextProps.syncQuestionnaireResponse
-      );
-      this.setState({ scoringCalculator: this.getScoringCalculator(nextProps.questionnaire) });
+  useEffect(() => {
+    if (formDefinition?.Content) {
+      setScoringCalculator(new ScoringCalculator(formDefinition.Content));
     }
-  }
-  onAnswerChange = (newState: GlobalState, _path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer): void => {
-    if (this.props.onChange && newState.refero.form.FormDefinition.Content && newState.refero.form.FormData.Content) {
+    if (questionnaire) {
+      dispatch(setSkjemaDefinition(questionnaire, questionnaireResponse, language, syncQuestionnaireResponse));
+    }
+  }, [formDefinition?.Content]);
+
+  const onAnswerChange = (
+    newState: GlobalState,
+    _path: Array<Path>,
+    item: QuestionnaireItem,
+    answer: QuestionnaireResponseItemAnswer
+  ): void => {
+    if (onChange && newState.refero.form.FormDefinition.Content && newState.refero.form.FormData.Content) {
       const actionRequester = new ActionRequester(newState.refero.form.FormDefinition.Content, newState.refero.form.FormData.Content);
 
       const questionnaireInspector = new QuestionniareInspector(
@@ -110,35 +155,28 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
         newState.refero.form.FormData.Content
       );
 
-      this.props.onChange(item, answer, actionRequester, questionnaireInspector);
+      onChange(item, answer, actionRequester, questionnaireInspector);
 
       for (const action of actionRequester.getActions()) {
-        this.props.dispatch(action);
+        dispatch(action);
       }
     }
-
-    this.runScoringCalculator(newState);
+    runScoringCalculator(newState);
   };
-
-  getScoringCalculator = (questionnaire: Questionnaire): ScoringCalculator => {
-    return new ScoringCalculator(questionnaire);
-  };
-
-  runScoringCalculator = (newState: GlobalState): void => {
+  const runScoringCalculator = (newState: GlobalState): void => {
     const questionnaireResponse = newState.refero?.form?.FormData?.Content;
     const questionnaire = newState.refero.form.FormDefinition?.Content;
     if (!questionnaire || !questionnaireResponse) return;
 
-    if (this.state.scoringCalculator) {
-      const scores = this.state.scoringCalculator.calculateScore(questionnaireResponse);
-      this.updateQuestionnaireResponseWithScore(scores, questionnaire, questionnaireResponse);
+    if (scoringCalculator) {
+      const scores = scoringCalculator.calculateScore(questionnaireResponse);
+      updateQuestionnaireResponseWithScore(scores, questionnaire, questionnaireResponse);
 
-      const fhirScores = this.state.scoringCalculator.calculateFhirScore(questionnaireResponse);
-      this.updateQuestionnaireResponseWithScore(fhirScores, questionnaire, questionnaireResponse);
+      const fhirScores = scoringCalculator.calculateFhirScore(questionnaireResponse);
+      updateQuestionnaireResponseWithScore(fhirScores, questionnaire, questionnaireResponse);
     }
   };
-
-  updateQuestionnaireResponseWithScore = (
+  const updateQuestionnaireResponseWithScore = (
     scores: { [linkId: string]: number | undefined },
     questionnaire: Questionnaire,
     questionnaireResponse: QuestionnaireResponse
@@ -184,16 +222,14 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
     }
 
     for (const a of actions) {
-      this.props.dispatch(a);
+      dispatch(a);
     }
   };
 
-  renderFormItems(pdf?: boolean): Array<JSX.Element> | undefined {
-    const { formDefinition, resources, formData, promptLoginMessage } = this.props;
+  const renderFormItems = (pdf?: boolean): Array<JSX.Element> | undefined => {
     if (!formDefinition || !formDefinition.Content || !formDefinition.Content.item) {
       return undefined;
     }
-    const contained = formDefinition.Content.contained;
     const renderedItems: Array<JSX.Element> | undefined = [];
     const isNavigatorEnabled = !!getNavigatorExtension(formDefinition.Content);
     let isNavigatorBlindzoneInitiated = false;
@@ -220,16 +256,15 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
               <div className="page_refero__repeatbutton-wrapper">
                 <RepeatButton
                   key={`item_${item.linkId}_add_repeat_item`}
-                  resources={this.props.resources}
+                  resources={resources}
                   item={item}
                   responseItems={responseItems}
-                  parentPath={this.props.path}
-                  renderContext={new RenderContext()}
+                  parentPath={path}
                   disabled={item.type !== ItemType.GROUP && !responseItem.answer}
                 />
               </div>
             ) : undefined;
-          const path = createPathForItem(this.props.path, item, responseItem, index);
+          const pathForItem = createPathForItem(path, item, responseItem, index);
           // legg på blindzone rett over den første seksjonen
           if (isNavigatorEnabled && item.type === ItemType.GROUP && !isNavigatorBlindzoneInitiated) {
             isNavigatorBlindzoneInitiated = true;
@@ -237,179 +272,104 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
           }
           renderedItems.push(
             <Comp
-              language={formDefinition.Content?.language}
               pdf={pdf}
               includeSkipLink={isNavigatorEnabled && item.type === ItemType.GROUP}
               promptLoginMessage={promptLoginMessage}
               key={`item_${responseItem.linkId}_${index}`}
-              id={'item_' + responseItem.linkId + createIdSuffix(path, index, item.repeats)}
+              id={'item_' + responseItem.linkId + createIdSuffix(pathForItem, index, item.repeats)}
               item={item}
-              questionnaire={formDefinition.Content}
               responseItem={responseItem}
               answer={getAnswerFromResponseItem(responseItem)}
               resources={resources}
-              containedResources={contained}
-              path={path}
+              path={pathForItem}
               headerTag={Constants.DEFAULT_HEADER_TAG}
               visibleDeleteButton={shouldRenderDeleteButton(item, index)}
               repeatButton={repeatButton}
-              onRequestAttachmentLink={this.props.onRequestAttachmentLink}
-              onOpenAttachment={this.props.onOpenAttachment}
-              onDeleteAttachment={this.props.onDeleteAttachment}
-              uploadAttachment={this.props.uploadAttachment}
-              onRequestHelpButton={this.props.onRequestHelpButton}
-              onRequestHelpElement={this.props.onRequestHelpElement}
-              attachmentErrorMessage={this.props.attachmentErrorMessage}
-              attachmentMaxFileSize={this.props.attachmentMaxFileSize}
-              attachmentValidTypes={this.props.attachmentValidTypes}
-              validateScriptInjection={this.props.validateScriptInjection}
-              onAnswerChange={this.onAnswerChange}
+              onRequestAttachmentLink={onRequestAttachmentLink}
+              onOpenAttachment={onOpenAttachment}
+              onDeleteAttachment={onDeleteAttachment}
+              uploadAttachment={uploadAttachment}
+              onRequestHelpButton={onRequestHelpButton}
+              onRequestHelpElement={onRequestHelpElement}
+              attachmentErrorMessage={attachmentErrorMessage}
+              attachmentMaxFileSize={attachmentMaxFileSize}
+              attachmentValidTypes={attachmentValidTypes}
+              validateScriptInjection={validateScriptInjection}
+              onAnswerChange={onAnswerChange}
               renderContext={new RenderContext()}
-              onRenderMarkdown={this.props.onRenderMarkdown}
-              fetchValueSet={this.props.fetchValueSet}
-              autoSuggestProps={this.props.autoSuggestProps}
-              fetchReceivers={this.props.fetchReceivers}
+              onRenderMarkdown={onRenderMarkdown}
+              fetchValueSet={fetchValueSet}
+              autoSuggestProps={autoSuggestProps}
+              fetchReceivers={fetchReceivers}
             />
           );
         });
       }
     });
     return renderedItems;
-  }
-
-  renderSkjema = (pdf?: boolean): Array<JSX.Element> | Array<Array<JSX.Element>> | JSX.Element | null | undefined => {
-    const { formDefinition, resources } = this.props;
-
-    if (!formDefinition || !formDefinition.Content || !resources) {
-      return null;
-    }
-
-    if (pdf) {
-      return this.renderFormItems(true);
-    }
-
-    const presentationButtonsType = getPresentationButtonsExtension(formDefinition.Content);
-    const isStepView = shouldFormBeDisplayedAsStepView(formDefinition);
-
-    return (
-      <div className={this.getButtonClasses(presentationButtonsType, ['page_refero__content'])}>
-        <div className="page_refero__messageboxes" />
-        {this.renderForm(isStepView)}
-      </div>
-    );
   };
 
-  renderForm = (isStepView?: boolean): JSX.Element | undefined => {
-    const {
-      formDefinition,
-      resources,
-      authorized,
-      blockSubmit,
-      onSave,
-      onCancel,
-      onSubmit,
-      loginButton,
-      validationSummaryPlacement,
-      submitButtonDisabled,
-      saveButtonDisabled,
-      onFieldsNotCorrectlyFilledOut,
-      onStepChange,
-    } = this.props;
-    if (!formDefinition || !resources) {
-      return;
-    }
 
-    const referoProps = {
-      authorized,
-      blockSubmit,
-      onSave,
-      onCancel,
-      onSubmit,
-      loginButton,
-      validationSummaryPlacement,
-      submitButtonDisabled,
-      saveButtonDisabled,
-      onFieldsNotCorrectlyFilledOut,
-      onStepChange,
-    };
 
-    return (
-      <>
+  if (!formDefinition || !formDefinition.Content || !resources) {
+    return null;
+  }
+
+  if (pdf) {
+    return <>{renderFormItems(true)}</>;
+  }
+
+  const presentationButtonsType = getPresentationButtonsExtension(formDefinition.Content);
+  const isStepView = shouldFormBeDisplayedAsStepView(formDefinition);
+
+  const referoProps: ReferoProps = {
+    authorized,
+    blockSubmit,
+    onSave,
+    onCancel,
+    onSubmit,
+    loginButton,
+    validationSummaryPlacement,
+    submitButtonDisabled,
+    saveButtonDisabled,
+    onStepChange,
+    isHelsenorgeForm,
+  };
+  return (
+    <FormProvider {...methods}>
+      <div className={getButtonClasses(presentationButtonsType, ['page_refero__content'], sticky)}>
+        <div className="page_refero__messageboxes" />
+
         {isStepView ? (
           <StepView
             isAuthorized={authorized}
             referoProps={referoProps}
             resources={resources}
-            formItems={this.renderFormItems()}
-            formDefinition={formDefinition}
-            onSave={this.onSave}
-            onSubmit={this.onSubmit}
+            onSave={handleSave}
+            onSubmit={handleSubmit}
             onStepChange={onStepChange}
-          />
+            isHelsenorgeForm={isHelsenorgeForm}
+            methods={methods}
+          >
+            {renderFormItems()}
+          </StepView>
         ) : (
           <RenderForm
             isAuthorized={authorized}
             isStepView={false}
             referoProps={referoProps}
             resources={resources}
-            formItemsToBeRendered={this.renderFormItems()}
-            onSave={this.onSave}
-            onSubmit={this.onSubmit}
-          />
+            onSave={handleSave}
+            onSubmit={handleSubmit}
+            isHelsenorgeForm={isHelsenorgeForm}
+            methods={methods}
+          >
+            {renderFormItems()}
+          </RenderForm>
         )}
-      </>
-    );
-  };
+      </div>
+    </FormProvider>
+  );
+};
 
-  getButtonClasses(presentationButtonsType: PresentationButtonsType | null, defaultClasses?: string[]): string {
-    defaultClasses = defaultClasses ?? [];
-    if (presentationButtonsType === PresentationButtonsType.None) {
-      defaultClasses.push('page_refero__hidden_buttons');
-    }
-    if (presentationButtonsType === PresentationButtonsType.Sticky || (this.props.sticky && !presentationButtonsType)) {
-      defaultClasses.push('page_refero__stickybar');
-    }
-
-    return defaultClasses.join(' ');
-  }
-
-  render(): JSX.Element | null {
-    const { resources } = this.props;
-
-    if (!resources) {
-      return null;
-    }
-
-    return <React.Fragment>{this.renderSkjema(this.props.pdf)}</React.Fragment>;
-  }
-}
-
-function mapStateToProps(state: GlobalState): StateProps {
-  return {
-    formDefinition: getFormDefinition(state),
-    formData: getFormData(state),
-  };
-}
-
-function mapDispatchToProps(dispatch: ThunkDispatch<GlobalState, void, NewValueAction>, props: ReferoProps): DispatchProps {
-  return {
-    updateSkjema: (
-      questionnaire: Questionnaire,
-      questionnaireResponse: QuestionnaireResponse | undefined,
-      language: string | undefined,
-      syncQuestionnaireResponse: boolean | undefined
-    ): void => {
-      dispatch(setSkjemaDefinition(questionnaire, questionnaireResponse, language, syncQuestionnaireResponse));
-    },
-    mount: (): void => {
-      if (props.questionnaire) {
-        dispatch(setSkjemaDefinition(props.questionnaire, props.questionnaireResponse, props.language, props.syncQuestionnaireResponse));
-      }
-    },
-    dispatch,
-    path: [],
-  };
-}
-
-const ReferoContainer = connect<StateProps, DispatchProps, ReferoProps>(mapStateToProps, mapDispatchToProps)(Refero);
-export { ReferoContainer };
+export { Refero as ReferoContainer };

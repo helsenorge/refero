@@ -1,10 +1,13 @@
+import { ComponentType } from 'react';
+
 import { Questionnaire, QuestionnaireResponseItem, QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
-import marked from 'marked';
-import { ComponentClass } from 'react-redux';
-import * as uuid from 'uuid';
+import { Renderer, marked } from 'marked';
+import { ConnectedComponent } from 'react-redux';
+import { v4 as uuidv4 } from 'uuid';
+
+import { Resources } from '../types/resources';
 
 import { isValid, invalidNodes } from '@helsenorge/core-utils/string-utils';
-import { ValidationProps } from '@helsenorge/form/components/form/validation';
 
 import { getQuestionnaireItemCodeValue } from './codingsystem';
 import {
@@ -30,9 +33,9 @@ import Integer from '../components/formcomponents/integer/integer';
 import OpenChoice from '../components/formcomponents/open-choice/open-choice';
 import Quantity from '../components/formcomponents/quantity/quantity';
 import StringComponent from '../components/formcomponents/string/string';
-import TableContainer from '../components/formcomponents/table/TableContainer';
+import TableContainer, { TableContainerAllProps, TableContainerProps } from '../components/formcomponents/table/TableContainer';
 import Text from '../components/formcomponents/text/text';
-import { Props } from '../components/with-common-functions';
+import { WithFormComponentsProps } from '../components/with-common-functions';
 import CodingSystemConstants from '../constants/codingsystems';
 import ExtensionConstants from '../constants/extensions';
 import { HyperlinkTarget } from '../constants/hyperlinkTarget';
@@ -40,7 +43,6 @@ import Constants from '../constants/index';
 import ItemType from '../constants/itemType';
 import { RenderOptionCode } from '../constants/renderOptionCode';
 import { TableCodes } from '../constants/tableTypes';
-import { Resources } from '../util/resources';
 
 function openNewIfAbsolute(url: string): string {
   const regex = new RegExp('^(([a-z][a-z0-9+.-]*):.*)');
@@ -62,53 +64,48 @@ export const isTableCode = (extensionCode: string | string[]): boolean => {
   return isTable;
 };
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function getComponentForItem(type: string, extensionCode?: string | string[]) {
-  if (String(type) === ItemType.GROUP && !!extensionCode && isTableCode(extensionCode)) {
-    return TableContainer as ComponentClass<Omit<Props & ValidationProps & Props, keyof Props> & Props>;
-  } else if (String(type) === ItemType.GROUP) {
-    return Group;
+export function getComponentForItem(
+  type: QuestionnaireItem['type'],
+  extensionCode?: string | string[]
+):
+  | ConnectedComponent<ComponentType<WithFormComponentsProps | TableContainerAllProps>, WithFormComponentsProps | TableContainerProps>
+  | undefined {
+  switch (type) {
+    case ItemType.GROUP:
+      if (!!extensionCode && isTableCode(extensionCode)) {
+        return TableContainer;
+      } else {
+        return Group;
+      }
+    case ItemType.DISPLAY:
+      return Display;
+    case ItemType.BOOLEAN:
+      return Boolean;
+    case ItemType.DECIMAL:
+      return Decimal;
+    case ItemType.INTEGER:
+      return Integer;
+    case ItemType.DATE:
+      return Date;
+    case ItemType.DATETIME:
+      return DateTime;
+    case ItemType.TIME:
+      return Time;
+    case ItemType.STRING:
+      return StringComponent;
+    case ItemType.TEXT:
+      return Text;
+    case ItemType.CHOICE:
+      return Choice;
+    case ItemType.OPENCHOICE:
+      return OpenChoice;
+    case ItemType.ATTATCHMENT:
+      return Attachment;
+    case ItemType.QUANTITY:
+      return Quantity;
+    default:
+      return undefined;
   }
-  if (String(type) === ItemType.DISPLAY) {
-    return Display;
-  }
-  if (String(type) === ItemType.BOOLEAN) {
-    return Boolean;
-  }
-  if (String(type) === ItemType.DECIMAL) {
-    return Decimal;
-  }
-  if (String(type) === ItemType.INTEGER) {
-    return Integer;
-  }
-  if (String(type) === ItemType.DATE) {
-    return Date;
-  }
-  if (String(type) === ItemType.DATETIME) {
-    return DateTime;
-  }
-  if (String(type) === ItemType.TIME) {
-    return Time;
-  }
-  if (String(type) === ItemType.STRING) {
-    return StringComponent;
-  }
-  if (String(type) === ItemType.TEXT) {
-    return Text;
-  }
-  if (String(type) === ItemType.CHOICE) {
-    return Choice;
-  }
-  if (String(type) === ItemType.OPENCHOICE) {
-    return OpenChoice;
-  }
-  if (String(type) === ItemType.ATTATCHMENT) {
-    return Attachment;
-  }
-  if (String(type) === ItemType.QUANTITY) {
-    return Quantity;
-  }
-  return undefined;
 }
 
 export function isStringEmpty(string: string | undefined): boolean {
@@ -151,7 +148,7 @@ export function getId(id?: string): string {
   if (id) {
     return id;
   }
-  return uuid.v4();
+  return uuidv4();
 }
 
 export function renderPrefix(item: QuestionnaireItem): string {
@@ -201,8 +198,8 @@ function getMarkdownValue(
   const itemValue = getHyperlinkExtensionValue(item);
   const questionnaireValue = questionnaire ? getHyperlinkExtensionValue(questionnaire) : undefined;
 
-  const renderer = new marked.Renderer();
-  renderer.link = (href: string, title: string, text: string): string => {
+  const rendererNewWindow = new Renderer({ async: false });
+  rendererNewWindow.link = (href: string, title: string, text: string): string => {
     const urlString = `<a href=${href} ${
       title ? `title=${title}` : ''
     } target="_blank" rel="noopener noreferrer" class="external" aria-label=${
@@ -210,7 +207,8 @@ function getMarkdownValue(
     }>${text}</a>`;
     return urlString;
   };
-  const rendererSameWindow = new marked.Renderer();
+
+  const rendererSameWindow = new Renderer({ async: false });
   rendererSameWindow.link = (href: string, title: string, text: string): string => {
     const urlString = `<a href=${href} ${title ? `title=${title}` : ''} target="${openNewIfAbsolute(
       href
@@ -219,15 +217,15 @@ function getMarkdownValue(
   };
 
   if (onRenderMarkdown) {
-    return onRenderMarkdown(item, markdownText.toString());
+    return onRenderMarkdown(item, markdownText);
   }
   if (itemValue === HyperlinkTarget.SAME_WINDOW || (!itemValue && questionnaireValue === HyperlinkTarget.SAME_WINDOW)) {
-    marked.setOptions({ renderer: rendererSameWindow });
-    return marked(markdownText.toString());
+    marked.use({ renderer: rendererSameWindow, async: false });
+    return marked.parseInline(markdownText) as string;
+  } else {
+    marked.use({ renderer: rendererNewWindow, async: false });
+    return marked.parseInline(markdownText) as string;
   }
-
-  marked.setOptions({ renderer: renderer });
-  return marked(markdownText.toString());
 }
 
 export function getChildHeaderTag(item?: QuestionnaireItem, headerTag?: number): number {
@@ -251,7 +249,7 @@ export function getLinkId(item: QuestionnaireItem): string {
   if (item && item.linkId) {
     return item.linkId;
   }
-  return uuid.v4();
+  return uuidv4();
 }
 
 export function getStringValue(answer: QuestionnaireResponseItemAnswer | Array<QuestionnaireResponseItemAnswer>): string {

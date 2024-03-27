@@ -1,9 +1,4 @@
-import {
-  QuestionnaireItem,
-  QuestionnaireResponse,
-  QuestionnaireResponseItem,
-  QuestionnaireResponseItemAnswer,
-} from '../../../../../../types/fhir';
+import { QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import {
   columnsForRowIndex,
   createTableHeader,

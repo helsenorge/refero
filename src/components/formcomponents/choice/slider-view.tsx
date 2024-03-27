@@ -1,11 +1,15 @@
 import * as React from 'react';
 
 import { QuestionnaireItem, QuestionnaireItemAnswerOption, QuestionnaireResponseItemAnswer } from 'fhir/r4';
+import { useFormContext } from 'react-hook-form';
 
+import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import { Slider, SliderStep } from '@helsenorge/designsystem-react/components/Slider';
 
 import ExtensionConstants from '../../../constants/extensions';
-import { getExtension } from '../../../util/extension';
+import { isRequired } from '../../../util';
+import { getExtension, getMaxValueExtensionValue, getMinValueExtensionValue } from '../../../util/extension';
+import { Path, createFromIdFromPath } from '../../../util/refero-core';
 import { isString } from '../../../util/typeguards';
 
 interface SliderProps {
@@ -14,16 +18,19 @@ interface SliderProps {
   handleChange: (sliderStep: string) => void;
   selected?: Array<string | undefined>;
   children: React.ReactNode;
+  path: Path[];
 }
 
 type LeftRightLabels = { leftLabel: string; rightLabel: string };
 
-const SliderView: React.FC<SliderProps> = ({ item, handleChange, selected, children }) => {
+const SliderView: React.FC<SliderProps> = ({ item, handleChange, selected, children, path }) => {
   const title = item.text;
+  const formId = createFromIdFromPath(path);
+  const { getFieldState, register } = useFormContext();
+  const { error } = getFieldState(formId);
 
   const onValueChange = (index: number): void => {
     const code = item.answerOption?.[index]?.valueCoding?.code;
-
     if (code) {
       handleChange(code);
     }
@@ -46,15 +53,23 @@ const SliderView: React.FC<SliderProps> = ({ item, handleChange, selected, child
   const leftRightLabels = getLeftRightLabels(item?.answerOption);
   return (
     <div className="page_refero__component page_refero__component_choice page_refero__component_choice_slider">
-      <Slider
-        title={title}
-        labelLeft={leftRightLabels?.leftLabel}
-        labelRight={leftRightLabels?.rightLabel}
-        onChange={onValueChange}
-        steps={sliderSteps}
-        value={getSelectedStep()}
-        selected={selected && selected[0] ? true : false}
-      />
+      <FormGroup mode="ongrey" error={error?.message}>
+        <Slider
+          {...register(formId, {
+            required: isRequired(item),
+          })}
+          maxValue={getMaxValueExtensionValue(item)}
+          minValue={getMinValueExtensionValue(item)}
+          title={title}
+          labelLeft={leftRightLabels?.leftLabel}
+          labelRight={leftRightLabels?.rightLabel}
+          steps={sliderSteps}
+          onChange={onValueChange}
+          selected={selected && selected[0] ? true : false}
+          value={getSelectedStep()}
+        />
+      </FormGroup>
+
       {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : undefined}
     </div>
   );

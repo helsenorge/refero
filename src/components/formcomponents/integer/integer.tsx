@@ -1,33 +1,33 @@
 import * as React from 'react';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem, Questionnaire } from 'fhir/r4';
-import { connect } from 'react-redux';
+import { useFormContext } from 'react-hook-form';
+import { connect, useDispatch, useSelector } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
-import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
-import Validation from '@helsenorge/form/components/form/validation';
-import { ValidationProps } from '@helsenorge/form/components/form/validation';
-import SafeInputField from '@helsenorge/form/components/safe-input-field';
+import { Resources } from '../../../types/resources';
 
-import { NewValueAction, newIntegerValueAsync } from '../../../actions/newValue';
-import { GlobalState } from '../../../reducers';
-import { getValidationTextExtension, getPlaceholder, getMaxValueExtensionValue, getMinValueExtensionValue } from '../../../util/extension';
-import { isReadOnly, isRequired, getId, getSublabelText } from '../../../util/index';
-import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
-import { Path } from '../../../util/refero-core';
-import { Resources } from '../../../util/resources';
-import withCommonFunctions from '../../with-common-functions';
-import Label from '../label';
-import SubLabel from '../sublabel';
+import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
+import Input from '@helsenorge/designsystem-react/components/Input';
+import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
+
+import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
+
+import { NewValueAction, newIntegerValueAsync } from '../../../store/actions/newValue';
+import { GlobalState } from '../../../store/reducers';
+import { getFormDefinition } from '../../../store/selectors';
+import { getPlaceholder } from '../../../util/extension';
+import { isReadOnly, getId, getSublabelText, renderPrefix, getText } from '../../../util/index';
+import { mapStateToProps } from '../../../util/map-props';
+import { Path, createFromIdFromPath } from '../../../util/refero-core';
+import withCommonFunctions, { WithFormComponentsProps } from '../../with-common-functions';
 import TextView from '../textview';
 
-export interface Props {
+export interface IntegerProps extends WithFormComponentsProps {
   item: QuestionnaireItem;
-  questionnaire?: Questionnaire;
   responseItem: QuestionnaireResponseItem;
   answer: QuestionnaireResponseItemAnswer;
   resources?: Resources;
-  dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
   path: Array<Path>;
   pdf?: boolean;
   promptLoginMessage?: () => void;
@@ -37,14 +37,30 @@ export interface Props {
   oneToTwoColumn: boolean;
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
-  isHelpOpen?: boolean;
   onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
+  children?: React.ReactNode;
 }
 
-class Integer extends React.Component<Props & ValidationProps, {}> {
-  getValue(): string | number | number[] | undefined {
-    const { item, answer } = this.props;
+const Integer = ({
+  children,
+  renderHelpElement,
+  resources,
+  promptLoginMessage,
+  path,
+  item,
+  onAnswerChange,
+  answer,
+  pdf,
+  id,
+  onRenderMarkdown,
+  renderHelpButton,
+  renderDeleteButton,
+  repeatButton,
+}: IntegerProps): JSX.Element | null => {
+  const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
+  const questionnaire = useSelector<GlobalState, Questionnaire | undefined | null>(state => getFormDefinition(state)?.Content);
+  const getValue = (): string | number | number[] | undefined => {
     if (answer && Array.isArray(answer)) {
       return answer.map(m => m.valueInteger);
     }
@@ -54,14 +70,13 @@ class Integer extends React.Component<Props & ValidationProps, {}> {
     if (!item || !item.initial || item.initial.length === 0 || !item.initial[0].valueInteger) {
       return '';
     }
-  }
-
-  getPDFValue(): string | number {
-    const value = this.getValue();
+  };
+  const getPDFValue = (): string | number => {
+    const value = getValue();
     if (value === undefined || value === null || value === '') {
       let text = '';
-      if (this.props.resources && this.props.resources.ikkeBesvart) {
-        text = this.props.resources.ikkeBesvart;
+      if (resources && resources.ikkeBesvart) {
+        text = resources.ikkeBesvart;
       }
       return text;
     }
@@ -69,97 +84,75 @@ class Integer extends React.Component<Props & ValidationProps, {}> {
       return value.join(', ');
     }
     return value;
-  }
+  };
 
-  handleChange = (event: React.FormEvent<{}>): void => {
-    const { dispatch, promptLoginMessage, path, item, onAnswerChange } = this.props;
+  const handleChange = (event: React.FormEvent): void => {
     const value = parseInt((event.target as HTMLInputElement).value, 10);
-    if (dispatch) {
-      dispatch(newIntegerValueAsync(this.props.path, value, this.props.item))?.then(newState =>
-        onAnswerChange(newState, path, item, { valueInteger: value } as QuestionnaireResponseItemAnswer)
-      );
-    }
+    dispatch(newIntegerValueAsync(path, value, item))?.then(newState =>
+      onAnswerChange(newState, path, item, { valueInteger: value } as QuestionnaireResponseItemAnswer)
+    );
 
     if (promptLoginMessage) {
       promptLoginMessage();
     }
   };
 
-  shouldComponentUpdate(nextProps: Props): boolean {
-    const responseItemHasChanged = this.props.responseItem !== nextProps.responseItem;
-    const helpItemHasChanged = this.props.isHelpOpen !== nextProps.isHelpOpen;
-    const answerHasChanged = this.props.answer !== nextProps.answer;
-    const resourcesHasChanged = JSON.stringify(this.props.resources) !== JSON.stringify(nextProps.resources);
-    const repeats = this.props.item.repeats ?? false;
+  const inputId = getId(id);
 
-    return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats || answerHasChanged;
-  }
-
-  render(): JSX.Element | null {
-    if (this.props.pdf || isReadOnly(this.props.item)) {
-      return (
-        <TextView
-          id={this.props.id}
-          item={this.props.item}
-          value={this.getPDFValue()}
-          onRenderMarkdown={this.props.onRenderMarkdown}
-          helpButton={this.props.renderHelpButton()}
-          helpElement={this.props.renderHelpElement()}
-        >
-          {this.props.children}
-        </TextView>
-      );
-    }
-    const value = this.getValue();
-    const subLabelText = getSublabelText(this.props.item, this.props.onRenderMarkdown, this.props.questionnaire, this.props.resources);
-
+  if (pdf || isReadOnly(item)) {
     return (
-      <div className="page_refero__component page_refero__component_integer">
-        <Validation {...this.props}>
-          <SafeInputField
-            type="number"
-            id={getId(this.props.id)}
-            inputName={getId(this.props.id)}
-            value={value !== undefined && value !== null ? value + '' : ''}
-            showLabel={true}
-            label={
-              <Label
-                item={this.props.item}
-                onRenderMarkdown={this.props.onRenderMarkdown}
-                questionnaire={this.props.questionnaire}
-                resources={this.props.resources}
-              />
-            }
-            subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
-            isRequired={isRequired(this.props.item)}
-            placeholder={getPlaceholder(this.props.item)}
-            max={getMaxValueExtensionValue(this.props.item)}
-            min={getMinValueExtensionValue(this.props.item)}
-            errorMessage={getValidationTextExtension(this.props.item)}
-            inputProps={{
-              step: '1',
-              onKeyPress: (e: React.KeyboardEvent<{}>): void => {
-                const key = String.fromCharCode(e.which);
-                if ('0123456789-'.indexOf(key) === -1) {
-                  e.preventDefault();
-                }
-              },
-            }}
-            className="page_refero__input"
-            onChange={this.handleChange}
-            helpButton={this.props.renderHelpButton()}
-            helpElement={this.props.renderHelpElement()}
-            validateOnExternalUpdate={true}
-          />
-        </Validation>
-        {this.props.renderDeleteButton('page_refero__deletebutton--margin-top')}
-        {this.props.repeatButton}
-        {this.props.children ? <div className="nested-fieldset nested-fieldset--full-height">{this.props.children}</div> : null}
-      </div>
+      <TextView
+        id={id}
+        item={item}
+        value={getPDFValue()}
+        onRenderMarkdown={onRenderMarkdown}
+        helpButton={renderHelpButton()}
+        helpElement={renderHelpElement()}
+      >
+        {children}
+      </TextView>
     );
   }
-}
+
+  const value = getValue();
+  const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`;
+  const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
+
+  const formId = createFromIdFromPath(path);
+  const { getFieldState, register } = useFormContext();
+  const { error } = getFieldState(formId);
+
+  return (
+    <div className="page_refero__component page_refero__component_integer">
+      {renderHelpElement()}
+      <FormGroup error={error?.message} mode="ongrey">
+        <Input
+          {...register(formId, {
+            valueAsNumber: true,
+            onChange: handleChange,
+          })}
+          label={
+            <Label
+              labelTexts={[{ text: labelText, type: 'semibold' }]}
+              sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+              afterLabelChildren={renderHelpButton()}
+            />
+          }
+          type="number"
+          inputId={inputId}
+          defaultValue={value !== undefined && value !== null ? value + '' : ''}
+          placeholder={getPlaceholder(item)}
+          className="page_refero__input"
+          width={25}
+        />
+      </FormGroup>
+      {renderDeleteButton('page_refero__deletebutton--margin-top')}
+      {repeatButton}
+      {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
+    </div>
+  );
+};
 
 const withCommonFunctionsComponent = withCommonFunctions(Integer);
-const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(layoutChange(withCommonFunctionsComponent));
+const connectedComponent = connect(mapStateToProps)(layoutChange(withCommonFunctionsComponent));
 export default connectedComponent;

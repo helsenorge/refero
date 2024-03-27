@@ -5,7 +5,7 @@ import thunk, { ThunkDispatch } from 'redux-thunk';
 import { ReactWrapper, mount } from 'enzyme';
 
 import '../../util/defineFetch';
-import rootReducer from '../../reducers';
+import rootReducer from '../../store/reducers';
 import { Choice } from '../formcomponents/choice/choice';
 import {
   QuestionnaireItem,
@@ -15,8 +15,8 @@ import {
   QuestionnaireResponseItem,
 } from 'fhir/r4';
 import { Path } from '../../util/refero-core';
-import { GlobalState } from '../../reducers/index';
-import { NewValueAction } from '../../actions/newValue';
+import { GlobalState } from '../../store/reducers/index';
+import { NewValueAction } from '../../store/actions/newValue';
 import { createIDataReceiverExpressionExtension } from '../__tests__/utils';
 import itemType from '../../constants/itemType';
 import TextView from '../formcomponents/textview';

@@ -2,14 +2,17 @@ import * as React from 'react';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { Moment } from 'moment';
+import { ValidateResult, useFormContext } from 'react-hook-form';
+
+import { Resources } from '../../../types/resources';
+
+import Validation from '@helsenorge/designsystem-react/components/Validation';
 
 import { YearErrorResources, YearInput } from '@helsenorge/date-time/components/year-input';
-import { Validation } from '@helsenorge/form/components/form/validation';
 
 import { getId, isReadOnly, isRequired } from '../../../util';
 import { createDateFromYear } from '../../../util/createDateFromYear';
 import { getPlaceholder, getValidationTextExtension } from '../../../util/extension';
-import { Resources } from '../../../util/resources';
 import TextView from '../textview';
 
 interface Props {
@@ -59,6 +62,9 @@ export const DateYearInput = (props: React.PropsWithChildren<Props>): JSX.Elemen
     props.onDateValueChange(year === 0 ? '' : year.toString());
   };
 
+  const { register, getFieldState } = useFormContext();
+  const { error } = getFieldState(getId(props.id));
+
   const getPDFValue = (): string => {
     const ikkeBesvartText = props.resources?.ikkeBesvart || '';
     return (
@@ -82,24 +88,34 @@ export const DateYearInput = (props: React.PropsWithChildren<Props>): JSX.Elemen
       </TextView>
     );
   }
-
   return (
-    <Validation {...props}>
-      <YearInput
-        id={`${getId(props.id)}-year_input`}
-        errorResources={getYearInputResources()}
-        label={props.label}
-        subLabel={props.subLabel}
-        isRequired={isRequired(props.item)}
-        placeholder={getPlaceholder(props.item)}
-        maximumYear={props.maxDate?.year()}
-        minimumYear={props.minDate?.year()}
-        value={answerState}
-        className={props.className}
-        onChange={onYearChange}
-        helpButton={props.helpButton}
-        helpElement={props.helpElement}
-      />
-    </Validation>
+    <YearInput
+      {...register(getId(props.item.linkId), {
+        required: { value: isRequired(props.item), message: props.resources?.dateRequired || '' },
+        onChange: onYearChange,
+        value: answerState,
+        validate: {
+          maximumYear: (value: number) => {
+            return (props.maxDate && value < props.maxDate.year()) || props.resources?.year_field_maxdate || '';
+          },
+          minimumYear: (value: number) => {
+            return (props.minDate && value > props.minDate.year()) || props.resources?.year_field_mindate || '';
+          },
+        },
+      })}
+      id={getId(props.id)}
+      errorResources={getYearInputResources()}
+      label={props.label}
+      subLabel={props.subLabel}
+      isRequired={isRequired(props.item)}
+      placeholder={getPlaceholder(props.item)}
+      maximumYear={props.maxDate?.year()}
+      minimumYear={props.minDate?.year()}
+      value={answerState}
+      className={props.className}
+      onChange={onYearChange}
+      helpButton={props.helpButton}
+      helpElement={props.helpElement}
+    />
   );
 };

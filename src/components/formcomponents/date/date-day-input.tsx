@@ -2,21 +2,21 @@ import * as React from 'react';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireItemInitial } from 'fhir/r4';
 import moment, { Moment } from 'moment';
+import { useFormContext } from 'react-hook-form';
+
+import { Resources } from '../../../types/resources';
 
 import { LanguageLocales } from '@helsenorge/core-utils/constants/languages';
 import { DateRangePicker } from '@helsenorge/date-time/components/date-range-picker';
 import { DatePickerErrorPhrases } from '@helsenorge/date-time/components/date-range-picker/date-range-picker-types';
 import { parseDate } from '@helsenorge/date-time/components/time-input/date-core';
-import { Validation } from '@helsenorge/form/components/form/validation';
 
 import Constants from '../../../constants/index';
 import { getId, isRequired } from '../../../util';
 import { getPlaceholder, getValidationTextExtension } from '../../../util/extension';
 import { isReadOnly } from '../../../util/index';
-import { Resources } from '../../../util/resources';
 import TextView from '../textview';
-
-interface Props {
+interface DateDayInputProps {
   id?: string;
   pdf?: boolean;
   item: QuestionnaireItem;
@@ -36,9 +36,9 @@ interface Props {
   answer: QuestionnaireResponseItemAnswer;
 }
 
-export class DateDayInput extends React.Component<Props, {}> {
-  getDatepickerErrorPhrases(): DatePickerErrorPhrases {
-    const { resources, item } = this.props;
+export const DateDayInput: React.FC<DateDayInputProps> = props => {
+  const getDatepickerErrorPhrases = (): DatePickerErrorPhrases => {
+    const { resources, item } = props;
     // Vi får maks én valideringstekst, derfor settes alle til denne.
     const validationErrorText = getValidationTextExtension(item);
 
@@ -51,39 +51,39 @@ export class DateDayInput extends React.Component<Props, {}> {
       errorRequiredDateRange: '',
       errorInvalidMinimumNights: '',
     };
-  }
+  };
 
-  getDateAnswerValue(answer: QuestionnaireResponseItemAnswer | QuestionnaireItemInitial): string | undefined {
+  const getDateAnswerValue = (answer: QuestionnaireResponseItemAnswer | QuestionnaireItemInitial): string | undefined => {
     if (answer && answer.valueDate) {
       return answer.valueDate;
     }
     if (answer && answer.valueDateTime) {
       return answer.valueDateTime;
     }
-  }
+  };
 
-  getValue(): Date[] | undefined {
-    const { item, answer } = this.props;
+  const getValue = (): Date[] | undefined => {
+    const { item, answer } = props;
 
     if (answer && Array.isArray(answer)) {
-      return answer.map(m => parseDate(String(this.getDateAnswerValue(m))));
+      return answer.map(m => parseDate(String(getDateAnswerValue(m))));
     }
 
     if (Array.isArray(item.initial)) {
-      return item.initial.map(m => parseDate(String(this.getDateAnswerValue(m))));
+      return item.initial.map(m => parseDate(String(getDateAnswerValue(m))));
     }
 
     if (answer) {
-      const parsedDate = [parseDate(String(this.getDateAnswerValue(answer)))];
-      if (this.isValidDate(parsedDate[0]) === true) {
+      const parsedDate = [parseDate(String(getDateAnswerValue(answer)))];
+      if (isValidDate(parsedDate[0]) === true) {
         return parsedDate;
       } else {
         return undefined;
       }
     }
-  }
+  };
 
-  isValidDate = (date: Date): boolean => {
+  const isValidDate = (date: Date): boolean => {
     if (date instanceof Date) {
       const text = Date.prototype.toString.call(date);
       return text !== 'Invalid Date';
@@ -91,66 +91,76 @@ export class DateDayInput extends React.Component<Props, {}> {
     return false;
   };
 
-  toLocaleDate(moment: Moment | undefined): Moment | undefined {
-    return moment ? moment.locale(this.props.locale) : undefined;
-  }
-
-  onDateChange = (value: Moment | null): void => {
-    const newValue = value ? moment(value).format(Constants.DATE_FORMAT) : '';
-    this.props.onDateValueChange(newValue);
+  const toLocaleDate = (moment: Moment | undefined): Moment | undefined => {
+    return moment ? moment.locale(props.locale) : undefined;
   };
 
-  getPDFValue = (): string => {
-    const date = this.getValue();
-    const ikkeBesvartText = this.props.resources?.ikkeBesvart || '';
+  const onDateChange = (value: Moment | null): void => {
+    const newValue = value ? moment(value).format(Constants.DATE_FORMAT) : '';
+    props.onDateValueChange(newValue);
+  };
+
+  const getPDFValue = (): string => {
+    const date = getValue();
+    const ikkeBesvartText = props.resources?.ikkeBesvart || '';
 
     return date ? date.map(m => moment(m).format('D. MMMM YYYY')).join(', ') : ikkeBesvartText;
   };
 
-  getSingleDateValue = (): moment.Moment | undefined => {
-    const date = this.getValue();
-    return date ? this.toLocaleDate(moment(date[0])) : undefined;
+  const getSingleDateValue = (): moment.Moment | undefined => {
+    const date = getValue();
+    return date ? toLocaleDate(moment(date[0])) : undefined;
   };
-
-  render(): JSX.Element {
-    if (this.props.pdf || isReadOnly(this.props.item)) {
-      return (
-        <TextView
-          id={this.props.id}
-          item={this.props.item}
-          value={this.getPDFValue()}
-          onRenderMarkdown={this.props.onRenderMarkdown}
-          helpButton={this.props.helpButton}
-          helpElement={this.props.helpElement}
-        >
-          {this.props.children}
-        </TextView>
-      );
-    }
-
+  const { register, getFieldState } = useFormContext();
+  const { error } = getFieldState(getId(props.id));
+  if (props.pdf || isReadOnly(props.item)) {
     return (
-      <Validation {...this.props}>
-        <DateRangePicker
-          type="single"
-          id={`${getId(this.props.id)}-datepicker_input`}
-          locale={this.props.locale} // TODO: må støtte nynorsk og samisk også
-          errorResources={this.getDatepickerErrorPhrases()}
-          resources={this.props.resources}
-          label={this.props.label}
-          subLabel={this.props.subLabel}
-          isRequired={isRequired(this.props.item)}
-          placeholder={getPlaceholder(this.props.item)}
-          ref={this.props.datepickerRef}
-          maximumDate={this.toLocaleDate(this.props.maxDate)}
-          minimumDate={this.toLocaleDate(this.props.minDate)}
-          singleDateValue={this.getSingleDateValue()}
-          className={this.props.className}
-          onDateChange={this.onDateChange}
-          validationErrorRenderer={this.props.validationErrorRenderer}
-          helpButton={this.props.helpButton}
-          helpElement={this.props.helpElement}
-        />
-      </Validation>
+      <TextView
+        id={props.id}
+        item={props.item}
+        value={getPDFValue()}
+        onRenderMarkdown={props.onRenderMarkdown}
+        helpButton={props.helpButton}
+        helpElement={props.helpElement}
+      >
+        {props.children}
+      </TextView>
     );
   }
-}
+
+  return (
+    <DateRangePicker
+      {...register(getId(props.item.linkId), {
+        required: { value: isRequired(props.item), message: props.resources?.dateRequired || '' },
+        onChange: onDateChange,
+        value: getSingleDateValue(),
+        validate: {
+          maximumDate: (value: Moment | null) => {
+            return (props.maxDate && value && value.isAfter(props.maxDate)) || props.resources?.errorAfterMaxDate || '';
+          },
+          minimumDate: (value: Moment | null) => {
+            return (props.minDate && value && value.isBefore(props.minDate)) || props.resources?.errorBeforeMinDate || '';
+          },
+        },
+      })}
+      type="single"
+      id={getId(props.id)}
+      locale={props.locale} // TODO: må støtte nynorsk og samisk også
+      errorResources={getDatepickerErrorPhrases()}
+      resources={props.resources}
+      label={props.label}
+      subLabel={props.subLabel}
+      isRequired={isRequired(props.item)}
+      placeholder={getPlaceholder(props.item)}
+      ref={props.datepickerRef}
+      maximumDate={toLocaleDate(props.maxDate)}
+      minimumDate={toLocaleDate(props.minDate)}
+      singleDateValue={getSingleDateValue()}
+      className={props.className}
+      onDateChange={onDateChange}
+      validationErrorRenderer={props.validationErrorRenderer}
+      helpButton={props.helpButton}
+      helpElement={props.helpElement}
+    />
+  );
+};

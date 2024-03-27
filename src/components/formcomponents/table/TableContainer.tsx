@@ -10,7 +10,8 @@ import {
   Resource,
 } from 'fhir/r4';
 import { connect } from 'react-redux';
-import { ThunkDispatch } from 'redux-thunk';
+
+import { Resources } from '../../../types/resources';
 
 import LanguageLocales from '@helsenorge/core-utils/constants/languages';
 
@@ -18,21 +19,18 @@ import GTable from './tables/gtable/GTable';
 import { StandardTable } from './tables/table/StandardTable';
 import TableHn1 from './tables/table-hn1/TableHn1';
 import TableHn2 from './tables/table-hn2/TableHn2';
-import { NewValueAction } from '../../../actions/newValue';
 import { TABLE_CODES_VALUES, TableCodes } from '../../../constants/tableTypes';
-import { GlobalState } from '../../../reducers';
-import { getFormData, getFormDefinition } from '../../../reducers/form';
+import { GlobalState } from '../../../store/reducers';
+import { getFormData, getFormDefinition } from '../../../store/selectors/index';
 import { getCodingTextTableValues } from '../../../util/extension';
 import { Path } from '../../../util/refero-core';
 import { RenderContext } from '../../../util/renderContext';
-import { Resources } from '../../../util/resources';
 
-export interface Props {
+export interface TableContainerProps {
   item: QuestionnaireItem;
   questionnaire?: Questionnaire | null;
   answer?: QuestionnaireResponseItemAnswer | null;
   responseItem: QuestionnaireResponseItem;
-  dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
   path: Array<Path>;
   pdf?: boolean;
   includeSkipLink?: boolean;
@@ -43,13 +41,11 @@ export interface Props {
   repeatButton?: JSX.Element;
   id?: string;
   renderContext: RenderContext;
-  renderHelpButton: () => JSX.Element;
-  renderHelpElement: () => JSX.Element;
-  isHelpOpen?: boolean;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
 }
+export type TableContainerAllProps = TableContainerEnhancedProps & TableContainerProps;
 
-interface EnhancedProps {
+interface TableContainerEnhancedProps {
   headline: string;
   tableCodesCoding: Coding[];
   items: QuestionnaireItem[];
@@ -66,7 +62,7 @@ const TableContainer = ({
   tableType,
   questionnaireResponse,
   resource,
-}: Props & EnhancedProps): JSX.Element => {
+}: TableContainerProps & TableContainerEnhancedProps): JSX.Element => {
   {
     switch (tableType) {
       case TableCodes.tableHn1:
@@ -112,7 +108,7 @@ const TableContainer = ({
   }
 };
 
-const mapStateToProps = (state: GlobalState, props: Props): EnhancedProps => {
+const mapStateToProps = (state: GlobalState, props: TableContainerProps): TableContainerEnhancedProps => {
   const group = props.item;
   const tableType = getCodingTextTableValues(group)[0];
   const resource = getFormDefinition(state)?.Content?.contained;

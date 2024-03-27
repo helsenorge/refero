@@ -3,6 +3,8 @@ import { useState } from 'react';
 
 import { QuestionnaireItem } from 'fhir/r4';
 
+import Button from '@helsenorge/designsystem-react/components/Button';
+
 interface Props {
   item: QuestionnaireItem | undefined;
   callback: (isOpen: boolean) => void;
@@ -19,7 +21,7 @@ const HelpButton = ({ item, children, callback }: Props): JSX.Element | null => 
   if (!item) return null;
 
   return (
-    <span className="page_refero__helpButton" onClick={handleToggle}>
+    <span className="page_refero__helpButton"  onClick={handleToggle}>
       {children}
     </span>
   );

@@ -2,39 +2,37 @@ import * as React from 'react';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem, Questionnaire } from 'fhir/r4';
 import moment, { Moment } from 'moment';
-import { connect } from 'react-redux';
+import { connect, useDispatch, useSelector } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
+import { Resources } from '../../../types/resources';
 
 import { LanguageLocales } from '@helsenorge/core-utils/constants/languages';
 import { DateRangePicker } from '@helsenorge/date-time/components/date-range-picker';
 import { parseDate } from '@helsenorge/date-time/components/time-input/date-core';
-import { ValidationProps } from '@helsenorge/form/components/form/validation';
 
 import { DateDayInput } from './date-day-input';
 import { DateYearMonthInput } from './date-month-input';
 import { DateYearInput } from './date-year-input';
-import { NewValueAction, newDateValueAsync } from '../../../actions/newValue';
 import ExtensionConstants from '../../../constants/extensions';
 import itemControlConstants from '../../../constants/itemcontrol';
-import { GlobalState } from '../../../reducers';
+import { NewValueAction, newDateValueAsync } from '../../../store/actions/newValue';
+import { GlobalState } from '../../../store/reducers';
+import { getFormDefinition } from '../../../store/selectors';
 import { getExtension, getItemControlExtensionValue } from '../../../util/extension';
 import { evaluateFhirpathExpressionToGetDate } from '../../../util/fhirpathHelper';
 import { getSublabelText } from '../../../util/index';
-import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
+import { mapStateToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
-import { Resources } from '../../../util/resources';
-import withCommonFunctions from '../../with-common-functions';
+import withCommonFunctions, { WithFormComponentsProps } from '../../with-common-functions';
 import Label from '../label';
 import SubLabel from '../sublabel';
 
-export interface Props {
+export interface DateProps extends WithFormComponentsProps {
   item: QuestionnaireItem;
-  questionnaire?: Questionnaire;
   responseItem: QuestionnaireResponseItem;
   answer: QuestionnaireResponseItemAnswer;
   resources?: Resources;
-  dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
   path: Array<Path>;
   pdf?: boolean;
   language?: string;
@@ -46,33 +44,29 @@ export interface Props {
   repeatButton: JSX.Element;
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
-  isHelpOpen?: boolean;
   onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
+  children: React.ReactNode;
 }
 
-class DateComponent extends React.Component<Props & ValidationProps> {
-  static defaultProps: Partial<Props> = {
-    path: [],
-  };
-  datepicker: React.RefObject<DateRangePicker>;
-  constructor(props: Props) {
-    super(props);
-    this.datepicker = React.createRef();
-  }
+const DateComponent = (props: DateProps): JSX.Element | null => {
+  const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
 
-  getMaxDate(): Moment | undefined {
-    const maxDate = getExtension(ExtensionConstants.DATE_MAX_VALUE_URL, this.props.item);
+  const questionnaire = useSelector<GlobalState, Questionnaire | undefined | null>(state => getFormDefinition(state)?.Content);
+  const [datepicker, setDatepicker] = React.useState<React.RefObject<DateRangePicker>>(React.createRef());
+
+  const getMaxDate = (): Moment | undefined => {
+    const maxDate = getExtension(ExtensionConstants.DATE_MAX_VALUE_URL, props.item);
     if (maxDate && maxDate.valueString) {
-      const fhirPathExpression = evaluateFhirpathExpressionToGetDate(this.props.item, maxDate.valueString);
+      const fhirPathExpression = evaluateFhirpathExpressionToGetDate(props.item, maxDate.valueString);
       return fhirPathExpression ? moment(fhirPathExpression) : undefined;
     }
-    const maxDateWithExtension = this.getMaxDateWithExtension();
+    const maxDateWithExtension = getMaxDateWithExtension();
     return maxDateWithExtension ? moment(maxDateWithExtension) : undefined;
-  }
+  };
 
-  getMaxDateWithExtension(): Date | undefined {
-    const maxDate = getExtension(ExtensionConstants.MAX_VALUE_URL, this.props.item);
+  const getMaxDateWithExtension = (): Date | undefined => {
+    const maxDate = getExtension(ExtensionConstants.MAX_VALUE_URL, props.item);
     if (maxDate && maxDate.valueDate) {
       return parseDate(String(maxDate.valueDate));
     } else if (maxDate && maxDate.valueDateTime) {
@@ -81,20 +75,20 @@ class DateComponent extends React.Component<Props & ValidationProps> {
       return parseDate(String(maxDate.valueInstant));
     }
     return undefined;
-  }
+  };
 
-  getMinDate(): Moment | undefined {
-    const minDate = getExtension(ExtensionConstants.DATE_MIN_VALUE_URL, this.props.item);
+  const getMinDate = (): Moment | undefined => {
+    const minDate = getExtension(ExtensionConstants.DATE_MIN_VALUE_URL, props.item);
     if (minDate && minDate.valueString) {
-      const fhirPathExpression = evaluateFhirpathExpressionToGetDate(this.props.item, minDate.valueString);
+      const fhirPathExpression = evaluateFhirpathExpressionToGetDate(props.item, minDate.valueString);
       return fhirPathExpression ? moment(fhirPathExpression) : undefined;
     }
-    const minDateWithExtension = this.getMinDateWithExtension();
+    const minDateWithExtension = getMinDateWithExtension();
     return minDateWithExtension ? moment(minDateWithExtension) : undefined;
-  }
+  };
 
-  getMinDateWithExtension(): Date | undefined {
-    const minDate = getExtension(ExtensionConstants.MIN_VALUE_URL, this.props.item);
+  const getMinDateWithExtension = (): Date | undefined => {
+    const minDate = getExtension(ExtensionConstants.MIN_VALUE_URL, props.item);
     if (minDate && minDate.valueDate) {
       return parseDate(String(minDate.valueDate));
     } else if (minDate && minDate.valueDateTime) {
@@ -103,13 +97,13 @@ class DateComponent extends React.Component<Props & ValidationProps> {
       return parseDate(String(minDate.valueInstant));
     }
     return undefined;
-  }
+  };
 
-  onDateValueChange = (newValue: string): void => {
-    const { dispatch, promptLoginMessage, path, item, answer, onAnswerChange } = this.props;
+  const onDateValueChange = (newValue: string): void => {
+    const { promptLoginMessage, path, item, answer, onAnswerChange } = props;
     const existingAnswer = answer?.valueDate || '';
-    if (dispatch && newValue !== existingAnswer) {
-      dispatch(newDateValueAsync(this.props.path, newValue, this.props.item))?.then(newState =>
+    if (newValue !== existingAnswer) {
+      dispatch(newDateValueAsync(props.path, newValue, props.item))?.then(newState =>
         onAnswerChange(newState, path, item, { valueDate: newValue } as QuestionnaireResponseItemAnswer)
       );
 
@@ -119,95 +113,95 @@ class DateComponent extends React.Component<Props & ValidationProps> {
     }
   };
 
-  getLocaleFromLanguage = (): LanguageLocales.ENGLISH | LanguageLocales.NORWEGIAN => {
-    if (this.props.language?.toLowerCase() === 'en-gb') {
+  const getLocaleFromLanguage = (): LanguageLocales.ENGLISH | LanguageLocales.NORWEGIAN => {
+    if (props.language?.toLowerCase() === 'en-gb') {
       return LanguageLocales.ENGLISH;
     }
 
     return LanguageLocales.NORWEGIAN;
   };
 
-  shouldComponentUpdate(nextProps: Props): boolean {
-    const responseItemHasChanged = this.props.responseItem !== nextProps.responseItem;
-    const helpItemHasChanged = this.props.isHelpOpen !== nextProps.isHelpOpen;
-    const answerHasChanged = this.props.answer !== nextProps.answer;
-    const resourcesHasChanged = JSON.stringify(this.props.resources) !== JSON.stringify(nextProps.resources);
-    const repeats = this.props.item.repeats ?? false;
+  const subLabelText = getSublabelText(props.item, props.onRenderMarkdown, questionnaire, props.resources);
 
-    return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats || answerHasChanged;
-  }
+  const itemControls = getItemControlExtensionValue(props.item);
 
-  render(): JSX.Element | null {
-    const subLabelText = getSublabelText(this.props.item, this.props.onRenderMarkdown, this.props.questionnaire, this.props.resources);
+  let element: JSX.Element | undefined = undefined;
 
-    const itemControls = getItemControlExtensionValue(this.props.item);
-    const labelEl = (
-      <Label
-        item={this.props.item}
-        onRenderMarkdown={this.props.onRenderMarkdown}
-        questionnaire={this.props.questionnaire}
-        resources={this.props.resources}
+  if (itemControls && itemControls.some(itemControl => itemControl.code === itemControlConstants.YEAR)) {
+    element = (
+      <DateYearInput
+        label={
+          <Label
+            item={props.item}
+            onRenderMarkdown={props.onRenderMarkdown}
+            questionnaire={questionnaire}
+            resources={props.resources}
+          />
+        }
+        subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
+        helpButton={props.renderHelpButton()}
+        helpElement={props.renderHelpElement()}
+        onDateValueChange={onDateValueChange}
+        maxDate={getMaxDate()}
+        minDate={getMinDate()}
+        {...props}
       />
     );
-    const subLabelEl = subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined;
-
-    let element: JSX.Element | undefined = undefined;
-
-    if (itemControls && itemControls.some(itemControl => itemControl.code === itemControlConstants.YEAR)) {
-      element = (
-        <DateYearInput
-          label={labelEl}
-          subLabel={subLabelEl}
-          helpButton={this.props.renderHelpButton()}
-          helpElement={this.props.renderHelpElement()}
-          onDateValueChange={this.onDateValueChange}
-          maxDate={this.getMaxDate()}
-          minDate={this.getMinDate()}
-          {...this.props}
-        />
-      );
-    } else if (itemControls && itemControls.some(itemControl => itemControl.code === itemControlConstants.YEARMONTH)) {
-      element = (
-        <DateYearMonthInput
-          label={labelEl}
-          locale={this.getLocaleFromLanguage()}
-          subLabel={subLabelEl}
-          helpButton={this.props.renderHelpButton()}
-          helpElement={this.props.renderHelpElement()}
-          onDateValueChange={this.onDateValueChange}
-          maxDate={this.getMaxDate()}
-          minDate={this.getMinDate()}
-          {...this.props}
-        />
-      );
-    } else {
-      element = (
-        <DateDayInput
-          locale={this.getLocaleFromLanguage()}
-          label={labelEl}
-          subLabel={subLabelEl}
-          datepickerRef={this.datepicker}
-          helpButton={this.props.renderHelpButton()}
-          helpElement={this.props.renderHelpElement()}
-          onDateValueChange={this.onDateValueChange}
-          maxDate={this.getMaxDate()}
-          minDate={this.getMinDate()}
-          {...this.props}
-        />
-      );
-    }
-
-    return (
-      <div className="page_refero__component page_refero__component_date">
-        {element}
-        {this.props.renderDeleteButton('page_refero__deletebutton--margin-top')}
-        {this.props.repeatButton}
-        {this.props.children ? <div className="nested-fieldset nested-fieldset--full-height">{this.props.children}</div> : null}
-      </div>
+  } else if (itemControls && itemControls.some(itemControl => itemControl.code === itemControlConstants.YEARMONTH)) {
+    element = (
+      <DateYearMonthInput
+        label={
+          <Label
+            item={props.item}
+            onRenderMarkdown={props.onRenderMarkdown}
+            questionnaire={questionnaire}
+            resources={props.resources}
+          />
+        }
+        locale={getLocaleFromLanguage()}
+        subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
+        helpButton={props.renderHelpButton()}
+        helpElement={props.renderHelpElement()}
+        onDateValueChange={onDateValueChange}
+        maxDate={getMaxDate()}
+        minDate={getMinDate()}
+        {...props}
+      />
+    );
+  } else {
+    element = (
+      <DateDayInput
+        locale={getLocaleFromLanguage()}
+        label={
+          <Label
+            item={props.item}
+            onRenderMarkdown={props.onRenderMarkdown}
+            questionnaire={questionnaire}
+            resources={props.resources}
+          />
+        }
+        subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
+        datepickerRef={datepicker}
+        helpButton={props.renderHelpButton()}
+        helpElement={props.renderHelpElement()}
+        onDateValueChange={onDateValueChange}
+        maxDate={getMaxDate()}
+        minDate={getMinDate()}
+        {...props}
+      />
     );
   }
-}
+
+  return (
+    <div className="page_refero__component page_refero__component_date">
+      {element}
+      {props.renderDeleteButton('page_refero__deletebutton--margin-top')}
+      {props.repeatButton}
+      {props.children ? <div className="nested-fieldset nested-fieldset--full-height">{props.children}</div> : null}
+    </div>
+  );
+};
 
 const withCommonFunctionsComponent = withCommonFunctions(DateComponent);
-const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(withCommonFunctionsComponent);
+const connectedComponent = connect(mapStateToProps)(withCommonFunctionsComponent);
 export default connectedComponent;

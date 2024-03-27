@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import './styles/skjemautfyller.scss';
 import './styles/sidebar.scss';
 import './styles/refero.scss';
-// import './styles/formFillerPreview.css';
-// import './styles/formFillerSidebar.css';
+import './styles/formFillerPreview.css';
+import './styles/formFillerSidebar.css';
 
 import FormFillerPreview from './FormFillerPreview';
 
@@ -16,6 +16,7 @@ function App() {
       <FormFillerPreview
         showFormFiller={(): void => {
           setShow(prevState => !prevState);
+          console.log('avbryt');
         }}
       />
     </>

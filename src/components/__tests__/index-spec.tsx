@@ -7,14 +7,14 @@ import thunk from 'redux-thunk';
 
 import { Questionnaire, QuestionnaireItem, QuestionnaireItemEnableWhen } from 'fhir/r4';
 
-import SafeInputField from '@helsenorge/form/components/safe-input-field';
+import Input from '@helsenorge/designsystem-react/components/Input';
 
 import '../../util/defineFetch';
 import Boolean from '../../components/formcomponents/boolean/boolean';
 import { RepeatButton as RepeatButtonInstance } from '../../components/formcomponents/repeat/repeat-button';
 import itemControlConstants from '../../constants/itemcontrol';
-import rootReducer from '../../reducers';
-import { Resources } from '../../util/resources';
+import rootReducer from '../../store/reducers';
+import { Resources } from '../../types/resources';
 import HelpButton from '../help-button/help-button';
 import TextView from '../formcomponents/textview';
 import { ReferoContainer } from '../index';
@@ -90,21 +90,21 @@ describe('repeat with enableWhen', () => {
     expect(wrapper.find(Boolean)).toHaveLength(2);
 
     // no enableWhen components should be visible
-    expect(wrapper.find(SafeInputField)).toHaveLength(0);
+    expect(wrapper.find(Input)).toHaveLength(0);
 
     // Click first boolean input, and enableWhen component should be enabled
     wrapper
       .find("input[type='checkbox']")
       .first()
       .simulate('change', { taget: { checked: true } });
-    expect(wrapper.find(SafeInputField)).toHaveLength(1);
+    expect(wrapper.find(Input)).toHaveLength(1);
 
     // Click last boolean input, and enableWhen component should be enabled
     wrapper
       .find("input[type='checkbox']")
       .last()
       .simulate('change', { target: { checked: true } });
-    expect(wrapper.find(SafeInputField)).toHaveLength(2);
+    expect(wrapper.find(Input)).toHaveLength(2);
   });
 });
 

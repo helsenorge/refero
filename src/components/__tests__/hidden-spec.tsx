@@ -3,9 +3,9 @@ import { mount } from 'enzyme';
 import { createStore } from 'redux';
 import { Store, Provider } from 'react-redux';
 
-import rootReducer from '../../reducers';
+import rootReducer from '../../store/reducers';
 import '../../util/defineFetch';
-import { Resources } from '../../util/resources';
+import { Resources } from '../../types/resources';
 import { ReferoContainer } from '../../components';
 import { Questionnaire, QuestionnaireItem, Extension, Reference } from 'fhir/r4';
 import Choice from '../formcomponents/choice/choice';

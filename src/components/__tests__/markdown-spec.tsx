@@ -5,10 +5,10 @@ import thunk from 'redux-thunk';
 import { mount } from 'enzyme';
 
 import '../../util/defineFetch';
-import rootReducer from '../../reducers';
+import rootReducer from '../../store/reducers';
 import { Questionnaire, QuestionnaireItem } from 'fhir/r4';
 import { ReferoContainer } from '..';
-import { Resources } from '../../util/resources';
+import { Resources } from '../../types/resources';
 import questionnaireWithMarkdown from './__data__/markdown';
 import ItemType from '../../constants/itemType';
 

@@ -1,32 +1,34 @@
 import * as React from 'react';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem, Questionnaire } from 'fhir/r4';
-import { connect } from 'react-redux';
+import { Controller, useFormContext } from 'react-hook-form';
+import { connect, useDispatch, useSelector } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
+import { Resources } from '../../../types/resources';
+
+import Checkbox from '@helsenorge/designsystem-react/components/Checkbox';
+import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
+import Label from '@helsenorge/designsystem-react/components/Label';
+
+// import Validation from '@helsenorge/designsystem-react/components/Validation';
 import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
-import { CheckBox } from '@helsenorge/form/components/checkbox';
-import Validation from '@helsenorge/form/components/form/validation';
-import { ValidationProps } from '@helsenorge/form/components/form/validation';
 
 import Pdf from './pdf';
-import { NewValueAction, newBooleanValueAsync } from '../../../actions/newValue';
-import { GlobalState } from '../../../reducers';
-import { getValidationTextExtension } from '../../../util/extension';
-import { isReadOnly, isRequired, getId } from '../../../util/index';
-import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
-import { Path } from '../../../util/refero-core';
-import { Resources } from '../../../util/resources';
-import withCommonFunctions from '../../with-common-functions';
-import Label from '../label';
+import { getBooleanValue } from './utils';
+import { NewValueAction, newBooleanValueAsync } from '../../../store/actions/newValue';
+import { GlobalState } from '../../../store/reducers';
+import { getFormDefinition } from '../../../store/selectors';
+import { getText, isReadOnly, renderPrefix } from '../../../util/index';
+import { mapStateToProps } from '../../../util/map-props';
+import { Path, createFromIdFromPath } from '../../../util/refero-core';
+import withCommonFunctions, { WithFormComponentsProps } from '../../with-common-functions';
 
-export interface Props {
+export interface BooleanProps extends WithFormComponentsProps {
   item: QuestionnaireItem;
-  questionnaire?: Questionnaire;
   responseItem: QuestionnaireResponseItem;
   answer: QuestionnaireResponseItemAnswer;
   resources?: Resources;
-  dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
   path: Array<Path>;
   pdf?: boolean;
   promptLoginMessage?: () => void;
@@ -37,102 +39,93 @@ export interface Props {
   oneToTwoColumn: boolean;
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
-  isHelpOpen?: boolean;
   onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
+  children: React.ReactNode;
 }
 
-class Boolean extends React.Component<Props & ValidationProps, {}> {
-  getValue(): boolean {
-    const { item, answer } = this.props;
-    if (answer && answer.valueBoolean !== undefined) {
-      return answer.valueBoolean;
-    }
-    if (!item || !item.initial || item.initial.length === 0 || !item.initial[0].valueBoolean) {
-      return false;
-    }
-    return item.initial[0].valueBoolean;
-  }
+const Boolean = ({
+  item,
+  answer,
+  path,
+  promptLoginMessage,
+  onAnswerChange,
+  // responseItem,
+  resources,
+  onRenderMarkdown,
+  pdf,
+  renderDeleteButton,
+  repeatButton,
+  children,
+  renderHelpElement,
+  renderHelpButton,
+}: BooleanProps): JSX.Element => {
+  const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
+  const questionnaire = useSelector<GlobalState, Questionnaire | undefined | null>(state => getFormDefinition(state)?.Content);
+  const formId = createFromIdFromPath(path);
+  const { getFieldState, control } = useFormContext();
+  const { error } = getFieldState(formId);
 
-  handleChange = (): void => {
-    const { dispatch, promptLoginMessage, onAnswerChange, path, item } = this.props;
-    const newValue = !this.getValue();
-    if (dispatch) {
-      dispatch(newBooleanValueAsync(this.props.path, newValue, this.props.item))?.then(newState =>
-        onAnswerChange(newState, path, item, { valueBoolean: newValue } as QuestionnaireResponseItemAnswer)
-      );
-    }
+  const handleChange = (): void => {
+    const newValue = !getBooleanValue(answer, item);
+    dispatch(newBooleanValueAsync(path, newValue, item))?.then(newState =>
+      onAnswerChange(newState, path, item, { valueBoolean: newValue } as QuestionnaireResponseItemAnswer)
+    );
 
     if (promptLoginMessage) {
       promptLoginMessage();
     }
   };
 
-  getLabel = (): JSX.Element => {
+  const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`;
+
+  if (pdf) {
+    return <Pdf item={item} checked={getBooleanValue(answer, item)} onRenderMarkdown={onRenderMarkdown} />;
+  } else if (isReadOnly(item)) {
+    //id={getId(this.props.id)}
+
     return (
-      <Label
-        item={this.props.item}
-        onRenderMarkdown={this.props.onRenderMarkdown}
-        questionnaire={this.props.questionnaire}
-        resources={this.props.resources}
+      <Checkbox
+        label={labelText}
+        checked={getBooleanValue(answer, item)}
+        disabled
+        onChange={(): void => {
+          /*kan ikke endres, er alltid disabled*/
+        }}
+        className="page_refero__input"
       />
     );
-  };
-
-  shouldComponentUpdate(nextProps: Props): boolean {
-    const responseItemHasChanged = this.props.responseItem !== nextProps.responseItem;
-    const helpItemHasChanged = this.props.isHelpOpen !== nextProps.isHelpOpen;
-    const answerHasChanged = this.props.answer !== nextProps.answer;
-    const resourcesHasChanged = JSON.stringify(this.props.resources) !== JSON.stringify(nextProps.resources);
-    const repeats = this.props.item.repeats ?? false;
-
-    return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats || answerHasChanged;
   }
 
-  render(): JSX.Element | null {
-    if (this.props.pdf) {
-      return <Pdf item={this.props.item} checked={this.getValue()} onRenderMarkdown={this.props.onRenderMarkdown} />;
-    } else if (isReadOnly(this.props.item)) {
-      return (
-        <CheckBox
-          label={this.getLabel()}
-          id={getId(this.props.id)}
-          checked={this.getValue()}
-          disabled
-          isStyleBlue
-          onChange={(): void => {
-            /*kan ikke endres, er alltid disabled*/
-          }}
-          className="page_refero__input"
+  return (
+    <div className="page_refero__component page_refero__component_boolean">
+      <FormGroup error={error?.message}>
+        <Controller
+          control={control}
+          name={formId}
+          render={({ field: { onChange, value, ref } }): React.ReactElement => (
+            <Checkbox
+              label={<Label labelTexts={[{ text: labelText }]} afterLabelChildren={<>{renderHelpButton()}</>} />}
+              checked={value}
+              className="page_refero__input"
+              value={value}
+              ref={ref}
+              onChange={(): void => {
+                const newValue = !getBooleanValue(answer, item);
+                onChange(newValue);
+                handleChange();
+              }}
+            />
+          )}
         />
-      );
-    }
-    return (
-      // Dette er en hack for FHI-skjema. TODO: fjern hack
-      <div className="page_refero__component page_refero__component_boolean">
-        <Validation {...this.props}>
-          <CheckBox
-            label={this.getLabel()}
-            id={getId(this.props.id)}
-            isRequired={isRequired(this.props.item)}
-            errorMessage={getValidationTextExtension(this.props.item)}
-            checked={this.getValue()}
-            onChange={this.handleChange}
-            disabled={isReadOnly(this.props.item)}
-            className="page_refero__input"
-            helpButton={this.props.renderHelpButton()}
-            helpElement={this.props.renderHelpElement()}
-            validateOnExternalUpdate={true}
-            isStyleBlue
-          />
-        </Validation>
-        {this.props.renderDeleteButton('page_refero__deletebutton--margin-top')}
-        {this.props.repeatButton}
-        {this.props.children ? <div className="nested-fieldset nested-fieldset--full-height">{this.props.children}</div> : null}
-      </div>
-    );
-  }
-}
+      </FormGroup>
+      {renderDeleteButton('page_refero__deletebutton--margin-top')}
+      {repeatButton}
+      {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
+      {renderHelpElement()}
+    </div>
+  );
+};
 const withCommonFunctionsComponent = withCommonFunctions(Boolean);
-const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(layoutChange(withCommonFunctionsComponent));
+const connectedComponent = connect(mapStateToProps)(layoutChange(withCommonFunctionsComponent));
 export default connectedComponent;

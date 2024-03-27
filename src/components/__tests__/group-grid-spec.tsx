@@ -5,11 +5,11 @@ import thunk from 'redux-thunk';
 import { mount, ReactWrapper } from 'enzyme';
 
 import '../../util/defineFetch';
-import rootReducer from '../../reducers';
+import rootReducer from '../../store/reducers';
 import { Questionnaire } from 'fhir/r4';
 import Decimal from '../formcomponents/decimal/decimal';
 import { ReferoContainer } from '..';
-import { Resources } from '../../util/resources';
+import { Resources } from '../../types/resources';
 import GroupGridModel from './__data__/group-grid';
 
 describe('Group-grid component renders correctly', () => {

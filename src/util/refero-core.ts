@@ -10,7 +10,7 @@ import { QuestionnaireEnableOperator } from '../types/fhirEnums';
 
 import { getMinOccursExtensionValue } from './extension';
 import ItemType from '../constants/itemType';
-import { FormData, FormDefinition } from '../reducers/form';
+import { FormData, FormDefinition } from '../store/reducers/form';
 import { enableWhenMatches } from '../util/enableWhenMatcher';
 
 export function getRootQuestionnaireResponseItemFromData(
@@ -567,3 +567,6 @@ function getItemLinkIdsWithType(type: string, items: QuestionnaireItem[] | undef
     items.filter(f => f.type === type).forEach(f => itemsWithType.push(f));
   }
 }
+
+//export const createFromIdFromPath = (path: Path[]): string => path.map(p => (p.index ? `${p.linkId}.${p.index}` : p.linkId)).join('.');
+export const createFromIdFromPath = (path: Path[]): string => path[path.length - 1].linkId;

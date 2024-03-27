@@ -3,12 +3,13 @@ import * as React from 'react';
 import DOMPurify from 'dompurify';
 import { QuestionnaireItem, Questionnaire } from 'fhir/r4';
 
+import { Resources } from '../../types/resources';
+
 import { getText, renderPrefix } from '../../util/index';
-import { Resources } from '../../util/resources';
 
 interface Props {
   item: QuestionnaireItem;
-  questionnaire?: Questionnaire;
+  questionnaire?: Questionnaire | null;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
   resources?: Resources;
 }

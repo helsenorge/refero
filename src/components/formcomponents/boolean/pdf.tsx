@@ -8,13 +8,13 @@ interface Props {
   item: QuestionnaireItem;
   checked: boolean;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
+  children?: React.ReactNode;
 }
 
-const pdf: React.SFC<Props> = ({ item, checked, children, onRenderMarkdown }) => {
+const pdf = ({ item, checked, children, onRenderMarkdown }: Props): JSX.Element => {
   return (
     <div>
-      {/* eslint-disable react/jsx-no-literals */}
-      {checked ? <b>[ X ]</b> : <b>[&nbsp;&nbsp;&nbsp;&nbsp;]</b>} {`${renderPrefix(item)} ${getText(item, onRenderMarkdown)}`}
+      {checked ? <b>{'[ X ]'}</b> : <b>{'[&nbsp;&nbsp;&nbsp;&nbsp;]'}</b>} {`${renderPrefix(item)} ${getText(item, onRenderMarkdown)}`}
       {children ? (
         <span>
           <br />

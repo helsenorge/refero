@@ -1,0 +1,250 @@
+{
+  "resourceType": "Questionnaire",
+  "language": "nb-NO",
+  "status": "draft",
+  "publisher": "NHN",
+  "meta": {
+    "profile": ["http://ehelse.no/fhir/StructureDefinition/sdf-Questionnaire"],
+    "tag": [
+      {
+        "system": "urn:ietf:bcp:47",
+        "code": "nb-NO",
+        "display": "Bokmål"
+      }
+    ],
+    "security": [
+      {
+        "code": "3",
+        "display": "Helsehjelp (Full)",
+        "system": "urn:oid:2.16.578.1.12.4.1.1.7618"
+      }
+    ]
+  },
+  "contact": [
+    {
+      "name": "http://www.nhn.no"
+    }
+  ],
+  "subjectType": ["Patient"],
+  "extension": [
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sidebar",
+      "valueCoding": {
+        "system": "http://helsenorge.no/fhir/ValueSet/sdf-sidebar",
+        "code": "1"
+      }
+    },
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-information-message",
+      "valueCoding": {
+        "system": "http://helsenorge.no/fhir/ValueSet/sdf-information-message",
+        "code": "1"
+      }
+    },
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefintion/sdf-itemControl-visibility",
+      "valueCodeableConcept": {
+        "coding": [
+          {
+            "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
+            "code": "hide-help",
+            "display": "Hide help texts"
+          },
+          {
+            "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
+            "code": "hide-sublabel",
+            "display": "Hide sublabel texts"
+          }
+        ]
+      }
+    }
+  ],
+  "id": "de4cf7d5-f21e-4468-c1eb-059ad36f54c8",
+  "contained": [
+    {
+      "url": "http://ehelse.no/fhir/ValueSet/Predefined",
+      "resourceType": "ValueSet",
+      "id": "1102",
+      "version": "1.0",
+      "name": "urn:oid:1102",
+      "title": "Ja / Nei / Vet ikke (structor)",
+      "status": "draft",
+      "publisher": "Direktoratet for e-helse",
+      "compose": {
+        "include": [
+          {
+            "system": "urn:oid:2.16.578.1.12.4.1.1102",
+            "concept": [
+              {
+                "code": "1",
+                "display": "Ja"
+              },
+              {
+                "code": "2",
+                "display": "Nei"
+              },
+              {
+                "code": "3",
+                "display": "Vet ikke"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "url": "http://ehelse.no/fhir/ValueSet/Predefined",
+      "resourceType": "ValueSet",
+      "id": "9523",
+      "version": "1.0",
+      "name": "urn:oid:9523",
+      "title": "Ja / Nei / Usikker (structor)",
+      "status": "draft",
+      "publisher": "Direktoratet for e-helse",
+      "compose": {
+        "include": [
+          {
+            "system": "urn:oid:2.16.578.1.12.4.1.9523",
+            "concept": [
+              {
+                "code": "1",
+                "display": "Ja"
+              },
+              {
+                "code": "2",
+                "display": "Nei"
+              },
+              {
+                "code": "3",
+                "display": "Usikker"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "item": [
+    {
+      "linkId": "76330cf5-50d6-4fbd-df5f-a9061cd2c736",
+      "type": "choice",
+      "text": "CHOICE OUTSIDE - CHECKBOX",
+      "required": true,
+      "answerOption": [
+        {
+          "valueCoding": {
+            "id": "148ec0ef-9d76-407d-8dae-964494682787",
+            "code": "1",
+            "system": "urn:uuid:c2cb3309-925a-40b2-81ed-da186621b80f",
+            "display": "ja"
+          }
+        },
+        {
+          "valueCoding": {
+            "id": "a012c568-1ce3-41c6-fdcc-082a2106ff07",
+            "code": "2",
+            "system": "urn:uuid:c2cb3309-925a-40b2-81ed-da186621b80f",
+            "display": "nei"
+          }
+        },
+        {
+          "valueCoding": {
+            "id": "0525b9a7-0364-415c-868a-754c530e5599",
+            "code": "3",
+            "system": "urn:uuid:c2cb3309-925a-40b2-81ed-da186621b80f",
+            "display": "vet ikke"
+          }
+        }
+      ],
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                "code": "check-box"
+              }
+            ]
+          }
+        },
+        {
+          "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sublabel",
+          "valueMarkdown": "CHECKBOX"
+        }
+      ]
+    },
+    {
+      "linkId": "61b6a39e-f3fb-4ab9-c59a-3e55931e8321",
+      "type": "choice",
+      "text": "DROPDOWN",
+      "required": true,
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                "code": "drop-down"
+              }
+            ]
+          }
+        }
+      ],
+      "answerValueSet": "#9523"
+    },
+    {
+      "linkId": "051b10cd-66a4-4d90-8606-f5bdd3aadb9c",
+      "type": "group",
+      "text": "Gruppe\n",
+      "item": [
+        {
+          "linkId": "84f01e75-40b8-4430-9e53-9b8fffd2e735",
+          "type": "choice",
+          "text": "RADIO- CHOICE - ValueSet",
+          "required": true,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "radio-button"
+                  }
+                ]
+              }
+            },
+            {
+              "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sublabel",
+              "valueMarkdown": "Sub label"
+            }
+          ],
+          "answerValueSet": "#1102"
+        },
+        {
+          "linkId": "ca83887d-bd85-473d-e1b3-3cdbe2e364c3",
+          "type": "choice",
+          "text": "Checkbox - CHOICE - ValueSet",
+          "required": true,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "check-box"
+                  }
+                ]
+              }
+            }
+          ],
+          "answerValueSet": "#1102"
+        }
+      ],
+      "required": false
+    }
+  ]
+}

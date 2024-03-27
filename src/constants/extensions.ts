@@ -30,6 +30,4 @@ export default {
   HYPERLINK: 'http://helsenorge.no/fhir/StructureDefinition/sdf-hyperlink-target',
 
   VALUESET_LABEL: 'http://hl7.org/fhir/StructureDefinition/valueset-label',
-
-  MAX_SIZE_URL: 'http://hl7.org/fhir/StructureDefinition/maxSize',
 };

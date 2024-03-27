@@ -1,0 +1,191 @@
+{
+  "resourceType": "Questionnaire",
+  "language": "nb-NO",
+  "status": "draft",
+  "publisher": "NHN",
+  "meta": {
+    "profile": ["http://ehelse.no/fhir/StructureDefinition/sdf-Questionnaire"],
+    "tag": [{ "system": "urn:ietf:bcp:47", "code": "nb-NO", "display": "Bokmål" }],
+    "security": [{ "code": "3", "display": "Helsehjelp (Full)", "system": "urn:oid:2.16.578.1.12.4.1.1.7618" }]
+  },
+  "contact": [{ "name": "http://www.nhn.no" }],
+  "subjectType": ["Patient"],
+  "extension": [
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sidebar",
+      "valueCoding": { "system": "http://helsenorge.no/fhir/ValueSet/sdf-sidebar", "code": "1" }
+    },
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-information-message",
+      "valueCoding": { "system": "http://helsenorge.no/fhir/ValueSet/sdf-information-message", "code": "1" }
+    },
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefintion/sdf-itemControl-visibility",
+      "valueCodeableConcept": {
+        "coding": [
+          { "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions", "code": "hide-help", "display": "Hide help texts" },
+          {
+            "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
+            "code": "hide-sublabel",
+            "display": "Hide sublabel texts"
+          }
+        ]
+      }
+    }
+  ],
+  "id": "de4cf7d5-f21e-4468-c1eb-059ad36f54c8",
+  "item": [
+    {
+      "linkId": "d7aa311f-3236-4db1-8f6c-272ba0831a08",
+      "type": "group",
+      "text": "Decimal",
+      "item": [
+        { "linkId": "2e5a0b80-800e-4a93-8285-7066d7b1a8e7", "type": "decimal", "text": "DECIMAL" },
+        { "linkId": "22e106c4-8cb7-4dc8-ea01-6a0271b619c0", "type": "decimal", "text": "DECIMAL - MANDATORY ", "required": true },
+        {
+          "linkId": "63e00c92-6a4f-4fe2-afde-459258bd7d7a",
+          "type": "decimal",
+          "text": "DECIMAL - MANDATORY - VALIDATIONS",
+          "extension": [
+            { "url": "http://hl7.org/fhir/StructureDefinition/minValue", "valueInteger": 2 },
+            { "url": "http://hl7.org/fhir/StructureDefinition/maxValue", "valueInteger": 10 },
+            { "url": "http://hl7.org/fhir/StructureDefinition/maxDecimalPlaces", "valueInteger": 2 },
+            {
+              "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sublabel",
+              "valueMarkdown": "Max decimals 2, Min value 2, Max value 10"
+            },
+            { "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "Custom error message, decimal" }
+          ],
+          "required": true
+        }
+      ],
+      "required": false
+    },
+    {
+      "linkId": "53187be0-7dd6-4b21-8a41-77c11f3d7cf3",
+      "type": "group",
+      "text": "Number\n",
+      "item": [
+        { "linkId": "b31ed505-e8ba-4faa-cc4f-fd08930b1290", "type": "integer", "text": "NUMBER" },
+        { "linkId": "18f0ddc4-eaf7-449d-bd43-f5eabac0476f", "type": "integer", "text": "NUMBER - MANDATORY", "required": true },
+        {
+          "linkId": "446c03e7-95df-463e-88df-408d5715672b",
+          "type": "integer",
+          "text": "NUMBER - MANDATORY - VALIDATION",
+          "extension": [
+            { "url": "http://hl7.org/fhir/StructureDefinition/minValue", "valueInteger": 2 },
+            { "url": "http://hl7.org/fhir/StructureDefinition/maxValue", "valueInteger": 10 },
+            { "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sublabel", "valueMarkdown": "min value 2, max value 10" },
+            { "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "Custom error message, number" }
+          ],
+          "required": true
+        }
+      ],
+      "required": false
+    },
+    {
+      "linkId": "81e1a749-1520-486c-9734-37aced579726",
+      "type": "group",
+      "text": "Quantity",
+      "item": [
+        {
+          "linkId": "c0ca4659-cf8d-4a52-8eb6-68b80333f36b",
+          "type": "quantity",
+          "text": "QUANTITY - KILO\n",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+              "valueCoding": { "code": "kg", "display": "kilo", "system": "http://unitsofmeasure.org" }
+            }
+          ]
+        },
+        {
+          "linkId": "1f872597-a968-4b09-e527-23bd2c36b047",
+          "type": "quantity",
+          "text": "QUANTITY - NO UNIT - MANDATORY",
+          "required": true
+        },
+        {
+          "linkId": "dfe2dced-1851-44fb-8a71-6b55a09ee0b0",
+          "type": "quantity",
+          "text": "QUANTITY - KILO - MANDITORY - VALIDATION ",
+          "required": true,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+              "valueCoding": { "code": "kg", "display": "kilo", "system": "http://unitsofmeasure.org" }
+            },
+            { "url": "http://hl7.org/fhir/StructureDefinition/maxDecimalPlaces", "valueInteger": 2 },
+            { "url": "http://hl7.org/fhir/StructureDefinition/minValue", "valueInteger": 2 },
+            { "url": "http://hl7.org/fhir/StructureDefinition/maxValue", "valueInteger": 10 },
+            {
+              "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sublabel",
+              "valueMarkdown": "Max decimals 2, min value 2,  max value 10"
+            },
+            { "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "Custom error message, quantity" }
+          ]
+        }
+      ],
+      "required": false
+    },
+    {
+      "linkId": "79b34729-b64e-42f2-893b-c3e1779a6cd0",
+      "type": "group",
+      "text": "Confirmation",
+      "item": [
+        { "linkId": "427cbcdf-a69f-4a1a-8413-90d43810c731", "type": "boolean", "text": "CONFIRMATION" },
+        { "linkId": "d8585fd8-b248-437d-a721-6734b116e0ed", "type": "boolean", "text": "CONFIRMATION - MANDATORY", "required": true }
+      ],
+      "required": false
+    },
+    {
+      "linkId": "1cf52303-1991-42a2-883a-ff9f6fcf1281",
+      "type": "group",
+      "text": "Text answer",
+      "item": [
+        { "linkId": "8133e8f9-bc84-4bc3-c471-4f14aa99961b", "type": "string", "text": "TEXT " },
+        { "linkId": "772ed5c2-1167-4d9f-84d4-2f3f8856d8d7", "type": "string", "text": "TEXT - MANDATORY", "required": true },
+        {
+          "linkId": "32929fe8-6125-465f-8d98-8ead9b141896",
+          "type": "string",
+          "text": "TEXT - MANDATORY - VALIDATION",
+          "extension": [
+            { "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "custom error message, text" },
+            { "url": "http://hl7.org/fhir/StructureDefinition/minLength", "valueInteger": 2 },
+            { "url": "http://hl7.org/fhir/StructureDefinition/regex", "valueString": "^[æøåÆØÅa-zA-Z ]*$" },
+            { "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sublabel", "valueMarkdown": "only norwegaian chars, min 2, max 10" }
+          ],
+          "required": true,
+          "maxLength": 10
+        }
+      ],
+      "required": false
+    },
+    {
+      "linkId": "d4fa14a6-b791-4844-83d7-199994e71297",
+      "type": "group",
+      "text": "Textarea\n",
+      "item": [
+        { "linkId": "681b7ceb-8f1d-4fe9-9893-3fb6d77a4fc7", "type": "text", "text": "TEXTAREA" },
+        { "linkId": "48d71688-1372-49e5-c73a-391893bd96bc", "type": "text", "text": "TEXTAREA - MANDATORY", "required": true },
+        {
+          "linkId": "c1c5cd31-c69f-4906-fe9d-ff0dbb08aafd",
+          "type": "text",
+          "text": "TEXTAREA - MANDATORY - VALIDATION",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/regex",
+              "valueString": "^(http[s]?:\\/\\/(www\\.)?|ftp:\\/\\/(www\\.)?|www\\.){1}([0-9A-Za-z-\\.@:%_+~#=]+)+((\\.[a-zA-Z]{2,3})+)(/(.)*)?(\\?(.)*)?"
+            },
+            { "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sublabel", "valueMarkdown": "URL validation, min 2, max 10" },
+            { "url": "http://hl7.org/fhir/StructureDefinition/minLength", "valueInteger": 2 },
+            { "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "Custom error message, textarea" }
+          ],
+          "required": true,
+          "maxLength": 10
+        }
+      ],
+      "required": false
+    }
+  ]
+}

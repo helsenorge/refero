@@ -1,7 +1,9 @@
 import * as React from 'react';
 
 import { QuestionnaireItem } from 'fhir/r4';
+import { useFormContext } from 'react-hook-form';
 
+import { Resources } from '../../../types/resources';
 import { TextMessage } from '../../../types/text-message';
 
 import NotificationPanel from '@helsenorge/designsystem-react/components/NotificationPanel';
@@ -9,12 +11,10 @@ import NotificationPanel from '@helsenorge/designsystem-react/components/Notific
 import Dropzone from '@helsenorge/file-upload/components/dropzone';
 import { UploadedFile } from '@helsenorge/file-upload/components/dropzone';
 import { sizeIsValid, mimeTypeIsValid } from '@helsenorge/file-upload/components/dropzone/validation';
-import Validation, { ValidationProps } from '@helsenorge/form/components/form/validation';
 
-import { convertBytesToMBString, convertMBToBytes } from './attachmentUtil';
 import constants, { VALID_FILE_TYPES } from '../../../constants';
-import { getMaxSizeExtensionValue, getValidationTextExtension } from '../../../util/extension';
-import { Resources } from '../../../util/resources';
+import { getId } from '../../../util';
+import { getValidationTextExtension } from '../../../util/extension';
 
 interface Props {
   onUpload: (files: Array<File>, cb: (success: boolean, errormessage: TextMessage | null, uploadedFile?: UploadedFile) => void) => void;
@@ -37,12 +37,12 @@ interface Props {
   item: QuestionnaireItem;
   attachmentMaxFileSize?: number;
   attachmentValidTypes?: Array<string>;
-
+  children?: React.ReactNode;
   helpButton?: JSX.Element;
   helpElement?: JSX.Element;
 }
 
-const attachmentHtml: React.SFC<Props & ValidationProps> = ({
+const attachmentHtml = ({
   id,
   onUpload,
   onDelete,
@@ -65,67 +65,51 @@ const attachmentHtml: React.SFC<Props & ValidationProps> = ({
   minFiles,
   item,
   children,
-  ...other
-}) => {
-  const getMaxValueBytes = getAttachmentMaxSizeBytesToUse(attachmentMaxFileSize, item);
-  const getMaxValueMBToReplace = convertBytesToMBString(getMaxValueBytes);
+}: Props): JSX.Element => {
+  const { register } = useFormContext();
+  const maxFilesize = attachmentMaxFileSize ? attachmentMaxFileSize : constants.MAX_FILE_SIZE;
   const validFileTypes = attachmentValidTypes ? attachmentValidTypes : VALID_FILE_TYPES;
   const deleteText = resources ? resources.deleteAttachmentText : undefined;
 
   return (
     <div className="page_refero__component page_refero__component_attachment">
-      <Validation {...other}>
-        <Dropzone
-          id={id}
-          label={label}
-          subLabel={subLabel}
-          onDrop={onUpload}
-          onDelete={onDelete}
-          onOpenFile={onOpen}
-          uploadButtonText={uploadButtonText}
-          uploadedFiles={uploadedFiles}
-          maxFileSize={getMaxValueBytes}
-          validMimeTypes={validFileTypes}
-          dontShowHardcodedText={!!deleteText}
-          deleteText={deleteText}
-          supportedFileFormatsText={resources ? resources.supportedFileFormats : undefined}
-          errorMessage={(file: File): string => {
-            return getErrorMessage(validFileTypes, getMaxValueBytes, getMaxValueMBToReplace, item, errorText, file, resources);
-          }}
-          isRequired={isRequired}
-          wrapperClasses="page_refero__input"
-          onRequestLink={onRequestAttachmentLink}
-          helpButton={helpButton}
-          helpElement={helpElement}
-          shouldUploadMultiple={multiple}
-          maxFiles={maxFiles}
-          minFiles={minFiles}
-          chooseFilesText={resources?.chooseFilesText}
-        />
-      </Validation>
+      <Dropzone
+        {...register(getId(item.linkId))}
+        id={id}
+        label={label}
+        subLabel={subLabel}
+        onDrop={onUpload}
+        onDelete={onDelete}
+        onOpenFile={onOpen}
+        uploadButtonText={uploadButtonText}
+        uploadedFiles={uploadedFiles}
+        maxFileSize={maxFilesize}
+        validMimeTypes={validFileTypes}
+        dontShowHardcodedText={!!deleteText}
+        deleteText={deleteText}
+        supportedFileFormatsText={resources ? resources.supportedFileFormats : undefined}
+        errorMessage={(file: File): string => {
+          return getErrorMessage(validFileTypes, maxFilesize, item, errorText, file, resources);
+        }}
+        isRequired={isRequired}
+        wrapperClasses="page_refero__input"
+        onRequestLink={onRequestAttachmentLink}
+        helpButton={helpButton}
+        helpElement={helpElement}
+        shouldUploadMultiple={multiple}
+        maxFiles={maxFiles}
+        minFiles={minFiles}
+        chooseFilesText={resources?.chooseFilesText}
+      />
       {attachmentErrorMessage && <NotificationPanel variant="alert">{attachmentErrorMessage}</NotificationPanel>}
       {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
     </div>
   );
 };
 
-export function getAttachmentMaxSizeBytesToUse(defaultMaxProps: number | undefined, item: QuestionnaireItem): number {
-  if (item) {
-    const questionnaireMaxRuleSizeMB = getMaxSizeExtensionValue(item);
-    if (questionnaireMaxRuleSizeMB !== undefined) {
-      return convertMBToBytes(questionnaireMaxRuleSizeMB);
-    }
-  }
-  if (defaultMaxProps !== undefined) {
-    return defaultMaxProps;
-  }
-  return constants.MAX_FILE_SIZE;
-}
-
 function getErrorMessage(
   validFileTypes: Array<string>,
   maxFileSize: number,
-  maxFileSizeMBStringToReplace: string,
   item: QuestionnaireItem,
   genericErrorText?: string,
   file?: File,
@@ -135,7 +119,7 @@ function getErrorMessage(
     if (!mimeTypeIsValid(file, validFileTypes)) {
       return resources.validationFileType;
     } else if (!sizeIsValid(file, maxFileSize)) {
-      return resources.validationFileMax.replace('{0}', maxFileSizeMBStringToReplace);
+      return resources.validationFileMax;
     }
   }
 

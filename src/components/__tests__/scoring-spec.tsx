@@ -12,8 +12,8 @@ import SectionScoreDataModel from './__data__/scoring/section-score';
 import FhirpathScoreDataModel from './__data__/scoring/fhirpath-score';
 import CodeScoreDataModel from './__data__/scoring/code-scoring';
 import { Questionnaire } from 'fhir/r4';
-import rootReducer from '../../reducers';
-import { Resources } from '../../util/resources';
+import rootReducer from '../../store/reducers';
+import { Resources } from '../../types/resources';
 import { ReferoContainer } from '..';
 import { getCalculatedExpressionExtension } from '../../util/extension';
 import {

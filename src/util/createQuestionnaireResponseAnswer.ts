@@ -1,5 +1,7 @@
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 
+import ItemType from '../constants/itemType';
+
 export function createQuestionnaireResponseAnswer(item: QuestionnaireItem): QuestionnaireResponseItemAnswer | undefined {
   const answer = {} as QuestionnaireResponseItemAnswer;
   let hasInitialAnswer = false;
@@ -7,7 +9,7 @@ export function createQuestionnaireResponseAnswer(item: QuestionnaireItem): Ques
   if (item.initial && item.initial.length > 0 && item.initial[0].valueBoolean !== undefined) {
     answer.valueBoolean = item.initial[0].valueBoolean;
     hasInitialAnswer = true;
-  } else if (item.type === 'boolean') {
+  } else if (item.type === ItemType.BOOLEAN) {
     hasInitialAnswer = true;
     answer.valueBoolean = false;
   }

@@ -1,40 +1,44 @@
 import * as React from 'react';
 
 import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
+import { useFormContext } from 'react-hook-form';
+import { useSelector } from 'react-redux';
 
-import Validation from '@helsenorge/form/components/form/validation';
-import { ValidationProps } from '@helsenorge/form/components/form/validation';
-import SafeInputField from '@helsenorge/form/components/safe-input-field';
+import { Resources } from '../../../types/resources';
 
-import { getValidationTextExtension, getPlaceholder, getMinLengthExtensionValue, getRegexExtension } from '../../../util/extension';
-import { isReadOnly, isRequired, getId, getStringValue, getPDFStringValue, getMaxLength, getSublabelText } from '../../../util/index';
-import { Resources } from '../../../util/resources';
-import Label from '../label';
-import SubLabel from '../sublabel';
+import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
+import Input from '@helsenorge/designsystem-react/components/Input';
+import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
+
+import { GlobalState } from '../../../store/reducers';
+import { getFormDefinition } from '../../../store/selectors';
+import { getPlaceholder } from '../../../util/extension';
+import { getId, getStringValue, getPDFStringValue, getSublabelText, renderPrefix, getText } from '../../../util/index';
+import { Path, createFromIdFromPath } from '../../../util/refero-core';
 import Pdf from '../textview';
 
 interface Props {
   id?: string;
   pdf?: boolean;
   item: QuestionnaireItem;
-  questionnaire?: Questionnaire;
   answer: QuestionnaireResponseItemAnswer;
-  handleStringChange: (event: React.FormEvent<{}>) => void;
+  handleStringChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
   resources?: Resources;
+  path: Path[];
+  children?: React.ReactNode;
 }
-const textField: React.SFC<Props & ValidationProps> = ({
+const textField = ({
   id,
   pdf,
   item,
-  questionnaire,
   answer,
   handleStringChange,
   children,
   onRenderMarkdown,
   resources,
-  ...other
-}) => {
+  path,
+}: Props): JSX.Element | null => {
   if (pdf) {
     return (
       <Pdf item={item} value={getPDFStringValue(answer)}>
@@ -42,29 +46,34 @@ const textField: React.SFC<Props & ValidationProps> = ({
       </Pdf>
     );
   }
+  const questionnaire = useSelector<GlobalState, Questionnaire | undefined | null>(state => getFormDefinition(state)?.Content);
+
+  const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`;
   const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
 
+  const formId = createFromIdFromPath(path);
+  const { getFieldState, register } = useFormContext();
+  const { error } = getFieldState(formId);
   return (
-    <Validation {...other}>
-      <SafeInputField
+    <FormGroup error={error?.message} mode="ongrey">
+      <Input
+        {...(register(formId),
+        {
+          onChange: handleStringChange,
+        })}
         type="text"
-        id={getId(id)}
-        inputName={getId(id)}
+        inputId={getId(id)}
         value={getStringValue(answer)}
-        showLabel={false}
-        label={<Label item={item} onRenderMarkdown={onRenderMarkdown} questionnaire={questionnaire} resources={resources} />}
-        subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
-        isRequired={isRequired(item)}
+        defaultValue={getStringValue(answer)}
+        label={
+          <Label
+            labelTexts={[{ text: labelText, type: 'semibold' }]}
+            sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+          />
+        }
         placeholder={getPlaceholder(item)}
-        minLength={getMinLengthExtensionValue(item)}
-        maxLength={getMaxLength(item)}
-        readOnly={isReadOnly(item)}
-        onBlur={handleStringChange}
-        pattern={getRegexExtension(item)}
-        errorMessage={getValidationTextExtension(item)}
-        validateOnExternalUpdate={true}
       />
-    </Validation>
+    </FormGroup>
   );
 };
 

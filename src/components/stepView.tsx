@@ -1,39 +1,48 @@
 import * as React from 'react';
 
+import { FieldValues, UseFormReturn } from 'react-hook-form';
+import { useSelector } from 'react-redux';
+
 import { ReferoProps } from '../types/referoProps';
+import { Resources } from '../types/resources';
 
 import RenderForm from './renderForm';
 import { NAVIGATOR_BLINDZONE_ID } from '../constants';
-import { FormDefinition } from '../reducers/form';
+import { getFormDefinition } from '../store/selectors';
 import { getTopLevelElements } from '../util/getTopLevelElements';
-import { Resources } from '../util/resources';
 
 interface StepViewProps {
   isAuthorized: boolean;
   referoProps: ReferoProps;
   resources: Resources;
-  formItems: Array<JSX.Element> | undefined;
-  formDefinition: FormDefinition;
+  children: Array<JSX.Element> | undefined;
   onSave: () => void;
   onSubmit: () => void;
   onStepChange?: (stepIndex: number) => void;
+  isHelsenorgeForm?: boolean;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  methods: UseFormReturn<FieldValues, any, undefined>;
 }
 
 const StepView = ({
   isAuthorized,
   referoProps,
   resources,
-  formItems,
-  formDefinition,
+  children,
   onSave,
   onSubmit,
   onStepChange,
-}: StepViewProps): JSX.Element => {
+  isHelsenorgeForm,
+  methods,
+}: StepViewProps): JSX.Element | null => {
   const stepArray: Array<JSX.Element> | undefined = [];
   const [stepIndex, setStepIndex] = React.useState(0);
-
+  const formDefinition = useSelector(getFormDefinition);
+  if (!formDefinition) {
+    return null;
+  }
   const topLevelElements = getTopLevelElements(formDefinition);
-  formItems?.filter(formItem =>
+  children?.filter(formItem =>
     topLevelElements?.find(element => {
       if (formItem.props.id !== NAVIGATOR_BLINDZONE_ID && formItem.props.item.linkId === element.linkId) {
         stepArray.push(formItem);
@@ -55,21 +64,22 @@ const StepView = ({
   }, [stepIndex]);
 
   return (
-    <>
-      <RenderForm
-        isAuthorized={isAuthorized}
-        isStepView={true}
-        referoProps={referoProps}
-        resources={resources}
-        formItemsToBeRendered={stepArray[stepIndex]}
-        onSave={onSave}
-        onSubmit={onSubmit}
-        displayNextButton={stepIndex !== stepArrayLength}
-        displayPreviousButton={stepIndex > 0}
-        nextStep={nextStep}
-        previousStep={previousStep}
-      />
-    </>
+    <RenderForm
+      isAuthorized={isAuthorized}
+      isStepView={true}
+      referoProps={referoProps}
+      resources={resources}
+      onSave={onSave}
+      onSubmit={onSubmit}
+      displayNextButton={stepIndex !== stepArrayLength}
+      displayPreviousButton={stepIndex > 0}
+      nextStep={nextStep}
+      previousStep={previousStep}
+      isHelsenorgeForm={isHelsenorgeForm && isHelsenorgeForm}
+      methods={methods}
+    >
+      {stepArray[stepIndex]}
+    </RenderForm>
   );
 };
 

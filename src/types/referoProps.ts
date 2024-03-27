@@ -1,16 +1,15 @@
 import { UploadedFile } from '@helsenorge/file-upload/components/dropzone';
-import { ValidationSummaryPlacement } from '@helsenorge/form/components/form/validationSummaryPlacement';
-import { Store } from 'react-redux';
+import { ValidationSummaryPlacement } from './formTypes/validationSummaryPlacement';
 import { IActionRequester } from '../util/actionRequester';
 import { IQuestionnaireInspector } from '../util/questionnaireInspector';
-import { Resources } from '../util/resources';
+import { Resources } from './resources';
 import { AutoSuggestProps } from './autoSuggestProps';
 import { QuestionnaireResponse, Attachment, Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer, ValueSet } from 'fhir/r4';
 import { OrgenhetHierarki } from './orgenhetHierarki';
 import { TextMessage } from './text-message';
 
 export interface ReferoProps {
-  store?: Store<{}>;
+  store?: {};
   authorized: boolean;
   blockSubmit?: boolean;
   onSave?: (questionnaireResponse: QuestionnaireResponse) => void;
@@ -71,4 +70,5 @@ export interface ReferoProps {
   fetchReceivers?: (successCallback: (receivers: Array<OrgenhetHierarki>) => void, errorCallback: () => void) => void;
   onFieldsNotCorrectlyFilledOut?: () => void;
   onStepChange?: (newIndex: number) => void;
+  isHelsenorgeForm?: boolean;
 }

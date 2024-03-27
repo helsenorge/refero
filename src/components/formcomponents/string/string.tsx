@@ -1,44 +1,44 @@
 import * as React from 'react';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem, Questionnaire } from 'fhir/r4';
-import { connect } from 'react-redux';
+import { useFormContext } from 'react-hook-form';
+import { connect, useDispatch, useSelector } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
+
+import { Resources } from '../../../types/resources';
+
+import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
+import Input from '@helsenorge/designsystem-react/components/Input';
+import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
 
 import { debounce } from '@helsenorge/core-utils/debounce';
 import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
-import Validation from '@helsenorge/form/components/form/validation';
-import { ValidationProps } from '@helsenorge/form/components/form/validation';
-import SafeInputField from '@helsenorge/form/components/safe-input-field';
 
-import { NewValueAction, newStringValueAsync } from '../../../actions/newValue';
-import { GlobalState } from '../../../reducers';
-import { getPlaceholder, getMinLengthExtensionValue, getRegexExtension } from '../../../util/extension';
+import { NewValueAction, newStringValueAsync } from '../../../store/actions/newValue';
+import { GlobalState } from '../../../store/reducers';
+import { getFormDefinition } from '../../../store/selectors';
+import { getPlaceholder } from '../../../util/extension';
 import {
   isReadOnly,
   isRequired,
   getId,
   getStringValue,
-  getMaxLength,
   getPDFStringValue,
-  validateText,
-  getTextValidationErrorMessage,
   getSublabelText,
+  renderPrefix,
+  getText,
 } from '../../../util/index';
-import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
-import { Path } from '../../../util/refero-core';
-import { Resources } from '../../../util/resources';
-import withCommonFunctions from '../../with-common-functions';
-import Label from '../label';
-import SubLabel from '../sublabel';
+import { mapStateToProps } from '../../../util/map-props';
+import { Path, createFromIdFromPath } from '../../../util/refero-core';
+import withCommonFunctions, { WithFormComponentsProps } from '../../with-common-functions';
+// import SubLabel from '../sublabel';
 import TextView from '../textview';
 
-export interface Props {
+export interface StringProps extends WithFormComponentsProps {
   item: QuestionnaireItem;
-  questionnaire?: Questionnaire;
   responseItem: QuestionnaireResponseItem;
   answer: QuestionnaireResponseItemAnswer;
   path: Array<Path>;
-  dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
   pdf?: boolean;
   promptLoginMessage?: () => void;
   id?: string;
@@ -51,105 +51,100 @@ export interface Props {
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
   onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
-  isHelpOpen?: boolean;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
+  children: React.ReactNode;
 }
 
-export class String extends React.Component<Props & ValidationProps, {}> {
-  handleChange = (event: React.FormEvent<{}>): void => {
-    const { dispatch, promptLoginMessage, path, item, onAnswerChange } = this.props;
+const String = ({
+  id,
+  item,
+  pdf,
+  resources,
+  answer,
+  onRenderMarkdown,
+  promptLoginMessage,
+  path,
+  onAnswerChange,
+  renderHelpElement,
+  renderHelpButton,
+  children,
+  renderDeleteButton,
+  repeatButton,
+}: StringProps): JSX.Element => {
+  const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
+  const questionnaire = useSelector<GlobalState, Questionnaire | undefined | null>(state => getFormDefinition(state)?.Content);
+  const handleChange = (event: React.FormEvent): void => {
     const value = (event.target as HTMLInputElement).value;
-    if (dispatch) {
-      dispatch(newStringValueAsync(this.props.path, value, this.props.item))?.then(newState =>
-        onAnswerChange(newState, path, item, { valueString: value } as QuestionnaireResponseItemAnswer)
-      );
-    }
+    dispatch(newStringValueAsync(path, value, item))?.then(newState =>
+      onAnswerChange(newState, path, item, { valueString: value } as QuestionnaireResponseItemAnswer)
+    );
 
     if (promptLoginMessage) {
       promptLoginMessage();
     }
   };
 
-  debouncedHandleChange: (event: React.FormEvent<{}>) => void = debounce(this.handleChange, 250, false);
+  const debouncedHandleChange: (event: React.FormEvent) => void = debounce(handleChange, 250, false);
 
-  shouldComponentUpdate(nextProps: Props): boolean {
-    const responseItemHasChanged = this.props.responseItem !== nextProps.responseItem;
-    const helpItemHasChanged = this.props.isHelpOpen !== nextProps.isHelpOpen;
-    const answerHasChanged = this.props.answer !== nextProps.answer;
-    const resourcesHasChanged = JSON.stringify(this.props.resources) !== JSON.stringify(nextProps.resources);
-    const repeats = this.props.item.repeats ?? false;
-
-    return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats || answerHasChanged;
-  }
-
-  validateText = (value: string): boolean => {
-    return validateText(value, this.props.validateScriptInjection);
-  };
-
-  getValidationErrorMessage = (value: string): string => {
-    return getTextValidationErrorMessage(value, this.props.validateScriptInjection, this.props.item, this.props.resources);
-  };
-
-  getRequiredErrorMessage = (item: QuestionnaireItem): string | undefined => {
-    return isRequired(item) ? this.props.resources?.formRequiredErrorMessage : undefined;
-  };
-
-  render(): JSX.Element | null {
-    const { id, item, questionnaire, pdf, resources, answer, onRenderMarkdown } = this.props;
-    if (pdf || isReadOnly(item)) {
-      return (
-        <TextView
-          id={id}
-          item={item}
-          value={getPDFStringValue(answer, resources)}
-          onRenderMarkdown={onRenderMarkdown}
-          textClass="page_refero__component_readonlytext"
-          helpButton={this.props.renderHelpButton()}
-          helpElement={this.props.renderHelpElement()}
-        >
-          {this.props.children}
-        </TextView>
-      );
-    }
-    const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
-
+  if (pdf || isReadOnly(item)) {
     return (
-      <div className="page_refero__component page_refero__component_string">
-        <Validation {...this.props}>
-          <SafeInputField
-            type="text"
-            id={getId(this.props.id)}
-            inputName={getId(this.props.id)}
-            value={getStringValue(answer)}
-            onChangeValidator={this.validateText}
-            showLabel={true}
-            label={<Label item={item} onRenderMarkdown={onRenderMarkdown} questionnaire={questionnaire} resources={resources} />}
-            subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
-            isRequired={isRequired(item)}
-            placeholder={getPlaceholder(item)}
-            minLength={getMinLengthExtensionValue(item)}
-            maxLength={getMaxLength(item)}
-            onChange={(event: React.FormEvent<{}>): void => {
-              event.persist();
-              this.debouncedHandleChange(event);
-            }}
-            pattern={getRegexExtension(item)}
-            errorMessage={this.getValidationErrorMessage}
-            requiredErrorMessage={this.getRequiredErrorMessage(item)}
-            className="page_refero__input"
-            helpButton={this.props.renderHelpButton()}
-            helpElement={this.props.renderHelpElement()}
-            validateOnExternalUpdate={true}
-            stringOverMaxLengthError={resources?.stringOverMaxLengthError}
-          />
-        </Validation>
-        {this.props.renderDeleteButton('page_refero__deletebutton--margin-top')}
-        {this.props.repeatButton}
-        {this.props.children ? <div className="nested-fieldset nested-fieldset--full-height">{this.props.children}</div> : null}
-      </div>
+      <TextView
+        id={id}
+        item={item}
+        value={getPDFStringValue(answer, resources)}
+        onRenderMarkdown={onRenderMarkdown}
+        textClass="page_refero__component_readonlytext"
+        helpButton={renderHelpButton()}
+        helpElement={renderHelpElement()}
+      >
+        {children}
+      </TextView>
     );
   }
-}
+
+  const inputId = getId(id);
+  const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`;
+  const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
+
+  const handleInputChange = (event: React.FormEvent<HTMLInputElement>): void => {
+    event.persist();
+    debouncedHandleChange(event);
+  };
+
+  const formId = createFromIdFromPath(path);
+  const { getFieldState, register } = useFormContext();
+  const { error } = getFieldState(formId);
+  return (
+    <div className="page_refero__component page_refero__component_string">
+      {renderHelpElement()}
+      <FormGroup error={error?.message} mode="ongrey">
+        <Input
+          {...register(formId, {
+            onChange: handleInputChange,
+          })}
+          label={
+            <Label
+              labelTexts={[{ text: labelText, type: 'semibold' }]}
+              sublabel={
+                <Sublabel id={`${formId}_sublabel`} sublabelTexts={[{ text: subLabelText, hideFromScreenReader: false, type: 'normal' }]} />
+              }
+              afterLabelChildren={renderHelpButton()}
+            />
+          }
+          type="text"
+          width={25}
+          inputId={inputId}
+          defaultValue={getStringValue(answer)}
+          placeholder={getPlaceholder(item)}
+          className="page_refero__input"
+        />
+        {renderDeleteButton('page_refero__deletebutton--margin-top')}
+        {repeatButton}
+      </FormGroup>
+      {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
+    </div>
+  );
+};
 const withCommonFunctionsComponent = withCommonFunctions(String);
-const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(layoutChange(withCommonFunctionsComponent));
+const connectedComponent = connect(mapStateToProps)(layoutChange(withCommonFunctionsComponent));
 export default connectedComponent;
