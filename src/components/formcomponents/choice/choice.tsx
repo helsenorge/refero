@@ -56,9 +56,7 @@ const Choice = (props: ChoiceProps): JSX.Element | null => {
   // const [valid, setValid] = React.useState<boolean>(true);
   // const [validated, setValidated] = React.useState<boolean>(false);
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
-  const { containedResources } = useSelector<GlobalState, { containedResources?: FhirResource[] }>(state => ({
-    containedResources: getFormDefinition(state)?.Content?.contained,
-  }));
+  const containedResources = useSelector<GlobalState, FhirResource[] | undefined>(state => getFormDefinition(state)?.Content?.contained);
   const getValue = (
     item: QuestionnaireItem,
     answer: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer

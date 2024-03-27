@@ -70,7 +70,7 @@ export interface OpenChoiceProps extends WithFormComponentsProps {
 
 const OpenChoice = (props: OpenChoiceProps): JSX.Element | null => {
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
-  const { containedResources } = useSelector<GlobalState, { containedResources?: FhirResource[]}>(state => ({ containedResources: getFormDefinition(state)?.Content?.contained }));
+  const containedResources = useSelector<GlobalState, FhirResource[] | undefined>(state => getFormDefinition(state)?.Content?.contained);
   const getDataReceiverValue = (answer: Array<QuestionnaireResponseItemAnswer>): (string | undefined)[] => {
     return answer
       .filter(f => f.valueCoding?.code !== OPEN_CHOICE_ID)
