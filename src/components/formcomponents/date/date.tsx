@@ -50,6 +50,8 @@ export interface DateProps extends WithFormComponentsProps {
 }
 
 const DateComponent = (props: DateProps): JSX.Element | null => {
+  const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
+
   const questionnaire = useSelector<GlobalState, Questionnaire | undefined | null>(state => getFormDefinition(state)?.Content);
   const [datepicker, setDatepicker] = React.useState<React.RefObject<DateRangePicker>>(React.createRef());
 
