@@ -19,7 +19,7 @@ import RenderForm from './renderForm';
 import StepView from './stepView';
 import { setSkjemaDefinition } from '../actions/form';
 import { NewValueAction, newQuantityValue, newDecimalValue, newIntegerValue } from '../actions/newValue';
-import RepeatButton from '../components/formcomponents/repeat/repeat-button';
+import RepeatButton from './formcomponents/repeat/RepeatButton';
 import Constants, { NAVIGATOR_BLINDZONE_ID } from '../constants/index';
 import ItemType from '../constants/itemType';
 import { PresentationButtonsType } from '../constants/presentationButtonsType';

@@ -7,15 +7,13 @@ import thunk from 'redux-thunk';
 
 import { Questionnaire, QuestionnaireItem, QuestionnaireItemEnableWhen } from 'fhir/r4';
 
-import SafeInputField from '@helsenorge/form/components/safe-input-field';
-
 import '../../util/defineFetch';
 import Boolean from '../../components/formcomponents/boolean/boolean';
-import { RepeatButton as RepeatButtonInstance } from '../../components/formcomponents/repeat/repeat-button';
+import { RepeatButton as RepeatButtonInstance } from '../formcomponents/repeat/RepeatButton';
 import itemControlConstants from '../../constants/itemcontrol';
 import rootReducer from '../../reducers';
 import { Resources } from '../../util/resources';
-import HelpButton from '../help-button/help-button';
+import HelpButton from '../help-button/HelpButton';
 import TextView from '../formcomponents/textview';
 import { ReferoContainer } from '../index';
 import RenderingOptionsData from './__data__/renderingOptions';

@@ -4,7 +4,6 @@ import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer } fro
 import { Collapse } from 'react-collapse';
 
 import CheckBoxGroup from '@helsenorge/form/components/checkbox-group';
-import Validation from '@helsenorge/form/components/form/validation';
 import { Options } from '@helsenorge/form/components/radio-group';
 
 import { shouldShowExtraChoice } from '../../../util/choice';
@@ -48,7 +47,6 @@ const CheckboxView: React.SFC<Props> = ({
   renderHelpButton,
   renderHelpElement,
   onRenderMarkdown,
-  ...other
 }) => {
   if (!options) {
     return null;
@@ -62,23 +60,21 @@ const CheckboxView: React.SFC<Props> = ({
   return (
     <div className="page_refero__component page_refero__component_openchoice page_refero__component_openchoice_checkbox">
       <Collapse isOpened>
-        <Validation {...other}>
-          <CheckBoxGroup
-            legend={<Label item={item} onRenderMarkdown={onRenderMarkdown} questionnaire={questionnaire} resources={resources} />}
-            subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
-            checkboxes={checkboxes}
-            handleChange={handleChange}
-            isRequired={isRequired(item)}
-            id={getId(id)}
-            max={getMaxOccursExtensionValue(item)}
-            min={getMinOccursExtensionValue(item)}
-            errorMessage={getValidationTextExtension(item)}
-            helpButton={renderHelpButton()}
-            helpElement={renderHelpElement()}
-            validateOnExternalUpdate={true}
-            isStyleBlue
-          />
-        </Validation>
+        <CheckBoxGroup
+          legend={<Label item={item} onRenderMarkdown={onRenderMarkdown} questionnaire={questionnaire} resources={resources} />}
+          subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
+          checkboxes={checkboxes}
+          handleChange={handleChange}
+          isRequired={isRequired(item)}
+          id={getId(id)}
+          max={getMaxOccursExtensionValue(item)}
+          min={getMinOccursExtensionValue(item)}
+          errorMessage={getValidationTextExtension(item)}
+          helpButton={renderHelpButton()}
+          helpElement={renderHelpElement()}
+          validateOnExternalUpdate={true}
+          isStyleBlue
+        />
         {shouldShowExtraChoice(answer) ? (
           <div className="page_refero__component_openchoice_openfield">{renderOpenField()}</div>
         ) : (

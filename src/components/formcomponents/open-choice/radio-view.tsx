@@ -3,7 +3,6 @@ import * as React from 'react';
 import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { Collapse } from 'react-collapse';
 
-import Validation from '@helsenorge/form/components/form/validation';
 import { RadioGroup, Options } from '@helsenorge/form/components/radio-group';
 
 import { shouldShowExtraChoice } from '../../../util/choice';
@@ -32,7 +31,7 @@ interface Props {
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
 }
 
-const RadioView: React.SFC<Props> = ({
+const RadioView: React.FC<Props> = ({
   options,
   item,
   questionnaire,
@@ -50,7 +49,6 @@ const RadioView: React.SFC<Props> = ({
   renderHelpButton,
   renderHelpElement,
   onRenderMarkdown,
-  ...other
 }) => {
   if (!options) {
     return null;
@@ -60,23 +58,21 @@ const RadioView: React.SFC<Props> = ({
   return (
     <div className="page_refero__component page_refero__component_openchoice page_refero__component_openchoice_radiobutton">
       <Collapse isOpened>
-        <Validation {...other}>
-          <RadioGroup
-            legend={<Label item={item} onRenderMarkdown={onRenderMarkdown} questionnaire={questionnaire} resources={resources} />}
-            subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
-            id={getId(id)}
-            options={options}
-            onChange={handleChange}
-            selected={selected ? selected[0] : undefined}
-            isRequired={isRequired(item)}
-            validator={validateInput}
-            getErrorMessage={getErrorMessage}
-            helpButton={renderHelpButton()}
-            helpElement={renderHelpElement()}
-            validateOnExternalUpdate={true}
-            isStyleBlue
-          />
-        </Validation>
+        <RadioGroup
+          legend={<Label item={item} onRenderMarkdown={onRenderMarkdown} questionnaire={questionnaire} resources={resources} />}
+          subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
+          id={getId(id)}
+          options={options}
+          onChange={handleChange}
+          selected={selected ? selected[0] : undefined}
+          isRequired={isRequired(item)}
+          validator={validateInput}
+          getErrorMessage={getErrorMessage}
+          helpButton={renderHelpButton()}
+          helpElement={renderHelpElement()}
+          validateOnExternalUpdate={true}
+          isStyleBlue
+        />
         {shouldShowExtraChoice(answer) ? (
           <div className="page_refero__component_openchoice_openfield">{renderOpenField()}</div>
         ) : (

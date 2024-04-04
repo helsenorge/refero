@@ -10,8 +10,6 @@ import {
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
-import Validation from '@helsenorge/form/components/form/validation';
-import { ValidationProps } from '@helsenorge/form/components/form/validation';
 import SafeInputField from '@helsenorge/form/components/safe-input-field';
 
 import { NewValueAction, newQuantityValueAsync } from '../../../actions/newValue';
@@ -52,7 +50,7 @@ export interface Props {
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
 }
 
-class Quantity extends React.Component<Props & ValidationProps, {}> {
+class Quantity extends React.Component<Props> {
   getValue(): number | number[] | undefined {
     const { answer } = this.props;
     if (answer && Array.isArray(answer)) {
@@ -78,7 +76,7 @@ class Quantity extends React.Component<Props & ValidationProps, {}> {
     return `${value} ${this.getUnit()}`;
   }
 
-  handleChange = (event: React.FormEvent<{}>): void => {
+  handleChange = (event: React.FormEvent): void => {
     const { dispatch, promptLoginMessage, path, item, onAnswerChange } = this.props;
     const extension = getQuestionnaireUnitExtensionValue(this.props.item);
     if (extension) {
@@ -144,31 +142,29 @@ class Quantity extends React.Component<Props & ValidationProps, {}> {
 
     return (
       <div className="page_refero__component page_refero__component_quantity">
-        <Validation {...this.props}>
-          <SafeInputField
-            size="xSmall"
-            type="number"
-            id={getId(this.props.id)}
-            inputName={getId(this.props.id)}
-            value={value !== undefined ? value + '' : ''}
-            showLabel={true}
-            label={<Label item={item} onRenderMarkdown={onRenderMarkdown} questionnaire={questionnaire} resources={this.props.resources} />}
-            subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
-            isRequired={isRequired(item)}
-            placeholder={getPlaceholder(item)}
-            max={getMaxValueExtensionValue(item)}
-            min={getMinValueExtensionValue(item)}
-            onChange={this.handleChange}
-            errorMessage={getValidationTextExtension(item)}
-            pattern={getDecimalPattern(item)}
-            className="page_refero__quantity"
-            helpButton={this.props.renderHelpButton()}
-            helpElement={this.props.renderHelpElement()}
-            validateOnExternalUpdate={true}
-          >
-            <span className="page_refero__unit">{this.getUnit()}</span>
-          </SafeInputField>
-        </Validation>
+        <SafeInputField
+          size="xSmall"
+          type="number"
+          id={getId(this.props.id)}
+          inputName={getId(this.props.id)}
+          value={value !== undefined ? value + '' : ''}
+          showLabel={true}
+          label={<Label item={item} onRenderMarkdown={onRenderMarkdown} questionnaire={questionnaire} resources={this.props.resources} />}
+          subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
+          isRequired={isRequired(item)}
+          placeholder={getPlaceholder(item)}
+          max={getMaxValueExtensionValue(item)}
+          min={getMinValueExtensionValue(item)}
+          onChange={this.handleChange}
+          errorMessage={getValidationTextExtension(item)}
+          pattern={getDecimalPattern(item)}
+          className="page_refero__quantity"
+          helpButton={this.props.renderHelpButton()}
+          helpElement={this.props.renderHelpElement()}
+          validateOnExternalUpdate={true}
+        >
+          <span className="page_refero__unit">{this.getUnit()}</span>
+        </SafeInputField>
         {this.props.renderDeleteButton('page_refero__deletebutton--margin-top')}
         <div>{this.props.repeatButton}</div>
         {this.props.children ? <div className="nested-fieldset nested-fieldset--full-height">{this.props.children}</div> : null}

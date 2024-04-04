@@ -11,7 +11,6 @@ import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Label from '@helsenorge/designsystem-react/components/Label';
 
 import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
-import { CheckBox } from '@helsenorge/form/components/checkbox';
 
 import Pdf from './pdf';
 import { NewValueAction, newBooleanValueAsync } from '../../../actions/newValue';
@@ -96,12 +95,10 @@ class Boolean extends React.Component<Props> {
       return <Pdf item={this.props.item} checked={this.getValue()} onRenderMarkdown={this.props.onRenderMarkdown} />;
     } else if (isReadOnly(this.props.item)) {
       return (
-        <CheckBox
+        <Checkbox
           label={this.getLabel()}
-          id={getId(this.props.id)}
           checked={this.getValue()}
           disabled
-          isStyleBlue
           onChange={(): void => {
             /*kan ikke endres, er alltid disabled*/
           }}

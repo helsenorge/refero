@@ -4,10 +4,10 @@ import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireRespon
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
+import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
+
 import { debounce } from '@helsenorge/core-utils/debounce';
 import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
-import Validation from '@helsenorge/form/components/form/validation';
-import { ValidationProps } from '@helsenorge/form/components/form/validation';
 import SafeInputField from '@helsenorge/form/components/safe-input-field';
 
 import { NewValueAction, newStringValueAsync } from '../../../actions/newValue';
@@ -28,8 +28,6 @@ import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/m
 import { Path } from '../../../util/refero-core';
 import { Resources } from '../../../util/resources';
 import withCommonFunctions from '../../with-common-functions';
-import Label from '../label';
-import SubLabel from '../sublabel';
 import TextView from '../textview';
 
 export interface Props {
@@ -55,7 +53,7 @@ export interface Props {
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
 }
 
-export class String extends React.Component<Props & ValidationProps, Record<string, unknown>> {
+export class String extends React.Component<Props, Record<string, unknown>> {
   handleChange = (event: React.FormEvent): void => {
     const { dispatch, promptLoginMessage, path, item, onAnswerChange } = this.props;
     const value = (event.target as HTMLInputElement).value;
@@ -115,34 +113,32 @@ export class String extends React.Component<Props & ValidationProps, Record<stri
 
     return (
       <div className="page_refero__component page_refero__component_string">
-        <Validation {...this.props}>
-          <SafeInputField
-            type="text"
-            id={getId(this.props.id)}
-            inputName={getId(this.props.id)}
-            value={getStringValue(answer)}
-            onChangeValidator={this.validateText}
-            showLabel={true}
-            label={<Label item={item} onRenderMarkdown={onRenderMarkdown} questionnaire={questionnaire} resources={resources} />}
-            subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
-            isRequired={isRequired(item)}
-            placeholder={getPlaceholder(item)}
-            minLength={getMinLengthExtensionValue(item)}
-            maxLength={getMaxLength(item)}
-            onChange={(event: React.FormEvent): void => {
-              event.persist();
-              this.debouncedHandleChange(event);
-            }}
-            pattern={getRegexExtension(item)}
-            errorMessage={this.getValidationErrorMessage}
-            requiredErrorMessage={this.getRequiredErrorMessage(item)}
-            className="page_refero__input"
-            helpButton={this.props.renderHelpButton()}
-            helpElement={this.props.renderHelpElement()}
-            validateOnExternalUpdate={true}
-            stringOverMaxLengthError={resources?.stringOverMaxLengthError}
-          />
-        </Validation>
+        <SafeInputField
+          type="text"
+          id={getId(this.props.id)}
+          inputName={getId(this.props.id)}
+          value={getStringValue(answer)}
+          onChangeValidator={this.validateText}
+          showLabel={true}
+          label={<Label item={item} onRenderMarkdown={onRenderMarkdown} questionnaire={questionnaire} resources={resources} />}
+          subLabel={subLabelText ? subLabelText : undefined}
+          isRequired={isRequired(item)}
+          placeholder={getPlaceholder(item)}
+          minLength={getMinLengthExtensionValue(item)}
+          maxLength={getMaxLength(item)}
+          onChange={(event: React.FormEvent): void => {
+            event.persist();
+            this.debouncedHandleChange(event);
+          }}
+          pattern={getRegexExtension(item)}
+          errorMessage={this.getValidationErrorMessage}
+          requiredErrorMessage={this.getRequiredErrorMessage(item)}
+          className="page_refero__input"
+          helpButton={this.props.renderHelpButton()}
+          helpElement={this.props.renderHelpElement()}
+          validateOnExternalUpdate={true}
+          stringOverMaxLengthError={resources?.stringOverMaxLengthError}
+        />
         {this.props.renderDeleteButton('page_refero__deletebutton--margin-top')}
         {this.props.repeatButton}
         {this.props.children ? <div className="nested-fieldset nested-fieldset--full-height">{this.props.children}</div> : null}

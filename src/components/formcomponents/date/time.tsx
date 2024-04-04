@@ -8,7 +8,6 @@ import { ThunkDispatch } from 'redux-thunk';
 import TimeInput from '@helsenorge/date-time/components/time-input';
 import { parseDate } from '@helsenorge/date-time/components/time-input/date-core';
 import * as DateTimeConstants from '@helsenorge/date-time/constants/datetime';
-import { ValidationProps } from '@helsenorge/form/components/form/validation';
 
 import { NewValueAction, newTimeValueAsync } from '../../../actions/newValue';
 import ExtensionConstants from '../../../constants/extensions';
@@ -47,7 +46,7 @@ export interface Props {
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
 }
 
-class Time extends React.Component<Props & ValidationProps> {
+class Time extends React.Component<Props> {
   static defaultProps: Partial<Props> = {
     renderFieldset: true,
     path: [],

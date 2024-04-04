@@ -22,11 +22,10 @@ import Icon from '@helsenorge/designsystem-react/components/Icons';
 import HelpSign from '@helsenorge/designsystem-react/components/Icons/HelpSign';
 
 import { UploadedFile } from '@helsenorge/file-upload/components/dropzone';
-import { ValidationProps } from '@helsenorge/form/components/form/validation';
 
-import DeleteButton from './formcomponents/repeat/delete-button';
-import RepeatButton from './formcomponents/repeat/repeat-button';
-import HelpButton from './help-button/help-button';
+import DeleteButton from './formcomponents/repeat/DeleteButton';
+import RepeatButton from './formcomponents/repeat/RepeatButton';
+import HelpButton from './help-button/HelpButton';
 import { NewValueAction } from '../actions/newValue';
 import itemControlConstants from '../constants/itemcontrol';
 import itemType from '../constants/itemType';
@@ -119,8 +118,8 @@ interface State {
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export default function withCommonFunctions<T>(WrappedComponent: React.ComponentClass<T & EnhancedProps>) {
-  return class WithCommonFunctions extends React.Component<T & ValidationProps & Props, State> {
-    constructor(props: T & ValidationProps & Props) {
+  return class WithCommonFunctions extends React.Component<T & Props, State> {
+    constructor(props: T & Props) {
       super(props);
 
       this.state = {

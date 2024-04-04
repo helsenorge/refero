@@ -6,7 +6,6 @@ import { ThunkDispatch } from 'redux-thunk';
 
 import { AutoSuggestProps } from '../../../types/autoSuggestProps';
 
-import { ValidationProps } from '@helsenorge/form/components/form/validation';
 import { Options } from '@helsenorge/form/components/radio-group';
 
 import CheckboxView from './checkbox-view';
@@ -71,7 +70,7 @@ export interface Props {
   autoSuggestProps?: AutoSuggestProps;
 }
 
-export class OpenChoice extends React.Component<Props & ValidationProps> {
+export class OpenChoice extends React.Component<Props> {
   getDataReceiverValue = (answer: Array<QuestionnaireResponseItemAnswer>): (string | undefined)[] => {
     return answer
       .filter(f => f.valueCoding?.code !== OPEN_CHOICE_ID)

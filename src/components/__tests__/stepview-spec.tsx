@@ -13,7 +13,6 @@ import { Resources } from '../../util/resources';
 import { ReferoContainer } from '../index';
 import StepViewQuestionnaire from './__data__/stepview';
 import StepView from '../stepView';
-import Form from '@helsenorge/form/components/form';
 import { act } from 'react-dom/test-utils';
 
 Object.defineProperty(window, 'matchMedia', {

@@ -8,8 +8,6 @@ import { ThunkDispatch } from 'redux-thunk';
 import Expander from '@helsenorge/designsystem-react/components/Expander';
 
 import { debounce } from '@helsenorge/core-utils/debounce';
-import Validation from '@helsenorge/form/components/form/validation';
-import { ValidationProps } from '@helsenorge/form/components/form/validation';
 import { SafeTextarea } from '@helsenorge/form/components/safe-textarea';
 
 import { NewValueAction, newStringValueAsync } from '../../../actions/newValue';
@@ -58,7 +56,7 @@ export interface Props {
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
   shouldExpanderRenderChildrenWhenClosed?: boolean;
 }
-export class Text extends React.Component<Props & ValidationProps, {}> {
+export class Text extends React.Component<Props> {
   showCounter(): boolean {
     if (getMaxLength(this.props.item) || getMinLengthExtensionValue(this.props.item)) {
       return true;
@@ -66,7 +64,7 @@ export class Text extends React.Component<Props & ValidationProps, {}> {
     return false;
   }
 
-  handleChange = (event: React.FormEvent<{}>): void => {
+  handleChange = (event: React.FormEvent): void => {
     const { dispatch, promptLoginMessage, path, item, onAnswerChange } = this.props;
     const value = (event.target as HTMLInputElement).value;
     if (dispatch) {
@@ -80,7 +78,7 @@ export class Text extends React.Component<Props & ValidationProps, {}> {
     }
   };
 
-  debouncedHandleChange: (event: React.FormEvent<{}>) => void = debounce(this.handleChange, 250, false);
+  debouncedHandleChange: (event: React.FormEvent) => void = debounce(this.handleChange, 250, false);
 
   validateText = (value: string): boolean => {
     return this.validateWithRegex(value) && validateText(value, this.props.validateScriptInjection);
@@ -171,33 +169,31 @@ export class Text extends React.Component<Props & ValidationProps, {}> {
 
     return (
       <div className="page_refero__component page_refero__component_text">
-        <Validation {...other}>
-          <SafeTextarea
-            id={getId(this.props.id)}
-            rows={Constants.DEFAULT_TEXTAREA_HEIGHT}
-            value={getStringValue(answer)}
-            isRequired={isRequired(item)}
-            showLabel={true}
-            label={<Label item={item} onRenderMarkdown={onRenderMarkdown} questionnaire={questionnaire} resources={resources} />}
-            subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
-            placeholder={getPlaceholder(item)}
-            maxlength={getMaxLength(item)}
-            minlength={getMinLengthExtensionValue(item)}
-            counter={this.showCounter()}
-            onChange={(event: React.FormEvent<{}>): void => {
-              event.persist();
-              this.debouncedHandleChange(event);
-            }}
-            validator={this.validateText}
-            errorMessage={this.getValidationErrorMessage}
-            requiredErrorMessage={this.getRequiredErrorMessage(item)}
-            helpButton={this.props.renderHelpButton()}
-            helpElement={this.props.renderHelpElement()}
-            validateOnExternalUpdate={true}
-            stringOverMaxLengthError={resources?.stringOverMaxLengthError}
-            maxLengthText={resources?.maxLengthText}
-          />
-        </Validation>
+        <SafeTextarea
+          id={getId(this.props.id)}
+          rows={Constants.DEFAULT_TEXTAREA_HEIGHT}
+          value={getStringValue(answer)}
+          isRequired={isRequired(item)}
+          showLabel={true}
+          label={<Label item={item} onRenderMarkdown={onRenderMarkdown} questionnaire={questionnaire} resources={resources} />}
+          subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
+          placeholder={getPlaceholder(item)}
+          maxlength={getMaxLength(item)}
+          minlength={getMinLengthExtensionValue(item)}
+          counter={this.showCounter()}
+          onChange={(event: React.FormEvent<{}>): void => {
+            event.persist();
+            this.debouncedHandleChange(event);
+          }}
+          validator={this.validateText}
+          errorMessage={this.getValidationErrorMessage}
+          requiredErrorMessage={this.getRequiredErrorMessage(item)}
+          helpButton={this.props.renderHelpButton()}
+          helpElement={this.props.renderHelpElement()}
+          validateOnExternalUpdate={true}
+          stringOverMaxLengthError={resources?.stringOverMaxLengthError}
+          maxLengthText={resources?.maxLengthText}
+        />
         {this.props.renderDeleteButton('page_refero__deletebutton--margin-top')}
         {this.props.repeatButton}
         {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}

@@ -4,7 +4,6 @@ import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer } fro
 import { Collapse } from 'react-collapse';
 
 import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
-import Validation from '@helsenorge/form/components/form/validation';
 import { Options } from '@helsenorge/form/components/radio-group';
 import SafeSelect from '@helsenorge/form/components/safe-select';
 
@@ -53,7 +52,6 @@ class DropdownView extends React.Component<Props, Record<string, unknown>> {
       renderHelpButton,
       renderHelpElement,
       onRenderMarkdown,
-      ...other
     } = this.props;
     if (!options) {
       return null;
@@ -73,25 +71,23 @@ class DropdownView extends React.Component<Props, Record<string, unknown>> {
     return (
       <div className="page_refero__component page_refero__component_openchoice page_refero__component_openchoice_dropdown">
         <Collapse isOpened>
-          <Validation {...other}>
-            <SafeSelect
-              id={getId(id)}
-              selectName={getId(id)}
-              showLabel={true}
-              label={<Label item={item} onRenderMarkdown={onRenderMarkdown} questionnaire={questionnaire} resources={resources} />}
-              subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
-              isRequired={isRequired(item)}
-              onChange={(evt): void => handleChange((evt.target as HTMLInputElement).value)}
-              options={dropdownOptions}
-              selected={selected ? selected[0] : undefined}
-              placeholder={placeholder}
-              onChangeValidator={validateInput}
-              errorMessage={getValidationTextExtension(item)}
-              className="page_refero__input"
-              helpButton={renderHelpButton()}
-              helpElement={renderHelpElement()}
-            />
-          </Validation>
+          <SafeSelect
+            id={getId(id)}
+            selectName={getId(id)}
+            showLabel={true}
+            label={<Label item={item} onRenderMarkdown={onRenderMarkdown} questionnaire={questionnaire} resources={resources} />}
+            subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
+            isRequired={isRequired(item)}
+            onChange={(evt): void => handleChange((evt.target as HTMLInputElement).value)}
+            options={dropdownOptions}
+            selected={selected ? selected[0] : undefined}
+            placeholder={placeholder}
+            onChangeValidator={validateInput}
+            errorMessage={getValidationTextExtension(item)}
+            className="page_refero__input"
+            helpButton={renderHelpButton()}
+            helpElement={renderHelpElement()}
+          />
           {shouldShowExtraChoice(answer) ? (
             <div className="page_refero__component_openchoice_openfield">{renderOpenField()}</div>
           ) : (
