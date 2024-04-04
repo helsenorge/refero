@@ -1,9 +1,14 @@
 import * as React from 'react';
 
+import { FieldValues, SubmitHandler, UseFormReturn } from 'react-hook-form';
+import { useFormContext } from 'react-hook-form';
+
 import { ReferoProps } from '../types/referoProps';
 
-import Form, { ButtonType } from '@helsenorge/form/components/form';
+import Loader from '@helsenorge/designsystem-react/components/Loader';
+import Validation from '@helsenorge/designsystem-react/components/Validation';
 
+import FormButtons from './formButtons/formButtons';
 import { Resources } from '../util/resources';
 
 interface RenderFormProps {
@@ -11,87 +16,68 @@ interface RenderFormProps {
   isStepView: boolean;
   referoProps: ReferoProps;
   resources: Resources;
-  formItemsToBeRendered: Array<JSX.Element> | JSX.Element | undefined;
   onSave: () => void;
   onSubmit: () => void;
   displayNextButton?: boolean;
   displayPreviousButton?: boolean;
   nextStep?: () => void;
   previousStep?: () => void;
+  isHelsenorgeForm?: boolean;
+  children?: React.ReactNode;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // methods: UseFormReturn<FieldValues, any, undefined>;
 }
 
 const RenderForm = ({
-  isAuthorized,
   isStepView,
   referoProps,
   resources,
-  formItemsToBeRendered,
   onSave,
   onSubmit,
   displayNextButton,
   displayPreviousButton,
   nextStep,
   previousStep,
-}: RenderFormProps): JSX.Element => {
+  isHelsenorgeForm,
+  children,
+}: // methods,
+RenderFormProps): JSX.Element | null => {
+  // const onSubmitReactHookForm: SubmitHandler<any> = (data: QuestionnaireResponse, e: React.FormEvent): void => {
+  //   console.log('data', JSON.stringify(data, null, 2));
+  //   return false;
+  //   onSubmit();
+  // };
+
   const displayPauseButtonInNormalView = referoProps.onSave ? onSave : undefined;
   const displayPauseButtonInStepView = displayPreviousButton ? previousStep : undefined;
 
-  const buttonOrderStepView = {
-    1: ButtonType.pauseButton,
-    2: ButtonType.submitButton,
-    3: ButtonType.cancelButton,
-    4: ButtonType.draftButton,
-  };
-  const buttonOrderNormalView = {
-    1: ButtonType.submitButton,
-    2: ButtonType.pauseButton,
-    3: ButtonType.cancelButton,
-    4: ButtonType.draftButton,
-  };
-
+  if (referoProps.blockSubmit) {
+    return <Loader size={'medium'} overlay={'parent'} />;
+  }
+  // const { errors, isSubmitted } = formState;
+  // console.log('errors', errors);
+  // console.log('isSubmitted', isSubmitted);
+  // console.log('values: ', getValues());
+  //onSubmit={methods.handleSubmit(onSubmitReactHookForm)}
   return (
-    <>
-      {isAuthorized && (
-        <>
-          <Form
-            action="#"
-            disabled={referoProps.blockSubmit}
-            submitButtonText={displayNextButton ? resources.nextStep : resources.formSend}
-            errorMessage={resources.formError}
-            onSubmit={displayNextButton ? nextStep : onSubmit}
-            requiredLabel={resources.formRequired}
-            optionalLabel={resources.formOptional}
-            cancelButtonText={resources.formCancel}
-            pauseButtonText={displayPreviousButton ? resources.previousStep : resources.formSave}
-            onPause={isStepView ? displayPauseButtonInStepView : displayPauseButtonInNormalView}
-            pauseButtonClasses={`${isStepView ? 'page_refero__pausebutton_stepView' : 'page_refero__pausebutton'}`}
-            pauseButtonType="display"
-            submitButtonType="display"
-            cancelButtonType="display"
-            pauseButtonLevel="secondary"
-            buttonOrder={isStepView ? buttonOrderStepView : buttonOrderNormalView}
-            onCancel={referoProps.onCancel}
-            buttonClasses="page_refero__saveblock"
-            validationSummaryPlacement={referoProps.validationSummaryPlacement}
-            validationSummary={{
-              enable: true,
-              header: resources.validationSummaryHeader,
-            }}
-            submitButtonDisabled={referoProps.submitButtonDisabled}
-            pauseButtonDisabled={referoProps.saveButtonDisabled}
-            onFieldsNotCorrectlyFilledOut={referoProps.onFieldsNotCorrectlyFilledOut}
-          >
-            {formItemsToBeRendered}
-          </Form>
-        </>
-      )}
-      {!isAuthorized && (
-        <>
-          {formItemsToBeRendered}
-          <div className="page_refero__buttonwrapper page_refero__saveblock">{referoProps.loginButton}</div>
-        </>
-      )}
-    </>
+    <form>
+      {/* <Validation errorSummary="test" /> */}
+      {children}
+      <FormButtons
+        isStepView={isStepView}
+        submitButtonText={displayNextButton && resources.nextStep ? resources.nextStep : resources.formSend}
+        cancelButtonText={resources.formCancel}
+        pauseButtonText={displayPreviousButton && resources.previousStep ? resources.previousStep : resources.formSave}
+        submitButtonDisabled={referoProps.blockSubmit}
+        pauseButtonDisabled={referoProps.saveButtonDisabled}
+        onSubmitButtonClicked={displayNextButton ? nextStep : onSubmit}
+        onCancelButtonClicked={(): void => {
+          referoProps.onCancel && referoProps.onCancel();
+        }}
+        onPauseButtonClicked={isStepView ? displayPauseButtonInStepView : displayPauseButtonInNormalView}
+        isHelsenorgeForm={!!isHelsenorgeForm}
+      />
+    </form>
   );
 };
 

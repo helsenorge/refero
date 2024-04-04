@@ -1,15 +1,16 @@
 import * as React from 'react';
 
 import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
-import { Collapse } from 'react-collapse';
 
-import { RadioGroup, Options } from '@helsenorge/form/components/radio-group';
+import { Options } from '../../../types/formTypes/radioGroupOptions';
+
+import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
+import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
+import RadioButton from '@helsenorge/designsystem-react/components/RadioButton';
 
 import { shouldShowExtraChoice } from '../../../util/choice';
-import { isRequired, getId, getSublabelText } from '../../../util/index';
+import { isRequired, getId, getSublabelText, getText } from '../../../util/index';
 import { Resources } from '../../../util/resources';
-import Label from '../label';
-import SubLabel from '../sublabel';
 
 interface Props {
   options?: Array<Options>;
@@ -25,7 +26,6 @@ interface Props {
   renderOpenField: () => JSX.Element | undefined;
   repeatButton: JSX.Element;
   answer: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer;
-
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
@@ -38,10 +38,8 @@ const RadioView: React.FC<Props> = ({
   id,
   handleChange,
   selected,
-  validateInput,
   resources,
   children,
-  getErrorMessage,
   repeatButton,
   renderDeleteButton,
   renderOpenField,
@@ -54,34 +52,42 @@ const RadioView: React.FC<Props> = ({
     return null;
   }
   const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
-
+  const selectedValue = (selected && selected[0]) || '';
   return (
     <div className="page_refero__component page_refero__component_openchoice page_refero__component_openchoice_radiobutton">
-      <Collapse isOpened>
-        <RadioGroup
-          legend={<Label item={item} onRenderMarkdown={onRenderMarkdown} questionnaire={questionnaire} resources={resources} />}
-          subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
-          id={getId(id)}
-          options={options}
-          onChange={handleChange}
-          selected={selected ? selected[0] : undefined}
-          isRequired={isRequired(item)}
-          validator={validateInput}
-          getErrorMessage={getErrorMessage}
-          helpButton={renderHelpButton()}
-          helpElement={renderHelpElement()}
-          validateOnExternalUpdate={true}
-          isStyleBlue
-        />
-        {shouldShowExtraChoice(answer) ? (
-          <div className="page_refero__component_openchoice_openfield">{renderOpenField()}</div>
-        ) : (
-          <React.Fragment />
-        )}
-        {renderDeleteButton('page_refero__deletebutton--margin-top')}
-        {repeatButton}
-        {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : undefined}
-      </Collapse>
+      <FormGroup legend={getText(item, onRenderMarkdown, questionnaire, resources)} error={''} mode="ongrey">
+        {renderHelpElement()}
+        {options.map((option: Options, index: number) => (
+          <RadioButton
+            name={getId(id)}
+            key={`${getId(id)}-${index.toString()}`}
+            inputId={getId(id) + index}
+            testId={getId(id) + index}
+            mode="ongrey"
+            required={isRequired(item)}
+            onChange={(): void => {
+              handleChange(option.type);
+            }}
+            value={option.type}
+            label={
+              <Label
+                labelTexts={[{ text: option.label }]}
+                sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+                afterLabelChildren={<>{renderHelpButton()}</>}
+              />
+            }
+            defaultChecked={selectedValue === option?.type}
+          />
+        ))}
+      </FormGroup>
+      {shouldShowExtraChoice(answer) ? (
+        <div className="page_refero__component_openchoice_openfield">{renderOpenField()}</div>
+      ) : (
+        <React.Fragment />
+      )}
+      {renderDeleteButton('page_refero__deletebutton--margin-top')}
+      {repeatButton}
+      {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : undefined}
     </div>
   );
 };

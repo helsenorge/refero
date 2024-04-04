@@ -6,9 +6,11 @@ import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
 import Expander from '@helsenorge/designsystem-react/components/Expander';
+import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
+import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
+import Textarea from '@helsenorge/designsystem-react/components/Textarea';
 
 import { debounce } from '@helsenorge/core-utils/debounce';
-import { SafeTextarea } from '@helsenorge/form/components/safe-textarea';
 
 import { NewValueAction, newStringValueAsync } from '../../../actions/newValue';
 import Constants from '../../../constants/index';
@@ -26,13 +28,13 @@ import {
   validateText,
   getTextValidationErrorMessage,
   getSublabelText,
+  renderPrefix,
 } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
 import { Resources } from '../../../util/resources';
+import { SanitizeText } from '../../../util/sanitize/domPurifyHelper';
 import withCommonFunctions from '../../with-common-functions';
-import Label from '../label';
-import SubLabel from '../sublabel';
 import TextView from '../textview';
 
 export interface Props {
@@ -113,9 +115,12 @@ export class Text extends React.Component<Props> {
 
     return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats || answerHasChanged;
   }
-
+  onTextAreaChange = (event: React.FormEvent<HTMLTextAreaElement>): void => {
+    event.persist();
+    this.debouncedHandleChange(event);
+  };
   render(): JSX.Element | null {
-    const { id, item, answer, pdf, children, resources, onRenderMarkdown, questionnaire, ...other } = this.props;
+    const { id, item, answer, pdf, children, resources, onRenderMarkdown, questionnaire } = this.props;
     const itemControls = getItemControlExtensionValue(item);
 
     if (itemControls && itemControls.some(itemControl => itemControl.code === itemControlConstants.SIDEBAR)) {
@@ -165,37 +170,34 @@ export class Text extends React.Component<Props> {
         </TextView>
       );
     }
+
+    const labelText = SanitizeText(`${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`) || '';
     const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
 
     return (
       <div className="page_refero__component page_refero__component_text">
-        <SafeTextarea
-          id={getId(this.props.id)}
-          rows={Constants.DEFAULT_TEXTAREA_HEIGHT}
-          value={getStringValue(answer)}
-          isRequired={isRequired(item)}
-          showLabel={true}
-          label={<Label item={item} onRenderMarkdown={onRenderMarkdown} questionnaire={questionnaire} resources={resources} />}
-          subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
-          placeholder={getPlaceholder(item)}
-          maxlength={getMaxLength(item)}
-          minlength={getMinLengthExtensionValue(item)}
-          counter={this.showCounter()}
-          onChange={(event: React.FormEvent<{}>): void => {
-            event.persist();
-            this.debouncedHandleChange(event);
-          }}
-          validator={this.validateText}
-          errorMessage={this.getValidationErrorMessage}
-          requiredErrorMessage={this.getRequiredErrorMessage(item)}
-          helpButton={this.props.renderHelpButton()}
-          helpElement={this.props.renderHelpElement()}
-          validateOnExternalUpdate={true}
-          stringOverMaxLengthError={resources?.stringOverMaxLengthError}
-          maxLengthText={resources?.maxLengthText}
-        />
-        {this.props.renderDeleteButton('page_refero__deletebutton--margin-top')}
-        {this.props.repeatButton}
+        <FormGroup error={''} mode="ongrey">
+          {this.props.renderHelpElement()}
+          <Textarea
+            onChange={this.onTextAreaChange}
+            textareaId={getId(id)}
+            maxRows={Constants.DEFAULT_TEXTAREA_HEIGHT}
+            placeholder={getPlaceholder(item)}
+            label={
+              <Label
+                labelTexts={[{ text: labelText, type: 'semibold' }]}
+                sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+                afterLabelChildren={this.props.renderHelpButton()}
+              />
+            }
+            defaultValue={getStringValue(answer)}
+            grow={true}
+            maxCharacters={getMaxLength(item)}
+            maxText={getMaxLength(item) ? resources?.maxLengthText?.replace('{0}', `${getMaxLength(item)}`) : ''}
+          />
+          {this.props.renderDeleteButton('page_refero__deletebutton--margin-top')}
+          {this.props.repeatButton}
+        </FormGroup>
         {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
       </div>
     );

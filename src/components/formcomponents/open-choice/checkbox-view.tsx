@@ -1,17 +1,17 @@
 import * as React from 'react';
 
 import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
-import { Collapse } from 'react-collapse';
 
-import CheckBoxGroup from '@helsenorge/form/components/checkbox-group';
-import { Options } from '@helsenorge/form/components/radio-group';
+import { Options } from '../../../types/formTypes/radioGroupOptions';
+
+import Checkbox from '@helsenorge/designsystem-react/components/Checkbox';
+import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
+import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
 
 import { shouldShowExtraChoice } from '../../../util/choice';
 import { getMaxOccursExtensionValue, getMinOccursExtensionValue, getValidationTextExtension } from '../../../util/extension';
-import { isRequired, getId, getSublabelText } from '../../../util/index';
+import { isRequired, getId, getSublabelText, getText } from '../../../util/index';
 import { Resources } from '../../../util/resources';
-import Label from '../label';
-import SubLabel from '../sublabel';
 
 interface Props {
   options?: Array<Options>;
@@ -59,31 +59,33 @@ const CheckboxView: React.SFC<Props> = ({
 
   return (
     <div className="page_refero__component page_refero__component_openchoice page_refero__component_openchoice_checkbox">
-      <Collapse isOpened>
-        <CheckBoxGroup
-          legend={<Label item={item} onRenderMarkdown={onRenderMarkdown} questionnaire={questionnaire} resources={resources} />}
-          subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
-          checkboxes={checkboxes}
-          handleChange={handleChange}
-          isRequired={isRequired(item)}
-          id={getId(id)}
-          max={getMaxOccursExtensionValue(item)}
-          min={getMinOccursExtensionValue(item)}
-          errorMessage={getValidationTextExtension(item)}
-          helpButton={renderHelpButton()}
-          helpElement={renderHelpElement()}
-          validateOnExternalUpdate={true}
-          isStyleBlue
-        />
-        {shouldShowExtraChoice(answer) ? (
-          <div className="page_refero__component_openchoice_openfield">{renderOpenField()}</div>
-        ) : (
-          <React.Fragment />
-        )}
-        {renderDeleteButton('page_refero__deletebutton--margin-top')}
-        {repeatButton}
-        {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
-      </Collapse>
+      {renderHelpElement()}
+      <FormGroup legend={getText(item, onRenderMarkdown, questionnaire, resources)} error={''} mode="ongrey">
+        {checkboxes.map((checkbox, index) => (
+          <Checkbox
+            inputId={`${getId(id)}-${checkbox.id}`}
+            testId={`checkbox-openChoice`}
+            key={`${checkbox.id}-${index.toString()}`}
+            required={isRequired(item)}
+            onChange={(): void => {
+              handleChange(checkbox.id);
+            }}
+            label={
+              <Label
+                labelTexts={[{ text: checkbox.label }]}
+                sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+                afterLabelChildren={<>{renderHelpButton()}</>}
+              />
+            }
+            value={checkbox.id}
+            checked={checkbox.checked}
+          />
+        ))}
+      </FormGroup>
+      {shouldShowExtraChoice(answer) && <div className="page_refero__component_openchoice_openfield">{renderOpenField()}</div>}
+      {renderDeleteButton('page_refero__deletebutton--margin-top')}
+      {repeatButton}
+      {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
     </div>
   );
 };

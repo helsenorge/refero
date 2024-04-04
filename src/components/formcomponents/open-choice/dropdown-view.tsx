@@ -1,18 +1,19 @@
 import * as React from 'react';
 
 import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
-import { Collapse } from 'react-collapse';
+
+import { Options } from '../../../types/formTypes/radioGroupOptions';
+
+import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
+import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
+import Select from '@helsenorge/designsystem-react/components/Select';
 
 import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
-import { Options } from '@helsenorge/form/components/radio-group';
-import SafeSelect from '@helsenorge/form/components/safe-select';
 
 import { shouldShowExtraChoice } from '../../../util/choice';
 import { getValidationTextExtension, getPlaceholder } from '../../../util/extension';
-import { isRequired, getId, getSublabelText } from '../../../util/index';
+import { isRequired, getId, getSublabelText, getText } from '../../../util/index';
 import { Resources } from '../../../util/resources';
-import Label from '../label';
-import SubLabel from '../sublabel';
 
 interface Props {
   options?: Array<Options>;
@@ -56,47 +57,41 @@ class DropdownView extends React.Component<Props, Record<string, unknown>> {
     if (!options) {
       return null;
     }
-    const dropdownOptions: HTMLOptionElement[] = options.map((o: Options) => {
-      return new Option(o.label, o.type);
-    });
+
+    const labelText = getText(item, onRenderMarkdown, questionnaire, resources);
     const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
-
-    let placeholder;
-    if (getPlaceholder(item)) {
-      placeholder = new Option(getPlaceholder(item), '');
-    } else if (resources) {
-      placeholder = new Option(resources.selectDefaultPlaceholder, '');
-    }
-
     return (
       <div className="page_refero__component page_refero__component_openchoice page_refero__component_openchoice_dropdown">
-        <Collapse isOpened>
-          <SafeSelect
-            id={getId(id)}
-            selectName={getId(id)}
-            showLabel={true}
-            label={<Label item={item} onRenderMarkdown={onRenderMarkdown} questionnaire={questionnaire} resources={resources} />}
-            subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
-            isRequired={isRequired(item)}
-            onChange={(evt): void => handleChange((evt.target as HTMLInputElement).value)}
-            options={dropdownOptions}
-            selected={selected ? selected[0] : undefined}
-            placeholder={placeholder}
-            onChangeValidator={validateInput}
-            errorMessage={getValidationTextExtension(item)}
+        {renderHelpElement()}
+        <FormGroup error={''} mode="ongrey">
+          <Select
+            selectId={getId(id)}
             className="page_refero__input"
-            helpButton={renderHelpButton()}
-            helpElement={renderHelpElement()}
-          />
-          {shouldShowExtraChoice(answer) ? (
-            <div className="page_refero__component_openchoice_openfield">{renderOpenField()}</div>
-          ) : (
-            <React.Fragment />
-          )}
-          {renderDeleteButton('page_refero__deletebutton--margin-top')}
-          {repeatButton}
-          {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
-        </Collapse>
+            label={
+              <Label
+                htmlFor={getId(id)}
+                labelTexts={[{ text: labelText, type: 'semibold' }]}
+                sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+                afterLabelChildren={renderHelpButton()}
+              />
+            }
+            onChange={(e): void => {
+              handleChange(e.target.value);
+            }}
+            value={selected && selected[0] ? selected[0] : undefined}
+          >
+            <option value={undefined}>{resources?.selectDefaultPlaceholder || ''}</option>
+            {options.map(option => (
+              <option key={getId(id) + option.label} value={option.type}>
+                {option.label}
+              </option>
+            ))}
+          </Select>
+          {shouldShowExtraChoice(answer) && <div className="page_refero__component_openchoice_openfield">{renderOpenField()}</div>}
+        </FormGroup>
+        {renderDeleteButton('page_refero__deletebutton--margin-top')}
+        {repeatButton}
+        {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
       </div>
     );
   }

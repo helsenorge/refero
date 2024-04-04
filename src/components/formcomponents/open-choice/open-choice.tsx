@@ -5,8 +5,7 @@ import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
 import { AutoSuggestProps } from '../../../types/autoSuggestProps';
-
-import { Options } from '@helsenorge/form/components/radio-group';
+import { Options } from '../../../types/formTypes/radioGroupOptions';
 
 import CheckboxView from './checkbox-view';
 import DropdownView from './dropdown-view';
@@ -68,6 +67,7 @@ export interface Props {
     errorCallback: (error: string) => void
   ) => void;
   autoSuggestProps?: AutoSuggestProps;
+  children: JSX.Element;
 }
 
 export class OpenChoice extends React.Component<Props> {
@@ -152,7 +152,7 @@ export class OpenChoice extends React.Component<Props> {
     return [String(item.initial[0].valueCoding.code)];
   };
 
-  handleStringChangeEvent = (event: React.ChangeEvent<HTMLInputElement>): void => {
+  handleStringChangeEvent = (event: React.FocusEvent<HTMLInputElement, Element>): void => {
     const value = event.target.value;
     this.handleStringChange(value);
   };

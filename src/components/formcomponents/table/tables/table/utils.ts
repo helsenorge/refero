@@ -1,8 +1,8 @@
 import { Coding, QuestionnaireItem, QuestionnaireResponse, Resource } from 'fhir/r4';
 
-import { SortDirection } from '@helsenorge/designsystem-react/components/Table';
+import { Options } from '../../../../../types/formTypes/radioGroupOptions';
 
-import { Options } from '@helsenorge/form/components/radio-group';
+import { SortDirection } from '@helsenorge/designsystem-react/components/Table';
 
 import { IStandardTable, IStandardTableColumn, IStandardTableRow } from './interface';
 import codeSystems from '../../../../../constants/codingsystems';

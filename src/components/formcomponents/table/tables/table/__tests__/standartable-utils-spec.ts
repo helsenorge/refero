@@ -1,4 +1,3 @@
-import { Options } from '@helsenorge/form/components/radio-group';
 import ItemType from '../../../../../../constants/itemType';
 import {
   createBodyRows,

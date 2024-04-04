@@ -5,11 +5,11 @@ import { Coding } from 'fhir/r4';
 
 import { EnhetType, OrgenhetHierarki } from '../../../types/orgenhetHierarki';
 
+import Label, { getLabelText } from '@helsenorge/designsystem-react/components/Label';
 import Loader from '@helsenorge/designsystem-react/components/Loader';
 import NotificationPanel from '@helsenorge/designsystem-react/components/NotificationPanel';
-
-import ValidationError from '@helsenorge/form/components/form/validation-error';
-import SafeSelect from '@helsenorge/form/components/safe-select';
+import Select from '@helsenorge/designsystem-react/components/Select';
+import Validation from '@helsenorge/designsystem-react/components/Validation';
 
 import { getId } from '../../../util';
 import { Resources } from '../../../util/resources';
@@ -203,30 +203,25 @@ class ReceiverComponent extends React.Component<ReceiverComponentProps, Receiver
 
   createSelect(treeNodes: Array<OrgenhetHierarki>, level: number, selectKey: string): JSX.Element {
     const selectOptions = treeNodes.map(node => new Option(node.Navn, node.OrgenhetId.toString()));
-    const label = this.getLabelText(treeNodes[0].EnhetType);
-
+    const label = getLabelText(treeNodes[0].EnhetType) || '';
+    const handleSelectChange = (evt: React.ChangeEvent<HTMLSelectElement>): void => {
+      const newValue = evt.target.value;
+      const node = treeNodes.find(x => x.OrgenhetId === parseInt(newValue));
+      if (node) {
+        this.onChangeDropdownValue(level, node);
+      }
+    };
     return (
-      <SafeSelect
-        key={selectKey}
-        id={`${getId(this.props.id)}-${selectKey}`}
-        selectName={`${getId(this.props.id)}-${selectKey}`}
-        showLabel={true}
-        label={label}
-        isRequired={true}
-        onChange={(evt): void => {
-          const newValue = (evt.target as HTMLInputElement).value;
-          const node = treeNodes.find(x => x.OrgenhetId === parseInt(newValue));
-          if (node) {
-            this.onChangeDropdownValue(level, node);
-          }
-        }}
-        options={selectOptions}
-        selected={this.state.selectedPath[level] ? this.state.selectedPath[level].toString() : ''}
+      <Select
+        onChange={handleSelectChange}
         value={this.state.selectedPath[level] ? this.state.selectedPath[level].toString() : ''}
-        placeholder={new Option(this.props.resources?.selectDefaultPlaceholder, '')}
-        wrapperClasses="page_refero__receiverselect"
+        key={selectKey}
+        selectId={`${getId(this.props.id)}-${selectKey}`}
+        label={<Label labelTexts={[{ text: label, type: 'semibold' }]} />}
         className="page_refero__input"
-      />
+      >
+        {selectOptions}
+      </Select>
     );
   }
 
@@ -251,7 +246,7 @@ class ReceiverComponent extends React.Component<ReceiverComponentProps, Receiver
 
   renderErrorMessage(): JSX.Element | null {
     if (!this.state.isValid && this.state.isValidated) {
-      return <ValidationError isValid={this.state.isValid} error={this.props.resources?.adresseKomponent_feilmelding || ''} />;
+      return <Validation errorSummary={this.props.resources?.adresseKomponent_feilmelding || ''} />;
     }
     return null;
   }

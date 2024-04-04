@@ -4,11 +4,12 @@ import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireRespon
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
+import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
+import Input from '@helsenorge/designsystem-react/components/Input';
 import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
 
 import { debounce } from '@helsenorge/core-utils/debounce';
 import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
-import SafeInputField from '@helsenorge/form/components/safe-input-field';
 
 import { NewValueAction, newStringValueAsync } from '../../../actions/newValue';
 import { GlobalState } from '../../../reducers';
@@ -23,6 +24,8 @@ import {
   validateText,
   getTextValidationErrorMessage,
   getSublabelText,
+  renderPrefix,
+  getText,
 } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
@@ -109,38 +112,41 @@ export class String extends React.Component<Props, Record<string, unknown>> {
         </TextView>
       );
     }
+    const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`;
     const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
 
+    const handleInputChange = (event: React.FormEvent<HTMLInputElement>): void => {
+      event.persist();
+      this.debouncedHandleChange(event);
+    };
     return (
       <div className="page_refero__component page_refero__component_string">
-        <SafeInputField
-          type="text"
-          id={getId(this.props.id)}
-          inputName={getId(this.props.id)}
-          value={getStringValue(answer)}
-          onChangeValidator={this.validateText}
-          showLabel={true}
-          label={<Label item={item} onRenderMarkdown={onRenderMarkdown} questionnaire={questionnaire} resources={resources} />}
-          subLabel={subLabelText ? subLabelText : undefined}
-          isRequired={isRequired(item)}
-          placeholder={getPlaceholder(item)}
-          minLength={getMinLengthExtensionValue(item)}
-          maxLength={getMaxLength(item)}
-          onChange={(event: React.FormEvent): void => {
-            event.persist();
-            this.debouncedHandleChange(event);
-          }}
-          pattern={getRegexExtension(item)}
-          errorMessage={this.getValidationErrorMessage}
-          requiredErrorMessage={this.getRequiredErrorMessage(item)}
-          className="page_refero__input"
-          helpButton={this.props.renderHelpButton()}
-          helpElement={this.props.renderHelpElement()}
-          validateOnExternalUpdate={true}
-          stringOverMaxLengthError={resources?.stringOverMaxLengthError}
-        />
-        {this.props.renderDeleteButton('page_refero__deletebutton--margin-top')}
-        {this.props.repeatButton}
+        {this.props.renderHelpElement()}
+        <FormGroup error={''} mode="ongrey">
+          <Input
+            onChange={handleInputChange}
+            label={
+              <Label
+                labelTexts={[{ text: labelText, type: 'semibold' }]}
+                sublabel={
+                  <Sublabel
+                    id={`${getId(this.props.id)}_sublabel`}
+                    sublabelTexts={[{ text: subLabelText, hideFromScreenReader: false, type: 'normal' }]}
+                  />
+                }
+                afterLabelChildren={this.props.renderHelpButton()}
+              />
+            }
+            type="text"
+            width={25}
+            inputId={getId(this.props.id)}
+            defaultValue={getStringValue(answer)}
+            placeholder={getPlaceholder(item)}
+            className="page_refero__input"
+          />
+          {this.props.renderDeleteButton('page_refero__deletebutton--margin-top')}
+          {this.props.repeatButton}
+        </FormGroup>
         {this.props.children ? <div className="nested-fieldset nested-fieldset--full-height">{this.props.children}</div> : null}
       </div>
     );

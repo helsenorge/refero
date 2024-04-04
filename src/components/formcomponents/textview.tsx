@@ -15,7 +15,7 @@ interface Props {
   helpElement?: JSX.Element;
 }
 
-const textView: React.SFC<Props> = ({ id, item, value, textClass, children, onRenderMarkdown, helpButton, helpElement }) => {
+const textView: React.FC<Props> = ({ id, item, value, textClass, children, onRenderMarkdown, helpButton, helpElement }) => {
   return (
     <div id={getId(id)}>
       <>

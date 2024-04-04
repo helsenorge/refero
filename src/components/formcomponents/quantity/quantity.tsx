@@ -10,7 +10,9 @@ import {
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
-import SafeInputField from '@helsenorge/form/components/safe-input-field';
+import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
+import Input from '@helsenorge/designsystem-react/components/Input';
+import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
 
 import { NewValueAction, newQuantityValueAsync } from '../../../actions/newValue';
 import { GlobalState } from '../../../reducers';
@@ -21,13 +23,11 @@ import {
   getMinValueExtensionValue,
   getQuestionnaireUnitExtensionValue,
 } from '../../../util/extension';
-import { isReadOnly, isRequired, getId, getDecimalPattern, getSublabelText } from '../../../util/index';
+import { isReadOnly, isRequired, getId, getDecimalPattern, getSublabelText, renderPrefix, getText } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
 import { Resources } from '../../../util/resources';
 import withCommonFunctions from '../../with-common-functions';
-import Label from '../label';
-import SubLabel from '../sublabel';
 import TextView from '../textview';
 
 export interface Props {
@@ -122,7 +122,7 @@ class Quantity extends React.Component<Props> {
   }
 
   render(): JSX.Element | null {
-    const { id, item, questionnaire, onRenderMarkdown } = this.props;
+    const { id, item, questionnaire, onRenderMarkdown, resources } = this.props;
     if (this.props.pdf || isReadOnly(item)) {
       return (
         <TextView
@@ -138,35 +138,32 @@ class Quantity extends React.Component<Props> {
       );
     }
     const value = this.getValue();
-    const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, this.props.resources);
+    const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`;
+    const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
 
     return (
       <div className="page_refero__component page_refero__component_quantity">
-        <SafeInputField
-          size="xSmall"
-          type="number"
-          id={getId(this.props.id)}
-          inputName={getId(this.props.id)}
-          value={value !== undefined ? value + '' : ''}
-          showLabel={true}
-          label={<Label item={item} onRenderMarkdown={onRenderMarkdown} questionnaire={questionnaire} resources={this.props.resources} />}
-          subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
-          isRequired={isRequired(item)}
-          placeholder={getPlaceholder(item)}
-          max={getMaxValueExtensionValue(item)}
-          min={getMinValueExtensionValue(item)}
-          onChange={this.handleChange}
-          errorMessage={getValidationTextExtension(item)}
-          pattern={getDecimalPattern(item)}
-          className="page_refero__quantity"
-          helpButton={this.props.renderHelpButton()}
-          helpElement={this.props.renderHelpElement()}
-          validateOnExternalUpdate={true}
-        >
+        <FormGroup error={''} mode="ongrey">
+          {this.props.renderHelpElement()}
+          <Input
+            label={
+              <Label
+                labelTexts={[{ text: labelText, type: 'semibold' }]}
+                sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+                afterLabelChildren={this.props.renderHelpButton()}
+              />
+            }
+            type="number"
+            inputId={getId(id)}
+            defaultValue={value !== undefined ? value + '' : ''}
+            placeholder={getPlaceholder(item)}
+            className="page_refero__quantity"
+            width={7}
+          />
           <span className="page_refero__unit">{this.getUnit()}</span>
-        </SafeInputField>
-        {this.props.renderDeleteButton('page_refero__deletebutton--margin-top')}
-        <div>{this.props.repeatButton}</div>
+          {this.props.renderDeleteButton('page_refero__deletebutton--margin-top')}
+          <div>{this.props.repeatButton}</div>
+        </FormGroup>
         {this.props.children ? <div className="nested-fieldset nested-fieldset--full-height">{this.props.children}</div> : null}
       </div>
     );

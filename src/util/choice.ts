@@ -12,7 +12,7 @@ import {
   ValueSetComposeInclude,
 } from 'fhir/r4';
 
-import { Options } from '@helsenorge/form/components/radio-group';
+import { Options } from '../types/formTypes/radioGroupOptions';
 
 import { getItemControlExtensionValue, getValidationTextExtension } from './extension';
 import { Resources } from './resources';

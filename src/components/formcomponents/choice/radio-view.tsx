@@ -37,7 +37,6 @@ const RadioView: React.FC<Props> = ({
   selected,
   resources,
   children,
-  getErrorMessage,
   repeatButton,
   renderDeleteButton,
   renderHelpButton,

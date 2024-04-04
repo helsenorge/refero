@@ -2,13 +2,22 @@ import * as React from 'react';
 
 import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 
-import SafeInputField from '@helsenorge/form/components/safe-input-field';
+import Input from '@helsenorge/designsystem-react/components/Input';
+import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
 
 import { getValidationTextExtension, getPlaceholder, getMinLengthExtensionValue, getRegexExtension } from '../../../util/extension';
-import { isReadOnly, isRequired, getId, getStringValue, getPDFStringValue, getMaxLength, getSublabelText } from '../../../util/index';
+import {
+  isReadOnly,
+  isRequired,
+  getId,
+  getStringValue,
+  getPDFStringValue,
+  getMaxLength,
+  getSublabelText,
+  renderPrefix,
+  getText,
+} from '../../../util/index';
 import { Resources } from '../../../util/resources';
-import Label from '../label';
-import SubLabel from '../sublabel';
 import Pdf from '../textview';
 
 interface Props {
@@ -17,11 +26,11 @@ interface Props {
   item: QuestionnaireItem;
   questionnaire?: Questionnaire;
   answer: QuestionnaireResponseItemAnswer;
-  handleStringChange: (event: React.FormEvent<{}>) => void;
+  handleStringChange: (event: React.FocusEvent<HTMLInputElement, Element>) => void;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
   resources?: Resources;
 }
-const textField: React.SFC<Props> = ({
+const textField: React.FC<Props> = ({
   id,
   pdf,
   item,
@@ -39,26 +48,33 @@ const textField: React.SFC<Props> = ({
       </Pdf>
     );
   }
-  const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
+  const handleOnBlur = (e: React.FocusEvent<HTMLInputElement, Element>): void => {
+    handleStringChange(e);
+  };
 
+  const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`;
+  const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
   return (
-    <SafeInputField
+    <Input
       type="text"
-      id={getId(id)}
-      inputName={getId(id)}
+      inputId={getId(id)}
+      name={getId(id)}
       value={getStringValue(answer)}
-      showLabel={false}
-      label={<Label item={item} onRenderMarkdown={onRenderMarkdown} questionnaire={questionnaire} resources={resources} />}
-      subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
-      isRequired={isRequired(item)}
+      label={
+        <Label
+          labelTexts={[{ text: labelText, type: 'semibold' }]}
+          sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+        />
+      }
+      required={isRequired(item)}
       placeholder={getPlaceholder(item)}
-      minLength={getMinLengthExtensionValue(item)}
-      maxLength={getMaxLength(item)}
+      // minLength={getMinLengthExtensionValue(item)}
+      // maxLength={getMaxLength(item)}
       readOnly={isReadOnly(item)}
-      onBlur={handleStringChange}
-      pattern={getRegexExtension(item)}
-      errorMessage={getValidationTextExtension(item)}
-      validateOnExternalUpdate={true}
+      onBlur={handleOnBlur}
+      // pattern={getRegexExtension(item)}
+      // errorMessage={getValidationTextExtension(item)}
+      // validateOnExternalUpdate={true}
     />
   );
 };

@@ -61,14 +61,15 @@ const StepView = ({
         isStepView={true}
         referoProps={referoProps}
         resources={resources}
-        formItemsToBeRendered={stepArray[stepIndex]}
         onSave={onSave}
         onSubmit={onSubmit}
         displayNextButton={stepIndex !== stepArrayLength}
         displayPreviousButton={stepIndex > 0}
         nextStep={nextStep}
         previousStep={previousStep}
-      />
+      >
+        {stepArray[stepIndex]}
+      </RenderForm>
     </>
   );
 };

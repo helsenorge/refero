@@ -1,5 +1,4 @@
 import { UploadedFile } from '@helsenorge/file-upload/components/dropzone';
-import { ValidationSummaryPlacement } from '@helsenorge/form/components/form/validationSummaryPlacement';
 import { Store } from 'react-redux';
 import { IActionRequester } from '../util/actionRequester';
 import { IQuestionnaireInspector } from '../util/questionnaireInspector';
@@ -8,6 +7,7 @@ import { AutoSuggestProps } from './autoSuggestProps';
 import { QuestionnaireResponse, Attachment, Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer, ValueSet } from 'fhir/r4';
 import { OrgenhetHierarki } from './orgenhetHierarki';
 import { TextMessage } from './text-message';
+import { ValidationSummaryPlacement } from './formTypes/validationSummaryPlacement';
 
 export interface ReferoProps {
   store?: Store<{}>;
