@@ -2,10 +2,11 @@ import * as React from 'react';
 
 import { QuestionnaireItem, QuestionnaireItemAnswerOption, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 
+import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import { Slider, SliderStep } from '@helsenorge/designsystem-react/components/Slider';
 
 import ExtensionConstants from '../../../constants/extensions';
-import { getExtension } from '../../../util/extension';
+import { getExtension, getMaxValueExtensionValue, getMinValueExtensionValue } from '../../../util/extension';
 import { isString } from '../../../util/typeguards';
 
 interface SliderProps {
@@ -44,17 +45,21 @@ const SliderView: React.FC<SliderProps> = ({ item, handleChange, selected, child
   };
   const sliderSteps = item?.answerOption?.map(option => mapToSliderStep(option));
   const leftRightLabels = getLeftRightLabels(item?.answerOption);
+  // maxValue={getMaxValueExtensionValue(item)}
+  // minValue={getMinValueExtensionValue(item)}
   return (
     <div className="page_refero__component page_refero__component_choice page_refero__component_choice_slider">
-      <Slider
-        title={title}
-        labelLeft={leftRightLabels?.leftLabel}
-        labelRight={leftRightLabels?.rightLabel}
-        onChange={onValueChange}
-        steps={sliderSteps}
-        value={getSelectedStep()}
-        selected={selected && selected[0] ? true : false}
-      />
+      <FormGroup mode="ongrey">
+        <Slider
+          title={title}
+          labelLeft={leftRightLabels?.leftLabel}
+          labelRight={leftRightLabels?.rightLabel}
+          steps={sliderSteps}
+          onChange={onValueChange}
+          selected={selected && selected[0] ? true : false}
+          value={getSelectedStep()}
+        />
+      </FormGroup>
       {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : undefined}
     </div>
   );

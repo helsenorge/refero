@@ -1,18 +1,18 @@
 import * as React from 'react';
 
 import { QuestionnaireItem, Questionnaire } from 'fhir/r4';
-import { Collapse } from 'react-collapse';
+
+import { Options } from '../../../types/formTypes/radioGroupOptions';
+
+import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
+import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
+import Select from '@helsenorge/designsystem-react/components/Select';
 
 import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
-import Validation from '@helsenorge/form/components/form/validation';
-import { Options } from '@helsenorge/form/components/radio-group';
-import SafeSelect from '@helsenorge/form/components/safe-select';
 
 import { getValidationTextExtension, getPlaceholder } from '../../../util/extension';
-import { isRequired, getId, getSublabelText } from '../../../util/index';
+import { isRequired, getId, getSublabelText, getText, renderPrefix } from '../../../util/index';
 import { Resources } from '../../../util/resources';
-import Label from '../label';
-import SubLabel from '../sublabel';
 
 interface Props {
   options?: Array<Options>;
@@ -25,15 +25,13 @@ interface Props {
   resources?: Resources;
   renderDeleteButton: (className?: string) => JSX.Element | undefined;
   repeatButton: JSX.Element;
-  oneToTwoColumn?: boolean;
-  children?: JSX.Element;
-
+  children?: React.ReactNode;
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
 }
 
-class DropdownView extends React.Component<Props, {}> {
+class DropdownView extends React.Component<Props, Record<string, unknown>> {
   render(): JSX.Element | null {
     const {
       options,
@@ -50,15 +48,10 @@ class DropdownView extends React.Component<Props, {}> {
       renderHelpButton,
       renderHelpElement,
       onRenderMarkdown,
-      ...other
     } = this.props;
     if (!options) {
       return null;
     }
-    const dropdownOptions: HTMLOptionElement[] = options.map((o: Options) => {
-      return new Option(o.label, o.type);
-    });
-    const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
 
     let placeholder;
     if (getPlaceholder(item)) {
@@ -66,34 +59,37 @@ class DropdownView extends React.Component<Props, {}> {
     } else if (resources) {
       placeholder = new Option(resources.selectDefaultPlaceholder, '');
     }
-
+    const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`;
+    const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
     return (
       <div className="page_refero__component page_refero__component_choice page_refero__component_choice_dropdown">
-        <Collapse isOpened>
-          <Validation {...other}>
-            <SafeSelect
-              id={getId(id)}
-              selectName={getId(id)}
-              showLabel={true}
-              label={<Label item={item} onRenderMarkdown={onRenderMarkdown} questionnaire={questionnaire} resources={resources} />}
-              subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
-              isRequired={isRequired(item)}
-              onChange={(evt): void => handleChange((evt.target as HTMLInputElement).value)}
-              options={dropdownOptions}
-              selected={selected ? selected[0] : undefined}
-              value={selected ? selected[0] : undefined}
-              placeholder={placeholder}
-              onChangeValidator={validateInput}
-              errorMessage={getValidationTextExtension(item)}
-              className="page_refero__input"
-              helpButton={renderHelpButton()}
-              helpElement={renderHelpElement()}
-            />
-          </Validation>
-          {renderDeleteButton('page_refero__deletebutton--margin-top')}
-          {repeatButton}
-          {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
-        </Collapse>
+        {renderHelpElement()}
+        <FormGroup legend={getText(item, onRenderMarkdown, questionnaire, resources)} mode="ongrey">
+          <Select
+            label={
+              <Label
+                htmlFor={getId(id)}
+                labelTexts={[{ text: labelText, type: 'semibold' }]}
+                sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+                afterLabelChildren={renderHelpButton()}
+              />
+            }
+            onChange={(e): void => handleChange(e.target.value)}
+            selectId={getId(id)}
+            className="page_refero__input"
+          >
+            {placeholder}
+            {options.map(dropdownOption => (
+              <option key={getId(id) + dropdownOption.label} value={dropdownOption.type}>
+                {dropdownOption.label}
+              </option>
+            ))}
+          </Select>
+        </FormGroup>
+
+        {renderDeleteButton('page_refero__deletebutton--margin-top')}
+        {repeatButton}
+        {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
       </div>
     );
   }

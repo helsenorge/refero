@@ -51,7 +51,6 @@ function getStringWrapperWithChangedValue(validateScriptInjection: boolean, valu
       answer={{} as QuestionnaireResponseItemAnswer}
       path={[]}
       id="item_2"
-      oneToTwoColumn
       validateScriptInjection={validateScriptInjection}
       repeatButton={<div />}
       renderDeleteButton={() => {

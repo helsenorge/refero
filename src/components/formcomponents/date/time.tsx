@@ -9,7 +9,6 @@ import TimeInput from '@helsenorge/date-time/components/time-input';
 import { parseDate } from '@helsenorge/date-time/components/time-input/date-core';
 import * as DateTimeConstants from '@helsenorge/date-time/constants/datetime';
 import { ValidationProps } from '@helsenorge/form/components/form/validation';
-import Validation from '@helsenorge/form/components/form/validation';
 
 import { NewValueAction, newTimeValueAsync } from '../../../actions/newValue';
 import ExtensionConstants from '../../../constants/extensions';
@@ -242,36 +241,34 @@ class Time extends React.Component<Props & ValidationProps> {
 
     return (
       <div className="page_refero__component page_refero__component_time">
-        <Validation {...this.props}>
-          <TimeInput
-            id={getId(id)}
-            value={this.getValue()}
-            legend={
-              <Label
-                item={this.props.item}
-                onRenderMarkdown={this.props.onRenderMarkdown}
-                questionnaire={this.props.questionnaire}
-                resources={this.props.resources}
-              />
-            }
-            subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
-            isRequired={isRequired(item)}
-            maxHour={this.getMaxHour()}
-            minHour={this.getMinHour()}
-            maxMinute={this.getMaxMinute()}
-            minMinute={this.getMinMinute()}
-            onBlur={this.onTimeChange}
-            className={this.props.className + ' page_refero__input'}
-            renderFieldset={this.props.renderFieldset}
-            errorMessage={getValidationTextExtension(item)}
-            resetButton={{
-              resetButtonText: this.getResetButtonText(),
-              onReset: this.onTimeChange,
-            }}
-            helpButton={this.props.renderHelpButton()}
-            helpElement={this.props.renderHelpElement()}
-          />
-        </Validation>
+        <TimeInput
+          id={getId(id)}
+          value={this.getValue()}
+          legend={
+            <Label
+              item={this.props.item}
+              onRenderMarkdown={this.props.onRenderMarkdown}
+              questionnaire={this.props.questionnaire}
+              resources={this.props.resources}
+            />
+          }
+          subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
+          isRequired={isRequired(item)}
+          maxHour={this.getMaxHour()}
+          minHour={this.getMinHour()}
+          maxMinute={this.getMaxMinute()}
+          minMinute={this.getMinMinute()}
+          onBlur={this.onTimeChange}
+          className={this.props.className + ' page_refero__input'}
+          renderFieldset={this.props.renderFieldset}
+          errorMessage={getValidationTextExtension(item)}
+          resetButton={{
+            resetButtonText: this.getResetButtonText(),
+            onReset: this.onTimeChange,
+          }}
+          helpButton={this.props.renderHelpButton()}
+          helpElement={this.props.renderHelpElement()}
+        />
         {this.props.renderDeleteButton('page_refero__deletebutton--margin-top')}
         {this.props.repeatButton}
         {this.props.children ? <div className="nested-fieldset nested-fieldset--full-height">{this.props.children}</div> : null}

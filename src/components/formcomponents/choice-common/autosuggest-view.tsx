@@ -1,7 +1,6 @@
 import * as React from 'react';
 
 import { ValueSet, QuestionnaireItem, Questionnaire, Coding, QuestionnaireResponseItemAnswer } from 'fhir/r4';
-import { Collapse } from 'react-collapse';
 
 import { AutoSuggestProps } from '../../../types/autoSuggestProps';
 
@@ -10,7 +9,6 @@ import NotificationPanel from '@helsenorge/designsystem-react/components/Notific
 
 import Autosuggest, { Suggestion } from '@helsenorge/autosuggest/components/autosuggest';
 import { debounce } from '@helsenorge/core-utils/debounce';
-import Validation from '@helsenorge/form/components/form/validation';
 
 import { OPEN_CHOICE_ID, OPEN_CHOICE_SYSTEM } from '../../../constants';
 import ItemType from '../../../constants/itemType';
@@ -38,8 +36,7 @@ interface AutosuggestProps {
   resources?: Resources;
   renderDeleteButton: (className?: string) => JSX.Element | undefined;
   repeatButton: JSX.Element;
-  children?: JSX.Element;
-
+  children?: React.ReactNode;
   handleStringChange?: (value: string) => void;
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
@@ -240,54 +237,50 @@ class AutosuggestView extends React.Component<AutosuggestProps, AutosuggestState
 
     return (
       <div className="page_refero__component page_refero__component_choice page_refero__component_choice_autosuggest">
-        <Collapse isOpened>
-          <Validation {...this.props}>
-            <Autosuggest
-              id={getId(this.props.id)}
-              label={
-                <Label
-                  item={this.props.item}
-                  onRenderMarkdown={this.props.onRenderMarkdown}
-                  questionnaire={this.props.questionnaire}
-                  resources={this.props.resources}
-                />
-              }
-              subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
-              className="page_refero__autosuggest"
-              type="search"
-              isRequired={isRequired(this.props.item)}
-              errorMessage={getValidationTextExtension(this.props.item)}
-              helpButton={this.props.renderHelpButton()}
-              helpElement={this.props.renderHelpElement()}
-              suggestions={this.state.suggestions}
-              onSuggestionsFetchRequested={this.debouncedOnSuggestionsFetchRequested}
-              onSuggestionsClearRequested={(): void => {
-                // vis samme resultatsett neste gang feltet får fokus
-              }}
-              noCharacterValidation
-              onSubmitValidator={this.onSubmitValidator}
-              onSuggestionSelected={this.onSuggestionSelected}
-              onChange={this.onChangeInput}
-              onBlur={this.onBlur}
-              focusInputOnSuggestionClick={true}
-              value={this.state.inputValue}
+        <Autosuggest
+          id={getId(this.props.id)}
+          label={
+            <Label
+              item={this.props.item}
+              onRenderMarkdown={this.props.onRenderMarkdown}
+              questionnaire={this.props.questionnaire}
+              resources={this.props.resources}
             />
-          </Validation>
-          {this.state.isLoading && (
-            <div>
-              <Loader size={'tiny'} />
-            </div>
-          )}
-          {this.state.noSuggestionsToShow && (
-            <div className="page_refero__no-suggestions">
-              {this.props.resources?.autosuggestNoSuggestions?.replace('{0}', this.state.inputValue)}
-            </div>
-          )}
-          {this.state.hasLoadError && <NotificationPanel variant="alert">{this.props.resources?.autoSuggestLoadError}</NotificationPanel>}
-          {this.props.renderDeleteButton('page_refero__deletebutton--margin-top')}
-          {this.props.repeatButton}
-          {this.props.children ? <div className="nested-fieldset nested-fieldset--full-height">{this.props.children}</div> : null}
-        </Collapse>
+          }
+          subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
+          className="page_refero__autosuggest"
+          type="search"
+          isRequired={isRequired(this.props.item)}
+          errorMessage={getValidationTextExtension(this.props.item)}
+          helpButton={this.props.renderHelpButton()}
+          helpElement={this.props.renderHelpElement()}
+          suggestions={this.state.suggestions}
+          onSuggestionsFetchRequested={this.debouncedOnSuggestionsFetchRequested}
+          onSuggestionsClearRequested={(): void => {
+            // vis samme resultatsett neste gang feltet får fokus
+          }}
+          noCharacterValidation
+          onSubmitValidator={this.onSubmitValidator}
+          onSuggestionSelected={this.onSuggestionSelected}
+          onChange={this.onChangeInput}
+          onBlur={this.onBlur}
+          focusInputOnSuggestionClick={true}
+          value={this.state.inputValue}
+        />
+        {this.state.isLoading && (
+          <div>
+            <Loader size={'tiny'} />
+          </div>
+        )}
+        {this.state.noSuggestionsToShow && (
+          <div className="page_refero__no-suggestions">
+            {this.props.resources?.autosuggestNoSuggestions?.replace('{0}', this.state.inputValue)}
+          </div>
+        )}
+        {this.state.hasLoadError && <NotificationPanel variant="alert">{this.props.resources?.autoSuggestLoadError}</NotificationPanel>}
+        {this.props.renderDeleteButton('page_refero__deletebutton--margin-top')}
+        {this.props.repeatButton}
+        {this.props.children ? <div className="nested-fieldset nested-fieldset--full-height">{this.props.children}</div> : null}
       </div>
     );
   }

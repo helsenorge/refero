@@ -7,7 +7,6 @@ import { ThunkDispatch } from 'redux-thunk';
 import { TextMessage } from '../../../types/text-message';
 
 import { UploadedFile } from '@helsenorge/file-upload/components/dropzone';
-import { ValidationProps } from '@helsenorge/form/components/form/validation';
 
 import AttachmentHtml from './attachmenthtml';
 import { NewValueAction, newAttachmentAsync, removeAttachmentAsync } from '../../../actions/newValue';
@@ -52,7 +51,7 @@ export interface Props {
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
 }
 
-export class AttachmentComponent extends React.Component<Props & ValidationProps> {
+export class AttachmentComponent extends React.Component<Props> {
   onUpload = (files: File[], cb: (success: boolean, errormessage: TextMessage | null, uploadedFile?: UploadedFile) => void): void => {
     const { uploadAttachment, path, item, onAnswerChange } = this.props;
     if (uploadAttachment) {
@@ -193,7 +192,6 @@ export class AttachmentComponent extends React.Component<Props & ValidationProps
             attachmentValidTypes={this.props.attachmentValidTypes}
             item={item}
             attachmentErrorMessage={this.props.attachmentErrorMessage}
-            {...other}
           />
         </>
       );

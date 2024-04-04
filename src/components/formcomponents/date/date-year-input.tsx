@@ -4,7 +4,6 @@ import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { Moment } from 'moment';
 
 import { YearErrorResources, YearInput } from '@helsenorge/date-time/components/year-input';
-import { Validation } from '@helsenorge/form/components/form/validation';
 
 import { getId, isReadOnly, isRequired } from '../../../util';
 import { createDateFromYear } from '../../../util/createDateFromYear';
@@ -84,22 +83,20 @@ export const DateYearInput = (props: React.PropsWithChildren<Props>): JSX.Elemen
   }
 
   return (
-    <Validation {...props}>
-      <YearInput
-        id={`${getId(props.id)}-year_input`}
-        errorResources={getYearInputResources()}
-        label={props.label}
-        subLabel={props.subLabel}
-        isRequired={isRequired(props.item)}
-        placeholder={getPlaceholder(props.item)}
-        maximumYear={props.maxDate?.year()}
-        minimumYear={props.minDate?.year()}
-        value={answerState}
-        className={props.className}
-        onChange={onYearChange}
-        helpButton={props.helpButton}
-        helpElement={props.helpElement}
-      />
-    </Validation>
+    <YearInput
+      id={`${getId(props.id)}-year_input`}
+      errorResources={getYearInputResources()}
+      label={props.label}
+      subLabel={props.subLabel}
+      isRequired={isRequired(props.item)}
+      placeholder={getPlaceholder(props.item)}
+      maximumYear={props.maxDate?.year()}
+      minimumYear={props.minDate?.year()}
+      value={answerState}
+      className={props.className}
+      onChange={onYearChange}
+      helpButton={props.helpButton}
+      helpElement={props.helpElement}
+    />
   );
 };

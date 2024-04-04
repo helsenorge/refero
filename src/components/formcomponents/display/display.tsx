@@ -1,28 +1,33 @@
 import * as React from 'react';
 
 import DOMPurify from 'dompurify';
-import { Questionnaire, QuestionnaireItem } from 'fhir/r4';
+import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { connect } from 'react-redux';
+import { ThunkDispatch } from 'redux-thunk';
+
+import { CommonFormElementProps } from '../../../types/formTypes/commonFormElementProps';
 
 import designsystemtypography from '@helsenorge/designsystem-react/scss/typography.module.scss';
 
+import { NewValueAction } from '../../../actions/newValue';
 import itemControlConstants from '../../../constants/itemcontrol';
+import { GlobalState } from '../../../reducers';
 import { getItemControlExtensionValue, getMarkdownExtensionValue } from '../../../util/extension';
 import { renderPrefix, getText, getId } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
-import { Resources } from '../../../util/resources';
 
-export interface Props {
-  id?: string;
-  item?: QuestionnaireItem;
-  questionnaire?: Questionnaire | null;
-  enable?: boolean;
-  pdf?: boolean;
-  onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
-  resources?: Resources;
+interface StateProps {
+  enable: boolean;
+  answer?: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[];
 }
 
-const Display: React.SFC<Props> = ({ id, enable, pdf, item, questionnaire, onRenderMarkdown, resources }) => {
+interface DispatchProps {
+  dispatch: ThunkDispatch<GlobalState, void, NewValueAction>;
+}
+
+export interface Props extends StateProps, DispatchProps, CommonFormElementProps {}
+
+const Display: React.FC<Props> = ({ id, enable, pdf, item, questionnaire, onRenderMarkdown, resources }) => {
   const itemControls = item ? getItemControlExtensionValue(item) : null;
   const highlightClass =
     itemControls && itemControls.some(itemControl => itemControl.code === itemControlConstants.HIGHLIGHT)

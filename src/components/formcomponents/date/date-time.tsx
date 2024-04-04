@@ -10,8 +10,6 @@ import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 import DateTimePicker from '@helsenorge/date-time/components/date-time-picker';
 import { getFullMomentDate } from '@helsenorge/date-time/components/date-time-picker/date-time-picker-utils';
 import { parseDate } from '@helsenorge/date-time/components/time-input/date-core';
-import Validation from '@helsenorge/form/components/form/validation';
-import { ValidationProps } from '@helsenorge/form/components/form/validation';
 
 import { NewValueAction, newDateTimeValueAsync } from '../../../actions/newValue';
 import ExtensionConstants from '../../../constants/extensions';
@@ -42,7 +40,6 @@ export interface Props {
   id?: string;
   renderDeleteButton: (className?: string) => JSX.Element | undefined;
   repeatButton: JSX.Element;
-  oneToTwoColumn: boolean;
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
   isHelpOpen?: boolean;
@@ -50,7 +47,7 @@ export interface Props {
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
 }
 
-class DateTime extends React.Component<Props & ValidationProps> {
+class DateTime extends React.Component<Props> {
   getDefaultDate(item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer): Date | undefined {
     if (answer && answer.valueDateTime) {
       return parseDate(String(answer.valueDateTime));
@@ -178,7 +175,7 @@ class DateTime extends React.Component<Props & ValidationProps> {
   }
 
   render(): JSX.Element | null {
-    const { item, pdf, id, onRenderMarkdown, ...other } = this.props;
+    const { item, pdf, id, onRenderMarkdown } = this.props;
     if (pdf || isReadOnly(item)) {
       return (
         <TextView
@@ -200,34 +197,32 @@ class DateTime extends React.Component<Props & ValidationProps> {
 
     return (
       <div className="page_refero__component page_refero__component_datetime">
-        <Validation {...other}>
-          <DateTimePicker
-            id={getId(id)}
-            resources={{ dateResources: this.props.resources }}
-            locale={this.getLocaleFromLanguage()}
-            dateValue={valueDateTime ? this.toLocaleDate(moment(valueDateTime)) : undefined}
-            timeValue={valueDateTime ? moment(valueDateTime).format('HH:mm') : undefined}
-            maximumDateTime={maxDateTime ? this.toLocaleDate(moment(maxDateTime)) : undefined}
-            minimumDateTime={minDateTime ? this.toLocaleDate(moment(minDateTime)) : undefined}
-            initialDate={this.toLocaleDate(moment(new Date()))}
-            onChange={this.dispatchNewDate}
-            onBlur={this.onBlur}
-            legend={
-              <Label
-                item={this.props.item}
-                onRenderMarkdown={this.props.onRenderMarkdown}
-                questionnaire={this.props.questionnaire}
-                resources={this.props.resources}
-              />
-            }
-            subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
-            isRequired={isRequired(item)}
-            errorMessage={getValidationTextExtension(item)}
-            timeClassName="page_refero__input"
-            helpButton={this.props.renderHelpButton()}
-            helpElement={this.props.renderHelpElement()}
-          />
-        </Validation>
+        <DateTimePicker
+          id={getId(id)}
+          resources={{ dateResources: this.props.resources }}
+          locale={this.getLocaleFromLanguage()}
+          dateValue={valueDateTime ? this.toLocaleDate(moment(valueDateTime)) : undefined}
+          timeValue={valueDateTime ? moment(valueDateTime).format('HH:mm') : undefined}
+          maximumDateTime={maxDateTime ? this.toLocaleDate(moment(maxDateTime)) : undefined}
+          minimumDateTime={minDateTime ? this.toLocaleDate(moment(minDateTime)) : undefined}
+          initialDate={this.toLocaleDate(moment(new Date()))}
+          onChange={this.dispatchNewDate}
+          onBlur={this.onBlur}
+          legend={
+            <Label
+              item={this.props.item}
+              onRenderMarkdown={this.props.onRenderMarkdown}
+              questionnaire={this.props.questionnaire}
+              resources={this.props.resources}
+            />
+          }
+          subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
+          isRequired={isRequired(item)}
+          errorMessage={getValidationTextExtension(item)}
+          timeClassName="page_refero__input"
+          helpButton={this.props.renderHelpButton()}
+          helpElement={this.props.renderHelpElement()}
+        />
         {this.props.renderDeleteButton('page_refero__deletebutton--margin-top')}
         {this.props.repeatButton}
         {this.props.children ? <div className="nested-fieldset nested-fieldset--full-height">{this.props.children}</div> : null}

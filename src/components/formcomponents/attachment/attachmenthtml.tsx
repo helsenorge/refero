@@ -9,7 +9,6 @@ import NotificationPanel from '@helsenorge/designsystem-react/components/Notific
 import Dropzone from '@helsenorge/file-upload/components/dropzone';
 import { UploadedFile } from '@helsenorge/file-upload/components/dropzone';
 import { sizeIsValid, mimeTypeIsValid } from '@helsenorge/file-upload/components/dropzone/validation';
-import Validation, { ValidationProps } from '@helsenorge/form/components/form/validation';
 
 import { convertBytesToMBString, convertMBToBytes } from './attachmentUtil';
 import constants, { VALID_FILE_TYPES } from '../../../constants';
@@ -42,7 +41,7 @@ interface Props {
   helpElement?: JSX.Element;
 }
 
-const attachmentHtml: React.SFC<Props & ValidationProps> = ({
+const attachmentHtml: React.SFC<Props> = ({
   id,
   onUpload,
   onDelete,
@@ -65,7 +64,6 @@ const attachmentHtml: React.SFC<Props & ValidationProps> = ({
   minFiles,
   item,
   children,
-  ...other
 }) => {
   const getMaxValueBytes = getAttachmentMaxSizeBytesToUse(attachmentMaxFileSize, item);
   const getMaxValueMBToReplace = convertBytesToMBString(getMaxValueBytes);
@@ -74,35 +72,33 @@ const attachmentHtml: React.SFC<Props & ValidationProps> = ({
 
   return (
     <div className="page_refero__component page_refero__component_attachment">
-      <Validation {...other}>
-        <Dropzone
-          id={id}
-          label={label}
-          subLabel={subLabel}
-          onDrop={onUpload}
-          onDelete={onDelete}
-          onOpenFile={onOpen}
-          uploadButtonText={uploadButtonText}
-          uploadedFiles={uploadedFiles}
-          maxFileSize={getMaxValueBytes}
-          validMimeTypes={validFileTypes}
-          dontShowHardcodedText={!!deleteText}
-          deleteText={deleteText}
-          supportedFileFormatsText={resources ? resources.supportedFileFormats : undefined}
-          errorMessage={(file: File): string => {
-            return getErrorMessage(validFileTypes, getMaxValueBytes, getMaxValueMBToReplace, item, errorText, file, resources);
-          }}
-          isRequired={isRequired}
-          wrapperClasses="page_refero__input"
-          onRequestLink={onRequestAttachmentLink}
-          helpButton={helpButton}
-          helpElement={helpElement}
-          shouldUploadMultiple={multiple}
-          maxFiles={maxFiles}
-          minFiles={minFiles}
-          chooseFilesText={resources?.chooseFilesText}
-        />
-      </Validation>
+      <Dropzone
+        id={id}
+        label={label}
+        subLabel={subLabel}
+        onDrop={onUpload}
+        onDelete={onDelete}
+        onOpenFile={onOpen}
+        uploadButtonText={uploadButtonText}
+        uploadedFiles={uploadedFiles}
+        maxFileSize={getMaxValueBytes}
+        validMimeTypes={validFileTypes}
+        dontShowHardcodedText={!!deleteText}
+        deleteText={deleteText}
+        supportedFileFormatsText={resources ? resources.supportedFileFormats : undefined}
+        errorMessage={(file: File): string => {
+          return getErrorMessage(validFileTypes, getMaxValueBytes, getMaxValueMBToReplace, item, errorText, file, resources);
+        }}
+        isRequired={isRequired}
+        wrapperClasses="page_refero__input"
+        onRequestLink={onRequestAttachmentLink}
+        helpButton={helpButton}
+        helpElement={helpElement}
+        shouldUploadMultiple={multiple}
+        maxFiles={maxFiles}
+        minFiles={minFiles}
+        chooseFilesText={resources?.chooseFilesText}
+      />
       {attachmentErrorMessage && <NotificationPanel variant="alert">{attachmentErrorMessage}</NotificationPanel>}
       {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
     </div>

@@ -26,17 +26,15 @@ interface Props {
   resources?: Resources;
   renderDeleteButton: (className?: string) => JSX.Element | undefined;
   repeatButton: JSX.Element;
-  oneToTwoColumn?: boolean;
   renderOpenField: () => JSX.Element | undefined;
   answer: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer;
   children?: JSX.Element;
-
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
 }
 
-class DropdownView extends React.Component<Props, {}> {
+class DropdownView extends React.Component<Props, Record<string, unknown>> {
   render(): JSX.Element | null {
     const {
       options,

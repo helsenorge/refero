@@ -5,11 +5,9 @@ import moment, { Moment } from 'moment';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
-
 import { LanguageLocales } from '@helsenorge/core-utils/constants/languages';
 import { DateRangePicker } from '@helsenorge/date-time/components/date-range-picker';
 import { parseDate } from '@helsenorge/date-time/components/time-input/date-core';
-import { ValidationProps } from '@helsenorge/form/components/form/validation';
 
 import { DateDayInput } from './date-day-input';
 import { DateYearMonthInput } from './date-month-input';
@@ -51,7 +49,7 @@ export interface Props {
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
 }
 
-class DateComponent extends React.Component<Props & ValidationProps> {
+class DateComponent extends React.Component<Props> {
   static defaultProps: Partial<Props> = {
     path: [],
   };

@@ -34,7 +34,7 @@ import TextView from '../textview';
 
 export interface Props {
   item: QuestionnaireItem;
-  questionnaire?: Questionnaire;
+  questionnaire?: Questionnaire | null;
   responseItem: QuestionnaireResponseItem;
   answer: QuestionnaireResponseItemAnswer;
   path: Array<Path>;
@@ -55,8 +55,8 @@ export interface Props {
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
 }
 
-export class String extends React.Component<Props & ValidationProps, {}> {
-  handleChange = (event: React.FormEvent<{}>): void => {
+export class String extends React.Component<Props & ValidationProps, Record<string, unknown>> {
+  handleChange = (event: React.FormEvent): void => {
     const { dispatch, promptLoginMessage, path, item, onAnswerChange } = this.props;
     const value = (event.target as HTMLInputElement).value;
     if (dispatch) {
@@ -70,7 +70,7 @@ export class String extends React.Component<Props & ValidationProps, {}> {
     }
   };
 
-  debouncedHandleChange: (event: React.FormEvent<{}>) => void = debounce(this.handleChange, 250, false);
+  debouncedHandleChange: (event: React.FormEvent) => void = debounce(this.handleChange, 250, false);
 
   shouldComponentUpdate(nextProps: Props): boolean {
     const responseItemHasChanged = this.props.responseItem !== nextProps.responseItem;
@@ -129,7 +129,7 @@ export class String extends React.Component<Props & ValidationProps, {}> {
             placeholder={getPlaceholder(item)}
             minLength={getMinLengthExtensionValue(item)}
             maxLength={getMaxLength(item)}
-            onChange={(event: React.FormEvent<{}>): void => {
+            onChange={(event: React.FormEvent): void => {
               event.persist();
               this.debouncedHandleChange(event);
             }}

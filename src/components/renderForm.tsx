@@ -87,23 +87,6 @@ const RenderForm = ({
       )}
       {!isAuthorized && (
         <>
-          <Form
-            action="#"
-            disabled={referoProps.blockSubmit}
-            errorMessage={resources.formError}
-            requiredLabel={resources.formRequired}
-            optionalLabel={resources.formOptional}
-            buttonOrder={isStepView ? buttonOrderStepView : buttonOrderNormalView}
-            triggerPreventDefaultOnSubmit
-            validationSummaryPlacement={referoProps.validationSummaryPlacement}
-            validationSummary={{
-              enable: true,
-              header: resources.validationSummaryHeader,
-            }}
-            submitButtonDisabled={referoProps.submitButtonDisabled}
-            pauseButtonDisabled={referoProps.saveButtonDisabled}
-            onFieldsNotCorrectlyFilledOut={referoProps.onFieldsNotCorrectlyFilledOut}
-          ></Form>
           {formItemsToBeRendered}
           <div className="page_refero__buttonwrapper page_refero__saveblock">{referoProps.loginButton}</div>
         </>

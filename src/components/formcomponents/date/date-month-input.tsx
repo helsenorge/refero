@@ -5,7 +5,6 @@ import moment, { Moment } from 'moment';
 
 import { LanguageLocales } from '@helsenorge/core-utils/constants/languages';
 import { YearMonthResources, YearMonthInput, YearMonthValue } from '@helsenorge/date-time/components/year-month-input';
-import { Validation } from '@helsenorge/form/components/form/validation';
 
 import { getId, isReadOnly, isRequired } from '../../../util';
 import { getPlaceholder, getValidationTextExtension } from '../../../util/extension';
@@ -121,24 +120,22 @@ export class DateYearMonthInput extends React.Component<Props, {}> {
     }
 
     return (
-      <Validation {...this.props}>
-        <YearMonthInput
-          id={`${getId(this.props.id)}-yearmonth_input`}
-          locale={this.props.locale} // TODO: må støtte nynorsk og samisk også
-          resources={this.getYearMonthInputResources()}
-          legend={this.props.label}
-          subLabel={this.props.subLabel}
-          isRequired={isRequired(this.props.item)}
-          placeholder={getPlaceholder(this.props.item)}
-          maximumYearMonth={this.getMinMaxDate(this.props.maxDate)}
-          minimumYearMonth={this.getMinMaxDate(this.props.minDate)}
-          value={this.getValue()}
-          className={this.props.className}
-          onChange={this.onYearMonthChange}
-          helpButton={this.props.helpButton}
-          helpElement={this.props.helpElement}
-        />
-      </Validation>
+      <YearMonthInput
+        id={`${getId(this.props.id)}-yearmonth_input`}
+        locale={this.props.locale} // TODO: må støtte nynorsk og samisk også
+        resources={this.getYearMonthInputResources()}
+        legend={this.props.label}
+        subLabel={this.props.subLabel}
+        isRequired={isRequired(this.props.item)}
+        placeholder={getPlaceholder(this.props.item)}
+        maximumYearMonth={this.getMinMaxDate(this.props.maxDate)}
+        minimumYearMonth={this.getMinMaxDate(this.props.minDate)}
+        value={this.getValue()}
+        className={this.props.className}
+        onChange={this.onYearMonthChange}
+        helpButton={this.props.helpButton}
+        helpElement={this.props.helpElement}
+      />
     );
   }
 }

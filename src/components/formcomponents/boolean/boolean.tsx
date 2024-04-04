@@ -1,24 +1,27 @@
 import * as React from 'react';
 
-import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem, Questionnaire } from 'fhir/r4';
+import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
+import { CommonFormElementProps } from '../../../types/formTypes/commonFormElementProps';
+
+import Checkbox from '@helsenorge/designsystem-react/components/Checkbox';
+import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
+import Label from '@helsenorge/designsystem-react/components/Label';
+
 import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 import { CheckBox } from '@helsenorge/form/components/checkbox';
-import Validation from '@helsenorge/form/components/form/validation';
-import { ValidationProps } from '@helsenorge/form/components/form/validation';
 
 import Pdf from './pdf';
 import { NewValueAction, newBooleanValueAsync } from '../../../actions/newValue';
 import { GlobalState } from '../../../reducers';
 import { getValidationTextExtension } from '../../../util/extension';
-import { isReadOnly, isRequired, getId } from '../../../util/index';
+import { isReadOnly, isRequired, getId, getText, renderPrefix } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
 import { Resources } from '../../../util/resources';
 import withCommonFunctions from '../../with-common-functions';
-import Label from '../label';
 
 export interface Props {
   item: QuestionnaireItem;
@@ -42,7 +45,7 @@ export interface Props {
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
 }
 
-class Boolean extends React.Component<Props & ValidationProps, {}> {
+class Boolean extends React.Component<Props> {
   getValue(): boolean {
     const { item, answer } = this.props;
     if (answer && answer.valueBoolean !== undefined) {
@@ -58,9 +61,10 @@ class Boolean extends React.Component<Props & ValidationProps, {}> {
     const { dispatch, promptLoginMessage, onAnswerChange, path, item } = this.props;
     const newValue = !this.getValue();
     if (dispatch) {
-      dispatch(newBooleanValueAsync(this.props.path, newValue, this.props.item))?.then(newState =>
-        onAnswerChange(newState, path, item, { valueBoolean: newValue } as QuestionnaireResponseItemAnswer)
-      );
+      path &&
+        dispatch(newBooleanValueAsync(path, newValue, this.props.item))?.then(
+          newState => onAnswerChange && onAnswerChange(newState, path, item, { valueBoolean: newValue } as QuestionnaireResponseItemAnswer)
+        );
     }
 
     if (promptLoginMessage) {
@@ -68,15 +72,13 @@ class Boolean extends React.Component<Props & ValidationProps, {}> {
     }
   };
 
-  getLabel = (): JSX.Element => {
-    return (
-      <Label
-        item={this.props.item}
-        onRenderMarkdown={this.props.onRenderMarkdown}
-        questionnaire={this.props.questionnaire}
-        resources={this.props.resources}
-      />
-    );
+  getLabel = (): string => {
+    return `${renderPrefix(this.props.item)} ${getText(
+      this.props.item,
+      this.props.onRenderMarkdown,
+      this.props.questionnaire,
+      this.props.resources
+    )}`;
   };
 
   shouldComponentUpdate(nextProps: Props): boolean {
@@ -110,29 +112,26 @@ class Boolean extends React.Component<Props & ValidationProps, {}> {
     return (
       // Dette er en hack for FHI-skjema. TODO: fjern hack
       <div className="page_refero__component page_refero__component_boolean">
-        <Validation {...this.props}>
-          <CheckBox
-            label={this.getLabel()}
-            id={getId(this.props.id)}
-            isRequired={isRequired(this.props.item)}
-            errorMessage={getValidationTextExtension(this.props.item)}
+        <FormGroup error={getValidationTextExtension(this.props.item)}>
+          <Checkbox
+            testId={getId(this.props.id)}
+            label={<Label labelTexts={[{ text: this.getLabel() }]} afterLabelChildren={<>{this.props.renderHelpButton()}</>} />}
+            required={isRequired(this.props.item)}
             checked={this.getValue()}
             onChange={this.handleChange}
             disabled={isReadOnly(this.props.item)}
             className="page_refero__input"
-            helpButton={this.props.renderHelpButton()}
-            helpElement={this.props.renderHelpElement()}
-            validateOnExternalUpdate={true}
-            isStyleBlue
+            // validateOnExternalUpdate={true}
+            // isStyleBlue
           />
-        </Validation>
+        </FormGroup>
         {this.props.renderDeleteButton('page_refero__deletebutton--margin-top')}
         {this.props.repeatButton}
         {this.props.children ? <div className="nested-fieldset nested-fieldset--full-height">{this.props.children}</div> : null}
+        {this.props.renderHelpElement()}
       </div>
     );
   }
 }
-const withCommonFunctionsComponent = withCommonFunctions(Boolean);
-const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(layoutChange(withCommonFunctionsComponent));
-export default connectedComponent;
+
+export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(layoutChange(withCommonFunctions(Boolean)));

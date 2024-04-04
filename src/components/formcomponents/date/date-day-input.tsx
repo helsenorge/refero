@@ -7,7 +7,6 @@ import { LanguageLocales } from '@helsenorge/core-utils/constants/languages';
 import { DateRangePicker } from '@helsenorge/date-time/components/date-range-picker';
 import { DatePickerErrorPhrases } from '@helsenorge/date-time/components/date-range-picker/date-range-picker-types';
 import { parseDate } from '@helsenorge/date-time/components/time-input/date-core';
-import { Validation } from '@helsenorge/form/components/form/validation';
 
 import Constants from '../../../constants/index';
 import { getId, isRequired } from '../../../util';
@@ -129,28 +128,26 @@ export class DateDayInput extends React.Component<Props, {}> {
     }
 
     return (
-      <Validation {...this.props}>
-        <DateRangePicker
-          type="single"
-          id={`${getId(this.props.id)}-datepicker_input`}
-          locale={this.props.locale} // TODO: må støtte nynorsk og samisk også
-          errorResources={this.getDatepickerErrorPhrases()}
-          resources={this.props.resources}
-          label={this.props.label}
-          subLabel={this.props.subLabel}
-          isRequired={isRequired(this.props.item)}
-          placeholder={getPlaceholder(this.props.item)}
-          ref={this.props.datepickerRef}
-          maximumDate={this.toLocaleDate(this.props.maxDate)}
-          minimumDate={this.toLocaleDate(this.props.minDate)}
-          singleDateValue={this.getSingleDateValue()}
-          className={this.props.className}
-          onDateChange={this.onDateChange}
-          validationErrorRenderer={this.props.validationErrorRenderer}
-          helpButton={this.props.helpButton}
-          helpElement={this.props.helpElement}
-        />
-      </Validation>
+      <DateRangePicker
+        type="single"
+        id={`${getId(this.props.id)}-datepicker_input`}
+        locale={this.props.locale} // TODO: må støtte nynorsk og samisk også
+        errorResources={this.getDatepickerErrorPhrases()}
+        resources={this.props.resources}
+        label={this.props.label}
+        subLabel={this.props.subLabel}
+        isRequired={isRequired(this.props.item)}
+        placeholder={getPlaceholder(this.props.item)}
+        ref={this.props.datepickerRef}
+        maximumDate={this.toLocaleDate(this.props.maxDate)}
+        minimumDate={this.toLocaleDate(this.props.minDate)}
+        singleDateValue={this.getSingleDateValue()}
+        className={this.props.className}
+        onDateChange={this.onDateChange}
+        validationErrorRenderer={this.props.validationErrorRenderer}
+        helpButton={this.props.helpButton}
+        helpElement={this.props.helpElement}
+      />
     );
   }
 }

@@ -4,21 +4,20 @@ import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer } fro
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
+import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
+import Input from '@helsenorge/designsystem-react/components/Input';
+import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
+
 import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
-import Validation from '@helsenorge/form/components/form/validation';
-import { ValidationProps } from '@helsenorge/form/components/form/validation';
-import SafeInputField from '@helsenorge/form/components/safe-input-field';
 
 import { NewValueAction, newDecimalValueAsync } from '../../../actions/newValue';
 import { GlobalState } from '../../../reducers';
 import { getValidationTextExtension, getPlaceholder, getMaxValueExtensionValue, getMinValueExtensionValue } from '../../../util/extension';
-import { isReadOnly, isRequired, getId, getDecimalPattern, getSublabelText } from '../../../util/index';
+import { isReadOnly, isRequired, getId, getDecimalPattern, getSublabelText, renderPrefix, getText } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
 import { Resources } from '../../../util/resources';
 import withCommonFunctions from '../../with-common-functions';
-import Label from '../label';
-import SubLabel from '../sublabel';
 import TextView from '../textview';
 
 export interface Props {
@@ -34,7 +33,6 @@ export interface Props {
   promptLoginMessage?: () => void;
   renderDeleteButton: (className?: string) => JSX.Element | undefined;
   repeatButton: JSX.Element;
-  oneToTwoColumn: boolean;
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
   isHelpOpen?: boolean;
@@ -42,7 +40,7 @@ export interface Props {
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
 }
 
-class Decimal extends React.Component<Props & ValidationProps, {}> {
+class Decimal extends React.Component<Props, Record<string, unknown>> {
   getValue = (item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer): string | number | number[] | undefined => {
     if (answer && Array.isArray(answer)) {
       return answer.map(m => m.valueDecimal);
@@ -70,7 +68,7 @@ class Decimal extends React.Component<Props & ValidationProps, {}> {
     return value;
   }
 
-  handleChange = (event: React.FormEvent<{}>): void => {
+  handleChange = (event: React.FormEvent): void => {
     const { dispatch, path, item, promptLoginMessage, onAnswerChange } = this.props;
     const value = parseFloat((event.target as HTMLInputElement).value);
     if (dispatch) {
@@ -97,6 +95,7 @@ class Decimal extends React.Component<Props & ValidationProps, {}> {
   render(): JSX.Element | null {
     const { id, item, pdf, onRenderMarkdown } = this.props;
     const value = this.getValue(this.props.item, this.props.answer);
+    const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, this.props.questionnaire, this.props.resources)}`;
     const subLabelText = getSublabelText(this.props.item, this.props.onRenderMarkdown, this.props.questionnaire, this.props.resources);
 
     if (pdf || isReadOnly(item)) {
@@ -115,35 +114,33 @@ class Decimal extends React.Component<Props & ValidationProps, {}> {
     }
     return (
       <div className="page_refero__component page_refero__component_decimal">
-        <Validation {...this.props}>
-          <SafeInputField
+        <FormGroup error={getValidationTextExtension(item)} mode="ongrey">
+          <Input
             type="number"
-            id={getId(this.props.id)}
-            inputName={getId(this.props.id)}
+            inputId={getId(this.props.id)}
+            name={getId(this.props.id)}
             value={value ? value + '' : ''}
-            showLabel={true}
             label={
               <Label
-                item={item}
-                onRenderMarkdown={onRenderMarkdown}
-                questionnaire={this.props.questionnaire}
-                resources={this.props.resources}
+                htmlFor={getId(id)}
+                labelTexts={[{ text: labelText, type: 'semibold' }]}
+                sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+                afterLabelChildren={this.props.renderHelpButton()}
+                statusDot={<div>{status}</div>}
               />
             }
-            subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
-            isRequired={isRequired(item)}
+            required={isRequired(item)}
             placeholder={getPlaceholder(item)}
-            max={getMaxValueExtensionValue(item)}
-            min={getMinValueExtensionValue(item)}
-            errorMessage={getValidationTextExtension(item)}
-            pattern={getDecimalPattern(item)}
+            // max={getMaxValueExtensionValue(item)}
+            // min={getMinValueExtensionValue(item)}
+            // pattern={getDecimalPattern(item)}
             className="page_refero__input"
-            helpButton={this.props.renderHelpButton()}
-            helpElement={this.props.renderHelpElement()}
-            validateOnExternalUpdate={true}
+            // validateOnExternalUpdate={true}
             onChange={this.handleChange}
+            width={25}
           />
-        </Validation>
+          {this.props.renderHelpElement()}
+        </FormGroup>
         {this.props.renderDeleteButton('page_refero__deletebutton--margin-top')}
         {this.props.repeatButton}
         {this.props.children ? <div className="nested-fieldset nested-fieldset--full-height">{this.props.children}</div> : null}

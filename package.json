@@ -78,6 +78,7 @@
     "@typescript-eslint/eslint-plugin": "^5.12.0",
     "@typescript-eslint/parser": "^5.12.0",
     "@ungap/structured-clone": "^1.2.0",
+    "@vitejs/plugin-react": "^4.2.1",
     "@wojtekmaj/enzyme-adapter-react-17": "^0.8.0",
     "babel-jest": "^27.4.2",
     "babel-loader": "^8.2.3",
@@ -117,6 +118,7 @@
     "redux-thunk": "^2.4.2",
     "resolve": "^1.22.2",
     "rimraf": "^3.0.2",
+    "sass": "^1.69.0",
     "tabbable": "^6.2.0",
     "typescript": "^4.8.3",
     "vite": "^4.4.5",
@@ -124,9 +126,7 @@
     "vite-tsconfig-paths": "^4.2.1",
     "whatwg-fetch": "^2.0.4",
     "xml2js": "^0.6.2",
-    "yargs": "^17.7.2",
-    "@vitejs/plugin-react": "^4.2.1",
-    "sass": "^1.69.0"
+    "yargs": "^17.7.2"
   },
   "dependencies": {
     "@types/react-collapse": "^5.0.1",
@@ -136,6 +136,7 @@
     "isomorphic-fetch": "^3.0.0",
     "marked": "^3.0.8",
     "react-collapse": "^5.1.1",
+    "react-hook-form": "^7.51.2",
     "uuid": "^9.0.0"
   },
   "browserslist": [

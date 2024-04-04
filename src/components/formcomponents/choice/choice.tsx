@@ -5,10 +5,8 @@ import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
 import { AutoSuggestProps } from '../../../types/autoSuggestProps';
+import { Options } from '../../../types/formTypes/radioGroupOptions';
 import { OrgenhetHierarki } from '../../../types/orgenhetHierarki';
-
-import { ValidationProps } from '@helsenorge/form/components/form/validation';
-import { Options } from '@helsenorge/form/components/radio-group';
 
 import CheckboxView from './checkbox-view';
 import DropdownView from './dropdown-view';
@@ -60,8 +58,8 @@ interface ChoiceState {
   validated: boolean;
 }
 
-export class Choice extends React.Component<ChoiceProps & ValidationProps, ChoiceState> {
-  constructor(props: ChoiceProps & ValidationProps) {
+export class Choice extends React.Component<ChoiceProps, ChoiceState> {
+  constructor(props: ChoiceProps) {
     super(props);
 
     this.state = {
