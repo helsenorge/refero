@@ -11,7 +11,7 @@ import RadioButton from '@helsenorge/designsystem-react/components/RadioButton';
 import { isRequired, getId, getSublabelText, getText } from '../../../util/index';
 import { Resources } from '../../../util/resources';
 
-interface Props {
+export interface Props {
   options?: Array<Options>;
   item: QuestionnaireItem;
   questionnaire?: Questionnaire;
@@ -21,7 +21,7 @@ interface Props {
   validateInput: (value: string) => boolean;
   resources?: Resources;
   getErrorMessage: (val: string) => string;
-  renderDeleteButton: (className: string) => JSX.Element | undefined;
+  renderDeleteButton: (className?: string) => JSX.Element | null;
   repeatButton: JSX.Element;
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;

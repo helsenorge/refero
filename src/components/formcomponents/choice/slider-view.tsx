@@ -8,8 +8,9 @@ import { Slider, SliderStep } from '@helsenorge/designsystem-react/components/Sl
 import ExtensionConstants from '../../../constants/extensions';
 import { getExtension, getMaxValueExtensionValue, getMinValueExtensionValue } from '../../../util/extension';
 import { isString } from '../../../util/typeguards';
+import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 
-interface SliderProps {
+export interface SliderProps {
   item: QuestionnaireItem;
   answer: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer;
   handleChange: (sliderStep: string) => void;

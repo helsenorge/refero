@@ -16,10 +16,10 @@ import { isReadOnly, isRequired, getId, getSublabelText, renderPrefix, getText }
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
 import { Resources } from '../../../util/resources';
-import withCommonFunctions from '../../with-common-functions';
+import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 import TextView from '../textview';
 
-export interface Props {
+export interface Props extends WithCommonFunctionsAndEnhancedProps {
   item: QuestionnaireItem;
   questionnaire?: Questionnaire;
   responseItem: QuestionnaireResponseItem;
@@ -29,7 +29,7 @@ export interface Props {
   path: Array<Path>;
   pdf?: boolean;
   promptLoginMessage?: () => void;
-  renderDeleteButton: (className?: string) => JSX.Element | undefined;
+  renderDeleteButton: (className?: string) => JSX.Element | null;
   id?: string;
   repeatButton: JSX.Element;
   renderHelpButton: () => JSX.Element;
@@ -155,5 +155,6 @@ class Integer extends React.Component<Props, Record<string, unknown>> {
 }
 
 const withCommonFunctionsComponent = withCommonFunctions(Integer);
-const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(layoutChange(withCommonFunctionsComponent));
+const layoytChangeComponent = layoutChange(withCommonFunctionsComponent);
+const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(layoytChangeComponent);
 export default connectedComponent;

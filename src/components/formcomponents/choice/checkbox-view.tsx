@@ -11,8 +11,9 @@ import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label
 // import { getMaxOccursExtensionValue, getMinOccursExtensionValue, getValidationTextExtension } from '../../../util/extension';
 import { isRequired, getSublabelText, getText } from '../../../util/index';
 import { Resources } from '../../../util/resources';
+import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 
-interface Props {
+export interface Props {
   options?: Array<Options>;
   item: QuestionnaireItem;
   questionnaire?: Questionnaire;
@@ -21,7 +22,7 @@ interface Props {
   selected?: Array<string | undefined>;
   resources?: Resources;
   repeatButton: JSX.Element;
-  renderDeleteButton: (className?: string) => JSX.Element | undefined;
+  renderDeleteButton: (className?: string) => JSX.Element | null;
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;

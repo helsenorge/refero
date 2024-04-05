@@ -17,12 +17,12 @@ import { isReadOnly, isRequired, getId, getSublabelText } from '../../../util/in
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
 import { Resources } from '../../../util/resources';
-import withCommonFunctions from '../../with-common-functions';
+import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 import Label from '../label';
 import SubLabel from '../sublabel';
 import TextView from '../textview';
 
-export interface Props {
+export interface Props extends WithCommonFunctionsAndEnhancedProps {
   value?: string;
   answer: QuestionnaireResponseItemAnswer;
   item: QuestionnaireItem;
@@ -37,7 +37,7 @@ export interface Props {
   renderFieldset?: boolean;
   className?: string;
   enable?: boolean;
-  renderDeleteButton: (className?: string) => JSX.Element | undefined;
+  renderDeleteButton: (className?: string) => JSX.Element | null;
   repeatButton: JSX.Element;
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;

@@ -22,7 +22,6 @@ interface Props {
   resources?: Resources;
   dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
   mustShowConfirm: boolean;
-  className?: string;
   onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
   renderContext: RenderContext;
 }

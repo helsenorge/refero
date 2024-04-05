@@ -27,10 +27,10 @@ import { isReadOnly, isRequired, getId, getDecimalPattern, getSublabelText, rend
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
 import { Resources } from '../../../util/resources';
-import withCommonFunctions from '../../with-common-functions';
+import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 import TextView from '../textview';
 
-export interface Props {
+export interface Props extends WithCommonFunctionsAndEnhancedProps {
   item: QuestionnaireItem;
   questionnaire?: Questionnaire;
   responseItem: QuestionnaireResponseItem;
@@ -40,7 +40,7 @@ export interface Props {
   path: Array<Path>;
   pdf?: boolean;
   promptLoginMessage?: () => void;
-  renderDeleteButton: (className?: string) => JSX.Element | undefined;
+  renderDeleteButton: (className?: string) => JSX.Element | null;
   id?: string;
   repeatButton: JSX.Element;
   renderHelpButton: () => JSX.Element;

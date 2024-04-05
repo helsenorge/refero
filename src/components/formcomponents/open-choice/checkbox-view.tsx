@@ -22,7 +22,7 @@ interface Props {
   selected?: Array<string | undefined>;
   resources?: Resources;
   repeatButton: JSX.Element;
-  renderDeleteButton: (className?: string) => JSX.Element | undefined;
+  renderDeleteButton: (className?: string) => JSX.Element | null;
   renderOpenField: () => JSX.Element | undefined;
   answer: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer;
 

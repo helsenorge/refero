@@ -14,7 +14,7 @@ import { getValidationTextExtension, getPlaceholder } from '../../../util/extens
 import { isRequired, getId, getSublabelText, getText, renderPrefix } from '../../../util/index';
 import { Resources } from '../../../util/resources';
 
-interface Props {
+export interface Props {
   options?: Array<Options>;
   item: QuestionnaireItem;
   questionnaire?: Questionnaire;
@@ -23,7 +23,7 @@ interface Props {
   selected?: Array<string | undefined>;
   validateInput: (value: string | undefined) => boolean;
   resources?: Resources;
-  renderDeleteButton: (className?: string) => JSX.Element | undefined;
+  renderDeleteButton: (className?: string) => JSX.Element | null;
   repeatButton: JSX.Element;
   children?: React.ReactNode;
   renderHelpButton: () => JSX.Element;

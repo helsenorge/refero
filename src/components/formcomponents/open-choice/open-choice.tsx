@@ -1,6 +1,14 @@
 import * as React from 'react';
 
-import { QuestionnaireItem, QuestionnaireResponseItemAnswer, Resource, Coding, QuestionnaireResponseItem, ValueSet } from 'fhir/r4';
+import {
+  QuestionnaireItem,
+  QuestionnaireResponseItemAnswer,
+  Resource,
+  Coding,
+  QuestionnaireResponseItem,
+  ValueSet,
+  Questionnaire,
+} from 'fhir/r4';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
@@ -36,14 +44,15 @@ import {
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
 import { Resources } from '../../../util/resources';
-import withCommonFunctions from '../../with-common-functions';
+import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 import SliderView from '../choice/slider-view';
 import AutosuggestView from '../choice-common/autosuggest-view';
 import TextView from '../textview';
 
-export interface Props {
+export interface Props extends WithCommonFunctionsAndEnhancedProps {
   item: QuestionnaireItem;
   answer: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[];
+  questionnaire?: Questionnaire;
   path: Array<Path>;
   id?: string;
   pdf?: boolean;
@@ -51,7 +60,7 @@ export interface Props {
   dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
   resources?: Resources;
   containedResources?: Resource[];
-  renderDeleteButton: () => JSX.Element | undefined;
+  renderDeleteButton: () => JSX.Element | null;
   headerTag?: number;
   responseItem: QuestionnaireResponseItem;
   repeatButton: JSX.Element;

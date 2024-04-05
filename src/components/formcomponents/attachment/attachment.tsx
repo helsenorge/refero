@@ -16,12 +16,12 @@ import { isRequired, getId, isReadOnly, isRepeat, getSublabelText } from '../../
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
 import { Resources } from '../../../util/resources';
-import withCommonFunctions from '../../with-common-functions';
+import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 import Label from '../label';
 import SubLabel from '../sublabel';
 import TextView from '../textview';
 
-export interface Props {
+export interface Props extends WithCommonFunctionsAndEnhancedProps {
   dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
   path: Array<Path>;
   item: QuestionnaireItem;
@@ -31,7 +31,7 @@ export interface Props {
   pdf?: boolean;
   id?: string;
   resources?: Resources;
-  renderDeleteButton: () => JSX.Element | undefined;
+  renderDeleteButton: () => JSX.Element | null;
   repeatButton: JSX.Element;
   attachmentErrorMessage?: string;
   attachmentMaxFileSize?: number;
@@ -151,7 +151,7 @@ export class AttachmentComponent extends React.Component<Props> {
   }
 
   render(): JSX.Element | null {
-    const { pdf, id, item, resources, onOpenAttachment, onRenderMarkdown, questionnaire, ...other } = this.props;
+    const { pdf, id, item, resources, onOpenAttachment, onRenderMarkdown, questionnaire } = this.props;
     const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
 
     if (pdf || isReadOnly(item)) {

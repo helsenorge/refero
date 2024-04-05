@@ -20,9 +20,9 @@ import { isReadOnly, isRequired, getId, getText, renderPrefix } from '../../../u
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
 import { Resources } from '../../../util/resources';
-import withCommonFunctions from '../../with-common-functions';
+import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 
-export interface Props {
+export interface Props extends WithCommonFunctionsAndEnhancedProps {
   item: QuestionnaireItem;
   questionnaire?: Questionnaire;
   responseItem: QuestionnaireResponseItem;
@@ -34,7 +34,7 @@ export interface Props {
   promptLoginMessage?: () => void;
   id?: string;
   onValidated?: (valid: boolean | undefined) => void;
-  renderDeleteButton: (className?: string) => JSX.Element | undefined;
+  renderDeleteButton: (className?: string) => JSX.Element | null;
   repeatButton: JSX.Element;
   oneToTwoColumn: boolean;
   renderHelpButton: () => JSX.Element;
@@ -130,5 +130,7 @@ class Boolean extends React.Component<Props> {
     );
   }
 }
-
-export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(layoutChange(withCommonFunctions(Boolean)));
+const withCommonFunctionsComponent = withCommonFunctions(Boolean);
+const layoutChangeComponent = layoutChange(withCommonFunctionsComponent);
+const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(layoutChangeComponent);
+export default connectedComponent;

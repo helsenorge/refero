@@ -17,9 +17,9 @@ import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/m
 import { Path } from '../../../util/refero-core';
 import { RenderContext } from '../../../util/renderContext';
 import { Resources } from '../../../util/resources';
-import withCommonFunctions from '../../with-common-functions';
+import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 
-export interface Props {
+export interface Props extends WithCommonFunctionsAndEnhancedProps {
   item: QuestionnaireItem;
   questionnaire?: Questionnaire;
   answer: QuestionnaireResponseItemAnswer;
@@ -32,8 +32,8 @@ export interface Props {
   resources?: Resources;
   headerTag?: number;
   attachmentErrorMessage?: string;
-  renderDeleteButton: (className?: string) => JSX.Element | undefined;
-  renderChildrenItems: (renderContext: RenderContext) => Array<JSX.Element> | undefined;
+  renderDeleteButton: (className?: string) => JSX.Element | null;
+  renderChildrenItems: (renderContext: RenderContext) => Array<JSX.Element> | null;
   repeatButton: JSX.Element;
   id?: string;
   renderContext: RenderContext;

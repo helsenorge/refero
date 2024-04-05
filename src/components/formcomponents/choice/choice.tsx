@@ -1,6 +1,14 @@
 import * as React from 'react';
 
-import { QuestionnaireItem, QuestionnaireResponseItemAnswer, Resource, Coding, QuestionnaireResponseItem, ValueSet } from 'fhir/r4';
+import {
+  QuestionnaireItem,
+  QuestionnaireResponseItemAnswer,
+  Resource,
+  Coding,
+  QuestionnaireResponseItem,
+  ValueSet,
+  Questionnaire,
+} from 'fhir/r4';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
@@ -19,13 +27,14 @@ import { isReadOnly, isDataReceiver } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
 import { Resources } from '../../../util/resources';
-import withCommonFunctions from '../../with-common-functions';
+import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 import AutosuggestView from '../choice-common/autosuggest-view';
 import ReceiverComponentWrapper from '../receiver-component/receiver-component-wrapper';
 import TextView from '../textview';
 
-export interface ChoiceProps {
+export interface ChoiceProps extends WithCommonFunctionsAndEnhancedProps {
   item: QuestionnaireItem;
+  questionnaire?: Questionnaire;
   answer: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer;
   resources?: Resources;
   containedResources?: Resource[];
@@ -36,7 +45,7 @@ export interface ChoiceProps {
   promptLoginMessage?: () => void;
   headerTag?: number;
   responseItem: QuestionnaireResponseItem;
-  renderDeleteButton: () => JSX.Element | undefined;
+  renderDeleteButton: () => JSX.Element | null;
   repeatButton: JSX.Element;
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;

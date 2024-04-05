@@ -30,10 +30,10 @@ import {
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
 import { Resources } from '../../../util/resources';
-import withCommonFunctions from '../../with-common-functions';
+import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 import TextView from '../textview';
 
-export interface Props {
+export interface Props extends WithCommonFunctionsAndEnhancedProps {
   item: QuestionnaireItem;
   questionnaire?: Questionnaire | null;
   responseItem: QuestionnaireResponseItem;
@@ -44,10 +44,10 @@ export interface Props {
   promptLoginMessage?: () => void;
   id?: string;
   resources?: Resources;
-  visibleDeleteButton: boolean;
-  renderDeleteButton: (className?: string) => JSX.Element | undefined;
-  repeatButton: JSX.Element;
   oneToTwoColumn: boolean;
+  visibleDeleteButton: boolean;
+  renderDeleteButton: (className?: string) => JSX.Element | null;
+  repeatButton: JSX.Element;
   validateScriptInjection: boolean;
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
@@ -153,5 +153,6 @@ export class String extends React.Component<Props, Record<string, unknown>> {
   }
 }
 const withCommonFunctionsComponent = withCommonFunctions(String);
-const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(layoutChange(withCommonFunctionsComponent));
+const layoutChangeComponent = layoutChange(withCommonFunctionsComponent);
+const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(layoutChangeComponent);
 export default connectedComponent;

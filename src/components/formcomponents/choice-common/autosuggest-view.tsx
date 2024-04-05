@@ -15,10 +15,11 @@ import ItemType from '../../../constants/itemType';
 import { getValidationTextExtension } from '../../../util/extension';
 import { isRequired, getId, getSublabelText } from '../../../util/index';
 import { Resources } from '../../../util/resources';
+import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 import Label from '../label';
 import SubLabel from '../sublabel';
 
-interface AutosuggestProps {
+export interface AutosuggestProps extends WithCommonFunctionsAndEnhancedProps {
   handleChange: (code?: string, systemArg?: string, displayArg?: string) => void;
   clearCodingAnswer: (coding: Coding) => void;
   fetchValueSet?: (
@@ -34,7 +35,7 @@ interface AutosuggestProps {
   questionnaire?: Questionnaire;
   id?: string;
   resources?: Resources;
-  renderDeleteButton: (className?: string) => JSX.Element | undefined;
+  renderDeleteButton: (className?: string) => JSX.Element | null;
   repeatButton: JSX.Element;
   children?: React.ReactNode;
   handleStringChange?: (value: string) => void;

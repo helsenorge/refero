@@ -17,10 +17,10 @@ import { isReadOnly, isRequired, getId, getDecimalPattern, getSublabelText, rend
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
 import { Resources } from '../../../util/resources';
-import withCommonFunctions from '../../with-common-functions';
+import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 import TextView from '../textview';
 
-export interface Props {
+export interface Props extends WithCommonFunctionsAndEnhancedProps {
   item: QuestionnaireItem;
   questionnaire?: Questionnaire;
   responseItem: QuestionnaireItem;
@@ -31,7 +31,7 @@ export interface Props {
   id?: string;
   pdf?: boolean;
   promptLoginMessage?: () => void;
-  renderDeleteButton: (className?: string) => JSX.Element | undefined;
+  renderDeleteButton: (className?: string) => JSX.Element | null;
   repeatButton: JSX.Element;
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
@@ -114,6 +114,7 @@ class Decimal extends React.Component<Props, Record<string, unknown>> {
     }
     return (
       <div className="page_refero__component page_refero__component_decimal">
+        {this.props.renderHelpElement()}
         <FormGroup error={getValidationTextExtension(item)} mode="ongrey">
           <Input
             type="number"
@@ -139,7 +140,6 @@ class Decimal extends React.Component<Props, Record<string, unknown>> {
             onChange={this.handleChange}
             width={25}
           />
-          {this.props.renderHelpElement()}
         </FormGroup>
         {this.props.renderDeleteButton('page_refero__deletebutton--margin-top')}
         {this.props.repeatButton}
@@ -150,5 +150,6 @@ class Decimal extends React.Component<Props, Record<string, unknown>> {
 }
 
 const withCommonFunctionsComponent = withCommonFunctions(Decimal);
-const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(layoutChange(withCommonFunctionsComponent));
+const layoutChangeComponent = layoutChange(withCommonFunctionsComponent);
+const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(layoutChangeComponent);
 export default connectedComponent;
