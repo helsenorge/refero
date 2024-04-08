@@ -17,8 +17,8 @@ import { isReadOnly, isRequired, getId, getDecimalPattern, getSublabelText, rend
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
 import { Resources } from '../../../util/resources';
+import ReactHookFormHoc, { FormProps } from '../../../validation/ReactHookFormHoc';
 import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
-import ReactHookFormHoc, { FormProps } from '../form/ReactHookFormHoc';
 import TextView from '../textview';
 
 export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {

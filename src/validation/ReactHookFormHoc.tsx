@@ -2,7 +2,7 @@ import React from 'react';
 
 import { FieldValues, UseFormReturn, useFormContext } from 'react-hook-form';
 
-import { WithCommonFunctionsProps } from '../../with-common-functions';
+import { WithCommonFunctionsProps } from '../components/with-common-functions';
 
 export type FormProps = UseFormReturn<FieldValues, unknown, undefined>;
 

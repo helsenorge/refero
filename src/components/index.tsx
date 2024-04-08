@@ -50,6 +50,7 @@ import {
 import { RenderContext } from '../util/renderContext';
 import { ScoringCalculator } from '../util/scoringCalculator';
 import { shouldFormBeDisplayedAsStepView } from '../util/shouldFormBeDisplayedAsStepView';
+import { generateDefaultValues } from '../validation/defaultFormValues';
 
 interface StateProps {
   formDefinition?: FormDefinition | null;
@@ -58,14 +59,14 @@ interface StateProps {
 
 const Refero = (props: StateProps & DispatchProps & ReferoProps): JSX.Element | null => {
   IE11HackToWorkAroundBug187484();
+  const questionnaire = props.questionnaire ? props.questionnaire : props.formDefinition?.Content;
+
   const methods = useForm({
-    // defaultValues: createDefaultFormValuesFromQuestionnaire(qst),
+    defaultValues: generateDefaultValues(questionnaire?.item),
   });
   const getScoringCalculator = (questionnaire: Questionnaire): ScoringCalculator => {
     return new ScoringCalculator(questionnaire);
   };
-
-  const questionnaire = props.questionnaire ? props.questionnaire : props.formDefinition?.Content;
 
   const [scoringCalculator, setScoringCalculator] = React.useState<ScoringCalculator | undefined>(
     questionnaire ? getScoringCalculator(questionnaire) : undefined

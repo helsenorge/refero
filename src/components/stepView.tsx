@@ -2,12 +2,12 @@ import * as React from 'react';
 
 import { ReferoProps } from '../types/referoProps';
 
-import { FormProps } from './formcomponents/form/ReactHookFormHoc';
 import RenderForm from './renderForm';
 import { NAVIGATOR_BLINDZONE_ID } from '../constants';
 import { FormDefinition } from '../reducers/form';
 import { getTopLevelElements } from '../util/getTopLevelElements';
 import { Resources } from '../util/resources';
+import { FormProps } from '../validation/ReactHookFormHoc';
 
 interface StepViewProps {
   isAuthorized: boolean;
