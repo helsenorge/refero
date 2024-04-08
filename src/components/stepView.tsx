@@ -2,6 +2,7 @@ import * as React from 'react';
 
 import { ReferoProps } from '../types/referoProps';
 
+import { FormProps } from './formcomponents/form/ReactHookFormHoc';
 import RenderForm from './renderForm';
 import { NAVIGATOR_BLINDZONE_ID } from '../constants';
 import { FormDefinition } from '../reducers/form';
@@ -17,6 +18,7 @@ interface StepViewProps {
   onSave: () => void;
   onSubmit: () => void;
   onStepChange?: (stepIndex: number) => void;
+  methods: FormProps;
 }
 
 const StepView = ({
@@ -28,6 +30,7 @@ const StepView = ({
   onSave,
   onSubmit,
   onStepChange,
+  methods,
 }: StepViewProps): JSX.Element => {
   const stepArray: Array<JSX.Element> | undefined = [];
   const [stepIndex, setStepIndex] = React.useState(0);
@@ -67,6 +70,7 @@ const StepView = ({
         displayPreviousButton={stepIndex > 0}
         nextStep={nextStep}
         previousStep={previousStep}
+        methods={methods}
       >
         {stepArray[stepIndex]}
       </RenderForm>

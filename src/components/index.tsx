@@ -8,13 +8,12 @@ import {
   QuestionnaireResponseItemAnswer,
   Quantity,
 } from 'fhir/r4';
-import { useForm } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
 import { DispatchProps } from '../types/dispatchProps';
 import { ReferoProps } from '../types/referoProps';
-import { State } from '../types/state';
 
 import RepeatButton from './formcomponents/repeat/RepeatButton';
 import RenderForm from './renderForm';
@@ -57,53 +56,52 @@ interface StateProps {
   formData?: FormData | null;
 }
 
-class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, State> {
-  constructor(props: StateProps & DispatchProps & ReferoProps) {
-    super(props);
-    const questionnaire = this.props.questionnaire ? this.props.questionnaire : this.props.formDefinition?.Content;
-    this.state = {
-      valid: true,
-      validated: false,
-      showCancelLightbox: false,
-      scoringCalculator: questionnaire ? this.getScoringCalculator(questionnaire) : undefined,
-    };
-  }
+const Refero = (props: StateProps & DispatchProps & ReferoProps): JSX.Element | null => {
+  IE11HackToWorkAroundBug187484();
+  const methods = useForm({
+    // defaultValues: createDefaultFormValuesFromQuestionnaire(qst),
+  });
+  const getScoringCalculator = (questionnaire: Questionnaire): ScoringCalculator => {
+    return new ScoringCalculator(questionnaire);
+  };
 
-  onSubmit = (): void => {
-    const { formData, onSubmit } = this.props;
+  const questionnaire = props.questionnaire ? props.questionnaire : props.formDefinition?.Content;
+
+  const [scoringCalculator, setScoringCalculator] = React.useState<ScoringCalculator | undefined>(
+    questionnaire ? getScoringCalculator(questionnaire) : undefined
+  );
+
+  const handleSubmit = (): void => {
+    const { formData, onSubmit } = props;
 
     if (formData && formData.Content && onSubmit) {
       onSubmit(formData.Content);
     }
   };
 
-  onSave = (): void => {
-    if (this.props.onSave && this.props.formData && this.props.formData.Content) {
-      this.props.onSave(this.props.formData.Content);
+  const handleSave = (): void => {
+    if (props.onSave && props.formData && props.formData.Content) {
+      props.onSave(props.formData.Content);
     }
   };
+  React.useEffect(() => {
+    props.mount();
+  }, []);
 
-  componentDidMount(): void {
-    this.props.mount();
-  }
-
-  componentDidUpdate(): void {
-    IE11HackToWorkAroundBug187484();
-  }
-
-  UNSAFE_componentWillReceiveProps(nextProps: ReferoProps): void {
-    if (nextProps.questionnaire && nextProps.questionnaire !== this.props.questionnaire) {
-      this.props.updateSkjema(
-        nextProps.questionnaire,
-        nextProps.questionnaireResponse,
-        nextProps.language,
-        nextProps.syncQuestionnaireResponse
-      );
-      this.setState({ scoringCalculator: this.getScoringCalculator(nextProps.questionnaire) });
+  React.useEffect(() => {
+    if (props.questionnaire) {
+      props.updateSkjema(props.questionnaire, props.questionnaireResponse, props.language, props.syncQuestionnaireResponse);
+      setScoringCalculator(getScoringCalculator(props.questionnaire));
     }
-  }
-  onAnswerChange = (newState: GlobalState, _path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer): void => {
-    if (this.props.onChange && newState.refero.form.FormDefinition.Content && newState.refero.form.FormData.Content) {
+  }, []);
+
+  const onAnswerChange = (
+    newState: GlobalState,
+    _path: Array<Path>,
+    item: QuestionnaireItem,
+    answer: QuestionnaireResponseItemAnswer
+  ): void => {
+    if (props.onChange && newState.refero.form.FormDefinition.Content && newState.refero.form.FormData.Content) {
       const actionRequester = new ActionRequester(newState.refero.form.FormDefinition.Content, newState.refero.form.FormData.Content);
 
       const questionnaireInspector = new QuestionniareInspector(
@@ -111,35 +109,31 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
         newState.refero.form.FormData.Content
       );
 
-      this.props.onChange(item, answer, actionRequester, questionnaireInspector);
+      props.onChange(item, answer, actionRequester, questionnaireInspector);
 
       for (const action of actionRequester.getActions()) {
-        this.props.dispatch(action);
+        props.dispatch(action);
       }
     }
 
-    this.runScoringCalculator(newState);
+    runScoringCalculator(newState);
   };
 
-  getScoringCalculator = (questionnaire: Questionnaire): ScoringCalculator => {
-    return new ScoringCalculator(questionnaire);
-  };
-
-  runScoringCalculator = (newState: GlobalState): void => {
+  const runScoringCalculator = (newState: GlobalState): void => {
     const questionnaireResponse = newState.refero?.form?.FormData?.Content;
     const questionnaire = newState.refero.form.FormDefinition?.Content;
     if (!questionnaire || !questionnaireResponse) return;
 
-    if (this.state.scoringCalculator) {
-      const scores = this.state.scoringCalculator.calculateScore(questionnaireResponse);
-      this.updateQuestionnaireResponseWithScore(scores, questionnaire, questionnaireResponse);
+    if (scoringCalculator) {
+      const scores = scoringCalculator.calculateScore(questionnaireResponse);
+      updateQuestionnaireResponseWithScore(scores, questionnaire, questionnaireResponse);
 
-      const fhirScores = this.state.scoringCalculator.calculateFhirScore(questionnaireResponse);
-      this.updateQuestionnaireResponseWithScore(fhirScores, questionnaire, questionnaireResponse);
+      const fhirScores = scoringCalculator.calculateFhirScore(questionnaireResponse);
+      updateQuestionnaireResponseWithScore(fhirScores, questionnaire, questionnaireResponse);
     }
   };
 
-  updateQuestionnaireResponseWithScore = (
+  const updateQuestionnaireResponseWithScore = (
     scores: { [linkId: string]: number | undefined },
     questionnaire: Questionnaire,
     questionnaireResponse: QuestionnaireResponse
@@ -185,12 +179,12 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
     }
 
     for (const a of actions) {
-      this.props.dispatch(a);
+      props.dispatch(a);
     }
   };
 
-  renderFormItems(pdf?: boolean): Array<JSX.Element> | undefined {
-    const { formDefinition, resources, formData, promptLoginMessage } = this.props;
+  const renderFormItems = (pdf?: boolean): Array<JSX.Element> | undefined => {
+    const { formDefinition, resources, formData, promptLoginMessage } = props;
     if (!formDefinition || !formDefinition.Content || !formDefinition.Content.item) {
       return undefined;
     }
@@ -221,16 +215,16 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
               <div className="page_refero__repeatbutton-wrapper">
                 <RepeatButton
                   key={`item_${item.linkId}_add_repeat_item`}
-                  resources={this.props.resources}
+                  resources={props.resources}
                   item={item}
                   responseItems={responseItems}
-                  parentPath={this.props.path}
+                  parentPath={props.path}
                   renderContext={new RenderContext()}
                   disabled={item.type !== ItemType.GROUP && !responseItem.answer}
                 />
               </div>
             ) : undefined;
-          const path = createPathForItem(this.props.path, item, responseItem, index);
+          const path = createPathForItem(props.path, item, responseItem, index);
           // legg på blindzone rett over den første seksjonen
           if (isNavigatorEnabled && item.type === ItemType.GROUP && !isNavigatorBlindzoneInitiated) {
             isNavigatorBlindzoneInitiated = true;
@@ -254,53 +248,53 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
               headerTag={Constants.DEFAULT_HEADER_TAG}
               visibleDeleteButton={shouldRenderDeleteButton(item, index)}
               repeatButton={repeatButton}
-              onRequestAttachmentLink={this.props.onRequestAttachmentLink}
-              onOpenAttachment={this.props.onOpenAttachment}
-              onDeleteAttachment={this.props.onDeleteAttachment}
-              uploadAttachment={this.props.uploadAttachment}
-              onRequestHelpButton={this.props.onRequestHelpButton}
-              onRequestHelpElement={this.props.onRequestHelpElement}
-              attachmentErrorMessage={this.props.attachmentErrorMessage}
-              attachmentMaxFileSize={this.props.attachmentMaxFileSize}
-              attachmentValidTypes={this.props.attachmentValidTypes}
-              validateScriptInjection={this.props.validateScriptInjection}
-              onAnswerChange={this.onAnswerChange}
+              onRequestAttachmentLink={props.onRequestAttachmentLink}
+              onOpenAttachment={props.onOpenAttachment}
+              onDeleteAttachment={props.onDeleteAttachment}
+              uploadAttachment={props.uploadAttachment}
+              onRequestHelpButton={props.onRequestHelpButton}
+              onRequestHelpElement={props.onRequestHelpElement}
+              attachmentErrorMessage={props.attachmentErrorMessage}
+              attachmentMaxFileSize={props.attachmentMaxFileSize}
+              attachmentValidTypes={props.attachmentValidTypes}
+              validateScriptInjection={props.validateScriptInjection}
+              onAnswerChange={onAnswerChange}
               renderContext={new RenderContext()}
-              onRenderMarkdown={this.props.onRenderMarkdown}
-              fetchValueSet={this.props.fetchValueSet}
-              autoSuggestProps={this.props.autoSuggestProps}
-              fetchReceivers={this.props.fetchReceivers}
+              onRenderMarkdown={props.onRenderMarkdown}
+              fetchValueSet={props.fetchValueSet}
+              autoSuggestProps={props.autoSuggestProps}
+              fetchReceivers={props.fetchReceivers}
             />
           );
         });
       }
     });
     return renderedItems;
-  }
+  };
 
-  renderSkjema = (pdf?: boolean): Array<JSX.Element> | Array<Array<JSX.Element>> | JSX.Element | null | undefined => {
-    const { formDefinition, resources } = this.props;
+  const renderSkjema = (pdf?: boolean): Array<JSX.Element> | Array<Array<JSX.Element>> | JSX.Element | null | undefined => {
+    const { formDefinition, resources } = props;
 
     if (!formDefinition || !formDefinition.Content || !resources) {
       return null;
     }
 
     if (pdf) {
-      return this.renderFormItems(true);
+      return renderFormItems(true);
     }
 
     const presentationButtonsType = getPresentationButtonsExtension(formDefinition.Content);
     const isStepView = shouldFormBeDisplayedAsStepView(formDefinition);
 
     return (
-      <div className={this.getButtonClasses(presentationButtonsType, ['page_refero__content'])}>
+      <div className={getButtonClasses(presentationButtonsType, ['page_refero__content'])}>
         <div className="page_refero__messageboxes" />
-        {this.renderForm(isStepView)}
+        {renderForm(isStepView)}
       </div>
     );
   };
 
-  renderForm = (isStepView?: boolean): JSX.Element | undefined => {
+  const renderForm = (isStepView?: boolean): JSX.Element | undefined => {
     const {
       formDefinition,
       resources,
@@ -315,7 +309,7 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
       saveButtonDisabled,
       onFieldsNotCorrectlyFilledOut,
       onStepChange,
-    } = this.props;
+    } = props;
     if (!formDefinition || !resources) {
       return;
     }
@@ -335,17 +329,18 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
     };
 
     return (
-      <>
+      <FormProvider {...methods}>
         {isStepView ? (
           <StepView
             isAuthorized={authorized}
             referoProps={referoProps}
             resources={resources}
-            formItems={this.renderFormItems()}
+            formItems={renderFormItems()}
             formDefinition={formDefinition}
-            onSave={this.onSave}
-            onSubmit={this.onSubmit}
+            onSave={handleSave}
+            onSubmit={handleSubmit}
             onStepChange={onStepChange}
+            methods={methods}
           />
         ) : (
           <RenderForm
@@ -353,38 +348,37 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
             isStepView={false}
             referoProps={referoProps}
             resources={resources}
-            onSave={this.onSave}
-            onSubmit={this.onSubmit}
+            onSave={handleSave}
+            onSubmit={handleSubmit}
+            methods={methods}
           >
-            {this.renderFormItems()}
+            {renderFormItems()}
           </RenderForm>
         )}
-      </>
+      </FormProvider>
     );
   };
 
-  getButtonClasses(presentationButtonsType: PresentationButtonsType | null, defaultClasses?: string[]): string {
+  const getButtonClasses = (presentationButtonsType: PresentationButtonsType | null, defaultClasses?: string[]): string => {
     defaultClasses = defaultClasses ?? [];
     if (presentationButtonsType === PresentationButtonsType.None) {
       defaultClasses.push('page_refero__hidden_buttons');
     }
-    if (presentationButtonsType === PresentationButtonsType.Sticky || (this.props.sticky && !presentationButtonsType)) {
+    if (presentationButtonsType === PresentationButtonsType.Sticky || (props.sticky && !presentationButtonsType)) {
       defaultClasses.push('page_refero__stickybar');
     }
 
     return defaultClasses.join(' ');
+  };
+
+  const { resources } = props;
+
+  if (!resources) {
+    return null;
   }
 
-  render(): JSX.Element | null {
-    const { resources } = this.props;
-
-    if (!resources) {
-      return null;
-    }
-
-    return <React.Fragment>{this.renderSkjema(this.props.pdf)}</React.Fragment>;
-  }
-}
+  return <>{renderSkjema(props.pdf)}</>;
+};
 
 function mapStateToProps(state: GlobalState): StateProps {
   return {

@@ -18,9 +18,10 @@ import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/m
 import { Path } from '../../../util/refero-core';
 import { Resources } from '../../../util/resources';
 import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
+import ReactHookFormHoc, { FormProps } from '../form/ReactHookFormHoc';
 import TextView from '../textview';
 
-export interface Props extends WithCommonFunctionsAndEnhancedProps {
+export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   item: QuestionnaireItem;
   questionnaire?: Questionnaire;
   responseItem: QuestionnaireItem;
@@ -118,6 +119,13 @@ class Decimal extends React.Component<Props, Record<string, unknown>> {
         {this.props.renderHelpElement()}
         <FormGroup error={''} mode="ongrey">
           <Input
+            {...this.props.register(this.props.item.linkId, {
+              required: isRequired(this.props.item),
+              valueAsNumber: true,
+              onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
+                this.handleChange(e);
+              },
+            })}
             type="number"
             inputId={getId(this.props.id)}
             name={getId(this.props.id)}
@@ -150,7 +158,8 @@ class Decimal extends React.Component<Props, Record<string, unknown>> {
   }
 }
 
-const withCommonFunctionsComponent = withCommonFunctions(Decimal);
+const withFormProps = ReactHookFormHoc(Decimal);
+const withCommonFunctionsComponent = withCommonFunctions(withFormProps);
 const layoutChangeComponent = layoutChange(withCommonFunctionsComponent);
 const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(layoutChangeComponent);
 export default connectedComponent;

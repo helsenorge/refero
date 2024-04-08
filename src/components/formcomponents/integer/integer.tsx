@@ -11,15 +11,16 @@ import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 
 import { NewValueAction, newIntegerValueAsync } from '../../../actions/newValue';
 import { GlobalState } from '../../../reducers';
-import { getValidationTextExtension, getPlaceholder, getMaxValueExtensionValue, getMinValueExtensionValue } from '../../../util/extension';
+import { getPlaceholder, getMaxValueExtensionValue, getMinValueExtensionValue } from '../../../util/extension';
 import { isReadOnly, isRequired, getId, getSublabelText, renderPrefix, getText } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
 import { Resources } from '../../../util/resources';
 import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
+import ReactHookFormHoc, { FormProps } from '../form/ReactHookFormHoc';
 import TextView from '../textview';
 
-export interface Props extends WithCommonFunctionsAndEnhancedProps {
+export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   item: QuestionnaireItem;
   questionnaire?: Questionnaire;
   responseItem: QuestionnaireResponseItem;
@@ -70,7 +71,9 @@ class Integer extends React.Component<Props, Record<string, unknown>> {
 
   handleChange = (event: React.FormEvent): void => {
     const { dispatch, promptLoginMessage, path, item, onAnswerChange } = this.props;
+
     const value = parseInt((event.target as HTMLInputElement).value, 10);
+    this.props.setValue(this.props.item.linkId, value);
     if (dispatch) {
       dispatch(newIntegerValueAsync(this.props.path, value, this.props.item))?.then(newState =>
         onAnswerChange(newState, path, item, { valueInteger: value } as QuestionnaireResponseItemAnswer)
@@ -119,10 +122,15 @@ class Integer extends React.Component<Props, Record<string, unknown>> {
       <div className="page_refero__component page_refero__component_integer">
         {this.props.renderHelpElement()}
         <Input
+          {...this.props.register(this.props.item.linkId, {
+            required: isRequired(this.props.item),
+            valueAsNumber: true,
+          })}
+          onChange={this.handleChange}
           type="number"
+          value={value !== undefined && value !== null ? value + '' : ''}
           inputId={getId(this.props.id)}
           name={getId(this.props.id)}
-          value={value !== undefined && value !== null ? value + '' : ''}
           label={
             <Label
               labelTexts={[{ text: labelText, type: 'semibold' }]}
@@ -131,19 +139,12 @@ class Integer extends React.Component<Props, Record<string, unknown>> {
             />
           }
           required={isRequired(this.props.item)}
-          onKeyDown={(e: React.KeyboardEvent): void => {
-            const key = String.fromCharCode(e.which);
-            if ('0123456789-'.indexOf(key) === -1) {
-              e.preventDefault();
-            }
-          }}
           placeholder={getPlaceholder(this.props.item)}
           defaultValue={value !== undefined && value !== null ? value + '' : ''}
           max={getMaxValueExtensionValue(this.props.item)}
           min={getMinValueExtensionValue(this.props.item)}
           // errorMessage={getValidationTextExtension(this.props.item)}
           className="page_refero__input"
-          onChange={this.handleChange}
           width={25}
         />
         {this.props.renderDeleteButton('page_refero__deletebutton--margin-top')}
@@ -154,7 +155,8 @@ class Integer extends React.Component<Props, Record<string, unknown>> {
   }
 }
 
-const withCommonFunctionsComponent = withCommonFunctions(Integer);
+const withFormProps = ReactHookFormHoc(Integer);
+const withCommonFunctionsComponent = withCommonFunctions(withFormProps);
 const layoytChangeComponent = layoutChange(withCommonFunctionsComponent);
 const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(layoytChangeComponent);
 export default connectedComponent;

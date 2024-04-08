@@ -127,6 +127,7 @@
     "yargs": "^17.7.2"
   },
   "dependencies": {
+    "@redux-devtools/extension": "^3.3.0",
     "@types/react-collapse": "^5.0.1",
     "dompurify": "^2.0.8",
     "fhirpath": "2.7.3",
