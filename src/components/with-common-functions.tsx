@@ -18,7 +18,7 @@ import { AutoSuggestProps } from '../types/autoSuggestProps';
 import { OrgenhetHierarki } from '../types/orgenhetHierarki';
 import { TextMessage } from '../types/text-message';
 
-import Icon from '@helsenorge/designsystem-react/components/Icon';
+import Icon from '@helsenorge/designsystem-react/components/Icons';
 import HelpSign from '@helsenorge/designsystem-react/components/Icons/HelpSign';
 
 import { UploadedFile } from '@helsenorge/file-upload/components/dropzone';
@@ -106,7 +106,7 @@ export interface WithCommonFunctionsProps {
   fetchReceivers?: (successCallback: (receivers: Array<OrgenhetHierarki>) => void, errorCallback: () => void) => void;
 }
 
-interface EnhancedProps {
+export interface EnhancedProps {
   renderChildrenItems?: (renderContext: RenderContext) => Array<JSX.Element> | null;
   renderDeleteButton?: (classname?: string) => JSX.Element | null;
   renderRepeatButton: (
@@ -123,7 +123,7 @@ interface EnhancedProps {
 export interface WithCommonFunctionsAndEnhancedProps extends WithCommonFunctionsProps, EnhancedProps {}
 
 export default function withCommonFunctions<T extends WithCommonFunctionsProps>(
-  WrappedComponent: React.ComponentType<T & EnhancedProps>
+  WrappedComponent: React.ComponentType<T>
 ): React.ComponentType<T & EnhancedProps> {
   const WithCommonFunctions = (props: T): JSX.Element | null => {
     const [isHelpVisible, setIsHelpVisible] = React.useState(false);

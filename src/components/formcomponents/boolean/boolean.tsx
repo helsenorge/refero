@@ -4,8 +4,6 @@ import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItem, Questionna
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
-import { CommonFormElementProps } from '../../../types/formTypes/commonFormElementProps';
-
 import Checkbox from '@helsenorge/designsystem-react/components/Checkbox';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Label from '@helsenorge/designsystem-react/components/Label';

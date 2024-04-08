@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
 import Button from '@helsenorge/designsystem-react/components/Button';
-import Icon from '@helsenorge/designsystem-react/components/Icon';
+import Icon from '@helsenorge/designsystem-react/components/Icons';
 import TrashCan from '@helsenorge/designsystem-react/components/Icons/TrashCan';
 import Modal from '@helsenorge/designsystem-react/components/Modal';
 
@@ -17,6 +17,7 @@ import { RenderContext } from '../../../util/renderContext';
 import { Resources } from '../../../util/resources';
 
 interface Props {
+  className?: string;
   item: QuestionnaireItem;
   path: Array<Path>;
   resources?: Resources;

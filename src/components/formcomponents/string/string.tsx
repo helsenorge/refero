@@ -19,7 +19,6 @@ import {
   isRequired,
   getId,
   getStringValue,
-  getMaxLength,
   getPDFStringValue,
   validateText,
   getTextValidationErrorMessage,

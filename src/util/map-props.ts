@@ -55,7 +55,7 @@ function isEnableWhenEnabled(
 
 function getValueIfDataReceiver(
   state: GlobalState,
-  originalProps: Props
+  originalProps: WithCommonFunctionsProps
 ): QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[] | undefined {
   if (originalProps.item) {
     const extension = getCopyExtension(originalProps.item);
@@ -119,14 +119,20 @@ function getQuestionnaireResponseItemAnswer(
   return answerArray;
 }
 
-export function mergeProps(stateProps: Props, dispatchProps: Props, ownProps: Props): Props {
+export function mergeProps(
+  stateProps: WithCommonFunctionsProps,
+  dispatchProps: {
+    dispatch: ThunkDispatch<GlobalState, void, NewValueAction>;
+  },
+  ownProps: WithCommonFunctionsProps
+): WithCommonFunctionsProps {
   return Object.assign({}, ownProps, stateProps, dispatchProps);
 }
 
-export function mapDispatchToProps(dispatch: ThunkDispatch<GlobalState, void, NewValueAction>, props: Props): Props {
+export function mapDispatchToProps(dispatch: ThunkDispatch<GlobalState, void, NewValueAction>): {
+  dispatch: ThunkDispatch<GlobalState, void, NewValueAction>;
+} {
   return {
     dispatch,
-    path: props.path,
-    renderContext: props.renderContext,
   };
 }
