@@ -8,6 +8,7 @@ import {
   QuestionnaireResponseItemAnswer,
   Quantity,
 } from 'fhir/r4';
+import { useForm } from 'react-hook-form';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 

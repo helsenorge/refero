@@ -5,21 +5,21 @@ import { QuestionnaireItemEnableBehaviorCodes } from '../types/fhirEnums';
 
 import { enableWhenMatchesAnswer, getQuestionnaireResponseItemWithLinkid, getResponseItems, Path, isInGroupContext } from './refero-core';
 import { NewValueAction } from '../actions/newValue';
-import { Props } from '../components/with-common-functions';
+import { WithCommonFunctionsProps } from '../components/with-common-functions';
 import ItemType from '../constants/itemType';
 import { getFormData } from '../reducers/form';
 import { GlobalState } from '../reducers/index';
 import { getCopyExtension, getCalculatedExpressionExtension } from '../util/extension';
 import { evaluateFhirpathExpressionToGetString } from '../util/fhirpathHelper';
 
-export function mapStateToProps(state: GlobalState, originalProps: Props): Props {
+export function mapStateToProps(state: GlobalState, originalProps: WithCommonFunctionsProps): WithCommonFunctionsProps {
   const newAnswer = getValueIfDataReceiver(state, originalProps);
   if (!originalProps.item || !originalProps.item.enableWhen) {
-    return { ...originalProps, enable: true, ...(newAnswer !== undefined && { answer: newAnswer }) } as Props;
+    return { ...originalProps, enable: true, ...(newAnswer !== undefined && { answer: newAnswer }) } as WithCommonFunctionsProps;
   }
   const enable = isEnableWhenEnabled(originalProps.item.enableWhen, originalProps.item.enableBehavior, originalProps.path || [], state);
 
-  return { ...originalProps, enable, ...(newAnswer !== undefined && { answer: newAnswer }) } as Props;
+  return { ...originalProps, enable, ...(newAnswer !== undefined && { answer: newAnswer }) } as WithCommonFunctionsProps;
 }
 
 function isEnableWhenEnabled(

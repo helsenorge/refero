@@ -112,10 +112,11 @@ class Decimal extends React.Component<Props, Record<string, unknown>> {
         </TextView>
       );
     }
+    //getValidationTextExtension(item)
     return (
       <div className="page_refero__component page_refero__component_decimal">
         {this.props.renderHelpElement()}
-        <FormGroup error={getValidationTextExtension(item)} mode="ongrey">
+        <FormGroup error={''} mode="ongrey">
           <Input
             type="number"
             inputId={getId(this.props.id)}
