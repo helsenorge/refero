@@ -72,6 +72,7 @@ class Decimal extends React.Component<Props, Record<string, unknown>> {
   handleChange = (event: React.FormEvent): void => {
     const { dispatch, path, item, promptLoginMessage, onAnswerChange } = this.props;
     const value = parseFloat((event.target as HTMLInputElement).value);
+    this.props.setValue(this.props.item.linkId, value);
     if (dispatch) {
       dispatch(newDecimalValueAsync(path, value, item))?.then(newState =>
         onAnswerChange(newState, path, item, { valueDecimal: value } as QuestionnaireResponseItemAnswer)

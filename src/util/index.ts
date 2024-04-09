@@ -1,5 +1,6 @@
 import { Questionnaire, QuestionnaireResponseItem, QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import marked from 'marked';
+import { UseFormRegister } from 'react-hook-form';
 import { ComponentClass } from 'react-redux';
 import * as uuid from 'uuid';
 

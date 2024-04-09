@@ -4,11 +4,11 @@ import { IItemType } from '../constants/itemType';
 
 export const defaultValuesForType: Record<IItemType, unknown> = {
   text: '', // Default value for text items
-  quantity: 0, // Default value for quantity items
+  quantity: null, // Default value for quantity items
   choice: null, // Default value for choice items
   boolean: false, // Default value for boolean items
-  integer: 0, // Default value for integer items
-  decimal: 0, // Default value for decimal items
+  integer: null, // Default value for integer items
+  decimal: null, // Default value for decimal items
   date: '', // Default value for date items
   dateTime: '', // Default value for dateTime items
   time: '', // Default value for time items
@@ -27,7 +27,7 @@ export function generateDefaultValues(items?: QuestionnaireItem[]): Record<strin
   const defaultValues: DefaultValues = {};
   if (!items) return defaultValues;
   for (const item of items) {
-    const defaultValue = defaultValuesForType[item.type];
+    const defaultValue = item.repeats ? [defaultValuesForType[item.type]] : defaultValuesForType[item.type];
 
     if (item.item && Array.isArray(item.item)) {
       defaultValues[item.linkId] = generateDefaultValues(item.item);

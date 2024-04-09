@@ -16,8 +16,9 @@ import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/m
 import { Path } from '../../../util/refero-core';
 import { RenderContext } from '../../../util/renderContext';
 import { Resources } from '../../../util/resources';
+import ReactHookFormHoc, { FormProps } from '../../../validation/ReactHookFormHoc';
 
-interface Props {
+interface Props extends Partial<FormProps> {
   item: QuestionnaireItem;
   parentPath?: Array<Path>;
   responseItems?: Array<QuestionnaireResponseItem>;
@@ -27,7 +28,7 @@ interface Props {
   disabled: boolean;
 }
 
-export const RepeatButton = ({ item, resources, dispatch, parentPath, responseItems, disabled }: Props): JSX.Element => {
+export const RepeatButton = ({ item, resources, dispatch, parentPath, responseItems, disabled, register }: Props): JSX.Element => {
   const onAddRepeatItem = (): void => {
     if (dispatch && item) {
       dispatch(addRepeatItem(parentPath, item, responseItems));
@@ -46,6 +47,6 @@ export const RepeatButton = ({ item, resources, dispatch, parentPath, responseIt
     </Button>
   );
 };
-
-const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(RepeatButton);
+const withFormProps = ReactHookFormHoc(RepeatButton);
+const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(withFormProps);
 export default connectedComponent;
