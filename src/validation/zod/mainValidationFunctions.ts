@@ -1,8 +1,6 @@
 import { Questionnaire, QuestionnaireItem, Resource } from 'fhir/r4';
 import { ZodNaN, ZodNumber, ZodOptional, ZodUnion, z } from 'zod';
 
-import { Resources } from '../types/resources';
-
 import { booleanValidation } from './booleanValidation';
 import { createChoiceSchema } from './choiceValidation';
 import { decimalValidation } from './decimalValidation';
@@ -10,8 +8,9 @@ import { integerValidation } from './integerValidation';
 import { quantityValidation } from './quantityVaidation';
 import { stringValidation } from './stringValidation';
 import { textValidation } from './textValidation';
-import ItemType from '../constants/itemType';
-import { isRequired } from '../util';
+import ItemType from '../../constants/itemType';
+import { isRequired } from '../../util';
+import { Resources } from '../../util/resources';
 
 type ZodSchemaType =
   | z.ZodString

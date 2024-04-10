@@ -4,8 +4,8 @@ import { ZodNaN, ZodNumber, ZodOptional, ZodUnion, z } from 'zod';
 // import { Resources } from '../types/resources';
 // resources?: Resources
 
-import { getDecimalPattern, isRequired } from '../util';
-import { getMaxValueExtensionValue, getMinValueExtensionValue, getValidationTextExtension } from '../util/extension';
+import { getDecimalPattern, isRequired } from '../../util';
+import { getValidationTextExtension, getMaxValueExtensionValue, getMinValueExtensionValue } from '../../util/extension';
 
 export const decimalValidation = (item: QuestionnaireItem): ZodNumber | ZodOptional<ZodUnion<[ZodNumber, ZodNaN]>> => {
   const customErrorMessage = getValidationTextExtension(item);

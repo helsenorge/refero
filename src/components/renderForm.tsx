@@ -1,12 +1,10 @@
 import * as React from 'react';
 
-import { QuestionnaireResponse } from 'fhir/r4';
-import { FieldValues, SubmitHandler, UseFormReturn, useForm, useFormContext } from 'react-hook-form';
+import { FieldValues, SubmitHandler } from 'react-hook-form';
 
 import { ReferoProps } from '../types/referoProps';
 
 import Loader from '@helsenorge/designsystem-react/components/Loader';
-import Validation from '@helsenorge/designsystem-react/components/Validation';
 
 import FormButtons from './formButtons/formButtons';
 import { Resources } from '../util/resources';
@@ -45,9 +43,10 @@ const RenderForm = ({
   methods,
 }: // methods,
 RenderFormProps): JSX.Element | null => {
-  const { getValues } = useFormContext();
+  // const { getValues } = useFormContext();
 
-  const onSubmitReactHookForm: SubmitHandler<FieldValues> = (data: QuestionnaireResponse, e: React.FormEvent): void => {
+  //data: QuestionnaireResponse, e: React.FormEvent
+  const onSubmitReactHookForm: SubmitHandler<FieldValues> = (): void => {
     // console.log('data', JSON.stringify(data, null, 2));
     // console.log('e', e);
     // return false;
@@ -59,7 +58,6 @@ RenderFormProps): JSX.Element | null => {
   if (referoProps.blockSubmit) {
     return <Loader size={'medium'} overlay={'parent'} />;
   }
-  console.log('values', getValues());
   return (
     <form onSubmit={methods.handleSubmit(onSubmitReactHookForm)}>
       {/* <Validation errorSummary="test" /> */}

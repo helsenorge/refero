@@ -1,10 +1,9 @@
 import { QuestionnaireItem } from 'fhir/r4';
 import { ZodNumber, z } from 'zod';
 
-import { Resources } from '../types/resources';
-
-import { getDecimalPattern, isRequired } from '../util';
-import { getMaxValueExtensionValue, getMinValueExtensionValue } from '../util/extension';
+import { getDecimalPattern, isRequired } from '../../util';
+import { getMaxValueExtensionValue, getMinValueExtensionValue } from '../../util/extension';
+import { Resources } from '../../util/resources';
 
 export const ZodFhirQuantity = z.object({
   value: z.number(),

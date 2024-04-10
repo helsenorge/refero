@@ -6,7 +6,7 @@ import { WithCommonFunctionsProps } from '../components/with-common-functions';
 
 export type FormProps = UseFormReturn<FieldValues, unknown, undefined>;
 
-function ReactHookFormHoc<T extends WithCommonFunctionsProps>(Comp: React.ComponentType<T>): React.ComponentType<T & FormProps> {
+function ReactHookFormHoc<T extends Partial<WithCommonFunctionsProps>>(Comp: React.ComponentType<T>): React.ComponentType<T & FormProps> {
   const EnhancedComponent: React.FC<T & FormProps> = props => {
     const form = useFormContext();
     return <Comp {...props} {...form} />;

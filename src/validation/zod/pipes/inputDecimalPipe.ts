@@ -1,9 +1,12 @@
 import { QuestionnaireItem } from 'fhir/r4';
 import { z } from 'zod';
 
-import { getDecimalPattern, isRequired } from '../../util';
+import { getDecimalPattern } from '../../../util';
 
-export const zodDecimalPipe = (zodPipe: z.ZodNumber, item: QuestionnaireItem) => {
+export const zodDecimalPipe = (
+  zodPipe: z.ZodNumber,
+  item: QuestionnaireItem
+): z.ZodPipeline<z.ZodEffects<z.ZodEffects<z.ZodString, string, string>, number, string>, z.ZodNumber> => {
   const decimal = getDecimalPattern(item);
   const schema = z.coerce
     .string()

@@ -1,13 +1,13 @@
 import { QuestionnaireItem, Resource } from 'fhir/r4';
 import { z } from 'zod';
 
-import { Options } from '../types/formTypes/radioGroupOptions';
-import { Resources } from '../types/resources';
+import { Options } from '../../types/formTypes/radioGroupOptions';
 
-import ItemControl from '../constants/itemcontrol';
-import ItemType from '../constants/itemType';
-import { isRequired } from '../util';
-import { getItemControlValue, getOptions } from '../util/choice';
+import ItemControl from '../../constants/itemcontrol';
+import ItemType from '../../constants/itemType';
+import { isRequired } from '../../util';
+import { getItemControlValue, getOptions } from '../../util/choice';
+import { Resources } from '../../util/resources';
 
 function transformOptionsToEnum(options: Options[] | undefined): [string, ...string[]] | undefined {
   if (!options || options.length === 0) return undefined;

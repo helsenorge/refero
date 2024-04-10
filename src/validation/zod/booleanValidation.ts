@@ -1,9 +1,10 @@
 import { QuestionnaireItem } from 'fhir/r4';
 import { z } from 'zod';
 
+import { isRequired } from '../../util';
+
 // import { Resources } from '../types/resources';
 
-import { isRequired } from '../util';
 //, resources?: Resources
 export const booleanValidation = (item: QuestionnaireItem): z.ZodType<boolean> => {
   const schema = z.boolean().transform(value => {

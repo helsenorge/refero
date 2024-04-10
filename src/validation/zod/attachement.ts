@@ -5,7 +5,8 @@ import { z } from 'zod';
 
 import { MimeTypes } from '@helsenorge/file-upload/components/dropzone';
 
-import { VALID_FILE_TYPES } from '../constants';
+import { VALID_FILE_TYPES } from '../../constants';
+
 //item: QuestionnaireItem, resources: Resources
 export const attachmentValidation = (): z.ZodTypeAny => {
   const schema = z

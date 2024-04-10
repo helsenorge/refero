@@ -1,10 +1,9 @@
 import { QuestionnaireItem } from 'fhir/r4';
 import { ZodString, z } from 'zod';
 
-import { Resources } from '../types/resources';
-
-import { getMaxLength, isRequired } from '../util';
-import { getMinLengthExtensionValue, getRegexExtension, getValidationTextExtension } from '../util/extension';
+import { getMaxLength, isRequired } from '../../util';
+import { getMinLengthExtensionValue, getRegexExtension, getValidationTextExtension } from '../../util/extension';
+import { Resources } from '../../util/resources';
 
 //return getTextValidationErrorMessage(value, validateScriptInjection, item, resources);
 
