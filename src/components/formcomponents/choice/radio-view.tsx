@@ -52,6 +52,7 @@ const RadioView: React.FC<Props> = ({
     <div className="page_refero__component page_refero__component_choice page_refero__component_choice_radiobutton">
       <FormGroup legend={getText(item, onRenderMarkdown, questionnaire, resources)} mode="ongrey">
         {renderHelpElement()}
+        {renderHelpButton()}
         {options.map((option: Options, index: number) => (
           <RadioButton
             key={id + '' + index}
@@ -66,7 +67,6 @@ const RadioView: React.FC<Props> = ({
               <Label
                 labelTexts={[{ text: option.label }]}
                 sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
-                afterLabelChildren={<>{renderHelpButton()}</>}
               />
             }
             defaultChecked={selectedValue === option?.type}

@@ -20,6 +20,7 @@ import RenderingOptionsData from './__data__/renderingOptions';
 import ChoiceCopyFrom from './__data__/copyFrom/choice';
 import { createItemControlExtension, selectCheckBoxOption } from '../__tests__/utils';
 import itemcontrol from '../../constants/itemcontrol';
+import Checkbox from '@helsenorge/designsystem-react/components/Checkbox';
 
 describe('Component renders help items', () => {
   beforeEach(() => {
@@ -88,21 +89,21 @@ describe('repeat with enableWhen', () => {
     expect(wrapper.find(Boolean)).toHaveLength(2);
 
     // no enableWhen components should be visible
-    expect(wrapper.find(SafeInputField)).toHaveLength(0);
+    expect(wrapper.find(Checkbox)).toHaveLength(0);
 
     // Click first boolean input, and enableWhen component should be enabled
     wrapper
       .find("input[type='checkbox']")
       .first()
       .simulate('change', { taget: { checked: true } });
-    expect(wrapper.find(SafeInputField)).toHaveLength(1);
+    expect(wrapper.find(Checkbox)).toHaveLength(1);
 
     // Click last boolean input, and enableWhen component should be enabled
     wrapper
       .find("input[type='checkbox']")
       .last()
       .simulate('change', { target: { checked: true } });
-    expect(wrapper.find(SafeInputField)).toHaveLength(2);
+    expect(wrapper.find(Checkbox)).toHaveLength(2);
   });
 });
 

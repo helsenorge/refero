@@ -26,15 +26,9 @@ import { NewValueAction } from '../../actions/newValue';
 import { RenderContextType } from '../../constants/renderContextType';
 import { RenderContext } from '../../util/renderContext';
 import { createItemControlExtension } from '../__tests__/utils';
-import ItemType from '../../constants/itemType';
+import ItemType, { IItemType } from '../../constants/itemType';
 
 describe('Component renders help items', () => {
-  beforeEach(() => {
-    window.matchMedia = jest.fn().mockImplementation(_ => {
-      return {};
-    });
-  });
-
   it('should render help button and text for choice component of type radio-button', () => {
     const extension = createItemControlExtension('radio-button');
     runTest(ItemType.CHOICE, HelpElement.HelpButtonAndText, [extension]);
@@ -115,9 +109,12 @@ enum HelpElement {
   HelpButtonAndText = 2,
 }
 
-function runTest(itemType: string, expect: HelpElement, extensions?: Extension[]) {
+function runTest(itemType: IItemType, expect: HelpElement, extensions?: Extension[]) {
   const component = createComponentOfType(itemType, extensions);
   const wrapper = createWrapperWithComponent(component);
+  if (itemType === ItemType.CHOICE && extensions?.[0]?.valueCodeableConcept?.coding?.[0]?.code === 'check-box') {
+    console.log(wrapper.debug());
+  }
   wrapper.render();
 
   expectToFind(wrapper, expect);
@@ -147,7 +144,7 @@ function createValueStringOption(...options: string[]): QuestionnaireItemAnswerO
   });
 }
 
-function createItem(itemType: string, extensions?: Extension[]): QuestionnaireItem {
+function createItem(itemType: IItemType, extensions?: Extension[]): QuestionnaireItem {
   return {
     linkId: '1',
     type: itemType,
@@ -161,7 +158,7 @@ function createWrapperWithComponent(component: JSX.Element): ReactWrapper<{}, {}
   return mount(<Provider store={store}>{component}</Provider>);
 }
 
-function createComponentOfType(type: string, extensions?: Extension[]): JSX.Element {
+function createComponentOfType(type: IItemType, extensions?: Extension[]): JSX.Element {
   switch (type) {
     case ItemType.CHOICE:
       return createComponentChoice(extensions);
@@ -203,11 +200,12 @@ function createComponentText(extensions?: Extension[]): JSX.Element {
       answer={{} as QuestionnaireResponseItemAnswer}
       item={item}
       path={{} as Path[]}
-      renderDeleteButton={() => undefined}
+      renderDeleteButton={() => null}
       repeatButton={<React.Fragment />}
       renderHelpButton={() => <div className="helpButton">{'help button'}</div>}
       renderHelpElement={() => <div className="helpText">{'help text'}</div>}
       renderContext={new RenderContext(RenderContextType.None)}
+      renderRepeatButton={() => <React.Fragment />}
     />
   );
 }
@@ -226,6 +224,7 @@ function createComponentQuantity(extensions?: Extension[]): JSX.Element {
       renderHelpElement={() => <div className="helpText">{'help text'}</div>}
       renderContext={new RenderContext(RenderContextType.None)}
       renderDeleteButton={jest.fn()}
+      renderRepeatButton={() => <React.Fragment />}
     />
   );
 }
@@ -239,12 +238,12 @@ function createComponentInteger(extensions?: Extension[]): JSX.Element {
       answer={{} as QuestionnaireResponseItemAnswer}
       item={item}
       path={{} as Path[]}
-      renderDeleteButton={() => undefined}
+      renderDeleteButton={() => null}
       repeatButton={<React.Fragment />}
-      oneToTwoColumn={false}
       renderHelpButton={() => <div className="helpButton">{'help button'}</div>}
       renderHelpElement={() => <div className="helpText">{'help text'}</div>}
       renderContext={new RenderContext(RenderContextType.None)}
+      register={(...args) => undefined}
     />
   );
 }
@@ -258,12 +257,12 @@ function createComponentDecimal(extensions?: Extension[]): JSX.Element {
       answer={{} as QuestionnaireResponseItemAnswer}
       item={item}
       path={{} as Path[]}
-      renderDeleteButton={() => undefined}
+      renderDeleteButton={() => null}
       repeatButton={<React.Fragment />}
-      oneToTwoColumn={false}
       renderHelpButton={() => <div className="helpButton">{'help button'}</div>}
       renderHelpElement={() => <div className="helpText">{'help text'}</div>}
       renderContext={new RenderContext(RenderContextType.None)}
+      register={(...args) => undefined}
     />
   );
 }
@@ -277,11 +276,12 @@ function createComponentTime(extensions?: Extension[]): JSX.Element {
       answer={{} as QuestionnaireResponseItemAnswer}
       item={item}
       path={{} as Path[]}
-      renderDeleteButton={() => undefined}
+      renderDeleteButton={() => null}
       repeatButton={<React.Fragment />}
       renderHelpButton={() => <div className="helpButton">{'help button'}</div>}
       renderHelpElement={() => <div className="helpText">{'help text'}</div>}
       renderContext={new RenderContext(RenderContextType.None)}
+      renderRepeatButton={() => <React.Fragment />}
     />
   );
 }
@@ -295,12 +295,12 @@ function createComponentDateTime(extensions?: Extension[]): JSX.Element {
       answer={{} as QuestionnaireResponseItemAnswer}
       item={item}
       path={{} as Path[]}
-      renderDeleteButton={() => undefined}
+      renderDeleteButton={() => null}
       repeatButton={<React.Fragment />}
-      oneToTwoColumn={false}
       renderHelpButton={() => <div className="helpButton">{'help button'}</div>}
       renderHelpElement={() => <div className="helpText">{'help text'}</div>}
       renderContext={new RenderContext(RenderContextType.None)}
+      renderRepeatButton={() => <React.Fragment />}
     />
   );
 }
@@ -314,11 +314,12 @@ function createComponentDate(extensions?: Extension[]): JSX.Element {
       answer={{} as QuestionnaireResponseItemAnswer}
       item={item}
       path={{} as Path[]}
-      renderDeleteButton={() => undefined}
+      renderDeleteButton={() => null}
       repeatButton={<React.Fragment />}
       renderHelpButton={() => <div className="helpButton">{'help button'}</div>}
       renderHelpElement={() => <div className="helpText">{'help text'}</div>}
       renderContext={new RenderContext(RenderContextType.None)}
+      renderRepeatButton={() => <React.Fragment />}
     />
   );
 }
@@ -332,11 +333,12 @@ function createComponentAttachment(extensions?: Extension[]): JSX.Element {
       answer={{} as QuestionnaireResponseItemAnswer}
       item={item}
       path={{} as Path[]}
-      renderDeleteButton={() => undefined}
+      renderDeleteButton={() => null}
       repeatButton={<React.Fragment />}
       renderHelpButton={() => <div className="helpButton">{'help button'}</div>}
       renderHelpElement={() => <div className="helpText">{'help text'}</div>}
       renderContext={new RenderContext(RenderContextType.None)}
+      renderRepeatButton={() => <React.Fragment />}
     />
   );
 }
@@ -351,12 +353,13 @@ function createComponentGroup(extensions?: Extension[]): JSX.Element {
       item={item}
       path={{} as Path[]}
       headerTag={1}
-      renderDeleteButton={() => undefined}
+      renderDeleteButton={() => null}
       repeatButton={<React.Fragment />}
       renderChildrenItems={() => []}
       renderHelpButton={() => <div className="helpButton">{'help button'}</div>}
       renderHelpElement={() => <div className="helpText">{'help text'}</div>}
       renderContext={new RenderContext(RenderContextType.None)}
+      renderRepeatButton={() => <React.Fragment />}
     />
   );
 }
@@ -370,12 +373,13 @@ function createComponentBoolean(extensions?: Extension[]): JSX.Element {
       answer={{} as QuestionnaireResponseItemAnswer}
       item={item}
       path={{} as Path[]}
-      renderDeleteButton={() => undefined}
+      renderDeleteButton={() => null}
       repeatButton={<React.Fragment />}
       oneToTwoColumn={false}
       renderHelpButton={() => <div className="helpButton">{'help button'}</div>}
       renderHelpElement={() => <div className="helpText">{'help text'}</div>}
       renderContext={new RenderContext(RenderContextType.None)}
+      renderRepeatButton={() => <React.Fragment />}
     />
   );
 }
@@ -389,13 +393,14 @@ function createComponentString(extensions?: Extension[]): JSX.Element {
       answer={{} as QuestionnaireResponseItemAnswer}
       item={item}
       path={{} as Path[]}
-      renderDeleteButton={() => undefined}
+      renderDeleteButton={() => null}
       repeatButton={<React.Fragment />}
       visibleDeleteButton={false}
       oneToTwoColumn={false}
       renderHelpButton={() => <div className="helpButton">{'help button'}</div>}
       renderHelpElement={() => <div className="helpText">{'help text'}</div>}
       renderContext={new RenderContext(RenderContextType.None)}
+      renderRepeatButton={() => <React.Fragment />}
     />
   );
 }
@@ -410,11 +415,12 @@ function createComponentChoice(extensions?: Extension[]): JSX.Element {
       answer={{} as QuestionnaireResponseItemAnswer}
       item={item}
       path={{} as Path[]}
-      renderDeleteButton={() => undefined}
+      renderDeleteButton={() => null}
       repeatButton={<React.Fragment />}
       renderHelpButton={() => <div className="helpButton">{'help button'}</div>}
       renderHelpElement={() => <div className="helpText">{'help text'}</div>}
       renderContext={new RenderContext(RenderContextType.None)}
+      renderRepeatButton={() => <React.Fragment />}
     />
   );
 }
@@ -429,11 +435,13 @@ function createComponentOpenChoice(extensions?: Extension[]): JSX.Element {
       answer={{} as QuestionnaireResponseItemAnswer}
       item={item}
       path={{} as Path[]}
-      renderDeleteButton={() => undefined}
+      renderDeleteButton={() => null}
       repeatButton={<React.Fragment />}
       renderHelpButton={() => <div className="helpButton">{'help button'}</div>}
       renderHelpElement={() => <div className="helpText">{'help text'}</div>}
       renderContext={new RenderContext(RenderContextType.None)}
+      renderRepeatButton={() => <React.Fragment />}
+      children={<React.Fragment />}
     />
   );
 }

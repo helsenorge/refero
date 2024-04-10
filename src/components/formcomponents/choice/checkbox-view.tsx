@@ -56,6 +56,7 @@ const CheckboxView: React.FC<Props> = ({
     <div className="page_refero__component page_refero__component_choice page_refero__component_choice_checkbox">
       <FormGroup legend={getText(item, onRenderMarkdown, questionnaire, resources)} mode="ongrey">
         {renderHelpElement()}
+        {renderHelpButton()}
         {checkboxes.map((checkbox, index) => (
           <Checkbox
             onChange={(): void => handleChange(checkbox.id)}
@@ -68,7 +69,6 @@ const CheckboxView: React.FC<Props> = ({
               <Label
                 labelTexts={[{ text: checkbox.label }]}
                 sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
-                afterLabelChildren={<>{renderHelpButton()}</>}
               />
             }
             checked={checkbox.checked}

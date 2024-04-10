@@ -109,19 +109,19 @@ export function createItemControlExtension(code: string): Extension {
     valueCodeableConcept: {
       coding: [createItemControlCoding(code)],
     },
-  } as Extension;
+  };
 }
 
 function createItemControlCoding(code: string): Coding {
   return {
     code: code,
     system: 'http://hl7.org/fhir/ValueSet/questionnaire-item-control',
-  } as Coding;
+  };
 }
 
 export function createIDataReceiverExpressionExtension(value: string): Extension {
   return {
     url: ExtensionConstants.Copy_EXPRESSION,
     valueString: value,
-  } as Extension;
+  };
 }

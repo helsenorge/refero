@@ -16,3 +16,17 @@ Enzyme.configure({
 
 import structuredClone from '@ungap/structured-clone';
 global.structuredClone = global.structuredClone || structuredClone;
+
+Object.defineProperty(window, 'matchMedia', {
+  writable: true,
+  value: query => ({
+    matches: false,
+    media: query,
+    onchange: null,
+    addListener: () => {},
+    removeListener: () => {},
+    addEventListener: () => {},
+    removeEventListener: () => {},
+    dispatchEvent: () => {},
+  }),
+});

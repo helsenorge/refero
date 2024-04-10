@@ -63,8 +63,8 @@ class DropdownView extends React.Component<Props, Record<string, unknown>> {
     const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
     return (
       <div className="page_refero__component page_refero__component_choice page_refero__component_choice_dropdown">
-        {renderHelpElement()}
         <FormGroup legend={getText(item, onRenderMarkdown, questionnaire, resources)} mode="ongrey">
+          {renderHelpElement()}
           <Select
             label={
               <Label

@@ -60,6 +60,7 @@ const CheckboxView: React.SFC<Props> = ({
   return (
     <div className="page_refero__component page_refero__component_openchoice page_refero__component_openchoice_checkbox">
       {renderHelpElement()}
+      {renderHelpButton()}
       <FormGroup legend={getText(item, onRenderMarkdown, questionnaire, resources)} error={''} mode="ongrey">
         {checkboxes.map((checkbox, index) => (
           <Checkbox
@@ -74,7 +75,6 @@ const CheckboxView: React.SFC<Props> = ({
               <Label
                 labelTexts={[{ text: checkbox.label }]}
                 sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
-                afterLabelChildren={<>{renderHelpButton()}</>}
               />
             }
             value={checkbox.id}
