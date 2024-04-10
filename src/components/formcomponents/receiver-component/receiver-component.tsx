@@ -55,6 +55,7 @@ class ReceiverComponent extends React.Component<ReceiverComponentProps, Receiver
 
   componentDidMount(): void {
     if (this.props.fetchReceivers) {
+      console.log(this.props.fetchReceivers);
       this.props.fetchReceivers(this.loadSuccessCallback, this.loadErrorCallback);
     }
   }
@@ -220,7 +221,13 @@ class ReceiverComponent extends React.Component<ReceiverComponentProps, Receiver
         label={<Label labelTexts={[{ text: label, type: 'semibold' }]} />}
         className="page_refero__input"
       >
-        {selectOptions}
+        {selectOptions.map(option => {
+          return (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          );
+        })}
       </Select>
     );
   }

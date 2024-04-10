@@ -55,8 +55,7 @@ const RadioView: React.FC<Props> = ({
         {options.map((option: Options, index: number) => (
           <RadioButton
             key={id + '' + index}
-            inputId={getId(id) + index}
-            testId={getId(id) + index}
+            inputId={getId(id) + '-hn-' + index}
             mode="ongrey"
             onChange={(): void => {
               handleChange(option.type);

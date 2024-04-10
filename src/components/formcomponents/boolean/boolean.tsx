@@ -110,6 +110,7 @@ class Boolean extends React.Component<Props> {
         <FormGroup error={getValidationTextExtension(this.props.item)}>
           <Checkbox
             testId={getId(this.props.id)}
+            inputId={getId(this.props.id)}
             label={<Label labelTexts={[{ text: this.getLabel() }]} afterLabelChildren={<>{this.props.renderHelpButton()}</>} />}
             required={isRequired(this.props.item)}
             checked={this.getValue()}

@@ -5,12 +5,12 @@ import thunk from 'redux-thunk';
 import { mount } from 'enzyme';
 
 import '../../util/defineFetch';
-import rootReducer from '../../store/reducers';
 import { Questionnaire } from 'fhir/r4';
 import { ReferoContainer } from '..';
 import { Resources } from '../../util/resources';
 import questionnaireWithEnableWhen from './__data__/enableWhen';
 import { selectCheckBoxOption } from './utils';
+import rootReducer from '../../reducers';
 
 describe('enableWhen with checkboxes and multiple answers', () => {
   beforeEach(() => {

@@ -61,7 +61,7 @@ const RadioView: React.FC<Props> = ({
           <RadioButton
             name={getId(id)}
             key={`${getId(id)}-${index.toString()}`}
-            inputId={getId(id) + index}
+            inputId={getId(id) + '-hn-' + index}
             testId={getId(id) + index}
             mode="ongrey"
             required={isRequired(item)}

@@ -78,7 +78,9 @@ class DropdownView extends React.Component<Props, Record<string, unknown>> {
             selectId={getId(id)}
             className="page_refero__input"
           >
-            {placeholder}
+            <option key={getId(id) + placeholder?.label} value={undefined}>
+              {placeholder?.label}
+            </option>
             {options.map(dropdownOption => (
               <option key={getId(id) + dropdownOption.label} value={dropdownOption.type}>
                 {dropdownOption.label}

@@ -49,7 +49,7 @@ export async function selectRadioButtonOption(linkId: string, index: number, wra
   await act(async () => {
     const id = 'item_' + linkId + '-hn-' + index;
     const input = wrapper.find('input[id="' + id + '"]');
-    input.simulate('click');
+    input.simulate('change');
   });
 
   await new Promise(r => {
@@ -82,6 +82,7 @@ export async function changeCheckBoxOption(linkId: string, index: string, on: bo
 export function findItem(linkId: string, wrapper: ReactWrapper<{}, {}>) {
   const id = 'item_' + linkId;
   const expr = 'input[id="' + id + '"]';
+
   const input = wrapper.find(expr);
   return input.at(0);
 }

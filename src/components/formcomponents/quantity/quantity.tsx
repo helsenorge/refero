@@ -154,6 +154,8 @@ class Quantity extends React.Component<Props> {
               />
             }
             type="number"
+            onChange={this.handleChange}
+            value={value !== undefined ? value + '' : ''}
             inputId={getId(id)}
             defaultValue={value !== undefined ? value + '' : ''}
             placeholder={getPlaceholder(item)}

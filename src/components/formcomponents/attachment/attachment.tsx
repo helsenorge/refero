@@ -192,7 +192,9 @@ export class AttachmentComponent extends React.Component<Props> {
             attachmentValidTypes={this.props.attachmentValidTypes}
             item={item}
             attachmentErrorMessage={this.props.attachmentErrorMessage}
-          />
+          >
+            {this.props.children}
+          </AttachmentHtml>
         </>
       );
     }

@@ -1,5 +1,6 @@
 import React, { ReactElement } from 'react';
 
+import { QuestionnaireResponse } from 'fhir/r4';
 import { useFormContext } from 'react-hook-form';
 
 import { ButtonType, buttonOrderNormalView, buttonOrderStepView } from '../../types/formTypes/formButton';
@@ -17,7 +18,7 @@ interface FormButtonsInterface {
   pauseButtonDisabled?: boolean;
   onSubmitButtonClicked?: (() => void) | ((e: React.FormEvent) => void);
   onCancelButtonClicked?: () => void;
-  onPauseButtonClicked?: () => void;
+  onPauseButtonClicked?: (questionnaireResponse?: QuestionnaireResponse) => void;
   isHelsenorgeForm?: boolean;
   isStepView?: boolean;
 }

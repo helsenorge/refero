@@ -139,7 +139,7 @@ export class String extends React.Component<Props, Record<string, unknown>> {
             type="text"
             width={25}
             inputId={getId(this.props.id)}
-            defaultValue={getStringValue(answer)}
+            value={getStringValue(answer)}
             placeholder={getPlaceholder(item)}
             className="page_refero__input"
           />

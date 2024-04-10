@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireItemInitial } from 'fhir/r4';
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireItemInitial, QuestionnaireResponse } from 'fhir/r4';
 import moment, { Moment } from 'moment';
 
 import { LanguageLocales } from '@helsenorge/core-utils/constants/languages';
