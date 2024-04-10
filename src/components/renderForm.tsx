@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { FieldValues, SubmitHandler } from 'react-hook-form';
+import { FieldValues, SubmitHandler, useFormContext } from 'react-hook-form';
 
 import { ReferoProps } from '../types/referoProps';
 
@@ -9,6 +9,8 @@ import Loader from '@helsenorge/designsystem-react/components/Loader';
 import FormButtons from './formButtons/formButtons';
 import { Resources } from '../util/resources';
 import { FormProps } from '../validation/ReactHookFormHoc';
+import { ValidationSummaryPlacement } from '../types/formTypes/validationSummaryPlacement';
+import { ValidationSummary } from './validation-summary';
 
 interface RenderFormProps {
   isAuthorized: boolean;
@@ -24,6 +26,7 @@ interface RenderFormProps {
   isHelsenorgeForm?: boolean;
   children?: React.ReactNode;
   methods: FormProps;
+  validationSummaryPlacement?: ValidationSummaryPlacement;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   // methods: UseFormReturn<FieldValues, any, undefined>;
 }
@@ -41,9 +44,11 @@ const RenderForm = ({
   isHelsenorgeForm,
   children,
   methods,
+  validationSummaryPlacement
 }: // methods,
 RenderFormProps): JSX.Element | null => {
-  // const { getValues } = useFormContext();
+  const { formState } = useFormContext();
+  const errors = formState.errors;
 
   //data: QuestionnaireResponse, e: React.FormEvent
   const onSubmitReactHookForm: SubmitHandler<FieldValues> = (): void => {
@@ -52,8 +57,12 @@ RenderFormProps): JSX.Element | null => {
     // return false;
     // onSubmit();
   };
+  
   const displayPauseButtonInNormalView = referoProps.onSave ? onSave : undefined;
   const displayPauseButtonInStepView = displayPreviousButton ? previousStep : undefined;
+  const displayValidationSummaryOnTop: boolean =
+  !validationSummaryPlacement || validationSummaryPlacement === ValidationSummaryPlacement.Top;
+  const validationSummary = <ValidationSummary resources={resources} errors={errors} />;
 
   if (referoProps.blockSubmit) {
     return <Loader size={'medium'} overlay={'parent'} />;
@@ -61,6 +70,7 @@ RenderFormProps): JSX.Element | null => {
   return (
     <form onSubmit={methods.handleSubmit(onSubmitReactHookForm)}>
       {/* <Validation errorSummary="test" /> */}
+      {displayValidationSummaryOnTop && validationSummary}
       {children}
       <FormButtons
         isStepView={isStepView}
@@ -76,6 +86,7 @@ RenderFormProps): JSX.Element | null => {
         onPauseButtonClicked={isStepView ? displayPauseButtonInStepView : displayPauseButtonInNormalView}
         isHelsenorgeForm={!!isHelsenorgeForm}
       />
+      {!displayValidationSummaryOnTop && validationSummary}
     </form>
   );
 };

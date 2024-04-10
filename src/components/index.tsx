@@ -354,6 +354,7 @@ const Refero = (props: StateProps & DispatchProps & ReferoProps): JSX.Element | 
             onSave={handleSave}
             onSubmit={handleSubmit}
             methods={methods}
+            validationSummaryPlacement={validationSummaryPlacement}
           >
             {renderFormItems()}
           </RenderForm>
