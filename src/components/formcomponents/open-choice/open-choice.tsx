@@ -44,7 +44,7 @@ import {
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
 import { Resources } from '../../../util/resources';
-import { FormProps } from '../../../validation/ReactHookFormHoc';
+import ReactHookFormHoc, { FormProps } from '../../../validation/ReactHookFormHoc';
 import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 import SliderView from '../choice/slider-view';
 import AutosuggestView from '../choice-common/autosuggest-view';
@@ -446,7 +446,7 @@ export class OpenChoice extends React.Component<Props> {
     );
   }
 }
-
-const withCommonFunctionsComponent = withCommonFunctions(OpenChoice);
+const withFormProps = ReactHookFormHoc(OpenChoice);
+const withCommonFunctionsComponent = withCommonFunctions(withFormProps);
 const connectedStringComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(withCommonFunctionsComponent);
 export default connectedStringComponent;
