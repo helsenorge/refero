@@ -27,10 +27,11 @@ import { isReadOnly, isRequired, getId, getDecimalPattern, getSublabelText, rend
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
 import { Resources } from '../../../util/resources';
+import ReactHookFormHoc, { FormProps } from '../../../validation/ReactHookFormHoc';
 import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 import TextView from '../textview';
 
-export interface Props extends WithCommonFunctionsAndEnhancedProps {
+export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   item: QuestionnaireItem;
   questionnaire?: Questionnaire;
   responseItem: QuestionnaireResponseItem;
@@ -153,6 +154,10 @@ class Quantity extends React.Component<Props> {
                 afterLabelChildren={this.props.renderHelpButton()}
               />
             }
+            {...this.props.register(this.props.item.linkId, {
+              required: isRequired(this.props.item),
+              valueAsNumber: true,
+            })}
             type="number"
             onChange={this.handleChange}
             value={value !== undefined ? value + '' : ''}
@@ -171,7 +176,7 @@ class Quantity extends React.Component<Props> {
     );
   }
 }
-
-const withCommonFunctionsComponent = withCommonFunctions(Quantity);
+const withFormProps = ReactHookFormHoc(Quantity);
+const withCommonFunctionsComponent = withCommonFunctions(withFormProps);
 const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(withCommonFunctionsComponent);
 export default connectedComponent;

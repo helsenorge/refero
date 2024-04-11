@@ -18,15 +18,16 @@ import itemControlConstants from '../../../constants/itemcontrol';
 import { GlobalState } from '../../../reducers';
 import { getExtension, getItemControlExtensionValue } from '../../../util/extension';
 import { evaluateFhirpathExpressionToGetDate } from '../../../util/fhirpathHelper';
-import { getSublabelText } from '../../../util/index';
+import { getSublabelText, isRequired } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
 import { Resources } from '../../../util/resources';
+import ReactHookFormHoc, { FormProps } from '../../../validation/ReactHookFormHoc';
 import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 import Label from '../label';
 import SubLabel from '../sublabel';
 
-export interface Props extends WithCommonFunctionsAndEnhancedProps {
+export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   item: QuestionnaireItem;
   questionnaire?: Questionnaire;
   responseItem: QuestionnaireResponseItem;
@@ -147,6 +148,7 @@ class DateComponent extends React.Component<Props> {
         resources={this.props.resources}
       />
     );
+
     const subLabelEl = subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined;
 
     let element: JSX.Element | undefined = undefined;
@@ -205,7 +207,7 @@ class DateComponent extends React.Component<Props> {
     );
   }
 }
-
-const withCommonFunctionsComponent = withCommonFunctions(DateComponent);
+const withFormProps = ReactHookFormHoc(DateComponent);
+const withCommonFunctionsComponent = withCommonFunctions(withFormProps);
 const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(withCommonFunctionsComponent);
 export default connectedComponent;

@@ -14,6 +14,7 @@ import { convertBytesToMBString, convertMBToBytes } from './attachmentUtil';
 import constants, { VALID_FILE_TYPES } from '../../../constants';
 import { getMaxSizeExtensionValue, getValidationTextExtension } from '../../../util/extension';
 import { Resources } from '../../../util/resources';
+import { FormProps } from '../../../validation/ReactHookFormHoc';
 
 interface Props {
   onUpload: (files: Array<File>, cb: (success: boolean, errormessage: TextMessage | null, uploadedFile?: UploadedFile) => void) => void;
@@ -39,6 +40,7 @@ interface Props {
 
   helpButton?: JSX.Element;
   helpElement?: JSX.Element;
+  register: FormProps['register'];
 }
 
 const attachmentHtml: React.SFC<Props> = ({
@@ -64,6 +66,7 @@ const attachmentHtml: React.SFC<Props> = ({
   minFiles,
   item,
   children,
+  register,
 }) => {
   const getMaxValueBytes = getAttachmentMaxSizeBytesToUse(attachmentMaxFileSize, item);
   const getMaxValueMBToReplace = convertBytesToMBString(getMaxValueBytes);
@@ -73,6 +76,9 @@ const attachmentHtml: React.SFC<Props> = ({
   return (
     <div className="page_refero__component page_refero__component_attachment">
       <Dropzone
+        {...register(item.linkId, {
+          required: isRequired,
+        })}
         id={id}
         label={label}
         subLabel={subLabel}

@@ -13,9 +13,11 @@ import { getId, isRequired } from '../../../util';
 import { getPlaceholder, getValidationTextExtension } from '../../../util/extension';
 import { isReadOnly } from '../../../util/index';
 import { Resources } from '../../../util/resources';
+import { FormProps } from '../../../validation/ReactHookFormHoc';
+import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 import TextView from '../textview';
 
-interface Props {
+interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   id?: string;
   pdf?: boolean;
   item: QuestionnaireItem;
@@ -129,6 +131,9 @@ export class DateDayInput extends React.Component<Props, {}> {
 
     return (
       <DateRangePicker
+        {...this.props.register(this.props.item.linkId, {
+          required: isRequired(this.props.item),
+        })}
         type="single"
         id={`${getId(this.props.id)}-datepicker_input`}
         locale={this.props.locale} // TODO: må støtte nynorsk og samisk også

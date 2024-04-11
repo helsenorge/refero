@@ -10,10 +10,12 @@ import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label
 
 import { shouldShowExtraChoice } from '../../../util/choice';
 import { getMaxOccursExtensionValue, getMinOccursExtensionValue, getValidationTextExtension } from '../../../util/extension';
-import { isRequired, getId, getSublabelText, getText } from '../../../util/index';
+import { isRequired, getId, getSublabelText, getText, renderPrefix } from '../../../util/index';
 import { Resources } from '../../../util/resources';
+import { FormProps } from '../../../validation/ReactHookFormHoc';
+import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 
-interface Props {
+interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   options?: Array<Options>;
   item: QuestionnaireItem;
   questionnaire?: Questionnaire;
@@ -47,6 +49,7 @@ const CheckboxView: React.SFC<Props> = ({
   renderHelpButton,
   renderHelpElement,
   onRenderMarkdown,
+  register,
 }) => {
   if (!options) {
     return null;
@@ -56,14 +59,21 @@ const CheckboxView: React.SFC<Props> = ({
     return { label: el.label, id: el.type, checked: isSelected(el, selected) };
   });
   const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
-
+  const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`;
   return (
     <div className="page_refero__component page_refero__component_openchoice page_refero__component_openchoice_checkbox">
-      {renderHelpElement()}
-      {renderHelpButton()}
-      <FormGroup legend={getText(item, onRenderMarkdown, questionnaire, resources)} error={''} mode="ongrey">
+      <FormGroup error={''} mode="ongrey">
+        <Label
+          labelTexts={[{ text: labelText }]}
+          sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+          afterLabelChildren={renderHelpButton()}
+        />
+        {renderHelpElement()}
         {checkboxes.map((checkbox, index) => (
           <Checkbox
+            {...register(item.linkId, {
+              required: isRequired(item),
+            })}
             inputId={`${getId(id)}-${checkbox.id}`}
             testId={`checkbox-openChoice`}
             key={`${checkbox.id}-${index.toString()}`}
@@ -71,12 +81,7 @@ const CheckboxView: React.SFC<Props> = ({
             onChange={(): void => {
               handleChange(checkbox.id);
             }}
-            label={
-              <Label
-                labelTexts={[{ text: checkbox.label }]}
-                sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
-              />
-            }
+            label={<Label labelTexts={[{ text: checkbox.label }]} />}
             value={checkbox.id}
             checked={checkbox.checked}
           />

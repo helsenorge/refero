@@ -13,8 +13,10 @@ import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 import { getValidationTextExtension, getPlaceholder } from '../../../util/extension';
 import { isRequired, getId, getSublabelText, getText, renderPrefix } from '../../../util/index';
 import { Resources } from '../../../util/resources';
+import { FormProps } from '../../../validation/ReactHookFormHoc';
+import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 
-export interface Props {
+export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   options?: Array<Options>;
   item: QuestionnaireItem;
   questionnaire?: Questionnaire;
@@ -40,7 +42,6 @@ class DropdownView extends React.Component<Props, Record<string, unknown>> {
       id,
       handleChange,
       selected,
-      validateInput,
       resources,
       children,
       repeatButton,
@@ -48,6 +49,7 @@ class DropdownView extends React.Component<Props, Record<string, unknown>> {
       renderHelpButton,
       renderHelpElement,
       onRenderMarkdown,
+      register,
     } = this.props;
     if (!options) {
       return null;
@@ -66,6 +68,9 @@ class DropdownView extends React.Component<Props, Record<string, unknown>> {
         <FormGroup legend={getText(item, onRenderMarkdown, questionnaire, resources)} mode="ongrey">
           {renderHelpElement()}
           <Select
+            {...register(item.linkId, {
+              required: isRequired(item),
+            })}
             label={
               <Label
                 htmlFor={getId(id)}
@@ -77,6 +82,7 @@ class DropdownView extends React.Component<Props, Record<string, unknown>> {
             onChange={(e): void => handleChange(e.target.value)}
             selectId={getId(id)}
             className="page_refero__input"
+            value={selected && selected[0] ? selected[0] : undefined}
           >
             <option key={getId(id) + placeholder?.label} value={undefined}>
               {placeholder?.label}

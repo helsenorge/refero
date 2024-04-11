@@ -1,6 +1,5 @@
 import * as React from 'react';
 
-import classNames from 'classnames';
 import { Coding } from 'fhir/r4';
 
 import { EnhetType, OrgenhetHierarki } from '../../../types/orgenhetHierarki';
@@ -9,10 +8,10 @@ import Label, { getLabelText } from '@helsenorge/designsystem-react/components/L
 import Loader from '@helsenorge/designsystem-react/components/Loader';
 import NotificationPanel from '@helsenorge/designsystem-react/components/NotificationPanel';
 import Select from '@helsenorge/designsystem-react/components/Select';
-import Validation from '@helsenorge/designsystem-react/components/Validation';
 
 import { getId } from '../../../util';
 import { Resources } from '../../../util/resources';
+import { FormProps } from '../../../validation/ReactHookFormHoc';
 
 export interface ReceiverComponentProps {
   selected?: Array<string | undefined>;
@@ -27,23 +26,19 @@ export interface ReceiverComponentProps {
 interface ReceiverComponentState {
   selectedPath: Array<number>;
   selectedReceiver: string;
-  isValid: boolean;
-  isValidated: boolean;
   receiverTreeNodes: Array<OrgenhetHierarki>;
   isLoading: boolean;
   hasLoadError: boolean;
 }
 
-class ReceiverComponent extends React.Component<ReceiverComponentProps, ReceiverComponentState> {
-  constructor(props: ReceiverComponentProps) {
+class ReceiverComponent extends React.Component<ReceiverComponentProps & FormProps, ReceiverComponentState> {
+  constructor(props: ReceiverComponentProps & FormProps) {
     super(props);
 
     this.state = {
       receiverTreeNodes: [],
       selectedPath: [],
       selectedReceiver: '',
-      isValid: false,
-      isValidated: false,
       isLoading: true,
       hasLoadError: false,
     };
@@ -55,7 +50,6 @@ class ReceiverComponent extends React.Component<ReceiverComponentProps, Receiver
 
   componentDidMount(): void {
     if (this.props.fetchReceivers) {
-      console.log(this.props.fetchReceivers);
       this.props.fetchReceivers(this.loadSuccessCallback, this.loadErrorCallback);
     }
   }
@@ -70,7 +64,6 @@ class ReceiverComponent extends React.Component<ReceiverComponentProps, Receiver
       receiverTreeNodes: receivers,
       selectedPath: selectedPath,
       selectedReceiver: selectedReceiver,
-      isValid: !!selectedReceiver,
       hasLoadError: receivers.length === 0, // show error if there are no receivers
     });
 
@@ -114,7 +107,6 @@ class ReceiverComponent extends React.Component<ReceiverComponentProps, Receiver
       return {
         selectedPath: newSelectedPath,
         selectedReceiver: selectedReceiver,
-        isValid: !!selectedReceiver,
       };
     });
 
@@ -159,25 +151,22 @@ class ReceiverComponent extends React.Component<ReceiverComponentProps, Receiver
     return `Endpoint/${endepunktId}`;
   }
 
-  // this function is called on form submit
-  validateField(): Promise<void> {
-    return new Promise<void>((resolve: () => void) => {
-      this.setState(
-        {
-          isValid: !!this.getReceiverName(this.state.receiverTreeNodes, this.state.selectedPath),
-          isValidated: true,
-        },
-        () => {
-          resolve();
-        }
-      );
-    });
-  }
+  // TODO: Custom validering hvis this.getReceiverName(this.state.receiverTreeNodes, this.state.selectedPath)
+  // returnerer tom streng skal ikke komponenten være valid
 
-  // this function is used to get validation state for validation summary component
-  isValid(): boolean {
-    return this.state.isValid;
-  }
+  // validateField(): Promise<void> {
+  //   return new Promise<void>((resolve: () => void) => {
+  //     this.setState(
+  //       {
+  //         isValid: !!this.getReceiverName(this.state.receiverTreeNodes, this.state.selectedPath),
+  //         isValidated: true,
+  //       },
+  //       () => {
+  //         resolve();
+  //       }
+  //     );
+  //   });
+  // }
 
   getLabelText(enhetType: EnhetType): string | undefined {
     if (enhetType === EnhetType.Region) {
@@ -214,6 +203,9 @@ class ReceiverComponent extends React.Component<ReceiverComponentProps, Receiver
     };
     return (
       <Select
+        {...this.props.register(getId(this.props.id), {
+          required: false,
+        })}
         onChange={handleSelectChange}
         value={this.state.selectedPath[level] ? this.state.selectedPath[level].toString() : ''}
         key={selectKey}
@@ -251,21 +243,22 @@ class ReceiverComponent extends React.Component<ReceiverComponentProps, Receiver
     );
   }
 
-  renderErrorMessage(): JSX.Element | null {
-    if (!this.state.isValid && this.state.isValidated) {
-      return <Validation errorSummary={this.props.resources?.adresseKomponent_feilmelding || ''} />;
-    }
-    return null;
-  }
+  // renderErrorMessage(): JSX.Element | null {
+  //   if (!this.state.isValid && this.state.isValidated) {
+  //     return <Validation errorSummary={this.props.resources?.adresseKomponent_feilmelding || ''} />;
+  //   }
+  //   return null;
+  // }
 
   render(): JSX.Element {
-    const wrapperClasses = classNames({
-      mol_validation: true,
-      'mol_validation--active': !this.state.isValid && this.state.isValidated,
-    });
+    // const wrapperClasses = classNames({
+    //   mol_validation: true,
+    //   'mol_validation--active': !this.state.isValid && this.state.isValidated,
+    // });
+    //className={wrapperClasses}
     return (
-      <div className={wrapperClasses} id={getId(this.props.id)}>
-        {this.renderErrorMessage()}
+      <div id={getId(this.props.id)}>
+        {/* {this.renderErrorMessage()} */}
         <h2>{this.props.resources?.adresseKomponent_header}</h2>
         <div className="page_refero__sublabel">{this.props.resources?.adresseKomponent_sublabel}</div>
 

@@ -17,12 +17,13 @@ import { isReadOnly, isRequired, getId, getSublabelText } from '../../../util/in
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
 import { Resources } from '../../../util/resources';
+import ReactHookFormHoc, { FormProps } from '../../../validation/ReactHookFormHoc';
 import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 import Label from '../label';
 import SubLabel from '../sublabel';
 import TextView from '../textview';
 
-export interface Props extends WithCommonFunctionsAndEnhancedProps {
+export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   value?: string;
   answer: QuestionnaireResponseItemAnswer;
   item: QuestionnaireItem;
@@ -241,6 +242,9 @@ class Time extends React.Component<Props> {
     return (
       <div className="page_refero__component page_refero__component_time">
         <TimeInput
+          {...this.props.register(this.props.item.linkId, {
+            required: isRequired(this.props.item),
+          })}
           id={getId(id)}
           value={this.getValue()}
           legend={
@@ -275,6 +279,7 @@ class Time extends React.Component<Props> {
     );
   }
 }
-const withCommonFunctionsComponent = withCommonFunctions(Time);
+const withFormProps = ReactHookFormHoc(Time);
+const withCommonFunctionsComponent = withCommonFunctions(withFormProps);
 const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(withCommonFunctionsComponent);
 export default connectedComponent;

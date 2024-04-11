@@ -44,12 +44,13 @@ import {
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
 import { Resources } from '../../../util/resources';
+import { FormProps } from '../../../validation/ReactHookFormHoc';
 import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 import SliderView from '../choice/slider-view';
 import AutosuggestView from '../choice-common/autosuggest-view';
 import TextView from '../textview';
 
-export interface Props extends WithCommonFunctionsAndEnhancedProps {
+export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   item: QuestionnaireItem;
   answer: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[];
   questionnaire?: Questionnaire;
@@ -403,12 +404,7 @@ export class OpenChoice extends React.Component<Props> {
 
   renderSlider = (): JSX.Element => {
     return (
-      <SliderView
-        item={this.props.item}
-        answer={this.props.answer}
-        handleChange={this.handleChange}
-        selected={this.getValue(this.props.item, this.props.answer)}
-      >
+      <SliderView handleChange={this.handleChange} selected={this.getValue(this.props.item, this.props.answer)} {...this.props}>
         {this.props.children}
       </SliderView>
     );

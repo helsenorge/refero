@@ -14,8 +14,10 @@ import { shouldShowExtraChoice } from '../../../util/choice';
 import { getValidationTextExtension, getPlaceholder } from '../../../util/extension';
 import { isRequired, getId, getSublabelText, getText } from '../../../util/index';
 import { Resources } from '../../../util/resources';
+import { FormProps } from '../../../validation/ReactHookFormHoc';
+import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 
-interface Props {
+interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   options?: Array<Options>;
   item: QuestionnaireItem;
   questionnaire?: Questionnaire;
@@ -44,7 +46,6 @@ class DropdownView extends React.Component<Props, Record<string, unknown>> {
       answer,
       handleChange,
       selected,
-      validateInput,
       resources,
       children,
       repeatButton,
@@ -53,6 +54,7 @@ class DropdownView extends React.Component<Props, Record<string, unknown>> {
       renderHelpButton,
       renderHelpElement,
       onRenderMarkdown,
+      register,
     } = this.props;
     if (!options) {
       return null;
@@ -62,9 +64,12 @@ class DropdownView extends React.Component<Props, Record<string, unknown>> {
     const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
     return (
       <div className="page_refero__component page_refero__component_openchoice page_refero__component_openchoice_dropdown">
-        {renderHelpElement()}
         <FormGroup error={''} mode="ongrey">
+          {renderHelpElement()}
           <Select
+            {...register(item.linkId, {
+              required: isRequired(item),
+            })}
             selectId={getId(id)}
             className="page_refero__input"
             label={

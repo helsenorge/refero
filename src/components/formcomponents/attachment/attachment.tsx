@@ -16,12 +16,13 @@ import { isRequired, getId, isReadOnly, isRepeat, getSublabelText } from '../../
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
 import { Resources } from '../../../util/resources';
+import ReactHookFormHoc, { FormProps } from '../../../validation/ReactHookFormHoc';
 import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 import Label from '../label';
 import SubLabel from '../sublabel';
 import TextView from '../textview';
 
-export interface Props extends WithCommonFunctionsAndEnhancedProps {
+export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
   path: Array<Path>;
   item: QuestionnaireItem;
@@ -192,6 +193,7 @@ export class AttachmentComponent extends React.Component<Props> {
             attachmentValidTypes={this.props.attachmentValidTypes}
             item={item}
             attachmentErrorMessage={this.props.attachmentErrorMessage}
+            register={this.props.register}
           >
             {this.props.children}
           </AttachmentHtml>
@@ -201,6 +203,7 @@ export class AttachmentComponent extends React.Component<Props> {
   }
 }
 
-const withCommonFunctionsComponent = withCommonFunctions(AttachmentComponent);
+const withFormProps = ReactHookFormHoc(AttachmentComponent);
+const withCommonFunctionsComponent = withCommonFunctions(withFormProps);
 const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(withCommonFunctionsComponent);
 export default connectedComponent;

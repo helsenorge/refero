@@ -15,11 +15,12 @@ import ItemType from '../../../constants/itemType';
 import { getValidationTextExtension } from '../../../util/extension';
 import { isRequired, getId, getSublabelText } from '../../../util/index';
 import { Resources } from '../../../util/resources';
+import { FormProps } from '../../../validation/ReactHookFormHoc';
 import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 import Label from '../label';
 import SubLabel from '../sublabel';
 
-export interface AutosuggestProps extends WithCommonFunctionsAndEnhancedProps {
+export interface AutosuggestProps extends WithCommonFunctionsAndEnhancedProps, FormProps {
   handleChange: (code?: string, systemArg?: string, displayArg?: string) => void;
   clearCodingAnswer: (coding: Coding) => void;
   fetchValueSet?: (
@@ -239,6 +240,9 @@ class AutosuggestView extends React.Component<AutosuggestProps, AutosuggestState
     return (
       <div className="page_refero__component page_refero__component_choice page_refero__component_choice_autosuggest">
         <Autosuggest
+          {...this.props.register(this.props.item.linkId, {
+            required: isRequired(this.props.item),
+          })}
           id={getId(this.props.id)}
           label={
             <Label

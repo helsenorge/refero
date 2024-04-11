@@ -9,9 +9,11 @@ import { getId, isReadOnly, isRequired } from '../../../util';
 import { createDateFromYear } from '../../../util/createDateFromYear';
 import { getPlaceholder, getValidationTextExtension } from '../../../util/extension';
 import { Resources } from '../../../util/resources';
+import { FormProps } from '../../../validation/ReactHookFormHoc';
+import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 import TextView from '../textview';
 
-interface Props {
+interface Props extends FormProps, WithCommonFunctionsAndEnhancedProps {
   id?: string;
   pdf?: boolean;
   item: QuestionnaireItem;
@@ -84,6 +86,9 @@ export const DateYearInput = (props: React.PropsWithChildren<Props>): JSX.Elemen
 
   return (
     <YearInput
+      {...props.register(props.item.linkId, {
+        required: isRequired(props.item),
+      })}
       id={`${getId(props.id)}-year_input`}
       errorResources={getYearInputResources()}
       label={props.label}
