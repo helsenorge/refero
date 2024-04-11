@@ -21,12 +21,13 @@ import { isRequired, getId, isReadOnly, getSublabelText } from '../../../util/in
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
 import { Resources } from '../../../util/resources';
+import { FormProps } from '../../../validation/ReactHookFormHoc';
 import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 import Label from '../label';
 import SubLabel from '../sublabel';
 import TextView from '../textview';
 
-export interface Props extends WithCommonFunctionsAndEnhancedProps {
+export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   item: QuestionnaireItem;
   questionnaire?: Questionnaire;
   responseItem: QuestionnaireResponseItem;
@@ -198,6 +199,9 @@ class DateTime extends React.Component<Props> {
     return (
       <div className="page_refero__component page_refero__component_datetime">
         <DateTimePicker
+          {...this.props.register(this.props.item.linkId, {
+            required: isRequired(this.props.item),
+          })}
           id={getId(id)}
           resources={{ dateResources: this.props.resources }}
           locale={this.getLocaleFromLanguage()}

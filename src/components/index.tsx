@@ -60,7 +60,6 @@ interface StateProps {
 const Refero = (props: StateProps & DispatchProps & ReferoProps): JSX.Element | null => {
   IE11HackToWorkAroundBug187484();
   const questionnaire = props.questionnaire ? props.questionnaire : props.formDefinition?.Content;
-  console.log(questionnaire);
   const methods = useForm({
     defaultValues: generateDefaultValues(questionnaire?.item),
   });

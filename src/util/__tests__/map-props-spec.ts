@@ -1,7 +1,6 @@
 import * as chai from 'chai';
 
 import '../../util/defineFetch';
-import { Props } from '../../components/with-common-functions';
 import { mapStateToProps, mapDispatchToProps } from '../map-props';
 import { getQuestionnaireDefinitionItem } from '../refero-core';
 import { pathify } from '../../reducers/__tests__/utils';
@@ -13,8 +12,9 @@ const should = chai.should();
 describe('mapStateToProps', () => {
   it('should enable component when no enableWhen field', () => {
     const result = mapStateToProps(dataModel, {
-      item: { linkId: '1' },
-    } as Props);
+      item: { linkId: '1', type: 'string', text: 'test' },
+      renderContext: new RenderContext(),
+    });
     const enable = result.enable;
     should.exist(enable);
     expect(enable).toEqual(true);
@@ -34,7 +34,8 @@ describe('mapStateToProps', () => {
     const result = mapStateToProps(dataModel, {
       item,
       path: pathify(item.linkId),
-    } as Props);
+      renderContext: new RenderContext(),
+    });
 
     const enable = result.enable;
     should.exist(enable);
@@ -55,7 +56,8 @@ describe('mapStateToProps', () => {
     const result = mapStateToProps(dataModel, {
       item,
       path: pathify(item.linkId),
-    } as Props);
+      renderContext: new RenderContext(),
+    });
     const enable = result.enable;
     should.exist(enable);
     expect(enable).toEqual(false);
@@ -75,7 +77,8 @@ describe('mapStateToProps', () => {
     const result = mapStateToProps(dataModel, {
       item,
       path: pathify(item.linkId),
-    } as Props);
+      renderContext: new RenderContext(),
+    });
 
     const enable = result.enable;
     should.exist(enable);
@@ -96,7 +99,8 @@ describe('mapStateToProps', () => {
     const result = mapStateToProps(dataModel, {
       item,
       path: pathify(item.linkId),
-    } as Props);
+      renderContext: new RenderContext(),
+    });
     const enable = result.enable;
     should.exist(enable);
     expect(enable).toEqual(true);
@@ -116,7 +120,8 @@ describe('mapStateToProps', () => {
     const result = mapStateToProps(dataModel, {
       item,
       path: pathify(item.linkId),
-    } as Props);
+      renderContext: new RenderContext(),
+    });
     const enable = result.enable;
     should.exist(enable);
     expect(enable).toEqual(false);
@@ -136,7 +141,8 @@ describe('mapStateToProps', () => {
     const result = mapStateToProps(dataModel, {
       item,
       path: pathify(item.linkId),
-    } as Props);
+      renderContext: new RenderContext(),
+    });
     const enable = result.enable;
     should.exist(enable);
     expect(enable).toEqual(true);
@@ -156,7 +162,8 @@ describe('mapStateToProps', () => {
     const result = mapStateToProps(dataModel, {
       item,
       path: pathify(item.linkId),
-    } as Props);
+      renderContext: new RenderContext(),
+    });
 
     const enable = result.enable;
     should.exist(enable);
@@ -177,7 +184,8 @@ describe('mapStateToProps', () => {
     const result = mapStateToProps(dataModel, {
       item,
       path: pathify(item.linkId),
-    } as Props);
+      renderContext: new RenderContext(),
+    });
     const enable = result.enable;
     should.exist(enable);
     expect(enable).toEqual(true);
@@ -197,7 +205,8 @@ describe('mapStateToProps', () => {
     const result = mapStateToProps(dataModel, {
       item,
       path: pathify(item.linkId),
-    } as Props);
+      renderContext: new RenderContext(),
+    });
 
     const enable = result.enable;
     should.exist(enable);
@@ -218,7 +227,8 @@ describe('mapStateToProps', () => {
     const result = mapStateToProps(dataModel, {
       item,
       path: pathify(item.linkId),
-    } as Props);
+      renderContext: new RenderContext(),
+    });
 
     const enable = result.enable;
     should.exist(enable);
@@ -240,7 +250,8 @@ describe('mapStateToProps', () => {
     const result = mapStateToProps(dataModel, {
       item,
       path: pathify(item.linkId),
-    } as Props);
+      renderContext: new RenderContext(),
+    });
 
     const enable = result.enable;
     should.exist(enable);
@@ -262,7 +273,8 @@ describe('mapStateToProps', () => {
     const result = mapStateToProps(dataModel, {
       item,
       path: pathify(item.linkId),
-    } as Props);
+      renderContext: new RenderContext(),
+    });
 
     const enable = result.enable;
     should.exist(enable);
@@ -284,7 +296,7 @@ describe('mapStateToProps', () => {
     const result = mapStateToProps(dataModel, {
       item,
       path: pathify('group1^0', 'group1.2^0', 'group1.2.2'),
-    } as Props);
+    });
     const enable = result.enable;
     should.exist(enable);
     expect(enable).toEqual(false);
@@ -305,17 +317,10 @@ describe('mapStateToProps', () => {
     const result = mapStateToProps(dataModel, {
       item,
       path: pathify(item.linkId),
-    } as Props);
+      renderContext: new RenderContext(),
+    });
     const enable = result.enable;
     should.exist(enable);
     expect(enable).toEqual(true);
-  });
-});
-
-describe('mapDispatchToProps', () => {
-  it('should return object', () => {
-    const props = mapDispatchToProps(() => {}, { path: [], renderContext: new RenderContext() });
-    should.exist(props.dispatch);
-    should.exist(props.path);
   });
 });

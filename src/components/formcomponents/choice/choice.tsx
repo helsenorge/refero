@@ -27,12 +27,13 @@ import { isReadOnly, isDataReceiver } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
 import { Resources } from '../../../util/resources';
+import ReactHookFormHoc, { FormProps } from '../../../validation/ReactHookFormHoc';
 import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 import AutosuggestView from '../choice-common/autosuggest-view';
 import ReceiverComponentWrapper from '../receiver-component/receiver-component-wrapper';
 import TextView from '../textview';
 
-export interface ChoiceProps extends WithCommonFunctionsAndEnhancedProps {
+export interface ChoiceProps extends WithCommonFunctionsAndEnhancedProps, FormProps {
   item: QuestionnaireItem;
   questionnaire?: Questionnaire;
   answer: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer;
@@ -257,12 +258,7 @@ export class Choice extends React.Component<ChoiceProps, ChoiceState> {
 
   renderSlider = (): JSX.Element => {
     return (
-      <SliderView
-        item={this.props.item}
-        answer={this.props.answer}
-        handleChange={this.handleChange}
-        selected={this.getValue(this.props.item, this.props.answer)}
-      >
+      <SliderView handleChange={this.handleChange} selected={this.getValue(this.props.item, this.props.answer)} {...this.props}>
         {this.props.children}
       </SliderView>
     );
@@ -334,6 +330,7 @@ export class Choice extends React.Component<ChoiceProps, ChoiceState> {
   }
 }
 
-const withCommonFunctionsComponent = withCommonFunctions(Choice);
+const withFormProps = ReactHookFormHoc(Choice);
+const withCommonFunctionsComponent = withCommonFunctions(withFormProps);
 const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(withCommonFunctionsComponent);
 export default connectedComponent;

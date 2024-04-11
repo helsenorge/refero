@@ -29,10 +29,11 @@ import {
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
 import { Resources } from '../../../util/resources';
+import ReactHookFormHoc, { FormProps } from '../../../validation/ReactHookFormHoc';
 import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 import TextView from '../textview';
 
-export interface Props extends WithCommonFunctionsAndEnhancedProps {
+export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   item: QuestionnaireItem;
   questionnaire?: Questionnaire | null;
   responseItem: QuestionnaireResponseItem;
@@ -123,6 +124,9 @@ export class String extends React.Component<Props, Record<string, unknown>> {
         {this.props.renderHelpElement()}
         <FormGroup error={''} mode="ongrey">
           <Input
+            {...this.props.register(item.linkId, {
+              required: isRequired(item),
+            })}
             onChange={handleInputChange}
             label={
               <Label
@@ -139,7 +143,7 @@ export class String extends React.Component<Props, Record<string, unknown>> {
             type="text"
             width={25}
             inputId={getId(this.props.id)}
-            defaultValue={getStringValue(answer)}
+            value={getStringValue(answer)}
             placeholder={getPlaceholder(item)}
             className="page_refero__input"
           />
@@ -151,7 +155,8 @@ export class String extends React.Component<Props, Record<string, unknown>> {
     );
   }
 }
-const withCommonFunctionsComponent = withCommonFunctions(String);
+const withFormProps = ReactHookFormHoc(String);
+const withCommonFunctionsComponent = withCommonFunctions(withFormProps);
 const layoutChangeComponent = layoutChange(withCommonFunctionsComponent);
 const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(layoutChangeComponent);
 export default connectedComponent;

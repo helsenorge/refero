@@ -6,11 +6,13 @@ import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import { Slider, SliderStep } from '@helsenorge/designsystem-react/components/Slider';
 
 import ExtensionConstants from '../../../constants/extensions';
+import { isRequired } from '../../../util';
 import { getExtension, getMaxValueExtensionValue, getMinValueExtensionValue } from '../../../util/extension';
 import { isString } from '../../../util/typeguards';
+import { FormProps } from '../../../validation/ReactHookFormHoc';
 import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 
-export interface SliderProps {
+export interface SliderProps extends WithCommonFunctionsAndEnhancedProps, FormProps {
   item: QuestionnaireItem;
   answer: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer;
   handleChange: (sliderStep: string) => void;
@@ -20,7 +22,7 @@ export interface SliderProps {
 
 type LeftRightLabels = { leftLabel: string; rightLabel: string };
 
-const SliderView: React.FC<SliderProps> = ({ item, handleChange, selected, children }) => {
+const SliderView: React.FC<SliderProps> = ({ item, handleChange, selected, children, register }) => {
   const title = item.text;
 
   const onValueChange = (index: number): void => {
@@ -52,6 +54,9 @@ const SliderView: React.FC<SliderProps> = ({ item, handleChange, selected, child
     <div className="page_refero__component page_refero__component_choice page_refero__component_choice_slider">
       <FormGroup mode="ongrey">
         <Slider
+          {...register(item.linkId, {
+            required: isRequired(item),
+          })}
           title={title}
           labelLeft={leftRightLabels?.leftLabel}
           labelRight={leftRightLabels?.rightLabel}

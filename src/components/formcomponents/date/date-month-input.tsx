@@ -9,9 +9,11 @@ import { YearMonthResources, YearMonthInput, YearMonthValue } from '@helsenorge/
 import { getId, isReadOnly, isRequired } from '../../../util';
 import { getPlaceholder, getValidationTextExtension } from '../../../util/extension';
 import { Resources } from '../../../util/resources';
+import { FormProps } from '../../../validation/ReactHookFormHoc';
+import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 import TextView from '../textview';
 
-interface Props {
+interface Props extends FormProps, WithCommonFunctionsAndEnhancedProps {
   id?: string;
   pdf?: boolean;
   item: QuestionnaireItem;
@@ -121,6 +123,9 @@ export class DateYearMonthInput extends React.Component<Props, {}> {
 
     return (
       <YearMonthInput
+        {...this.props.register(this.props.item.linkId, {
+          required: isRequired(this.props.item),
+        })}
         id={`${getId(this.props.id)}-yearmonth_input`}
         locale={this.props.locale} // TODO: må støtte nynorsk og samisk også
         resources={this.getYearMonthInputResources()}

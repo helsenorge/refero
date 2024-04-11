@@ -61,17 +61,18 @@ describe('Component renders and calculates score', () => {
   });
 
   it('fhirpath score should be updated when quantity questions are answered', async () => {
-    var model: Questionnaire = cloneQuestionnaire(FhirpathScoreDataModel);
+    let model: Questionnaire = cloneQuestionnaire(FhirpathScoreDataModel);
     setFhirpath('4', "QuestionnaireResponse.item.where(linkId='3').answer.value.value", model);
     const wrapper = createWrapper(model);
     wrapper.render();
-
     await inputAnswer('3', 42, wrapper);
 
     let item = findItem('3', wrapper);
+
     expect(item.props().value).toBe('42');
 
     let fhirpathItem = findItem('4', wrapper);
+
     expect(fhirpathItem.props().value).toBe('42');
   });
 
@@ -130,6 +131,7 @@ describe('Component renders and calculates score', () => {
     wrapper.render();
 
     let ts = findItem('3.1', wrapper);
+    console.log(ts.debug());
     expect(ts.props().value).toBe('');
 
     await selectRadioButtonOption('2.1', 2, wrapper);

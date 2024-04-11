@@ -8,10 +8,12 @@ import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
 import RadioButton from '@helsenorge/designsystem-react/components/RadioButton';
 
-import { isRequired, getId, getSublabelText, getText } from '../../../util/index';
+import { isRequired, getId, getSublabelText, getText, renderPrefix } from '../../../util/index';
 import { Resources } from '../../../util/resources';
+import { FormProps } from '../../../validation/ReactHookFormHoc';
+import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 
-export interface Props {
+export interface Props extends FormProps, WithCommonFunctionsAndEnhancedProps {
   options?: Array<Options>;
   item: QuestionnaireItem;
   questionnaire?: Questionnaire;
@@ -42,34 +44,38 @@ const RadioView: React.FC<Props> = ({
   renderHelpButton,
   renderHelpElement,
   onRenderMarkdown,
+  register,
 }) => {
   if (!options) {
     return null;
   }
   const selectedValue = (selected && selected[0]) || '';
+  const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`;
   const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
   return (
     <div className="page_refero__component page_refero__component_choice page_refero__component_choice_radiobutton">
-      <FormGroup legend={getText(item, onRenderMarkdown, questionnaire, resources)} mode="ongrey">
+      <FormGroup mode="ongrey">
+        <Label
+          labelTexts={[{ text: labelText }]}
+          sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+          afterLabelChildren={renderHelpButton()}
+        />
         {renderHelpElement()}
         {options.map((option: Options, index: number) => (
           <RadioButton
+            {...register(item.linkId, {
+              required: isRequired(item),
+            })}
             key={id + '' + index}
-            inputId={getId(id) + index}
-            testId={getId(id) + index}
-            mode="ongrey"
+            inputId={getId(id) + '-hn-' + index}
+            name={getId(id)}
+            mode="ondark"
             onChange={(): void => {
               handleChange(option.type);
             }}
             required={isRequired(item)}
             value={option.type}
-            label={
-              <Label
-                labelTexts={[{ text: option.label }]}
-                sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
-                afterLabelChildren={<>{renderHelpButton()}</>}
-              />
-            }
+            label={<Label labelTexts={[{ text: option.label }]} />}
             defaultChecked={selectedValue === option?.type}
           />
         ))}

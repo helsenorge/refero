@@ -18,9 +18,11 @@ import {
   getText,
 } from '../../../util/index';
 import { Resources } from '../../../util/resources';
+import { FormProps } from '../../../validation/ReactHookFormHoc';
+import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 import Pdf from '../textview';
 
-interface Props {
+interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   id?: string;
   pdf?: boolean;
   item: QuestionnaireItem;
@@ -40,6 +42,7 @@ const textField: React.FC<Props> = ({
   children,
   onRenderMarkdown,
   resources,
+  register,
 }) => {
   if (pdf) {
     return (
@@ -56,6 +59,9 @@ const textField: React.FC<Props> = ({
   const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
   return (
     <Input
+      {...register(item.linkId, {
+        required: isRequired(item),
+      })}
       type="text"
       inputId={getId(id)}
       name={getId(id)}

@@ -34,10 +34,11 @@ import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/m
 import { Path } from '../../../util/refero-core';
 import { Resources } from '../../../util/resources';
 import { SanitizeText } from '../../../util/sanitize/domPurifyHelper';
+import ReactHookFormHoc, { FormProps } from '../../../validation/ReactHookFormHoc';
 import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 import TextView from '../textview';
 
-export interface Props extends WithCommonFunctionsAndEnhancedProps {
+export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   item: QuestionnaireItem;
   questionnaire?: Questionnaire;
   responseItem: QuestionnaireResponseItem;
@@ -179,6 +180,9 @@ export class Text extends React.Component<Props> {
         <FormGroup error={''} mode="ongrey">
           {this.props.renderHelpElement()}
           <Textarea
+            {...this.props.register(this.props.item.linkId, {
+              required: isRequired(this.props.item),
+            })}
             onChange={this.onTextAreaChange}
             textareaId={getId(id)}
             maxRows={Constants.DEFAULT_TEXTAREA_HEIGHT}
@@ -204,6 +208,7 @@ export class Text extends React.Component<Props> {
   }
 }
 
-const withCommonFunctionsComponent = withCommonFunctions(Text);
+const withFormProps = ReactHookFormHoc(Text);
+const withCommonFunctionsComponent = withCommonFunctions(withFormProps);
 const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(withCommonFunctionsComponent);
 export default connectedComponent;

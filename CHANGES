@@ -1,3 +1,10 @@
+## 16.0.0-beta01
+
+---
+
+- Rework of refero with new components
+- removed old components and added new from @helsenorge designsystem
+
 ## 15.0.4
 
 ---

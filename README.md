@@ -6,7 +6,6 @@ React component that consumes a [FHIR Questionnaire](https://www.hl7.org/fhir/qu
 
 - [@helsenorge/core-utils](https://www.npmjs.com/package/@helsenorge/core-utils)
 - [@helsenorge/file-upload](https://www.npmjs.com/package/@helsenorge/file-upload)
-- [@helsenorge/form](https://www.npmjs.com/package/@helsenorge/form)
 - [@helsenorge/date-time](https://www.npmjs.com/package/@helsenorge/date-time)
 - [@helsenorge/autosuggest](https://www.npmjs.com/package/@helsenorge/autosuggest)
 - [@helsenorge/designsystem-react](https://www.npmjs.com/package/@helsenorge/designsystem-react)
@@ -15,6 +14,7 @@ React component that consumes a [FHIR Questionnaire](https://www.hl7.org/fhir/qu
 - [uuid](https://www.npmjs.com/package/uuid)
 - [dompurify](https://www.npmjs.com/package/dompurify)
 - [immer](https://www.npmjs.com/package/immer)
+- [React hook form](https://www.npmjs.com/package/react-hook-form)
 
 ## Example usage
 
@@ -113,7 +113,6 @@ class App extends Component<{}, {}> {
 | fetchReceivers                |          | callback                   |         | Callback when the receiver component is mounted                                                               |
 | onFieldsNotCorrectlyFilledOut |          | callback                   |         | Callback when a field is incorrectly filled out                                                               |
 | onStepChange                  |          | callback                   |         | Callback when the current step in step-views changes                                                          |
-
 
 ### `questionnaire: Questionnaire`
 
@@ -289,8 +288,8 @@ This callback is called when a required field is not filled out, or if a field i
 
 ### `onStepChange: (newIndex: number) => void`
 
-This callback is called when the current step in a step-view changes. It takes in the parameter newIndex, which contains the new index that the current index will be updated to.
-This can be used to make progress indicators display the correct step.
+This callback is called when the current step in a step-view changes. It takes in the parameter newIndex, which contains the new index that
+the current index will be updated to. This can be used to make progress indicators display the correct step.
 
 # Enum definitions
 

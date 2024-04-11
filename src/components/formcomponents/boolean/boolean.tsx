@@ -6,7 +6,7 @@ import { ThunkDispatch } from 'redux-thunk';
 
 import Checkbox from '@helsenorge/designsystem-react/components/Checkbox';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
-import Label from '@helsenorge/designsystem-react/components/Label';
+import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
 
 import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 
@@ -14,13 +14,14 @@ import Pdf from './pdf';
 import { NewValueAction, newBooleanValueAsync } from '../../../actions/newValue';
 import { GlobalState } from '../../../reducers';
 import { getValidationTextExtension } from '../../../util/extension';
-import { isReadOnly, isRequired, getId, getText, renderPrefix } from '../../../util/index';
+import { isReadOnly, isRequired, getId, getText, renderPrefix, getSublabelText } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
 import { Resources } from '../../../util/resources';
+import { FormProps } from '../../../validation/ReactHookFormHoc';
 import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 
-export interface Props extends WithCommonFunctionsAndEnhancedProps {
+export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   item: QuestionnaireItem;
   questionnaire?: Questionnaire;
   responseItem: QuestionnaireResponseItem;
@@ -104,12 +105,23 @@ class Boolean extends React.Component<Props> {
         />
       );
     }
+    const subLabelText = getSublabelText(this.props.item, this.props.onRenderMarkdown, this.props.questionnaire, this.props.resources);
     return (
       // Dette er en hack for FHI-skjema. TODO: fjern hack
       <div className="page_refero__component page_refero__component_boolean">
         <FormGroup error={getValidationTextExtension(this.props.item)}>
+          <Label
+            labelTexts={[{ text: this.getLabel() }]}
+            sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+            afterLabelChildren={this.props.renderHelpButton()}
+          />
           <Checkbox
+            {...this.props.register(this.props.item.linkId, {
+              required: isRequired(this.props.item),
+              value: this.getValue(),
+            })}
             testId={getId(this.props.id)}
+            inputId={getId(this.props.id)}
             label={<Label labelTexts={[{ text: this.getLabel() }]} afterLabelChildren={<>{this.props.renderHelpButton()}</>} />}
             required={isRequired(this.props.item)}
             checked={this.getValue()}
@@ -128,7 +140,8 @@ class Boolean extends React.Component<Props> {
     );
   }
 }
-const withCommonFunctionsComponent = withCommonFunctions(Boolean);
+const withFormProps = withCommonFunctions(Boolean);
+const withCommonFunctionsComponent = withCommonFunctions(withFormProps);
 const layoutChangeComponent = layoutChange(withCommonFunctionsComponent);
 const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(layoutChangeComponent);
 export default connectedComponent;

@@ -110,7 +110,6 @@ describe('onAnswerChange callback gets called and can request additional changes
 
     const wrapper = createWrapper(questionnaireWithAllItemTypes, onChange);
     await inputAnswer('1', 0.1, wrapper);
-
     const item = findItem('4', wrapper);
     expect(item.props().checked).toBe(true);
   });
@@ -138,7 +137,7 @@ describe('onAnswerChange callback gets called and can request additional changes
 
     // radiobuttons are 0-based
     const item = findItem('5a-hn-1', wrapper);
-    expect(item.props().checked).toBe(true);
+    expect(item.props().defaultChecked).toBe(true);
   });
 
   it('choice (radiobuttons) does not get cleared', async () => {
@@ -151,7 +150,7 @@ describe('onAnswerChange callback gets called and can request additional changes
     await inputAnswer('1', 0.1, wrapper);
 
     const item = findItem('5a-hn-1', wrapper);
-    expect(item.props().checked).toBe(true);
+    expect(item.props().defaultChecked).toBe(true);
   });
 
   it('choice (checkboxes) gets updated', async () => {
@@ -189,7 +188,7 @@ describe('onAnswerChange callback gets called and can request additional changes
     await inputAnswer('1', 0.1, wrapper);
 
     const item = findItem('6a-hn-1', wrapper);
-    expect(item.props().checked).toBe(true);
+    expect(item.props().defaultChecked).toBe(true);
   });
 
   it('openchoice (checkboxes) gets updated', async () => {
@@ -320,7 +319,7 @@ describe('onAnswerChange callback gets called and can request additional changes
     await inputAnswer('1', 0.1, wrapper);
 
     const item = wrapper.find('textarea#item_9');
-    expect(item.props().value).toBe('Hello\nWorld!');
+    expect(item.props().defaultValue).toBe('Hello\nWorld!');
   });
 
   it('can request many changes', async () => {
@@ -349,7 +348,7 @@ describe('onAnswerChange callback gets called and can request additional changes
     await inputAnswer('1', 0.1, wrapper);
 
     let item = findItem('6a-hn-2', wrapper);
-    expect(item.props().checked).toBe(true);
+    expect(item.props().defaultChecked).toBe(true);
 
     item = wrapper.find('textField#item_6a input');
     expect(item.props().value).toBe('Hello World!');
