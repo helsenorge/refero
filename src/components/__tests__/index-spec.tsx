@@ -20,7 +20,6 @@ import RenderingOptionsData from './__data__/renderingOptions';
 import ChoiceCopyFrom from './__data__/copyFrom/choice';
 import { createItemControlExtension, selectCheckBoxOption } from '../__tests__/utils';
 import itemcontrol from '../../constants/itemcontrol';
-import Checkbox from '@helsenorge/designsystem-react/components/Checkbox';
 import Input from '@helsenorge/designsystem-react/components/Input';
 
 describe('Component renders help items', () => {

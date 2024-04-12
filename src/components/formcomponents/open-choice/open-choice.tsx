@@ -421,6 +421,7 @@ export class OpenChoice extends React.Component<Props> {
   }
 
   render(): JSX.Element | null {
+    console.log(this.props);
     const { id, item, pdf, answer, containedResources, children, onRenderMarkdown } = this.props;
     if (pdf || isReadOnly(item)) {
       return (
@@ -447,6 +448,7 @@ export class OpenChoice extends React.Component<Props> {
   }
 }
 
-const withCommonFunctionsComponent = withCommonFunctions(OpenChoice);
+const withFormProps = withCommonFunctions(OpenChoice);
+const withCommonFunctionsComponent = withCommonFunctions(withFormProps);
 const connectedStringComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(withCommonFunctionsComponent);
 export default connectedStringComponent;
