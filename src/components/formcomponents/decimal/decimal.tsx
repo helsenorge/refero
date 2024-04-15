@@ -10,6 +10,7 @@ import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label
 
 import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 
+import { decimalFormRegister } from './utils';
 import { NewValueAction, newDecimalValueAsync } from '../../../actions/newValue';
 import { GlobalState } from '../../../reducers';
 import { getValidationTextExtension, getPlaceholder, getMaxValueExtensionValue, getMinValueExtensionValue } from '../../../util/extension';
@@ -90,8 +91,8 @@ class Decimal extends React.Component<Props, Record<string, unknown>> {
     const answerHasChanged = this.props.answer !== nextProps.answer;
     const resourcesHasChanged = JSON.stringify(this.props.resources) !== JSON.stringify(nextProps.resources);
     const repeats = this.props.item.repeats ?? false;
-
-    return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats || answerHasChanged;
+    const newErrorMessage = this.props.error?.message !== nextProps.error?.message;
+    return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats || answerHasChanged || newErrorMessage;
   }
 
   render(): JSX.Element | null {
@@ -118,15 +119,9 @@ class Decimal extends React.Component<Props, Record<string, unknown>> {
     return (
       <div className="page_refero__component page_refero__component_decimal">
         {this.props.renderHelpElement()}
-        <FormGroup error={''} mode="ongrey">
+        <FormGroup error={this.props.error?.message} mode="ongrey">
           <Input
-            {...this.props.register(this.props.item.linkId, {
-              required: isRequired(this.props.item),
-              valueAsNumber: true,
-              onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
-                this.handleChange(e);
-              },
-            })}
+            {...decimalFormRegister(this.props.register, this.props.item, this.props.resources, value, this.handleChange)}
             type="number"
             inputId={getId(this.props.id)}
             name={getId(this.props.id)}
@@ -140,13 +135,8 @@ class Decimal extends React.Component<Props, Record<string, unknown>> {
                 statusDot={<div>{status}</div>}
               />
             }
-            required={isRequired(item)}
             placeholder={getPlaceholder(item)}
-            // max={getMaxValueExtensionValue(item)}
-            // min={getMinValueExtensionValue(item)}
-            // pattern={getDecimalPattern(item)}
             className="page_refero__input"
-            // validateOnExternalUpdate={true}
             onChange={this.handleChange}
             width={25}
           />

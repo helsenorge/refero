@@ -51,6 +51,7 @@ import {
 import { RenderContext } from '../util/renderContext';
 import { ScoringCalculator } from '../util/scoringCalculator';
 import { shouldFormBeDisplayedAsStepView } from '../util/shouldFormBeDisplayedAsStepView';
+import { generateDefaultValues } from '../validation/defaultFormValues';
 import { createDefaultFormValuesFromQuestionnaire, createZodSchemaFromQuestionnaire } from '../validation/zod/mainValidationFunctions';
 interface StateProps {
   formDefinition?: FormDefinition | null;
@@ -62,8 +63,8 @@ const Refero = (props: StateProps & DispatchProps & ReferoProps): JSX.Element | 
   const questionnaire = props.questionnaire ? props.questionnaire : props.formDefinition?.Content;
   const schema = createZodSchemaFromQuestionnaire(questionnaire, props.resources, questionnaire?.contained);
   const methods = useForm({
-    defaultValues: createDefaultFormValuesFromQuestionnaire(questionnaire),
-
+    defaultValues: generateDefaultValues(questionnaire?.item),
+    shouldFocusError: false,
     // resolver: async (data, context, options) => {
     //   // you can debug your validation schema here
     //   console.log('resolver in data', data);

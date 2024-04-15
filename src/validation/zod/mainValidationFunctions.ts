@@ -119,14 +119,13 @@ export const createDefaultFormValues = (items?: QuestionnaireItem[]): Record<str
     return {};
   }
   return items.reduce<Record<string, unknown>>((acc, item) => {
-    if (item.type === ItemType.GROUP) {
-      return { ...acc, ...createDefaultFormValues(item.item) };
-    }
-
     if (item.repeats) {
       acc[item.linkId] = [];
     } else {
       acc[item.linkId] = getDefaultFormValue(item);
+    }
+    if (item.item && Array.isArray(item.item)) {
+      return { ...acc, ...createDefaultFormValues(item.item) };
     }
 
     return acc;

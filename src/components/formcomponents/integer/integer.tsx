@@ -10,6 +10,7 @@ import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label
 
 import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 
+import { integerFormRegister } from './utils';
 import { NewValueAction, newIntegerValueAsync } from '../../../actions/newValue';
 import { GlobalState } from '../../../reducers';
 import { getPlaceholder, getMaxValueExtensionValue, getMinValueExtensionValue } from '../../../util/extension';
@@ -70,7 +71,7 @@ class Integer extends React.Component<Props, Record<string, unknown>> {
     return value;
   }
 
-  handleChange = (event: React.FormEvent): void => {
+  handleChange = (event: React.FormEvent<HTMLInputElement>): void => {
     const { dispatch, promptLoginMessage, path, item, onAnswerChange } = this.props;
 
     const value = parseInt((event.target as HTMLInputElement).value, 10);
@@ -92,8 +93,8 @@ class Integer extends React.Component<Props, Record<string, unknown>> {
     const answerHasChanged = this.props.answer !== nextProps.answer;
     const resourcesHasChanged = JSON.stringify(this.props.resources) !== JSON.stringify(nextProps.resources);
     const repeats = this.props.item.repeats ?? false;
-
-    return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats || answerHasChanged;
+    const newErrorMessage = this.props.error?.message !== nextProps.error?.message;
+    return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats || answerHasChanged || newErrorMessage;
   }
 
   render(): JSX.Element | null {
@@ -121,18 +122,18 @@ class Integer extends React.Component<Props, Record<string, unknown>> {
     )}`;
     return (
       <div className="page_refero__component page_refero__component_integer">
-        <FormGroup error={''} mode="ongrey">
+        <FormGroup error={this.props.error?.message} mode="ongrey">
           {this.props.renderHelpElement()}
           <Input
-            {...this.props.register(this.props.item.linkId, {
-              required: isRequired(this.props.item),
-              valueAsNumber: true,
-              value: value !== undefined && value !== null ? value + '' : '',
-              onChange: this.handleChange,
-            })}
+            {...integerFormRegister(
+              this.props.register,
+              this.props.item,
+              this.props.resources,
+              value !== undefined && value !== null ? value + '' : '',
+              this.handleChange
+            )}
             type="number"
             inputId={getId(this.props.id)}
-            name={getId(this.props.id)}
             label={
               <Label
                 labelTexts={[{ text: labelText, type: 'semibold' }]}
@@ -143,10 +144,6 @@ class Integer extends React.Component<Props, Record<string, unknown>> {
               />
             }
             placeholder={getPlaceholder(this.props.item)}
-            // defaultValue={value !== undefined && value !== null ? value + '' : ''}
-            // max={getMaxValueExtensionValue(this.props.item)}
-            // min={getMinValueExtensionValue(this.props.item)}
-            // errorMessage={getValidationTextExtension(this.props.item)}
             className="page_refero__input"
             width={25}
           />

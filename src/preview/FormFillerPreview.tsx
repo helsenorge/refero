@@ -13,7 +13,7 @@ import LanguageLocales from '@helsenorge/core-utils/constants/languages';
 import FormFillerSidebar from './FormFillerSidebar';
 import { emptyPropertyReplacer } from './helpers';
 import { getResources } from './resources/referoResources';
-import skjema from './skjema/NHN_Testskjema_Bool-nb-NO.json';
+import skjema from './skjema/NHN_Testskjema_Tall-nb-NO-v0.1.json';
 import { ReferoContainer } from '../components';
 import rootReducer from '../reducers';
 

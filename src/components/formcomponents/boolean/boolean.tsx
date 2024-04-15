@@ -11,6 +11,7 @@ import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label
 import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 
 import Pdf from './pdf';
+import { booleanFormRegister } from './utils';
 import { NewValueAction, newBooleanValueAsync } from '../../../actions/newValue';
 import { GlobalState } from '../../../reducers';
 import { getValidationTextExtension } from '../../../util/extension';
@@ -86,13 +87,35 @@ class Boolean extends React.Component<Props> {
     const resourcesHasChanged = JSON.stringify(this.props.resources) !== JSON.stringify(nextProps.resources);
     const repeats = this.props.item.repeats ?? false;
 
-    return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats || answerHasChanged;
+    return (
+      responseItemHasChanged ||
+      helpItemHasChanged ||
+      resourcesHasChanged ||
+      repeats ||
+      answerHasChanged ||
+      this.props.error?.message !== nextProps.error?.message
+    );
   }
 
   render(): JSX.Element | null {
-    if (this.props.pdf) {
-      return <Pdf item={this.props.item} checked={this.getValue()} onRenderMarkdown={this.props.onRenderMarkdown} />;
-    } else if (isReadOnly(this.props.item)) {
+    const {
+      pdf,
+      item,
+      onRenderMarkdown,
+      questionnaire,
+      id,
+      resources,
+      renderHelpButton,
+      renderHelpElement,
+      register,
+      renderDeleteButton,
+      repeatButton,
+      error,
+      children,
+    } = this.props;
+    if (pdf) {
+      return <Pdf item={item} checked={this.getValue()} onRenderMarkdown={onRenderMarkdown} />;
+    } else if (isReadOnly(item)) {
       return (
         <Checkbox
           label={this.getLabel()}
@@ -105,38 +128,35 @@ class Boolean extends React.Component<Props> {
         />
       );
     }
-    const subLabelText = getSublabelText(this.props.item, this.props.onRenderMarkdown, this.props.questionnaire, this.props.resources);
+    const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
     return (
       // Dette er en hack for FHI-skjema. TODO: fjern hack
       <div className="page_refero__component page_refero__component_boolean">
-        <FormGroup error={getValidationTextExtension(this.props.item)}>
-          {this.props.renderHelpElement()}
+        <FormGroup error={error?.message}>
+          {renderHelpElement()}
 
           <Label
+            labelId={`${getId(id)}-label-boolean`}
             labelTexts={[{ text: this.getLabel() }]}
-            sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
-            afterLabelChildren={this.props.renderHelpButton()}
+            sublabel={<Sublabel id={`${getId(id)}-sublabel-boolean`} sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+            afterLabelChildren={renderHelpButton()}
           />
           <Checkbox
-            {...this.props.register(this.props.item.linkId, {
-              required: isRequired(this.props.item),
-              value: this.getValue(),
-            })}
-            testId={getId(this.props.id)}
-            inputId={getId(this.props.id)}
+            {...booleanFormRegister(register, item, resources, this.getValue(), this.handleChange)}
+            testId={getId(id)}
+            inputId={getId(id)}
             label={<Label labelTexts={[{ text: this.getLabel() }]} />}
-            required={isRequired(this.props.item)}
             checked={this.getValue()}
             onChange={this.handleChange}
-            disabled={isReadOnly(this.props.item)}
+            disabled={isReadOnly(item)}
             className="page_refero__input"
             // validateOnExternalUpdate={true}
             // isStyleBlue
           />
         </FormGroup>
-        {this.props.renderDeleteButton('page_refero__deletebutton--margin-top')}
-        {this.props.repeatButton}
-        {this.props.children ? <div className="nested-fieldset nested-fieldset--full-height">{this.props.children}</div> : null}
+        {renderDeleteButton('page_refero__deletebutton--margin-top')}
+        {repeatButton}
+        {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
       </div>
     );
   }
