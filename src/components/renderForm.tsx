@@ -11,6 +11,7 @@ import { Resources } from '../util/resources';
 import { FormProps } from '../validation/ReactHookFormHoc';
 import { ValidationSummaryPlacement } from '../types/formTypes/validationSummaryPlacement';
 import { ValidationSummary } from './validation-summary';
+import { QuestionnaireResponse } from 'fhir/r4';
 
 interface RenderFormProps {
   isAuthorized: boolean;
@@ -44,25 +45,24 @@ const RenderForm = ({
   isHelsenorgeForm,
   children,
   methods,
-  validationSummaryPlacement
+  validationSummaryPlacement,
 }: // methods,
 RenderFormProps): JSX.Element | null => {
   const { formState } = useFormContext();
   const errors = formState.errors;
 
   //data: QuestionnaireResponse, e: React.FormEvent
-  const onSubmitReactHookForm: SubmitHandler<FieldValues> = (): void => {
-    // console.log('data', JSON.stringify(data, null, 2));
-    // console.log('e', e);
-    // return false;
-    // onSubmit();
+  const onSubmitReactHookForm: SubmitHandler<FieldValues> = (data: QuestionnaireResponse, e: React.FormEvent): void => {
+    console.log('data', JSON.stringify(data, null, 2));
+    console.log('e', e);
+    return false;
+    onSubmit();
   };
-  
+
   const displayPauseButtonInNormalView = referoProps.onSave ? onSave : undefined;
   const displayPauseButtonInStepView = displayPreviousButton ? previousStep : undefined;
   const displayValidationSummaryOnTop: boolean =
-  !validationSummaryPlacement || validationSummaryPlacement === ValidationSummaryPlacement.Top;
-  const validationSummary = <ValidationSummary resources={resources} errors={errors} />;
+    !validationSummaryPlacement || validationSummaryPlacement === ValidationSummaryPlacement.Top;
 
   if (referoProps.blockSubmit) {
     return <Loader size={'medium'} overlay={'parent'} />;
@@ -70,7 +70,7 @@ RenderFormProps): JSX.Element | null => {
   return (
     <form onSubmit={methods.handleSubmit(onSubmitReactHookForm)}>
       {/* <Validation errorSummary="test" /> */}
-      {displayValidationSummaryOnTop && validationSummary}
+      {displayValidationSummaryOnTop && <ValidationSummary resources={resources} errors={errors} />}
       {children}
       <FormButtons
         isStepView={isStepView}
@@ -79,14 +79,14 @@ RenderFormProps): JSX.Element | null => {
         pauseButtonText={displayPreviousButton && resources.previousStep ? resources.previousStep : resources.formSave}
         submitButtonDisabled={referoProps.blockSubmit}
         pauseButtonDisabled={referoProps.saveButtonDisabled}
-        onSubmitButtonClicked={displayNextButton ? nextStep : onSubmit}
+        onSubmitButtonClicked={displayNextButton ? nextStep : methods.handleSubmit(onSubmitReactHookForm)}
         onCancelButtonClicked={(): void => {
           referoProps.onCancel && referoProps.onCancel();
         }}
         onPauseButtonClicked={isStepView ? displayPauseButtonInStepView : displayPauseButtonInNormalView}
         isHelsenorgeForm={!!isHelsenorgeForm}
       />
-      {!displayValidationSummaryOnTop && validationSummary}
+      {!displayValidationSummaryOnTop && <ValidationSummary resources={resources} errors={errors} />}
     </form>
   );
 };

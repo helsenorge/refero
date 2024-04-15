@@ -1,7 +1,6 @@
 import React from 'react';
-import { FieldErrors, FieldValues } from 'react-hook-form';
+import { FieldErrors, FieldValues, useForm, useFormContext } from 'react-hook-form';
 import { Resources } from '../util/resources';
-import { palette } from '@helsenorge/designsystem-react/theme/palette';
 import {
   validationSummaryHeader,
   validationSummaryLink,
@@ -16,6 +15,13 @@ interface ValidationSummaryProps {
 
 export const ValidationSummary = ({ errors, resources }: ValidationSummaryProps) => {
   const errorArray = Object.entries(errors);
+
+  const { setFocus } = useFormContext();
+
+  const doStuff = (enString: string) => {
+    setFocus(enString);
+    console.log(enString);
+  }
 
   if (!errorArray.length) {
     return <></>;
@@ -33,8 +39,10 @@ export const ValidationSummary = ({ errors, resources }: ValidationSummaryProps)
           {errorArray &&
             errorArray.map(([fieldName, error], index) => (
               <li className="validationSummary_listItem" key={fieldName + index.toString()}>
-                <a className="validationSummary_link" href={`#${fieldName}`}>
-                  {error?.message}
+                {console.log(error)}
+                <a className="validationSummary_link" onClick={() => doStuff(fieldName)}>
+                  {/*TODO: remove index.toString when error message actually displays something*/}
+                  {error?.message + index.toString()}
                 </a>
               </li>
             ))}
