@@ -125,10 +125,10 @@ class Integer extends React.Component<Props, Record<string, unknown>> {
           {...this.props.register(this.props.item.linkId, {
             required: isRequired(this.props.item),
             valueAsNumber: true,
+            value: value !== undefined && value !== null ? value + '' : '',
+            onChange: this.handleChange,
           })}
-          onChange={this.handleChange}
           type="number"
-          value={value !== undefined && value !== null ? value + '' : ''}
           inputId={getId(this.props.id)}
           name={getId(this.props.id)}
           label={
@@ -138,11 +138,10 @@ class Integer extends React.Component<Props, Record<string, unknown>> {
               afterLabelChildren={this.props.renderHelpButton()}
             />
           }
-          required={isRequired(this.props.item)}
           placeholder={getPlaceholder(this.props.item)}
-          defaultValue={value !== undefined && value !== null ? value + '' : ''}
-          max={getMaxValueExtensionValue(this.props.item)}
-          min={getMinValueExtensionValue(this.props.item)}
+          // defaultValue={value !== undefined && value !== null ? value + '' : ''}
+          // max={getMaxValueExtensionValue(this.props.item)}
+          // min={getMinValueExtensionValue(this.props.item)}
           // errorMessage={getValidationTextExtension(this.props.item)}
           className="page_refero__input"
           width={25}
