@@ -51,8 +51,7 @@ import {
 import { RenderContext } from '../util/renderContext';
 import { ScoringCalculator } from '../util/scoringCalculator';
 import { shouldFormBeDisplayedAsStepView } from '../util/shouldFormBeDisplayedAsStepView';
-import { generateDefaultValues } from '../validation/defaultFormValues';
-import { createDefaultFormValuesFromQuestionnaire, createZodSchemaFromQuestionnaireItems } from '../validation/zod/mainValidationFunctions';
+import { createDefaultFormValuesFromQuestionnaire, createZodSchemaFromQuestionnaire } from '../validation/zod/mainValidationFunctions';
 interface StateProps {
   formDefinition?: FormDefinition | null;
   formData?: FormData | null;
@@ -61,16 +60,16 @@ interface StateProps {
 const Refero = (props: StateProps & DispatchProps & ReferoProps): JSX.Element | null => {
   IE11HackToWorkAroundBug187484();
   const questionnaire = props.questionnaire ? props.questionnaire : props.formDefinition?.Content;
-  const schema = createZodSchemaFromQuestionnaireItems(questionnaire?.item, props.resources, questionnaire?.contained);
+  const schema = createZodSchemaFromQuestionnaire(questionnaire, props.resources, questionnaire?.contained);
   const methods = useForm({
     defaultValues: createDefaultFormValuesFromQuestionnaire(questionnaire),
 
-    resolver: async (data, context, options) => {
-      // you can debug your validation schema here
-      console.log('formData', data);
-      console.log('validation result', await zodResolver(schema)(data, context, options));
-      return zodResolver(schema)(data, context, options);
-    },
+    // resolver: async (data, context, options) => {
+    //   // you can debug your validation schema here
+    //   console.log('resolver in data', data);
+    //   console.log('resolver validation result', await zodResolver(schema)(data, context, options));
+    //   return zodResolver(schema)(data, context, options);
+    // },
   });
 
   const getScoringCalculator = (questionnaire: Questionnaire): ScoringCalculator => {

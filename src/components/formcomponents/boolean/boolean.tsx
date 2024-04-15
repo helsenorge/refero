@@ -18,7 +18,7 @@ import { isReadOnly, isRequired, getId, getText, renderPrefix, getSublabelText }
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
 import { Resources } from '../../../util/resources';
-import { FormProps } from '../../../validation/ReactHookFormHoc';
+import ReactHookFormHoc, { FormProps } from '../../../validation/ReactHookFormHoc';
 import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 
 export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
@@ -110,6 +110,8 @@ class Boolean extends React.Component<Props> {
       // Dette er en hack for FHI-skjema. TODO: fjern hack
       <div className="page_refero__component page_refero__component_boolean">
         <FormGroup error={getValidationTextExtension(this.props.item)}>
+          {this.props.renderHelpElement()}
+
           <Label
             labelTexts={[{ text: this.getLabel() }]}
             sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
@@ -122,7 +124,7 @@ class Boolean extends React.Component<Props> {
             })}
             testId={getId(this.props.id)}
             inputId={getId(this.props.id)}
-            label={<Label labelTexts={[{ text: this.getLabel() }]} afterLabelChildren={<>{this.props.renderHelpButton()}</>} />}
+            label={<Label labelTexts={[{ text: this.getLabel() }]} />}
             required={isRequired(this.props.item)}
             checked={this.getValue()}
             onChange={this.handleChange}
@@ -135,12 +137,11 @@ class Boolean extends React.Component<Props> {
         {this.props.renderDeleteButton('page_refero__deletebutton--margin-top')}
         {this.props.repeatButton}
         {this.props.children ? <div className="nested-fieldset nested-fieldset--full-height">{this.props.children}</div> : null}
-        {this.props.renderHelpElement()}
       </div>
     );
   }
 }
-const withFormProps = withCommonFunctions(Boolean);
+const withFormProps = ReactHookFormHoc(Boolean);
 const withCommonFunctionsComponent = withCommonFunctions(withFormProps);
 const layoutChangeComponent = layoutChange(withCommonFunctionsComponent);
 const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(layoutChangeComponent);

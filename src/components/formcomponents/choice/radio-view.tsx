@@ -55,12 +55,12 @@ const RadioView: React.FC<Props> = ({
   return (
     <div className="page_refero__component page_refero__component_choice page_refero__component_choice_radiobutton">
       <FormGroup mode="ongrey">
+        {renderHelpElement()}
         <Label
           labelTexts={[{ text: labelText }]}
           sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
           afterLabelChildren={renderHelpButton()}
         />
-        {renderHelpElement()}
         {options.map((option: Options, index: number) => (
           <RadioButton
             {...register(item.linkId, {

@@ -52,7 +52,6 @@ const textField: React.FC<Props> = ({
     );
   }
   const handleOnBlur = (e: React.FocusEvent<HTMLInputElement, Element>): void => {
-    console.log(e);
     handleStringChange(e);
   };
 

@@ -1,6 +1,7 @@
 import * as React from 'react';
 
-import { FieldValues, SubmitHandler } from 'react-hook-form';
+import { QuestionnaireResponse } from 'fhir/r4';
+import { FieldValues, SubmitHandler, useFormContext } from 'react-hook-form';
 
 import { ReferoProps } from '../types/referoProps';
 
@@ -9,7 +10,6 @@ import Loader from '@helsenorge/designsystem-react/components/Loader';
 import FormButtons from './formButtons/formButtons';
 import { Resources } from '../util/resources';
 import { FormProps } from '../validation/ReactHookFormHoc';
-import { QuestionnaireResponse } from 'fhir/r4';
 
 interface RenderFormProps {
   isAuthorized: boolean;
@@ -44,7 +44,9 @@ const RenderForm = ({
   methods,
 }: // methods,
 RenderFormProps): JSX.Element | null => {
-  // const { getValues } = useFormContext();
+  const {
+    formState: { errors, defaultValues, dirtyFields },
+  } = useFormContext();
 
   const onSubmitReactHookForm: SubmitHandler<FieldValues> = (data: QuestionnaireResponse, e: React.FormEvent): void => {
     console.log('data', JSON.stringify(data, null, 2));
@@ -58,6 +60,10 @@ RenderFormProps): JSX.Element | null => {
   if (referoProps.blockSubmit) {
     return <Loader size={'medium'} overlay={'parent'} />;
   }
+  console.log(errors, 'errors');
+  console.log(defaultValues, 'defaultValues');
+  console.log(dirtyFields, 'dirtyFields');
+
   return (
     <form onSubmit={methods.handleSubmit(onSubmitReactHookForm)}>
       {/* <Validation errorSummary="test" /> */}

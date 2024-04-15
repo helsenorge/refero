@@ -4,6 +4,7 @@ import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireRespon
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
+import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Input from '@helsenorge/designsystem-react/components/Input';
 import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
 
@@ -120,34 +121,38 @@ class Integer extends React.Component<Props, Record<string, unknown>> {
     )}`;
     return (
       <div className="page_refero__component page_refero__component_integer">
-        {this.props.renderHelpElement()}
-        <Input
-          {...this.props.register(this.props.item.linkId, {
-            required: isRequired(this.props.item),
-            valueAsNumber: true,
-            value: value !== undefined && value !== null ? value + '' : '',
-            onChange: this.handleChange,
-          })}
-          type="number"
-          inputId={getId(this.props.id)}
-          name={getId(this.props.id)}
-          label={
-            <Label
-              labelTexts={[{ text: labelText, type: 'semibold' }]}
-              sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
-              afterLabelChildren={this.props.renderHelpButton()}
-            />
-          }
-          placeholder={getPlaceholder(this.props.item)}
-          // defaultValue={value !== undefined && value !== null ? value + '' : ''}
-          // max={getMaxValueExtensionValue(this.props.item)}
-          // min={getMinValueExtensionValue(this.props.item)}
-          // errorMessage={getValidationTextExtension(this.props.item)}
-          className="page_refero__input"
-          width={25}
-        />
-        {this.props.renderDeleteButton('page_refero__deletebutton--margin-top')}
-        {this.props.repeatButton}
+        <FormGroup error={''} mode="ongrey">
+          {this.props.renderHelpElement()}
+          <Input
+            {...this.props.register(this.props.item.linkId, {
+              required: isRequired(this.props.item),
+              valueAsNumber: true,
+              value: value !== undefined && value !== null ? value + '' : '',
+              onChange: this.handleChange,
+            })}
+            type="number"
+            inputId={getId(this.props.id)}
+            name={getId(this.props.id)}
+            label={
+              <Label
+                labelTexts={[{ text: labelText, type: 'semibold' }]}
+                sublabel={
+                  <Sublabel id={`${getId(this.props.id)}-select-sublabel`} sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />
+                }
+                afterLabelChildren={this.props.renderHelpButton()}
+              />
+            }
+            placeholder={getPlaceholder(this.props.item)}
+            // defaultValue={value !== undefined && value !== null ? value + '' : ''}
+            // max={getMaxValueExtensionValue(this.props.item)}
+            // min={getMinValueExtensionValue(this.props.item)}
+            // errorMessage={getValidationTextExtension(this.props.item)}
+            className="page_refero__input"
+            width={25}
+          />
+          {this.props.renderDeleteButton('page_refero__deletebutton--margin-top')}
+          {this.props.repeatButton}
+        </FormGroup>
         {this.props.children ? <div className="nested-fieldset nested-fieldset--full-height">{this.props.children}</div> : null}
       </div>
     );

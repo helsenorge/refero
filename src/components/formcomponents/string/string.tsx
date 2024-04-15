@@ -121,8 +121,8 @@ export class String extends React.Component<Props, Record<string, unknown>> {
     };
     return (
       <div className="page_refero__component page_refero__component_string">
-        {this.props.renderHelpElement()}
         <FormGroup error={''} mode="ongrey">
+          {this.props.renderHelpElement()}
           <Input
             {...this.props.register(item.linkId, {
               required: isRequired(item),
