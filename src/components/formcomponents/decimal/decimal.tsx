@@ -70,7 +70,7 @@ class Decimal extends React.Component<Props, Record<string, unknown>> {
     return value;
   }
 
-  handleChange = (event: React.FormEvent): void => {
+  handleChange = (event: React.FormEvent<HTMLInputElement>): void => {
     const { dispatch, path, item, promptLoginMessage, onAnswerChange } = this.props;
     const value = parseFloat((event.target as HTMLInputElement).value);
     this.props.setValue(this.props.item.linkId, value);

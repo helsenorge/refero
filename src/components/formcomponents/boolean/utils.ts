@@ -16,7 +16,7 @@ export const booleanFormRegister = (
   return register(item.linkId, {
     required: {
       value: isRequired(item),
-      message: getValidationTextExtension(item) ?? resources?.formRequiredErrorMessage ?? 'Feltet er påkrevd',
+      message: resources?.formRequiredErrorMessage ?? 'Feltet er påkrevd',
     },
     value,
     onChange,

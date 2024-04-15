@@ -11,6 +11,7 @@ import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label
 import { debounce } from '@helsenorge/core-utils/debounce';
 import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 
+import { stringFormRegister } from './utils';
 import { NewValueAction, newStringValueAsync } from '../../../actions/newValue';
 import { GlobalState } from '../../../reducers';
 import { getPlaceholder, getMinLengthExtensionValue, getRegexExtension } from '../../../util/extension';
@@ -79,8 +80,9 @@ export class String extends React.Component<Props, Record<string, unknown>> {
     const answerHasChanged = this.props.answer !== nextProps.answer;
     const resourcesHasChanged = JSON.stringify(this.props.resources) !== JSON.stringify(nextProps.resources);
     const repeats = this.props.item.repeats ?? false;
+    const newErrorMessage = this.props.error?.message !== nextProps.error?.message;
 
-    return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats || answerHasChanged;
+    return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats || answerHasChanged || newErrorMessage;
   }
 
   validateText = (value: string): boolean => {
@@ -121,13 +123,10 @@ export class String extends React.Component<Props, Record<string, unknown>> {
     };
     return (
       <div className="page_refero__component page_refero__component_string">
-        <FormGroup error={''} mode="ongrey">
+        <FormGroup error={this.props.error?.message} mode="ongrey">
           {this.props.renderHelpElement()}
           <Input
-            {...this.props.register(item.linkId, {
-              required: isRequired(item),
-            })}
-            onChange={handleInputChange}
+            {...stringFormRegister(this.props.register, this.props.item, getStringValue(answer), this.props.resources, handleInputChange)}
             label={
               <Label
                 labelTexts={[{ text: labelText, type: 'semibold' }]}
@@ -143,7 +142,6 @@ export class String extends React.Component<Props, Record<string, unknown>> {
             type="text"
             width={25}
             inputId={getId(this.props.id)}
-            value={getStringValue(answer)}
             placeholder={getPlaceholder(item)}
             className="page_refero__input"
           />
