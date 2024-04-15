@@ -37,7 +37,7 @@ interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   answer: QuestionnaireResponseItemAnswer;
 }
 
-export class DateDayInput extends React.Component<Props, {}> {
+export class DateDayInput extends React.Component<Props> {
   getDatepickerErrorPhrases(): DatePickerErrorPhrases {
     const { resources, item } = this.props;
     // Vi får maks én valideringstekst, derfor settes alle til denne.

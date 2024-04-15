@@ -45,11 +45,7 @@ const CheckboxView: React.FC<Props> = ({
   onRenderMarkdown,
   register,
 }) => {
-  if (!options) {
-    return null;
-  }
-
-  const checkboxes = options.map(el => {
+  const checkboxes = options?.map(el => {
     return { label: el.label, id: el.type, checked: isSelected(el, selected), disabled: el.disabled };
   });
   const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
@@ -57,13 +53,13 @@ const CheckboxView: React.FC<Props> = ({
   return (
     <div className="page_refero__component page_refero__component_choice page_refero__component_choice_checkbox">
       <FormGroup mode="ongrey">
+        {renderHelpElement()}
         <Label
           labelTexts={[{ text: labelText }]}
           sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
           afterLabelChildren={renderHelpButton()}
         />
-        {renderHelpElement()}
-        {checkboxes.map((checkbox, index) => (
+        {checkboxes?.map((checkbox, index) => (
           <Checkbox
             {...register(item.linkId, {
               required: isRequired(item),

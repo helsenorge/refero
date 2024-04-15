@@ -31,7 +31,7 @@ interface Props extends FormProps, WithCommonFunctionsAndEnhancedProps {
   answer: QuestionnaireResponseItemAnswer;
 }
 
-export class DateYearMonthInput extends React.Component<Props, {}> {
+export class DateYearMonthInput extends React.Component<Props> {
   getYearMonthInputResources(): YearMonthResources {
     const { resources, item } = this.props;
     // Vi får maks én valideringstekst, derfor settes alle til denne.

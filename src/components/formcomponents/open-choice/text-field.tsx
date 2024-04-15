@@ -61,6 +61,8 @@ const textField: React.FC<Props> = ({
     <Input
       {...register(item.linkId, {
         required: isRequired(item),
+        onChange: handleOnBlur,
+        onBlur: handleOnBlur,
       })}
       type="text"
       inputId={getId(id)}
@@ -72,12 +74,10 @@ const textField: React.FC<Props> = ({
           sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
         />
       }
-      required={isRequired(item)}
       placeholder={getPlaceholder(item)}
       // minLength={getMinLengthExtensionValue(item)}
       // maxLength={getMaxLength(item)}
       readOnly={isReadOnly(item)}
-      onBlur={handleOnBlur}
       // pattern={getRegexExtension(item)}
       // errorMessage={getValidationTextExtension(item)}
       // validateOnExternalUpdate={true}
