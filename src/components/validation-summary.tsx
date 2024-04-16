@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { FieldErrors, FieldValues, useForm, useFormContext } from 'react-hook-form';
 import { Resources } from '../util/resources';
 import {
@@ -15,18 +15,25 @@ interface ValidationSummaryProps {
 
 export const ValidationSummary = ({ errors, resources }: ValidationSummaryProps) => {
   const errorArray = Object.entries(errors);
+  const errorSummaryRef = useRef<HTMLDivElement | null>(null);
 
-  const { setFocus } = useFormContext();
+  const { setFocus, formState } = useFormContext();
 
   const handleErrorButtonClicked = (fieldName: string) => {
     setFocus(fieldName);
-  }
+  };
 
-  if (!errorArray.length) {
+  React.useEffect(() => {
+    if (errorArray.length > 0 && errorSummaryRef.current) {
+      errorSummaryRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, [formState.submitCount]);
+
+  if (errorArray.length === 0) {
     return <></>;
   } else
     return (
-      <>
+      <div ref={errorSummaryRef}>
         <style>
           {validationSummaryList}
           {validationSummaryHeader}
@@ -44,6 +51,6 @@ export const ValidationSummary = ({ errors, resources }: ValidationSummaryProps)
               </li>
             ))}
         </ol>
-      </>
+      </div>
     );
 };
