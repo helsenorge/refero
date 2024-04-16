@@ -25,10 +25,17 @@ export const validationSummaryListItem = `
   }
 `;
 
-export const validationSummaryLink = `
-  .validationSummary_link {
+export const validationSummaryButton = `
+  .validationSummary_button {
     color: ${palette.cherry600};
     font-size: 1.125rem;
     font-weight: 400;
+
+    background: none;
+    border: none;
+    padding: 0;
+    font: inherit;
+    text-decoration: underline;
+    cursor: pointer;
   }
 `;
