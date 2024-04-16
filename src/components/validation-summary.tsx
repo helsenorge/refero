@@ -18,9 +18,8 @@ export const ValidationSummary = ({ errors, resources }: ValidationSummaryProps)
 
   const { setFocus } = useFormContext();
 
-  const doStuff = (enString: string) => {
-    setFocus(enString);
-    console.log(enString);
+  const handleErrorButtonClicked = (fieldName: string) => {
+    setFocus(fieldName);
   }
 
   if (!errorArray.length) {
@@ -39,10 +38,8 @@ export const ValidationSummary = ({ errors, resources }: ValidationSummaryProps)
           {errorArray &&
             errorArray.map(([fieldName, error], index) => (
               <li className="validationSummary_listItem" key={fieldName + index.toString()}>
-                {console.log(error)}
-                <a className="validationSummary_link" onClick={() => doStuff(fieldName)}>
-                  {/*TODO: remove index.toString when error message actually displays something*/}
-                  {error?.message + index.toString()}
+                <a className="validationSummary_link" onClick={() => handleErrorButtonClicked(fieldName)}>
+                  {error?.message}
                 </a>
               </li>
             ))}
