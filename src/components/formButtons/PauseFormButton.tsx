@@ -2,8 +2,6 @@ import React, { ReactElement } from 'react';
 
 import Button from '@helsenorge/designsystem-react/components/Button';
 
-import { displayPauseButtonOnSmallScreen, hidePauseButtonOnSmallScreen, pauseButtonStyle } from '../../styles/formButtonStyles';
-
 type Props = {
   onPauseButtonClicked?: () => void;
   pauseButtonText: string;
@@ -13,9 +11,7 @@ type Props = {
 
 export const PauseFormButton = ({ pauseButtonText, onPauseButtonClicked, pauseButtonDisabled, isHelsenorgeForm }: Props): ReactElement => {
   return (
-    <div className="pauseButtonStyle">
-      <style>{pauseButtonStyle}</style>
-      <style>{isHelsenorgeForm ? hidePauseButtonOnSmallScreen : displayPauseButtonOnSmallScreen}</style>
+    <div className={`pauseButtonStyle ${isHelsenorgeForm ? 'hideOnSmallScreen' : 'displayOnSmallScreen'}`}>
       <Button variant="outline" disabled={pauseButtonDisabled} onClick={onPauseButtonClicked}>
         {pauseButtonText}
       </Button>

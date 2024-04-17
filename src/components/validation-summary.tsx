@@ -1,12 +1,8 @@
 import React, { useRef } from 'react';
 import { FieldErrors, FieldValues, useForm, useFormContext } from 'react-hook-form';
 import { Resources } from '../util/resources';
-import {
-  validationSummaryHeader,
-  validationSummaryButton,
-  validationSummaryList,
-  validationSummaryListItem,
-} from '../styles/validationSummaryStyles';
+
+import '../styles/validationSummary.scss';
 
 interface ValidationSummaryProps {
   resources: Resources;
@@ -34,12 +30,6 @@ export const ValidationSummary = ({ errors, resources }: ValidationSummaryProps)
   } else
     return (
       <div ref={errorSummaryRef}>
-        <style>
-          {validationSummaryList}
-          {validationSummaryHeader}
-          {validationSummaryListItem}
-          {validationSummaryButton}
-        </style>
         <ol className="validationSummary_list">
           <h3 className="validationSummary_header">{resources.validationSummaryHeader}</h3>
           {errorArray &&
