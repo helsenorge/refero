@@ -10,8 +10,9 @@ import Select from '@helsenorge/designsystem-react/components/Select';
 
 import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 
+import { checkboxFormRegister, selectFormRegister } from './utils';
 import { getValidationTextExtension, getPlaceholder } from '../../../util/extension';
-import { isRequired, getId, getSublabelText, getText, renderPrefix } from '../../../util/index';
+import { getId, getSublabelText, getText, renderPrefix } from '../../../util/index';
 import { Resources } from '../../../util/resources';
 import { FormProps } from '../../../validation/ReactHookFormHoc';
 import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
@@ -23,7 +24,6 @@ export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   id?: string;
   handleChange: (code: string) => void;
   selected?: Array<string | undefined>;
-  validateInput: (value: string | undefined) => boolean;
   resources?: Resources;
   renderDeleteButton: (className?: string) => JSX.Element | null;
   repeatButton: JSX.Element;
@@ -50,11 +50,8 @@ class DropdownView extends React.Component<Props, Record<string, unknown>> {
       renderHelpElement,
       onRenderMarkdown,
       register,
+      error,
     } = this.props;
-    if (!options) {
-      return null;
-    }
-
     let placeholder;
     if (getPlaceholder(item)) {
       placeholder = new Option(getPlaceholder(item), '');
@@ -63,31 +60,30 @@ class DropdownView extends React.Component<Props, Record<string, unknown>> {
     }
     const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`;
     const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
+    const onChange = (e: React.ChangeEvent<HTMLSelectElement>): void => {
+      handleChange(e.target.value);
+    };
     return (
       <div className="page_refero__component page_refero__component_choice page_refero__component_choice_dropdown">
-        <FormGroup mode="ongrey">
+        <FormGroup mode="ongrey" error={error?.message}>
           {renderHelpElement()}
           <Select
-            {...register(item.linkId, {
-              required: isRequired(item),
-            })}
+            {...selectFormRegister(register, item, resources)}
             label={
               <Label
-                htmlFor={getId(id)}
                 labelTexts={[{ text: labelText, type: 'semibold' }]}
                 sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
                 afterLabelChildren={renderHelpButton()}
               />
             }
-            onChange={(e): void => handleChange(e.target.value)}
             selectId={getId(id)}
+            onChange={onChange}
             className="page_refero__input"
-            value={selected && selected[0] ? selected[0] : undefined}
           >
             <option key={getId(id) + placeholder?.label} value={undefined}>
               {placeholder?.label}
             </option>
-            {options.map(dropdownOption => (
+            {options?.map(dropdownOption => (
               <option key={getId(id) + dropdownOption.label} value={dropdownOption.type}>
                 {dropdownOption.label}
               </option>

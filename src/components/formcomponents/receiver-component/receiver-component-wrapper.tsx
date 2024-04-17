@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import ReceiverComponent, { ReceiverComponentProps } from './receiver-component';
 import { getId } from '../../../util';
-import ReactHookFormHoc, { FormProps } from '../../../validation/ReactHookFormHoc';
+import { FormProps } from '../../../validation/ReactHookFormHoc';
 
 class ReceiverComponentWrapper extends React.Component<ReceiverComponentProps & FormProps> {
   render(): JSX.Element {
@@ -13,5 +13,5 @@ class ReceiverComponentWrapper extends React.Component<ReceiverComponentProps & 
     );
   }
 }
-const withFormProps = ReactHookFormHoc(ReceiverComponentWrapper);
-export default withFormProps;
+
+export default ReceiverComponentWrapper;

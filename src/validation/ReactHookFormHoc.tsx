@@ -4,7 +4,7 @@ import { FieldError, FieldValues, UseFormReturn, useFormContext } from 'react-ho
 
 import { WithCommonFunctionsProps } from '../components/with-common-functions';
 
-export type FormProps = UseFormReturn<FieldValues, unknown, undefined> & {
+export type FormProps = Omit<UseFormReturn<FieldValues, unknown, undefined>, 'getFieldState'> & {
   invalid: boolean;
   isDirty: boolean;
   isTouched: boolean;
@@ -12,30 +12,34 @@ export type FormProps = UseFormReturn<FieldValues, unknown, undefined> & {
   error?: FieldError | undefined;
 };
 
-function ReactHookFormHoc<T extends Partial<WithCommonFunctionsProps>>(Comp: React.ComponentType<T>): React.ComponentType<T & FormProps> {
-  const EnhancedComponent: React.FC<T & FormProps> = props => {
-    const { formState, getFieldState, ...rest } = useFormContext();
+function withReactHookFormHoc<T extends WithCommonFunctionsProps>(
+  WrappedComponent: React.ComponentType<T & FormProps>
+): React.ComponentType<T> {
+  const EnhancedComponent: React.FC<T> = props => {
+    const { formState, getFieldState, control, register, ...rest } = useFormContext<FieldValues>();
     const { error, invalid, isDirty, isTouched, isValidating } = getFieldState(props.item?.linkId || '', formState);
 
     return (
-      <Comp
+      <WrappedComponent
         {...props}
         {...rest}
-        formState={formState}
+        control={control}
+        register={register}
         error={error}
         invalid={invalid}
         isDirty={isDirty}
         isTouched={isTouched}
         isValidating={isValidating}
+        formState={formState}
       />
     );
   };
 
   EnhancedComponent.displayName = 'ReactHookFormHoc';
 
-  return EnhancedComponent;
+  return React.memo(EnhancedComponent);
 }
 
-ReactHookFormHoc.displayName = 'ReactHookFormHoc';
+withReactHookFormHoc.displayName = 'ReactHookFormHoc';
 
-export default ReactHookFormHoc;
+export default withReactHookFormHoc;

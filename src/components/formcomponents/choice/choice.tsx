@@ -300,7 +300,14 @@ export class Choice extends React.Component<ChoiceProps, ChoiceState> {
     const resourcesHasChanged = JSON.stringify(this.props.resources) !== JSON.stringify(nextProps.resources);
     const repeats = this.props.item.repeats ?? false;
 
-    return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats || answerHasChanged;
+    return (
+      responseItemHasChanged ||
+      helpItemHasChanged ||
+      resourcesHasChanged ||
+      repeats ||
+      answerHasChanged ||
+      this.props.error?.message !== nextProps.error?.message
+    );
   }
 
   render(): JSX.Element | null {

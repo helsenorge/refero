@@ -15,7 +15,7 @@ import ItemType from '../../../constants/itemType';
 import { getValidationTextExtension } from '../../../util/extension';
 import { isRequired, getId, getSublabelText } from '../../../util/index';
 import { Resources } from '../../../util/resources';
-import { FormProps } from '../../../validation/ReactHookFormHoc';
+import ReactHookFormHoc, { FormProps } from '../../../validation/ReactHookFormHoc';
 import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 import Label from '../label';
 import SubLabel from '../sublabel';
@@ -291,4 +291,4 @@ class AutosuggestView extends React.Component<AutosuggestProps, AutosuggestState
   }
 }
 
-export default AutosuggestView;
+export default ReactHookFormHoc(AutosuggestView);

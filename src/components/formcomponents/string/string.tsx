@@ -14,14 +14,13 @@ import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 import { stringFormRegister } from './utils';
 import { NewValueAction, newStringValueAsync } from '../../../actions/newValue';
 import { GlobalState } from '../../../reducers';
-import { getPlaceholder, getMinLengthExtensionValue, getRegexExtension } from '../../../util/extension';
+import { getPlaceholder } from '../../../util/extension';
 import {
   isReadOnly,
   isRequired,
   getId,
   getStringValue,
   getPDFStringValue,
-  validateText,
   getTextValidationErrorMessage,
   getSublabelText,
   renderPrefix,
@@ -84,10 +83,6 @@ export class String extends React.Component<Props, Record<string, unknown>> {
 
     return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats || answerHasChanged || newErrorMessage;
   }
-
-  validateText = (value: string): boolean => {
-    return validateText(value, this.props.validateScriptInjection);
-  };
 
   getValidationErrorMessage = (value: string): string => {
     return getTextValidationErrorMessage(value, this.props.validateScriptInjection, this.props.item, this.props.resources);

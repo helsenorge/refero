@@ -113,12 +113,13 @@ class Quantity extends React.Component<Props> {
     const answerHasChanged = this.props.answer !== nextProps.answer;
     const resourcesHasChanged = JSON.stringify(this.props.resources) !== JSON.stringify(nextProps.resources);
     const repeats = this.props.item.repeats ?? false;
+    const newErrorMessage = this.props.error?.message !== nextProps.error?.message;
 
-    return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats || answerHasChanged;
+    return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats || answerHasChanged || newErrorMessage;
   }
 
   render(): JSX.Element | null {
-    const { id, item, questionnaire, onRenderMarkdown, resources } = this.props;
+    const { id, item, questionnaire, onRenderMarkdown, resources, error } = this.props;
     if (this.props.pdf || isReadOnly(item)) {
       return (
         <TextView
@@ -139,7 +140,7 @@ class Quantity extends React.Component<Props> {
 
     return (
       <div className="page_refero__component page_refero__component_quantity">
-        <FormGroup error={''} mode="ongrey">
+        <FormGroup error={error?.message} mode="ongrey">
           {this.props.renderHelpElement()}
           <Input
             label={
