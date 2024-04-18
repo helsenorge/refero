@@ -1,13 +1,14 @@
 import * as React from 'react';
 
 import { QuestionnaireItem, QuestionnaireItemAnswerOption, QuestionnaireResponseItemAnswer } from 'fhir/r4';
+import { Controller } from 'react-hook-form';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import { Slider, SliderStep } from '@helsenorge/designsystem-react/components/Slider';
 
 import ExtensionConstants from '../../../constants/extensions';
 import { isRequired } from '../../../util';
-import { getExtension, getMaxValueExtensionValue, getMinValueExtensionValue } from '../../../util/extension';
+import { getExtension, getMaxValueExtensionValue, getMinValueExtensionValue, getValidationTextExtension } from '../../../util/extension';
 import { isString } from '../../../util/typeguards';
 import { FormProps } from '../../../validation/ReactHookFormHoc';
 import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
@@ -22,7 +23,7 @@ export interface SliderProps extends WithCommonFunctionsAndEnhancedProps, FormPr
 
 type LeftRightLabels = { leftLabel: string; rightLabel: string };
 
-const SliderView: React.FC<SliderProps> = ({ item, handleChange, selected, children, register }) => {
+const SliderView: React.FC<SliderProps> = ({ item, handleChange, selected, children, control, resources }) => {
   const title = item.text;
 
   const onValueChange = (index: number): void => {
@@ -48,24 +49,48 @@ const SliderView: React.FC<SliderProps> = ({ item, handleChange, selected, child
   };
   const sliderSteps = item?.answerOption?.map(option => mapToSliderStep(option));
   const leftRightLabels = getLeftRightLabels(item?.answerOption);
-  // maxValue={getMaxValueExtensionValue(item)}
-  // minValue={getMinValueExtensionValue(item)}
+  const minValue = getMinValueExtensionValue(item);
+  const maxValue = getMaxValueExtensionValue(item);
   return (
     <div className="page_refero__component page_refero__component_choice page_refero__component_choice_slider">
-      <FormGroup mode="ongrey">
-        <Slider
-          {...register(item.linkId, {
-            required: isRequired(item),
-          })}
-          title={title}
-          labelLeft={leftRightLabels?.leftLabel}
-          labelRight={leftRightLabels?.rightLabel}
-          steps={sliderSteps}
-          onChange={onValueChange}
-          selected={selected && selected[0] ? true : false}
-          value={getSelectedStep()}
-        />
-      </FormGroup>
+      <Controller
+        name={item.linkId}
+        control={control}
+        rules={{
+          required: {
+            message: getValidationTextExtension(item) ?? resources?.formRequiredErrorMessage ?? 'Påkrevd felt',
+            value: isRequired(item),
+          },
+          ...(minValue && {
+            min: {
+              message: getValidationTextExtension(item) ?? '',
+              value: minValue,
+            },
+          }),
+          ...(maxValue && {
+            min: {
+              message: getValidationTextExtension(item) ?? '',
+              value: maxValue,
+            },
+          }),
+        }}
+        render={({ field, fieldState: { error } }): JSX.Element => (
+          <FormGroup mode="ongrey" error={error?.message}>
+            <Slider
+              title={title}
+              labelLeft={leftRightLabels?.leftLabel}
+              labelRight={leftRightLabels?.rightLabel}
+              steps={sliderSteps}
+              onChange={(e): void => {
+                onValueChange(e);
+                field.onChange(e);
+              }}
+              selected={selected && selected[0] ? true : false}
+              value={getSelectedStep()}
+            />
+          </FormGroup>
+        )}
+      />
       {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : undefined}
     </div>
   );

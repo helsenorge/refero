@@ -5,7 +5,7 @@ import { IItemType } from '../constants/itemType';
 export const defaultValuesForType: Record<IItemType, unknown> = {
   text: '', // Default value for text items
   quantity: null, // Default value for quantity items
-  choice: null, // Default value for choice items
+  choice: [], // Default value for choice items
   boolean: false, // Default value for boolean items
   integer: null, // Default value for integer items
   decimal: null, // Default value for decimal items
@@ -18,23 +18,65 @@ export const defaultValuesForType: Record<IItemType, unknown> = {
   question: '', // Default value for question items
   group: '', // Default value for group items
   display: '', // Default value for display items
-  'open-choice': null, // Default value for open-choice items,
+  'open-choice': [], // Default value for open-choice items,
   string: '', // Default value for string items
 };
 type DefaultValues = Record<string, unknown>;
 
-export function generateDefaultValues(items?: QuestionnaireItem[]): Record<string, unknown> {
-  const defaultValues: DefaultValues = {};
-  if (!items) return defaultValues;
-  for (const item of items) {
-    const defaultValue = item.repeats ? [defaultValuesForType[item.type]] : defaultValuesForType[item.type];
+const getInitialValueForItem = (item: QuestionnaireItem): unknown => {
+  if (item.initial)
+    if (item.initial && item.initial.length > 0) {
+      return item.initial.map(
+        x =>
+          x.valueBoolean ||
+          x.valueString ||
+          x.valueInteger ||
+          x.valueDecimal ||
+          x.valueDate ||
+          x.valueDateTime ||
+          x.valueTime ||
+          x.valueAttachment ||
+          x.valueReference ||
+          x?.valueQuantity?.value ||
+          x?.valueCoding?.code ||
+          x.valueString
+      );
+    }
+  return defaultValuesForType[item.type];
+};
 
-    if (item.item && Array.isArray(item.item)) {
-      defaultValues[item.linkId] = generateDefaultValues(item.item);
-    } else {
-      defaultValues[item.linkId] = defaultValue;
+// Recursively generate a nested structure of default values
+export const generateDefaultValues = (items?: QuestionnaireItem[]): DefaultValues => {
+  const nestedDefaultValues = items?.reduce((acc: DefaultValues, item) => {
+    const key = item.linkId;
+    // Assign default value only if not read-only
+    if (!item.readOnly) {
+      acc[key] = item.repeats ? [getInitialValueForItem(item)] : getInitialValueForItem(item);
+    }
+
+    // Process nested items if any, even if current item is read-only
+    if (item.item && item.item.length > 0) {
+      const nestedDefaults = generateDefaultValues(item.item);
+      Object.assign(acc, nestedDefaults);
+    }
+    return acc;
+  }, {});
+  return flattenAndFilterDefaults(nestedDefaultValues, items);
+};
+
+// Flatten the structure and remove entries of unwanted types
+const flattenAndFilterDefaults = (defaults?: DefaultValues, items?: QuestionnaireItem[]): DefaultValues => {
+  const flatDefaults: DefaultValues = {};
+  const excludedTypes = ['group', 'display', 'reference', 'url'];
+
+  for (const key in defaults) {
+    // Extract the type from the key
+    const type = items?.find(item => key === item.linkId)?.type;
+
+    if (!type || !excludedTypes.includes(type)) {
+      flatDefaults[key] = defaults[key];
     }
   }
-
-  return defaultValues;
-}
+  console.log('flatDefaults', flatDefaults);
+  return flatDefaults;
+};

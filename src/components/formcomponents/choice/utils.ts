@@ -6,19 +6,21 @@ import { getValidationTextExtension } from '../../../util/extension';
 import { Resources } from '../../../util/resources';
 import { FormProps } from '../../../validation/ReactHookFormHoc';
 
-export const booleanFormRegister = (
+export const selectFormRegister = (
   register: FormProps['register'],
   item: QuestionnaireItem,
   resources?: Resources,
-  value?: boolean,
-  onChange?: () => void
+  value?: string,
+  onChange?: (e: React.ChangeEvent<HTMLSelectElement>) => void,
+  disabled?: boolean
 ): UseFormRegisterReturn => {
   return register(item.linkId, {
-    required: {
-      value: isRequired(item),
-      message: resources?.formRequiredErrorMessage ?? 'Feltet er påkrevd',
-    },
     value,
     onChange,
+    required: {
+      message: getValidationTextExtension(item) ?? resources?.formRequiredErrorMessage ?? '',
+      value: isRequired(item),
+    },
+    disabled,
   });
 };

@@ -14,16 +14,11 @@ import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Input from '@helsenorge/designsystem-react/components/Input';
 import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
 
+import { quantityFormRegister } from './utils';
 import { NewValueAction, newQuantityValueAsync } from '../../../actions/newValue';
 import { GlobalState } from '../../../reducers';
-import {
-  getValidationTextExtension,
-  getPlaceholder,
-  getMaxValueExtensionValue,
-  getMinValueExtensionValue,
-  getQuestionnaireUnitExtensionValue,
-} from '../../../util/extension';
-import { isReadOnly, isRequired, getId, getDecimalPattern, getSublabelText, renderPrefix, getText } from '../../../util/index';
+import { getPlaceholder, getQuestionnaireUnitExtensionValue } from '../../../util/extension';
+import { isReadOnly, getId, getSublabelText, renderPrefix, getText } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
 import { Resources } from '../../../util/resources';
@@ -77,7 +72,7 @@ class Quantity extends React.Component<Props> {
     return `${value} ${this.getUnit()}`;
   }
 
-  handleChange = (event: React.FormEvent): void => {
+  handleChange = (event: React.FormEvent<HTMLInputElement>): void => {
     const { dispatch, promptLoginMessage, path, item, onAnswerChange } = this.props;
     const extension = getQuestionnaireUnitExtensionValue(this.props.item);
     if (extension) {
@@ -118,12 +113,13 @@ class Quantity extends React.Component<Props> {
     const answerHasChanged = this.props.answer !== nextProps.answer;
     const resourcesHasChanged = JSON.stringify(this.props.resources) !== JSON.stringify(nextProps.resources);
     const repeats = this.props.item.repeats ?? false;
+    const newErrorMessage = this.props.error?.message !== nextProps.error?.message;
 
-    return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats || answerHasChanged;
+    return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats || answerHasChanged || newErrorMessage;
   }
 
   render(): JSX.Element | null {
-    const { id, item, questionnaire, onRenderMarkdown, resources } = this.props;
+    const { id, item, questionnaire, onRenderMarkdown, resources, error } = this.props;
     if (this.props.pdf || isReadOnly(item)) {
       return (
         <TextView
@@ -144,7 +140,7 @@ class Quantity extends React.Component<Props> {
 
     return (
       <div className="page_refero__component page_refero__component_quantity">
-        <FormGroup error={''} mode="ongrey">
+        <FormGroup error={error?.message} mode="ongrey">
           {this.props.renderHelpElement()}
           <Input
             label={
@@ -154,13 +150,14 @@ class Quantity extends React.Component<Props> {
                 afterLabelChildren={this.props.renderHelpButton()}
               />
             }
-            {...this.props.register(this.props.item.linkId, {
-              required: isRequired(this.props.item),
-              valueAsNumber: true,
-            })}
+            {...quantityFormRegister(
+              this.props.register,
+              this.props.item,
+              this.props.resources,
+              value !== undefined ? value + '' : '',
+              this.handleChange
+            )}
             type="number"
-            onChange={this.handleChange}
-            value={value !== undefined ? value + '' : ''}
             inputId={getId(id)}
             defaultValue={value !== undefined ? value + '' : ''}
             placeholder={getPlaceholder(item)}

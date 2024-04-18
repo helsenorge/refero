@@ -1,9 +1,11 @@
 import * as React from 'react';
 
 import { QuestionnaireItem } from 'fhir/r4';
+import { Controller, useFormContext } from 'react-hook-form';
 
 import { TextMessage } from '../../../types/text-message';
 
+import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import NotificationPanel from '@helsenorge/designsystem-react/components/NotificationPanel';
 
 import Dropzone from '@helsenorge/file-upload/components/dropzone';
@@ -14,7 +16,6 @@ import { convertBytesToMBString, convertMBToBytes } from './attachmentUtil';
 import constants, { VALID_FILE_TYPES } from '../../../constants';
 import { getMaxSizeExtensionValue, getValidationTextExtension } from '../../../util/extension';
 import { Resources } from '../../../util/resources';
-import { FormProps } from '../../../validation/ReactHookFormHoc';
 
 interface Props {
   onUpload: (files: Array<File>, cb: (success: boolean, errormessage: TextMessage | null, uploadedFile?: UploadedFile) => void) => void;
@@ -40,7 +41,6 @@ interface Props {
 
   helpButton?: JSX.Element;
   helpElement?: JSX.Element;
-  register: FormProps['register'];
 }
 
 const attachmentHtml: React.SFC<Props> = ({
@@ -66,45 +66,65 @@ const attachmentHtml: React.SFC<Props> = ({
   minFiles,
   item,
   children,
-  register,
 }) => {
   const getMaxValueBytes = getAttachmentMaxSizeBytesToUse(attachmentMaxFileSize, item);
   const getMaxValueMBToReplace = convertBytesToMBString(getMaxValueBytes);
   const validFileTypes = attachmentValidTypes ? attachmentValidTypes : VALID_FILE_TYPES;
   const deleteText = resources ? resources.deleteAttachmentText : undefined;
-
+  const { control, getFieldState } = useFormContext();
+  const { error } = getFieldState(item.linkId);
   return (
     <div className="page_refero__component page_refero__component_attachment">
-      <Dropzone
-        {...register(item.linkId, {
-          required: isRequired,
-        })}
-        id={id}
-        label={label}
-        subLabel={subLabel}
-        onDrop={onUpload}
-        onDelete={onDelete}
-        onOpenFile={onOpen}
-        uploadButtonText={uploadButtonText}
-        uploadedFiles={uploadedFiles}
-        maxFileSize={getMaxValueBytes}
-        validMimeTypes={validFileTypes}
-        dontShowHardcodedText={!!deleteText}
-        deleteText={deleteText}
-        supportedFileFormatsText={resources ? resources.supportedFileFormats : undefined}
-        errorMessage={(file: File): string => {
-          return getErrorMessage(validFileTypes, getMaxValueBytes, getMaxValueMBToReplace, item, errorText, file, resources);
-        }}
-        isRequired={isRequired}
-        wrapperClasses="page_refero__input"
-        onRequestLink={onRequestAttachmentLink}
-        helpButton={helpButton}
-        helpElement={helpElement}
-        shouldUploadMultiple={multiple}
-        maxFiles={maxFiles}
-        minFiles={minFiles}
-        chooseFilesText={resources?.chooseFilesText}
-      />
+      <FormGroup error={error?.message}>
+        <Controller
+          name={item.linkId}
+          control={control}
+          rules={{
+            required: {
+              message: resources?.formRequiredErrorMessage ?? '',
+              value: !!isRequired,
+            },
+            validate: {
+              mimeType: (files: File[]): boolean => {
+                return files.every(file => mimeTypeIsValid(file, validFileTypes));
+              },
+              size: (files: File[]): boolean => {
+                return files.every(file => sizeIsValid(file, getMaxValueBytes));
+              },
+            },
+          }}
+          render={({ field }): JSX.Element => (
+            <Dropzone
+              id={id}
+              label={label}
+              subLabel={subLabel}
+              onDrop={onUpload}
+              onDelete={onDelete}
+              onOpenFile={onOpen}
+              uploadButtonText={uploadButtonText}
+              uploadedFiles={uploadedFiles}
+              maxFileSize={getMaxValueBytes}
+              validMimeTypes={validFileTypes}
+              dontShowHardcodedText={!!deleteText}
+              deleteText={deleteText}
+              supportedFileFormatsText={resources ? resources.supportedFileFormats : undefined}
+              errorMessage={(file: File): string => {
+                return getErrorMessage(validFileTypes, getMaxValueBytes, getMaxValueMBToReplace, item, errorText, file, resources);
+              }}
+              isRequired={isRequired}
+              wrapperClasses="page_refero__input"
+              onRequestLink={onRequestAttachmentLink}
+              helpButton={helpButton}
+              helpElement={helpElement}
+              shouldUploadMultiple={multiple}
+              maxFiles={maxFiles}
+              minFiles={minFiles}
+              chooseFilesText={resources?.chooseFilesText}
+            />
+          )}
+        />
+      </FormGroup>
+
       {attachmentErrorMessage && <NotificationPanel variant="alert">{attachmentErrorMessage}</NotificationPanel>}
       {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
     </div>

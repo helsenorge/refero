@@ -11,13 +11,13 @@ export const decimalFormRegister = (
   item: QuestionnaireItem,
   resources?: Resources,
   value?: string | number | number[] | undefined,
-  onChange?: (event: React.FormEvent<Element>) => void
+  onChange?: (event: React.FormEvent<HTMLInputElement>) => void
 ): UseFormRegisterReturn => {
   const decimalPattern = getDecimalPattern(item);
   return register(item.linkId, {
     required: {
       value: isRequired(item),
-      message: getValidationTextExtension(item) ?? resources?.formRequiredErrorMessage ?? 'Feltet er påkrevd',
+      message: resources?.formRequiredErrorMessage ?? 'Feltet er påkrevd',
     },
     max: {
       value: Number(getMaxValueExtensionValue(item)),
@@ -27,7 +27,7 @@ export const decimalFormRegister = (
       value: Number(getMinValueExtensionValue(item)),
       message: getValidationTextExtension(item) ?? resources?.oppgiGyldigVerdi ?? 'Verdien er for lav',
     },
-    ...(decimalPattern && { pattern: new RegExp(decimalPattern) }),
+    ...(decimalPattern && { pattern: new RegExp(decimalPattern), message: 'Verdien er ikke et gyldig tall' }),
     value,
     onChange,
   });
