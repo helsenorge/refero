@@ -1,6 +1,6 @@
 import { QuestionnaireItem, Coding } from 'fhir/r4';
 
-export function getCode(item: QuestionnaireItem, system: string): Coding | undefined {
+export function getCodes(item: QuestionnaireItem, system: string): Coding[] | undefined {
   if (!item || !item.code || item.code.length === 0) {
     return undefined;
   }
@@ -8,8 +8,10 @@ export function getCode(item: QuestionnaireItem, system: string): Coding | undef
   if (!filteredCode || filteredCode.length === 0) {
     return undefined;
   }
-  return filteredCode[0];
+  return filteredCode;
 }
+
+export const getCode = (item: QuestionnaireItem, system: string): Coding | undefined => getCodes(item, system)?.[0];
 
 export function getQuestionnaireItemCodeValue(item: QuestionnaireItem, codesytem: string): string | undefined {
   const codingSystem = getCode(item, codesytem);

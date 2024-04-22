@@ -4,7 +4,9 @@ import { QuestionnaireItem, QuestionnaireItemAnswerOption, QuestionnaireResponse
 
 import { Slider, SliderStep } from '@helsenorge/designsystem-react/components/Slider';
 
+import codeSystems from '../../../constants/codingsystems';
 import ExtensionConstants from '../../../constants/extensions';
+import { getCodes as getCodingSystemCodes } from '../../../util/codingsystem';
 import { getExtension } from '../../../util/extension';
 import { isString } from '../../../util/typeguards';
 
@@ -14,6 +16,11 @@ interface SliderProps {
   handleChange: (sliderStep: string) => void;
   selected?: Array<string | undefined>;
   children: React.ReactNode;
+}
+enum SliderDisplayTypes {
+  Label = 'label',
+  OrdinalValue = 'ordnialValue',
+  default = 'label',
 }
 
 type LeftRightLabels = { leftLabel: string; rightLabel: string };
@@ -42,8 +49,11 @@ const SliderView: React.FC<SliderProps> = ({ item, handleChange, selected, child
       return undefined;
     }
   };
-  const sliderSteps = item?.answerOption?.map(option => mapToSliderStep(option));
-  const leftRightLabels = getLeftRightLabels(item?.answerOption);
+  const displayType = getCodingSystemCodes(item, codeSystems.SliderDisplayType);
+  const sliderSteps = item?.answerOption?.map(option =>
+    mapToSliderStep(option, (displayType?.[0]?.code as SliderDisplayTypes) || SliderDisplayTypes.OrdinalValue)
+  );
+  const leftRightLabels = getLeftRightLabels(item);
   return (
     <div className="page_refero__component page_refero__component_choice page_refero__component_choice_slider">
       <Slider
@@ -60,34 +70,32 @@ const SliderView: React.FC<SliderProps> = ({ item, handleChange, selected, child
   );
 };
 
-function mapToSliderStep(answerOptions: QuestionnaireItemAnswerOption): SliderStep {
+function mapToSliderStep(answerOptions: QuestionnaireItemAnswerOption, displayType: SliderDisplayTypes): SliderStep {
   return {
-    label: getStepLabel(answerOptions),
+    label: getStepLabel(answerOptions, displayType),
     emojiUniCode: getStepEmoji(answerOptions),
   };
-}
-
-function getDisplay(answerOptions?: QuestionnaireItemAnswerOption[]): string[] {
-  return answerOptions?.map(option => option.valueCoding?.display).filter(isString) || [];
 }
 
 function getCodes(answerOptions?: QuestionnaireItemAnswerOption[]): string[] {
   return answerOptions?.map(option => option.valueCoding?.code).filter(isString) || [];
 }
 
-function getLeftRightLabels(answerOptions?: QuestionnaireItemAnswerOption[]): LeftRightLabels | undefined {
-  const displayLabels = getDisplay(answerOptions);
+function getLeftRightLabels(item?: QuestionnaireItem): LeftRightLabels | undefined {
+  if (!item) return undefined;
 
-  if (displayLabels.length > 1) {
-    return { leftLabel: displayLabels[0], rightLabel: displayLabels[displayLabels.length - 1] };
-  }
+  const displayLabels = getCodingSystemCodes(item, codeSystems.SliderLabels);
 
-  return undefined;
+  return {
+    leftLabel: displayLabels?.find(x => x.code === 'LabelLeft')?.display || '',
+    rightLabel: displayLabels?.find(x => x.code === 'LabelRight')?.display || '',
+  };
 }
 
-function getStepLabel(option: QuestionnaireItemAnswerOption): number | undefined {
-  const label = getExtension(ExtensionConstants.ORDINAL_VALUE, option.valueCoding)?.valueDecimal;
-  return label;
+function getStepLabel(option: QuestionnaireItemAnswerOption, displayType: SliderDisplayTypes): number | string | undefined {
+  if (displayType === SliderDisplayTypes.OrdinalValue)
+    return getExtension(ExtensionConstants.ORDINAL_VALUE, option.valueCoding)?.valueDecimal;
+  return option.valueCoding?.display;
 }
 
 function getStepEmoji(option: QuestionnaireItemAnswerOption): string | undefined {
