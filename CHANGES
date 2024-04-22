@@ -1,3 +1,11 @@
+## 15.0.6-beta01
+
+---
+
+- Bugfix:
+  - Added min and max display value on slider
+  - Check if we should display ordinal values or labels as the slider steps
+
 ## 15.0.5
 
 ---
