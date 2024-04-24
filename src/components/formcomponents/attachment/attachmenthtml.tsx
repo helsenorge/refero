@@ -15,6 +15,7 @@ import constants, { VALID_FILE_TYPES } from '../../../constants';
 import { getMaxSizeExtensionValue, getValidationTextExtension } from '../../../util/extension';
 import { Resources } from '../../../util/resources';
 import { FormProps } from '../../../validation/ReactHookFormHoc';
+import { mockMaxFiles, mockMaxSize, mockMinFiles, mockValidTypes, validateFileSize, validateFileType, validateMaxFiles, validateMinFiles } from './attachment-validation';
 
 interface Props {
   onUpload: (files: Array<File>, cb: (success: boolean, errormessage: TextMessage | null, uploadedFile?: UploadedFile) => void) => void;
@@ -41,6 +42,7 @@ interface Props {
   helpButton?: JSX.Element;
   helpElement?: JSX.Element;
   register: FormProps['register'];
+  setValue: FormProps['setValue'];
 }
 
 const attachmentHtml: React.SFC<Props> = ({
@@ -67,22 +69,45 @@ const attachmentHtml: React.SFC<Props> = ({
   item,
   children,
   register,
+  setValue,
 }) => {
   const getMaxValueBytes = getAttachmentMaxSizeBytesToUse(attachmentMaxFileSize, item);
   const getMaxValueMBToReplace = convertBytesToMBString(getMaxValueBytes);
   const validFileTypes = attachmentValidTypes ? attachmentValidTypes : VALID_FILE_TYPES;
   const deleteText = resources ? resources.deleteAttachmentText : undefined;
 
+  const handleUpload = (files: File[], cb: (success: boolean, errormessage: TextMessage | null, uploadedFile?: UploadedFile) => void) => {
+    const response: UploadedFile[] = files.map(file => ({
+      id: Math.random().toString(),
+      name: file.name,
+      size: file.size,
+      type: file.type,
+    }));
+
+    cb(true, null, response[0]);
+
+    setValue(item.linkId, response, { shouldValidate: true });
+  };
+
   return (
     <div className="page_refero__component page_refero__component_attachment">
       <Dropzone
         {...register(item.linkId, {
-          required: isRequired,
+          required: {
+            value: !!isRequired,
+            message: 'Dette feltet er påkrevd',
+          },
+          validate: {
+            minFiles: files => files.length ? validateMinFiles(files, mockMinFiles) : true,
+            maxFiles: files => files.length ? validateMaxFiles(files, mockMaxFiles) : true,
+            fileSize: (files: File[]) => files.length ? validateFileSize(files, mockMaxSize) : true,
+            fileType: (files: File[]) => files.length ? validateFileType(files, mockValidTypes) : true,
+          },
         })}
         id={id}
         label={label}
         subLabel={subLabel}
-        onDrop={onUpload}
+        onDrop={handleUpload}
         onDelete={onDelete}
         onOpenFile={onOpen}
         uploadButtonText={uploadButtonText}

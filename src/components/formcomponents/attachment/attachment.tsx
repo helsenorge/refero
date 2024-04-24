@@ -204,6 +204,7 @@ export class AttachmentComponent extends React.Component<Props> {
             item={item}
             attachmentErrorMessage={this.props.attachmentErrorMessage}
             register={this.props.register}
+            setValue={this.props.setValue}
           >
             {this.props.children}
           </AttachmentHtml>

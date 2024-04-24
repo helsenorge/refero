@@ -36,3 +36,7 @@ export function convertBytesToMB(bytes: number): number {
   }
   return bytes / 1024 / 1024;
 }
+
+export const getFileExtension = (filename: string) => {
+  return filename.slice(((filename.lastIndexOf('.') - 1) >>> 0) + 2);
+};
