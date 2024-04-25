@@ -148,7 +148,14 @@ export class AttachmentComponent extends React.Component<Props> {
     const attachmentErrorMessageHasChanged = this.props.attachmentErrorMessage !== nextProps.attachmentErrorMessage;
     const repeats = this.props.item.repeats ?? false;
 
-    return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || attachmentErrorMessageHasChanged || repeats;
+    return (
+      responseItemHasChanged ||
+      helpItemHasChanged ||
+      resourcesHasChanged ||
+      attachmentErrorMessageHasChanged ||
+      repeats ||
+      this.props.error?.message !== nextProps.error?.message
+    );
   }
 
   render(): JSX.Element | null {
@@ -205,6 +212,7 @@ export class AttachmentComponent extends React.Component<Props> {
             attachmentErrorMessage={this.props.attachmentErrorMessage}
             register={this.props.register}
             setValue={this.props.setValue}
+            error={this.props.error}
           >
             {this.props.children}
           </AttachmentHtml>

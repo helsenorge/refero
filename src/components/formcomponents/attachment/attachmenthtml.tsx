@@ -15,7 +15,18 @@ import constants, { VALID_FILE_TYPES } from '../../../constants';
 import { getMaxSizeExtensionValue, getValidationTextExtension } from '../../../util/extension';
 import { Resources } from '../../../util/resources';
 import { FormProps } from '../../../validation/ReactHookFormHoc';
-import { mockMaxFiles, mockMaxSize, mockMinFiles, mockValidTypes, validateFileSize, validateFileType, validateMaxFiles, validateMinFiles } from './attachment-validation';
+import {
+  mockMaxFiles,
+  mockMaxSize,
+  mockMinFiles,
+  mockValidTypes,
+  validateFileSize,
+  validateFileType,
+  validateMaxFiles,
+  validateMinFiles,
+} from './attachment-validation';
+import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
+import { FieldError } from 'react-hook-form';
 
 interface Props {
   onUpload: (files: Array<File>, cb: (success: boolean, errormessage: TextMessage | null, uploadedFile?: UploadedFile) => void) => void;
@@ -43,6 +54,7 @@ interface Props {
   helpElement?: JSX.Element;
   register: FormProps['register'];
   setValue: FormProps['setValue'];
+  error?: FieldError;
 }
 
 const attachmentHtml: React.SFC<Props> = ({
@@ -70,6 +82,7 @@ const attachmentHtml: React.SFC<Props> = ({
   children,
   register,
   setValue,
+  error,
 }) => {
   const getMaxValueBytes = getAttachmentMaxSizeBytesToUse(attachmentMaxFileSize, item);
   const getMaxValueMBToReplace = convertBytesToMBString(getMaxValueBytes);
@@ -89,49 +102,55 @@ const attachmentHtml: React.SFC<Props> = ({
     setValue(item.linkId, response, { shouldValidate: true });
   };
 
+  const concatErrorMessages = (): string => {
+    return error?.types ? Object.values(error.types).join('. ') : '';
+  };
+
   return (
     <div className="page_refero__component page_refero__component_attachment">
-      <Dropzone
-        {...register(item.linkId, {
-          required: {
-            value: !!isRequired,
-            message: 'Dette feltet er påkrevd',
-          },
-          validate: {
-            minFiles: files => files.length ? validateMinFiles(files, mockMinFiles) : true,
-            maxFiles: files => files.length ? validateMaxFiles(files, mockMaxFiles) : true,
-            fileSize: (files: File[]) => files.length ? validateFileSize(files, mockMaxSize) : true,
-            fileType: (files: File[]) => files.length ? validateFileType(files, mockValidTypes) : true,
-          },
-        })}
-        id={id}
-        label={label}
-        subLabel={subLabel}
-        onDrop={handleUpload}
-        onDelete={onDelete}
-        onOpenFile={onOpen}
-        uploadButtonText={uploadButtonText}
-        uploadedFiles={uploadedFiles}
-        maxFileSize={getMaxValueBytes}
-        validMimeTypes={validFileTypes}
-        dontShowHardcodedText={!!deleteText}
-        deleteText={deleteText}
-        supportedFileFormatsText={resources ? resources.supportedFileFormats : undefined}
-        errorMessage={(file: File): string => {
-          return getErrorMessage(validFileTypes, getMaxValueBytes, getMaxValueMBToReplace, item, errorText, file, resources);
-        }}
-        isRequired={isRequired}
-        wrapperClasses="page_refero__input"
-        onRequestLink={onRequestAttachmentLink}
-        helpButton={helpButton}
-        helpElement={helpElement}
-        shouldUploadMultiple={multiple}
-        maxFiles={maxFiles}
-        minFiles={minFiles}
-        chooseFilesText={resources?.chooseFilesText}
-      />
-      {attachmentErrorMessage && <NotificationPanel variant="alert">{attachmentErrorMessage}</NotificationPanel>}
-      {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
+      <FormGroup error={concatErrorMessages()}>
+        <Dropzone
+          {...register(item.linkId, {
+            required: {
+              value: !!isRequired,
+              message: resources?.uploadButtonText || '',
+            },
+            validate: {
+              minFiles: files => (files.length ? validateMinFiles(files, mockMinFiles) : true),
+              maxFiles: files => (files.length ? validateMaxFiles(files, mockMaxFiles) : true),
+              fileSize: (files: File[]) => (files.length ? validateFileSize(files, mockMaxSize) : true),
+              fileType: (files: File[]) => (files.length ? validateFileType(files, mockValidTypes) : true),
+            },
+          })}
+          id={id}
+          label={label}
+          subLabel={subLabel}
+          onDrop={handleUpload}
+          onDelete={onDelete}
+          onOpenFile={onOpen}
+          uploadButtonText={uploadButtonText}
+          uploadedFiles={uploadedFiles}
+          maxFileSize={getMaxValueBytes}
+          validMimeTypes={validFileTypes}
+          dontShowHardcodedText={!!deleteText}
+          deleteText={deleteText}
+          supportedFileFormatsText={resources ? resources.supportedFileFormats : undefined}
+          errorMessage={(file: File): string => {
+            return getErrorMessage(validFileTypes, getMaxValueBytes, getMaxValueMBToReplace, item, errorText, file, resources);
+          }}
+          isRequired={isRequired}
+          wrapperClasses="page_refero__input"
+          onRequestLink={onRequestAttachmentLink}
+          helpButton={helpButton}
+          helpElement={helpElement}
+          shouldUploadMultiple={multiple}
+          maxFiles={maxFiles}
+          minFiles={minFiles}
+          chooseFilesText={resources?.chooseFilesText}
+        />
+        {attachmentErrorMessage && <NotificationPanel variant="alert">{attachmentErrorMessage}</NotificationPanel>}
+        {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
+      </FormGroup>
     </div>
   );
 };

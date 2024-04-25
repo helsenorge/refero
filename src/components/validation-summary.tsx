@@ -33,18 +33,12 @@ export const ValidationSummary = ({ errors, resources }: ValidationSummaryProps)
         <ol className="validationSummary_list">
           <h3 className="validationSummary_header">{resources.validationSummaryHeader}</h3>
           {errorArray &&
-            errorArray.map(([fieldName, error], errorArrayIndex) => (
-              <div key={fieldName + errorArrayIndex.toString()}>
-                {error?.types &&
-                  Object.entries(error?.types).map(([type, typeMessage], typesIndex) => (
-                    <li className="validationSummary_listItem" key={fieldName + type + typesIndex.toString()}>
-                      {console.log(fieldName + type + typesIndex.toString())}
-                      <button className="validationSummary_button" onClick={() => handleErrorButtonClicked(fieldName)}>
-                        {typeMessage}
-                      </button>
-                    </li>
-                  ))}
-              </div>
+            errorArray.map(([fieldName], index) => (
+              <li className="validationSummary_listItem" key={fieldName + index.toString()}>
+                <button className="validationSummary_button" onClick={() => handleErrorButtonClicked(fieldName)}>
+                  {fieldName}
+                </button>
+              </li>
             ))}
         </ol>
       </div>
