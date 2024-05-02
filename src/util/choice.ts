@@ -41,7 +41,7 @@ export function getOptions(
     return undefined;
   }
 
-  let options;
+  let options: Options[] | undefined;
   if (item.answerValueSet) {
     if (item.answerValueSet.startsWith('#')) {
       options = getContainedOptions(item, containedResources);
@@ -147,7 +147,7 @@ export function renderOptions(
   return null;
 }
 
-function isAboveDropdownThreshold(options: Array<Options> | undefined): boolean {
+export function isAboveDropdownThreshold(options: Array<Options> | undefined): boolean {
   if (!options) {
     return false;
   }

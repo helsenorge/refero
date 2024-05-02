@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import { ValueSet, QuestionnaireItem, Questionnaire, Coding, QuestionnaireResponseItemAnswer } from 'fhir/r4';
+import { Controller } from 'react-hook-form';
 
 import { AutoSuggestProps } from '../../../types/autoSuggestProps';
 
@@ -15,7 +16,7 @@ import ItemType from '../../../constants/itemType';
 import { getValidationTextExtension } from '../../../util/extension';
 import { isRequired, getId, getSublabelText } from '../../../util/index';
 import { Resources } from '../../../util/resources';
-import { FormProps } from '../../../validation/ReactHookFormHoc';
+import ReactHookFormHoc, { FormProps } from '../../../validation/ReactHookFormHoc';
 import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 import Label from '../label';
 import SubLabel from '../sublabel';
@@ -180,7 +181,7 @@ class AutosuggestView extends React.Component<AutosuggestProps, AutosuggestState
     this.props.handleChange(suggestion.value, this.state.system, suggestion.label);
   }
 
-  onBlur(_e: React.FormEvent<{}>, { highlightedSuggestion }: { highlightedSuggestion: Suggestion | null }): void {
+  onBlur(_e: React.ChangeEvent<HTMLInputElement>, { highlightedSuggestion }: { highlightedSuggestion: Suggestion | null }): void {
     if (this.state.isDirty && highlightedSuggestion) {
       this.setState({
         lastSearchValue: highlightedSuggestion.label,
@@ -235,42 +236,52 @@ class AutosuggestView extends React.Component<AutosuggestProps, AutosuggestState
   }
 
   render(): JSX.Element {
-    const subLabelText = getSublabelText(this.props.item, this.props.onRenderMarkdown, this.props.questionnaire, this.props.resources);
+    const { control, resources, item, onRenderMarkdown, questionnaire, id, renderHelpButton, renderHelpElement } = this.props;
+    const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
 
     return (
       <div className="page_refero__component page_refero__component_choice page_refero__component_choice_autosuggest">
-        <Autosuggest
-          {...this.props.register(this.props.item.linkId, {
-            required: isRequired(this.props.item),
-          })}
-          id={getId(this.props.id)}
-          label={
-            <Label
-              item={this.props.item}
-              onRenderMarkdown={this.props.onRenderMarkdown}
-              questionnaire={this.props.questionnaire}
-              resources={this.props.resources}
-            />
-          }
-          subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
-          className="page_refero__autosuggest"
-          type="search"
-          isRequired={isRequired(this.props.item)}
-          errorMessage={getValidationTextExtension(this.props.item)}
-          helpButton={this.props.renderHelpButton()}
-          helpElement={this.props.renderHelpElement()}
-          suggestions={this.state.suggestions}
-          onSuggestionsFetchRequested={this.debouncedOnSuggestionsFetchRequested}
-          onSuggestionsClearRequested={(): void => {
-            // vis samme resultatsett neste gang feltet får fokus
+        <Controller
+          name={item.linkId}
+          control={control}
+          rules={{
+            required: {
+              value: isRequired(item),
+              message: resources?.formRequiredErrorMessage ?? 'Feltet er påkrevd',
+            },
           }}
-          noCharacterValidation
-          onSubmitValidator={this.onSubmitValidator}
-          onSuggestionSelected={this.onSuggestionSelected}
-          onChange={this.onChangeInput}
-          onBlur={this.onBlur}
-          focusInputOnSuggestionClick={true}
-          value={this.state.inputValue}
+          render={({ field: { onChange, ...rest } }): JSX.Element => (
+            <Autosuggest
+              {...rest}
+              id={getId(id)}
+              label={<Label item={item} onRenderMarkdown={onRenderMarkdown} questionnaire={questionnaire} resources={resources} />}
+              subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
+              className="page_refero__autosuggest"
+              type="search"
+              isRequired={isRequired(item)}
+              errorMessage={getValidationTextExtension(item)}
+              helpButton={renderHelpButton()}
+              helpElement={renderHelpElement()}
+              suggestions={this.state.suggestions}
+              onSuggestionsFetchRequested={this.debouncedOnSuggestionsFetchRequested}
+              onSuggestionsClearRequested={(): void => {
+                // vis samme resultatsett neste gang feltet får fokus
+              }}
+              noCharacterValidation
+              onSubmitValidator={this.onSubmitValidator}
+              onSuggestionSelected={this.onSuggestionSelected}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>, AutosuggestChangeEvent): void => {
+                this.onChangeInput(e, AutosuggestChangeEvent);
+                onChange(AutosuggestChangeEvent.newValue);
+              }}
+              onBlur={(e: React.ChangeEvent<HTMLInputElement>, AutosuggestChangeEvent): void => {
+                this.onBlur(e, AutosuggestChangeEvent);
+                onChange(AutosuggestChangeEvent.highlightedSuggestion.value);
+              }}
+              focusInputOnSuggestionClick={true}
+              value={this.state.inputValue}
+            />
+          )}
         />
         {this.state.isLoading && (
           <div>
@@ -291,4 +302,4 @@ class AutosuggestView extends React.Component<AutosuggestProps, AutosuggestState
   }
 }
 
-export default AutosuggestView;
+export default ReactHookFormHoc(AutosuggestView);

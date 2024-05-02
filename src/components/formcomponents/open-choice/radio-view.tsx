@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
+import { Controller } from 'react-hook-form';
 
 import { Options } from '../../../types/formTypes/radioGroupOptions';
 
@@ -9,6 +10,7 @@ import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label
 import RadioButton from '@helsenorge/designsystem-react/components/RadioButton';
 
 import { shouldShowExtraChoice } from '../../../util/choice';
+import { getValidationTextExtension } from '../../../util/extension';
 import { isRequired, getId, getSublabelText, getText, renderPrefix } from '../../../util/index';
 import { Resources } from '../../../util/resources';
 import { FormProps } from '../../../validation/ReactHookFormHoc';
@@ -49,7 +51,8 @@ const RadioView: React.FC<Props> = ({
   renderHelpButton,
   renderHelpElement,
   onRenderMarkdown,
-  register,
+  control,
+  error,
 }) => {
   if (!options) {
     return null;
@@ -59,7 +62,7 @@ const RadioView: React.FC<Props> = ({
   const selectedValue = (selected && selected[0]) || '';
   return (
     <div className="page_refero__component page_refero__component_openchoice page_refero__component_openchoice_radiobutton">
-      <FormGroup error={''} mode="ongrey">
+      <FormGroup error={error?.message} mode="ongrey">
         {renderHelpElement()}
         <Label
           labelTexts={[{ text: labelText }]}
@@ -67,22 +70,30 @@ const RadioView: React.FC<Props> = ({
           afterLabelChildren={renderHelpButton()}
         />
         {options.map((option: Options, index: number) => (
-          <RadioButton
-            {...register(item.linkId, {
-              required: isRequired(item),
-            })}
-            name={getId(id)}
-            key={`${getId(id)}-${index.toString()}`}
-            inputId={getId(id) + '-hn-' + index}
-            testId={getId(id) + index}
-            mode="ongrey"
-            required={isRequired(item)}
-            onChange={(): void => {
-              handleChange(option.type);
+          <Controller
+            name={item.linkId}
+            key={`${option.type}-${index}`}
+            control={control}
+            rules={{
+              required: {
+                value: isRequired(item),
+                message: getValidationTextExtension(item) ?? resources?.formRequiredErrorMessage ?? 'Feltet må fylles ut',
+              },
             }}
-            value={option.type}
-            label={<Label labelTexts={[{ text: option.label }]} />}
-            defaultChecked={selectedValue === option?.type}
+            render={({ field: { onChange, ...rest } }): JSX.Element => (
+              <RadioButton
+                {...rest}
+                key={`${getId(id)}-${index.toString()}`}
+                inputId={getId(id) + '-hn-' + index}
+                testId={getId(id) + index}
+                onChange={(): void => {
+                  handleChange(option.type);
+                  onChange(option.type);
+                }}
+                label={<Label labelTexts={[{ text: option.label }]} />}
+                defaultChecked={selectedValue === option?.type}
+              />
+            )}
           />
         ))}
       </FormGroup>

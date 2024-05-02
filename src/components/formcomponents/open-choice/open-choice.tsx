@@ -322,6 +322,7 @@ export class OpenChoice extends React.Component<Props> {
         item={item}
         answer={a}
         handleStringChange={this.handleStringChangeEvent}
+        handleChange={this.handleStringChange}
         onRenderMarkdown={onRenderMarkdown}
         resources={this.props.resources}
         {...other}
@@ -416,8 +417,8 @@ export class OpenChoice extends React.Component<Props> {
     const resourcesHasChanged = JSON.stringify(this.props.resources) !== JSON.stringify(nextProps.resources);
     const answerHasChanged = this.props.answer !== nextProps.answer;
     const repeats = this.props.item.repeats ?? false;
-
-    return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats || answerHasChanged;
+    const error = this.props.error?.message !== nextProps.error?.message;
+    return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats || answerHasChanged || error;
   }
 
   render(): JSX.Element | null {

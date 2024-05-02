@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem, Questionnaire } from 'fhir/r4';
+import { Controller } from 'react-hook-form';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
@@ -13,7 +14,7 @@ import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 import { integerFormRegister } from './utils';
 import { NewValueAction, newIntegerValueAsync } from '../../../actions/newValue';
 import { GlobalState } from '../../../reducers';
-import { getPlaceholder, getMaxValueExtensionValue, getMinValueExtensionValue } from '../../../util/extension';
+import { getPlaceholder, getMaxValueExtensionValue, getMinValueExtensionValue, getValidationTextExtension } from '../../../util/extension';
 import { isReadOnly, isRequired, getId, getSublabelText, renderPrefix, getText } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
@@ -98,59 +99,94 @@ class Integer extends React.Component<Props, Record<string, unknown>> {
   }
 
   render(): JSX.Element | null {
-    if (this.props.pdf || isReadOnly(this.props.item)) {
+    const {
+      repeatButton,
+      item,
+      resources,
+      id,
+      onRenderMarkdown,
+      renderHelpButton,
+      renderHelpElement,
+      children,
+      pdf,
+      questionnaire,
+      control,
+      error,
+      renderDeleteButton,
+    } = this.props;
+    if (pdf || isReadOnly(item)) {
       return (
         <TextView
-          id={this.props.id}
-          item={this.props.item}
+          id={id}
+          item={item}
           value={this.getPDFValue()}
-          onRenderMarkdown={this.props.onRenderMarkdown}
-          helpButton={this.props.renderHelpButton()}
-          helpElement={this.props.renderHelpElement()}
+          onRenderMarkdown={onRenderMarkdown}
+          helpButton={renderHelpButton()}
+          helpElement={renderHelpElement()}
         >
-          {this.props.children}
+          {children}
         </TextView>
       );
     }
     const value = this.getValue();
-    const subLabelText = getSublabelText(this.props.item, this.props.onRenderMarkdown, this.props.questionnaire, this.props.resources);
-    const labelText = `${renderPrefix(this.props.item)} ${getText(
-      this.props.item,
-      this.props.onRenderMarkdown,
-      this.props.questionnaire,
-      this.props.resources
-    )}`;
+    const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
+    const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`;
+    const errorMessage = getValidationTextExtension(item);
+    const minValue = getMinValueExtensionValue(item);
+    const maxValue = getMaxValueExtensionValue(item);
     return (
       <div className="page_refero__component page_refero__component_integer">
-        <FormGroup error={this.props.error?.message} mode="ongrey">
-          {this.props.renderHelpElement()}
-          <Input
-            {...integerFormRegister(
-              this.props.register,
-              this.props.item,
-              this.props.resources,
-              value !== undefined && value !== null ? value + '' : '',
-              this.handleChange
-            )}
-            type="number"
-            inputId={getId(this.props.id)}
-            label={
-              <Label
-                labelTexts={[{ text: labelText, type: 'semibold' }]}
-                sublabel={
-                  <Sublabel id={`${getId(this.props.id)}-select-sublabel`} sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />
+        <FormGroup error={error?.message} mode="ongrey">
+          {renderHelpElement()}
+          <Controller
+            name={item.linkId}
+            control={control}
+            defaultValue={Array.isArray(value) ? value.join(', ') : value}
+            rules={{
+              required: {
+                value: isRequired(item),
+                message: resources?.formRequiredErrorMessage ?? 'Feltet er påkrevd',
+              },
+              ...(maxValue && {
+                max: {
+                  value: maxValue,
+                  message: errorMessage ?? resources?.oppgiGyldigVerdi ?? 'Verdien er for høy',
+                },
+              }),
+              ...(minValue && {
+                min: {
+                  value: minValue,
+                  message: errorMessage ?? resources?.oppgiGyldigVerdi ?? 'Verdien er for lav',
+                },
+              }),
+            }}
+            render={({ field: { value, onChange, ...rest } }): JSX.Element => (
+              <Input
+                {...rest}
+                type="number"
+                inputId={getId(id)}
+                label={
+                  <Label
+                    labelTexts={[{ text: labelText, type: 'semibold' }]}
+                    sublabel={<Sublabel id={`${getId(id)}-select-sublabel`} sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+                    afterLabelChildren={renderHelpButton()}
+                  />
                 }
-                afterLabelChildren={this.props.renderHelpButton()}
+                onChange={(e): void => {
+                  onChange(e.target.value);
+                  this.handleChange(e);
+                }}
+                value={Array.isArray(value) ? value.join(', ') : value}
+                placeholder={getPlaceholder(item)}
+                className="page_refero__input"
+                width={25}
               />
-            }
-            placeholder={getPlaceholder(this.props.item)}
-            className="page_refero__input"
-            width={25}
+            )}
           />
-          {this.props.renderDeleteButton('page_refero__deletebutton--margin-top')}
-          {this.props.repeatButton}
+          {renderDeleteButton('page_refero__deletebutton--margin-top')}
+          {repeatButton}
         </FormGroup>
-        {this.props.children ? <div className="nested-fieldset nested-fieldset--full-height">{this.props.children}</div> : null}
+        {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
       </div>
     );
   }

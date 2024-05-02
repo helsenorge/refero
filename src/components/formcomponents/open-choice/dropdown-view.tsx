@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
+import { Controller } from 'react-hook-form';
 
 import { Options } from '../../../types/formTypes/radioGroupOptions';
 
@@ -11,7 +12,7 @@ import Select from '@helsenorge/designsystem-react/components/Select';
 import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 
 import { shouldShowExtraChoice } from '../../../util/choice';
-import { getValidationTextExtension, getPlaceholder } from '../../../util/extension';
+import { getValidationTextExtension } from '../../../util/extension';
 import { isRequired, getId, getSublabelText, getText } from '../../../util/index';
 import { Resources } from '../../../util/resources';
 import { FormProps } from '../../../validation/ReactHookFormHoc';
@@ -54,44 +55,58 @@ class DropdownView extends React.Component<Props, Record<string, unknown>> {
       renderHelpButton,
       renderHelpElement,
       onRenderMarkdown,
-      register,
+      control,
+      error,
     } = this.props;
     if (!options) {
       return null;
     }
-
+    const onChange = (e: React.ChangeEvent<HTMLSelectElement>): void => {
+      handleChange(e.target.value);
+    };
     const labelText = getText(item, onRenderMarkdown, questionnaire, resources);
     const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
     return (
       <div className="page_refero__component page_refero__component_openchoice page_refero__component_openchoice_dropdown">
-        <FormGroup error={''} mode="ongrey">
+        <FormGroup error={error?.message} mode="ongrey">
           {renderHelpElement()}
-          <Select
-            {...register(item.linkId, {
-              required: isRequired(item),
-            })}
-            selectId={getId(id)}
-            className="page_refero__input"
-            label={
-              <Label
-                htmlFor={getId(id)}
-                labelTexts={[{ text: labelText, type: 'semibold' }]}
-                sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
-                afterLabelChildren={renderHelpButton()}
-              />
-            }
-            onChange={(e): void => {
-              handleChange(e.target.value);
+          <Controller
+            name={item.linkId}
+            control={control}
+            rules={{
+              required: {
+                message: getValidationTextExtension(item) ?? resources?.formRequiredErrorMessage ?? '',
+                value: isRequired(item),
+              },
             }}
-            value={selected && selected[0] ? selected[0] : undefined}
-          >
-            <option value={undefined}>{resources?.selectDefaultPlaceholder || ''}</option>
-            {options.map(option => (
-              <option key={getId(id) + option.label} value={option.type}>
-                {option.label}
-              </option>
-            ))}
-          </Select>
+            render={({ field: { onChange: handleChange, ...rest } }): JSX.Element => (
+              <Select
+                {...rest}
+                selectId={getId(id)}
+                className="page_refero__input"
+                label={
+                  <Label
+                    htmlFor={getId(id)}
+                    labelTexts={[{ text: labelText, type: 'semibold' }]}
+                    sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+                    afterLabelChildren={renderHelpButton()}
+                  />
+                }
+                onChange={(e): void => {
+                  handleChange(e);
+                  onChange(e);
+                }}
+                value={selected?.[0] || ''}
+              >
+                <option value={undefined}>{resources?.selectDefaultPlaceholder || ''}</option>
+                {options.map(option => (
+                  <option key={getId(id) + option.label} value={option.type}>
+                    {option.label}
+                  </option>
+                ))}
+              </Select>
+            )}
+          />
           {shouldShowExtraChoice(answer) && <div className="page_refero__component_openchoice_openfield">{renderOpenField()}</div>}
         </FormGroup>
         {renderDeleteButton('page_refero__deletebutton--margin-top')}

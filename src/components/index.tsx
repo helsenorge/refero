@@ -61,9 +61,11 @@ interface StateProps {
 const Refero = (props: StateProps & DispatchProps & ReferoProps): JSX.Element | null => {
   IE11HackToWorkAroundBug187484();
   const questionnaire = props.questionnaire ? props.questionnaire : props.formDefinition?.Content;
-  const schema = createZodSchemaFromQuestionnaire(questionnaire, props.resources, questionnaire?.contained);
+  // const schema = createZodSchemaFromQuestionnaire(questionnaire, props.resources, questionnaire?.contained);
+  const defualtVals = React.useMemo(() => generateDefaultValues(questionnaire?.item), [questionnaire?.item?.length]);
+
   const methods = useForm({
-    defaultValues: generateDefaultValues(questionnaire?.item),
+    defaultValues: defualtVals,
     shouldFocusError: false,
     criteriaMode: 'all',
     // resolver: async (data, context, options) => {

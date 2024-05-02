@@ -1,9 +1,11 @@
 import * as React from 'react';
 
 import { QuestionnaireItem } from 'fhir/r4';
+import { Controller, useFormContext } from 'react-hook-form';
 
 import { TextMessage } from '../../../types/text-message';
 
+import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import NotificationPanel from '@helsenorge/designsystem-react/components/NotificationPanel';
 
 import Dropzone from '@helsenorge/file-upload/components/dropzone';

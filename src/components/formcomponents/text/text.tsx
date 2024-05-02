@@ -12,6 +12,7 @@ import Textarea from '@helsenorge/designsystem-react/components/Textarea';
 
 import { debounce } from '@helsenorge/core-utils/debounce';
 
+import { textFormRegister } from './utils';
 import { NewValueAction, newStringValueAsync } from '../../../actions/newValue';
 import Constants from '../../../constants/index';
 import itemControlConstants from '../../../constants/itemcontrol';
@@ -113,13 +114,16 @@ export class Text extends React.Component<Props> {
     const answerHasChanged = this.props.answer !== nextProps.answer;
     const resourcesHasChanged = JSON.stringify(this.props.resources) !== JSON.stringify(nextProps.resources);
     const repeats = this.props.item.repeats ?? false;
+    const newErrorMessage = this.props.error?.message !== nextProps.error?.message;
 
-    return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats || answerHasChanged;
+    return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats || answerHasChanged || newErrorMessage;
   }
+
   onTextAreaChange = (event: React.FormEvent<HTMLTextAreaElement>): void => {
     event.persist();
     this.debouncedHandleChange(event);
   };
+
   render(): JSX.Element | null {
     const { id, item, answer, pdf, children, resources, onRenderMarkdown, questionnaire } = this.props;
     const itemControls = getItemControlExtensionValue(item);
@@ -174,16 +178,13 @@ export class Text extends React.Component<Props> {
 
     const labelText = SanitizeText(`${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`) || '';
     const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
-
+    const value = getStringValue(answer);
     return (
       <div className="page_refero__component page_refero__component_text">
-        <FormGroup error={''} mode="ongrey">
+        <FormGroup error={this.props.error?.message} mode="ongrey">
           {this.props.renderHelpElement()}
           <Textarea
-            {...this.props.register(this.props.item.linkId, {
-              required: isRequired(this.props.item),
-            })}
-            onChange={this.onTextAreaChange}
+            {...textFormRegister(this.props.register, this.props.item, value, this.props.resources, this.onTextAreaChange)}
             textareaId={getId(id)}
             maxRows={Constants.DEFAULT_TEXTAREA_HEIGHT}
             placeholder={getPlaceholder(item)}
@@ -194,7 +195,6 @@ export class Text extends React.Component<Props> {
                 afterLabelChildren={this.props.renderHelpButton()}
               />
             }
-            defaultValue={getStringValue(answer)}
             grow={true}
             maxCharacters={getMaxLength(item)}
             maxText={getMaxLength(item) ? resources?.maxLengthText?.replace('{0}', `${getMaxLength(item)}`) : ''}

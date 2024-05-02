@@ -68,11 +68,10 @@ RenderFormProps): JSX.Element | null => {
   if (referoProps.blockSubmit) {
     return <Loader size={'medium'} overlay={'parent'} />;
   }
-  console.log(errors, 'errors');
+  const value = getValues();
+  console.log(value, 'values');
   console.log(defaultValues, 'defaultValues');
   console.log(dirtyFields, 'dirtyFields');
-  const values = getValues();
-  console.log(values, 'values');
 
   return (
     <form onSubmit={methods.handleSubmit(onSubmitReactHookForm)}>

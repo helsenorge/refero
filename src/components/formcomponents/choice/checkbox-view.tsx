@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import { QuestionnaireItem, Questionnaire } from 'fhir/r4';
+import { Controller } from 'react-hook-form';
 
 import { Options } from '../../../types/formTypes/radioGroupOptions';
 
@@ -8,8 +9,8 @@ import Checkbox from '@helsenorge/designsystem-react/components/Checkbox';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
 
-// import { getMaxOccursExtensionValue, getMinOccursExtensionValue, getValidationTextExtension } from '../../../util/extension';
-import { isRequired, getSublabelText, getText, renderPrefix } from '../../../util/index';
+import { getValidationTextExtension } from '../../../util/extension';
+import { getSublabelText, getText, isRequired, renderPrefix } from '../../../util/index';
 import { Resources } from '../../../util/resources';
 import { FormProps } from '../../../validation/ReactHookFormHoc';
 import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
@@ -35,7 +36,6 @@ const CheckboxView: React.FC<Props> = ({
   questionnaire,
   id,
   handleChange,
-  selected,
   resources,
   children,
   repeatButton,
@@ -43,55 +43,61 @@ const CheckboxView: React.FC<Props> = ({
   renderHelpButton,
   renderHelpElement,
   onRenderMarkdown,
-  register,
+  error,
+  control,
 }) => {
-  const checkboxes = options?.map(el => {
-    return { label: el.label, id: el.type, checked: isSelected(el, selected), disabled: el.disabled };
-  });
   const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
   const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`;
+
   return (
     <div className="page_refero__component page_refero__component_choice page_refero__component_choice_checkbox">
-      <FormGroup mode="ongrey">
+      <FormGroup mode="ongrey" error={error?.message}>
         {renderHelpElement()}
         <Label
           labelTexts={[{ text: labelText }]}
-          sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+          sublabel={<Sublabel id="select-sublsbel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
           afterLabelChildren={renderHelpButton()}
         />
-        {checkboxes?.map((checkbox, index) => (
-          <Checkbox
-            {...register(item.linkId, {
-              required: isRequired(item),
-            })}
-            onChange={(): void => handleChange(checkbox.id)}
-            inputId={`${id}-${checkbox.id}`}
-            testId={`checkbox-choice`}
-            key={`${checkbox.id}-${index.toString()}`}
-            value={checkbox.id}
-            required={isRequired(item)}
-            label={<Label labelTexts={[{ text: checkbox.label }]} />}
-            checked={checkbox.checked}
-            disabled={checkbox.disabled}
+        {options?.map((option, index) => (
+          <Controller
+            name={item.linkId}
+            key={`${option.type}-${index}`}
+            control={control}
+            rules={{
+              required: {
+                message: getValidationTextExtension(item) ?? resources?.formRequiredErrorMessage ?? 'Påkrevd felt',
+                value: isRequired(item),
+              },
+            }}
+            render={({ field: { value, onChange, ...rest } }): JSX.Element => (
+              <Checkbox
+                {...rest}
+                inputId={`${id}-${option.type}`}
+                testId={`${option.type}-${index}-checkbox-choice`}
+                label={<Label labelTexts={[{ text: option.label }]} />}
+                checked={value.some((val: string) => val === option.type)}
+                value={option.type}
+                onChange={(e): void => {
+                  const valueCopy = [...value];
+                  if (e.target.checked) {
+                    valueCopy.push(option.type);
+                  } else {
+                    const idx = valueCopy.findIndex(code => option.type === code);
+                    valueCopy.splice(idx, 1);
+                  }
+                  onChange(valueCopy);
+                  handleChange(option.type);
+                }}
+              />
+            )}
           />
         ))}
       </FormGroup>
       {renderDeleteButton('page_refero__deletebutton--margin-top')}
       {repeatButton}
-      {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
+      {children && <div className="nested-fieldset nested-fieldset--full-height">{children}</div>}
     </div>
   );
 };
-
-function isSelected(el: Options, selected?: Array<string | undefined>): boolean {
-  if (selected) {
-    for (let i = 0; i < selected.length; i++) {
-      if (el.type === selected[i]) {
-        return true;
-      }
-    }
-  }
-  return false;
-}
 
 export default CheckboxView;

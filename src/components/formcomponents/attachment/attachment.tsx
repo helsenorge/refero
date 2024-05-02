@@ -6,20 +6,20 @@ import { ThunkDispatch } from 'redux-thunk';
 
 import { TextMessage } from '../../../types/text-message';
 
-import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
-
 import { UploadedFile } from '@helsenorge/file-upload/components/dropzone';
 
 import AttachmentHtml from './attachmenthtml';
 import { NewValueAction, newAttachmentAsync, removeAttachmentAsync } from '../../../actions/newValue';
 import { GlobalState } from '../../../reducers';
 import { getValidationTextExtension, getMaxOccursExtensionValue, getMinOccursExtensionValue } from '../../../util/extension';
-import { isRequired, getId, isReadOnly, isRepeat, getSublabelText, renderPrefix, getText } from '../../../util/index';
+import { isRequired, getId, isReadOnly, isRepeat, getSublabelText } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
 import { Resources } from '../../../util/resources';
 import ReactHookFormHoc, { FormProps } from '../../../validation/ReactHookFormHoc';
 import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
+import Label from '../label';
+import SubLabel from '../sublabel';
 import TextView from '../textview';
 import { UploadFile } from '@helsenorge/file-upload/components/file-upload';
 
@@ -156,12 +156,7 @@ export class AttachmentComponent extends React.Component<Props> {
   render(): JSX.Element | null {
     const { pdf, id, item, resources, onOpenAttachment, onRenderMarkdown, questionnaire } = this.props;
     const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
-    const labelText = `${renderPrefix(this.props.item)} ${getText(
-      this.props.item,
-      this.props.onRenderMarkdown,
-      this.props.questionnaire,
-      this.props.resources
-    )}`;
+
     if (pdf || isReadOnly(item)) {
       return (
         <TextView
@@ -183,13 +178,8 @@ export class AttachmentComponent extends React.Component<Props> {
             onDelete={this.onDelete}
             onOpen={onOpenAttachment}
             id={getId(id)}
-            label={
-              <Label
-                labelTexts={[{ text: labelText, type: 'semibold' }]}
-                sublabel={<Sublabel id={`${getId(id)}-attachemnt-sublabel`} sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
-                afterLabelChildren={this.props.renderHelpButton()}
-              />
-            }
+            label={<Label item={item} onRenderMarkdown={onRenderMarkdown} questionnaire={questionnaire} resources={resources} />}
+            subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
             uploadButtonText={this.getButtonText()}
             resources={resources}
             isRequired={isRequired(item)}
