@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import { QuestionnaireItem, Questionnaire } from 'fhir/r4';
+import { Controller } from 'react-hook-form';
 
 import { Options } from '../../../types/formTypes/radioGroupOptions';
 
@@ -44,8 +45,8 @@ const RadioView: React.FC<Props> = ({
   renderHelpButton,
   renderHelpElement,
   onRenderMarkdown,
-  register,
   error,
+  control,
 }) => {
   const selectedValue = (selected && selected[0]) || '';
   const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`;
@@ -60,22 +61,31 @@ const RadioView: React.FC<Props> = ({
           afterLabelChildren={renderHelpButton()}
         />
         {options?.map((option: Options, index: number) => (
-          <RadioButton
-            {...register(item.linkId, {
+          <Controller
+            name={item.linkId}
+            key={`${option.type}-${index}`}
+            control={control}
+            rules={{
               required: {
                 value: isRequired(item),
                 message: getValidationTextExtension(item) ?? resources?.formRequiredErrorMessage ?? 'Feltet må fylles ut',
               },
-              onChange: (): void => {
-                handleChange(option.type);
-              },
-              value: option.type,
-            })}
-            key={getId(id) + index}
-            inputId={`${getId(id)}-hn- + ${index}`}
-            mode="ongrey"
-            label={<Label labelTexts={[{ text: option.label }]} />}
-            defaultChecked={selectedValue === option?.type}
+            }}
+            render={({ field: { value, onChange, ...rest } }): JSX.Element => (
+              <RadioButton
+                {...rest}
+                onChange={(): void => {
+                  handleChange(option.type);
+                  onChange(option.type);
+                }}
+                value={value}
+                key={getId(id) + index}
+                inputId={`${getId(id)}-hn-${index}`}
+                mode="ongrey"
+                label={<Label labelTexts={[{ text: option.label }]} />}
+                defaultChecked={selectedValue === option?.type}
+              />
+            )}
           />
         ))}
       </FormGroup>

@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import { Coding } from 'fhir/r4';
+import { Controller } from 'react-hook-form';
 
 import { EnhetType, OrgenhetHierarki } from '../../../types/orgenhetHierarki';
 
@@ -9,7 +10,7 @@ import Loader from '@helsenorge/designsystem-react/components/Loader';
 import NotificationPanel from '@helsenorge/designsystem-react/components/NotificationPanel';
 import Select from '@helsenorge/designsystem-react/components/Select';
 
-import { getId } from '../../../util';
+import { getId, isRequired } from '../../../util';
 import { Resources } from '../../../util/resources';
 import { FormProps } from '../../../validation/ReactHookFormHoc';
 
@@ -202,25 +203,38 @@ class ReceiverComponent extends React.Component<ReceiverComponentProps & FormPro
       }
     };
     return (
-      <Select
-        {...this.props.register(getId(this.props.id), {
-          required: false,
-        })}
-        onChange={handleSelectChange}
-        value={this.state.selectedPath[level] ? this.state.selectedPath[level].toString() : ''}
-        key={selectKey}
-        selectId={`${getId(this.props.id)}-${selectKey}`}
-        label={<Label labelTexts={[{ text: label, type: 'semibold' }]} />}
-        className="page_refero__input"
-      >
-        {selectOptions.map(option => {
-          return (
-            <option key={option.value} value={option.value}>
-              {option.label}
-            </option>
-          );
-        })}
-      </Select>
+      <Controller
+        name={this.props.id || ''}
+        control={this.props.control}
+        rules={{
+          required: {
+            value: true,
+            message: this.props.resources?.adresseKomponent_feilmelding || '',
+          },
+        }}
+        render={({ field: { onChange, ...rest } }): JSX.Element => (
+          <Select
+            {...rest}
+            onChange={(e): void => {
+              handleSelectChange(e);
+              onChange(e.target.value);
+            }}
+            value={this.state.selectedPath[level] ? this.state.selectedPath[level].toString() : ''}
+            key={selectKey}
+            selectId={`${getId(this.props.id)}-${selectKey}`}
+            label={<Label labelTexts={[{ text: label, type: 'semibold' }]} />}
+            className="page_refero__input"
+          >
+            {selectOptions.map(option => {
+              return (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              );
+            })}
+          </Select>
+        )}
+      />
     );
   }
 

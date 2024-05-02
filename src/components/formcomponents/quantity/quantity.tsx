@@ -7,6 +7,7 @@ import {
   QuestionnaireResponseItem,
   Questionnaire,
 } from 'fhir/r4';
+import { Controller } from 'react-hook-form';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
@@ -14,11 +15,16 @@ import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Input from '@helsenorge/designsystem-react/components/Input';
 import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
 
-import { quantityFormRegister } from './utils';
 import { NewValueAction, newQuantityValueAsync } from '../../../actions/newValue';
 import { GlobalState } from '../../../reducers';
-import { getPlaceholder, getQuestionnaireUnitExtensionValue } from '../../../util/extension';
-import { isReadOnly, getId, getSublabelText, renderPrefix, getText } from '../../../util/index';
+import {
+  getMaxValueExtensionValue,
+  getMinValueExtensionValue,
+  getPlaceholder,
+  getQuestionnaireUnitExtensionValue,
+  getValidationTextExtension,
+} from '../../../util/extension';
+import { isReadOnly, getId, getSublabelText, renderPrefix, getText, isRequired, getDecimalPattern } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
 import { Resources } from '../../../util/resources';
@@ -72,7 +78,7 @@ class Quantity extends React.Component<Props> {
     return `${value} ${this.getUnit()}`;
   }
 
-  handleChange = (event: React.FormEvent<HTMLInputElement>): void => {
+  handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     const { dispatch, promptLoginMessage, path, item, onAnswerChange } = this.props;
     const extension = getQuestionnaireUnitExtensionValue(this.props.item);
     if (extension) {
@@ -82,7 +88,7 @@ class Quantity extends React.Component<Props> {
         code: extension.code,
       } as QuantityType;
 
-      const value = Number(parseFloat((event.target as HTMLInputElement).value));
+      const value = Number(parseFloat(event.target.value));
       if (value != null && !isNaN(value) && isFinite(value)) {
         quantity.value = value;
       }
@@ -119,7 +125,7 @@ class Quantity extends React.Component<Props> {
   }
 
   render(): JSX.Element | null {
-    const { id, item, questionnaire, onRenderMarkdown, resources, error } = this.props;
+    const { id, item, questionnaire, onRenderMarkdown, resources, error, control } = this.props;
     if (this.props.pdf || isReadOnly(item)) {
       return (
         <TextView
@@ -137,32 +143,59 @@ class Quantity extends React.Component<Props> {
     const value = this.getValue();
     const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`;
     const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
-
+    const decimalPattern = getDecimalPattern(item);
+    const minValue = getMinValueExtensionValue(item);
+    const maxValue = getMaxValueExtensionValue(item);
+    const errorMessage = getValidationTextExtension(item);
     return (
       <div className="page_refero__component page_refero__component_quantity">
         <FormGroup error={error?.message} mode="ongrey">
           {this.props.renderHelpElement()}
-          <Input
-            label={
-              <Label
-                labelTexts={[{ text: labelText, type: 'semibold' }]}
-                sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
-                afterLabelChildren={this.props.renderHelpButton()}
-              />
-            }
-            {...quantityFormRegister(
-              this.props.register,
-              this.props.item,
-              this.props.resources,
-              value !== undefined ? value + '' : '',
-              this.handleChange
-            )}
-            type="number"
-            inputId={getId(id)}
+          <Controller
+            name={item.linkId}
+            control={control}
             defaultValue={value !== undefined ? value + '' : ''}
-            placeholder={getPlaceholder(item)}
-            className="page_refero__quantity"
-            width={7}
+            rules={{
+              required: {
+                value: isRequired(item),
+                message: resources?.formRequiredErrorMessage ?? 'Feltet er påkrevd',
+              },
+
+              ...(maxValue && {
+                max: {
+                  value: maxValue,
+                  message: errorMessage ?? resources?.oppgiGyldigVerdi ?? 'Verdien er for høy',
+                },
+              }),
+              ...(minValue && {
+                min: {
+                  value: minValue,
+                  message: errorMessage ?? resources?.oppgiGyldigVerdi ?? 'Verdien er for lav',
+                },
+              }),
+              ...(decimalPattern && { pattern: new RegExp(decimalPattern), message: 'Verdien er ikke tilatt' }),
+            }}
+            render={({ field: { onChange, ...rest } }): JSX.Element => (
+              <Input
+                {...rest}
+                label={
+                  <Label
+                    labelTexts={[{ text: labelText, type: 'semibold' }]}
+                    sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+                    afterLabelChildren={this.props.renderHelpButton()}
+                  />
+                }
+                type="number"
+                inputId={getId(id)}
+                placeholder={getPlaceholder(item)}
+                className="page_refero__quantity"
+                onChange={(e): void => {
+                  onChange(e.target.value);
+                  this.handleChange(e);
+                }}
+                width={7}
+              />
+            )}
           />
           <span className="page_refero__unit">{this.getUnit()}</span>
           {this.props.renderDeleteButton('page_refero__deletebutton--margin-top')}

@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
+import { Controller } from 'react-hook-form';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
@@ -13,8 +14,8 @@ import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 import { decimalFormRegister } from './utils';
 import { NewValueAction, newDecimalValueAsync } from '../../../actions/newValue';
 import { GlobalState } from '../../../reducers';
-import { getPlaceholder } from '../../../util/extension';
-import { isReadOnly, getId, getSublabelText, renderPrefix, getText } from '../../../util/index';
+import { getMaxValueExtensionValue, getMinValueExtensionValue, getPlaceholder, getValidationTextExtension } from '../../../util/extension';
+import { isReadOnly, getId, getSublabelText, renderPrefix, getText, getDecimalPattern, isRequired } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
 import { Resources } from '../../../util/resources';
@@ -96,10 +97,23 @@ class Decimal extends React.Component<Props, Record<string, unknown>> {
   }
 
   render(): JSX.Element | null {
-    const { id, item, pdf, onRenderMarkdown } = this.props;
-    const value = this.getValue(this.props.item, this.props.answer);
-    const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, this.props.questionnaire, this.props.resources)}`;
-    const subLabelText = getSublabelText(this.props.item, this.props.onRenderMarkdown, this.props.questionnaire, this.props.resources);
+    const {
+      id,
+      item,
+      pdf,
+      onRenderMarkdown,
+      control,
+      answer,
+      questionnaire,
+      resources,
+      renderHelpButton,
+      renderHelpElement,
+      children,
+      error,
+    } = this.props;
+    const value = this.getValue(item, answer);
+    const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`;
+    const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
 
     if (pdf || isReadOnly(item)) {
       return (
@@ -108,37 +122,68 @@ class Decimal extends React.Component<Props, Record<string, unknown>> {
           item={item}
           value={this.getPDFValue()}
           onRenderMarkdown={onRenderMarkdown}
-          helpButton={this.props.renderHelpButton()}
-          helpElement={this.props.renderHelpElement()}
+          helpButton={renderHelpButton()}
+          helpElement={renderHelpElement()}
         >
-          {this.props.children}
+          {children}
         </TextView>
       );
     }
+    const decimalPattern = getDecimalPattern(item);
+    const maxValue = getMaxValueExtensionValue(item);
+    const minValue = getMinValueExtensionValue(item);
     //getValidationTextExtension(item)
     return (
       <div className="page_refero__component page_refero__component_decimal">
-        {this.props.renderHelpElement()}
-        <FormGroup error={this.props.error?.message} mode="ongrey">
-          <Input
-            {...decimalFormRegister(this.props.register, this.props.item, this.props.resources, value, this.handleChange)}
-            type="number"
-            inputId={getId(this.props.id)}
-            name={getId(this.props.id)}
-            value={value ? value + '' : ''}
-            label={
-              <Label
-                htmlFor={getId(id)}
-                labelTexts={[{ text: labelText, type: 'semibold' }]}
-                sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
-                afterLabelChildren={this.props.renderHelpButton()}
-                statusDot={<div>{status}</div>}
+        {renderHelpElement()}
+        <FormGroup error={error?.message} mode="ongrey">
+          <Controller
+            name={item.linkId}
+            control={control}
+            rules={{
+              required: {
+                value: isRequired(item),
+                message: resources?.formRequiredErrorMessage ?? 'Feltet er påkrevd',
+              },
+              ...(maxValue && {
+                max: {
+                  value: maxValue,
+                  message: getValidationTextExtension(item) ?? resources?.oppgiGyldigVerdi ?? 'Verdien er for høy',
+                },
+              }),
+              ...(minValue && {
+                min: {
+                  value: minValue,
+                  message: getValidationTextExtension(item) ?? resources?.oppgiGyldigVerdi ?? 'Verdien er for lav',
+                },
+              }),
+              ...(decimalPattern && { pattern: new RegExp(decimalPattern), message: 'Verdien er ikke et gyldig tall' }),
+            }}
+            render={({ field: { onChange, ...rest } }): JSX.Element => (
+              <Input
+                {...rest}
+                type="number"
+                inputId={getId(this.props.id)}
+                name={getId(this.props.id)}
+                value={value ? value + '' : ''}
+                label={
+                  <Label
+                    htmlFor={getId(id)}
+                    labelTexts={[{ text: labelText, type: 'semibold' }]}
+                    sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+                    afterLabelChildren={this.props.renderHelpButton()}
+                    statusDot={<div>{status}</div>}
+                  />
+                }
+                placeholder={getPlaceholder(item)}
+                className="page_refero__input"
+                onChange={(e): void => {
+                  this.handleChange(e);
+                  onChange(e.target.value);
+                }}
+                width={25}
               />
-            }
-            placeholder={getPlaceholder(item)}
-            className="page_refero__input"
-            onChange={this.handleChange}
-            width={25}
+            )}
           />
         </FormGroup>
         {this.props.renderDeleteButton('page_refero__deletebutton--margin-top')}

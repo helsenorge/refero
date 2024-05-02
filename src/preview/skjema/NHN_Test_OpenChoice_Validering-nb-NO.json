@@ -1,0 +1,157 @@
+{
+  "resourceType": "Questionnaire",
+  "language": "nb-NO",
+  "id": "51ba62d8-538e-4063-83e5-2dbd3c39e780",
+  "name": "NHN_Test_OpenChoice_Validering",
+  "title": "Open Choice med validering",
+  "status": "draft",
+  "publisher": "NHN",
+  "meta": {
+    "profile": ["http://ehelse.no/fhir/StructureDefinition/sdf-Questionnaire"],
+    "tag": [
+      {
+        "system": "urn:ietf:bcp:47",
+        "code": "nb-NO",
+        "display": "Bokmål"
+      }
+    ],
+    "security": [
+      {
+        "code": "3",
+        "display": "Helsehjelp (Full)",
+        "system": "urn:oid:2.16.578.1.12.4.1.1.7618"
+      }
+    ]
+  },
+  "contact": [
+    {
+      "name": "http://www.nhn.no"
+    }
+  ],
+  "subjectType": ["Patient"],
+  "extension": [
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sidebar",
+      "valueCoding": {
+        "system": "http://helsenorge.no/fhir/ValueSet/sdf-sidebar",
+        "code": "1"
+      }
+    },
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-information-message",
+      "valueCoding": {
+        "system": "http://helsenorge.no/fhir/ValueSet/sdf-information-message",
+        "code": "1"
+      }
+    },
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefintion/sdf-itemControl-visibility",
+      "valueCodeableConcept": {
+        "coding": [
+          {
+            "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
+            "code": "hide-help",
+            "display": "Hide help texts"
+          },
+          {
+            "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
+            "code": "hide-sublabel",
+            "display": "Hide sublabel texts"
+          }
+        ]
+      }
+    }
+  ],
+  "contained": [
+    {
+      "url": "http://ehelse.no/fhir/ValueSet/Predefined",
+      "resourceType": "ValueSet",
+      "id": "1101",
+      "version": "1.0",
+      "name": "urn:oid:1101",
+      "title": "Ja / Nei (structor)",
+      "status": "draft",
+      "publisher": "NHN",
+      "compose": {
+        "include": [
+          {
+            "system": "urn:oid:2.16.578.1.12.4.1.1101",
+            "concept": [
+              {
+                "code": "1",
+                "display": "Ja"
+              },
+              {
+                "code": "2",
+                "display": "Nei"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "item": [
+    {
+      "linkId": "590e5a60-80aa-474c-b693-e699c8d2876c",
+      "type": "open-choice",
+      "text": "Openchoice med predefinert kodverk.\n",
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/regex",
+          "valueString": "^[a-zA-Z-æøåÆØÅÁÀÄÉÈÊÎÏÑÓÒÔÖÙÜáàäçéèêîïñóòôöùüÇČĐŊŠŦŽčđŋšŧž'’* ]*$"
+        },
+        {
+          "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
+          "valueString": "Hei på deg, dette ble feil"
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/minLength",
+          "valueInteger": 1
+        }
+      ],
+      "required": true,
+      "maxLength": 10,
+      "answerValueSet": "#1101"
+    },
+    {
+      "linkId": "7253e5bd-55d3-49dd-8ae7-6ca4fab11408",
+      "type": "open-choice",
+      "text": "Openchoice med egendefinert kodverk.\n",
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/regex",
+          "valueString": "^[a-zA-Z-æøåÆØÅÁÀÄÉÈÊÎÏÑÓÒÔÖÙÜáàäçéèêîïñóòôöùüÇČĐŊŠŦŽčđŋšŧž'’* ]*$"
+        },
+        {
+          "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
+          "valueString": "Hei på deg, dette ble feil"
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/minLength",
+          "valueInteger": 1
+        }
+      ],
+      "required": true,
+      "maxLength": 10,
+      "answerOption": [
+        {
+          "valueCoding": {
+            "id": "bcc51be2-f288-4d5d-947b-ca823320e57c",
+            "code": "ja,-alle-tiders",
+            "system": "urn:uuid:2158a5e8-f28a-44a0-8cc0-d3da7156c78f",
+            "display": "Ja, alle tiders"
+          }
+        },
+        {
+          "valueCoding": {
+            "id": "d4316da6-8360-4528-f4d8-0c0023f20b01",
+            "code": "nei,-på-ingen-måte",
+            "system": "urn:uuid:2158a5e8-f28a-44a0-8cc0-d3da7156c78f",
+            "display": "Nei, på ingen måte"
+          }
+        }
+      ]
+    }
+  ]
+}

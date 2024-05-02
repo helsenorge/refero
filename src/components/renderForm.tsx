@@ -62,8 +62,8 @@ RenderFormProps): JSX.Element | null => {
     return <Loader size={'medium'} overlay={'parent'} />;
   }
   const value = getValues();
-  // console.log(value, 'values');
-  // console.log(defaultValues, 'defaultValues');
+  console.log(value, 'values');
+  console.log(defaultValues, 'defaultValues');
   // console.log(dirtyFields, 'dirtyFields');
 
   return (

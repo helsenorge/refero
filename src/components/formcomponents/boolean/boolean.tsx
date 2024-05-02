@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
+import { Controller } from 'react-hook-form';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
@@ -11,10 +12,9 @@ import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label
 import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 
 import Pdf from './pdf';
-import { booleanFormRegister } from './utils';
 import { NewValueAction, newBooleanValueAsync } from '../../../actions/newValue';
 import { GlobalState } from '../../../reducers';
-import { isReadOnly, getId, getText, renderPrefix, getSublabelText } from '../../../util/index';
+import { isReadOnly, getId, getText, renderPrefix, getSublabelText, isRequired } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
 import { Resources } from '../../../util/resources';
@@ -106,11 +106,11 @@ class Boolean extends React.Component<Props> {
       resources,
       renderHelpButton,
       renderHelpElement,
-      register,
       renderDeleteButton,
       repeatButton,
       error,
       children,
+      control,
     } = this.props;
     if (pdf) {
       return <Pdf item={item} checked={this.getValue()} onRenderMarkdown={onRenderMarkdown} />;
@@ -140,17 +140,30 @@ class Boolean extends React.Component<Props> {
             sublabel={<Sublabel id={`${getId(id)}-sublabel-boolean`} sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
             afterLabelChildren={renderHelpButton()}
           />
-          <Checkbox
-            {...booleanFormRegister(register, item, resources, this.getValue(), this.handleChange)}
-            testId={getId(id)}
-            inputId={getId(id)}
-            label={<Label labelTexts={[{ text: this.getLabel() }]} />}
-            checked={this.getValue()}
-            onChange={this.handleChange}
-            disabled={isReadOnly(item)}
-            className="page_refero__input"
-            // validateOnExternalUpdate={true}
-            // isStyleBlue
+          <Controller
+            name={item.linkId}
+            control={control}
+            rules={{
+              required: {
+                value: isRequired(item),
+                message: resources?.formRequiredErrorMessage ?? 'Feltet er påkrevd',
+              },
+            }}
+            render={({ field: { onChange, ...rest } }): JSX.Element => (
+              <Checkbox
+                {...rest}
+                testId={getId(id)}
+                inputId={getId(id)}
+                label={<Label labelTexts={[{ text: this.getLabel() }]} />}
+                checked={this.getValue()}
+                onChange={(): void => {
+                  this.handleChange();
+                  onChange(!this.getValue());
+                }}
+                disabled={isReadOnly(item)}
+                className="page_refero__input"
+              />
+            )}
           />
         </FormGroup>
         {renderDeleteButton('page_refero__deletebutton--margin-top')}

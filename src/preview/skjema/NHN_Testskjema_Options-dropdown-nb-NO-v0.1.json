@@ -1,0 +1,357 @@
+{
+  "resourceType": "Questionnaire",
+  "language": "nb-NO",
+  "id": "4db7bfe8-dd1b-4cce-b586-0a5b77b2c7b7",
+  "name": "NHN_Testskjema_Options",
+  "title": "Testskjema Option - options",
+  "version": "0.1",
+  "status": "draft",
+  "publisher": "NHN",
+  "meta": {
+    "profile": ["http://ehelse.no/fhir/StructureDefinition/sdf-Questionnaire"],
+    "tag": [{ "system": "urn:ietf:bcp:47", "code": "nb-NO", "display": "Bokmål" }],
+    "security": [{ "code": "3", "display": "Helsehjelp (Full)", "system": "urn:oid:2.16.578.1.12.4.1.1.7618" }]
+  },
+  "contact": [{ "name": "http://www.nhn.no" }],
+  "subjectType": ["Patient"],
+  "extension": [
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sidebar",
+      "valueCoding": { "system": "http://helsenorge.no/fhir/ValueSet/sdf-sidebar", "code": "1" }
+    },
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-information-message",
+      "valueCoding": { "system": "http://helsenorge.no/fhir/ValueSet/sdf-information-message", "code": "1" }
+    },
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefintion/sdf-itemControl-visibility",
+      "valueCodeableConcept": {
+        "coding": [
+          { "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions", "code": "hide-help", "display": "Hide help texts" },
+          {
+            "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
+            "code": "hide-sublabel",
+            "display": "Hide sublabel texts"
+          }
+        ]
+      }
+    }
+  ],
+  "date": "2024-03-19T00:00:00+01:00",
+  "contained": [
+    {
+      "url": "http://ehelse.no/fhir/ValueSet/Predefined",
+      "resourceType": "ValueSet",
+      "id": "1101",
+      "version": "1.0",
+      "name": "urn:oid:1101",
+      "title": "Ja / Nei (structor)",
+      "status": "draft",
+      "publisher": "NHN",
+      "compose": {
+        "include": [
+          {
+            "system": "urn:oid:2.16.578.1.12.4.1.1101",
+            "concept": [
+              { "code": "1", "display": "Ja" },
+              { "code": "2", "display": "Nei" }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "url": "http://ehelse.no/fhir/ValueSet/Predefined",
+      "resourceType": "ValueSet",
+      "id": "1102",
+      "version": "1.0",
+      "name": "urn:oid:1102",
+      "title": "Ja / Nei / Vet ikke (structor)",
+      "status": "draft",
+      "publisher": "Direktoratet for e-helse",
+      "compose": {
+        "include": [
+          {
+            "system": "urn:oid:2.16.578.1.12.4.1.1102",
+            "concept": [
+              { "code": "1", "display": "Ja" },
+              { "code": "2", "display": "Nei" },
+              { "code": "3", "display": "Vet ikke" }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "item": [
+    {
+      "linkId": "73295400-6e77-4cf9-84a7-9601c0dc952c",
+      "type": "group",
+      "text": "Dropdown",
+      "item": [
+        {
+          "linkId": "9a0dd64a-bfbc-4d6d-eb39-7dff55510aef",
+          "type": "choice",
+          "text": "Åpne felt under",
+          "item": [
+            {
+              "linkId": "c78ab9dc-08f6-46db-91d4-ece4678f37c9",
+              "type": "string",
+              "text": "Fyll ut",
+              "required": false,
+              "enableWhen": [
+                {
+                  "question": "9a0dd64a-bfbc-4d6d-eb39-7dff55510aef",
+                  "operator": "=",
+                  "answerCoding": { "system": "urn:oid:2.16.578.1.12.4.1.1101", "code": "1" }
+                }
+              ]
+            }
+          ],
+          "required": false,
+          "answerValueSet": "#1101",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "drop-down" }]
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "2e9de2c3-75d4-4860-8c26-3850a845500a",
+          "type": "choice",
+          "text": "Uten noen ting",
+          "required": false,
+          "answerValueSet": "#1102",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "drop-down" }]
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "3fb60e98-f871-480b-a165-af4390fec2d7",
+          "type": "open-choice",
+          "text": "Uten noen ting med tekstfelt for åpent svar",
+          "required": false,
+          "answerValueSet": "#1102",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "drop-down" }]
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "cfb4408f-5577-4e5a-f1b0-439529d366ed",
+          "type": "choice",
+          "text": "Uten noen ting - Obligatorisk",
+          "required": true,
+          "answerValueSet": "#1102",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "drop-down" }]
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "39e0989e-7288-41e7-8f56-dbf9b9c16dc3",
+          "type": "choice",
+          "text": "Predefinert valg",
+          "required": false,
+          "answerValueSet": "#1102",
+          "initial": [{ "valueCoding": { "system": "urn:oid:2.16.578.1.12.4.1.1102", "code": "2", "display": "Nei" } }],
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "drop-down" }]
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "0eac264b-a8e2-4dda-f11c-861871f693c2",
+          "type": "choice",
+          "text": "Predefinert valg skrivebeskyttet",
+          "required": false,
+          "answerValueSet": "#1102",
+          "initial": [{ "valueCoding": { "system": "urn:oid:2.16.578.1.12.4.1.1102", "code": "2", "display": "Nei" } }],
+          "readOnly": true,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "drop-down" }]
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "4b289032-8360-49a1-8dc8-b9b8529a40b3",
+          "type": "choice",
+          "text": "Instruks",
+          "extension": [
+            { "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sublabel", "valueMarkdown": "Instruks" },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "drop-down" }]
+              }
+            }
+          ],
+          "required": false,
+          "answerValueSet": "#1102"
+        },
+        {
+          "linkId": "8009c317-694a-40b2-8b23-c4bcde3e2dbb",
+          "type": "choice",
+          "text": "Hjelp",
+          "item": [
+            {
+              "linkId": "c7f4c275-0186-4508-830d-e893a4fd5559",
+              "type": "text",
+              "required": false,
+              "repeats": false,
+              "readOnly": true,
+              "maxLength": 250,
+              "_text": {
+                "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown", "valueMarkdown": "Hjelp!" }]
+              },
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                  "valueCodeableConcept": {
+                    "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "help" }]
+                  }
+                }
+              ]
+            }
+          ],
+          "required": false,
+          "answerValueSet": "#1102",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "drop-down" }]
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "add8114a-041e-4ec5-880c-b2a1da460273",
+          "type": "choice",
+          "text": "Repeterende",
+          "required": false,
+          "answerValueSet": "#1102",
+          "repeats": true,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "drop-down" }]
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "e0110b32-89f2-4fa3-b9ed-ffcd3d91ec59",
+          "type": "choice",
+          "text": "Repeterende Min 2 maks 10",
+          "required": false,
+          "answerValueSet": "#1102",
+          "repeats": true,
+          "extension": [
+            { "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-minOccurs", "valueInteger": 2 },
+            { "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-maxOccurs", "valueInteger": 20 },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "drop-down" }]
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "e4b1fbc3-355e-4189-bad7-13957de2a642",
+          "type": "choice",
+          "text": "Kopi fra uten noen ting",
+          "required": false,
+          "answerValueSet": "#1102",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueString": "QuestionnaireResponse.descendants().where(linkId='95104f55-b092-49cd-8117-a482fbd6c2f5').answer.value"
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "drop-down" }]
+              }
+            }
+          ],
+          "readOnly": true,
+          "enableWhen": [{ "answerBoolean": true, "question": "2e9de2c3-75d4-4860-8c26-3850a845500a", "operator": "exists" }]
+        },
+        {
+          "linkId": "bd30b5af-bbce-42c3-8d67-b48833f42dbc",
+          "type": "choice",
+          "text": "Full vising i PDF",
+          "code": [
+            {
+              "code": "Full",
+              "display": "Full vising",
+              "system": "http://helsenorge.no/fhir/CodeSystem/ChoiceRenderOptions",
+              "id": "2de2483b-cf7b-401f-8aaa-a94b61b9f9f2"
+            }
+          ],
+          "required": false,
+          "answerValueSet": "#1102",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "drop-down" }]
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "53819e76-52db-4cd8-8f65-3b9e7de71ff3",
+          "type": "choice",
+          "text": "Kompakt vising i PDF",
+          "required": false,
+          "answerValueSet": "#1102",
+          "code": [
+            {
+              "code": "Compact",
+              "display": "Kompakt vising",
+              "system": "http://helsenorge.no/fhir/CodeSystem/ChoiceRenderOptions",
+              "id": "ecaef411-3f22-49da-893c-608fe9c21451"
+            }
+          ],
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "drop-down" }]
+              }
+            }
+          ]
+        }
+      ],
+      "required": false
+    }
+  ]
+}

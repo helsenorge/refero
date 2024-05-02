@@ -1,27 +1,44 @@
 import { QuestionnaireItem } from 'fhir/r4';
 
-import { IItemType } from '../constants/itemType';
-
+import itemControlConstants from '../constants/itemcontrol';
+import ItemType, { IItemType } from '../constants/itemType';
+import { getItemControlValue } from '../util/choice';
 export const defaultValuesForType: Record<IItemType, unknown> = {
-  text: '', // Default value for text items
-  quantity: null, // Default value for quantity items
-  choice: [], // Default value for choice items
-  boolean: false, // Default value for boolean items
-  integer: null, // Default value for integer items
-  decimal: null, // Default value for decimal items
-  date: '', // Default value for date items
-  dateTime: '', // Default value for dateTime items
-  time: '', // Default value for time items
-  reference: '', // Default value for reference items
-  attachment: '', // Default value for attachment items
-  url: '', // Default value for url items
-  question: '', // Default value for question items
-  group: '', // Default value for group items
-  display: '', // Default value for display items
-  'open-choice': [], // Default value for open-choice items,
-  string: '', // Default value for string items
+  [ItemType.TEXT]: '', // Default value for text items
+  [ItemType.QUANTITY]: null, // Default value for quantity items
+  [ItemType.CHOICE]: [], // Default value for choice items
+  [ItemType.BOOLEAN]: false, // Default value for boolean items
+  [ItemType.INTEGER]: undefined, // Default value for integer items
+  [ItemType.DECIMAL]: undefined, // Default value for decimal items
+  [ItemType.DATE]: '', // Default value for date items
+  [ItemType.DATETIME]: '', // Default value for dateTime items
+  [ItemType.TIME]: '', // Default value for time items
+  [ItemType.REFERENCE]: '', // Default value for reference items
+  [ItemType.ATTATCHMENT]: '', // Default value for attachment items
+  [ItemType.URL]: '', // Default value for url items
+  [ItemType.QUESTION]: '', // Default value for question items
+  [ItemType.GROUP]: '', // Default value for group items
+  [ItemType.DISPLAY]: '', // Default value for display items
+  [ItemType.OPENCHOICE]: [], // Default value for open-choice items,
+  [ItemType.STRING]: '', // Default value for string items
 };
 type DefaultValues = Record<string, unknown>;
+
+const getDefaultFormValuesForType = (item: QuestionnaireItem): unknown => {
+  switch (item.type) {
+    case ItemType.CHOICE:
+    case ItemType.OPENCHOICE:
+      const itemControlValue = getItemControlValue(item);
+      switch (itemControlValue) {
+        case itemControlConstants.CHECKBOX:
+          return [];
+        default:
+          return '';
+      }
+    default:
+      return defaultValuesForType[item.type as IItemType];
+  }
+};
 
 const getInitialValueForItem = (item: QuestionnaireItem): unknown => {
   if (item.initial)
@@ -38,11 +55,10 @@ const getInitialValueForItem = (item: QuestionnaireItem): unknown => {
           x.valueAttachment ||
           x.valueReference ||
           x?.valueQuantity?.value ||
-          x?.valueCoding?.code ||
-          x.valueString
+          x?.valueCoding?.code
       );
     }
-  return defaultValuesForType[item.type];
+  return getDefaultFormValuesForType(item);
 };
 
 // Recursively generate a nested structure of default values
@@ -77,6 +93,5 @@ const flattenAndFilterDefaults = (defaults?: DefaultValues, items?: Questionnair
       flatDefaults[key] = defaults[key];
     }
   }
-  console.log('flatDefaults', flatDefaults);
   return flatDefaults;
 };

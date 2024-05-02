@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import { QuestionnaireItem, Questionnaire } from 'fhir/r4';
+import { Controller } from 'react-hook-form';
 
 import { Options } from '../../../types/formTypes/radioGroupOptions';
 
@@ -10,9 +11,8 @@ import Select from '@helsenorge/designsystem-react/components/Select';
 
 import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 
-import { checkboxFormRegister, selectFormRegister } from './utils';
 import { getValidationTextExtension, getPlaceholder } from '../../../util/extension';
-import { getId, getSublabelText, getText, renderPrefix } from '../../../util/index';
+import { getId, getSublabelText, getText, isRequired, renderPrefix } from '../../../util/index';
 import { Resources } from '../../../util/resources';
 import { FormProps } from '../../../validation/ReactHookFormHoc';
 import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
@@ -49,10 +49,12 @@ class DropdownView extends React.Component<Props, Record<string, unknown>> {
       renderHelpButton,
       renderHelpElement,
       onRenderMarkdown,
-      register,
       error,
+      control,
     } = this.props;
-    let placeholder;
+
+    let placeholder: HTMLOptionElement;
+
     if (getPlaceholder(item)) {
       placeholder = new Option(getPlaceholder(item), '');
     } else if (resources) {
@@ -67,28 +69,44 @@ class DropdownView extends React.Component<Props, Record<string, unknown>> {
       <div className="page_refero__component page_refero__component_choice page_refero__component_choice_dropdown">
         <FormGroup mode="ongrey" error={error?.message}>
           {renderHelpElement()}
-          <Select
-            {...selectFormRegister(register, item, resources)}
-            label={
-              <Label
-                labelTexts={[{ text: labelText, type: 'semibold' }]}
-                sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
-                afterLabelChildren={renderHelpButton()}
-              />
-            }
-            selectId={getId(id)}
-            onChange={onChange}
-            className="page_refero__input"
-          >
-            <option key={getId(id) + placeholder?.label} value={undefined}>
-              {placeholder?.label}
-            </option>
-            {options?.map(dropdownOption => (
-              <option key={getId(id) + dropdownOption.label} value={dropdownOption.type}>
-                {dropdownOption.label}
-              </option>
-            ))}
-          </Select>
+          <Controller
+            name={item.linkId}
+            control={control}
+            rules={{
+              required: {
+                message: getValidationTextExtension(item) ?? resources?.formRequiredErrorMessage ?? '',
+                value: isRequired(item),
+              },
+            }}
+            render={({ field: { onChange: handleChange, ...rest } }): JSX.Element => (
+              <Select
+                {...rest}
+                label={
+                  <Label
+                    labelTexts={[{ text: labelText, type: 'semibold' }]}
+                    sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+                    afterLabelChildren={renderHelpButton()}
+                  />
+                }
+                selectId={getId(id)}
+                onChange={(e): void => {
+                  handleChange(e);
+                  onChange(e);
+                }}
+                value={selected?.[0] || ''}
+                className="page_refero__input"
+              >
+                <option key={getId(id) + placeholder?.label} value={undefined}>
+                  {placeholder?.label}
+                </option>
+                {options?.map(dropdownOption => (
+                  <option key={getId(id) + dropdownOption.label} value={dropdownOption.type}>
+                    {dropdownOption.label}
+                  </option>
+                ))}
+              </Select>
+            )}
+          />
         </FormGroup>
 
         {renderDeleteButton('page_refero__deletebutton--margin-top')}

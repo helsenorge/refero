@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem, Questionnaire } from 'fhir/r4';
+import { Controller } from 'react-hook-form';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
@@ -11,10 +12,9 @@ import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label
 import { debounce } from '@helsenorge/core-utils/debounce';
 import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 
-import { stringFormRegister } from './utils';
 import { NewValueAction, newStringValueAsync } from '../../../actions/newValue';
 import { GlobalState } from '../../../reducers';
-import { getPlaceholder } from '../../../util/extension';
+import { getMinLengthExtensionValue, getPlaceholder, getRegexExtension, getValidationTextExtension } from '../../../util/extension';
 import {
   isReadOnly,
   isRequired,
@@ -25,6 +25,7 @@ import {
   getSublabelText,
   renderPrefix,
   getText,
+  getMaxLength,
 } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
@@ -93,7 +94,7 @@ export class String extends React.Component<Props, Record<string, unknown>> {
   };
 
   render(): JSX.Element | null {
-    const { id, item, questionnaire, pdf, resources, answer, onRenderMarkdown } = this.props;
+    const { id, item, questionnaire, pdf, resources, answer, onRenderMarkdown, control } = this.props;
     if (pdf || isReadOnly(item)) {
       return (
         <TextView
@@ -111,8 +112,11 @@ export class String extends React.Component<Props, Record<string, unknown>> {
     }
     const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`;
     const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
-
-    const handleInputChange = (event: React.FormEvent<HTMLInputElement>): void => {
+    const maxLength = getMaxLength(item);
+    const minLength = getMinLengthExtensionValue(item);
+    const pattern = getRegexExtension(item);
+    const errorMessage = getValidationTextExtension(item);
+    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
       event.persist();
       this.debouncedHandleChange(event);
     };
@@ -120,25 +124,60 @@ export class String extends React.Component<Props, Record<string, unknown>> {
       <div className="page_refero__component page_refero__component_string">
         <FormGroup error={this.props.error?.message} mode="ongrey">
           {this.props.renderHelpElement()}
-          <Input
-            {...stringFormRegister(this.props.register, this.props.item, getStringValue(answer), this.props.resources, handleInputChange)}
-            label={
-              <Label
-                labelTexts={[{ text: labelText, type: 'semibold' }]}
-                sublabel={
-                  <Sublabel
-                    id={`${getId(this.props.id)}_sublabel`}
-                    sublabelTexts={[{ text: subLabelText, hideFromScreenReader: false, type: 'normal' }]}
+          <Controller
+            name={item.linkId}
+            control={control}
+            defaultValue={getStringValue(answer)}
+            rules={{
+              required: {
+                value: isRequired(item),
+                message: resources?.formRequiredErrorMessage ?? 'Feltet er påkrevd',
+              },
+              ...(minLength && {
+                minLength: {
+                  value: minLength || 0,
+                  message: errorMessage ?? resources?.stringOverMaxLengthError ?? 'Verdien er for kort',
+                },
+              }),
+              ...(maxLength && {
+                maxLength: {
+                  value: maxLength,
+                  message: errorMessage ?? resources?.stringOverMaxLengthError ?? 'Verdien er for lang',
+                },
+              }),
+              ...(pattern && {
+                pattern: {
+                  value: new RegExp(pattern),
+                  message: errorMessage ?? resources?.oppgiGyldigVerdi ?? 'Verdien er for lav',
+                },
+              }),
+            }}
+            render={({ field: { onChange, ...rest } }): JSX.Element => (
+              <Input
+                {...rest}
+                label={
+                  <Label
+                    labelTexts={[{ text: labelText, type: 'semibold' }]}
+                    sublabel={
+                      <Sublabel
+                        id={`${getId(this.props.id)}_sublabel`}
+                        sublabelTexts={[{ text: subLabelText, hideFromScreenReader: false, type: 'normal' }]}
+                      />
+                    }
+                    afterLabelChildren={this.props.renderHelpButton()}
                   />
                 }
-                afterLabelChildren={this.props.renderHelpButton()}
+                onChange={(e): void => {
+                  handleInputChange(e);
+                  onChange(e.target.value);
+                }}
+                type="text"
+                width={25}
+                inputId={getId(this.props.id)}
+                placeholder={getPlaceholder(item)}
+                className="page_refero__input"
               />
-            }
-            type="text"
-            width={25}
-            inputId={getId(this.props.id)}
-            placeholder={getPlaceholder(item)}
-            className="page_refero__input"
+            )}
           />
           {this.props.renderDeleteButton('page_refero__deletebutton--margin-top')}
           {this.props.repeatButton}

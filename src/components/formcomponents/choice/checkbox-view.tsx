@@ -10,7 +10,7 @@ import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
 
 import { getValidationTextExtension } from '../../../util/extension';
-import { getCodingAnswer, getSublabelText, getText, isRequired, renderPrefix } from '../../../util/index';
+import { getSublabelText, getText, isRequired, renderPrefix } from '../../../util/index';
 import { Resources } from '../../../util/resources';
 import { FormProps } from '../../../validation/ReactHookFormHoc';
 import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
@@ -36,7 +36,6 @@ const CheckboxView: React.FC<Props> = ({
   questionnaire,
   id,
   handleChange,
-  selected,
   resources,
   children,
   repeatButton,
@@ -59,10 +58,10 @@ const CheckboxView: React.FC<Props> = ({
           sublabel={<Sublabel id="select-sublsbel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
           afterLabelChildren={renderHelpButton()}
         />
-        {options?.map((checkbox, index) => (
+        {options?.map((option, index) => (
           <Controller
             name={item.linkId}
-            key={`${checkbox.type}-${index}`}
+            key={`${option.type}-${index}`}
             control={control}
             rules={{
               required: {
@@ -70,16 +69,24 @@ const CheckboxView: React.FC<Props> = ({
                 value: isRequired(item),
               },
             }}
-            render={({ field }): JSX.Element => (
+            render={({ field: { value, onChange, ...rest } }): JSX.Element => (
               <Checkbox
-                inputId={`${id}-${checkbox.type}`}
-                testId={`${checkbox.type}-${index}-checkbox-choice`}
-                label={<Label labelTexts={[{ text: checkbox.label }]} />}
-                checked={isSelected(checkbox, selected)}
-                value={checkbox.type}
-                onChange={(): void => {
-                  field.onChange(checkbox.type);
-                  handleChange(checkbox.type);
+                {...rest}
+                inputId={`${id}-${option.type}`}
+                testId={`${option.type}-${index}-checkbox-choice`}
+                label={<Label labelTexts={[{ text: option.label }]} />}
+                checked={value.some((val: string) => val === option.type)}
+                value={option.type}
+                onChange={(e): void => {
+                  const valueCopy = [...value];
+                  if (e.target.checked) {
+                    valueCopy.push(option.type);
+                  } else {
+                    const idx = valueCopy.findIndex(code => option.type === code);
+                    valueCopy.splice(idx, 1);
+                  }
+                  onChange(valueCopy);
+                  handleChange(option.type);
                 }}
               />
             )}
@@ -92,16 +99,5 @@ const CheckboxView: React.FC<Props> = ({
     </div>
   );
 };
-
-function isSelected(el: Options, selected?: Array<string | undefined>): boolean {
-  if (selected) {
-    for (let i = 0; i < selected.length; i++) {
-      if (el.type === selected[i]) {
-        return true;
-      }
-    }
-  }
-  return false;
-}
 
 export default CheckboxView;

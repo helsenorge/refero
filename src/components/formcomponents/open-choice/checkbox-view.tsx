@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
+import { Controller } from 'react-hook-form';
 
 import { Options } from '../../../types/formTypes/radioGroupOptions';
 
@@ -40,7 +41,6 @@ const CheckboxView: React.SFC<Props> = ({
   id,
   answer,
   handleChange,
-  selected,
   resources,
   children,
   repeatButton,
@@ -49,37 +49,52 @@ const CheckboxView: React.SFC<Props> = ({
   renderHelpButton,
   renderHelpElement,
   onRenderMarkdown,
-  register,
+  control,
+  error,
 }) => {
-  const checkboxes = options?.map(el => {
-    return { label: el.label, id: el.type, checked: isSelected(el, selected) };
-  });
   const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
   const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`;
   return (
     <div className="page_refero__component page_refero__component_openchoice page_refero__component_openchoice_checkbox">
-      <FormGroup error={''} mode="ongrey">
+      <FormGroup error={error?.message} mode="ongrey">
         {renderHelpElement()}
         <Label
           labelTexts={[{ text: labelText }]}
           sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
           afterLabelChildren={renderHelpButton()}
         />
-        {checkboxes?.map((checkbox, index) => (
-          <Checkbox
-            {...register(item.linkId, {
-              required: isRequired(item),
-            })}
-            inputId={`${getId(id)}-${checkbox.id}`}
-            testId={`checkbox-openChoice`}
-            key={`${checkbox.id}-${index.toString()}`}
-            required={isRequired(item)}
-            onChange={(): void => {
-              handleChange(checkbox.id);
+        {options?.map((option, index) => (
+          <Controller
+            name={item.linkId}
+            key={`${option.type}-${index}`}
+            control={control}
+            rules={{
+              required: {
+                message: getValidationTextExtension(item) ?? resources?.formRequiredErrorMessage ?? 'Påkrevd felt',
+                value: isRequired(item),
+              },
             }}
-            label={<Label labelTexts={[{ text: checkbox.label }]} />}
-            value={checkbox.id}
-            checked={checkbox.checked}
+            render={({ field: { value, onChange, ...rest } }): JSX.Element => (
+              <Checkbox
+                {...rest}
+                inputId={`${id}-${option.type}`}
+                testId={`${option.type}-${index}-checkbox-choice`}
+                label={<Label labelTexts={[{ text: option.label }]} />}
+                checked={value.some((val: string) => val === option.type)}
+                value={option.type}
+                onChange={(e): void => {
+                  const valueCopy = [...value];
+                  if (e.target.checked) {
+                    valueCopy.push(option.type);
+                  } else {
+                    const idx = valueCopy.findIndex(code => option.type === code);
+                    valueCopy.splice(idx, 1);
+                  }
+                  onChange(valueCopy);
+                  handleChange(option.type);
+                }}
+              />
+            )}
           />
         ))}
       </FormGroup>
@@ -90,16 +105,5 @@ const CheckboxView: React.SFC<Props> = ({
     </div>
   );
 };
-
-function isSelected(el: Options, selected?: Array<string | undefined>): boolean {
-  if (selected) {
-    for (let i = 0; i < selected.length; i++) {
-      if (el.type === selected[i]) {
-        return true;
-      }
-    }
-  }
-  return false;
-}
 
 export default CheckboxView;

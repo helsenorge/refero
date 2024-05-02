@@ -1,7 +1,9 @@
 import * as React from 'react';
 
 import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
+import { Controller, FieldValues, useFieldArray, useFormContext, useWatch } from 'react-hook-form';
 
+import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Input from '@helsenorge/designsystem-react/components/Input';
 import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
 
@@ -29,8 +31,10 @@ interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   questionnaire?: Questionnaire;
   answer: QuestionnaireResponseItemAnswer;
   handleStringChange: (event: React.FocusEvent<HTMLInputElement, Element>) => void;
+  handleChange: (value: string) => void;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
   resources?: Resources;
+  selected: (string | undefined)[] | undefined;
 }
 const textField: React.FC<Props> = ({
   id,
@@ -39,11 +43,15 @@ const textField: React.FC<Props> = ({
   questionnaire,
   answer,
   handleStringChange,
+  handleChange,
   children,
   onRenderMarkdown,
   resources,
-  register,
+  selected,
 }) => {
+  const formName = `${item.linkId}-extra-field`;
+  const { formState, getFieldState, control } = useFormContext<FieldValues>();
+  const { error } = getFieldState(formName, formState);
   if (pdf) {
     return (
       <Pdf item={item} value={getPDFStringValue(answer)}>
@@ -57,31 +65,71 @@ const textField: React.FC<Props> = ({
 
   const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`;
   const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
+  const maxLength = getMaxLength(item);
+  const minLength = getMinLengthExtensionValue(item);
+  const pattern = getRegexExtension(item);
+  const errorMessage = getValidationTextExtension(item);
+
   return (
-    <Input
-      {...register(item.linkId, {
-        required: isRequired(item),
-        onChange: handleOnBlur,
-        onBlur: handleOnBlur,
-      })}
-      type="text"
-      inputId={getId(id)}
-      name={getId(id)}
-      value={getStringValue(answer)}
-      label={
-        <Label
-          labelTexts={[{ text: labelText, type: 'semibold' }]}
-          sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
-        />
-      }
-      placeholder={getPlaceholder(item)}
-      // minLength={getMinLengthExtensionValue(item)}
-      // maxLength={getMaxLength(item)}
-      readOnly={isReadOnly(item)}
-      // pattern={getRegexExtension(item)}
-      // errorMessage={getValidationTextExtension(item)}
-      // validateOnExternalUpdate={true}
-    />
+    <FormGroup error={error?.message} mode="ongrey">
+      <Controller
+        name={`${item.linkId}-extra-field`}
+        control={control}
+        defaultValue={''}
+        shouldUnregister={true}
+        rules={{
+          required: {
+            value: isRequired(item),
+            message: resources?.formRequiredErrorMessage ?? 'Feltet er påkrevd',
+          },
+          ...(minLength && {
+            minLength: {
+              value: minLength || 0,
+              message: errorMessage ?? resources?.stringOverMaxLengthError ?? 'Verdien er for kort',
+            },
+          }),
+          ...(maxLength && {
+            maxLength: {
+              value: maxLength,
+              message: errorMessage ?? resources?.stringOverMaxLengthError ?? 'Verdien er for lang',
+            },
+          }),
+          ...(pattern && {
+            pattern: {
+              value: new RegExp(pattern),
+              message: errorMessage ?? 'Det er en feil på feltet',
+            },
+          }),
+        }}
+        render={({ field: { onChange, ref, name, onBlur } }): JSX.Element => (
+          <Input
+            name={name}
+            ref={ref}
+            disabled={isReadOnly(item)}
+            type="text"
+            mode="ongrey"
+            inputId={`${getId(id)}-extra-field`}
+            label={
+              <Label
+                labelTexts={[{ text: labelText, type: 'semibold' }]}
+                sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+              />
+            }
+            placeholder={getPlaceholder(item)}
+            readOnly={isReadOnly(item)}
+            onChange={(e): void => {
+              onChange(e.target.value);
+              handleChange(e.target.value);
+            }}
+            onBlur={(e): void => {
+              handleOnBlur(e);
+              onChange(e.target.value);
+              onBlur();
+            }}
+          />
+        )}
+      />
+    </FormGroup>
   );
 };
 
