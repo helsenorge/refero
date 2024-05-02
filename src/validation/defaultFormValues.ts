@@ -13,7 +13,7 @@ export const defaultValuesForType: Record<IItemType, unknown> = {
   dateTime: '', // Default value for dateTime items
   time: '', // Default value for time items
   reference: '', // Default value for reference items
-  attachment: '', // Default value for attachment items
+  attachment: [], // Default value for attachment items
   url: '', // Default value for url items
   question: '', // Default value for question items
   group: '', // Default value for group items

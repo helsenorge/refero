@@ -50,6 +50,7 @@ const RenderForm = ({
 RenderFormProps): JSX.Element | null => {
   const {
     formState: { errors, defaultValues, dirtyFields },
+    getValues,
   } = useFormContext();
 
   const onSubmitReactHookForm: SubmitHandler<FieldValues> = (data: QuestionnaireResponse, e: React.FormEvent): void => {
@@ -70,6 +71,8 @@ RenderFormProps): JSX.Element | null => {
   console.log(errors, 'errors');
   console.log(defaultValues, 'defaultValues');
   console.log(dirtyFields, 'dirtyFields');
+  const values = getValues();
+  console.log(values, 'values');
 
   return (
     <form onSubmit={methods.handleSubmit(onSubmitReactHookForm)}>

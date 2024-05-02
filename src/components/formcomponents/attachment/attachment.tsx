@@ -21,6 +21,7 @@ import { Resources } from '../../../util/resources';
 import ReactHookFormHoc, { FormProps } from '../../../validation/ReactHookFormHoc';
 import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 import TextView from '../textview';
+import { UploadFile } from '@helsenorge/file-upload/components/file-upload';
 
 export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
@@ -53,7 +54,7 @@ export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
 }
 
 export class AttachmentComponent extends React.Component<Props> {
-  onUpload = (files: File[], cb: (success: boolean, errormessage: TextMessage | null, uploadedFile?: UploadedFile) => void): void => {
+  onUpload = (files: UploadFile[]) => {
     const { uploadAttachment, path, item, onAnswerChange } = this.props;
     if (uploadAttachment) {
       for (const file of files) {
@@ -63,12 +64,9 @@ export class AttachmentComponent extends React.Component<Props> {
               .dispatch(newAttachmentAsync(this.props.path, attachment, this.props.item, isRepeat(this.props.item)))
               ?.then(newState => onAnswerChange(newState, path, item, { valueAttachment: attachment } as QuestionnaireResponseItemAnswer));
           }
-
-          cb(true, null, uploadedFile);
         };
 
         const onError = (errorMessage: TextMessage | null): void => {
-          cb(false, errorMessage);
         };
 
         uploadAttachment([file], onSuccess, onError);
@@ -76,7 +74,7 @@ export class AttachmentComponent extends React.Component<Props> {
     }
   };
 
-  onDelete = (fileId: string, cb: (success: boolean, errormessage: TextMessage | null) => void): void => {
+  onDelete = (fileId: string) => {
     const { onDeleteAttachment, path, item, onAnswerChange } = this.props;
 
     if (onDeleteAttachment) {
@@ -87,12 +85,9 @@ export class AttachmentComponent extends React.Component<Props> {
             .dispatch(removeAttachmentAsync(this.props.path, attachment, this.props.item))
             ?.then(newState => onAnswerChange(newState, path, item, { valueAttachment: attachment } as QuestionnaireResponseItemAnswer));
         }
-
-        cb(true, null);
       };
 
       const onError = (errormessage: TextMessage | null): void => {
-        cb(false, errormessage);
       };
 
       onDeleteAttachment(fileId, onSuccess, onError);
@@ -213,6 +208,7 @@ export class AttachmentComponent extends React.Component<Props> {
             register={this.props.register}
             setValue={this.props.setValue}
             error={this.props.error}
+            resetField={this.props.resetField}
           >
             {this.props.children}
           </AttachmentHtml>

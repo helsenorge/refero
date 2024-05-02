@@ -8,6 +8,7 @@ import NotificationPanel from '@helsenorge/designsystem-react/components/Notific
 
 import Dropzone from '@helsenorge/file-upload/components/dropzone';
 import { UploadedFile } from '@helsenorge/file-upload/components/dropzone';
+import FileUpload, { UploadFile } from '@helsenorge/file-upload/components/file-upload';
 import { sizeIsValid, mimeTypeIsValid } from '@helsenorge/file-upload/components/dropzone/validation';
 
 import { convertBytesToMBString, convertMBToBytes } from './attachmentUtil';
@@ -24,13 +25,18 @@ import {
   validateFileType,
   validateMaxFiles,
   validateMinFiles,
+  // validateMaxFiles,
+  // validateMinFiles,
 } from './attachment-validation';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import { FieldError } from 'react-hook-form';
+import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
+
+import { useFileUpload } from '@helsenorge/file-upload/components/file-upload/useFileUpload';
 
 interface Props {
-  onUpload: (files: Array<File>, cb: (success: boolean, errormessage: TextMessage | null, uploadedFile?: UploadedFile) => void) => void;
-  onDelete: (fileId: string, cb: (success: boolean, errormessage: TextMessage | null) => void) => void;
+  onUpload: (files: UploadFile[]) => void;
+  onDelete: (fileId: string) => void;
   onOpen?: (fileId: string) => void;
   uploadButtonText: string;
   label: string | JSX.Element;
@@ -55,6 +61,7 @@ interface Props {
   register: FormProps['register'];
   setValue: FormProps['setValue'];
   error?: FieldError;
+  resetField: FormProps['resetField'];
 }
 
 const attachmentHtml: React.SFC<Props> = ({
@@ -80,26 +87,38 @@ const attachmentHtml: React.SFC<Props> = ({
   minFiles,
   item,
   children,
-  register,
   setValue,
   error,
+  resetField,
+  ...rest
 }) => {
   const getMaxValueBytes = getAttachmentMaxSizeBytesToUse(attachmentMaxFileSize, item);
   const getMaxValueMBToReplace = convertBytesToMBString(getMaxValueBytes);
   const validFileTypes = attachmentValidTypes ? attachmentValidTypes : VALID_FILE_TYPES;
   const deleteText = resources ? resources.deleteAttachmentText : undefined;
 
-  const handleUpload = (files: File[], cb: (success: boolean, errormessage: TextMessage | null, uploadedFile?: UploadedFile) => void) => {
-    const response: UploadedFile[] = files.map(file => ({
-      id: Math.random().toString(),
-      name: file.name,
-      size: file.size,
-      type: file.type,
-    }));
+  const { register, acceptedFiles, rejectedFiles, setAcceptedFiles, setRejectedFiles } = useFileUpload(rest.register, [
+    // file => (file ? validateMinFiles(file, mockMinFiles) : true),
+    // file => (file ? validateMaxFiles(file, mockMaxFiles) : true),
+    file => (file ? validateFileSize(file, mockMaxSize) : true),
+    file => (file ? validateFileType(file, mockValidTypes) : true),
+  ]);
 
-    cb(true, null, response[0]);
+  const handleUpload = (files: UploadFile[]) => {
+    //oppdater redux
+    onUpload(files);
+    //oppdater react hook form
+    // setValue(item.linkId, files[0], { shouldValidate: true });
+  };
 
-    setValue(item.linkId, response, { shouldValidate: true });
+  const handleDelete = (fileId: string) => {
+    //oppdater redux
+    onDelete(fileId);
+    //oppdater react hook form
+    resetField(item.linkId);
+
+    setAcceptedFiles(acceptedFiles.filter(x => x.id !== fileId));
+    setRejectedFiles(acceptedFiles.filter(x => x.id !== fileId));
   };
 
   const concatErrorMessages = (): string => {
@@ -109,44 +128,26 @@ const attachmentHtml: React.SFC<Props> = ({
   return (
     <div className="page_refero__component page_refero__component_attachment">
       <FormGroup error={concatErrorMessages()}>
-        <Dropzone
+        <FileUpload
           {...register(item.linkId, {
-            required: {
-              value: !!isRequired,
-              message: resources?.uploadButtonText || '',
-            },
-            validate: {
-              minFiles: files => (files.length ? validateMinFiles(files, mockMinFiles) : true),
-              maxFiles: files => (files.length ? validateMaxFiles(files, mockMaxFiles) : true),
-              fileSize: (files: File[]) => (files.length ? validateFileSize(files, mockMaxSize) : true),
-              fileType: (files: File[]) => (files.length ? validateFileType(files, mockValidTypes) : true),
-            },
+            required: { value: !!isRequired, message: 'fyll ut' },
+            validate: () => true,
           })}
-          id={id}
-          label={label}
-          subLabel={subLabel}
-          onDrop={handleUpload}
-          onDelete={onDelete}
-          onOpenFile={onOpen}
-          uploadButtonText={uploadButtonText}
-          uploadedFiles={uploadedFiles}
-          maxFileSize={getMaxValueBytes}
-          validMimeTypes={validFileTypes}
-          dontShowHardcodedText={!!deleteText}
-          deleteText={deleteText}
-          supportedFileFormatsText={resources ? resources.supportedFileFormats : undefined}
-          errorMessage={(file: File): string => {
-            return getErrorMessage(validFileTypes, getMaxValueBytes, getMaxValueMBToReplace, item, errorText, file, resources);
-          }}
-          isRequired={isRequired}
-          wrapperClasses="page_refero__input"
-          onRequestLink={onRequestAttachmentLink}
-          helpButton={helpButton}
-          helpElement={helpElement}
-          shouldUploadMultiple={multiple}
-          maxFiles={maxFiles}
-          minFiles={minFiles}
+          inputId={id}
+          onChangeFile={handleUpload}
+          onDeleteFile={handleDelete}
           chooseFilesText={resources?.chooseFilesText}
+          label={
+            <Label
+              labelTexts={[{ text: label as string, type: 'semibold' }]}
+              sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabel as string, type: 'normal' }]} />}
+            />
+          }
+          deleteText={deleteText}
+          acceptedFiles={acceptedFiles}
+          rejectedFiles={rejectedFiles}
+          helpElement={helpElement}
+          onOpenFile={onOpen}
         />
         {attachmentErrorMessage && <NotificationPanel variant="alert">{attachmentErrorMessage}</NotificationPanel>}
         {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
@@ -197,3 +198,18 @@ function getErrorMessage(
 }
 
 export default attachmentHtml;
+
+{
+  /* <Dropzone
+  uploadedFiles={uploadedFiles}
+  validMimeTypes={validFileTypes}
+  supportedFileFormatsText={resources ? resources.supportedFileFormats : undefined}
+  onRequestLink={onRequestAttachmentLink}
+  helpButton={helpButton}
+  shouldUploadMultiple={multiple}
+  errorMessage={(file: File): string => {
+    return getErrorMessage(validFileTypes, getMaxValueBytes, getMaxValueMBToReplace, item, errorText, file, resources);
+  }}
+  wrapperClasses="page_refero__input"
+/> */
+}

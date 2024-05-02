@@ -1,23 +1,19 @@
+import { UploadFile } from '@helsenorge/file-upload/components/file-upload';
 import { convertBytesToMBString, getFileExtension } from './attachmentUtil';
 
-export const validateMinFiles = (files: File[], minFiles: number): boolean | string => {
-  return !minFiles || (files && files.length >= minFiles) || `Minst ${minFiles} filer er påkrevd`;
+// export const validateMinFiles = (files: UploadFile, minFiles: number): true | string => {
+//   // return !minFiles || (files && files.length >= minFiles) || `Legg til minst ${minFiles} filer`;
+//   return 'skjerp deg';
+// };
+// export const validateMaxFiles = (files: UploadFile, maxFiles: number): true | string => {
+//   // return !maxFiles || (files && files.length <= maxFiles) || `Max ${maxFiles} filer er tillat`;
+//   return 'skjerp deg 2';
+// };
+export const validateFileSize = (file: UploadFile, maxSize: number): true | string => {
+  return !maxSize || file.size <= maxSize || `Filstørrelsen må være mindre enn ${convertBytesToMBString(maxSize)} MB.`;
 };
-export const validateMaxFiles = (files: File[], maxFiles: number): boolean | string => {
-  return !maxFiles || (files && files.length <= maxFiles) || `Max ${maxFiles} filer er tillat`;
-};
-export const validateFileSize = (files: File[], maxSize: number): boolean | string => {
-  return (
-    !maxSize ||
-    (files.length && files.every(file => file.size <= maxSize)) ||
-    `Filen overstiger maxstørrelse. Maxstørrelse er: ${convertBytesToMBString(maxSize)} MB.`
-  );
-};
-export const validateFileType = (files: File[], validTypes: string[]): boolean | string => {
-  return (
-    (files.length && files.every(file => validTypes.includes(getFileExtension(file.name).toLowerCase()))) ||
-    `Ugyldig filtype. Tillate filtyper er: ${validTypes.join(', ')}.`
-  );
+export const validateFileType = (file: UploadFile, validTypes: string[]): true | string => {
+  return validTypes.includes(getFileExtension(file.name).toLowerCase()) || `Filtypen må være ${validTypes.join(', ')}.`;
 };
 
 export const mockMinFiles: number = 1;
