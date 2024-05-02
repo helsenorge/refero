@@ -10,8 +10,8 @@ import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
 
 import { shouldShowExtraChoice } from '../../../util/choice';
-import { getMaxOccursExtensionValue, getMinOccursExtensionValue, getValidationTextExtension } from '../../../util/extension';
-import { isRequired, getId, getSublabelText, getText, renderPrefix } from '../../../util/index';
+import { getValidationTextExtension } from '../../../util/extension';
+import { isRequired, getSublabelText, getText, renderPrefix } from '../../../util/index';
 import { Resources } from '../../../util/resources';
 import { FormProps } from '../../../validation/ReactHookFormHoc';
 import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';

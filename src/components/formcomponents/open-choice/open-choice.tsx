@@ -323,7 +323,6 @@ export class OpenChoice extends React.Component<Props> {
         answer={a}
         handleStringChange={this.handleStringChangeEvent}
         handleChange={this.handleStringChange}
-        selected={this.getValue(item, answer)}
         onRenderMarkdown={onRenderMarkdown}
         resources={this.props.resources}
         {...other}

@@ -12,7 +12,7 @@ import Select from '@helsenorge/designsystem-react/components/Select';
 import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 
 import { shouldShowExtraChoice } from '../../../util/choice';
-import { getValidationTextExtension, getPlaceholder } from '../../../util/extension';
+import { getValidationTextExtension } from '../../../util/extension';
 import { isRequired, getId, getSublabelText, getText } from '../../../util/index';
 import { Resources } from '../../../util/resources';
 import { FormProps } from '../../../validation/ReactHookFormHoc';

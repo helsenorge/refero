@@ -12,7 +12,6 @@ import {
   isReadOnly,
   isRequired,
   getId,
-  getStringValue,
   getPDFStringValue,
   getMaxLength,
   getSublabelText,
@@ -34,7 +33,6 @@ interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   handleChange: (value: string) => void;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
   resources?: Resources;
-  selected: (string | undefined)[] | undefined;
 }
 const textField: React.FC<Props> = ({
   id,
@@ -47,7 +45,6 @@ const textField: React.FC<Props> = ({
   children,
   onRenderMarkdown,
   resources,
-  selected,
 }) => {
   const formName = `${item.linkId}-extra-field`;
   const { formState, getFieldState, control } = useFormContext<FieldValues>();
