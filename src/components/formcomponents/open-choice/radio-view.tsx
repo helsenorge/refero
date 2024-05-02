@@ -23,9 +23,7 @@ interface Props extends FormProps, WithCommonFunctionsAndEnhancedProps {
   id?: string;
   handleChange: (radioButton: string) => void;
   selected?: Array<string | undefined>;
-  validateInput: (value: string) => boolean;
   resources?: Resources;
-  getErrorMessage: (val: string) => string;
   renderDeleteButton: (className: string) => JSX.Element | null;
   renderOpenField: () => JSX.Element | undefined;
   repeatButton: JSX.Element;

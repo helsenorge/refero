@@ -28,7 +28,6 @@ interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   renderDeleteButton: (className?: string) => JSX.Element | null;
   renderOpenField: () => JSX.Element | undefined;
   answer: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer;
-
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;

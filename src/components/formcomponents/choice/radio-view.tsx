@@ -23,7 +23,6 @@ export interface Props extends FormProps, WithCommonFunctionsAndEnhancedProps {
   handleChange: (radioButton: string) => void;
   selected?: Array<string | undefined>;
   resources?: Resources;
-  getErrorMessage: (val: string) => string;
   renderDeleteButton: (className?: string) => JSX.Element | null;
   repeatButton: JSX.Element;
   renderHelpButton: () => JSX.Element;

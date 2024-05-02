@@ -18,7 +18,7 @@ export interface SliderProps extends WithCommonFunctionsAndEnhancedProps, FormPr
   answer: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer;
   handleChange: (sliderStep: string) => void;
   selected?: Array<string | undefined>;
-  children: React.ReactNode;
+  children?: React.ReactNode;
 }
 
 type LeftRightLabels = { leftLabel: string; rightLabel: string };
