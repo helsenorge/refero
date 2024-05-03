@@ -99,7 +99,7 @@ const attachmentHtml: React.SFC<Props> = ({
   const deleteText = resources ? resources.deleteAttachmentText : undefined;
 
   const registerInterceptor: UseFormRegister<FieldValues> = (ref, rules) => {
-    const newRules = {...rules, required: { value: isRequired, message: 'PÅKREVD FFS' }}
+    const newRules = {...rules, required: { value: isRequired, message: 'IKKE NOE MER!' }}
     return rest.register(ref, newRules);
   };
 
