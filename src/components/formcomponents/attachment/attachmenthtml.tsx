@@ -2,22 +2,20 @@ import * as React from 'react';
 
 import { QuestionnaireItem } from 'fhir/r4';
 import { Controller, FieldValues, UseFormRegister, useFormContext } from 'react-hook-form';
+import { FieldError } from 'react-hook-form';
 
 import { TextMessage } from '../../../types/text-message';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
+import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
 import NotificationPanel from '@helsenorge/designsystem-react/components/NotificationPanel';
 
 import Dropzone from '@helsenorge/file-upload/components/dropzone';
 import { UploadedFile } from '@helsenorge/file-upload/components/dropzone';
-import FileUpload, { UploadFile } from '@helsenorge/file-upload/components/file-upload';
 import { sizeIsValid, mimeTypeIsValid } from '@helsenorge/file-upload/components/dropzone/validation';
+import FileUpload, { UploadFile } from '@helsenorge/file-upload/components/file-upload';
+import { useFileUpload } from '@helsenorge/file-upload/components/file-upload/useFileUpload';
 
-import { convertBytesToMBString, convertMBToBytes } from './attachmentUtil';
-import constants, { VALID_FILE_TYPES } from '../../../constants';
-import { getMaxSizeExtensionValue, getValidationTextExtension } from '../../../util/extension';
-import { Resources } from '../../../util/resources';
-import { FormProps } from '../../../validation/ReactHookFormHoc';
 import {
   mockMaxFiles,
   mockMaxSize,
@@ -30,10 +28,11 @@ import {
   // validateMaxFiles,
   // validateMinFiles,
 } from './attachment-validation';
-import { FieldError } from 'react-hook-form';
-import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
-
-import { useFileUpload } from '@helsenorge/file-upload/components/file-upload/useFileUpload';
+import { convertBytesToMBString, convertMBToBytes } from './attachmentUtil';
+import constants, { VALID_FILE_TYPES } from '../../../constants';
+import { getMaxSizeExtensionValue, getValidationTextExtension } from '../../../util/extension';
+import { Resources } from '../../../util/resources';
+import { FormProps } from '../../../validation/ReactHookFormHoc';
 
 interface Props {
   onUpload: (files: UploadFile[]) => void;
@@ -99,25 +98,25 @@ const attachmentHtml: React.SFC<Props> = ({
   const deleteText = resources ? resources.deleteAttachmentText : undefined;
 
   const registerInterceptor: UseFormRegister<FieldValues> = (ref, rules) => {
-    const newRules = {...rules, required: { value: isRequired, message: 'IKKE NOE MER!' }}
+    const newRules = { ...rules, required: { value: !!isRequired, message: errorText || 'IKKE NOE MER!' } };
     return rest.register(ref, newRules);
   };
 
   const { register, acceptedFiles, rejectedFiles, setAcceptedFiles, setRejectedFiles } = useFileUpload(registerInterceptor, [
     // file => (file ? validateMinFiles(file, mockMinFiles) : true),
     // file => (file ? validateMaxFiles(file, mockMaxFiles) : true),
-    file => (file ? validateFileSize(file, mockMaxSize) : true),
-    file => (file ? validateFileType(file, mockValidTypes) : true),
+    (file): true | string => (file ? validateFileSize(file, mockMaxSize) : true),
+    (file): true | string => (file ? validateFileType(file, mockValidTypes) : true),
   ]);
 
-  const handleUpload = (files: UploadFile[]) => {
+  const handleUpload = (files: UploadFile[]): void => {
     //oppdater redux
     onUpload(files);
     //oppdater react hook form
     // setValue(item.linkId, files[0], { shouldValidate: true });
   };
 
-  const handleDelete = (fileId: string) => {
+  const handleDelete = (fileId: string): void => {
     //oppdater redux
     onDelete(fileId);
     //oppdater react hook form
