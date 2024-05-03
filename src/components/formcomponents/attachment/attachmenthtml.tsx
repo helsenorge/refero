@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { QuestionnaireItem } from 'fhir/r4';
-import { Controller, useFormContext } from 'react-hook-form';
+import { Controller, FieldValues, UseFormRegister, useFormContext } from 'react-hook-form';
 
 import { TextMessage } from '../../../types/text-message';
 
@@ -30,7 +30,6 @@ import {
   // validateMaxFiles,
   // validateMinFiles,
 } from './attachment-validation';
-import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import { FieldError } from 'react-hook-form';
 import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
 
@@ -99,7 +98,12 @@ const attachmentHtml: React.SFC<Props> = ({
   const validFileTypes = attachmentValidTypes ? attachmentValidTypes : VALID_FILE_TYPES;
   const deleteText = resources ? resources.deleteAttachmentText : undefined;
 
-  const { register, acceptedFiles, rejectedFiles, setAcceptedFiles, setRejectedFiles } = useFileUpload(rest.register, [
+  const registerInterceptor: UseFormRegister<FieldValues> = (ref, rules) => {
+    const newRules = {...rules, required: { value: isRequired, message: 'PÅKREVD FFS' }}
+    return rest.register(ref, newRules);
+  };
+
+  const { register, acceptedFiles, rejectedFiles, setAcceptedFiles, setRejectedFiles } = useFileUpload(registerInterceptor, [
     // file => (file ? validateMinFiles(file, mockMinFiles) : true),
     // file => (file ? validateMaxFiles(file, mockMaxFiles) : true),
     file => (file ? validateFileSize(file, mockMaxSize) : true),
@@ -132,7 +136,6 @@ const attachmentHtml: React.SFC<Props> = ({
       <FormGroup error={concatErrorMessages()}>
         <FileUpload
           {...register(item.linkId, {
-            required: { value: !!isRequired, message: 'fyll ut' },
             validate: () => true,
           })}
           inputId={id}
