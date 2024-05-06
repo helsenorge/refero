@@ -10,7 +10,7 @@ import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label
 import RadioButton from '@helsenorge/designsystem-react/components/RadioButton';
 
 import { getValidationTextExtension } from '../../../util/extension';
-import { isRequired, getId, getSublabelText, getText, renderPrefix, getTextValidationErrorMessage } from '../../../util/index';
+import { isRequired, getId, getSublabelText, getText, renderPrefix } from '../../../util/index';
 import { Resources } from '../../../util/resources';
 import { FormProps } from '../../../validation/ReactHookFormHoc';
 import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';

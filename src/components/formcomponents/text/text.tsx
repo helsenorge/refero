@@ -196,7 +196,7 @@ export class Text extends React.Component<Props> {
           <Controller
             name={item.linkId}
             control={control}
-            defaultValue={getStringValue(answer)}
+            defaultValue={value}
             shouldUnregister={true}
             rules={{
               required: {

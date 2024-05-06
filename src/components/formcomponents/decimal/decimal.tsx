@@ -11,7 +11,6 @@ import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label
 
 import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 
-import { decimalFormRegister } from './utils';
 import { NewValueAction, newDecimalValueAsync } from '../../../actions/newValue';
 import { GlobalState } from '../../../reducers';
 import { getMaxValueExtensionValue, getMinValueExtensionValue, getPlaceholder, getValidationTextExtension } from '../../../util/extension';
