@@ -16,7 +16,7 @@ import { sizeIsValid, mimeTypeIsValid } from '@helsenorge/file-upload/components
 import FileUpload, { UploadFile } from '@helsenorge/file-upload/components/file-upload';
 import { useFileUpload } from '@helsenorge/file-upload/components/file-upload/useFileUpload';
 
-import { mockMaxFiles, mockMaxSize, mockMinFiles, mockValidTypes, validateFileSize, validateFileType } from './attachment-validation';
+import { mockMaxFiles, mockMaxSize, mockMinFiles, mockValidTypes, validateFileSize, validateFileType, validateMaxFiles, validateMinFiles } from './attachment-validation';
 import { convertBytesToMBString, convertMBToBytes } from './attachmentUtil';
 import constants, { VALID_FILE_TYPES } from '../../../constants';
 import { getMaxSizeExtensionValue, getValidationTextExtension } from '../../../util/extension';
@@ -87,10 +87,11 @@ const attachmentHtml: React.SFC<Props> = ({
   const deleteText = resources ? resources.deleteAttachmentText : undefined;
 
   const { register, acceptedFiles, rejectedFiles, setAcceptedFiles, setRejectedFiles } = useFileUpload(rest.register, [
-    // file => (file ? validateMinFiles(file, mockMinFiles) : true),
-    // file => (file ? validateMaxFiles(file, mockMaxFiles) : true),
     (file): true | string => (file ? validateFileSize(file, mockMaxSize) : true),
     (file): true | string => (file ? validateFileType(file, mockValidTypes) : true),
+  ], [
+    files => (files ? validateMinFiles(files, mockMinFiles) : true),
+    files => (files ? validateMaxFiles(files, mockMaxFiles) : true),
   ]);
 
   const handleUpload = (files: UploadFile[]): void => {
