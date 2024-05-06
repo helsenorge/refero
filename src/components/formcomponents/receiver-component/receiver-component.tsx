@@ -206,6 +206,7 @@ class ReceiverComponent extends React.Component<ReceiverComponentProps & FormPro
       <Controller
         name={this.props.id || ''}
         control={this.props.control}
+        shouldUnregister={true}
         rules={{
           required: {
             value: true,

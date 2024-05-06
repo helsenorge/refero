@@ -1,0 +1,214 @@
+{
+  "resourceType": "Questionnaire",
+  "language": "nb-NO",
+  "status": "draft",
+  "publisher": "NHN",
+  "meta": {
+    "profile": ["http://ehelse.no/fhir/StructureDefinition/sdf-Questionnaire"],
+    "tag": [
+      {
+        "system": "urn:ietf:bcp:47",
+        "code": "nb-NO",
+        "display": "Bokmål"
+      }
+    ],
+    "security": [
+      {
+        "code": "3",
+        "display": "Helsehjelp (Full)",
+        "system": "urn:oid:2.16.578.1.12.4.1.1.7618"
+      }
+    ]
+  },
+  "contact": [
+    {
+      "name": "http://www.nhn.no"
+    }
+  ],
+  "subjectType": ["Patient"],
+  "extension": [
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sidebar",
+      "valueCoding": {
+        "system": "http://helsenorge.no/fhir/ValueSet/sdf-sidebar",
+        "code": "1"
+      }
+    },
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-information-message",
+      "valueCoding": {
+        "system": "http://helsenorge.no/fhir/ValueSet/sdf-information-message",
+        "code": "1"
+      }
+    },
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefintion/sdf-itemControl-visibility",
+      "valueCodeableConcept": {
+        "coding": [
+          {
+            "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
+            "code": "hide-help",
+            "display": "Hide help texts"
+          },
+          {
+            "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
+            "code": "hide-sublabel",
+            "display": "Hide sublabel texts"
+          }
+        ]
+      }
+    }
+  ],
+  "id": "f21667eb-d091-4421-bc70-d03cd252a15f",
+  "item": [
+    {
+      "linkId": "4b30d442-afce-4ec9-8961-11d3aad19ad0",
+      "type": "choice",
+      "text": "YES / NO",
+      "code": [
+        {
+          "code": "label",
+          "display": "Display value",
+          "system": "http://helsenorge.no/fhir/CodeSystem/SliderDisplayType"
+        },
+        {
+          "code": "LabelLeft",
+          "system": "http://helsenorge.no/fhir/CodeSystem/SliderLabels"
+        },
+        {
+          "code": "LabelRight",
+          "system": "http://helsenorge.no/fhir/CodeSystem/SliderLabels"
+        }
+      ],
+      "required": false,
+      "answerOption": [
+        {
+          "valueCoding": {
+            "id": "2f7fbebf-4b35-451f-a03e-ea339b1296f9",
+            "code": "yes",
+            "system": "urn:uuid:19101f60-1532-4db3-9a9b-074f1cab3902",
+            "display": "yes",
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+                "valueDecimal": 0
+              }
+            ]
+          }
+        },
+        {
+          "valueCoding": {
+            "id": "a0a22db3-5f4c-4215-9122-74ddda36b6a8",
+            "code": "no",
+            "system": "urn:uuid:19101f60-1532-4db3-9a9b-074f1cab3902",
+            "display": "no",
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+                "valueDecimal": 1
+              }
+            ]
+          }
+        }
+      ],
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                "code": "slider"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "da94bd68-4380-4d69-fbf1-44cd8eac7d1c",
+      "type": "group",
+      "text": "Enable When Group\n",
+      "item": [
+        {
+          "linkId": "6866640c-35c7-4015-8a2e-3c3b2a03a99c",
+          "type": "text",
+          "text": "REQUIRED",
+          "required": true
+        }
+      ],
+      "required": false,
+      "enableWhen": [
+        {
+          "question": "4b30d442-afce-4ec9-8961-11d3aad19ad0",
+          "operator": "=",
+          "answerCoding": {
+            "system": "urn:uuid:19101f60-1532-4db3-9a9b-074f1cab3902",
+            "code": "yes"
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "8f57a6c4-a628-4e35-ebde-a29a79e16c60",
+      "type": "integer",
+      "text": "Number enable when",
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/minValue",
+          "valueInteger": 5
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/maxValue",
+          "valueInteger": 25
+        },
+        {
+          "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
+          "valueString": "Dette ble feil"
+        }
+      ],
+      "required": true,
+      "enableWhen": [
+        {
+          "question": "4b30d442-afce-4ec9-8961-11d3aad19ad0",
+          "operator": "=",
+          "answerCoding": {
+            "system": "urn:uuid:19101f60-1532-4db3-9a9b-074f1cab3902",
+            "code": "yes"
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "1da98e80-3ee0-4a87-8e15-8a1eb2fe612b",
+      "type": "string",
+      "text": "String enable when",
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/minLength",
+          "valueInteger": 5
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/regex",
+          "valueString": "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$"
+        },
+        {
+          "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
+          "valueString": "Email error + min and max"
+        }
+      ],
+      "required": true,
+      "enableWhen": [
+        {
+          "question": "4b30d442-afce-4ec9-8961-11d3aad19ad0",
+          "operator": "=",
+          "answerCoding": {
+            "system": "urn:uuid:19101f60-1532-4db3-9a9b-074f1cab3902",
+            "code": "no"
+          }
+        }
+      ],
+      "maxLength": 25
+    }
+  ]
+}

@@ -55,6 +55,7 @@ const SliderView: React.FC<SliderProps> = ({ item, handleChange, selected, child
     <div className="page_refero__component page_refero__component_choice page_refero__component_choice_slider">
       <Controller
         name={item.linkId}
+        shouldUnregister={true}
         control={control}
         rules={{
           required: {

@@ -67,6 +67,7 @@ const CheckboxView: React.SFC<Props> = ({
             name={item.linkId}
             key={`${option.type}-${index}`}
             control={control}
+            shouldUnregister={true}
             rules={{
               required: {
                 message: getValidationTextExtension(item) ?? resources?.formRequiredErrorMessage ?? 'Påkrevd felt',

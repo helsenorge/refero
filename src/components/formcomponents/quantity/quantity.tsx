@@ -154,7 +154,7 @@ class Quantity extends React.Component<Props> {
           <Controller
             name={item.linkId}
             control={control}
-            defaultValue={value !== undefined ? value + '' : ''}
+            shouldUnregister={true}
             rules={{
               required: {
                 value: isRequired(item),
@@ -178,6 +178,7 @@ class Quantity extends React.Component<Props> {
             render={({ field: { onChange, ...rest } }): JSX.Element => (
               <Input
                 {...rest}
+                value={value !== undefined ? value + '' : ''}
                 label={
                   <Label
                     labelTexts={[{ text: labelText, type: 'semibold' }]}

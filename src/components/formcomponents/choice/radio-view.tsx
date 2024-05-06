@@ -64,6 +64,7 @@ const RadioView: React.FC<Props> = ({
             name={item.linkId}
             key={`${option.type}-${index}`}
             control={control}
+            shouldUnregister={true}
             rules={{
               required: {
                 value: isRequired(item),

@@ -244,6 +244,7 @@ class AutosuggestView extends React.Component<AutosuggestProps, AutosuggestState
         <Controller
           name={item.linkId}
           control={control}
+          shouldUnregister={true}
           rules={{
             required: {
               value: isRequired(item),
