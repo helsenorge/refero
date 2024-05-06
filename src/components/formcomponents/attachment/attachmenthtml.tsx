@@ -16,18 +16,7 @@ import { sizeIsValid, mimeTypeIsValid } from '@helsenorge/file-upload/components
 import FileUpload, { UploadFile } from '@helsenorge/file-upload/components/file-upload';
 import { useFileUpload } from '@helsenorge/file-upload/components/file-upload/useFileUpload';
 
-import {
-  mockMaxFiles,
-  mockMaxSize,
-  mockMinFiles,
-  mockValidTypes,
-  validateFileSize,
-  validateFileType,
-  validateMaxFiles,
-  validateMinFiles,
-  // validateMaxFiles,
-  // validateMinFiles,
-} from './attachment-validation';
+import { mockMaxFiles, mockMaxSize, mockMinFiles, mockValidTypes, validateFileSize, validateFileType } from './attachment-validation';
 import { convertBytesToMBString, convertMBToBytes } from './attachmentUtil';
 import constants, { VALID_FILE_TYPES } from '../../../constants';
 import { getMaxSizeExtensionValue, getValidationTextExtension } from '../../../util/extension';
@@ -97,12 +86,7 @@ const attachmentHtml: React.SFC<Props> = ({
   const validFileTypes = attachmentValidTypes ? attachmentValidTypes : VALID_FILE_TYPES;
   const deleteText = resources ? resources.deleteAttachmentText : undefined;
 
-  const registerInterceptor: UseFormRegister<FieldValues> = (ref, rules) => {
-    const newRules = { ...rules, required: { value: !!isRequired, message: errorText || 'IKKE NOE MER!' } };
-    return rest.register(ref, newRules);
-  };
-
-  const { register, acceptedFiles, rejectedFiles, setAcceptedFiles, setRejectedFiles } = useFileUpload(registerInterceptor, [
+  const { register, acceptedFiles, rejectedFiles, setAcceptedFiles, setRejectedFiles } = useFileUpload(rest.register, [
     // file => (file ? validateMinFiles(file, mockMinFiles) : true),
     // file => (file ? validateMaxFiles(file, mockMaxFiles) : true),
     (file): true | string => (file ? validateFileSize(file, mockMaxSize) : true),
@@ -110,20 +94,14 @@ const attachmentHtml: React.SFC<Props> = ({
   ]);
 
   const handleUpload = (files: UploadFile[]): void => {
-    //oppdater redux
     onUpload(files);
-    //oppdater react hook form
-    // setValue(item.linkId, files[0], { shouldValidate: true });
+    setAcceptedFiles(prevState => [...prevState, ...files]);
   };
 
   const handleDelete = (fileId: string): void => {
-    //oppdater redux
     onDelete(fileId);
-    //oppdater react hook form
-    resetField(item.linkId);
-
     setAcceptedFiles(acceptedFiles.filter(x => x.id !== fileId));
-    setRejectedFiles(acceptedFiles.filter(x => x.id !== fileId));
+    setRejectedFiles(rejectedFiles.filter(x => x.id !== fileId));
   };
 
   const concatErrorMessages = (): string => {
@@ -135,6 +113,10 @@ const attachmentHtml: React.SFC<Props> = ({
       <FormGroup error={concatErrorMessages()}>
         <FileUpload
           {...register(item.linkId, {
+            required: {
+              value: !!isRequired,
+              message: 'fyll ut',
+            },
             validate: () => true,
           })}
           inputId={id}
