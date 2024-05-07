@@ -26,7 +26,7 @@ import {
   validateMaxFiles,
   validateMinFiles,
 } from './attachment-validation';
-import { convertBytesToMBString, convertMBToBytes } from './attachmentUtil';
+import { convertBytesToMBString, convertMBToBytes, getAttachmentMaxSizeBytesToUse } from './attachmentUtil';
 import constants, { VALID_FILE_TYPES } from '../../../constants';
 import { getMaxSizeExtensionValue, getValidationTextExtension } from '../../../util/extension';
 import { Resources } from '../../../util/resources';
@@ -98,12 +98,12 @@ const attachmentHtml: React.SFC<Props> = ({
   const { register, acceptedFiles, rejectedFiles, setAcceptedFiles, setRejectedFiles } = useFileUpload(
     rest.register,
     [
-      (file): true | string => (file ? validateFileSize(file, mockMaxSize) : true),
-      (file): true | string => (file ? validateFileType(file, mockValidTypes) : true),
+      (file): true | string => (file ? validateFileSize(file, mockMaxSize, resources?.attachmentError_fileSize) : true),
+      (file): true | string => (file ? validateFileType(file, mockValidTypes, resources?.attachmentError_fileType) : true),
     ],
     [
-      (files): true | string => (files.length ? validateMinFiles(files, mockMinFiles) : true),
-      (files): true | string => (files.length ? validateMaxFiles(files, mockMaxFiles) : true),
+      (files): true | string => (files.length ? validateMinFiles(files, mockMinFiles, resources?.attachmentError_minFiles) : true),
+      (files): true | string => (files.length ? validateMaxFiles(files, mockMaxFiles, resources?.attachmentError_maxFiles) : true),
     ]
   );
 
@@ -129,7 +129,7 @@ const attachmentHtml: React.SFC<Props> = ({
           {...register(item.linkId, {
             required: {
               value: !!isRequired,
-              message: resources?.uploadButtonText || '',
+              message: resources?.attachmentError_required || '',
             },
             validate: () => true,
           })}
@@ -155,47 +155,6 @@ const attachmentHtml: React.SFC<Props> = ({
     </div>
   );
 };
-
-export function getAttachmentMaxSizeBytesToUse(defaultMaxProps: number | undefined, item: QuestionnaireItem): number {
-  if (item) {
-    const questionnaireMaxRuleSizeMB = getMaxSizeExtensionValue(item);
-    if (questionnaireMaxRuleSizeMB !== undefined) {
-      return convertMBToBytes(questionnaireMaxRuleSizeMB);
-    }
-  }
-  if (defaultMaxProps !== undefined) {
-    return defaultMaxProps;
-  }
-  return constants.MAX_FILE_SIZE;
-}
-
-function getErrorMessage(
-  validFileTypes: Array<string>,
-  maxFileSize: number,
-  maxFileSizeMBStringToReplace: string,
-  item: QuestionnaireItem,
-  genericErrorText?: string,
-  file?: File,
-  resources?: Resources
-): string {
-  if (file && resources) {
-    if (!mimeTypeIsValid(file, validFileTypes)) {
-      return resources.validationFileType;
-    } else if (!sizeIsValid(file, maxFileSize)) {
-      return resources.validationFileMax.replace('{0}', maxFileSizeMBStringToReplace);
-    }
-  }
-
-  const validationText = getValidationTextExtension(item);
-  if (validationText) {
-    return validationText;
-  }
-
-  if (genericErrorText) {
-    return genericErrorText;
-  }
-  return '';
-}
 
 export default attachmentHtml;
 
