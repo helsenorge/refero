@@ -93,7 +93,7 @@ export class String extends React.Component<Props, Record<string, unknown>> {
   };
 
   render(): JSX.Element | null {
-    const { id, item, questionnaire, pdf, resources, answer, onRenderMarkdown, control } = this.props;
+    const { id, item, questionnaire, pdf, resources, answer, onRenderMarkdown, control, idWithLinkIdAndItemIndex } = this.props;
     if (pdf || isReadOnly(item)) {
       return (
         <TextView
@@ -124,7 +124,7 @@ export class String extends React.Component<Props, Record<string, unknown>> {
         <FormGroup error={this.props.error?.message} mode="ongrey">
           {this.props.renderHelpElement()}
           <Controller
-            name={item.linkId}
+            name={idWithLinkIdAndItemIndex}
             control={control}
             defaultValue={getStringValue(answer)}
             shouldUnregister={true}
@@ -152,9 +152,11 @@ export class String extends React.Component<Props, Record<string, unknown>> {
                 },
               }),
             }}
-            render={({ field: { onChange, ...rest } }): JSX.Element => (
+            render={({ field: { onChange, ref, name } }): JSX.Element => (
               <Input
-                {...rest}
+                name={name}
+                ref={ref}
+                disabled={item.readOnly}
                 label={
                   <Label
                     labelTexts={[{ text: labelText, type: 'semibold' }]}

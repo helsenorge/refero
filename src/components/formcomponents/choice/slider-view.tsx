@@ -23,7 +23,7 @@ export interface SliderProps extends WithCommonFunctionsAndEnhancedProps, FormPr
 
 type LeftRightLabels = { leftLabel: string; rightLabel: string };
 
-const SliderView: React.FC<SliderProps> = ({ item, handleChange, selected, children, control, resources }) => {
+const SliderView: React.FC<SliderProps> = ({ item, handleChange, selected, children, control, resources, idWithLinkIdAndItemIndex }) => {
   const title = item.text;
 
   const onValueChange = (index: number): void => {
@@ -54,7 +54,7 @@ const SliderView: React.FC<SliderProps> = ({ item, handleChange, selected, child
   return (
     <div className="page_refero__component page_refero__component_choice page_refero__component_choice_slider">
       <Controller
-        name={item.linkId}
+        name={idWithLinkIdAndItemIndex}
         shouldUnregister={true}
         control={control}
         rules={{

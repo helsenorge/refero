@@ -15,14 +15,15 @@ import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/m
 import { Path } from '../../../util/refero-core';
 import { RenderContext } from '../../../util/renderContext';
 import { Resources } from '../../../util/resources';
+import { WithCommonFunctionsProps } from '../../with-common-functions';
 
-interface Props {
+interface Props extends WithCommonFunctionsProps {
   className?: string;
   item: QuestionnaireItem;
   path: Array<Path>;
   resources?: Resources;
   dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
-  mustShowConfirm: boolean;
+  mustShowConfirm?: boolean;
   onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
   renderContext: RenderContext;
 }

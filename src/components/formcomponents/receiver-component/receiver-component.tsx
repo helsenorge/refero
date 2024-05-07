@@ -22,6 +22,7 @@ export interface ReceiverComponentProps {
   fetchReceivers?: (successCallback: (receivers: Array<OrgenhetHierarki>) => void, errorCallback: () => void) => void;
   handleChange: (code?: string, systemArg?: string, displayArg?: string) => void;
   clearCodingAnswer: (coding: Coding) => void;
+  idWithLinkIdAndItemIndex: string;
 }
 
 interface ReceiverComponentState {
@@ -204,7 +205,7 @@ class ReceiverComponent extends React.Component<ReceiverComponentProps & FormPro
     };
     return (
       <Controller
-        name={this.props.id || ''}
+        name={this.props.idWithLinkIdAndItemIndex}
         control={this.props.control}
         shouldUnregister={true}
         rules={{

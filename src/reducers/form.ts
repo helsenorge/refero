@@ -147,13 +147,14 @@ function processAddRepeatItemAction(action: NewValueAction, state: Form): Form {
     if (!responseItems || responseItems.length === 0) {
       return;
     }
+    if (draft.FormDefinition.Content === undefined || draft.FormDefinition.Content === null) {
+      return;
+    }
+    if (state.FormDefinition.Content === undefined || state.FormDefinition.Content === null) {
+      return;
+    }
 
-    const newItem = copyItem(
-      responseItems[0],
-      undefined,
-      draft.FormDefinition.Content as Questionnaire,
-      state.FormDefinition.Content as Questionnaire
-    );
+    const newItem = copyItem(responseItems[0], undefined, draft.FormDefinition.Content, state.FormDefinition.Content);
     if (!newItem) {
       return;
     }

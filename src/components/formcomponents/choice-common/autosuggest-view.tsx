@@ -236,13 +236,14 @@ class AutosuggestView extends React.Component<AutosuggestProps, AutosuggestState
   }
 
   render(): JSX.Element {
-    const { control, resources, item, onRenderMarkdown, questionnaire, id, renderHelpButton, renderHelpElement } = this.props;
+    const { control, resources, item, onRenderMarkdown, questionnaire, id, renderHelpButton, renderHelpElement, idWithLinkIdAndItemIndex } =
+      this.props;
     const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
 
     return (
       <div className="page_refero__component page_refero__component_choice page_refero__component_choice_autosuggest">
         <Controller
-          name={item.linkId}
+          name={idWithLinkIdAndItemIndex}
           control={control}
           shouldUnregister={true}
           rules={{

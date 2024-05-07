@@ -50,6 +50,7 @@ const CheckboxView: React.SFC<Props> = ({
   onRenderMarkdown,
   control,
   error,
+  idWithLinkIdAndItemIndex,
 }) => {
   const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
   const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`;
@@ -64,7 +65,7 @@ const CheckboxView: React.SFC<Props> = ({
         />
         {options?.map((option, index) => (
           <Controller
-            name={item.linkId}
+            name={idWithLinkIdAndItemIndex}
             key={`${option.type}-${index}`}
             control={control}
             shouldUnregister={true}

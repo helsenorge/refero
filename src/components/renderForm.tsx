@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { QuestionnaireResponse } from 'fhir/r4';
-import { FieldValues, SubmitHandler, useFormContext } from 'react-hook-form';
+import { DefaultValues, FieldValues, SubmitHandler, UseFormReturn, useFormContext } from 'react-hook-form';
 
 import { ReferoProps } from '../types/referoProps';
 
@@ -24,9 +24,7 @@ interface RenderFormProps {
   previousStep?: () => void;
   isHelsenorgeForm?: boolean;
   children?: React.ReactNode;
-  methods: FormProps;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  // methods: UseFormReturn<FieldValues, any, undefined>;
+  methods: UseFormReturn<FieldValues, unknown, undefined>;
 }
 
 const RenderForm = ({

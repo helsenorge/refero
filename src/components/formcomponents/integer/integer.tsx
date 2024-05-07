@@ -45,6 +45,7 @@ export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
 class Integer extends React.Component<Props, Record<string, unknown>> {
   getValue(): string | number | number[] | undefined {
     const { item, answer } = this.props;
+
     if (answer && Array.isArray(answer)) {
       return answer.map(m => m.valueInteger);
     }
@@ -111,6 +112,7 @@ class Integer extends React.Component<Props, Record<string, unknown>> {
       control,
       error,
       renderDeleteButton,
+      idWithLinkIdAndItemIndex,
     } = this.props;
     if (pdf || isReadOnly(item)) {
       return (
@@ -137,7 +139,7 @@ class Integer extends React.Component<Props, Record<string, unknown>> {
         <FormGroup error={error?.message} mode="ongrey">
           {renderHelpElement()}
           <Controller
-            name={item.linkId}
+            name={idWithLinkIdAndItemIndex}
             control={control}
             shouldUnregister={true}
             rules={{

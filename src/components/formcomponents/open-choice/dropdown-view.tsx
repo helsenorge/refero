@@ -56,6 +56,7 @@ class DropdownView extends React.Component<Props, Record<string, unknown>> {
       onRenderMarkdown,
       control,
       error,
+      idWithLinkIdAndItemIndex,
     } = this.props;
     if (!options) {
       return null;
@@ -70,7 +71,7 @@ class DropdownView extends React.Component<Props, Record<string, unknown>> {
         <FormGroup error={error?.message} mode="ongrey">
           {renderHelpElement()}
           <Controller
-            name={item.linkId}
+            name={idWithLinkIdAndItemIndex}
             control={control}
             shouldUnregister={true}
             rules={{

@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
-import { Controller, FieldValues, useFieldArray, useFormContext, useWatch } from 'react-hook-form';
+import { Controller, FieldValues, useFormContext } from 'react-hook-form';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Input from '@helsenorge/designsystem-react/components/Input';
@@ -45,8 +45,9 @@ const textField: React.FC<Props> = ({
   children,
   onRenderMarkdown,
   resources,
+  idWithLinkIdAndItemIndex,
 }) => {
-  const formName = `${item.linkId}-extra-field`;
+  const formName = `${idWithLinkIdAndItemIndex}-extra-field`;
   const { formState, getFieldState, control } = useFormContext<FieldValues>();
   const { error } = getFieldState(formName, formState);
   if (pdf) {
@@ -70,7 +71,7 @@ const textField: React.FC<Props> = ({
   return (
     <FormGroup error={error?.message} mode="ongrey">
       <Controller
-        name={`${item.linkId}-extra-field`}
+        name={`${idWithLinkIdAndItemIndex}-extra-field`}
         control={control}
         defaultValue={''}
         shouldUnregister={true}

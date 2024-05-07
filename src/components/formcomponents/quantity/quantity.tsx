@@ -125,7 +125,7 @@ class Quantity extends React.Component<Props> {
   }
 
   render(): JSX.Element | null {
-    const { id, item, questionnaire, onRenderMarkdown, resources, error, control } = this.props;
+    const { id, item, questionnaire, onRenderMarkdown, resources, error, control, idWithLinkIdAndItemIndex } = this.props;
     if (this.props.pdf || isReadOnly(item)) {
       return (
         <TextView
@@ -152,7 +152,7 @@ class Quantity extends React.Component<Props> {
         <FormGroup error={error?.message} mode="ongrey">
           {this.props.renderHelpElement()}
           <Controller
-            name={item.linkId}
+            name={idWithLinkIdAndItemIndex}
             control={control}
             shouldUnregister={true}
             rules={{

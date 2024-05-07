@@ -46,6 +46,7 @@ const RadioView: React.FC<Props> = ({
   onRenderMarkdown,
   error,
   control,
+  idWithLinkIdAndItemIndex,
 }) => {
   const selectedValue = (selected && selected[0]) || '';
   const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`;
@@ -61,7 +62,7 @@ const RadioView: React.FC<Props> = ({
         />
         {options?.map((option: Options, index: number) => (
           <Controller
-            name={item.linkId}
+            name={idWithLinkIdAndItemIndex}
             key={`${option.type}-${index}`}
             control={control}
             shouldUnregister={true}

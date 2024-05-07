@@ -29,9 +29,8 @@ import {
 import { OPEN_CHOICE_ID, OPEN_CHOICE_SYSTEM } from '../../../constants';
 import ItemControlConstants from '../../../constants/itemcontrol';
 import { GlobalState } from '../../../reducers';
-import { isReadOnly, isDataReceiver, shouldRenderRepeatButton } from '../../../util';
+import { isReadOnly, isDataReceiver } from '../../../util';
 import {
-  renderOptions,
   getOptions,
   shouldShowExtraChoice,
   getDisplay,
