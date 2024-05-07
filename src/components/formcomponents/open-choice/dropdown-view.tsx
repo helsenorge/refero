@@ -25,7 +25,6 @@ interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   id?: string;
   handleChange: (code: string) => void;
   selected?: Array<string | undefined>;
-  validateInput: (value: string) => boolean;
   resources?: Resources;
   renderDeleteButton: (className?: string) => JSX.Element | null;
   repeatButton: JSX.Element;
@@ -73,6 +72,7 @@ class DropdownView extends React.Component<Props, Record<string, unknown>> {
           <Controller
             name={item.linkId}
             control={control}
+            shouldUnregister={true}
             rules={{
               required: {
                 message: getValidationTextExtension(item) ?? resources?.formRequiredErrorMessage ?? '',

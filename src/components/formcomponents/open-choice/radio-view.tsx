@@ -23,9 +23,7 @@ interface Props extends FormProps, WithCommonFunctionsAndEnhancedProps {
   id?: string;
   handleChange: (radioButton: string) => void;
   selected?: Array<string | undefined>;
-  validateInput: (value: string) => boolean;
   resources?: Resources;
-  getErrorMessage: (val: string) => string;
   renderDeleteButton: (className: string) => JSX.Element | null;
   renderOpenField: () => JSX.Element | undefined;
   repeatButton: JSX.Element;
@@ -74,6 +72,7 @@ const RadioView: React.FC<Props> = ({
             name={item.linkId}
             key={`${option.type}-${index}`}
             control={control}
+            shouldUnregister={true}
             rules={{
               required: {
                 value: isRequired(item),

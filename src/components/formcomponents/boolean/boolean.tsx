@@ -143,6 +143,7 @@ class Boolean extends React.Component<Props> {
           <Controller
             name={item.linkId}
             control={control}
+            shouldUnregister={true}
             rules={{
               required: {
                 value: isRequired(item),

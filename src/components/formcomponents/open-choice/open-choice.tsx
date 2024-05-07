@@ -29,17 +29,18 @@ import {
 import { OPEN_CHOICE_ID, OPEN_CHOICE_SYSTEM } from '../../../constants';
 import ItemControlConstants from '../../../constants/itemcontrol';
 import { GlobalState } from '../../../reducers';
-import { isReadOnly, isDataReceiver } from '../../../util';
+import { isReadOnly, isDataReceiver, shouldRenderRepeatButton } from '../../../util';
 import {
   renderOptions,
   getOptions,
-  getErrorMessage,
-  validateInput,
   shouldShowExtraChoice,
   getDisplay,
   getSystem,
   getIndexOfAnswer,
   getItemControlValue,
+  hasCanonicalValueSet,
+  hasOptions,
+  isAboveDropdownThreshold,
 } from '../../../util/choice';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
@@ -346,83 +347,48 @@ export class OpenChoice extends React.Component<Props> {
     );
   };
 
-  renderDropdown = (options: Array<Options> | undefined): JSX.Element => {
-    return (
-      <DropdownView
-        options={options}
-        id={this.props.id}
-        handleChange={this.handleChange}
-        selected={this.getValue(this.props.item, this.props.answer)}
-        validateInput={(value: string): boolean =>
-          validateInput(this.props.item, value, this.props.containedResources, this.props.resources)
-        }
-        resources={this.props.resources}
-        renderOpenField={(): JSX.Element => this.renderTextField()}
-        onRenderMarkdown={this.props.onRenderMarkdown}
-        {...this.props}
-      >
-        {this.props.children}
-      </DropdownView>
-    );
-  };
-
-  renderRadio = (options: Array<Options> | undefined): JSX.Element => {
-    const { item, resources, containedResources, children, id, answer, repeatButton, ...rest } = this.props;
-    return (
-      <RadioView
-        options={options}
-        item={item}
-        getErrorMessage={(value: string): string => getErrorMessage(item, value, resources, containedResources)}
-        handleChange={this.handleChange}
-        validateInput={(value: string): boolean => validateInput(item, value, containedResources, resources)}
-        id={id}
-        selected={this.getValue(item, answer)}
-        repeatButton={repeatButton}
-        renderOpenField={(): JSX.Element => this.renderTextField()}
-        answer={answer}
-        onRenderMarkdown={this.props.onRenderMarkdown}
-        {...rest}
-      >
-        {children}
-      </RadioView>
-    );
-  };
-
-  renderAutosuggest = (): JSX.Element => {
-    return (
-      <AutosuggestView
-        handleChange={this.handleChange}
-        id={this.props.id}
-        clearCodingAnswer={this.clearCodingAnswer}
-        onRenderMarkdown={this.props.onRenderMarkdown}
-        handleStringChange={this.handleStringChange}
-        {...this.props}
-      >
-        {this.props.children}
-      </AutosuggestView>
-    );
-  };
-
-  renderSlider = (): JSX.Element => {
-    return (
-      <SliderView handleChange={this.handleChange} selected={this.getValue(this.props.item, this.props.answer)} {...this.props}>
-        {this.props.children}
-      </SliderView>
-    );
-  };
-
   shouldComponentUpdate(nextProps: Props): boolean {
     const responseItemHasChanged = this.props.responseItem !== nextProps.responseItem;
     const helpItemHasChanged = this.props.isHelpOpen !== nextProps.isHelpOpen;
     const resourcesHasChanged = JSON.stringify(this.props.resources) !== JSON.stringify(nextProps.resources);
     const answerHasChanged = this.props.answer !== nextProps.answer;
     const repeats = this.props.item.repeats ?? false;
-    const error = this.props.error?.message !== nextProps.error?.message;
+    const error = this.props.error !== nextProps.error;
+
     return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats || answerHasChanged || error;
   }
+  renderComponentBasedOnType = (): JSX.Element | null => {
+    const { resources, item, containedResources, answer } = this.props;
+    const itemControlValue = getItemControlValue(item);
+    if (!itemControlValue) {
+      return null;
+    }
+    const options = getOptions(resources, item, containedResources);
 
+    const commonProps = {
+      handleChange: this.handleChange,
+      selected: this.getValue(item, answer),
+      renderOpenField: this.renderTextField,
+      ...this.props,
+    };
+
+    const componentMap = {
+      [ItemControlConstants.DROPDOWN]: <DropdownView options={options} {...commonProps} />,
+      [ItemControlConstants.CHECKBOX]: <CheckboxView options={options} {...commonProps} />,
+      [ItemControlConstants.RADIOBUTTON]: <RadioView options={options} {...commonProps} />,
+      [ItemControlConstants.SLIDER]: <SliderView {...commonProps} />,
+    };
+
+    return componentMap[itemControlValue];
+  };
   render(): JSX.Element | null {
-    const { id, item, pdf, answer, containedResources, children, onRenderMarkdown } = this.props;
+    const { id, item, pdf, answer, containedResources, children, onRenderMarkdown, resources } = this.props;
+    const hasOptionsAndNoCanonicalValueSet = hasOptions(resources, item, containedResources) && !hasCanonicalValueSet(item);
+    const options = getOptions(resources, item, containedResources);
+    const aboveDropdownThreshold = isAboveDropdownThreshold(options);
+    const itemControlValue = getItemControlValue(item);
+    const shouldRenderAutosuggest = hasCanonicalValueSet(item) && itemControlValue === ItemControlConstants.AUTOCOMPLETE;
+    const getValue = this.getValue(item, answer);
     if (pdf || isReadOnly(item)) {
       return (
         <TextView id={id} item={item} value={this.getPDFValue(item, answer)} onRenderMarkdown={onRenderMarkdown}>
@@ -433,16 +399,40 @@ export class OpenChoice extends React.Component<Props> {
 
     return (
       <React.Fragment>
-        {renderOptions(
-          item,
-          containedResources,
-          this.renderRadio,
-          this.renderCheckbox,
-          this.renderDropdown,
-          this.renderSlider,
-          this.props.resources,
-          this.renderAutosuggest
-        )}
+        {hasOptionsAndNoCanonicalValueSet ? (
+          itemControlValue ? (
+            this.renderComponentBasedOnType()
+          ) : aboveDropdownThreshold ? (
+            <DropdownView
+              options={options}
+              handleChange={this.handleChange}
+              selected={getValue}
+              renderOpenField={(): JSX.Element => this.renderTextField()}
+              {...this.props}
+            >
+              {children}
+            </DropdownView>
+          ) : (
+            <RadioView
+              options={options}
+              handleChange={this.handleChange}
+              selected={getValue}
+              renderOpenField={(): JSX.Element => this.renderTextField()}
+              {...this.props}
+            >
+              {children}
+            </RadioView>
+          )
+        ) : shouldRenderAutosuggest ? (
+          <AutosuggestView
+            handleChange={this.handleChange}
+            clearCodingAnswer={this.clearCodingAnswer}
+            handleStringChange={this.handleStringChange}
+            {...this.props}
+          >
+            {children}
+          </AutosuggestView>
+        ) : null}
       </React.Fragment>
     );
   }

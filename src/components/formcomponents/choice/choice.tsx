@@ -220,9 +220,38 @@ export class Choice extends React.Component<ChoiceProps, ChoiceState> {
     const error = this.props.error?.message !== nextProps.error?.message;
     return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats || answerHasChanged || error;
   }
+  renderComponentBasedOnType = (): JSX.Element | null => {
+    const { resources, item, containedResources, answer } = this.props;
+    const itemControlValue = getItemControlValue(item);
+    if (!itemControlValue) {
+      return null;
+    }
+    const options = getOptions(resources, item, containedResources);
 
+    const commonProps = {
+      handleChange: this.handleChange,
+      selected: this.getValue(item, answer),
+      ...this.props,
+    };
+
+    const componentMap = {
+      [itemControlConstants.DROPDOWN]: <DropdownView options={options} {...commonProps} />,
+      [itemControlConstants.CHECKBOX]: <CheckboxView options={options} {...commonProps} />,
+      [itemControlConstants.RADIOBUTTON]: <RadioView options={options} {...commonProps} />,
+      [itemControlConstants.SLIDER]: <SliderView {...commonProps} />,
+    };
+
+    return componentMap[itemControlValue];
+  };
   render(): JSX.Element | null {
     const { id, item, pdf, answer, containedResources, children, onRenderMarkdown, resources } = this.props;
+    const hasOptionsAndNoCanonicalValueSet = hasOptions(resources, item, containedResources) && !hasCanonicalValueSet(item);
+    const options = getOptions(resources, item, containedResources);
+    const aboveDropdownThreshold = isAboveDropdownThreshold(options);
+    const itemControlValue = getItemControlValue(item);
+    const shouldRenderAutosuggest = hasCanonicalValueSet(item) && itemControlValue === itemControlConstants.AUTOCOMPLETE;
+    const isReceiverComponent = itemControlValue === itemControlConstants.RECEIVERCOMPONENT;
+    const getValue = this.getValue(item, answer);
     if (pdf || isReadOnly(item)) {
       return (
         <TextView id={id} item={item} value={this.getPDFValue(item, answer)} onRenderMarkdown={onRenderMarkdown}>
@@ -230,120 +259,37 @@ export class Choice extends React.Component<ChoiceProps, ChoiceState> {
         </TextView>
       );
     }
-    const itemControlValue = getItemControlValue(item);
-    const options = getOptions(resources, item, containedResources);
-    if (hasOptions(resources, item, containedResources) && !hasCanonicalValueSet(item)) {
-      if (itemControlValue) {
-        switch (itemControlValue) {
-          case itemControlConstants.DROPDOWN:
-            return (
-              <DropdownView
-                options={options}
-                id={this.props.id}
-                handleChange={this.handleChange}
-                selected={this.getValue(this.props.item, this.props.answer)}
-                resources={this.props.resources}
-                onRenderMarkdown={this.props.onRenderMarkdown}
-                {...this.props}
-              >
-                {this.props.children}
-              </DropdownView>
-            );
-          case itemControlConstants.CHECKBOX:
-            return (
-              <CheckboxView
-                options={options}
-                id={this.props.id}
-                handleChange={this.handleCheckboxChange}
-                selected={this.getValue(this.props.item, this.props.answer)}
-                onRenderMarkdown={this.props.onRenderMarkdown}
-                {...this.props}
-              >
-                {this.props.children}
-              </CheckboxView>
-            );
-          case itemControlConstants.RADIOBUTTON:
-            return (
-              <RadioView
-                options={options}
-                getErrorMessage={(value: string): string =>
-                  getErrorMessage(this.props.item, value, this.props.resources, this.props.containedResources)
-                }
-                handleChange={this.handleChange}
-                id={this.props.id}
-                selected={this.getValue(this.props.item, this.props.answer)}
-                onRenderMarkdown={this.props.onRenderMarkdown}
-                {...this.props}
-              >
-                {this.props.children}
-              </RadioView>
-            );
-          case itemControlConstants.SLIDER:
-            return (
-              <SliderView handleChange={this.handleChange} selected={this.getValue(this.props.item, this.props.answer)} {...this.props}>
-                {this.props.children}
-              </SliderView>
-            );
-          default:
-            break;
-        }
-      } else if (isAboveDropdownThreshold(options)) {
-        return (
-          <DropdownView
-            options={options}
-            id={this.props.id}
+
+    return (
+      <React.Fragment>
+        {hasOptionsAndNoCanonicalValueSet ? (
+          itemControlValue ? (
+            this.renderComponentBasedOnType()
+          ) : aboveDropdownThreshold ? (
+            <DropdownView options={options} handleChange={this.handleChange} selected={getValue} {...this.props}>
+              {children}
+            </DropdownView>
+          ) : (
+            <RadioView options={options} handleChange={this.handleChange} selected={getValue} {...this.props}>
+              {children}
+            </RadioView>
+          )
+        ) : shouldRenderAutosuggest ? (
+          <AutosuggestView handleChange={this.handleChange} clearCodingAnswer={this.clearCodingAnswer} {...this.props}>
+            {children}
+          </AutosuggestView>
+        ) : isReceiverComponent ? (
+          <ReceiverComponentWrapper
             handleChange={this.handleChange}
             selected={this.getValue(this.props.item, this.props.answer)}
-            resources={this.props.resources}
-            onRenderMarkdown={this.props.onRenderMarkdown}
+            clearCodingAnswer={this.clearCodingAnswer}
             {...this.props}
           >
             {this.props.children}
-          </DropdownView>
-        );
-      }
-      return (
-        <RadioView
-          options={options}
-          getErrorMessage={(value: string): string =>
-            getErrorMessage(this.props.item, value, this.props.resources, this.props.containedResources)
-          }
-          handleChange={this.handleChange}
-          id={this.props.id}
-          selected={this.getValue(this.props.item, this.props.answer)}
-          onRenderMarkdown={this.props.onRenderMarkdown}
-          {...this.props}
-        >
-          {this.props.children}
-        </RadioView>
-      );
-    } else if (hasCanonicalValueSet(item) && itemControlValue === itemControlConstants.AUTOCOMPLETE) {
-      return (
-        <AutosuggestView
-          handleChange={this.handleChange}
-          id={this.props.id}
-          clearCodingAnswer={this.clearCodingAnswer}
-          onRenderMarkdown={this.props.onRenderMarkdown}
-          {...this.props}
-        >
-          {this.props.children}
-        </AutosuggestView>
-      );
-    } else if (itemControlValue === itemControlConstants.RECEIVERCOMPONENT) {
-      return (
-        <ReceiverComponentWrapper
-          handleChange={this.handleChange}
-          id={this.props.id}
-          selected={this.getValue(this.props.item, this.props.answer)}
-          clearCodingAnswer={this.clearCodingAnswer}
-          fetchReceivers={this.props.fetchReceivers}
-          {...this.props}
-        >
-          {this.props.children}
-        </ReceiverComponentWrapper>
-      );
-    }
-    return null;
+          </ReceiverComponentWrapper>
+        ) : null}
+      </React.Fragment>
+    );
   }
 }
 

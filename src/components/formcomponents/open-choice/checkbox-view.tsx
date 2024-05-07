@@ -28,7 +28,6 @@ interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   renderDeleteButton: (className?: string) => JSX.Element | null;
   renderOpenField: () => JSX.Element | undefined;
   answer: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer;
-
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
@@ -68,6 +67,7 @@ const CheckboxView: React.SFC<Props> = ({
             name={item.linkId}
             key={`${option.type}-${index}`}
             control={control}
+            shouldUnregister={true}
             rules={{
               required: {
                 message: getValidationTextExtension(item) ?? resources?.formRequiredErrorMessage ?? 'Påkrevd felt',

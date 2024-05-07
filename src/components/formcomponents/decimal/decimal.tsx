@@ -11,7 +11,6 @@ import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label
 
 import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 
-import { decimalFormRegister } from './utils';
 import { NewValueAction, newDecimalValueAsync } from '../../../actions/newValue';
 import { GlobalState } from '../../../reducers';
 import { getMaxValueExtensionValue, getMinValueExtensionValue, getPlaceholder, getValidationTextExtension } from '../../../util/extension';
@@ -74,7 +73,6 @@ class Decimal extends React.Component<Props, Record<string, unknown>> {
   handleChange = (event: React.FormEvent<HTMLInputElement>): void => {
     const { dispatch, path, item, promptLoginMessage, onAnswerChange } = this.props;
     const value = parseFloat((event.target as HTMLInputElement).value);
-    this.props.setValue(this.props.item.linkId, value);
     if (dispatch) {
       dispatch(newDecimalValueAsync(path, value, item))?.then(newState =>
         onAnswerChange(newState, path, item, { valueDecimal: value } as QuestionnaireResponseItemAnswer)
@@ -140,6 +138,7 @@ class Decimal extends React.Component<Props, Record<string, unknown>> {
           <Controller
             name={item.linkId}
             control={control}
+            shouldUnregister={true}
             rules={{
               required: {
                 value: isRequired(item),

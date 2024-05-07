@@ -10,7 +10,7 @@ import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label
 import RadioButton from '@helsenorge/designsystem-react/components/RadioButton';
 
 import { getValidationTextExtension } from '../../../util/extension';
-import { isRequired, getId, getSublabelText, getText, renderPrefix, getTextValidationErrorMessage } from '../../../util/index';
+import { isRequired, getId, getSublabelText, getText, renderPrefix } from '../../../util/index';
 import { Resources } from '../../../util/resources';
 import { FormProps } from '../../../validation/ReactHookFormHoc';
 import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
@@ -23,7 +23,6 @@ export interface Props extends FormProps, WithCommonFunctionsAndEnhancedProps {
   handleChange: (radioButton: string) => void;
   selected?: Array<string | undefined>;
   resources?: Resources;
-  getErrorMessage: (val: string) => string;
   renderDeleteButton: (className?: string) => JSX.Element | null;
   repeatButton: JSX.Element;
   renderHelpButton: () => JSX.Element;
@@ -65,6 +64,7 @@ const RadioView: React.FC<Props> = ({
             name={item.linkId}
             key={`${option.type}-${index}`}
             control={control}
+            shouldUnregister={true}
             rules={{
               required: {
                 value: isRequired(item),

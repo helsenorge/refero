@@ -11,7 +11,6 @@ import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label
 
 import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 
-import { integerFormRegister } from './utils';
 import { NewValueAction, newIntegerValueAsync } from '../../../actions/newValue';
 import { GlobalState } from '../../../reducers';
 import { getPlaceholder, getMaxValueExtensionValue, getMinValueExtensionValue, getValidationTextExtension } from '../../../util/extension';
@@ -76,7 +75,6 @@ class Integer extends React.Component<Props, Record<string, unknown>> {
     const { dispatch, promptLoginMessage, path, item, onAnswerChange } = this.props;
 
     const value = parseInt((event.target as HTMLInputElement).value, 10);
-    this.props.setValue(this.props.item.linkId, value);
     if (dispatch) {
       dispatch(newIntegerValueAsync(this.props.path, value, this.props.item))?.then(newState =>
         onAnswerChange(newState, path, item, { valueInteger: value } as QuestionnaireResponseItemAnswer)
@@ -141,7 +139,7 @@ class Integer extends React.Component<Props, Record<string, unknown>> {
           <Controller
             name={item.linkId}
             control={control}
-            defaultValue={Array.isArray(value) ? value.join(', ') : value}
+            shouldUnregister={true}
             rules={{
               required: {
                 value: isRequired(item),
@@ -160,10 +158,11 @@ class Integer extends React.Component<Props, Record<string, unknown>> {
                 },
               }),
             }}
-            render={({ field: { value, onChange, ...rest } }): JSX.Element => (
+            render={({ field: { onChange, ...rest } }): JSX.Element => (
               <Input
                 {...rest}
                 type="number"
+                value={Array.isArray(value) ? value.join(', ') : value}
                 inputId={getId(id)}
                 label={
                   <Label
@@ -176,7 +175,6 @@ class Integer extends React.Component<Props, Record<string, unknown>> {
                   onChange(e.target.value);
                   this.handleChange(e);
                 }}
-                value={Array.isArray(value) ? value.join(', ') : value}
                 placeholder={getPlaceholder(item)}
                 className="page_refero__input"
                 width={25}

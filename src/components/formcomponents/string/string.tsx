@@ -81,7 +81,6 @@ export class String extends React.Component<Props, Record<string, unknown>> {
     const resourcesHasChanged = JSON.stringify(this.props.resources) !== JSON.stringify(nextProps.resources);
     const repeats = this.props.item.repeats ?? false;
     const newErrorMessage = this.props.error?.message !== nextProps.error?.message;
-
     return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats || answerHasChanged || newErrorMessage;
   }
 
@@ -128,6 +127,7 @@ export class String extends React.Component<Props, Record<string, unknown>> {
             name={item.linkId}
             control={control}
             defaultValue={getStringValue(answer)}
+            shouldUnregister={true}
             rules={{
               required: {
                 value: isRequired(item),

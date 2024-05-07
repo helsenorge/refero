@@ -71,6 +71,7 @@ class DropdownView extends React.Component<Props, Record<string, unknown>> {
           {renderHelpElement()}
           <Controller
             name={item.linkId}
+            shouldUnregister={true}
             control={control}
             rules={{
               required: {

@@ -2,6 +2,7 @@ import * as React from 'react';
 
 import DOMPurify from 'dompurify';
 import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem } from 'fhir/r4';
+import { Controller } from 'react-hook-form';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
@@ -12,12 +13,17 @@ import Textarea from '@helsenorge/designsystem-react/components/Textarea';
 
 import { debounce } from '@helsenorge/core-utils/debounce';
 
-import { textFormRegister } from './utils';
 import { NewValueAction, newStringValueAsync } from '../../../actions/newValue';
 import Constants from '../../../constants/index';
 import itemControlConstants from '../../../constants/itemcontrol';
 import { GlobalState } from '../../../reducers';
-import { getPlaceholder, getMinLengthExtensionValue, getItemControlExtensionValue, getRegexExtension } from '../../../util/extension';
+import {
+  getPlaceholder,
+  getMinLengthExtensionValue,
+  getItemControlExtensionValue,
+  getRegexExtension,
+  getValidationTextExtension,
+} from '../../../util/extension';
 import {
   isReadOnly,
   isRequired,
@@ -125,7 +131,7 @@ export class Text extends React.Component<Props> {
   };
 
   render(): JSX.Element | null {
-    const { id, item, answer, pdf, children, resources, onRenderMarkdown, questionnaire } = this.props;
+    const { id, item, answer, pdf, children, resources, onRenderMarkdown, questionnaire, control } = this.props;
     const itemControls = getItemControlExtensionValue(item);
 
     if (itemControls && itemControls.some(itemControl => itemControl.code === itemControlConstants.SIDEBAR)) {
@@ -179,25 +185,65 @@ export class Text extends React.Component<Props> {
     const labelText = SanitizeText(`${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`) || '';
     const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
     const value = getStringValue(answer);
+    const maxLength = getMaxLength(item);
+    const minLength = getMinLengthExtensionValue(item);
+    const pattern = getRegexExtension(item);
+    const validationTextMessage = getValidationTextExtension(item);
     return (
       <div className="page_refero__component page_refero__component_text">
         <FormGroup error={this.props.error?.message} mode="ongrey">
           {this.props.renderHelpElement()}
-          <Textarea
-            {...textFormRegister(this.props.register, this.props.item, value, this.props.resources, this.onTextAreaChange)}
-            textareaId={getId(id)}
-            maxRows={Constants.DEFAULT_TEXTAREA_HEIGHT}
-            placeholder={getPlaceholder(item)}
-            label={
-              <Label
-                labelTexts={[{ text: labelText, type: 'semibold' }]}
-                sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
-                afterLabelChildren={this.props.renderHelpButton()}
+          <Controller
+            name={item.linkId}
+            control={control}
+            defaultValue={value}
+            shouldUnregister={true}
+            rules={{
+              required: {
+                value: isRequired(item),
+                message: resources?.formRequiredErrorMessage ?? 'Feltet er påkrevd',
+              },
+              ...(minLength && {
+                minLength: {
+                  value: minLength || 0,
+                  message: validationTextMessage ?? resources?.stringOverMaxLengthError ?? 'Verdien er for kort',
+                },
+              }),
+              ...(maxLength && {
+                maxLength: {
+                  value: maxLength,
+                  message: validationTextMessage ?? resources?.stringOverMaxLengthError ?? 'Verdien er for lang',
+                },
+              }),
+              ...(pattern && {
+                pattern: {
+                  value: new RegExp(pattern),
+                  message: validationTextMessage ?? resources?.oppgiGyldigVerdi ?? 'Verdien er for lav',
+                },
+              }),
+            }}
+            render={({ field: { onChange, ...rest } }): JSX.Element => (
+              <Textarea
+                {...rest}
+                onChange={(e): void => {
+                  this.onTextAreaChange(e);
+                  onChange(e.target.value);
+                }}
+                textareaId={getId(id)}
+                maxRows={Constants.DEFAULT_TEXTAREA_HEIGHT}
+                placeholder={getPlaceholder(item)}
+                label={
+                  <Label
+                    labelTexts={[{ text: labelText, type: 'semibold' }]}
+                    sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+                    afterLabelChildren={this.props.renderHelpButton()}
+                  />
+                }
+                grow={true}
+                maxCharacters={maxLength}
+                maxText={maxLength ? resources?.maxLengthText?.replace('{0}', `${maxLength}`) : ''}
               />
-            }
-            grow={true}
-            maxCharacters={getMaxLength(item)}
-            maxText={getMaxLength(item) ? resources?.maxLengthText?.replace('{0}', `${getMaxLength(item)}`) : ''}
+            )}
           />
           {this.props.renderDeleteButton('page_refero__deletebutton--margin-top')}
           {this.props.repeatButton}
