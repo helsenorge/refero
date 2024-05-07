@@ -91,19 +91,18 @@ const attachmentHtml: React.SFC<Props> = ({
   ...rest
 }) => {
   const getMaxValueBytes = getAttachmentMaxSizeBytesToUse(attachmentMaxFileSize, item);
-  const getMaxValueMBToReplace = convertBytesToMBString(getMaxValueBytes);
   const validFileTypes = attachmentValidTypes ? attachmentValidTypes : VALID_FILE_TYPES;
   const deleteText = resources ? resources.deleteAttachmentText : undefined;
 
   const { register, acceptedFiles, rejectedFiles, setAcceptedFiles, setRejectedFiles } = useFileUpload(
     rest.register,
     [
-      (file): true | string => (file ? validateFileSize(file, mockMaxSize, resources?.attachmentError_fileSize) : true),
-      (file): true | string => (file ? validateFileType(file, mockValidTypes, resources?.attachmentError_fileType) : true),
+      (file): true | string => (file ? validateFileSize(file, getMaxValueBytes, resources?.attachmentError_fileSize) : true),
+      (file): true | string => (file ? validateFileType(file, validFileTypes, resources?.attachmentError_fileType) : true),
     ],
     [
-      (files): true | string => (files.length ? validateMinFiles(files, mockMinFiles, resources?.attachmentError_minFiles) : true),
-      (files): true | string => (files.length ? validateMaxFiles(files, mockMaxFiles, resources?.attachmentError_maxFiles) : true),
+      (files): true | string => (files.length && minFiles ? validateMinFiles(files, minFiles, resources?.attachmentError_minFiles) : true),
+      (files): true | string => (files.length && maxFiles ? validateMaxFiles(files, maxFiles, resources?.attachmentError_maxFiles) : true),
     ]
   );
 
