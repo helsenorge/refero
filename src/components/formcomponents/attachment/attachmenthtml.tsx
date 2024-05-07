@@ -1,10 +1,7 @@
 import * as React from 'react';
 
 import { QuestionnaireItem } from 'fhir/r4';
-import { Controller, FieldValues, UseFormRegister, useFormContext } from 'react-hook-form';
 import { FieldError } from 'react-hook-form';
-
-import { TextMessage } from '../../../types/text-message';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
@@ -12,23 +9,12 @@ import NotificationPanel from '@helsenorge/designsystem-react/components/Notific
 
 import Dropzone from '@helsenorge/file-upload/components/dropzone';
 import { UploadedFile } from '@helsenorge/file-upload/components/dropzone';
-import { sizeIsValid, mimeTypeIsValid } from '@helsenorge/file-upload/components/dropzone/validation';
 import FileUpload, { UploadFile } from '@helsenorge/file-upload/components/file-upload';
 import { useFileUpload } from '@helsenorge/file-upload/components/file-upload/useFileUpload';
 
-import {
-  mockMaxFiles,
-  mockMaxSize,
-  mockMinFiles,
-  mockValidTypes,
-  validateFileSize,
-  validateFileType,
-  validateMaxFiles,
-  validateMinFiles,
-} from './attachment-validation';
-import { convertBytesToMBString, convertMBToBytes, getAttachmentMaxSizeBytesToUse } from './attachmentUtil';
-import constants, { VALID_FILE_TYPES } from '../../../constants';
-import { getMaxSizeExtensionValue, getValidationTextExtension } from '../../../util/extension';
+import { validateFileSize, validateFileType, validateMaxFiles, validateMinFiles } from './attachment-validation';
+import { getAttachmentMaxSizeBytesToUse } from './attachmentUtil';
+import { VALID_FILE_TYPES } from '../../../constants';
 import { Resources } from '../../../util/resources';
 import { FormProps } from '../../../validation/ReactHookFormHoc';
 

@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { FieldErrors, FieldValues, useForm, useFormContext } from 'react-hook-form';
+import { FieldErrors, FieldValues, useFormContext } from 'react-hook-form';
 import { Resources } from '../util/resources';
 
 import '../styles/validationSummary.scss';
