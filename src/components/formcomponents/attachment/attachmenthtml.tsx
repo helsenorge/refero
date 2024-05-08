@@ -83,12 +83,14 @@ const attachmentHtml: React.SFC<Props> = ({
   const { register, acceptedFiles, rejectedFiles, setAcceptedFiles, setRejectedFiles } = useFileUpload(
     rest.register,
     [
-      (file): true | string => (file ? validateFileSize(file, getMaxValueBytes, resources?.attachmentError_fileSize) : true),
-      (file): true | string => (file ? validateFileType(file, validFileTypes, resources?.attachmentError_fileType) : true),
+      (file): true | string => (file ? validateFileSize(file, getMaxValueBytes, item, resources?.attachmentError_fileSize) : true),
+      (file): true | string => (file ? validateFileType(file, validFileTypes, item, resources?.attachmentError_fileType) : true),
     ],
     [
-      (files): true | string => (files.length && minFiles ? validateMinFiles(files, minFiles, resources?.attachmentError_minFiles) : true),
-      (files): true | string => (files.length && maxFiles ? validateMaxFiles(files, maxFiles, resources?.attachmentError_maxFiles) : true),
+      (files): true | string =>
+        files.length && minFiles ? validateMinFiles(files, minFiles, item, resources?.attachmentError_minFiles) : true,
+      (files): true | string =>
+        files.length && maxFiles ? validateMaxFiles(files, maxFiles, item, resources?.attachmentError_maxFiles) : true,
     ]
   );
 

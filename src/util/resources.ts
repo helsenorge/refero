@@ -408,15 +408,15 @@ export interface Resources {
    */
   attachmentError_minFiles?: string;
   /**
-   * Max {0} filer er tillat
+   * Maks {0} filer er tillatt
    */
   attachmentError_maxFiles?: string;
   /**
-   * Filstørrelsen må være mindre enn {0}MB
+   * Filstørrelse må være mindre enn {0}MB
    */
   attachmentError_fileSize?: string;
   /**
-   * Tillate filtyper er:
+   * Tillatte filtyper er:
    */
   attachmentError_fileType?: string;
 }

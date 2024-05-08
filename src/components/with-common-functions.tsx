@@ -72,11 +72,10 @@ export interface WithCommonFunctionsProps {
   attachmentValidTypes?: Array<string>;
   onRequestAttachmentLink?: (file: string) => string;
   onOpenAttachment?: (fileId: string) => void;
-  onDeleteAttachment?: (fileId: string, onSuccess: () => void, onError: (errormessage: TextMessage | null) => void) => void;
+  onDeleteAttachment?: (fileId: string, onSuccess: () => void) => void;
   uploadAttachment?: (
     files: File[],
     onSuccess: (uploadedFile: UploadedFile, attachment: Attachment) => void,
-    onError: (errormessage: TextMessage | null) => void
   ) => void;
   onRequestHelpButton?: (
     item: QuestionnaireItem,

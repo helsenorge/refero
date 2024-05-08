@@ -25,11 +25,10 @@ export interface ReferoProps {
   attachmentValidTypes?: Array<string>;
   onRequestAttachmentLink?: (fileId: string) => string;
   onOpenAttachment?: (fileId: string) => void;
-  onDeleteAttachment?: (fileId: string, onSuccess: () => void, onError: (errormessage: TextMessage | null) => void) => void;
+  onDeleteAttachment?: (fileId: string, onSuccess: () => void) => void;
   uploadAttachment?: (
     files: File[],
     onSuccess: (uploadedFile: UploadedFile, attachment: Attachment) => void,
-    onError: (errormessage: TextMessage | null) => void
   ) => void;
   questionnaire?: Questionnaire;
   questionnaireResponse?: QuestionnaireResponse;

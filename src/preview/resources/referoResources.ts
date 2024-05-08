@@ -312,8 +312,8 @@ export const getResources = (language: string): Resources => {
     openChoiceOption: 'Annet',
     attachmentError_required: 'Last opp fil',
     attachmentError_minFiles: 'Legg til minst {0} filer',
-    attachmentError_maxFiles: 'Max {0} filer er tillat',
-    attachmentError_fileSize: 'Filstørrelsen må være mindre enn {0}MB',
-    attachmentError_fileType: 'Tillate filtyper er:',
+    attachmentError_maxFiles: 'Maks {0} filer er tillatt',
+    attachmentError_fileSize: 'Filstørrelse må være mindre enn {0}MB',
+    attachmentError_fileType: 'Tillatte filtyper er:',
   };
 };
