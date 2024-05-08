@@ -38,8 +38,12 @@ export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   attachmentErrorMessage?: string;
   attachmentMaxFileSize?: number;
   attachmentValidTypes?: Array<string>;
-  uploadAttachment?: (files: File[], onSuccess: (uploadedFile: UploadedFile, attachment: Attachment) => void) => void;
-  onDeleteAttachment?: (fileId: string, onSuccess: () => void) => void;
+  uploadAttachment?: (
+    files: File[],
+    onSuccess: (uploadedFile: UploadedFile, attachment: Attachment) => void,
+    onError: (errorMessage: TextMessage | null) => void
+  ) => void;
+  onDeleteAttachment?: (fileId: string, onSuccess: () => void, onError: (errorMessage: TextMessage | null) => void) => void;
   onOpenAttachment?: (fileId: string) => void;
   onRequestAttachmentLink?: (file: string) => string;
   renderHelpButton: () => JSX.Element;
@@ -62,7 +66,10 @@ export class AttachmentComponent extends React.Component<Props> {
           }
         };
 
-        uploadAttachment([file], onSuccess);
+        const onError = (errorMessage: TextMessage | null): void => {
+        };
+
+        uploadAttachment([file], onSuccess, onError);
       }
     }
   };
@@ -80,7 +87,10 @@ export class AttachmentComponent extends React.Component<Props> {
         }
       };
 
-      onDeleteAttachment(fileId, onSuccess);
+      const onError = (errormessage: TextMessage | null): void => {
+      };
+
+      onDeleteAttachment(fileId, onSuccess, onError);
     }
   };
 

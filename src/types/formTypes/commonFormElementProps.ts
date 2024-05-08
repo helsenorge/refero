@@ -34,10 +34,11 @@ export interface CommonFormElementProps {
   repeatButton?: JSX.Element;
   onRequestAttachmentLink?: (file: string) => string;
   onOpenAttachment?: (fileId: string) => void;
-  onDeleteAttachment?: (fileId: string, onSuccess: () => void) => void;
+  onDeleteAttachment?: (fileId: string, onSuccess: () => void, onError: (errormessage: TextMessage | null) => void) => void;
   uploadAttachment?: (
     files: File[],
     onSuccess: (uploadedFile: UploadedFile, attachment: Attachment) => void,
+    onError: (errormessage: TextMessage | null) => void
   ) => void;
   onRequestHelpButton?: (
     item: QuestionnaireItem,
