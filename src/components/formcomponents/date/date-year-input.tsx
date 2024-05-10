@@ -34,6 +34,9 @@ export const DateYearInput = (props: React.PropsWithChildren<Props>): JSX.Elemen
     if (Array.isArray(props.answer)) {
       return props.answer.map(m => createDateFromYear(props.item, m)?.getFullYear());
     }
+
+    // in case of props.answer is not an array
+    return answerState
   };
 
   React.useEffect(() => {
