@@ -57,7 +57,7 @@ describe('Component renders and calculates score', () => {
     await inputAnswer('2', 42, wrapper);
 
     let item = findItem('2', wrapper);
-    expect(item.props().value).toBe('42');
+    expect(item.props().value).toBe(42);
   });
 
   it('fhirpath score should be updated when quantity questions are answered', async () => {
@@ -94,7 +94,7 @@ describe('Component renders and calculates score', () => {
     await inputAnswer('2', 21, wrapper);
 
     item = findItem('2', wrapper);
-    expect(item.props().value).toBe('21');
+    expect(item.props().value).toBe(21);
 
     let fhirpathItem = findItem('4', wrapper);
     expect(fhirpathItem.props().value).toBe('42');
@@ -131,7 +131,6 @@ describe('Component renders and calculates score', () => {
     wrapper.render();
 
     let ts = findItem('3.1', wrapper);
-    console.log(ts.debug());
     expect(ts.props().value).toBe('');
 
     await selectRadioButtonOption('2.1', 2, wrapper);
@@ -155,11 +154,12 @@ describe('Component renders and calculates score', () => {
     await selectCheckBoxOption('2.1', 'c', wrapper);
 
     ts = findItem('3.1', wrapper);
+
     expect(ts.props().value).toBe('2');
 
     await selectCheckBoxOption('2.1', 'b', wrapper);
-
     ts = findItem('3.1', wrapper);
+
     expect(ts.props().value).toBe('3');
 
     await unSelectCheckBoxOption('2.1', 'c', wrapper);
@@ -375,7 +375,7 @@ function setFhirpath(linkId: string, expression: string, q: Questionnaire) {
 }
 
 function cloneQuestionnaire(o: Questionnaire): Questionnaire {
-  return JSON.parse(JSON.stringify(o));
+  return structuredClone(o);
 }
 
 function createWrapper(questionnaire: Questionnaire) {

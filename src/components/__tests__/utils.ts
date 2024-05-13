@@ -99,7 +99,10 @@ export function findQuestionnaireItem(linkId: string, items: QuestionnaireItem[]
 
 export function submit(name: string, wrapper: ReactWrapper<{}, {}>) {
   let submit = wrapper.findWhere(it => it.text() === name).find('button');
-  submit.simulate('click');
+  act(async () => {
+    submit.simulate('click');
+  });
+
   wrapper.update();
 }
 

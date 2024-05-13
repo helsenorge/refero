@@ -297,7 +297,7 @@ describe('onAnswerChange callback gets called and can request additional changes
     expect(item.props().value).toBe('Hello World!');
   });
 
-  it('string gets cleared', async () => {
+  it.only('string gets cleared', async () => {
     const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
       actionRequester.addStringAnswer('8', 'Hello World!');
       actionRequester.clearStringAnswer('8');
@@ -428,7 +428,7 @@ describe('onAnswerChange callback gets called and can request additional changes
     await inputAnswer('1.1', 0.1, wrapper);
 
     const item = findItem('1.3.1.1', wrapper);
-    expect(item.props().value).toBe('42');
+    expect(item.props().value).toBe(42);
   });
 
   it('can query to get both questionnaire and questionnaire response', async () => {

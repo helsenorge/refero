@@ -88,6 +88,7 @@ const CheckboxView: React.FC<Props> = ({
                     valueCopy.splice(idx, 1);
                   }
                   onChange(valueCopy);
+
                   handleChange(option.type);
                 }}
               />
