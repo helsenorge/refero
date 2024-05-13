@@ -6,7 +6,6 @@ import { Resources } from '../util/resources';
 import { AutoSuggestProps } from './autoSuggestProps';
 import { QuestionnaireResponse, Attachment, Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer, ValueSet } from 'fhir/r4';
 import { OrgenhetHierarki } from './orgenhetHierarki';
-import { TextMessage } from './text-message';
 import { ValidationSummaryPlacement } from './formTypes/validationSummaryPlacement';
 
 export interface ReferoProps {
@@ -25,11 +24,10 @@ export interface ReferoProps {
   attachmentValidTypes?: Array<string>;
   onRequestAttachmentLink?: (fileId: string) => string;
   onOpenAttachment?: (fileId: string) => void;
-  onDeleteAttachment?: (fileId: string, onSuccess: () => void, onError: (errormessage: TextMessage | null) => void) => void;
+  onDeleteAttachment?: (fileId: string, onSuccess: () => void) => void;
   uploadAttachment?: (
     files: File[],
-    onSuccess: (uploadedFile: UploadedFile, attachment: Attachment) => void,
-    onError: (errormessage: TextMessage | null) => void
+    onSuccess: (attachment: Attachment) => void
   ) => void;
   questionnaire?: Questionnaire;
   questionnaireResponse?: QuestionnaireResponse;

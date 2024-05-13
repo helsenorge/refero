@@ -1,3 +1,7 @@
+import { QuestionnaireItem } from 'fhir/r4';
+import { getMaxSizeExtensionValue } from '../../../util/extension';
+import constants from '../../../constants';
+
 export function convertMBToBytes(mb: number): number {
   if (typeof mb !== 'number' || isNaN(mb)) {
     throw new Error('Input must be a valid number.');
@@ -35,4 +39,21 @@ export function convertBytesToMB(bytes: number): number {
     throw new Error('Input must be a finite number.');
   }
   return bytes / 1024 / 1024;
+}
+
+export const getFileExtension = (filename: string) => {
+  return filename.slice(((filename.lastIndexOf('.') - 1) >>> 0) + 2);
+};
+
+export function getAttachmentMaxSizeBytesToUse(defaultMaxProps: number | undefined, item: QuestionnaireItem): number {
+  if (item) {
+    const questionnaireMaxRuleSizeMB = getMaxSizeExtensionValue(item);
+    if (questionnaireMaxRuleSizeMB !== undefined) {
+      return convertMBToBytes(questionnaireMaxRuleSizeMB);
+    }
+  }
+  if (defaultMaxProps !== undefined) {
+    return defaultMaxProps;
+  }
+  return constants.MAX_FILE_SIZE;
 }

@@ -393,10 +393,30 @@ export interface Resources {
   nextStep?: string;
   /**
    * Forrige
-  */
+   */
   previousStep?: string;
   /**
-  * Annet
-  */
-  openChoiceOption?: string
+   * Annet
+   */
+  openChoiceOption?: string;
+  /**
+   * Last opp fil
+   */
+  attachmentError_required?: string;
+  /**
+   * Legg til minst {0} filer
+   */
+  attachmentError_minFiles?: string;
+  /**
+   * Maks {0} filer er tillatt
+   */
+  attachmentError_maxFiles?: string;
+  /**
+   * Filstørrelse må være mindre enn {0}MB
+   */
+  attachmentError_fileSize?: string;
+  /**
+   * Tillatte filtyper er:
+   */
+  attachmentError_fileType?: string;
 }

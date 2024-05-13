@@ -2,7 +2,8 @@ import React, { ReactElement } from 'react';
 
 import Button from '@helsenorge/designsystem-react/components/Button';
 
-import { submitButtonStyle } from '../../styles/formButtonStyles';
+import '../../styles/formButtons.scss';
+
 type Props = {
   submitButtonDisabled?: boolean;
   onSubmitButtonClicked?: (() => void) | ((e: React.FormEvent) => void);
@@ -16,7 +17,6 @@ export const SubmitFormButton = ({ submitButtonText, submitButtonDisabled, onSub
   };
   return (
     <div className="submitButtonStyle">
-      <style>{submitButtonStyle}</style>
       <Button type="submit" disabled={submitButtonDisabled} onClick={handleSubmit}>
         {submitButtonText}
       </Button>

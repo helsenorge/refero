@@ -436,7 +436,6 @@ export class OpenChoice extends React.Component<Props> {
     );
   }
 }
-
 const withFormProps = ReactHookFormHoc(OpenChoice);
 const withCommonFunctionsComponent = withCommonFunctions(withFormProps);
 const connectedStringComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(withCommonFunctionsComponent);

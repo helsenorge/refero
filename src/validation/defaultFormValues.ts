@@ -14,7 +14,7 @@ export const defaultValuesForType: Record<IItemType, unknown> = {
   [ItemType.DATETIME]: '', // Default value for dateTime items
   [ItemType.TIME]: '', // Default value for time items
   [ItemType.REFERENCE]: '', // Default value for reference items
-  [ItemType.ATTATCHMENT]: '', // Default value for attachment items
+  [ItemType.ATTATCHMENT]: [], // Default value for attachment items
   [ItemType.URL]: '', // Default value for url items
   [ItemType.QUESTION]: '', // Default value for question items
   [ItemType.GROUP]: '', // Default value for group items

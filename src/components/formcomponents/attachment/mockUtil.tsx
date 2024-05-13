@@ -16,6 +16,11 @@ const mockQuestionnaireResponseMock: QuestionnaireResponseItem = {
   linkId: '',
 };
 
+export const mockMinFiles: number = 2;
+export const mockMaxFiles: number = 2;
+export const mockMaxSize: number = 1 * 1024 * 1024;
+export const mockValidMimeTypes: string[] = ['image/jpeg', 'image/png'];
+
 /** Mock Testing Enum */
 export const MimeType_For_Test_Util = {
   PlainText: 'text/plain',

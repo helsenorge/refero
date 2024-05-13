@@ -1,25 +1,26 @@
 import * as React from 'react';
 
 import { QuestionnaireItem } from 'fhir/r4';
-import { Controller, useFormContext } from 'react-hook-form';
-
-import { TextMessage } from '../../../types/text-message';
+import { FieldError } from 'react-hook-form';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
+import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
 import NotificationPanel from '@helsenorge/designsystem-react/components/NotificationPanel';
 
 import Dropzone from '@helsenorge/file-upload/components/dropzone';
 import { UploadedFile } from '@helsenorge/file-upload/components/dropzone';
-import { sizeIsValid, mimeTypeIsValid } from '@helsenorge/file-upload/components/dropzone/validation';
+import FileUpload, { UploadFile } from '@helsenorge/file-upload/components/file-upload';
+import { useFileUpload } from '@helsenorge/file-upload/components/file-upload/useFileUpload';
 
-import { convertBytesToMBString, convertMBToBytes } from './attachmentUtil';
-import constants, { VALID_FILE_TYPES } from '../../../constants';
-import { getMaxSizeExtensionValue, getValidationTextExtension } from '../../../util/extension';
+import { validateFileSize, validateFileType, validateMaxFiles, validateMinFiles } from './attachment-validation';
+import { getAttachmentMaxSizeBytesToUse } from './attachmentUtil';
+import { VALID_FILE_TYPES } from '../../../constants';
 import { Resources } from '../../../util/resources';
+import { FormProps } from '../../../validation/ReactHookFormHoc';
 
 interface Props {
-  onUpload: (files: Array<File>, cb: (success: boolean, errormessage: TextMessage | null, uploadedFile?: UploadedFile) => void) => void;
-  onDelete: (fileId: string, cb: (success: boolean, errormessage: TextMessage | null) => void) => void;
+  onUpload: (files: UploadFile[]) => void;
+  onDelete: (fileId: string) => void;
   onOpen?: (fileId: string) => void;
   uploadButtonText: string;
   label: string | JSX.Element;
@@ -41,6 +42,10 @@ interface Props {
 
   helpButton?: JSX.Element;
   helpElement?: JSX.Element;
+  register: FormProps['register'];
+  setValue: FormProps['setValue'];
+  error?: FieldError;
+  resetField: FormProps['resetField'];
 }
 
 const attachmentHtml: React.SFC<Props> = ({
@@ -66,110 +71,91 @@ const attachmentHtml: React.SFC<Props> = ({
   minFiles,
   item,
   children,
+  setValue,
+  error,
+  resetField,
+  ...rest
 }) => {
   const getMaxValueBytes = getAttachmentMaxSizeBytesToUse(attachmentMaxFileSize, item);
-  const getMaxValueMBToReplace = convertBytesToMBString(getMaxValueBytes);
   const validFileTypes = attachmentValidTypes ? attachmentValidTypes : VALID_FILE_TYPES;
   const deleteText = resources ? resources.deleteAttachmentText : undefined;
-  const { control, getFieldState } = useFormContext();
-  const { error } = getFieldState(item.linkId);
+
+  const { register, acceptedFiles, rejectedFiles, setAcceptedFiles, setRejectedFiles } = useFileUpload(
+    rest.register,
+    [
+      (file): true | string => (file ? validateFileSize(file, getMaxValueBytes, item, resources?.attachmentError_fileSize) : true),
+      (file): true | string => (file ? validateFileType(file, validFileTypes, item, resources?.attachmentError_fileType) : true),
+    ],
+    [
+      (files): true | string =>
+        files.length && minFiles ? validateMinFiles(files, minFiles, item, resources?.attachmentError_minFiles) : true,
+      (files): true | string =>
+        files.length && maxFiles ? validateMaxFiles(files, maxFiles, item, resources?.attachmentError_maxFiles) : true,
+    ]
+  );
+
+  const handleUpload = (files: UploadFile[]): void => {
+    onUpload(files);
+    setAcceptedFiles(prevState => [...prevState, ...files]);
+  };
+
+  const handleDelete = (fileId: string): void => {
+    onDelete(fileId);
+    setAcceptedFiles(acceptedFiles.filter(x => x.id !== fileId));
+    setRejectedFiles(rejectedFiles.filter(x => x.id !== fileId));
+  };
+
+  const concatErrorMessages = (): string => {
+    return error?.types ? Object.values(error.types).join('. ') : '';
+  };
+
   return (
     <div className="page_refero__component page_refero__component_attachment">
-      <FormGroup error={error?.message}>
-        <Controller
-          name={item.linkId}
-          control={control}
-          rules={{
+      <FormGroup error={concatErrorMessages()}>
+        <FileUpload
+          {...register(item.linkId, {
             required: {
-              message: resources?.formRequiredErrorMessage ?? '',
               value: !!isRequired,
+              message: resources?.attachmentError_required || '',
             },
-            validate: {
-              mimeType: (files: File[]): boolean => {
-                return files.every(file => mimeTypeIsValid(file, validFileTypes));
-              },
-              size: (files: File[]): boolean => {
-                return files.every(file => sizeIsValid(file, getMaxValueBytes));
-              },
-            },
-          }}
-          render={({ field }): JSX.Element => (
-            <Dropzone
-              id={id}
-              label={label}
-              subLabel={subLabel}
-              onDrop={onUpload}
-              onDelete={onDelete}
-              onOpenFile={onOpen}
-              uploadButtonText={uploadButtonText}
-              uploadedFiles={uploadedFiles}
-              maxFileSize={getMaxValueBytes}
-              validMimeTypes={validFileTypes}
-              dontShowHardcodedText={!!deleteText}
-              deleteText={deleteText}
-              supportedFileFormatsText={resources ? resources.supportedFileFormats : undefined}
-              errorMessage={(file: File): string => {
-                return getErrorMessage(validFileTypes, getMaxValueBytes, getMaxValueMBToReplace, item, errorText, file, resources);
-              }}
-              isRequired={isRequired}
-              wrapperClasses="page_refero__input"
-              onRequestLink={onRequestAttachmentLink}
-              helpButton={helpButton}
-              helpElement={helpElement}
-              shouldUploadMultiple={multiple}
-              maxFiles={maxFiles}
-              minFiles={minFiles}
-              chooseFilesText={resources?.chooseFilesText}
+            validate: () => true,
+          })}
+          inputId={id}
+          onChangeFile={handleUpload}
+          onDeleteFile={handleDelete}
+          chooseFilesText={resources?.chooseFilesText}
+          label={
+            <Label
+              labelTexts={[{ text: label as string, type: 'semibold' }]}
+              sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabel as string, type: 'normal' }]} />}
             />
-          )}
+          }
+          deleteText={deleteText}
+          acceptedFiles={acceptedFiles}
+          rejectedFiles={rejectedFiles}
+          helpElement={helpElement}
+          onOpenFile={onOpen}
         />
+        {attachmentErrorMessage && <NotificationPanel variant="alert">{attachmentErrorMessage}</NotificationPanel>}
+        {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
       </FormGroup>
-
-      {attachmentErrorMessage && <NotificationPanel variant="alert">{attachmentErrorMessage}</NotificationPanel>}
-      {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
     </div>
   );
 };
 
-export function getAttachmentMaxSizeBytesToUse(defaultMaxProps: number | undefined, item: QuestionnaireItem): number {
-  if (item) {
-    const questionnaireMaxRuleSizeMB = getMaxSizeExtensionValue(item);
-    if (questionnaireMaxRuleSizeMB !== undefined) {
-      return convertMBToBytes(questionnaireMaxRuleSizeMB);
-    }
-  }
-  if (defaultMaxProps !== undefined) {
-    return defaultMaxProps;
-  }
-  return constants.MAX_FILE_SIZE;
-}
-
-function getErrorMessage(
-  validFileTypes: Array<string>,
-  maxFileSize: number,
-  maxFileSizeMBStringToReplace: string,
-  item: QuestionnaireItem,
-  genericErrorText?: string,
-  file?: File,
-  resources?: Resources
-): string {
-  if (file && resources) {
-    if (!mimeTypeIsValid(file, validFileTypes)) {
-      return resources.validationFileType;
-    } else if (!sizeIsValid(file, maxFileSize)) {
-      return resources.validationFileMax.replace('{0}', maxFileSizeMBStringToReplace);
-    }
-  }
-
-  const validationText = getValidationTextExtension(item);
-  if (validationText) {
-    return validationText;
-  }
-
-  if (genericErrorText) {
-    return genericErrorText;
-  }
-  return '';
-}
-
 export default attachmentHtml;
+
+{
+  /* <Dropzone
+  uploadedFiles={uploadedFiles}
+  validMimeTypes={validFileTypes}
+  supportedFileFormatsText={resources ? resources.supportedFileFormats : undefined}
+  onRequestLink={onRequestAttachmentLink}
+  helpButton={helpButton}
+  shouldUploadMultiple={multiple}
+  errorMessage={(file: File): string => {
+    return getErrorMessage(validFileTypes, getMaxValueBytes, getMaxValueMBToReplace, item, errorText, file, resources);
+  }}
+  wrapperClasses="page_refero__input"
+/> */
+}

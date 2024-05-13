@@ -65,6 +65,7 @@ const Refero = (props: StateProps & DispatchProps & ReferoProps): JSX.Element | 
   const methods = useForm({
     defaultValues: defualtVals,
     shouldFocusError: false,
+    criteriaMode: 'all',
     // resolver: async (data, context, options) => {
     //   // you can debug your validation schema here
     //   console.log('resolver in data', data);
@@ -366,6 +367,7 @@ const Refero = (props: StateProps & DispatchProps & ReferoProps): JSX.Element | 
             onSave={handleSave}
             onSubmit={handleSubmit}
             methods={methods}
+            validationSummaryPlacement={validationSummaryPlacement}
           >
             {renderFormItems()}
           </RenderForm>

@@ -310,5 +310,10 @@ export const getResources = (language: string): Resources => {
     nextStep: 'Neste',
     previousStep: 'Forrige',
     openChoiceOption: 'Annet',
+    attachmentError_required: 'Last opp fil',
+    attachmentError_minFiles: 'Legg til minst {0} filer',
+    attachmentError_maxFiles: 'Maks {0} filer er tillatt',
+    attachmentError_fileSize: 'Filstørrelse må være mindre enn {0}MB',
+    attachmentError_fileType: 'Tillatte filtyper er:',
   };
 };
