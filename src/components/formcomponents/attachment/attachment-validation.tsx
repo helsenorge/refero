@@ -96,4 +96,4 @@ export const getCustomValidationText = (item: QuestionnaireItem, genericErrorTex
 export const mockMinFiles: number = 2;
 export const mockMaxFiles: number = 2;
 export const mockMaxSize: number = 1 * 1024 * 1024;
-export const mockValidTypes: string[] = ['jpg', 'png'];
+export const mockValidTypes: string[] = ['image/jpeg', 'image/png'];
