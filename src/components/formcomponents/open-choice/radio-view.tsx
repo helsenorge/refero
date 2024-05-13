@@ -51,6 +51,7 @@ const RadioView: React.FC<Props> = ({
   onRenderMarkdown,
   control,
   error,
+  idWithLinkIdAndItemIndex,
 }) => {
   if (!options) {
     return null;
@@ -69,7 +70,7 @@ const RadioView: React.FC<Props> = ({
         />
         {options.map((option: Options, index: number) => (
           <Controller
-            name={item.linkId}
+            name={idWithLinkIdAndItemIndex}
             key={`${option.type}-${index}`}
             control={control}
             shouldUnregister={true}

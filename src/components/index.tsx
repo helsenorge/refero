@@ -1,6 +1,5 @@
 import * as React from 'react';
 
-import { zodResolver } from '@hookform/resolvers/zod';
 import {
   QuestionnaireResponseItem,
   Questionnaire,
@@ -52,7 +51,6 @@ import { RenderContext } from '../util/renderContext';
 import { ScoringCalculator } from '../util/scoringCalculator';
 import { shouldFormBeDisplayedAsStepView } from '../util/shouldFormBeDisplayedAsStepView';
 import { generateDefaultValues } from '../validation/defaultFormValues';
-import { createDefaultFormValuesFromQuestionnaire, createZodSchemaFromQuestionnaire } from '../validation/zod/mainValidationFunctions';
 interface StateProps {
   formDefinition?: FormDefinition | null;
   formData?: FormData | null;
@@ -227,6 +225,7 @@ const Refero = (props: StateProps & DispatchProps & ReferoProps): JSX.Element | 
             item.repeats && shouldRenderRepeatButton(item, responseItems, index) ? (
               <div className="page_refero__repeatbutton-wrapper">
                 <RepeatButton
+                  idWithLinkIdAndItemIndex={item.linkId}
                   key={`item_${item.linkId}_add_repeat_item`}
                   resources={props.resources}
                   item={item}
@@ -234,11 +233,13 @@ const Refero = (props: StateProps & DispatchProps & ReferoProps): JSX.Element | 
                   parentPath={props.path}
                   renderContext={new RenderContext()}
                   disabled={item.type !== ItemType.GROUP && !responseItem.answer}
-                  {...methods}
                 />
               </div>
             ) : undefined;
           const path = createPathForItem(props.path, item, responseItem, index);
+          const idWithLinkIdAndItemIndex = `${item.linkId}${
+            props?.path && props?.path[0] && props?.path[0].index ? `-${props.path[0].index}` : ''
+          }${index ? `-${index}` : ''}`;
           // legg på blindzone rett over den første seksjonen
           if (isNavigatorEnabled && item.type === ItemType.GROUP && !isNavigatorBlindzoneInitiated) {
             isNavigatorBlindzoneInitiated = true;
@@ -246,6 +247,7 @@ const Refero = (props: StateProps & DispatchProps & ReferoProps): JSX.Element | 
           }
           renderedItems.push(
             <Comp
+              idWithLinkIdAndItemIndex={idWithLinkIdAndItemIndex}
               language={formDefinition.Content?.language}
               pdf={pdf}
               includeSkipLink={isNavigatorEnabled && item.type === ItemType.GROUP}

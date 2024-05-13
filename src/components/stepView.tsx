@@ -1,5 +1,7 @@
 import * as React from 'react';
 
+import { FieldValues, UseFormReturn } from 'react-hook-form';
+
 import { ReferoProps } from '../types/referoProps';
 
 import RenderForm from './renderForm';
@@ -7,7 +9,6 @@ import { NAVIGATOR_BLINDZONE_ID } from '../constants';
 import { FormDefinition } from '../reducers/form';
 import { getTopLevelElements } from '../util/getTopLevelElements';
 import { Resources } from '../util/resources';
-import { FormProps } from '../validation/ReactHookFormHoc';
 
 interface StepViewProps {
   isAuthorized: boolean;
@@ -18,7 +19,7 @@ interface StepViewProps {
   onSave: () => void;
   onSubmit: () => void;
   onStepChange?: (stepIndex: number) => void;
-  methods: FormProps;
+  methods: UseFormReturn<FieldValues, unknown, undefined>;
 }
 
 const StepView = ({

@@ -8,8 +8,8 @@ export const defaultValuesForType: Record<IItemType, unknown> = {
   [ItemType.QUANTITY]: null, // Default value for quantity items
   [ItemType.CHOICE]: [], // Default value for choice items
   [ItemType.BOOLEAN]: false, // Default value for boolean items
-  [ItemType.INTEGER]: undefined, // Default value for integer items
-  [ItemType.DECIMAL]: undefined, // Default value for decimal items
+  [ItemType.INTEGER]: '', // Default value for integer items
+  [ItemType.DECIMAL]: '', // Default value for decimal items
   [ItemType.DATE]: '', // Default value for date items
   [ItemType.DATETIME]: '', // Default value for dateTime items
   [ItemType.TIME]: '', // Default value for time items
@@ -67,7 +67,7 @@ export const generateDefaultValues = (items?: QuestionnaireItem[]): DefaultValue
     const key = item.linkId;
     // Assign default value only if not read-only
     if (!item.readOnly) {
-      acc[key] = item.repeats ? [getInitialValueForItem(item)] : getInitialValueForItem(item);
+      acc[key] = getInitialValueForItem(item);
     }
 
     // Process nested items if any, even if current item is read-only

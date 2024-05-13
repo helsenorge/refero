@@ -131,7 +131,7 @@ export class Text extends React.Component<Props> {
   };
 
   render(): JSX.Element | null {
-    const { id, item, answer, pdf, children, resources, onRenderMarkdown, questionnaire, control } = this.props;
+    const { id, item, answer, pdf, children, resources, onRenderMarkdown, questionnaire, control, idWithLinkIdAndItemIndex } = this.props;
     const itemControls = getItemControlExtensionValue(item);
 
     if (itemControls && itemControls.some(itemControl => itemControl.code === itemControlConstants.SIDEBAR)) {
@@ -194,7 +194,7 @@ export class Text extends React.Component<Props> {
         <FormGroup error={this.props.error?.message} mode="ongrey">
           {this.props.renderHelpElement()}
           <Controller
-            name={item.linkId}
+            name={idWithLinkIdAndItemIndex}
             control={control}
             defaultValue={value}
             shouldUnregister={true}

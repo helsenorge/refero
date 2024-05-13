@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { QuestionnaireResponse } from 'fhir/r4';
-import { FieldValues, SubmitHandler, useFormContext } from 'react-hook-form';
+import { FieldValues, SubmitHandler, UseFormReturn, useFormContext } from 'react-hook-form';
 
 import { ReferoProps } from '../types/referoProps';
 
@@ -9,7 +9,6 @@ import Loader from '@helsenorge/designsystem-react/components/Loader';
 
 import FormButtons from './formButtons/formButtons';
 import { Resources } from '../util/resources';
-import { FormProps } from '../validation/ReactHookFormHoc';
 import { ValidationSummaryPlacement } from '../types/formTypes/validationSummaryPlacement';
 import { ValidationSummary } from './validation-summary';
 
@@ -26,10 +25,8 @@ interface RenderFormProps {
   previousStep?: () => void;
   isHelsenorgeForm?: boolean;
   children?: React.ReactNode;
-  methods: FormProps;
   validationSummaryPlacement?: ValidationSummaryPlacement;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  // methods: UseFormReturn<FieldValues, any, undefined>;
+  methods: UseFormReturn<FieldValues, unknown, undefined>;
 }
 
 const RenderForm = ({

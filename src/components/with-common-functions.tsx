@@ -45,6 +45,7 @@ import { RenderContext } from '../util/renderContext';
 import { Resources } from '../util/resources';
 
 export interface WithCommonFunctionsProps {
+  idWithLinkIdAndItemIndex: string;
   dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
   resources?: Resources;
   responseItem?: QuestionnaireResponseItem;
@@ -138,10 +139,11 @@ export default function withCommonFunctions<T extends WithCommonFunctionsProps>(
       if (!mustShowConfirm && props.responseItem && props.responseItem.item) {
         mustShowConfirm = props.responseItem.item.some(item => (item ? hasAnwer(item.answer) : false));
       }
-
+      const idWithLinkIdAndItemIndex = props.item.linkId;
       return (
         <div className="page_refero__deletebutton-wrapper">
           <DeleteButton
+            idWithLinkIdAndItemIndex={idWithLinkIdAndItemIndex}
             className={className}
             item={props.item}
             path={props.path}
@@ -164,12 +166,15 @@ export default function withCommonFunctions<T extends WithCommonFunctionsProps>(
       if (!item.repeats || !shouldRenderRepeatButton(item, response, index)) {
         return undefined;
       }
+      const idWithLinkIdAndItemIndex = path ? `${path[0].linkId}${path[0].index ? `-${path[0].index}` : ''}` : item.linkId ?? '';
+
       return (
         <div className="page_refero__repeatbutton-wrapper">
           <RepeatButton
             key={`item_${item.linkId}_add_repeat_item`}
             resources={props.resources}
             item={item}
+            idWithLinkIdAndItemIndex={idWithLinkIdAndItemIndex}
             responseItems={response}
             parentPath={path}
             renderContext={props.renderContext}
@@ -254,12 +259,11 @@ export default function withCommonFunctions<T extends WithCommonFunctionsProps>(
       }
 
       let response: Array<QuestionnaireResponseItem> | undefined;
+      const linkId = item.linkId;
 
       if (responseItem) {
         const childItem = responseItem.item;
         const childAnswer = responseItem.answer;
-        const linkId = item.linkId;
-        // console.log(childAnswer);
 
         if (childItem) {
           response = getItemWithIdFromResponseItemArray(linkId, childItem);
@@ -270,8 +274,13 @@ export default function withCommonFunctions<T extends WithCommonFunctionsProps>(
       const renderedItems: Array<JSX.Element> = [];
       if (response && response.length > 0) {
         response.forEach((responseItem, index) => {
+          const idWithLinkIdAndItemIndex = `${item.linkId}${path && path[0] && path[0].index ? `-${path[0].index}` : ''}${
+            index ? `-${index}` : ''
+          }`;
+
           renderedItems.push(
             <Comp
+              idWithLinkIdAndItemIndex={idWithLinkIdAndItemIndex}
               key={'item_' + responseItem.linkId + createIdSuffix(path, index, item.repeats)}
               pdf={pdf}
               language={props.language}

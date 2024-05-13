@@ -45,6 +45,7 @@ const CheckboxView: React.FC<Props> = ({
   onRenderMarkdown,
   error,
   control,
+  idWithLinkIdAndItemIndex,
 }) => {
   const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
   const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`;
@@ -60,7 +61,7 @@ const CheckboxView: React.FC<Props> = ({
         />
         {options?.map((option, index) => (
           <Controller
-            name={item.linkId}
+            name={idWithLinkIdAndItemIndex}
             key={`${option.type}-${index}`}
             control={control}
             shouldUnregister={true}

@@ -108,6 +108,7 @@ class Decimal extends React.Component<Props, Record<string, unknown>> {
       renderHelpElement,
       children,
       error,
+      idWithLinkIdAndItemIndex,
     } = this.props;
     const value = this.getValue(item, answer);
     const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`;
@@ -136,7 +137,7 @@ class Decimal extends React.Component<Props, Record<string, unknown>> {
         {renderHelpElement()}
         <FormGroup error={error?.message} mode="ongrey">
           <Controller
-            name={item.linkId}
+            name={idWithLinkIdAndItemIndex}
             control={control}
             shouldUnregister={true}
             rules={{

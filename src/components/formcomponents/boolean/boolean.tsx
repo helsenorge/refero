@@ -111,6 +111,7 @@ class Boolean extends React.Component<Props> {
       error,
       children,
       control,
+      idWithLinkIdAndItemIndex,
     } = this.props;
     if (pdf) {
       return <Pdf item={item} checked={this.getValue()} onRenderMarkdown={onRenderMarkdown} />;
@@ -141,7 +142,7 @@ class Boolean extends React.Component<Props> {
             afterLabelChildren={renderHelpButton()}
           />
           <Controller
-            name={item.linkId}
+            name={idWithLinkIdAndItemIndex}
             control={control}
             shouldUnregister={true}
             rules={{
