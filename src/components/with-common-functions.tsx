@@ -16,7 +16,6 @@ import { ThunkDispatch } from 'redux-thunk';
 
 import { AutoSuggestProps } from '../types/autoSuggestProps';
 import { OrgenhetHierarki } from '../types/orgenhetHierarki';
-import { TextMessage } from '../types/text-message';
 
 import Icon from '@helsenorge/designsystem-react/components/Icons';
 import HelpSign from '@helsenorge/designsystem-react/components/Icons/HelpSign';
@@ -73,11 +72,10 @@ export interface WithCommonFunctionsProps {
   attachmentValidTypes?: Array<string>;
   onRequestAttachmentLink?: (file: string) => string;
   onOpenAttachment?: (fileId: string) => void;
-  onDeleteAttachment?: (fileId: string, onSuccess: () => void, onError: (errormessage: TextMessage | null) => void) => void;
+  onDeleteAttachment?: (fileId: string, onSuccess: () => void) => void;
   uploadAttachment?: (
     files: File[],
-    onSuccess: (uploadedFile: UploadedFile, attachment: Attachment) => void,
-    onError: (errormessage: TextMessage | null) => void
+    onSuccess: (attachment: Attachment) => void
   ) => void;
   onRequestHelpButton?: (
     item: QuestionnaireItem,

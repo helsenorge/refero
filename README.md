@@ -185,22 +185,20 @@ This callback is called when the user requests the current form to be saved.
 
 This callback is called when the user requests the current form to be cancled.
 
-### `uploadAttachment: (files: File[], onSuccess: (uploadedFile: UploadedFile, attachment: Attachment) => void, onError: (errorMessage: TextMessage|null)) => void`
+### `uploadAttachment: (files: File[], onSuccess: (attachment: Attachment) => void) => void`
 
 This callback is called when the user requests uploading an attachment. The callback is called with the following arguments:
 
 - `files: File[]` An array of [`File`](https://developer.mozilla.org/en-US/docs/Web/API/File) objects to be be uploaded.
 
-- `onSuccess: (uploadedFile: UploadedFile, attachment: Attachment) => void` Call this callback to indicate success
-- `onError: (errormessage: TextMessage|null) => void` Call this callback to indicate error.
+- `onSuccess: (attachment: Attachment) => void` Call this callback to indicate success
 
-### `onDeleteAttachment: (fileId: string, onSuccess: () => void, onError: (errorMessage: TextMessage|null)) => void`
+### `onDeleteAttachment: (fileId: string, onSuccess: () => void) => void`
 
 This callback is called when the user requests deleting an attachment. The callback is called with the following arguments:
 
 - `fileId: string` This indicates which file the user is requesting to delete
 - `onSuccess: () => void` Call this callback to indicate success.
-- `onError: (errormessage: TextMessage|null) => void` Call this callback to indicate error.
 
 ### `onOpenAttachment: (fileId: string) => void`
 

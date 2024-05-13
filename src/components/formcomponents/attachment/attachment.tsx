@@ -40,10 +40,9 @@ export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   attachmentValidTypes?: Array<string>;
   uploadAttachment?: (
     files: File[],
-    onSuccess: (uploadedFile: UploadedFile, attachment: Attachment) => void,
-    onError: (errorMessage: TextMessage | null) => void
+    onSuccess: (attachment: Attachment) => void
   ) => void;
-  onDeleteAttachment?: (fileId: string, onSuccess: () => void, onError: (errorMessage: TextMessage | null) => void) => void;
+  onDeleteAttachment?: (fileId: string, onSuccess: () => void) => void;
   onOpenAttachment?: (fileId: string) => void;
   onRequestAttachmentLink?: (file: string) => string;
   renderHelpButton: () => JSX.Element;
@@ -58,7 +57,7 @@ export class AttachmentComponent extends React.Component<Props> {
     const { uploadAttachment, path, item, onAnswerChange } = this.props;
     if (uploadAttachment) {
       for (const file of files) {
-        const onSuccess = (uploadedFile: UploadedFile, attachment: Attachment): void => {
+        const onSuccess = (attachment: Attachment): void => {
           if (this.props.dispatch && attachment) {
             this.props
               .dispatch(newAttachmentAsync(this.props.path, attachment, this.props.item, isRepeat(this.props.item)))
@@ -66,10 +65,7 @@ export class AttachmentComponent extends React.Component<Props> {
           }
         };
 
-        const onError = (errorMessage: TextMessage | null): void => {
-        };
-
-        uploadAttachment([file], onSuccess, onError);
+        uploadAttachment([file], onSuccess);
       }
     }
   };
@@ -87,10 +83,7 @@ export class AttachmentComponent extends React.Component<Props> {
         }
       };
 
-      const onError = (errormessage: TextMessage | null): void => {
-      };
-
-      onDeleteAttachment(fileId, onSuccess, onError);
+      onDeleteAttachment(fileId, onSuccess);
     }
   };
 
