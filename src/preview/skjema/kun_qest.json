@@ -59,82 +59,79 @@
       }
     }
   ],
-  "id": "20d8aa9d-8f07-403c-d5fd-2ef0d50c3d6d",
-  "contained": [
-    {
-      "url": "http://ehelse.no/fhir/ValueSet/Predefined",
-      "resourceType": "ValueSet",
-      "id": "1102",
-      "version": "1.0",
-      "name": "urn:oid:1102",
-      "title": "Ja / Nei / Vet ikke (structor)",
-      "status": "draft",
-      "publisher": "Direktoratet for e-helse",
-      "compose": {
-        "include": [
-          {
-            "system": "urn:oid:2.16.578.1.12.4.1.1102",
-            "concept": [
-              {
-                "code": "1",
-                "display": "Ja"
-              },
-              {
-                "code": "2",
-                "display": "Nei"
-              },
-              {
-                "code": "3",
-                "display": "Vet ikke"
-              }
-            ]
-          }
-        ]
-      }
-    }
-  ],
+  "id": "6dab9880-606c-485d-8d3f-833776241b03",
   "item": [
     {
-      "linkId": "4784e926-7776-4fa3-8e61-43d75b23eacf",
+      "linkId": "78e9ca61-32ae-41ba-8c82-3e2a51cd5107",
       "type": "group",
-      "text": "Gruppe med innhold\n",
+      "text": "SLIDERS",
       "item": [
         {
-          "linkId": "8e640b54-ef90-4141-f6be-5b1f164977a6",
+          "linkId": "f9f516b8-3218-4b2c-89ce-be49b0ac0d5f",
           "type": "choice",
-          "text": "Radio",
-          "item": [
+          "text": "SLIDER 1 TITLE (DISPLAY) VALUES",
+          "code": [
             {
-              "linkId": "7bcb040c-a967-4ddb-ea12-19219ce043f4",
-              "type": "text",
-              "required": false,
-              "repeats": false,
-              "readOnly": true,
-              "maxLength": 250,
-              "_text": {
-                "extension": [
-                  {
-                    "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
-                    "valueMarkdown": "Hjelp meg hver så snill"
-                  }
-                ]
-              },
-              "extension": [
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                  "valueCodeableConcept": {
-                    "coding": [
-                      {
-                        "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
-                        "code": "help"
-                      }
-                    ]
-                  }
-                }
-              ]
+              "code": "label",
+              "display": "Display value",
+              "system": "http://helsenorge.no/fhir/CodeSystem/SliderDisplayType"
+            },
+            {
+              "code": "LabelLeft",
+              "display": "MAX",
+              "system": "http://helsenorge.no/fhir/CodeSystem/SliderLabels"
+            },
+            {
+              "code": "LabelRight",
+              "display": "MIN",
+              "system": "http://helsenorge.no/fhir/CodeSystem/SliderLabels"
             }
           ],
           "required": false,
+          "answerOption": [
+            {
+              "valueCoding": {
+                "id": "ae04df63-a39f-4a4e-8299-a371db3f2241",
+                "code": "value",
+                "system": "urn:uuid:ccf93a65-8ddb-4395-f381-f0a45e195331",
+                "display": "title",
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+                    "valueDecimal": 1
+                  }
+                ]
+              }
+            },
+            {
+              "valueCoding": {
+                "id": "05d6749a-bbba-4614-8797-fb0f6160cb37",
+                "code": "value-2",
+                "system": "urn:uuid:ccf93a65-8ddb-4395-f381-f0a45e195331",
+                "display": "titleTWO",
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+                    "valueDecimal": 2
+                  }
+                ]
+              }
+            },
+            {
+              "valueCoding": {
+                "id": "d1a9f779-2e94-4040-8032-1f7ff6bf8557",
+                "code": "title-3",
+                "system": "urn:uuid:ccf93a65-8ddb-4395-f381-f0a45e195331",
+                "display": "titleTHREE",
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+                    "valueDecimal": 3.5
+                  }
+                ]
+              }
+            }
+          ],
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
@@ -142,50 +139,79 @@
                 "coding": [
                   {
                     "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
-                    "code": "radio-button"
+                    "code": "slider"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "7cb31fe5-74d0-49b9-c917-f663fa408690",
+          "type": "choice",
+          "text": "SLIDER 1 DECIMAL (ORDINAL) VALUES",
+          "code": [
+            {
+              "code": "ordnialValue",
+              "display": "Display value",
+              "system": "http://helsenorge.no/fhir/CodeSystem/SliderDisplayType"
+            },
+            {
+              "code": "LabelLeft",
+              "display": "MAX",
+              "system": "http://helsenorge.no/fhir/CodeSystem/SliderLabels"
+            },
+            {
+              "code": "LabelRight",
+              "display": "MIN",
+              "system": "http://helsenorge.no/fhir/CodeSystem/SliderLabels"
+            }
+          ],
+          "required": false,
+          "answerOption": [
+            {
+              "valueCoding": {
+                "id": "ae04df63-a39f-4a4e-8299-a371db3f2241",
+                "code": "value",
+                "system": "urn:uuid:ccf93a65-8ddb-4395-f381-f0a45e195331",
+                "display": "title",
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+                    "valueDecimal": 1
+                  }
+                ]
+              }
+            },
+            {
+              "valueCoding": {
+                "id": "05d6749a-bbba-4614-8797-fb0f6160cb37",
+                "code": "value-2",
+                "system": "urn:uuid:ccf93a65-8ddb-4395-f381-f0a45e195331",
+                "display": "title 2",
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+                    "valueDecimal": 2
+                  }
+                ]
+              }
+            },
+            {
+              "valueCoding": {
+                "id": "d1a9f779-2e94-4040-8032-1f7ff6bf8557",
+                "code": "title-3",
+                "system": "urn:uuid:ccf93a65-8ddb-4395-f381-f0a45e195331",
+                "display": "title 3",
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
+                    "valueDecimal": 3.5
                   }
                 ]
               }
             }
           ],
-          "answerValueSet": "#1102"
-        },
-        {
-          "linkId": "24e385f4-9c64-4779-8caf-1ccde59bba4d",
-          "type": "open-choice",
-          "text": "Radio open test saadad  adsads",
-          "item": [
-            {
-              "linkId": "622bd747-78a5-4bdb-88e6-6ceb02a08610",
-              "type": "text",
-              "required": false,
-              "repeats": false,
-              "readOnly": true,
-              "maxLength": 250,
-              "_text": {
-                "extension": [
-                  {
-                    "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
-                    "valueMarkdown": "Hjelp meg hver så snill"
-                  }
-                ]
-              },
-              "extension": [
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                  "valueCodeableConcept": {
-                    "coding": [
-                      {
-                        "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
-                        "code": "help"
-                      }
-                    ]
-                  }
-                }
-              ]
-            }
-          ],
-          "required": false,
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
@@ -193,58 +219,12 @@
                 "coding": [
                   {
                     "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
-                    "code": "radio-button"
+                    "code": "slider"
                   }
                 ]
               }
             }
-          ],
-          "answerValueSet": "#1102",
-          "_text": {
-            "extension": [
-              {
-                "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
-                "valueMarkdown": "**Radio open** test _saadad  **adsads**_"
-              }
-            ]
-          }
-        },
-        {
-          "linkId": "76ed02a3-a8c5-4ce9-8954-9faab4c021d0",
-          "type": "string",
-          "text": "Hei du!",
-          "item": [
-            {
-              "linkId": "6a4d16f9-7c43-4c8c-f314-c6d26e186059",
-              "type": "text",
-              "required": false,
-              "repeats": false,
-              "readOnly": true,
-              "maxLength": 250,
-              "_text": {
-                "extension": [
-                  {
-                    "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
-                    "valueMarkdown": "help"
-                  }
-                ]
-              },
-              "extension": [
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                  "valueCodeableConcept": {
-                    "coding": [
-                      {
-                        "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
-                        "code": "help"
-                      }
-                    ]
-                  }
-                }
-              ]
-            }
-          ],
-          "required": false
+          ]
         }
       ],
       "required": false
