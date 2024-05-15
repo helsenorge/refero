@@ -6,23 +6,36 @@ import { ReactWrapper, mount } from 'enzyme';
 import rootReducer from '../../reducers';
 
 import { OpenChoice } from '../formcomponents/open-choice/open-choice';
-import {
-  QuestionnaireItem,
-  QuestionnaireItemAnswerOption,
-  QuestionnaireResponseItemAnswer,
-  Extension,
-  QuestionnaireResponseItem,
-} from 'fhir/r4';
+import { QuestionnaireItem, QuestionnaireItemAnswerOption, QuestionnaireResponseItemAnswer, Extension } from 'fhir/r4';
 import itemType from '../../constants/itemType';
 import '../../util/defineFetch';
-import { Path } from '../../util/refero-core';
 import { GlobalState } from '../../reducers/index';
 import { NewValueAction } from '../../actions/newValue';
 import { createIDataReceiverExpressionExtension } from '../__tests__/utils';
 import TextView from '../formcomponents/textview';
 import { OPEN_CHOICE_ID, OPEN_CHOICE_SYSTEM, OPEN_CHOICE_LABEL } from '../../constants';
+import { useFormContext, FormProvider, useForm } from 'react-hook-form';
+
+jest.mock('react-hook-form', () => ({
+  ...jest.requireActual('react-hook-form'),
+  useFormContext: jest.fn(),
+}));
 
 const initAnswer: QuestionnaireResponseItemAnswer[] = [{}];
+const mockUseFormContext = {
+  formState: {},
+  getFieldState: jest.fn().mockReturnValue({
+    error: undefined,
+    invalid: false,
+    isDirty: false,
+    isTouched: false,
+    isValidating: false,
+  }),
+  control: {},
+  register: jest.fn(),
+};
+
+(useFormContext as jest.Mock).mockImplementation(() => mockUseFormContext);
 
 describe('Open-Choice component render', () => {
   beforeEach(() => {
@@ -35,9 +48,7 @@ describe('Open-Choice component render', () => {
     const extensions = [createIDataReceiverExpressionExtension('Test')];
     const item = createItemWithExtensions(...extensions);
     item.readOnly = true;
-    const answer = [
-      { valueCoding: { code: '3', display: 'Usikker', system: 'urn:oid:2.16.578.1.12.4.1.9523' } },
-    ] as QuestionnaireResponseItemAnswer[];
+    const answer = [{ valueCoding: { code: '3', display: 'Usikker', system: 'urn:oid:2.16.578.1.12.4.1.9523' } }];
     const wrapper = createWrapperWithItem(item, answer);
     wrapper.render();
 
@@ -53,7 +64,7 @@ describe('Open-Choice component render', () => {
       { valueCoding: { code: '3', display: 'Usikker', system: 'urn:oid:2.16.578.1.12.4.1.9523' } },
       { valueCoding: { code: OPEN_CHOICE_ID, display: OPEN_CHOICE_LABEL, system: OPEN_CHOICE_SYSTEM } },
       { valueString: 'Free text' },
-    ] as QuestionnaireResponseItemAnswer[];
+    ];
     const wrapper = createWrapperWithItem(item, answer);
     wrapper.render();
 
@@ -93,23 +104,33 @@ describe('Open-Choice component render', () => {
   });
 });
 
-function createWrapperWithItem(item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer[] = initAnswer): ReactWrapper<{}, {}> {
+const FormWrapper = ({ children }: { children: JSX.Element }) => {
+  const methods = useForm();
+  return <FormProvider {...methods}>{children}</FormProvider>;
+};
+
+function createWrapperWithItem(item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer[] = initAnswer): ReactWrapper {
   const store: any = createStore(rootReducer, applyMiddleware(thunk));
   return mount(
     <Provider store={store}>
-      <OpenChoice
-        id={item.linkId}
-        dispatch={() => undefined as unknown as ThunkDispatch<GlobalState, void, NewValueAction>}
-        answer={answer}
-        item={item}
-        path={{} as Path[]}
-        renderDeleteButton={() => undefined}
-        repeatButton={<React.Fragment />}
-        renderHelpButton={() => <React.Fragment />}
-        renderHelpElement={() => <React.Fragment />}
-        onAnswerChange={() => {}}
-        responseItem={{} as QuestionnaireResponseItem}
-      />
+      <FormWrapper>
+        <OpenChoice
+          id={item.linkId}
+          idWithLinkIdAndItemIndex={item.linkId}
+          dispatch={() => undefined as unknown as ThunkDispatch<GlobalState, void, NewValueAction>}
+          answer={answer}
+          item={item}
+          path={[]}
+          renderDeleteButton={() => <></>}
+          repeatButton={<React.Fragment />}
+          renderHelpButton={() => <React.Fragment />}
+          renderHelpElement={() => <React.Fragment />}
+          onAnswerChange={() => {}}
+          responseItem={{
+            linkId: item.linkId,
+          }}
+        />
+      </FormWrapper>
     </Provider>
   );
 }
@@ -118,7 +139,7 @@ function createValueStringOption(...options: string[]): QuestionnaireItemAnswerO
   return options.map(o => {
     return {
       valueCoding: { code: o, display: o },
-    } as QuestionnaireItemAnswerOption;
+    };
   });
 }
 

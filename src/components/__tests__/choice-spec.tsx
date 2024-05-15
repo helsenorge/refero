@@ -7,21 +7,37 @@ import { ReactWrapper, mount } from 'enzyme';
 import '../../util/defineFetch';
 import rootReducer from '../../reducers';
 import { Choice } from '../formcomponents/choice/choice';
-import {
-  QuestionnaireItem,
-  QuestionnaireItemAnswerOption,
-  QuestionnaireResponseItemAnswer,
-  Extension,
-  QuestionnaireResponseItem,
-} from 'fhir/r4';
+import { QuestionnaireItem, QuestionnaireItemAnswerOption, QuestionnaireResponseItemAnswer, Extension } from 'fhir/r4';
 import { Path } from '../../util/refero-core';
 import { GlobalState } from '../../reducers/index';
 import { NewValueAction } from '../../actions/newValue';
 import { createIDataReceiverExpressionExtension } from '../__tests__/utils';
 import itemType from '../../constants/itemType';
 import TextView from '../formcomponents/textview';
+import { useFormContext, FormProvider, useForm } from 'react-hook-form';
+
+jest.mock('react-hook-form', () => ({
+  ...jest.requireActual('react-hook-form'),
+  useFormContext: jest.fn(),
+}));
 
 const initAnswer: QuestionnaireResponseItemAnswer[] = [{}];
+// Mock implementation for useFormContext
+const mockUseFormContext = {
+  formState: {},
+  getFieldState: jest.fn().mockReturnValue({
+    error: undefined,
+    invalid: false,
+    isDirty: false,
+    isTouched: false,
+    isValidating: false,
+  }),
+  control: {},
+  register: jest.fn(),
+};
+
+// Provide the mock implementation
+(useFormContext as jest.Mock).mockImplementation(() => mockUseFormContext);
 
 describe('Choice component renders item.option[]', () => {
   beforeEach(() => {
@@ -38,7 +54,7 @@ describe('Choice component renders item.option[]', () => {
     const item = createItemWithExtensions(...extensions);
     const wrapper = createWrapperWithItem(item);
     wrapper.render();
-
+    console.log(wrapper.debug());
     expectToFind(wrapper, ['http://some.end/point1', 'http://some.end/point2'], ['HV', 'HSØ']);
   });
 
@@ -148,18 +164,19 @@ describe('Choice component renders item.option[]', () => {
   });
 });
 
-function expectToFind(wrapper: ReactWrapper<{}, {}>, keys: string[], values: string[]) {
+function expectToFind(wrapper: ReactWrapper, keys: string[], values: string[]) {
   const choices = wrapper.find('input');
+  const labels = wrapper.find('label');
+
   expect(choices.length).toBe(keys.length);
   keys.forEach((e, i) => {
     const choice = choices.at(i);
     expect(choice.props().value).toBe(e);
   });
 
-  const labels = wrapper.find('label');
-  expect(labels.length).toBe(values.length);
+  expect(labels.length).toBe(values.length + 1);
   values.forEach((e, i) => {
-    const label = labels.at(i);
+    const label = labels.at(i + 1);
     expect(label.text()).toBe(e);
   });
 }
@@ -172,7 +189,7 @@ function createExtensionReferenceOption(...options: { key: string; value: string
         reference: o.value,
         display: o.key,
       },
-    } as Extension;
+    };
   });
 }
 
@@ -183,7 +200,7 @@ function createValueReferenceOption(...options: { key: string; value: string }[]
         reference: o.key,
         display: o.value,
       },
-    } as QuestionnaireItemAnswerOption;
+    };
   });
 }
 
@@ -194,7 +211,7 @@ function createValueCodingOption(...options: { key: string; value: string }[]): 
         code: o.key,
         display: o.value,
       },
-    } as QuestionnaireItemAnswerOption;
+    };
   });
 }
 
@@ -202,51 +219,61 @@ function createValueStringOption(...options: string[]): QuestionnaireItemAnswerO
   return options.map(o => {
     return {
       valueString: o,
-    } as QuestionnaireItemAnswerOption;
+    };
   });
 }
 
 function createValueIntegerOption(...options: number[]): QuestionnaireItemAnswerOption[] {
   return options.map(o => {
     return {
-      valueInteger: o as {} as number,
-    } as QuestionnaireItemAnswerOption;
+      valueInteger: o,
+    };
   });
 }
 
 function createValueDateOption(...options: string[]): QuestionnaireItemAnswerOption[] {
   return options.map(o => {
     return {
-      valueDate: o as {} as string,
-    } as QuestionnaireItemAnswerOption;
+      valueDate: o,
+    };
   });
 }
 
 function createValueTimeOption(...options: string[]): QuestionnaireItemAnswerOption[] {
   return options.map(o => {
     return {
-      valueTime: o as {} as string,
-    } as QuestionnaireItemAnswerOption;
+      valueTime: o,
+    };
   });
 }
+const FormWrapper = ({ children }: { children: JSX.Element }) => {
+  const methods = useForm();
+  return <FormProvider {...methods}>{children}</FormProvider>;
+};
 
 function createWrapperWithItem(item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer[] = initAnswer): ReactWrapper<{}, {}> {
   const store: any = createStore(rootReducer, applyMiddleware(thunk));
+
   return mount(
     <Provider store={store}>
-      <Choice
-        id={item.linkId}
-        dispatch={() => undefined as unknown as ThunkDispatch<GlobalState, void, NewValueAction>}
-        answer={answer}
-        item={item}
-        path={{} as Path[]}
-        renderDeleteButton={() => undefined}
-        repeatButton={<React.Fragment />}
-        renderHelpButton={() => <React.Fragment />}
-        renderHelpElement={() => <React.Fragment />}
-        onAnswerChange={() => {}}
-        responseItem={{} as QuestionnaireResponseItem}
-      />
+      <FormWrapper>
+        <Choice
+          id={item.linkId}
+          idWithLinkIdAndItemIndex={item.linkId}
+          dispatch={() => undefined as unknown as ThunkDispatch<GlobalState, void, NewValueAction>}
+          answer={answer}
+          item={item}
+          path={[]}
+          renderDeleteButton={() => <></>}
+          repeatButton={<React.Fragment />}
+          renderHelpButton={() => <React.Fragment />}
+          renderHelpElement={() => <React.Fragment />}
+          onAnswerChange={() => {}}
+          responseItem={{
+            linkId: item.linkId,
+          }}
+        />
+      </FormWrapper>
     </Provider>
   );
 }

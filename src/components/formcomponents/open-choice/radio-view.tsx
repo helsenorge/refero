@@ -86,6 +86,7 @@ const RadioView: React.FC<Props> = ({
                 key={`${getId(id)}-${index.toString()}`}
                 inputId={getId(id) + '-hn-' + index}
                 testId={getId(id) + index}
+                value={option.type}
                 onChange={(): void => {
                   handleChange(option.type);
                   onChange(option.type);
@@ -97,11 +98,7 @@ const RadioView: React.FC<Props> = ({
           />
         ))}
       </FormGroup>
-      {shouldShowExtraChoice(answer) ? (
-        <div className="page_refero__component_openchoice_openfield">{renderOpenField()}</div>
-      ) : (
-        <React.Fragment />
-      )}
+      {shouldShowExtraChoice(answer) ? <div className="page_refero__component_openchoice_openfield">{renderOpenField()}</div> : null}
       {renderDeleteButton('page_refero__deletebutton--margin-top')}
       {repeatButton}
       {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : undefined}

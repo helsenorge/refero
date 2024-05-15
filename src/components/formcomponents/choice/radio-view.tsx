@@ -72,14 +72,14 @@ const RadioView: React.FC<Props> = ({
                 message: getValidationTextExtension(item) ?? resources?.formRequiredErrorMessage ?? 'Feltet må fylles ut',
               },
             }}
-            render={({ field: { value, onChange, ...rest } }): JSX.Element => (
+            render={({ field: { onChange, ...rest } }): JSX.Element => (
               <RadioButton
                 {...rest}
                 onChange={(): void => {
                   handleChange(option.type);
                   onChange(option.type);
                 }}
-                value={value}
+                value={option.type}
                 key={getId(id) + index}
                 inputId={`${getId(id)}-hn-${index}`}
                 mode="ongrey"

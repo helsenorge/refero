@@ -300,7 +300,7 @@ export class OpenChoice extends React.Component<Props> {
   };
 
   renderTextField(): JSX.Element {
-    const { id, pdf, item, answer, onRenderMarkdown, ...other } = this.props;
+    const { answer, ...other } = this.props;
 
     let a: QuestionnaireResponseItemAnswer = {};
     if (Array.isArray(answer)) {
@@ -317,15 +317,11 @@ export class OpenChoice extends React.Component<Props> {
 
     return (
       <TextField
-        id={id}
-        pdf={pdf}
-        item={item}
+        {...other}
         answer={a}
         handleStringChange={this.handleStringChangeEvent}
         handleChange={this.handleStringChange}
-        onRenderMarkdown={onRenderMarkdown}
         resources={this.props.resources}
-        {...other}
       />
     );
   }
@@ -367,7 +363,7 @@ export class OpenChoice extends React.Component<Props> {
     const commonProps = {
       handleChange: this.handleChange,
       selected: this.getValue(item, answer),
-      renderOpenField: this.renderTextField,
+      renderOpenField: () => this.renderTextField(),
       ...this.props,
     };
 

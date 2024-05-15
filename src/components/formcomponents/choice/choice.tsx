@@ -25,7 +25,6 @@ import { GlobalState } from '../../../reducers';
 import {
   getOptions,
   getSystem,
-  getErrorMessage,
   getIndexOfAnswer,
   getDisplay,
   getItemControlValue,
@@ -252,6 +251,7 @@ export class Choice extends React.Component<ChoiceProps, ChoiceState> {
     const shouldRenderAutosuggest = hasCanonicalValueSet(item) && itemControlValue === itemControlConstants.AUTOCOMPLETE;
     const isReceiverComponent = itemControlValue === itemControlConstants.RECEIVERCOMPONENT;
     const getValue = this.getValue(item, answer);
+
     if (pdf || isReadOnly(item)) {
       return (
         <TextView id={id} item={item} value={this.getPDFValue(item, answer)} onRenderMarkdown={onRenderMarkdown}>
