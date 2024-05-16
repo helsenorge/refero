@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem, Questionnaire } from 'fhir/r4';
-import moment, { Moment } from 'moment';
+import moment from 'moment';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
@@ -60,7 +60,7 @@ class DateComponent extends React.Component<Props> {
     this.datepicker = React.createRef();
   }
 
-  getMaxDate(): Moment | undefined {
+  getMaxDate(): Date | undefined {
     const maxDate = getExtension(ExtensionConstants.DATE_MAX_VALUE_URL, this.props.item);
     if (maxDate && maxDate.valueString) {
       const fhirPathExpression = evaluateFhirpathExpressionToGetDate(this.props.item, maxDate.valueString);
@@ -82,7 +82,7 @@ class DateComponent extends React.Component<Props> {
     return undefined;
   }
 
-  getMinDate(): Moment | undefined {
+  getMinDate(): Date | undefined {
     const minDate = getExtension(ExtensionConstants.DATE_MIN_VALUE_URL, this.props.item);
     if (minDate && minDate.valueString) {
       const fhirPathExpression = evaluateFhirpathExpressionToGetDate(this.props.item, minDate.valueString);

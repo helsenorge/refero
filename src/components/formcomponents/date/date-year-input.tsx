@@ -1,7 +1,6 @@
 import * as React from 'react';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
-import { Moment } from 'moment';
 
 import { YearErrorResources, YearInput } from '@helsenorge/date-time/components/year-input';
 
@@ -25,8 +24,8 @@ interface Props extends FormProps, WithCommonFunctionsAndEnhancedProps {
   onDateValueChange: (newValue: string) => void;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
   className?: string;
-  maxDate?: Moment;
-  minDate?: Moment;
+  maxDate?: Date;
+  minDate?: Date;
   answer: QuestionnaireResponseItemAnswer;
 }
 

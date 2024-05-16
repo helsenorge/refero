@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireItemInitial, QuestionnaireResponse } from 'fhir/r4';
-import moment, { Moment } from 'moment';
+import moment from 'moment';
 
 import { LanguageLocales } from '@helsenorge/core-utils/constants/languages';
 import { DateRangePicker } from '@helsenorge/date-time/components/date-range-picker';
@@ -32,8 +32,8 @@ interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
   validationErrorRenderer?: JSX.Element;
   className?: string;
-  maxDate?: Moment;
-  minDate?: Moment;
+  maxDate?: Date;
+  minDate?: Date;
   answer: QuestionnaireResponseItemAnswer;
 }
 
@@ -92,11 +92,11 @@ export class DateDayInput extends React.Component<Props> {
     return false;
   };
 
-  toLocaleDate(moment: Moment | undefined): Moment | undefined {
+  toLocaleDate(moment: Date | undefined): Date | undefined {
     return moment ? moment.locale(this.props.locale) : undefined;
   }
 
-  onDateChange = (value: Moment | null): void => {
+  onDateChange = (value: Date | null): void => {
     const newValue = value ? moment(value).format(Constants.DATE_FORMAT) : '';
     this.props.onDateValueChange(newValue);
   };
@@ -108,7 +108,7 @@ export class DateDayInput extends React.Component<Props> {
     return date ? date.map(m => moment(m).format('D. MMMM YYYY')).join(', ') : ikkeBesvartText;
   };
 
-  getSingleDateValue = (): moment.Moment | undefined => {
+  getSingleDateValue = (): moment.Date | undefined => {
     const date = this.getValue();
     return date ? this.toLocaleDate(moment(date[0])) : undefined;
   };

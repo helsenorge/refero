@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem, Questionnaire } from 'fhir/r4';
-import moment, { Moment } from 'moment';
+import moment from 'moment';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
@@ -106,7 +106,7 @@ class DateTime extends React.Component<Props> {
     return undefined;
   }
 
-  dispatchNewDate = (date: Moment | undefined, time: string | undefined): void => {
+  dispatchNewDate = (date: Date | undefined, time: string | undefined): void => {
     const { dispatch, promptLoginMessage, onAnswerChange, answer, path, item } = this.props;
     const momentDate = getFullMomentDate(date, time);
     const dateTimeString = momentDate ? momentDate.locale('nb').utc().format(Constants.DATE_TIME_FORMAT) : '';
@@ -171,7 +171,7 @@ class DateTime extends React.Component<Props> {
     return LanguageLocales.NORWEGIAN;
   };
 
-  toLocaleDate(moment: Moment | undefined): Moment | undefined {
+  toLocaleDate(moment: Date | undefined): Date | undefined {
     return moment ? moment.locale(this.getLocaleFromLanguage()) : undefined;
   }
 
