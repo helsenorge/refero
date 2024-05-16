@@ -11,7 +11,6 @@
     "moduleResolution": "node",
     "sourceMap": true,
     "noImplicitAny": true,
-    "suppressImplicitAnyIndexErrors": true,
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
     "esModuleInterop": true,
@@ -20,7 +19,10 @@
     "skipLibCheck": true,
     "lib": ["es5", "es2015.core", "es2015.promise", "es6", "dom", "scripthost"],
     "noEmit": true,
-    "importHelpers": true
+    "importHelpers": true,
+    "paths": {
+      "test-utils": ["../src/components/__tests__/test-utils"]
+    }
   },
   "include": ["../src/**/*.tsx", "../src/**/*.ts"],
   "exclude": ["../**/node_modules", "../src/**/__tests__*", "../lib/**/*.*", "../src/preview"]

@@ -20,6 +20,9 @@
     "lib": ["es5", "es2015.core", "es2015.promise", "es6", "dom", "scripthost"],
     "noUnusedParameters": true,
     "noEmit": true,
-    "importHelpers": true
+    "importHelpers": true,
+    "paths": {
+      "test-utils": ["../src/components/__tests__/test-utils"]
+    }
   }
 }

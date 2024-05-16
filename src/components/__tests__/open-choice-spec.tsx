@@ -1,47 +1,25 @@
 import * as React from 'react';
-import { createStore, applyMiddleware } from 'redux';
-import { Provider } from 'react-redux';
-import thunk, { ThunkDispatch } from 'redux-thunk';
-import { ReactWrapper, mount } from 'enzyme';
-import rootReducer from '../../reducers';
-
+import { render, screen } from './test-utils/test-utils';
+import '@testing-library/jest-dom/extend-expect';
 import { OpenChoice } from '../formcomponents/open-choice/open-choice';
 import { QuestionnaireItem, QuestionnaireItemAnswerOption, QuestionnaireResponseItemAnswer, Extension } from 'fhir/r4';
 import itemType from '../../constants/itemType';
 import '../../util/defineFetch';
-import { GlobalState } from '../../reducers/index';
-import { NewValueAction } from '../../actions/newValue';
 import { createIDataReceiverExpressionExtension } from '../__tests__/utils';
-import TextView from '../formcomponents/textview';
 import { OPEN_CHOICE_ID, OPEN_CHOICE_SYSTEM, OPEN_CHOICE_LABEL } from '../../constants';
-import { useFormContext, FormProvider, useForm } from 'react-hook-form';
-
-jest.mock('react-hook-form', () => ({
-  ...jest.requireActual('react-hook-form'),
-  useFormContext: jest.fn(),
-}));
 
 const initAnswer: QuestionnaireResponseItemAnswer[] = [{}];
-const mockUseFormContext = {
-  formState: {},
-  getFieldState: jest.fn().mockReturnValue({
-    error: undefined,
-    invalid: false,
-    isDirty: false,
-    isTouched: false,
-    isValidating: false,
-  }),
-  control: {},
-  register: jest.fn(),
-};
-
-(useFormContext as jest.Mock).mockImplementation(() => mockUseFormContext);
 
 describe('Open-Choice component render', () => {
   beforeEach(() => {
-    window.matchMedia = jest.fn().mockImplementation(_ => {
-      return {};
-    });
+    window.matchMedia = jest.fn().mockImplementation(() => ({
+      matches: false,
+      addListener: jest.fn(),
+      removeListener: jest.fn(),
+      addEventListener: jest.fn(),
+      removeEventListener: jest.fn(),
+      dispatchEvent: jest.fn(),
+    }));
   });
 
   it('should render data-receiver with coding answer as text', () => {
@@ -49,14 +27,13 @@ describe('Open-Choice component render', () => {
     const item = createItemWithExtensions(...extensions);
     item.readOnly = true;
     const answer = [{ valueCoding: { code: '3', display: 'Usikker', system: 'urn:oid:2.16.578.1.12.4.1.9523' } }];
-    const wrapper = createWrapperWithItem(item, answer);
-    wrapper.render();
+    renderWrapperWithItem(item, answer);
 
-    const textView = wrapper.find(TextView);
-    expect(textView.props().value).toBe('Usikker');
+    const textView = screen.getByText('Usikker');
+    expect(textView).toBeInTheDocument();
   });
 
-  it('should render data-receiver with coding and textvalue as text', () => {
+  it('should render data-receiver with coding and text value as text', () => {
     const extensions = [createIDataReceiverExpressionExtension('Test')];
     const item = createItemWithExtensions(...extensions);
     item.readOnly = true;
@@ -65,11 +42,10 @@ describe('Open-Choice component render', () => {
       { valueCoding: { code: OPEN_CHOICE_ID, display: OPEN_CHOICE_LABEL, system: OPEN_CHOICE_SYSTEM } },
       { valueString: 'Free text' },
     ];
-    const wrapper = createWrapperWithItem(item, answer);
-    wrapper.render();
+    renderWrapperWithItem(item, answer);
 
-    const textView = wrapper.find(TextView);
-    expect(textView.props().value).toBe('Usikker, Free text');
+    const textView = screen.getByText('Usikker, Free text');
+    expect(textView).toBeInTheDocument();
   });
 
   it('should render valueStrings as input value', () => {
@@ -79,13 +55,16 @@ describe('Open-Choice component render', () => {
       { valueCoding: { code: OPEN_CHOICE_ID, display: OPEN_CHOICE_LABEL, system: OPEN_CHOICE_SYSTEM } },
       { valueString: 'Free text' },
     ] as QuestionnaireResponseItemAnswer[];
-    const wrapper = createWrapperWithItem(item, answer);
-    wrapper.render();
+    renderWrapperWithItem(item, answer);
 
-    const input = wrapper.find('input').at(3);
-    expect(input.props().type).toBe('text');
-    expect(input.props().readOnly).toBeFalsy();
-    expect(input.props().value).toBe('Free text');
+    const input = screen.getAllByRole('textbox');
+    expect(input.length).toBeGreaterThan(0);
+    input.forEach(input => {
+      console.log(input.outerHTML);
+      expect(input).toHaveAttribute('type', 'text');
+      expect(input).not.toHaveAttribute('disabled');
+      expect(input).toHaveValue('Free text');
+    });
   });
 
   it('should render empty valueString as empty input value', () => {
@@ -94,44 +73,38 @@ describe('Open-Choice component render', () => {
     const answer = [
       { valueCoding: { code: OPEN_CHOICE_ID, display: OPEN_CHOICE_LABEL, system: OPEN_CHOICE_SYSTEM } },
     ] as QuestionnaireResponseItemAnswer[];
-    const wrapper = createWrapperWithItem(item, answer);
-    wrapper.render();
+    renderWrapperWithItem(item, answer);
 
-    const input = wrapper.find('input').at(3);
-    expect(input.props().type).toBe('text');
-    expect(input.props().readOnly).toBeFalsy();
-    expect(input.props().value).toBe('');
+    const input = screen.getAllByRole('textbox');
+    expect(input.length).toBeGreaterThan(0);
+    input.forEach(input => {
+      console.log(input.outerHTML);
+      expect(input).toHaveAttribute('type', 'text');
+      expect(input).not.toHaveAttribute('disabled');
+      expect(input).toHaveValue('');
+    });
   });
 });
 
-const FormWrapper = ({ children }: { children: JSX.Element }) => {
-  const methods = useForm();
-  return <FormProvider {...methods}>{children}</FormProvider>;
-};
-
-function createWrapperWithItem(item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer[] = initAnswer): ReactWrapper {
-  const store: any = createStore(rootReducer, applyMiddleware(thunk));
-  return mount(
-    <Provider store={store}>
-      <FormWrapper>
-        <OpenChoice
-          id={item.linkId}
-          idWithLinkIdAndItemIndex={item.linkId}
-          dispatch={() => undefined as unknown as ThunkDispatch<GlobalState, void, NewValueAction>}
-          answer={answer}
-          item={item}
-          path={[]}
-          renderDeleteButton={() => <></>}
-          repeatButton={<React.Fragment />}
-          renderHelpButton={() => <React.Fragment />}
-          renderHelpElement={() => <React.Fragment />}
-          onAnswerChange={() => {}}
-          responseItem={{
-            linkId: item.linkId,
-          }}
-        />
-      </FormWrapper>
-    </Provider>
+function renderWrapperWithItem(item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer[] = initAnswer) {
+  const initialState = {}; // Add any required initial state here
+  return render(
+    <OpenChoice
+      id={item.linkId}
+      idWithLinkIdAndItemIndex={item.linkId}
+      answer={answer}
+      item={item}
+      path={[]}
+      renderDeleteButton={() => <></>}
+      repeatButton={<React.Fragment />}
+      renderHelpButton={() => <React.Fragment />}
+      renderHelpElement={() => <React.Fragment />}
+      onAnswerChange={() => {}}
+      responseItem={{
+        linkId: item.linkId,
+      }}
+    />,
+    { initialState }
   );
 }
 

@@ -72,6 +72,7 @@
     "@types/react-dom": "^17.0.11",
     "@types/react-redux": "^5.0.7",
     "@types/react-router-dom": "^4.0.7",
+    "@types/redux-mock-store": "^1.0.6",
     "@types/rimraf": "^3.0.2",
     "@types/uuid": "^2.0.29",
     "@types/yargs": "^17.0.24",
@@ -115,6 +116,7 @@
     "react-dom": "^17.0.2",
     "react-redux": "^7.1.0",
     "redux": "^4.2.1",
+    "redux-mock-store": "^1.5.4",
     "redux-thunk": "^2.4.2",
     "resolve": "^1.22.2",
     "rimraf": "^3.0.2",
@@ -137,8 +139,7 @@
     "marked": "^3.0.8",
     "react-collapse": "^5.1.1",
     "react-hook-form": "^7.51.2",
-    "uuid": "^9.0.0",
-    "zod": "^3.22.4"
+    "uuid": "^9.0.0"
   },
   "browserslist": [
     "> 0.2% in NO",

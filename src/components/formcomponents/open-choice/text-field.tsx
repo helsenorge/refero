@@ -72,8 +72,6 @@ const textField: React.FC<Props> = ({
     <FormGroup error={error?.message} mode="ongrey">
       <Controller
         name={`${idWithLinkIdAndItemIndex}-extra-field`}
-        control={control}
-        defaultValue={''}
         shouldUnregister={true}
         rules={{
           required: {
@@ -115,6 +113,7 @@ const textField: React.FC<Props> = ({
             }
             placeholder={getPlaceholder(item)}
             readOnly={isReadOnly(item)}
+            value={answer?.valueString ?? ''}
             onChange={(e): void => {
               onChange(e.target.value);
               handleChange(e.target.value);

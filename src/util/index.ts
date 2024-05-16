@@ -65,7 +65,8 @@ export const isTableCode = (extensionCode: string | string[]): boolean => {
 export function getComponentForItem(type: string, extensionCode?: string | string[]) {
   if (String(type) === ItemType.GROUP && !!extensionCode && isTableCode(extensionCode)) {
     return TableContainer as ComponentClass<
-      Omit<WithCommonFunctionsProps & WithCommonFunctionsProps, keyof WithCommonFunctionsProps> & WithCommonFunctionsProps
+      Omit<WithCommonFunctionsProps & WithCommonFunctionsProps, keyof WithCommonFunctionsProps> &
+        WithCommonFunctionsProps & { renderHelpButton: () => JSX.Element; renderHelpElement: () => JSX.Element }
     >;
   } else if (String(type) === ItemType.GROUP) {
     return Group;

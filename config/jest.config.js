@@ -31,4 +31,5 @@ module.exports = {
     '\\.(css|scss)$': 'identity-obj-proxy',
     '\\.(png|svg)$': '<rootDir>/config/empty.js',
   },
+  moduleDirectories: ['node_modules', 'components/__tests__/test-utils'],
 };
