@@ -6,7 +6,6 @@ import moment from 'moment';
 import { LanguageLocales } from '@helsenorge/core-utils/constants/languages';
 import { DateRangePicker } from '@helsenorge/date-time/components/date-range-picker';
 import { DatePickerErrorPhrases } from '@helsenorge/date-time/components/date-range-picker/date-range-picker-types';
-import { parseDate } from '@helsenorge/date-time/components/time-input/date-core';
 
 import Constants from '../../../constants/index';
 import { getId, isRequired } from '../../../util';
@@ -16,6 +15,7 @@ import { Resources } from '../../../util/resources';
 import { FormProps } from '../../../validation/ReactHookFormHoc';
 import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 import TextView from '../textview';
+import { safeParseJSON } from '../../../util/date-fns-utils';
 
 interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   id?: string;
@@ -63,19 +63,19 @@ export class DateDayInput extends React.Component<Props> {
     }
   }
 
-  getValue(): Date[] | undefined {
+  getValue(): (Date | undefined)[] | undefined {
     const { item, answer } = this.props;
 
     if (answer && Array.isArray(answer)) {
-      return answer.map(m => parseDate(String(this.getDateAnswerValue(m))));
+      return answer.map(m => safeParseJSON(String(this.getDateAnswerValue(m))));
     }
 
     if (Array.isArray(item.initial)) {
-      return item.initial.map(m => parseDate(String(this.getDateAnswerValue(m))));
+      return item.initial.map(m => safeParseJSON(String(this.getDateAnswerValue(m))));
     }
 
     if (answer) {
-      const parsedDate = [parseDate(String(this.getDateAnswerValue(answer)))];
+      const parsedDate = [safeParseJSON(String(this.getDateAnswerValue(answer)))];
       if (this.isValidDate(parsedDate[0]) === true) {
         return parsedDate;
       } else {
@@ -84,7 +84,7 @@ export class DateDayInput extends React.Component<Props> {
     }
   }
 
-  isValidDate = (date: Date): boolean => {
+  isValidDate = (date: Date | undefined): boolean => {
     if (date instanceof Date) {
       const text = Date.prototype.toString.call(date);
       return text !== 'Invalid Date';

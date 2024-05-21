@@ -7,7 +7,6 @@ import { ThunkDispatch } from 'redux-thunk';
 
 import { LanguageLocales } from '@helsenorge/core-utils/constants/languages';
 import { DateRangePicker } from '@helsenorge/date-time/components/date-range-picker';
-import { parseDate } from '@helsenorge/date-time/components/time-input/date-core';
 
 import { DateDayInput } from './date-day-input';
 import { DateYearMonthInput } from './date-month-input';
@@ -26,6 +25,7 @@ import ReactHookFormHoc, { FormProps } from '../../../validation/ReactHookFormHo
 import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 import Label from '../label';
 import SubLabel from '../sublabel';
+import { safeParseJSON } from '../../../util/date-fns-utils';
 
 export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   item: QuestionnaireItem;
@@ -73,11 +73,11 @@ class DateComponent extends React.Component<Props> {
   getMaxDateWithExtension(): Date | undefined {
     const maxDate = getExtension(ExtensionConstants.MAX_VALUE_URL, this.props.item);
     if (maxDate && maxDate.valueDate) {
-      return parseDate(String(maxDate.valueDate));
+      return safeParseJSON(String(maxDate.valueDate));
     } else if (maxDate && maxDate.valueDateTime) {
-      return parseDate(String(maxDate.valueDateTime));
+      return safeParseJSON(String(maxDate.valueDateTime));
     } else if (maxDate && maxDate.valueInstant) {
-      return parseDate(String(maxDate.valueInstant));
+      return safeParseJSON(String(maxDate.valueInstant));
     }
     return undefined;
   }
@@ -95,11 +95,11 @@ class DateComponent extends React.Component<Props> {
   getMinDateWithExtension(): Date | undefined {
     const minDate = getExtension(ExtensionConstants.MIN_VALUE_URL, this.props.item);
     if (minDate && minDate.valueDate) {
-      return parseDate(String(minDate.valueDate));
+      return safeParseJSON(String(minDate.valueDate));
     } else if (minDate && minDate.valueDateTime) {
-      return parseDate(String(minDate.valueDateTime));
+      return safeParseJSON(String(minDate.valueDateTime));
     } else if (minDate && minDate.valueInstant) {
-      return parseDate(String(minDate.valueInstant));
+      return safeParseJSON(String(minDate.valueInstant));
     }
     return undefined;
   }

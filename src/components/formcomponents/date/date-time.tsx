@@ -9,7 +9,6 @@ import { LanguageLocales } from '@helsenorge/core-utils/constants/languages';
 import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 import DateTimePicker from '@helsenorge/date-time/components/date-time-picker';
 import { getFullMomentDate } from '@helsenorge/date-time/components/date-time-picker/date-time-picker-utils';
-import { parseDate } from '@helsenorge/date-time/components/time-input/date-core';
 
 import { NewValueAction, newDateTimeValueAsync } from '../../../actions/newValue';
 import ExtensionConstants from '../../../constants/extensions';
@@ -26,6 +25,7 @@ import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../
 import Label from '../label';
 import SubLabel from '../sublabel';
 import TextView from '../textview';
+import { safeParseJSON } from '../../../util/date-fns-utils';
 
 export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   item: QuestionnaireItem;
@@ -51,10 +51,10 @@ export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
 class DateTime extends React.Component<Props> {
   getDefaultDate(item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer): Date | undefined {
     if (answer && answer.valueDateTime) {
-      return parseDate(String(answer.valueDateTime));
+      return safeParseJSON(String(answer.valueDateTime));
     }
     if (answer && answer.valueDate) {
-      return parseDate(String(answer.valueDate));
+      return safeParseJSON(String(answer.valueDate));
     }
     if (!item || !item.initial || item.initial.length === 0) {
       return undefined;
@@ -63,9 +63,9 @@ class DateTime extends React.Component<Props> {
       return undefined;
     }
     if (item.initial[0].valueDateTime) {
-      return parseDate(String(item.initial[0].valueDateTime));
+      return safeParseJSON(String(item.initial[0].valueDateTime));
     }
-    return parseDate(String(item.initial[0].valueDate));
+    return safeParseJSON(String(item.initial[0].valueDate));
   }
 
   getMaxDate(): Date | undefined {
@@ -80,9 +80,9 @@ class DateTime extends React.Component<Props> {
       return;
     }
     if (maxDate.valueDate) {
-      return parseDate(String(maxDate.valueDate));
+      return safeParseJSON(String(maxDate.valueDate));
     } else if (maxDate.valueDateTime) {
-      return parseDate(String(maxDate.valueDateTime));
+      return safeParseJSON(String(maxDate.valueDateTime));
     }
     return undefined;
   }
@@ -99,9 +99,9 @@ class DateTime extends React.Component<Props> {
       return;
     }
     if (minDate.valueDate) {
-      return parseDate(String(minDate.valueDate));
+      return safeParseJSON(String(minDate.valueDate));
     } else if (minDate.valueDateTime) {
-      return parseDate(String(minDate.valueDateTime));
+      return safeParseJSON(String(minDate.valueDateTime));
     }
     return undefined;
   }

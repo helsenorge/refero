@@ -6,7 +6,6 @@ import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
 import TimeInput from '@helsenorge/date-time/components/time-input';
-import { parseDate } from '@helsenorge/date-time/components/time-input/date-core';
 import * as DateTimeConstants from '@helsenorge/date-time/constants/datetime';
 
 import { NewValueAction, newTimeValueAsync } from '../../../actions/newValue';
@@ -22,6 +21,7 @@ import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../
 import Label from '../label';
 import SubLabel from '../sublabel';
 import TextView from '../textview';
+import { safeParseJSON } from '../../../util/date-fns-utils';
 
 export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   value?: string;
@@ -65,10 +65,10 @@ class Time extends React.Component<Props> {
       return answer.valueTime;
     }
     if (answer && answer.valueDate) {
-      return this.getTimeStringFromDate(parseDate(String(answer.valueDate)));
+      return this.getTimeStringFromDate(safeParseJSON(String(answer.valueDate)));
     }
     if (answer && answer.valueDateTime) {
-      return this.getTimeStringFromDate(parseDate(String(answer.valueDateTime)));
+      return this.getTimeStringFromDate(safeParseJSON(String(answer.valueDateTime)));
     }
     return '';
   }
@@ -96,7 +96,7 @@ class Time extends React.Component<Props> {
     return value;
   }
 
-  getTimeStringFromDate(date: Date): string {
+  getTimeStringFromDate(date: Date | undefined): string {
     const momentDate = moment(date);
     return `${momentDate.hours()}${DateTimeConstants.TIME_SEPARATOR}${momentDate.minutes()}`;
   }
