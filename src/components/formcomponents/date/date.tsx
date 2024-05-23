@@ -1,7 +1,6 @@
 import * as React from 'react';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem, Questionnaire } from 'fhir/r4';
-import moment from 'moment';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
@@ -64,10 +63,10 @@ class DateComponent extends React.Component<Props> {
     const maxDate = getExtension(ExtensionConstants.DATE_MAX_VALUE_URL, this.props.item);
     if (maxDate && maxDate.valueString) {
       const fhirPathExpression = evaluateFhirpathExpressionToGetDate(this.props.item, maxDate.valueString);
-      return fhirPathExpression ? moment(fhirPathExpression) : undefined;
+      return fhirPathExpression ? safeParseJSON(fhirPathExpression) : undefined;
     }
     const maxDateWithExtension = this.getMaxDateWithExtension();
-    return maxDateWithExtension ? moment(maxDateWithExtension) : undefined;
+    return maxDateWithExtension ? safeParseJSON(maxDateWithExtension) : undefined;
   }
 
   getMaxDateWithExtension(): Date | undefined {
@@ -86,10 +85,10 @@ class DateComponent extends React.Component<Props> {
     const minDate = getExtension(ExtensionConstants.DATE_MIN_VALUE_URL, this.props.item);
     if (minDate && minDate.valueString) {
       const fhirPathExpression = evaluateFhirpathExpressionToGetDate(this.props.item, minDate.valueString);
-      return fhirPathExpression ? moment(fhirPathExpression) : undefined;
+      return fhirPathExpression ? safeParseJSON(fhirPathExpression) : undefined;
     }
     const minDateWithExtension = this.getMinDateWithExtension();
-    return minDateWithExtension ? moment(minDateWithExtension) : undefined;
+    return minDateWithExtension ? safeParseJSON(minDateWithExtension) : undefined;
   }
 
   getMinDateWithExtension(): Date | undefined {

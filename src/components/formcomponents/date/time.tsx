@@ -1,7 +1,6 @@
 import * as React from 'react';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem, Questionnaire } from 'fhir/r4';
-import moment from 'moment';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
@@ -22,6 +21,7 @@ import Label from '../label';
 import SubLabel from '../sublabel';
 import TextView from '../textview';
 import { safeParseJSON } from '../../../util/date-fns-utils';
+import { getHours, getMinutes } from 'date-fns';
 
 export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   value?: string;
@@ -97,8 +97,15 @@ class Time extends React.Component<Props> {
   }
 
   getTimeStringFromDate(date: Date | undefined): string {
-    const momentDate = moment(date);
-    return `${momentDate.hours()}${DateTimeConstants.TIME_SEPARATOR}${momentDate.minutes()}`;
+    if (!date) {
+      return '';
+    }
+    const hours = getHours(date);
+    const minutes = getMinutes(date);
+    const formattedHours = String(hours).padStart(2, '0');
+    const formattedMinutes = String(minutes).padStart(2, '0');
+
+    return `${formattedHours}${DateTimeConstants.TIME_SEPARATOR}${formattedMinutes}`;
   }
 
   getMaxHour(): number {

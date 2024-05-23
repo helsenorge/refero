@@ -1,14 +1,11 @@
 import * as React from 'react';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem, Questionnaire } from 'fhir/r4';
-import moment from 'moment';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
-import { LanguageLocales } from '@helsenorge/core-utils/constants/languages';
 import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 import DateTimePicker from '@helsenorge/date-time/components/date-time-picker';
-import { getFullMomentDate } from '@helsenorge/date-time/components/date-time-picker/date-time-picker-utils';
 
 import { NewValueAction, newDateTimeValueAsync } from '../../../actions/newValue';
 import ExtensionConstants from '../../../constants/extensions';
@@ -26,6 +23,8 @@ import Label from '../label';
 import SubLabel from '../sublabel';
 import TextView from '../textview';
 import { safeParseJSON } from '../../../util/date-fns-utils';
+import { getFullFnsDate } from '../../../util/date-utils';
+import { format } from 'date-fns';
 
 export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   item: QuestionnaireItem;
@@ -108,8 +107,9 @@ class DateTime extends React.Component<Props> {
 
   dispatchNewDate = (date: Date | undefined, time: string | undefined): void => {
     const { dispatch, promptLoginMessage, onAnswerChange, answer, path, item } = this.props;
-    const momentDate = getFullMomentDate(date, time);
-    const dateTimeString = momentDate ? momentDate.locale('nb').utc().format(Constants.DATE_TIME_FORMAT) : '';
+    const fullDate = getFullFnsDate(date, time);
+    const dateTimeString = fullDate ? format(fullDate, Constants.DATE_TIME_FORMAT) : '';
+
     const existingAnswer = answer?.valueDateTime || '';
     if (dispatch && existingAnswer !== dateTimeString) {
       dispatch(newDateTimeValueAsync(this.props.path, dateTimeString, this.props.item))?.then(newState =>
@@ -135,7 +135,7 @@ class DateTime extends React.Component<Props> {
   convertDateToString = (item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer): string | undefined => {
     const date = this.getDefaultDate(item, answer);
     if (date) {
-      return moment(date).locale('nb').format('LLL');
+      return format(date, 'dd.MM.yyyy HH:mm');
     }
     return undefined;
   };
@@ -163,17 +163,17 @@ class DateTime extends React.Component<Props> {
     return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats || answerHasChanged;
   }
 
-  getLocaleFromLanguage = (): LanguageLocales.NORWEGIAN | LanguageLocales.ENGLISH => {
-    if (this.props.language?.toLowerCase() === 'en-gb') {
-      return LanguageLocales.ENGLISH;
-    }
+  // getLocaleFromLanguage = (): LanguageLocales.NORWEGIAN | LanguageLocales.ENGLISH => {
+  //   if (this.props.language?.toLowerCase() === 'en-gb') {
+  //     return LanguageLocales.ENGLISH;
+  //   }
 
-    return LanguageLocales.NORWEGIAN;
-  };
+  //   return LanguageLocales.NORWEGIAN;
+  // };
 
-  toLocaleDate(moment: Date | undefined): Date | undefined {
-    return moment ? moment.locale(this.getLocaleFromLanguage()) : undefined;
-  }
+  // toLocaleDate(moment: Moment | undefined): Moment | undefined {
+  //   return moment ? moment.locale(this.getLocaleFromLanguage()) : undefined;
+  // }
 
   render(): JSX.Element | null {
     const { item, pdf, id, onRenderMarkdown } = this.props;

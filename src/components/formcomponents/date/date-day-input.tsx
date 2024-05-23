@@ -1,7 +1,6 @@
 import * as React from 'react';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireItemInitial, QuestionnaireResponse } from 'fhir/r4';
-import moment from 'moment';
 
 import { LanguageLocales } from '@helsenorge/core-utils/constants/languages';
 import { DateRangePicker } from '@helsenorge/date-time/components/date-range-picker';
@@ -16,6 +15,7 @@ import { FormProps } from '../../../validation/ReactHookFormHoc';
 import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 import TextView from '../textview';
 import { safeParseJSON } from '../../../util/date-fns-utils';
+import { format } from 'date-fns';
 
 interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   id?: string;
@@ -92,12 +92,12 @@ export class DateDayInput extends React.Component<Props> {
     return false;
   };
 
-  toLocaleDate(moment: Date | undefined): Date | undefined {
-    return moment ? moment.locale(this.props.locale) : undefined;
-  }
+  // toLocaleDate(moment: Moment | undefined): Moment | undefined {
+  //   return moment ? moment.locale(this.getLocaleFromLanguage()) : undefined;
+  // }
 
   onDateChange = (value: Date | null): void => {
-    const newValue = value ? moment(value).format(Constants.DATE_FORMAT) : '';
+    const newValue = value ? format(value, Constants.DATE_FORMAT) : '';
     this.props.onDateValueChange(newValue);
   };
 
@@ -105,12 +105,12 @@ export class DateDayInput extends React.Component<Props> {
     const date = this.getValue();
     const ikkeBesvartText = this.props.resources?.ikkeBesvart || '';
 
-    return date ? date.map(m => moment(m).format('D. MMMM YYYY')).join(', ') : ikkeBesvartText;
+    return date ? date.map(d => d && format(d, 'd. MMMM yyyy')).join(', ') : ikkeBesvartText;
   };
 
-  getSingleDateValue = (): moment.Date | undefined => {
+  getSingleDateValue = (): Date | undefined => {
     const date = this.getValue();
-    return date ? this.toLocaleDate(moment(date[0])) : undefined;
+    return date ? (safeParseJSON(date[0])) : undefined;
   };
 
   render(): JSX.Element {
