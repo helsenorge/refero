@@ -14,7 +14,7 @@ import Decimal from '../formcomponents/decimal/decimal';
 import Integer from '../formcomponents/integer/integer';
 import Date from '../formcomponents/date/date';
 import Time from '../formcomponents/date/time';
-import DateTime from '../formcomponents/date/date-time';
+import DateTimeInput from '../formcomponents/date/date-time';
 import StringComponent from '../formcomponents/string/string';
 import Text from '../formcomponents/text/text';
 import OpenChoice from '../formcomponents/open-choice/open-choice';
@@ -74,7 +74,7 @@ describe('Components render children', () => {
 
     wrapper.render();
 
-    expect(wrapper.find(DateTime)).toHaveLength(3);
+    expect(wrapper.find(DateTimeInput)).toHaveLength(3);
   });
 
   it('decimal with children renders', () => {

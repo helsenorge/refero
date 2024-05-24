@@ -5,7 +5,6 @@ import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
 import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
-import DateTimePicker from '@helsenorge/date-time/components/date-time-picker';
 
 import { NewValueAction, newDateTimeValueAsync } from '../../../actions/newValue';
 import ExtensionConstants from '../../../constants/extensions';
@@ -13,19 +12,18 @@ import Constants from '../../../constants/index';
 import { GlobalState } from '../../../reducers';
 import { getValidationTextExtension, getExtension } from '../../../util/extension';
 import { evaluateFhirpathExpressionToGetDate } from '../../../util/fhirpathHelper';
-import { isRequired, getId, isReadOnly, getSublabelText } from '../../../util/index';
+import { isRequired, getId, isReadOnly, getSublabelText, renderPrefix, getText } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
 import { Resources } from '../../../util/resources';
 import { FormProps } from '../../../validation/ReactHookFormHoc';
 import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
-import Label from '../label';
-import SubLabel from '../sublabel';
+import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
 import TextView from '../textview';
 import { safeParseJSON } from '../../../util/date-fns-utils';
 import { getFullFnsDate } from '../../../util/date-utils';
 import { format } from 'date-fns';
-import { DatePicker, DateTimePickerWrapper } from '@helsenorge/datepicker/components/DatePicker'
+import { DatePicker, DateTimePickerWrapper, DateTime } from '@helsenorge/datepicker/components/DatePicker';
 
 export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   item: QuestionnaireItem;
@@ -48,7 +46,7 @@ export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
 }
 
-class DateTime extends React.Component<Props> {
+class DateTimeInput extends React.Component<Props> {
   getDefaultDate(item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer): Date | undefined {
     if (answer && answer.valueDateTime) {
       return safeParseJSON(String(answer.valueDateTime));
@@ -195,57 +193,39 @@ class DateTime extends React.Component<Props> {
     const valueDateTime = this.getDefaultDate(this.props.item, this.props.answer);
     const maxDateTime = this.getMaxDate();
     const minDateTime = this.getMinDate();
+    const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, this.props.questionnaire, this.props.resources)}`;
     const subLabelText = getSublabelText(this.props.item, this.props.onRenderMarkdown, this.props.questionnaire, this.props.resources);
 
     return (
       <div className="page_refero__component page_refero__component_datetime">
-        <DateTimePicker
-          {...this.props.register(this.props.item.linkId, {
-            required: isRequired(this.props.item),
-          })}
-          id={getId(id)}
-          resources={{ dateResources: this.props.resources }}
-          locale={this.getLocaleFromLanguage()}
-          dateValue={valueDateTime ? this.toLocaleDate(moment(valueDateTime)) : undefined}
-          timeValue={valueDateTime ? moment(valueDateTime).format('HH:mm') : undefined}
-          maximumDateTime={maxDateTime ? this.toLocaleDate(moment(maxDateTime)) : undefined}
-          minimumDateTime={minDateTime ? this.toLocaleDate(moment(minDateTime)) : undefined}
-          initialDate={this.toLocaleDate(moment(new Date()))}
-          onChange={this.dispatchNewDate}
-          onBlur={this.onBlur}
-          legend={
-            <Label
-              item={this.props.item}
-              onRenderMarkdown={this.props.onRenderMarkdown}
-              questionnaire={this.props.questionnaire}
-              resources={this.props.resources}
-            />
-          }
-          subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
-          isRequired={isRequired(item)}
-          errorMessage={getValidationTextExtension(item)}
-          timeClassName="page_refero__input"
-          helpButton={this.props.renderHelpButton()}
-          helpElement={this.props.renderHelpElement()}
-        />
-
         <DateTimePickerWrapper>
           <DatePicker
+            {...this.props.register(this.props.item.linkId, {
+              required: isRequired(this.props.item),
+            })}
+            testId={getId(id)}
             autoComplete=""
             dateButtonAriaLabel="Open datepicker"
             dateFormat="dd.MM.yyyy"
-            dateValue={new Date('2024-05-23T14:32:36.139Z')}
-            errorText=""
-            label={<Label labelTexts={[{ text: 'Dato', type: 'semibold' }, { text: '(dd.mm.åååå)' }]} />}
+            dateValue={valueDateTime}
+            errorText={getValidationTextExtension(item)}
+            label={
+              <Label
+                labelId={`${getId(id)}-label-dateTime`}
+                labelTexts={[{ text: labelText }]}
+                sublabel={<Sublabel id={`${getId(id)}-sublabel-dateTime`} sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+                afterLabelChildren={this.props.renderHelpButton()}
+              />
+            }
+            minDate={minDateTime}
+            maxDate={maxDateTime}
+            onChange={() => this.dispatchNewDate}
+            onBlur={() => this.onBlur}
           />
-          <DateTime
-            defaultValue={12}
-            label={<Label labelId="label01" labelTexts={[{ text: 'Tid', type: 'semibold' }, { text: '(tt:mm)' }]} />}
-            timeUnit="hours"
-          />
-          <DateTime aria-labelledby="label01" defaultValue={0} timeUnit="minutes" />
+          <DateTime defaultValue={12} timeUnit="hours" />
+          <DateTime defaultValue={0} timeUnit="minutes" />
         </DateTimePickerWrapper>
-        
+
         {this.props.renderDeleteButton('page_refero__deletebutton--margin-top')}
         {this.props.repeatButton}
         {this.props.children ? <div className="nested-fieldset nested-fieldset--full-height">{this.props.children}</div> : null}
@@ -254,7 +234,7 @@ class DateTime extends React.Component<Props> {
   }
 }
 
-const withCommonFunctionsComponent = withCommonFunctions(DateTime);
+const withCommonFunctionsComponent = withCommonFunctions(DateTimeInput);
 const layoutChangeComponent = layoutChange(withCommonFunctionsComponent);
 const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(layoutChangeComponent);
 export default connectedComponent;

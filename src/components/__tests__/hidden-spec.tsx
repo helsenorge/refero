@@ -14,7 +14,7 @@ import Decimal from '../formcomponents/decimal/decimal';
 import Integer from '../formcomponents/integer/integer';
 import Date from '../formcomponents/date/date';
 import Time from '../formcomponents/date/time';
-import DateTime from '../formcomponents/date/date-time';
+import DateTimeInput from '../formcomponents/date/date-time';
 import StringComponent from '../formcomponents/string/string';
 import Text from '../formcomponents/text/text';
 import OpenChoice from '../formcomponents/open-choice/open-choice';
@@ -109,7 +109,7 @@ describe('Hidden components should not render', () => {
 
     wrapper.render();
 
-    expect(wrapper.find(DateTime)).toHaveLength(1);
+    expect(wrapper.find(DateTimeInput)).toHaveLength(1);
   });
 
   it('hidden dateTime does not render', () => {
@@ -118,7 +118,7 @@ describe('Hidden components should not render', () => {
 
     wrapper.render();
 
-    expect(wrapper.find(DateTime)).toHaveLength(0);
+    expect(wrapper.find(DateTimeInput)).toHaveLength(0);
   });
 
   it('unhidden decimal renders', () => {
