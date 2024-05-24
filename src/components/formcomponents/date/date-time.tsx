@@ -25,6 +25,7 @@ import TextView from '../textview';
 import { safeParseJSON } from '../../../util/date-fns-utils';
 import { getFullFnsDate } from '../../../util/date-utils';
 import { format } from 'date-fns';
+import { DatePicker, DateTimePickerWrapper } from '@helsenorge/datepicker/components/DatePicker'
 
 export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   item: QuestionnaireItem;
@@ -227,6 +228,24 @@ class DateTime extends React.Component<Props> {
           helpButton={this.props.renderHelpButton()}
           helpElement={this.props.renderHelpElement()}
         />
+
+        <DateTimePickerWrapper>
+          <DatePicker
+            autoComplete=""
+            dateButtonAriaLabel="Open datepicker"
+            dateFormat="dd.MM.yyyy"
+            dateValue={new Date('2024-05-23T14:32:36.139Z')}
+            errorText=""
+            label={<Label labelTexts={[{ text: 'Dato', type: 'semibold' }, { text: '(dd.mm.åååå)' }]} />}
+          />
+          <DateTime
+            defaultValue={12}
+            label={<Label labelId="label01" labelTexts={[{ text: 'Tid', type: 'semibold' }, { text: '(tt:mm)' }]} />}
+            timeUnit="hours"
+          />
+          <DateTime aria-labelledby="label01" defaultValue={0} timeUnit="minutes" />
+        </DateTimePickerWrapper>
+        
         {this.props.renderDeleteButton('page_refero__deletebutton--margin-top')}
         {this.props.repeatButton}
         {this.props.children ? <div className="nested-fieldset nested-fieldset--full-height">{this.props.children}</div> : null}
