@@ -82,6 +82,7 @@ const RadioView: React.FC<Props> = ({
                 value={option.type}
                 key={getId(id) + index}
                 inputId={`${getId(id)}-hn-${index}`}
+                testId={`${option.type}-${index}-radio-choice`}
                 mode="ongrey"
                 label={<Label labelTexts={[{ text: option.label }]} />}
                 defaultChecked={selectedValue === option?.type}

@@ -85,6 +85,7 @@ class DropdownView extends React.Component<Props, Record<string, unknown>> {
                 {...rest}
                 selectId={getId(id)}
                 className="page_refero__input"
+                testId={getId(id)}
                 label={
                   <Label
                     htmlFor={getId(id)}

@@ -17,7 +17,14 @@ function withReactHookFormHoc<T extends WithCommonFunctionsProps>(
 ): React.ComponentType<T> {
   const EnhancedComponent: React.FC<T> = props => {
     const { formState, getFieldState, control, register, ...rest } = useFormContext<FieldValues>();
-    const { error, invalid, isDirty, isTouched, isValidating } = getFieldState(props.idWithLinkIdAndItemIndex, formState);
+    const fieldState = getFieldState(props.idWithLinkIdAndItemIndex, formState) || {
+      error: undefined,
+      invalid: false,
+      isDirty: false,
+      isTouched: false,
+      isValidating: false,
+    };
+    const { error, invalid, isDirty, isTouched, isValidating } = fieldState;
 
     return (
       <WrappedComponent

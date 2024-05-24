@@ -1,71 +1,72 @@
 import React, { ReactElement } from 'react';
 import { render, RenderOptions } from '@testing-library/react';
-import { Provider } from 'react-redux';
-import configureMockStore from 'redux-mock-store';
+import { Provider, Store } from 'react-redux';
+import configureMockStore, { MockStore, MockStoreEnhanced } from 'redux-mock-store';
 import thunk from 'redux-thunk';
+import { FormProvider, useForm } from 'react-hook-form';
+import '@testing-library/jest-dom/extend-expect';
+import rootReducer, { GlobalState } from '../../../reducers';
+import { Questionnaire } from 'fhir/r4';
+import { generateQuestionnaireResponse } from '../../../actions/generateQuestionnaireResponse';
+import { applyMiddleware, createStore } from 'redux';
+const mockStore = configureMockStore<Partial<GlobalState>>([thunk]);
 
-import { useFormContext, FormProvider, useForm } from 'react-hook-form';
-import { GlobalState } from '../../../reducers';
-
-jest.mock('react-hook-form', () => ({
-  ...jest.requireActual('react-hook-form'),
-  useFormContext: jest.fn(),
-}));
-
-const mockUseFormContext = {
-  formState: {},
-  getFieldState: jest.fn().mockReturnValue({
-    error: undefined,
-    invalid: false,
-    isDirty: false,
-    isTouched: false,
-    isValidating: false,
-  }),
-  control: {
-    register: jest.fn(),
-    unregister: jest.fn(),
-    setValue: jest.fn(),
-    getValues: jest.fn(),
-    trigger: jest.fn(),
-    formState: {
-      errors: {},
-      isDirty: false,
-      isSubmitted: false,
-      isSubmitSuccessful: false,
-      isSubmitting: false,
-      isValid: true,
-      isValidating: false,
-      submitCount: 0,
-    },
-  },
-  register: jest.fn(),
-};
-
-// Provide the mock implementation
-(useFormContext as jest.Mock).mockImplementation(() => mockUseFormContext);
-
-const mockStore = configureMockStore([thunk]);
-
-const FormWrapper = ({ children }: { children: React.ReactNode }) => {
-  const methods = useForm();
+const FormWrapper = ({ children, defaultValues }: { children: React.ReactNode; defaultValues: any }) => {
+  const methods = useForm({
+    shouldFocusError: false,
+    criteriaMode: 'all',
+    defaultValues: defaultValues,
+  });
   return <FormProvider {...methods}>{children}</FormProvider>;
 };
 
-const AllTheProviders = ({ children, initialState = {} }: { children: React.ReactNode; initialState?: Partial<GlobalState> }) => {
-  const store = mockStore(initialState);
+const AllTheProviders = ({
+  children,
+  initialState = {},
+  defaultValues = {},
+  store = mockStore(initialState),
+}: {
+  children: React.ReactNode;
+  initialState?: Partial<GlobalState>;
+  defaultValues?: any;
+  store?: MockStoreEnhanced<Partial<GlobalState>>;
+}) => {
   return (
     <Provider store={store}>
-      <FormWrapper>{children}</FormWrapper>
+      <FormWrapper defaultValues={defaultValues}>{children}</FormWrapper>
     </Provider>
   );
 };
 
-const customRender = (ui: ReactElement, options?: Omit<RenderOptions, 'wrapper'> & { initialState?: Partial<GlobalState> }) => {
-  const { initialState, ...renderOptions } = options || {};
+const customRender = (
+  ui: ReactElement,
+  options?: Omit<RenderOptions, 'wrapper'> & { initialState?: Partial<GlobalState> } & { defaultValues?: any } & {
+    store?: MockStoreEnhanced<Partial<GlobalState>>;
+  }
+) => {
+  const { initialState, defaultValues, store, ...renderOptions } = options || {};
   return render(ui, {
-    wrapper: ({ children }) => <AllTheProviders initialState={initialState}>{children}</AllTheProviders>,
+    wrapper: ({ children }) => (
+      <AllTheProviders initialState={initialState} defaultValues={defaultValues} store={store}>
+        {children}
+      </AllTheProviders>
+    ),
     ...renderOptions,
   });
 };
+interface CustomRenderOptions extends Omit<RenderOptions, 'queries'> {
+  initialState?: Partial<GlobalState>;
+  store?: Store<GlobalState>;
+}
+const renderWithRedux = (
+  ui: React.ReactElement,
+  { initialState, store = createStore(rootReducer, initialState, applyMiddleware(thunk)), ...renderOptions }: CustomRenderOptions = {}
+) => {
+  const Wrapper: React.FC = ({ children }) => <Provider store={store}>{children}</Provider>;
+  return { ...render(ui, { wrapper: Wrapper, ...renderOptions }), store };
+};
+
 export * from '@testing-library/react';
-export { customRender as render };
+export { default as userEvent } from '@testing-library/user-event';
+
+export { customRender as render, renderWithRedux };

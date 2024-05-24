@@ -44,6 +44,7 @@ export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
 
 class Decimal extends React.Component<Props, Record<string, unknown>> {
   getValue = (item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer): string | number | number[] | undefined => {
+    console.log('answer', answer);
     if (answer && Array.isArray(answer)) {
       return answer.map(m => m.valueDecimal);
     }
@@ -74,9 +75,9 @@ class Decimal extends React.Component<Props, Record<string, unknown>> {
     const { dispatch, path, item, promptLoginMessage, onAnswerChange } = this.props;
     const value = parseFloat((event.target as HTMLInputElement).value);
     if (dispatch) {
-      dispatch(newDecimalValueAsync(path, value, item))?.then(newState =>
-        onAnswerChange(newState, path, item, { valueDecimal: value } as QuestionnaireResponseItemAnswer)
-      );
+      dispatch(newDecimalValueAsync(path, value, item))?.then(newState => {
+        return onAnswerChange(newState, path, item, { valueDecimal: value } as QuestionnaireResponseItemAnswer);
+      });
     }
 
     if (promptLoginMessage) {
@@ -111,9 +112,9 @@ class Decimal extends React.Component<Props, Record<string, unknown>> {
       idWithLinkIdAndItemIndex,
     } = this.props;
     const value = this.getValue(item, answer);
+
     const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`;
     const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
-
     if (pdf || isReadOnly(item)) {
       return (
         <TextView
@@ -169,6 +170,7 @@ class Decimal extends React.Component<Props, Record<string, unknown>> {
                 label={
                   <Label
                     htmlFor={getId(id)}
+                    testId={getId(this.props.id)}
                     labelTexts={[{ text: labelText, type: 'semibold' }]}
                     sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
                     afterLabelChildren={this.props.renderHelpButton()}

@@ -4,7 +4,7 @@ import { QuestionnaireItem } from 'fhir/r4';
 import { FieldError } from 'react-hook-form';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
-import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
+import Label from '@helsenorge/designsystem-react/components/Label';
 import NotificationPanel from '@helsenorge/designsystem-react/components/NotificationPanel';
 
 import Dropzone from '@helsenorge/file-upload/components/dropzone';
@@ -15,6 +15,7 @@ import { useFileUpload } from '@helsenorge/file-upload/components/file-upload/us
 import { validateFileSize, validateFileType, validateMaxFiles, validateMinFiles } from './attachment-validation';
 import { getAttachmentMaxSizeBytesToUse } from './attachmentUtil';
 import { VALID_FILE_TYPES } from '../../../constants';
+import { getId } from '../../../util';
 import { Resources } from '../../../util/resources';
 import { FormProps } from '../../../validation/ReactHookFormHoc';
 
@@ -23,8 +24,7 @@ interface Props {
   onDelete: (fileId: string) => void;
   onOpen?: (fileId: string) => void;
   uploadButtonText: string;
-  label: string | JSX.Element;
-  subLabel?: string | JSX.Element;
+  labelText?: string;
   id: string;
   attachmentErrorMessage?: string;
   getComponentToValidate?: (el: Dropzone) => void;
@@ -43,39 +43,30 @@ interface Props {
   helpButton?: JSX.Element;
   helpElement?: JSX.Element;
   register: FormProps['register'];
-  setValue: FormProps['setValue'];
   error?: FieldError;
-  resetField: FormProps['resetField'];
+  children?: React.ReactNode;
 }
 
-const attachmentHtml: React.SFC<Props> = ({
+const attachmentHtml = ({
   id,
   onUpload,
   onDelete,
   onOpen,
-  uploadButtonText,
-  label,
-  subLabel,
+  labelText,
   resources,
   isRequired,
-  errorText,
-  uploadedFiles,
-  onRequestAttachmentLink,
   attachmentErrorMessage,
   helpButton,
   helpElement,
-  multiple,
   maxFiles,
   attachmentMaxFileSize,
   attachmentValidTypes,
   minFiles,
   item,
   children,
-  setValue,
   error,
-  resetField,
   ...rest
-}) => {
+}: Props): JSX.Element | null => {
   const getMaxValueBytes = getAttachmentMaxSizeBytesToUse(attachmentMaxFileSize, item);
   const validFileTypes = attachmentValidTypes ? attachmentValidTypes : VALID_FILE_TYPES;
   const deleteText = resources ? resources.deleteAttachmentText : undefined;
@@ -110,7 +101,7 @@ const attachmentHtml: React.SFC<Props> = ({
   };
 
   return (
-    <div className="page_refero__component page_refero__component_attachment">
+    <div className="page_refero__component page_refero__component_attachment" data-testid={getId(id)}>
       <FormGroup error={concatErrorMessages()}>
         <FileUpload
           {...register(item.linkId, {
@@ -124,12 +115,7 @@ const attachmentHtml: React.SFC<Props> = ({
           onChangeFile={handleUpload}
           onDeleteFile={handleDelete}
           chooseFilesText={resources?.chooseFilesText}
-          label={
-            <Label
-              labelTexts={[{ text: label as string, type: 'semibold' }]}
-              sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabel as string, type: 'normal' }]} />}
-            />
-          }
+          label={<Label labelTexts={[{ text: labelText || '', type: 'semibold' }]} afterLabelChildren={helpButton && helpButton} />}
           deleteText={deleteText}
           acceptedFiles={acceptedFiles}
           rejectedFiles={rejectedFiles}

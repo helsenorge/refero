@@ -114,6 +114,7 @@ class Integer extends React.Component<Props, Record<string, unknown>> {
       renderDeleteButton,
       idWithLinkIdAndItemIndex,
     } = this.props;
+
     if (pdf || isReadOnly(item)) {
       return (
         <TextView
@@ -166,6 +167,7 @@ class Integer extends React.Component<Props, Record<string, unknown>> {
                 type="number"
                 value={Array.isArray(value) ? value.join(', ') : value}
                 inputId={getId(id)}
+                testId={getId(id)}
                 label={
                   <Label
                     labelTexts={[{ text: labelText, type: 'semibold' }]}

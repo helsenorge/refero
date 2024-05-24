@@ -15,6 +15,7 @@ import { OPEN_CHOICE_ID, OPEN_CHOICE_SYSTEM } from '../../../constants';
 import ItemType from '../../../constants/itemType';
 import { getValidationTextExtension } from '../../../util/extension';
 import { isRequired, getId, getSublabelText } from '../../../util/index';
+import { getStringAnswer, hasStringAnswer, getCodingAnswer, hasCodingAnswer } from '../../../util/refero-core';
 import { Resources } from '../../../util/resources';
 import ReactHookFormHoc, { FormProps } from '../../../validation/ReactHookFormHoc';
 import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
@@ -61,9 +62,11 @@ class AutosuggestView extends React.Component<AutosuggestProps, AutosuggestState
   constructor(props: AutosuggestProps) {
     super(props);
 
-    const codingAnswer = this.getCodingAnswer();
+    const codingAnswer = getCodingAnswer(this.props.answer);
     const initialInputValue =
-      codingAnswer?.code === OPEN_CHOICE_ID && codingAnswer?.system === OPEN_CHOICE_SYSTEM ? this.getStringAnswer() : codingAnswer?.display;
+      codingAnswer?.code === OPEN_CHOICE_ID && codingAnswer?.system === OPEN_CHOICE_SYSTEM
+        ? getStringAnswer(this.props.answer)
+        : codingAnswer?.display;
 
     this.state = {
       inputValue: initialInputValue || '',
@@ -90,7 +93,7 @@ class AutosuggestView extends React.Component<AutosuggestProps, AutosuggestState
   }
 
   onSubmitValidator(): boolean {
-    return isRequired(this.props.item) ? !!this.hasCodingAnswer() || !!this.hasStringAnswer() : true;
+    return isRequired(this.props.item) ? !!hasCodingAnswer(this.props.answer) || !!hasStringAnswer(this.props.answer) : true;
   }
 
   successCallback(valueSet: ValueSet): void {
@@ -108,7 +111,6 @@ class AutosuggestView extends React.Component<AutosuggestProps, AutosuggestState
       });
       return;
     }
-
     this.setState({
       isLoading: false,
       system: valueSet.compose.include[0].system || '',
@@ -126,9 +128,9 @@ class AutosuggestView extends React.Component<AutosuggestProps, AutosuggestState
   }
 
   clearCodingAnswerIfExists(): void {
-    const codingAnswer = this.getCodingAnswer();
-    const hasStringAnswer = this.hasStringAnswer();
-    if (codingAnswer && !hasStringAnswer) {
+    const codingAnswer = getCodingAnswer(this.props.answer);
+    const stringAnswer = hasStringAnswer(this.props.answer);
+    if (codingAnswer && !stringAnswer) {
       this.props.clearCodingAnswer(codingAnswer);
     }
   }
@@ -195,7 +197,8 @@ class AutosuggestView extends React.Component<AutosuggestProps, AutosuggestState
         noSuggestionsToShow: false,
       });
 
-      const codingAnswer = this.getCodingAnswer();
+      const codingAnswer = getCodingAnswer(this.props.answer);
+
       if (this.state.inputValue) {
         this.props.handleChange(OPEN_CHOICE_ID, OPEN_CHOICE_SYSTEM, this.props.resources?.openChoiceOption);
         this.props.handleStringChange(this.state.inputValue);
@@ -210,36 +213,10 @@ class AutosuggestView extends React.Component<AutosuggestProps, AutosuggestState
     }
   }
 
-  hasStringAnswer(): boolean {
-    return !!this.getStringAnswer();
-  }
-
-  hasCodingAnswer(): boolean {
-    return !!this.getCodingAnswer();
-  }
-
-  getCodingAnswer(): Coding | undefined {
-    if (Array.isArray(this.props.answer)) {
-      return this.props.answer.reduce((acc, x) => acc || x.valueCoding, undefined);
-    } else if (this.props.answer) {
-      return this.props.answer.valueCoding;
-    }
-    return undefined;
-  }
-
-  getStringAnswer(): string | undefined {
-    if (Array.isArray(this.props.answer)) {
-      return this.props.answer.reduce((acc, x) => acc || x.valueString, undefined);
-    } else if (this.props.answer) {
-      return this.props.answer.valueString;
-    }
-  }
-
   render(): JSX.Element {
     const { control, resources, item, onRenderMarkdown, questionnaire, id, renderHelpButton, renderHelpElement, idWithLinkIdAndItemIndex } =
       this.props;
     const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
-
     return (
       <div className="page_refero__component page_refero__component_choice page_refero__component_choice_autosuggest">
         <Controller
@@ -255,6 +232,7 @@ class AutosuggestView extends React.Component<AutosuggestProps, AutosuggestState
           render={({ field: { onChange, ...rest } }): JSX.Element => (
             <Autosuggest
               {...rest}
+              data-testid={getId(id)}
               id={getId(id)}
               label={<Label item={item} onRenderMarkdown={onRenderMarkdown} questionnaire={questionnaire} resources={resources} />}
               subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
@@ -270,6 +248,7 @@ class AutosuggestView extends React.Component<AutosuggestProps, AutosuggestState
                 // vis samme resultatsett neste gang feltet får fokus
               }}
               noCharacterValidation
+              renderSuggestion={(suggestion: Suggestion): JSX.Element => <div>{suggestion.label}</div>}
               onSubmitValidator={this.onSubmitValidator}
               onSuggestionSelected={this.onSuggestionSelected}
               onChange={(e: React.ChangeEvent<HTMLInputElement>, AutosuggestChangeEvent): void => {
@@ -278,13 +257,14 @@ class AutosuggestView extends React.Component<AutosuggestProps, AutosuggestState
               }}
               onBlur={(e: React.ChangeEvent<HTMLInputElement>, AutosuggestChangeEvent): void => {
                 this.onBlur(e, AutosuggestChangeEvent);
-                onChange(AutosuggestChangeEvent.highlightedSuggestion.value);
+                onChange(AutosuggestChangeEvent.highlightedSuggestion?.value);
               }}
               focusInputOnSuggestionClick={true}
               value={this.state.inputValue}
             />
           )}
         />
+
         {this.state.isLoading && (
           <div>
             <Loader size={'tiny'} />

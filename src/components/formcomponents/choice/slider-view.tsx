@@ -8,7 +8,7 @@ import { Slider, SliderStep } from '@helsenorge/designsystem-react/components/Sl
 
 import codeSystems from '../../../constants/codingsystems';
 import ExtensionConstants from '../../../constants/extensions';
-import { isRequired } from '../../../util';
+import { getId, isRequired } from '../../../util';
 import { getCodes as getCodingSystemCodes } from '../../../util/codingsystem';
 import { getExtension, getMaxValueExtensionValue, getMinValueExtensionValue, getValidationTextExtension } from '../../../util/extension';
 import { isString } from '../../../util/typeguards';
@@ -92,6 +92,7 @@ const SliderView: React.FC<SliderProps> = ({ item, handleChange, selected, child
               labelLeft={leftRightLabels?.leftLabel}
               labelRight={leftRightLabels?.rightLabel}
               steps={sliderSteps}
+              testId={getId(item.linkId)}
               onChange={(e): void => {
                 onValueChange(e);
                 field.onChange(e);

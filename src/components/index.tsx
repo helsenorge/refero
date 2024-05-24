@@ -95,13 +95,10 @@ const Refero = (props: StateProps & DispatchProps & ReferoProps): JSX.Element | 
       props.onSave(props.formData.Content);
     }
   };
-  React.useEffect(() => {
-    props.mount();
-  }, []);
 
   React.useEffect(() => {
     if (props.questionnaire) {
-      props.updateSkjema(props.questionnaire, props.questionnaireResponse, props.language, props.syncQuestionnaireResponse);
+      props.mount();
       setScoringCalculator(getScoringCalculator(props.questionnaire));
     }
   }, []);
@@ -218,7 +215,6 @@ const Refero = (props: StateProps & DispatchProps & ReferoProps): JSX.Element | 
       if (formData) {
         responseItems = getRootQuestionnaireResponseItemFromData(item.linkId, formData);
       }
-
       if (responseItems && responseItems.length > 0) {
         responseItems.forEach((responseItem, index) => {
           const repeatButton =
@@ -290,7 +286,6 @@ const Refero = (props: StateProps & DispatchProps & ReferoProps): JSX.Element | 
 
   const renderSkjema = (pdf?: boolean): Array<JSX.Element> | Array<Array<JSX.Element>> | JSX.Element | null | undefined => {
     const { formDefinition, resources } = props;
-
     if (!formDefinition || !formDefinition.Content || !resources) {
       return null;
     }
@@ -329,7 +324,6 @@ const Refero = (props: StateProps & DispatchProps & ReferoProps): JSX.Element | 
     if (!formDefinition || !resources) {
       return;
     }
-
     const referoProps = {
       authorized,
       blockSubmit,
@@ -343,7 +337,6 @@ const Refero = (props: StateProps & DispatchProps & ReferoProps): JSX.Element | 
       onFieldsNotCorrectlyFilledOut,
       onStepChange,
     };
-
     return (
       <FormProvider {...methods}>
         {isStepView ? (

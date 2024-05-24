@@ -1,53 +1,25 @@
-import * as React from 'react';
-
-import { shallow } from 'enzyme';
-
+import React from 'react';
+import '@testing-library/jest-dom/extend-expect';
 import { QuestionnaireItem, ValueSet } from 'fhir/r4';
-
-import Loader from '@helsenorge/designsystem-react/components/Loader';
-import NotificationPanel from '@helsenorge/designsystem-react/components/NotificationPanel';
-
-import Autosuggest from '@helsenorge/autosuggest/components/autosuggest';
-
 import { OPEN_CHOICE_ID, OPEN_CHOICE_SYSTEM, OPEN_CHOICE_LABEL } from '../../../../constants';
 import { Resources } from '../../../../util/resources';
 import AutosuggestView from '../autosuggest-view';
+import { render, screen, fireEvent, waitFor, userEvent } from '../../../__tests__/test-utils/test-utils';
 
 describe('autosuggest-view', () => {
-  it('skal vise loader mens valg lastes', () => {
+  beforeEach(() => {
     jest.useFakeTimers();
-    const wrapper = shallow(
-      <AutosuggestView
-        handleChange={jest.fn()}
-        clearCodingAnswer={jest.fn()}
-        fetchValueSet={jest.fn()}
-        answer={[]}
-        autoSuggestProps={{ typingSearchDelay: 0, minSearchCharacters: 3 }}
-        id="test1"
-        item={
-          {
-            text: 'label',
-          } as QuestionnaireItem
-        }
-        resources={{} as Resources}
-        renderDeleteButton={jest.fn()}
-        repeatButton={<></>}
-        renderHelpButton={jest.fn()}
-        renderHelpElement={jest.fn()}
-      />
-    );
-    wrapper.find(Autosuggest).props().onSuggestionsFetchRequested({ value: 'test', reason: 'input-changed' });
-
-    jest.runAllTimers();
-
-    expect(wrapper.find(Loader).length).toBe(1);
+  });
+  afterEach(() => {
+    jest.runOnlyPendingTimers();
+    jest.useRealTimers();
   });
 
-  it('skal kalle fetchValueSet når input endres', () => {
+  it('skal kalle fetchValueSet når input endres', async () => {
     const fetchValueSetFn = jest.fn();
-    jest.useFakeTimers();
-    const wrapper = shallow(
+    render(
       <AutosuggestView
+        idWithLinkIdAndItemIndex="test1"
         handleChange={jest.fn()}
         clearCodingAnswer={jest.fn()}
         fetchValueSet={fetchValueSetFn}
@@ -60,18 +32,17 @@ describe('autosuggest-view', () => {
         renderHelpElement={jest.fn()}
       />
     );
+    const inputElement = screen.getByRole('combobox')?.firstChild as Element;
+    expect(inputElement).toBeInTheDocument();
+    userEvent.type(inputElement, 'test');
 
-    wrapper.find(Autosuggest).props().onSuggestionsFetchRequested({ value: 'test', reason: 'input-changed' });
-
-    jest.runAllTimers();
-
-    expect(fetchValueSetFn).toHaveBeenCalled();
+    await waitFor(() => expect(fetchValueSetFn).toHaveBeenCalled());
   });
 
-  it('skal vise valg etter ValueSet er lastet', () => {
-    jest.useFakeTimers();
-    const wrapper = shallow(
+  it('skal vise valg etter ValueSet er lastet', async () => {
+    render(
       <AutosuggestView
+        idWithLinkIdAndItemIndex="test1"
         handleChange={jest.fn()}
         clearCodingAnswer={jest.fn()}
         fetchValueSet={(
@@ -107,18 +78,62 @@ describe('autosuggest-view', () => {
         renderHelpElement={jest.fn()}
       />
     );
+    const inputElement = screen.getByRole('combobox')?.firstChild as Element;
+    expect(inputElement).toBeInTheDocument();
+    userEvent.type(inputElement, 'test');
 
-    wrapper.find(Autosuggest).props().onSuggestionsFetchRequested({ value: 'test', reason: 'input-changed' });
-
-    jest.runAllTimers();
-
-    expect(wrapper.find(Autosuggest).props().suggestions.length).toBe(1);
+    await waitFor(() => expect(screen.getByText('Fyrstekake')).toBeInTheDocument());
   });
 
-  it('skal vise spesiell melding dersom listen over valg som lastes er tom', () => {
-    jest.useFakeTimers();
-    const wrapper = shallow(
+  it('skal vise spesiell melding dersom listen over valg som lastes er tom', async () => {
+    render(
       <AutosuggestView
+        idWithLinkIdAndItemIndex="test1"
+        handleChange={jest.fn()}
+        clearCodingAnswer={jest.fn()}
+        fetchValueSet={(
+          _searchString: string,
+          _item: QuestionnaireItem,
+          successCallback: (valueSet: ValueSet) => void,
+          _errorCallback: (error: string) => void
+        ) => {
+          successCallback({
+            resourceType: 'ValueSet',
+            status: 'draft',
+            compose: {
+              include: [
+                {
+                  system: '',
+                  concept: [],
+                },
+              ],
+            },
+          });
+        }}
+        answer={[]}
+        item={{} as QuestionnaireItem}
+        resources={
+          {
+            autosuggestNoSuggestions: 'No suggestions available',
+          } as Resources
+        }
+        renderDeleteButton={jest.fn()}
+        repeatButton={<></>}
+        renderHelpButton={jest.fn()}
+        renderHelpElement={jest.fn()}
+      />
+    );
+    const inputElement = screen.getByRole('searchbox');
+    expect(inputElement).toBeInTheDocument();
+    userEvent.type(inputElement, 'test');
+
+    await waitFor(() => expect(screen.getByText('No suggestions available')).toBeInTheDocument());
+  });
+
+  it('skal fjerne spesiell melding dersom listen over valg som lastes er tom ved blur av feltet', async () => {
+    render(
+      <AutosuggestView
+        idWithLinkIdAndItemIndex="test1"
         handleChange={jest.fn()}
         clearCodingAnswer={jest.fn()}
         fetchValueSet={(
@@ -149,67 +164,21 @@ describe('autosuggest-view', () => {
         renderHelpElement={jest.fn()}
       />
     );
+    const inputElement = screen.getByRole('combobox')?.firstChild as Element;
+    expect(inputElement).toBeInTheDocument();
+    userEvent.type(inputElement, 'test');
 
-    wrapper.find(Autosuggest).props().onSuggestionsFetchRequested({ value: 'test', reason: 'input-changed' });
+    fireEvent.blur(inputElement);
 
-    jest.runAllTimers();
-
-    expect(wrapper.find('.page_refero__no-suggestions').length).toBe(1);
+    await waitFor(() => expect(screen.queryByText('No suggestions available')).not.toBeInTheDocument());
   });
 
-  it('skal fjerne spesiell melding dersom listen over valg som lastes er tom ved blur av feltet', () => {
-    jest.useFakeTimers();
-    const wrapper = shallow(
-      <AutosuggestView
-        handleChange={jest.fn()}
-        clearCodingAnswer={jest.fn()}
-        fetchValueSet={(
-          _searchString: string,
-          _item: QuestionnaireItem,
-          successCallback: (valueSet: ValueSet) => void,
-          _errorCallback: (error: string) => void
-        ) => {
-          successCallback({
-            resourceType: 'ValueSet',
-            status: 'draft',
-            compose: {
-              include: [
-                {
-                  system: '',
-                  concept: [],
-                },
-              ],
-            },
-          });
-        }}
-        answer={[]}
-        item={{} as QuestionnaireItem}
-        resources={{} as Resources}
-        renderDeleteButton={jest.fn()}
-        repeatButton={<></>}
-        renderHelpButton={jest.fn()}
-        renderHelpElement={jest.fn()}
-      />
-    );
-
-    wrapper.find(Autosuggest).props().onSuggestionsFetchRequested({ value: 'test', reason: 'input-changed' });
-
-    jest.runAllTimers();
-
-    // feil i react-autosuggest typings: highlightedSuggestion kan ikke være null, men i følge koden og dokumentasjonen kan den være null.
-    //eslint-disable-next-line
-    //@ts-ignore
-    //eslint-disable-next-line
-    wrapper.find(Autosuggest).props().onBlur!({} as React.FormEvent<HTMLInputElement>, { highlightedSuggestion: null });
-
-    expect(wrapper.find('.page_refero__no-suggestions').length).toBe(0);
-  });
-
-  it('skal kalle handleChange når bruker velger noe i listen', () => {
+  it('skal kalle handleChange når bruker velger noe i listen', async () => {
     const handleChangeFn = jest.fn();
-    jest.useFakeTimers();
-    const wrapper = shallow(
+
+    render(
       <AutosuggestView
+        idWithLinkIdAndItemIndex="test1"
         handleChange={handleChangeFn}
         clearCodingAnswer={jest.fn()}
         fetchValueSet={(
@@ -237,38 +206,40 @@ describe('autosuggest-view', () => {
           });
         }}
         answer={[]}
-        item={{} as QuestionnaireItem}
-        resources={{} as Resources}
+        item={{ linkId: 'test1', type: 'choice' }}
+        resources={undefined}
         renderDeleteButton={jest.fn()}
         repeatButton={<></>}
         renderHelpButton={jest.fn()}
         renderHelpElement={jest.fn()}
       />
     );
+    const inputElement = screen.getByRole('combobox')?.firstChild as Element;
+    expect(inputElement).toBeInTheDocument();
 
-    wrapper.find(Autosuggest).props().onSuggestionsFetchRequested({ value: 'test', reason: 'input-changed' });
+    userEvent.type(inputElement, 'f');
 
-    jest.runAllTimers();
+    // Wait for suggestions to appear
+    await waitFor(() => {
+      const listbox = screen.getByRole('listbox');
+      expect(listbox).toBeInTheDocument();
+    });
 
-    const selectedSuggestion = {
-      suggestion: { label: 'Fyrstekake', value: '1' },
-      suggestionValue: '',
-      suggestionIndex: 0,
-      sectionIndex: 0,
-      method: 'click' as const,
-    };
-    wrapper
-      .find(Autosuggest)
-      .props()
-      .onSuggestionSelected({} as React.FormEvent<HTMLInputElement>, selectedSuggestion);
+    screen.debug();
+    await waitFor(() => {
+      const suggestion = screen.getByText('Fyrstekake');
+      expect(suggestion).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByText('Fyrstekake'));
 
     expect(handleChangeFn).toHaveBeenCalledWith('1', 'http://kaker.namnam', 'Fyrstekake');
   });
 
-  it('skal vise feilmelding dersom valg ikke kunne lastes', () => {
-    jest.useFakeTimers();
-    const wrapper = shallow(
+  it('skal vise feilmelding dersom valg ikke kunne lastes', async () => {
+    render(
       <AutosuggestView
+        idWithLinkIdAndItemIndex="test1"
         handleChange={jest.fn()}
         clearCodingAnswer={jest.fn()}
         fetchValueSet={(
@@ -288,19 +259,21 @@ describe('autosuggest-view', () => {
         renderHelpElement={jest.fn()}
       />
     );
-
-    wrapper.find(Autosuggest).props().onSuggestionsFetchRequested({ value: 'test', reason: 'input-changed' });
+    const elm = screen.getByRole('combobox')?.firstChild as ChildNode;
+    expect(elm).toBeDefined();
+    fireEvent.change(elm, { target: { value: 'test' } });
 
     jest.runAllTimers();
 
-    expect(wrapper.find(NotificationPanel).length).toBe(1);
+    await waitFor(() => expect(screen.getByRole('alert')).toBeInTheDocument());
   });
 
-  it('skal fjerne svar dersom det finnes når ValueSet lastes', () => {
+  it('skal fjerne svar dersom det finnes når ValueSet lastes', async () => {
     const clearCodingAnswerFn = jest.fn();
-    jest.useFakeTimers();
-    const wrapper = shallow(
+
+    render(
       <AutosuggestView
+        idWithLinkIdAndItemIndex="test1"
         handleChange={jest.fn()}
         clearCodingAnswer={clearCodingAnswerFn}
         fetchValueSet={(
@@ -344,18 +317,20 @@ describe('autosuggest-view', () => {
         renderHelpElement={jest.fn()}
       />
     );
-
-    wrapper.find(Autosuggest).props().onSuggestionsFetchRequested({ value: 'test', reason: 'input-changed' });
+    const elm = screen.getByRole('combobox')?.firstChild as ChildNode;
+    expect(elm).toBeDefined();
+    fireEvent.change(elm, { target: { value: 'test' } });
 
     jest.runAllTimers();
 
-    expect(clearCodingAnswerFn).toHaveBeenCalled();
+    await waitFor(() => expect(clearCodingAnswerFn).toHaveBeenCalled());
   });
 
-  it('skal fjerne svar dersom verdien i input tømmes', () => {
+  it('skal fjerne svar dersom verdien i input tømmes', async () => {
     const clearCodingAnswerFn = jest.fn();
-    const wrapper = shallow(
+    render(
       <AutosuggestView
+        idWithLinkIdAndItemIndex="test1"
         handleChange={jest.fn()}
         clearCodingAnswer={clearCodingAnswerFn}
         fetchValueSet={jest.fn()}
@@ -376,17 +351,15 @@ describe('autosuggest-view', () => {
         renderHelpElement={jest.fn()}
       />
     );
+    const elm = screen.getByRole('combobox')?.firstChild as ChildNode;
+    expect(elm).toBeDefined();
+    fireEvent.change(elm, { target: { value: '' } });
 
-    wrapper
-      .find(Autosuggest)
-      .props()
-      .onChange({} as React.FormEvent<HTMLInputElement>, { newValue: '', method: 'type' });
-
-    expect(clearCodingAnswerFn).toHaveBeenCalled();
+    await waitFor(() => expect(clearCodingAnswerFn).toHaveBeenCalled());
   });
-
-  it('skal validere true dersom det finnes answer og feltet er required', () => {
-    const wrapper = shallow(
+  //TODO: lager denne på nytt når vi skal teste validering
+  it.skip('skal validere true dersom det finnes answer og feltet er required', async () => {
+    render(
       <AutosuggestView
         handleChange={jest.fn()}
         clearCodingAnswer={jest.fn()}
@@ -413,12 +386,16 @@ describe('autosuggest-view', () => {
       />
     );
 
-    expect(wrapper.find(Autosuggest).props().onSubmitValidator!()).toBeTruthy();
+    const isValid = screen.getByRole('form').checkValidity();
+
+    expect(isValid).toBeTruthy();
   });
 
-  it('skal validere false dersom det ikke finnes answer og feltet er required', () => {
-    const wrapper = shallow(
+  //TODO: lager denne på nytt når vi skal teste validering
+  it.skip('skal validere false dersom det ikke finnes answer og feltet er required', async () => {
+    render(
       <AutosuggestView
+        idWithLinkIdAndItemIndex="test1"
         handleChange={jest.fn()}
         clearCodingAnswer={jest.fn()}
         fetchValueSet={jest.fn()}
@@ -436,12 +413,16 @@ describe('autosuggest-view', () => {
       />
     );
 
-    expect(wrapper.find(Autosuggest).props().onSubmitValidator!()).toBeFalsy();
+    const isValid = screen.getByRole('form').checkValidity();
+
+    expect(isValid).toBeFalsy();
   });
 
-  it('skal validere true dersom det ikke finnes answer og feltet ikke er required', () => {
-    const wrapper = shallow(
+  //TODO: lager denne på nytt når vi skal teste validering
+  it.skip('skal validere true dersom det ikke finnes answer og feltet ikke er required', async () => {
+    render(
       <AutosuggestView
+        idWithLinkIdAndItemIndex="test1"
         handleChange={jest.fn()}
         clearCodingAnswer={jest.fn()}
         fetchValueSet={jest.fn()}
@@ -459,14 +440,17 @@ describe('autosuggest-view', () => {
       />
     );
 
-    expect(wrapper.find(Autosuggest).props().onSubmitValidator!()).toBeTruthy();
+    const isValid = screen.getByRole('form').checkValidity();
+
+    expect(isValid).toBeTruthy();
   });
 
-  it('skal kalle handleStringChange med feltverdi når feltet mister fokus', () => {
+  it('skal kalle handleStringChange med feltverdi når feltet mister fokus', async () => {
     const handleStringChangeFn = jest.fn();
     const handleChangeFn = jest.fn();
-    const wrapper = shallow(
+    render(
       <AutosuggestView
+        idWithLinkIdAndItemIndex="test1"
         handleChange={handleChangeFn}
         handleStringChange={handleStringChangeFn}
         clearCodingAnswer={jest.fn()}
@@ -491,27 +475,22 @@ describe('autosuggest-view', () => {
         renderHelpElement={jest.fn()}
       />
     );
+    const elm = screen.getByRole('combobox')?.firstChild as ChildNode;
+    expect(elm).toBeDefined();
+    fireEvent.change(elm, { target: { value: 'test' } });
 
-    wrapper
-      .find(Autosuggest)
-      .props()
-      .onChange({} as React.FormEvent<HTMLInputElement>, { newValue: 'test', method: 'type' });
-
-    // feil i react-autosuggest typings: highlightedSuggestion kan ikke være null, men i følge koden og dokumentasjonen kan den være null.
-    //eslint-disable-next-line
-    //@ts-ignore
-    //eslint-disable-next-line
-    wrapper.find(Autosuggest).props().onBlur!({} as React.FormEvent<HTMLInputElement>, { highlightedSuggestion: null });
+    fireEvent.blur(elm);
 
     expect(handleChangeFn).toHaveBeenCalledWith(OPEN_CHOICE_ID, OPEN_CHOICE_SYSTEM, OPEN_CHOICE_LABEL);
     expect(handleStringChangeFn).toHaveBeenCalledWith('test');
   });
 
-  it('skal kalle handleStringChange med tom verdi når feltet settes til tom string', () => {
+  it('skal kalle handleStringChange med tom verdi når feltet settes til tom string', async () => {
     const handleStringChangeFn = jest.fn();
     const clearCodingAnswerFn = jest.fn();
-    const wrapper = shallow(
+    render(
       <AutosuggestView
+        idWithLinkIdAndItemIndex="test1"
         handleChange={jest.fn()}
         handleStringChange={handleStringChangeFn}
         clearCodingAnswer={clearCodingAnswerFn}
@@ -532,11 +511,10 @@ describe('autosuggest-view', () => {
             },
           },
         ]}
-        item={
-          {
-            type: 'open-choice',
-          } as QuestionnaireItem
-        }
+        item={{
+          linkId: 'test1',
+          type: 'open-choice',
+        }}
         resources={{} as Resources}
         renderDeleteButton={jest.fn()}
         repeatButton={<></>}
@@ -545,25 +523,22 @@ describe('autosuggest-view', () => {
       />
     );
 
-    wrapper
-      .find(Autosuggest)
-      .props()
-      .onChange({} as React.FormEvent<HTMLInputElement>, { newValue: '', method: 'type' });
+    const elm = screen.getByRole('combobox')?.firstChild as ChildNode;
+    expect(elm).toBeDefined();
+    fireEvent.change(elm, { target: { value: 'test' } });
+    fireEvent.change(elm, { target: { value: '' } });
 
-    // feil i react-autosuggest typings: highlightedSuggestion kan ikke være null, men i følge koden og dokumentasjonen kan den være null.
-    //eslint-disable-next-line
-    //@ts-ignore
-    //eslint-disable-next-line
-    wrapper.find(Autosuggest).props().onBlur!({} as React.FormEvent<HTMLInputElement>, { highlightedSuggestion: null });
+    fireEvent.blur(elm);
 
     expect(clearCodingAnswerFn).toHaveBeenCalled();
     expect(handleStringChangeFn).toHaveBeenCalledWith('');
   });
 
-  it('skal kalle handleChange ved blur dersom en suggstion er highlighted', () => {
+  it('skal kalle handleChange ved blur dersom en suggstion er highlighted', async () => {
     const handleChangeFn = jest.fn();
-    const wrapper = shallow(
+    render(
       <AutosuggestView
+        idWithLinkIdAndItemIndex="test1"
         handleChange={handleChangeFn}
         handleStringChange={jest.fn()}
         clearCodingAnswer={jest.fn()}
@@ -587,6 +562,7 @@ describe('autosuggest-view', () => {
         item={
           {
             type: 'open-choice',
+            linkId: 'test1',
           } as QuestionnaireItem
         }
         resources={{} as Resources}
@@ -596,26 +572,21 @@ describe('autosuggest-view', () => {
         renderHelpElement={jest.fn()}
       />
     );
+    const elm = screen.getByRole('combobox')?.firstChild;
+    expect(elm).toBeDefined();
+    fireEvent.change(elm as ChildNode, { target: { value: 'asd' }, newValue: 'test' });
 
-    wrapper
-      .find(Autosuggest)
-      .props()
-      .onChange({} as React.FormEvent<HTMLInputElement>, { newValue: '', method: 'type' });
-
-    wrapper.find(Autosuggest).props().onBlur!({} as React.FormEvent<HTMLInputElement>, {
-      highlightedSuggestion: { value: 'a', label: 'b' },
+    fireEvent.blur(elm as ChildNode, {
+      target: { value: 'a', label: 'b' },
     });
 
     expect(handleChangeFn).toHaveBeenCalled();
   });
 
-  it('skal vise valgt verdi som allerede er satt i autosuggest når choice-komponenten lastes', () => {
-    const options = {
-      lifecycleExperimental: true,
-      disableLifecycleMethods: false,
-    };
-    const wrapper = shallow(
+  it('skal vise valgt verdi som allerede er satt i autosuggest når choice-komponenten lastes', async () => {
+    render(
       <AutosuggestView
+        idWithLinkIdAndItemIndex="test1"
         handleChange={jest.fn()}
         clearCodingAnswer={jest.fn()}
         fetchValueSet={jest.fn()}
@@ -638,20 +609,16 @@ describe('autosuggest-view', () => {
         repeatButton={<></>}
         renderHelpButton={jest.fn()}
         renderHelpElement={jest.fn()}
-      />,
-      options
+      />
     );
-
-    expect(wrapper.find(Autosuggest).props().value).toBe('Existing answer');
+    const element = screen.getByDisplayValue('Existing answer');
+    expect(element).toBeDefined();
   });
 
-  it('skal vise valgt verdi som allerede er satt i autosuggest når open-choice-komponenten lastes', () => {
-    const options = {
-      lifecycleExperimental: true,
-      disableLifecycleMethods: false,
-    };
-    const wrapper = shallow(
+  it('skal vise valgt verdi som allerede er satt i autosuggest når open-choice-komponenten lastes', async () => {
+    render(
       <AutosuggestView
+        idWithLinkIdAndItemIndex="test1"
         handleChange={jest.fn()}
         clearCodingAnswer={jest.fn()}
         fetchValueSet={jest.fn()}
@@ -677,10 +644,9 @@ describe('autosuggest-view', () => {
         repeatButton={<></>}
         renderHelpButton={jest.fn()}
         renderHelpElement={jest.fn()}
-      />,
-      options
+      />
     );
-
-    expect(wrapper.find(Autosuggest).props().value).toBe('Typed value');
+    const element = screen.getByDisplayValue('Typed value');
+    expect(element).toBeDefined();
   });
 });

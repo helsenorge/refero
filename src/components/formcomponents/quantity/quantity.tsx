@@ -188,6 +188,7 @@ class Quantity extends React.Component<Props> {
                 }
                 type="number"
                 inputId={getId(id)}
+                testId={getId(id)}
                 placeholder={getPlaceholder(item)}
                 className="page_refero__quantity"
                 onChange={(e): void => {

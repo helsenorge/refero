@@ -91,6 +91,7 @@ class DropdownView extends React.Component<Props, Record<string, unknown>> {
                   />
                 }
                 selectId={getId(id)}
+                testId={getId(id)}
                 onChange={(e): void => {
                   handleChange(e);
                   onChange(e);

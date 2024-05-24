@@ -105,6 +105,7 @@ const textField: React.FC<Props> = ({
             type="text"
             mode="ongrey"
             inputId={`${getId(id)}-extra-field`}
+            testId={`${getId(id)}-extra-field`}
             label={
               <Label
                 labelTexts={[{ text: labelText, type: 'semibold' }]}

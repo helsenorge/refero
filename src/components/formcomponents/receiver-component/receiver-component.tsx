@@ -223,6 +223,7 @@ class ReceiverComponent extends React.Component<ReceiverComponentProps & FormPro
             }}
             value={this.state.selectedPath[level] ? this.state.selectedPath[level].toString() : ''}
             key={selectKey}
+            testId={`${getId(this.props.id)}-${selectKey}`}
             selectId={`${getId(this.props.id)}-${selectKey}`}
             label={<Label labelTexts={[{ text: label, type: 'semibold' }]} />}
             className="page_refero__input"

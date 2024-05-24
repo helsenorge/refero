@@ -7,21 +7,19 @@ import { ThunkDispatch } from 'redux-thunk';
 import { TextMessage } from '../../../types/text-message';
 
 import { UploadedFile } from '@helsenorge/file-upload/components/dropzone';
+import { UploadFile } from '@helsenorge/file-upload/components/file-upload';
 
 import AttachmentHtml from './attachmenthtml';
 import { NewValueAction, newAttachmentAsync, removeAttachmentAsync } from '../../../actions/newValue';
 import { GlobalState } from '../../../reducers';
 import { getValidationTextExtension, getMaxOccursExtensionValue, getMinOccursExtensionValue } from '../../../util/extension';
-import { isRequired, getId, isReadOnly, isRepeat, getSublabelText } from '../../../util/index';
+import { isRequired, getId, isReadOnly, isRepeat, getSublabelText, getText, renderPrefix } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
 import { Resources } from '../../../util/resources';
 import ReactHookFormHoc, { FormProps } from '../../../validation/ReactHookFormHoc';
 import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
-import Label from '../label';
-import SubLabel from '../sublabel';
 import TextView from '../textview';
-import { UploadFile } from '@helsenorge/file-upload/components/file-upload';
 
 export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
@@ -38,10 +36,7 @@ export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   attachmentErrorMessage?: string;
   attachmentMaxFileSize?: number;
   attachmentValidTypes?: Array<string>;
-  uploadAttachment?: (
-    files: File[],
-    onSuccess: (attachment: Attachment) => void
-  ) => void;
+  uploadAttachment?: (files: File[], onSuccess: (attachment: Attachment) => void) => void;
   onDeleteAttachment?: (fileId: string, onSuccess: () => void) => void;
   onOpenAttachment?: (fileId: string) => void;
   onRequestAttachmentLink?: (file: string) => string;
@@ -53,7 +48,7 @@ export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
 }
 
 export class AttachmentComponent extends React.Component<Props> {
-  onUpload = (files: UploadFile[]) => {
+  onUpload = (files: UploadFile[]): void => {
     const { uploadAttachment, path, item, onAnswerChange } = this.props;
     if (uploadAttachment) {
       for (const file of files) {
@@ -70,7 +65,7 @@ export class AttachmentComponent extends React.Component<Props> {
     }
   };
 
-  onDelete = (fileId: string) => {
+  onDelete = (fileId: string): void => {
     const { onDeleteAttachment, path, item, onAnswerChange } = this.props;
 
     if (onDeleteAttachment) {
@@ -148,7 +143,7 @@ export class AttachmentComponent extends React.Component<Props> {
 
   render(): JSX.Element | null {
     const { pdf, id, item, resources, onOpenAttachment, onRenderMarkdown, questionnaire } = this.props;
-    const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
+    const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`;
 
     if (pdf || isReadOnly(item)) {
       return (
@@ -171,8 +166,7 @@ export class AttachmentComponent extends React.Component<Props> {
             onDelete={this.onDelete}
             onOpen={onOpenAttachment}
             id={getId(id)}
-            label={<Label item={item} onRenderMarkdown={onRenderMarkdown} questionnaire={questionnaire} resources={resources} />}
-            subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
+            labelText={labelText}
             uploadButtonText={this.getButtonText()}
             resources={resources}
             isRequired={isRequired(item)}
@@ -189,9 +183,7 @@ export class AttachmentComponent extends React.Component<Props> {
             item={item}
             attachmentErrorMessage={this.props.attachmentErrorMessage}
             register={this.props.register}
-            setValue={this.props.setValue}
             error={this.props.error}
-            resetField={this.props.resetField}
           >
             {this.props.children}
           </AttachmentHtml>

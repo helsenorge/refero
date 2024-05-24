@@ -78,7 +78,6 @@ describe('Open-Choice component render', () => {
     const input = screen.getAllByRole('textbox');
     expect(input.length).toBeGreaterThan(0);
     input.forEach(input => {
-      console.log(input.outerHTML);
       expect(input).toHaveAttribute('type', 'text');
       expect(input).not.toHaveAttribute('disabled');
       expect(input).toHaveValue('');

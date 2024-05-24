@@ -20,8 +20,6 @@ import { OrgenhetHierarki } from '../types/orgenhetHierarki';
 import Icon from '@helsenorge/designsystem-react/components/Icons';
 import HelpSign from '@helsenorge/designsystem-react/components/Icons/HelpSign';
 
-import { UploadedFile } from '@helsenorge/file-upload/components/dropzone';
-
 import DeleteButton from './formcomponents/repeat/DeleteButton';
 import RepeatButton from './formcomponents/repeat/RepeatButton';
 import HelpButton from './help-button/HelpButton';
@@ -73,10 +71,7 @@ export interface WithCommonFunctionsProps {
   onRequestAttachmentLink?: (file: string) => string;
   onOpenAttachment?: (fileId: string) => void;
   onDeleteAttachment?: (fileId: string, onSuccess: () => void) => void;
-  uploadAttachment?: (
-    files: File[],
-    onSuccess: (attachment: Attachment) => void
-  ) => void;
+  uploadAttachment?: (files: File[], onSuccess: (attachment: Attachment) => void) => void;
   onRequestHelpButton?: (
     item: QuestionnaireItem,
     itemHelp: QuestionnaireItem,

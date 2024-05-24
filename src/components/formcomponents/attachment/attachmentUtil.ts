@@ -1,6 +1,7 @@
 import { QuestionnaireItem } from 'fhir/r4';
-import { getMaxSizeExtensionValue } from '../../../util/extension';
+
 import constants from '../../../constants';
+import { getMaxSizeExtensionValue } from '../../../util/extension';
 
 export function convertMBToBytes(mb: number): number {
   if (typeof mb !== 'number' || isNaN(mb)) {
@@ -41,7 +42,7 @@ export function convertBytesToMB(bytes: number): number {
   return bytes / 1024 / 1024;
 }
 
-export const getFileExtension = (filename: string) => {
+export const getFileExtension = (filename: string): string => {
   return filename.slice(((filename.lastIndexOf('.') - 1) >>> 0) + 2);
 };
 

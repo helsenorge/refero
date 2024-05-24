@@ -79,7 +79,7 @@ export class Text extends React.Component<Props> {
     const value = (event.target as HTMLInputElement).value;
     if (dispatch) {
       dispatch(newStringValueAsync(this.props.path, value, this.props.item))?.then(newState =>
-        onAnswerChange(newState, path, item, { valueString: value } as QuestionnaireResponseItemAnswer)
+        onAnswerChange(newState, path, item, { valueString: value })
       );
     }
 
@@ -189,14 +189,15 @@ export class Text extends React.Component<Props> {
     const minLength = getMinLengthExtensionValue(item);
     const pattern = getRegexExtension(item);
     const validationTextMessage = getValidationTextExtension(item);
+
     return (
       <div className="page_refero__component page_refero__component_text">
         <FormGroup error={this.props.error?.message} mode="ongrey">
           {this.props.renderHelpElement()}
           <Controller
             name={idWithLinkIdAndItemIndex}
+            defaultValue={value || ''}
             control={control}
-            defaultValue={value}
             shouldUnregister={true}
             rules={{
               required: {
@@ -227,7 +228,7 @@ export class Text extends React.Component<Props> {
                 {...rest}
                 onChange={(e): void => {
                   this.onTextAreaChange(e);
-                  onChange(e.target.value);
+                  onChange(e?.target?.value);
                 }}
                 textareaId={getId(id)}
                 maxRows={Constants.DEFAULT_TEXTAREA_HEIGHT}

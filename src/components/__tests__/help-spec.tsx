@@ -1,11 +1,6 @@
+import { render, screen } from './test-utils/test-utils';
 import * as React from 'react';
-import { createStore } from 'redux';
-import { Provider, Store } from 'react-redux';
-import { ThunkDispatch } from 'redux-thunk';
-import { ReactWrapper, mount } from 'enzyme';
 
-import '../../util/defineFetch';
-import rootReducer from '../../reducers';
 import { QuestionnaireItem, Extension, QuestionnaireResponseItemAnswer, QuestionnaireItemAnswerOption } from 'fhir/r4';
 import { Path } from '../../util/refero-core';
 import String from '../formcomponents/string/string';
@@ -21,12 +16,12 @@ import Integer from '../formcomponents/integer/integer';
 import OpenChoice from '../formcomponents/open-choice/open-choice';
 import Quantity from '../formcomponents/quantity/quantity';
 import Text from '../formcomponents/text/text';
-import { GlobalState } from '../../reducers/index';
-import { NewValueAction } from '../../actions/newValue';
 import { RenderContextType } from '../../constants/renderContextType';
 import { RenderContext } from '../../util/renderContext';
-import { createItemControlExtension } from '../__tests__/utils';
+import { createItemControlExtension } from './utils';
 import ItemType, { IItemType } from '../../constants/itemType';
+import '@testing-library/jest-dom/extend-expect';
+import HelpButton from '../help-button/HelpButton';
 
 describe('Component renders help items', () => {
   it('should render help button and text for choice component of type radio-button', () => {
@@ -111,20 +106,22 @@ enum HelpElement {
 
 function runTest(itemType: IItemType, expect: HelpElement, extensions?: Extension[]) {
   const component = createComponentOfType(itemType, extensions);
-  const wrapper = createWrapperWithComponent(component);
-  if (itemType === ItemType.CHOICE && extensions?.[0]?.valueCodeableConcept?.coding?.[0]?.code === 'check-box') {
-    console.log(wrapper.debug());
-  }
-  wrapper.render();
-
-  expectToFind(wrapper, expect);
+  renderWrapperWithComponent(component);
+  expectToFind(expect);
 }
 
-function expectToFind(wrapper: ReactWrapper<{}, {}>, helpElement: HelpElement) {
-  expect(wrapper.find('.helpButton')).toHaveLength(
-    helpElement == HelpElement.HelpButton || helpElement == HelpElement.HelpButtonAndText ? 1 : 0
-  );
-  expect(wrapper.find('.helpText')).toHaveLength(helpElement == HelpElement.HelpButtonAndText ? 1 : 0);
+function expectToFind(helpElement: HelpElement) {
+  if (helpElement == HelpElement.HelpButton || helpElement == HelpElement.HelpButtonAndText) {
+    expect(screen.getByText('help button')).toBeInTheDocument();
+  } else {
+    expect(screen.queryByText('help button')).not.toBeInTheDocument();
+  }
+
+  if (helpElement == HelpElement.HelpButtonAndText) {
+    expect(screen.getByText('help text')).toBeInTheDocument();
+  } else {
+    expect(screen.queryByText('help text')).not.toBeInTheDocument();
+  }
 }
 
 function createItemWithOption(extensions?: Extension[], ...options: QuestionnaireItemAnswerOption[]): QuestionnaireItem {
@@ -153,9 +150,9 @@ function createItem(itemType: IItemType, extensions?: Extension[]): Questionnair
   };
 }
 
-function createWrapperWithComponent(component: JSX.Element): ReactWrapper<{}, {}> {
-  const store: Store<{}> = createStore(rootReducer);
-  return mount(<Provider store={store}>{component}</Provider>);
+function renderWrapperWithComponent(component: JSX.Element) {
+  const initialState = {}; // Add any required initial state here
+  return render(component, { initialState });
 }
 
 function createComponentOfType(type: IItemType, extensions?: Extension[]): JSX.Element {
@@ -196,8 +193,9 @@ function createComponentText(extensions?: Extension[]): JSX.Element {
 
   return (
     <Text
-      dispatch={() => undefined as unknown as ThunkDispatch<GlobalState, void, NewValueAction>}
-      answer={{} as QuestionnaireResponseItemAnswer}
+      idWithLinkIdAndItemIndex={item.linkId}
+      dispatch={() => undefined as any}
+      answer={{ valueString: 'text', id: '1', item: [item] }}
       item={item}
       path={{} as Path[]}
       renderDeleteButton={() => null}
@@ -215,7 +213,8 @@ function createComponentQuantity(extensions?: Extension[]): JSX.Element {
 
   return (
     <Quantity
-      dispatch={() => undefined as unknown as ThunkDispatch<GlobalState, void, NewValueAction>}
+      idWithLinkIdAndItemIndex={item.linkId}
+      dispatch={() => undefined as any}
       answer={{} as QuestionnaireResponseItemAnswer}
       item={item}
       path={{} as Path[]}
@@ -234,7 +233,8 @@ function createComponentInteger(extensions?: Extension[]): JSX.Element {
 
   return (
     <Integer
-      dispatch={() => undefined as unknown as ThunkDispatch<GlobalState, void, NewValueAction>}
+      idWithLinkIdAndItemIndex={item.linkId}
+      dispatch={() => undefined as any}
       answer={{} as QuestionnaireResponseItemAnswer}
       item={item}
       path={{} as Path[]}
@@ -243,7 +243,6 @@ function createComponentInteger(extensions?: Extension[]): JSX.Element {
       renderHelpButton={() => <div className="helpButton">{'help button'}</div>}
       renderHelpElement={() => <div className="helpText">{'help text'}</div>}
       renderContext={new RenderContext(RenderContextType.None)}
-      register={(...args) => undefined}
     />
   );
 }
@@ -253,7 +252,8 @@ function createComponentDecimal(extensions?: Extension[]): JSX.Element {
 
   return (
     <Decimal
-      dispatch={() => undefined as unknown as ThunkDispatch<GlobalState, void, NewValueAction>}
+      idWithLinkIdAndItemIndex={item.linkId}
+      dispatch={() => undefined as any}
       answer={{} as QuestionnaireResponseItemAnswer}
       item={item}
       path={{} as Path[]}
@@ -262,7 +262,6 @@ function createComponentDecimal(extensions?: Extension[]): JSX.Element {
       renderHelpButton={() => <div className="helpButton">{'help button'}</div>}
       renderHelpElement={() => <div className="helpText">{'help text'}</div>}
       renderContext={new RenderContext(RenderContextType.None)}
-      register={(...args) => undefined}
     />
   );
 }
@@ -272,7 +271,8 @@ function createComponentTime(extensions?: Extension[]): JSX.Element {
 
   return (
     <Time
-      dispatch={() => undefined as unknown as ThunkDispatch<GlobalState, void, NewValueAction>}
+      idWithLinkIdAndItemIndex={item.linkId}
+      dispatch={() => undefined as any}
       answer={{} as QuestionnaireResponseItemAnswer}
       item={item}
       path={{} as Path[]}
@@ -291,7 +291,8 @@ function createComponentDateTime(extensions?: Extension[]): JSX.Element {
 
   return (
     <DateTime
-      dispatch={() => undefined as unknown as ThunkDispatch<GlobalState, void, NewValueAction>}
+      idWithLinkIdAndItemIndex={item.linkId}
+      dispatch={() => undefined as any}
       answer={{} as QuestionnaireResponseItemAnswer}
       item={item}
       path={{} as Path[]}
@@ -310,7 +311,8 @@ function createComponentDate(extensions?: Extension[]): JSX.Element {
 
   return (
     <Date
-      dispatch={() => undefined as unknown as ThunkDispatch<GlobalState, void, NewValueAction>}
+      idWithLinkIdAndItemIndex={item.linkId}
+      dispatch={() => undefined as any}
       answer={{} as QuestionnaireResponseItemAnswer}
       item={item}
       path={{} as Path[]}
@@ -329,7 +331,8 @@ function createComponentAttachment(extensions?: Extension[]): JSX.Element {
 
   return (
     <Attachment
-      dispatch={() => undefined as unknown as ThunkDispatch<GlobalState, void, NewValueAction>}
+      idWithLinkIdAndItemIndex={item.linkId}
+      dispatch={() => undefined as any}
       answer={{} as QuestionnaireResponseItemAnswer}
       item={item}
       path={{} as Path[]}
@@ -348,7 +351,8 @@ function createComponentGroup(extensions?: Extension[]): JSX.Element {
 
   return (
     <Group
-      dispatch={() => undefined as unknown as ThunkDispatch<GlobalState, void, NewValueAction>}
+      idWithLinkIdAndItemIndex={item.linkId}
+      dispatch={() => undefined as any}
       answer={{} as QuestionnaireResponseItemAnswer}
       item={item}
       path={{} as Path[]}
@@ -369,7 +373,8 @@ function createComponentBoolean(extensions?: Extension[]): JSX.Element {
 
   return (
     <Boolean
-      dispatch={() => undefined as unknown as ThunkDispatch<GlobalState, void, NewValueAction>}
+      idWithLinkIdAndItemIndex={item.linkId}
+      dispatch={() => undefined as any}
       answer={{} as QuestionnaireResponseItemAnswer}
       item={item}
       path={{} as Path[]}
@@ -389,7 +394,8 @@ function createComponentString(extensions?: Extension[]): JSX.Element {
 
   return (
     <String
-      dispatch={() => undefined as unknown as ThunkDispatch<GlobalState, void, NewValueAction>}
+      idWithLinkIdAndItemIndex={item.linkId}
+      dispatch={() => undefined as any}
       answer={{} as QuestionnaireResponseItemAnswer}
       item={item}
       path={{} as Path[]}
@@ -397,7 +403,11 @@ function createComponentString(extensions?: Extension[]): JSX.Element {
       repeatButton={<React.Fragment />}
       visibleDeleteButton={false}
       oneToTwoColumn={false}
-      renderHelpButton={() => <div className="helpButton">{'help button'}</div>}
+      renderHelpButton={() => (
+        <HelpButton callback={() => {}} item={item}>
+          {'help button'}
+        </HelpButton>
+      )}
       renderHelpElement={() => <div className="helpText">{'help text'}</div>}
       renderContext={new RenderContext(RenderContextType.None)}
       renderRepeatButton={() => <React.Fragment />}
@@ -411,7 +421,8 @@ function createComponentChoice(extensions?: Extension[]): JSX.Element {
 
   return (
     <Choice
-      dispatch={() => undefined as unknown as ThunkDispatch<GlobalState, void, NewValueAction>}
+      idWithLinkIdAndItemIndex={item.linkId}
+      dispatch={() => undefined as any}
       answer={{} as QuestionnaireResponseItemAnswer}
       item={item}
       path={{} as Path[]}
@@ -431,7 +442,8 @@ function createComponentOpenChoice(extensions?: Extension[]): JSX.Element {
 
   return (
     <OpenChoice
-      dispatch={() => undefined as unknown as ThunkDispatch<GlobalState, void, NewValueAction>}
+      idWithLinkIdAndItemIndex={item.linkId}
+      dispatch={() => undefined as any}
       answer={{} as QuestionnaireResponseItemAnswer}
       item={item}
       path={{} as Path[]}

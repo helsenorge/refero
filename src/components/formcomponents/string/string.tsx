@@ -175,6 +175,7 @@ export class String extends React.Component<Props, Record<string, unknown>> {
                 }}
                 type="text"
                 width={25}
+                testId={getId(this.props.id)}
                 inputId={getId(this.props.id)}
                 placeholder={getPlaceholder(item)}
                 className="page_refero__input"
