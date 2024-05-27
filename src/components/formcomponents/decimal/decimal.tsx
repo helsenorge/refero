@@ -44,7 +44,6 @@ export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
 
 class Decimal extends React.Component<Props, Record<string, unknown>> {
   getValue = (item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer): string | number | number[] | undefined => {
-    console.log('answer', answer);
     if (answer && Array.isArray(answer)) {
       return answer.map(m => m.valueDecimal);
     }

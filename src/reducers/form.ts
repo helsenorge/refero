@@ -77,7 +77,6 @@ const initialState: Form = {
 };
 
 export default function reducer(state: Form = initialState, action: NewValueAction | FormAction): Form | undefined {
-  console.log(action);
   switch (action.type) {
     case NEW_VALUE:
       return processNewValueAction(action, state);

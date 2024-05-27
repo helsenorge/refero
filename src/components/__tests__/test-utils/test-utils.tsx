@@ -1,13 +1,11 @@
 import React, { ReactElement } from 'react';
 import { render, RenderOptions } from '@testing-library/react';
 import { Provider, Store } from 'react-redux';
-import configureMockStore, { MockStore, MockStoreEnhanced } from 'redux-mock-store';
+import configureMockStore, { MockStoreEnhanced } from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { FormProvider, useForm } from 'react-hook-form';
 import '@testing-library/jest-dom/extend-expect';
 import rootReducer, { GlobalState } from '../../../reducers';
-import { Questionnaire } from 'fhir/r4';
-import { generateQuestionnaireResponse } from '../../../actions/generateQuestionnaireResponse';
 import { applyMiddleware, createStore } from 'redux';
 const mockStore = configureMockStore<Partial<GlobalState>>([thunk]);
 

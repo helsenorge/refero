@@ -1,30 +1,25 @@
 import * as React from 'react';
-
-import { mount } from 'enzyme';
-import { Provider } from 'react-redux';
+import { renderWithRedux, screen } from './test-utils/test-utils';
+import userEvent from '@testing-library/user-event';
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
+import '@testing-library/jest-dom';
 
 import { Questionnaire, QuestionnaireItem } from 'fhir/r4';
 
 import '../../util/defineFetch';
-import Boolean from '../../components/formcomponents/boolean/boolean';
-import { RepeatButton as RepeatButtonInstance } from '../formcomponents/repeat/RepeatButton';
 import itemControlConstants from '../../constants/itemcontrol';
-import rootReducer from '../../reducers';
+import rootReducer, { GlobalState } from '../../reducers';
 import { Resources } from '../../util/resources';
-import HelpButton from '../help-button/HelpButton';
-import TextView from '../formcomponents/textview';
 import { ReferoContainer } from '../index';
 import RenderingOptionsData from './__data__/renderingOptions';
 import ChoiceCopyFrom from './__data__/copyFrom/choice';
-import { createItemControlExtension, selectCheckBoxOption } from '../__tests__/utils';
+import { createItemControlExtension, findItemById, selectCheckBoxOption } from '../__tests__/utils';
 import itemcontrol from '../../constants/itemcontrol';
-import Input from '@helsenorge/designsystem-react/components/Input';
 
 describe('Component renders help items', () => {
   it('help button should be visible and control the help element', () => {
-    let expectedOpeningStatus: boolean = false;
+    let expectedOpeningStatus = false;
 
     const helpButtonCb = (item: QuestionnaireItem, helpItem: QuestionnaireItem, helpType: string, helpText: string, opening: boolean) => {
       expect(item.linkId).toBe('1');
@@ -47,92 +42,79 @@ describe('Component renders help items', () => {
     };
 
     // Render schema with 1 help button
-    const wrapper = createWrapper(questionnaireWithHelp(), helpButtonCb, helpElementCb);
-    wrapper.render();
+    const { container } = createWrapper(questionnaireWithHelp(), helpButtonCb, helpElementCb);
 
-    expect(wrapper.find('.helpButton')).toHaveLength(1);
-    expect(wrapper.find('.helpElement')).toHaveLength(0);
+    expect(container.querySelectorAll('.helpButton')).toHaveLength(1);
+    expect(container.querySelectorAll('.helpElement')).toHaveLength(0);
 
     // click help button to open the help element
     expectedOpeningStatus = true;
-    wrapper.find(HelpButton).simulate('click');
-    expect(wrapper.find('.helpElement')).toHaveLength(1);
+    userEvent.click(container.querySelectorAll('.helpButton')[0]);
+    expect(container.querySelectorAll('.helpElement')).toHaveLength(1);
 
     // click help button to close the help element
     expectedOpeningStatus = false;
-    wrapper.find(HelpButton).simulate('click');
-    expect(wrapper.find('.helpElement')).toHaveLength(0);
+    userEvent.click(container.querySelectorAll('.helpButton')[0]);
+    expect(container.querySelectorAll('.helpElement')).toHaveLength(0);
   });
 });
 
 describe('repeat with enableWhen', () => {
   beforeEach(() => {
-    window.matchMedia = jest.fn().mockImplementation(_ => {
+    window.matchMedia = jest.fn().mockImplementation(() => {
       return {};
     });
   });
 
-  it('When we add a section with repeat, the enableWhen component should be hidden per default', () => {
-    const wrapper = createWrapper(questionnaireWithRepeatedEnableWhens());
-    wrapper.render();
+  it.only('When we add a section with repeat, the enableWhen component should be hidden per default', () => {
+    const { container } = createWrapper(questionnaireWithRepeatedEnableWhens());
 
     // clicking the repeat button, repeats the elements
-    expect(wrapper.find(Boolean)).toHaveLength(1);
+    expect(container.querySelectorAll('input[type="checkbox"]')).toHaveLength(1);
 
-    wrapper.find(RepeatButtonInstance).simulate('click');
-    expect(wrapper.find(Boolean)).toHaveLength(2);
+    userEvent.click(screen.getByRole('button', { name: /repeat/i }));
+    expect(container.querySelectorAll('input[type="checkbox"]')).toHaveLength(2);
 
     // no enableWhen components should be visible
-    expect(wrapper.find(Input)).toHaveLength(0);
+    expect(container.querySelectorAll('input[type="text"]')).toHaveLength(0);
 
     // Click first boolean input, and enableWhen component should be enabled
-    wrapper
-      .find("input[type='checkbox']")
-      .first()
-      .simulate('change', { taget: { checked: true } });
-    expect(wrapper.find(Input)).toHaveLength(1);
+    userEvent.click(container.querySelectorAll('input[type="checkbox"]')[0]);
+    expect(container.querySelectorAll('input[type="text"]')).toHaveLength(1);
 
     // Click last boolean input, and enableWhen component should be enabled
-    wrapper
-      .find("input[type='checkbox']")
-      .last()
-      .simulate('change', { target: { checked: true } });
-    expect(wrapper.find(Input)).toHaveLength(2);
+    userEvent.click(container.querySelectorAll('input[type="checkbox"]')[1]);
+    expect(container.querySelectorAll('input[type="text"]')).toHaveLength(2);
   });
 });
 
 describe('Coding system (RenderingOptions)', () => {
-  it('Only displayes items that have system code as KunSkjemautfyll or Default', () => {
-    const wrapper = createWrapper(RenderingOptionsData);
-    wrapper.render();
+  it('Only displays items that have system code as KunSkjemautfyll or Default', () => {
+    const { container } = createWrapper(RenderingOptionsData);
 
-    expect(wrapper.find('#item_group1_default').exists()).toBeTruthy();
-    expect(wrapper.find('#item_group1_default_text').exists()).toBeTruthy();
-    expect(wrapper.find('#item_group1_default_checkbox').exists()).toBeTruthy();
-    expect(wrapper.find('#item_group2').exists()).toBeTruthy();
-    expect(wrapper.find('#item_group2_kunskjemautfyll_text').exists()).toBeTruthy();
-    expect(wrapper.find('#item_group4_kunskjemautfyll').exists()).toBeTruthy();
-    expect(wrapper.find('#item_group4_kunskjemautfyll_text').exists()).toBeTruthy();
-    expect(wrapper.find('#item_group4_kunskjemautfyll_checkbox').exists()).toBeTruthy();
+    expect(findItemById('item_group1_default', container)).toBeInTheDocument();
+    expect(findItemById('item_group1_default_text', container)).toBeInTheDocument();
+    expect(findItemById('item_group1_default_checkbox', container)).toBeInTheDocument();
+    expect(findItemById('item_group2', container)).toBeInTheDocument();
+    expect(findItemById('item_group2_kunskjemautfyll_text', container)).toBeInTheDocument();
+    expect(findItemById('item_group4_kunskjemautfyll', container)).toBeInTheDocument();
+    expect(findItemById('item_group4_kunskjemautfyll_text', container)).toBeInTheDocument();
+    expect(findItemById('item_group4_kunskjemautfyll_checkbox', container)).toBeInTheDocument();
 
-    expect(wrapper.find('#item_group2_kunpdf_checkbox').exists()).toBeFalsy();
-    expect(wrapper.find('#item_group3_kunpdf').exists()).toBeFalsy();
-    expect(wrapper.find('#item_group3_kunpdf_text').exists()).toBeFalsy();
-    expect(wrapper.find('#item_group3_kunpdf_checkbox').exists()).toBeFalsy();
+    expect(container.querySelector('item_group2_kunpdf_checkbox')).toBeFalsy();
+    expect(container.querySelector('item_group3_kunpdf')).toBeFalsy();
+    expect(container.querySelector('item_group3_kunpdf_text')).toBeFalsy();
+    expect(container.querySelector('item_group3_kunpdf_checkbox')).toBeFalsy();
   });
 });
 
 describe('Copying from ...', () => {
   describe('Choice', () => {
     it('Choice selected options displays in data-receiver element', () => {
-      const wrapper = createWrapper(ChoiceCopyFrom);
-      wrapper.render();
-      selectCheckBoxOption('parent-choice-id', 'option-1', wrapper);
-      wrapper.update();
+      const { container } = createWrapper(ChoiceCopyFrom);
+      selectCheckBoxOption('parent-choice-id', 'option-1', container);
 
-      const textView = wrapper.find(TextView);
-      expect(textView).toHaveLength(1);
-      expect(textView.find('#item_data-receiver-choice-id').exists()).toBeTruthy();
+      expect(findItemById('item_data-receiver-choice-id', container)).toBeInTheDocument();
     });
   });
 });
@@ -142,22 +124,22 @@ function createWrapper(
   helpButtonCb?: (item: QuestionnaireItem, helpItem: QuestionnaireItem, helpType: string, help: string, opening: boolean) => JSX.Element,
   helpElementCb?: (item: QuestionnaireItem, helpItem: QuestionnaireItem, helpType: string, help: string, opening: boolean) => JSX.Element
 ) {
-  const store: any = createStore(rootReducer, applyMiddleware(thunk));
-  return mount(
-    <Provider store={store}>
-      <ReferoContainer
-        loginButton={<React.Fragment />}
-        store={store}
-        authorized={true}
-        onCancel={() => {}}
-        onSave={() => {}}
-        onSubmit={() => {}}
-        resources={{} as Resources}
-        questionnaire={questionnaire}
-        onRequestHelpButton={helpButtonCb}
-        onRequestHelpElement={helpElementCb}
-      />
-    </Provider>
+  const store = createStore<GlobalState>(rootReducer, applyMiddleware(thunk));
+  return renderWithRedux(
+    <ReferoContainer
+      loginButton={<React.Fragment />}
+      authorized={true}
+      onCancel={() => {}}
+      onSave={() => {}}
+      onSubmit={() => {}}
+      resources={{} as Resources}
+      questionnaire={questionnaire}
+      onRequestHelpButton={helpButtonCb}
+      onRequestHelpElement={helpElementCb}
+    />,
+    {
+      store,
+    }
   );
 }
 

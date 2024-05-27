@@ -56,6 +56,7 @@ class Boolean extends React.Component<Props> {
   }
 
   handleChange = (): void => {
+    console.log('handleChange');
     const { dispatch, promptLoginMessage, onAnswerChange, path, item } = this.props;
     const newValue = !this.getValue();
     if (dispatch) {
@@ -129,6 +130,7 @@ class Boolean extends React.Component<Props> {
       );
     }
     const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
+    const value = this.getValue();
     return (
       // Dette er en hack for FHI-skjema. TODO: fjern hack
       <div className="page_refero__component page_refero__component_boolean">
@@ -157,10 +159,10 @@ class Boolean extends React.Component<Props> {
                 testId={getId(id)}
                 inputId={getId(id)}
                 label={<Label labelTexts={[{ text: this.getLabel() }]} />}
-                checked={this.getValue()}
+                checked={value}
                 onChange={(): void => {
                   this.handleChange();
-                  onChange(!this.getValue());
+                  onChange(!value);
                 }}
                 disabled={isReadOnly(item)}
                 className="page_refero__input"

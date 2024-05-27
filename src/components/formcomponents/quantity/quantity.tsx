@@ -81,6 +81,7 @@ class Quantity extends React.Component<Props> {
   handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     const { dispatch, promptLoginMessage, path, item, onAnswerChange } = this.props;
     const extension = getQuestionnaireUnitExtensionValue(this.props.item);
+    console.log(extension);
     if (extension) {
       const quantity = {
         unit: extension.display,
@@ -192,6 +193,7 @@ class Quantity extends React.Component<Props> {
                 placeholder={getPlaceholder(item)}
                 className="page_refero__quantity"
                 onChange={(e): void => {
+                  console.log(e)
                   onChange(e.target.value);
                   this.handleChange(e);
                 }}
