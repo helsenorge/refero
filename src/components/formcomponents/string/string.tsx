@@ -11,6 +11,7 @@ import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label
 
 import { debounce } from '@helsenorge/core-utils/debounce';
 import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
+import { invalidNodes } from '@helsenorge/core-utils/string-utils';
 
 import { NewValueAction, newStringValueAsync } from '../../../actions/newValue';
 import { GlobalState } from '../../../reducers';
@@ -26,6 +27,7 @@ import {
   renderPrefix,
   getText,
   getMaxLength,
+  scriptInjectionValidation,
 } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
@@ -136,11 +138,9 @@ export class String extends React.Component<Props, Record<string, unknown>> {
                 value: isRequired(item),
                 message: resources?.formRequiredErrorMessage ?? 'Feltet er påkrevd',
               },
-              // ...(this.props.validateScriptInjection && {
-              //   validate: (value: string): string | undefined => {
-              //     return this.getValidationErrorMessage(value) ?? true;
-              //   },
-              // }),
+              ...(this.props.validateScriptInjection && {
+                validate: (value: string): true | string => scriptInjectionValidation(value, this.props.resources),
+              }),
               ...(minLength && {
                 minLength: {
                   value: minLength || 0,

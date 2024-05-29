@@ -12,6 +12,7 @@ import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label
 import Textarea from '@helsenorge/designsystem-react/components/Textarea';
 
 import { debounce } from '@helsenorge/core-utils/debounce';
+import { invalidNodes } from '@helsenorge/core-utils/string-utils';
 
 import { NewValueAction, newStringValueAsync } from '../../../actions/newValue';
 import Constants from '../../../constants/index';
@@ -36,6 +37,7 @@ import {
   getTextValidationErrorMessage,
   getSublabelText,
   renderPrefix,
+  scriptInjectionValidation,
 } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
@@ -221,6 +223,9 @@ export class Text extends React.Component<Props> {
                   value: new RegExp(pattern),
                   message: validationTextMessage ?? resources?.oppgiGyldigVerdi ?? 'Verdien er for lav',
                 },
+              }),
+              ...(this.props.validateScriptInjection && {
+                validate: (value: string): true | string => scriptInjectionValidation(value, resources),
               }),
             }}
             render={({ field: { onChange, ...rest } }): JSX.Element => (

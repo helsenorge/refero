@@ -394,3 +394,15 @@ export function isIE11(): boolean {
   // tslint:disable-next-line:no-string-literal
   return !!window['MSInputMethodContext'] && !!document['documentMode'];
 }
+
+export const scriptInjectionValidation = (value: string, resources?: Resources): string | true => {
+  if (value && typeof value === 'string') {
+    const invalid: string[] = invalidNodes(value);
+
+    if (invalid && invalid.length > 0) {
+      return invalid.join(', ') + ' ' + (resources ? resources.validationNotAllowed : 'er ikke tillatt');
+    }
+    return true;
+  }
+  return true;
+};
