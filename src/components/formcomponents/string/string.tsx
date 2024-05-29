@@ -11,7 +11,6 @@ import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label
 
 import { debounce } from '@helsenorge/core-utils/debounce';
 import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
-import { invalidNodes } from '@helsenorge/core-utils/string-utils';
 
 import { NewValueAction, newStringValueAsync } from '../../../actions/newValue';
 import { GlobalState } from '../../../reducers';

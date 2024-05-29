@@ -12,7 +12,6 @@ import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label
 import Textarea from '@helsenorge/designsystem-react/components/Textarea';
 
 import { debounce } from '@helsenorge/core-utils/debounce';
-import { invalidNodes } from '@helsenorge/core-utils/string-utils';
 
 import { NewValueAction, newStringValueAsync } from '../../../actions/newValue';
 import Constants from '../../../constants/index';
