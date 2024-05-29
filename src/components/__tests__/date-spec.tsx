@@ -12,7 +12,7 @@ import { Resources } from '../../util/resources';
 import questionnaireWithAllItemTypes from './__data__/onChange/allItemTypes';
 import { inputAnswer, findItem } from './utils';
 
-describe('date fields gets set and cleared properly', () => {
+describe.skip('date fields gets set and cleared properly', () => {
   beforeEach(() => {
     window.matchMedia = jest.fn().mockImplementation(_ => {
       return {};

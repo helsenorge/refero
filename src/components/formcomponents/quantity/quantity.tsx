@@ -81,7 +81,6 @@ class Quantity extends React.Component<Props> {
   handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     const { dispatch, promptLoginMessage, path, item, onAnswerChange } = this.props;
     const extension = getQuestionnaireUnitExtensionValue(this.props.item);
-    console.log(extension);
     if (extension) {
       const quantity = {
         unit: extension.display,
@@ -148,6 +147,7 @@ class Quantity extends React.Component<Props> {
     const minValue = getMinValueExtensionValue(item);
     const maxValue = getMaxValueExtensionValue(item);
     const errorMessage = getValidationTextExtension(item);
+
     return (
       <div className="page_refero__component page_refero__component_quantity">
         <FormGroup error={error?.message} mode="ongrey">
@@ -193,7 +193,6 @@ class Quantity extends React.Component<Props> {
                 placeholder={getPlaceholder(item)}
                 className="page_refero__quantity"
                 onChange={(e): void => {
-                  console.log(e)
                   onChange(e.target.value);
                   this.handleChange(e);
                 }}

@@ -35,7 +35,6 @@ describe('Components render children', () => {
   it('attachments with children renders', () => {
     const q = createQuestionnaire(creatNestedItem(itemType.ATTATCHMENT));
     const wrapper = createWrapper(q);
-    console.log(wrapper.debug());
     wrapper.render();
 
     expect(wrapper.find(Attachment)).toHaveLength(3);

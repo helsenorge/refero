@@ -1,6 +1,6 @@
-import { Coding, Extension } from 'fhir/r4';
+import { Coding, Extension, QuestionnaireItem } from 'fhir/r4';
 import ExtensionConstants from '../../constants/extensions';
-import { queryHelpers, userEvent, screen, fireEvent } from './test-utils/test-utils';
+import { queryHelpers, userEvent, screen, fireEvent, findByLabelText } from './test-utils/test-utils';
 
 export function inputAnswer(linkId: string, answer: number | string, element: HTMLElement) {
   const input = findItem(linkId, element);
@@ -25,18 +25,8 @@ export function selectRadioButtonOption(linkId: string, index: number, element: 
   userEvent.click(item);
 }
 
-export function selectCheckBoxOption(linkId: string, index: string, element: HTMLElement) {
-  changeCheckBoxOption(linkId, index, true, element);
-}
-
-export function unSelectCheckBoxOption(linkId: string, index: string, element: HTMLElement) {
-  changeCheckBoxOption(linkId, index, false, element);
-}
-
-export function changeCheckBoxOption(linkId: string, index: string, on: boolean, element: HTMLElement) {
-  const id = `${linkId}-${index}`;
-  const item = findItem(id, element);
-  userEvent.click(item);
+export async function changeCheckBoxOption(label: string, element: HTMLElement) {
+  userEvent.click(await findByLabelText(element, label));
 }
 
 export function findItem(linkId: string, element: HTMLElement) {
@@ -50,6 +40,14 @@ export function findItemById(id: string, element: HTMLElement) {
   }
   return el;
 }
+export function queryItemById(id: string, element: HTMLElement) {
+  const el = element.querySelectorAll(`#${id}`);
+  if (!el) {
+    throw queryHelpers.getElementError(`Found no elements with the [id="${id}"]`, element);
+  }
+  return el;
+}
+
 export async function findItemByDispayValue(value: string) {
   const el = await screen.findByDisplayValue(value);
   if (!el) {
@@ -78,4 +76,14 @@ export function createItemControlExtension(code: string): Extension {
       coding: [createItemControlCoding(code)],
     },
   };
+}
+export function findQuestionnaireItem(linkId: string, items?: QuestionnaireItem[]): QuestionnaireItem | undefined {
+  if (items === undefined) return;
+  for (let item of items) {
+    if (item.linkId === linkId) return item;
+
+    const found = findQuestionnaireItem(linkId, item.item);
+    if (found !== undefined) return found;
+  }
+  return undefined;
 }

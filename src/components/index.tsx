@@ -48,7 +48,7 @@ import {
   getResponseItemAndPathWithLinkId,
 } from '../util/refero-core';
 import { RenderContext } from '../util/renderContext';
-import { ScoringCalculator } from '../util/scoringCalculator';
+import { AnswerPad, ScoringCalculator } from '../util/scoringCalculator';
 import { shouldFormBeDisplayedAsStepView } from '../util/shouldFormBeDisplayedAsStepView';
 import { generateDefaultValues } from '../validation/defaultFormValues';
 interface StateProps {
@@ -118,7 +118,6 @@ const Refero = (props: StateProps & DispatchProps & ReferoProps): JSX.Element | 
       );
 
       props.onChange(item, answer, actionRequester, questionnaireInspector);
-
       for (const action of actionRequester.getActions()) {
         props.dispatch(action);
       }
@@ -130,19 +129,21 @@ const Refero = (props: StateProps & DispatchProps & ReferoProps): JSX.Element | 
   const runScoringCalculator = (newState: GlobalState): void => {
     const questionnaireResponse = newState.refero?.form?.FormData?.Content;
     const questionnaire = newState.refero.form.FormDefinition?.Content;
-    if (!questionnaire || !questionnaireResponse) return;
 
+    if (!questionnaire || !questionnaireResponse) return;
     if (scoringCalculator) {
       const scores = scoringCalculator.calculateScore(questionnaireResponse);
+
       updateQuestionnaireResponseWithScore(scores, questionnaire, questionnaireResponse);
 
       const fhirScores = scoringCalculator.calculateFhirScore(questionnaireResponse);
+
       updateQuestionnaireResponseWithScore(fhirScores, questionnaire, questionnaireResponse);
     }
   };
 
   const updateQuestionnaireResponseWithScore = (
-    scores: { [linkId: string]: number | undefined },
+    scores: AnswerPad,
     questionnaire: Questionnaire,
     questionnaireResponse: QuestionnaireResponse
   ): void => {
@@ -185,7 +186,6 @@ const Refero = (props: StateProps & DispatchProps & ReferoProps): JSX.Element | 
         }
       }
     }
-
     for (const a of actions) {
       props.dispatch(a);
     }

@@ -8,7 +8,7 @@ import {
   Coding,
   Attachment,
 } from 'fhir/r4';
-import produce, { enableES5 } from 'immer';
+import produce, { enableES5, current } from 'immer';
 
 import { QuestionnaireItemEnableBehaviorCodes } from '../types/fhirEnums';
 
@@ -429,6 +429,7 @@ function processRemoveAttachmentValueAction(action: NewValueAction, state: Form)
 function processNewValueAction(action: NewValueAction, state: Form): Form {
   return produce(state, draft => {
     const responseItem = getResponseItemWithPath(action.itemPath || [], draft.FormData);
+
     if (!responseItem) {
       return;
     }

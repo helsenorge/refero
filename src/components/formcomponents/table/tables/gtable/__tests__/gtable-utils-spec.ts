@@ -1,9 +1,4 @@
-import {
-  QuestionnaireItem,
-  QuestionnaireResponse,
-  QuestionnaireResponseItem,
-  QuestionnaireResponseItemAnswer,
-} from '../../../../../../types/fhir';
+import { QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import {
   columnsForRowIndex,
   createTableHeader,
@@ -247,7 +242,6 @@ describe('gtable-utils-spec', () => {
         ],
       });
       const gTable = getGtablebodyObject(questionnaireItems, questionnaireResponse);
-      console.log('gTable', gTable);
       expect(gTable.rows.length).toBe(1);
       expect(gTable.headerRow.length).toBe(2);
       expect(gTable.rows[0].columns.length).toBe(2);

@@ -263,6 +263,11 @@ export function hasAnswer(answer: QuestionnaireResponseItemAnswer | Questionnair
     hasUriAnswer(answer)
   );
 }
+
+function isObjEmpty(obj: object | undefined): boolean {
+  return obj ? Object.keys(obj).length === 0 : true;
+}
+
 function getAnswer<T>(
   answer: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[],
   key: keyof QuestionnaireResponseItemAnswer
@@ -327,10 +332,10 @@ export function hasBooleanAnswer(answer: QuestionnaireResponseItemAnswer | Quest
 }
 
 export function hasCodingAnswer(answer: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]): boolean {
-  return !!getCodingAnswer(answer);
+  return !!getCodingAnswer(answer) && !isObjEmpty(getCodingAnswer(answer));
 }
 export function hasQuantityAnswer(answer: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]): boolean {
-  return getQuantityAnswer(answer) !== null && (!!getQuantityAnswer(answer)?.value || getQuantityAnswer(answer)?.value === 0);
+  return getQuantityAnswer(answer) !== null && !isObjEmpty(getQuantityAnswer(answer));
 }
 
 export function hasDateAnswer(answer: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]): boolean {

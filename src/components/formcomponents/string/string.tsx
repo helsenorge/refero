@@ -58,13 +58,14 @@ export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
 }
 
 export class String extends React.Component<Props, Record<string, unknown>> {
-  handleChange = (event: React.FormEvent): void => {
+  handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     const { dispatch, promptLoginMessage, path, item, onAnswerChange } = this.props;
-    const value = (event.target as HTMLInputElement).value;
+
+    const value = event.target.value;
     if (dispatch) {
-      dispatch(newStringValueAsync(this.props.path, value, this.props.item))?.then(newState =>
-        onAnswerChange(newState, path, item, { valueString: value } as QuestionnaireResponseItemAnswer)
-      );
+      dispatch(newStringValueAsync(this.props.path, value, this.props.item))?.then(newState => {
+        return onAnswerChange(newState, path, item, { valueString: value });
+      });
     }
 
     if (promptLoginMessage) {
@@ -119,6 +120,8 @@ export class String extends React.Component<Props, Record<string, unknown>> {
       event.persist();
       this.debouncedHandleChange(event);
     };
+    const value = getStringValue(answer);
+
     return (
       <div className="page_refero__component page_refero__component_string">
         <FormGroup error={this.props.error?.message} mode="ongrey">
@@ -126,13 +129,18 @@ export class String extends React.Component<Props, Record<string, unknown>> {
           <Controller
             name={idWithLinkIdAndItemIndex}
             control={control}
-            defaultValue={getStringValue(answer)}
             shouldUnregister={true}
+            defaultValue={value}
             rules={{
               required: {
                 value: isRequired(item),
                 message: resources?.formRequiredErrorMessage ?? 'Feltet er påkrevd',
               },
+              // ...(this.props.validateScriptInjection && {
+              //   validate: (value: string): string | undefined => {
+              //     return this.getValidationErrorMessage(value) ?? true;
+              //   },
+              // }),
               ...(minLength && {
                 minLength: {
                   value: minLength || 0,
@@ -157,6 +165,7 @@ export class String extends React.Component<Props, Record<string, unknown>> {
                 name={name}
                 ref={ref}
                 disabled={item.readOnly}
+                defaultValue={value}
                 label={
                   <Label
                     labelTexts={[{ text: labelText, type: 'semibold' }]}

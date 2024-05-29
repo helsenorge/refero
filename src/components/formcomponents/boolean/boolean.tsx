@@ -56,7 +56,6 @@ class Boolean extends React.Component<Props> {
   }
 
   handleChange = (): void => {
-    console.log('handleChange');
     const { dispatch, promptLoginMessage, onAnswerChange, path, item } = this.props;
     const newValue = !this.getValue();
     if (dispatch) {

@@ -111,7 +111,6 @@ class Decimal extends React.Component<Props, Record<string, unknown>> {
       idWithLinkIdAndItemIndex,
     } = this.props;
     const value = this.getValue(item, answer);
-
     const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`;
     const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
     if (pdf || isReadOnly(item)) {

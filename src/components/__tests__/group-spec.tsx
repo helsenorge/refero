@@ -8,7 +8,7 @@ import StringComponent from '../../components/formcomponents/string/string';
 import { RenderContextType } from '../../constants/renderContextType';
 import { RenderContext } from '../../util/renderContext';
 import { createItemControlExtension, findItemById } from '../__tests__/utils';
-import { prettyDOM, render } from './test-utils/test-utils';
+import { render } from './test-utils/test-utils';
 
 describe('Group component renders with correct classes', () => {
   const defaultClasses = ['.page_refero__component', '.page_refero__component_group'];

@@ -1,9 +1,8 @@
 import * as React from 'react';
-
-import { mount } from 'enzyme';
-import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
+import '@testing-library/jest-dom';
+import { act } from 'react-dom/test-utils';
 
 import { Questionnaire, QuestionnaireItem } from 'fhir/r4';
 
@@ -12,10 +11,9 @@ import rootReducer from '../../reducers';
 import { Resources } from '../../util/resources';
 import { ReferoContainer } from '../index';
 import StepViewQuestionnaire from './__data__/stepview';
-import StepView from '../stepView';
-import { act } from 'react-dom/test-utils';
-import FormButtons from '../formButtons/formButtons';
+import { render, userEvent } from './test-utils/test-utils';
 
+// Mock window.matchMedia
 Object.defineProperty(window, 'matchMedia', {
   writable: true,
   value: jest.fn().mockImplementation(query => ({
@@ -29,88 +27,87 @@ Object.defineProperty(window, 'matchMedia', {
     dispatchEvent: jest.fn(),
   })),
 });
-
+Object.defineProperty(window, 'scrollTo', {
+  writable: true,
+  value: jest.fn(),
+});
 const onSubmitMock = jest.fn();
 const onStepChangeMock = jest.fn();
+
 function createWrapper(
   questionnaire: Questionnaire,
   helpButtonCb?: (item: QuestionnaireItem, helpItem: QuestionnaireItem, helpType: string, help: string, opening: boolean) => JSX.Element,
   helpElementCb?: (item: QuestionnaireItem, helpItem: QuestionnaireItem, helpType: string, help: string, opening: boolean) => JSX.Element
 ) {
-  const store: any = createStore(rootReducer, applyMiddleware(thunk));
-  return mount(
-    <Provider store={store}>
-      <ReferoContainer
-        loginButton={<React.Fragment />}
-        store={store}
-        authorized={true}
-        onCancel={() => {}}
-        onSave={() => {}}
-        onSubmit={onSubmitMock}
-        resources={{ formSend: 'Send inn', nextStep: 'Neste', previousStep: 'Forrige', formSave: 'Save' } as Resources}
-        questionnaire={questionnaire}
-        onRequestHelpButton={helpButtonCb}
-        onRequestHelpElement={helpElementCb}
-        saveButtonDisabled={false}
-        onStepChange={onStepChangeMock}
-      />
-    </Provider>
+  const store = createStore(rootReducer, applyMiddleware(thunk));
+  return render(
+    <ReferoContainer
+      loginButton={<React.Fragment />}
+      authorized={true}
+      onCancel={() => {}}
+      onSave={() => {}}
+      onSubmit={onSubmitMock}
+      resources={{ formSend: 'Send inn', nextStep: 'Neste', previousStep: 'Forrige', formSave: 'Save' } as Resources}
+      questionnaire={questionnaire}
+      onRequestHelpButton={helpButtonCb}
+      onRequestHelpElement={helpElementCb}
+      saveButtonDisabled={false}
+      onStepChange={onStepChangeMock}
+    />,
+    {
+      store,
+    }
   );
 }
 
 describe('Step-view', () => {
   it('Should render StepView if a top-level element has the code "step"', () => {
-    const wrapper = createWrapper(StepViewQuestionnaire);
-    wrapper.render();
-    expect(wrapper.find(StepView).length).toBe(1);
+    const { getByText, queryByText } = createWrapper(StepViewQuestionnaire);
+
+    expect(getByText('Gruppe 1')).toBeInTheDocument();
+    expect(queryByText('Gruppe 2')).not.toBeInTheDocument();
   });
 
-  it('Should call onStepChange if the step updates in step-view', () => {
-    const wrapper = createWrapper(StepViewQuestionnaire);
-    wrapper.render();
-    act(() => {
-      (wrapper.find('form').prop('onSubmit') as () => void)();
-    });
-    wrapper.update();
+  it('Should call onStepChange if the step updates in step-view', async () => {
+    const { getByRole } = createWrapper(StepViewQuestionnaire);
+    userEvent.click(getByRole('button', { name: 'Neste' }));
     expect(onStepChangeMock).toHaveBeenCalled();
   });
 
   // This test only works with 3-step questionnaires
-  it.skip('Buttons in step-view: Should call right functions and display correct texts in step-view', () => {
-    const wrapper = createWrapper(StepViewQuestionnaire);
-    wrapper.render();
+  it('Buttons in step-view: Should call right functions and display correct texts in step-view', async () => {
+    const { getByText, queryByText, findByRole } = createWrapper(StepViewQuestionnaire);
 
     // Step 1
-    expect(wrapper.find(FormButtons).props().submitButtonText).toBe('Neste');
-    expect(wrapper.find(FormButtons).props().pauseButtonText).toBe(undefined);
-    act(() => {
-      (wrapper.find('form').prop('onSubmit') as () => void)();
+    expect(getByText('Neste')).toBeInTheDocument();
+    await act(async () => {
+      userEvent.click(await findByRole('button', { name: 'Neste' }));
     });
-    wrapper.update();
-    console.log(wrapper.find(FormButtons).props());
+
     // Step 2
-    expect(wrapper.find(FormButtons).props().pauseButtonText).toBe('Forrige');
-    act(() => {
-      (wrapper.find('form').prop('onPause') as () => void)();
+    expect(getByText('Forrige')).toBeInTheDocument();
+    await act(async () => {
+      userEvent.click(await findByRole('button', { name: 'Forrige' }));
     });
-    wrapper.update();
+
     // Step 1
-    expect(wrapper.find(FormButtons).props().pauseButtonText).toBe(undefined);
-    act(() => {
-      (wrapper.find('form').prop('onSubmit') as () => void)();
+    expect(queryByText('Forrige')).not.toBeInTheDocument();
+    await act(async () => {
+      userEvent.click(await findByRole('button', { name: 'Neste' }));
     });
-    wrapper.update();
+
     // Step 2
-    act(() => {
-      (wrapper.find('form').prop('onSubmit') as () => void)();
+
+    await act(async () => {
+      userEvent.click(await findByRole('button', { name: 'Neste' }));
     });
-    wrapper.update();
     // Step 3
-    expect(wrapper.find(FormButtons).props().submitButtonText).toBe('Send inn');
-    act(() => {
-      (wrapper.find('form').prop('onSubmit') as () => void)();
+    expect(queryByText('Send inn')).toBeInTheDocument();
+    await act(async () => {
+      userEvent.click(await findByRole('button', { name: 'Send inn' }));
     });
-    wrapper.update();
+
+    // Final assertion
     expect(onSubmitMock).toHaveBeenCalled();
   });
 });

@@ -10,7 +10,7 @@ import {
   createPathForItem,
   Path,
 } from '../refero-core';
-import { QuestionnaireResponseItem, QuestionnaireResponseItemAnswer, QuestionnaireItemEnableWhen, QuestionnaireItem } from 'fhir/r4';
+import { QuestionnaireResponseItem, QuestionnaireItemEnableWhen, QuestionnaireItem } from 'fhir/r4';
 import itemType from '../../constants/itemType';
 import { pathify } from '../../reducers/__tests__/utils';
 import { dataModel } from './__data__/testDataModel';
@@ -57,11 +57,11 @@ describe('get questionnaireResponse item', () => {
         ],
       },
     ],
-  } as QuestionnaireResponseItem;
+  };
 
   it('should return correct item', () => {
     //should.not.exist(getQuestionnaireResponseItemWithLinkid('123', undefined, false, []));
-    should.not.exist(getQuestionnaireResponseItemWithLinkid('123', {} as QuestionnaireResponseItem, []));
+    should.not.exist(getQuestionnaireResponseItemWithLinkid('123', {}, []));
     should.exist(getQuestionnaireResponseItemWithLinkid('123', data, []));
     should.not.exist(getQuestionnaireResponseItemWithLinkid('753159', data, []));
     let item = getQuestionnaireResponseItemWithLinkid('456', data, pathify('123', '456'));
@@ -87,11 +87,11 @@ describe('get questionnaireResponse item', () => {
   });
 
   it('should return correct item for repeating elements', () => {
-    const dataCopy = JSON.parse(JSON.stringify(data)) as QuestionnaireResponseItem;
+    const dataCopy = JSON.parse(JSON.stringify(data));
     if (dataCopy.item && dataCopy.item[0].item) {
-      dataCopy.item[0].item[0].answer = [{ valueString: '2' } as QuestionnaireResponseItemAnswer];
+      dataCopy.item[0].item[0].answer = [{ valueString: '2' }];
     }
-    const repeatingData = { item: [data, dataCopy], linkId: '1' } as QuestionnaireResponseItem;
+    const repeatingData = { item: [data, dataCopy], linkId: '1' };
 
     let item = getQuestionnaireResponseItemWithLinkid('testId', repeatingData, [
       { linkId: '1' },
@@ -126,11 +126,11 @@ describe('get answer from questionnareReponse', () => {
         valueString: 'def',
       },
     ],
-  } as QuestionnaireResponseItem;
+  };
 
   it('should return correct answer', () => {
     should.not.exist(getAnswerFromResponseItem(undefined));
-    should.not.exist(getAnswerFromResponseItem({} as QuestionnaireResponseItem));
+    should.not.exist(getAnswerFromResponseItem({}));
     const answer = getAnswerFromResponseItem(data);
     should.exist(answer);
     if (answer && 'valueString' in answer && answer.valueString) {
@@ -141,49 +141,40 @@ describe('get answer from questionnareReponse', () => {
 
 describe('hasAnswer', () => {
   it('should return no answer on invalid input', () => {
-    expect(hasAnswer({} as QuestionnaireResponseItemAnswer)).toEqual(false);
-    expect(hasAnswer({ valueCoding: {} } as QuestionnaireResponseItemAnswer)).toEqual(false);
-    expect(hasAnswer({ valueDate: undefined } as QuestionnaireResponseItemAnswer)).toEqual(false);
-    expect(hasAnswer({ valueDateTime: undefined } as QuestionnaireResponseItemAnswer)).toEqual(false);
-    expect(hasAnswer({ valueDecimal: undefined } as QuestionnaireResponseItemAnswer)).toEqual(false);
-    expect(hasAnswer({ valueInteger: undefined } as QuestionnaireResponseItemAnswer)).toEqual(false);
-    expect(hasAnswer({ valueString: '' } as QuestionnaireResponseItemAnswer)).toEqual(false);
-    expect(hasAnswer({ valueString: undefined } as QuestionnaireResponseItemAnswer)).toEqual(false);
-    expect(hasAnswer({ valueTime: undefined } as QuestionnaireResponseItemAnswer)).toEqual(false);
+    expect(hasAnswer({})).toEqual(false);
+    expect(hasAnswer({ valueCoding: {} })).toEqual(false);
+    expect(hasAnswer({ valueDate: undefined })).toEqual(false);
+    expect(hasAnswer({ valueDateTime: undefined })).toEqual(false);
+    expect(hasAnswer({ valueDecimal: undefined })).toEqual(false);
+    expect(hasAnswer({ valueInteger: undefined })).toEqual(false);
+    expect(hasAnswer({ valueString: '' })).toEqual(false);
+    expect(hasAnswer({ valueString: undefined })).toEqual(false);
+    expect(hasAnswer({ valueTime: undefined })).toEqual(false);
   });
 
   it('should return true if any answer type is given', () => {
-    expect(hasAnswer({ valueBoolean: true } as QuestionnaireResponseItemAnswer)).toEqual(true);
-    expect(hasAnswer({ valueBoolean: false } as QuestionnaireResponseItemAnswer)).toEqual(true);
-    expect(hasAnswer({ valueString: 'asdf' } as QuestionnaireResponseItemAnswer)).toEqual(true);
+    expect(hasAnswer({ valueBoolean: true })).toEqual(true);
+    expect(hasAnswer({ valueBoolean: false })).toEqual(true);
+    expect(hasAnswer({ valueString: 'asdf' })).toEqual(true);
   });
 });
 
 describe('item path', () => {
   it('should create path correct', () => {
-    expect(
-      createPathForItem([], { linkId: 'qwe', repeats: true } as QuestionnaireItem, { linkId: 'qwe' } as QuestionnaireResponseItem, 1)
-    ).toEqual([{ linkId: 'qwe', index: 1 }]);
-    expect(
-      createPathForItem([], { linkId: 'qwe' } as QuestionnaireItem, { linkId: 'qwe' } as QuestionnaireResponseItem, undefined)
-    ).toEqual([{ linkId: 'qwe' }]);
+    expect(createPathForItem([], { linkId: 'qwe', repeats: true } as QuestionnaireItem, { linkId: 'qwe' }, 1)).toEqual([
+      { linkId: 'qwe', index: 1 },
+    ]);
+    expect(createPathForItem([], { linkId: 'qwe' } as QuestionnaireItem, { linkId: 'qwe' }, undefined)).toEqual([{ linkId: 'qwe' }]);
     let response: Array<Path> = [
       { linkId: 'test', index: 0 },
       { linkId: 'abc', index: 2 },
     ];
     expect(
-      createPathForItem(
-        [{ linkId: 'test', index: 0 }],
-        { linkId: 'abc', repeats: true } as QuestionnaireItem,
-        { linkId: 'abc' } as QuestionnaireResponseItem,
-        2
-      )
+      createPathForItem([{ linkId: 'test', index: 0 }], { linkId: 'abc', repeats: true } as QuestionnaireItem, { linkId: 'abc' }, 2)
     ).toEqual(response);
     const path = [{ linkId: 'test' }, { linkId: 'test2' }];
     response = [{ linkId: 'test' }, { linkId: 'test2' }, { linkId: 'abc', index: 3 }];
-    expect(
-      createPathForItem(path, { linkId: 'abc', repeats: true } as QuestionnaireItem, { linkId: 'abc' } as QuestionnaireResponseItem, 3)
-    ).toEqual(response);
+    expect(createPathForItem(path, { linkId: 'abc', repeats: true } as QuestionnaireItem, { linkId: 'abc' }, 3)).toEqual(response);
   });
 });
 
@@ -311,7 +302,7 @@ describe('getItemWithTypeFromArray', () => {
           valueAttachment: { title: '' },
         },
       ],
-    } as QuestionnaireResponseItem;
+    };
     const item2: QuestionnaireResponseItem = {
       linkId: '123',
       answer: [
@@ -319,7 +310,7 @@ describe('getItemWithTypeFromArray', () => {
           valueString: 'lala',
         },
       ],
-    } as QuestionnaireResponseItem;
+    };
     const response = getItemWithTypeFromArray(itemType.ATTATCHMENT, [item1, item2]);
     expect(response).toMatchSnapshot();
   });
@@ -328,7 +319,7 @@ describe('getItemWithTypeFromArray', () => {
     const item1: QuestionnaireResponseItem = {
       linkId: '123',
       answer: [],
-    } as QuestionnaireResponseItem;
+    };
     const response = getItemWithTypeFromArray(itemType.ATTATCHMENT, [item1]);
     expect(response).toMatchSnapshot();
   });
@@ -344,7 +335,7 @@ describe('Given a Questionnaire with operator="exists" and answerBoolean=false',
 
   it('When an item does have an answer then enablewhen should return false', () => {
     const result = enableWhenMatchesAnswer({ question: '1.0.0', operator: 'exists', answerBoolean: false } as QuestionnaireItemEnableWhen, [
-      { valueString: 'et svar' } as QuestionnaireResponseItemAnswer,
+      { valueString: 'et svar' },
     ]);
     expect(result).toBe(false);
   });

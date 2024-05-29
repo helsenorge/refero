@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { renderWithRedux, screen } from './test-utils/test-utils';
+import { render, renderWithRedux, screen } from './test-utils/test-utils';
 import userEvent from '@testing-library/user-event';
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
@@ -9,12 +9,12 @@ import { Questionnaire, QuestionnaireItem } from 'fhir/r4';
 
 import '../../util/defineFetch';
 import itemControlConstants from '../../constants/itemcontrol';
-import rootReducer, { GlobalState } from '../../reducers';
+import rootReducer from '../../reducers';
 import { Resources } from '../../util/resources';
 import { ReferoContainer } from '../index';
 import RenderingOptionsData from './__data__/renderingOptions';
 import ChoiceCopyFrom from './__data__/copyFrom/choice';
-import { createItemControlExtension, findItemById, selectCheckBoxOption } from '../__tests__/utils';
+import { createItemControlExtension, findItemById, changeCheckBoxOption } from '../__tests__/utils';
 import itemcontrol from '../../constants/itemcontrol';
 
 describe('Component renders help items', () => {
@@ -66,13 +66,13 @@ describe('repeat with enableWhen', () => {
     });
   });
 
-  it.only('When we add a section with repeat, the enableWhen component should be hidden per default', () => {
+  it('When we add a section with repeat, the enableWhen component should be hidden per default', () => {
     const { container } = createWrapper(questionnaireWithRepeatedEnableWhens());
 
     // clicking the repeat button, repeats the elements
     expect(container.querySelectorAll('input[type="checkbox"]')).toHaveLength(1);
 
-    userEvent.click(screen.getByRole('button', { name: /repeat/i }));
+    userEvent.click(screen.getByTestId(/-repeat-button/i));
     expect(container.querySelectorAll('input[type="checkbox"]')).toHaveLength(2);
 
     // no enableWhen components should be visible
@@ -110,10 +110,9 @@ describe('Coding system (RenderingOptions)', () => {
 
 describe('Copying from ...', () => {
   describe('Choice', () => {
-    it('Choice selected options displays in data-receiver element', () => {
+    it('Choice selected options displays in data-receiver element', async () => {
       const { container } = createWrapper(ChoiceCopyFrom);
-      selectCheckBoxOption('parent-choice-id', 'option-1', container);
-
+      await changeCheckBoxOption('Option 1', container);
       expect(findItemById('item_data-receiver-choice-id', container)).toBeInTheDocument();
     });
   });
@@ -124,8 +123,8 @@ function createWrapper(
   helpButtonCb?: (item: QuestionnaireItem, helpItem: QuestionnaireItem, helpType: string, help: string, opening: boolean) => JSX.Element,
   helpElementCb?: (item: QuestionnaireItem, helpItem: QuestionnaireItem, helpType: string, help: string, opening: boolean) => JSX.Element
 ) {
-  const store = createStore<GlobalState>(rootReducer, applyMiddleware(thunk));
-  return renderWithRedux(
+  const store = createStore(rootReducer, applyMiddleware(thunk));
+  return render(
     <ReferoContainer
       loginButton={<React.Fragment />}
       authorized={true}

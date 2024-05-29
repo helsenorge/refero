@@ -41,7 +41,7 @@ export const RepeatButton = ({ item, resources, dispatch, parentPath, responseIt
   }
 
   return (
-    <Button onClick={onAddRepeatItem} variant="borderless" disabled={disabled}>
+    <Button onClick={onAddRepeatItem} variant="borderless" disabled={disabled} testId={`${item.linkId}-repeat-button`}>
       <Icon svgIcon={PlusLarge} />
       {text}
     </Button>
