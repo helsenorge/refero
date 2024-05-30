@@ -7,6 +7,12 @@ import { FormProvider, useForm } from 'react-hook-form';
 import '@testing-library/jest-dom/extend-expect';
 import rootReducer, { GlobalState } from '../../../reducers';
 import { applyMiddleware, createStore } from 'redux';
+import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
+import { generateDefaultValues } from '../../../validation/defaultFormValues';
+import { Questionnaire } from 'fhir/r4';
+import { ReferoContainer } from '../..';
+import { generateQuestionnaireResponse } from '../../../actions/generateQuestionnaireResponse';
+import { Resources } from '../../../util/resources';
 const mockStore = configureMockStore<Partial<GlobalState>>([thunk]);
 
 export const FormWrapper = ({ children, defaultValues }: { children: React.ReactNode; defaultValues: any }) => {
@@ -96,4 +102,44 @@ const renderWithReduxAndHookFormMock = (
 export * from '@testing-library/react';
 export { default as userEvent } from '@testing-library/user-event';
 
-export { customRender as render, customRenderMockStore as renderMockStore, renderWithRedux, renderWithReduxAndHookFormMock };
+interface InputProps {
+  questionnaire: Questionnaire;
+  props?: Partial<WithCommonFunctionsAndEnhancedProps>;
+  initialState?: GlobalState;
+  resources?: Partial<Resources>;
+}
+
+function renderRefero({ questionnaire, props, initialState, resources = {} }: InputProps) {
+  const state = initialState || {
+    refero: {
+      form: {
+        FormDefinition: {
+          Content: questionnaire,
+        },
+        FormData: {
+          Content: generateQuestionnaireResponse(questionnaire),
+        },
+        Language: 'nb',
+      },
+    },
+  };
+  const store = createStore(rootReducer, state, applyMiddleware(thunk));
+  const defaultValues = generateDefaultValues(questionnaire.item);
+
+  return customRender(
+    <ReferoContainer
+      {...props}
+      loginButton={<React.Fragment />}
+      authorized={true}
+      onCancel={() => {}}
+      onSave={() => {}}
+      onSubmit={() => {}}
+      questionnaire={questionnaire}
+      resources={resources as Resources}
+      onChange={() => {}}
+    />,
+    { store, defaultValues }
+  );
+}
+
+export { customRender as render, customRenderMockStore as renderMockStore, renderWithRedux, renderWithReduxAndHookFormMock, renderRefero };

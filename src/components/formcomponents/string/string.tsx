@@ -122,7 +122,6 @@ export class String extends React.Component<Props, Record<string, unknown>> {
       this.debouncedHandleChange(event);
     };
     const value = getStringValue(answer);
-
     return (
       <div className="page_refero__component page_refero__component_string">
         <FormGroup error={this.props.error?.message} mode="ongrey">

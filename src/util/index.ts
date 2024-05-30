@@ -400,7 +400,7 @@ export const scriptInjectionValidation = (value: string, resources?: Resources):
     const invalid: string[] = invalidNodes(value);
 
     if (invalid && invalid.length > 0) {
-      return invalid.join(', ') + ' ' + (resources ? resources.validationNotAllowed : 'er ikke tillatt');
+      return invalid.join(', ') + ' ' + (resources && resources.validationNotAllowed ? resources.validationNotAllowed : 'er ikke tillatt');
     }
     return true;
   }

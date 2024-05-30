@@ -1,47 +1,46 @@
 import * as React from 'react';
 
 import '../../../../util/defineFetch';
-import String from '../string';
-import { QuestionnaireItem } from 'fhir/r4';
-import { RenderContext } from '../../../../util/renderContext';
-import { renderMockStore } from '../../../__tests__/test-utils/test-utils';
+import { renderRefero, userEvent } from '../../../__tests__/test-utils/test-utils';
 import { WithCommonFunctionsAndEnhancedProps } from '../../../with-common-functions';
 import { act } from 'react-dom/test-utils';
+import q from './__data__/';
+
+import { Questionnaire } from 'fhir/r4';
+
 jest.mock('@helsenorge/core-utils/debounce', () => ({
-  debounce: (fn: Function, delay: number, immediate: boolean) => fn,
+  debounce: (fn: Function) => fn,
 }));
-//TODO: Skal dette fungere å teste må vi rendre hele refero container og ha et questionnaire med kun string.
+
 describe('string', () => {
-  beforeEach(() => {
-    jest.useFakeTimers();
-  });
-  afterEach(() => {
-    jest.runOnlyPendingTimers();
-    jest.useRealTimers();
-  });
   describe('When input has html and validateScriptInjection = true', () => {
     const validateScriptInjection = true;
     const value = 'input med <html>';
-    it.only('Should render with validation', async () => {
-      const {
-        renderResult: { findByText },
-      } = renderComponent({ validateScriptInjection, answer: [{ valueString: value }] });
-
-      const item = await findByText('&lt;html&gt; er ikke tillatt');
-      expect(item).toBeInTheDocument();
+    it('Should render with validation', async () => {
+      const { findByText, findByLabelText, findByRole } = renderComponent({ validateScriptInjection }, q);
+      await act(async () => {
+        userEvent.type(await findByLabelText('String1'), value);
+        userEvent.type(await findByLabelText('String2 - Obligatorisk'), 'test');
+        userEvent.click(await findByRole('button', { name: 'submit' }));
+      });
+      const actualElement = await findByText(/er ikke tillatt/i);
+      const actualAlert = await findByRole('alert');
+      expect(actualElement).toBeInTheDocument();
+      expect(actualAlert).toBeInTheDocument();
     });
   });
 
-  describe.skip('When input does not have html and validateScriptInjection = true', () => {
+  describe('When input does not have html and validateScriptInjection = true', () => {
     const validateScriptInjection = true;
-    const value = 'input med uten html';
+    const value = 'input uten html';
     it('Should render without validation', async () => {
-      const {
-        renderResult: { findByDisplayValue },
-      } = renderComponent({ validateScriptInjection, answer: [{ valueString: value }] });
-
+      const { findByDisplayValue, findByLabelText, queryByRole } = renderComponent({ validateScriptInjection }, q);
+      userEvent.type(await findByLabelText('String2 - Obligatorisk'), value);
+      const actualAlert = queryByRole('alert');
       const item = await findByDisplayValue(value);
+
       expect(item).toBeInTheDocument();
+      expect(actualAlert).not.toBeInTheDocument();
     });
   });
 
@@ -49,42 +48,22 @@ describe('string', () => {
     const validateScriptInjection = false;
     const value = 'input med <html>';
     it('Should render with validation', async () => {
-      const {
-        renderResult: { findByDisplayValue },
-      } = renderComponent({ validateScriptInjection, answer: [{ valueString: value }] });
+      const { findByDisplayValue, findByLabelText, findByRole, queryByRole } = renderComponent({ validateScriptInjection }, q);
       await act(async () => {
-        expect(await findByDisplayValue(value)).toBeInTheDocument();
+        userEvent.type(await findByLabelText('String2 - Obligatorisk'), value);
+        userEvent.click(await findByRole('button', { name: 'submit' }));
       });
+      const actualElement = await findByDisplayValue(value);
+      const actualAlert = queryByRole('alert');
+      expect(actualElement).toBeInTheDocument();
+      expect(actualAlert).not.toBeInTheDocument();
     });
   });
 });
 
-function renderComponent(props: Partial<WithCommonFunctionsAndEnhancedProps>) {
-  const item: QuestionnaireItem = {
-    id: '2',
-    linkId: '2.1',
-    repeats: false,
-    type: 'string',
-    text: 'Uten html',
+function renderComponent(props: Partial<WithCommonFunctionsAndEnhancedProps>, questionnaire: Questionnaire) {
+  const resources = {
+    formSend: 'submit',
   };
-  return renderMockStore(
-    <String
-      {...props}
-      idWithLinkIdAndItemIndex={item.linkId}
-      item={item}
-      path={[]}
-      id="item_2"
-      repeatButton={<div />}
-      renderDeleteButton={() => {
-        return null;
-      }}
-      visibleDeleteButton
-      renderHelpButton={() => <React.Fragment />}
-      renderHelpElement={() => <React.Fragment />}
-      onAnswerChange={() => {}}
-      oneToTwoColumn={false}
-      renderRepeatButton={() => <React.Fragment />}
-      renderContext={new RenderContext()}
-    />
-  );
+  return renderRefero({ questionnaire, props, resources });
 }
