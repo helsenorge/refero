@@ -1,8 +1,6 @@
 import * as React from 'react';
 import { createStore, applyMiddleware } from 'redux';
-import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
-import { mount } from 'enzyme';
 
 import '../../util/defineFetch';
 import rootReducer from '../../reducers';
@@ -11,6 +9,7 @@ import { ReferoContainer } from '..';
 import { Resources } from '../../util/resources';
 import questionnaireWithAllItemTypes from './__data__/onChange/allItemTypes';
 import { inputAnswer, findItem } from './utils';
+import { render } from './test-utils/test-utils';
 
 describe.skip('date fields gets set and cleared properly', () => {
   beforeEach(() => {
@@ -34,18 +33,19 @@ describe.skip('date fields gets set and cleared properly', () => {
 
 function createWrapper(questionnaire: Questionnaire) {
   const store: any = createStore(rootReducer, applyMiddleware(thunk));
-  return mount(
-    <Provider store={store}>
-      <ReferoContainer
-        loginButton={<React.Fragment />}
-        store={store}
-        authorized={true}
-        onCancel={() => {}}
-        onSave={() => {}}
-        onSubmit={() => {}}
-        resources={{} as Resources}
-        questionnaire={questionnaire}
-      />
-    </Provider>
+  return render(
+    <ReferoContainer
+      loginButton={<React.Fragment />}
+      store={store}
+      authorized={true}
+      onCancel={() => {}}
+      onSave={() => {}}
+      onSubmit={() => {}}
+      resources={{} as Resources}
+      questionnaire={questionnaire}
+    />,
+    {
+      store,
+    }
   );
 }

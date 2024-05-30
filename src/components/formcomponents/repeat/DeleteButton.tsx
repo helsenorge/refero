@@ -13,7 +13,6 @@ import { NewValueAction, deleteRepeatItemAsync } from '../../../actions/newValue
 import { GlobalState } from '../../../reducers';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
-import { RenderContext } from '../../../util/renderContext';
 import { Resources } from '../../../util/resources';
 import { WithCommonFunctionsProps } from '../../with-common-functions';
 
@@ -25,7 +24,6 @@ interface Props extends WithCommonFunctionsProps {
   dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
   mustShowConfirm?: boolean;
   onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
-  renderContext: RenderContext;
 }
 
 const DeleteButton = ({ resources, dispatch, item, path, onAnswerChange, mustShowConfirm }: Props): JSX.Element => {

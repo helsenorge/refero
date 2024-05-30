@@ -1,3 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`group should render correct tag 1`] = `"<h3 class=\\"page_refero__heading\\"> Overskrift</h3>"`;

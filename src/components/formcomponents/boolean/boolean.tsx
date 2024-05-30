@@ -136,12 +136,6 @@ class Boolean extends React.Component<Props> {
         <FormGroup error={error?.message}>
           {renderHelpElement()}
 
-          <Label
-            labelId={`${getId(id)}-label-boolean`}
-            labelTexts={[{ text: this.getLabel() }]}
-            sublabel={<Sublabel id={`${getId(id)}-sublabel-boolean`} sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
-            afterLabelChildren={renderHelpButton()}
-          />
           <Controller
             name={idWithLinkIdAndItemIndex}
             control={control}
@@ -157,7 +151,14 @@ class Boolean extends React.Component<Props> {
                 {...rest}
                 testId={getId(id)}
                 inputId={getId(id)}
-                label={<Label labelTexts={[{ text: this.getLabel() }]} />}
+                label={
+                  <Label
+                    labelId={`${getId(id)}-label-boolean`}
+                    labelTexts={[{ text: this.getLabel() }]}
+                    sublabel={<Sublabel id={`${getId(id)}-sublabel-boolean`} sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+                    afterLabelChildren={renderHelpButton()}
+                  />
+                }
                 checked={value}
                 onChange={(): void => {
                   this.handleChange();

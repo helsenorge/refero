@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 import '../../../../util/defineFetch';
 import { renderRefero, userEvent } from '../../../__tests__/test-utils/test-utils';
 import { WithCommonFunctionsAndEnhancedProps } from '../../../with-common-functions';

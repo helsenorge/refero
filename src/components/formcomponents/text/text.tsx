@@ -152,20 +152,20 @@ export class Text extends React.Component<Props> {
       );
     }
 
-    if (itemControls && itemControls.some(itemControl => itemControl.code === itemControlConstants.HIGHLIGHT)) {
-      return (
-        <div
-          id={id}
-          className="page_refero__component page_refero__component_highlight"
-          dangerouslySetInnerHTML={{
-            __html: DOMPurify.sanitize(`${getText(item, onRenderMarkdown, questionnaire, resources)}`, {
-              RETURN_TRUSTED_TYPE: true,
-              ADD_ATTR: ['target'],
-            }) as unknown as string,
-          }}
-        />
-      );
-    }
+    // if (itemControls && itemControls.some(itemControl => itemControl.code === itemControlConstants.HIGHLIGHT)) {
+    //   return (
+    //     <div
+    //       id={id}
+    //       className="page_refero__component page_refero__component_highlight"
+    //       dangerouslySetInnerHTML={{
+    //         __html: DOMPurify.sanitize(`${getText(item, onRenderMarkdown, questionnaire, resources)}`, {
+    //           RETURN_TRUSTED_TYPE: true,
+    //           ADD_ATTR: ['target'],
+    //         }) as unknown as string,
+    //       }}
+    //     />
+    //   );
+    // }
 
     if (pdf || isReadOnly(item)) {
       return (

@@ -56,13 +56,6 @@ export async function findItemByDispayValue(value: string) {
   return el;
 }
 
-function createItemControlCoding(code: string): Coding {
-  return {
-    code: code,
-    system: 'http://hl7.org/fhir/ValueSet/questionnaire-item-control',
-  };
-}
-
 export function createIDataReceiverExpressionExtension(value: string): Extension {
   return {
     url: ExtensionConstants.Copy_EXPRESSION,
@@ -73,7 +66,12 @@ export function createItemControlExtension(code: string): Extension {
   return {
     url: ExtensionConstants.ITEMCONTROL_URL,
     valueCodeableConcept: {
-      coding: [createItemControlCoding(code)],
+      coding: [
+        {
+          code,
+          system: 'http://hl7.org/fhir/ValueSet/questionnaire-item-control',
+        },
+      ],
     },
   };
 }

@@ -13,7 +13,7 @@ import { QuestionnaireItemWithAnswers } from '../../interface';
 type MockAnswerProps = Partial<QuestionnaireResponseItemAnswer>;
 type MockResponseItemProps = Partial<QuestionnaireResponseItem>;
 type MockQuestionnaireItemProps = Partial<Omit<QuestionnaireItem, 'type'>> & {
-  type: string; // Make type a required property
+  type: string;
 };
 type MockResponseProps = Partial<QuestionnaireResponse>;
 

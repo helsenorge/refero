@@ -14,7 +14,6 @@ import { GlobalState } from '../../../reducers';
 import { getRepeatsTextExtension } from '../../../util/extension';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
-import { RenderContext } from '../../../util/renderContext';
 import { Resources } from '../../../util/resources';
 import { WithCommonFunctionsProps } from '../../with-common-functions';
 
@@ -24,7 +23,6 @@ interface Props extends WithCommonFunctionsProps {
   responseItems?: Array<QuestionnaireResponseItem>;
   resources?: Resources;
   dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
-  renderContext: RenderContext;
   disabled: boolean;
 }
 
