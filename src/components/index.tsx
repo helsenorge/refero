@@ -314,6 +314,8 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
       saveButtonDisabled,
       onFieldsNotCorrectlyFilledOut,
       onStepChange,
+      isMicroweb,
+      isMicrowebStep
     } = this.props;
     if (!formDefinition || !resources) {
       return;
@@ -331,6 +333,8 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
       saveButtonDisabled,
       onFieldsNotCorrectlyFilledOut,
       onStepChange,
+      isMicroweb,
+      isMicrowebStep,
     };
 
     return (

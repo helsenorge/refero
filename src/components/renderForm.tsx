@@ -36,6 +36,13 @@ const RenderForm = ({
   const displayPauseButtonInNormalView = referoProps.onSave ? onSave : undefined;
   const displayPauseButtonInStepView = displayPreviousButton ? previousStep : undefined;
 
+  const buttonOrderMicroWeb = {
+    1: ButtonType.pauseButton, 
+    2: ButtonType.submitButton,
+    3: ButtonType.cancelButton,
+    4: ButtonType.draftButton,
+  }
+
   const buttonOrderStepView = {
     1: ButtonType.pauseButton,
     2: ButtonType.submitButton,
@@ -48,6 +55,27 @@ const RenderForm = ({
     3: ButtonType.cancelButton,
     4: ButtonType.draftButton,
   };
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const getButtonOrder = (): any => {
+    if (isStepView && referoProps.isMicrowebStep === false) {
+      return buttonOrderStepView;
+    }
+    if (referoProps.isMicrowebStep) {
+      return buttonOrderMicroWeb;
+    }
+    return buttonOrderNormalView;
+  }
+
+  const getPauseButtonClasses = (): string | undefined => {
+    if ( referoProps.isMicrowebStep ) { 
+        return 'page_refero__pausebutton_microweb';
+    }
+    if ( isStepView ) {
+        return 'page_refero__pausebutton_stepView';
+    }
+    return 'page_refero__pausebutton';
+  }
 
   return (
     <>
@@ -64,12 +92,13 @@ const RenderForm = ({
             cancelButtonText={resources.formCancel}
             pauseButtonText={displayPreviousButton ? resources.previousStep : resources.formSave}
             onPause={isStepView ? displayPauseButtonInStepView : displayPauseButtonInNormalView}
-            pauseButtonClasses={`${isStepView ? 'page_refero__pausebutton_stepView' : 'page_refero__pausebutton'}`}
+            pauseButtonClasses={getPauseButtonClasses()}
+            submitButtonClasses={getPauseButtonClasses()}
             pauseButtonType="display"
             submitButtonType="display"
             cancelButtonType="display"
             pauseButtonLevel="secondary"
-            buttonOrder={isStepView ? buttonOrderStepView : buttonOrderNormalView}
+            buttonOrder={getButtonOrder()}
             onCancel={referoProps.onCancel}
             buttonClasses="page_refero__saveblock"
             validationSummaryPlacement={referoProps.validationSummaryPlacement}
@@ -110,6 +139,8 @@ const RenderForm = ({
       )}
     </>
   );
+
+
 };
 
 export default RenderForm;
