@@ -130,29 +130,7 @@ export class DateDayInput extends React.Component<Props> {
     }
 
     return (
-      <DateRangePicker
-        {...this.props.register(this.props.item.linkId, {
-          required: isRequired(this.props.item),
-        })}
-        type="single"
-        id={`${getId(this.props.id)}-datepicker_input`}
-        locale={this.props.locale} // TODO: må støtte nynorsk og samisk også
-        errorResources={this.getDatepickerErrorPhrases()}
-        resources={this.props.resources}
-        label={this.props.label}
-        subLabel={this.props.subLabel}
-        isRequired={isRequired(this.props.item)}
-        placeholder={getPlaceholder(this.props.item)}
-        ref={this.props.datepickerRef}
-        maximumDate={this.toLocaleDate(this.props.maxDate)}
-        minimumDate={this.toLocaleDate(this.props.minDate)}
-        singleDateValue={this.getSingleDateValue()}
-        className={this.props.className}
-        onDateChange={this.onDateChange}
-        validationErrorRenderer={this.props.validationErrorRenderer}
-        helpButton={this.props.helpButton}
-        helpElement={this.props.helpElement}
-      />
+      <></>
     );
   }
 }

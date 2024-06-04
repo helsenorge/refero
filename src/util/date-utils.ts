@@ -1,19 +1,45 @@
-import { parse, set, isValid } from 'date-fns';
+import { setHours, setMinutes } from 'date-fns';
+import { QuestionnaireResponseItemAnswer } from 'fhir/r4';
+import { format, startOfDay } from 'date-fns';
+import { safeParseJSON } from './date-fns-utils';
+import { DatePickerFormat, DateTimeUnit } from '../types/dateTypes';
 
-export const getFullFnsDate = (date: Date | undefined, timeString: string | undefined): Date | undefined => {
-  if (!date) return;
-
-  let hour = 0;
-  let minute = 0;
-
-  if (timeString) {
-    const parsedTime = parse(timeString, 'HH:mm', new Date());
-    if (isValid(parsedTime)) {
-      hour = parsedTime.getHours();
-      minute = parsedTime.getMinutes();
-    }
+export function getFullFnsDate(date: Date | undefined, hours: string | undefined, minutes: string | undefined): Date | undefined {
+  if (!date || !hours || !minutes) {
+    return undefined;
   }
 
-  const newDate = set(date, { hours: hour, minutes: minute, seconds: 0, milliseconds: 0 });
-  return newDate;
+  const hoursNumber = parseInt(hours, 10);
+  const minutesNumber = parseInt(minutes, 10);
+
+  if (isNaN(hoursNumber) || hoursNumber < 0 || hoursNumber > 23) {
+    throw new Error('Invalid hours value');
+  }
+  if (isNaN(minutesNumber) || minutesNumber < 0 || minutesNumber > 59) {
+    throw new Error('Invalid minutes value');
+  }
+
+  let fullDate = setHours(date, hoursNumber);
+  fullDate = setMinutes(fullDate, minutesNumber);
+
+  return fullDate;
+}
+
+export const getDateFromAnswer = (answer: QuestionnaireResponseItemAnswer) => {
+  const dateObject = answer?.valueDateTime ? safeParseJSON(answer.valueDateTime) : null;
+
+  if (dateObject) {
+    return startOfDay(dateObject);
+  }
+};
+
+export const getHoursOrMinutesFromAnswer = (answer: QuestionnaireResponseItemAnswer, unitToGet: DateTimeUnit) => {
+  const dateObject = answer?.valueDateTime ? safeParseJSON(answer.valueDateTime) : null;
+
+  if (dateObject && unitToGet === DateTimeUnit.Hours) {
+    return format(dateObject, DatePickerFormat.HH);
+  }
+  if (dateObject && unitToGet === DateTimeUnit.Minutes) {
+    return format(dateObject, DatePickerFormat.mm);
+  }
 };

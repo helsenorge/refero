@@ -1,7 +1,7 @@
 import { MimeTypes } from '@helsenorge/file-upload/components/dropzone';
 
 export default {
-  DATE_TIME_FORMAT: 'YYYY-MM-DDTHH:mm:ssZ',
+  DATE_TIME_FORMAT: "yyyy-MM-dd'T'HH:mm:ssX",
   DATE_FORMAT: 'YYYY-MM-DD',
   DATE_SEPARATOR: '-',
   TIME_SEPARATOR: ':',

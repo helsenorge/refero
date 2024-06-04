@@ -84,23 +84,6 @@ export const DateYearInput = (props: React.PropsWithChildren<Props>): JSX.Elemen
   }
 
   return (
-    <YearInput
-      {...props.register(props.item.linkId, {
-        required: isRequired(props.item),
-      })}
-      id={`${getId(props.id)}-year_input`}
-      errorResources={getYearInputResources()}
-      label={props.label}
-      subLabel={props.subLabel}
-      isRequired={isRequired(props.item)}
-      placeholder={getPlaceholder(props.item)}
-      maximumYear={props.maxDate?.year()}
-      minimumYear={props.minDate?.year()}
-      value={answerState}
-      className={props.className}
-      onChange={onYearChange}
-      helpButton={props.helpButton}
-      helpElement={props.helpElement}
-    />
+    <></>
   );
 };

@@ -16,14 +16,16 @@ import { isRequired, getId, isReadOnly, getSublabelText, renderPrefix, getText }
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
 import { Resources } from '../../../util/resources';
-import { FormProps } from '../../../validation/ReactHookFormHoc';
+import ReactHookFormHoc, { FormProps } from '../../../validation/ReactHookFormHoc';
 import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
 import TextView from '../textview';
 import { safeParseJSON } from '../../../util/date-fns-utils';
-import { getFullFnsDate } from '../../../util/date-utils';
+import { getDateFromAnswer, getFullFnsDate, getHoursOrMinutesFromAnswer } from '../../../util/date-utils';
 import { format } from 'date-fns';
 import { DatePicker, DateTimePickerWrapper, DateTime } from '@helsenorge/datepicker/components/DatePicker';
+import { FieldError } from 'react-hook-form';
+import { DateTimeUnit } from '../../../types/dateTypes';
 
 export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   item: QuestionnaireItem;
@@ -44,10 +46,34 @@ export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   isHelpOpen?: boolean;
   onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
+  register: FormProps['register'];
+  error?: FieldError;
 }
 
-class DateTimeInput extends React.Component<Props> {
-  getDefaultDate(item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer): Date | undefined {
+const DateTimeInput: React.FC<Props> = ({
+  item,
+  questionnaire,
+  responseItem,
+  answer,
+  resources,
+  dispatch,
+  path,
+  pdf,
+  language,
+  promptLoginMessage,
+  id,
+  renderDeleteButton,
+  repeatButton,
+  renderHelpButton,
+  renderHelpElement,
+  isHelpOpen,
+  onAnswerChange,
+  onRenderMarkdown,
+  register,
+  error,
+  children,
+}) => {
+  const getDefaultDate = (item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer): Date | undefined => {
     if (answer && answer.valueDateTime) {
       return safeParseJSON(String(answer.valueDateTime));
     }
@@ -64,16 +90,16 @@ class DateTimeInput extends React.Component<Props> {
       return safeParseJSON(String(item.initial[0].valueDateTime));
     }
     return safeParseJSON(String(item.initial[0].valueDate));
-  }
+  };
 
-  getMaxDate(): Date | undefined {
-    const maxDate = getExtension(ExtensionConstants.DATE_MAX_VALUE_URL, this.props.item);
-    if (maxDate && maxDate.valueString) return evaluateFhirpathExpressionToGetDate(this.props.item, maxDate.valueString);
-    return this.getMaxDateWithExtension();
-  }
+  const getMaxDate = (): Date | undefined => {
+    const maxDate = getExtension(ExtensionConstants.DATE_MAX_VALUE_URL, item);
+    if (maxDate && maxDate.valueString) return evaluateFhirpathExpressionToGetDate(item, maxDate.valueString);
+    return getMaxDateWithExtension();
+  };
 
-  getMaxDateWithExtension(): Date | undefined {
-    const maxDate = getExtension(ExtensionConstants.MAX_VALUE_URL, this.props.item);
+  const getMaxDateWithExtension = (): Date | undefined => {
+    const maxDate = getExtension(ExtensionConstants.MAX_VALUE_URL, item);
     if (!maxDate) {
       return;
     }
@@ -83,16 +109,16 @@ class DateTimeInput extends React.Component<Props> {
       return safeParseJSON(String(maxDate.valueDateTime));
     }
     return undefined;
-  }
+  };
 
-  getMinDate(): Date | undefined {
-    const minDate = getExtension(ExtensionConstants.DATE_MIN_VALUE_URL, this.props.item);
-    if (minDate && minDate.valueString) return evaluateFhirpathExpressionToGetDate(this.props.item, minDate.valueString);
-    return this.getMinDateWithExtension();
-  }
+  const getMinDate = (): Date | undefined => {
+    const minDate = getExtension(ExtensionConstants.DATE_MIN_VALUE_URL, item);
+    if (minDate && minDate.valueString) return evaluateFhirpathExpressionToGetDate(item, minDate.valueString);
+    return getMinDateWithExtension();
+  };
 
-  getMinDateWithExtension(): Date | undefined {
-    const minDate = getExtension(ExtensionConstants.MIN_VALUE_URL, this.props.item);
+  const getMinDateWithExtension = (): Date | undefined => {
+    const minDate = getExtension(ExtensionConstants.MIN_VALUE_URL, item);
     if (!minDate) {
       return;
     }
@@ -102,68 +128,42 @@ class DateTimeInput extends React.Component<Props> {
       return safeParseJSON(String(minDate.valueDateTime));
     }
     return undefined;
-  }
+  };
 
-  dispatchNewDate = (date: Date | undefined, time: string | undefined): void => {
-    const { dispatch, promptLoginMessage, onAnswerChange, answer, path, item } = this.props;
-    const fullDate = getFullFnsDate(date, time);
-    const dateTimeString = fullDate ? format(fullDate, Constants.DATE_TIME_FORMAT) : '';
-
-    const existingAnswer = answer?.valueDateTime || '';
-    if (dispatch && existingAnswer !== dateTimeString) {
-      dispatch(newDateTimeValueAsync(this.props.path, dateTimeString, this.props.item))?.then(newState =>
-        onAnswerChange(newState, path, item, { valueDateTime: dateTimeString } as QuestionnaireResponseItemAnswer)
-      );
-    }
-
+  const promptLogin = (): void => {
     if (promptLoginMessage) {
       promptLoginMessage();
     }
   };
 
-  promptLogin = (): void => {
-    if (this.props.promptLoginMessage) {
-      this.props.promptLoginMessage();
-    }
-  };
-
-  onBlur = (): boolean => {
+  const onBlur = (): boolean => {
     return true;
   };
 
-  convertDateToString = (item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer): string | undefined => {
-    const date = this.getDefaultDate(item, answer);
+  const convertDateToString = (item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer): string | undefined => {
+    const date = getDefaultDate(item, answer);
     if (date) {
       return format(date, 'dd.MM.yyyy HH:mm');
     }
     return undefined;
   };
 
-  getStringValue = (): string => {
-    const { item, answer } = this.props;
+  const getStringValue = (): string => {
     if (Array.isArray(answer)) {
-      return answer.map(m => this.convertDateToString(item, m)).join(', ');
+      return answer.map(m => convertDateToString(item, m)).join(', ');
     }
-    const date = this.convertDateToString(item, answer);
+    const date = convertDateToString(item, answer);
     let text = '';
-    if (this.props.resources && this.props.resources.ikkeBesvart) {
-      text = this.props.resources.ikkeBesvart;
+    if (resources && resources.ikkeBesvart) {
+      text = resources.ikkeBesvart;
     }
     return date ?? text;
   };
 
-  shouldComponentUpdate(nextProps: Props): boolean {
-    const responseItemHasChanged = this.props.responseItem !== nextProps.responseItem;
-    const helpItemHasChanged = this.props.isHelpOpen !== nextProps.isHelpOpen;
-    const answerHasChanged = this.props.answer !== nextProps.answer;
-    const resourcesHasChanged = JSON.stringify(this.props.resources) !== JSON.stringify(nextProps.resources);
-    const repeats = this.props.item.repeats ?? false;
-
-    return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats || answerHasChanged;
-  }
+  // React.useEffect(() => {}, [responseItem, isHelpOpen, answer, resources, item.repeats, error]);
 
   // getLocaleFromLanguage = (): LanguageLocales.NORWEGIAN | LanguageLocales.ENGLISH => {
-  //   if (this.props.language?.toLowerCase() === 'en-gb') {
+  //   if (props.language?.toLowerCase() === 'en-gb') {
   //     return LanguageLocales.ENGLISH;
   //   }
 
@@ -171,70 +171,104 @@ class DateTimeInput extends React.Component<Props> {
   // };
 
   // toLocaleDate(moment: Moment | undefined): Moment | undefined {
-  //   return moment ? moment.locale(this.getLocaleFromLanguage()) : undefined;
+  //   return moment ? moment.locale(getLocaleFromLanguage()) : undefined;
   // }
 
-  render(): JSX.Element | null {
-    const { item, pdf, id, onRenderMarkdown } = this.props;
-    if (pdf || isReadOnly(item)) {
-      return (
-        <TextView
-          id={id}
-          item={item}
-          value={this.getStringValue()}
-          onRenderMarkdown={onRenderMarkdown}
-          helpButton={this.props.renderHelpButton()}
-          helpElement={this.props.renderHelpElement()}
-        >
-          {this.props.children}
-        </TextView>
-      );
+  const handleChange = (date: Date | string | undefined, hours: string | undefined, minutes: string | undefined) => {
+    if (typeof date === 'string') {
+      date = safeParseJSON(date);
     }
-    const valueDateTime = this.getDefaultDate(this.props.item, this.props.answer);
-    const maxDateTime = this.getMaxDate();
-    const minDateTime = this.getMinDate();
-    const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, this.props.questionnaire, this.props.resources)}`;
-    const subLabelText = getSublabelText(this.props.item, this.props.onRenderMarkdown, this.props.questionnaire, this.props.resources);
 
+    date && setDate(date);
+    hours && setHours(hours);
+    minutes && setMinutes(minutes);
+
+    const fullDate = getFullFnsDate(date, hours, minutes);
+
+    if (fullDate) {
+      const dateTimeString = format(fullDate, Constants.DATE_TIME_FORMAT);
+      const existingAnswer = answer?.valueDateTime || '';
+      if (dispatch && existingAnswer !== dateTimeString) {
+        dispatch(newDateTimeValueAsync(path, dateTimeString, item))?.then(newState =>
+          onAnswerChange(newState, path, item, { valueDateTime: dateTimeString } as QuestionnaireResponseItemAnswer)
+        );
+      }
+
+      if (promptLoginMessage) {
+        promptLoginMessage();
+      }
+    }
+  };
+
+  if (pdf || isReadOnly(item)) {
     return (
-      <div className="page_refero__component page_refero__component_datetime">
-        <DateTimePickerWrapper>
-          <DatePicker
-            {...this.props.register(this.props.item.linkId, {
-              required: isRequired(this.props.item),
-            })}
-            testId={getId(id)}
-            autoComplete=""
-            dateButtonAriaLabel="Open datepicker"
-            dateFormat="dd.MM.yyyy"
-            dateValue={valueDateTime}
-            errorText={getValidationTextExtension(item)}
-            label={
-              <Label
-                labelId={`${getId(id)}-label-dateTime`}
-                labelTexts={[{ text: labelText }]}
-                sublabel={<Sublabel id={`${getId(id)}-sublabel-dateTime`} sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
-                afterLabelChildren={this.props.renderHelpButton()}
-              />
-            }
-            minDate={minDateTime}
-            maxDate={maxDateTime}
-            onChange={() => this.dispatchNewDate}
-            onBlur={() => this.onBlur}
-          />
-          <DateTime defaultValue={12} timeUnit="hours" />
-          <DateTime defaultValue={0} timeUnit="minutes" />
-        </DateTimePickerWrapper>
-
-        {this.props.renderDeleteButton('page_refero__deletebutton--margin-top')}
-        {this.props.repeatButton}
-        {this.props.children ? <div className="nested-fieldset nested-fieldset--full-height">{this.props.children}</div> : null}
-      </div>
+      <TextView
+        id={id}
+        item={item}
+        value={getStringValue()}
+        onRenderMarkdown={onRenderMarkdown}
+        helpButton={renderHelpButton()}
+        helpElement={renderHelpElement()}
+      >
+        {children}
+      </TextView>
     );
   }
-}
 
-const withCommonFunctionsComponent = withCommonFunctions(DateTimeInput);
+  const [date, setDate] = React.useState(getDateFromAnswer(answer));
+  const [hours, setHours] = React.useState(getHoursOrMinutesFromAnswer(answer, DateTimeUnit.Hours));
+  const [minutes, setMinutes] = React.useState(getHoursOrMinutesFromAnswer(answer, DateTimeUnit.Minutes));
+
+  const valueDateTime = getDefaultDate(item, answer);
+  const maxDateTime = getMaxDate();
+  const minDateTime = getMinDate();
+  const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`;
+  const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
+
+  const getErrorText = (): string | undefined => {
+    if (error) {
+      return getValidationTextExtension(item) || resources?.formRequiredErrorMessage;
+    }
+  };
+
+  return (
+    <div className="page_refero__component page_refero__component_datetime">
+      <DateTimePickerWrapper errorText={getErrorText()}>
+        <DatePicker
+          {...register(item.linkId, {
+            required: isRequired(item),
+          })}
+          testId={getId(id)}
+          autoComplete=""
+          dateButtonAriaLabel="Open datepicker"
+          dateFormat={'dd.MM.yyyy'}
+          dateValue={valueDateTime}
+          label={
+            <Label
+              labelId={`${getId(id)}-label-dateTime`}
+              labelTexts={[{ text: labelText }]}
+              sublabel={<Sublabel id={`${getId(id)}-sublabel-dateTime`} sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+              afterLabelChildren={renderHelpButton()}
+            />
+          }
+          minDate={minDateTime}
+          maxDate={maxDateTime}
+          onChange={(e, newDate) => handleChange(newDate, hours, minutes)}
+          onBlur={() => onBlur}
+        />
+        <DateTime defaultValue={Number(minutes)} timeUnit="hours" onChange={e => handleChange(date, e.target.value, minutes)} />
+        <DateTime defaultValue={Number(minutes)} timeUnit="minutes" onChange={e => handleChange(date, hours, e.target.value)} />
+      </DateTimePickerWrapper>
+
+      {renderDeleteButton('page_refero__deletebutton--margin-top')}
+      {repeatButton}
+      {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
+    </div>
+  );
+};
+
+const withFormProps = ReactHookFormHoc(DateTimeInput);
+const withCommonFunctionsComponent = withCommonFunctions(withFormProps);
 const layoutChangeComponent = layoutChange(withCommonFunctionsComponent);
 const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(layoutChangeComponent);
 export default connectedComponent;
