@@ -77,6 +77,14 @@
         {
           "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sublabel",
           "valueMarkdown": "For eksempel Ibux Tab 400 mg. Skriv inn minst 3 tegn for å søke."
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-minOccurs",
+          "valueInteger": 1
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-maxOccurs",
+          "valueInteger": 4
         }
       ],
       "linkId": "af3cff52-5879-4db0-c671-1fb2bec90309",

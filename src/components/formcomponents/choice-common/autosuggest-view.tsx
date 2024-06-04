@@ -20,8 +20,6 @@ import { getStringAnswer, hasStringAnswer, getCodingAnswer } from '../../../util
 import { Resources } from '../../../util/resources';
 import ReactHookFormHoc, { FormProps } from '../../../validation/ReactHookFormHoc';
 import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
-// import Label from '../label';
-// import SubLabel from '../sublabel';
 
 export interface AutosuggestProps extends WithCommonFunctionsAndEnhancedProps, FormProps {
   handleChange: (code?: string, systemArg?: string, displayArg?: string) => void;
@@ -156,13 +154,12 @@ class AutosuggestView extends React.Component<AutosuggestProps, AutosuggestState
     if (newValue === '') {
       this.clearCodingAnswerIfExists();
     }
-    this.setState(prevState => ({
-      ...prevState,
+    this.setState({
       inputValue: newValue,
       isDirty: true,
       noSuggestionsToShow: false,
       hasLoadError: this.state.hasLoadError && !newValue,
-    }));
+    });
   }
 
   debouncedOnSuggestionsFetchRequested: ({ value }: { value: string }) => void = debounce(

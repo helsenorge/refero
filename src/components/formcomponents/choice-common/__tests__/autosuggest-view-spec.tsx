@@ -1,16 +1,19 @@
 import React from 'react';
 import '@testing-library/jest-dom/extend-expect';
-import { QuestionnaireItem, ValueSet } from 'fhir/r4';
+import { Questionnaire, QuestionnaireItem, QuestionnaireResponse, ValueSet } from 'fhir/r4';
 import { OPEN_CHOICE_ID, OPEN_CHOICE_SYSTEM, OPEN_CHOICE_LABEL } from '../../../../constants';
 import { Resources } from '../../../../util/resources';
 import AutosuggestView from '../autosuggest-view';
-import { render, screen, fireEvent, waitFor, userEvent, renderRefero, act } from '../../../__tests__/test-utils/test-utils';
+import { render, screen, fireEvent, waitFor, userEvent, renderRefero, act, findByRole } from '../../../__tests__/test-utils/test-utils';
 import { q } from './__data__/index';
+import { getResources } from '../../../../preview/resources/referoResources';
 import { generateQuestionnaireResponse } from '../../../../actions/generateQuestionnaireResponse';
 
 jest.mock('@helsenorge/core-utils/debounce', () => ({
   debounce: (fn: Function) => fn,
 }));
+const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle ut dette feltet', openChoiceOption: 'annet' };
+
 const successReturnValueSet: ValueSet = {
   resourceType: 'ValueSet',
   status: 'draft',
@@ -29,6 +32,193 @@ const successReturnValueSet: ValueSet = {
   },
 };
 describe('autosuggest-view', () => {
+  describe('help button', () => {
+    it('Should render helpButton', async () => {
+      const { container } = renderRefero({ questionnaire: q });
+
+      expect(container.querySelector('.page_refero__helpButton')).toBeInTheDocument();
+    });
+    it('Should render helpElement when helpbutton is clicked', async () => {
+      const { container } = renderRefero({ questionnaire: q });
+
+      expect(container.querySelector('.page_refero__helpButton')).toBeInTheDocument();
+
+      expect(container.querySelector('.page_refero__helpComponent--open')).not.toBeInTheDocument();
+
+      userEvent.click(container.querySelector('.page_refero__helpButton') as HTMLElement);
+
+      expect(container.querySelector('.page_refero__helpComponent--open')).toBeInTheDocument();
+    });
+  });
+  describe('repeat button', () => {
+    it('Should render repeat button if item repeats', () => {
+      const questionnaire: Questionnaire = {
+        ...q,
+        item: q.item?.map(x => ({ ...x, repeats: true })),
+      };
+
+      const { getByTestId } = renderRefero({ questionnaire });
+      const repeatButton = getByTestId(/-repeat-button/i);
+      expect(repeatButton).toBeInTheDocument();
+    });
+
+    it('Should not render repeat button if item does not repeats', () => {
+      const questionnaire: Questionnaire = {
+        ...q,
+        item: q.item?.map(x => ({ ...x, repeats: false })),
+      };
+      const { queryByTestId } = renderRefero({ questionnaire });
+      const repeatButton = queryByTestId(/-repeat-button/i);
+      expect(repeatButton).not.toBeInTheDocument();
+    });
+    it('Should add item when repeat is clicked and remove button when maxOccurance(4) is reached', async () => {
+      const questionnaire: Questionnaire = {
+        ...q,
+        item: q.item?.map(x => ({ ...x, repeats: true })),
+        extension: q.extension?.map(y => {
+          if (y.url === 'http://hl7.org/fhir/StructureDefinition/questionnaire-minOccurs') {
+            return { ...y, valueInteger: 2 };
+          }
+          return y;
+        }),
+      };
+      const { getByTestId, queryAllByLabelText, queryByTestId } = renderRefero({ questionnaire });
+      act(() => {
+        userEvent.click(getByTestId(/-repeat-button/i));
+        userEvent.click(getByTestId(/-repeat-button/i));
+        userEvent.click(getByTestId(/-repeat-button/i));
+      });
+
+      expect(queryAllByLabelText(/Mistenkt legemiddel/i)).toHaveLength(4);
+      expect(queryByTestId(/-repeat-button/i)).not.toBeInTheDocument();
+    });
+  });
+  describe('delete button', () => {
+    it('Should render delete button if item repeats and number of repeated items is greater than minOccurance(2)', async () => {
+      const questionnaire: Questionnaire = {
+        ...q,
+        item: q.item?.map(x => ({ ...x, repeats: true })),
+      };
+      const { getByTestId, queryAllByTestId } = renderRefero({ questionnaire });
+
+      userEvent.click(getByTestId(/-repeat-button/i));
+      userEvent.click(getByTestId(/-repeat-button/i));
+
+      expect(queryAllByTestId(/-delete-button/i)).toHaveLength(2);
+    });
+    it('Should not render delete button if item repeats and number of repeated items is lower or equal than minOccurance(2)', async () => {
+      const questionnaire: Questionnaire = {
+        ...q,
+        item: q.item?.map(x => ({ ...x, repeats: true })),
+      };
+      const { queryByTestId } = renderRefero({ questionnaire });
+
+      expect(queryByTestId(/-delete-button/i)).not.toBeInTheDocument();
+    });
+    it('Should show confirmationbox when deletebutton is clicked', async () => {
+      const questionnaire: Questionnaire = {
+        ...q,
+        item: q.item?.map(x => ({ ...x, repeats: true })),
+      };
+      const { getByTestId } = renderRefero({ questionnaire });
+
+      userEvent.click(getByTestId(/-repeat-button/i));
+
+      const deleteButton = getByTestId(/-delete-button/i);
+      expect(deleteButton).toBeInTheDocument();
+      userEvent.click(deleteButton);
+
+      expect(getByTestId(/-delete-confirm-modal/i)).toBeInTheDocument();
+    });
+    it('Should remove item when delete button is clicked', async () => {
+      const questionnaire: Questionnaire = {
+        ...q,
+        item: q.item?.map(x => ({ ...x, repeats: true })),
+      };
+      const { getByTestId, queryByTestId } = renderRefero({ questionnaire });
+
+      userEvent.click(getByTestId(/-repeat-button/i));
+
+      const deleteButton = getByTestId(/-delete-button/i);
+      expect(deleteButton).toBeInTheDocument();
+
+      userEvent.click(deleteButton);
+
+      const confirmModal = getByTestId(/-delete-confirm-modal/i);
+      userEvent.click(await findByRole(confirmModal, 'button', { name: /Forkast endringer/i }));
+
+      expect(queryByTestId(/-delete-button/i)).not.toBeInTheDocument();
+    });
+  });
+  describe('Validation', () => {
+    describe('Required', () => {
+      it('Should show error if field is required and value is empty', async () => {
+        const questionnaire: Questionnaire = {
+          ...q,
+          item: q.item?.map(x => ({ ...x, required: true })),
+        };
+        const { getByTestId, getByText } = renderRefero({ questionnaire });
+        await act(async () => {
+          await userEvent.click(getByTestId('refero-submit-button'));
+        });
+
+        expect(getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
+      });
+      it('Should not show error if required and has value', async () => {
+        const questionnaire: Questionnaire = {
+          ...q,
+          item: q.item?.map(x => ({ ...x, required: true })),
+        };
+        const fetchValueSetFn = (
+          _searchString: string,
+          _item: QuestionnaireItem,
+          successCallback: (valueSet: ValueSet) => void,
+          _errorCallback: (error: string) => void
+        ) => {
+          successCallback(successReturnValueSet);
+        };
+        const { getByTestId, getByLabelText, queryByText, getByText } = renderRefero({
+          questionnaire,
+          props: { fetchValueSet: fetchValueSetFn },
+        });
+        await act(async () => {
+          await userEvent.type(getByLabelText(/Mistenkt legemiddel/i), 'fyr');
+          await userEvent.click(getByText('Fyrstekake'));
+          await userEvent.click(getByTestId('refero-submit-button'));
+        });
+
+        expect(queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
+      });
+      it('Should remove error on change if form is submitted', async () => {
+        const fetchValueSetFn = (
+          _searchString: string,
+          _item: QuestionnaireItem,
+          successCallback: (valueSet: ValueSet) => void,
+          _errorCallback: (error: string) => void
+        ) => {
+          successCallback(successReturnValueSet);
+        };
+        const questionnaire: Questionnaire = {
+          ...q,
+          item: q.item?.map(x => ({ ...x, required: true })),
+        };
+        const { getByTestId, getByText, queryByText, getByLabelText } = renderRefero({
+          questionnaire,
+          props: { fetchValueSet: fetchValueSetFn },
+        });
+        await act(async () => {
+          await userEvent.click(getByTestId('refero-submit-button'));
+        });
+        expect(getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
+
+        await act(async () => {
+          await userEvent.type(getByLabelText(/Mistenkt legemiddel/i), 'fyr');
+          await userEvent.click(getByText('Fyrstekake'));
+        });
+        expect(queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
+      });
+    });
+  });
   it('skal kalle fetchValueSet når input endres', async () => {
     const fetchValueSetFn = jest.fn();
     const { getByLabelText } = renderRefero({ questionnaire: q, props: { fetchValueSet: fetchValueSetFn } });
@@ -153,296 +343,89 @@ describe('autosuggest-view', () => {
     await waitFor(() => expect(getByText('Teknisk feil')).toBeInTheDocument());
   });
 
-  //TODO: lager denne på nytt når vi skal teste validering
-  it.skip('skal validere true dersom det finnes answer og feltet er required', async () => {
-    render(
-      <AutosuggestView
-        handleChange={jest.fn()}
-        clearCodingAnswer={jest.fn()}
-        fetchValueSet={jest.fn()}
-        answer={[
-          {
-            valueCoding: {
-              code: '1',
-              system: 'http://autosuggest.system',
-              display: 'Answer',
-            },
-          },
-        ]}
-        item={
-          {
-            required: true,
-          } as QuestionnaireItem
+  it('skal vise valgt verdi som allerede er satt i autosuggest når choice-komponenten lastes', async () => {
+    const questionnaire: Questionnaire = {
+      ...q,
+      item: q.item?.map(x => ({ ...x, type: 'choice' })),
+    };
+
+    const questionnaireResponse: QuestionnaireResponse = {
+      resourceType: 'QuestionnaireResponse',
+      status: 'in-progress',
+      ...generateQuestionnaireResponse(questionnaire),
+      item: generateQuestionnaireResponse(questionnaire)?.item?.map(x => {
+        if (x.linkId === 'af3cff52-5879-4db0-c671-1fb2bec90309') {
+          return {
+            ...x,
+            answer: [
+              {
+                valueCoding: {
+                  code: '1',
+                  system: 'http://autosuggest.system',
+                  display: 'Fyrstekake',
+                },
+              },
+            ],
+          };
         }
-        resources={{} as Resources}
-        renderDeleteButton={jest.fn()}
-        repeatButton={<></>}
-        renderHelpButton={jest.fn()}
-        renderHelpElement={jest.fn()}
-      />
-    );
-
-    const isValid = screen.getByRole('form').checkValidity();
-
-    expect(isValid).toBeTruthy();
-  });
-
-  //TODO: lager denne på nytt når vi skal teste validering
-  it.skip('skal validere false dersom det ikke finnes answer og feltet er required', async () => {
-    render(
-      <AutosuggestView
-        idWithLinkIdAndItemIndex="test1"
-        handleChange={jest.fn()}
-        clearCodingAnswer={jest.fn()}
-        fetchValueSet={jest.fn()}
-        answer={[]}
-        item={
-          {
-            required: true,
-          } as QuestionnaireItem
-        }
-        resources={{} as Resources}
-        renderDeleteButton={jest.fn()}
-        repeatButton={<></>}
-        renderHelpButton={jest.fn()}
-        renderHelpElement={jest.fn()}
-      />
-    );
-
-    const isValid = screen.getByRole('form').checkValidity();
-
-    expect(isValid).toBeFalsy();
-  });
-
-  //TODO: lager denne på nytt når vi skal teste validering
-  it.skip('skal validere true dersom det ikke finnes answer og feltet ikke er required', async () => {
-    render(
-      <AutosuggestView
-        idWithLinkIdAndItemIndex="test1"
-        handleChange={jest.fn()}
-        clearCodingAnswer={jest.fn()}
-        fetchValueSet={jest.fn()}
-        answer={[]}
-        item={
-          {
-            required: false,
-          } as QuestionnaireItem
-        }
-        resources={{} as Resources}
-        renderDeleteButton={jest.fn()}
-        repeatButton={<></>}
-        renderHelpButton={jest.fn()}
-        renderHelpElement={jest.fn()}
-      />
-    );
-
-    const isValid = screen.getByRole('form').checkValidity();
-
-    expect(isValid).toBeTruthy();
-  });
-
-  it.skip('skal kalle handleStringChange med feltverdi når feltet mister fokus', async () => {
-    const handleStringChangeFn = jest.fn();
-    const handleChangeFn = jest.fn();
-    render(
-      <AutosuggestView
-        idWithLinkIdAndItemIndex="test1"
-        handleChange={handleChangeFn}
-        handleStringChange={handleStringChangeFn}
-        clearCodingAnswer={jest.fn()}
-        fetchValueSet={(
-          _searchString: string,
-          _item: QuestionnaireItem,
-          _successCallback: (valueSet: ValueSet) => void,
-          errorCallback: (error: string) => void
-        ) => {
-          errorCallback('feil');
-        }}
-        answer={[]}
-        item={
-          {
-            type: 'open-choice',
-          } as QuestionnaireItem
-        }
-        resources={{ openChoiceOption: 'annet' } as Resources}
-        renderDeleteButton={jest.fn()}
-        repeatButton={<></>}
-        renderHelpButton={jest.fn()}
-        renderHelpElement={jest.fn()}
-      />
-    );
-    const elm = screen.getByRole('combobox')?.firstChild as ChildNode;
-    expect(elm).toBeDefined();
-    fireEvent.change(elm, { target: { value: 'test' } });
-
-    fireEvent.blur(elm);
-
-    expect(handleChangeFn).toHaveBeenCalledWith(OPEN_CHOICE_ID, OPEN_CHOICE_SYSTEM, OPEN_CHOICE_LABEL);
-    expect(handleStringChangeFn).toHaveBeenCalledWith('test');
-  });
-
-  it.skip('skal kalle handleStringChange med tom verdi når feltet settes til tom string', async () => {
-    const handleStringChangeFn = jest.fn();
-    const clearCodingAnswerFn = jest.fn();
-    render(
-      <AutosuggestView
-        idWithLinkIdAndItemIndex="test1"
-        handleChange={jest.fn()}
-        handleStringChange={handleStringChangeFn}
-        clearCodingAnswer={clearCodingAnswerFn}
-        fetchValueSet={(
-          _searchString: string,
-          _item: QuestionnaireItem,
-          _successCallback: (valueSet: ValueSet) => void,
-          errorCallback: (error: string) => void
-        ) => {
-          errorCallback('feil');
-        }}
-        answer={[
-          {
-            valueCoding: {
-              code: OPEN_CHOICE_ID,
-              system: OPEN_CHOICE_SYSTEM,
-              display: OPEN_CHOICE_LABEL,
-            },
-          },
-        ]}
-        item={{
-          linkId: 'test1',
-          type: 'open-choice',
-        }}
-        resources={{} as Resources}
-        renderDeleteButton={jest.fn()}
-        repeatButton={<></>}
-        renderHelpButton={jest.fn()}
-        renderHelpElement={jest.fn()}
-      />
-    );
-
-    const elm = screen.getByRole('combobox')?.firstChild as ChildNode;
-    expect(elm).toBeDefined();
-    fireEvent.change(elm, { target: { value: 'test' } });
-    fireEvent.change(elm, { target: { value: '' } });
-
-    fireEvent.blur(elm);
-
-    expect(clearCodingAnswerFn).toHaveBeenCalled();
-    expect(handleStringChangeFn).toHaveBeenCalledWith('');
-  });
-
-  it.skip('skal kalle handleChange ved blur dersom en suggstion er highlighted', async () => {
-    const handleChangeFn = jest.fn();
-    render(
-      <AutosuggestView
-        idWithLinkIdAndItemIndex="test1"
-        handleChange={handleChangeFn}
-        handleStringChange={jest.fn()}
-        clearCodingAnswer={jest.fn()}
-        fetchValueSet={(
-          _searchString: string,
-          _item: QuestionnaireItem,
-          _successCallback: (valueSet: ValueSet) => void,
-          errorCallback: (error: string) => void
-        ) => {
-          errorCallback('feil');
-        }}
-        answer={[
-          {
-            valueCoding: {
-              code: OPEN_CHOICE_ID,
-              system: OPEN_CHOICE_SYSTEM,
-              display: OPEN_CHOICE_LABEL,
-            },
-          },
-        ]}
-        item={
-          {
-            type: 'open-choice',
-            linkId: 'test1',
-          } as QuestionnaireItem
-        }
-        resources={{} as Resources}
-        renderDeleteButton={jest.fn()}
-        repeatButton={<></>}
-        renderHelpButton={jest.fn()}
-        renderHelpElement={jest.fn()}
-      />
-    );
-    const elm = screen.getByRole('combobox')?.firstChild;
-    expect(elm).toBeDefined();
-    fireEvent.change(elm as ChildNode, { target: { value: 'asd' }, newValue: 'test' });
-
-    fireEvent.blur(elm as ChildNode, {
-      target: { value: 'a', label: 'b' },
+        return x;
+      }),
+    };
+    const fetchValueSetFn = (
+      _searchString: string,
+      _item: QuestionnaireItem,
+      successCallback: (valueSet: ValueSet) => void,
+      _errorCallback: (error: string) => void
+    ) => {
+      successCallback(successReturnValueSet);
+    };
+    const { getByDisplayValue } = renderRefero({
+      questionnaire,
+      props: { fetchValueSet: fetchValueSetFn, questionnaireResponse },
     });
-
-    expect(handleChangeFn).toHaveBeenCalled();
+    waitFor(() => expect(getByDisplayValue('Fyrstekake')).toBeDefined());
   });
 
-  it.skip('skal vise valgt verdi som allerede er satt i autosuggest når choice-komponenten lastes', async () => {
-    render(
-      <AutosuggestView
-        idWithLinkIdAndItemIndex="test1"
-        handleChange={jest.fn()}
-        clearCodingAnswer={jest.fn()}
-        fetchValueSet={jest.fn()}
-        answer={[
-          {
-            valueCoding: {
-              code: '1',
-              system: 'http://autosuggest.system',
-              display: 'Existing answer',
-            },
-          },
-        ]}
-        item={
-          {
-            type: 'choice',
-          } as QuestionnaireItem
-        }
-        resources={{} as Resources}
-        renderDeleteButton={jest.fn()}
-        repeatButton={<></>}
-        renderHelpButton={jest.fn()}
-        renderHelpElement={jest.fn()}
-      />
-    );
-    const element = screen.getByDisplayValue('Existing answer');
-    expect(element).toBeDefined();
-  });
+  it('skal vise valgt verdi som allerede er satt i autosuggest når open-choice-komponenten lastes', async () => {
+    const questionnaire: Questionnaire = {
+      ...q,
+      item: q.item?.map(x => ({ ...x, type: 'open-choice' })),
+    };
 
-  it.skip('skal vise valgt verdi som allerede er satt i autosuggest når open-choice-komponenten lastes', async () => {
-    render(
-      <AutosuggestView
-        idWithLinkIdAndItemIndex="test1"
-        handleChange={jest.fn()}
-        clearCodingAnswer={jest.fn()}
-        fetchValueSet={jest.fn()}
-        answer={[
-          {
-            valueString: 'Typed value',
-          },
-          {
-            valueCoding: {
-              code: OPEN_CHOICE_ID,
-              system: OPEN_CHOICE_SYSTEM,
-              display: OPEN_CHOICE_LABEL,
-            },
-          },
-        ]}
-        item={
-          {
-            type: 'open-choice',
-          } as QuestionnaireItem
+    const questionnaireResponse: QuestionnaireResponse = {
+      resourceType: 'QuestionnaireResponse',
+      status: 'in-progress',
+      ...generateQuestionnaireResponse(questionnaire),
+      item: generateQuestionnaireResponse(questionnaire)?.item?.map(x => {
+        if (x.linkId === 'af3cff52-5879-4db0-c671-1fb2bec90309') {
+          return {
+            ...x,
+            answer: [
+              {
+                valueCoding: {
+                  code: '1',
+                  system: 'http://autosuggest.system',
+                  display: 'Fyrstekake',
+                },
+              },
+            ],
+          };
         }
-        resources={{} as Resources}
-        renderDeleteButton={jest.fn()}
-        repeatButton={<></>}
-        renderHelpButton={jest.fn()}
-        renderHelpElement={jest.fn()}
-      />
-    );
-    const element = screen.getByDisplayValue('Typed value');
-    expect(element).toBeDefined();
+        return x;
+      }),
+    };
+    const fetchValueSetFn = (
+      _searchString: string,
+      _item: QuestionnaireItem,
+      successCallback: (valueSet: ValueSet) => void,
+      _errorCallback: (error: string) => void
+    ) => {
+      successCallback(successReturnValueSet);
+    };
+    const { getByDisplayValue } = renderRefero({
+      questionnaire,
+      props: { fetchValueSet: fetchValueSetFn, questionnaireResponse },
+    });
+    waitFor(() => expect(getByDisplayValue('Fyrstekake')).toBeDefined());
   });
 });
