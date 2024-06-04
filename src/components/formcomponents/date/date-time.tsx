@@ -24,7 +24,7 @@ import { safeParseJSON } from '../../../util/date-fns-utils';
 import { getDateFromAnswer, getFullFnsDate, getHoursOrMinutesFromAnswer } from '../../../util/date-utils';
 import { format } from 'date-fns';
 import { DatePicker, DateTimePickerWrapper, DateTime } from '@helsenorge/datepicker/components/DatePicker';
-import { FieldError } from 'react-hook-form';
+import { Controller, FieldError } from 'react-hook-form';
 import { DateTimeUnit } from '../../../types/dateTypes';
 
 export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
@@ -69,6 +69,8 @@ const DateTimeInput: React.FC<Props> = ({
   isHelpOpen,
   onAnswerChange,
   onRenderMarkdown,
+  control,
+  idWithLinkIdAndItemIndex,
   register,
   error,
   children,
@@ -174,7 +176,12 @@ const DateTimeInput: React.FC<Props> = ({
   //   return moment ? moment.locale(getLocaleFromLanguage()) : undefined;
   // }
 
-  const handleChange = (date: Date | string | undefined, hours: string | undefined, minutes: string | undefined) => {
+  const handleChange = (
+    date: Date | string | undefined,
+    hours: string | undefined,
+    minutes: string | undefined,
+    controllerOnChange: (...event: any[]) => void
+  ) => {
     if (typeof date === 'string') {
       date = safeParseJSON(date);
     }
@@ -193,6 +200,8 @@ const DateTimeInput: React.FC<Props> = ({
           onAnswerChange(newState, path, item, { valueDateTime: dateTimeString } as QuestionnaireResponseItemAnswer)
         );
       }
+
+      controllerOnChange(dateTimeString);
 
       if (promptLoginMessage) {
         promptLoginMessage();
@@ -233,33 +242,56 @@ const DateTimeInput: React.FC<Props> = ({
 
   return (
     <div className="page_refero__component page_refero__component_datetime">
-      <DateTimePickerWrapper errorText={getErrorText()}>
-        <DatePicker
-          {...register(item.linkId, {
-            required: isRequired(item),
-          })}
-          testId={getId(id)}
-          autoComplete=""
-          dateButtonAriaLabel="Open datepicker"
-          dateFormat={'dd.MM.yyyy'}
-          dateValue={valueDateTime}
-          label={
-            <Label
-              labelId={`${getId(id)}-label-dateTime`}
-              labelTexts={[{ text: labelText }]}
-              sublabel={<Sublabel id={`${getId(id)}-sublabel-dateTime`} sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
-              afterLabelChildren={renderHelpButton()}
+      <Controller
+        name={idWithLinkIdAndItemIndex}
+        control={control}
+        shouldUnregister={true}
+        rules={{
+          required: {
+            value: isRequired(item),
+            message: resources?.formRequiredErrorMessage ?? 'Feltet er påkrevd',
+          },
+        }}
+        render={({ field: { onChange, ...rest } }): JSX.Element => (
+          <DateTimePickerWrapper errorText={getErrorText()}>
+            <DatePicker
+              testId={getId(id)}
+              autoComplete=""
+              dateButtonAriaLabel="Open datepicker"
+              dateFormat={'dd.MM.yyyy'}
+              dateValue={valueDateTime}
+              label={
+                <Label
+                  labelId={`${getId(id)}-label-dateTime`}
+                  labelTexts={[{ text: labelText }]}
+                  sublabel={<Sublabel id={`${getId(id)}-sublabel-dateTime`} sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+                  afterLabelChildren={renderHelpButton()}
+                />
+              }
+              minDate={minDateTime}
+              maxDate={maxDateTime}
+              onChange={(e, newDate) => {
+                handleChange(newDate, hours, minutes, onChange);
+              }}
+              onBlur={() => onBlur}
             />
-          }
-          minDate={minDateTime}
-          maxDate={maxDateTime}
-          onChange={(e, newDate) => handleChange(newDate, hours, minutes)}
-          onBlur={() => onBlur}
-        />
-        <DateTime defaultValue={Number(minutes)} timeUnit="hours" onChange={e => handleChange(date, e.target.value, minutes)} />
-        <DateTime defaultValue={Number(minutes)} timeUnit="minutes" onChange={e => handleChange(date, hours, e.target.value)} />
-      </DateTimePickerWrapper>
-
+            <DateTime
+              defaultValue={Number(minutes)}
+              timeUnit="hours"
+              onChange={e => {
+                handleChange(date, e.target.value, minutes, onChange);
+              }}
+            />
+            <DateTime
+              defaultValue={Number(minutes)}
+              timeUnit="minutes"
+              onChange={e => {
+                handleChange(date, hours, e.target.value, onChange);
+              }}
+            />
+          </DateTimePickerWrapper>
+        )}
+      />
       {renderDeleteButton('page_refero__deletebutton--margin-top')}
       {repeatButton}
       {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
