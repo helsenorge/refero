@@ -88,7 +88,7 @@ describe('onAnswerChange callback gets called and can request additional changes
       actionRequester.addIntegerAnswer('2', 42);
       actionRequester.clearIntegerAnswer('2');
     });
-    const { container, getByLabelText } = wrapper(onChange, questionnaireWithAllItemTypes);
+    const { getByLabelText } = wrapper(onChange, questionnaireWithAllItemTypes);
 
     const { answer } = await addValueToInputByTypeAndTab('Decimal', '0.1');
 

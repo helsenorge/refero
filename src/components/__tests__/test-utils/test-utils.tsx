@@ -111,7 +111,11 @@ interface InputProps {
   resources?: Partial<Resources>;
 }
 
-function renderRefero({ questionnaire, props, initialState, resources = getResources('') }: InputProps) {
+function renderRefero({ questionnaire, props, initialState, resources }: InputProps) {
+  const resourcesDefault = {
+    ...getResources(''),
+    ...resources,
+  };
   const state = initialState || {
     refero: {
       form: {
@@ -136,7 +140,7 @@ function renderRefero({ questionnaire, props, initialState, resources = getResou
       onSave={() => {}}
       onSubmit={() => {}}
       questionnaire={questionnaire}
-      resources={resources as Resources}
+      resources={resourcesDefault}
       onChange={() => {}}
       {...props}
     />,

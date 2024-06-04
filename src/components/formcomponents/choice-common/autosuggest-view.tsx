@@ -5,6 +5,8 @@ import { Controller } from 'react-hook-form';
 
 import { AutoSuggestProps } from '../../../types/autoSuggestProps';
 
+import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
+import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
 import Loader from '@helsenorge/designsystem-react/components/Loader';
 import NotificationPanel from '@helsenorge/designsystem-react/components/NotificationPanel';
 
@@ -13,14 +15,13 @@ import { debounce } from '@helsenorge/core-utils/debounce';
 
 import { OPEN_CHOICE_ID, OPEN_CHOICE_SYSTEM } from '../../../constants';
 import ItemType from '../../../constants/itemType';
-import { getValidationTextExtension } from '../../../util/extension';
-import { isRequired, getId, getSublabelText } from '../../../util/index';
-import { getStringAnswer, hasStringAnswer, getCodingAnswer, hasCodingAnswer } from '../../../util/refero-core';
+import { isRequired, getId, getSublabelText, getLabelText } from '../../../util/index';
+import { getStringAnswer, hasStringAnswer, getCodingAnswer } from '../../../util/refero-core';
 import { Resources } from '../../../util/resources';
 import ReactHookFormHoc, { FormProps } from '../../../validation/ReactHookFormHoc';
 import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
-import Label from '../label';
-import SubLabel from '../sublabel';
+// import Label from '../label';
+// import SubLabel from '../sublabel';
 
 export interface AutosuggestProps extends WithCommonFunctionsAndEnhancedProps, FormProps {
   handleChange: (code?: string, systemArg?: string, displayArg?: string) => void;
@@ -83,17 +84,12 @@ class AutosuggestView extends React.Component<AutosuggestProps, AutosuggestState
     this.onSuggestionSelected = this.onSuggestionSelected.bind(this);
     this.errorCallback = this.errorCallback.bind(this);
     this.successCallback = this.successCallback.bind(this);
-    this.onSubmitValidator = this.onSubmitValidator.bind(this);
     this.onChangeInput = this.onChangeInput.bind(this);
     this.onBlur = this.onBlur.bind(this);
   }
 
   isOpenChoice(): boolean {
     return this.props.item.type === ItemType.OPENCHOICE;
-  }
-
-  onSubmitValidator(): boolean {
-    return isRequired(this.props.item) ? !!hasCodingAnswer(this.props.answer) || !!hasStringAnswer(this.props.answer) : true;
   }
 
   successCallback(valueSet: ValueSet): void {
@@ -145,7 +141,6 @@ class AutosuggestView extends React.Component<AutosuggestProps, AutosuggestState
     if (value === this.state.lastSearchValue) {
       return;
     }
-
     if (this.props.fetchValueSet) {
       this.setState({
         isLoading: true,
@@ -161,12 +156,13 @@ class AutosuggestView extends React.Component<AutosuggestProps, AutosuggestState
     if (newValue === '') {
       this.clearCodingAnswerIfExists();
     }
-    this.setState({
+    this.setState(prevState => ({
+      ...prevState,
       inputValue: newValue,
       isDirty: true,
       noSuggestionsToShow: false,
       hasLoadError: this.state.hasLoadError && !newValue,
-    });
+    }));
   }
 
   debouncedOnSuggestionsFetchRequested: ({ value }: { value: string }) => void = debounce(
@@ -217,67 +213,71 @@ class AutosuggestView extends React.Component<AutosuggestProps, AutosuggestState
     const { control, resources, item, onRenderMarkdown, questionnaire, id, renderHelpButton, renderHelpElement, idWithLinkIdAndItemIndex } =
       this.props;
     const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
+    const labelText = getLabelText(item, onRenderMarkdown, questionnaire, resources);
     return (
       <div className="page_refero__component page_refero__component_choice page_refero__component_choice_autosuggest">
-        <Controller
-          name={idWithLinkIdAndItemIndex}
-          control={control}
-          shouldUnregister={true}
-          rules={{
-            required: {
-              value: isRequired(item),
-              message: resources?.formRequiredErrorMessage ?? 'Feltet er påkrevd',
-            },
-          }}
-          render={({ field: { onChange, ...rest } }): JSX.Element => (
-            <Autosuggest
-              {...rest}
-              data-testid={getId(id)}
-              id={getId(id)}
-              label={<Label item={item} onRenderMarkdown={onRenderMarkdown} questionnaire={questionnaire} resources={resources} />}
-              subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
-              className="page_refero__autosuggest"
-              type="search"
-              isRequired={isRequired(item)}
-              errorMessage={getValidationTextExtension(item)}
-              helpButton={renderHelpButton()}
-              helpElement={renderHelpElement()}
-              suggestions={this.state.suggestions}
-              onSuggestionsFetchRequested={this.debouncedOnSuggestionsFetchRequested}
-              onSuggestionsClearRequested={(): void => {
-                // vis samme resultatsett neste gang feltet får fokus
-              }}
-              noCharacterValidation
-              renderSuggestion={(suggestion: Suggestion): JSX.Element => <div>{suggestion.label}</div>}
-              onSubmitValidator={this.onSubmitValidator}
-              onSuggestionSelected={this.onSuggestionSelected}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>, AutosuggestChangeEvent): void => {
-                this.onChangeInput(e, AutosuggestChangeEvent);
-                onChange(AutosuggestChangeEvent.newValue);
-              }}
-              onBlur={(e: React.ChangeEvent<HTMLInputElement>, AutosuggestChangeEvent): void => {
-                this.onBlur(e, AutosuggestChangeEvent);
-                onChange(AutosuggestChangeEvent.highlightedSuggestion?.value);
-              }}
-              focusInputOnSuggestionClick={true}
-              value={this.state.inputValue}
-            />
-          )}
-        />
+        <FormGroup error={this.props.error?.message}>
+          {renderHelpElement()}
+          <Label
+            htmlFor={getId(id)}
+            testId={`${getId(id)}-label`}
+            labelTexts={[{ text: labelText, type: 'semibold' }]}
+            className="page_refero__label"
+            sublabel={<Sublabel id={`${getId(id)}-sublabel`} sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+            afterLabelChildren={renderHelpButton()}
+          ></Label>
+          <Controller
+            name={idWithLinkIdAndItemIndex}
+            control={control}
+            shouldUnregister={true}
+            rules={{
+              required: {
+                value: isRequired(item),
+                message: resources?.formRequiredErrorMessage ?? 'Feltet er påkrevd',
+              },
+            }}
+            render={({ field: { onChange, ...rest } }): JSX.Element => (
+              <Autosuggest
+                {...rest}
+                id={getId(id)}
+                className="page_refero__autosuggest"
+                type="search"
+                suggestions={this.state.suggestions}
+                onSuggestionsFetchRequested={this.debouncedOnSuggestionsFetchRequested}
+                onSuggestionsClearRequested={(): void => {
+                  // vis samme resultatsett neste gang feltet får fokus
+                }}
+                noCharacterValidation
+                renderSuggestion={(suggestion: Suggestion): JSX.Element => <div>{suggestion.label}</div>}
+                onSuggestionSelected={this.onSuggestionSelected}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>, AutosuggestChangeEvent): void => {
+                  this.onChangeInput(e, AutosuggestChangeEvent);
+                  onChange(AutosuggestChangeEvent.newValue);
+                }}
+                onBlur={(e: React.ChangeEvent<HTMLInputElement>, AutosuggestChangeEvent): void => {
+                  this.onBlur(e, AutosuggestChangeEvent);
+                  onChange(AutosuggestChangeEvent.highlightedSuggestion?.value);
+                }}
+                focusInputOnSuggestionClick={true}
+                value={this.state.inputValue}
+              />
+            )}
+          />
 
-        {this.state.isLoading && (
-          <div>
-            <Loader size={'tiny'} />
-          </div>
-        )}
-        {this.state.noSuggestionsToShow && (
-          <div className="page_refero__no-suggestions">
-            {this.props.resources?.autosuggestNoSuggestions?.replace('{0}', this.state.inputValue)}
-          </div>
-        )}
-        {this.state.hasLoadError && <NotificationPanel variant="alert">{this.props.resources?.autoSuggestLoadError}</NotificationPanel>}
-        {this.props.renderDeleteButton('page_refero__deletebutton--margin-top')}
-        {this.props.repeatButton}
+          {this.state.isLoading && (
+            <div>
+              <Loader size={'tiny'} />
+            </div>
+          )}
+          {this.state.noSuggestionsToShow && (
+            <div className="page_refero__no-suggestions">
+              {this.props.resources?.autosuggestNoSuggestions?.replace('{0}', this.state.inputValue)}
+            </div>
+          )}
+          {this.state.hasLoadError && <NotificationPanel variant="alert">{this.props.resources?.autoSuggestLoadError}</NotificationPanel>}
+          {this.props.renderDeleteButton('page_refero__deletebutton--margin-top')}
+          {this.props.repeatButton}
+        </FormGroup>
         {this.props.children ? <div className="nested-fieldset nested-fieldset--full-height">{this.props.children}</div> : null}
       </div>
     );

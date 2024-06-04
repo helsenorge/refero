@@ -199,7 +199,7 @@ class Quantity extends React.Component<Props> {
                     htmlFor={getId(id)}
                     className="page_refero__label"
                     labelTexts={[{ text: labelText, type: 'semibold' }]}
-                    sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+                    sublabel={<Sublabel id={`${getId(id)}-sublabel`} sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
                     afterLabelChildren={this.props.renderHelpButton()}
                   />
                 }

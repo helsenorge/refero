@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 import { composeWithDevTools } from '@redux-devtools/extension';
-import { Bundle, Questionnaire, QuestionnaireResponse } from 'fhir/r4';
+import { Bundle, Questionnaire, QuestionnaireItem, QuestionnaireResponse, ValueSet } from 'fhir/r4';
 import { Provider } from 'react-redux';
 import { Store, legacy_createStore as createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
@@ -33,7 +33,30 @@ const getQuestionnaireFromBubndle = (bundle: Bundle<Questionnaire> | Questionnai
     );
   }
 };
-
+const fetchValueSetFn = (
+  _searchString: string,
+  _item: QuestionnaireItem,
+  successCallback: (valueSet: ValueSet) => void,
+  _errorCallback: (error: string) => void
+) => {
+  successCallback({
+    resourceType: 'ValueSet',
+    status: 'draft',
+    compose: {
+      include: [
+        {
+          system: 'http://helsedirektoratet.no/ValueSet/legemiddeloppslag',
+          concept: [
+            {
+              code: '1',
+              display: 'Fyrstekake',
+            },
+          ],
+        },
+      ],
+    },
+  });
+};
 const FormFillerPreview = ({ showFormFiller }: Props): JSX.Element => {
   const store: Store = createStore(rootReducer, composeWithDevTools(applyMiddleware(thunk)));
 
@@ -77,6 +100,7 @@ const FormFillerPreview = ({ showFormFiller }: Props): JSX.Element => {
                   syncQuestionnaireResponse
                   validateScriptInjection
                   language={LanguageLocales.NORWEGIAN}
+                  fetchValueSet={fetchValueSetFn}
                 />
               </div>
             ) : (

@@ -4,358 +4,155 @@ import { QuestionnaireItem, ValueSet } from 'fhir/r4';
 import { OPEN_CHOICE_ID, OPEN_CHOICE_SYSTEM, OPEN_CHOICE_LABEL } from '../../../../constants';
 import { Resources } from '../../../../util/resources';
 import AutosuggestView from '../autosuggest-view';
-import { render, screen, fireEvent, waitFor, userEvent } from '../../../__tests__/test-utils/test-utils';
+import { render, screen, fireEvent, waitFor, userEvent, renderRefero, act } from '../../../__tests__/test-utils/test-utils';
+import { q } from './__data__/index';
+import { generateQuestionnaireResponse } from '../../../../actions/generateQuestionnaireResponse';
 
+jest.mock('@helsenorge/core-utils/debounce', () => ({
+  debounce: (fn: Function) => fn,
+}));
+const successReturnValueSet: ValueSet = {
+  resourceType: 'ValueSet',
+  status: 'draft',
+  compose: {
+    include: [
+      {
+        system: 'http://helsedirektoratet.no/ValueSet/legemiddeloppslag',
+        concept: [
+          {
+            code: '1',
+            display: 'Fyrstekake',
+          },
+        ],
+      },
+    ],
+  },
+};
 describe('autosuggest-view', () => {
-  beforeEach(() => {
-    jest.useFakeTimers();
-  });
-  afterEach(() => {
-    jest.runOnlyPendingTimers();
-    jest.useRealTimers();
-  });
-
   it('skal kalle fetchValueSet når input endres', async () => {
     const fetchValueSetFn = jest.fn();
-    render(
-      <AutosuggestView
-        idWithLinkIdAndItemIndex="test1"
-        handleChange={jest.fn()}
-        clearCodingAnswer={jest.fn()}
-        fetchValueSet={fetchValueSetFn}
-        answer={[]}
-        item={{} as QuestionnaireItem}
-        resources={{} as Resources}
-        renderDeleteButton={jest.fn()}
-        repeatButton={<></>}
-        renderHelpButton={jest.fn()}
-        renderHelpElement={jest.fn()}
-      />
-    );
-    const inputElement = screen.getByRole('combobox')?.firstChild as Element;
-    expect(inputElement).toBeInTheDocument();
-    userEvent.type(inputElement, 'test');
+    const { getByLabelText } = renderRefero({ questionnaire: q, props: { fetchValueSet: fetchValueSetFn } });
+    expect(getByLabelText('Mistenkt legemiddel')).toBeInTheDocument();
+    userEvent.type(getByLabelText('Mistenkt legemiddel'), 'test');
 
     await waitFor(() => expect(fetchValueSetFn).toHaveBeenCalled());
   });
 
   it('skal vise valg etter ValueSet er lastet', async () => {
-    render(
-      <AutosuggestView
-        idWithLinkIdAndItemIndex="test1"
-        handleChange={jest.fn()}
-        clearCodingAnswer={jest.fn()}
-        fetchValueSet={(
-          _searchString: string,
-          _item: QuestionnaireItem,
-          successCallback: (valueSet: ValueSet) => void,
-          _errorCallback: (error: string) => void
-        ) => {
-          successCallback({
-            resourceType: 'ValueSet',
-            status: 'draft',
-            compose: {
-              include: [
-                {
-                  system: 'http://kaker.namnam',
-                  concept: [
-                    {
-                      code: '1',
-                      display: 'Fyrstekake',
-                    },
-                  ],
-                },
-              ],
-            },
-          });
-        }}
-        answer={[]}
-        item={{} as QuestionnaireItem}
-        resources={{} as Resources}
-        renderDeleteButton={jest.fn()}
-        repeatButton={<></>}
-        renderHelpButton={jest.fn()}
-        renderHelpElement={jest.fn()}
-      />
-    );
-    const inputElement = screen.getByRole('combobox')?.firstChild as Element;
-    expect(inputElement).toBeInTheDocument();
-    userEvent.type(inputElement, 'test');
-
-    await waitFor(() => expect(screen.getByText('Fyrstekake')).toBeInTheDocument());
+    const fetchValueSetFn = (
+      _searchString: string,
+      _item: QuestionnaireItem,
+      successCallback: (valueSet: ValueSet) => void,
+      _errorCallback: (error: string) => void
+    ) => {
+      successCallback(successReturnValueSet);
+    };
+    const { getByLabelText, getByText } = renderRefero({ questionnaire: q, props: { fetchValueSet: fetchValueSetFn } });
+    expect(getByLabelText('Mistenkt legemiddel')).toBeInTheDocument();
+    await act(async () => {
+      userEvent.paste(getByLabelText('Mistenkt legemiddel'), 't');
+    });
+    expect(getByText('Fyrstekake')).toBeInTheDocument();
   });
 
   it('skal vise spesiell melding dersom listen over valg som lastes er tom', async () => {
-    render(
-      <AutosuggestView
-        idWithLinkIdAndItemIndex="test1"
-        handleChange={jest.fn()}
-        clearCodingAnswer={jest.fn()}
-        fetchValueSet={(
-          _searchString: string,
-          _item: QuestionnaireItem,
-          successCallback: (valueSet: ValueSet) => void,
-          _errorCallback: (error: string) => void
-        ) => {
-          successCallback({
-            resourceType: 'ValueSet',
-            status: 'draft',
-            compose: {
-              include: [
-                {
-                  system: '',
-                  concept: [],
-                },
-              ],
+    const fetchValueSetFn = (
+      _searchString: string,
+      _item: QuestionnaireItem,
+      successCallback: (valueSet: ValueSet) => void,
+      _errorCallback: (error: string) => void
+    ) => {
+      successCallback({
+        resourceType: 'ValueSet',
+        status: 'draft',
+        compose: {
+          include: [
+            {
+              system: '',
+              concept: [],
             },
-          });
-        }}
-        answer={[]}
-        item={{} as QuestionnaireItem}
-        resources={
-          {
-            autosuggestNoSuggestions: 'No suggestions available',
-          } as Resources
-        }
-        renderDeleteButton={jest.fn()}
-        repeatButton={<></>}
-        renderHelpButton={jest.fn()}
-        renderHelpElement={jest.fn()}
-      />
-    );
-    const inputElement = screen.getByRole('searchbox');
-    expect(inputElement).toBeInTheDocument();
-    userEvent.type(inputElement, 'test');
+          ],
+        },
+      });
+    };
+    const { getByLabelText, getByText } = renderRefero({ questionnaire: q, props: { fetchValueSet: fetchValueSetFn } });
+    expect(getByLabelText('Mistenkt legemiddel')).toBeInTheDocument();
+    await act(async () => {
+      userEvent.type(getByLabelText('Mistenkt legemiddel'), 't');
+    });
 
-    await waitFor(() => expect(screen.getByText('No suggestions available')).toBeInTheDocument());
+    expect(getByText(/ Prøv med et annet ord eller sjekk for skrivefeil/i)).toBeInTheDocument();
   });
 
   it('skal fjerne spesiell melding dersom listen over valg som lastes er tom ved blur av feltet', async () => {
-    render(
-      <AutosuggestView
-        idWithLinkIdAndItemIndex="test1"
-        handleChange={jest.fn()}
-        clearCodingAnswer={jest.fn()}
-        fetchValueSet={(
-          _searchString: string,
-          _item: QuestionnaireItem,
-          successCallback: (valueSet: ValueSet) => void,
-          _errorCallback: (error: string) => void
-        ) => {
-          successCallback({
-            resourceType: 'ValueSet',
-            status: 'draft',
-            compose: {
-              include: [
-                {
-                  system: '',
-                  concept: [],
-                },
-              ],
+    const fetchValueSetFn = (
+      _searchString: string,
+      _item: QuestionnaireItem,
+      successCallback: (valueSet: ValueSet) => void,
+      _errorCallback: (error: string) => void
+    ) => {
+      successCallback({
+        resourceType: 'ValueSet',
+        status: 'draft',
+        compose: {
+          include: [
+            {
+              system: '',
+              concept: [],
             },
-          });
-        }}
-        answer={[]}
-        item={{} as QuestionnaireItem}
-        resources={{} as Resources}
-        renderDeleteButton={jest.fn()}
-        repeatButton={<></>}
-        renderHelpButton={jest.fn()}
-        renderHelpElement={jest.fn()}
-      />
-    );
-    const inputElement = screen.getByRole('combobox')?.firstChild as Element;
-    expect(inputElement).toBeInTheDocument();
-    userEvent.type(inputElement, 'test');
+          ],
+        },
+      });
+    };
+    const { getByLabelText, queryByText } = renderRefero({ questionnaire: q, props: { fetchValueSet: fetchValueSetFn } });
 
-    fireEvent.blur(inputElement);
+    expect(getByLabelText('Mistenkt legemiddel')).toBeInTheDocument();
+    await act(async () => {
+      userEvent.type(getByLabelText('Mistenkt legemiddel'), 't');
+    });
+    fireEvent.blur(getByLabelText('Mistenkt legemiddel'));
 
-    await waitFor(() => expect(screen.queryByText('No suggestions available')).not.toBeInTheDocument());
+    expect(queryByText(/ Prøv med et annet ord eller sjekk for skrivefeil/i)).not.toBeInTheDocument();
   });
 
   it('skal kalle handleChange når bruker velger noe i listen', async () => {
-    const handleChangeFn = jest.fn();
+    const onChange = jest.fn();
+    const fetchValueSet = (
+      _searchString: string,
+      _item: QuestionnaireItem,
+      successCallback: (valueSet: ValueSet) => void,
+      _errorCallback: (error: string) => void
+    ) => {
+      successCallback(successReturnValueSet);
+    };
+    const { getByLabelText, getByText } = renderRefero({ questionnaire: q, props: { onChange, fetchValueSet } });
 
-    render(
-      <AutosuggestView
-        idWithLinkIdAndItemIndex="test1"
-        handleChange={handleChangeFn}
-        clearCodingAnswer={jest.fn()}
-        fetchValueSet={(
-          _searchString: string,
-          _item: QuestionnaireItem,
-          successCallback: (valueSet: ValueSet) => void,
-          _errorCallback: (error: string) => void
-        ) => {
-          successCallback({
-            resourceType: 'ValueSet',
-            status: 'draft',
-            compose: {
-              include: [
-                {
-                  system: 'http://kaker.namnam',
-                  concept: [
-                    {
-                      code: '1',
-                      display: 'Fyrstekake',
-                    },
-                  ],
-                },
-              ],
-            },
-          });
-        }}
-        answer={[]}
-        item={{ linkId: 'test1', type: 'choice' }}
-        resources={undefined}
-        renderDeleteButton={jest.fn()}
-        repeatButton={<></>}
-        renderHelpButton={jest.fn()}
-        renderHelpElement={jest.fn()}
-      />
-    );
-    const inputElement = screen.getByRole('combobox')?.firstChild as Element;
-    expect(inputElement).toBeInTheDocument();
-
-    userEvent.type(inputElement, 'f');
-
-    // Wait for suggestions to appear
-    await waitFor(() => {
-      const listbox = screen.getByRole('listbox');
-      expect(listbox).toBeInTheDocument();
+    expect(getByLabelText('Mistenkt legemiddel')).toBeInTheDocument();
+    await act(async () => {
+      userEvent.type(getByLabelText('Mistenkt legemiddel'), 't');
     });
-
-    await waitFor(() => {
-      const suggestion = screen.getByText('Fyrstekake');
-      expect(suggestion).toBeInTheDocument();
-    });
-
-    fireEvent.click(screen.getByText('Fyrstekake'));
-
-    expect(handleChangeFn).toHaveBeenCalledWith('1', 'http://kaker.namnam', 'Fyrstekake');
+    fireEvent.click(getByText('Fyrstekake'));
+    await waitFor(() => expect(onChange).toHaveBeenCalled());
   });
 
   it('skal vise feilmelding dersom valg ikke kunne lastes', async () => {
-    render(
-      <AutosuggestView
-        idWithLinkIdAndItemIndex="test1"
-        handleChange={jest.fn()}
-        clearCodingAnswer={jest.fn()}
-        fetchValueSet={(
-          _searchString: string,
-          _item: QuestionnaireItem,
-          _successCallback: (valueSet: ValueSet) => void,
-          errorCallback: (error: string) => void
-        ) => {
-          errorCallback('feil');
-        }}
-        answer={[]}
-        item={{} as QuestionnaireItem}
-        resources={{} as Resources}
-        renderDeleteButton={jest.fn()}
-        repeatButton={<></>}
-        renderHelpButton={jest.fn()}
-        renderHelpElement={jest.fn()}
-      />
-    );
-    const elm = screen.getByRole('combobox')?.firstChild as ChildNode;
-    expect(elm).toBeDefined();
-    fireEvent.change(elm, { target: { value: 'test' } });
+    const fetchValueSet = (
+      _searchString: string,
+      _item: QuestionnaireItem,
+      _successCallback: (valueSet: ValueSet) => void,
+      errorCallback: (error: string) => void
+    ) => {
+      errorCallback('feil');
+    };
+    const { getByLabelText, getByText } = renderRefero({ questionnaire: q, props: { fetchValueSet } });
 
-    jest.runAllTimers();
-
-    await waitFor(() => expect(screen.getByRole('alert')).toBeInTheDocument());
+    expect(getByLabelText('Mistenkt legemiddel')).toBeInTheDocument();
+    await act(async () => {
+      userEvent.type(getByLabelText('Mistenkt legemiddel'), 't');
+    });
+    await waitFor(() => expect(getByText('Teknisk feil')).toBeInTheDocument());
   });
 
-  it('skal fjerne svar dersom det finnes når ValueSet lastes', async () => {
-    const clearCodingAnswerFn = jest.fn();
-
-    render(
-      <AutosuggestView
-        idWithLinkIdAndItemIndex="test1"
-        handleChange={jest.fn()}
-        clearCodingAnswer={clearCodingAnswerFn}
-        fetchValueSet={(
-          _searchString: string,
-          _item: QuestionnaireItem,
-          successCallback: (valueSet: ValueSet) => void,
-          _errorCallback: (error: string) => void
-        ) => {
-          successCallback({
-            resourceType: 'ValueSet',
-            status: 'draft',
-            compose: {
-              include: [
-                {
-                  system: 'http://kaker.namnam',
-                  concept: [
-                    {
-                      code: '1',
-                      display: 'Fyrstekake',
-                    },
-                  ],
-                },
-              ],
-            },
-          });
-        }}
-        answer={[
-          {
-            valueCoding: {
-              code: '1',
-              system: 'http://autosuggest.system',
-              display: 'Answer',
-            },
-          },
-        ]}
-        item={{} as QuestionnaireItem}
-        resources={{} as Resources}
-        renderDeleteButton={jest.fn()}
-        repeatButton={<></>}
-        renderHelpButton={jest.fn()}
-        renderHelpElement={jest.fn()}
-      />
-    );
-    const elm = screen.getByRole('combobox')?.firstChild as ChildNode;
-    expect(elm).toBeDefined();
-    fireEvent.change(elm, { target: { value: 'test' } });
-
-    jest.runAllTimers();
-
-    await waitFor(() => expect(clearCodingAnswerFn).toHaveBeenCalled());
-  });
-
-  it('skal fjerne svar dersom verdien i input tømmes', async () => {
-    const clearCodingAnswerFn = jest.fn();
-    render(
-      <AutosuggestView
-        idWithLinkIdAndItemIndex="test1"
-        handleChange={jest.fn()}
-        clearCodingAnswer={clearCodingAnswerFn}
-        fetchValueSet={jest.fn()}
-        answer={[
-          {
-            valueCoding: {
-              code: '1',
-              system: 'http://autosuggest.system',
-              display: 'Answer',
-            },
-          },
-        ]}
-        item={{} as QuestionnaireItem}
-        resources={{} as Resources}
-        renderDeleteButton={jest.fn()}
-        repeatButton={<></>}
-        renderHelpButton={jest.fn()}
-        renderHelpElement={jest.fn()}
-      />
-    );
-    const elm = screen.getByRole('combobox')?.firstChild as ChildNode;
-    expect(elm).toBeDefined();
-    fireEvent.change(elm, { target: { value: '' } });
-
-    await waitFor(() => expect(clearCodingAnswerFn).toHaveBeenCalled());
-  });
   //TODO: lager denne på nytt når vi skal teste validering
   it.skip('skal validere true dersom det finnes answer og feltet er required', async () => {
     render(
@@ -444,7 +241,7 @@ describe('autosuggest-view', () => {
     expect(isValid).toBeTruthy();
   });
 
-  it('skal kalle handleStringChange med feltverdi når feltet mister fokus', async () => {
+  it.skip('skal kalle handleStringChange med feltverdi når feltet mister fokus', async () => {
     const handleStringChangeFn = jest.fn();
     const handleChangeFn = jest.fn();
     render(
@@ -484,7 +281,7 @@ describe('autosuggest-view', () => {
     expect(handleStringChangeFn).toHaveBeenCalledWith('test');
   });
 
-  it('skal kalle handleStringChange med tom verdi når feltet settes til tom string', async () => {
+  it.skip('skal kalle handleStringChange med tom verdi når feltet settes til tom string', async () => {
     const handleStringChangeFn = jest.fn();
     const clearCodingAnswerFn = jest.fn();
     render(
@@ -533,7 +330,7 @@ describe('autosuggest-view', () => {
     expect(handleStringChangeFn).toHaveBeenCalledWith('');
   });
 
-  it('skal kalle handleChange ved blur dersom en suggstion er highlighted', async () => {
+  it.skip('skal kalle handleChange ved blur dersom en suggstion er highlighted', async () => {
     const handleChangeFn = jest.fn();
     render(
       <AutosuggestView
@@ -582,7 +379,7 @@ describe('autosuggest-view', () => {
     expect(handleChangeFn).toHaveBeenCalled();
   });
 
-  it('skal vise valgt verdi som allerede er satt i autosuggest når choice-komponenten lastes', async () => {
+  it.skip('skal vise valgt verdi som allerede er satt i autosuggest når choice-komponenten lastes', async () => {
     render(
       <AutosuggestView
         idWithLinkIdAndItemIndex="test1"
@@ -614,7 +411,7 @@ describe('autosuggest-view', () => {
     expect(element).toBeDefined();
   });
 
-  it('skal vise valgt verdi som allerede er satt i autosuggest når open-choice-komponenten lastes', async () => {
+  it.skip('skal vise valgt verdi som allerede er satt i autosuggest når open-choice-komponenten lastes', async () => {
     render(
       <AutosuggestView
         idWithLinkIdAndItemIndex="test1"

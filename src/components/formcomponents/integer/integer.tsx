@@ -173,7 +173,7 @@ class Integer extends React.Component<Props, Record<string, unknown>> {
                     htmlFor={getId(id)}
                     labelTexts={[{ text: labelText, type: 'semibold' }]}
                     className="page_refero__label"
-                    sublabel={<Sublabel id={`${getId(id)}-select-sublabel`} sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+                    sublabel={<Sublabel id={`${getId(id)}-sublabel`} sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
                     afterLabelChildren={renderHelpButton()}
                   />
                 }
