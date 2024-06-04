@@ -56,8 +56,8 @@ const RenderForm = ({
     4: ButtonType.draftButton,
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const getButtonOrder = (): any => {
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+  const getButtonOrder = () => {
     if (isStepView && referoProps.isMicrowebStep === false) {
       return buttonOrderStepView;
     }
@@ -93,7 +93,6 @@ const RenderForm = ({
             pauseButtonText={displayPreviousButton ? resources.previousStep : resources.formSave}
             onPause={isStepView ? displayPauseButtonInStepView : displayPauseButtonInNormalView}
             pauseButtonClasses={getPauseButtonClasses()}
-            submitButtonClasses={getPauseButtonClasses()}
             pauseButtonType="display"
             submitButtonType="display"
             cancelButtonType="display"
