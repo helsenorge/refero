@@ -27,18 +27,16 @@ import {
   isReadOnly,
   isRequired,
   getId,
-  getText,
   getStringValue,
   getMaxLength,
   getPDFStringValue,
   getSublabelText,
-  renderPrefix,
   scriptInjectionValidation,
+  getLabelText,
 } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
 import { Resources } from '../../../util/resources';
-import { SanitizeText } from '../../../util/sanitize/domPurifyHelper';
 import ReactHookFormHoc, { FormProps } from '../../../validation/ReactHookFormHoc';
 import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 import TextView from '../textview';
@@ -134,8 +132,9 @@ export class Text extends React.Component<Props> {
       );
     }
 
-    const labelText = SanitizeText(`${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`) || '';
     const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
+    const labelText = getLabelText(item, onRenderMarkdown, questionnaire, resources);
+
     const value = getStringValue(answer);
     const maxLength = getMaxLength(item);
     const minLength = getMinLengthExtensionValue(item);
@@ -190,8 +189,9 @@ export class Text extends React.Component<Props> {
                 placeholder={getPlaceholder(item)}
                 label={
                   <Label
+                    className="page_refero__label"
                     labelTexts={[{ text: labelText, type: 'semibold' }]}
-                    sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+                    sublabel={<Sublabel id={`${getId(this.props.id)}-sublabel`} sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
                     afterLabelChildren={this.props.renderHelpButton()}
                   />
                 }

@@ -10,7 +10,7 @@ import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
 
 import { getValidationTextExtension } from '../../../util/extension';
-import { getSublabelText, getText, isRequired, renderPrefix } from '../../../util/index';
+import { getId, getSublabelText, getText, isRequired, renderPrefix } from '../../../util/index';
 import { Resources } from '../../../util/resources';
 import { FormProps } from '../../../validation/ReactHookFormHoc';
 import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
@@ -55,7 +55,8 @@ const CheckboxView: React.FC<Props> = ({
       <FormGroup mode="ongrey" error={error?.message}>
         {renderHelpElement()}
         <Label
-          labelTexts={[{ text: labelText }]}
+          className="page_refero__label"
+          labelTexts={[{ text: labelText, type: 'semibold' }]}
           sublabel={<Sublabel id="select-sublsbel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
           afterLabelChildren={renderHelpButton()}
         />

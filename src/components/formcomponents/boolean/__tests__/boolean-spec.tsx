@@ -18,12 +18,12 @@ describe('Boolean', () => {
       };
 
       const { queryByTestId } = createWrapper(questionnaire);
-
-      expect(queryByTestId(/-readonly/i)).toBeInTheDocument();
+      expect(queryByTestId(/-label-readonly/i)).toBeInTheDocument();
     });
     it('Should render as input if props.pdf === false && item is not readonly', () => {
       const { queryByText } = createWrapper(q);
-      expect(queryByText('Ikke besvart')).not.toBeInTheDocument();
+      expect(queryByText(/-label-readonly/i)).not.toBeInTheDocument();
+      expect(queryByText(/-pdf/i)).not.toBeInTheDocument();
     });
   });
   describe('help button', () => {
@@ -88,7 +88,7 @@ describe('Boolean', () => {
     });
   });
   describe('delete button', () => {
-    it('Should render delete button if item repeats and number of repeated items is greater than minOccurance(2)', async () => {
+    it('Should render delete button if item repeats and number of repeated items is greater than minOccurance(1)', async () => {
       const questionnaire: Questionnaire = {
         ...q,
         item: q.item?.map(x => ({ ...x, repeats: true })),
@@ -100,7 +100,7 @@ describe('Boolean', () => {
 
       expect(queryAllByTestId(/-delete-button/i)).toHaveLength(2);
     });
-    it('Should not render delete button if item repeats and number of repeated items is lower or equal than minOccurance(2)', async () => {
+    it('Should not render delete button if item repeats and number of repeated items is lower or equal than minOccurance(1)', async () => {
       const questionnaire: Questionnaire = {
         ...q,
         item: q.item?.map(x => ({ ...x, repeats: true })),
@@ -168,6 +168,7 @@ describe('Boolean', () => {
       expect(onChange).toHaveBeenCalledTimes(1);
     });
   });
+
   describe('Required', () => {
     it('Should show error if field is required and value is empty', async () => {
       const questionnaire: Questionnaire = {

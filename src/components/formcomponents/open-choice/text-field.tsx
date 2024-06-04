@@ -108,6 +108,7 @@ const textField: React.FC<Props> = ({
             testId={`${getId(id)}-extra-field`}
             label={
               <Label
+                htmlFor={`${getId(id)}-extra-field`}
                 labelTexts={[{ text: labelText, type: 'semibold' }]}
                 sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
               />

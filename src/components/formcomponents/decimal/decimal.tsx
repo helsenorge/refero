@@ -130,7 +130,7 @@ class Decimal extends React.Component<Props, Record<string, unknown>> {
     const decimalPattern = getDecimalPattern(item);
     const maxValue = getMaxValueExtensionValue(item);
     const minValue = getMinValueExtensionValue(item);
-    //getValidationTextExtension(item)
+    const validationText = getValidationTextExtension(item);
     return (
       <div className="page_refero__component page_refero__component_decimal">
         {renderHelpElement()}
@@ -147,16 +147,21 @@ class Decimal extends React.Component<Props, Record<string, unknown>> {
               ...(maxValue && {
                 max: {
                   value: maxValue,
-                  message: getValidationTextExtension(item) ?? resources?.oppgiGyldigVerdi ?? 'Verdien er for høy',
+                  message: validationText ?? resources?.oppgiGyldigVerdi ?? 'Verdien er for høy',
                 },
               }),
               ...(minValue && {
                 min: {
                   value: minValue,
-                  message: getValidationTextExtension(item) ?? resources?.oppgiGyldigVerdi ?? 'Verdien er for lav',
+                  message: validationText ?? resources?.oppgiGyldigVerdi ?? 'Verdien er for lav',
                 },
               }),
-              ...(decimalPattern && { pattern: new RegExp(decimalPattern), message: 'Verdien er ikke et gyldig tall' }),
+              ...(decimalPattern && {
+                pattern: {
+                  value: new RegExp(decimalPattern),
+                  message: resources?.oppgiGyldigVerdi ?? 'Verdien er ikke et gyldig tall',
+                },
+              }),
             }}
             render={({ field: { onChange, ...rest } }): JSX.Element => (
               <Input
@@ -167,8 +172,9 @@ class Decimal extends React.Component<Props, Record<string, unknown>> {
                 value={value ? value + '' : ''}
                 label={
                   <Label
+                    className="page_refero__label"
                     htmlFor={getId(id)}
-                    testId={getId(this.props.id)}
+                    testId={`${getId(this.props.id)}-label-decimal`}
                     labelTexts={[{ text: labelText, type: 'semibold' }]}
                     sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
                     afterLabelChildren={this.props.renderHelpButton()}

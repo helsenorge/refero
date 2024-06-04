@@ -115,7 +115,13 @@ const attachmentHtml = ({
           onChangeFile={handleUpload}
           onDeleteFile={handleDelete}
           chooseFilesText={resources?.chooseFilesText}
-          label={<Label labelTexts={[{ text: labelText || '', type: 'semibold' }]} afterLabelChildren={helpButton && helpButton} />}
+          label={
+            <Label
+              className="page_refero__label"
+              labelTexts={[{ text: labelText || '', type: 'semibold' }]}
+              afterLabelChildren={helpButton && helpButton}
+            />
+          }
           deleteText={deleteText}
           acceptedFiles={acceptedFiles}
           rejectedFiles={rejectedFiles}

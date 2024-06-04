@@ -103,7 +103,7 @@
         "extension": [
           {
             "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
-            "valueMarkdown": "Boolean"
+            "valueMarkdown": "**Boolean**"
           }
         ]
       },
@@ -111,7 +111,7 @@
       "extension": [
         {
           "url": "http://ehelse.no/fhir/StructureDefinition/repeatstext",
-          "valueString": "Custom error"
+          "valueString": "Legg til"
         },
         {
           "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-minOccurs",

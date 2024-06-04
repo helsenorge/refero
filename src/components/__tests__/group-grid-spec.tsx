@@ -3,10 +3,9 @@ import { Questionnaire } from 'fhir/r4';
 import GroupGridModel from './__data__/group-grid';
 import { renderRefero, screen } from './test-utils/test-utils';
 
-describe('Group-grid component renders correctly', () => {
+describe('group-grid-spec', () => {
   it('renders table with reordered items', () => {
-    const { container, getAllByRole, debug, queryAllByText } = createWrapper(GroupGridModel);
-    debug();
+    const { container, getAllByRole, queryAllByText } = createWrapper(GroupGridModel);
     expect(getAllByRole('table')).toHaveLength(1);
 
     ['X', 'SpmA', 'SpmB', 'SpmC', 'SpmD'].forEach(element => {
@@ -18,7 +17,6 @@ describe('Group-grid component renders correctly', () => {
     expect(rows).toHaveLength(4);
 
     let expectedItemsPerRow = [['1.1.1', '1.1.2', '1.1.3'], ['1.2.2', '1.2.3', '1.2.1'], ['1.3.1'], ['1.4.1']];
-
     for (let i = 0; i < rows.length; i++) {
       validateRow(rows[i], 5, expectedItemsPerRow[i]);
     }
@@ -30,7 +28,8 @@ function validateRow(wrapper: Element, expectedNumCells: number, expectedItemLin
   expect(numCells).toHaveLength(expectedNumCells);
 
   expectedItemLinkIds.forEach(expectedItemLinkId => {
-    const cell = screen.queryByTestId(`item_${expectedItemLinkId}`);
+    const id = `item_${expectedItemLinkId}-label-decimal`;
+    const cell = screen.queryByTestId(id);
     expect(cell).toBeInTheDocument();
   });
 

@@ -24,7 +24,16 @@ import {
   getQuestionnaireUnitExtensionValue,
   getValidationTextExtension,
 } from '../../../util/extension';
-import { isReadOnly, getId, getSublabelText, renderPrefix, getText, isRequired, getDecimalPattern } from '../../../util/index';
+import {
+  isReadOnly,
+  getId,
+  getSublabelText,
+  renderPrefix,
+  getText,
+  isRequired,
+  getDecimalPattern,
+  getLabelText,
+} from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
 import { Resources } from '../../../util/resources';
@@ -141,7 +150,7 @@ class Quantity extends React.Component<Props> {
       );
     }
     const value = this.getValue();
-    const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`;
+    const labelText = getLabelText(item, onRenderMarkdown, questionnaire, resources);
     const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
     const decimalPattern = getDecimalPattern(item);
     const minValue = getMinValueExtensionValue(item);
@@ -174,7 +183,12 @@ class Quantity extends React.Component<Props> {
                   message: errorMessage ?? resources?.oppgiGyldigVerdi ?? 'Verdien er for lav',
                 },
               }),
-              ...(decimalPattern && { pattern: new RegExp(decimalPattern), message: 'Verdien er ikke tilatt' }),
+              ...(decimalPattern && {
+                pattern: {
+                  value: new RegExp(decimalPattern),
+                  message: resources?.oppgiGyldigVerdi ?? 'Verdien er ikke et gyldig tall',
+                },
+              }),
             }}
             render={({ field: { onChange, ...rest } }): JSX.Element => (
               <Input
@@ -182,6 +196,8 @@ class Quantity extends React.Component<Props> {
                 value={value !== undefined ? value + '' : ''}
                 label={
                   <Label
+                    htmlFor={getId(id)}
+                    className="page_refero__label"
                     labelTexts={[{ text: labelText, type: 'semibold' }]}
                     sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
                     afterLabelChildren={this.props.renderHelpButton()}

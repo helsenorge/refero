@@ -19,7 +19,7 @@ describe('string', () => {
         item: q.item?.map(x => ({ ...x, repeats: false })),
       };
       const { queryByText } = createWrapper(questionnaire, { pdf: true });
-      expect(queryByText('Ikke besvart')).toBeInTheDocument();
+      expect(queryByText(resources.ikkeBesvart)).toBeInTheDocument();
     });
     it('Should render text if item is readonly', () => {
       const questionnaire: Questionnaire = {
@@ -28,7 +28,7 @@ describe('string', () => {
       };
 
       const { queryByText } = createWrapper(questionnaire);
-      expect(queryByText('Ikke besvart')).toBeInTheDocument();
+      expect(queryByText(resources.ikkeBesvart)).toBeInTheDocument();
     });
     it('Should render as input if props.pdf === false && item is not readonly', () => {
       const questionnaire: Questionnaire = {
@@ -36,7 +36,7 @@ describe('string', () => {
         item: q.item?.map(x => ({ ...x, repeats: false })),
       };
       const { queryByText } = createWrapper(questionnaire);
-      expect(queryByText('Ikke besvart')).not.toBeInTheDocument();
+      expect(queryByText(resources.ikkeBesvart)).not.toBeInTheDocument();
     });
   });
   describe('help button', () => {

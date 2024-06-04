@@ -4,9 +4,9 @@ import { q } from './__data__';
 import { ReferoProps } from '../../../../types/referoProps';
 import { getResources } from '../../../../preview/resources/referoResources';
 
-const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle ut dette feltet' };
+const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle ut dette feltet', oppgiGyldigVerdi: 'ikke gyldig tall' };
 
-describe('Integer', () => {
+describe('Quantity', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
@@ -27,6 +27,17 @@ describe('Integer', () => {
     it('Should render as input if props.pdf === false && item is not readonly', () => {
       const { queryByText } = createWrapper(q);
       expect(queryByText(resources.ikkeBesvart)).not.toBeInTheDocument();
+    });
+    it('Should render with correct unit', () => {
+      const questionnaire: Questionnaire = {
+        ...q,
+        item: q.item?.map(x => ({
+          ...x,
+          repeats: true,
+        })),
+      };
+      const { queryByText } = createWrapper(questionnaire);
+      expect(queryByText('centimeter')).toBeInTheDocument();
     });
   });
   describe('help button', () => {
@@ -86,7 +97,7 @@ describe('Integer', () => {
         userEvent.click(getByTestId(/-repeat-button/i));
       });
 
-      expect(queryAllByLabelText(/Integer/i)).toHaveLength(4);
+      expect(queryAllByLabelText(/Quantity/i)).toHaveLength(4);
       expect(queryByTestId(/-repeat-button/i)).not.toBeInTheDocument();
     });
   });
@@ -149,23 +160,58 @@ describe('Integer', () => {
   });
   describe('onChange', () => {
     it('Should update component with value from answer', async () => {
-      const { getByLabelText } = createWrapper(q);
+      const questionnaire: Questionnaire = {
+        ...q,
+        item: q.item?.map(x => ({
+          ...x,
+          repeats: true,
+          extension: [
+            ...(q.extension ?? []), // Spread the existing extensions or use an empty array if undefined
+            {
+              url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-unit',
+              valueCoding: {
+                code: 'cm',
+                display: 'centimeter',
+                system: 'http://unitsofmeasure.org',
+              },
+            },
+          ],
+        })),
+      };
+      const { getByLabelText } = createWrapper(questionnaire);
 
-      const inputElement = getByLabelText(/Integer/i);
+      const inputElement = getByLabelText(/Quantity/i);
       expect(inputElement).toBeInTheDocument();
       expect(inputElement).toHaveAttribute('type', 'number');
-      expect(inputElement).toHaveAttribute('id', `item_${q?.item?.[0].linkId}`);
-
+      expect(inputElement).toHaveAttribute('id', `item_${q?.item?.[0].linkId}^0`);
       userEvent.type(inputElement, '123');
 
-      expect(getByLabelText(/Integer/i)).toHaveValue(123);
+      expect(getByLabelText(/Quantity/i)).toHaveValue(123);
     });
     it('Should call onChange with correct value', async () => {
+      const questionnaire: Questionnaire = {
+        ...q,
+        item: q.item?.map(x => ({
+          ...x,
+          repeats: true,
+          extension: [
+            ...(q.extension ?? []), // Spread the existing extensions or use an empty array if undefined
+            {
+              url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-unit',
+              valueCoding: {
+                code: 'cm',
+                display: 'centimeter',
+                system: 'http://unitsofmeasure.org',
+              },
+            },
+          ],
+        })),
+      };
       const onChange = jest.fn();
-      const { getByLabelText } = createWrapper(q, { onChange });
-      expect(getByLabelText(/Integer/i)).toBeInTheDocument();
+      const { getByLabelText } = createWrapper(questionnaire, { onChange });
+      expect(getByLabelText(/Quantity/i)).toBeInTheDocument();
       await act(async () => {
-        userEvent.type(getByLabelText(/Integer/i), '1');
+        userEvent.type(getByLabelText(/Quantity/i), '1');
       });
       expect(onChange).toHaveBeenCalledTimes(1);
     });
@@ -191,7 +237,7 @@ describe('Integer', () => {
         };
         const { getByTestId, getByLabelText, queryByText } = createWrapper(questionnaire);
         await act(async () => {
-          await userEvent.type(getByLabelText(/Integer/i), '123');
+          await userEvent.type(getByLabelText(/Quantity/i), '123');
           await userEvent.click(getByTestId('refero-submit-button'));
         });
 
@@ -209,7 +255,7 @@ describe('Integer', () => {
         expect(getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
 
         await act(async () => {
-          await userEvent.type(getByLabelText(/Integer/i), '123');
+          await userEvent.type(getByLabelText(/Quantity/i), '123');
           await userEvent.tab();
         });
         expect(queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
@@ -235,7 +281,7 @@ describe('Integer', () => {
         };
         const { getByTestId, getByLabelText, queryByText } = createWrapper(questionnaire);
         await act(async () => {
-          await userEvent.type(getByLabelText(/Integer/i), '8');
+          await userEvent.type(getByLabelText(/Quantity/i), '8');
           await userEvent.click(getByTestId('refero-submit-button'));
         });
 
@@ -248,13 +294,13 @@ describe('Integer', () => {
         };
         const { getByTestId, getByText, queryByText, getByLabelText } = createWrapper(questionnaire);
         await act(async () => {
-          await userEvent.type(getByLabelText(/Integer/i), '12');
+          await userEvent.type(getByLabelText(/Quantity/i), '12');
           await userEvent.click(getByTestId('refero-submit-button'));
         });
         expect(getByText('Custom error')).toBeInTheDocument();
         await act(async () => {
-          await userEvent.clear(getByLabelText(/Integer/i));
-          await userEvent.type(getByLabelText(/Integer/i), '8');
+          await userEvent.clear(getByLabelText(/Quantity/i));
+          await userEvent.type(getByLabelText(/Quantity/i), '8');
         });
 
         expect(queryByText('Custom error')).not.toBeInTheDocument();
@@ -280,7 +326,7 @@ describe('Integer', () => {
         };
         const { getByTestId, getByLabelText, queryByText } = createWrapper(questionnaire);
         await act(async () => {
-          await userEvent.type(getByLabelText(/Integer/i), '8');
+          await userEvent.type(getByLabelText(/Quantity/i), '8');
           await userEvent.click(getByTestId('refero-submit-button'));
         });
 
@@ -291,18 +337,72 @@ describe('Integer', () => {
           ...q,
           item: q.item?.map(x => ({ ...x, required: false })),
         };
-        const { getByTestId, getByText, queryByText, getByLabelText } = createWrapper(questionnaire);
+        const { getByTestId, queryByText, getByLabelText } = createWrapper(questionnaire);
         await act(async () => {
-          await userEvent.type(getByLabelText(/Integer/i), '3');
+          await userEvent.type(getByLabelText(/Quantity/i), '3');
           await userEvent.click(getByTestId('refero-submit-button'));
         });
-        expect(getByText('Custom error')).toBeInTheDocument();
+        expect(queryByText('Custom error')).toBeInTheDocument();
         await act(async () => {
-          await userEvent.clear(getByLabelText(/Integer/i));
-          await userEvent.type(getByLabelText(/Integer/i), '8');
+          await userEvent.clear(getByLabelText(/Quantity/i));
+          await userEvent.type(getByLabelText(/Quantity/i), '8');
         });
 
         expect(queryByText('Custom error')).not.toBeInTheDocument();
+      });
+    });
+    describe('decimalPattern validation', () => {
+      it('Should not show error if value is empty', async () => {
+        const questionnaire: Questionnaire = {
+          ...q,
+          item: q.item?.map(x => ({
+            ...x,
+            required: false,
+          })),
+        };
+        const { getByTestId, queryByText } = createWrapper(questionnaire);
+        await act(async () => {
+          await userEvent.click(getByTestId('refero-submit-button'));
+        });
+
+        expect(queryByText(resources.oppgiGyldigVerdi)).not.toBeInTheDocument();
+      });
+      it('Should not show error if value is valid pattern', async () => {
+        const questionnaire: Questionnaire = {
+          ...q,
+          item: q.item?.map(x => ({
+            ...x,
+            required: false,
+          })),
+        };
+        const { getByTestId, getByLabelText, queryByText } = createWrapper(questionnaire);
+        await act(async () => {
+          await userEvent.type(getByLabelText(/Quantity/i), '6.12');
+          await userEvent.click(getByTestId('refero-submit-button'));
+        });
+
+        expect(queryByText(resources.oppgiGyldigVerdi)).not.toBeInTheDocument();
+      });
+      it('Should remove error on change if form is submitted', async () => {
+        const questionnaire: Questionnaire = {
+          ...q,
+          item: q.item?.map(x => ({
+            ...x,
+            required: false,
+          })),
+        };
+        const { getByTestId, queryByText, getByLabelText } = createWrapper(questionnaire);
+        await act(async () => {
+          await userEvent.type(getByLabelText(/Quantity/i), '6.121212');
+          await userEvent.click(getByTestId('refero-submit-button'));
+        });
+        expect(queryByText(resources.oppgiGyldigVerdi)).toBeInTheDocument();
+        await act(async () => {
+          await userEvent.clear(getByLabelText(/Quantity/i));
+          await userEvent.type(getByLabelText(/Quantity/i), '6.2');
+        });
+
+        expect(queryByText(resources.oppgiGyldigVerdi)).not.toBeInTheDocument();
       });
     });
   });

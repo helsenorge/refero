@@ -175,7 +175,14 @@ export function getSublabelText(
   }
   return '';
 }
-
+export function getLabelText(
+  item: QuestionnaireItem,
+  onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string,
+  questionnaire?: Questionnaire | null,
+  resources?: Resources
+): string {
+  return `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`;
+}
 export function getText(
   item: QuestionnaireItem,
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string,

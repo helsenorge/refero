@@ -64,12 +64,54 @@
   "id": "75dc5309-00ee-4e65-bc07-0e9f87f3311c",
   "item": [
     {
-      "linkId": "af3cff52-5879-4db0-c671-1fb2bec90309",
-      "type": "boolean",
-      "text": "Boolean",
+      "linkId": "bb5bcd44-4052-4650-a5c5-33778e10df01",
+      "type": "quantity",
+      "text": "Quantity",
+      "extension": [
+        {
+          "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sublabel",
+          "valueMarkdown": "**Quantity sublabel**"
+        },
+        {
+          "url": "http://ehelse.no/fhir/StructureDefinition/repeatstext",
+          "valueString": "Legg til"
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-minOccurs",
+          "valueInteger": 1
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-maxOccurs",
+          "valueInteger": 4
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/maxDecimalPlaces",
+          "valueInteger": 2
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/minValue",
+          "valueInteger": 5
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/maxValue",
+          "valueInteger": 10
+        },
+        {
+          "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
+          "valueString": "Custom error"
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+          "valueCoding": {
+            "code": "cm",
+            "display": "centimeter",
+            "system": "http://unitsofmeasure.org"
+          }
+        }
+      ],
       "item": [
         {
-          "linkId": "6b993066-aac0-4ad5-8d03-dc80b18e4664",
+          "linkId": "d0fda21a-a660-4e7d-941d-f4a6bfa1f41f",
           "type": "text",
           "required": false,
           "repeats": false,
@@ -103,25 +145,11 @@
         "extension": [
           {
             "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
-            "valueMarkdown": "**Boolean** <script>alert('HELLO')</script>"
+            "valueMarkdown": "**Quantity**"
           }
         ]
       },
-      "repeats": true,
-      "extension": [
-        {
-          "url": "http://ehelse.no/fhir/StructureDefinition/repeatstext",
-          "valueString": "Custom error"
-        },
-        {
-          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-minOccurs",
-          "valueInteger": 1
-        },
-        {
-          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-maxOccurs",
-          "valueInteger": 4
-        }
-      ]
+      "repeats": true
     }
   ]
 }

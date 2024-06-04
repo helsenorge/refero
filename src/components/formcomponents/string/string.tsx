@@ -23,10 +23,9 @@ import {
   getPDFStringValue,
   getTextValidationErrorMessage,
   getSublabelText,
-  renderPrefix,
-  getText,
   getMaxLength,
   scriptInjectionValidation,
+  getLabelText,
 } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
@@ -111,7 +110,7 @@ export class String extends React.Component<Props, Record<string, unknown>> {
         </TextView>
       );
     }
-    const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`;
+    const labelText = getLabelText(item, onRenderMarkdown, questionnaire, resources);
     const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
     const maxLength = getMaxLength(item);
     const minLength = getMinLengthExtensionValue(item);
@@ -167,9 +166,10 @@ export class String extends React.Component<Props, Record<string, unknown>> {
                 label={
                   <Label
                     labelTexts={[{ text: labelText, type: 'semibold' }]}
+                    className="page_refero__label"
                     sublabel={
                       <Sublabel
-                        id={`${getId(this.props.id)}_sublabel`}
+                        id={`${getId(this.props.id)}-sublabel`}
                         sublabelTexts={[{ text: subLabelText, hideFromScreenReader: false, type: 'normal' }]}
                       />
                     }

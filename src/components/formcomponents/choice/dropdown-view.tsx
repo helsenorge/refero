@@ -85,6 +85,7 @@ class DropdownView extends React.Component<Props, Record<string, unknown>> {
                 {...rest}
                 label={
                   <Label
+                    className="page_refero__label"
                     labelTexts={[{ text: labelText, type: 'semibold' }]}
                     sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
                     afterLabelChildren={renderHelpButton()}

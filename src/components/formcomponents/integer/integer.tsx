@@ -14,7 +14,7 @@ import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 import { NewValueAction, newIntegerValueAsync } from '../../../actions/newValue';
 import { GlobalState } from '../../../reducers';
 import { getPlaceholder, getMaxValueExtensionValue, getMinValueExtensionValue, getValidationTextExtension } from '../../../util/extension';
-import { isReadOnly, isRequired, getId, getSublabelText, renderPrefix, getText } from '../../../util/index';
+import { isReadOnly, isRequired, getId, getSublabelText, getLabelText } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
 import { Resources } from '../../../util/resources';
@@ -131,7 +131,7 @@ class Integer extends React.Component<Props, Record<string, unknown>> {
     }
     const value = this.getValue();
     const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
-    const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`;
+    const labelText = getLabelText(item, onRenderMarkdown, questionnaire, resources);
     const errorMessage = getValidationTextExtension(item);
     const minValue = getMinValueExtensionValue(item);
     const maxValue = getMaxValueExtensionValue(item);
@@ -170,7 +170,9 @@ class Integer extends React.Component<Props, Record<string, unknown>> {
                 testId={getId(id)}
                 label={
                   <Label
+                    htmlFor={getId(id)}
                     labelTexts={[{ text: labelText, type: 'semibold' }]}
+                    className="page_refero__label"
                     sublabel={<Sublabel id={`${getId(id)}-select-sublabel`} sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
                     afterLabelChildren={renderHelpButton()}
                   />

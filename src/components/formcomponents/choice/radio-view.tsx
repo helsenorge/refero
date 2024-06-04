@@ -56,7 +56,8 @@ const RadioView: React.FC<Props> = ({
       <FormGroup mode="ongrey" error={error?.message}>
         {renderHelpElement()}
         <Label
-          labelTexts={[{ text: labelText }]}
+          className="page_refero__label"
+          labelTexts={[{ text: labelText, type: 'semibold' }]}
           sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
           afterLabelChildren={renderHelpButton()}
         />

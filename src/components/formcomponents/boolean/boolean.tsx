@@ -1,5 +1,6 @@
 import * as React from 'react';
 
+import DOMPurify from 'dompurify';
 import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { Controller } from 'react-hook-form';
 import { connect } from 'react-redux';
@@ -14,7 +15,7 @@ import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 import Pdf from './pdf';
 import { NewValueAction, newBooleanValueAsync } from '../../../actions/newValue';
 import { GlobalState } from '../../../reducers';
-import { isReadOnly, getId, getText, renderPrefix, getSublabelText, isRequired } from '../../../util/index';
+import { isReadOnly, getId, getText, renderPrefix, getSublabelText, isRequired, getLabelText } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
 import { Resources } from '../../../util/resources';
@@ -70,15 +71,6 @@ class Boolean extends React.Component<Props> {
     }
   };
 
-  getLabel = (): string => {
-    return `${renderPrefix(this.props.item)} ${getText(
-      this.props.item,
-      this.props.onRenderMarkdown,
-      this.props.questionnaire,
-      this.props.resources
-    )}`;
-  };
-
   shouldComponentUpdate(nextProps: Props): boolean {
     const responseItemHasChanged = this.props.responseItem !== nextProps.responseItem;
     const helpItemHasChanged = this.props.isHelpOpen !== nextProps.isHelpOpen;
@@ -113,13 +105,14 @@ class Boolean extends React.Component<Props> {
       control,
       idWithLinkIdAndItemIndex,
     } = this.props;
+    const labelText = getLabelText(item, onRenderMarkdown, questionnaire, resources);
     if (pdf) {
       return <Pdf item={item} checked={this.getValue()} onRenderMarkdown={onRenderMarkdown} />;
     } else if (isReadOnly(item)) {
       return (
         <Checkbox
           testId={`${getId(id)}-readonly`}
-          label={this.getLabel()}
+          label={<Label testId={`${getId(id)}-label-readonly`} labelTexts={[{ text: labelText }]} />}
           checked={this.getValue()}
           disabled={true}
           onChange={(): void => {
@@ -156,7 +149,9 @@ class Boolean extends React.Component<Props> {
                   <Label
                     labelId={`${getId(id)}-label-boolean`}
                     testId={`${getId(id)}-label-boolean`}
-                    labelTexts={[{ text: this.getLabel() }]}
+                    labelTexts={[{ text: labelText, type: 'semibold' }]}
+                    htmlFor={getId(id)}
+                    className="page_refero__label"
                     sublabel={
                       <Sublabel
                         testId={`${getId(id)}-sublabel-boolean`}

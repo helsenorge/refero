@@ -225,7 +225,6 @@ describe('autosuggest-view', () => {
       expect(listbox).toBeInTheDocument();
     });
 
-    screen.debug();
     await waitFor(() => {
       const suggestion = screen.getByText('Fyrstekake');
       expect(suggestion).toBeInTheDocument();

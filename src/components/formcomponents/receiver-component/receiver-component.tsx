@@ -5,6 +5,7 @@ import { Controller } from 'react-hook-form';
 
 import { EnhetType, OrgenhetHierarki } from '../../../types/orgenhetHierarki';
 
+import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Label from '@helsenorge/designsystem-react/components/Label';
 import Loader from '@helsenorge/designsystem-react/components/Loader';
 import NotificationPanel from '@helsenorge/designsystem-react/components/NotificationPanel';
@@ -151,23 +152,6 @@ class ReceiverComponent extends React.Component<ReceiverComponentProps & FormPro
     return `Endpoint/${endepunktId}`;
   }
 
-  // TODO: Custom validering hvis this.getReceiverName(this.state.receiverTreeNodes, this.state.selectedPath)
-  // returnerer tom streng skal ikke komponenten være valid
-
-  // validateField(): Promise<void> {
-  //   return new Promise<void>((resolve: () => void) => {
-  //     this.setState(
-  //       {
-  //         isValid: !!this.getReceiverName(this.state.receiverTreeNodes, this.state.selectedPath),
-  //         isValidated: true,
-  //       },
-  //       () => {
-  //         resolve();
-  //       }
-  //     );
-  //   });
-  // }
-
   getLabelText(enhetType: EnhetType): string | undefined {
     if (enhetType === EnhetType.Region) {
       return this.props.resources?.adresseKomponent_velgHelseregion;
@@ -204,40 +188,46 @@ class ReceiverComponent extends React.Component<ReceiverComponentProps & FormPro
     };
 
     return (
-      <Controller
-        key={selectKey}
-        name={`${this.props.idWithLinkIdAndItemIndex}-${selectKey}`}
-        control={this.props.control}
-        shouldUnregister={true}
-        rules={{
-          required: {
-            value: true,
-            message: this.props.resources?.adresseKomponent_feilmelding || '',
-          },
-        }}
-        render={({ field: { onChange, ...rest } }): JSX.Element => (
-          <Select
-            {...rest}
-            onChange={(e): void => {
-              handleSelectChange(e);
-              onChange(e.target.value);
-            }}
-            value={this.state.selectedPath[level] ? this.state.selectedPath[level].toString() : ''}
-            testId={`${getId(this.props.id)}-${selectKey}`}
-            selectId={`${getId(this.props.id)}-${selectKey}`}
-            label={<Label labelTexts={[{ text: label, type: 'semibold' }]} />}
-            className="page_refero__input"
-          >
-            {selectOptions.map(option => {
-              return (
-                <option key={`${option.value}-${option.label}`} value={option.value}>
-                  {option.label}
-                </option>
-              );
-            })}
-          </Select>
-        )}
-      />
+      <FormGroup error={this.props.error?.message}>
+        <Controller
+          key={selectKey}
+          name={`${this.props.idWithLinkIdAndItemIndex}-${selectKey}`}
+          control={this.props.control}
+          shouldUnregister={true}
+          rules={{
+            required: {
+              value: true,
+              message: this.props.resources?.adresseKomponent_feilmelding || 'Påkrevd felt',
+            },
+            validate: (): true | string =>
+              !!this.getReceiverName(this.state.receiverTreeNodes, this.state.selectedPath)
+                ? true
+                : this.props.resources?.adresseKomponent_feilmelding || 'Kan ikke være tom streng',
+          }}
+          render={({ field: { onChange, ...rest } }): JSX.Element => (
+            <Select
+              {...rest}
+              onChange={(e): void => {
+                handleSelectChange(e);
+                onChange(e.target.value);
+              }}
+              value={this.state.selectedPath[level] ? this.state.selectedPath[level].toString() : ''}
+              testId={`${getId(this.props.id)}-${selectKey}`}
+              selectId={`${getId(this.props.id)}-${selectKey}`}
+              label={<Label labelTexts={[{ text: label, type: 'semibold' }]} />}
+              className="page_refero__input"
+            >
+              {selectOptions.map(option => {
+                return (
+                  <option key={`${option.value}-${option.label}`} value={option.value}>
+                    {option.label}
+                  </option>
+                );
+              })}
+            </Select>
+          )}
+        />
+      </FormGroup>
     );
   }
 
@@ -261,8 +251,7 @@ class ReceiverComponent extends React.Component<ReceiverComponentProps & FormPro
 
   render(): JSX.Element {
     return (
-      <div id={getId(this.props.id)}>
-        {/* {this.renderErrorMessage()} */}
+      <div>
         <h2>{this.props.resources?.adresseKomponent_header}</h2>
         <div className="page_refero__sublabel">{this.props.resources?.adresseKomponent_sublabel}</div>
 
