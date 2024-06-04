@@ -58,11 +58,7 @@ export interface WithCommonFunctionsProps {
   enable?: boolean;
   id?: string;
   answer?: QuestionnaireResponseItemAnswer | Array<QuestionnaireResponseItemAnswer>;
-  optionalLabel?: string;
-  requiredLabel?: string;
   validateScriptInjection?: boolean;
-  showOptionalLabel?: boolean;
-  showRequiredLabel?: boolean;
   visibleDeleteButton?: boolean;
   repeatButton?: JSX.Element;
   attachmentErrorMessage?: string;
@@ -289,10 +285,6 @@ export default function withCommonFunctions<T extends WithCommonFunctionsProps>(
               path={createPathForItem(path, item, responseItem, index)}
               headerTag={getChildHeaderTag(props.item, headerTag)}
               validateScriptInjection={props.validateScriptInjection}
-              optionalLabel={props.optionalLabel}
-              requiredLabel={props.requiredLabel}
-              showOptionalLabel={props.showOptionalLabel}
-              showRequiredLabel={props.showRequiredLabel}
               visibleDeleteButton={shouldRenderDeleteButton(item, index)}
               repeatButton={renderRepeatButton(item, index, path, response, responseItem)}
               onRequestAttachmentLink={props.onRequestAttachmentLink}

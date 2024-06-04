@@ -12,7 +12,7 @@ type Props = {
 export const CancelFormButton = ({ cancelButtonText, onCancelButtonClicked }: Props): ReactElement => {
   return (
     <div className="cancelButtonStyle">
-      <Button variant="borderless" onClick={onCancelButtonClicked}>
+      <Button variant="borderless" onClick={onCancelButtonClicked} testId="refero-cancel-button">
         {cancelButtonText}
       </Button>
     </div>

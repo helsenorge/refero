@@ -12,7 +12,7 @@ type Props = {
 export const PauseFormButton = ({ pauseButtonText, onPauseButtonClicked, pauseButtonDisabled, isHelsenorgeForm }: Props): ReactElement => {
   return (
     <div className={`pauseButtonStyle ${isHelsenorgeForm ? 'hideOnSmallScreen' : 'displayOnSmallScreen'}`}>
-      <Button variant="outline" disabled={pauseButtonDisabled} onClick={onPauseButtonClicked}>
+      <Button variant="outline" disabled={pauseButtonDisabled} onClick={onPauseButtonClicked} testId="refero-pause-button">
         {pauseButtonText}
       </Button>
     </div>

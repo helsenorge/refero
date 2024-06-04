@@ -1,24 +1,17 @@
-import React from 'react';
-import { screen, userEvent, act, render } from './test-utils/test-utils';
+import { screen, userEvent, act, renderRefero } from './test-utils/test-utils';
 import moment from 'moment';
 import '@testing-library/jest-dom/extend-expect';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, Quantity, Coding, Questionnaire } from 'fhir/r4';
 
 import '../../util/defineFetch';
-import { ReferoContainer } from '..';
 import Constants, { OPEN_CHOICE_ID } from '../../constants/index';
 import { IActionRequester } from '../../util/actionRequester';
 import { IQuestionnaireInspector, QuestionnaireItemPair } from '../../util/questionnaireInspector';
-import { Resources } from '../../util/resources';
 import questionnaireWithAllItemTypes from './__data__/onChange/allItemTypes';
 import questionnaireWithNestedItems from './__data__/onChange/nestedItems';
 import questionnaireWithRepeats from './__data__/onChange/repeats';
 import { inputAnswer, selectRadioButtonOption, changeCheckBoxOption, findItem, findItemByDispayValue, selectBoolean } from './utils';
-import { generateQuestionnaireResponse } from '../../actions/generateQuestionnaireResponse';
-import { applyMiddleware, createStore } from 'redux';
-import rootReducer from '../../reducers';
-import thunk from 'redux-thunk';
 
 function toCoding(code: string, system?: string): Coding {
   return {
@@ -81,7 +74,7 @@ describe('onAnswerChange callback gets called and can request additional changes
       actionRequester.addIntegerAnswer('2', 42);
     });
 
-    const { findByDisplayValue } = renderWrapperWithItem(onChange, questionnaireWithAllItemTypes);
+    const { findByDisplayValue } = wrapper(onChange, questionnaireWithAllItemTypes);
 
     const { answer } = await addValueToInputByTypeAndTab('Decimal', '0.1');
 
@@ -95,7 +88,7 @@ describe('onAnswerChange callback gets called and can request additional changes
       actionRequester.addIntegerAnswer('2', 42);
       actionRequester.clearIntegerAnswer('2');
     });
-    const { container, getByLabelText } = renderWrapperWithItem(onChange, questionnaireWithAllItemTypes);
+    const { container, getByLabelText } = wrapper(onChange, questionnaireWithAllItemTypes);
 
     const { answer } = await addValueToInputByTypeAndTab('Decimal', '0.1');
 
@@ -110,7 +103,7 @@ describe('onAnswerChange callback gets called and can request additional changes
       actionRequester.addDecimalAnswer('1', 42);
     });
 
-    const { container } = renderWrapperWithItem(onChange, questionnaireWithAllItemTypes);
+    const { container } = wrapper(onChange, questionnaireWithAllItemTypes);
     await act(async () => {
       inputAnswer('1', 0.1, container);
     });
@@ -125,7 +118,7 @@ describe('onAnswerChange callback gets called and can request additional changes
       actionRequester.clearDecimalAnswer('1');
     });
 
-    const { container } = renderWrapperWithItem(onChange, questionnaireWithAllItemTypes);
+    const { container } = wrapper(onChange, questionnaireWithAllItemTypes);
     await act(async () => {
       inputAnswer('1', 0.1, container);
     });
@@ -139,7 +132,7 @@ describe('onAnswerChange callback gets called and can request additional changes
       actionRequester.addQuantityAnswer('3', toQuantity(42, 'kg', 'kilogram', 'http://unitsofmeasure.org'));
     });
 
-    const { container } = renderWrapperWithItem(onChange, questionnaireWithAllItemTypes);
+    const { container } = wrapper(onChange, questionnaireWithAllItemTypes);
 
     await act(async () => {
       inputAnswer('1', 0.1, container);
@@ -154,7 +147,7 @@ describe('onAnswerChange callback gets called and can request additional changes
       actionRequester.clearQuantityAnswer('3');
     });
 
-    const { container } = renderWrapperWithItem(onChange, questionnaireWithAllItemTypes);
+    const { container } = wrapper(onChange, questionnaireWithAllItemTypes);
     await act(async () => {
       inputAnswer('1', 0.1, container);
     });
@@ -167,7 +160,7 @@ describe('onAnswerChange callback gets called and can request additional changes
       actionRequester.addBooleanAnswer('4', true);
     });
 
-    const { container } = renderWrapperWithItem(onChange, questionnaireWithAllItemTypes);
+    const { container } = wrapper(onChange, questionnaireWithAllItemTypes);
     selectBoolean('1', container);
     const updatedInput = await screen.findByDisplayValue('true');
     expect(updatedInput).toBeChecked();
@@ -179,7 +172,7 @@ describe('onAnswerChange callback gets called and can request additional changes
       actionRequester.clearBooleanAnswer('4');
     });
 
-    const { container } = renderWrapperWithItem(onChange, questionnaireWithAllItemTypes);
+    const { container } = wrapper(onChange, questionnaireWithAllItemTypes);
 
     inputAnswer('1', 0.1, container);
     const item = findItem('4', container);
@@ -191,7 +184,7 @@ describe('onAnswerChange callback gets called and can request additional changes
       actionRequester.addChoiceAnswer('5a', toCoding('2', 'urn:oid:2.16.578.1.12.4.1.1101'));
     });
 
-    const { container } = renderWrapperWithItem(onChange, questionnaireWithAllItemTypes);
+    const { container } = wrapper(onChange, questionnaireWithAllItemTypes);
     await act(async () => {
       selectRadioButtonOption('1', 0.1, container);
     });
@@ -206,7 +199,7 @@ describe('onAnswerChange callback gets called and can request additional changes
       actionRequester.removeChoiceAnswer('5a', toCoding('2', 'urn:oid:2.16.578.1.12.4.1.1101'));
     });
 
-    const { container } = renderWrapperWithItem(onChange, questionnaireWithAllItemTypes);
+    const { container } = wrapper(onChange, questionnaireWithAllItemTypes);
 
     await selectRadioButtonOption('1', 0.1, container);
     const item = findItem('5a-hn-1', container);
@@ -219,7 +212,7 @@ describe('onAnswerChange callback gets called and can request additional changes
       actionRequester.addChoiceAnswer('5b', toCoding('2', 'urn:oid:2.16.578.1.12.4.1.1101'));
     });
 
-    const { container } = renderWrapperWithItem(onChange, questionnaireWithAllItemTypes);
+    const { container } = wrapper(onChange, questionnaireWithAllItemTypes);
 
     await changeCheckBoxOption('1', '2', container);
     const item = findItem('5b-2', container);
@@ -233,7 +226,7 @@ describe('onAnswerChange callback gets called and can request additional changes
       actionRequester.removeChoiceAnswer('5b', toCoding('2', 'urn:oid:2.16.578.1.12.4.1.1101'));
     });
 
-    const { container } = renderWrapperWithItem(onChange, questionnaireWithAllItemTypes);
+    const { container } = wrapper(onChange, questionnaireWithAllItemTypes);
 
     await changeCheckBoxOption('1', '2', container);
     const item = findItem('5b-2', container);
@@ -245,7 +238,7 @@ describe('onAnswerChange callback gets called and can request additional changes
       actionRequester.addOpenChoiceAnswer('6a', toCoding('2', 'urn:oid:2.16.578.1.12.4.1.1101'));
     });
 
-    const { container } = renderWrapperWithItem(onChange, questionnaireWithAllItemTypes);
+    const { container } = wrapper(onChange, questionnaireWithAllItemTypes);
 
     await selectRadioButtonOption('1', 0.1, container);
     const item = findItem('6a-hn-1', container);
@@ -257,7 +250,7 @@ describe('onAnswerChange callback gets called and can request additional changes
       actionRequester.addOpenChoiceAnswer('6b', toCoding('2', 'urn:oid:2.16.578.1.12.4.1.1101'));
     });
 
-    const { container } = renderWrapperWithItem(onChange, questionnaireWithAllItemTypes);
+    const { container } = wrapper(onChange, questionnaireWithAllItemTypes);
 
     await changeCheckBoxOption('1', '2', container);
     const item = findItem('6b-2', container);
@@ -269,7 +262,7 @@ describe('onAnswerChange callback gets called and can request additional changes
       actionRequester.addDateAnswer('7a', '2020-05-17');
     });
 
-    const { container } = renderWrapperWithItem(onChange, questionnaireWithAllItemTypes);
+    const { container } = wrapper(onChange, questionnaireWithAllItemTypes);
 
     inputAnswer('1', 0.1, container);
     const item = findItem('7a-datepicker_input', container);
@@ -282,7 +275,7 @@ describe('onAnswerChange callback gets called and can request additional changes
       actionRequester.clearDateAnswer('7a');
     });
 
-    const { container } = renderWrapperWithItem(onChange, questionnaireWithAllItemTypes);
+    const { container } = wrapper(onChange, questionnaireWithAllItemTypes);
 
     inputAnswer('1', 0.1, container);
     const item = findItem('7a-datepicker_input', container);
@@ -294,7 +287,7 @@ describe('onAnswerChange callback gets called and can request additional changes
       actionRequester.addTimeAnswer('7b', '12:01');
     });
 
-    const { container } = renderWrapperWithItem(onChange, questionnaireWithAllItemTypes);
+    const { container } = wrapper(onChange, questionnaireWithAllItemTypes);
 
     inputAnswer('1', 0.1, container);
 
@@ -311,7 +304,7 @@ describe('onAnswerChange callback gets called and can request additional changes
       actionRequester.clearTimeAnswer('7b');
     });
 
-    const { container } = renderWrapperWithItem(onChange, questionnaireWithAllItemTypes);
+    const { container } = wrapper(onChange, questionnaireWithAllItemTypes);
 
     inputAnswer('1', 0.1, container);
 
@@ -327,7 +320,7 @@ describe('onAnswerChange callback gets called and can request additional changes
       actionRequester.addDateTimeAnswer('7c', '2020-05-17T12:01:00Z');
     });
 
-    const { container } = renderWrapperWithItem(onChange, questionnaireWithAllItemTypes);
+    const { container } = wrapper(onChange, questionnaireWithAllItemTypes);
 
     inputAnswer('1', 0.1, container);
 
@@ -343,7 +336,7 @@ describe('onAnswerChange callback gets called and can request additional changes
       actionRequester.clearDateTimeAnswer('7c');
     });
 
-    const { container } = renderWrapperWithItem(onChange, questionnaireWithAllItemTypes);
+    const { container } = wrapper(onChange, questionnaireWithAllItemTypes);
 
     inputAnswer('1', 0.1, container);
 
@@ -357,7 +350,7 @@ describe('onAnswerChange callback gets called and can request additional changes
       actionRequester.addStringAnswer('8', 'Hello World!');
     });
 
-    const { container } = renderWrapperWithItem(onChange, questionnaireWithAllItemTypes);
+    const { container } = wrapper(onChange, questionnaireWithAllItemTypes);
 
     inputAnswer('1', 0.1, container);
     const item = findItem('8', container);
@@ -370,7 +363,7 @@ describe('onAnswerChange callback gets called and can request additional changes
       actionRequester.clearStringAnswer('8');
     });
 
-    const { container } = renderWrapperWithItem(onChange, questionnaireWithAllItemTypes);
+    const { container } = wrapper(onChange, questionnaireWithAllItemTypes);
 
     inputAnswer('1', 0.1, container);
     const item = findItem('8', container);
@@ -382,7 +375,7 @@ describe('onAnswerChange callback gets called and can request additional changes
       actionRequester.addStringAnswer('9', 'Hello\nWorld!');
     });
 
-    const { container } = renderWrapperWithItem(onChange, questionnaireWithAllItemTypes);
+    const { container } = wrapper(onChange, questionnaireWithAllItemTypes);
 
     inputAnswer('1', 0.1, container);
 
@@ -396,7 +389,7 @@ describe('onAnswerChange callback gets called and can request additional changes
       actionRequester.addIntegerAnswer('2', 42);
     });
 
-    const { container } = renderWrapperWithItem(onChange, questionnaireWithAllItemTypes);
+    const { container } = wrapper(onChange, questionnaireWithAllItemTypes);
 
     inputAnswer('1', 0.1, container);
 
@@ -413,7 +406,7 @@ describe('onAnswerChange callback gets called and can request additional changes
       actionRequester.addOpenChoiceAnswer('6a', 'Hello World!');
     });
 
-    const { container } = renderWrapperWithItem(onChange, questionnaireWithAllItemTypes);
+    const { container } = wrapper(onChange, questionnaireWithAllItemTypes);
 
     inputAnswer('1', 0.1, container);
 
@@ -430,7 +423,7 @@ describe('onAnswerChange callback gets called and can request additional changes
       actionRequester.addChoiceAnswer('5b', toCoding('1', 'urn:oid:2.16.578.1.12.4.1.1101'));
     });
 
-    const { container } = renderWrapperWithItem(onChange, questionnaireWithAllItemTypes);
+    const { container } = wrapper(onChange, questionnaireWithAllItemTypes);
 
     await changeCheckBoxOption('1', '2', container);
 
@@ -448,7 +441,7 @@ describe('onAnswerChange callback gets called and can request additional changes
       actionRequester.removeChoiceAnswer('5b', toCoding('2', 'urn:oid:2.16.578.1.12.4.1.1101'));
     });
 
-    const { container } = renderWrapperWithItem(onChange, questionnaireWithAllItemTypes);
+    const { container } = wrapper(onChange, questionnaireWithAllItemTypes);
 
     await changeCheckBoxOption('1', '2', container);
 
@@ -466,7 +459,7 @@ describe('onAnswerChange callback gets called and can request additional changes
       actionRequester.addDecimalAnswer('1', 2.1, 2);
     });
 
-    const { container } = renderWrapperWithItem(onChange, questionnaireWithRepeats);
+    const { container } = wrapper(onChange, questionnaireWithRepeats);
 
     inputAnswer('2', 42, container);
 
@@ -485,7 +478,7 @@ describe('onAnswerChange callback gets called and can request additional changes
       actionRequester.addStringAnswer('1.3.1', 'Hello');
     });
 
-    const { container } = renderWrapperWithItem(onChange, questionnaireWithNestedItems);
+    const { container } = wrapper(onChange, questionnaireWithNestedItems);
 
     inputAnswer('1.1', 0.1, container);
 
@@ -498,7 +491,7 @@ describe('onAnswerChange callback gets called and can request additional changes
       actionRequester.addIntegerAnswer('1.3.1.1', 42);
     });
 
-    const { container } = renderWrapperWithItem(onChange, questionnaireWithAllItemTypes);
+    const { container } = wrapper(onChange, questionnaireWithAllItemTypes);
 
     inputAnswer('1.1', 0.1, container);
 
@@ -512,7 +505,7 @@ describe('onAnswerChange callback gets called and can request additional changes
       result = questionnaireInspector.findItemWithLinkIds('1.3.1.1');
     });
 
-    const { container } = renderWrapperWithItem(onChange, questionnaireWithNestedItems);
+    const { container } = wrapper(onChange, questionnaireWithNestedItems);
 
     inputAnswer('1.1', 0.1, container);
 
@@ -529,7 +522,7 @@ describe('onAnswerChange callback gets called and can request additional changes
       result = questionnaireInspector.findItemWithLinkIds('xxx');
     });
 
-    const { container } = renderWrapperWithItem(onChange, questionnaireWithNestedItems);
+    const { container } = wrapper(onChange, questionnaireWithNestedItems);
 
     inputAnswer('1.1', 0.1, container);
 
@@ -542,7 +535,7 @@ describe('onAnswerChange callback gets called and can request additional changes
       result = questionnaireInspector.findItemWithLinkIds('1.3.1.1', '1.1');
     });
 
-    const { container } = renderWrapperWithItem(onChange, questionnaireWithNestedItems);
+    const { container } = wrapper(onChange, questionnaireWithNestedItems);
 
     inputAnswer('1.1', 0.1, container);
 
@@ -564,7 +557,7 @@ describe('onAnswerChange callback gets called and can request additional changes
       result = questionnaireInspector.findItemWithLinkIds('1');
     });
 
-    const { container } = renderWrapperWithItem(onChange, questionnaireWithRepeats);
+    const { container } = wrapper(onChange, questionnaireWithRepeats);
 
     inputAnswer('2', 1, container);
 
@@ -578,7 +571,7 @@ describe('onAnswerChange callback gets called and can request additional changes
   });
 });
 
-function renderWrapperWithItem(
+function wrapper(
   onChange: (
     item: QuestionnaireItem,
     answer: QuestionnaireResponseItemAnswer,
@@ -587,34 +580,5 @@ function renderWrapperWithItem(
   ) => void,
   q: Questionnaire
 ) {
-  const initialState = {
-    refero: {
-      form: {
-        FormDefinition: {
-          Content: q,
-        },
-        FormData: {
-          Content: generateQuestionnaireResponse(q),
-        },
-        Language: 'nb',
-      },
-    },
-  };
-
-  const store = createStore(rootReducer, initialState, applyMiddleware(thunk));
-  return render(
-    <ReferoContainer
-      loginButton={<React.Fragment />}
-      authorized={true}
-      onCancel={() => {}}
-      onSave={() => {}}
-      onSubmit={() => {}}
-      questionnaire={q}
-      resources={{} as Resources}
-      onChange={onChange}
-    />,
-    {
-      store,
-    }
-  );
+  return renderRefero({ questionnaire: q, props: { onChange } });
 }

@@ -5,12 +5,12 @@ import { Controller } from 'react-hook-form';
 
 import { EnhetType, OrgenhetHierarki } from '../../../types/orgenhetHierarki';
 
-import Label, { getLabelText } from '@helsenorge/designsystem-react/components/Label';
+import Label from '@helsenorge/designsystem-react/components/Label';
 import Loader from '@helsenorge/designsystem-react/components/Loader';
 import NotificationPanel from '@helsenorge/designsystem-react/components/NotificationPanel';
 import Select from '@helsenorge/designsystem-react/components/Select';
 
-import { getId, isRequired } from '../../../util';
+import { getId } from '../../../util';
 import { Resources } from '../../../util/resources';
 import { FormProps } from '../../../validation/ReactHookFormHoc';
 
@@ -56,17 +56,16 @@ class ReceiverComponent extends React.Component<ReceiverComponentProps & FormPro
     }
   }
 
-  loadSuccessCallback(receivers: Array<OrgenhetHierarki>): void {
-    const pathsToEndPoint = this.props.selected ? this.findPathToEndpointNode(receivers, this.props.selected[0] || '') : [];
+  loadSuccessCallback(receiverTreeNodes: Array<OrgenhetHierarki>): void {
+    const pathsToEndPoint = this.props.selected ? this.findPathToEndpointNode(receiverTreeNodes, this.props.selected[0] || '') : [];
     const selectedPath = pathsToEndPoint.length === 1 ? pathsToEndPoint[0] : [];
-    const selectedReceiver = this.getReceiverName(receivers, selectedPath);
-
+    const selectedReceiver = this.getReceiverName(receiverTreeNodes, selectedPath);
     this.setState({
       isLoading: false,
-      receiverTreeNodes: receivers,
-      selectedPath: selectedPath,
-      selectedReceiver: selectedReceiver,
-      hasLoadError: receivers.length === 0, // show error if there are no receivers
+      receiverTreeNodes,
+      selectedPath,
+      selectedReceiver,
+      hasLoadError: receiverTreeNodes.length === 0, // show error if there are no receivers
     });
 
     // clear answer if more than one receiver match the selected endpoint
@@ -101,7 +100,6 @@ class ReceiverComponent extends React.Component<ReceiverComponentProps & FormPro
 
   onChangeDropdownValue(level: number, selectedNode: OrgenhetHierarki): void {
     const isLeafNode = selectedNode.UnderOrgenheter === null || selectedNode.UnderOrgenheter.length === 0;
-
     this.setState((prevState: ReceiverComponentState) => {
       const prevSelectedValues = prevState.selectedPath.filter((_x, index) => index < level);
       const newSelectedPath = [...prevSelectedValues, selectedNode.OrgenhetId];
@@ -195,7 +193,8 @@ class ReceiverComponent extends React.Component<ReceiverComponentProps & FormPro
 
   createSelect(treeNodes: Array<OrgenhetHierarki>, level: number, selectKey: string): JSX.Element {
     const selectOptions = treeNodes.map(node => new Option(node.Navn, node.OrgenhetId.toString()));
-    const label = getLabelText(treeNodes[0].EnhetType) || '';
+    const label = this.getLabelText(treeNodes[0].EnhetType) || '';
+
     const handleSelectChange = (evt: React.ChangeEvent<HTMLSelectElement>): void => {
       const newValue = evt.target.value;
       const node = treeNodes.find(x => x.OrgenhetId === parseInt(newValue));
@@ -203,9 +202,11 @@ class ReceiverComponent extends React.Component<ReceiverComponentProps & FormPro
         this.onChangeDropdownValue(level, node);
       }
     };
+
     return (
       <Controller
-        name={this.props.idWithLinkIdAndItemIndex}
+        key={selectKey}
+        name={`${this.props.idWithLinkIdAndItemIndex}-${selectKey}`}
         control={this.props.control}
         shouldUnregister={true}
         rules={{
@@ -222,7 +223,6 @@ class ReceiverComponent extends React.Component<ReceiverComponentProps & FormPro
               onChange(e.target.value);
             }}
             value={this.state.selectedPath[level] ? this.state.selectedPath[level].toString() : ''}
-            key={selectKey}
             testId={`${getId(this.props.id)}-${selectKey}`}
             selectId={`${getId(this.props.id)}-${selectKey}`}
             label={<Label labelTexts={[{ text: label, type: 'semibold' }]} />}
@@ -230,7 +230,7 @@ class ReceiverComponent extends React.Component<ReceiverComponentProps & FormPro
           >
             {selectOptions.map(option => {
               return (
-                <option key={option.value} value={option.value}>
+                <option key={`${option.value}-${option.label}`} value={option.value}>
                   {option.label}
                 </option>
               );
@@ -250,7 +250,6 @@ class ReceiverComponent extends React.Component<ReceiverComponentProps & FormPro
         return selectConfigs.push({ key: searchPath.toString(), selectOptions: treeNodes });
       }
     });
-
     return (
       <>
         {selectConfigs.map((config, index) => {
@@ -260,19 +259,7 @@ class ReceiverComponent extends React.Component<ReceiverComponentProps & FormPro
     );
   }
 
-  // renderErrorMessage(): JSX.Element | null {
-  //   if (!this.state.isValid && this.state.isValidated) {
-  //     return <Validation errorSummary={this.props.resources?.adresseKomponent_feilmelding || ''} />;
-  //   }
-  //   return null;
-  // }
-
   render(): JSX.Element {
-    // const wrapperClasses = classNames({
-    //   mol_validation: true,
-    //   'mol_validation--active': !this.state.isValid && this.state.isValidated,
-    // });
-    //className={wrapperClasses}
     return (
       <div id={getId(this.props.id)}>
         {/* {this.renderErrorMessage()} */}

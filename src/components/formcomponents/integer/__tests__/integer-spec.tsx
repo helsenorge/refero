@@ -1,41 +1,31 @@
-import '../../../../util/defineFetch';
-import { findByRole, renderRefero, userEvent } from '../../../__tests__/test-utils/test-utils';
-import { act } from 'react-dom/test-utils';
-import { qScriptInjection, q } from './__data__/';
-
 import { Questionnaire } from 'fhir/r4';
+import { act, findByRole, renderRefero, userEvent } from '../../../__tests__/test-utils/test-utils';
+import { q } from './__data__';
 import { ReferoProps } from '../../../../types/referoProps';
 import { getResources } from '../../../../preview/resources/referoResources';
 
-jest.mock('@helsenorge/core-utils/debounce', () => ({
-  debounce: (fn: Function) => fn,
-}));
 const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle ut dette feltet' };
-describe('string', () => {
+
+describe('Integer', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
   describe('Render', () => {
     it('Should render as text if props.pdf', () => {
-      const questionnaire: Questionnaire = {
-        ...q,
-        item: q.item?.map(x => ({ ...x, repeats: false })),
-      };
-      const { queryByText } = createWrapper(questionnaire, { pdf: true });
+      const { queryByText } = createWrapper(q, { pdf: true });
       expect(queryByText('Ikke besvart')).toBeInTheDocument();
     });
     it('Should render text if item is readonly', () => {
       const questionnaire: Questionnaire = {
         ...q,
-        item: q.item?.map(x => ({ ...x, readOnly: true, repeats: false })),
+        item: q.item?.map(x => ({ ...x, readOnly: true })),
       };
 
       const { queryByText } = createWrapper(questionnaire);
       expect(queryByText('Ikke besvart')).toBeInTheDocument();
     });
     it('Should render as input if props.pdf === false && item is not readonly', () => {
-      const questionnaire: Questionnaire = {
-        ...q,
-        item: q.item?.map(x => ({ ...x, repeats: false })),
-      };
-      const { queryByText } = createWrapper(questionnaire);
+      const { queryByText } = createWrapper(q);
       expect(queryByText('Ikke besvart')).not.toBeInTheDocument();
     });
   });
@@ -96,7 +86,7 @@ describe('string', () => {
         userEvent.click(getByTestId(/-repeat-button/i));
       });
 
-      expect(queryAllByLabelText(/String/i)).toHaveLength(4);
+      expect(queryAllByLabelText(/Integer/i)).toHaveLength(4);
       expect(queryByTestId(/-repeat-button/i)).not.toBeInTheDocument();
     });
   });
@@ -157,15 +147,35 @@ describe('string', () => {
       expect(queryByTestId(/-delete-button/i)).not.toBeInTheDocument();
     });
   });
+  describe('onChange', () => {
+    it('Should update component with value from answer', async () => {
+      const { getByLabelText } = createWrapper(q);
+
+      const inputElement = getByLabelText(/Integer/i);
+      expect(inputElement).toBeInTheDocument();
+      expect(inputElement).toHaveAttribute('type', 'number');
+      expect(inputElement).toHaveAttribute('id', `item_${q?.item?.[0].linkId}`);
+
+      userEvent.type(inputElement, '123');
+
+      expect(getByLabelText(/Integer/i)).toHaveValue(123);
+    });
+    it('Should call onChange with correct value', async () => {
+      const onChange = jest.fn();
+      const { getByLabelText } = createWrapper(q, { onChange });
+      expect(getByLabelText(/Integer/i)).toBeInTheDocument();
+      await act(async () => {
+        userEvent.type(getByLabelText(/Integer/i), '1');
+      });
+      expect(onChange).toHaveBeenCalledTimes(1);
+    });
+  });
   describe('Validation', () => {
     describe('Required', () => {
       it('Should show error if field is required and value is empty', async () => {
         const questionnaire: Questionnaire = {
           ...q,
-          item: q.item?.map(x => ({
-            ...x,
-            required: true,
-          })),
+          item: q.item?.map(x => ({ ...x, required: true })),
         };
         const { getByTestId, getByText } = createWrapper(questionnaire);
         await act(async () => {
@@ -177,14 +187,11 @@ describe('string', () => {
       it('Should not show error if required and has value', async () => {
         const questionnaire: Questionnaire = {
           ...q,
-          item: q.item?.map(x => ({
-            ...x,
-            required: true,
-          })),
+          item: q.item?.map(x => ({ ...x, required: true })),
         };
         const { getByTestId, getByLabelText, queryByText } = createWrapper(questionnaire);
         await act(async () => {
-          await userEvent.type(getByLabelText(/String/i), 'abc');
+          await userEvent.type(getByLabelText(/Integer/i), '123');
           await userEvent.click(getByTestId('refero-submit-button'));
         });
 
@@ -193,10 +200,7 @@ describe('string', () => {
       it('Should remove error on change if form is submitted', async () => {
         const questionnaire: Questionnaire = {
           ...q,
-          item: q.item?.map(x => ({
-            ...x,
-            required: true,
-          })),
+          item: q.item?.map(x => ({ ...x, required: true })),
         };
         const { getByTestId, getByText, queryByText, getByLabelText } = createWrapper(questionnaire);
         await act(async () => {
@@ -205,20 +209,17 @@ describe('string', () => {
         expect(getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
 
         await act(async () => {
-          await userEvent.type(getByLabelText(/String/i), 'abc');
+          await userEvent.type(getByLabelText(/Integer/i), '123');
           await userEvent.tab();
         });
         expect(queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
       });
     });
-    describe('minLength validation', () => {
+    describe('maxValue', () => {
       it('Should not show error if value is empty', async () => {
         const questionnaire: Questionnaire = {
           ...q,
-          item: q.item?.map(x => ({
-            ...x,
-            required: false,
-          })),
+          item: q.item?.map(x => ({ ...x, required: false })),
         };
         const { getByTestId, queryByText } = createWrapper(questionnaire);
         await act(async () => {
@@ -227,17 +228,14 @@ describe('string', () => {
 
         expect(queryByText('Custom error')).not.toBeInTheDocument();
       });
-      it('Should not show error if value is bellow maxLength (20) and over minLemgth(10)', async () => {
+      it('Should not show error if value is bellow max value (10) and over min(5)', async () => {
         const questionnaire: Questionnaire = {
           ...q,
-          item: q.item?.map(x => ({
-            ...x,
-            required: false,
-          })),
+          item: q.item?.map(x => ({ ...x, required: false })),
         };
         const { getByTestId, getByLabelText, queryByText } = createWrapper(questionnaire);
         await act(async () => {
-          await userEvent.type(getByLabelText(/String/i), 'epost@test.com');
+          await userEvent.type(getByLabelText(/Integer/i), '8');
           await userEvent.click(getByTestId('refero-submit-button'));
         });
 
@@ -246,33 +244,27 @@ describe('string', () => {
       it('Should remove error on change if form is submitted', async () => {
         const questionnaire: Questionnaire = {
           ...q,
-          item: q.item?.map(x => ({
-            ...x,
-            required: false,
-          })),
+          item: q.item?.map(x => ({ ...x, required: false })),
         };
         const { getByTestId, getByText, queryByText, getByLabelText } = createWrapper(questionnaire);
         await act(async () => {
-          await userEvent.type(getByLabelText(/String/i), 'e@st.co');
+          await userEvent.type(getByLabelText(/Integer/i), '12');
           await userEvent.click(getByTestId('refero-submit-button'));
         });
         expect(getByText('Custom error')).toBeInTheDocument();
         await act(async () => {
-          await userEvent.clear(getByLabelText(/String/i));
-          await userEvent.type(getByLabelText(/String/i), 'epost@test.com');
+          await userEvent.clear(getByLabelText(/Integer/i));
+          await userEvent.type(getByLabelText(/Integer/i), '8');
         });
 
         expect(queryByText('Custom error')).not.toBeInTheDocument();
       });
     });
-    describe('maxLength validation', () => {
+    describe('minValue', () => {
       it('Should not show error if value is empty', async () => {
         const questionnaire: Questionnaire = {
           ...q,
-          item: q.item?.map(x => ({
-            ...x,
-            required: false,
-          })),
+          item: q.item?.map(x => ({ ...x, required: false })),
         };
         const { getByTestId, queryByText } = createWrapper(questionnaire);
         await act(async () => {
@@ -281,17 +273,14 @@ describe('string', () => {
 
         expect(queryByText('Custom error')).not.toBeInTheDocument();
       });
-      it('Should not show error if value is bellow maxLength (20) and over minLemgth(10)', async () => {
+      it('Should not show error if value is bellow max value (10) and over min(5)', async () => {
         const questionnaire: Questionnaire = {
           ...q,
-          item: q.item?.map(x => ({
-            ...x,
-            required: false,
-          })),
+          item: q.item?.map(x => ({ ...x, required: false })),
         };
         const { getByTestId, getByLabelText, queryByText } = createWrapper(questionnaire);
         await act(async () => {
-          await userEvent.type(getByLabelText(/String/i), 'epost@test.com');
+          await userEvent.type(getByLabelText(/Integer/i), '8');
           await userEvent.click(getByTestId('refero-submit-button'));
         });
 
@@ -300,124 +289,25 @@ describe('string', () => {
       it('Should remove error on change if form is submitted', async () => {
         const questionnaire: Questionnaire = {
           ...q,
-          item: q.item?.map(x => ({
-            ...x,
-            required: false,
-          })),
+          item: q.item?.map(x => ({ ...x, required: false })),
         };
         const { getByTestId, getByText, queryByText, getByLabelText } = createWrapper(questionnaire);
         await act(async () => {
-          await userEvent.type(getByLabelText(/String/i), 'eposteneraølt@asdasdst.com');
+          await userEvent.type(getByLabelText(/Integer/i), '3');
           await userEvent.click(getByTestId('refero-submit-button'));
         });
         expect(getByText('Custom error')).toBeInTheDocument();
         await act(async () => {
-          await userEvent.clear(getByLabelText(/String/i));
-          await userEvent.type(getByLabelText(/String/i), 'epost@test.com');
+          await userEvent.clear(getByLabelText(/Integer/i));
+          await userEvent.type(getByLabelText(/Integer/i), '8');
         });
 
         expect(queryByText('Custom error')).not.toBeInTheDocument();
-      });
-    });
-    describe('Pattern (email) validation', () => {
-      it('Should not show error if value is empty', async () => {
-        const questionnaire: Questionnaire = {
-          ...q,
-          item: q.item?.map(x => ({
-            ...x,
-            required: false,
-          })),
-        };
-        const { getByTestId, queryByText } = createWrapper(questionnaire);
-        await act(async () => {
-          await userEvent.click(getByTestId('refero-submit-button'));
-        });
-
-        expect(queryByText('Custom error')).not.toBeInTheDocument();
-      });
-      it('Should not show error if value is valid pattern', async () => {
-        const questionnaire: Questionnaire = {
-          ...q,
-          item: q.item?.map(x => ({
-            ...x,
-            required: false,
-          })),
-        };
-        const { getByTestId, getByLabelText, queryByText } = createWrapper(questionnaire);
-        await act(async () => {
-          await userEvent.type(getByLabelText(/String/i), 'epost@test.com');
-          await userEvent.click(getByTestId('refero-submit-button'));
-        });
-
-        expect(queryByText('Custom error')).not.toBeInTheDocument();
-      });
-      it('Should remove error on change if form is submitted', async () => {
-        const questionnaire: Questionnaire = {
-          ...q,
-          item: q.item?.map(x => ({
-            ...x,
-            required: false,
-          })),
-        };
-        const { getByTestId, getByText, queryByText, getByLabelText } = createWrapper(questionnaire);
-        await act(async () => {
-          await userEvent.type(getByLabelText(/String/i), 'epostsdsdcom');
-          await userEvent.click(getByTestId('refero-submit-button'));
-        });
-        expect(getByText('Custom error')).toBeInTheDocument();
-        await act(async () => {
-          await userEvent.clear(getByLabelText(/String/i));
-          await userEvent.type(getByLabelText(/String/i), 'epost@test.com');
-        });
-
-        expect(queryByText('Custom error')).not.toBeInTheDocument();
-      });
-    });
-    describe('validateScriptInjection ', () => {
-      it('Should render with validation when input has html and validateScriptInjection = true', async () => {
-        const validateScriptInjection = true;
-        const value = 'input med <html>';
-        const { findByText, findByLabelText, findByRole, getByTestId } = createWrapper(qScriptInjection, { validateScriptInjection });
-        await act(async () => {
-          userEvent.type(await findByLabelText('String1'), value);
-          userEvent.type(await findByLabelText('String2 - Obligatorisk'), 'test');
-          await userEvent.click(getByTestId('refero-submit-button'));
-        });
-        const actualElement = await findByText(/er ikke tillatt/i);
-        const actualAlert = await findByRole('alert');
-        expect(actualElement).toBeInTheDocument();
-        expect(actualAlert).toBeInTheDocument();
-      });
-      it('Should render with validation when input has html and validateScriptInjection = false', async () => {
-        const validateScriptInjection = false;
-        const value = 'input med <html>';
-        const { findByDisplayValue, findByLabelText, getByTestId, queryByRole } = createWrapper(qScriptInjection, {
-          validateScriptInjection,
-        });
-        await act(async () => {
-          userEvent.type(await findByLabelText('String2 - Obligatorisk'), value);
-          await userEvent.click(getByTestId('refero-submit-button'));
-        });
-        const actualElement = await findByDisplayValue(value);
-        const actualAlert = queryByRole('alert');
-        expect(actualElement).toBeInTheDocument();
-        expect(actualAlert).not.toBeInTheDocument();
-      });
-      it('Should render without validation when input does not have html and validateScriptInjection = true', async () => {
-        const validateScriptInjection = true;
-        const value = 'input uten html';
-        const { findByDisplayValue, findByLabelText, queryByRole } = createWrapper(qScriptInjection, { validateScriptInjection });
-        userEvent.type(await findByLabelText('String2 - Obligatorisk'), value);
-        const actualAlert = queryByRole('alert');
-        const item = await findByDisplayValue(value);
-
-        expect(item).toBeInTheDocument();
-        expect(actualAlert).not.toBeInTheDocument();
       });
     });
   });
 });
 
-function createWrapper(questionnaire: Questionnaire, props: Partial<ReferoProps> = {}) {
-  return renderRefero({ questionnaire, props, resources });
-}
+const createWrapper = (questionnaire: Questionnaire, props: Partial<ReferoProps> = {}) => {
+  return renderRefero({ questionnaire, props: { ...props, resources } });
+};

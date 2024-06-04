@@ -211,6 +211,7 @@ const Refero = (props: StateProps & DispatchProps & ReferoProps): JSX.Element | 
       if (!Comp) {
         return undefined;
       }
+
       let responseItems: Array<QuestionnaireResponseItem> | undefined;
       if (formData) {
         responseItems = getRootQuestionnaireResponseItemFromData(item.linkId, formData);
@@ -399,14 +400,6 @@ function mapStateToProps(state: GlobalState): StateProps {
 
 function mapDispatchToProps(dispatch: ThunkDispatch<GlobalState, void, NewValueAction>, props: ReferoProps): DispatchProps {
   return {
-    updateSkjema: (
-      questionnaire: Questionnaire,
-      questionnaireResponse: QuestionnaireResponse | undefined,
-      language: string | undefined,
-      syncQuestionnaireResponse: boolean | undefined
-    ): void => {
-      dispatch(setSkjemaDefinition(questionnaire, questionnaireResponse, language, syncQuestionnaireResponse));
-    },
     mount: (): void => {
       if (props.questionnaire) {
         dispatch(setSkjemaDefinition(props.questionnaire, props.questionnaireResponse, props.language, props.syncQuestionnaireResponse));

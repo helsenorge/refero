@@ -190,7 +190,7 @@ export class Choice extends React.Component<ChoiceProps, ChoiceState> {
   clearCodingAnswer = (coding: Coding): void => {
     const { dispatch, promptLoginMessage, item, onAnswerChange, path } = this.props;
     if (dispatch) {
-      const responseAnswer = { valueCoding: coding } as QuestionnaireResponseItemAnswer;
+      const responseAnswer = { valueCoding: coding };
       dispatch(removeCodingValueAsync(path, coding, item))?.then(newState => onAnswerChange(newState, path, item, responseAnswer));
       if (promptLoginMessage) {
         promptLoginMessage();
@@ -202,7 +202,8 @@ export class Choice extends React.Component<ChoiceProps, ChoiceState> {
     const { dispatch, promptLoginMessage, item, onAnswerChange, path } = this.props;
     if (dispatch && code) {
       const coding = this.getAnswerValueCoding(code, systemArg, displayArg);
-      const responseAnswer = { valueCoding: coding } as QuestionnaireResponseItemAnswer;
+      const responseAnswer = { valueCoding: coding };
+
       dispatch(newCodingValueAsync(path, coding, item))?.then(newState => onAnswerChange(newState, path, item, responseAnswer));
       if (promptLoginMessage) {
         promptLoginMessage();

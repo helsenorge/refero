@@ -1,0 +1,108 @@
+{
+  "resourceType": "Questionnaire",
+  "language": "nb-NO",
+  "status": "draft",
+  "publisher": "NHN",
+  "meta": {
+    "profile": ["http://ehelse.no/fhir/StructureDefinition/sdf-Questionnaire"],
+    "tag": [
+      {
+        "system": "urn:ietf:bcp:47",
+        "code": "nb-NO",
+        "display": "Bokmål"
+      }
+    ],
+    "security": [
+      {
+        "code": "3",
+        "display": "Helsehjelp (Full)",
+        "system": "urn:oid:2.16.578.1.12.4.1.1.7618"
+      }
+    ]
+  },
+  "contact": [
+    {
+      "name": "http://www.nhn.no"
+    }
+  ],
+  "subjectType": ["Patient"],
+  "extension": [
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sidebar",
+      "valueCoding": {
+        "system": "http://helsenorge.no/fhir/ValueSet/sdf-sidebar",
+        "code": "1"
+      }
+    },
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-information-message",
+      "valueCoding": {
+        "system": "http://helsenorge.no/fhir/ValueSet/sdf-information-message",
+        "code": "1"
+      }
+    },
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefintion/sdf-itemControl-visibility",
+      "valueCodeableConcept": {
+        "coding": [
+          {
+            "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
+            "code": "hide-help",
+            "display": "Hide help texts"
+          },
+          {
+            "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
+            "code": "hide-sublabel",
+            "display": "Hide sublabel texts"
+          }
+        ]
+      }
+    }
+  ],
+  "id": "8b2804aa-7e42-4d43-8e42-7b7fb7c7cd6a",
+  "item": [
+    {
+      "linkId": "2ea73ecf-c759-4191-9cb0-ddf2ad7bf06b",
+      "type": "text",
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                "code": "inline"
+              }
+            ]
+          }
+        }
+      ],
+      "item": [
+        {
+          "linkId": "ed06ac21-57e5-48cb-9253-c433ebd250ec",
+          "type": "display",
+          "text": "Her er teksten som skal åpnes av knappen over, med markDown\n\n[(https://www.hl7.org/fhir/codesystem-questionnaire-item-control.html)](Her **kommer** det mer *tekst* \\r\\n\\r\\n[Les mer on inline her:](https://www.hl7.org/fhir/codesystem-questionnaire-item-control.html)\")",
+          "required": false,
+          "_text": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                "valueMarkdown": "Her er teksten som skal åpnes av knappen over, med markDown\n\n[(https://www.hl7.org/fhir/codesystem-questionnaire-item-control.html)](Her **kommer** det mer *tekst* \\r\\n\\r\\n[Les mer on inline her:](https://www.hl7.org/fhir/codesystem-questionnaire-item-control.html)\")"
+              }
+            ]
+          }
+        }
+      ],
+      "required": false,
+      "_text": {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+            "valueMarkdown": "Her er teksten som skal åpnes"
+          }
+        ]
+      },
+      "text": "Her er teksten som skal åpnes"
+    }
+  ]
+}

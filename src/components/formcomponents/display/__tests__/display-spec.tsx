@@ -1,6 +1,7 @@
+import { getResources } from '../../../../preview/resources/referoResources';
 import '../../../../util/defineFetch';
 import { renderRefero } from '../../../__tests__/test-utils/test-utils';
-import q from './__data__/';
+import { q, qHighlight } from './__data__/';
 
 describe('Display', () => {
   describe('Highlight extension', () => {
@@ -22,6 +23,12 @@ describe('Display', () => {
       const { queryByText } = renderRefero({ questionnaire: q });
       const actualAlert = queryByText(/alert/i);
       expect(actualAlert).not.toBeInTheDocument();
+    });
+  });
+  describe('Highlight extension', () => {
+    it('should render highlight correct', () => {
+      const { container } = renderRefero({ questionnaire: qHighlight, resources: getResources('') });
+      expect(container.querySelectorAll('.page_refero__component_highlight').length).toBe(1);
     });
   });
 });

@@ -1,6 +1,5 @@
 import * as React from 'react';
 
-import DOMPurify from 'dompurify';
 import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem } from 'fhir/r4';
 import { Controller } from 'react-hook-form';
 import { connect } from 'react-redux';
@@ -32,8 +31,6 @@ import {
   getStringValue,
   getMaxLength,
   getPDFStringValue,
-  validateText,
-  getTextValidationErrorMessage,
   getSublabelText,
   renderPrefix,
   scriptInjectionValidation,
@@ -68,13 +65,6 @@ export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   shouldExpanderRenderChildrenWhenClosed?: boolean;
 }
 export class Text extends React.Component<Props> {
-  showCounter(): boolean {
-    if (getMaxLength(this.props.item) || getMinLengthExtensionValue(this.props.item)) {
-      return true;
-    }
-    return false;
-  }
-
   handleChange = (event: React.FormEvent): void => {
     const { dispatch, promptLoginMessage, path, item, onAnswerChange } = this.props;
     const value = (event.target as HTMLInputElement).value;
@@ -90,30 +80,6 @@ export class Text extends React.Component<Props> {
   };
 
   debouncedHandleChange: (event: React.FormEvent) => void = debounce(this.handleChange, 250, false);
-
-  validateText = (value: string): boolean => {
-    return this.validateWithRegex(value) && validateText(value, this.props.validateScriptInjection);
-  };
-
-  validateWithRegex = (value: string): boolean => {
-    const regexAsStr = getRegexExtension(this.props.item);
-    if (regexAsStr && value) {
-      const regexp = new RegExp(regexAsStr);
-      if (!regexp.test(value.toString())) {
-        return false;
-      }
-    }
-
-    return true;
-  };
-
-  getValidationErrorMessage = (value: string): string => {
-    return getTextValidationErrorMessage(value, this.props.validateScriptInjection, this.props.item, this.props.resources);
-  };
-
-  getRequiredErrorMessage = (item: QuestionnaireItem): string | undefined => {
-    return isRequired(item) ? this.props.resources?.formRequiredErrorMessage : undefined;
-  };
 
   shouldComponentUpdate(nextProps: Props): boolean {
     const responseItemHasChanged = this.props.responseItem !== nextProps.responseItem;
@@ -146,33 +112,18 @@ export class Text extends React.Component<Props> {
             title={item.text ? item.text : ''}
             renderChildrenWhenClosed={this.props.shouldExpanderRenderChildrenWhenClosed ? true : false}
           >
-            <React.Fragment>{children}</React.Fragment>
+            {children}
           </Expander>
         </div>
       );
     }
-
-    // if (itemControls && itemControls.some(itemControl => itemControl.code === itemControlConstants.HIGHLIGHT)) {
-    //   return (
-    //     <div
-    //       id={id}
-    //       className="page_refero__component page_refero__component_highlight"
-    //       dangerouslySetInnerHTML={{
-    //         __html: DOMPurify.sanitize(`${getText(item, onRenderMarkdown, questionnaire, resources)}`, {
-    //           RETURN_TRUSTED_TYPE: true,
-    //           ADD_ATTR: ['target'],
-    //         }) as unknown as string,
-    //       }}
-    //     />
-    //   );
-    // }
 
     if (pdf || isReadOnly(item)) {
       return (
         <TextView
           id={id}
           item={item}
-          value={getPDFStringValue(answer)}
+          value={getPDFStringValue(answer, this.props.resources)}
           onRenderMarkdown={onRenderMarkdown}
           textClass="page_refero__component_readonlytext"
           helpButton={this.props.renderHelpButton()}
@@ -203,7 +154,7 @@ export class Text extends React.Component<Props> {
             rules={{
               required: {
                 value: isRequired(item),
-                message: resources?.formRequiredErrorMessage ?? 'Feltet er påkrevd',
+                message: this.props.resources?.formRequiredErrorMessage || 'Verdien er påkrevd',
               },
               ...(minLength && {
                 minLength: {

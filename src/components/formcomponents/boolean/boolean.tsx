@@ -118,9 +118,10 @@ class Boolean extends React.Component<Props> {
     } else if (isReadOnly(item)) {
       return (
         <Checkbox
+          testId={`${getId(id)}-readonly`}
           label={this.getLabel()}
           checked={this.getValue()}
-          disabled
+          disabled={true}
           onChange={(): void => {
             /*kan ikke endres, er alltid disabled*/
           }}
@@ -149,13 +150,20 @@ class Boolean extends React.Component<Props> {
             render={({ field: { onChange, ...rest } }): JSX.Element => (
               <Checkbox
                 {...rest}
-                testId={getId(id)}
+                testId={`${getId(id)}-boolean`}
                 inputId={getId(id)}
                 label={
                   <Label
                     labelId={`${getId(id)}-label-boolean`}
+                    testId={`${getId(id)}-label-boolean`}
                     labelTexts={[{ text: this.getLabel() }]}
-                    sublabel={<Sublabel id={`${getId(id)}-sublabel-boolean`} sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+                    sublabel={
+                      <Sublabel
+                        testId={`${getId(id)}-sublabel-boolean`}
+                        id={`${getId(id)}-sublabel-boolean`}
+                        sublabelTexts={[{ text: subLabelText, type: 'normal' }]}
+                      />
+                    }
                     afterLabelChildren={renderHelpButton()}
                   />
                 }
@@ -164,7 +172,6 @@ class Boolean extends React.Component<Props> {
                   this.handleChange();
                   onChange(!value);
                 }}
-                disabled={isReadOnly(item)}
                 className="page_refero__input"
               />
             )}

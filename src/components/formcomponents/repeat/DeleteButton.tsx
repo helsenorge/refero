@@ -48,16 +48,18 @@ const DeleteButton = ({ resources, dispatch, item, path, onAnswerChange, mustSho
   const onConfirmCancel = (): void => {
     setShowConfirm(false);
   };
-
+  const pathItem = path.filter(p => p.linkId === item.linkId);
+  const testId = `${pathItem?.[0].linkId ?? item.linkId}-${pathItem?.[0].index ?? 0}`;
   return (
     <>
       <br />
-      <Button variant="outline" concept="destructive" onClick={onDeleteRepeatItem}>
+      <Button variant="outline" concept="destructive" onClick={onDeleteRepeatItem} testId={`${testId}-delete-button`}>
         <Icon svgIcon={TrashCan} />
         {resources && resources.deleteButtonText ? resources.deleteButtonText : ''}
       </Button>
       {showConfirm && !!resources ? (
         <Modal
+          testId={`${testId}-delete-confirm-modal`}
           onClose={onConfirmCancel}
           title={resources.confirmDeleteHeading}
           description={resources.confirmDeleteDescription}

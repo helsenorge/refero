@@ -78,7 +78,7 @@ class Integer extends React.Component<Props, Record<string, unknown>> {
     const value = parseInt((event.target as HTMLInputElement).value, 10);
     if (dispatch) {
       dispatch(newIntegerValueAsync(this.props.path, value, this.props.item))?.then(newState =>
-        onAnswerChange(newState, path, item, { valueInteger: value } as QuestionnaireResponseItemAnswer)
+        onAnswerChange(newState, path, item, { valueInteger: value })
       );
     }
 

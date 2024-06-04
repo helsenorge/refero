@@ -1,12 +1,3 @@
-import Enzyme from 'enzyme';
-import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
-
-// Setting up enzyme for use with React based on node 18 requirements
-Enzyme.configure({
-  adapter: new Adapter(),
-  disableLifecycleMethods: true,
-});
-
 /*  The structured clone global is needed to fix error: "StructuredCopy is not defined"
  *  Ended up using ungap npm package to resolve this:
  *     1) It it is very similar to structuredClone ( which is needed for some of the tests that do actual deep copies )
@@ -16,7 +7,32 @@ Enzyme.configure({
 
 import structuredClone from '@ungap/structured-clone';
 global.structuredClone = global.structuredClone || structuredClone;
+class IntersectionObserver {
+  constructor(callback, options) {
+    this.callback = callback;
+    this.options = options;
+  }
 
+  observe(target) {
+    this.callback([{ target, isIntersecting: true }]);
+  }
+
+  unobserve(target) {}
+
+  disconnect() {}
+}
+
+Object.defineProperty(window, 'IntersectionObserver', {
+  writable: true,
+  configurable: true,
+  value: IntersectionObserver,
+});
+
+Object.defineProperty(global, 'IntersectionObserver', {
+  writable: true,
+  configurable: true,
+  value: IntersectionObserver,
+});
 Object.defineProperty(window, 'matchMedia', {
   writable: true,
   value: query => ({

@@ -1,0 +1,108 @@
+{
+  "title": "Testskjema adressering",
+  "resourceType": "Questionnaire",
+  "language": "nb-NO",
+  "name": "NHN_Testskjema_Adressering",
+  "status": "draft",
+  "publisher": "NHN",
+  "meta": {
+    "profile": ["http://ehelse.no/fhir/StructureDefinition/sdf-Questionnaire"],
+    "tag": [{ "system": "urn:ietf:bcp:47", "code": "nb-NO", "display": "Bokmål" }],
+    "security": [{ "code": "3", "display": "Helsehjelp (Full)", "system": "urn:oid:2.16.578.1.12.4.1.1.7618" }]
+  },
+  "contact": [{ "name": "http://www.nhn.no" }],
+  "subjectType": ["Patient"],
+  "extension": [
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sidebar",
+      "valueCoding": { "system": "http://helsenorge.no/fhir/ValueSet/sdf-sidebar", "code": "1" }
+    },
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-information-message",
+      "valueCoding": { "system": "http://helsenorge.no/fhir/ValueSet/sdf-information-message", "code": "1" }
+    },
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefintion/sdf-itemControl-visibility",
+      "valueCodeableConcept": {
+        "coding": [
+          { "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions", "code": "hide-help", "display": "Hide help texts" },
+          {
+            "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
+            "code": "hide-sublabel",
+            "display": "Hide sublabel texts"
+          }
+        ]
+      }
+    }
+  ],
+  "id": "0cedeaba-78ae-4655-8a1b-e523773fe63c",
+  "item": [
+    {
+      "linkId": "3a154799-1409-4ac7-8e56-27ea57f477a4",
+      "type": "group",
+      "text": "Mottakerliste",
+      "item": [
+        {
+          "linkId": "6f06cfaf-068b-4f5e-96f8-fa31c3b8b1de",
+          "type": "choice",
+          "text": "Mottaker uten noen ting",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "drop-down" }]
+              }
+            },
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-optionReference",
+              "valueReference": { "reference": "Endpoint/1", "display": "Mottaker 1", "id": "c66c585d-c237-4a0d-fe2b-d4b06c390991" }
+            },
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-optionReference",
+              "valueReference": { "reference": "Endpoint/2", "display": "Mottaker 2", "id": "04c735f7-4758-4329-f4fb-8ce9f818c7cb" }
+            }
+          ],
+          "code": [
+            {
+              "system": "http://ehelse.no/fhir/ValueSet/TQQC",
+              "code": "1",
+              "display": "Technical endpoint for receiving QuestionnaireResponse"
+            }
+          ],
+          "required": false
+        }
+      ],
+      "required": false
+    },
+    {
+      "linkId": "190df460-a37a-4280-826b-145e8aa6b073",
+      "type": "group",
+      "text": "Mottakerkomponent - Må konfigureres i HelsenorgeAdmin",
+      "item": [
+        {
+          "linkId": "41fad5c9-3fd4-491f-849b-c37758cb4222",
+          "type": "choice",
+          "text": "Mottakerkomponent",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "receiver-component" }]
+              }
+            }
+          ],
+          "code": [
+            {
+              "system": "http://ehelse.no/fhir/ValueSet/TQQC",
+              "code": "1",
+              "display": "Technical endpoint for receiving QuestionnaireResponse"
+            }
+          ],
+          "required": true,
+          "answerValueSet": "http://helsenorge.no/fhir/ValueSet/adresser"
+        }
+      ],
+      "required": false
+    }
+  ]
+}
