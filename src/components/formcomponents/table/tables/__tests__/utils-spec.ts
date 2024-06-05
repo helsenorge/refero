@@ -5,6 +5,9 @@ import * as questionnaireFunctions from '../utils';
 
 import * as fhirUtils from '../../../../../util/refero-core';
 import { QuestionnaireItemEnableBehaviorCodes } from '../../../../../types/fhirEnums';
+import { Extensions } from '../../../../../constants/extensions';
+import valueSet from '../../../../../constants/valuesets';
+import codeSystems from '../../../../../constants/codingsystems';
 
 jest.mock('../../../../../util/refero-core');
 
@@ -39,7 +42,7 @@ describe('isConditionEnabled', () => {
 
   it('should return true if single condition is met and behavior is ANY', () => {
     const conditions: QuestionnaireItemEnableWhen[] = [
-      { answerBoolean: true, question: 'e32a3b49-42df-4394-9560-2cf48155e182', operator: 'exists' } as QuestionnaireItemEnableWhen,
+      { answerBoolean: true, question: 'e32a3b49-42df-4394-9560-2cf48155e182', operator: 'exists' },
     ];
 
     const behavior = QuestionnaireItemEnableBehaviorCodes.ANY;
@@ -182,16 +185,16 @@ describe('addAnswerToItems', () => {
       type: ItemType.STRING,
       extension: [
         {
-          url: 'http://hl7.org/fhir/StructureDefinition/cqf-expression',
+          url: Extensions.COPY_EXPRESSION_URL,
           valueString: "QuestionnaireResponse.descendants().where(linkId='1').answer.value",
         },
         {
-          url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl',
+          url: Extensions.ITEMCONTROL_URL,
           valueCodeableConcept: {
             coding: [
               {
                 code: 'data-receiver',
-                system: 'http://hl7.org/fhir/ValueSet/questionnaire-item-control',
+                system: valueSet.QUESTIONNAIRE_ITEM_CONTROL_SYSTEM,
               },
             ],
           },
@@ -225,16 +228,16 @@ describe('addAnswerToItems', () => {
       type: ItemType.STRING,
       extension: [
         {
-          url: 'http://hl7.org/fhir/StructureDefinition/cqf-expression',
+          url: Extensions.COPY_EXPRESSION_URL,
           valueString: "QuestionnaireResponse.descendants().where(linkId='1').answer.value",
         },
         {
-          url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl',
+          url: Extensions.ITEMCONTROL_URL,
           valueCodeableConcept: {
             coding: [
               {
                 code: 'data-receiver',
-                system: 'http://hl7.org/fhir/ValueSet/questionnaire-item-control',
+                system: valueSet.QUESTIONNAIRE_ITEM_CONTROL_SYSTEM,
               },
             ],
           },
@@ -264,16 +267,16 @@ describe('addAnswerToItems', () => {
       type: ItemType.STRING,
       extension: [
         {
-          url: 'http://hl7.org/fhir/StructureDefinition/cqf-expression',
+          url: Extensions.COPY_EXPRESSION_URL,
           valueString: "QuestionnaireResponse.descendants().where(linkId='1').answer.value",
         },
         {
-          url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl',
+          url: Extensions.ITEMCONTROL_URL,
           valueCodeableConcept: {
             coding: [
               {
                 code: 'data-receiver',
-                system: 'http://hl7.org/fhir/ValueSet/questionnaire-item-control',
+                system: valueSet.QUESTIONNAIRE_ITEM_CONTROL_SYSTEM,
               },
             ],
           },
@@ -305,14 +308,14 @@ describe('findIndexByCode', () => {
       type: ItemType.STRING,
       code: [
         {
-          system: 'http://helsenorge.no/fhir/CodeSystem/TableColumn',
+          system: codeSystems.TableColumn,
           code: '1',
           display: 'Column 1',
         },
       ],
     };
 
-    const result = questionnaireFunctions.findIndexByCode(item, 'http://helsenorge.no/fhir/CodeSystem/TableColumn');
+    const result = questionnaireFunctions.findIndexByCode(item, codeSystems.TableColumn);
 
     expect(result).toEqual(1);
   });
@@ -324,7 +327,7 @@ describe('findIndexByCode', () => {
       code: [],
     };
 
-    const result = questionnaireFunctions.findIndexByCode(item, 'http://helsenorge.no/fhir/CodeSystem/TableColumn');
+    const result = questionnaireFunctions.findIndexByCode(item, codeSystems.TableColumn);
 
     expect(result).toEqual(-1);
   });

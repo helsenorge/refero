@@ -1,5 +1,4 @@
 import itemType from '../../constants/itemType';
-import { QuestionnaireItem } from 'fhir/r4';
 import { getQuestionnaireItemsWithType } from '../refero-core';
 
 describe('utils', () => {
@@ -16,7 +15,7 @@ describe('utils', () => {
           linkId: '2',
           text: 'Attachment',
         },
-      ] as QuestionnaireItem[];
+      ];
 
       const itemsWithType = getQuestionnaireItemsWithType(itemType.ATTATCHMENT, items);
       expect(itemsWithType).toEqual(expect.arrayContaining([expect.objectContaining({ linkId: '2' })]));
@@ -39,9 +38,9 @@ describe('utils', () => {
               text: 'Attachment',
               type: itemType.ATTATCHMENT,
             },
-          ] as QuestionnaireItem[],
+          ],
         },
-      ] as QuestionnaireItem[];
+      ];
 
       const itemsWithType = getQuestionnaireItemsWithType(itemType.ATTATCHMENT, items);
       expect(itemsWithType).toEqual(expect.arrayContaining([expect.objectContaining({ linkId: '2.1' })]));
@@ -71,9 +70,9 @@ describe('utils', () => {
                 },
               ],
             },
-          ] as QuestionnaireItem[],
+          ],
         },
-      ] as QuestionnaireItem[];
+      ];
 
       const itemsWithType = getQuestionnaireItemsWithType(itemType.ATTATCHMENT, items);
       expect(itemsWithType).toEqual(expect.arrayContaining([expect.objectContaining({ linkId: '1' })]));

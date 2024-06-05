@@ -62,7 +62,7 @@ class Boolean extends React.Component<Props> {
     if (dispatch) {
       path &&
         dispatch(newBooleanValueAsync(path, newValue, this.props.item))?.then(
-          newState => onAnswerChange && onAnswerChange(newState, path, item, { valueBoolean: newValue } as QuestionnaireResponseItemAnswer)
+          newState => onAnswerChange && onAnswerChange(newState, path, item, { valueBoolean: newValue })
         );
     }
 

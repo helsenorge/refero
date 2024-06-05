@@ -33,7 +33,7 @@ import TableContainer from '../components/formcomponents/table/TableContainer';
 import Text from '../components/formcomponents/text/text';
 import { WithCommonFunctionsProps } from '../components/with-common-functions';
 import CodingSystemConstants from '../constants/codingsystems';
-import ExtensionConstants from '../constants/extensions';
+import { Extensions } from '../constants/extensions';
 import { HyperlinkTarget } from '../constants/hyperlinkTarget';
 import Constants from '../constants/index';
 import ItemType from '../constants/itemType';
@@ -367,7 +367,7 @@ export function getTextValidationErrorMessage(
 }
 
 export function getDecimalPattern(item: QuestionnaireItem): string | undefined {
-  const step = getExtension(ExtensionConstants.STEP_URL, item);
+  const step = getExtension(Extensions.STEP_URL, item);
 
   const integerPart = '[+-]?[0-9]+';
   if (step && step.valueInteger != null) {
@@ -389,7 +389,7 @@ export function getDecimalPattern(item: QuestionnaireItem): string | undefined {
 }
 
 export function getDecimalValue(item: QuestionnaireItem, value: number | undefined): number | undefined {
-  const decimalPlacesExtension = getExtension(ExtensionConstants.STEP_URL, item);
+  const decimalPlacesExtension = getExtension(Extensions.STEP_URL, item);
   if (value && decimalPlacesExtension && decimalPlacesExtension.valueInteger != null) {
     const places = Number(decimalPlacesExtension.valueInteger);
     return Number(value.toFixed(places));

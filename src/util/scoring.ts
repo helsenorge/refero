@@ -1,11 +1,11 @@
-import { QuestionnaireItem, Coding, Extension } from 'fhir/r4';
+import { QuestionnaireItem, Coding } from 'fhir/r4';
 import * as uuid from 'uuid';
 
 import { getCalculatedExpressionExtension } from './extension';
-import ExtensionConstants from '../constants/extensions';
+import { Extensions } from '../constants/extensions';
 import ItemType from '../constants/itemType';
-import { ScoringItemType } from '../constants/scoringItemType';
 import { SCORING, SCORING_CODE, SCORING_FORMULAS, ScoringTypes, Type } from '../constants/scoring';
+import { ScoringItemType } from '../constants/scoringItemType';
 
 export function createDummySectionScoreItem(): QuestionnaireItem {
   return {
@@ -13,21 +13,21 @@ export function createDummySectionScoreItem(): QuestionnaireItem {
     type: ItemType.QUANTITY,
     extension: [
       {
-        url: ExtensionConstants.QUESTIONNAIRE_UNIT,
+        url: Extensions.QUESTIONNAIRE_UNIT_URL,
         valueCoding: {
           system: SCORING,
           code: SCORING_CODE,
           display: 'score',
         },
-      } as Extension,
+      },
     ],
     code: [
       {
         system: SCORING_FORMULAS,
         code: Type.SECTION_SCORE,
         display: 'Sectionscore',
-      } as unknown,
-    ] as Coding[],
+      },
+    ],
   };
 }
 
@@ -71,7 +71,7 @@ function getCodingWithScoring(item: QuestionnaireItem): Coding | undefined {
   if (!item.code) return;
 
   for (const coding of item.code) {
-    const system: string = coding.system as unknown as string;
+    const system: string = coding.system || '';
     if (system === SCORING_FORMULAS && ScoringTypes.filter(s => s === coding.code).length > 0) {
       return coding;
     }

@@ -20,7 +20,7 @@ describe('extensions', () => {
       const extension: Extension = {
         url: extensionConstants.VALIDATIONTEXT_URL,
         valueString: 'Du må fylle ut feltet',
-      } as Extension;
+      };
       const item: QuestionnaireItem = {
         linkId: '2.1',
         type: 'group',
@@ -35,7 +35,7 @@ describe('extensions', () => {
       const extension: Extension = {
         url: extensionConstants.VALIDATIONTEXT_URL,
         valueString: 'Du må fylle ut feltet',
-      } as Extension;
+      };
       const item: QuestionnaireItem = {
         linkId: '2.1',
         type: 'group',
@@ -50,7 +50,7 @@ describe('extensions', () => {
       const extension: Extension = {
         url: extensionConstants.ENTRY_FORMAT_URL,
         valueString: 'placeholdervalue',
-      } as Extension;
+      };
       const item: QuestionnaireItem = {
         linkId: '2.1',
         type: 'group',
@@ -66,7 +66,7 @@ describe('extensions', () => {
       const extension: Extension = {
         url: extensionConstants.MAX_VALUE_URL,
         valueInteger,
-      } as Extension;
+      };
       const item: QuestionnaireItem = {
         linkId: '2.1',
         type: 'group',
@@ -82,7 +82,7 @@ describe('extensions', () => {
       const extension: Extension = {
         url: extensionConstants.MIN_VALUE_URL,
         valueInteger,
-      } as Extension;
+      };
       const item: QuestionnaireItem = {
         linkId: '2.1',
         type: 'group',
@@ -98,7 +98,7 @@ describe('extensions', () => {
       const extension: Extension = {
         url: extensionConstants.MIN_OCCURS_URL,
         valueInteger,
-      } as Extension;
+      };
       const item: QuestionnaireItem = {
         linkId: '2.1',
         type: 'group',
@@ -114,7 +114,7 @@ describe('extensions', () => {
       const extension: Extension = {
         url: extensionConstants.MAX_OCCURS_URL,
         valueInteger,
-      } as Extension;
+      };
       const item: QuestionnaireItem = {
         linkId: '2.1',
         type: 'group',
@@ -130,7 +130,7 @@ describe('extensions', () => {
       const extension: Extension = {
         url: extensionConstants.MIN_LENGTH_URL,
         valueInteger,
-      } as Extension;
+      };
       const item: QuestionnaireItem = {
         linkId: '2.1',
         type: 'group',
@@ -145,7 +145,7 @@ describe('extensions', () => {
       const extension: Extension = {
         url: extensionConstants.REPEATSTEXT_URL,
         valueString: 'repeats text',
-      } as Extension;
+      };
       const item: QuestionnaireItem = {
         linkId: '2.1',
         type: 'group',
@@ -160,7 +160,7 @@ describe('extensions', () => {
       const extension: Extension = {
         url: extensionConstants.REGEX_URL,
         valueString: 'regex',
-      } as Extension;
+      };
       const item: QuestionnaireItem = {
         linkId: '2.1',
         type: 'group',
@@ -175,7 +175,7 @@ describe('extensions', () => {
       const extension: Extension = {
         url: extensionConstants.Copy_EXPRESSION,
         valueString: 'Du må fylle ut feltet',
-      } as Extension;
+      };
       const item: QuestionnaireItem = {
         linkId: '2.1',
         type: 'group',

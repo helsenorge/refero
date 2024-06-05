@@ -2,7 +2,7 @@ import { QuestionnaireItem, Extension, Element, Questionnaire, Coding } from 'fh
 
 import { SidebarItem } from '../types/sidebar';
 
-import ExtensionConstants from '../constants/extensions';
+import { Extensions } from '../constants/extensions';
 import itemControlConstants from '../constants/itemcontrol';
 import itemType from '../constants/itemType';
 import { PresentationButtonsType } from '../constants/presentationButtonsType';
@@ -10,7 +10,7 @@ import { TABLE_CODES_VALUES, TableCodes } from '../constants/tableTypes';
 import { getText } from '../util/index';
 
 export function getValidationTextExtension(item: QuestionnaireItem): string | undefined {
-  const validationTextExtension = getExtension(ExtensionConstants.VALIDATIONTEXT_URL, item);
+  const validationTextExtension = getExtension(Extensions.VALIDATIONTEXT_URL, item);
   if (!validationTextExtension || !validationTextExtension.valueString) {
     return undefined;
   }
@@ -18,7 +18,7 @@ export function getValidationTextExtension(item: QuestionnaireItem): string | un
 }
 
 export function getPresentationButtonsExtension(questionniare: Questionnaire): PresentationButtonsType | null {
-  const extension = getExtension(ExtensionConstants.PRESENTATION_BUTTONS, questionniare);
+  const extension = getExtension(Extensions.PRESENTATION_BUTTONS_URL, questionniare);
   if (!extension || !extension.valueCoding || !extension.valueCoding.code) {
     return null;
   }
@@ -36,7 +36,7 @@ export function getPresentationButtonsExtension(questionniare: Questionnaire): P
 }
 
 export function getNavigatorExtension(questionniare: Questionnaire): Array<Coding> | undefined {
-  const navigatorExtension = getExtension(ExtensionConstants.NAVIGATOR, questionniare);
+  const navigatorExtension = getExtension(Extensions.NAVIGATOR_URL, questionniare);
   return navigatorExtension?.valueCodeableConcept?.coding;
 }
 
@@ -91,7 +91,7 @@ export function getPlaceholder(item: QuestionnaireItem): string | undefined {
   if (!item || !item.extension || item.extension.length === 0) {
     return undefined;
   }
-  const extension = getExtension(ExtensionConstants.ENTRY_FORMAT_URL, item);
+  const extension = getExtension(Extensions.ENTRY_FORMAT_URL, item);
   if (!extension) {
     return undefined;
   }
@@ -102,7 +102,7 @@ export function getQuestionnaireUnitExtensionValue(item: QuestionnaireItem): Cod
   if (!item || !item.extension || item.extension.length === 0) {
     return undefined;
   }
-  const extension = getExtension(ExtensionConstants.QUESTIONNAIRE_UNIT, item);
+  const extension = getExtension(Extensions.QUESTIONNAIRE_UNIT_URL, item);
   if (!extension) {
     return undefined;
   }
@@ -110,7 +110,7 @@ export function getQuestionnaireUnitExtensionValue(item: QuestionnaireItem): Cod
 }
 
 export function getMaxValueExtensionValue(item: QuestionnaireItem): number | undefined {
-  const maxValue = getExtension(ExtensionConstants.MAX_VALUE_URL, item);
+  const maxValue = getExtension(Extensions.MAX_VALUE_URL, item);
   if (maxValue && maxValue.valueDecimal !== null && maxValue.valueDecimal !== undefined) {
     return Number(maxValue.valueDecimal);
   }
@@ -121,7 +121,7 @@ export function getMaxValueExtensionValue(item: QuestionnaireItem): number | und
 }
 
 export function getMinValueExtensionValue(item: QuestionnaireItem): number | undefined {
-  const minValue = getExtension(ExtensionConstants.MIN_VALUE_URL, item);
+  const minValue = getExtension(Extensions.MIN_VALUE_URL, item);
   if (minValue && minValue.valueDecimal !== null && minValue.valueDecimal !== undefined) {
     return Number(minValue.valueDecimal);
   }
@@ -132,7 +132,7 @@ export function getMinValueExtensionValue(item: QuestionnaireItem): number | und
 }
 
 export function getMinOccursExtensionValue(item: QuestionnaireItem): number | undefined {
-  const minValue = getExtension(ExtensionConstants.MIN_OCCURS_URL, item);
+  const minValue = getExtension(Extensions.MIN_OCCURS_URL, item);
   if (minValue && minValue.valueInteger !== null && minValue.valueInteger !== undefined) {
     return Number(minValue.valueInteger);
   }
@@ -140,7 +140,7 @@ export function getMinOccursExtensionValue(item: QuestionnaireItem): number | un
 }
 
 export function getMaxOccursExtensionValue(item: QuestionnaireItem): number | undefined {
-  const maxValue = getExtension(ExtensionConstants.MAX_OCCURS_URL, item);
+  const maxValue = getExtension(Extensions.MAX_OCCURS_URL, item);
   if (maxValue && maxValue.valueInteger !== null && maxValue.valueInteger !== undefined) {
     return Number(maxValue.valueInteger);
   }
@@ -148,7 +148,7 @@ export function getMaxOccursExtensionValue(item: QuestionnaireItem): number | un
 }
 
 export function getMinLengthExtensionValue(item: QuestionnaireItem): number | undefined {
-  const minLength = getExtension(ExtensionConstants.MIN_LENGTH_URL, item);
+  const minLength = getExtension(Extensions.MIN_LENGTH_URL, item);
   if (minLength && minLength.valueInteger) {
     return Number(minLength.valueInteger);
   }
@@ -156,7 +156,7 @@ export function getMinLengthExtensionValue(item: QuestionnaireItem): number | un
 }
 
 export function getRegexExtension(item: QuestionnaireItem): string | undefined {
-  const regexExtension = getExtension(ExtensionConstants.REGEX_URL, item);
+  const regexExtension = getExtension(Extensions.REGEX_URL, item);
   if (!regexExtension || !regexExtension.valueString) {
     return undefined;
   }
@@ -164,7 +164,7 @@ export function getRegexExtension(item: QuestionnaireItem): string | undefined {
 }
 
 export function getRepeatsTextExtension(item: QuestionnaireItem): string | undefined {
-  const repeatsTextExtension = getExtension(ExtensionConstants.REPEATSTEXT_URL, item);
+  const repeatsTextExtension = getExtension(Extensions.REPEATSTEXT_URL, item);
   if (!repeatsTextExtension || !repeatsTextExtension.valueString) {
     return undefined;
   }
@@ -172,7 +172,7 @@ export function getRepeatsTextExtension(item: QuestionnaireItem): string | undef
 }
 
 export function getItemControlExtensionValue(item: QuestionnaireItem): Coding[] | undefined {
-  const itemControlExtension = getExtension(ExtensionConstants.ITEMCONTROL_URL, item);
+  const itemControlExtension = getExtension(Extensions.ITEMCONTROL_URL, item);
   if (!itemControlExtension || !itemControlExtension.valueCodeableConcept || !itemControlExtension.valueCodeableConcept.coding) {
     return undefined;
   }
@@ -198,7 +198,7 @@ export const getCodingTextTableValues = (item: QuestionnaireItem): TABLE_CODES_V
 };
 
 export function getMarkdownExtensionValue(item: QuestionnaireItem | Element): string | undefined {
-  const markdownExtension = getExtension(ExtensionConstants.MARKDOWN_URL, item);
+  const markdownExtension = getExtension(Extensions.MARKDOWN_URL, item);
   if (!markdownExtension || !markdownExtension.valueMarkdown) {
     return undefined;
   }
@@ -206,7 +206,7 @@ export function getMarkdownExtensionValue(item: QuestionnaireItem | Element): st
 }
 
 export function getSublabelExtensionValue(item: QuestionnaireItem | Element): string | undefined {
-  const markdownExtension = getExtension(ExtensionConstants.SUBLABEL, item);
+  const markdownExtension = getExtension(Extensions.SUBLABEL_URL, item);
   if (!markdownExtension || !markdownExtension.valueMarkdown) {
     return undefined;
   }
@@ -214,7 +214,7 @@ export function getSublabelExtensionValue(item: QuestionnaireItem | Element): st
 }
 
 export function getQuestionnaireHiddenExtensionValue(item: QuestionnaireItem): boolean | undefined {
-  const questionnaireHiddenExtension = getExtension(ExtensionConstants.QUESTIONNAIRE_HIDDEN, item);
+  const questionnaireHiddenExtension = getExtension(Extensions.QUESTIONNAIRE_HIDDEN_URL, item);
   if (!questionnaireHiddenExtension || !questionnaireHiddenExtension.valueBoolean) {
     return false;
   }
@@ -222,7 +222,7 @@ export function getQuestionnaireHiddenExtensionValue(item: QuestionnaireItem): b
 }
 
 export function getCalculatedExpressionExtension(item: QuestionnaireItem): Extension | undefined {
-  const calculatedExpressionExtension = getExtension(ExtensionConstants.CALCULATED_EXPRESSION, item);
+  const calculatedExpressionExtension = getExtension(Extensions.CALCULATED_EXPRESSION_URL, item);
   if (
     !calculatedExpressionExtension ||
     calculatedExpressionExtension.valueString === null ||
@@ -234,7 +234,7 @@ export function getCalculatedExpressionExtension(item: QuestionnaireItem): Exten
 }
 
 export function getCopyExtension(item: QuestionnaireItem): Extension | undefined {
-  const extension = getExtension(ExtensionConstants.Copy_EXPRESSION, item);
+  const extension = getExtension(Extensions.COPY_EXPRESSION_URL, item);
   if (!extension || !extension.valueString) {
     return;
   }
@@ -242,7 +242,7 @@ export function getCopyExtension(item: QuestionnaireItem): Extension | undefined
 }
 
 export function getHyperlinkExtensionValue(item: QuestionnaireItem | Element | Questionnaire): number | undefined {
-  const hyperlinkExtension = getExtension(ExtensionConstants.HYPERLINK, item);
+  const hyperlinkExtension = getExtension(Extensions.HYPERLINK_URL, item);
   if (hyperlinkExtension && hyperlinkExtension.valueCoding && hyperlinkExtension.valueCoding.code) {
     return parseInt(hyperlinkExtension.valueCoding.code);
   }
@@ -250,7 +250,7 @@ export function getHyperlinkExtensionValue(item: QuestionnaireItem | Element | Q
 }
 
 export function getMaxSizeExtensionValue(item: QuestionnaireItem): number | undefined {
-  const maxValue = getExtension(ExtensionConstants.MAX_SIZE_URL, item);
+  const maxValue = getExtension(Extensions.MAX_SIZE_URL, item);
   if (maxValue && maxValue.valueDecimal !== null && maxValue.valueDecimal !== undefined) {
     return Number(maxValue.valueDecimal);
   }

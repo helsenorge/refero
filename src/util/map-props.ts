@@ -15,11 +15,11 @@ import { evaluateFhirpathExpressionToGetString } from '../util/fhirpathHelper';
 export function mapStateToProps(state: GlobalState, originalProps: WithCommonFunctionsProps): WithCommonFunctionsProps {
   const newAnswer = getValueIfDataReceiver(state, originalProps);
   if (!originalProps.item || !originalProps.item.enableWhen) {
-    return { ...originalProps, enable: true, ...(newAnswer !== undefined && { answer: newAnswer }) } as WithCommonFunctionsProps;
+    return { ...originalProps, enable: true, ...(newAnswer !== undefined && { answer: newAnswer }) };
   }
   const enable = isEnableWhenEnabled(originalProps.item.enableWhen, originalProps.item.enableBehavior, originalProps.path || [], state);
 
-  return { ...originalProps, enable, ...(newAnswer !== undefined && { answer: newAnswer }) } as WithCommonFunctionsProps;
+  return { ...originalProps, enable, ...(newAnswer !== undefined && { answer: newAnswer }) };
 }
 
 function isEnableWhenEnabled(

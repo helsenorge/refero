@@ -5,12 +5,13 @@ import { Questionnaire, Extension } from 'fhir/r4';
 import ExtensionConstants from '../../constants/extensions';
 import { PresentationButtonsType } from '../../constants/presentationButtonsType';
 import { renderRefero } from './test-utils/test-utils';
+import valueSet from '../../constants/valuesets';
 
 const createExtension = (code: PresentationButtonsType): Extension => {
   return {
     url: ExtensionConstants.PRESENTATION_BUTTONS,
     valueCoding: {
-      system: 'http://helsenorge.no/fhir/ValueSet/presentationbuttons',
+      system: valueSet.PRESENTATIONBUTTONS_SYSTEM,
       code: code.toLowerCase(),
       display: code,
     },

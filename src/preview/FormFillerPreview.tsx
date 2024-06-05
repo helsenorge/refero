@@ -15,6 +15,7 @@ import { emptyPropertyReplacer } from './helpers';
 import { getResources } from './resources/referoResources';
 import skjema from './skjema/q.json';
 import { ReferoContainer } from '../components';
+import valueSet from '../constants/valuesets';
 import rootReducer from '../reducers';
 
 type Props = {
@@ -38,14 +39,14 @@ const fetchValueSetFn = (
   _item: QuestionnaireItem,
   successCallback: (valueSet: ValueSet) => void,
   _errorCallback: (error: string) => void
-) => {
+): any => {
   successCallback({
     resourceType: 'ValueSet',
     status: 'draft',
     compose: {
       include: [
         {
-          system: 'http://helsedirektoratet.no/ValueSet/legemiddeloppslag',
+          system: valueSet.LEGEMIDDELOPPSLAG_SYSTEM,
           concept: [
             {
               code: '1',

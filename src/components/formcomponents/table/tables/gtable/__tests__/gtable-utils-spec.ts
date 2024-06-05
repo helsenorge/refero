@@ -9,6 +9,8 @@ import {
 } from '../utils';
 import ItemType from '../../../../../../constants/itemType';
 import { QuestionnaireItemWithAnswers } from '../../interface';
+import { QUESTIONNAIRE_ITEM_CONTROL } from '../../../../../../constants/valuesets';
+import { Extensions } from '../../../../../../constants/extensions';
 
 type MockAnswerProps = Partial<QuestionnaireResponseItemAnswer>;
 type MockResponseItemProps = Partial<QuestionnaireResponseItem>;
@@ -216,18 +218,18 @@ describe('gtable-utils-spec', () => {
           type: 'string',
           extension: [
             {
-              url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl',
+              url: Extensions.ITEMCONTROL_URL,
               valueCodeableConcept: {
                 coding: [
                   {
-                    system: 'http://hl7.org/fhir/ValueSet/questionnaire-item-control',
+                    system: QUESTIONNAIRE_ITEM_CONTROL,
                     code: 'data-receiver',
                   },
                 ],
               },
             },
             {
-              url: 'http://hl7.org/fhir/StructureDefinition/cqf-expression',
+              url: Extensions.COPY_EXPRESSION_URL,
               valueString: "QuestionnaireResponse.descendants().where(linkId='1').answer.value",
             },
           ],

@@ -7,6 +7,7 @@ import { Choice } from '../formcomponents/choice/choice';
 import { QuestionnaireItem, QuestionnaireItemAnswerOption, QuestionnaireResponseItemAnswer, Extension } from 'fhir/r4';
 import { createIDataReceiverExpressionExtension } from './utils';
 import itemType from '../../constants/itemType';
+import { Extensions } from '../../constants/extensions';
 
 const initAnswer: QuestionnaireResponseItemAnswer[] = [{}];
 
@@ -108,9 +109,7 @@ describe('Choice component renders item.option[]', () => {
     const extensions = [createIDataReceiverExpressionExtension('Test')];
     const item = createItemWithExtensions(...extensions);
     item.readOnly = true;
-    const answer = [
-      { valueCoding: { code: '3', display: 'Usikker', system: 'urn:oid:2.16.578.1.12.4.1.9523' } },
-    ] as QuestionnaireResponseItemAnswer[];
+    const answer = [{ valueCoding: { code: '3', display: 'Usikker', system: 'urn:oid:2.16.578.1.12.4.1.9523' } }];
     renderWrapperWithItem(item, answer);
     const textView = screen.getByText('Usikker');
     expect(textView).toBeInTheDocument();
@@ -136,7 +135,7 @@ function expectToFind(keys: string[], values: string[]) {
 function createExtensionReferenceOption(...options: { key: string; value: string }[]): Extension[] {
   return options.map(o => {
     return {
-      url: 'http://ehelse.no/fhir/StructureDefinition/sdf-optionReference',
+      url: Extensions.OPTION_REFERENCE_URL,
       valueReference: {
         reference: o.value,
         display: o.key,

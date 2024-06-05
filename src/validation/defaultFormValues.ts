@@ -36,7 +36,7 @@ const getDefaultFormValuesForType = (item: QuestionnaireItem): unknown => {
           return '';
       }
     default:
-      return defaultValuesForType[item.type as IItemType];
+      return defaultValuesForType[item.type];
   }
 };
 

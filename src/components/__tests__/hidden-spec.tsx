@@ -1,11 +1,12 @@
 import '../../util/defineFetch';
 
-import { Questionnaire, QuestionnaireItem, Extension, Reference } from 'fhir/r4';
+import { Questionnaire, QuestionnaireItem, Extension } from 'fhir/r4';
 
 import Valueset from '../../util/__tests__/__data__/valuesets/valueset-8459';
 import { createItemControlExtension } from '../__tests__/utils';
 import ItemType from '../../constants/itemType';
 import { renderRefero } from './test-utils/test-utils';
+import { Extensions } from '../../constants/extensions';
 
 describe('Hidden components should not render', () => {
   beforeEach(() => {
@@ -260,9 +261,9 @@ describe('Hidden components should not render', () => {
 
 function createQuestionnaireHiddenExtension(value: boolean): Extension {
   return {
-    url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-hidden',
+    url: Extensions.QUESTIONNAIRE_HIDDEN_URL,
     valueBoolean: value,
-  } as Extension;
+  };
 }
 
 function createItem(type: QuestionnaireItem['type'], ...withExtensions: Extension[]): QuestionnaireItem {

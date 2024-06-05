@@ -174,14 +174,14 @@ export default function withCommonFunctions<T extends WithCommonFunctionsProps>(
     };
 
     const hasAnwer = (answer: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[] | undefined): boolean => {
-      return !!answer && Object.keys(answer as object).length > 0;
+      return !!answer && Object.keys(answer).length > 0;
     };
 
     const renderHelpButton = (): JSX.Element | undefined => {
       const { item, onRequestHelpButton } = props;
 
       if (!item) return;
-      const qItem = item as QuestionnaireItem;
+      const qItem = item;
 
       const helpItem = findHelpItem(qItem);
       if (!helpItem) return;
@@ -207,7 +207,7 @@ export default function withCommonFunctions<T extends WithCommonFunctionsProps>(
       if (!item) {
         return null;
       }
-      const qItem = item as QuestionnaireItem;
+      const qItem = item;
 
       const helpItem = findHelpItem(qItem);
       if (!helpItem) {

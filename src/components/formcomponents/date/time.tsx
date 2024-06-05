@@ -10,7 +10,7 @@ import { parseDate } from '@helsenorge/date-time/components/time-input/date-core
 import * as DateTimeConstants from '@helsenorge/date-time/constants/datetime';
 
 import { NewValueAction, newTimeValueAsync } from '../../../actions/newValue';
-import ExtensionConstants from '../../../constants/extensions';
+import { Extensions } from '../../../constants/extensions';
 import { GlobalState } from '../../../reducers';
 import { getExtension, getValidationTextExtension } from '../../../util/extension';
 import { isReadOnly, isRequired, getId, getSublabelText } from '../../../util/index';
@@ -102,7 +102,7 @@ class Time extends React.Component<Props> {
   }
 
   getMaxHour(): number {
-    const maxTime = getExtension(ExtensionConstants.MAX_VALUE_URL, this.props.item);
+    const maxTime = getExtension(Extensions.MAX_VALUE_URL, this.props.item);
     if (!maxTime) {
       return 23;
     }
@@ -112,7 +112,7 @@ class Time extends React.Component<Props> {
   }
 
   getMaxMinute(): number {
-    const maxTime = getExtension(ExtensionConstants.MAX_VALUE_URL, this.props.item);
+    const maxTime = getExtension(Extensions.MAX_VALUE_URL, this.props.item);
     if (!maxTime) {
       return 59;
     }
@@ -122,7 +122,7 @@ class Time extends React.Component<Props> {
   }
 
   getMinHour(): number {
-    const minTime = getExtension(ExtensionConstants.MIN_VALUE_URL, this.props.item);
+    const minTime = getExtension(Extensions.MIN_VALUE_URL, this.props.item);
     if (!minTime) {
       return 0;
     }
@@ -132,7 +132,7 @@ class Time extends React.Component<Props> {
   }
 
   getMinMinute(): number {
-    const minTime = getExtension(ExtensionConstants.MIN_VALUE_URL, this.props.item);
+    const minTime = getExtension(Extensions.MIN_VALUE_URL, this.props.item);
     if (!minTime) {
       return 0;
     }
@@ -144,9 +144,7 @@ class Time extends React.Component<Props> {
   dispatchNewTime(newTime: string): void {
     const { dispatch, item, path, onAnswerChange } = this.props;
     if (dispatch) {
-      dispatch(newTimeValueAsync(path, newTime, item))?.then(newState =>
-        onAnswerChange(newState, path, item, { valueTime: newTime } as QuestionnaireResponseItemAnswer)
-      );
+      dispatch(newTimeValueAsync(path, newTime, item))?.then(newState => onAnswerChange(newState, path, item, { valueTime: newTime }));
     }
   }
 

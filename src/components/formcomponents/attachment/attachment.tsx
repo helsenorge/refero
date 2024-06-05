@@ -4,8 +4,6 @@ import { QuestionnaireItem, QuestionnaireResponseItemAnswer, Attachment, Questio
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
-import { TextMessage } from '../../../types/text-message';
-
 import { UploadedFile } from '@helsenorge/file-upload/components/dropzone';
 import { UploadFile } from '@helsenorge/file-upload/components/file-upload';
 
@@ -13,7 +11,7 @@ import AttachmentHtml from './attachmenthtml';
 import { NewValueAction, newAttachmentAsync, removeAttachmentAsync } from '../../../actions/newValue';
 import { GlobalState } from '../../../reducers';
 import { getValidationTextExtension, getMaxOccursExtensionValue, getMinOccursExtensionValue } from '../../../util/extension';
-import { isRequired, getId, isReadOnly, isRepeat, getSublabelText, getText, renderPrefix } from '../../../util/index';
+import { isRequired, getId, isReadOnly, isRepeat, getText, renderPrefix } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
 import { Resources } from '../../../util/resources';
@@ -56,7 +54,7 @@ export class AttachmentComponent extends React.Component<Props> {
           if (this.props.dispatch && attachment) {
             this.props
               .dispatch(newAttachmentAsync(this.props.path, attachment, this.props.item, isRepeat(this.props.item)))
-              ?.then(newState => onAnswerChange(newState, path, item, { valueAttachment: attachment } as QuestionnaireResponseItemAnswer));
+              ?.then(newState => onAnswerChange(newState, path, item, { valueAttachment: attachment }));
           }
         };
 
@@ -71,10 +69,10 @@ export class AttachmentComponent extends React.Component<Props> {
     if (onDeleteAttachment) {
       const onSuccess = (): void => {
         if (this.props.dispatch) {
-          const attachment = { url: fileId } as Attachment;
+          const attachment: Attachment = { url: fileId };
           this.props
             .dispatch(removeAttachmentAsync(this.props.path, attachment, this.props.item))
-            ?.then(newState => onAnswerChange(newState, path, item, { valueAttachment: attachment } as QuestionnaireResponseItemAnswer));
+            ?.then(newState => onAnswerChange(newState, path, item, { valueAttachment: attachment }));
         }
       };
 
@@ -96,9 +94,9 @@ export class AttachmentComponent extends React.Component<Props> {
     if (Array.isArray(answer)) {
       return answer.map(v => {
         return {
-          id: v.valueAttachment && v.valueAttachment.url ? v.valueAttachment.url : -1,
+          id: v.valueAttachment?.url ?? '-1',
           name: v.valueAttachment && v.valueAttachment.title ? v.valueAttachment.title : '',
-        } as UploadedFile;
+        };
       });
     } else {
       if (answer && answer.valueAttachment && answer.valueAttachment.url) {
@@ -106,7 +104,7 @@ export class AttachmentComponent extends React.Component<Props> {
           {
             id: answer.valueAttachment.url,
             name: answer.valueAttachment.title ? answer.valueAttachment.title : '',
-          } as UploadedFile,
+          },
         ];
       }
     }

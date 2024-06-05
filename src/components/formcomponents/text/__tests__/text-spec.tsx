@@ -5,6 +5,7 @@ import { qinline, q, qScriptInjection } from './__data__';
 import { getResources } from '../../../../preview/resources/referoResources';
 import { Questionnaire } from 'fhir/r4';
 import { ReferoProps } from '../../../../types/referoProps';
+import { Extensions } from '../../../../constants/extensions';
 
 const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle ut dette feltet' };
 
@@ -58,7 +59,8 @@ describe('Text', () => {
 
       expect(container.querySelector('.page_refero__helpComponent--open')).not.toBeInTheDocument();
 
-      userEvent.click(container.querySelector('.page_refero__helpButton') as HTMLElement);
+      const helpButton = container.querySelector('.page_refero__helpButton');
+      if (helpButton) userEvent.click(helpButton);
 
       expect(container.querySelector('.page_refero__helpComponent--open')).toBeInTheDocument();
     });
@@ -71,7 +73,7 @@ describe('Text', () => {
           ...x,
           repeats: true,
           extension: x.extension?.map(y => {
-            if (y.url === 'http://hl7.org/fhir/StructureDefinition/questionnaire-minOccurs') {
+            if (y.url === Extensions.MIN_OCCURS_URL) {
               return { ...y, valueInteger: 2 };
             }
             return y;
@@ -122,7 +124,7 @@ describe('Text', () => {
           ...x,
           repeats: true,
           extension: x.extension?.map(y => {
-            if (y.url === 'http://hl7.org/fhir/StructureDefinition/questionnaire-minOccurs') {
+            if (y.url === Extensions.MIN_OCCURS_URL) {
               return { ...y, valueInteger: 2 };
             }
             return y;
@@ -143,7 +145,7 @@ describe('Text', () => {
           ...x,
           repeats: true,
           extension: x.extension?.map(y => {
-            if (y.url === 'http://hl7.org/fhir/StructureDefinition/questionnaire-minOccurs') {
+            if (y.url === Extensions.MIN_OCCURS_URL) {
               return { ...y, valueInteger: 2 };
             }
             return y;
@@ -161,7 +163,7 @@ describe('Text', () => {
           ...x,
           repeats: true,
           extension: x.extension?.map(y => {
-            if (y.url === 'http://hl7.org/fhir/StructureDefinition/questionnaire-minOccurs') {
+            if (y.url === Extensions.MIN_OCCURS_URL) {
               return { ...y, valueInteger: 2 };
             }
             return y;
@@ -185,7 +187,7 @@ describe('Text', () => {
           ...x,
           repeats: true,
           extension: x.extension?.map(y => {
-            if (y.url === 'http://hl7.org/fhir/StructureDefinition/questionnaire-minOccurs') {
+            if (y.url === Extensions.MIN_OCCURS_URL) {
               return { ...y, valueInteger: 2 };
             }
             return y;

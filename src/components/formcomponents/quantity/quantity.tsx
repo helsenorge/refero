@@ -24,16 +24,7 @@ import {
   getQuestionnaireUnitExtensionValue,
   getValidationTextExtension,
 } from '../../../util/extension';
-import {
-  isReadOnly,
-  getId,
-  getSublabelText,
-  renderPrefix,
-  getText,
-  isRequired,
-  getDecimalPattern,
-  getLabelText,
-} from '../../../util/index';
+import { isReadOnly, getId, getSublabelText, isRequired, getDecimalPattern, getLabelText } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
 import { Resources } from '../../../util/resources';

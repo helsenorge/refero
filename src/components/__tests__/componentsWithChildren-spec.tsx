@@ -5,7 +5,7 @@ import { Questionnaire, QuestionnaireItem, Extension } from 'fhir/r4';
 import Valueset from '../../util/__tests__/__data__/valuesets/valueset-8459';
 import { createItemControlExtension } from '../__tests__/utils';
 import itemControlConstants from '../../constants/itemcontrol';
-import itemType from '../../constants/itemType';
+import itemType, { IItemType } from '../../constants/itemType';
 import { renderRefero } from './test-utils/test-utils';
 
 describe('Components render children', () => {
@@ -166,7 +166,7 @@ describe('Components render children', () => {
   });
 });
 
-function creatNestedItem(type: string, ...withExtensions: Extension[]): QuestionnaireItem {
+function creatNestedItem(type: IItemType, ...withExtensions: Extension[]): QuestionnaireItem {
   return createItem(
     type,
     '1',
@@ -176,7 +176,7 @@ function creatNestedItem(type: string, ...withExtensions: Extension[]): Question
   );
 }
 
-function createNestedChoiceItem(type: string, ...withExtensions: Extension[]): QuestionnaireItem {
+function createNestedChoiceItem(type: IItemType, ...withExtensions: Extension[]): QuestionnaireItem {
   const reference = '#8459';
   return createItem(
     type,
@@ -190,13 +190,14 @@ function createNestedChoiceItem(type: string, ...withExtensions: Extension[]): Q
 function createQuestionnaire(...items: QuestionnaireItem[]): Questionnaire {
   return {
     status: 'draft',
+    resourceType: 'Questionnaire',
     item: items,
     contained: [Valueset],
-  } as Questionnaire;
+  };
 }
 
 function createItem(
-  type: string,
+  type: IItemType,
   text: string,
   extensions: Extension[],
   options: string | undefined,
@@ -209,7 +210,7 @@ function createItem(
     item: children,
     extension: extensions,
     answerValueSet: options,
-  } as QuestionnaireItem;
+  };
 }
 
 function createWrapper(q: Questionnaire) {

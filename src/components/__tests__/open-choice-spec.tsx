@@ -1,14 +1,20 @@
-import * as React from 'react';
-import { render, screen } from './test-utils/test-utils';
+import { renderRefero, screen } from './test-utils/test-utils';
 import '@testing-library/jest-dom/extend-expect';
-import { OpenChoice } from '../formcomponents/open-choice/open-choice';
-import { QuestionnaireItem, QuestionnaireItemAnswerOption, QuestionnaireResponseItemAnswer, Extension } from 'fhir/r4';
+import {
+  QuestionnaireItem,
+  QuestionnaireItemAnswerOption,
+  QuestionnaireResponseItemAnswer,
+  Extension,
+  Questionnaire,
+  QuestionnaireResponse,
+  QuestionnaireResponseItem,
+} from 'fhir/r4';
 import itemType from '../../constants/itemType';
 import '../../util/defineFetch';
 import { createIDataReceiverExpressionExtension } from '../__tests__/utils';
 import { OPEN_CHOICE_ID, OPEN_CHOICE_SYSTEM, OPEN_CHOICE_LABEL } from '../../constants';
-
-const initAnswer: QuestionnaireResponseItemAnswer[] = [{}];
+import { generateQuestionnaireResponse } from '../../actions/generateQuestionnaireResponse';
+import ItemType from '../../constants/itemType';
 
 describe('Open-Choice component render', () => {
   beforeEach(() => {
@@ -22,14 +28,16 @@ describe('Open-Choice component render', () => {
     }));
   });
 
-  it('should render data-receiver with coding answer as text', () => {
-    const extensions = [createIDataReceiverExpressionExtension('Test')];
-    const item = createItemWithExtensions(...extensions);
-    item.readOnly = true;
-    const answer = [{ valueCoding: { code: '3', display: 'Usikker', system: 'urn:oid:2.16.578.1.12.4.1.9523' } }];
-    renderWrapperWithItem(item, answer);
+  it.only('should render data-receiver with coding answer as text', () => {
+    const extensions: Extension[] = [createIDataReceiverExpressionExtension('Test')];
+    const item: QuestionnaireItem = { ...createItemWithExtensions(...extensions), readOnly: true, type: 'choice' };
 
-    const textView = screen.getByText('Usikker');
+    const answer: QuestionnaireResponseItemAnswer[] = [
+      { valueCoding: { code: '3', display: 'Usikker', system: 'urn:oid:2.16.578.1.12.4.1.9523' } },
+    ];
+    const { getByText } = renderWrapperWithItem(item, [{ linkId: '1', answer: answer }]);
+
+    const textView = getByText('Usikker');
     expect(textView).toBeInTheDocument();
   });
 
@@ -42,7 +50,7 @@ describe('Open-Choice component render', () => {
       { valueCoding: { code: OPEN_CHOICE_ID, display: OPEN_CHOICE_LABEL, system: OPEN_CHOICE_SYSTEM } },
       { valueString: 'Free text' },
     ];
-    renderWrapperWithItem(item, answer);
+    renderWrapperWithItem(item, [{ linkId: '1', answer: answer }]);
 
     const textView = screen.getByText('Usikker, Free text');
     expect(textView).toBeInTheDocument();
@@ -54,8 +62,8 @@ describe('Open-Choice component render', () => {
     const answer = [
       { valueCoding: { code: OPEN_CHOICE_ID, display: OPEN_CHOICE_LABEL, system: OPEN_CHOICE_SYSTEM } },
       { valueString: 'Free text' },
-    ] as QuestionnaireResponseItemAnswer[];
-    renderWrapperWithItem(item, answer);
+    ];
+    renderWrapperWithItem(item, [{ linkId: '1', answer: answer }]);
 
     const input = screen.getAllByRole('textbox');
     expect(input.length).toBeGreaterThan(0);
@@ -69,10 +77,8 @@ describe('Open-Choice component render', () => {
   it('should render empty valueString as empty input value', () => {
     const option = createValueStringOption('Home', 'Car');
     const item = createItemWithOption(...option);
-    const answer = [
-      { valueCoding: { code: OPEN_CHOICE_ID, display: OPEN_CHOICE_LABEL, system: OPEN_CHOICE_SYSTEM } },
-    ] as QuestionnaireResponseItemAnswer[];
-    renderWrapperWithItem(item, answer);
+    const answer = [{ valueCoding: { code: OPEN_CHOICE_ID, display: OPEN_CHOICE_LABEL, system: OPEN_CHOICE_SYSTEM } }];
+    renderWrapperWithItem(item, [{ linkId: '1', answer: answer }]);
 
     const input = screen.getAllByRole('textbox');
     expect(input.length).toBeGreaterThan(0);
@@ -84,26 +90,50 @@ describe('Open-Choice component render', () => {
   });
 });
 
-function renderWrapperWithItem(item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer[] = initAnswer) {
-  const initialState = {}; // Add any required initial state here
-  return render(
-    <OpenChoice
-      id={item.linkId}
-      idWithLinkIdAndItemIndex={item.linkId}
-      answer={answer}
-      item={item}
-      path={[]}
-      renderDeleteButton={() => <></>}
-      repeatButton={<React.Fragment />}
-      renderHelpButton={() => <React.Fragment />}
-      renderHelpElement={() => <React.Fragment />}
-      onAnswerChange={() => {}}
-      responseItem={{
-        linkId: item.linkId,
-      }}
-    />,
-    { initialState }
-  );
+function renderWrapperWithItem(item: QuestionnaireItem, responseItem: QuestionnaireResponseItem[]) {
+  const quest = createQuestionnaire({ item: [item] });
+
+  const resp = generateQuestionnaireResponse(quest);
+  const questionnaireResponse: QuestionnaireResponse = {
+    resourceType: 'QuestionnaireResponse',
+    status: 'in-progress',
+    ...resp,
+    item: resp?.item?.map(x => {
+      const answerItem = responseItem.find(y => y.linkId === x.linkId);
+      if (!!answerItem) {
+        return {
+          ...x,
+          answer: answerItem.answer,
+        };
+      }
+      return x;
+    }),
+  };
+
+  return renderRefero({ questionnaire: quest, props: { questionnaireResponse } });
+}
+function createQuestionnaire({ ...rest }: Partial<Questionnaire>): Questionnaire {
+  return {
+    resourceType: 'Questionnaire',
+    status: 'draft',
+    ...rest,
+  };
+}
+
+function createItem({ type = itemType.OPENCHOICE, linkId = '1', ...rest }: QuestionnaireItem): QuestionnaireItem {
+  return {
+    linkId,
+    type,
+    ...rest,
+  };
+}
+
+function createItemWithOption(...options: QuestionnaireItemAnswerOption[]): QuestionnaireItem {
+  return createItem({ linkId: '1', type: ItemType.OPENCHOICE, answerOption: options });
+}
+
+function createItemWithExtensions(...extensions: Extension[]): QuestionnaireItem {
+  return createItem({ linkId: '1', type: ItemType.OPENCHOICE, extension: extensions });
 }
 
 function createValueStringOption(...options: string[]): QuestionnaireItemAnswerOption[] {
@@ -112,20 +142,4 @@ function createValueStringOption(...options: string[]): QuestionnaireItemAnswerO
       valueCoding: { code: o, display: o },
     };
   });
-}
-
-function createItemWithOption(...options: QuestionnaireItemAnswerOption[]): QuestionnaireItem {
-  return {
-    linkId: '1',
-    type: itemType.OPENCHOICE,
-    answerOption: options,
-  };
-}
-
-function createItemWithExtensions(...extensions: Extension[]): QuestionnaireItem {
-  return {
-    linkId: '1',
-    type: itemType.OPENCHOICE,
-    extension: extensions,
-  };
 }

@@ -1,13 +1,12 @@
-import React from 'react';
 import '@testing-library/jest-dom/extend-expect';
 import { Questionnaire, QuestionnaireItem, QuestionnaireResponse, ValueSet } from 'fhir/r4';
-import { OPEN_CHOICE_ID, OPEN_CHOICE_SYSTEM, OPEN_CHOICE_LABEL } from '../../../../constants';
-import { Resources } from '../../../../util/resources';
-import AutosuggestView from '../autosuggest-view';
-import { render, screen, fireEvent, waitFor, userEvent, renderRefero, act, findByRole } from '../../../__tests__/test-utils/test-utils';
+
+import { fireEvent, waitFor, userEvent, renderRefero, act, findByRole } from '../../../__tests__/test-utils/test-utils';
 import { q } from './__data__/index';
 import { getResources } from '../../../../preview/resources/referoResources';
 import { generateQuestionnaireResponse } from '../../../../actions/generateQuestionnaireResponse';
+import valueSet from '../../../../constants/valuesets';
+import { Extensions } from '../../../../constants/extensions';
 
 jest.mock('@helsenorge/core-utils/debounce', () => ({
   debounce: (fn: Function) => fn,
@@ -20,7 +19,7 @@ const successReturnValueSet: ValueSet = {
   compose: {
     include: [
       {
-        system: 'http://helsedirektoratet.no/ValueSet/legemiddeloppslag',
+        system: valueSet.LEGEMIDDELOPPSLAG_SYSTEM,
         concept: [
           {
             code: '1',
@@ -44,8 +43,8 @@ describe('autosuggest-view', () => {
       expect(container.querySelector('.page_refero__helpButton')).toBeInTheDocument();
 
       expect(container.querySelector('.page_refero__helpComponent--open')).not.toBeInTheDocument();
-
-      userEvent.click(container.querySelector('.page_refero__helpButton') as HTMLElement);
+      const helpButton = container.querySelector('.page_refero__helpButton');
+      if (helpButton) userEvent.click(helpButton);
 
       expect(container.querySelector('.page_refero__helpComponent--open')).toBeInTheDocument();
     });
@@ -76,7 +75,7 @@ describe('autosuggest-view', () => {
         ...q,
         item: q.item?.map(x => ({ ...x, repeats: true })),
         extension: q.extension?.map(y => {
-          if (y.url === 'http://hl7.org/fhir/StructureDefinition/questionnaire-minOccurs') {
+          if (y.url === Extensions.MIN_OCCURS_URL) {
             return { ...y, valueInteger: 2 };
           }
           return y;

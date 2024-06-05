@@ -10,7 +10,7 @@ import { getExtension, getCalculatedExpressionExtension } from './extension';
 import { evaluateFhirpathExpressionToGetString } from './fhirpathHelper';
 import { getQuestionnaireResponseItemsWithLinkId } from './refero-core';
 import { createDummySectionScoreItem, scoringItemType } from './scoring';
-import ExtensionConstants from '../constants/extensions';
+import { Extensions } from '../constants/extensions';
 import itemType from '../constants/itemType';
 import { ScoringItemType } from '../constants/scoringItemType';
 
@@ -138,7 +138,7 @@ export class ScoringCalculator {
   }
 
   private isOfTypeQuestionnaireItem(item: Questionnaire | QuestionnaireItem): item is QuestionnaireItem {
-    return (item as QuestionnaireItem).type !== undefined;
+    return item.hasOwnProperty('type');
   }
 
   public calculateScore(questionnaireResponse: QuestionnaireResponse): AnswerPad {
@@ -250,7 +250,7 @@ export class ScoringCalculator {
   }
 
   private getOptionScore(option: QuestionnaireItemAnswerOption): number {
-    const extension = getExtension(ExtensionConstants.ORDINAL_VALUE, option.valueCoding);
+    const extension = getExtension(Extensions.ORDINAL_VALUE_URL, option.valueCoding);
     if (extension?.valueDecimal) {
       return extension?.valueDecimal as unknown as number;
     }

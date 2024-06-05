@@ -38,8 +38,10 @@ describe('Boolean', () => {
       expect(container.querySelector('.page_refero__helpButton')).toBeInTheDocument();
 
       expect(container.querySelector('.page_refero__helpComponent--open')).not.toBeInTheDocument();
-
-      userEvent.click(container.querySelector('.page_refero__helpButton') as HTMLElement);
+      const elm = container.querySelector('.page_refero__helpButton');
+      if (elm) {
+        userEvent.click(elm);
+      }
 
       expect(container.querySelector('.page_refero__helpComponent--open')).toBeInTheDocument();
     });

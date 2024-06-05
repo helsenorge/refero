@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { render, renderWithRedux, screen } from './test-utils/test-utils';
+import { render, screen } from './test-utils/test-utils';
 import userEvent from '@testing-library/user-event';
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';

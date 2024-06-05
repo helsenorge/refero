@@ -121,11 +121,11 @@ export class Choice extends React.Component<ChoiceProps, ChoiceState> {
     });
   };
 
-  getPDFValue = (item: QuestionnaireItem, answer: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer): string => {
+  getPDFValue = (item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer[] | QuestionnaireResponseItemAnswer): string => {
     const { resources, containedResources } = this.props;
 
-    if (isDataReceiver(item)) {
-      return this.getDataReceiverValue(answer as Array<QuestionnaireResponseItemAnswer>).join(', ');
+    if (isDataReceiver(item) && Array.isArray(answer)) {
+      return this.getDataReceiverValue(answer).join(', ');
     }
 
     const value = this.getValue(item, answer);

@@ -97,8 +97,8 @@ export class OpenChoice extends React.Component<Props> {
   getPDFValue = (item: QuestionnaireItem, answer: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer): string => {
     const { resources, containedResources } = this.props;
 
-    if (isDataReceiver(item)) {
-      return this.getDataReceiverValue(answer as Array<QuestionnaireResponseItemAnswer>).join(', ');
+    if (isDataReceiver(item) && Array.isArray(answer)) {
+      return this.getDataReceiverValue(answer).join(', ');
     }
 
     const value = this.getValue(item, answer);
@@ -172,11 +172,11 @@ export class OpenChoice extends React.Component<Props> {
     if (dispatch) {
       if (value.length > 0) {
         dispatch(newCodingStringValueAsync(this.props.path, value, this.props.item))?.then(newState =>
-          onAnswerChange(newState, path, item, { valueString: value } as QuestionnaireResponseItemAnswer)
+          onAnswerChange(newState, path, item, { valueString: value })
         );
       } else {
         dispatch(removeCodingStringValueAsync(this.props.path, this.props.item))?.then(newState =>
-          onAnswerChange(newState, path, item, { valueString: '' } as QuestionnaireResponseItemAnswer)
+          onAnswerChange(newState, path, item, { valueString: '' })
         );
       }
     }
@@ -192,14 +192,14 @@ export class OpenChoice extends React.Component<Props> {
       : getDisplay(getOptions(this.props.resources, this.props.item, this.props.containedResources), code);
     const valueSetSystem = code === OPEN_CHOICE_ID ? OPEN_CHOICE_SYSTEM : getSystem(this.props.item, code, this.props.containedResources);
     const system = systemArg ? systemArg : valueSetSystem;
-    return { code, display, system } as Coding;
+    return { code, display, system };
   };
 
   resetInitialAnswer = (code: string): void => {
     const { dispatch, answer, promptLoginMessage, item, onAnswerChange, path } = this.props;
     if (dispatch && code) {
       const coding = this.getAnswerValueCoding(code);
-      const responseAnswer = { valueCoding: coding } as QuestionnaireResponseItemAnswer;
+      const responseAnswer = { valueCoding: coding };
       if (getIndexOfAnswer(code, answer) > -1) {
         dispatch(removeCodingValueAsync(path, coding, item))?.then(newState => onAnswerChange(newState, path, item, responseAnswer));
         if (promptLoginMessage) {
@@ -217,7 +217,7 @@ export class OpenChoice extends React.Component<Props> {
     const { dispatch, answer, promptLoginMessage, item, onAnswerChange, path } = this.props;
     if (dispatch && code) {
       const coding = this.getAnswerValueCoding(code);
-      const responseAnswer = { valueCoding: coding } as QuestionnaireResponseItemAnswer;
+      const responseAnswer = { valueCoding: coding };
       if (getIndexOfAnswer(code, answer) > -1) {
         dispatch(removeCodingValueAsync(this.props.path, coding, item))?.then(newState =>
           onAnswerChange(newState, path, item, responseAnswer)
@@ -242,7 +242,7 @@ export class OpenChoice extends React.Component<Props> {
   clearCodingAnswer = (coding: Coding): void => {
     const { dispatch, promptLoginMessage, item, onAnswerChange, path } = this.props;
     if (dispatch) {
-      const responseAnswer = { valueCoding: coding } as QuestionnaireResponseItemAnswer;
+      const responseAnswer = { valueCoding: coding };
       dispatch(removeCodingValueAsync(path, coding, item))?.then(newState => onAnswerChange(newState, path, item, responseAnswer));
       if (promptLoginMessage) {
         promptLoginMessage();
@@ -254,7 +254,7 @@ export class OpenChoice extends React.Component<Props> {
     const { dispatch, promptLoginMessage, item, onAnswerChange, path } = this.props;
     if (dispatch && code) {
       const coding = this.getAnswerValueCoding(code, systemArg, displayArg);
-      const responseAnswer = { valueCoding: coding } as QuestionnaireResponseItemAnswer;
+      const responseAnswer = { valueCoding: coding };
       dispatch(newCodingValueAsync(this.props.path, coding, item))?.then(newState => onAnswerChange(newState, path, item, responseAnswer));
       if (promptLoginMessage) {
         promptLoginMessage();
@@ -278,9 +278,7 @@ export class OpenChoice extends React.Component<Props> {
 
     if (dispatch) {
       if (coding.code !== OPEN_CHOICE_ID) {
-        dispatch(removeCodingStringValueAsync(path, item))?.then(newState =>
-          onAnswerChange(newState, path, item, { valueString: '' } as QuestionnaireResponseItemAnswer)
-        );
+        dispatch(removeCodingStringValueAsync(path, item))?.then(newState => onAnswerChange(newState, path, item, { valueString: '' }));
       }
     }
   };
@@ -292,9 +290,7 @@ export class OpenChoice extends React.Component<Props> {
       const isShown = shouldShowExtraChoice(answer);
 
       if (isShown && coding.code === OPEN_CHOICE_ID) {
-        dispatch(removeCodingStringValueAsync(path, item))?.then(newState =>
-          onAnswerChange(newState, path, item, { valueString: '' } as QuestionnaireResponseItemAnswer)
-        );
+        dispatch(removeCodingStringValueAsync(path, item))?.then(newState => onAnswerChange(newState, path, item, { valueString: '' }));
       }
     }
   };
@@ -305,7 +301,7 @@ export class OpenChoice extends React.Component<Props> {
     let a: QuestionnaireResponseItemAnswer = {};
     if (Array.isArray(answer)) {
       for (let i = 0; i < answer.length; i++) {
-        const el = answer[i] as QuestionnaireResponseItemAnswer;
+        const el = answer[i];
         if (el.valueString) {
           a = el;
           break;

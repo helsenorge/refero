@@ -7,7 +7,7 @@ import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import { Slider, SliderStep } from '@helsenorge/designsystem-react/components/Slider';
 
 import codeSystems from '../../../constants/codingsystems';
-import ExtensionConstants from '../../../constants/extensions';
+import { Extensions } from '../../../constants/extensions';
 import { getId, isRequired } from '../../../util';
 import { getCodes as getCodingSystemCodes } from '../../../util/codingsystem';
 import { getExtension, getMaxValueExtensionValue, getMinValueExtensionValue, getValidationTextExtension } from '../../../util/extension';
@@ -131,13 +131,12 @@ function getLeftRightLabels(item?: QuestionnaireItem): LeftRightLabels | undefin
 }
 
 function getStepLabel(option: QuestionnaireItemAnswerOption, displayType: SliderDisplayTypes): number | string | undefined {
-  if (displayType === SliderDisplayTypes.OrdinalValue)
-    return getExtension(ExtensionConstants.ORDINAL_VALUE, option.valueCoding)?.valueDecimal;
+  if (displayType === SliderDisplayTypes.OrdinalValue) return getExtension(Extensions.ORDINAL_VALUE_URL, option.valueCoding)?.valueDecimal;
   return option.valueCoding?.display;
 }
 
 function getStepEmoji(option: QuestionnaireItemAnswerOption): string | undefined {
-  const emojiLabel = getExtension(ExtensionConstants.VALUESET_LABEL, option.valueCoding)?.valueString?.trim();
+  const emojiLabel = getExtension(Extensions.VALUESET_LABEL_URL, option.valueCoding)?.valueString?.trim();
   if (!emojiLabel) return undefined;
 
   return convertToEmoji(emojiLabel);

@@ -3,6 +3,7 @@ import { act, findByRole, renderRefero, userEvent } from '../../../__tests__/tes
 import { q } from './__data__';
 import { ReferoProps } from '../../../../types/referoProps';
 import { getResources } from '../../../../preview/resources/referoResources';
+import { Extensions } from '../../../../constants/extensions';
 
 const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle ut dette feltet', oppgiGyldigVerdi: 'ikke gyldig tall' };
 
@@ -84,7 +85,7 @@ describe('Quantity', () => {
         ...q,
         item: q.item?.map(x => ({ ...x, repeats: true })),
         extension: q.extension?.map(y => {
-          if (y.url === 'http://hl7.org/fhir/StructureDefinition/questionnaire-minOccurs') {
+          if (y.url === Extensions.MIN_OCCURS_URL) {
             return { ...y, valueInteger: 2 };
           }
           return y;
@@ -168,7 +169,7 @@ describe('Quantity', () => {
           extension: [
             ...(q.extension ?? []), // Spread the existing extensions or use an empty array if undefined
             {
-              url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-unit',
+              url: Extensions.QUESTIONNAIRE_UNIT_URL,
               valueCoding: {
                 code: 'cm',
                 display: 'centimeter',
@@ -197,7 +198,7 @@ describe('Quantity', () => {
           extension: [
             ...(q.extension ?? []), // Spread the existing extensions or use an empty array if undefined
             {
-              url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-unit',
+              url: Extensions.QUESTIONNAIRE_UNIT_URL,
               valueCoding: {
                 code: 'cm',
                 display: 'centimeter',
