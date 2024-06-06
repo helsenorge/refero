@@ -50,37 +50,38 @@ export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   isHelpOpen?: boolean;
   onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
+  children?: React.ReactNode;
 }
 
-class Quantity extends React.Component<Props> {
-  getValue(): number | number[] | undefined {
-    const { answer } = this.props;
+const Quantity = (props: Props): JSX.Element | null => {
+  const getValue = (): number | number[] | undefined => {
+    const { answer } = props;
     if (answer && Array.isArray(answer)) {
       return answer.map(m => m.valueQuantity.value);
     }
     if (answer && answer.valueQuantity !== undefined && answer.valueQuantity !== null) {
       return answer.valueQuantity.value;
     }
-  }
+  };
 
-  getPDFValue(): string {
-    const value = this.getValue();
+  const getPDFValue = (): string => {
+    const value = getValue();
     if (value === undefined || value === null) {
       let text = '';
-      if (this.props.resources && this.props.resources.ikkeBesvart) {
-        text = this.props.resources.ikkeBesvart;
+      if (props.resources && props.resources.ikkeBesvart) {
+        text = props.resources.ikkeBesvart;
       }
       return text;
     }
     if (Array.isArray(value)) {
-      return value.map(m => `${m} ${this.getUnit()}`).join(', ');
+      return value.map(m => `${m} ${getUnit()}`).join(', ');
     }
-    return `${value} ${this.getUnit()}`;
-  }
+    return `${value} ${getUnit()}`;
+  };
 
-  handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    const { dispatch, promptLoginMessage, path, item, onAnswerChange } = this.props;
-    const extension = getQuestionnaireUnitExtensionValue(this.props.item);
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+    const { dispatch, promptLoginMessage, path, item, onAnswerChange } = props;
+    const extension = getQuestionnaireUnitExtensionValue(props.item);
     if (extension) {
       const quantity = {
         unit: extension.display,
@@ -94,7 +95,7 @@ class Quantity extends React.Component<Props> {
       }
 
       if (dispatch) {
-        dispatch(newQuantityValueAsync(this.props.path, quantity, this.props.item))?.then(newState =>
+        dispatch(newQuantityValueAsync(props.path, quantity, props.item))?.then(newState =>
           onAnswerChange(newState, path, item, { valueQuantity: quantity } as QuestionnaireResponseItemAnswer)
         );
       }
@@ -105,117 +106,115 @@ class Quantity extends React.Component<Props> {
     }
   };
 
-  getUnit = (): string => {
-    const valueCoding = getQuestionnaireUnitExtensionValue(this.props.item);
+  const getUnit = (): string => {
+    const valueCoding = getQuestionnaireUnitExtensionValue(props.item);
     if (valueCoding && valueCoding.display) {
       return valueCoding.display;
     }
     return '';
   };
 
-  shouldComponentUpdate(nextProps: Props): boolean {
-    const responseItemHasChanged = this.props.responseItem !== nextProps.responseItem;
-    const helpItemHasChanged = this.props.isHelpOpen !== nextProps.isHelpOpen;
-    const answerHasChanged = this.props.answer !== nextProps.answer;
-    const resourcesHasChanged = JSON.stringify(this.props.resources) !== JSON.stringify(nextProps.resources);
-    const repeats = this.props.item.repeats ?? false;
-    const newErrorMessage = this.props.error?.message !== nextProps.error?.message;
+  // shouldComponentUpdate(nextProps: Props): boolean {
+  //   const responseItemHasChanged = props.responseItem !== nextProps.responseItem;
+  //   const helpItemHasChanged = props.isHelpOpen !== nextProps.isHelpOpen;
+  //   const answerHasChanged = props.answer !== nextProps.answer;
+  //   const resourcesHasChanged = JSON.stringify(props.resources) !== JSON.stringify(nextProps.resources);
+  //   const repeats = props.item.repeats ?? false;
+  //   const newErrorMessage = props.error?.message !== nextProps.error?.message;
 
-    return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats || answerHasChanged || newErrorMessage;
-  }
+  //   return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats || answerHasChanged || newErrorMessage;
+  // }
 
-  render(): JSX.Element | null {
-    const { id, item, questionnaire, onRenderMarkdown, resources, error, control, idWithLinkIdAndItemIndex } = this.props;
-    if (this.props.pdf || isReadOnly(item)) {
-      return (
-        <TextView
-          id={id}
-          item={this.props.item}
-          value={this.getPDFValue()}
-          onRenderMarkdown={onRenderMarkdown}
-          helpButton={this.props.renderHelpButton()}
-          helpElement={this.props.renderHelpElement()}
-        >
-          {this.props.children}
-        </TextView>
-      );
-    }
-    const value = this.getValue();
-    const labelText = getLabelText(item, onRenderMarkdown, questionnaire, resources);
-    const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
-    const decimalPattern = getDecimalPattern(item);
-    const minValue = getMinValueExtensionValue(item);
-    const maxValue = getMaxValueExtensionValue(item);
-    const errorMessage = getValidationTextExtension(item);
-
+  const { id, item, questionnaire, onRenderMarkdown, resources, error, control, idWithLinkIdAndItemIndex } = props;
+  if (props.pdf || isReadOnly(item)) {
     return (
-      <div className="page_refero__component page_refero__component_quantity">
-        <FormGroup error={error?.message} mode="ongrey">
-          {this.props.renderHelpElement()}
-          <Controller
-            name={idWithLinkIdAndItemIndex}
-            control={control}
-            shouldUnregister={true}
-            rules={{
-              required: {
-                value: isRequired(item),
-                message: resources?.formRequiredErrorMessage ?? 'Feltet er påkrevd',
-              },
-
-              ...(maxValue && {
-                max: {
-                  value: maxValue,
-                  message: errorMessage ?? resources?.oppgiGyldigVerdi ?? 'Verdien er for høy',
-                },
-              }),
-              ...(minValue && {
-                min: {
-                  value: minValue,
-                  message: errorMessage ?? resources?.oppgiGyldigVerdi ?? 'Verdien er for lav',
-                },
-              }),
-              ...(decimalPattern && {
-                pattern: {
-                  value: new RegExp(decimalPattern),
-                  message: resources?.oppgiGyldigVerdi ?? 'Verdien er ikke et gyldig tall',
-                },
-              }),
-            }}
-            render={({ field: { onChange, ...rest } }): JSX.Element => (
-              <Input
-                {...rest}
-                value={value !== undefined ? value + '' : ''}
-                label={
-                  <Label
-                    htmlFor={getId(id)}
-                    className="page_refero__label"
-                    labelTexts={[{ text: labelText, type: 'semibold' }]}
-                    sublabel={<Sublabel id={`${getId(id)}-sublabel`} sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
-                    afterLabelChildren={this.props.renderHelpButton()}
-                  />
-                }
-                type="number"
-                inputId={getId(id)}
-                testId={getId(id)}
-                placeholder={getPlaceholder(item)}
-                className="page_refero__quantity"
-                onChange={(e): void => {
-                  onChange(e.target.value);
-                  this.handleChange(e);
-                }}
-                width={7}
-              />
-            )}
-          />
-          <span className="page_refero__unit">{this.getUnit()}</span>
-          {this.props.renderDeleteButton('page_refero__deletebutton--margin-top')}
-          <div>{this.props.repeatButton}</div>
-        </FormGroup>
-        {this.props.children ? <div className="nested-fieldset nested-fieldset--full-height">{this.props.children}</div> : null}
-      </div>
+      <TextView
+        id={id}
+        item={props.item}
+        value={getPDFValue()}
+        onRenderMarkdown={onRenderMarkdown}
+        helpButton={props.renderHelpButton()}
+        helpElement={props.renderHelpElement()}
+      >
+        {props.children}
+      </TextView>
     );
   }
-}
+  const value = getValue();
+  const labelText = getLabelText(item, onRenderMarkdown, questionnaire, resources);
+  const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
+  const decimalPattern = getDecimalPattern(item);
+  const minValue = getMinValueExtensionValue(item);
+  const maxValue = getMaxValueExtensionValue(item);
+  const errorMessage = getValidationTextExtension(item);
+
+  return (
+    <div className="page_refero__component page_refero__component_quantity">
+      <FormGroup error={error?.message} mode="ongrey">
+        {props.renderHelpElement()}
+        <Controller
+          name={idWithLinkIdAndItemIndex}
+          control={control}
+          shouldUnregister={true}
+          rules={{
+            required: {
+              value: isRequired(item),
+              message: resources?.formRequiredErrorMessage ?? 'Feltet er påkrevd',
+            },
+
+            ...(maxValue && {
+              max: {
+                value: maxValue,
+                message: errorMessage ?? resources?.oppgiGyldigVerdi ?? 'Verdien er for høy',
+              },
+            }),
+            ...(minValue && {
+              min: {
+                value: minValue,
+                message: errorMessage ?? resources?.oppgiGyldigVerdi ?? 'Verdien er for lav',
+              },
+            }),
+            ...(decimalPattern && {
+              pattern: {
+                value: new RegExp(decimalPattern),
+                message: resources?.oppgiGyldigVerdi ?? 'Verdien er ikke et gyldig tall',
+              },
+            }),
+          }}
+          render={({ field: { onChange, ...rest } }): JSX.Element => (
+            <Input
+              {...rest}
+              value={value !== undefined ? value + '' : ''}
+              label={
+                <Label
+                  htmlFor={getId(id)}
+                  className="page_refero__label"
+                  labelTexts={[{ text: labelText, type: 'semibold' }]}
+                  sublabel={<Sublabel id={`${getId(id)}-sublabel`} sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+                  afterLabelChildren={props.renderHelpButton()}
+                />
+              }
+              type="number"
+              inputId={getId(id)}
+              testId={getId(id)}
+              placeholder={getPlaceholder(item)}
+              className="page_refero__quantity"
+              onChange={(e): void => {
+                onChange(e.target.value);
+                handleChange(e);
+              }}
+              width={7}
+            />
+          )}
+        />
+        <span className="page_refero__unit">{getUnit()}</span>
+        {props.renderDeleteButton('page_refero__deletebutton--margin-top')}
+        <div>{props.repeatButton}</div>
+      </FormGroup>
+      {props.children ? <div className="nested-fieldset nested-fieldset--full-height">{props.children}</div> : null}
+    </div>
+  );
+};
 const withFormProps = ReactHookFormHoc(Quantity);
 const withCommonFunctionsComponent = withCommonFunctions(withFormProps);
 const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(withCommonFunctionsComponent);

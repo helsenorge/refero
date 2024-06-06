@@ -43,18 +43,43 @@ export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   isHelpOpen?: boolean;
   onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
+  children?: React.ReactNode;
 }
 
-export class AttachmentComponent extends React.Component<Props> {
-  onUpload = (files: UploadFile[]): void => {
-    const { uploadAttachment, path, item, onAnswerChange } = this.props;
+export const AttachmentComponent = (props: Props): JSX.Element | null => {
+  const {
+    uploadAttachment,
+    path,
+    item,
+    onAnswerChange,
+    onDeleteAttachment,
+    dispatch,
+    pdf,
+    id,
+    resources,
+    onOpenAttachment,
+    onRenderMarkdown,
+    questionnaire,
+    children,
+    answer,
+    renderHelpButton,
+    onRequestAttachmentLink,
+    attachmentMaxFileSize,
+    renderHelpElement,
+    attachmentValidTypes,
+    attachmentErrorMessage,
+    register,
+    error,
+  } = props;
+
+  const onUpload = (files: UploadFile[]): void => {
     if (uploadAttachment) {
       for (const file of files) {
         const onSuccess = (attachment: Attachment): void => {
-          if (this.props.dispatch && attachment) {
-            this.props
-              .dispatch(newAttachmentAsync(this.props.path, attachment, this.props.item, isRepeat(this.props.item)))
-              ?.then(newState => onAnswerChange(newState, path, item, { valueAttachment: attachment }));
+          if (dispatch && attachment) {
+            dispatch(newAttachmentAsync(path, attachment, item, isRepeat(item)))?.then(newState =>
+              onAnswerChange(newState, path, item, { valueAttachment: attachment })
+            );
           }
         };
 
@@ -63,16 +88,14 @@ export class AttachmentComponent extends React.Component<Props> {
     }
   };
 
-  onDelete = (fileId: string): void => {
-    const { onDeleteAttachment, path, item, onAnswerChange } = this.props;
-
+  const onDelete = (fileId: string): void => {
     if (onDeleteAttachment) {
       const onSuccess = (): void => {
-        if (this.props.dispatch) {
+        if (dispatch) {
           const attachment: Attachment = { url: fileId };
-          this.props
-            .dispatch(removeAttachmentAsync(this.props.path, attachment, this.props.item))
-            ?.then(newState => onAnswerChange(newState, path, item, { valueAttachment: attachment }));
+          dispatch(removeAttachmentAsync(path, attachment, item))?.then(newState =>
+            onAnswerChange(newState, path, item, { valueAttachment: attachment })
+          );
         }
       };
 
@@ -80,17 +103,15 @@ export class AttachmentComponent extends React.Component<Props> {
     }
   };
 
-  getButtonText = (): string => {
+  const getButtonText = (): string => {
     let buttonText = '';
-    const { resources } = this.props;
     if (resources && resources.uploadButtonText) {
       buttonText = resources.uploadButtonText;
     }
     return buttonText;
   };
 
-  getAttachment = (): UploadedFile[] => {
-    const { answer } = this.props;
+  const getAttachment = (): UploadedFile[] => {
     if (Array.isArray(answer)) {
       return answer.map(v => {
         return {
@@ -111,85 +132,82 @@ export class AttachmentComponent extends React.Component<Props> {
     return [];
   };
 
-  getPdfValue = (): string => {
-    const attachments = this.getAttachment();
+  const getPdfValue = (): string => {
+    const attachments = getAttachment();
     if (attachments) {
       return attachments.map(v => v.name).join(', ');
-    } else if (this.props.resources) {
-      return this.props.resources.ikkeBesvart;
+    } else if (resources) {
+      return resources.ikkeBesvart;
     }
 
     return '';
   };
 
-  shouldComponentUpdate(nextProps: Props): boolean {
-    const responseItemHasChanged = this.props.responseItem !== nextProps.responseItem;
-    const helpItemHasChanged = this.props.isHelpOpen !== nextProps.isHelpOpen;
-    const resourcesHasChanged = JSON.stringify(this.props.resources) !== JSON.stringify(nextProps.resources);
-    const attachmentErrorMessageHasChanged = this.props.attachmentErrorMessage !== nextProps.attachmentErrorMessage;
-    const repeats = this.props.item.repeats ?? false;
+  // shouldComponentUpdate(nextProps: Props): boolean {
+  //   const responseItemHasChanged = responseItem !== nextresponseItem;
+  //   const helpItemHasChanged = isHelpOpen !== nextisHelpOpen;
+  //   const resourcesHasChanged = JSON.stringify(resources) !== JSON.stringify(nextresources);
+  //   const attachmentErrorMessageHasChanged = attachmentErrorMessage !== nextattachmentErrorMessage;
+  //   const repeats = item.repeats ?? false;
 
+  //   return (
+  //     responseItemHasChanged ||
+  //     helpItemHasChanged ||
+  //     resourcesHasChanged ||
+  //     attachmentErrorMessageHasChanged ||
+  //     repeats ||
+  //     error?.message !== nexterror?.message
+  //   );
+  // }
+
+  const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`;
+
+  if (pdf || isReadOnly(item)) {
     return (
-      responseItemHasChanged ||
-      helpItemHasChanged ||
-      resourcesHasChanged ||
-      attachmentErrorMessageHasChanged ||
-      repeats ||
-      this.props.error?.message !== nextProps.error?.message
+      <TextView
+        id={id}
+        item={item}
+        value={getPdfValue()}
+        onRenderMarkdown={onRenderMarkdown}
+        helpButton={renderHelpButton()}
+        helpElement={renderHelpElement()}
+      >
+        {children}
+      </TextView>
+    );
+  } else {
+    return (
+      <>
+        <AttachmentHtml
+          onUpload={onUpload}
+          onDelete={onDelete}
+          onOpen={onOpenAttachment}
+          id={getId(id)}
+          labelText={labelText}
+          uploadButtonText={getButtonText()}
+          resources={resources}
+          isRequired={isRequired(item)}
+          multiple={isRepeat(item)}
+          errorText={getValidationTextExtension(item)}
+          uploadedFiles={getAttachment()}
+          onRequestAttachmentLink={onRequestAttachmentLink}
+          helpButton={renderHelpButton()}
+          helpElement={renderHelpElement()}
+          maxFiles={getMaxOccursExtensionValue(item)}
+          minFiles={getMinOccursExtensionValue(item)}
+          attachmentMaxFileSize={attachmentMaxFileSize}
+          attachmentValidTypes={attachmentValidTypes}
+          item={item}
+          attachmentErrorMessage={attachmentErrorMessage}
+          register={register}
+          error={error}
+        >
+          {children}
+        </AttachmentHtml>
+      </>
     );
   }
-
-  render(): JSX.Element | null {
-    const { pdf, id, item, resources, onOpenAttachment, onRenderMarkdown, questionnaire } = this.props;
-    const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`;
-
-    if (pdf || isReadOnly(item)) {
-      return (
-        <TextView
-          id={id}
-          item={item}
-          value={this.getPdfValue()}
-          onRenderMarkdown={onRenderMarkdown}
-          helpButton={this.props.renderHelpButton()}
-          helpElement={this.props.renderHelpElement()}
-        >
-          {this.props.children}
-        </TextView>
-      );
-    } else {
-      return (
-        <>
-          <AttachmentHtml
-            onUpload={this.onUpload}
-            onDelete={this.onDelete}
-            onOpen={onOpenAttachment}
-            id={getId(id)}
-            labelText={labelText}
-            uploadButtonText={this.getButtonText()}
-            resources={resources}
-            isRequired={isRequired(item)}
-            multiple={isRepeat(item)}
-            errorText={getValidationTextExtension(item)}
-            uploadedFiles={this.getAttachment()}
-            onRequestAttachmentLink={this.props.onRequestAttachmentLink}
-            helpButton={this.props.renderHelpButton()}
-            helpElement={this.props.renderHelpElement()}
-            maxFiles={getMaxOccursExtensionValue(item)}
-            minFiles={getMinOccursExtensionValue(item)}
-            attachmentMaxFileSize={this.props.attachmentMaxFileSize}
-            attachmentValidTypes={this.props.attachmentValidTypes}
-            item={item}
-            attachmentErrorMessage={this.props.attachmentErrorMessage}
-            register={this.props.register}
-            error={this.props.error}
-          >
-            {this.props.children}
-          </AttachmentHtml>
-        </>
-      );
-    }
-  }
-}
+};
 
 const withFormProps = ReactHookFormHoc(AttachmentComponent);
 const withCommonFunctionsComponent = withCommonFunctions(withFormProps);
