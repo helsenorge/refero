@@ -11,7 +11,7 @@ import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label
 
 import { shouldShowExtraChoice } from '../../../util/choice';
 import { getValidationTextExtension } from '../../../util/extension';
-import { isRequired, getSublabelText, getText, renderPrefix } from '../../../util/index';
+import { isRequired, getSublabelText, getText, renderPrefix, getId } from '../../../util/index';
 import { Resources } from '../../../util/resources';
 import { FormProps } from '../../../validation/ReactHookFormHoc';
 import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
@@ -51,6 +51,7 @@ const CheckboxView: React.SFC<Props> = ({
   control,
   error,
   idWithLinkIdAndItemIndex,
+  selected,
 }) => {
   const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
   const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`;
@@ -79,9 +80,9 @@ const CheckboxView: React.SFC<Props> = ({
               <Checkbox
                 {...rest}
                 inputId={`${id}-${option.type}`}
-                testId={`${option.type}-${index}-checkbox-choice`}
-                label={<Label labelTexts={[{ text: option.label }]} />}
-                checked={value?.some((val: string) => val === option.type)}
+                testId={`${getId(id)}-${index}-checkbox-openchoice`}
+                label={<Label testId={`${getId(id)}-${index}-checkbox-openchoice-label`} labelTexts={[{ text: option.label }]} />}
+                checked={selected?.some((val: string) => val === option.type)}
                 value={option.type}
                 onChange={(e): void => {
                   const valueCopy = [...value];

@@ -2,14 +2,14 @@ import '../../util/defineFetch';
 import questionnaire from './__data__/common/';
 import { Questionnaire, Extension } from 'fhir/r4';
 
-import ExtensionConstants from '../../constants/extensions';
+import { Extensions } from '../../constants/extensions';
 import { PresentationButtonsType } from '../../constants/presentationButtonsType';
 import { renderRefero } from './test-utils/test-utils';
 import valueSet from '../../constants/valuesets';
 
 const createExtension = (code: PresentationButtonsType): Extension => {
   return {
-    url: ExtensionConstants.PRESENTATION_BUTTONS,
+    url: Extensions.PRESENTATION_BUTTONS_URL,
     valueCoding: {
       system: valueSet.PRESENTATIONBUTTONS_SYSTEM,
       code: code.toLowerCase(),

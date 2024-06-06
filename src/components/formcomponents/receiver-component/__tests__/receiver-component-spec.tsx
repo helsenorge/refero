@@ -6,6 +6,8 @@ import { renderRefero, userEvent } from '../../../__tests__/test-utils/test-util
 import { getResources } from '../../../../preview/resources/referoResources';
 import { generateQuestionnaireResponse } from '../../../../actions/generateQuestionnaireResponse';
 import { act } from 'react-dom/test-utils';
+import { createOnChangeFuncForActionRequester } from '../../../__tests__/utils';
+import { IActionRequester } from '../../../../util/actionRequester';
 
 const receivers = [
   {
@@ -62,33 +64,38 @@ describe('ReceiverComponent', () => {
     expect(await findByText(/Region 1 \/ Receiver 1/i)).toBeInTheDocument();
   });
 
-  //TODO: Find out what this does, looks at loadSuccessCallback in receiver-component.tsx
-  it.skip('Should not set selected receiver after load if multiple receivers match selected endpoint', async () => {
-    const fetchReceiversFn = (successCallback: (receivers: Array<OrgenhetHierarki>) => void) => {
-      successCallback([
-        ...receivers,
-        {
-          OrgenhetId: 2,
-          EndepunktId: '1',
-          Navn: 'Region 3',
-          EnhetType: EnhetType.Foretak,
-          UnderOrgenheter: null,
-        },
-      ]);
-    };
-    const questionnaireResponse = generateQuestionnaireResponse(q);
-    const { findByRole, findByLabelText, queryByText } = renderRefero({
-      questionnaire: q,
-      props: { fetchReceivers: fetchReceiversFn, questionnaireResponse },
-      resources: getResources(''),
-    });
+  // it.only('Should not set selected receiver after load if multiple receivers match selected endpoint', async () => {
+  //   const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
+  //     actionRequester.addChoiceAnswer('3a154799-1409-4ac7-8e56-27ea57f477a4', {
+  //       code: '',
+  //       system: '',
+  //     });
+  //   });
+  //   const fetchReceiversFn = (successCallback: (receivers: Array<OrgenhetHierarki>) => void) => {
+  //     successCallback([
+  //       ...receivers,
+  //       {
+  //         OrgenhetId: 2,
+  //         EndepunktId: '1',
+  //         Navn: 'Region 3',
+  //         EnhetType: EnhetType.Foretak,
+  //         UnderOrgenheter: null,
+  //       },
+  //     ]);
+  //   };
+  //   const questionnaireResponse = generateQuestionnaireResponse(q);
+  //   const { findByRole, findByLabelText, queryByText, debug } = renderRefero({
+  //     questionnaire: q,
+  //     props: { fetchReceivers: fetchReceiversFn, questionnaireResponse, onChange },
+  //     resources: getResources(''),
+  //   });
+  //   debug();
+  //   const option = await findByRole('option', { name: /region 1/i });
+  //   userEvent.selectOptions(await findByLabelText('Velg helseregion'), option);
+  //   userEvent.selectOptions(await findByLabelText('Velg helseforetak'), 'Receiver 1');
 
-    const option = await findByRole('option', { name: /region 1/i });
-    userEvent.selectOptions(await findByLabelText('Velg helseregion'), option);
-    userEvent.selectOptions(await findByLabelText('Velg helseforetak'), 'Receiver 1');
-
-    expect(queryByText(/Region 1 \/ Receiver 1/i)).not.toBeInTheDocument();
-  });
+  //   expect(queryByText(/Region 1 \/ Receiver 1/i)).not.toBeInTheDocument();
+  // });
 
   it('Should show selects after loading receivers', async () => {
     const fetchReceivers = (successCallback: (receivers: Array<OrgenhetHierarki>) => void) => {

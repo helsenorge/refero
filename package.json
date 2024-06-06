@@ -23,6 +23,7 @@
     "prebuild:lib": "rimraf lib",
     "prepare": "npm run build:lib",
     "test": "jest --config config/jest.config.js",
+    "test:skipped": "jest --config config/jest.config.js --verbose | grep -i 'skipped'",
     "dev": "vite"
   },
   "husky": {

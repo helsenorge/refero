@@ -236,7 +236,7 @@ export class Choice extends React.Component<ChoiceProps, ChoiceState> {
 
     const componentMap = {
       [itemControlConstants.DROPDOWN]: <DropdownView options={options} {...commonProps} />,
-      [itemControlConstants.CHECKBOX]: <CheckboxView options={options} {...commonProps} />,
+      [itemControlConstants.CHECKBOX]: <CheckboxView options={options} {...commonProps} handleChange={this.handleCheckboxChange} />,
       [itemControlConstants.RADIOBUTTON]: <RadioView options={options} {...commonProps} />,
       [itemControlConstants.SLIDER]: <SliderView {...commonProps} />,
     };

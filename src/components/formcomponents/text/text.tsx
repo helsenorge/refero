@@ -177,9 +177,11 @@ export class Text extends React.Component<Props> {
                 validate: (value: string): true | string => scriptInjectionValidation(value, resources),
               }),
             }}
-            render={({ field: { onChange, ...rest } }): JSX.Element => (
+            render={({ field: { onChange, name, ref } }): JSX.Element => (
               <Textarea
-                {...rest}
+                ref={ref}
+                name={name}
+                defaultValue={value}
                 onChange={(e): void => {
                   this.onTextAreaChange(e);
                   onChange(e?.target?.value);
@@ -187,8 +189,10 @@ export class Text extends React.Component<Props> {
                 textareaId={getId(id)}
                 maxRows={Constants.DEFAULT_TEXTAREA_HEIGHT}
                 placeholder={getPlaceholder(item)}
+                testId={`${getId(this.props.id)}-text`}
                 label={
                   <Label
+                    testId={`${getId(this.props.id)}-text-label`}
                     className="page_refero__label"
                     labelTexts={[{ text: labelText, type: 'semibold' }]}
                     sublabel={<Sublabel id={`${getId(this.props.id)}-sublabel`} sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}

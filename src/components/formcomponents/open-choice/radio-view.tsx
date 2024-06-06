@@ -85,13 +85,13 @@ const RadioView: React.FC<Props> = ({
                 {...rest}
                 key={`${getId(id)}-${index.toString()}`}
                 inputId={getId(id) + '-hn-' + index}
-                testId={getId(id) + index}
+                testId={`${getId(id)}-${index}-radio-open-choice`}
                 value={option.type}
                 onChange={(): void => {
                   handleChange(option.type);
                   onChange(option.type);
                 }}
-                label={<Label labelTexts={[{ text: option.label }]} />}
+                label={<Label testId={`${getId(id)}-${index}-radio-open-choice-label`} labelTexts={[{ text: option.label }]} />}
                 defaultChecked={selectedValue === option?.type}
               />
             )}

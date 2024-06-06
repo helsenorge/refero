@@ -81,7 +81,7 @@ export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
 }
 
 export class OpenChoice extends React.Component<Props> {
-  getDataReceiverValue = (answer: Array<QuestionnaireResponseItemAnswer>): (string | undefined)[] => {
+  getDataReceiverValue = (answer: QuestionnaireResponseItemAnswer[]): string[] | undefined => {
     return answer
       .filter(f => f.valueCoding?.code !== OPEN_CHOICE_ID)
       .map((el: QuestionnaireResponseItemAnswer) => {
@@ -91,17 +91,17 @@ export class OpenChoice extends React.Component<Props> {
         if (el && el.valueString) {
           return el.valueString;
         }
-      });
+      })
+      .filter((it): it is string => it !== undefined);
   };
 
-  getPDFValue = (item: QuestionnaireItem, answer: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer): string => {
+  getPDFValue = (item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer[] | QuestionnaireResponseItemAnswer): string => {
     const { resources, containedResources } = this.props;
-
     if (isDataReceiver(item) && Array.isArray(answer)) {
-      return this.getDataReceiverValue(answer).join(', ');
+      return this.getDataReceiverValue(answer)?.join(', ') || '';
     }
-
     const value = this.getValue(item, answer);
+
     if (!value) {
       let text = '';
       if (resources && resources.ikkeBesvart) {
@@ -112,7 +112,8 @@ export class OpenChoice extends React.Component<Props> {
 
     const displayValues = value
       .filter(el => el !== OPEN_CHOICE_ID)
-      .map(el => getDisplay(getOptions(resources, item, containedResources), el));
+      .map(el => getDisplay(getOptions(resources, item, containedResources), el))
+      .filter((it): it is string => it !== undefined);
     const openValue = this.getOpenValue(answer);
     if (openValue) {
       displayValues.push(openValue);
@@ -380,6 +381,7 @@ export class OpenChoice extends React.Component<Props> {
     const itemControlValue = getItemControlValue(item);
     const shouldRenderAutosuggest = hasCanonicalValueSet(item) && itemControlValue === ItemControlConstants.AUTOCOMPLETE;
     const getValue = this.getValue(item, answer);
+
     if (pdf || isReadOnly(item)) {
       return (
         <TextView id={id} item={item} value={this.getPDFValue(item, answer)} onRenderMarkdown={onRenderMarkdown}>

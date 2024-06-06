@@ -7,6 +7,7 @@ import { Store, legacy_createStore as createStore, applyMiddleware } from 'redux
 import thunk from 'redux-thunk';
 
 import { QuestionnaireStatusCodes } from '../types/fhirEnums';
+import { EnhetType, OrgenhetHierarki } from '../types/orgenhetHierarki';
 
 import LanguageLocales from '@helsenorge/core-utils/constants/languages';
 
@@ -34,12 +35,41 @@ const getQuestionnaireFromBubndle = (bundle: Bundle<Questionnaire> | Questionnai
     );
   }
 };
+const fetchReceiversFn = (successCallback: (receivers: Array<OrgenhetHierarki>) => void) => {
+  successCallback([
+    {
+      OrgenhetId: 1,
+      EndepunktId: null,
+      Navn: 'Region 1',
+      EnhetType: EnhetType.Region,
+      UnderOrgenheter: [
+        { OrgenhetId: 11, EndepunktId: '1', Navn: 'Receiver 1', EnhetType: EnhetType.Foretak, UnderOrgenheter: null },
+        { OrgenhetId: 12, EndepunktId: '11', Navn: 'Receiver 11', EnhetType: EnhetType.Foretak, UnderOrgenheter: null },
+      ],
+    },
+    {
+      OrgenhetId: 2,
+      EndepunktId: null,
+      Navn: 'Region 2',
+      EnhetType: EnhetType.Region,
+      UnderOrgenheter: [{ OrgenhetId: 21, EndepunktId: '2', Navn: 'Receiver 2', EnhetType: EnhetType.Foretak, UnderOrgenheter: null }],
+    },
+    {
+      OrgenhetId: 2,
+      EndepunktId: '1',
+      Navn: 'Region 3',
+      EnhetType: EnhetType.Foretak,
+      UnderOrgenheter: null,
+    },
+  ]);
+};
 const fetchValueSetFn = (
   _searchString: string,
   _item: QuestionnaireItem,
   successCallback: (valueSet: ValueSet) => void,
   _errorCallback: (error: string) => void
 ): any => {
+  _errorCallback('ERROR');
   successCallback({
     resourceType: 'ValueSet',
     status: 'draft',
@@ -87,6 +117,7 @@ const FormFillerPreview = ({ showFormFiller }: Props): JSX.Element => {
                   store={store}
                   questionnaire={getQuestionnaireFromBubndle(questionnaireForPreview, lang)}
                   onCancel={showFormFiller}
+                  onChange={(): void => {}}
                   onSave={(questionnaireResponse: QuestionnaireResponse): void => {
                     setQuestionnaireResponse(questionnaireResponse);
                     setShowResponse(true);
@@ -102,6 +133,7 @@ const FormFillerPreview = ({ showFormFiller }: Props): JSX.Element => {
                   validateScriptInjection
                   language={LanguageLocales.NORWEGIAN}
                   fetchValueSet={fetchValueSetFn}
+                  fetchReceivers={fetchReceiversFn}
                 />
               </div>
             ) : (

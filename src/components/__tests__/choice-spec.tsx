@@ -5,7 +5,7 @@ import '@testing-library/jest-dom/extend-expect';
 import '../../util/defineFetch';
 import { Choice } from '../formcomponents/choice/choice';
 import { QuestionnaireItem, QuestionnaireItemAnswerOption, QuestionnaireResponseItemAnswer, Extension } from 'fhir/r4';
-import { createIDataReceiverExpressionExtension } from './utils';
+import { createDataReceiverExpressionExtension } from './utils';
 import itemType from '../../constants/itemType';
 import { Extensions } from '../../constants/extensions';
 
@@ -106,7 +106,7 @@ describe('Choice component renders item.option[]', () => {
   });
 
   it('should render data-receiver item as readonly text', () => {
-    const extensions = [createIDataReceiverExpressionExtension('Test')];
+    const extensions = [createDataReceiverExpressionExtension('Test')];
     const item = createItemWithExtensions(...extensions);
     item.readOnly = true;
     const answer = [{ valueCoding: { code: '3', display: 'Usikker', system: 'urn:oid:2.16.578.1.12.4.1.9523' } }];

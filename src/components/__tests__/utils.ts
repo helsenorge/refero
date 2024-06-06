@@ -1,7 +1,17 @@
-import { Coding, Extension, Questionnaire, QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r4';
+import {
+  Coding,
+  Extension,
+  Questionnaire,
+  QuestionnaireItem,
+  QuestionnaireResponse,
+  QuestionnaireResponseItem,
+  QuestionnaireResponseItemAnswer,
+} from 'fhir/r4';
 import { Extensions } from '../../constants/extensions';
 import { queryHelpers, userEvent, screen, fireEvent, findByLabelText } from './test-utils/test-utils';
 import valueSet from '../../constants/valuesets';
+import { IActionRequester } from '../../util/actionRequester';
+import { IQuestionnaireInspector } from '../../util/questionnaireInspector';
 
 export function inputAnswer(linkId: string, answer: number | string, element: HTMLElement) {
   const input = findItem(linkId, element);
@@ -189,7 +199,7 @@ export const createMaxOccursExtension = ({ value, extension }: { extension?: Ext
   });
 };
 
-export function createIDataReceiverExpressionExtension(value: string): Extension {
+export function createDataReceiverExpressionExtension(value: string): Extension {
   return createExtension({
     url: Extensions.COPY_EXPRESSION_URL,
     valueString: value,
@@ -207,4 +217,25 @@ export function createItemControlExtension(code: string): Extension {
       ],
     },
   });
+}
+
+export function createOnChangeFuncForActionRequester(actions: (actionRequester: IActionRequester) => void) {
+  return (
+    _item: QuestionnaireItem,
+    _answer: QuestionnaireResponseItemAnswer,
+    actionRequester: IActionRequester,
+    _questionnaireInspector: IQuestionnaireInspector
+  ) => {
+    actions(actionRequester);
+  };
+}
+export function createOnChangeFuncForQuestionnaireInspector(actions: (questionnaireInspector: IQuestionnaireInspector) => void) {
+  return (
+    _item: QuestionnaireItem,
+    _answer: QuestionnaireResponseItemAnswer,
+    _actionRequester: IActionRequester,
+    questionnaireInspector: IQuestionnaireInspector
+  ) => {
+    actions(questionnaireInspector);
+  };
 }

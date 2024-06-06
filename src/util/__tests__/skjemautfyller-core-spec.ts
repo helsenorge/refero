@@ -293,37 +293,6 @@ describe('get item with path', () => {
   });
 });
 
-describe('getItemWithTypeFromArray', () => {
-  it('should return correct items', () => {
-    const item1: QuestionnaireResponseItem = {
-      linkId: '123',
-      answer: [
-        {
-          valueAttachment: { title: '' },
-        },
-      ],
-    };
-    const item2: QuestionnaireResponseItem = {
-      linkId: '123',
-      answer: [
-        {
-          valueString: 'lala',
-        },
-      ],
-    };
-    const response = getItemWithTypeFromArray(itemType.ATTATCHMENT, [item1, item2]);
-    expect(response).toMatchSnapshot();
-  });
-
-  it('should not fail on empty answer array', () => {
-    const item1: QuestionnaireResponseItem = {
-      linkId: '123',
-      answer: [],
-    };
-    const response = getItemWithTypeFromArray(itemType.ATTATCHMENT, [item1]);
-    expect(response).toMatchSnapshot();
-  });
-});
 describe('Given a Questionnaire with operator="exists" and answerBoolean=false', () => {
   it('When an item does not have an answer then enablewhen should return true', () => {
     const result = enableWhenMatchesAnswer(

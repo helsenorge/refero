@@ -11,7 +11,13 @@ import { IQuestionnaireInspector, QuestionnaireItemPair } from '../../util/quest
 import questionnaireWithAllItemTypes from './__data__/onChange/allItemTypes';
 import questionnaireWithNestedItems from './__data__/onChange/nestedItems';
 import questionnaireWithRepeats from './__data__/onChange/repeats';
-import { inputAnswer, selectRadioButtonOption, changeCheckBoxOption, findItem, findItemByDispayValue, selectBoolean } from './utils';
+import {
+  inputAnswer,
+  findItem,
+  findItemByDispayValue,
+  createOnChangeFuncForActionRequester,
+  createOnChangeFuncForQuestionnaireInspector,
+} from './utils';
 
 function toCoding(code: string, system?: string): Coding {
   return {
@@ -26,28 +32,6 @@ function toQuantity(value: number, code: string, unit: string, system?: string):
     code: code,
     unit: unit,
     system: system,
-  };
-}
-
-function createOnChangeFuncForActionRequester(actions: (actionRequester: IActionRequester) => void) {
-  return (
-    _item: QuestionnaireItem,
-    _answer: QuestionnaireResponseItemAnswer,
-    actionRequester: IActionRequester,
-    _questionnaireInspector: IQuestionnaireInspector
-  ) => {
-    actions(actionRequester);
-  };
-}
-
-function createOnChangeFuncForQuestionnaireInspector(actions: (questionnaireInspector: IQuestionnaireInspector) => void) {
-  return (
-    _item: QuestionnaireItem,
-    _answer: QuestionnaireResponseItemAnswer,
-    _actionRequester: IActionRequester,
-    questionnaireInspector: IQuestionnaireInspector
-  ) => {
-    actions(questionnaireInspector);
   };
 }
 
@@ -155,106 +139,121 @@ describe('onAnswerChange callback gets called and can request additional changes
     expect(item).toHaveValue(null);
   });
 
-  it.skip('boolean gets updated', async () => {
+  it('boolean gets updated', async () => {
     const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
       actionRequester.addBooleanAnswer('4', true);
     });
 
-    const { container } = wrapper(onChange, questionnaireWithAllItemTypes);
-    selectBoolean('1', container);
-    const updatedInput = await screen.findByDisplayValue('true');
+    const { findByLabelText, queryByLabelText } = wrapper(onChange, questionnaireWithAllItemTypes);
+    await act(async () => {
+      userEvent.click(await findByLabelText('Boolean'));
+    });
+    const updatedInput = queryByLabelText('Boolean');
     expect(updatedInput).toBeChecked();
   });
 
-  it.skip('boolean gets cleared', async () => {
+  it('boolean gets cleared', async () => {
     const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
       actionRequester.addBooleanAnswer('4', true);
       actionRequester.clearBooleanAnswer('4');
     });
 
-    const { container } = wrapper(onChange, questionnaireWithAllItemTypes);
-
-    inputAnswer('1', 0.1, container);
-    const item = findItem('4', container);
-    expect(item).not.toBeChecked();
+    const { findByLabelText, queryByLabelText } = wrapper(onChange, questionnaireWithAllItemTypes);
+    await act(async () => {
+      userEvent.click(await findByLabelText('Boolean'));
+    });
+    const updatedInput = queryByLabelText('Boolean');
+    expect(updatedInput).not.toBeChecked();
   });
 
-  it.skip('choice (radiobuttons) gets updated', async () => {
+  it('choice (radiobuttons) gets updated', async () => {
     const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
       actionRequester.addChoiceAnswer('5a', toCoding('2', 'urn:oid:2.16.578.1.12.4.1.1101'));
     });
 
-    const { container } = wrapper(onChange, questionnaireWithAllItemTypes);
+    const { findByLabelText, queryByTestId } = wrapper(onChange, questionnaireWithAllItemTypes);
     await act(async () => {
-      selectRadioButtonOption('1', 0.1, container);
+      userEvent.click(await findByLabelText('Boolean'));
     });
-    const item = findItem('5a-hn-1', container);
 
-    expect(item).toBeChecked();
+    expect(queryByTestId('item_5a-1-radio-choice-label')?.querySelector('#item_5a-hn-1')).toHaveAttribute('checked', '');
   });
 
-  it.skip('choice (radiobuttons) does not get cleared', async () => {
+  it('choice (radiobuttons) does not get cleared', async () => {
     const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
       actionRequester.addChoiceAnswer('5a', toCoding('2', 'urn:oid:2.16.578.1.12.4.1.1101'));
       actionRequester.removeChoiceAnswer('5a', toCoding('2', 'urn:oid:2.16.578.1.12.4.1.1101'));
     });
 
-    const { container } = wrapper(onChange, questionnaireWithAllItemTypes);
+    const { findByLabelText, queryByTestId } = wrapper(onChange, questionnaireWithAllItemTypes);
+    await act(async () => {
+      userEvent.click(await findByLabelText('Boolean'));
+    });
 
-    await selectRadioButtonOption('1', 0.1, container);
-    const item = findItem('5a-hn-1', container);
-
-    expect(item).toBeChecked();
+    expect(queryByTestId('item_5a-1-radio-choice-label')?.querySelector('#item_5a-hn-1')).toHaveAttribute('checked', '');
   });
 
-  it.skip('choice (checkboxes) gets updated', async () => {
+  it('choice (checkboxes) gets updated', async () => {
     const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
       actionRequester.addChoiceAnswer('5b', toCoding('2', 'urn:oid:2.16.578.1.12.4.1.1101'));
     });
 
-    const { container } = wrapper(onChange, questionnaireWithAllItemTypes);
-
-    await changeCheckBoxOption('1', '2', container);
-    const item = findItem('5b-2', container);
-
-    expect(item).toBeChecked();
+    const { findByLabelText, container } = wrapper(onChange, questionnaireWithAllItemTypes);
+    await act(async () => {
+      userEvent.click(await findByLabelText('Boolean'));
+    });
+    expect(container.querySelector('#item_5b-hn-1')).toBeChecked();
   });
 
-  it.skip('choice (checkboxes) gets cleared', async () => {
+  it('choice (checkboxes) gets cleared', async () => {
     const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
       actionRequester.addChoiceAnswer('5b', toCoding('2', 'urn:oid:2.16.578.1.12.4.1.1101'));
       actionRequester.removeChoiceAnswer('5b', toCoding('2', 'urn:oid:2.16.578.1.12.4.1.1101'));
     });
 
-    const { container } = wrapper(onChange, questionnaireWithAllItemTypes);
+    const { container, findByLabelText } = wrapper(onChange, questionnaireWithAllItemTypes);
 
-    await changeCheckBoxOption('1', '2', container);
-    const item = findItem('5b-2', container);
-    expect(item).not.toBeChecked();
+    await act(async () => {
+      userEvent.click(await findByLabelText('Boolean'));
+    });
+    expect(container.querySelector('#item_5b-hn-1')).not.toBeChecked();
   });
 
-  it.skip('openchoice (radiobuttons) gets updated', async () => {
+  it('openchoice (radiobuttons) gets updated', async () => {
     const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
       actionRequester.addOpenChoiceAnswer('6a', toCoding('2', 'urn:oid:2.16.578.1.12.4.1.1101'));
     });
 
-    const { container } = wrapper(onChange, questionnaireWithAllItemTypes);
+    const { findByLabelText, queryByTestId } = wrapper(onChange, questionnaireWithAllItemTypes);
+    await act(async () => {
+      userEvent.click(await findByLabelText('Boolean'));
+    });
 
-    await selectRadioButtonOption('1', 0.1, container);
-    const item = findItem('6a-hn-1', container);
-    expect(item).toBeChecked();
+    expect(queryByTestId('item_6a-1-radio-open-choice-label')?.querySelector('#item_6a-hn-1')).toHaveAttribute('checked', '');
   });
+  it('openchoice (radiobuttons) does not get cleared', async () => {
+    const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
+      actionRequester.addChoiceAnswer('6a', toCoding('2', 'urn:oid:2.16.578.1.12.4.1.1101'));
+      actionRequester.removeChoiceAnswer('6a', toCoding('2', 'urn:oid:2.16.578.1.12.4.1.1101'));
+    });
 
-  it.skip('openchoice (checkboxes) gets updated', async () => {
+    const { findByLabelText, queryByTestId } = wrapper(onChange, questionnaireWithAllItemTypes);
+    await act(async () => {
+      userEvent.click(await findByLabelText('Boolean'));
+    });
+
+    expect(queryByTestId('item_6a-1-radio-open-choice-label')?.querySelector('#item_6a-hn-1')).toHaveAttribute('checked', '');
+  });
+  it('openchoice (checkboxes) gets updated', async () => {
     const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
       actionRequester.addOpenChoiceAnswer('6b', toCoding('2', 'urn:oid:2.16.578.1.12.4.1.1101'));
     });
 
-    const { container } = wrapper(onChange, questionnaireWithAllItemTypes);
-
-    await changeCheckBoxOption('1', '2', container);
-    const item = findItem('6b-2', container);
-    expect(item).toBeChecked();
+    const { findByLabelText, container } = wrapper(onChange, questionnaireWithAllItemTypes);
+    await act(async () => {
+      userEvent.click(await findByLabelText('Boolean'));
+    });
+    expect(container.querySelector('#item_6b-2')).toBeChecked();
   });
 
   it.skip('date gets updated', async () => {
@@ -268,7 +267,6 @@ describe('onAnswerChange callback gets called and can request additional changes
     const item = findItem('7a-datepicker_input', container);
     expect(item).toHaveValue('17.05.2020');
   });
-
   it.skip('date gets cleared', async () => {
     const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
       actionRequester.addDateAnswer('7a', '2020-05-17');
@@ -281,7 +279,6 @@ describe('onAnswerChange callback gets called and can request additional changes
     const item = findItem('7a-datepicker_input', container);
     expect(item).toHaveValue(null);
   });
-
   it.skip('time gets updated', async () => {
     const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
       actionRequester.addTimeAnswer('7b', '12:01');
@@ -297,7 +294,6 @@ describe('onAnswerChange callback gets called and can request additional changes
     item = screen.getByLabelText('#item_7b_minutes');
     expect(item).toHaveValue('01');
   });
-
   it.skip('time gets cleared', async () => {
     const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
       actionRequester.addTimeAnswer('7b', '12:01');
@@ -314,7 +310,6 @@ describe('onAnswerChange callback gets called and can request additional changes
     item = screen.getByLabelText('#item_7b_minutes');
     expect(item).toHaveValue(null);
   });
-
   it.skip('dateTime gets updated', async () => {
     const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
       actionRequester.addDateTimeAnswer('7c', '2020-05-17T12:01:00Z');
@@ -329,7 +324,6 @@ describe('onAnswerChange callback gets called and can request additional changes
     const dateString = moment(date).locale('nb').utc().format(Constants.DATE_TIME_FORMAT);
     expect(dateString).toBe('2020-05-17T12:01:00+00:00');
   });
-
   it.skip('dateTime gets cleared', async () => {
     const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
       actionRequester.addDateTimeAnswer('7c', '2020-05-17T12:01:00Z');
@@ -345,169 +339,167 @@ describe('onAnswerChange callback gets called and can request additional changes
     expect(date).toBe(undefined);
   });
 
-  it.skip('string gets updated', async () => {
+  it('string gets updated', async () => {
     const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
       actionRequester.addStringAnswer('8', 'Hello World!');
     });
 
-    const { container } = wrapper(onChange, questionnaireWithAllItemTypes);
-
-    inputAnswer('1', 0.1, container);
-    const item = findItem('8', container);
-    expect(item).toHaveValue('Hello World!');
+    const { findByLabelText, queryByLabelText } = wrapper(onChange, questionnaireWithAllItemTypes);
+    await act(async () => {
+      userEvent.click(await findByLabelText('Boolean'));
+    });
+    expect(queryByLabelText('String')).toHaveValue('Hello World!');
   });
 
-  it.skip('string gets cleared', async () => {
+  it('string gets cleared', async () => {
     const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
       actionRequester.addStringAnswer('8', 'Hello World!');
       actionRequester.clearStringAnswer('8');
     });
 
-    const { container } = wrapper(onChange, questionnaireWithAllItemTypes);
+    const { findByLabelText, queryByText } = wrapper(onChange, questionnaireWithAllItemTypes);
 
-    inputAnswer('1', 0.1, container);
-    const item = findItem('8', container);
-    expect(item).toHaveValue(null);
+    await act(async () => {
+      userEvent.click(await findByLabelText('Boolean'));
+    });
+
+    expect(queryByText('Hello World!')).not.toBeInTheDocument();
   });
 
-  it.skip('text gets updated', async () => {
+  it('text gets updated', async () => {
     const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
       actionRequester.addStringAnswer('9', 'Hello\nWorld!');
     });
 
-    const { container } = wrapper(onChange, questionnaireWithAllItemTypes);
+    const { findByLabelText, queryByText } = wrapper(onChange, questionnaireWithAllItemTypes);
 
-    inputAnswer('1', 0.1, container);
-
-    const item = screen.getByLabelText('textarea#item_9');
-    expect(item).toHaveValue('Hello\nWorld!');
+    await act(async () => {
+      userEvent.click(await findByLabelText('Boolean'));
+    });
+    expect(queryByText(/Hello/i)).toBeInTheDocument();
   });
 
-  it.skip('can request many changes', async () => {
+  it('can request many changes', async () => {
     const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
       actionRequester.addStringAnswer('8', 'Hello World!');
       actionRequester.addIntegerAnswer('2', 42);
     });
 
-    const { container } = wrapper(onChange, questionnaireWithAllItemTypes);
+    const { findByLabelText, queryByLabelText } = wrapper(onChange, questionnaireWithAllItemTypes);
 
-    inputAnswer('1', 0.1, container);
+    await act(async () => {
+      userEvent.click(await findByLabelText('Boolean'));
+    });
+    expect(queryByLabelText('String')).toHaveValue('Hello World!');
 
-    let item = findItem('8', container);
-    expect(item).toHaveValue('Hello World!');
-
-    item = findItem('2', container);
-    expect(item).toHaveValue('42');
+    expect(queryByLabelText('Integer')).toHaveValue(42);
   });
 
-  it.skip('opencboice other option can be updated', async () => {
+  it('opencboice other option can be updated', async () => {
     const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
       actionRequester.addOpenChoiceAnswer('6a', toCoding(OPEN_CHOICE_ID));
       actionRequester.addOpenChoiceAnswer('6a', 'Hello World!');
     });
 
-    const { container } = wrapper(onChange, questionnaireWithAllItemTypes);
+    const { container, findByLabelText } = wrapper(onChange, questionnaireWithAllItemTypes);
 
-    inputAnswer('1', 0.1, container);
-
-    let item = findItem('6a-hn-2', container);
-    expect(item).toBeChecked();
-
-    item = screen.getByLabelText('textField#item_6a input');
-    expect(item).toHaveValue('Hello World!');
-  });
-
-  it.skip('can select multiple checkboxes', async () => {
-    const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
-      actionRequester.addChoiceAnswer('5b', toCoding('2', 'urn:oid:2.16.578.1.12.4.1.1101'));
-      actionRequester.addChoiceAnswer('5b', toCoding('1', 'urn:oid:2.16.578.1.12.4.1.1101'));
+    await act(async () => {
+      userEvent.click(await findByLabelText('Boolean'));
     });
 
-    const { container } = wrapper(onChange, questionnaireWithAllItemTypes);
+    const item1 = findItem('6a-hn-2', container);
+    expect(item1).toHaveAttribute('checked', '');
 
-    await changeCheckBoxOption('1', '2', container);
-
-    let item = findItem('5b-2', container);
-    expect(item).toBeChecked();
-
-    item = findItem('5b-1', container);
-    expect(item).toBeChecked();
+    const item2 = findItem('6a-extra-field', container);
+    expect(item2).toHaveValue('Hello World!');
   });
 
-  it.skip('can select and unselect multiple checkboxes', async () => {
+  it('can select multiple checkboxes', async () => {
+    const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
+      actionRequester.addChoiceAnswer('5b', toCoding('1', 'urn:oid:2.16.578.1.12.4.1.1101'));
+      actionRequester.addChoiceAnswer('5b', toCoding('2', 'urn:oid:2.16.578.1.12.4.1.1101'));
+    });
+
+    const { findByLabelText, container } = wrapper(onChange, questionnaireWithAllItemTypes);
+    await act(async () => {
+      userEvent.click(await findByLabelText('Boolean'));
+    });
+    expect(container.querySelector('#item_5b-hn-0')).toBeChecked();
+    expect(container.querySelector('#item_5b-hn-1')).toBeChecked();
+  });
+
+  it('can select and unselect multiple checkboxes', async () => {
     const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
       actionRequester.addChoiceAnswer('5b', toCoding('2', 'urn:oid:2.16.578.1.12.4.1.1101'));
       actionRequester.addChoiceAnswer('5b', toCoding('1', 'urn:oid:2.16.578.1.12.4.1.1101'));
       actionRequester.removeChoiceAnswer('5b', toCoding('2', 'urn:oid:2.16.578.1.12.4.1.1101'));
     });
 
-    const { container } = wrapper(onChange, questionnaireWithAllItemTypes);
-
-    await changeCheckBoxOption('1', '2', container);
-
-    let item = findItem('5b-2', container);
-    expect(item).not.toBeChecked();
-
-    item = findItem('5b-1', container);
-    expect(item).toBeChecked();
+    const { findByLabelText, container } = wrapper(onChange, questionnaireWithAllItemTypes);
+    await act(async () => {
+      userEvent.click(await findByLabelText('Boolean'));
+    });
+    expect(container.querySelector('#item_5b-hn-0')).toBeChecked();
+    expect(container.querySelector('#item_5b-hn-1')).not.toBeChecked();
   });
 
-  it.skip('can update repeated items', async () => {
+  it('can update repeated items', async () => {
     const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
       actionRequester.addDecimalAnswer('1', 0.1, 0);
       actionRequester.addDecimalAnswer('1', 1.1, 1);
       actionRequester.addDecimalAnswer('1', 2.1, 2);
     });
 
-    const { container } = wrapper(onChange, questionnaireWithRepeats);
+    const { queryAllByLabelText, findByLabelText } = wrapper(onChange, questionnaireWithRepeats);
 
-    inputAnswer('2', 42, container);
+    await act(async () => {
+      userEvent.type(await findByLabelText('Integer'), '1');
+    });
+    const items = queryAllByLabelText('Decimal');
+    expect(items).toHaveLength(3);
 
-    let item = findItem('1^0', container);
-    expect(item).toHaveValue('0.1');
-
-    item = findItem('1^1^1', container);
-    expect(item).toHaveValue('1.1');
-
-    item = findItem('1^2^2', container);
-    expect(item).toHaveValue('2.1');
+    expect(items[0]).toHaveValue(0.1);
+    expect(items[1]).toHaveValue(1.1);
+    expect(items[2]).toHaveValue(2.1);
   });
 
-  it.skip('can update nested items', async () => {
+  it('can update nested items', async () => {
     const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
       actionRequester.addStringAnswer('1.3.1', 'Hello');
     });
 
-    const { container } = wrapper(onChange, questionnaireWithNestedItems);
+    const { findByLabelText, queryByLabelText } = wrapper(onChange, questionnaireWithNestedItems);
 
-    inputAnswer('1.1', 0.1, container);
+    await act(async () => {
+      userEvent.type(await findByLabelText('Decimal'), '1');
+    });
 
-    const item = findItem('1.3.1', container);
-    expect(item).toHaveValue('Hello');
+    expect(queryByLabelText('String')).toHaveValue('Hello');
   });
 
-  it.skip('can update items nested under answer', async () => {
+  it('can update items nested under answer', async () => {
     const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
       actionRequester.addIntegerAnswer('1.3.1.1', 42);
     });
 
-    const { container } = wrapper(onChange, questionnaireWithAllItemTypes);
-
-    inputAnswer('1.1', 0.1, container);
-
-    const item = findItem('1.3.1.1', container);
-    expect(item).toHaveValue(42);
+    const { findByLabelText, queryByLabelText } = wrapper(onChange, questionnaireWithNestedItems);
+    await act(async () => {
+      userEvent.type(await findByLabelText('Decimal'), '1');
+    });
+    expect(queryByLabelText('nested under non-group')).toHaveValue(42);
   });
 
-  it.skip('can query to get both questionnaire and questionnaire response', async () => {
+  it('can query to get both questionnaire and questionnaire response', async () => {
     let result: QuestionnaireItemPair[] = [];
     const onChange = createOnChangeFuncForQuestionnaireInspector((questionnaireInspector: IQuestionnaireInspector) => {
       result = questionnaireInspector.findItemWithLinkIds('1.3.1.1');
     });
 
-    const { container } = wrapper(onChange, questionnaireWithNestedItems);
+    const { findByLabelText } = wrapper(onChange, questionnaireWithNestedItems);
 
-    inputAnswer('1.1', 0.1, container);
+    await act(async () => {
+      userEvent.type(await findByLabelText('Decimal'), '1');
+    });
 
     expect(result.length).toBe(1);
     expect(result[0].QuestionnaireItem.linkId).toBe('1.3.1.1');
@@ -516,28 +508,32 @@ describe('onAnswerChange callback gets called and can request additional changes
     expect(result[0].QuestionnaireResponseItems[0].item.linkId).toBe('1.3.1.1');
   });
 
-  it.skip('querying non-existant linkIds returns nothing', async () => {
+  it('querying non-existant linkIds returns nothing', async () => {
     let result: QuestionnaireItemPair[] = [];
     const onChange = createOnChangeFuncForQuestionnaireInspector((questionnaireInspector: IQuestionnaireInspector) => {
       result = questionnaireInspector.findItemWithLinkIds('xxx');
     });
 
-    const { container } = wrapper(onChange, questionnaireWithNestedItems);
+    const { findByLabelText } = wrapper(onChange, questionnaireWithNestedItems);
 
-    inputAnswer('1.1', 0.1, container);
+    await act(async () => {
+      userEvent.type(await findByLabelText('Decimal'), '1');
+    });
 
     expect(result.length).toBe(0);
   });
 
-  it.skip('can query several linkIds', async () => {
+  it('can query several linkIds', async () => {
     let result: QuestionnaireItemPair[] = [];
     const onChange = createOnChangeFuncForQuestionnaireInspector((questionnaireInspector: IQuestionnaireInspector) => {
       result = questionnaireInspector.findItemWithLinkIds('1.3.1.1', '1.1');
     });
 
-    const { container } = wrapper(onChange, questionnaireWithNestedItems);
+    const { findByLabelText } = wrapper(onChange, questionnaireWithNestedItems);
 
-    inputAnswer('1.1', 0.1, container);
+    await act(async () => {
+      userEvent.type(await findByLabelText('Decimal'), '1');
+    });
 
     expect(result.length).toBe(2);
     expect(result[0].QuestionnaireItem.linkId).toBe('1.3.1.1');
@@ -551,15 +547,17 @@ describe('onAnswerChange callback gets called and can request additional changes
     expect(result[1].QuestionnaireResponseItems[0].item.linkId).toBe('1.1');
   });
 
-  it.skip('querying for repeated items returns all responseitems', async () => {
+  it('querying for repeated items returns all responseitems', async () => {
     let result: QuestionnaireItemPair[] = [];
     const onChange = createOnChangeFuncForQuestionnaireInspector((questionnaireInspector: IQuestionnaireInspector) => {
       result = questionnaireInspector.findItemWithLinkIds('1');
     });
 
-    const { container } = wrapper(onChange, questionnaireWithRepeats);
+    const { findByLabelText } = wrapper(onChange, questionnaireWithRepeats);
 
-    inputAnswer('2', 1, container);
+    await act(async () => {
+      userEvent.type(await findByLabelText('Integer'), '1');
+    });
 
     expect(result.length).toBe(1);
     expect(result[0].QuestionnaireItem.linkId).toBe('1');

@@ -190,7 +190,7 @@ class ReceiverComponent extends React.Component<ReceiverComponentProps & FormPro
     return (
       <FormGroup error={this.props.error?.message}>
         <Controller
-          key={selectKey}
+          key={`${selectKey}-${level}`}
           name={`${this.props.idWithLinkIdAndItemIndex}-${selectKey}`}
           control={this.props.control}
           shouldUnregister={true}
@@ -243,7 +243,7 @@ class ReceiverComponent extends React.Component<ReceiverComponentProps & FormPro
     return (
       <>
         {selectConfigs.map((config, index) => {
-          return this.createSelect(config.selectOptions, index, config.key);
+          return <React.Fragment key={index}>{this.createSelect(config.selectOptions, index, config.key)}</React.Fragment>;
         })}
       </>
     );

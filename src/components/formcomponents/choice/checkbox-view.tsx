@@ -46,6 +46,7 @@ const CheckboxView: React.FC<Props> = ({
   error,
   control,
   idWithLinkIdAndItemIndex,
+  selected,
 }) => {
   const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
   const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`;
@@ -72,28 +73,30 @@ const CheckboxView: React.FC<Props> = ({
                 value: isRequired(item),
               },
             }}
-            render={({ field: { value, onChange, ...rest } }): JSX.Element => (
-              <Checkbox
-                {...rest}
-                inputId={`${id}-${option.type}`}
-                testId={`${option.type}-${index}-checkbox-choice`}
-                label={<Label labelTexts={[{ text: option.label }]} />}
-                checked={value?.some((val: string) => val === option.type)}
-                value={option.type}
-                onChange={(e): void => {
-                  const valueCopy = [...value];
-                  if (e.target.checked) {
-                    valueCopy.push(option.type);
-                  } else {
-                    const idx = valueCopy.findIndex(code => option.type === code);
-                    valueCopy?.splice(idx, 1);
-                  }
-                  onChange(valueCopy);
+            render={({ field: { value, onChange, ...rest } }): JSX.Element => {
+              return (
+                <Checkbox
+                  {...rest}
+                  inputId={`${getId(id)}-hn-${index}`}
+                  testId={`${getId(id)}-${index}-checkbox-choice`}
+                  label={<Label testId={`${getId(id)}-${index}-checkbox-choice-label`} labelTexts={[{ text: option.label }]} />}
+                  checked={selected?.some((val: string) => val === option.type)}
+                  value={option.type}
+                  onChange={(e): void => {
+                    const valueCopy = [...value];
+                    if (e.target.checked) {
+                      valueCopy.push(option.type);
+                    } else {
+                      const idx = valueCopy.findIndex(code => option.type === code);
+                      valueCopy?.splice(idx, 1);
+                    }
+                    onChange(valueCopy);
 
-                  handleChange(option.type);
-                }}
-              />
-            )}
+                    handleChange(option.type);
+                  }}
+                />
+              );
+            }}
           />
         ))}
       </FormGroup>

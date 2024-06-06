@@ -116,7 +116,6 @@ const Refero = (props: StateProps & DispatchProps & ReferoProps): JSX.Element | 
         newState.refero.form.FormDefinition.Content,
         newState.refero.form.FormData.Content
       );
-
       props.onChange(item, answer, actionRequester, questionnaireInspector);
       for (const action of actionRequester.getActions()) {
         props.dispatch(action);
@@ -200,7 +199,6 @@ const Refero = (props: StateProps & DispatchProps & ReferoProps): JSX.Element | 
     const renderedItems: Array<JSX.Element> | undefined = [];
     const isNavigatorEnabled = !!getNavigatorExtension(formDefinition.Content);
     let isNavigatorBlindzoneInitiated = false;
-
     const questionnaireItemArray: QuestionnaireItem[] | undefined = shouldFormBeDisplayedAsStepView(formDefinition)
       ? getTopLevelElements(formDefinition)
       : formDefinition.Content.item;

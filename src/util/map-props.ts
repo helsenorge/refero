@@ -14,6 +14,7 @@ import { evaluateFhirpathExpressionToGetString } from '../util/fhirpathHelper';
 
 export function mapStateToProps(state: GlobalState, originalProps: WithCommonFunctionsProps): WithCommonFunctionsProps {
   const newAnswer = getValueIfDataReceiver(state, originalProps);
+
   if (!originalProps.item || !originalProps.item.enableWhen) {
     return { ...originalProps, enable: true, ...(newAnswer !== undefined && { answer: newAnswer }) };
   }

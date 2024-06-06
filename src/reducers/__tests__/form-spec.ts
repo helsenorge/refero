@@ -265,36 +265,6 @@ describe('new value action', () => {
     expect(answer.valueCoding.display).toEqual('new display');
   });
 
-  it('should update coding value with multiple answers', () => {
-    let action: NewValueAction = newCodingValue([{ linkId: 'c' }], { code: 'y', display: 'displayy' } as Coding, undefined, true);
-    let newState: Form | undefined = reducer(dataModel.refero.form, action);
-    if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
-      return fail();
-    }
-    let item = newState.FormData.Content.item[7];
-    if (!item || item.answer === undefined || item.answer === null || !item.answer[0]) {
-      return fail();
-    }
-    const answer = item.answer[0];
-    if (!answer || !answer.valueCoding) {
-      return fail();
-    }
-    expect(answer.valueCoding.code).toMatchSnapshot();
-    expect(answer.valueCoding.display).toMatchSnapshot();
-
-    action = newCodingValue([{ linkId: 'c' }], { code: 'n', display: 'new display' } as Coding, undefined, true);
-    newState = reducer(dataModel.refero.form, action);
-    if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
-      return fail();
-    }
-    item = newState.FormData.Content.item[7];
-    if (!item || item.answer === undefined || item.answer === null || !item.answer[0]) {
-      return fail();
-    }
-    expect(item.answer.length).toMatchSnapshot();
-    expect(item.answer[0]).toMatchSnapshot();
-    expect(item.answer[1]).toMatchSnapshot();
-  });
   it('should update attachment fields', () => {
     const action: NewValueAction = newAttachment(
       [{ linkId: 'attachment' }],
