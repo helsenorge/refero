@@ -1,7 +1,9 @@
+import { QuestionnaireItem } from 'fhir/r4';
+
 import { UploadFile } from '@helsenorge/file-upload/components/file-upload';
+
 import { convertBytesToMBString } from './attachmentUtil';
 import { getValidationTextExtension } from '../../../util/extension';
-import { QuestionnaireItem } from 'fhir/r4';
 
 export const validateMinFiles = (
   files: UploadFile[],
