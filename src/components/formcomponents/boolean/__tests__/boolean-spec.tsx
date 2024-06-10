@@ -1,4 +1,4 @@
-import { Questionnaire } from 'fhir/r4';
+import { Questionnaire, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { act, findByRole, renderRefero, userEvent } from '../../../__tests__/test-utils/test-utils';
 import { q } from './__data__';
 import { getResources } from '../../../../preview/resources/referoResources';
@@ -6,6 +6,9 @@ import { ReferoProps } from '../../../../types/referoProps';
 const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle ut dette feltet' };
 
 describe('Boolean', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
   describe('Render', () => {
     it('Should render as text if props.pdf', () => {
       const { queryByTestId } = createWrapper(q, { pdf: true });
@@ -24,6 +27,37 @@ describe('Boolean', () => {
       const { queryByText } = createWrapper(q);
       expect(queryByText(/-label-readonly/i)).not.toBeInTheDocument();
       expect(queryByText(/-pdf/i)).not.toBeInTheDocument();
+    });
+  });
+  describe('initialvalue', () => {
+    it('Initial value should not be set', async () => {
+      const questionnaire: Questionnaire = {
+        ...q,
+        item: q.item?.map(x => ({
+          ...x,
+          repeats: false,
+        })),
+      };
+      const { getByLabelText } = createWrapper(questionnaire);
+
+      expect(getByLabelText(/Boolean/i)).not.toBeChecked();
+    });
+    it('Initial value should be set', async () => {
+      const questionnaire: Questionnaire = {
+        ...q,
+        item: q.item?.map(x => ({
+          ...x,
+          repeats: false,
+          initial: [
+            {
+              valueBoolean: true,
+            },
+          ],
+        })),
+      };
+      const { getByLabelText } = createWrapper(questionnaire);
+
+      expect(getByLabelText(/Boolean/i)).toBeChecked();
     });
   });
   describe('help button', () => {
@@ -167,7 +201,11 @@ describe('Boolean', () => {
       await act(async () => {
         userEvent.click(getByLabelText(/Boolean/i));
       });
+      const expectedAnswer: QuestionnaireResponseItemAnswer = {
+        valueBoolean: true,
+      };
       expect(onChange).toHaveBeenCalledTimes(1);
+      expect(onChange).toHaveBeenCalledWith(expect.any(Object), expectedAnswer, expect.any(Object), expect.any(Object));
     });
   });
 

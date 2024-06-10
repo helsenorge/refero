@@ -1,8 +1,9 @@
 {
-  "title": "Title",
   "resourceType": "Questionnaire",
   "language": "nb-NO",
+  "id": "75dc5309-00ee-4e65-bc07-0e9f87f3311c",
   "name": "Techinal_boolean",
+  "title": "Title",
   "status": "draft",
   "publisher": "NHN",
   "meta": {
@@ -61,26 +62,74 @@
       }
     }
   ],
-  "id": "75dc5309-00ee-4e65-bc07-0e9f87f3311c",
   "item": [
     {
       "linkId": "3dec9e0d-7b78-424e-8a59-f0909510985d",
       "type": "open-choice",
-      "code": [
+      "required": true,
+      "_text": {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+            "valueMarkdown": "**Dropdown view label**"
+          }
+        ]
+      },
+      "text": "Dropdown view label",
+      "extension": [
         {
-          "code": "label",
-          "display": "Display value",
-          "system": "http://helsenorge.no/fhir/CodeSystem/SliderDisplayType"
+          "url": "http://ehelse.no/fhir/StructureDefinition/repeatstext",
+          "valueString": "Legg til"
         },
         {
-          "code": "LabelLeft",
-          "display": "min",
-          "system": "http://helsenorge.no/fhir/CodeSystem/SliderLabels"
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-minOccurs",
+          "valueInteger": 1
         },
         {
-          "code": "LabelRight",
-          "display": "max",
-          "system": "http://helsenorge.no/fhir/CodeSystem/SliderLabels"
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-maxOccurs",
+          "valueInteger": 4
+        },
+        {
+          "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sublabel",
+          "valueMarkdown": "**Dropdown view sublabel**"
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                "code": "drop-down"
+              }
+            ]
+          }
+        }
+      ],
+      "repeats": true,
+      "answerOption": [
+        {
+          "valueCoding": {
+            "id": "d5646b17-bb7c-4776-8186-88011b98a0bf",
+            "code": "ja",
+            "system": "urn:uuid:791a62b0-6ca0-4cb9-8924-7d4f0a286228",
+            "display": "Ja"
+          }
+        },
+        {
+          "valueCoding": {
+            "id": "352926a9-27f8-4bc1-e394-08edc439b4d7",
+            "code": "nei",
+            "system": "urn:uuid:791a62b0-6ca0-4cb9-8924-7d4f0a286228",
+            "display": "Nei"
+          }
+        },
+        {
+          "valueCoding": {
+            "id": "540c894e-29ef-46bf-f961-851921c87d57",
+            "code": "vet-ikke",
+            "system": "urn:uuid:791a62b0-6ca0-4cb9-8924-7d4f0a286228",
+            "display": "Vet ikke"
+          }
         }
       ],
       "item": [
@@ -112,102 +161,6 @@
               }
             }
           ]
-        }
-      ],
-      "required": true,
-      "_text": {
-        "extension": [
-          {
-            "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
-            "valueMarkdown": "**Slider view label**"
-          }
-        ]
-      },
-      "text": "Slider view label",
-      "extension": [
-        {
-          "url": "http://ehelse.no/fhir/StructureDefinition/repeatstext",
-          "valueString": "Legg til"
-        },
-        {
-          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-minOccurs",
-          "valueInteger": 1
-        },
-        {
-          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-maxOccurs",
-          "valueInteger": 4
-        },
-        {
-          "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sublabel",
-          "valueMarkdown": "**Slider view sublabel**"
-        },
-        {
-          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-          "valueCodeableConcept": {
-            "coding": [
-              {
-                "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
-                "code": "slider"
-              }
-            ]
-          }
-        }
-      ],
-      "repeats": true,
-      "answerOption": [
-        {
-          "valueCoding": {
-            "id": "d5646b17-bb7c-4776-8186-88011b98a0bf",
-            "code": "ja",
-            "system": "urn:uuid:791a62b0-6ca0-4cb9-8924-7d4f0a286228",
-            "display": "Ja",
-            "extension": [
-              {
-                "url": "http://hl7.org/fhir/StructureDefinition/valueset-label",
-                "valueString": "&#9917"
-              },
-              {
-                "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
-                "valueDecimal": 1.1
-              }
-            ]
-          }
-        },
-        {
-          "valueCoding": {
-            "id": "352926a9-27f8-4bc1-e394-08edc439b4d7",
-            "code": "nei",
-            "system": "urn:uuid:791a62b0-6ca0-4cb9-8924-7d4f0a286228",
-            "display": "Nei",
-            "extension": [
-              {
-                "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
-                "valueDecimal": 2.2
-              },
-              {
-                "url": "http://hl7.org/fhir/StructureDefinition/valueset-label",
-                "valueString": "&#9917"
-              }
-            ]
-          }
-        },
-        {
-          "valueCoding": {
-            "id": "540c894e-29ef-46bf-f961-851921c87d57",
-            "code": "vet-ikke",
-            "system": "urn:uuid:791a62b0-6ca0-4cb9-8924-7d4f0a286228",
-            "display": "Vet ikke",
-            "extension": [
-              {
-                "url": "http://hl7.org/fhir/StructureDefinition/valueset-label",
-                "valueString": "&#9917"
-              },
-              {
-                "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
-                "valueDecimal": 3.3
-              }
-            ]
-          }
         }
       ]
     }

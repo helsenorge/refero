@@ -72,7 +72,7 @@ const CheckboxView: React.SFC<Props> = ({
             shouldUnregister={true}
             rules={{
               required: {
-                message: getValidationTextExtension(item) ?? resources?.formRequiredErrorMessage ?? 'Påkrevd felt',
+                message: resources?.formRequiredErrorMessage ?? 'Påkrevd felt',
                 value: isRequired(item),
               },
             }}

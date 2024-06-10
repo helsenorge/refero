@@ -15,8 +15,8 @@ import rootReducer from '../../reducers';
 import { Resources } from '../../util/resources';
 import { ReferoContainer } from '..';
 import { getCalculatedExpressionExtension } from '../../util/extension';
-import { inputAnswer, selectRadioButtonOption, findQuestionnaireItem, findItem } from './utils';
-import { act, findByTestId, queryByLabelText, renderWithRedux, screen, userEvent } from './test-utils/test-utils';
+import { inputAnswer, findQuestionnaireItem, findItem } from './utils';
+import { act, renderWithRedux, screen, userEvent } from './test-utils/test-utils';
 
 describe('Component renders and calculates score', () => {
   beforeEach(() => {
@@ -329,10 +329,10 @@ describe('Code Scoring', () => {
   });
 
   it('Total QS scoring', async () => {
-    const { findByText } = createWrapper(CodeScoreDataModel);
+    const { findByText, findByLabelText } = createWrapper(CodeScoreDataModel);
 
-    userEvent.click(await screen.findByLabelText('Astma'));
-    userEvent.click(await screen.findByLabelText('Feber'));
+    userEvent.click(await findByLabelText('Astma'));
+    userEvent.click(await findByLabelText('Feber'));
 
     expect(await findByText('35 score')).toBeInTheDocument();
   });

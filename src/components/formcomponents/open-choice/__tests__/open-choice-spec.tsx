@@ -1,4 +1,4 @@
-import { renderRefero, waitFor } from './test-utils/test-utils';
+import { renderRefero, waitFor } from '../../../__tests__/test-utils/test-utils';
 import '@testing-library/jest-dom/extend-expect';
 import {
   QuestionnaireItem,
@@ -9,13 +9,13 @@ import {
   QuestionnaireResponse,
   QuestionnaireResponseItem,
 } from 'fhir/r4';
-import itemType from '../../constants/itemType';
-import '../../util/defineFetch';
-import { createItemControlExtension } from '../__tests__/utils';
-import { OPEN_CHOICE_ID, OPEN_CHOICE_SYSTEM, OPEN_CHOICE_LABEL } from '../../constants';
-import { generateQuestionnaireResponse } from '../../actions/generateQuestionnaireResponse';
-import ItemType from '../../constants/itemType';
-import itemcontrol from '../../constants/itemcontrol';
+import itemType from '../../../../constants/itemType';
+import '../../../../util/defineFetch';
+import { createItemControlExtension } from '../../../__tests__/utils';
+import { OPEN_CHOICE_ID, OPEN_CHOICE_SYSTEM, OPEN_CHOICE_LABEL } from '../../../../constants';
+import { generateQuestionnaireResponse } from '../../../../actions/generateQuestionnaireResponse';
+import ItemType from '../../../../constants/itemType';
+import itemcontrol from '../../../../constants/itemcontrol';
 
 describe('Open-Choice component render', () => {
   beforeEach(() => {

@@ -109,10 +109,10 @@ export const Text = (props: Props): JSX.Element | null => {
 
   //   return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats || answerHasChanged || newErrorMessage;
   // }
-
-  const onTextAreaChange = (event: React.FormEvent<HTMLTextAreaElement>): void => {
+  const debouncedHandleChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => void = debounce(handleChange, 250, false);
+  const onTextAreaChange = (event: React.ChangeEvent<HTMLTextAreaElement>): void => {
     event.persist();
-    debounce(() => handleChange(event), 250, false);
+    debouncedHandleChange(event);
   };
 
   const itemControls = getItemControlExtensionValue(item);

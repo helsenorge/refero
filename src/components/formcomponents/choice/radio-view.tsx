@@ -9,7 +9,6 @@ import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
 import RadioButton from '@helsenorge/designsystem-react/components/RadioButton';
 
-import { getValidationTextExtension } from '../../../util/extension';
 import { isRequired, getId, getSublabelText, getText, renderPrefix } from '../../../util/index';
 import { Resources } from '../../../util/resources';
 import { FormProps } from '../../../validation/ReactHookFormHoc';
@@ -70,7 +69,7 @@ const RadioView: React.FC<Props> = ({
             rules={{
               required: {
                 value: isRequired(item),
-                message: getValidationTextExtension(item) ?? resources?.formRequiredErrorMessage ?? 'Feltet må fylles ut',
+                message: resources?.formRequiredErrorMessage ?? 'Feltet må fylles ut',
               },
             }}
             render={({ field: { onChange, ...rest } }): JSX.Element => (

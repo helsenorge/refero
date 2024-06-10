@@ -1,5 +1,5 @@
 import '@testing-library/jest-dom/extend-expect';
-import { Questionnaire, QuestionnaireItem, QuestionnaireResponse, ValueSet } from 'fhir/r4';
+import { Questionnaire, QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItemAnswer, ValueSet } from 'fhir/r4';
 
 import { fireEvent, waitFor, userEvent, renderRefero, act, findByRole } from '../../../__tests__/test-utils/test-utils';
 import { q } from './__data__/index';
@@ -31,6 +31,9 @@ const successReturnValueSet: ValueSet = {
   },
 };
 describe('autosuggest-view', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
   describe('help button', () => {
     it('Should render helpButton', async () => {
       const { container } = renderRefero({ questionnaire: q });
@@ -303,25 +306,34 @@ describe('autosuggest-view', () => {
 
     expect(queryByText(/ Prøv med et annet ord eller sjekk for skrivefeil/i)).not.toBeInTheDocument();
   });
+  describe('onChange', () => {
+    it('skal kalle handleChange når bruker velger noe i listen', async () => {
+      const onChange = jest.fn();
+      const fetchValueSet = (
+        _searchString: string,
+        _item: QuestionnaireItem,
+        successCallback: (valueSet: ValueSet) => void,
+        _errorCallback: (error: string) => void
+      ) => {
+        successCallback(successReturnValueSet);
+      };
+      const { getByLabelText, getByText } = renderRefero({ questionnaire: q, props: { onChange, fetchValueSet } });
 
-  it('skal kalle handleChange når bruker velger noe i listen', async () => {
-    const onChange = jest.fn();
-    const fetchValueSet = (
-      _searchString: string,
-      _item: QuestionnaireItem,
-      successCallback: (valueSet: ValueSet) => void,
-      _errorCallback: (error: string) => void
-    ) => {
-      successCallback(successReturnValueSet);
-    };
-    const { getByLabelText, getByText } = renderRefero({ questionnaire: q, props: { onChange, fetchValueSet } });
-
-    expect(getByLabelText('Mistenkt legemiddel')).toBeInTheDocument();
-    await act(async () => {
-      userEvent.type(getByLabelText('Mistenkt legemiddel'), 't');
+      expect(getByLabelText('Mistenkt legemiddel')).toBeInTheDocument();
+      await act(async () => {
+        userEvent.type(getByLabelText('Mistenkt legemiddel'), 't');
+      });
+      await act(async () => userEvent.click(getByText('Fyrstekake')));
+      const expectedAnswer: QuestionnaireResponseItemAnswer = {
+        valueCoding: {
+          code: '1',
+          system: 'http://helsedirektoratet.no/ValueSet/legemiddeloppslag',
+          display: 'Fyrstekake',
+        },
+      };
+      expect(onChange).toHaveBeenCalledTimes(1);
+      expect(onChange).toHaveBeenCalledWith(expect.any(Object), expectedAnswer, expect.any(Object), expect.any(Object));
     });
-    fireEvent.click(getByText('Fyrstekake'));
-    await waitFor(() => expect(onChange).toHaveBeenCalled());
   });
 
   it('skal vise feilmelding dersom valg ikke kunne lastes', async () => {

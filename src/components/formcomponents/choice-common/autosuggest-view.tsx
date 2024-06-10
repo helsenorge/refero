@@ -47,6 +47,8 @@ export interface AutosuggestProps extends WithCommonFunctionsAndEnhancedProps, F
 }
 
 const AutosuggestView = (props: AutosuggestProps): JSX.Element | null => {
+  const { control, resources, item, onRenderMarkdown, questionnaire, id, renderHelpButton, renderHelpElement, idWithLinkIdAndItemIndex } =
+    props;
   const codingAnswer = getCodingAnswer(props.answer);
   const initialInputValue =
     codingAnswer?.code === OPEN_CHOICE_ID && codingAnswer?.system === OPEN_CHOICE_SYSTEM
@@ -172,8 +174,6 @@ const AutosuggestView = (props: AutosuggestProps): JSX.Element | null => {
     }
   };
 
-  const { control, resources, item, onRenderMarkdown, questionnaire, id, renderHelpButton, renderHelpElement, idWithLinkIdAndItemIndex } =
-    props;
   const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
   const labelText = getLabelText(item, onRenderMarkdown, questionnaire, resources);
   return (

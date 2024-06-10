@@ -65,24 +65,7 @@
   "item": [
     {
       "linkId": "3dec9e0d-7b78-424e-8a59-f0909510985d",
-      "type": "open-choice",
-      "code": [
-        {
-          "code": "label",
-          "display": "Display value",
-          "system": "http://helsenorge.no/fhir/CodeSystem/SliderDisplayType"
-        },
-        {
-          "code": "LabelLeft",
-          "display": "min",
-          "system": "http://helsenorge.no/fhir/CodeSystem/SliderLabels"
-        },
-        {
-          "code": "LabelRight",
-          "display": "max",
-          "system": "http://helsenorge.no/fhir/CodeSystem/SliderLabels"
-        }
-      ],
+      "type": "choice",
       "item": [
         {
           "linkId": "f799ebd5-7cac-4d15-8b84-2e6037124401",
@@ -115,16 +98,57 @@
         }
       ],
       "required": true,
+      "answerOption": [
+        {
+          "valueCoding": {
+            "id": "30008dd7-3713-42cd-86c2-da0d3cd5c4c9",
+            "code": "ja",
+            "system": "urn:uuid:b4d3b26f-e0cc-4d56-9574-aea793dc7c4c",
+            "display": "Ja"
+          }
+        },
+        {
+          "valueCoding": {
+            "id": "9719c30a-7a75-46d6-a7b3-edbae7070720",
+            "code": "nei",
+            "system": "urn:uuid:b4d3b26f-e0cc-4d56-9574-aea793dc7c4c",
+            "display": "Nei"
+          }
+        },
+        {
+          "valueCoding": {
+            "id": "79485049-32ba-4e21-9a85-49935cd336cd",
+            "code": "vet-ikke",
+            "system": "urn:uuid:b4d3b26f-e0cc-4d56-9574-aea793dc7c4c",
+            "display": "Vet ikke"
+          }
+        }
+      ],
       "_text": {
         "extension": [
           {
             "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
-            "valueMarkdown": "**Slider view label**"
+            "valueMarkdown": "**Checkbox view label**"
           }
         ]
       },
-      "text": "Slider view label",
+      "text": "Checkbox view label",
       "extension": [
+        {
+          "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sublabel",
+          "valueMarkdown": "**Checkbox view sublabel**"
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                "code": "check-box"
+              }
+            ]
+          }
+        },
         {
           "url": "http://ehelse.no/fhir/StructureDefinition/repeatstext",
           "valueString": "Legg til"
@@ -136,80 +160,9 @@
         {
           "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-maxOccurs",
           "valueInteger": 4
-        },
-        {
-          "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sublabel",
-          "valueMarkdown": "**Slider view sublabel**"
-        },
-        {
-          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-          "valueCodeableConcept": {
-            "coding": [
-              {
-                "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
-                "code": "slider"
-              }
-            ]
-          }
         }
       ],
-      "repeats": true,
-      "answerOption": [
-        {
-          "valueCoding": {
-            "id": "d5646b17-bb7c-4776-8186-88011b98a0bf",
-            "code": "ja",
-            "system": "urn:uuid:791a62b0-6ca0-4cb9-8924-7d4f0a286228",
-            "display": "Ja",
-            "extension": [
-              {
-                "url": "http://hl7.org/fhir/StructureDefinition/valueset-label",
-                "valueString": "&#9917"
-              },
-              {
-                "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
-                "valueDecimal": 1.1
-              }
-            ]
-          }
-        },
-        {
-          "valueCoding": {
-            "id": "352926a9-27f8-4bc1-e394-08edc439b4d7",
-            "code": "nei",
-            "system": "urn:uuid:791a62b0-6ca0-4cb9-8924-7d4f0a286228",
-            "display": "Nei",
-            "extension": [
-              {
-                "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
-                "valueDecimal": 2.2
-              },
-              {
-                "url": "http://hl7.org/fhir/StructureDefinition/valueset-label",
-                "valueString": "&#9917"
-              }
-            ]
-          }
-        },
-        {
-          "valueCoding": {
-            "id": "540c894e-29ef-46bf-f961-851921c87d57",
-            "code": "vet-ikke",
-            "system": "urn:uuid:791a62b0-6ca0-4cb9-8924-7d4f0a286228",
-            "display": "Vet ikke",
-            "extension": [
-              {
-                "url": "http://hl7.org/fhir/StructureDefinition/valueset-label",
-                "valueString": "&#9917"
-              },
-              {
-                "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue",
-                "valueDecimal": 3.3
-              }
-            ]
-          }
-        }
-      ]
+      "repeats": true
     }
   ]
 }

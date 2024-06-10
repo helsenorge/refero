@@ -58,9 +58,22 @@ export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
 }
 
 export const String = (props: Props): JSX.Element | null => {
+  const {
+    dispatch,
+    promptLoginMessage,
+    path,
+    item,
+    onAnswerChange,
+    id,
+    questionnaire,
+    pdf,
+    resources,
+    answer,
+    onRenderMarkdown,
+    control,
+    idWithLinkIdAndItemIndex,
+  } = props;
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    const { dispatch, promptLoginMessage, path, item, onAnswerChange } = props;
-
     const value = event.target.value;
     if (dispatch) {
       dispatch(newStringValueAsync(props.path, value, props.item))?.then(newState => {
@@ -87,7 +100,6 @@ export const String = (props: Props): JSX.Element | null => {
   //   return getTextValidationErrorMessage(value, props.validateScriptInjection, props.item, props.resources);
   // };
 
-  const { id, item, questionnaire, pdf, resources, answer, onRenderMarkdown, control, idWithLinkIdAndItemIndex } = props;
   if (pdf || isReadOnly(item)) {
     return (
       <TextView
@@ -109,9 +121,11 @@ export const String = (props: Props): JSX.Element | null => {
   const minLength = getMinLengthExtensionValue(item);
   const pattern = getRegexExtension(item);
   const errorMessage = getValidationTextExtension(item);
+  const debouncedHandleChange: (event: React.ChangeEvent<HTMLInputElement>) => void = debounce(handleChange, 250, false);
+
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     event.persist();
-    debounce(() => handleChange(event), 250, false);
+    debouncedHandleChange(event);
   };
   const value = getStringValue(answer);
   return (

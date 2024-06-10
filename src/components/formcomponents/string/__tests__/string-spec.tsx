@@ -3,7 +3,7 @@ import { findByRole, renderRefero, userEvent } from '../../../__tests__/test-uti
 import { act } from 'react-dom/test-utils';
 import { qScriptInjection, q } from './__data__/';
 
-import { Questionnaire } from 'fhir/r4';
+import { Questionnaire, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { ReferoProps } from '../../../../types/referoProps';
 import { getResources } from '../../../../preview/resources/referoResources';
 import { Extensions } from '../../../../constants/extensions';
@@ -13,6 +13,9 @@ jest.mock('@helsenorge/core-utils/debounce', () => ({
 }));
 const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle ut dette feltet' };
 describe('string', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
   describe('Render', () => {
     it('Should render as text if props.pdf', () => {
       const questionnaire: Questionnaire = {
@@ -38,6 +41,37 @@ describe('string', () => {
       };
       const { queryByText } = createWrapper(questionnaire);
       expect(queryByText(resources.ikkeBesvart)).not.toBeInTheDocument();
+    });
+  });
+  describe('initialvalue', () => {
+    it('Initial value should not be set', async () => {
+      const questionnaire: Questionnaire = {
+        ...q,
+        item: q.item?.map(x => ({
+          ...x,
+          repeats: false,
+        })),
+      };
+      const { getByLabelText } = createWrapper(questionnaire);
+
+      expect(getByLabelText(/String/i)).toHaveValue('');
+    });
+    it('Initial value should be set', async () => {
+      const questionnaire: Questionnaire = {
+        ...q,
+        item: q.item?.map(x => ({
+          ...x,
+          repeats: false,
+          initial: [
+            {
+              valueString: 'test',
+            },
+          ],
+        })),
+      };
+      const { getByLabelText } = createWrapper(questionnaire);
+
+      expect(getByLabelText(/String/i)).toHaveValue('test');
     });
   });
   describe('help button', () => {
@@ -157,6 +191,44 @@ describe('string', () => {
       userEvent.click(await findByRole(confirmModal, 'button', { name: /Forkast endringer/i }));
 
       expect(queryByTestId(/-delete-button/i)).not.toBeInTheDocument();
+    });
+  });
+
+  describe('onChange', () => {
+    it('Should update component with value from answer', async () => {
+      const questionnaire: Questionnaire = {
+        ...q,
+        item: q.item?.map(x => ({
+          ...x,
+          repeats: false,
+        })),
+      };
+      const { getByLabelText } = createWrapper(questionnaire);
+
+      const inputElement = getByLabelText(/String/i);
+      expect(inputElement).toBeInTheDocument();
+      expect(inputElement).toHaveAttribute('type', 'text');
+      expect(inputElement).toHaveAttribute('id', `item_${q?.item?.[0].linkId}`);
+      userEvent.type(inputElement, '123');
+
+      expect(getByLabelText(/String/i)).toHaveValue('123');
+    });
+    it('Should call onChange with correct value', async () => {
+      const questionnaire: Questionnaire = {
+        ...q,
+      };
+      const onChange = jest.fn();
+      const { getByLabelText } = createWrapper(questionnaire, { onChange });
+      expect(getByLabelText(/String/i)).toBeInTheDocument();
+      const input = 'string';
+      await act(async () => {
+        await userEvent.type(getByLabelText(/String/i), input);
+      });
+      const expectedAnswer: QuestionnaireResponseItemAnswer = {
+        valueString: input,
+      };
+      expect(onChange).toHaveBeenCalledTimes(input.length);
+      expect(onChange).toHaveBeenCalledWith(expect.any(Object), expectedAnswer, expect.any(Object), expect.any(Object));
     });
   });
   describe('Validation', () => {

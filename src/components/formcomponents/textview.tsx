@@ -17,7 +17,7 @@ interface Props {
 
 const textView: React.FC<Props> = ({ id, item, value, textClass, children, onRenderMarkdown, helpButton, helpElement }) => {
   return (
-    <div id={getId(id)}>
+    <div data-testid={`${getId(id)}-text-view`} id={getId(id)}>
       <>
         <b
           dangerouslySetInnerHTML={{

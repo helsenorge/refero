@@ -1,4 +1,4 @@
-import { Questionnaire } from 'fhir/r4';
+import { Questionnaire, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { act, findByRole, renderRefero, userEvent } from '../../../__tests__/test-utils/test-utils';
 import { q } from './__data__';
 import { ReferoProps } from '../../../../types/referoProps';
@@ -39,6 +39,42 @@ describe('Quantity', () => {
       };
       const { queryByText } = createWrapper(questionnaire);
       expect(queryByText('centimeter')).toBeInTheDocument();
+    });
+  });
+  describe('initialvalue', () => {
+    it('Initial value should not be set', async () => {
+      const questionnaire: Questionnaire = {
+        ...q,
+        item: q.item?.map(x => ({
+          ...x,
+          repeats: false,
+        })),
+      };
+      const { getByLabelText } = createWrapper(questionnaire);
+
+      expect(getByLabelText(/Quantity/i)).toHaveValue(null);
+    });
+    it('Initial value should be set', async () => {
+      const questionnaire: Questionnaire = {
+        ...q,
+        item: q.item?.map(x => ({
+          ...x,
+          repeats: false,
+          initial: [
+            {
+              valueQuantity: {
+                code: 'cm',
+                system: 'http://unitsofmeasure.org',
+                unit: 'centimeter',
+                value: 12.3,
+              },
+            },
+          ],
+        })),
+      };
+      const { getByLabelText } = createWrapper(questionnaire);
+
+      expect(getByLabelText(/Quantity/i)).toHaveValue(12.3);
     });
   });
   describe('help button', () => {
@@ -214,7 +250,16 @@ describe('Quantity', () => {
       await act(async () => {
         userEvent.type(getByLabelText(/Quantity/i), '1');
       });
+      const expectedAnswer: QuestionnaireResponseItemAnswer = {
+        valueQuantity: {
+          code: 'cm',
+          system: 'http://unitsofmeasure.org',
+          unit: 'centimeter',
+          value: 1,
+        },
+      };
       expect(onChange).toHaveBeenCalledTimes(1);
+      expect(onChange).toHaveBeenCalledWith(expect.any(Object), expectedAnswer, expect.any(Object), expect.any(Object));
     });
   });
   describe('Validation', () => {

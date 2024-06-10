@@ -4,13 +4,14 @@ import { QuestionnaireItem, QuestionnaireItemAnswerOption, QuestionnaireResponse
 import { Controller } from 'react-hook-form';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
+import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
 import { Slider, SliderStep } from '@helsenorge/designsystem-react/components/Slider';
 
 import codeSystems from '../../../constants/codingsystems';
 import { Extensions } from '../../../constants/extensions';
-import { getId, isRequired } from '../../../util';
+import { getId, getLabelText, getSublabelText, isRequired } from '../../../util';
 import { getCodes as getCodingSystemCodes } from '../../../util/codingsystem';
-import { getExtension, getMaxValueExtensionValue, getMinValueExtensionValue, getValidationTextExtension } from '../../../util/extension';
+import { getExtension, getValidationTextExtension } from '../../../util/extension';
 import { isString } from '../../../util/typeguards';
 import { FormProps } from '../../../validation/ReactHookFormHoc';
 import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
@@ -30,12 +31,24 @@ enum SliderDisplayTypes {
 
 type LeftRightLabels = { leftLabel: string; rightLabel: string };
 
-const SliderView: React.FC<SliderProps> = ({ item, handleChange, selected, children, control, resources, idWithLinkIdAndItemIndex }) => {
-  const title = item.text;
-
+const SliderView: React.FC<SliderProps> = ({
+  item,
+  questionnaire,
+  onRenderMarkdown,
+  handleChange,
+  selected,
+  children,
+  resources,
+  idWithLinkIdAndItemIndex,
+  id,
+  renderHelpElement,
+  renderHelpButton,
+  renderDeleteButton,
+  repeatButton,
+  error,
+}) => {
   const onValueChange = (index: number): void => {
     const code = item.answerOption?.[index]?.valueCoding?.code;
-
     if (code) {
       handleChange(code);
     }
@@ -46,16 +59,14 @@ const SliderView: React.FC<SliderProps> = ({ item, handleChange, selected, child
       const stepCodes = getCodes(item.answerOption);
       for (let i = 0; i < stepCodes.length; i++) {
         if (stepCodes[i] === selected[0]) {
-          const selectedStepIndex = i;
-          return selectedStepIndex;
+          return i;
         }
       }
     } else {
       return undefined;
     }
   };
-  const minValue = getMinValueExtensionValue(item);
-  const maxValue = getMaxValueExtensionValue(item);
+
   const displayType = getCodingSystemCodes(item, codeSystems.SliderDisplayType);
   const sliderSteps = item?.answerOption?.map(option =>
     mapToSliderStep(option, (displayType?.[0]?.code as SliderDisplayTypes) || SliderDisplayTypes.OrdinalValue)
@@ -63,47 +74,51 @@ const SliderView: React.FC<SliderProps> = ({ item, handleChange, selected, child
   const leftRightLabels = getLeftRightLabels(item);
   return (
     <div className="page_refero__component page_refero__component_choice page_refero__component_choice_slider">
-      <Controller
-        name={idWithLinkIdAndItemIndex}
-        shouldUnregister={true}
-        control={control}
-        rules={{
-          required: {
-            message: getValidationTextExtension(item) ?? resources?.formRequiredErrorMessage ?? 'Påkrevd felt',
-            value: isRequired(item),
-          },
-          ...(minValue && {
-            min: {
-              message: getValidationTextExtension(item) ?? '',
-              value: minValue,
+      <FormGroup mode="ongrey" error={error?.message}>
+        {renderHelpElement()}
+        <Label
+          className="page_refero__label"
+          testId={`${getId(id)}-slider-choice-label`}
+          labelTexts={[{ text: getLabelText(item, onRenderMarkdown, questionnaire, resources), type: 'semibold' }]}
+          sublabel={
+            <Sublabel
+              id="select-sublabel"
+              sublabelTexts={[{ text: getSublabelText(item, onRenderMarkdown, questionnaire, resources), type: 'normal' }]}
+            />
+          }
+          afterLabelChildren={renderHelpButton()}
+        />
+        <Controller
+          name={idWithLinkIdAndItemIndex}
+          shouldUnregister={true}
+          rules={{
+            required: {
+              message: getValidationTextExtension(item) ?? resources?.formRequiredErrorMessage ?? 'Påkrevd felt',
+              value: isRequired(item),
             },
-          }),
-          ...(maxValue && {
-            min: {
-              message: getValidationTextExtension(item) ?? '',
-              value: maxValue,
-            },
-          }),
-        }}
-        render={({ field, fieldState: { error } }): JSX.Element => (
-          <FormGroup mode="ongrey" error={error?.message}>
+          }}
+          render={({ field: { onChange, ...rest } }): JSX.Element => (
             <Slider
-              title={title}
+              {...rest}
               labelLeft={leftRightLabels?.leftLabel}
               labelRight={leftRightLabels?.rightLabel}
               steps={sliderSteps}
               testId={getId(item.linkId)}
-              onChange={(e): void => {
-                onValueChange(e);
-                field.onChange(e);
+              onChange={(value): void => {
+                if (!isNaN(value)) {
+                  onValueChange(value);
+                  onChange(value);
+                }
               }}
               selected={selected && selected[0] ? true : false}
               value={getSelectedStep()}
             />
-          </FormGroup>
-        )}
-      />
-      {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : undefined}
+          )}
+        />
+        {renderDeleteButton && renderDeleteButton('page_refero__deletebutton--margin-top')}
+        {repeatButton}
+        {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : undefined}
+      </FormGroup>
     </div>
   );
 };

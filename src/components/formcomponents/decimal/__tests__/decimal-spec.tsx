@@ -1,4 +1,4 @@
-import { Questionnaire } from 'fhir/r4';
+import { Questionnaire, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { act, findByRole, renderRefero, userEvent } from '../../../__tests__/test-utils/test-utils';
 import { q } from './__data__';
 import { ReferoProps } from '../../../../types/referoProps';
@@ -28,6 +28,37 @@ describe('Decimal', () => {
     it('Should render as input if props.pdf === false && item is not readonly', () => {
       const { queryByText } = createWrapper(q);
       expect(queryByText('Ikke besvart')).not.toBeInTheDocument();
+    });
+  });
+  describe('initialvalue', () => {
+    it('Initial value should not be set', async () => {
+      const questionnaire: Questionnaire = {
+        ...q,
+        item: q.item?.map(x => ({
+          ...x,
+          repeats: false,
+        })),
+      };
+      const { getByLabelText } = createWrapper(questionnaire);
+
+      expect(getByLabelText(/Decimal/i)).toHaveValue(null);
+    });
+    it('Initial value should be set', async () => {
+      const questionnaire: Questionnaire = {
+        ...q,
+        item: q.item?.map(x => ({
+          ...x,
+          repeats: false,
+          initial: [
+            {
+              valueDecimal: 12.3,
+            },
+          ],
+        })),
+      };
+      const { getByLabelText } = createWrapper(questionnaire);
+
+      expect(getByLabelText(/Decimal/i)).toHaveValue(12.3);
     });
   });
   describe('help button', () => {
@@ -167,9 +198,13 @@ describe('Decimal', () => {
       const { getByLabelText } = createWrapper(q, { onChange });
       expect(getByLabelText(/Decimal/i)).toBeInTheDocument();
       await act(async () => {
-        userEvent.type(getByLabelText(/Decimal/i), '1');
+        userEvent.type(getByLabelText(/Decimal/i), '1.2');
       });
-      expect(onChange).toHaveBeenCalledTimes(1);
+      const expectedAnswer: QuestionnaireResponseItemAnswer = {
+        valueDecimal: 1.2,
+      };
+      expect(onChange).toHaveBeenCalledTimes(2);
+      expect(onChange).toHaveBeenCalledWith(expect.any(Object), expectedAnswer, expect.any(Object), expect.any(Object));
     });
   });
   describe('Validation', () => {

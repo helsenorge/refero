@@ -9,8 +9,7 @@ import Checkbox from '@helsenorge/designsystem-react/components/Checkbox';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
 
-import { getValidationTextExtension } from '../../../util/extension';
-import { getId, getSublabelText, getText, isRequired, renderPrefix } from '../../../util/index';
+import { getId, getLabelText, getSublabelText, isRequired } from '../../../util/index';
 import { Resources } from '../../../util/resources';
 import { FormProps } from '../../../validation/ReactHookFormHoc';
 import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
@@ -44,12 +43,11 @@ const CheckboxView: React.FC<Props> = ({
   renderHelpElement,
   onRenderMarkdown,
   error,
-  control,
   idWithLinkIdAndItemIndex,
   selected,
 }) => {
   const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
-  const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`;
+  const labelText = getLabelText(item, onRenderMarkdown, questionnaire, resources);
 
   return (
     <div className="page_refero__component page_refero__component_choice page_refero__component_choice_checkbox">
@@ -65,11 +63,10 @@ const CheckboxView: React.FC<Props> = ({
           <Controller
             name={idWithLinkIdAndItemIndex}
             key={`${option.type}-${index}`}
-            control={control}
             shouldUnregister={true}
             rules={{
               required: {
-                message: getValidationTextExtension(item) ?? resources?.formRequiredErrorMessage ?? 'Påkrevd felt',
+                message: resources?.formRequiredErrorMessage ?? 'Påkrevd felt',
                 value: isRequired(item),
               },
             }}

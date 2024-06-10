@@ -227,6 +227,7 @@ export default function withCommonFunctions<T extends WithCommonFunctionsProps>(
       return (
         <Collapse isOpened={isHelpVisible}>
           <div
+            data-testid={`${helpItem.linkId}-help-element`}
             className={collapseClasses}
             dangerouslySetInnerHTML={{
               __html: DOMPurify.sanitize(`${getText(helpItem)}`, { RETURN_TRUSTED_TYPE: true, ADD_ATTR: ['target'] }) as unknown as string,

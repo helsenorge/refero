@@ -1,16 +1,19 @@
-import { Questionnaire, QuestionnaireResponseItemAnswer } from 'fhir/r4';
+import { Questionnaire } from 'fhir/r4';
 import { act, findByRole, renderRefero, userEvent } from '../../../__tests__/test-utils/test-utils';
-import { q } from './__data__';
+import { dropdownView as q } from './__data__/index';
 import { ReferoProps } from '../../../../types/referoProps';
 import { getResources } from '../../../../preview/resources/referoResources';
 import { Extensions } from '../../../../constants/extensions';
 
-const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle ut dette feltet' };
-
-describe('Integer', () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
+const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle ut dette feltet', oppgiGyldigVerdi: 'ikke gyldig tall' };
+const expectedAnswer = {
+  valueCoding: {
+    code: 'ja',
+    display: 'Ja',
+    system: 'urn:uuid:791a62b0-6ca0-4cb9-8924-7d4f0a286228',
+  },
+};
+describe('Dropdown-view - choice', () => {
   describe('Render', () => {
     it('Should render as text if props.pdf', () => {
       const { queryByText } = createWrapper(q, { pdf: true });
@@ -30,37 +33,6 @@ describe('Integer', () => {
       expect(queryByText(resources.ikkeBesvart)).not.toBeInTheDocument();
     });
   });
-  describe('initialvalue', () => {
-    it('Initial value should be set', async () => {
-      const questionnaire: Questionnaire = {
-        ...q,
-        item: q.item?.map(x => ({
-          ...x,
-          repeats: false,
-        })),
-      };
-      const { getByLabelText } = createWrapper(questionnaire);
-
-      expect(getByLabelText(/Integer/i)).toHaveValue(null);
-    });
-    it('Initial value should be set', async () => {
-      const questionnaire: Questionnaire = {
-        ...q,
-        item: q.item?.map(x => ({
-          ...x,
-          repeats: false,
-          initial: [
-            {
-              valueInteger: 123,
-            },
-          ],
-        })),
-      };
-      const { getByLabelText } = createWrapper(questionnaire);
-
-      expect(getByLabelText(/Integer/i)).toHaveValue(123);
-    });
-  });
   describe('help button', () => {
     it('Should render helpButton', async () => {
       const { container } = createWrapper(q);
@@ -73,7 +45,6 @@ describe('Integer', () => {
       expect(container.querySelector('.page_refero__helpButton')).toBeInTheDocument();
 
       expect(container.querySelector('.page_refero__helpComponent--open')).not.toBeInTheDocument();
-
       const helpButton = container.querySelector('.page_refero__helpButton');
       if (helpButton) userEvent.click(helpButton);
 
@@ -112,14 +83,13 @@ describe('Integer', () => {
           return y;
         }),
       };
-      const { getByTestId, queryAllByLabelText, queryByTestId } = createWrapper(questionnaire);
+      const { getByTestId, queryAllByText, queryByTestId } = createWrapper(questionnaire);
       act(() => {
         userEvent.click(getByTestId(/-repeat-button/i));
         userEvent.click(getByTestId(/-repeat-button/i));
         userEvent.click(getByTestId(/-repeat-button/i));
       });
-
-      expect(queryAllByLabelText(/Integer/i)).toHaveLength(4);
+      expect(queryAllByText(/Dropdown view label/i)).toHaveLength(4);
       expect(queryByTestId(/-repeat-button/i)).not.toBeInTheDocument();
     });
   });
@@ -180,43 +150,58 @@ describe('Integer', () => {
       expect(queryByTestId(/-delete-button/i)).not.toBeInTheDocument();
     });
   });
+  describe('initialvalue', () => {
+    it('Initial value should not be set', async () => {
+      const questionnaire: Questionnaire = {
+        ...q,
+        item: q.item?.map(x => ({
+          ...x,
+          repeats: false,
+        })),
+      };
+      const { getByRole } = createWrapper(questionnaire);
+      expect((getByRole('option', { name: 'Velg...' }) as HTMLOptionElement).selected).toBe(true);
+    });
+    it('Initial value should be set', async () => {
+      const questionnaire: Questionnaire = {
+        ...q,
+        item: q.item?.map(x => ({
+          ...x,
+          repeats: false,
+          initial: [expectedAnswer],
+        })),
+      };
+      const { getByRole } = createWrapper(questionnaire);
+      expect((getByRole('option', { name: 'Ja' }) as HTMLOptionElement).selected).toBe(true);
+    });
+  });
   describe('onChange', () => {
     it('Should update component with value from answer', async () => {
       const questionnaire: Questionnaire = {
         ...q,
-        item: q.item?.map(x => ({
-          ...x,
-          repeats: false,
-        })),
+        item: q.item?.map(x => ({ ...x, repeats: false })),
       };
-      const { getByLabelText } = createWrapper(questionnaire);
+      const { getByRole, getByLabelText } = createWrapper(questionnaire);
 
-      const inputElement = getByLabelText(/Integer/i);
-      expect(inputElement).toBeInTheDocument();
-      expect(inputElement).toHaveAttribute('type', 'number');
-      expect(inputElement).toHaveAttribute('id', `item_${q?.item?.[0].linkId}`);
-      userEvent.type(inputElement, '123');
+      await act(async () => {
+        userEvent.selectOptions(getByLabelText(/Dropdown view label/i), getByRole('option', { name: 'Ja' }) as HTMLOptionElement);
+      });
 
-      expect(getByLabelText(/Integer/i)).toHaveValue(123);
+      expect((getByRole('option', { name: 'Ja' }) as HTMLOptionElement as HTMLOptionElement).selected).toBe(true);
     });
     it('Should call onChange with correct value', async () => {
       const questionnaire: Questionnaire = {
         ...q,
-        item: q.item?.map(x => ({
-          ...x,
-          repeats: false,
-        })),
+        item: q.item?.map(x => ({ ...x, repeats: false })),
       };
       const onChange = jest.fn();
-      const { getByLabelText } = createWrapper(questionnaire, { onChange });
-      expect(getByLabelText(/Integer/i)).toBeInTheDocument();
+      const { getByRole, getByLabelText } = createWrapper(questionnaire, { onChange });
+      expect(getByRole('option', { name: 'Ja' }) as HTMLOptionElement).toBeInTheDocument();
       await act(async () => {
-        userEvent.type(getByLabelText(/Integer/i), '123');
+        userEvent.selectOptions(getByLabelText(/Dropdown view label/i), getByRole('option', { name: 'Ja' }) as HTMLOptionElement);
       });
-      const expectedAnswer: QuestionnaireResponseItemAnswer = {
-        valueInteger: 123,
-      };
-      expect(onChange).toHaveBeenCalledTimes(3);
+
+      expect(onChange).toHaveBeenCalledTimes(1);
       expect(onChange).toHaveBeenCalledWith(expect.any(Object), expectedAnswer, expect.any(Object), expect.any(Object));
     });
   });
@@ -225,24 +210,24 @@ describe('Integer', () => {
       it('Should show error if field is required and value is empty', async () => {
         const questionnaire: Questionnaire = {
           ...q,
-          item: q.item?.map(x => ({ ...x, required: true })),
+          item: q.item?.map(x => ({ ...x, required: true, repeats: false })),
         };
-        const { getByTestId, getByText } = createWrapper(questionnaire);
+        const { getByRole, getByText, getByTestId } = createWrapper(questionnaire);
+        expect(getByRole('option', { name: 'Ja' }) as HTMLOptionElement).toBeInTheDocument();
         await act(async () => {
-          await userEvent.click(getByTestId('refero-submit-button'));
+          userEvent.click(getByTestId('refero-submit-button'));
         });
-
         expect(getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
       });
       it('Should not show error if required and has value', async () => {
         const questionnaire: Questionnaire = {
           ...q,
-          item: q.item?.map(x => ({ ...x, required: true })),
+          item: q.item?.map(x => ({ ...x, required: true, repeats: false })),
         };
-        const { getByTestId, getByLabelText, queryByText } = createWrapper(questionnaire);
+        const { getByTestId, queryByText, getByRole, getByLabelText } = createWrapper(questionnaire);
         await act(async () => {
-          await userEvent.type(getByLabelText(/Integer/i), '123');
-          await userEvent.click(getByTestId('refero-submit-button'));
+          userEvent.selectOptions(getByLabelText(/Dropdown view label/i), getByRole('option', { name: 'Ja' }) as HTMLOptionElement);
+          userEvent.click(getByTestId('refero-submit-button'));
         });
 
         expect(queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
@@ -250,109 +235,18 @@ describe('Integer', () => {
       it('Should remove error on change if form is submitted', async () => {
         const questionnaire: Questionnaire = {
           ...q,
-          item: q.item?.map(x => ({ ...x, required: true })),
+          item: q.item?.map(x => ({ ...x, required: true, repeats: false })),
         };
-        const { getByTestId, getByText, queryByText, getByLabelText } = createWrapper(questionnaire);
+        const { getByTestId, getByRole, getByText, queryByText, getByLabelText } = createWrapper(questionnaire);
         await act(async () => {
-          await userEvent.click(getByTestId('refero-submit-button'));
+          userEvent.click(getByTestId('refero-submit-button'));
         });
         expect(getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
 
         await act(async () => {
-          await userEvent.type(getByLabelText(/Integer/i), '123');
-          await userEvent.tab();
+          userEvent.selectOptions(getByLabelText(/Dropdown view label/i), getByRole('option', { name: 'Ja' }) as HTMLOptionElement);
         });
         expect(queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
-      });
-    });
-    describe('maxValue', () => {
-      it('Should not show error if value is empty', async () => {
-        const questionnaire: Questionnaire = {
-          ...q,
-          item: q.item?.map(x => ({ ...x, required: false })),
-        };
-        const { getByTestId, queryByText } = createWrapper(questionnaire);
-        await act(async () => {
-          await userEvent.click(getByTestId('refero-submit-button'));
-        });
-
-        expect(queryByText('Custom error')).not.toBeInTheDocument();
-      });
-      it('Should not show error if value is bellow max value (10) and over min(5)', async () => {
-        const questionnaire: Questionnaire = {
-          ...q,
-          item: q.item?.map(x => ({ ...x, required: false })),
-        };
-        const { getByTestId, getByLabelText, queryByText } = createWrapper(questionnaire);
-        await act(async () => {
-          await userEvent.type(getByLabelText(/Integer/i), '8');
-          await userEvent.click(getByTestId('refero-submit-button'));
-        });
-
-        expect(queryByText('Custom error')).not.toBeInTheDocument();
-      });
-      it('Should remove error on change if form is submitted', async () => {
-        const questionnaire: Questionnaire = {
-          ...q,
-          item: q.item?.map(x => ({ ...x, required: false })),
-        };
-        const { getByTestId, getByText, queryByText, getByLabelText } = createWrapper(questionnaire);
-        await act(async () => {
-          await userEvent.type(getByLabelText(/Integer/i), '12');
-          await userEvent.click(getByTestId('refero-submit-button'));
-        });
-        expect(getByText('Custom error')).toBeInTheDocument();
-        await act(async () => {
-          await userEvent.clear(getByLabelText(/Integer/i));
-          await userEvent.type(getByLabelText(/Integer/i), '8');
-        });
-
-        expect(queryByText('Custom error')).not.toBeInTheDocument();
-      });
-    });
-    describe('minValue', () => {
-      it('Should not show error if value is empty', async () => {
-        const questionnaire: Questionnaire = {
-          ...q,
-          item: q.item?.map(x => ({ ...x, required: false })),
-        };
-        const { getByTestId, queryByText } = createWrapper(questionnaire);
-        await act(async () => {
-          await userEvent.click(getByTestId('refero-submit-button'));
-        });
-
-        expect(queryByText('Custom error')).not.toBeInTheDocument();
-      });
-      it('Should not show error if value is bellow max value (10) and over min(5)', async () => {
-        const questionnaire: Questionnaire = {
-          ...q,
-          item: q.item?.map(x => ({ ...x, required: false })),
-        };
-        const { getByTestId, getByLabelText, queryByText } = createWrapper(questionnaire);
-        await act(async () => {
-          await userEvent.type(getByLabelText(/Integer/i), '8');
-          await userEvent.click(getByTestId('refero-submit-button'));
-        });
-
-        expect(queryByText('Custom error')).not.toBeInTheDocument();
-      });
-      it('Should remove error on change if form is submitted', async () => {
-        const questionnaire: Questionnaire = {
-          ...q,
-          item: q.item?.map(x => ({ ...x, required: false })),
-        };
-        const { getByTestId, getByText, queryByText, getByLabelText } = createWrapper(questionnaire);
-        await act(async () => {
-          await userEvent.type(getByLabelText(/Integer/i), '3');
-          await userEvent.click(getByTestId('refero-submit-button'));
-        });
-        expect(getByText('Custom error')).toBeInTheDocument();
-        await act(async () => {
-          await userEvent.clear(getByLabelText(/Integer/i));
-          await userEvent.type(getByLabelText(/Integer/i), '8');
-        });
-
-        expect(queryByText('Custom error')).not.toBeInTheDocument();
       });
     });
   });

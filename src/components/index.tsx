@@ -109,6 +109,7 @@ const Refero = (props: StateProps & DispatchProps & ReferoProps): JSX.Element | 
     item: QuestionnaireItem,
     answer: QuestionnaireResponseItemAnswer
   ): void => {
+    // console.log('onAnswerChange', newState, item, answer, props.onChange);
     if (props.onChange && newState.refero.form.FormDefinition.Content && newState.refero.form.FormData.Content) {
       const actionRequester = new ActionRequester(newState.refero.form.FormDefinition.Content, newState.refero.form.FormData.Content);
 

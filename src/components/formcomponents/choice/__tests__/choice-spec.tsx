@@ -1,13 +1,13 @@
 import * as React from 'react';
-import { render, screen } from './test-utils/test-utils';
+import { render, screen } from '../../../__tests__/test-utils/test-utils';
 import '@testing-library/jest-dom/extend-expect';
 
-import '../../util/defineFetch';
-import { Choice } from '../formcomponents/choice/choice';
+import '../../../../util/defineFetch';
+import { Choice } from '../choice';
 import { QuestionnaireItem, QuestionnaireItemAnswerOption, QuestionnaireResponseItemAnswer, Extension } from 'fhir/r4';
-import { createDataReceiverExpressionExtension } from './utils';
-import itemType from '../../constants/itemType';
-import { Extensions } from '../../constants/extensions';
+import { createDataReceiverExpressionExtension } from '../../../__tests__/utils';
+import itemType from '../../../../constants/itemType';
+import { Extensions } from '../../../../constants/extensions';
 
 const initAnswer: QuestionnaireResponseItemAnswer[] = [{}];
 
@@ -126,7 +126,7 @@ function expectToFind(keys: string[], values: string[]) {
     expect(val).toEqual(e);
   });
 
-  values.forEach((e, i) => {
+  values.forEach(e => {
     const label = screen.getByText(e);
     expect(label).toBeInTheDocument();
   });

@@ -8,16 +8,7 @@ import Input from '@helsenorge/designsystem-react/components/Input';
 import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
 
 import { getValidationTextExtension, getPlaceholder, getMinLengthExtensionValue, getRegexExtension } from '../../../util/extension';
-import {
-  isReadOnly,
-  isRequired,
-  getId,
-  getPDFStringValue,
-  getMaxLength,
-  getSublabelText,
-  renderPrefix,
-  getText,
-} from '../../../util/index';
+import { isReadOnly, isRequired, getId, getPDFStringValue, getMaxLength, getSublabelText, getLabelText } from '../../../util/index';
 import { Resources } from '../../../util/resources';
 import { FormProps } from '../../../validation/ReactHookFormHoc';
 import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
@@ -48,7 +39,7 @@ const textField: React.FC<Props> = ({
   idWithLinkIdAndItemIndex,
 }) => {
   const formName = `${idWithLinkIdAndItemIndex}-extra-field`;
-  const { formState, getFieldState, control } = useFormContext<FieldValues>();
+  const { formState, getFieldState } = useFormContext<FieldValues>();
   const { error } = getFieldState(formName, formState);
   if (pdf) {
     return (
@@ -61,7 +52,7 @@ const textField: React.FC<Props> = ({
     handleStringChange(e);
   };
 
-  const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`;
+  const labelText = getLabelText(item, onRenderMarkdown, questionnaire, resources);
   const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
   const maxLength = getMaxLength(item);
   const minLength = getMinLengthExtensionValue(item);
@@ -115,7 +106,6 @@ const textField: React.FC<Props> = ({
             }
             placeholder={getPlaceholder(item)}
             readOnly={isReadOnly(item)}
-            value={answer?.valueString ?? ''}
             onChange={(e): void => {
               onChange(e.target.value);
               handleChange(e.target.value);
