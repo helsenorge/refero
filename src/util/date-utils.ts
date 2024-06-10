@@ -1,10 +1,14 @@
-import { setHours, setMinutes } from 'date-fns';
 import { QuestionnaireResponseItemAnswer } from 'fhir/r4';
-import { format, startOfDay } from 'date-fns';
+import { format, setHours, setMinutes, startOfDay, isValid, isBefore, isAfter, endOfDay } from 'date-fns';
 import { safeParseJSON } from './date-fns-utils';
-import { DatePickerFormat, DateTimeUnit } from '../types/dateTypes';
+import { DateFormat, DatePickerFormat, DateTimeUnit } from '../types/dateTypes';
+import { mockMaxDateTime, mockMinDateTime } from '../components/formcomponents/date/date-mocks';
+import { Resources } from './resources';
 
-export function getFullFnsDate(date: Date | undefined, hours: string | undefined, minutes: string | undefined): Date | undefined {
+export function getFullFnsDate(date: Date | string | undefined, hours: string | undefined, minutes: string | undefined): Date | undefined {
+  if (!date) {
+    console.log('date er undefined');
+  }
   if (!date || !hours || !minutes) {
     return undefined;
   }
@@ -12,20 +16,13 @@ export function getFullFnsDate(date: Date | undefined, hours: string | undefined
   const hoursNumber = parseInt(hours, 10);
   const minutesNumber = parseInt(minutes, 10);
 
-  if (isNaN(hoursNumber) || hoursNumber < 0 || hoursNumber > 23) {
-    throw new Error('Invalid hours value');
-  }
-  if (isNaN(minutesNumber) || minutesNumber < 0 || minutesNumber > 59) {
-    throw new Error('Invalid minutes value');
-  }
-
   let fullDate = setHours(date, hoursNumber);
   fullDate = setMinutes(fullDate, minutesNumber);
 
   return fullDate;
 }
 
-export const getDateFromAnswer = (answer: QuestionnaireResponseItemAnswer) => {
+export const getDateFromAnswer = (answer: QuestionnaireResponseItemAnswer): Date | string | undefined => {
   const dateObject = answer?.valueDateTime ? safeParseJSON(answer.valueDateTime) : null;
 
   if (dateObject) {
@@ -42,4 +39,20 @@ export const getHoursOrMinutesFromAnswer = (answer: QuestionnaireResponseItemAns
   if (dateObject && unitToGet === DateTimeUnit.Minutes) {
     return format(dateObject, DatePickerFormat.mm);
   }
+};
+
+export const validateDateTime = (dateToValidate: Date | undefined, resources: Resources | undefined) => {
+  if (!isValid(dateToValidate)) {
+    return resources?.dateError_invalid;
+  }
+
+  if (mockMinDateTime && dateToValidate && isBefore(dateToValidate, startOfDay(mockMinDateTime))) {
+    return `${resources?.errorBeforeMinDate} ${format(mockMinDateTime, DateFormat.ddMMyyyy)}`;
+  }
+
+  if (mockMaxDateTime && dateToValidate && isAfter(dateToValidate, endOfDay(mockMaxDateTime))) {
+    return `${resources?.errorAfterMaxDate} ${format(mockMaxDateTime, DateFormat.ddMMyyyy)}`;
+  }
+
+  return true;
 };

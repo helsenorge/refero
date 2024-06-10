@@ -419,4 +419,8 @@ export interface Resources {
    * Tillatte filtyper er:
    */
   attachmentError_fileType?: string;
+  /**
+   * Ugyldig dato
+   */
+  dateError_invalid?: string;
 }

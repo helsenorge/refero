@@ -21,8 +21,8 @@ import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../
 import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
 import TextView from '../textview';
 import { safeParseJSON } from '../../../util/date-fns-utils';
-import { getDateFromAnswer, getFullFnsDate, getHoursOrMinutesFromAnswer } from '../../../util/date-utils';
-import { format } from 'date-fns';
+import { getDateFromAnswer, getFullFnsDate, getHoursOrMinutesFromAnswer, validateDateTime } from '../../../util/date-utils';
+import { format, isValid } from 'date-fns';
 import { DatePicker, DateTimePickerWrapper, DateTime } from '@helsenorge/datepicker/components/DatePicker';
 import { Controller, FieldError } from 'react-hook-form';
 import { DateTimeUnit } from '../../../types/dateTypes';
@@ -53,25 +53,21 @@ export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
 const DateTimeInput: React.FC<Props> = ({
   item,
   questionnaire,
-  responseItem,
   answer,
   resources,
   dispatch,
   path,
   pdf,
-  language,
   promptLoginMessage,
   id,
   renderDeleteButton,
   repeatButton,
   renderHelpButton,
   renderHelpElement,
-  isHelpOpen,
   onAnswerChange,
   onRenderMarkdown,
   control,
   idWithLinkIdAndItemIndex,
-  register,
   error,
   children,
 }) => {
@@ -132,15 +128,11 @@ const DateTimeInput: React.FC<Props> = ({
     return undefined;
   };
 
-  const promptLogin = (): void => {
-    if (promptLoginMessage) {
-      promptLoginMessage();
-    }
-  };
-
-  const onBlur = (): boolean => {
-    return true;
-  };
+  // const promptLogin = (): void => {
+  //   if (promptLoginMessage) {
+  //     promptLoginMessage();
+  //   }
+  // };
 
   const convertDateToString = (item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer): string | undefined => {
     const date = getDefaultDate(item, answer);
@@ -182,10 +174,6 @@ const DateTimeInput: React.FC<Props> = ({
     minutes: string | undefined,
     controllerOnChange: (...event: any[]) => void
   ) => {
-    if (typeof date === 'string') {
-      date = safeParseJSON(date);
-    }
-
     date && setDate(date);
     hours && setHours(hours);
     minutes && setMinutes(minutes);
@@ -193,7 +181,12 @@ const DateTimeInput: React.FC<Props> = ({
     const fullDate = getFullFnsDate(date, hours, minutes);
 
     if (fullDate) {
-      const dateTimeString = format(fullDate, Constants.DATE_TIME_FORMAT);
+      let dateTimeString = fullDate.toString();
+
+      if (isValid(fullDate)) {
+        dateTimeString = format(fullDate, Constants.DATE_TIME_FORMAT);
+      }
+
       const existingAnswer = answer?.valueDateTime || '';
       if (dispatch && existingAnswer !== dateTimeString) {
         dispatch(newDateTimeValueAsync(path, dateTimeString, item))?.then(newState =>
@@ -234,9 +227,9 @@ const DateTimeInput: React.FC<Props> = ({
   const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`;
   const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
 
-  const getErrorText = (): string | undefined => {
+  const getErrorText = (error: FieldError | undefined): string | undefined => {
     if (error) {
-      return getValidationTextExtension(item) || resources?.formRequiredErrorMessage;
+      return getValidationTextExtension(item) || error?.message;
     }
   };
 
@@ -251,10 +244,17 @@ const DateTimeInput: React.FC<Props> = ({
             value: isRequired(item),
             message: resources?.formRequiredErrorMessage ?? 'Feltet er påkrevd',
           },
+          validate: {
+            validDate: value => {
+              const parsedDate = safeParseJSON(value);
+              return validateDateTime(parsedDate, resources);
+            },
+          },
         }}
-        render={({ field: { onChange, ...rest } }): JSX.Element => (
-          <DateTimePickerWrapper errorText={getErrorText()}>
+        render={({ field: { onChange, value, ...rest } }): JSX.Element => (
+          <DateTimePickerWrapper errorText={getErrorText(error)}>
             <DatePicker
+              {...rest}
               testId={getId(id)}
               autoComplete=""
               dateButtonAriaLabel="Open datepicker"
@@ -273,7 +273,6 @@ const DateTimeInput: React.FC<Props> = ({
               onChange={(e, newDate) => {
                 handleChange(newDate, hours, minutes, onChange);
               }}
-              onBlur={() => onBlur}
             />
             <DateTime
               defaultValue={Number(minutes)}
