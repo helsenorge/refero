@@ -13,6 +13,7 @@ import { getId, getLabelText, getSublabelText, isRequired } from '../../../util/
 import { Resources } from '../../../util/resources';
 import { FormProps } from '../../../validation/ReactHookFormHoc';
 import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
+import SafeText from '../SafeText';
 
 export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   options?: Array<Options>;
@@ -55,10 +56,12 @@ const CheckboxView: React.FC<Props> = ({
         {renderHelpElement()}
         <Label
           className="page_refero__label"
-          labelTexts={[{ text: labelText, type: 'semibold' }]}
+          labelTexts={[]}
           sublabel={<Sublabel id="select-sublsbel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
           afterLabelChildren={renderHelpButton()}
-        />
+        >
+          <SafeText text={labelText} />
+        </Label>
         {options?.map((option, index) => (
           <Controller
             name={idWithLinkIdAndItemIndex}

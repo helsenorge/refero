@@ -20,6 +20,7 @@ import { Path } from '../../../util/refero-core';
 import { Resources } from '../../../util/resources';
 import ReactHookFormHoc, { FormProps } from '../../../validation/ReactHookFormHoc';
 import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
+import SafeText from '../SafeText';
 
 export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   item: QuestionnaireItem;
@@ -105,7 +106,7 @@ const Boolean = ({
   //     props.error?.message !== nextProps.error?.message
   //   );
   // };
-
+  const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
   const labelText = getLabelText(item, onRenderMarkdown, questionnaire, resources);
   if (pdf) {
     return <Pdf item={item} checked={getValue()} onRenderMarkdown={onRenderMarkdown} />;
@@ -123,7 +124,7 @@ const Boolean = ({
       />
     );
   }
-  const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
+
   const value = getValue();
   return (
     // Dette er en hack for FHI-skjema. TODO: fjern hack
@@ -162,7 +163,9 @@ const Boolean = ({
                     />
                   }
                   afterLabelChildren={renderHelpButton()}
-                />
+                >
+                  <SafeText text={labelText} />
+                </Label>
               }
               checked={value}
               onChange={(): void => {

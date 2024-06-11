@@ -20,6 +20,7 @@ import { Path } from '../../../util/refero-core';
 import { Resources } from '../../../util/resources';
 import ReactHookFormHoc, { FormProps } from '../../../validation/ReactHookFormHoc';
 import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
+import SafeText from '../SafeText';
 import TextView from '../textview';
 
 export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
@@ -169,11 +170,13 @@ const Integer = ({
               label={
                 <Label
                   htmlFor={getId(id)}
-                  labelTexts={[{ text: labelText, type: 'semibold' }]}
+                  labelTexts={[]}
                   className="page_refero__label"
                   sublabel={<Sublabel id={`${getId(id)}-sublabel`} sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
                   afterLabelChildren={renderHelpButton()}
-                />
+                >
+                  <SafeText text={labelText} />
+                </Label>
               }
               onChange={(e): void => {
                 onChange(e.target.value);

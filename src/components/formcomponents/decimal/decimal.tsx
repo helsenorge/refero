@@ -20,6 +20,7 @@ import { Path } from '../../../util/refero-core';
 import { Resources } from '../../../util/resources';
 import ReactHookFormHoc, { FormProps } from '../../../validation/ReactHookFormHoc';
 import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
+import SafeText from '../SafeText';
 import TextView from '../textview';
 
 export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
@@ -180,11 +181,12 @@ const Decimal = ({
                   className="page_refero__label"
                   htmlFor={getId(id)}
                   testId={`${getId(id)}-label-decimal`}
-                  labelTexts={[{ text: labelText, type: 'semibold' }]}
+                  labelTexts={[]}
                   sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
                   afterLabelChildren={renderHelpButton()}
-                  statusDot={<div>{status}</div>}
-                />
+                >
+                  <SafeText text={labelText} />
+                </Label>
               }
               placeholder={getPlaceholder(item)}
               className="page_refero__input"

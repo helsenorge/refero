@@ -367,7 +367,7 @@ export const OpenChoice = (props: Props): JSX.Element | null => {
   }
 
   return (
-    <React.Fragment>
+    <>
       {hasOptionsAndNoCanonicalValueSet ? (
         itemControlValue ? (
           renderComponentBasedOnType()
@@ -402,7 +402,7 @@ export const OpenChoice = (props: Props): JSX.Element | null => {
           {children}
         </AutosuggestView>
       ) : null}
-    </React.Fragment>
+    </>
   );
 };
 const withFormProps = ReactHookFormHoc(OpenChoice);

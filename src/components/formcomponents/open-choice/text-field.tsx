@@ -21,6 +21,7 @@ import {
 import { Resources } from '../../../util/resources';
 import { FormProps } from '../../../validation/ReactHookFormHoc';
 import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
+import SafeText from '../SafeText';
 import Pdf from '../textview';
 
 interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
@@ -113,7 +114,9 @@ const textField = ({
                 htmlFor={`${getId(id)}-extra-field`}
                 labelTexts={[{ text: labelText, type: 'semibold' }]}
                 sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
-              />
+              >
+                <SafeText text={labelText} />
+              </Label>
             }
             value={getStringValue(answer)}
             placeholder={getPlaceholder(item)}

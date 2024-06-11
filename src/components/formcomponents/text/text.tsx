@@ -39,6 +39,7 @@ import { Path } from '../../../util/refero-core';
 import { Resources } from '../../../util/resources';
 import ReactHookFormHoc, { FormProps } from '../../../validation/ReactHookFormHoc';
 import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
+import SafeText from '../SafeText';
 import TextView from '../textview';
 
 export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
@@ -158,6 +159,16 @@ export const Text = ({
     <div className="page_refero__component page_refero__component_text">
       <FormGroup error={error?.message} mode="ongrey">
         {renderHelpElement()}
+        <Label
+          testId={`${getId(id)}-text-label`}
+          className="page_refero__label"
+          labelTexts={[]}
+          htmlFor={getId(id)}
+          sublabel={<Sublabel id={`${getId(id)}-sublabel`} sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+          afterLabelChildren={renderHelpButton()}
+        >
+          <SafeText text={labelText} />
+        </Label>
         <Controller
           name={idWithLinkIdAndItemIndex}
           defaultValue={value || ''}
@@ -203,15 +214,6 @@ export const Text = ({
               maxRows={Constants.DEFAULT_TEXTAREA_HEIGHT}
               placeholder={getPlaceholder(item)}
               testId={`${getId(id)}-text`}
-              label={
-                <Label
-                  testId={`${getId(id)}-text-label`}
-                  className="page_refero__label"
-                  labelTexts={[{ text: labelText, type: 'semibold' }]}
-                  sublabel={<Sublabel id={`${getId(id)}-sublabel`} sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
-                  afterLabelChildren={renderHelpButton()}
-                />
-              }
               grow={true}
               maxCharacters={maxLength}
               maxText={maxLength ? resources?.maxLengthText?.replace('{0}', `${maxLength}`) : ''}

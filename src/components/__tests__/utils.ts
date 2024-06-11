@@ -8,7 +8,7 @@ import {
   QuestionnaireResponseItemAnswer,
 } from 'fhir/r4';
 import { Extensions } from '../../constants/extensions';
-import { queryHelpers, userEvent, screen, fireEvent, act } from './test-utils/test-utils';
+import { queryHelpers, userEvent, screen } from './test-utils/test-utils';
 import valueSet from '../../constants/valuesets';
 import { IActionRequester } from '../../util/actionRequester';
 import { IQuestionnaireInspector } from '../../util/questionnaireInspector';
@@ -17,29 +17,6 @@ export function inputAnswer(linkId: string, answer: number | string, element: HT
   const input = findItem(linkId, element);
   userEvent.type(input, answer.toString());
   userEvent.tab();
-}
-
-export function inputTextAnswer(linkId: string, answer: string, element: HTMLElement) {
-  const textarea = findItem(linkId, element);
-  userEvent.type(textarea, answer);
-  userEvent.tab();
-}
-export function selectBoolean(linkId: string, element: HTMLElement) {
-  const item = findItem(linkId, element);
-  fireEvent.change(item, { target: { checked: true } });
-  // userEvent.selectOptions(item, 'true');
-}
-
-export function selectRadioButtonOption(linkId: string, index: number, element: HTMLElement) {
-  const id = `${linkId}-hn-${index}`;
-  const item = findItem(id, element);
-  userEvent.click(item);
-}
-
-export async function changeCheckBoxOption(label: string) {
-  act(() => {
-    userEvent.click(screen.getByLabelText(label));
-  });
 }
 
 export function findItem(linkId: string, element: HTMLElement) {

@@ -20,6 +20,7 @@ import { getStringAnswer, hasStringAnswer, getCodingAnswer } from '../../../util
 import { Resources } from '../../../util/resources';
 import ReactHookFormHoc, { FormProps } from '../../../validation/ReactHookFormHoc';
 import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
+import SafeText from '../SafeText';
 
 export interface AutosuggestProps extends WithCommonFunctionsAndEnhancedProps, FormProps {
   handleChange: (code?: string, systemArg?: string, displayArg?: string) => void;
@@ -199,11 +200,13 @@ const AutosuggestView = ({
         <Label
           htmlFor={getId(id)}
           testId={`${getId(id)}-label`}
-          labelTexts={[{ text: labelText, type: 'semibold' }]}
+          labelTexts={[]}
           className="page_refero__label"
           sublabel={<Sublabel id={`${getId(id)}-sublabel`} sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
           afterLabelChildren={renderHelpButton()}
-        ></Label>
+        >
+          <SafeText text={labelText} />
+        </Label>
         <Controller
           name={idWithLinkIdAndItemIndex}
           control={control}
