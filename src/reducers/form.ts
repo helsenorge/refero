@@ -8,7 +8,7 @@ import {
   Coding,
   Attachment,
 } from 'fhir/r4';
-import produce, { enableES5, current } from 'immer';
+import produce, { enableES5 } from 'immer';
 
 import { QuestionnaireItemEnableBehaviorCodes } from '../types/fhirEnums';
 
@@ -208,13 +208,13 @@ function processDeleteRepeatItemAction(action: NewValueAction, state: Form): For
   });
 }
 
-function addInitialValueToBooleanItem(definitionItem: QuestionnaireItem): QuestionnaireResponseItemAnswer[] | undefined {
-  if (definitionItem.initial && definitionItem.initial.length > 0 && definitionItem.initial[0].valueBoolean !== undefined) {
-    return [{ valueBoolean: definitionItem.initial[0].valueBoolean }];
-  } else {
-    return [{ valueBoolean: false }];
-  }
-}
+// function addInitialValueToBooleanItem(definitionItem: QuestionnaireItem): QuestionnaireResponseItemAnswer[] | undefined {
+//   if (definitionItem.initial && definitionItem.initial.length > 0 && definitionItem.initial[0].valueBoolean !== undefined) {
+//     return [{ valueBoolean: definitionItem.initial[0].valueBoolean }];
+//   } else {
+//     return [{ valueBoolean: false }];
+//   }
+// }
 
 function copyItem(
   source: QuestionnaireResponseItem,

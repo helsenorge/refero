@@ -18,6 +18,7 @@ import {
   createOnChangeFuncForActionRequester,
   createOnChangeFuncForQuestionnaireInspector,
 } from './utils';
+import { clickByLabelText, typeAndTabByLabelText } from './test-utils/selectors';
 
 function toCoding(code: string, system?: string): Coding {
   return {
@@ -37,10 +38,7 @@ function toQuantity(value: number, code: string, unit: string, system?: string):
 
 async function addValueToInputByTypeAndTab(componentLabel: string, value: string) {
   const element = screen.getByLabelText(componentLabel);
-  await act(async () => {
-    userEvent.type(element, value);
-    userEvent.tab();
-  });
+  await typeAndTabByLabelText(componentLabel, value);
 
   const answer = screen.getByRole('spinbutton', { name: componentLabel });
   return { answer, element };
@@ -144,10 +142,8 @@ describe('onAnswerChange callback gets called and can request additional changes
       actionRequester.addBooleanAnswer('4', true);
     });
 
-    const { findByLabelText, queryByLabelText } = wrapper(onChange, questionnaireWithAllItemTypes);
-    await act(async () => {
-      userEvent.click(await findByLabelText('Boolean'));
-    });
+    const { queryByLabelText } = wrapper(onChange, questionnaireWithAllItemTypes);
+    await clickByLabelText(/Boolean/i);
     const updatedInput = queryByLabelText('Boolean');
     expect(updatedInput).toBeChecked();
   });
@@ -158,10 +154,8 @@ describe('onAnswerChange callback gets called and can request additional changes
       actionRequester.clearBooleanAnswer('4');
     });
 
-    const { findByLabelText, queryByLabelText } = wrapper(onChange, questionnaireWithAllItemTypes);
-    await act(async () => {
-      userEvent.click(await findByLabelText('Boolean'));
-    });
+    const { queryByLabelText } = wrapper(onChange, questionnaireWithAllItemTypes);
+    await clickByLabelText(/Boolean/i);
     const updatedInput = queryByLabelText('Boolean');
     expect(updatedInput).not.toBeChecked();
   });
@@ -171,10 +165,8 @@ describe('onAnswerChange callback gets called and can request additional changes
       actionRequester.addChoiceAnswer('5a', toCoding('2', 'urn:oid:2.16.578.1.12.4.1.1101'));
     });
 
-    const { findByLabelText, queryByTestId } = wrapper(onChange, questionnaireWithAllItemTypes);
-    await act(async () => {
-      userEvent.click(await findByLabelText('Boolean'));
-    });
+    const { queryByTestId } = wrapper(onChange, questionnaireWithAllItemTypes);
+    await clickByLabelText(/Boolean/i);
 
     expect(queryByTestId('item_5a-1-radio-choice-label')?.querySelector('#item_5a-hn-1')).toHaveAttribute('checked', '');
   });
@@ -185,10 +177,8 @@ describe('onAnswerChange callback gets called and can request additional changes
       actionRequester.removeChoiceAnswer('5a', toCoding('2', 'urn:oid:2.16.578.1.12.4.1.1101'));
     });
 
-    const { findByLabelText, queryByTestId } = wrapper(onChange, questionnaireWithAllItemTypes);
-    await act(async () => {
-      userEvent.click(await findByLabelText('Boolean'));
-    });
+    const { queryByTestId } = wrapper(onChange, questionnaireWithAllItemTypes);
+    await clickByLabelText(/Boolean/i);
 
     expect(queryByTestId('item_5a-1-radio-choice-label')?.querySelector('#item_5a-hn-1')).toHaveAttribute('checked', '');
   });
@@ -198,10 +188,8 @@ describe('onAnswerChange callback gets called and can request additional changes
       actionRequester.addChoiceAnswer('5b', toCoding('2', 'urn:oid:2.16.578.1.12.4.1.1101'));
     });
 
-    const { findByLabelText, container } = wrapper(onChange, questionnaireWithAllItemTypes);
-    await act(async () => {
-      userEvent.click(await findByLabelText('Boolean'));
-    });
+    const { container } = wrapper(onChange, questionnaireWithAllItemTypes);
+    await clickByLabelText(/Boolean/i);
     expect(container.querySelector('#item_5b-hn-1')).toBeChecked();
   });
 
@@ -211,11 +199,9 @@ describe('onAnswerChange callback gets called and can request additional changes
       actionRequester.removeChoiceAnswer('5b', toCoding('2', 'urn:oid:2.16.578.1.12.4.1.1101'));
     });
 
-    const { container, findByLabelText } = wrapper(onChange, questionnaireWithAllItemTypes);
+    const { container } = wrapper(onChange, questionnaireWithAllItemTypes);
 
-    await act(async () => {
-      userEvent.click(await findByLabelText('Boolean'));
-    });
+    await clickByLabelText(/Boolean/i);
     expect(container.querySelector('#item_5b-hn-1')).not.toBeChecked();
   });
 
@@ -224,10 +210,8 @@ describe('onAnswerChange callback gets called and can request additional changes
       actionRequester.addOpenChoiceAnswer('6a', toCoding('2', 'urn:oid:2.16.578.1.12.4.1.1101'));
     });
 
-    const { findByLabelText, queryByTestId } = wrapper(onChange, questionnaireWithAllItemTypes);
-    await act(async () => {
-      userEvent.click(await findByLabelText('Boolean'));
-    });
+    const { queryByTestId } = wrapper(onChange, questionnaireWithAllItemTypes);
+    await clickByLabelText(/Boolean/i);
 
     expect(queryByTestId('item_6a-1-radio-open-choice-label')?.querySelector('#item_6a-hn-1')).toHaveAttribute('checked', '');
   });
@@ -237,10 +221,8 @@ describe('onAnswerChange callback gets called and can request additional changes
       actionRequester.removeChoiceAnswer('6a', toCoding('2', 'urn:oid:2.16.578.1.12.4.1.1101'));
     });
 
-    const { findByLabelText, queryByTestId } = wrapper(onChange, questionnaireWithAllItemTypes);
-    await act(async () => {
-      userEvent.click(await findByLabelText('Boolean'));
-    });
+    const { queryByTestId } = wrapper(onChange, questionnaireWithAllItemTypes);
+    await clickByLabelText(/Boolean/i);
 
     expect(queryByTestId('item_6a-1-radio-open-choice-label')?.querySelector('#item_6a-hn-1')).toHaveAttribute('checked', '');
   });
@@ -249,10 +231,8 @@ describe('onAnswerChange callback gets called and can request additional changes
       actionRequester.addOpenChoiceAnswer('6b', toCoding('2', 'urn:oid:2.16.578.1.12.4.1.1101'));
     });
 
-    const { findByLabelText, container } = wrapper(onChange, questionnaireWithAllItemTypes);
-    await act(async () => {
-      userEvent.click(await findByLabelText('Boolean'));
-    });
+    const { container } = wrapper(onChange, questionnaireWithAllItemTypes);
+    await clickByLabelText(/Boolean/i);
     expect(container.querySelector('#item_6b-2')).toBeChecked();
   });
 
@@ -345,9 +325,7 @@ describe('onAnswerChange callback gets called and can request additional changes
     });
 
     const { findByLabelText, queryByLabelText } = wrapper(onChange, questionnaireWithAllItemTypes);
-    await act(async () => {
-      userEvent.click(await findByLabelText('Boolean'));
-    });
+    await clickByLabelText(/Boolean/i);
     expect(queryByLabelText('String')).toHaveValue('Hello World!');
   });
 
@@ -359,9 +337,7 @@ describe('onAnswerChange callback gets called and can request additional changes
 
     const { findByLabelText, queryByText } = wrapper(onChange, questionnaireWithAllItemTypes);
 
-    await act(async () => {
-      userEvent.click(await findByLabelText('Boolean'));
-    });
+    await clickByLabelText(/Boolean/i);
 
     expect(queryByText('Hello World!')).not.toBeInTheDocument();
   });
@@ -373,9 +349,7 @@ describe('onAnswerChange callback gets called and can request additional changes
 
     const { findByLabelText, queryByText } = wrapper(onChange, questionnaireWithAllItemTypes);
 
-    await act(async () => {
-      userEvent.click(await findByLabelText('Boolean'));
-    });
+    await clickByLabelText(/Boolean/i);
     expect(queryByText(/Hello/i)).toBeInTheDocument();
   });
 
@@ -387,9 +361,7 @@ describe('onAnswerChange callback gets called and can request additional changes
 
     const { findByLabelText, queryByLabelText } = wrapper(onChange, questionnaireWithAllItemTypes);
 
-    await act(async () => {
-      userEvent.click(await findByLabelText('Boolean'));
-    });
+    await clickByLabelText(/Boolean/i);
     expect(queryByLabelText('String')).toHaveValue('Hello World!');
 
     expect(queryByLabelText('Integer')).toHaveValue(42);
@@ -403,9 +375,7 @@ describe('onAnswerChange callback gets called and can request additional changes
 
     const { container, findByLabelText } = wrapper(onChange, questionnaireWithAllItemTypes);
 
-    await act(async () => {
-      userEvent.click(await findByLabelText('Boolean'));
-    });
+    await clickByLabelText(/Boolean/i);
 
     const item1 = findItem('6a-hn-2', container);
     expect(item1).toHaveAttribute('checked', '');
@@ -421,9 +391,7 @@ describe('onAnswerChange callback gets called and can request additional changes
     });
 
     const { findByLabelText, container } = wrapper(onChange, questionnaireWithAllItemTypes);
-    await act(async () => {
-      userEvent.click(await findByLabelText('Boolean'));
-    });
+    await clickByLabelText(/Boolean/i);
     expect(container.querySelector('#item_5b-hn-0')).toBeChecked();
     expect(container.querySelector('#item_5b-hn-1')).toBeChecked();
   });
@@ -436,9 +404,7 @@ describe('onAnswerChange callback gets called and can request additional changes
     });
 
     const { findByLabelText, container } = wrapper(onChange, questionnaireWithAllItemTypes);
-    await act(async () => {
-      userEvent.click(await findByLabelText('Boolean'));
-    });
+    await clickByLabelText(/Boolean/i);
     expect(container.querySelector('#item_5b-hn-0')).toBeChecked();
     expect(container.querySelector('#item_5b-hn-1')).not.toBeChecked();
   });

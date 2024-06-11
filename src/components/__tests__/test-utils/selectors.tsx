@@ -39,3 +39,25 @@ export async function typeByLabelText(id: Matcher, value: string, clear?: boolea
     userEvent.type(screen.getByLabelText(id), value);
   });
 }
+
+export async function clickByTestId(id: Matcher) {
+  expect(screen.getByTestId(id)).toBeInTheDocument();
+  await act(async () => {
+    userEvent.click(screen.getByTestId(id));
+  });
+}
+
+export async function clickByLabelText(id: Matcher) {
+  const elm = screen.getByLabelText(id);
+  expect(elm).toBeInTheDocument();
+  await act(async () => {
+    userEvent.click(elm);
+  });
+}
+
+export async function typeAndTabByLabelText(id: Matcher, value: string) {
+  await act(async () => {
+    userEvent.type(screen.getByLabelText(id), value);
+    userEvent.tab();
+  });
+}

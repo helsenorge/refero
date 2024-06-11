@@ -15,6 +15,7 @@ import { getExtension, getValidationTextExtension } from '../../../util/extensio
 import { isString } from '../../../util/typeguards';
 import { FormProps } from '../../../validation/ReactHookFormHoc';
 import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
+import SafeText from '../SafeText';
 
 export interface SliderProps extends WithCommonFunctionsAndEnhancedProps, FormProps {
   item: QuestionnaireItem;
@@ -72,6 +73,8 @@ const SliderView: React.FC<SliderProps> = ({
     mapToSliderStep(option, (displayType?.[0]?.code as SliderDisplayTypes) || SliderDisplayTypes.OrdinalValue)
   );
   const leftRightLabels = getLeftRightLabels(item);
+  const labelText = getLabelText(item, onRenderMarkdown, questionnaire, resources);
+  const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
   return (
     <div className="page_refero__component page_refero__component_choice page_refero__component_choice_slider">
       <FormGroup mode="ongrey" error={error?.message}>
@@ -79,15 +82,12 @@ const SliderView: React.FC<SliderProps> = ({
         <Label
           className="page_refero__label"
           testId={`${getId(id)}-slider-choice-label`}
-          labelTexts={[{ text: getLabelText(item, onRenderMarkdown, questionnaire, resources), type: 'semibold' }]}
-          sublabel={
-            <Sublabel
-              id="select-sublabel"
-              sublabelTexts={[{ text: getSublabelText(item, onRenderMarkdown, questionnaire, resources), type: 'normal' }]}
-            />
-          }
+          labelTexts={[]}
+          sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
           afterLabelChildren={renderHelpButton()}
-        />
+        >
+          <SafeText text={labelText} />
+        </Label>
         <Controller
           name={idWithLinkIdAndItemIndex}
           shouldUnregister={true}

@@ -15,6 +15,7 @@ import { isRequired, getId, getSublabelText, getText, renderPrefix } from '../..
 import { Resources } from '../../../util/resources';
 import { FormProps } from '../../../validation/ReactHookFormHoc';
 import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
+import SafeText from '../SafeText';
 
 interface Props extends FormProps, WithCommonFunctionsAndEnhancedProps {
   options?: Array<Options>;
@@ -65,10 +66,12 @@ const RadioView = ({
       <FormGroup error={error?.message} mode="ongrey">
         {renderHelpElement()}
         <Label
-          labelTexts={[{ text: labelText, type: 'semibold' }]}
+          labelTexts={[]}
           sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
           afterLabelChildren={renderHelpButton()}
-        />
+        >
+          <SafeText text={labelText} />
+        </Label>
         {options.map((option: Options, index: number) => (
           <Controller
             name={idWithLinkIdAndItemIndex}

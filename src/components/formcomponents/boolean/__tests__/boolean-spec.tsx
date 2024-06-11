@@ -25,7 +25,8 @@ describe('Boolean', () => {
       expect(queryByTestId(/-label-readonly/i)).toBeInTheDocument();
     });
     it('Should render as input if props.pdf === false && item is not readonly', () => {
-      const { queryByText } = createWrapper(q);
+      const { queryByText, debug } = createWrapper(q);
+      debug();
       expect(queryByText(/-label-readonly/i)).not.toBeInTheDocument();
       expect(queryByText(/-pdf/i)).not.toBeInTheDocument();
     });

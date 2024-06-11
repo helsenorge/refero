@@ -14,8 +14,9 @@ import { Resources } from '../../util/resources';
 import { ReferoContainer } from '../index';
 import RenderingOptionsData from './__data__/renderingOptions';
 import ChoiceCopyFrom from './__data__/copyFrom/choice';
-import { createItemControlExtension, findItemById, changeCheckBoxOption } from '../__tests__/utils';
+import { createItemControlExtension, findItemById } from '../__tests__/utils';
 import itemcontrol from '../../constants/itemcontrol';
+import { selectCheckboxOption } from './test-utils/selectors';
 
 describe('Component renders help items', () => {
   it('help button should be visible and control the help element', () => {
@@ -112,7 +113,7 @@ describe('Copying from ...', () => {
   describe('Choice', () => {
     it('Choice selected options displays in data-receiver element', async () => {
       const { container } = createWrapper(ChoiceCopyFrom);
-      await changeCheckBoxOption('Option 1');
+      await selectCheckboxOption('Option 1');
       expect(findItemById('item_data-receiver-choice-id', container)).toBeInTheDocument();
     });
   });

@@ -16,6 +16,7 @@ import { getId, getLabelText, getSublabelText, isRequired } from '../../../util/
 import { Resources } from '../../../util/resources';
 import { FormProps } from '../../../validation/ReactHookFormHoc';
 import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
+import SafeText from '../SafeText';
 
 export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   options?: Array<Options>;
@@ -85,10 +86,12 @@ const DropdownView = (props: Props): JSX.Element | null => {
                 <Label
                   className="page_refero__label"
                   htmlFor={getId(id)}
-                  labelTexts={[{ text: labelText, type: 'semibold' }]}
+                  labelTexts={[]}
                   sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
                   afterLabelChildren={renderHelpButton()}
-                />
+                >
+                  <SafeText text={labelText} />
+                </Label>
               }
               selectId={getId(id)}
               testId={getId(id)}

@@ -14,6 +14,7 @@ import Select from '@helsenorge/designsystem-react/components/Select';
 import { getId } from '../../../util';
 import { Resources } from '../../../util/resources';
 import { FormProps } from '../../../validation/ReactHookFormHoc';
+import SafeText from '../SafeText';
 
 export interface ReceiverComponentProps {
   selected?: Array<string | undefined>;
@@ -208,7 +209,11 @@ const ReceiverComponent = ({
               value={value}
               testId={`${getId(id)}-${selectKey}`}
               selectId={`${getId(id)}-${selectKey}`}
-              label={<Label labelTexts={[{ text: label, type: 'semibold' }]} />}
+              label={
+                <Label labelTexts={[]}>
+                  <SafeText text={label} />
+                </Label>
+              }
               className="page_refero__input"
             >
               {selectOptions.map(option => {
