@@ -8,7 +8,7 @@ import StepViewQuestionnaire from './__data__/stepview';
 import { act, renderRefero, userEvent } from './test-utils/test-utils';
 import { ReferoProps } from '../../types/referoProps';
 import { getResources } from '../../preview/resources/referoResources';
-import { clickButtonTimes, selectCheckboxOption, submitForm } from './test-utils/selectors';
+import { clickButtonTimes, selectCheckboxOption, submitForm, typeByLabelText } from './test-utils/selectors';
 
 // Mock window.matchMedia
 Object.defineProperty(window, 'matchMedia', {
@@ -81,14 +81,14 @@ describe('Step-view', () => {
     await submitForm();
     expect(queryAllByText(/Du må fylle ut dette feltet/i)).toHaveLength(2);
     await selectCheckboxOption(/Mann/i);
-    await act(async () => {
-      userEvent.type(getByLabelText(/String/i), 'epost@test.com');
-    });
+
+    await typeByLabelText(/String/i, 'epost@test.com');
     await submitForm();
     // Step 3
     await clickButtonTimes(/refero-pause-button/i, 1);
 
     // Step 2 - value persist
+
     expect(getByLabelText(/String/i)).toHaveValue('epost@test.com');
     await submitForm();
 
@@ -96,9 +96,7 @@ describe('Step-view', () => {
     expect(queryByText(resources.formSend)).toBeInTheDocument();
     await submitForm();
     expect(queryByText(/Du må fylle ut dette feltet/i)).toBeInTheDocument();
-    await act(async () => {
-      userEvent.type(getByLabelText(/Hvor mange liter blod/i), '2.23');
-    });
+    await typeByLabelText(/Hvor mange liter blod/i, '2.23');
     await submitForm();
 
     // Final assertion
