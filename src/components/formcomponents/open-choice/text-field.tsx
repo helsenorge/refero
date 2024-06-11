@@ -112,7 +112,7 @@ const textField = ({
             label={
               <Label
                 htmlFor={`${getId(id)}-extra-field`}
-                labelTexts={[{ text: labelText, type: 'semibold' }]}
+                labelTexts={[]}
                 sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
               >
                 <SafeText text={labelText} />
