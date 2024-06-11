@@ -6,15 +6,20 @@ import { mockMaxDateTime, mockMinDateTime } from '../components/formcomponents/d
 import { Resources } from './resources';
 
 export function getFullFnsDate(date: Date | string | undefined, hours: string | undefined, minutes: string | undefined): Date | undefined {
-  if (!date) {
-    console.log('date er undefined');
-  }
   if (!date || !hours || !minutes) {
     return undefined;
   }
 
   const hoursNumber = parseInt(hours, 10);
   const minutesNumber = parseInt(minutes, 10);
+
+  if (hoursNumber < 0 || hoursNumber > 23) {
+    return new Date('');
+  }
+
+  if (minutesNumber < 0 || minutesNumber > 59) {
+    return new Date('');
+  }
 
   let fullDate = setHours(date, hoursNumber);
   fullDate = setMinutes(fullDate, minutesNumber);
@@ -41,18 +46,36 @@ export const getHoursOrMinutesFromAnswer = (answer: QuestionnaireResponseItemAns
   }
 };
 
-export const validateDateTime = (dateToValidate: Date | undefined, resources: Resources | undefined) => {
+export const validateDate = (dateToValidate: Date | undefined, resources: Resources | undefined) => {
   if (!isValid(dateToValidate)) {
     return resources?.dateError_invalid;
   }
+  return true;
+};
 
+export const validateMinDate = (dateToValidate: Date | undefined, resources: Resources | undefined) => {
   if (mockMinDateTime && dateToValidate && isBefore(dateToValidate, startOfDay(mockMinDateTime))) {
     return `${resources?.errorBeforeMinDate} ${format(mockMinDateTime, DateFormat.ddMMyyyy)}`;
   }
+  return true;
+};
 
+export const validateMaxDate = (dateToValidate: Date | undefined, resources: Resources | undefined) => {
   if (mockMaxDateTime && dateToValidate && isAfter(dateToValidate, endOfDay(mockMaxDateTime))) {
     return `${resources?.errorAfterMaxDate} ${format(mockMaxDateTime, DateFormat.ddMMyyyy)}`;
   }
+  return true;
+};
 
+export const validateTime = (dateToValidate: Date | undefined, resources: Resources | undefined) => {
+  const hours = dateToValidate?.getHours();
+  const minutes = dateToValidate?.getMinutes();
+
+  if (hours && (hours < 0 || hours > 23)) {
+    return resources?.dateError_time_invalid;
+  }
+  if (minutes && (minutes < 0 || minutes > 59)) {
+    return resources?.dateError_time_invalid;
+  }
   return true;
 };

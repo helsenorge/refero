@@ -21,7 +21,15 @@ import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../
 import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
 import TextView from '../textview';
 import { safeParseJSON } from '../../../util/date-fns-utils';
-import { getDateFromAnswer, getFullFnsDate, getHoursOrMinutesFromAnswer, validateDateTime } from '../../../util/date-utils';
+import {
+  getDateFromAnswer,
+  getFullFnsDate,
+  getHoursOrMinutesFromAnswer,
+  validateDate,
+  validateMinDate,
+  validateMaxDate,
+  validateTime,
+} from '../../../util/date-utils';
 import { format, isValid } from 'date-fns';
 import { DatePicker, DateTimePickerWrapper, DateTime } from '@helsenorge/datepicker/components/DatePicker';
 import { Controller, FieldError } from 'react-hook-form';
@@ -72,6 +80,9 @@ const DateTimeInput: React.FC<Props> = ({
   children,
 }) => {
   const getDefaultDate = (item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer): Date | undefined => {
+    if (answer && answer.valueDateTime && !isValid(answer.valueDateTime)) {
+      return undefined;
+    }
     if (answer && answer.valueDateTime) {
       return safeParseJSON(String(answer.valueDateTime));
     }
@@ -246,8 +257,16 @@ const DateTimeInput: React.FC<Props> = ({
           },
           validate: {
             validDate: value => {
-              const parsedDate = safeParseJSON(value);
-              return validateDateTime(parsedDate, resources);
+              return validateDate(safeParseJSON(value), resources);
+            },
+            validMinDate: value => {
+              return validateMinDate(safeParseJSON(value), resources);
+            },
+            validMaxDate: value => {
+              return validateMaxDate(safeParseJSON(value), resources);
+            },
+            validTime: value => {
+              return validateTime(safeParseJSON(value), resources);
             },
           },
         }}
@@ -275,7 +294,7 @@ const DateTimeInput: React.FC<Props> = ({
               }}
             />
             <DateTime
-              defaultValue={Number(minutes)}
+              defaultValue={Number(hours)}
               timeUnit="hours"
               onChange={e => {
                 handleChange(date, e.target.value, minutes, onChange);

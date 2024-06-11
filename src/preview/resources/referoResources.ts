@@ -316,5 +316,6 @@ export const getResources = (language: string): Resources => {
     attachmentError_fileSize: 'Filstørrelse må være mindre enn {0}MB',
     attachmentError_fileType: 'Tillatte filtyper er:',
     dateError_invalid: 'Ugyldig dato',
+    dateError_time_invalid: 'Ugyldig klokkeslett',
   };
 };

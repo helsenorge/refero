@@ -423,4 +423,8 @@ export interface Resources {
    * Ugyldig dato
    */
   dateError_invalid?: string;
+  /**
+   * Ugyldig klokkeslett
+   */
+  dateError_time_invalid?: string;
 }
