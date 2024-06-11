@@ -5,7 +5,7 @@ import { Questionnaire } from 'fhir/r4';
 import '../../util/defineFetch';
 
 import StepViewQuestionnaire from './__data__/stepview';
-import { act, queryAllByText, renderRefero, userEvent } from './test-utils/test-utils';
+import { act, renderRefero, userEvent } from './test-utils/test-utils';
 import { ReferoProps } from '../../types/referoProps';
 import { getResources } from '../../preview/resources/referoResources';
 import { clickButtonTimes, selectCheckboxOption, submitForm } from './test-utils/selectors';
@@ -84,6 +84,12 @@ describe('Step-view', () => {
     await act(async () => {
       userEvent.type(getByLabelText(/String/i), 'epost@test.com');
     });
+    await submitForm();
+    // Step 3
+    await clickButtonTimes(/refero-pause-button/i, 1);
+
+    // Step 2 - value persist
+    expect(getByLabelText(/String/i)).toHaveValue('epost@test.com');
     await submitForm();
 
     // Step 3, validation

@@ -1,6 +1,5 @@
 import * as React from 'react';
 
-import DOMPurify from 'dompurify';
 import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { Controller } from 'react-hook-form';
 import { connect } from 'react-redux';
