@@ -1,6 +1,5 @@
 import * as React from 'react';
 
-import { QuestionnaireResponse } from 'fhir/r4';
 import { FieldValues, SubmitHandler, UseFormReturn, useFormContext } from 'react-hook-form';
 
 import { ValidationSummaryPlacement } from '../types/formTypes/validationSummaryPlacement';
@@ -43,16 +42,12 @@ const RenderForm = ({
   children,
   methods,
   validationSummaryPlacement,
-}: // methods,
-RenderFormProps): JSX.Element | null => {
+}: RenderFormProps): JSX.Element | null => {
   const {
-    formState: { errors, defaultValues, dirtyFields },
-    getValues,
+    formState: { errors },
   } = useFormContext();
 
-  const onSubmitReactHookForm: SubmitHandler<FieldValues> = (data: QuestionnaireResponse, e: React.FormEvent): void => {
-    // console.log('data', JSON.stringify(data, null, 2));
-    // console.log('e', e);
+  const onSubmitReactHookForm: SubmitHandler<FieldValues> = (): void => {
     onSubmit();
   };
 
@@ -64,11 +59,8 @@ RenderFormProps): JSX.Element | null => {
   if (referoProps.blockSubmit) {
     return <Loader size={'medium'} overlay={'parent'} />;
   }
-  const value = getValues();
-  // console.log(value, 'values');
-  // console.log(defaultValues, 'defaultValues');
-  // console.log(dirtyFields, 'dirtyFields');
-  const handleNextStep: SubmitHandler<FieldValues> = (data: QuestionnaireResponse, e: React.FormEvent): void => {
+
+  const handleNextStep: SubmitHandler<FieldValues> = (): void => {
     if (nextStep) {
       nextStep();
     }
