@@ -58,11 +58,7 @@ export interface WithCommonFunctionsProps {
   enable?: boolean;
   id?: string;
   answer?: QuestionnaireResponseItemAnswer | Array<QuestionnaireResponseItemAnswer>;
-  optionalLabel?: string;
-  requiredLabel?: string;
   validateScriptInjection?: boolean;
-  showOptionalLabel?: boolean;
-  showRequiredLabel?: boolean;
   visibleDeleteButton?: boolean;
   repeatButton?: JSX.Element;
   attachmentErrorMessage?: string;
@@ -178,14 +174,14 @@ export default function withCommonFunctions<T extends WithCommonFunctionsProps>(
     };
 
     const hasAnwer = (answer: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[] | undefined): boolean => {
-      return !!answer && Object.keys(answer as object).length > 0;
+      return !!answer && Object.keys(answer).length > 0;
     };
 
     const renderHelpButton = (): JSX.Element | undefined => {
       const { item, onRequestHelpButton } = props;
 
       if (!item) return;
-      const qItem = item as QuestionnaireItem;
+      const qItem = item;
 
       const helpItem = findHelpItem(qItem);
       if (!helpItem) return;
@@ -211,7 +207,7 @@ export default function withCommonFunctions<T extends WithCommonFunctionsProps>(
       if (!item) {
         return null;
       }
-      const qItem = item as QuestionnaireItem;
+      const qItem = item;
 
       const helpItem = findHelpItem(qItem);
       if (!helpItem) {
@@ -231,6 +227,7 @@ export default function withCommonFunctions<T extends WithCommonFunctionsProps>(
       return (
         <Collapse isOpened={isHelpVisible}>
           <div
+            data-testid={`${helpItem.linkId}-help-element`}
             className={collapseClasses}
             dangerouslySetInnerHTML={{
               __html: DOMPurify.sanitize(`${getText(helpItem)}`, { RETURN_TRUSTED_TYPE: true, ADD_ATTR: ['target'] }) as unknown as string,
@@ -289,10 +286,6 @@ export default function withCommonFunctions<T extends WithCommonFunctionsProps>(
               path={createPathForItem(path, item, responseItem, index)}
               headerTag={getChildHeaderTag(props.item, headerTag)}
               validateScriptInjection={props.validateScriptInjection}
-              optionalLabel={props.optionalLabel}
-              requiredLabel={props.requiredLabel}
-              showOptionalLabel={props.showOptionalLabel}
-              showRequiredLabel={props.showRequiredLabel}
               visibleDeleteButton={shouldRenderDeleteButton(item, index)}
               repeatButton={renderRepeatButton(item, index, path, response, responseItem)}
               onRequestAttachmentLink={props.onRequestAttachmentLink}

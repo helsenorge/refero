@@ -12,7 +12,7 @@ import { getFullMomentDate } from '@helsenorge/date-time/components/date-time-pi
 import { parseDate } from '@helsenorge/date-time/components/time-input/date-core';
 
 import { NewValueAction, newDateTimeValueAsync } from '../../../actions/newValue';
-import ExtensionConstants from '../../../constants/extensions';
+import { Extensions } from '../../../constants/extensions';
 import Constants from '../../../constants/index';
 import { GlobalState } from '../../../reducers';
 import { getValidationTextExtension, getExtension } from '../../../util/extension';
@@ -69,13 +69,13 @@ class DateTime extends React.Component<Props> {
   }
 
   getMaxDate(): Date | undefined {
-    const maxDate = getExtension(ExtensionConstants.DATE_MAX_VALUE_URL, this.props.item);
+    const maxDate = getExtension(Extensions.DATE_MAX_VALUE_URL, this.props.item);
     if (maxDate && maxDate.valueString) return evaluateFhirpathExpressionToGetDate(this.props.item, maxDate.valueString);
     return this.getMaxDateWithExtension();
   }
 
   getMaxDateWithExtension(): Date | undefined {
-    const maxDate = getExtension(ExtensionConstants.MAX_VALUE_URL, this.props.item);
+    const maxDate = getExtension(Extensions.MAX_VALUE_URL, this.props.item);
     if (!maxDate) {
       return;
     }
@@ -88,13 +88,13 @@ class DateTime extends React.Component<Props> {
   }
 
   getMinDate(): Date | undefined {
-    const minDate = getExtension(ExtensionConstants.DATE_MIN_VALUE_URL, this.props.item);
+    const minDate = getExtension(Extensions.DATE_MIN_VALUE_URL, this.props.item);
     if (minDate && minDate.valueString) return evaluateFhirpathExpressionToGetDate(this.props.item, minDate.valueString);
     return this.getMinDateWithExtension();
   }
 
   getMinDateWithExtension(): Date | undefined {
-    const minDate = getExtension(ExtensionConstants.MIN_VALUE_URL, this.props.item);
+    const minDate = getExtension(Extensions.MIN_VALUE_URL, this.props.item);
     if (!minDate) {
       return;
     }

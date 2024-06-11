@@ -15,8 +15,8 @@ import {
   getPDFStringValue,
   getMaxLength,
   getSublabelText,
-  renderPrefix,
-  getText,
+  getLabelText,
+  getStringValue,
 } from '../../../util/index';
 import { Resources } from '../../../util/resources';
 import { FormProps } from '../../../validation/ReactHookFormHoc';
@@ -33,8 +33,9 @@ interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   handleChange: (value: string) => void;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
   resources?: Resources;
+  children: React.ReactNode;
 }
-const textField: React.FC<Props> = ({
+const textField = ({
   id,
   pdf,
   item,
@@ -46,9 +47,9 @@ const textField: React.FC<Props> = ({
   onRenderMarkdown,
   resources,
   idWithLinkIdAndItemIndex,
-}) => {
+}: Props): JSX.Element | null => {
   const formName = `${idWithLinkIdAndItemIndex}-extra-field`;
-  const { formState, getFieldState, control } = useFormContext<FieldValues>();
+  const { formState, getFieldState } = useFormContext<FieldValues>();
   const { error } = getFieldState(formName, formState);
   if (pdf) {
     return (
@@ -61,7 +62,7 @@ const textField: React.FC<Props> = ({
     handleStringChange(e);
   };
 
-  const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`;
+  const labelText = getLabelText(item, onRenderMarkdown, questionnaire, resources);
   const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
   const maxLength = getMaxLength(item);
   const minLength = getMinLengthExtensionValue(item);
@@ -73,6 +74,7 @@ const textField: React.FC<Props> = ({
       <Controller
         name={`${idWithLinkIdAndItemIndex}-extra-field`}
         shouldUnregister={true}
+        defaultValue={getStringValue(answer)}
         rules={{
           required: {
             value: isRequired(item),
@@ -108,13 +110,14 @@ const textField: React.FC<Props> = ({
             testId={`${getId(id)}-extra-field`}
             label={
               <Label
+                htmlFor={`${getId(id)}-extra-field`}
                 labelTexts={[{ text: labelText, type: 'semibold' }]}
                 sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
               />
             }
+            value={getStringValue(answer)}
             placeholder={getPlaceholder(item)}
             readOnly={isReadOnly(item)}
-            value={answer?.valueString ?? ''}
             onChange={(e): void => {
               onChange(e.target.value);
               handleChange(e.target.value);

@@ -31,9 +31,10 @@ interface Props extends FormProps, WithCommonFunctionsAndEnhancedProps {
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
+  children: React.ReactNode;
 }
 
-const RadioView: React.FC<Props> = ({
+const RadioView = ({
   options,
   item,
   questionnaire,
@@ -52,7 +53,7 @@ const RadioView: React.FC<Props> = ({
   control,
   error,
   idWithLinkIdAndItemIndex,
-}) => {
+}: Props): JSX.Element | null => {
   if (!options) {
     return null;
   }
@@ -64,7 +65,7 @@ const RadioView: React.FC<Props> = ({
       <FormGroup error={error?.message} mode="ongrey">
         {renderHelpElement()}
         <Label
-          labelTexts={[{ text: labelText }]}
+          labelTexts={[{ text: labelText, type: 'semibold' }]}
           sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
           afterLabelChildren={renderHelpButton()}
         />
@@ -74,6 +75,7 @@ const RadioView: React.FC<Props> = ({
             key={`${option.type}-${index}`}
             control={control}
             shouldUnregister={true}
+            defaultValue={selectedValue}
             rules={{
               required: {
                 value: isRequired(item),
@@ -85,13 +87,13 @@ const RadioView: React.FC<Props> = ({
                 {...rest}
                 key={`${getId(id)}-${index.toString()}`}
                 inputId={getId(id) + '-hn-' + index}
-                testId={getId(id) + index}
+                testId={`${getId(id)}-${index}-radio-open-choice`}
                 value={option.type}
                 onChange={(): void => {
                   handleChange(option.type);
                   onChange(option.type);
                 }}
-                label={<Label labelTexts={[{ text: option.label }]} />}
+                label={<Label testId={`${getId(id)}-${index}-radio-open-choice-label`} labelTexts={[{ text: option.label }]} />}
                 defaultChecked={selectedValue === option?.type}
               />
             )}

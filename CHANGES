@@ -4,6 +4,18 @@
 
 - Rework of refero with new components
 - removed old components and added new from @helsenorge designsystem
+
+## 15.0.7
+
+---
+
+- Bugfix:
+  - Added support for emoji-codes in slider
+    - Html codes
+    - decimal codes
+    - uni codes
+    - hex codes
+
 ## 15.0.6
 
 ---

@@ -11,7 +11,7 @@ interface ValidationSummaryProps {
   errors: FieldErrors<FieldValues>;
 }
 
-export const ValidationSummary = ({ errors, resources }: ValidationSummaryProps): JSX.Element => {
+export const ValidationSummary = ({ errors, resources }: ValidationSummaryProps): JSX.Element | null => {
   const errorArray = Object.entries(errors);
   const errorSummaryRef = useRef<HTMLDivElement | null>(null);
 
@@ -28,7 +28,7 @@ export const ValidationSummary = ({ errors, resources }: ValidationSummaryProps)
   }, [formState.submitCount]);
 
   if (errorArray.length === 0) {
-    return <></>;
+    return null;
   } else
     return (
       <div ref={errorSummaryRef}>

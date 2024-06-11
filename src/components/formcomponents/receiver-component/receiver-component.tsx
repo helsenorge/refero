@@ -5,12 +5,13 @@ import { Controller } from 'react-hook-form';
 
 import { EnhetType, OrgenhetHierarki } from '../../../types/orgenhetHierarki';
 
-import Label, { getLabelText } from '@helsenorge/designsystem-react/components/Label';
+import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
+import Label from '@helsenorge/designsystem-react/components/Label';
 import Loader from '@helsenorge/designsystem-react/components/Loader';
 import NotificationPanel from '@helsenorge/designsystem-react/components/NotificationPanel';
 import Select from '@helsenorge/designsystem-react/components/Select';
 
-import { getId, isRequired } from '../../../util';
+import { getId } from '../../../util';
 import { Resources } from '../../../util/resources';
 import { FormProps } from '../../../validation/ReactHookFormHoc';
 
@@ -23,105 +24,96 @@ export interface ReceiverComponentProps {
   handleChange: (code?: string, systemArg?: string, displayArg?: string) => void;
   clearCodingAnswer: (coding: Coding) => void;
   idWithLinkIdAndItemIndex: string;
+  children?: React.ReactNode;
 }
 
-interface ReceiverComponentState {
-  selectedPath: Array<number>;
-  selectedReceiver: string;
-  receiverTreeNodes: Array<OrgenhetHierarki>;
-  isLoading: boolean;
-  hasLoadError: boolean;
-}
+const ReceiverComponent = ({
+  selected,
+  id,
+  resources,
+  fetchReceivers,
+  handleChange,
+  clearCodingAnswer,
+  idWithLinkIdAndItemIndex,
+  control,
+  error,
+}: ReceiverComponentProps & FormProps): JSX.Element | null => {
+  const [receiverTreeNodes, setReceiverTreeNodes] = React.useState<OrgenhetHierarki[]>([]);
+  const [selectedPath, setSelectedPath] = React.useState<number[]>([]);
+  const [selectedReceiver, setSelectedReceiver] = React.useState<string>('');
+  const [isLoading, setIsLoading] = React.useState<boolean>(true);
+  const [hasLoadError, setHasLoadError] = React.useState<boolean>(false);
 
-class ReceiverComponent extends React.Component<ReceiverComponentProps & FormProps, ReceiverComponentState> {
-  constructor(props: ReceiverComponentProps & FormProps) {
-    super(props);
-
-    this.state = {
-      receiverTreeNodes: [],
-      selectedPath: [],
-      selectedReceiver: '',
-      isLoading: true,
-      hasLoadError: false,
-    };
-
-    this.onChangeDropdownValue = this.onChangeDropdownValue.bind(this);
-    this.loadSuccessCallback = this.loadSuccessCallback.bind(this);
-    this.loadErrorCallback = this.loadErrorCallback.bind(this);
-  }
-
-  componentDidMount(): void {
-    if (this.props.fetchReceivers) {
-      this.props.fetchReceivers(this.loadSuccessCallback, this.loadErrorCallback);
+  React.useEffect(() => {
+    if (fetchReceivers) {
+      fetchReceivers(loadSuccessCallback, loadErrorCallback);
     }
-  }
+  }, []);
 
-  loadSuccessCallback(receivers: Array<OrgenhetHierarki>): void {
-    const pathsToEndPoint = this.props.selected ? this.findPathToEndpointNode(receivers, this.props.selected[0] || '') : [];
+  const loadSuccessCallback = (receiverTreeNodes: Array<OrgenhetHierarki>): void => {
+    const pathsToEndPoint = selected ? findPathToEndpointNode(receiverTreeNodes, selected[0] || '') : [];
     const selectedPath = pathsToEndPoint.length === 1 ? pathsToEndPoint[0] : [];
-    const selectedReceiver = this.getReceiverName(receivers, selectedPath);
-
-    this.setState({
-      isLoading: false,
-      receiverTreeNodes: receivers,
-      selectedPath: selectedPath,
-      selectedReceiver: selectedReceiver,
-      hasLoadError: receivers.length === 0, // show error if there are no receivers
-    });
+    const selectedReceiver = getReceiverName(receiverTreeNodes, selectedPath);
+    setIsLoading(false);
+    setReceiverTreeNodes(receiverTreeNodes);
+    setSelectedPath(selectedPath);
+    setSelectedReceiver(selectedReceiver);
+    setHasLoadError(receiverTreeNodes.length === 0);
 
     // clear answer if more than one receiver match the selected endpoint
-    if (selectedPath.length === 0 && this.props.selected && this.props.selected.length > 0) {
-      this.props.clearCodingAnswer({ code: this.props.selected[0] });
+    if (selectedPath.length === 0 && selected && selected.length > 0) {
+      clearCodingAnswer({ code: selected[0] });
     }
-  }
+  };
 
-  loadErrorCallback(): void {
-    this.setState({
-      isLoading: false,
-      hasLoadError: true,
-    });
-  }
+  const loadErrorCallback = (): void => {
+    setIsLoading(false);
+    setHasLoadError(true);
+  };
 
-  findPathToEndpointNode(
+  const findPathToEndpointNode = (
     nodes: Array<OrgenhetHierarki> | null,
     target: string,
     currentPath: Array<number> = [],
     finalPaths: Array<Array<number>> = []
-  ): Array<Array<number>> {
+  ): Array<Array<number>> => {
     (nodes || []).forEach(node => {
-      if (this.getEndepunktVerdi(node.EndepunktId) === target && (node.UnderOrgenheter === null || node.UnderOrgenheter.length === 0)) {
+      if (getEndepunktVerdi(node.EndepunktId) === target && (node.UnderOrgenheter === null || node.UnderOrgenheter.length === 0)) {
         finalPaths.push([...currentPath, node.OrgenhetId]);
       } else {
-        this.findPathToEndpointNode(node.UnderOrgenheter, target, [...currentPath, node.OrgenhetId], finalPaths);
+        findPathToEndpointNode(node.UnderOrgenheter, target, [...currentPath, node.OrgenhetId], finalPaths);
       }
     });
 
     return finalPaths;
-  }
+  };
 
-  onChangeDropdownValue(level: number, selectedNode: OrgenhetHierarki): void {
+  const onChangeDropdownValue = (level: number, selectedNode: OrgenhetHierarki): void => {
     const isLeafNode = selectedNode.UnderOrgenheter === null || selectedNode.UnderOrgenheter.length === 0;
-
-    this.setState((prevState: ReceiverComponentState) => {
-      const prevSelectedValues = prevState.selectedPath.filter((_x, index) => index < level);
-      const newSelectedPath = [...prevSelectedValues, selectedNode.OrgenhetId];
-      const selectedReceiver = isLeafNode ? this.getReceiverName(this.state.receiverTreeNodes, newSelectedPath) : '';
-      return {
-        selectedPath: newSelectedPath,
-        selectedReceiver: selectedReceiver,
-      };
-    });
+    setSelectedPath(prevState => [...prevState.filter((_x, index) => index < level), selectedNode.OrgenhetId]);
+    setSelectedReceiver(
+      getReceiverName(receiverTreeNodes, [...selectedPath.filter((_x, index) => index < level), selectedNode.OrgenhetId])
+    );
+    // setState((prevState: ReceiverComponentState) => {
+    //   const prevSelectedValues = prevselectedPath.filter((_x, index) => index < level);
+    //   const newSelectedPath = [...prevSelectedValues, selectedNode.OrgenhetId];
+    //   const selectedReceiver = isLeafNode ? getReceiverName(receiverTreeNodes, newSelectedPath) : '';
+    //   return {
+    //     selectedPath: newSelectedPath,
+    //     selectedReceiver: selectedReceiver,
+    //   };
+    // });
 
     if (isLeafNode) {
       // set answer selected when leaf node is selected
-      this.props.handleChange(this.getEndepunktVerdi(selectedNode.EndepunktId) || '', '', selectedNode.Navn);
-    } else if (this.props.selected) {
+      handleChange(getEndepunktVerdi(selectedNode.EndepunktId) || '', '', selectedNode.Navn);
+    } else if (selected) {
       // clear previous answer when another node than a leaf node is selected
-      this.props.clearCodingAnswer({ code: this.props.selected[0] });
+      clearCodingAnswer({ code: selected[0] });
     }
-  }
+  };
 
-  findTreeNodeFromPath(searchData: Array<OrgenhetHierarki> | null, searchPath: Array<number>): OrgenhetHierarki | undefined {
+  const findTreeNodeFromPath = (searchData: Array<OrgenhetHierarki> | null, searchPath: Array<number>): OrgenhetHierarki | undefined => {
     const currentSearchNode = (searchData || []).find(x => x.OrgenhetId === searchPath[0]);
     if (!currentSearchNode) {
       return undefined; // this should never happen
@@ -131,12 +123,12 @@ class ReceiverComponent extends React.Component<ReceiverComponentProps & FormPro
     }
     const newSearchPath = [...searchPath];
     newSearchPath.shift();
-    return this.findTreeNodeFromPath(currentSearchNode.UnderOrgenheter, newSearchPath);
-  }
+    return findTreeNodeFromPath(currentSearchNode.UnderOrgenheter, newSearchPath);
+  };
 
-  getReceiverName(searchData: Array<OrgenhetHierarki>, searchPath: Array<number>): string {
+  const getReceiverName = (searchData: Array<OrgenhetHierarki>, searchPath: Array<number>): string => {
     const receiverNodes = searchPath.map((_x, index) => {
-      return this.findTreeNodeFromPath(searchData, searchPath.slice(0, index + 1));
+      return findTreeNodeFromPath(searchData, searchPath.slice(0, index + 1));
     });
     // if a leaf node is the last selected node, a valid receiver is selected
     if (
@@ -147,157 +139,131 @@ class ReceiverComponent extends React.Component<ReceiverComponentProps & FormPro
     } else {
       return '';
     }
-  }
+  };
 
-  getEndepunktVerdi(endepunktId: string | null | undefined): string {
+  const getEndepunktVerdi = (endepunktId: string | null | undefined): string => {
     return `Endpoint/${endepunktId}`;
-  }
+  };
 
-  // TODO: Custom validering hvis this.getReceiverName(this.state.receiverTreeNodes, this.state.selectedPath)
-  // returnerer tom streng skal ikke komponenten være valid
-
-  // validateField(): Promise<void> {
-  //   return new Promise<void>((resolve: () => void) => {
-  //     this.setState(
-  //       {
-  //         isValid: !!this.getReceiverName(this.state.receiverTreeNodes, this.state.selectedPath),
-  //         isValidated: true,
-  //       },
-  //       () => {
-  //         resolve();
-  //       }
-  //     );
-  //   });
-  // }
-
-  getLabelText(enhetType: EnhetType): string | undefined {
+  const getLabelText = (enhetType: EnhetType): string | undefined => {
     if (enhetType === EnhetType.Region) {
-      return this.props.resources?.adresseKomponent_velgHelseregion;
+      return resources?.adresseKomponent_velgHelseregion;
     } else if (enhetType === EnhetType.Foretak) {
-      return this.props.resources?.adresseKomponent_velgHelseforetak;
+      return resources?.adresseKomponent_velgHelseforetak;
     } else if (enhetType === EnhetType.Sykehus) {
-      return this.props.resources?.adresseKomponent_velgSykehus;
+      return resources?.adresseKomponent_velgSykehus;
     } else if (enhetType === EnhetType.Klinikk) {
-      return this.props.resources?.adresseKomponent_velgKlinikk;
+      return resources?.adresseKomponent_velgKlinikk;
     } else if (enhetType === EnhetType.Avdeling) {
-      return this.props.resources?.adresseKomponent_velgAvdeling;
+      return resources?.adresseKomponent_velgAvdeling;
     } else if (enhetType === EnhetType.Seksjon) {
-      return this.props.resources?.adresseKomponent_velgSeksjon;
+      return resources?.adresseKomponent_velgSeksjon;
     } else if (enhetType === EnhetType.Sengepost) {
-      return this.props.resources?.adresseKomponent_velgSengepost;
+      return resources?.adresseKomponent_velgSengepost;
     } else if (enhetType === EnhetType.Poliklinikk) {
-      return this.props.resources?.adresseKomponent_velgPoliklinikk;
+      return resources?.adresseKomponent_velgPoliklinikk;
     } else if (enhetType === EnhetType.Tjeneste) {
-      return this.props.resources?.adresseKomponent_velgTjeneste;
+      return resources?.adresseKomponent_velgTjeneste;
     }
     return '';
-  }
+  };
 
-  createSelect(treeNodes: Array<OrgenhetHierarki>, level: number, selectKey: string): JSX.Element {
+  const createSelect = (treeNodes: Array<OrgenhetHierarki>, level: number, selectKey: string): JSX.Element => {
     const selectOptions = treeNodes.map(node => new Option(node.Navn, node.OrgenhetId.toString()));
     const label = getLabelText(treeNodes[0].EnhetType) || '';
+
     const handleSelectChange = (evt: React.ChangeEvent<HTMLSelectElement>): void => {
       const newValue = evt.target.value;
       const node = treeNodes.find(x => x.OrgenhetId === parseInt(newValue));
       if (node) {
-        this.onChangeDropdownValue(level, node);
+        onChangeDropdownValue(level, node);
       }
     };
+    const value = selectedPath[level] ? selectedPath[level].toString() : '';
     return (
-      <Controller
-        name={this.props.idWithLinkIdAndItemIndex}
-        control={this.props.control}
-        shouldUnregister={true}
-        rules={{
-          required: {
-            value: true,
-            message: this.props.resources?.adresseKomponent_feilmelding || '',
-          },
-        }}
-        render={({ field: { onChange, ...rest } }): JSX.Element => (
-          <Select
-            {...rest}
-            onChange={(e): void => {
-              handleSelectChange(e);
-              onChange(e.target.value);
-            }}
-            value={this.state.selectedPath[level] ? this.state.selectedPath[level].toString() : ''}
-            key={selectKey}
-            testId={`${getId(this.props.id)}-${selectKey}`}
-            selectId={`${getId(this.props.id)}-${selectKey}`}
-            label={<Label labelTexts={[{ text: label, type: 'semibold' }]} />}
-            className="page_refero__input"
-          >
-            {selectOptions.map(option => {
-              return (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              );
-            })}
-          </Select>
-        )}
-      />
+      <FormGroup error={error?.message}>
+        <Controller
+          key={`${selectKey}-${level}`}
+          name={`${idWithLinkIdAndItemIndex}-${selectKey}`}
+          control={control}
+          shouldUnregister={true}
+          defaultValue={value}
+          rules={{
+            required: {
+              value: true,
+              message: resources?.adresseKomponent_feilmelding || 'Påkrevd felt',
+            },
+            validate: (): true | string =>
+              !!getReceiverName(receiverTreeNodes, selectedPath)
+                ? true
+                : resources?.adresseKomponent_feilmelding || 'Kan ikke være tom streng',
+          }}
+          render={({ field: { onChange, ...rest } }): JSX.Element => (
+            <Select
+              {...rest}
+              onChange={(e): void => {
+                handleSelectChange(e);
+                onChange(e.target.value);
+              }}
+              value={value}
+              testId={`${getId(id)}-${selectKey}`}
+              selectId={`${getId(id)}-${selectKey}`}
+              label={<Label labelTexts={[{ text: label, type: 'semibold' }]} />}
+              className="page_refero__input"
+            >
+              {selectOptions.map(option => {
+                return (
+                  <option key={`${option.value}-${option.label}`} value={option.value}>
+                    {option.label}
+                  </option>
+                );
+              })}
+            </Select>
+          )}
+        />
+      </FormGroup>
     );
-  }
+  };
 
-  renderSelects(): JSX.Element {
-    const selectConfigs = [{ key: 'root', selectOptions: this.state.receiverTreeNodes }];
-    this.state.selectedPath.forEach((_x, index) => {
-      const searchPath = this.state.selectedPath.slice(0, index + 1);
-      const treeNodes = this.findTreeNodeFromPath(this.state.receiverTreeNodes, searchPath)?.UnderOrgenheter;
+  const renderSelects = (): JSX.Element => {
+    const selectConfigs = [{ key: 'root', selectOptions: receiverTreeNodes }];
+    selectedPath.forEach((_x, index) => {
+      const searchPath = selectedPath.slice(0, index + 1);
+      const treeNodes = findTreeNodeFromPath(receiverTreeNodes, searchPath)?.UnderOrgenheter;
       if (treeNodes && treeNodes.length > 0) {
         return selectConfigs.push({ key: searchPath.toString(), selectOptions: treeNodes });
       }
     });
-
     return (
       <>
         {selectConfigs.map((config, index) => {
-          return this.createSelect(config.selectOptions, index, config.key);
+          return <React.Fragment key={index}>{createSelect(config.selectOptions, index, config.key)}</React.Fragment>;
         })}
       </>
     );
-  }
+  };
 
-  // renderErrorMessage(): JSX.Element | null {
-  //   if (!this.state.isValid && this.state.isValidated) {
-  //     return <Validation errorSummary={this.props.resources?.adresseKomponent_feilmelding || ''} />;
-  //   }
-  //   return null;
-  // }
+  return (
+    <div>
+      <h2>{resources?.adresseKomponent_header}</h2>
+      <div className="page_refero__sublabel">{resources?.adresseKomponent_sublabel}</div>
 
-  render(): JSX.Element {
-    // const wrapperClasses = classNames({
-    //   mol_validation: true,
-    //   'mol_validation--active': !this.state.isValid && this.state.isValidated,
-    // });
-    //className={wrapperClasses}
-    return (
-      <div id={getId(this.props.id)}>
-        {/* {this.renderErrorMessage()} */}
-        <h2>{this.props.resources?.adresseKomponent_header}</h2>
-        <div className="page_refero__sublabel">{this.props.resources?.adresseKomponent_sublabel}</div>
+      {isLoading && (
+        <div>
+          <Loader />
+        </div>
+      )}
+      {hasLoadError && <NotificationPanel variant="alert">{resources?.adresseKomponent_loadError}</NotificationPanel>}
 
-        {this.state.isLoading && (
-          <div>
-            <Loader />
-          </div>
-        )}
-        {this.state.hasLoadError && (
-          <NotificationPanel variant="alert">{this.props.resources?.adresseKomponent_loadError}</NotificationPanel>
-        )}
-
-        {this.state.receiverTreeNodes.length > 0 && this.renderSelects()}
-        {this.state.selectedReceiver && (
-          <div>
-            <span>{`${this.props.resources?.adresseKomponent_skjemaSendesTil} `}</span>
-            <strong>{this.state.selectedReceiver}</strong>
-          </div>
-        )}
-      </div>
-    );
-  }
-}
+      {receiverTreeNodes.length > 0 && renderSelects()}
+      {selectedReceiver && (
+        <div>
+          <span>{`${resources?.adresseKomponent_skjemaSendesTil} `}</span>
+          <strong>{selectedReceiver}</strong>
+        </div>
+      )}
+    </div>
+  );
+};
 
 export default ReceiverComponent;

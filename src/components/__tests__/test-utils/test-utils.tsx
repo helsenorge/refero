@@ -1,18 +1,22 @@
 import React, { ReactElement } from 'react';
 import { render, RenderOptions, RenderResult } from '@testing-library/react';
 import { Provider, Store } from 'react-redux';
-import configureMockStore, { MockStoreEnhanced } from 'redux-mock-store';
+import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { FormProvider, useForm } from 'react-hook-form';
 import '@testing-library/jest-dom/extend-expect';
 import rootReducer, { GlobalState } from '../../../reducers';
 import { applyMiddleware, createStore } from 'redux';
-import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
+
 import { generateDefaultValues } from '../../../validation/defaultFormValues';
 import { Questionnaire } from 'fhir/r4';
 import { ReferoContainer } from '../..';
 import { generateQuestionnaireResponse } from '../../../actions/generateQuestionnaireResponse';
 import { Resources } from '../../../util/resources';
+import { ReferoProps } from '../../../types/referoProps';
+import userEvent from '@testing-library/user-event';
+import { getResources } from '../../../preview/resources/referoResources';
+
 const mockStore = configureMockStore<Partial<GlobalState>>([thunk]);
 
 export const FormWrapper = ({ children, defaultValues }: { children: React.ReactNode; defaultValues: any }) => {
@@ -33,7 +37,7 @@ const AllTheProviders = ({
   children: React.ReactNode;
   initialState?: Partial<GlobalState>;
   defaultValues?: any;
-  store?: MockStoreEnhanced<Partial<GlobalState>>;
+  store?: Store<any>;
 }) => {
   return (
     <Provider store={store}>
@@ -45,7 +49,7 @@ const AllTheProviders = ({
 const customRender = (
   ui: ReactElement,
   options?: Omit<RenderOptions, 'wrapper'> & { initialState?: Partial<GlobalState> } & { defaultValues?: any } & {
-    store?: MockStoreEnhanced<Partial<GlobalState>>;
+    store?: Store<any>;
   }
 ) => {
   const { initialState, defaultValues, store, ...renderOptions } = options || {};
@@ -61,9 +65,9 @@ const customRender = (
 const customRenderMockStore = (
   ui: ReactElement,
   options?: Omit<RenderOptions, 'wrapper'> & { initialState?: Partial<GlobalState> } & { defaultValues?: any } & {
-    store?: MockStoreEnhanced<Partial<GlobalState>>;
+    store?: Store<any>;
   }
-): { renderResult: RenderResult; store: MockStoreEnhanced<Partial<GlobalState>> } => {
+): { renderResult: RenderResult; store: Store<any> } => {
   const { initialState, defaultValues, store = mockStore(initialState || {}), ...renderOptions } = options || {};
   return {
     renderResult: render(ui, {
@@ -99,17 +103,19 @@ const renderWithReduxAndHookFormMock = (
   );
   return { ...render(ui, { wrapper: Wrapper, ...renderOptions }), store };
 };
-export * from '@testing-library/react';
-export { default as userEvent } from '@testing-library/user-event';
 
 interface InputProps {
   questionnaire: Questionnaire;
-  props?: Partial<WithCommonFunctionsAndEnhancedProps>;
+  props?: Partial<ReferoProps>;
   initialState?: GlobalState;
   resources?: Partial<Resources>;
 }
 
-function renderRefero({ questionnaire, props, initialState, resources = {} }: InputProps) {
+function renderRefero({ questionnaire, props, initialState, resources }: InputProps) {
+  const resourcesDefault = {
+    ...getResources(''),
+    ...resources,
+  };
   const state = initialState || {
     refero: {
       form: {
@@ -128,18 +134,26 @@ function renderRefero({ questionnaire, props, initialState, resources = {} }: In
 
   return customRender(
     <ReferoContainer
-      {...props}
       loginButton={<React.Fragment />}
       authorized={true}
       onCancel={() => {}}
       onSave={() => {}}
       onSubmit={() => {}}
       questionnaire={questionnaire}
-      resources={resources as Resources}
+      resources={resourcesDefault}
       onChange={() => {}}
+      {...props}
     />,
     { store, defaultValues }
   );
 }
+export * from '@testing-library/react';
 
-export { customRender as render, customRenderMockStore as renderMockStore, renderWithRedux, renderWithReduxAndHookFormMock, renderRefero };
+export {
+  customRender as render,
+  customRenderMockStore as renderMockStore,
+  renderWithRedux,
+  renderWithReduxAndHookFormMock,
+  renderRefero,
+  userEvent,
+};

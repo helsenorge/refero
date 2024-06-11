@@ -1,20 +1,22 @@
 import React, { useState } from 'react';
 
 import { composeWithDevTools } from '@redux-devtools/extension';
-import { Bundle, Questionnaire, QuestionnaireResponse } from 'fhir/r4';
+import { Bundle, Questionnaire, QuestionnaireItem, QuestionnaireResponse, ValueSet } from 'fhir/r4';
 import { Provider } from 'react-redux';
 import { Store, legacy_createStore as createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 
 import { QuestionnaireStatusCodes } from '../types/fhirEnums';
+import { EnhetType, OrgenhetHierarki } from '../types/orgenhetHierarki';
 
 import LanguageLocales from '@helsenorge/core-utils/constants/languages';
 
 import FormFillerSidebar from './FormFillerSidebar';
 import { emptyPropertyReplacer } from './helpers';
 import { getResources } from './resources/referoResources';
-import skjema from './skjema/NHN_Testskjema_TextBox-nb-NO-v0.1.json';
 import { ReferoContainer } from '../components';
+import skjema from '../components/__tests__/__data__/stepview/q.json';
+import valueSet from '../constants/valuesets';
 import rootReducer from '../reducers';
 
 type Props = {
@@ -33,7 +35,58 @@ const getQuestionnaireFromBubndle = (bundle: Bundle<Questionnaire> | Questionnai
     );
   }
 };
-
+const fetchReceiversFn = (successCallback: (receivers: Array<OrgenhetHierarki>) => void) => {
+  successCallback([
+    {
+      OrgenhetId: 1,
+      EndepunktId: null,
+      Navn: 'Region 1',
+      EnhetType: EnhetType.Region,
+      UnderOrgenheter: [
+        { OrgenhetId: 11, EndepunktId: '1', Navn: 'Receiver 1', EnhetType: EnhetType.Foretak, UnderOrgenheter: null },
+        { OrgenhetId: 12, EndepunktId: '11', Navn: 'Receiver 11', EnhetType: EnhetType.Foretak, UnderOrgenheter: null },
+      ],
+    },
+    {
+      OrgenhetId: 2,
+      EndepunktId: null,
+      Navn: 'Region 2',
+      EnhetType: EnhetType.Region,
+      UnderOrgenheter: [{ OrgenhetId: 21, EndepunktId: '2', Navn: 'Receiver 2', EnhetType: EnhetType.Foretak, UnderOrgenheter: null }],
+    },
+    {
+      OrgenhetId: 2,
+      EndepunktId: '1',
+      Navn: 'Region 3',
+      EnhetType: EnhetType.Foretak,
+      UnderOrgenheter: null,
+    },
+  ]);
+};
+const fetchValueSetFn = (
+  _searchString: string,
+  _item: QuestionnaireItem,
+  successCallback: (valueSet: ValueSet) => void,
+  _errorCallback: (error: string) => void
+): any => {
+  successCallback({
+    resourceType: 'ValueSet',
+    status: 'draft',
+    compose: {
+      include: [
+        {
+          system: valueSet.LEGEMIDDELOPPSLAG_SYSTEM,
+          concept: [
+            {
+              code: '1',
+              display: 'Fyrstekake',
+            },
+          ],
+        },
+      ],
+    },
+  });
+};
 const FormFillerPreview = ({ showFormFiller }: Props): JSX.Element => {
   const store: Store = createStore(rootReducer, composeWithDevTools(applyMiddleware(thunk)));
 
@@ -63,6 +116,7 @@ const FormFillerPreview = ({ showFormFiller }: Props): JSX.Element => {
                   store={store}
                   questionnaire={getQuestionnaireFromBubndle(questionnaireForPreview, lang)}
                   onCancel={showFormFiller}
+                  onChange={(): void => {}}
                   onSave={(questionnaireResponse: QuestionnaireResponse): void => {
                     setQuestionnaireResponse(questionnaireResponse);
                     setShowResponse(true);
@@ -77,6 +131,8 @@ const FormFillerPreview = ({ showFormFiller }: Props): JSX.Element => {
                   syncQuestionnaireResponse
                   validateScriptInjection
                   language={LanguageLocales.NORWEGIAN}
+                  fetchValueSet={fetchValueSetFn}
+                  fetchReceivers={fetchReceiversFn}
                 />
               </div>
             ) : (

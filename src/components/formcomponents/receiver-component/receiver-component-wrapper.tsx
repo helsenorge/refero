@@ -4,14 +4,12 @@ import ReceiverComponent, { ReceiverComponentProps } from './receiver-component'
 import { getId } from '../../../util';
 import { FormProps } from '../../../validation/ReactHookFormHoc';
 
-class ReceiverComponentWrapper extends React.Component<ReceiverComponentProps & FormProps> {
-  render(): JSX.Element {
-    return (
-      <div className="page_refero__component page_refero__receivercomponent" id={`${getId(this.props.id)}-wrapper`}>
-        <ReceiverComponent {...this.props} label={this.props.resources?.adresseKomponent_header} />
-      </div>
-    );
-  }
-}
+const ReceiverComponentWrapper = (props: ReceiverComponentProps & FormProps): JSX.Element => {
+  return (
+    <div className="page_refero__component page_refero__receivercomponent" id={`${getId(props.id)}-wrapper`}>
+      <ReceiverComponent {...props} label={props.resources?.adresseKomponent_header} />
+    </div>
+  );
+};
 
 export default ReceiverComponentWrapper;

@@ -17,7 +17,7 @@ export const SubmitFormButton = ({ submitButtonText, submitButtonDisabled, onSub
   };
   return (
     <div className="submitButtonStyle">
-      <Button type="submit" disabled={submitButtonDisabled} onClick={handleSubmit}>
+      <Button type="submit" disabled={submitButtonDisabled} onClick={handleSubmit} testId="refero-submit-button">
         {submitButtonText}
       </Button>
     </div>

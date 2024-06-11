@@ -40,10 +40,31 @@ export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   isHelpOpen?: boolean;
   onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
+  children?: React.ReactNode;
 }
 
-class Decimal extends React.Component<Props, Record<string, unknown>> {
-  getValue = (item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer): string | number | number[] | undefined => {
+const Decimal = ({
+  id,
+  item,
+  pdf,
+  onRenderMarkdown,
+  control,
+  answer,
+  questionnaire,
+  resources,
+  renderHelpButton,
+  renderHelpElement,
+  children,
+  error,
+  idWithLinkIdAndItemIndex,
+  path,
+  dispatch,
+  onAnswerChange,
+  promptLoginMessage,
+  repeatButton,
+  renderDeleteButton,
+}: Props): JSX.Element | null => {
+  const getValue = (item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer): string | number | number[] | undefined => {
     if (answer && Array.isArray(answer)) {
       return answer.map(m => m.valueDecimal);
     }
@@ -55,12 +76,12 @@ class Decimal extends React.Component<Props, Record<string, unknown>> {
     }
   };
 
-  getPDFValue(): string | number {
-    const value = this.getValue(this.props.item, this.props.answer);
+  const getPDFValue = (): string | number => {
+    const value = getValue(item, answer);
     if (value === undefined || value === null || value === '') {
       let text = '';
-      if (this.props.resources && this.props.resources.ikkeBesvart) {
-        text = this.props.resources.ikkeBesvart;
+      if (resources && resources.ikkeBesvart) {
+        text = resources.ikkeBesvart;
       }
       return text;
     }
@@ -68,10 +89,9 @@ class Decimal extends React.Component<Props, Record<string, unknown>> {
       return value.join(', ');
     }
     return value;
-  }
+  };
 
-  handleChange = (event: React.FormEvent<HTMLInputElement>): void => {
-    const { dispatch, path, item, promptLoginMessage, onAnswerChange } = this.props;
+  const handleChange = (event: React.FormEvent<HTMLInputElement>): void => {
     const value = parseFloat((event.target as HTMLInputElement).value);
     if (dispatch) {
       dispatch(newDecimalValueAsync(path, value, item))?.then(newState => {
@@ -84,115 +104,105 @@ class Decimal extends React.Component<Props, Record<string, unknown>> {
     }
   };
 
-  shouldComponentUpdate(nextProps: Props): boolean {
-    const responseItemHasChanged = this.props.responseItem !== nextProps.responseItem;
-    const helpItemHasChanged = this.props.isHelpOpen !== nextProps.isHelpOpen;
-    const answerHasChanged = this.props.answer !== nextProps.answer;
-    const resourcesHasChanged = JSON.stringify(this.props.resources) !== JSON.stringify(nextProps.resources);
-    const repeats = this.props.item.repeats ?? false;
-    const newErrorMessage = this.props.error?.message !== nextProps.error?.message;
-    return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats || answerHasChanged || newErrorMessage;
-  }
+  // shouldComponentUpdate(nextProps: Props): boolean {
+  //   const responseItemHasChanged = props.responseItem !== nextProps.responseItem;
+  //   const helpItemHasChanged = props.isHelpOpen !== nextProps.isHelpOpen;
+  //   const answerHasChanged = props.answer !== nextProps.answer;
+  //   const resourcesHasChanged = JSON.stringify(props.resources) !== JSON.stringify(nextProps.resources);
+  //   const repeats = props.item.repeats ?? false;
+  //   const newErrorMessage = props.error?.message !== nextProps.error?.message;
+  //   return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats || answerHasChanged || newErrorMessage;
+  // }
 
-  render(): JSX.Element | null {
-    const {
-      id,
-      item,
-      pdf,
-      onRenderMarkdown,
-      control,
-      answer,
-      questionnaire,
-      resources,
-      renderHelpButton,
-      renderHelpElement,
-      children,
-      error,
-      idWithLinkIdAndItemIndex,
-    } = this.props;
-    const value = this.getValue(item, answer);
-    const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`;
-    const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
-    if (pdf || isReadOnly(item)) {
-      return (
-        <TextView
-          id={id}
-          item={item}
-          value={this.getPDFValue()}
-          onRenderMarkdown={onRenderMarkdown}
-          helpButton={renderHelpButton()}
-          helpElement={renderHelpElement()}
-        >
-          {children}
-        </TextView>
-      );
-    }
-    const decimalPattern = getDecimalPattern(item);
-    const maxValue = getMaxValueExtensionValue(item);
-    const minValue = getMinValueExtensionValue(item);
-    //getValidationTextExtension(item)
+  const value = getValue(item, answer);
+  const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`;
+  const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
+  if (pdf || isReadOnly(item)) {
     return (
-      <div className="page_refero__component page_refero__component_decimal">
-        {renderHelpElement()}
-        <FormGroup error={error?.message} mode="ongrey">
-          <Controller
-            name={idWithLinkIdAndItemIndex}
-            control={control}
-            shouldUnregister={true}
-            rules={{
-              required: {
-                value: isRequired(item),
-                message: resources?.formRequiredErrorMessage ?? 'Feltet er påkrevd',
-              },
-              ...(maxValue && {
-                max: {
-                  value: maxValue,
-                  message: getValidationTextExtension(item) ?? resources?.oppgiGyldigVerdi ?? 'Verdien er for høy',
-                },
-              }),
-              ...(minValue && {
-                min: {
-                  value: minValue,
-                  message: getValidationTextExtension(item) ?? resources?.oppgiGyldigVerdi ?? 'Verdien er for lav',
-                },
-              }),
-              ...(decimalPattern && { pattern: new RegExp(decimalPattern), message: 'Verdien er ikke et gyldig tall' }),
-            }}
-            render={({ field: { onChange, ...rest } }): JSX.Element => (
-              <Input
-                {...rest}
-                type="number"
-                inputId={getId(this.props.id)}
-                name={getId(this.props.id)}
-                value={value ? value + '' : ''}
-                label={
-                  <Label
-                    htmlFor={getId(id)}
-                    testId={getId(this.props.id)}
-                    labelTexts={[{ text: labelText, type: 'semibold' }]}
-                    sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
-                    afterLabelChildren={this.props.renderHelpButton()}
-                    statusDot={<div>{status}</div>}
-                  />
-                }
-                placeholder={getPlaceholder(item)}
-                className="page_refero__input"
-                onChange={(e): void => {
-                  this.handleChange(e);
-                  onChange(e.target.value);
-                }}
-                width={25}
-              />
-            )}
-          />
-        </FormGroup>
-        {this.props.renderDeleteButton('page_refero__deletebutton--margin-top')}
-        {this.props.repeatButton}
-        {this.props.children ? <div className="nested-fieldset nested-fieldset--full-height">{this.props.children}</div> : null}
-      </div>
+      <TextView
+        id={id}
+        item={item}
+        value={getPDFValue()}
+        onRenderMarkdown={onRenderMarkdown}
+        helpButton={renderHelpButton()}
+        helpElement={renderHelpElement()}
+      >
+        {children}
+      </TextView>
     );
   }
-}
+  const decimalPattern = getDecimalPattern(item);
+  const maxValue = getMaxValueExtensionValue(item);
+  const minValue = getMinValueExtensionValue(item);
+  const validationText = getValidationTextExtension(item);
+  return (
+    <div className="page_refero__component page_refero__component_decimal">
+      {renderHelpElement()}
+      <FormGroup error={error?.message} mode="ongrey">
+        <Controller
+          name={idWithLinkIdAndItemIndex}
+          control={control}
+          shouldUnregister={true}
+          defaultValue={value ? value + '' : ''}
+          rules={{
+            required: {
+              value: isRequired(item),
+              message: resources?.formRequiredErrorMessage ?? 'Feltet er påkrevd',
+            },
+            ...(maxValue && {
+              max: {
+                value: maxValue,
+                message: validationText ?? resources?.oppgiGyldigVerdi ?? 'Verdien er for høy',
+              },
+            }),
+            ...(minValue && {
+              min: {
+                value: minValue,
+                message: validationText ?? resources?.oppgiGyldigVerdi ?? 'Verdien er for lav',
+              },
+            }),
+            ...(decimalPattern && {
+              pattern: {
+                value: new RegExp(decimalPattern),
+                message: resources?.oppgiGyldigVerdi ?? 'Verdien er ikke et gyldig tall',
+              },
+            }),
+          }}
+          render={({ field: { onChange, ...rest } }): JSX.Element => (
+            <Input
+              {...rest}
+              type="number"
+              inputId={getId(id)}
+              name={getId(id)}
+              value={value ? value + '' : ''}
+              label={
+                <Label
+                  className="page_refero__label"
+                  htmlFor={getId(id)}
+                  testId={`${getId(id)}-label-decimal`}
+                  labelTexts={[{ text: labelText, type: 'semibold' }]}
+                  sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+                  afterLabelChildren={renderHelpButton()}
+                  statusDot={<div>{status}</div>}
+                />
+              }
+              placeholder={getPlaceholder(item)}
+              className="page_refero__input"
+              onChange={(e): void => {
+                handleChange(e);
+                onChange(e.target.value);
+              }}
+              width={25}
+            />
+          )}
+        />
+      </FormGroup>
+      {renderDeleteButton('page_refero__deletebutton--margin-top')}
+      {repeatButton}
+      {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
+    </div>
+  );
+};
 
 const withFormProps = ReactHookFormHoc(Decimal);
 const withCommonFunctionsComponent = withCommonFunctions(withFormProps);

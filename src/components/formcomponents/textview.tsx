@@ -13,11 +13,12 @@ interface Props {
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
   helpButton?: JSX.Element;
   helpElement?: JSX.Element;
+  children: React.ReactNode;
 }
 
-const textView: React.FC<Props> = ({ id, item, value, textClass, children, onRenderMarkdown, helpButton, helpElement }) => {
+const textView = ({ id, item, value, textClass, children, onRenderMarkdown, helpButton, helpElement }: Props): JSX.Element | null => {
   return (
-    <div id={getId(id)}>
+    <div data-testid={`${getId(id)}-text-view`} id={getId(id)}>
       <>
         <b
           dangerouslySetInnerHTML={{

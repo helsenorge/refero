@@ -24,7 +24,6 @@ import { GlobalState } from '../../../reducers';
 import { getFormData, getFormDefinition } from '../../../reducers/form';
 import { getCodingTextTableValues } from '../../../util/extension';
 import { Path } from '../../../util/refero-core';
-import { RenderContext } from '../../../util/renderContext';
 import { Resources } from '../../../util/resources';
 
 export interface Props {
@@ -42,7 +41,6 @@ export interface Props {
   attachmentErrorMessage?: string;
   repeatButton?: JSX.Element;
   id?: string;
-  renderContext: RenderContext;
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
   isHelpOpen?: boolean;

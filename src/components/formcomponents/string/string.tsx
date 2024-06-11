@@ -21,12 +21,10 @@ import {
   getId,
   getStringValue,
   getPDFStringValue,
-  getTextValidationErrorMessage,
   getSublabelText,
-  renderPrefix,
-  getText,
   getMaxLength,
   scriptInjectionValidation,
+  getLabelText,
 } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
@@ -56,15 +54,35 @@ export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
   isHelpOpen?: boolean;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
+  children?: React.ReactNode;
 }
 
-export class String extends React.Component<Props, Record<string, unknown>> {
-  handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    const { dispatch, promptLoginMessage, path, item, onAnswerChange } = this.props;
-
+export const String = ({
+  dispatch,
+  promptLoginMessage,
+  path,
+  item,
+  onAnswerChange,
+  id,
+  questionnaire,
+  pdf,
+  resources,
+  answer,
+  onRenderMarkdown,
+  control,
+  idWithLinkIdAndItemIndex,
+  renderDeleteButton,
+  repeatButton,
+  validateScriptInjection,
+  error,
+  children,
+  renderHelpButton,
+  renderHelpElement,
+}: Props): JSX.Element | null => {
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     const value = event.target.value;
     if (dispatch) {
-      dispatch(newStringValueAsync(this.props.path, value, this.props.item))?.then(newState => {
+      dispatch(newStringValueAsync(path, value, item))?.then(newState => {
         return onAnswerChange(newState, path, item, { valueString: value });
       });
     }
@@ -74,129 +92,124 @@ export class String extends React.Component<Props, Record<string, unknown>> {
     }
   };
 
-  debouncedHandleChange: (event: React.FormEvent) => void = debounce(this.handleChange, 250, false);
+  // shouldComponentUpdate(nextProps: Props): boolean {
+  //   const responseItemHasChanged = responseItem !== nextresponseItem;
+  //   const helpItemHasChanged = isHelpOpen !== nextisHelpOpen;
+  //   const answerHasChanged = answer !== nextanswer;
+  //   const resourcesHasChanged = JSON.stringify(resources) !== JSON.stringify(nextresources);
+  //   const repeats = item.repeats ?? false;
+  //   const newErrorMessage = error?.message !== nexterror?.message;
+  //   return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats || answerHasChanged || newErrorMessage;
+  // }
 
-  shouldComponentUpdate(nextProps: Props): boolean {
-    const responseItemHasChanged = this.props.responseItem !== nextProps.responseItem;
-    const helpItemHasChanged = this.props.isHelpOpen !== nextProps.isHelpOpen;
-    const answerHasChanged = this.props.answer !== nextProps.answer;
-    const resourcesHasChanged = JSON.stringify(this.props.resources) !== JSON.stringify(nextProps.resources);
-    const repeats = this.props.item.repeats ?? false;
-    const newErrorMessage = this.props.error?.message !== nextProps.error?.message;
-    return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats || answerHasChanged || newErrorMessage;
-  }
+  // const getValidationErrorMessage = (value: string): string => {
+  //   return getTextValidationErrorMessage(value, validateScriptInjection, item, resources);
+  // };
 
-  getValidationErrorMessage = (value: string): string => {
-    return getTextValidationErrorMessage(value, this.props.validateScriptInjection, this.props.item, this.props.resources);
-  };
-
-  getRequiredErrorMessage = (item: QuestionnaireItem): string | undefined => {
-    return isRequired(item) ? this.props.resources?.formRequiredErrorMessage : undefined;
-  };
-
-  render(): JSX.Element | null {
-    const { id, item, questionnaire, pdf, resources, answer, onRenderMarkdown, control, idWithLinkIdAndItemIndex } = this.props;
-    if (pdf || isReadOnly(item)) {
-      return (
-        <TextView
-          id={id}
-          item={item}
-          value={getPDFStringValue(answer, resources)}
-          onRenderMarkdown={onRenderMarkdown}
-          textClass="page_refero__component_readonlytext"
-          helpButton={this.props.renderHelpButton()}
-          helpElement={this.props.renderHelpElement()}
-        >
-          {this.props.children}
-        </TextView>
-      );
-    }
-    const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`;
-    const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
-    const maxLength = getMaxLength(item);
-    const minLength = getMinLengthExtensionValue(item);
-    const pattern = getRegexExtension(item);
-    const errorMessage = getValidationTextExtension(item);
-    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-      event.persist();
-      this.debouncedHandleChange(event);
-    };
-    const value = getStringValue(answer);
+  if (pdf || isReadOnly(item)) {
     return (
-      <div className="page_refero__component page_refero__component_string">
-        <FormGroup error={this.props.error?.message} mode="ongrey">
-          {this.props.renderHelpElement()}
-          <Controller
-            name={idWithLinkIdAndItemIndex}
-            control={control}
-            shouldUnregister={true}
-            defaultValue={value}
-            rules={{
-              required: {
-                value: isRequired(item),
-                message: resources?.formRequiredErrorMessage ?? 'Feltet er påkrevd',
-              },
-              ...(this.props.validateScriptInjection && {
-                validate: (value: string): true | string => scriptInjectionValidation(value, this.props.resources),
-              }),
-              ...(minLength && {
-                minLength: {
-                  value: minLength || 0,
-                  message: errorMessage ?? resources?.stringOverMaxLengthError ?? 'Verdien er for kort',
-                },
-              }),
-              ...(maxLength && {
-                maxLength: {
-                  value: maxLength,
-                  message: errorMessage ?? resources?.stringOverMaxLengthError ?? 'Verdien er for lang',
-                },
-              }),
-              ...(pattern && {
-                pattern: {
-                  value: new RegExp(pattern),
-                  message: errorMessage ?? resources?.oppgiGyldigVerdi ?? 'Verdien er for lav',
-                },
-              }),
-            }}
-            render={({ field: { onChange, ref, name } }): JSX.Element => (
-              <Input
-                name={name}
-                ref={ref}
-                disabled={item.readOnly}
-                defaultValue={value}
-                label={
-                  <Label
-                    labelTexts={[{ text: labelText, type: 'semibold' }]}
-                    sublabel={
-                      <Sublabel
-                        id={`${getId(this.props.id)}_sublabel`}
-                        sublabelTexts={[{ text: subLabelText, hideFromScreenReader: false, type: 'normal' }]}
-                      />
-                    }
-                    afterLabelChildren={this.props.renderHelpButton()}
-                  />
-                }
-                onChange={(e): void => {
-                  handleInputChange(e);
-                  onChange(e.target.value);
-                }}
-                type="text"
-                width={25}
-                testId={getId(this.props.id)}
-                inputId={getId(this.props.id)}
-                placeholder={getPlaceholder(item)}
-                className="page_refero__input"
-              />
-            )}
-          />
-          {this.props.renderDeleteButton('page_refero__deletebutton--margin-top')}
-          {this.props.repeatButton}
-        </FormGroup>
-        {this.props.children ? <div className="nested-fieldset nested-fieldset--full-height">{this.props.children}</div> : null}
-      </div>
+      <TextView
+        id={id}
+        item={item}
+        value={getPDFStringValue(answer, resources)}
+        onRenderMarkdown={onRenderMarkdown}
+        textClass="page_refero__component_readonlytext"
+        helpButton={renderHelpButton()}
+        helpElement={renderHelpElement()}
+      >
+        {children}
+      </TextView>
     );
   }
-}
+  const labelText = getLabelText(item, onRenderMarkdown, questionnaire, resources);
+  const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
+  const maxLength = getMaxLength(item);
+  const minLength = getMinLengthExtensionValue(item);
+  const pattern = getRegexExtension(item);
+  const errorMessage = getValidationTextExtension(item);
+  const debouncedHandleChange: (event: React.ChangeEvent<HTMLInputElement>) => void = debounce(handleChange, 250, false);
+
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+    event.persist();
+    debouncedHandleChange(event);
+  };
+  const value = getStringValue(answer);
+  return (
+    <div className="page_refero__component page_refero__component_string">
+      <FormGroup error={error?.message} mode="ongrey">
+        {renderHelpElement()}
+        <Controller
+          name={idWithLinkIdAndItemIndex}
+          control={control}
+          shouldUnregister={true}
+          defaultValue={value}
+          rules={{
+            required: {
+              value: isRequired(item),
+              message: resources?.formRequiredErrorMessage ?? 'Feltet er påkrevd',
+            },
+            ...(validateScriptInjection && {
+              validate: (value: string): true | string => scriptInjectionValidation(value, resources),
+            }),
+            ...(minLength && {
+              minLength: {
+                value: minLength || 0,
+                message: errorMessage ?? resources?.stringOverMaxLengthError ?? 'Verdien er for kort',
+              },
+            }),
+            ...(maxLength && {
+              maxLength: {
+                value: maxLength,
+                message: errorMessage ?? resources?.stringOverMaxLengthError ?? 'Verdien er for lang',
+              },
+            }),
+            ...(pattern && {
+              pattern: {
+                value: new RegExp(pattern),
+                message: errorMessage ?? resources?.oppgiGyldigVerdi ?? 'Verdien er for lav',
+              },
+            }),
+          }}
+          render={({ field: { onChange, ref, name } }): JSX.Element => (
+            <Input
+              name={name}
+              ref={ref}
+              disabled={item.readOnly}
+              defaultValue={value}
+              label={
+                <Label
+                  testId={`${getId(id)}-string-label`}
+                  labelTexts={[{ text: labelText, type: 'semibold' }]}
+                  className="page_refero__label"
+                  sublabel={
+                    <Sublabel
+                      id={`${getId(id)}-sublabel`}
+                      sublabelTexts={[{ text: subLabelText, hideFromScreenReader: false, type: 'normal' }]}
+                    />
+                  }
+                  afterLabelChildren={renderHelpButton()}
+                />
+              }
+              onChange={(e): void => {
+                handleInputChange(e);
+                onChange(e.target.value);
+              }}
+              type="text"
+              width={25}
+              testId={`${getId(id)}-string`}
+              inputId={getId(id)}
+              placeholder={getPlaceholder(item)}
+              className="page_refero__input"
+            />
+          )}
+        />
+        {renderDeleteButton('page_refero__deletebutton--margin-top')}
+        {repeatButton}
+      </FormGroup>
+      {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
+    </div>
+  );
+};
 const withFormProps = ReactHookFormHoc(String);
 const withCommonFunctionsComponent = withCommonFunctions(withFormProps);
 const layoutChangeComponent = layoutChange(withCommonFunctionsComponent);

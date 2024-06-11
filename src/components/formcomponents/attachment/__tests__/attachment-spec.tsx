@@ -11,7 +11,7 @@ import {
   createMockFile,
   createMockQuestionnaireItem,
   createMockQuestionnaireItemWithEmptyValue,
-} from '../mockUtil';
+} from './__data__/mockUtil';
 import { Resources } from '../../../../util/resources';
 import { convertBytesToMBString, convertMBToBytes } from '../attachmentUtil';
 import constants from '../../../../constants';
@@ -109,7 +109,6 @@ describe.skip('<AttachmentComponent />', () => {
 
       await uploadMockFile(PLAIN_TEXT_6_MB);
 
-      screen.debug(undefined, 6000000);
       expectReplacedFileSizeError(5);
       expectNotToFindByText(wrongFileTypeMsg);
     });

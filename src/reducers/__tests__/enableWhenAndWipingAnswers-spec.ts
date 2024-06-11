@@ -28,12 +28,12 @@ describe('wipe answers when collapsing enable whens', () => {
     if (!qItem) return;
     state = clickCheckbox(state, pathifyExpand('1'), false, qItem);
 
-    let i1 = getResponseItem('1', state, pathifyExpand('1'));
-    let i11 = getResponseItem('1.1', state, pathifyExpand('1.1'));
-    let i111 = getResponseItem('1.1.1', state, pathifyExpand('1.1.1'));
-    let i1111 = getResponseItem('1.1.1.1', state, pathifyExpand('1.1.1.1'));
-    let i2 = getResponseItem('2', state, pathifyExpand('2'));
-    let i21 = getResponseItem('2.1', state, pathifyExpand('2.1'));
+    const i1 = getResponseItem('1', state, pathifyExpand('1'));
+    const i11 = getResponseItem('1.1', state, pathifyExpand('1.1'));
+    const i111 = getResponseItem('1.1.1', state, pathifyExpand('1.1.1'));
+    const i1111 = getResponseItem('1.1.1.1', state, pathifyExpand('1.1.1.1'));
+    const i2 = getResponseItem('2', state, pathifyExpand('2'));
+    const i21 = getResponseItem('2.1', state, pathifyExpand('2.1'));
 
     if (!i1 || !i11 || !i111 || !i1111 || !i2 || !i21) return fail();
 
@@ -57,12 +57,12 @@ describe('wipe answers when collapsing enable whens', () => {
     if (!qItem) return fail();
     state = enterText(state, pathifyExpand('1.1'), '', qItem);
 
-    let i1 = getResponseItem('1', state, pathifyExpand('1'));
-    let i11 = getResponseItem('1.1', state, pathifyExpand('1.1'));
-    let i111 = getResponseItem('1.1.1', state, pathifyExpand('1.1.1'));
-    let i1111 = getResponseItem('1.1.1.1', state, pathifyExpand('1.1.1.1'));
-    let i2 = getResponseItem('2', state, pathifyExpand('2'));
-    let i21 = getResponseItem('2.1', state, pathifyExpand('2.1'));
+    const i1 = getResponseItem('1', state, pathifyExpand('1'));
+    const i11 = getResponseItem('1.1', state, pathifyExpand('1.1'));
+    const i111 = getResponseItem('1.1.1', state, pathifyExpand('1.1.1'));
+    const i1111 = getResponseItem('1.1.1.1', state, pathifyExpand('1.1.1.1'));
+    const i2 = getResponseItem('2', state, pathifyExpand('2'));
+    const i21 = getResponseItem('2.1', state, pathifyExpand('2.1'));
 
     if (!i1 || !i11 || !i111 || !i1111 || !i2 || !i21) return fail();
 

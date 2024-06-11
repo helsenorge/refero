@@ -1,14 +1,14 @@
 import * as React from 'react';
 
 import '../../util/defineFetch';
-import { QuestionnaireItem, QuestionnaireResponseItemAnswer, Extension, QuestionnaireResponseItem } from 'fhir/r4';
-import { Path } from '../../util/refero-core';
+import { QuestionnaireItem, Extension } from 'fhir/r4';
 import { Group } from '../formcomponents/group/group';
 import StringComponent from '../../components/formcomponents/string/string';
 import { RenderContextType } from '../../constants/renderContextType';
 import { RenderContext } from '../../util/renderContext';
 import { createItemControlExtension, findItemById } from '../__tests__/utils';
 import { render } from './test-utils/test-utils';
+import { IItemType } from '../../constants/itemType';
 
 describe('Group component renders with correct classes', () => {
   const defaultClasses = ['.page_refero__component', '.page_refero__component_group'];
@@ -86,17 +86,19 @@ function createWrapperForGroupItem(item: QuestionnaireItem) {
     <Group
       idWithLinkIdAndItemIndex={item.linkId}
       dispatch={() => undefined as unknown}
-      answer={{} as QuestionnaireResponseItemAnswer}
+      answer={{}}
       item={item}
       id={item.linkId}
-      path={{} as Path[]}
+      path={[]}
       renderDeleteButton={() => <></>}
       repeatButton={<React.Fragment />}
       renderHelpButton={() => <React.Fragment />}
       renderHelpElement={() => <React.Fragment />}
       renderChildrenItems={() => [<></>]}
       renderContext={new RenderContext(RenderContextType.None)}
-      responseItem={{} as QuestionnaireResponseItem}
+      responseItem={{
+        linkId: '1',
+      }}
     />
   );
 }
@@ -106,10 +108,10 @@ function createWrapperForStringItem(item: QuestionnaireItem) {
     <StringComponent
       idWithLinkIdAndItemIndex={item.linkId}
       dispatch={() => undefined as unknown}
-      answer={{} as QuestionnaireResponseItemAnswer}
+      answer={{}}
       item={item}
       id={item.linkId}
-      path={{} as Path[]}
+      path={[]}
       renderDeleteButton={() => <></>}
       repeatButton={<React.Fragment />}
       renderHelpButton={() => <React.Fragment />}
@@ -120,10 +122,10 @@ function createWrapperForStringItem(item: QuestionnaireItem) {
   );
 }
 
-function createItemWithExtensions(itemType: string, id = '1', ...extensions: Extension[]): QuestionnaireItem {
+function createItemWithExtensions(itemType: IItemType, id = '1', ...extensions: Extension[]): QuestionnaireItem {
   return {
     linkId: id,
-    type: itemType as QuestionnaireItem['type'],
+    type: itemType,
     extension: extensions,
   };
 }

@@ -14,7 +14,7 @@ import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 import { NewValueAction, newIntegerValueAsync } from '../../../actions/newValue';
 import { GlobalState } from '../../../reducers';
 import { getPlaceholder, getMaxValueExtensionValue, getMinValueExtensionValue, getValidationTextExtension } from '../../../util/extension';
-import { isReadOnly, isRequired, getId, getSublabelText, renderPrefix, getText } from '../../../util/index';
+import { isReadOnly, isRequired, getId, getSublabelText, getLabelText } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
 import { Resources } from '../../../util/resources';
@@ -40,12 +40,31 @@ export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   isHelpOpen?: boolean;
   onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
+  children?: React.ReactNode;
 }
 
-class Integer extends React.Component<Props, Record<string, unknown>> {
-  getValue(): string | number | number[] | undefined {
-    const { item, answer } = this.props;
-
+const Integer = ({
+  item,
+  answer,
+  repeatButton,
+  resources,
+  id,
+  onRenderMarkdown,
+  renderHelpButton,
+  renderHelpElement,
+  children,
+  pdf,
+  questionnaire,
+  control,
+  error,
+  renderDeleteButton,
+  idWithLinkIdAndItemIndex,
+  dispatch,
+  promptLoginMessage,
+  path,
+  onAnswerChange,
+}: Props): JSX.Element | null => {
+  const getValue = (): string | number | number[] | undefined => {
     if (answer && Array.isArray(answer)) {
       return answer.map(m => m.valueInteger);
     }
@@ -55,14 +74,14 @@ class Integer extends React.Component<Props, Record<string, unknown>> {
     if (!item || !item.initial || item.initial.length === 0 || !item.initial[0].valueInteger) {
       return '';
     }
-  }
+  };
 
-  getPDFValue(): string | number {
-    const value = this.getValue();
+  const getPDFValue = (): string | number => {
+    const value = getValue();
     if (value === undefined || value === null || value === '') {
       let text = '';
-      if (this.props.resources && this.props.resources.ikkeBesvart) {
-        text = this.props.resources.ikkeBesvart;
+      if (resources && resources.ikkeBesvart) {
+        text = resources.ikkeBesvart;
       }
       return text;
     }
@@ -70,16 +89,12 @@ class Integer extends React.Component<Props, Record<string, unknown>> {
       return value.join(', ');
     }
     return value;
-  }
+  };
 
-  handleChange = (event: React.FormEvent<HTMLInputElement>): void => {
-    const { dispatch, promptLoginMessage, path, item, onAnswerChange } = this.props;
-
+  const handleChange = (event: React.FormEvent<HTMLInputElement>): void => {
     const value = parseInt((event.target as HTMLInputElement).value, 10);
     if (dispatch) {
-      dispatch(newIntegerValueAsync(this.props.path, value, this.props.item))?.then(newState =>
-        onAnswerChange(newState, path, item, { valueInteger: value } as QuestionnaireResponseItemAnswer)
-      );
+      dispatch(newIntegerValueAsync(path, value, item))?.then(newState => onAnswerChange(newState, path, item, { valueInteger: value }));
     }
 
     if (promptLoginMessage) {
@@ -87,112 +102,96 @@ class Integer extends React.Component<Props, Record<string, unknown>> {
     }
   };
 
-  shouldComponentUpdate(nextProps: Props): boolean {
-    const responseItemHasChanged = this.props.responseItem !== nextProps.responseItem;
-    const helpItemHasChanged = this.props.isHelpOpen !== nextProps.isHelpOpen;
-    const answerHasChanged = this.props.answer !== nextProps.answer;
-    const resourcesHasChanged = JSON.stringify(this.props.resources) !== JSON.stringify(nextProps.resources);
-    const repeats = this.props.item.repeats ?? false;
-    const newErrorMessage = this.props.error?.message !== nextProps.error?.message;
-    return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats || answerHasChanged || newErrorMessage;
-  }
+  // shouldComponentUpdate(nextProps: Props): boolean {
+  //   const responseItemHasChanged = responseItem !== nextresponseItem;
+  //   const helpItemHasChanged = isHelpOpen !== nextisHelpOpen;
+  //   const answerHasChanged = answer !== nextanswer;
+  //   const resourcesHasChanged = JSON.stringify(resources) !== JSON.stringify(nextresources);
+  //   const repeats = item.repeats ?? false;
+  //   const newErrorMessage = error?.message !== nexterror?.message;
+  //   return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats || answerHasChanged || newErrorMessage;
+  // }
 
-  render(): JSX.Element | null {
-    const {
-      repeatButton,
-      item,
-      resources,
-      id,
-      onRenderMarkdown,
-      renderHelpButton,
-      renderHelpElement,
-      children,
-      pdf,
-      questionnaire,
-      control,
-      error,
-      renderDeleteButton,
-      idWithLinkIdAndItemIndex,
-    } = this.props;
-
-    if (pdf || isReadOnly(item)) {
-      return (
-        <TextView
-          id={id}
-          item={item}
-          value={this.getPDFValue()}
-          onRenderMarkdown={onRenderMarkdown}
-          helpButton={renderHelpButton()}
-          helpElement={renderHelpElement()}
-        >
-          {children}
-        </TextView>
-      );
-    }
-    const value = this.getValue();
-    const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
-    const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`;
-    const errorMessage = getValidationTextExtension(item);
-    const minValue = getMinValueExtensionValue(item);
-    const maxValue = getMaxValueExtensionValue(item);
+  if (pdf || isReadOnly(item)) {
     return (
-      <div className="page_refero__component page_refero__component_integer">
-        <FormGroup error={error?.message} mode="ongrey">
-          {renderHelpElement()}
-          <Controller
-            name={idWithLinkIdAndItemIndex}
-            control={control}
-            shouldUnregister={true}
-            rules={{
-              required: {
-                value: isRequired(item),
-                message: resources?.formRequiredErrorMessage ?? 'Feltet er påkrevd',
-              },
-              ...(maxValue && {
-                max: {
-                  value: maxValue,
-                  message: errorMessage ?? resources?.oppgiGyldigVerdi ?? 'Verdien er for høy',
-                },
-              }),
-              ...(minValue && {
-                min: {
-                  value: minValue,
-                  message: errorMessage ?? resources?.oppgiGyldigVerdi ?? 'Verdien er for lav',
-                },
-              }),
-            }}
-            render={({ field: { onChange, ...rest } }): JSX.Element => (
-              <Input
-                {...rest}
-                type="number"
-                value={Array.isArray(value) ? value.join(', ') : value}
-                inputId={getId(id)}
-                testId={getId(id)}
-                label={
-                  <Label
-                    labelTexts={[{ text: labelText, type: 'semibold' }]}
-                    sublabel={<Sublabel id={`${getId(id)}-select-sublabel`} sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
-                    afterLabelChildren={renderHelpButton()}
-                  />
-                }
-                onChange={(e): void => {
-                  onChange(e.target.value);
-                  this.handleChange(e);
-                }}
-                placeholder={getPlaceholder(item)}
-                className="page_refero__input"
-                width={25}
-              />
-            )}
-          />
-          {renderDeleteButton('page_refero__deletebutton--margin-top')}
-          {repeatButton}
-        </FormGroup>
-        {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
-      </div>
+      <TextView
+        id={id}
+        item={item}
+        value={getPDFValue()}
+        onRenderMarkdown={onRenderMarkdown}
+        helpButton={renderHelpButton()}
+        helpElement={renderHelpElement()}
+      >
+        {children}
+      </TextView>
     );
   }
-}
+  const value = getValue();
+  const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
+  const labelText = getLabelText(item, onRenderMarkdown, questionnaire, resources);
+  const errorMessage = getValidationTextExtension(item);
+  const minValue = getMinValueExtensionValue(item);
+  const maxValue = getMaxValueExtensionValue(item);
+  return (
+    <div className="page_refero__component page_refero__component_integer">
+      <FormGroup error={error?.message} mode="ongrey">
+        {renderHelpElement()}
+        <Controller
+          name={idWithLinkIdAndItemIndex}
+          control={control}
+          shouldUnregister={true}
+          defaultValue={value}
+          rules={{
+            required: {
+              value: isRequired(item),
+              message: resources?.formRequiredErrorMessage ?? 'Feltet er påkrevd',
+            },
+            ...(maxValue && {
+              max: {
+                value: maxValue,
+                message: errorMessage ?? resources?.oppgiGyldigVerdi ?? 'Verdien er for høy',
+              },
+            }),
+            ...(minValue && {
+              min: {
+                value: minValue,
+                message: errorMessage ?? resources?.oppgiGyldigVerdi ?? 'Verdien er for lav',
+              },
+            }),
+          }}
+          render={({ field: { onChange, ...rest } }): JSX.Element => (
+            <Input
+              {...rest}
+              type="number"
+              value={Array.isArray(value) ? value.join(', ') : value}
+              inputId={getId(id)}
+              testId={getId(id)}
+              label={
+                <Label
+                  htmlFor={getId(id)}
+                  labelTexts={[{ text: labelText, type: 'semibold' }]}
+                  className="page_refero__label"
+                  sublabel={<Sublabel id={`${getId(id)}-sublabel`} sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+                  afterLabelChildren={renderHelpButton()}
+                />
+              }
+              onChange={(e): void => {
+                onChange(e.target.value);
+                handleChange(e);
+              }}
+              placeholder={getPlaceholder(item)}
+              className="page_refero__input"
+              width={25}
+            />
+          )}
+        />
+        {renderDeleteButton('page_refero__deletebutton--margin-top')}
+        {repeatButton}
+      </FormGroup>
+      {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
+    </div>
+  );
+};
 
 const withFormProps = ReactHookFormHoc(Integer);
 const withCommonFunctionsComponent = withCommonFunctions(withFormProps);

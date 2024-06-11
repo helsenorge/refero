@@ -10,8 +10,7 @@ import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
 
 import { shouldShowExtraChoice } from '../../../util/choice';
-import { getValidationTextExtension } from '../../../util/extension';
-import { isRequired, getSublabelText, getText, renderPrefix } from '../../../util/index';
+import { isRequired, getSublabelText, getText, renderPrefix, getId } from '../../../util/index';
 import { Resources } from '../../../util/resources';
 import { FormProps } from '../../../validation/ReactHookFormHoc';
 import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
@@ -31,9 +30,10 @@ interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
+  children?: React.ReactNode;
 }
 
-const CheckboxView: React.SFC<Props> = ({
+const CheckboxView = ({
   options,
   item,
   questionnaire,
@@ -51,7 +51,8 @@ const CheckboxView: React.SFC<Props> = ({
   control,
   error,
   idWithLinkIdAndItemIndex,
-}) => {
+  selected,
+}: Props): JSX.Element | null => {
   const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
   const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`;
   return (
@@ -59,7 +60,7 @@ const CheckboxView: React.SFC<Props> = ({
       <FormGroup error={error?.message} mode="ongrey">
         {renderHelpElement()}
         <Label
-          labelTexts={[{ text: labelText }]}
+          labelTexts={[{ text: labelText, type: 'semibold' }]}
           sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
           afterLabelChildren={renderHelpButton()}
         />
@@ -69,9 +70,10 @@ const CheckboxView: React.SFC<Props> = ({
             key={`${option.type}-${index}`}
             control={control}
             shouldUnregister={true}
+            defaultValue={selected}
             rules={{
               required: {
-                message: getValidationTextExtension(item) ?? resources?.formRequiredErrorMessage ?? 'Påkrevd felt',
+                message: resources?.formRequiredErrorMessage ?? 'Påkrevd felt',
                 value: isRequired(item),
               },
             }}
@@ -79,12 +81,12 @@ const CheckboxView: React.SFC<Props> = ({
               <Checkbox
                 {...rest}
                 inputId={`${id}-${option.type}`}
-                testId={`${option.type}-${index}-checkbox-choice`}
-                label={<Label labelTexts={[{ text: option.label }]} />}
-                checked={value?.some((val: string) => val === option.type)}
+                testId={`${getId(id)}-${index}-checkbox-openchoice`}
+                label={<Label testId={`${getId(id)}-${index}-checkbox-openchoice-label`} labelTexts={[{ text: option.label }]} />}
+                checked={selected?.some((val: string) => val === option.type)}
                 value={option.type}
                 onChange={(e): void => {
-                  const valueCopy = [...value];
+                  const valueCopy = value ? [...value] : [];
                   if (e.target.checked) {
                     valueCopy.push(option.type);
                   } else {

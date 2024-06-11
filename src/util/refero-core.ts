@@ -527,7 +527,7 @@ function getResponseItemAndPathWithLinkIdTraverse(
 }
 
 function isOfTypeQuestionnaireResponseItem(item: QuestionnaireResponse | QuestionnaireResponseItem): item is QuestionnaireResponseItem {
-  return (item as QuestionnaireResponseItem).answer !== undefined;
+  return item.hasOwnProperty('answer');
 }
 
 export function getResponseItemWithPath(path: Array<Path>, formData: FormData): QuestionnaireResponseItem | undefined {

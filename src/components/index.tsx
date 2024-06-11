@@ -61,7 +61,6 @@ const Refero = (props: StateProps & DispatchProps & ReferoProps): JSX.Element | 
   const questionnaire = props.questionnaire ? props.questionnaire : props.formDefinition?.Content;
   // const schema = createZodSchemaFromQuestionnaire(questionnaire, props.resources, questionnaire?.contained);
   const defualtVals = React.useMemo(() => generateDefaultValues(questionnaire?.item), [questionnaire?.item?.length]);
-
   const methods = useForm({
     defaultValues: defualtVals,
     shouldFocusError: false,
@@ -109,6 +108,7 @@ const Refero = (props: StateProps & DispatchProps & ReferoProps): JSX.Element | 
     item: QuestionnaireItem,
     answer: QuestionnaireResponseItemAnswer
   ): void => {
+    // console.log('onAnswerChange', newState, item, answer, props.onChange);
     if (props.onChange && newState.refero.form.FormDefinition.Content && newState.refero.form.FormData.Content) {
       const actionRequester = new ActionRequester(newState.refero.form.FormDefinition.Content, newState.refero.form.FormData.Content);
 
@@ -116,7 +116,6 @@ const Refero = (props: StateProps & DispatchProps & ReferoProps): JSX.Element | 
         newState.refero.form.FormDefinition.Content,
         newState.refero.form.FormData.Content
       );
-
       props.onChange(item, answer, actionRequester, questionnaireInspector);
       for (const action of actionRequester.getActions()) {
         props.dispatch(action);
@@ -200,7 +199,6 @@ const Refero = (props: StateProps & DispatchProps & ReferoProps): JSX.Element | 
     const renderedItems: Array<JSX.Element> | undefined = [];
     const isNavigatorEnabled = !!getNavigatorExtension(formDefinition.Content);
     let isNavigatorBlindzoneInitiated = false;
-
     const questionnaireItemArray: QuestionnaireItem[] | undefined = shouldFormBeDisplayedAsStepView(formDefinition)
       ? getTopLevelElements(formDefinition)
       : formDefinition.Content.item;
@@ -211,6 +209,7 @@ const Refero = (props: StateProps & DispatchProps & ReferoProps): JSX.Element | 
       if (!Comp) {
         return undefined;
       }
+
       let responseItems: Array<QuestionnaireResponseItem> | undefined;
       if (formData) {
         responseItems = getRootQuestionnaireResponseItemFromData(item.linkId, formData);
@@ -399,14 +398,6 @@ function mapStateToProps(state: GlobalState): StateProps {
 
 function mapDispatchToProps(dispatch: ThunkDispatch<GlobalState, void, NewValueAction>, props: ReferoProps): DispatchProps {
   return {
-    updateSkjema: (
-      questionnaire: Questionnaire,
-      questionnaireResponse: QuestionnaireResponse | undefined,
-      language: string | undefined,
-      syncQuestionnaireResponse: boolean | undefined
-    ): void => {
-      dispatch(setSkjemaDefinition(questionnaire, questionnaireResponse, language, syncQuestionnaireResponse));
-    },
     mount: (): void => {
       if (props.questionnaire) {
         dispatch(setSkjemaDefinition(props.questionnaire, props.questionnaireResponse, props.language, props.syncQuestionnaireResponse));

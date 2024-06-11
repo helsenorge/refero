@@ -19,7 +19,7 @@ const HelpButton = ({ item, children, callback }: Props): JSX.Element | null => 
   if (!item) return null;
 
   return (
-    <span className="page_refero__helpButton" onClick={handleToggle}>
+    <span data-testid={`${item.linkId}-help-button`} className="page_refero__helpButton" onClick={handleToggle}>
       {children}
     </span>
   );

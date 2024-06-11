@@ -1,8 +1,7 @@
 import { render, screen } from './test-utils/test-utils';
 import * as React from 'react';
 
-import { QuestionnaireItem, Extension, QuestionnaireResponseItemAnswer, QuestionnaireItemAnswerOption } from 'fhir/r4';
-import { Path } from '../../util/refero-core';
+import { QuestionnaireItem, Extension, QuestionnaireItemAnswerOption } from 'fhir/r4';
 import String from '../formcomponents/string/string';
 import Choice from '../formcomponents/choice/choice';
 import Boolean from '../formcomponents/boolean/boolean';
@@ -137,7 +136,7 @@ function createValueStringOption(...options: string[]): QuestionnaireItemAnswerO
   return options.map(o => {
     return {
       valueString: o,
-    } as QuestionnaireItemAnswerOption;
+    };
   });
 }
 
@@ -194,10 +193,10 @@ function createComponentText(extensions?: Extension[]): JSX.Element {
   return (
     <Text
       idWithLinkIdAndItemIndex={item.linkId}
-      dispatch={() => undefined as any}
+      dispatch={() => undefined}
       answer={{ valueString: 'text', id: '1', item: [item] }}
       item={item}
-      path={{} as Path[]}
+      path={[]}
       renderDeleteButton={() => null}
       repeatButton={<React.Fragment />}
       renderHelpButton={() => <div className="helpButton">{'help button'}</div>}
@@ -214,10 +213,10 @@ function createComponentQuantity(extensions?: Extension[]): JSX.Element {
   return (
     <Quantity
       idWithLinkIdAndItemIndex={item.linkId}
-      dispatch={() => undefined as any}
-      answer={{} as QuestionnaireResponseItemAnswer}
+      dispatch={() => undefined}
+      answer={{}}
       item={item}
-      path={{} as Path[]}
+      path={[]}
       repeatButton={<React.Fragment />}
       renderHelpButton={() => <div className="helpButton">{'help button'}</div>}
       renderHelpElement={() => <div className="helpText">{'help text'}</div>}
@@ -234,10 +233,10 @@ function createComponentInteger(extensions?: Extension[]): JSX.Element {
   return (
     <Integer
       idWithLinkIdAndItemIndex={item.linkId}
-      dispatch={() => undefined as any}
-      answer={{} as QuestionnaireResponseItemAnswer}
+      dispatch={() => undefined}
+      answer={{}}
       item={item}
-      path={{} as Path[]}
+      path={[]}
       renderDeleteButton={() => null}
       repeatButton={<React.Fragment />}
       renderHelpButton={() => <div className="helpButton">{'help button'}</div>}
@@ -253,10 +252,10 @@ function createComponentDecimal(extensions?: Extension[]): JSX.Element {
   return (
     <Decimal
       idWithLinkIdAndItemIndex={item.linkId}
-      dispatch={() => undefined as any}
-      answer={{} as QuestionnaireResponseItemAnswer}
+      dispatch={() => undefined}
+      answer={{}}
       item={item}
-      path={{} as Path[]}
+      path={[]}
       renderDeleteButton={() => null}
       repeatButton={<React.Fragment />}
       renderHelpButton={() => <div className="helpButton">{'help button'}</div>}
@@ -272,10 +271,10 @@ function createComponentTime(extensions?: Extension[]): JSX.Element {
   return (
     <Time
       idWithLinkIdAndItemIndex={item.linkId}
-      dispatch={() => undefined as any}
-      answer={{} as QuestionnaireResponseItemAnswer}
+      dispatch={() => undefined}
+      answer={{}}
       item={item}
-      path={{} as Path[]}
+      path={[]}
       renderDeleteButton={() => null}
       repeatButton={<React.Fragment />}
       renderHelpButton={() => <div className="helpButton">{'help button'}</div>}
@@ -292,10 +291,10 @@ function createComponentDateTime(extensions?: Extension[]): JSX.Element {
   return (
     <DateTime
       idWithLinkIdAndItemIndex={item.linkId}
-      dispatch={() => undefined as any}
-      answer={{} as QuestionnaireResponseItemAnswer}
+      dispatch={() => undefined}
+      answer={{}}
       item={item}
-      path={{} as Path[]}
+      path={[]}
       renderDeleteButton={() => null}
       repeatButton={<React.Fragment />}
       renderHelpButton={() => <div className="helpButton">{'help button'}</div>}
@@ -312,10 +311,10 @@ function createComponentDate(extensions?: Extension[]): JSX.Element {
   return (
     <Date
       idWithLinkIdAndItemIndex={item.linkId}
-      dispatch={() => undefined as any}
-      answer={{} as QuestionnaireResponseItemAnswer}
+      dispatch={() => undefined}
+      answer={{}}
       item={item}
-      path={{} as Path[]}
+      path={[]}
       renderDeleteButton={() => null}
       repeatButton={<React.Fragment />}
       renderHelpButton={() => <div className="helpButton">{'help button'}</div>}
@@ -332,10 +331,10 @@ function createComponentAttachment(extensions?: Extension[]): JSX.Element {
   return (
     <Attachment
       idWithLinkIdAndItemIndex={item.linkId}
-      dispatch={() => undefined as any}
-      answer={{} as QuestionnaireResponseItemAnswer}
+      dispatch={() => undefined}
+      answer={{}}
       item={item}
-      path={{} as Path[]}
+      path={[]}
       renderDeleteButton={() => null}
       repeatButton={<React.Fragment />}
       renderHelpButton={() => <div className="helpButton">{'help button'}</div>}
@@ -352,10 +351,10 @@ function createComponentGroup(extensions?: Extension[]): JSX.Element {
   return (
     <Group
       idWithLinkIdAndItemIndex={item.linkId}
-      dispatch={() => undefined as any}
-      answer={{} as QuestionnaireResponseItemAnswer}
+      dispatch={() => undefined}
+      answer={{}}
       item={item}
-      path={{} as Path[]}
+      path={[]}
       headerTag={1}
       renderDeleteButton={() => null}
       repeatButton={<React.Fragment />}
@@ -374,10 +373,10 @@ function createComponentBoolean(extensions?: Extension[]): JSX.Element {
   return (
     <Boolean
       idWithLinkIdAndItemIndex={item.linkId}
-      dispatch={() => undefined as any}
-      answer={{} as QuestionnaireResponseItemAnswer}
+      dispatch={() => undefined}
+      answer={{}}
       item={item}
-      path={{} as Path[]}
+      path={[]}
       renderDeleteButton={() => null}
       repeatButton={<React.Fragment />}
       oneToTwoColumn={false}
@@ -395,10 +394,10 @@ function createComponentString(extensions?: Extension[]): JSX.Element {
   return (
     <String
       idWithLinkIdAndItemIndex={item.linkId}
-      dispatch={() => undefined as any}
-      answer={{} as QuestionnaireResponseItemAnswer}
+      dispatch={() => undefined}
+      answer={{}}
       item={item}
-      path={{} as Path[]}
+      path={[]}
       renderDeleteButton={() => null}
       repeatButton={<React.Fragment />}
       visibleDeleteButton={false}
@@ -422,10 +421,10 @@ function createComponentChoice(extensions?: Extension[]): JSX.Element {
   return (
     <Choice
       idWithLinkIdAndItemIndex={item.linkId}
-      dispatch={() => undefined as any}
-      answer={{} as QuestionnaireResponseItemAnswer}
+      dispatch={() => undefined}
+      answer={{}}
       item={item}
-      path={{} as Path[]}
+      path={[]}
       renderDeleteButton={() => null}
       repeatButton={<React.Fragment />}
       renderHelpButton={() => <div className="helpButton">{'help button'}</div>}
@@ -443,10 +442,10 @@ function createComponentOpenChoice(extensions?: Extension[]): JSX.Element {
   return (
     <OpenChoice
       idWithLinkIdAndItemIndex={item.linkId}
-      dispatch={() => undefined as any}
-      answer={{} as QuestionnaireResponseItemAnswer}
+      dispatch={() => undefined}
+      answer={{}}
       item={item}
-      path={{} as Path[]}
+      path={[]}
       renderDeleteButton={() => null}
       repeatButton={<React.Fragment />}
       renderHelpButton={() => <div className="helpButton">{'help button'}</div>}

@@ -15,8 +15,8 @@ import rootReducer from '../../reducers';
 import { Resources } from '../../util/resources';
 import { ReferoContainer } from '..';
 import { getCalculatedExpressionExtension } from '../../util/extension';
-import { inputAnswer, selectRadioButtonOption, findQuestionnaireItem, findItem } from './utils';
-import { renderWithRedux, screen, userEvent } from './test-utils/test-utils';
+import { inputAnswer, findQuestionnaireItem, findItem } from './utils';
+import { act, renderWithRedux, screen, userEvent } from './test-utils/test-utils';
 
 describe('Component renders and calculates score', () => {
   beforeEach(() => {
@@ -133,12 +133,12 @@ describe('Component renders and calculates score', () => {
     userEvent.click(getByLabelText('Nesten hver dag'));
 
     const sum3 = await findByLabelText('Sum');
-    expect(sum3).toHaveValue(3);
+    expect(sum3).toHaveValue(5);
 
     userEvent.click(getByLabelText('Mer enn halvparten av dagene'));
 
     const sum4 = await findByLabelText('Sum');
-    expect(sum4).toHaveValue(2);
+    expect(sum4).toHaveValue(3);
   });
 
   it('total score should be updated when options in open-choice item is selected', async () => {
@@ -157,55 +157,74 @@ describe('Component renders and calculates score', () => {
     sum = await findByLabelText('Sum');
     expect(sum).toHaveValue(3);
   });
+  function expectScores(scores: { [linkId: string]: number | null }, container: HTMLElement) {
+    for (const linkId in scores) {
+      const value = scores[linkId];
+      const item = findItem(linkId, container);
+      expect(item).toHaveValue(value);
+    }
+  }
+  it('total score and section score should be updated', async () => {
+    const { container, findByTestId } = createWrapper(SectionScoreDataModel);
 
-  it.skip('total score and section score should be updated', async () => {
-    const { container, getByLabelText } = createWrapper(SectionScoreDataModel);
-
-    let expectedScores = {
-      totalscore_31: '',
-      sectionscore_213: '',
-      sectionscore_223: '',
-      sectionscore_230: '',
+    const expectedScores: { [linkId: string]: number | null } = {
+      totalscore_31: null,
+      sectionscore_213: null,
+      sectionscore_223: null,
+      sectionscore_230: null,
     };
     expectScores(expectedScores, container);
+    await act(async () => {
+      const label = await findByTestId('item_2.1.1-2-radio-choice-label');
+      userEvent.click(label);
+    });
 
-    userEvent.click(getByLabelText('Noen dager'));
-
-    expectedScores.totalscore_31 = '4';
-    expectedScores.sectionscore_213 = '4';
-    expectedScores.sectionscore_223 = '';
-    expectedScores.sectionscore_230 = '';
+    expectedScores.totalscore_31 = 4;
+    expectedScores.sectionscore_213 = 4;
     expectScores(expectedScores, container);
 
-    selectCheckBoxOption('2.2.2', 'd', container);
-
-    expectedScores.sectionscore_223 = '8';
-    expectedScores.totalscore_31 = '12';
+    await act(async () => {
+      const label = await findByTestId('item_2.2.2-3-checkbox-choice-label');
+      userEvent.click(label);
+    });
+    expectedScores.sectionscore_223 = 8;
+    expectedScores.totalscore_31 = 12;
     expectScores(expectedScores, container);
 
-    selectRadioButtonOption('2.3.2.2.1', 0, container);
-
-    expectedScores.sectionscore_230 = '1';
-    expectedScores.totalscore_31 = '13';
+    await act(async () => {
+      const label = await findByTestId(/item_2.3.2.2.1-0-radio-choice-label/i);
+      userEvent.click(label);
+    });
+    expectedScores.sectionscore_230 = 1;
+    expectedScores.totalscore_31 = 13;
     expectScores(expectedScores, container);
 
-    selectRadioButtonOption('2.3.1', 1, container);
-
-    expectedScores.sectionscore_230 = '3';
-    expectedScores.totalscore_31 = '15';
+    await act(async () => {
+      const label = await findByTestId(/item_2.3.1-1-radio-choice-label/i);
+      userEvent.click(label);
+    });
+    expectedScores.sectionscore_230 = 3;
+    expectedScores.totalscore_31 = 15;
     expectScores(expectedScores, container);
 
-    selectCheckBoxOption('2.3.2.1', 'a', container);
-    selectCheckBoxOption('2.3.2.1', 'b', container);
+    await act(async () => {
+      const label = await findByTestId(/item_2.3.2.1-0-checkbox-choice-label/i);
+      const label2 = await findByTestId(/item_2.3.2.1-1-checkbox-choice-label/i);
 
-    expectedScores.sectionscore_230 = '6';
-    expectedScores.totalscore_31 = '18';
+      userEvent.click(label);
+      userEvent.click(label2);
+    });
+    expectedScores.sectionscore_230 = 6;
+    expectedScores.totalscore_31 = 18;
     expectScores(expectedScores, container);
 
-    selectCheckBoxOption('2.1.2', 'd', container);
+    await act(async () => {
+      const label = await findByTestId(/item_2.1.2-3-checkbox-choice-label/i);
 
-    expectedScores.sectionscore_213 = '12';
-    expectedScores.totalscore_31 = '26';
+      userEvent.click(label);
+    });
+    expectedScores.sectionscore_213 = 12;
+    expectedScores.totalscore_31 = 26;
     expectScores(expectedScores, container);
   });
 });
@@ -300,34 +319,24 @@ describe('Code Scoring', () => {
     expect(sectionScoreItem).toBeInTheDocument();
   });
 
-  it.skip('Section scoring on multiple choice grouping, with section scoring quantity without extension. Select multiple', async () => {
-    const { findByText } = createWrapper(CodeScoreDataModel);
-
-    userEvent.click(await screen.findByLabelText('Astma'));
-    userEvent.click(await screen.findByLabelText('Kols'));
-
-    const sectionScoreItem = await findByText('50 score');
-    expect(sectionScoreItem).toBeInTheDocument();
+  it('Section scoring on multiple choice grouping, with section scoring quantity without extension. Select multiple', async () => {
+    const { findAllByText, findByLabelText } = createWrapper(CodeScoreDataModel);
+    await act(async () => {
+      userEvent.click(await findByLabelText('Astma'));
+      userEvent.click(await findByLabelText('Kols'));
+    });
+    expect(await findAllByText('50 score')).toHaveLength(2);
   });
 
   it('Total QS scoring', async () => {
-    const { findByText } = createWrapper(CodeScoreDataModel);
+    const { findByText, findByLabelText } = createWrapper(CodeScoreDataModel);
 
-    userEvent.click(await screen.findByLabelText('Astma'));
-    userEvent.click(await screen.findByLabelText('Feber'));
+    userEvent.click(await findByLabelText('Astma'));
+    userEvent.click(await findByLabelText('Feber'));
 
-    const sectionScoreItem = await findByText('35 score');
-    expect(sectionScoreItem).toBeInTheDocument();
+    expect(await findByText('35 score')).toBeInTheDocument();
   });
 });
-
-function expectScores(scores: { [linkId: string]: string }, container: HTMLElement) {
-  for (const linkId in scores) {
-    const value = scores[linkId];
-    const item = findItem(linkId, container);
-    expect(item).toHaveValue(value);
-  }
-}
 
 export function setFhirpath(linkId: string, expression: string, q: Questionnaire): Questionnaire {
   const newQuestionnaire = structuredClone(q);

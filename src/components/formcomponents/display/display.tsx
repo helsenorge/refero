@@ -19,7 +19,6 @@ const Display = ({ id, enable, pdf, item, questionnaire, onRenderMarkdown, resou
     itemControls && itemControls.some(itemControl => itemControl.code === itemControlConstants.HIGHLIGHT)
       ? 'page_refero__component_highlight'
       : '';
-
   if (!enable) {
     return null;
   }
@@ -43,6 +42,7 @@ const Display = ({ id, enable, pdf, item, questionnaire, onRenderMarkdown, resou
       value = <p id={getId(id)}>{`${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`}</p>;
     }
   }
+
   if (pdf) {
     if (!value) {
       return null;

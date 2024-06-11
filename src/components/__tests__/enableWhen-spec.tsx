@@ -19,19 +19,19 @@ describe('enableWhen with checkboxes and multiple answers', () => {
   });
 
   it('enableWhen should trigger when correct answer is selected', async () => {
-    const { container, queryByLabelText } = createWrapper(questionnaireWithEnableWhen);
+    const { queryByLabelText } = createWrapper(questionnaireWithEnableWhen);
     expect(queryByLabelText('Flere sykdommer')).not.toBeInTheDocument();
-    await changeCheckBoxOption('Andre sykdommer', container);
+    await changeCheckBoxOption('Andre sykdommer');
 
     expect(queryByLabelText('Flere sykdommer')).toBeInTheDocument();
   });
 
   it('enableWhen should trigger when correct answer is selected along with other answers', async () => {
-    const { container, queryByLabelText } = createWrapper(questionnaireWithEnableWhen);
+    const { queryByLabelText } = createWrapper(questionnaireWithEnableWhen);
     expect(queryByLabelText('Flere sykdommer')).not.toBeInTheDocument();
-    await changeCheckBoxOption('Allergi', container);
-    await changeCheckBoxOption('Hepatitt C', container);
-    await changeCheckBoxOption('Andre sykdommer', container);
+    await changeCheckBoxOption('Allergi');
+    await changeCheckBoxOption('Hepatitt C');
+    await changeCheckBoxOption('Andre sykdommer');
 
     expect(queryByLabelText('Flere sykdommer')).toBeInTheDocument();
   });
