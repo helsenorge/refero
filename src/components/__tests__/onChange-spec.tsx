@@ -18,7 +18,7 @@ import {
   createOnChangeFuncForActionRequester,
   createOnChangeFuncForQuestionnaireInspector,
 } from './utils';
-import { clickByLabelText, typeAndTabByLabelText } from './test-utils/selectors';
+import { clickByLabelText, typeAndTabByLabelText, typeByLabelText } from './test-utils/selectors';
 
 function toCoding(code: string, system?: string): Coding {
   return {
@@ -324,7 +324,7 @@ describe('onAnswerChange callback gets called and can request additional changes
       actionRequester.addStringAnswer('8', 'Hello World!');
     });
 
-    const { findByLabelText, queryByLabelText } = wrapper(onChange, questionnaireWithAllItemTypes);
+    const { queryByLabelText } = wrapper(onChange, questionnaireWithAllItemTypes);
     await clickByLabelText(/Boolean/i);
     expect(queryByLabelText('String')).toHaveValue('Hello World!');
   });
@@ -335,7 +335,7 @@ describe('onAnswerChange callback gets called and can request additional changes
       actionRequester.clearStringAnswer('8');
     });
 
-    const { findByLabelText, queryByText } = wrapper(onChange, questionnaireWithAllItemTypes);
+    const { queryByText } = wrapper(onChange, questionnaireWithAllItemTypes);
 
     await clickByLabelText(/Boolean/i);
 
@@ -347,7 +347,7 @@ describe('onAnswerChange callback gets called and can request additional changes
       actionRequester.addStringAnswer('9', 'Hello\nWorld!');
     });
 
-    const { findByLabelText, queryByText } = wrapper(onChange, questionnaireWithAllItemTypes);
+    const { queryByText } = wrapper(onChange, questionnaireWithAllItemTypes);
 
     await clickByLabelText(/Boolean/i);
     expect(queryByText(/Hello/i)).toBeInTheDocument();
@@ -359,7 +359,7 @@ describe('onAnswerChange callback gets called and can request additional changes
       actionRequester.addIntegerAnswer('2', 42);
     });
 
-    const { findByLabelText, queryByLabelText } = wrapper(onChange, questionnaireWithAllItemTypes);
+    const { queryByLabelText } = wrapper(onChange, questionnaireWithAllItemTypes);
 
     await clickByLabelText(/Boolean/i);
     expect(queryByLabelText('String')).toHaveValue('Hello World!');
@@ -373,7 +373,7 @@ describe('onAnswerChange callback gets called and can request additional changes
       actionRequester.addOpenChoiceAnswer('6a', 'Hello World!');
     });
 
-    const { container, findByLabelText } = wrapper(onChange, questionnaireWithAllItemTypes);
+    const { container } = wrapper(onChange, questionnaireWithAllItemTypes);
 
     await clickByLabelText(/Boolean/i);
 
@@ -390,7 +390,7 @@ describe('onAnswerChange callback gets called and can request additional changes
       actionRequester.addChoiceAnswer('5b', toCoding('2', 'urn:oid:2.16.578.1.12.4.1.1101'));
     });
 
-    const { findByLabelText, container } = wrapper(onChange, questionnaireWithAllItemTypes);
+    const { container } = wrapper(onChange, questionnaireWithAllItemTypes);
     await clickByLabelText(/Boolean/i);
     expect(container.querySelector('#item_5b-hn-0')).toBeChecked();
     expect(container.querySelector('#item_5b-hn-1')).toBeChecked();
@@ -403,7 +403,7 @@ describe('onAnswerChange callback gets called and can request additional changes
       actionRequester.removeChoiceAnswer('5b', toCoding('2', 'urn:oid:2.16.578.1.12.4.1.1101'));
     });
 
-    const { findByLabelText, container } = wrapper(onChange, questionnaireWithAllItemTypes);
+    const { container } = wrapper(onChange, questionnaireWithAllItemTypes);
     await clickByLabelText(/Boolean/i);
     expect(container.querySelector('#item_5b-hn-0')).toBeChecked();
     expect(container.querySelector('#item_5b-hn-1')).not.toBeChecked();
@@ -434,11 +434,9 @@ describe('onAnswerChange callback gets called and can request additional changes
       actionRequester.addStringAnswer('1.3.1', 'Hello');
     });
 
-    const { findByLabelText, queryByLabelText } = wrapper(onChange, questionnaireWithNestedItems);
+    const { queryByLabelText } = wrapper(onChange, questionnaireWithNestedItems);
 
-    await act(async () => {
-      userEvent.type(await findByLabelText('Decimal'), '1');
-    });
+    await typeByLabelText('Decimal', '1');
 
     expect(queryByLabelText('String')).toHaveValue('Hello');
   });
@@ -448,10 +446,8 @@ describe('onAnswerChange callback gets called and can request additional changes
       actionRequester.addIntegerAnswer('1.3.1.1', 42);
     });
 
-    const { findByLabelText, queryByLabelText } = wrapper(onChange, questionnaireWithNestedItems);
-    await act(async () => {
-      userEvent.type(await findByLabelText('Decimal'), '1');
-    });
+    const { queryByLabelText } = wrapper(onChange, questionnaireWithNestedItems);
+    await typeByLabelText('Decimal', '1');
     expect(queryByLabelText('nested under non-group')).toHaveValue(42);
   });
 
@@ -461,11 +457,9 @@ describe('onAnswerChange callback gets called and can request additional changes
       result = questionnaireInspector.findItemWithLinkIds('1.3.1.1');
     });
 
-    const { findByLabelText } = wrapper(onChange, questionnaireWithNestedItems);
+    wrapper(onChange, questionnaireWithNestedItems);
 
-    await act(async () => {
-      userEvent.type(await findByLabelText('Decimal'), '1');
-    });
+    await typeByLabelText('Decimal', '1');
 
     expect(result.length).toBe(1);
     expect(result[0].QuestionnaireItem.linkId).toBe('1.3.1.1');
@@ -480,11 +474,9 @@ describe('onAnswerChange callback gets called and can request additional changes
       result = questionnaireInspector.findItemWithLinkIds('xxx');
     });
 
-    const { findByLabelText } = wrapper(onChange, questionnaireWithNestedItems);
+    wrapper(onChange, questionnaireWithNestedItems);
 
-    await act(async () => {
-      userEvent.type(await findByLabelText('Decimal'), '1');
-    });
+    await typeByLabelText('Decimal', '1');
 
     expect(result.length).toBe(0);
   });
@@ -495,11 +487,9 @@ describe('onAnswerChange callback gets called and can request additional changes
       result = questionnaireInspector.findItemWithLinkIds('1.3.1.1', '1.1');
     });
 
-    const { findByLabelText } = wrapper(onChange, questionnaireWithNestedItems);
+    wrapper(onChange, questionnaireWithNestedItems);
 
-    await act(async () => {
-      userEvent.type(await findByLabelText('Decimal'), '1');
-    });
+    await typeByLabelText('Decimal', '1');
 
     expect(result.length).toBe(2);
     expect(result[0].QuestionnaireItem.linkId).toBe('1.3.1.1');
@@ -519,11 +509,9 @@ describe('onAnswerChange callback gets called and can request additional changes
       result = questionnaireInspector.findItemWithLinkIds('1');
     });
 
-    const { findByLabelText } = wrapper(onChange, questionnaireWithRepeats);
+    wrapper(onChange, questionnaireWithRepeats);
 
-    await act(async () => {
-      userEvent.type(await findByLabelText('Integer'), '1');
-    });
+    await typeByLabelText('Integer', '1');
 
     expect(result.length).toBe(1);
     expect(result[0].QuestionnaireItem.linkId).toBe('1');

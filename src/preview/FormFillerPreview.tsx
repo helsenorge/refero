@@ -14,8 +14,8 @@ import LanguageLocales from '@helsenorge/core-utils/constants/languages';
 import FormFillerSidebar from './FormFillerSidebar';
 import { emptyPropertyReplacer } from './helpers';
 import { getResources } from './resources/referoResources';
+import skjema from './skjema/NHN_Testskjema_Bool-nb-NO.json';
 import { ReferoContainer } from '../components';
-import skjema from '../components/__tests__/__data__/stepview/q.json';
 import valueSet from '../constants/valuesets';
 import rootReducer from '../reducers';
 
