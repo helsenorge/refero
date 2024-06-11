@@ -134,6 +134,7 @@ const Boolean = (props: Props): JSX.Element | null => {
           name={idWithLinkIdAndItemIndex}
           control={control}
           shouldUnregister={true}
+          defaultValue={value}
           rules={{
             required: {
               value: isRequired(item),

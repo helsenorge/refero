@@ -112,7 +112,7 @@ describe('Copying from ...', () => {
   describe('Choice', () => {
     it('Choice selected options displays in data-receiver element', async () => {
       const { container } = createWrapper(ChoiceCopyFrom);
-      await changeCheckBoxOption('Option 1', container);
+      await changeCheckBoxOption('Option 1');
       expect(findItemById('item_data-receiver-choice-id', container)).toBeInTheDocument();
     });
   });

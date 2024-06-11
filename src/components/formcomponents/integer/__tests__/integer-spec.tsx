@@ -4,6 +4,8 @@ import { q } from './__data__';
 import { ReferoProps } from '../../../../types/referoProps';
 import { getResources } from '../../../../preview/resources/referoResources';
 import { Extensions } from '../../../../constants/extensions';
+import { clickButtonTimes, submitForm, typeByLabelText } from '../../../__tests__/test-utils/selectors';
+import { addManyPropertiesToQuestionnaireItem } from '../../../__tests__/test-utils/questionnairHelpers';
 
 const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle ut dette feltet' };
 
@@ -112,12 +114,8 @@ describe('Integer', () => {
           return y;
         }),
       };
-      const { getByTestId, queryAllByLabelText, queryByTestId } = createWrapper(questionnaire);
-      act(() => {
-        userEvent.click(getByTestId(/-repeat-button/i));
-        userEvent.click(getByTestId(/-repeat-button/i));
-        userEvent.click(getByTestId(/-repeat-button/i));
-      });
+      const { queryAllByLabelText, queryByTestId } = createWrapper(questionnaire);
+      await clickButtonTimes(/-repeat-button/i, 3);
 
       expect(queryAllByLabelText(/Integer/i)).toHaveLength(4);
       expect(queryByTestId(/-repeat-button/i)).not.toBeInTheDocument();
@@ -129,10 +127,8 @@ describe('Integer', () => {
         ...q,
         item: q.item?.map(x => ({ ...x, repeats: true })),
       };
-      const { getByTestId, queryAllByTestId } = createWrapper(questionnaire);
-
-      userEvent.click(getByTestId(/-repeat-button/i));
-      userEvent.click(getByTestId(/-repeat-button/i));
+      const { queryAllByTestId } = createWrapper(questionnaire);
+      await clickButtonTimes(/-repeat-button/i, 2);
 
       expect(queryAllByTestId(/-delete-button/i)).toHaveLength(2);
     });
@@ -146,10 +142,7 @@ describe('Integer', () => {
       expect(queryByTestId(/-delete-button/i)).not.toBeInTheDocument();
     });
     it('Should show confirmationbox when deletebutton is clicked', async () => {
-      const questionnaire: Questionnaire = {
-        ...q,
-        item: q.item?.map(x => ({ ...x, repeats: true })),
-      };
+      const questionnaire = addManyPropertiesToQuestionnaireItem(q, [{ property: 'repeats', value: true }]);
       const { getByTestId } = createWrapper(questionnaire);
 
       userEvent.click(getByTestId(/-repeat-button/i));
@@ -161,10 +154,7 @@ describe('Integer', () => {
       expect(getByTestId(/-delete-confirm-modal/i)).toBeInTheDocument();
     });
     it('Should remove item when delete button is clicked', async () => {
-      const questionnaire: Questionnaire = {
-        ...q,
-        item: q.item?.map(x => ({ ...x, repeats: true })),
-      };
+      const questionnaire = addManyPropertiesToQuestionnaireItem(q, [{ property: 'repeats', value: true }]);
       const { getByTestId, queryByTestId } = createWrapper(questionnaire);
 
       userEvent.click(getByTestId(/-repeat-button/i));
@@ -182,13 +172,7 @@ describe('Integer', () => {
   });
   describe('onChange', () => {
     it('Should update component with value from answer', async () => {
-      const questionnaire: Questionnaire = {
-        ...q,
-        item: q.item?.map(x => ({
-          ...x,
-          repeats: false,
-        })),
-      };
+      const questionnaire = addManyPropertiesToQuestionnaireItem(q, [{ property: 'repeats', value: false }]);
       const { getByLabelText } = createWrapper(questionnaire);
 
       const inputElement = getByLabelText(/Integer/i);
@@ -200,13 +184,7 @@ describe('Integer', () => {
       expect(getByLabelText(/Integer/i)).toHaveValue(123);
     });
     it('Should call onChange with correct value', async () => {
-      const questionnaire: Questionnaire = {
-        ...q,
-        item: q.item?.map(x => ({
-          ...x,
-          repeats: false,
-        })),
-      };
+      const questionnaire = addManyPropertiesToQuestionnaireItem(q, [{ property: 'repeats', value: false }]);
       const onChange = jest.fn();
       const { getByLabelText } = createWrapper(questionnaire, { onChange });
       expect(getByLabelText(/Integer/i)).toBeInTheDocument();
@@ -223,14 +201,9 @@ describe('Integer', () => {
   describe('Validation', () => {
     describe('Required', () => {
       it('Should show error if field is required and value is empty', async () => {
-        const questionnaire: Questionnaire = {
-          ...q,
-          item: q.item?.map(x => ({ ...x, required: true })),
-        };
-        const { getByTestId, getByText } = createWrapper(questionnaire);
-        await act(async () => {
-          await userEvent.click(getByTestId('refero-submit-button'));
-        });
+        const questionnaire = addManyPropertiesToQuestionnaireItem(q, [{ property: 'required', value: true }]);
+        const { getByText } = createWrapper(questionnaire);
+        await submitForm();
 
         expect(getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
       });
@@ -239,11 +212,9 @@ describe('Integer', () => {
           ...q,
           item: q.item?.map(x => ({ ...x, required: true })),
         };
-        const { getByTestId, getByLabelText, queryByText } = createWrapper(questionnaire);
-        await act(async () => {
-          await userEvent.type(getByLabelText(/Integer/i), '123');
-          await userEvent.click(getByTestId('refero-submit-button'));
-        });
+        const { queryByText } = createWrapper(questionnaire);
+        await typeByLabelText(/Integer/i, '123');
+        await submitForm();
 
         expect(queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
       });
@@ -252,14 +223,12 @@ describe('Integer', () => {
           ...q,
           item: q.item?.map(x => ({ ...x, required: true })),
         };
-        const { getByTestId, getByText, queryByText, getByLabelText } = createWrapper(questionnaire);
-        await act(async () => {
-          await userEvent.click(getByTestId('refero-submit-button'));
-        });
-        expect(getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
+        const { getByText, queryByText } = createWrapper(questionnaire);
+        await submitForm();
 
+        expect(getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
+        await typeByLabelText(/Integer/i, '123');
         await act(async () => {
-          await userEvent.type(getByLabelText(/Integer/i), '123');
           await userEvent.tab();
         });
         expect(queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
@@ -271,10 +240,8 @@ describe('Integer', () => {
           ...q,
           item: q.item?.map(x => ({ ...x, required: false })),
         };
-        const { getByTestId, queryByText } = createWrapper(questionnaire);
-        await act(async () => {
-          await userEvent.click(getByTestId('refero-submit-button'));
-        });
+        const { queryByText } = createWrapper(questionnaire);
+        await submitForm();
 
         expect(queryByText('Custom error')).not.toBeInTheDocument();
       });
@@ -283,11 +250,9 @@ describe('Integer', () => {
           ...q,
           item: q.item?.map(x => ({ ...x, required: false })),
         };
-        const { getByTestId, getByLabelText, queryByText } = createWrapper(questionnaire);
-        await act(async () => {
-          await userEvent.type(getByLabelText(/Integer/i), '8');
-          await userEvent.click(getByTestId('refero-submit-button'));
-        });
+        const { queryByText } = createWrapper(questionnaire);
+        await typeByLabelText(/Integer/i, '8');
+        await submitForm();
 
         expect(queryByText('Custom error')).not.toBeInTheDocument();
       });
@@ -296,16 +261,12 @@ describe('Integer', () => {
           ...q,
           item: q.item?.map(x => ({ ...x, required: false })),
         };
-        const { getByTestId, getByText, queryByText, getByLabelText } = createWrapper(questionnaire);
-        await act(async () => {
-          await userEvent.type(getByLabelText(/Integer/i), '12');
-          await userEvent.click(getByTestId('refero-submit-button'));
-        });
+        const { getByText, queryByText } = createWrapper(questionnaire);
+        await typeByLabelText(/Integer/i, '12');
+        await submitForm();
+
         expect(getByText('Custom error')).toBeInTheDocument();
-        await act(async () => {
-          await userEvent.clear(getByLabelText(/Integer/i));
-          await userEvent.type(getByLabelText(/Integer/i), '8');
-        });
+        await typeByLabelText(/Integer/i, '8', true);
 
         expect(queryByText('Custom error')).not.toBeInTheDocument();
       });
@@ -316,23 +277,17 @@ describe('Integer', () => {
           ...q,
           item: q.item?.map(x => ({ ...x, required: false })),
         };
-        const { getByTestId, queryByText } = createWrapper(questionnaire);
-        await act(async () => {
-          await userEvent.click(getByTestId('refero-submit-button'));
-        });
+        const { queryByText } = createWrapper(questionnaire);
+        await submitForm();
 
         expect(queryByText('Custom error')).not.toBeInTheDocument();
       });
       it('Should not show error if value is bellow max value (10) and over min(5)', async () => {
-        const questionnaire: Questionnaire = {
-          ...q,
-          item: q.item?.map(x => ({ ...x, required: false })),
-        };
-        const { getByTestId, getByLabelText, queryByText } = createWrapper(questionnaire);
-        await act(async () => {
-          await userEvent.type(getByLabelText(/Integer/i), '8');
-          await userEvent.click(getByTestId('refero-submit-button'));
-        });
+        const questionnaire = addManyPropertiesToQuestionnaireItem(q, [{ property: 'required', value: false }]);
+
+        const { queryByText } = createWrapper(questionnaire);
+        await typeByLabelText(/Integer/i, '8');
+        await submitForm();
 
         expect(queryByText('Custom error')).not.toBeInTheDocument();
       });
@@ -341,16 +296,13 @@ describe('Integer', () => {
           ...q,
           item: q.item?.map(x => ({ ...x, required: false })),
         };
-        const { getByTestId, getByText, queryByText, getByLabelText } = createWrapper(questionnaire);
-        await act(async () => {
-          await userEvent.type(getByLabelText(/Integer/i), '3');
-          await userEvent.click(getByTestId('refero-submit-button'));
-        });
+        const { getByText, queryByText } = createWrapper(questionnaire);
+        await typeByLabelText(/Integer/i, '3');
+
+        await submitForm();
+
         expect(getByText('Custom error')).toBeInTheDocument();
-        await act(async () => {
-          await userEvent.clear(getByLabelText(/Integer/i));
-          await userEvent.type(getByLabelText(/Integer/i), '8');
-        });
+        await typeByLabelText(/Integer/i, '8', true);
 
         expect(queryByText('Custom error')).not.toBeInTheDocument();
       });

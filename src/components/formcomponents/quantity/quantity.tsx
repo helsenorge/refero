@@ -54,8 +54,29 @@ export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
 }
 
 const Quantity = (props: Props): JSX.Element | null => {
+  const {
+    dispatch,
+    promptLoginMessage,
+    path,
+    item,
+    onAnswerChange,
+    answer,
+    id,
+    questionnaire,
+    onRenderMarkdown,
+    resources,
+    error,
+    control,
+    pdf,
+    idWithLinkIdAndItemIndex,
+    renderDeleteButton,
+    repeatButton,
+    children,
+    renderHelpButton,
+    renderHelpElement,
+  } = props;
+
   const getValue = (): number | number[] | undefined => {
-    const { answer } = props;
     if (answer && Array.isArray(answer)) {
       return answer.map(m => m.valueQuantity.value);
     }
@@ -68,8 +89,8 @@ const Quantity = (props: Props): JSX.Element | null => {
     const value = getValue();
     if (value === undefined || value === null) {
       let text = '';
-      if (props.resources && props.resources.ikkeBesvart) {
-        text = props.resources.ikkeBesvart;
+      if (resources && resources.ikkeBesvart) {
+        text = resources.ikkeBesvart;
       }
       return text;
     }
@@ -80,8 +101,7 @@ const Quantity = (props: Props): JSX.Element | null => {
   };
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    const { dispatch, promptLoginMessage, path, item, onAnswerChange } = props;
-    const extension = getQuestionnaireUnitExtensionValue(props.item);
+    const extension = getQuestionnaireUnitExtensionValue(item);
     if (extension) {
       const quantity = {
         unit: extension.display,
@@ -95,7 +115,7 @@ const Quantity = (props: Props): JSX.Element | null => {
       }
 
       if (dispatch) {
-        dispatch(newQuantityValueAsync(props.path, quantity, props.item))?.then(newState =>
+        dispatch(newQuantityValueAsync(path, quantity, item))?.then(newState =>
           onAnswerChange(newState, path, item, { valueQuantity: quantity } as QuestionnaireResponseItemAnswer)
         );
       }
@@ -107,7 +127,7 @@ const Quantity = (props: Props): JSX.Element | null => {
   };
 
   const getUnit = (): string => {
-    const valueCoding = getQuestionnaireUnitExtensionValue(props.item);
+    const valueCoding = getQuestionnaireUnitExtensionValue(item);
     if (valueCoding && valueCoding.display) {
       return valueCoding.display;
     }
@@ -115,28 +135,27 @@ const Quantity = (props: Props): JSX.Element | null => {
   };
 
   // shouldComponentUpdate(nextProps: Props): boolean {
-  //   const responseItemHasChanged = props.responseItem !== nextProps.responseItem;
-  //   const helpItemHasChanged = props.isHelpOpen !== nextProps.isHelpOpen;
-  //   const answerHasChanged = props.answer !== nextProps.answer;
-  //   const resourcesHasChanged = JSON.stringify(props.resources) !== JSON.stringify(nextProps.resources);
-  //   const repeats = props.item.repeats ?? false;
-  //   const newErrorMessage = props.error?.message !== nextProps.error?.message;
+  //   const responseItemHasChanged = responseItem !== nextresponseItem;
+  //   const helpItemHasChanged = isHelpOpen !== nextisHelpOpen;
+  //   const answerHasChanged = answer !== nextanswer;
+  //   const resourcesHasChanged = JSON.stringify(resources) !== JSON.stringify(nextresources);
+  //   const repeats = item.repeats ?? false;
+  //   const newErrorMessage = error?.message !== nexterror?.message;
 
   //   return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats || answerHasChanged || newErrorMessage;
   // }
 
-  const { id, item, questionnaire, onRenderMarkdown, resources, error, control, idWithLinkIdAndItemIndex } = props;
-  if (props.pdf || isReadOnly(item)) {
+  if (pdf || isReadOnly(item)) {
     return (
       <TextView
         id={id}
-        item={props.item}
+        item={item}
         value={getPDFValue()}
         onRenderMarkdown={onRenderMarkdown}
-        helpButton={props.renderHelpButton()}
-        helpElement={props.renderHelpElement()}
+        helpButton={renderHelpButton()}
+        helpElement={renderHelpElement()}
       >
-        {props.children}
+        {children}
       </TextView>
     );
   }
@@ -151,11 +170,12 @@ const Quantity = (props: Props): JSX.Element | null => {
   return (
     <div className="page_refero__component page_refero__component_quantity">
       <FormGroup error={error?.message} mode="ongrey">
-        {props.renderHelpElement()}
+        {renderHelpElement()}
         <Controller
           name={idWithLinkIdAndItemIndex}
           control={control}
           shouldUnregister={true}
+          defaultValue={getValue()}
           rules={{
             required: {
               value: isRequired(item),
@@ -191,7 +211,7 @@ const Quantity = (props: Props): JSX.Element | null => {
                   className="page_refero__label"
                   labelTexts={[{ text: labelText, type: 'semibold' }]}
                   sublabel={<Sublabel id={`${getId(id)}-sublabel`} sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
-                  afterLabelChildren={props.renderHelpButton()}
+                  afterLabelChildren={renderHelpButton()}
                 />
               }
               type="number"
@@ -208,10 +228,10 @@ const Quantity = (props: Props): JSX.Element | null => {
           )}
         />
         <span className="page_refero__unit">{getUnit()}</span>
-        {props.renderDeleteButton('page_refero__deletebutton--margin-top')}
-        <div>{props.repeatButton}</div>
+        {renderDeleteButton('page_refero__deletebutton--margin-top')}
+        <div>{repeatButton}</div>
       </FormGroup>
-      {props.children ? <div className="nested-fieldset nested-fieldset--full-height">{props.children}</div> : null}
+      {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
     </div>
   );
 };

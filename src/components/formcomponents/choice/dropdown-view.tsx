@@ -62,7 +62,7 @@ const DropdownView = (props: Props): JSX.Element | null => {
   }
   const labelText = getLabelText(item, onRenderMarkdown, questionnaire, resources);
   const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
-
+  const value = selected?.[0] || '';
   return (
     <div className="page_refero__component page_refero__component_choice page_refero__component_choice_dropdown">
       <FormGroup mode="ongrey" error={error?.message}>
@@ -71,6 +71,7 @@ const DropdownView = (props: Props): JSX.Element | null => {
           name={idWithLinkIdAndItemIndex}
           shouldUnregister={true}
           control={control}
+          defaultValue={value}
           rules={{
             required: {
               message: resources?.formRequiredErrorMessage ?? 'Feltet må fylles ut',
@@ -95,7 +96,7 @@ const DropdownView = (props: Props): JSX.Element | null => {
                 onChange(e);
                 handleChange(e.target.value);
               }}
-              value={selected?.[0] || ''}
+              value={value}
               className="page_refero__input"
             >
               <option key={getId(id) + placeholder?.label} value={undefined}>

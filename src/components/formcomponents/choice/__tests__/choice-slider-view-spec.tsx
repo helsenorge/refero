@@ -5,6 +5,7 @@ import { sliderView as q } from './__data__/index';
 import { ReferoProps } from '../../../../types/referoProps';
 import { getResources } from '../../../../preview/resources/referoResources';
 import { Extensions } from '../../../../constants/extensions';
+import { submitForm } from '../../../__tests__/test-utils/selectors';
 
 const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle ut dette feltet', oppgiGyldigVerdi: 'ikke gyldig tall' };
 const expectedAnswer = {
@@ -203,11 +204,10 @@ describe('Slider-view', () => {
           ...q,
           item: q.item?.map(x => ({ ...x, required: true, repeats: false })),
         };
-        const { container, getByText, getByTestId } = createWrapper(questionnaire);
+        const { container, getByText } = createWrapper(questionnaire);
         expect(container.querySelector('div[role="slider"]')).toBeInTheDocument();
-        await act(async () => {
-          userEvent.click(getByTestId('refero-submit-button'));
-        });
+        await submitForm();
+
         expect(getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
       });
       it('Should not show error if required and has value', async () => {
@@ -215,11 +215,11 @@ describe('Slider-view', () => {
           ...q,
           item: q.item?.map(x => ({ ...x, required: true, repeats: false })),
         };
-        const { getByTestId, queryByText, getByText } = createWrapper(questionnaire);
+        const { queryByText, getByText } = createWrapper(questionnaire);
         await act(async () => {
           userEvent.click(getByText(/Ja/i));
-          userEvent.click(getByTestId('refero-submit-button'));
         });
+        await submitForm();
 
         expect(queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
       });
@@ -228,10 +228,9 @@ describe('Slider-view', () => {
           ...q,
           item: q.item?.map(x => ({ ...x, required: true, repeats: false })),
         };
-        const { getByTestId, getByText, queryByText } = createWrapper(questionnaire);
-        await act(async () => {
-          userEvent.click(getByTestId('refero-submit-button'));
-        });
+        const { getByText, queryByText } = createWrapper(questionnaire);
+        await submitForm();
+
         expect(getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
 
         await act(async () => {

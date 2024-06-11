@@ -6,6 +6,7 @@ import { getResources } from '../../../../preview/resources/referoResources';
 import { Questionnaire, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { ReferoProps } from '../../../../types/referoProps';
 import { Extensions } from '../../../../constants/extensions';
+import { submitForm } from '../../../__tests__/test-utils/selectors';
 jest.mock('@helsenorge/core-utils/debounce', () => ({
   debounce: (fn: Function) => fn,
 }));
@@ -291,10 +292,8 @@ describe('Text', () => {
             required: true,
           })),
         };
-        const { getByTestId, getByText } = createWrapper(questionnaire);
-        await act(async () => {
-          await userEvent.click(getByTestId('refero-submit-button'));
-        });
+        const { getByText } = createWrapper(questionnaire);
+        await submitForm();
         expect(getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
       });
       it('Should not show error if required and has value', async () => {
@@ -305,11 +304,11 @@ describe('Text', () => {
             required: true,
           })),
         };
-        const { getByTestId, getByLabelText, queryByText } = createWrapper(questionnaire);
+        const { getByLabelText, queryByText } = createWrapper(questionnaire);
         await act(async () => {
           await userEvent.type(getByLabelText(/String/i), 'abc');
-          await userEvent.click(getByTestId('refero-submit-button'));
         });
+        await submitForm();
 
         expect(queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
       });
@@ -321,10 +320,8 @@ describe('Text', () => {
             required: true,
           })),
         };
-        const { getByTestId, getByText, queryByText, getByLabelText } = createWrapper(questionnaire);
-        await act(async () => {
-          await userEvent.click(getByTestId('refero-submit-button'));
-        });
+        const { getByText, queryByText, getByLabelText } = createWrapper(questionnaire);
+        await submitForm();
         expect(getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
 
         await act(async () => {
@@ -343,10 +340,8 @@ describe('Text', () => {
             required: false,
           })),
         };
-        const { getByTestId, queryByText } = createWrapper(questionnaire);
-        await act(async () => {
-          await userEvent.click(getByTestId('refero-submit-button'));
-        });
+        const { queryByText } = createWrapper(questionnaire);
+        await submitForm();
 
         expect(queryByText('Custom error')).not.toBeInTheDocument();
       });
@@ -358,11 +353,11 @@ describe('Text', () => {
             required: false,
           })),
         };
-        const { getByTestId, getByLabelText, queryByText } = createWrapper(questionnaire);
+        const { getByLabelText, queryByText } = createWrapper(questionnaire);
         await act(async () => {
           await userEvent.paste(getByLabelText(/String/i), 'epost@test.com');
-          await userEvent.click(getByTestId('refero-submit-button'));
         });
+        await submitForm();
         expect(queryByText('Custom error')).not.toBeInTheDocument();
       });
       it('Should remove error on change if form is submitted', async () => {
@@ -373,11 +368,11 @@ describe('Text', () => {
             required: false,
           })),
         };
-        const { getByTestId, getByText, queryByText, getByLabelText } = createWrapper(questionnaire);
+        const { getByText, queryByText, getByLabelText } = createWrapper(questionnaire);
         await act(async () => {
           await userEvent.paste(getByLabelText(/String/i), 'e@st.co');
-          await userEvent.click(getByTestId('refero-submit-button'));
         });
+        await submitForm();
         expect(getByText('Custom error')).toBeInTheDocument();
         await act(async () => {
           await userEvent.clear(getByLabelText(/String/i));
@@ -396,10 +391,8 @@ describe('Text', () => {
             required: false,
           })),
         };
-        const { getByTestId, queryByText } = createWrapper(questionnaire);
-        await act(async () => {
-          await userEvent.click(getByTestId('refero-submit-button'));
-        });
+        const { queryByText } = createWrapper(questionnaire);
+        await submitForm();
 
         expect(queryByText('Custom error')).not.toBeInTheDocument();
       });
@@ -411,11 +404,11 @@ describe('Text', () => {
             required: false,
           })),
         };
-        const { getByTestId, getByLabelText, queryByText } = createWrapper(questionnaire);
+        const { getByLabelText, queryByText } = createWrapper(questionnaire);
         await act(async () => {
           await userEvent.paste(getByLabelText(/String/i), 'epost@test.com');
-          await userEvent.click(getByTestId('refero-submit-button'));
         });
+        await submitForm();
 
         expect(queryByText('Custom error')).not.toBeInTheDocument();
       });
@@ -427,11 +420,11 @@ describe('Text', () => {
             required: false,
           })),
         };
-        const { getByTestId, getByText, queryByText, getByLabelText } = createWrapper(questionnaire);
+        const { getByText, queryByText, getByLabelText } = createWrapper(questionnaire);
         await act(async () => {
           await userEvent.paste(getByLabelText(/String/i), 'eposteneraølt@asdasdst.com');
-          await userEvent.click(getByTestId('refero-submit-button'));
         });
+        await submitForm();
         expect(getByText('Custom error')).toBeInTheDocument();
         await act(async () => {
           await userEvent.clear(getByLabelText(/String/i));
@@ -450,10 +443,8 @@ describe('Text', () => {
             required: false,
           })),
         };
-        const { getByTestId, queryByText } = createWrapper(questionnaire);
-        await act(async () => {
-          await userEvent.click(getByTestId('refero-submit-button'));
-        });
+        const { queryByText } = createWrapper(questionnaire);
+        await submitForm();
 
         expect(queryByText('Custom error')).not.toBeInTheDocument();
       });
@@ -465,11 +456,11 @@ describe('Text', () => {
             required: false,
           })),
         };
-        const { getByTestId, getByLabelText, queryByText } = createWrapper(questionnaire);
+        const { getByLabelText, queryByText } = createWrapper(questionnaire);
         await act(async () => {
           await userEvent.paste(getByLabelText(/String/i), 'epost@test.com');
-          await userEvent.click(getByTestId('refero-submit-button'));
         });
+        await submitForm();
 
         expect(queryByText('Custom error')).not.toBeInTheDocument();
       });
@@ -481,11 +472,11 @@ describe('Text', () => {
             required: false,
           })),
         };
-        const { getByTestId, getByText, queryByText, getByLabelText } = createWrapper(questionnaire);
+        const { getByText, queryByText, getByLabelText } = createWrapper(questionnaire);
         await act(async () => {
           await userEvent.paste(getByLabelText(/String/i), 'epostsdsdcom');
-          await userEvent.click(getByTestId('refero-submit-button'));
         });
+        await submitForm();
         expect(getByText('Custom error')).toBeInTheDocument();
         await act(async () => {
           await userEvent.clear(getByLabelText(/String/i));
@@ -499,12 +490,12 @@ describe('Text', () => {
       it('Should render with validation when input has html and validateScriptInjection = true', async () => {
         const validateScriptInjection = true;
         const value = 'input med <html>';
-        const { findByText, findByLabelText, findByRole, getByTestId } = createWrapper(qScriptInjection, { validateScriptInjection });
+        const { findByText, findByLabelText, findByRole } = createWrapper(qScriptInjection, { validateScriptInjection });
         await act(async () => {
           userEvent.type(await findByLabelText('String1'), value);
           userEvent.type(await findByLabelText('String2 - Obligatorisk'), 'test');
-          await userEvent.click(getByTestId('refero-submit-button'));
         });
+        await submitForm();
         const actualElement = await findByText(/er ikke tillatt/i);
         const actualAlert = await findByRole('alert');
         expect(actualElement).toBeInTheDocument();
@@ -513,13 +504,13 @@ describe('Text', () => {
       it('Should render with validation when input has html and validateScriptInjection = false', async () => {
         const validateScriptInjection = false;
         const value = 'input med <html>';
-        const { findByDisplayValue, findByLabelText, getByTestId, queryByRole } = createWrapper(qScriptInjection, {
+        const { findByDisplayValue, findByLabelText, queryByRole } = createWrapper(qScriptInjection, {
           validateScriptInjection,
         });
         await act(async () => {
           userEvent.type(await findByLabelText('String2 - Obligatorisk'), value);
-          await userEvent.click(getByTestId('refero-submit-button'));
         });
+        await submitForm();
         const actualElement = await findByDisplayValue(value);
         const actualAlert = queryByRole('alert');
         expect(actualElement).toBeInTheDocument();

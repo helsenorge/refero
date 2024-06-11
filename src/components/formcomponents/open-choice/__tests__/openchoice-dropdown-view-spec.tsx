@@ -6,6 +6,7 @@ import { getResources } from '../../../../preview/resources/referoResources';
 import { Extensions } from '../../../../constants/extensions';
 import { typeExtraField } from './utils';
 import { clickButtonTimes, selectDropdownOptionByName, submitForm } from '../../../__tests__/test-utils/selectors';
+import { addManyPropertiesToQuestionnaireItem, addPropertyToQuestionnaireItem } from '../../../__tests__/test-utils/questionnairHelpers';
 const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle ut dette feltet', oppgiGyldigVerdi: 'ikke gyldig tall' };
 const expectedAnswer = {
   valueCoding: {
@@ -24,10 +25,7 @@ describe('Dropdown-view - choice', () => {
       expect(queryByText(resources.ikkeBesvart)).toBeInTheDocument();
     });
     it('Should render text if item is readonly', () => {
-      const questionnaire: Questionnaire = {
-        ...q,
-        item: q.item?.map(x => ({ ...x, readOnly: true })),
-      };
+      const questionnaire = addPropertyToQuestionnaireItem(q, 'readOnly', true);
 
       const { queryByText } = createWrapper(questionnaire);
       expect(queryByText(resources.ikkeBesvart)).toBeInTheDocument();
@@ -60,20 +58,14 @@ describe('Dropdown-view - choice', () => {
   });
   describe('repeat button', () => {
     it('Should render repeat button if item repeats', () => {
-      const questionnaire: Questionnaire = {
-        ...q,
-        item: q.item?.map(x => ({ ...x, repeats: true })),
-      };
+      const questionnaire = addPropertyToQuestionnaireItem(q, 'repeats', true);
 
       const { getByTestId } = createWrapper(questionnaire);
       expect(getByTestId(/-repeat-button/i)).toBeInTheDocument();
     });
 
     it('Should not render repeat button if item does not repeats', () => {
-      const questionnaire: Questionnaire = {
-        ...q,
-        item: q.item?.map(x => ({ ...x, repeats: false })),
-      };
+      const questionnaire = addPropertyToQuestionnaireItem(q, 'repeats', false);
       const { queryByTestId } = createWrapper(questionnaire);
       expect(queryByTestId(/-repeat-button/i)).not.toBeInTheDocument();
     });
@@ -96,29 +88,20 @@ describe('Dropdown-view - choice', () => {
   });
   describe('delete button', () => {
     it('Should render delete button if item repeats and number of repeated items is greater than minOccurance(2)', async () => {
-      const questionnaire: Questionnaire = {
-        ...q,
-        item: q.item?.map(x => ({ ...x, repeats: true })),
-      };
+      const questionnaire = addPropertyToQuestionnaireItem(q, 'repeats', true);
       const { queryAllByTestId } = createWrapper(questionnaire);
       await clickButtonTimes(/-repeat-button/i, 2);
 
       expect(queryAllByTestId(/-delete-button/i)).toHaveLength(2);
     });
     it('Should not render delete button if item repeats and number of repeated items is lower or equal than minOccurance(2)', async () => {
-      const questionnaire: Questionnaire = {
-        ...q,
-        item: q.item?.map(x => ({ ...x, repeats: true })),
-      };
+      const questionnaire = addPropertyToQuestionnaireItem(q, 'repeats', true);
       const { queryByTestId } = createWrapper(questionnaire);
 
       expect(queryByTestId(/-delete-button/i)).not.toBeInTheDocument();
     });
     it('Should show confirmationbox when deletebutton is clicked', async () => {
-      const questionnaire: Questionnaire = {
-        ...q,
-        item: q.item?.map(x => ({ ...x, repeats: true })),
-      };
+      const questionnaire = addPropertyToQuestionnaireItem(q, 'repeats', true);
       const { getByTestId } = createWrapper(questionnaire);
       await clickButtonTimes(/-repeat-button/i, 1);
 
@@ -127,10 +110,7 @@ describe('Dropdown-view - choice', () => {
       expect(getByTestId(/-delete-confirm-modal/i)).toBeInTheDocument();
     });
     it('Should remove item when delete button is clicked', async () => {
-      const questionnaire: Questionnaire = {
-        ...q,
-        item: q.item?.map(x => ({ ...x, repeats: true })),
-      };
+      const questionnaire = addPropertyToQuestionnaireItem(q, 'repeats', true);
       const { getByTestId, queryByTestId } = createWrapper(questionnaire);
       await clickButtonTimes(/-repeat-button/i, 1);
 
@@ -154,24 +134,17 @@ describe('Dropdown-view - choice', () => {
       expect((getByRole('option', { name: 'Velg...' }) as HTMLOptionElement).selected).toBe(true);
     });
     it('Initial value should be set', async () => {
-      const questionnaire: Questionnaire = {
-        ...q,
-        item: q.item?.map(x => ({
-          ...x,
-          repeats: false,
-          initial: [expectedAnswer],
-        })),
-      };
+      const questionnaire = addManyPropertiesToQuestionnaireItem(q, [
+        { property: 'initial', value: [expectedAnswer] },
+        { property: 'repeats', value: false },
+      ]);
       const { getByRole } = createWrapper(questionnaire);
       expect((getByRole('option', { name: 'Ja' }) as HTMLOptionElement).selected).toBe(true);
     });
   });
   describe('onChange', () => {
     it('Should render extra text field when open-choice extra value is selected', async () => {
-      const questionnaire: Questionnaire = {
-        ...q,
-        item: q.item?.map(x => ({ ...x, repeats: false })),
-      };
+      const questionnaire = addPropertyToQuestionnaireItem(q, 'repeats', false);
       const { getByTestId, getByRole } = createWrapper(questionnaire);
 
       await selectDropdownOptionByName(/Dropdown view label/i, 'Annet');
@@ -179,10 +152,7 @@ describe('Dropdown-view - choice', () => {
       expect((getByRole('option', { name: 'Annet' }) as HTMLOptionElement).selected).toBe(true);
     });
     it('Should update component with value from answer', async () => {
-      const questionnaire: Questionnaire = {
-        ...q,
-        item: q.item?.map(x => ({ ...x, repeats: false })),
-      };
+      const questionnaire = addPropertyToQuestionnaireItem(q, 'repeats', false);
       const { getByRole } = createWrapper(questionnaire);
 
       await selectDropdownOptionByName(/Dropdown view label/i, 'Ja');
@@ -190,10 +160,7 @@ describe('Dropdown-view - choice', () => {
       expect((getByRole('option', { name: 'Ja' }) as HTMLOptionElement as HTMLOptionElement).selected).toBe(true);
     });
     it('Should call onChange with correct value', async () => {
-      const questionnaire: Questionnaire = {
-        ...q,
-        item: q.item?.map(x => ({ ...x, repeats: false })),
-      };
+      const questionnaire = addPropertyToQuestionnaireItem(q, 'repeats', false);
       const onChange = jest.fn();
       const { getByRole } = createWrapper(questionnaire, { onChange });
       expect(getByRole('option', { name: 'Ja' }) as HTMLOptionElement).toBeInTheDocument();
@@ -206,30 +173,30 @@ describe('Dropdown-view - choice', () => {
   describe('Validation', () => {
     describe('Required', () => {
       it('Should show error if field is required and value is empty', async () => {
-        const questionnaire: Questionnaire = {
-          ...q,
-          item: q.item?.map(x => ({ ...x, required: true, repeats: false })),
-        };
+        const questionnaire = addManyPropertiesToQuestionnaireItem(q, [
+          { property: 'required', value: true },
+          { property: 'repeats', value: false },
+        ]);
         const { getByRole, getByText } = createWrapper(questionnaire);
         expect(getByRole('option', { name: 'Ja' }) as HTMLOptionElement).toBeInTheDocument();
         await submitForm();
         expect(getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
       });
       it('Should not show error if required and has value', async () => {
-        const questionnaire: Questionnaire = {
-          ...q,
-          item: q.item?.map(x => ({ ...x, required: true, repeats: false })),
-        };
+        const questionnaire = addManyPropertiesToQuestionnaireItem(q, [
+          { property: 'required', value: true },
+          { property: 'repeats', value: false },
+        ]);
         const { queryByText } = createWrapper(questionnaire);
         await selectDropdownOptionByName(/Dropdown view label/i, 'Ja');
         await submitForm();
         expect(queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
       });
       it('Should remove error on change if form is submitted', async () => {
-        const questionnaire: Questionnaire = {
-          ...q,
-          item: q.item?.map(x => ({ ...x, required: true, repeats: false })),
-        };
+        const questionnaire = addManyPropertiesToQuestionnaireItem(q, [
+          { property: 'required', value: true },
+          { property: 'repeats', value: false },
+        ]);
         const { getByText, queryByText } = createWrapper(questionnaire);
         await submitForm();
         expect(getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
@@ -242,10 +209,7 @@ describe('Dropdown-view - choice', () => {
   describe('Extra field', () => {
     describe('OnChange', () => {
       it('Should render extra text field when open-choice extra value is selected', async () => {
-        const questionnaire: Questionnaire = {
-          ...q,
-          item: q.item?.map(x => ({ ...x, repeats: false })),
-        };
+        const questionnaire = addManyPropertiesToQuestionnaireItem(q, [{ property: 'repeats', value: false }]);
         const { getByTestId, getByRole } = createWrapper(questionnaire);
 
         await selectDropdownOptionByName(/Dropdown view label/i, 'Annet');
@@ -254,10 +218,8 @@ describe('Dropdown-view - choice', () => {
         expect((getByRole('option', { name: 'Annet' }) as HTMLOptionElement).selected).toBe(true);
       });
       it('Should not render extra text field when open-choice extra value is not selected', async () => {
-        const questionnaire: Questionnaire = {
-          ...q,
-          item: q.item?.map(x => ({ ...x, repeats: false })),
-        };
+        const questionnaire = addManyPropertiesToQuestionnaireItem(q, [{ property: 'repeats', value: false }]);
+
         const { queryByTestId } = createWrapper(questionnaire);
 
         expect(queryByTestId(/-extra-field/i)).not.toBeInTheDocument();
@@ -267,10 +229,8 @@ describe('Dropdown-view - choice', () => {
           valueString: 'test',
         };
         const onChange = jest.fn();
-        const questionnaire: Questionnaire = {
-          ...q,
-          item: q.item?.map(x => ({ ...x, repeats: false })),
-        };
+        const questionnaire = addManyPropertiesToQuestionnaireItem(q, [{ property: 'repeats', value: false }]);
+
         const { getByTestId } = createWrapper(questionnaire, { onChange });
 
         await selectDropdownOptionByName(/Dropdown view label/i, 'Annet');
@@ -279,16 +239,17 @@ describe('Dropdown-view - choice', () => {
         await typeExtraField('test');
 
         expect(onChange).toHaveBeenCalledWith(expect.any(Object), answer, expect.any(Object), expect.any(Object));
-        expect(onChange).toHaveBeenCalledTimes(5);
+        expect(onChange).toHaveBeenCalledTimes(2);
       });
     });
     describe('Validation', () => {
       describe('Required', () => {
         it('Should show error if field is required and value is empty', async () => {
-          const questionnaire: Questionnaire = {
-            ...q,
-            item: q.item?.map(x => ({ ...x, required: true, repeats: false })),
-          };
+          const questionnaire = addManyPropertiesToQuestionnaireItem(q, [
+            { property: 'repeats', value: false },
+            { property: 'required', value: true },
+          ]);
+
           const { getByText, getByTestId } = createWrapper(questionnaire);
 
           await selectDropdownOptionByName(/Dropdown view label/i, 'Annet');
@@ -297,10 +258,10 @@ describe('Dropdown-view - choice', () => {
           expect(getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
         });
         it('Should not show error if required and has value', async () => {
-          const questionnaire: Questionnaire = {
-            ...q,
-            item: q.item?.map(x => ({ ...x, required: true, repeats: false })),
-          };
+          const questionnaire = addManyPropertiesToQuestionnaireItem(q, [
+            { property: 'repeats', value: false },
+            { property: 'required', value: true },
+          ]);
           const { queryByText } = createWrapper(questionnaire);
           await selectDropdownOptionByName(/Dropdown view label/i, 'Annet');
           await typeExtraField('epost@test.com');
@@ -308,10 +269,10 @@ describe('Dropdown-view - choice', () => {
           expect(queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
         });
         it('Should remove error on change if form is submitted', async () => {
-          const questionnaire: Questionnaire = {
-            ...q,
-            item: q.item?.map(x => ({ ...x, required: true, repeats: false })),
-          };
+          const questionnaire = addManyPropertiesToQuestionnaireItem(q, [
+            { property: 'repeats', value: false },
+            { property: 'required', value: true },
+          ]);
           const { getByText, queryByText } = createWrapper(questionnaire);
           await selectDropdownOptionByName(/Dropdown view label/i, 'Annet');
           await submitForm();

@@ -27,14 +27,6 @@ export interface ReceiverComponentProps {
   children?: React.ReactNode;
 }
 
-interface ReceiverComponentState {
-  selectedPath: Array<number>;
-  selectedReceiver: string;
-  receiverTreeNodes: Array<OrgenhetHierarki>;
-  isLoading: boolean;
-  hasLoadError: boolean;
-}
-
 const ReceiverComponent = (props: ReceiverComponentProps & FormProps): JSX.Element | null => {
   const [receiverTreeNodes, setReceiverTreeNodes] = React.useState<OrgenhetHierarki[]>([]);
   const [selectedPath, setSelectedPath] = React.useState<number[]>([]);
@@ -47,12 +39,6 @@ const ReceiverComponent = (props: ReceiverComponentProps & FormProps): JSX.Eleme
       props.fetchReceivers(loadSuccessCallback, loadErrorCallback);
     }
   }, []);
-
-  // componentDidMount(): void {
-  //   if (props.fetchReceivers) {
-  //     props.fetchReceivers(loadSuccessCallback, loadErrorCallback);
-  //   }
-  // }
 
   const loadSuccessCallback = (receiverTreeNodes: Array<OrgenhetHierarki>): void => {
     const pathsToEndPoint = props.selected ? findPathToEndpointNode(receiverTreeNodes, props.selected[0] || '') : [];
@@ -183,7 +169,7 @@ const ReceiverComponent = (props: ReceiverComponentProps & FormProps): JSX.Eleme
         onChangeDropdownValue(level, node);
       }
     };
-
+    const value = selectedPath[level] ? selectedPath[level].toString() : '';
     return (
       <FormGroup error={props.error?.message}>
         <Controller
@@ -191,6 +177,7 @@ const ReceiverComponent = (props: ReceiverComponentProps & FormProps): JSX.Eleme
           name={`${props.idWithLinkIdAndItemIndex}-${selectKey}`}
           control={props.control}
           shouldUnregister={true}
+          defaultValue={value}
           rules={{
             required: {
               value: true,
@@ -208,7 +195,7 @@ const ReceiverComponent = (props: ReceiverComponentProps & FormProps): JSX.Eleme
                 handleSelectChange(e);
                 onChange(e.target.value);
               }}
-              value={selectedPath[level] ? selectedPath[level].toString() : ''}
+              value={value}
               testId={`${getId(props.id)}-${selectKey}`}
               selectId={`${getId(props.id)}-${selectKey}`}
               label={<Label labelTexts={[{ text: label, type: 'semibold' }]} />}

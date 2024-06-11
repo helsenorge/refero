@@ -70,6 +70,7 @@ const CheckboxView: React.SFC<Props> = ({
             key={`${option.type}-${index}`}
             control={control}
             shouldUnregister={true}
+            defaultValue={selected}
             rules={{
               required: {
                 message: resources?.formRequiredErrorMessage ?? 'Påkrevd felt',
@@ -85,7 +86,7 @@ const CheckboxView: React.SFC<Props> = ({
                 checked={selected?.some((val: string) => val === option.type)}
                 value={option.type}
                 onChange={(e): void => {
-                  const valueCopy = [...value];
+                  const valueCopy = value ? [...value] : [];
                   if (e.target.checked) {
                     valueCopy.push(option.type);
                   } else {

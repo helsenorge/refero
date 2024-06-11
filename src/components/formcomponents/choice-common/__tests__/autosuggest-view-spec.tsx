@@ -7,6 +7,8 @@ import { getResources } from '../../../../preview/resources/referoResources';
 import { generateQuestionnaireResponse } from '../../../../actions/generateQuestionnaireResponse';
 import valueSet from '../../../../constants/valuesets';
 import { Extensions } from '../../../../constants/extensions';
+import { clickButtonTimes, submitForm } from '../../../__tests__/test-utils/selectors';
+import { addPropertyToQuestionnaireItem } from '../../../__tests__/test-utils/questionnairHelpers';
 
 jest.mock('@helsenorge/core-utils/debounce', () => ({
   debounce: (fn: Function) => fn,
@@ -54,10 +56,7 @@ describe('autosuggest-view', () => {
   });
   describe('repeat button', () => {
     it('Should render repeat button if item repeats', () => {
-      const questionnaire: Questionnaire = {
-        ...q,
-        item: q.item?.map(x => ({ ...x, repeats: true })),
-      };
+      const questionnaire = addPropertyToQuestionnaireItem(q, 'repeats', true);
 
       const { getByTestId } = renderRefero({ questionnaire });
       const repeatButton = getByTestId(/-repeat-button/i);
@@ -65,10 +64,7 @@ describe('autosuggest-view', () => {
     });
 
     it('Should not render repeat button if item does not repeats', () => {
-      const questionnaire: Questionnaire = {
-        ...q,
-        item: q.item?.map(x => ({ ...x, repeats: false })),
-      };
+      const questionnaire = addPropertyToQuestionnaireItem(q, 'repeats', false);
       const { queryByTestId } = renderRefero({ questionnaire });
       const repeatButton = queryByTestId(/-repeat-button/i);
       expect(repeatButton).not.toBeInTheDocument();
@@ -84,23 +80,15 @@ describe('autosuggest-view', () => {
           return y;
         }),
       };
-      const { getByTestId, queryAllByLabelText, queryByTestId } = renderRefero({ questionnaire });
-      act(() => {
-        userEvent.click(getByTestId(/-repeat-button/i));
-        userEvent.click(getByTestId(/-repeat-button/i));
-        userEvent.click(getByTestId(/-repeat-button/i));
-      });
-
+      const { queryAllByLabelText, queryByTestId } = renderRefero({ questionnaire });
+      await clickButtonTimes(/-repeat-button/i, 3);
       expect(queryAllByLabelText(/Mistenkt legemiddel/i)).toHaveLength(4);
       expect(queryByTestId(/-repeat-button/i)).not.toBeInTheDocument();
     });
   });
   describe('delete button', () => {
     it('Should render delete button if item repeats and number of repeated items is greater than minOccurance(2)', async () => {
-      const questionnaire: Questionnaire = {
-        ...q,
-        item: q.item?.map(x => ({ ...x, repeats: true })),
-      };
+      const questionnaire = addPropertyToQuestionnaireItem(q, 'repeats', true);
       const { getByTestId, queryAllByTestId } = renderRefero({ questionnaire });
 
       userEvent.click(getByTestId(/-repeat-button/i));
@@ -109,19 +97,13 @@ describe('autosuggest-view', () => {
       expect(queryAllByTestId(/-delete-button/i)).toHaveLength(2);
     });
     it('Should not render delete button if item repeats and number of repeated items is lower or equal than minOccurance(2)', async () => {
-      const questionnaire: Questionnaire = {
-        ...q,
-        item: q.item?.map(x => ({ ...x, repeats: true })),
-      };
+      const questionnaire = addPropertyToQuestionnaireItem(q, 'repeats', true);
       const { queryByTestId } = renderRefero({ questionnaire });
 
       expect(queryByTestId(/-delete-button/i)).not.toBeInTheDocument();
     });
     it('Should show confirmationbox when deletebutton is clicked', async () => {
-      const questionnaire: Questionnaire = {
-        ...q,
-        item: q.item?.map(x => ({ ...x, repeats: true })),
-      };
+      const questionnaire = addPropertyToQuestionnaireItem(q, 'repeats', true);
       const { getByTestId } = renderRefero({ questionnaire });
 
       userEvent.click(getByTestId(/-repeat-button/i));
@@ -133,10 +115,7 @@ describe('autosuggest-view', () => {
       expect(getByTestId(/-delete-confirm-modal/i)).toBeInTheDocument();
     });
     it('Should remove item when delete button is clicked', async () => {
-      const questionnaire: Questionnaire = {
-        ...q,
-        item: q.item?.map(x => ({ ...x, repeats: true })),
-      };
+      const questionnaire = addPropertyToQuestionnaireItem(q, 'repeats', true);
       const { getByTestId, queryByTestId } = renderRefero({ questionnaire });
 
       userEvent.click(getByTestId(/-repeat-button/i));
@@ -155,22 +134,14 @@ describe('autosuggest-view', () => {
   describe('Validation', () => {
     describe('Required', () => {
       it('Should show error if field is required and value is empty', async () => {
-        const questionnaire: Questionnaire = {
-          ...q,
-          item: q.item?.map(x => ({ ...x, required: true })),
-        };
-        const { getByTestId, getByText } = renderRefero({ questionnaire });
-        await act(async () => {
-          await userEvent.click(getByTestId('refero-submit-button'));
-        });
+        const questionnaire = addPropertyToQuestionnaireItem(q, 'required', true);
+        const { getByText } = renderRefero({ questionnaire });
+        await submitForm();
 
         expect(getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
       });
       it('Should not show error if required and has value', async () => {
-        const questionnaire: Questionnaire = {
-          ...q,
-          item: q.item?.map(x => ({ ...x, required: true })),
-        };
+        const questionnaire = addPropertyToQuestionnaireItem(q, 'required', true);
         const fetchValueSetFn = (
           _searchString: string,
           _item: QuestionnaireItem,
@@ -179,16 +150,18 @@ describe('autosuggest-view', () => {
         ) => {
           successCallback(successReturnValueSet);
         };
-        const { getByTestId, getByLabelText, queryByText, getByText } = renderRefero({
+        const { getByLabelText, queryByText, getByText } = renderRefero({
           questionnaire,
           props: { fetchValueSet: fetchValueSetFn },
         });
         await act(async () => {
-          await userEvent.type(getByLabelText(/Mistenkt legemiddel/i), 'fyr');
-          await userEvent.click(getByText('Fyrstekake'));
-          await userEvent.click(getByTestId('refero-submit-button'));
+          userEvent.type(getByLabelText(/Mistenkt legemiddel/i), 'fyr');
+        });
+        await act(async () => {
+          userEvent.click(getByText(/Fyrstekake/i));
         });
 
+        await submitForm();
         expect(queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
       });
       it('Should remove error on change if form is submitted', async () => {
@@ -204,13 +177,12 @@ describe('autosuggest-view', () => {
           ...q,
           item: q.item?.map(x => ({ ...x, required: true })),
         };
-        const { getByTestId, getByText, queryByText, getByLabelText } = renderRefero({
+        const { getByText, queryByText, getByLabelText } = renderRefero({
           questionnaire,
           props: { fetchValueSet: fetchValueSetFn },
         });
-        await act(async () => {
-          await userEvent.click(getByTestId('refero-submit-button'));
-        });
+        await submitForm();
+
         expect(getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
 
         await act(async () => {

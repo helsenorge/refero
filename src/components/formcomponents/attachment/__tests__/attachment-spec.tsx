@@ -11,7 +11,7 @@ import {
   createMockFile,
   createMockQuestionnaireItem,
   createMockQuestionnaireItemWithEmptyValue,
-} from '../mockUtil';
+} from './__data__/mockUtil';
 import { Resources } from '../../../../util/resources';
 import { convertBytesToMBString, convertMBToBytes } from '../attachmentUtil';
 import constants from '../../../../constants';

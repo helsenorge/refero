@@ -2,12 +2,9 @@ import { q } from './__data__';
 
 import { EnhetType, OrgenhetHierarki } from '../../../../types/orgenhetHierarki';
 
-import { renderRefero, userEvent } from '../../../__tests__/test-utils/test-utils';
+import { act, renderRefero } from '../../../__tests__/test-utils/test-utils';
 import { getResources } from '../../../../preview/resources/referoResources';
-import { generateQuestionnaireResponse } from '../../../../actions/generateQuestionnaireResponse';
-import { act } from 'react-dom/test-utils';
-import { createOnChangeFuncForActionRequester } from '../../../__tests__/utils';
-import { IActionRequester } from '../../../../util/actionRequester';
+import { selectDropdownOptionByName } from '../../../__tests__/test-utils/selectors';
 
 const receivers = [
   {
@@ -53,14 +50,14 @@ describe('ReceiverComponent', () => {
       successCallback(receivers);
     };
     const onChange = jest.fn();
-    const { findByText, findByLabelText, findByRole } = renderRefero({
+    const { findByText } = renderRefero({
       questionnaire: q,
       props: { fetchReceivers: fetchReceiversFn, onChange },
       resources: getResources(''),
     });
-    const option = await findByRole('option', { name: /region 1/i });
-    userEvent.selectOptions(await findByLabelText('Velg helseregion'), option);
-    userEvent.selectOptions(await findByLabelText('Velg helseforetak'), 'Receiver 1');
+    await selectDropdownOptionByName('Velg helseregion', /region 1/i);
+    await selectDropdownOptionByName('Velg helseforetak', 'Receiver 1');
+
     expect(await findByText(/Region 1 \/ Receiver 1/i)).toBeInTheDocument();
   });
 
@@ -112,7 +109,7 @@ describe('ReceiverComponent', () => {
     const fetchReceivers = (successCallback: (receivers: Array<OrgenhetHierarki>) => void) => {
       successCallback(receivers);
     };
-    const { queryByText, findByRole, findByLabelText } = renderRefero({
+    const { queryByText } = renderRefero({
       questionnaire: q,
       props: { fetchReceivers },
       resources: {
@@ -122,8 +119,7 @@ describe('ReceiverComponent', () => {
       },
     });
     expect(queryByText('Velg region')).toBeInTheDocument();
-    const option = await findByRole('option', { name: /region 1/i });
-    userEvent.selectOptions(await findByLabelText('Velg region'), option);
+    await selectDropdownOptionByName('Velg region', /region 1/i);
     expect(queryByText('Velg helseforetak')).toBeInTheDocument();
   });
   it('Should call clearCodingAnswer when dropdown value is changed to a non-leaf node', async () => {
@@ -131,7 +127,7 @@ describe('ReceiverComponent', () => {
       successCallback(receivers);
     };
     const onChange = jest.fn();
-    const { findByRole, findByLabelText, queryByText } = renderRefero({
+    const { queryByText } = renderRefero({
       questionnaire: q,
       props: { fetchReceivers, onChange },
       resources: {
@@ -141,12 +137,13 @@ describe('ReceiverComponent', () => {
       },
     });
     await act(async () => {
-      const option = await findByRole('option', { name: /region 1/i });
-      userEvent.selectOptions(await findByLabelText('Velg region'), option);
-      const option2 = await findByRole('option', { name: /Receiver 11/i });
-      userEvent.selectOptions(await findByLabelText('Velg helseforetak'), option2);
+      await selectDropdownOptionByName('Velg region', /region 1/i);
+
+      await selectDropdownOptionByName('Velg helseforetak', /Receiver 11/i);
+
       expect(queryByText(/Region 1 \/ Receiver 11/i)).toBeInTheDocument();
-      userEvent.selectOptions(await findByLabelText('Velg region'), option);
+
+      await selectDropdownOptionByName('Velg region', /region 1/i);
       expect(queryByText(/Region 1 \/ Receiver 11/i)).not.toBeInTheDocument();
     });
   });
@@ -156,7 +153,7 @@ describe('ReceiverComponent', () => {
       successCallback(receivers);
     };
     const onChange = jest.fn();
-    const { findByRole, findByLabelText } = renderRefero({
+    renderRefero({
       questionnaire: q,
       props: { fetchReceivers, onChange },
       resources: {
@@ -166,10 +163,9 @@ describe('ReceiverComponent', () => {
       },
     });
     await act(async () => {
-      const option = await findByRole('option', { name: /region 1/i });
-      userEvent.selectOptions(await findByLabelText('Velg region'), option);
-      const option2 = await findByRole('option', { name: /Receiver 11/i });
-      userEvent.selectOptions(await findByLabelText('Velg helseforetak'), option2);
+      await selectDropdownOptionByName('Velg region', /region 1/i);
+
+      await selectDropdownOptionByName('Velg helseforetak', /Receiver 11/i);
     });
 
     expect(onChange).toHaveBeenCalled();

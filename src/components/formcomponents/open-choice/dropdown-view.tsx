@@ -74,6 +74,7 @@ class DropdownView extends React.Component<Props, Record<string, unknown>> {
             name={idWithLinkIdAndItemIndex}
             control={control}
             shouldUnregister={true}
+            defaultValue={selected?.[0] || ''}
             rules={{
               required: {
                 message: getValidationTextExtension(item) ?? resources?.formRequiredErrorMessage ?? '',

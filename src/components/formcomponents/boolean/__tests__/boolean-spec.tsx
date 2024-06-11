@@ -3,6 +3,7 @@ import { act, findByRole, renderRefero, userEvent } from '../../../__tests__/tes
 import { q } from './__data__';
 import { getResources } from '../../../../preview/resources/referoResources';
 import { ReferoProps } from '../../../../types/referoProps';
+import { submitForm } from '../../../__tests__/test-utils/selectors';
 const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle ut dette feltet' };
 
 describe('Boolean', () => {
@@ -215,10 +216,8 @@ describe('Boolean', () => {
         ...q,
         item: q.item?.map(x => ({ ...x, required: true })),
       };
-      const { getByTestId, getByText } = createWrapper(questionnaire);
-      await act(async () => {
-        await userEvent.click(getByTestId('refero-submit-button'));
-      });
+      const { getByText } = createWrapper(questionnaire);
+      await submitForm();
 
       expect(getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
     });
@@ -227,12 +226,11 @@ describe('Boolean', () => {
         ...q,
         item: q.item?.map(x => ({ ...x, required: true })),
       };
-      const { getByTestId, getByLabelText, queryByText } = createWrapper(questionnaire);
+      const { getByLabelText, queryByText } = createWrapper(questionnaire);
       await act(async () => {
         await userEvent.click(getByLabelText(/Boolean/i));
-        await userEvent.click(getByTestId('refero-submit-button'));
       });
-
+      await submitForm();
       expect(queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
     });
     it('Should not show error if form dirty and value is changed to a valid state', async () => {
@@ -240,10 +238,8 @@ describe('Boolean', () => {
         ...q,
         item: q.item?.map(x => ({ ...x, required: true })),
       };
-      const { getByTestId, getByLabelText, queryByText } = createWrapper(questionnaire);
-      await act(async () => {
-        await userEvent.click(getByTestId('refero-submit-button'));
-      });
+      const { getByLabelText, queryByText } = createWrapper(questionnaire);
+      await submitForm();
       expect(queryByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
       await act(async () => {
         await userEvent.click(getByLabelText(/Boolean/i));

@@ -69,14 +69,14 @@ export const validateFileType = (
   return errorMessage ? errorMessage + ` ${validTypes.join(', ')}.` : '';
 };
 
-const mimeTypeIsValid = (file: UploadFile, validMimeTypes: Array<string>) => {
+const mimeTypeIsValid = (file: UploadFile, validMimeTypes: Array<string>): boolean => {
   if (validMimeTypes.indexOf(file.type) < 0) {
     return false;
   }
   return true;
 };
 
-const sizeIsValid = (file: UploadFile, size: number) => {
+const sizeIsValid = (file: UploadFile, size: number): boolean => {
   if (file.size > size) {
     return false;
   }

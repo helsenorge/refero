@@ -264,10 +264,10 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
         </AutosuggestView>
       ) : isReceiverComponent ? (
         <ReceiverComponentWrapper
+          {...props}
           handleChange={handleChange}
           selected={getValue(props.item, props.answer)}
           clearCodingAnswer={clearCodingAnswer}
-          {...props}
         >
           {props.children}
         </ReceiverComponentWrapper>

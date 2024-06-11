@@ -58,11 +58,11 @@ describe('onAnswerChange callback gets called and can request additional changes
       actionRequester.addIntegerAnswer('2', 42);
     });
 
-    const { findByDisplayValue } = wrapper(onChange, questionnaireWithAllItemTypes);
+    const { queryByDisplayValue } = wrapper(onChange, questionnaireWithAllItemTypes);
 
     const { answer } = await addValueToInputByTypeAndTab('Decimal', '0.1');
 
-    const elm = await findByDisplayValue(42);
+    const elm = queryByDisplayValue(42);
     expect(elm).toBeInTheDocument();
     expect(answer).toHaveValue(0.1);
   });

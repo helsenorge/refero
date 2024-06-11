@@ -6,6 +6,7 @@ import { getResources } from '../../../../preview/resources/referoResources';
 import { Extensions } from '../../../../constants/extensions';
 import { typeExtraField } from './utils';
 import { clickButtonTimes, selectCheckboxOption, submitForm } from '../../../__tests__/test-utils/selectors';
+import { addManyPropertiesToQuestionnaireItem } from '../../../__tests__/test-utils/questionnairHelpers';
 
 const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle ut dette feltet', oppgiGyldigVerdi: 'ikke gyldig tall' };
 const expectedAnswer = {
@@ -25,10 +26,7 @@ describe('Radio-view - choice', () => {
       expect(queryByText(resources.ikkeBesvart)).toBeInTheDocument();
     });
     it('Should render text if item is readonly', () => {
-      const questionnaire: Questionnaire = {
-        ...q,
-        item: q.item?.map(x => ({ ...x, readOnly: true })),
-      };
+      const questionnaire = addManyPropertiesToQuestionnaireItem(q, [{ property: 'readOnly', value: true }]);
 
       const { queryByText } = createWrapper(questionnaire);
       expect(queryByText(resources.ikkeBesvart)).toBeInTheDocument();
@@ -62,21 +60,14 @@ describe('Radio-view - choice', () => {
   });
   describe('repeat button', () => {
     it('Should render repeat button if item repeats', () => {
-      const questionnaire: Questionnaire = {
-        ...q,
-        item: q.item?.map(x => ({ ...x, repeats: true })),
-      };
-
+      const questionnaire = addManyPropertiesToQuestionnaireItem(q, [{ property: 'repeats', value: true }]);
       const { getByTestId } = createWrapper(questionnaire);
       const repeatButton = getByTestId(/-repeat-button/i);
       expect(repeatButton).toBeInTheDocument();
     });
 
     it('Should not render repeat button if item does not repeats', () => {
-      const questionnaire: Questionnaire = {
-        ...q,
-        item: q.item?.map(x => ({ ...x, repeats: false })),
-      };
+      const questionnaire = addManyPropertiesToQuestionnaireItem(q, [{ property: 'repeats', value: false }]);
       const { queryByTestId } = createWrapper(questionnaire);
       const repeatButton = queryByTestId(/-repeat-button/i);
       expect(repeatButton).not.toBeInTheDocument();
@@ -101,10 +92,7 @@ describe('Radio-view - choice', () => {
   });
   describe('delete button', () => {
     it('Should render delete button if item repeats and number of repeated items is greater than minOccurance(2)', async () => {
-      const questionnaire: Questionnaire = {
-        ...q,
-        item: q.item?.map(x => ({ ...x, repeats: true })),
-      };
+      const questionnaire = addManyPropertiesToQuestionnaireItem(q, [{ property: 'repeats', value: true }]);
       const { getByTestId, queryAllByTestId } = createWrapper(questionnaire);
 
       userEvent.click(getByTestId(/-repeat-button/i));
@@ -113,19 +101,13 @@ describe('Radio-view - choice', () => {
       expect(queryAllByTestId(/-delete-button/i)).toHaveLength(2);
     });
     it('Should not render delete button if item repeats and number of repeated items is lower or equal than minOccurance(2)', async () => {
-      const questionnaire: Questionnaire = {
-        ...q,
-        item: q.item?.map(x => ({ ...x, repeats: true })),
-      };
+      const questionnaire = addManyPropertiesToQuestionnaireItem(q, [{ property: 'repeats', value: true }]);
       const { queryByTestId } = createWrapper(questionnaire);
 
       expect(queryByTestId(/-delete-button/i)).not.toBeInTheDocument();
     });
     it('Should show confirmationbox when deletebutton is clicked', async () => {
-      const questionnaire: Questionnaire = {
-        ...q,
-        item: q.item?.map(x => ({ ...x, repeats: true })),
-      };
+      const questionnaire = addManyPropertiesToQuestionnaireItem(q, [{ property: 'repeats', value: true }]);
       const { getByTestId } = createWrapper(questionnaire);
 
       userEvent.click(getByTestId(/-repeat-button/i));
@@ -137,10 +119,7 @@ describe('Radio-view - choice', () => {
       expect(getByTestId(/-delete-confirm-modal/i)).toBeInTheDocument();
     });
     it('Should remove item when delete button is clicked', async () => {
-      const questionnaire: Questionnaire = {
-        ...q,
-        item: q.item?.map(x => ({ ...x, repeats: true })),
-      };
+      const questionnaire = addManyPropertiesToQuestionnaireItem(q, [{ property: 'repeats', value: true }]);
       const { getByTestId, queryByTestId } = createWrapper(questionnaire);
 
       userEvent.click(getByTestId(/-repeat-button/i));
@@ -158,26 +137,17 @@ describe('Radio-view - choice', () => {
   });
   describe('initialvalue', () => {
     it('Initial value should not be set', async () => {
-      const questionnaire: Questionnaire = {
-        ...q,
-        item: q.item?.map(x => ({
-          ...x,
-          repeats: false,
-        })),
-      };
+      const questionnaire = addManyPropertiesToQuestionnaireItem(q, [{ property: 'repeats', value: false }]);
       const { getByLabelText } = createWrapper(questionnaire);
 
       expect(getByLabelText(/Ja/i)).not.toBeChecked();
     });
     it('Initial value should be set', async () => {
-      const questionnaire: Questionnaire = {
-        ...q,
-        item: q.item?.map(x => ({
-          ...x,
-          repeats: false,
-          initial: [expectedAnswer],
-        })),
-      };
+      const questionnaire = addManyPropertiesToQuestionnaireItem(q, [
+        { property: 'repeats', value: false },
+        { property: 'initial', value: [expectedAnswer] },
+      ]);
+
       const { getByLabelText } = createWrapper(questionnaire);
 
       expect(getByLabelText(/Ja/i)).toBeChecked();
@@ -185,10 +155,7 @@ describe('Radio-view - choice', () => {
   });
   describe('onChange', () => {
     it('Should render extra text field when open-choice extra value is selected', async () => {
-      const questionnaire: Questionnaire = {
-        ...q,
-        item: q.item?.map(x => ({ ...x, repeats: false })),
-      };
+      const questionnaire = addManyPropertiesToQuestionnaireItem(q, [{ property: 'repeats', value: false }]);
       const { getByLabelText, getByTestId } = createWrapper(questionnaire);
 
       await act(async () => {
@@ -198,10 +165,7 @@ describe('Radio-view - choice', () => {
       expect(getByLabelText(/Annet/i)).toBeChecked();
     });
     it('Should update component with value from answer', async () => {
-      const questionnaire: Questionnaire = {
-        ...q,
-        item: q.item?.map(x => ({ ...x, repeats: false })),
-      };
+      const questionnaire = addManyPropertiesToQuestionnaireItem(q, [{ property: 'repeats', value: false }]);
       const { getByLabelText } = createWrapper(questionnaire);
 
       await act(async () => {
@@ -211,10 +175,7 @@ describe('Radio-view - choice', () => {
       expect(getByLabelText(/Ja/i)).toBeChecked();
     });
     it('Should call onChange with correct value', async () => {
-      const questionnaire: Questionnaire = {
-        ...q,
-        item: q.item?.map(x => ({ ...x, repeats: false })),
-      };
+      const questionnaire = addManyPropertiesToQuestionnaireItem(q, [{ property: 'repeats', value: false }]);
       const onChange = jest.fn();
       const { getByLabelText } = createWrapper(questionnaire, { onChange });
       expect(getByLabelText(/Ja/i)).toBeInTheDocument();
@@ -229,39 +190,35 @@ describe('Radio-view - choice', () => {
   describe('Validation', () => {
     describe('Required', () => {
       it('Should show error if field is required and value is empty', async () => {
-        const questionnaire: Questionnaire = {
-          ...q,
-          item: q.item?.map(x => ({ ...x, required: true, repeats: false })),
-        };
-        const { getByLabelText, getByText, getByTestId } = createWrapper(questionnaire);
+        const questionnaire = addManyPropertiesToQuestionnaireItem(q, [
+          { property: 'repeats', value: false },
+          { property: 'required', value: true },
+        ]);
+
+        const { getByLabelText, getByText } = createWrapper(questionnaire);
         expect(getByLabelText(/Ja/i)).toBeInTheDocument();
-        await act(async () => {
-          userEvent.click(getByTestId('refero-submit-button'));
-        });
+        await submitForm();
         expect(getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
       });
       it('Should not show error if required and has value', async () => {
-        const questionnaire: Questionnaire = {
-          ...q,
-          item: q.item?.map(x => ({ ...x, required: true, repeats: false })),
-        };
-        const { getByTestId, queryByText, getByLabelText } = createWrapper(questionnaire);
+        const questionnaire = addManyPropertiesToQuestionnaireItem(q, [
+          { property: 'repeats', value: false },
+          { property: 'required', value: true },
+        ]);
+        const { queryByText, getByLabelText } = createWrapper(questionnaire);
         await act(async () => {
           userEvent.click(getByLabelText(/Ja/i));
-          userEvent.click(getByTestId('refero-submit-button'));
         });
-
+        await submitForm();
         expect(queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
       });
       it('Should remove error on change if form is submitted', async () => {
-        const questionnaire: Questionnaire = {
-          ...q,
-          item: q.item?.map(x => ({ ...x, required: true, repeats: false })),
-        };
-        const { getByTestId, getByLabelText, getByText, queryByText } = createWrapper(questionnaire);
-        await act(async () => {
-          userEvent.click(getByTestId('refero-submit-button'));
-        });
+        const questionnaire = addManyPropertiesToQuestionnaireItem(q, [
+          { property: 'repeats', value: false },
+          { property: 'required', value: true },
+        ]);
+        const { getByLabelText, getByText, queryByText } = createWrapper(questionnaire);
+        await submitForm();
         expect(getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
 
         await act(async () => {
@@ -313,7 +270,7 @@ describe('Radio-view - choice', () => {
         await typeExtraField('test');
 
         expect(onChange).toHaveBeenCalledWith(expect.any(Object), answer, expect.any(Object), expect.any(Object));
-        expect(onChange).toHaveBeenCalledTimes(5);
+        expect(onChange).toHaveBeenCalledTimes(2);
       });
     });
     describe('Validation', () => {

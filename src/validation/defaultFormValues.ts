@@ -1,8 +1,12 @@
 import { QuestionnaireItem } from 'fhir/r4';
 
+import codeSystems from '../constants/codingsystems';
 import itemControlConstants from '../constants/itemcontrol';
 import ItemType, { IItemType } from '../constants/itemType';
+import valueSet from '../constants/valuesets';
+import Valueset from '../util/__tests__/__data__/valuesets/valueset-8459';
 import { getItemControlValue } from '../util/choice';
+import { getItemControlExtensionValue } from '../util/extension';
 export const defaultValuesForType: Record<IItemType, unknown> = {
   [ItemType.TEXT]: '', // Default value for text items
   [ItemType.QUANTITY]: null, // Default value for quantity items
@@ -87,9 +91,13 @@ const flattenAndFilterDefaults = (defaults?: DefaultValues, items?: Questionnair
 
   for (const key in defaults) {
     // Extract the type from the key
-    const type = items?.find(item => key === item.linkId)?.type;
-
-    if (!type || !excludedTypes.includes(type)) {
+    const item = items?.find(item => key === item.linkId);
+    if (!item) continue;
+    const type = item?.type;
+    //exclude help elements
+    const isHelpElement =
+      getItemControlExtensionValue(item)?.find(x => x.system === valueSet.QUESTIONNAIRE_ITEM_CONTROL_SYSTEM)?.code === 'help';
+    if (!type || !excludedTypes.includes(type) || !isHelpElement) {
       flatDefaults[key] = defaults[key];
     }
   }

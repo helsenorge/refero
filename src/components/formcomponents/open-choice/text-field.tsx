@@ -8,7 +8,16 @@ import Input from '@helsenorge/designsystem-react/components/Input';
 import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
 
 import { getValidationTextExtension, getPlaceholder, getMinLengthExtensionValue, getRegexExtension } from '../../../util/extension';
-import { isReadOnly, isRequired, getId, getPDFStringValue, getMaxLength, getSublabelText, getLabelText } from '../../../util/index';
+import {
+  isReadOnly,
+  isRequired,
+  getId,
+  getPDFStringValue,
+  getMaxLength,
+  getSublabelText,
+  getLabelText,
+  getStringValue,
+} from '../../../util/index';
 import { Resources } from '../../../util/resources';
 import { FormProps } from '../../../validation/ReactHookFormHoc';
 import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
@@ -64,6 +73,7 @@ const textField: React.FC<Props> = ({
       <Controller
         name={`${idWithLinkIdAndItemIndex}-extra-field`}
         shouldUnregister={true}
+        defaultValue={getStringValue(answer)}
         rules={{
           required: {
             value: isRequired(item),
@@ -104,6 +114,7 @@ const textField: React.FC<Props> = ({
                 sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
               />
             }
+            value={getStringValue(answer)}
             placeholder={getPlaceholder(item)}
             readOnly={isReadOnly(item)}
             onChange={(e): void => {

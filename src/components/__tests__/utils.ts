@@ -8,7 +8,7 @@ import {
   QuestionnaireResponseItemAnswer,
 } from 'fhir/r4';
 import { Extensions } from '../../constants/extensions';
-import { queryHelpers, userEvent, screen, fireEvent, findByLabelText } from './test-utils/test-utils';
+import { queryHelpers, userEvent, screen, fireEvent, act } from './test-utils/test-utils';
 import valueSet from '../../constants/valuesets';
 import { IActionRequester } from '../../util/actionRequester';
 import { IQuestionnaireInspector } from '../../util/questionnaireInspector';
@@ -36,8 +36,10 @@ export function selectRadioButtonOption(linkId: string, index: number, element: 
   userEvent.click(item);
 }
 
-export async function changeCheckBoxOption(label: string, element: HTMLElement) {
-  userEvent.click(await findByLabelText(element, label));
+export async function changeCheckBoxOption(label: string) {
+  act(() => {
+    userEvent.click(screen.getByLabelText(label));
+  });
 }
 
 export function findItem(linkId: string, element: HTMLElement) {

@@ -140,6 +140,7 @@ const Decimal = (props: Props): JSX.Element | null => {
           name={idWithLinkIdAndItemIndex}
           control={control}
           shouldUnregister={true}
+          defaultValue={value ? value + '' : ''}
           rules={{
             required: {
               value: isRequired(item),

@@ -4,6 +4,7 @@ import { checkboxView as q } from './__data__/index';
 import { ReferoProps } from '../../../../types/referoProps';
 import { getResources } from '../../../../preview/resources/referoResources';
 import { Extensions } from '../../../../constants/extensions';
+import { submitForm } from '../../../__tests__/test-utils/selectors';
 
 const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle ut dette feltet', oppgiGyldigVerdi: 'ikke gyldig tall' };
 const expectedAnswer = {
@@ -214,11 +215,9 @@ describe('checkbox-view - choice', () => {
           ...q,
           item: q.item?.map(x => ({ ...x, required: true, repeats: false })),
         };
-        const { getByLabelText, getByText, getByTestId } = createWrapper(questionnaire);
+        const { getByLabelText, getByText } = createWrapper(questionnaire);
         expect(getByLabelText(/Ja/i)).toBeInTheDocument();
-        await act(async () => {
-          userEvent.click(getByTestId('refero-submit-button'));
-        });
+        await submitForm();
         expect(getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
       });
       it('Should not show error if required and has value', async () => {
@@ -226,12 +225,11 @@ describe('checkbox-view - choice', () => {
           ...q,
           item: q.item?.map(x => ({ ...x, required: true, repeats: false })),
         };
-        const { getByTestId, queryByText, getByLabelText } = createWrapper(questionnaire);
+        const { queryByText, getByLabelText } = createWrapper(questionnaire);
         await act(async () => {
           userEvent.click(getByLabelText(/Ja/i));
-          userEvent.click(getByTestId('refero-submit-button'));
         });
-
+        await submitForm();
         expect(queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
       });
       it('Should remove error on change if form is submitted', async () => {
@@ -239,10 +237,8 @@ describe('checkbox-view - choice', () => {
           ...q,
           item: q.item?.map(x => ({ ...x, required: true, repeats: false })),
         };
-        const { getByTestId, getByLabelText, getByText, queryByText } = createWrapper(questionnaire);
-        await act(async () => {
-          userEvent.click(getByTestId('refero-submit-button'));
-        });
+        const { getByLabelText, getByText, queryByText } = createWrapper(questionnaire);
+        await submitForm();
         expect(getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
 
         await act(async () => {

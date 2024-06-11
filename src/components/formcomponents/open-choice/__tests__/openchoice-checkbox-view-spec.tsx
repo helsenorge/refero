@@ -26,7 +26,7 @@ describe('checkbox-view - openchoice', () => {
       expect(queryByText(resources.ikkeBesvart)).toBeInTheDocument();
     });
     it('Should render text if item is readonly', () => {
-      const questionnaire: Questionnaire = addPropertyToQuestionnaireItem(q, 'readOnly', true);
+      const questionnaire = addPropertyToQuestionnaireItem(q, 'readOnly', true);
       const { queryByText } = createWrapper(questionnaire);
       expect(queryByText(resources.ikkeBesvart)).toBeInTheDocument();
     });
@@ -58,21 +58,18 @@ describe('checkbox-view - openchoice', () => {
   });
   describe('repeat button', () => {
     it('Should render repeat button if item repeats', () => {
-      const questionnaire: Questionnaire = addPropertyToQuestionnaireItem(q, 'repeats', true);
+      const questionnaire = addPropertyToQuestionnaireItem(q, 'repeats', true);
       const { getByTestId } = createWrapper(questionnaire);
       expect(getByTestId(/-repeat-button/i)).toBeInTheDocument();
     });
 
     it('Should not render repeat button if item does not repeats', () => {
-      const questionnaire: Questionnaire = {
-        ...q,
-        item: q.item?.map(x => ({ ...x, repeats: false })),
-      };
+      const questionnaire = addPropertyToQuestionnaireItem(q, 'repeats', false);
       const { queryByTestId } = createWrapper(questionnaire);
       expect(queryByTestId(/-repeat-button/i)).not.toBeInTheDocument();
     });
     it('Should add item when repeat is clicked and remove button when maxOccurance(4) is reached', async () => {
-      const questionnaire: Questionnaire = addPropertyToQuestionnaireItem(q, 'repeats', true);
+      const questionnaire = addPropertyToQuestionnaireItem(q, 'repeats', true);
       const { queryAllByText, queryByTestId } = createWrapper(questionnaire);
       await clickButtonTimes(/-repeat-button/i, 3);
       expect(queryAllByText(/Checkbox view label/i)).toHaveLength(4);
@@ -81,20 +78,20 @@ describe('checkbox-view - openchoice', () => {
   });
   describe('delete button', () => {
     it('Should render delete button if item repeats and number of repeated items is greater than minOccurance(2)', async () => {
-      const questionnaire: Questionnaire = addPropertyToQuestionnaireItem(q, 'repeats', true);
+      const questionnaire = addPropertyToQuestionnaireItem(q, 'repeats', true);
       const { queryAllByTestId } = createWrapper(questionnaire);
       await clickButtonTimes(/-repeat-button/i, 2);
 
       expect(queryAllByTestId(/-delete-button/i)).toHaveLength(2);
     });
     it('Should not render delete button if item repeats and number of repeated items is lower or equal than minOccurance(2)', async () => {
-      const questionnaire: Questionnaire = addPropertyToQuestionnaireItem(q, 'repeats', true);
+      const questionnaire = addPropertyToQuestionnaireItem(q, 'repeats', true);
       const { queryByTestId } = createWrapper(questionnaire);
 
       expect(queryByTestId(/-delete-button/i)).not.toBeInTheDocument();
     });
     it('Should show confirmationbox when deletebutton is clicked', async () => {
-      const questionnaire: Questionnaire = addPropertyToQuestionnaireItem(q, 'repeats', true);
+      const questionnaire = addPropertyToQuestionnaireItem(q, 'repeats', true);
       const { getByTestId } = createWrapper(questionnaire);
 
       await clickButtonTimes(/-repeat-button/i, 1);
@@ -103,7 +100,7 @@ describe('checkbox-view - openchoice', () => {
       expect(getByTestId(/-delete-confirm-modal/i)).toBeInTheDocument();
     });
     it('Should remove item when delete button is clicked', async () => {
-      const questionnaire: Questionnaire = addPropertyToQuestionnaireItem(q, 'repeats', true);
+      const questionnaire = addPropertyToQuestionnaireItem(q, 'repeats', true);
       const { getByTestId, queryByTestId } = createWrapper(questionnaire);
 
       await clickButtonTimes(/-repeat-button/i, 1);
@@ -116,7 +113,7 @@ describe('checkbox-view - openchoice', () => {
   });
   describe('initialvalue', () => {
     it('Initial value should not be set', async () => {
-      const questionnaire: Questionnaire = addPropertyToQuestionnaireItem(q, 'repeats', false);
+      const questionnaire = addPropertyToQuestionnaireItem(q, 'repeats', false);
       const { getByLabelText } = createWrapper(questionnaire);
 
       expect(getByLabelText(/Ja/i)).not.toBeChecked();
@@ -135,7 +132,7 @@ describe('checkbox-view - openchoice', () => {
   describe('Extra field', () => {
     describe('OnChange', () => {
       it('Should render extra text field when open-choice extra value is selected', async () => {
-        const questionnaire: Questionnaire = addPropertyToQuestionnaireItem(q, 'repeats', false);
+        const questionnaire = addPropertyToQuestionnaireItem(q, 'repeats', false);
         const { getByLabelText, getByTestId } = createWrapper(questionnaire);
 
         await selectCheckboxOption(/Annet/i);
@@ -164,7 +161,7 @@ describe('checkbox-view - openchoice', () => {
         await typeExtraField('test');
 
         expect(onChange).toHaveBeenCalledWith(expect.any(Object), answer, expect.any(Object), expect.any(Object));
-        expect(onChange).toHaveBeenCalledTimes(5);
+        expect(onChange).toHaveBeenCalledTimes(2);
       });
     });
     describe('Validation', () => {

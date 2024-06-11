@@ -110,6 +110,7 @@ const attachmentHtml = ({
               message: resources?.attachmentError_required || '',
             },
             validate: () => true,
+            shouldUnregister: true,
           })}
           inputId={id}
           onChangeFile={handleUpload}

@@ -4,6 +4,7 @@ import { dropdownView as q } from './__data__/index';
 import { ReferoProps } from '../../../../types/referoProps';
 import { getResources } from '../../../../preview/resources/referoResources';
 import { Extensions } from '../../../../constants/extensions';
+import { submitForm } from '../../../__tests__/test-utils/selectors';
 
 const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle ut dette feltet', oppgiGyldigVerdi: 'ikke gyldig tall' };
 const expectedAnswer = {
@@ -212,11 +213,9 @@ describe('Dropdown-view - choice', () => {
           ...q,
           item: q.item?.map(x => ({ ...x, required: true, repeats: false })),
         };
-        const { getByRole, getByText, getByTestId } = createWrapper(questionnaire);
+        const { getByRole, getByText } = createWrapper(questionnaire);
         expect(getByRole('option', { name: 'Ja' }) as HTMLOptionElement).toBeInTheDocument();
-        await act(async () => {
-          userEvent.click(getByTestId('refero-submit-button'));
-        });
+        await submitForm();
         expect(getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
       });
       it('Should not show error if required and has value', async () => {
@@ -224,12 +223,11 @@ describe('Dropdown-view - choice', () => {
           ...q,
           item: q.item?.map(x => ({ ...x, required: true, repeats: false })),
         };
-        const { getByTestId, queryByText, getByRole, getByLabelText } = createWrapper(questionnaire);
+        const { queryByText, getByRole, getByLabelText } = createWrapper(questionnaire);
         await act(async () => {
           userEvent.selectOptions(getByLabelText(/Dropdown view label/i), getByRole('option', { name: 'Ja' }) as HTMLOptionElement);
-          userEvent.click(getByTestId('refero-submit-button'));
         });
-
+        await submitForm();
         expect(queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
       });
       it('Should remove error on change if form is submitted', async () => {
@@ -237,10 +235,8 @@ describe('Dropdown-view - choice', () => {
           ...q,
           item: q.item?.map(x => ({ ...x, required: true, repeats: false })),
         };
-        const { getByTestId, getByRole, getByText, queryByText, getByLabelText } = createWrapper(questionnaire);
-        await act(async () => {
-          userEvent.click(getByTestId('refero-submit-button'));
-        });
+        const { getByRole, getByText, queryByText, getByLabelText } = createWrapper(questionnaire);
+        await submitForm();
         expect(getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
 
         await act(async () => {

@@ -64,11 +64,15 @@ RenderFormProps): JSX.Element | null => {
   if (referoProps.blockSubmit) {
     return <Loader size={'medium'} overlay={'parent'} />;
   }
-  // const value = getValues();
+  const value = getValues();
   // console.log(value, 'values');
   // console.log(defaultValues, 'defaultValues');
   // console.log(dirtyFields, 'dirtyFields');
-
+  const handleNextStep: SubmitHandler<FieldValues> = (data: QuestionnaireResponse, e: React.FormEvent): void => {
+    if (nextStep) {
+      nextStep();
+    }
+  };
   return (
     <form onSubmit={methods.handleSubmit(onSubmitReactHookForm)}>
       {/* <Validation errorSummary="test" /> */}
@@ -81,7 +85,7 @@ RenderFormProps): JSX.Element | null => {
         pauseButtonText={displayPreviousButton && resources.previousStep ? resources.previousStep : resources.formSave}
         submitButtonDisabled={referoProps.blockSubmit}
         pauseButtonDisabled={referoProps.saveButtonDisabled}
-        onSubmitButtonClicked={displayNextButton ? nextStep : methods.handleSubmit(onSubmitReactHookForm)}
+        onSubmitButtonClicked={displayNextButton ? methods.handleSubmit(handleNextStep) : methods.handleSubmit(onSubmitReactHookForm)}
         onCancelButtonClicked={(): void => {
           referoProps.onCancel && referoProps.onCancel();
         }}

@@ -4,6 +4,7 @@ import { q } from './__data__';
 import { ReferoProps } from '../../../../types/referoProps';
 import { getResources } from '../../../../preview/resources/referoResources';
 import { Extensions } from '../../../../constants/extensions';
+import { submitForm } from '../../../__tests__/test-utils/selectors';
 
 const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle ut dette feltet', oppgiGyldigVerdi: 'ikke gyldig tall' };
 
@@ -215,9 +216,7 @@ describe('Decimal', () => {
           item: q.item?.map(x => ({ ...x, required: true })),
         };
         const { getByTestId, getByText } = createWrapper(questionnaire);
-        await act(async () => {
-          await userEvent.click(getByTestId('refero-submit-button'));
-        });
+        await submitForm();
 
         expect(getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
       });
@@ -229,8 +228,8 @@ describe('Decimal', () => {
         const { getByTestId, getByLabelText, queryByText } = createWrapper(questionnaire);
         await act(async () => {
           await userEvent.type(getByLabelText(/Decimal/i), '123');
-          await userEvent.click(getByTestId('refero-submit-button'));
         });
+        await submitForm();
 
         expect(queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
       });
@@ -240,9 +239,7 @@ describe('Decimal', () => {
           item: q.item?.map(x => ({ ...x, required: true })),
         };
         const { getByTestId, getByText, queryByText, getByLabelText } = createWrapper(questionnaire);
-        await act(async () => {
-          await userEvent.click(getByTestId('refero-submit-button'));
-        });
+        await submitForm();
         expect(getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
 
         await act(async () => {
@@ -259,9 +256,7 @@ describe('Decimal', () => {
           item: q.item?.map(x => ({ ...x, required: false })),
         };
         const { getByTestId, queryByText } = createWrapper(questionnaire);
-        await act(async () => {
-          await userEvent.click(getByTestId('refero-submit-button'));
-        });
+        await submitForm();
 
         expect(queryByText('Custom error')).not.toBeInTheDocument();
       });
@@ -273,8 +268,8 @@ describe('Decimal', () => {
         const { getByTestId, getByLabelText, queryByText } = createWrapper(questionnaire);
         await act(async () => {
           await userEvent.type(getByLabelText(/Decimal/i), '8');
-          await userEvent.click(getByTestId('refero-submit-button'));
         });
+        await submitForm();
 
         expect(queryByText('Custom error')).not.toBeInTheDocument();
       });
@@ -286,8 +281,8 @@ describe('Decimal', () => {
         const { getByTestId, getByText, queryByText, getByLabelText } = createWrapper(questionnaire);
         await act(async () => {
           await userEvent.type(getByLabelText(/Decimal/i), '12');
-          await userEvent.click(getByTestId('refero-submit-button'));
         });
+        await submitForm();
         expect(getByText('Custom error')).toBeInTheDocument();
         await act(async () => {
           await userEvent.clear(getByLabelText(/Decimal/i));
@@ -304,9 +299,7 @@ describe('Decimal', () => {
           item: q.item?.map(x => ({ ...x, required: false })),
         };
         const { getByTestId, queryByText } = createWrapper(questionnaire);
-        await act(async () => {
-          await userEvent.click(getByTestId('refero-submit-button'));
-        });
+        await submitForm();
 
         expect(queryByText('Custom error')).not.toBeInTheDocument();
       });
@@ -315,11 +308,11 @@ describe('Decimal', () => {
           ...q,
           item: q.item?.map(x => ({ ...x, required: false })),
         };
-        const { getByTestId, getByLabelText, queryByText } = createWrapper(questionnaire);
+        const { getByLabelText, queryByText } = createWrapper(questionnaire);
         await act(async () => {
           await userEvent.type(getByLabelText(/Decimal/i), '8');
-          await userEvent.click(getByTestId('refero-submit-button'));
         });
+        await submitForm();
 
         expect(queryByText('Custom error')).not.toBeInTheDocument();
       });
@@ -328,11 +321,11 @@ describe('Decimal', () => {
           ...q,
           item: q.item?.map(x => ({ ...x, required: false })),
         };
-        const { getByTestId, queryByText, getByLabelText } = createWrapper(questionnaire);
+        const { queryByText, getByLabelText } = createWrapper(questionnaire);
         await act(async () => {
           await userEvent.type(getByLabelText(/Decimal/i), '3');
-          await userEvent.click(getByTestId('refero-submit-button'));
         });
+        await submitForm();
         expect(queryByText('Custom error')).toBeInTheDocument();
         await act(async () => {
           await userEvent.clear(getByLabelText(/Decimal/i));
@@ -351,10 +344,8 @@ describe('Decimal', () => {
             required: false,
           })),
         };
-        const { getByTestId, queryByText } = createWrapper(questionnaire);
-        await act(async () => {
-          await userEvent.click(getByTestId('refero-submit-button'));
-        });
+        const { queryByText } = createWrapper(questionnaire);
+        await submitForm();
 
         expect(queryByText(resources.oppgiGyldigVerdi)).not.toBeInTheDocument();
       });
@@ -369,8 +360,8 @@ describe('Decimal', () => {
         const { getByTestId, getByLabelText, queryByText } = createWrapper(questionnaire);
         await act(async () => {
           await userEvent.type(getByLabelText(/Decimal/i), '6.12');
-          await userEvent.click(getByTestId('refero-submit-button'));
         });
+        await submitForm();
 
         expect(queryByText(resources.oppgiGyldigVerdi)).not.toBeInTheDocument();
       });
@@ -385,8 +376,8 @@ describe('Decimal', () => {
         const { getByTestId, queryByText, getByLabelText } = createWrapper(questionnaire);
         await act(async () => {
           await userEvent.type(getByLabelText(/Decimal/i), '6.121212');
-          await userEvent.click(getByTestId('refero-submit-button'));
         });
+        await submitForm();
         expect(queryByText(resources.oppgiGyldigVerdi)).toBeInTheDocument();
         await act(async () => {
           await userEvent.clear(getByLabelText(/Decimal/i));
