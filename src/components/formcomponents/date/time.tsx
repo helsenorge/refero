@@ -5,6 +5,8 @@ import moment from 'moment';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
+import Label from '@helsenorge/designsystem-react/components/Label';
+
 import TimeInput from '@helsenorge/date-time/components/time-input';
 import { parseDate } from '@helsenorge/date-time/components/time-input/date-core';
 import * as DateTimeConstants from '@helsenorge/date-time/constants/datetime';
@@ -13,13 +15,12 @@ import { NewValueAction, newTimeValueAsync } from '../../../actions/newValue';
 import { Extensions } from '../../../constants/extensions';
 import { GlobalState } from '../../../reducers';
 import { getExtension, getValidationTextExtension } from '../../../util/extension';
-import { isReadOnly, isRequired, getId, getSublabelText } from '../../../util/index';
+import { isReadOnly, isRequired, getId, getSublabelText, getLabelText } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
 import { Resources } from '../../../util/resources';
 import ReactHookFormHoc, { FormProps } from '../../../validation/ReactHookFormHoc';
 import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
-import Label from '../SafeText';
 import SubLabel from '../sublabel';
 import TextView from '../textview';
 
@@ -247,10 +248,9 @@ class Time extends React.Component<Props> {
           value={this.getValue()}
           legend={
             <Label
-              item={this.props.item}
-              onRenderMarkdown={this.props.onRenderMarkdown}
-              questionnaire={this.props.questionnaire}
-              resources={this.props.resources}
+              labelTexts={[
+                { text: getLabelText(this.props.item, this.props.onRenderMarkdown, this.props.questionnaire, this.props.resources) },
+              ]}
             />
           }
           subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}

@@ -5,6 +5,8 @@ import moment, { Moment } from 'moment';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
+import Label from '@helsenorge/designsystem-react/components/Label';
+
 import { LanguageLocales } from '@helsenorge/core-utils/constants/languages';
 import { DateRangePicker } from '@helsenorge/date-time/components/date-range-picker';
 import { parseDate } from '@helsenorge/date-time/components/time-input/date-core';
@@ -18,13 +20,12 @@ import itemControlConstants from '../../../constants/itemcontrol';
 import { GlobalState } from '../../../reducers';
 import { getExtension, getItemControlExtensionValue } from '../../../util/extension';
 import { evaluateFhirpathExpressionToGetDate } from '../../../util/fhirpathHelper';
-import { getSublabelText, isRequired } from '../../../util/index';
+import { getLabelText, getSublabelText, isRequired } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
 import { Resources } from '../../../util/resources';
 import ReactHookFormHoc, { FormProps } from '../../../validation/ReactHookFormHoc';
 import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
-import Label from '../SafeText';
 import SubLabel from '../sublabel';
 
 export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
@@ -142,10 +143,7 @@ class DateComponent extends React.Component<Props> {
     const itemControls = getItemControlExtensionValue(this.props.item);
     const labelEl = (
       <Label
-        item={this.props.item}
-        onRenderMarkdown={this.props.onRenderMarkdown}
-        questionnaire={this.props.questionnaire}
-        resources={this.props.resources}
+        labelTexts={[{ text: getLabelText(this.props.item, this.props.onRenderMarkdown, this.props.questionnaire, this.props.resources) }]}
       />
     );
 
