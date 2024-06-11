@@ -53,29 +53,27 @@ export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   children?: React.ReactNode;
 }
 
-const Quantity = (props: Props): JSX.Element | null => {
-  const {
-    dispatch,
-    promptLoginMessage,
-    path,
-    item,
-    onAnswerChange,
-    answer,
-    id,
-    questionnaire,
-    onRenderMarkdown,
-    resources,
-    error,
-    control,
-    pdf,
-    idWithLinkIdAndItemIndex,
-    renderDeleteButton,
-    repeatButton,
-    children,
-    renderHelpButton,
-    renderHelpElement,
-  } = props;
-
+const Quantity = ({
+  dispatch,
+  promptLoginMessage,
+  path,
+  item,
+  onAnswerChange,
+  answer,
+  id,
+  questionnaire,
+  onRenderMarkdown,
+  resources,
+  error,
+  control,
+  pdf,
+  idWithLinkIdAndItemIndex,
+  renderDeleteButton,
+  repeatButton,
+  children,
+  renderHelpButton,
+  renderHelpElement,
+}: Props): JSX.Element | null => {
   const getValue = (): number | number[] | undefined => {
     if (answer && Array.isArray(answer)) {
       return answer.map(m => m.valueQuantity.value);

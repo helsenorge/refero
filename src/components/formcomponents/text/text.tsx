@@ -63,31 +63,29 @@ export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   shouldExpanderRenderChildrenWhenClosed?: boolean;
   children?: React.ReactNode;
 }
-export const Text = (props: Props): JSX.Element | null => {
-  const {
-    id,
-    item,
-    answer,
-    pdf,
-    children,
-    resources,
-    onRenderMarkdown,
-    questionnaire,
-    control,
-    idWithLinkIdAndItemIndex,
-    dispatch,
-    promptLoginMessage,
-    path,
-    onAnswerChange,
-    shouldExpanderRenderChildrenWhenClosed,
-    renderHelpButton,
-    renderHelpElement,
-    error,
-    validateScriptInjection,
-    renderDeleteButton,
-    repeatButton,
-  } = props;
-
+export const Text = ({
+  id,
+  item,
+  answer,
+  pdf,
+  children,
+  resources,
+  onRenderMarkdown,
+  questionnaire,
+  control,
+  idWithLinkIdAndItemIndex,
+  dispatch,
+  promptLoginMessage,
+  path,
+  onAnswerChange,
+  shouldExpanderRenderChildrenWhenClosed,
+  renderHelpButton,
+  renderHelpElement,
+  error,
+  validateScriptInjection,
+  renderDeleteButton,
+  repeatButton,
+}: Props): JSX.Element | null => {
   const handleChange = (event: React.FormEvent): void => {
     const value = (event.target as HTMLInputElement).value;
     if (dispatch) {

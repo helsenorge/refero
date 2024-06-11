@@ -57,26 +57,32 @@ export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   children?: React.ReactNode;
 }
 
-export const String = (props: Props): JSX.Element | null => {
-  const {
-    dispatch,
-    promptLoginMessage,
-    path,
-    item,
-    onAnswerChange,
-    id,
-    questionnaire,
-    pdf,
-    resources,
-    answer,
-    onRenderMarkdown,
-    control,
-    idWithLinkIdAndItemIndex,
-  } = props;
+export const String = ({
+  dispatch,
+  promptLoginMessage,
+  path,
+  item,
+  onAnswerChange,
+  id,
+  questionnaire,
+  pdf,
+  resources,
+  answer,
+  onRenderMarkdown,
+  control,
+  idWithLinkIdAndItemIndex,
+  renderDeleteButton,
+  repeatButton,
+  validateScriptInjection,
+  error,
+  children,
+  renderHelpButton,
+  renderHelpElement,
+}: Props): JSX.Element | null => {
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     const value = event.target.value;
     if (dispatch) {
-      dispatch(newStringValueAsync(props.path, value, props.item))?.then(newState => {
+      dispatch(newStringValueAsync(path, value, item))?.then(newState => {
         return onAnswerChange(newState, path, item, { valueString: value });
       });
     }
@@ -87,17 +93,17 @@ export const String = (props: Props): JSX.Element | null => {
   };
 
   // shouldComponentUpdate(nextProps: Props): boolean {
-  //   const responseItemHasChanged = props.responseItem !== nextProps.responseItem;
-  //   const helpItemHasChanged = props.isHelpOpen !== nextProps.isHelpOpen;
-  //   const answerHasChanged = props.answer !== nextProps.answer;
-  //   const resourcesHasChanged = JSON.stringify(props.resources) !== JSON.stringify(nextProps.resources);
-  //   const repeats = props.item.repeats ?? false;
-  //   const newErrorMessage = props.error?.message !== nextProps.error?.message;
+  //   const responseItemHasChanged = responseItem !== nextresponseItem;
+  //   const helpItemHasChanged = isHelpOpen !== nextisHelpOpen;
+  //   const answerHasChanged = answer !== nextanswer;
+  //   const resourcesHasChanged = JSON.stringify(resources) !== JSON.stringify(nextresources);
+  //   const repeats = item.repeats ?? false;
+  //   const newErrorMessage = error?.message !== nexterror?.message;
   //   return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats || answerHasChanged || newErrorMessage;
   // }
 
   // const getValidationErrorMessage = (value: string): string => {
-  //   return getTextValidationErrorMessage(value, props.validateScriptInjection, props.item, props.resources);
+  //   return getTextValidationErrorMessage(value, validateScriptInjection, item, resources);
   // };
 
   if (pdf || isReadOnly(item)) {
@@ -108,10 +114,10 @@ export const String = (props: Props): JSX.Element | null => {
         value={getPDFStringValue(answer, resources)}
         onRenderMarkdown={onRenderMarkdown}
         textClass="page_refero__component_readonlytext"
-        helpButton={props.renderHelpButton()}
-        helpElement={props.renderHelpElement()}
+        helpButton={renderHelpButton()}
+        helpElement={renderHelpElement()}
       >
-        {props.children}
+        {children}
       </TextView>
     );
   }
@@ -130,8 +136,8 @@ export const String = (props: Props): JSX.Element | null => {
   const value = getStringValue(answer);
   return (
     <div className="page_refero__component page_refero__component_string">
-      <FormGroup error={props.error?.message} mode="ongrey">
-        {props.renderHelpElement()}
+      <FormGroup error={error?.message} mode="ongrey">
+        {renderHelpElement()}
         <Controller
           name={idWithLinkIdAndItemIndex}
           control={control}
@@ -142,8 +148,8 @@ export const String = (props: Props): JSX.Element | null => {
               value: isRequired(item),
               message: resources?.formRequiredErrorMessage ?? 'Feltet er påkrevd',
             },
-            ...(props.validateScriptInjection && {
-              validate: (value: string): true | string => scriptInjectionValidation(value, props.resources),
+            ...(validateScriptInjection && {
+              validate: (value: string): true | string => scriptInjectionValidation(value, resources),
             }),
             ...(minLength && {
               minLength: {
@@ -172,16 +178,16 @@ export const String = (props: Props): JSX.Element | null => {
               defaultValue={value}
               label={
                 <Label
-                  testId={`${getId(props.id)}-string-label`}
+                  testId={`${getId(id)}-string-label`}
                   labelTexts={[{ text: labelText, type: 'semibold' }]}
                   className="page_refero__label"
                   sublabel={
                     <Sublabel
-                      id={`${getId(props.id)}-sublabel`}
+                      id={`${getId(id)}-sublabel`}
                       sublabelTexts={[{ text: subLabelText, hideFromScreenReader: false, type: 'normal' }]}
                     />
                   }
-                  afterLabelChildren={props.renderHelpButton()}
+                  afterLabelChildren={renderHelpButton()}
                 />
               }
               onChange={(e): void => {
@@ -190,17 +196,17 @@ export const String = (props: Props): JSX.Element | null => {
               }}
               type="text"
               width={25}
-              testId={`${getId(props.id)}-string`}
-              inputId={getId(props.id)}
+              testId={`${getId(id)}-string`}
+              inputId={getId(id)}
               placeholder={getPlaceholder(item)}
               className="page_refero__input"
             />
           )}
         />
-        {props.renderDeleteButton('page_refero__deletebutton--margin-top')}
-        {props.repeatButton}
+        {renderDeleteButton('page_refero__deletebutton--margin-top')}
+        {repeatButton}
       </FormGroup>
-      {props.children ? <div className="nested-fieldset nested-fieldset--full-height">{props.children}</div> : null}
+      {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
     </div>
   );
 };

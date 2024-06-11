@@ -184,13 +184,11 @@ export const OpenChoice = (props: Props): JSX.Element | null => {
   const handleStringChange = (value: string): void => {
     if (dispatch) {
       if (value.length > 0) {
-        dispatch(newCodingStringValueAsync(props.path, value, props.item))?.then(newState =>
+        dispatch(newCodingStringValueAsync(path, value, item))?.then(newState =>
           onAnswerChange(newState, path, item, { valueString: value })
         );
       } else {
-        dispatch(removeCodingStringValueAsync(props.path, props.item))?.then(newState =>
-          onAnswerChange(newState, path, item, { valueString: '' })
-        );
+        dispatch(removeCodingStringValueAsync(path, item))?.then(newState => onAnswerChange(newState, path, item, { valueString: '' }));
       }
     }
 
@@ -200,14 +198,13 @@ export const OpenChoice = (props: Props): JSX.Element | null => {
   };
 
   const getAnswerValueCoding = (code: string, systemArg?: string, displayArg?: string): Coding => {
-    const display = displayArg ? displayArg : getDisplay(getOptions(props.resources, props.item, props.containedResources), code);
-    const valueSetSystem = code === OPEN_CHOICE_ID ? OPEN_CHOICE_SYSTEM : getSystem(props.item, code, props.containedResources);
+    const display = displayArg ? displayArg : getDisplay(getOptions(resources, item, containedResources), code);
+    const valueSetSystem = code === OPEN_CHOICE_ID ? OPEN_CHOICE_SYSTEM : getSystem(item, code, containedResources);
     const system = systemArg ? systemArg : valueSetSystem;
     return { code, display, system };
   };
 
   const resetInitialAnswer = (code: string): void => {
-    const { dispatch, answer, promptLoginMessage, item, onAnswerChange, path } = props;
     if (dispatch && code) {
       const coding = getAnswerValueCoding(code);
       const responseAnswer = { valueCoding: coding };
@@ -225,20 +222,17 @@ export const OpenChoice = (props: Props): JSX.Element | null => {
   };
 
   const handleCheckboxChange = (code?: string): void => {
-    const { dispatch, answer, promptLoginMessage, item, onAnswerChange, path } = props;
     if (dispatch && code) {
       const coding = getAnswerValueCoding(code);
       const responseAnswer = { valueCoding: coding };
       if (getIndexOfAnswer(code, answer) > -1) {
-        dispatch(removeCodingValueAsync(props.path, coding, item))?.then(newState => onAnswerChange(newState, path, item, responseAnswer));
+        dispatch(removeCodingValueAsync(path, coding, item))?.then(newState => onAnswerChange(newState, path, item, responseAnswer));
 
         if (promptLoginMessage) {
           promptLoginMessage();
         }
       } else {
-        dispatch(newCodingValueAsync(props.path, coding, props.item, true))?.then(newState =>
-          onAnswerChange(newState, path, item, responseAnswer)
-        );
+        dispatch(newCodingValueAsync(path, coding, item, true))?.then(newState => onAnswerChange(newState, path, item, responseAnswer));
         if (promptLoginMessage) {
           promptLoginMessage();
         }
@@ -262,7 +256,7 @@ export const OpenChoice = (props: Props): JSX.Element | null => {
     if (dispatch && code) {
       const coding = getAnswerValueCoding(code, systemArg, displayArg);
       const responseAnswer = { valueCoding: coding };
-      dispatch(newCodingValueAsync(props.path, coding, item))?.then(newState => onAnswerChange(newState, path, item, responseAnswer));
+      dispatch(newCodingValueAsync(path, coding, item))?.then(newState => onAnswerChange(newState, path, item, responseAnswer));
       if (promptLoginMessage) {
         promptLoginMessage();
       }
@@ -318,18 +312,18 @@ export const OpenChoice = (props: Props): JSX.Element | null => {
         answer={a}
         handleStringChange={handleStringChangeEvent}
         handleChange={handleStringChange}
-        resources={props.resources}
+        resources={resources}
       />
     );
   };
 
   // shouldComponentUpdate(nextProps: Props): boolean {
-  //   const responseItemHasChanged = props.responseItem !== nextProps.responseItem;
-  //   const helpItemHasChanged = props.isHelpOpen !== nextProps.isHelpOpen;
-  //   const resourcesHasChanged = JSON.stringify(props.resources) !== JSON.stringify(nextProps.resources);
-  //   const answerHasChanged = props.answer !== nextProps.answer;
-  //   const repeats = props.item.repeats ?? false;
-  //   const error = props.error !== nextProps.error;
+  //   const responseItemHasChanged = responseItem !== nextresponseItem;
+  //   const helpItemHasChanged = isHelpOpen !== nextisHelpOpen;
+  //   const resourcesHasChanged = JSON.stringify(resources) !== JSON.stringify(nextresources);
+  //   const answerHasChanged = answer !== nextanswer;
+  //   const repeats = item.repeats ?? false;
+  //   const error = error !== nexterror;
 
   //   return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats || answerHasChanged || error;
   // }

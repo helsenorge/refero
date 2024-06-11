@@ -43,7 +43,23 @@ export interface Props extends WithCommonFunctionsAndEnhancedProps {
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
 }
 
-export const Group = (props: Props): JSX.Element | null => {
+export const Group = ({
+  pdf,
+  renderContext,
+  repeatButton,
+  id,
+  includeSkipLink,
+  path,
+  renderDeleteButton,
+  item,
+  questionnaire,
+  onRenderMarkdown,
+  resources,
+  renderHelpElement,
+  renderChildrenItems,
+  headerTag,
+  renderHelpButton,
+}: Props): JSX.Element | null => {
   // shouldComponentUpdate(nextProps: Props): boolean {
   //   const responseItemHasChanged = props.responseItem !== nextProps.responseItem;
   //   const helpItemHasChanged = props.isHelpOpen !== nextProps.isHelpOpen;
@@ -61,21 +77,6 @@ export const Group = (props: Props): JSX.Element | null => {
   //     repeats
   //   );
   // }
-  const {
-    pdf,
-    renderContext,
-    repeatButton,
-    id,
-    includeSkipLink,
-    path,
-    renderDeleteButton,
-    item,
-    questionnaire,
-    onRenderMarkdown,
-    resources,
-    renderHelpElement,
-    renderChildrenItems,
-  } = props;
 
   const renderAllItems = (item: QuestionnaireItem): JSX.Element => {
     const localRenderContextType = getLocalRenderContextType(item);
@@ -124,7 +125,7 @@ export const Group = (props: Props): JSX.Element | null => {
     return (
       <tr key={item.linkId} className="page_refero__grid--row">
         <td className="page_refero__grid--cell page_refero__grid--cell-first">{renderGroupHeader()}</td>
-        {props.renderChildrenItems(renderContext)}
+        {renderChildrenItems(renderContext)}
       </tr>
     );
   };
@@ -151,7 +152,7 @@ export const Group = (props: Props): JSX.Element | null => {
 
   const renderGroup = (): JSX.Element => {
     return (
-      <section id={getId(props.id)} data-sectionname={getHeaderText(item, questionnaire, resources, onRenderMarkdown)}>
+      <section id={getId(id)} data-sectionname={getHeaderText(item, questionnaire, resources, onRenderMarkdown)}>
         {renderGroupHeader()}
         {renderHelpElement()}
         <div id={`${getId(id)}-navanchor`} className={getClassNames(item)}>
@@ -169,8 +170,6 @@ export const Group = (props: Props): JSX.Element | null => {
   };
 
   const renderGroupHeader = (): JSX.Element | null => {
-    const { item, questionnaire, onRenderMarkdown, resources, headerTag, renderHelpButton } = props;
-
     if (!getText(item, onRenderMarkdown)) {
       return null;
     }

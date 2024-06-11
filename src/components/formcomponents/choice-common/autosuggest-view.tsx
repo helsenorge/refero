@@ -46,28 +46,27 @@ export interface AutosuggestProps extends WithCommonFunctionsAndEnhancedProps, F
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
 }
 
-const AutosuggestView = (props: AutosuggestProps): JSX.Element | null => {
-  const {
-    control,
-    resources,
-    item,
-    onRenderMarkdown,
-    questionnaire,
-    answer,
-    id,
-    renderHelpButton,
-    renderHelpElement,
-    idWithLinkIdAndItemIndex,
-    clearCodingAnswer,
-    autoSuggestProps,
-    fetchValueSet,
-    handleChange,
-    handleStringChange,
-    renderDeleteButton,
-    repeatButton,
-    children,
-    error,
-  } = props;
+const AutosuggestView = ({
+  control,
+  resources,
+  item,
+  onRenderMarkdown,
+  questionnaire,
+  answer,
+  id,
+  renderHelpButton,
+  renderHelpElement,
+  idWithLinkIdAndItemIndex,
+  clearCodingAnswer,
+  autoSuggestProps,
+  fetchValueSet,
+  handleChange,
+  handleStringChange,
+  renderDeleteButton,
+  repeatButton,
+  children,
+  error,
+}: AutosuggestProps): JSX.Element | null => {
   const codingAnswer = getCodingAnswer(answer);
   const initialInputValue =
     codingAnswer?.code === OPEN_CHOICE_ID && codingAnswer?.system === OPEN_CHOICE_SYSTEM ? getStringAnswer(answer) : codingAnswer?.display;

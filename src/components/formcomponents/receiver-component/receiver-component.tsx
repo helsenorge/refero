@@ -27,7 +27,17 @@ export interface ReceiverComponentProps {
   children?: React.ReactNode;
 }
 
-const ReceiverComponent = (props: ReceiverComponentProps & FormProps): JSX.Element | null => {
+const ReceiverComponent = ({
+  selected,
+  id,
+  resources,
+  fetchReceivers,
+  handleChange,
+  clearCodingAnswer,
+  idWithLinkIdAndItemIndex,
+  control,
+  error,
+}: ReceiverComponentProps & FormProps): JSX.Element | null => {
   const [receiverTreeNodes, setReceiverTreeNodes] = React.useState<OrgenhetHierarki[]>([]);
   const [selectedPath, setSelectedPath] = React.useState<number[]>([]);
   const [selectedReceiver, setSelectedReceiver] = React.useState<string>('');
@@ -35,13 +45,13 @@ const ReceiverComponent = (props: ReceiverComponentProps & FormProps): JSX.Eleme
   const [hasLoadError, setHasLoadError] = React.useState<boolean>(false);
 
   React.useEffect(() => {
-    if (props.fetchReceivers) {
-      props.fetchReceivers(loadSuccessCallback, loadErrorCallback);
+    if (fetchReceivers) {
+      fetchReceivers(loadSuccessCallback, loadErrorCallback);
     }
   }, []);
 
   const loadSuccessCallback = (receiverTreeNodes: Array<OrgenhetHierarki>): void => {
-    const pathsToEndPoint = props.selected ? findPathToEndpointNode(receiverTreeNodes, props.selected[0] || '') : [];
+    const pathsToEndPoint = selected ? findPathToEndpointNode(receiverTreeNodes, selected[0] || '') : [];
     const selectedPath = pathsToEndPoint.length === 1 ? pathsToEndPoint[0] : [];
     const selectedReceiver = getReceiverName(receiverTreeNodes, selectedPath);
     setIsLoading(false);
@@ -51,8 +61,8 @@ const ReceiverComponent = (props: ReceiverComponentProps & FormProps): JSX.Eleme
     setHasLoadError(receiverTreeNodes.length === 0);
 
     // clear answer if more than one receiver match the selected endpoint
-    if (selectedPath.length === 0 && props.selected && props.selected.length > 0) {
-      props.clearCodingAnswer({ code: props.selected[0] });
+    if (selectedPath.length === 0 && selected && selected.length > 0) {
+      clearCodingAnswer({ code: selected[0] });
     }
   };
 
@@ -96,10 +106,10 @@ const ReceiverComponent = (props: ReceiverComponentProps & FormProps): JSX.Eleme
 
     if (isLeafNode) {
       // set answer selected when leaf node is selected
-      props.handleChange(getEndepunktVerdi(selectedNode.EndepunktId) || '', '', selectedNode.Navn);
-    } else if (props.selected) {
+      handleChange(getEndepunktVerdi(selectedNode.EndepunktId) || '', '', selectedNode.Navn);
+    } else if (selected) {
       // clear previous answer when another node than a leaf node is selected
-      props.clearCodingAnswer({ code: props.selected[0] });
+      clearCodingAnswer({ code: selected[0] });
     }
   };
 
@@ -137,23 +147,23 @@ const ReceiverComponent = (props: ReceiverComponentProps & FormProps): JSX.Eleme
 
   const getLabelText = (enhetType: EnhetType): string | undefined => {
     if (enhetType === EnhetType.Region) {
-      return props.resources?.adresseKomponent_velgHelseregion;
+      return resources?.adresseKomponent_velgHelseregion;
     } else if (enhetType === EnhetType.Foretak) {
-      return props.resources?.adresseKomponent_velgHelseforetak;
+      return resources?.adresseKomponent_velgHelseforetak;
     } else if (enhetType === EnhetType.Sykehus) {
-      return props.resources?.adresseKomponent_velgSykehus;
+      return resources?.adresseKomponent_velgSykehus;
     } else if (enhetType === EnhetType.Klinikk) {
-      return props.resources?.adresseKomponent_velgKlinikk;
+      return resources?.adresseKomponent_velgKlinikk;
     } else if (enhetType === EnhetType.Avdeling) {
-      return props.resources?.adresseKomponent_velgAvdeling;
+      return resources?.adresseKomponent_velgAvdeling;
     } else if (enhetType === EnhetType.Seksjon) {
-      return props.resources?.adresseKomponent_velgSeksjon;
+      return resources?.adresseKomponent_velgSeksjon;
     } else if (enhetType === EnhetType.Sengepost) {
-      return props.resources?.adresseKomponent_velgSengepost;
+      return resources?.adresseKomponent_velgSengepost;
     } else if (enhetType === EnhetType.Poliklinikk) {
-      return props.resources?.adresseKomponent_velgPoliklinikk;
+      return resources?.adresseKomponent_velgPoliklinikk;
     } else if (enhetType === EnhetType.Tjeneste) {
-      return props.resources?.adresseKomponent_velgTjeneste;
+      return resources?.adresseKomponent_velgTjeneste;
     }
     return '';
   };
@@ -171,22 +181,22 @@ const ReceiverComponent = (props: ReceiverComponentProps & FormProps): JSX.Eleme
     };
     const value = selectedPath[level] ? selectedPath[level].toString() : '';
     return (
-      <FormGroup error={props.error?.message}>
+      <FormGroup error={error?.message}>
         <Controller
           key={`${selectKey}-${level}`}
-          name={`${props.idWithLinkIdAndItemIndex}-${selectKey}`}
-          control={props.control}
+          name={`${idWithLinkIdAndItemIndex}-${selectKey}`}
+          control={control}
           shouldUnregister={true}
           defaultValue={value}
           rules={{
             required: {
               value: true,
-              message: props.resources?.adresseKomponent_feilmelding || 'Påkrevd felt',
+              message: resources?.adresseKomponent_feilmelding || 'Påkrevd felt',
             },
             validate: (): true | string =>
               !!getReceiverName(receiverTreeNodes, selectedPath)
                 ? true
-                : props.resources?.adresseKomponent_feilmelding || 'Kan ikke være tom streng',
+                : resources?.adresseKomponent_feilmelding || 'Kan ikke være tom streng',
           }}
           render={({ field: { onChange, ...rest } }): JSX.Element => (
             <Select
@@ -196,8 +206,8 @@ const ReceiverComponent = (props: ReceiverComponentProps & FormProps): JSX.Eleme
                 onChange(e.target.value);
               }}
               value={value}
-              testId={`${getId(props.id)}-${selectKey}`}
-              selectId={`${getId(props.id)}-${selectKey}`}
+              testId={`${getId(id)}-${selectKey}`}
+              selectId={`${getId(id)}-${selectKey}`}
               label={<Label labelTexts={[{ text: label, type: 'semibold' }]} />}
               className="page_refero__input"
             >
@@ -235,20 +245,20 @@ const ReceiverComponent = (props: ReceiverComponentProps & FormProps): JSX.Eleme
 
   return (
     <div>
-      <h2>{props.resources?.adresseKomponent_header}</h2>
-      <div className="page_refero__sublabel">{props.resources?.adresseKomponent_sublabel}</div>
+      <h2>{resources?.adresseKomponent_header}</h2>
+      <div className="page_refero__sublabel">{resources?.adresseKomponent_sublabel}</div>
 
       {isLoading && (
         <div>
           <Loader />
         </div>
       )}
-      {hasLoadError && <NotificationPanel variant="alert">{props.resources?.adresseKomponent_loadError}</NotificationPanel>}
+      {hasLoadError && <NotificationPanel variant="alert">{resources?.adresseKomponent_loadError}</NotificationPanel>}
 
       {receiverTreeNodes.length > 0 && renderSelects()}
       {selectedReceiver && (
         <div>
-          <span>{`${props.resources?.adresseKomponent_skjemaSendesTil} `}</span>
+          <span>{`${resources?.adresseKomponent_skjemaSendesTil} `}</span>
           <strong>{selectedReceiver}</strong>
         </div>
       )}

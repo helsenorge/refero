@@ -31,9 +31,10 @@ interface Props extends FormProps, WithCommonFunctionsAndEnhancedProps {
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
+  children: React.ReactNode;
 }
 
-const RadioView: React.FC<Props> = ({
+const RadioView = ({
   options,
   item,
   questionnaire,
@@ -52,7 +53,7 @@ const RadioView: React.FC<Props> = ({
   control,
   error,
   idWithLinkIdAndItemIndex,
-}) => {
+}: Props): JSX.Element | null => {
   if (!options) {
     return null;
   }

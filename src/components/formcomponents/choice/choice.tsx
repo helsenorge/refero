@@ -74,6 +74,21 @@ export interface ChoiceProps extends WithCommonFunctionsAndEnhancedProps, FormPr
 }
 
 export const Choice = (props: ChoiceProps): JSX.Element | null => {
+  const {
+    resources,
+    containedResources,
+    dispatch,
+    answer,
+    promptLoginMessage,
+    item,
+    onAnswerChange,
+    path,
+    id,
+    pdf,
+    children,
+    onRenderMarkdown,
+  } = props;
+
   const getValue = (
     item: QuestionnaireItem,
     answer: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer
@@ -109,8 +124,6 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
   };
 
   const getPDFValue = (item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer[] | QuestionnaireResponseItemAnswer): string => {
-    const { resources, containedResources } = props;
-
     if (isDataReceiver(item) && Array.isArray(answer)) {
       return getDataReceiverValue(answer).join(', ');
     }
@@ -134,7 +147,6 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
   };
 
   const resetInitialAnswer = (code: string): void => {
-    const { dispatch, answer, promptLoginMessage, item, onAnswerChange, path } = props;
     if (dispatch && code) {
       const coding = getAnswerValueCoding(code);
       const responseAnswer = { valueCoding: coding } as QuestionnaireResponseItemAnswer;
@@ -152,7 +164,6 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
   };
 
   const handleCheckboxChange = (code?: string): void => {
-    const { dispatch, answer, promptLoginMessage, item, onAnswerChange, path } = props;
     if (dispatch && code) {
       const coding = getAnswerValueCoding(code);
       const responseAnswer = { valueCoding: coding } as QuestionnaireResponseItemAnswer;
@@ -171,7 +182,6 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
   };
 
   const clearCodingAnswer = (coding: Coding): void => {
-    const { dispatch, promptLoginMessage, item, onAnswerChange, path } = props;
     if (dispatch) {
       const responseAnswer = { valueCoding: coding };
       dispatch(removeCodingValueAsync(path, coding, item))?.then(newState => onAnswerChange(newState, path, item, responseAnswer));
@@ -182,7 +192,6 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
   };
 
   const handleChange = (code?: string, systemArg?: string, displayArg?: string): void => {
-    const { dispatch, promptLoginMessage, item, onAnswerChange, path } = props;
     if (dispatch && code) {
       const coding = getAnswerValueCoding(code, systemArg, displayArg);
       const responseAnswer = { valueCoding: coding };
@@ -204,7 +213,6 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
   //   return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats || answerHasChanged || error;
   // }
   const renderComponentBasedOnType = (): JSX.Element | null => {
-    const { resources, item, containedResources, answer } = props;
     const itemControlValue = getItemControlValue(item);
     if (!itemControlValue) {
       return null;
@@ -227,7 +235,6 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
     return componentMap[itemControlValue];
   };
 
-  const { id, item, pdf, answer, containedResources, children, onRenderMarkdown, resources } = props;
   const hasOptionsAndNoCanonicalValueSet = hasOptions(resources, item, containedResources) && !hasCanonicalValueSet(item);
   const options = getOptions(resources, item, containedResources);
   const aboveDropdownThreshold = isAboveDropdownThreshold(options);

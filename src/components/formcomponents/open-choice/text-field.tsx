@@ -33,8 +33,9 @@ interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   handleChange: (value: string) => void;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
   resources?: Resources;
+  children: React.ReactNode;
 }
-const textField: React.FC<Props> = ({
+const textField = ({
   id,
   pdf,
   item,
@@ -46,7 +47,7 @@ const textField: React.FC<Props> = ({
   onRenderMarkdown,
   resources,
   idWithLinkIdAndItemIndex,
-}) => {
+}: Props): JSX.Element | null => {
   const formName = `${idWithLinkIdAndItemIndex}-extra-field`;
   const { formState, getFieldState } = useFormContext<FieldValues>();
   const { error } = getFieldState(formName, formState);

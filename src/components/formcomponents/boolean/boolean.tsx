@@ -44,9 +44,28 @@ export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   children?: React.ReactNode;
 }
 
-const Boolean = (props: Props): JSX.Element | null => {
+const Boolean = ({
+  item,
+  answer,
+  dispatch,
+  promptLoginMessage,
+  onAnswerChange,
+  path,
+  pdf,
+  onRenderMarkdown,
+  questionnaire,
+  id,
+  resources,
+  renderHelpButton,
+  renderHelpElement,
+  renderDeleteButton,
+  repeatButton,
+  error,
+  children,
+  control,
+  idWithLinkIdAndItemIndex,
+}: Props): JSX.Element | null => {
   const getValue = (): boolean => {
-    const { item, answer } = props;
     if (answer && answer.valueBoolean !== undefined) {
       return answer.valueBoolean;
     }
@@ -57,11 +76,10 @@ const Boolean = (props: Props): JSX.Element | null => {
   };
 
   const handleChange = (): void => {
-    const { dispatch, promptLoginMessage, onAnswerChange, path, item } = props;
     const newValue = !getValue();
     if (dispatch) {
       path &&
-        dispatch(newBooleanValueAsync(path, newValue, props.item))?.then(
+        dispatch(newBooleanValueAsync(path, newValue, item))?.then(
           newState => onAnswerChange && onAnswerChange(newState, path, item, { valueBoolean: newValue })
         );
     }
@@ -88,22 +106,6 @@ const Boolean = (props: Props): JSX.Element | null => {
   //   );
   // };
 
-  const {
-    pdf,
-    item,
-    onRenderMarkdown,
-    questionnaire,
-    id,
-    resources,
-    renderHelpButton,
-    renderHelpElement,
-    renderDeleteButton,
-    repeatButton,
-    error,
-    children,
-    control,
-    idWithLinkIdAndItemIndex,
-  } = props;
   const labelText = getLabelText(item, onRenderMarkdown, questionnaire, resources);
   if (pdf) {
     return <Pdf item={item} checked={getValue()} onRenderMarkdown={onRenderMarkdown} />;

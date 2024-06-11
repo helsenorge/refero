@@ -43,23 +43,27 @@ export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   children?: React.ReactNode;
 }
 
-const Decimal = (props: Props): JSX.Element | null => {
-  const {
-    id,
-    item,
-    pdf,
-    onRenderMarkdown,
-    control,
-    answer,
-    questionnaire,
-    resources,
-    renderHelpButton,
-    renderHelpElement,
-    children,
-    error,
-    idWithLinkIdAndItemIndex,
-  } = props;
-
+const Decimal = ({
+  id,
+  item,
+  pdf,
+  onRenderMarkdown,
+  control,
+  answer,
+  questionnaire,
+  resources,
+  renderHelpButton,
+  renderHelpElement,
+  children,
+  error,
+  idWithLinkIdAndItemIndex,
+  path,
+  dispatch,
+  onAnswerChange,
+  promptLoginMessage,
+  repeatButton,
+  renderDeleteButton,
+}: Props): JSX.Element | null => {
   const getValue = (item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer): string | number | number[] | undefined => {
     if (answer && Array.isArray(answer)) {
       return answer.map(m => m.valueDecimal);
@@ -73,11 +77,11 @@ const Decimal = (props: Props): JSX.Element | null => {
   };
 
   const getPDFValue = (): string | number => {
-    const value = getValue(props.item, props.answer);
+    const value = getValue(item, answer);
     if (value === undefined || value === null || value === '') {
       let text = '';
-      if (props.resources && props.resources.ikkeBesvart) {
-        text = props.resources.ikkeBesvart;
+      if (resources && resources.ikkeBesvart) {
+        text = resources.ikkeBesvart;
       }
       return text;
     }
@@ -88,7 +92,6 @@ const Decimal = (props: Props): JSX.Element | null => {
   };
 
   const handleChange = (event: React.FormEvent<HTMLInputElement>): void => {
-    const { dispatch, path, item, promptLoginMessage, onAnswerChange } = props;
     const value = parseFloat((event.target as HTMLInputElement).value);
     if (dispatch) {
       dispatch(newDecimalValueAsync(path, value, item))?.then(newState => {
@@ -169,17 +172,17 @@ const Decimal = (props: Props): JSX.Element | null => {
             <Input
               {...rest}
               type="number"
-              inputId={getId(props.id)}
-              name={getId(props.id)}
+              inputId={getId(id)}
+              name={getId(id)}
               value={value ? value + '' : ''}
               label={
                 <Label
                   className="page_refero__label"
                   htmlFor={getId(id)}
-                  testId={`${getId(props.id)}-label-decimal`}
+                  testId={`${getId(id)}-label-decimal`}
                   labelTexts={[{ text: labelText, type: 'semibold' }]}
                   sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
-                  afterLabelChildren={props.renderHelpButton()}
+                  afterLabelChildren={renderHelpButton()}
                   statusDot={<div>{status}</div>}
                 />
               }
@@ -194,9 +197,9 @@ const Decimal = (props: Props): JSX.Element | null => {
           )}
         />
       </FormGroup>
-      {props.renderDeleteButton('page_refero__deletebutton--margin-top')}
-      {props.repeatButton}
-      {props.children ? <div className="nested-fieldset nested-fieldset--full-height">{props.children}</div> : null}
+      {renderDeleteButton('page_refero__deletebutton--margin-top')}
+      {repeatButton}
+      {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
     </div>
   );
 };

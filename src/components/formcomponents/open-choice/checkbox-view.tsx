@@ -30,9 +30,10 @@ interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
+  children?: React.ReactNode;
 }
 
-const CheckboxView: React.SFC<Props> = ({
+const CheckboxView = ({
   options,
   item,
   questionnaire,
@@ -51,7 +52,7 @@ const CheckboxView: React.SFC<Props> = ({
   error,
   idWithLinkIdAndItemIndex,
   selected,
-}) => {
+}: Props): JSX.Element | null => {
   const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
   const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`;
   return (
