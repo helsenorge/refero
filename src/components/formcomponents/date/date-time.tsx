@@ -5,6 +5,8 @@ import moment, { Moment } from 'moment';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
+import Label from '@helsenorge/designsystem-react/components/Label';
+
 import { LanguageLocales } from '@helsenorge/core-utils/constants/languages';
 import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 import DateTimePicker from '@helsenorge/date-time/components/date-time-picker';
@@ -17,16 +19,14 @@ import Constants from '../../../constants/index';
 import { GlobalState } from '../../../reducers';
 import { getValidationTextExtension, getExtension } from '../../../util/extension';
 import { evaluateFhirpathExpressionToGetDate } from '../../../util/fhirpathHelper';
-import { isRequired, getId, isReadOnly, getSublabelText } from '../../../util/index';
+import { isRequired, getId, isReadOnly, getSublabelText, getLabelText } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
 import { Resources } from '../../../util/resources';
 import ReactHookFormHoc, { FormProps } from '../../../validation/ReactHookFormHoc';
 import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
-import Label from '../SafeText';
 import SubLabel from '../sublabel';
 import TextView from '../textview';
-
 export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   item: QuestionnaireItem;
   questionnaire?: Questionnaire;
@@ -212,14 +212,7 @@ class DateTime extends React.Component<Props> {
           initialDate={this.toLocaleDate(moment(new Date()))}
           onChange={this.dispatchNewDate}
           onBlur={this.onBlur}
-          legend={
-            <Label
-              item={this.props.item}
-              onRenderMarkdown={this.props.onRenderMarkdown}
-              questionnaire={this.props.questionnaire}
-              resources={this.props.resources}
-            />
-          }
+          legend={<Label labelTexts={[{ text: getLabelText(item, onRenderMarkdown, this.props.questionnaire, this.props.resources) }]} />}
           subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}
           isRequired={isRequired(item)}
           errorMessage={getValidationTextExtension(item)}
