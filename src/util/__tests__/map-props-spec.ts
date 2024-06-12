@@ -1,13 +1,9 @@
-import * as chai from 'chai';
-
 import '../../util/defineFetch';
-import { mapStateToProps, mapDispatchToProps } from '../map-props';
+import { mapStateToProps } from '../map-props';
 import { getQuestionnaireDefinitionItem } from '../refero-core';
 import { pathify } from '../../reducers/__tests__/utils';
 import { dataModel } from './__data__/testDataModel';
 import { RenderContext } from '../renderContext';
-
-const should = chai.should();
 
 describe('mapStateToProps', () => {
   it('should enable component when no enableWhen field', () => {
@@ -16,7 +12,7 @@ describe('mapStateToProps', () => {
       renderContext: new RenderContext(),
     });
     const enable = result.enable;
-    should.exist(enable);
+    expect(enable).toBeDefined();
     expect(enable).toEqual(true);
   });
 
@@ -38,7 +34,7 @@ describe('mapStateToProps', () => {
     });
 
     const enable = result.enable;
-    should.exist(enable);
+    expect(enable).toBeDefined();
     expect(enable).toEqual(true);
   });
 
@@ -59,7 +55,7 @@ describe('mapStateToProps', () => {
       renderContext: new RenderContext(),
     });
     const enable = result.enable;
-    should.exist(enable);
+    expect(enable).toBeDefined();
     expect(enable).toEqual(false);
   });
 
@@ -81,7 +77,7 @@ describe('mapStateToProps', () => {
     });
 
     const enable = result.enable;
-    should.exist(enable);
+    expect(enable).toBeDefined();
     expect(enable).toEqual(true);
   });
 
@@ -102,7 +98,7 @@ describe('mapStateToProps', () => {
       renderContext: new RenderContext(),
     });
     const enable = result.enable;
-    should.exist(enable);
+    expect(enable).toBeDefined();
     expect(enable).toEqual(true);
   });
 
@@ -123,7 +119,7 @@ describe('mapStateToProps', () => {
       renderContext: new RenderContext(),
     });
     const enable = result.enable;
-    should.exist(enable);
+    expect(enable).toBeDefined();
     expect(enable).toEqual(false);
   });
 
@@ -144,7 +140,7 @@ describe('mapStateToProps', () => {
       renderContext: new RenderContext(),
     });
     const enable = result.enable;
-    should.exist(enable);
+    expect(enable).toBeDefined();
     expect(enable).toEqual(true);
   });
 
@@ -166,7 +162,7 @@ describe('mapStateToProps', () => {
     });
 
     const enable = result.enable;
-    should.exist(enable);
+    expect(enable).toBeDefined();
     expect(enable).toEqual(true);
   });
 
@@ -187,7 +183,7 @@ describe('mapStateToProps', () => {
       renderContext: new RenderContext(),
     });
     const enable = result.enable;
-    should.exist(enable);
+    expect(enable).toBeDefined();
     expect(enable).toEqual(true);
   });
 
@@ -209,7 +205,7 @@ describe('mapStateToProps', () => {
     });
 
     const enable = result.enable;
-    should.exist(enable);
+    expect(enable).toBeDefined();
     expect(enable).toEqual(true);
   });
 
@@ -231,7 +227,7 @@ describe('mapStateToProps', () => {
     });
 
     const enable = result.enable;
-    should.exist(enable);
+    expect(enable).toBeDefined();
     expect(enable).toEqual(true);
   });
 
@@ -254,7 +250,7 @@ describe('mapStateToProps', () => {
     });
 
     const enable = result.enable;
-    should.exist(enable);
+    expect(enable).toBeDefined();
     expect(enable).toEqual(true);
   });
 
@@ -277,7 +273,7 @@ describe('mapStateToProps', () => {
     });
 
     const enable = result.enable;
-    should.exist(enable);
+    expect(enable).toBeDefined();
     expect(enable).toEqual(false);
   });
   // TODO: Flere tester?
@@ -292,13 +288,13 @@ describe('mapStateToProps', () => {
       return;
     }
     const item = getQuestionnaireDefinitionItem('group1.2.2', dataModel.refero.form.FormDefinition.Content.item);
-    should.exist(item);
+    expect(item).toBeDefined();
     const result = mapStateToProps(dataModel, {
       item,
       path: pathify('group1^0', 'group1.2^0', 'group1.2.2'),
     });
     const enable = result.enable;
-    should.exist(enable);
+    expect(enable).toBeDefined();
     expect(enable).toEqual(false);
   });
 
@@ -320,7 +316,7 @@ describe('mapStateToProps', () => {
       renderContext: new RenderContext(),
     });
     const enable = result.enable;
-    should.exist(enable);
+    expect(enable).toBeDefined();
     expect(enable).toEqual(true);
   });
 });

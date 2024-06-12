@@ -1,21 +1,16 @@
-import * as chai from 'chai';
 import {
   getRootQuestionnaireResponseItemFromData,
   getQuestionnaireResponseItemWithLinkid,
   getAnswerFromResponseItem,
   hasAnswer,
   getResponseItemWithPath,
-  getItemWithTypeFromArray,
   enableWhenMatchesAnswer,
   createPathForItem,
   Path,
 } from '../refero-core';
 import { QuestionnaireResponseItem, QuestionnaireItemEnableWhen, QuestionnaireItem } from 'fhir/r4';
-import itemType from '../../constants/itemType';
 import { pathify } from '../../reducers/__tests__/utils';
 import { dataModel } from './__data__/testDataModel';
-
-const should = chai.should();
 
 describe('getQuestionnaireResponseItemFromData', () => {
   it('should not fail on empty form', () => {
@@ -26,7 +21,7 @@ describe('getQuestionnaireResponseItemFromData', () => {
   });
   it('should return response item', () => {
     const item = getRootQuestionnaireResponseItemFromData('decimal2', dataModel.refero.form.FormData);
-    should.exist(item);
+    expect(item).toBeDefined();
   });
 });
 
@@ -61,28 +56,28 @@ describe('get questionnaireResponse item', () => {
 
   it('should return correct item', () => {
     //should.not.exist(getQuestionnaireResponseItemWithLinkid('123', undefined, false, []));
-    should.not.exist(getQuestionnaireResponseItemWithLinkid('123', {}, []));
-    should.exist(getQuestionnaireResponseItemWithLinkid('123', data, []));
-    should.not.exist(getQuestionnaireResponseItemWithLinkid('753159', data, []));
+    expect(getQuestionnaireResponseItemWithLinkid('123', {}, [])).toBeUndefined();
+    expect(getQuestionnaireResponseItemWithLinkid('123', data, [])).toBeDefined();
+    expect(getQuestionnaireResponseItemWithLinkid('753159', data, [])).toBeUndefined();
     let item = getQuestionnaireResponseItemWithLinkid('456', data, pathify('123', '456'));
-    should.exist(item);
+    expect(item).toBeDefined();
     if (item) {
-      item.linkId.should.equal('456');
+      expect(item.linkId).toEqual('456');
     }
     item = getQuestionnaireResponseItemWithLinkid('789', data, pathify('123', '789'));
-    should.exist(item);
+    expect(item).toBeDefined();
     if (item) {
-      item.linkId.should.equal('789');
+      expect(item.linkId).toEqual('789');
     }
     item = getQuestionnaireResponseItemWithLinkid('test', data, pathify('123', '789', 'test'));
-    should.exist(item);
+    expect(item).toBeDefined();
     if (item) {
-      item.linkId.should.equal('test');
+      expect(item.linkId).toEqual('test');
     }
     item = getQuestionnaireResponseItemWithLinkid('testId', data, pathify('123', '456', 'testId'));
-    should.exist(item);
+    expect(item).toBeDefined();
     if (item) {
-      item.linkId.should.equal('testId');
+      expect(item.linkId).toEqual('testId');
     }
   });
 
@@ -99,12 +94,12 @@ describe('get questionnaireResponse item', () => {
       { linkId: '456' },
       { linkId: 'testId' },
     ]);
-    should.exist(item);
+    expect(item).toBeDefined();
     if (item) {
-      item.linkId.should.equal('testId');
-      should.exist(item.answer);
+      expect(item.linkId).toEqual('testId');
+      expect(item.answer).toBeDefined();
       if (item.answer && item.answer[0].valueString) {
-        item.answer[0].valueString.should.equal('2');
+        expect(item.answer[0].valueString).toEqual('2');
       }
     }
   });
@@ -129,12 +124,12 @@ describe('get answer from questionnareReponse', () => {
   };
 
   it('should return correct answer', () => {
-    should.not.exist(getAnswerFromResponseItem(undefined));
-    should.not.exist(getAnswerFromResponseItem({}));
+    expect(getAnswerFromResponseItem(undefined)).toBeUndefined();
+    expect(getAnswerFromResponseItem({})).toBeUndefined();
     const answer = getAnswerFromResponseItem(data);
-    should.exist(answer);
+    expect(answer).toBeDefined();
     if (answer && 'valueString' in answer && answer.valueString) {
-      answer.valueString.should.equal('abc');
+      expect(answer.valueString).toEqual('abc');
     }
   });
 });
@@ -189,12 +184,9 @@ describe('get item with path', () => {
 
   it('should return data', () => {
     let item = getResponseItemWithPath([{ linkId: 't0' }], dataModel.refero.form.FormData);
-    should.exist(item);
-    if (!item) {
-      fail();
-      return;
-    }
-    expect(item.linkId).toEqual('t0');
+    expect(item).toBeDefined();
+
+    expect(item?.linkId).toEqual('t0');
 
     let path = [
       {
@@ -208,12 +200,9 @@ describe('get item with path', () => {
       },
     ];
     item = getResponseItemWithPath(path, dataModel.refero.form.FormData);
-    should.exist(item);
-    if (!item) {
-      fail();
-      return;
-    }
-    expect(item.linkId).toEqual('t21');
+    expect(item).toBeDefined();
+
+    expect(item?.linkId).toEqual('t21');
 
     path = [
       {
@@ -230,12 +219,9 @@ describe('get item with path', () => {
       },
     ];
     item = getResponseItemWithPath(path, dataModel.refero.form.FormData);
-    should.exist(item);
-    if (!item) {
-      fail();
-      return;
-    }
-    expect(item.linkId).toEqual('t31.abc');
+    expect(item).toBeDefined();
+
+    expect(item?.linkId).toEqual('t31.abc');
 
     path = [
       {
@@ -255,12 +241,9 @@ describe('get item with path', () => {
       },
     ];
     item = getResponseItemWithPath(path, dataModel.refero.form.FormData);
-    should.exist(item);
-    if (!item) {
-      fail();
-      return;
-    }
-    expect(item.linkId).toEqual('t41');
+    expect(item).toBeDefined();
+
+    expect(item?.linkId).toEqual('t41');
 
     path = [
       {
@@ -268,12 +251,9 @@ describe('get item with path', () => {
       },
     ];
     item = getResponseItemWithPath(path, dataModel.refero.form.FormData);
-    should.exist(item);
-    if (!item) {
-      fail();
-      return;
-    }
-    expect(item.linkId).toEqual('t0');
+    expect(item).toBeDefined();
+
+    expect(item?.linkId).toEqual('t0');
 
     path = [
       {
@@ -284,12 +264,9 @@ describe('get item with path', () => {
       },
     ];
     item = getResponseItemWithPath(path, dataModel.refero.form.FormData);
-    should.exist(item);
-    if (!item) {
-      fail();
-      return;
-    }
-    expect(item.linkId).toEqual('group1.1');
+    expect(item).toBeDefined();
+
+    expect(item?.linkId).toEqual('group1.1');
   });
 });
 

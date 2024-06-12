@@ -1,5 +1,4 @@
 /* tslint:disable */
-import * as chai from 'chai';
 
 import '../../util/defineFetch';
 import reducer, { Form } from '../form';
@@ -26,8 +25,6 @@ import {
   getItemWithIdFromResponseItemArray,
 } from '../../util/refero-core';
 import dataModel from './__data__/dummy-data-model';
-
-const should = chai.should();
 
 describe('new value action', () => {
   it('should update string value', () => {
@@ -397,13 +394,13 @@ describe('new value action', () => {
     expect(dataModel.refero.form.FormData.Content.item.length).toEqual(12);
 
     const repeatGroupResponseItems = getItemWithIdFromResponseItemArray('addGroupTest1', newState.FormData.Content.item);
-    should.exist(repeatGroupResponseItems);
+    expect(repeatGroupResponseItems).toBeDefined();
     if (repeatGroupResponseItems) {
       expect(repeatGroupResponseItems.length).toEqual(2);
     }
 
     const addedGroup = newState.FormData.Content.item[10];
-    should.exist(addedGroup);
+    expect(addedGroup).toBeDefined();
 
     if (!addedGroup || !addedGroup.item) {
       return fail();
@@ -414,7 +411,7 @@ describe('new value action', () => {
       return fail();
     }
     expect(items.length).toEqual(1);
-    should.exist(items[0]);
+    expect(items[0]).toBeDefined();
 
     expect(items[0].linkId).toEqual('addGroupTest111');
     // also check answer items are copied but not answer value
@@ -448,7 +445,7 @@ describe('new value action', () => {
       { linkId: 'group110' },
       { linkId: 'group110.1' },
     ]);
-    should.exist(addedGroup);
+    expect(addedGroup).toBeDefined();
 
     if (!addedGroup || !addedGroup.item) {
       return fail();
@@ -482,7 +479,7 @@ describe('new value action', () => {
       { linkId: 'group110' },
       { linkId: 'group110.1', index: 1 },
     ]);
-    should.exist(addedGroup);
+    expect(addedGroup).toBeDefined();
 
     action = deleteRepeatItem([{ linkId: 'group110' }, { linkId: 'group110.1', index: 1 }], { linkId: 'group110.1', type: 'group' });
 
