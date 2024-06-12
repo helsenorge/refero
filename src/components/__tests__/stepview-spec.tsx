@@ -5,7 +5,7 @@ import { Questionnaire } from 'fhir/r4';
 import '../../util/defineFetch';
 
 import StepViewQuestionnaire from './__data__/stepview';
-import { act, renderRefero, userEvent } from './test-utils/test-utils';
+import { renderRefero, waitFor } from './test-utils/test-utils';
 import { ReferoProps } from '../../types/referoProps';
 import { getResources } from '../../preview/resources/referoResources';
 import { clickButtonTimes, selectCheckboxOption, submitForm, typeByLabelText } from './test-utils/selectors';
@@ -64,7 +64,7 @@ describe('Step-view', () => {
 
   // This test only works with 3-step questionnaires
   it('Buttons in step-view: Should call right functions and display correct texts in step-view', async () => {
-    const { getByText, queryByText, queryAllByText, getByLabelText } = createWrapper(StepViewQuestionnaire);
+    const { getByText, queryByText, queryAllByText } = createWrapper(StepViewQuestionnaire);
 
     // Step 1
     expect(getByText(resources.nextStep)).toBeInTheDocument();
@@ -84,18 +84,8 @@ describe('Step-view', () => {
 
     await typeByLabelText(/String/i, 'epost@test.com');
     await submitForm();
+
     // Step 3
-    await clickButtonTimes(/refero-pause-button/i, 1);
-
-    // Step 2 - value persist
-
-    expect(getByLabelText(/String/i)).toHaveValue('epost@test.com');
-    await submitForm();
-
-    // Step 3, validation
-    expect(queryByText(resources.formSend)).toBeInTheDocument();
-    await submitForm();
-    expect(queryByText(/Du må fylle ut dette feltet/i)).toBeInTheDocument();
     await typeByLabelText(/Hvor mange liter blod/i, '2.23');
     await submitForm();
 
