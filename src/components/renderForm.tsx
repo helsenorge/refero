@@ -51,8 +51,8 @@ RenderFormProps): JSX.Element | null => {
   } = useFormContext();
 
   const onSubmitReactHookForm: SubmitHandler<FieldValues> = (data: QuestionnaireResponse, e: React.FormEvent): void => {
-    console.log('data', JSON.stringify(data, null, 2));
-    console.log('e', e);
+    // console.log('data', JSON.stringify(data, null, 2));
+    // console.log('e', e);
     return false;
     onSubmit();
   };
@@ -66,9 +66,9 @@ RenderFormProps): JSX.Element | null => {
     return <Loader size={'medium'} overlay={'parent'} />;
   }
   const value = getValues();
-  console.log(value, 'values');
-  console.log(defaultValues, 'defaultValues');
-  console.log(dirtyFields, 'dirtyFields');
+  // console.log(value, 'values');
+  // console.log(defaultValues, 'defaultValues');
+  // console.log(dirtyFields, 'dirtyFields');
 
   return (
     <form onSubmit={methods.handleSubmit(onSubmitReactHookForm)}>

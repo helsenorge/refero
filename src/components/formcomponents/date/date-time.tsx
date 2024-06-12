@@ -20,19 +20,20 @@ import ReactHookFormHoc, { FormProps } from '../../../validation/ReactHookFormHo
 import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
 import TextView from '../textview';
-import { safeParseJSON } from '../../../util/date-fns-utils';
+import { initialize, safeParseJSON } from '../../../util/date-fns-utils';
 import {
   getDateFromAnswer,
   getFullFnsDate,
-  getHoursOrMinutesFromAnswer,
+  getHoursOrMinutesFromDate,
   validateDate,
   validateMinDate,
   validateMaxDate,
-  validateTime,
+  validateHours,
+  validateMinutes,
 } from '../../../util/date-utils';
 import { format, isValid } from 'date-fns';
 import { DatePicker, DateTimePickerWrapper, DateTime } from '@helsenorge/datepicker/components/DatePicker';
-import { Controller, FieldError } from 'react-hook-form';
+import { FieldError, FieldValues, useFormContext } from 'react-hook-form';
 import { DateTimeUnit } from '../../../types/dateTypes';
 
 export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
@@ -74,15 +75,18 @@ const DateTimeInput: React.FC<Props> = ({
   renderHelpElement,
   onAnswerChange,
   onRenderMarkdown,
-  control,
   idWithLinkIdAndItemIndex,
-  error,
   children,
 }) => {
+  const { formState, getFieldState, register, setValue } = useFormContext<FieldValues>();
+  const dateField = getFieldState(`${idWithLinkIdAndItemIndex}-date`, formState);
+  const hoursField = getFieldState(`${idWithLinkIdAndItemIndex}-hours`, formState);
+  const minutesField = getFieldState(`${idWithLinkIdAndItemIndex}-minutes`, formState);
+
   const getDefaultDate = (item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer): Date | undefined => {
-    if (answer && answer.valueDateTime && !isValid(answer.valueDateTime)) {
-      return undefined;
-    }
+    // if (answer && answer.valueDateTime && !isValid(answer.valueDateTime)) {
+    //   return undefined;
+    // }
     if (answer && answer.valueDateTime) {
       return safeParseJSON(String(answer.valueDateTime));
     }
@@ -179,38 +183,20 @@ const DateTimeInput: React.FC<Props> = ({
   //   return moment ? moment.locale(getLocaleFromLanguage()) : undefined;
   // }
 
-  const handleChange = (
-    date: Date | string | undefined,
-    hours: string | undefined,
-    minutes: string | undefined,
-    controllerOnChange: (...event: any[]) => void
-  ) => {
-    date && setDate(date);
-    hours && setHours(hours);
-    minutes && setMinutes(minutes);
-
-    const fullDate = getFullFnsDate(date, hours, minutes);
-
-    if (fullDate) {
-      let dateTimeString = fullDate.toString();
-
-      if (isValid(fullDate)) {
-        dateTimeString = format(fullDate, Constants.DATE_TIME_FORMAT);
-      }
-
-      const existingAnswer = answer?.valueDateTime || '';
-      if (dispatch && existingAnswer !== dateTimeString) {
-        dispatch(newDateTimeValueAsync(path, dateTimeString, item))?.then(newState =>
-          onAnswerChange(newState, path, item, { valueDateTime: dateTimeString } as QuestionnaireResponseItemAnswer)
-        );
-      }
-
-      controllerOnChange(dateTimeString);
-
-      if (promptLoginMessage) {
-        promptLoginMessage();
-      }
-    }
+  const handleDateChange = (date: Date | string | undefined): void => {
+    // if (typeof date == 'string') {
+    //   date = safeParseJSON(date);
+    // }
+    // date && setDate(date);
+    // setValue(`${idWithLinkIdAndItemIndex}-date`, date);
+  };
+  const handleHoursChange = (hours: string | undefined): void => {
+    // hours && setHours(hours);
+    // setValue(`${idWithLinkIdAndItemIndex}-hours`, date);
+  };
+  const handleMinutesChange = (minutes: string | undefined): void => {
+    // hours && setMinutes(minutes);
+    // setValue(`${idWithLinkIdAndItemIndex}-minutes`, date);
   };
 
   if (pdf || isReadOnly(item)) {
@@ -228,9 +214,9 @@ const DateTimeInput: React.FC<Props> = ({
     );
   }
 
-  const [date, setDate] = React.useState(getDateFromAnswer(answer));
-  const [hours, setHours] = React.useState(getHoursOrMinutesFromAnswer(answer, DateTimeUnit.Hours));
-  const [minutes, setMinutes] = React.useState(getHoursOrMinutesFromAnswer(answer, DateTimeUnit.Minutes));
+  const [date, setDate] = React.useState(getDefaultDate(item, answer));
+  const [hours, setHours] = React.useState(getHoursOrMinutesFromDate(date, DateTimeUnit.Hours));
+  const [minutes, setMinutes] = React.useState(getHoursOrMinutesFromDate(date, DateTimeUnit.Minutes));
 
   const valueDateTime = getDefaultDate(item, answer);
   const maxDateTime = getMaxDate();
@@ -244,9 +230,16 @@ const DateTimeInput: React.FC<Props> = ({
     }
   };
 
+  function getCombinedFieldError(dateField: FieldValues, hoursField: FieldValues, minutesField: FieldValues): FieldError | undefined {
+    const test = dateField.error || hoursField.error || minutesField.error || undefined;
+    return test;
+  }
+
+  initialize();
+
   return (
     <div className="page_refero__component page_refero__component_datetime">
-      <Controller
+      {/* <Controller
         name={idWithLinkIdAndItemIndex}
         control={control}
         shouldUnregister={true}
@@ -269,47 +262,82 @@ const DateTimeInput: React.FC<Props> = ({
               return validateTime(safeParseJSON(value), resources);
             },
           },
-        }}
-        render={({ field: { onChange, value, ...rest } }): JSX.Element => (
-          <DateTimePickerWrapper errorText={getErrorText(error)}>
-            <DatePicker
-              {...rest}
-              testId={getId(id)}
-              autoComplete=""
-              dateButtonAriaLabel="Open datepicker"
-              dateFormat={'dd.MM.yyyy'}
-              dateValue={valueDateTime}
-              label={
-                <Label
-                  labelId={`${getId(id)}-label-dateTime`}
-                  labelTexts={[{ text: labelText }]}
-                  sublabel={<Sublabel id={`${getId(id)}-sublabel-dateTime`} sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
-                  afterLabelChildren={renderHelpButton()}
-                />
-              }
-              minDate={minDateTime}
-              maxDate={maxDateTime}
-              onChange={(e, newDate) => {
-                handleChange(newDate, hours, minutes, onChange);
-              }}
+        }}> */}
+      <DateTimePickerWrapper errorText={getErrorText(getCombinedFieldError(dateField, hoursField, minutesField))}>
+        <DatePicker
+          {...register(idWithLinkIdAndItemIndex + '-date', {
+            required: {
+              value: isRequired(item),
+              message: resources?.formRequiredErrorMessage || '',
+            },
+            validate: {
+              validDate: value => {
+                return validateDate(value, resources);
+              },
+              validMinDate: value => {
+                return validateMinDate(value, resources);
+              },
+              validMaxDate: value => {
+                return validateMaxDate(value, resources);
+              },
+            },
+          })}
+          testId={getId(id)}
+          autoComplete=""
+          dateButtonAriaLabel="Open datepicker"
+          dateFormat={'dd.MM.yyyy'}
+          dateValue={valueDateTime}
+          label={
+            <Label
+              labelId={`${getId(id)}-label-dateTime`}
+              labelTexts={[{ text: labelText }]}
+              sublabel={<Sublabel id={`${getId(id)}-sublabel-dateTime`} sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+              afterLabelChildren={renderHelpButton()}
             />
-            <DateTime
-              defaultValue={Number(hours)}
-              timeUnit="hours"
-              onChange={e => {
-                handleChange(date, e.target.value, minutes, onChange);
-              }}
-            />
-            <DateTime
-              defaultValue={Number(minutes)}
-              timeUnit="minutes"
-              onChange={e => {
-                handleChange(date, hours, e.target.value, onChange);
-              }}
-            />
-          </DateTimePickerWrapper>
-        )}
-      />
+          }
+          minDate={minDateTime}
+          maxDate={maxDateTime}
+          onChange={(e, newDate) => {
+            handleDateChange(newDate);
+          }}
+        />
+        <DateTime
+          {...register(idWithLinkIdAndItemIndex + '-hours', {
+            required: {
+              value: isRequired(item),
+              message: resources?.formRequiredErrorMessage || '',
+            },
+            validate: {
+              validHours: value => {
+                return validateHours(safeParseJSON(value), resources);
+              },
+            },
+          })}
+          defaultValue={Number(hours)}
+          timeUnit="hours"
+          onChange={e => {
+            handleHoursChange(e.target.value);
+          }}
+        />
+        <DateTime
+          {...register(idWithLinkIdAndItemIndex + '-minutes', {
+            required: {
+              value: isRequired(item),
+              message: resources?.formRequiredErrorMessage || '',
+            },
+            validate: {
+              validMinutes: value => {
+                return validateMinutes(safeParseJSON(value), resources);
+              },
+            },
+          })}
+          defaultValue={Number(minutes)}
+          timeUnit="minutes"
+          onChange={e => {
+            handleMinutesChange(e.target.value);
+          }}
+        />
+      </DateTimePickerWrapper>
       {renderDeleteButton('page_refero__deletebutton--margin-top')}
       {repeatButton}
       {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
@@ -317,8 +345,34 @@ const DateTimeInput: React.FC<Props> = ({
   );
 };
 
-const withFormProps = ReactHookFormHoc(DateTimeInput);
-const withCommonFunctionsComponent = withCommonFunctions(withFormProps);
+const withCommonFunctionsComponent = withCommonFunctions(DateTimeInput);
 const layoutChangeComponent = layoutChange(withCommonFunctionsComponent);
 const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(layoutChangeComponent);
 export default connectedComponent;
+
+// const handleChange = (date: Date | string | undefined, hours: string | undefined, minutes: string | undefined) => {
+//   date && setDate(date);
+//   hours && setHours(hours);
+//   minutes && setMinutes(minutes);
+
+//   const fullDate = getFullFnsDate(date, hours, minutes);
+
+//   if (fullDate) {
+//     let dateTimeString = fullDate.toString();
+
+//     if (isValid(fullDate)) {
+//       dateTimeString = format(fullDate, Constants.DATE_TIME_FORMAT);
+//     }
+
+//     const existingAnswer = answer?.valueDateTime || '';
+//     if (dispatch && existingAnswer !== dateTimeString) {
+//       dispatch(newDateTimeValueAsync(path, dateTimeString, item))?.then(newState =>
+//         onAnswerChange(newState, path, item, { valueDateTime: dateTimeString } as QuestionnaireResponseItemAnswer)
+//       );
+//     }
+
+//     if (promptLoginMessage) {
+//       promptLoginMessage();
+//     }
+//   }
+// };
