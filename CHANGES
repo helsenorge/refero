@@ -1,3 +1,7 @@
+## 16.0.0-beta05
+
+- set peerDependency react-hook-form
+
 ## 16.0.0-beta04
 
 - upgraded jest to new version
