@@ -5,7 +5,7 @@ import { Questionnaire } from 'fhir/r4';
 import '../../util/defineFetch';
 
 import StepViewQuestionnaire from './__data__/stepview';
-import { renderRefero, waitFor } from './test-utils/test-utils';
+import { renderRefero } from './test-utils/test-utils';
 import { ReferoProps } from '../../types/referoProps';
 import { getResources } from '../../preview/resources/referoResources';
 import { clickButtonTimes, selectCheckboxOption, submitForm, typeByLabelText } from './test-utils/selectors';
