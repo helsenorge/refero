@@ -4,7 +4,7 @@ import { FieldErrors, FieldValues, useFormContext } from 'react-hook-form';
 
 import { Resources } from '../util/resources';
 
-import '../styles/validationSummary.scss';
+import '../styles/validationSummary.css';
 
 interface ValidationSummaryProps {
   resources: Resources;
