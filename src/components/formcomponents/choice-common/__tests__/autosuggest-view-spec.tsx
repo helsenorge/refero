@@ -1,4 +1,3 @@
-import '@testing-library/jest-dom/extend-expect';
 import { Questionnaire, QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItemAnswer, ValueSet } from 'fhir/r4';
 
 import { fireEvent, waitFor, userEvent, renderRefero, act, findByRole } from '../../../__tests__/test-utils/test-utils';

@@ -5,7 +5,7 @@ module.exports = {
     ecmaVersion: 2018,
     sourceType: 'module',
   },
-  plugins: ['react', 'import', 'testing-library'],
+  plugins: ['react', 'import', 'testing-library', 'jest-dom'],
   rules: {
     '@typescript-eslint/ban-types': 'warn',
     '@typescript-eslint/explicit-function-return-type': 'warn',

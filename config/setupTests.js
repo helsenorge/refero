@@ -4,7 +4,7 @@
  *     2) Avoid complications using a hybrid of test environments for different tests
  *     3) The package seems stable ( lot of downloads )
  */
-
+import '@testing-library/jest-dom';
 import structuredClone from '@ungap/structured-clone';
 global.structuredClone = global.structuredClone || structuredClone;
 class IntersectionObserver {

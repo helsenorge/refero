@@ -4,7 +4,6 @@ import { Provider, Store } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { FormProvider, useForm } from 'react-hook-form';
-import '@testing-library/jest-dom/extend-expect';
 import rootReducer, { GlobalState } from '../../../reducers';
 import { applyMiddleware, createStore } from 'redux';
 
