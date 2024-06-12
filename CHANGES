@@ -1,3 +1,8 @@
+## 16.0.0-beta04
+
+- upgraded jest to new version
+- upgraded @testing-library/jest-dom and added babel-plugin for jest-dom
+
 ## 16.0.0-beta03
 
 - bump
