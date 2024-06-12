@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { render, screen } from '../../../__tests__/test-utils/test-utils';
-import '@testing-library/jest-dom/extend-expect';
 
 import '../../../../util/defineFetch';
 import { Choice } from '../choice';

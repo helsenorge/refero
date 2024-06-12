@@ -1,5 +1,5 @@
 import { renderRefero, waitFor } from '../../../__tests__/test-utils/test-utils';
-import '@testing-library/jest-dom/extend-expect';
+
 import {
   QuestionnaireItem,
   QuestionnaireItemAnswerOption,

@@ -19,7 +19,6 @@ import { RenderContextType } from '../../constants/renderContextType';
 import { RenderContext } from '../../util/renderContext';
 import { createItemControlExtension } from './utils';
 import ItemType, { IItemType } from '../../constants/itemType';
-import '@testing-library/jest-dom/extend-expect';
 import HelpButton from '../help-button/HelpButton';
 
 describe('Component renders help items', () => {

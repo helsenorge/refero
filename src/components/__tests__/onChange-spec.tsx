@@ -1,6 +1,5 @@
 import { screen, userEvent, act, renderRefero } from './test-utils/test-utils';
 import moment from 'moment';
-import '@testing-library/jest-dom/extend-expect';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, Quantity, Coding, Questionnaire } from 'fhir/r4';
 
