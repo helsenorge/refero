@@ -8,7 +8,7 @@ import { CancelFormButton } from './CancelFormButton';
 import { PauseFormButton } from './PauseFormButton';
 import { SubmitFormButton } from './SubmitFormButton';
 
-import '../../styles/formButtons.scss';
+import '../../styles/formButtons.css';
 
 interface FormButtonsInterface {
   submitButtonText: string;

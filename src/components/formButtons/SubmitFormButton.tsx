@@ -2,7 +2,7 @@ import React, { ReactElement } from 'react';
 
 import Button from '@helsenorge/designsystem-react/components/Button';
 
-import '../../styles/formButtons.scss';
+import '../../styles/formButtons.css';
 
 type Props = {
   submitButtonDisabled?: boolean;
