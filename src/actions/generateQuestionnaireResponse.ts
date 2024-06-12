@@ -1,10 +1,4 @@
-import {
-  QuestionnaireItem,
-  QuestionnaireResponse,
-  QuestionnaireResponseItem,
-  QuestionnaireResponseItemAnswer,
-  Questionnaire,
-} from 'fhir/r4';
+import { QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItem, Questionnaire } from 'fhir/r4';
 
 import Constants from '../constants/index';
 import itemType from '../constants/itemType';
