@@ -66,8 +66,7 @@ const RenderForm = ({
     }
   };
   return (
-    <form onSubmit={methods.handleSubmit(onSubmitReactHookForm)}>
-      {/* <Validation errorSummary="test" /> */}
+    <form onSubmit={methods.handleSubmit(onSubmitReactHookForm)} style={{ marginTop: '1rem' }}>
       {displayValidationSummaryOnTop && <ValidationSummary resources={resources} errors={errors} />}
       {children}
       <FormButtons

@@ -202,32 +202,34 @@ const Quantity = ({
           }}
           render={({ field: { onChange, ...rest } }): JSX.Element => (
             <>
-              <Input
-                {...rest}
-                value={value !== undefined ? value + '' : ''}
-                label={
-                  <Label
-                    htmlFor={getId(id)}
-                    className="page_refero__label"
-                    labelTexts={[]}
-                    sublabel={<Sublabel id={`${getId(id)}-sublabel`} sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
-                    afterLabelChildren={renderHelpButton()}
-                  >
-                    <SafeText text={labelText} />
-                  </Label>
-                }
-                type="number"
-                inputId={getId(id)}
-                testId={getId(id)}
-                placeholder={getPlaceholder(item)}
-                className="page_refero__quantity"
-                onChange={(e): void => {
-                  onChange(e.target.value);
-                  handleChange(e);
-                }}
-                width={7}
-              />
-              <span className="page_refero__unit">{getUnit()}</span>
+              <Label
+                htmlFor={getId(id)}
+                className="page_refero__label"
+                labelTexts={[]}
+                sublabel={<Sublabel id={`${getId(id)}-sublabel`} sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
+                afterLabelChildren={renderHelpButton()}
+              >
+                <SafeText text={labelText} />
+              </Label>
+              <div style={{ display: 'inline-block' }}>
+                <Input
+                  {...rest}
+                  value={value !== undefined ? value + '' : ''}
+                  type="number"
+                  inputId={getId(id)}
+                  testId={getId(id)}
+                  placeholder={getPlaceholder(item)}
+                  className="page_refero__quantity"
+                  onChange={(e): void => {
+                    onChange(e.target.value);
+                    handleChange(e);
+                  }}
+                  width={7}
+                />
+              </div>
+              <span className="page_refero__unit" style={{ marginBottom: '2rem', display: 'inline-block' }}>
+                {getUnit()}
+              </span>
             </>
           )}
         />

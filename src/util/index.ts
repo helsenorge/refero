@@ -181,7 +181,9 @@ export function getLabelText(
   questionnaire?: Questionnaire | null,
   resources?: Resources
 ): string {
-  return `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`;
+  return `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)} ${
+    item.required ? '' : resources?.formOptional || ''
+  }`;
 }
 export function getText(
   item: QuestionnaireItem,

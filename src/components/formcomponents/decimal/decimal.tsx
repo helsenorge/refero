@@ -14,7 +14,7 @@ import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 import { NewValueAction, newDecimalValueAsync } from '../../../actions/newValue';
 import { GlobalState } from '../../../reducers';
 import { getMaxValueExtensionValue, getMinValueExtensionValue, getPlaceholder, getValidationTextExtension } from '../../../util/extension';
-import { isReadOnly, getId, getSublabelText, renderPrefix, getText, getDecimalPattern, isRequired } from '../../../util/index';
+import { isReadOnly, getId, getSublabelText, getDecimalPattern, isRequired, getLabelText } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
 import { Resources } from '../../../util/resources';
@@ -116,7 +116,7 @@ const Decimal = ({
   // }
 
   const value = getValue(item, answer);
-  const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`;
+  const labelText = getLabelText(item, onRenderMarkdown, questionnaire, resources);
   const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
   if (pdf || isReadOnly(item)) {
     return (
