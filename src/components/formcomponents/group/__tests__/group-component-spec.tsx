@@ -1,4 +1,4 @@
-import '../../../../util/defineFetch';
+import '../../../../util/__tests__/defineFetch';
 import { act, renderRefero, userEvent } from '../../../__tests__/test-utils/test-utils';
 import q from './__data__';
 import Constants from '../../../../constants';

@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Questionnaire } from 'fhir/r4';
 
-import { getSidebarSections } from '../../util/extension';
+import { getSidebarSections } from '../../src/util/extension';
 
 export const generateSectionContent = (header: string, content: string[]): JSX.Element | null => {
   return content.length > 0 ? (

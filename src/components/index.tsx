@@ -410,3 +410,4 @@ function mapDispatchToProps(dispatch: ThunkDispatch<GlobalState, void, NewValueA
 
 const ReferoContainer = connect<StateProps, DispatchProps, ReferoProps>(mapStateToProps, mapDispatchToProps)(Refero);
 export { ReferoContainer };
+export default ReferoContainer;

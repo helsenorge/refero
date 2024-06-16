@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { render, screen } from '../../../__tests__/test-utils/test-utils';
 
-import '../../../../util/defineFetch';
+import '../../../../util/__tests__/defineFetch';
 import { Choice } from '../choice';
 import { QuestionnaireItem, QuestionnaireItemAnswerOption, QuestionnaireResponseItemAnswer, Extension } from 'fhir/r4';
 import { createDataReceiverExpressionExtension } from '../../../__tests__/utils';

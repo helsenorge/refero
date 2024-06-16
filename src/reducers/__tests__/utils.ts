@@ -1,4 +1,4 @@
-import '../../util/defineFetch';
+import '../../util/__tests__/defineFetch';
 import reducer, { Form } from '../form';
 import { Path, getResponseItemWithPath } from '../../util/refero-core';
 import { Coding, QuestionnaireItem, QuestionnaireResponseItem, Questionnaire, QuestionnaireResponse, Quantity, Attachment } from 'fhir/r4';

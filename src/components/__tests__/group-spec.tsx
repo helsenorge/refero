@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import '../../util/defineFetch';
+import '../../util/__tests__/defineFetch';
 import { QuestionnaireItem, Extension } from 'fhir/r4';
 import { Group } from '../formcomponents/group/group';
 import StringComponent from '../../components/formcomponents/string/string';

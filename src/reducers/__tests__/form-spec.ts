@@ -1,6 +1,6 @@
 /* tslint:disable */
 
-import '../../util/defineFetch';
+import '../../util/__tests__/defineFetch';
 import reducer, { Form } from '../form';
 import { Coding, QuestionnaireResponseItem, Attachment } from 'fhir/r4';
 import {

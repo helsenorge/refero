@@ -1,4 +1,4 @@
-import '../../util/defineFetch';
+import '../../util/__tests__/defineFetch';
 import { Questionnaire } from 'fhir/r4';
 import questionnaireWithAllItemTypes from './__data__/onChange/allItemTypes';
 import { inputAnswer, findItem } from './utils';

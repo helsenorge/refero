@@ -1,4 +1,4 @@
-import '../../../../util/defineFetch';
+import '../../../../util/__tests__/defineFetch';
 import { act, findByRole, renderRefero, userEvent } from '../../../__tests__/test-utils/test-utils';
 import { qScriptInjection, q } from './__data__/';
 

@@ -1,4 +1,4 @@
-import '../../util/defineFetch';
+import '../../util/__tests__/defineFetch';
 import questionnaire from './__data__/common/';
 import { Questionnaire, Extension } from 'fhir/r4';
 
