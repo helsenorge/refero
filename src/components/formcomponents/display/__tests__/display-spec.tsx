@@ -1,5 +1,5 @@
 import { getResources } from '../../../../preview/resources/referoResources';
-import '../../../../util/defineFetch';
+import '../../../../util/__tests__/defineFetch';
 import { renderRefero } from '../../../__tests__/test-utils/test-utils';
 import { q, qHighlight } from './__data__/';
 

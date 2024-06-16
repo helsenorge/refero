@@ -1,4 +1,4 @@
-import '../../util/defineFetch';
+import './defineFetch';
 import { mapStateToProps } from '../map-props';
 import { getQuestionnaireDefinitionItem } from '../refero-core';
 import { pathify } from '../../reducers/__tests__/utils';

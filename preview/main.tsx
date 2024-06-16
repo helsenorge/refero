@@ -1,4 +1,4 @@
-import './init';
+// import './init';
 import React from 'react';
 
 import ReactDOM from 'react-dom';

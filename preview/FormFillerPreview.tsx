@@ -1,23 +1,21 @@
 import React, { useState } from 'react';
-
 import { composeWithDevTools } from '@redux-devtools/extension';
 import { Bundle, Questionnaire, QuestionnaireItem, QuestionnaireResponse, ValueSet } from 'fhir/r4';
 import { Provider } from 'react-redux';
 import { Store, legacy_createStore as createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 
-import { QuestionnaireStatusCodes } from '../types/fhirEnums';
-import { EnhetType, OrgenhetHierarki } from '../types/orgenhetHierarki';
-
 import LanguageLocales from '@helsenorge/core-utils/constants/languages';
+import { Refero as ReferoContainer } from '@helsenorge/refero';
 
 import FormFillerSidebar from './FormFillerSidebar';
 import { emptyPropertyReplacer } from './helpers';
 import { getResources } from './resources/referoResources';
 import skjema from './skjema/q.json';
-import { ReferoContainer } from '../components';
-import valueSet from '../constants/valuesets';
-import rootReducer from '../reducers';
+import valueSet from '../src/constants/valuesets';
+import rootReducer from '../src/reducers/index';
+import { QuestionnaireStatusCodes } from '../src/types/fhirEnums';
+import { EnhetType, OrgenhetHierarki } from '../src/types/orgenhetHierarki';
 
 type Props = {
   showFormFiller: () => void;

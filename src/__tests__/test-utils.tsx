@@ -1,20 +1,20 @@
 import React, { ReactElement } from 'react';
 import { render, RenderOptions, RenderResult } from '@testing-library/react';
-import { Provider, Store } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { FormProvider, useForm } from 'react-hook-form';
-import rootReducer, { GlobalState } from '../../../reducers';
+import rootReducer, { GlobalState } from '../reducers';
 import { applyMiddleware, createStore } from 'redux';
 
-import { generateDefaultValues } from '../../../validation/defaultFormValues';
+import { generateDefaultValues } from '../validation/defaultFormValues';
 import { Questionnaire } from 'fhir/r4';
-import { ReferoContainer } from '../..';
-import { generateQuestionnaireResponse } from '../../../actions/generateQuestionnaireResponse';
-import { Resources } from '../../../util/resources';
-import { ReferoProps } from '../../../types/referoProps';
+import { ReferoContainer } from '../components';
+import { generateQuestionnaireResponse } from '../actions/generateQuestionnaireResponse';
+import { Resources } from '../util/resources';
+import { ReferoProps } from '../types/referoProps';
 import userEvent from '@testing-library/user-event';
-import { getResources } from '../../../../preview/resources/referoResources';
+import { getResources } from '../../preview/resources/referoResources';
+import { Provider, Store } from 'react-redux';
 
 const mockStore = configureMockStore<Partial<GlobalState>>([thunk]);
 

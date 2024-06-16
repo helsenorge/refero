@@ -7,7 +7,7 @@ import '@testing-library/jest-dom';
 
 import { Questionnaire, QuestionnaireItem } from 'fhir/r4';
 
-import '../../util/defineFetch';
+import '../../util/__tests__/defineFetch';
 import itemControlConstants from '../../constants/itemcontrol';
 import rootReducer from '../../reducers';
 import { Resources } from '../../util/resources';

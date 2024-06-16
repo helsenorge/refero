@@ -10,7 +10,7 @@ import {
   QuestionnaireResponseItem,
 } from 'fhir/r4';
 import itemType from '../../../../constants/itemType';
-import '../../../../util/defineFetch';
+import '../../../../util/__tests__/defineFetch';
 import { createItemControlExtension } from '../../../__tests__/utils';
 import { OPEN_CHOICE_ID, OPEN_CHOICE_SYSTEM, OPEN_CHOICE_LABEL } from '../../../../constants';
 import { generateQuestionnaireResponse } from '../../../../actions/generateQuestionnaireResponse';

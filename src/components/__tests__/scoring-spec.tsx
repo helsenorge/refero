@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom';
 
-import '../../util/defineFetch';
+import '../../util/__tests__/defineFetch';
 import ChoiceRadioButtonDataModel from './__data__/scoring/choice-radio-button';
 import ChoiceCheckBoxDataModel from './__data__/scoring/choice-check-box';
 import OpenChoiceDataModel from './__data__/scoring/open-choice';

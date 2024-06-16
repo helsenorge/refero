@@ -3,7 +3,7 @@ import moment from 'moment';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, Quantity, Coding, Questionnaire } from 'fhir/r4';
 
-import '../../util/defineFetch';
+import '../../util/__tests__/defineFetch';
 import Constants, { OPEN_CHOICE_ID } from '../../constants/index';
 import { IActionRequester } from '../../util/actionRequester';
 import { IQuestionnaireInspector, QuestionnaireItemPair } from '../../util/questionnaireInspector';

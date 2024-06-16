@@ -1,10 +1,10 @@
 import { QuestionnaireItem, Extension, QuestionnaireResponse } from 'fhir/r4';
+import fhirpath from 'fhirpath';
+import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
 
 import r4 from './fhirpathLoaderHelper';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const fhirpath = require('fhirpath');
-const fhirpath_r4_model = require('fhirpath/fhir-context/r4');
 
 export function evaluateFhirpathExpressionToGetDate(item: QuestionnaireItem, fhirExpression: string): Date | undefined {
   const result = fhirpath.evaluate(item, fhirExpression, null, r4);

@@ -1,4 +1,4 @@
-import { Questionnaire, QuestionnaireResponseItem, QuestionnaireItem, QuestionnaireResponseItemAnswer, Coding } from 'fhir/r4';
+import { Questionnaire, QuestionnaireResponseItem, QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import marked from 'marked';
 import { ComponentClass } from 'react-redux';
 import * as uuid from 'uuid';
@@ -269,19 +269,6 @@ export function getStringValue(answer: QuestionnaireResponseItemAnswer | Array<Q
     return stringAnswer.length > 0 ? stringAnswer.map(m => m.valueString).join(', ') : '';
   }
   return answer?.valueString ?? '';
-}
-
-export function getCodingAnswer(answer?: QuestionnaireResponseItemAnswer | Array<QuestionnaireResponseItemAnswer>): Coding | undefined {
-  if (Array.isArray(answer)) {
-    return answer.reduce((acc, x) => acc || x.valueCoding, undefined);
-  } else if (answer) {
-    return answer.valueCoding;
-  }
-  return undefined;
-}
-
-export function hasCodingAnswer(answer: QuestionnaireResponseItemAnswer | Array<QuestionnaireResponseItemAnswer>): boolean {
-  return !!getCodingAnswer(answer);
 }
 
 export function getPDFStringValue(

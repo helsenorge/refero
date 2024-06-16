@@ -1,4 +1,4 @@
-import '../../util/defineFetch';
+import '../../util/__tests__/defineFetch';
 import { Questionnaire } from 'fhir/r4';
 import GroupGridModel from './__data__/group-grid';
 import { renderRefero, screen } from './test-utils/test-utils';

@@ -2,7 +2,7 @@ import '@testing-library/jest-dom';
 
 import { Questionnaire } from 'fhir/r4';
 
-import '../../util/defineFetch';
+import '../../util/__tests__/defineFetch';
 
 import StepViewQuestionnaire from './__data__/stepview';
 import { renderRefero } from './test-utils/test-utils';

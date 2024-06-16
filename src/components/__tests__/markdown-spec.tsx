@@ -1,4 +1,4 @@
-import '../../util/defineFetch';
+import '../../util/__tests__/defineFetch';
 import { Questionnaire, QuestionnaireItem } from 'fhir/r4';
 import questionnaireWithMarkdown from './__data__/markdown';
 import ItemType from '../../constants/itemType';

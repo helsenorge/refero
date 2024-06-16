@@ -1,4 +1,4 @@
-import '../../util/defineFetch';
+import '../../util/__tests__/defineFetch';
 import { Questionnaire } from 'fhir/r4';
 
 import questionnaireWithEnableWhen from './__data__/enableWhen';
