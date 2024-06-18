@@ -1,4 +1,4 @@
-import React, { ReactElement } from 'react';
+import React, { ReactElement, ReactNode } from 'react';
 
 import { QuestionnaireResponse } from 'fhir/r4';
 
@@ -40,7 +40,7 @@ const FormButtons = ({
   return (
     <div className="formButtonsWrapper">
       <>
-        {Object.values(buttonOrder).map((buttonType: ButtonType): ReactElement => {
+        {Object.values(buttonOrder).map((buttonType: ButtonType): JSX.Element | null => {
           switch (buttonType) {
             case ButtonType.pauseButton:
               return (

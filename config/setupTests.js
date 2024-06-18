@@ -6,6 +6,7 @@
  */
 import '@testing-library/jest-dom';
 import structuredClone from '@ungap/structured-clone';
+
 global.structuredClone = global.structuredClone || structuredClone;
 class IntersectionObserver {
   constructor(callback, options) {
@@ -33,6 +34,7 @@ Object.defineProperty(global, 'IntersectionObserver', {
   configurable: true,
   value: IntersectionObserver,
 });
+
 Object.defineProperty(window, 'matchMedia', {
   writable: true,
   value: query => ({
@@ -46,4 +48,5 @@ Object.defineProperty(window, 'matchMedia', {
     dispatchEvent: () => {},
   }),
 });
+
 window.HTMLElement.prototype.scrollIntoView = jest.fn();

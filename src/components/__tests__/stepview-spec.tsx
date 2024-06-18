@@ -7,8 +7,8 @@ import '../../util/__tests__/defineFetch';
 import StepViewQuestionnaire from './__data__/stepview';
 import { renderRefero } from './test-utils/test-utils';
 import { ReferoProps } from '../../types/referoProps';
-import { getResources } from '../../preview/resources/referoResources';
 import { clickButtonTimes, selectCheckboxOption, submitForm, typeByLabelText } from './test-utils/selectors';
+import { getResources } from '../../../preview/resources/referoResources';
 
 // Mock window.matchMedia
 Object.defineProperty(window, 'matchMedia', {

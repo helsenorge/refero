@@ -2,11 +2,11 @@ import '../../../../util/__tests__/defineFetch';
 
 import { act, findByRole, renderRefero, userEvent } from '../../../__tests__/test-utils/test-utils';
 import { qinline, q, qScriptInjection } from './__data__';
-import { getResources } from '../../../../preview/resources/referoResources';
 import { Questionnaire, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { ReferoProps } from '../../../../types/referoProps';
 import { Extensions } from '../../../../constants/extensions';
 import { submitForm } from '../../../__tests__/test-utils/selectors';
+import { getResources } from '../../../../../preview/resources/referoResources';
 jest.mock('@helsenorge/core-utils/debounce', () => ({
   debounce: (fn: Function) => fn,
 }));

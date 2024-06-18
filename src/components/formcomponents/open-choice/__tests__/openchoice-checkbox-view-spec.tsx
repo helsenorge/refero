@@ -3,9 +3,9 @@ import { act, findByRole, renderRefero, userEvent } from '../../../__tests__/tes
 import { clickButtonTimes, selectCheckboxOption, submitForm } from '../../../__tests__/test-utils/selectors';
 import { checkboxView as q } from './__data__/index';
 import { ReferoProps } from '../../../../types/referoProps';
-import { getResources } from '../../../../preview/resources/referoResources';
 import { typeExtraField } from './utils';
 import { addManyPropertiesToQuestionnaireItem, addPropertyToQuestionnaireItem } from '../../../__tests__/test-utils/questionnairHelpers';
+import { getResources } from '../../../../../preview/resources/referoResources';
 
 const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle ut dette feltet', oppgiGyldigVerdi: 'ikke gyldig tall' };
 const expectedAnswer: QuestionnaireItemAnswerOption = {

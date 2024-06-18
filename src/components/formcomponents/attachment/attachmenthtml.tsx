@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 
 import { QuestionnaireItem } from 'fhir/r4';
 import { FieldError } from 'react-hook-form';

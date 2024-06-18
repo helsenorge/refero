@@ -1,29 +1,17 @@
 {
+  "extends": "./tsconfig.base.json",
   "compilerOptions": {
-    "target": "ES2020",
-    "useDefineForClassFields": true,
-    "lib": ["ES2020", "DOM", "DOM.Iterable"],
-    "module": "ESNext",
-    "skipLibCheck": true,
     "types": ["vite/client"],
     /* Bundler mode */
     "moduleResolution": "bundler",
-    "allowJs": true,
-    "allowImportingTsExtensions": true,
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "noEmit": true,
-    "jsx": "react",
-
-    /* Linting */
-    "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true
+    "noEmit": true
   },
   "paths": {
-    "@helsenorge/refero": ["lib"],
-    "@": ["src"]
+    "@helsenorge/refero": ["./lib"],
+    "@": ["src"],
+    "@components": ["src/components"],
+    "@fromComponents": ["src/components/fromComponents"]
   },
-  "include": ["src", "preview", "lib"]
+  "include": ["src", "preview", "lib"],
+  "exclude": ["node_modules", "lib", "preview", "**/__tests__/*", "**__mocks__/", "**/*-spec.*"]
 }

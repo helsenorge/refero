@@ -1,9 +1,9 @@
 import { Questionnaire, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { act, findByRole, renderRefero, userEvent } from '../../../__tests__/test-utils/test-utils';
 import { q } from './__data__';
-import { getResources } from '../../../../preview/resources/referoResources';
 import { ReferoProps } from '../../../../types/referoProps';
 import { submitForm } from '../../../__tests__/test-utils/selectors';
+import { getResources } from '../../../../../preview/resources/referoResources';
 const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle ut dette feltet' };
 
 describe('Boolean', () => {

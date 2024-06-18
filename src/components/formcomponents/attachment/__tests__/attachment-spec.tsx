@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 
 import { Matcher, render, screen } from '../../../__tests__/test-utils/test-utils';
 

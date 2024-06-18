@@ -4,9 +4,9 @@ import { qScriptInjection, q } from './__data__/';
 
 import { Questionnaire, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { ReferoProps } from '../../../../types/referoProps';
-import { getResources } from '../../../../preview/resources/referoResources';
 import { Extensions } from '../../../../constants/extensions';
 import { submitForm } from '../../../__tests__/test-utils/selectors';
+import { getResources } from '../../../../../preview/resources/referoResources';
 
 jest.mock('@helsenorge/core-utils/debounce', () => ({
   debounce: (fn: Function) => fn,

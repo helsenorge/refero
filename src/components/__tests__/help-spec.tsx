@@ -1,5 +1,5 @@
 import { render, screen } from './test-utils/test-utils';
-import * as React from 'react';
+import React from 'react';
 
 import { QuestionnaireItem, Extension, QuestionnaireItemAnswerOption } from 'fhir/r4';
 import String from '../formcomponents/string/string';

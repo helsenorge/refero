@@ -13,8 +13,8 @@ import { generateQuestionnaireResponse } from '../actions/generateQuestionnaireR
 import { Resources } from '../util/resources';
 import { ReferoProps } from '../types/referoProps';
 import userEvent from '@testing-library/user-event';
-import { getResources } from '../../preview/resources/referoResources';
 import { Provider, Store } from 'react-redux';
+import { getResources } from '../../preview/resources/referoResources';
 
 const mockStore = configureMockStore<Partial<GlobalState>>([thunk]);
 
