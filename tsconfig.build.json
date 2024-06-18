@@ -6,6 +6,6 @@
     "moduleResolution": "bundler",
     "noEmit": true
   },
-  "include": ["src", "preview", "lib"],
+  "include": ["src"],
   "exclude": ["node_modules", "lib", "preview", "**/__tests__/*", "**__mocks__/", "**/*-spec.*"]
 }
