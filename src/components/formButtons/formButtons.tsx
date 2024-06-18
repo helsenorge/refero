@@ -1,4 +1,4 @@
-import React, { ReactElement, ReactNode } from 'react';
+import React, { FormEvent, KeyboardEvent, MouseEvent } from 'react';
 
 import { QuestionnaireResponse } from 'fhir/r4';
 
@@ -16,7 +16,9 @@ interface FormButtonsInterface {
   pauseButtonText: string;
   submitButtonDisabled?: boolean;
   pauseButtonDisabled?: boolean;
-  onSubmitButtonClicked?: (() => void) | ((e: React.FormEvent) => void);
+  onSubmitButtonClicked?:
+    | (() => void)
+    | ((e: MouseEvent<HTMLElement, MouseEvent> | FormEvent<{}> | KeyboardEvent<HTMLUListElement> | null | undefined) => void);
   onCancelButtonClicked?: () => void;
   onPauseButtonClicked?: (questionnaireResponse?: QuestionnaireResponse) => void;
   isHelsenorgeForm?: boolean;

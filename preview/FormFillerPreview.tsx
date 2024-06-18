@@ -12,7 +12,7 @@ import { Refero as ReferoContainer } from '@helsenorge/refero';
 import FormFillerSidebar from './FormFillerSidebar';
 import { emptyPropertyReplacer } from './helpers';
 import { getResources } from './resources/referoResources';
-import skjema from './skjema/q.json';
+import skjema from './skjema/NHN_Testskjema_Dato-nb-NO-v1.0.json';
 import valueSet from '../src/constants/valuesets';
 import rootReducer from '../src/reducers/index';
 import { QuestionnaireStatusCodes } from '../src/types/fhirEnums';

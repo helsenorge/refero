@@ -86,7 +86,7 @@ const CheckboxView = ({
                 inputId={`${id}-${option.type}`}
                 testId={`${getId(id)}-${index}-checkbox-openchoice`}
                 label={<Label testId={`${getId(id)}-${index}-checkbox-openchoice-label`} labelTexts={[{ text: option.label }]} />}
-                checked={selected?.some((val: string) => val === option.type)}
+                checked={selected?.some((val: string | undefined) => val === option?.type)}
                 value={option.type}
                 onChange={(e): void => {
                   const valueCopy = value ? [...value] : [];
