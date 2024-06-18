@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FormEvent } from 'react';
 
 import { ValueSet, QuestionnaireItem, Questionnaire, Coding, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { Controller } from 'react-hook-form';
@@ -235,7 +235,7 @@ const AutosuggestView = ({
                 onChange([data.suggestion.value]);
                 onSuggestionSelected(e, data);
               }}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>, AutosuggestChangeEvent): void => {
+              onChange={(e: FormEvent<{}>, AutosuggestChangeEvent): void => {
                 onChange('');
                 onChangeInput(e, AutosuggestChangeEvent);
               }}

@@ -12,7 +12,10 @@
     "lib",
     "README.md",
     "CHANGES",
-    "LICENSE"
+    "LICENSE",
+    "package.json",
+    ".vite/manifest.json",
+    "style.css"
   ],
   "repository": "github:helsenorge/refero",
   "type": "module",
