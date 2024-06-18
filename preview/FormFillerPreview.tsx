@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+
 import { composeWithDevTools } from '@redux-devtools/extension';
 import { Bundle, Questionnaire, QuestionnaireItem, QuestionnaireResponse, ValueSet } from 'fhir/r4';
 import { Provider } from 'react-redux';
@@ -33,7 +34,7 @@ const getQuestionnaireFromBubndle = (bundle: Bundle<Questionnaire> | Questionnai
     );
   }
 };
-const fetchReceiversFn = (successCallback: (receivers: Array<OrgenhetHierarki>) => void) => {
+const fetchReceiversFn = (successCallback: (receivers: Array<OrgenhetHierarki>) => void): any => {
   successCallback([
     {
       OrgenhetId: 1,
