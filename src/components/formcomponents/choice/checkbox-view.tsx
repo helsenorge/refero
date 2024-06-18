@@ -81,7 +81,7 @@ const CheckboxView: React.FC<Props> = ({
                   inputId={`${getId(id)}-hn-${index}`}
                   testId={`${getId(id)}-${index}-checkbox-choice`}
                   label={<Label testId={`${getId(id)}-${index}-checkbox-choice-label`} labelTexts={[{ text: option.label }]} />}
-                  checked={selected?.some((val: string) => val === option.type)}
+                  checked={selected?.some((val?: string) => val === option.type)}
                   value={option.type}
                   onChange={(e): void => {
                     const valueCopy = value ? [...value] : [];

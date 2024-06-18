@@ -13,12 +13,11 @@ const OUTPUT_DIRECTORY = 'lib';
 export default defineConfig(({ mode }) => {
   const isPreview = mode === 'development';
 
-  // Plugin definitions
-
   return {
     define: { global: 'window' },
     root: isPreview ? './preview' : '.',
     resolve: {
+      extensions: ['.ts', '.tsx', '.js', '.json'],
       alias: {
         '@helsenorge/refero': path.resolve(__dirname, OUTPUT_DIRECTORY),
         '@': path.resolve(__dirname, 'src'),
@@ -58,11 +57,11 @@ export default defineConfig(({ mode }) => {
             react: 'React',
             'react-dom': 'ReactDOM',
             'react/jsx-runtime': 'react/jsx-runtime',
-            '@helsenorge/autosuggest': 'HelsenorgeAutoSuggest',
-            '@helsenorge/core-utils': 'HelsenorgeCoreUtils',
-            '@helsenorge/date-time': 'HelsenorgeDateTime',
-            '@helsenorge/file-upload': 'HelsenorgeFileUpload',
-            '@helsenorge/designsystem-react': 'HelsenorgeDesignSystemReact',
+            '@helsenorge/autosuggest': '@helsenorge/autosuggest',
+            '@helsenorge/core-utils': '@helsenorge/core-utils',
+            '@helsenorge/date-time': '@helsenorge/date-time',
+            '@helsenorge/file-upload': '@helsenorge/file-upload',
+            '@helsenorge/designsystem-react': '@helsenorge/designsystem-react',
             'react-redux': 'ReactRedux',
             redux: 'Redux',
             'redux-thunk': 'ReduxThunk',
@@ -78,16 +77,17 @@ export default defineConfig(({ mode }) => {
       dts({
         tsconfigPath: path.resolve(__dirname, 'tsconfig.build.json'),
         outDir: path.resolve(__dirname, 'lib/types'),
-        exclude: ['**/*-spec.*', 'preview/**'],
+        include: ['src'],
+        exclude: ['__test__', '__mocks__', '__data__'],
       }),
       react(),
-      libInjectCss(),
+      // libInjectCss(),
       copy({
         targets: [
           { src: 'LICENSE', dest: path.resolve(__dirname, OUTPUT_DIRECTORY) },
           { src: 'README.md', dest: path.resolve(__dirname, OUTPUT_DIRECTORY) },
           { src: 'CHANGE', dest: path.resolve(__dirname, OUTPUT_DIRECTORY) },
-          { src: 'src/components/**/*.module.scss*', dest: OUTPUT_DIRECTORY },
+          { src: 'src/components/**/*.module.*', dest: OUTPUT_DIRECTORY },
         ],
         hook: 'writeBundle',
       }),
