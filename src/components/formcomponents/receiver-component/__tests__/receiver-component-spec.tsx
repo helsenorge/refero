@@ -3,8 +3,8 @@ import { q } from './__data__';
 import { EnhetType, OrgenhetHierarki } from '../../../../types/orgenhetHierarki';
 
 import { act, renderRefero } from '../../../__tests__/test-utils/test-utils';
-import { getResources } from '../../../../preview/resources/referoResources';
 import { selectDropdownOptionByName } from '../../../__tests__/test-utils/selectors';
+import { getResources } from '../../../../../preview/resources/referoResources';
 
 const receivers = [
   {

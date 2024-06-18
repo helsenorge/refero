@@ -6,7 +6,7 @@ import {
   QuestionnaireResponseItemAnswer,
 } from 'fhir/r4';
 
-import { createQuestionnaireResponseItem } from './generateQuestionnaireResponse.js';
+import { createQuestionnaireResponseItem } from './generateQuestionnaireResponse';
 import ItemType from '../constants/itemType';
 import {
   hasAnswer,

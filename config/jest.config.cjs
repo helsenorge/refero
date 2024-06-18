@@ -1,4 +1,4 @@
-/** @type {import('ts-jest/dist/types').InitialOptionsTsJest} */
+/** @type {import('ts-jest/dist/types').JestConfigWithTsJest} */
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const path = require('path');
 const root = path.resolve(__dirname, '../');
@@ -6,17 +6,14 @@ const root = path.resolve(__dirname, '../');
 module.exports = {
   verbose: true,
   testEnvironment: 'jest-environment-jsdom',
-  setupFilesAfterEnv: ['<rootDir>/config/setupTests.js'],
   rootDir: root,
   roots: ['<rootDir>/src'],
   moduleFileExtensions: ['js', 'json', 'jsx', 'ts', 'tsx'],
   testMatch: ['**/__tests__/**/*-spec.js?(x)', '**/__tests__/**/*-spec.ts?(x)'],
   transform: {
-    '^.+\\.js?$': 'babel-jest',
-    // '\\.m?js?$': 'esm',
     '^.+\\.(js|jsx|ts|tsx)$': 'babel-jest',
-    '^.+\\.css$': '<rootDir>/config/cssTransform.js',
-    '^(?!.*\\.(js|jsx|ts|tsx|css|json)$)': '<rootDir>/config/fileTransform.js',
+    '^.+\\.css$': '<rootDir>/config/cssTransform.cjs',
+    '^(?!.*\\.(js|jsx|ts|tsx|css|json)$)': '<rootDir>/config/fileTransform.cjs',
   },
   transformIgnorePatterns: [
     '[/\\\\]node_modules[/\\\\](?!(@helsenorge)[/\\\\])',
@@ -32,4 +29,5 @@ module.exports = {
     '\\.(png|svg)$': '<rootDir>/config/empty.js',
   },
   moduleDirectories: ['node_modules', 'components/__tests__/test-utils'],
+  setupFilesAfterEnv: ['<rootDir>/config/setupTests.js'],
 };

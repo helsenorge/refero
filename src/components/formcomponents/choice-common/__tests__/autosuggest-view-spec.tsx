@@ -2,12 +2,12 @@ import { Questionnaire, QuestionnaireItem, QuestionnaireResponse, QuestionnaireR
 
 import { fireEvent, waitFor, userEvent, renderRefero, act, findByRole } from '../../../__tests__/test-utils/test-utils';
 import { q } from './__data__/index';
-import { getResources } from '../../../../preview/resources/referoResources';
 import { generateQuestionnaireResponse } from '../../../../actions/generateQuestionnaireResponse';
 import valueSet from '../../../../constants/valuesets';
 import { Extensions } from '../../../../constants/extensions';
 import { clickButtonTimes, submitForm } from '../../../__tests__/test-utils/selectors';
 import { addPropertyToQuestionnaireItem } from '../../../__tests__/test-utils/questionnairHelpers';
+import { getResources } from '../../../../../preview/resources/referoResources';
 
 jest.mock('@helsenorge/core-utils/debounce', () => ({
   debounce: (fn: Function) => fn,

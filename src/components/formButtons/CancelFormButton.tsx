@@ -1,4 +1,4 @@
-import React, { ReactElement } from 'react';
+import React from 'react';
 
 import Button from '@helsenorge/designsystem-react/components/Button';
 
@@ -9,7 +9,7 @@ type Props = {
   cancelButtonText: string;
 };
 
-export const CancelFormButton = ({ cancelButtonText, onCancelButtonClicked }: Props): ReactElement => {
+export const CancelFormButton = ({ cancelButtonText, onCancelButtonClicked }: Props): JSX.Element | null => {
   return (
     <div className="cancelButtonStyle">
       <Button variant="borderless" onClick={onCancelButtonClicked} testId="refero-cancel-button">

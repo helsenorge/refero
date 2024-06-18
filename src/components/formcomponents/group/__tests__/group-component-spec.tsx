@@ -4,8 +4,8 @@ import q from './__data__';
 import Constants from '../../../../constants';
 import { Questionnaire } from 'fhir/r4';
 import { ReferoProps } from '../../../../types/referoProps';
-import { getResources } from '../../../../preview/resources/referoResources';
 import { Extensions } from '../../../../constants/extensions';
+import { getResources } from '../../../../../preview/resources/referoResources';
 
 const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle ut dette feltet', oppgiGyldigVerdi: 'ikke gyldig tall' };
 

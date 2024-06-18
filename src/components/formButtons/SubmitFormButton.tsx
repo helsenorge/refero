@@ -1,4 +1,4 @@
-import React, { ReactElement } from 'react';
+import React from 'react';
 
 import Button from '@helsenorge/designsystem-react/components/Button';
 
@@ -10,7 +10,7 @@ type Props = {
   submitButtonText: string;
 };
 
-export const SubmitFormButton = ({ submitButtonText, submitButtonDisabled, onSubmitButtonClicked }: Props): ReactElement => {
+export const SubmitFormButton = ({ submitButtonText, submitButtonDisabled, onSubmitButtonClicked }: Props): JSX.Element | null => {
   const handleSubmit = (e: React.FormEvent): void => {
     e.preventDefault();
     onSubmitButtonClicked && onSubmitButtonClicked(e);

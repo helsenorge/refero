@@ -8,27 +8,31 @@ import dts from 'vite-plugin-dts';
 import { libInjectCss } from 'vite-plugin-lib-inject-css';
 import tsconfigPaths from 'vite-tsconfig-paths';
 
+const OUTPUT_DIRECTORY = 'lib';
+
 export default defineConfig(({ mode }) => {
   const isPreview = mode === 'development';
 
   // Plugin definitions
 
   return {
-    define: {global: 'window'},
+    define: { global: 'window' },
     root: isPreview ? './preview' : '.',
     resolve: {
       alias: {
-        '@helsenorge/refero': path.resolve(__dirname, 'lib'),
+        '@helsenorge/refero': path.resolve(__dirname, OUTPUT_DIRECTORY),
+        '@': path.resolve(__dirname, 'src'),
+        '@components': path.resolve(__dirname, 'src/components'),
+        '@fromComponents': path.resolve(__dirname, 'src/components/fromComponents'),
       },
     },
     build: {
-      outDir: path.resolve(__dirname, 'lib'),
+      outDir: path.resolve(__dirname, OUTPUT_DIRECTORY),
       manifest: true,
-      sourcemap: isPreview,
+      sourcemap: true,
       commonjsOptions: {
         transformMixedEsModules: true,
       },
-      emptyOutDir: true,
       lib: {
         entry: path.resolve(__dirname, 'src/index.ts'),
         formats: ['es'],
@@ -50,7 +54,6 @@ export default defineConfig(({ mode }) => {
           'redux-thunk',
         ],
         output: {
-          format: 'es',
           globals: {
             react: 'React',
             'react-dom': 'ReactDOM',
@@ -60,13 +63,14 @@ export default defineConfig(({ mode }) => {
             '@helsenorge/date-time': 'HelsenorgeDateTime',
             '@helsenorge/file-upload': 'HelsenorgeFileUpload',
             '@helsenorge/designsystem-react': 'HelsenorgeDesignSystemReact',
-            'react-redux': 'reactRedux',
+            'react-redux': 'ReactRedux',
             redux: 'Redux',
             'redux-thunk': 'ReduxThunk',
           },
         },
       },
     },
+
     plugins: [
       tsconfigPaths({
         projects: [path.resolve(__dirname, 'tsconfig.build.json')],
@@ -74,25 +78,27 @@ export default defineConfig(({ mode }) => {
       dts({
         tsconfigPath: path.resolve(__dirname, 'tsconfig.build.json'),
         outDir: path.resolve(__dirname, 'lib/types'),
-        exclude: ['**/*-spec.*'],
+        exclude: ['**/*-spec.*', 'preview/**'],
       }),
       react(),
       libInjectCss(),
       copy({
         targets: [
-          { src: 'LICENSE', dest: path.resolve(__dirname, 'lib') },
-          { src: 'README.md', dest: path.resolve(__dirname, 'lib') },
-          { src: 'CHANGE', dest: path.resolve(__dirname, 'lib') },
+          { src: 'LICENSE', dest: path.resolve(__dirname, OUTPUT_DIRECTORY) },
+          { src: 'README.md', dest: path.resolve(__dirname, OUTPUT_DIRECTORY) },
+          { src: 'CHANGE', dest: path.resolve(__dirname, OUTPUT_DIRECTORY) },
+          { src: 'src/components/**/*.module.scss*', dest: OUTPUT_DIRECTORY },
         ],
         hook: 'writeBundle',
       }),
       generatePackageJson({
-        outputFolder: path.resolve(__dirname, 'lib'),
+        outputFolder: path.resolve(__dirname, OUTPUT_DIRECTORY),
         baseContents: pkg => ({
           author: pkg.author,
           name: pkg.name,
+          description: pkg.description,
+          repository: pkg.repository,
           version: pkg.version,
-          main: 'refero.umd.js',
           module: 'refero.es.js',
           types: 'types/index.d.ts',
           license: pkg.license,
@@ -100,7 +106,6 @@ export default defineConfig(({ mode }) => {
           peerDependencies: pkg.peerDependencies,
           exports: {
             '.': {
-              require: './refero.umd.js',
               import: './refero.es.js',
             },
           },

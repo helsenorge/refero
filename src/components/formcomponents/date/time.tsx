@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem, Questionnaire } from 'fhir/r4';
 import moment from 'moment';

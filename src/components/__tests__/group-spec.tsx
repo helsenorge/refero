@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 
 import '../../util/__tests__/defineFetch';
 import { QuestionnaireItem, Extension } from 'fhir/r4';

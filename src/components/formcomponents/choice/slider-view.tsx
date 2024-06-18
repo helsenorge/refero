@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 
 import { QuestionnaireItem, QuestionnaireItemAnswerOption, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { Controller } from 'react-hook-form';

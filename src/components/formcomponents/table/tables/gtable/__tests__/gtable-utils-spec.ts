@@ -9,8 +9,8 @@ import {
 } from '../utils';
 import ItemType from '../../../../../../constants/itemType';
 import { QuestionnaireItemWithAnswers } from '../../interface';
-import { QUESTIONNAIRE_ITEM_CONTROL } from '../../../../../../constants/valuesets';
 import { Extensions } from '../../../../../../constants/extensions';
+import { QUESTIONNAIRE_ITEM_CONTROL_SYSTEM } from '../../../../../../constants/valuesets';
 
 type MockAnswerProps = Partial<QuestionnaireResponseItemAnswer>;
 type MockResponseItemProps = Partial<QuestionnaireResponseItem>;
@@ -222,7 +222,7 @@ describe('gtable-utils-spec', () => {
               valueCodeableConcept: {
                 coding: [
                   {
-                    system: QUESTIONNAIRE_ITEM_CONTROL,
+                    system: QUESTIONNAIRE_ITEM_CONTROL_SYSTEM,
                     code: 'data-receiver',
                   },
                 ],
