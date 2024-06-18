@@ -1,3 +1,9 @@
 SkjemautfyllerEnums.ts
 SkjemautfyllerEntities.d.ts
 types/fhir.ts
+node_modules
+.prettierrc
+.eslintrc
+.gitignore
+lib
+config

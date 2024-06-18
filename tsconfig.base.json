@@ -16,8 +16,15 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "paths": {
+      "@helsenorge/refero": ["./lib"],
+      "@": ["src"],
+      "@components": ["src/components"],
+      "@fromComponents": ["src/components/fromComponents"],
+      "react": ["./node_modules/@types/react"]
+    }
   },
   "include": ["src", "preview", "lib"],
-  "exclude": ["node_modules", "lib", "preview", "**/__tests__/**/*.*"]
+  "exclude": ["node_modules", "lib", "preview"]
 }
