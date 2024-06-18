@@ -1,10 +1,8 @@
 import { QuestionnaireItem } from 'fhir/r4';
 
-import codeSystems from '../constants/codingsystems';
 import itemControlConstants from '../constants/itemcontrol';
 import ItemType, { IItemType } from '../constants/itemType';
 import valueSet from '../constants/valuesets';
-import Valueset from '../util/__tests__/__data__/valuesets/valueset-8459';
 import { getItemControlValue } from '../util/choice';
 import { getItemControlExtensionValue } from '../util/extension';
 export const defaultValuesForType: Record<IItemType, unknown> = {
