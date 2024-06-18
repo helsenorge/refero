@@ -8,6 +8,11 @@ module.exports = {
   testEnvironment: 'jest-environment-jsdom',
   rootDir: root,
   roots: ['<rootDir>/src'],
+  globals: {
+    'ts-jest': {
+      tsconfig: '<rootDir>/tsconfig.test.json',
+    },
+  },
   moduleFileExtensions: ['js', 'json', 'jsx', 'ts', 'tsx'],
   testMatch: ['**/__tests__/**/*-spec.js?(x)', '**/__tests__/**/*-spec.ts?(x)'],
   transform: {
