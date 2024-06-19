@@ -131,7 +131,7 @@ type ItemTypeToDataTypeMap = {
 };
 export const getPrimitiveValueFromItemType = <
   ItemType extends keyof ItemTypeToDataTypeMap,
-  DisplayType extends ItemTypeToDataTypeMap[ItemType]
+  DisplayType extends ItemTypeToDataTypeMap[ItemType],
 >(
   type: IItemType,
   res: QuestionnaireResponseItemAnswer,
@@ -165,7 +165,7 @@ export const getPrimitiveValueFromItemType = <
   }
 };
 export function getQuestionnaireResponseItemAnswer(
-  type: typeof ItemType[keyof typeof ItemType],
+  type: (typeof ItemType)[keyof typeof ItemType],
   result: never[]
 ): QuestionnaireResponseItemAnswer | Array<QuestionnaireResponseItemAnswer> {
   switch (type) {
@@ -229,13 +229,13 @@ export const getValueIfDataReceiver = (
   if (copyExtension) {
     let result = evaluateFhirpathExpressionToGetString(copyExtension, questionnaireResponse);
 
-    if (!!getCalculatedExpressionExtension(item)) {
+    if (getCalculatedExpressionExtension(item)) {
       result = result.map((m: { value: number }) => {
         return m.value;
       });
     }
 
-    return getQuestionnaireResponseItemAnswer(item.type as Exclude<typeof ItemType[keyof typeof ItemType], 'url'>, result);
+    return getQuestionnaireResponseItemAnswer(item.type as Exclude<(typeof ItemType)[keyof typeof ItemType], 'url'>, result);
   }
   return undefined;
 };
@@ -243,7 +243,7 @@ export const getValueIfDataReceiver = (
 export const convertValuesToStrings = (values: Array<string | number | Quantity>): string[] => values.map(value => value.toString());
 
 export const extractValuesFromAnswer = (
-  type: typeof ItemType[keyof typeof ItemType],
+  type: (typeof ItemType)[keyof typeof ItemType],
   questionnaireAnswer?: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]
 ): Array<string | number | Quantity> => {
   if (questionnaireAnswer === undefined) {
@@ -255,7 +255,7 @@ export const extractValuesFromAnswer = (
 };
 
 export const transformAnswersToListOfStrings = (
-  type: typeof ItemType[keyof typeof ItemType],
+  type: (typeof ItemType)[keyof typeof ItemType],
   answer?: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]
 ): string[] => {
   const value = extractValuesFromAnswer(type, answer);
@@ -364,7 +364,7 @@ export const getEnabledQuestionnaireItemsWithAnswers = (
 /* TABLE HEADER */
 export const transformCodingToSortDirection = (coding: Coding[]): SortDirection | undefined => {
   const code = getCodeFromCodingSystem(coding, codeSystems.TableOrderingFunctions);
-  return !!code ? (code === 'ASC' ? SortDirection.asc : SortDirection.desc) : undefined;
+  return code ? (code === 'ASC' ? SortDirection.asc : SortDirection.desc) : undefined;
 };
 
 export const getDisplayFromCodingSystem = (coding: Coding[], codingSystem: string): string | undefined => {

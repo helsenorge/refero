@@ -140,7 +140,7 @@ const AutosuggestView = ({
     }
   };
 
-  const onChangeInput = (_event: React.FormEvent<HTMLInputElement>, { newValue }: { newValue: string; method: string }): void => {
+  const onChangeInput = (_event: React.FormEvent<{}>, { newValue }: { newValue: string; method: string }): void => {
     if (newValue === '') {
       clearCodingAnswerIfExists();
     }
@@ -239,7 +239,7 @@ const AutosuggestView = ({
                 onChange('');
                 onChangeInput(e, AutosuggestChangeEvent);
               }}
-              onBlur={(e: React.ChangeEvent<HTMLInputElement>, AutosuggestChangeEvent): void => {
+              onBlur={(e: React.ChangeEvent<{}>, AutosuggestChangeEvent): void => {
                 onBlur(e, AutosuggestChangeEvent);
               }}
               focusInputOnSuggestionClick={true}

@@ -6,7 +6,7 @@ import { IGTableHeaderItem } from './interface';
 
 type Props = {
   headerRow: IGTableHeaderItem[];
-  setSortDir: React.Dispatch<React.SetStateAction<SortDirection>>;
+  setSortDir?: React.Dispatch<React.SetStateAction<SortDirection | undefined>>;
   sortDir?: SortDirection;
   linkIdToSortBy?: string;
 };
@@ -15,7 +15,7 @@ export const GTableHeader = ({ headerRow, sortDir, setSortDir, linkIdToSortBy }:
   const sortable = linkIdToSortBy !== undefined ? true : false;
 
   const handleSort = (): void => {
-    setSortDir(prevState => (prevState === SortDirection.asc ? SortDirection.desc : SortDirection.asc));
+    setSortDir && setSortDir(prevState => (prevState === SortDirection.asc ? SortDirection.desc : SortDirection.asc));
   };
   return (
     <TableHead category={sortable ? HeaderCategory.sortable : HeaderCategory.normal} className="page_refero__table__gtable__header">

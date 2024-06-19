@@ -6,8 +6,10 @@
  */
 import '@testing-library/jest-dom';
 import structuredClone from '@ungap/structured-clone';
+import React from 'react';
 
 global.structuredClone = global.structuredClone || structuredClone;
+global.React = React;
 class IntersectionObserver {
   constructor(callback, options) {
     this.callback = callback;

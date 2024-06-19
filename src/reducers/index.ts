@@ -1,8 +1,8 @@
 import { CombinedState, combineReducers, Reducer } from 'redux';
-import { FormAction } from 'src/actions/form';
-import { NewValueAction } from 'src/actions/newValue';
 
-import form, { Form } from '../reducers/form';
+import form, { Form } from './form';
+import { FormAction } from '../actions/form';
+import { NewValueAction } from '../actions/newValue';
 
 export interface GlobalState {
   refero: ReferoState;

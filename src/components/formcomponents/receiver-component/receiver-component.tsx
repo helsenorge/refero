@@ -195,7 +195,7 @@ const ReceiverComponent = ({
               message: resources?.adresseKomponent_feilmelding || 'Påkrevd felt',
             },
             validate: (): true | string =>
-              !!getReceiverName(receiverTreeNodes, selectedPath)
+              getReceiverName(receiverTreeNodes, selectedPath)
                 ? true
                 : resources?.adresseKomponent_feilmelding || 'Kan ikke være tom streng',
           }}

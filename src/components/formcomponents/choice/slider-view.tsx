@@ -27,7 +27,7 @@ export interface SliderProps extends WithCommonFunctionsAndEnhancedProps, FormPr
 enum SliderDisplayTypes {
   Label = 'label',
   OrdinalValue = 'ordnialValue',
-  default = 'label',
+  default = '',
 }
 
 type LeftRightLabels = { leftLabel: string; rightLabel: string };
