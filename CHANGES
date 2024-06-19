@@ -1,3 +1,7 @@
+## 16.0.0-beta09
+
+- Update github actions
+
 ## 16.0.0-beta07
 
 - [Breaking change] exports from refero now comes directly from @helsenorge/refero
