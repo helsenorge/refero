@@ -1,4 +1,4 @@
-import React from 'react';
+import { ReactNode } from 'react';
 
 import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { Controller } from 'react-hook-form';
@@ -31,7 +31,7 @@ interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
-  children?: React.ReactNode;
+  children?: ReactNode;
 }
 
 const CheckboxView = ({

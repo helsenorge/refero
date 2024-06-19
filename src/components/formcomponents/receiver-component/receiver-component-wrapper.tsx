@@ -1,5 +1,3 @@
-import React from 'react';
-
 import ReceiverComponent, { ReceiverComponentProps } from './receiver-component';
 import { getId } from '../../../util';
 import { FormProps } from '../../../validation/ReactHookFormHoc';

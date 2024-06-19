@@ -81,7 +81,7 @@ export default defineConfig(({ mode }) => {
         exclude: ['__test__', '__mocks__', '__data__'],
       }),
       react(),
-      // libInjectCss(),
+      libInjectCss(),
       copy({
         targets: [
           { src: 'LICENSE', dest: path.resolve(__dirname, OUTPUT_DIRECTORY) },

@@ -1,4 +1,4 @@
-import React, { FormEvent, KeyboardEvent, MouseEvent } from 'react';
+import { FormEvent, KeyboardEvent, MouseEvent } from 'react';
 
 import { QuestionnaireResponse } from 'fhir/r4';
 
