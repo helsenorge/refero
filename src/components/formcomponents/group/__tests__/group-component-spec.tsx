@@ -6,6 +6,7 @@ import { Questionnaire } from 'fhir/r4';
 import { ReferoProps } from '../../../../types/referoProps';
 import { Extensions } from '../../../../constants/extensions';
 import { getResources } from '../../../../../preview/resources/referoResources';
+import { clickButtonTimes } from '../../../__tests__/test-utils/selectors';
 
 const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle ut dette feltet', oppgiGyldigVerdi: 'ikke gyldig tall' };
 
@@ -29,8 +30,11 @@ describe('group', () => {
       expect(container.querySelector('.page_refero__helpComponent--open')).not.toBeInTheDocument();
 
       const helpButton = container.querySelector('.page_refero__helpButton');
-      if (helpButton) userEvent.click(helpButton);
-
+      if (helpButton) {
+        await act(async () => {
+          userEvent.click(helpButton);
+        });
+      }
       expect(container.querySelector('.page_refero__helpComponent--open')).toBeInTheDocument();
     });
   });
@@ -67,11 +71,7 @@ describe('group', () => {
         }),
       };
       const { getByTestId, queryAllByText, queryByTestId } = createWrapper(questionnaire);
-      act(() => {
-        userEvent.click(getByTestId(/-repeat-button/i));
-        userEvent.click(getByTestId(/-repeat-button/i));
-        userEvent.click(getByTestId(/-repeat-button/i));
-      });
+      await clickButtonTimes(/-repeat-button/i, 3);
       expect(queryAllByText(/Overskrift/i)).toHaveLength(4);
       expect(queryByTestId(/-repeat-button/i)).not.toBeInTheDocument();
     });
@@ -84,8 +84,7 @@ describe('group', () => {
       };
       const { getByTestId, queryAllByTestId } = createWrapper(questionnaire);
 
-      userEvent.click(getByTestId(/-repeat-button/i));
-      userEvent.click(getByTestId(/-repeat-button/i));
+      await clickButtonTimes(/-repeat-button/i, 2);
 
       expect(queryAllByTestId(/-delete-button/i)).toHaveLength(2);
     });
@@ -104,11 +103,9 @@ describe('group', () => {
         ...q,
         item: q.item?.map(x => ({ ...x, repeats: true })),
       };
-      const { findByTestId, queryByTestId } = createWrapper(questionnaire);
-      await act(async () => {
-        userEvent.click(await findByTestId(/-repeat-button/i));
-        userEvent.click(await findByTestId(/-delete-button/i));
-      });
+      const { queryByTestId } = createWrapper(questionnaire);
+      await clickButtonTimes(/-repeat-button/i, 1);
+      await clickButtonTimes(/-delete-button/i, 1);
 
       expect(queryByTestId(/-delete-button/i)).not.toBeInTheDocument();
     });

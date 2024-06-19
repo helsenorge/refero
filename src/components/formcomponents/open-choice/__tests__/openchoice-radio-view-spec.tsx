@@ -53,8 +53,11 @@ describe('Radio-view - choice', () => {
 
       expect(container.querySelector('.page_refero__helpComponent--open')).not.toBeInTheDocument();
       const helpButton = container.querySelector('.page_refero__helpButton');
-      if (helpButton) userEvent.click(helpButton);
-
+      if (helpButton) {
+        await act(async () => {
+          userEvent.click(helpButton);
+        });
+      }
       expect(container.querySelector('.page_refero__helpComponent--open')).toBeInTheDocument();
     });
   });
@@ -95,8 +98,7 @@ describe('Radio-view - choice', () => {
       const questionnaire = addManyPropertiesToQuestionnaireItem(q, [{ property: 'repeats', value: true }]);
       const { getByTestId, queryAllByTestId } = createWrapper(questionnaire);
 
-      userEvent.click(getByTestId(/-repeat-button/i));
-      userEvent.click(getByTestId(/-repeat-button/i));
+      await clickButtonTimes(/-repeat-button/i, 2);
 
       expect(queryAllByTestId(/-delete-button/i)).toHaveLength(2);
     });
@@ -110,11 +112,10 @@ describe('Radio-view - choice', () => {
       const questionnaire = addManyPropertiesToQuestionnaireItem(q, [{ property: 'repeats', value: true }]);
       const { getByTestId } = createWrapper(questionnaire);
 
-      userEvent.click(getByTestId(/-repeat-button/i));
+      await clickButtonTimes(/-repeat-button/i, 1);
 
-      const deleteButton = getByTestId(/-delete-button/i);
-      expect(deleteButton).toBeInTheDocument();
-      userEvent.click(deleteButton);
+      expect(getByTestId(/-delete-button/i)).toBeInTheDocument();
+      await clickButtonTimes(/-delete-button/i, 1);
 
       expect(getByTestId(/-delete-confirm-modal/i)).toBeInTheDocument();
     });
@@ -122,15 +123,15 @@ describe('Radio-view - choice', () => {
       const questionnaire = addManyPropertiesToQuestionnaireItem(q, [{ property: 'repeats', value: true }]);
       const { getByTestId, queryByTestId } = createWrapper(questionnaire);
 
-      userEvent.click(getByTestId(/-repeat-button/i));
+      await clickButtonTimes(/-repeat-button/i, 1);
 
-      const deleteButton = getByTestId(/-delete-button/i);
-      expect(deleteButton).toBeInTheDocument();
-
-      userEvent.click(deleteButton);
+      expect(getByTestId(/-delete-button/i)).toBeInTheDocument();
+      await clickButtonTimes(/-delete-button/i, 1);
 
       const confirmModal = getByTestId(/-delete-confirm-modal/i);
-      userEvent.click(await findByRole(confirmModal, 'button', { name: /Forkast endringer/i }));
+      await act(async () => {
+        userEvent.click(await findByRole(confirmModal, 'button', { name: /Forkast endringer/i }));
+      });
 
       expect(queryByTestId(/-delete-button/i)).not.toBeInTheDocument();
     });

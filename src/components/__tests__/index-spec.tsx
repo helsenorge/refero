@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen } from './test-utils/test-utils';
+import { act, render, screen } from './test-utils/test-utils';
 import userEvent from '@testing-library/user-event';
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
@@ -19,7 +19,7 @@ import itemcontrol from '../../constants/itemcontrol';
 import { selectCheckboxOption } from './test-utils/selectors';
 
 describe('Component renders help items', () => {
-  it('help button should be visible and control the help element', () => {
+  it('help button should be visible and control the help element', async () => {
     let expectedOpeningStatus = false;
 
     const helpButtonCb = (item: QuestionnaireItem, helpItem: QuestionnaireItem, helpType: string, helpText: string, opening: boolean) => {
@@ -50,12 +50,16 @@ describe('Component renders help items', () => {
 
     // click help button to open the help element
     expectedOpeningStatus = true;
-    userEvent.click(container.querySelectorAll('.helpButton')[0]);
+    await act(async () => {
+      userEvent.click(container.querySelectorAll('.helpButton')[0]);
+    });
     expect(container.querySelectorAll('.helpElement')).toHaveLength(1);
 
     // click help button to close the help element
     expectedOpeningStatus = false;
-    userEvent.click(container.querySelectorAll('.helpButton')[0]);
+    await act(async () => {
+      userEvent.click(container.querySelectorAll('.helpButton')[0]);
+    });
     expect(container.querySelectorAll('.helpElement')).toHaveLength(0);
   });
 });
@@ -67,24 +71,29 @@ describe('repeat with enableWhen', () => {
     });
   });
 
-  it('When we add a section with repeat, the enableWhen component should be hidden per default', () => {
+  it('When we add a section with repeat, the enableWhen component should be hidden per default', async () => {
     const { container } = createWrapper(questionnaireWithRepeatedEnableWhens());
 
     // clicking the repeat button, repeats the elements
     expect(container.querySelectorAll('input[type="checkbox"]')).toHaveLength(1);
-
-    userEvent.click(screen.getByTestId(/-repeat-button/i));
+    await act(async () => {
+      userEvent.click(screen.getByTestId(/-repeat-button/i));
+    });
     expect(container.querySelectorAll('input[type="checkbox"]')).toHaveLength(2);
 
     // no enableWhen components should be visible
     expect(container.querySelectorAll('input[type="text"]')).toHaveLength(0);
 
     // Click first boolean input, and enableWhen component should be enabled
-    userEvent.click(container.querySelectorAll('input[type="checkbox"]')[0]);
+    await act(async () => {
+      userEvent.click(container.querySelectorAll('input[type="checkbox"]')[0]);
+    });
     expect(container.querySelectorAll('input[type="text"]')).toHaveLength(1);
 
     // Click last boolean input, and enableWhen component should be enabled
-    userEvent.click(container.querySelectorAll('input[type="checkbox"]')[1]);
+    await act(async () => {
+      userEvent.click(container.querySelectorAll('input[type="checkbox"]')[1]);
+    });
     expect(container.querySelectorAll('input[type="text"]')).toHaveLength(2);
   });
 });

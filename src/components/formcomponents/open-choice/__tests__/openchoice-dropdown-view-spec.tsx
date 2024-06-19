@@ -115,9 +115,9 @@ describe('Dropdown-view - choice', () => {
       await clickButtonTimes(/-repeat-button/i, 1);
 
       await clickButtonTimes(/-delete-button/i, 1);
-
-      userEvent.click(await findByRole(getByTestId(/-delete-confirm-modal/i), 'button', { name: /Forkast endringer/i }));
-
+      await act(async () => {
+        userEvent.click(await findByRole(getByTestId(/-delete-confirm-modal/i), 'button', { name: /Forkast endringer/i }));
+      });
       expect(queryByTestId(/-delete-button/i)).not.toBeInTheDocument();
     });
   });

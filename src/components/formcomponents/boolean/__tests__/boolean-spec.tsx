@@ -2,7 +2,7 @@ import { Questionnaire, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { act, findByRole, renderRefero, userEvent } from '../../../__tests__/test-utils/test-utils';
 import { q } from './__data__';
 import { ReferoProps } from '../../../../types/referoProps';
-import { submitForm } from '../../../__tests__/test-utils/selectors';
+import { clickButtonTimes, clickByLabelText, clickByTestId, submitForm } from '../../../__tests__/test-utils/selectors';
 import { getResources } from '../../../../../preview/resources/referoResources';
 const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle ut dette feltet' };
 
@@ -75,7 +75,9 @@ describe('Boolean', () => {
       expect(container.querySelector('.page_refero__helpComponent--open')).not.toBeInTheDocument();
       const elm = container.querySelector('.page_refero__helpButton');
       if (elm) {
-        userEvent.click(elm);
+        await act(async () => {
+          userEvent.click(elm);
+        });
       }
 
       expect(container.querySelector('.page_refero__helpComponent--open')).toBeInTheDocument();
@@ -113,12 +115,8 @@ describe('Boolean', () => {
           return y;
         }),
       };
-      const { getByTestId, queryAllByLabelText, queryByTestId } = createWrapper(questionnaire);
-      act(() => {
-        userEvent.click(getByTestId(/-repeat-button/i));
-        userEvent.click(getByTestId(/-repeat-button/i));
-        userEvent.click(getByTestId(/-repeat-button/i));
-      });
+      const { queryAllByLabelText, queryByTestId } = createWrapper(questionnaire);
+      await clickButtonTimes(/-repeat-button/i, 3);
 
       expect(queryAllByLabelText(/Boolean/i)).toHaveLength(4);
       expect(queryByTestId(/-repeat-button/i)).not.toBeInTheDocument();
@@ -131,9 +129,7 @@ describe('Boolean', () => {
         item: q.item?.map(x => ({ ...x, repeats: true })),
       };
       const { getByTestId, queryAllByTestId } = createWrapper(questionnaire);
-
-      userEvent.click(getByTestId(/-repeat-button/i));
-      userEvent.click(getByTestId(/-repeat-button/i));
+      await clickButtonTimes(/-repeat-button/i, 2);
 
       expect(queryAllByTestId(/-delete-button/i)).toHaveLength(2);
     });
@@ -153,11 +149,10 @@ describe('Boolean', () => {
       };
       const { getByTestId } = createWrapper(questionnaire);
 
-      userEvent.click(getByTestId(/-repeat-button/i));
-
+      await clickButtonTimes(/-repeat-button/i, 1);
       const deleteButton = getByTestId(/-delete-button/i);
       expect(deleteButton).toBeInTheDocument();
-      userEvent.click(deleteButton);
+      await clickButtonTimes(/-delete-button/i, 1);
 
       expect(getByTestId(/-delete-confirm-modal/i)).toBeInTheDocument();
     });
@@ -168,15 +163,15 @@ describe('Boolean', () => {
       };
       const { getByTestId, queryByTestId } = createWrapper(questionnaire);
 
-      userEvent.click(getByTestId(/-repeat-button/i));
+      await clickButtonTimes(/-repeat-button/i, 1);
+      expect(getByTestId(/-delete-button/i)).toBeInTheDocument();
 
-      const deleteButton = getByTestId(/-delete-button/i);
-      expect(deleteButton).toBeInTheDocument();
-
-      userEvent.click(deleteButton);
+      await clickButtonTimes(/-delete-button/i, 1);
 
       const confirmModal = getByTestId(/-delete-confirm-modal/i);
-      userEvent.click(await findByRole(confirmModal, 'button', { name: /Forkast endringer/i }));
+      await act(async () => {
+        userEvent.click(await findByRole(confirmModal, 'button', { name: /Forkast endringer/i }));
+      });
 
       expect(queryByTestId(/-delete-button/i)).not.toBeInTheDocument();
     });
@@ -190,18 +185,16 @@ describe('Boolean', () => {
       expect(inputElement).toHaveAttribute('type', `checkbox`);
 
       expect(inputElement).toHaveAttribute('id', `item_${q?.item?.[0].linkId}^0`);
-
-      userEvent.click(inputElement);
-
+      await act(async () => {
+        userEvent.click(inputElement);
+      });
       expect(getByLabelText(/Boolean/i)).toBeChecked();
     });
     it('Should call onChange with correct value', async () => {
       const onChange = jest.fn();
       const { getByLabelText } = createWrapper(q, { onChange });
       expect(getByLabelText(/Boolean/i)).toBeInTheDocument();
-      await act(async () => {
-        userEvent.click(getByLabelText(/Boolean/i));
-      });
+      await clickByLabelText(/Boolean/i);
       const expectedAnswer: QuestionnaireResponseItemAnswer = {
         valueBoolean: true,
       };
@@ -226,10 +219,8 @@ describe('Boolean', () => {
         ...q,
         item: q.item?.map(x => ({ ...x, required: true })),
       };
-      const { getByLabelText, queryByText } = createWrapper(questionnaire);
-      await act(async () => {
-        await userEvent.click(getByLabelText(/Boolean/i));
-      });
+      const { queryByText } = createWrapper(questionnaire);
+      await clickByLabelText(/Boolean/i);
       await submitForm();
       expect(queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
     });
@@ -238,12 +229,10 @@ describe('Boolean', () => {
         ...q,
         item: q.item?.map(x => ({ ...x, required: true })),
       };
-      const { getByLabelText, queryByText } = createWrapper(questionnaire);
+      const { queryByText } = createWrapper(questionnaire);
       await submitForm();
       expect(queryByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
-      await act(async () => {
-        await userEvent.click(getByLabelText(/Boolean/i));
-      });
+      await clickByLabelText(/Boolean/i);
 
       expect(queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
     });

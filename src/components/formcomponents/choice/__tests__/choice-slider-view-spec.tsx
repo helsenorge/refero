@@ -4,7 +4,7 @@ import { act, findByRole, renderRefero, userEvent } from '../../../__tests__/tes
 import { sliderView as q } from './__data__/index';
 import { ReferoProps } from '../../../../types/referoProps';
 import { Extensions } from '../../../../constants/extensions';
-import { submitForm } from '../../../__tests__/test-utils/selectors';
+import { clickButtonTimes, submitForm } from '../../../__tests__/test-utils/selectors';
 import { getResources } from '../../../../../preview/resources/referoResources';
 
 const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle ut dette feltet', oppgiGyldigVerdi: 'ikke gyldig tall' };
@@ -57,8 +57,9 @@ describe('Slider-view', () => {
       await act(async () => {
         userEvent.click(getByRole('slider'));
       });
-
-      await userEvent.keyboard('{ArrowRight}');
+      await act(async () => {
+        userEvent.keyboard('{ArrowRight}');
+      });
 
       expect(onChange).toHaveBeenCalledTimes(1);
       expect(container.querySelector('div[role="slider"]')).toHaveAttribute('aria-valuetext', '&#9917 Ja');
@@ -73,7 +74,11 @@ describe('Slider-view', () => {
       const { container } = createWrapper(questionnaire, { onChange });
       await act(async () => {
         const JaElement = container.querySelectorAll('div.slider__value');
-        if (JaElement[1]) userEvent.click(JaElement[1]);
+        if (JaElement[1]) {
+          await act(async () => {
+            userEvent.click(JaElement[1]);
+          });
+        }
       });
       expect(onChange).toHaveBeenCalledTimes(1);
       expect(onChange).toHaveBeenCalledWith(expect.any(Object), expectedAnswer, expect.any(Object), expect.any(Object));
@@ -92,7 +97,11 @@ describe('Slider-view', () => {
 
       expect(container.querySelector('.page_refero__helpComponent--open')).not.toBeInTheDocument();
       const helpButton = container.querySelector('.page_refero__helpButton');
-      if (helpButton) userEvent.click(helpButton);
+      if (helpButton) {
+        await act(async () => {
+          userEvent.click(helpButton);
+        });
+      }
 
       expect(container.querySelector('.page_refero__helpComponent--open')).toBeInTheDocument();
     });
@@ -129,12 +138,8 @@ describe('Slider-view', () => {
           return y;
         }),
       };
-      const { getByTestId, queryAllByText, queryByTestId } = createWrapper(questionnaire);
-      act(() => {
-        userEvent.click(getByTestId(/-repeat-button/i));
-        userEvent.click(getByTestId(/-repeat-button/i));
-        userEvent.click(getByTestId(/-repeat-button/i));
-      });
+      const { queryAllByText, queryByTestId } = createWrapper(questionnaire);
+      await clickButtonTimes(/-repeat-button/i, 3);
       expect(queryAllByText(/Slider view label/i)).toHaveLength(4);
       expect(queryByTestId(/-repeat-button/i)).not.toBeInTheDocument();
     });
@@ -145,10 +150,9 @@ describe('Slider-view', () => {
         ...q,
         item: q.item?.map(x => ({ ...x, repeats: true })),
       };
-      const { getByTestId, queryAllByTestId } = createWrapper(questionnaire);
+      const { queryAllByTestId } = createWrapper(questionnaire);
 
-      userEvent.click(getByTestId(/-repeat-button/i));
-      userEvent.click(getByTestId(/-repeat-button/i));
+      await clickButtonTimes(/-repeat-button/i, 2);
 
       expect(queryAllByTestId(/-delete-button/i)).toHaveLength(2);
     });
@@ -168,11 +172,9 @@ describe('Slider-view', () => {
       };
       const { getByTestId } = createWrapper(questionnaire);
 
-      userEvent.click(getByTestId(/-repeat-button/i));
-
-      const deleteButton = getByTestId(/-delete-button/i);
-      expect(deleteButton).toBeInTheDocument();
-      userEvent.click(deleteButton);
+      await clickButtonTimes(/-repeat-button/i, 1);
+      expect(getByTestId(/-delete-button/i)).toBeInTheDocument();
+      await clickButtonTimes(/-delete-button/i, 1);
 
       expect(getByTestId(/-delete-confirm-modal/i)).toBeInTheDocument();
     });
@@ -183,15 +185,16 @@ describe('Slider-view', () => {
       };
       const { getByTestId, queryByTestId } = createWrapper(questionnaire);
 
-      userEvent.click(getByTestId(/-repeat-button/i));
+      await clickButtonTimes(/-repeat-button/i, 1);
 
-      const deleteButton = getByTestId(/-delete-button/i);
-      expect(deleteButton).toBeInTheDocument();
+      expect(getByTestId(/-delete-button/i)).toBeInTheDocument();
 
-      userEvent.click(deleteButton);
+      await clickButtonTimes(/-delete-button/i, 1);
 
       const confirmModal = getByTestId(/-delete-confirm-modal/i);
-      userEvent.click(await findByRole(confirmModal, 'button', { name: /Forkast endringer/i }));
+      await act(async () => {
+        userEvent.click(await findByRole(confirmModal, 'button', { name: /Forkast endringer/i }));
+      });
 
       expect(queryByTestId(/-delete-button/i)).not.toBeInTheDocument();
     });
