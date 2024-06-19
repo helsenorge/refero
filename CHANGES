@@ -1,4 +1,4 @@
-## 16.0.0-beta06
+## 16.0.0-beta07
 
 - [Breaking change] exports from refero now comes directly from @helsenorge/refero
 - [Breaking change] exports ReferoContainer by default
