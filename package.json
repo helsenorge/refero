@@ -20,7 +20,7 @@
     "prepare": "npm run build:lib",
     "test": "jest --config config/jest.config.cjs",
     "dev": "vite",
-    "build:lib": "vite build -c ./vite.config.ts"
+    "build:lib": "vite build -c ./vite.config.mjs"
   },
   "husky": {
     "hooks": {

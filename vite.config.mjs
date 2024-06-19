@@ -1,4 +1,5 @@
 import path from 'path';
+import { fileURLToPath } from 'url';
 
 import react from '@vitejs/plugin-react';
 import copy from 'rollup-plugin-copy';
@@ -7,6 +8,10 @@ import { defineConfig } from 'vite';
 import dts from 'vite-plugin-dts';
 import { libInjectCss } from 'vite-plugin-lib-inject-css';
 import tsconfigPaths from 'vite-tsconfig-paths';
+
+// Resolve __dirname
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const OUTPUT_DIRECTORY = 'lib';
 
@@ -36,7 +41,7 @@ export default defineConfig(({ mode }) => {
         entry: path.resolve(__dirname, 'src/index.ts'),
         formats: ['es'],
         name: 'Refero',
-        fileName: (format): string => `refero.${format}.js`,
+        fileName: format => `refero.${format}.js`,
       },
       rollupOptions: {
         external: [
@@ -69,7 +74,6 @@ export default defineConfig(({ mode }) => {
         },
       },
     },
-
     plugins: [
       tsconfigPaths({
         projects: [path.resolve(__dirname, 'tsconfig.build.json')],
