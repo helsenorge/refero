@@ -41,7 +41,7 @@ jobs:
           node-version: 20
           registry-url: https://registry.npmjs.org/
       - run: npm install
-      - run: npm run prepare
+      - run: npm run build:lib
       - run: cd ./lib && npm publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.PUBLISH_HELSENORGE_PACKAGES_TO_NPMJS}}
