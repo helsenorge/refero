@@ -30,7 +30,7 @@ jobs:
           cache: "npm"
 
       - name: Install dependencies
-        uses: bahmutov/npm-install@v1
+        run: npm ci
 
       - name: Build
         run: npm run build:lib --if-present

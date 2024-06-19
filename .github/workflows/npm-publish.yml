@@ -25,6 +25,10 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Clean cache
+        run: npm cache clean --force
+      - run: npm install @ast-grep/napi-linux-x64-gnu --force
+
       - name: Test
         run: npm test
 
