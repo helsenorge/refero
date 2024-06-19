@@ -1,5 +1,4 @@
 import { parse, format, setHours, setMinutes, startOfDay, isValid, isBefore, isAfter, endOfDay } from 'date-fns';
-import { nb } from 'date-fns/locale';
 import { QuestionnaireResponseItemAnswer } from 'fhir/r4';
 
 import { DateFormat, DatePickerFormat, DateTimeUnit } from '../types/dateTypes';
@@ -9,46 +8,29 @@ import { Resources } from './resources';
 import { mockMaxDateTime, mockMinDateTime } from '../components/formcomponents/date/date-mocks';
 import Constants from '../constants/index';
 
-export function getFullFnsDate(date: Date | string | undefined, hours: string | undefined, minutes: string | undefined): Date | undefined {
-  console.log(date);
+export function getFullFnsDate(
+  date: Date | string | undefined,
+  hours: string | undefined,
+  minutes: string | undefined
+): string | undefined {
+  if (typeof date == 'string') {
+    date = parseStringToDateDDMMYYYY(date);
+  }
 
-  if (!date || !hours || !minutes) {
+  if (!date) {
     return undefined;
-  }
-
-  const hoursNumber = parseInt(hours, 10);
-  const minutesNumber = parseInt(minutes, 10);
-
-  if (hoursNumber < 0 || hoursNumber > 23) {
-    return new Date('');
-  }
-
-  if (minutesNumber < 0 || minutesNumber > 59) {
-    return new Date('');
-  }
-
-  let fullDate: Date;
-
-  // Pass på at strengen blir parset med format og locale
-  if (typeof date === 'string') {
-    fullDate = parse(date, 'dd.MM.yyyy', new Date(), { 
-      locale: nb // Dette passer på at parsing blir gjort i forhold til norsk bokmål
-    });
-
-    if (isNaN(fullDate.getTime())) { // Sjekk for en gyldig dato rett etter parsing
-      console.error('The provided date string could not be parsed into a valid date:', date);
-      return undefined;
-    }
   } else {
-    fullDate = date;
+    if (hours) {
+      const hoursNumber = parseInt(hours, 10);
+      date = setHours(date, hoursNumber);
+    }
+    if (minutes) {
+      const minutesNumber = parseInt(minutes, 10);
+      date = setMinutes(date, minutesNumber);
+    }
   }
 
-  fullDate = setHours(date, hoursNumber);
-  fullDate = setMinutes(fullDate, minutesNumber);
-
-  console.log(fullDate);
-
-  return fullDate;
+  return format(date, Constants.DATE_TIME_FORMAT);
 }
 
 export const getDateFromAnswer = (answer: QuestionnaireResponseItemAnswer): Date | string | undefined => {
@@ -72,40 +54,42 @@ export const getHoursOrMinutesFromDate = (date: Date | undefined, unitToGet: Dat
   return undefined;
 };
 
+export const parseStringToDateDDMMYYYY = (stringToParse: string): Date => {
+  return parse(stringToParse, 'dd.MM.yyyy', new Date());
+};
+export const formatDateToStringDDMMYYYY = (dateToFormat: Date): string => {
+  return format(dateToFormat, 'dd.MM.yyyy');
+};
+
 export const validateDate = (dateToValidate: Date | undefined, resources: Resources | undefined): true | string => {
-  const fullDate = getFullFnsDate(dateToValidate, '05', '05');
-  if (!isValid(fullDate)) {
+  if (!isValid(dateToValidate)) {
     return resources?.dateError_invalid || '';
   }
   return true;
 };
 
 export const validateMinDate = (dateToValidate: Date | undefined, resources: Resources | undefined): true | string => {
-  const fullDate = getFullFnsDate(dateToValidate, '05', '05');
-  if (mockMinDateTime && fullDate && isBefore(fullDate, startOfDay(mockMinDateTime))) {
+  if (mockMinDateTime && dateToValidate && isBefore(dateToValidate, startOfDay(mockMinDateTime))) {
     return `${resources?.errorBeforeMinDate} ${format(mockMinDateTime, DateFormat.ddMMyyyy)}`;
   }
   return true;
 };
 
 export const validateMaxDate = (dateToValidate: Date | undefined, resources: Resources | undefined): true | string => {
-  const fullDate = getFullFnsDate(dateToValidate, '05', '05');
-  if (mockMaxDateTime && fullDate && isAfter(fullDate, endOfDay(mockMaxDateTime))) {
+  if (mockMaxDateTime && dateToValidate && isAfter(dateToValidate, endOfDay(mockMaxDateTime))) {
     return `${resources?.errorAfterMaxDate} ${format(mockMaxDateTime, DateFormat.ddMMyyyy)}`;
   }
   return true;
 };
 
-export const validateHours = (dateToValidate: Date | undefined, resources: Resources | undefined): true | string => {
-  const hours = dateToValidate?.getHours();
+export const validateHours = (hours: number | undefined, resources: Resources | undefined): true | string => {
   if (hours && (hours < 0 || hours > 23)) {
     return resources?.dateError_time_invalid || '';
   }
   return true;
 };
 
-export const validateMinutes = (dateToValidate: Date | undefined, resources: Resources | undefined): true | string => {
-  const minutes = dateToValidate?.getMinutes();
+export const validateMinutes = (minutes: number | undefined, resources: Resources | undefined): true | string => {
   if (minutes && (minutes < 0 || minutes > 59)) {
     return resources?.dateError_time_invalid || '';
   }

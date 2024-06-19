@@ -1,28 +1,23 @@
 import * as React from 'react';
 
+import { format, parse } from 'date-fns';
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem, Questionnaire } from 'fhir/r4';
+import { FieldError, FieldValues, useFormContext } from 'react-hook-form';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
+import { DateTimeUnit } from '../../../types/dateTypes';
+
+import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
+
 import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
+import { DatePicker, DateTimePickerWrapper, DateTime } from '@helsenorge/datepicker/components/DatePicker';
 
 import { NewValueAction, newDateTimeValueAsync } from '../../../actions/newValue';
 import ExtensionConstants from '../../../constants/extensions';
-import Constants from '../../../constants/index';
 import { GlobalState } from '../../../reducers';
-import { getValidationTextExtension, getExtension } from '../../../util/extension';
-import { evaluateFhirpathExpressionToGetDate } from '../../../util/fhirpathHelper';
-import { isRequired, getId, isReadOnly, getSublabelText, renderPrefix, getText } from '../../../util/index';
-import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
-import { Path } from '../../../util/refero-core';
-import { Resources } from '../../../util/resources';
-import ReactHookFormHoc, { FormProps } from '../../../validation/ReactHookFormHoc';
-import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
-import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
-import TextView from '../textview';
 import { initialize, safeParseJSON } from '../../../util/date-fns-utils';
 import {
-  getDateFromAnswer,
   getFullFnsDate,
   getHoursOrMinutesFromDate,
   validateDate,
@@ -30,11 +25,19 @@ import {
   validateMaxDate,
   validateHours,
   validateMinutes,
+  parseStringToDateDDMMYYYY,
+  formatDateToStringDDMMYYYY,
 } from '../../../util/date-utils';
-import { format, isValid } from 'date-fns';
-import { DatePicker, DateTimePickerWrapper, DateTime } from '@helsenorge/datepicker/components/DatePicker';
-import { FieldError, FieldValues, useFormContext } from 'react-hook-form';
-import { DateTimeUnit } from '../../../types/dateTypes';
+import { getValidationTextExtension, getExtension } from '../../../util/extension';
+import { evaluateFhirpathExpressionToGetDate } from '../../../util/fhirpathHelper';
+import { isRequired, getId, isReadOnly, getSublabelText, renderPrefix, getText } from '../../../util/index';
+import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
+import { Path } from '../../../util/refero-core';
+import { Resources } from '../../../util/resources';
+import { FormProps } from '../../../validation/ReactHookFormHoc';
+import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
+import TextView from '../textview';
+import Constants from '../../../constants/index';
 
 export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   item: QuestionnaireItem;
@@ -55,8 +58,6 @@ export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   isHelpOpen?: boolean;
   onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
-  register: FormProps['register'];
-  error?: FieldError;
 }
 
 const DateTimeInput: React.FC<Props> = ({
@@ -183,22 +184,6 @@ const DateTimeInput: React.FC<Props> = ({
   //   return moment ? moment.locale(getLocaleFromLanguage()) : undefined;
   // }
 
-  const handleDateChange = (date: Date | string | undefined): void => {
-    // if (typeof date == 'string') {
-    //   date = safeParseJSON(date);
-    // }
-    // date && setDate(date);
-    // setValue(`${idWithLinkIdAndItemIndex}-date`, date);
-  };
-  const handleHoursChange = (hours: string | undefined): void => {
-    // hours && setHours(hours);
-    // setValue(`${idWithLinkIdAndItemIndex}-hours`, date);
-  };
-  const handleMinutesChange = (minutes: string | undefined): void => {
-    // hours && setMinutes(minutes);
-    // setValue(`${idWithLinkIdAndItemIndex}-minutes`, date);
-  };
-
   if (pdf || isReadOnly(item)) {
     return (
       <TextView
@@ -218,15 +203,18 @@ const DateTimeInput: React.FC<Props> = ({
   const [hours, setHours] = React.useState(getHoursOrMinutesFromDate(date, DateTimeUnit.Hours));
   const [minutes, setMinutes] = React.useState(getHoursOrMinutesFromDate(date, DateTimeUnit.Minutes));
 
-  const valueDateTime = getDefaultDate(item, answer);
   const maxDateTime = getMaxDate();
   const minDateTime = getMinDate();
   const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`;
   const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
 
   const getErrorText = (error: FieldError | undefined): string | undefined => {
+    const validationTextExtension = getValidationTextExtension(item);
+    if (validationTextExtension) {
+      return validationTextExtension;
+    }
     if (error) {
-      return getValidationTextExtension(item) || error?.message;
+      return error.message;
     }
   };
 
@@ -235,34 +223,52 @@ const DateTimeInput: React.FC<Props> = ({
     return test;
   }
 
+  const handleDateChange = (newDate: Date | string | undefined): void => {
+    let dateString: Date | string | undefined = '';
+    if (newDate && typeof newDate !== 'string') {
+      dateString = formatDateToStringDDMMYYYY(newDate);
+      setDate(newDate);
+    } else if (newDate) {
+      dateString = newDate;
+      const newDateParsed = parseStringToDateDDMMYYYY(newDate);
+      setDate(newDateParsed);
+    }
+
+    setValue(`${idWithLinkIdAndItemIndex}-date`, dateString);
+    updateQuestionnaireResponse(dateString, hours, minutes);
+  };
+  const handleHoursChange = (newHours: string | undefined): void => {
+    setHours(newHours);
+    setValue(`${idWithLinkIdAndItemIndex}-hours`, newHours);
+    updateQuestionnaireResponse(date, newHours, minutes);
+  };
+  const handleMinutesChange = (newMinutes: string | undefined): void => {
+    setMinutes(newMinutes);
+    setValue(`${idWithLinkIdAndItemIndex}-minutes`, newMinutes);
+    updateQuestionnaireResponse(date, hours, newMinutes);
+  };
+
   initialize();
+
+  const updateQuestionnaireResponse = (date: Date | string | undefined, hours: string | undefined, minutes: string | undefined): void => {
+    const fullDate = getFullFnsDate(date, hours, minutes);
+
+    if (fullDate) {
+      const existingAnswer = answer?.valueDateTime || '';
+      if (dispatch && existingAnswer !== fullDate) {
+        dispatch(newDateTimeValueAsync(path, fullDate, item))?.then(newState =>
+          onAnswerChange(newState, path, item, { valueDateTime: fullDate } as QuestionnaireResponseItemAnswer)
+        );
+      }
+
+      if (promptLoginMessage) {
+        promptLoginMessage();
+      }
+    }
+  };
 
   return (
     <div className="page_refero__component page_refero__component_datetime">
-      {/* <Controller
-        name={idWithLinkIdAndItemIndex}
-        control={control}
-        shouldUnregister={true}
-        rules={{
-          required: {
-            value: isRequired(item),
-            message: resources?.formRequiredErrorMessage ?? 'Feltet er påkrevd',
-          },
-          validate: {
-            validDate: value => {
-              return validateDate(safeParseJSON(value), resources);
-            },
-            validMinDate: value => {
-              return validateMinDate(safeParseJSON(value), resources);
-            },
-            validMaxDate: value => {
-              return validateMaxDate(safeParseJSON(value), resources);
-            },
-            validTime: value => {
-              return validateTime(safeParseJSON(value), resources);
-            },
-          },
-        }}> */}
       <DateTimePickerWrapper errorText={getErrorText(getCombinedFieldError(dateField, hoursField, minutesField))}>
         <DatePicker
           {...register(idWithLinkIdAndItemIndex + '-date', {
@@ -272,13 +278,13 @@ const DateTimeInput: React.FC<Props> = ({
             },
             validate: {
               validDate: value => {
-                return validateDate(value, resources);
+                return validateDate(parseStringToDateDDMMYYYY(value), resources);
               },
               validMinDate: value => {
-                return validateMinDate(value, resources);
+                return validateMinDate(parseStringToDateDDMMYYYY(value), resources);
               },
               validMaxDate: value => {
-                return validateMaxDate(value, resources);
+                return validateMaxDate(parseStringToDateDDMMYYYY(value), resources);
               },
             },
           })}
@@ -286,7 +292,6 @@ const DateTimeInput: React.FC<Props> = ({
           autoComplete=""
           dateButtonAriaLabel="Open datepicker"
           dateFormat={'dd.MM.yyyy'}
-          dateValue={valueDateTime}
           label={
             <Label
               labelId={`${getId(id)}-label-dateTime`}
@@ -295,6 +300,7 @@ const DateTimeInput: React.FC<Props> = ({
               afterLabelChildren={renderHelpButton()}
             />
           }
+          dateValue={date}
           minDate={minDateTime}
           maxDate={maxDateTime}
           onChange={(e, newDate) => {
@@ -309,7 +315,7 @@ const DateTimeInput: React.FC<Props> = ({
             },
             validate: {
               validHours: value => {
-                return validateHours(safeParseJSON(value), resources);
+                return validateHours(Number(value), resources);
               },
             },
           })}
@@ -327,7 +333,7 @@ const DateTimeInput: React.FC<Props> = ({
             },
             validate: {
               validMinutes: value => {
-                return validateMinutes(safeParseJSON(value), resources);
+                return validateMinutes(Number(value), resources);
               },
             },
           })}
@@ -349,30 +355,3 @@ const withCommonFunctionsComponent = withCommonFunctions(DateTimeInput);
 const layoutChangeComponent = layoutChange(withCommonFunctionsComponent);
 const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(layoutChangeComponent);
 export default connectedComponent;
-
-// const handleChange = (date: Date | string | undefined, hours: string | undefined, minutes: string | undefined) => {
-//   date && setDate(date);
-//   hours && setHours(hours);
-//   minutes && setMinutes(minutes);
-
-//   const fullDate = getFullFnsDate(date, hours, minutes);
-
-//   if (fullDate) {
-//     let dateTimeString = fullDate.toString();
-
-//     if (isValid(fullDate)) {
-//       dateTimeString = format(fullDate, Constants.DATE_TIME_FORMAT);
-//     }
-
-//     const existingAnswer = answer?.valueDateTime || '';
-//     if (dispatch && existingAnswer !== dateTimeString) {
-//       dispatch(newDateTimeValueAsync(path, dateTimeString, item))?.then(newState =>
-//         onAnswerChange(newState, path, item, { valueDateTime: dateTimeString } as QuestionnaireResponseItemAnswer)
-//       );
-//     }
-
-//     if (promptLoginMessage) {
-//       promptLoginMessage();
-//     }
-//   }
-// };
