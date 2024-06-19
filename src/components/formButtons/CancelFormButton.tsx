@@ -1,5 +1,3 @@
-import React from 'react';
-
 import Button from '@helsenorge/designsystem-react/components/Button';
 
 import '../../styles/formButtons.css';

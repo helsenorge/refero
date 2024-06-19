@@ -1,5 +1,3 @@
-import React from 'react';
-
 import DOMPurify from 'dompurify';
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem, Questionnaire } from 'fhir/r4';
 import { connect } from 'react-redux';

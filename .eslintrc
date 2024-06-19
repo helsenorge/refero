@@ -1,11 +1,15 @@
 {
   "parser": "@typescript-eslint/parser",
-  "extends": ["plugin:@typescript-eslint/recommended", "plugin:react/recommended", "prettier"],
+  "extends": ["eslint:recommended", "plugin:@typescript-eslint/eslint-recommended", "prettier", "plugin:@typescript-eslint/recommended"],
   "parserOptions": {
-    "ecmaVersion": 2018,
+    "ecmaVersion": 2020,
     "sourceType": "module"
   },
-  "plugins": ["react", "import", "testing-library", "jest-dom"],
+  "plugins": ["react", "import", "testing-library", "jest-dom", "@typescript-eslint"],
+  "globals": {
+    "React": true,
+    "JSX": true
+  },
   "rules": {
     "@typescript-eslint/ban-types": "warn",
     "@typescript-eslint/explicit-function-return-type": "warn",
@@ -15,8 +19,8 @@
     "react/display-name": "warn",
     "no-console": "error",
     "no-debugger": "error",
-
-    "react/prop-types": 0, //Gir feil i funksjonelle komponenter
+    "react/react-in-jsx-scope": 0,
+    "react/prop-types": 0,
     "@typescript-eslint/no-use-before-define": 0,
     "@typescript-eslint/no-inferrable-types": 0,
 

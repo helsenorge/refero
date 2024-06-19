@@ -8,9 +8,11 @@ import { RenderContext } from '../../../util/renderContext';
 import { Resources } from '../../../util/resources';
 
 export const getColumns = (item: QuestionnaireItem): Array<string> => {
-  const seenColumns = {};
+  const seenColumns: { [key: string]: number } = {};
   const columns: Array<string> = [];
+
   if (!item.item || item.item.length === 0) return columns;
+
   for (const group of item.item) {
     if (group.item && group.item.length > 0) {
       for (const cell of group.item) {
