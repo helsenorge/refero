@@ -1,5 +1,18 @@
 ## 16.0.0-beta06
 
+- [Breaking change] exports from refero now comes directly from @helsenorge/refero
+- [Breaking change] exports ReferoContainer by default
+- [Breaking change] Updated tsconfigs to support es2020, build is es.js
+
+- [For development] Changed from tsc build to vite build
+- [For development] Moved preview out from src
+- [For development] Updated prettierrc, eslintrc and jest.config
+- [For development] Updated plugins for babel, vite, jest
+- Updated ts to 5.4.5
+- removed: xml2js, yargs, tabbable, rimraf, esm, crlf, bufferutil, bfj +++
+
+## 16.0.0-beta06
+
 - updated build script to handle css
 
 ## 16.0.0-beta05
@@ -1220,8 +1233,8 @@
 
   { linkId: "1", text: "This is a question", type: "group", item: [ { extension: [ { url:
   "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl", valueCodeableConcept: { coding: [ { system:
-  "http://hl7.org/fhir/ValueSet/questionnaire-item-control", code: "help" } ] } } ], linkId: "1.0.1", text: "This is the help text for the
-  item with linkId 1", type: "text" } ] }
+  "http://hl7.org/fhir/ValueSet/questionnaire-item-control", code: "help" } ] } } ], linkId: "1.0.1", text: "This is the help text for the item
+  with linkId 1", type: "text" } ] }
 
   2.2.2
 
