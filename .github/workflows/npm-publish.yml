@@ -25,10 +25,8 @@ jobs:
       - name: Clean cache
         run: npm cache clean --force
 
-      - run: npm install @ast-grep/napi-linux-x64-gnu --force
-
       - name: Install dependencies
-        run: npm ci
+        run: npm install
 
       - name: Test
         run: npm test
@@ -42,7 +40,7 @@ jobs:
         with:
           node-version: 20
           registry-url: https://registry.npmjs.org/
-      - run: npm ci
+      - run: npm install
       - run: npm run prepare
       - run: cd ./lib && npm publish
         env:
