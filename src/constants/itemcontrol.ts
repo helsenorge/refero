@@ -1,4 +1,4 @@
-export default {
+const ItemControlConstants = {
   CHECKBOX: 'check-box',
   DROPDOWN: 'drop-down',
   RADIOBUTTON: 'radio-button',
@@ -21,3 +21,12 @@ export default {
   },
   SLIDER: 'slider',
 } as const;
+
+export default ItemControlConstants;
+export type ValueOf<T> = T[keyof T];
+export type ItemControlValue = ValueOf<typeof ItemControlConstants | typeof ItemControlConstants.Group>;
+export function isItemControlValue(value: string): value is ItemControlValue {
+  return (
+    Object.values(ItemControlConstants).some(val => val === value) || Object.values(ItemControlConstants.Group).some(val => val === value)
+  );
+}

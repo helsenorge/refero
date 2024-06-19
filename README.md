@@ -1,6 +1,19 @@
 # @helsenorge/refero
 
-React component that consumes a [FHIR Questionnaire](https://www.hl7.org/fhir/questionnaire.html) object and renders it as a form.
+React component that consumes a [FHIR Questionnaire](https://hl7.org/fhir/R4/questionnaire.html) object and renders it as a form.
+
+## PeerDependencies
+
+- [@helsenorge/core-utils](https://www.npmjs.com/package/@helsenorge/core-utils)
+- [@helsenorge/file-upload](https://www.npmjs.com/package/@helsenorge/file-upload)
+- [@helsenorge/date-time](https://www.npmjs.com/package/@helsenorge/date-time)
+- [@helsenorge/autosuggest](https://www.npmjs.com/package/@helsenorge/autosuggest)
+- [@helsenorge/designsystem-react](https://www.npmjs.com/package/@helsenorge/designsystem-react)
+- [react](https://www.npmjs.com/package/react)
+- [react-dom](https://www.npmjs.com/package/react-dom)
+- [redux](https://www.npmjs.com/package/redux)
+- [react-redux](https://www.npmjs.com/package/react-redux)
+- [redux-thunk](https://www.npmjs.com/package/redux-thunk)
 
 ## Dependencies
 
@@ -9,12 +22,11 @@ React component that consumes a [FHIR Questionnaire](https://www.hl7.org/fhir/qu
 - [@helsenorge/date-time](https://www.npmjs.com/package/@helsenorge/date-time)
 - [@helsenorge/autosuggest](https://www.npmjs.com/package/@helsenorge/autosuggest)
 - [@helsenorge/designsystem-react](https://www.npmjs.com/package/@helsenorge/designsystem-react)
+- [firepath](https://www.npmjs.com/package/firepath)
 - [marked](https://www.npmjs.com/package/marked)
-- [moment](https://www.npmjs.com/package/moment)
 - [uuid](https://www.npmjs.com/package/uuid)
 - [dompurify](https://www.npmjs.com/package/dompurify)
 - [immer](https://www.npmjs.com/package/immer)
-- [React hook form](https://www.npmjs.com/package/react-hook-form)
 
 ## Example usage
 
@@ -23,8 +35,7 @@ import React from 'react';
 import { Store, createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
-import rootReducer from '@helsenorge/refero/reducers';
-import { ReferoContainer } from '@helsenorge/refero/components';
+import { Refero, rootReducer } from '@helsenorge/refero';
 
 let store: Store<{}> = createStore(rootReducer, applyMiddleware(thunk));
 
@@ -32,7 +43,7 @@ class App extends Component<{}, {}> {
   render() {
     return (
       <Provider store={store}>
-        <ReferoContainer
+        <Refero
           store={store}
           questionnaire={...}
           questionnaireResponse={...}
@@ -89,7 +100,7 @@ class App extends Component<{}, {}> {
 | onOpenAttachment              |          | callback                   | null    | Callback when user opens attachment                                                                           |
 | onRequestAttachmentLink       |          | callback                   | null    | Callback when the form needs to render a link to an attachment                                                |
 | attachmentMaxFileSize         |          | number                     | 25M     | Max allowed file size for attachments in bytes. Default is 25M                                                |
-| attachmentValidTypes          |          | Array<string>              | ...     | List of allowed mime types for attachments. Default allowed types are: image/jpeg, image/png, application/pdf |
+| attachmentValidTypes          |          | string[]                   | ...     | List of allowed mime types for attachments. Default allowed types are: image/jpeg, image/png, application/pdf |
 | attachmentErrorMessage        |          | string                     | null    | Text shown when file-upload fails to validate                                                                 |
 | promptLoginMessage            |          | callback                   | null    | Callback when the form needs to notify the user about authentication                                          |
 | loginButton                   | true     | JSX.Element                |         | JSX for when the form needs to render a login button                                                          |
@@ -116,12 +127,12 @@ class App extends Component<{}, {}> {
 
 ### `questionnaire: Questionnaire`
 
-This is the questionnaire to be rendered. It must be a [`Questionnaire`](https://www.hl7.org/fhir/questionnaire.html) object.
+This is the questionnaire to be rendered. It must be a [`Questionnaire`](https://hl7.org/fhir/R4/questionnaire.html) object.
 
 ### `questionnaireResponse: QuestionnaireResponse`
 
 This is the object that reflects the users answers. If the property is not specified, an empty
-[`QuestionnaireResponse`](https://www.hl7.org/fhir/questionnaireresponse.html) will be generated.
+[`QuestionnaireResponse`](https://hl7.org/fhir/R4/questionnaireresponse.html) will be generated.
 
 ### `resources: Resources`
 
@@ -294,7 +305,6 @@ the current index will be updated to. This can be used to make progress indicato
 ## `ValidationSummaryPlacement`
 
 ```ts
-// location: '@helsenorge/form/components/form/validationSummaryPlacement'
 enum ValidationSummaryPlacement {
   Top = 'Top',
   Bottom = 'Bottom',
@@ -306,7 +316,6 @@ enum ValidationSummaryPlacement {
 ## `IActionRequester`
 
 ```ts
-// location '@helsenorge/refero/util/actionRequester'
 interface IActionRequester {
   addIntegerAnswer(linkId: string, value: number, index?: number): void;
   addDecimalAnswer(linkId: string, value: number, index?: number): void;
@@ -355,7 +364,6 @@ interface IQuestionnaireInspector {
 ## `Path`
 
 ```ts
-// location: '@helsenorge/refero/util/refero-core'
 interface Path {
   linkId: string;
   index?: number;
@@ -379,7 +387,6 @@ interface ItemAndPath {
 ## `TextMessage`
 
 ```ts
-// location: '@helsenorge/refero/types/text-message'
 interface TextMessage {
   Title: string;
   Body: string;
@@ -399,7 +406,6 @@ interface UploadedFile {
 ## `Resources`
 
 ```ts
-// location: '@helsenorge/refero/util/resources'
 interface Resources {
   deleteButtonText: string;
   validationSummaryHeader: string;
@@ -500,13 +506,18 @@ interface Resources {
   linkOpensInNewTab?: string;
   nextStep?: string;
   previousStep?: string;
+  openChoiceOption?: string;
+  attachmentError_required?: string;
+  attachmentError_minFiles?: string;
+  attachmentError_maxFiles?: string;
+  attachmentError_fileSize?: string;
+  attachmentError_fileType?: string;
 }
 ```
 
 ## `AutoSuggestProps`
 
 ```ts
-// location: '@helsenorge/refero/types/autoSuggestProps'
 interface AutoSuggestProps {
   minSearchCharacters: number;
   typingSearchDelay: number;
@@ -516,7 +527,6 @@ interface AutoSuggestProps {
 ## `ValueSet`
 
 ```ts
-// location: '@helsenorge/refero/types/fhir'
 interface ValueSet extends DomainResource {
   // ValueSet as defined by the FHIR standard
 }
@@ -525,13 +535,12 @@ interface ValueSet extends DomainResource {
 ## `OrgenhetHierarki`
 
 ```ts
-// location: '@helsenorge/refero/types/orgenhetHierarki'
 interface OrgenhetHierarki {
   OrgenhetId: number;
   Navn: string;
   EnhetType: EnhetType;
   EndepunktId: string | null;
-  UnderOrgenheter: Array<OrgenhetHierarki> | null;
+  UnderOrgenheter: OrgenhetHierarki[] | null;
 }
 
 enum EnhetType {

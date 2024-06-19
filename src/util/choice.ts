@@ -18,7 +18,7 @@ import { getItemControlExtensionValue, getValidationTextExtension } from './exte
 import { Resources } from './resources';
 import { Extensions } from '../constants/extensions';
 import Constants, { OPEN_CHOICE_ID } from '../constants/index';
-import itemControlConstants from '../constants/itemcontrol';
+import itemControlConstants, { ItemControlValue, isItemControlValue } from '../constants/itemcontrol';
 import ItemType from '../constants/itemType';
 
 import { isReadOnly, isRequired } from './index';
@@ -154,29 +154,13 @@ export function isAboveDropdownThreshold(options: Array<Options> | undefined): b
   return options.length > Constants.CHOICE_DROPDOWN_TRESHOLD;
 }
 
-export function getItemControlValue(item: QuestionnaireItem): string | undefined {
+export function getItemControlValue(item: QuestionnaireItem): ItemControlValue | undefined {
   const itemControl = getItemControlExtensionValue(item);
   if (itemControl) {
-    for (let i = 0; i < itemControl.length; i++) {
-      if (itemControl[i] && itemControl[i].code) {
-        if (itemControl[i].code === itemControlConstants.CHECKBOX) {
-          return itemControlConstants.CHECKBOX;
-        }
-        if (itemControl[i].code === itemControlConstants.DROPDOWN) {
-          return itemControlConstants.DROPDOWN;
-        }
-        if (itemControl[i].code === itemControlConstants.RADIOBUTTON) {
-          return itemControlConstants.RADIOBUTTON;
-        }
-        if (itemControl[i].code === itemControlConstants.AUTOCOMPLETE) {
-          return itemControlConstants.AUTOCOMPLETE;
-        }
-        if (itemControl[i].code === itemControlConstants.RECEIVERCOMPONENT) {
-          return itemControlConstants.RECEIVERCOMPONENT;
-        }
-        if (itemControl[i].code === itemControlConstants.SLIDER) {
-          return itemControlConstants.SLIDER;
-        }
+    for (const control of itemControl) {
+      const code = control?.code;
+      if (code && isItemControlValue(code)) {
+        return code;
       }
     }
   }
