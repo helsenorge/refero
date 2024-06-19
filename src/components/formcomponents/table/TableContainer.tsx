@@ -1,5 +1,3 @@
-import React from 'react';
-
 import {
   Coding,
   Questionnaire,
@@ -47,7 +45,7 @@ export interface Props {
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
 }
 
-interface EnhancedProps {
+export interface StateProps {
   headline: string;
   tableCodesCoding: Coding[];
   items: QuestionnaireItem[];
@@ -56,15 +54,8 @@ interface EnhancedProps {
   language: LanguageLocales;
   resource: Resource[] | undefined;
 }
-
-const TableContainer = ({
-  tableCodesCoding,
-  items,
-  headline,
-  tableType,
-  questionnaireResponse,
-  resource,
-}: Props & EnhancedProps): JSX.Element => {
+export interface CombinedProps extends Props, StateProps {}
+const TableContainer = ({ tableCodesCoding, items, headline, tableType, questionnaireResponse, resource }: CombinedProps): JSX.Element => {
   {
     switch (tableType) {
       case TableCodes.tableHn1:
@@ -110,7 +101,7 @@ const TableContainer = ({
   }
 };
 
-const mapStateToProps = (state: GlobalState, props: Props): EnhancedProps => {
+const mapStateToProps = (state: GlobalState, props: Props): StateProps => {
   const group = props.item;
   const tableType = getCodingTextTableValues(group)[0];
   const resource = getFormDefinition(state)?.Content?.contained;

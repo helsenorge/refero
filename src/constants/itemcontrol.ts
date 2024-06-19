@@ -20,4 +20,4 @@ export default {
     GRID: 'grid',
   },
   SLIDER: 'slider',
-};
+} as const;

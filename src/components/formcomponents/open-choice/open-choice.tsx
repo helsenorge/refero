@@ -1,4 +1,4 @@
-import React from 'react';
+import { FocusEvent } from 'react';
 
 import {
   QuestionnaireItem,
@@ -176,7 +176,7 @@ export const OpenChoice = (props: Props): JSX.Element | null => {
     return [String(item.initial[0].valueCoding.code)];
   };
 
-  const handleStringChangeEvent = (event: React.FocusEvent<HTMLInputElement, Element>): void => {
+  const handleStringChangeEvent = (event: FocusEvent<HTMLInputElement, Element>): void => {
     const value = event.target.value;
     handleStringChange(value);
   };
@@ -337,7 +337,7 @@ export const OpenChoice = (props: Props): JSX.Element | null => {
     const commonProps = {
       handleChange: handleChange,
       selected: getValue(item, answer),
-      renderOpenField: () => renderTextField(),
+      renderOpenField: (): JSX.Element | undefined => renderTextField(),
       ...props,
     };
 

@@ -5,3 +5,4 @@ lib/
 coverage/
 test-report.xml
 .npmrc
+vite.config.ts.timestamp*

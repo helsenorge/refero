@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
