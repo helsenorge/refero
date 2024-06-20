@@ -246,6 +246,7 @@ const DateTimeInput: React.FC<Props> = ({
 
   return (
     <div className="page_refero__component page_refero__component_datetime">
+      {renderHelpElement()}
       <DateTimePickerWrapper errorText={getErrorText(getCombinedFieldError(dateField, hoursField, minutesField))}>
         <DatePicker
           {...register(idWithLinkIdAndItemIndex + '-date', {
