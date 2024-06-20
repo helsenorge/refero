@@ -1,6 +1,7 @@
 import * as React from 'react';
 
-import { format, parse } from 'date-fns';
+import { format } from 'date-fns';
+import { isValid } from 'date-fns';
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem, Questionnaire } from 'fhir/r4';
 import { FieldError, FieldValues, useFormContext } from 'react-hook-form';
 import { connect } from 'react-redux';
@@ -37,8 +38,6 @@ import { Resources } from '../../../util/resources';
 import { FormProps } from '../../../validation/ReactHookFormHoc';
 import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 import TextView from '../textview';
-import Constants from '../../../constants/index';
-import { isValid } from 'date-fns';
 
 export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   item: QuestionnaireItem;
@@ -86,9 +85,6 @@ const DateTimeInput: React.FC<Props> = ({
   const minutesField = getFieldState(`${idWithLinkIdAndItemIndex}-minutes`, formState);
 
   const getDefaultDate = (item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer): Date | undefined => {
-    // if (answer && answer.valueDateTime && !isValid(answer.valueDateTime)) {
-    //   return undefined;
-    // }
     if (answer && answer.valueDateTime) {
       return safeParseJSON(String(answer.valueDateTime));
     }
@@ -145,12 +141,6 @@ const DateTimeInput: React.FC<Props> = ({
     return undefined;
   };
 
-  // const promptLogin = (): void => {
-  //   if (promptLoginMessage) {
-  //     promptLoginMessage();
-  //   }
-  // };
-
   const convertDateToString = (item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer): string | undefined => {
     const date = getDefaultDate(item, answer);
     if (date) {
@@ -170,20 +160,6 @@ const DateTimeInput: React.FC<Props> = ({
     }
     return date ?? text;
   };
-
-  // React.useEffect(() => {}, [responseItem, isHelpOpen, answer, resources, item.repeats, error]);
-
-  // getLocaleFromLanguage = (): LanguageLocales.NORWEGIAN | LanguageLocales.ENGLISH => {
-  //   if (props.language?.toLowerCase() === 'en-gb') {
-  //     return LanguageLocales.ENGLISH;
-  //   }
-
-  //   return LanguageLocales.NORWEGIAN;
-  // };
-
-  // toLocaleDate(moment: Moment | undefined): Moment | undefined {
-  //   return moment ? moment.locale(getLocaleFromLanguage()) : undefined;
-  // }
 
   if (pdf || isReadOnly(item)) {
     return (
