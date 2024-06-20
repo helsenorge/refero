@@ -1,14 +1,12 @@
 import React from 'react';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem, Questionnaire } from 'fhir/r4';
-import moment from 'moment';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
 import Label from '@helsenorge/designsystem-react/components/Label';
 
 import TimeInput from '@helsenorge/date-time/components/time-input';
-import { parseDate } from '@helsenorge/date-time/components/time-input/date-core';
 import * as DateTimeConstants from '@helsenorge/date-time/constants/datetime';
 
 import { NewValueAction, newTimeValueAsync } from '../../../actions/newValue';
@@ -23,6 +21,8 @@ import ReactHookFormHoc, { FormProps } from '../../../validation/ReactHookFormHo
 import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 import SubLabel from '../sublabel';
 import TextView from '../textview';
+import { safeParseJSON } from '../../../util/date-fns-utils';
+import { getHours, getMinutes } from 'date-fns';
 
 export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   value?: string;
@@ -66,10 +66,10 @@ class Time extends React.Component<Props> {
       return answer.valueTime;
     }
     if (answer && answer.valueDate) {
-      return this.getTimeStringFromDate(parseDate(String(answer.valueDate)));
+      return this.getTimeStringFromDate(safeParseJSON(String(answer.valueDate)));
     }
     if (answer && answer.valueDateTime) {
-      return this.getTimeStringFromDate(parseDate(String(answer.valueDateTime)));
+      return this.getTimeStringFromDate(safeParseJSON(String(answer.valueDateTime)));
     }
     return '';
   }
@@ -97,9 +97,16 @@ class Time extends React.Component<Props> {
     return value;
   }
 
-  getTimeStringFromDate(date: Date): string {
-    const momentDate = moment(date);
-    return `${momentDate.hours()}${DateTimeConstants.TIME_SEPARATOR}${momentDate.minutes()}`;
+  getTimeStringFromDate(date: Date | undefined): string {
+    if (!date) {
+      return '';
+    }
+    const hours = getHours(date);
+    const minutes = getMinutes(date);
+    const formattedHours = String(hours).padStart(2, '0');
+    const formattedMinutes = String(minutes).padStart(2, '0');
+
+    return `${formattedHours}${DateTimeConstants.TIME_SEPARATOR}${formattedMinutes}`;
   }
 
   getMaxHour(): number {

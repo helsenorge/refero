@@ -8,7 +8,7 @@ import Boolean from '../formcomponents/boolean/boolean';
 import Group from '../formcomponents/group/group';
 import Attachment from '../formcomponents/attachment/attachment';
 import Date from '../formcomponents/date/date';
-import DateTime from '../formcomponents/date/date-time';
+import DateTimeInput from '../formcomponents/date/date-time';
 import Time from '../formcomponents/date/time';
 import Decimal from '../formcomponents/decimal/decimal';
 import Integer from '../formcomponents/integer/integer';

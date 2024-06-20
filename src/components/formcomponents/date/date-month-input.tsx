@@ -1,7 +1,6 @@
 import React from 'react';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
-import moment, { Moment } from 'moment';
 
 import { LanguageLocales } from '@helsenorge/core-utils/constants/languages';
 import { YearMonthResources, YearMonthInput, YearMonthValue } from '@helsenorge/date-time/components/year-month-input';
@@ -12,6 +11,7 @@ import { Resources } from '../../../util/resources';
 import { FormProps } from '../../../validation/ReactHookFormHoc';
 import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 import TextView from '../textview';
+import { format } from 'date-fns';
 
 interface Props extends FormProps, WithCommonFunctionsAndEnhancedProps {
   id?: string;
@@ -26,8 +26,8 @@ interface Props extends FormProps, WithCommonFunctionsAndEnhancedProps {
   onDateValueChange: (newValue: string) => void;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
   className?: string;
-  maxDate?: Moment;
-  minDate?: Moment;
+  maxDate?: Date;
+  minDate?: Date;
   answer: QuestionnaireResponseItemAnswer;
 }
 
@@ -83,18 +83,19 @@ export class DateYearMonthInput extends React.Component<Props> {
     }
   };
 
-  getMinMaxDate = (dateValue: Moment | undefined): YearMonthValue | undefined => {
+  getMinMaxDate = (dateValue: Date | undefined): YearMonthValue | undefined => {
     return dateValue
       ? {
-          year: dateValue.year(),
-          month: dateValue.month(),
+          year: dateValue.getFullYear(),
+          // Legger til 1 siden getMonth() returnerer en zero-based index (0-11)
+          month: dateValue.getMonth() + 1,
         }
       : undefined;
   };
 
   convertToPDFValue = (answer: QuestionnaireResponseItemAnswer): string => {
     const value = this.getDateValueFromAnswer(answer);
-    return moment(value).locale(this.props.locale).format('MMMM YYYY');
+    return value ? format(value, 'MMMM yyyy') : '';
   };
 
   getPDFValue = (): string => {

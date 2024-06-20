@@ -1,7 +1,6 @@
 import '../../util/__tests__/defineFetch';
 
 import { Questionnaire, QuestionnaireItem, Extension } from 'fhir/r4';
-
 import Valueset from '../../util/__tests__/__data__/valuesets/valueset-8459';
 import { createItemControlExtension } from '../__tests__/utils';
 import itemControlConstants from '../../constants/itemcontrol';
