@@ -34,5 +34,5 @@ module.exports = {
     '\\.(png|svg)$': '<rootDir>/config/empty.js',
   },
   moduleDirectories: ['node_modules', 'components/__tests__/test-utils'],
-  setupFilesAfterEnv: ['<rootDir>/config/setupTests.js'],
+  setupFilesAfterEnv: ['<rootDir>/config/setupTests.ts'],
 };
