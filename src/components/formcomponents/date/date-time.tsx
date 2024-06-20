@@ -38,6 +38,7 @@ import { FormProps } from '../../../validation/ReactHookFormHoc';
 import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 import TextView from '../textview';
 import Constants from '../../../constants/index';
+import { isValid } from 'date-fns';
 
 export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   item: QuestionnaireItem;
@@ -199,9 +200,10 @@ const DateTimeInput: React.FC<Props> = ({
     );
   }
 
-  const [date, setDate] = React.useState(getDefaultDate(item, answer));
-  const [hours, setHours] = React.useState(getHoursOrMinutesFromDate(date, DateTimeUnit.Hours));
-  const [minutes, setMinutes] = React.useState(getHoursOrMinutesFromDate(date, DateTimeUnit.Minutes));
+  const defaultDate: Date | undefined = getDefaultDate(item, answer);
+  const [date, setDate] = React.useState<Date | undefined>(undefined);
+  const [hours, setHours] = React.useState(getHoursOrMinutesFromDate(defaultDate, DateTimeUnit.Hours));
+  const [minutes, setMinutes] = React.useState(getHoursOrMinutesFromDate(defaultDate, DateTimeUnit.Minutes));
 
   const maxDateTime = getMaxDate();
   const minDateTime = getMinDate();
@@ -231,7 +233,7 @@ const DateTimeInput: React.FC<Props> = ({
     } else if (newDate) {
       dateString = newDate;
       const newDateParsed = parseStringToDateDDMMYYYY(newDate);
-      setDate(newDateParsed);
+      isValid(newDateParsed) && setDate(newDateParsed);
     }
 
     setValue(`${idWithLinkIdAndItemIndex}-date`, dateString);
@@ -300,7 +302,7 @@ const DateTimeInput: React.FC<Props> = ({
               afterLabelChildren={renderHelpButton()}
             />
           }
-          dateValue={date}
+          dateValue={date ? undefined : defaultDate}
           minDate={minDateTime}
           maxDate={maxDateTime}
           onChange={(e, newDate) => {

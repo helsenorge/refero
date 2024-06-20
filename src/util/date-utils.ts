@@ -17,7 +17,7 @@ export function getFullFnsDate(
     date = parseStringToDateDDMMYYYY(date);
   }
 
-  if (!date) {
+  if (!date || !isValid(date)) {
     return undefined;
   } else {
     if (hours) {
@@ -42,7 +42,7 @@ export const getDateFromAnswer = (answer: QuestionnaireResponseItemAnswer): Date
 };
 
 export const getHoursOrMinutesFromDate = (date: Date | undefined, unitToGet: DateTimeUnit): string | undefined => {
-  if (!date) return undefined;
+  if (!date || !isValid(date)) return undefined;
 
   if (unitToGet === DateTimeUnit.Hours) {
     return format(date, DatePickerFormat.HH);
