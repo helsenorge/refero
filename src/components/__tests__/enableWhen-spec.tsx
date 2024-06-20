@@ -1,16 +1,9 @@
-import * as React from 'react';
-import { createStore, applyMiddleware } from 'redux';
-import { Provider } from 'react-redux';
-import thunk from 'redux-thunk';
-import { mount } from 'enzyme';
-
-import '../../util/defineFetch';
+import '../../util/__tests__/defineFetch';
 import { Questionnaire } from 'fhir/r4';
-import { ReferoContainer } from '..';
-import { Resources } from '../../util/resources';
+
 import questionnaireWithEnableWhen from './__data__/enableWhen';
-import { selectCheckBoxOption } from './utils';
-import rootReducer from '../../reducers';
+import { renderRefero } from './test-utils/test-utils';
+import { selectCheckboxOption } from './test-utils/selectors';
 
 describe('enableWhen with checkboxes and multiple answers', () => {
   beforeEach(() => {
@@ -20,44 +13,24 @@ describe('enableWhen with checkboxes and multiple answers', () => {
   });
 
   it('enableWhen should trigger when correct answer is selected', async () => {
-    const wrapper = createWrapper(questionnaireWithEnableWhen);
-    wrapper.render();
+    const { queryByLabelText } = createWrapper(questionnaireWithEnableWhen);
+    expect(queryByLabelText('Flere sykdommer')).not.toBeInTheDocument();
+    await selectCheckboxOption('Andre sykdommer');
 
-    expect(wrapper.find('input#item_9_2')).toHaveLength(0);
-    await selectCheckBoxOption('9_1', '18', wrapper);
-    expect(wrapper.find('input#item_9_2')).toHaveLength(1);
+    expect(queryByLabelText('Flere sykdommer')).toBeInTheDocument();
   });
 
   it('enableWhen should trigger when correct answer is selected along with other answers', async () => {
-    const wrapper = createWrapper(questionnaireWithEnableWhen);
-    wrapper.render();
+    const { queryByLabelText } = createWrapper(questionnaireWithEnableWhen);
+    expect(queryByLabelText('Flere sykdommer')).not.toBeInTheDocument();
+    await selectCheckboxOption('Allergi');
+    await selectCheckboxOption('Hepatitt C');
+    await selectCheckboxOption('Andre sykdommer');
 
-    expect(wrapper.find('input#item_9_2')).toHaveLength(0);
-    await selectCheckBoxOption('9_1', '10', wrapper);
-    expect(wrapper.find('input#item_9_2')).toHaveLength(0);
-
-    await selectCheckBoxOption('9_1', '18', wrapper);
-    expect(wrapper.find('input#item_9_2')).toHaveLength(1);
-
-    await selectCheckBoxOption('9_1', '11', wrapper);
-    expect(wrapper.find('input#item_9_2')).toHaveLength(1);
+    expect(queryByLabelText('Flere sykdommer')).toBeInTheDocument();
   });
 });
 
 function createWrapper(questionnaire: Questionnaire) {
-  const store: any = createStore(rootReducer, applyMiddleware(thunk));
-  return mount(
-    <Provider store={store}>
-      <ReferoContainer
-        loginButton={<React.Fragment />}
-        store={store}
-        authorized={true}
-        onCancel={() => {}}
-        onSave={() => {}}
-        onSubmit={() => {}}
-        resources={{} as Resources}
-        questionnaire={questionnaire}
-      />
-    </Provider>
-  );
+  return renderRefero({ questionnaire, props: { authorized: true } });
 }

@@ -1,32 +1,34 @@
 import React, { useRef } from 'react';
+
 import { FieldErrors, FieldValues, useFormContext } from 'react-hook-form';
+
 import { Resources } from '../util/resources';
 
-import '../styles/validationSummary.scss';
+import '../styles/validationSummary.css';
 
 interface ValidationSummaryProps {
   resources: Resources;
   errors: FieldErrors<FieldValues>;
 }
 
-export const ValidationSummary = ({ errors, resources }: ValidationSummaryProps) => {
+export const ValidationSummary = ({ errors, resources }: ValidationSummaryProps): JSX.Element | null => {
   const errorArray = Object.entries(errors);
   const errorSummaryRef = useRef<HTMLDivElement | null>(null);
 
   const { setFocus, formState } = useFormContext();
 
-  const handleErrorButtonClicked = (fieldName: string) => {
+  const handleErrorButtonClicked = (fieldName: string): void => {
     setFocus(fieldName);
   };
 
   React.useEffect(() => {
-    if (errorArray.length > 0 && errorSummaryRef.current) {
-      errorSummaryRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (errorArray.length > 0 && errorSummaryRef && errorSummaryRef.current) {
+      errorSummaryRef?.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   }, [formState.submitCount]);
 
   if (errorArray.length === 0) {
-    return <></>;
+    return null;
   } else
     return (
       <div ref={errorSummaryRef}>
@@ -35,7 +37,7 @@ export const ValidationSummary = ({ errors, resources }: ValidationSummaryProps)
           {errorArray &&
             errorArray.map(([fieldName], index) => (
               <li className="validationSummary_listItem" key={fieldName + index.toString()}>
-                <button className="validationSummary_button" onClick={() => handleErrorButtonClicked(fieldName)}>
+                <button className="validationSummary_button" onClick={(): void => handleErrorButtonClicked(fieldName)}>
                   {fieldName}
                 </button>
               </li>

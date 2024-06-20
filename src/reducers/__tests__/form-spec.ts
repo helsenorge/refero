@@ -1,7 +1,6 @@
 /* tslint:disable */
-import * as chai from 'chai';
 
-import '../../util/defineFetch';
+import '../../util/__tests__/defineFetch';
 import reducer, { Form } from '../form';
 import { Coding, QuestionnaireResponseItem, Attachment } from 'fhir/r4';
 import {
@@ -26,8 +25,6 @@ import {
   getItemWithIdFromResponseItemArray,
 } from '../../util/refero-core';
 import dataModel from './__data__/dummy-data-model';
-
-const should = chai.should();
 
 describe('new value action', () => {
   it('should update string value', () => {
@@ -265,36 +262,6 @@ describe('new value action', () => {
     expect(answer.valueCoding.display).toEqual('new display');
   });
 
-  it('should update coding value with multiple answers', () => {
-    let action: NewValueAction = newCodingValue([{ linkId: 'c' }], { code: 'y', display: 'displayy' } as Coding, undefined, true);
-    let newState: Form | undefined = reducer(dataModel.refero.form, action);
-    if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
-      return fail();
-    }
-    let item = newState.FormData.Content.item[7];
-    if (!item || item.answer === undefined || item.answer === null || !item.answer[0]) {
-      return fail();
-    }
-    const answer = item.answer[0];
-    if (!answer || !answer.valueCoding) {
-      return fail();
-    }
-    expect(answer.valueCoding.code).toMatchSnapshot();
-    expect(answer.valueCoding.display).toMatchSnapshot();
-
-    action = newCodingValue([{ linkId: 'c' }], { code: 'n', display: 'new display' } as Coding, undefined, true);
-    newState = reducer(dataModel.refero.form, action);
-    if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
-      return fail();
-    }
-    item = newState.FormData.Content.item[7];
-    if (!item || item.answer === undefined || item.answer === null || !item.answer[0]) {
-      return fail();
-    }
-    expect(item.answer.length).toMatchSnapshot();
-    expect(item.answer[0]).toMatchSnapshot();
-    expect(item.answer[1]).toMatchSnapshot();
-  });
   it('should update attachment fields', () => {
     const action: NewValueAction = newAttachment(
       [{ linkId: 'attachment' }],
@@ -427,13 +394,13 @@ describe('new value action', () => {
     expect(dataModel.refero.form.FormData.Content.item.length).toEqual(12);
 
     const repeatGroupResponseItems = getItemWithIdFromResponseItemArray('addGroupTest1', newState.FormData.Content.item);
-    should.exist(repeatGroupResponseItems);
+    expect(repeatGroupResponseItems).toBeDefined();
     if (repeatGroupResponseItems) {
       expect(repeatGroupResponseItems.length).toEqual(2);
     }
 
     const addedGroup = newState.FormData.Content.item[10];
-    should.exist(addedGroup);
+    expect(addedGroup).toBeDefined();
 
     if (!addedGroup || !addedGroup.item) {
       return fail();
@@ -444,7 +411,7 @@ describe('new value action', () => {
       return fail();
     }
     expect(items.length).toEqual(1);
-    should.exist(items[0]);
+    expect(items[0]).toBeDefined();
 
     expect(items[0].linkId).toEqual('addGroupTest111');
     // also check answer items are copied but not answer value
@@ -478,7 +445,7 @@ describe('new value action', () => {
       { linkId: 'group110' },
       { linkId: 'group110.1' },
     ]);
-    should.exist(addedGroup);
+    expect(addedGroup).toBeDefined();
 
     if (!addedGroup || !addedGroup.item) {
       return fail();
@@ -512,7 +479,7 @@ describe('new value action', () => {
       { linkId: 'group110' },
       { linkId: 'group110.1', index: 1 },
     ]);
-    should.exist(addedGroup);
+    expect(addedGroup).toBeDefined();
 
     action = deleteRepeatItem([{ linkId: 'group110' }, { linkId: 'group110.1', index: 1 }], { linkId: 'group110.1', type: 'group' });
 

@@ -1,9 +1,4 @@
-import {
-  QuestionnaireItem,
-  QuestionnaireResponse,
-  QuestionnaireResponseItem,
-  QuestionnaireResponseItemAnswer,
-} from '../../../../../../types/fhir';
+import { QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import {
   columnsForRowIndex,
   createTableHeader,
@@ -14,11 +9,13 @@ import {
 } from '../utils';
 import ItemType from '../../../../../../constants/itemType';
 import { QuestionnaireItemWithAnswers } from '../../interface';
+import { Extensions } from '../../../../../../constants/extensions';
+import { QUESTIONNAIRE_ITEM_CONTROL_SYSTEM } from '../../../../../../constants/valuesets';
 
 type MockAnswerProps = Partial<QuestionnaireResponseItemAnswer>;
 type MockResponseItemProps = Partial<QuestionnaireResponseItem>;
 type MockQuestionnaireItemProps = Partial<Omit<QuestionnaireItem, 'type'>> & {
-  type: string; // Make type a required property
+  type: string;
 };
 type MockResponseProps = Partial<QuestionnaireResponse>;
 
@@ -221,18 +218,18 @@ describe('gtable-utils-spec', () => {
           type: 'string',
           extension: [
             {
-              url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl',
+              url: Extensions.ITEMCONTROL_URL,
               valueCodeableConcept: {
                 coding: [
                   {
-                    system: 'http://hl7.org/fhir/ValueSet/questionnaire-item-control',
+                    system: QUESTIONNAIRE_ITEM_CONTROL_SYSTEM,
                     code: 'data-receiver',
                   },
                 ],
               },
             },
             {
-              url: 'http://hl7.org/fhir/StructureDefinition/cqf-expression',
+              url: Extensions.COPY_EXPRESSION_URL,
               valueString: "QuestionnaireResponse.descendants().where(linkId='1').answer.value",
             },
           ],
@@ -247,7 +244,6 @@ describe('gtable-utils-spec', () => {
         ],
       });
       const gTable = getGtablebodyObject(questionnaireItems, questionnaireResponse);
-      console.log('gTable', gTable);
       expect(gTable.rows.length).toBe(1);
       expect(gTable.headerRow.length).toBe(2);
       expect(gTable.rows[0].columns.length).toBe(2);

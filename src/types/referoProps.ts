@@ -1,4 +1,3 @@
-import { UploadedFile } from '@helsenorge/file-upload/components/dropzone';
 import { Store } from 'react-redux';
 import { IActionRequester } from '../util/actionRequester';
 import { IQuestionnaireInspector } from '../util/questionnaireInspector';
@@ -25,10 +24,7 @@ export interface ReferoProps {
   onRequestAttachmentLink?: (fileId: string) => string;
   onOpenAttachment?: (fileId: string) => void;
   onDeleteAttachment?: (fileId: string, onSuccess: () => void) => void;
-  uploadAttachment?: (
-    files: File[],
-    onSuccess: (attachment: Attachment) => void
-  ) => void;
+  uploadAttachment?: (files: File[], onSuccess: (attachment: Attachment) => void) => void;
   questionnaire?: Questionnaire;
   questionnaireResponse?: QuestionnaireResponse;
   language?: string;

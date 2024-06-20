@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 
 import { format } from 'date-fns';
 import { isValid } from 'date-fns';
@@ -15,7 +15,7 @@ import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 import { DatePicker, DateTimePickerWrapper, DateTime } from '@helsenorge/datepicker/components/DatePicker';
 
 import { NewValueAction, newDateTimeValueAsync } from '../../../actions/newValue';
-import ExtensionConstants from '../../../constants/extensions';
+import { Extensions } from '../../../constants/extensions';
 import { GlobalState } from '../../../reducers';
 import { initialize, safeParseJSON } from '../../../util/date-fns-utils';
 import {
@@ -38,7 +38,6 @@ import { Resources } from '../../../util/resources';
 import { FormProps } from '../../../validation/ReactHookFormHoc';
 import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 import TextView from '../textview';
-
 export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   item: QuestionnaireItem;
   questionnaire?: Questionnaire;
@@ -104,13 +103,13 @@ const DateTimeInput: React.FC<Props> = ({
   };
 
   const getMaxDate = (): Date | undefined => {
-    const maxDate = getExtension(ExtensionConstants.DATE_MAX_VALUE_URL, item);
+    const maxDate = getExtension(Extensions.DATE_MAX_VALUE_URL, item);
     if (maxDate && maxDate.valueString) return evaluateFhirpathExpressionToGetDate(item, maxDate.valueString);
     return getMaxDateWithExtension();
   };
 
   const getMaxDateWithExtension = (): Date | undefined => {
-    const maxDate = getExtension(ExtensionConstants.MAX_VALUE_URL, item);
+    const maxDate = getExtension(Extensions.MAX_VALUE_URL, item);
     if (!maxDate) {
       return;
     }
@@ -123,13 +122,13 @@ const DateTimeInput: React.FC<Props> = ({
   };
 
   const getMinDate = (): Date | undefined => {
-    const minDate = getExtension(ExtensionConstants.DATE_MIN_VALUE_URL, item);
+    const minDate = getExtension(Extensions.DATE_MIN_VALUE_URL, item);
     if (minDate && minDate.valueString) return evaluateFhirpathExpressionToGetDate(item, minDate.valueString);
     return getMinDateWithExtension();
   };
 
   const getMinDateWithExtension = (): Date | undefined => {
-    const minDate = getExtension(ExtensionConstants.MIN_VALUE_URL, item);
+    const minDate = getExtension(Extensions.MIN_VALUE_URL, item);
     if (!minDate) {
       return;
     }

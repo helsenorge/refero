@@ -1,6 +1,5 @@
-import { Questionnaire, QuestionnaireResponseItem, QuestionnaireItem, QuestionnaireResponseItemAnswer, Coding } from 'fhir/r4';
+import { Questionnaire, QuestionnaireResponseItem, QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import marked from 'marked';
-import { ComponentClass } from 'react-redux';
 import * as uuid from 'uuid';
 
 import { isValid, invalidNodes } from '@helsenorge/core-utils/string-utils';
@@ -31,9 +30,8 @@ import Quantity from '../components/formcomponents/quantity/quantity';
 import StringComponent from '../components/formcomponents/string/string';
 import TableContainer from '../components/formcomponents/table/TableContainer';
 import Text from '../components/formcomponents/text/text';
-import { WithCommonFunctionsProps } from '../components/with-common-functions';
 import CodingSystemConstants from '../constants/codingsystems';
-import ExtensionConstants from '../constants/extensions';
+import { Extensions } from '../constants/extensions';
 import { HyperlinkTarget } from '../constants/hyperlinkTarget';
 import Constants from '../constants/index';
 import ItemType from '../constants/itemType';
@@ -61,12 +59,9 @@ export const isTableCode = (extensionCode: string | string[]): boolean => {
   return isTable;
 };
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function getComponentForItem(type: string, extensionCode?: string | string[]) {
   if (String(type) === ItemType.GROUP && !!extensionCode && isTableCode(extensionCode)) {
-    return TableContainer as ComponentClass<
-      Omit<WithCommonFunctionsProps & WithCommonFunctionsProps, keyof WithCommonFunctionsProps> & WithCommonFunctionsProps
-    >;
+    return TableContainer;
   } else if (String(type) === ItemType.GROUP) {
     return Group;
   }
@@ -174,7 +169,14 @@ export function getSublabelText(
   }
   return '';
 }
-
+export function getLabelText(
+  item: QuestionnaireItem,
+  onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string,
+  questionnaire?: Questionnaire | null,
+  resources?: Resources
+): string {
+  return `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`;
+}
 export function getText(
   item: QuestionnaireItem,
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string,
@@ -263,19 +265,6 @@ export function getStringValue(answer: QuestionnaireResponseItemAnswer | Array<Q
   return answer?.valueString ?? '';
 }
 
-export function getCodingAnswer(answer?: QuestionnaireResponseItemAnswer | Array<QuestionnaireResponseItemAnswer>): Coding | undefined {
-  if (Array.isArray(answer)) {
-    return answer.reduce((acc, x) => acc || x.valueCoding, undefined);
-  } else if (answer) {
-    return answer.valueCoding;
-  }
-  return undefined;
-}
-
-export function hasCodingAnswer(answer: QuestionnaireResponseItemAnswer | Array<QuestionnaireResponseItemAnswer>): boolean {
-  return !!getCodingAnswer(answer);
-}
-
 export function getPDFStringValue(
   answer: QuestionnaireResponseItemAnswer | Array<QuestionnaireResponseItemAnswer>,
   resources?: Resources
@@ -359,7 +348,7 @@ export function getTextValidationErrorMessage(
 }
 
 export function getDecimalPattern(item: QuestionnaireItem): string | undefined {
-  const step = getExtension(ExtensionConstants.STEP_URL, item);
+  const step = getExtension(Extensions.STEP_URL, item);
 
   const integerPart = '[+-]?[0-9]+';
   if (step && step.valueInteger != null) {
@@ -381,7 +370,7 @@ export function getDecimalPattern(item: QuestionnaireItem): string | undefined {
 }
 
 export function getDecimalValue(item: QuestionnaireItem, value: number | undefined): number | undefined {
-  const decimalPlacesExtension = getExtension(ExtensionConstants.STEP_URL, item);
+  const decimalPlacesExtension = getExtension(Extensions.STEP_URL, item);
   if (value && decimalPlacesExtension && decimalPlacesExtension.valueInteger != null) {
     const places = Number(decimalPlacesExtension.valueInteger);
     return Number(value.toFixed(places));
@@ -393,3 +382,15 @@ export function isIE11(): boolean {
   // tslint:disable-next-line:no-string-literal
   return !!window['MSInputMethodContext'] && !!document['documentMode'];
 }
+
+export const scriptInjectionValidation = (value: string, resources?: Resources): string | true => {
+  if (value && typeof value === 'string') {
+    const invalid: string[] = invalidNodes(value);
+
+    if (invalid && invalid.length > 0) {
+      return invalid.join(', ') + ' ' + (resources && resources.validationNotAllowed ? resources.validationNotAllowed : 'er ikke tillatt');
+    }
+    return true;
+  }
+  return true;
+};

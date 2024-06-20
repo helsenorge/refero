@@ -1,23 +1,24 @@
-import * as React from 'react';
+import React from 'react';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem, Questionnaire } from 'fhir/r4';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
+import Label from '@helsenorge/designsystem-react/components/Label';
+
 import TimeInput from '@helsenorge/date-time/components/time-input';
 import * as DateTimeConstants from '@helsenorge/date-time/constants/datetime';
 
 import { NewValueAction, newTimeValueAsync } from '../../../actions/newValue';
-import ExtensionConstants from '../../../constants/extensions';
+import { Extensions } from '../../../constants/extensions';
 import { GlobalState } from '../../../reducers';
 import { getExtension, getValidationTextExtension } from '../../../util/extension';
-import { isReadOnly, isRequired, getId, getSublabelText } from '../../../util/index';
+import { isReadOnly, isRequired, getId, getSublabelText, getLabelText } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
 import { Resources } from '../../../util/resources';
 import ReactHookFormHoc, { FormProps } from '../../../validation/ReactHookFormHoc';
 import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
-import Label from '../label';
 import SubLabel from '../sublabel';
 import TextView from '../textview';
 import { safeParseJSON } from '../../../util/date-fns-utils';
@@ -109,7 +110,7 @@ class Time extends React.Component<Props> {
   }
 
   getMaxHour(): number {
-    const maxTime = getExtension(ExtensionConstants.MAX_VALUE_URL, this.props.item);
+    const maxTime = getExtension(Extensions.MAX_VALUE_URL, this.props.item);
     if (!maxTime) {
       return 23;
     }
@@ -119,7 +120,7 @@ class Time extends React.Component<Props> {
   }
 
   getMaxMinute(): number {
-    const maxTime = getExtension(ExtensionConstants.MAX_VALUE_URL, this.props.item);
+    const maxTime = getExtension(Extensions.MAX_VALUE_URL, this.props.item);
     if (!maxTime) {
       return 59;
     }
@@ -129,7 +130,7 @@ class Time extends React.Component<Props> {
   }
 
   getMinHour(): number {
-    const minTime = getExtension(ExtensionConstants.MIN_VALUE_URL, this.props.item);
+    const minTime = getExtension(Extensions.MIN_VALUE_URL, this.props.item);
     if (!minTime) {
       return 0;
     }
@@ -139,7 +140,7 @@ class Time extends React.Component<Props> {
   }
 
   getMinMinute(): number {
-    const minTime = getExtension(ExtensionConstants.MIN_VALUE_URL, this.props.item);
+    const minTime = getExtension(Extensions.MIN_VALUE_URL, this.props.item);
     if (!minTime) {
       return 0;
     }
@@ -151,9 +152,7 @@ class Time extends React.Component<Props> {
   dispatchNewTime(newTime: string): void {
     const { dispatch, item, path, onAnswerChange } = this.props;
     if (dispatch) {
-      dispatch(newTimeValueAsync(path, newTime, item))?.then(newState =>
-        onAnswerChange(newState, path, item, { valueTime: newTime } as QuestionnaireResponseItemAnswer)
-      );
+      dispatch(newTimeValueAsync(path, newTime, item))?.then(newState => onAnswerChange(newState, path, item, { valueTime: newTime }));
     }
   }
 
@@ -256,10 +255,9 @@ class Time extends React.Component<Props> {
           value={this.getValue()}
           legend={
             <Label
-              item={this.props.item}
-              onRenderMarkdown={this.props.onRenderMarkdown}
-              questionnaire={this.props.questionnaire}
-              resources={this.props.resources}
+              labelTexts={[
+                { text: getLabelText(this.props.item, this.props.onRenderMarkdown, this.props.questionnaire, this.props.resources) },
+              ]}
             />
           }
           subLabel={subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined}

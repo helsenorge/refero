@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 
 import {
   QuestionnaireResponseItem,
@@ -48,7 +48,7 @@ import {
   getResponseItemAndPathWithLinkId,
 } from '../util/refero-core';
 import { RenderContext } from '../util/renderContext';
-import { ScoringCalculator } from '../util/scoringCalculator';
+import { AnswerPad, ScoringCalculator } from '../util/scoringCalculator';
 import { shouldFormBeDisplayedAsStepView } from '../util/shouldFormBeDisplayedAsStepView';
 import { generateDefaultValues } from '../validation/defaultFormValues';
 interface StateProps {
@@ -61,7 +61,6 @@ const Refero = (props: StateProps & DispatchProps & ReferoProps): JSX.Element | 
   const questionnaire = props.questionnaire ? props.questionnaire : props.formDefinition?.Content;
   // const schema = createZodSchemaFromQuestionnaire(questionnaire, props.resources, questionnaire?.contained);
   const defualtVals = React.useMemo(() => generateDefaultValues(questionnaire?.item), [questionnaire?.item?.length]);
-
   const methods = useForm({
     defaultValues: defualtVals,
     shouldFocusError: false,
@@ -95,13 +94,10 @@ const Refero = (props: StateProps & DispatchProps & ReferoProps): JSX.Element | 
       props.onSave(props.formData.Content);
     }
   };
-  React.useEffect(() => {
-    props.mount();
-  }, []);
 
   React.useEffect(() => {
     if (props.questionnaire) {
-      props.updateSkjema(props.questionnaire, props.questionnaireResponse, props.language, props.syncQuestionnaireResponse);
+      props.mount();
       setScoringCalculator(getScoringCalculator(props.questionnaire));
     }
   }, []);
@@ -112,6 +108,7 @@ const Refero = (props: StateProps & DispatchProps & ReferoProps): JSX.Element | 
     item: QuestionnaireItem,
     answer: QuestionnaireResponseItemAnswer
   ): void => {
+    // console.log('onAnswerChange', newState, item, answer, props.onChange);
     if (props.onChange && newState.refero.form.FormDefinition.Content && newState.refero.form.FormData.Content) {
       const actionRequester = new ActionRequester(newState.refero.form.FormDefinition.Content, newState.refero.form.FormData.Content);
 
@@ -119,9 +116,7 @@ const Refero = (props: StateProps & DispatchProps & ReferoProps): JSX.Element | 
         newState.refero.form.FormDefinition.Content,
         newState.refero.form.FormData.Content
       );
-
       props.onChange(item, answer, actionRequester, questionnaireInspector);
-
       for (const action of actionRequester.getActions()) {
         props.dispatch(action);
       }
@@ -133,19 +128,21 @@ const Refero = (props: StateProps & DispatchProps & ReferoProps): JSX.Element | 
   const runScoringCalculator = (newState: GlobalState): void => {
     const questionnaireResponse = newState.refero?.form?.FormData?.Content;
     const questionnaire = newState.refero.form.FormDefinition?.Content;
-    if (!questionnaire || !questionnaireResponse) return;
 
+    if (!questionnaire || !questionnaireResponse) return;
     if (scoringCalculator) {
       const scores = scoringCalculator.calculateScore(questionnaireResponse);
+
       updateQuestionnaireResponseWithScore(scores, questionnaire, questionnaireResponse);
 
       const fhirScores = scoringCalculator.calculateFhirScore(questionnaireResponse);
+
       updateQuestionnaireResponseWithScore(fhirScores, questionnaire, questionnaireResponse);
     }
   };
 
   const updateQuestionnaireResponseWithScore = (
-    scores: { [linkId: string]: number | undefined },
+    scores: AnswerPad,
     questionnaire: Questionnaire,
     questionnaireResponse: QuestionnaireResponse
   ): void => {
@@ -188,7 +185,6 @@ const Refero = (props: StateProps & DispatchProps & ReferoProps): JSX.Element | 
         }
       }
     }
-
     for (const a of actions) {
       props.dispatch(a);
     }
@@ -203,7 +199,6 @@ const Refero = (props: StateProps & DispatchProps & ReferoProps): JSX.Element | 
     const renderedItems: Array<JSX.Element> | undefined = [];
     const isNavigatorEnabled = !!getNavigatorExtension(formDefinition.Content);
     let isNavigatorBlindzoneInitiated = false;
-
     const questionnaireItemArray: QuestionnaireItem[] | undefined = shouldFormBeDisplayedAsStepView(formDefinition)
       ? getTopLevelElements(formDefinition)
       : formDefinition.Content.item;
@@ -214,11 +209,11 @@ const Refero = (props: StateProps & DispatchProps & ReferoProps): JSX.Element | 
       if (!Comp) {
         return undefined;
       }
+
       let responseItems: Array<QuestionnaireResponseItem> | undefined;
       if (formData) {
         responseItems = getRootQuestionnaireResponseItemFromData(item.linkId, formData);
       }
-
       if (responseItems && responseItems.length > 0) {
         responseItems.forEach((responseItem, index) => {
           const repeatButton =
@@ -290,7 +285,6 @@ const Refero = (props: StateProps & DispatchProps & ReferoProps): JSX.Element | 
 
   const renderSkjema = (pdf?: boolean): Array<JSX.Element> | Array<Array<JSX.Element>> | JSX.Element | null | undefined => {
     const { formDefinition, resources } = props;
-
     if (!formDefinition || !formDefinition.Content || !resources) {
       return null;
     }
@@ -329,7 +323,6 @@ const Refero = (props: StateProps & DispatchProps & ReferoProps): JSX.Element | 
     if (!formDefinition || !resources) {
       return;
     }
-
     const referoProps = {
       authorized,
       blockSubmit,
@@ -343,7 +336,6 @@ const Refero = (props: StateProps & DispatchProps & ReferoProps): JSX.Element | 
       onFieldsNotCorrectlyFilledOut,
       onStepChange,
     };
-
     return (
       <FormProvider {...methods}>
         {isStepView ? (
@@ -406,14 +398,6 @@ function mapStateToProps(state: GlobalState): StateProps {
 
 function mapDispatchToProps(dispatch: ThunkDispatch<GlobalState, void, NewValueAction>, props: ReferoProps): DispatchProps {
   return {
-    updateSkjema: (
-      questionnaire: Questionnaire,
-      questionnaireResponse: QuestionnaireResponse | undefined,
-      language: string | undefined,
-      syncQuestionnaireResponse: boolean | undefined
-    ): void => {
-      dispatch(setSkjemaDefinition(questionnaire, questionnaireResponse, language, syncQuestionnaireResponse));
-    },
     mount: (): void => {
       if (props.questionnaire) {
         dispatch(setSkjemaDefinition(props.questionnaire, props.questionnaireResponse, props.language, props.syncQuestionnaireResponse));
@@ -426,3 +410,4 @@ function mapDispatchToProps(dispatch: ThunkDispatch<GlobalState, void, NewValueA
 
 const ReferoContainer = connect<StateProps, DispatchProps, ReferoProps>(mapStateToProps, mapDispatchToProps)(Refero);
 export { ReferoContainer };
+export default ReferoContainer;

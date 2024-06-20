@@ -1,5 +1,3 @@
-import React from 'react';
-
 import {
   Coding,
   Questionnaire,
@@ -24,7 +22,6 @@ import { GlobalState } from '../../../reducers';
 import { getFormData, getFormDefinition } from '../../../reducers/form';
 import { getCodingTextTableValues } from '../../../util/extension';
 import { Path } from '../../../util/refero-core';
-import { RenderContext } from '../../../util/renderContext';
 import { Resources } from '../../../util/resources';
 
 export interface Props {
@@ -42,14 +39,13 @@ export interface Props {
   attachmentErrorMessage?: string;
   repeatButton?: JSX.Element;
   id?: string;
-  renderContext: RenderContext;
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
   isHelpOpen?: boolean;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
 }
 
-interface EnhancedProps {
+export interface StateProps {
   headline: string;
   tableCodesCoding: Coding[];
   items: QuestionnaireItem[];
@@ -58,15 +54,8 @@ interface EnhancedProps {
   language: LanguageLocales;
   resource: Resource[] | undefined;
 }
-
-const TableContainer = ({
-  tableCodesCoding,
-  items,
-  headline,
-  tableType,
-  questionnaireResponse,
-  resource,
-}: Props & EnhancedProps): JSX.Element => {
+export interface CombinedProps extends Props, StateProps {}
+const TableContainer = ({ tableCodesCoding, items, headline, tableType, questionnaireResponse, resource }: CombinedProps): JSX.Element => {
   {
     switch (tableType) {
       case TableCodes.tableHn1:
@@ -112,7 +101,7 @@ const TableContainer = ({
   }
 };
 
-const mapStateToProps = (state: GlobalState, props: Props): EnhancedProps => {
+const mapStateToProps = (state: GlobalState, props: Props): StateProps => {
   const group = props.item;
   const tableType = getCodingTextTableValues(group)[0];
   const resource = getFormDefinition(state)?.Content?.contained;

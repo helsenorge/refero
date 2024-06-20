@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 
 import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { Controller, FieldValues, useFormContext } from 'react-hook-form';
@@ -15,12 +15,13 @@ import {
   getPDFStringValue,
   getMaxLength,
   getSublabelText,
-  renderPrefix,
-  getText,
+  getLabelText,
+  getStringValue,
 } from '../../../util/index';
 import { Resources } from '../../../util/resources';
 import { FormProps } from '../../../validation/ReactHookFormHoc';
 import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
+import SafeText from '../SafeText';
 import Pdf from '../textview';
 
 interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
@@ -33,8 +34,9 @@ interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   handleChange: (value: string) => void;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
   resources?: Resources;
+  children: React.ReactNode;
 }
-const textField: React.FC<Props> = ({
+const textField = ({
   id,
   pdf,
   item,
@@ -46,9 +48,9 @@ const textField: React.FC<Props> = ({
   onRenderMarkdown,
   resources,
   idWithLinkIdAndItemIndex,
-}) => {
+}: Props): JSX.Element | null => {
   const formName = `${idWithLinkIdAndItemIndex}-extra-field`;
-  const { formState, getFieldState, control } = useFormContext<FieldValues>();
+  const { formState, getFieldState } = useFormContext<FieldValues>();
   const { error } = getFieldState(formName, formState);
   if (pdf) {
     return (
@@ -61,7 +63,7 @@ const textField: React.FC<Props> = ({
     handleStringChange(e);
   };
 
-  const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`;
+  const labelText = getLabelText(item, onRenderMarkdown, questionnaire, resources);
   const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
   const maxLength = getMaxLength(item);
   const minLength = getMinLengthExtensionValue(item);
@@ -72,9 +74,8 @@ const textField: React.FC<Props> = ({
     <FormGroup error={error?.message} mode="ongrey">
       <Controller
         name={`${idWithLinkIdAndItemIndex}-extra-field`}
-        control={control}
-        defaultValue={''}
         shouldUnregister={true}
+        defaultValue={getStringValue(answer)}
         rules={{
           required: {
             value: isRequired(item),
@@ -107,12 +108,17 @@ const textField: React.FC<Props> = ({
             type="text"
             mode="ongrey"
             inputId={`${getId(id)}-extra-field`}
+            testId={`${getId(id)}-extra-field`}
             label={
               <Label
-                labelTexts={[{ text: labelText, type: 'semibold' }]}
+                htmlFor={`${getId(id)}-extra-field`}
+                labelTexts={[]}
                 sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
-              />
+              >
+                <SafeText text={labelText} />
+              </Label>
             }
+            value={getStringValue(answer)}
             placeholder={getPlaceholder(item)}
             readOnly={isReadOnly(item)}
             onChange={(e): void => {

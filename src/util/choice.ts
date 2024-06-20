@@ -16,9 +16,9 @@ import { Options } from '../types/formTypes/radioGroupOptions';
 
 import { getItemControlExtensionValue, getValidationTextExtension } from './extension';
 import { Resources } from './resources';
-import ExtensionConstants from '../constants/extensions';
+import { Extensions } from '../constants/extensions';
 import Constants, { OPEN_CHOICE_ID } from '../constants/index';
-import itemControlConstants from '../constants/itemcontrol';
+import itemControlConstants, { ItemControlValue, isItemControlValue } from '../constants/itemcontrol';
 import ItemType from '../constants/itemType';
 
 import { isReadOnly, isRequired } from './index';
@@ -54,12 +54,12 @@ export function getOptions(
 
   if (item.type === ItemType.OPENCHOICE) {
     if (!options) {
-      options = [] as Options[];
+      options = [];
     }
     options.push({
-      label: resources?.openChoiceOption,
+      label: resources?.openChoiceOption || '',
       type: OPEN_CHOICE_ID,
-    } as Options);
+    });
   }
 
   return options;
@@ -154,29 +154,13 @@ export function isAboveDropdownThreshold(options: Array<Options> | undefined): b
   return options.length > Constants.CHOICE_DROPDOWN_TRESHOLD;
 }
 
-export function getItemControlValue(item: QuestionnaireItem): string | undefined {
+export function getItemControlValue(item: QuestionnaireItem): ItemControlValue | undefined {
   const itemControl = getItemControlExtensionValue(item);
   if (itemControl) {
-    for (let i = 0; i < itemControl.length; i++) {
-      if (itemControl[i] && itemControl[i].code) {
-        if (itemControl[i].code === itemControlConstants.CHECKBOX) {
-          return itemControlConstants.CHECKBOX;
-        }
-        if (itemControl[i].code === itemControlConstants.DROPDOWN) {
-          return itemControlConstants.DROPDOWN;
-        }
-        if (itemControl[i].code === itemControlConstants.RADIOBUTTON) {
-          return itemControlConstants.RADIOBUTTON;
-        }
-        if (itemControl[i].code === itemControlConstants.AUTOCOMPLETE) {
-          return itemControlConstants.AUTOCOMPLETE;
-        }
-        if (itemControl[i].code === itemControlConstants.RECEIVERCOMPONENT) {
-          return itemControlConstants.RECEIVERCOMPONENT;
-        }
-        if (itemControl[i].code === itemControlConstants.SLIDER) {
-          return itemControlConstants.SLIDER;
-        }
+    for (const control of itemControl) {
+      const code = control?.code;
+      if (code && isItemControlValue(code)) {
+        return code;
       }
     }
   }
@@ -264,7 +248,7 @@ export function shouldShowExtraChoice(answer: Array<QuestionnaireResponseItemAns
 
   if (Array.isArray(answer)) {
     for (let i = 0; i < answer.length; i++) {
-      const el = answer[i] as QuestionnaireResponseItemAnswer;
+      const el = answer[i];
       if (el.valueCoding && el.valueCoding.code === OPEN_CHOICE_ID) {
         return true;
       }
@@ -277,31 +261,31 @@ export function shouldShowExtraChoice(answer: Array<QuestionnaireResponseItemAns
 
 function hasExtensionOptions(item: QuestionnaireItem): boolean {
   if (item.extension) {
-    return item.extension.filter((it: Extension) => it.url === ExtensionConstants.OPTION_REFERENCE).length > 0;
+    return item.extension.filter((it: Extension) => it.url === Extensions.OPTION_REFERENCE_URL).length > 0;
   }
 
   return false;
 }
 
-function getExtensionOptions(item: QuestionnaireItem, readOnly: boolean): Array<Options> | undefined {
+function getExtensionOptions(item: QuestionnaireItem, readOnly: boolean): Options[] | undefined {
   if (!item || !item.extension) {
     return undefined;
   }
 
   return item.extension
-    .filter((it: Extension) => it.url === ExtensionConstants.OPTION_REFERENCE)
+    .filter((it: Extension) => it.url === Extensions.OPTION_REFERENCE_URL)
     .map((it: Extension) => createRadiogroupOptionFromQuestionnaireExtension(it, readOnly))
-    .filter((it: Options | undefined) => it !== undefined) as Options[];
+    .filter((it): it is Options => it !== undefined);
 }
 
-function getInlineOptions(item: QuestionnaireItem, readOnly: boolean): Array<Options> | undefined {
+function getInlineOptions(item: QuestionnaireItem, readOnly: boolean): Options[] | undefined {
   if (!item || !item.answerOption) {
     return undefined;
   }
 
   return item.answerOption
-    .map((it: QuestionnaireItemAnswerOption) => createRadiogroupOptionFromQuestionnaireOption(it, readOnly))
-    .filter((it: Options | undefined) => it !== undefined) as Options[];
+    .map((it: QuestionnaireItemAnswerOption): Options | undefined => createRadiogroupOptionFromQuestionnaireOption(it, readOnly))
+    .filter((it): it is Options => it !== undefined);
 }
 
 function createRadiogroupOptionFromQuestionnaireExtension(extension: Extension, readOnly: boolean): Options | undefined {

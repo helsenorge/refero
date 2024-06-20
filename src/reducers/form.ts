@@ -208,13 +208,13 @@ function processDeleteRepeatItemAction(action: NewValueAction, state: Form): For
   });
 }
 
-function addInitialValueToBooleanItem(definitionItem: QuestionnaireItem): QuestionnaireResponseItemAnswer[] | undefined {
-  if (definitionItem.initial && definitionItem.initial.length > 0 && definitionItem.initial[0].valueBoolean !== undefined) {
-    return [{ valueBoolean: definitionItem.initial[0].valueBoolean }];
-  } else {
-    return [{ valueBoolean: false }];
-  }
-}
+// function addInitialValueToBooleanItem(definitionItem: QuestionnaireItem): QuestionnaireResponseItemAnswer[] | undefined {
+//   if (definitionItem.initial && definitionItem.initial.length > 0 && definitionItem.initial[0].valueBoolean !== undefined) {
+//     return [{ valueBoolean: definitionItem.initial[0].valueBoolean }];
+//   } else {
+//     return [{ valueBoolean: false }];
+//   }
+// }
 
 function copyItem(
   source: QuestionnaireResponseItem,
@@ -429,6 +429,7 @@ function processRemoveAttachmentValueAction(action: NewValueAction, state: Form)
 function processNewValueAction(action: NewValueAction, state: Form): Form {
   return produce(state, draft => {
     const responseItem = getResponseItemWithPath(action.itemPath || [], draft.FormData);
+
     if (!responseItem) {
       return;
     }

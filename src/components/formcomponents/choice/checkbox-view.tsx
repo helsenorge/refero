@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 
 import { QuestionnaireItem, Questionnaire } from 'fhir/r4';
 import { Controller } from 'react-hook-form';
@@ -9,11 +9,11 @@ import Checkbox from '@helsenorge/designsystem-react/components/Checkbox';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
 
-import { getValidationTextExtension } from '../../../util/extension';
-import { getSublabelText, getText, isRequired, renderPrefix } from '../../../util/index';
+import { getId, getLabelText, getSublabelText, isRequired } from '../../../util/index';
 import { Resources } from '../../../util/resources';
 import { FormProps } from '../../../validation/ReactHookFormHoc';
 import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
+import SafeText from '../SafeText';
 
 export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   options?: Array<Options>;
@@ -44,54 +44,60 @@ const CheckboxView: React.FC<Props> = ({
   renderHelpElement,
   onRenderMarkdown,
   error,
-  control,
   idWithLinkIdAndItemIndex,
+  selected,
 }) => {
   const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
-  const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`;
+  const labelText = getLabelText(item, onRenderMarkdown, questionnaire, resources);
 
   return (
     <div className="page_refero__component page_refero__component_choice page_refero__component_choice_checkbox">
       <FormGroup mode="ongrey" error={error?.message}>
         {renderHelpElement()}
         <Label
-          labelTexts={[{ text: labelText }]}
+          className="page_refero__label"
+          labelTexts={[]}
           sublabel={<Sublabel id="select-sublsbel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
           afterLabelChildren={renderHelpButton()}
-        />
+        >
+          <SafeText text={labelText} />
+        </Label>
         {options?.map((option, index) => (
           <Controller
             name={idWithLinkIdAndItemIndex}
             key={`${option.type}-${index}`}
-            control={control}
             shouldUnregister={true}
+            defaultValue={selected}
             rules={{
               required: {
-                message: getValidationTextExtension(item) ?? resources?.formRequiredErrorMessage ?? 'Påkrevd felt',
+                message: resources?.formRequiredErrorMessage ?? 'Påkrevd felt',
                 value: isRequired(item),
               },
             }}
-            render={({ field: { value, onChange, ...rest } }): JSX.Element => (
-              <Checkbox
-                {...rest}
-                inputId={`${id}-${option.type}`}
-                testId={`${option.type}-${index}-checkbox-choice`}
-                label={<Label labelTexts={[{ text: option.label }]} />}
-                checked={value.some((val: string) => val === option.type)}
-                value={option.type}
-                onChange={(e): void => {
-                  const valueCopy = [...value];
-                  if (e.target.checked) {
-                    valueCopy.push(option.type);
-                  } else {
-                    const idx = valueCopy.findIndex(code => option.type === code);
-                    valueCopy.splice(idx, 1);
-                  }
-                  onChange(valueCopy);
-                  handleChange(option.type);
-                }}
-              />
-            )}
+            render={({ field: { value, onChange, ...rest } }): JSX.Element => {
+              return (
+                <Checkbox
+                  {...rest}
+                  inputId={`${getId(id)}-hn-${index}`}
+                  testId={`${getId(id)}-${index}-checkbox-choice`}
+                  label={<Label testId={`${getId(id)}-${index}-checkbox-choice-label`} labelTexts={[{ text: option.label }]} />}
+                  checked={selected?.some((val?: string) => val === option.type)}
+                  value={option.type}
+                  onChange={(e): void => {
+                    const valueCopy = value ? [...value] : [];
+                    if (e.target.checked) {
+                      valueCopy.push(option.type);
+                    } else {
+                      const idx = valueCopy.findIndex(code => option.type === code);
+                      valueCopy?.splice(idx, 1);
+                    }
+                    onChange(valueCopy);
+
+                    handleChange(option.type);
+                  }}
+                />
+              );
+            }}
           />
         ))}
       </FormGroup>

@@ -1,6 +1,8 @@
-import { combineReducers, Reducer } from 'redux';
+import { CombinedState, combineReducers, Reducer } from 'redux';
 
-import form, { Form } from '../reducers/form';
+import form, { Form } from './form';
+import { FormAction } from '../actions/form';
+import { NewValueAction } from '../actions/newValue';
 
 export interface GlobalState {
   refero: ReferoState;
@@ -10,7 +12,14 @@ export interface ReferoState {
   form: Form;
 }
 // Benyttes kun for tester eller hvis Refero kjøres utenfor helsenorge
-const rootReducer: Reducer<{}> = combineReducers({
+const rootReducer: Reducer<
+  CombinedState<{
+    refero: CombinedState<{
+      form: Form | undefined;
+    }>;
+  }>,
+  NewValueAction | FormAction
+> = combineReducers({
   refero: combineReducers({ form }),
 });
 

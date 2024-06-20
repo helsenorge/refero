@@ -9,7 +9,6 @@ import {
 } from 'fhir/r4';
 import { Resources } from '../../util/resources';
 import { Path } from '../../util/refero-core';
-import { UploadedFile } from '@helsenorge/file-upload/components/dropzone';
 import { GlobalState } from '../../reducers';
 import { RenderContext } from '../../util/renderContext';
 import { AutoSuggestProps } from '../autoSuggestProps';
@@ -34,10 +33,7 @@ export interface CommonFormElementProps {
   onRequestAttachmentLink?: (file: string) => string;
   onOpenAttachment?: (fileId: string) => void;
   onDeleteAttachment?: (fileId: string, onSuccess: () => void) => void;
-  uploadAttachment?: (
-    files: File[],
-    onSuccess: (attachment: Attachment) => void
-  ) => void;
+  uploadAttachment?: (files: File[], onSuccess: (attachment: Attachment) => void) => void;
   onRequestHelpButton?: (
     item: QuestionnaireItem,
     itemHelp: QuestionnaireItem,

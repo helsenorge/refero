@@ -13,7 +13,7 @@ import { IStandardTableColumn } from './interface';
 
 type Props = {
   headerRow: IStandardTableColumn[];
-  setSortDir: React.Dispatch<React.SetStateAction<SortDirection>>;
+  setSortDir: React.Dispatch<React.SetStateAction<SortDirection | undefined>>;
   sortDir?: SortDirection;
   displayToSortBy?: string;
 };

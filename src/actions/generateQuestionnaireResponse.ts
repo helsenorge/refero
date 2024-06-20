@@ -1,10 +1,4 @@
-import {
-  QuestionnaireItem,
-  QuestionnaireResponse,
-  QuestionnaireResponseItem,
-  QuestionnaireResponseItemAnswer,
-  Questionnaire,
-} from 'fhir/r4';
+import { QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItem, Questionnaire } from 'fhir/r4';
 
 import Constants from '../constants/index';
 import itemType from '../constants/itemType';
@@ -16,7 +10,7 @@ export function generateQuestionnaireResponse(questionnaire: Questionnaire): Que
   const response: QuestionnaireResponse = {
     resourceType: Constants.QUESTIONNAIRE_RESPONSE_RESOURCE_TYPE,
     status: StatusConstants.questionnaireResponse.IN_PROGRESS,
-  } as QuestionnaireResponse;
+  };
   if (!questionnaire || !questionnaire.item || questionnaire.item.length === 0) {
     return response;
   }
@@ -82,7 +76,7 @@ function addResponseItemtoResponse(
       responseItemForQuestionnaire.answer = [];
     }
     if (responseItemForQuestionnaire.answer.length === 0) {
-      responseItemForQuestionnaire.answer.push({} as QuestionnaireResponseItemAnswer);
+      responseItemForQuestionnaire.answer.push({});
     }
     const answer = responseItemForQuestionnaire.answer[0];
     if (!answer.item) {
@@ -93,10 +87,10 @@ function addResponseItemtoResponse(
 }
 
 export function createQuestionnaireResponseItem(item: QuestionnaireItem): QuestionnaireResponseItem {
-  const responseItem = {
+  const responseItem: QuestionnaireResponseItem = {
     linkId: item.linkId,
     ...(item.text && { text: item.text }),
-  } as QuestionnaireResponseItem;
+  };
 
   const answer = createQuestionnaireResponseAnswer(item);
   if (answer) {

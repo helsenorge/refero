@@ -1,23 +1,29 @@
-import React, { ReactElement } from 'react';
+import { FormEvent, KeyboardEvent, MouseEvent } from 'react';
 
 import Button from '@helsenorge/designsystem-react/components/Button';
 
-import '../../styles/formButtons.scss';
+import '../../styles/formButtons.css';
 
 type Props = {
   submitButtonDisabled?: boolean;
-  onSubmitButtonClicked?: (() => void) | ((e: React.FormEvent) => void);
+  onSubmitButtonClicked?:
+    | (() => void)
+    | ((e: MouseEvent<HTMLElement, MouseEvent> | FormEvent<{}> | KeyboardEvent<HTMLUListElement> | null | undefined) => void);
   submitButtonText: string;
 };
 
-export const SubmitFormButton = ({ submitButtonText, submitButtonDisabled, onSubmitButtonClicked }: Props): ReactElement => {
-  const handleSubmit = (e: React.FormEvent): void => {
-    e.preventDefault();
-    onSubmitButtonClicked && onSubmitButtonClicked(e);
+export const SubmitFormButton = ({ submitButtonText, submitButtonDisabled, onSubmitButtonClicked }: Props): JSX.Element | null => {
+  const handleSubmit = (
+    e?: MouseEvent<HTMLElement, MouseEvent> | FormEvent<{}> | KeyboardEvent<HTMLUListElement> | null | undefined
+  ): void => {
+    if (e) {
+      e.preventDefault();
+      onSubmitButtonClicked && onSubmitButtonClicked(e);
+    }
   };
   return (
     <div className="submitButtonStyle">
-      <Button type="submit" disabled={submitButtonDisabled} onClick={handleSubmit}>
+      <Button type="submit" disabled={submitButtonDisabled} onClick={handleSubmit} testId="refero-submit-button">
         {submitButtonText}
       </Button>
     </div>

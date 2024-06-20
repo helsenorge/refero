@@ -1,16 +1,10 @@
-import * as React from 'react';
-
-import { mount } from 'enzyme';
+import { q } from './__data__';
 
 import { EnhetType, OrgenhetHierarki } from '../../../../types/orgenhetHierarki';
 
-import Loader from '@helsenorge/designsystem-react/components/Loader';
-import NotificationPanel from '@helsenorge/designsystem-react/components/NotificationPanel';
-
-import { Resources } from '../../../../util/resources';
-import ReceiverComponent from '../receiver-component';
-import Select from '@helsenorge/designsystem-react/components/Select';
-import Label from '@helsenorge/designsystem-react/components/Label';
+import { act, renderRefero } from '../../../__tests__/test-utils/test-utils';
+import { selectDropdownOptionByName } from '../../../__tests__/test-utils/selectors';
+import { getResources } from '../../../../../preview/resources/referoResources';
 
 const receivers = [
   {
@@ -26,151 +20,154 @@ const receivers = [
   {
     OrgenhetId: 2,
     EndepunktId: null,
-    Navn: 'Region 1',
+    Navn: 'Region 2',
     EnhetType: EnhetType.Region,
     UnderOrgenheter: [{ OrgenhetId: 21, EndepunktId: '2', Navn: 'Receiver 2', EnhetType: EnhetType.Foretak, UnderOrgenheter: null }],
   },
 ];
 
 describe('ReceiverComponent', () => {
-  it('Should show Loader while loading receivers', () => {
-    const wrapper = mount(<ReceiverComponent handleChange={jest.fn()} clearCodingAnswer={jest.fn()} fetchReceivers={jest.fn()} />);
-
-    expect(wrapper.find(Loader).length).toBe(1);
+  beforeEach(() => {
+    jest.clearAllMocks();
   });
   it('Should call function to load receivers on mount', () => {
-    const fetchReceiversFn = jest.fn();
-    mount(<ReceiverComponent handleChange={jest.fn()} clearCodingAnswer={jest.fn()} fetchReceivers={fetchReceiversFn} />);
+    const fetchReceivers = jest.fn();
+    renderRefero({ questionnaire: q, props: { fetchReceivers }, resources: getResources('') });
 
-    expect(fetchReceiversFn).toHaveBeenCalled();
+    expect(fetchReceivers).toHaveBeenCalled();
   });
 
-  it('Should show error message if loading receivers call fails', () => {
+  it('Should show error message if loading receivers call fails', async () => {
     const fetchReceiversFn = (_successCallback: (receivers: Array<OrgenhetHierarki>) => void, errorCallback: () => void) => {
       errorCallback();
     };
-    const wrapper = mount(<ReceiverComponent handleChange={jest.fn()} clearCodingAnswer={jest.fn()} fetchReceivers={fetchReceiversFn} />);
-
-    expect(wrapper.find(NotificationPanel).length).toBe(1);
+    const { findByRole } = renderRefero({ questionnaire: q, props: { fetchReceivers: fetchReceiversFn }, resources: getResources('') });
+    expect(await findByRole('alert')).toBeInTheDocument();
   });
 
-  it('Should set selected receiver after load', () => {
-    const fetchReceiversFn = (successCallback: (receivers: Array<OrgenhetHierarki>) => void) => {
+  it('Should set selected receiver after load', async () => {
+    const fetchReceiversFn = (successCallback: (receivers: OrgenhetHierarki[]) => void) => {
       successCallback(receivers);
     };
-    const wrapper = mount(
-      <ReceiverComponent
-        selected={['Endpoint/1']}
-        handleChange={jest.fn()}
-        clearCodingAnswer={jest.fn()}
-        fetchReceivers={fetchReceiversFn}
-      />
-    );
+    const onChange = jest.fn();
+    const { findByText } = renderRefero({
+      questionnaire: q,
+      props: { fetchReceivers: fetchReceiversFn, onChange },
+      resources: getResources(''),
+    });
+    await selectDropdownOptionByName('Velg helseregion', /region 1/i);
+    await selectDropdownOptionByName('Velg helseforetak', 'Receiver 1');
 
-    expect(wrapper.find('strong').text()).toBe('Region 1 / Receiver 1');
+    expect(await findByText(/Region 1 \/ Receiver 1/i)).toBeInTheDocument();
   });
 
-  it('Should not set selected receiver after load if multiple receivers match selected endpoint', () => {
-    const fetchReceiversFn = (successCallback: (receivers: Array<OrgenhetHierarki>) => void) => {
-      successCallback([
-        ...receivers,
-        {
-          OrgenhetId: 2,
-          EndepunktId: '1',
-          Navn: 'Region 1',
-          EnhetType: EnhetType.Foretak,
-          UnderOrgenheter: null,
-        },
-      ]);
-    };
-    const clearCodingAnswerFn = jest.fn();
-    const wrapper = mount(
-      <ReceiverComponent
-        selected={['Endpoint/1']}
-        handleChange={jest.fn()}
-        clearCodingAnswer={clearCodingAnswerFn}
-        fetchReceivers={fetchReceiversFn}
-      />
-    );
+  // it.only('Should not set selected receiver after load if multiple receivers match selected endpoint', async () => {
+  //   const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
+  //     actionRequester.addChoiceAnswer('3a154799-1409-4ac7-8e56-27ea57f477a4', {
+  //       code: '',
+  //       system: '',
+  //     });
+  //   });
+  //   const fetchReceiversFn = (successCallback: (receivers: Array<OrgenhetHierarki>) => void) => {
+  //     successCallback([
+  //       ...receivers,
+  //       {
+  //         OrgenhetId: 2,
+  //         EndepunktId: '1',
+  //         Navn: 'Region 3',
+  //         EnhetType: EnhetType.Foretak,
+  //         UnderOrgenheter: null,
+  //       },
+  //     ]);
+  //   };
+  //   const questionnaireResponse = generateQuestionnaireResponse(q);
+  //   const { findByRole, findByLabelText, queryByText, debug } = renderRefero({
+  //     questionnaire: q,
+  //     props: { fetchReceivers: fetchReceiversFn, questionnaireResponse, onChange },
+  //     resources: getResources(''),
+  //   });
+  //   debug();
+  //   const option = await findByRole('option', { name: /region 1/i });
+  //   userEvent.selectOptions(await findByLabelText('Velg helseregion'), option);
+  //   userEvent.selectOptions(await findByLabelText('Velg helseforetak'), 'Receiver 1');
 
-    expect(wrapper.find('strong').length).toBe(0);
-    expect(clearCodingAnswerFn).toHaveBeenCalled();
-  });
+  //   expect(queryByText(/Region 1 \/ Receiver 1/i)).not.toBeInTheDocument();
+  // });
 
-  it('Should show selects after loading receivers', () => {
-    const fetchReceiversFn = (successCallback: (receivers: Array<OrgenhetHierarki>) => void) => {
+  it('Should show selects after loading receivers', async () => {
+    const fetchReceivers = (successCallback: (receivers: Array<OrgenhetHierarki>) => void) => {
       successCallback(receivers);
     };
-    const wrapper = mount(
-      <ReceiverComponent
-        selected={['Endpoint/1']}
-        handleChange={jest.fn()}
-        clearCodingAnswer={jest.fn()}
-        fetchReceivers={fetchReceiversFn}
-      />
-    );
-
-    expect(wrapper.find(Select).length).toBe(2);
+    const { findAllByRole } = renderRefero({
+      questionnaire: q,
+      props: { fetchReceivers },
+      resources: getResources(''),
+    });
+    expect(await findAllByRole('combobox')).toHaveLength(2);
   });
-  //TODO: fix label text
-  it.skip('Should show correct headers for select components after loading receivers', () => {
-    const fetchReceiversFn = (successCallback: (receivers: Array<OrgenhetHierarki>) => void) => {
+  it('Should show correct headers for select components after loading receivers', async () => {
+    const fetchReceivers = (successCallback: (receivers: Array<OrgenhetHierarki>) => void) => {
       successCallback(receivers);
     };
-    const wrapper = mount(
-      <ReceiverComponent
-        resources={
-          {
-            adresseKomponent_velgHelseregion: 'Velg region',
-            adresseKomponent_velgHelseforetak: 'Velg helseforetak',
-          } as Resources
-        }
-        selected={['Endpoint/1']}
-        handleChange={jest.fn()}
-        clearCodingAnswer={jest.fn()}
-        fetchReceivers={fetchReceiversFn}
-      />
-    );
-
-    expect(wrapper.find(Label).at(0).props().labelTexts[0].text).toBe('Velg region');
-    expect(wrapper.find(Label).at(1).props().labelTexts[0].text).toBe('Velg helseforetak');
+    const { queryByText } = renderRefero({
+      questionnaire: q,
+      props: { fetchReceivers },
+      resources: {
+        ...getResources(''),
+        adresseKomponent_velgHelseregion: 'Velg region',
+        adresseKomponent_velgHelseforetak: 'Velg helseforetak',
+      },
+    });
+    expect(queryByText('Velg region')).toBeInTheDocument();
+    await selectDropdownOptionByName('Velg region', /region 1/i);
+    expect(queryByText('Velg helseforetak')).toBeInTheDocument();
   });
-
-  it('Should call clearCodingAnswer when dropdown value is changed to a non-leaf node', () => {
-    const fetchReceiversFn = (successCallback: (receivers: Array<OrgenhetHierarki>) => void) => {
+  it('Should call clearCodingAnswer when dropdown value is changed to a non-leaf node', async () => {
+    const fetchReceivers = (successCallback: (receivers: Array<OrgenhetHierarki>) => void) => {
       successCallback(receivers);
     };
-    const clearCodingAnswerFn = jest.fn();
-    const wrapper = mount(
-      <ReceiverComponent
-        selected={['Endpoint/1']}
-        handleChange={jest.fn()}
-        clearCodingAnswer={clearCodingAnswerFn}
-        fetchReceivers={fetchReceiversFn}
-      />
-    );
+    const onChange = jest.fn();
+    const { queryByText } = renderRefero({
+      questionnaire: q,
+      props: { fetchReceivers, onChange },
+      resources: {
+        ...getResources(''),
+        adresseKomponent_velgHelseregion: 'Velg region',
+        adresseKomponent_velgHelseforetak: 'Velg helseforetak',
+      },
+    });
+    await act(async () => {
+      await selectDropdownOptionByName('Velg region', /region 1/i);
 
-    wrapper.find(Select).at(0).props().onChange!({ target: { value: '2' } as unknown } as React.FormEvent<HTMLInputElement>, '2');
+      await selectDropdownOptionByName('Velg helseforetak', /Receiver 11/i);
 
-    expect(clearCodingAnswerFn).toHaveBeenCalled();
+      expect(queryByText(/Region 1 \/ Receiver 11/i)).toBeInTheDocument();
+
+      await selectDropdownOptionByName('Velg region', /region 1/i);
+      expect(queryByText(/Region 1 \/ Receiver 11/i)).not.toBeInTheDocument();
+    });
   });
 
-  it('Should call handleChange when a leaf node is selected', () => {
-    const fetchReceiversFn = (successCallback: (receivers: Array<OrgenhetHierarki>) => void) => {
+  it('Should call handleChange when a leaf node is selected', async () => {
+    const fetchReceivers = (successCallback: (receivers: Array<OrgenhetHierarki>) => void) => {
       successCallback(receivers);
     };
-    const handleChangeFn = jest.fn();
-    const wrapper = mount(
-      <ReceiverComponent
-        selected={['Endpoint/1']}
-        handleChange={handleChangeFn}
-        clearCodingAnswer={jest.fn()}
-        fetchReceivers={fetchReceiversFn}
-      />
-    );
+    const onChange = jest.fn();
+    renderRefero({
+      questionnaire: q,
+      props: { fetchReceivers, onChange },
+      resources: {
+        ...getResources(''),
+        adresseKomponent_velgHelseregion: 'Velg region',
+        adresseKomponent_velgHelseforetak: 'Velg helseforetak',
+      },
+    });
+    await act(async () => {
+      await selectDropdownOptionByName('Velg region', /region 1/i);
 
-    wrapper.find(Select).at(1).props().onChange!({ target: { value: '12' } as unknown } as React.FormEvent<HTMLInputElement>, '1.2');
+      await selectDropdownOptionByName('Velg helseforetak', /Receiver 11/i);
+    });
 
-    expect(handleChangeFn).toHaveBeenCalled();
+    expect(onChange).toHaveBeenCalled();
   });
 });

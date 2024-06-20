@@ -10,9 +10,13 @@ import { getExtension, getCalculatedExpressionExtension } from './extension';
 import { evaluateFhirpathExpressionToGetString } from './fhirpathHelper';
 import { getQuestionnaireResponseItemsWithLinkId } from './refero-core';
 import { createDummySectionScoreItem, scoringItemType } from './scoring';
-import ExtensionConstants from '../constants/extensions';
+import { Extensions } from '../constants/extensions';
 import itemType from '../constants/itemType';
 import { ScoringItemType } from '../constants/scoringItemType';
+
+export interface AnswerPad {
+  [linkId: string]: number | undefined;
+}
 
 class CalculatedScores {
   totalScores: Array<QuestionnaireItem> = [];
@@ -134,11 +138,11 @@ export class ScoringCalculator {
   }
 
   private isOfTypeQuestionnaireItem(item: Questionnaire | QuestionnaireItem): item is QuestionnaireItem {
-    return (item as QuestionnaireItem).type !== undefined;
+    return item.hasOwnProperty('type');
   }
 
-  public calculateScore(questionnaireResponse: QuestionnaireResponse): { [linkId: string]: number | undefined } {
-    const answerPad: { [linkId: string]: number | undefined } = {};
+  public calculateScore(questionnaireResponse: QuestionnaireResponse): AnswerPad {
+    const answerPad: AnswerPad = {};
 
     for (const sectionScoreLinkId in this.sectionScoreCache) {
       answerPad[sectionScoreLinkId] = this.calculateSectionScore(sectionScoreLinkId, questionnaireResponse, answerPad);
@@ -155,8 +159,8 @@ export class ScoringCalculator {
     return answerPad;
   }
 
-  public calculateFhirScore(questionnaireResponse: QuestionnaireResponse): { [linkId: string]: number | undefined } {
-    const answerPad: { [linkId: string]: number | undefined } = {};
+  public calculateFhirScore(questionnaireResponse: QuestionnaireResponse): AnswerPad {
+    const answerPad: AnswerPad = {};
 
     for (const fhirScoreLinkId in this.fhirScoreCache) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -166,11 +170,7 @@ export class ScoringCalculator {
     return answerPad;
   }
 
-  private calculateSectionScore(
-    linkId: string,
-    questionnaireResponse: QuestionnaireResponse,
-    answerPad: { [linkId: string]: number | undefined }
-  ): number | undefined {
+  private calculateSectionScore(linkId: string, questionnaireResponse: QuestionnaireResponse, answerPad: AnswerPad): number | undefined {
     let sum: number = 0;
     let hasCalculatedAtLeastOneAnswer = false;
     const dependencies: Array<QuestionnaireItem> = this.sectionScoreCache[linkId];
@@ -186,11 +186,7 @@ export class ScoringCalculator {
     return hasCalculatedAtLeastOneAnswer ? sum : undefined;
   }
 
-  private valueOf(
-    item: QuestionnaireItem,
-    questionnaireResponse: QuestionnaireResponse,
-    answerPad: { [linkId: string]: number | undefined }
-  ): number | undefined {
+  private valueOf(item: QuestionnaireItem, questionnaireResponse: QuestionnaireResponse, answerPad: AnswerPad): number | undefined {
     const scoringType = scoringItemType(item);
     switch (scoringType) {
       case ScoringItemType.SECTION_SCORE:
@@ -242,7 +238,7 @@ export class ScoringCalculator {
   private valueOfSectionScoreItem(
     item: QuestionnaireItem,
     questionnaireResponse: QuestionnaireResponse,
-    answerPad: { [linkId: string]: number | undefined }
+    answerPad: AnswerPad
   ): number | undefined {
     if (item.linkId in answerPad) {
       // return cached score
@@ -254,7 +250,7 @@ export class ScoringCalculator {
   }
 
   private getOptionScore(option: QuestionnaireItemAnswerOption): number {
-    const extension = getExtension(ExtensionConstants.ORDINAL_VALUE, option.valueCoding);
+    const extension = getExtension(Extensions.ORDINAL_VALUE_URL, option.valueCoding);
     if (extension?.valueDecimal) {
       return extension?.valueDecimal as unknown as number;
     }

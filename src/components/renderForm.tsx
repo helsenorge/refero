@@ -1,16 +1,15 @@
-import * as React from 'react';
+import React from 'react';
 
-import { QuestionnaireResponse } from 'fhir/r4';
 import { FieldValues, SubmitHandler, UseFormReturn, useFormContext } from 'react-hook-form';
 
+import { ValidationSummaryPlacement } from '../types/formTypes/validationSummaryPlacement';
 import { ReferoProps } from '../types/referoProps';
 
 import Loader from '@helsenorge/designsystem-react/components/Loader';
 
 import FormButtons from './formButtons/formButtons';
-import { Resources } from '../util/resources';
-import { ValidationSummaryPlacement } from '../types/formTypes/validationSummaryPlacement';
 import { ValidationSummary } from './validation-summary';
+import { Resources } from '../util/resources';
 
 interface RenderFormProps {
   isAuthorized: boolean;
@@ -43,17 +42,12 @@ const RenderForm = ({
   children,
   methods,
   validationSummaryPlacement,
-}: // methods,
-RenderFormProps): JSX.Element | null => {
+}: RenderFormProps): JSX.Element | null => {
   const {
-    formState: { errors, defaultValues, dirtyFields },
-    getValues,
+    formState: { errors },
   } = useFormContext();
 
-  const onSubmitReactHookForm: SubmitHandler<FieldValues> = (data: QuestionnaireResponse, e: React.FormEvent): void => {
-    // console.log('data', JSON.stringify(data, null, 2));
-    // console.log('e', e);
-    return false;
+  const onSubmitReactHookForm: SubmitHandler<FieldValues> = (): void => {
     onSubmit();
   };
 
@@ -65,11 +59,12 @@ RenderFormProps): JSX.Element | null => {
   if (referoProps.blockSubmit) {
     return <Loader size={'medium'} overlay={'parent'} />;
   }
-  const value = getValues();
-  // console.log(value, 'values');
-  // console.log(defaultValues, 'defaultValues');
-  // console.log(dirtyFields, 'dirtyFields');
 
+  const handleNextStep: SubmitHandler<FieldValues> = (): void => {
+    if (nextStep) {
+      nextStep();
+    }
+  };
   return (
     <form onSubmit={methods.handleSubmit(onSubmitReactHookForm)}>
       {/* <Validation errorSummary="test" /> */}
@@ -82,7 +77,7 @@ RenderFormProps): JSX.Element | null => {
         pauseButtonText={displayPreviousButton && resources.previousStep ? resources.previousStep : resources.formSave}
         submitButtonDisabled={referoProps.blockSubmit}
         pauseButtonDisabled={referoProps.saveButtonDisabled}
-        onSubmitButtonClicked={displayNextButton ? nextStep : methods.handleSubmit(onSubmitReactHookForm)}
+        onSubmitButtonClicked={displayNextButton ? methods.handleSubmit(handleNextStep) : methods.handleSubmit(onSubmitReactHookForm)}
         onCancelButtonClicked={(): void => {
           referoProps.onCancel && referoProps.onCancel();
         }}

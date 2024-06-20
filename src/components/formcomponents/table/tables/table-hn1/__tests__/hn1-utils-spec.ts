@@ -1,5 +1,5 @@
+import { QuestionnaireItem, QuestionnaireResponse } from 'fhir/r4';
 import itemType from '../../../../../../constants/itemType';
-import { QuestionnaireItem, QuestionnaireResponse } from '../../../../../../types/fhir';
 import { ITableH1Column, TABLE_HN1_TABLE_TYPES } from '../interface';
 import * as hn1Utils from '../utils';
 

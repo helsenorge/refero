@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
@@ -14,7 +12,6 @@ import { GlobalState } from '../../../reducers';
 import { getRepeatsTextExtension } from '../../../util/extension';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
-import { RenderContext } from '../../../util/renderContext';
 import { Resources } from '../../../util/resources';
 import { WithCommonFunctionsProps } from '../../with-common-functions';
 
@@ -24,7 +21,6 @@ interface Props extends WithCommonFunctionsProps {
   responseItems?: Array<QuestionnaireResponseItem>;
   resources?: Resources;
   dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
-  renderContext: RenderContext;
   disabled: boolean;
 }
 
@@ -41,7 +37,7 @@ export const RepeatButton = ({ item, resources, dispatch, parentPath, responseIt
   }
 
   return (
-    <Button onClick={onAddRepeatItem} variant="borderless" disabled={disabled}>
+    <Button onClick={onAddRepeatItem} variant="borderless" disabled={disabled} testId={`${item.linkId}-repeat-button`}>
       <Icon svgIcon={PlusLarge} />
       {text}
     </Button>

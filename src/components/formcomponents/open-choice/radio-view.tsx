@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 
 import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { Controller } from 'react-hook-form';
@@ -15,6 +15,7 @@ import { isRequired, getId, getSublabelText, getText, renderPrefix } from '../..
 import { Resources } from '../../../util/resources';
 import { FormProps } from '../../../validation/ReactHookFormHoc';
 import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
+import SafeText from '../SafeText';
 
 interface Props extends FormProps, WithCommonFunctionsAndEnhancedProps {
   options?: Array<Options>;
@@ -24,16 +25,17 @@ interface Props extends FormProps, WithCommonFunctionsAndEnhancedProps {
   handleChange: (radioButton: string) => void;
   selected?: Array<string | undefined>;
   resources?: Resources;
-  renderDeleteButton: (className: string) => JSX.Element | null;
+  renderDeleteButton: (className?: string) => JSX.Element | null;
   renderOpenField: () => JSX.Element | undefined;
   repeatButton: JSX.Element;
   answer: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer;
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
+  children: React.ReactNode;
 }
 
-const RadioView: React.FC<Props> = ({
+const RadioView = ({
   options,
   item,
   questionnaire,
@@ -52,7 +54,7 @@ const RadioView: React.FC<Props> = ({
   control,
   error,
   idWithLinkIdAndItemIndex,
-}) => {
+}: Props): JSX.Element | null => {
   if (!options) {
     return null;
   }
@@ -64,16 +66,19 @@ const RadioView: React.FC<Props> = ({
       <FormGroup error={error?.message} mode="ongrey">
         {renderHelpElement()}
         <Label
-          labelTexts={[{ text: labelText }]}
+          labelTexts={[]}
           sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
           afterLabelChildren={renderHelpButton()}
-        />
+        >
+          <SafeText text={labelText} />
+        </Label>
         {options.map((option: Options, index: number) => (
           <Controller
             name={idWithLinkIdAndItemIndex}
             key={`${option.type}-${index}`}
             control={control}
             shouldUnregister={true}
+            defaultValue={selectedValue}
             rules={{
               required: {
                 value: isRequired(item),
@@ -85,23 +90,20 @@ const RadioView: React.FC<Props> = ({
                 {...rest}
                 key={`${getId(id)}-${index.toString()}`}
                 inputId={getId(id) + '-hn-' + index}
-                testId={getId(id) + index}
+                testId={`${getId(id)}-${index}-radio-open-choice`}
+                value={option.type}
                 onChange={(): void => {
                   handleChange(option.type);
                   onChange(option.type);
                 }}
-                label={<Label labelTexts={[{ text: option.label }]} />}
+                label={<Label testId={`${getId(id)}-${index}-radio-open-choice-label`} labelTexts={[{ text: option.label }]} />}
                 defaultChecked={selectedValue === option?.type}
               />
             )}
           />
         ))}
       </FormGroup>
-      {shouldShowExtraChoice(answer) ? (
-        <div className="page_refero__component_openchoice_openfield">{renderOpenField()}</div>
-      ) : (
-        <React.Fragment />
-      )}
+      {shouldShowExtraChoice(answer) ? <div className="page_refero__component_openchoice_openfield">{renderOpenField()}</div> : null}
       {renderDeleteButton('page_refero__deletebutton--margin-top')}
       {repeatButton}
       {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : undefined}

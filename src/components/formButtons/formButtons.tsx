@@ -1,5 +1,4 @@
-import React, { ReactElement } from 'react';
-import { useFormContext } from 'react-hook-form';
+import { FormEvent, KeyboardEvent, MouseEvent } from 'react';
 
 import { QuestionnaireResponse } from 'fhir/r4';
 
@@ -9,7 +8,7 @@ import { CancelFormButton } from './CancelFormButton';
 import { PauseFormButton } from './PauseFormButton';
 import { SubmitFormButton } from './SubmitFormButton';
 
-import '../../styles/formButtons.scss';
+import '../../styles/formButtons.css';
 
 interface FormButtonsInterface {
   submitButtonText: string;
@@ -17,7 +16,9 @@ interface FormButtonsInterface {
   pauseButtonText: string;
   submitButtonDisabled?: boolean;
   pauseButtonDisabled?: boolean;
-  onSubmitButtonClicked?: (() => void) | ((e: React.FormEvent) => void);
+  onSubmitButtonClicked?:
+    | (() => void)
+    | ((e: MouseEvent<HTMLElement, MouseEvent> | FormEvent<{}> | KeyboardEvent<HTMLUListElement> | null | undefined) => void);
   onCancelButtonClicked?: () => void;
   onPauseButtonClicked?: (questionnaireResponse?: QuestionnaireResponse) => void;
   isHelsenorgeForm?: boolean;
@@ -41,7 +42,7 @@ const FormButtons = ({
   return (
     <div className="formButtonsWrapper">
       <>
-        {Object.values(buttonOrder).map((buttonType: ButtonType): ReactElement => {
+        {Object.values(buttonOrder).map((buttonType: ButtonType): JSX.Element | null => {
           switch (buttonType) {
             case ButtonType.pauseButton:
               return (

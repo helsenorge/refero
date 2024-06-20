@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 
 import { FieldValues, UseFormReturn } from 'react-hook-form';
 
@@ -32,7 +32,7 @@ const StepView = ({
   onSubmit,
   onStepChange,
   methods,
-}: StepViewProps): JSX.Element => {
+}: StepViewProps): JSX.Element | null => {
   const stepArray: Array<JSX.Element> | undefined = [];
   const [stepIndex, setStepIndex] = React.useState(0);
 

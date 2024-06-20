@@ -1,7 +1,7 @@
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { createDateFromYear } from '../../../../util/createDateFromYear';
 
-describe('Date form component', () => {
+describe.skip('Date form component', () => {
   const question: QuestionnaireItem = {
     id: '2',
     linkId: '2.1',

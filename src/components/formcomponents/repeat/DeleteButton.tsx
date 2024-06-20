@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { connect } from 'react-redux';
@@ -13,7 +13,6 @@ import { NewValueAction, deleteRepeatItemAsync } from '../../../actions/newValue
 import { GlobalState } from '../../../reducers';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
-import { RenderContext } from '../../../util/renderContext';
 import { Resources } from '../../../util/resources';
 import { WithCommonFunctionsProps } from '../../with-common-functions';
 
@@ -25,7 +24,6 @@ interface Props extends WithCommonFunctionsProps {
   dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
   mustShowConfirm?: boolean;
   onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
-  renderContext: RenderContext;
 }
 
 const DeleteButton = ({ resources, dispatch, item, path, onAnswerChange, mustShowConfirm }: Props): JSX.Element => {
@@ -50,16 +48,18 @@ const DeleteButton = ({ resources, dispatch, item, path, onAnswerChange, mustSho
   const onConfirmCancel = (): void => {
     setShowConfirm(false);
   };
-
+  const pathItem = path.filter(p => p.linkId === item.linkId);
+  const testId = `${pathItem?.[0].linkId ?? item.linkId}-${pathItem?.[0].index ?? 0}`;
   return (
     <>
       <br />
-      <Button variant="outline" concept="destructive" onClick={onDeleteRepeatItem}>
+      <Button variant="outline" concept="destructive" onClick={onDeleteRepeatItem} testId={`${testId}-delete-button`}>
         <Icon svgIcon={TrashCan} />
         {resources && resources.deleteButtonText ? resources.deleteButtonText : ''}
       </Button>
       {showConfirm && !!resources ? (
         <Modal
+          testId={`${testId}-delete-confirm-modal`}
           onClose={onConfirmCancel}
           title={resources.confirmDeleteHeading}
           description={resources.confirmDeleteDescription}

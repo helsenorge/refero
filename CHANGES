@@ -1,9 +1,65 @@
+## 16.0.0-beta09
+
+- Update github actions
+
+## 16.0.0-beta07
+
+- [Breaking change] exports from refero now comes directly from @helsenorge/refero
+- [Breaking change] exports ReferoContainer by default
+- [Breaking change] Updated tsconfigs to support es2020, build is es.js
+
+- [For development] Changed from tsc build to vite build
+- [For development] Moved preview out from src
+- [For development] Updated prettierrc, eslintrc and jest.config
+- [For development] Updated plugins for babel, vite, jest
+- Updated ts to 5.4.5
+- removed: xml2js, yargs, tabbable, rimraf, esm, crlf, bufferutil, bfj +++
+
+## 16.0.0-beta06
+
+- updated build script to handle css
+
+## 16.0.0-beta05
+
+- set peerDependency react-hook-form
+
+## 16.0.0-beta04
+
+- upgraded jest to new version
+- upgraded @testing-library/jest-dom and added babel-plugin for jest-dom
+
+## 16.0.0-beta03
+
+- bump
+
+## 16.0.0-beta02
+
+---
+
+- Added tests for all components
+- Removed enzyme and added react-testing-library
+- Use new labels from designsystem
+- Added validatation to all components
+- Refactored all class components to functional components
+
 ## 16.0.0-beta01
 
 ---
 
 - Rework of refero with new components
 - removed old components and added new from @helsenorge designsystem
+
+## 15.0.7
+
+---
+
+- Bugfix:
+  - Added support for emoji-codes in slider
+    - Html codes
+    - decimal codes
+    - uni codes
+    - hex codes
+
 ## 15.0.6
 
 ---
@@ -1181,8 +1237,8 @@
 
   { linkId: "1", text: "This is a question", type: "group", item: [ { extension: [ { url:
   "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl", valueCodeableConcept: { coding: [ { system:
-  "http://hl7.org/fhir/ValueSet/questionnaire-item-control", code: "help" } ] } } ], linkId: "1.0.1", text: "This is the help text for the
-  item with linkId 1", type: "text" } ] }
+  "http://hl7.org/fhir/ValueSet/questionnaire-item-control", code: "help" } ] } } ], linkId: "1.0.1", text: "This is the help text for the item
+  with linkId 1", type: "text" } ] }
 
   2.2.2
 

@@ -1,5 +1,3 @@
-import React, { ReactElement } from 'react';
-
 import Button from '@helsenorge/designsystem-react/components/Button';
 
 type Props = {
@@ -9,10 +7,15 @@ type Props = {
   pauseButtonDisabled?: boolean;
 };
 
-export const PauseFormButton = ({ pauseButtonText, onPauseButtonClicked, pauseButtonDisabled, isHelsenorgeForm }: Props): ReactElement => {
+export const PauseFormButton = ({
+  pauseButtonText,
+  onPauseButtonClicked,
+  pauseButtonDisabled,
+  isHelsenorgeForm,
+}: Props): JSX.Element | null => {
   return (
     <div className={`pauseButtonStyle ${isHelsenorgeForm ? 'hideOnSmallScreen' : 'displayOnSmallScreen'}`}>
-      <Button variant="outline" disabled={pauseButtonDisabled} onClick={onPauseButtonClicked}>
+      <Button variant="outline" disabled={pauseButtonDisabled} onClick={onPauseButtonClicked} testId="refero-pause-button">
         {pauseButtonText}
       </Button>
     </div>

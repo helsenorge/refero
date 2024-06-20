@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 
 import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { Controller } from 'react-hook-form';
@@ -14,12 +14,13 @@ import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 import Pdf from './pdf';
 import { NewValueAction, newBooleanValueAsync } from '../../../actions/newValue';
 import { GlobalState } from '../../../reducers';
-import { isReadOnly, getId, getText, renderPrefix, getSublabelText, isRequired } from '../../../util/index';
+import { isReadOnly, getId, getSublabelText, isRequired, getLabelText } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
 import { Resources } from '../../../util/resources';
 import ReactHookFormHoc, { FormProps } from '../../../validation/ReactHookFormHoc';
 import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
+import SafeText from '../SafeText';
 
 export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   item: QuestionnaireItem;
@@ -41,11 +42,31 @@ export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   isHelpOpen?: boolean;
   onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
+  children?: React.ReactNode;
 }
 
-class Boolean extends React.Component<Props> {
-  getValue(): boolean {
-    const { item, answer } = this.props;
+const Boolean = ({
+  item,
+  answer,
+  dispatch,
+  promptLoginMessage,
+  onAnswerChange,
+  path,
+  pdf,
+  onRenderMarkdown,
+  questionnaire,
+  id,
+  resources,
+  renderHelpButton,
+  renderHelpElement,
+  renderDeleteButton,
+  repeatButton,
+  error,
+  children,
+  control,
+  idWithLinkIdAndItemIndex,
+}: Props): JSX.Element | null => {
+  const getValue = (): boolean => {
     if (answer && answer.valueBoolean !== undefined) {
       return answer.valueBoolean;
     }
@@ -53,15 +74,14 @@ class Boolean extends React.Component<Props> {
       return false;
     }
     return item.initial[0].valueBoolean;
-  }
+  };
 
-  handleChange = (): void => {
-    const { dispatch, promptLoginMessage, onAnswerChange, path, item } = this.props;
-    const newValue = !this.getValue();
+  const handleChange = (): void => {
+    const newValue = !getValue();
     if (dispatch) {
       path &&
-        dispatch(newBooleanValueAsync(path, newValue, this.props.item))?.then(
-          newState => onAnswerChange && onAnswerChange(newState, path, item, { valueBoolean: newValue } as QuestionnaireResponseItemAnswer)
+        dispatch(newBooleanValueAsync(path, newValue, item))?.then(
+          newState => onAnswerChange && onAnswerChange(newState, path, item, { valueBoolean: newValue })
         );
     }
 
@@ -70,111 +90,99 @@ class Boolean extends React.Component<Props> {
     }
   };
 
-  getLabel = (): string => {
-    return `${renderPrefix(this.props.item)} ${getText(
-      this.props.item,
-      this.props.onRenderMarkdown,
-      this.props.questionnaire,
-      this.props.resources
-    )}`;
-  };
+  // const shouldComponentUpdate = (nextProps: Props): boolean => {
+  //   const responseItemHasChanged = props.responseItem !== nextProps.responseItem;
+  //   const helpItemHasChanged = props.isHelpOpen !== nextProps.isHelpOpen;
+  //   const answerHasChanged = props.answer !== nextProps.answer;
+  //   const resourcesHasChanged = JSON.stringify(props.resources) !== JSON.stringify(nextProps.resources);
+  //   const repeats = props.item.repeats ?? false;
 
-  shouldComponentUpdate(nextProps: Props): boolean {
-    const responseItemHasChanged = this.props.responseItem !== nextProps.responseItem;
-    const helpItemHasChanged = this.props.isHelpOpen !== nextProps.isHelpOpen;
-    const answerHasChanged = this.props.answer !== nextProps.answer;
-    const resourcesHasChanged = JSON.stringify(this.props.resources) !== JSON.stringify(nextProps.resources);
-    const repeats = this.props.item.repeats ?? false;
-
+  //   return (
+  //     responseItemHasChanged ||
+  //     helpItemHasChanged ||
+  //     resourcesHasChanged ||
+  //     repeats ||
+  //     answerHasChanged ||
+  //     props.error?.message !== nextProps.error?.message
+  //   );
+  // };
+  const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
+  const labelText = getLabelText(item, onRenderMarkdown, questionnaire, resources);
+  if (pdf) {
+    return <Pdf item={item} checked={getValue()} onRenderMarkdown={onRenderMarkdown} />;
+  } else if (isReadOnly(item)) {
     return (
-      responseItemHasChanged ||
-      helpItemHasChanged ||
-      resourcesHasChanged ||
-      repeats ||
-      answerHasChanged ||
-      this.props.error?.message !== nextProps.error?.message
+      <Checkbox
+        testId={`${getId(id)}-readonly`}
+        label={<Label testId={`${getId(id)}-label-readonly`} labelTexts={[{ text: labelText }]} />}
+        checked={getValue()}
+        disabled={true}
+        onChange={(): void => {
+          /*kan ikke endres, er alltid disabled*/
+        }}
+        className="page_refero__input"
+      />
     );
   }
 
-  render(): JSX.Element | null {
-    const {
-      pdf,
-      item,
-      onRenderMarkdown,
-      questionnaire,
-      id,
-      resources,
-      renderHelpButton,
-      renderHelpElement,
-      renderDeleteButton,
-      repeatButton,
-      error,
-      children,
-      control,
-      idWithLinkIdAndItemIndex,
-    } = this.props;
-    if (pdf) {
-      return <Pdf item={item} checked={this.getValue()} onRenderMarkdown={onRenderMarkdown} />;
-    } else if (isReadOnly(item)) {
-      return (
-        <Checkbox
-          label={this.getLabel()}
-          checked={this.getValue()}
-          disabled
-          onChange={(): void => {
-            /*kan ikke endres, er alltid disabled*/
+  const value = getValue();
+  return (
+    // Dette er en hack for FHI-skjema. TODO: fjern hack
+    <div className="page_refero__component page_refero__component_boolean">
+      <FormGroup error={error?.message}>
+        {renderHelpElement()}
+
+        <Controller
+          name={idWithLinkIdAndItemIndex}
+          control={control}
+          shouldUnregister={true}
+          defaultValue={value}
+          rules={{
+            required: {
+              value: isRequired(item),
+              message: resources?.formRequiredErrorMessage ?? 'Feltet er påkrevd',
+            },
           }}
-          className="page_refero__input"
+          render={({ field: { onChange, ...rest } }): JSX.Element => (
+            <Checkbox
+              {...rest}
+              testId={`${getId(id)}-boolean`}
+              inputId={getId(id)}
+              label={
+                <Label
+                  labelId={`${getId(id)}-label-boolean`}
+                  testId={`${getId(id)}-label-boolean`}
+                  labelTexts={[{ text: labelText, type: 'semibold' }]}
+                  htmlFor={getId(id)}
+                  className="page_refero__label"
+                  sublabel={
+                    <Sublabel
+                      testId={`${getId(id)}-sublabel-boolean`}
+                      id={`${getId(id)}-sublabel-boolean`}
+                      sublabelTexts={[{ text: subLabelText, type: 'normal' }]}
+                    />
+                  }
+                  afterLabelChildren={renderHelpButton()}
+                >
+                  <SafeText text={labelText} />
+                </Label>
+              }
+              checked={value}
+              onChange={(): void => {
+                handleChange();
+                onChange(!value);
+              }}
+              className="page_refero__input"
+            />
+          )}
         />
-      );
-    }
-    const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
-    return (
-      // Dette er en hack for FHI-skjema. TODO: fjern hack
-      <div className="page_refero__component page_refero__component_boolean">
-        <FormGroup error={error?.message}>
-          {renderHelpElement()}
-
-          <Label
-            labelId={`${getId(id)}-label-boolean`}
-            labelTexts={[{ text: this.getLabel() }]}
-            sublabel={<Sublabel id={`${getId(id)}-sublabel-boolean`} sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
-            afterLabelChildren={renderHelpButton()}
-          />
-          <Controller
-            name={idWithLinkIdAndItemIndex}
-            control={control}
-            shouldUnregister={true}
-            rules={{
-              required: {
-                value: isRequired(item),
-                message: resources?.formRequiredErrorMessage ?? 'Feltet er påkrevd',
-              },
-            }}
-            render={({ field: { onChange, ...rest } }): JSX.Element => (
-              <Checkbox
-                {...rest}
-                testId={getId(id)}
-                inputId={getId(id)}
-                label={<Label labelTexts={[{ text: this.getLabel() }]} />}
-                checked={this.getValue()}
-                onChange={(): void => {
-                  this.handleChange();
-                  onChange(!this.getValue());
-                }}
-                disabled={isReadOnly(item)}
-                className="page_refero__input"
-              />
-            )}
-          />
-        </FormGroup>
-        {renderDeleteButton('page_refero__deletebutton--margin-top')}
-        {repeatButton}
-        {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
-      </div>
-    );
-  }
-}
+      </FormGroup>
+      {renderDeleteButton('page_refero__deletebutton--margin-top')}
+      {repeatButton}
+      {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
+    </div>
+  );
+};
 const withFormProps = ReactHookFormHoc(Boolean);
 const withCommonFunctionsComponent = withCommonFunctions(withFormProps);
 const layoutChangeComponent = layoutChange(withCommonFunctionsComponent);

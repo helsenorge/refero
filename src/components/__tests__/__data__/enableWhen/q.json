@@ -159,7 +159,7 @@
             }
           ],
           "linkId": "9_2",
-          "text": "Andre sykdommer",
+          "text": "Flere sykdommer",
           "type": "string",
           "enableBehavior": "any",
           "enableWhen": [

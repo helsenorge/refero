@@ -1,8 +1,10 @@
-import * as React from 'react';
+import React from 'react';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem, Questionnaire } from 'fhir/r4';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
+
+import Label from '@helsenorge/designsystem-react/components/Label';
 
 import { LanguageLocales } from '@helsenorge/core-utils/constants/languages';
 import { DateRangePicker } from '@helsenorge/date-time/components/date-range-picker';
@@ -11,18 +13,17 @@ import { DateDayInput } from './date-day-input';
 import { DateYearMonthInput } from './date-month-input';
 import { DateYearInput } from './date-year-input';
 import { NewValueAction, newDateValueAsync } from '../../../actions/newValue';
-import ExtensionConstants from '../../../constants/extensions';
+import { Extensions } from '../../../constants/extensions';
 import itemControlConstants from '../../../constants/itemcontrol';
 import { GlobalState } from '../../../reducers';
 import { getExtension, getItemControlExtensionValue } from '../../../util/extension';
 import { evaluateFhirpathExpressionToGetDate } from '../../../util/fhirpathHelper';
-import { getSublabelText, isRequired } from '../../../util/index';
+import { getLabelText, getSublabelText } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
 import { Resources } from '../../../util/resources';
 import ReactHookFormHoc, { FormProps } from '../../../validation/ReactHookFormHoc';
 import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
-import Label from '../label';
 import SubLabel from '../sublabel';
 import { safeParseJSON } from '../../../util/date-fns-utils';
 
@@ -60,7 +61,7 @@ class DateComponent extends React.Component<Props> {
   }
 
   getMaxDate(): Date | undefined {
-    const maxDate = getExtension(ExtensionConstants.DATE_MAX_VALUE_URL, this.props.item);
+    const maxDate = getExtension(Extensions.DATE_MAX_VALUE_URL, this.props.item);
     if (maxDate && maxDate.valueString) {
       const fhirPathExpression = evaluateFhirpathExpressionToGetDate(this.props.item, maxDate.valueString);
       return fhirPathExpression ? safeParseJSON(fhirPathExpression) : undefined;
@@ -70,7 +71,7 @@ class DateComponent extends React.Component<Props> {
   }
 
   getMaxDateWithExtension(): Date | undefined {
-    const maxDate = getExtension(ExtensionConstants.MAX_VALUE_URL, this.props.item);
+    const maxDate = getExtension(Extensions.MAX_VALUE_URL, this.props.item);
     if (maxDate && maxDate.valueDate) {
       return safeParseJSON(String(maxDate.valueDate));
     } else if (maxDate && maxDate.valueDateTime) {
@@ -82,7 +83,7 @@ class DateComponent extends React.Component<Props> {
   }
 
   getMinDate(): Date | undefined {
-    const minDate = getExtension(ExtensionConstants.DATE_MIN_VALUE_URL, this.props.item);
+    const minDate = getExtension(Extensions.DATE_MIN_VALUE_URL, this.props.item);
     if (minDate && minDate.valueString) {
       const fhirPathExpression = evaluateFhirpathExpressionToGetDate(this.props.item, minDate.valueString);
       return fhirPathExpression ? safeParseJSON(fhirPathExpression) : undefined;
@@ -92,7 +93,7 @@ class DateComponent extends React.Component<Props> {
   }
 
   getMinDateWithExtension(): Date | undefined {
-    const minDate = getExtension(ExtensionConstants.MIN_VALUE_URL, this.props.item);
+    const minDate = getExtension(Extensions.MIN_VALUE_URL, this.props.item);
     if (minDate && minDate.valueDate) {
       return safeParseJSON(String(minDate.valueDate));
     } else if (minDate && minDate.valueDateTime) {
@@ -141,10 +142,7 @@ class DateComponent extends React.Component<Props> {
     const itemControls = getItemControlExtensionValue(this.props.item);
     const labelEl = (
       <Label
-        item={this.props.item}
-        onRenderMarkdown={this.props.onRenderMarkdown}
-        questionnaire={this.props.questionnaire}
-        resources={this.props.resources}
+        labelTexts={[{ text: getLabelText(this.props.item, this.props.onRenderMarkdown, this.props.questionnaire, this.props.resources) }]}
       />
     );
 

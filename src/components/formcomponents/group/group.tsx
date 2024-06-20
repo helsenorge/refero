@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 import DOMPurify from 'dompurify';
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem, Questionnaire } from 'fhir/r4';
 import { connect } from 'react-redux';
@@ -42,53 +40,61 @@ export interface Props extends WithCommonFunctionsAndEnhancedProps {
   isHelpOpen?: boolean;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
 }
-interface State {
-  counter?: number;
-}
-export class Group extends React.Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
-  }
-  shouldComponentUpdate(nextProps: Props): boolean {
-    const responseItemHasChanged = this.props.responseItem !== nextProps.responseItem;
-    const helpItemHasChanged = this.props.isHelpOpen !== nextProps.isHelpOpen;
-    const repeatButtonHasChanged = this.props.repeatButton !== nextProps.repeatButton;
-    const attachmentErrorMessageHasChanged = this.props.attachmentErrorMessage !== nextProps.attachmentErrorMessage;
-    const resourcesHasChanged = JSON.stringify(this.props.resources) !== JSON.stringify(nextProps.resources);
 
-    const repeats = this.props.item.repeats ?? false;
-    return (
-      responseItemHasChanged ||
-      helpItemHasChanged ||
-      repeatButtonHasChanged ||
-      attachmentErrorMessageHasChanged ||
-      resourcesHasChanged ||
-      repeats
-    );
-  }
+export const Group = ({
+  pdf,
+  renderContext,
+  repeatButton,
+  id,
+  includeSkipLink,
+  path,
+  renderDeleteButton,
+  item,
+  questionnaire,
+  onRenderMarkdown,
+  resources,
+  renderHelpElement,
+  renderChildrenItems,
+  headerTag,
+  renderHelpButton,
+}: Props): JSX.Element | null => {
+  // shouldComponentUpdate(nextProps: Props): boolean {
+  //   const responseItemHasChanged = props.responseItem !== nextProps.responseItem;
+  //   const helpItemHasChanged = props.isHelpOpen !== nextProps.isHelpOpen;
+  //   const repeatButtonHasChanged = props.repeatButton !== nextProps.repeatButton;
+  //   const attachmentErrorMessageHasChanged = props.attachmentErrorMessage !== nextProps.attachmentErrorMessage;
+  //   const resourcesHasChanged = JSON.stringify(props.resources) !== JSON.stringify(nextProps.resources);
 
-  renderAllItems = (item: QuestionnaireItem): JSX.Element => {
-    const { path, renderContext } = this.props;
+  //   const repeats = props.item.repeats ?? false;
+  //   return (
+  //     responseItemHasChanged ||
+  //     helpItemHasChanged ||
+  //     repeatButtonHasChanged ||
+  //     attachmentErrorMessageHasChanged ||
+  //     resourcesHasChanged ||
+  //     repeats
+  //   );
+  // }
+
+  const renderAllItems = (item: QuestionnaireItem): JSX.Element => {
     const localRenderContextType = getLocalRenderContextType(item);
 
     if (localRenderContextType) {
       switch (localRenderContextType) {
         case RenderContextType.Grid:
-          return this.renderContextTypeGrid();
+          return renderContextTypeGrid();
       }
     }
 
     switch (renderContext.RenderContextType) {
       case RenderContextType.Grid:
-        return isDirectChildOfRenderContextOwner(path, item, renderContext) ? this.renderContextTypeGridRow() : this.renderGroup();
+        return isDirectChildOfRenderContextOwner(path, item, renderContext) ? renderContextTypeGridRow() : renderGroup();
       default:
-        return this.renderGroup();
+        return renderGroup();
     }
   };
 
-  renderContextTypeGridRow = (): JSX.Element => {
-    const { renderContext, item } = this.props;
-
+  const renderContextTypeGridRow = (): JSX.Element => {
     renderContext.RenderChildren = (
       childItems: QuestionnaireItem[],
       itemRenderer: (item: QuestionnaireItem, renderContext: RenderContext) => Array<JSX.Element | undefined>
@@ -116,15 +122,13 @@ export class Group extends React.Component<Props, State> {
 
     return (
       <tr key={item.linkId} className="page_refero__grid--row">
-        <td className="page_refero__grid--cell page_refero__grid--cell-first">{this.renderGroupHeader()}</td>
-        {this.props.renderChildrenItems(renderContext)}
+        <td className="page_refero__grid--cell page_refero__grid--cell-first">{renderGroupHeader()}</td>
+        {renderChildrenItems(renderContext)}
       </tr>
     );
   };
 
-  renderContextTypeGrid = (): JSX.Element => {
-    const { item, renderChildrenItems, repeatButton, renderDeleteButton, id } = this.props;
-
+  const renderContextTypeGrid = (): JSX.Element => {
     const columns = getColumns(item);
     const headers = columns.map(c => <th key={item.linkId + '-' + c}>{c}</th>);
     headers.unshift(<th key={item.linkId + 'X'}>{item.text ? item.text : ''}</th>);
@@ -144,23 +148,10 @@ export class Group extends React.Component<Props, State> {
     );
   };
 
-  renderGroup = (): JSX.Element => {
-    const {
-      repeatButton,
-      id,
-      includeSkipLink,
-      path,
-      renderDeleteButton,
-      item,
-      questionnaire,
-      onRenderMarkdown,
-      resources,
-      renderHelpElement,
-      renderChildrenItems,
-    } = this.props;
+  const renderGroup = (): JSX.Element => {
     return (
-      <section id={getId(this.props.id)} data-sectionname={getHeaderText(item, questionnaire, resources, onRenderMarkdown)}>
-        {this.renderGroupHeader()}
+      <section id={getId(id)} data-sectionname={getHeaderText(item, questionnaire, resources, onRenderMarkdown)}>
+        {renderGroupHeader()}
         {renderHelpElement()}
         <div id={`${getId(id)}-navanchor`} className={getClassNames(item)}>
           {renderChildrenItems(new RenderContext())}
@@ -176,9 +167,7 @@ export class Group extends React.Component<Props, State> {
     );
   };
 
-  renderGroupHeader = (): JSX.Element | null => {
-    const { item, questionnaire, onRenderMarkdown, resources, headerTag, renderHelpButton } = this.props;
-
+  const renderGroupHeader = (): JSX.Element | null => {
     if (!getText(item, onRenderMarkdown)) {
       return null;
     }
@@ -195,11 +184,8 @@ export class Group extends React.Component<Props, State> {
       </>
     );
   };
-  render(): JSX.Element | null {
-    const { pdf, item } = this.props;
-    return <AsPdf pdf={!!pdf}>{this.renderAllItems(item)}</AsPdf>;
-  }
-}
+  return <AsPdf pdf={!!pdf}>{renderAllItems(item)}</AsPdf>;
+};
 const withCommonFunctionsComponent = withCommonFunctions(Group);
 const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(withCommonFunctionsComponent);
 export default connectedComponent;

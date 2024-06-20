@@ -1,10 +1,6 @@
-import * as React from 'react';
-import { createStore, applyMiddleware } from 'redux';
-import { Provider } from 'react-redux';
-import thunk from 'redux-thunk';
-import { mount, ReactWrapper } from 'enzyme';
+import '@testing-library/jest-dom';
 
-import '../../util/defineFetch';
+import '../../util/__tests__/defineFetch';
 import ChoiceRadioButtonDataModel from './__data__/scoring/choice-radio-button';
 import ChoiceCheckBoxDataModel from './__data__/scoring/choice-check-box';
 import OpenChoiceDataModel from './__data__/scoring/open-choice';
@@ -12,386 +8,310 @@ import SectionScoreDataModel from './__data__/scoring/section-score';
 import FhirpathScoreDataModel from './__data__/scoring/fhirpath-score';
 import CodeScoreDataModel from './__data__/scoring/code-scoring';
 import { Questionnaire } from 'fhir/r4';
-import rootReducer from '../../reducers';
-import { Resources } from '../../util/resources';
-import { ReferoContainer } from '..';
 import { getCalculatedExpressionExtension } from '../../util/extension';
-import {
-  inputAnswer,
-  selectRadioButtonOption,
-  unSelectCheckBoxOption,
-  selectCheckBoxOption,
-  findItem,
-  findQuestionnaireItem,
-} from './utils';
-import TextView from '../formcomponents/textview';
+import { inputAnswer, findQuestionnaireItem, findItem } from './utils';
+import { renderRefero } from './test-utils/test-utils';
+import { clickByLabelText, clickByTestId, typeByLabelText } from './test-utils/selectors';
 
 describe('Component renders and calculates score', () => {
   beforeEach(() => {
-    window.matchMedia = jest.fn().mockImplementation(_ => {
+    window.matchMedia = jest.fn().mockImplementation(() => {
       return {};
     });
   });
 
   it('fhirpath score should be updated when decimal questions are answered', async () => {
-    var model: Questionnaire = cloneQuestionnaire(FhirpathScoreDataModel);
-    setFhirpath('4', "QuestionnaireResponse.item.where(linkId='1').answer.value", model);
-    const wrapper = createWrapper(model);
-    wrapper.render();
+    const questionnaire = setFhirpath('4', "QuestionnaireResponse.item.where(linkId='1').answer.value", FhirpathScoreDataModel);
+    const { container, findByLabelText } = createWrapper(questionnaire);
 
-    await inputAnswer('1', 42, wrapper);
+    inputAnswer('1', 42, container);
 
-    let item = findItem('1', wrapper);
-    expect(item.props().value).toBe('42');
+    const item = findItem('1', container);
+    expect(item).toHaveValue(42);
 
-    let fhirpathItem = findItem('4', wrapper);
-    expect(fhirpathItem.props().value).toBe('42');
+    const fhirpathItem = await findByLabelText('Fhir sum element');
+
+    expect(fhirpathItem).toHaveValue(42);
   });
 
   it('fhirpath score should be updated when integer questions are answered', async () => {
-    var model: Questionnaire = cloneQuestionnaire(FhirpathScoreDataModel);
-    setFhirpath('4', "QuestionnaireResponse.item.where(linkId='2').answer.value", model);
-    const wrapper = createWrapper(model);
-    wrapper.render();
+    const questionnaire = setFhirpath('4', "QuestionnaireResponse.item.where(linkId='2').answer.value", FhirpathScoreDataModel);
+    const { container, findByLabelText } = createWrapper(questionnaire);
 
-    await inputAnswer('2', 42, wrapper);
+    inputAnswer('2', 42, container);
 
-    let item = findItem('2', wrapper);
-    expect(item.props().value).toBe('42');
+    const fhirpathItem = await findByLabelText('Fhir sum element');
+    expect(fhirpathItem).toHaveValue(42);
   });
 
   it('fhirpath score should be updated when quantity questions are answered', async () => {
-    let model: Questionnaire = cloneQuestionnaire(FhirpathScoreDataModel);
-    setFhirpath('4', "QuestionnaireResponse.item.where(linkId='3').answer.value.value", model);
-    const wrapper = createWrapper(model);
-    wrapper.render();
-    await inputAnswer('3', 42, wrapper);
+    const questionnaire = setFhirpath('4', "QuestionnaireResponse.item.where(linkId='3').answer.value.value", FhirpathScoreDataModel);
+    const { container, findByLabelText } = createWrapper(questionnaire);
 
-    let item = findItem('3', wrapper);
+    inputAnswer('3', 42, container);
 
-    expect(item.props().value).toBe('42');
+    const item = findItem('3', container);
+    expect(item).toHaveValue(42);
 
-    let fhirpathItem = findItem('4', wrapper);
-
-    expect(fhirpathItem.props().value).toBe('42');
+    const fhirpathItem = await findByLabelText('Fhir sum element');
+    expect(fhirpathItem).toHaveValue(42);
   });
 
   it('fhirpath score should handle complex queries and should be part of totalscore', async () => {
-    var model: Questionnaire = cloneQuestionnaire(FhirpathScoreDataModel);
-    setFhirpath(
+    const questionnaire = setFhirpath(
       '4',
       "QuestionnaireResponse.item.where(linkId='1').answer.value + QuestionnaireResponse.item.where(linkId='2').answer.value",
-      model
+      FhirpathScoreDataModel
     );
-    const wrapper = createWrapper(model);
-    wrapper.render();
+    const { container, findByLabelText } = createWrapper(questionnaire);
 
-    await inputAnswer('1', 21, wrapper);
+    inputAnswer('1', 21, container);
 
-    let item = findItem('1', wrapper);
-    expect(item.props().value).toBe('21');
+    let item = findItem('1', container);
+    expect(item).toHaveValue(21);
 
-    await inputAnswer('2', 21, wrapper);
+    inputAnswer('2', 21, container);
 
-    item = findItem('2', wrapper);
-    expect(item.props().value).toBe('21');
+    item = findItem('2', container);
+    expect(item).toHaveValue(21);
 
-    let fhirpathItem = findItem('4', wrapper);
-    expect(fhirpathItem.props().value).toBe('42');
+    const fhirpathItem = await findByLabelText('Fhir sum element');
+    expect(fhirpathItem).toHaveValue(42);
   });
 
   it('fhirpath score should update with blank score when answer is NaN', async () => {
-    var model: Questionnaire = cloneQuestionnaire(FhirpathScoreDataModel);
-    setFhirpath('4', '0 / 0', model);
+    const questionnaire = setFhirpath('4', '0 / 0', FhirpathScoreDataModel);
+    const { container, findByLabelText } = createWrapper(questionnaire);
 
-    const wrapper = createWrapper(model);
-    wrapper.render();
+    inputAnswer('1', 42, container);
 
-    await inputAnswer('1', 42, wrapper);
-
-    let fhirpathItem = findItem('4', wrapper);
-    expect(fhirpathItem.props().value).toBe('');
+    const fhirpathItem = await findByLabelText('Fhir sum element');
+    expect(fhirpathItem).toHaveValue(null);
   });
 
-  it('fhirpath score should upladte with blank score when answer is infinite', async () => {
-    var model: Questionnaire = cloneQuestionnaire(FhirpathScoreDataModel);
-    setFhirpath('4', '42 / 0', model);
+  it('fhirpath score should update with blank score when answer is infinite', async () => {
+    const questionnaire = setFhirpath('4', '42 / 0', FhirpathScoreDataModel);
+    const { container } = createWrapper(questionnaire);
 
-    const wrapper = createWrapper(model);
-    wrapper.render();
+    inputAnswer('1', 42, container);
 
-    await inputAnswer('1', 42, wrapper);
-
-    let fhirpathItem = findItem('4', wrapper);
-    expect(fhirpathItem.props().value).toBe('');
+    const fhirpathItem = findItem('4', container);
+    expect(fhirpathItem).toHaveValue(null);
   });
 
   it('total score should be updated when options in choice item as radio-button is selected', async () => {
-    const wrapper = createWrapper(ChoiceRadioButtonDataModel);
-    wrapper.render();
+    const { getByLabelText } = createWrapper(ChoiceRadioButtonDataModel);
+    const sum = getByLabelText('Sum');
+    expect(sum).toHaveValue(null);
 
-    let ts = findItem('3.1', wrapper);
-    console.log(ts.debug());
-    expect(ts.props().value).toBe('');
+    await clickByLabelText('Mer enn halvparten av dagene');
+    const sum2 = getByLabelText('Sum');
+    expect(sum2).toHaveValue(2);
 
-    await selectRadioButtonOption('2.1', 2, wrapper);
-
-    ts = findItem('3.1', wrapper);
-    expect(ts.props().value).toBe('2');
-
-    await selectRadioButtonOption('2.1', 1, wrapper);
-
-    ts = findItem('3.1', wrapper);
-    expect(ts.props().value).toBe('1');
+    await clickByLabelText('Noen dager');
+    const sum3 = getByLabelText('Sum');
+    expect(sum3).toHaveValue(1);
   });
 
   it('total score should be updated when options in choice item as check-box is selected', async () => {
-    const wrapper = createWrapper(ChoiceCheckBoxDataModel);
-    wrapper.render();
+    const { getByLabelText } = createWrapper(ChoiceCheckBoxDataModel);
 
-    let ts = findItem('3.1', wrapper);
-    expect(ts.props().value).toBe('');
+    const sum = getByLabelText('Sum');
+    expect(sum).toHaveValue(null);
 
-    await selectCheckBoxOption('2.1', 'c', wrapper);
+    await clickByLabelText('Mer enn halvparten av dagene');
+    const sum2 = getByLabelText('Sum');
+    expect(sum2).toHaveValue(2);
 
-    ts = findItem('3.1', wrapper);
-    expect(ts.props().value).toBe('2');
+    await clickByLabelText('Nesten hver dag');
+    const sum3 = getByLabelText('Sum');
+    expect(sum3).toHaveValue(5);
 
-    await selectCheckBoxOption('2.1', 'b', wrapper);
-
-    ts = findItem('3.1', wrapper);
-    expect(ts.props().value).toBe('3');
-
-    await unSelectCheckBoxOption('2.1', 'c', wrapper);
-
-    ts = findItem('3.1', wrapper);
-    expect(ts.props().value).toBe('1');
+    await clickByLabelText('Mer enn halvparten av dagene');
+    const sum4 = getByLabelText('Sum');
+    expect(sum4).toHaveValue(3);
   });
 
   it('total score should be updated when options in open-choice item is selected', async () => {
-    const wrapper = createWrapper(OpenChoiceDataModel);
-    wrapper.render();
+    const { getByLabelText } = createWrapper(OpenChoiceDataModel);
 
-    let ts = findItem('3.1', wrapper);
-    expect(ts.props().value).toBe('');
+    let sum = getByLabelText('Sum');
+    expect(sum).toHaveValue(null);
 
-    await selectRadioButtonOption('2.1', 2, wrapper);
+    await clickByLabelText('Mer enn halvparten av dagene');
+    sum = getByLabelText('Sum');
+    expect(sum).toHaveValue(2);
 
-    ts = findItem('3.1', wrapper);
-    expect(ts.props().value).toBe('2');
-
-    await selectRadioButtonOption('2.1', 3, wrapper);
-
-    ts = findItem('3.1', wrapper);
-    expect(ts.props().value).toBe('3');
+    await clickByLabelText('Nesten hver dag');
+    sum = getByLabelText('Sum');
+    expect(sum).toHaveValue(3);
   });
-
+  function expectScores(scores: { [linkId: string]: number | null }, container: HTMLElement) {
+    for (const linkId in scores) {
+      const value = scores[linkId];
+      const item = findItem(linkId, container);
+      expect(item).toHaveValue(value);
+    }
+  }
   it('total score and section score should be updated', async () => {
-    const wrapper = createWrapper(SectionScoreDataModel);
-    wrapper.render();
+    const { container } = createWrapper(SectionScoreDataModel);
 
-    let expectedScores = {
-      totalscore_31: '',
-      sectionscore_213: '',
-      sectionscore_223: '',
-      sectionscore_230: '',
+    const expectedScores: { [linkId: string]: number | null } = {
+      totalscore_31: null,
+      sectionscore_213: null,
+      sectionscore_223: null,
+      sectionscore_230: null,
     };
-    expectScores(expectedScores, wrapper);
+    expectScores(expectedScores, container);
 
-    await selectRadioButtonOption('2.1.1', 2, wrapper);
+    await clickByTestId('item_2.1.1-2-radio-choice-label');
+    expectedScores.totalscore_31 = 4;
+    expectedScores.sectionscore_213 = 4;
+    expectScores(expectedScores, container);
 
-    expectedScores.totalscore_31 = '4';
-    expectedScores.sectionscore_213 = '4';
-    expectedScores.sectionscore_223 = '';
-    expectedScores.sectionscore_230 = '';
-    expectScores(expectedScores, wrapper);
+    await clickByTestId('item_2.2.2-3-checkbox-choice-label');
+    expectedScores.sectionscore_223 = 8;
+    expectedScores.totalscore_31 = 12;
+    expectScores(expectedScores, container);
 
-    await selectCheckBoxOption('2.2.2', 'd', wrapper);
+    await clickByTestId(/item_2.3.2.2.1-0-radio-choice-label/i);
+    expectedScores.sectionscore_230 = 1;
+    expectedScores.totalscore_31 = 13;
+    expectScores(expectedScores, container);
 
-    expectedScores.sectionscore_223 = '8';
-    expectedScores.totalscore_31 = '12';
-    expectScores(expectedScores, wrapper);
+    await clickByTestId(/item_2.3.1-1-radio-choice-label/i);
+    expectedScores.sectionscore_230 = 3;
+    expectedScores.totalscore_31 = 15;
+    expectScores(expectedScores, container);
 
-    await selectRadioButtonOption('2.3.2.2.1', 0, wrapper);
+    await clickByTestId(/item_2.3.2.1-0-checkbox-choice-label/i);
+    await clickByTestId(/item_2.3.2.1-1-checkbox-choice-label/i);
+    expectedScores.sectionscore_230 = 6;
+    expectedScores.totalscore_31 = 18;
+    expectScores(expectedScores, container);
 
-    expectedScores.sectionscore_230 = '1';
-    expectedScores.totalscore_31 = '13';
-    expectScores(expectedScores, wrapper);
-
-    await selectRadioButtonOption('2.3.1', 1, wrapper);
-
-    expectedScores.sectionscore_230 = '3';
-    expectedScores.totalscore_31 = '15';
-    expectScores(expectedScores, wrapper);
-
-    await selectCheckBoxOption('2.3.2.1', 'a', wrapper);
-    await selectCheckBoxOption('2.3.2.1', 'b', wrapper);
-
-    expectedScores.sectionscore_230 = '6';
-    expectedScores.totalscore_31 = '18';
-    expectScores(expectedScores, wrapper);
-
-    await selectCheckBoxOption('2.1.2', 'd', wrapper);
-
-    expectedScores.sectionscore_213 = '12';
-    expectedScores.totalscore_31 = '26';
-    expectScores(expectedScores, wrapper);
+    await clickByTestId(/item_2.1.2-3-checkbox-choice-label/i);
+    expectedScores.sectionscore_213 = 12;
+    expectedScores.totalscore_31 = 26;
+    expectScores(expectedScores, container);
   });
 });
 
 describe('Code Scoring', () => {
   beforeEach(() => {
-    window.matchMedia = jest.fn().mockImplementation(_ => {
+    window.matchMedia = jest.fn().mockImplementation(() => {
       return {};
     });
   });
 
   it('Section scoring on decimal grouping with limit 2 digit in decimal. Round decimal to integer less than 5', async () => {
-    var model: Questionnaire = cloneQuestionnaire(CodeScoreDataModel);
-    const wrapper = createWrapper(model);
-    wrapper.render();
+    const { getByDisplayValue, getByText } = createWrapper(CodeScoreDataModel);
 
-    await inputAnswer('1.1', 42.451, wrapper);
-    await inputAnswer('1.2', 1.041, wrapper);
+    await typeByLabelText('Decimal 1', '42.451', false);
 
-    const sectionScoreItem = wrapper.find(TextView);
-    expect(sectionScoreItem.at(0).props().id).toBe('item_1.3');
-    expect(sectionScoreItem.at(0).props().value).toBe(43.49);
+    let sum = getByDisplayValue(42.451);
+    expect(sum).toBeInTheDocument();
 
-    expect(sectionScoreItem.at(1).props().id).toBe('item_1.4');
-    expect(sectionScoreItem.at(1).props().value).toBe(43);
+    await typeByLabelText('Decimal 2', '1.041', false);
+    sum = getByDisplayValue(1.041);
+    expect(sum).toBeInTheDocument();
+    sum = getByText(43);
+    expect(sum).toBeInTheDocument();
+    sum = getByText(43.49);
+    expect(sum).toBeInTheDocument();
   });
 
   it('Section scoring on decimal grouping with limit 2 digit in decimal. Round decimal to integer more than 5', async () => {
-    var model: Questionnaire = cloneQuestionnaire(CodeScoreDataModel);
-    const wrapper = createWrapper(model);
-    wrapper.render();
+    const { getByDisplayValue, getByText } = createWrapper(CodeScoreDataModel);
 
-    await inputAnswer('1.1', 42.551, wrapper);
-    await inputAnswer('1.2', 1.041, wrapper);
+    await typeByLabelText('Decimal 1', '42.551', false);
+    let sum = getByDisplayValue(42.551);
+    expect(sum).toBeInTheDocument();
 
-    const sectionScoreItem = wrapper.find(TextView);
-    expect(sectionScoreItem.at(0).props().id).toBe('item_1.3');
-    expect(sectionScoreItem.at(0).props().value).toBe(43.59);
+    await typeByLabelText('Decimal 2', '1.041', false);
 
-    expect(sectionScoreItem.at(1).props().id).toBe('item_1.4');
-    expect(sectionScoreItem.at(1).props().value).toBe(44);
+    sum = getByDisplayValue(1.041);
+    expect(sum).toBeInTheDocument();
+    sum = getByText(44);
+    expect(sum).toBeInTheDocument();
+    sum = getByText(43.59);
+    expect(sum).toBeInTheDocument();
   });
 
   it('Section scoring on integer grouping', async () => {
-    var model: Questionnaire = cloneQuestionnaire(CodeScoreDataModel);
-    const wrapper = createWrapper(model);
-    wrapper.render();
+    const { getByDisplayValue, getByText, getAllByDisplayValue } = createWrapper(CodeScoreDataModel);
 
-    await inputAnswer('2.1', 42, wrapper);
-    await inputAnswer('2.2', 2, wrapper);
+    await typeByLabelText('Integer 1', '42', false);
+    let sum = getByDisplayValue(42);
+    expect(sum).toBeInTheDocument();
 
-    const sectionScoreItem = wrapper.find(TextView);
-    expect(sectionScoreItem.at(2).props().id).toBe('item_2.3');
-    expect(sectionScoreItem.at(2).props().value).toBe(44);
+    await typeByLabelText('Integer 2', '2', false);
+
+    const sum2 = getAllByDisplayValue(2);
+    expect(sum2[0]).toHaveValue(2);
+    sum = getByText(44);
+    expect(sum).toBeInTheDocument();
   });
 
   it('Section scoring on quantity grouping', async () => {
-    var model: Questionnaire = cloneQuestionnaire(CodeScoreDataModel);
-    const wrapper = createWrapper(model);
-    wrapper.render();
+    const { getByDisplayValue, getByText } = createWrapper(CodeScoreDataModel);
 
-    await inputAnswer('3.1', 165.234, wrapper);
-    await inputAnswer('3.2', 45.234, wrapper);
+    await typeByLabelText('Quantity (cm)', '165.234', false);
+    let sum = getByDisplayValue(165.234);
+    expect(sum).toBeInTheDocument();
 
-    const sectionScoreItem = wrapper.find(TextView);
-    expect(sectionScoreItem.at(3).props().id).toBe('item_3.3');
-    expect(sectionScoreItem.at(3).props().value).toBe('210.47 centimeter');
+    await typeByLabelText('Nytt quantityfelt med en egen enhet der man feks skal regne sammen to cm felt', '45.234', false);
+
+    const sum2 = getByDisplayValue(45.234);
+    expect(sum2).toBeInTheDocument();
+    const sectionScoreItem = getByText('210.47 centimeter');
+    expect(sectionScoreItem).toBeInTheDocument();
   });
 
   it('Section scoring on multiple choice grouping, with section scoring quantity extention kilo. Select one', async () => {
-    var model: Questionnaire = cloneQuestionnaire(CodeScoreDataModel);
-    const wrapper = createWrapper(model);
-    wrapper.render();
-
-    await selectCheckBoxOption('4.1', '1', wrapper);
-
-    const sectionScoreItem = wrapper.find(TextView);
-    expect(sectionScoreItem.at(4).props().id).toBe('item_4.2');
-    expect(sectionScoreItem.at(4).props().value).toBe('50 kilo');
+    const { getByText } = createWrapper(CodeScoreDataModel);
+    await clickByLabelText('Svært medtatt, vansker med å ta til deg væske eller næring');
+    expect(getByText('50 kilo')).toBeInTheDocument();
   });
 
   it('Section scoring on multiple choice grouping, with section scoring quantity extention kilo. Select multiple', async () => {
-    var model: Questionnaire = cloneQuestionnaire(CodeScoreDataModel);
-    const wrapper = createWrapper(model);
-    wrapper.render();
-
-    await selectCheckBoxOption('4.1', '1', wrapper);
-    await selectCheckBoxOption('4.1', '3', wrapper);
-
-    const sectionScoreItem = wrapper.find(TextView);
-    expect(sectionScoreItem.at(4).props().id).toBe('item_4.2');
-    expect(sectionScoreItem.at(4).props().value).toBe('100 kilo');
+    const { getByText } = createWrapper(CodeScoreDataModel);
+    await clickByLabelText('Svært medtatt, vansker med å ta til deg væske eller næring');
+    await clickByLabelText(/utslett som ikke lar seg avbleke/i);
+    expect(getByText('100 kilo')).toBeInTheDocument();
   });
 
   it('Section scoring on multiple choice grouping, with section scoring quantity without extension. Select multiple', async () => {
-    var model: Questionnaire = cloneQuestionnaire(CodeScoreDataModel);
-    const wrapper = createWrapper(model);
-    wrapper.render();
+    const { getAllByText } = createWrapper(CodeScoreDataModel);
 
-    await selectCheckBoxOption('5.1', '1', wrapper);
-    await selectCheckBoxOption('5.1', '2', wrapper);
+    await clickByLabelText('Astma');
+    await clickByLabelText('Kols');
 
-    const sectionScoreItem = wrapper.find(TextView);
-    expect(sectionScoreItem.at(5).props().id).toBe('item_5.2');
-    expect(sectionScoreItem.at(5).props().value).toBe('50 score');
+    expect(getAllByText('50 score')).toHaveLength(2);
   });
 
   it('Total QS scoring', async () => {
-    var model: Questionnaire = cloneQuestionnaire(CodeScoreDataModel);
-    const wrapper = createWrapper(model);
-    wrapper.render();
+    const { getByText } = createWrapper(CodeScoreDataModel);
 
-    await selectCheckBoxOption('5.1', '1', wrapper);
-    await selectRadioButtonOption('6.1', 2, wrapper);
+    await clickByLabelText('Astma');
+    await clickByLabelText('Feber');
 
-    const sectionScoreItem = wrapper.find(TextView);
-    expect(sectionScoreItem.at(6).props().id).toBe('item_7.1');
-    expect(sectionScoreItem.at(6).props().value).toBe('35 score');
+    expect(getByText('35 score')).toBeInTheDocument();
   });
 });
 
-function expectScores(scores: { [linkId: string]: string }, wrapper: ReactWrapper<{}, {}>) {
-  for (let linkId in scores) {
-    const value = scores[linkId];
-    const item = findItem(linkId, wrapper);
-    expect(item.props().value).toBe(value);
-  }
-}
-
-function setFhirpath(linkId: string, expression: string, q: Questionnaire) {
-  const item = findQuestionnaireItem(linkId, q.item);
+export function setFhirpath(linkId: string, expression: string, q: Questionnaire): Questionnaire {
+  const newQuestionnaire = structuredClone(q);
+  const item = findQuestionnaireItem(linkId, newQuestionnaire.item);
   if (item) {
-    var extension = getCalculatedExpressionExtension(item);
+    const extension = getCalculatedExpressionExtension(item);
     if (extension) {
       extension.valueString = expression;
     }
   }
-}
-
-function cloneQuestionnaire(o: Questionnaire): Questionnaire {
-  return JSON.parse(JSON.stringify(o));
+  return newQuestionnaire;
 }
 
 function createWrapper(questionnaire: Questionnaire) {
-  const store: any = createStore(rootReducer, applyMiddleware(thunk));
-  return mount(
-    <Provider store={store}>
-      <ReferoContainer
-        loginButton={<React.Fragment />}
-        store={store}
-        authorized={true}
-        onCancel={() => {}}
-        onSave={() => {}}
-        onSubmit={() => {}}
-        resources={{} as Resources}
-        questionnaire={questionnaire}
-      />
-    </Provider>
-  );
+  return renderRefero({ questionnaire, props: { authorized: true } });
 }

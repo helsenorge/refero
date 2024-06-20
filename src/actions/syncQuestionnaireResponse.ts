@@ -104,7 +104,7 @@ function synQuestionnaireResponseItem(qItem: QuestionnaireItem, qrItem: Question
       qrItem.answer = [];
     }
     if (!qrItem.answer[0]) {
-      qrItem.answer.push({} as QuestionnaireResponseItemAnswer);
+      qrItem.answer.push({});
     }
     qrItem.answer[0].item = qrAnswerItemCopy;
   } else {

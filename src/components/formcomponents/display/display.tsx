@@ -1,39 +1,22 @@
-import * as React from 'react';
-
 import DOMPurify from 'dompurify';
-import { QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { connect } from 'react-redux';
-import { ThunkDispatch } from 'redux-thunk';
-
-import { CommonFormElementProps } from '../../../types/formTypes/commonFormElementProps';
 
 import designsystemtypography from '@helsenorge/designsystem-react/scss/typography.module.scss';
 
-import { NewValueAction } from '../../../actions/newValue';
 import itemControlConstants from '../../../constants/itemcontrol';
-import { GlobalState } from '../../../reducers';
 import { getItemControlExtensionValue, getMarkdownExtensionValue } from '../../../util/extension';
 import { renderPrefix, getText, getId } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
+import { WithCommonFunctionsProps } from '../../with-common-functions';
 
-interface StateProps {
-  enable: boolean;
-  answer?: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[];
-}
+export type Props = WithCommonFunctionsProps;
 
-interface DispatchProps {
-  dispatch: ThunkDispatch<GlobalState, void, NewValueAction>;
-}
-
-export interface Props extends StateProps, DispatchProps, CommonFormElementProps {}
-
-const Display: React.FC<Props> = ({ id, enable, pdf, item, questionnaire, onRenderMarkdown, resources }) => {
+const Display = ({ id, enable, pdf, item, questionnaire, onRenderMarkdown, resources }: Props): JSX.Element | null => {
   const itemControls = item ? getItemControlExtensionValue(item) : null;
   const highlightClass =
     itemControls && itemControls.some(itemControl => itemControl.code === itemControlConstants.HIGHLIGHT)
       ? 'page_refero__component_highlight'
       : '';
-
   if (!enable) {
     return null;
   }
@@ -57,6 +40,7 @@ const Display: React.FC<Props> = ({ id, enable, pdf, item, questionnaire, onRend
       value = <p id={getId(id)}>{`${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`}</p>;
     }
   }
+
   if (pdf) {
     if (!value) {
       return null;

@@ -19,7 +19,6 @@ import {
 } from '../actions/newValue';
 import itemControlConstants from '../constants/itemcontrol';
 
-// eslint-disable-next-line @typescript-eslint/interface-name-prefix
 export interface IActionRequester {
   addIntegerAnswer(linkId: string, value: number, index?: number): void;
   addDecimalAnswer(linkId: string, value: number, index?: number): void;

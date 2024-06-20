@@ -4,6 +4,10 @@ import {
   QuestionnaireItem,
   QuestionnaireItemEnableWhen,
   QuestionnaireResponse,
+  Coding,
+  Reference,
+  Attachment,
+  Quantity,
 } from 'fhir/r4';
 
 import { QuestionnaireEnableOperator } from '../types/fhirEnums';
@@ -239,7 +243,7 @@ export function getItemWithTypeFromArray(
   return filteredItems;
 }
 
-export function hasAnswer(answer: QuestionnaireResponseItemAnswer): boolean {
+export function hasAnswer(answer: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]): boolean {
   if (!answer) {
     return false;
   }
@@ -254,53 +258,120 @@ export function hasAnswer(answer: QuestionnaireResponseItemAnswer): boolean {
     hasDecimalAnswer(answer) ||
     hasIntegerAnswer(answer) ||
     hasStringAnswer(answer) ||
-    hasAttachmentAnswer(answer)
+    hasAttachmentAnswer(answer) ||
+    hasReferendeAnswer(answer) ||
+    hasUriAnswer(answer)
   );
 }
 
-export function hasBooleanAnswer(answer: QuestionnaireResponseItemAnswer): boolean {
-  return answer.valueBoolean === true || answer.valueBoolean === false;
+function isObjEmpty(obj: object | undefined): boolean {
+  return obj ? Object.keys(obj).length === 0 : true;
 }
 
-export function hasCodingAnswer(answer: QuestionnaireResponseItemAnswer): boolean {
-  const coding = answer.valueCoding;
-  const codingValue = coding && coding.code ? String(coding.code) : null;
-
-  return codingValue !== null && codingValue !== undefined && codingValue !== '';
+function getAnswer<T>(
+  answer: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[],
+  key: keyof QuestionnaireResponseItemAnswer
+): T | undefined {
+  if (Array.isArray(answer)) {
+    return answer.reduce((acc, x) => acc || (x[key] as T), undefined);
+  } else if (answer) {
+    return answer[key] as T;
+  }
+  return undefined;
+}
+export function getBooleanAnswer(answer: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]): boolean | undefined {
+  return getAnswer<boolean>(answer, 'valueBoolean');
 }
 
-export function hasQuantityAnswer(answer: QuestionnaireResponseItemAnswer): boolean {
-  return answer.valueQuantity != null && (!!answer.valueQuantity.value || answer.valueQuantity.value === 0);
+export function getDecimalAnswer(answer: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]): number | undefined {
+  return getAnswer<number>(answer, 'valueDecimal');
 }
 
-export function hasDateAnswer(answer: QuestionnaireResponseItemAnswer): boolean {
-  return !!answer.valueDate;
+export function getIntegerAnswer(answer: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]): number | undefined {
+  return getAnswer<number>(answer, 'valueInteger');
 }
 
-export function hasDateTimeAnswer(answer: QuestionnaireResponseItemAnswer): boolean {
-  return !!answer.valueDateTime;
+export function getDateAnswer(answer: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]): string | undefined {
+  return getAnswer<string>(answer, 'valueDate');
 }
 
-export function hasTimeAnswer(answer: QuestionnaireResponseItemAnswer): boolean {
-  return !!answer.valueTime;
+export function getDateTimeAnswer(answer: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]): string | undefined {
+  return getAnswer<string>(answer, 'valueDateTime');
 }
 
-export function hasDecimalAnswer(answer: QuestionnaireResponseItemAnswer): boolean {
-  return !!answer.valueDecimal || answer.valueDecimal === 0;
+export function getTimeAnswer(answer: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]): string | undefined {
+  return getAnswer<string>(answer, 'valueTime');
 }
 
-export function hasIntegerAnswer(answer: QuestionnaireResponseItemAnswer): boolean {
-  return !!answer.valueInteger || answer.valueInteger === 0;
+export function getStringAnswer(answer: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]): string | undefined {
+  return getAnswer<string>(answer, 'valueString');
 }
 
-export function hasStringAnswer(answer: QuestionnaireResponseItemAnswer): boolean {
-  return !!answer.valueString;
+export function getUriAnswer(answer: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]): string | undefined {
+  return getAnswer<string>(answer, 'valueUri');
 }
 
-export function hasAttachmentAnswer(answer: QuestionnaireResponseItemAnswer): boolean {
-  return answer.valueAttachment != null && !!answer.valueAttachment.id;
+export function getAttachmentAnswer(answer: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]): Attachment | undefined {
+  return getAnswer<{ id?: string }>(answer, 'valueAttachment');
 }
 
+export function getCodingAnswer(answer: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]): Coding | undefined {
+  return getAnswer<Coding>(answer, 'valueCoding');
+}
+
+export function getQuantityAnswer(answer: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]): Quantity | undefined {
+  return getAnswer<Quantity>(answer, 'valueQuantity');
+}
+
+export function getReferenceAnswer(answer: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]): Reference | undefined {
+  return getAnswer<Reference>(answer, 'valueReference');
+}
+
+export function hasBooleanAnswer(answer: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]): boolean {
+  return getBooleanAnswer(answer) === true || getBooleanAnswer(answer) === false;
+}
+
+export function hasCodingAnswer(answer: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]): boolean {
+  return !!getCodingAnswer(answer) && !isObjEmpty(getCodingAnswer(answer));
+}
+export function hasQuantityAnswer(answer: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]): boolean {
+  return getQuantityAnswer(answer) !== null && !isObjEmpty(getQuantityAnswer(answer));
+}
+
+export function hasDateAnswer(answer: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]): boolean {
+  return !!getDateAnswer(answer);
+}
+
+export function hasDateTimeAnswer(answer: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]): boolean {
+  return !!getDateTimeAnswer(answer);
+}
+
+export function hasTimeAnswer(answer: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]): boolean {
+  return !!getTimeAnswer(answer);
+}
+
+export function hasDecimalAnswer(answer: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]): boolean {
+  return !!getDecimalAnswer(answer) || getDecimalAnswer(answer) === 0;
+}
+
+export function hasIntegerAnswer(answer: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]): boolean {
+  return !!getIntegerAnswer(answer) || getIntegerAnswer(answer) === 0;
+}
+
+export function hasStringAnswer(answer: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]): boolean {
+  return !!getStringAnswer(answer);
+}
+
+export function hasAttachmentAnswer(answer: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]): boolean {
+  return getAttachmentAnswer(answer) != null && !!getAttachmentAnswer(answer)?.id;
+}
+export function hasReferendeAnswer(answer: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]): boolean {
+  return getReferenceAnswer(answer) != null && !!getReferenceAnswer(answer)?.id;
+}
+
+export function hasUriAnswer(answer: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]): boolean {
+  return !!getUriAnswer(answer);
+}
 export function enableWhenMatchesAnswer(
   enableWhen: QuestionnaireItemEnableWhen,
   answers: Array<QuestionnaireResponseItemAnswer> | undefined
@@ -456,7 +527,7 @@ function getResponseItemAndPathWithLinkIdTraverse(
 }
 
 function isOfTypeQuestionnaireResponseItem(item: QuestionnaireResponse | QuestionnaireResponseItem): item is QuestionnaireResponseItem {
-  return (item as QuestionnaireResponseItem).answer !== undefined;
+  return item.hasOwnProperty('answer');
 }
 
 export function getResponseItemWithPath(path: Array<Path>, formData: FormData): QuestionnaireResponseItem | undefined {
