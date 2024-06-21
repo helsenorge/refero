@@ -419,4 +419,12 @@ export interface Resources {
    * Tillatte filtyper er:
    */
   attachmentError_fileType?: string;
+  /**
+   * Ugyldig dato
+   */
+  dateError_invalid?: string;
+  /**
+   * Ugyldig klokkeslett
+   */
+  dateError_time_invalid?: string;
 }

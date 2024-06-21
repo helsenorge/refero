@@ -1,12 +1,10 @@
 import React from 'react';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireItemInitial } from 'fhir/r4';
-import moment, { Moment } from 'moment';
 
 import { LanguageLocales } from '@helsenorge/core-utils/constants/languages';
 import { DateRangePicker } from '@helsenorge/date-time/components/date-range-picker';
 import { DatePickerErrorPhrases } from '@helsenorge/date-time/components/date-range-picker/date-range-picker-types';
-import { parseDate } from '@helsenorge/date-time/components/time-input/date-core';
 
 import Constants from '../../../constants/index';
 import { getId, isRequired } from '../../../util';
@@ -16,6 +14,8 @@ import { Resources } from '../../../util/resources';
 import { FormProps } from '../../../validation/ReactHookFormHoc';
 import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 import TextView from '../textview';
+import { safeParseJSON } from '../../../util/date-fns-utils';
+import { format } from 'date-fns';
 
 interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   id?: string;
@@ -32,8 +32,8 @@ interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
   validationErrorRenderer?: JSX.Element;
   className?: string;
-  maxDate?: Moment;
-  minDate?: Moment;
+  maxDate?: Date;
+  minDate?: Date;
   answer: QuestionnaireResponseItemAnswer;
 }
 
@@ -63,19 +63,19 @@ export class DateDayInput extends React.Component<Props> {
     }
   }
 
-  getValue(): Date[] | undefined {
+  getValue(): (Date | undefined)[] | undefined {
     const { item, answer } = this.props;
 
     if (answer && Array.isArray(answer)) {
-      return answer.map(m => parseDate(String(this.getDateAnswerValue(m))));
+      return answer.map(m => safeParseJSON(String(this.getDateAnswerValue(m))));
     }
 
     if (Array.isArray(item.initial)) {
-      return item.initial.map(m => parseDate(String(this.getDateAnswerValue(m))));
+      return item.initial.map(m => safeParseJSON(String(this.getDateAnswerValue(m))));
     }
 
     if (answer) {
-      const parsedDate = [parseDate(String(this.getDateAnswerValue(answer)))];
+      const parsedDate = [safeParseJSON(String(this.getDateAnswerValue(answer)))];
       if (this.isValidDate(parsedDate[0]) === true) {
         return parsedDate;
       } else {
@@ -84,7 +84,7 @@ export class DateDayInput extends React.Component<Props> {
     }
   }
 
-  isValidDate = (date: Date): boolean => {
+  isValidDate = (date: Date | undefined): boolean => {
     if (date instanceof Date) {
       const text = Date.prototype.toString.call(date);
       return text !== 'Invalid Date';
@@ -92,12 +92,12 @@ export class DateDayInput extends React.Component<Props> {
     return false;
   };
 
-  toLocaleDate(moment: Moment | undefined): Moment | undefined {
-    return moment ? moment.locale(this.props.locale) : undefined;
-  }
+  // toLocaleDate(moment: Moment | undefined): Moment | undefined {
+  //   return moment ? moment.locale(this.getLocaleFromLanguage()) : undefined;
+  // }
 
-  onDateChange = (value: Moment | null): void => {
-    const newValue = value ? moment(value).format(Constants.DATE_FORMAT) : '';
+  onDateChange = (value: Date | null): void => {
+    const newValue = value ? format(value, Constants.DATE_FORMAT) : '';
     this.props.onDateValueChange(newValue);
   };
 
@@ -105,12 +105,12 @@ export class DateDayInput extends React.Component<Props> {
     const date = this.getValue();
     const ikkeBesvartText = this.props.resources?.ikkeBesvart || '';
 
-    return date ? date.map(m => moment(m).format('D. MMMM YYYY')).join(', ') : ikkeBesvartText;
+    return date ? date.map(d => d && format(d, 'd. MMMM yyyy')).join(', ') : ikkeBesvartText;
   };
 
-  getSingleDateValue = (): moment.Moment | undefined => {
+  getSingleDateValue = (): Date | undefined => {
     const date = this.getValue();
-    return date ? this.toLocaleDate(moment(date[0])) : undefined;
+    return date ? (safeParseJSON(date[0])) : undefined;
   };
 
   render(): JSX.Element {
@@ -130,29 +130,7 @@ export class DateDayInput extends React.Component<Props> {
     }
 
     return (
-      <DateRangePicker
-        {...this.props.register(this.props.item.linkId, {
-          required: isRequired(this.props.item),
-        })}
-        type="single"
-        id={`${getId(this.props.id)}-datepicker_input`}
-        locale={this.props.locale} // TODO: må støtte nynorsk og samisk også
-        errorResources={this.getDatepickerErrorPhrases()}
-        resources={this.props.resources}
-        label={this.props.label}
-        subLabel={this.props.subLabel}
-        isRequired={isRequired(this.props.item)}
-        placeholder={getPlaceholder(this.props.item)}
-        ref={this.props.datepickerRef}
-        maximumDate={this.toLocaleDate(this.props.maxDate)}
-        minimumDate={this.toLocaleDate(this.props.minDate)}
-        singleDateValue={this.getSingleDateValue()}
-        className={this.props.className}
-        onDateChange={this.onDateChange}
-        validationErrorRenderer={this.props.validationErrorRenderer}
-        helpButton={this.props.helpButton}
-        helpElement={this.props.helpElement}
-      />
+      <></>
     );
   }
 }

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
 import Button from '@helsenorge/designsystem-react/components/Button';
-import Icon from '@helsenorge/designsystem-react/components/Icons';
+import Icon from '@helsenorge/designsystem-react/components/Icon';
 import PlusLarge from '@helsenorge/designsystem-react/components/Icons/PlusLarge';
 
 import { NewValueAction } from '../../../actions/newValue';

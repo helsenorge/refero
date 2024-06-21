@@ -22,7 +22,7 @@ import Attachment from '../components/formcomponents/attachment/attachment';
 import Boolean from '../components/formcomponents/boolean/boolean';
 import Choice from '../components/formcomponents/choice/choice';
 import Date from '../components/formcomponents/date/date';
-import DateTime from '../components/formcomponents/date/date-time';
+import DateTimeInput from '../components/formcomponents/date/date-time';
 import Time from '../components/formcomponents/date/time';
 import Decimal from '../components/formcomponents/decimal/decimal';
 import Integer from '../components/formcomponents/integer/integer';
@@ -81,7 +81,7 @@ export function getComponentForItem(type: string, extensionCode?: string | strin
     return Date;
   }
   if (String(type) === ItemType.DATETIME) {
-    return DateTime;
+    return DateTimeInput;
   }
   if (String(type) === ItemType.TIME) {
     return Time;
