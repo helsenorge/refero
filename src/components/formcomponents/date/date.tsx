@@ -137,24 +137,23 @@ class DateComponent extends React.Component<Props> {
   }
 
   render(): JSX.Element | null {
+    const labelText = getLabelText(this.props.item, this.props.onRenderMarkdown, this.props.questionnaire, this.props.resources);
     const subLabelText = getSublabelText(this.props.item, this.props.onRenderMarkdown, this.props.questionnaire, this.props.resources);
-
-    const itemControls = getItemControlExtensionValue(this.props.item);
     const labelEl = (
       <Label
-        labelTexts={[{ text: getLabelText(this.props.item, this.props.onRenderMarkdown, this.props.questionnaire, this.props.resources) }]}
+        labelTexts={[{ text: labelText }]}
       />
     );
-
     const subLabelEl = subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined;
 
+    const itemControls = getItemControlExtensionValue(this.props.item);
     let element: JSX.Element | undefined = undefined;
 
     if (itemControls && itemControls.some(itemControl => itemControl.code === itemControlConstants.YEAR)) {
       element = (
         <DateYearInput
-          label={labelEl}
-          subLabel={subLabelEl}
+          label={labelText}
+          subLabel={subLabelText}
           helpButton={this.props.renderHelpButton()}
           helpElement={this.props.renderHelpElement()}
           onDateValueChange={this.onDateValueChange}
