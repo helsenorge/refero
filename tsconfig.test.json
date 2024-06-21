@@ -4,6 +4,6 @@
     "types": ["vite/client", "node", "vitest/jsdom"],
     "allowSyntheticDefaultImports": true
   },
-  "include": ["src"],
+  "include": ["src", "tests"],
   "exclude": ["lib", "preview", "config", "node_modules"]
 }

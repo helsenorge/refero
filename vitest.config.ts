@@ -8,6 +8,7 @@ export default defineConfig(configEnv =>
   mergeConfig(
     viteConfig(configEnv),
     defineConfig({
+      root: path.resolve(__dirname, '.'),
       test: {
         include: ['src/**/*-spec.ts', 'src/**/*-spec.tsx'],
         globals: true,

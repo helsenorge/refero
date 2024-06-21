@@ -14,9 +14,6 @@ vi.mock('@helsenorge/core-utils/debounce', () => ({
 const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle ut dette feltet' };
 
 describe('Text', () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
   describe('render', () => {
     it('should render correct tag', async () => {
       const { findByText, queryByText } = renderRefero({ questionnaire: qinline, resources: getResources('') });

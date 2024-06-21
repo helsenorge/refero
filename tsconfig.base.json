@@ -27,7 +27,7 @@
       "react": ["./node_modules/@types/react"]
     }
   },
-  "include": ["src", "preview", "test"],
+  "include": ["src", "preview", "test", "test/setup-tests.ts"],
   "exclude": ["node_modules", "lib"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

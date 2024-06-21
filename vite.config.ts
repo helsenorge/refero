@@ -5,6 +5,7 @@ import autoprefixer from 'autoprefixer';
 import cssnano from 'cssnano';
 import copy from 'rollup-plugin-copy';
 import generatePackageJson from 'rollup-plugin-generate-package-json';
+import peerDepsExternal from 'rollup-plugin-peer-deps-external';
 import { defineConfig } from 'vite';
 import dts from 'vite-plugin-dts';
 import { libInjectCss } from 'vite-plugin-lib-inject-css';
@@ -16,7 +17,7 @@ export default defineConfig(({ command }) => {
   const dev = command === 'serve';
 
   return {
-    root: dev ? './preview' : '.',
+    root: dev ? path.resolve(__dirname, './preview') : path.resolve(__dirname, ''),
 
     css: {
       preprocessorOptions: {
@@ -32,10 +33,10 @@ export default defineConfig(({ command }) => {
       extensions: ['.ts', '.tsx', '.js', '.json', '.scss', '.css'],
       alias: [
         { find: '@helsenorge/refero', replacement: path.resolve(__dirname, OUTPUT_DIRECTORY) },
-        { find: '@', replacement: path.resolve(__dirname, './src') },
-        { find: '@components', replacement: path.resolve(__dirname, './src/components') },
-        { find: '@formcomponents', replacement: path.resolve(__dirname, './src/components/formcomponents') },
-        { find: '@constants', replacement: path.resolve(__dirname, './src/constants') },
+        { find: '@', replacement: path.resolve(__dirname, 'src') },
+        { find: '@components', replacement: path.resolve(__dirname, 'src/components') },
+        { find: '@formcomponents', replacement: path.resolve(__dirname, 'src/components/formcomponents') },
+        { find: '@constants', replacement: path.resolve(__dirname, 'src/constants') },
         { find: /^~(.*)$/, replacement: '$1' },
       ],
     },
@@ -53,39 +54,40 @@ export default defineConfig(({ command }) => {
         name: 'Refero',
         fileName: (format): string => `refero.${format}.js`,
       },
-      rollupOptions: {
-        external: [
-          'react',
-          'react-dom',
-          'react/jsx-runtime',
-          '@helsenorge/autosuggest',
-          '@helsenorge/core-utils',
-          '@helsenorge/date-time',
-          '@helsenorge/file-upload',
-          '@helsenorge/designsystem-react',
-          'react-redux',
-          'redux',
-          'redux-thunk',
-        ],
-        output: {
-          globals: {
-            react: 'React',
-            'react-dom': 'ReactDOM',
-            'react/jsx-runtime': 'react/jsx-runtime',
-            '@helsenorge/autosuggest': '@helsenorge/autosuggest',
-            '@helsenorge/core-utils': '@helsenorge/core-utils',
-            '@helsenorge/date-time': '@helsenorge/date-time',
-            '@helsenorge/file-upload': '@helsenorge/file-upload',
-            '@helsenorge/designsystem-react': '@helsenorge/designsystem-react',
-            'react-redux': 'ReactRedux',
-            redux: 'Redux',
-            'redux-thunk': 'ReduxThunk',
-          },
-        },
-      },
+      // rollupOptions: {
+      //   external: [
+      //     'react',
+      //     'react-dom',
+      //     'react/jsx-runtime',
+      //     '@helsenorge/autosuggest',
+      //     '@helsenorge/core-utils',
+      //     '@helsenorge/date-time',
+      //     '@helsenorge/file-upload',
+      //     '@helsenorge/designsystem-react',
+      //     'react-redux',
+      //     'redux',
+      //     'redux-thunk',
+      //   ],
+      //   output: {
+      //     globals: {
+      //       react: 'React',
+      //       'react-dom': 'ReactDOM',
+      //       'react/jsx-runtime': 'react/jsx-runtime',
+      //       '@helsenorge/autosuggest': '@helsenorge/autosuggest',
+      //       '@helsenorge/core-utils': '@helsenorge/core-utils',
+      //       '@helsenorge/date-time': '@helsenorge/date-time',
+      //       '@helsenorge/file-upload': '@helsenorge/file-upload',
+      //       '@helsenorge/designsystem-react': '@helsenorge/designsystem-react',
+      //       'react-redux': 'ReactRedux',
+      //       redux: 'Redux',
+      //       'redux-thunk': 'ReduxThunk',
+      //     },
+      //   },
+      // },
     },
 
     plugins: [
+      peerDepsExternal(),
       tsconfigPaths({
         projects: [path.resolve(__dirname, 'tsconfig.build.json')],
       }),
