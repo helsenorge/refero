@@ -108,6 +108,7 @@ export const DateYearInput = ({
           />
         }
         defaultValue={answerState}
+        width={10}
       />
     </>
   );
