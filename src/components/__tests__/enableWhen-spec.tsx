@@ -6,12 +6,6 @@ import { renderRefero } from './test-utils/test-utils';
 import { selectCheckboxOption } from './test-utils/selectors';
 
 describe('enableWhen with checkboxes and multiple answers', () => {
-  beforeEach(() => {
-    window.matchMedia = jest.fn().mockImplementation(_ => {
-      return {};
-    });
-  });
-
   it('enableWhen should trigger when correct answer is selected', async () => {
     const { queryByLabelText } = createWrapper(questionnaireWithEnableWhen);
     expect(queryByLabelText('Flere sykdommer')).not.toBeInTheDocument();

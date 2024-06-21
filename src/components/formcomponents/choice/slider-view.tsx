@@ -15,7 +15,7 @@ import { getExtension, getValidationTextExtension } from '../../../util/extensio
 import { isString } from '../../../util/typeguards';
 import { FormProps } from '../../../validation/ReactHookFormHoc';
 import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
-import SafeText from '../SafeText';
+import SafeText from '../../referoLabel/SafeText';
 
 export interface SliderProps extends WithCommonFunctionsAndEnhancedProps, FormProps {
   item: QuestionnaireItem;

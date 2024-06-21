@@ -2,6 +2,5 @@
   "extends": "./tsconfig.build.json",
   "compilerOptions": {
     "baseUrl": "."
-  },
-  "references": [{ "path": "./tsconfig.node.json" }]
+  }
 }

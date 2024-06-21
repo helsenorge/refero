@@ -7,7 +7,6 @@ import { ThunkDispatch } from 'redux-thunk';
 
 import Expander from '@helsenorge/designsystem-react/components/Expander';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
-import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
 import Textarea from '@helsenorge/designsystem-react/components/Textarea';
 
 import { debounce } from '@helsenorge/core-utils/debounce';
@@ -30,16 +29,14 @@ import {
   getStringValue,
   getMaxLength,
   getPDFStringValue,
-  getSublabelText,
   scriptInjectionValidation,
-  getLabelText,
 } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
 import { Resources } from '../../../util/resources';
 import ReactHookFormHoc, { FormProps } from '../../../validation/ReactHookFormHoc';
+import { ReferoLabel } from '../../referoLabel/ReferoLabel';
 import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
-import SafeText from '../SafeText';
 import TextView from '../textview';
 
 export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
@@ -146,9 +143,6 @@ export const Text = ({
     );
   }
 
-  const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
-  const labelText = getLabelText(item, onRenderMarkdown, questionnaire, resources);
-
   const value = getStringValue(answer);
   const maxLength = getMaxLength(item);
   const minLength = getMinLengthExtensionValue(item);
@@ -159,16 +153,16 @@ export const Text = ({
     <div className="page_refero__component page_refero__component_text">
       <FormGroup error={error?.message} mode="ongrey">
         {renderHelpElement()}
-        <Label
+
+        <ReferoLabel
           testId={`${getId(id)}-text-label`}
-          className="page_refero__label"
-          labelTexts={[]}
           htmlFor={getId(id)}
-          sublabel={<Sublabel id={`${getId(id)}-sublabel`} sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
-          afterLabelChildren={renderHelpButton()}
-        >
-          <SafeText text={labelText} />
-        </Label>
+          item={item}
+          labelId={`${getId(id)}-text-label`}
+          questionnaire={questionnaire}
+          resources={resources}
+          renderHelpButton={renderHelpButton}
+        />
         <Controller
           name={idWithLinkIdAndItemIndex}
           defaultValue={value || ''}

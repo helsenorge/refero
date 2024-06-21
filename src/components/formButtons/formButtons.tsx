@@ -7,8 +7,7 @@ import { ButtonType, buttonOrderNormalView, buttonOrderStepView } from '../../ty
 import { CancelFormButton } from './CancelFormButton';
 import { PauseFormButton } from './PauseFormButton';
 import { SubmitFormButton } from './SubmitFormButton';
-
-import '../../styles/formButtons.css';
+import styles from '../../styles/formButtons.module.css';
 
 interface FormButtonsInterface {
   submitButtonText: string;
@@ -40,7 +39,7 @@ const FormButtons = ({
   const buttonOrder = isStepView ? buttonOrderStepView : buttonOrderNormalView;
 
   return (
-    <div className="formButtonsWrapper">
+    <div className={styles.formButtonsWrapper}>
       <>
         {Object.values(buttonOrder).map((buttonType: ButtonType): JSX.Element | null => {
           switch (buttonType) {

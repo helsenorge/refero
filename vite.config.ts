@@ -1,6 +1,8 @@
 import path from 'path';
 
 import react from '@vitejs/plugin-react';
+import autoprefixer from 'autoprefixer';
+import cssnano from 'cssnano';
 import copy from 'rollup-plugin-copy';
 import generatePackageJson from 'rollup-plugin-generate-package-json';
 import { defineConfig } from 'vite';
@@ -10,25 +12,38 @@ import tsconfigPaths from 'vite-tsconfig-paths';
 
 const OUTPUT_DIRECTORY = 'lib';
 
-export default defineConfig(({ mode }) => {
-  const isPreview = mode === 'development';
+export default defineConfig(({ command }) => {
+  const dev = command === 'serve';
 
   return {
-    define: { global: 'window' },
-    root: isPreview ? './preview' : '.',
-    resolve: {
-      extensions: ['.ts', '.tsx', '.js', '.json'],
-      alias: {
-        '@helsenorge/refero': path.resolve(__dirname, OUTPUT_DIRECTORY),
-        '@': path.resolve(__dirname, 'src'),
-        '@components': path.resolve(__dirname, 'src/components'),
-        '@fromComponents': path.resolve(__dirname, 'src/components/fromComponents'),
+    root: dev ? './preview' : '.',
+
+    css: {
+      preprocessorOptions: {
+        scss: {
+          includePaths: ['node_modules'],
+        },
       },
+      postcss: {
+        plugins: [autoprefixer(), cssnano({ preset: 'default' })],
+      },
+    },
+    resolve: {
+      extensions: ['.ts', '.tsx', '.js', '.json', '.scss', '.css'],
+      alias: [
+        { find: '@helsenorge/refero', replacement: path.resolve(__dirname, OUTPUT_DIRECTORY) },
+        { find: '@', replacement: path.resolve(__dirname, './src') },
+        { find: '@components', replacement: path.resolve(__dirname, './src/components') },
+        { find: '@formcomponents', replacement: path.resolve(__dirname, './src/components/formcomponents') },
+        { find: '@constants', replacement: path.resolve(__dirname, './src/constants') },
+        { find: /^~(.*)$/, replacement: '$1' },
+      ],
     },
     build: {
       outDir: path.resolve(__dirname, OUTPUT_DIRECTORY),
       manifest: true,
-      sourcemap: true,
+      cssMinify: 'esbuild',
+      sourcemap: false,
       commonjsOptions: {
         transformMixedEsModules: true,
       },
@@ -83,12 +98,7 @@ export default defineConfig(({ mode }) => {
       react(),
       libInjectCss(),
       copy({
-        targets: [
-          { src: 'LICENSE', dest: path.resolve(__dirname, OUTPUT_DIRECTORY) },
-          { src: 'README.md', dest: path.resolve(__dirname, OUTPUT_DIRECTORY) },
-          { src: 'CHANGE', dest: path.resolve(__dirname, OUTPUT_DIRECTORY) },
-          { src: 'src/components/**/*.module.*', dest: OUTPUT_DIRECTORY },
-        ],
+        targets: [{ src: '*.md', dest: path.resolve(__dirname, OUTPUT_DIRECTORY) }],
         hook: 'writeBundle',
       }),
       generatePackageJson({

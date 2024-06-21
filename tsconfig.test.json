@@ -1,10 +1,9 @@
 {
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
-    "types": ["vite/client", "jest", "node"],
-    "moduleResolution": "node",
+    "types": ["vite/client", "node", "vitest/jsdom"],
     "allowSyntheticDefaultImports": true
   },
   "include": ["src"],
-  "exclude": ["node_modules", "lib", "preview", "config"]
+  "exclude": ["lib", "preview", "config", "node_modules"]
 }

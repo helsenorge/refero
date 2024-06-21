@@ -17,14 +17,17 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "forceConsistentCasingInFileNames": true,
+    "types": ["vite/client", "node", "vitest/jsdom"],
     "paths": {
       "@helsenorge/refero": ["./lib"],
-      "@": ["src"],
-      "@components": ["src/components"],
-      "@fromComponents": ["src/components/fromComponents"],
+      "@/*": ["./src/*"],
+      "@components/*": ["./src/components/*"],
+      "@formcomponents/*": ["./src/components/formcomponents/*"],
+      "@constants/*": ["./src/constants/*"],
       "react": ["./node_modules/@types/react"]
     }
   },
-  "include": ["src", "config/setupTest.ts"],
-  "exclude": ["node_modules", "lib", "preview", "**/*.d.ts"]
+  "include": ["src", "preview", "test"],
+  "exclude": ["node_modules", "lib"],
+  "references": [{ "path": "./tsconfig.node.json" }]
 }

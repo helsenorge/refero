@@ -44,12 +44,6 @@ async function addValueToInputByTypeAndTab(componentLabel: string, value: string
 }
 
 describe('onAnswerChange callback gets called and can request additional changes', () => {
-  beforeEach(() => {
-    window.matchMedia = jest.fn().mockImplementation(_ => {
-      return {};
-    });
-  });
-
   it('integers gets updated', async () => {
     const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
       actionRequester.addIntegerAnswer('2', 42);

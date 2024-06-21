@@ -1,4 +1,4 @@
-import '../../../../util/__tests__/defineFetch';
+// import '../../../../util/__tests__/defineFetch';
 import { act, findByRole, renderRefero, userEvent } from '../../../__tests__/test-utils/test-utils';
 import { qScriptInjection, q } from './__data__/';
 
@@ -7,15 +7,14 @@ import { ReferoProps } from '../../../../types/referoProps';
 import { Extensions } from '../../../../constants/extensions';
 import { clickButtonTimes, submitForm } from '../../../__tests__/test-utils/selectors';
 import { getResources } from '../../../../../preview/resources/referoResources';
+import { vi } from 'vitest';
 
-jest.mock('@helsenorge/core-utils/debounce', () => ({
+vi.mock('@helsenorge/core-utils/debounce', () => ({
   debounce: (fn: Function) => fn,
 }));
+
 const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle ut dette feltet' };
 describe('string', () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
   describe('Render', () => {
     it('Should render as text if props.pdf', () => {
       const questionnaire: Questionnaire = {
@@ -214,7 +213,7 @@ describe('string', () => {
       const questionnaire: Questionnaire = {
         ...q,
       };
-      const onChange = jest.fn();
+      const onChange = vi.fn();
       const { getByLabelText } = createWrapper(questionnaire, { onChange });
       expect(getByLabelText(/String/i)).toBeInTheDocument();
       const input = 'string';
@@ -440,8 +439,8 @@ describe('string', () => {
         const value = 'input med <html>';
         const { findByText, findByLabelText, findByRole } = createWrapper(qScriptInjection, { validateScriptInjection });
         await act(async () => {
-          userEvent.type(await findByLabelText('String1'), value);
-          userEvent.type(await findByLabelText('String2 - Obligatorisk'), 'test');
+          userEvent.type(await findByLabelText(/String1/i), value);
+          userEvent.type(await findByLabelText(/String2 - Obligatorisk/i), 'test');
         });
         await submitForm();
         const actualElement = await findByText(/er ikke tillatt/i);
@@ -456,7 +455,7 @@ describe('string', () => {
           validateScriptInjection,
         });
         await act(async () => {
-          userEvent.type(await findByLabelText('String2 - Obligatorisk'), value);
+          userEvent.type(await findByLabelText(/String2 - Obligatorisk/i), value);
         });
         await submitForm();
         const actualElement = await findByDisplayValue(value);
@@ -467,8 +466,10 @@ describe('string', () => {
       it('Should render without validation when input does not have html and validateScriptInjection = true', async () => {
         const validateScriptInjection = true;
         const value = 'input uten html';
-        const { findByDisplayValue, findByLabelText, queryByRole } = createWrapper(qScriptInjection, { validateScriptInjection });
-        userEvent.type(await findByLabelText('String2 - Obligatorisk'), value);
+        const { findByDisplayValue, getByLabelText, queryByRole } = createWrapper(qScriptInjection, { validateScriptInjection });
+        await act(async () => {
+          userEvent.type(getByLabelText(/String2 - Obligatorisk/i), value);
+        });
         const actualAlert = queryByRole('alert');
         const item = await findByDisplayValue(value);
 

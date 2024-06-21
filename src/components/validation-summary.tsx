@@ -2,9 +2,8 @@ import React, { useRef } from 'react';
 
 import { FieldErrors, FieldValues, useFormContext } from 'react-hook-form';
 
+import styles from '../styles/validationSummary.module.css';
 import { Resources } from '../util/resources';
-
-import '../styles/validationSummary.css';
 
 interface ValidationSummaryProps {
   resources: Resources;
@@ -32,12 +31,12 @@ export const ValidationSummary = ({ errors, resources }: ValidationSummaryProps)
   } else
     return (
       <div ref={errorSummaryRef}>
-        <ol className="validationSummary_list">
-          <h3 className="validationSummary_header">{resources.validationSummaryHeader}</h3>
+        <ol className={styles.validationSummary_list}>
+          <h3 className={styles.validationSummary_header}>{resources.validationSummaryHeader}</h3>
           {errorArray &&
             errorArray.map(([fieldName], index) => (
-              <li className="validationSummary_listItem" key={fieldName + index.toString()}>
-                <button className="validationSummary_button" onClick={(): void => handleErrorButtonClicked(fieldName)}>
+              <li className={styles.validationSummary_listItem} key={fieldName + index.toString()}>
+                <button className={styles.validationSummary_button} onClick={(): void => handleErrorButtonClicked(fieldName)}>
                   {fieldName}
                 </button>
               </li>

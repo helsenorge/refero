@@ -14,12 +14,6 @@ import { renderRefero } from './test-utils/test-utils';
 import { clickByLabelText, clickByTestId, typeByLabelText } from './test-utils/selectors';
 
 describe('Component renders and calculates score', () => {
-  beforeEach(() => {
-    window.matchMedia = jest.fn().mockImplementation(() => {
-      return {};
-    });
-  });
-
   it('fhirpath score should be updated when decimal questions are answered', async () => {
     const questionnaire = setFhirpath('4', "QuestionnaireResponse.item.where(linkId='1').answer.value", FhirpathScoreDataModel);
     const { container, findByLabelText } = createWrapper(questionnaire);
@@ -198,12 +192,6 @@ describe('Component renders and calculates score', () => {
 });
 
 describe('Code Scoring', () => {
-  beforeEach(() => {
-    window.matchMedia = jest.fn().mockImplementation(() => {
-      return {};
-    });
-  });
-
   it('Section scoring on decimal grouping with limit 2 digit in decimal. Round decimal to integer less than 5', async () => {
     const { getByDisplayValue, getByText } = createWrapper(CodeScoreDataModel);
 

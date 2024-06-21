@@ -7,7 +7,7 @@ interface Props {
 const SafeText = ({ text }: Props): JSX.Element => {
   return (
     <span
-      style={{ display: 'inline-block', fontWeight: 'normal', fontSize: '1.25rem', lineHeight: '1.75rem', marginBottom: '-0.5rem' }}
+      style={{ fontWeight: 'normal', fontSize: '1.25rem', lineHeight: '1.75rem', marginBottom: '-0.5rem' }}
       dangerouslySetInnerHTML={{
         __html: DOMPurify.sanitize(text, {
           RETURN_TRUSTED_TYPE: true,

@@ -65,12 +65,6 @@ describe('Component renders help items', () => {
 });
 
 describe('repeat with enableWhen', () => {
-  beforeEach(() => {
-    window.matchMedia = jest.fn().mockImplementation(() => {
-      return {};
-    });
-  });
-
   it('When we add a section with repeat, the enableWhen component should be hidden per default', async () => {
     const { container } = createWrapper(questionnaireWithRepeatedEnableWhens());
 

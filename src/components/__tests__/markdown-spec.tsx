@@ -5,12 +5,6 @@ import ItemType from '../../constants/itemType';
 import { renderRefero } from './test-utils/test-utils';
 
 describe('support for external markdown', () => {
-  beforeEach(() => {
-    window.matchMedia = jest.fn().mockImplementation(_ => {
-      return {};
-    });
-  });
-
   it('enableWhen should trigger when correct answer is selected', async () => {
     let visited: { [key: string]: string } = {};
     let cb = (q: QuestionnaireItem, _markdown: string): string => {

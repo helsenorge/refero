@@ -9,12 +9,6 @@ import itemType, { IItemType } from '../../constants/itemType';
 import { renderRefero } from './test-utils/test-utils';
 
 describe('Components render children', () => {
-  beforeEach(() => {
-    window.matchMedia = jest.fn().mockImplementation(_ => {
-      return {};
-    });
-  });
-
   it('attachments with children renders', () => {
     const q = createQuestionnaire(creatNestedItem(itemType.ATTATCHMENT));
     const { queryByLabelText } = createWrapper(q);
