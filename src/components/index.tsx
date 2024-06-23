@@ -1,5 +1,8 @@
 import React from 'react';
 
+import ItemType from '@constants/itemType';
+import { PresentationButtonsType } from '@constants/presentationButtonsType';
+import RepeatButton from '@formcomponents/repeat/RepeatButton';
 import {
   QuestionnaireResponseItem,
   Questionnaire,
@@ -15,14 +18,11 @@ import { ThunkDispatch } from 'redux-thunk';
 import { DispatchProps } from '../types/dispatchProps';
 import { ReferoProps } from '../types/referoProps';
 
-import RepeatButton from './formcomponents/repeat/RepeatButton';
 import RenderForm from './renderForm';
 import StepView from './stepView';
 import { setSkjemaDefinition } from '../actions/form';
 import { NewValueAction, newQuantityValue, newDecimalValue, newIntegerValue } from '../actions/newValue';
 import Constants, { NAVIGATOR_BLINDZONE_ID } from '../constants/index';
-import ItemType from '../constants/itemType';
-import { PresentationButtonsType } from '../constants/presentationButtonsType';
 import { GlobalState } from '../reducers';
 import { getFormDefinition, getFormData } from '../reducers/form';
 import { FormDefinition, FormData } from '../reducers/form';
@@ -52,8 +52,8 @@ import { AnswerPad, ScoringCalculator } from '../util/scoringCalculator';
 import { shouldFormBeDisplayedAsStepView } from '../util/shouldFormBeDisplayedAsStepView';
 import { generateDefaultValues } from '../validation/defaultFormValues';
 interface StateProps {
-  formDefinition?: FormDefinition | null;
-  formData?: FormData | null;
+  formDefinition: FormDefinition | null;
+  formData: FormData | null;
 }
 
 const Refero = (props: StateProps & DispatchProps & ReferoProps): JSX.Element | null => {
@@ -389,13 +389,6 @@ const Refero = (props: StateProps & DispatchProps & ReferoProps): JSX.Element | 
   return <>{renderSkjema(props.pdf)}</>;
 };
 
-function mapStateToProps(state: GlobalState): StateProps {
-  return {
-    formDefinition: getFormDefinition(state),
-    formData: getFormData(state),
-  };
-}
-
 function mapDispatchToProps(dispatch: ThunkDispatch<GlobalState, void, NewValueAction>, props: ReferoProps): DispatchProps {
   return {
     mount: (): void => {
@@ -408,6 +401,12 @@ function mapDispatchToProps(dispatch: ThunkDispatch<GlobalState, void, NewValueA
   };
 }
 
-const ReferoContainer = connect<StateProps, DispatchProps, ReferoProps>(mapStateToProps, mapDispatchToProps)(Refero);
+const ReferoContainer = connect(
+  (state: GlobalState) => ({
+    formDefinition: getFormDefinition(state),
+    formData: getFormData(state),
+  }),
+  mapDispatchToProps
+)(Refero);
 export { ReferoContainer };
 export default ReferoContainer;

@@ -4,18 +4,18 @@ import { QuestionnaireItem, QuestionnaireItemAnswerOption, QuestionnaireResponse
 import { Controller } from 'react-hook-form';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
-import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
 import { Slider, SliderStep } from '@helsenorge/designsystem-react/components/Slider';
 
 import codeSystems from '../../../constants/codingsystems';
 import { Extensions } from '../../../constants/extensions';
-import { getId, getLabelText, getSublabelText, isRequired } from '../../../util';
+import { getId, isRequired } from '../../../util';
 import { getCodes as getCodingSystemCodes } from '../../../util/codingsystem';
 import { getExtension, getValidationTextExtension } from '../../../util/extension';
 import { isString } from '../../../util/typeguards';
 import { FormProps } from '../../../validation/ReactHookFormHoc';
 import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
-import SafeText from '../SafeText';
+
+import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 
 export interface SliderProps extends WithCommonFunctionsAndEnhancedProps, FormProps {
   item: QuestionnaireItem;
@@ -47,6 +47,7 @@ const SliderView: React.FC<SliderProps> = ({
   renderDeleteButton,
   repeatButton,
   error,
+  control,
 }) => {
   const onValueChange = (index: number): void => {
     const code = item.answerOption?.[index]?.valueCoding?.code;
@@ -73,21 +74,22 @@ const SliderView: React.FC<SliderProps> = ({
     mapToSliderStep(option, (displayType?.[0]?.code as SliderDisplayTypes) || SliderDisplayTypes.OrdinalValue)
   );
   const leftRightLabels = getLeftRightLabels(item);
-  const labelText = getLabelText(item, onRenderMarkdown, questionnaire, resources);
-  const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
+
   return (
     <div className="page_refero__component page_refero__component_choice page_refero__component_choice_slider">
       <FormGroup mode="ongrey" error={error?.message}>
         {renderHelpElement()}
-        <Label
-          className="page_refero__label"
+        <ReferoLabel
+          htmlFor={id}
+          item={item}
+          labelId={`${getId(id)}-slider-choice-label`}
           testId={`${getId(id)}-slider-choice-label`}
-          labelTexts={[]}
-          sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
-          afterLabelChildren={renderHelpButton()}
-        >
-          <SafeText text={labelText} />
-        </Label>
+          renderHelpButton={renderHelpButton}
+          onRenderMarkdown={onRenderMarkdown}
+          questionnaire={questionnaire}
+          resources={resources}
+        />
+
         <Controller
           name={idWithLinkIdAndItemIndex}
           shouldUnregister={true}
@@ -97,6 +99,7 @@ const SliderView: React.FC<SliderProps> = ({
               value: isRequired(item),
             },
           }}
+          control={control}
           render={({ field: { onChange, ...rest } }): JSX.Element => (
             <Slider
               {...rest}

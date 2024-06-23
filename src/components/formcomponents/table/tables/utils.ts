@@ -1,3 +1,4 @@
+import { format, isAfter, isBefore, parse } from 'date-fns';
 import {
   Attachment,
   Coding,
@@ -8,14 +9,10 @@ import {
   QuestionnaireResponseItem,
   QuestionnaireResponseItemAnswer,
 } from 'fhir/r4';
-import moment from 'moment';
 
 import { QuestionnaireItemEnableBehaviorCodes } from '../../../../types/fhirEnums';
 
 import { SortDirection } from '@helsenorge/designsystem-react/components/Table';
-
-import { parseDate } from '@helsenorge/date-time/components/time-input/date-core';
-import * as DateTimeConstants from '@helsenorge/date-time/constants/datetime';
 
 import { DATEFORMATS } from './constants';
 import { QuestionnaireItemWithAnswers } from './interface';
@@ -32,6 +29,9 @@ import {
   getResponseItemAndPathWithLinkId,
   isInGroupContext,
 } from '../../../../util/refero-core';
+
+import { TIME_SEPARATOR } from '@/constants/dateTimeConstants';
+import { safeParseJSON } from '@/util/date-fns-utils';
 type QuantityKeys = keyof Pick<Quantity, 'value' | 'code' | 'system' | 'unit'> | 'display';
 type Codingkeys = keyof Pick<Coding, 'code' | 'display' | 'system'>;
 type AttachmentKeys = keyof Pick<Attachment, 'data' | 'url' | 'title' | 'size' | 'contentType' | 'language' | 'id' | 'hash' | 'creation'>;
@@ -61,25 +61,25 @@ const extractValueFromDate = (inputValue?: string): string => {
   if (!inputValue) {
     return '';
   }
-  const date = parseDate(String(inputValue));
-  return moment(date).locale('nb').format(DATEFORMATS.DATE);
+  const date = safeParseJSON(inputValue);
+  return date ? format(date, DATEFORMATS.DATE) : '';
 };
 const extractValueFromTime = (inputTime?: string): string => {
   if (!inputTime) {
     return '';
   }
-  const time = inputTime.split(DateTimeConstants.TIME_SEPARATOR);
+  const time = inputTime.split(TIME_SEPARATOR);
   if (time.length < 2) {
     return '';
   }
-  return `${time[0]}${DateTimeConstants.TIME_SEPARATOR}${time[1]}`;
+  return `${time[0]}${TIME_SEPARATOR}${time[1]}`;
 };
 const extractValueFromDateTime = (inputValue?: string): string => {
   if (!inputValue) {
     return '';
   }
-  const date = parseDate(String(inputValue));
-  return moment(date).locale('nb').format(DATEFORMATS.DATETIME);
+  const date = safeParseJSON(inputValue);
+  return date ? format(date, DATEFORMATS.DATETIME) : '';
 };
 
 export const extractValueFromAttachment = (inputValue?: Attachment, field: AttachmentKeys = 'url'): string | number => {
@@ -420,13 +420,13 @@ const compareStrings = (aValue: string, bValue: string, sortOrder: SortDirection
 };
 
 const compareDates = (aValue: string, bValue: string, sortOrder: SortDirection): number => {
-  const dateA = moment(aValue, DATEFORMATS.DATETIME);
-  const dateB = moment(bValue, DATEFORMATS.DATETIME);
+  const dateA = parse(aValue, DATEFORMATS.DATETIME, new Date());
+  const dateB = parse(bValue, DATEFORMATS.DATETIME, new Date());
 
   let comparisonResult = 0;
-  if (dateA.isBefore(dateB)) {
+  if (isBefore(dateA, dateB)) {
     comparisonResult = -1;
-  } else if (dateA.isAfter(dateB)) {
+  } else if (isAfter(dateA, dateB)) {
     comparisonResult = 1;
   }
   return sortOrder === 'asc' ? comparisonResult : -comparisonResult;
@@ -434,13 +434,13 @@ const compareDates = (aValue: string, bValue: string, sortOrder: SortDirection):
 
 const compareTimes = (aValue: string, bValue: string, sortOrder: SortDirection): number => {
   const format = DATEFORMATS.TIME;
-  const timeA = moment(aValue, format);
-  const timeB = moment(bValue, format);
+  const timeA = parse(aValue, format, new Date());
+  const timeB = parse(bValue, format, new Date());
 
   if (sortOrder === SortDirection.asc) {
-    return timeA.isBefore(timeB) ? -1 : timeA.isAfter(timeB) ? 1 : 0;
+    return isBefore(timeA, timeB) ? -1 : isAfter(timeA, timeB) ? 1 : 0;
   } else {
-    return timeA.isAfter(timeB) ? -1 : timeA.isBefore(timeB) ? 1 : 0;
+    return isAfter(timeA, timeB) ? -1 : isBefore(timeA, timeB) ? 1 : 0;
   }
 };
 const compareNumbers = (aValue: string, bValue: string, sortOrder: SortDirection): number => {

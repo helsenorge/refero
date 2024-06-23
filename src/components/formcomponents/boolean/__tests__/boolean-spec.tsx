@@ -4,11 +4,12 @@ import { q } from './__data__';
 import { ReferoProps } from '../../../../types/referoProps';
 import { clickButtonTimes, clickByLabelText, clickByTestId, submitForm } from '../../../__tests__/test-utils/selectors';
 import { getResources } from '../../../../../preview/resources/referoResources';
+import { vi } from 'vitest';
 const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle ut dette feltet' };
 
 describe('Boolean', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
   describe('Render', () => {
     it('Should render as text if props.pdf', () => {
@@ -191,7 +192,7 @@ describe('Boolean', () => {
       expect(getByLabelText(/Boolean/i)).toBeChecked();
     });
     it('Should call onChange with correct value', async () => {
-      const onChange = jest.fn();
+      const onChange = vi.fn();
       const { getByLabelText } = createWrapper(q, { onChange });
       expect(getByLabelText(/Boolean/i)).toBeInTheDocument();
       await clickByLabelText(/Boolean/i);

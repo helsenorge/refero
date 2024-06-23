@@ -5,12 +5,6 @@ import { inputAnswer, findItem } from './utils';
 import { renderRefero } from './test-utils/test-utils';
 
 describe.skip('date fields gets set and cleared properly', () => {
-  beforeEach(() => {
-    window.matchMedia = jest.fn().mockImplementation(_ => {
-      return {};
-    });
-  });
-
   it('dates gets set and cleared', async () => {
     const { container } = createWrapper(questionnaireWithAllItemTypes);
 

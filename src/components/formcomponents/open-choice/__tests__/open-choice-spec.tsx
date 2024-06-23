@@ -18,17 +18,6 @@ import ItemType from '../../../../constants/itemType';
 import itemcontrol from '../../../../constants/itemcontrol';
 
 describe('Open-Choice component render', () => {
-  beforeEach(() => {
-    window.matchMedia = jest.fn().mockImplementation(() => ({
-      matches: false,
-      addListener: jest.fn(),
-      removeListener: jest.fn(),
-      addEventListener: jest.fn(),
-      removeEventListener: jest.fn(),
-      dispatchEvent: jest.fn(),
-    }));
-  });
-
   it('should render coding answer as text', async () => {
     const extensions: Extension[] = [createItemControlExtension(itemcontrol.RADIOBUTTON)];
     const option = createValueStringOption('Home', 'Car', 'Nuts', 'Usikker');

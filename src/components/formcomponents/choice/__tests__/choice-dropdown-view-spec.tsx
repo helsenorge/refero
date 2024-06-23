@@ -5,6 +5,7 @@ import { ReferoProps } from '../../../../types/referoProps';
 import { Extensions } from '../../../../constants/extensions';
 import { clickButtonTimes, submitForm } from '../../../__tests__/test-utils/selectors';
 import { getResources } from '../../../../../preview/resources/referoResources';
+import { vi } from 'vitest';
 
 const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle ut dette feltet', oppgiGyldigVerdi: 'ikke gyldig tall' };
 const expectedAnswer = {
@@ -193,7 +194,7 @@ describe('Dropdown-view - choice', () => {
         ...q,
         item: q.item?.map(x => ({ ...x, repeats: false })),
       };
-      const onChange = jest.fn();
+      const onChange = vi.fn();
       const { getByRole, getByLabelText } = createWrapper(questionnaire, { onChange });
       expect(getByRole('option', { name: 'Ja' }) as HTMLOptionElement).toBeInTheDocument();
       await act(async () => {

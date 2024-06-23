@@ -18,11 +18,7 @@ const createExtension = (code: PresentationButtonsType): Extension => {
   };
 };
 describe('component respects sdf-presentationbuttons', () => {
-  beforeEach(() => {
-    window.matchMedia = jest.fn().mockImplementation(_ => {
-      return {};
-    });
-  });
+
 
   it('questionnaire without presentationbuttons default to sticky, when sticky is set to true', () => {
     const { container } = createWrapper(questionnaire, true);

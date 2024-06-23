@@ -9,12 +9,12 @@ import { applyMiddleware, createStore } from 'redux';
 
 import { generateDefaultValues } from '../../../validation/defaultFormValues';
 import { Questionnaire } from 'fhir/r4';
-import { ReferoContainer } from '../..';
 import { generateQuestionnaireResponse } from '../../../actions/generateQuestionnaireResponse';
 import { Resources } from '../../../util/resources';
 import { ReferoProps } from '../../../types/referoProps';
 import userEvent from '@testing-library/user-event';
 import { getResources } from '../../../../preview/resources/referoResources';
+import ReferoContainer from '../..';
 
 const mockStore = configureMockStore<Partial<GlobalState>>([thunk]);
 

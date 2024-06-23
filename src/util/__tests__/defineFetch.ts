@@ -1,5 +1,7 @@
+import { vi } from 'vitest';
+
 Object.defineProperty(window, 'fetch', {
-  value: jest.fn(() => {
+  value: vi.fn(() => {
     return Promise.resolve();
   }),
 });

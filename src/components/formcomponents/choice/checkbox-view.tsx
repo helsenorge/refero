@@ -12,8 +12,8 @@ import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label
 import { getId, getLabelText, getSublabelText, isRequired } from '../../../util/index';
 import { Resources } from '../../../util/resources';
 import { FormProps } from '../../../validation/ReactHookFormHoc';
+import SafeText from '../../referoLabel/SafeText';
 import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
-import SafeText from '../SafeText';
 
 export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   options?: Array<Options>;

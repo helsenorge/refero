@@ -5,13 +5,11 @@ import { ReferoProps } from '../../../../types/referoProps';
 import { Extensions } from '../../../../constants/extensions';
 import { clickButtonTimes, submitForm } from '../../../__tests__/test-utils/selectors';
 import { getResources } from '../../../../../preview/resources/referoResources';
+import { vi } from 'vitest';
 
 const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle ut dette feltet', oppgiGyldigVerdi: 'ikke gyldig tall' };
 
 describe('Quantity', () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
   describe('Render', () => {
     it('Should render as text if props.pdf', () => {
       const { queryByText } = createWrapper(q, { pdf: true });
@@ -243,7 +241,7 @@ describe('Quantity', () => {
           ],
         })),
       };
-      const onChange = jest.fn();
+      const onChange = vi.fn();
       const { getByLabelText } = createWrapper(questionnaire, { onChange });
       expect(getByLabelText(/Quantity/i)).toBeInTheDocument();
       await act(async () => {

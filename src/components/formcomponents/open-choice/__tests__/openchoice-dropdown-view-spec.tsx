@@ -7,6 +7,7 @@ import { typeExtraField } from './utils';
 import { clickButtonTimes, selectDropdownOptionByName, submitForm } from '../../../__tests__/test-utils/selectors';
 import { addManyPropertiesToQuestionnaireItem, addPropertyToQuestionnaireItem } from '../../../__tests__/test-utils/questionnairHelpers';
 import { getResources } from '../../../../../preview/resources/referoResources';
+import { vi } from 'vitest';
 const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle ut dette feltet', oppgiGyldigVerdi: 'ikke gyldig tall' };
 const expectedAnswer = {
   valueCoding: {
@@ -17,7 +18,7 @@ const expectedAnswer = {
 };
 describe('Dropdown-view - choice', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
   describe('Render', () => {
     it('Should render as text if props.pdf', () => {
@@ -161,7 +162,7 @@ describe('Dropdown-view - choice', () => {
     });
     it('Should call onChange with correct value', async () => {
       const questionnaire = addPropertyToQuestionnaireItem(q, 'repeats', false);
-      const onChange = jest.fn();
+      const onChange = vi.fn();
       const { getByRole } = createWrapper(questionnaire, { onChange });
       expect(getByRole('option', { name: 'Ja' }) as HTMLOptionElement).toBeInTheDocument();
       await selectDropdownOptionByName(/Dropdown view label/i, 'Ja');
@@ -228,7 +229,7 @@ describe('Dropdown-view - choice', () => {
         const answer: QuestionnaireItemAnswerOption = {
           valueString: 'test',
         };
-        const onChange = jest.fn();
+        const onChange = vi.fn();
         const questionnaire = addManyPropertiesToQuestionnaireItem(q, [{ property: 'repeats', value: false }]);
 
         const { getByTestId } = createWrapper(questionnaire, { onChange });

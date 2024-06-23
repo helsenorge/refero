@@ -6,13 +6,11 @@ import { Extensions } from '../../../../constants/extensions';
 import { clickButtonTimes, submitForm, typeByLabelText } from '../../../__tests__/test-utils/selectors';
 import { addManyPropertiesToQuestionnaireItem } from '../../../__tests__/test-utils/questionnairHelpers';
 import { getResources } from '../../../../../preview/resources/referoResources';
+import { vi } from 'vitest';
 
 const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle ut dette feltet' };
 
 describe('Integer', () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
   describe('Render', () => {
     it('Should render as text if props.pdf', () => {
       const { queryByText } = createWrapper(q, { pdf: true });
@@ -186,7 +184,7 @@ describe('Integer', () => {
     });
     it('Should call onChange with correct value', async () => {
       const questionnaire = addManyPropertiesToQuestionnaireItem(q, [{ property: 'repeats', value: false }]);
-      const onChange = jest.fn();
+      const onChange = vi.fn();
       const { getByLabelText } = createWrapper(questionnaire, { onChange });
       expect(getByLabelText(/Integer/i)).toBeInTheDocument();
       await act(async () => {

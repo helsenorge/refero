@@ -19,8 +19,8 @@ import { isRequired, getId, getSublabelText, getLabelText } from '../../../util/
 import { getStringAnswer, hasStringAnswer, getCodingAnswer } from '../../../util/refero-core';
 import { Resources } from '../../../util/resources';
 import ReactHookFormHoc, { FormProps } from '../../../validation/ReactHookFormHoc';
+import SafeText from '../../referoLabel/SafeText';
 import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
-import SafeText from '../SafeText';
 
 export interface AutosuggestProps extends WithCommonFunctionsAndEnhancedProps, FormProps {
   handleChange: (code?: string, systemArg?: string, displayArg?: string) => void;
@@ -140,7 +140,7 @@ const AutosuggestView = ({
     }
   };
 
-  const onChangeInput = (_event: React.FormEvent<{}>, { newValue }: { newValue: string; method: string }): void => {
+  const onChangeInput = (_event: React.FormEvent<HTMLElement>, { newValue }: { newValue: string; method: string }): void => {
     if (newValue === '') {
       clearCodingAnswerIfExists();
     }
@@ -163,10 +163,7 @@ const AutosuggestView = ({
     handleChange(suggestion.value, system, suggestion.label);
   };
 
-  const onBlur = (
-    _e: React.ChangeEvent<HTMLInputElement>,
-    { highlightedSuggestion }: { highlightedSuggestion: Suggestion | null }
-  ): void => {
+  const onBlur = (_e: React.ChangeEvent<HTMLElement>, { highlightedSuggestion }: any | undefined): void => {
     if (isDirty && highlightedSuggestion) {
       setLastSearchValue(highlightedSuggestion.label);
       setIsDirty(false);
@@ -221,29 +218,30 @@ const AutosuggestView = ({
           render={({ field: { onChange, ...rest } }): JSX.Element => (
             <Autosuggest
               {...rest}
-              id={getId(id)}
+              inputProps={{
+                id: getId(id),
+                onChange: (e: React.FormEvent<HTMLElement>, AutosuggestChangeEvent): void => {
+                  onChange('');
+                  onChangeInput(e, AutosuggestChangeEvent);
+                },
+                value: inputValue,
+                type: 'search',
+                onBlur: (e: React.ChangeEvent<HTMLElement>, AutosuggestChangeEvent): void => {
+                  onBlur(e, AutosuggestChangeEvent);
+                },
+              }}
               className="page_refero__autosuggest"
-              type="search"
               suggestions={suggestions}
               onSuggestionsFetchRequested={debouncedOnSuggestionsFetchRequested}
               onSuggestionsClearRequested={(): void => {
                 // vis samme resultatsett neste gang feltet får fokus
               }}
-              noCharacterValidation
               renderSuggestion={(suggestion: Suggestion): JSX.Element => <div>{suggestion.label}</div>}
               onSuggestionSelected={(e, data): void => {
                 onChange([data.suggestion.value]);
                 onSuggestionSelected(e, data);
               }}
-              onChange={(e: FormEvent<{}>, AutosuggestChangeEvent): void => {
-                onChange('');
-                onChangeInput(e, AutosuggestChangeEvent);
-              }}
-              onBlur={(e: React.ChangeEvent<{}>, AutosuggestChangeEvent): void => {
-                onBlur(e, AutosuggestChangeEvent);
-              }}
               focusInputOnSuggestionClick={true}
-              value={inputValue}
             />
           )}
         />

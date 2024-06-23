@@ -6,6 +6,7 @@ import { QuestionnaireStatusCodes } from '../../../../../types/fhirEnums';
 
 import { Props } from '../../attachment';
 import { Resources } from '../../../../../util/resources';
+import { vi } from 'vitest';
 
 const mockQuestionnaire: Questionnaire = {
   resourceType: 'Questionnaire',
@@ -62,18 +63,18 @@ export function createMockAttachmentProps(
 ): Props {
   // Create a base mock with required and default properties.
   const mockProps: Partial<Props> = {
-    dispatch: jest.fn(),
+    dispatch: vi.fn(),
     path: [],
     item, // Required parameter
     questionnaire: mockQuestionnaire,
     responseItem: mockQuestionnaireResponseMock,
     answer: [],
     resources: partialResources as Resources,
-    renderDeleteButton: jest.fn(() => <button>{'Delete'}</button>),
+    renderDeleteButton: vi.fn(() => <button>{'Delete'}</button>),
     repeatButton: <button>{'Repeat'}</button>,
-    renderHelpButton: jest.fn(() => <button>{'Help'}</button>),
-    renderHelpElement: jest.fn(() => <div>{'Help content'}</div>),
-    onAnswerChange: jest.fn(),
+    renderHelpButton: vi.fn(() => <button>{'Help'}</button>),
+    renderHelpElement: vi.fn(() => <div>{'Help content'}</div>),
+    onAnswerChange: vi.fn(),
     // ... other props with their mock implementations
   };
   if (attachmentMaxFileSize !== undefined) {
