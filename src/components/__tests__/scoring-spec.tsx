@@ -158,12 +158,12 @@ describe('Component renders and calculates score', () => {
     };
     expectScores(expectedScores, container);
 
-    await clickByTestId('item_2.1.1-2-radio-choice-label');
+    await clickByTestId(/item_2.1.1-2-radio-choice-label/i);
     expectedScores.totalscore_31 = 4;
     expectedScores.sectionscore_213 = 4;
     expectScores(expectedScores, container);
 
-    await clickByTestId('item_2.2.2-3-checkbox-choice-label');
+    await clickByTestId(/item_2.2.2-3-checkbox-choice-label/i);
     expectedScores.sectionscore_223 = 8;
     expectedScores.totalscore_31 = 12;
     expectScores(expectedScores, container);
@@ -197,16 +197,19 @@ describe('Code Scoring', () => {
 
     await typeByLabelText('Decimal 1', '42.451', false);
 
-    let sum = getByDisplayValue(42.451);
-    expect(sum).toBeInTheDocument();
+    const sum1 = getByDisplayValue(42.451);
+    expect(sum1).toBeInTheDocument();
 
     await typeByLabelText('Decimal 2', '1.041', false);
-    sum = getByDisplayValue(1.041);
-    expect(sum).toBeInTheDocument();
-    sum = getByText(43);
-    expect(sum).toBeInTheDocument();
-    sum = getByText(43.49);
-    expect(sum).toBeInTheDocument();
+
+    const sum2 = getByDisplayValue(1.041);
+    expect(sum2).toBeInTheDocument();
+
+    const sum3 = getByText(43);
+    expect(sum3).toBeInTheDocument();
+
+    const sum4 = getByText(43.49);
+    expect(sum4).toBeInTheDocument();
   });
 
   it('Section scoring on decimal grouping with limit 2 digit in decimal. Round decimal to integer more than 5', async () => {
@@ -218,12 +221,14 @@ describe('Code Scoring', () => {
 
     await typeByLabelText('Decimal 2', '1.041', false);
 
-    sum = getByDisplayValue(1.041);
-    expect(sum).toBeInTheDocument();
-    sum = getByText(44);
-    expect(sum).toBeInTheDocument();
-    sum = getByText(43.59);
-    expect(sum).toBeInTheDocument();
+    const sum2 = getByDisplayValue(1.041);
+    expect(sum2).toBeInTheDocument();
+
+    const sum3 = getByText(44);
+    expect(sum3).toBeInTheDocument();
+
+    const sum4 = getByText(43.59);
+    expect(sum4).toBeInTheDocument();
   });
 
   it('Section scoring on integer grouping', async () => {
@@ -237,8 +242,9 @@ describe('Code Scoring', () => {
 
     const sum2 = getAllByDisplayValue(2);
     expect(sum2[0]).toHaveValue(2);
-    sum = getByText(44);
-    expect(sum).toBeInTheDocument();
+
+    const sum3 = getByText(44);
+    expect(sum3).toBeInTheDocument();
   });
 
   it('Section scoring on quantity grouping', async () => {

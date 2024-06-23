@@ -1,7 +1,7 @@
-import { vi as jest } from 'vitest';
+import { vi } from 'vitest';
 
-jest.mock('../hooks/useOutsideEvent', () => ({
-  useOutsideEvent: jest.fn(),
+vi.mock('../hooks/useOutsideEvent', () => ({
+  useOutsideEvent: vi.fn(),
 }));
 
 export {};

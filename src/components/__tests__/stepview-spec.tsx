@@ -9,6 +9,7 @@ import { renderRefero } from './test-utils/test-utils';
 import { ReferoProps } from '../../types/referoProps';
 import { clickButtonTimes, selectCheckboxOption, submitForm, typeByLabelText } from './test-utils/selectors';
 import { getResources } from '../../../preview/resources/referoResources';
+import { vi } from 'vitest';
 
 const resources = {
   ...getResources(''),
@@ -19,8 +20,8 @@ const resources = {
   previousStep: 'Forrige',
   formSave: 'Save',
 };
-const onSubmitMock = jest.fn();
-const onStepChangeMock = jest.fn();
+const onSubmitMock = vi.fn();
+const onStepChangeMock = vi.fn();
 
 const createWrapper = (questionnaire: Questionnaire, props: Partial<ReferoProps> = {}) => {
   return renderRefero({

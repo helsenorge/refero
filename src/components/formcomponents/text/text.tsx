@@ -157,6 +157,7 @@ export const Text = ({
         <ReferoLabel
           testId={`${getId(id)}-text-label`}
           htmlFor={getId(id)}
+          onRenderMarkdown={onRenderMarkdown}
           item={item}
           labelId={`${getId(id)}-text-label`}
           questionnaire={questionnaire}

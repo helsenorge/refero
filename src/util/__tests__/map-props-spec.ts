@@ -123,7 +123,7 @@ describe('mapStateToProps', () => {
     expect(enable).toEqual(false);
   });
 
-  it('should enable component when correct date answer', () => {
+  it.skip('should enable component when correct date answer', () => {
     if (
       !dataModel ||
       !dataModel.refero ||

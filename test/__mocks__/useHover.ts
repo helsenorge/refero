@@ -1,4 +1,4 @@
-import { vi as jest } from 'vitest';
+import { vi } from 'vitest';
 
 vi.mock('../hooks/useHover', () => ({
   useHover: vi.fn().mockImplementation(ref => {

@@ -1,17 +1,10 @@
-class IntersectionObserver {
-  observe(): void {
-    // do nothing
-  }
-  unobserve(): void {
-    // do nothing
-  }
-  disconnect(): void {
-    // do nothing
-  }
-}
+import { vi } from 'vitest';
 
-Object.defineProperty(window, 'IntersectionObserver', {
-  value: IntersectionObserver,
-});
+const IntersectionObserverMock = vi.fn(() => ({
+  disconnect: vi.fn(),
+  observe: vi.fn(),
+  takeRecords: vi.fn(),
+  unobserve: vi.fn(),
+}));
 
-export default IntersectionObserver;
+vi.stubGlobal('IntersectionObserver', IntersectionObserverMock);

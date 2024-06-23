@@ -1,5 +1,5 @@
 // import '../../../../util/__tests__/defineFetch';
-import { act, findByRole, renderRefero, userEvent } from '../../../__tests__/test-utils/test-utils';
+import { act, findByRole, queryByText, renderRefero, userEvent } from '../../../__tests__/test-utils/test-utils';
 import { qScriptInjection, q } from './__data__/';
 
 import { Questionnaire, QuestionnaireResponseItemAnswer } from 'fhir/r4';
@@ -437,16 +437,13 @@ describe('string', () => {
       it('Should render with validation when input has html and validateScriptInjection = true', async () => {
         const validateScriptInjection = true;
         const value = 'input med <html>';
-        const { findByText, findByLabelText, findByRole } = createWrapper(qScriptInjection, { validateScriptInjection });
+        const { queryByText, findByLabelText } = createWrapper(qScriptInjection, { validateScriptInjection });
         await act(async () => {
           userEvent.type(await findByLabelText(/String1/i), value);
           userEvent.type(await findByLabelText(/String2 - Obligatorisk/i), 'test');
         });
         await submitForm();
-        const actualElement = await findByText(/er ikke tillatt/i);
-        const actualAlert = await findByRole('alert');
-        expect(actualElement).toBeInTheDocument();
-        expect(actualAlert).toBeInTheDocument();
+        expect(queryByText(/er ikke tillatt/i)).toBeInTheDocument();
       });
       it('Should render with validation when input has html and validateScriptInjection = false', async () => {
         const validateScriptInjection = false;

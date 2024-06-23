@@ -3,6 +3,7 @@ import { Questionnaire, QuestionnaireItem } from 'fhir/r4';
 import Label, { LabelText } from '@helsenorge/designsystem-react/components/Label';
 
 import SafeText from './SafeText';
+import SubLabel from './sublabel';
 import { getLabelText, getSublabelText } from '../../util';
 import { Resources } from '../../util/resources';
 
@@ -14,8 +15,8 @@ type Props = {
   labelId: string;
   testId: string;
   labelText?: LabelText[];
-  renderHelpButton: () => JSX.Element;
-  htmlFor: string;
+  renderHelpButton: () => JSX.Element | undefined;
+  htmlFor?: string;
 };
 
 export const ReferoLabel = ({
@@ -42,7 +43,7 @@ export const ReferoLabel = ({
     >
       <div>
         <SafeText text={lblText} />
-        {subLabelText && <SafeText text={subLabelText} />}
+        {subLabelText && <SubLabel subLabelText={subLabelText} />}
       </div>
     </Label>
   );

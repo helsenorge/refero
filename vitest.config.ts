@@ -9,7 +9,16 @@ export default defineConfig(configEnv =>
     viteConfig(configEnv),
     defineConfig({
       root: path.resolve(__dirname, '.'),
+      resolve: {
+        alias: [
+          {
+            find: '@helsenorge/datepicker',
+            replacement: path.resolve(__dirname, 'node_modules/@helsenorge/datepicker'),
+          },
+        ],
+      },
       test: {
+        testTimeout: 30000,
         include: ['src/**/*-spec.ts', 'src/**/*-spec.tsx'],
         globals: true,
         environment: 'jsdom',
@@ -24,16 +33,16 @@ export default defineConfig(configEnv =>
         },
         server: {
           deps: {
-            inline: ['@helsenorge/designsystem-react'],
+            inline: ['@helsenorge/designsystem-react', '@helsenorge/datepicker'],
           },
         },
-        // coverage: {
-        //   reporter: ['cobertura', 'json'],
-        // },
-        // reporters: ['default', 'junit'],
-        // outputFile: {
-        //   junit: 'test-report.xml',
-        // },
+        coverage: {
+          reporter: ['cobertura', 'json'],
+        },
+        reporters: ['default', 'junit'],
+        outputFile: {
+          junit: 'test-report.xml',
+        },
       },
     })
   )

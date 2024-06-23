@@ -5,6 +5,7 @@ import { EnhetType, OrgenhetHierarki } from '../../../../types/orgenhetHierarki'
 import { act, renderRefero } from '../../../__tests__/test-utils/test-utils';
 import { selectDropdownOptionByName } from '../../../__tests__/test-utils/selectors';
 import { getResources } from '../../../../../preview/resources/referoResources';
+import { vi } from 'vitest';
 
 const receivers = [
   {
@@ -27,11 +28,8 @@ const receivers = [
 ];
 
 describe('ReceiverComponent', () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
   it('Should call function to load receivers on mount', () => {
-    const fetchReceivers = jest.fn();
+    const fetchReceivers = vi.fn();
     renderRefero({ questionnaire: q, props: { fetchReceivers }, resources: getResources('') });
 
     expect(fetchReceivers).toHaveBeenCalled();
@@ -49,7 +47,7 @@ describe('ReceiverComponent', () => {
     const fetchReceiversFn = (successCallback: (receivers: OrgenhetHierarki[]) => void) => {
       successCallback(receivers);
     };
-    const onChange = jest.fn();
+    const onChange = vi.fn();
     const { findByText } = renderRefero({
       questionnaire: q,
       props: { fetchReceivers: fetchReceiversFn, onChange },
@@ -126,7 +124,7 @@ describe('ReceiverComponent', () => {
     const fetchReceivers = (successCallback: (receivers: Array<OrgenhetHierarki>) => void) => {
       successCallback(receivers);
     };
-    const onChange = jest.fn();
+    const onChange = vi.fn();
     const { queryByText } = renderRefero({
       questionnaire: q,
       props: { fetchReceivers, onChange },
@@ -152,7 +150,7 @@ describe('ReceiverComponent', () => {
     const fetchReceivers = (successCallback: (receivers: Array<OrgenhetHierarki>) => void) => {
       successCallback(receivers);
     };
-    const onChange = jest.fn();
+    const onChange = vi.fn();
     renderRefero({
       questionnaire: q,
       props: { fetchReceivers, onChange },

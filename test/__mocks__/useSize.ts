@@ -1,7 +1,7 @@
-import { vi as jest } from 'vitest';
+import { vi } from 'vitest';
 
-jest.mock('../hooks/useSize', () => ({
-  useSize: jest.fn().mockReturnValue({
+vi.mock('../hooks/useSize', () => ({
+  useSize: vi.fn().mockReturnValue({
     height: 100,
     width: 100,
     top: 0,

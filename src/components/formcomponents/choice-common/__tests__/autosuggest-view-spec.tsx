@@ -8,8 +8,9 @@ import { Extensions } from '../../../../constants/extensions';
 import { clickButtonTimes, submitForm } from '../../../__tests__/test-utils/selectors';
 import { addPropertyToQuestionnaireItem } from '../../../__tests__/test-utils/questionnairHelpers';
 import { getResources } from '../../../../../preview/resources/referoResources';
+import { vi } from 'vitest';
 
-jest.mock('@helsenorge/core-utils/debounce', () => ({
+vi.mock('@helsenorge/core-utils/debounce', () => ({
   debounce: (fn: Function) => fn,
 }));
 const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle ut dette feltet', openChoiceOption: 'annet' };
@@ -33,7 +34,7 @@ const successReturnValueSet: ValueSet = {
 };
 describe('autosuggest-view', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
   describe('help button', () => {
     it('Should render helpButton', async () => {
@@ -195,7 +196,7 @@ describe('autosuggest-view', () => {
     });
   });
   it('skal kalle fetchValueSet når input endres', async () => {
-    const fetchValueSetFn = jest.fn();
+    const fetchValueSetFn = vi.fn();
     const { getByLabelText } = renderRefero({ questionnaire: q, props: { fetchValueSet: fetchValueSetFn } });
     expect(getByLabelText('Mistenkt legemiddel')).toBeInTheDocument();
     userEvent.type(getByLabelText('Mistenkt legemiddel'), 'test');
@@ -281,7 +282,7 @@ describe('autosuggest-view', () => {
   });
   describe('onChange', () => {
     it('skal kalle handleChange når bruker velger noe i listen', async () => {
-      const onChange = jest.fn();
+      const onChange = vi.fn();
       const fetchValueSet = (
         _searchString: string,
         _item: QuestionnaireItem,

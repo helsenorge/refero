@@ -26,7 +26,7 @@ describe('support for external markdown', () => {
     expect(visited['6c']).toBe(ItemType.OPENCHOICE);
     // expect(visited['7a']).toBe(ItemType.DATE);
     // expect(visited['7b']).toBe(ItemType.TIME);
-    // expect(visited['7c']).toBe(ItemType.DATETIME);
+    expect(visited['7c']).toBe(ItemType.DATETIME);
     expect(visited['8']).toBe(ItemType.STRING);
     expect(visited['9']).toBe(ItemType.TEXT);
     expect(visited['10']).toBe(ItemType.ATTATCHMENT);

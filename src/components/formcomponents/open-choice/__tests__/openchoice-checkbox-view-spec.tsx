@@ -6,6 +6,7 @@ import { ReferoProps } from '../../../../types/referoProps';
 import { typeExtraField } from './utils';
 import { addManyPropertiesToQuestionnaireItem, addPropertyToQuestionnaireItem } from '../../../__tests__/test-utils/questionnairHelpers';
 import { getResources } from '../../../../../preview/resources/referoResources';
+import { vi } from 'vitest';
 
 const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle ut dette feltet', oppgiGyldigVerdi: 'ikke gyldig tall' };
 const expectedAnswer: QuestionnaireItemAnswerOption = {
@@ -17,9 +18,6 @@ const expectedAnswer: QuestionnaireItemAnswerOption = {
 };
 
 describe('checkbox-view - openchoice', () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
   describe('Render', () => {
     it('Should render as text if props.pdf', () => {
       const { queryByText } = createWrapper(q, { pdf: true });
@@ -151,7 +149,7 @@ describe('checkbox-view - openchoice', () => {
         const answer: QuestionnaireItemAnswerOption = {
           valueString: 'test',
         };
-        const onChange = jest.fn();
+        const onChange = vi.fn();
         const questionnaire = addPropertyToQuestionnaireItem(q, 'repeats', false);
         const { getByTestId } = createWrapper(questionnaire, { onChange });
 
@@ -219,7 +217,7 @@ describe('checkbox-view - openchoice', () => {
     });
     it('Should call onChange with correct value', async () => {
       const questionnaire = addPropertyToQuestionnaireItem(q, 'repeats', false);
-      const onChange = jest.fn();
+      const onChange = vi.fn();
       const { getByLabelText } = createWrapper(questionnaire, { onChange });
 
       expect(getByLabelText(/Ja/i)).toBeInTheDocument();

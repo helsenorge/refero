@@ -6,6 +6,7 @@ import { ReferoProps } from '../../../../types/referoProps';
 import { Extensions } from '../../../../constants/extensions';
 import { clickButtonTimes, submitForm } from '../../../__tests__/test-utils/selectors';
 import { getResources } from '../../../../../preview/resources/referoResources';
+import { vi } from 'vitest';
 
 const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle ut dette feltet', oppgiGyldigVerdi: 'ikke gyldig tall' };
 const expectedAnswer = {
@@ -17,9 +18,6 @@ const expectedAnswer = {
 };
 
 describe('Slider-view', () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
   describe('initialvalue', () => {
     it('Initial value should not be set', async () => {
       const questionnaire: Questionnaire = {
@@ -50,7 +48,7 @@ describe('Slider-view', () => {
   //TODO: Fix when component is updated and can be given refs
   describe.skip('onChange', () => {
     it('Should update component with value from answer', async () => {
-      const onChange = jest.fn();
+      const onChange = vi.fn();
 
       const { container, getByRole } = createWrapper(q, { onChange });
 
@@ -70,7 +68,7 @@ describe('Slider-view', () => {
         ...q,
         item: q.item?.map(x => ({ ...x, repeats: false })),
       };
-      const onChange = jest.fn();
+      const onChange = vi.fn();
       const { container } = createWrapper(questionnaire, { onChange });
       await act(async () => {
         const JaElement = container.querySelectorAll('div.slider__value');

@@ -9,4 +9,8 @@ import './__mocks__/IntersectionObserver';
 // import './__mocks__/useSize';
 // import './__mocks__/useHover';
 // import './__mocks__/usePseudoClasses';
+Object.defineProperty(window, 'scrollTo', {
+  value: vi.fn(),
+  writable: true,
+});
 window.HTMLElement.prototype.scrollIntoView = vi.fn();

@@ -1,7 +1,7 @@
-import { vi as jest } from 'vitest';
+import { vi } from 'vitest';
 
-jest.mock('../hooks/usePseudoClasses', () => ({
-  usePseudoClasses: jest.fn().mockImplementation(ref => {
+vi.mock('../hooks/usePseudoClasses', () => ({
+  usePseudoClasses: vi.fn().mockImplementation(ref => {
     return { refObject: ref, isHovered: false, isFocused: false };
   }),
 }));

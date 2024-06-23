@@ -37,6 +37,7 @@ export default defineConfig(({ command }) => {
         { find: '@components', replacement: path.resolve(__dirname, 'src/components') },
         { find: '@formcomponents', replacement: path.resolve(__dirname, 'src/components/formcomponents') },
         { find: '@constants', replacement: path.resolve(__dirname, 'src/constants') },
+
         { find: /^~(.*)$/, replacement: '$1' },
       ],
     },
@@ -54,36 +55,6 @@ export default defineConfig(({ command }) => {
         name: 'Refero',
         fileName: (format): string => `refero.${format}.js`,
       },
-      // rollupOptions: {
-      //   external: [
-      //     'react',
-      //     'react-dom',
-      //     'react/jsx-runtime',
-      //     '@helsenorge/autosuggest',
-      //     '@helsenorge/core-utils',
-      //     '@helsenorge/date-time',
-      //     '@helsenorge/file-upload',
-      //     '@helsenorge/designsystem-react',
-      //     'react-redux',
-      //     'redux',
-      //     'redux-thunk',
-      //   ],
-      //   output: {
-      //     globals: {
-      //       react: 'React',
-      //       'react-dom': 'ReactDOM',
-      //       'react/jsx-runtime': 'react/jsx-runtime',
-      //       '@helsenorge/autosuggest': '@helsenorge/autosuggest',
-      //       '@helsenorge/core-utils': '@helsenorge/core-utils',
-      //       '@helsenorge/date-time': '@helsenorge/date-time',
-      //       '@helsenorge/file-upload': '@helsenorge/file-upload',
-      //       '@helsenorge/designsystem-react': '@helsenorge/designsystem-react',
-      //       'react-redux': 'ReactRedux',
-      //       redux: 'Redux',
-      //       'redux-thunk': 'ReduxThunk',
-      //     },
-      //   },
-      // },
     },
 
     plugins: [

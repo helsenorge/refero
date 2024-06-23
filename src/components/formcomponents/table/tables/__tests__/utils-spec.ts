@@ -8,8 +8,9 @@ import { QuestionnaireItemEnableBehaviorCodes } from '../../../../../types/fhirE
 import { Extensions } from '../../../../../constants/extensions';
 import valueSet from '../../../../../constants/valuesets';
 import codeSystems from '../../../../../constants/codingsystems';
+import { vi } from 'vitest';
 
-jest.mock('../../../../../util/refero-core');
+vi.mock('../../../../../util/refero-core');
 
 describe('getPrimitiveValueFromItemType', () => {
   it('Should return value based on type', () => {
@@ -32,12 +33,12 @@ describe('getQuestionnaireResponseItemAnswer', () => {
 
 describe('isConditionEnabled', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
-    (fhirUtils.getQuestionnaireResponseItemsWithLinkId as jest.Mock).mockImplementation(() => [
+    vi.clearAllMocks();
+    (fhirUtils.getQuestionnaireResponseItemsWithLinkId as vi.Mock).mockImplementation(() => [
       { linkId: 'e32a3b49-42df-4394-9560-2cf48155e182', text: 'Hvilken sykdom har du?', answer: [{ valueString: 'dfg' }] },
     ]);
-    (fhirUtils.isInGroupContext as jest.Mock).mockImplementation(() => true);
-    (fhirUtils.enableWhenMatchesAnswer as jest.Mock).mockImplementation(() => true);
+    (fhirUtils.isInGroupContext as vi.Mock).mockImplementation(() => true);
+    (fhirUtils.enableWhenMatchesAnswer as vi.Mock).mockImplementation(() => true);
   });
 
   it('should return true if single condition is met and behavior is ANY', () => {
@@ -175,7 +176,7 @@ describe('extractValuesFromAnswer', () => {
 
 describe('addAnswerToItems', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should process single item correctly', () => {
