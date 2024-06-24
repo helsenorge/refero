@@ -37,6 +37,7 @@ export default defineConfig(({ command }) => {
         { find: '@components', replacement: path.resolve(__dirname, 'src/components') },
         { find: '@formcomponents', replacement: path.resolve(__dirname, 'src/components/formcomponents') },
         { find: '@constants', replacement: path.resolve(__dirname, 'src/constants') },
+        { find: '@test', replacement: path.resolve(__dirname, 'test') },
         { find: /^~(.*)$/, replacement: '$1' },
       ],
     },

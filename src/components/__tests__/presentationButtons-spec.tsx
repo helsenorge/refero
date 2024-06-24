@@ -4,7 +4,7 @@ import { Questionnaire, Extension } from 'fhir/r4';
 
 import { Extensions } from '../../constants/extensions';
 import { PresentationButtonsType } from '../../constants/presentationButtonsType';
-import { renderRefero } from './test-utils/test-utils';
+import { renderRefero } from '../../../test/test-utils';
 import valueSet from '../../constants/valuesets';
 
 const createExtension = (code: PresentationButtonsType): Extension => {
@@ -18,8 +18,6 @@ const createExtension = (code: PresentationButtonsType): Extension => {
   };
 };
 describe('component respects sdf-presentationbuttons', () => {
-
-
   it('questionnaire without presentationbuttons default to sticky, when sticky is set to true', () => {
     const { container } = createWrapper(questionnaire, true);
     expect(container.querySelector('.page_refero__stickybar')).toBeInTheDocument();

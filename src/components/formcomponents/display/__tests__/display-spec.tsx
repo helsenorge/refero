@@ -1,6 +1,6 @@
 import { getResources } from '../../../../../preview/resources/referoResources';
 import '../../../../util/__tests__/defineFetch';
-import { renderRefero } from '../../../__tests__/test-utils/test-utils';
+import { renderRefero } from '@test/test-utils.tsx';
 import { q, qHighlight } from './__data__/';
 
 describe('Display', () => {

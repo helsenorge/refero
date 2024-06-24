@@ -1,14 +1,11 @@
 import React from 'react';
 
-import { QuestionnaireItem } from 'fhir/r4';
+import { Questionnaire, QuestionnaireItem } from 'fhir/r4';
 import { FieldError } from 'react-hook-form';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
-import Label from '@helsenorge/designsystem-react/components/Label';
 import NotificationPanel from '@helsenorge/designsystem-react/components/NotificationPanel';
 
-import Dropzone from '@helsenorge/file-upload/components/dropzone';
-import { UploadedFile } from '@helsenorge/file-upload/components/dropzone';
 import FileUpload, { UploadFile } from '@helsenorge/file-upload/components/file-upload';
 import { useFileUpload } from '@helsenorge/file-upload/components/file-upload/useFileUpload';
 
@@ -19,6 +16,8 @@ import { getId } from '../../../util';
 import { Resources } from '../../../util/resources';
 import { FormProps } from '../../../validation/ReactHookFormHoc';
 
+import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
+
 interface Props {
   onUpload: (files: UploadFile[]) => void;
   onDelete: (fileId: string) => void;
@@ -27,36 +26,35 @@ interface Props {
   labelText?: string;
   id: string;
   attachmentErrorMessage?: string;
-  getComponentToValidate?: (el: Dropzone) => void;
   resources?: Resources;
   isRequired?: boolean;
   multiple?: boolean;
   errorText?: string;
-  uploadedFiles: UploadedFile[] | undefined;
   onRequestAttachmentLink?: (file: string) => string;
   maxFiles?: number;
   minFiles?: number;
   item: QuestionnaireItem;
   attachmentMaxFileSize?: number;
   attachmentValidTypes?: Array<string>;
-
-  helpButton?: JSX.Element;
+  questionnaire?: Questionnaire;
+  renderHelpButton: () => JSX.Element;
   helpElement?: JSX.Element;
   register: FormProps['register'];
   error?: FieldError;
   children?: React.ReactNode;
+  onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
 }
 
 const attachmentHtml = ({
   id,
   onUpload,
+  questionnaire,
   onDelete,
   onOpen,
-  labelText,
   resources,
   isRequired,
   attachmentErrorMessage,
-  helpButton,
+  renderHelpButton,
   helpElement,
   maxFiles,
   attachmentMaxFileSize,
@@ -65,6 +63,7 @@ const attachmentHtml = ({
   item,
   children,
   error,
+  onRenderMarkdown,
   ...rest
 }: Props): JSX.Element | null => {
   const getMaxValueBytes = getAttachmentMaxSizeBytesToUse(attachmentMaxFileSize, item);
@@ -103,6 +102,16 @@ const attachmentHtml = ({
   return (
     <div className="page_refero__component page_refero__component_attachment" data-testid={getId(id)}>
       <FormGroup error={concatErrorMessages()}>
+        <ReferoLabel
+          item={item}
+          onRenderMarkdown={onRenderMarkdown}
+          questionnaire={questionnaire}
+          resources={resources}
+          htmlFor={id}
+          labelId={`${getId(id)}-string-label`}
+          testId={`${getId(id)}-string-label`}
+          renderHelpButton={renderHelpButton}
+        />
         <FileUpload
           {...register(item.linkId, {
             required: {
@@ -116,13 +125,6 @@ const attachmentHtml = ({
           onChangeFile={handleUpload}
           onDeleteFile={handleDelete}
           chooseFilesText={resources?.chooseFilesText}
-          label={
-            <Label
-              className="page_refero__label"
-              labelTexts={[{ text: labelText || '', type: 'semibold' }]}
-              afterLabelChildren={helpButton && helpButton}
-            />
-          }
           deleteText={deleteText}
           acceptedFiles={acceptedFiles}
           rejectedFiles={rejectedFiles}

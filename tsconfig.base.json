@@ -23,6 +23,8 @@
       "@components/*": ["./src/components/*"],
       "@formcomponents/*": ["./src/components/formcomponents/*"],
       "@constants/*": ["./src/constants/*"],
+      "@test/*": ["./test/*"],
+
       "react": ["./node_modules/@types/react"]
     }
   },

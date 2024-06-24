@@ -1,12 +1,12 @@
 import '../../../../util/__tests__/defineFetch';
-import { act, renderRefero, userEvent } from '../../../__tests__/test-utils/test-utils';
+import { act, renderRefero, userEvent } from '@test/test-utils.tsx'
 import q from './__data__';
 import Constants from '../../../../constants';
 import { Questionnaire } from 'fhir/r4';
 import { ReferoProps } from '../../../../types/referoProps';
 import { Extensions } from '../../../../constants/extensions';
 import { getResources } from '../../../../../preview/resources/referoResources';
-import { clickButtonTimes } from '../../../__tests__/test-utils/selectors';
+import { clickButtonTimes } from '../../../../../test/selectors';
 
 const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle ut dette feltet', oppgiGyldigVerdi: 'ikke gyldig tall' };
 

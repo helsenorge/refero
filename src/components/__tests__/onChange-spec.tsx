@@ -1,4 +1,4 @@
-import { screen, userEvent, act, renderRefero } from './test-utils/test-utils';
+import { screen, userEvent, act, renderRefero } from '../../../test/test-utils';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, Quantity, Coding, Questionnaire } from 'fhir/r4';
 
@@ -16,7 +16,7 @@ import {
   createOnChangeFuncForActionRequester,
   createOnChangeFuncForQuestionnaireInspector,
 } from './utils';
-import { clickByLabelText, typeAndTabByLabelText, typeByLabelText } from './test-utils/selectors';
+import { clickByLabelText, typeAndTabByLabelText, typeByLabelText } from '../../../test/selectors';
 import { parse } from 'date-fns';
 
 function toCoding(code: string, system?: string): Coding {

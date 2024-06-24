@@ -1,6 +1,4 @@
-import React from 'react';
-
-import { Matcher, render, screen } from '../../../__tests__/test-utils/test-utils';
+import { Matcher, render, screen } from '@test/test-utils.tsx';
 
 import userEvent from '@testing-library/user-event';
 

@@ -1,10 +1,10 @@
 import { Questionnaire, QuestionnaireItemAnswerOption } from 'fhir/r4';
-import { act, findByRole, renderRefero, userEvent } from '../../../__tests__/test-utils/test-utils';
-import { clickButtonTimes, selectCheckboxOption, submitForm } from '../../../__tests__/test-utils/selectors';
+import { act, findByRole, renderRefero, userEvent } from '@test/test-utils.tsx';;
+import { clickButtonTimes, selectCheckboxOption, submitForm } from '../../../../../test/selectors';
 import { checkboxView as q } from './__data__/index';
 import { ReferoProps } from '../../../../types/referoProps';
 import { typeExtraField } from './utils';
-import { addManyPropertiesToQuestionnaireItem, addPropertyToQuestionnaireItem } from '../../../__tests__/test-utils/questionnairHelpers';
+import { addManyPropertiesToQuestionnaireItem, addPropertyToQuestionnaireItem } from '../../../../../test/questionnairHelpers';
 import { getResources } from '../../../../../preview/resources/referoResources';
 import { vi } from 'vitest';
 
