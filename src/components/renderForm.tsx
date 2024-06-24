@@ -8,7 +8,7 @@ import { ReferoProps } from '../types/referoProps';
 import Loader from '@helsenorge/designsystem-react/components/Loader';
 
 import FormButtons from './formButtons/formButtons';
-import { ValidationSummary } from './validation-summary';
+import { ValidationSummary } from './validation/validation-summary';
 import { Resources } from '../util/resources';
 
 interface RenderFormProps {
