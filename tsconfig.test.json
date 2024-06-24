@@ -1,9 +1,0 @@
-{
-  "extends": "./tsconfig.base.json",
-  "compilerOptions": {
-    "types": ["vite/client", "node", "vitest/jsdom"],
-    "allowSyntheticDefaultImports": true
-  },
-  "include": ["src", "test", "test/jest-setup.ts"],
-  "exclude": ["lib", "preview", "config", "node_modules"]
-}

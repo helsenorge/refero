@@ -28,9 +28,6 @@ export default defineConfig(configEnv =>
             classNameStrategy: 'non-scoped',
           },
         },
-        typecheck: {
-          tsconfig: path.resolve(__dirname, 'tsconfig.test.json'),
-        },
         server: {
           deps: {
             inline: ['@helsenorge/designsystem-react', '@helsenorge/datepicker'],

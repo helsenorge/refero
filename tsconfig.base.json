@@ -17,7 +17,6 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "forceConsistentCasingInFileNames": true,
-    "types": ["vite/client", "vitest/globals", "node", "vitest/jsdom"],
     "paths": {
       "@helsenorge/refero": ["./lib"],
       "@/*": ["./src/*"],
@@ -27,7 +26,6 @@
       "react": ["./node_modules/@types/react"]
     }
   },
-  "include": ["src", "preview", "test", "test/setup-tests.ts", "src/global.d.ts"],
-  "exclude": ["node_modules", "lib"],
+  "include": ["src", "preview", "test"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

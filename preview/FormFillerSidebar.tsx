@@ -1,4 +1,4 @@
-import React from 'react';
+import { useState } from 'react';
 
 import { Questionnaire } from 'fhir/r4';
 
@@ -9,7 +9,7 @@ type Props = {
 };
 
 const FormFillerSidebar = ({ questionnaire }: Props): JSX.Element => {
-  const [isSidebarViewEnabled, setIsSidebarViewEnabled] = React.useState(false);
+  const [isSidebarViewEnabled, setIsSidebarViewEnabled] = useState(false);
   const sidebarData = getSidebarElements(questionnaire);
 
   return (
