@@ -1,4 +1,4 @@
-import { parse, format, setHours, setMinutes, startOfDay, isValid, isBefore, isAfter, endOfDay } from 'date-fns';
+import { parse, format, setHours, setMinutes, setYear, startOfDay, isValid, isBefore, isAfter, endOfDay } from 'date-fns';
 import { QuestionnaireResponseItemAnswer } from 'fhir/r4';
 
 import { DateFormat, DatePickerFormat, DateTimeUnit } from '../types/dateTypes';
@@ -7,6 +7,8 @@ import { safeParseJSON } from './date-fns-utils';
 import { Resources } from './resources';
 import { mockMaxDateTime, mockMinDateTime } from '../components/formcomponents/date/date-mocks';
 import Constants from '../constants/index';
+
+import '@helsenorge/datepicker/components/DatePicker/';
 
 export function getFullFnsDate(
   date: Date | string | undefined,
@@ -93,5 +95,13 @@ export const validateMinutes = (minutes: number | undefined, resources: Resource
   if (minutes && (minutes < 0 || minutes > 59)) {
     return resources?.dateError_time_invalid || '';
   }
+  return true;
+};
+
+export const validateYearDigits = (year: number, resources: Resources | undefined): true | string => {
+  if (year && year.toString().length !== 4) {
+    return resources?.year_field_invalid || '';
+  }
+
   return true;
 };

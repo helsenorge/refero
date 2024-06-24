@@ -1,13 +1,17 @@
 import React from 'react';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
-import { FieldValues, useFormContext } from 'react-hook-form';
+import { Controller, FieldError } from 'react-hook-form';
 
+
+import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Input from '@helsenorge/designsystem-react/components/Input';
 import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
 
 import { getId, isReadOnly, isRequired } from '../../../util';
 import { createDateFromYear } from '../../../util/createDateFromYear';
+import { validateYearDigits } from '../../../util/date-utils';
+import { getValidationTextExtension } from '../../../util/extension';
 import { Resources } from '../../../util/resources';
 import { FormProps } from '../../../validation/ReactHookFormHoc';
 import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
@@ -42,12 +46,11 @@ export const DateYearInput = ({
   onRenderMarkdown,
   answer,
   idWithLinkIdAndItemIndex,
+  error,
+  control,
   children,
 }: React.PropsWithChildren<Props>): JSX.Element => {
-  const { register } = useFormContext<FieldValues>();
-  const [answerState, setAnswerState] = React.useState<number | undefined>(0);
-
-  const getYear = (): (number | undefined)[] | undefined => {
+  const getYear = (answer: QuestionnaireResponseItemAnswer): (number | undefined)[] | undefined => {
     if (Array.isArray(answer)) {
       return answer.map(m => createDateFromYear(item, m)?.getFullYear());
     }
@@ -60,15 +63,23 @@ export const DateYearInput = ({
   const getPDFValue = (): string => {
     const ikkeBesvartText = resources?.ikkeBesvart || '';
     return (
-      getYear()
+      getYear(answer)
         ?.map(m => m?.toString())
         .join(', ') || ikkeBesvartText
     );
   };
 
-  React.useEffect(() => {
-    answer ? setAnswerState(Number(answer.valueDate)) : setAnswerState(getYear()?.[0]);
-  }, [answer]);
+  const getErrorText = (error: FieldError | undefined): string | undefined => {
+    const validationTextExtension = getValidationTextExtension(item);
+    if (validationTextExtension) {
+      return validationTextExtension;
+    }
+    if (error) {
+      return error.message;
+    }
+  };
+
+  const answerState = answer ? Number(answer.valueDate) : getYear(answer)?.[0];
 
   if (pdf || isReadOnly(item)) {
     return (
@@ -86,31 +97,46 @@ export const DateYearInput = ({
   }
 
   return (
-    <>
+    <FormGroup error={getErrorText(error)}>
       {helpElement}
-      <Input
-        {...register(idWithLinkIdAndItemIndex + '-dateYear', {
+      <Controller
+        name={idWithLinkIdAndItemIndex}
+        shouldUnregister={true}
+        rules={{
           required: {
             value: isRequired(item),
-            message: resources?.formRequiredErrorMessage || '',
+            message: resources?.year_field_required || '',
           },
-          validate: {},
-        })}
-        type="number"
-        testId={getId(id)}
-        onChange={e => onYearChange(Number(e.target.value))}
-        label={
-          <Label
-            labelId={`${getId(id)}-label-dateYear`}
-            labelTexts={[{ text: label || '' }]}
-            sublabel={<Sublabel id={`${getId(id)}-sublabel-dateYear`} sublabelTexts={[{ text: subLabel || '', type: 'normal' }]} />}
-            afterLabelChildren={helpButton}
+          validate: {
+            validYear: value => {
+              return validateYearDigits(value, resources);
+            },
+          },
+        }}
+        control={control}
+        render={({ field: { onChange, ...rest } }): JSX.Element => (
+          <Input
+            {...rest}
+            type="number"
+            testId={getId(id)}
+            onChange={e => {
+              onChange(e.target.value);
+              onYearChange(Number(e.target.value));
+            }}
+            label={
+              <Label
+                labelId={`${getId(id)}-label-dateYear`}
+                labelTexts={[{ text: label || '' }]}
+                sublabel={<Sublabel id={`${getId(id)}-sublabel-dateYear`} sublabelTexts={[{ text: subLabel || '', type: 'normal' }]} />}
+                afterLabelChildren={helpButton}
+              />
+            }
+            value={answerState ?? ''}
+            width={10}
           />
-        }
-        defaultValue={answerState}
-        width={10}
+        )}
       />
-    </>
+    </FormGroup>
   );
 };
 
