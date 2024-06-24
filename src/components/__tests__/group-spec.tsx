@@ -12,11 +12,6 @@ import { IItemType } from '../../constants/itemType';
 
 describe('Group component renders with correct classes', () => {
   const defaultClasses = ['.page_refero__component', '.page_refero__component_group'];
-  beforeEach(() => {
-    window.matchMedia = jest.fn().mockImplementation(_ => {
-      return {};
-    });
-  });
 
   it('renders with table-class when extension is table', () => {
     const id = 'table';

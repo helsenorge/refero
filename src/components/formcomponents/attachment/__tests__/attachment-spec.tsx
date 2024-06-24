@@ -16,29 +16,30 @@ import { Resources } from '../../../../util/resources';
 import { convertBytesToMBString, convertMBToBytes } from '../attachmentUtil';
 import constants from '../../../../constants';
 import { AttachmentComponent } from '../attachment';
+import { vi } from 'vitest';
 
-jest.mock('@helsenorge/file-upload/components/file-upload/useFileUpload', () => ({
-  useFileUpload: jest.fn(() => ({
-    register: jest.fn(),
+vi.mock('@helsenorge/file-upload/components/file-upload/useFileUpload', () => ({
+  useFileUpload: vi.fn(() => ({
+    register: vi.fn(),
     acceptedFiles: [],
     rejectedFiles: [],
-    setAcceptedFiles: jest.fn(),
-    setRejectedFiles: jest.fn(),
+    setAcceptedFiles: vi.fn(),
+    setRejectedFiles: vi.fn(),
   })),
 }));
 
 beforeAll(() => {
   Object.defineProperty(window, 'matchMedia', {
     writable: true,
-    value: jest.fn().mockImplementation(query => ({
+    value: vi.fn().mockImplementation(query => ({
       matches: false,
       media: query,
       onchange: null,
-      addListener: jest.fn(), // Deprecated but included for compatibility
-      removeListener: jest.fn(), // Deprecated but included for compatibility
-      addEventListener: jest.fn(),
-      removeEventListener: jest.fn(),
-      dispatchEvent: jest.fn(),
+      addListener: vi.fn(), // Deprecated but included for compatibility
+      removeListener: vi.fn(), // Deprecated but included for compatibility
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+      dispatchEvent: vi.fn(),
     })),
   });
 });

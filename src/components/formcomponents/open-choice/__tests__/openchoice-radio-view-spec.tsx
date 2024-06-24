@@ -7,6 +7,7 @@ import { typeExtraField } from './utils';
 import { clickButtonTimes, selectCheckboxOption, submitForm } from '../../../__tests__/test-utils/selectors';
 import { addManyPropertiesToQuestionnaireItem } from '../../../__tests__/test-utils/questionnairHelpers';
 import { getResources } from '../../../../../preview/resources/referoResources';
+import { vi } from 'vitest';
 
 const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle ut dette feltet', oppgiGyldigVerdi: 'ikke gyldig tall' };
 const expectedAnswer = {
@@ -17,9 +18,6 @@ const expectedAnswer = {
   },
 };
 describe('Radio-view - choice', () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
   describe('Render', () => {
     it('Should render as text if props.pdf', () => {
       const { queryByText } = createWrapper(q, { pdf: true });
@@ -177,7 +175,7 @@ describe('Radio-view - choice', () => {
     });
     it('Should call onChange with correct value', async () => {
       const questionnaire = addManyPropertiesToQuestionnaireItem(q, [{ property: 'repeats', value: false }]);
-      const onChange = jest.fn();
+      const onChange = vi.fn();
       const { getByLabelText } = createWrapper(questionnaire, { onChange });
       expect(getByLabelText(/Ja/i)).toBeInTheDocument();
       await act(async () => {
@@ -258,7 +256,7 @@ describe('Radio-view - choice', () => {
         const answer: QuestionnaireItemAnswerOption = {
           valueString: 'test',
         };
-        const onChange = jest.fn();
+        const onChange = vi.fn();
         const questionnaire: Questionnaire = {
           ...q,
           item: q.item?.map(x => ({ ...x, repeats: false })),

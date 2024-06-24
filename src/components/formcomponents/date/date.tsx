@@ -16,6 +16,7 @@ import { NewValueAction, newDateValueAsync } from '../../../actions/newValue';
 import { Extensions } from '../../../constants/extensions';
 import itemControlConstants from '../../../constants/itemcontrol';
 import { GlobalState } from '../../../reducers';
+import { safeParseJSON } from '../../../util/date-fns-utils';
 import { getExtension, getItemControlExtensionValue } from '../../../util/extension';
 import { evaluateFhirpathExpressionToGetDate } from '../../../util/fhirpathHelper';
 import { getLabelText, getSublabelText } from '../../../util/index';
@@ -24,8 +25,6 @@ import { Path } from '../../../util/refero-core';
 import { Resources } from '../../../util/resources';
 import ReactHookFormHoc, { FormProps } from '../../../validation/ReactHookFormHoc';
 import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
-import SubLabel from '../sublabel';
-import { safeParseJSON } from '../../../util/date-fns-utils';
 
 export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   item: QuestionnaireItem;
@@ -140,12 +139,8 @@ class DateComponent extends React.Component<Props> {
   render(): JSX.Element | null {
     const labelText = getLabelText(this.props.item, this.props.onRenderMarkdown, this.props.questionnaire, this.props.resources);
     const subLabelText = getSublabelText(this.props.item, this.props.onRenderMarkdown, this.props.questionnaire, this.props.resources);
-    const labelEl = (
-      <Label
-        labelTexts={[{ text: labelText }]}
-      />
-    );
-    const subLabelEl = subLabelText ? <SubLabel subLabelText={subLabelText} /> : undefined;
+    const labelEl = <Label labelTexts={[{ text: labelText }]} />;
+    const subLabelEl = subLabelText ? <p>{subLabelText}</p> : undefined;
 
     const itemControls = getItemControlExtensionValue(this.props.item);
     let element: JSX.Element | undefined = undefined;

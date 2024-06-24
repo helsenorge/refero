@@ -1,5 +1,5 @@
 export const DATEFORMATS = {
-  DATE: 'DD.MM.YYYY',
-  DATETIME: 'DD MM YYYY HH:mm',
+  DATE: 'dd.MM.yyyy',
+  DATETIME: 'dd MM yyyy HH:mm',
   TIME: 'HH:mm',
 };

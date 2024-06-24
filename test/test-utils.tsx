@@ -1,20 +1,17 @@
-import React, { ReactElement } from 'react';
+import React from 'react';
+import { ReactElement } from 'react';
+
 import { render, RenderOptions, RenderResult } from '@testing-library/react';
+import { Questionnaire } from 'fhir/r4';
+import { FormProvider, useForm } from 'react-hook-form';
+import { Provider, Store } from 'react-redux';
+import { applyMiddleware, createStore } from 'redux';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { FormProvider, useForm } from 'react-hook-form';
-import rootReducer, { GlobalState } from '../reducers';
-import { applyMiddleware, createStore } from 'redux';
 
-import { generateDefaultValues } from '../validation/defaultFormValues';
-import { Questionnaire } from 'fhir/r4';
-import { ReferoContainer } from '../components';
-import { generateQuestionnaireResponse } from '../actions/generateQuestionnaireResponse';
-import { Resources } from '../util/resources';
-import { ReferoProps } from '../types/referoProps';
-import userEvent from '@testing-library/user-event';
-import { Provider, Store } from 'react-redux';
-import { getResources } from '../../preview/resources/referoResources';
+import { GlobalState } from '../src/reducers';
+import { ReferoProps } from '../src/types/referoProps';
+import { Resources } from '../src/util/resources';
 
 const mockStore = configureMockStore<Partial<GlobalState>>([thunk]);
 

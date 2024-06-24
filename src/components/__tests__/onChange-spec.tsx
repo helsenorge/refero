@@ -1,5 +1,4 @@
 import { screen, userEvent, act, renderRefero } from './test-utils/test-utils';
-import moment from 'moment';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, Quantity, Coding, Questionnaire } from 'fhir/r4';
 
@@ -18,6 +17,7 @@ import {
   createOnChangeFuncForQuestionnaireInspector,
 } from './utils';
 import { clickByLabelText, typeAndTabByLabelText, typeByLabelText } from './test-utils/selectors';
+import { parse } from 'date-fns';
 
 function toCoding(code: string, system?: string): Coding {
   return {
@@ -44,12 +44,6 @@ async function addValueToInputByTypeAndTab(componentLabel: string, value: string
 }
 
 describe('onAnswerChange callback gets called and can request additional changes', () => {
-  beforeEach(() => {
-    window.matchMedia = jest.fn().mockImplementation(_ => {
-      return {};
-    });
-  });
-
   it('integers gets updated', async () => {
     const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
       actionRequester.addIntegerAnswer('2', 42);
@@ -299,8 +293,8 @@ describe('onAnswerChange callback gets called and can request additional changes
     inputAnswer('1', 0.1, container);
 
     const item = screen.getByTestId('date-time-picker');
-    const date = item.getAttribute('value');
-    const dateString = moment(date).locale('nb').utc().format(Constants.DATE_TIME_FORMAT);
+    const date = item.getAttribute('value') || '';
+    const dateString = parse(date, Constants.DATE_TIME_FORMAT, new Date());
     expect(dateString).toBe('2020-05-17T12:01:00+00:00');
   });
   it.skip('dateTime gets cleared', async () => {

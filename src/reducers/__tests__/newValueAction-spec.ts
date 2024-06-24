@@ -25,8 +25,9 @@ import {
   enterOpenChoiceText,
   removeOpenChoiceText,
 } from './utils';
+import { vi } from 'vitest';
 
-jest.mock('uuid');
+vi.mock('uuid');
 
 describe('QuestionnaireResponseAnswer shall reflect user input', () => {
   let newState: Form;
@@ -40,7 +41,7 @@ describe('QuestionnaireResponseAnswer shall reflect user input', () => {
     }
     definitionItems = dItems;
 
-    const mockedUuid = uuid as jest.Mocked<typeof uuid>;
+    const mockedUuid = uuid as vi.Mocked<typeof uuid>;
     //@ts-ignore
     mockedUuid.v4.mockReturnValue('uuid');
   });
@@ -269,7 +270,7 @@ function verifyAnswer(
   linkId: string,
   state: Form,
   path: Array<Path>,
-  test: (it: jest.Matchers<QuestionnaireResponseItemAnswer[] | undefined | void, undefined>) => unknown
+  test: (it: vi.Matchers<QuestionnaireResponseItemAnswer[] | undefined | void, undefined>) => unknown
 ) {
   const r = getResponseItem(linkId, state, path);
   if (!r) return fail();

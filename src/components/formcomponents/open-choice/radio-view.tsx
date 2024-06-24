@@ -14,8 +14,8 @@ import { getValidationTextExtension } from '../../../util/extension';
 import { isRequired, getId, getSublabelText, getText, renderPrefix } from '../../../util/index';
 import { Resources } from '../../../util/resources';
 import { FormProps } from '../../../validation/ReactHookFormHoc';
+import SafeText from '../../referoLabel/SafeText';
 import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
-import SafeText from '../SafeText';
 
 interface Props extends FormProps, WithCommonFunctionsAndEnhancedProps {
   options?: Array<Options>;

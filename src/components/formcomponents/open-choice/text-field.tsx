@@ -20,8 +20,8 @@ import {
 } from '../../../util/index';
 import { Resources } from '../../../util/resources';
 import { FormProps } from '../../../validation/ReactHookFormHoc';
+import SafeText from '../../referoLabel/SafeText';
 import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
-import SafeText from '../SafeText';
 import Pdf from '../textview';
 
 interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {

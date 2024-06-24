@@ -7,7 +7,6 @@ import { ThunkDispatch } from 'redux-thunk';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Input from '@helsenorge/designsystem-react/components/Input';
-import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
 
 import { debounce } from '@helsenorge/core-utils/debounce';
 import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
@@ -21,18 +20,17 @@ import {
   getId,
   getStringValue,
   getPDFStringValue,
-  getSublabelText,
   getMaxLength,
   scriptInjectionValidation,
-  getLabelText,
 } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
 import { Resources } from '../../../util/resources';
 import ReactHookFormHoc, { FormProps } from '../../../validation/ReactHookFormHoc';
 import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
-import SafeText from '../SafeText';
 import TextView from '../textview';
+
+import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 
 export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   item: QuestionnaireItem;
@@ -122,8 +120,7 @@ export const String = ({
       </TextView>
     );
   }
-  const labelText = getLabelText(item, onRenderMarkdown, questionnaire, resources);
-  const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
+
   const maxLength = getMaxLength(item);
   const minLength = getMinLengthExtensionValue(item);
   const pattern = getRegexExtension(item);
@@ -139,6 +136,16 @@ export const String = ({
     <div className="page_refero__component page_refero__component_string">
       <FormGroup error={error?.message} mode="ongrey">
         {renderHelpElement()}
+        <ReferoLabel
+          item={item}
+          onRenderMarkdown={onRenderMarkdown}
+          questionnaire={questionnaire}
+          resources={resources}
+          htmlFor={getId(id)}
+          labelId={`${getId(id)}-string-label`}
+          testId={`${getId(id)}-string-label`}
+          renderHelpButton={renderHelpButton}
+        />
         <Controller
           name={idWithLinkIdAndItemIndex}
           control={control}
@@ -177,21 +184,6 @@ export const String = ({
               ref={ref}
               disabled={item.readOnly}
               defaultValue={value}
-              label={
-                <Label
-                  testId={`${getId(id)}-string-label`}
-                  labelTexts={[]}
-                  sublabel={
-                    <Sublabel
-                      id={`${getId(id)}-sublabel`}
-                      sublabelTexts={[{ text: subLabelText, hideFromScreenReader: false, type: 'normal' }]}
-                    />
-                  }
-                  afterLabelChildren={renderHelpButton()}
-                >
-                  <SafeText text={labelText} />
-                </Label>
-              }
               onChange={(e): void => {
                 handleInputChange(e);
                 onChange(e.target.value);

@@ -1,6 +1,6 @@
 import Button from '@helsenorge/designsystem-react/components/Button';
 
-import '../../styles/formButtons.css';
+import styles from '../../styles/formButtons.module.css';
 
 type Props = {
   onCancelButtonClicked?: () => void;
@@ -9,7 +9,7 @@ type Props = {
 
 export const CancelFormButton = ({ cancelButtonText, onCancelButtonClicked }: Props): JSX.Element | null => {
   return (
-    <div className="cancelButtonStyle">
+    <div className={styles.cancelButtonStyle}>
       <Button variant="borderless" onClick={onCancelButtonClicked} testId="refero-cancel-button">
         {cancelButtonText}
       </Button>

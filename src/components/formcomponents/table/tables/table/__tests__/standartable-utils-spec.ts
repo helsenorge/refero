@@ -17,8 +17,9 @@ import * as choiceUtils from '../../../../../../util/choice';
 import * as tableUtils from '../../utils';
 import { QuestionnaireItemWithAnswers } from '../../interface';
 import { QuestionnaireResponseItem, QuestionnaireItem, QuestionnaireResponse, Resource } from 'fhir/r4';
-jest.mock('../../utils');
-jest.mock('../../../../../../util/choice');
+import { vi } from 'vitest';
+vi.mock('../../utils');
+vi.mock('../../../../../../util/choice');
 
 describe('emptyTable', () => {
   it('should return an empty table', () => {
@@ -64,10 +65,10 @@ describe('createTableColumn', () => {
 
 describe('createHeaderRow', () => {
   beforeEach(() => {
-    jest.spyOn(tableUtils, 'getEnabledQuestionnaireItemsWithAnswers');
+    vi.spyOn(tableUtils, 'getEnabledQuestionnaireItemsWithAnswers');
   });
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
   it('should create a header row with the given choice values and extra column flag', () => {
     const choiceValues: Options[] = [
@@ -129,21 +130,21 @@ describe('createHeaderRow', () => {
 
 describe('createBodyRows', () => {
   beforeEach(() => {
-    jest.spyOn(tableUtils, 'getEnabledQuestionnaireItemsWithAnswers');
-    jest.spyOn(tableUtils, 'transformAnswersToListOfStrings');
+    vi.spyOn(tableUtils, 'getEnabledQuestionnaireItemsWithAnswers');
+    vi.spyOn(tableUtils, 'transformAnswersToListOfStrings');
   });
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   it('should create body rows from the given questionnaire items, response items, extra column flag, and choice values', () => {
-    (tableUtils.getEnabledQuestionnaireItemsWithAnswers as jest.Mock).mockImplementation((): QuestionnaireResponseItem[] => {
+    (tableUtils.getEnabledQuestionnaireItemsWithAnswers as vi.Mock).mockImplementation((): QuestionnaireResponseItem[] => {
       return [
         { linkId: '1', answer: [{ valueCoding: { code: '1' } }] },
         { linkId: '2', answer: [{ valueCoding: { code: '2' } }] },
       ] as QuestionnaireResponseItem[];
     });
-    (tableUtils.transformAnswersToListOfStrings as jest.Mock).mockImplementation(() => {
+    (tableUtils.transformAnswersToListOfStrings as vi.Mock).mockImplementation(() => {
       return ['A', 'B'];
     });
     const items: QuestionnaireItem[] = [
@@ -190,7 +191,7 @@ describe('createBodyRows', () => {
   });
 
   it('should create body rows without an extra column if the flag is false', () => {
-    (tableUtils.getEnabledQuestionnaireItemsWithAnswers as jest.Mock).mockImplementation((): QuestionnaireResponseItem[] => {
+    (tableUtils.getEnabledQuestionnaireItemsWithAnswers as vi.Mock).mockImplementation((): QuestionnaireResponseItem[] => {
       return [
         { linkId: '1', answer: [{ valueCoding: { code: '1' } }] },
         { linkId: '2', answer: [{ valueCoding: { code: '2' } }] },
@@ -264,13 +265,13 @@ describe('createBodyRows', () => {
 
 describe('createRowsFromAnswersCodes', () => {
   beforeEach(() => {
-    jest.spyOn(choiceUtils, 'getSystemForItem');
+    vi.spyOn(choiceUtils, 'getSystemForItem');
   });
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
   it('should create rows from the given response item and choice values', () => {
-    (choiceUtils.getSystemForItem as jest.Mock).mockImplementation(() => {
+    (choiceUtils.getSystemForItem as vi.Mock).mockImplementation(() => {
       return 'sys';
     });
     const item: QuestionnaireItemWithAnswers = {
@@ -310,13 +311,13 @@ describe('createRowsFromAnswersCodes', () => {
 
 describe('createColumnsFromAnswers', () => {
   beforeEach(() => {
-    jest.spyOn(tableUtils, 'transformAnswersToListOfStrings');
+    vi.spyOn(tableUtils, 'transformAnswersToListOfStrings');
   });
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
   it('should create columns from the given response item and choice values', () => {
-    (tableUtils.transformAnswersToListOfStrings as jest.Mock).mockImplementation(() => {
+    (tableUtils.transformAnswersToListOfStrings as vi.Mock).mockImplementation(() => {
       return ['A', 'B'];
     });
     const item: QuestionnaireItemWithAnswers = {
@@ -350,7 +351,7 @@ describe('createColumnsFromAnswers', () => {
   });
 
   it('should return an empty array if no choice values are provided', () => {
-    (tableUtils.transformAnswersToListOfStrings as jest.Mock).mockImplementation(() => {
+    (tableUtils.transformAnswersToListOfStrings as vi.Mock).mockImplementation(() => {
       return [];
     });
     const item: QuestionnaireItemWithAnswers = {
@@ -380,12 +381,12 @@ describe('createColumnsFromAnswers', () => {
 
 describe('getStandardTableObject', () => {
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
   beforeEach(() => {
-    jest.spyOn(tableUtils, 'getEnabledQuestionnaireItemsWithAnswers');
-    jest.spyOn(tableUtils, 'transformAnswersToListOfStrings');
-    jest.spyOn(choiceUtils, 'getContainedOptions');
+    vi.spyOn(tableUtils, 'getEnabledQuestionnaireItemsWithAnswers');
+    vi.spyOn(tableUtils, 'transformAnswersToListOfStrings');
+    vi.spyOn(choiceUtils, 'getContainedOptions');
   });
   it('should return an empty table if no response items or items are provided', () => {
     const table = getStandardTableObject([], null);
@@ -419,7 +420,7 @@ describe('getStandardTableObject', () => {
   });
 
   it('should return a table with the response items id, header row, and body rows', () => {
-    (tableUtils.getEnabledQuestionnaireItemsWithAnswers as jest.Mock).mockImplementation(() => {
+    (tableUtils.getEnabledQuestionnaireItemsWithAnswers as vi.Mock).mockImplementation(() => {
       return [
         { linkId: '1', text: 'Question 1', answer: [{ valueCoding: { code: '1' } }] },
         {
@@ -428,10 +429,10 @@ describe('getStandardTableObject', () => {
         },
       ] as QuestionnaireResponseItem[];
     });
-    (tableUtils.transformAnswersToListOfStrings as jest.Mock).mockImplementation(() => {
+    (tableUtils.transformAnswersToListOfStrings as vi.Mock).mockImplementation(() => {
       return ['string'];
     });
-    (choiceUtils.getContainedOptions as jest.Mock).mockImplementation((): Options[] => {
+    (choiceUtils.getContainedOptions as vi.Mock).mockImplementation((): Options[] => {
       return [
         { type: '1', label: 'Option A' },
         { type: '2', label: 'Option B' },
@@ -543,13 +544,13 @@ describe('findFirstChoiceItem', () => {
 
 describe('needsExtraColumn', () => {
   beforeEach(() => {
-    jest.spyOn(tableUtils, 'getEnabledQuestionnaireItemsWithAnswers');
+    vi.spyOn(tableUtils, 'getEnabledQuestionnaireItemsWithAnswers');
   });
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
   it('should return true if any answer has a non-empty last column value', () => {
-    (tableUtils.getEnabledQuestionnaireItemsWithAnswers as jest.Mock).mockImplementation(() => {
+    (tableUtils.getEnabledQuestionnaireItemsWithAnswers as vi.Mock).mockImplementation(() => {
       return [
         { linkId: '1', text: 'Question 1', answer: [{ valueCoding: { code: 'A' } }] },
         {
@@ -559,7 +560,7 @@ describe('needsExtraColumn', () => {
         },
       ] as QuestionnaireResponseItem[];
     });
-    (tableUtils.transformAnswersToListOfStrings as jest.Mock).mockImplementation(() => {
+    (tableUtils.transformAnswersToListOfStrings as vi.Mock).mockImplementation(() => {
       return ['string'];
     });
     const items: QuestionnaireItem[] = [
@@ -585,7 +586,7 @@ describe('needsExtraColumn', () => {
   });
 
   it('should return false if items have no children', () => {
-    (tableUtils.getEnabledQuestionnaireItemsWithAnswers as jest.Mock).mockImplementation(() => {
+    (tableUtils.getEnabledQuestionnaireItemsWithAnswers as vi.Mock).mockImplementation(() => {
       return [
         { linkId: '1', text: 'Question 1', answer: [{ valueCoding: { code: 'A' } }] },
         {
@@ -595,7 +596,7 @@ describe('needsExtraColumn', () => {
         },
       ] as QuestionnaireResponseItem[];
     });
-    (tableUtils.transformAnswersToListOfStrings as jest.Mock).mockImplementation(() => {
+    (tableUtils.transformAnswersToListOfStrings as vi.Mock).mockImplementation(() => {
       return [];
     });
     const items: QuestionnaireItem[] = [

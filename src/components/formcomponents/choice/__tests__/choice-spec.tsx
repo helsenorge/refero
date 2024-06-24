@@ -13,12 +13,6 @@ const initAnswer: QuestionnaireResponseItemAnswer[] = [{}];
 // Provide the mock implementation
 
 describe('Choice component renders item.option[]', () => {
-  beforeEach(() => {
-    window.matchMedia = jest.fn().mockImplementation(() => {
-      return {};
-    });
-  });
-
   it('should render options from extension optionreference', () => {
     const extensions = createExtensionReferenceOption(
       { key: 'HV', value: 'http://some.end/point1' },

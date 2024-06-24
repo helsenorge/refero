@@ -12,8 +12,8 @@ import RadioButton from '@helsenorge/designsystem-react/components/RadioButton';
 import { isRequired, getId, getSublabelText, getText, renderPrefix } from '../../../util/index';
 import { Resources } from '../../../util/resources';
 import { FormProps } from '../../../validation/ReactHookFormHoc';
+import SafeText from '../../referoLabel/SafeText';
 import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
-import SafeText from '../SafeText';
 
 export interface Props extends FormProps, WithCommonFunctionsAndEnhancedProps {
   options?: Array<Options>;

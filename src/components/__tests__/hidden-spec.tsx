@@ -9,12 +9,6 @@ import { renderRefero } from './test-utils/test-utils';
 import { Extensions } from '../../constants/extensions';
 
 describe('Hidden components should not render', () => {
-  beforeEach(() => {
-    window.matchMedia = jest.fn().mockImplementation(_ => {
-      return {};
-    });
-  });
-
   it('unhidden attachment renders', () => {
     const q = createQuestionnaire(createItem(ItemType.ATTATCHMENT, createQuestionnaireHiddenExtension(false)));
     const { queryByLabelText } = createWrapper(q);

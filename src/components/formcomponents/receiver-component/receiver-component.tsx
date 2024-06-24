@@ -14,7 +14,7 @@ import Select from '@helsenorge/designsystem-react/components/Select';
 import { getId } from '../../../util';
 import { Resources } from '../../../util/resources';
 import { FormProps } from '../../../validation/ReactHookFormHoc';
-import SafeText from '../SafeText';
+import SafeText from '../../referoLabel/SafeText';
 
 export interface ReceiverComponentProps {
   selected?: Array<string | undefined>;
