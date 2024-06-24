@@ -30,5 +30,6 @@
     "statusBarItem.remoteForeground": "#15202b"
   },
   "peacock.color": "#5dc9e2",
-  "eslint.runtime": "node"
+  "eslint.runtime": "node",
+  "typescript.experimental.updateImportsOnPaste": true
 }

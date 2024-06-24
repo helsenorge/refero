@@ -126,7 +126,7 @@ describe('string', () => {
           return y;
         }),
       };
-      const { getByTestId, queryAllByLabelText, queryByTestId } = createWrapper(questionnaire);
+      const { queryAllByLabelText, queryByTestId } = createWrapper(questionnaire);
       await clickButtonTimes(/-repeat-button/i, 3);
 
       expect(queryAllByLabelText(/String/i)).toHaveLength(4);
@@ -139,7 +139,7 @@ describe('string', () => {
         ...q,
         item: q.item?.map(x => ({ ...x, repeats: true })),
       };
-      const { getByTestId, queryAllByTestId } = createWrapper(questionnaire);
+      const { queryAllByTestId } = createWrapper(questionnaire);
 
       await clickButtonTimes(/-repeat-button/i, 2);
 

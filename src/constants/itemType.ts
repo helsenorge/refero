@@ -1,4 +1,3 @@
-// add all of thiese "string" | "boolean" | "group" | "display" | "decimal" | "date" | "dateTime" | "time" | "text" | "integer" | "choice" | "open-choice" | "attachment" | "quantity" | "question" | "url" | "reference"' is not assignable to parameter of type '"string" | "boolean" | "group" | "display" | "decimal" | "date" | "dateTime" | "time" | "text" | "integer" | "choice" | "open-choice" | "attachment" | "quantity"
 const ItemType = {
   BOOLEAN: 'boolean',
   GROUP: 'group',
@@ -21,4 +20,4 @@ const ItemType = {
 
 export default ItemType;
 
-export type IItemType = typeof ItemType[keyof typeof ItemType];
+export type IItemType = (typeof ItemType)[keyof typeof ItemType];
