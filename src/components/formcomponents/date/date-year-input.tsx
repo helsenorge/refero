@@ -146,15 +146,3 @@ export const DateYearInput = ({
     </FormGroup>
   );
 };
-
-// function getYearInputResources(): YearErrorResources {
-//   // Vi får maks én valideringstekst, derfor settes alle til denne.
-//   const validationErrorText = getValidationTextExtension(item);
-
-//   return {
-//     errorInvalidYear: validationErrorText ? validationErrorText : resources?.year_field_invalid || '',
-//     errorRequiredYear: resources?.year_field_required || '',
-//     errorYearBeforeMinDate: resources?.year_field_mindate || '',
-//     errorYearAfterMaxDate: resources?.year_field_maxdate || '',
-//   };
-// }
