@@ -86,7 +86,7 @@
             "extension": [
               {
                 "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
-                "valueMarkdown": "### String - Label - Markdown"
+                "valueMarkdown": "### **String - Label - Markdown**"
               }
             ]
           }
@@ -95,13 +95,27 @@
           "linkId": "7868d6a0-0526-48d7-eb50-b9e7a321909e",
           "type": "string",
           "text": "String - Label - Nomarkdown",
+          "required": false
+        },
+        {
+          "linkId": "dd07621d-e11d-42d0-866a-6524f880a573",
+          "type": "string",
+          "text": "String - Label - scriptinjectionalert(4)\">",
           "extension": [
             {
               "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sublabel",
-              "valueMarkdown": "String - Sublabel - Nomarkdown"
+              "valueMarkdown": "String - Sublabel - scriptinjection\\<math>\\<mi//xlink:href=\"data:x,\\<script>alert(4)\\</script>\">"
             }
           ],
-          "required": false
+          "required": false,
+          "_text": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                "valueMarkdown": "String - Label - scriptinjection\\<math>\\<mi//xlink:href=\"data:x,\\<script>alert(4)\\</script>\">"
+              }
+            ]
+          }
         }
       ],
       "required": false,

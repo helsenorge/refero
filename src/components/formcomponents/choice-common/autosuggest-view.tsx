@@ -163,6 +163,7 @@ const AutosuggestView = ({
     handleChange(suggestion.value, system, suggestion.label);
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const onBlur = (_e: React.ChangeEvent<HTMLElement>, { highlightedSuggestion }: any | undefined): void => {
     if (isDirty && highlightedSuggestion) {
       setLastSearchValue(highlightedSuggestion.label);
