@@ -1,5 +1,4 @@
-// import '../../../../util/__tests__/defineFetch';
-import { act, findByRole, queryByText, renderRefero, userEvent } from '../../../__tests__/test-utils/test-utils';
+import { act, findByRole, renderRefero, userEvent } from '../../../__tests__/test-utils/test-utils';
 import { qScriptInjection, q } from './__data__/';
 
 import { Questionnaire, QuestionnaireResponseItemAnswer } from 'fhir/r4';

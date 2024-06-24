@@ -1,6 +1,5 @@
-import { vi } from 'vitest';
-
 import '@testing-library/jest-dom/vitest';
+import { vi } from 'vitest';
 
 import './__mocks__/matchMedia';
 import './__mocks__/IntersectionObserver';

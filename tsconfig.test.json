@@ -4,6 +4,6 @@
     "types": ["vite/client", "node", "vitest/jsdom"],
     "allowSyntheticDefaultImports": true
   },
-  "include": ["src", "tests"],
+  "include": ["src", "test", "test/jest-setup.ts"],
   "exclude": ["lib", "preview", "config", "node_modules"]
 }

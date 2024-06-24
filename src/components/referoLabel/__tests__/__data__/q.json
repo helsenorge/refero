@@ -1,0 +1,118 @@
+{
+  "title": "refero-label",
+  "description": "Testskjema for label",
+  "resourceType": "Questionnaire",
+  "language": "nb-NO",
+  "name": "ReferoLabelTestSkjema",
+  "status": "active",
+  "publisher": "NHN",
+  "meta": {
+    "profile": ["http://ehelse.no/fhir/StructureDefinition/sdf-Questionnaire"],
+    "tag": [
+      {
+        "system": "urn:ietf:bcp:47",
+        "code": "nb-NO",
+        "display": "Bokmål"
+      }
+    ],
+    "security": [
+      {
+        "code": "3",
+        "display": "Helsehjelp (Full)",
+        "system": "urn:oid:2.16.578.1.12.4.1.1.7618"
+      }
+    ]
+  },
+  "contact": [
+    {
+      "name": "http://www.nhn.no"
+    }
+  ],
+  "subjectType": ["Patient"],
+  "extension": [
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sidebar",
+      "valueCoding": {
+        "system": "http://helsenorge.no/fhir/ValueSet/sdf-sidebar",
+        "code": "1"
+      }
+    },
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-information-message",
+      "valueCoding": {
+        "system": "http://helsenorge.no/fhir/ValueSet/sdf-information-message",
+        "code": "1"
+      }
+    },
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefintion/sdf-itemControl-visibility",
+      "valueCodeableConcept": {
+        "coding": [
+          {
+            "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
+            "code": "hide-help",
+            "display": "Hide help texts"
+          },
+          {
+            "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
+            "code": "hide-sublabel",
+            "display": "Hide sublabel texts"
+          }
+        ]
+      }
+    }
+  ],
+  "id": "890fa049-b7ed-41dc-8bfc-62ae3c427724",
+  "date": "2024-06-24T00:00:00+02:00",
+  "version": "1.0",
+  "item": [
+    {
+      "linkId": "f6356403-3f86-4b48-840a-0ea0ca09115e",
+      "type": "group",
+      "text": "Gruppe - markdown",
+      "item": [
+        {
+          "linkId": "08ac4dce-11b7-4c0c-8091-3c40d0d8d3ef",
+          "type": "string",
+          "text": "String - Label - Markdown",
+          "extension": [
+            {
+              "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sublabel",
+              "valueMarkdown": "_**String - Sublabel - Markdown**_"
+            }
+          ],
+          "required": false,
+          "_text": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                "valueMarkdown": "### String - Label - Markdown"
+              }
+            ]
+          }
+        },
+        {
+          "linkId": "7868d6a0-0526-48d7-eb50-b9e7a321909e",
+          "type": "string",
+          "text": "String - Label - Nomarkdown",
+          "extension": [
+            {
+              "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sublabel",
+              "valueMarkdown": "String - Sublabel - Nomarkdown"
+            }
+          ],
+          "required": false
+        }
+      ],
+      "required": false,
+      "_text": {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+            "valueMarkdown": "Gruppe - markdown"
+          }
+        ]
+      }
+    }
+  ]
+}

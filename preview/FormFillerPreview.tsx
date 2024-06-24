@@ -7,12 +7,12 @@ import { Store, legacy_createStore as createStore, applyMiddleware } from 'redux
 import thunk from 'redux-thunk';
 
 import LanguageLocales from '@helsenorge/core-utils/constants/languages';
+import ReferoContainer from '@helsenorge/refero';
 
 import FormFillerSidebar from './FormFillerSidebar';
 import { emptyPropertyReplacer } from './helpers';
 import { getResources } from './resources/referoResources';
 import skjema from './skjema/NHN_Testskjema_TextBox-nb-NO-v0.1.json';
-import ReferoContainer from '../src/components/index';
 import valueSet from '../src/constants/valuesets';
 import rootReducer from '../src/reducers/index';
 import { QuestionnaireStatusCodes } from '../src/types/fhirEnums';

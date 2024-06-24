@@ -1,5 +1,3 @@
-import '@testing-library/jest-dom';
-
 import { Questionnaire } from 'fhir/r4';
 
 import '../../util/__tests__/defineFetch';
