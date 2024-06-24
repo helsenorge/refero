@@ -5,7 +5,6 @@ import { DateFormat, DatePickerFormat, DateTimeUnit } from '../types/dateTypes';
 
 import { safeParseJSON } from './date-fns-utils';
 import { Resources } from './resources';
-import { mockMaxDateTime, mockMinDateTime } from '../components/formcomponents/date/date-mocks';
 import Constants from '../constants/index';
 
 import '@helsenorge/datepicker/components/DatePicker/';
@@ -70,16 +69,24 @@ export const validateDate = (dateToValidate: Date | undefined, resources: Resour
   return true;
 };
 
-export const validateMinDate = (dateToValidate: Date | undefined, resources: Resources | undefined): true | string => {
-  if (mockMinDateTime && dateToValidate && isBefore(dateToValidate, startOfDay(mockMinDateTime))) {
-    return `${resources?.errorBeforeMinDate}: ${format(mockMinDateTime, DateFormat.ddMMyyyy)}`;
+export const validateMinDate = (
+  minDateTime: Date | undefined,
+  dateToValidate: Date | undefined,
+  resources: Resources | undefined
+): true | string => {
+  if (minDateTime && dateToValidate && isBefore(dateToValidate, startOfDay(minDateTime))) {
+    return `${resources?.errorBeforeMinDate}: ${format(minDateTime, DateFormat.ddMMyyyy)}`;
   }
   return true;
 };
 
-export const validateMaxDate = (dateToValidate: Date | undefined, resources: Resources | undefined): true | string => {
-  if (mockMaxDateTime && dateToValidate && isAfter(dateToValidate, endOfDay(mockMaxDateTime))) {
-    return `${resources?.errorAfterMaxDate}: ${format(mockMaxDateTime, DateFormat.ddMMyyyy)}`;
+export const validateMaxDate = (
+  maxDateTime: Date | undefined,
+  dateToValidate: Date | undefined,
+  resources: Resources | undefined
+): true | string => {
+  if (maxDateTime && dateToValidate && isAfter(dateToValidate, endOfDay(maxDateTime))) {
+    return `${resources?.errorAfterMaxDate}: ${format(maxDateTime, DateFormat.ddMMyyyy)}`;
   }
   return true;
 };
