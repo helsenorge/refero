@@ -7,7 +7,7 @@ import StringComponent from '../../components/formcomponents/string/string';
 import { RenderContextType } from '../../constants/renderContextType';
 import { RenderContext } from '../../util/renderContext';
 import { createItemControlExtension, findItemById } from '../__tests__/utils';
-import { render } from './test-utils/test-utils';
+import { render } from '../../../test/test-utils';
 import { IItemType } from '../../constants/itemType';
 
 describe('Group component renders with correct classes', () => {

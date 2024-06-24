@@ -1,12 +1,12 @@
 import { Questionnaire, QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItemAnswer, ValueSet } from 'fhir/r4';
 
-import { fireEvent, waitFor, userEvent, renderRefero, act, findByRole } from '../../../__tests__/test-utils/test-utils';
+import { fireEvent, waitFor, userEvent, renderRefero, act, findByRole } from '@test/test-utils.tsx';
 import { q } from './__data__/index';
 import { generateQuestionnaireResponse } from '../../../../actions/generateQuestionnaireResponse';
 import valueSet from '../../../../constants/valuesets';
 import { Extensions } from '../../../../constants/extensions';
-import { clickButtonTimes, submitForm } from '../../../__tests__/test-utils/selectors';
-import { addPropertyToQuestionnaireItem } from '../../../__tests__/test-utils/questionnairHelpers';
+import { clickButtonTimes, submitForm } from '../../../../../test/selectors';
+import { addPropertyToQuestionnaireItem } from '../../../../../test/questionnairHelpers';
 import { getResources } from '../../../../../preview/resources/referoResources';
 import { vi } from 'vitest';
 

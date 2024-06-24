@@ -5,7 +5,7 @@ import { Questionnaire, QuestionnaireItem, Extension } from 'fhir/r4';
 import Valueset from '../../util/__tests__/__data__/valuesets/valueset-8459';
 import { createItemControlExtension } from '../__tests__/utils';
 import ItemType from '../../constants/itemType';
-import { renderRefero } from './test-utils/test-utils';
+import { renderRefero } from '../../../test/test-utils';
 import { Extensions } from '../../constants/extensions';
 
 describe('Hidden components should not render', () => {

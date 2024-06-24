@@ -1,4 +1,4 @@
-import { act, screen, userEvent } from '../../../__tests__/test-utils/test-utils';
+import { act, screen, userEvent } from '../../../../../test/test-utils';
 
 export async function typeExtraField(value: string) {
   const extraField = screen.getByTestId(/-extra-field/i).querySelector('input');

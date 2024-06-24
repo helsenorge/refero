@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen } from '../../../__tests__/test-utils/test-utils';
+import { render, screen } from '../../../../../test/test-utils';
 
 import '../../../../util/__tests__/defineFetch';
 import { Choice } from '../choice';

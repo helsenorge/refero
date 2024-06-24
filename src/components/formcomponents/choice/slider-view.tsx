@@ -100,7 +100,7 @@ const SliderView: React.FC<SliderProps> = ({
             },
           }}
           control={control}
-          render={({ field: { onChange, ...rest } }): JSX.Element => (
+          render={({ field: { onChange, ref, ...rest } }): JSX.Element => (
             <Slider
               {...rest}
               labelLeft={leftRightLabels?.leftLabel}

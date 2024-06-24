@@ -1,11 +1,11 @@
 import { Questionnaire, QuestionnaireItemAnswerOption } from 'fhir/r4';
-import { act, findByRole, renderRefero, userEvent } from '../../../__tests__/test-utils/test-utils';
+import { act, findByRole, renderRefero, userEvent } from '@test/test-utils.tsx';
 import { dropdownView as q } from './__data__/index';
 import { ReferoProps } from '../../../../types/referoProps';
 import { Extensions } from '../../../../constants/extensions';
 import { typeExtraField } from './utils';
-import { clickButtonTimes, selectDropdownOptionByName, submitForm } from '../../../__tests__/test-utils/selectors';
-import { addManyPropertiesToQuestionnaireItem, addPropertyToQuestionnaireItem } from '../../../__tests__/test-utils/questionnairHelpers';
+import { clickButtonTimes, selectDropdownOptionByName, submitForm } from '../../../../../test/selectors';
+import { addManyPropertiesToQuestionnaireItem, addPropertyToQuestionnaireItem } from '../../../../../test/questionnairHelpers';
 import { getResources } from '../../../../../preview/resources/referoResources';
 import { vi } from 'vitest';
 const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle ut dette feltet', oppgiGyldigVerdi: 'ikke gyldig tall' };

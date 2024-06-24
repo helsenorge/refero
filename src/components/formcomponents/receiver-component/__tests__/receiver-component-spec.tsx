@@ -2,8 +2,8 @@ import { q } from './__data__';
 
 import { EnhetType, OrgenhetHierarki } from '../../../../types/orgenhetHierarki';
 
-import { act, renderRefero } from '../../../__tests__/test-utils/test-utils';
-import { selectDropdownOptionByName } from '../../../__tests__/test-utils/selectors';
+import { act, renderRefero } from '@test/test-utils.tsx';
+import { selectDropdownOptionByName } from '../../../../../test/selectors';
 import { getResources } from '../../../../../preview/resources/referoResources';
 import { vi } from 'vitest';
 

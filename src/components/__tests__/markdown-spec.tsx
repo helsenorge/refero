@@ -2,7 +2,7 @@ import '../../util/__tests__/defineFetch';
 import { Questionnaire, QuestionnaireItem } from 'fhir/r4';
 import questionnaireWithMarkdown from './__data__/markdown';
 import ItemType from '../../constants/itemType';
-import { renderRefero } from './test-utils/test-utils';
+import { renderRefero } from '../../../test/test-utils';
 
 describe('support for external markdown', () => {
   it('enableWhen should trigger when correct answer is selected', async () => {

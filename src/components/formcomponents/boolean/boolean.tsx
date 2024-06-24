@@ -89,23 +89,6 @@ const Boolean = ({
       promptLoginMessage();
     }
   };
-
-  // const shouldComponentUpdate = (nextProps: Props): boolean => {
-  //   const responseItemHasChanged = props.responseItem !== nextProps.responseItem;
-  //   const helpItemHasChanged = props.isHelpOpen !== nextProps.isHelpOpen;
-  //   const answerHasChanged = props.answer !== nextProps.answer;
-  //   const resourcesHasChanged = JSON.stringify(props.resources) !== JSON.stringify(nextProps.resources);
-  //   const repeats = props.item.repeats ?? false;
-
-  //   return (
-  //     responseItemHasChanged ||
-  //     helpItemHasChanged ||
-  //     resourcesHasChanged ||
-  //     repeats ||
-  //     answerHasChanged ||
-  //     props.error?.message !== nextProps.error?.message
-  //   );
-  // };
   const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
   const labelText = getLabelText(item, onRenderMarkdown, questionnaire, resources);
   if (pdf) {

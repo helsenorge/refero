@@ -203,15 +203,6 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
     }
   };
 
-  // shouldComponentUpdate(nextProps: ChoiceProps): boolean {
-  //   const responseItemHasChanged = props.responseItem !== nextProps.responseItem;
-  //   const helpItemHasChanged = props.isHelpOpen !== nextProps.isHelpOpen;
-  //   const answerHasChanged = props.answer !== nextProps.answer;
-  //   const resourcesHasChanged = JSON.stringify(props.resources) !== JSON.stringify(nextProps.resources);
-  //   const repeats = props.item.repeats ?? false;
-  //   const error = props.error?.message !== nextProps.error?.message;
-  //   return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats || answerHasChanged || error;
-  // }
   const renderComponentBasedOnType = (): JSX.Element | null => {
     const itemControlValue = getItemControlValue(item);
     if (!itemControlValue) {

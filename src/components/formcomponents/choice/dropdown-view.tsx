@@ -6,17 +6,17 @@ import { Controller } from 'react-hook-form';
 import { Options } from '../../../types/formTypes/radioGroupOptions';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
-import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
 import Select from '@helsenorge/designsystem-react/components/Select';
 
 import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 
 import { getPlaceholder } from '../../../util/extension';
-import { getId, getLabelText, getSublabelText, isRequired } from '../../../util/index';
+import { getId, isRequired } from '../../../util/index';
 import { Resources } from '../../../util/resources';
 import { FormProps } from '../../../validation/ReactHookFormHoc';
-import SafeText from '../../referoLabel/SafeText';
 import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
+
+import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 
 export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   options?: Array<Options>;
@@ -61,13 +61,22 @@ const DropdownView = (props: Props): JSX.Element | null => {
   } else if (resources) {
     placeholder = new Option(resources.selectDefaultPlaceholder, '');
   }
-  const labelText = getLabelText(item, onRenderMarkdown, questionnaire, resources);
-  const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
   const value = selected?.[0] || '';
   return (
     <div className="page_refero__component page_refero__component_choice page_refero__component_choice_dropdown">
       <FormGroup mode="ongrey" error={error?.message}>
         {renderHelpElement()}
+        <ReferoLabel
+          item={item}
+          onRenderMarkdown={onRenderMarkdown}
+          questionnaire={questionnaire}
+          resources={resources}
+          htmlFor={getId(id)}
+          labelId={`${getId(id)}-label`}
+          testId={`${getId(id)}-label`}
+          renderHelpButton={renderHelpButton}
+          sublabelId="select-sublabel"
+        />
         <Controller
           name={idWithLinkIdAndItemIndex}
           shouldUnregister={true}
@@ -82,17 +91,6 @@ const DropdownView = (props: Props): JSX.Element | null => {
           render={({ field: { onChange, ...rest } }): JSX.Element => (
             <Select
               {...rest}
-              label={
-                <Label
-                  className="page_refero__label"
-                  htmlFor={getId(id)}
-                  labelTexts={[]}
-                  sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
-                  afterLabelChildren={renderHelpButton()}
-                >
-                  <SafeText text={labelText} />
-                </Label>
-              }
               selectId={getId(id)}
               testId={getId(id)}
               onChange={(e): void => {

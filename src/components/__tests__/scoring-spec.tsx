@@ -8,8 +8,8 @@ import CodeScoreDataModel from './__data__/scoring/code-scoring';
 import { Questionnaire } from 'fhir/r4';
 import { getCalculatedExpressionExtension } from '../../util/extension';
 import { inputAnswer, findQuestionnaireItem, findItem } from './utils';
-import { renderRefero } from './test-utils/test-utils';
-import { clickByLabelText, clickByTestId, typeByLabelText } from './test-utils/selectors';
+import { renderRefero } from '../../../test/test-utils';
+import { clickByLabelText, clickByTestId, typeByLabelText } from '../../../test/selectors';
 
 describe('Component renders and calculates score', () => {
   it('fhirpath score should be updated when decimal questions are answered', async () => {
