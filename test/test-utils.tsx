@@ -9,9 +9,13 @@ import { applyMiddleware, createStore } from 'redux';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
-import { GlobalState } from '../src/reducers';
+import rootReducer, { GlobalState } from '../src/reducers';
 import { ReferoProps } from '../src/types/referoProps';
 import { Resources } from '../src/util/resources';
+
+import ReferoContainer from '@/components';
+import { generateQuestionnaireResponse } from '@/index';
+import { generateDefaultValues } from '@/validation/defaultFormValues';
 
 const mockStore = configureMockStore<Partial<GlobalState>>([thunk]);
 

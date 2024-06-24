@@ -4,7 +4,6 @@ import { Matcher, render, screen } from '../../../__tests__/test-utils/test-util
 
 import userEvent from '@testing-library/user-event';
 
-import '@testing-library/jest-dom';
 import {
   MimeType_For_Test_Util as MIME_TYPES_TEST,
   createMockAttachmentProps,

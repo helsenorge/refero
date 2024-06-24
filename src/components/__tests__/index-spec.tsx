@@ -3,7 +3,6 @@ import { act, render, screen } from './test-utils/test-utils';
 import userEvent from '@testing-library/user-event';
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
-import '@testing-library/jest-dom';
 
 import { Questionnaire, QuestionnaireItem } from 'fhir/r4';
 
