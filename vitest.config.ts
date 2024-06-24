@@ -9,6 +9,7 @@ export default defineConfig(configEnv =>
     viteConfig(configEnv),
     defineConfig({
       root: path.resolve(__dirname, '.'),
+
       resolve: {
         alias: [
           {
@@ -17,6 +18,7 @@ export default defineConfig(configEnv =>
           },
         ],
       },
+
       test: {
         testTimeout: 30000,
         include: ['src/**/*-spec.ts', 'src/**/*-spec.tsx'],
@@ -36,7 +38,7 @@ export default defineConfig(configEnv =>
         coverage: {
           reporter: ['cobertura', 'json'],
         },
-        reporters: ['default', 'junit'],
+        reporters: ['default', 'junit', 'default', 'html'],
         outputFile: {
           junit: 'test-report.xml',
         },

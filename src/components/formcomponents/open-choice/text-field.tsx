@@ -5,24 +5,15 @@ import { Controller, FieldValues, useFormContext } from 'react-hook-form';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Input from '@helsenorge/designsystem-react/components/Input';
-import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
 
 import { getValidationTextExtension, getPlaceholder, getMinLengthExtensionValue, getRegexExtension } from '../../../util/extension';
-import {
-  isReadOnly,
-  isRequired,
-  getId,
-  getPDFStringValue,
-  getMaxLength,
-  getSublabelText,
-  getLabelText,
-  getStringValue,
-} from '../../../util/index';
+import { isReadOnly, isRequired, getId, getPDFStringValue, getMaxLength, getStringValue } from '../../../util/index';
 import { Resources } from '../../../util/resources';
 import { FormProps } from '../../../validation/ReactHookFormHoc';
-import SafeText from '../../referoLabel/SafeText';
 import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 import Pdf from '../textview';
+
+import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 
 interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   id?: string;
@@ -63,8 +54,6 @@ const textField = ({
     handleStringChange(e);
   };
 
-  const labelText = getLabelText(item, onRenderMarkdown, questionnaire, resources);
-  const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
   const maxLength = getMaxLength(item);
   const minLength = getMinLengthExtensionValue(item);
   const pattern = getRegexExtension(item);
@@ -72,6 +61,16 @@ const textField = ({
 
   return (
     <FormGroup error={error?.message} mode="ongrey">
+      <ReferoLabel
+        item={item}
+        onRenderMarkdown={onRenderMarkdown}
+        questionnaire={questionnaire}
+        resources={resources}
+        htmlFor={`${getId(id)}-extra-field`}
+        labelId={`${getId(id)}-extra-field-label`}
+        testId={`${getId(id)}-label`}
+        sublabelId={`${getId(id)}-sublabel`}
+      />
       <Controller
         name={`${idWithLinkIdAndItemIndex}-extra-field`}
         shouldUnregister={true}
@@ -109,15 +108,6 @@ const textField = ({
             mode="ongrey"
             inputId={`${getId(id)}-extra-field`}
             testId={`${getId(id)}-extra-field`}
-            label={
-              <Label
-                htmlFor={`${getId(id)}-extra-field`}
-                labelTexts={[]}
-                sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
-              >
-                <SafeText text={labelText} />
-              </Label>
-            }
             value={getStringValue(answer)}
             placeholder={getPlaceholder(item)}
             readOnly={isReadOnly(item)}

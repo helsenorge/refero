@@ -91,16 +91,6 @@ export const String = ({
     }
   };
 
-  // shouldComponentUpdate(nextProps: Props): boolean {
-  //   const responseItemHasChanged = responseItem !== nextresponseItem;
-  //   const helpItemHasChanged = isHelpOpen !== nextisHelpOpen;
-  //   const answerHasChanged = answer !== nextanswer;
-  //   const resourcesHasChanged = JSON.stringify(resources) !== JSON.stringify(nextresources);
-  //   const repeats = item.repeats ?? false;
-  //   const newErrorMessage = error?.message !== nexterror?.message;
-  //   return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats || answerHasChanged || newErrorMessage;
-  // }
-
   // const getValidationErrorMessage = (value: string): string => {
   //   return getTextValidationErrorMessage(value, validateScriptInjection, item, resources);
   // };

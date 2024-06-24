@@ -15,7 +15,7 @@ type Props = {
   labelId: string;
   testId: string;
   labelText?: LabelText[];
-  renderHelpButton: () => JSX.Element | undefined;
+  renderHelpButton?: () => JSX.Element | undefined;
   htmlFor?: string;
   sublabelId?: string;
   sublabelTestId?: string;
@@ -43,7 +43,7 @@ export const ReferoLabel = ({
       labelTexts={labelText || []}
       htmlFor={htmlFor}
       className="page_refero__label"
-      afterLabelChildren={renderHelpButton()}
+      afterLabelChildren={renderHelpButton && renderHelpButton()}
     >
       <div>
         <SafeText text={lblText} />

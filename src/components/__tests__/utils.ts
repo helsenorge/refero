@@ -8,15 +8,17 @@ import {
   QuestionnaireResponseItemAnswer,
 } from 'fhir/r4';
 import { Extensions } from '../../constants/extensions';
-import { queryHelpers, userEvent, screen } from '../../../test/test-utils';
+import { queryHelpers, userEvent, screen, act } from '@test/test-utils';
 import valueSet from '../../constants/valuesets';
 import { IActionRequester } from '../../util/actionRequester';
 import { IQuestionnaireInspector } from '../../util/questionnaireInspector';
 
-export function inputAnswer(linkId: string, answer: number | string, element: HTMLElement) {
+export async function inputAnswer(linkId: string, answer: number | string, element: HTMLElement) {
   const input = findItem(linkId, element);
-  userEvent.type(input, answer.toString());
-  userEvent.tab();
+  await act(async () => {
+    userEvent.type(input, answer.toString());
+    userEvent.tab();
+  });
 }
 
 export function findItem(linkId: string, element: HTMLElement) {

@@ -25,22 +25,6 @@ vi.mock('@helsenorge/file-upload/components/file-upload/useFileUpload', () => ({
   })),
 }));
 
-beforeAll(() => {
-  Object.defineProperty(window, 'matchMedia', {
-    writable: true,
-    value: vi.fn().mockImplementation(query => ({
-      matches: false,
-      media: query,
-      onchange: null,
-      addListener: vi.fn(), // Deprecated but included for compatibility
-      removeListener: vi.fn(), // Deprecated but included for compatibility
-      addEventListener: vi.fn(),
-      removeEventListener: vi.fn(),
-      dispatchEvent: vi.fn(),
-    })),
-  });
-});
-
 const mockFileTooLarge = 'Filstørrelsen må være mindre enn {0} MB';
 const wrongFileTypeMsg = 'Feil filtype';
 const mockFileName = 'testFile.txt';

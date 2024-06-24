@@ -7,14 +7,15 @@ import { Options } from '../../../types/formTypes/radioGroupOptions';
 
 import Checkbox from '@helsenorge/designsystem-react/components/Checkbox';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
-import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
+import Label from '@helsenorge/designsystem-react/components/Label';
 
 import { shouldShowExtraChoice } from '../../../util/choice';
-import { isRequired, getSublabelText, getText, renderPrefix, getId } from '../../../util/index';
+import { isRequired, getId } from '../../../util/index';
 import { Resources } from '../../../util/resources';
 import { FormProps } from '../../../validation/ReactHookFormHoc';
-import SafeText from '../../referoLabel/SafeText';
 import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
+
+import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 
 interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   options?: Array<Options>;
@@ -54,19 +55,22 @@ const CheckboxView = ({
   idWithLinkIdAndItemIndex,
   selected,
 }: Props): JSX.Element | null => {
-  const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
-  const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`;
   return (
     <div className="page_refero__component page_refero__component_openchoice page_refero__component_openchoice_checkbox">
       <FormGroup error={error?.message} mode="ongrey">
         {renderHelpElement()}
-        <Label
-          labelTexts={[]}
-          sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
-          afterLabelChildren={renderHelpButton()}
-        >
-          <SafeText text={labelText} />
-        </Label>
+
+        <ReferoLabel
+          item={item}
+          onRenderMarkdown={onRenderMarkdown}
+          questionnaire={questionnaire}
+          resources={resources}
+          htmlFor={getId(id)}
+          labelId={`${getId(id)}-open-choice-label`}
+          testId={`${getId(id)}-open-choice-label`}
+          sublabelId={`${getId(id)}-open-choice-sublabel`}
+          renderHelpButton={renderHelpButton}
+        />
         {options?.map((option, index) => (
           <Controller
             name={idWithLinkIdAndItemIndex}
