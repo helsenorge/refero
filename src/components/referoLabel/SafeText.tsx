@@ -1,5 +1,6 @@
 import DOMPurify from 'dompurify';
 
+import styles from './safetext.module.css';
 interface Props {
   text: string;
 }
@@ -7,12 +8,9 @@ interface Props {
 const SafeText = ({ text }: Props): JSX.Element => {
   return (
     <span
-      style={{ fontWeight: 'normal', fontSize: '1.25rem', lineHeight: '1.75rem', marginBottom: '-0.5rem' }}
+      className={styles.safetext}
       dangerouslySetInnerHTML={{
-        __html: DOMPurify.sanitize(text, {
-          RETURN_TRUSTED_TYPE: true,
-          ADD_ATTR: ['target'],
-        }) as unknown as string,
+        __html: DOMPurify.sanitize(text),
       }}
     />
   );

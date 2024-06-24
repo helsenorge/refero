@@ -1,5 +1,5 @@
 import '../../../../util/__tests__/defineFetch';
-import { act, renderRefero, userEvent } from '@test/test-utils.tsx'
+import { act, renderRefero, userEvent } from '@test/test-utils.tsx';
 import q from './__data__';
 import Constants from '../../../../constants';
 import { Questionnaire } from 'fhir/r4';
@@ -70,7 +70,7 @@ describe('group', () => {
           return y;
         }),
       };
-      const { getByTestId, queryAllByText, queryByTestId } = createWrapper(questionnaire);
+      const { queryAllByText, queryByTestId } = createWrapper(questionnaire);
       await clickButtonTimes(/-repeat-button/i, 3);
       expect(queryAllByText(/Overskrift/i)).toHaveLength(4);
       expect(queryByTestId(/-repeat-button/i)).not.toBeInTheDocument();
@@ -82,7 +82,7 @@ describe('group', () => {
         ...q,
         item: q.item?.map(x => ({ ...x, repeats: true })),
       };
-      const { getByTestId, queryAllByTestId } = createWrapper(questionnaire);
+      const { queryAllByTestId } = createWrapper(questionnaire);
 
       await clickButtonTimes(/-repeat-button/i, 2);
 

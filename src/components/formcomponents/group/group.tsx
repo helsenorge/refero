@@ -58,24 +58,6 @@ export const Group = ({
   headerTag,
   renderHelpButton,
 }: Props): JSX.Element | null => {
-  // shouldComponentUpdate(nextProps: Props): boolean {
-  //   const responseItemHasChanged = props.responseItem !== nextProps.responseItem;
-  //   const helpItemHasChanged = props.isHelpOpen !== nextProps.isHelpOpen;
-  //   const repeatButtonHasChanged = props.repeatButton !== nextProps.repeatButton;
-  //   const attachmentErrorMessageHasChanged = props.attachmentErrorMessage !== nextProps.attachmentErrorMessage;
-  //   const resourcesHasChanged = JSON.stringify(props.resources) !== JSON.stringify(nextProps.resources);
-
-  //   const repeats = props.item.repeats ?? false;
-  //   return (
-  //     responseItemHasChanged ||
-  //     helpItemHasChanged ||
-  //     repeatButtonHasChanged ||
-  //     attachmentErrorMessageHasChanged ||
-  //     resourcesHasChanged ||
-  //     repeats
-  //   );
-  // }
-
   const renderAllItems = (item: QuestionnaireItem): JSX.Element => {
     const localRenderContextType = getLocalRenderContextType(item);
 
