@@ -16,7 +16,7 @@ describe('Component renders and calculates score', () => {
     const questionnaire = setFhirpath('4', "QuestionnaireResponse.item.where(linkId='1').answer.value", FhirpathScoreDataModel);
     const { container, findByLabelText } = createWrapper(questionnaire);
 
-    inputAnswer('1', 42, container);
+    await inputAnswer('1', 42, container);
 
     const item = findItem('1', container);
     expect(item).toHaveValue(42);
@@ -30,7 +30,7 @@ describe('Component renders and calculates score', () => {
     const questionnaire = setFhirpath('4', "QuestionnaireResponse.item.where(linkId='2').answer.value", FhirpathScoreDataModel);
     const { container, findByLabelText } = createWrapper(questionnaire);
 
-    inputAnswer('2', 42, container);
+    await inputAnswer('2', 42, container);
 
     const fhirpathItem = await findByLabelText('Fhir sum element');
     expect(fhirpathItem).toHaveValue(42);
@@ -40,7 +40,7 @@ describe('Component renders and calculates score', () => {
     const questionnaire = setFhirpath('4', "QuestionnaireResponse.item.where(linkId='3').answer.value.value", FhirpathScoreDataModel);
     const { container, findByLabelText } = createWrapper(questionnaire);
 
-    inputAnswer('3', 42, container);
+    await inputAnswer('3', 42, container);
 
     const item = findItem('3', container);
     expect(item).toHaveValue(42);
@@ -57,12 +57,12 @@ describe('Component renders and calculates score', () => {
     );
     const { container, findByLabelText } = createWrapper(questionnaire);
 
-    inputAnswer('1', 21, container);
+    await inputAnswer('1', 21, container);
 
     let item = findItem('1', container);
     expect(item).toHaveValue(21);
 
-    inputAnswer('2', 21, container);
+    await inputAnswer('2', 21, container);
 
     item = findItem('2', container);
     expect(item).toHaveValue(21);
@@ -75,7 +75,7 @@ describe('Component renders and calculates score', () => {
     const questionnaire = setFhirpath('4', '0 / 0', FhirpathScoreDataModel);
     const { container, findByLabelText } = createWrapper(questionnaire);
 
-    inputAnswer('1', 42, container);
+    await inputAnswer('1', 42, container);
 
     const fhirpathItem = await findByLabelText('Fhir sum element');
     expect(fhirpathItem).toHaveValue(null);
@@ -85,7 +85,7 @@ describe('Component renders and calculates score', () => {
     const questionnaire = setFhirpath('4', '42 / 0', FhirpathScoreDataModel);
     const { container } = createWrapper(questionnaire);
 
-    inputAnswer('1', 42, container);
+    await inputAnswer('1', 42, container);
 
     const fhirpathItem = findItem('4', container);
     expect(fhirpathItem).toHaveValue(null);
@@ -127,16 +127,16 @@ describe('Component renders and calculates score', () => {
   it('total score should be updated when options in open-choice item is selected', async () => {
     const { getByLabelText } = createWrapper(OpenChoiceDataModel);
 
-    let sum = getByLabelText('Sum');
+    const sum = getByLabelText('Sum');
     expect(sum).toHaveValue(null);
 
     await clickByLabelText('Mer enn halvparten av dagene');
-    sum = getByLabelText('Sum');
-    expect(sum).toHaveValue(2);
+    const sum2 = getByLabelText('Sum');
+    expect(sum2).toHaveValue(2);
 
     await clickByLabelText('Nesten hver dag');
-    sum = getByLabelText('Sum');
-    expect(sum).toHaveValue(3);
+    const sum3 = getByLabelText('Sum');
+    expect(sum3).toHaveValue(3);
   });
   function expectScores(scores: { [linkId: string]: number | null }, container: HTMLElement) {
     for (const linkId in scores) {

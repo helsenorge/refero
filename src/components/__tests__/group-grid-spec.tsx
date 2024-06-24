@@ -28,7 +28,7 @@ function validateRow(wrapper: Element, expectedNumCells: number, expectedItemLin
   expect(numCells).toHaveLength(expectedNumCells);
 
   expectedItemLinkIds.forEach(expectedItemLinkId => {
-    const id = `item_${expectedItemLinkId}-label-decimal`;
+    const id = `item_${expectedItemLinkId}-decimal-label`;
     const cell = screen.queryByTestId(id);
     expect(cell).toBeInTheDocument();
   });

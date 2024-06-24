@@ -1,4 +1,4 @@
-import React, { FormEvent } from 'react';
+import React from 'react';
 
 import { ValueSet, QuestionnaireItem, Questionnaire, Coding, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { Controller } from 'react-hook-form';
@@ -6,7 +6,6 @@ import { Controller } from 'react-hook-form';
 import { AutoSuggestProps } from '../../../types/autoSuggestProps';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
-import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
 import Loader from '@helsenorge/designsystem-react/components/Loader';
 import NotificationPanel from '@helsenorge/designsystem-react/components/NotificationPanel';
 
@@ -15,12 +14,13 @@ import { debounce } from '@helsenorge/core-utils/debounce';
 
 import { OPEN_CHOICE_ID, OPEN_CHOICE_SYSTEM } from '../../../constants';
 import ItemType from '../../../constants/itemType';
-import { isRequired, getId, getSublabelText, getLabelText } from '../../../util/index';
+import { isRequired, getId } from '../../../util/index';
 import { getStringAnswer, hasStringAnswer, getCodingAnswer } from '../../../util/refero-core';
 import { Resources } from '../../../util/resources';
 import ReactHookFormHoc, { FormProps } from '../../../validation/ReactHookFormHoc';
-import SafeText from '../../referoLabel/SafeText';
 import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
+
+import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 
 export interface AutosuggestProps extends WithCommonFunctionsAndEnhancedProps, FormProps {
   handleChange: (code?: string, systemArg?: string, displayArg?: string) => void;
@@ -188,22 +188,22 @@ const AutosuggestView = ({
     }
   };
 
-  const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
-  const labelText = getLabelText(item, onRenderMarkdown, questionnaire, resources);
   return (
     <div className="page_refero__component page_refero__component_choice page_refero__component_choice_autosuggest">
       <FormGroup error={error?.message}>
         {renderHelpElement()}
-        <Label
+
+        <ReferoLabel
+          item={item}
+          onRenderMarkdown={onRenderMarkdown}
+          questionnaire={questionnaire}
+          resources={resources}
           htmlFor={getId(id)}
+          labelId={`${getId(id)}-autosuggest-label`}
           testId={`${getId(id)}-label`}
-          labelTexts={[]}
-          className="page_refero__label"
-          sublabel={<Sublabel id={`${getId(id)}-sublabel`} sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
-          afterLabelChildren={renderHelpButton()}
-        >
-          <SafeText text={labelText} />
-        </Label>
+          sublabelId={`${getId(id)}-sublabel`}
+          renderHelpButton={renderHelpButton}
+        />
         <Controller
           name={idWithLinkIdAndItemIndex}
           control={control}
@@ -217,8 +217,8 @@ const AutosuggestView = ({
           }}
           render={({ field: { onChange, ...rest } }): JSX.Element => (
             <Autosuggest
-              {...rest}
               inputProps={{
+                ...rest,
                 id: getId(id),
                 onChange: (e: React.FormEvent<HTMLElement>, AutosuggestChangeEvent): void => {
                   onChange('');

@@ -6,16 +6,17 @@ import { Controller } from 'react-hook-form';
 import { Options } from '../../../types/formTypes/radioGroupOptions';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
-import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
+import Label from '@helsenorge/designsystem-react/components/Label';
 import RadioButton from '@helsenorge/designsystem-react/components/RadioButton';
 
 import { shouldShowExtraChoice } from '../../../util/choice';
 import { getValidationTextExtension } from '../../../util/extension';
-import { isRequired, getId, getSublabelText, getText, renderPrefix } from '../../../util/index';
+import { isRequired, getId } from '../../../util/index';
 import { Resources } from '../../../util/resources';
 import { FormProps } from '../../../validation/ReactHookFormHoc';
-import SafeText from '../../referoLabel/SafeText';
 import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
+
+import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 
 interface Props extends FormProps, WithCommonFunctionsAndEnhancedProps {
   options?: Array<Options>;
@@ -58,20 +59,22 @@ const RadioView = ({
   if (!options) {
     return null;
   }
-  const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`;
-  const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
   const selectedValue = (selected && selected[0]) || '';
   return (
     <div className="page_refero__component page_refero__component_openchoice page_refero__component_openchoice_radiobutton">
       <FormGroup error={error?.message} mode="ongrey">
         {renderHelpElement()}
-        <Label
-          labelTexts={[]}
-          sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
-          afterLabelChildren={renderHelpButton()}
-        >
-          <SafeText text={labelText} />
-        </Label>
+        <ReferoLabel
+          item={item}
+          onRenderMarkdown={onRenderMarkdown}
+          questionnaire={questionnaire}
+          resources={resources}
+          labelId={`${getId(id)}-open-choice-label`}
+          testId={`${getId(id)}-open-choice-label`}
+          sublabelId={`${getId(id)}-open-choice-sublabel`}
+          renderHelpButton={renderHelpButton}
+        />
+
         {options.map((option: Options, index: number) => (
           <Controller
             name={idWithLinkIdAndItemIndex}
