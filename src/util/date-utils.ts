@@ -1,4 +1,4 @@
-import { parse, format, setHours, setMinutes, setYear, startOfDay, isValid, isBefore, isAfter, endOfDay } from 'date-fns';
+import { parse, format, setHours, setMinutes, getYear, startOfDay, isValid, isBefore, isAfter, endOfDay } from 'date-fns';
 import { QuestionnaireResponseItemAnswer } from 'fhir/r4';
 
 import { DateFormat, DatePickerFormat, DateTimeUnit } from '../types/dateTypes';
@@ -72,14 +72,14 @@ export const validateDate = (dateToValidate: Date | undefined, resources: Resour
 
 export const validateMinDate = (dateToValidate: Date | undefined, resources: Resources | undefined): true | string => {
   if (mockMinDateTime && dateToValidate && isBefore(dateToValidate, startOfDay(mockMinDateTime))) {
-    return `${resources?.errorBeforeMinDate} ${format(mockMinDateTime, DateFormat.ddMMyyyy)}`;
+    return `${resources?.errorBeforeMinDate}: ${format(mockMinDateTime, DateFormat.ddMMyyyy)}`;
   }
   return true;
 };
 
 export const validateMaxDate = (dateToValidate: Date | undefined, resources: Resources | undefined): true | string => {
   if (mockMaxDateTime && dateToValidate && isAfter(dateToValidate, endOfDay(mockMaxDateTime))) {
-    return `${resources?.errorAfterMaxDate} ${format(mockMaxDateTime, DateFormat.ddMMyyyy)}`;
+    return `${resources?.errorAfterMaxDate}: ${format(mockMaxDateTime, DateFormat.ddMMyyyy)}`;
   }
   return true;
 };
@@ -103,5 +103,25 @@ export const validateYearDigits = (year: number, resources: Resources | undefine
     return resources?.year_field_invalid || '';
   }
 
+  return true;
+};
+
+export const validateYearMin = (minDate: Date | undefined, yearToValidate: number, resources: Resources | undefined): true | string => {
+  if (minDate) {
+    const minYear = getYear(minDate);
+    if (minYear > yearToValidate) {
+      return `${resources?.year_field_mindate}: ${minYear}`;
+    }
+  }
+  return true;
+};
+
+export const validateYearMax = (maxDate: Date | undefined, yearToValidate: number, resources: Resources | undefined): true | string => {
+  if (maxDate) {
+    const maxYear = getYear(maxDate);
+    if (maxYear < yearToValidate) {
+      return `${resources?.year_field_maxdate}: ${maxYear}`;
+    }
+  }
   return true;
 };

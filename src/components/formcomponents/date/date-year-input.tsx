@@ -3,14 +3,13 @@ import React from 'react';
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { Controller, FieldError } from 'react-hook-form';
 
-
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Input from '@helsenorge/designsystem-react/components/Input';
 import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
 
 import { getId, isReadOnly, isRequired } from '../../../util';
 import { createDateFromYear } from '../../../util/createDateFromYear';
-import { validateYearDigits } from '../../../util/date-utils';
+import { validateYearDigits, validateYearMax, validateYearMin } from '../../../util/date-utils';
 import { getValidationTextExtension } from '../../../util/extension';
 import { Resources } from '../../../util/resources';
 import { FormProps } from '../../../validation/ReactHookFormHoc';
@@ -44,6 +43,8 @@ export const DateYearInput = ({
   helpElement,
   onDateValueChange,
   onRenderMarkdown,
+  maxDate,
+  minDate,
   answer,
   idWithLinkIdAndItemIndex,
   error,
@@ -110,6 +111,12 @@ export const DateYearInput = ({
           validate: {
             validYear: value => {
               return validateYearDigits(value, resources);
+            },
+            validMinDate: value => {
+              return validateYearMin(minDate, value, resources);
+            },
+            validMaxDate: value => {
+              return validateYearMax(maxDate, value, resources);
             },
           },
         }}
