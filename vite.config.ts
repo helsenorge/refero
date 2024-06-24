@@ -13,8 +13,8 @@ import tsconfigPaths from 'vite-tsconfig-paths';
 
 const OUTPUT_DIRECTORY = 'lib';
 
-export default defineConfig(({ command }) => {
-  const dev = command === 'serve';
+export default defineConfig(({ command, isPreview }) => {
+  const dev = command === 'serve' && !isPreview;
 
   return {
     root: dev ? path.resolve(__dirname, './preview') : path.resolve(__dirname, ''),

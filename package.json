@@ -20,6 +20,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:ui": "vitest --ui",
+    "test:preview": "vite preview --outDir html",
     "dev": "vite",
     "build:lib": "vite build"
   },
