@@ -232,9 +232,7 @@ const Refero = (props: StateProps & DispatchProps & ReferoProps): JSX.Element | 
               </div>
             ) : undefined;
           const path = createPathForItem(props.path, item, responseItem, index);
-          const idWithLinkIdAndItemIndex = `${item.linkId}${
-            props?.path && props?.path[0] && props?.path[0].index ? `-${props.path[0].index}` : ''
-          }${index ? `-${index}` : ''}`;
+
           // legg på blindzone rett over den første seksjonen
           if (isNavigatorEnabled && item.type === ItemType.GROUP && !isNavigatorBlindzoneInitiated) {
             isNavigatorBlindzoneInitiated = true;
@@ -242,7 +240,7 @@ const Refero = (props: StateProps & DispatchProps & ReferoProps): JSX.Element | 
           }
           renderedItems.push(
             <Comp
-              idWithLinkIdAndItemIndex={idWithLinkIdAndItemIndex}
+              idWithLinkIdAndItemIndex={`${item.linkId}${createIdSuffix(path, index, item.repeats)}`}
               language={formDefinition.Content?.language}
               pdf={pdf}
               includeSkipLink={isNavigatorEnabled && item.type === ItemType.GROUP}

@@ -65,16 +65,14 @@ const getInitialValueForItem = (item: QuestionnaireItem): unknown => {
   return getDefaultFormValuesForType(item);
 };
 
-// Recursively generate a nested structure of default values
 export const generateDefaultValues = (items?: QuestionnaireItem[]): DefaultValues => {
   const nestedDefaultValues = items?.reduce((acc: DefaultValues, item) => {
-    const key = item.linkId;
-    // Assign default value only if not read-only
+    const key = item.repeats ? `${item.linkId}^0` : item.linkId;
+
     if (!item.readOnly) {
       acc[key] = getInitialValueForItem(item);
     }
 
-    // Process nested items if any, even if current item is read-only
     if (item.item && item.item.length > 0) {
       const nestedDefaults = generateDefaultValues(item.item);
       Object.assign(acc, nestedDefaults);
