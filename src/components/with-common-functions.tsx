@@ -155,7 +155,6 @@ export default function withCommonFunctions<T extends WithCommonFunctionsProps>(
       if (!item.repeats || !shouldRenderRepeatButton(item, response, index)) {
         return undefined;
       }
-      const idWithLinkIdAndItemIndex = path ? `${path[0].linkId}${path[0].index ? `-${path[0].index}` : ''}` : item.linkId ?? '';
 
       return (
         <div className="page_refero__repeatbutton-wrapper">
@@ -163,7 +162,7 @@ export default function withCommonFunctions<T extends WithCommonFunctionsProps>(
             key={`item_${item.linkId}_add_repeat_item`}
             resources={props.resources}
             item={item}
-            idWithLinkIdAndItemIndex={idWithLinkIdAndItemIndex}
+            idWithLinkIdAndItemIndex={`${item.linkId}${createIdSuffix(path, index, item.repeats)}`}
             responseItems={response}
             parentPath={path}
             renderContext={props.renderContext}
@@ -264,9 +263,7 @@ export default function withCommonFunctions<T extends WithCommonFunctionsProps>(
       const renderedItems: Array<JSX.Element> = [];
       if (response && response.length > 0) {
         response.forEach((responseItem, index) => {
-          const idWithLinkIdAndItemIndex = `${item.linkId}${path && path[0] && path[0].index ? `-${path[0].index}` : ''}${
-            index ? `-${index}` : ''
-          }`;
+          const idWithLinkIdAndItemIndex = `${item.linkId}${createIdSuffix(path, index, item.repeats)}`;
 
           renderedItems.push(
             <Comp
