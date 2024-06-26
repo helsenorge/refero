@@ -1,6 +1,6 @@
-import DOMPurify from 'dompurify';
-
 import styles from './safetext.module.css';
+
+import { SanitizeText } from '@/util/sanitize/domPurifyHelper';
 interface Props {
   text: string;
 }
@@ -10,7 +10,7 @@ const SafeText = ({ text }: Props): JSX.Element => {
     <span
       className={styles.safetext}
       dangerouslySetInnerHTML={{
-        __html: DOMPurify.sanitize(text),
+        __html: SanitizeText(text) ?? '',
       }}
     />
   );

@@ -435,6 +435,11 @@ export function parseIdSuffix(input: string): Path[] {
 
   return paths;
 }
+export function findFirstGuidInString(input: string): string | null {
+  const regex = /\b[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}\b/;
+  const match = input.match(regex);
+  return match ? match[0] : null;
+}
 export function createPathForItem(
   path: Path[] | undefined,
   item: QuestionnaireItem,

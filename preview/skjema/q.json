@@ -9,7 +9,7 @@
       {
         "system": "urn:ietf:bcp:47",
         "code": "nb-NO",
-        "display": "Norsk Bokmål"
+        "display": "Bokmål"
       }
     ],
     "security": [
@@ -20,22 +20,6 @@
       }
     ]
   },
-  "useContext": [
-    {
-      "code": {
-        "system": "http://hl7.org/fhir/ValueSet/usage-context-type",
-        "code": "focus",
-        "display": "Clinical Focus"
-      },
-      "valueCodeableConcept": {
-        "coding": [
-          {
-            "system": "urn:oid:2.16.578.1.12.4.1.1.8655"
-          }
-        ]
-      }
-    }
-  ],
   "contact": [
     {
       "name": "http://www.nhn.no"
@@ -75,89 +59,72 @@
       }
     }
   ],
+  "id": "fdd3bc45-ed12-4386-9eaa-424225cd5898",
+  "contained": [
+    {
+      "url": "http://ehelse.no/fhir/ValueSet/Predefined",
+      "resourceType": "ValueSet",
+      "id": "9523",
+      "version": "1.0",
+      "name": "urn:oid:9523",
+      "title": "Ja / Nei / Usikker (structor)",
+      "status": "draft",
+      "publisher": "Direktoratet for e-helse",
+      "compose": {
+        "include": [
+          {
+            "system": "urn:oid:2.16.578.1.12.4.1.9523",
+            "concept": [
+              {
+                "code": "1",
+                "display": "Ja"
+              },
+              {
+                "code": "2",
+                "display": "Nei"
+              },
+              {
+                "code": "3",
+                "display": "Usikker"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
   "item": [
     {
-      "linkId": "f3866e47-51da-4ec2-8f0b-e10269bbdc1e",
+      "linkId": "43dbe96a-094a-4438-a4c9-8a5ac1747546",
       "type": "group",
       "text": "Gruppe 1",
-      "extension": [
-        {
-          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-          "valueCodeableConcept": {
-            "coding": [
-              {
-                "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
-                "code": "step"
-              }
-            ]
-          }
-        }
-      ],
-      "required": false,
       "item": [
         {
-          "linkId": "f21daf96-658a-4591-808c-e64fe9b3ed28",
-          "type": "display",
-          "text": "Dette er et stegvisningsskjema. Trykk på neste eller tilbake for å navigere frem og tilbake mellom stegene. Lykke til! :-)",
-          "required": false,
+          "linkId": "e8bbc727-6ae1-4e33-ef44-be4ca7dc9abd",
+          "type": "string",
           "extension": [
             {
-              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-              "valueCodeableConcept": {
-                "coding": [
-                  {
-                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
-                    "code": "highlight"
-                  }
-                ]
-              }
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "linkId": "bc8b56ee-fc46-404d-dde4-2cfa4d3606db",
-      "type": "group",
-      "text": "Gruppe 2",
-      "extension": [
-        {
-          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-          "valueCodeableConcept": {
-            "coding": [
-              {
-                "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
-                "code": "step"
-              }
-            ]
-          }
-        }
-      ],
-      "required": false,
-      "item": [
-        {
-          "linkId": "19ddaddc-3974-481f-c3fc-213d5790f5aa",
-          "type": "choice",
-          "text": "Er du en mann eller kvinne?",
-          "required": true,
-          "answerOption": [
-            {
-              "valueCoding": {
-                "id": "73dafada-3bdd-4734-dcf2-740f8ad771e0",
-                "code": "mann",
-                "system": "urn:uuid:04ab0147-0526-4e32-fe64-f10b874eed90",
-                "display": "Mann"
-              }
+              "url": "http://hl7.org/fhir/StructureDefinition/regex",
+              "valueString": "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$"
             },
             {
-              "valueCoding": {
-                "id": "7b82a7aa-9758-446b-9c06-9871e944d4f9",
-                "code": "kvinne",
-                "system": "urn:uuid:04ab0147-0526-4e32-fe64-f10b874eed90",
-                "display": "Kvinne"
-              }
+              "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
+              "valueString": "custom error message"
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/minLength",
+              "valueInteger": 5
             }
           ],
+          "required": true,
+          "text": "String - epost",
+          "maxLength": 20
+        },
+        {
+          "linkId": "b0c2cb74-2ffd-45ad-9c37-31be5e5b1548",
+          "type": "open-choice",
+          "text": "Radio - open choice - predeffinert",
+          "required": true,
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
@@ -170,117 +137,90 @@
                 ]
               }
             }
-          ]
+          ],
+          "answerValueSet": "#9523"
         },
         {
-          "linkId": "9f296680-528a-4496-daf8-89771bc1f19c",
-          "type": "string",
-          "extension": [
-            {
-              "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sublabel",
-              "valueMarkdown": "**String sublabel**"
-            },
-            {
-              "url": "http://hl7.org/fhir/StructureDefinition/regex",
-              "valueString": "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$"
-            },
-            {
-              "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
-              "valueString": "Custom error"
-            },
-            {
-              "url": "http://hl7.org/fhir/StructureDefinition/minLength",
-              "valueInteger": 10
-            },
-            {
-              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-minOccurs",
-              "valueInteger": 1
-            },
-            {
-              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-maxOccurs",
-              "valueInteger": 4
-            },
-            {
-              "url": "http://ehelse.no/fhir/StructureDefinition/repeatstext",
-              "valueString": "Legg til"
-            }
-          ],
+          "linkId": "57544f1e-5e66-405a-afe5-c2e8e76896eb",
+          "type": "open-choice",
+          "text": "Radio - open choice ",
           "required": true,
-          "_text": {
-            "extension": [
-              {
-                "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
-                "valueMarkdown": "**String markdown**"
-              }
-            ]
-          },
-          "text": "String markdown",
-          "maxLength": 20,
-          "repeats": true,
-          "item": [
+          "answerOption": [
             {
-              "linkId": "886ba9d4-e7cd-4c23-b581-46ea81a1deca",
-              "type": "text",
-              "required": false,
-              "repeats": false,
-              "readOnly": true,
-              "maxLength": 250,
-              "_text": {
-                "extension": [
-                  {
-                    "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
-                    "valueMarkdown": "Help text"
-                  }
-                ]
-              },
-              "extension": [
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                  "valueCodeableConcept": {
-                    "coding": [
-                      {
-                        "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
-                        "code": "help"
-                      }
-                    ]
-                  }
-                }
-              ]
+              "valueCoding": {
+                "id": "4820832c-c8e1-4211-8070-dd85f6794048",
+                "code": "yes",
+                "system": "urn:uuid:ddfcd158-ba16-46d9-8865-c27fbbd75288",
+                "display": "Yes"
+              }
+            },
+            {
+              "valueCoding": {
+                "id": "e73fb594-55de-4fb5-8853-88fc4a901c31",
+                "code": "no",
+                "system": "urn:uuid:ddfcd158-ba16-46d9-8865-c27fbbd75288",
+                "display": "no"
+              }
+            },
+            {
+              "valueCoding": {
+                "id": "bc455bed-d00d-472b-8338-db86d4f8997a",
+                "code": "maybe",
+                "system": "urn:uuid:ddfcd158-ba16-46d9-8865-c27fbbd75288",
+                "display": "maybe"
+              }
             }
           ]
-        }
-      ]
-    },
-    {
-      "linkId": "50a9ea8d-23b3-47db-97e5-ffdd16949594",
-      "type": "group",
-      "text": "Gruppe 3",
-      "extension": [
-        {
-          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-          "valueCodeableConcept": {
-            "coding": [
-              {
-                "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
-                "code": "step"
-              }
-            ]
-          }
         }
       ],
       "required": false,
+      "_text": {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+            "valueMarkdown": "**Gruppe 1**"
+          }
+        ]
+      }
+    },
+    {
+      "linkId": "d7bf01e9-496d-4551-86a7-186ae5c50186",
+      "type": "group",
+      "text": "Gruppe 2",
       "item": [
         {
-          "linkId": "4658bc33-4ca0-47e6-d0e9-f12fdaaf4d5b",
+          "linkId": "98e87a24-a6ef-425f-8534-1c4032828b5f",
+          "type": "integer",
+          "text": "Integer",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/minValue",
+              "valueInteger": 2
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/maxValue",
+              "valueInteger": 5
+            },
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
+              "valueString": "custom integer error"
+            }
+          ],
+          "required": true,
+          "repeats": true
+        },
+        {
+          "linkId": "c76813fd-72d6-4fc6-a76a-98d9b2cbdffd",
           "type": "quantity",
-          "text": "Hvor mange liter blod mister du om dagen?",
+          "text": "Decimal - kilo",
+          "required": true,
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
               "valueCoding": {
-                "code": "Ltr",
-                "display": "Liter",
-                "system": "urn:uuid:fc361a68-2dd7-4982-875d-361e5cf51eb2"
+                "code": "kg",
+                "display": "kilo",
+                "system": "http://unitsofmeasure.org"
               }
             },
             {
@@ -289,16 +229,45 @@
             },
             {
               "url": "http://hl7.org/fhir/StructureDefinition/minValue",
-              "valueInteger": 1
+              "valueInteger": 2
             },
             {
               "url": "http://hl7.org/fhir/StructureDefinition/maxValue",
-              "valueInteger": 10
+              "valueInteger": 5
+            },
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
+              "valueString": "custom decimal error"
+            }
+          ]
+        },
+        {
+          "linkId": "ab1bb454-3697-4def-81da-77c565a5c1e4",
+          "type": "string",
+          "text": "Textarea",
+          "extension": [
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
+              "valueString": "custom textarea feilmelding"
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/minLength",
+              "valueInteger": 2
             }
           ],
-          "required": true
+          "required": true,
+          "maxLength": 5
         }
-      ]
+      ],
+      "required": false,
+      "_text": {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+            "valueMarkdown": "**Gruppe 2**"
+          }
+        ]
+      }
     }
   ]
 }

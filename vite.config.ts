@@ -49,6 +49,7 @@ export default defineConfig(({ command, isPreview }) => {
       commonjsOptions: {
         transformMixedEsModules: true,
       },
+
       lib: {
         entry: path.resolve(__dirname, 'src/index.ts'),
         formats: ['es'],

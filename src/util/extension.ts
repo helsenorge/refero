@@ -1,8 +1,8 @@
-import DOMPurify from 'dompurify';
 import { QuestionnaireItem, Extension, Element, Questionnaire, Coding } from 'fhir/r4';
 
 import { SidebarItem } from '../types/sidebar';
 
+import { SanitizeText } from './sanitize/domPurifyHelper';
 import { Extensions } from '../constants/extensions';
 import itemControlConstants from '../constants/itemcontrol';
 import itemType from '../constants/itemType';
@@ -15,10 +15,7 @@ export function getValidationTextExtension(item: QuestionnaireItem): string | un
   if (!validationTextExtension || !validationTextExtension.valueString) {
     return undefined;
   }
-  return DOMPurify.sanitize(validationTextExtension.valueString, {
-    RETURN_TRUSTED_TYPE: true,
-    ADD_ATTR: ['target'],
-  }) as unknown as string;
+  return SanitizeText(validationTextExtension.valueString);
 }
 
 export function getPresentationButtonsExtension(questionniare: Questionnaire): PresentationButtonsType | null {

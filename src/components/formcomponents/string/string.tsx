@@ -91,10 +91,6 @@ export const String = ({
     }
   };
 
-  // const getValidationErrorMessage = (value: string): string => {
-  //   return getTextValidationErrorMessage(value, validateScriptInjection, item, resources);
-  // };
-
   if (pdf || isReadOnly(item)) {
     return (
       <TextView
@@ -124,7 +120,7 @@ export const String = ({
   const value = getStringValue(answer);
   return (
     <div className="page_refero__component page_refero__component_string">
-      <FormGroup error={error?.message} mode="ongrey">
+      <FormGroup error={error?.message ?? ''} mode="ongrey">
         {renderHelpElement()}
         <ReferoLabel
           item={item}
