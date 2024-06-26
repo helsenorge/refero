@@ -1,5 +1,5 @@
 import itemType from '../../constants/itemType';
-import { Path, createIdSuffix, getQuestionnaireItemsWithType, parseIdSuffix } from '../refero-core';
+import { Path, createIdSuffix, findFirstGuidInString, getQuestionnaireItemsWithType, parseIdSuffix } from '../refero-core';
 
 describe('utils', () => {
   describe('findQuestionnaireItemWithType, in parent', () => {
@@ -177,6 +177,25 @@ describe('utils', () => {
       const input = 'link1^^^';
       const result = parseIdSuffix(input);
       expect(result).toEqual([{ linkId: 'link1' }]);
+    });
+  });
+  describe('findFirstGuid', () => {
+    it('should return the first GUID in the string', () => {
+      const inputString = 'Here is a string with a GUID 123e4567-e89b-12d3-a456-426614174000 in it.';
+      const result = findFirstGuidInString(inputString);
+      expect(result).toBe('123e4567-e89b-12d3-a456-426614174000');
+    });
+
+    it('should return null if there is no GUID in the string', () => {
+      const inputString = 'This string does not contain a GUID.';
+      const result = findFirstGuidInString(inputString);
+      expect(result).toBeNull();
+    });
+
+    it('should return the first GUID when multiple GUIDs are present', () => {
+      const inputString = 'Multiple GUIDs: 123e4567-e89b-12d3-a456-426614174000 and 987e6543-e21b-45d3-b456-123456789012.';
+      const result = findFirstGuidInString(inputString);
+      expect(result).toBe('123e4567-e89b-12d3-a456-426614174000');
     });
   });
 });

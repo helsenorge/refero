@@ -66,7 +66,6 @@ const Quantity = ({
   onRenderMarkdown,
   resources,
   error,
-  control,
   pdf,
   idWithLinkIdAndItemIndex,
   renderDeleteButton,
@@ -170,9 +169,8 @@ const Quantity = ({
         />
         <Controller
           name={idWithLinkIdAndItemIndex}
-          control={control}
           shouldUnregister={true}
-          defaultValue={getValue()}
+          defaultValue={value}
           rules={{
             required: {
               value: isRequired(item),

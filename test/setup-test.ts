@@ -13,3 +13,8 @@ Object.defineProperty(window, 'scrollTo', {
   writable: true,
 });
 window.HTMLElement.prototype.scrollIntoView = vi.fn();
+const scrollIntoViewMock = vi.fn();
+vi.stubGlobal('scrollIntoView', scrollIntoViewMock);
+afterEach(() => {
+  vi.useRealTimers();
+});
