@@ -135,8 +135,6 @@ const DateComponent = (props: React.PropsWithChildren<DateProps>): JSX.Element =
   const itemControls = getItemControlExtensionValue(item);
   let element: JSX.Element | undefined = undefined;
 
-   console.log(props.error);
-
   if (itemControls && itemControls.some(itemControl => itemControl.code === itemControlConstants.YEAR)) {
     element = (
       <DateYearInput

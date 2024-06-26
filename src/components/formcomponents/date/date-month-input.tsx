@@ -7,6 +7,7 @@ import { Controller, FieldError, FieldValues, useFormContext } from 'react-hook-
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Input from '@helsenorge/designsystem-react/components/Input';
 import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
+import Select from '@helsenorge/designsystem-react/components/Select';
 
 import { LanguageLocales } from '@helsenorge/core-utils/constants/languages';
 
@@ -16,7 +17,7 @@ import { Resources } from '../../../util/resources';
 import { FormProps } from '../../../validation/ReactHookFormHoc';
 import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 import TextView from '../textview';
-import Select from '@helsenorge/designsystem-react/components/Select';
+
 import { getMonthOptions } from '@/util/date-utils';
 
 interface DateMonthProps extends FormProps, WithCommonFunctionsAndEnhancedProps {
@@ -81,6 +82,13 @@ export const DateYearMonthInput = ({
     }
   };
 
+  const [year, setYear] = useState<number | undefined>(getValue()?.year);
+  const [month, setMonth] = useState<number | undefined | null>(getValue()?.month);
+  const { formState, getFieldState } = useFormContext<FieldValues>();
+  const yearField = getFieldState(`${idWithLinkIdAndItemIndex}-yearmonth-year`, formState);
+  const monthsField = getFieldState(`${idWithLinkIdAndItemIndex}-yearmonth-month`, formState);
+  const monthOptions = getMonthOptions(resources);
+
   const convertToPDFValue = (answer: QuestionnaireResponseItemAnswer): string => {
     const value = getDateValueFromAnswer(answer);
     return value ? format(value, 'MMMM yyyy') : '';
@@ -104,24 +112,25 @@ export const DateYearMonthInput = ({
     }
   };
 
-  const [year, setYear] = useState<number | undefined>(getValue()?.year);
-  const [month, setMonth] = useState<number | undefined | null>(getValue()?.month);
-  const { formState, getFieldState } = useFormContext<FieldValues>();
-  const yearField = getFieldState(`${idWithLinkIdAndItemIndex}-yearmonth-year`, formState);
-  const monthsField = getFieldState(`${idWithLinkIdAndItemIndex}-yearmonth-month`, formState);
-  const monthOptions = getMonthOptions(resources);
-
-  const onYearChange = (year: number) => {
-    setYear(year);
-    onDateValueChange(year.toString());
-  };
-  const onMonthChange = (month: string) => {
-    setMonth(Number(month));
-    onDateValueChange(month.toString());
-  };
   const getCombinedFieldError = (): FieldError | undefined => {
     const error = yearField.error || monthsField.error || undefined;
     return error;
+  };
+
+  const getConcatinatedYearAndMonth = (newYear: number | undefined, newMonth: number | undefined | null): string => {
+    const newYearString = newYear?.toString().padStart(2, '0');
+    const newMonthString = newMonth?.toString().padStart(2, '0');
+    return `${newYearString}-${newMonthString}`;
+  };
+
+  const handleYearMonthChange = (newYear: number | undefined, newMonth: number | undefined | null) => {
+    setYear(newYear);
+    setMonth(newMonth);
+
+    if (newYear && newMonth) {
+      const concatinatedString = getConcatinatedYearAndMonth(newYear, newMonth);
+      onDateValueChange(concatinatedString);
+    }
   };
 
   if (pdf || isReadOnly(item)) {
@@ -157,8 +166,8 @@ export const DateYearMonthInput = ({
               type="number"
               testId={getId(id)}
               onChange={e => {
-                onChange(e.target.value);
-                onYearChange(Number(e.target.value));
+                handleYearMonthChange(Number(e.target.value), month);
+                onChange(getConcatinatedYearAndMonth(Number(e.target.value), month));
               }}
               label={
                 <Label
@@ -171,6 +180,7 @@ export const DateYearMonthInput = ({
                 />
               }
               width={10}
+              defaultValue={year ?? ''}
             />
           )}
         />
@@ -187,10 +197,11 @@ export const DateYearMonthInput = ({
             <Select
               label={<Label labelTexts={[{ text: 'Velg noe', type: 'semibold' }]} />}
               onChange={e => {
-                onChange(e.target.value);
-                onMonthChange(e.target.value);
+                handleYearMonthChange(year, Number(e.target.value));
+                onChange(getConcatinatedYearAndMonth(year, Number(e.target.value)));
               }}
               width={10}
+              defaultValue={month ?? ''}
             >
               {monthOptions.map(option => (
                 <option key={option.optionValue} value={option.optionValue}>
