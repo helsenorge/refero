@@ -115,6 +115,10 @@ export const getMonthOptions = (resources: Resources | undefined) => {
   ];
 };
 
+export const getYearFromString = (dateString: string): string => {
+  return dateString.split('-')[0];
+}
+
 export const validateDate = (dateToValidate: Date | undefined, resources: Resources | undefined): true | string => {
   if (!isValid(dateToValidate)) {
     return resources?.dateError_invalid || '';
@@ -158,7 +162,7 @@ export const validateMinutes = (minutes: number | undefined, resources: Resource
   return true;
 };
 
-export const validateYearDigits = (year: number, resources: Resources | undefined): true | string => {
+export const validateYearDigits = (year: number | string, resources: Resources | undefined): true | string => {
   if (year && year.toString().length !== 4) {
     return resources?.year_field_invalid || '';
   }

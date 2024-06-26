@@ -18,7 +18,7 @@ import { FormProps } from '../../../validation/ReactHookFormHoc';
 import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 import TextView from '../textview';
 
-import { getMonthOptions } from '@/util/date-utils';
+import { getMonthOptions, getYearFromString, validateYearDigits, validateYearMax, validateYearMin } from '@/util/date-utils';
 
 interface DateMonthProps extends FormProps, WithCommonFunctionsAndEnhancedProps {
   id?: string;
@@ -159,6 +159,17 @@ export const DateYearMonthInput = ({
             required: {
               value: isRequired(item),
               message: resources?.yearmonth_field_required || '',
+            },
+            validate: {
+              validYear: value => {
+                return validateYearDigits(getYearFromString(value), resources);
+              },
+              validMinDate: value => {
+                return validateYearMin(minDate, Number(getYearFromString(value)), resources);
+              },
+              validMaxDate: value => {
+                return validateYearMax(maxDate, Number(getYearFromString(value)), resources);
+              },
             },
           }}
           render={({ field: { onChange } }): JSX.Element => (
