@@ -317,5 +317,17 @@ export const getResources = (language: string): Resources => {
     attachmentError_fileType: 'Tillatte filtyper er:',
     dateError_invalid: 'Ugyldig dato',
     dateError_time_invalid: 'Ugyldig klokkeslett',
+    dateLabel_january: 'Januar',
+    dateLabel_february: 'Februar',
+    dateLabel_march: 'Mars',
+    dateLabel_april: 'April',
+    dateLabel_may: 'Mai',
+    dateLabel_june: 'Juni',
+    dateLabel_july: 'Juli',
+    dateLabel_august: 'August',
+    dateLabel_september: 'September',
+    dateLabel_october: 'Oktober',
+    dateLabel_november: 'November',
+    dateLabel_december: 'Desember',
   };
 };

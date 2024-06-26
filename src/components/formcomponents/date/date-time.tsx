@@ -196,8 +196,8 @@ const DateTimeInput: React.FC<Props> = ({
   };
 
   function getCombinedFieldError(dateField: FieldValues, hoursField: FieldValues, minutesField: FieldValues): FieldError | undefined {
-    const test = dateField.error || hoursField.error || minutesField.error || undefined;
-    return test;
+    const error = dateField.error || hoursField.error || minutesField.error || undefined;
+    return error;
   }
 
   const handleDateChange = (newDate: Date | string | undefined): void => {
@@ -259,10 +259,10 @@ const DateTimeInput: React.FC<Props> = ({
                 return validateDate(parseStringToDateDDMMYYYY(value), resources);
               },
               validMinDate: value => {
-                return validateMinDate(parseStringToDateDDMMYYYY(value), resources);
+                return validateMinDate(minDateTime, parseStringToDateDDMMYYYY(value), resources);
               },
               validMaxDate: value => {
-                return validateMaxDate(parseStringToDateDDMMYYYY(value), resources);
+                return validateMaxDate(maxDateTime, parseStringToDateDDMMYYYY(value), resources);
               },
             },
           })}

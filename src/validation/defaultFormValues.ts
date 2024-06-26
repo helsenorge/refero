@@ -28,6 +28,8 @@ type DefaultValues = Record<string, unknown>;
 
 const getDefaultFormValuesForType = (item: QuestionnaireItem): unknown => {
   switch (item.type) {
+    case ItemType.DATE:
+      return { [`${item.linkId}-yearmonth-year`]: '', [`${item.linkId}-yearmonth-month`]: ''};
     case ItemType.DATETIME:
       return { [`${item.linkId}-date`]: '', [`${item.linkId}-hours`]: '', [`${item.linkId}-minutes`]: '' };
     case ItemType.CHOICE:

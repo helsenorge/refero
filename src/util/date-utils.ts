@@ -62,6 +62,59 @@ export const formatDateToStringDDMMYYYY = (dateToFormat: Date): string => {
   return format(dateToFormat, 'dd.MM.yyyy');
 };
 
+export const getMonthOptions = (resources: Resources | undefined) => {
+  return [
+    {
+      optionName: resources?.dateLabel_january,
+      optionValue: '01',
+    },
+    {
+      optionName: resources?.dateLabel_february,
+      optionValue: '02',
+    },
+    {
+      optionName: resources?.dateLabel_march,
+      optionValue: '03',
+    },
+    {
+      optionName: resources?.dateLabel_april,
+      optionValue: '04',
+    },
+    {
+      optionName: resources?.dateLabel_may,
+      optionValue: '05',
+    },
+    {
+      optionName: resources?.dateLabel_june,
+      optionValue: '06',
+    },
+    {
+      optionName: resources?.dateLabel_july,
+      optionValue: '07',
+    },
+    {
+      optionName: resources?.dateLabel_august,
+      optionValue: '08',
+    },
+    {
+      optionName: resources?.dateLabel_september,
+      optionValue: '09',
+    },
+    {
+      optionName: resources?.dateLabel_october,
+      optionValue: '10',
+    },
+    {
+      optionName: resources?.dateLabel_november,
+      optionValue: '11',
+    },
+    {
+      optionName: resources?.dateLabel_december,
+      optionValue: '12',
+    },
+  ];
+};
+
 export const validateDate = (dateToValidate: Date | undefined, resources: Resources | undefined): true | string => {
   if (!isValid(dateToValidate)) {
     return resources?.dateError_invalid || '';
