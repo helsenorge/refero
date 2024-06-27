@@ -82,8 +82,8 @@ export const DateYearMonthInput = ({
     }
   };
 
-  const [year, setYear] = useState<number | undefined>(getValue()?.year);
-  const [month, setMonth] = useState<number | undefined | null>(getValue()?.month);
+  const [year, setYear] = useState<string | undefined>(getValue()?.year.toString());
+  const [month, setMonth] = useState<string | undefined | null>(getValue()?.month?.toString());
   const { formState, getFieldState } = useFormContext<FieldValues>();
   const yearField = getFieldState(`${idWithLinkIdAndItemIndex}-yearmonth-year`, formState);
   const monthsField = getFieldState(`${idWithLinkIdAndItemIndex}-yearmonth-month`, formState);
@@ -117,13 +117,13 @@ export const DateYearMonthInput = ({
     return error;
   };
 
-  const getConcatinatedYearAndMonth = (newYear: number | undefined, newMonth: number | undefined | null): string => {
-    const newYearString = newYear?.toString().padStart(2, '0');
-    const newMonthString = newMonth?.toString().padStart(2, '0');
+  const getConcatinatedYearAndMonth = (newYear: string | undefined, newMonth: string | undefined | null): string => {
+    const newYearString = newYear?.padStart(2, '0');
+    const newMonthString = newMonth?.padStart(2, '0');
     return `${newYearString}-${newMonthString}`;
   };
 
-  const handleYearMonthChange = (newYear: number | undefined, newMonth: number | undefined | null) => {
+  const handleYearMonthChange = (newYear: string | undefined, newMonth: string | undefined | null) => {
     setYear(newYear);
     setMonth(newMonth);
 
@@ -177,8 +177,8 @@ export const DateYearMonthInput = ({
               type="number"
               testId={getId(id)}
               onChange={e => {
-                handleYearMonthChange(Number(e.target.value), month);
-                onChange(getConcatinatedYearAndMonth(Number(e.target.value), month));
+                handleYearMonthChange(e.target.value, month);
+                onChange(getConcatinatedYearAndMonth(e.target.value, month));
               }}
               label={
                 <Label
@@ -208,11 +208,11 @@ export const DateYearMonthInput = ({
             <Select
               label={<Label labelTexts={[{ text: 'Velg noe', type: 'semibold' }]} />}
               onChange={e => {
-                handleYearMonthChange(year, Number(e.target.value));
-                onChange(getConcatinatedYearAndMonth(year, Number(e.target.value)));
+                handleYearMonthChange(year, e.target.value);
+                onChange(getConcatinatedYearAndMonth(year, e.target.value));
               }}
               width={10}
-              defaultValue={month ?? ''}
+              defaultValue={month ?? '00'}
             >
               {monthOptions.map(option => (
                 <option key={option.optionValue} value={option.optionValue}>
