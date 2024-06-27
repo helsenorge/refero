@@ -66,7 +66,7 @@ export const getMonthOptions = (resources: Resources | undefined) => {
   return [
     {
       optionName: '',
-      optionValue: '00',
+      optionValue: '',
     },
     {
       optionName: resources?.dateLabel_january,

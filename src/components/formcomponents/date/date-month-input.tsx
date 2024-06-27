@@ -82,12 +82,12 @@ export const DateYearMonthInput = ({
     }
   };
 
-  const [year, setYear] = useState<string | undefined>(getValue()?.year.toString());
-  const [month, setMonth] = useState<string | undefined | null>(getValue()?.month?.toString());
   const { formState, getFieldState } = useFormContext<FieldValues>();
   const yearField = getFieldState(`${idWithLinkIdAndItemIndex}-yearmonth-year`, formState);
   const monthsField = getFieldState(`${idWithLinkIdAndItemIndex}-yearmonth-month`, formState);
   const monthOptions = getMonthOptions(resources);
+  const [year, setYear] = useState<string | undefined>(getValue()?.year.toString());
+  const [month, setMonth] = useState<string | undefined | null>(getValue()?.month?.toString() || monthOptions[0].optionValue);
 
   const convertToPDFValue = (answer: QuestionnaireResponseItemAnswer): string => {
     const value = getDateValueFromAnswer(answer);
@@ -212,7 +212,7 @@ export const DateYearMonthInput = ({
                 onChange(getConcatinatedYearAndMonth(year, e.target.value));
               }}
               width={10}
-              defaultValue={month ?? '00'}
+              defaultValue={month}
             >
               {monthOptions.map(option => (
                 <option key={option.optionValue} value={option.optionValue}>
