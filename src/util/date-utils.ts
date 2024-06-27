@@ -65,6 +65,10 @@ export const formatDateToStringDDMMYYYY = (dateToFormat: Date): string => {
 export const getMonthOptions = (resources: Resources | undefined) => {
   return [
     {
+      optionName: '',
+      optionValue: '00',
+    },
+    {
       optionName: resources?.dateLabel_january,
       optionValue: '01',
     },
@@ -116,8 +120,8 @@ export const getMonthOptions = (resources: Resources | undefined) => {
 };
 
 export const getYearFromString = (dateString: string): string => {
-  return dateString.split('-')[0];
-}
+  return dateString ? dateString.split('-')[0] : '';
+};
 
 export const validateDate = (dateToValidate: Date | undefined, resources: Resources | undefined): true | string => {
   if (!isValid(dateToValidate)) {
