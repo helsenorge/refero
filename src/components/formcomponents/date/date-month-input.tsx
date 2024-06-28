@@ -212,7 +212,7 @@ export const DateYearMonthInput = ({
                 onChange(getConcatinatedYearAndMonth(year, e.target.value));
               }}
               width={10}
-              defaultValue={month}
+              defaultValue={month ? month : monthOptions[0].optionValue}
             >
               {monthOptions.map(option => (
                 <option key={option.optionValue} value={option.optionValue}>
