@@ -121,7 +121,6 @@ describe('Default form values', () => {
       it('prefilled values should not cause a validation error on submit', async () => {
         const wrapper = createWrapper(qOpenChoiceCheckbox);
         await submitForm();
-        wrapper.debug(undefined, 1000000);
         expect(wrapper.queryByTestId(/summary-element-Preutfylt checkbox/i)).not.toBeInTheDocument();
       });
       it('empty fields should not cause a validation error on submit', async () => {
