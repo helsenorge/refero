@@ -59,6 +59,7 @@ export const isTableCode = (extensionCode: string | string[]): boolean => {
   return isTable;
 };
 
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function getComponentForItem(type: string, extensionCode?: string | string[]) {
   if (String(type) === ItemType.GROUP && !!extensionCode && isTableCode(extensionCode)) {
     return TableContainer;
@@ -379,7 +380,7 @@ export function getDecimalValue(item: QuestionnaireItem, value: number | undefin
 }
 
 export function isIE11(): boolean {
-  // tslint:disable-next-line:no-string-literal
+  // @ts-expect-error ie 11 stuff
   return !!window['MSInputMethodContext'] && !!document['documentMode'];
 }
 

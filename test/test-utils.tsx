@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { ReactElement } from 'react';
 
 import { render, RenderOptions, RenderResult } from '@testing-library/react';
@@ -15,7 +17,7 @@ import ReferoContainer from '../src/components';
 import rootReducer, { GlobalState } from '../src/reducers';
 import { ReferoProps } from '../src/types/referoProps';
 import { Resources } from '../src/util/resources';
-import { generateDefaultValues } from '../src/validation/defaultFormValues';
+import { createIntitialFormValues, DefaultValues } from '../src/validation/defaultFormValues';
 
 const mockStore = configureMockStore<Partial<GlobalState>>([thunk]);
 
@@ -109,9 +111,10 @@ interface InputProps {
   props?: Partial<ReferoProps>;
   initialState?: GlobalState;
   resources?: Partial<Resources>;
+  defaultValues?: DefaultValues;
 }
 
-function renderRefero({ questionnaire, props, initialState, resources }: InputProps) {
+function renderRefero({ questionnaire, props, initialState, resources, defaultValues }: InputProps) {
   const resourcesDefault = {
     ...getResources(''),
     ...resources,
@@ -130,7 +133,7 @@ function renderRefero({ questionnaire, props, initialState, resources }: InputPr
     },
   };
   const store = createStore(rootReducer, state, applyMiddleware(thunk));
-  const defaultValues = generateDefaultValues(questionnaire.item);
+  const defaultReactHookFormValues = defaultValues ?? createIntitialFormValues(questionnaire.item);
 
   return customRender(
     <ReferoContainer
@@ -144,7 +147,7 @@ function renderRefero({ questionnaire, props, initialState, resources }: InputPr
       onChange={() => {}}
       {...props}
     />,
-    { store, defaultValues }
+    { store, defaultValues: defaultReactHookFormValues }
   );
 }
 export * from '@testing-library/react';
