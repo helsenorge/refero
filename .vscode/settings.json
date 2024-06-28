@@ -30,5 +30,6 @@
   },
   "peacock.color": "#5dc9e2",
   "eslint.runtime": "node",
-  "typescript.experimental.updateImportsOnPaste": true
+  "typescript.experimental.updateImportsOnPaste": true,
+  "vitest.disableWorkspaceWarning": true
 }
