@@ -23,7 +23,7 @@ import {
 import { GlobalState } from '..';
 
 export function pathify(...linkIds: string[]): Path[] {
-  return linkIds.map(id => ({ linkId: id.split('^')[0], ...(id.includes('^') && { index: Number(id.split('^')[1]) }) } as Path));
+  return linkIds.map(id => ({ linkId: id.split('^')[0], ...(id.includes('^') && { index: Number(id.split('^')[1]) }) }) as Path);
 }
 
 export function pathifyExpand(linkId: string): Path[] {

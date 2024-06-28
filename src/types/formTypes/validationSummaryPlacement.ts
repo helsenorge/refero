@@ -1,4 +1,4 @@
 export enum ValidationSummaryPlacement {
-  Top = "Top",
-  Bottom = "Bottom"
+  Top = 'Top',
+  Bottom = 'Bottom',
 }

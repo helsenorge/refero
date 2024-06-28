@@ -12,7 +12,7 @@ import { isIE11 } from './index';
 //   assign it a new value each time it is called.
 export function IE11HackToWorkAroundBug187484(): void {
   if (isIE11()) {
-    window.setTimeout(function() {
+    window.setTimeout(function () {
       const heights = ['1.51', '1.5'];
       const elem = document.getElementsByTagName('body')[0];
       const currentHeight = elem.style.lineHeight || '1.5';

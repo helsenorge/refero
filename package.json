@@ -17,6 +17,7 @@
   "type": "module",
   "scripts": {
     "lint": "eslint --ext .ts,.tsx src/ --fix",
+    "prettier": "prettier --write src/",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:ui": "vitest --ui",

@@ -6,4 +6,4 @@ export const TableCodes = {
 } as const;
 
 export type TABLE_CODES_KEYS = keyof typeof TableCodes;
-export type TABLE_CODES_VALUES = typeof TableCodes[TABLE_CODES_KEYS];
+export type TABLE_CODES_VALUES = (typeof TableCodes)[TABLE_CODES_KEYS];

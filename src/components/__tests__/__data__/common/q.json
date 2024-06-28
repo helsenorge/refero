@@ -13,9 +13,7 @@
   "approvalDate": "2018-02-02",
   "lastReviewDate": "2018-02-02",
   "copyright": "Er utviklet av Direktoratet for e-helse til fri benyttelse",
-  "subjectType": [
-    "Person"
-  ],
+  "subjectType": ["Person"],
   "item": [
     {
       "linkId": "1",
