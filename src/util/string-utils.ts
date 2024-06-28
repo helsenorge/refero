@@ -10,7 +10,7 @@ export const isEmpty = (string: string | undefined | null): boolean => {
 };
 
 /**
- * Returnerer true når strengen inneholder følgende symboler: "!#¤%=?`´^¨~*:;£${[\]}|§€><\|
+ * Returnerer true når strengen inneholder følgende symboler:"!#¤%=?`´^¨~*:;£${[\]}|§€><\|
  * @param s - streng som skal sjekkes
  */
 export const hasInvalidCharacters = (s: string): boolean => {

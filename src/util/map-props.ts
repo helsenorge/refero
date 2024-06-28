@@ -64,7 +64,7 @@ function getValueIfDataReceiver(
       const formData = getFormData(state);
       let result = evaluateFhirpathExpressionToGetString(extension, formData?.Content);
 
-      if (!!getCalculatedExpressionExtension(originalProps.item)) {
+      if (getCalculatedExpressionExtension(originalProps.item)) {
         result = result.map((m: any) => m.value as number);
       }
 

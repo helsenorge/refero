@@ -51,7 +51,7 @@ terms above.
  */
 
 /** Used to map HTML entities to characters. */
-const htmlUnescapes = {
+const htmlUnescapes: { [key: string]: string } = {
   '&amp;': '&',
   '&lt;': '<',
   '&gt;': '>',
