@@ -13,6 +13,7 @@
         "system": "urn:ietf:bcp:47",
         "code": "nb-NO",
         "display": "Bokmål"
+        "display": "Bokmål"
       }
     ],
     "security": [
@@ -143,7 +144,16 @@
             "display": "Nei"
           }
         }
-      ]
+      ],
+      "required": false,
+      "_text": {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+            "valueMarkdown": "**Gruppe 2**"
+          }
+        ]
+      }
     }
   ]
 }
