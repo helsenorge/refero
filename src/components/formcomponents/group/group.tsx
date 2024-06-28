@@ -112,8 +112,8 @@ export const Group = ({
 
   const renderContextTypeGrid = (): JSX.Element => {
     const columns = getColumns(item);
-    const headers = columns.map(c => <th key={item.linkId + '-' + c}>{c}</th>);
-    headers.unshift(<th key={item.linkId + 'X'}>{item.text ? item.text : ''}</th>);
+    const headers = columns.map((c, i) => <th key={`${item.linkId}-${c}-${i}`}>{c}</th>);
+    headers.unshift(<th key={`${item.linkId}-X`}>{item.text ? item.text : ''}</th>);
 
     const newRenderContext = new RenderContext(RenderContextType.Grid, item.linkId, columns);
     return (

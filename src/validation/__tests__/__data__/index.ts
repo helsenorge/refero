@@ -8,4 +8,29 @@ const qDecimal: Questionnaire = JSON.parse(fs.readFileSync(__dirname + '/qDecima
 const qText: Questionnaire = JSON.parse(fs.readFileSync(__dirname + '/qText.json').toString());
 const qQuantity: Questionnaire = JSON.parse(fs.readFileSync(__dirname + '/qQuantity.json').toString());
 const qBoolean: Questionnaire = JSON.parse(fs.readFileSync(__dirname + '/qBoolean.json').toString());
-export { q, qString, qInteger, qDecimal, qText, qQuantity, qBoolean };
+const qChoiceRadio: Questionnaire = JSON.parse(fs.readFileSync(__dirname + '/qChoiceRadio.json').toString());
+const qChoiceCheckbox: Questionnaire = JSON.parse(fs.readFileSync(__dirname + '/qChoiceCheckbox.json').toString());
+const qOpenChoiceRadio: Questionnaire = JSON.parse(fs.readFileSync(__dirname + '/qOpenChoiceRadio.json').toString());
+const qOpenChoiceCheckbox: Questionnaire = JSON.parse(fs.readFileSync(__dirname + '/qOpenChoiceCheckbox.json').toString());
+const qChoiceDropdown: Questionnaire = JSON.parse(fs.readFileSync(__dirname + '/qChoiceDropdown.json').toString());
+const qOpenChoiceDropdown: Questionnaire = JSON.parse(fs.readFileSync(__dirname + '/qOpenChoiceDropdown.json').toString());
+const qChoiceSlider: Questionnaire = JSON.parse(fs.readFileSync(__dirname + '/qChoiceSlider.json').toString());
+const qAttachment: Questionnaire = JSON.parse(fs.readFileSync(__dirname + '/qAttachment.json').toString());
+
+export {
+  q,
+  qAttachment,
+  qChoiceSlider,
+  qOpenChoiceCheckbox,
+  qOpenChoiceRadio,
+  qString,
+  qInteger,
+  qDecimal,
+  qText,
+  qQuantity,
+  qBoolean,
+  qChoiceRadio,
+  qChoiceCheckbox,
+  qChoiceDropdown,
+  qOpenChoiceDropdown,
+};

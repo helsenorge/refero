@@ -99,32 +99,20 @@
   "item": [
     {
       "linkId": "94f65769-6303-4ef4-9a9f-77a2a7c3b8fd",
-      "type": "choice",
-      "text": "Tom dynamisk",
+      "type": "open-choice",
+      "text": "Tom dropdown",
       "required": true,
-      "answerOption": [
+      "answerValueSet": "#1102",
+      "extension": [
         {
-          "valueCoding": {
-            "id": "0c1a4cdc-be97-45a0-8479-1401fee72718",
-            "code": "ja",
-            "system": "urn:uuid:79389321-cfb3-4cd9-8b4a-c7e4171db0c5",
-            "display": "ja"
-          }
-        },
-        {
-          "valueCoding": {
-            "id": "85b43054-e072-4019-979c-7be293373f13",
-            "code": "nei",
-            "system": "urn:uuid:79389321-cfb3-4cd9-8b4a-c7e4171db0c5",
-            "display": "nei"
-          }
-        },
-        {
-          "valueCoding": {
-            "id": "4a97bb8d-3a2b-4422-8ca7-72e0ce358469",
-            "code": "vet-ikke",
-            "system": "urn:uuid:79389321-cfb3-4cd9-8b4a-c7e4171db0c5",
-            "display": "vet ikke"
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                "code": "drop-down"
+              }
+            ]
           }
         }
       ]
@@ -132,7 +120,7 @@
     {
       "linkId": "6ee016c0-5001-433a-8647-eabe8142f3c2",
       "type": "open-choice",
-      "text": "Preutfylt dynamisk",
+      "text": "Preutfylt dropdown",
       "required": true,
       "answerValueSet": "#1102",
       "initial": [
@@ -141,6 +129,19 @@
             "system": "urn:oid:2.16.578.1.12.4.1.1102",
             "code": "2",
             "display": "Nei"
+          }
+        }
+      ],
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                "code": "drop-down"
+              }
+            ]
           }
         }
       ]

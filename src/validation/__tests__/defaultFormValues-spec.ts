@@ -1,5 +1,19 @@
 import { Questionnaire } from 'fhir/r4';
-import { qString, qInteger, qDecimal, qText, qQuantity, qBoolean } from './__data__';
+import {
+  qString,
+  qInteger,
+  qOpenChoiceCheckbox,
+  qDecimal,
+  qText,
+  qQuantity,
+  qBoolean,
+  qChoiceRadio,
+  qOpenChoiceRadio,
+  qChoiceCheckbox,
+  qChoiceDropdown,
+  qChoiceSlider,
+  qAttachment,
+} from './__data__';
 import { ReferoProps } from '@/types/referoProps';
 import { renderRefero } from '@test/test-utils';
 import { getResources } from '../../../preview/resources/referoResources';
@@ -39,18 +53,96 @@ describe('Default form values', () => {
   describe.skip('Initial date value', () => {});
   describe.skip('Initial dateTime value', () => {});
   describe.skip('Initial time value', () => {});
-  describe.skip('Initial choice value', () => {
-    describe('initial Radiobutton value', () => {});
-    describe('initial checkbox value', () => {});
-    describe('initial dropdown value', () => {});
-    describe('initial autosuggest value', () => {});
+  describe('Initial choice value', () => {
+    describe('initial Radiobutton value', () => {
+      it('prefilled values should not cause a validation error on submit', async () => {
+        const wrapper = createWrapper(qChoiceRadio);
+        await submitForm();
+        expect(wrapper.queryByTestId(/summary-element-Preutfylt radioknapper/i)).not.toBeInTheDocument();
+      });
+      it('empty fields should not cause a validation error on submit', async () => {
+        const wrapper = createWrapper(qChoiceRadio);
+        await submitForm();
+        expect(wrapper.queryByTestId(/summary-element-Tom radioknapper/i)).toBeInTheDocument();
+      });
+    });
+    describe('initial checkbox value', () => {
+      it('prefilled values should not cause a validation error on submit', async () => {
+        const wrapper = createWrapper(qChoiceCheckbox);
+        await submitForm();
+        expect(wrapper.queryByTestId(/summary-element-Preutfylt checkbox/i)).not.toBeInTheDocument();
+      });
+      it('empty fields should not cause a validation error on submit', async () => {
+        const wrapper = createWrapper(qChoiceCheckbox);
+        await submitForm();
+        expect(wrapper.queryByTestId(/summary-element-Tom checkbox/i)).toBeInTheDocument();
+      });
+    });
+    describe('initial dropdown value', () => {
+      it('prefilled values should not cause a validation error on submit', async () => {
+        const wrapper = createWrapper(qChoiceDropdown);
+        await submitForm();
+        expect(wrapper.queryByTestId(/summary-element-Preutfylt dropdown/i)).not.toBeInTheDocument();
+      });
+      it('empty fields should not cause a validation error on submit', async () => {
+        const wrapper = createWrapper(qChoiceDropdown);
+        await submitForm();
+        expect(wrapper.queryByTestId(/summary-element-Tom dropdown/i)).toBeInTheDocument();
+      });
+    });
+    describe.skip('initial autosuggest value', () => {});
+    describe('initial slider value', () => {
+      it('prefilled values should not cause a validation error on submit', async () => {
+        const wrapper = createWrapper(qChoiceSlider);
+        await submitForm();
+        expect(wrapper.queryByTestId(/summary-element-Preutfylt slider/i)).not.toBeInTheDocument();
+      });
+      it('empty fields should not cause a validation error on submit', async () => {
+        const wrapper = createWrapper(qChoiceSlider);
+        await submitForm();
+        expect(wrapper.queryByTestId(/summary-element-Tom slider/i)).toBeInTheDocument();
+      });
+    });
   });
-  describe.skip('Initial open choice value', () => {
-    describe('initial Radiobutton value', () => {});
-    describe('initial checkbox value', () => {});
-    describe('initial dropdown value', () => {});
-    describe('initial autosuggest value', () => {});
-    describe('initial radiobutton extra-field value', () => {});
+  describe('Initial open choice value', () => {
+    describe('initial Radiobutton value', () => {
+      it('prefilled values should not cause a validation error on submit', async () => {
+        const wrapper = createWrapper(qOpenChoiceRadio);
+        await submitForm();
+        expect(wrapper.queryByTestId(/summary-element-Preutfylt radioknapper/i)).not.toBeInTheDocument();
+      });
+      it('empty fields should not cause a validation error on submit', async () => {
+        const wrapper = createWrapper(qOpenChoiceRadio);
+        await submitForm();
+        expect(wrapper.queryByTestId(/summary-element-Tom radioknapper/i)).toBeInTheDocument();
+      });
+    });
+    describe('initial checkbox value', () => {
+      it('prefilled values should not cause a validation error on submit', async () => {
+        const wrapper = createWrapper(qOpenChoiceCheckbox);
+        await submitForm();
+        wrapper.debug(undefined, 1000000);
+        expect(wrapper.queryByTestId(/summary-element-Preutfylt checkbox/i)).not.toBeInTheDocument();
+      });
+      it('empty fields should not cause a validation error on submit', async () => {
+        const wrapper = createWrapper(qOpenChoiceCheckbox);
+        await submitForm();
+        expect(wrapper.queryByTestId(/summary-element-Tom checkbox/i)).toBeInTheDocument();
+      });
+    });
+    describe('initial dropdown value', () => {
+      it('prefilled values should not cause a validation error on submit', async () => {
+        const wrapper = createWrapper(qChoiceDropdown);
+        await submitForm();
+        expect(wrapper.queryByTestId(/summary-element-Preutfylt dropdown/i)).not.toBeInTheDocument();
+      });
+      it('empty fields should not cause a validation error on submit', async () => {
+        const wrapper = createWrapper(qChoiceDropdown);
+        await submitForm();
+        expect(wrapper.queryByTestId(/summary-element-Tom dropdown/i)).toBeInTheDocument();
+      });
+    });
+    describe.skip('initial autosuggest value', () => {});
   });
   describe('Initial string value', () => {
     it('prefilled values should not cause a validation error on submit', async () => {
@@ -76,7 +168,13 @@ describe('Default form values', () => {
       expect(wrapper.queryByTestId(/summary-element-Tom boolean/i)).toBeInTheDocument();
     });
   });
-  describe.skip('Initial attachment value', () => {});
+  describe('Initial attachment value', () => {
+    it('empty fields should not cause a validation error on submit', async () => {
+      const wrapper = createWrapper(qAttachment);
+      await submitForm();
+      expect(wrapper.queryByTestId(/summary-element-Tom attachment/i)).toBeInTheDocument();
+    });
+  });
   describe('Initial quantity value', () => {
     it('prefilled values should not cause a validation error on submit', async () => {
       const wrapper = createWrapper(qQuantity);
