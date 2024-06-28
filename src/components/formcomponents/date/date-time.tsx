@@ -281,7 +281,7 @@ const DateTimeInput: React.FC<Props> = ({
           dateValue={date ? undefined : defaultDate}
           minDate={minDateTime}
           maxDate={maxDateTime}
-          onChange={(e, newDate) => {
+          onChange={(_e, newDate) => {
             handleDateChange(newDate);
           }}
         />
