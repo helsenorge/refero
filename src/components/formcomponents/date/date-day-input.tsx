@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { format } from 'date-fns';
+import { format, isValid, parse } from 'date-fns';
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireItemInitial } from 'fhir/r4';
 import { Controller, FieldError } from 'react-hook-form';
 
@@ -100,7 +100,16 @@ export const DateDayInput = ({
   };
 
   const handleDateChange = (value: string | Date | undefined): void => {
-    const newValue = value ? format(value, 'dd.MM.yyyy') : '';
+    let newValue = '';
+    if (typeof value !== 'string' && isValid(value)) {
+      const valueAsString = value ? format(value, 'dd.MM.yyyy') : '';
+      newValue = valueAsString;
+    } else if (typeof value == 'string') {
+      const valueAsDate = parse(value, 'dd.MM.yyyy', new Date());
+      if (isValid(valueAsDate)) {
+        newValue = value;
+      }
+    }
     onDateValueChange(newValue);
   };
 
