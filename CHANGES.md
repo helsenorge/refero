@@ -56,6 +56,12 @@
 
 - Rework of refero with new components
 - removed old components and added new from @helsenorge designsystem
+## 15.0.9
+
+---
+
+- Bugfix:
+  - fix a bug with sorting strings that looks like numbers. now trying to parse all stings as numbers and if they are numbers, sort as numbers
 
 ## 15.0.8
 
