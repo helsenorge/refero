@@ -131,7 +131,7 @@ type ItemTypeToDataTypeMap = {
 };
 export const getPrimitiveValueFromItemType = <
   ItemType extends keyof ItemTypeToDataTypeMap,
-  DisplayType extends ItemTypeToDataTypeMap[ItemType]
+  DisplayType extends ItemTypeToDataTypeMap[ItemType],
 >(
   type: IItemType,
   res: QuestionnaireResponseItemAnswer,
@@ -165,7 +165,7 @@ export const getPrimitiveValueFromItemType = <
   }
 };
 export function getQuestionnaireResponseItemAnswer(
-  type: typeof ItemType[keyof typeof ItemType],
+  type: (typeof ItemType)[keyof typeof ItemType],
   result: never[]
 ): QuestionnaireResponseItemAnswer | Array<QuestionnaireResponseItemAnswer> {
   switch (type) {
@@ -235,7 +235,7 @@ export const getValueIfDataReceiver = (
       });
     }
 
-    return getQuestionnaireResponseItemAnswer(item.type as Exclude<typeof ItemType[keyof typeof ItemType], 'url'>, result);
+    return getQuestionnaireResponseItemAnswer(item.type as Exclude<(typeof ItemType)[keyof typeof ItemType], 'url'>, result);
   }
   return undefined;
 };
@@ -243,7 +243,7 @@ export const getValueIfDataReceiver = (
 export const convertValuesToStrings = (values: Array<string | number | Quantity>): string[] => values.map(value => value.toString());
 
 export const extractValuesFromAnswer = (
-  type: typeof ItemType[keyof typeof ItemType],
+  type: (typeof ItemType)[keyof typeof ItemType],
   questionnaireAnswer?: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]
 ): Array<string | number | Quantity> => {
   if (questionnaireAnswer === undefined) {
@@ -255,7 +255,7 @@ export const extractValuesFromAnswer = (
 };
 
 export const transformAnswersToListOfStrings = (
-  type: typeof ItemType[keyof typeof ItemType],
+  type: (typeof ItemType)[keyof typeof ItemType],
   answer?: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]
 ): string[] => {
   const value = extractValuesFromAnswer(type, answer);
@@ -397,10 +397,28 @@ export const sortByItemType = (aValue: string, bValue: string, sortOrder: SortDi
     case ItemType.STRING:
     case ItemType.TEXT:
     case ItemType.OPENCHOICE:
-      return compareStrings(aValue, bValue, sortOrder);
+    case ItemType.CHOICE:
+      return isNumber(aValue, bValue) ? compareNumbers(aValue, bValue, sortOrder) : compareStrings(aValue, bValue, sortOrder);
     default:
-      return compareStrings(aValue, bValue, sortOrder);
+      return isNumber(aValue, bValue) ? compareNumbers(aValue, bValue, sortOrder) : compareStrings(aValue, bValue, sortOrder);
   }
+};
+const isNumber = (aValue: string, bValues: string): boolean => {
+  return isNumberString(aValue) && isNumberString(bValues);
+};
+const isNumberString = (str: string): boolean => {
+  str = str.trim();
+
+  if (str === '') {
+    return false;
+  }
+  const numberRegex = /^-?\d+(\.\d+)?([eE][-+]?\d+)?$/;
+
+  if (!numberRegex.test(str)) {
+    return false;
+  }
+  const number = Number(str);
+  return !isNaN(number);
 };
 
 const extractNumber = (value: string | undefined): number => {
