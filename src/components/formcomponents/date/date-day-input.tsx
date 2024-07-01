@@ -154,15 +154,12 @@ export const DateDayInput = ({
           },
           validate: {
             validDate: value => {
-              console.log(value);
               return validateDate(parseStringToDateDDMMYYYY(value), resources);
             },
             validMinDate: value => {
-              console.log(value);
               return validateMinDate(minDate, parseStringToDateDDMMYYYY(value), resources);
             },
             validMaxDate: value => {
-              console.log(value);
               return validateMaxDate(maxDate, parseStringToDateDDMMYYYY(value), resources);
             },
           },
