@@ -1,12 +1,12 @@
 import { Questionnaire, QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItemAnswer, ValueSet } from 'fhir/r4';
 
-import { fireEvent, waitFor, userEvent, renderRefero, act, findByRole } from '../../../__tests__/test-utils/test-utils';
+import { waitFor, userEvent, renderRefero, act, findByRole } from '@test/test-utils.tsx';
 import { q } from './__data__/index';
 import { generateQuestionnaireResponse } from '../../../../actions/generateQuestionnaireResponse';
 import valueSet from '../../../../constants/valuesets';
 import { Extensions } from '../../../../constants/extensions';
-import { clickButtonTimes, submitForm } from '../../../__tests__/test-utils/selectors';
-import { addPropertyToQuestionnaireItem } from '../../../__tests__/test-utils/questionnairHelpers';
+import { clickButtonTimes, submitForm } from '../../../../../test/selectors';
+import { addPropertyToQuestionnaireItem } from '../../../../../test/questionnairHelpers';
 import { getResources } from '../../../../../preview/resources/referoResources';
 import { vi } from 'vitest';
 
@@ -92,7 +92,7 @@ describe('autosuggest-view', () => {
   describe('delete button', () => {
     it('Should render delete button if item repeats and number of repeated items is greater than minOccurance(2)', async () => {
       const questionnaire = addPropertyToQuestionnaireItem(q, 'repeats', true);
-      const { getByTestId, queryAllByTestId } = renderRefero({ questionnaire });
+      const { queryAllByTestId } = renderRefero({ questionnaire });
 
       await clickButtonTimes(/-repeat-button/i, 2);
 
@@ -197,9 +197,12 @@ describe('autosuggest-view', () => {
   });
   it('skal kalle fetchValueSet når input endres', async () => {
     const fetchValueSetFn = vi.fn();
-    const { getByLabelText } = renderRefero({ questionnaire: q, props: { fetchValueSet: fetchValueSetFn } });
-    expect(getByLabelText('Mistenkt legemiddel')).toBeInTheDocument();
-    userEvent.type(getByLabelText('Mistenkt legemiddel'), 'test');
+    const { getByTestId, getByText } = renderRefero({ questionnaire: q, props: { fetchValueSet: fetchValueSetFn } });
+    expect(getByText('Mistenkt legemiddel')).toBeInTheDocument();
+
+    await act(async () => {
+      userEvent.type(getByTestId('item_af3cff52-5879-4db0-c671-1fb2bec90309-label'), 'test');
+    });
 
     await waitFor(() => expect(fetchValueSetFn).toHaveBeenCalled());
   });
@@ -213,10 +216,10 @@ describe('autosuggest-view', () => {
     ) => {
       successCallback(successReturnValueSet);
     };
-    const { getByLabelText, getByText } = renderRefero({ questionnaire: q, props: { fetchValueSet: fetchValueSetFn } });
-    expect(getByLabelText('Mistenkt legemiddel')).toBeInTheDocument();
+    const { getByTestId, getByText } = renderRefero({ questionnaire: q, props: { fetchValueSet: fetchValueSetFn } });
+    expect(getByText('Mistenkt legemiddel')).toBeInTheDocument();
     await act(async () => {
-      userEvent.paste(getByLabelText('Mistenkt legemiddel'), 't');
+      userEvent.type(getByTestId('item_af3cff52-5879-4db0-c671-1fb2bec90309-label'), 't');
     });
     expect(getByText('Fyrstekake')).toBeInTheDocument();
   });
@@ -241,10 +244,10 @@ describe('autosuggest-view', () => {
         },
       });
     };
-    const { getByLabelText, getByText } = renderRefero({ questionnaire: q, props: { fetchValueSet: fetchValueSetFn } });
-    expect(getByLabelText('Mistenkt legemiddel')).toBeInTheDocument();
+    const { getByTestId, getByText } = renderRefero({ questionnaire: q, props: { fetchValueSet: fetchValueSetFn } });
+    expect(getByText('Mistenkt legemiddel')).toBeInTheDocument();
     await act(async () => {
-      userEvent.type(getByLabelText('Mistenkt legemiddel'), 't');
+      userEvent.type(getByTestId('item_af3cff52-5879-4db0-c671-1fb2bec90309-label'), 't');
     });
 
     expect(getByText(/ Prøv med et annet ord eller sjekk for skrivefeil/i)).toBeInTheDocument();
@@ -270,13 +273,16 @@ describe('autosuggest-view', () => {
         },
       });
     };
-    const { getByLabelText, queryByText } = renderRefero({ questionnaire: q, props: { fetchValueSet: fetchValueSetFn } });
-
-    expect(getByLabelText('Mistenkt legemiddel')).toBeInTheDocument();
-    await act(async () => {
-      userEvent.type(getByLabelText('Mistenkt legemiddel'), 't');
+    const { getByText, queryByText, getByTestId } = renderRefero({
+      questionnaire: q,
+      props: { fetchValueSet: fetchValueSetFn },
     });
-    fireEvent.blur(getByLabelText('Mistenkt legemiddel'));
+
+    expect(getByText('Mistenkt legemiddel')).toBeInTheDocument();
+    await act(async () => {
+      userEvent.type(getByTestId('item_af3cff52-5879-4db0-c671-1fb2bec90309-label'), 'f');
+      userEvent.tab();
+    });
 
     expect(queryByText(/ Prøv med et annet ord eller sjekk for skrivefeil/i)).not.toBeInTheDocument();
   });
@@ -291,13 +297,15 @@ describe('autosuggest-view', () => {
       ) => {
         successCallback(successReturnValueSet);
       };
-      const { getByLabelText, getByText } = renderRefero({ questionnaire: q, props: { onChange, fetchValueSet } });
+      const { getByTestId, getByText } = renderRefero({ questionnaire: q, props: { onChange, fetchValueSet } });
 
-      expect(getByLabelText('Mistenkt legemiddel')).toBeInTheDocument();
+      expect(getByText('Mistenkt legemiddel')).toBeInTheDocument();
       await act(async () => {
-        userEvent.type(getByLabelText('Mistenkt legemiddel'), 't');
+        userEvent.type(getByTestId('item_af3cff52-5879-4db0-c671-1fb2bec90309-label'), 't');
       });
-      await act(async () => userEvent.click(getByText('Fyrstekake')));
+      await act(async () => {
+        userEvent.click(getByText('Fyrstekake'));
+      });
       const expectedAnswer: QuestionnaireResponseItemAnswer = {
         valueCoding: {
           code: '1',
@@ -319,11 +327,11 @@ describe('autosuggest-view', () => {
     ) => {
       errorCallback('feil');
     };
-    const { getByLabelText, getByText } = renderRefero({ questionnaire: q, props: { fetchValueSet } });
+    const { getByTestId, getByText } = renderRefero({ questionnaire: q, props: { fetchValueSet } });
 
-    expect(getByLabelText('Mistenkt legemiddel')).toBeInTheDocument();
+    expect(getByText('Mistenkt legemiddel')).toBeInTheDocument();
     await act(async () => {
-      userEvent.type(getByLabelText('Mistenkt legemiddel'), 't');
+      userEvent.type(getByTestId('item_af3cff52-5879-4db0-c671-1fb2bec90309-label'), 't');
     });
     await waitFor(() => expect(getByText('Teknisk feil')).toBeInTheDocument());
   });

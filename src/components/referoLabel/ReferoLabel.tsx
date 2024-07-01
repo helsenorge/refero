@@ -15,8 +15,10 @@ type Props = {
   labelId: string;
   testId: string;
   labelText?: LabelText[];
-  renderHelpButton: () => JSX.Element | undefined;
+  renderHelpButton?: () => JSX.Element | undefined;
   htmlFor?: string;
+  sublabelId?: string;
+  sublabelTestId?: string;
 };
 
 export const ReferoLabel = ({
@@ -29,6 +31,8 @@ export const ReferoLabel = ({
   labelText,
   htmlFor,
   testId,
+  sublabelId,
+  sublabelTestId,
 }: Props): JSX.Element => {
   const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
   const lblText = getLabelText(item, onRenderMarkdown, questionnaire, resources);
@@ -39,11 +43,11 @@ export const ReferoLabel = ({
       labelTexts={labelText || []}
       htmlFor={htmlFor}
       className="page_refero__label"
-      afterLabelChildren={renderHelpButton()}
+      afterLabelChildren={renderHelpButton && renderHelpButton()}
     >
       <div>
         <SafeText text={lblText} />
-        {subLabelText && <SubLabel subLabelText={subLabelText} />}
+        {subLabelText && <SubLabel id={sublabelId} testId={sublabelTestId} subLabelText={subLabelText} />}
       </div>
     </Label>
   );

@@ -5,7 +5,7 @@ import Valueset from '../../util/__tests__/__data__/valuesets/valueset-8459';
 import { createItemControlExtension } from '../__tests__/utils';
 import itemControlConstants from '../../constants/itemcontrol';
 import itemType, { IItemType } from '../../constants/itemType';
-import { renderRefero } from './test-utils/test-utils';
+import { renderRefero } from '../../../test/test-utils';
 
 describe('Components render children', () => {
   it('attachments with children renders', () => {

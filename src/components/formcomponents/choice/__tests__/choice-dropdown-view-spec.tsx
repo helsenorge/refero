@@ -1,9 +1,9 @@
 import { Questionnaire } from 'fhir/r4';
-import { act, findByRole, renderRefero, userEvent } from '../../../__tests__/test-utils/test-utils';
+import { act, findByRole, renderRefero, userEvent } from '@test/test-utils.tsx';
 import { dropdownView as q } from './__data__/index';
 import { ReferoProps } from '../../../../types/referoProps';
 import { Extensions } from '../../../../constants/extensions';
-import { clickButtonTimes, submitForm } from '../../../__tests__/test-utils/selectors';
+import { clickButtonTimes, submitForm } from '../../../../../test/selectors';
 import { getResources } from '../../../../../preview/resources/referoResources';
 import { vi } from 'vitest';
 

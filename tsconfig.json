@@ -1,6 +1,8 @@
 {
   "extends": "./tsconfig.build.json",
   "compilerOptions": {
+    "types": ["vite/client", "vitest/globals", "vitest/jsdom"],
+    "typeRoots": ["./node_modules/@types"],
     "baseUrl": "."
   }
 }

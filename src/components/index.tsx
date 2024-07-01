@@ -50,7 +50,7 @@ import {
 import { RenderContext } from '../util/renderContext';
 import { AnswerPad, ScoringCalculator } from '../util/scoringCalculator';
 import { shouldFormBeDisplayedAsStepView } from '../util/shouldFormBeDisplayedAsStepView';
-import { generateDefaultValues } from '../validation/defaultFormValues';
+import { createIntitialFormValues } from '../validation/defaultFormValues';
 interface StateProps {
   formDefinition: FormDefinition | null;
   formData: FormData | null;
@@ -60,7 +60,8 @@ const Refero = (props: StateProps & DispatchProps & ReferoProps): JSX.Element | 
   IE11HackToWorkAroundBug187484();
   const questionnaire = props.questionnaire ? props.questionnaire : props.formDefinition?.Content;
   // const schema = createZodSchemaFromQuestionnaire(questionnaire, props.resources, questionnaire?.contained);
-  const defualtVals = React.useMemo(() => generateDefaultValues(questionnaire?.item), [questionnaire?.item?.length]);
+  const defualtVals = React.useMemo(() => createIntitialFormValues(questionnaire?.item), [questionnaire?.item?.length]);
+  // console.log('defualtVals', defualtVals);
   const methods = useForm({
     defaultValues: defualtVals,
     shouldFocusError: false,
@@ -232,17 +233,16 @@ const Refero = (props: StateProps & DispatchProps & ReferoProps): JSX.Element | 
               </div>
             ) : undefined;
           const path = createPathForItem(props.path, item, responseItem, index);
-          const idWithLinkIdAndItemIndex = `${item.linkId}${
-            props?.path && props?.path[0] && props?.path[0].index ? `-${props.path[0].index}` : ''
-          }${index ? `-${index}` : ''}`;
+
           // legg på blindzone rett over den første seksjonen
           if (isNavigatorEnabled && item.type === ItemType.GROUP && !isNavigatorBlindzoneInitiated) {
             isNavigatorBlindzoneInitiated = true;
             renderedItems.push(<section id={NAVIGATOR_BLINDZONE_ID}></section>);
           }
           renderedItems.push(
+            // @ts-expect-error missing props
             <Comp
-              idWithLinkIdAndItemIndex={idWithLinkIdAndItemIndex}
+              idWithLinkIdAndItemIndex={`${item.linkId}${createIdSuffix(path, index, item.repeats)}`}
               language={formDefinition.Content?.language}
               pdf={pdf}
               includeSkipLink={isNavigatorEnabled && item.type === ItemType.GROUP}

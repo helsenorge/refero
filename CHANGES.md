@@ -1,3 +1,11 @@
+## 16.0.0-beta11
+
+- fixed types for lib.
+
+## 16.0.0-beta10
+
+- added new function for react hook form default values.
+
 ## 16.0.0-beta09
 
 - Update github actions

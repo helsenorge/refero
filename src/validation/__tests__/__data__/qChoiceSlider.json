@@ -1,0 +1,184 @@
+{
+  "title": "Default verdi",
+  "description": "Tester default verdi for validering",
+  "resourceType": "Questionnaire",
+  "language": "nb-NO",
+  "name": "DefaultVerdi",
+  "status": "active",
+  "publisher": "NHN",
+  "meta": {
+    "profile": ["http://ehelse.no/fhir/StructureDefinition/sdf-Questionnaire"],
+    "tag": [
+      {
+        "system": "urn:ietf:bcp:47",
+        "code": "nb-NO",
+        "display": "Bokmål"
+      }
+    ],
+    "security": [
+      {
+        "code": "3",
+        "display": "Helsehjelp (Full)",
+        "system": "urn:oid:2.16.578.1.12.4.1.1.7618"
+      }
+    ]
+  },
+  "contact": [
+    {
+      "name": "http://www.nhn.no"
+    }
+  ],
+  "subjectType": ["Patient"],
+  "extension": [
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sidebar",
+      "valueCoding": {
+        "system": "http://helsenorge.no/fhir/ValueSet/sdf-sidebar",
+        "code": "1"
+      }
+    },
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-information-message",
+      "valueCoding": {
+        "system": "http://helsenorge.no/fhir/ValueSet/sdf-information-message",
+        "code": "1"
+      }
+    },
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefintion/sdf-itemControl-visibility",
+      "valueCodeableConcept": {
+        "coding": [
+          {
+            "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
+            "code": "hide-help",
+            "display": "Hide help texts"
+          },
+          {
+            "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
+            "code": "hide-sublabel",
+            "display": "Hide sublabel texts"
+          }
+        ]
+      }
+    }
+  ],
+  "id": "1ce1a649-f81a-4f97-8c36-8a798a0e025a",
+  "contained": [
+    {
+      "url": "http://ehelse.no/fhir/ValueSet/Predefined",
+      "resourceType": "ValueSet",
+      "id": "1102",
+      "version": "1.0",
+      "name": "urn:oid:1102",
+      "title": "Ja / Nei / Vet ikke (structor)",
+      "status": "draft",
+      "publisher": "Direktoratet for e-helse",
+      "compose": {
+        "include": [
+          {
+            "system": "urn:oid:2.16.578.1.12.4.1.1102",
+            "concept": [
+              {
+                "code": "1",
+                "display": "Ja"
+              },
+              {
+                "code": "2",
+                "display": "Nei"
+              },
+              {
+                "code": "3",
+                "display": "Vet ikke"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "item": [
+    {
+      "linkId": "94f65769-6303-4ef4-9a9f-77a2a7c3b8fd",
+      "type": "open-choice",
+      "text": "Tom slider",
+      "code": [
+        {
+          "code": "label",
+          "display": "Display value",
+          "system": "http://helsenorge.no/fhir/CodeSystem/SliderDisplayType"
+        },
+        {
+          "code": "LabelLeft",
+          "display": "min",
+          "system": "http://helsenorge.no/fhir/CodeSystem/SliderLabels"
+        },
+        {
+          "code": "LabelRight",
+          "display": "max",
+          "system": "http://helsenorge.no/fhir/CodeSystem/SliderLabels"
+        }
+      ],
+      "required": true,
+      "answerValueSet": "#1102",
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                "code": "slider"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "6ee016c0-5001-433a-8647-eabe8142f3c2",
+      "type": "open-choice",
+      "text": "Preutfylt slider",
+      "code": [
+        {
+          "code": "label",
+          "display": "Display value",
+          "system": "http://helsenorge.no/fhir/CodeSystem/SliderDisplayType"
+        },
+        {
+          "code": "LabelLeft",
+          "display": "min",
+          "system": "http://helsenorge.no/fhir/CodeSystem/SliderLabels"
+        },
+        {
+          "code": "LabelRight",
+          "display": "max",
+          "system": "http://helsenorge.no/fhir/CodeSystem/SliderLabels"
+        }
+      ],
+      "required": true,
+      "answerValueSet": "#1102",
+      "initial": [
+        {
+          "valueCoding": {
+            "system": "urn:oid:2.16.578.1.12.4.1.1102",
+            "code": "2",
+            "display": "Nei"
+          }
+        }
+      ],
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                "code": "slider"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,9 +1,8 @@
 import React from 'react';
-import { act, render, screen } from './test-utils/test-utils';
+import { act, render, screen } from '../../../test/test-utils';
 import userEvent from '@testing-library/user-event';
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
-import '@testing-library/jest-dom';
 
 import { Questionnaire, QuestionnaireItem } from 'fhir/r4';
 
@@ -16,7 +15,7 @@ import RenderingOptionsData from './__data__/renderingOptions';
 import ChoiceCopyFrom from './__data__/copyFrom/choice';
 import { createItemControlExtension, findItemById } from '../__tests__/utils';
 import itemcontrol from '../../constants/itemcontrol';
-import { selectCheckboxOption } from './test-utils/selectors';
+import { selectCheckboxOption } from '../../../test/selectors';
 
 describe('Component renders help items', () => {
   it('help button should be visible and control the help element', async () => {

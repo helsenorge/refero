@@ -1,10 +1,10 @@
 import { Questionnaire, QuestionnaireResponseItemAnswer } from 'fhir/r4';
-import { act, findByRole, renderRefero, userEvent } from '../../../__tests__/test-utils/test-utils';
+import { act, findByRole, renderRefero, userEvent } from '@test/test-utils.tsx';
 import { q } from './__data__';
 import { ReferoProps } from '../../../../types/referoProps';
 import { Extensions } from '../../../../constants/extensions';
-import { clickButtonTimes, submitForm, typeByLabelText } from '../../../__tests__/test-utils/selectors';
-import { addManyPropertiesToQuestionnaireItem } from '../../../__tests__/test-utils/questionnairHelpers';
+import { clickButtonTimes, submitForm, typeByLabelText } from '../../../../../test/selectors';
+import { addManyPropertiesToQuestionnaireItem } from '../../../../../test/questionnairHelpers';
 import { getResources } from '../../../../../preview/resources/referoResources';
 import { vi } from 'vitest';
 

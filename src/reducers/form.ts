@@ -208,14 +208,6 @@ function processDeleteRepeatItemAction(action: NewValueAction, state: Form): For
   });
 }
 
-// function addInitialValueToBooleanItem(definitionItem: QuestionnaireItem): QuestionnaireResponseItemAnswer[] | undefined {
-//   if (definitionItem.initial && definitionItem.initial.length > 0 && definitionItem.initial[0].valueBoolean !== undefined) {
-//     return [{ valueBoolean: definitionItem.initial[0].valueBoolean }];
-//   } else {
-//     return [{ valueBoolean: false }];
-//   }
-// }
-
 function copyItem(
   source: QuestionnaireResponseItem,
   target: QuestionnaireResponseItem | undefined,

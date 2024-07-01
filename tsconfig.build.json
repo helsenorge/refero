@@ -1,10 +1,9 @@
 {
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
-    "types": ["vite/client"],
     "moduleResolution": "bundler",
     "noEmit": true
   },
-  "include": ["src", "test"],
-  "exclude": ["**/__tests__/*", "**/__mocks__/*", "**/*-spec.*", "**/__data__/*", "node_modules", "lib", "config"]
+  "include": ["src", "test", "preview"],
+  "exclude": ["**/__mocks__/*", "**/__data__/*"]
 }

@@ -1,107 +1,95 @@
-import { QuestionnaireItem } from 'fhir/r4';
+import { Attachment, QuestionnaireItem, QuestionnaireItemInitial, Reference } from 'fhir/r4';
 
-import itemControlConstants from '../constants/itemcontrol';
 import ItemType, { IItemType } from '../constants/itemType';
-import valueSet from '../constants/valuesets';
-import { getItemControlValue } from '../util/choice';
-import { getItemControlExtensionValue } from '../util/extension';
-export const defaultValuesForType: Record<IItemType, unknown> = {
-  [ItemType.TEXT]: '', // Default value for text items
-  [ItemType.QUANTITY]: null, // Default value for quantity items
-  [ItemType.CHOICE]: [], // Default value for choice items
-  [ItemType.BOOLEAN]: false, // Default value for boolean items
-  [ItemType.INTEGER]: '', // Default value for integer items
-  [ItemType.DECIMAL]: '', // Default value for decimal items
-  [ItemType.DATE]: '', // Default value for date items
-  [ItemType.DATETIME]: '', // Default value for dateTime items
-  [ItemType.TIME]: '', // Default value for time items
-  [ItemType.REFERENCE]: '', // Default value for reference items
-  [ItemType.ATTATCHMENT]: [], // Default value for attachment items
-  [ItemType.URL]: '', // Default value for url items
-  [ItemType.QUESTION]: '', // Default value for question items
-  [ItemType.GROUP]: '', // Default value for group items
-  [ItemType.DISPLAY]: '', // Default value for display items
-  [ItemType.OPENCHOICE]: [], // Default value for open-choice items,
-  [ItemType.STRING]: '', // Default value for string items
-};
-type DefaultValues = Record<string, unknown>;
 
-const getDefaultFormValuesForType = (item: QuestionnaireItem): unknown => {
+export type DefaultValues = Record<string, IItemType | unknown>;
+
+export const createIntitialFormValues = (items?: QuestionnaireItem[]): DefaultValues => {
+  if (!items) return {};
+  const createInitialFormValuesForItems = (items: QuestionnaireItem[]): DefaultValues => {
+    return items.reduce((acc: DefaultValues, item) => {
+      const key = item.repeats ? `${item.linkId}^0` : item.linkId;
+      const itemValue = getInitialFormValueForItemtype(key, item);
+      if (!item.readOnly) {
+        acc = { ...acc, ...(itemValue && itemValue) };
+      }
+      if (item.item && item.item.length > 0) {
+        const nestedDefaults = createInitialFormValuesForItems(item.item);
+        Object.assign(acc, nestedDefaults);
+      }
+      return acc;
+    }, {});
+  };
+  return createInitialFormValuesForItems(items);
+};
+const excludedTypes = ['group', 'display', 'reference', 'url'];
+type excludedTypes = 'group' | 'display' | 'reference' | 'url';
+const getInitialFormValueForItemtype = (key: string, item: QuestionnaireItem): DefaultValues | undefined => {
+  if (excludedTypes.includes(item.type)) return;
   switch (item.type) {
     case ItemType.DATE:
       return { [`${item.linkId}-yearmonth-year`]: '', [`${item.linkId}-yearmonth-month`]: ''};
     case ItemType.DATETIME:
-      return { [`${item.linkId}-date`]: '', [`${item.linkId}-hours`]: '', [`${item.linkId}-minutes`]: '' };
-    case ItemType.CHOICE:
-    case ItemType.OPENCHOICE:
-      const itemControlValue = getItemControlValue(item);
-      switch (itemControlValue) {
-        case itemControlConstants.CHECKBOX:
-          return [];
-        default:
-          return '';
-      }
+      return { [`${key}-date`]: '', [`${key}-hours`]: '', [`${key}-minutes`]: '' };
+    case ItemType.TIME:
+      return { [`${key}-hours`]: '', [`${key}-minutes`]: '' };
+    case ItemType.DATE:
+      return { [key]: '' };
     default:
-      return defaultValuesForType[item.type];
+      return { [key]: getValueforFormItem(item) };
   }
 };
 
-const getInitialValueForItem = (item: QuestionnaireItem): unknown => {
-  if (item.initial)
-    if (item.initial && item.initial.length > 0) {
-      return item.initial.map(
-        x =>
-          x.valueBoolean ||
-          x.valueString ||
-          x.valueInteger ||
-          x.valueDecimal ||
-          x.valueDate ||
-          x.valueDateTime ||
-          x.valueTime ||
-          x.valueAttachment ||
-          x.valueReference ||
-          x?.valueQuantity?.value ||
-          x?.valueCoding?.code
-      );
-    }
-  return getDefaultFormValuesForType(item);
-};
-
-// Recursively generate a nested structure of default values
-export const generateDefaultValues = (items?: QuestionnaireItem[]): DefaultValues => {
-  const nestedDefaultValues = items?.reduce((acc: DefaultValues, item) => {
-    const key = item.linkId;
-    // Assign default value only if not read-only
-    if (!item.readOnly) {
-      acc[key] = getInitialValueForItem(item);
-    }
-
-    // Process nested items if any, even if current item is read-only
-    if (item.item && item.item.length > 0) {
-      const nestedDefaults = generateDefaultValues(item.item);
-      Object.assign(acc, nestedDefaults);
-    }
-    return acc;
-  }, {});
-  return flattenAndFilterDefaults(nestedDefaultValues, items);
-};
-
-// Flatten the structure and remove entries of unwanted types
-const flattenAndFilterDefaults = (defaults?: DefaultValues, items?: QuestionnaireItem[]): DefaultValues => {
-  const flatDefaults: DefaultValues = {};
-  const excludedTypes = ['group', 'display', 'reference', 'url'];
-
-  for (const key in defaults) {
-    // Extract the type from the key
-    const item = items?.find(item => key === item.linkId);
-    if (!item) continue;
-    const type = item?.type;
-    //exclude help elements
-    const isHelpElement =
-      getItemControlExtensionValue(item)?.find(x => x.system === valueSet.QUESTIONNAIRE_ITEM_CONTROL_SYSTEM)?.code === 'help';
-    if (!type || !excludedTypes.includes(type) || !isHelpElement) {
-      flatDefaults[key] = defaults[key];
-    }
+const getValueforFormItem = (
+  item: QuestionnaireItem
+): string | number | boolean | symbol | (string | number | boolean | Attachment | Reference | undefined)[] | null => {
+  if (item.initial && item.initial.length > 0) {
+    return initialValuesBasedOnItemType(item.initial);
   }
-  return flatDefaults;
+  return getDefaultValuesForQuestionnaireItemType(item.type);
+};
+const initialValuesBasedOnItemType = (
+  initial: QuestionnaireItemInitial[]
+): (string | number | boolean | Attachment | Reference | undefined)[] => {
+  return initial
+    .map(
+      x =>
+        x.valueBoolean ||
+        x.valueString ||
+        x.valueInteger ||
+        x.valueDecimal ||
+        x.valueDate ||
+        x.valueDateTime ||
+        x.valueTime ||
+        x.valueAttachment ||
+        x.valueReference ||
+        x?.valueQuantity?.value ||
+        x?.valueCoding?.code
+    )
+    .filter(x => x !== undefined);
+};
+export const getDefaultValuesForQuestionnaireItemType = (
+  type: QuestionnaireItem['type']
+): string | number | null | symbol | [] | boolean => {
+  switch (type) {
+    case ItemType.TEXT:
+    case ItemType.INTEGER:
+    case ItemType.DECIMAL:
+    case ItemType.STRING:
+      return '';
+    case ItemType.QUANTITY:
+      return null;
+    case ItemType.ATTATCHMENT:
+    case ItemType.OPENCHOICE:
+    case ItemType.CHOICE:
+      return [];
+    case ItemType.BOOLEAN:
+      return false;
+    case ItemType.DATE:
+    case ItemType.DATETIME:
+    case ItemType.TIME:
+      return '';
+    default:
+      return '';
+  }
 };

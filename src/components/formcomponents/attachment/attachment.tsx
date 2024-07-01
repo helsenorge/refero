@@ -4,14 +4,13 @@ import { QuestionnaireItem, QuestionnaireResponseItemAnswer, Attachment, Questio
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
-import { UploadedFile } from '@helsenorge/file-upload/components/dropzone';
 import { UploadFile } from '@helsenorge/file-upload/components/file-upload';
 
 import AttachmentHtml from './attachmenthtml';
 import { NewValueAction, newAttachmentAsync, removeAttachmentAsync } from '../../../actions/newValue';
 import { GlobalState } from '../../../reducers';
 import { getValidationTextExtension, getMaxOccursExtensionValue, getMinOccursExtensionValue } from '../../../util/extension';
-import { isRequired, getId, isReadOnly, isRepeat, getText, renderPrefix } from '../../../util/index';
+import { isRequired, getId, isReadOnly, isRepeat } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
 import { Resources } from '../../../util/resources';
@@ -45,7 +44,10 @@ export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
   children?: React.ReactNode;
 }
-
+type UploadedFile = {
+  name: string;
+  id: string;
+};
 export const AttachmentComponent = (props: Props): JSX.Element | null => {
   const {
     uploadAttachment,
@@ -71,7 +73,6 @@ export const AttachmentComponent = (props: Props): JSX.Element | null => {
     register,
     error,
   } = props;
-
   const onUpload = (files: UploadFile[]): void => {
     if (uploadAttachment) {
       for (const file of files) {
@@ -143,25 +144,6 @@ export const AttachmentComponent = (props: Props): JSX.Element | null => {
     return '';
   };
 
-  // shouldComponentUpdate(nextProps: Props): boolean {
-  //   const responseItemHasChanged = responseItem !== nextresponseItem;
-  //   const helpItemHasChanged = isHelpOpen !== nextisHelpOpen;
-  //   const resourcesHasChanged = JSON.stringify(resources) !== JSON.stringify(nextresources);
-  //   const attachmentErrorMessageHasChanged = attachmentErrorMessage !== nextattachmentErrorMessage;
-  //   const repeats = item.repeats ?? false;
-
-  //   return (
-  //     responseItemHasChanged ||
-  //     helpItemHasChanged ||
-  //     resourcesHasChanged ||
-  //     attachmentErrorMessageHasChanged ||
-  //     repeats ||
-  //     error?.message !== nexterror?.message
-  //   );
-  // }
-
-  const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`;
-
   if (pdf || isReadOnly(item)) {
     return (
       <TextView
@@ -183,15 +165,15 @@ export const AttachmentComponent = (props: Props): JSX.Element | null => {
           onDelete={onDelete}
           onOpen={onOpenAttachment}
           id={getId(id)}
-          labelText={labelText}
+          questionnaire={questionnaire}
+          onRenderMarkdown={onRenderMarkdown}
           uploadButtonText={getButtonText()}
           resources={resources}
           isRequired={isRequired(item)}
           multiple={isRepeat(item)}
           errorText={getValidationTextExtension(item)}
-          uploadedFiles={getAttachment()}
           onRequestAttachmentLink={onRequestAttachmentLink}
-          helpButton={renderHelpButton()}
+          renderHelpButton={renderHelpButton}
           helpElement={renderHelpElement()}
           maxFiles={getMaxOccursExtensionValue(item)}
           minFiles={getMinOccursExtensionValue(item)}

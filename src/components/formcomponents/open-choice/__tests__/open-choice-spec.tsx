@@ -1,4 +1,4 @@
-import { renderRefero, waitFor } from '../../../__tests__/test-utils/test-utils';
+import { renderRefero, waitFor } from '@test/test-utils.tsx';;
 
 import {
   QuestionnaireItem,

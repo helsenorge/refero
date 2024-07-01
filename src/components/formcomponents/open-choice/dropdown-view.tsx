@@ -6,18 +6,18 @@ import { Controller } from 'react-hook-form';
 import { Options } from '../../../types/formTypes/radioGroupOptions';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
-import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
 import Select from '@helsenorge/designsystem-react/components/Select';
 
 import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 
 import { shouldShowExtraChoice } from '../../../util/choice';
 import { getValidationTextExtension } from '../../../util/extension';
-import { isRequired, getId, getSublabelText, getText } from '../../../util/index';
+import { isRequired, getId } from '../../../util/index';
 import { Resources } from '../../../util/resources';
 import { FormProps } from '../../../validation/ReactHookFormHoc';
-import SafeText from '../../referoLabel/SafeText';
 import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
+
+import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 
 interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   options?: Array<Options>;
@@ -63,12 +63,21 @@ const DropdownView = ({
   const onChange = (e: React.ChangeEvent<HTMLSelectElement>): void => {
     handleChange(e.target.value);
   };
-  const labelText = getText(item, onRenderMarkdown, questionnaire, resources);
-  const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
   return (
     <div className="page_refero__component page_refero__component_openchoice page_refero__component_openchoice_dropdown">
       <FormGroup error={error?.message} mode="ongrey">
         {renderHelpElement()}
+        <ReferoLabel
+          item={item}
+          onRenderMarkdown={onRenderMarkdown}
+          questionnaire={questionnaire}
+          resources={resources}
+          htmlFor={getId(id)}
+          labelId={`${getId(id)}-open-choice-label`}
+          testId={`${getId(id)}-open-choice-label`}
+          sublabelId={`${getId(id)}-open-choice-sublabel`}
+          renderHelpButton={renderHelpButton}
+        />
         <Controller
           name={idWithLinkIdAndItemIndex}
           control={control}
@@ -86,16 +95,6 @@ const DropdownView = ({
               selectId={getId(id)}
               className="page_refero__input"
               testId={getId(id)}
-              label={
-                <Label
-                  htmlFor={getId(id)}
-                  labelTexts={[]}
-                  sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
-                  afterLabelChildren={renderHelpButton()}
-                >
-                  <SafeText text={labelText} />
-                </Label>
-              }
               onChange={(e): void => {
                 handleChange(e);
                 onChange(e);

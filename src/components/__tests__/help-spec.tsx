@@ -1,4 +1,4 @@
-import { render, screen } from './test-utils/test-utils';
+import { render, screen } from '../../../test/test-utils';
 import React from 'react';
 
 import { QuestionnaireItem, Extension, QuestionnaireItemAnswerOption } from 'fhir/r4';

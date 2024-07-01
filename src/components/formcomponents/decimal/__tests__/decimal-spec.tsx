@@ -1,9 +1,9 @@
 import { Questionnaire, QuestionnaireResponseItemAnswer } from 'fhir/r4';
-import { act, findByRole, renderRefero, userEvent } from '../../../__tests__/test-utils/test-utils';
+import { act, findByRole, renderRefero, userEvent } from '@test/test-utils.tsx';
 import { q } from './__data__';
 import { ReferoProps } from '../../../../types/referoProps';
 import { Extensions } from '../../../../constants/extensions';
-import { clickButtonTimes, submitForm } from '../../../__tests__/test-utils/selectors';
+import { clickButtonTimes, submitForm } from '../../../../../test/selectors';
 import { getResources } from '../../../../../preview/resources/referoResources';
 import { vi } from 'vitest';
 
@@ -211,7 +211,7 @@ describe('Decimal', () => {
           ...q,
           item: q.item?.map(x => ({ ...x, required: true })),
         };
-        const { getByTestId, getByText } = createWrapper(questionnaire);
+        const { getByText } = createWrapper(questionnaire);
         await submitForm();
 
         expect(getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
@@ -221,7 +221,7 @@ describe('Decimal', () => {
           ...q,
           item: q.item?.map(x => ({ ...x, required: true })),
         };
-        const { getByTestId, getByLabelText, queryByText } = createWrapper(questionnaire);
+        const { getByLabelText, queryByText } = createWrapper(questionnaire);
         await act(async () => {
           userEvent.type(getByLabelText(/Decimal/i), '123');
         });
@@ -234,7 +234,7 @@ describe('Decimal', () => {
           ...q,
           item: q.item?.map(x => ({ ...x, required: true })),
         };
-        const { getByTestId, getByText, queryByText, getByLabelText } = createWrapper(questionnaire);
+        const { getByText, queryByText, getByLabelText } = createWrapper(questionnaire);
         await submitForm();
         expect(getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
 
@@ -251,7 +251,7 @@ describe('Decimal', () => {
           ...q,
           item: q.item?.map(x => ({ ...x, required: false })),
         };
-        const { getByTestId, queryByText } = createWrapper(questionnaire);
+        const { queryByText } = createWrapper(questionnaire);
         await submitForm();
 
         expect(queryByText('Custom error')).not.toBeInTheDocument();
@@ -261,7 +261,7 @@ describe('Decimal', () => {
           ...q,
           item: q.item?.map(x => ({ ...x, required: false })),
         };
-        const { getByTestId, getByLabelText, queryByText } = createWrapper(questionnaire);
+        const { getByLabelText, queryByText } = createWrapper(questionnaire);
         await act(async () => {
           userEvent.type(getByLabelText(/Decimal/i), '8');
         });
@@ -274,7 +274,7 @@ describe('Decimal', () => {
           ...q,
           item: q.item?.map(x => ({ ...x, required: false })),
         };
-        const { getByTestId, getByText, queryByText, getByLabelText } = createWrapper(questionnaire);
+        const { getByText, queryByText, getByLabelText } = createWrapper(questionnaire);
         await act(async () => {
           userEvent.type(getByLabelText(/Decimal/i), '12');
         });
@@ -294,7 +294,7 @@ describe('Decimal', () => {
           ...q,
           item: q.item?.map(x => ({ ...x, required: false })),
         };
-        const { getByTestId, queryByText } = createWrapper(questionnaire);
+        const { queryByText } = createWrapper(questionnaire);
         await submitForm();
 
         expect(queryByText('Custom error')).not.toBeInTheDocument();
@@ -353,7 +353,7 @@ describe('Decimal', () => {
             required: false,
           })),
         };
-        const { getByTestId, getByLabelText, queryByText } = createWrapper(questionnaire);
+        const { getByLabelText, queryByText } = createWrapper(questionnaire);
         await act(async () => {
           userEvent.type(getByLabelText(/Decimal/i), '6.12');
         });
@@ -369,7 +369,7 @@ describe('Decimal', () => {
             required: false,
           })),
         };
-        const { getByTestId, queryByText, getByLabelText } = createWrapper(questionnaire);
+        const { queryByText, getByLabelText } = createWrapper(questionnaire);
         await act(async () => {
           userEvent.type(getByLabelText(/Decimal/i), '6.121212');
         });

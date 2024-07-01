@@ -1,4 +1,4 @@
-import { screen, userEvent, act, renderRefero } from './test-utils/test-utils';
+import { screen, userEvent, act, renderRefero } from '../../../test/test-utils';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, Quantity, Coding, Questionnaire } from 'fhir/r4';
 
@@ -16,7 +16,7 @@ import {
   createOnChangeFuncForActionRequester,
   createOnChangeFuncForQuestionnaireInspector,
 } from './utils';
-import { clickByLabelText, typeAndTabByLabelText, typeByLabelText } from './test-utils/selectors';
+import { clickByLabelText, typeAndTabByLabelText, typeByLabelText } from '../../../test/selectors';
 import { parse } from 'date-fns';
 
 function toCoding(code: string, system?: string): Coding {
@@ -80,7 +80,7 @@ describe('onAnswerChange callback gets called and can request additional changes
 
     const { container } = wrapper(onChange, questionnaireWithAllItemTypes);
     await act(async () => {
-      inputAnswer('1', 0.1, container);
+      await inputAnswer('1', 0.1, container);
     });
 
     const updatedInput = await screen.findByDisplayValue('42');
@@ -95,7 +95,7 @@ describe('onAnswerChange callback gets called and can request additional changes
 
     const { container } = wrapper(onChange, questionnaireWithAllItemTypes);
     await act(async () => {
-      inputAnswer('1', 0.1, container);
+      await inputAnswer('1', 0.1, container);
     });
     const item = findItem('2', container);
 
@@ -110,7 +110,7 @@ describe('onAnswerChange callback gets called and can request additional changes
     const { container } = wrapper(onChange, questionnaireWithAllItemTypes);
 
     await act(async () => {
-      inputAnswer('1', 0.1, container);
+      await inputAnswer('1', 0.1, container);
     });
     const item = await findItemByDispayValue('42');
     expect(item).toHaveValue(42);
@@ -124,7 +124,7 @@ describe('onAnswerChange callback gets called and can request additional changes
 
     const { container } = wrapper(onChange, questionnaireWithAllItemTypes);
     await act(async () => {
-      inputAnswer('1', 0.1, container);
+      await inputAnswer('1', 0.1, container);
     });
     const item = findItem('3', container);
     expect(item).toHaveValue(null);
@@ -236,7 +236,7 @@ describe('onAnswerChange callback gets called and can request additional changes
 
     const { container } = wrapper(onChange, questionnaireWithAllItemTypes);
 
-    inputAnswer('1', 0.1, container);
+    await inputAnswer('1', 0.1, container);
     const item = findItem('7a-datepicker_input', container);
     expect(item).toHaveValue('17.05.2020');
   });
@@ -248,7 +248,7 @@ describe('onAnswerChange callback gets called and can request additional changes
 
     const { container } = wrapper(onChange, questionnaireWithAllItemTypes);
 
-    inputAnswer('1', 0.1, container);
+    await inputAnswer('1', 0.1, container);
     const item = findItem('7a-datepicker_input', container);
     expect(item).toHaveValue(null);
   });
@@ -259,7 +259,7 @@ describe('onAnswerChange callback gets called and can request additional changes
 
     const { container } = wrapper(onChange, questionnaireWithAllItemTypes);
 
-    inputAnswer('1', 0.1, container);
+    await inputAnswer('1', 0.1, container);
 
     let item = screen.getByLabelText('#item_7b_hours');
     expect(item).toHaveValue('12');
@@ -275,7 +275,7 @@ describe('onAnswerChange callback gets called and can request additional changes
 
     const { container } = wrapper(onChange, questionnaireWithAllItemTypes);
 
-    inputAnswer('1', 0.1, container);
+    await inputAnswer('1', 0.1, container);
 
     let item = screen.getByLabelText('#item_7b_hours');
     expect(item).toHaveValue(null);
@@ -290,7 +290,7 @@ describe('onAnswerChange callback gets called and can request additional changes
 
     const { container } = wrapper(onChange, questionnaireWithAllItemTypes);
 
-    inputAnswer('1', 0.1, container);
+    await inputAnswer('1', 0.1, container);
 
     const item = screen.getByTestId('date-time-picker');
     const date = item.getAttribute('value') || '';
@@ -305,7 +305,7 @@ describe('onAnswerChange callback gets called and can request additional changes
 
     const { container } = wrapper(onChange, questionnaireWithAllItemTypes);
 
-    inputAnswer('1', 0.1, container);
+    await inputAnswer('1', 0.1, container);
 
     const item = screen.getByTestId('date-time-picker');
     const date = item.getAttribute('value');

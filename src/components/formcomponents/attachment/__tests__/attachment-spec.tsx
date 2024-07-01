@@ -1,10 +1,7 @@
-import React from 'react';
-
-import { Matcher, render, screen } from '../../../__tests__/test-utils/test-utils';
+import { Matcher, render, screen } from '@test/test-utils.tsx';
 
 import userEvent from '@testing-library/user-event';
 
-import '@testing-library/jest-dom';
 import {
   MimeType_For_Test_Util as MIME_TYPES_TEST,
   createMockAttachmentProps,
@@ -27,22 +24,6 @@ vi.mock('@helsenorge/file-upload/components/file-upload/useFileUpload', () => ({
     setRejectedFiles: vi.fn(),
   })),
 }));
-
-beforeAll(() => {
-  Object.defineProperty(window, 'matchMedia', {
-    writable: true,
-    value: vi.fn().mockImplementation(query => ({
-      matches: false,
-      media: query,
-      onchange: null,
-      addListener: vi.fn(), // Deprecated but included for compatibility
-      removeListener: vi.fn(), // Deprecated but included for compatibility
-      addEventListener: vi.fn(),
-      removeEventListener: vi.fn(),
-      dispatchEvent: vi.fn(),
-    })),
-  });
-});
 
 const mockFileTooLarge = 'Filstørrelsen må være mindre enn {0} MB';
 const wrongFileTypeMsg = 'Feil filtype';

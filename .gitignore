@@ -4,5 +4,9 @@ lib/
 .jest-cache/
 coverage/
 test-report.xml
+sonar-report.xml
 .npmrc
 vite.config.ts.timestamp*
+vitest.config.ts.timestamp*
+
+html/

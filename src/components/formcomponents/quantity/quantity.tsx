@@ -13,7 +13,6 @@ import { ThunkDispatch } from 'redux-thunk';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Input from '@helsenorge/designsystem-react/components/Input';
-import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
 
 import { NewValueAction, newQuantityValueAsync } from '../../../actions/newValue';
 import { GlobalState } from '../../../reducers';
@@ -24,14 +23,15 @@ import {
   getQuestionnaireUnitExtensionValue,
   getValidationTextExtension,
 } from '../../../util/extension';
-import { isReadOnly, getId, getSublabelText, isRequired, getDecimalPattern, getLabelText } from '../../../util/index';
+import { isReadOnly, getId, isRequired, getDecimalPattern } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
 import { Resources } from '../../../util/resources';
 import ReactHookFormHoc, { FormProps } from '../../../validation/ReactHookFormHoc';
-import SafeText from '../../referoLabel/SafeText';
 import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 import TextView from '../textview';
+
+import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 
 export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   item: QuestionnaireItem;
@@ -66,7 +66,6 @@ const Quantity = ({
   onRenderMarkdown,
   resources,
   error,
-  control,
   pdf,
   idWithLinkIdAndItemIndex,
   renderDeleteButton,
@@ -133,17 +132,6 @@ const Quantity = ({
     return '';
   };
 
-  // shouldComponentUpdate(nextProps: Props): boolean {
-  //   const responseItemHasChanged = responseItem !== nextresponseItem;
-  //   const helpItemHasChanged = isHelpOpen !== nextisHelpOpen;
-  //   const answerHasChanged = answer !== nextanswer;
-  //   const resourcesHasChanged = JSON.stringify(resources) !== JSON.stringify(nextresources);
-  //   const repeats = item.repeats ?? false;
-  //   const newErrorMessage = error?.message !== nexterror?.message;
-
-  //   return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats || answerHasChanged || newErrorMessage;
-  // }
-
   if (pdf || isReadOnly(item)) {
     return (
       <TextView
@@ -159,8 +147,6 @@ const Quantity = ({
     );
   }
   const value = getValue();
-  const labelText = getLabelText(item, onRenderMarkdown, questionnaire, resources);
-  const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
   const decimalPattern = getDecimalPattern(item);
   const minValue = getMinValueExtensionValue(item);
   const maxValue = getMaxValueExtensionValue(item);
@@ -170,11 +156,21 @@ const Quantity = ({
     <div className="page_refero__component page_refero__component_quantity">
       <FormGroup error={error?.message} mode="ongrey">
         {renderHelpElement()}
+        <ReferoLabel
+          item={item}
+          onRenderMarkdown={onRenderMarkdown}
+          questionnaire={questionnaire}
+          resources={resources}
+          htmlFor={getId(id)}
+          labelId={`${getId(id)}-quantity-label`}
+          testId={`${getId(id)}-quantity-label`}
+          sublabelId={`${getId(id)}-quantity-sublabel`}
+          renderHelpButton={renderHelpButton}
+        />
         <Controller
           name={idWithLinkIdAndItemIndex}
-          control={control}
           shouldUnregister={true}
-          defaultValue={getValue()}
+          defaultValue={value}
           rules={{
             required: {
               value: isRequired(item),
@@ -205,17 +201,6 @@ const Quantity = ({
               <Input
                 {...rest}
                 value={value !== undefined ? value + '' : ''}
-                label={
-                  <Label
-                    htmlFor={getId(id)}
-                    className="page_refero__label"
-                    labelTexts={[]}
-                    sublabel={<Sublabel id={`${getId(id)}-sublabel`} sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
-                    afterLabelChildren={renderHelpButton()}
-                  >
-                    <SafeText text={labelText} />
-                  </Label>
-                }
                 type="number"
                 inputId={getId(id)}
                 testId={getId(id)}

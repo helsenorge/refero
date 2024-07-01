@@ -13,8 +13,8 @@ import tsconfigPaths from 'vite-tsconfig-paths';
 
 const OUTPUT_DIRECTORY = 'lib';
 
-export default defineConfig(({ command }) => {
-  const dev = command === 'serve';
+export default defineConfig(({ command, isPreview }) => {
+  const dev = command === 'serve' && !isPreview;
 
   return {
     root: dev ? path.resolve(__dirname, './preview') : path.resolve(__dirname, ''),
@@ -37,7 +37,7 @@ export default defineConfig(({ command }) => {
         { find: '@components', replacement: path.resolve(__dirname, 'src/components') },
         { find: '@formcomponents', replacement: path.resolve(__dirname, 'src/components/formcomponents') },
         { find: '@constants', replacement: path.resolve(__dirname, 'src/constants') },
-
+        { find: '@test', replacement: path.resolve(__dirname, 'test') },
         { find: /^~(.*)$/, replacement: '$1' },
       ],
     },
@@ -49,6 +49,7 @@ export default defineConfig(({ command }) => {
       commonjsOptions: {
         transformMixedEsModules: true,
       },
+
       lib: {
         entry: path.resolve(__dirname, 'src/index.ts'),
         formats: ['es'],
@@ -83,7 +84,7 @@ export default defineConfig(({ command }) => {
           repository: pkg.repository,
           version: pkg.version,
           module: 'refero.es.js',
-          types: 'types/index.d.ts',
+          types: 'types/src/index.d.ts',
           license: pkg.license,
           dependencies: pkg.dependencies,
           peerDependencies: pkg.peerDependencies,

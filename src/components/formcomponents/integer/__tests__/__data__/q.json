@@ -81,7 +81,7 @@
         },
         {
           "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sublabel",
-          "valueMarkdown": "min: 5, max: 10, **Custom error**"
+          "valueMarkdown": "min: 5, max: 10, **Custom err**"
         },
         {
           "url": "http://ehelse.no/fhir/StructureDefinition/repeatstext",

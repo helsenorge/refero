@@ -1,6 +1,5 @@
-import { vi } from 'vitest';
-
 import '@testing-library/jest-dom/vitest';
+import { vi } from 'vitest';
 
 import './__mocks__/matchMedia';
 import './__mocks__/IntersectionObserver';
@@ -14,3 +13,8 @@ Object.defineProperty(window, 'scrollTo', {
   writable: true,
 });
 window.HTMLElement.prototype.scrollIntoView = vi.fn();
+const scrollIntoViewMock = vi.fn();
+vi.stubGlobal('scrollIntoView', scrollIntoViewMock);
+afterEach(() => {
+  vi.useRealTimers();
+});

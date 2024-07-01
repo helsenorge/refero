@@ -7,21 +7,21 @@ import { ThunkDispatch } from 'redux-thunk';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Input from '@helsenorge/designsystem-react/components/Input';
-import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
 
 import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 
 import { NewValueAction, newDecimalValueAsync } from '../../../actions/newValue';
 import { GlobalState } from '../../../reducers';
 import { getMaxValueExtensionValue, getMinValueExtensionValue, getPlaceholder, getValidationTextExtension } from '../../../util/extension';
-import { isReadOnly, getId, getSublabelText, renderPrefix, getText, getDecimalPattern, isRequired } from '../../../util/index';
+import { isReadOnly, getId, getDecimalPattern, isRequired } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
 import { Resources } from '../../../util/resources';
 import ReactHookFormHoc, { FormProps } from '../../../validation/ReactHookFormHoc';
-import SafeText from '../../referoLabel/SafeText';
 import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 import TextView from '../textview';
+
+import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 
 export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   item: QuestionnaireItem;
@@ -105,19 +105,8 @@ const Decimal = ({
     }
   };
 
-  // shouldComponentUpdate(nextProps: Props): boolean {
-  //   const responseItemHasChanged = props.responseItem !== nextProps.responseItem;
-  //   const helpItemHasChanged = props.isHelpOpen !== nextProps.isHelpOpen;
-  //   const answerHasChanged = props.answer !== nextProps.answer;
-  //   const resourcesHasChanged = JSON.stringify(props.resources) !== JSON.stringify(nextProps.resources);
-  //   const repeats = props.item.repeats ?? false;
-  //   const newErrorMessage = props.error?.message !== nextProps.error?.message;
-  //   return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats || answerHasChanged || newErrorMessage;
-  // }
-
   const value = getValue(item, answer);
-  const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`;
-  const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
+
   if (pdf || isReadOnly(item)) {
     return (
       <TextView
@@ -139,6 +128,17 @@ const Decimal = ({
   return (
     <div className="page_refero__component page_refero__component_decimal">
       {renderHelpElement()}
+      <ReferoLabel
+        item={item}
+        onRenderMarkdown={onRenderMarkdown}
+        questionnaire={questionnaire}
+        resources={resources}
+        htmlFor={getId(id)}
+        labelId={`${getId(id)}-label-decimal`}
+        testId={`${getId(id)}-decimal-label`}
+        sublabelId={`${getId(id)}-decimal-sublabel`}
+        renderHelpButton={renderHelpButton}
+      />
       <FormGroup error={error?.message} mode="ongrey">
         <Controller
           name={idWithLinkIdAndItemIndex}
@@ -176,18 +176,6 @@ const Decimal = ({
               inputId={getId(id)}
               name={getId(id)}
               value={value ? value + '' : ''}
-              label={
-                <Label
-                  className="page_refero__label"
-                  htmlFor={getId(id)}
-                  testId={`${getId(id)}-label-decimal`}
-                  labelTexts={[]}
-                  sublabel={<Sublabel id="select-sublabel" sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
-                  afterLabelChildren={renderHelpButton()}
-                >
-                  <SafeText text={labelText} />
-                </Label>
-              }
               placeholder={getPlaceholder(item)}
               className="page_refero__input"
               onChange={(e): void => {

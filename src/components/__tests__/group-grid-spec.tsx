@@ -1,7 +1,7 @@
 import '../../util/__tests__/defineFetch';
 import { Questionnaire } from 'fhir/r4';
 import GroupGridModel from './__data__/group-grid';
-import { renderRefero, screen } from './test-utils/test-utils';
+import { renderRefero, screen } from '../../../test/test-utils';
 
 describe('group-grid-spec', () => {
   it('renders table with reordered items', () => {
@@ -28,7 +28,7 @@ function validateRow(wrapper: Element, expectedNumCells: number, expectedItemLin
   expect(numCells).toHaveLength(expectedNumCells);
 
   expectedItemLinkIds.forEach(expectedItemLinkId => {
-    const id = `item_${expectedItemLinkId}-label-decimal`;
+    const id = `item_${expectedItemLinkId}-decimal-label`;
     const cell = screen.queryByTestId(id);
     expect(cell).toBeInTheDocument();
   });

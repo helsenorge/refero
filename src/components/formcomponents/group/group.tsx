@@ -58,24 +58,6 @@ export const Group = ({
   headerTag,
   renderHelpButton,
 }: Props): JSX.Element | null => {
-  // shouldComponentUpdate(nextProps: Props): boolean {
-  //   const responseItemHasChanged = props.responseItem !== nextProps.responseItem;
-  //   const helpItemHasChanged = props.isHelpOpen !== nextProps.isHelpOpen;
-  //   const repeatButtonHasChanged = props.repeatButton !== nextProps.repeatButton;
-  //   const attachmentErrorMessageHasChanged = props.attachmentErrorMessage !== nextProps.attachmentErrorMessage;
-  //   const resourcesHasChanged = JSON.stringify(props.resources) !== JSON.stringify(nextProps.resources);
-
-  //   const repeats = props.item.repeats ?? false;
-  //   return (
-  //     responseItemHasChanged ||
-  //     helpItemHasChanged ||
-  //     repeatButtonHasChanged ||
-  //     attachmentErrorMessageHasChanged ||
-  //     resourcesHasChanged ||
-  //     repeats
-  //   );
-  // }
-
   const renderAllItems = (item: QuestionnaireItem): JSX.Element => {
     const localRenderContextType = getLocalRenderContextType(item);
 
@@ -130,8 +112,8 @@ export const Group = ({
 
   const renderContextTypeGrid = (): JSX.Element => {
     const columns = getColumns(item);
-    const headers = columns.map(c => <th key={item.linkId + '-' + c}>{c}</th>);
-    headers.unshift(<th key={item.linkId + 'X'}>{item.text ? item.text : ''}</th>);
+    const headers = columns.map((c, i) => <th key={`${item.linkId}-${c}-${i}`}>{c}</th>);
+    headers.unshift(<th key={`${item.linkId}-X`}>{item.text ? item.text : ''}</th>);
 
     const newRenderContext = new RenderContext(RenderContextType.Grid, item.linkId, columns);
     return (

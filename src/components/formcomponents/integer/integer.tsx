@@ -7,21 +7,21 @@ import { ThunkDispatch } from 'redux-thunk';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Input from '@helsenorge/designsystem-react/components/Input';
-import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
 
 import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 
 import { NewValueAction, newIntegerValueAsync } from '../../../actions/newValue';
 import { GlobalState } from '../../../reducers';
 import { getPlaceholder, getMaxValueExtensionValue, getMinValueExtensionValue, getValidationTextExtension } from '../../../util/extension';
-import { isReadOnly, isRequired, getId, getSublabelText, getLabelText } from '../../../util/index';
+import { isReadOnly, isRequired, getId } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
 import { Resources } from '../../../util/resources';
 import ReactHookFormHoc, { FormProps } from '../../../validation/ReactHookFormHoc';
-import SafeText from '../../referoLabel/SafeText';
 import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 import TextView from '../textview';
+
+import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 
 export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   item: QuestionnaireItem;
@@ -103,16 +103,6 @@ const Integer = ({
     }
   };
 
-  // shouldComponentUpdate(nextProps: Props): boolean {
-  //   const responseItemHasChanged = responseItem !== nextresponseItem;
-  //   const helpItemHasChanged = isHelpOpen !== nextisHelpOpen;
-  //   const answerHasChanged = answer !== nextanswer;
-  //   const resourcesHasChanged = JSON.stringify(resources) !== JSON.stringify(nextresources);
-  //   const repeats = item.repeats ?? false;
-  //   const newErrorMessage = error?.message !== nexterror?.message;
-  //   return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats || answerHasChanged || newErrorMessage;
-  // }
-
   if (pdf || isReadOnly(item)) {
     return (
       <TextView
@@ -128,8 +118,6 @@ const Integer = ({
     );
   }
   const value = getValue();
-  const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
-  const labelText = getLabelText(item, onRenderMarkdown, questionnaire, resources);
   const errorMessage = getValidationTextExtension(item);
   const minValue = getMinValueExtensionValue(item);
   const maxValue = getMaxValueExtensionValue(item);
@@ -137,6 +125,17 @@ const Integer = ({
     <div className="page_refero__component page_refero__component_integer">
       <FormGroup error={error?.message} mode="ongrey">
         {renderHelpElement()}
+        <ReferoLabel
+          item={item}
+          onRenderMarkdown={onRenderMarkdown}
+          questionnaire={questionnaire}
+          resources={resources}
+          htmlFor={getId(id)}
+          labelId={`${getId(id)}-label-integer`}
+          testId={`${getId(id)}-integer-label`}
+          sublabelId={`${getId(id)}-integer-sublabel`}
+          renderHelpButton={renderHelpButton}
+        />
         <Controller
           name={idWithLinkIdAndItemIndex}
           control={control}
@@ -167,17 +166,6 @@ const Integer = ({
               value={Array.isArray(value) ? value.join(', ') : value}
               inputId={getId(id)}
               testId={getId(id)}
-              label={
-                <Label
-                  htmlFor={getId(id)}
-                  labelTexts={[]}
-                  className="page_refero__label"
-                  sublabel={<Sublabel id={`${getId(id)}-sublabel`} sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
-                  afterLabelChildren={renderHelpButton()}
-                >
-                  <SafeText text={labelText} />
-                </Label>
-              }
               onChange={(e): void => {
                 onChange(e.target.value);
                 handleChange(e);

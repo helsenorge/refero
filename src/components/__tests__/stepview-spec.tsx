@@ -1,13 +1,11 @@
-import '@testing-library/jest-dom';
-
 import { Questionnaire } from 'fhir/r4';
 
 import '../../util/__tests__/defineFetch';
 
 import StepViewQuestionnaire from './__data__/stepview';
-import { renderRefero } from './test-utils/test-utils';
+import { renderRefero } from '../../../test/test-utils';
 import { ReferoProps } from '../../types/referoProps';
-import { clickButtonTimes, selectCheckboxOption, submitForm, typeByLabelText } from './test-utils/selectors';
+import { clickButtonTimes, selectCheckboxOption, submitForm, typeByLabelText } from '../../../test/selectors';
 import { getResources } from '../../../preview/resources/referoResources';
 import { vi } from 'vitest';
 
