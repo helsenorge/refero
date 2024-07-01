@@ -163,22 +163,21 @@ const DateComponent = (props: React.PropsWithChildren<DateProps>): JSX.Element =
       />
     );
   }
-  // else {
-  //   element = (
-  //     <DateDayInput
-  //       locale={getLocaleFromLanguage()}
-  //       label={labelEl}
-  //       subLabel={subLabelEl}
-  //       datepickerRef={datepicker}
-  //       helpButton={renderHelpButton()}
-  //       helpElement={renderHelpElement()}
-  //       onDateValueChange={onDateValueChange}
-  //       maxDate={getMaxDate()}
-  //       minDate={getMinDate()}
-  //       {...rest}
-  //     />
-  //   );
-  // }
+  else {
+    element = (
+      <DateDayInput
+        {...props}
+        locale={getLocaleFromLanguage()}
+        label={labelText}
+        subLabel={subLabelText}
+        helpButton={renderHelpButton()}
+        helpElement={renderHelpElement()}
+        onDateValueChange={onDateValueChange}
+        maxDate={getMaxDate()}
+        minDate={getMinDate()}
+      />
+    );
+  }
 
   return (
     <div className="page_refero__component page_refero__component_date">

@@ -55,7 +55,7 @@ export const getHoursOrMinutesFromDate = (date: Date | undefined, unitToGet: Dat
   return undefined;
 };
 
-export const parseStringToDateDDMMYYYY = (stringToParse: string): Date => {
+export const parseStringToDateDDMMYYYY = (stringToParse: string): Date | undefined => {
   return parse(stringToParse, 'dd.MM.yyyy', new Date());
 };
 export const formatDateToStringDDMMYYYY = (dateToFormat: Date): string => {
