@@ -57,6 +57,13 @@
 - Rework of refero with new components
 - removed old components and added new from @helsenorge designsystem
 
+## 15.0.8
+
+---
+
+- Bugfix:
+  - fix a bug in the table-hn2. Not being able to sort on the first column in the table
+
 ## 15.0.7
 
 ---
