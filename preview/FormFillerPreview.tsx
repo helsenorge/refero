@@ -11,8 +11,8 @@ import LanguageLocales from '@helsenorge/core-utils/constants/languages';
 import FormFillerSidebar from './FormFillerSidebar';
 import { emptyPropertyReplacer } from './helpers';
 import { getResources } from './resources/referoResources';
-import skjema from './skjema/q.json';
-import ReferoContainer from '../src/components/index';
+import skjema from './skjema/HSO_InvolverMeg-v0.2.5.json';
+import Refero from '../src/components/index';
 import valueSet from '../src/constants/valuesets';
 import rootReducer from '../src/reducers/index';
 import { QuestionnaireStatusCodes } from '../src/types/fhirEnums';
@@ -110,7 +110,7 @@ const FormFillerPreview = ({ showFormFiller }: Props): JSX.Element => {
           <div className="referoContainer-div">
             {!showResponse ? (
               <div className="page_refero">
-                <ReferoContainer
+                <Refero
                   key={123}
                   store={store}
                   questionnaire={getQuestionnaireFromBubndle(questionnaireForPreview, lang)}

@@ -1,6 +1,5 @@
 //Component
 export { default as Refero } from './components/index';
-export { default } from './components/index';
 
 //State
 ////Actions

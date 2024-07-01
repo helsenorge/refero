@@ -408,5 +408,5 @@ const ReferoContainer = connect(
   }),
   mapDispatchToProps
 )(Refero);
-export { ReferoContainer };
+
 export default ReferoContainer;
