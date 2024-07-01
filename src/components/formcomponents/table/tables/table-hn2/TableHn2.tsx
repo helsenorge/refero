@@ -26,7 +26,7 @@ const TableHn2 = ({ tableCodesCoding, items, questionnaireResponse }: Props): JS
   }, [sortDir, items, questionnaireResponse]);
   return rows.length ? (
     <HnTable className="page_refero__table_hn2">
-      <TableHeadHn2 sortable={!!sortIndex} setSortDir={setSortDir} sortDir={sortDir} tableCodesCoding={tableCodesCoding} />
+      <TableHeadHn2 sortable={sortIndex !== undefined} setSortDir={setSortDir} sortDir={sortDir} tableCodesCoding={tableCodesCoding} />
       <TableBody className='className="page_refero__table_hn2__body'>
         {rows.map((item, index) => {
           return (

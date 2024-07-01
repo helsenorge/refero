@@ -87,7 +87,7 @@ export const getTableHN2bodyObject = (
   const structure = createTableStructure(items, itemsToShow);
   const tableWithRemovedEmptyRows = structure.filter(row => row.columns.some(column => column.text !== ''));
 
-  if (!!sortColumnIndex && !!sortOrder) {
+  if (sortColumnIndex !== undefined && !!sortOrder) {
     return sortTableRows(tableWithRemovedEmptyRows, sortColumnIndex, sortOrder);
   }
   return tableWithRemovedEmptyRows;
