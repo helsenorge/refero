@@ -96,7 +96,7 @@ export const DateDayInput = ({
     return date ? date.map(d => d && format(d, 'd. MMMM yyyy')).join(', ') : ikkeBesvartText;
   };
 
-  const handleChange = (newDate: string | Date | undefined) => {
+  const handleChange = (newDate: string | Date | undefined): void => {
     if (typeof newDate !== 'string') {
       handleChangeDate(newDate);
     } else {
