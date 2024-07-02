@@ -2,6 +2,9 @@ import { Attachment, QuestionnaireItem, QuestionnaireItemInitial, Reference } fr
 
 import ItemType, { IItemType } from '../constants/itemType';
 
+import itemControlConstants from '@/constants/itemcontrol';
+import { getItemControlExtensionValue } from '@/util/extension';
+
 export type DefaultValues = Record<string, IItemType | unknown>;
 
 export const createIntitialFormValues = (items?: QuestionnaireItem[]): DefaultValues => {
@@ -26,13 +29,18 @@ const excludedTypes = ['group', 'display', 'reference', 'url'];
 type excludedTypes = 'group' | 'display' | 'reference' | 'url';
 const getInitialFormValueForItemtype = (key: string, item: QuestionnaireItem): DefaultValues | undefined => {
   if (excludedTypes.includes(item.type)) return;
+  const itemControls = getItemControlExtensionValue(item);
   switch (item.type) {
+    case ItemType.DATE:
+      if (itemControls && itemControls.some(itemControl => itemControl.code === itemControlConstants.YEARMONTH)) {
+        return { [`${key}-yearmonth-year`]: '', [`${key}-yearmonth-month`]: '' };
+      } else {
+        return { [key]: getValueforFormItem(item) };
+      }
     case ItemType.DATETIME:
       return { [`${key}-date`]: '', [`${key}-hours`]: '', [`${key}-minutes`]: '' };
     case ItemType.TIME:
       return { [`${key}-hours`]: '', [`${key}-minutes`]: '' };
-    case ItemType.DATE:
-      return { [key]: '' };
     default:
       return { [key]: getValueforFormItem(item) };
   }

@@ -427,4 +427,52 @@ export interface Resources {
    * Ugyldig klokkeslett
    */
   dateError_time_invalid?: string;
+  /**
+   * Januar
+   */
+  dateLabel_january?: string;
+  /**
+   * Februar
+   */
+  dateLabel_february?: string;
+  /**
+   * Mars
+   */
+  dateLabel_march?: string;
+  /**
+   * April
+   */
+  dateLabel_april?: string;
+  /**
+   * Mai
+   */
+  dateLabel_may?: string;
+  /**
+   * Juni
+   */
+  dateLabel_june?: string;
+  /**
+   * Juli
+   */
+  dateLabel_july?: string;
+  /**
+   * August
+   */
+  dateLabel_august?: string;
+  /**
+   * September
+   */
+  dateLabel_september?: string;
+  /**
+   * Oktober
+   */
+  dateLabel_october?: string;
+  /**
+   * November
+   */
+  dateLabel_november?: string;
+  /**
+   * Desember
+   */
+  dateLabel_december?: string;
 }
