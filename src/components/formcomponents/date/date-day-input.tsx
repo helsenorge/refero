@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 
-import { format, isValid, parse } from 'date-fns';
+import { format, isValid } from 'date-fns';
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireItemInitial } from 'fhir/r4';
 import { Controller, FieldError } from 'react-hook-form';
 
@@ -8,9 +8,6 @@ import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
 
 import { LanguageLocales } from '@helsenorge/core-utils/constants/languages';
-// import { DateRangePicker } from '@helsenorge/date-time/components/date-range-picker';
-// import { DatePickerErrorPhrases } from '@helsenorge/date-time/components/date-range-picker/date-range-picker-types';
-
 import DatePicker from '@helsenorge/datepicker/components/DatePicker';
 
 import { safeParseJSON } from '../../../util/date-fns-utils';
@@ -21,7 +18,7 @@ import { FormProps } from '../../../validation/ReactHookFormHoc';
 import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 import TextView from '../textview';
 
-import { parseStringToDateDDMMYYYY, validateDate, validateMaxDate, validateMinDate } from '@/util/date-utils';
+import { formatDateToStringDDMMYYYY, parseStringToDateDDMMYYYY, validateDate, validateMaxDate, validateMinDate } from '@/util/date-utils';
 
 interface DateDayInputProps extends WithCommonFunctionsAndEnhancedProps, FormProps {
   id?: string;
@@ -48,15 +45,12 @@ export const DateDayInput = ({
   pdf,
   item,
   resources,
-  locale,
   label,
   subLabel,
   helpButton,
   helpElement,
   onDateValueChange,
   onRenderMarkdown,
-  validationErrorRenderer,
-  className,
   maxDate,
   minDate,
   answer,
@@ -72,6 +66,10 @@ export const DateDayInput = ({
     }
   };
 
+  const dateAnswerValue = getDateAnswerValue(answer);
+  const parsedDateAnswerValue = parseStringToDateDDMMYYYY(dateAnswerValue);
+  const [defaultDate, setDefaultDate] = useState<Date | undefined>(parsedDateAnswerValue);
+
   const getValue = (): (Date | undefined)[] | undefined => {
     if (answer && Array.isArray(answer)) {
       return answer.map(m => safeParseJSON(String(getDateAnswerValue(m))));
@@ -83,34 +81,12 @@ export const DateDayInput = ({
 
     if (answer) {
       const parsedDate = [safeParseJSON(String(getDateAnswerValue(answer)))];
-      if (isValidDate(parsedDate[0]) === true) {
+      if (isValid(parsedDate[0]) === true) {
         return parsedDate;
       } else {
         return undefined;
       }
     }
-  };
-
-  const isValidDate = (date: Date | undefined): boolean => {
-    if (date instanceof Date) {
-      const text = Date.prototype.toString.call(date);
-      return text !== 'Invalid Date';
-    }
-    return false;
-  };
-
-  const handleDateChange = (value: string | Date | undefined): void => {
-    let newValue = '';
-    if (typeof value !== 'string' && isValid(value)) {
-      const valueAsString = value ? format(value, 'dd.MM.yyyy') : '';
-      newValue = valueAsString;
-    } else if (typeof value == 'string') {
-      const valueAsDate = parse(value, 'dd.MM.yyyy', new Date());
-      if (isValid(valueAsDate)) {
-        newValue = value;
-      }
-    }
-    onDateValueChange(newValue);
   };
 
   const getPDFValue = (): string => {
@@ -120,9 +96,39 @@ export const DateDayInput = ({
     return date ? date.map(d => d && format(d, 'd. MMMM yyyy')).join(', ') : ikkeBesvartText;
   };
 
-  const getSingleDateValue = (): Date | undefined => {
-    const date = getValue();
-    return date ? safeParseJSON(date[0]) : undefined;
+  const handleChange = (newDate: string | Date | undefined) => {
+    if (typeof newDate !== 'string') {
+      handleChangeDate(newDate);
+    } else {
+      handleChangeString(newDate);
+    }
+    if (defaultDate) {
+      setDefaultDate(undefined);
+    }
+  };
+
+  const handleChangeString = (value: string): void => {
+    const valueAsDate = parseStringToDateDDMMYYYY(value);
+    if (isValid(valueAsDate)) {
+      onDateValueChange(value);
+    } else {
+      onDateValueChange('');
+    }
+    if (defaultDate) {
+      setDefaultDate(undefined);
+    }
+  };
+
+  const handleChangeDate = (value: Date | undefined): void => {
+    if (isValid(value)) {
+      const valueAsString = formatDateToStringDDMMYYYY(value);
+      onDateValueChange(valueAsString);
+    } else {
+      onDateValueChange('');
+    }
+    if (defaultDate) {
+      setDefaultDate(undefined);
+    }
   };
 
   const getErrorText = (error: FieldError | undefined): string | undefined => {
@@ -190,9 +196,10 @@ export const DateDayInput = ({
             minDate={minDate}
             maxDate={maxDate}
             onChange={(e, newDate) => {
-              handleDateChange(newDate);
+              handleChange(newDate);
               onChange(newDate);
             }}
+            dateValue={isValid(defaultDate) ? defaultDate : undefined}
           />
         )}
       />
@@ -219,3 +226,16 @@ export const DateDayInput = ({
 // toLocaleDate(moment: Moment | undefined): Moment | undefined {
 //   return moment ? moment.locale(getLocaleFromLanguage()) : undefined;
 // }
+
+// const isValidDate = (date: Date | undefined): boolean => {
+//   if (date instanceof Date) {
+//     const text = Date.prototype.toString.call(date);
+//     return text !== 'Invalid Date';
+//   }
+//   return false;
+// };
+
+// const getSingleDateValue = (): Date | undefined => {
+//   const date = getValue();
+//   return date ? safeParseJSON(date[0]) : undefined;
+// };

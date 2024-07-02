@@ -55,7 +55,7 @@ export const getHoursOrMinutesFromDate = (date: Date | undefined, unitToGet: Dat
   return undefined;
 };
 
-export const parseStringToDateDDMMYYYY = (valueToParse: string | Date): Date | undefined => {
+export const parseStringToDateDDMMYYYY = (valueToParse: string | Date | undefined): Date | undefined => {
   if (valueToParse) {
     if (typeof valueToParse == 'string') {
       return parse(valueToParse, 'dd.MM.yyyy', new Date());
@@ -64,8 +64,8 @@ export const parseStringToDateDDMMYYYY = (valueToParse: string | Date): Date | u
     }
   }
 };
-export const formatDateToStringDDMMYYYY = (dateToFormat: Date): string => {
-  return format(dateToFormat, 'dd.MM.yyyy');
+export const formatDateToStringDDMMYYYY = (dateToFormat: Date | undefined): string => {
+  return format(dateToFormat || '', 'dd.MM.yyyy');
 };
 
 export const getMonthOptions = (resources: Resources | undefined) => {
