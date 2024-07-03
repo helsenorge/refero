@@ -115,10 +115,9 @@ describe('Date day', () => {
           return y;
         }),
       };
-      const { queryAllByLabelText, queryByTestId, debug } = createWrapper(questionnaire);
+      const { queryAllByLabelText, queryByTestId } = createWrapper(questionnaire);
       await clickButtonTimes(/-repeat-button/i, 3);
 
-      // debug(undefined, 50000);
       expect(queryAllByLabelText(/Dato/i)).toHaveLength(4);
       expect(queryByTestId(/-repeat-button/i)).not.toBeInTheDocument();
     });
@@ -178,33 +177,33 @@ describe('Date day', () => {
       expect(queryByTestId(/-delete-button/i)).not.toBeInTheDocument();
     });
   });
-  // describe('onChange', () => {
-  //   it('Should update component with value from answer', async () => {
-  //     const { getByLabelText } = createWrapper(q);
+  describe('onChange', () => {
+    it('Should update component with value from answer', async () => {
+      const { getByLabelText } = createWrapper(q);
 
-  //     const inputElement = getByLabelText(/Decimal/i);
-  //     expect(inputElement).toBeInTheDocument();
-  //     expect(inputElement).toHaveAttribute('type', 'number');
-  //     expect(inputElement).toHaveAttribute('id', `item_${q?.item?.[0].linkId}^0`);
-  //     await act(async () => {
-  //       userEvent.type(inputElement, '123');
-  //     });
-  //     expect(getByLabelText(/Decimal/i)).toHaveValue(123);
-  //   });
-  //   it('Should call onChange with correct value', async () => {
-  //     const onChange = vi.fn();
-  //     const { getByLabelText } = createWrapper(q, { onChange });
-  //     expect(getByLabelText(/Decimal/i)).toBeInTheDocument();
-  //     await act(async () => {
-  //       userEvent.type(getByLabelText(/Decimal/i), '1.2');
-  //     });
-  //     const expectedAnswer: QuestionnaireResponseItemAnswer = {
-  //       valueDecimal: 1.2,
-  //     };
-  //     expect(onChange).toHaveBeenCalledTimes(2);
-  //     expect(onChange).toHaveBeenCalledWith(expect.any(Object), expectedAnswer, expect.any(Object), expect.any(Object));
-  //   });
-  // });
+      const inputElement = getByLabelText(/Dato/i);
+      expect(inputElement).toBeInTheDocument();
+      expect(inputElement).toHaveAttribute('type', 'text');
+      expect(inputElement).toHaveAttribute('id', `item_${q?.item?.[0].linkId}^0-datepicker`);
+      await act(async () => {
+        userEvent.paste(inputElement, '31.05.1994');
+      });
+      expect(getByLabelText(/Dato/i)).toHaveValue('31.05.1994');
+    });
+    it('Should call onChange with correct value', async () => {
+      const onChange = vi.fn();
+      const { getByLabelText } = createWrapper(q, { onChange });
+      expect(getByLabelText(/Dato/i)).toBeInTheDocument();
+      await act(async () => {
+        userEvent.paste(getByLabelText(/Dato/i), '31.05.1994');
+      });
+      const expectedAnswer: QuestionnaireResponseItemAnswer = {
+        valueDate: '31.05.1994',
+      };
+      expect(onChange).toHaveBeenCalledTimes(1);
+      expect(onChange).toHaveBeenCalledWith(expect.any(Object), expectedAnswer, expect.any(Object), expect.any(Object));
+    });
+  });
   describe('Validation', () => {
     describe('Required', () => {
       it('Should show error if field is required and value is empty', async () => {
@@ -230,21 +229,21 @@ describe('Date day', () => {
 
         expect(queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
       });
-      // it('Should remove error on change if form is submitted', async () => {
-      //   const questionnaire: Questionnaire = {
-      //     ...q,
-      //     item: q.item?.map(x => ({ ...x, required: true })),
-      //   };
-      //   const { getByText, queryByText, getByLabelText } = createWrapper(questionnaire);
-      //   await submitForm();
-      //   expect(getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
+      it('Should remove error on change if form is submitted', async () => {
+        const questionnaire: Questionnaire = {
+          ...q,
+          item: q.item?.map(x => ({ ...x, required: true })),
+        };
+        const { getByText, queryByText, getByLabelText } = createWrapper(questionnaire);
+        await submitForm();
+        expect(getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
 
-      //   await act(async () => {
-      //     userEvent.type(getByLabelText(/Dato/i), '31.05.1994');
-      //     userEvent.tab();
-      //   });
-      //   expect(queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
-      // });
+        await act(async () => {
+          userEvent.type(getByLabelText(/Dato/i), '31.05.1994');
+          userEvent.tab();
+        });
+        expect(queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
+      });
     });
   });
   //   describe('maxValue', () => {
