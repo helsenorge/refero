@@ -3,20 +3,20 @@ import { useState } from 'react';
 import { composeWithDevTools } from '@redux-devtools/extension';
 import { Bundle, Questionnaire, QuestionnaireItem, QuestionnaireResponse, ValueSet } from 'fhir/r4';
 import { Provider } from 'react-redux';
-import { Store, legacy_createStore as createStore, applyMiddleware } from 'redux';
+import { Store, applyMiddleware, legacy_createStore as createStore } from 'redux';
 import thunk from 'redux-thunk';
 
 import LanguageLocales from '@helsenorge/core-utils/constants/languages';
 
-import FormFillerSidebar from './FormFillerSidebar';
-import { emptyPropertyReplacer } from './helpers';
-import { getResources } from './resources/referoResources';
-import skjema from './skjema/mandatory_date-day.json';
 import ReferoContainer from '../src/components/index';
 import valueSet from '../src/constants/valuesets';
 import rootReducer from '../src/reducers/index';
 import { QuestionnaireStatusCodes } from '../src/types/fhirEnums';
 import { EnhetType, OrgenhetHierarki } from '../src/types/orgenhetHierarki';
+import FormFillerSidebar from './FormFillerSidebar';
+import { emptyPropertyReplacer } from './helpers';
+import { getResources } from './resources/referoResources';
+import skjema from './skjema/NHN_Testskjema_Options-radio-nb-NO-v0.1.json';
 
 type Props = {
   showFormFiller: () => void;

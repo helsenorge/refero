@@ -3,12 +3,12 @@ import React from 'react';
 import classNames from 'classnames';
 import DOMPurify from 'dompurify';
 import {
-  Resource,
-  Questionnaire,
-  QuestionnaireResponseItem,
-  QuestionnaireItem,
-  QuestionnaireResponseItemAnswer,
   Attachment,
+  Questionnaire,
+  QuestionnaireItem,
+  QuestionnaireResponseItem,
+  QuestionnaireResponseItemAnswer,
+  Resource,
   ValueSet,
 } from 'fhir/r4';
 import { Collapse } from 'react-collapse';
@@ -20,26 +20,26 @@ import { OrgenhetHierarki } from '../types/orgenhetHierarki';
 import Icon from '@helsenorge/designsystem-react/components/Icon';
 import HelpSign from '@helsenorge/designsystem-react/components/Icons/HelpSign';
 
-import DeleteButton from './formcomponents/repeat/DeleteButton';
-import RepeatButton from './formcomponents/repeat/RepeatButton';
-import HelpButton from './help-button/HelpButton';
 import { NewValueAction } from '../actions/newValue';
 import itemControlConstants from '../constants/itemcontrol';
 import itemType from '../constants/itemType';
 import { GlobalState } from '../reducers';
 import { getCodingTextTableValues } from '../util/extension';
-import { findHelpItem, isHelpItem, getHelpItemType } from '../util/help';
-import { getComponentForItem, getChildHeaderTag, shouldRenderRepeatButton, getText, isHiddenItem } from '../util/index';
+import { findHelpItem, getHelpItemType, isHelpItem } from '../util/help';
+import { getChildHeaderTag, getComponentForItem, getText, isHiddenItem, shouldRenderRepeatButton } from '../util/index';
 import {
   Path,
+  createIdSuffix,
+  createPathForItem,
   getAnswerFromResponseItem,
   getItemWithIdFromResponseItemArray,
-  createPathForItem,
   shouldRenderDeleteButton,
-  createIdSuffix,
 } from '../util/refero-core';
 import { RenderContext } from '../util/renderContext';
 import { Resources } from '../util/resources';
+import DeleteButton from './formcomponents/repeat/DeleteButton';
+import RepeatButton from './formcomponents/repeat/RepeatButton';
+import HelpButton from './help-button/HelpButton';
 
 export interface WithCommonFunctionsProps {
   idWithLinkIdAndItemIndex: string;
@@ -123,6 +123,10 @@ export default function withCommonFunctions<T extends WithCommonFunctionsProps>(
         return null;
       }
 
+      const hasAnwer = (answer: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[] | undefined): boolean => {
+        return !!answer && Object.keys(answer).length > 0;
+      };
+
       let mustShowConfirm: boolean = hasAnwer(props.answer);
 
       if (!mustShowConfirm && props.responseItem && props.responseItem.item) {
@@ -170,10 +174,6 @@ export default function withCommonFunctions<T extends WithCommonFunctionsProps>(
           />
         </div>
       );
-    };
-
-    const hasAnwer = (answer: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[] | undefined): boolean => {
-      return !!answer && Object.keys(answer).length > 0;
     };
 
     const renderHelpButton = (): JSX.Element | undefined => {
@@ -266,6 +266,7 @@ export default function withCommonFunctions<T extends WithCommonFunctionsProps>(
           const idWithLinkIdAndItemIndex = `${item.linkId}${createIdSuffix(path, index, item.repeats)}`;
 
           renderedItems.push(
+            //@ts-expect-error - TS doesn't know that Comp is a React component
             <Comp
               idWithLinkIdAndItemIndex={idWithLinkIdAndItemIndex}
               key={'item_' + responseItem.linkId + createIdSuffix(path, index, item.repeats)}
