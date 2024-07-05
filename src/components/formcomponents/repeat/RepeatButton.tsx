@@ -1,9 +1,10 @@
-import Button from '@helsenorge/designsystem-react/components/Button';
-import Icon from '@helsenorge/designsystem-react/components/Icon';
-import PlusLarge from '@helsenorge/designsystem-react/components/Icons/PlusLarge';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { useDispatch } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
+
+import Button from '@helsenorge/designsystem-react/components/Button';
+import Icon from '@helsenorge/designsystem-react/components/Icon';
+import PlusLarge from '@helsenorge/designsystem-react/components/Icons/PlusLarge';
 
 import { addRepeatItem, NewValueAction } from '../../../actions/newValue';
 import { GlobalState } from '../../../reducers';

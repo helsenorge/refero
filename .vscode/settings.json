@@ -22,5 +22,9 @@
     "statusBarItem.remoteBackground": "#5dc9e2",
     "statusBarItem.remoteForeground": "#15202b"
   },
+  "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "always"
+  },
   "peacock.color": "#5dc9e2"
 }

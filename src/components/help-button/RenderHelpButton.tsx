@@ -1,11 +1,15 @@
+import { useState } from 'react';
+
+import { QuestionnaireItem } from 'fhir/r4';
+
+import Icon from '@helsenorge/designsystem-react/components/Icon';
+import HelpSign from '@helsenorge/designsystem-react/components/Icons/HelpSign';
+
+import HelpButton from './HelpButton';
+
 import ItemControlConstants from '@/constants/itemcontrol';
 import { getText } from '@/util';
 import { findHelpItem, getHelpItemType } from '@/util/help';
-import Icon from '@helsenorge/designsystem-react/components/Icon';
-import HelpSign from '@helsenorge/designsystem-react/components/Icons/HelpSign';
-import { QuestionnaireItem } from 'fhir/r4';
-import { useState } from 'react';
-import HelpButton from './HelpButton';
 
 type Props = {
   item: QuestionnaireItem;

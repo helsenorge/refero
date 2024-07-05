@@ -1,9 +1,11 @@
+import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
+
+import RepeatButton from './RepeatButton';
+
 import ItemType from '@/constants/itemType';
 import { shouldRenderRepeatButton } from '@/util';
 import { Path } from '@/util/refero-core';
 import { Resources } from '@/util/resources';
-import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
-import RepeatButton from './RepeatButton';
 
 const RenderRepeatButton = (
   item: QuestionnaireItem,

@@ -1,9 +1,11 @@
+import { QuestionnaireItem, QuestionnaireResponseItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
+
+import DeleteButton from './DeleteButton';
+
 import { GlobalState } from '@/reducers';
 import { Path } from '@/util/refero-core';
 import { RenderContext } from '@/util/renderContext';
 import { Resources } from '@/util/resources';
-import { QuestionnaireItem, QuestionnaireResponseItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
-import DeleteButton from './DeleteButton';
 
 type Props = {
   className?: string;

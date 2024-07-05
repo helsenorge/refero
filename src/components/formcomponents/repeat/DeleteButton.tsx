@@ -1,14 +1,14 @@
 import { useState } from 'react';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
+import { useDispatch } from 'react-redux';
+import { ThunkDispatch } from 'redux-thunk';
 
 import Button from '@helsenorge/designsystem-react/components/Button';
 import Icon from '@helsenorge/designsystem-react/components/Icon';
 import TrashCan from '@helsenorge/designsystem-react/components/Icons/TrashCan';
 import Modal from '@helsenorge/designsystem-react/components/Modal';
 
-import { useDispatch } from 'react-redux';
-import { ThunkDispatch } from 'redux-thunk';
 import { deleteRepeatItemAsync, NewValueAction } from '../../../actions/newValue';
 import { GlobalState } from '../../../reducers';
 import { Path } from '../../../util/refero-core';
