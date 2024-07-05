@@ -1,12 +1,12 @@
-import { Questionnaire, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { act, findByRole, renderRefero, userEvent } from '@test/test-utils.tsx';
-import { q } from './__data__';
-import { ReferoProps } from '../../../../types/referoProps';
-import { Extensions } from '../../../../constants/extensions';
-import { clickButtonTimes, submitForm, typeByLabelText } from '../../../../../test/selectors';
-import { addManyPropertiesToQuestionnaireItem } from '../../../../../test/questionnairHelpers';
-import { getResources } from '../../../../../preview/resources/referoResources';
+import { Questionnaire, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { vi } from 'vitest';
+import { getResources } from '../../../../../preview/resources/referoResources';
+import { addManyPropertiesToQuestionnaireItem } from '../../../../../test/questionnairHelpers';
+import { clickButtonTimes, submitForm, typeByLabelText } from '../../../../../test/selectors';
+import { Extensions } from '../../../../constants/extensions';
+import { ReferoProps } from '../../../../types/referoProps';
+import { q } from './__data__';
 
 const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle ut dette feltet' };
 
