@@ -1,4 +1,4 @@
-import DOMPurify from 'dompurify';
+import SafeText from './SafeText';
 
 interface Props {
   subLabelText: string;
@@ -8,14 +8,8 @@ interface Props {
 
 const SubLabel = ({ subLabelText, id, testId }: Props): JSX.Element | null => {
   return (
-    <span
-      data-testid={testId}
-      className="page_refero__sublabel"
-      id={id}
-      dangerouslySetInnerHTML={{
-        __html: DOMPurify.sanitize(subLabelText, { RETURN_TRUSTED_TYPE: true, ADD_ATTR: ['target'] }) as unknown as string,
-      }}
-    />
+    <SafeText as='span' id={id} data-testid={testId} className='page_refero__sublabel' text={subLabelText} />
+
   );
 };
 

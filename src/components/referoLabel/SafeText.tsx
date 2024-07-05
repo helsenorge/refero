@@ -1,14 +1,23 @@
 import styles from './safetext.module.css';
 
 import { SanitizeText } from '@/util/sanitize/domPurifyHelper';
-interface Props {
-  text: string;
+
+type SafeTextOwnProps<E extends React.ElementType = React.ElementType> = {
+  text: string
+  as?: E
 }
 
-const SafeText = ({ text }: Props): JSX.Element => {
+type SafeTextProps<E extends React.ElementType> = SafeTextOwnProps<E> &
+  Omit<React.ComponentProps<E>, keyof SafeTextOwnProps>
+
+const __DEFAULT_ELEMENT__ = 'h2'
+
+function SafeText<E extends React.ElementType = typeof __DEFAULT_ELEMENT__>({ text, as, ...props }: SafeTextProps<E>): JSX.Element {
+  const Component = as || __DEFAULT_ELEMENT__
   return (
-    <span
-      className={styles.safetext}
+    <Component
+      {...props}
+      className={props.classname ? props.classname : styles.safetext}
       dangerouslySetInnerHTML={{
         __html: SanitizeText(text) ?? '',
       }}

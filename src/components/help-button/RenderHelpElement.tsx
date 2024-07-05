@@ -1,6 +1,12 @@
-import { findHelpItem } from "@/util/help";
 import classNames from "classnames";
 import { QuestionnaireItem } from "fhir/r4";
+import { Collapse } from "react-collapse";
+
+import SafeText from "../referoLabel/SafeText";
+
+import ItemControlConstants from "@/constants/itemcontrol";
+import { getText } from "@/util";
+import { findHelpItem, getHelpItemType } from "@/util/help";
 
 type Props = {
   item: QuestionnaireItem,
@@ -10,18 +16,19 @@ type Props = {
     helpType: string,
     helpText: string,
     opening: boolean
-  ) => JSX.Element
+  ) => JSX.Element,
+  isHelpVisible: boolean
 }
 
-export const renderHelpElement = ({ item, onRequestHelpElement }: Props): JSX.Element | null => {
+export const renderHelpElement = ({ item, onRequestHelpElement, isHelpVisible }: Props): JSX.Element | null => {
   const helpItem = findHelpItem(item);
 
   if (!item || !helpItem) return null;
 
-  const helpItemType = getHelpItemType(helpItem) || itemControlConstants.HELP;
+  const helpItemType = getHelpItemType(helpItem) || ItemControlConstants.HELP;
 
   if (onRequestHelpElement) {
-    return onRequestHelpElement(qItem, helpItem, helpItemType, getText(helpItem), isHelpVisible);
+    return onRequestHelpElement(item, helpItem, helpItemType, getText(helpItem), isHelpVisible);
   }
 
   const collapseClasses: string = classNames({
@@ -30,14 +37,7 @@ export const renderHelpElement = ({ item, onRequestHelpElement }: Props): JSX.El
   });
   return (
     <Collapse isOpened={isHelpVisible}>
-      <SafeText />
-      <div
-        data-testid={`${helpItem.linkId}-help-element`}
-        className={collapseClasses}
-        dangerouslySetInnerHTML={{
-          __html: DOMPurify.sanitize(`${getText(helpItem)}`, { RETURN_TRUSTED_TYPE: true, ADD_ATTR: ['target'] }) as unknown as string,
-        }}
-      />
+      <SafeText as='div' text={getText(helpItem)} data-testid={`${helpItem.linkId}-help-element`} className={collapseClasses} />
     </Collapse>
   );
 };
