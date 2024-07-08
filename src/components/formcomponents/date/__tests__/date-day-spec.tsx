@@ -1,5 +1,5 @@
 import { Questionnaire, QuestionnaireResponseItemAnswer } from 'fhir/r4';
-import { act, findByRole, queryByText, renderRefero, userEvent } from '@test/test-utils.tsx';
+import { act, findByRole, renderRefero, userEvent } from '@test/test-utils.tsx';
 import { q, qMinMax, qMinMaxCustomError } from './__data__';
 import { ReferoProps } from '../../../../types/referoProps';
 import { Extensions } from '../../../../constants/extensions';
