@@ -1,10 +1,9 @@
 import React from 'react';
 
-import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem, Questionnaire } from 'fhir/r4';
+import { parseISO } from 'date-fns';
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer, Questionnaire } from 'fhir/r4';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
-
-import Label from '@helsenorge/designsystem-react/components/Label';
 
 import { LanguageLocales } from '@helsenorge/core-utils/constants/languages';
 
@@ -24,8 +23,6 @@ import { Path } from '../../../util/refero-core';
 import { Resources } from '../../../util/resources';
 import ReactHookFormHoc, { FormProps } from '../../../validation/ReactHookFormHoc';
 import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
-import { parse, parseISO } from 'date-fns';
-import { formatDateToStringDDMMYYYY, parseStringToDateDDMMYYYY } from '@/util/date-utils';
 
 export interface DateProps extends WithCommonFunctionsAndEnhancedProps, FormProps {
   item: QuestionnaireItem;
