@@ -1,6 +1,6 @@
 import { Questionnaire, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { act, findByRole, renderRefero, userEvent } from '@test/test-utils.tsx';
-import { q, qMinMax, qMinMaxCustomError } from './__data__';
+import { q, qMinMax, qMinMaxCustomError } from './__data__/date-day';
 import { ReferoProps } from '../../../../types/referoProps';
 import { Extensions } from '../../../../constants/extensions';
 import { clickButtonTimes, submitForm } from '../../../../../test/selectors';
