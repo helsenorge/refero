@@ -1,13 +1,20 @@
 import { Questionnaire, QuestionnaireResponseItemAnswer } from 'fhir/r4';
-import { act, findByRole, renderRefero, userEvent } from '@test/test-utils.tsx';
-import { q } from './__data__';
+import { act, findByRole, queryByText, renderRefero, userEvent } from '@test/test-utils.tsx';
+import { q, qMinMax, qMinMaxCustomError } from './__data__';
 import { ReferoProps } from '../../../../types/referoProps';
 import { Extensions } from '../../../../constants/extensions';
 import { clickButtonTimes, submitForm } from '../../../../../test/selectors';
 import { getResources } from '../../../../../preview/resources/referoResources';
 import { vi } from 'vitest';
 
-const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle ut dette feltet', oppgiGyldigVerdi: 'ikke gyldig tall' };
+const resources = {
+  ...getResources(''),
+  formRequiredErrorMessage: 'Du må fylle ut dette feltet',
+  oppgiGyldigVerdi: 'ikke gyldig tall',
+  dateError_invalid: 'Ugyldig dato',
+  errorBeforeMinDate: 'Dato kan ikke være før minimums dato',
+  errorAfterMaxDate: 'Dato kan ikke være etter maksimum dato',
+};
 
 describe('Date day', () => {
   describe('Render', () => {
@@ -244,146 +251,85 @@ describe('Date day', () => {
         });
         expect(queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
       });
+      it('Should show error if date is invalid', async () => {
+        const { getByLabelText, getByText } = createWrapper(q);
+
+        await act(async () => {
+          userEvent.paste(getByLabelText(/Dato/i), '313131');
+        });
+
+        await submitForm();
+        expect(getByText(resources.dateError_invalid)).toBeInTheDocument();
+      });
+      it('Should show error message for min value', async () => {
+        const { getByLabelText, getByText } = createWrapper(qMinMax);
+
+        await act(async () => {
+          userEvent.paste(getByLabelText(/Dato/i), '31.05.1904');
+        });
+
+        await submitForm();
+        expect(getByText(resources.errorBeforeMinDate + ': 31.05.1994')).toBeInTheDocument();
+      });
+      it('Should show error message for max value', async () => {
+        const { getByLabelText, getByText } = createWrapper(qMinMax);
+
+        await act(async () => {
+          userEvent.paste(getByLabelText(/Dato/i), '31.05.2095');
+        });
+
+        await submitForm();
+        expect(getByText(resources.errorAfterMaxDate + ': 31.05.2094')).toBeInTheDocument();
+      });
+      it('Should show custom error message for min value', async () => {
+        const { getByLabelText, getByText } = createWrapper(qMinMaxCustomError);
+
+        await act(async () => {
+          userEvent.paste(getByLabelText(/Dato/i), '31.05.1904');
+        });
+
+        await submitForm();
+        expect(getByText('Custom errormessage')).toBeInTheDocument();
+      });
+      it('Should show custom error message for max value', async () => {
+        const { getByLabelText, getByText } = createWrapper(qMinMaxCustomError);
+
+        await act(async () => {
+          userEvent.paste(getByLabelText(/Dato/i), '31.05.2095');
+        });
+
+        await submitForm();
+        expect(getByText('Custom errormessage')).toBeInTheDocument();
+      });
+      it('Should not show error if date value is between min value and max value', async () => {
+        const { getByLabelText, queryByText } = createWrapper(qMinMax);
+
+        await act(async () => {
+          userEvent.paste(getByLabelText(/Dato/i), '31.05.2024');
+        });
+
+        await submitForm();
+        expect(queryByText(resources.errorBeforeMinDate + ': 31.05.1994')).not.toBeInTheDocument();
+        expect(queryByText(resources.errorAfterMaxDate + ': 31.05.2094')).not.toBeInTheDocument();
+      });
+      it('Should remove error on change if form is submitted', async () => {
+        const questionnaire: Questionnaire = {
+          ...q,
+          item: q.item?.map(x => ({ ...x, required: true })),
+        };
+        const { getByLabelText, getByText, queryByText } = createWrapper(questionnaire);
+        await submitForm();
+
+        expect(getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
+
+        await act(async () => {
+          userEvent.paste(getByLabelText(/Dato/i), '31.05.2024');
+        });
+
+        expect(queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
+      });
     });
   });
-  //   describe('maxValue', () => {
-  //     it('Should not show error if value is empty', async () => {
-  //       const questionnaire: Questionnaire = {
-  //         ...q,
-  //         item: q.item?.map(x => ({ ...x, required: false })),
-  //       };
-  //       const { queryByText } = createWrapper(questionnaire);
-  //       await submitForm();
-
-  //       expect(queryByText('Custom error')).not.toBeInTheDocument();
-  //     });
-  //     it('Should not show error if value is bellow max value (10) and over min(5)', async () => {
-  //       const questionnaire: Questionnaire = {
-  //         ...q,
-  //         item: q.item?.map(x => ({ ...x, required: false })),
-  //       };
-  //       const { getByLabelText, queryByText } = createWrapper(questionnaire);
-  //       await act(async () => {
-  //         userEvent.type(getByLabelText(/Decimal/i), '8');
-  //       });
-  //       await submitForm();
-
-  //       expect(queryByText('Custom error')).not.toBeInTheDocument();
-  //     });
-  //     it('Should remove error on change if form is submitted', async () => {
-  //       const questionnaire: Questionnaire = {
-  //         ...q,
-  //         item: q.item?.map(x => ({ ...x, required: false })),
-  //       };
-  //       const { getByText, queryByText, getByLabelText } = createWrapper(questionnaire);
-  //       await act(async () => {
-  //         userEvent.type(getByLabelText(/Decimal/i), '12');
-  //       });
-  //       await submitForm();
-  //       expect(getByText('Custom error')).toBeInTheDocument();
-  //       await act(async () => {
-  //         userEvent.clear(getByLabelText(/Decimal/i));
-  //         userEvent.type(getByLabelText(/Decimal/i), '8');
-  //       });
-
-  //       expect(queryByText('Custom error')).not.toBeInTheDocument();
-  //     });
-  //   });
-  //   describe('minValue', () => {
-  //     it('Should not show error if value is empty', async () => {
-  //       const questionnaire: Questionnaire = {
-  //         ...q,
-  //         item: q.item?.map(x => ({ ...x, required: false })),
-  //       };
-  //       const { queryByText } = createWrapper(questionnaire);
-  //       await submitForm();
-
-  //       expect(queryByText('Custom error')).not.toBeInTheDocument();
-  //     });
-  //     it('Should not show error if value is bellow max value (10) and over min(5)', async () => {
-  //       const questionnaire: Questionnaire = {
-  //         ...q,
-  //         item: q.item?.map(x => ({ ...x, required: false })),
-  //       };
-  //       const { getByLabelText, queryByText } = createWrapper(questionnaire);
-  //       await act(async () => {
-  //         userEvent.type(getByLabelText(/Decimal/i), '8');
-  //       });
-  //       await submitForm();
-
-  //       expect(queryByText('Custom error')).not.toBeInTheDocument();
-  //     });
-  //     it('Should remove error on change if form is submitted', async () => {
-  //       const questionnaire: Questionnaire = {
-  //         ...q,
-  //         item: q.item?.map(x => ({ ...x, required: false })),
-  //       };
-  //       const { queryByText, getByLabelText } = createWrapper(questionnaire);
-  //       await act(async () => {
-  //         userEvent.type(getByLabelText(/Decimal/i), '3');
-  //       });
-  //       await submitForm();
-  //       expect(queryByText('Custom error')).toBeInTheDocument();
-  //       await act(async () => {
-  //         userEvent.clear(getByLabelText(/Decimal/i));
-  //         userEvent.type(getByLabelText(/Decimal/i), '8');
-  //       });
-
-  //       expect(queryByText('Custom error')).not.toBeInTheDocument();
-  //     });
-  //   });
-  //   describe('decimalPattern validation', () => {
-  //     it('Should not show error if value is empty', async () => {
-  //       const questionnaire: Questionnaire = {
-  //         ...q,
-  //         item: q.item?.map(x => ({
-  //           ...x,
-  //           required: false,
-  //         })),
-  //       };
-  //       const { queryByText } = createWrapper(questionnaire);
-  //       await submitForm();
-
-  //       expect(queryByText(resources.oppgiGyldigVerdi)).not.toBeInTheDocument();
-  //     });
-  //     it('Should not show error if value is valid pattern', async () => {
-  //       const questionnaire: Questionnaire = {
-  //         ...q,
-  //         item: q.item?.map(x => ({
-  //           ...x,
-  //           required: false,
-  //         })),
-  //       };
-  //       const { getByLabelText, queryByText } = createWrapper(questionnaire);
-  //       await act(async () => {
-  //         userEvent.type(getByLabelText(/Decimal/i), '6.12');
-  //       });
-  //       await submitForm();
-
-  //       expect(queryByText(resources.oppgiGyldigVerdi)).not.toBeInTheDocument();
-  //     });
-  //     it('Should remove error on change if form is submitted', async () => {
-  //       const questionnaire: Questionnaire = {
-  //         ...q,
-  //         item: q.item?.map(x => ({
-  //           ...x,
-  //           required: false,
-  //         })),
-  //       };
-  //       const { queryByText, getByLabelText } = createWrapper(questionnaire);
-  //       await act(async () => {
-  //         userEvent.type(getByLabelText(/Decimal/i), '6.121212');
-  //       });
-  //       await submitForm();
-  //       expect(queryByText(resources.oppgiGyldigVerdi)).toBeInTheDocument();
-  //       await act(async () => {
-  //         userEvent.clear(getByLabelText(/Decimal/i));
-  //         userEvent.type(getByLabelText(/Decimal/i), '6.12');
-  //       });
-
-  //       expect(queryByText(resources.oppgiGyldigVerdi)).not.toBeInTheDocument();
-  //     });
-  //   });
 });
 
 const createWrapper = (questionnaire: Questionnaire, props: Partial<ReferoProps> = {}) => {

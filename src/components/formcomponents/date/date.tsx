@@ -24,6 +24,8 @@ import { Path } from '../../../util/refero-core';
 import { Resources } from '../../../util/resources';
 import ReactHookFormHoc, { FormProps } from '../../../validation/ReactHookFormHoc';
 import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
+import { parse, parseISO } from 'date-fns';
+import { formatDateToStringDDMMYYYY, parseStringToDateDDMMYYYY } from '@/util/date-utils';
 
 export interface DateProps extends WithCommonFunctionsAndEnhancedProps, FormProps {
   item: QuestionnaireItem;
@@ -75,11 +77,11 @@ const DateComponent = (props: React.PropsWithChildren<DateProps>): JSX.Element =
   const getMaxDateWithExtension = (): Date | undefined => {
     const maxDate = getExtension(Extensions.MAX_VALUE_URL, item);
     if (maxDate && maxDate.valueDate) {
-      return safeParseJSON(String(maxDate.valueDate));
+      return parseISO(maxDate.valueDate);
     } else if (maxDate && maxDate.valueDateTime) {
-      return safeParseJSON(String(maxDate.valueDateTime));
+      return parseISO(maxDate.valueDateTime);
     } else if (maxDate && maxDate.valueInstant) {
-      return safeParseJSON(String(maxDate.valueInstant));
+      return parseISO(maxDate.valueInstant);
     }
     return undefined;
   };
@@ -97,11 +99,11 @@ const DateComponent = (props: React.PropsWithChildren<DateProps>): JSX.Element =
   const getMinDateWithExtension = (): Date | undefined => {
     const minDate = getExtension(Extensions.MIN_VALUE_URL, item);
     if (minDate && minDate.valueDate) {
-      return safeParseJSON(String(minDate.valueDate));
+      return parseISO(minDate.valueDate);
     } else if (minDate && minDate.valueDateTime) {
-      return safeParseJSON(String(minDate.valueDateTime));
+      return parseISO(minDate.valueDateTime);
     } else if (minDate && minDate.valueInstant) {
-      return safeParseJSON(String(minDate.valueInstant));
+      return parseISO(minDate.valueInstant);
     }
     return undefined;
   };
@@ -129,8 +131,7 @@ const DateComponent = (props: React.PropsWithChildren<DateProps>): JSX.Element =
 
   const labelText = getLabelText(item, onRenderMarkdown, questionnaire, resources);
   const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
-  const labelEl = <Label labelTexts={[{ text: labelText }]} />;
-  const subLabelEl = subLabelText ? <p>{subLabelText}</p> : undefined;
+  // console.log(maxDate);
 
   const itemControls = getItemControlExtensionValue(item);
   let element: JSX.Element | undefined = undefined;
@@ -162,8 +163,7 @@ const DateComponent = (props: React.PropsWithChildren<DateProps>): JSX.Element =
         minDate={getMinDate()}
       />
     );
-  }
-  else {
+  } else {
     element = (
       <DateDayInput
         {...props}
