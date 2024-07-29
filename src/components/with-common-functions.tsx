@@ -20,6 +20,9 @@ import { OrgenhetHierarki } from '../types/orgenhetHierarki';
 import Icon from '@helsenorge/designsystem-react/components/Icon';
 import HelpSign from '@helsenorge/designsystem-react/components/Icons/HelpSign';
 
+import DeleteButton from './formcomponents/repeat/DeleteButton';
+import RepeatButton from './formcomponents/repeat/RepeatButton';
+import HelpButton from './help-button/HelpButton';
 import { NewValueAction } from '../actions/newValue';
 import itemControlConstants from '../constants/itemcontrol';
 import itemType from '../constants/itemType';
@@ -37,9 +40,6 @@ import {
 } from '../util/refero-core';
 import { RenderContext } from '../util/renderContext';
 import { Resources } from '../util/resources';
-import DeleteButton from './formcomponents/repeat/DeleteButton';
-import RepeatButton from './formcomponents/repeat/RepeatButton';
-import HelpButton from './help-button/HelpButton';
 
 export interface WithCommonFunctionsProps {
   idWithLinkIdAndItemIndex: string;
