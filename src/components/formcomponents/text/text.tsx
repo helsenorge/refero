@@ -56,7 +56,6 @@ export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   renderHelpElement: () => JSX.Element;
   resources?: Resources;
   onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
-  isHelpOpen?: boolean;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
   shouldExpanderRenderChildrenWhenClosed?: boolean;
   children?: React.ReactNode;
@@ -97,7 +96,6 @@ export const Text = ({
 
   // shouldComponentUpdate(nextProps: Props): boolean {
   //   const responseItemHasChanged = responseItem !== nextresponseItem;
-  //   const helpItemHasChanged = isHelpOpen !== nextisHelpOpen;
   //   const answerHasChanged = answer !== nextanswer;
   //   const resourcesHasChanged = JSON.stringify(resources) !== JSON.stringify(nextresources);
   //   const repeats = item.repeats ?? false;

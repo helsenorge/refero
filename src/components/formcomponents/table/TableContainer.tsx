@@ -41,7 +41,6 @@ export interface Props {
   id?: string;
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
-  isHelpOpen?: boolean;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
 }
 

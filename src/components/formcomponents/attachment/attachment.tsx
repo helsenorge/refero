@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, Attachment, QuestionnaireResponseItem, Questionnaire } from 'fhir/r4';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
 import { UploadFile } from '@helsenorge/file-upload/components/file-upload';
@@ -19,7 +19,6 @@ import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../
 import TextView from '../textview';
 
 export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
-  dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
   path: Array<Path>;
   item: QuestionnaireItem;
   questionnaire?: Questionnaire;
@@ -39,7 +38,6 @@ export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   onRequestAttachmentLink?: (file: string) => string;
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
-  isHelpOpen?: boolean;
   onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
   children?: React.ReactNode;
@@ -55,7 +53,6 @@ export const AttachmentComponent = (props: Props): JSX.Element | null => {
     item,
     onAnswerChange,
     onDeleteAttachment,
-    dispatch,
     pdf,
     id,
     resources,
@@ -73,6 +70,7 @@ export const AttachmentComponent = (props: Props): JSX.Element | null => {
     register,
     error,
   } = props;
+  const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
   const onUpload = (files: UploadFile[]): void => {
     if (uploadAttachment) {
       for (const file of files) {
@@ -193,5 +191,5 @@ export const AttachmentComponent = (props: Props): JSX.Element | null => {
 
 const withFormProps = ReactHookFormHoc(AttachmentComponent);
 const withCommonFunctionsComponent = withCommonFunctions(withFormProps);
-const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(withCommonFunctionsComponent);
-export default connectedComponent;
+// const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(withCommonFunctionsComponent);
+export default withCommonFunctionsComponent;

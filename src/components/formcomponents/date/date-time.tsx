@@ -54,7 +54,6 @@ export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   repeatButton: JSX.Element;
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
-  isHelpOpen?: boolean;
   onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
 }

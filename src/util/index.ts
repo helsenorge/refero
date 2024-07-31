@@ -18,18 +18,18 @@ import {
   getHyperlinkExtensionValue,
   getCopyExtension,
 } from './extension';
-import Attachment from '../components/formcomponents/attachment/attachment';
-import Boolean from '../components/formcomponents/boolean/boolean';
-import Choice from '../components/formcomponents/choice/choice';
-import Date from '../components/formcomponents/date/date';
-import DateTimeInput from '../components/formcomponents/date/date-time';
-import Time from '../components/formcomponents/date/time';
-import Decimal from '../components/formcomponents/decimal/decimal';
-import Integer from '../components/formcomponents/integer/integer';
-import OpenChoice from '../components/formcomponents/open-choice/open-choice';
-import Quantity from '../components/formcomponents/quantity/quantity';
-import StringComponent from '../components/formcomponents/string/string';
-import TableContainer from '../components/formcomponents/table/TableContainer';
+import Attachment from '@formcomponents/attachment/attachment';
+import Boolean from '@formcomponents/boolean/boolean';
+import Choice from '@formcomponents/choice/choice';
+import Date from '@formcomponents/date/date';
+import DateTimeInput from '@formcomponents/date/date-time';
+import Time from '@formcomponents/date/time';
+import Decimal from '@formcomponents/decimal/decimal';
+import Integer from '@formcomponents/integer/integer';
+import OpenChoice from '@formcomponents/open-choice/open-choice';
+import Quantity from '@formcomponents/quantity/quantity';
+import StringComponent from '@formcomponents/string/string';
+import TableContainer from '@formcomponents/table/TableContainer';
 import CodingSystemConstants from '../constants/codingsystems';
 import { Extensions } from '../constants/extensions';
 import { HyperlinkTarget } from '../constants/hyperlinkTarget';
@@ -37,7 +37,8 @@ import Constants from '../constants/index';
 import ItemType from '../constants/itemType';
 import { RenderOptionCode } from '../constants/renderOptionCode';
 import { TableCodes } from '../constants/tableTypes';
-import { Resources } from '../util/resources';
+import { Resources } from '@/util/resources';
+import { ComponentType } from 'react';
 
 function openNewIfAbsolute(url: string): string {
   const regex = new RegExp('^(([a-z][a-z0-9+.-]*):.*)');
@@ -59,8 +60,7 @@ export const isTableCode = (extensionCode: string | string[]): boolean => {
   return isTable;
 };
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function getComponentForItem(type: string, extensionCode?: string | string[]) {
+export function getComponentForItem(type: string, extensionCode?: string | string[]): ComponentType<any> {
   if (String(type) === ItemType.GROUP && !!extensionCode && isTableCode(extensionCode)) {
     return TableContainer;
   } else if (String(type) === ItemType.GROUP) {

@@ -9,7 +9,7 @@ import {
   ValueSet,
   Questionnaire,
 } from 'fhir/r4';
-import { connect } from 'react-redux';
+// import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
 import { AutoSuggestProps } from '../../../types/autoSuggestProps';
@@ -33,7 +33,7 @@ import {
   isAboveDropdownThreshold,
 } from '../../../util/choice';
 import { isReadOnly, isDataReceiver } from '../../../util/index';
-import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
+// import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
 import { Resources } from '../../../util/resources';
 import ReactHookFormHoc, { FormProps } from '../../../validation/ReactHookFormHoc';
@@ -41,6 +41,7 @@ import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../
 import AutosuggestView from '../choice-common/autosuggest-view';
 import ReceiverComponentWrapper from '../receiver-component/receiver-component-wrapper';
 import TextView from '../textview';
+import { useDispatch } from 'react-redux';
 
 export interface ChoiceProps extends WithCommonFunctionsAndEnhancedProps, FormProps {
   item: QuestionnaireItem;
@@ -48,7 +49,6 @@ export interface ChoiceProps extends WithCommonFunctionsAndEnhancedProps, FormPr
   answer: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer;
   resources?: Resources;
   containedResources?: Resource[];
-  dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
   path: Array<Path>;
   id?: string;
   pdf?: boolean;
@@ -59,7 +59,6 @@ export interface ChoiceProps extends WithCommonFunctionsAndEnhancedProps, FormPr
   repeatButton: JSX.Element;
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
-  isHelpOpen?: boolean;
   onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
   fetchValueSet?: (
@@ -74,20 +73,9 @@ export interface ChoiceProps extends WithCommonFunctionsAndEnhancedProps, FormPr
 }
 
 export const Choice = (props: ChoiceProps): JSX.Element | null => {
-  const {
-    resources,
-    containedResources,
-    dispatch,
-    answer,
-    promptLoginMessage,
-    item,
-    onAnswerChange,
-    path,
-    id,
-    pdf,
-    children,
-    onRenderMarkdown,
-  } = props;
+  const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
+  const { resources, containedResources, answer, promptLoginMessage, item, onAnswerChange, path, id, pdf, children, onRenderMarkdown } =
+    props;
 
   const getValue = (
     item: QuestionnaireItem,
@@ -243,7 +231,7 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
   }
 
   return (
-    <React.Fragment>
+    <>
       {hasOptionsAndNoCanonicalValueSet ? (
         itemControlValue ? (
           renderComponentBasedOnType()
@@ -270,11 +258,11 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
           {props.children}
         </ReceiverComponentWrapper>
       ) : null}
-    </React.Fragment>
+    </>
   );
 };
 
 const withFormProps = ReactHookFormHoc(Choice);
 const withCommonFunctionsComponent = withCommonFunctions(withFormProps);
-const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(withCommonFunctionsComponent);
-export default connectedComponent;
+// const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(withCommonFunctionsComponent);
+export default withCommonFunctionsComponent;

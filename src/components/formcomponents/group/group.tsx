@@ -37,7 +37,6 @@ export interface Props extends WithCommonFunctionsAndEnhancedProps {
   renderContext: RenderContext;
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
-  isHelpOpen?: boolean;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
 }
 

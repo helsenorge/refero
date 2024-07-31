@@ -66,7 +66,6 @@ export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   repeatButton: JSX.Element;
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
-  isHelpOpen?: boolean;
   onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
   fetchValueSet?: (
@@ -319,7 +318,6 @@ export const OpenChoice = (props: Props): JSX.Element | null => {
 
   // shouldComponentUpdate(nextProps: Props): boolean {
   //   const responseItemHasChanged = responseItem !== nextresponseItem;
-  //   const helpItemHasChanged = isHelpOpen !== nextisHelpOpen;
   //   const resourcesHasChanged = JSON.stringify(resources) !== JSON.stringify(nextresources);
   //   const answerHasChanged = answer !== nextanswer;
   //   const repeats = item.repeats ?? false;

@@ -51,7 +51,6 @@ export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
   onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
-  isHelpOpen?: boolean;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
   children?: React.ReactNode;
 }

@@ -162,8 +162,7 @@ const DateComponent = (props: React.PropsWithChildren<DateProps>): JSX.Element =
         minDate={getMinDate()}
       />
     );
-  }
-  else {
+  } else {
     element = (
       <DateDayInput
         {...props}
@@ -192,14 +191,3 @@ const withFormProps = ReactHookFormHoc(DateComponent);
 const withCommonFunctionsComponent = withCommonFunctions(withFormProps);
 const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(withCommonFunctionsComponent);
 export default connectedComponent;
-
-// const shouldComponentUpdate = (nextProps: DateProps): boolean => {
-//   const responseItemHasChanged = responseItem !== nextProps.responseItem;
-//   const helpItemHasChanged = isHelpOpen !== nextProps.isHelpOpen;
-//   const answerHasChanged = answer !== nextProps.answer;
-//   const resourcesHasChanged = JSON.stringify(resources) !== JSON.stringify(nextProps.resources);
-//   const repeats = item.repeats ?? false;
-//   const error = error !== nextProps.error;
-
-//   return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats || answerHasChanged || error;
-// };

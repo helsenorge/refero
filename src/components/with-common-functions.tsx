@@ -40,6 +40,9 @@ import {
 } from '../util/refero-core';
 import { RenderContext } from '../util/renderContext';
 import { Resources } from '../util/resources';
+import { getValueIfDataReceiver, isEnableWhenEnabled } from '@/util/map-props';
+import { useSelector } from 'react-redux';
+import { getFormData } from '@/reducers/form';
 
 export interface WithCommonFunctionsProps {
   idWithLinkIdAndItemIndex: string;
@@ -84,7 +87,6 @@ export interface WithCommonFunctionsProps {
   ) => JSX.Element;
   onAnswerChange?: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
   renderContext: RenderContext;
-  isHelpOpen?: boolean;
   onRenderMarkdown?: (item: QuestionnaireItem, markup: string) => string;
   fetchValueSet?: (
     searchString: string,
@@ -116,13 +118,22 @@ export default function withCommonFunctions<T extends WithCommonFunctionsProps>(
   WrappedComponent: React.ComponentType<T>
 ): React.ComponentType<T & EnhancedProps> {
   const WithCommonFunctions = (props: T): JSX.Element | null => {
+    const formData = useSelector((state: GlobalState) => getFormData(state));
+    const newAnswer = getValueIfDataReceiver(formData, props.item);
+
+    const enable =
+      !props.item || !props.item.enableWhen
+        ? true
+        : isEnableWhenEnabled(props.item.enableWhen, props.item.enableBehavior, props.path || [], formData);
     const [isHelpVisible, setIsHelpVisible] = React.useState(false);
 
     const renderDeleteButton = (className?: string): JSX.Element | null => {
       if (!props.visibleDeleteButton) {
         return null;
       }
-
+      const hasAnwer = (answer: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[] | undefined): boolean => {
+        return !!answer && Object.keys(answer).length > 0;
+      };
       let mustShowConfirm: boolean = hasAnwer(props.answer);
 
       if (!mustShowConfirm && props.responseItem && props.responseItem.item) {
@@ -170,10 +181,6 @@ export default function withCommonFunctions<T extends WithCommonFunctionsProps>(
           />
         </div>
       );
-    };
-
-    const hasAnwer = (answer: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[] | undefined): boolean => {
-      return !!answer && Object.keys(answer).length > 0;
     };
 
     const renderHelpButton = (): JSX.Element | undefined => {
@@ -277,7 +284,7 @@ export default function withCommonFunctions<T extends WithCommonFunctionsProps>(
               item={item}
               questionnaire={props.questionnaire}
               responseItem={responseItem}
-              answer={getAnswerFromResponseItem(responseItem)}
+              answer={newAnswer ?? getAnswerFromResponseItem(responseItem)}
               resources={resources}
               containedResources={containedResources}
               path={createPathForItem(path, item, responseItem, index)}
@@ -322,7 +329,7 @@ export default function withCommonFunctions<T extends WithCommonFunctionsProps>(
       return renderedItems;
     };
 
-    if (!props.enable) {
+    if (!enable) {
       return null;
     } else {
       return (
@@ -332,7 +339,6 @@ export default function withCommonFunctions<T extends WithCommonFunctionsProps>(
           renderRepeatButton={renderRepeatButton}
           renderHelpButton={renderHelpButton}
           renderHelpElement={renderHelpElement}
-          isHelpOpen={isHelpVisible}
           {...props}
         >
           {renderChildrenItems(props.renderContext)}

@@ -43,7 +43,6 @@
 //   repeatButton: JSX.Element;
 //   renderHelpButton: () => JSX.Element;
 //   renderHelpElement: () => JSX.Element;
-//   isHelpOpen?: boolean;
 //   onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
 //   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
 // }
@@ -209,7 +208,6 @@ export default Time;
 
 //   shouldComponentUpdate(nextProps: Props): boolean {
 //     const responseItemHasChanged = this.props.responseItem !== nextProps.responseItem;
-//     const helpItemHasChanged = this.props.isHelpOpen !== nextProps.isHelpOpen;
 //     const answerHasChanged = this.props.answer !== nextProps.answer;
 //     const resourcesHasChanged = JSON.stringify(this.props.resources) !== JSON.stringify(nextProps.resources);
 //     const repeats = this.props.item.repeats ?? false;
