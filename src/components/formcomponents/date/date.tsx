@@ -126,8 +126,6 @@ const DateComponent = (props: React.PropsWithChildren<DateProps>): JSX.Element =
 
   const labelText = getLabelText(item, onRenderMarkdown, questionnaire, resources);
   const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
-  const labelEl = <Label labelTexts={[{ text: labelText }]} />;
-  const subLabelEl = subLabelText ? <p>{subLabelText}</p> : undefined;
 
   const itemControls = getItemControlExtensionValue(item);
   let element: JSX.Element | undefined = undefined;
