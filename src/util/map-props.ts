@@ -1,37 +1,22 @@
-import { QuestionnaireResponseItem, QuestionnaireItemEnableWhen, QuestionnaireResponseItemAnswer } from 'fhir/r4';
-import { ThunkDispatch } from 'redux-thunk';
+import { QuestionnaireResponseItem, QuestionnaireItemEnableWhen, QuestionnaireResponseItemAnswer, QuestionnaireItem } from 'fhir/r4';
 
 import { QuestionnaireItemEnableBehaviorCodes } from '../types/fhirEnums';
 
 import { enableWhenMatchesAnswer, getQuestionnaireResponseItemWithLinkid, getResponseItems, Path, isInGroupContext } from './refero-core';
-import { NewValueAction } from '../actions/newValue';
-import { WithCommonFunctionsProps } from '../components/with-common-functions';
 import ItemType from '../constants/itemType';
-import { getFormData } from '../reducers/form';
-import { GlobalState } from '../reducers/index';
+import { FormData } from '../reducers/form';
 import { getCopyExtension, getCalculatedExpressionExtension } from '../util/extension';
 import { evaluateFhirpathExpressionToGetString } from '../util/fhirpathHelper';
 
-export function mapStateToProps(state: GlobalState, originalProps: WithCommonFunctionsProps): WithCommonFunctionsProps {
-  const newAnswer = getValueIfDataReceiver(state, originalProps);
-
-  if (!originalProps.item || !originalProps.item.enableWhen) {
-    return { ...originalProps, enable: true, ...(newAnswer !== undefined && { answer: newAnswer }) };
-  }
-  const enable = isEnableWhenEnabled(originalProps.item.enableWhen, originalProps.item.enableBehavior, originalProps.path || [], state);
-
-  return { ...originalProps, enable, ...(newAnswer !== undefined && { answer: newAnswer }) };
-}
-
-function isEnableWhenEnabled(
+export function isEnableWhenEnabled(
   enableWhen: QuestionnaireItemEnableWhen[],
   enableBehavior: string | undefined,
   path: Path[],
-  state: GlobalState
+  formData: FormData | null
 ): boolean {
   const enableMatches: Array<boolean> = [];
   enableWhen.forEach((enableWhen: QuestionnaireItemEnableWhen) => {
-    const responseItems = getResponseItems(getFormData(state));
+    const responseItems = getResponseItems(formData);
     const enableWhenQuestion = enableWhen.question;
     for (let i = 0; responseItems && i < responseItems.length; i++) {
       let responseItem: QuestionnaireResponseItem | undefined = responseItems[i];
@@ -54,21 +39,20 @@ function isEnableWhenEnabled(
     : enableMatches.some(x => x === true);
 }
 
-function getValueIfDataReceiver(
-  state: GlobalState,
-  originalProps: WithCommonFunctionsProps
+export function getValueIfDataReceiver(
+  formData: FormData | null,
+  item?: QuestionnaireItem
 ): QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[] | undefined {
-  if (originalProps.item) {
-    const extension = getCopyExtension(originalProps.item);
+  if (item) {
+    const extension = getCopyExtension(item);
     if (extension) {
-      const formData = getFormData(state);
       let result = evaluateFhirpathExpressionToGetString(extension, formData?.Content);
 
-      if (getCalculatedExpressionExtension(originalProps.item)) {
+      if (getCalculatedExpressionExtension(item)) {
         result = result.map((m: any) => m.value as number);
       }
 
-      return getQuestionnaireResponseItemAnswer(originalProps.item.type, result);
+      return getQuestionnaireResponseItemAnswer(item.type, result);
     }
     return undefined;
   }
@@ -118,22 +102,4 @@ function getQuestionnaireResponseItemAnswer(
     }
   });
   return answerArray;
-}
-
-export function mergeProps(
-  stateProps: WithCommonFunctionsProps,
-  dispatchProps: {
-    dispatch: ThunkDispatch<GlobalState, void, NewValueAction>;
-  },
-  ownProps: WithCommonFunctionsProps
-): WithCommonFunctionsProps {
-  return Object.assign({}, ownProps, stateProps, dispatchProps);
-}
-
-export function mapDispatchToProps(dispatch: ThunkDispatch<GlobalState, void, NewValueAction>): {
-  dispatch: ThunkDispatch<GlobalState, void, NewValueAction>;
-} {
-  return {
-    dispatch,
-  };
 }

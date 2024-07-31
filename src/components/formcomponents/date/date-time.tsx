@@ -4,7 +4,6 @@ import { format } from 'date-fns';
 import { isValid } from 'date-fns';
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem, Questionnaire } from 'fhir/r4';
 import { FieldError, FieldValues, useFormContext } from 'react-hook-form';
-import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
 import { DateTimeUnit } from '../../../types/dateTypes';
@@ -32,12 +31,12 @@ import {
 import { getValidationTextExtension, getExtension } from '../../../util/extension';
 import { evaluateFhirpathExpressionToGetDate } from '../../../util/fhirpathHelper';
 import { isRequired, getId, isReadOnly, getSublabelText, renderPrefix, getText } from '../../../util/index';
-import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
 import { Resources } from '../../../util/resources';
 import { FormProps } from '../../../validation/ReactHookFormHoc';
 import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 import TextView from '../textview';
+import { useDispatch } from 'react-redux';
 export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   item: QuestionnaireItem;
   questionnaire?: Questionnaire;
@@ -54,7 +53,6 @@ export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   repeatButton: JSX.Element;
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
-  isHelpOpen?: boolean;
   onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
 }
@@ -64,7 +62,6 @@ const DateTimeInput: React.FC<Props> = ({
   questionnaire,
   answer,
   resources,
-  dispatch,
   path,
   pdf,
   promptLoginMessage,
@@ -78,6 +75,7 @@ const DateTimeInput: React.FC<Props> = ({
   idWithLinkIdAndItemIndex,
   children,
 }) => {
+  const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
   const { formState, getFieldState, register, setValue } = useFormContext<FieldValues>();
   const dateField = getFieldState(`${idWithLinkIdAndItemIndex}-date`, formState);
   const hoursField = getFieldState(`${idWithLinkIdAndItemIndex}-hours`, formState);
@@ -331,5 +329,4 @@ const DateTimeInput: React.FC<Props> = ({
 
 const withCommonFunctionsComponent = withCommonFunctions(DateTimeInput);
 const layoutChangeComponent = layoutChange(withCommonFunctionsComponent);
-const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(layoutChangeComponent);
-export default connectedComponent;
+export default layoutChangeComponent;

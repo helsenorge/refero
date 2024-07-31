@@ -1,17 +1,12 @@
 import DOMPurify from 'dompurify';
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem, Questionnaire } from 'fhir/r4';
-import { connect } from 'react-redux';
-import { ThunkDispatch } from 'redux-thunk';
 
 import AnchorLink from '@helsenorge/designsystem-react/components/AnchorLink';
 
 import AsPdf from './AsPdf';
 import { getClassNames, getColumns, getHeaderText, getLocalRenderContextType, isDirectChildOfRenderContextOwner } from './helpers';
-import { NewValueAction } from '../../../actions/newValue';
 import { RenderContextType } from '../../../constants/renderContextType';
-import { GlobalState } from '../../../reducers';
 import { getText, getId } from '../../../util/index';
-import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
 import { RenderContext } from '../../../util/renderContext';
 import { Resources } from '../../../util/resources';
@@ -22,7 +17,6 @@ export interface Props extends WithCommonFunctionsAndEnhancedProps {
   questionnaire?: Questionnaire;
   answer: QuestionnaireResponseItemAnswer;
   responseItem: QuestionnaireResponseItem;
-  dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
   path: Array<Path>;
   pdf?: boolean;
   includeSkipLink?: boolean;
@@ -37,7 +31,6 @@ export interface Props extends WithCommonFunctionsAndEnhancedProps {
   renderContext: RenderContext;
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
-  isHelpOpen?: boolean;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
 }
 
@@ -169,5 +162,4 @@ export const Group = ({
   return <AsPdf pdf={!!pdf}>{renderAllItems(item)}</AsPdf>;
 };
 const withCommonFunctionsComponent = withCommonFunctions(Group);
-const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(withCommonFunctionsComponent);
-export default connectedComponent;
+export default withCommonFunctionsComponent;

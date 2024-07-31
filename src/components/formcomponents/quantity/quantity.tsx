@@ -8,7 +8,6 @@ import {
   Questionnaire,
 } from 'fhir/r4';
 import { Controller } from 'react-hook-form';
-import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
@@ -24,7 +23,6 @@ import {
   getValidationTextExtension,
 } from '../../../util/extension';
 import { isReadOnly, getId, isRequired, getDecimalPattern } from '../../../util/index';
-import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
 import { Resources } from '../../../util/resources';
 import ReactHookFormHoc, { FormProps } from '../../../validation/ReactHookFormHoc';
@@ -32,6 +30,7 @@ import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../
 import TextView from '../textview';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
+import { useDispatch } from 'react-redux';
 
 export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   item: QuestionnaireItem;
@@ -39,7 +38,6 @@ export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   responseItem: QuestionnaireResponseItem;
   answer: QuestionnaireResponseItemAnswer;
   resources?: Resources;
-  dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
   path: Array<Path>;
   pdf?: boolean;
   promptLoginMessage?: () => void;
@@ -48,14 +46,12 @@ export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   repeatButton: JSX.Element;
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
-  isHelpOpen?: boolean;
   onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
   children?: React.ReactNode;
 }
 
 const Quantity = ({
-  dispatch,
   promptLoginMessage,
   path,
   item,
@@ -74,6 +70,7 @@ const Quantity = ({
   renderHelpButton,
   renderHelpElement,
 }: Props): JSX.Element | null => {
+  const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
   const getValue = (): number | number[] | undefined => {
     if (answer && Array.isArray(answer)) {
       return answer.map(m => m.valueQuantity.value);
@@ -225,5 +222,4 @@ const Quantity = ({
 };
 const withFormProps = ReactHookFormHoc(Quantity);
 const withCommonFunctionsComponent = withCommonFunctions(withFormProps);
-const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(withCommonFunctionsComponent);
-export default connectedComponent;
+export default withCommonFunctionsComponent;

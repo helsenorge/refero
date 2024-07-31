@@ -2,7 +2,7 @@ import React from 'react';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem, Questionnaire } from 'fhir/r4';
 import { Controller } from 'react-hook-form';
-import { connect } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
@@ -23,7 +23,6 @@ import {
   getMaxLength,
   scriptInjectionValidation,
 } from '../../../util/index';
-import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
 import { Resources } from '../../../util/resources';
 import ReactHookFormHoc, { FormProps } from '../../../validation/ReactHookFormHoc';
@@ -38,7 +37,6 @@ export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   responseItem: QuestionnaireResponseItem;
   answer: QuestionnaireResponseItemAnswer;
   path: Array<Path>;
-  dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
   pdf?: boolean;
   promptLoginMessage?: () => void;
   id?: string;
@@ -51,13 +49,11 @@ export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
   onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
-  isHelpOpen?: boolean;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
   children?: React.ReactNode;
 }
 
 export const String = ({
-  dispatch,
   promptLoginMessage,
   path,
   item,
@@ -78,6 +74,7 @@ export const String = ({
   renderHelpButton,
   renderHelpElement,
 }: Props): JSX.Element | null => {
+  const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     const value = event.target.value;
     if (dispatch) {
@@ -193,5 +190,4 @@ export const String = ({
 const withFormProps = ReactHookFormHoc(String);
 const withCommonFunctionsComponent = withCommonFunctions(withFormProps);
 const layoutChangeComponent = layoutChange(withCommonFunctionsComponent);
-const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(layoutChangeComponent);
-export default connectedComponent;
+export default layoutChangeComponent;

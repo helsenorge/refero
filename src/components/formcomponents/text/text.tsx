@@ -2,7 +2,6 @@ import React from 'react';
 
 import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem } from 'fhir/r4';
 import { Controller } from 'react-hook-form';
-import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
 import Expander from '@helsenorge/designsystem-react/components/Expander';
@@ -31,20 +30,19 @@ import {
   getPDFStringValue,
   scriptInjectionValidation,
 } from '../../../util/index';
-import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
 import { Resources } from '../../../util/resources';
 import ReactHookFormHoc, { FormProps } from '../../../validation/ReactHookFormHoc';
 import { ReferoLabel } from '../../referoLabel/ReferoLabel';
 import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 import TextView from '../textview';
+import { useDispatch } from 'react-redux';
 
 export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   item: QuestionnaireItem;
   questionnaire?: Questionnaire;
   responseItem: QuestionnaireResponseItem;
   answer: QuestionnaireResponseItemAnswer;
-  dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
   path: Array<Path>;
   pdf?: boolean;
   promptLoginMessage?: () => void;
@@ -56,7 +54,6 @@ export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   renderHelpElement: () => JSX.Element;
   resources?: Resources;
   onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
-  isHelpOpen?: boolean;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
   shouldExpanderRenderChildrenWhenClosed?: boolean;
   children?: React.ReactNode;
@@ -72,7 +69,6 @@ export const Text = ({
   questionnaire,
   control,
   idWithLinkIdAndItemIndex,
-  dispatch,
   promptLoginMessage,
   path,
   onAnswerChange,
@@ -84,6 +80,7 @@ export const Text = ({
   renderDeleteButton,
   repeatButton,
 }: Props): JSX.Element | null => {
+  const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
   const handleChange = (event: React.FormEvent): void => {
     const value = (event.target as HTMLInputElement).value;
     if (dispatch) {
@@ -95,16 +92,6 @@ export const Text = ({
     }
   };
 
-  // shouldComponentUpdate(nextProps: Props): boolean {
-  //   const responseItemHasChanged = responseItem !== nextresponseItem;
-  //   const helpItemHasChanged = isHelpOpen !== nextisHelpOpen;
-  //   const answerHasChanged = answer !== nextanswer;
-  //   const resourcesHasChanged = JSON.stringify(resources) !== JSON.stringify(nextresources);
-  //   const repeats = item.repeats ?? false;
-  //   const newErrorMessage = error?.message !== nexterror?.message;
-
-  //   return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats || answerHasChanged || newErrorMessage;
-  // }
   const debouncedHandleChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => void = debounce(handleChange, 250, false);
   const onTextAreaChange = (event: React.ChangeEvent<HTMLTextAreaElement>): void => {
     event.persist();
@@ -225,5 +212,4 @@ export const Text = ({
 
 const withFormProps = ReactHookFormHoc(Text);
 const withCommonFunctionsComponent = withCommonFunctions(withFormProps);
-const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(withCommonFunctionsComponent);
-export default connectedComponent;
+export default withCommonFunctionsComponent;

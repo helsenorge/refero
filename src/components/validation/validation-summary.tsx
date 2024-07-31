@@ -1,7 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 
 import { useFormContext } from 'react-hook-form';
-import { connect } from 'react-redux';
 
 import { getItemTextFromErrors } from './utils';
 import { Resources } from '../../util/resources';
@@ -10,19 +9,18 @@ import SafeText from '../referoLabel/SafeText';
 import styles from './validationSummary.module.css';
 
 import { GlobalState } from '@/reducers';
-import { FormData, FormDefinition, getFormData, getFormDefinition } from '@/reducers/form';
+import { getFormData, getFormDefinition } from '@/reducers/form';
+import { useSelector } from 'react-redux';
 
-type ValidationSummaryProps = {
+type Props = {
   resources: Resources;
 };
-type StateProps = {
-  formDefinition: FormDefinition | null;
-  formData: FormData | null;
-};
 
-type Props = ValidationSummaryProps & StateProps;
-
-const ValidationSummary = ({ resources, formData, formDefinition }: Props): JSX.Element | null => {
+const ValidationSummary = ({ resources }: Props): JSX.Element | null => {
+  const { formDefinition, formData } = useSelector((state: GlobalState) => ({
+    formDefinition: getFormDefinition(state),
+    formData: getFormData(state),
+  }));
   const errorSummaryRef = useRef<HTMLDivElement | null>(null);
 
   const { setFocus, formState } = useFormContext();
@@ -62,12 +60,6 @@ const ValidationSummary = ({ resources, formData, formDefinition }: Props): JSX.
     </div>
   ) : null;
 };
-const ValidationSummaryComponent = connect(
-  (state: GlobalState): StateProps => ({
-    formDefinition: getFormDefinition(state),
-    formData: getFormData(state),
-  }),
-  {}
-)(ValidationSummary);
-export { ValidationSummaryComponent };
-export default ValidationSummaryComponent;
+
+export { ValidationSummary };
+export default ValidationSummary;

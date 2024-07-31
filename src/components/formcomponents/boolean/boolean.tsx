@@ -2,7 +2,6 @@ import React from 'react';
 
 import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { Controller } from 'react-hook-form';
-import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
 import Checkbox from '@helsenorge/designsystem-react/components/Checkbox';
@@ -15,12 +14,12 @@ import Pdf from './pdf';
 import { NewValueAction, newBooleanValueAsync } from '../../../actions/newValue';
 import { GlobalState } from '../../../reducers';
 import { isReadOnly, getId, getSublabelText, isRequired, getLabelText } from '../../../util/index';
-import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
 import { Resources } from '../../../util/resources';
 import ReactHookFormHoc, { FormProps } from '../../../validation/ReactHookFormHoc';
 import SafeText from '../../referoLabel/SafeText';
 import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
+import { useDispatch } from 'react-redux';
 
 export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   item: QuestionnaireItem;
@@ -28,7 +27,6 @@ export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   responseItem: QuestionnaireResponseItem;
   answer: QuestionnaireResponseItemAnswer;
   resources?: Resources;
-  dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
   path: Array<Path>;
   pdf?: boolean;
   promptLoginMessage?: () => void;
@@ -39,7 +37,6 @@ export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   oneToTwoColumn: boolean;
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
-  isHelpOpen?: boolean;
   onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
   children?: React.ReactNode;
@@ -48,7 +45,6 @@ export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
 const Boolean = ({
   item,
   answer,
-  dispatch,
   promptLoginMessage,
   onAnswerChange,
   path,
@@ -66,6 +62,7 @@ const Boolean = ({
   control,
   idWithLinkIdAndItemIndex,
 }: Props): JSX.Element | null => {
+  const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
   const getValue = (): boolean => {
     if (answer && answer.valueBoolean !== undefined) {
       return answer.valueBoolean;
@@ -169,5 +166,4 @@ const Boolean = ({
 const withFormProps = ReactHookFormHoc(Boolean);
 const withCommonFunctionsComponent = withCommonFunctions(withFormProps);
 const layoutChangeComponent = layoutChange(withCommonFunctionsComponent);
-const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(layoutChangeComponent);
-export default connectedComponent;
+export default layoutChangeComponent;
