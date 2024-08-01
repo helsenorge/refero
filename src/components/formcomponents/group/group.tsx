@@ -5,11 +5,11 @@ import AnchorLink from '@helsenorge/designsystem-react/components/AnchorLink';
 
 import AsPdf from './AsPdf';
 import { getClassNames, getColumns, getHeaderText, getLocalRenderContextType, isDirectChildOfRenderContextOwner } from './helpers';
-import { RenderContextType } from '../../../constants/renderContextType';
-import { getText, getId } from '../../../util/index';
-import { Path } from '../../../util/refero-core';
-import { RenderContext } from '../../../util/renderContext';
-import { Resources } from '../../../util/resources';
+import { RenderContextType } from '@/constants/renderContextType';
+import { getText, getId } from '@/util/index';
+import { Path } from '@/util/refero-core';
+import { RenderContext } from '@/util/renderContext';
+import { Resources } from '@/util/resources';
 import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 
 export interface Props extends WithCommonFunctionsAndEnhancedProps {

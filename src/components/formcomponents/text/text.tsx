@@ -10,28 +10,20 @@ import Textarea from '@helsenorge/designsystem-react/components/Textarea';
 
 import { debounce } from '@helsenorge/core-utils/debounce';
 
-import { NewValueAction, newStringValueAsync } from '../../../actions/newValue';
-import Constants from '../../../constants/index';
-import itemControlConstants from '../../../constants/itemcontrol';
-import { GlobalState } from '../../../reducers';
+import { NewValueAction, newStringValueAsync } from '@/actions/newValue';
+import Constants from '@/constants/index';
+import itemControlConstants from '@/constants/itemcontrol';
+import { GlobalState } from '@/reducers';
 import {
   getPlaceholder,
   getMinLengthExtensionValue,
   getItemControlExtensionValue,
   getRegexExtension,
   getValidationTextExtension,
-} from '../../../util/extension';
-import {
-  isReadOnly,
-  isRequired,
-  getId,
-  getStringValue,
-  getMaxLength,
-  getPDFStringValue,
-  scriptInjectionValidation,
-} from '../../../util/index';
-import { Path } from '../../../util/refero-core';
-import { Resources } from '../../../util/resources';
+} from '@/util/extension';
+import { isReadOnly, isRequired, getId, getStringValue, getMaxLength, getPDFStringValue, scriptInjectionValidation } from '@/util/index';
+import { Path } from '@/util/refero-core';
+import { Resources } from '@/util/resources';
 import ReactHookFormHoc, { FormProps } from '../../../validation/ReactHookFormHoc';
 import { ReferoLabel } from '../../referoLabel/ReferoLabel';
 import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';

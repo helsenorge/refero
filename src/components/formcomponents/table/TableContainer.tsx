@@ -15,12 +15,12 @@ import GTable from './tables/gtable/GTable';
 import { StandardTable } from './tables/table/StandardTable';
 import TableHn1 from './tables/table-hn1/TableHn1';
 import TableHn2 from './tables/table-hn2/TableHn2';
-import { TABLE_CODES_VALUES, TableCodes } from '../../../constants/tableTypes';
-import { GlobalState } from '../../../reducers';
-import { getFormData, getFormDefinition } from '../../../reducers/form';
-import { getCodingTextTableValues } from '../../../util/extension';
-import { Path } from '../../../util/refero-core';
-import { Resources } from '../../../util/resources';
+import { TABLE_CODES_VALUES, TableCodes } from '@/constants/tableTypes';
+import { GlobalState } from '@/reducers';
+import { getFormData, getFormDefinition } from '@/reducers/form';
+import { getCodingTextTableValues } from '@/util/extension';
+import { Path } from '@/util/refero-core';
+import { Resources } from '@/util/resources';
 
 export interface Props {
   item: QuestionnaireItem;

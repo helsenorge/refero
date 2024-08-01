@@ -3,7 +3,7 @@ import React from 'react';
 import { Coding } from 'fhir/r4';
 import { Controller } from 'react-hook-form';
 
-import { EnhetType, OrgenhetHierarki } from '../../../types/orgenhetHierarki';
+import { EnhetType, OrgenhetHierarki } from '@/types/orgenhetHierarki';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Label from '@helsenorge/designsystem-react/components/Label';
@@ -11,8 +11,8 @@ import Loader from '@helsenorge/designsystem-react/components/Loader';
 import NotificationPanel from '@helsenorge/designsystem-react/components/NotificationPanel';
 import Select from '@helsenorge/designsystem-react/components/Select';
 
-import { getId } from '../../../util';
-import { Resources } from '../../../util/resources';
+import { getId } from '@/util';
+import { Resources } from '@/util/resources';
 import { FormProps } from '../../../validation/ReactHookFormHoc';
 import SafeText from '../../referoLabel/SafeText';
 

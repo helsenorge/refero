@@ -10,12 +10,12 @@ import Input from '@helsenorge/designsystem-react/components/Input';
 
 import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 
-import { NewValueAction, newDecimalValueAsync } from '../../../actions/newValue';
-import { GlobalState } from '../../../reducers';
-import { getMaxValueExtensionValue, getMinValueExtensionValue, getPlaceholder, getValidationTextExtension } from '../../../util/extension';
-import { isReadOnly, getId, getDecimalPattern, isRequired } from '../../../util/index';
-import { Path } from '../../../util/refero-core';
-import { Resources } from '../../../util/resources';
+import { NewValueAction, newDecimalValueAsync } from '@/actions/newValue';
+import { GlobalState } from '@/reducers';
+import { getMaxValueExtensionValue, getMinValueExtensionValue, getPlaceholder, getValidationTextExtension } from '@/util/extension';
+import { isReadOnly, getId, getDecimalPattern, isRequired } from '@/util/index';
+import { Path } from '@/util/refero-core';
+import { Resources } from '@/util/resources';
 import ReactHookFormHoc, { FormProps } from '../../../validation/ReactHookFormHoc';
 import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 import TextView from '../textview';

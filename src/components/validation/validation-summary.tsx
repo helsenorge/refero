@@ -17,10 +17,9 @@ type Props = {
 };
 
 const ValidationSummary = ({ resources }: Props): JSX.Element | null => {
-  const { formDefinition, formData } = useSelector((state: GlobalState) => ({
-    formDefinition: getFormDefinition(state),
-    formData: getFormData(state),
-  }));
+  const formData = useSelector((state: GlobalState) => getFormData(state));
+  const formDefinition = useSelector((state: GlobalState) => getFormDefinition(state));
+
   const errorSummaryRef = useRef<HTMLDivElement | null>(null);
 
   const { setFocus, formState } = useFormContext();

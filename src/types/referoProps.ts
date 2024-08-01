@@ -1,4 +1,3 @@
-import { Store } from 'react-redux';
 import { IActionRequester } from '../util/actionRequester';
 import { IQuestionnaireInspector } from '../util/questionnaireInspector';
 import { Resources } from '../util/resources';
@@ -6,9 +5,12 @@ import { AutoSuggestProps } from './autoSuggestProps';
 import { QuestionnaireResponse, Attachment, Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer, ValueSet } from 'fhir/r4';
 import { OrgenhetHierarki } from './orgenhetHierarki';
 import { ValidationSummaryPlacement } from './formTypes/validationSummaryPlacement';
+import { Store } from 'redux';
+import { GlobalState } from '@/reducers';
+import { NewValueAction } from '@/actions/newValue';
 
 export interface ReferoProps {
-  store?: Store<{}>;
+  store?: Store<GlobalState, NewValueAction>;
   authorized: boolean;
   blockSubmit?: boolean;
   onSave?: (questionnaireResponse: QuestionnaireResponse) => void;

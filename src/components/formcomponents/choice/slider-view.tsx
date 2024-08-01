@@ -6,12 +6,12 @@ import { Controller } from 'react-hook-form';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import { Slider, SliderStep } from '@helsenorge/designsystem-react/components/Slider';
 
-import codeSystems from '../../../constants/codingsystems';
-import { Extensions } from '../../../constants/extensions';
-import { getId, isRequired } from '../../../util';
-import { getCodes as getCodingSystemCodes } from '../../../util/codingsystem';
-import { getExtension, getValidationTextExtension } from '../../../util/extension';
-import { isString } from '../../../util/typeguards';
+import codeSystems from '@/constants/codingsystems';
+import { Extensions } from '@/constants/extensions';
+import { getId, isRequired } from '@/util';
+import { getCodes as getCodingSystemCodes } from '@/util/codingsystem';
+import { getExtension, getValidationTextExtension } from '@/util/extension';
+import { isString } from '@/util/typeguards';
 import { FormProps } from '../../../validation/ReactHookFormHoc';
 import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 

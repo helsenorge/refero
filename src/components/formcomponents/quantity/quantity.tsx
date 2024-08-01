@@ -13,18 +13,18 @@ import { ThunkDispatch } from 'redux-thunk';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Input from '@helsenorge/designsystem-react/components/Input';
 
-import { NewValueAction, newQuantityValueAsync } from '../../../actions/newValue';
-import { GlobalState } from '../../../reducers';
+import { NewValueAction, newQuantityValueAsync } from '@/actions/newValue';
+import { GlobalState } from '@/reducers';
 import {
   getMaxValueExtensionValue,
   getMinValueExtensionValue,
   getPlaceholder,
   getQuestionnaireUnitExtensionValue,
   getValidationTextExtension,
-} from '../../../util/extension';
-import { isReadOnly, getId, isRequired, getDecimalPattern } from '../../../util/index';
-import { Path } from '../../../util/refero-core';
-import { Resources } from '../../../util/resources';
+} from '@/util/extension';
+import { isReadOnly, getId, isRequired, getDecimalPattern } from '@/util/index';
+import { Path } from '@/util/refero-core';
+import { Resources } from '@/util/resources';
 import ReactHookFormHoc, { FormProps } from '../../../validation/ReactHookFormHoc';
 import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 import TextView from '../textview';

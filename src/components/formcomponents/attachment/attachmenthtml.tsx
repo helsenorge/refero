@@ -11,9 +11,9 @@ import { useFileUpload } from '@helsenorge/file-upload/components/file-upload/us
 
 import { validateFileSize, validateFileType, validateMaxFiles, validateMinFiles } from './attachment-validation';
 import { getAttachmentMaxSizeBytesToUse } from './attachmentUtil';
-import { VALID_FILE_TYPES } from '../../../constants';
-import { getId } from '../../../util';
-import { Resources } from '../../../util/resources';
+import { VALID_FILE_TYPES } from '@/constants';
+import { getId } from '@/util';
+import { Resources } from '@/util/resources';
 import { FormProps } from '../../../validation/ReactHookFormHoc';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
@@ -139,18 +139,3 @@ const attachmentHtml = ({
 };
 
 export default attachmentHtml;
-
-{
-  /* <Dropzone
-  uploadedFiles={uploadedFiles}
-  validMimeTypes={validFileTypes}
-  supportedFileFormatsText={resources ? resources.supportedFileFormats : undefined}
-  onRequestLink={onRequestAttachmentLink}
-  helpButton={helpButton}
-  shouldUploadMultiple={multiple}
-  errorMessage={(file: File): string => {
-    return getErrorMessage(validFileTypes, getMaxValueBytes, getMaxValueMBToReplace, item, errorText, file, resources);
-  }}
-  wrapperClasses="page_refero__input"
-/> */
-}

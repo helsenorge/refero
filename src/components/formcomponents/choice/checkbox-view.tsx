@@ -3,14 +3,14 @@ import React from 'react';
 import { QuestionnaireItem, Questionnaire } from 'fhir/r4';
 import { Controller } from 'react-hook-form';
 
-import { Options } from '../../../types/formTypes/radioGroupOptions';
+import { Options } from '@/types/formTypes/radioGroupOptions';
 
 import Checkbox from '@helsenorge/designsystem-react/components/Checkbox';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Label from '@helsenorge/designsystem-react/components/Label';
 
-import { getId, isRequired } from '../../../util/index';
-import { Resources } from '../../../util/resources';
+import { getId, isRequired } from '@/util/index';
+import { Resources } from '@/util/resources';
 import { FormProps } from '../../../validation/ReactHookFormHoc';
 import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 

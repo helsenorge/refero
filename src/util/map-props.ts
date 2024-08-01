@@ -39,7 +39,7 @@ export function isEnableWhenEnabled(
     : enableMatches.some(x => x === true);
 }
 
-export function getValueIfDataReceiver(
+export function getAnswerIfDataReceiver(
   formData: FormData | null,
   item?: QuestionnaireItem
 ): QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[] | undefined {

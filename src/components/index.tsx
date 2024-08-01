@@ -15,28 +15,28 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
-import { DispatchProps } from '../types/dispatchProps';
-import { ReferoProps } from '../types/referoProps';
+import { DispatchProps } from '@/types/dispatchProps';
+import { ReferoProps } from '@/types/referoProps';
 
 import RenderForm from './renderForm';
 import StepView from './stepView';
-import { setSkjemaDefinition } from '../actions/form';
-import { NewValueAction, newQuantityValue, newDecimalValue, newIntegerValue } from '../actions/newValue';
-import Constants, { NAVIGATOR_BLINDZONE_ID } from '../constants/index';
-import { GlobalState } from '../reducers';
-import { getFormDefinition, getFormData } from '../reducers/form';
-import { FormDefinition, FormData } from '../reducers/form';
-import { ActionRequester } from '../util/actionRequester';
+import { setSkjemaDefinition } from '@/actions/form';
+import { NewValueAction, newQuantityValue, newDecimalValue, newIntegerValue } from '@/actions/newValue';
+import Constants, { NAVIGATOR_BLINDZONE_ID } from '@/constants/index';
+import { GlobalState } from '@/reducers';
+import { getFormDefinition, getFormData } from '@/reducers/form';
+import { FormDefinition, FormData } from '@/reducers/form';
+import { ActionRequester } from '@/util/actionRequester';
 import {
   getQuestionnaireUnitExtensionValue,
   getPresentationButtonsExtension,
   getNavigatorExtension,
   getCodingTextTableValues,
-} from '../util/extension';
-import { getTopLevelElements } from '../util/getTopLevelElements';
-import { IE11HackToWorkAroundBug187484 } from '../util/hacks';
-import { getComponentForItem, shouldRenderRepeatButton, isHiddenItem, getDecimalValue } from '../util/index';
-import { QuestionniareInspector } from '../util/questionnaireInspector';
+} from '@/util/extension';
+import { getTopLevelElements } from '@/util/getTopLevelElements';
+import { IE11HackToWorkAroundBug187484 } from '@/util/hacks';
+import { getComponentForItem, shouldRenderRepeatButton, isHiddenItem, getDecimalValue } from '@/util/index';
+import { QuestionniareInspector } from '@/util/questionnaireInspector';
 import {
   getRootQuestionnaireResponseItemFromData,
   Path,
@@ -46,11 +46,12 @@ import {
   createIdSuffix,
   getQuestionnaireDefinitionItem,
   getResponseItemAndPathWithLinkId,
-} from '../util/refero-core';
-import { RenderContext } from '../util/renderContext';
-import { AnswerPad, ScoringCalculator } from '../util/scoringCalculator';
-import { shouldFormBeDisplayedAsStepView } from '../util/shouldFormBeDisplayedAsStepView';
-import { createIntitialFormValues } from '../validation/defaultFormValues';
+} from '@/util/refero-core';
+import { RenderContext } from '@/util/renderContext';
+import { AnswerPad, ScoringCalculator } from '@/util/scoringCalculator';
+import { shouldFormBeDisplayedAsStepView } from '@/util/shouldFormBeDisplayedAsStepView';
+import { createIntitialFormValues } from '@/validation/defaultFormValues';
+import { isEnableWhenEnabled } from '@/util/map-props';
 interface StateProps {
   formDefinition: FormDefinition | null;
   formData: FormData | null;
@@ -210,7 +211,7 @@ const Refero = (props: StateProps & DispatchProps & ReferoProps): JSX.Element | 
       if (!Comp) {
         return undefined;
       }
-
+      const enable = !item || !item.enableWhen ? true : isEnableWhenEnabled(item.enableWhen, item.enableBehavior, path || [], formData);
       let responseItems: Array<QuestionnaireResponseItem> | undefined;
       if (formData) {
         responseItems = getRootQuestionnaireResponseItemFromData(item.linkId, formData);
@@ -221,13 +222,11 @@ const Refero = (props: StateProps & DispatchProps & ReferoProps): JSX.Element | 
             item.repeats && shouldRenderRepeatButton(item, responseItems, index) ? (
               <div className="page_refero__repeatbutton-wrapper">
                 <RepeatButton
-                  idWithLinkIdAndItemIndex={item.linkId}
                   key={`item_${item.linkId}_add_repeat_item`}
                   resources={props.resources}
                   item={item}
                   responseItems={responseItems}
                   parentPath={props.path}
-                  renderContext={new RenderContext()}
                   disabled={item.type !== ItemType.GROUP && !responseItem.answer}
                 />
               </div>
@@ -239,9 +238,10 @@ const Refero = (props: StateProps & DispatchProps & ReferoProps): JSX.Element | 
             isNavigatorBlindzoneInitiated = true;
             renderedItems.push(<section id={NAVIGATOR_BLINDZONE_ID}></section>);
           }
+
           renderedItems.push(
-            // @ts-expect-error missing props
             <Comp
+              enable={enable}
               idWithLinkIdAndItemIndex={`${item.linkId}${createIdSuffix(path, index, item.repeats)}`}
               language={formDefinition.Content?.language}
               pdf={pdf}

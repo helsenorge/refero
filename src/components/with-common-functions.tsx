@@ -40,7 +40,7 @@ import {
 } from '../util/refero-core';
 import { RenderContext } from '../util/renderContext';
 import { Resources } from '../util/resources';
-import { getValueIfDataReceiver, isEnableWhenEnabled } from '@/util/map-props';
+import { getAnswerIfDataReceiver, isEnableWhenEnabled } from '@/util/map-props';
 import { useSelector } from 'react-redux';
 import { getFormData } from '@/reducers/form';
 
@@ -119,12 +119,8 @@ export default function withCommonFunctions<T extends WithCommonFunctionsProps>(
 ): React.ComponentType<T & EnhancedProps> {
   const WithCommonFunctions = (props: T): JSX.Element | null => {
     const formData = useSelector((state: GlobalState) => getFormData(state));
-    const newAnswer = getValueIfDataReceiver(formData, props.item);
+    const newAnswer = getAnswerIfDataReceiver(formData, props.item);
 
-    const enable =
-      !props.item || !props.item.enableWhen
-        ? true
-        : isEnableWhenEnabled(props.item.enableWhen, props.item.enableBehavior, props.path || [], formData);
     const [isHelpVisible, setIsHelpVisible] = React.useState(false);
 
     const renderDeleteButton = (className?: string): JSX.Element | null => {
@@ -139,18 +135,15 @@ export default function withCommonFunctions<T extends WithCommonFunctionsProps>(
       if (!mustShowConfirm && props.responseItem && props.responseItem.item) {
         mustShowConfirm = props.responseItem.item.some(item => (item ? hasAnwer(item.answer) : false));
       }
-      const idWithLinkIdAndItemIndex = props.item.linkId;
       return (
         <div className="page_refero__deletebutton-wrapper">
           <DeleteButton
-            idWithLinkIdAndItemIndex={idWithLinkIdAndItemIndex}
             className={className}
             item={props.item}
             path={props.path}
             resources={props.resources}
             mustShowConfirm={mustShowConfirm}
             onAnswerChange={props.onAnswerChange}
-            renderContext={props.renderContext}
           />
         </div>
       );
@@ -173,10 +166,8 @@ export default function withCommonFunctions<T extends WithCommonFunctionsProps>(
             key={`item_${item.linkId}_add_repeat_item`}
             resources={props.resources}
             item={item}
-            idWithLinkIdAndItemIndex={`${item.linkId}${createIdSuffix(path, index, item.repeats)}`}
             responseItems={response}
             parentPath={path}
-            renderContext={props.renderContext}
             disabled={item.type !== itemType.GROUP && !responseItem?.answer}
           />
         </div>
@@ -267,6 +258,7 @@ export default function withCommonFunctions<T extends WithCommonFunctionsProps>(
           response = getItemWithIdFromResponseItemArray(linkId, childAnswer[0].item);
         }
       }
+      const enable = !item || !item.enableWhen ? true : isEnableWhenEnabled(item.enableWhen, item.enableBehavior, path || [], formData);
       const renderedItems: Array<JSX.Element> = [];
       if (response && response.length > 0) {
         response.forEach((responseItem, index) => {
@@ -276,6 +268,7 @@ export default function withCommonFunctions<T extends WithCommonFunctionsProps>(
             <Comp
               idWithLinkIdAndItemIndex={idWithLinkIdAndItemIndex}
               key={'item_' + responseItem.linkId + createIdSuffix(path, index, item.repeats)}
+              enable={enable}
               pdf={pdf}
               language={props.language}
               includeSkipLink={props.includeSkipLink}
@@ -326,8 +319,14 @@ export default function withCommonFunctions<T extends WithCommonFunctionsProps>(
 
       const renderedItems: Array<JSX.Element> = [];
       item.item.forEach(i => renderedItems.push(...renderItem(i, renderContext)));
+
       return renderedItems;
     };
+
+    const enable =
+      !props.item || !props.item.enableWhen
+        ? true
+        : isEnableWhenEnabled(props.item.enableWhen, props.item.enableBehavior, props.path || [], formData);
 
     if (!enable) {
       return null;
@@ -339,6 +338,7 @@ export default function withCommonFunctions<T extends WithCommonFunctionsProps>(
           renderRepeatButton={renderRepeatButton}
           renderHelpButton={renderHelpButton}
           renderHelpElement={renderHelpElement}
+          enable={enable}
           {...props}
         >
           {renderChildrenItems(props.renderContext)}

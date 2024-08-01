@@ -17,10 +17,10 @@ import { Resources } from '../../../util/resources';
 interface Props {
   className?: string;
   item: QuestionnaireItem;
-  path: Array<Path>;
+  path?: Array<Path>;
   resources?: Resources;
   mustShowConfirm?: boolean;
-  onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
+  onAnswerChange?: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
 }
 
 const DeleteButton = ({ resources, item, path, onAnswerChange, mustShowConfirm }: Props): JSX.Element => {
@@ -28,8 +28,8 @@ const DeleteButton = ({ resources, item, path, onAnswerChange, mustShowConfirm }
   const [showConfirm, setShowConfirm] = useState(false);
   const onDeleteRepeatItemConfirmed = (): void => {
     if (dispatch && item && path) {
-      dispatch(deleteRepeatItemAsync(path, item))?.then(newState =>
-        onAnswerChange(newState, path, item, {} as QuestionnaireResponseItemAnswer)
+      dispatch(deleteRepeatItemAsync(path, item))?.then(
+        newState => onAnswerChange && onAnswerChange(newState, path, item, {} as QuestionnaireResponseItemAnswer)
       );
     }
     setShowConfirm(false);
@@ -46,7 +46,7 @@ const DeleteButton = ({ resources, item, path, onAnswerChange, mustShowConfirm }
   const onConfirmCancel = (): void => {
     setShowConfirm(false);
   };
-  const pathItem = path.filter(p => p.linkId === item.linkId);
+  const pathItem = path?.filter(p => p.linkId === item.linkId);
   const testId = `${pathItem?.[0].linkId ?? item.linkId}-${pathItem?.[0].index ?? 0}`;
   return (
     <>

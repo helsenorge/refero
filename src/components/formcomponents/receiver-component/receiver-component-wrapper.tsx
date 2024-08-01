@@ -1,5 +1,5 @@
 import ReceiverComponent, { ReceiverComponentProps } from './receiver-component';
-import { getId } from '../../../util';
+import { getId } from '@/util';
 import { FormProps } from '../../../validation/ReactHookFormHoc';
 
 const ReceiverComponentWrapper = (props: ReceiverComponentProps & FormProps): JSX.Element => {

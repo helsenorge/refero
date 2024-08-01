@@ -11,7 +11,7 @@ import {
 } from 'fhir/r4';
 import { ThunkDispatch } from 'redux-thunk';
 
-import { AutoSuggestProps } from '../../../types/autoSuggestProps';
+import { AutoSuggestProps } from '@/types/autoSuggestProps';
 
 import CheckboxView from './checkbox-view';
 import DropdownView from './dropdown-view';
@@ -23,11 +23,11 @@ import {
   newCodingValueAsync,
   newCodingStringValueAsync,
   removeCodingStringValueAsync,
-} from '../../../actions/newValue';
-import { OPEN_CHOICE_ID, OPEN_CHOICE_SYSTEM } from '../../../constants';
-import ItemControlConstants from '../../../constants/itemcontrol';
-import { GlobalState } from '../../../reducers';
-import { isReadOnly, isDataReceiver } from '../../../util';
+} from '@/actions/newValue';
+import { OPEN_CHOICE_ID, OPEN_CHOICE_SYSTEM } from '@/constants';
+import ItemControlConstants from '@/constants/itemcontrol';
+import { GlobalState } from '@/reducers';
+import { isReadOnly, isDataReceiver } from '@/util';
 import {
   getOptions,
   shouldShowExtraChoice,
@@ -38,9 +38,9 @@ import {
   hasCanonicalValueSet,
   hasOptions,
   isAboveDropdownThreshold,
-} from '../../../util/choice';
-import { Path } from '../../../util/refero-core';
-import { Resources } from '../../../util/resources';
+} from '@/util/choice';
+import { Path } from '@/util/refero-core';
+import { Resources } from '@/util/resources';
 import ReactHookFormHoc, { FormProps } from '../../../validation/ReactHookFormHoc';
 import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 import SliderView from '../choice/slider-view';

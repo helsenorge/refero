@@ -11,11 +11,11 @@ import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label
 import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 
 import Pdf from './pdf';
-import { NewValueAction, newBooleanValueAsync } from '../../../actions/newValue';
-import { GlobalState } from '../../../reducers';
-import { isReadOnly, getId, getSublabelText, isRequired, getLabelText } from '../../../util/index';
-import { Path } from '../../../util/refero-core';
-import { Resources } from '../../../util/resources';
+import { NewValueAction, newBooleanValueAsync } from '@/actions/newValue';
+import { GlobalState } from '@/reducers';
+import { isReadOnly, getId, getSublabelText, isRequired, getLabelText } from '@/util/index';
+import { Path } from '@/util/refero-core';
+import { Resources } from '@/util/resources';
 import ReactHookFormHoc, { FormProps } from '../../../validation/ReactHookFormHoc';
 import SafeText from '../../referoLabel/SafeText';
 import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
