@@ -8,7 +8,7 @@ import Input from '@helsenorge/designsystem-react/components/Input';
 
 import { getValidationTextExtension, getPlaceholder, getMinLengthExtensionValue, getRegexExtension } from '../../../util/extension';
 import { isReadOnly, isRequired, getId, getPDFStringValue, getMaxLength, getStringValue } from '../../../util/index';
-import { Resources } from '../../../util/resources';
+import { Resources } from '@/util/resources';
 import { FormProps } from '../../../validation/ReactHookFormHoc';
 import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 import Pdf from '../textview';

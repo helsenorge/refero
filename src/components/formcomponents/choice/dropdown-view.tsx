@@ -10,7 +10,7 @@ import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 
 import { getPlaceholder } from '@/util/extension';
 import { getId, isRequired } from '@/util/index';
-import { FormProps } from '../../../validation/ReactHookFormHoc';
+import { FormProps } from '@/validation/ReactHookFormHoc';
 import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';

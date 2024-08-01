@@ -3,15 +3,15 @@ import { ReactNode } from 'react';
 import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { Controller } from 'react-hook-form';
 
-import { Options } from '../../../types/formTypes/radioGroupOptions';
+import { Options } from '@/types/formTypes/radioGroupOptions';
 
 import Checkbox from '@helsenorge/designsystem-react/components/Checkbox';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Label from '@helsenorge/designsystem-react/components/Label';
 
-import { shouldShowExtraChoice } from '../../../util/choice';
-import { isRequired, getId } from '../../../util/index';
-import { Resources } from '../../../util/resources';
+import { shouldShowExtraChoice } from '@/util/choice';
+import { isRequired, getId } from '@/util/index';
+import { Resources } from '@/util/resources';
 import { FormProps } from '../../../validation/ReactHookFormHoc';
 import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 

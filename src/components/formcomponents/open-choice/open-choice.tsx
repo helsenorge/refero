@@ -9,10 +9,9 @@ import {
   ValueSet,
   Questionnaire,
 } from 'fhir/r4';
-import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
-import { AutoSuggestProps } from '../../../types/autoSuggestProps';
+import { AutoSuggestProps } from '@/types/autoSuggestProps';
 
 import CheckboxView from './checkbox-view';
 import DropdownView from './dropdown-view';
@@ -24,11 +23,11 @@ import {
   newCodingValueAsync,
   newCodingStringValueAsync,
   removeCodingStringValueAsync,
-} from '../../../actions/newValue';
-import { OPEN_CHOICE_ID, OPEN_CHOICE_SYSTEM } from '../../../constants';
-import ItemControlConstants from '../../../constants/itemcontrol';
-import { GlobalState } from '../../../reducers';
-import { isReadOnly, isDataReceiver } from '../../../util';
+} from '@/actions/newValue';
+import { OPEN_CHOICE_ID, OPEN_CHOICE_SYSTEM } from '@/constants';
+import ItemControlConstants from '@/constants/itemcontrol';
+import { GlobalState } from '@/reducers';
+import { isReadOnly, isDataReceiver } from '@/util';
 import {
   getOptions,
   shouldShowExtraChoice,
@@ -39,15 +38,15 @@ import {
   hasCanonicalValueSet,
   hasOptions,
   isAboveDropdownThreshold,
-} from '../../../util/choice';
-import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
-import { Path } from '../../../util/refero-core';
-import { Resources } from '../../../util/resources';
+} from '@/util/choice';
+import { Path } from '@/util/refero-core';
+import { Resources } from '@/util/resources';
 import ReactHookFormHoc, { FormProps } from '../../../validation/ReactHookFormHoc';
 import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 import SliderView from '../choice/slider-view';
 import AutosuggestView from '../choice-common/autosuggest-view';
 import TextView from '../textview';
+import { useDispatch } from 'react-redux';
 
 export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   item: QuestionnaireItem;
@@ -57,7 +56,6 @@ export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   id?: string;
   pdf?: boolean;
   promptLoginMessage?: () => void;
-  dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
   resources?: Resources;
   containedResources?: Resource[];
   renderDeleteButton: () => JSX.Element | null;
@@ -79,20 +77,9 @@ export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
 }
 
 export const OpenChoice = (props: Props): JSX.Element | null => {
-  const {
-    id,
-    item,
-    pdf,
-    answer,
-    containedResources,
-    children,
-    onRenderMarkdown,
-    resources,
-    dispatch,
-    promptLoginMessage,
-    path,
-    onAnswerChange,
-  } = props;
+  const { id, item, pdf, answer, containedResources, children, onRenderMarkdown, resources, promptLoginMessage, path, onAnswerChange } =
+    props;
+  const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
 
   const getDataReceiverValue = (answer: QuestionnaireResponseItemAnswer[]): string[] | undefined => {
     return answer
@@ -316,15 +303,6 @@ export const OpenChoice = (props: Props): JSX.Element | null => {
     );
   };
 
-  // shouldComponentUpdate(nextProps: Props): boolean {
-  //   const responseItemHasChanged = responseItem !== nextresponseItem;
-  //   const resourcesHasChanged = JSON.stringify(resources) !== JSON.stringify(nextresources);
-  //   const answerHasChanged = answer !== nextanswer;
-  //   const repeats = item.repeats ?? false;
-  //   const error = error !== nexterror;
-
-  //   return responseItemHasChanged || helpItemHasChanged || resourcesHasChanged || repeats || answerHasChanged || error;
-  // }
   const renderComponentBasedOnType = (): JSX.Element | null => {
     const itemControlValue = getItemControlValue(item);
     if (!itemControlValue) {
@@ -405,5 +383,4 @@ export const OpenChoice = (props: Props): JSX.Element | null => {
 };
 const withFormProps = ReactHookFormHoc(OpenChoice);
 const withCommonFunctionsComponent = withCommonFunctions(withFormProps);
-const connectedStringComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(withCommonFunctionsComponent);
-export default connectedStringComponent;
+export default withCommonFunctionsComponent;

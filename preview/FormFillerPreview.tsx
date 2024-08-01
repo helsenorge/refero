@@ -12,6 +12,8 @@ import FormFillerSidebar from './FormFillerSidebar';
 import { emptyPropertyReplacer } from './helpers';
 import { getResources } from './resources/referoResources';
 import skjema from './skjema/NHN_Testskjema_Options-nb-NO-v0.1.json';
+// import skjema from '../src/components/formcomponents/display/__tests__/__data__/qHighlight.json';
+
 import ReferoContainer from '../src/components/index';
 import valueSet from '../src/constants/valuesets';
 import rootReducer from '../src/reducers/index';

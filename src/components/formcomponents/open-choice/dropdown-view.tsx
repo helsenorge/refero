@@ -3,17 +3,17 @@ import React from 'react';
 import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { Controller } from 'react-hook-form';
 
-import { Options } from '../../../types/formTypes/radioGroupOptions';
+import { Options } from '@/types/formTypes/radioGroupOptions';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Select from '@helsenorge/designsystem-react/components/Select';
 
 import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 
-import { shouldShowExtraChoice } from '../../../util/choice';
-import { getValidationTextExtension } from '../../../util/extension';
-import { isRequired, getId } from '../../../util/index';
-import { Resources } from '../../../util/resources';
+import { shouldShowExtraChoice } from '@/util/choice';
+import { getValidationTextExtension } from '@/util/extension';
+import { isRequired, getId } from '@/util/index';
+import { Resources } from '@/util/resources';
 import { FormProps } from '../../../validation/ReactHookFormHoc';
 import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 

@@ -1,7 +1,6 @@
 import React from 'react';
 
-import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem, Questionnaire } from 'fhir/r4';
-import { connect } from 'react-redux';
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer, Questionnaire } from 'fhir/r4';
 import { ThunkDispatch } from 'redux-thunk';
 
 import Label from '@helsenorge/designsystem-react/components/Label';
@@ -19,18 +18,17 @@ import { safeParseJSON } from '../../../util/date-fns-utils';
 import { getExtension, getItemControlExtensionValue } from '../../../util/extension';
 import { evaluateFhirpathExpressionToGetDate } from '../../../util/fhirpathHelper';
 import { getLabelText, getSublabelText } from '../../../util/index';
-import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
 import { Resources } from '../../../util/resources';
 import ReactHookFormHoc, { FormProps } from '../../../validation/ReactHookFormHoc';
 import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
+import { useDispatch } from 'react-redux';
 
 export interface DateProps extends WithCommonFunctionsAndEnhancedProps, FormProps {
   item: QuestionnaireItem;
   questionnaire?: Questionnaire;
   answer: QuestionnaireResponseItemAnswer;
   resources?: Resources;
-  dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
   path: Array<Path>;
   pdf?: boolean;
   language?: string;
@@ -49,7 +47,6 @@ const DateComponent = (props: React.PropsWithChildren<DateProps>): JSX.Element =
     questionnaire,
     answer,
     resources,
-    dispatch,
     path,
     language,
     promptLoginMessage,
@@ -61,7 +58,7 @@ const DateComponent = (props: React.PropsWithChildren<DateProps>): JSX.Element =
     onRenderMarkdown,
     children,
   } = props;
-
+  const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
   const getMaxDate = (): Date | undefined => {
     const maxDate = getExtension(Extensions.DATE_MAX_VALUE_URL, item);
     if (maxDate && maxDate.valueString) {
@@ -129,8 +126,6 @@ const DateComponent = (props: React.PropsWithChildren<DateProps>): JSX.Element =
 
   const labelText = getLabelText(item, onRenderMarkdown, questionnaire, resources);
   const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
-  const labelEl = <Label labelTexts={[{ text: labelText }]} />;
-  const subLabelEl = subLabelText ? <p>{subLabelText}</p> : undefined;
 
   const itemControls = getItemControlExtensionValue(item);
   let element: JSX.Element | undefined = undefined;
@@ -189,5 +184,4 @@ const DateComponent = (props: React.PropsWithChildren<DateProps>): JSX.Element =
 };
 const withFormProps = ReactHookFormHoc(DateComponent);
 const withCommonFunctionsComponent = withCommonFunctions(withFormProps);
-const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(withCommonFunctionsComponent);
-export default connectedComponent;
+export default withCommonFunctionsComponent;

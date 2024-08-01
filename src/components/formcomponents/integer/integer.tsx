@@ -2,7 +2,6 @@ import React from 'react';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem, Questionnaire } from 'fhir/r4';
 import { Controller } from 'react-hook-form';
-import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
@@ -10,18 +9,18 @@ import Input from '@helsenorge/designsystem-react/components/Input';
 
 import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 
-import { NewValueAction, newIntegerValueAsync } from '../../../actions/newValue';
-import { GlobalState } from '../../../reducers';
-import { getPlaceholder, getMaxValueExtensionValue, getMinValueExtensionValue, getValidationTextExtension } from '../../../util/extension';
-import { isReadOnly, isRequired, getId } from '../../../util/index';
-import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
-import { Path } from '../../../util/refero-core';
-import { Resources } from '../../../util/resources';
-import ReactHookFormHoc, { FormProps } from '../../../validation/ReactHookFormHoc';
+import { NewValueAction, newIntegerValueAsync } from '@/actions/newValue';
+import { GlobalState } from '@/reducers';
+import { getPlaceholder, getMaxValueExtensionValue, getMinValueExtensionValue, getValidationTextExtension } from '@/util/extension';
+import { isReadOnly, isRequired, getId } from '@/util/index';
+import { Path } from '@/util/refero-core';
+import { Resources } from '@/util/resources';
+import ReactHookFormHoc, { FormProps } from '@/validation/ReactHookFormHoc';
 import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 import TextView from '../textview';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
+import { useDispatch } from 'react-redux';
 
 export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   item: QuestionnaireItem;
@@ -29,7 +28,6 @@ export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   responseItem: QuestionnaireResponseItem;
   answer: QuestionnaireResponseItemAnswer;
   resources?: Resources;
-  dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
   path: Array<Path>;
   pdf?: boolean;
   promptLoginMessage?: () => void;
@@ -59,11 +57,11 @@ const Integer = ({
   error,
   renderDeleteButton,
   idWithLinkIdAndItemIndex,
-  dispatch,
   promptLoginMessage,
   path,
   onAnswerChange,
 }: Props): JSX.Element | null => {
+  const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
   const getValue = (): string | number | number[] | undefined => {
     if (answer && Array.isArray(answer)) {
       return answer.map(m => m.valueInteger);
@@ -186,5 +184,4 @@ const Integer = ({
 const withFormProps = ReactHookFormHoc(Integer);
 const withCommonFunctionsComponent = withCommonFunctions(withFormProps);
 const layoytChangeComponent = layoutChange(withCommonFunctionsComponent);
-const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(layoytChangeComponent);
-export default connectedComponent;
+export default layoytChangeComponent;

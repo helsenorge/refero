@@ -1,27 +1,12 @@
 import { QuestionnaireResponseItem, QuestionnaireItemEnableWhen, QuestionnaireResponseItemAnswer, QuestionnaireItem } from 'fhir/r4';
-import { ThunkDispatch } from 'redux-thunk';
 
 import { QuestionnaireItemEnableBehaviorCodes } from '../types/fhirEnums';
 
 import { enableWhenMatchesAnswer, getQuestionnaireResponseItemWithLinkid, getResponseItems, Path, isInGroupContext } from './refero-core';
-import { NewValueAction } from '../actions/newValue';
-import { WithCommonFunctionsProps } from '../components/with-common-functions';
 import ItemType from '../constants/itemType';
-import { FormData, getFormData } from '../reducers/form';
-import { GlobalState } from '../reducers/index';
+import { FormData } from '../reducers/form';
 import { getCopyExtension, getCalculatedExpressionExtension } from '../util/extension';
 import { evaluateFhirpathExpressionToGetString } from '../util/fhirpathHelper';
-
-export function mapStateToProps(state: GlobalState, originalProps: WithCommonFunctionsProps): WithCommonFunctionsProps {
-  const formData = getFormData(state);
-  const newAnswer = getValueIfDataReceiver(formData, originalProps.item);
-  const enable =
-    !originalProps.item || !originalProps.item.enableWhen
-      ? true
-      : isEnableWhenEnabled(originalProps.item.enableWhen, originalProps.item.enableBehavior, originalProps.path || [], formData);
-
-  return { ...originalProps, enable, ...(newAnswer !== undefined && { answer: newAnswer }) };
-}
 
 export function isEnableWhenEnabled(
   enableWhen: QuestionnaireItemEnableWhen[],
@@ -54,7 +39,7 @@ export function isEnableWhenEnabled(
     : enableMatches.some(x => x === true);
 }
 
-export function getValueIfDataReceiver(
+export function getAnswerIfDataReceiver(
   formData: FormData | null,
   item?: QuestionnaireItem
 ): QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[] | undefined {
@@ -117,22 +102,4 @@ function getQuestionnaireResponseItemAnswer(
     }
   });
   return answerArray;
-}
-
-export function mergeProps(
-  stateProps: WithCommonFunctionsProps,
-  dispatchProps: {
-    dispatch: ThunkDispatch<GlobalState, void, NewValueAction>;
-  },
-  ownProps: WithCommonFunctionsProps
-): WithCommonFunctionsProps {
-  return Object.assign({}, ownProps, stateProps, dispatchProps);
-}
-
-export function mapDispatchToProps(dispatch: ThunkDispatch<GlobalState, void, NewValueAction>): {
-  dispatch: ThunkDispatch<GlobalState, void, NewValueAction>;
-} {
-  return {
-    dispatch,
-  };
 }

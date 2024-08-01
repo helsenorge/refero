@@ -9,19 +9,18 @@ import {
   ValueSet,
   Questionnaire,
 } from 'fhir/r4';
-// import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
-import { AutoSuggestProps } from '../../../types/autoSuggestProps';
-import { OrgenhetHierarki } from '../../../types/orgenhetHierarki';
+import { AutoSuggestProps } from '@/types/autoSuggestProps';
+import { OrgenhetHierarki } from '@/types/orgenhetHierarki';
 
 import CheckboxView from './checkbox-view';
 import DropdownView from './dropdown-view';
 import RadioView from './radio-view';
 import SliderView from './slider-view';
-import { NewValueAction, newCodingValueAsync, removeCodingValueAsync } from '../../../actions/newValue';
-import itemControlConstants from '../../../constants/itemcontrol';
-import { GlobalState } from '../../../reducers';
+import { NewValueAction, newCodingValueAsync, removeCodingValueAsync } from '@/actions/newValue';
+import itemControlConstants from '@/constants/itemcontrol';
+import { GlobalState } from '@/reducers';
 import {
   getOptions,
   getSystem,
@@ -31,11 +30,10 @@ import {
   hasCanonicalValueSet,
   hasOptions,
   isAboveDropdownThreshold,
-} from '../../../util/choice';
-import { isReadOnly, isDataReceiver } from '../../../util/index';
-// import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
-import { Path } from '../../../util/refero-core';
-import { Resources } from '../../../util/resources';
+} from '@/util/choice';
+import { isReadOnly, isDataReceiver } from '@/util/index';
+import { Path } from '@/util/refero-core';
+import { Resources } from '@/util/resources';
 import ReactHookFormHoc, { FormProps } from '../../../validation/ReactHookFormHoc';
 import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 import AutosuggestView from '../choice-common/autosuggest-view';
@@ -264,5 +262,4 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
 
 const withFormProps = ReactHookFormHoc(Choice);
 const withCommonFunctionsComponent = withCommonFunctions(withFormProps);
-// const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(withCommonFunctionsComponent);
 export default withCommonFunctionsComponent;

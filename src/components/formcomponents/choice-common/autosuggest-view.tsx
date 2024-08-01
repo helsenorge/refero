@@ -3,7 +3,7 @@ import React from 'react';
 import { ValueSet, QuestionnaireItem, Questionnaire, Coding, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { Controller } from 'react-hook-form';
 
-import { AutoSuggestProps } from '../../../types/autoSuggestProps';
+import { AutoSuggestProps } from '@/types/autoSuggestProps';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Loader from '@helsenorge/designsystem-react/components/Loader';
@@ -12,11 +12,11 @@ import NotificationPanel from '@helsenorge/designsystem-react/components/Notific
 import Autosuggest, { Suggestion } from '@helsenorge/autosuggest/components/autosuggest';
 import { debounce } from '@helsenorge/core-utils/debounce';
 
-import { OPEN_CHOICE_ID, OPEN_CHOICE_SYSTEM } from '../../../constants';
-import ItemType from '../../../constants/itemType';
-import { isRequired, getId } from '../../../util/index';
-import { getStringAnswer, hasStringAnswer, getCodingAnswer } from '../../../util/refero-core';
-import { Resources } from '../../../util/resources';
+import { OPEN_CHOICE_ID, OPEN_CHOICE_SYSTEM } from '@/constants';
+import ItemType from '@/constants/itemType';
+import { isRequired, getId } from '@/util/index';
+import { getStringAnswer, hasStringAnswer, getCodingAnswer } from '@/util/refero-core';
+import { Resources } from '@/util/resources';
 import ReactHookFormHoc, { FormProps } from '../../../validation/ReactHookFormHoc';
 import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 

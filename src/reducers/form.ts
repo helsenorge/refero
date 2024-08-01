@@ -107,7 +107,7 @@ export default function reducer(state: Form = initialState, action: NewValueActi
 }
 
 export function getFormData(state: GlobalState): FormData | null {
-  if (!state.refero.form.FormData) {
+  if (!state.refero?.form?.FormData) {
     return null;
   }
   return state.refero.form.FormData;
