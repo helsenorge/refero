@@ -21,6 +21,7 @@ import SafeText from '../../referoLabel/SafeText';
 import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 import { useDispatch } from 'react-redux';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
+import { useIsEnabled } from '@/hooks/useIsEnabled';
 
 export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   item: QuestionnaireItem;
@@ -62,6 +63,7 @@ const Boolean = ({
   responseItem,
 }: Props): JSX.Element | null => {
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
+  const enable = useIsEnabled(item, path);
   const answer = useGetAnswer(responseItem) || [];
   const getValue = (): boolean => {
     if (answer && Array.isArray(answer)) {
@@ -91,6 +93,10 @@ const Boolean = ({
   };
   const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
   const labelText = getLabelText(item, onRenderMarkdown, questionnaire, resources);
+  const value = getValue();
+  if (!enable) {
+    return null;
+  }
   if (pdf) {
     return <Pdf item={item} checked={getValue()} onRenderMarkdown={onRenderMarkdown} />;
   } else if (isReadOnly(item)) {
@@ -108,7 +114,6 @@ const Boolean = ({
     );
   }
 
-  const value = getValue();
   return (
     // Dette er en hack for FHI-skjema. TODO: fjern hack
     <div className="page_refero__component page_refero__component_boolean">

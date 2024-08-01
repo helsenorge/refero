@@ -26,6 +26,7 @@ import TextView from '../textview';
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { useDispatch } from 'react-redux';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
+import { useIsEnabled } from '@/hooks/useIsEnabled';
 
 export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   item: QuestionnaireItem;
@@ -65,7 +66,7 @@ const Quantity = ({
 }: Props): JSX.Element | null => {
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
   const answer = useGetAnswer(responseItem);
-
+  const enable = useIsEnabled(item, path);
   const getValue = (): number | number[] | undefined => {
     if (answer && Array.isArray(answer)) {
       return answer.map(m => m.valueQuantity?.value).filter(f => f !== undefined);
@@ -123,7 +124,9 @@ const Quantity = ({
     }
     return '';
   };
-
+  if (!enable) {
+    return null;
+  }
   if (pdf || isReadOnly(item)) {
     return (
       <TextView

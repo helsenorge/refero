@@ -22,6 +22,7 @@ import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
+import { useIsEnabled } from '@/hooks/useIsEnabled';
 
 export interface AutosuggestProps extends WithCommonFunctionsAndEnhancedProps, FormProps {
   handleChange: (code?: string, systemArg?: string, displayArg?: string) => void;
@@ -67,8 +68,10 @@ const AutosuggestView = ({
   children,
   error,
   responseItem,
+  path,
 }: AutosuggestProps): JSX.Element | null => {
   const answer = useGetAnswer(responseItem) || [];
+  const enable = useIsEnabled(item, path);
   const codingAnswer = getCodingAnswer(answer);
   const initialInputValue =
     codingAnswer?.code === OPEN_CHOICE_ID && codingAnswer?.system === OPEN_CHOICE_SYSTEM ? getStringAnswer(answer) : codingAnswer?.display;
@@ -189,7 +192,9 @@ const AutosuggestView = ({
       setNoSuggestionsToShow(false);
     }
   };
-
+  if (!enable) {
+    return null;
+  }
   return (
     <div className="page_refero__component page_refero__component_choice page_refero__component_choice_autosuggest">
       <FormGroup error={error?.message}>

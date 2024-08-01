@@ -11,6 +11,7 @@ import { Path } from '@/util/refero-core';
 import { RenderContext } from '@/util/renderContext';
 import { Resources } from '@/util/resources';
 import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
+import { useIsEnabled } from '@/hooks/useIsEnabled';
 
 export interface Props extends WithCommonFunctionsAndEnhancedProps {
   item: QuestionnaireItem;
@@ -47,6 +48,7 @@ export const Group = ({
   headerTag,
   renderHelpButton,
 }: Props): JSX.Element | null => {
+  const enable = useIsEnabled(item, path);
   const renderAllItems = (item: QuestionnaireItem): JSX.Element => {
     const localRenderContextType = getLocalRenderContextType(item);
 
@@ -155,6 +157,9 @@ export const Group = ({
       </>
     );
   };
+  if (!enable) {
+    return null;
+  }
   return <AsPdf pdf={!!pdf}>{renderAllItems(item)}</AsPdf>;
 };
 const withCommonFunctionsComponent = withCommonFunctions(Group);

@@ -30,6 +30,7 @@ import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../
 import TextView from '../textview';
 import { useDispatch } from 'react-redux';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
+import { useIsEnabled } from '@/hooks/useIsEnabled';
 
 export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   item: QuestionnaireItem;
@@ -75,6 +76,7 @@ export const Text = ({
 }: Props): JSX.Element | null => {
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
   const answer = useGetAnswer(responseItem) || [];
+  const enable = useIsEnabled(item, path);
   const handleChange = (event: React.FormEvent): void => {
     const value = (event.target as HTMLInputElement).value;
     if (dispatch) {
@@ -93,7 +95,9 @@ export const Text = ({
   };
 
   const itemControls = getItemControlExtensionValue(item);
-
+  if (!enable) {
+    return null;
+  }
   if (itemControls && itemControls.some(itemControl => itemControl.code === itemControlConstants.SIDEBAR)) {
     return null;
   }

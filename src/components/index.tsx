@@ -50,7 +50,6 @@ import { RenderContext } from '@/util/renderContext';
 import { AnswerPad, ScoringCalculator } from '@/util/scoringCalculator';
 import { shouldFormBeDisplayedAsStepView } from '@/util/shouldFormBeDisplayedAsStepView';
 import { createIntitialFormValues } from '@/validation/defaultFormValues';
-import { isEnableWhenEnabled } from '@/util/map-props';
 interface StateProps {
   formDefinition: FormDefinition | null;
   formData: FormData | null;
@@ -216,7 +215,6 @@ const Refero = (props: StateProps & DispatchProps & ReferoProps): JSX.Element | 
       }
       if (responseItems && responseItems.length > 0) {
         responseItems.forEach((responseItem, index) => {
-          const enable = !item || !item.enableWhen ? true : isEnableWhenEnabled(item.enableWhen, item.enableBehavior, [], formData);
           const repeatButton =
             item.repeats && shouldRenderRepeatButton(item, responseItems, index) ? (
               <div className="page_refero__repeatbutton-wrapper">
@@ -240,7 +238,6 @@ const Refero = (props: StateProps & DispatchProps & ReferoProps): JSX.Element | 
 
           renderedItems.push(
             <Comp
-              enable={enable}
               idWithLinkIdAndItemIndex={`${item.linkId}${createIdSuffix(path, index, item.repeats)}`}
               language={formDefinition.Content?.language}
               pdf={pdf}

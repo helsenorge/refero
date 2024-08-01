@@ -41,6 +41,7 @@ import ReceiverComponentWrapper from '../receiver-component/receiver-component-w
 import TextView from '../textview';
 import { useDispatch } from 'react-redux';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
+import { useIsEnabled } from '@/hooks/useIsEnabled';
 
 export interface ChoiceProps extends WithCommonFunctionsAndEnhancedProps, FormProps {
   item: QuestionnaireItem;
@@ -86,7 +87,7 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
     responseItem,
   } = props;
   const answer = useGetAnswer(responseItem) || [];
-
+  const enable = useIsEnabled(item, path);
   const getValue = (
     item: QuestionnaireItem,
     answer: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer
@@ -231,6 +232,10 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
   const shouldRenderAutosuggest = hasCanonicalValueSet(item) && itemControlValue === itemControlConstants.AUTOCOMPLETE;
   const isReceiverComponent = itemControlValue === itemControlConstants.RECEIVERCOMPONENT;
   const value = getValue(item, answer);
+
+  if (!enable) {
+    return null;
+  }
 
   if (pdf || isReadOnly(item)) {
     return (

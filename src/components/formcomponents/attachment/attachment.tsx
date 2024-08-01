@@ -17,6 +17,7 @@ import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../
 import TextView from '../textview';
 import { useDispatch } from 'react-redux';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
+import { useIsEnabled } from '@/hooks/useIsEnabled';
 
 export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   path: Array<Path>;
@@ -69,6 +70,7 @@ export const AttachmentComponent = (props: Props): JSX.Element | null => {
     responseItem,
   } = props;
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
+  const enable = useIsEnabled(item, path);
   const answer = useGetAnswer(responseItem) || [];
   const onUpload = (files: UploadFile[]): void => {
     if (uploadAttachment) {
@@ -140,7 +142,9 @@ export const AttachmentComponent = (props: Props): JSX.Element | null => {
 
     return '';
   };
-
+  if (!enable) {
+    return null;
+  }
   if (pdf || isReadOnly(item)) {
     return (
       <TextView

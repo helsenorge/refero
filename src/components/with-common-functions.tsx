@@ -34,8 +34,6 @@ import { Path, getItemWithIdFromResponseItemArray, createPathForItem, shouldRend
 import { RenderContext } from '../util/renderContext';
 import { Resources } from '../util/resources';
 
-import { useIsEnabled } from '@/hooks/useIsEnabled';
-
 export interface WithCommonFunctionsProps {
   idWithLinkIdAndItemIndex: string;
   dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
@@ -50,7 +48,6 @@ export interface WithCommonFunctionsProps {
   includeSkipLink?: boolean;
   promptLoginMessage?: () => void;
   path?: Array<Path>;
-  enable?: boolean;
   id?: string;
   validateScriptInjection?: boolean;
   visibleDeleteButton?: boolean;
@@ -110,7 +107,6 @@ export default function withCommonFunctions<T extends WithCommonFunctionsProps>(
 ): React.ComponentType<T & EnhancedProps> {
   const WithCommonFunctions = (props: T): JSX.Element | null => {
     const [isHelpVisible, setIsHelpVisible] = React.useState(false);
-    const enable = useIsEnabled(props.item, props.path);
 
     const renderDeleteButton = (className?: string): JSX.Element | null => {
       if (!props.visibleDeleteButton) {
@@ -256,7 +252,6 @@ export default function withCommonFunctions<T extends WithCommonFunctionsProps>(
             <Comp
               idWithLinkIdAndItemIndex={idWithLinkIdAndItemIndex}
               key={'item_' + responseItem.linkId + createIdSuffix(path, index, item.repeats)}
-              enable={enable}
               pdf={pdf}
               language={props.language}
               includeSkipLink={props.includeSkipLink}
@@ -310,23 +305,18 @@ export default function withCommonFunctions<T extends WithCommonFunctionsProps>(
       return renderedItems;
     };
 
-    if (!enable) {
-      return null;
-    } else {
-      return (
-        <WrappedComponent
-          renderChildrenItems={renderChildrenItems}
-          renderDeleteButton={renderDeleteButton}
-          renderRepeatButton={renderRepeatButton}
-          renderHelpButton={renderHelpButton}
-          renderHelpElement={renderHelpElement}
-          enable={enable}
-          {...props}
-        >
-          {renderChildrenItems(props.renderContext)}
-        </WrappedComponent>
-      );
-    }
+    return (
+      <WrappedComponent
+        renderChildrenItems={renderChildrenItems}
+        renderDeleteButton={renderDeleteButton}
+        renderRepeatButton={renderRepeatButton}
+        renderHelpButton={renderHelpButton}
+        renderHelpElement={renderHelpElement}
+        {...props}
+      >
+        {renderChildrenItems(props.renderContext)}
+      </WrappedComponent>
+    );
   };
   const displayName = WrappedComponent.displayName || WrappedComponent.name || 'WithCommonFunctions';
 

@@ -6,11 +6,11 @@ import { GlobalState } from '@/reducers';
 import { Path } from '@/util/refero-core';
 import { RenderContext } from '@/util/renderContext';
 import { Resources } from '@/util/resources';
+import { useGetAnswer } from '@/hooks/useGetAnswer';
 
 type Props = {
   className?: string;
   visibleDeleteButton: boolean;
-  answer?: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[];
   item: QuestionnaireItem;
   path: Path[];
   responseItem: QuestionnaireResponseItem;
@@ -22,7 +22,6 @@ type Props = {
 export const RenderDeleteButton = ({
   resources,
   visibleDeleteButton,
-  answer,
   className,
   responseItem,
   item,
@@ -32,7 +31,7 @@ export const RenderDeleteButton = ({
   if (!visibleDeleteButton) {
     return null;
   }
-
+  const answer = useGetAnswer(responseItem);
   const hasAnwer = (answer: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[] | undefined): boolean => {
     return !!answer && Object.keys(answer).length > 0;
   };
@@ -40,7 +39,7 @@ export const RenderDeleteButton = ({
   let mustShowConfirm: boolean = hasAnwer(answer);
 
   if (!mustShowConfirm && responseItem && responseItem.item) {
-    mustShowConfirm = responseItem.item.some(item => (item ? hasAnwer(item.answer) : false));
+    mustShowConfirm = responseItem.item.some(item => (item ? hasAnwer(answer) : false));
   }
   return (
     <div className="page_refero__deletebutton-wrapper">

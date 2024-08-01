@@ -23,6 +23,7 @@ import TextView from '../textview';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
+import { useIsEnabled } from '@/hooks/useIsEnabled';
 
 export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   item: QuestionnaireItem;
@@ -66,6 +67,7 @@ export const String = ({
 }: Props): JSX.Element | null => {
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
   const answer = useGetAnswer(responseItem) || [];
+  const enable = useIsEnabled(item, path);
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     const value = event.target.value;
     if (dispatch) {
@@ -78,7 +80,9 @@ export const String = ({
       promptLoginMessage();
     }
   };
-
+  if (!enable) {
+    return null;
+  }
   if (pdf || isReadOnly(item)) {
     return (
       <TextView

@@ -48,6 +48,7 @@ import AutosuggestView from '../choice-common/autosuggest-view';
 import TextView from '../textview';
 import { useDispatch } from 'react-redux';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
+import { useIsEnabled } from '@/hooks/useIsEnabled';
 
 export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   item: QuestionnaireItem;
@@ -92,7 +93,7 @@ export const OpenChoice = (props: Props): JSX.Element | null => {
   } = props;
   const answer = useGetAnswer(responseItem) || [];
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
-
+  const enable = useIsEnabled(item, path);
   const getDataReceiverValue = (answer: QuestionnaireResponseItemAnswer[]): string[] | undefined => {
     return answer
       .filter(f => f.valueCoding?.code !== OPEN_CHOICE_ID)
@@ -332,7 +333,9 @@ export const OpenChoice = (props: Props): JSX.Element | null => {
       </TextView>
     );
   }
-
+  if (!enable) {
+    return null;
+  }
   return (
     <>
       {hasOptionsAndNoCanonicalValueSet ? (
