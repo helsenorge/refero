@@ -1,5 +1,5 @@
 import DOMPurify from 'dompurify';
-import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem, Questionnaire } from 'fhir/r4';
+import { QuestionnaireItem } from 'fhir/r4';
 
 import AnchorLink from '@helsenorge/designsystem-react/components/AnchorLink';
 
@@ -14,11 +14,7 @@ import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../
 
 export interface Props extends WithCommonFunctionsAndEnhancedProps {
   item: QuestionnaireItem;
-  questionnaire?: Questionnaire;
-  answer: QuestionnaireResponseItemAnswer;
-  responseItem: QuestionnaireResponseItem;
   path: Array<Path>;
-  pdf?: boolean;
   includeSkipLink?: boolean;
   className?: string;
   resources?: Resources;

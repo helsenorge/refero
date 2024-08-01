@@ -29,12 +29,13 @@ import { ReferoLabel } from '../../referoLabel/ReferoLabel';
 import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 import TextView from '../textview';
 import { useDispatch } from 'react-redux';
+import { useGetAnswer } from '@/hooks/useGetAnswer';
 
 export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   item: QuestionnaireItem;
   questionnaire?: Questionnaire;
   responseItem: QuestionnaireResponseItem;
-  answer: QuestionnaireResponseItemAnswer;
+
   path: Array<Path>;
   pdf?: boolean;
   promptLoginMessage?: () => void;
@@ -53,7 +54,6 @@ export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
 export const Text = ({
   id,
   item,
-  answer,
   pdf,
   children,
   resources,
@@ -71,8 +71,10 @@ export const Text = ({
   validateScriptInjection,
   renderDeleteButton,
   repeatButton,
+  responseItem,
 }: Props): JSX.Element | null => {
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
+  const answer = useGetAnswer(responseItem) || [];
   const handleChange = (event: React.FormEvent): void => {
     const value = (event.target as HTMLInputElement).value;
     if (dispatch) {

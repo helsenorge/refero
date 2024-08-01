@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
+import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { Controller } from 'react-hook-form';
 import { ThunkDispatch } from 'redux-thunk';
 
@@ -20,12 +20,11 @@ import ReactHookFormHoc, { FormProps } from '../../../validation/ReactHookFormHo
 import SafeText from '../../referoLabel/SafeText';
 import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 import { useDispatch } from 'react-redux';
+import { useGetAnswer } from '@/hooks/useGetAnswer';
 
 export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   item: QuestionnaireItem;
   questionnaire?: Questionnaire;
-  responseItem: QuestionnaireResponseItem;
-  answer: QuestionnaireResponseItemAnswer;
   resources?: Resources;
   path: Array<Path>;
   pdf?: boolean;
@@ -44,7 +43,6 @@ export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
 
 const Boolean = ({
   item,
-  answer,
   promptLoginMessage,
   onAnswerChange,
   path,
@@ -61,9 +59,14 @@ const Boolean = ({
   children,
   control,
   idWithLinkIdAndItemIndex,
+  responseItem,
 }: Props): JSX.Element | null => {
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
+  const answer = useGetAnswer(responseItem) || [];
   const getValue = (): boolean => {
+    if (answer && Array.isArray(answer)) {
+      return answer.map(m => m.valueBoolean).filter(f => f !== undefined)[0] ?? false;
+    }
     if (answer && answer.valueBoolean !== undefined) {
       return answer.valueBoolean;
     }

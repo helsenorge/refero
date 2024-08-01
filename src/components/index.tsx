@@ -41,7 +41,6 @@ import {
   getRootQuestionnaireResponseItemFromData,
   Path,
   createPathForItem,
-  getAnswerFromResponseItem,
   shouldRenderDeleteButton,
   createIdSuffix,
   getQuestionnaireDefinitionItem,
@@ -110,7 +109,6 @@ const Refero = (props: StateProps & DispatchProps & ReferoProps): JSX.Element | 
     item: QuestionnaireItem,
     answer: QuestionnaireResponseItemAnswer
   ): void => {
-    // console.log('onAnswerChange', newState, item, answer, props.onChange);
     if (props.onChange && newState.refero.form.FormDefinition.Content && newState.refero.form.FormData.Content) {
       const actionRequester = new ActionRequester(newState.refero.form.FormDefinition.Content, newState.refero.form.FormData.Content);
 
@@ -211,13 +209,14 @@ const Refero = (props: StateProps & DispatchProps & ReferoProps): JSX.Element | 
       if (!Comp) {
         return undefined;
       }
-      const enable = !item || !item.enableWhen ? true : isEnableWhenEnabled(item.enableWhen, item.enableBehavior, path || [], formData);
+
       let responseItems: Array<QuestionnaireResponseItem> | undefined;
       if (formData) {
         responseItems = getRootQuestionnaireResponseItemFromData(item.linkId, formData);
       }
       if (responseItems && responseItems.length > 0) {
         responseItems.forEach((responseItem, index) => {
+          const enable = !item || !item.enableWhen ? true : isEnableWhenEnabled(item.enableWhen, item.enableBehavior, [], formData);
           const repeatButton =
             item.repeats && shouldRenderRepeatButton(item, responseItems, index) ? (
               <div className="page_refero__repeatbutton-wrapper">
@@ -252,7 +251,6 @@ const Refero = (props: StateProps & DispatchProps & ReferoProps): JSX.Element | 
               item={item}
               questionnaire={formDefinition.Content}
               responseItem={responseItem}
-              answer={getAnswerFromResponseItem(responseItem)}
               resources={resources}
               containedResources={contained}
               path={path}

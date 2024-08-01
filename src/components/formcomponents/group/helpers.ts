@@ -61,7 +61,7 @@ export const getClassNames = (item: QuestionnaireItem): string => {
 
 export const getHeaderText = (
   item: QuestionnaireItem,
-  questionnaire?: Questionnaire,
+  questionnaire?: Questionnaire | null,
   resources?: Resources,
   onRenderMarkdown?: ((item: QuestionnaireItem, markdown: string) => string) | undefined
 ): string => {

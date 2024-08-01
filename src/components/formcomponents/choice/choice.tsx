@@ -40,11 +40,11 @@ import AutosuggestView from '../choice-common/autosuggest-view';
 import ReceiverComponentWrapper from '../receiver-component/receiver-component-wrapper';
 import TextView from '../textview';
 import { useDispatch } from 'react-redux';
+import { useGetAnswer } from '@/hooks/useGetAnswer';
 
 export interface ChoiceProps extends WithCommonFunctionsAndEnhancedProps, FormProps {
   item: QuestionnaireItem;
   questionnaire?: Questionnaire;
-  answer: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer;
   resources?: Resources;
   containedResources?: Resource[];
   path: Array<Path>;
@@ -72,8 +72,20 @@ export interface ChoiceProps extends WithCommonFunctionsAndEnhancedProps, FormPr
 
 export const Choice = (props: ChoiceProps): JSX.Element | null => {
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
-  const { resources, containedResources, answer, promptLoginMessage, item, onAnswerChange, path, id, pdf, children, onRenderMarkdown } =
-    props;
+  const {
+    resources,
+    containedResources,
+    promptLoginMessage,
+    item,
+    onAnswerChange,
+    path,
+    id,
+    pdf,
+    children,
+    onRenderMarkdown,
+    responseItem,
+  } = props;
+  const answer = useGetAnswer(responseItem) || [];
 
   const getValue = (
     item: QuestionnaireItem,
@@ -250,7 +262,7 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
         <ReceiverComponentWrapper
           {...props}
           handleChange={handleChange}
-          selected={getValue(props.item, props.answer)}
+          selected={getValue(props.item, answer)}
           clearCodingAnswer={clearCodingAnswer}
         >
           {props.children}

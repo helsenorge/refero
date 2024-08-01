@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 
-import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
+import { Questionnaire, QuestionnaireItem } from 'fhir/r4';
 import { Controller } from 'react-hook-form';
 
 import { Options } from '@/types/formTypes/radioGroupOptions';
@@ -16,6 +16,7 @@ import { FormProps } from '../../../validation/ReactHookFormHoc';
 import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
+import { useGetAnswer } from '@/hooks/useGetAnswer';
 
 interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   options?: Array<Options>;
@@ -28,7 +29,6 @@ interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   repeatButton: JSX.Element;
   renderDeleteButton: (className?: string) => JSX.Element | null;
   renderOpenField: () => JSX.Element | undefined;
-  answer: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer;
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
@@ -40,7 +40,6 @@ const CheckboxView = ({
   item,
   questionnaire,
   id,
-  answer,
   handleChange,
   resources,
   children,
@@ -54,7 +53,9 @@ const CheckboxView = ({
   error,
   idWithLinkIdAndItemIndex,
   selected,
+  responseItem,
 }: Props): JSX.Element | null => {
+  const answer = useGetAnswer(responseItem) || [];
   return (
     <div className="page_refero__component page_refero__component_openchoice page_refero__component_openchoice_checkbox">
       <FormGroup error={error?.message} mode="ongrey">

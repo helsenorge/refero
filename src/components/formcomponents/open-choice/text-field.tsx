@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
+import { Questionnaire, QuestionnaireItem } from 'fhir/r4';
 import { Controller, FieldValues, useFormContext } from 'react-hook-form';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
@@ -14,13 +14,13 @@ import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions
 import Pdf from '../textview';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
+import { useGetAnswer } from '@/hooks/useGetAnswer';
 
 interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   id?: string;
   pdf?: boolean;
   item: QuestionnaireItem;
   questionnaire?: Questionnaire;
-  answer: QuestionnaireResponseItemAnswer;
   handleStringChange: (event: React.FocusEvent<HTMLInputElement, Element>) => void;
   handleChange: (value: string) => void;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
@@ -32,17 +32,19 @@ const textField = ({
   pdf,
   item,
   questionnaire,
-  answer,
   handleStringChange,
   handleChange,
   children,
   onRenderMarkdown,
   resources,
   idWithLinkIdAndItemIndex,
+  responseItem,
 }: Props): JSX.Element | null => {
   const formName = `${idWithLinkIdAndItemIndex}-extra-field`;
   const { formState, getFieldState } = useFormContext<FieldValues>();
   const { error } = getFieldState(formName, formState);
+  const answer = useGetAnswer(responseItem) || [];
+
   if (pdf) {
     return (
       <Pdf item={item} value={getPDFStringValue(answer)}>
@@ -58,7 +60,7 @@ const textField = ({
   const minLength = getMinLengthExtensionValue(item);
   const pattern = getRegexExtension(item);
   const errorMessage = getValidationTextExtension(item);
-
+  const value = getStringValue(answer);
   return (
     <FormGroup error={error?.message} mode="ongrey">
       <ReferoLabel
@@ -74,7 +76,7 @@ const textField = ({
       <Controller
         name={`${idWithLinkIdAndItemIndex}-extra-field`}
         shouldUnregister={true}
-        defaultValue={getStringValue(answer)}
+        defaultValue={value}
         rules={{
           required: {
             value: isRequired(item),
@@ -108,7 +110,7 @@ const textField = ({
             mode="ongrey"
             inputId={`${getId(id)}-extra-field`}
             testId={`${getId(id)}-extra-field`}
-            value={getStringValue(answer)}
+            value={value}
             placeholder={getPlaceholder(item)}
             readOnly={isReadOnly(item)}
             onChange={(e): void => {

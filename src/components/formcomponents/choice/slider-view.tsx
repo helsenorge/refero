@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { QuestionnaireItem, QuestionnaireItemAnswerOption, QuestionnaireResponseItemAnswer } from 'fhir/r4';
+import { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
 import { Controller } from 'react-hook-form';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
@@ -19,7 +19,6 @@ import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 
 export interface SliderProps extends WithCommonFunctionsAndEnhancedProps, FormProps {
   item: QuestionnaireItem;
-  answer: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer;
   handleChange: (sliderStep: string) => void;
   selected?: Array<string | undefined>;
   children?: React.ReactNode;
@@ -100,6 +99,7 @@ const SliderView: React.FC<SliderProps> = ({
             },
           }}
           control={control}
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
           render={({ field: { onChange, ref, ...rest } }): JSX.Element => (
             <Slider
               {...rest}

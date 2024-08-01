@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem, Questionnaire } from 'fhir/r4';
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer, Questionnaire } from 'fhir/r4';
 import { Controller } from 'react-hook-form';
 import { ThunkDispatch } from 'redux-thunk';
 
@@ -21,12 +21,11 @@ import TextView from '../textview';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { useDispatch } from 'react-redux';
+import { useGetAnswer } from '@/hooks/useGetAnswer';
 
 export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   item: QuestionnaireItem;
   questionnaire?: Questionnaire;
-  responseItem: QuestionnaireResponseItem;
-  answer: QuestionnaireResponseItemAnswer;
   resources?: Resources;
   path: Array<Path>;
   pdf?: boolean;
@@ -43,7 +42,6 @@ export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
 
 const Integer = ({
   item,
-  answer,
   repeatButton,
   resources,
   id,
@@ -60,11 +58,13 @@ const Integer = ({
   promptLoginMessage,
   path,
   onAnswerChange,
+  responseItem,
 }: Props): JSX.Element | null => {
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
+  const answer = useGetAnswer(responseItem);
   const getValue = (): string | number | number[] | undefined => {
     if (answer && Array.isArray(answer)) {
-      return answer.map(m => m.valueInteger);
+      return answer.map(m => m.valueInteger).filter(f => f !== undefined);
     }
     if (answer && answer.valueInteger !== undefined && answer.valueInteger !== null) {
       return answer.valueInteger;

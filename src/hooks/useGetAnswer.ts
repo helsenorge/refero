@@ -1,43 +1,12 @@
-import { QuestionnaireResponseItem, QuestionnaireItemEnableWhen, QuestionnaireResponseItemAnswer, QuestionnaireItem } from 'fhir/r4';
-
-import { QuestionnaireItemEnableBehaviorCodes } from '../types/fhirEnums';
-
-import { enableWhenMatchesAnswer, getQuestionnaireResponseItemWithLinkid, getResponseItems, Path, isInGroupContext } from './refero-core';
-import ItemType from '../constants/itemType';
-import { FormData } from '../reducers/form';
-import { getCopyExtension, getCalculatedExpressionExtension } from '../util/extension';
-import { evaluateFhirpathExpressionToGetString } from '../util/fhirpathHelper';
-
-export function isEnableWhenEnabled(
-  enableWhen: QuestionnaireItemEnableWhen[],
-  enableBehavior: string | undefined,
-  path: Path[],
-  formData: FormData | null
-): boolean {
-  const enableMatches: Array<boolean> = [];
-  enableWhen.forEach((enableWhen: QuestionnaireItemEnableWhen) => {
-    const responseItems = getResponseItems(formData);
-    const enableWhenQuestion = enableWhen.question;
-    for (let i = 0; responseItems && i < responseItems.length; i++) {
-      let responseItem: QuestionnaireResponseItem | undefined = responseItems[i];
-      if (!isInGroupContext(path, responseItem, responseItems)) {
-        continue;
-      }
-      if (responseItem.linkId !== enableWhen.question) {
-        responseItem = getQuestionnaireResponseItemWithLinkid(enableWhenQuestion, responseItems[i], path);
-      }
-      if (!responseItem) {
-        continue;
-      }
-
-      const matchesAnswer = enableWhenMatchesAnswer(enableWhen, responseItem.answer);
-      enableMatches.push(matchesAnswer);
-    }
-  });
-  return enableBehavior === QuestionnaireItemEnableBehaviorCodes.ALL
-    ? enableMatches.every(x => x === true)
-    : enableMatches.some(x => x === true);
-}
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import ItemType from '@/constants/itemType';
+import { GlobalState } from '@/reducers';
+import { FormData, getFormData } from '@/reducers/form';
+import { getCalculatedExpressionExtension, getCopyExtension } from '@/util/extension';
+import { evaluateFhirpathExpressionToGetString } from '@/util/fhirpathHelper';
+import { getAnswerFromResponseItem } from '@/util/refero-core';
+import { QuestionnaireItem, QuestionnaireResponseItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
+import { useSelector } from 'react-redux';
 
 export function getAnswerIfDataReceiver(
   formData: FormData | null,
@@ -103,3 +72,13 @@ function getQuestionnaireResponseItemAnswer(
   });
   return answerArray;
 }
+
+export const useGetAnswer = (
+  responseItem: QuestionnaireResponseItem,
+  item?: QuestionnaireItem
+): QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[] | undefined => {
+  const formData = useSelector<GlobalState, FormData | null>(state => getFormData(state));
+  const answer = getAnswerFromResponseItem(responseItem);
+  const newAnswer = getAnswerIfDataReceiver(formData, item);
+  return newAnswer ?? answer;
+};

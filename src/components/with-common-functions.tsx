@@ -30,25 +30,17 @@ import { GlobalState } from '../reducers';
 import { getCodingTextTableValues } from '../util/extension';
 import { findHelpItem, isHelpItem, getHelpItemType } from '../util/help';
 import { getComponentForItem, getChildHeaderTag, shouldRenderRepeatButton, getText, isHiddenItem } from '../util/index';
-import {
-  Path,
-  getAnswerFromResponseItem,
-  getItemWithIdFromResponseItemArray,
-  createPathForItem,
-  shouldRenderDeleteButton,
-  createIdSuffix,
-} from '../util/refero-core';
+import { Path, getItemWithIdFromResponseItemArray, createPathForItem, shouldRenderDeleteButton, createIdSuffix } from '../util/refero-core';
 import { RenderContext } from '../util/renderContext';
 import { Resources } from '../util/resources';
-import { getAnswerIfDataReceiver, isEnableWhenEnabled } from '@/util/map-props';
-import { useSelector } from 'react-redux';
-import { getFormData } from '@/reducers/form';
+
+import { useIsEnabled } from '@/hooks/useIsEnabled';
 
 export interface WithCommonFunctionsProps {
   idWithLinkIdAndItemIndex: string;
   dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
   resources?: Resources;
-  responseItem?: QuestionnaireResponseItem;
+  responseItem: QuestionnaireResponseItem;
   containedResources?: Resource[];
   item: QuestionnaireItem;
   questionnaire?: Questionnaire | null;
@@ -60,7 +52,6 @@ export interface WithCommonFunctionsProps {
   path?: Array<Path>;
   enable?: boolean;
   id?: string;
-  answer?: QuestionnaireResponseItemAnswer | Array<QuestionnaireResponseItemAnswer>;
   validateScriptInjection?: boolean;
   visibleDeleteButton?: boolean;
   repeatButton?: JSX.Element;
@@ -118,10 +109,8 @@ export default function withCommonFunctions<T extends WithCommonFunctionsProps>(
   WrappedComponent: React.ComponentType<T>
 ): React.ComponentType<T & EnhancedProps> {
   const WithCommonFunctions = (props: T): JSX.Element | null => {
-    const formData = useSelector((state: GlobalState) => getFormData(state));
-    const newAnswer = getAnswerIfDataReceiver(formData, props.item);
-
     const [isHelpVisible, setIsHelpVisible] = React.useState(false);
+    const enable = useIsEnabled(props.item, props.path);
 
     const renderDeleteButton = (className?: string): JSX.Element | null => {
       if (!props.visibleDeleteButton) {
@@ -130,7 +119,7 @@ export default function withCommonFunctions<T extends WithCommonFunctionsProps>(
       const hasAnwer = (answer: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[] | undefined): boolean => {
         return !!answer && Object.keys(answer).length > 0;
       };
-      let mustShowConfirm: boolean = hasAnwer(props.answer);
+      let mustShowConfirm: boolean = hasAnwer(props.responseItem?.answer);
 
       if (!mustShowConfirm && props.responseItem && props.responseItem.item) {
         mustShowConfirm = props.responseItem.item.some(item => (item ? hasAnwer(item.answer) : false));
@@ -258,7 +247,6 @@ export default function withCommonFunctions<T extends WithCommonFunctionsProps>(
           response = getItemWithIdFromResponseItemArray(linkId, childAnswer[0].item);
         }
       }
-      const enable = !item || !item.enableWhen ? true : isEnableWhenEnabled(item.enableWhen, item.enableBehavior, path || [], formData);
       const renderedItems: Array<JSX.Element> = [];
       if (response && response.length > 0) {
         response.forEach((responseItem, index) => {
@@ -277,7 +265,6 @@ export default function withCommonFunctions<T extends WithCommonFunctionsProps>(
               item={item}
               questionnaire={props.questionnaire}
               responseItem={responseItem}
-              answer={newAnswer ?? getAnswerFromResponseItem(responseItem)}
               resources={resources}
               containedResources={containedResources}
               path={createPathForItem(path, item, responseItem, index)}
@@ -322,11 +309,6 @@ export default function withCommonFunctions<T extends WithCommonFunctionsProps>(
 
       return renderedItems;
     };
-
-    const enable =
-      !props.item || !props.item.enableWhen
-        ? true
-        : isEnableWhenEnabled(props.item.enableWhen, props.item.enableBehavior, props.path || [], formData);
 
     if (!enable) {
       return null;

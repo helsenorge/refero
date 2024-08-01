@@ -3,6 +3,7 @@ import { Form } from '../form';
 import { Coding, QuestionnaireItem } from 'fhir/r4';
 import { getQuestionnaireDefinitionItem, getDefinitionItems, getResponseItemWithPath } from '../../util/refero-core';
 import { pathify, selectChoice, getResponseItem, enterText, clickRepeat } from './utils';
+import { fail } from 'assert';
 
 describe('update enable when action', () => {
   let newState: Form;

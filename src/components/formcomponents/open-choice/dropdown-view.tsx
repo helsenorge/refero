@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
+import { Questionnaire, QuestionnaireItem } from 'fhir/r4';
 import { Controller } from 'react-hook-form';
 
 import { Options } from '@/types/formTypes/radioGroupOptions';
@@ -18,6 +18,7 @@ import { FormProps } from '../../../validation/ReactHookFormHoc';
 import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
+import { useGetAnswer } from '@/hooks/useGetAnswer';
 
 interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   options?: Array<Options>;
@@ -30,7 +31,6 @@ interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   renderDeleteButton: (className?: string) => JSX.Element | null;
   repeatButton: JSX.Element;
   renderOpenField: () => JSX.Element | undefined;
-  answer: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer;
   children?: React.ReactNode;
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
@@ -42,7 +42,6 @@ const DropdownView = ({
   item,
   questionnaire,
   id,
-  answer,
   handleChange,
   selected,
   resources,
@@ -56,10 +55,12 @@ const DropdownView = ({
   control,
   error,
   idWithLinkIdAndItemIndex,
+  responseItem,
 }: Props): JSX.Element | null => {
   if (!options) {
     return null;
   }
+  const answer = useGetAnswer(responseItem) || [];
   const onChange = (e: React.ChangeEvent<HTMLSelectElement>): void => {
     handleChange(e.target.value);
   };

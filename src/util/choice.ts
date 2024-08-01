@@ -16,10 +16,10 @@ import { Options } from '../types/formTypes/radioGroupOptions';
 
 import { getItemControlExtensionValue, getValidationTextExtension } from './extension';
 import { Resources } from './resources';
-import { Extensions } from '../constants/extensions';
-import Constants, { OPEN_CHOICE_ID } from '../constants/index';
-import itemControlConstants, { ItemControlValue, isItemControlValue } from '../constants/itemcontrol';
-import ItemType from '../constants/itemType';
+import { Extensions } from '@/constants/extensions';
+import Constants, { OPEN_CHOICE_ID } from '@/constants/index';
+import itemControlConstants, { ItemControlValue, isItemControlValue } from '@/constants/itemcontrol';
+import ItemType from '@/constants/itemType';
 
 import { isReadOnly, isRequired } from './index';
 

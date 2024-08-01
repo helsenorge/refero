@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { ValueSet, QuestionnaireItem, Questionnaire, Coding, QuestionnaireResponseItemAnswer } from 'fhir/r4';
+import { ValueSet, QuestionnaireItem, Questionnaire, Coding } from 'fhir/r4';
 import { Controller } from 'react-hook-form';
 
 import { AutoSuggestProps } from '@/types/autoSuggestProps';
@@ -21,6 +21,7 @@ import ReactHookFormHoc, { FormProps } from '../../../validation/ReactHookFormHo
 import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
+import { useGetAnswer } from '@/hooks/useGetAnswer';
 
 export interface AutosuggestProps extends WithCommonFunctionsAndEnhancedProps, FormProps {
   handleChange: (code?: string, systemArg?: string, displayArg?: string) => void;
@@ -32,7 +33,6 @@ export interface AutosuggestProps extends WithCommonFunctionsAndEnhancedProps, F
     errorCallback: (error: string) => void
   ) => void;
   autoSuggestProps?: AutoSuggestProps;
-  answer: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer;
 
   item: QuestionnaireItem;
   questionnaire?: Questionnaire;
@@ -53,7 +53,6 @@ const AutosuggestView = ({
   item,
   onRenderMarkdown,
   questionnaire,
-  answer,
   id,
   renderHelpButton,
   renderHelpElement,
@@ -67,7 +66,9 @@ const AutosuggestView = ({
   repeatButton,
   children,
   error,
+  responseItem,
 }: AutosuggestProps): JSX.Element | null => {
+  const answer = useGetAnswer(responseItem) || [];
   const codingAnswer = getCodingAnswer(answer);
   const initialInputValue =
     codingAnswer?.code === OPEN_CHOICE_ID && codingAnswer?.system === OPEN_CHOICE_SYSTEM ? getStringAnswer(answer) : codingAnswer?.display;

@@ -1,12 +1,4 @@
-import {
-  Coding,
-  Questionnaire,
-  QuestionnaireItem,
-  QuestionnaireResponse,
-  QuestionnaireResponseItem,
-  QuestionnaireResponseItemAnswer,
-  Resource,
-} from 'fhir/r4';
+import { Coding, Questionnaire, QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItem, Resource } from 'fhir/r4';
 import { connect } from 'react-redux';
 
 import LanguageLocales from '@helsenorge/core-utils/constants/languages';
@@ -25,7 +17,6 @@ import { Resources } from '@/util/resources';
 export interface Props {
   item: QuestionnaireItem;
   questionnaire?: Questionnaire | null;
-  answer?: QuestionnaireResponseItemAnswer | null;
   responseItem: QuestionnaireResponseItem;
   path: Array<Path>;
   pdf?: boolean;

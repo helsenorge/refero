@@ -9,7 +9,7 @@ import SafeText from '../referoLabel/SafeText';
 import styles from './validationSummary.module.css';
 
 import { GlobalState } from '@/reducers';
-import { getFormData, getFormDefinition } from '@/reducers/form';
+import { FormData, FormDefinition, getFormData, getFormDefinition } from '@/reducers/form';
 import { useSelector } from 'react-redux';
 
 type Props = {
@@ -17,8 +17,8 @@ type Props = {
 };
 
 const ValidationSummary = ({ resources }: Props): JSX.Element | null => {
-  const formData = useSelector((state: GlobalState) => getFormData(state));
-  const formDefinition = useSelector((state: GlobalState) => getFormDefinition(state));
+  const formData = useSelector<GlobalState, FormData | null>(state => getFormData(state));
+  const formDefinition = useSelector<GlobalState, FormDefinition | null>(state => getFormDefinition(state));
 
   const errorSummaryRef = useRef<HTMLDivElement | null>(null);
 

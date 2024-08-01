@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem, Questionnaire } from 'fhir/r4';
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { Controller } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
@@ -22,12 +22,10 @@ import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../
 import TextView from '../textview';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
+import { useGetAnswer } from '@/hooks/useGetAnswer';
 
 export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   item: QuestionnaireItem;
-  questionnaire?: Questionnaire | null;
-  responseItem: QuestionnaireResponseItem;
-  answer: QuestionnaireResponseItemAnswer;
   path: Array<Path>;
   pdf?: boolean;
   promptLoginMessage?: () => void;
@@ -54,7 +52,6 @@ export const String = ({
   questionnaire,
   pdf,
   resources,
-  answer,
   onRenderMarkdown,
   control,
   idWithLinkIdAndItemIndex,
@@ -65,8 +62,10 @@ export const String = ({
   children,
   renderHelpButton,
   renderHelpElement,
+  responseItem,
 }: Props): JSX.Element | null => {
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
+  const answer = useGetAnswer(responseItem) || [];
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     const value = event.target.value;
     if (dispatch) {

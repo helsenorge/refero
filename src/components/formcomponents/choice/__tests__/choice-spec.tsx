@@ -4,7 +4,6 @@ import { render, screen } from '../../../../../test/test-utils';
 import '../../../../util/__tests__/defineFetch';
 import { Choice } from '../choice';
 import { QuestionnaireItem, QuestionnaireItemAnswerOption, QuestionnaireResponseItemAnswer, Extension } from 'fhir/r4';
-import { createDataReceiverExpressionExtension } from '../../../__tests__/utils';
 import itemType from '../../../../constants/itemType';
 import { Extensions } from '../../../../constants/extensions';
 
@@ -97,16 +96,6 @@ describe('Choice component renders item.option[]', () => {
       ['ref', 'code', 'foo', '42', '2018-12-31', '00:00']
     );
   });
-
-  it('should render data-receiver item as readonly text', () => {
-    const extensions = [createDataReceiverExpressionExtension('Test')];
-    const item = createItemWithExtensions(...extensions);
-    item.readOnly = true;
-    const answer = [{ valueCoding: { code: '3', display: 'Usikker', system: 'urn:oid:2.16.578.1.12.4.1.9523' } }];
-    renderWrapperWithItem(item, answer);
-    const textView = screen.getByText('Usikker');
-    expect(textView).toBeInTheDocument();
-  });
 });
 
 function expectToFind(keys: string[], values: string[]) {
@@ -197,7 +186,6 @@ function renderWrapperWithItem(item: QuestionnaireItem, answer: QuestionnaireRes
       id={item.linkId}
       idWithLinkIdAndItemIndex={item.linkId}
       dispatch={() => undefined as any}
-      answer={answer}
       item={item}
       path={[]}
       renderDeleteButton={() => <></>}

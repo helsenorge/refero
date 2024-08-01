@@ -60,7 +60,7 @@ export const isTableCode = (extensionCode: string | string[]): boolean => {
   return isTable;
 };
 
-export function getComponentForItem(type: string, extensionCode?: string | string[]): ComponentType<any> {
+export function getComponentForItem(type: string, extensionCode?: string | string[]): ComponentType<any> | undefined {
   if (String(type) === ItemType.GROUP && !!extensionCode && isTableCode(extensionCode)) {
     return TableContainer;
   } else if (String(type) === ItemType.GROUP) {

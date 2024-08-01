@@ -47,10 +47,10 @@ import SliderView from '../choice/slider-view';
 import AutosuggestView from '../choice-common/autosuggest-view';
 import TextView from '../textview';
 import { useDispatch } from 'react-redux';
+import { useGetAnswer } from '@/hooks/useGetAnswer';
 
 export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   item: QuestionnaireItem;
-  answer: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[];
   questionnaire?: Questionnaire;
   path: Array<Path>;
   id?: string;
@@ -77,8 +77,20 @@ export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
 }
 
 export const OpenChoice = (props: Props): JSX.Element | null => {
-  const { id, item, pdf, answer, containedResources, children, onRenderMarkdown, resources, promptLoginMessage, path, onAnswerChange } =
-    props;
+  const {
+    id,
+    item,
+    pdf,
+    responseItem,
+    containedResources,
+    children,
+    onRenderMarkdown,
+    resources,
+    promptLoginMessage,
+    path,
+    onAnswerChange,
+  } = props;
+  const answer = useGetAnswer(responseItem) || [];
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
 
   const getDataReceiverValue = (answer: QuestionnaireResponseItemAnswer[]): string[] | undefined => {
@@ -279,28 +291,7 @@ export const OpenChoice = (props: Props): JSX.Element | null => {
   };
 
   const renderTextField = (): JSX.Element => {
-    let a: QuestionnaireResponseItemAnswer = {};
-    if (Array.isArray(answer)) {
-      for (let i = 0; i < answer.length; i++) {
-        const el = answer[i];
-        if (el.valueString) {
-          a = el;
-          break;
-        }
-      }
-    } else {
-      a = answer;
-    }
-
-    return (
-      <TextField
-        {...props}
-        answer={a}
-        handleStringChange={handleStringChangeEvent}
-        handleChange={handleStringChange}
-        resources={resources}
-      />
-    );
+    return <TextField {...props} handleStringChange={handleStringChangeEvent} handleChange={handleStringChange} resources={resources} />;
   };
 
   const renderComponentBasedOnType = (): JSX.Element | null => {

@@ -1,12 +1,6 @@
 import React from 'react';
 
-import {
-  QuestionnaireItem,
-  QuestionnaireResponseItemAnswer,
-  Quantity as QuantityType,
-  QuestionnaireResponseItem,
-  Questionnaire,
-} from 'fhir/r4';
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer, Quantity as QuantityType, Questionnaire } from 'fhir/r4';
 import { Controller } from 'react-hook-form';
 import { ThunkDispatch } from 'redux-thunk';
 
@@ -31,12 +25,11 @@ import TextView from '../textview';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { useDispatch } from 'react-redux';
+import { useGetAnswer } from '@/hooks/useGetAnswer';
 
 export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   item: QuestionnaireItem;
   questionnaire?: Questionnaire;
-  responseItem: QuestionnaireResponseItem;
-  answer: QuestionnaireResponseItemAnswer;
   resources?: Resources;
   path: Array<Path>;
   pdf?: boolean;
@@ -56,7 +49,6 @@ const Quantity = ({
   path,
   item,
   onAnswerChange,
-  answer,
   id,
   questionnaire,
   onRenderMarkdown,
@@ -69,11 +61,14 @@ const Quantity = ({
   children,
   renderHelpButton,
   renderHelpElement,
+  responseItem,
 }: Props): JSX.Element | null => {
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
+  const answer = useGetAnswer(responseItem);
+
   const getValue = (): number | number[] | undefined => {
     if (answer && Array.isArray(answer)) {
-      return answer.map(m => m.valueQuantity.value);
+      return answer.map(m => m.valueQuantity?.value).filter(f => f !== undefined);
     }
     if (answer && answer.valueQuantity !== undefined && answer.valueQuantity !== null) {
       return answer.valueQuantity.value;

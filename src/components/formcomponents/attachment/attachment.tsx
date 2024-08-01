@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { QuestionnaireItem, QuestionnaireResponseItemAnswer, Attachment, QuestionnaireResponseItem, Questionnaire } from 'fhir/r4';
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer, Attachment, Questionnaire } from 'fhir/r4';
 import { ThunkDispatch } from 'redux-thunk';
 
 import { UploadFile } from '@helsenorge/file-upload/components/file-upload';
@@ -16,13 +16,12 @@ import ReactHookFormHoc, { FormProps } from '../../../validation/ReactHookFormHo
 import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 import TextView from '../textview';
 import { useDispatch } from 'react-redux';
+import { useGetAnswer } from '@/hooks/useGetAnswer';
 
 export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   path: Array<Path>;
   item: QuestionnaireItem;
   questionnaire?: Questionnaire;
-  responseItem: QuestionnaireResponseItem;
-  answer: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer;
   pdf?: boolean;
   id?: string;
   resources?: Resources;
@@ -59,7 +58,6 @@ export const AttachmentComponent = (props: Props): JSX.Element | null => {
     onRenderMarkdown,
     questionnaire,
     children,
-    answer,
     renderHelpButton,
     onRequestAttachmentLink,
     attachmentMaxFileSize,
@@ -68,8 +66,10 @@ export const AttachmentComponent = (props: Props): JSX.Element | null => {
     attachmentErrorMessage,
     register,
     error,
+    responseItem,
   } = props;
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
+  const answer = useGetAnswer(responseItem) || [];
   const onUpload = (files: UploadFile[]): void => {
     if (uploadAttachment) {
       for (const file of files) {

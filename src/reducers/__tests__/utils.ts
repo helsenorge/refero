@@ -1,6 +1,6 @@
-import '../../util/__tests__/defineFetch';
+import '@/util/__tests__/defineFetch';
 import reducer, { Form } from '../form';
-import { Path, getResponseItemWithPath } from '../../util/refero-core';
+import { Path, getResponseItemWithPath } from '@/util/refero-core';
 import { Coding, QuestionnaireItem, QuestionnaireResponseItem, Questionnaire, QuestionnaireResponse, Quantity, Attachment } from 'fhir/r4';
 import {
   newCodingValue,
@@ -19,11 +19,11 @@ import {
   removeCodingValue,
   newCodingStringValue,
   removeCodingStringValue,
-} from '../../actions/newValue';
+} from '@/actions/newValue';
 import { GlobalState } from '..';
 
 export function pathify(...linkIds: string[]): Path[] {
-  return linkIds.map(id => ({ linkId: id.split('^')[0], ...(id.includes('^') && { index: Number(id.split('^')[1]) }) } as Path));
+  return linkIds.map(id => ({ linkId: id.split('^')[0], ...(id.includes('^') && { index: Number(id.split('^')[1]) }) }) as Path);
 }
 
 export function pathifyExpand(linkId: string): Path[] {

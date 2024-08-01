@@ -81,7 +81,6 @@ function createWrapperForGroupItem(item: QuestionnaireItem) {
     <Group
       idWithLinkIdAndItemIndex={item.linkId}
       dispatch={() => undefined as unknown}
-      answer={{}}
       item={item}
       id={item.linkId}
       path={[]}
@@ -103,7 +102,6 @@ function createWrapperForStringItem(item: QuestionnaireItem) {
     <StringComponent
       idWithLinkIdAndItemIndex={item.linkId}
       dispatch={() => undefined as unknown}
-      answer={{}}
       item={item}
       id={item.linkId}
       path={[]}

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { Controller } from 'react-hook-form';
 
 import { ThunkDispatch } from 'redux-thunk';
@@ -22,12 +22,10 @@ import TextView from '../textview';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { useDispatch } from 'react-redux';
+import { useGetAnswer } from '@/hooks/useGetAnswer';
 
 export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   item: QuestionnaireItem;
-  questionnaire?: Questionnaire;
-  responseItem: QuestionnaireItem;
-  answer: QuestionnaireResponseItemAnswer;
   resources?: Resources;
   path: Array<Path>;
   id?: string;
@@ -48,7 +46,6 @@ const Decimal = ({
   pdf,
   onRenderMarkdown,
   control,
-  answer,
   questionnaire,
   resources,
   renderHelpButton,
@@ -61,11 +58,16 @@ const Decimal = ({
   promptLoginMessage,
   repeatButton,
   renderDeleteButton,
+  responseItem,
 }: Props): JSX.Element | null => {
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
-  const getValue = (item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer): string | number | number[] | undefined => {
+  const answer = useGetAnswer(responseItem) || [];
+  const getValue = (
+    item: QuestionnaireItem,
+    answer: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]
+  ): string | number | number[] | undefined => {
     if (answer && Array.isArray(answer)) {
-      return answer.map(m => m.valueDecimal);
+      return answer.map(m => m.valueDecimal).filter(f => f !== undefined);
     }
     if (answer && answer.valueDecimal !== undefined && answer.valueDecimal !== null) {
       return answer.valueDecimal;
