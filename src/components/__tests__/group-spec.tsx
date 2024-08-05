@@ -1,5 +1,3 @@
-import React from 'react';
-
 import '../../util/__tests__/defineFetch';
 import { QuestionnaireItem, Extension } from 'fhir/r4';
 import { Group } from '../formcomponents/group/group';
@@ -84,10 +82,6 @@ function createWrapperForGroupItem(item: QuestionnaireItem) {
       item={item}
       id={item.linkId}
       path={[]}
-      renderDeleteButton={() => <></>}
-      repeatButton={<React.Fragment />}
-      renderHelpButton={() => <React.Fragment />}
-      renderHelpElement={() => <React.Fragment />}
       renderChildrenItems={() => [<></>]}
       renderContext={new RenderContext(RenderContextType.None)}
       responseItem={{
@@ -105,10 +99,6 @@ function createWrapperForStringItem(item: QuestionnaireItem) {
       item={item}
       id={item.linkId}
       path={[]}
-      renderDeleteButton={() => <></>}
-      repeatButton={<React.Fragment />}
-      renderHelpButton={() => <React.Fragment />}
-      renderHelpElement={() => <React.Fragment />}
       oneToTwoColumn={false}
       renderContext={new RenderContext(RenderContextType.None)}
     />

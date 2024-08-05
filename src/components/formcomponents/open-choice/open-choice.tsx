@@ -59,12 +59,8 @@ export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   promptLoginMessage?: () => void;
   resources?: Resources;
   containedResources?: Resource[];
-  renderDeleteButton?: () => JSX.Element | null;
   headerTag?: number;
   responseItem: QuestionnaireResponseItem;
-  repeatButton?: JSX.Element;
-  renderHelpButton?: () => JSX.Element;
-  renderHelpElement?: () => JSX.Element;
   onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
   fetchValueSet?: (
     searchString: string,

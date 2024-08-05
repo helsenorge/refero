@@ -21,6 +21,8 @@ import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
 import RenderHelpButton from '@/components/help-button/RenderHelpButton';
 import RenderHelpElement from '@/components/help-button/RenderHelpElement';
+import RenderDeleteButton from '../repeat/RenderDeleteButton';
+import RenderRepeatButton from '../repeat/RenderRepeatButton';
 
 interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   options?: Array<Options>;
@@ -30,8 +32,6 @@ interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   handleChange: (code: string) => void;
   selected?: Array<string | undefined>;
   resources?: Resources;
-  renderDeleteButton?: (className?: string) => JSX.Element | null;
-  repeatButton?: JSX.Element;
   renderOpenField: () => JSX.Element | undefined;
   children?: React.ReactNode;
 }
@@ -45,13 +45,16 @@ const DropdownView = ({
   selected,
   resources,
   children,
-  repeatButton,
-  renderDeleteButton,
   renderOpenField,
   control,
   error,
   idWithLinkIdAndItemIndex,
+  onAnswerChange,
+  renderContext,
+  responseItems,
   responseItem,
+  path,
+  index,
 }: Props): JSX.Element | null => {
   const [isHelpVisible, setIsHelpVisible] = React.useState(false);
 
@@ -111,8 +114,17 @@ const DropdownView = ({
         />
         {shouldShowExtraChoice(answer) && <div className="page_refero__component_openchoice_openfield">{renderOpenField()}</div>}
       </FormGroup>
-      {renderDeleteButton && renderDeleteButton('page_refero__deletebutton--margin-top')}
-      {repeatButton}
+      <RenderDeleteButton
+        item={item}
+        path={path}
+        index={index}
+        onAnswerChange={onAnswerChange}
+        renderContext={renderContext}
+        responseItem={responseItem}
+        resources={resources}
+        className="page_refero__deletebutton--margin-top"
+      />
+      <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} responseItem={responseItem} responseItems={responseItems} />
       {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
     </div>
   );

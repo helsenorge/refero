@@ -25,6 +25,8 @@ import { useIsEnabled } from '@/hooks/useIsEnabled';
 import RenderHelpElement from '@/components/help-button/RenderHelpElement';
 import RenderHelpButton from '@/components/help-button/RenderHelpButton';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
+import RenderDeleteButton from '../repeat/RenderDeleteButton';
+import RenderRepeatButton from '../repeat/RenderRepeatButton';
 
 export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   item: QuestionnaireItem;
@@ -35,8 +37,6 @@ export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   promptLoginMessage?: () => void;
   id?: string;
   onValidated?: (valid: boolean | undefined) => void;
-  renderDeleteButton?: (className?: string) => JSX.Element | null;
-  repeatButton: JSX.Element;
   oneToTwoColumn: boolean;
   onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
   children?: React.ReactNode;
@@ -48,12 +48,12 @@ const Boolean = ({
   onAnswerChange,
   path,
   pdf,
-
   questionnaire,
   id,
   resources,
-  renderDeleteButton,
-  repeatButton,
+  renderContext,
+  responseItems,
+  index,
   error,
   children,
   control,
@@ -99,7 +99,7 @@ const Boolean = ({
     return null;
   }
   if (pdf) {
-    return <Pdf item={item} checked={getValue()} onRenderMarkdown={onRenderMarkdown} />;
+    return <Pdf item={item} checked={getValue()} />;
   } else if (isReadOnly(item)) {
     return (
       <Checkbox
@@ -166,8 +166,17 @@ const Boolean = ({
 
         <RenderHelpElement item={item} isHelpVisible={isHelpVisible} />
       </FormGroup>
-      {renderDeleteButton && renderDeleteButton('page_refero__deletebutton--margin-top')}
-      {repeatButton}
+      <RenderDeleteButton
+        item={item}
+        path={path}
+        index={index}
+        onAnswerChange={onAnswerChange}
+        renderContext={renderContext}
+        responseItem={responseItem}
+        resources={resources}
+        className="page_refero__deletebutton--margin-top"
+      />
+      <RenderRepeatButton path={path.slice(0, -1)} item={item} index={index} responseItem={responseItem} responseItems={responseItems} />
       {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
     </div>
   );

@@ -17,6 +17,8 @@ import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import RenderHelpButton from '@/components/help-button/RenderHelpButton';
 import RenderHelpElement from '@/components/help-button/RenderHelpElement';
+import RenderRepeatButton from '../repeat/RenderRepeatButton';
+import RenderDeleteButton from '../repeat/RenderDeleteButton';
 
 export interface Props extends FormProps, WithCommonFunctionsAndEnhancedProps {
   options?: Array<Options>;
@@ -39,9 +41,12 @@ const RadioView: React.FC<Props> = ({
   selected,
   resources,
   children,
-  repeatButton,
-  renderDeleteButton,
-
+  onAnswerChange,
+  renderContext,
+  responseItems,
+  responseItem,
+  path,
+  index,
   error,
   control,
   idWithLinkIdAndItemIndex,
@@ -94,8 +99,17 @@ const RadioView: React.FC<Props> = ({
           />
         ))}
       </FormGroup>
-      {renderDeleteButton && renderDeleteButton('page_refero__deletebutton--margin-top')}
-      {repeatButton}
+      <RenderDeleteButton
+        item={item}
+        path={path}
+        index={index}
+        onAnswerChange={onAnswerChange}
+        renderContext={renderContext}
+        responseItem={responseItem}
+        resources={resources}
+        className="page_refero__deletebutton--margin-top"
+      />
+      <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} responseItem={responseItem} responseItems={responseItems} />
       {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : undefined}
     </div>
   );

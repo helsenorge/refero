@@ -26,6 +26,8 @@ import { useGetAnswer } from '@/hooks/useGetAnswer';
 import { useIsEnabled } from '@/hooks/useIsEnabled';
 import RenderHelpElement from '@/components/help-button/RenderHelpElement';
 import RenderHelpButton from '@/components/help-button/RenderHelpButton';
+import RenderDeleteButton from '../repeat/RenderDeleteButton';
+import RenderRepeatButton from '../repeat/RenderRepeatButton';
 
 export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   item: QuestionnaireItem;
@@ -53,8 +55,9 @@ const Decimal = ({
   path,
   onAnswerChange,
   promptLoginMessage,
-  repeatButton,
-  renderDeleteButton,
+  responseItems,
+  renderContext,
+  index,
   responseItem,
 }: Props): JSX.Element | null => {
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
@@ -181,8 +184,17 @@ const Decimal = ({
           )}
         />
       </FormGroup>
-      {renderDeleteButton && renderDeleteButton('page_refero__deletebutton--margin-top')}
-      {repeatButton}
+      <RenderDeleteButton
+        item={item}
+        path={path}
+        index={index}
+        onAnswerChange={onAnswerChange}
+        renderContext={renderContext}
+        responseItem={responseItem}
+        resources={resources}
+        className="page_refero__deletebutton--margin-top"
+      />
+      <RenderRepeatButton path={path.slice(0, -1)} item={item} index={index} responseItem={responseItem} responseItems={responseItems} />
       {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
     </div>
   );

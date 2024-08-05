@@ -1,4 +1,4 @@
-import React from 'react';
+import { ReactNode } from 'react';
 
 import { QuestionnaireItem } from 'fhir/r4';
 
@@ -8,7 +8,7 @@ import { useExternalRenderContext } from '@/context/externalRenderContext';
 interface Props {
   item: QuestionnaireItem;
   checked: boolean;
-  children?: React.ReactNode;
+  children?: ReactNode;
 }
 
 const pdf = ({ item, checked, children }: Props): JSX.Element => {

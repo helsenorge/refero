@@ -28,15 +28,17 @@ export const RepeatButton = ({ item, resources, parentPath, responseItems, disab
       dispatch(addRepeatItem(parentPath, item, responseItems));
     }
   };
-  let text = getRepeatsTextExtension(item);
-  if (!text && resources && resources.repeatButtonText) {
-    text = resources.repeatButtonText;
-  }
-
+  const text = getRepeatsTextExtension(item);
   return (
-    <Button onClick={onAddRepeatItem} variant="borderless" disabled={disabled} testId={`${item.linkId}-repeat-button`}>
+    <Button
+      onClick={onAddRepeatItem}
+      variant="borderless"
+      disabled={disabled}
+      testId={`${item.linkId}-repeat-button`}
+      ariaLabel={`${text || 'Copy'}`}
+    >
       <Icon svgIcon={PlusLarge} />
-      {text}
+      {text || resources?.repeatButtonText || 'Copy'}
     </Button>
   );
 };

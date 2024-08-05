@@ -25,6 +25,8 @@ import { useGetAnswer } from '@/hooks/useGetAnswer';
 import { useIsEnabled } from '@/hooks/useIsEnabled';
 import RenderHelpButton from '@/components/help-button/RenderHelpButton';
 import RenderHelpElement from '@/components/help-button/RenderHelpElement';
+import RenderDeleteButton from '../repeat/RenderDeleteButton';
+import RenderRepeatButton from '../repeat/RenderRepeatButton';
 
 export interface AutosuggestProps extends WithCommonFunctionsAndEnhancedProps, FormProps {
   handleChange: (code?: string, systemArg?: string, displayArg?: string) => void;
@@ -58,12 +60,14 @@ const AutosuggestView = ({
   fetchValueSet,
   handleChange,
   handleStringChange,
-  renderDeleteButton,
-  repeatButton,
+  renderContext,
+  index,
+  responseItems,
   children,
   error,
   responseItem,
   path,
+  onAnswerChange,
 }: AutosuggestProps): JSX.Element | null => {
   const answer = useGetAnswer(responseItem) || [];
   const enable = useIsEnabled(item, path);
@@ -256,8 +260,17 @@ const AutosuggestView = ({
           <div className="page_refero__no-suggestions">{resources?.autosuggestNoSuggestions?.replace('{0}', inputValue)}</div>
         )}
         {hasLoadError && <NotificationPanel variant="alert">{resources?.autoSuggestLoadError}</NotificationPanel>}
-        {renderDeleteButton && renderDeleteButton('page_refero__deletebutton--margin-top')}
-        {repeatButton}
+        <RenderDeleteButton
+          item={item}
+          path={path}
+          index={index}
+          onAnswerChange={onAnswerChange}
+          renderContext={renderContext}
+          responseItem={responseItem}
+          resources={resources}
+          className="page_refero__deletebutton--margin-top"
+        />
+        <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} responseItem={responseItem} responseItems={responseItems} />
       </FormGroup>
       {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
     </div>

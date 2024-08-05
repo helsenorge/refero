@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { QuestionnaireItem, QuestionnaireResponseItemAnswer, Questionnaire } from 'fhir/r4';
+import { QuestionnaireItem, Questionnaire } from 'fhir/r4';
 import { Controller } from 'react-hook-form';
 import { ThunkDispatch } from 'redux-thunk';
 
@@ -25,6 +25,8 @@ import { useGetAnswer } from '@/hooks/useGetAnswer';
 import { useIsEnabled } from '@/hooks/useIsEnabled';
 import RenderHelpButton from '@/components/help-button/RenderHelpButton';
 import RenderHelpElement from '@/components/help-button/RenderHelpElement';
+import RenderDeleteButton from '../repeat/RenderDeleteButton';
+import RenderRepeatButton from '../repeat/RenderRepeatButton';
 
 export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   item: QuestionnaireItem;
@@ -33,16 +35,12 @@ export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   path: Array<Path>;
   pdf?: boolean;
   promptLoginMessage?: () => void;
-  renderDeleteButton?: (className?: string) => JSX.Element | null;
   id?: string;
-  repeatButton?: JSX.Element;
-  onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
   children?: React.ReactNode;
 }
 
 const Integer = ({
   item,
-  repeatButton,
   resources,
   id,
   children,
@@ -50,12 +48,14 @@ const Integer = ({
   questionnaire,
   control,
   error,
-  renderDeleteButton,
   idWithLinkIdAndItemIndex,
   promptLoginMessage,
   path,
-  onAnswerChange,
   responseItem,
+  onAnswerChange,
+  renderContext,
+  responseItems,
+  index,
 }: Props): JSX.Element | null => {
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
   const [isHelpVisible, setIsHelpVisible] = useState(false);
@@ -90,7 +90,7 @@ const Integer = ({
 
   const handleChange = (event: React.FormEvent<HTMLInputElement>): void => {
     const value = parseInt((event.target as HTMLInputElement).value, 10);
-    if (dispatch) {
+    if (dispatch && onAnswerChange) {
       dispatch(newIntegerValueAsync(path, value, item))?.then(newState => onAnswerChange(newState, path, item, { valueInteger: value }));
     }
 
@@ -166,8 +166,17 @@ const Integer = ({
             />
           )}
         />
-        {renderDeleteButton && renderDeleteButton('page_refero__deletebutton--margin-top')}
-        {repeatButton}
+        <RenderDeleteButton
+          item={item}
+          path={path}
+          index={index}
+          onAnswerChange={onAnswerChange}
+          renderContext={renderContext}
+          responseItem={responseItem}
+          resources={resources}
+          className="page_refero__deletebutton--margin-top"
+        />
+        <RenderRepeatButton path={path.slice(0, -1)} item={item} index={index} responseItem={responseItem} responseItems={responseItems} />
       </FormGroup>
       {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
     </div>

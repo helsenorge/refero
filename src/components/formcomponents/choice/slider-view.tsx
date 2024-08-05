@@ -18,15 +18,14 @@ import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import RenderHelpButton from '@/components/help-button/RenderHelpButton';
 import RenderHelpElement from '@/components/help-button/RenderHelpElement';
+import RenderDeleteButton from '../repeat/RenderDeleteButton';
+import RenderRepeatButton from '../repeat/RenderRepeatButton';
 
 export interface SliderProps extends WithCommonFunctionsAndEnhancedProps, FormProps {
   item: QuestionnaireItem;
   handleChange: (sliderStep: string) => void;
   selected?: Array<string | undefined>;
   children?: React.ReactNode;
-  renderHelpButton?: () => JSX.Element;
-  renderHelpElement?: () => JSX.Element;
-  renderDeleteButton?: (className?: string) => JSX.Element | null;
 }
 enum SliderDisplayTypes {
   Label = 'label',
@@ -45,9 +44,13 @@ const SliderView: React.FC<SliderProps> = ({
   resources,
   idWithLinkIdAndItemIndex,
   id,
-  renderDeleteButton,
-  repeatButton,
   error,
+  onAnswerChange,
+  renderContext,
+  responseItems,
+  responseItem,
+  path,
+  index,
   control,
 }) => {
   const [isHelpVisible, setIsHelpVisible] = useState(false);
@@ -120,8 +123,17 @@ const SliderView: React.FC<SliderProps> = ({
             />
           )}
         />
-        {renderDeleteButton && renderDeleteButton('page_refero__deletebutton--margin-top')}
-        {repeatButton}
+        <RenderDeleteButton
+          item={item}
+          path={path}
+          index={index}
+          onAnswerChange={onAnswerChange}
+          renderContext={renderContext}
+          responseItem={responseItem}
+          resources={resources}
+          className="page_refero__deletebutton--margin-top"
+        />
+        <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} responseItem={responseItem} responseItems={responseItems} />
         {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : undefined}
       </FormGroup>
     </div>

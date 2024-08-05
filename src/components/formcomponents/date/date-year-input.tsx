@@ -15,6 +15,9 @@ import { Resources } from '../../../util/resources';
 import { FormProps } from '../../../validation/ReactHookFormHoc';
 import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 import TextView from '../textview';
+import RenderHelpElement from '@/components/help-button/RenderHelpElement';
+import { useState } from 'react';
+import RenderHelpButton from '@/components/help-button/RenderHelpButton';
 
 interface Props extends FormProps, WithCommonFunctionsAndEnhancedProps {
   id?: string;
@@ -23,10 +26,8 @@ interface Props extends FormProps, WithCommonFunctionsAndEnhancedProps {
   resources?: Resources;
   label?: string;
   subLabel?: string;
-  helpButton?: JSX.Element;
-  helpElement?: JSX.Element;
+
   onDateValueChange: (newValue: string) => void;
-  onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
   maxDate?: Date;
   minDate?: Date;
   answer: QuestionnaireResponseItemAnswer;
@@ -39,10 +40,7 @@ export const DateYearInput = ({
   resources,
   label,
   subLabel,
-  helpButton,
-  helpElement,
   onDateValueChange,
-  onRenderMarkdown,
   maxDate,
   minDate,
   answer,
@@ -51,6 +49,7 @@ export const DateYearInput = ({
   control,
   children,
 }: React.PropsWithChildren<Props>): JSX.Element => {
+  const [isHelpVisible, setIsHelpVisible] = useState(false);
   const getYear = (answer: QuestionnaireResponseItemAnswer): (number | undefined)[] | undefined => {
     if (Array.isArray(answer)) {
       return answer.map(m => createDateFromYear(item, m)?.getFullYear());
@@ -84,14 +83,7 @@ export const DateYearInput = ({
 
   if (pdf || isReadOnly(item)) {
     return (
-      <TextView
-        id={id}
-        item={item}
-        value={getPDFValue()}
-        onRenderMarkdown={onRenderMarkdown}
-        helpButton={helpButton}
-        helpElement={helpElement}
-      >
+      <TextView id={id} item={item} value={getPDFValue()}>
         {children}
       </TextView>
     );
@@ -99,7 +91,7 @@ export const DateYearInput = ({
 
   return (
     <FormGroup error={getErrorText(error)}>
-      {helpElement}
+      <RenderHelpElement item={item} isHelpVisible={isHelpVisible} />
       <Controller
         name={idWithLinkIdAndItemIndex}
         shouldUnregister={true}
@@ -135,7 +127,7 @@ export const DateYearInput = ({
                 labelId={`${getId(id)}-label-dateYear`}
                 labelTexts={[{ text: label || '' }]}
                 sublabel={<Sublabel id={`${getId(id)}-sublabel-dateYear`} sublabelTexts={[{ text: subLabel || '', type: 'normal' }]} />}
-                afterLabelChildren={helpButton}
+                afterLabelChildren={<RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />}
               />
             }
             value={answerState ?? ''}

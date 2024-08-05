@@ -188,10 +188,6 @@ function renderWrapperWithItem(item: QuestionnaireItem, answer: QuestionnaireRes
       dispatch={() => undefined as any}
       item={item}
       path={[]}
-      renderDeleteButton={() => <></>}
-      repeatButton={<React.Fragment />}
-      renderHelpButton={() => <React.Fragment />}
-      renderHelpElement={() => <React.Fragment />}
       onAnswerChange={() => {}}
       responseItem={{
         linkId: item.linkId,

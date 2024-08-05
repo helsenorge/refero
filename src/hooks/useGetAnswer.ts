@@ -74,7 +74,7 @@ function getQuestionnaireResponseItemAnswer(
 }
 
 export const useGetAnswer = (
-  responseItem: QuestionnaireResponseItem,
+  responseItem?: QuestionnaireResponseItem,
   item?: QuestionnaireItem
 ): QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[] | undefined => {
   const formData = useSelector<GlobalState, FormData | null>(state => getFormData(state));

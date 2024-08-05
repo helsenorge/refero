@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import { format } from 'date-fns';
 import { isValid } from 'date-fns';
@@ -37,6 +37,11 @@ import { FormProps } from '../../../validation/ReactHookFormHoc';
 import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 import TextView from '../textview';
 import { useDispatch } from 'react-redux';
+import { useExternalRenderContext } from '@/context/externalRenderContext';
+import RenderHelpElement from '@/components/help-button/RenderHelpElement';
+import RenderHelpButton from '@/components/help-button/RenderHelpButton';
+import RenderDeleteButton from '../repeat/RenderDeleteButton';
+import RenderRepeatButton from '../repeat/RenderRepeatButton';
 export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   item: QuestionnaireItem;
   questionnaire?: Questionnaire;
@@ -49,12 +54,7 @@ export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   language?: string;
   promptLoginMessage?: () => void;
   id?: string;
-  renderDeleteButton: (className?: string) => JSX.Element | null;
-  repeatButton: JSX.Element;
-  renderHelpButton: () => JSX.Element;
-  renderHelpElement: () => JSX.Element;
   onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
-  onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
 }
 
 const DateTimeInput: React.FC<Props> = ({
@@ -66,16 +66,17 @@ const DateTimeInput: React.FC<Props> = ({
   pdf,
   promptLoginMessage,
   id,
-  renderDeleteButton,
-  repeatButton,
-  renderHelpButton,
-  renderHelpElement,
+  responseItems,
+  responseItem,
+  index,
+  renderContext,
   onAnswerChange,
-  onRenderMarkdown,
   idWithLinkIdAndItemIndex,
   children,
 }) => {
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
+  const { onRenderMarkdown } = useExternalRenderContext();
+  const [isHelpVisible, setIsHelpVisible] = useState(false);
   const { formState, getFieldState, register, setValue } = useFormContext<FieldValues>();
   const dateField = getFieldState(`${idWithLinkIdAndItemIndex}-date`, formState);
   const hoursField = getFieldState(`${idWithLinkIdAndItemIndex}-hours`, formState);
@@ -160,14 +161,7 @@ const DateTimeInput: React.FC<Props> = ({
 
   if (pdf || isReadOnly(item)) {
     return (
-      <TextView
-        id={id}
-        item={item}
-        value={getStringValue()}
-        onRenderMarkdown={onRenderMarkdown}
-        helpButton={renderHelpButton()}
-        helpElement={renderHelpElement()}
-      >
+      <TextView id={id} item={item} value={getStringValue()}>
         {children}
       </TextView>
     );
@@ -244,7 +238,7 @@ const DateTimeInput: React.FC<Props> = ({
 
   return (
     <div className="page_refero__component page_refero__component_datetime">
-      {renderHelpElement()}
+      <RenderHelpElement item={item} isHelpVisible={isHelpVisible} />
       <DateTimePickerWrapper errorText={getErrorText(getCombinedFieldError(dateField, hoursField, minutesField))}>
         <DatePicker
           {...register(idWithLinkIdAndItemIndex + '-date', {
@@ -273,7 +267,7 @@ const DateTimeInput: React.FC<Props> = ({
               labelId={`${getId(id)}-label-dateTime`}
               labelTexts={[{ text: labelText }]}
               sublabel={<Sublabel id={`${getId(id)}-sublabel-dateTime`} sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
-              afterLabelChildren={renderHelpButton()}
+              afterLabelChildren={<RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />}
             />
           }
           dateValue={date ? undefined : defaultDate}
@@ -320,8 +314,17 @@ const DateTimeInput: React.FC<Props> = ({
           }}
         />
       </DateTimePickerWrapper>
-      {renderDeleteButton('page_refero__deletebutton--margin-top')}
-      {repeatButton}
+      <RenderDeleteButton
+        item={item}
+        path={path}
+        index={index}
+        onAnswerChange={onAnswerChange}
+        renderContext={renderContext}
+        responseItem={responseItem}
+        resources={resources}
+        className="page_refero__deletebutton--margin-top"
+      />
+      <RenderRepeatButton path={path.slice(0, -1)} item={item} index={index} responseItem={responseItem} responseItems={responseItems} />
       {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
     </div>
   );

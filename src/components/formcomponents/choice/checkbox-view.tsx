@@ -17,6 +17,8 @@ import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import RenderHelpButton from '@/components/help-button/RenderHelpButton';
 import RenderHelpElement from '@/components/help-button/RenderHelpElement';
+import RenderDeleteButton from '../repeat/RenderDeleteButton';
+import RenderRepeatButton from '../repeat/RenderRepeatButton';
 
 export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   options?: Array<Options>;
@@ -38,11 +40,15 @@ const CheckboxView: React.FC<Props> = ({
   handleChange,
   resources,
   children,
-  repeatButton,
-  renderDeleteButton,
   error,
   idWithLinkIdAndItemIndex,
   selected,
+  onAnswerChange,
+  renderContext,
+  responseItems,
+  responseItem,
+  path,
+  index,
 }) => {
   const [isHelpVisible, setIsHelpVisible] = useState(false);
   return (
@@ -99,8 +105,17 @@ const CheckboxView: React.FC<Props> = ({
           />
         ))}
       </FormGroup>
-      {renderDeleteButton && renderDeleteButton('page_refero__deletebutton--margin-top')}
-      {repeatButton}
+      <RenderDeleteButton
+        item={item}
+        path={path}
+        index={index}
+        onAnswerChange={onAnswerChange}
+        renderContext={renderContext}
+        responseItem={responseItem}
+        resources={resources}
+        className="page_refero__deletebutton--margin-top"
+      />
+      <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} responseItem={responseItem} responseItems={responseItems} />
       {children && <div className="nested-fieldset nested-fieldset--full-height">{children}</div>}
     </div>
   );

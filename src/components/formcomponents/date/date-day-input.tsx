@@ -20,6 +20,7 @@ import TextView from '../textview';
 
 import { formatDateToStringDDMMYYYY, parseStringToDateDDMMYYYY, validateDate, validateMaxDate, validateMinDate } from '@/util/date-utils';
 import RenderHelpElement from '@/components/help-button/RenderHelpElement';
+import RenderHelpButton from '@/components/help-button/RenderHelpButton';
 
 interface DateDayInputProps extends WithCommonFunctionsAndEnhancedProps, FormProps {
   id?: string;
@@ -179,7 +180,7 @@ export const DateDayInput = ({
                 labelId={`${getId(id)}-label`}
                 labelTexts={[{ text: label || '' }]}
                 sublabel={<Sublabel id={`${getId(id)}-sublabel`} sublabelTexts={[{ text: subLabel || '', type: 'normal' }]} />}
-                afterLabelChildren={helpButton}
+                afterLabelChildren={<RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />}
               />
             }
             minDate={minDate}

@@ -3,8 +3,6 @@ import React from 'react';
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, Questionnaire } from 'fhir/r4';
 import { ThunkDispatch } from 'redux-thunk';
 
-import Label from '@helsenorge/designsystem-react/components/Label';
-
 import { LanguageLocales } from '@helsenorge/core-utils/constants/languages';
 
 import { DateDayInput } from './date-day-input';
@@ -23,6 +21,9 @@ import { Resources } from '../../../util/resources';
 import ReactHookFormHoc, { FormProps } from '../../../validation/ReactHookFormHoc';
 import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 import { useDispatch } from 'react-redux';
+import { useExternalRenderContext } from '@/context/externalRenderContext';
+import RenderDeleteButton from '../repeat/RenderDeleteButton';
+import RenderRepeatButton from '../repeat/RenderRepeatButton';
 
 export interface DateProps extends WithCommonFunctionsAndEnhancedProps, FormProps {
   item: QuestionnaireItem;
@@ -33,12 +34,6 @@ export interface DateProps extends WithCommonFunctionsAndEnhancedProps, FormProp
   pdf?: boolean;
   language?: string;
   promptLoginMessage?: () => void;
-  renderDeleteButton: (className?: string) => JSX.Element | null;
-  repeatButton: JSX.Element;
-  renderHelpButton: () => JSX.Element;
-  renderHelpElement: () => JSX.Element;
-  onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
-  onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
 }
 
 const DateComponent = (props: React.PropsWithChildren<DateProps>): JSX.Element => {
@@ -47,17 +42,17 @@ const DateComponent = (props: React.PropsWithChildren<DateProps>): JSX.Element =
     questionnaire,
     answer,
     resources,
-    path,
     language,
     promptLoginMessage,
-    renderDeleteButton,
-    repeatButton,
-    renderHelpButton,
-    renderHelpElement,
-    onAnswerChange,
-    onRenderMarkdown,
     children,
+    onAnswerChange,
+    renderContext,
+    responseItems,
+    responseItem,
+    path,
+    index,
   } = props;
+  const { onRenderMarkdown } = useExternalRenderContext();
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
   const getMaxDate = (): Date | undefined => {
     const maxDate = getExtension(Extensions.DATE_MAX_VALUE_URL, item);
@@ -106,8 +101,8 @@ const DateComponent = (props: React.PropsWithChildren<DateProps>): JSX.Element =
   const onDateValueChange = (newValue: string): void => {
     const existingAnswer = answer?.valueDate || '';
     if (dispatch && newValue !== existingAnswer) {
-      dispatch(newDateValueAsync(path, newValue, item))?.then(newState =>
-        onAnswerChange(newState, path, item, { valueDate: newValue } as QuestionnaireResponseItemAnswer)
+      dispatch(newDateValueAsync(path, newValue, item))?.then(
+        newState => onAnswerChange && onAnswerChange(newState, path, item, { valueDate: newValue } as QuestionnaireResponseItemAnswer)
       );
 
       if (promptLoginMessage) {
@@ -136,8 +131,6 @@ const DateComponent = (props: React.PropsWithChildren<DateProps>): JSX.Element =
         {...props}
         label={labelText}
         subLabel={subLabelText}
-        helpButton={renderHelpButton()}
-        helpElement={renderHelpElement()}
         onDateValueChange={onDateValueChange}
         maxDate={getMaxDate()}
         minDate={getMinDate()}
@@ -150,8 +143,6 @@ const DateComponent = (props: React.PropsWithChildren<DateProps>): JSX.Element =
         label={labelText}
         locale={getLocaleFromLanguage()}
         subLabel={subLabelText}
-        helpButton={renderHelpButton()}
-        helpElement={renderHelpElement()}
         onDateValueChange={onDateValueChange}
         maxDate={getMaxDate()}
         minDate={getMinDate()}
@@ -164,8 +155,6 @@ const DateComponent = (props: React.PropsWithChildren<DateProps>): JSX.Element =
         locale={getLocaleFromLanguage()}
         label={labelText}
         subLabel={subLabelText}
-        helpButton={renderHelpButton()}
-        helpElement={renderHelpElement()}
         onDateValueChange={onDateValueChange}
         maxDate={getMaxDate()}
         minDate={getMinDate()}
@@ -176,8 +165,17 @@ const DateComponent = (props: React.PropsWithChildren<DateProps>): JSX.Element =
   return (
     <div className="page_refero__component page_refero__component_date">
       {element}
-      {renderDeleteButton('page_refero__deletebutton--margin-top')}
-      {repeatButton}
+      <RenderDeleteButton
+        item={item}
+        path={path}
+        index={index}
+        onAnswerChange={onAnswerChange}
+        renderContext={renderContext}
+        responseItem={responseItem}
+        resources={resources}
+        className="page_refero__deletebutton--margin-top"
+      />
+      <RenderRepeatButton path={path.slice(0, -1)} item={item} index={index} responseItem={responseItem} responseItems={responseItems} />
       {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
     </div>
   );

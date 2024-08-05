@@ -12,10 +12,10 @@ type Props = {
   className?: string;
   index?: number;
   item: QuestionnaireItem;
-  path: Path[];
-  responseItem: QuestionnaireResponseItem;
+  path?: Path[];
+  responseItem?: QuestionnaireResponseItem;
   resources?: Resources;
-  onAnswerChange: (newState: GlobalState, path: Path[], item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
+  onAnswerChange?: (newState: GlobalState, path: Path[], item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
   renderContext: RenderContext;
 };
 

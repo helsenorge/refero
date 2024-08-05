@@ -43,7 +43,6 @@ export interface WithCommonFunctionsProps {
   path?: Array<Path>;
   id?: string;
   validateScriptInjection?: boolean;
-  visibleDeleteButton?: boolean;
   index?: number;
   attachmentErrorMessage?: string;
   attachmentMaxFileSize?: number;
@@ -77,56 +76,6 @@ export default function withCommonFunctions<T extends WithCommonFunctionsProps>(
   WrappedComponent: React.ComponentType<T>
 ): React.ComponentType<T & EnhancedProps> {
   const WithCommonFunctions = (props: T): JSX.Element | null => {
-    const renderDeleteButton = (className?: string): JSX.Element | null => {
-      if (!props.visibleDeleteButton) {
-        return null;
-      }
-      const hasAnwer = (answer: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[] | undefined): boolean => {
-        return !!answer && Object.keys(answer).length > 0;
-      };
-      let mustShowConfirm: boolean = hasAnwer(props.responseItem?.answer);
-
-      if (!mustShowConfirm && props.responseItem && props.responseItem.item) {
-        mustShowConfirm = props.responseItem.item.some(item => (item ? hasAnwer(item.answer) : false));
-      }
-      return (
-        <div className="page_refero__deletebutton-wrapper">
-          <DeleteButton
-            className={className}
-            item={props.item}
-            path={props.path}
-            resources={props.resources}
-            mustShowConfirm={mustShowConfirm}
-            onAnswerChange={props.onAnswerChange}
-          />
-        </div>
-      );
-    };
-
-    // const renderRepeatButton = (
-    //   item: QuestionnaireItem,
-    //   index: number,
-    //   path?: Array<Path>,
-    //   response?: Array<QuestionnaireResponseItem>,
-    //   responseItem?: QuestionnaireResponseItem
-    // ): JSX.Element | undefined => {
-    //   if (!item.repeats || !shouldRenderRepeatButton(item, response, index)) {
-    //     return undefined;
-    //   }
-
-    //   return (
-    //     <div className="page_refero__repeatbutton-wrapper">
-    //       <RepeatButton
-    //         key={`item_${item.linkId}_add_repeat_item`}
-    //         resources={props.resources}
-    //         item={item}
-    //         responseItems={response}
-    //         parentPath={path}
-    //         disabled={item.type !== itemType.GROUP && !responseItem?.answer}
-    //       />
-    //     </div>
-    //   );
-    // };
     const renderItem = (item: QuestionnaireItem, renderContext: RenderContext): Array<JSX.Element> => {
       const { resources, containedResources, responseItem, pdf, path, headerTag, promptLoginMessage } = props;
       if (isHelpItem(item)) return [];
@@ -175,7 +124,7 @@ export default function withCommonFunctions<T extends WithCommonFunctionsProps>(
               validateScriptInjection={props.validateScriptInjection}
               index={index}
               responseItems={response}
-              visibleDeleteButton={shouldRenderDeleteButton(item, index)}
+              // visibleDeleteButton={shouldRenderDeleteButton(item, index)}
               // repeatButton={renderRepeatButton(item, index, path, response, responseItem)}
               onRequestAttachmentLink={props.onRequestAttachmentLink}
               onOpenAttachment={props.onOpenAttachment}
@@ -213,7 +162,7 @@ export default function withCommonFunctions<T extends WithCommonFunctionsProps>(
     };
 
     return (
-      <WrappedComponent renderChildrenItems={renderChildrenItems} renderDeleteButton={renderDeleteButton} {...props}>
+      <WrappedComponent renderChildrenItems={renderChildrenItems} {...props}>
         {renderChildrenItems(props.renderContext)}
       </WrappedComponent>
     );

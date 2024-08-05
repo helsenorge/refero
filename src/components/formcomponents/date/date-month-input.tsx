@@ -19,6 +19,8 @@ import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions
 import TextView from '../textview';
 
 import { getMonthOptions, getYearFromString, validateYearDigits, validateYearMax, validateYearMin } from '@/util/date-utils';
+import RenderHelpButton from '@/components/help-button/RenderHelpButton';
+import RenderHelpElement from '@/components/help-button/RenderHelpElement';
 
 interface DateMonthProps extends FormProps, WithCommonFunctionsAndEnhancedProps {
   id?: string;
@@ -28,10 +30,7 @@ interface DateMonthProps extends FormProps, WithCommonFunctionsAndEnhancedProps 
   locale: LanguageLocales.ENGLISH | LanguageLocales.NORWEGIAN;
   label?: string;
   subLabel?: string;
-  helpButton?: JSX.Element;
-  helpElement?: JSX.Element;
   onDateValueChange: (newValue: string) => void;
-  onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
   className?: string;
   maxDate?: Date;
   minDate?: Date;
@@ -44,14 +43,9 @@ export const DateYearMonthInput = ({
   pdf,
   item,
   resources,
-  locale,
   label,
   subLabel,
-  helpButton,
-  helpElement,
   onDateValueChange,
-  onRenderMarkdown,
-  className,
   maxDate,
   minDate,
   answer,
@@ -81,7 +75,7 @@ export const DateYearMonthInput = ({
       };
     }
   };
-
+  const [isHelpVisible, setIsHelpVisible] = useState(false);
   const { formState, getFieldState } = useFormContext<FieldValues>();
   const yearField = getFieldState(`${idWithLinkIdAndItemIndex}-yearmonth-year`, formState);
   const monthsField = getFieldState(`${idWithLinkIdAndItemIndex}-yearmonth-month`, formState);
@@ -135,14 +129,7 @@ export const DateYearMonthInput = ({
 
   if (pdf || isReadOnly(item)) {
     return (
-      <TextView
-        id={id}
-        item={item}
-        value={getPDFValue()}
-        onRenderMarkdown={onRenderMarkdown}
-        helpButton={helpButton}
-        helpElement={helpElement}
-      >
+      <TextView id={id} item={item} value={getPDFValue()}>
         {children}
       </TextView>
     );
@@ -151,7 +138,7 @@ export const DateYearMonthInput = ({
   return (
     <>
       <FormGroup error={getErrorText(getCombinedFieldError())}>
-        {helpElement}
+        <RenderHelpElement item={item} isHelpVisible={isHelpVisible} />
         <Controller
           name={idWithLinkIdAndItemIndex + '-yearmonth-year'}
           shouldUnregister={true}
@@ -187,7 +174,7 @@ export const DateYearMonthInput = ({
                   sublabel={
                     <Sublabel id={`${getId(id)}-sublabel-dateYearMonth`} sublabelTexts={[{ text: subLabel || '', type: 'normal' }]} />
                   }
-                  afterLabelChildren={helpButton}
+                  afterLabelChildren={<RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />}
                 />
               }
               width={10}

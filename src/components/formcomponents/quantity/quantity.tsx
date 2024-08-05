@@ -29,6 +29,8 @@ import { useGetAnswer } from '@/hooks/useGetAnswer';
 import { useIsEnabled } from '@/hooks/useIsEnabled';
 import RenderHelpButton from '@/components/help-button/RenderHelpButton';
 import RenderHelpElement from '@/components/help-button/RenderHelpElement';
+import RenderDeleteButton from '../repeat/RenderDeleteButton';
+import RenderRepeatButton from '../repeat/RenderRepeatButton';
 
 export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   item: QuestionnaireItem;
@@ -37,9 +39,7 @@ export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   path: Array<Path>;
   pdf?: boolean;
   promptLoginMessage?: () => void;
-  renderDeleteButton?: (className?: string) => JSX.Element | null;
   id?: string;
-  repeatButton?: JSX.Element;
   onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
   children?: React.ReactNode;
 }
@@ -55,8 +55,9 @@ const Quantity = ({
   error,
   pdf,
   idWithLinkIdAndItemIndex,
-  renderDeleteButton,
-  repeatButton,
+  responseItems,
+  renderContext,
+  index,
   children,
   responseItem,
 }: Props): JSX.Element | null => {
@@ -201,8 +202,17 @@ const Quantity = ({
             </>
           )}
         />
-        {renderDeleteButton && renderDeleteButton('page_refero__deletebutton--margin-top')}
-        <div>{repeatButton}</div>
+        <RenderDeleteButton
+          item={item}
+          path={path}
+          index={index}
+          onAnswerChange={onAnswerChange}
+          renderContext={renderContext}
+          responseItem={responseItem}
+          resources={resources}
+          className="page_refero__deletebutton--margin-top"
+        />
+        <RenderRepeatButton path={path.slice(0, -1)} item={item} index={index} responseItem={responseItem} responseItems={responseItems} />
       </FormGroup>
       {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
     </div>

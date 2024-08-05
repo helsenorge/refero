@@ -54,8 +54,6 @@ export interface ChoiceProps extends WithCommonFunctionsAndEnhancedProps, FormPr
   promptLoginMessage?: () => void;
   headerTag?: number;
   responseItem: QuestionnaireResponseItem;
-  renderDeleteButton: () => JSX.Element | null;
-  repeatButton: JSX.Element;
   onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
   fetchValueSet?: (
     searchString: string,
