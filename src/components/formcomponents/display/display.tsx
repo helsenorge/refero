@@ -7,10 +7,12 @@ import { renderPrefix, getText, getId } from '@/util/index';
 import { WithCommonFunctionsProps } from '../../with-common-functions';
 import SafeText from '@/components/referoLabel/SafeText';
 import { useIsEnabled } from '@/hooks/useIsEnabled';
+import { useExternalRenderContext } from '@/context/externalRenderContext';
 
 export type Props = WithCommonFunctionsProps;
 
-const Display = ({ id, pdf, item, questionnaire, onRenderMarkdown, resources, path }: Props): JSX.Element | null => {
+const Display = ({ id, pdf, item, questionnaire, resources, path }: Props): JSX.Element | null => {
+  const { onRenderMarkdown } = useExternalRenderContext();
   const itemControls = item ? getItemControlExtensionValue(item) : null;
   const enable = useIsEnabled(item, path);
   const highlightClass =

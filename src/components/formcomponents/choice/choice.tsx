@@ -56,10 +56,7 @@ export interface ChoiceProps extends WithCommonFunctionsAndEnhancedProps, FormPr
   responseItem: QuestionnaireResponseItem;
   renderDeleteButton: () => JSX.Element | null;
   repeatButton: JSX.Element;
-  renderHelpButton: () => JSX.Element;
-  renderHelpElement: () => JSX.Element;
   onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
-  onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
   fetchValueSet?: (
     searchString: string,
     item: QuestionnaireItem,
@@ -73,19 +70,7 @@ export interface ChoiceProps extends WithCommonFunctionsAndEnhancedProps, FormPr
 
 export const Choice = (props: ChoiceProps): JSX.Element | null => {
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
-  const {
-    resources,
-    containedResources,
-    promptLoginMessage,
-    item,
-    onAnswerChange,
-    path,
-    id,
-    pdf,
-    children,
-    onRenderMarkdown,
-    responseItem,
-  } = props;
+  const { resources, containedResources, promptLoginMessage, item, onAnswerChange, path, id, pdf, children, responseItem } = props;
   const answer = useGetAnswer(responseItem) || [];
   const enable = useIsEnabled(item, path);
   const getValue = (
@@ -239,7 +224,7 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
 
   if (pdf || isReadOnly(item)) {
     return (
-      <TextView id={id} item={item} value={getPDFValue(item, answer)} onRenderMarkdown={onRenderMarkdown}>
+      <TextView id={id} item={item} value={getPDFValue(item, answer)}>
         {children}
       </TextView>
     );

@@ -59,14 +59,13 @@ export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   promptLoginMessage?: () => void;
   resources?: Resources;
   containedResources?: Resource[];
-  renderDeleteButton: () => JSX.Element | null;
+  renderDeleteButton?: () => JSX.Element | null;
   headerTag?: number;
   responseItem: QuestionnaireResponseItem;
-  repeatButton: JSX.Element;
-  renderHelpButton: () => JSX.Element;
-  renderHelpElement: () => JSX.Element;
+  repeatButton?: JSX.Element;
+  renderHelpButton?: () => JSX.Element;
+  renderHelpElement?: () => JSX.Element;
   onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
-  onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
   fetchValueSet?: (
     searchString: string,
     item: QuestionnaireItem,
@@ -78,19 +77,7 @@ export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
 }
 
 export const OpenChoice = (props: Props): JSX.Element | null => {
-  const {
-    id,
-    item,
-    pdf,
-    responseItem,
-    containedResources,
-    children,
-    onRenderMarkdown,
-    resources,
-    promptLoginMessage,
-    path,
-    onAnswerChange,
-  } = props;
+  const { id, item, pdf, responseItem, containedResources, children, resources, promptLoginMessage, path, onAnswerChange } = props;
   const answer = useGetAnswer(responseItem) || [];
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
   const enable = useIsEnabled(item, path);
@@ -328,7 +315,7 @@ export const OpenChoice = (props: Props): JSX.Element | null => {
 
   if (pdf || isReadOnly(item)) {
     return (
-      <TextView id={id} item={item} value={getPDFValue(item, answer)} onRenderMarkdown={onRenderMarkdown}>
+      <TextView id={id} item={item} value={getPDFValue(item, answer)}>
         {children}
       </TextView>
     );

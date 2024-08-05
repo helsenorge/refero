@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import { Questionnaire, QuestionnaireItem } from 'fhir/r4';
 import { FieldError } from 'react-hook-form';
@@ -17,6 +17,8 @@ import { Resources } from '@/util/resources';
 import { FormProps } from '../../../validation/ReactHookFormHoc';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
+import RenderHelpButton from '@/components/help-button/RenderHelpButton';
+import RenderHelpElement from '@/components/help-button/RenderHelpElement';
 
 interface Props {
   onUpload: (files: UploadFile[]) => void;
@@ -37,12 +39,9 @@ interface Props {
   attachmentMaxFileSize?: number;
   attachmentValidTypes?: Array<string>;
   questionnaire?: Questionnaire;
-  renderHelpButton: () => JSX.Element;
-  helpElement?: JSX.Element;
   register: FormProps['register'];
   error?: FieldError;
   children?: React.ReactNode;
-  onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
 }
 
 const attachmentHtml = ({
@@ -54,8 +53,6 @@ const attachmentHtml = ({
   resources,
   isRequired,
   attachmentErrorMessage,
-  renderHelpButton,
-  helpElement,
   maxFiles,
   attachmentMaxFileSize,
   attachmentValidTypes,
@@ -63,13 +60,12 @@ const attachmentHtml = ({
   item,
   children,
   error,
-  onRenderMarkdown,
   ...rest
 }: Props): JSX.Element | null => {
   const getMaxValueBytes = getAttachmentMaxSizeBytesToUse(attachmentMaxFileSize, item);
   const validFileTypes = attachmentValidTypes ? attachmentValidTypes : VALID_FILE_TYPES;
   const deleteText = resources ? resources.deleteAttachmentText : undefined;
-
+  const [isHelpVisible, setIsHelpVisible] = useState(false);
   const { register, acceptedFiles, rejectedFiles, setAcceptedFiles, setRejectedFiles } = useFileUpload(
     rest.register,
     [
@@ -104,13 +100,12 @@ const attachmentHtml = ({
       <FormGroup error={concatErrorMessages()}>
         <ReferoLabel
           item={item}
-          onRenderMarkdown={onRenderMarkdown}
           questionnaire={questionnaire}
           resources={resources}
           htmlFor={id}
           labelId={`${getId(id)}-string-label`}
           testId={`${getId(id)}-string-label`}
-          renderHelpButton={renderHelpButton}
+          afterLabelContent={<RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />}
         />
         <FileUpload
           {...register(item.linkId, {
@@ -128,7 +123,7 @@ const attachmentHtml = ({
           deleteText={deleteText}
           acceptedFiles={acceptedFiles}
           rejectedFiles={rejectedFiles}
-          helpElement={helpElement}
+          helpElement={<RenderHelpElement item={item} isHelpVisible={isHelpVisible} />}
           onOpenFile={onOpen}
         />
         {attachmentErrorMessage && <NotificationPanel variant="alert">{attachmentErrorMessage}</NotificationPanel>}

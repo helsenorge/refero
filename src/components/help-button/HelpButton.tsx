@@ -1,8 +1,7 @@
 import React from 'react';
 import { useState } from 'react';
-
 import { QuestionnaireItem } from 'fhir/r4';
-
+import styles from './helpbutton.module.css';
 interface Props {
   item: QuestionnaireItem | undefined;
   callback: (isOpen: boolean) => void;
@@ -19,7 +18,11 @@ const HelpButton = ({ item, children, callback }: Props): JSX.Element | null => 
   if (!item) return null;
 
   return (
-    <span data-testid={`${item.linkId}-help-button`} className="page_refero__helpButton" onClick={handleToggle}>
+    <span
+      data-testid={`${item.linkId}-help-button`}
+      className={`page_refero__helpButton ${styles.page_refero__helpButton}`}
+      onClick={handleToggle}
+    >
       {children}
     </span>
   );

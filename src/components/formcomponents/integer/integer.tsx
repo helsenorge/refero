@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, Questionnaire } from 'fhir/r4';
 import { Controller } from 'react-hook-form';
@@ -23,6 +23,8 @@ import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { useDispatch } from 'react-redux';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
 import { useIsEnabled } from '@/hooks/useIsEnabled';
+import RenderHelpButton from '@/components/help-button/RenderHelpButton';
+import RenderHelpElement from '@/components/help-button/RenderHelpElement';
 
 export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   item: QuestionnaireItem;
@@ -31,13 +33,10 @@ export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   path: Array<Path>;
   pdf?: boolean;
   promptLoginMessage?: () => void;
-  renderDeleteButton: (className?: string) => JSX.Element | null;
+  renderDeleteButton?: (className?: string) => JSX.Element | null;
   id?: string;
-  repeatButton: JSX.Element;
-  renderHelpButton: () => JSX.Element;
-  renderHelpElement: () => JSX.Element;
+  repeatButton?: JSX.Element;
   onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
-  onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
   children?: React.ReactNode;
 }
 
@@ -46,9 +45,6 @@ const Integer = ({
   repeatButton,
   resources,
   id,
-  onRenderMarkdown,
-  renderHelpButton,
-  renderHelpElement,
   children,
   pdf,
   questionnaire,
@@ -62,6 +58,7 @@ const Integer = ({
   responseItem,
 }: Props): JSX.Element | null => {
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
+  const [isHelpVisible, setIsHelpVisible] = useState(false);
   const enable = useIsEnabled(item, path);
   const answer = useGetAnswer(responseItem);
   const getValue = (): string | number | number[] | undefined => {
@@ -106,14 +103,7 @@ const Integer = ({
   }
   if (pdf || isReadOnly(item)) {
     return (
-      <TextView
-        id={id}
-        item={item}
-        value={getPDFValue()}
-        onRenderMarkdown={onRenderMarkdown}
-        helpButton={renderHelpButton()}
-        helpElement={renderHelpElement()}
-      >
+      <TextView id={id} item={item} value={getPDFValue()}>
         {children}
       </TextView>
     );
@@ -125,18 +115,17 @@ const Integer = ({
   return (
     <div className="page_refero__component page_refero__component_integer">
       <FormGroup error={error?.message} mode="ongrey">
-        {renderHelpElement()}
         <ReferoLabel
           item={item}
-          onRenderMarkdown={onRenderMarkdown}
           questionnaire={questionnaire}
           resources={resources}
           htmlFor={getId(id)}
           labelId={`${getId(id)}-label-integer`}
           testId={`${getId(id)}-integer-label`}
           sublabelId={`${getId(id)}-integer-sublabel`}
-          renderHelpButton={renderHelpButton}
+          afterLabelContent={<RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />}
         />
+        <RenderHelpElement item={item} isHelpVisible={isHelpVisible} />
         <Controller
           name={idWithLinkIdAndItemIndex}
           control={control}
@@ -177,7 +166,7 @@ const Integer = ({
             />
           )}
         />
-        {renderDeleteButton('page_refero__deletebutton--margin-top')}
+        {renderDeleteButton && renderDeleteButton('page_refero__deletebutton--margin-top')}
         {repeatButton}
       </FormGroup>
       {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
 import { Controller } from 'react-hook-form';
@@ -16,12 +16,17 @@ import { FormProps } from '../../../validation/ReactHookFormHoc';
 import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
+import RenderHelpButton from '@/components/help-button/RenderHelpButton';
+import RenderHelpElement from '@/components/help-button/RenderHelpElement';
 
 export interface SliderProps extends WithCommonFunctionsAndEnhancedProps, FormProps {
   item: QuestionnaireItem;
   handleChange: (sliderStep: string) => void;
   selected?: Array<string | undefined>;
   children?: React.ReactNode;
+  renderHelpButton?: () => JSX.Element;
+  renderHelpElement?: () => JSX.Element;
+  renderDeleteButton?: (className?: string) => JSX.Element | null;
 }
 enum SliderDisplayTypes {
   Label = 'label',
@@ -34,20 +39,18 @@ type LeftRightLabels = { leftLabel: string; rightLabel: string };
 const SliderView: React.FC<SliderProps> = ({
   item,
   questionnaire,
-  onRenderMarkdown,
   handleChange,
   selected,
   children,
   resources,
   idWithLinkIdAndItemIndex,
   id,
-  renderHelpElement,
-  renderHelpButton,
   renderDeleteButton,
   repeatButton,
   error,
   control,
 }) => {
+  const [isHelpVisible, setIsHelpVisible] = useState(false);
   const onValueChange = (index: number): void => {
     const code = item.answerOption?.[index]?.valueCoding?.code;
     if (code) {
@@ -77,17 +80,16 @@ const SliderView: React.FC<SliderProps> = ({
   return (
     <div className="page_refero__component page_refero__component_choice page_refero__component_choice_slider">
       <FormGroup mode="ongrey" error={error?.message}>
-        {renderHelpElement()}
         <ReferoLabel
           htmlFor={id}
           item={item}
           labelId={`${getId(id)}-slider-choice-label`}
           testId={`${getId(id)}-slider-choice-label`}
-          renderHelpButton={renderHelpButton}
-          onRenderMarkdown={onRenderMarkdown}
           questionnaire={questionnaire}
           resources={resources}
+          afterLabelContent={<RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />}
         />
+        <RenderHelpElement item={item} isHelpVisible={isHelpVisible} />
 
         <Controller
           name={idWithLinkIdAndItemIndex}

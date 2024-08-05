@@ -3,15 +3,16 @@ import React from 'react';
 import { QuestionnaireItem } from 'fhir/r4';
 
 import { renderPrefix, getText } from '../../../util/index';
+import { useExternalRenderContext } from '@/context/externalRenderContext';
 
 interface Props {
   item: QuestionnaireItem;
   checked: boolean;
-  onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
   children?: React.ReactNode;
 }
 
-const pdf = ({ item, checked, children, onRenderMarkdown }: Props): JSX.Element => {
+const pdf = ({ item, checked, children }: Props): JSX.Element => {
+  const { onRenderMarkdown } = useExternalRenderContext();
   return (
     <div>
       {/* eslint-disable react/jsx-no-literals */}

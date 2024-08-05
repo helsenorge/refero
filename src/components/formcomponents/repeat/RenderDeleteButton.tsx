@@ -3,14 +3,14 @@ import { QuestionnaireItem, QuestionnaireResponseItem, QuestionnaireResponseItem
 import DeleteButton from './DeleteButton';
 
 import { GlobalState } from '@/reducers';
-import { Path } from '@/util/refero-core';
+import { Path, shouldRenderDeleteButton } from '@/util/refero-core';
 import { RenderContext } from '@/util/renderContext';
 import { Resources } from '@/util/resources';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
 
 type Props = {
   className?: string;
-  visibleDeleteButton: boolean;
+  index?: number;
   item: QuestionnaireItem;
   path: Path[];
   responseItem: QuestionnaireResponseItem;
@@ -21,14 +21,14 @@ type Props = {
 
 export const RenderDeleteButton = ({
   resources,
-  visibleDeleteButton,
   className,
   responseItem,
   item,
   path,
   onAnswerChange,
+  index,
 }: Props): JSX.Element | null => {
-  if (!visibleDeleteButton) {
+  if (!shouldRenderDeleteButton(item, index || 0)) {
     return null;
   }
   const answer = useGetAnswer(responseItem);

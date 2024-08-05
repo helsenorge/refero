@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { ReactNode, useState } from 'react';
 
 import { Questionnaire, QuestionnaireItem } from 'fhir/r4';
 import { Controller } from 'react-hook-form';
@@ -17,6 +17,8 @@ import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
+import RenderHelpElement from '@/components/help-button/RenderHelpElement';
+import RenderHelpButton from '@/components/help-button/RenderHelpButton';
 
 interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   options?: Array<Options>;
@@ -26,12 +28,9 @@ interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   handleChange: (radioButton: string) => void;
   selected?: Array<string | undefined>;
   resources?: Resources;
-  repeatButton: JSX.Element;
-  renderDeleteButton: (className?: string) => JSX.Element | null;
+  repeatButton?: JSX.Element;
+  renderDeleteButton?: (className?: string) => JSX.Element | null;
   renderOpenField: () => JSX.Element | undefined;
-  renderHelpButton: () => JSX.Element;
-  renderHelpElement: () => JSX.Element;
-  onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
   children?: ReactNode;
 }
 
@@ -46,9 +45,6 @@ const CheckboxView = ({
   repeatButton,
   renderDeleteButton,
   renderOpenField,
-  renderHelpButton,
-  renderHelpElement,
-  onRenderMarkdown,
   control,
   error,
   idWithLinkIdAndItemIndex,
@@ -56,22 +52,23 @@ const CheckboxView = ({
   responseItem,
 }: Props): JSX.Element | null => {
   const answer = useGetAnswer(responseItem) || [];
+  const [isHelpVisible, setIsHelpVisible] = useState(false);
   return (
     <div className="page_refero__component page_refero__component_openchoice page_refero__component_openchoice_checkbox">
       <FormGroup error={error?.message} mode="ongrey">
-        {renderHelpElement()}
-
         <ReferoLabel
           item={item}
-          onRenderMarkdown={onRenderMarkdown}
           questionnaire={questionnaire}
           resources={resources}
           htmlFor={getId(id)}
           labelId={`${getId(id)}-open-choice-label`}
           testId={`${getId(id)}-open-choice-label`}
           sublabelId={`${getId(id)}-open-choice-sublabel`}
-          renderHelpButton={renderHelpButton}
+          afterLabelContent={<RenderHelpButton isHelpVisible={isHelpVisible} item={item} setIsHelpVisible={setIsHelpVisible} />}
         />
+
+        <RenderHelpElement item={item} isHelpVisible={isHelpVisible} />
+
         {options?.map((option, index) => (
           <Controller
             name={idWithLinkIdAndItemIndex}
@@ -110,7 +107,7 @@ const CheckboxView = ({
         ))}
       </FormGroup>
       {shouldShowExtraChoice(answer) && <div className="page_refero__component_openchoice_openfield">{renderOpenField()}</div>}
-      {renderDeleteButton('page_refero__deletebutton--margin-top')}
+      {renderDeleteButton && renderDeleteButton('page_refero__deletebutton--margin-top')}
       {repeatButton}
       {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
     </div>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { Controller } from 'react-hook-form';
@@ -22,6 +22,9 @@ import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../
 import { useDispatch } from 'react-redux';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
 import { useIsEnabled } from '@/hooks/useIsEnabled';
+import RenderHelpElement from '@/components/help-button/RenderHelpElement';
+import RenderHelpButton from '@/components/help-button/RenderHelpButton';
+import { useExternalRenderContext } from '@/context/externalRenderContext';
 
 export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   item: QuestionnaireItem;
@@ -32,13 +35,10 @@ export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   promptLoginMessage?: () => void;
   id?: string;
   onValidated?: (valid: boolean | undefined) => void;
-  renderDeleteButton: (className?: string) => JSX.Element | null;
+  renderDeleteButton?: (className?: string) => JSX.Element | null;
   repeatButton: JSX.Element;
   oneToTwoColumn: boolean;
-  renderHelpButton: () => JSX.Element;
-  renderHelpElement: () => JSX.Element;
   onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
-  onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
   children?: React.ReactNode;
 }
 
@@ -48,12 +48,10 @@ const Boolean = ({
   onAnswerChange,
   path,
   pdf,
-  onRenderMarkdown,
+
   questionnaire,
   id,
   resources,
-  renderHelpButton,
-  renderHelpElement,
   renderDeleteButton,
   repeatButton,
   error,
@@ -63,7 +61,9 @@ const Boolean = ({
   responseItem,
 }: Props): JSX.Element | null => {
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
+  const { onRenderMarkdown } = useExternalRenderContext();
   const enable = useIsEnabled(item, path);
+  const [isHelpVisible, setIsHelpVisible] = useState(false);
   const answer = useGetAnswer(responseItem) || [];
   const getValue = (): boolean => {
     if (answer && Array.isArray(answer)) {
@@ -91,6 +91,7 @@ const Boolean = ({
       promptLoginMessage();
     }
   };
+
   const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
   const labelText = getLabelText(item, onRenderMarkdown, questionnaire, resources);
   const value = getValue();
@@ -118,8 +119,6 @@ const Boolean = ({
     // Dette er en hack for FHI-skjema. TODO: fjern hack
     <div className="page_refero__component page_refero__component_boolean">
       <FormGroup error={error?.message}>
-        {renderHelpElement()}
-
         <Controller
           name={idWithLinkIdAndItemIndex}
           control={control}
@@ -150,7 +149,7 @@ const Boolean = ({
                       sublabelTexts={[{ text: subLabelText, type: 'normal' }]}
                     />
                   }
-                  afterLabelChildren={renderHelpButton()}
+                  afterLabelChildren={<RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />}
                 >
                   <SafeText text={labelText} />
                 </Label>
@@ -164,8 +163,10 @@ const Boolean = ({
             />
           )}
         />
+
+        <RenderHelpElement item={item} isHelpVisible={isHelpVisible} />
       </FormGroup>
-      {renderDeleteButton('page_refero__deletebutton--margin-top')}
+      {renderDeleteButton && renderDeleteButton('page_refero__deletebutton--margin-top')}
       {repeatButton}
       {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
     </div>

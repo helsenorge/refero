@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem } from 'fhir/r4';
 import { Controller } from 'react-hook-form';
@@ -31,6 +31,8 @@ import TextView from '../textview';
 import { useDispatch } from 'react-redux';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
 import { useIsEnabled } from '@/hooks/useIsEnabled';
+import RenderHelpButton from '@/components/help-button/RenderHelpButton';
+import RenderHelpElement from '@/components/help-button/RenderHelpElement';
 
 export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   item: QuestionnaireItem;
@@ -58,7 +60,6 @@ export const Text = ({
   pdf,
   children,
   resources,
-  onRenderMarkdown,
   questionnaire,
   control,
   idWithLinkIdAndItemIndex,
@@ -66,8 +67,6 @@ export const Text = ({
   path,
   onAnswerChange,
   shouldExpanderRenderChildrenWhenClosed,
-  renderHelpButton,
-  renderHelpElement,
   error,
   validateScriptInjection,
   renderDeleteButton,
@@ -75,6 +74,7 @@ export const Text = ({
   responseItem,
 }: Props): JSX.Element | null => {
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
+  const [isHelpVisible, setIsHelpVisible] = useState(false);
   const answer = useGetAnswer(responseItem) || [];
   const enable = useIsEnabled(item, path);
   const handleChange = (event: React.FormEvent): void => {
@@ -114,15 +114,7 @@ export const Text = ({
 
   if (pdf || isReadOnly(item)) {
     return (
-      <TextView
-        id={id}
-        item={item}
-        value={getPDFStringValue(answer, resources)}
-        onRenderMarkdown={onRenderMarkdown}
-        textClass="page_refero__component_readonlytext"
-        helpButton={renderHelpButton()}
-        helpElement={renderHelpElement()}
-      >
+      <TextView id={id} item={item} value={getPDFStringValue(answer, resources)} textClass="page_refero__component_readonlytext">
         {children}
       </TextView>
     );
@@ -137,18 +129,16 @@ export const Text = ({
   return (
     <div className="page_refero__component page_refero__component_text">
       <FormGroup error={error?.message} mode="ongrey">
-        {renderHelpElement()}
-
         <ReferoLabel
           testId={`${getId(id)}-text-label`}
           htmlFor={getId(id)}
-          onRenderMarkdown={onRenderMarkdown}
           item={item}
           labelId={`${getId(id)}-text-label`}
           questionnaire={questionnaire}
           resources={resources}
-          renderHelpButton={renderHelpButton}
+          afterLabelContent={<RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />}
         />
+        <RenderHelpElement item={item} isHelpVisible={isHelpVisible} />
         <Controller
           name={idWithLinkIdAndItemIndex}
           defaultValue={value || ''}

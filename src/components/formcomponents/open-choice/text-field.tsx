@@ -23,7 +23,6 @@ interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   questionnaire?: Questionnaire;
   handleStringChange: (event: React.FocusEvent<HTMLInputElement, Element>) => void;
   handleChange: (value: string) => void;
-  onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
   resources?: Resources;
   children: React.ReactNode;
 }
@@ -35,7 +34,6 @@ const textField = ({
   handleStringChange,
   handleChange,
   children,
-  onRenderMarkdown,
   resources,
   idWithLinkIdAndItemIndex,
   responseItem,
@@ -65,7 +63,6 @@ const textField = ({
     <FormGroup error={error?.message} mode="ongrey">
       <ReferoLabel
         item={item}
-        onRenderMarkdown={onRenderMarkdown}
         questionnaire={questionnaire}
         resources={resources}
         htmlFor={`${getId(id)}-extra-field`}

@@ -27,9 +27,6 @@ export interface Props {
   attachmentErrorMessage?: string;
   repeatButton?: JSX.Element;
   id?: string;
-  renderHelpButton: () => JSX.Element;
-  renderHelpElement: () => JSX.Element;
-  onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
 }
 
 export interface StateProps {

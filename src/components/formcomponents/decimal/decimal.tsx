@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { Controller } from 'react-hook-form';
@@ -24,6 +24,8 @@ import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { useDispatch } from 'react-redux';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
 import { useIsEnabled } from '@/hooks/useIsEnabled';
+import RenderHelpElement from '@/components/help-button/RenderHelpElement';
+import RenderHelpButton from '@/components/help-button/RenderHelpButton';
 
 export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   item: QuestionnaireItem;
@@ -32,12 +34,9 @@ export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   id?: string;
   pdf?: boolean;
   promptLoginMessage?: () => void;
-  renderDeleteButton: (className?: string) => JSX.Element | null;
-  repeatButton: JSX.Element;
-  renderHelpButton: () => JSX.Element;
-  renderHelpElement: () => JSX.Element;
+  renderDeleteButton?: (className?: string) => JSX.Element | null;
+  repeatButton?: JSX.Element;
   onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
-  onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
   children?: React.ReactNode;
 }
 
@@ -45,12 +44,9 @@ const Decimal = ({
   id,
   item,
   pdf,
-  onRenderMarkdown,
   control,
   questionnaire,
   resources,
-  renderHelpButton,
-  renderHelpElement,
   children,
   error,
   idWithLinkIdAndItemIndex,
@@ -62,6 +58,8 @@ const Decimal = ({
   responseItem,
 }: Props): JSX.Element | null => {
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
+  const [isHelpVisible, setIsHelpVisible] = useState(false);
+
   const answer = useGetAnswer(responseItem) || [];
   const enable = useIsEnabled(item, path);
   const getValue = (
@@ -113,14 +111,7 @@ const Decimal = ({
   }
   if (pdf || isReadOnly(item)) {
     return (
-      <TextView
-        id={id}
-        item={item}
-        value={getPDFValue()}
-        onRenderMarkdown={onRenderMarkdown}
-        helpButton={renderHelpButton()}
-        helpElement={renderHelpElement()}
-      >
+      <TextView id={id} item={item} value={getPDFValue()}>
         {children}
       </TextView>
     );
@@ -131,19 +122,18 @@ const Decimal = ({
   const validationText = getValidationTextExtension(item);
   return (
     <div className="page_refero__component page_refero__component_decimal">
-      {renderHelpElement()}
-      <ReferoLabel
-        item={item}
-        onRenderMarkdown={onRenderMarkdown}
-        questionnaire={questionnaire}
-        resources={resources}
-        htmlFor={getId(id)}
-        labelId={`${getId(id)}-label-decimal`}
-        testId={`${getId(id)}-decimal-label`}
-        sublabelId={`${getId(id)}-decimal-sublabel`}
-        renderHelpButton={renderHelpButton}
-      />
       <FormGroup error={error?.message} mode="ongrey">
+        <ReferoLabel
+          item={item}
+          questionnaire={questionnaire}
+          resources={resources}
+          htmlFor={getId(id)}
+          labelId={`${getId(id)}-label-decimal`}
+          testId={`${getId(id)}-decimal-label`}
+          sublabelId={`${getId(id)}-decimal-sublabel`}
+          afterLabelContent={<RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />}
+        />
+        <RenderHelpElement item={item} isHelpVisible={isHelpVisible} />
         <Controller
           name={idWithLinkIdAndItemIndex}
           control={control}
@@ -191,7 +181,7 @@ const Decimal = ({
           )}
         />
       </FormGroup>
-      {renderDeleteButton('page_refero__deletebutton--margin-top')}
+      {renderDeleteButton && renderDeleteButton('page_refero__deletebutton--margin-top')}
       {repeatButton}
       {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
     </div>

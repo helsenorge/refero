@@ -35,10 +35,8 @@ export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   onDeleteAttachment?: (fileId: string, onSuccess: () => void) => void;
   onOpenAttachment?: (fileId: string) => void;
   onRequestAttachmentLink?: (file: string) => string;
-  renderHelpButton: () => JSX.Element;
-  renderHelpElement: () => JSX.Element;
+
   onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
-  onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
   children?: React.ReactNode;
 }
 type UploadedFile = {
@@ -56,13 +54,10 @@ export const AttachmentComponent = (props: Props): JSX.Element | null => {
     id,
     resources,
     onOpenAttachment,
-    onRenderMarkdown,
     questionnaire,
     children,
-    renderHelpButton,
     onRequestAttachmentLink,
     attachmentMaxFileSize,
-    renderHelpElement,
     attachmentValidTypes,
     attachmentErrorMessage,
     register,
@@ -147,14 +142,7 @@ export const AttachmentComponent = (props: Props): JSX.Element | null => {
   }
   if (pdf || isReadOnly(item)) {
     return (
-      <TextView
-        id={id}
-        item={item}
-        value={getPdfValue()}
-        onRenderMarkdown={onRenderMarkdown}
-        helpButton={renderHelpButton()}
-        helpElement={renderHelpElement()}
-      >
+      <TextView id={id} item={item} value={getPdfValue()}>
         {children}
       </TextView>
     );
@@ -167,15 +155,12 @@ export const AttachmentComponent = (props: Props): JSX.Element | null => {
           onOpen={onOpenAttachment}
           id={getId(id)}
           questionnaire={questionnaire}
-          onRenderMarkdown={onRenderMarkdown}
           uploadButtonText={getButtonText()}
           resources={resources}
           isRequired={isRequired(item)}
           multiple={isRepeat(item)}
           errorText={getValidationTextExtension(item)}
           onRequestAttachmentLink={onRequestAttachmentLink}
-          renderHelpButton={renderHelpButton}
-          helpElement={renderHelpElement()}
           maxFiles={getMaxOccursExtensionValue(item)}
           minFiles={getMinOccursExtensionValue(item)}
           attachmentMaxFileSize={attachmentMaxFileSize}

@@ -18,6 +18,7 @@ import rootReducer, { GlobalState } from '../src/reducers';
 import { ReferoProps } from '../src/types/referoProps';
 import { Resources } from '../src/util/resources';
 import { createIntitialFormValues, DefaultValues } from '../src/validation/defaultFormValues';
+import { ExternalRenderProvider } from '@/context/externalRenderContext';
 
 const mockStore = configureMockStore<Partial<GlobalState>>([thunk]);
 
@@ -42,9 +43,11 @@ const AllTheProviders = ({
   store?: Store<any>;
 }) => {
   return (
-    <Provider store={store}>
-      <FormWrapper defaultValues={defaultValues}>{children}</FormWrapper>
-    </Provider>
+    <ExternalRenderProvider onRenderMarkdown={undefined} onRequestHelpButton={undefined} onRequestHelpElement={undefined}>
+      <Provider store={store}>
+        <FormWrapper defaultValues={defaultValues}>{children}</FormWrapper>
+      </Provider>
+    </ExternalRenderProvider>
   );
 };
 

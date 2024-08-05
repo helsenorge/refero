@@ -134,6 +134,7 @@ describe('string', () => {
     });
   });
   describe('delete button', () => {
+    //TODO: Add test to see if the correct item is deleted
     it('Should render delete button if item repeats and number of repeated items is greater than minOccurance(2)', async () => {
       const questionnaire: Questionnaire = {
         ...q,

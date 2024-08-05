@@ -7,16 +7,23 @@ import { shouldRenderRepeatButton } from '@/util';
 import { Path } from '@/util/refero-core';
 import { Resources } from '@/util/resources';
 
-const RenderRepeatButton = (
-  item: QuestionnaireItem,
-  index: number,
-  path?: Path[],
-  response?: QuestionnaireResponseItem[],
-  responseItem?: QuestionnaireResponseItem,
-  resources?: Resources
-): JSX.Element | undefined => {
-  if (!item.repeats || !shouldRenderRepeatButton(item, response, index)) {
-    return undefined;
+const RenderRepeatButton = ({
+  item,
+  index,
+  path,
+  responseItems,
+  responseItem,
+  resources,
+}: {
+  item: QuestionnaireItem;
+  index?: number;
+  path?: Path[];
+  responseItems?: QuestionnaireResponseItem[];
+  responseItem?: QuestionnaireResponseItem;
+  resources?: Resources;
+}): JSX.Element | null => {
+  if (!item.repeats || !shouldRenderRepeatButton(item, responseItems, index)) {
+    return null;
   }
 
   return (
@@ -25,7 +32,7 @@ const RenderRepeatButton = (
         key={`item_${item.linkId}_add_repeat_item`}
         resources={resources}
         item={item}
-        responseItems={response}
+        responseItems={responseItems}
         parentPath={path}
         disabled={item.type !== ItemType.GROUP && !responseItem?.answer}
       />

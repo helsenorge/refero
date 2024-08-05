@@ -35,7 +35,7 @@ import {
 } from '@/util/extension';
 import { getTopLevelElements } from '@/util/getTopLevelElements';
 import { IE11HackToWorkAroundBug187484 } from '@/util/hacks';
-import { getComponentForItem, shouldRenderRepeatButton, isHiddenItem, getDecimalValue } from '@/util/index';
+import { getComponentForItem, isHiddenItem, getDecimalValue } from '@/util/index';
 import { QuestionniareInspector } from '@/util/questionnaireInspector';
 import {
   getRootQuestionnaireResponseItemFromData,
@@ -50,6 +50,7 @@ import { RenderContext } from '@/util/renderContext';
 import { AnswerPad, ScoringCalculator } from '@/util/scoringCalculator';
 import { shouldFormBeDisplayedAsStepView } from '@/util/shouldFormBeDisplayedAsStepView';
 import { createIntitialFormValues } from '@/validation/defaultFormValues';
+import { ExternalRenderProvider } from '@/context/externalRenderContext';
 interface StateProps {
   formDefinition: FormDefinition | null;
   formData: FormData | null;
@@ -215,19 +216,6 @@ const Refero = (props: StateProps & DispatchProps & ReferoProps): JSX.Element | 
       }
       if (responseItems && responseItems.length > 0) {
         responseItems.forEach((responseItem, index) => {
-          const repeatButton =
-            item.repeats && shouldRenderRepeatButton(item, responseItems, index) ? (
-              <div className="page_refero__repeatbutton-wrapper">
-                <RepeatButton
-                  key={`item_${item.linkId}_add_repeat_item`}
-                  resources={props.resources}
-                  item={item}
-                  responseItems={responseItems}
-                  parentPath={props.path}
-                  disabled={item.type !== ItemType.GROUP && !responseItem.answer}
-                />
-              </div>
-            ) : undefined;
           const path = createPathForItem(props.path, item, responseItem, index);
 
           // legg på blindzone rett over den første seksjonen
@@ -235,7 +223,6 @@ const Refero = (props: StateProps & DispatchProps & ReferoProps): JSX.Element | 
             isNavigatorBlindzoneInitiated = true;
             renderedItems.push(<section id={NAVIGATOR_BLINDZONE_ID}></section>);
           }
-
           renderedItems.push(
             <Comp
               idWithLinkIdAndItemIndex={`${item.linkId}${createIdSuffix(path, index, item.repeats)}`}
@@ -253,7 +240,8 @@ const Refero = (props: StateProps & DispatchProps & ReferoProps): JSX.Element | 
               path={path}
               headerTag={Constants.DEFAULT_HEADER_TAG}
               visibleDeleteButton={shouldRenderDeleteButton(item, index)}
-              repeatButton={repeatButton}
+              index={index}
+              responseItems={responseItems}
               onRequestAttachmentLink={props.onRequestAttachmentLink}
               onOpenAttachment={props.onOpenAttachment}
               onDeleteAttachment={props.onDeleteAttachment}
@@ -266,7 +254,6 @@ const Refero = (props: StateProps & DispatchProps & ReferoProps): JSX.Element | 
               validateScriptInjection={props.validateScriptInjection}
               onAnswerChange={onAnswerChange}
               renderContext={new RenderContext()}
-              onRenderMarkdown={props.onRenderMarkdown}
               fetchValueSet={props.fetchValueSet}
               autoSuggestProps={props.autoSuggestProps}
               fetchReceivers={props.fetchReceivers}
@@ -292,7 +279,7 @@ const Refero = (props: StateProps & DispatchProps & ReferoProps): JSX.Element | 
     const isStepView = shouldFormBeDisplayedAsStepView(formDefinition);
 
     return (
-      <div className={getButtonClasses(presentationButtonsType, ['page_refero__content'])}>
+      <div className={getButtonClasses(presentationButtonsType, ['page_refero__content'], props.sticky)}>
         <div className="page_refero__messageboxes" />
         {renderForm(isStepView)}
       </div>
@@ -332,47 +319,57 @@ const Refero = (props: StateProps & DispatchProps & ReferoProps): JSX.Element | 
       onStepChange,
     };
     return (
-      <FormProvider {...methods}>
-        {isStepView ? (
-          <StepView
-            isAuthorized={authorized}
-            referoProps={referoProps}
-            resources={resources}
-            formItems={renderFormItems()}
-            formDefinition={formDefinition}
-            onSave={handleSave}
-            onSubmit={handleSubmit}
-            onStepChange={onStepChange}
-            methods={methods}
-          />
-        ) : (
-          <RenderForm
-            isAuthorized={authorized}
-            isStepView={false}
-            referoProps={referoProps}
-            resources={resources}
-            onSave={handleSave}
-            onSubmit={handleSubmit}
-            methods={methods}
-            validationSummaryPlacement={validationSummaryPlacement}
-          >
-            {renderFormItems()}
-          </RenderForm>
-        )}
-      </FormProvider>
+      <ExternalRenderProvider
+        onRequestHelpButton={props.onRequestHelpButton}
+        onRequestHelpElement={props.onRequestHelpElement}
+        onRenderMarkdown={props.onRenderMarkdown}
+      >
+        <FormProvider {...methods}>
+          {isStepView ? (
+            <StepView
+              isAuthorized={authorized}
+              referoProps={referoProps}
+              resources={resources}
+              formItems={renderFormItems()}
+              formDefinition={formDefinition}
+              onSave={handleSave}
+              onSubmit={handleSubmit}
+              onStepChange={onStepChange}
+              methods={methods}
+            />
+          ) : (
+            <RenderForm
+              isAuthorized={authorized}
+              isStepView={false}
+              referoProps={referoProps}
+              resources={resources}
+              onSave={handleSave}
+              onSubmit={handleSubmit}
+              methods={methods}
+              validationSummaryPlacement={validationSummaryPlacement}
+            >
+              {renderFormItems()}
+            </RenderForm>
+          )}
+        </FormProvider>
+      </ExternalRenderProvider>
     );
   };
 
-  const getButtonClasses = (presentationButtonsType: PresentationButtonsType | null, defaultClasses?: string[]): string => {
-    defaultClasses = defaultClasses ?? [];
+  const getButtonClasses = (
+    presentationButtonsType: PresentationButtonsType | null,
+    defaultClasses: string[] = [],
+    sticky: boolean | undefined
+  ): string => {
+    const classes = [...defaultClasses];
+
     if (presentationButtonsType === PresentationButtonsType.None) {
-      defaultClasses.push('page_refero__hidden_buttons');
-    }
-    if (presentationButtonsType === PresentationButtonsType.Sticky || (props.sticky && !presentationButtonsType)) {
-      defaultClasses.push('page_refero__stickybar');
+      classes.push('page_refero__hidden_buttons');
+    } else if (presentationButtonsType === PresentationButtonsType.Sticky || (sticky && !presentationButtonsType)) {
+      classes.push('page_refero__stickybar');
     }
 
-    return defaultClasses.join(' ');
+    return classes.join(' ');
   };
 
   const { resources } = props;

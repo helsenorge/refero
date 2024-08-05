@@ -19,6 +19,7 @@ import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions
 import TextView from '../textview';
 
 import { formatDateToStringDDMMYYYY, parseStringToDateDDMMYYYY, validateDate, validateMaxDate, validateMinDate } from '@/util/date-utils';
+import RenderHelpElement from '@/components/help-button/RenderHelpElement';
 
 interface DateDayInputProps extends WithCommonFunctionsAndEnhancedProps, FormProps {
   id?: string;
@@ -28,10 +29,7 @@ interface DateDayInputProps extends WithCommonFunctionsAndEnhancedProps, FormPro
   locale: LanguageLocales.ENGLISH | LanguageLocales.NORWEGIAN;
   label?: string;
   subLabel?: string;
-  helpButton?: JSX.Element;
-  helpElement?: JSX.Element;
   onDateValueChange: (newValue: string) => void;
-  onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
   validationErrorRenderer?: JSX.Element;
   className?: string;
   maxDate?: Date;
@@ -47,16 +45,14 @@ export const DateDayInput = ({
   resources,
   label,
   subLabel,
-  helpButton,
-  helpElement,
   onDateValueChange,
-  onRenderMarkdown,
   maxDate,
   minDate,
   answer,
   error,
   children,
 }: React.PropsWithChildren<DateDayInputProps>): JSX.Element => {
+  const [isHelpVisible, setIsHelpVisible] = useState(false);
   const getDateAnswerValue = (answer: QuestionnaireResponseItemAnswer | QuestionnaireItemInitial): string | undefined => {
     if (answer && answer.valueDate) {
       return answer.valueDate;
@@ -143,14 +139,7 @@ export const DateDayInput = ({
 
   if (pdf || isReadOnly(item)) {
     return (
-      <TextView
-        id={id}
-        item={item}
-        value={getPDFValue()}
-        onRenderMarkdown={onRenderMarkdown}
-        helpButton={helpButton}
-        helpElement={helpElement}
-      >
+      <TextView id={id} item={item} value={getPDFValue()}>
         {children}
       </TextView>
     );
@@ -158,7 +147,7 @@ export const DateDayInput = ({
 
   return (
     <FormGroup error={getErrorText(error)}>
-      {helpElement}
+      <RenderHelpElement item={item} isHelpVisible={isHelpVisible} />
       <Controller
         name={idWithLinkIdAndItemIndex}
         shouldUnregister={true}

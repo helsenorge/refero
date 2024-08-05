@@ -51,7 +51,7 @@ const DeleteButton = ({ resources, item, path, onAnswerChange, mustShowConfirm }
   return (
     <>
       <br />
-      <Button variant="outline" concept="destructive" onClick={onDeleteRepeatItem} testId={`${testId}-delete-button`}>
+      <Button variant="outline" concept="destructive" onClick={onDeleteRepeatItem} testId={`${testId}-delete-button`} ariaLabel="slett">
         <Icon svgIcon={TrashCan} />
         {resources && resources.deleteButtonText ? resources.deleteButtonText : ''}
       </Button>

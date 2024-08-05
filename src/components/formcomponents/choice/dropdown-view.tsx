@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import { QuestionnaireItem, Questionnaire } from 'fhir/r4';
 import { Controller } from 'react-hook-form';
@@ -16,6 +16,8 @@ import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { Resources } from '@/util/resources';
 import { Options } from '@/types/formTypes/radioGroupOptions';
+import RenderHelpButton from '@/components/help-button/RenderHelpButton';
+import RenderHelpElement from '@/components/help-button/RenderHelpElement';
 
 export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   options?: Array<Options>;
@@ -25,12 +27,9 @@ export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   handleChange: (code: string) => void;
   selected?: Array<string | undefined>;
   resources?: Resources;
-  renderDeleteButton: (className?: string) => JSX.Element | null;
-  repeatButton: JSX.Element;
+  renderDeleteButton?: (className?: string) => JSX.Element | null;
+  repeatButton?: JSX.Element;
   children?: React.ReactNode;
-  renderHelpButton: () => JSX.Element;
-  renderHelpElement: () => JSX.Element;
-  onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
 }
 
 const DropdownView = (props: Props): JSX.Element | null => {
@@ -45,14 +44,11 @@ const DropdownView = (props: Props): JSX.Element | null => {
     children,
     repeatButton,
     renderDeleteButton,
-    renderHelpButton,
-    renderHelpElement,
-    onRenderMarkdown,
     error,
     control,
     idWithLinkIdAndItemIndex,
   } = props;
-
+  const [isHelpVisible, setIsHelpVisible] = useState(false);
   let placeholder: string | undefined = '';
 
   if (getPlaceholder(item)) {
@@ -65,18 +61,18 @@ const DropdownView = (props: Props): JSX.Element | null => {
   return (
     <div className="page_refero__component page_refero__component_choice page_refero__component_choice_dropdown">
       <FormGroup mode="ongrey" error={error?.message}>
-        {renderHelpElement()}
         <ReferoLabel
           item={item}
-          onRenderMarkdown={onRenderMarkdown}
           questionnaire={questionnaire}
           resources={resources}
           htmlFor={getId(id)}
           labelId={`${getId(id)}-label`}
           testId={`${getId(id)}-label`}
-          renderHelpButton={renderHelpButton}
           sublabelId="select-sublabel"
+          afterLabelContent={<RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />}
         />
+        <RenderHelpElement item={item} isHelpVisible={isHelpVisible} />
+
         <Controller
           name={idWithLinkIdAndItemIndex}
           shouldUnregister={true}
@@ -115,7 +111,7 @@ const DropdownView = (props: Props): JSX.Element | null => {
         />
       </FormGroup>
 
-      {renderDeleteButton('page_refero__deletebutton--margin-top')}
+      {renderDeleteButton && renderDeleteButton('page_refero__deletebutton--margin-top')}
       {repeatButton}
       {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
     </div>

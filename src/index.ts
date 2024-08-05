@@ -25,7 +25,6 @@ export * from './util/actionRequester';
 export * from './util/refero-core';
 
 //Types
-export * from './types/formTypes/commonFormElementProps';
 export * from './types/formTypes/formButton';
 export * from './types/formTypes/formInputs';
 export * from './types/formTypes/radioGroupOptions';

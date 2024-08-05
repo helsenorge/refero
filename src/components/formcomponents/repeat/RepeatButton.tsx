@@ -28,7 +28,6 @@ export const RepeatButton = ({ item, resources, parentPath, responseItems, disab
       dispatch(addRepeatItem(parentPath, item, responseItems));
     }
   };
-
   let text = getRepeatsTextExtension(item);
   if (!text && resources && resources.repeatButtonText) {
     text = resources.repeatButtonText;

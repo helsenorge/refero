@@ -1,5 +1,4 @@
-import DOMPurify from 'dompurify';
-import { QuestionnaireItem } from 'fhir/r4';
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 
 import AnchorLink from '@helsenorge/designsystem-react/components/AnchorLink';
 
@@ -12,6 +11,14 @@ import { RenderContext } from '@/util/renderContext';
 import { Resources } from '@/util/resources';
 import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 import { useIsEnabled } from '@/hooks/useIsEnabled';
+import RenderHelpElement from '@/components/help-button/RenderHelpElement';
+import RenderHelpButton from '@/components/help-button/RenderHelpButton';
+import { useState } from 'react';
+import { useExternalRenderContext } from '@/context/externalRenderContext';
+import RenderRepeatButton from '../repeat/RenderRepeatButton';
+import RenderDeleteButton from '../repeat/RenderDeleteButton';
+import { GlobalState } from '@/reducers';
+import SafeText from '@/components/referoLabel/SafeText';
 
 export interface Props extends WithCommonFunctionsAndEnhancedProps {
   item: QuestionnaireItem;
@@ -21,34 +28,31 @@ export interface Props extends WithCommonFunctionsAndEnhancedProps {
   resources?: Resources;
   headerTag?: number;
   attachmentErrorMessage?: string;
-  renderDeleteButton: (className?: string) => JSX.Element | null;
   renderChildrenItems: (renderContext: RenderContext) => Array<JSX.Element> | null;
-  repeatButton: JSX.Element;
   id?: string;
   renderContext: RenderContext;
-  renderHelpButton: () => JSX.Element;
-  renderHelpElement: () => JSX.Element;
-  onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
+  onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
 }
 
 export const Group = ({
   pdf,
   renderContext,
-  repeatButton,
   id,
   includeSkipLink,
   path,
-  renderDeleteButton,
   item,
   questionnaire,
-  onRenderMarkdown,
   resources,
-  renderHelpElement,
   renderChildrenItems,
   headerTag,
-  renderHelpButton,
+  index,
+  responseItem,
+  responseItems,
+  onAnswerChange,
 }: Props): JSX.Element | null => {
   const enable = useIsEnabled(item, path);
+  const [isHelpVisible, setIsHelpVisible] = useState(false);
+  const { onRenderMarkdown } = useExternalRenderContext();
   const renderAllItems = (item: QuestionnaireItem): JSX.Element => {
     const localRenderContextType = getLocalRenderContextType(item);
 
@@ -115,8 +119,24 @@ export const Group = ({
           </thead>
           <tbody>{renderChildrenItems(newRenderContext)}</tbody>
         </table>
-        {renderDeleteButton('page_refero__deletebutton--margin-top')}
-        {repeatButton}
+        <RenderDeleteButton
+          item={item}
+          path={path}
+          index={index}
+          onAnswerChange={onAnswerChange}
+          renderContext={renderContext}
+          responseItem={responseItem}
+          resources={resources}
+          className="page_refero__deletebutton--margin-top"
+        />
+        <RenderRepeatButton
+          item={item}
+          index={index}
+          path={path.slice(0, -1)}
+          resources={resources}
+          responseItem={responseItem}
+          responseItems={responseItems}
+        />
       </>
     );
   };
@@ -124,8 +144,8 @@ export const Group = ({
   const renderGroup = (): JSX.Element => {
     return (
       <section id={getId(id)} data-sectionname={getHeaderText(item, questionnaire, resources, onRenderMarkdown)}>
-        {renderGroupHeader()}
-        {renderHelpElement()}
+        {renderGroupHeader && renderGroupHeader()}
+        <RenderHelpElement item={item} isHelpVisible={isHelpVisible} />
         <div id={`${getId(id)}-navanchor`} className={getClassNames(item)}>
           {renderChildrenItems(new RenderContext())}
         </div>
@@ -134,8 +154,24 @@ export const Group = ({
             {resources?.skipLinkText}
           </AnchorLink>
         )}
-        {renderDeleteButton('page_refero__deletebutton--margin-top')}
-        {repeatButton}
+        <RenderDeleteButton
+          item={item}
+          path={path}
+          index={index}
+          onAnswerChange={onAnswerChange}
+          renderContext={renderContext}
+          responseItem={responseItem}
+          resources={resources}
+          className="page_refero__deletebutton--margin-top"
+        />
+        <RenderRepeatButton
+          item={item}
+          index={index}
+          path={path.slice(0, -1)}
+          resources={resources}
+          responseItem={responseItem}
+          responseItems={responseItems}
+        />
       </section>
     );
   };
@@ -146,14 +182,11 @@ export const Group = ({
     }
 
     const HeaderTag = `h${headerTag}` as 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
-    const headerText = DOMPurify.sanitize(getHeaderText(item, questionnaire, resources, onRenderMarkdown), {
-      RETURN_TRUSTED_TYPE: true,
-      ADD_ATTR: ['target'],
-    }) as unknown as string;
+    const headerText = getHeaderText(item, questionnaire, resources, onRenderMarkdown);
     return (
       <>
-        <HeaderTag className={'page_refero__heading'} dangerouslySetInnerHTML={{ __html: headerText }} />
-        {renderHelpButton()}
+        <SafeText as={HeaderTag} text={headerText} className={'page_refero__heading'} />
+        <RenderHelpButton isHelpVisible={isHelpVisible} item={item} setIsHelpVisible={setIsHelpVisible} />
       </>
     );
   };

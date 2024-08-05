@@ -19,6 +19,8 @@ import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
+import RenderHelpButton from '@/components/help-button/RenderHelpButton';
+import RenderHelpElement from '@/components/help-button/RenderHelpElement';
 
 interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   options?: Array<Options>;
@@ -28,13 +30,10 @@ interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   handleChange: (code: string) => void;
   selected?: Array<string | undefined>;
   resources?: Resources;
-  renderDeleteButton: (className?: string) => JSX.Element | null;
-  repeatButton: JSX.Element;
+  renderDeleteButton?: (className?: string) => JSX.Element | null;
+  repeatButton?: JSX.Element;
   renderOpenField: () => JSX.Element | undefined;
   children?: React.ReactNode;
-  renderHelpButton: () => JSX.Element;
-  renderHelpElement: () => JSX.Element;
-  onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
 }
 
 const DropdownView = ({
@@ -49,17 +48,17 @@ const DropdownView = ({
   repeatButton,
   renderDeleteButton,
   renderOpenField,
-  renderHelpButton,
-  renderHelpElement,
-  onRenderMarkdown,
   control,
   error,
   idWithLinkIdAndItemIndex,
   responseItem,
 }: Props): JSX.Element | null => {
+  const [isHelpVisible, setIsHelpVisible] = React.useState(false);
+
   if (!options) {
     return null;
   }
+
   const answer = useGetAnswer(responseItem) || [];
   const onChange = (e: React.ChangeEvent<HTMLSelectElement>): void => {
     handleChange(e.target.value);
@@ -67,18 +66,17 @@ const DropdownView = ({
   return (
     <div className="page_refero__component page_refero__component_openchoice page_refero__component_openchoice_dropdown">
       <FormGroup error={error?.message} mode="ongrey">
-        {renderHelpElement()}
         <ReferoLabel
           item={item}
-          onRenderMarkdown={onRenderMarkdown}
           questionnaire={questionnaire}
           resources={resources}
           htmlFor={getId(id)}
           labelId={`${getId(id)}-open-choice-label`}
           testId={`${getId(id)}-open-choice-label`}
           sublabelId={`${getId(id)}-open-choice-sublabel`}
-          renderHelpButton={renderHelpButton}
+          afterLabelContent={<RenderHelpButton isHelpVisible={isHelpVisible} item={item} setIsHelpVisible={setIsHelpVisible} />}
         />
+        <RenderHelpElement item={item} isHelpVisible={isHelpVisible} />
         <Controller
           name={idWithLinkIdAndItemIndex}
           control={control}
@@ -113,7 +111,7 @@ const DropdownView = ({
         />
         {shouldShowExtraChoice(answer) && <div className="page_refero__component_openchoice_openfield">{renderOpenField()}</div>}
       </FormGroup>
-      {renderDeleteButton('page_refero__deletebutton--margin-top')}
+      {renderDeleteButton && renderDeleteButton('page_refero__deletebutton--margin-top')}
       {repeatButton}
       {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
     </div>

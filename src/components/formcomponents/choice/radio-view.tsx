@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import { QuestionnaireItem, Questionnaire } from 'fhir/r4';
 import { Controller } from 'react-hook-form';
@@ -15,6 +15,8 @@ import { FormProps } from '../../../validation/ReactHookFormHoc';
 import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
+import RenderHelpButton from '@/components/help-button/RenderHelpButton';
+import RenderHelpElement from '@/components/help-button/RenderHelpElement';
 
 export interface Props extends FormProps, WithCommonFunctionsAndEnhancedProps {
   options?: Array<Options>;
@@ -24,11 +26,8 @@ export interface Props extends FormProps, WithCommonFunctionsAndEnhancedProps {
   handleChange: (radioButton: string) => void;
   selected?: Array<string | undefined>;
   resources?: Resources;
-  renderDeleteButton: (className?: string) => JSX.Element | null;
-  repeatButton: JSX.Element;
-  renderHelpButton: () => JSX.Element;
-  renderHelpElement: () => JSX.Element;
-  onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
+  renderDeleteButton?: (className?: string) => JSX.Element | null;
+  repeatButton?: JSX.Element;
 }
 
 const RadioView: React.FC<Props> = ({
@@ -42,28 +41,27 @@ const RadioView: React.FC<Props> = ({
   children,
   repeatButton,
   renderDeleteButton,
-  renderHelpButton,
-  renderHelpElement,
-  onRenderMarkdown,
+
   error,
   control,
   idWithLinkIdAndItemIndex,
 }) => {
+  const [isHelpVisible, setIsHelpVisible] = useState(false);
   const selectedValue = (selected && selected[0]) || '';
   return (
     <div className="page_refero__component page_refero__component_choice page_refero__component_choice_radiobutton">
       <FormGroup mode="ongrey" error={error?.message}>
-        {renderHelpElement()}
         <ReferoLabel
           item={item}
-          onRenderMarkdown={onRenderMarkdown}
           questionnaire={questionnaire}
           resources={resources}
           labelId={`${getId(id)}-choice-label`}
           testId={`${getId(id)}-choice-label`}
           sublabelId={`${getId(id)}-choice-sublabel`}
-          renderHelpButton={renderHelpButton}
+          afterLabelContent={<RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />}
         />
+        <RenderHelpElement item={item} isHelpVisible={isHelpVisible} />
+
         {options?.map((option: Options, index: number) => (
           <Controller
             name={idWithLinkIdAndItemIndex}
@@ -96,7 +94,7 @@ const RadioView: React.FC<Props> = ({
           />
         ))}
       </FormGroup>
-      {renderDeleteButton('page_refero__deletebutton--margin-top')}
+      {renderDeleteButton && renderDeleteButton('page_refero__deletebutton--margin-top')}
       {repeatButton}
       {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : undefined}
     </div>
