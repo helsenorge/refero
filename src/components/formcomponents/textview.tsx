@@ -4,8 +4,8 @@ import { QuestionnaireItem } from 'fhir/r4';
 
 import { getText, getId } from '@/util/index';
 import SafeText from '../referoLabel/SafeText';
-import RenderHelpButton from '../help-button/RenderHelpButton';
-import RenderHelpElement from '../help-button/RenderHelpElement';
+import RenderHelpButton from './help-button/RenderHelpButton';
+import RenderHelpElement from './help-button/RenderHelpElement';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 
 interface Props {

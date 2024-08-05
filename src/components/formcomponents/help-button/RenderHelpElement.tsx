@@ -4,7 +4,7 @@ import { QuestionnaireItem } from 'fhir/r4';
 import ItemControlConstants from '@/constants/itemcontrol';
 import classNames from 'classnames';
 import { Collapse } from 'react-collapse';
-import SafeText from '../referoLabel/SafeText';
+import SafeText from '../../referoLabel/SafeText';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 
 type Props = {

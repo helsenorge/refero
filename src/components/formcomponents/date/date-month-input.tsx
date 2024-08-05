@@ -19,8 +19,8 @@ import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions
 import TextView from '../textview';
 
 import { getMonthOptions, getYearFromString, validateYearDigits, validateYearMax, validateYearMin } from '@/util/date-utils';
-import RenderHelpButton from '@/components/help-button/RenderHelpButton';
-import RenderHelpElement from '@/components/help-button/RenderHelpElement';
+import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelpButton';
+import RenderHelpElement from '@/components/formcomponents/help-button/RenderHelpElement';
 
 interface DateMonthProps extends FormProps, WithCommonFunctionsAndEnhancedProps {
   id?: string;

@@ -38,8 +38,8 @@ import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../
 import TextView from '../textview';
 import { useDispatch } from 'react-redux';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
-import RenderHelpElement from '@/components/help-button/RenderHelpElement';
-import RenderHelpButton from '@/components/help-button/RenderHelpButton';
+import RenderHelpElement from '@/components/formcomponents/help-button/RenderHelpElement';
+import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelpButton';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {

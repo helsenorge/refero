@@ -22,8 +22,8 @@ import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../
 import { useDispatch } from 'react-redux';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
 import { useIsEnabled } from '@/hooks/useIsEnabled';
-import RenderHelpElement from '@/components/help-button/RenderHelpElement';
-import RenderHelpButton from '@/components/help-button/RenderHelpButton';
+import RenderHelpElement from '@/components/formcomponents/help-button/RenderHelpElement';
+import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelpButton';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';

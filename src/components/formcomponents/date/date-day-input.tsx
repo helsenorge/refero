@@ -19,8 +19,8 @@ import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions
 import TextView from '../textview';
 
 import { formatDateToStringDDMMYYYY, parseStringToDateDDMMYYYY, validateDate, validateMaxDate, validateMinDate } from '@/util/date-utils';
-import RenderHelpElement from '@/components/help-button/RenderHelpElement';
-import RenderHelpButton from '@/components/help-button/RenderHelpButton';
+import RenderHelpElement from '@/components/formcomponents/help-button/RenderHelpElement';
+import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelpButton';
 
 interface DateDayInputProps extends WithCommonFunctionsAndEnhancedProps, FormProps {
   id?: string;

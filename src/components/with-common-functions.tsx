@@ -22,10 +22,9 @@ import { GlobalState } from '../reducers';
 import { getCodingTextTableValues } from '../util/extension';
 import { isHelpItem } from '../util/help';
 import { getComponentForItem, getChildHeaderTag, isHiddenItem } from '../util/index';
-import { Path, getItemWithIdFromResponseItemArray, createPathForItem, shouldRenderDeleteButton, createIdSuffix } from '../util/refero-core';
+import { Path, getItemWithIdFromResponseItemArray, createPathForItem, createIdSuffix } from '../util/refero-core';
 import { RenderContext } from '../util/renderContext';
 import { Resources } from '../util/resources';
-import DeleteButton from './formcomponents/repeat/DeleteButton';
 
 export interface WithCommonFunctionsProps {
   idWithLinkIdAndItemIndex: string;
@@ -64,7 +63,7 @@ export interface WithCommonFunctionsProps {
 }
 
 export interface EnhancedProps {
-  renderChildrenItems?: (renderContext: RenderContext) => Array<JSX.Element> | null;
+  renderChildrenItems?: (renderContext: RenderContext) => JSX.Element[] | null;
   renderDeleteButton?: (classname?: string) => JSX.Element | null;
 }
 
@@ -76,7 +75,7 @@ export default function withCommonFunctions<T extends WithCommonFunctionsProps>(
   WrappedComponent: React.ComponentType<T>
 ): React.ComponentType<T & EnhancedProps> {
   const WithCommonFunctions = (props: T): JSX.Element | null => {
-    const renderItem = (item: QuestionnaireItem, renderContext: RenderContext): Array<JSX.Element> => {
+    const renderItem = (item: QuestionnaireItem, renderContext: RenderContext): JSX.Element[] => {
       const { resources, containedResources, responseItem, pdf, path, headerTag, promptLoginMessage } = props;
       if (isHelpItem(item)) return [];
       if (isHiddenItem(item)) return [];
@@ -124,8 +123,6 @@ export default function withCommonFunctions<T extends WithCommonFunctionsProps>(
               validateScriptInjection={props.validateScriptInjection}
               index={index}
               responseItems={response}
-              // visibleDeleteButton={shouldRenderDeleteButton(item, index)}
-              // repeatButton={renderRepeatButton(item, index, path, response, responseItem)}
               onRequestAttachmentLink={props.onRequestAttachmentLink}
               onOpenAttachment={props.onOpenAttachment}
               onDeleteAttachment={props.onDeleteAttachment}
@@ -145,7 +142,7 @@ export default function withCommonFunctions<T extends WithCommonFunctionsProps>(
       return renderedItems;
     };
 
-    const renderChildrenItems = (renderContext: RenderContext): Array<JSX.Element> | null => {
+    const renderChildrenItems = (renderContext: RenderContext): JSX.Element[] | null => {
       const { item } = props;
       if (!item || !item.item) {
         return null;
@@ -155,7 +152,7 @@ export default function withCommonFunctions<T extends WithCommonFunctionsProps>(
         return renderContext.RenderChildren(item.item, renderItem);
       }
 
-      const renderedItems: Array<JSX.Element> = [];
+      const renderedItems: JSX.Element[] = [];
       item.item.forEach(i => renderedItems.push(...renderItem(i, renderContext)));
 
       return renderedItems;

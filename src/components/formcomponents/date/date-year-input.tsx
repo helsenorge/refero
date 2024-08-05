@@ -15,9 +15,9 @@ import { Resources } from '../../../util/resources';
 import { FormProps } from '../../../validation/ReactHookFormHoc';
 import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 import TextView from '../textview';
-import RenderHelpElement from '@/components/help-button/RenderHelpElement';
+import RenderHelpElement from '@/components/formcomponents/help-button/RenderHelpElement';
 import { useState } from 'react';
-import RenderHelpButton from '@/components/help-button/RenderHelpButton';
+import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelpButton';
 
 interface Props extends FormProps, WithCommonFunctionsAndEnhancedProps {
   id?: string;

@@ -17,8 +17,8 @@ import { Resources } from '@/util/resources';
 import { FormProps } from '../../../validation/ReactHookFormHoc';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
-import RenderHelpButton from '@/components/help-button/RenderHelpButton';
-import RenderHelpElement from '@/components/help-button/RenderHelpElement';
+import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelpButton';
+import RenderHelpElement from '@/components/formcomponents/help-button/RenderHelpElement';
 
 interface Props {
   onUpload: (files: UploadFile[]) => void;
