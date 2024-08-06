@@ -9,7 +9,7 @@ type ContextTypeGridRowProps = RenderItemProps & {
   setIsHelpVisible: Dispatch<React.SetStateAction<boolean>>;
 };
 const ContextTypeGridRow = (props: ContextTypeGridRowProps): JSX.Element => {
-  const { isHelpVisible, setIsHelpVisible, item, resources, renderContext, headerTag, questionnaire } = props;
+  const { isHelpVisible, setIsHelpVisible, item, resources, renderContext, headerTag } = props;
 
   renderContext.RenderChildren = (
     childItems: QuestionnaireItem[],
@@ -44,7 +44,6 @@ const ContextTypeGridRow = (props: ContextTypeGridRowProps): JSX.Element => {
           isHelpVisible={isHelpVisible}
           setIsHelpVisible={setIsHelpVisible}
           item={item}
-          questionnaire={questionnaire}
           resources={resources}
         />
       </td>

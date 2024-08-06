@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 import { Controller, FieldValues, useFormContext } from 'react-hook-form';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
@@ -24,7 +24,6 @@ import RenderHelpElement from '@/components/formcomponents/help-button/RenderHel
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import { RenderChildrenItems, RenderItemProps } from '../renderChildren/RenderChildrenItems';
-import { getFormDefinition } from '@/reducers/form';
 
 export type Props = RenderItemProps & {
   oneToTwoColumn: boolean;
@@ -47,8 +46,7 @@ export const String = (props: Props): JSX.Element | null => {
     index,
     responseItem,
   } = props;
-  const formDefinition = useSelector((state: GlobalState) => getFormDefinition(state));
-  const questionnaire = formDefinition?.Content;
+
   const { formState, getFieldState, control } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
@@ -95,7 +93,6 @@ export const String = (props: Props): JSX.Element | null => {
       <FormGroup error={error?.message ?? ''} mode="ongrey">
         <ReferoLabel
           item={item}
-          questionnaire={questionnaire}
           resources={resources}
           htmlFor={getId(id)}
           labelId={`${getId(id)}-string-label`}

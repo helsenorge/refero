@@ -16,9 +16,6 @@ import RenderHelpElement from '@/components/formcomponents/help-button/RenderHel
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import { RenderItemProps } from '../renderChildren/RenderChildrenItems';
-import { useSelector } from 'react-redux';
-import { GlobalState } from '@/reducers';
-import { getFormDefinition } from '@/reducers/form';
 
 export type Props = RenderItemProps & {
   options?: Array<Options>;
@@ -42,8 +39,6 @@ const CheckboxView = ({
   path,
   index,
 }: Props): JSX.Element | null => {
-  const formDefinition = useSelector((state: GlobalState) => getFormDefinition(state));
-
   const [isHelpVisible, setIsHelpVisible] = useState(false);
 
   const { formState, getFieldState } = useFormContext<FieldValues>();
@@ -55,7 +50,6 @@ const CheckboxView = ({
       <FormGroup mode="ongrey" error={error?.message}>
         <ReferoLabel
           item={item}
-          questionnaire={formDefinition?.Content}
           resources={resources}
           htmlFor={id}
           labelId={`${getId(id)}-label`}

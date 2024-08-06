@@ -1,9 +1,7 @@
 import { FocusEvent } from 'react';
 
-import { QuestionnaireItem, QuestionnaireResponseItemAnswer, Resource, Coding, QuestionnaireResponseItem, Questionnaire } from 'fhir/r4';
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer, Coding } from 'fhir/r4';
 import { ThunkDispatch } from 'redux-thunk';
-
-import { AutoSuggestProps } from '@/types/autoSuggestProps';
 
 import CheckboxView from './checkbox-view';
 import DropdownView from './dropdown-view';
@@ -31,31 +29,18 @@ import {
   hasOptions,
   isAboveDropdownThreshold,
 } from '@/util/choice';
-import { Path } from '@/util/refero-core';
-import { Resources } from '@/util/resources';
-import ReactHookFormHoc, { FormProps } from '../../../validation/ReactHookFormHoc';
-import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
+
 import SliderView from '../choice/slider-view';
 import AutosuggestView from '../choice-common/autosuggest-view';
 import TextView from '../textview';
 import { useDispatch } from 'react-redux';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
 import { useIsEnabled } from '@/hooks/useIsEnabled';
+import { RenderChildrenItems, RenderItemProps } from '../renderChildren/RenderChildrenItems';
 
-export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
-  item: QuestionnaireItem;
-  questionnaire?: Questionnaire;
-  path: Array<Path>;
-  id?: string;
-  pdf?: boolean;
-  promptLoginMessage?: () => void;
-  resources?: Resources;
-  containedResources?: Resource[];
-  responseItem: QuestionnaireResponseItem;
-  onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
-  autoSuggestProps?: AutoSuggestProps;
+export type Props = RenderItemProps & {
   children: JSX.Element;
-}
+};
 
 export const OpenChoice = (props: Props): JSX.Element | null => {
   const { id, item, pdf, responseItem, containedResources, children, resources, promptLoginMessage, path, onAnswerChange } = props;
@@ -149,7 +134,7 @@ export const OpenChoice = (props: Props): JSX.Element | null => {
   };
 
   const handleStringChange = (value: string): void => {
-    if (dispatch) {
+    if (dispatch && onAnswerChange && path) {
       if (value.length > 0) {
         dispatch(newCodingStringValueAsync(path, value, item))?.then(newState =>
           onAnswerChange(newState, path, item, { valueString: value })
@@ -172,7 +157,7 @@ export const OpenChoice = (props: Props): JSX.Element | null => {
   };
 
   const resetInitialAnswer = (code: string): void => {
-    if (dispatch && code) {
+    if (dispatch && code && path && onAnswerChange) {
       const coding = getAnswerValueCoding(code);
       const responseAnswer = { valueCoding: coding };
       if (getIndexOfAnswer(code, answer) > -1) {
@@ -189,7 +174,7 @@ export const OpenChoice = (props: Props): JSX.Element | null => {
   };
 
   const handleCheckboxChange = (code?: string): void => {
-    if (dispatch && code) {
+    if (dispatch && code && path && onAnswerChange) {
       const coding = getAnswerValueCoding(code);
       const responseAnswer = { valueCoding: coding };
       if (getIndexOfAnswer(code, answer) > -1) {
@@ -210,7 +195,7 @@ export const OpenChoice = (props: Props): JSX.Element | null => {
   };
 
   const clearCodingAnswer = (coding: Coding): void => {
-    if (dispatch) {
+    if (dispatch && onAnswerChange && path) {
       const responseAnswer = { valueCoding: coding };
       dispatch(removeCodingValueAsync(path, coding, item))?.then(newState => onAnswerChange(newState, path, item, responseAnswer));
       if (promptLoginMessage) {
@@ -220,7 +205,7 @@ export const OpenChoice = (props: Props): JSX.Element | null => {
   };
 
   const handleChange = (code?: string, systemArg?: string, displayArg?: string): void => {
-    if (dispatch && code) {
+    if (dispatch && code && path && onAnswerChange) {
       const coding = getAnswerValueCoding(code, systemArg, displayArg);
       const responseAnswer = { valueCoding: coding };
       dispatch(newCodingValueAsync(path, coding, item))?.then(newState => onAnswerChange(newState, path, item, responseAnswer));
@@ -242,7 +227,7 @@ export const OpenChoice = (props: Props): JSX.Element | null => {
   };
 
   const singleValueHandler = (coding: Coding): void => {
-    if (dispatch) {
+    if (dispatch && path && onAnswerChange) {
       if (coding.code !== OPEN_CHOICE_ID) {
         dispatch(removeCodingStringValueAsync(path, item))?.then(newState => onAnswerChange(newState, path, item, { valueString: '' }));
       }
@@ -250,7 +235,7 @@ export const OpenChoice = (props: Props): JSX.Element | null => {
   };
 
   const multiValueHandler = (coding: Coding): void => {
-    if (dispatch) {
+    if (dispatch && onAnswerChange && path) {
       const isShown = shouldShowExtraChoice(answer);
 
       if (isShown && coding.code === OPEN_CHOICE_ID) {
@@ -340,9 +325,8 @@ export const OpenChoice = (props: Props): JSX.Element | null => {
           {children}
         </AutosuggestView>
       ) : null}
+      <RenderChildrenItems otherProps={props} />
     </>
   );
 };
-const withFormProps = ReactHookFormHoc(OpenChoice);
-const withCommonFunctionsComponent = withCommonFunctions(withFormProps);
-export default withCommonFunctionsComponent;
+export default OpenChoice;

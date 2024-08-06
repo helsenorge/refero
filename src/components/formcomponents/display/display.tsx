@@ -8,11 +8,16 @@ import SafeText from '@/components/referoLabel/SafeText';
 import { useIsEnabled } from '@/hooks/useIsEnabled';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 import { RenderItemProps } from '../renderChildren/RenderChildrenItems';
+import { useSelector } from 'react-redux';
+import { GlobalState } from '@/reducers';
+import { getFormDefinition } from '@/reducers/form';
 
 export type Props = RenderItemProps;
 
-const Display = ({ id, pdf, item, questionnaire, resources, path }: Props): JSX.Element | null => {
+const Display = ({ id, pdf, item, resources, path }: Props): JSX.Element | null => {
   const { onRenderMarkdown } = useExternalRenderContext();
+  const formDefinition = useSelector((state: GlobalState) => getFormDefinition(state));
+  const questionnaire = formDefinition?.Content;
   const itemControls = item ? getItemControlExtensionValue(item) : null;
   const enable = useIsEnabled(item, path);
   const highlightClass =

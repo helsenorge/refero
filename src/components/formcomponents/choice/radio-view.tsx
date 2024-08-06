@@ -15,9 +15,7 @@ import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelp
 import RenderHelpElement from '@/components/formcomponents/help-button/RenderHelpElement';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
-import { getFormDefinition } from '@/reducers/form';
-import { GlobalState } from '@/reducers';
-import { useSelector } from 'react-redux';
+
 import { RenderItemProps } from '../renderChildren/RenderChildrenItems';
 
 export type Props = RenderItemProps & {
@@ -42,8 +40,6 @@ const RadioView = ({
   index,
   idWithLinkIdAndItemIndex,
 }: Props): JSX.Element => {
-  const formDefinition = useSelector((state: GlobalState) => getFormDefinition(state));
-
   const { formState, getFieldState, control } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
@@ -55,7 +51,6 @@ const RadioView = ({
       <FormGroup mode="ongrey" error={error?.message}>
         <ReferoLabel
           item={item}
-          questionnaire={formDefinition?.Content}
           resources={resources}
           labelId={`${getId(id)}-choice-label`}
           testId={`${getId(id)}-choice-label`}

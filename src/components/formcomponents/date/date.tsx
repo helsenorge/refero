@@ -18,14 +18,13 @@ import { evaluateFhirpathExpressionToGetDate } from '../../../util/fhirpathHelpe
 import { getLabelText, getSublabelText } from '../../../util/index';
 import { Path } from '../../../util/refero-core';
 import { Resources } from '../../../util/resources';
-import ReactHookFormHoc, { FormProps } from '../../../validation/ReactHookFormHoc';
-import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 import { useDispatch } from 'react-redux';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
+import { RenderChildrenItems, RenderItemProps } from '../renderChildren/RenderChildrenItems';
 
-export interface DateProps extends WithCommonFunctionsAndEnhancedProps, FormProps {
+export type DateProps = RenderItemProps & {
   item: QuestionnaireItem;
   questionnaire?: Questionnaire;
   answer: QuestionnaireResponseItemAnswer;
@@ -34,9 +33,10 @@ export interface DateProps extends WithCommonFunctionsAndEnhancedProps, FormProp
   pdf?: boolean;
   language?: string;
   promptLoginMessage?: () => void;
-}
+  children: React.ReactNode;
+};
 
-const DateComponent = (props: React.PropsWithChildren<DateProps>): JSX.Element => {
+const DateComponent = (props: DateProps): JSX.Element => {
   const {
     item,
     questionnaire,
@@ -174,10 +174,9 @@ const DateComponent = (props: React.PropsWithChildren<DateProps>): JSX.Element =
         className="page_refero__deletebutton--margin-top"
       />
       <RenderRepeatButton path={path.slice(0, -1)} item={item} index={index} responseItem={responseItem} responseItems={responseItems} />
+      <RenderChildrenItems otherProps={props} />
       {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
     </div>
   );
 };
-const withFormProps = ReactHookFormHoc(DateComponent);
-const withCommonFunctionsComponent = withCommonFunctions(withFormProps);
-export default withCommonFunctionsComponent;
+export default DateComponent;

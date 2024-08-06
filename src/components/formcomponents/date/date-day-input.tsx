@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 
 import { format, isValid } from 'date-fns';
-import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireItemInitial } from 'fhir/r4';
-import { Controller, FieldError } from 'react-hook-form';
+import { QuestionnaireResponseItemAnswer, QuestionnaireItemInitial } from 'fhir/r4';
+import { Controller, FieldError, FieldValues, useFormContext } from 'react-hook-form';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
@@ -13,20 +13,14 @@ import DatePicker from '@helsenorge/datepicker/components/DatePicker';
 import { safeParseJSON } from '../../../util/date-fns-utils';
 import { getValidationTextExtension } from '../../../util/extension';
 import { getId, isReadOnly, isRequired } from '../../../util/index';
-import { Resources } from '../../../util/resources';
-import { FormProps } from '../../../validation/ReactHookFormHoc';
-import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 import TextView from '../textview';
 
 import { formatDateToStringDDMMYYYY, parseStringToDateDDMMYYYY, validateDate, validateMaxDate, validateMinDate } from '@/util/date-utils';
 import RenderHelpElement from '@/components/formcomponents/help-button/RenderHelpElement';
 import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelpButton';
+import { RenderItemProps } from '../renderChildren/RenderChildrenItems';
 
-interface DateDayInputProps extends WithCommonFunctionsAndEnhancedProps, FormProps {
-  id?: string;
-  pdf?: boolean;
-  item: QuestionnaireItem;
-  resources?: Resources;
+type DateDayInputProps = RenderItemProps & {
   locale: LanguageLocales.ENGLISH | LanguageLocales.NORWEGIAN;
   label?: string;
   subLabel?: string;
@@ -36,7 +30,8 @@ interface DateDayInputProps extends WithCommonFunctionsAndEnhancedProps, FormPro
   maxDate?: Date;
   minDate?: Date;
   answer: QuestionnaireResponseItemAnswer;
-}
+  children: React.ReactNode;
+};
 
 export const DateDayInput = ({
   id,
@@ -50,9 +45,11 @@ export const DateDayInput = ({
   maxDate,
   minDate,
   answer,
-  error,
   children,
-}: React.PropsWithChildren<DateDayInputProps>): JSX.Element => {
+}: DateDayInputProps): JSX.Element => {
+  const { formState, getFieldState } = useFormContext<FieldValues>();
+  const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
+  const { error } = fieldState;
   const [isHelpVisible, setIsHelpVisible] = useState(false);
   const getDateAnswerValue = (answer: QuestionnaireResponseItemAnswer | QuestionnaireItemInitial): string | undefined => {
     if (answer && answer.valueDate) {
@@ -196,36 +193,3 @@ export const DateDayInput = ({
     </FormGroup>
   );
 };
-
-// const getDatepickerErrorPhrases = (): DatePickerErrorPhrases => {
-//   const { resources, item } = props;
-//   // Vi får maks én valideringstekst, derfor settes alle til denne.
-//   const validationErrorText = getValidationTextExtension(item);
-
-//   return {
-//     errorInvalidDate: validationErrorText ? validationErrorText : resources?.filterDateErrorDateFormat || '',
-//     errorAfterMaxDate: resources?.errorAfterMaxDate || '',
-//     errorBeforeMinDate: resources?.errorBeforeMinDate || '',
-//     errorInvalidDateRange: '',
-//     errorRequiredDate: resources?.dateRequired || '',
-//     errorRequiredDateRange: '',
-//     errorInvalidMinimumNights: '',
-//   };
-// }
-
-// toLocaleDate(moment: Moment | undefined): Moment | undefined {
-//   return moment ? moment.locale(getLocaleFromLanguage()) : undefined;
-// }
-
-// const isValidDate = (date: Date | undefined): boolean => {
-//   if (date instanceof Date) {
-//     const text = Date.prototype.toString.call(date);
-//     return text !== 'Invalid Date';
-//   }
-//   return false;
-// };
-
-// const getSingleDateValue = (): Date | undefined => {
-//   const date = getValue();
-//   return date ? safeParseJSON(date[0]) : undefined;
-// };

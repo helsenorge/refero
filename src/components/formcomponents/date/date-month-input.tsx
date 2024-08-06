@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 import { format } from 'date-fns';
-import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
+import { QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { Controller, FieldError, FieldValues, useFormContext } from 'react-hook-form';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
@@ -13,20 +13,15 @@ import { LanguageLocales } from '@helsenorge/core-utils/constants/languages';
 
 import { getId, isReadOnly, isRequired } from '../../../util';
 import { getValidationTextExtension } from '../../../util/extension';
-import { Resources } from '../../../util/resources';
-import { FormProps } from '../../../validation/ReactHookFormHoc';
-import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
+
 import TextView from '../textview';
 
 import { getMonthOptions, getYearFromString, validateYearDigits, validateYearMax, validateYearMin } from '@/util/date-utils';
 import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelpButton';
 import RenderHelpElement from '@/components/formcomponents/help-button/RenderHelpElement';
+import { RenderItemProps } from '../renderChildren/RenderChildrenItems';
 
-interface DateMonthProps extends FormProps, WithCommonFunctionsAndEnhancedProps {
-  id?: string;
-  pdf?: boolean;
-  item: QuestionnaireItem;
-  resources?: Resources;
+type DateMonthProps = RenderItemProps & {
   locale: LanguageLocales.ENGLISH | LanguageLocales.NORWEGIAN;
   label?: string;
   subLabel?: string;
@@ -35,7 +30,8 @@ interface DateMonthProps extends FormProps, WithCommonFunctionsAndEnhancedProps 
   maxDate?: Date;
   minDate?: Date;
   answer: QuestionnaireResponseItemAnswer;
-}
+  children: React.ReactNode;
+};
 
 export const DateYearMonthInput = ({
   id,
@@ -50,7 +46,9 @@ export const DateYearMonthInput = ({
   minDate,
   answer,
   children,
-}: React.PropsWithChildren<DateMonthProps>): JSX.Element => {
+}: DateMonthProps): JSX.Element => {
+  const { formState, getFieldState } = useFormContext<FieldValues>();
+
   const getDateValueFromAnswer = (answer: QuestionnaireResponseItemAnswer): string | undefined => {
     if (answer && answer.valueDate) {
       return answer.valueDate;
@@ -60,7 +58,7 @@ export const DateYearMonthInput = ({
     }
   };
 
-  const getValue = () => {
+  const getValue = (): { year: number; month: number | null } | undefined => {
     const stringValue = getDateValueFromAnswer(answer);
 
     if (!stringValue) {
@@ -76,7 +74,6 @@ export const DateYearMonthInput = ({
     }
   };
   const [isHelpVisible, setIsHelpVisible] = useState(false);
-  const { formState, getFieldState } = useFormContext<FieldValues>();
   const yearField = getFieldState(`${idWithLinkIdAndItemIndex}-yearmonth-year`, formState);
   const monthsField = getFieldState(`${idWithLinkIdAndItemIndex}-yearmonth-month`, formState);
   const monthOptions = getMonthOptions(resources);
@@ -117,7 +114,7 @@ export const DateYearMonthInput = ({
     return `${newYearString}-${newMonthString}`;
   };
 
-  const handleYearMonthChange = (newYear: string | undefined, newMonth: string | undefined | null) => {
+  const handleYearMonthChange = (newYear: string | undefined, newMonth: string | undefined | null): void => {
     setYear(newYear);
     setMonth(newMonth);
 
@@ -213,59 +210,3 @@ export const DateYearMonthInput = ({
     </>
   );
 };
-
-// const onYearMonthChange = (newValue: YearMonthValue): void => {
-//   if (!newValue.year && (newValue.month === -1 || newValue.month === null)) {
-//     onDateValueChange('');
-//   } else {
-//     const newMonthValue = newValue.month === null || newValue.month === -1 ? '' : `0${newValue.month + 1}`.slice(-2);
-//     onDateValueChange(`${newValue.year}-${newMonthValue}`);
-//   }
-// };
-
-// const getYearMonthInputResources = (): YearMonthResources => {
-//   // Vi får maks én valideringstekst, derfor settes alle til denne.
-//   const validationErrorText = getValidationTextExtension(item);
-
-//   return {
-//     errorInvalidYearMonth: validationErrorText ? validationErrorText : resources?.yearmonth_field_invalid || '',
-//     errorInvalidYear: resources?.yearmonth_field_invalid_year || '',
-//     errorRequiredField: resources?.yearmonth_field_required || '',
-//     errorBeforeMinDate: resources?.yearmonth_field_mindate || '',
-//     errorAfterMaxDate: resources?.yearmonth_field_maxdate || '',
-//     selectYearPlaceholder: resources?.yearmonth_field_year_placeholder || '',
-//     selectMonthPlaceholder: resources?.yearmonth_field_month_placeholder || '',
-//   };
-// };
-
-{
-  /* <YearMonthInput
-  {...register(item.linkId, {
-    required: isRequired(item),
-  })}
-  id={`${getId(id)}-yearmonth_input`}
-  locale={locale} // TODO: må støtte nynorsk og samisk også
-  resources={getYearMonthInputResources()}
-  legend={label}
-  subLabel={subLabel}
-  isRequired={isRequired(item)}
-  placeholder={getPlaceholder(item)}
-  maximumYearMonth={getMinMaxDate(maxDate)}
-  minimumYearMonth={getMinMaxDate(minDate)}
-  value={getValue()}
-  className={className}
-  onChange={onYearMonthChange}
-  helpButton={helpButton}
-  helpElement={helpElement}
-/>; */
-}
-
-// const getMinMaxDate = (dateValue: Date | undefined): YearMonthValue | undefined => {
-//   return dateValue
-//     ? {
-//         year: dateValue.getFullYear(),
-//         // Legger til 1 siden getMonth() returnerer en zero-based index (0-11)
-//         month: dateValue.getMonth() + 1,
-//       }
-//     : undefined;
-// };

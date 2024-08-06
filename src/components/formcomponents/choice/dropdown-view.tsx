@@ -17,9 +17,6 @@ import RenderHelpElement from '@/components/formcomponents/help-button/RenderHel
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import { RenderItemProps } from '../renderChildren/RenderChildrenItems';
-import { useSelector } from 'react-redux';
-import { GlobalState } from '@/reducers';
-import { getFormDefinition } from '@/reducers/form';
 
 export type Props = RenderItemProps & {
   options?: Array<Options>;
@@ -44,7 +41,6 @@ const DropdownView = (props: Props): JSX.Element | null => {
     path,
     index,
   } = props;
-  const formDefinition = useSelector((state: GlobalState) => getFormDefinition(state));
 
   const { formState, getFieldState, control } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
@@ -65,7 +61,6 @@ const DropdownView = (props: Props): JSX.Element | null => {
       <FormGroup mode="ongrey" error={error?.message}>
         <ReferoLabel
           item={item}
-          questionnaire={formDefinition?.Content}
           resources={resources}
           htmlFor={getId(id)}
           labelId={`${getId(id)}-label`}

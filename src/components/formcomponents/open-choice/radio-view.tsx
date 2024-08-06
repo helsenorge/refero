@@ -1,7 +1,6 @@
 import React from 'react';
 
-import { Questionnaire, QuestionnaireItem } from 'fhir/r4';
-import { Controller } from 'react-hook-form';
+import { Controller, FieldValues, useFormContext } from 'react-hook-form';
 
 import { Options } from '@/types/formTypes/radioGroupOptions';
 
@@ -12,9 +11,6 @@ import RadioButton from '@helsenorge/designsystem-react/components/RadioButton';
 import { shouldShowExtraChoice } from '@/util/choice';
 import { getValidationTextExtension } from '@/util/extension';
 import { isRequired, getId } from '@/util/index';
-import { Resources } from '@/util/resources';
-import { FormProps } from '../../../validation/ReactHookFormHoc';
-import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
@@ -22,40 +18,36 @@ import RenderHelpElement from '@/components/formcomponents/help-button/RenderHel
 import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelpButton';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
+import { RenderItemProps } from '../renderChildren/RenderChildrenItems';
 
-interface Props extends FormProps, WithCommonFunctionsAndEnhancedProps {
+type Props = RenderItemProps & {
   options?: Array<Options>;
-  item: QuestionnaireItem;
-  questionnaire?: Questionnaire;
-  id?: string;
   handleChange: (radioButton: string) => void;
   selected?: Array<string | undefined>;
-  resources?: Resources;
-  renderDeleteButton?: (className?: string) => JSX.Element | null;
   renderOpenField: () => JSX.Element | undefined;
-  repeatButton?: JSX.Element;
   children: React.ReactNode;
-}
+};
 
-const RadioView = ({
-  options,
-  item,
-  questionnaire,
-  id,
-  handleChange,
-  selected,
-  resources,
-  children,
-  renderOpenField,
-  control,
-  error,
-  idWithLinkIdAndItemIndex,
-  responseItem,
-  onAnswerChange,
-  responseItems,
-  path,
-  index,
-}: Props): JSX.Element | null => {
+const RadioView = (props: Props): JSX.Element | null => {
+  const {
+    options,
+    item,
+    id,
+    handleChange,
+    selected,
+    resources,
+    children,
+    renderOpenField,
+    idWithLinkIdAndItemIndex,
+    responseItem,
+    onAnswerChange,
+    responseItems,
+    path,
+    index,
+  } = props;
+  const formName = `${idWithLinkIdAndItemIndex}-extra-field`;
+  const { formState, getFieldState, control } = useFormContext<FieldValues>();
+  const { error } = getFieldState(formName, formState);
   const [isHelpVisible, setIsHelpVisible] = React.useState(false);
   if (!options) {
     return null;
@@ -67,7 +59,6 @@ const RadioView = ({
       <FormGroup error={error?.message} mode="ongrey">
         <ReferoLabel
           item={item}
-          questionnaire={questionnaire}
           resources={resources}
           labelId={`${getId(id)}-open-choice-label`}
           testId={`${getId(id)}-open-choice-label`}
@@ -117,6 +108,7 @@ const RadioView = ({
         className="page_refero__deletebutton--margin-top"
       />
       <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} responseItem={responseItem} responseItems={responseItems} />
+
       {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : undefined}
     </div>
   );

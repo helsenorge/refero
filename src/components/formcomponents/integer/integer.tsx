@@ -36,7 +36,6 @@ const Integer = (props: Props): JSX.Element | null => {
     id,
     children,
     pdf,
-    questionnaire,
     idWithLinkIdAndItemIndex,
     promptLoginMessage,
     path,
@@ -109,7 +108,6 @@ const Integer = (props: Props): JSX.Element | null => {
       <FormGroup error={error?.message} mode="ongrey">
         <ReferoLabel
           item={item}
-          questionnaire={questionnaire}
           resources={resources}
           htmlFor={getId(id)}
           labelId={`${getId(id)}-label-integer`}

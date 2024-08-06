@@ -19,9 +19,6 @@ import RenderHelpElement from '@/components/formcomponents/help-button/RenderHel
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import { RenderItemProps } from '../renderChildren/RenderChildrenItems';
-import { getFormDefinition } from '@/reducers/form';
-import { GlobalState } from '@/reducers';
-import { useSelector } from 'react-redux';
 
 export type SliderProps = RenderItemProps & {
   item: QuestionnaireItem;
@@ -51,8 +48,6 @@ const SliderView: React.FC<SliderProps> = ({
   path,
   index,
 }) => {
-  const formDefinition = useSelector((state: GlobalState) => getFormDefinition(state));
-
   const { formState, getFieldState, control } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
@@ -92,7 +87,6 @@ const SliderView: React.FC<SliderProps> = ({
           item={item}
           labelId={`${getId(id)}-slider-choice-label`}
           testId={`${getId(id)}-slider-choice-label`}
-          questionnaire={formDefinition?.Content}
           resources={resources}
           afterLabelContent={<RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />}
         />

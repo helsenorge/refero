@@ -1,7 +1,6 @@
 import React from 'react';
 
-import { Questionnaire, QuestionnaireItem } from 'fhir/r4';
-import { Controller } from 'react-hook-form';
+import { Controller, FieldValues, useFormContext } from 'react-hook-form';
 
 import { Options } from '@/types/formTypes/radioGroupOptions';
 
@@ -13,9 +12,6 @@ import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 import { shouldShowExtraChoice } from '@/util/choice';
 import { getValidationTextExtension } from '@/util/extension';
 import { isRequired, getId } from '@/util/index';
-import { Resources } from '@/util/resources';
-import { FormProps } from '../../../validation/ReactHookFormHoc';
-import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
@@ -23,39 +19,37 @@ import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelp
 import RenderHelpElement from '@/components/formcomponents/help-button/RenderHelpElement';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
+import { RenderItemProps } from '../renderChildren/RenderChildrenItems';
 
-interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
+type Props = RenderItemProps & {
   options?: Array<Options>;
-  item: QuestionnaireItem;
-  questionnaire?: Questionnaire;
-  id?: string;
   handleChange: (code: string) => void;
   selected?: Array<string | undefined>;
-  resources?: Resources;
   renderOpenField: () => JSX.Element | undefined;
   children?: React.ReactNode;
-}
+};
 
-const DropdownView = ({
-  options,
-  item,
-  questionnaire,
-  id,
-  handleChange,
-  selected,
-  resources,
-  children,
-  renderOpenField,
-  control,
-  error,
-  idWithLinkIdAndItemIndex,
-  onAnswerChange,
-  responseItems,
-  responseItem,
-  path,
-  index,
-}: Props): JSX.Element | null => {
+const DropdownView = (props: Props): JSX.Element | null => {
+  const {
+    options,
+    item,
+    id,
+    handleChange,
+    selected,
+    resources,
+    children,
+    renderOpenField,
+    idWithLinkIdAndItemIndex,
+    onAnswerChange,
+    responseItems,
+    responseItem,
+    path,
+    index,
+  } = props;
   const [isHelpVisible, setIsHelpVisible] = React.useState(false);
+  const formName = `${idWithLinkIdAndItemIndex}-extra-field`;
+  const { formState, getFieldState, control } = useFormContext<FieldValues>();
+  const { error } = getFieldState(formName, formState);
 
   if (!options) {
     return null;
@@ -70,7 +64,6 @@ const DropdownView = ({
       <FormGroup error={error?.message} mode="ongrey">
         <ReferoLabel
           item={item}
-          questionnaire={questionnaire}
           resources={resources}
           htmlFor={getId(id)}
           labelId={`${getId(id)}-open-choice-label`}

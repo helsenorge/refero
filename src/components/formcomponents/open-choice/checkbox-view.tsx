@@ -1,7 +1,6 @@
 import { ReactNode, useState } from 'react';
 
-import { Questionnaire, QuestionnaireItem } from 'fhir/r4';
-import { Controller } from 'react-hook-form';
+import { Controller, FieldValues, useFormContext } from 'react-hook-form';
 
 import { Options } from '@/types/formTypes/radioGroupOptions';
 
@@ -11,9 +10,6 @@ import Label from '@helsenorge/designsystem-react/components/Label';
 
 import { shouldShowExtraChoice } from '@/util/choice';
 import { isRequired, getId } from '@/util/index';
-import { Resources } from '@/util/resources';
-import { FormProps } from '../../../validation/ReactHookFormHoc';
-import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
@@ -21,40 +17,37 @@ import RenderHelpElement from '@/components/formcomponents/help-button/RenderHel
 import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelpButton';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
+import { RenderItemProps } from '../renderChildren/RenderChildrenItems';
 
-interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
+type Props = RenderItemProps & {
   options?: Array<Options>;
-  item: QuestionnaireItem;
-  questionnaire?: Questionnaire;
-  id?: string;
   handleChange: (radioButton: string) => void;
   selected?: Array<string | undefined>;
-  resources?: Resources;
-  repeatButton?: JSX.Element;
-  renderDeleteButton?: (className?: string) => JSX.Element | null;
   renderOpenField: () => JSX.Element | undefined;
   children?: ReactNode;
-}
+};
 
-const CheckboxView = ({
-  options,
-  item,
-  questionnaire,
-  id,
-  handleChange,
-  resources,
-  children,
-  index,
-  renderOpenField,
-  control,
-  error,
-  idWithLinkIdAndItemIndex,
-  selected,
-  onAnswerChange,
-  responseItems,
-  responseItem,
-  path,
-}: Props): JSX.Element | null => {
+const CheckboxView = (props: Props): JSX.Element | null => {
+  const {
+    options,
+    item,
+    id,
+    handleChange,
+    resources,
+    children,
+    index,
+    renderOpenField,
+
+    idWithLinkIdAndItemIndex,
+    selected,
+    onAnswerChange,
+    responseItems,
+    responseItem,
+    path,
+  } = props;
+  const formName = `${idWithLinkIdAndItemIndex}-extra-field`;
+  const { formState, getFieldState, control } = useFormContext<FieldValues>();
+  const { error } = getFieldState(formName, formState);
   const answer = useGetAnswer(responseItem, item) || [];
   const [isHelpVisible, setIsHelpVisible] = useState(false);
   return (
@@ -62,7 +55,6 @@ const CheckboxView = ({
       <FormGroup error={error?.message} mode="ongrey">
         <ReferoLabel
           item={item}
-          questionnaire={questionnaire}
           resources={resources}
           htmlFor={getId(id)}
           labelId={`${getId(id)}-open-choice-label`}

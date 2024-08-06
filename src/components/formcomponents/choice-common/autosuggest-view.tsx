@@ -25,9 +25,6 @@ import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 
 import { RenderItemProps } from '../renderChildren/RenderChildrenItems';
-import { useSelector } from 'react-redux';
-import { GlobalState } from '@/reducers';
-import { getFormDefinition } from '@/reducers/form';
 
 export type AutosuggestProps = RenderItemProps & {
   handleChange: (code?: string, systemArg?: string, displayArg?: string) => void;
@@ -52,8 +49,6 @@ const AutosuggestView = ({
   path,
   onAnswerChange,
 }: AutosuggestProps): JSX.Element | null => {
-  const formDefinition = useSelector((state: GlobalState) => getFormDefinition(state));
-
   const { formState, getFieldState, control } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
@@ -188,7 +183,6 @@ const AutosuggestView = ({
       <FormGroup error={error?.message}>
         <ReferoLabel
           item={item}
-          questionnaire={formDefinition?.Content}
           resources={resources}
           htmlFor={getId(id)}
           labelId={`${getId(id)}-autosuggest-label`}

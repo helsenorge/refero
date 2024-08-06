@@ -1,11 +1,4 @@
-import {
-  Resource,
-  Questionnaire,
-  QuestionnaireResponseItem,
-  QuestionnaireItem,
-  QuestionnaireResponseItemAnswer,
-  Attachment,
-} from 'fhir/r4';
+import { Resource, QuestionnaireResponseItem, QuestionnaireItem, QuestionnaireResponseItemAnswer, Attachment } from 'fhir/r4';
 import itemType from '@/constants/itemType';
 import { getCodingTextTableValues } from '@/util/extension';
 import { isHelpItem } from '@/util/help';
@@ -21,7 +14,6 @@ export type RenderItemProps = {
   responseItem: QuestionnaireResponseItem;
   containedResources?: Resource[];
   item: QuestionnaireItem;
-  questionnaire?: Questionnaire | null;
   headerTag?: number;
   pdf?: boolean;
   language?: string;

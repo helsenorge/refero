@@ -41,7 +41,6 @@ const Quantity = (props: Props): JSX.Element | null => {
     item,
     onAnswerChange,
     id,
-    questionnaire,
     resources,
     pdf,
     idWithLinkIdAndItemIndex,
@@ -137,7 +136,6 @@ const Quantity = (props: Props): JSX.Element | null => {
       <FormGroup error={error?.message} mode="ongrey">
         <ReferoLabel
           item={item}
-          questionnaire={questionnaire}
           resources={resources}
           htmlFor={getId(id)}
           labelId={`${getId(id)}-quantity-label`}

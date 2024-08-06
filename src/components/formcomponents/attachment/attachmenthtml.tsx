@@ -18,9 +18,6 @@ import { Resources } from '@/util/resources';
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelpButton';
 import RenderHelpElement from '@/components/formcomponents/help-button/RenderHelpElement';
-import { useSelector } from 'react-redux';
-import { getFormDefinition } from '@/reducers/form';
-import { GlobalState } from '@/reducers';
 
 interface Props {
   onUpload: (files: UploadFile[]) => void;
@@ -60,7 +57,6 @@ const attachmentHtml = ({
   children,
   idWithLinkIdAndItemIndex,
 }: Props): JSX.Element | null => {
-  const formDefinition = useSelector((state: GlobalState) => getFormDefinition(state));
   const { formState, getFieldState, register: internalRegister } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex || '', formState);
   const { error } = fieldState;
@@ -102,7 +98,6 @@ const attachmentHtml = ({
       <FormGroup error={concatErrorMessages()}>
         <ReferoLabel
           item={item}
-          questionnaire={formDefinition?.Content}
           resources={resources}
           htmlFor={id}
           labelId={`${getId(id)}-string-label`}

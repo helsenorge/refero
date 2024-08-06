@@ -1,7 +1,7 @@
 // import React from 'react';
 
-import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
-import { Controller, FieldError } from 'react-hook-form';
+import { QuestionnaireResponseItemAnswer } from 'fhir/r4';
+import { Controller, FieldError, FieldValues, useFormContext } from 'react-hook-form';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Input from '@helsenorge/designsystem-react/components/Input';
@@ -11,44 +11,28 @@ import { getId, isReadOnly, isRequired } from '../../../util';
 import { createDateFromYear } from '../../../util/createDateFromYear';
 import { validateYearDigits, validateYearMax, validateYearMin } from '../../../util/date-utils';
 import { getValidationTextExtension } from '../../../util/extension';
-import { Resources } from '../../../util/resources';
-import { FormProps } from '../../../validation/ReactHookFormHoc';
-import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 import TextView from '../textview';
 import RenderHelpElement from '@/components/formcomponents/help-button/RenderHelpElement';
 import { useState } from 'react';
 import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelpButton';
+import { RenderItemProps } from '../renderChildren/RenderChildrenItems';
 
-interface Props extends FormProps, WithCommonFunctionsAndEnhancedProps {
-  id?: string;
-  pdf?: boolean;
-  item: QuestionnaireItem;
-  resources?: Resources;
+type Props = RenderItemProps & {
   label?: string;
   subLabel?: string;
-
+  children: React.ReactNode;
   onDateValueChange: (newValue: string) => void;
   maxDate?: Date;
   minDate?: Date;
   answer: QuestionnaireResponseItemAnswer;
-}
+};
 
-export const DateYearInput = ({
-  id,
-  pdf,
-  item,
-  resources,
-  label,
-  subLabel,
-  onDateValueChange,
-  maxDate,
-  minDate,
-  answer,
-  idWithLinkIdAndItemIndex,
-  error,
-  control,
-  children,
-}: React.PropsWithChildren<Props>): JSX.Element => {
+export const DateYearInput = (props: Props): JSX.Element => {
+  const { id, pdf, item, resources, label, subLabel, onDateValueChange, maxDate, minDate, answer, idWithLinkIdAndItemIndex, children } =
+    props;
+  const { formState, getFieldState, control } = useFormContext<FieldValues>();
+  const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
+  const { error } = fieldState;
   const [isHelpVisible, setIsHelpVisible] = useState(false);
   const getYear = (answer: QuestionnaireResponseItemAnswer): (number | undefined)[] | undefined => {
     if (Array.isArray(answer)) {

@@ -1,4 +1,4 @@
-import { Questionnaire, QuestionnaireItem } from 'fhir/r4';
+import { QuestionnaireItem } from 'fhir/r4';
 import styles from './safetext.module.css';
 import Label, { LabelText } from '@helsenorge/designsystem-react/components/Label';
 
@@ -7,10 +7,12 @@ import SubLabel from './sublabel';
 import { getLabelText, getSublabelText } from '@/util';
 import { Resources } from '@/util/resources';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
+import { useSelector } from 'react-redux';
+import { GlobalState } from '@/reducers';
+import { getFormDefinition } from '@/reducers/form';
 
 type Props = {
   item: QuestionnaireItem;
-  questionnaire?: Questionnaire | null;
   resources?: Resources;
   labelId: string;
   testId: string;
@@ -23,7 +25,6 @@ type Props = {
 
 export const ReferoLabel = ({
   item,
-  questionnaire,
   resources,
   labelId,
   labelText,
@@ -33,6 +34,8 @@ export const ReferoLabel = ({
   sublabelTestId,
   afterLabelContent,
 }: Props): JSX.Element => {
+  const formDefinition = useSelector((state: GlobalState) => getFormDefinition(state));
+  const questionnaire = formDefinition?.Content;
   const { onRenderMarkdown } = useExternalRenderContext();
   const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
   const lblText = getLabelText(item, onRenderMarkdown, questionnaire, resources);

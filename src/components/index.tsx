@@ -232,7 +232,6 @@ const Refero = (props: StateProps & DispatchProps & ReferoProps): JSX.Element | 
               key={`item_${responseItem.linkId}_${index}`}
               id={'item_' + responseItem.linkId + createIdSuffix(path, index, item.repeats)}
               item={item}
-              questionnaire={formDefinition.Content}
               responseItem={responseItem}
               resources={resources}
               containedResources={contained}

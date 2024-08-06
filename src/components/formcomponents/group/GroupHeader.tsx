@@ -6,6 +6,9 @@ import { useExternalRenderContext } from '@/context/externalRenderContext';
 import { Questionnaire, QuestionnaireItem } from 'fhir/r4';
 import { Resources } from '@/util/resources';
 import { Dispatch } from 'react';
+import { useSelector } from 'react-redux';
+import { getFormDefinition } from '@/reducers/form';
+import { GlobalState } from '@/reducers';
 
 type GroupHeaderProps = {
   item: QuestionnaireItem;
@@ -15,15 +18,10 @@ type GroupHeaderProps = {
   isHelpVisible: boolean;
   setIsHelpVisible: Dispatch<React.SetStateAction<boolean>>;
 };
-const GroupHeader = ({
-  item,
-  questionnaire,
-  resources,
-  headerTag,
-  isHelpVisible,
-  setIsHelpVisible,
-}: GroupHeaderProps): JSX.Element | null => {
+const GroupHeader = ({ item, resources, headerTag, isHelpVisible, setIsHelpVisible }: GroupHeaderProps): JSX.Element | null => {
   const { onRenderMarkdown } = useExternalRenderContext();
+  const formDefinition = useSelector((state: GlobalState) => getFormDefinition(state));
+  const questionnaire = formDefinition?.Content;
   if (!getText(item, onRenderMarkdown)) {
     return null;
   }

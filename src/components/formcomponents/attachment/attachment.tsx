@@ -14,7 +14,7 @@ import TextView from '../textview';
 import { useDispatch } from 'react-redux';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
 import { useIsEnabled } from '@/hooks/useIsEnabled';
-import { RenderItemProps } from '../renderChildren/RenderChildrenItems';
+import { RenderChildrenItems, RenderItemProps } from '../renderChildren/RenderChildrenItems';
 
 export type Props = RenderItemProps & {
   children?: React.ReactNode;
@@ -149,6 +149,7 @@ export const AttachmentComponent = (props: Props): JSX.Element | null => {
         >
           {children}
         </AttachmentHtml>
+        <RenderChildrenItems otherProps={props} />
       </>
     );
   }

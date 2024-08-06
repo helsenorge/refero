@@ -23,7 +23,7 @@ import {
 import { isReadOnly, isRequired, getId, getStringValue, getMaxLength, getPDFStringValue, scriptInjectionValidation } from '@/util/index';
 import { ReferoLabel } from '../../referoLabel/ReferoLabel';
 import TextView from '../textview';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
 import { useIsEnabled } from '@/hooks/useIsEnabled';
 import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelpButton';
@@ -31,7 +31,6 @@ import RenderHelpElement from '@/components/formcomponents/help-button/RenderHel
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import { RenderChildrenItems, RenderItemProps } from '../renderChildren/RenderChildrenItems';
-import { getFormDefinition } from '@/reducers/form';
 
 export type Props = RenderItemProps & {
   shouldExpanderRenderChildrenWhenClosed?: boolean;
@@ -54,8 +53,6 @@ export const Text = (props: Props): JSX.Element | null => {
     responseItem,
     index,
   } = props;
-  const formDefinition = useSelector((state: GlobalState) => getFormDefinition(state));
-  const questionnaire = formDefinition?.Content;
   const { formState, getFieldState, control } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
@@ -120,7 +117,6 @@ export const Text = (props: Props): JSX.Element | null => {
           htmlFor={getId(id)}
           item={item}
           labelId={`${getId(id)}-text-label`}
-          questionnaire={questionnaire}
           resources={resources}
           afterLabelContent={<RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />}
         />

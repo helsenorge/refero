@@ -10,6 +10,9 @@ import { Dispatch } from 'react';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import { RenderChildrenItems, RenderItemProps } from '../renderChildren/RenderChildrenItems';
+import { useSelector } from 'react-redux';
+import { GlobalState } from '@/reducers';
+import { getFormDefinition } from '@/reducers/form';
 
 type DefaultGroup = {
   isHelpVisible: boolean;
@@ -17,9 +20,11 @@ type DefaultGroup = {
   componentProps: RenderItemProps;
 };
 const DefaultGroup = ({ isHelpVisible, setIsHelpVisible, componentProps }: DefaultGroup): JSX.Element => {
+  const { item, resources, headerTag, includeSkipLink, path, onAnswerChange, responseItem, index, id, responseItems } = componentProps;
   const { onRenderMarkdown } = useExternalRenderContext();
-  const { item, questionnaire, resources, headerTag, includeSkipLink, path, onAnswerChange, responseItem, index, id, responseItems } =
-    componentProps;
+  const formDefinition = useSelector((state: GlobalState) => getFormDefinition(state));
+  const questionnaire = formDefinition?.Content;
+
   return (
     <section id={getId(id)} data-sectionname={getHeaderText(item, questionnaire, resources, onRenderMarkdown)}>
       <GroupHeader
@@ -27,7 +32,6 @@ const DefaultGroup = ({ isHelpVisible, setIsHelpVisible, componentProps }: Defau
         isHelpVisible={isHelpVisible}
         setIsHelpVisible={setIsHelpVisible}
         item={item}
-        questionnaire={questionnaire}
         resources={resources}
       />
       <RenderHelpElement item={item} isHelpVisible={isHelpVisible} />

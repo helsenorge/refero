@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 import { format } from 'date-fns';
 import { isValid } from 'date-fns';
-import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem, Questionnaire } from 'fhir/r4';
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { FieldError, FieldValues, useFormContext } from 'react-hook-form';
 import { ThunkDispatch } from 'redux-thunk';
 
@@ -31,48 +31,39 @@ import {
 import { getValidationTextExtension, getExtension } from '../../../util/extension';
 import { evaluateFhirpathExpressionToGetDate } from '../../../util/fhirpathHelper';
 import { isRequired, getId, isReadOnly, getSublabelText, renderPrefix, getText } from '../../../util/index';
-import { Path } from '../../../util/refero-core';
-import { Resources } from '../../../util/resources';
-import { FormProps } from '../../../validation/ReactHookFormHoc';
-import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
+
 import TextView from '../textview';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 import RenderHelpElement from '@/components/formcomponents/help-button/RenderHelpElement';
 import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelpButton';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
-export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
-  item: QuestionnaireItem;
-  questionnaire?: Questionnaire;
-  responseItem: QuestionnaireResponseItem;
+import { RenderItemProps } from '../renderChildren/RenderChildrenItems';
+import { getFormDefinition } from '@/reducers/form';
+export type Props = RenderItemProps & {
   answer: QuestionnaireResponseItemAnswer;
-  resources?: Resources;
-  dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
-  path: Array<Path>;
-  pdf?: boolean;
-  language?: string;
-  promptLoginMessage?: () => void;
-  id?: string;
-  onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
-}
+  children?: React.ReactNode;
+};
 
-const DateTimeInput: React.FC<Props> = ({
-  item,
-  questionnaire,
-  answer,
-  resources,
-  path,
-  pdf,
-  promptLoginMessage,
-  id,
-  responseItems,
-  responseItem,
-  index,
-  onAnswerChange,
-  idWithLinkIdAndItemIndex,
-  children,
-}) => {
+const DateTimeInput = (props: Props): JSX.Element => {
+  const {
+    item,
+    answer,
+    resources,
+    path,
+    pdf,
+    promptLoginMessage,
+    id,
+    responseItems,
+    responseItem,
+    index,
+    onAnswerChange,
+    idWithLinkIdAndItemIndex,
+    children,
+  } = props;
+  const formDefinition = useSelector((state: GlobalState) => getFormDefinition(state));
+  const questionnaire = formDefinition?.Content;
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
   const { onRenderMarkdown } = useExternalRenderContext();
   const [isHelpVisible, setIsHelpVisible] = useState(false);
@@ -223,7 +214,7 @@ const DateTimeInput: React.FC<Props> = ({
 
     if (fullDate) {
       const existingAnswer = answer?.valueDateTime || '';
-      if (dispatch && existingAnswer !== fullDate) {
+      if (dispatch && existingAnswer !== fullDate && onAnswerChange && path) {
         dispatch(newDateTimeValueAsync(path, fullDate, item))?.then(newState =>
           onAnswerChange(newState, path, item, { valueDateTime: fullDate } as QuestionnaireResponseItemAnswer)
         );
@@ -322,12 +313,10 @@ const DateTimeInput: React.FC<Props> = ({
         resources={resources}
         className="page_refero__deletebutton--margin-top"
       />
-      <RenderRepeatButton path={path.slice(0, -1)} item={item} index={index} responseItem={responseItem} responseItems={responseItems} />
+      <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} responseItem={responseItem} responseItems={responseItems} />
       {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
     </div>
   );
 };
 
-const withCommonFunctionsComponent = withCommonFunctions(DateTimeInput);
-const layoutChangeComponent = layoutChange(withCommonFunctionsComponent);
-export default layoutChangeComponent;
+export default layoutChange(DateTimeInput);

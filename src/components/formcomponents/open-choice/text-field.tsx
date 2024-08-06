@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { Questionnaire, QuestionnaireItem } from 'fhir/r4';
 import { Controller, FieldValues, useFormContext } from 'react-hook-form';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
@@ -8,36 +7,20 @@ import Input from '@helsenorge/designsystem-react/components/Input';
 
 import { getValidationTextExtension, getPlaceholder, getMinLengthExtensionValue, getRegexExtension } from '../../../util/extension';
 import { isReadOnly, isRequired, getId, getPDFStringValue, getMaxLength, getStringValue } from '../../../util/index';
-import { Resources } from '@/util/resources';
-import { FormProps } from '../../../validation/ReactHookFormHoc';
-import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
+
 import Pdf from '../textview';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
+import { RenderItemProps } from '../renderChildren/RenderChildrenItems';
 
-interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
-  id?: string;
-  pdf?: boolean;
-  item: QuestionnaireItem;
-  questionnaire?: Questionnaire;
+type Props = RenderItemProps & {
   handleStringChange: (event: React.FocusEvent<HTMLInputElement, Element>) => void;
   handleChange: (value: string) => void;
-  resources?: Resources;
   children: React.ReactNode;
-}
-const textField = ({
-  id,
-  pdf,
-  item,
-  questionnaire,
-  handleStringChange,
-  handleChange,
-  children,
-  resources,
-  idWithLinkIdAndItemIndex,
-  responseItem,
-}: Props): JSX.Element | null => {
+};
+const textField = (props: Props): JSX.Element | null => {
+  const { id, pdf, item, handleStringChange, handleChange, children, resources, idWithLinkIdAndItemIndex, responseItem } = props;
   const formName = `${idWithLinkIdAndItemIndex}-extra-field`;
   const { formState, getFieldState } = useFormContext<FieldValues>();
   const { error } = getFieldState(formName, formState);
@@ -63,7 +46,6 @@ const textField = ({
     <FormGroup error={error?.message} mode="ongrey">
       <ReferoLabel
         item={item}
-        questionnaire={questionnaire}
         resources={resources}
         htmlFor={`${getId(id)}-extra-field`}
         labelId={`${getId(id)}-extra-field-label`}
