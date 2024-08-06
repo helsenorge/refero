@@ -1,11 +1,12 @@
 import { Questionnaire, QuestionnaireResponseItemAnswer } from 'fhir/r4';
-import { act, findByRole, renderRefero, userEvent } from '@test/test-utils.tsx';
+import { act, findByRole, getByTestId, renderRefero, userEvent } from '@test/test-utils.tsx';
 import { q } from './__data__/date-time';
 import { ReferoProps } from '../../../../types/referoProps';
 import { Extensions } from '../../../../constants/extensions';
 import { clickButtonTimes, submitForm } from '../../../../../test/selectors';
 import { getResources } from '../../../../../preview/resources/referoResources';
 import { vi } from 'vitest';
+import { screen } from '@testing-library/dom';
 
 const resources = {
   ...getResources(''),
@@ -56,14 +57,23 @@ describe('Date day', () => {
           repeats: false,
           initial: [
             {
-              valueDateTime: '31.05.1994',
+              valueDateTime: '1994-05-31T14:00:00+02',
             },
           ],
         })),
       };
       const { getByLabelText } = createWrapper(questionnaire);
 
-      expect(getByLabelText(/Dato/i)).toHaveValue('31.05.1994');
+      const hoursElement = await screen.findByTestId('datetime-1');
+      const minutesElement = await screen.findByTestId('dateTime-2');
+
+      const dateInput = getByLabelText(/Dato/i);
+      const hoursInput = hoursElement.querySelector('input');
+      const minutesInput = minutesElement.querySelector('input');
+
+      expect(dateInput).toHaveValue('31.05.1994');
+      expect(hoursInput).toHaveValue(Number('14'));
+      expect(minutesInput).toHaveValue(Number('00'));
     });
   });
   describe('help button', () => {
@@ -181,6 +191,33 @@ describe('Date day', () => {
       });
 
       expect(queryByTestId(/-delete-button/i)).not.toBeInTheDocument();
+    });
+  });
+  describe('onChange', () => {
+    it('Should update component with value from answer', async () => {
+      const { getByLabelText } = createWrapper(q);
+
+      const inputElement = getByLabelText(/Dato/i);
+      expect(inputElement).toBeInTheDocument();
+      expect(inputElement).toHaveAttribute('type', 'text');
+      expect(inputElement).toHaveAttribute('id', `item_${q?.item?.[0].linkId}^0-datepicker`);
+      await act(async () => {
+        userEvent.paste(inputElement, '31.05.1994');
+      });
+      expect(getByLabelText(/Dato/i)).toHaveValue('31.05.1994');
+    });
+    it('Should call onChange with correct value', async () => {
+      const onChange = vi.fn();
+      const { getByLabelText } = createWrapper(q, { onChange });
+      expect(getByLabelText(/Dato/i)).toBeInTheDocument();
+      await act(async () => {
+        userEvent.paste(getByLabelText(/Dato/i), '31.05.1994');
+      });
+      const expectedAnswer: QuestionnaireResponseItemAnswer = {
+        valueDateTime: '1994-05-31T00:00:00+02',
+      };
+      expect(onChange).toHaveBeenCalledTimes(1);
+      expect(onChange).toHaveBeenCalledWith(expect.any(Object), expectedAnswer, expect.any(Object), expect.any(Object));
     });
   });
 });

@@ -9,8 +9,6 @@ import { ThunkDispatch } from 'redux-thunk';
 
 import { DateTimeUnit } from '../../../types/dateTypes';
 
-import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
-
 import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 import { DatePicker, DateTimePickerWrapper, DateTime } from '@helsenorge/datepicker/components/DatePicker';
 
@@ -31,13 +29,15 @@ import {
 } from '../../../util/date-utils';
 import { getValidationTextExtension, getExtension } from '../../../util/extension';
 import { evaluateFhirpathExpressionToGetDate } from '../../../util/fhirpathHelper';
-import { isRequired, getId, isReadOnly, getSublabelText, renderPrefix, getText } from '../../../util/index';
+import { isRequired, getId, isReadOnly } from '../../../util/index';
 import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 import { Path } from '../../../util/refero-core';
 import { Resources } from '../../../util/resources';
 import { FormProps } from '../../../validation/ReactHookFormHoc';
 import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 import TextView from '../textview';
+
+import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   item: QuestionnaireItem;
   questionnaire?: Questionnaire;
@@ -85,10 +85,10 @@ const DateTimeInput: React.FC<Props> = ({
 
   const getDefaultDate = (item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer): Date | undefined => {
     if (answer && answer.valueDateTime) {
-      return safeParseJSON(String(answer.valueDateTime));
+      return safeParseJSON(answer.valueDateTime);
     }
     if (answer && answer.valueDate) {
-      return safeParseJSON(String(answer.valueDate));
+      return safeParseJSON(answer.valueDate);
     }
     if (!item || !item.initial || item.initial.length === 0) {
       return undefined;
@@ -97,9 +97,9 @@ const DateTimeInput: React.FC<Props> = ({
       return undefined;
     }
     if (item.initial[0].valueDateTime) {
-      return safeParseJSON(String(item.initial[0].valueDateTime));
+      return safeParseJSON(item.initial[0].valueDateTime);
     }
-    return safeParseJSON(String(item.initial[0].valueDate));
+    return safeParseJSON(item.initial[0].valueDate);
   };
 
   const getMaxDate = (): Date | undefined => {
@@ -175,15 +175,12 @@ const DateTimeInput: React.FC<Props> = ({
     );
   }
 
-  const defaultDate: Date | undefined = getDefaultDate(item, answer);
-  const [date, setDate] = React.useState<Date | undefined>(undefined);
-  const [hours, setHours] = React.useState(getHoursOrMinutesFromDate(defaultDate, DateTimeUnit.Hours));
-  const [minutes, setMinutes] = React.useState(getHoursOrMinutesFromDate(defaultDate, DateTimeUnit.Minutes));
+  const [date, setDate] = React.useState<Date | undefined>(getDefaultDate(item, answer));
+  const [hours, setHours] = React.useState(getHoursOrMinutesFromDate(date, DateTimeUnit.Hours));
+  const [minutes, setMinutes] = React.useState(getHoursOrMinutesFromDate(date, DateTimeUnit.Minutes));
 
   const maxDateTime = getMaxDate();
   const minDateTime = getMinDate();
-  const labelText = `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`;
-  const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
 
   const getErrorText = (error: FieldError | undefined): string | undefined => {
     const validationTextExtension = getValidationTextExtension(item);
@@ -247,6 +244,17 @@ const DateTimeInput: React.FC<Props> = ({
   return (
     <div className="page_refero__component page_refero__component_datetime">
       {renderHelpElement()}
+      <ReferoLabel
+        item={item}
+        onRenderMarkdown={onRenderMarkdown}
+        questionnaire={questionnaire}
+        resources={resources}
+        htmlFor={`${getId(id)}-datepicker`}
+        labelId={`${getId(id)}-label`}
+        testId={`${getId(id)}-label-test`}
+        sublabelId={`${getId(id)}-sublabel`}
+        renderHelpButton={renderHelpButton}
+      />
       <DateTimePickerWrapper errorText={getErrorText(getCombinedFieldError(dateField, hoursField, minutesField))}>
         <DatePicker
           {...register(idWithLinkIdAndItemIndex + '-date', {
@@ -266,19 +274,12 @@ const DateTimeInput: React.FC<Props> = ({
               },
             },
           })}
-          testId={getId(id)}
+          inputId={`${getId(id)}-datepicker`}
+          testId={`${getId(id)}-datepicker-test`}
           autoComplete=""
           dateButtonAriaLabel="Open datepicker"
           dateFormat={'dd.MM.yyyy'}
-          label={
-            <Label
-              labelId={`${getId(id)}-label-dateTime`}
-              labelTexts={[{ text: labelText }]}
-              sublabel={<Sublabel id={`${getId(id)}-sublabel-dateTime`} sublabelTexts={[{ text: subLabelText, type: 'normal' }]} />}
-              afterLabelChildren={renderHelpButton()}
-            />
-          }
-          dateValue={date ? undefined : defaultDate}
+          dateValue={date}
           minDate={minDateTime}
           maxDate={maxDateTime}
           onChange={(_e, newDate) => {
@@ -297,6 +298,7 @@ const DateTimeInput: React.FC<Props> = ({
               },
             },
           })}
+          testId={`datetime-1`}
           defaultValue={Number(hours)}
           timeUnit="hours"
           onChange={e => {
@@ -315,6 +317,7 @@ const DateTimeInput: React.FC<Props> = ({
               },
             },
           })}
+          testId={`dateTime-2`}
           defaultValue={Number(minutes)}
           timeUnit="minutes"
           onChange={e => {
