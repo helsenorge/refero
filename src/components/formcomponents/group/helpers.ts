@@ -7,9 +7,9 @@ import { Path } from '@/util/refero-core';
 import { RenderContext } from '@/util/renderContext';
 import { Resources } from '@/util/resources';
 
-export const getColumns = (item: QuestionnaireItem): Array<string> => {
+export const getColumns = (item: QuestionnaireItem): string[] => {
   const seenColumns: { [key: string]: number } = {};
-  const columns: Array<string> = [];
+  const columns: string[] = [];
 
   if (!item.item || item.item.length === 0) return columns;
 

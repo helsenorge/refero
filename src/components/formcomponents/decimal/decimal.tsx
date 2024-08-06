@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
-import { Controller } from 'react-hook-form';
+import { Controller, FieldValues, useFormContext } from 'react-hook-form';
 
 import { ThunkDispatch } from 'redux-thunk';
 
@@ -14,10 +14,6 @@ import { NewValueAction, newDecimalValueAsync } from '@/actions/newValue';
 import { GlobalState } from '@/reducers';
 import { getMaxValueExtensionValue, getMinValueExtensionValue, getPlaceholder, getValidationTextExtension } from '@/util/extension';
 import { isReadOnly, getId, getDecimalPattern, isRequired } from '@/util/index';
-import { Path } from '@/util/refero-core';
-import { Resources } from '@/util/resources';
-import ReactHookFormHoc, { FormProps } from '../../../validation/ReactHookFormHoc';
-import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 import TextView from '../textview';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
@@ -28,42 +24,38 @@ import RenderHelpElement from '@/components/formcomponents/help-button/RenderHel
 import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelpButton';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
+import { RenderChildrenItems, RenderItemProps } from '../renderChildren/RenderChildrenItems';
 
-export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
-  item: QuestionnaireItem;
-  resources?: Resources;
-  path: Array<Path>;
-  id?: string;
-  pdf?: boolean;
-  promptLoginMessage?: () => void;
-  renderDeleteButton?: (className?: string) => JSX.Element | null;
-  repeatButton?: JSX.Element;
-  onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
+export interface Props extends RenderItemProps {
   children?: React.ReactNode;
 }
 
-const Decimal = ({
-  id,
-  item,
-  pdf,
-  control,
-  questionnaire,
-  resources,
-  children,
-  error,
-  idWithLinkIdAndItemIndex,
-  path,
-  onAnswerChange,
-  promptLoginMessage,
-  responseItems,
-  index,
-  responseItem,
-}: Props): JSX.Element | null => {
+const Decimal = (props: Props): JSX.Element | null => {
+  const {
+    id,
+    item,
+    pdf,
+    questionnaire,
+    resources,
+    children,
+    idWithLinkIdAndItemIndex,
+    path,
+    onAnswerChange,
+    promptLoginMessage,
+    responseItems,
+    index,
+    responseItem,
+  } = props;
+
+  const { formState, getFieldState, control } = useFormContext<FieldValues>();
+  const fieldState = getFieldState(idWithLinkIdAndItemIndex || '', formState);
+  const { error } = fieldState;
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
   const [isHelpVisible, setIsHelpVisible] = useState(false);
 
-  const answer = useGetAnswer(responseItem) || [];
+  const answer = useGetAnswer(responseItem, item) || [];
   const enable = useIsEnabled(item, path);
+
   const getValue = (
     item: QuestionnaireItem,
     answer: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]
@@ -94,13 +86,11 @@ const Decimal = ({
     return value;
   };
 
-  const handleChange = (event: React.FormEvent<HTMLInputElement>): void => {
-    const value = parseFloat((event.target as HTMLInputElement).value);
-    if (dispatch) {
-      dispatch(newDecimalValueAsync(path, value, item))?.then(newState => {
-        return onAnswerChange(newState, path, item, { valueDecimal: value } as QuestionnaireResponseItemAnswer);
-      });
-    }
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+    const value = parseFloat(event.target.value);
+    dispatch(newDecimalValueAsync(path || [], value, item))?.then(newState => {
+      return onAnswerChange && onAnswerChange(newState, path || [], item, { valueDecimal: value } as QuestionnaireResponseItemAnswer);
+    });
 
     if (promptLoginMessage) {
       promptLoginMessage();
@@ -137,7 +127,7 @@ const Decimal = ({
         />
         <RenderHelpElement item={item} isHelpVisible={isHelpVisible} />
         <Controller
-          name={idWithLinkIdAndItemIndex}
+          name={idWithLinkIdAndItemIndex || ''}
           control={control}
           shouldUnregister={true}
           defaultValue={value ? value + '' : ''}
@@ -192,13 +182,12 @@ const Decimal = ({
         resources={resources}
         className="page_refero__deletebutton--margin-top"
       />
-      <RenderRepeatButton path={path.slice(0, -1)} item={item} index={index} responseItem={responseItem} responseItems={responseItems} />
+      <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} responseItem={responseItem} responseItems={responseItems} />
+      <RenderChildrenItems otherProps={props} />
       {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
     </div>
   );
 };
 
-const withFormProps = ReactHookFormHoc(Decimal);
-const withCommonFunctionsComponent = withCommonFunctions(withFormProps);
-const layoutChangeComponent = layoutChange(withCommonFunctionsComponent);
+const layoutChangeComponent = layoutChange(Decimal);
 export default layoutChangeComponent;

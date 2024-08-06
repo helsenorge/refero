@@ -4,12 +4,12 @@ import itemControlConstants from '@/constants/itemcontrol';
 import { getItemControlExtensionValue, getMarkdownExtensionValue } from '@/util/extension';
 import { renderPrefix, getText, getId } from '@/util/index';
 
-import { WithCommonFunctionsProps } from '../../with-common-functions';
 import SafeText from '@/components/referoLabel/SafeText';
 import { useIsEnabled } from '@/hooks/useIsEnabled';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
+import { RenderItemProps } from '../renderChildren/RenderChildrenItems';
 
-export type Props = WithCommonFunctionsProps;
+export type Props = RenderItemProps;
 
 const Display = ({ id, pdf, item, questionnaire, resources, path }: Props): JSX.Element | null => {
   const { onRenderMarkdown } = useExternalRenderContext();

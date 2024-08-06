@@ -1,4 +1,5 @@
-import { QuestionnaireItem } from 'fhir/r4';
+import { OrgenhetHierarki } from '@/types/orgenhetHierarki';
+import { QuestionnaireItem, ValueSet } from 'fhir/r4';
 import { createContext, useContext, ReactNode } from 'react';
 
 type ExternalRenderType = {
@@ -17,6 +18,13 @@ type ExternalRenderType = {
     isHelpVisible: boolean
   ) => JSX.Element;
   onRenderMarkdown?: (item: QuestionnaireItem, markup: string) => string;
+  fetchValueSet?: (
+    searchString: string,
+    item: QuestionnaireItem,
+    successCallback: (valueSet: ValueSet) => void,
+    errorCallback: (error: string) => void
+  ) => void;
+  fetchReceivers?: (successCallback: (receivers: OrgenhetHierarki[]) => void, errorCallback: () => void) => void;
 };
 
 const ExternalRender = createContext<ExternalRenderType | undefined>(undefined);
@@ -38,15 +46,26 @@ type MyProviderProps = {
     isHelpVisible: boolean
   ) => JSX.Element;
   onRenderMarkdown?: (item: QuestionnaireItem, markup: string) => string;
+  fetchValueSet?: (
+    searchString: string,
+    item: QuestionnaireItem,
+    successCallback: (valueSet: ValueSet) => void,
+    errorCallback: (error: string) => void
+  ) => void;
+  fetchReceivers?: (successCallback: (receivers: OrgenhetHierarki[]) => void, errorCallback: () => void) => void;
 };
 export const ExternalRenderProvider = ({
   children,
   onRequestHelpButton,
   onRequestHelpElement,
   onRenderMarkdown,
+  fetchValueSet,
+  fetchReceivers,
 }: MyProviderProps): JSX.Element => {
   return (
-    <ExternalRender.Provider value={{ onRequestHelpElement, onRequestHelpButton, onRenderMarkdown }}>{children}</ExternalRender.Provider>
+    <ExternalRender.Provider value={{ onRequestHelpElement, onRequestHelpButton, onRenderMarkdown, fetchValueSet, fetchReceivers }}>
+      {children}
+    </ExternalRender.Provider>
   );
 };
 

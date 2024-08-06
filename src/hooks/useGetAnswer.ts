@@ -30,47 +30,38 @@ export function getAnswerIfDataReceiver(
 
 function getQuestionnaireResponseItemAnswer(
   type: string,
-  result: any
-): QuestionnaireResponseItemAnswer | Array<QuestionnaireResponseItemAnswer> {
-  const answerArray: Array<QuestionnaireResponseItemAnswer> = [];
+  result: any[]
+): QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[] {
   if (type === ItemType.BOOLEAN) {
     return { valueBoolean: result[0] };
   }
-
-  result.forEach((answer: any) => {
+  return result.map((answer: any) => {
     switch (String(type)) {
       case ItemType.TEXT:
       case ItemType.STRING:
-        answerArray.push({ valueString: answer });
-        break;
+        return { valueString: answer };
       case ItemType.INTEGER:
-        answerArray.push({ valueInteger: answer });
-        break;
+        return { valueInteger: answer };
       case ItemType.DECIMAL:
-        answerArray.push({ valueDecimal: answer });
-        break;
+        return { valueDecimal: answer };
+
       case ItemType.QUANTITY:
-        answerArray.push({ valueQuantity: answer });
-        break;
+        return { valueQuantity: answer };
       case ItemType.DATETIME:
-        answerArray.push({ valueDateTime: answer });
-        break;
+        return { valueDateTime: answer };
       case ItemType.DATE:
-        answerArray.push({ valueDate: answer });
-        break;
+        return { valueDate: answer };
       case ItemType.TIME:
-        answerArray.push({ valueTime: answer });
-        break;
+        return { valueTime: answer };
       default: {
         if (typeof answer === 'string') {
-          answerArray.push({ valueString: answer });
+          return { valueString: answer };
         } else {
-          answerArray.push({ valueCoding: answer });
+          return { valueCoding: answer };
         }
       }
     }
   });
-  return answerArray;
 }
 
 export const useGetAnswer = (
@@ -78,7 +69,5 @@ export const useGetAnswer = (
   item?: QuestionnaireItem
 ): QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[] | undefined => {
   const formData = useSelector<GlobalState, FormData | null>(state => getFormData(state));
-  const answer = getAnswerFromResponseItem(responseItem);
-  const newAnswer = getAnswerIfDataReceiver(formData, item);
-  return newAnswer ?? answer;
+  return getAnswerIfDataReceiver(formData, item) ?? getAnswerFromResponseItem(responseItem);
 };

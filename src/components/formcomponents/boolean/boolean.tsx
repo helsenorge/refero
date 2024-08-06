@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 
-import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
-import { Controller } from 'react-hook-form';
+import { Controller, FieldValues, useFormContext } from 'react-hook-form';
 import { ThunkDispatch } from 'redux-thunk';
 
 import Checkbox from '@helsenorge/designsystem-react/components/Checkbox';
@@ -14,12 +13,8 @@ import Pdf from './pdf';
 import { NewValueAction, newBooleanValueAsync } from '@/actions/newValue';
 import { GlobalState } from '@/reducers';
 import { isReadOnly, getId, getSublabelText, isRequired, getLabelText } from '@/util/index';
-import { Path } from '@/util/refero-core';
-import { Resources } from '@/util/resources';
-import ReactHookFormHoc, { FormProps } from '../../../validation/ReactHookFormHoc';
 import SafeText from '../../referoLabel/SafeText';
-import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
 import { useIsEnabled } from '@/hooks/useIsEnabled';
 import RenderHelpElement from '@/components/formcomponents/help-button/RenderHelpElement';
@@ -27,43 +22,40 @@ import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelp
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
+import { RenderChildrenItems, RenderItemProps } from '../renderChildren/RenderChildrenItems';
+import { getFormDefinition } from '@/reducers/form';
 
-export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
-  item: QuestionnaireItem;
-  questionnaire?: Questionnaire;
-  resources?: Resources;
-  path: Array<Path>;
-  pdf?: boolean;
-  promptLoginMessage?: () => void;
-  id?: string;
-  onValidated?: (valid: boolean | undefined) => void;
-  oneToTwoColumn: boolean;
-  onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
+export type Props = RenderItemProps & {
   children?: React.ReactNode;
-}
+};
 
-const Boolean = ({
-  item,
-  promptLoginMessage,
-  onAnswerChange,
-  path,
-  pdf,
-  questionnaire,
-  id,
-  resources,
-  responseItems,
-  index,
-  error,
-  children,
-  control,
-  idWithLinkIdAndItemIndex,
-  responseItem,
-}: Props): JSX.Element | null => {
+const Boolean = (props: Props): JSX.Element | null => {
+  const {
+    item,
+    promptLoginMessage,
+    onAnswerChange,
+    path,
+    pdf,
+    id,
+    resources,
+    responseItems,
+    index,
+    children,
+    idWithLinkIdAndItemIndex,
+    responseItem,
+  } = props;
+  const formDefinition = useSelector((state: GlobalState) => getFormDefinition(state));
+  const questionnaire = formDefinition?.Content;
+
+  const { formState, getFieldState, control } = useFormContext<FieldValues>();
+  const fieldState = getFieldState(props.idWithLinkIdAndItemIndex, formState);
+  const { error } = fieldState;
+
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
   const { onRenderMarkdown } = useExternalRenderContext();
   const enable = useIsEnabled(item, path);
   const [isHelpVisible, setIsHelpVisible] = useState(false);
-  const answer = useGetAnswer(responseItem) || [];
+  const answer = useGetAnswer(responseItem, item);
   const getValue = (): boolean => {
     if (answer && Array.isArray(answer)) {
       return answer.map(m => m.valueBoolean).filter(f => f !== undefined)[0] ?? false;
@@ -119,7 +111,7 @@ const Boolean = ({
     <div className="page_refero__component page_refero__component_boolean">
       <FormGroup error={error?.message}>
         <Controller
-          name={idWithLinkIdAndItemIndex}
+          name={idWithLinkIdAndItemIndex || ''}
           control={control}
           shouldUnregister={true}
           defaultValue={value}
@@ -174,12 +166,12 @@ const Boolean = ({
         resources={resources}
         className="page_refero__deletebutton--margin-top"
       />
-      <RenderRepeatButton path={path.slice(0, -1)} item={item} index={index} responseItem={responseItem} responseItems={responseItems} />
+      <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} responseItem={responseItem} responseItems={responseItems} />
+      <RenderChildrenItems otherProps={props} />
       {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
     </div>
   );
 };
-const withFormProps = ReactHookFormHoc(Boolean);
-const withCommonFunctionsComponent = withCommonFunctions(withFormProps);
-const layoutChangeComponent = layoutChange(withCommonFunctionsComponent);
+
+const layoutChangeComponent = layoutChange(Boolean);
 export default layoutChangeComponent;

@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 
-import { QuestionnaireItem, Questionnaire } from 'fhir/r4';
-import { Controller } from 'react-hook-form';
+import { Controller, FieldValues, useFormContext } from 'react-hook-form';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Select from '@helsenorge/designsystem-react/components/Select';
@@ -10,42 +9,34 @@ import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 
 import { getPlaceholder } from '@/util/extension';
 import { getId, isRequired } from '@/util/index';
-import { FormProps } from '@/validation/ReactHookFormHoc';
-import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
-import { Resources } from '@/util/resources';
 import { Options } from '@/types/formTypes/radioGroupOptions';
 import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelpButton';
 import RenderHelpElement from '@/components/formcomponents/help-button/RenderHelpElement';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
+import { RenderItemProps } from '../renderChildren/RenderChildrenItems';
+import { useSelector } from 'react-redux';
+import { GlobalState } from '@/reducers';
+import { getFormDefinition } from '@/reducers/form';
 
-export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
+export type Props = RenderItemProps & {
   options?: Array<Options>;
-  item: QuestionnaireItem;
-  questionnaire?: Questionnaire;
-  id?: string;
   handleChange: (code: string) => void;
   selected?: Array<string | undefined>;
-  resources?: Resources;
-  renderDeleteButton?: (className?: string) => JSX.Element | null;
-  repeatButton?: JSX.Element;
   children?: React.ReactNode;
-}
+};
 
 const DropdownView = (props: Props): JSX.Element | null => {
   const {
     options,
     item,
-    questionnaire,
     id,
     handleChange,
     selected,
     resources,
     children,
-    error,
-    control,
     idWithLinkIdAndItemIndex,
     onAnswerChange,
     responseItems,
@@ -53,6 +44,12 @@ const DropdownView = (props: Props): JSX.Element | null => {
     path,
     index,
   } = props;
+  const formDefinition = useSelector((state: GlobalState) => getFormDefinition(state));
+
+  const { formState, getFieldState, control } = useFormContext<FieldValues>();
+  const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
+  const { error } = fieldState;
+
   const [isHelpVisible, setIsHelpVisible] = useState(false);
   let placeholder: string | undefined = '';
 
@@ -68,7 +65,7 @@ const DropdownView = (props: Props): JSX.Element | null => {
       <FormGroup mode="ongrey" error={error?.message}>
         <ReferoLabel
           item={item}
-          questionnaire={questionnaire}
+          questionnaire={formDefinition?.Content}
           resources={resources}
           htmlFor={getId(id)}
           labelId={`${getId(id)}-label`}

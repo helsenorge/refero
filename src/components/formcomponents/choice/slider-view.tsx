@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 import { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
-import { Controller } from 'react-hook-form';
+import { Controller, FieldValues, useFormContext } from 'react-hook-form';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import { Slider, SliderStep } from '@helsenorge/designsystem-react/components/Slider';
@@ -12,21 +12,23 @@ import { getId, isRequired } from '@/util';
 import { getCodes as getCodingSystemCodes } from '@/util/codingsystem';
 import { getExtension, getValidationTextExtension } from '@/util/extension';
 import { isString } from '@/util/typeguards';
-import { FormProps } from '../../../validation/ReactHookFormHoc';
-import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelpButton';
 import RenderHelpElement from '@/components/formcomponents/help-button/RenderHelpElement';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
+import { RenderItemProps } from '../renderChildren/RenderChildrenItems';
+import { getFormDefinition } from '@/reducers/form';
+import { GlobalState } from '@/reducers';
+import { useSelector } from 'react-redux';
 
-export interface SliderProps extends WithCommonFunctionsAndEnhancedProps, FormProps {
+export type SliderProps = RenderItemProps & {
   item: QuestionnaireItem;
   handleChange: (sliderStep: string) => void;
   selected?: Array<string | undefined>;
   children?: React.ReactNode;
-}
+};
 enum SliderDisplayTypes {
   Label = 'label',
   OrdinalValue = 'ordnialValue',
@@ -37,21 +39,24 @@ type LeftRightLabels = { leftLabel: string; rightLabel: string };
 
 const SliderView: React.FC<SliderProps> = ({
   item,
-  questionnaire,
   handleChange,
   selected,
   children,
   resources,
   idWithLinkIdAndItemIndex,
   id,
-  error,
   onAnswerChange,
   responseItems,
   responseItem,
   path,
   index,
-  control,
 }) => {
+  const formDefinition = useSelector((state: GlobalState) => getFormDefinition(state));
+
+  const { formState, getFieldState, control } = useFormContext<FieldValues>();
+  const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
+  const { error } = fieldState;
+
   const [isHelpVisible, setIsHelpVisible] = useState(false);
   const onValueChange = (index: number): void => {
     const code = item.answerOption?.[index]?.valueCoding?.code;
@@ -87,7 +92,7 @@ const SliderView: React.FC<SliderProps> = ({
           item={item}
           labelId={`${getId(id)}-slider-choice-label`}
           testId={`${getId(id)}-slider-choice-label`}
-          questionnaire={questionnaire}
+          questionnaire={formDefinition?.Content}
           resources={resources}
           afterLabelContent={<RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />}
         />

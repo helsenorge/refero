@@ -61,7 +61,7 @@ const RadioView = ({
     return null;
   }
   const selectedValue = (selected && selected[0]) || '';
-  const answer = useGetAnswer(responseItem) || [];
+  const answer = useGetAnswer(responseItem, item) || [];
   return (
     <div className="page_refero__component page_refero__component_openchoice page_refero__component_openchoice_radiobutton">
       <FormGroup error={error?.message} mode="ongrey">

@@ -41,7 +41,7 @@ const textField = ({
   const formName = `${idWithLinkIdAndItemIndex}-extra-field`;
   const { formState, getFieldState } = useFormContext<FieldValues>();
   const { error } = getFieldState(formName, formState);
-  const answer = useGetAnswer(responseItem) || [];
+  const answer = useGetAnswer(responseItem, item) || [];
 
   if (pdf) {
     return (

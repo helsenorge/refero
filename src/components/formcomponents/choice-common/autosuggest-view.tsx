@@ -1,9 +1,7 @@
 import React, { ChangeEvent, FormEvent, useState } from 'react';
 
-import { ValueSet, QuestionnaireItem, Questionnaire, Coding } from 'fhir/r4';
-import { Controller } from 'react-hook-form';
-
-import { AutoSuggestProps } from '@/types/autoSuggestProps';
+import { ValueSet, Coding } from 'fhir/r4';
+import { Controller, FieldValues, useFormContext } from 'react-hook-form';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Loader from '@helsenorge/designsystem-react/components/Loader';
@@ -16,9 +14,6 @@ import { OPEN_CHOICE_ID, OPEN_CHOICE_SYSTEM } from '@/constants';
 import ItemType from '@/constants/itemType';
 import { isRequired, getId } from '@/util/index';
 import { getStringAnswer, hasStringAnswer, getCodingAnswer } from '@/util/refero-core';
-import { Resources } from '@/util/resources';
-import ReactHookFormHoc, { FormProps } from '../../../validation/ReactHookFormHoc';
-import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
@@ -27,49 +22,44 @@ import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelp
 import RenderHelpElement from '@/components/formcomponents/help-button/RenderHelpElement';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
+import { useExternalRenderContext } from '@/context/externalRenderContext';
 
-export interface AutosuggestProps extends WithCommonFunctionsAndEnhancedProps, FormProps {
+import { RenderItemProps } from '../renderChildren/RenderChildrenItems';
+import { useSelector } from 'react-redux';
+import { GlobalState } from '@/reducers';
+import { getFormDefinition } from '@/reducers/form';
+
+export type AutosuggestProps = RenderItemProps & {
   handleChange: (code?: string, systemArg?: string, displayArg?: string) => void;
   clearCodingAnswer: (coding: Coding) => void;
-  fetchValueSet?: (
-    searchString: string,
-    item: QuestionnaireItem,
-    successCallback: (valueSet: ValueSet) => void,
-    errorCallback: (error: string) => void
-  ) => void;
-  autoSuggestProps?: AutoSuggestProps;
-  item: QuestionnaireItem;
-  questionnaire?: Questionnaire;
-  id?: string;
-  resources?: Resources;
-  renderDeleteButton?: (className?: string) => JSX.Element | null;
-  repeatButton?: JSX.Element;
   children?: React.ReactNode;
   handleStringChange?: (value: string) => void;
-}
+};
 
 const AutosuggestView = ({
-  control,
   resources,
   item,
-  questionnaire,
   id,
   idWithLinkIdAndItemIndex,
   clearCodingAnswer,
   autoSuggestProps,
-  fetchValueSet,
   handleChange,
   handleStringChange,
   index,
   responseItems,
   children,
-  error,
   responseItem,
   path,
   onAnswerChange,
 }: AutosuggestProps): JSX.Element | null => {
-  const answer = useGetAnswer(responseItem) || [];
+  const formDefinition = useSelector((state: GlobalState) => getFormDefinition(state));
+
+  const { formState, getFieldState, control } = useFormContext<FieldValues>();
+  const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
+  const { error } = fieldState;
+  const answer = useGetAnswer(responseItem, item) || [];
   const enable = useIsEnabled(item, path);
+  const { fetchValueSet } = useExternalRenderContext();
   const codingAnswer = getCodingAnswer(answer);
   const initialInputValue =
     codingAnswer?.code === OPEN_CHOICE_ID && codingAnswer?.system === OPEN_CHOICE_SYSTEM ? getStringAnswer(answer) : codingAnswer?.display;
@@ -198,7 +188,7 @@ const AutosuggestView = ({
       <FormGroup error={error?.message}>
         <ReferoLabel
           item={item}
-          questionnaire={questionnaire}
+          questionnaire={formDefinition?.Content}
           resources={resources}
           htmlFor={getId(id)}
           labelId={`${getId(id)}-autosuggest-label`}
@@ -275,4 +265,4 @@ const AutosuggestView = ({
   );
 };
 
-export default ReactHookFormHoc(AutosuggestView);
+export default AutosuggestView;

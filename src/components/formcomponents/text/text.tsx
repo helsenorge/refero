@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 
-import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem } from 'fhir/r4';
-import { Controller } from 'react-hook-form';
+import { Controller, FieldValues, useFormContext } from 'react-hook-form';
 import { ThunkDispatch } from 'redux-thunk';
 
 import Expander from '@helsenorge/designsystem-react/components/Expander';
@@ -22,61 +21,51 @@ import {
   getValidationTextExtension,
 } from '@/util/extension';
 import { isReadOnly, isRequired, getId, getStringValue, getMaxLength, getPDFStringValue, scriptInjectionValidation } from '@/util/index';
-import { Path } from '@/util/refero-core';
-import { Resources } from '@/util/resources';
-import ReactHookFormHoc, { FormProps } from '../../../validation/ReactHookFormHoc';
 import { ReferoLabel } from '../../referoLabel/ReferoLabel';
-import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 import TextView from '../textview';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
 import { useIsEnabled } from '@/hooks/useIsEnabled';
 import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelpButton';
 import RenderHelpElement from '@/components/formcomponents/help-button/RenderHelpElement';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
+import { RenderChildrenItems, RenderItemProps } from '../renderChildren/RenderChildrenItems';
+import { getFormDefinition } from '@/reducers/form';
 
-export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
-  item: QuestionnaireItem;
-  questionnaire?: Questionnaire;
-  responseItem: QuestionnaireResponseItem;
-
-  path: Array<Path>;
-  pdf?: boolean;
-  promptLoginMessage?: () => void;
-  id?: string;
-  validateScriptInjection: boolean;
-  resources?: Resources;
-  onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
+export type Props = RenderItemProps & {
   shouldExpanderRenderChildrenWhenClosed?: boolean;
   children?: React.ReactNode;
-}
-export const Text = ({
-  id,
-  item,
-  pdf,
-  children,
-  resources,
-  questionnaire,
-  control,
-  idWithLinkIdAndItemIndex,
-  promptLoginMessage,
-  path,
-  onAnswerChange,
-  shouldExpanderRenderChildrenWhenClosed,
-  error,
-  validateScriptInjection,
-  responseItems,
-  responseItem,
-  index,
-}: Props): JSX.Element | null => {
+};
+export const Text = (props: Props): JSX.Element | null => {
+  const {
+    id,
+    item,
+    pdf,
+    children,
+    resources,
+    idWithLinkIdAndItemIndex,
+    promptLoginMessage,
+    path,
+    onAnswerChange,
+    shouldExpanderRenderChildrenWhenClosed,
+    validateScriptInjection,
+    responseItems,
+    responseItem,
+    index,
+  } = props;
+  const formDefinition = useSelector((state: GlobalState) => getFormDefinition(state));
+  const questionnaire = formDefinition?.Content;
+  const { formState, getFieldState, control } = useFormContext<FieldValues>();
+  const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
+  const { error } = fieldState;
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
   const [isHelpVisible, setIsHelpVisible] = useState(false);
-  const answer = useGetAnswer(responseItem) || [];
+  const answer = useGetAnswer(responseItem, item) || [];
   const enable = useIsEnabled(item, path);
   const handleChange = (event: React.FormEvent): void => {
     const value = (event.target as HTMLInputElement).value;
-    if (dispatch) {
+    if (dispatch && path && onAnswerChange) {
       dispatch(newStringValueAsync(path, value, item))?.then(newState => onAnswerChange(newState, path, item, { valueString: value }));
     }
 
@@ -196,13 +185,12 @@ export const Text = ({
           resources={resources}
           className="page_refero__deletebutton--margin-top"
         />
-        <RenderRepeatButton path={path.slice(0, -1)} item={item} index={index} responseItem={responseItem} responseItems={responseItems} />
+        <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} responseItem={responseItem} responseItems={responseItems} />
       </FormGroup>
+      <RenderChildrenItems otherProps={props} />
       {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
     </div>
   );
 };
 
-const withFormProps = ReactHookFormHoc(Text);
-const withCommonFunctionsComponent = withCommonFunctions(withFormProps);
-export default withCommonFunctionsComponent;
+export default Text;

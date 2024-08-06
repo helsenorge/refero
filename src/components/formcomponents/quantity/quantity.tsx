@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import { ReactNode, useState } from 'react';
 
-import { QuestionnaireItem, QuestionnaireResponseItemAnswer, Quantity as QuantityType, Questionnaire } from 'fhir/r4';
-import { Controller } from 'react-hook-form';
+import { QuestionnaireResponseItemAnswer, Quantity as QuantityType } from 'fhir/r4';
+import { Controller, FieldValues, useFormContext } from 'react-hook-form';
 import { ThunkDispatch } from 'redux-thunk';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
@@ -17,10 +17,7 @@ import {
   getValidationTextExtension,
 } from '@/util/extension';
 import { isReadOnly, getId, isRequired, getDecimalPattern } from '@/util/index';
-import { Path } from '@/util/refero-core';
-import { Resources } from '@/util/resources';
-import ReactHookFormHoc, { FormProps } from '../../../validation/ReactHookFormHoc';
-import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
+
 import TextView from '../textview';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
@@ -31,39 +28,37 @@ import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelp
 import RenderHelpElement from '@/components/formcomponents/help-button/RenderHelpElement';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
+import { RenderChildrenItems, RenderItemProps } from '../renderChildren/RenderChildrenItems';
 
-export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
-  item: QuestionnaireItem;
-  questionnaire?: Questionnaire;
-  resources?: Resources;
-  path: Array<Path>;
-  pdf?: boolean;
-  promptLoginMessage?: () => void;
-  id?: string;
-  onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
-  children?: React.ReactNode;
+export interface Props extends RenderItemProps {
+  children?: ReactNode;
 }
 
-const Quantity = ({
-  promptLoginMessage,
-  path,
-  item,
-  onAnswerChange,
-  id,
-  questionnaire,
-  resources,
-  error,
-  pdf,
-  idWithLinkIdAndItemIndex,
-  responseItems,
-  index,
-  children,
-  responseItem,
-}: Props): JSX.Element | null => {
+const Quantity = (props: Props): JSX.Element | null => {
+  const {
+    promptLoginMessage,
+    path,
+    item,
+    onAnswerChange,
+    id,
+    questionnaire,
+    resources,
+    pdf,
+    idWithLinkIdAndItemIndex,
+    responseItems,
+    index,
+    children,
+    responseItem,
+  } = props;
+  const { formState, getFieldState } = useFormContext<FieldValues>();
+  const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
+  const { error } = fieldState;
+
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
   const [isHelpVisible, setIsHelpVisible] = useState(false);
-  const answer = useGetAnswer(responseItem);
+  const answer = useGetAnswer(responseItem, item);
   const enable = useIsEnabled(item, path);
+
   const getValue = (): number | number[] | undefined => {
     if (answer && Array.isArray(answer)) {
       return answer.map(m => m.valueQuantity?.value).filter(f => f !== undefined);
@@ -102,9 +97,9 @@ const Quantity = ({
         quantity.value = value;
       }
 
-      if (dispatch) {
-        dispatch(newQuantityValueAsync(path, quantity, item))?.then(newState =>
-          onAnswerChange(newState, path, item, { valueQuantity: quantity } as QuestionnaireResponseItemAnswer)
+      if (path) {
+        dispatch(newQuantityValueAsync(path, quantity, item))?.then(
+          newState => onAnswerChange && onAnswerChange(newState, path, item, { valueQuantity: quantity } as QuestionnaireResponseItemAnswer)
         );
       }
 
@@ -210,12 +205,12 @@ const Quantity = ({
           resources={resources}
           className="page_refero__deletebutton--margin-top"
         />
-        <RenderRepeatButton path={path.slice(0, -1)} item={item} index={index} responseItem={responseItem} responseItems={responseItems} />
+        <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} responseItem={responseItem} responseItems={responseItems} />
       </FormGroup>
+      <RenderChildrenItems otherProps={props} />
       {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
     </div>
   );
 };
-const withFormProps = ReactHookFormHoc(Quantity);
-const withCommonFunctionsComponent = withCommonFunctions(withFormProps);
-export default withCommonFunctionsComponent;
+
+export default Quantity;

@@ -39,6 +39,8 @@ import { RenderOptionCode } from '../constants/renderOptionCode';
 import { TableCodes } from '../constants/tableTypes';
 import { Resources } from '@/util/resources';
 import { ComponentType } from 'react';
+import { RenderItemProps } from '@/components/formcomponents/renderChildren/RenderChildrenItems';
+import { FormProps } from '@/validation/ReactHookFormHoc';
 
 function openNewIfAbsolute(url: string): string {
   const regex = new RegExp('^(([a-z][a-z0-9+.-]*):.*)');
@@ -60,7 +62,10 @@ export const isTableCode = (extensionCode: string | string[]): boolean => {
   return isTable;
 };
 
-export function getComponentForItem(type: string, extensionCode?: string | string[]): ComponentType<any> | undefined {
+export function getComponentForItem(
+  type: string,
+  extensionCode?: string | string[]
+): ComponentType<RenderItemProps> | ComponentType<RenderItemProps> | undefined {
   if (String(type) === ItemType.GROUP && !!extensionCode && isTableCode(extensionCode)) {
     return TableContainer;
   } else if (String(type) === ItemType.GROUP) {

@@ -29,7 +29,7 @@ export const RenderDeleteButton = ({
   if (!shouldRenderDeleteButton(item, index || 0)) {
     return null;
   }
-  const answer = useGetAnswer(responseItem);
+  const answer = useGetAnswer(responseItem, item);
   const hasAnwer = (answer: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[] | undefined): boolean => {
     return !!answer && Object.keys(answer).length > 0;
   };

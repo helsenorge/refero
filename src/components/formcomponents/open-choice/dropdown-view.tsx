@@ -61,7 +61,7 @@ const DropdownView = ({
     return null;
   }
 
-  const answer = useGetAnswer(responseItem) || [];
+  const answer = useGetAnswer(responseItem, item) || [];
   const onChange = (e: React.ChangeEvent<HTMLSelectElement>): void => {
     handleChange(e.target.value);
   };

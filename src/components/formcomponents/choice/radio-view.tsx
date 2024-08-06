@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 
-import { QuestionnaireItem, Questionnaire } from 'fhir/r4';
-import { Controller } from 'react-hook-form';
+import { Controller, FieldValues, useFormContext } from 'react-hook-form';
 
 import { Options } from '@/types/formTypes/radioGroupOptions';
 
@@ -10,32 +9,27 @@ import Label from '@helsenorge/designsystem-react/components/Label';
 import RadioButton from '@helsenorge/designsystem-react/components/RadioButton';
 
 import { isRequired, getId } from '@/util/index';
-import { Resources } from '@/util/resources';
-import { FormProps } from '../../../validation/ReactHookFormHoc';
-import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelpButton';
 import RenderHelpElement from '@/components/formcomponents/help-button/RenderHelpElement';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
+import { getFormDefinition } from '@/reducers/form';
+import { GlobalState } from '@/reducers';
+import { useSelector } from 'react-redux';
+import { RenderItemProps } from '../renderChildren/RenderChildrenItems';
 
-export interface Props extends FormProps, WithCommonFunctionsAndEnhancedProps {
+export type Props = RenderItemProps & {
   options?: Array<Options>;
-  item: QuestionnaireItem;
-  questionnaire?: Questionnaire;
-  id?: string;
   handleChange: (radioButton: string) => void;
   selected?: Array<string | undefined>;
-  resources?: Resources;
-  renderDeleteButton?: (className?: string) => JSX.Element | null;
-  repeatButton?: JSX.Element;
-}
+  children?: React.ReactNode;
+};
 
-const RadioView: React.FC<Props> = ({
+const RadioView = ({
   options,
   item,
-  questionnaire,
   id,
   handleChange,
   selected,
@@ -46,10 +40,14 @@ const RadioView: React.FC<Props> = ({
   responseItem,
   path,
   index,
-  error,
-  control,
   idWithLinkIdAndItemIndex,
-}) => {
+}: Props): JSX.Element => {
+  const formDefinition = useSelector((state: GlobalState) => getFormDefinition(state));
+
+  const { formState, getFieldState, control } = useFormContext<FieldValues>();
+  const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
+  const { error } = fieldState;
+
   const [isHelpVisible, setIsHelpVisible] = useState(false);
   const selectedValue = (selected && selected[0]) || '';
   return (
@@ -57,7 +55,7 @@ const RadioView: React.FC<Props> = ({
       <FormGroup mode="ongrey" error={error?.message}>
         <ReferoLabel
           item={item}
-          questionnaire={questionnaire}
+          questionnaire={formDefinition?.Content}
           resources={resources}
           labelId={`${getId(id)}-choice-label`}
           testId={`${getId(id)}-choice-label`}

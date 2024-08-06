@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { Coding } from 'fhir/r4';
-import { Controller } from 'react-hook-form';
+import { Controller, FieldValues, useFormContext } from 'react-hook-form';
 
 import { EnhetType, OrgenhetHierarki } from '@/types/orgenhetHierarki';
 
@@ -13,15 +13,15 @@ import Select from '@helsenorge/designsystem-react/components/Select';
 
 import { getId } from '@/util';
 import { Resources } from '@/util/resources';
-import { FormProps } from '../../../validation/ReactHookFormHoc';
+
 import SafeText from '../../referoLabel/SafeText';
+import { useExternalRenderContext } from '@/context/externalRenderContext';
 
 export interface ReceiverComponentProps {
   selected?: Array<string | undefined>;
   id?: string;
   resources?: Resources;
   label?: string;
-  fetchReceivers?: (successCallback: (receivers: Array<OrgenhetHierarki>) => void, errorCallback: () => void) => void;
   handleChange: (code?: string, systemArg?: string, displayArg?: string) => void;
   clearCodingAnswer: (coding: Coding) => void;
   idWithLinkIdAndItemIndex: string;
@@ -32,19 +32,19 @@ const ReceiverComponent = ({
   selected,
   id,
   resources,
-  fetchReceivers,
   handleChange,
   clearCodingAnswer,
   idWithLinkIdAndItemIndex,
-  control,
-  error,
-}: ReceiverComponentProps & FormProps): JSX.Element | null => {
+}: ReceiverComponentProps): JSX.Element | null => {
+  const { formState, getFieldState, control } = useFormContext<FieldValues>();
+  const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
+  const { error } = fieldState;
   const [receiverTreeNodes, setReceiverTreeNodes] = React.useState<OrgenhetHierarki[]>([]);
   const [selectedPath, setSelectedPath] = React.useState<number[]>([]);
   const [selectedReceiver, setSelectedReceiver] = React.useState<string>('');
   const [isLoading, setIsLoading] = React.useState<boolean>(true);
   const [hasLoadError, setHasLoadError] = React.useState<boolean>(false);
-
+  const { fetchReceivers } = useExternalRenderContext();
   React.useEffect(() => {
     if (fetchReceivers) {
       fetchReceivers(loadSuccessCallback, loadErrorCallback);

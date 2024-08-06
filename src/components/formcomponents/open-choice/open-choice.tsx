@@ -1,14 +1,6 @@
 import { FocusEvent } from 'react';
 
-import {
-  QuestionnaireItem,
-  QuestionnaireResponseItemAnswer,
-  Resource,
-  Coding,
-  QuestionnaireResponseItem,
-  ValueSet,
-  Questionnaire,
-} from 'fhir/r4';
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer, Resource, Coding, QuestionnaireResponseItem, Questionnaire } from 'fhir/r4';
 import { ThunkDispatch } from 'redux-thunk';
 
 import { AutoSuggestProps } from '@/types/autoSuggestProps';
@@ -59,22 +51,15 @@ export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   promptLoginMessage?: () => void;
   resources?: Resources;
   containedResources?: Resource[];
-  headerTag?: number;
   responseItem: QuestionnaireResponseItem;
   onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
-  fetchValueSet?: (
-    searchString: string,
-    item: QuestionnaireItem,
-    successCallback: (valueSet: ValueSet) => void,
-    errorCallback: (error: string) => void
-  ) => void;
   autoSuggestProps?: AutoSuggestProps;
   children: JSX.Element;
 }
 
 export const OpenChoice = (props: Props): JSX.Element | null => {
   const { id, item, pdf, responseItem, containedResources, children, resources, promptLoginMessage, path, onAnswerChange } = props;
-  const answer = useGetAnswer(responseItem) || [];
+  const answer = useGetAnswer(responseItem, item) || [];
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
   const enable = useIsEnabled(item, path);
   const getDataReceiverValue = (answer: QuestionnaireResponseItemAnswer[]): string[] | undefined => {

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { QuestionnaireItem, QuestionnaireResponseItemAnswer, Attachment, Questionnaire } from 'fhir/r4';
+import { Attachment } from 'fhir/r4';
 import { ThunkDispatch } from 'redux-thunk';
 
 import { UploadFile } from '@helsenorge/file-upload/components/file-upload';
@@ -10,35 +10,15 @@ import { NewValueAction, newAttachmentAsync, removeAttachmentAsync } from '@/act
 import { GlobalState } from '@/reducers';
 import { getValidationTextExtension, getMaxOccursExtensionValue, getMinOccursExtensionValue } from '@/util/extension';
 import { isRequired, getId, isReadOnly, isRepeat } from '@/util/index';
-import { Path } from '@/util/refero-core';
-import { Resources } from '@/util/resources';
-import ReactHookFormHoc, { FormProps } from '../../../validation/ReactHookFormHoc';
-import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 import TextView from '../textview';
 import { useDispatch } from 'react-redux';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
 import { useIsEnabled } from '@/hooks/useIsEnabled';
+import { RenderItemProps } from '../renderChildren/RenderChildrenItems';
 
-export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
-  path: Array<Path>;
-  item: QuestionnaireItem;
-  questionnaire?: Questionnaire;
-  pdf?: boolean;
-  id?: string;
-  resources?: Resources;
-  renderDeleteButton: () => JSX.Element | null;
-  repeatButton: JSX.Element;
-  attachmentErrorMessage?: string;
-  attachmentMaxFileSize?: number;
-  attachmentValidTypes?: Array<string>;
-  uploadAttachment?: (files: File[], onSuccess: (attachment: Attachment) => void) => void;
-  onDeleteAttachment?: (fileId: string, onSuccess: () => void) => void;
-  onOpenAttachment?: (fileId: string) => void;
-  onRequestAttachmentLink?: (file: string) => string;
-
-  onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
+export type Props = RenderItemProps & {
   children?: React.ReactNode;
-}
+};
 type UploadedFile = {
   name: string;
   id: string;
@@ -54,24 +34,22 @@ export const AttachmentComponent = (props: Props): JSX.Element | null => {
     id,
     resources,
     onOpenAttachment,
-    questionnaire,
     children,
     onRequestAttachmentLink,
     attachmentMaxFileSize,
     attachmentValidTypes,
     attachmentErrorMessage,
-    register,
-    error,
     responseItem,
   } = props;
+
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
   const enable = useIsEnabled(item, path);
-  const answer = useGetAnswer(responseItem) || [];
+  const answer = useGetAnswer(responseItem, item);
   const onUpload = (files: UploadFile[]): void => {
     if (uploadAttachment) {
       for (const file of files) {
         const onSuccess = (attachment: Attachment): void => {
-          if (dispatch && attachment) {
+          if (onAnswerChange && attachment && path) {
             dispatch(newAttachmentAsync(path, attachment, item, isRepeat(item)))?.then(newState =>
               onAnswerChange(newState, path, item, { valueAttachment: attachment })
             );
@@ -88,9 +66,10 @@ export const AttachmentComponent = (props: Props): JSX.Element | null => {
       const onSuccess = (): void => {
         if (dispatch) {
           const attachment: Attachment = { url: fileId };
-          dispatch(removeAttachmentAsync(path, attachment, item))?.then(newState =>
-            onAnswerChange(newState, path, item, { valueAttachment: attachment })
-          );
+          if (path)
+            dispatch(removeAttachmentAsync(path, attachment, item))?.then(
+              newState => onAnswerChange && onAnswerChange(newState, path, item, { valueAttachment: attachment })
+            );
         }
       };
 
@@ -154,7 +133,6 @@ export const AttachmentComponent = (props: Props): JSX.Element | null => {
           onDelete={onDelete}
           onOpen={onOpenAttachment}
           id={getId(id)}
-          questionnaire={questionnaire}
           uploadButtonText={getButtonText()}
           resources={resources}
           isRequired={isRequired(item)}
@@ -167,8 +145,7 @@ export const AttachmentComponent = (props: Props): JSX.Element | null => {
           attachmentValidTypes={attachmentValidTypes}
           item={item}
           attachmentErrorMessage={attachmentErrorMessage}
-          register={register}
-          error={error}
+          idWithLinkIdAndItemIndex={props.idWithLinkIdAndItemIndex}
         >
           {children}
         </AttachmentHtml>
@@ -177,6 +154,4 @@ export const AttachmentComponent = (props: Props): JSX.Element | null => {
   }
 };
 
-const withFormProps = ReactHookFormHoc(AttachmentComponent);
-const withCommonFunctionsComponent = withCommonFunctions(withFormProps);
-export default withCommonFunctionsComponent;
+export default AttachmentComponent;

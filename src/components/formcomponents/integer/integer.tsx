@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 
-import { QuestionnaireItem, Questionnaire } from 'fhir/r4';
-import { Controller } from 'react-hook-form';
+import { Controller, FieldValues, useFormContext } from 'react-hook-form';
 import { ThunkDispatch } from 'redux-thunk';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
@@ -13,10 +12,7 @@ import { NewValueAction, newIntegerValueAsync } from '@/actions/newValue';
 import { GlobalState } from '@/reducers';
 import { getPlaceholder, getMaxValueExtensionValue, getMinValueExtensionValue, getValidationTextExtension } from '@/util/extension';
 import { isReadOnly, isRequired, getId } from '@/util/index';
-import { Path } from '@/util/refero-core';
-import { Resources } from '@/util/resources';
-import ReactHookFormHoc, { FormProps } from '@/validation/ReactHookFormHoc';
-import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
+
 import TextView from '../textview';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
@@ -27,39 +23,36 @@ import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelp
 import RenderHelpElement from '@/components/formcomponents/help-button/RenderHelpElement';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
+import { RenderChildrenItems, RenderItemProps } from '../renderChildren/RenderChildrenItems';
 
-export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
-  item: QuestionnaireItem;
-  questionnaire?: Questionnaire;
-  resources?: Resources;
-  path: Array<Path>;
-  pdf?: boolean;
-  promptLoginMessage?: () => void;
-  id?: string;
+export type Props = RenderItemProps & {
   children?: React.ReactNode;
-}
+};
 
-const Integer = ({
-  item,
-  resources,
-  id,
-  children,
-  pdf,
-  questionnaire,
-  control,
-  error,
-  idWithLinkIdAndItemIndex,
-  promptLoginMessage,
-  path,
-  responseItem,
-  onAnswerChange,
-  responseItems,
-  index,
-}: Props): JSX.Element | null => {
+const Integer = (props: Props): JSX.Element | null => {
+  const {
+    item,
+    resources,
+    id,
+    children,
+    pdf,
+    questionnaire,
+    idWithLinkIdAndItemIndex,
+    promptLoginMessage,
+    path,
+    responseItem,
+    onAnswerChange,
+    responseItems,
+    index,
+  } = props;
+
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
+  const { formState, getFieldState, control } = useFormContext<FieldValues>();
+  const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
+  const { error } = fieldState;
   const [isHelpVisible, setIsHelpVisible] = useState(false);
   const enable = useIsEnabled(item, path);
-  const answer = useGetAnswer(responseItem);
+  const answer = useGetAnswer(responseItem, item);
   const getValue = (): string | number | number[] | undefined => {
     if (answer && Array.isArray(answer)) {
       return answer.map(m => m.valueInteger).filter(f => f !== undefined);
@@ -89,7 +82,7 @@ const Integer = ({
 
   const handleChange = (event: React.FormEvent<HTMLInputElement>): void => {
     const value = parseInt((event.target as HTMLInputElement).value, 10);
-    if (dispatch && onAnswerChange) {
+    if (dispatch && onAnswerChange && path) {
       dispatch(newIntegerValueAsync(path, value, item))?.then(newState => onAnswerChange(newState, path, item, { valueInteger: value }));
     }
 
@@ -174,14 +167,13 @@ const Integer = ({
           resources={resources}
           className="page_refero__deletebutton--margin-top"
         />
-        <RenderRepeatButton path={path.slice(0, -1)} item={item} index={index} responseItem={responseItem} responseItems={responseItems} />
+        <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} responseItem={responseItem} responseItems={responseItems} />
       </FormGroup>
+      <RenderChildrenItems otherProps={props} />
       {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
     </div>
   );
 };
 
-const withFormProps = ReactHookFormHoc(Integer);
-const withCommonFunctionsComponent = withCommonFunctions(withFormProps);
-const layoytChangeComponent = layoutChange(withCommonFunctionsComponent);
+const layoytChangeComponent = layoutChange(Integer);
 export default layoytChangeComponent;

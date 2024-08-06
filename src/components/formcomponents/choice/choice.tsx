@@ -1,18 +1,7 @@
 import React from 'react';
 
-import {
-  QuestionnaireItem,
-  QuestionnaireResponseItemAnswer,
-  Resource,
-  Coding,
-  QuestionnaireResponseItem,
-  ValueSet,
-  Questionnaire,
-} from 'fhir/r4';
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer, Coding } from 'fhir/r4';
 import { ThunkDispatch } from 'redux-thunk';
-
-import { AutoSuggestProps } from '@/types/autoSuggestProps';
-import { OrgenhetHierarki } from '@/types/orgenhetHierarki';
 
 import CheckboxView from './checkbox-view';
 import DropdownView from './dropdown-view';
@@ -32,44 +21,24 @@ import {
   isAboveDropdownThreshold,
 } from '@/util/choice';
 import { isReadOnly, isDataReceiver } from '@/util/index';
-import { Path } from '@/util/refero-core';
-import { Resources } from '@/util/resources';
-import ReactHookFormHoc, { FormProps } from '../../../validation/ReactHookFormHoc';
-import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
+
 import AutosuggestView from '../choice-common/autosuggest-view';
 import ReceiverComponentWrapper from '../receiver-component/receiver-component-wrapper';
 import TextView from '../textview';
 import { useDispatch } from 'react-redux';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
 import { useIsEnabled } from '@/hooks/useIsEnabled';
+import { RenderChildrenItems, RenderItemProps } from '../renderChildren/RenderChildrenItems';
 
-export interface ChoiceProps extends WithCommonFunctionsAndEnhancedProps, FormProps {
-  item: QuestionnaireItem;
-  questionnaire?: Questionnaire;
-  resources?: Resources;
-  containedResources?: Resource[];
-  path: Array<Path>;
-  id?: string;
-  pdf?: boolean;
-  promptLoginMessage?: () => void;
-  headerTag?: number;
-  responseItem: QuestionnaireResponseItem;
-  onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
-  fetchValueSet?: (
-    searchString: string,
-    item: QuestionnaireItem,
-    successCallback: (valueSet: ValueSet) => void,
-    errorCallback: (error: string) => void
-  ) => void;
-  autoSuggestProps?: AutoSuggestProps;
-  fetchReceivers?: (successCallback: (receivers: Array<OrgenhetHierarki>) => void, errorCallback: () => void) => void;
+export type ChoiceProps = RenderItemProps & {
   children?: React.ReactNode;
-}
+};
 
 export const Choice = (props: ChoiceProps): JSX.Element | null => {
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
+
   const { resources, containedResources, promptLoginMessage, item, onAnswerChange, path, id, pdf, children, responseItem } = props;
-  const answer = useGetAnswer(responseItem) || [];
+  const answer = useGetAnswer(responseItem, item) || [];
   const enable = useIsEnabled(item, path);
   const getValue = (
     item: QuestionnaireItem,
@@ -132,13 +101,14 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
     if (dispatch && code) {
       const coding = getAnswerValueCoding(code);
       const responseAnswer = { valueCoding: coding } as QuestionnaireResponseItemAnswer;
-      if (getIndexOfAnswer(code, answer) > -1) {
+      if (getIndexOfAnswer(code, answer) > -1 && onAnswerChange && path) {
         dispatch(removeCodingValueAsync(path, coding, item))?.then(newState => onAnswerChange(newState, path, item, responseAnswer));
         if (promptLoginMessage) {
           promptLoginMessage();
         }
       }
-      dispatch(newCodingValueAsync(path, coding, item, true))?.then(newState => onAnswerChange(newState, path, item, responseAnswer));
+      if (onAnswerChange && path)
+        dispatch(newCodingValueAsync(path, coding, item, true))?.then(newState => onAnswerChange(newState, path, item, responseAnswer));
       if (promptLoginMessage) {
         promptLoginMessage();
       }
@@ -149,12 +119,12 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
     if (dispatch && code) {
       const coding = getAnswerValueCoding(code);
       const responseAnswer = { valueCoding: coding } as QuestionnaireResponseItemAnswer;
-      if (getIndexOfAnswer(code, answer) > -1) {
+      if (getIndexOfAnswer(code, answer) > -1 && onAnswerChange && path) {
         dispatch(removeCodingValueAsync(path, coding, item))?.then(newState => onAnswerChange(newState, path, item, responseAnswer));
         if (promptLoginMessage) {
           promptLoginMessage();
         }
-      } else {
+      } else if (onAnswerChange && path) {
         dispatch(newCodingValueAsync(path, coding, item, true))?.then(newState => onAnswerChange(newState, path, item, responseAnswer));
         if (promptLoginMessage) {
           promptLoginMessage();
@@ -164,8 +134,9 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
   };
 
   const clearCodingAnswer = (coding: Coding): void => {
-    if (dispatch) {
+    if (dispatch && onAnswerChange && path) {
       const responseAnswer = { valueCoding: coding };
+
       dispatch(removeCodingValueAsync(path, coding, item))?.then(newState => onAnswerChange(newState, path, item, responseAnswer));
       if (promptLoginMessage) {
         promptLoginMessage();
@@ -174,7 +145,7 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
   };
 
   const handleChange = (code?: string, systemArg?: string, displayArg?: string): void => {
-    if (dispatch && code) {
+    if (dispatch && code && onAnswerChange && path) {
       const coding = getAnswerValueCoding(code, systemArg, displayArg);
       const responseAnswer = { valueCoding: coding };
 
@@ -256,10 +227,9 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
           {props.children}
         </ReceiverComponentWrapper>
       ) : null}
+      <RenderChildrenItems otherProps={props} />
     </>
   );
 };
 
-const withFormProps = ReactHookFormHoc(Choice);
-const withCommonFunctionsComponent = withCommonFunctions(withFormProps);
-export default withCommonFunctionsComponent;
+export default Choice;

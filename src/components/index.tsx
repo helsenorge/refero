@@ -2,7 +2,6 @@ import React from 'react';
 
 import ItemType from '@constants/itemType';
 import { PresentationButtonsType } from '@constants/presentationButtonsType';
-import RepeatButton from '@formcomponents/repeat/RepeatButton';
 import {
   QuestionnaireResponseItem,
   Questionnaire,
@@ -41,7 +40,6 @@ import {
   getRootQuestionnaireResponseItemFromData,
   Path,
   createPathForItem,
-  shouldRenderDeleteButton,
   createIdSuffix,
   getQuestionnaireDefinitionItem,
   getResponseItemAndPathWithLinkId,
@@ -225,6 +223,7 @@ const Refero = (props: StateProps & DispatchProps & ReferoProps): JSX.Element | 
           }
           renderedItems.push(
             <Comp
+              {...props}
               idWithLinkIdAndItemIndex={`${item.linkId}${createIdSuffix(path, index, item.repeats)}`}
               language={formDefinition.Content?.language}
               pdf={pdf}
@@ -241,19 +240,8 @@ const Refero = (props: StateProps & DispatchProps & ReferoProps): JSX.Element | 
               headerTag={Constants.DEFAULT_HEADER_TAG}
               index={index}
               responseItems={responseItems}
-              onRequestAttachmentLink={props.onRequestAttachmentLink}
-              onOpenAttachment={props.onOpenAttachment}
-              onDeleteAttachment={props.onDeleteAttachment}
-              uploadAttachment={props.uploadAttachment}
-              attachmentErrorMessage={props.attachmentErrorMessage}
-              attachmentMaxFileSize={props.attachmentMaxFileSize}
-              attachmentValidTypes={props.attachmentValidTypes}
-              validateScriptInjection={props.validateScriptInjection}
               onAnswerChange={onAnswerChange}
               renderContext={new RenderContext()}
-              fetchValueSet={props.fetchValueSet}
-              autoSuggestProps={props.autoSuggestProps}
-              fetchReceivers={props.fetchReceivers}
             />
           );
         });
@@ -262,60 +250,69 @@ const Refero = (props: StateProps & DispatchProps & ReferoProps): JSX.Element | 
     return renderedItems;
   };
 
-  const renderSkjema = (pdf?: boolean): Array<JSX.Element> | Array<Array<JSX.Element>> | JSX.Element | null | undefined => {
-    const { formDefinition, resources } = props;
-    if (!formDefinition || !formDefinition.Content || !resources) {
-      return null;
+  const getButtonClasses = (
+    presentationButtonsType: PresentationButtonsType | null,
+    defaultClasses: string[] = [],
+    sticky: boolean | undefined
+  ): string => {
+    const classes = [...defaultClasses];
+
+    if (presentationButtonsType === PresentationButtonsType.None) {
+      classes.push('page_refero__hidden_buttons');
+    } else if (presentationButtonsType === PresentationButtonsType.Sticky || (sticky && !presentationButtonsType)) {
+      classes.push('page_refero__stickybar');
     }
 
-    if (pdf) {
-      return renderFormItems(true);
-    }
-
-    const presentationButtonsType = getPresentationButtonsExtension(formDefinition.Content);
-    const isStepView = shouldFormBeDisplayedAsStepView(formDefinition);
-
-    return (
-      <div className={getButtonClasses(presentationButtonsType, ['page_refero__content'], props.sticky)}>
-        <div className="page_refero__messageboxes" />
-        {renderForm(isStepView)}
-      </div>
-    );
+    return classes.join(' ');
   };
 
-  const renderForm = (isStepView?: boolean): JSX.Element | undefined => {
-    const {
-      formDefinition,
-      resources,
-      authorized,
-      blockSubmit,
-      onSave,
-      onCancel,
-      onSubmit,
-      loginButton,
-      validationSummaryPlacement,
-      submitButtonDisabled,
-      saveButtonDisabled,
-      onFieldsNotCorrectlyFilledOut,
-      onStepChange,
-    } = props;
-    if (!formDefinition || !resources) {
-      return;
-    }
-    const referoProps = {
-      authorized,
-      blockSubmit,
-      onSave,
-      onCancel,
-      onSubmit,
-      loginButton,
-      validationSummaryPlacement,
-      submitButtonDisabled,
-      saveButtonDisabled,
-      onFieldsNotCorrectlyFilledOut,
-      onStepChange,
-    };
-    return (
+  const {
+    formDefinition,
+    resources,
+    authorized,
+    blockSubmit,
+    onSave,
+    onCancel,
+    onSubmit,
+    loginButton,
+    validationSummaryPlacement,
+    submitButtonDisabled,
+    saveButtonDisabled,
+    onFieldsNotCorrectlyFilledOut,
+    onStepChange,
+  } = props;
+
+  const referoProps = {
+    authorized,
+    blockSubmit,
+    onSave,
+    onCancel,
+    onSubmit,
+    loginButton,
+    validationSummaryPlacement,
+    submitButtonDisabled,
+    saveButtonDisabled,
+    onFieldsNotCorrectlyFilledOut,
+    onStepChange,
+  };
+
+  if (!resources) {
+    return null;
+  }
+  if (!formDefinition || !formDefinition.Content || !resources) {
+    return null;
+  }
+
+  if (props.pdf) {
+    return <>{renderFormItems(true)}</>;
+  }
+
+  const presentationButtonsType = getPresentationButtonsExtension(formDefinition.Content);
+  const isStepView = shouldFormBeDisplayedAsStepView(formDefinition);
+
+  return (
+    <div className={getButtonClasses(presentationButtonsType, ['page_refero__content'], props.sticky)}>
+      <div className="page_refero__messageboxes" />
       <ExternalRenderProvider
         onRequestHelpButton={props.onRequestHelpButton}
         onRequestHelpElement={props.onRequestHelpElement}
@@ -350,32 +347,8 @@ const Refero = (props: StateProps & DispatchProps & ReferoProps): JSX.Element | 
           )}
         </FormProvider>
       </ExternalRenderProvider>
-    );
-  };
-
-  const getButtonClasses = (
-    presentationButtonsType: PresentationButtonsType | null,
-    defaultClasses: string[] = [],
-    sticky: boolean | undefined
-  ): string => {
-    const classes = [...defaultClasses];
-
-    if (presentationButtonsType === PresentationButtonsType.None) {
-      classes.push('page_refero__hidden_buttons');
-    } else if (presentationButtonsType === PresentationButtonsType.Sticky || (sticky && !presentationButtonsType)) {
-      classes.push('page_refero__stickybar');
-    }
-
-    return classes.join(' ');
-  };
-
-  const { resources } = props;
-
-  if (!resources) {
-    return null;
-  }
-
-  return <>{renderSkjema(props.pdf)}</>;
+    </div>
+  );
 };
 
 function mapDispatchToProps(dispatch: ThunkDispatch<GlobalState, void, NewValueAction>, props: ReferoProps): DispatchProps {

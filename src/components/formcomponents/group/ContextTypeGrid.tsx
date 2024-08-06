@@ -3,38 +3,17 @@ import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import { RenderContext } from '@/util/renderContext';
 import { getColumns } from './helpers';
-import { QuestionnaireItem, QuestionnaireResponseItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
-import { Path } from '@/util/refero-core';
 
-import { GlobalState } from '@/reducers';
-import { Resources } from '@/util/resources';
 import { RenderContextType } from '@/constants/renderContextType';
+import { RenderChildrenItems, RenderItemProps } from '../renderChildren/RenderChildrenItems';
 
-type ContextTypeGridProps = {
-  item: QuestionnaireItem;
-  onAnswerChange?: (newState: GlobalState, path: Path[], item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
-  responseItem: QuestionnaireResponseItem;
-  responseItems?: QuestionnaireResponseItem[];
-  resources?: Resources;
-  renderChildrenItems: (renderContext: RenderContext) => Array<JSX.Element> | null;
-  index?: number;
-  path: Path[];
-  id?: string;
-};
-const ContextTypeGrid = ({
-  item,
-  renderChildrenItems,
-  index,
-  path,
-  id,
-  onAnswerChange,
-  responseItem,
-  resources,
-  responseItems,
-}: ContextTypeGridProps): JSX.Element => {
+type ContextTypeGridProps = RenderItemProps;
+const ContextTypeGrid = (props: ContextTypeGridProps): JSX.Element => {
+  const { item, index, path, id, onAnswerChange, responseItem, resources, responseItems } = props;
   const columns = getColumns(item);
-  const headers = columns.map((c, i) => <th key={`${item.linkId}-${c}-${i}`}>{c}</th>);
-  headers.unshift(<th key={`${item.linkId}-X`}>{item.text ? item.text : ''}</th>);
+  const headers = [...columns]
+    .map((c, i) => <th key={`${item.linkId}-${c}-${i}`}>{c}</th>)
+    .unshift(<th key={`${item.linkId}-X`}>{item.text ? item.text : ''}</th>);
 
   const newRenderContext = new RenderContext(RenderContextType.Grid, item.linkId, columns);
   return (
@@ -43,7 +22,9 @@ const ContextTypeGrid = ({
         <thead>
           <tr>{headers}</tr>
         </thead>
-        <tbody>{renderChildrenItems(newRenderContext)}</tbody>
+        <tbody>
+          <RenderChildrenItems otherProps={{ ...props, renderContext: newRenderContext }} />
+        </tbody>
       </table>
       <RenderDeleteButton
         item={item}
@@ -57,7 +38,7 @@ const ContextTypeGrid = ({
       <RenderRepeatButton
         item={item}
         index={index}
-        path={path.slice(0, -1)}
+        path={path?.slice(0, -1)}
         resources={resources}
         responseItem={responseItem}
         responseItems={responseItems}

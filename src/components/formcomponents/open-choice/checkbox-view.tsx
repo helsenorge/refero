@@ -55,7 +55,7 @@ const CheckboxView = ({
   responseItem,
   path,
 }: Props): JSX.Element | null => {
-  const answer = useGetAnswer(responseItem) || [];
+  const answer = useGetAnswer(responseItem, item) || [];
   const [isHelpVisible, setIsHelpVisible] = useState(false);
   return (
     <div className="page_refero__component page_refero__component_openchoice page_refero__component_openchoice_checkbox">

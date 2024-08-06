@@ -64,7 +64,6 @@ export interface WithCommonFunctionsProps {
 
 export interface EnhancedProps {
   renderChildrenItems?: (renderContext: RenderContext) => JSX.Element[] | null;
-  renderDeleteButton?: (classname?: string) => JSX.Element | null;
 }
 
 export interface WithCommonFunctionsAndEnhancedProps extends WithCommonFunctionsProps, EnhancedProps {
@@ -132,9 +131,7 @@ export default function withCommonFunctions<T extends WithCommonFunctionsProps>(
               attachmentValidTypes={props.attachmentValidTypes}
               onAnswerChange={props.onAnswerChange}
               renderContext={renderContext}
-              fetchValueSet={props.fetchValueSet}
               autoSuggestProps={props.autoSuggestProps}
-              fetchReceivers={props.fetchReceivers}
             />
           );
         });

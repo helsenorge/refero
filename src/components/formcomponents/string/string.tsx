@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 
-import { QuestionnaireItem, QuestionnaireResponseItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
-import { Controller } from 'react-hook-form';
-import { useDispatch } from 'react-redux';
+import { Controller, FieldValues, useFormContext } from 'react-hook-form';
+import { useDispatch, useSelector } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
@@ -15,10 +14,6 @@ import { NewValueAction, newStringValueAsync } from '@/actions/newValue';
 import { GlobalState } from '@/reducers';
 import { getMinLengthExtensionValue, getPlaceholder, getRegexExtension, getValidationTextExtension } from '@/util/extension';
 import { isReadOnly, isRequired, getId, getStringValue, getPDFStringValue, getMaxLength, scriptInjectionValidation } from '@/util/index';
-import { Path } from '@/util/refero-core';
-import { Resources } from '@/util/resources';
-import ReactHookFormHoc, { FormProps } from '../../../validation/ReactHookFormHoc';
-import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 import TextView from '../textview';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
@@ -28,47 +23,42 @@ import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelp
 import RenderHelpElement from '@/components/formcomponents/help-button/RenderHelpElement';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
+import { RenderChildrenItems, RenderItemProps } from '../renderChildren/RenderChildrenItems';
+import { getFormDefinition } from '@/reducers/form';
 
-export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
-  item: QuestionnaireItem;
-  path: Array<Path>;
-  pdf?: boolean;
-  promptLoginMessage?: () => void;
-  id?: string;
-  resources?: Resources;
+export type Props = RenderItemProps & {
   oneToTwoColumn: boolean;
-  validateScriptInjection: boolean;
-  index?: number;
-  onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
   children?: React.ReactNode;
-  responseItems?: QuestionnaireResponseItem[];
-}
+};
 
-export const String = ({
-  promptLoginMessage,
-  path,
-  item,
-  onAnswerChange,
-  id,
-  questionnaire,
-  pdf,
-  resources,
-  control,
-  idWithLinkIdAndItemIndex,
-  validateScriptInjection,
-  error,
-  children,
-  responseItems,
-  index,
-  responseItem,
-}: Props): JSX.Element | null => {
+export const String = (props: Props): JSX.Element | null => {
+  const {
+    promptLoginMessage,
+    path,
+    item,
+    onAnswerChange,
+    id,
+    pdf,
+    resources,
+    idWithLinkIdAndItemIndex,
+    validateScriptInjection,
+    children,
+    responseItems,
+    index,
+    responseItem,
+  } = props;
+  const formDefinition = useSelector((state: GlobalState) => getFormDefinition(state));
+  const questionnaire = formDefinition?.Content;
+  const { formState, getFieldState, control } = useFormContext<FieldValues>();
+  const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
+  const { error } = fieldState;
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
   const [isHelpVisible, setIsHelpVisible] = useState(false);
-  const answer = useGetAnswer(responseItem) || [];
+  const answer = useGetAnswer(responseItem, item) || [];
   const enable = useIsEnabled(item, path);
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     const value = event.target.value;
-    if (dispatch) {
+    if (dispatch && onAnswerChange && path) {
       dispatch(newStringValueAsync(path, value, item))?.then(newState => {
         return onAnswerChange(newState, path, item, { valueString: value });
       });
@@ -173,13 +163,12 @@ export const String = ({
           resources={resources}
           className="page_refero__deletebutton--margin-top"
         />
-        <RenderRepeatButton path={path.slice(0, -1)} item={item} index={index} responseItem={responseItem} responseItems={responseItems} />
+        <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} responseItem={responseItem} responseItems={responseItems} />
       </FormGroup>
+      <RenderChildrenItems otherProps={props} />
       {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
     </div>
   );
 };
-const withFormProps = ReactHookFormHoc(String);
-const withCommonFunctionsComponent = withCommonFunctions(withFormProps);
-const layoutChangeComponent = layoutChange(withCommonFunctionsComponent);
+const layoutChangeComponent = layoutChange(String);
 export default layoutChangeComponent;
