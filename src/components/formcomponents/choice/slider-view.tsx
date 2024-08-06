@@ -46,7 +46,6 @@ const SliderView: React.FC<SliderProps> = ({
   id,
   error,
   onAnswerChange,
-  renderContext,
   responseItems,
   responseItem,
   path,
@@ -128,7 +127,6 @@ const SliderView: React.FC<SliderProps> = ({
           path={path}
           index={index}
           onAnswerChange={onAnswerChange}
-          renderContext={renderContext}
           responseItem={responseItem}
           resources={resources}
           className="page_refero__deletebutton--margin-top"

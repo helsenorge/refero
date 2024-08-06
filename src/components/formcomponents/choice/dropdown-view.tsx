@@ -48,7 +48,6 @@ const DropdownView = (props: Props): JSX.Element | null => {
     control,
     idWithLinkIdAndItemIndex,
     onAnswerChange,
-    renderContext,
     responseItems,
     responseItem,
     path,
@@ -122,7 +121,6 @@ const DropdownView = (props: Props): JSX.Element | null => {
         path={path}
         index={index}
         onAnswerChange={onAnswerChange}
-        renderContext={renderContext}
         responseItem={responseItem}
         resources={resources}
         className="page_refero__deletebutton--margin-top"

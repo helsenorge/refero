@@ -46,7 +46,6 @@ const DateComponent = (props: React.PropsWithChildren<DateProps>): JSX.Element =
     promptLoginMessage,
     children,
     onAnswerChange,
-    renderContext,
     responseItems,
     responseItem,
     path,
@@ -170,7 +169,6 @@ const DateComponent = (props: React.PropsWithChildren<DateProps>): JSX.Element =
         path={path}
         index={index}
         onAnswerChange={onAnswerChange}
-        renderContext={renderContext}
         responseItem={responseItem}
         resources={resources}
         className="page_refero__deletebutton--margin-top"

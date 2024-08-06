@@ -69,7 +69,6 @@ const DateTimeInput: React.FC<Props> = ({
   responseItems,
   responseItem,
   index,
-  renderContext,
   onAnswerChange,
   idWithLinkIdAndItemIndex,
   children,
@@ -319,7 +318,6 @@ const DateTimeInput: React.FC<Props> = ({
         path={path}
         index={index}
         onAnswerChange={onAnswerChange}
-        renderContext={renderContext}
         responseItem={responseItem}
         resources={resources}
         className="page_refero__deletebutton--margin-top"

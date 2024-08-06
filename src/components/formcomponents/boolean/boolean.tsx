@@ -51,7 +51,6 @@ const Boolean = ({
   questionnaire,
   id,
   resources,
-  renderContext,
   responseItems,
   index,
   error,
@@ -171,7 +170,6 @@ const Boolean = ({
         path={path}
         index={index}
         onAnswerChange={onAnswerChange}
-        renderContext={renderContext}
         responseItem={responseItem}
         resources={resources}
         className="page_refero__deletebutton--margin-top"

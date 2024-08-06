@@ -53,7 +53,6 @@ const Integer = ({
   path,
   responseItem,
   onAnswerChange,
-  renderContext,
   responseItems,
   index,
 }: Props): JSX.Element | null => {
@@ -171,7 +170,6 @@ const Integer = ({
           path={path}
           index={index}
           onAnswerChange={onAnswerChange}
-          renderContext={renderContext}
           responseItem={responseItem}
           resources={resources}
           className="page_refero__deletebutton--margin-top"

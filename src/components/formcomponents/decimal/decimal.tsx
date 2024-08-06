@@ -56,7 +56,6 @@ const Decimal = ({
   onAnswerChange,
   promptLoginMessage,
   responseItems,
-  renderContext,
   index,
   responseItem,
 }: Props): JSX.Element | null => {
@@ -189,7 +188,6 @@ const Decimal = ({
         path={path}
         index={index}
         onAnswerChange={onAnswerChange}
-        renderContext={renderContext}
         responseItem={responseItem}
         resources={resources}
         className="page_refero__deletebutton--margin-top"

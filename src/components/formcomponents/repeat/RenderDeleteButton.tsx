@@ -4,7 +4,6 @@ import DeleteButton from './DeleteButton';
 
 import { GlobalState } from '@/reducers';
 import { Path, shouldRenderDeleteButton } from '@/util/refero-core';
-import { RenderContext } from '@/util/renderContext';
 import { Resources } from '@/util/resources';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
 
@@ -16,7 +15,6 @@ type Props = {
   responseItem?: QuestionnaireResponseItem;
   resources?: Resources;
   onAnswerChange?: (newState: GlobalState, path: Path[], item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
-  renderContext: RenderContext;
 };
 
 export const RenderDeleteButton = ({

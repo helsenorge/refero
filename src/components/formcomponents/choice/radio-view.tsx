@@ -42,7 +42,6 @@ const RadioView: React.FC<Props> = ({
   resources,
   children,
   onAnswerChange,
-  renderContext,
   responseItems,
   responseItem,
   path,
@@ -104,7 +103,6 @@ const RadioView: React.FC<Props> = ({
         path={path}
         index={index}
         onAnswerChange={onAnswerChange}
-        renderContext={renderContext}
         responseItem={responseItem}
         resources={resources}
         className="page_refero__deletebutton--margin-top"

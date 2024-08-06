@@ -52,7 +52,6 @@ const RadioView = ({
   idWithLinkIdAndItemIndex,
   responseItem,
   onAnswerChange,
-  renderContext,
   responseItems,
   path,
   index,
@@ -113,7 +112,6 @@ const RadioView = ({
         path={path}
         index={index}
         onAnswerChange={onAnswerChange}
-        renderContext={renderContext}
         responseItem={responseItem}
         resources={resources}
         className="page_refero__deletebutton--margin-top"
