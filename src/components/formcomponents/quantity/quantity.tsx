@@ -58,7 +58,9 @@ const Quantity = (props: Props): JSX.Element | null => {
   const answer = useGetAnswer(responseItem, item);
   const enable = useIsEnabled(item, path);
 
-  const getValue = (): number | number[] | undefined => {
+  const getValue = (
+    answer?: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]
+  ): number | number[] | undefined | string => {
     if (answer && Array.isArray(answer)) {
       return answer.map(m => m.valueQuantity?.value).filter(f => f !== undefined);
     }
@@ -68,7 +70,7 @@ const Quantity = (props: Props): JSX.Element | null => {
   };
 
   const getPDFValue = (): string => {
-    const value = getValue();
+    const value = getValue(answer);
     if (value === undefined || value === null) {
       let text = '';
       if (resources && resources.ikkeBesvart) {
@@ -84,27 +86,24 @@ const Quantity = (props: Props): JSX.Element | null => {
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     const extension = getQuestionnaireUnitExtensionValue(item);
-    if (extension) {
-      const quantity = {
-        unit: extension.display,
-        system: extension.system,
-        code: extension.code,
-      } as QuantityType;
+    const quantity: QuantityType = {
+      unit: extension?.display,
+      system: extension?.system,
+      code: extension?.code,
+    };
 
-      const value = Number(parseFloat(event.target.value));
-      if (value != null && !isNaN(value) && isFinite(value)) {
-        quantity.value = value;
-      }
+    const value = Number(parseFloat(event.target.value));
+    if (value !== null && !isNaN(value) && isFinite(value)) {
+      quantity.value = value;
+    }
 
-      if (path) {
-        dispatch(newQuantityValueAsync(path, quantity, item))?.then(
-          newState => onAnswerChange && onAnswerChange(newState, path, item, { valueQuantity: quantity } as QuestionnaireResponseItemAnswer)
-        );
-      }
+    dispatch(newQuantityValueAsync(path || [], quantity, item))?.then(
+      newState =>
+        onAnswerChange && onAnswerChange(newState, path || [], item, { valueQuantity: quantity } as QuestionnaireResponseItemAnswer)
+    );
 
-      if (promptLoginMessage) {
-        promptLoginMessage();
-      }
+    if (promptLoginMessage) {
+      promptLoginMessage();
     }
   };
 
@@ -125,12 +124,11 @@ const Quantity = (props: Props): JSX.Element | null => {
       </TextView>
     );
   }
-  const value = getValue();
+  const value = getValue(answer);
   const decimalPattern = getDecimalPattern(item);
   const minValue = getMinValueExtensionValue(item);
   const maxValue = getMaxValueExtensionValue(item);
   const errorMessage = getValidationTextExtension(item);
-
   return (
     <div className="page_refero__component page_refero__component_quantity">
       <FormGroup error={error?.message} mode="ongrey">

@@ -35,7 +35,6 @@ const Decimal = (props: Props): JSX.Element | null => {
     id,
     item,
     pdf,
-    questionnaire,
     resources,
     children,
     idWithLinkIdAndItemIndex,
@@ -60,6 +59,7 @@ const Decimal = (props: Props): JSX.Element | null => {
     item: QuestionnaireItem,
     answer?: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]
   ): string | number | number[] | undefined => {
+    console.log('answer', answer);
     if (answer && Array.isArray(answer)) {
       return answer.map(m => m.valueDecimal).filter(f => f !== undefined);
     }
