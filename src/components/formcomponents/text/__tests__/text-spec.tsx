@@ -16,8 +16,7 @@ const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle
 describe('Text', () => {
   describe('render', () => {
     it('should render correct tag', async () => {
-      const { findByText, queryByText, debug } = renderRefero({ questionnaire: qinline, resources: getResources('') });
-      debug(undefined, 15000);
+      const { findByText, queryByText } = renderRefero({ questionnaire: qinline, resources: getResources('') });
       expect(queryByText(/Her er teksten som skal åpnes av knappen over, med markDown/i)).not.toBeInTheDocument();
       await act(async () => {
         userEvent.click(await findByText(/Her er teksten som skal åpnes/i));
