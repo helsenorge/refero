@@ -16,9 +16,9 @@ import TextView from '../textview';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { formatDateToStringDDMMYYYY, parseStringToDateDDMMYYYY, validateDate, validateMaxDate, validateMinDate } from '@/util/date-utils';
-import RenderHelpElement from '@/components/formcomponents/help-button/RenderHelpElement';
-import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelpButton';
 import { RenderItemProps } from '../renderChildren/RenderChildrenItems';
+import RenderHelpButton from '../help-button/RenderHelpButton';
+import RenderHelpElement from '../help-button/RenderHelpElement';
 
 type DateDayInputProps = RenderItemProps & {
   locale: LanguageLocales.ENGLISH | LanguageLocales.NORWEGIAN;
@@ -39,21 +39,16 @@ export const DateDayInput = ({
   pdf,
   item,
   resources,
-  questionnaire,
-  helpButton,
-  helpElement,
   onDateValueChange,
-  onRenderMarkdown,
-  renderHelpButton,
   maxDate,
   minDate,
   answer,
   children,
 }: DateDayInputProps): JSX.Element => {
+  const [isHelpVisible, setIsHelpVisible] = useState(false);
   const { formState, getFieldState } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
-  const [isHelpVisible, setIsHelpVisible] = useState(false);
   const getDateAnswerValue = (answer: QuestionnaireResponseItemAnswer | QuestionnaireItemInitial): string | undefined => {
     if (answer && answer.valueDate) {
       return answer.valueDate;
@@ -148,18 +143,17 @@ export const DateDayInput = ({
 
   return (
     <FormGroup error={getErrorText(error)}>
-      {helpElement}
       <ReferoLabel
         item={item}
-        onRenderMarkdown={onRenderMarkdown}
-        questionnaire={questionnaire}
         resources={resources}
         htmlFor={`${getId(id)}-datepicker`}
         labelId={`${getId(id)}-label`}
         testId={`${getId(id)}-label-test`}
         sublabelId={`${getId(id)}-sublabel`}
-        renderHelpButton={renderHelpButton}
+        afterLabelContent={<RenderHelpButton isHelpVisible={isHelpVisible} item={item} setIsHelpVisible={setIsHelpVisible} />}
       />
+      <RenderHelpElement isHelpVisible={isHelpVisible} item={item} />
+
       <Controller
         name={idWithLinkIdAndItemIndex}
         shouldUnregister={true}
