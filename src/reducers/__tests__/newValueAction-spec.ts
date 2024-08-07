@@ -26,6 +26,7 @@ import {
   removeOpenChoiceText,
 } from './utils';
 import { vi } from 'vitest';
+import { fail } from 'assert';
 
 vi.mock('uuid');
 

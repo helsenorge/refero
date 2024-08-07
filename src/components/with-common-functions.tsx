@@ -1,7 +1,5 @@
 import React from 'react';
 
-import classNames from 'classnames';
-import DOMPurify from 'dompurify';
 import {
   Resource,
   Questionnaire,
@@ -11,44 +9,28 @@ import {
   Attachment,
   ValueSet,
 } from 'fhir/r4';
-import { Collapse } from 'react-collapse';
+
 import { ThunkDispatch } from 'redux-thunk';
 
 import { AutoSuggestProps } from '../types/autoSuggestProps';
 import { OrgenhetHierarki } from '../types/orgenhetHierarki';
 
-import Icon from '@helsenorge/designsystem-react/components/Icon';
-import HelpSign from '@helsenorge/designsystem-react/components/Icons/HelpSign';
-
-import DeleteButton from './formcomponents/repeat/DeleteButton';
-import RepeatButton from './formcomponents/repeat/RepeatButton';
-import HelpButton from './help-button/HelpButton';
 import { NewValueAction } from '../actions/newValue';
-import itemControlConstants from '../constants/itemcontrol';
+
 import itemType from '../constants/itemType';
 import { GlobalState } from '../reducers';
 import { getCodingTextTableValues } from '../util/extension';
-import { findHelpItem, isHelpItem, getHelpItemType } from '../util/help';
-import { getComponentForItem, getChildHeaderTag, shouldRenderRepeatButton, getText, isHiddenItem } from '../util/index';
-import {
-  Path,
-  getAnswerFromResponseItem,
-  getItemWithIdFromResponseItemArray,
-  createPathForItem,
-  shouldRenderDeleteButton,
-  createIdSuffix,
-} from '../util/refero-core';
+import { isHelpItem } from '../util/help';
+import { getComponentForItem, getChildHeaderTag, isHiddenItem } from '../util/index';
+import { Path, getItemWithIdFromResponseItemArray, createPathForItem, createIdSuffix } from '../util/refero-core';
 import { RenderContext } from '../util/renderContext';
 import { Resources } from '../util/resources';
-import { getAnswerIfDataReceiver, isEnableWhenEnabled } from '@/util/map-props';
-import { useSelector } from 'react-redux';
-import { getFormData } from '@/reducers/form';
 
 export interface WithCommonFunctionsProps {
   idWithLinkIdAndItemIndex: string;
   dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
   resources?: Resources;
-  responseItem?: QuestionnaireResponseItem;
+  responseItem: QuestionnaireResponseItem;
   containedResources?: Resource[];
   item: QuestionnaireItem;
   questionnaire?: Questionnaire | null;
@@ -58,12 +40,9 @@ export interface WithCommonFunctionsProps {
   includeSkipLink?: boolean;
   promptLoginMessage?: () => void;
   path?: Array<Path>;
-  enable?: boolean;
   id?: string;
-  answer?: QuestionnaireResponseItemAnswer | Array<QuestionnaireResponseItemAnswer>;
   validateScriptInjection?: boolean;
-  visibleDeleteButton?: boolean;
-  repeatButton?: JSX.Element;
+  index?: number;
   attachmentErrorMessage?: string;
   attachmentMaxFileSize?: number;
   attachmentValidTypes?: Array<string>;
@@ -71,23 +50,8 @@ export interface WithCommonFunctionsProps {
   onOpenAttachment?: (fileId: string) => void;
   onDeleteAttachment?: (fileId: string, onSuccess: () => void) => void;
   uploadAttachment?: (files: File[], onSuccess: (attachment: Attachment) => void) => void;
-  onRequestHelpButton?: (
-    item: QuestionnaireItem,
-    itemHelp: QuestionnaireItem,
-    helpType: string,
-    helpText: string,
-    opening: boolean
-  ) => JSX.Element;
-  onRequestHelpElement?: (
-    item: QuestionnaireItem,
-    itemHelp: QuestionnaireItem,
-    helpType: string,
-    helpText: string,
-    opening: boolean
-  ) => JSX.Element;
   onAnswerChange?: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
   renderContext: RenderContext;
-  onRenderMarkdown?: (item: QuestionnaireItem, markup: string) => string;
   fetchValueSet?: (
     searchString: string,
     item: QuestionnaireItem,
@@ -99,143 +63,19 @@ export interface WithCommonFunctionsProps {
 }
 
 export interface EnhancedProps {
-  renderChildrenItems?: (renderContext: RenderContext) => Array<JSX.Element> | null;
-  renderDeleteButton?: (classname?: string) => JSX.Element | null;
-  renderRepeatButton: (
-    item: QuestionnaireItem,
-    index: number,
-    path?: Array<Path>,
-    response?: Array<QuestionnaireResponseItem>,
-    responseItem?: QuestionnaireResponseItem
-  ) => JSX.Element | undefined;
-  renderHelpButton: () => JSX.Element | undefined;
-  renderHelpElement: () => JSX.Element | null;
+  renderChildrenItems?: (renderContext: RenderContext) => JSX.Element[] | null;
 }
 
-export interface WithCommonFunctionsAndEnhancedProps extends WithCommonFunctionsProps, EnhancedProps {}
+export interface WithCommonFunctionsAndEnhancedProps extends WithCommonFunctionsProps, EnhancedProps {
+  responseItems?: QuestionnaireResponseItem[];
+}
 
 export default function withCommonFunctions<T extends WithCommonFunctionsProps>(
   WrappedComponent: React.ComponentType<T>
 ): React.ComponentType<T & EnhancedProps> {
   const WithCommonFunctions = (props: T): JSX.Element | null => {
-    const formData = useSelector((state: GlobalState) => getFormData(state));
-    const newAnswer = getAnswerIfDataReceiver(formData, props.item);
-
-    const [isHelpVisible, setIsHelpVisible] = React.useState(false);
-
-    const renderDeleteButton = (className?: string): JSX.Element | null => {
-      if (!props.visibleDeleteButton) {
-        return null;
-      }
-      const hasAnwer = (answer: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[] | undefined): boolean => {
-        return !!answer && Object.keys(answer).length > 0;
-      };
-      let mustShowConfirm: boolean = hasAnwer(props.answer);
-
-      if (!mustShowConfirm && props.responseItem && props.responseItem.item) {
-        mustShowConfirm = props.responseItem.item.some(item => (item ? hasAnwer(item.answer) : false));
-      }
-      return (
-        <div className="page_refero__deletebutton-wrapper">
-          <DeleteButton
-            className={className}
-            item={props.item}
-            path={props.path}
-            resources={props.resources}
-            mustShowConfirm={mustShowConfirm}
-            onAnswerChange={props.onAnswerChange}
-          />
-        </div>
-      );
-    };
-
-    const renderRepeatButton = (
-      item: QuestionnaireItem,
-      index: number,
-      path?: Array<Path>,
-      response?: Array<QuestionnaireResponseItem>,
-      responseItem?: QuestionnaireResponseItem
-    ): JSX.Element | undefined => {
-      if (!item.repeats || !shouldRenderRepeatButton(item, response, index)) {
-        return undefined;
-      }
-
-      return (
-        <div className="page_refero__repeatbutton-wrapper">
-          <RepeatButton
-            key={`item_${item.linkId}_add_repeat_item`}
-            resources={props.resources}
-            item={item}
-            responseItems={response}
-            parentPath={path}
-            disabled={item.type !== itemType.GROUP && !responseItem?.answer}
-          />
-        </div>
-      );
-    };
-
-    const renderHelpButton = (): JSX.Element | undefined => {
-      const { item, onRequestHelpButton } = props;
-
-      if (!item) return;
-      const qItem = item;
-
-      const helpItem = findHelpItem(qItem);
-      if (!helpItem) return;
-
-      const helpItemType = getHelpItemType(helpItem) || itemControlConstants.HELP;
-
-      if (onRequestHelpButton) {
-        return (
-          <HelpButton item={helpItem} callback={setIsHelpVisible}>
-            {onRequestHelpButton(qItem, helpItem, helpItemType, getText(helpItem), isHelpVisible)}
-          </HelpButton>
-        );
-      }
-      return (
-        <HelpButton item={helpItem} callback={setIsHelpVisible}>
-          <Icon svgIcon={HelpSign} />
-        </HelpButton>
-      );
-    };
-
-    const renderHelpElement = (): JSX.Element | null => {
-      const { item, onRequestHelpElement } = props;
-      if (!item) {
-        return null;
-      }
-      const qItem = item;
-
-      const helpItem = findHelpItem(qItem);
-      if (!helpItem) {
-        return null;
-      }
-
-      const helpItemType = getHelpItemType(helpItem) || itemControlConstants.HELP;
-
-      if (onRequestHelpElement) {
-        return onRequestHelpElement(qItem, helpItem, helpItemType, getText(helpItem), isHelpVisible);
-      }
-
-      const collapseClasses: string = classNames({
-        page_refero__helpComponent: true,
-        'page_refero__helpComponent--open': isHelpVisible,
-      });
-      return (
-        <Collapse isOpened={isHelpVisible}>
-          <div
-            data-testid={`${helpItem.linkId}-help-element`}
-            className={collapseClasses}
-            dangerouslySetInnerHTML={{
-              __html: DOMPurify.sanitize(`${getText(helpItem)}`, { RETURN_TRUSTED_TYPE: true, ADD_ATTR: ['target'] }) as unknown as string,
-            }}
-          />
-        </Collapse>
-      );
-    };
-
-    const renderItem = (item: QuestionnaireItem, renderContext: RenderContext): Array<JSX.Element> => {
-      const { resources, containedResources, responseItem, pdf, path, headerTag, promptLoginMessage, onRenderMarkdown } = props;
+    const renderItem = (item: QuestionnaireItem, renderContext: RenderContext): JSX.Element[] => {
+      const { resources, containedResources, responseItem, pdf, path, headerTag, promptLoginMessage } = props;
       if (isHelpItem(item)) return [];
       if (isHiddenItem(item)) return [];
 
@@ -258,7 +98,6 @@ export default function withCommonFunctions<T extends WithCommonFunctionsProps>(
           response = getItemWithIdFromResponseItemArray(linkId, childAnswer[0].item);
         }
       }
-      const enable = !item || !item.enableWhen ? true : isEnableWhenEnabled(item.enableWhen, item.enableBehavior, path || [], formData);
       const renderedItems: Array<JSX.Element> = [];
       if (response && response.length > 0) {
         response.forEach((responseItem, index) => {
@@ -268,7 +107,6 @@ export default function withCommonFunctions<T extends WithCommonFunctionsProps>(
             <Comp
               idWithLinkIdAndItemIndex={idWithLinkIdAndItemIndex}
               key={'item_' + responseItem.linkId + createIdSuffix(path, index, item.repeats)}
-              enable={enable}
               pdf={pdf}
               language={props.language}
               includeSkipLink={props.includeSkipLink}
@@ -277,29 +115,23 @@ export default function withCommonFunctions<T extends WithCommonFunctionsProps>(
               item={item}
               questionnaire={props.questionnaire}
               responseItem={responseItem}
-              answer={newAnswer ?? getAnswerFromResponseItem(responseItem)}
               resources={resources}
               containedResources={containedResources}
               path={createPathForItem(path, item, responseItem, index)}
               headerTag={getChildHeaderTag(props.item, headerTag)}
               validateScriptInjection={props.validateScriptInjection}
-              visibleDeleteButton={shouldRenderDeleteButton(item, index)}
-              repeatButton={renderRepeatButton(item, index, path, response, responseItem)}
+              index={index}
+              responseItems={response}
               onRequestAttachmentLink={props.onRequestAttachmentLink}
               onOpenAttachment={props.onOpenAttachment}
               onDeleteAttachment={props.onDeleteAttachment}
               uploadAttachment={props.uploadAttachment}
-              onRequestHelpButton={props.onRequestHelpButton}
-              onRequestHelpElement={props.onRequestHelpElement}
               attachmentErrorMessage={props.attachmentErrorMessage}
               attachmentMaxFileSize={props.attachmentMaxFileSize}
               attachmentValidTypes={props.attachmentValidTypes}
               onAnswerChange={props.onAnswerChange}
               renderContext={renderContext}
-              onRenderMarkdown={onRenderMarkdown}
-              fetchValueSet={props.fetchValueSet}
               autoSuggestProps={props.autoSuggestProps}
-              fetchReceivers={props.fetchReceivers}
             />
           );
         });
@@ -307,7 +139,7 @@ export default function withCommonFunctions<T extends WithCommonFunctionsProps>(
       return renderedItems;
     };
 
-    const renderChildrenItems = (renderContext: RenderContext): Array<JSX.Element> | null => {
+    const renderChildrenItems = (renderContext: RenderContext): JSX.Element[] | null => {
       const { item } = props;
       if (!item || !item.item) {
         return null;
@@ -317,34 +149,17 @@ export default function withCommonFunctions<T extends WithCommonFunctionsProps>(
         return renderContext.RenderChildren(item.item, renderItem);
       }
 
-      const renderedItems: Array<JSX.Element> = [];
+      const renderedItems: JSX.Element[] = [];
       item.item.forEach(i => renderedItems.push(...renderItem(i, renderContext)));
 
       return renderedItems;
     };
 
-    const enable =
-      !props.item || !props.item.enableWhen
-        ? true
-        : isEnableWhenEnabled(props.item.enableWhen, props.item.enableBehavior, props.path || [], formData);
-
-    if (!enable) {
-      return null;
-    } else {
-      return (
-        <WrappedComponent
-          renderChildrenItems={renderChildrenItems}
-          renderDeleteButton={renderDeleteButton}
-          renderRepeatButton={renderRepeatButton}
-          renderHelpButton={renderHelpButton}
-          renderHelpElement={renderHelpElement}
-          enable={enable}
-          {...props}
-        >
-          {renderChildrenItems(props.renderContext)}
-        </WrappedComponent>
-      );
-    }
+    return (
+      <WrappedComponent renderChildrenItems={renderChildrenItems} {...props}>
+        {renderChildrenItems(props.renderContext)}
+      </WrappedComponent>
+    );
   };
   const displayName = WrappedComponent.displayName || WrappedComponent.name || 'WithCommonFunctions';
 

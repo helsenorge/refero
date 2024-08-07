@@ -16,8 +16,8 @@ import {
   newStringValue,
   removeCodingValue,
   removeCodingStringValue,
-} from '../actions/newValue';
-import itemControlConstants from '../constants/itemcontrol';
+} from '@/actions/newValue';
+import itemControlConstants from '@/constants/itemcontrol';
 
 export interface IActionRequester {
   addIntegerAnswer(linkId: string, value: number, index?: number): void;

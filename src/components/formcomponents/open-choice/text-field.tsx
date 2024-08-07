@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { Controller, FieldValues, useFormContext } from 'react-hook-form';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
@@ -8,41 +7,25 @@ import Input from '@helsenorge/designsystem-react/components/Input';
 
 import { getValidationTextExtension, getPlaceholder, getMinLengthExtensionValue, getRegexExtension } from '../../../util/extension';
 import { isReadOnly, isRequired, getId, getPDFStringValue, getMaxLength, getStringValue } from '../../../util/index';
-import { Resources } from '@/util/resources';
-import { FormProps } from '../../../validation/ReactHookFormHoc';
-import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
+
 import Pdf from '../textview';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
+import { useGetAnswer } from '@/hooks/useGetAnswer';
+import { RenderItemProps } from '../renderChildren/RenderChildrenItems';
 
-interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
-  id?: string;
-  pdf?: boolean;
-  item: QuestionnaireItem;
-  questionnaire?: Questionnaire;
-  answer: QuestionnaireResponseItemAnswer;
+type Props = RenderItemProps & {
   handleStringChange: (event: React.FocusEvent<HTMLInputElement, Element>) => void;
   handleChange: (value: string) => void;
-  onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
-  resources?: Resources;
   children: React.ReactNode;
-}
-const textField = ({
-  id,
-  pdf,
-  item,
-  questionnaire,
-  answer,
-  handleStringChange,
-  handleChange,
-  children,
-  onRenderMarkdown,
-  resources,
-  idWithLinkIdAndItemIndex,
-}: Props): JSX.Element | null => {
+};
+const textField = (props: Props): JSX.Element | null => {
+  const { id, pdf, item, handleStringChange, handleChange, children, resources, idWithLinkIdAndItemIndex, responseItem } = props;
   const formName = `${idWithLinkIdAndItemIndex}-extra-field`;
   const { formState, getFieldState } = useFormContext<FieldValues>();
   const { error } = getFieldState(formName, formState);
+  const answer = useGetAnswer(responseItem, item);
+
   if (pdf) {
     return (
       <Pdf item={item} value={getPDFStringValue(answer)}>
@@ -58,13 +41,11 @@ const textField = ({
   const minLength = getMinLengthExtensionValue(item);
   const pattern = getRegexExtension(item);
   const errorMessage = getValidationTextExtension(item);
-
+  const value = getStringValue(answer);
   return (
     <FormGroup error={error?.message} mode="ongrey">
       <ReferoLabel
         item={item}
-        onRenderMarkdown={onRenderMarkdown}
-        questionnaire={questionnaire}
         resources={resources}
         htmlFor={`${getId(id)}-extra-field`}
         labelId={`${getId(id)}-extra-field-label`}
@@ -74,7 +55,7 @@ const textField = ({
       <Controller
         name={`${idWithLinkIdAndItemIndex}-extra-field`}
         shouldUnregister={true}
-        defaultValue={getStringValue(answer)}
+        defaultValue={value}
         rules={{
           required: {
             value: isRequired(item),
@@ -108,7 +89,7 @@ const textField = ({
             mode="ongrey"
             inputId={`${getId(id)}-extra-field`}
             testId={`${getId(id)}-extra-field`}
-            value={getStringValue(answer)}
+            value={value}
             placeholder={getPlaceholder(item)}
             readOnly={isReadOnly(item)}
             onChange={(e): void => {

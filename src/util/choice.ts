@@ -16,10 +16,10 @@ import { Options } from '../types/formTypes/radioGroupOptions';
 
 import { getItemControlExtensionValue, getValidationTextExtension } from './extension';
 import { Resources } from './resources';
-import { Extensions } from '../constants/extensions';
-import Constants, { OPEN_CHOICE_ID } from '../constants/index';
-import itemControlConstants, { ItemControlValue, isItemControlValue } from '../constants/itemcontrol';
-import ItemType from '../constants/itemType';
+import { Extensions } from '@/constants/extensions';
+import Constants, { OPEN_CHOICE_ID } from '@/constants/index';
+import itemControlConstants, { ItemControlValue, isItemControlValue } from '@/constants/itemcontrol';
+import ItemType from '@/constants/itemType';
 
 import { isReadOnly, isRequired } from './index';
 
@@ -227,7 +227,7 @@ export function validateInput(
   return true;
 }
 
-export function getIndexOfAnswer(code: string, answer: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer): number {
+export function getIndexOfAnswer(code: string, answer?: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer): number {
   if (answer && Array.isArray(answer)) {
     return answer.findIndex(el => {
       if (el && el.valueCoding && el.valueCoding.code) {
@@ -241,7 +241,7 @@ export function getIndexOfAnswer(code: string, answer: Array<QuestionnaireRespon
   return -1;
 }
 
-export function shouldShowExtraChoice(answer: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer): boolean {
+export function shouldShowExtraChoice(answer?: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer): boolean {
   if (!answer) {
     return false;
   }

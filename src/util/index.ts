@@ -39,6 +39,8 @@ import { RenderOptionCode } from '../constants/renderOptionCode';
 import { TableCodes } from '../constants/tableTypes';
 import { Resources } from '@/util/resources';
 import { ComponentType } from 'react';
+import { RenderItemProps } from '@/components/formcomponents/renderChildren/RenderChildrenItems';
+import { FormProps } from '@/validation/ReactHookFormHoc';
 
 function openNewIfAbsolute(url: string): string {
   const regex = new RegExp('^(([a-z][a-z0-9+.-]*):.*)');
@@ -60,7 +62,10 @@ export const isTableCode = (extensionCode: string | string[]): boolean => {
   return isTable;
 };
 
-export function getComponentForItem(type: string, extensionCode?: string | string[]): ComponentType<any> {
+export function getComponentForItem(
+  type: string,
+  extensionCode?: string | string[]
+): ComponentType<RenderItemProps> | ComponentType<RenderItemProps> | undefined {
   if (String(type) === ItemType.GROUP && !!extensionCode && isTableCode(extensionCode)) {
     return TableContainer;
   } else if (String(type) === ItemType.GROUP) {
@@ -258,7 +263,7 @@ export function getLinkId(item: QuestionnaireItem): string {
   return uuid.v4();
 }
 
-export function getStringValue(answer: QuestionnaireResponseItemAnswer | Array<QuestionnaireResponseItemAnswer>): string {
+export function getStringValue(answer?: QuestionnaireResponseItemAnswer | Array<QuestionnaireResponseItemAnswer>): string {
   if (answer && Array.isArray(answer)) {
     const stringAnswer = answer.filter(f => f.valueString);
     return stringAnswer.length > 0 ? stringAnswer.map(m => m.valueString).join(', ') : '';
@@ -267,7 +272,7 @@ export function getStringValue(answer: QuestionnaireResponseItemAnswer | Array<Q
 }
 
 export function getPDFStringValue(
-  answer: QuestionnaireResponseItemAnswer | Array<QuestionnaireResponseItemAnswer>,
+  answer?: QuestionnaireResponseItemAnswer | Array<QuestionnaireResponseItemAnswer>,
   resources?: Resources
 ): string {
   const value = getStringValue(answer);

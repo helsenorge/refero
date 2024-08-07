@@ -70,10 +70,6 @@ export function createMockAttachmentProps(
     responseItem: mockQuestionnaireResponseMock,
     answer: [],
     resources: partialResources as Resources,
-    renderDeleteButton: vi.fn(() => <button>{'Delete'}</button>),
-    repeatButton: <button>{'Repeat'}</button>,
-    renderHelpButton: vi.fn(() => <button>{'Help'}</button>),
-    renderHelpElement: vi.fn(() => <div>{'Help content'}</div>),
     onAnswerChange: vi.fn(),
     // ... other props with their mock implementations
   };

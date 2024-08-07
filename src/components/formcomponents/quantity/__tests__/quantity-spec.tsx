@@ -131,7 +131,7 @@ describe('Quantity', () => {
           return y;
         }),
       };
-      const { getByTestId, queryAllByLabelText, queryByTestId } = createWrapper(questionnaire);
+      const { queryAllByLabelText, queryByTestId } = createWrapper(questionnaire);
       await clickButtonTimes(/-repeat-button/i, 3);
 
       expect(queryAllByLabelText(/Quantity/i)).toHaveLength(4);
@@ -144,7 +144,7 @@ describe('Quantity', () => {
         ...q,
         item: q.item?.map(x => ({ ...x, repeats: true })),
       };
-      const { getByTestId, queryAllByTestId } = createWrapper(questionnaire);
+      const { queryAllByTestId } = createWrapper(questionnaire);
 
       await clickButtonTimes(/-repeat-button/i, 2);
 
@@ -214,12 +214,31 @@ describe('Quantity', () => {
       };
       const { getByLabelText } = createWrapper(questionnaire);
 
-      const inputElement = getByLabelText(/Quantity/i);
-      expect(inputElement).toBeInTheDocument();
-      expect(inputElement).toHaveAttribute('type', 'number');
-      expect(inputElement).toHaveAttribute('id', `item_${q?.item?.[0].linkId}^0`);
-      userEvent.type(inputElement, '123');
+      expect(getByLabelText(/Quantity/i)).toBeInTheDocument();
+      expect(getByLabelText(/Quantity/i)).toHaveAttribute('type', 'number');
+      expect(getByLabelText(/Quantity/i)).toHaveAttribute('id', `item_${q?.item?.[0].linkId}^0`);
+      await act(async () => {
+        userEvent.type(getByLabelText(/Quantity/i), '123');
+      });
+      expect(getByLabelText(/Quantity/i)).toHaveValue(123);
+    });
+    it('Should update component with value from answer - without unit', async () => {
+      const questionnaire: Questionnaire = {
+        ...q,
+        item: q.item?.map(x => ({
+          ...x,
+          repeats: true,
+          extension: [...(q.extension ?? [])],
+        })),
+      };
+      const { getByLabelText } = createWrapper(questionnaire);
 
+      expect(getByLabelText(/Quantity/i)).toBeInTheDocument();
+      expect(getByLabelText(/Quantity/i)).toHaveAttribute('type', 'number');
+      expect(getByLabelText(/Quantity/i)).toHaveAttribute('id', `item_${q?.item?.[0].linkId}^0`);
+      await act(async () => {
+        userEvent.type(getByLabelText(/Quantity/i), '123');
+      });
       expect(getByLabelText(/Quantity/i)).toHaveValue(123);
     });
     it('Should call onChange with correct value', async () => {

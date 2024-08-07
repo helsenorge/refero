@@ -56,7 +56,7 @@ describe('get questionnaireResponse item', () => {
 
   it('should return correct item', () => {
     //should.not.exist(getQuestionnaireResponseItemWithLinkid('123', undefined, false, []));
-    expect(getQuestionnaireResponseItemWithLinkid('123', {}, [])).toBeUndefined();
+    expect(getQuestionnaireResponseItemWithLinkid('123', { linkId: '' }, [])).toBeUndefined();
     expect(getQuestionnaireResponseItemWithLinkid('123', data, [])).toBeDefined();
     expect(getQuestionnaireResponseItemWithLinkid('753159', data, [])).toBeUndefined();
     let item = getQuestionnaireResponseItemWithLinkid('456', data, pathify('123', '456'));
@@ -125,7 +125,7 @@ describe('get answer from questionnareReponse', () => {
 
   it('should return correct answer', () => {
     expect(getAnswerFromResponseItem(undefined)).toBeUndefined();
-    expect(getAnswerFromResponseItem({})).toBeUndefined();
+    expect(getAnswerFromResponseItem({ linkId: '' })).toBeUndefined();
     const answer = getAnswerFromResponseItem(data);
     expect(answer).toBeDefined();
     if (answer && 'valueString' in answer && answer.valueString) {

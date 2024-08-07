@@ -1,13 +1,7 @@
-import React from 'react';
+import { ReactNode, useState } from 'react';
 
-import {
-  QuestionnaireItem,
-  QuestionnaireResponseItemAnswer,
-  Quantity as QuantityType,
-  QuestionnaireResponseItem,
-  Questionnaire,
-} from 'fhir/r4';
-import { Controller } from 'react-hook-form';
+import { QuestionnaireResponseItemAnswer, Quantity as QuantityType } from 'fhir/r4';
+import { Controller, FieldValues, useFormContext } from 'react-hook-form';
 import { ThunkDispatch } from 'redux-thunk';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
@@ -23,57 +17,52 @@ import {
   getValidationTextExtension,
 } from '@/util/extension';
 import { isReadOnly, getId, isRequired, getDecimalPattern } from '@/util/index';
-import { Path } from '@/util/refero-core';
-import { Resources } from '@/util/resources';
-import ReactHookFormHoc, { FormProps } from '../../../validation/ReactHookFormHoc';
-import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
+
 import TextView from '../textview';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { useDispatch } from 'react-redux';
+import { useGetAnswer } from '@/hooks/useGetAnswer';
+import { useIsEnabled } from '@/hooks/useIsEnabled';
+import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelpButton';
+import RenderHelpElement from '@/components/formcomponents/help-button/RenderHelpElement';
+import RenderDeleteButton from '../repeat/RenderDeleteButton';
+import RenderRepeatButton from '../repeat/RenderRepeatButton';
+import { RenderChildrenItems, RenderItemProps } from '../renderChildren/RenderChildrenItems';
 
-export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
-  item: QuestionnaireItem;
-  questionnaire?: Questionnaire;
-  responseItem: QuestionnaireResponseItem;
-  answer: QuestionnaireResponseItemAnswer;
-  resources?: Resources;
-  path: Array<Path>;
-  pdf?: boolean;
-  promptLoginMessage?: () => void;
-  renderDeleteButton: (className?: string) => JSX.Element | null;
-  id?: string;
-  repeatButton: JSX.Element;
-  renderHelpButton: () => JSX.Element;
-  renderHelpElement: () => JSX.Element;
-  onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
-  onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
-  children?: React.ReactNode;
+export interface Props extends RenderItemProps {
+  children?: ReactNode;
 }
 
-const Quantity = ({
-  promptLoginMessage,
-  path,
-  item,
-  onAnswerChange,
-  answer,
-  id,
-  questionnaire,
-  onRenderMarkdown,
-  resources,
-  error,
-  pdf,
-  idWithLinkIdAndItemIndex,
-  renderDeleteButton,
-  repeatButton,
-  children,
-  renderHelpButton,
-  renderHelpElement,
-}: Props): JSX.Element | null => {
+const Quantity = (props: Props): JSX.Element | null => {
+  const {
+    promptLoginMessage,
+    path,
+    item,
+    onAnswerChange,
+    id,
+    resources,
+    pdf,
+    idWithLinkIdAndItemIndex,
+    responseItems,
+    index,
+    children,
+    responseItem,
+  } = props;
+  const { formState, getFieldState } = useFormContext<FieldValues>();
+  const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
+  const { error } = fieldState;
+
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
-  const getValue = (): number | number[] | undefined => {
+  const [isHelpVisible, setIsHelpVisible] = useState(false);
+  const answer = useGetAnswer(responseItem, item);
+  const enable = useIsEnabled(item, path);
+
+  const getValue = (
+    answer?: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]
+  ): number | number[] | undefined | string => {
     if (answer && Array.isArray(answer)) {
-      return answer.map(m => m.valueQuantity.value);
+      return answer.map(m => m.valueQuantity?.value).filter(f => f !== undefined);
     }
     if (answer && answer.valueQuantity !== undefined && answer.valueQuantity !== null) {
       return answer.valueQuantity.value;
@@ -81,7 +70,7 @@ const Quantity = ({
   };
 
   const getPDFValue = (): string => {
-    const value = getValue();
+    const value = getValue(answer);
     if (value === undefined || value === null) {
       let text = '';
       if (resources && resources.ikkeBesvart) {
@@ -97,27 +86,24 @@ const Quantity = ({
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     const extension = getQuestionnaireUnitExtensionValue(item);
-    if (extension) {
-      const quantity = {
-        unit: extension.display,
-        system: extension.system,
-        code: extension.code,
-      } as QuantityType;
+    const quantity: QuantityType = {
+      unit: extension?.display,
+      system: extension?.system,
+      code: extension?.code,
+    };
 
-      const value = Number(parseFloat(event.target.value));
-      if (value != null && !isNaN(value) && isFinite(value)) {
-        quantity.value = value;
-      }
+    const value = Number(parseFloat(event.target.value));
+    if (value !== null && !isNaN(value) && isFinite(value)) {
+      quantity.value = value;
+    }
 
-      if (dispatch) {
-        dispatch(newQuantityValueAsync(path, quantity, item))?.then(newState =>
-          onAnswerChange(newState, path, item, { valueQuantity: quantity } as QuestionnaireResponseItemAnswer)
-        );
-      }
+    dispatch(newQuantityValueAsync(path || [], quantity, item))?.then(
+      newState =>
+        onAnswerChange && onAnswerChange(newState, path || [], item, { valueQuantity: quantity } as QuestionnaireResponseItemAnswer)
+    );
 
-      if (promptLoginMessage) {
-        promptLoginMessage();
-      }
+    if (promptLoginMessage) {
+      promptLoginMessage();
     }
   };
 
@@ -128,42 +114,35 @@ const Quantity = ({
     }
     return '';
   };
-
+  if (!enable) {
+    return null;
+  }
   if (pdf || isReadOnly(item)) {
     return (
-      <TextView
-        id={id}
-        item={item}
-        value={getPDFValue()}
-        onRenderMarkdown={onRenderMarkdown}
-        helpButton={renderHelpButton()}
-        helpElement={renderHelpElement()}
-      >
+      <TextView id={id} item={item} value={getPDFValue()}>
         {children}
       </TextView>
     );
   }
-  const value = getValue();
+  const value = getValue(answer);
   const decimalPattern = getDecimalPattern(item);
   const minValue = getMinValueExtensionValue(item);
   const maxValue = getMaxValueExtensionValue(item);
   const errorMessage = getValidationTextExtension(item);
-
   return (
     <div className="page_refero__component page_refero__component_quantity">
       <FormGroup error={error?.message} mode="ongrey">
-        {renderHelpElement()}
         <ReferoLabel
           item={item}
-          onRenderMarkdown={onRenderMarkdown}
-          questionnaire={questionnaire}
           resources={resources}
           htmlFor={getId(id)}
           labelId={`${getId(id)}-quantity-label`}
           testId={`${getId(id)}-quantity-label`}
           sublabelId={`${getId(id)}-quantity-sublabel`}
-          renderHelpButton={renderHelpButton}
+          afterLabelContent={<RenderHelpButton isHelpVisible={isHelpVisible} item={item} setIsHelpVisible={setIsHelpVisible} />}
         />
+        <RenderHelpElement isHelpVisible={isHelpVisible} item={item} />
+
         <Controller
           name={idWithLinkIdAndItemIndex}
           shouldUnregister={true}
@@ -213,13 +192,22 @@ const Quantity = ({
             </>
           )}
         />
-        {renderDeleteButton('page_refero__deletebutton--margin-top')}
-        <div>{repeatButton}</div>
+        <RenderDeleteButton
+          item={item}
+          path={path}
+          index={index}
+          onAnswerChange={onAnswerChange}
+          responseItem={responseItem}
+          resources={resources}
+          className="page_refero__deletebutton--margin-top"
+        />
+        <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} responseItem={responseItem} responseItems={responseItems} />
       </FormGroup>
-      {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
+      <div className="nested-fieldset nested-fieldset--full-height">
+        <RenderChildrenItems otherProps={props} />
+      </div>
     </div>
   );
 };
-const withFormProps = ReactHookFormHoc(Quantity);
-const withCommonFunctionsComponent = withCommonFunctions(withFormProps);
-export default withCommonFunctionsComponent;
+
+export default Quantity;

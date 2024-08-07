@@ -2,7 +2,6 @@ import React from 'react';
 
 import ItemType from '@constants/itemType';
 import { PresentationButtonsType } from '@constants/presentationButtonsType';
-import RepeatButton from '@formcomponents/repeat/RepeatButton';
 import {
   QuestionnaireResponseItem,
   Questionnaire,
@@ -35,14 +34,12 @@ import {
 } from '@/util/extension';
 import { getTopLevelElements } from '@/util/getTopLevelElements';
 import { IE11HackToWorkAroundBug187484 } from '@/util/hacks';
-import { getComponentForItem, shouldRenderRepeatButton, isHiddenItem, getDecimalValue } from '@/util/index';
+import { getComponentForItem, isHiddenItem, getDecimalValue } from '@/util/index';
 import { QuestionniareInspector } from '@/util/questionnaireInspector';
 import {
   getRootQuestionnaireResponseItemFromData,
   Path,
   createPathForItem,
-  getAnswerFromResponseItem,
-  shouldRenderDeleteButton,
   createIdSuffix,
   getQuestionnaireDefinitionItem,
   getResponseItemAndPathWithLinkId,
@@ -51,7 +48,7 @@ import { RenderContext } from '@/util/renderContext';
 import { AnswerPad, ScoringCalculator } from '@/util/scoringCalculator';
 import { shouldFormBeDisplayedAsStepView } from '@/util/shouldFormBeDisplayedAsStepView';
 import { createIntitialFormValues } from '@/validation/defaultFormValues';
-import { isEnableWhenEnabled } from '@/util/map-props';
+import { ExternalRenderProvider } from '@/context/externalRenderContext';
 interface StateProps {
   formDefinition: FormDefinition | null;
   formData: FormData | null;
@@ -110,7 +107,6 @@ const Refero = (props: StateProps & DispatchProps & ReferoProps): JSX.Element | 
     item: QuestionnaireItem,
     answer: QuestionnaireResponseItemAnswer
   ): void => {
-    // console.log('onAnswerChange', newState, item, answer, props.onChange);
     if (props.onChange && newState.refero.form.FormDefinition.Content && newState.refero.form.FormData.Content) {
       const actionRequester = new ActionRequester(newState.refero.form.FormDefinition.Content, newState.refero.form.FormData.Content);
 
@@ -211,26 +207,13 @@ const Refero = (props: StateProps & DispatchProps & ReferoProps): JSX.Element | 
       if (!Comp) {
         return undefined;
       }
-      const enable = !item || !item.enableWhen ? true : isEnableWhenEnabled(item.enableWhen, item.enableBehavior, path || [], formData);
+
       let responseItems: Array<QuestionnaireResponseItem> | undefined;
       if (formData) {
         responseItems = getRootQuestionnaireResponseItemFromData(item.linkId, formData);
       }
       if (responseItems && responseItems.length > 0) {
         responseItems.forEach((responseItem, index) => {
-          const repeatButton =
-            item.repeats && shouldRenderRepeatButton(item, responseItems, index) ? (
-              <div className="page_refero__repeatbutton-wrapper">
-                <RepeatButton
-                  key={`item_${item.linkId}_add_repeat_item`}
-                  resources={props.resources}
-                  item={item}
-                  responseItems={responseItems}
-                  parentPath={props.path}
-                  disabled={item.type !== ItemType.GROUP && !responseItem.answer}
-                />
-              </div>
-            ) : undefined;
           const path = createPathForItem(props.path, item, responseItem, index);
 
           // legg på blindzone rett over den første seksjonen
@@ -238,10 +221,9 @@ const Refero = (props: StateProps & DispatchProps & ReferoProps): JSX.Element | 
             isNavigatorBlindzoneInitiated = true;
             renderedItems.push(<section id={NAVIGATOR_BLINDZONE_ID}></section>);
           }
-
           renderedItems.push(
             <Comp
-              enable={enable}
+              {...props}
               idWithLinkIdAndItemIndex={`${item.linkId}${createIdSuffix(path, index, item.repeats)}`}
               language={formDefinition.Content?.language}
               pdf={pdf}
@@ -250,31 +232,15 @@ const Refero = (props: StateProps & DispatchProps & ReferoProps): JSX.Element | 
               key={`item_${responseItem.linkId}_${index}`}
               id={'item_' + responseItem.linkId + createIdSuffix(path, index, item.repeats)}
               item={item}
-              questionnaire={formDefinition.Content}
               responseItem={responseItem}
-              answer={getAnswerFromResponseItem(responseItem)}
               resources={resources}
               containedResources={contained}
               path={path}
               headerTag={Constants.DEFAULT_HEADER_TAG}
-              visibleDeleteButton={shouldRenderDeleteButton(item, index)}
-              repeatButton={repeatButton}
-              onRequestAttachmentLink={props.onRequestAttachmentLink}
-              onOpenAttachment={props.onOpenAttachment}
-              onDeleteAttachment={props.onDeleteAttachment}
-              uploadAttachment={props.uploadAttachment}
-              onRequestHelpButton={props.onRequestHelpButton}
-              onRequestHelpElement={props.onRequestHelpElement}
-              attachmentErrorMessage={props.attachmentErrorMessage}
-              attachmentMaxFileSize={props.attachmentMaxFileSize}
-              attachmentValidTypes={props.attachmentValidTypes}
-              validateScriptInjection={props.validateScriptInjection}
+              index={index}
+              responseItems={responseItems}
               onAnswerChange={onAnswerChange}
               renderContext={new RenderContext()}
-              onRenderMarkdown={props.onRenderMarkdown}
-              fetchValueSet={props.fetchValueSet}
-              autoSuggestProps={props.autoSuggestProps}
-              fetchReceivers={props.fetchReceivers}
             />
           );
         });
@@ -283,110 +249,117 @@ const Refero = (props: StateProps & DispatchProps & ReferoProps): JSX.Element | 
     return renderedItems;
   };
 
-  const renderSkjema = (pdf?: boolean): Array<JSX.Element> | Array<Array<JSX.Element>> | JSX.Element | null | undefined => {
-    const { formDefinition, resources } = props;
-    if (!formDefinition || !formDefinition.Content || !resources) {
-      return null;
-    }
+  const getButtonClasses = (
+    presentationButtonsType: PresentationButtonsType | null,
+    defaultClasses: string[] = [],
+    sticky: boolean | undefined
+  ): string => {
+    const classes = [...defaultClasses];
 
-    if (pdf) {
-      return renderFormItems(true);
-    }
-
-    const presentationButtonsType = getPresentationButtonsExtension(formDefinition.Content);
-    const isStepView = shouldFormBeDisplayedAsStepView(formDefinition);
-
-    return (
-      <div className={getButtonClasses(presentationButtonsType, ['page_refero__content'])}>
-        <div className="page_refero__messageboxes" />
-        {renderForm(isStepView)}
-      </div>
-    );
-  };
-
-  const renderForm = (isStepView?: boolean): JSX.Element | undefined => {
-    const {
-      formDefinition,
-      resources,
-      authorized,
-      blockSubmit,
-      onSave,
-      onCancel,
-      onSubmit,
-      loginButton,
-      validationSummaryPlacement,
-      submitButtonDisabled,
-      saveButtonDisabled,
-      onFieldsNotCorrectlyFilledOut,
-      onStepChange,
-    } = props;
-    if (!formDefinition || !resources) {
-      return;
-    }
-    const referoProps = {
-      authorized,
-      blockSubmit,
-      onSave,
-      onCancel,
-      onSubmit,
-      loginButton,
-      validationSummaryPlacement,
-      submitButtonDisabled,
-      saveButtonDisabled,
-      onFieldsNotCorrectlyFilledOut,
-      onStepChange,
-    };
-    return (
-      <FormProvider {...methods}>
-        {isStepView ? (
-          <StepView
-            isAuthorized={authorized}
-            referoProps={referoProps}
-            resources={resources}
-            formItems={renderFormItems()}
-            formDefinition={formDefinition}
-            onSave={handleSave}
-            onSubmit={handleSubmit}
-            onStepChange={onStepChange}
-            methods={methods}
-          />
-        ) : (
-          <RenderForm
-            isAuthorized={authorized}
-            isStepView={false}
-            referoProps={referoProps}
-            resources={resources}
-            onSave={handleSave}
-            onSubmit={handleSubmit}
-            methods={methods}
-            validationSummaryPlacement={validationSummaryPlacement}
-          >
-            {renderFormItems()}
-          </RenderForm>
-        )}
-      </FormProvider>
-    );
-  };
-
-  const getButtonClasses = (presentationButtonsType: PresentationButtonsType | null, defaultClasses?: string[]): string => {
-    defaultClasses = defaultClasses ?? [];
     if (presentationButtonsType === PresentationButtonsType.None) {
-      defaultClasses.push('page_refero__hidden_buttons');
-    }
-    if (presentationButtonsType === PresentationButtonsType.Sticky || (props.sticky && !presentationButtonsType)) {
-      defaultClasses.push('page_refero__stickybar');
+      classes.push('page_refero__hidden_buttons');
+    } else if (presentationButtonsType === PresentationButtonsType.Sticky || (sticky && !presentationButtonsType)) {
+      classes.push('page_refero__stickybar');
     }
 
-    return defaultClasses.join(' ');
+    return classes.join(' ');
   };
 
-  const { resources } = props;
+  const {
+    formDefinition,
+    resources,
+    authorized,
+    blockSubmit,
+    onSave,
+    onCancel,
+    onSubmit,
+    loginButton,
+    validationSummaryPlacement,
+    submitButtonDisabled,
+    saveButtonDisabled,
+    onFieldsNotCorrectlyFilledOut,
+    onStepChange,
+  } = props;
+
+  const referoProps = {
+    authorized,
+    blockSubmit,
+    onSave,
+    onCancel,
+    onSubmit,
+    loginButton,
+    validationSummaryPlacement,
+    submitButtonDisabled,
+    saveButtonDisabled,
+    onFieldsNotCorrectlyFilledOut,
+    onStepChange,
+  };
 
   if (!resources) {
     return null;
   }
+  if (!formDefinition || !formDefinition.Content || !resources) {
+    return null;
+  }
 
-  return <>{renderSkjema(props.pdf)}</>;
+  if (props.pdf) {
+    return (
+      <ExternalRenderProvider
+        onRequestHelpButton={props.onRequestHelpButton}
+        onRequestHelpElement={props.onRequestHelpElement}
+        onRenderMarkdown={props.onRenderMarkdown}
+        fetchReceivers={props.fetchReceivers}
+        fetchValueSet={props.fetchValueSet}
+      >
+        <FormProvider {...methods}>{renderFormItems(true)} </FormProvider>
+      </ExternalRenderProvider>
+    );
+  }
+
+  const presentationButtonsType = getPresentationButtonsExtension(formDefinition.Content);
+  const isStepView = shouldFormBeDisplayedAsStepView(formDefinition);
+
+  return (
+    <div className={getButtonClasses(presentationButtonsType, ['page_refero__content'], props.sticky)}>
+      <div className="page_refero__messageboxes" />
+      <ExternalRenderProvider
+        onRequestHelpButton={props.onRequestHelpButton}
+        onRequestHelpElement={props.onRequestHelpElement}
+        onRenderMarkdown={props.onRenderMarkdown}
+        fetchReceivers={props.fetchReceivers}
+        fetchValueSet={props.fetchValueSet}
+      >
+        <FormProvider {...methods}>
+          {isStepView ? (
+            <StepView
+              isAuthorized={authorized}
+              referoProps={referoProps}
+              resources={resources}
+              formItems={renderFormItems()}
+              formDefinition={formDefinition}
+              onSave={handleSave}
+              onSubmit={handleSubmit}
+              onStepChange={onStepChange}
+              methods={methods}
+            />
+          ) : (
+            <RenderForm
+              isAuthorized={authorized}
+              isStepView={false}
+              referoProps={referoProps}
+              resources={resources}
+              onSave={handleSave}
+              onSubmit={handleSubmit}
+              methods={methods}
+              validationSummaryPlacement={validationSummaryPlacement}
+            >
+              {renderFormItems()}
+            </RenderForm>
+          )}
+        </FormProvider>
+      </ExternalRenderProvider>
+    </div>
+  );
 };
 
 function mapDispatchToProps(dispatch: ThunkDispatch<GlobalState, void, NewValueAction>, props: ReferoProps): DispatchProps {

@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 
-import { QuestionnaireItem, QuestionnaireItemAnswerOption, QuestionnaireResponseItemAnswer } from 'fhir/r4';
-import { Controller } from 'react-hook-form';
+import { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
+import { Controller, FieldValues, useFormContext } from 'react-hook-form';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import { Slider, SliderStep } from '@helsenorge/designsystem-react/components/Slider';
@@ -12,18 +12,20 @@ import { getId, isRequired } from '@/util';
 import { getCodes as getCodingSystemCodes } from '@/util/codingsystem';
 import { getExtension, getValidationTextExtension } from '@/util/extension';
 import { isString } from '@/util/typeguards';
-import { FormProps } from '../../../validation/ReactHookFormHoc';
-import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
+import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelpButton';
+import RenderHelpElement from '@/components/formcomponents/help-button/RenderHelpElement';
+import RenderDeleteButton from '../repeat/RenderDeleteButton';
+import RenderRepeatButton from '../repeat/RenderRepeatButton';
+import { RenderChildrenItems, RenderItemProps } from '../renderChildren/RenderChildrenItems';
 
-export interface SliderProps extends WithCommonFunctionsAndEnhancedProps, FormProps {
+export type SliderProps = RenderItemProps & {
   item: QuestionnaireItem;
-  answer: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer;
   handleChange: (sliderStep: string) => void;
   selected?: Array<string | undefined>;
   children?: React.ReactNode;
-}
+};
 enum SliderDisplayTypes {
   Label = 'label',
   OrdinalValue = 'ordnialValue',
@@ -32,23 +34,25 @@ enum SliderDisplayTypes {
 
 type LeftRightLabels = { leftLabel: string; rightLabel: string };
 
-const SliderView: React.FC<SliderProps> = ({
-  item,
-  questionnaire,
-  onRenderMarkdown,
-  handleChange,
-  selected,
-  children,
-  resources,
-  idWithLinkIdAndItemIndex,
-  id,
-  renderHelpElement,
-  renderHelpButton,
-  renderDeleteButton,
-  repeatButton,
-  error,
-  control,
-}) => {
+const SliderView = (props: SliderProps): JSX.Element | null => {
+  const {
+    item,
+    handleChange,
+    selected,
+    resources,
+    idWithLinkIdAndItemIndex,
+    id,
+    onAnswerChange,
+    responseItems,
+    responseItem,
+    path,
+    index,
+  } = props;
+  const { formState, getFieldState, control } = useFormContext<FieldValues>();
+  const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
+  const { error } = fieldState;
+
+  const [isHelpVisible, setIsHelpVisible] = useState(false);
   const onValueChange = (index: number): void => {
     const code = item.answerOption?.[index]?.valueCoding?.code;
     if (code) {
@@ -78,17 +82,15 @@ const SliderView: React.FC<SliderProps> = ({
   return (
     <div className="page_refero__component page_refero__component_choice page_refero__component_choice_slider">
       <FormGroup mode="ongrey" error={error?.message}>
-        {renderHelpElement()}
         <ReferoLabel
           htmlFor={id}
           item={item}
           labelId={`${getId(id)}-slider-choice-label`}
           testId={`${getId(id)}-slider-choice-label`}
-          renderHelpButton={renderHelpButton}
-          onRenderMarkdown={onRenderMarkdown}
-          questionnaire={questionnaire}
           resources={resources}
+          afterLabelContent={<RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />}
         />
+        <RenderHelpElement item={item} isHelpVisible={isHelpVisible} />
 
         <Controller
           name={idWithLinkIdAndItemIndex}
@@ -100,6 +102,7 @@ const SliderView: React.FC<SliderProps> = ({
             },
           }}
           control={control}
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
           render={({ field: { onChange, ref, ...rest } }): JSX.Element => (
             <Slider
               {...rest}
@@ -118,9 +121,19 @@ const SliderView: React.FC<SliderProps> = ({
             />
           )}
         />
-        {renderDeleteButton && renderDeleteButton('page_refero__deletebutton--margin-top')}
-        {repeatButton}
-        {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : undefined}
+        <RenderDeleteButton
+          item={item}
+          path={path}
+          index={index}
+          onAnswerChange={onAnswerChange}
+          responseItem={responseItem}
+          resources={resources}
+          className="page_refero__deletebutton--margin-top"
+        />
+        <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} responseItem={responseItem} responseItems={responseItems} />
+        <div className="nested-fieldset nested-fieldset--full-height">
+          <RenderChildrenItems otherProps={props} />
+        </div>
       </FormGroup>
     </div>
   );

@@ -4,13 +4,22 @@ import itemControlConstants from '@/constants/itemcontrol';
 import { getItemControlExtensionValue, getMarkdownExtensionValue } from '@/util/extension';
 import { renderPrefix, getText, getId } from '@/util/index';
 
-import { WithCommonFunctionsProps } from '../../with-common-functions';
 import SafeText from '@/components/referoLabel/SafeText';
+import { useIsEnabled } from '@/hooks/useIsEnabled';
+import { useExternalRenderContext } from '@/context/externalRenderContext';
+import { RenderItemProps } from '../renderChildren/RenderChildrenItems';
+import { useSelector } from 'react-redux';
+import { GlobalState } from '@/reducers';
+import { getFormDefinition } from '@/reducers/form';
 
-export type Props = WithCommonFunctionsProps;
+export type Props = RenderItemProps;
 
-const Display = ({ id, enable, pdf, item, questionnaire, onRenderMarkdown, resources }: Props): JSX.Element | null => {
+const Display = ({ id, pdf, item, resources, path }: Props): JSX.Element | null => {
+  const { onRenderMarkdown } = useExternalRenderContext();
+  const formDefinition = useSelector((state: GlobalState) => getFormDefinition(state));
+  const questionnaire = formDefinition?.Content;
   const itemControls = item ? getItemControlExtensionValue(item) : null;
+  const enable = useIsEnabled(item, path);
   const highlightClass =
     itemControls && itemControls.some(itemControl => itemControl.code === itemControlConstants.HIGHLIGHT)
       ? 'page_refero__component_highlight'

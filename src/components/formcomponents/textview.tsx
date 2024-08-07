@@ -1,35 +1,31 @@
-import React from 'react';
+import { ReactNode, useState } from 'react';
 
-import DOMPurify from 'dompurify';
 import { QuestionnaireItem } from 'fhir/r4';
 
-import { renderPrefix, getText, getId } from '@/util/index';
+import { getText, getId } from '@/util/index';
+import SafeText from '../referoLabel/SafeText';
+import RenderHelpButton from './help-button/RenderHelpButton';
+import RenderHelpElement from './help-button/RenderHelpElement';
+import { useExternalRenderContext } from '@/context/externalRenderContext';
 
 interface Props {
   id?: string;
   item: QuestionnaireItem;
   value?: string | number;
   textClass?: string;
-  onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
-  helpButton?: JSX.Element;
-  helpElement?: JSX.Element;
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
-const textView = ({ id, item, value, textClass, children, onRenderMarkdown, helpButton, helpElement }: Props): JSX.Element | null => {
+const TextView = ({ id, item, value, textClass, children }: Props): JSX.Element | null => {
+  const { onRenderMarkdown } = useExternalRenderContext();
+  const [isHelpVisible, setIsHelpVisible] = useState(false);
   return (
     <div data-testid={`${getId(id)}-text-view`} id={getId(id)}>
       <>
-        <b
-          dangerouslySetInnerHTML={{
-            __html: DOMPurify.sanitize(`${renderPrefix(item)} ${getText(item, onRenderMarkdown)} `, {
-              RETURN_TRUSTED_TYPE: true,
-              ADD_ATTR: ['target'],
-            }) as unknown as string,
-          }}
-        />
-        <>{helpButton}</>
-        <>{helpElement}</>
+        <SafeText as="b" text={getText(item, onRenderMarkdown)} />
+
+        <RenderHelpButton isHelpVisible={isHelpVisible} item={item} setIsHelpVisible={setIsHelpVisible} />
+        <RenderHelpElement isHelpVisible={isHelpVisible} item={item} />
       </>
       <div className={textClass || ''}>{value}</div>
       {children ? (
@@ -44,4 +40,4 @@ const textView = ({ id, item, value, textClass, children, onRenderMarkdown, help
   );
 };
 
-export default textView;
+export default TextView;

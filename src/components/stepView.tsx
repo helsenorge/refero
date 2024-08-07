@@ -14,7 +14,7 @@ interface StepViewProps {
   isAuthorized: boolean;
   referoProps: ReferoProps;
   resources: Resources;
-  formItems: Array<JSX.Element> | undefined;
+  formItems: JSX.Element[] | undefined;
   formDefinition: FormDefinition;
   onSave: () => void;
   onSubmit: () => void;
