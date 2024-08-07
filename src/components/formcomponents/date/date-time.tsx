@@ -317,7 +317,7 @@ const DateTimeInput: React.FC<Props> = ({
               },
             },
           })}
-          testId={`dateTime-2`}
+          testId={`datetime-2`}
           defaultValue={Number(minutes)}
           timeUnit="minutes"
           onChange={e => {

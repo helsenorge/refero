@@ -1,5 +1,5 @@
 import { Questionnaire, QuestionnaireResponseItemAnswer } from 'fhir/r4';
-import { act, findByRole, getByTestId, renderRefero, userEvent } from '@test/test-utils.tsx';
+import { act, findByRole, getByTestId, renderRefero, userEvent, waitFor } from '@test/test-utils.tsx';
 import { q } from './__data__/date-time';
 import { ReferoProps } from '../../../../types/referoProps';
 import { Extensions } from '../../../../constants/extensions';
@@ -65,7 +65,7 @@ describe('Date day', () => {
       const { getByLabelText } = createWrapper(questionnaire);
 
       const hoursElement = await screen.findByTestId('datetime-1');
-      const minutesElement = await screen.findByTestId('dateTime-2');
+      const minutesElement = await screen.findByTestId('datetime-2');
 
       const dateInput = getByLabelText(/Dato/i);
       const hoursInput = hoursElement.querySelector('input');
@@ -194,19 +194,49 @@ describe('Date day', () => {
     });
   });
   describe('onChange', () => {
-    it('Should update component with value from answer', async () => {
+    it('Should update date field with value from answer', async () => {
       const { getByLabelText } = createWrapper(q);
 
       const inputElement = getByLabelText(/Dato/i);
+
       expect(inputElement).toBeInTheDocument();
       expect(inputElement).toHaveAttribute('type', 'text');
       expect(inputElement).toHaveAttribute('id', `item_${q?.item?.[0].linkId}^0-datepicker`);
       await act(async () => {
         userEvent.paste(inputElement, '31.05.1994');
       });
-      expect(getByLabelText(/Dato/i)).toHaveValue('31.05.1994');
+
+      expect(inputElement).toHaveValue('31.05.1994');
     });
-    it('Should call onChange with correct value', async () => {
+    it('Should update hours field with value from answer', async () => {
+      const { getByTestId } = createWrapper(q);
+
+      const hoursElement = getByTestId('datetime-1');
+      const hoursInput = hoursElement.querySelector('input');
+
+      if (hoursInput) {
+        await act(async () => {
+          userEvent.paste(hoursInput, '14');
+        });
+      }
+
+      expect(hoursInput).toHaveValue(Number('14'));
+    });
+    it('Should update minutes field with value from answer', async () => {
+      const { getByTestId } = createWrapper(q);
+
+      const minutesElement = getByTestId('datetime-2');
+      const minutesInput = minutesElement.querySelector('input');
+
+      if (minutesInput) {
+        await act(async () => {
+          userEvent.paste(minutesInput, '00');
+        });
+      }
+
+      expect(minutesInput).toHaveValue(Number('00'));
+    });
+    it('Should call onChange with correct value when date field changes', async () => {
       const onChange = vi.fn();
       const { getByLabelText } = createWrapper(q, { onChange });
       expect(getByLabelText(/Dato/i)).toBeInTheDocument();
@@ -218,6 +248,125 @@ describe('Date day', () => {
       };
       expect(onChange).toHaveBeenCalledTimes(1);
       expect(onChange).toHaveBeenCalledWith(expect.any(Object), expectedAnswer, expect.any(Object), expect.any(Object));
+    });
+  });
+  describe('Validation', () => {
+    describe('Required', () => {
+      it('Should show error if field is required and value is empty', async () => {
+        const questionnaire: Questionnaire = {
+          ...q,
+          item: q.item?.map(x => ({ ...x, required: true })),
+        };
+        const { getByText } = createWrapper(questionnaire);
+        await submitForm();
+
+        expect(getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
+      });
+      it('Should not show error if required and has value', async () => {
+        const questionnaire: Questionnaire = {
+          ...q,
+          item: q.item?.map(x => ({ ...x, required: true })),
+        };
+        const { getByLabelText, queryByText } = createWrapper(questionnaire);
+        await act(async () => {
+          userEvent.type(getByLabelText(/Dato/i), '31.05.1994');
+        });
+        await submitForm();
+
+        expect(queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
+      });
+      it('Should remove error on change if form is submitted', async () => {
+        const questionnaire: Questionnaire = {
+          ...q,
+          item: q.item?.map(x => ({ ...x, required: true })),
+        };
+        const { getByText, queryByText, getByLabelText } = createWrapper(questionnaire);
+        await submitForm();
+        expect(getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
+
+        const hoursElement = await screen.findByTestId('datetime-1');
+        const minutesElement = await screen.findByTestId('datetime-2');
+        const hoursInput = hoursElement.querySelector('input');
+        const minutesInput = minutesElement.querySelector('input');
+
+        await act(async () => {
+          userEvent.type(getByLabelText(/Dato/i), '31.05.1994');
+        });
+        await act(async () => {
+          hoursInput && userEvent.type(hoursInput, '14');
+        });
+        await act(async () => {
+          minutesInput && userEvent.type(minutesInput, '00');
+          userEvent.tab();
+        });
+
+        await submitForm();
+        await waitFor(() => {
+          expect(queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
+        });
+      });
+      
+      it('Should show error if date is invalid', async () => {
+        const { getByLabelText, getByText } = createWrapper(q);
+
+        await act(async () => {
+          userEvent.paste(getByLabelText(/Dato/i), '313131');
+        });
+
+        await submitForm();
+        expect(getByText(resources.dateError_invalid)).toBeInTheDocument();
+      });
+      // it('Should show error message for min value', async () => {
+      //   const { getByLabelText, getByText } = createWrapper(qMinMax);
+
+      //   await act(async () => {
+      //     userEvent.paste(getByLabelText(/Dato/i), '31.05.1904');
+      //   });
+
+      //   await submitForm();
+      //   expect(getByText(resources.errorBeforeMinDate + ': 31.05.1994')).toBeInTheDocument();
+      // });
+      // it('Should show error message for max value', async () => {
+      //   const { getByLabelText, getByText } = createWrapper(qMinMax);
+
+      //   await act(async () => {
+      //     userEvent.paste(getByLabelText(/Dato/i), '31.05.2095');
+      //   });
+
+      //   await submitForm();
+      //   expect(getByText(resources.errorAfterMaxDate + ': 31.05.2094')).toBeInTheDocument();
+      // });
+      // it('Should show custom error message for min value', async () => {
+      //   const { getByLabelText, getByText } = createWrapper(qMinMaxCustomError);
+
+      //   await act(async () => {
+      //     userEvent.paste(getByLabelText(/Dato/i), '31.05.1904');
+      //   });
+
+      //   await submitForm();
+      //   expect(getByText('Custom errormessage')).toBeInTheDocument();
+      // });
+      // it('Should show custom error message for max value', async () => {
+      //   const { getByLabelText, getByText } = createWrapper(qMinMaxCustomError);
+
+      //   await act(async () => {
+      //     userEvent.paste(getByLabelText(/Dato/i), '31.05.2095');
+      //   });
+
+      //   await submitForm();
+      //   expect(getByText('Custom errormessage')).toBeInTheDocument();
+      // });
+      // it('Should not show error if date value is between min value and max value', async () => {
+      //   const { getByLabelText, queryByText } = createWrapper(qMinMax);
+
+      //   await act(async () => {
+      //     userEvent.paste(getByLabelText(/Dato/i), '31.05.2024');
+      //   });
+
+      //   await submitForm();
+      //   expect(queryByText(resources.errorBeforeMinDate + ': 31.05.1994')).not.toBeInTheDocument();
+      //   expect(queryByText(resources.errorAfterMaxDate + ': 31.05.2094')).not.toBeInTheDocument();
+      // });
     });
   });
 });

@@ -36,11 +36,6 @@
   ],
   "item": [
     {
-      "initial": [
-        {
-          "valueDateTime": "1994-05-31T14:00:00.000Z"
-        }
-      ],
       "linkId": "ef5f832e-f959-41f1-a589-d784f61600ec",
       "type": "dateTime",
       "required": true,
