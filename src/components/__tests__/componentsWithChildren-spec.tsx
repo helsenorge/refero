@@ -130,8 +130,7 @@ describe('Components render children', () => {
   it('sliderchoice with children renders', () => {
     const item = createNestedChoiceItem(itemType.CHOICE, createItemControlExtension(itemControlConstants.SLIDER));
     const q = createQuestionnaire(item);
-    const { queryByText, debug } = createWrapper(q);
-    debug(undefined, 20000);
+    const { queryByText } = createWrapper(q);
     const firstChild = queryByText('2');
     expect(firstChild).toBeInTheDocument();
     const secondChild = queryByText('3');

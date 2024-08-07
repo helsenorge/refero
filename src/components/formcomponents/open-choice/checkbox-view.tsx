@@ -42,9 +42,10 @@ const CheckboxView = (props: Props): JSX.Element | null => {
     responseItem,
     path,
   } = props;
-  const formName = `${idWithLinkIdAndItemIndex}-extra-field`;
   const { formState, getFieldState, control } = useFormContext<FieldValues>();
-  const { error } = getFieldState(formName, formState);
+  const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
+  const { error } = fieldState;
+
   const answer = useGetAnswer(responseItem, item);
   const [isHelpVisible, setIsHelpVisible] = useState(false);
   return (

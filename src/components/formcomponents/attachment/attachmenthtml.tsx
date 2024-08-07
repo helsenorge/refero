@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 import { QuestionnaireItem } from 'fhir/r4';
 import { FieldValues, useFormContext } from 'react-hook-form';
@@ -37,7 +37,6 @@ interface Props {
   item: QuestionnaireItem;
   attachmentMaxFileSize?: number;
   attachmentValidTypes?: Array<string>;
-  children?: React.ReactNode;
   idWithLinkIdAndItemIndex: string;
 }
 
@@ -54,7 +53,6 @@ const attachmentHtml = ({
   attachmentValidTypes,
   minFiles,
   item,
-  children,
   idWithLinkIdAndItemIndex,
 }: Props): JSX.Element | null => {
   const { formState, getFieldState, register: internalRegister } = useFormContext<FieldValues>();
@@ -124,7 +122,6 @@ const attachmentHtml = ({
           onOpenFile={onOpen}
         />
         {attachmentErrorMessage && <NotificationPanel variant="alert">{attachmentErrorMessage}</NotificationPanel>}
-        <div className="nested-fieldset nested-fieldset--full-height">{children}</div>
       </FormGroup>
     </div>
   );

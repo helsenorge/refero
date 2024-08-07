@@ -145,9 +145,10 @@ export const AttachmentComponent = (props: Props): JSX.Element | null => {
           item={item}
           attachmentErrorMessage={attachmentErrorMessage}
           idWithLinkIdAndItemIndex={props.idWithLinkIdAndItemIndex}
-        >
+        />
+        <div className="nested-fieldset nested-fieldset--full-height">
           <RenderChildrenItems otherProps={props} />
-        </AttachmentHtml>
+        </div>
       </>
     );
   }

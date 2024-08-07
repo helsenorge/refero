@@ -44,9 +44,10 @@ export type Props = RenderItemProps & {
 
 export const OpenChoice = (props: Props): JSX.Element | null => {
   const { id, item, pdf, responseItem, containedResources, resources, promptLoginMessage, path, onAnswerChange } = props;
-  const answer = useGetAnswer(responseItem, item);
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
+  const answer = useGetAnswer(responseItem, item);
   const enable = useIsEnabled(item, path);
+
   const getDataReceiverValue = (answer: QuestionnaireResponseItemAnswer[]): string[] | undefined => {
     return answer
       .filter(f => f.valueCoding?.code !== OPEN_CHOICE_ID)

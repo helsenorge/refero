@@ -45,9 +45,8 @@ const DropdownView = (props: Props): JSX.Element | null => {
     index,
   } = props;
   const [isHelpVisible, setIsHelpVisible] = React.useState(false);
-  const formName = `${idWithLinkIdAndItemIndex}-extra-field`;
   const { formState, getFieldState, control } = useFormContext<FieldValues>();
-  const { error } = getFieldState(formName, formState);
+  const { error } = getFieldState(idWithLinkIdAndItemIndex, formState);
 
   if (!options) {
     return null;

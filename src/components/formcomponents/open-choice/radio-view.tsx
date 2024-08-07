@@ -43,9 +43,8 @@ const RadioView = (props: Props): JSX.Element | null => {
     path,
     index,
   } = props;
-  const formName = `${idWithLinkIdAndItemIndex}-extra-field`;
   const { formState, getFieldState, control } = useFormContext<FieldValues>();
-  const { error } = getFieldState(formName, formState);
+  const { error } = getFieldState(idWithLinkIdAndItemIndex, formState);
   const [isHelpVisible, setIsHelpVisible] = React.useState(false);
   if (!options) {
     return null;

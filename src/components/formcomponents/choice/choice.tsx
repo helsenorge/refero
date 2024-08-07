@@ -35,11 +35,11 @@ export type ChoiceProps = RenderItemProps & {
 };
 
 export const Choice = (props: ChoiceProps): JSX.Element | null => {
-  const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
-
   const { resources, containedResources, promptLoginMessage, item, onAnswerChange, path, id, pdf, responseItem } = props;
+  const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
   const answer = useGetAnswer(responseItem, item);
   const enable = useIsEnabled(item, path);
+
   const getValue = (
     item: QuestionnaireItem,
     answer?: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer

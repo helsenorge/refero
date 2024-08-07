@@ -303,7 +303,17 @@ const Refero = (props: StateProps & DispatchProps & ReferoProps): JSX.Element | 
   }
 
   if (props.pdf) {
-    return <>{renderFormItems(true)}</>;
+    return (
+      <ExternalRenderProvider
+        onRequestHelpButton={props.onRequestHelpButton}
+        onRequestHelpElement={props.onRequestHelpElement}
+        onRenderMarkdown={props.onRenderMarkdown}
+        fetchReceivers={props.fetchReceivers}
+        fetchValueSet={props.fetchValueSet}
+      >
+        <FormProvider {...methods}>{renderFormItems(true)} </FormProvider>
+      </ExternalRenderProvider>
+    );
   }
 
   const presentationButtonsType = getPresentationButtonsExtension(formDefinition.Content);

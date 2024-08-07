@@ -134,6 +134,7 @@ const FormFillerPreview = ({ showFormFiller }: Props): JSX.Element => {
                   language={LanguageLocales.NORWEGIAN}
                   fetchValueSet={fetchValueSetFn}
                   fetchReceivers={fetchReceiversFn}
+                  pdf={true}
                 />
               </div>
             ) : (
