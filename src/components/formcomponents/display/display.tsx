@@ -1,13 +1,11 @@
-import DOMPurify from 'dompurify';
-import { connect } from 'react-redux';
-
 import designsystemtypography from '@helsenorge/designsystem-react/scss/typography.module.scss';
 
-import itemControlConstants from '../../../constants/itemcontrol';
-import { getItemControlExtensionValue, getMarkdownExtensionValue } from '../../../util/extension';
-import { renderPrefix, getText, getId } from '../../../util/index';
-import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
+import itemControlConstants from '@/constants/itemcontrol';
+import { getItemControlExtensionValue, getMarkdownExtensionValue } from '@/util/extension';
+import { renderPrefix, getText, getId } from '@/util/index';
+
 import { WithCommonFunctionsProps } from '../../with-common-functions';
+import SafeText from '@/components/referoLabel/SafeText';
 
 export type Props = WithCommonFunctionsProps;
 
@@ -23,21 +21,13 @@ const Display = ({ id, enable, pdf, item, questionnaire, onRenderMarkdown, resou
   let value: JSX.Element | undefined = undefined;
   if (item) {
     const markdown = item._text ? getMarkdownExtensionValue(item._text) : undefined;
+    const text = getText(item, onRenderMarkdown, questionnaire, resources);
     if (markdown) {
       value = (
-        <div
-          id={getId(id)}
-          className={`page_refero__markdown ${designsystemtypography['anchorlink-wrapper']}`}
-          dangerouslySetInnerHTML={{
-            __html: DOMPurify.sanitize(getText(item, onRenderMarkdown, questionnaire, resources), {
-              RETURN_TRUSTED_TYPE: true,
-              ADD_ATTR: ['target'],
-            }) as unknown as string,
-          }}
-        />
+        <SafeText as="div" text={text} id={getId(id)} className={`page_refero__markdown ${designsystemtypography['anchorlink-wrapper']}`} />
       );
     } else {
-      value = <p id={getId(id)}>{`${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`}</p>;
+      value = <p id={getId(id)}>{`${renderPrefix(item)} ${text}`}</p>;
     }
   }
 
@@ -51,5 +41,4 @@ const Display = ({ id, enable, pdf, item, questionnaire, onRenderMarkdown, resou
   return <div className={`page_refero__component page_refero__component_display ${highlightClass}`}>{value}</div>;
 };
 
-const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(Display);
-export default connectedComponent;
+export default Display;

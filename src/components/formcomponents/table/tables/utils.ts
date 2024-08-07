@@ -397,10 +397,28 @@ export const sortByItemType = (aValue: string, bValue: string, sortOrder: SortDi
     case ItemType.STRING:
     case ItemType.TEXT:
     case ItemType.OPENCHOICE:
-      return compareStrings(aValue, bValue, sortOrder);
+    case ItemType.CHOICE:
+      return isNumber(aValue, bValue) ? compareNumbers(aValue, bValue, sortOrder) : compareStrings(aValue, bValue, sortOrder);
     default:
-      return compareStrings(aValue, bValue, sortOrder);
+      return isNumber(aValue, bValue) ? compareNumbers(aValue, bValue, sortOrder) : compareStrings(aValue, bValue, sortOrder);
   }
+};
+const isNumber = (aValue: string, bValues: string): boolean => {
+  return isNumberString(aValue) && isNumberString(bValues);
+};
+const isNumberString = (str: string): boolean => {
+  str = str.trim();
+
+  if (str === '') {
+    return false;
+  }
+  const numberRegex = /^-?\d+(\.\d+)?([eE][-+]?\d+)?$/;
+
+  if (!numberRegex.test(str)) {
+    return false;
+  }
+  const number = Number(str);
+  return !isNaN(number);
 };
 
 const extractNumber = (value: string | undefined): number => {

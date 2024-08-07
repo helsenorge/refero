@@ -8,7 +8,6 @@ import {
   Resource,
 } from 'fhir/r4';
 import { connect } from 'react-redux';
-import { ThunkDispatch } from 'redux-thunk';
 
 import LanguageLocales from '@helsenorge/core-utils/constants/languages';
 
@@ -16,20 +15,18 @@ import GTable from './tables/gtable/GTable';
 import { StandardTable } from './tables/table/StandardTable';
 import TableHn1 from './tables/table-hn1/TableHn1';
 import TableHn2 from './tables/table-hn2/TableHn2';
-import { NewValueAction } from '../../../actions/newValue';
-import { TABLE_CODES_VALUES, TableCodes } from '../../../constants/tableTypes';
-import { GlobalState } from '../../../reducers';
-import { getFormData, getFormDefinition } from '../../../reducers/form';
-import { getCodingTextTableValues } from '../../../util/extension';
-import { Path } from '../../../util/refero-core';
-import { Resources } from '../../../util/resources';
+import { TABLE_CODES_VALUES, TableCodes } from '@/constants/tableTypes';
+import { GlobalState } from '@/reducers';
+import { getFormData, getFormDefinition } from '@/reducers/form';
+import { getCodingTextTableValues } from '@/util/extension';
+import { Path } from '@/util/refero-core';
+import { Resources } from '@/util/resources';
 
 export interface Props {
   item: QuestionnaireItem;
   questionnaire?: Questionnaire | null;
   answer?: QuestionnaireResponseItemAnswer | null;
   responseItem: QuestionnaireResponseItem;
-  dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
   path: Array<Path>;
   pdf?: boolean;
   includeSkipLink?: boolean;
@@ -41,7 +38,6 @@ export interface Props {
   id?: string;
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
-  isHelpOpen?: boolean;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
 }
 

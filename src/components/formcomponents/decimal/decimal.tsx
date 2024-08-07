@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { Controller } from 'react-hook-form';
-import { connect } from 'react-redux';
+
 import { ThunkDispatch } from 'redux-thunk';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
@@ -10,18 +10,18 @@ import Input from '@helsenorge/designsystem-react/components/Input';
 
 import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 
-import { NewValueAction, newDecimalValueAsync } from '../../../actions/newValue';
-import { GlobalState } from '../../../reducers';
-import { getMaxValueExtensionValue, getMinValueExtensionValue, getPlaceholder, getValidationTextExtension } from '../../../util/extension';
-import { isReadOnly, getId, getDecimalPattern, isRequired } from '../../../util/index';
-import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
-import { Path } from '../../../util/refero-core';
-import { Resources } from '../../../util/resources';
+import { NewValueAction, newDecimalValueAsync } from '@/actions/newValue';
+import { GlobalState } from '@/reducers';
+import { getMaxValueExtensionValue, getMinValueExtensionValue, getPlaceholder, getValidationTextExtension } from '@/util/extension';
+import { isReadOnly, getId, getDecimalPattern, isRequired } from '@/util/index';
+import { Path } from '@/util/refero-core';
+import { Resources } from '@/util/resources';
 import ReactHookFormHoc, { FormProps } from '../../../validation/ReactHookFormHoc';
 import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 import TextView from '../textview';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
+import { useDispatch } from 'react-redux';
 
 export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   item: QuestionnaireItem;
@@ -29,7 +29,6 @@ export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   responseItem: QuestionnaireItem;
   answer: QuestionnaireResponseItemAnswer;
   resources?: Resources;
-  dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
   path: Array<Path>;
   id?: string;
   pdf?: boolean;
@@ -38,7 +37,6 @@ export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   repeatButton: JSX.Element;
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
-  isHelpOpen?: boolean;
   onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
   children?: React.ReactNode;
@@ -59,12 +57,12 @@ const Decimal = ({
   error,
   idWithLinkIdAndItemIndex,
   path,
-  dispatch,
   onAnswerChange,
   promptLoginMessage,
   repeatButton,
   renderDeleteButton,
 }: Props): JSX.Element | null => {
+  const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
   const getValue = (item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer): string | number | number[] | undefined => {
     if (answer && Array.isArray(answer)) {
       return answer.map(m => m.valueDecimal);
@@ -197,5 +195,4 @@ const Decimal = ({
 const withFormProps = ReactHookFormHoc(Decimal);
 const withCommonFunctionsComponent = withCommonFunctions(withFormProps);
 const layoutChangeComponent = layoutChange(withCommonFunctionsComponent);
-const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(layoutChangeComponent);
-export default connectedComponent;
+export default layoutChangeComponent;

@@ -1,4 +1,4 @@
-import '../../../../util/__tests__/defineFetch';
+import '@/util/__tests__/defineFetch';
 
 import { act, findByRole, renderRefero, userEvent } from '../../../../../test/test-utils';
 import { qinline, q, qScriptInjection } from './__data__';
@@ -181,7 +181,7 @@ describe('Text', () => {
           repeats: true,
         })),
       };
-      const { getByTestId, queryAllByLabelText, queryByTestId } = createWrapper(questionnaire);
+      const { queryAllByLabelText, queryByTestId } = createWrapper(questionnaire);
 
       await clickButtonTimes(/-repeat-button/i, 3);
 
@@ -204,7 +204,7 @@ describe('Text', () => {
           }),
         })),
       };
-      const { getByTestId, queryAllByTestId } = createWrapper(questionnaire);
+      const { queryAllByTestId } = createWrapper(questionnaire);
 
       await clickButtonTimes(/-repeat-button/i, 2);
 
@@ -487,7 +487,7 @@ describe('Text', () => {
       it('Should render with validation when input has html and validateScriptInjection = true', async () => {
         const validateScriptInjection = true;
         const value = 'input med <html>';
-        const { findByText, findByLabelText, debug, queryByRole } = createWrapper(qScriptInjection, { validateScriptInjection });
+        const { findByText, findByLabelText } = createWrapper(qScriptInjection, { validateScriptInjection });
         await act(async () => {
           userEvent.type(await findByLabelText(/String1/i), value);
           userEvent.type(await findByLabelText(/String2 - Obligatorisk/i), 'test');

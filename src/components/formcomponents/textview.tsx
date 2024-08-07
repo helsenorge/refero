@@ -3,7 +3,7 @@ import React from 'react';
 import DOMPurify from 'dompurify';
 import { QuestionnaireItem } from 'fhir/r4';
 
-import { renderPrefix, getText, getId } from '../../util/index';
+import { renderPrefix, getText, getId } from '@/util/index';
 
 interface Props {
   id?: string;

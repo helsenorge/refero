@@ -3,13 +3,13 @@ import React from 'react';
 import { FieldValues, SubmitHandler, UseFormReturn } from 'react-hook-form';
 
 import { ValidationSummaryPlacement } from '../types/formTypes/validationSummaryPlacement';
-import { ReferoProps } from '../types/referoProps';
+import { ReferoProps } from '@/types/referoProps';
 
 import Loader from '@helsenorge/designsystem-react/components/Loader';
 
 import FormButtons from './formButtons/formButtons';
-import { ValidationSummaryComponent } from './validation/validation-summary';
-import { Resources } from '../util/resources';
+import { ValidationSummary } from './validation/validation-summary';
+import { Resources } from '@/util/resources';
 
 interface RenderFormProps {
   isAuthorized: boolean;
@@ -64,7 +64,7 @@ const RenderForm = ({
   return (
     <form onSubmit={methods.handleSubmit(onSubmitReactHookForm)}>
       {/* <Validation errorSummary="test" /> */}
-      {displayValidationSummaryOnTop && <ValidationSummaryComponent resources={resources} />}
+      {displayValidationSummaryOnTop && <ValidationSummary resources={resources} />}
       {children}
       <FormButtons
         isStepView={isStepView}
@@ -80,7 +80,7 @@ const RenderForm = ({
         onPauseButtonClicked={isStepView ? displayPauseButtonInStepView : displayPauseButtonInNormalView}
         isHelsenorgeForm={!!isHelsenorgeForm}
       />
-      {!displayValidationSummaryOnTop && <ValidationSummaryComponent resources={resources} />}
+      {!displayValidationSummaryOnTop && <ValidationSummary resources={resources} />}
     </form>
   );
 };

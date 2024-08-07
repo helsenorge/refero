@@ -2,7 +2,7 @@ import React from 'react';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem, Questionnaire } from 'fhir/r4';
 import { Controller } from 'react-hook-form';
-import { connect } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
@@ -11,21 +11,12 @@ import Input from '@helsenorge/designsystem-react/components/Input';
 import { debounce } from '@helsenorge/core-utils/debounce';
 import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 
-import { NewValueAction, newStringValueAsync } from '../../../actions/newValue';
-import { GlobalState } from '../../../reducers';
-import { getMinLengthExtensionValue, getPlaceholder, getRegexExtension, getValidationTextExtension } from '../../../util/extension';
-import {
-  isReadOnly,
-  isRequired,
-  getId,
-  getStringValue,
-  getPDFStringValue,
-  getMaxLength,
-  scriptInjectionValidation,
-} from '../../../util/index';
-import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
-import { Path } from '../../../util/refero-core';
-import { Resources } from '../../../util/resources';
+import { NewValueAction, newStringValueAsync } from '@/actions/newValue';
+import { GlobalState } from '@/reducers';
+import { getMinLengthExtensionValue, getPlaceholder, getRegexExtension, getValidationTextExtension } from '@/util/extension';
+import { isReadOnly, isRequired, getId, getStringValue, getPDFStringValue, getMaxLength, scriptInjectionValidation } from '@/util/index';
+import { Path } from '@/util/refero-core';
+import { Resources } from '@/util/resources';
 import ReactHookFormHoc, { FormProps } from '../../../validation/ReactHookFormHoc';
 import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 import TextView from '../textview';
@@ -38,7 +29,6 @@ export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   responseItem: QuestionnaireResponseItem;
   answer: QuestionnaireResponseItemAnswer;
   path: Array<Path>;
-  dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
   pdf?: boolean;
   promptLoginMessage?: () => void;
   id?: string;
@@ -51,13 +41,11 @@ export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
   onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
-  isHelpOpen?: boolean;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
   children?: React.ReactNode;
 }
 
 export const String = ({
-  dispatch,
   promptLoginMessage,
   path,
   item,
@@ -78,6 +66,7 @@ export const String = ({
   renderHelpButton,
   renderHelpElement,
 }: Props): JSX.Element | null => {
+  const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     const value = event.target.value;
     if (dispatch) {
@@ -193,5 +182,4 @@ export const String = ({
 const withFormProps = ReactHookFormHoc(String);
 const withCommonFunctionsComponent = withCommonFunctions(withFormProps);
 const layoutChangeComponent = layoutChange(withCommonFunctionsComponent);
-const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(layoutChangeComponent);
-export default connectedComponent;
+export default layoutChangeComponent;

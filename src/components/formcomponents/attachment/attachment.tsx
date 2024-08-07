@@ -1,25 +1,23 @@
 import React from 'react';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, Attachment, QuestionnaireResponseItem, Questionnaire } from 'fhir/r4';
-import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
 import { UploadFile } from '@helsenorge/file-upload/components/file-upload';
 
 import AttachmentHtml from './attachmenthtml';
-import { NewValueAction, newAttachmentAsync, removeAttachmentAsync } from '../../../actions/newValue';
-import { GlobalState } from '../../../reducers';
-import { getValidationTextExtension, getMaxOccursExtensionValue, getMinOccursExtensionValue } from '../../../util/extension';
-import { isRequired, getId, isReadOnly, isRepeat } from '../../../util/index';
-import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
-import { Path } from '../../../util/refero-core';
-import { Resources } from '../../../util/resources';
+import { NewValueAction, newAttachmentAsync, removeAttachmentAsync } from '@/actions/newValue';
+import { GlobalState } from '@/reducers';
+import { getValidationTextExtension, getMaxOccursExtensionValue, getMinOccursExtensionValue } from '@/util/extension';
+import { isRequired, getId, isReadOnly, isRepeat } from '@/util/index';
+import { Path } from '@/util/refero-core';
+import { Resources } from '@/util/resources';
 import ReactHookFormHoc, { FormProps } from '../../../validation/ReactHookFormHoc';
 import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 import TextView from '../textview';
+import { useDispatch } from 'react-redux';
 
 export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
-  dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
   path: Array<Path>;
   item: QuestionnaireItem;
   questionnaire?: Questionnaire;
@@ -39,7 +37,6 @@ export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
   onRequestAttachmentLink?: (file: string) => string;
   renderHelpButton: () => JSX.Element;
   renderHelpElement: () => JSX.Element;
-  isHelpOpen?: boolean;
   onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
   children?: React.ReactNode;
@@ -55,7 +52,6 @@ export const AttachmentComponent = (props: Props): JSX.Element | null => {
     item,
     onAnswerChange,
     onDeleteAttachment,
-    dispatch,
     pdf,
     id,
     resources,
@@ -73,6 +69,7 @@ export const AttachmentComponent = (props: Props): JSX.Element | null => {
     register,
     error,
   } = props;
+  const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
   const onUpload = (files: UploadFile[]): void => {
     if (uploadAttachment) {
       for (const file of files) {
@@ -193,5 +190,4 @@ export const AttachmentComponent = (props: Props): JSX.Element | null => {
 
 const withFormProps = ReactHookFormHoc(AttachmentComponent);
 const withCommonFunctionsComponent = withCommonFunctions(withFormProps);
-const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(withCommonFunctionsComponent);
-export default connectedComponent;
+export default withCommonFunctionsComponent;

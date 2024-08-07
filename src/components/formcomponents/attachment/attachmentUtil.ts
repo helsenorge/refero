@@ -1,7 +1,7 @@
 import { QuestionnaireItem } from 'fhir/r4';
 
-import constants from '../../../constants';
-import { getMaxSizeExtensionValue } from '../../../util/extension';
+import constants from '@/constants';
+import { getMaxSizeExtensionValue } from '@/util/extension';
 
 export function convertMBToBytes(mb: number): number {
   if (typeof mb !== 'number' || isNaN(mb)) {

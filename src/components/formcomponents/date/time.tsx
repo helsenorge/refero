@@ -2,7 +2,6 @@
 
 // import { getHours, getMinutes } from 'date-fns';
 // import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem, Questionnaire } from 'fhir/r4';
-// import { connect } from 'react-redux';
 // import { ThunkDispatch } from 'redux-thunk';
 
 // import Label from '@helsenorge/designsystem-react/components/Label';
@@ -16,7 +15,6 @@
 // import { safeParseJSON } from '../../../util/date-fns-utils';
 // import { getExtension, getValidationTextExtension } from '../../../util/extension';
 // import { isReadOnly, isRequired, getId, getSublabelText, getLabelText } from '../../../util/index';
-// import { mapStateToProps, mergeProps, mapDispatchToProps } from '../../../util/map-props';
 // import { Path } from '../../../util/refero-core';
 // import { Resources } from '../../../util/resources';
 // import ReactHookFormHoc, { FormProps } from '../../../validation/ReactHookFormHoc';
@@ -31,7 +29,6 @@
 //   questionnaire?: Questionnaire;
 //   responseItem: QuestionnaireResponseItem;
 //   resources?: Resources;
-//   dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
 //   path: Array<Path>;
 //   pdf?: boolean;
 //   promptLoginMessage?: () => void;
@@ -43,7 +40,6 @@
 //   repeatButton: JSX.Element;
 //   renderHelpButton: () => JSX.Element;
 //   renderHelpElement: () => JSX.Element;
-//   isHelpOpen?: boolean;
 //   onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
 //   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
 // }
@@ -209,7 +205,6 @@ export default Time;
 
 //   shouldComponentUpdate(nextProps: Props): boolean {
 //     const responseItemHasChanged = this.props.responseItem !== nextProps.responseItem;
-//     const helpItemHasChanged = this.props.isHelpOpen !== nextProps.isHelpOpen;
 //     const answerHasChanged = this.props.answer !== nextProps.answer;
 //     const resourcesHasChanged = JSON.stringify(this.props.resources) !== JSON.stringify(nextProps.resources);
 //     const repeats = this.props.item.repeats ?? false;
@@ -287,5 +282,4 @@ export default Time;
 // }
 // const withFormProps = ReactHookFormHoc(Time);
 // const withCommonFunctionsComponent = withCommonFunctions(withFormProps);
-// const connectedComponent = connect(mapStateToProps, mapDispatchToProps, mergeProps)(withCommonFunctionsComponent);
-// export default connectedComponent;
+// export default withCommonFunctionsComponent;
