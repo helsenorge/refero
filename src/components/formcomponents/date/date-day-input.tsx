@@ -5,7 +5,6 @@ import { QuestionnaireResponseItemAnswer, QuestionnaireItemInitial } from 'fhir/
 import { Controller, FieldError, FieldValues, useFormContext } from 'react-hook-form';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
-import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
 
 import { LanguageLocales } from '@helsenorge/core-utils/constants/languages';
 import DatePicker from '@helsenorge/datepicker/components/DatePicker';
@@ -15,6 +14,7 @@ import { getValidationTextExtension } from '../../../util/extension';
 import { getId, isReadOnly, isRequired } from '../../../util/index';
 import TextView from '../textview';
 
+import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { formatDateToStringDDMMYYYY, parseStringToDateDDMMYYYY, validateDate, validateMaxDate, validateMinDate } from '@/util/date-utils';
 import RenderHelpElement from '@/components/formcomponents/help-button/RenderHelpElement';
 import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelpButton';
@@ -39,9 +39,12 @@ export const DateDayInput = ({
   pdf,
   item,
   resources,
-  label,
-  subLabel,
+  questionnaire,
+  helpButton,
+  helpElement,
   onDateValueChange,
+  onRenderMarkdown,
+  renderHelpButton,
   maxDate,
   minDate,
   answer,
@@ -145,7 +148,18 @@ export const DateDayInput = ({
 
   return (
     <FormGroup error={getErrorText(error)}>
-      <RenderHelpElement item={item} isHelpVisible={isHelpVisible} />
+      {helpElement}
+      <ReferoLabel
+        item={item}
+        onRenderMarkdown={onRenderMarkdown}
+        questionnaire={questionnaire}
+        resources={resources}
+        htmlFor={`${getId(id)}-datepicker`}
+        labelId={`${getId(id)}-label`}
+        testId={`${getId(id)}-label-test`}
+        sublabelId={`${getId(id)}-sublabel`}
+        renderHelpButton={renderHelpButton}
+      />
       <Controller
         name={idWithLinkIdAndItemIndex}
         shouldUnregister={true}
@@ -168,18 +182,11 @@ export const DateDayInput = ({
         }}
         render={({ field: { onChange } }): JSX.Element => (
           <DatePicker
-            testId={getId(id)}
+            inputId={`${getId(id)}-datepicker`}
+            testId={`${getId(id)}-datepicker-test`}
             autoComplete=""
             dateButtonAriaLabel="Open datepicker"
             dateFormat={'dd.MM.yyyy'}
-            label={
-              <Label
-                labelId={`${getId(id)}-label`}
-                labelTexts={[{ text: label || '' }]}
-                sublabel={<Sublabel id={`${getId(id)}-sublabel`} sublabelTexts={[{ text: subLabel || '', type: 'normal' }]} />}
-                afterLabelChildren={<RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />}
-              />
-            }
             minDate={minDate}
             maxDate={maxDate}
             onChange={(e, newDate) => {
