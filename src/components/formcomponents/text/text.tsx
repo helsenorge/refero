@@ -58,7 +58,7 @@ export const Text = (props: Props): JSX.Element | null => {
   const { error } = fieldState;
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
   const [isHelpVisible, setIsHelpVisible] = useState(false);
-  const answer = useGetAnswer(responseItem, item) || [];
+  const answer = useGetAnswer(responseItem, item);
   const enable = useIsEnabled(item, path);
   const handleChange = (event: React.FormEvent): void => {
     const value = (event.target as HTMLInputElement).value;
@@ -89,7 +89,7 @@ export const Text = (props: Props): JSX.Element | null => {
     return (
       <div id={id} className="page_refero__component page_refero__component_expandabletext">
         <Expander title={item.text ? item.text : ''} renderChildrenWhenClosed={shouldExpanderRenderChildrenWhenClosed ? true : false}>
-          {children}
+          <RenderChildrenItems otherProps={props} />
         </Expander>
       </div>
     );
@@ -98,7 +98,7 @@ export const Text = (props: Props): JSX.Element | null => {
   if (pdf || isReadOnly(item)) {
     return (
       <TextView id={id} item={item} value={getPDFStringValue(answer, resources)} textClass="page_refero__component_readonlytext">
-        {children}
+        <RenderChildrenItems otherProps={props} />
       </TextView>
     );
   }
@@ -183,8 +183,9 @@ export const Text = (props: Props): JSX.Element | null => {
         />
         <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} responseItem={responseItem} responseItems={responseItems} />
       </FormGroup>
-      <RenderChildrenItems otherProps={props} />
-      {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
+      <div className="nested-fieldset nested-fieldset--full-height">
+        <RenderChildrenItems otherProps={props} />
+      </div>
     </div>
   );
 };

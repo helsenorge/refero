@@ -1,4 +1,4 @@
-import { ReactNode, useState } from 'react';
+import { useState } from 'react';
 
 import { Controller, FieldValues, useFormContext } from 'react-hook-form';
 
@@ -17,14 +17,13 @@ import RenderHelpElement from '@/components/formcomponents/help-button/RenderHel
 import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelpButton';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
-import { RenderItemProps } from '../renderChildren/RenderChildrenItems';
+import { RenderChildrenItems, RenderItemProps } from '../renderChildren/RenderChildrenItems';
 
 type Props = RenderItemProps & {
   options?: Array<Options>;
   handleChange: (radioButton: string) => void;
   selected?: Array<string | undefined>;
   renderOpenField: () => JSX.Element | undefined;
-  children?: ReactNode;
 };
 
 const CheckboxView = (props: Props): JSX.Element | null => {
@@ -34,10 +33,8 @@ const CheckboxView = (props: Props): JSX.Element | null => {
     id,
     handleChange,
     resources,
-    children,
     index,
     renderOpenField,
-
     idWithLinkIdAndItemIndex,
     selected,
     onAnswerChange,
@@ -48,7 +45,7 @@ const CheckboxView = (props: Props): JSX.Element | null => {
   const formName = `${idWithLinkIdAndItemIndex}-extra-field`;
   const { formState, getFieldState, control } = useFormContext<FieldValues>();
   const { error } = getFieldState(formName, formState);
-  const answer = useGetAnswer(responseItem, item) || [];
+  const answer = useGetAnswer(responseItem, item);
   const [isHelpVisible, setIsHelpVisible] = useState(false);
   return (
     <div className="page_refero__component page_refero__component_openchoice page_refero__component_openchoice_checkbox">
@@ -113,7 +110,9 @@ const CheckboxView = (props: Props): JSX.Element | null => {
         className="page_refero__deletebutton--margin-top"
       />
       <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} responseItem={responseItem} responseItems={responseItems} />
-      {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
+      <div className="nested-fieldset nested-fieldset--full-height">
+        <RenderChildrenItems otherProps={props} />
+      </div>
     </div>
   );
 };

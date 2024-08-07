@@ -12,7 +12,7 @@ import FormFillerSidebar from './FormFillerSidebar';
 import { emptyPropertyReplacer } from './helpers';
 import { getResources } from './resources/referoResources';
 import skjema from './skjema/AlleKomponenterMedRepeatOgHelp-nb-NO-v1.0.json';
-// import skjema from '../src/components/formcomponents/display/__tests__/__data__/qHighlight.json';
+//import skjema from '../src/components/formcomponents/text/__tests__/__data__/inline.json';
 
 import ReferoContainer from '../src/components/index';
 import valueSet from '../src/constants/valuesets';

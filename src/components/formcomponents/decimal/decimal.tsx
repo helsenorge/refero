@@ -53,12 +53,12 @@ const Decimal = (props: Props): JSX.Element | null => {
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
   const [isHelpVisible, setIsHelpVisible] = useState(false);
 
-  const answer = useGetAnswer(responseItem, item) || [];
+  const answer = useGetAnswer(responseItem, item);
   const enable = useIsEnabled(item, path);
 
   const getValue = (
     item: QuestionnaireItem,
-    answer: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]
+    answer?: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]
   ): string | number | number[] | undefined => {
     if (answer && Array.isArray(answer)) {
       return answer.map(m => m.valueDecimal).filter(f => f !== undefined);
@@ -117,7 +117,6 @@ const Decimal = (props: Props): JSX.Element | null => {
       <FormGroup error={error?.message} mode="ongrey">
         <ReferoLabel
           item={item}
-          questionnaire={questionnaire}
           resources={resources}
           htmlFor={getId(id)}
           labelId={`${getId(id)}-label-decimal`}
@@ -184,7 +183,7 @@ const Decimal = (props: Props): JSX.Element | null => {
       />
       <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} responseItem={responseItem} responseItems={responseItems} />
       <RenderChildrenItems otherProps={props} />
-      {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
+      <div className="nested-fieldset nested-fieldset--full-height">{children}</div>
     </div>
   );
 };

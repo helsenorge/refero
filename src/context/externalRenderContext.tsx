@@ -29,7 +29,7 @@ type ExternalRenderType = {
 
 const ExternalRender = createContext<ExternalRenderType | undefined>(undefined);
 
-type MyProviderProps = {
+export type ExternalRenderProviderProps = {
   children: ReactNode;
   onRequestHelpElement?: (
     item: QuestionnaireItem,
@@ -61,7 +61,7 @@ export const ExternalRenderProvider = ({
   onRenderMarkdown,
   fetchValueSet,
   fetchReceivers,
-}: MyProviderProps): JSX.Element => {
+}: ExternalRenderProviderProps): JSX.Element => {
   return (
     <ExternalRender.Provider value={{ onRequestHelpElement, onRequestHelpButton, onRenderMarkdown, fetchValueSet, fetchReceivers }}>
       {children}

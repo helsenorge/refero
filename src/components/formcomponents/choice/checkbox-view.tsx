@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 import { Controller, FieldValues, useFormContext } from 'react-hook-form';
 
@@ -15,30 +15,29 @@ import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelp
 import RenderHelpElement from '@/components/formcomponents/help-button/RenderHelpElement';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
-import { RenderItemProps } from '../renderChildren/RenderChildrenItems';
+import { RenderChildrenItems, RenderItemProps } from '../renderChildren/RenderChildrenItems';
 
 export type Props = RenderItemProps & {
   options?: Array<Options>;
   handleChange: (radioButton: string) => void;
   selected?: Array<string | undefined>;
-  children?: React.ReactNode;
 };
 
-const CheckboxView = ({
-  options,
-  item,
-  id,
-  handleChange,
-  resources,
-  children,
-  idWithLinkIdAndItemIndex,
-  selected,
-  onAnswerChange,
-  responseItems,
-  responseItem,
-  path,
-  index,
-}: Props): JSX.Element | null => {
+const CheckboxView = (props: Props): JSX.Element | null => {
+  const {
+    options,
+    item,
+    id,
+    handleChange,
+    resources,
+    idWithLinkIdAndItemIndex,
+    selected,
+    onAnswerChange,
+    responseItems,
+    responseItem,
+    path,
+    index,
+  } = props;
   const [isHelpVisible, setIsHelpVisible] = useState(false);
 
   const { formState, getFieldState } = useFormContext<FieldValues>();
@@ -108,7 +107,9 @@ const CheckboxView = ({
         className="page_refero__deletebutton--margin-top"
       />
       <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} responseItem={responseItem} responseItems={responseItems} />
-      {children && <div className="nested-fieldset nested-fieldset--full-height">{children}</div>}
+      <div className="nested-fieldset nested-fieldset--full-height">
+        <RenderChildrenItems otherProps={props} />
+      </div>
     </div>
   );
 };

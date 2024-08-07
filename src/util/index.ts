@@ -263,7 +263,7 @@ export function getLinkId(item: QuestionnaireItem): string {
   return uuid.v4();
 }
 
-export function getStringValue(answer: QuestionnaireResponseItemAnswer | Array<QuestionnaireResponseItemAnswer>): string {
+export function getStringValue(answer?: QuestionnaireResponseItemAnswer | Array<QuestionnaireResponseItemAnswer>): string {
   if (answer && Array.isArray(answer)) {
     const stringAnswer = answer.filter(f => f.valueString);
     return stringAnswer.length > 0 ? stringAnswer.map(m => m.valueString).join(', ') : '';
@@ -272,7 +272,7 @@ export function getStringValue(answer: QuestionnaireResponseItemAnswer | Array<Q
 }
 
 export function getPDFStringValue(
-  answer: QuestionnaireResponseItemAnswer | Array<QuestionnaireResponseItemAnswer>,
+  answer?: QuestionnaireResponseItemAnswer | Array<QuestionnaireResponseItemAnswer>,
   resources?: Resources
 ): string {
   const value = getStringValue(answer);

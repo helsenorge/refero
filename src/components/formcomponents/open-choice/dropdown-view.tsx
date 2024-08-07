@@ -19,14 +19,13 @@ import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelp
 import RenderHelpElement from '@/components/formcomponents/help-button/RenderHelpElement';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
-import { RenderItemProps } from '../renderChildren/RenderChildrenItems';
+import { RenderChildrenItems, RenderItemProps } from '../renderChildren/RenderChildrenItems';
 
 type Props = RenderItemProps & {
   options?: Array<Options>;
   handleChange: (code: string) => void;
   selected?: Array<string | undefined>;
   renderOpenField: () => JSX.Element | undefined;
-  children?: React.ReactNode;
 };
 
 const DropdownView = (props: Props): JSX.Element | null => {
@@ -37,7 +36,6 @@ const DropdownView = (props: Props): JSX.Element | null => {
     handleChange,
     selected,
     resources,
-    children,
     renderOpenField,
     idWithLinkIdAndItemIndex,
     onAnswerChange,
@@ -55,7 +53,7 @@ const DropdownView = (props: Props): JSX.Element | null => {
     return null;
   }
 
-  const answer = useGetAnswer(responseItem, item) || [];
+  const answer = useGetAnswer(responseItem, item);
   const onChange = (e: React.ChangeEvent<HTMLSelectElement>): void => {
     handleChange(e.target.value);
   };
@@ -116,7 +114,9 @@ const DropdownView = (props: Props): JSX.Element | null => {
         className="page_refero__deletebutton--margin-top"
       />
       <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} responseItem={responseItem} responseItems={responseItems} />
-      {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
+      <div className="nested-fieldset nested-fieldset--full-height">
+        <RenderChildrenItems otherProps={props} />
+      </div>
     </div>
   );
 };

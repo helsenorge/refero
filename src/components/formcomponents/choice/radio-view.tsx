@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 import { Controller, FieldValues, useFormContext } from 'react-hook-form';
 
@@ -16,30 +16,29 @@ import RenderHelpElement from '@/components/formcomponents/help-button/RenderHel
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 
-import { RenderItemProps } from '../renderChildren/RenderChildrenItems';
+import { RenderChildrenItems, RenderItemProps } from '../renderChildren/RenderChildrenItems';
 
 export type Props = RenderItemProps & {
   options?: Array<Options>;
   handleChange: (radioButton: string) => void;
   selected?: Array<string | undefined>;
-  children?: React.ReactNode;
 };
 
-const RadioView = ({
-  options,
-  item,
-  id,
-  handleChange,
-  selected,
-  resources,
-  children,
-  onAnswerChange,
-  responseItems,
-  responseItem,
-  path,
-  index,
-  idWithLinkIdAndItemIndex,
-}: Props): JSX.Element => {
+const RadioView = (props: Props): JSX.Element => {
+  const {
+    options,
+    item,
+    id,
+    handleChange,
+    selected,
+    resources,
+    onAnswerChange,
+    responseItems,
+    responseItem,
+    path,
+    index,
+    idWithLinkIdAndItemIndex,
+  } = props;
   const { formState, getFieldState, control } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
@@ -101,7 +100,9 @@ const RadioView = ({
         className="page_refero__deletebutton--margin-top"
       />
       <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} responseItem={responseItem} responseItems={responseItems} />
-      {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : undefined}
+      <div className="nested-fieldset nested-fieldset--full-height">
+        <RenderChildrenItems otherProps={props} />
+      </div>
     </div>
   );
 };

@@ -18,14 +18,13 @@ import RenderHelpElement from '@/components/formcomponents/help-button/RenderHel
 import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelpButton';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
-import { RenderItemProps } from '../renderChildren/RenderChildrenItems';
+import { RenderChildrenItems, RenderItemProps } from '../renderChildren/RenderChildrenItems';
 
 type Props = RenderItemProps & {
   options?: Array<Options>;
   handleChange: (radioButton: string) => void;
   selected?: Array<string | undefined>;
   renderOpenField: () => JSX.Element | undefined;
-  children: React.ReactNode;
 };
 
 const RadioView = (props: Props): JSX.Element | null => {
@@ -36,7 +35,6 @@ const RadioView = (props: Props): JSX.Element | null => {
     handleChange,
     selected,
     resources,
-    children,
     renderOpenField,
     idWithLinkIdAndItemIndex,
     responseItem,
@@ -53,7 +51,7 @@ const RadioView = (props: Props): JSX.Element | null => {
     return null;
   }
   const selectedValue = (selected && selected[0]) || '';
-  const answer = useGetAnswer(responseItem, item) || [];
+  const answer = useGetAnswer(responseItem, item);
   return (
     <div className="page_refero__component page_refero__component_openchoice page_refero__component_openchoice_radiobutton">
       <FormGroup error={error?.message} mode="ongrey">
@@ -109,7 +107,9 @@ const RadioView = (props: Props): JSX.Element | null => {
       />
       <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} responseItem={responseItem} responseItems={responseItems} />
 
-      {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : undefined}
+      <div className="nested-fieldset nested-fieldset--full-height">
+        <RenderChildrenItems otherProps={props} />
+      </div>
     </div>
   );
 };

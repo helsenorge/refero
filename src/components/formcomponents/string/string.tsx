@@ -52,7 +52,7 @@ export const String = (props: Props): JSX.Element | null => {
   const { error } = fieldState;
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
   const [isHelpVisible, setIsHelpVisible] = useState(false);
-  const answer = useGetAnswer(responseItem, item) || [];
+  const answer = useGetAnswer(responseItem, item);
   const enable = useIsEnabled(item, path);
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     const value = event.target.value;
@@ -162,8 +162,10 @@ export const String = (props: Props): JSX.Element | null => {
         />
         <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} responseItem={responseItem} responseItems={responseItems} />
       </FormGroup>
-      <RenderChildrenItems otherProps={props} />
-      {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
+
+        <div className="nested-fieldset nested-fieldset--full-height">
+          <RenderChildrenItems otherProps={props} />
+        </div>
     </div>
   );
 };

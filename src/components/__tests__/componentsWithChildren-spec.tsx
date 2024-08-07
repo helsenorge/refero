@@ -127,7 +127,16 @@ describe('Components render children', () => {
     const secondChild = queryByLabelText('3');
     expect(secondChild).toBeInTheDocument();
   });
-
+  it('sliderchoice with children renders', () => {
+    const item = createNestedChoiceItem(itemType.CHOICE, createItemControlExtension(itemControlConstants.SLIDER));
+    const q = createQuestionnaire(item);
+    const { queryByText, debug } = createWrapper(q);
+    debug(undefined, 20000);
+    const firstChild = queryByText('2');
+    expect(firstChild).toBeInTheDocument();
+    const secondChild = queryByText('3');
+    expect(secondChild).toBeInTheDocument();
+  });
   it('radio-button open-choice with children renders', () => {
     const item = createNestedChoiceItem(itemType.OPENCHOICE, createItemControlExtension(itemControlConstants.RADIOBUTTON));
     const q = createQuestionnaire(item);

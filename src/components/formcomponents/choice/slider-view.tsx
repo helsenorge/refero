@@ -18,7 +18,7 @@ import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelp
 import RenderHelpElement from '@/components/formcomponents/help-button/RenderHelpElement';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
-import { RenderItemProps } from '../renderChildren/RenderChildrenItems';
+import { RenderChildrenItems, RenderItemProps } from '../renderChildren/RenderChildrenItems';
 
 export type SliderProps = RenderItemProps & {
   item: QuestionnaireItem;
@@ -34,20 +34,20 @@ enum SliderDisplayTypes {
 
 type LeftRightLabels = { leftLabel: string; rightLabel: string };
 
-const SliderView: React.FC<SliderProps> = ({
-  item,
-  handleChange,
-  selected,
-  children,
-  resources,
-  idWithLinkIdAndItemIndex,
-  id,
-  onAnswerChange,
-  responseItems,
-  responseItem,
-  path,
-  index,
-}) => {
+const SliderView = (props: SliderProps): JSX.Element | null => {
+  const {
+    item,
+    handleChange,
+    selected,
+    resources,
+    idWithLinkIdAndItemIndex,
+    id,
+    onAnswerChange,
+    responseItems,
+    responseItem,
+    path,
+    index,
+  } = props;
   const { formState, getFieldState, control } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
@@ -131,7 +131,9 @@ const SliderView: React.FC<SliderProps> = ({
           className="page_refero__deletebutton--margin-top"
         />
         <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} responseItem={responseItem} responseItems={responseItems} />
-        {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : undefined}
+        <div className="nested-fieldset nested-fieldset--full-height">
+          <RenderChildrenItems otherProps={props} />
+        </div>
       </FormGroup>
     </div>
   );

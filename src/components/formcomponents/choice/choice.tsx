@@ -37,12 +37,12 @@ export type ChoiceProps = RenderItemProps & {
 export const Choice = (props: ChoiceProps): JSX.Element | null => {
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
 
-  const { resources, containedResources, promptLoginMessage, item, onAnswerChange, path, id, pdf, children, responseItem } = props;
-  const answer = useGetAnswer(responseItem, item) || [];
+  const { resources, containedResources, promptLoginMessage, item, onAnswerChange, path, id, pdf, responseItem } = props;
+  const answer = useGetAnswer(responseItem, item);
   const enable = useIsEnabled(item, path);
   const getValue = (
     item: QuestionnaireItem,
-    answer: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer
+    answer?: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer
   ): (string | undefined)[] | undefined => {
     if (answer && Array.isArray(answer)) {
       return answer.map((el: QuestionnaireResponseItemAnswer) => {
@@ -74,7 +74,7 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
     });
   };
 
-  const getPDFValue = (item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer[] | QuestionnaireResponseItemAnswer): string => {
+  const getPDFValue = (item: QuestionnaireItem, answer?: QuestionnaireResponseItemAnswer[] | QuestionnaireResponseItemAnswer): string => {
     if (isDataReceiver(item) && Array.isArray(answer)) {
       return getDataReceiverValue(answer).join(', ');
     }
@@ -194,7 +194,7 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
   if (pdf || isReadOnly(item)) {
     return (
       <TextView id={id} item={item} value={getPDFValue(item, answer)}>
-        {children}
+        <RenderChildrenItems otherProps={props} />
       </TextView>
     );
   }
@@ -205,29 +205,20 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
         itemControlValue ? (
           renderComponentBasedOnType()
         ) : aboveDropdownThreshold ? (
-          <DropdownView options={options} handleChange={handleChange} selected={value} {...props}>
-            {children}
-          </DropdownView>
+          <DropdownView options={options} handleChange={handleChange} selected={value} {...props} />
         ) : (
-          <RadioView options={options} handleChange={handleChange} selected={value} {...props}>
-            {children}
-          </RadioView>
+          <RadioView options={options} handleChange={handleChange} selected={value} {...props} />
         )
       ) : shouldRenderAutosuggest ? (
-        <AutosuggestView handleChange={handleChange} clearCodingAnswer={clearCodingAnswer} {...props}>
-          {children}
-        </AutosuggestView>
+        <AutosuggestView handleChange={handleChange} clearCodingAnswer={clearCodingAnswer} {...props} />
       ) : isReceiverComponent ? (
         <ReceiverComponentWrapper
           {...props}
           handleChange={handleChange}
           selected={getValue(props.item, answer)}
           clearCodingAnswer={clearCodingAnswer}
-        >
-          {props.children}
-        </ReceiverComponentWrapper>
+        />
       ) : null}
-      <RenderChildrenItems otherProps={props} />
     </>
   );
 };

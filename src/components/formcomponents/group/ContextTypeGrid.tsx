@@ -6,21 +6,31 @@ import { getColumns } from './helpers';
 
 import { RenderContextType } from '@/constants/renderContextType';
 import { RenderChildrenItems, RenderItemProps } from '../renderChildren/RenderChildrenItems';
+import { QuestionnaireItem } from 'fhir/r4';
 
 type ContextTypeGridProps = RenderItemProps;
+type Props = {
+  item: QuestionnaireItem;
+  columns: string[];
+};
+const RenderHeaders = ({ item, columns }: Props): JSX.Element => {
+  const headers = columns.map((c, i) => <th key={`${item.linkId}-${c}-${i}`}>{c}</th>);
+  headers.unshift(<th key={`${item.linkId}-X`}>{item.text ? item.text : ''}</th>);
+  return <>{headers}</>;
+};
+
 const ContextTypeGrid = (props: ContextTypeGridProps): JSX.Element => {
   const { item, index, path, id, onAnswerChange, responseItem, resources, responseItems } = props;
   const columns = getColumns(item);
-  const headers = [...columns]
-    .map((c, i) => <th key={`${item.linkId}-${c}-${i}`}>{c}</th>)
-    .unshift(<th key={`${item.linkId}-X`}>{item.text ? item.text : ''}</th>);
 
   const newRenderContext = new RenderContext(RenderContextType.Grid, item.linkId, columns);
   return (
     <>
       <table id={getId(id)} className="page_refero__grid">
         <thead>
-          <tr>{headers}</tr>
+          <tr>
+            <RenderHeaders item={item} columns={columns} />
+          </tr>
         </thead>
         <tbody>
           <RenderChildrenItems otherProps={{ ...props, renderContext: newRenderContext }} />

@@ -316,6 +316,8 @@ const Refero = (props: StateProps & DispatchProps & ReferoProps): JSX.Element | 
         onRequestHelpButton={props.onRequestHelpButton}
         onRequestHelpElement={props.onRequestHelpElement}
         onRenderMarkdown={props.onRenderMarkdown}
+        fetchReceivers={props.fetchReceivers}
+        fetchValueSet={props.fetchValueSet}
       >
         <FormProvider {...methods}>
           {isStepView ? (

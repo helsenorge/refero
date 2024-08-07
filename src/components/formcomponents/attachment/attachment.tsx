@@ -34,7 +34,6 @@ export const AttachmentComponent = (props: Props): JSX.Element | null => {
     id,
     resources,
     onOpenAttachment,
-    children,
     onRequestAttachmentLink,
     attachmentMaxFileSize,
     attachmentValidTypes,
@@ -122,7 +121,7 @@ export const AttachmentComponent = (props: Props): JSX.Element | null => {
   if (pdf || isReadOnly(item)) {
     return (
       <TextView id={id} item={item} value={getPdfValue()}>
-        {children}
+        <RenderChildrenItems otherProps={props} />
       </TextView>
     );
   } else {
@@ -147,9 +146,8 @@ export const AttachmentComponent = (props: Props): JSX.Element | null => {
           attachmentErrorMessage={attachmentErrorMessage}
           idWithLinkIdAndItemIndex={props.idWithLinkIdAndItemIndex}
         >
-          {children}
+          <RenderChildrenItems otherProps={props} />
         </AttachmentHtml>
-        <RenderChildrenItems otherProps={props} />
       </>
     );
   }

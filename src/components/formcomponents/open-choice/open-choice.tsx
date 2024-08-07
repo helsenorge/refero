@@ -43,8 +43,8 @@ export type Props = RenderItemProps & {
 };
 
 export const OpenChoice = (props: Props): JSX.Element | null => {
-  const { id, item, pdf, responseItem, containedResources, children, resources, promptLoginMessage, path, onAnswerChange } = props;
-  const answer = useGetAnswer(responseItem, item) || [];
+  const { id, item, pdf, responseItem, containedResources, resources, promptLoginMessage, path, onAnswerChange } = props;
+  const answer = useGetAnswer(responseItem, item);
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
   const enable = useIsEnabled(item, path);
   const getDataReceiverValue = (answer: QuestionnaireResponseItemAnswer[]): string[] | undefined => {
@@ -61,7 +61,7 @@ export const OpenChoice = (props: Props): JSX.Element | null => {
       .filter((it): it is string => it !== undefined);
   };
 
-  const getPDFValue = (item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer[] | QuestionnaireResponseItemAnswer): string => {
+  const getPDFValue = (item: QuestionnaireItem, answer?: QuestionnaireResponseItemAnswer[] | QuestionnaireResponseItemAnswer): string => {
     if (isDataReceiver(item) && Array.isArray(answer)) {
       return getDataReceiverValue(answer)?.join(', ') || '';
     }
@@ -87,7 +87,7 @@ export const OpenChoice = (props: Props): JSX.Element | null => {
     return displayValues.join(', ');
   };
 
-  const getOpenValue = (answer: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer): string | undefined => {
+  const getOpenValue = (answer?: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer): string | undefined => {
     if (Array.isArray(answer)) {
       for (let i = 0; i < answer.length; i++) {
         const el = answer[i];
@@ -102,7 +102,7 @@ export const OpenChoice = (props: Props): JSX.Element | null => {
 
   const getValue = (
     item: QuestionnaireItem,
-    answer: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer
+    answer?: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer
   ): (string | undefined)[] | undefined => {
     if (answer && Array.isArray(answer)) {
       return answer.map((el: QuestionnaireResponseItemAnswer) => {
@@ -282,7 +282,7 @@ export const OpenChoice = (props: Props): JSX.Element | null => {
   if (pdf || isReadOnly(item)) {
     return (
       <TextView id={id} item={item} value={getPDFValue(item, answer)}>
-        {children}
+        <RenderChildrenItems otherProps={props} />
       </TextView>
     );
   }
@@ -301,9 +301,7 @@ export const OpenChoice = (props: Props): JSX.Element | null => {
             selected={value}
             renderOpenField={(): JSX.Element => renderTextField()}
             {...props}
-          >
-            {children}
-          </DropdownView>
+          />
         ) : (
           <RadioView
             options={options}
@@ -311,9 +309,7 @@ export const OpenChoice = (props: Props): JSX.Element | null => {
             selected={value}
             renderOpenField={(): JSX.Element => renderTextField()}
             {...props}
-          >
-            {children}
-          </RadioView>
+          />
         )
       ) : shouldRenderAutosuggest ? (
         <AutosuggestView
@@ -321,11 +317,8 @@ export const OpenChoice = (props: Props): JSX.Element | null => {
           clearCodingAnswer={clearCodingAnswer}
           handleStringChange={handleStringChange}
           {...props}
-        >
-          {children}
-        </AutosuggestView>
+        />
       ) : null}
-      <RenderChildrenItems otherProps={props} />
     </>
   );
 };

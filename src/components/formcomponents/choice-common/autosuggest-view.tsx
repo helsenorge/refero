@@ -1,4 +1,4 @@
-import React, { ChangeEvent, FormEvent, useState } from 'react';
+import { ChangeEvent, FormEvent, useState } from 'react';
 
 import { ValueSet, Coding } from 'fhir/r4';
 import { Controller, FieldValues, useFormContext } from 'react-hook-form';
@@ -24,35 +24,34 @@ import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 
-import { RenderItemProps } from '../renderChildren/RenderChildrenItems';
+import { RenderChildrenItems, RenderItemProps } from '../renderChildren/RenderChildrenItems';
 
 export type AutosuggestProps = RenderItemProps & {
   handleChange: (code?: string, systemArg?: string, displayArg?: string) => void;
   clearCodingAnswer: (coding: Coding) => void;
-  children?: React.ReactNode;
   handleStringChange?: (value: string) => void;
 };
 
-const AutosuggestView = ({
-  resources,
-  item,
-  id,
-  idWithLinkIdAndItemIndex,
-  clearCodingAnswer,
-  autoSuggestProps,
-  handleChange,
-  handleStringChange,
-  index,
-  responseItems,
-  children,
-  responseItem,
-  path,
-  onAnswerChange,
-}: AutosuggestProps): JSX.Element | null => {
+const AutosuggestView = (props: AutosuggestProps): JSX.Element | null => {
+  const {
+    resources,
+    item,
+    id,
+    idWithLinkIdAndItemIndex,
+    clearCodingAnswer,
+    autoSuggestProps,
+    handleChange,
+    handleStringChange,
+    index,
+    responseItems,
+    responseItem,
+    path,
+    onAnswerChange,
+  } = props;
   const { formState, getFieldState, control } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
-  const answer = useGetAnswer(responseItem, item) || [];
+  const answer = useGetAnswer(responseItem, item);
   const enable = useIsEnabled(item, path);
   const { fetchValueSet } = useExternalRenderContext();
   const codingAnswer = getCodingAnswer(answer);
@@ -254,7 +253,9 @@ const AutosuggestView = ({
         />
         <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} responseItem={responseItem} responseItems={responseItems} />
       </FormGroup>
-      {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
+      <div className="nested-fieldset nested-fieldset--full-height">
+        <RenderChildrenItems otherProps={props} />
+      </div>
     </div>
   );
 };

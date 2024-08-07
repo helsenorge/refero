@@ -124,7 +124,7 @@ const attachmentHtml = ({
           onOpenFile={onOpen}
         />
         {attachmentErrorMessage && <NotificationPanel variant="alert">{attachmentErrorMessage}</NotificationPanel>}
-        {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
+        <div className="nested-fieldset nested-fieldset--full-height">{children}</div>
       </FormGroup>
     </div>
   );

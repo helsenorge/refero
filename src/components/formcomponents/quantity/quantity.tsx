@@ -205,8 +205,9 @@ const Quantity = (props: Props): JSX.Element | null => {
         />
         <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} responseItem={responseItem} responseItems={responseItems} />
       </FormGroup>
-      <RenderChildrenItems otherProps={props} />
-      {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
+      <div className="nested-fieldset nested-fieldset--full-height">
+        <RenderChildrenItems otherProps={props} />
+      </div>
     </div>
   );
 };

@@ -16,17 +16,18 @@ export const Group = (props: Props): JSX.Element | null => {
   const { pdf, renderContext, path, item } = props;
   const enable = useIsEnabled(item, path);
   const [isHelpVisible, setIsHelpVisible] = useState(false);
-
   if (!enable) {
     return null;
   }
   const localRenderContextType = getLocalRenderContextType(item);
   const isLocalRenderContextTypeGrid = localRenderContextType === RenderContextType.Grid;
   const isRenderContextTypeGrid = renderContext.RenderContextType === RenderContextType.Grid;
+
   return (
     <AsPdf pdf={!!pdf}>
-      {isLocalRenderContextTypeGrid && <ContextTypeGrid {...props} />}
-      {isRenderContextTypeGrid ? (
+      {isLocalRenderContextTypeGrid ? (
+        <ContextTypeGrid {...props} />
+      ) : isRenderContextTypeGrid ? (
         isDirectChildOfRenderContextOwner(path || [], item, renderContext) ? (
           <ContextTypeGridRow {...props} isHelpVisible={isHelpVisible} setIsHelpVisible={setIsHelpVisible} />
         ) : (
