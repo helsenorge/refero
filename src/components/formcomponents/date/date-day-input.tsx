@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 import { format, isValid } from 'date-fns';
-import { QuestionnaireResponseItemAnswer, QuestionnaireItemInitial } from 'fhir/r4';
+import { QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { Controller, FieldError, FieldValues, useFormContext } from 'react-hook-form';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
@@ -19,6 +19,7 @@ import { formatDateToStringDDMMYYYY, parseStringToDateDDMMYYYY, validateDate, va
 import { RenderItemProps } from '../renderChildren/RenderChildrenItems';
 import RenderHelpButton from '../help-button/RenderHelpButton';
 import RenderHelpElement from '../help-button/RenderHelpElement';
+import { useGetAnswer } from '@/hooks/useGetAnswer';
 
 type DateDayInputProps = RenderItemProps & {
   locale: LanguageLocales.ENGLISH | LanguageLocales.NORWEGIAN;
@@ -29,7 +30,6 @@ type DateDayInputProps = RenderItemProps & {
   className?: string;
   maxDate?: Date;
   minDate?: Date;
-  answer: QuestionnaireResponseItemAnswer;
   children: React.ReactNode;
 };
 
@@ -42,20 +42,34 @@ export const DateDayInput = ({
   onDateValueChange,
   maxDate,
   minDate,
-  answer,
   children,
-}: DateDayInputProps): JSX.Element => {
+}: DateDayInputProps): JSX.Element | null => {
   const [isHelpVisible, setIsHelpVisible] = useState(false);
   const { formState, getFieldState } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
-  const getDateAnswerValue = (answer: QuestionnaireResponseItemAnswer | QuestionnaireItemInitial): string | undefined => {
-    if (answer && answer.valueDate) {
-      return answer.valueDate;
+  const answer = useGetAnswer(item);
+
+  const getDateAnswerValue = (
+    answer?: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[] | undefined
+  ): string | undefined => {
+    const answerValue = Array.isArray(answer) ? answer[0] : answer;
+    if (answerValue && answerValue.valueDate) {
+      return answerValue.valueDate;
     }
-    if (answer && answer.valueDateTime) {
-      return answer.valueDateTime;
+    if (answerValue && answerValue.valueDateTime) {
+      return answerValue.valueDateTime;
     }
+    if (!item || !item.initial || item.initial.length === 0) {
+      return undefined;
+    }
+    if (!item.initial[0].valueDate && !item.initial[0].valueDateTime) {
+      return undefined;
+    }
+    if (item.initial[0].valueDateTime) {
+      return item.initial[0].valueDateTime;
+    }
+    return item.initial[0].valueDate;
   };
 
   const dateAnswerValue = getDateAnswerValue(answer);
