@@ -30,7 +30,7 @@ type DateDayInputProps = RenderItemProps & {
   className?: string;
   maxDate?: Date;
   minDate?: Date;
-  children: React.ReactNode;
+  children?: React.ReactNode;
 };
 
 export const DateDayInput = ({

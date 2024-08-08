@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { parseISO } from 'date-fns';
-import { QuestionnaireItem, QuestionnaireResponseItemAnswer, Questionnaire } from 'fhir/r4';
+import { QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { ThunkDispatch } from 'redux-thunk';
 
 import { LanguageLocales } from '@helsenorge/core-utils/constants/languages';
@@ -17,41 +17,24 @@ import { safeParseJSON } from '../../../util/date-fns-utils';
 import { getExtension, getItemControlExtensionValue } from '../../../util/extension';
 import { evaluateFhirpathExpressionToGetDate } from '../../../util/fhirpathHelper';
 import { getLabelText, getSublabelText } from '../../../util/index';
-import { Path } from '../../../util/refero-core';
-import { Resources } from '../../../util/resources';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import { RenderChildrenItems, RenderItemProps } from '../renderChildren/RenderChildrenItems';
+import { getFormDefinition } from '@/reducers/form';
+import { useGetAnswer } from '@/hooks/useGetAnswer';
 
 export type DateProps = RenderItemProps & {
-  item: QuestionnaireItem;
-  questionnaire?: Questionnaire;
-  answer: QuestionnaireResponseItemAnswer;
-  resources?: Resources;
-  path: Array<Path>;
-  pdf?: boolean;
-  language?: string;
-  promptLoginMessage?: () => void;
-  children: React.ReactNode;
+  children?: React.ReactNode;
 };
 
 const DateComponent = (props: DateProps): JSX.Element => {
-  const {
-    item,
-    questionnaire,
-    answer,
-    resources,
-    language,
-    promptLoginMessage,
-    children,
-    onAnswerChange,
-    responseItems,
-    responseItem,
-    path,
-    index,
-  } = props;
+  const { item, resources, language, promptLoginMessage, children, onAnswerChange, responseItems, responseItem, path, index } = props;
+  const formDefinition = useSelector((state: GlobalState) => getFormDefinition(state));
+  const questionnaire = formDefinition?.Content;
+  const answer = useGetAnswer(responseItem, item);
+
   const { onRenderMarkdown } = useExternalRenderContext();
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
   const getMaxDate = (): Date | undefined => {
@@ -99,8 +82,8 @@ const DateComponent = (props: DateProps): JSX.Element => {
   };
 
   const onDateValueChange = (newValue: string): void => {
-    const existingAnswer = answer?.valueDate || '';
-    if (dispatch && newValue !== existingAnswer) {
+    const existingAnswer = Array.isArray(answer) ? answer[0].valueDate : answer?.valueDate || '';
+    if (dispatch && newValue !== existingAnswer && path) {
       dispatch(newDateValueAsync(path, newValue, item))?.then(
         newState => onAnswerChange && onAnswerChange(newState, path, item, { valueDate: newValue } as QuestionnaireResponseItemAnswer)
       );
@@ -174,7 +157,7 @@ const DateComponent = (props: DateProps): JSX.Element => {
         resources={resources}
         className="page_refero__deletebutton--margin-top"
       />
-      <RenderRepeatButton path={path.slice(0, -1)} item={item} index={index} responseItem={responseItem} responseItems={responseItems} />
+      <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} responseItem={responseItem} responseItems={responseItems} />
 
       {children ? (
         <div className="nested-fieldset nested-fieldset--full-height">
