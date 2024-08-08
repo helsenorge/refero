@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { format } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 import { isValid } from 'date-fns';
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem, Questionnaire } from 'fhir/r4';
 import { FieldError, FieldValues, useFormContext } from 'react-hook-form';
@@ -112,9 +112,9 @@ const DateTimeInput: React.FC<Props> = ({
       return;
     }
     if (maxDate.valueDate) {
-      return safeParseJSON(String(maxDate.valueDate));
+      return parseISO(maxDate.valueDate);
     } else if (maxDate.valueDateTime) {
-      return safeParseJSON(String(maxDate.valueDateTime));
+      return parseISO(maxDate.valueDateTime);
     }
     return undefined;
   };
@@ -131,9 +131,9 @@ const DateTimeInput: React.FC<Props> = ({
       return;
     }
     if (minDate.valueDate) {
-      return safeParseJSON(String(minDate.valueDate));
+      return parseISO(minDate.valueDate);
     } else if (minDate.valueDateTime) {
-      return safeParseJSON(String(minDate.valueDateTime));
+      return parseISO(minDate.valueDateTime);
     }
     return undefined;
   };

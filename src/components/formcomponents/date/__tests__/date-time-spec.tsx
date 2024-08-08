@@ -1,6 +1,6 @@
 import { Questionnaire, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { act, findByRole, getByTestId, renderRefero, userEvent, waitFor } from '@test/test-utils.tsx';
-import { q } from './__data__/date-time';
+import { q, qMinMax, qMinMaxCustomError } from './__data__/date-time';
 import { ReferoProps } from '../../../../types/referoProps';
 import { Extensions } from '../../../../constants/extensions';
 import { clickButtonTimes, submitForm } from '../../../../../test/selectors';
@@ -15,6 +15,7 @@ const resources = {
   dateError_invalid: 'Ugyldig dato',
   errorBeforeMinDate: 'Dato kan ikke være før minimums dato',
   errorAfterMaxDate: 'Dato kan ikke være etter maksimum dato',
+  dateError_time_invalid: 'Ugyldig klokkeslett',
 };
 
 describe('Date day', () => {
@@ -305,7 +306,7 @@ describe('Date day', () => {
           expect(queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
         });
       });
-      
+
       it('Should show error if date is invalid', async () => {
         const { getByLabelText, getByText } = createWrapper(q);
 
@@ -316,56 +317,104 @@ describe('Date day', () => {
         await submitForm();
         expect(getByText(resources.dateError_invalid)).toBeInTheDocument();
       });
-      // it('Should show error message for min value', async () => {
+      it('Should show error message for min value', async () => {
+        const { getByLabelText, getByText } = createWrapper(qMinMax);
+
+        await act(async () => {
+          userEvent.paste(getByLabelText(/Dato/i), '31.05.1904');
+        });
+
+        await submitForm();
+        expect(getByText(resources.errorBeforeMinDate + ': 31.05.1994')).toBeInTheDocument();
+      });
+      it('Should show error message for max value', async () => {
+        const { getByLabelText, getByText } = createWrapper(qMinMax);
+
+        await act(async () => {
+          userEvent.paste(getByLabelText(/Dato/i), '31.05.2095');
+        });
+
+        await submitForm();
+        expect(getByText(resources.errorAfterMaxDate + ': 31.05.2094')).toBeInTheDocument();
+      });
+      it('Should show custom error message for min value', async () => {
+        const { getByLabelText, getByText } = createWrapper(qMinMaxCustomError);
+
+        await act(async () => {
+          userEvent.paste(getByLabelText(/Dato/i), '31.05.1904');
+        });
+
+        await submitForm();
+        expect(getByText('Custom errormessage')).toBeInTheDocument();
+      });
+      it('Should show custom error message for max value', async () => {
+        const { getByLabelText, getByText } = createWrapper(qMinMaxCustomError);
+
+        await act(async () => {
+          userEvent.paste(getByLabelText(/Dato/i), '31.05.2095');
+        });
+
+        await submitForm();
+        expect(getByText('Custom errormessage')).toBeInTheDocument();
+      });
+      it('Should not show error if date value is between min value and max value', async () => {
+        const { getByLabelText, queryByText } = createWrapper(qMinMax);
+
+        await act(async () => {
+          userEvent.paste(getByLabelText(/Dato/i), '31.05.2024');
+        });
+
+        await submitForm();
+        expect(queryByText(resources.errorBeforeMinDate + ': 31.05.1994')).not.toBeInTheDocument();
+        expect(queryByText(resources.errorAfterMaxDate + ': 31.05.2094')).not.toBeInTheDocument();
+      });
+      // it('Should show error message for invalid hours value', async () => {
       //   const { getByLabelText, getByText } = createWrapper(qMinMax);
+      //   await submitForm();
+      //   const hoursElement = await screen.findByTestId('datetime-1');
+      //   const minutesElement = await screen.findByTestId('datetime-2');
+      //   const hoursInput = hoursElement.querySelector('input');
+      //   const minutesInput = minutesElement.querySelector('input');
 
       //   await act(async () => {
-      //     userEvent.paste(getByLabelText(/Dato/i), '31.05.1904');
+      //     userEvent.paste(getByLabelText(/Dato/i), '31.05.1994');
+      //   });
+      //   await act(async () => {
+      //     hoursInput && userEvent.paste(hoursInput, '1414');
+      //   });
+      //   await act(async () => {
+      //     minutesInput && userEvent.paste(minutesInput, '00');
+      //     userEvent.tab();
       //   });
 
       //   await submitForm();
-      //   expect(getByText(resources.errorBeforeMinDate + ': 31.05.1994')).toBeInTheDocument();
+      //   await waitFor(() => {
+      //     expect(getByText(resources.dateError_time_invalid)).toBeInTheDocument();
+      //   });
       // });
-      // it('Should show error message for max value', async () => {
-      //   const { getByLabelText, getByText } = createWrapper(qMinMax);
+      // it('Should remove error on change if form is submitted', async () => {
+      //   const { getByText, queryByText, getByLabelText } = createWrapper(q);
+
+      //   const hoursElement = await screen.findByTestId('datetime-1');
+      //   const minutesElement = await screen.findByTestId('datetime-2');
+      //   const hoursInput = hoursElement.querySelector('input');
+      //   const minutesInput = minutesElement.querySelector('input');
 
       //   await act(async () => {
-      //     userEvent.paste(getByLabelText(/Dato/i), '31.05.2095');
+      //     userEvent.paste(getByLabelText(/Dato/i), '31.05.1994');
+      //   });
+      //   await act(async () => {
+      //     hoursInput && userEvent.paste(hoursInput, '90');
+      //   });
+      //   await act(async () => {
+      //     minutesInput && userEvent.paste(minutesInput, '00');
+      //     userEvent.tab();
       //   });
 
       //   await submitForm();
-      //   expect(getByText(resources.errorAfterMaxDate + ': 31.05.2094')).toBeInTheDocument();
-      // });
-      // it('Should show custom error message for min value', async () => {
-      //   const { getByLabelText, getByText } = createWrapper(qMinMaxCustomError);
-
-      //   await act(async () => {
-      //     userEvent.paste(getByLabelText(/Dato/i), '31.05.1904');
+      //   await waitFor(() => {
+      //     expect(getByText(resources.dateError_time_invalid)).toBeInTheDocument();
       //   });
-
-      //   await submitForm();
-      //   expect(getByText('Custom errormessage')).toBeInTheDocument();
-      // });
-      // it('Should show custom error message for max value', async () => {
-      //   const { getByLabelText, getByText } = createWrapper(qMinMaxCustomError);
-
-      //   await act(async () => {
-      //     userEvent.paste(getByLabelText(/Dato/i), '31.05.2095');
-      //   });
-
-      //   await submitForm();
-      //   expect(getByText('Custom errormessage')).toBeInTheDocument();
-      // });
-      // it('Should not show error if date value is between min value and max value', async () => {
-      //   const { getByLabelText, queryByText } = createWrapper(qMinMax);
-
-      //   await act(async () => {
-      //     userEvent.paste(getByLabelText(/Dato/i), '31.05.2024');
-      //   });
-
-      //   await submitForm();
-      //   expect(queryByText(resources.errorBeforeMinDate + ': 31.05.1994')).not.toBeInTheDocument();
-      //   expect(queryByText(resources.errorAfterMaxDate + ': 31.05.2094')).not.toBeInTheDocument();
       // });
     });
   });

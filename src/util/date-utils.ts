@@ -142,7 +142,7 @@ export const validateMinDate = (
   resources: Resources | undefined
 ): true | string => {
   if (minDateTime && dateToValidate && isBefore(dateToValidate, startOfDay(minDateTime))) {
-    return `${resources?.errorBeforeMinDate}: ${format(minDateTime, DateFormat.ddMMyyyy)}`
+    return `${resources?.errorBeforeMinDate}: ${format(minDateTime, DateFormat.ddMMyyyy)}`;
   }
   return true;
 };

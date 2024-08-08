@@ -229,7 +229,7 @@ describe('onAnswerChange callback gets called and can request additional changes
     expect(container.querySelector('#item_6b-2')).toBeChecked();
   });
 
-  it.skip('date gets updated', async () => {
+  it('date gets updated', async () => {
     const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
       actionRequester.addDateAnswer('7a', '2020-05-17');
     });
@@ -240,7 +240,7 @@ describe('onAnswerChange callback gets called and can request additional changes
     const item = findItem('7a-datepicker_input', container);
     expect(item).toHaveValue('17.05.2020');
   });
-  it.skip('date gets cleared', async () => {
+  it('date gets cleared', async () => {
     const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
       actionRequester.addDateAnswer('7a', '2020-05-17');
       actionRequester.clearDateAnswer('7a');
@@ -252,7 +252,7 @@ describe('onAnswerChange callback gets called and can request additional changes
     const item = findItem('7a-datepicker_input', container);
     expect(item).toHaveValue(null);
   });
-  it.skip('time gets updated', async () => {
+  it('time gets updated', async () => {
     const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
       actionRequester.addTimeAnswer('7b', '12:01');
     });
@@ -267,7 +267,7 @@ describe('onAnswerChange callback gets called and can request additional changes
     item = screen.getByLabelText('#item_7b_minutes');
     expect(item).toHaveValue('01');
   });
-  it.skip('time gets cleared', async () => {
+  it('time gets cleared', async () => {
     const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
       actionRequester.addTimeAnswer('7b', '12:01');
       actionRequester.clearTimeAnswer('7b');
@@ -283,7 +283,7 @@ describe('onAnswerChange callback gets called and can request additional changes
     item = screen.getByLabelText('#item_7b_minutes');
     expect(item).toHaveValue(null);
   });
-  it.skip('dateTime gets updated', async () => {
+  it('dateTime gets updated', async () => {
     const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
       actionRequester.addDateTimeAnswer('7c', '2020-05-17T12:01:00Z');
     });
@@ -297,7 +297,7 @@ describe('onAnswerChange callback gets called and can request additional changes
     const dateString = parse(date, Constants.DATE_TIME_FORMAT, new Date());
     expect(dateString).toBe('2020-05-17T12:01:00+00:00');
   });
-  it.skip('dateTime gets cleared', async () => {
+  it('dateTime gets cleared', async () => {
     const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
       actionRequester.addDateTimeAnswer('7c', '2020-05-17T12:01:00Z');
       actionRequester.clearDateTimeAnswer('7c');
