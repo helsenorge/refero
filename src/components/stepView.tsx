@@ -9,6 +9,7 @@ import { NAVIGATOR_BLINDZONE_ID } from '../constants';
 import { FormDefinition } from '../reducers/form';
 import { getTopLevelElements } from '../util/getTopLevelElements';
 import { Resources } from '../util/resources';
+import { useExternalRenderContext } from '@/context/externalRenderContext';
 
 interface StepViewProps {
   isAuthorized: boolean;
@@ -18,7 +19,6 @@ interface StepViewProps {
   formDefinition: FormDefinition;
   onSave: () => void;
   onSubmit: () => void;
-  onStepChange?: (stepIndex: number) => void;
   methods: UseFormReturn<FieldValues, unknown, undefined>;
 }
 
@@ -30,12 +30,11 @@ const StepView = ({
   formDefinition,
   onSave,
   onSubmit,
-  onStepChange,
   methods,
 }: StepViewProps): JSX.Element | null => {
   const stepArray: Array<JSX.Element> | undefined = [];
   const [stepIndex, setStepIndex] = React.useState(0);
-
+  const { onStepChange } = useExternalRenderContext();
   const topLevelElements = getTopLevelElements(formDefinition);
   formItems?.filter(formItem =>
     topLevelElements?.find(element => {

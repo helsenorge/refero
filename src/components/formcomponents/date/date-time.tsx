@@ -41,6 +41,8 @@ import { RenderItemProps } from '../renderChildren/RenderChildrenItems';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
+import { useExternalRenderContext } from '@/context/externalRenderContext';
+
 export type Props = RenderItemProps & {
   item: QuestionnaireItem;
   responseItem: QuestionnaireResponseItem;
@@ -54,7 +56,6 @@ const DateTimeInput: React.FC<Props> = ({
   resources,
   path,
   pdf,
-  promptLoginMessage,
   id,
   onAnswerChange,
   idWithLinkIdAndItemIndex,
@@ -63,6 +64,7 @@ const DateTimeInput: React.FC<Props> = ({
   index,
   responseItems,
 }) => {
+  const { promptLoginMessage } = useExternalRenderContext();
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
   const answer = useGetAnswer(responseItem, item);
   const [isHelpVisible, setIsHelpVisible] = useState(false);

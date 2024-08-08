@@ -101,7 +101,7 @@ const RadioView = (props: Props): JSX.Element => {
       />
       <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} responseItem={responseItem} responseItems={responseItems} />
       <div className="nested-fieldset nested-fieldset--full-height">
-        <RenderChildrenItems otherProps={props} />
+        <RenderChildrenItems {...props} />
       </div>
     </div>
   );

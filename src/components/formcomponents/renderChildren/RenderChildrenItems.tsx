@@ -2,7 +2,7 @@ import { Resource, QuestionnaireResponseItem, QuestionnaireItem, QuestionnaireRe
 import itemType from '@/constants/itemType';
 import { getCodingTextTableValues } from '@/util/extension';
 import { isHelpItem } from '@/util/help';
-import { getComponentForItem, getChildHeaderTag, isHiddenItem } from '@/util/index';
+import { getComponentForItem, getChildHeaderTag, isHiddenItem, isRepeat } from '@/util/index';
 import { Path, getItemWithIdFromResponseItemArray, createPathForItem, createIdSuffix } from '@/util/refero-core';
 import { RenderContext } from '@/util/renderContext';
 import { Resources } from '@/util/resources';
@@ -18,7 +18,6 @@ export type RenderItemProps = {
   pdf?: boolean;
   language?: string;
   includeSkipLink?: boolean;
-  promptLoginMessage?: () => void;
   path?: Path[];
   id?: string;
   validateScriptInjection?: boolean;
@@ -55,22 +54,23 @@ const RenderItem = (props: RenderItemProps): JSX.Element | null => {
       response = getItemWithIdFromResponseItemArray(item.linkId, childAnswer[0].item);
     }
   }
-
   return (
     <>
       {response &&
         response.map((responseItem, index) => {
-          const idWithLinkIdAndItemIndex = `${item.linkId}${createIdSuffix(path, index, item.repeats)}`;
+          const newPath = createPathForItem(path, item, responseItem, index);
+
+          const idWithLinkIdAndItemIndex = `${item.linkId}${createIdSuffix(newPath, index, isRepeat(item))}`;
           return (
             <Comp
               {...props}
               index={index}
               responseItem={responseItem}
               responseItems={response}
-              key={`item_${responseItem.linkId}${createIdSuffix(path, index, item.repeats)}`}
+              key={`item_${responseItem.linkId}${createIdSuffix(newPath, index, isRepeat(item))}`}
               idWithLinkIdAndItemIndex={idWithLinkIdAndItemIndex}
-              id={`item_${responseItem.linkId}${createIdSuffix(path, index, item.repeats)}`}
-              path={createPathForItem(path, item, responseItem, index)}
+              id={`item_${responseItem.linkId}${createIdSuffix(newPath, index, isRepeat(item))}`}
+              path={newPath}
               headerTag={getChildHeaderTag(item, headerTag)}
             />
           );
@@ -78,21 +78,20 @@ const RenderItem = (props: RenderItemProps): JSX.Element | null => {
     </>
   );
 };
-interface RenderChildrenItemsProps {
-  otherProps: RenderItemProps;
-}
-export const RenderChildrenItems = ({ otherProps }: RenderChildrenItemsProps): JSX.Element | null => {
-  if (!otherProps.item || !otherProps.item.item) {
+type RenderChildrenItemsProps = RenderItemProps;
+export const RenderChildrenItems = (props: RenderChildrenItemsProps): JSX.Element | null => {
+  const { item, renderContext } = props;
+  if (!item || !item.item) {
     return null;
   }
 
-  if (otherProps.item.type === itemType.GROUP && otherProps.renderContext.RenderChildren) {
+  if (item.type === itemType.GROUP && renderContext.RenderChildren) {
     return (
       <>
-        {otherProps.renderContext.RenderChildren(
-          otherProps.item.item,
+        {renderContext.RenderChildren(
+          item.item,
           (childItem: QuestionnaireItem, context: RenderContext): JSX.Element => (
-            <RenderItem key={childItem.linkId} {...otherProps} item={childItem} renderContext={context} />
+            <RenderItem key={childItem.linkId} {...props} item={childItem} renderContext={context} />
           )
         )}
       </>
@@ -101,8 +100,8 @@ export const RenderChildrenItems = ({ otherProps }: RenderChildrenItemsProps): J
 
   return (
     <>
-      {otherProps.item.item.map(childItem => {
-        return <RenderItem key={childItem.linkId} {...otherProps} item={childItem} renderContext={otherProps.renderContext} />;
+      {item.item.map(childItem => {
+        return <RenderItem key={childItem.linkId} {...props} item={childItem} renderContext={renderContext} />;
       })}
     </>
   );

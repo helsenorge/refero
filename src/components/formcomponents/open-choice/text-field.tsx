@@ -17,7 +17,7 @@ import { RenderItemProps } from '../renderChildren/RenderChildrenItems';
 type Props = RenderItemProps & {
   handleStringChange: (event: React.FocusEvent<HTMLInputElement, Element>) => void;
   handleChange: (value: string) => void;
-  children: React.ReactNode;
+  children?: React.ReactNode;
 };
 const textField = (props: Props): JSX.Element | null => {
   const { id, pdf, item, handleStringChange, handleChange, children, resources, idWithLinkIdAndItemIndex, responseItem } = props;

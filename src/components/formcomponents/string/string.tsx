@@ -8,7 +8,6 @@ import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Input from '@helsenorge/designsystem-react/components/Input';
 
 import { debounce } from '@helsenorge/core-utils/debounce';
-import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 
 import { NewValueAction, newStringValueAsync } from '@/actions/newValue';
 import { GlobalState } from '@/reducers';
@@ -24,15 +23,14 @@ import RenderHelpElement from '@/components/formcomponents/help-button/RenderHel
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import { RenderChildrenItems, RenderItemProps } from '../renderChildren/RenderChildrenItems';
+import { useExternalRenderContext } from '@/context/externalRenderContext';
 
 export type Props = RenderItemProps & {
-  oneToTwoColumn: boolean;
   children?: React.ReactNode;
 };
 
 export const String = (props: Props): JSX.Element | null => {
   const {
-    promptLoginMessage,
     path,
     item,
     onAnswerChange,
@@ -46,7 +44,7 @@ export const String = (props: Props): JSX.Element | null => {
     index,
     responseItem,
   } = props;
-
+  const { promptLoginMessage } = useExternalRenderContext();
   const { formState, getFieldState, control } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
@@ -163,11 +161,10 @@ export const String = (props: Props): JSX.Element | null => {
         <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} responseItem={responseItem} responseItems={responseItems} />
       </FormGroup>
 
-        <div className="nested-fieldset nested-fieldset--full-height">
-          <RenderChildrenItems otherProps={props} />
-        </div>
+      <div className="nested-fieldset nested-fieldset--full-height">
+        <RenderChildrenItems {...props} />
+      </div>
     </div>
   );
 };
-const layoutChangeComponent = layoutChange(String);
-export default layoutChangeComponent;
+export default String;

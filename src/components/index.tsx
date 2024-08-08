@@ -11,15 +11,12 @@ import {
   Quantity,
 } from 'fhir/r4';
 import { FormProvider, useForm } from 'react-hook-form';
-import { connect } from 'react-redux';
-import { ThunkDispatch } from 'redux-thunk';
-
-import { DispatchProps } from '@/types/dispatchProps';
+import { useDispatch, useSelector } from 'react-redux';
 import { ReferoProps } from '@/types/referoProps';
 
 import RenderForm from './renderForm';
 import StepView from './stepView';
-import { setSkjemaDefinition } from '@/actions/form';
+
 import { NewValueAction, newQuantityValue, newDecimalValue, newIntegerValue } from '@/actions/newValue';
 import Constants, { NAVIGATOR_BLINDZONE_ID } from '@/constants/index';
 import { GlobalState } from '@/reducers';
@@ -34,7 +31,7 @@ import {
 } from '@/util/extension';
 import { getTopLevelElements } from '@/util/getTopLevelElements';
 import { IE11HackToWorkAroundBug187484 } from '@/util/hacks';
-import { getComponentForItem, isHiddenItem, getDecimalValue } from '@/util/index';
+import { getComponentForItem, isHiddenItem, getDecimalValue, isRepeat } from '@/util/index';
 import { QuestionniareInspector } from '@/util/questionnaireInspector';
 import {
   getRootQuestionnaireResponseItemFromData,
@@ -49,16 +46,18 @@ import { AnswerPad, ScoringCalculator } from '@/util/scoringCalculator';
 import { shouldFormBeDisplayedAsStepView } from '@/util/shouldFormBeDisplayedAsStepView';
 import { createIntitialFormValues } from '@/validation/defaultFormValues';
 import { ExternalRenderProvider } from '@/context/externalRenderContext';
-interface StateProps {
-  formDefinition: FormDefinition | null;
-  formData: FormData | null;
-}
+import { Resources } from '@/util/resources';
+import { setSkjemaDefinition } from '@/actions/form';
 
-const Refero = (props: StateProps & DispatchProps & ReferoProps): JSX.Element | null => {
+const Refero = (props: ReferoProps): JSX.Element | null => {
   IE11HackToWorkAroundBug187484();
-  const questionnaire = props.questionnaire ? props.questionnaire : props.formDefinition?.Content;
+  const dispatch = useDispatch();
+  const formDefinition = useSelector<GlobalState, FormDefinition | null>((state: GlobalState) => getFormDefinition(state));
+  const formData = useSelector<GlobalState, FormData | null>((state: GlobalState) => getFormData(state));
+  const questionnaire = formDefinition?.Content;
   // const schema = createZodSchemaFromQuestionnaire(questionnaire, props.resources, questionnaire?.contained);
   const defualtVals = React.useMemo(() => createIntitialFormValues(questionnaire?.item), [questionnaire?.item?.length]);
+
   // console.log('defualtVals', defualtVals);
   const methods = useForm({
     defaultValues: defualtVals,
@@ -81,7 +80,7 @@ const Refero = (props: StateProps & DispatchProps & ReferoProps): JSX.Element | 
   );
 
   const handleSubmit = (): void => {
-    const { formData, onSubmit } = props;
+    const { onSubmit } = props;
 
     if (formData && formData.Content && onSubmit) {
       onSubmit(formData.Content);
@@ -89,14 +88,14 @@ const Refero = (props: StateProps & DispatchProps & ReferoProps): JSX.Element | 
   };
 
   const handleSave = (): void => {
-    if (props.onSave && props.formData && props.formData.Content) {
-      props.onSave(props.formData.Content);
+    if (props.onSave && formData?.Content) {
+      props.onSave(formData.Content);
     }
   };
 
   React.useEffect(() => {
     if (props.questionnaire) {
-      props.mount();
+      dispatch(setSkjemaDefinition(props.questionnaire, props.questionnaireResponse, props.language, props.syncQuestionnaireResponse));
       setScoringCalculator(getScoringCalculator(props.questionnaire));
     }
   }, []);
@@ -116,7 +115,7 @@ const Refero = (props: StateProps & DispatchProps & ReferoProps): JSX.Element | 
       );
       props.onChange(item, answer, actionRequester, questionnaireInspector);
       for (const action of actionRequester.getActions()) {
-        props.dispatch(action);
+        dispatch(action);
       }
     }
 
@@ -184,12 +183,18 @@ const Refero = (props: StateProps & DispatchProps & ReferoProps): JSX.Element | 
       }
     }
     for (const a of actions) {
-      props.dispatch(a);
+      dispatch(a);
     }
   };
 
-  const renderFormItems = (pdf?: boolean): Array<JSX.Element> | undefined => {
-    const { formDefinition, resources, formData, promptLoginMessage } = props;
+  const renderFormItems = (
+    formDefinition: FormDefinition | null,
+    formData: FormData | null,
+    resources?: Resources,
+
+    path?: Path[],
+    pdf?: boolean
+  ): JSX.Element[] | undefined => {
     if (!formDefinition || !formDefinition.Content || !formDefinition.Content.item) {
       return undefined;
     }
@@ -204,43 +209,41 @@ const Refero = (props: StateProps & DispatchProps & ReferoProps): JSX.Element | 
     questionnaireItemArray?.map(item => {
       if (isHiddenItem(item)) return [];
       const Comp = getComponentForItem(item.type, getCodingTextTableValues(item));
-      if (!Comp) {
-        return undefined;
-      }
+      if (!Comp) return null;
 
-      let responseItems: Array<QuestionnaireResponseItem> | undefined;
+      let responseItems: QuestionnaireResponseItem[] | undefined;
       if (formData) {
         responseItems = getRootQuestionnaireResponseItemFromData(item.linkId, formData);
       }
       if (responseItems && responseItems.length > 0) {
         responseItems.forEach((responseItem, index) => {
-          const path = createPathForItem(props.path, item, responseItem, index);
+          const newPath = createPathForItem(path, item, responseItem, index);
 
           // legg på blindzone rett over den første seksjonen
           if (isNavigatorEnabled && item.type === ItemType.GROUP && !isNavigatorBlindzoneInitiated) {
             isNavigatorBlindzoneInitiated = true;
             renderedItems.push(<section id={NAVIGATOR_BLINDZONE_ID}></section>);
           }
+          const renderContext = new RenderContext();
           renderedItems.push(
             <Comp
               {...props}
-              idWithLinkIdAndItemIndex={`${item.linkId}${createIdSuffix(path, index, item.repeats)}`}
+              idWithLinkIdAndItemIndex={`${item.linkId}${createIdSuffix(newPath, index, isRepeat(item))}`}
               language={formDefinition.Content?.language}
               pdf={pdf}
               includeSkipLink={isNavigatorEnabled && item.type === ItemType.GROUP}
-              promptLoginMessage={promptLoginMessage}
               key={`item_${responseItem.linkId}_${index}`}
-              id={'item_' + responseItem.linkId + createIdSuffix(path, index, item.repeats)}
+              id={'item_' + responseItem.linkId + createIdSuffix(newPath, index, isRepeat(item))}
               item={item}
               responseItem={responseItem}
               resources={resources}
               containedResources={contained}
-              path={path}
+              path={newPath}
               headerTag={Constants.DEFAULT_HEADER_TAG}
               index={index}
               responseItems={responseItems}
               onAnswerChange={onAnswerChange}
-              renderContext={new RenderContext()}
+              renderContext={renderContext}
             />
           );
         });
@@ -266,7 +269,6 @@ const Refero = (props: StateProps & DispatchProps & ReferoProps): JSX.Element | 
   };
 
   const {
-    formDefinition,
     resources,
     authorized,
     blockSubmit,
@@ -310,8 +312,11 @@ const Refero = (props: StateProps & DispatchProps & ReferoProps): JSX.Element | 
         onRenderMarkdown={props.onRenderMarkdown}
         fetchReceivers={props.fetchReceivers}
         fetchValueSet={props.fetchValueSet}
+        onFieldsNotCorrectlyFilledOut={props.onFieldsNotCorrectlyFilledOut}
+        onStepChange={props.onStepChange}
+        promptLoginMessage={props.promptLoginMessage}
       >
-        <FormProvider {...methods}>{renderFormItems(true)} </FormProvider>
+        <FormProvider {...methods}>{renderFormItems(formDefinition, formData, props.resources, [], true)} </FormProvider>
       </ExternalRenderProvider>
     );
   }
@@ -328,6 +333,9 @@ const Refero = (props: StateProps & DispatchProps & ReferoProps): JSX.Element | 
         onRenderMarkdown={props.onRenderMarkdown}
         fetchReceivers={props.fetchReceivers}
         fetchValueSet={props.fetchValueSet}
+        onFieldsNotCorrectlyFilledOut={props.onFieldsNotCorrectlyFilledOut}
+        onStepChange={props.onStepChange}
+        promptLoginMessage={props.promptLoginMessage}
       >
         <FormProvider {...methods}>
           {isStepView ? (
@@ -335,11 +343,10 @@ const Refero = (props: StateProps & DispatchProps & ReferoProps): JSX.Element | 
               isAuthorized={authorized}
               referoProps={referoProps}
               resources={resources}
-              formItems={renderFormItems()}
+              formItems={renderFormItems(formDefinition, formData, props.resources, [], false)}
               formDefinition={formDefinition}
               onSave={handleSave}
               onSubmit={handleSubmit}
-              onStepChange={onStepChange}
               methods={methods}
             />
           ) : (
@@ -353,7 +360,7 @@ const Refero = (props: StateProps & DispatchProps & ReferoProps): JSX.Element | 
               methods={methods}
               validationSummaryPlacement={validationSummaryPlacement}
             >
-              {renderFormItems()}
+              {renderFormItems(formDefinition, formData, props.resources, [], false)}
             </RenderForm>
           )}
         </FormProvider>
@@ -362,24 +369,6 @@ const Refero = (props: StateProps & DispatchProps & ReferoProps): JSX.Element | 
   );
 };
 
-function mapDispatchToProps(dispatch: ThunkDispatch<GlobalState, void, NewValueAction>, props: ReferoProps): DispatchProps {
-  return {
-    mount: (): void => {
-      if (props.questionnaire) {
-        dispatch(setSkjemaDefinition(props.questionnaire, props.questionnaireResponse, props.language, props.syncQuestionnaireResponse));
-      }
-    },
-    dispatch,
-    path: [],
-  };
-}
-
-const ReferoContainer = connect(
-  (state: GlobalState) => ({
-    formDefinition: getFormDefinition(state),
-    formData: getFormData(state),
-  }),
-  mapDispatchToProps
-)(Refero);
+const ReferoContainer = Refero;
 export { ReferoContainer };
 export default ReferoContainer;

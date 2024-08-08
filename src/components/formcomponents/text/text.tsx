@@ -31,6 +31,7 @@ import RenderHelpElement from '@/components/formcomponents/help-button/RenderHel
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import { RenderChildrenItems, RenderItemProps } from '../renderChildren/RenderChildrenItems';
+import { useExternalRenderContext } from '@/context/externalRenderContext';
 
 export type Props = RenderItemProps & {
   shouldExpanderRenderChildrenWhenClosed?: boolean;
@@ -41,10 +42,8 @@ export const Text = (props: Props): JSX.Element | null => {
     id,
     item,
     pdf,
-    children,
     resources,
     idWithLinkIdAndItemIndex,
-    promptLoginMessage,
     path,
     onAnswerChange,
     shouldExpanderRenderChildrenWhenClosed,
@@ -53,6 +52,7 @@ export const Text = (props: Props): JSX.Element | null => {
     responseItem,
     index,
   } = props;
+  const { promptLoginMessage } = useExternalRenderContext();
   const { formState, getFieldState, control } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
@@ -89,7 +89,7 @@ export const Text = (props: Props): JSX.Element | null => {
     return (
       <div id={id} className="page_refero__component page_refero__component_expandabletext">
         <Expander title={item.text ? item.text : ''} renderChildrenWhenClosed={shouldExpanderRenderChildrenWhenClosed ? true : false}>
-          <RenderChildrenItems otherProps={props} />
+          <RenderChildrenItems {...props} />
         </Expander>
       </div>
     );
@@ -98,7 +98,7 @@ export const Text = (props: Props): JSX.Element | null => {
   if (pdf || isReadOnly(item)) {
     return (
       <TextView id={id} item={item} value={getPDFStringValue(answer, resources)} textClass="page_refero__component_readonlytext">
-        <RenderChildrenItems otherProps={props} />
+        <RenderChildrenItems {...props} />
       </TextView>
     );
   }
@@ -184,7 +184,7 @@ export const Text = (props: Props): JSX.Element | null => {
         <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} responseItem={responseItem} responseItems={responseItems} />
       </FormGroup>
       <div className="nested-fieldset nested-fieldset--full-height">
-        <RenderChildrenItems otherProps={props} />
+        <RenderChildrenItems {...props} />
       </div>
     </div>
   );

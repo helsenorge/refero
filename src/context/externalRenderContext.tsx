@@ -25,6 +25,9 @@ type ExternalRenderType = {
     errorCallback: (error: string) => void
   ) => void;
   fetchReceivers?: (successCallback: (receivers: OrgenhetHierarki[]) => void, errorCallback: () => void) => void;
+  onFieldsNotCorrectlyFilledOut?: () => void;
+  onStepChange?: (newIndex: number) => void;
+  promptLoginMessage?: () => void;
 };
 
 const ExternalRender = createContext<ExternalRenderType | undefined>(undefined);
@@ -53,6 +56,9 @@ export type ExternalRenderProviderProps = {
     errorCallback: (error: string) => void
   ) => void;
   fetchReceivers?: (successCallback: (receivers: OrgenhetHierarki[]) => void, errorCallback: () => void) => void;
+  onFieldsNotCorrectlyFilledOut?: () => void;
+  onStepChange?: (newIndex: number) => void;
+  promptLoginMessage?: () => void;
 };
 export const ExternalRenderProvider = ({
   children,
@@ -61,9 +67,23 @@ export const ExternalRenderProvider = ({
   onRenderMarkdown,
   fetchValueSet,
   fetchReceivers,
+  onFieldsNotCorrectlyFilledOut,
+  onStepChange,
+  promptLoginMessage,
 }: ExternalRenderProviderProps): JSX.Element => {
   return (
-    <ExternalRender.Provider value={{ onRequestHelpElement, onRequestHelpButton, onRenderMarkdown, fetchValueSet, fetchReceivers }}>
+    <ExternalRender.Provider
+      value={{
+        onRequestHelpElement,
+        onRequestHelpButton,
+        onRenderMarkdown,
+        fetchValueSet,
+        fetchReceivers,
+        onFieldsNotCorrectlyFilledOut,
+        onStepChange,
+        promptLoginMessage,
+      }}
+    >
       {children}
     </ExternalRender.Provider>
   );

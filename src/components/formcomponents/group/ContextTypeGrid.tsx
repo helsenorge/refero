@@ -33,7 +33,7 @@ const ContextTypeGrid = (props: ContextTypeGridProps): JSX.Element => {
           </tr>
         </thead>
         <tbody>
-          <RenderChildrenItems otherProps={{ ...props, renderContext: newRenderContext }} />
+          <RenderChildrenItems {...props} renderContext={newRenderContext} />
         </tbody>
       </table>
       <RenderDeleteButton

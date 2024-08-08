@@ -47,7 +47,7 @@ const ContextTypeGridRow = (props: ContextTypeGridRowProps): JSX.Element => {
           resources={resources}
         />
       </td>
-      {<RenderChildrenItems otherProps={props} />}
+      {<RenderChildrenItems {...props} />}
     </tr>
   );
 };

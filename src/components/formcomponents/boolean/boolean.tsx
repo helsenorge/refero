@@ -30,20 +30,7 @@ export type Props = RenderItemProps & {
 };
 
 const Boolean = (props: Props): JSX.Element | null => {
-  const {
-    item,
-    promptLoginMessage,
-    onAnswerChange,
-    path,
-    pdf,
-    id,
-    resources,
-    responseItems,
-    index,
-    children,
-    idWithLinkIdAndItemIndex,
-    responseItem,
-  } = props;
+  const { item, onAnswerChange, path, pdf, id, resources, responseItems, index, idWithLinkIdAndItemIndex, responseItem } = props;
   const formDefinition = useSelector((state: GlobalState) => getFormDefinition(state));
   const questionnaire = formDefinition?.Content;
 
@@ -52,7 +39,7 @@ const Boolean = (props: Props): JSX.Element | null => {
   const { error } = fieldState;
 
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
-  const { onRenderMarkdown } = useExternalRenderContext();
+  const { onRenderMarkdown, promptLoginMessage } = useExternalRenderContext();
   const enable = useIsEnabled(item, path);
   const [isHelpVisible, setIsHelpVisible] = useState(false);
   const answer = useGetAnswer(responseItem, item);
@@ -169,7 +156,7 @@ const Boolean = (props: Props): JSX.Element | null => {
       <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} responseItem={responseItem} responseItems={responseItems} />
 
       <div className="nested-fieldset nested-fieldset--full-height">
-        <RenderChildrenItems otherProps={props} />
+        <RenderChildrenItems {...props} />
       </div>
     </div>
   );

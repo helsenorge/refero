@@ -33,26 +33,13 @@ export type DateProps = RenderItemProps & {
   path: Array<Path>;
   pdf?: boolean;
   language?: string;
-  promptLoginMessage?: () => void;
   children: React.ReactNode;
 };
 
 const DateComponent = (props: DateProps): JSX.Element => {
-  const {
-    item,
-    questionnaire,
-    answer,
-    resources,
-    language,
-    promptLoginMessage,
-    children,
-    onAnswerChange,
-    responseItems,
-    responseItem,
-    path,
-    index,
-  } = props;
-  const { onRenderMarkdown } = useExternalRenderContext();
+  const { item, questionnaire, answer, resources, language, onAnswerChange, responseItems, responseItem, path, index } = props;
+
+  const { onRenderMarkdown, promptLoginMessage } = useExternalRenderContext();
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
   const getMaxDate = (): Date | undefined => {
     const maxDate = getExtension(Extensions.DATE_MAX_VALUE_URL, item);
@@ -176,11 +163,9 @@ const DateComponent = (props: DateProps): JSX.Element => {
       />
       <RenderRepeatButton path={path.slice(0, -1)} item={item} index={index} responseItem={responseItem} responseItems={responseItems} />
 
-      {children ? (
-        <div className="nested-fieldset nested-fieldset--full-height">
-          <RenderChildrenItems otherProps={props} />
-        </div>
-      ) : null}
+      <div className="nested-fieldset nested-fieldset--full-height">
+        <RenderChildrenItems {...props} />
+      </div>
     </div>
   );
 };
