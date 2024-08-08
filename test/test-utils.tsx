@@ -6,8 +6,8 @@ import { render, RenderOptions, RenderResult } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Questionnaire } from 'fhir/r4';
 import { FormProvider, useForm } from 'react-hook-form';
-import { Provider, Store } from 'react-redux';
-import { applyMiddleware, createStore } from 'redux';
+import { Provider } from 'react-redux';
+import { applyMiddleware, createStore, Store } from 'redux';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
@@ -18,6 +18,7 @@ import rootReducer, { GlobalState } from '../src/reducers';
 import { ReferoProps } from '../src/types/referoProps';
 import { Resources } from '../src/util/resources';
 import { createIntitialFormValues, DefaultValues } from '../src/validation/defaultFormValues';
+import { ExternalRenderProvider } from '@/context/externalRenderContext';
 
 const mockStore = configureMockStore<Partial<GlobalState>>([thunk]);
 
@@ -29,22 +30,28 @@ export const FormWrapper = ({ children, defaultValues }: { children: React.React
   });
   return <FormProvider {...methods}>{children}</FormProvider>;
 };
-
+export const ExternalRenderProviderWrapper = ({ children, props }: { children: React.ReactNode; props?: Partial<ReferoProps> }) => {
+  return <ExternalRenderProvider {...props}>{children}</ExternalRenderProvider>;
+};
 const AllTheProviders = ({
   children,
   initialState = {},
   defaultValues = {},
   store = mockStore(initialState),
+  referoProps,
 }: {
   children: React.ReactNode;
   initialState?: Partial<GlobalState>;
   defaultValues?: any;
   store?: Store<any>;
+  referoProps?: Partial<ReferoProps>;
 }) => {
   return (
-    <Provider store={store}>
-      <FormWrapper defaultValues={defaultValues}>{children}</FormWrapper>
-    </Provider>
+    <ExternalRenderProviderWrapper props={referoProps}>
+      <Provider store={store}>
+        <FormWrapper defaultValues={defaultValues}>{children}</FormWrapper>
+      </Provider>
+    </ExternalRenderProviderWrapper>
   );
 };
 
@@ -52,12 +59,12 @@ const customRender = (
   ui: ReactElement,
   options?: Omit<RenderOptions, 'wrapper'> & { initialState?: Partial<GlobalState> } & { defaultValues?: any } & {
     store?: Store<any>;
-  }
+  } & { referoProps?: Partial<ReferoProps> }
 ) => {
-  const { initialState, defaultValues, store, ...renderOptions } = options || {};
+  const { initialState, defaultValues, store, referoProps, ...renderOptions } = options || {};
   return render(ui, {
     wrapper: ({ children }) => (
-      <AllTheProviders initialState={initialState} defaultValues={defaultValues} store={store}>
+      <AllTheProviders initialState={initialState} defaultValues={defaultValues} store={store} referoProps={referoProps}>
         {children}
       </AllTheProviders>
     ),
@@ -147,7 +154,7 @@ function renderRefero({ questionnaire, props, initialState, resources, defaultVa
       onChange={() => {}}
       {...props}
     />,
-    { store, defaultValues: defaultReactHookFormValues }
+    { store, defaultValues: defaultReactHookFormValues, referoProps: props }
   );
 }
 export * from '@testing-library/react';

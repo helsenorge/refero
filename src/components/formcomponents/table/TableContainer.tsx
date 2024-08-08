@@ -1,12 +1,4 @@
-import {
-  Coding,
-  Questionnaire,
-  QuestionnaireItem,
-  QuestionnaireResponse,
-  QuestionnaireResponseItem,
-  QuestionnaireResponseItemAnswer,
-  Resource,
-} from 'fhir/r4';
+import { Coding, QuestionnaireItem, QuestionnaireResponse, Resource } from 'fhir/r4';
 import { connect } from 'react-redux';
 
 import LanguageLocales from '@helsenorge/core-utils/constants/languages';
@@ -19,27 +11,12 @@ import { TABLE_CODES_VALUES, TableCodes } from '@/constants/tableTypes';
 import { GlobalState } from '@/reducers';
 import { getFormData, getFormDefinition } from '@/reducers/form';
 import { getCodingTextTableValues } from '@/util/extension';
-import { Path } from '@/util/refero-core';
-import { Resources } from '@/util/resources';
+import { RenderItemProps } from '../renderChildren/RenderChildrenItems';
 
-export interface Props {
-  item: QuestionnaireItem;
-  questionnaire?: Questionnaire | null;
-  answer?: QuestionnaireResponseItemAnswer | null;
-  responseItem: QuestionnaireResponseItem;
-  path: Array<Path>;
-  pdf?: boolean;
-  includeSkipLink?: boolean;
+export type Props = RenderItemProps & {
   className?: string;
-  resources?: Resources;
-  headerTag?: number;
   attachmentErrorMessage?: string;
-  repeatButton?: JSX.Element;
-  id?: string;
-  renderHelpButton: () => JSX.Element;
-  renderHelpElement: () => JSX.Element;
-  onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
-}
+};
 
 export interface StateProps {
   headline: string;
@@ -50,7 +27,7 @@ export interface StateProps {
   language: LanguageLocales;
   resource: Resource[] | undefined;
 }
-export interface CombinedProps extends Props, StateProps {}
+export type CombinedProps = Props & StateProps;
 const TableContainer = ({ tableCodesCoding, items, headline, tableType, questionnaireResponse, resource }: CombinedProps): JSX.Element => {
   {
     switch (tableType) {

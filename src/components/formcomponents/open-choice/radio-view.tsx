@@ -1,7 +1,6 @@
 import React from 'react';
 
-import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
-import { Controller } from 'react-hook-form';
+import { Controller, FieldValues, useFormContext } from 'react-hook-form';
 
 import { Options } from '@/types/formTypes/radioGroupOptions';
 
@@ -12,69 +11,58 @@ import RadioButton from '@helsenorge/designsystem-react/components/RadioButton';
 import { shouldShowExtraChoice } from '@/util/choice';
 import { getValidationTextExtension } from '@/util/extension';
 import { isRequired, getId } from '@/util/index';
-import { Resources } from '@/util/resources';
-import { FormProps } from '../../../validation/ReactHookFormHoc';
-import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
+import { useGetAnswer } from '@/hooks/useGetAnswer';
+import RenderHelpElement from '@/components/formcomponents/help-button/RenderHelpElement';
+import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelpButton';
+import RenderDeleteButton from '../repeat/RenderDeleteButton';
+import RenderRepeatButton from '../repeat/RenderRepeatButton';
+import { RenderChildrenItems, RenderItemProps } from '../renderChildren/RenderChildrenItems';
 
-interface Props extends FormProps, WithCommonFunctionsAndEnhancedProps {
+type Props = RenderItemProps & {
   options?: Array<Options>;
-  item: QuestionnaireItem;
-  questionnaire?: Questionnaire;
-  id?: string;
   handleChange: (radioButton: string) => void;
   selected?: Array<string | undefined>;
-  resources?: Resources;
-  renderDeleteButton: (className?: string) => JSX.Element | null;
   renderOpenField: () => JSX.Element | undefined;
-  repeatButton: JSX.Element;
-  answer: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer;
-  renderHelpButton: () => JSX.Element;
-  renderHelpElement: () => JSX.Element;
-  onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
-  children: React.ReactNode;
-}
+};
 
-const RadioView = ({
-  options,
-  item,
-  questionnaire,
-  id,
-  handleChange,
-  selected,
-  resources,
-  children,
-  repeatButton,
-  renderDeleteButton,
-  renderOpenField,
-  answer,
-  renderHelpButton,
-  renderHelpElement,
-  onRenderMarkdown,
-  control,
-  error,
-  idWithLinkIdAndItemIndex,
-}: Props): JSX.Element | null => {
+const RadioView = (props: Props): JSX.Element | null => {
+  const {
+    options,
+    item,
+    id,
+    handleChange,
+    selected,
+    resources,
+    renderOpenField,
+    idWithLinkIdAndItemIndex,
+    responseItem,
+    onAnswerChange,
+    responseItems,
+    path,
+    index,
+  } = props;
+  const { formState, getFieldState, control } = useFormContext<FieldValues>();
+  const { error } = getFieldState(idWithLinkIdAndItemIndex, formState);
+  const [isHelpVisible, setIsHelpVisible] = React.useState(false);
   if (!options) {
     return null;
   }
   const selectedValue = (selected && selected[0]) || '';
+  const answer = useGetAnswer(responseItem, item);
   return (
     <div className="page_refero__component page_refero__component_openchoice page_refero__component_openchoice_radiobutton">
       <FormGroup error={error?.message} mode="ongrey">
-        {renderHelpElement()}
         <ReferoLabel
           item={item}
-          onRenderMarkdown={onRenderMarkdown}
-          questionnaire={questionnaire}
           resources={resources}
           labelId={`${getId(id)}-open-choice-label`}
           testId={`${getId(id)}-open-choice-label`}
           sublabelId={`${getId(id)}-open-choice-sublabel`}
-          renderHelpButton={renderHelpButton}
+          afterLabelContent={<RenderHelpButton isHelpVisible={isHelpVisible} item={item} setIsHelpVisible={setIsHelpVisible} />}
         />
-
+        <RenderHelpElement item={item} isHelpVisible={isHelpVisible} />
         {options.map((option: Options, index: number) => (
           <Controller
             name={idWithLinkIdAndItemIndex}
@@ -107,9 +95,20 @@ const RadioView = ({
         ))}
       </FormGroup>
       {shouldShowExtraChoice(answer) ? <div className="page_refero__component_openchoice_openfield">{renderOpenField()}</div> : null}
-      {renderDeleteButton('page_refero__deletebutton--margin-top')}
-      {repeatButton}
-      {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : undefined}
+      <RenderDeleteButton
+        item={item}
+        path={path}
+        index={index}
+        onAnswerChange={onAnswerChange}
+        responseItem={responseItem}
+        resources={resources}
+        className="page_refero__deletebutton--margin-top"
+      />
+      <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} responseItem={responseItem} responseItems={responseItems} />
+
+      <div className="nested-fieldset nested-fieldset--full-height">
+        <RenderChildrenItems otherProps={props} />
+      </div>
     </div>
   );
 };

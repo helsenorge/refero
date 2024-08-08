@@ -1,0 +1,7 @@
+.page_refero__helpButton_content{
+  display: flex;
+  align-self: center;
+}
+.page_refero__helpButton {
+  cursor: pointer;
+}

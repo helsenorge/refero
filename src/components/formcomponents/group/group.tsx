@@ -1,165 +1,43 @@
-import DOMPurify from 'dompurify';
-import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem, Questionnaire } from 'fhir/r4';
-
-import AnchorLink from '@helsenorge/designsystem-react/components/AnchorLink';
-
 import AsPdf from './AsPdf';
-import { getClassNames, getColumns, getHeaderText, getLocalRenderContextType, isDirectChildOfRenderContextOwner } from './helpers';
+import { getLocalRenderContextType, isDirectChildOfRenderContextOwner } from './helpers';
 import { RenderContextType } from '@/constants/renderContextType';
-import { getText, getId } from '@/util/index';
-import { Path } from '@/util/refero-core';
-import { RenderContext } from '@/util/renderContext';
-import { Resources } from '@/util/resources';
-import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 
-export interface Props extends WithCommonFunctionsAndEnhancedProps {
-  item: QuestionnaireItem;
-  questionnaire?: Questionnaire;
-  answer: QuestionnaireResponseItemAnswer;
-  responseItem: QuestionnaireResponseItem;
-  path: Array<Path>;
-  pdf?: boolean;
-  includeSkipLink?: boolean;
-  className?: string;
-  resources?: Resources;
-  headerTag?: number;
-  attachmentErrorMessage?: string;
-  renderDeleteButton: (className?: string) => JSX.Element | null;
-  renderChildrenItems: (renderContext: RenderContext) => Array<JSX.Element> | null;
-  repeatButton: JSX.Element;
-  id?: string;
-  renderContext: RenderContext;
-  renderHelpButton: () => JSX.Element;
-  renderHelpElement: () => JSX.Element;
-  onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
-}
+import { useIsEnabled } from '@/hooks/useIsEnabled';
+import { useState } from 'react';
 
-export const Group = ({
-  pdf,
-  renderContext,
-  repeatButton,
-  id,
-  includeSkipLink,
-  path,
-  renderDeleteButton,
-  item,
-  questionnaire,
-  onRenderMarkdown,
-  resources,
-  renderHelpElement,
-  renderChildrenItems,
-  headerTag,
-  renderHelpButton,
-}: Props): JSX.Element | null => {
-  const renderAllItems = (item: QuestionnaireItem): JSX.Element => {
-    const localRenderContextType = getLocalRenderContextType(item);
+import ContextTypeGrid from './ContextTypeGrid';
+import ContextTypeGridRow from './ContextTypeGridRow';
+import DefaultGroup from './DefaultGroup';
+import { RenderItemProps } from '../renderChildren/RenderChildrenItems';
 
-    if (localRenderContextType) {
-      switch (localRenderContextType) {
-        case RenderContextType.Grid:
-          return renderContextTypeGrid();
-      }
-    }
+export type Props = RenderItemProps;
 
-    switch (renderContext.RenderContextType) {
-      case RenderContextType.Grid:
-        return isDirectChildOfRenderContextOwner(path, item, renderContext) ? renderContextTypeGridRow() : renderGroup();
-      default:
-        return renderGroup();
-    }
-  };
+export const Group = (props: Props): JSX.Element | null => {
+  const { pdf, renderContext, path, item } = props;
+  const enable = useIsEnabled(item, path);
+  const [isHelpVisible, setIsHelpVisible] = useState(false);
+  if (!enable) {
+    return null;
+  }
+  const localRenderContextType = getLocalRenderContextType(item);
+  const isLocalRenderContextTypeGrid = localRenderContextType === RenderContextType.Grid;
+  const isRenderContextTypeGrid = renderContext.RenderContextType === RenderContextType.Grid;
 
-  const renderContextTypeGridRow = (): JSX.Element => {
-    renderContext.RenderChildren = (
-      childItems: QuestionnaireItem[],
-      itemRenderer: (item: QuestionnaireItem, renderContext: RenderContext) => Array<JSX.Element | undefined>
-    ): JSX.Element[] => {
-      const renderedChildItems = [];
-      let counter = 1;
-      for (const column of renderContext.Columns) {
-        const childItem = childItems.find(item => item.text === column);
-
-        if (childItem) {
-          renderedChildItems.push(
-            <td key={counter} className="page_refero__grid--cell">
-              {itemRenderer(childItem, renderContext)}
-            </td>
-          );
-        } else {
-          renderedChildItems.push(<td key={counter} className="page_refero__grid--cell page_refero__grid--cell-empty">{` `}</td>);
-        }
-
-        counter++;
-      }
-
-      return renderedChildItems;
-    };
-
-    return (
-      <tr key={item.linkId} className="page_refero__grid--row">
-        <td className="page_refero__grid--cell page_refero__grid--cell-first">{renderGroupHeader()}</td>
-        {renderChildrenItems(renderContext)}
-      </tr>
-    );
-  };
-
-  const renderContextTypeGrid = (): JSX.Element => {
-    const columns = getColumns(item);
-    const headers = columns.map((c, i) => <th key={`${item.linkId}-${c}-${i}`}>{c}</th>);
-    headers.unshift(<th key={`${item.linkId}-X`}>{item.text ? item.text : ''}</th>);
-
-    const newRenderContext = new RenderContext(RenderContextType.Grid, item.linkId, columns);
-    return (
-      <>
-        <table id={getId(id)} className="page_refero__grid">
-          <thead>
-            <tr>{headers}</tr>
-          </thead>
-          <tbody>{renderChildrenItems(newRenderContext)}</tbody>
-        </table>
-        {renderDeleteButton('page_refero__deletebutton--margin-top')}
-        {repeatButton}
-      </>
-    );
-  };
-
-  const renderGroup = (): JSX.Element => {
-    return (
-      <section id={getId(id)} data-sectionname={getHeaderText(item, questionnaire, resources, onRenderMarkdown)}>
-        {renderGroupHeader()}
-        {renderHelpElement()}
-        <div id={`${getId(id)}-navanchor`} className={getClassNames(item)}>
-          {renderChildrenItems(new RenderContext())}
-        </div>
-        {includeSkipLink && path.length === 1 && (
-          <AnchorLink className="page_refero__skiplink" href="#navigator-button">
-            {resources?.skipLinkText}
-          </AnchorLink>
-        )}
-        {renderDeleteButton('page_refero__deletebutton--margin-top')}
-        {repeatButton}
-      </section>
-    );
-  };
-
-  const renderGroupHeader = (): JSX.Element | null => {
-    if (!getText(item, onRenderMarkdown)) {
-      return null;
-    }
-
-    const HeaderTag = `h${headerTag}` as 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
-    const headerText = DOMPurify.sanitize(getHeaderText(item, questionnaire, resources, onRenderMarkdown), {
-      RETURN_TRUSTED_TYPE: true,
-      ADD_ATTR: ['target'],
-    }) as unknown as string;
-    return (
-      <>
-        <HeaderTag className={'page_refero__heading'} dangerouslySetInnerHTML={{ __html: headerText }} />
-        {renderHelpButton()}
-      </>
-    );
-  };
-  return <AsPdf pdf={!!pdf}>{renderAllItems(item)}</AsPdf>;
+  return (
+    <AsPdf pdf={!!pdf}>
+      {isLocalRenderContextTypeGrid ? (
+        <ContextTypeGrid {...props} />
+      ) : isRenderContextTypeGrid ? (
+        isDirectChildOfRenderContextOwner(path || [], item, renderContext) ? (
+          <ContextTypeGridRow {...props} isHelpVisible={isHelpVisible} setIsHelpVisible={setIsHelpVisible} />
+        ) : (
+          <DefaultGroup componentProps={props} isHelpVisible={isHelpVisible} setIsHelpVisible={setIsHelpVisible} />
+        )
+      ) : (
+        <DefaultGroup componentProps={props} isHelpVisible={isHelpVisible} setIsHelpVisible={setIsHelpVisible} />
+      )}
+    </AsPdf>
+  );
 };
-const withCommonFunctionsComponent = withCommonFunctions(Group);
-export default withCommonFunctionsComponent;
+
+export default Group;

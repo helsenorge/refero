@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import { format, parseISO } from 'date-fns';
 import { isValid } from 'date-fns';
-import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireResponseItem, Questionnaire } from 'fhir/r4';
+import { QuestionnaireItem, QuestionnaireResponseItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { FieldError, FieldValues, useFormContext } from 'react-hook-form';
 import { ThunkDispatch } from 'redux-thunk';
 
@@ -31,62 +31,56 @@ import { evaluateFhirpathExpressionToGetDate } from '../../../util/fhirpathHelpe
 import { isRequired, getId, isReadOnly } from '../../../util/index';
 import { Path } from '../../../util/refero-core';
 import { Resources } from '../../../util/resources';
-import { FormProps } from '../../../validation/ReactHookFormHoc';
-import withCommonFunctions, { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 import TextView from '../textview';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { useDispatch } from 'react-redux';
-export interface Props extends WithCommonFunctionsAndEnhancedProps, FormProps {
+import RenderHelpButton from '../help-button/RenderHelpButton';
+import RenderHelpElement from '../help-button/RenderHelpElement';
+import { RenderItemProps } from '../renderChildren/RenderChildrenItems';
+import { useGetAnswer } from '@/hooks/useGetAnswer';
+import RenderRepeatButton from '../repeat/RenderRepeatButton';
+import RenderDeleteButton from '../repeat/RenderDeleteButton';
+export type Props = RenderItemProps & {
   item: QuestionnaireItem;
-  questionnaire?: Questionnaire;
   responseItem: QuestionnaireResponseItem;
-  answer: QuestionnaireResponseItemAnswer;
   resources?: Resources;
-  dispatch?: ThunkDispatch<GlobalState, void, NewValueAction>;
-  path: Array<Path>;
-  pdf?: boolean;
-  language?: string;
-  promptLoginMessage?: () => void;
-  id?: string;
-  renderDeleteButton: (className?: string) => JSX.Element | null;
   repeatButton: JSX.Element;
-  renderHelpButton: () => JSX.Element;
-  renderHelpElement: () => JSX.Element;
   onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
-  onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
-}
+};
 
 const DateTimeInput: React.FC<Props> = ({
   item,
-  questionnaire,
-  answer,
   resources,
   path,
   pdf,
   promptLoginMessage,
   id,
-  renderDeleteButton,
-  repeatButton,
-  renderHelpButton,
-  renderHelpElement,
   onAnswerChange,
-  onRenderMarkdown,
   idWithLinkIdAndItemIndex,
   children,
+  responseItem,
+  index,
+  responseItems,
 }) => {
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
+  const answer = useGetAnswer(responseItem, item);
+  const [isHelpVisible, setIsHelpVisible] = useState(false);
   const { formState, getFieldState, register, setValue } = useFormContext<FieldValues>();
   const dateField = getFieldState(`${idWithLinkIdAndItemIndex}-date`, formState);
   const hoursField = getFieldState(`${idWithLinkIdAndItemIndex}-hours`, formState);
   const minutesField = getFieldState(`${idWithLinkIdAndItemIndex}-minutes`, formState);
 
-  const getDefaultDate = (item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer): Date | undefined => {
-    if (answer && answer.valueDateTime) {
-      return safeParseJSON(answer.valueDateTime);
+  const getDefaultDate = (
+    item: QuestionnaireItem,
+    answer?: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]
+  ): Date | undefined => {
+    const answerValue = Array.isArray(answer) ? answer[0] : answer;
+    if (answerValue && answerValue.valueDateTime) {
+      return safeParseJSON(answerValue.valueDateTime);
     }
-    if (answer && answer.valueDate) {
-      return safeParseJSON(answer.valueDate);
+    if (answerValue && answerValue.valueDate) {
+      return safeParseJSON(answerValue.valueDate);
     }
     if (!item || !item.initial || item.initial.length === 0) {
       return undefined;
@@ -138,7 +132,7 @@ const DateTimeInput: React.FC<Props> = ({
     return undefined;
   };
 
-  const convertDateToString = (item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer): string | undefined => {
+  const convertDateToString = (item: QuestionnaireItem, answer?: QuestionnaireResponseItemAnswer): string | undefined => {
     const date = getDefaultDate(item, answer);
     if (date) {
       return format(date, 'dd.MM.yyyy HH:mm');
@@ -160,14 +154,7 @@ const DateTimeInput: React.FC<Props> = ({
 
   if (pdf || isReadOnly(item)) {
     return (
-      <TextView
-        id={id}
-        item={item}
-        value={getStringValue()}
-        onRenderMarkdown={onRenderMarkdown}
-        helpButton={renderHelpButton()}
-        helpElement={renderHelpElement()}
-      >
+      <TextView id={id} item={item} value={getStringValue()}>
         {children}
       </TextView>
     );
@@ -224,10 +211,10 @@ const DateTimeInput: React.FC<Props> = ({
 
   const updateQuestionnaireResponse = (date: Date | string | undefined, hours: string | undefined, minutes: string | undefined): void => {
     const fullDate = getFullFnsDate(date, hours, minutes);
+    const existingAnswer = !Array.isArray(answer) ? answer?.valueDateTime : answer?.map(m => m.valueDateTime).join(', ');
 
     if (fullDate) {
-      const existingAnswer = answer?.valueDateTime || '';
-      if (dispatch && existingAnswer !== fullDate) {
+      if (dispatch && existingAnswer !== fullDate && onAnswerChange && path) {
         dispatch(newDateTimeValueAsync(path, fullDate, item))?.then(newState =>
           onAnswerChange(newState, path, item, { valueDateTime: fullDate } as QuestionnaireResponseItemAnswer)
         );
@@ -241,18 +228,16 @@ const DateTimeInput: React.FC<Props> = ({
 
   return (
     <div className="page_refero__component page_refero__component_datetime">
-      {renderHelpElement()}
       <ReferoLabel
         item={item}
-        onRenderMarkdown={onRenderMarkdown}
-        questionnaire={questionnaire}
         resources={resources}
         htmlFor={`${getId(id)}-datepicker`}
         labelId={`${getId(id)}-label`}
         testId={`${getId(id)}-label-test`}
         sublabelId={`${getId(id)}-sublabel`}
-        renderHelpButton={renderHelpButton}
+        afterLabelContent={<RenderHelpButton isHelpVisible={isHelpVisible} item={item} setIsHelpVisible={setIsHelpVisible} />}
       />
+      <RenderHelpElement isHelpVisible={isHelpVisible} item={item} />
       <DateTimePickerWrapper errorText={getErrorText(getCombinedFieldError(dateField, hoursField, minutesField))}>
         <DatePicker
           {...register(idWithLinkIdAndItemIndex + '-date', {
@@ -323,13 +308,19 @@ const DateTimeInput: React.FC<Props> = ({
           }}
         />
       </DateTimePickerWrapper>
-      {renderDeleteButton('page_refero__deletebutton--margin-top')}
-      {repeatButton}
+      <RenderDeleteButton
+        item={item}
+        path={path}
+        index={index}
+        onAnswerChange={onAnswerChange}
+        responseItem={responseItem}
+        resources={resources}
+        className="page_refero__deletebutton--margin-top"
+      />
+      <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} responseItem={responseItem} responseItems={responseItems} />
       {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
     </div>
   );
 };
 
-const withCommonFunctionsComponent = withCommonFunctions(DateTimeInput);
-const layoutChangeComponent = layoutChange(withCommonFunctionsComponent);
-export default layoutChangeComponent;
+export default layoutChange(DateTimeInput);

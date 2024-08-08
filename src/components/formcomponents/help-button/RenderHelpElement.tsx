@@ -4,27 +4,22 @@ import { QuestionnaireItem } from 'fhir/r4';
 import ItemControlConstants from '@/constants/itemcontrol';
 import classNames from 'classnames';
 import { Collapse } from 'react-collapse';
-import SafeText from '../referoLabel/SafeText';
+import SafeText from '../../referoLabel/SafeText';
+import { useExternalRenderContext } from '@/context/externalRenderContext';
 
 type Props = {
   isHelpVisible: boolean;
   item: QuestionnaireItem;
-  onRequestHelpElement?: (
-    item: QuestionnaireItem,
-    itemHelp: QuestionnaireItem,
-    helpType: string,
-    helpText: string,
-    opening: boolean
-  ) => JSX.Element;
 };
 
-const renderHelpElement = ({ isHelpVisible, item, onRequestHelpElement }: Props): JSX.Element | null => {
+const RenderHelpElement = ({ isHelpVisible, item }: Props): JSX.Element | null => {
+  const { onRequestHelpElement } = useExternalRenderContext();
+
   if (!item) {
     return null;
   }
-  const qItem = item;
 
-  const helpItem = findHelpItem(qItem);
+  const helpItem = findHelpItem(item);
   if (!helpItem) {
     return null;
   }
@@ -32,7 +27,7 @@ const renderHelpElement = ({ isHelpVisible, item, onRequestHelpElement }: Props)
   const helpItemType = getHelpItemType(helpItem) || ItemControlConstants.HELP;
 
   if (onRequestHelpElement) {
-    return onRequestHelpElement(qItem, helpItem, helpItemType, getText(helpItem), isHelpVisible);
+    return onRequestHelpElement(item, helpItem, helpItemType, getText(helpItem), isHelpVisible);
   }
 
   const collapseClasses: string = classNames({
@@ -46,4 +41,4 @@ const renderHelpElement = ({ isHelpVisible, item, onRequestHelpElement }: Props)
   );
 };
 
-export default renderHelpElement;
+export default RenderHelpElement;

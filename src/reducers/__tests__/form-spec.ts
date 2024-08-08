@@ -25,6 +25,7 @@ import {
   getItemWithIdFromResponseItemArray,
 } from '../../util/refero-core';
 import dataModel from './__data__/dummy-data-model';
+import { fail } from 'assert';
 
 describe('new value action', () => {
   it('should update string value', () => {

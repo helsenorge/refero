@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 
 import { format, isValid } from 'date-fns';
-import { QuestionnaireItem, QuestionnaireResponseItemAnswer, QuestionnaireItemInitial } from 'fhir/r4';
-import { Controller, FieldError } from 'react-hook-form';
+import { QuestionnaireResponseItemAnswer } from 'fhir/r4';
+import { Controller, FieldError, FieldValues, useFormContext } from 'react-hook-form';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 
@@ -12,32 +12,26 @@ import DatePicker from '@helsenorge/datepicker/components/DatePicker';
 import { safeParseJSON } from '../../../util/date-fns-utils';
 import { getValidationTextExtension } from '../../../util/extension';
 import { getId, isReadOnly, isRequired } from '../../../util/index';
-import { Resources } from '../../../util/resources';
-import { FormProps } from '../../../validation/ReactHookFormHoc';
-import { WithCommonFunctionsAndEnhancedProps } from '../../with-common-functions';
 import TextView from '../textview';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { formatDateToStringDDMMYYYY, parseStringToDateDDMMYYYY, validateDate, validateMaxDate, validateMinDate } from '@/util/date-utils';
+import { RenderItemProps } from '../renderChildren/RenderChildrenItems';
+import RenderHelpButton from '../help-button/RenderHelpButton';
+import RenderHelpElement from '../help-button/RenderHelpElement';
+import { useGetAnswer } from '@/hooks/useGetAnswer';
 
-interface DateDayInputProps extends WithCommonFunctionsAndEnhancedProps, FormProps {
-  id?: string;
-  pdf?: boolean;
-  item: QuestionnaireItem;
-  resources?: Resources;
+type DateDayInputProps = RenderItemProps & {
   locale: LanguageLocales.ENGLISH | LanguageLocales.NORWEGIAN;
   label?: string;
   subLabel?: string;
-  helpButton?: JSX.Element;
-  helpElement?: JSX.Element;
   onDateValueChange: (newValue: string) => void;
-  onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string;
   validationErrorRenderer?: JSX.Element;
   className?: string;
   maxDate?: Date;
   minDate?: Date;
-  answer: QuestionnaireResponseItemAnswer;
-}
+  children: React.ReactNode;
+};
 
 export const DateDayInput = ({
   id,
@@ -45,25 +39,37 @@ export const DateDayInput = ({
   pdf,
   item,
   resources,
-  questionnaire,
-  helpButton,
-  helpElement,
   onDateValueChange,
-  onRenderMarkdown,
-  renderHelpButton,
   maxDate,
   minDate,
-  answer,
-  error,
   children,
-}: React.PropsWithChildren<DateDayInputProps>): JSX.Element => {
-  const getDateAnswerValue = (answer: QuestionnaireResponseItemAnswer | QuestionnaireItemInitial): string | undefined => {
-    if (answer && answer.valueDate) {
-      return answer.valueDate;
+}: DateDayInputProps): JSX.Element | null => {
+  const [isHelpVisible, setIsHelpVisible] = useState(false);
+  const { formState, getFieldState } = useFormContext<FieldValues>();
+  const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
+  const { error } = fieldState;
+  const answer = useGetAnswer(item);
+
+  const getDateAnswerValue = (
+    answer?: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[] | undefined
+  ): string | undefined => {
+    const answerValue = Array.isArray(answer) ? answer[0] : answer;
+    if (answerValue && answerValue.valueDate) {
+      return answerValue.valueDate;
     }
-    if (answer && answer.valueDateTime) {
-      return answer.valueDateTime;
+    if (answerValue && answerValue.valueDateTime) {
+      return answerValue.valueDateTime;
     }
+    if (!item || !item.initial || item.initial.length === 0) {
+      return undefined;
+    }
+    if (!item.initial[0].valueDate && !item.initial[0].valueDateTime) {
+      return undefined;
+    }
+    if (item.initial[0].valueDateTime) {
+      return item.initial[0].valueDateTime;
+    }
+    return item.initial[0].valueDate;
   };
 
   const dateAnswerValue = getDateAnswerValue(answer);
@@ -143,14 +149,7 @@ export const DateDayInput = ({
 
   if (pdf || isReadOnly(item)) {
     return (
-      <TextView
-        id={id}
-        item={item}
-        value={getPDFValue()}
-        onRenderMarkdown={onRenderMarkdown}
-        helpButton={helpButton}
-        helpElement={helpElement}
-      >
+      <TextView id={id} item={item} value={getPDFValue()}>
         {children}
       </TextView>
     );
@@ -158,18 +157,17 @@ export const DateDayInput = ({
 
   return (
     <FormGroup error={getErrorText(error)}>
-      {helpElement}
       <ReferoLabel
         item={item}
-        onRenderMarkdown={onRenderMarkdown}
-        questionnaire={questionnaire}
         resources={resources}
         htmlFor={`${getId(id)}-datepicker`}
         labelId={`${getId(id)}-label`}
         testId={`${getId(id)}-label-test`}
         sublabelId={`${getId(id)}-sublabel`}
-        renderHelpButton={renderHelpButton}
+        afterLabelContent={<RenderHelpButton isHelpVisible={isHelpVisible} item={item} setIsHelpVisible={setIsHelpVisible} />}
       />
+      <RenderHelpElement isHelpVisible={isHelpVisible} item={item} />
+
       <Controller
         name={idWithLinkIdAndItemIndex}
         shouldUnregister={true}
@@ -210,36 +208,3 @@ export const DateDayInput = ({
     </FormGroup>
   );
 };
-
-// const getDatepickerErrorPhrases = (): DatePickerErrorPhrases => {
-//   const { resources, item } = props;
-//   // Vi får maks én valideringstekst, derfor settes alle til denne.
-//   const validationErrorText = getValidationTextExtension(item);
-
-//   return {
-//     errorInvalidDate: validationErrorText ? validationErrorText : resources?.filterDateErrorDateFormat || '',
-//     errorAfterMaxDate: resources?.errorAfterMaxDate || '',
-//     errorBeforeMinDate: resources?.errorBeforeMinDate || '',
-//     errorInvalidDateRange: '',
-//     errorRequiredDate: resources?.dateRequired || '',
-//     errorRequiredDateRange: '',
-//     errorInvalidMinimumNights: '',
-//   };
-// }
-
-// toLocaleDate(moment: Moment | undefined): Moment | undefined {
-//   return moment ? moment.locale(getLocaleFromLanguage()) : undefined;
-// }
-
-// const isValidDate = (date: Date | undefined): boolean => {
-//   if (date instanceof Date) {
-//     const text = Date.prototype.toString.call(date);
-//     return text !== 'Invalid Date';
-//   }
-//   return false;
-// };
-
-// const getSingleDateValue = (): Date | undefined => {
-//   const date = getValue();
-//   return date ? safeParseJSON(date[0]) : undefined;
-// };

@@ -51,7 +51,7 @@ describe('autosuggest-view', () => {
       const helpButton = container.querySelector('.page_refero__helpButton');
       if (helpButton) {
         await act(async () => {
-          userEvent.click(helpButton);
+          await userEvent.click(helpButton);
         });
       }
       expect(container.querySelector('.page_refero__helpComponent--open')).toBeInTheDocument();
@@ -127,7 +127,7 @@ describe('autosuggest-view', () => {
 
       const confirmModal = getByTestId(/-delete-confirm-modal/i);
       await act(async () => {
-        userEvent.click(await findByRole(confirmModal, 'button', { name: /Forkast endringer/i }));
+        await userEvent.click(await findByRole(confirmModal, 'button', { name: /Forkast endringer/i }));
       });
 
       expect(queryByTestId(/-delete-button/i)).not.toBeInTheDocument();
@@ -157,10 +157,10 @@ describe('autosuggest-view', () => {
           props: { fetchValueSet: fetchValueSetFn },
         });
         await act(async () => {
-          userEvent.type(getByLabelText(/Mistenkt legemiddel/i), 'fyr');
+          await userEvent.type(getByLabelText(/Mistenkt legemiddel/i), 'fyr');
         });
         await act(async () => {
-          userEvent.click(getByText(/Fyrstekake/i));
+          await userEvent.click(getByText(/Fyrstekake/i));
         });
 
         await submitForm();
@@ -201,7 +201,7 @@ describe('autosuggest-view', () => {
     expect(getByText('Mistenkt legemiddel')).toBeInTheDocument();
 
     await act(async () => {
-      userEvent.type(getByTestId('item_af3cff52-5879-4db0-c671-1fb2bec90309-label'), 'test');
+      await userEvent.type(getByTestId('item_af3cff52-5879-4db0-c671-1fb2bec90309-label'), 'test');
     });
 
     await waitFor(() => expect(fetchValueSetFn).toHaveBeenCalled());
@@ -219,7 +219,7 @@ describe('autosuggest-view', () => {
     const { getByTestId, getByText } = renderRefero({ questionnaire: q, props: { fetchValueSet: fetchValueSetFn } });
     expect(getByText('Mistenkt legemiddel')).toBeInTheDocument();
     await act(async () => {
-      userEvent.type(getByTestId('item_af3cff52-5879-4db0-c671-1fb2bec90309-label'), 't');
+      await userEvent.type(getByTestId('item_af3cff52-5879-4db0-c671-1fb2bec90309-label'), 't');
     });
     expect(getByText('Fyrstekake')).toBeInTheDocument();
   });
@@ -247,7 +247,7 @@ describe('autosuggest-view', () => {
     const { getByTestId, getByText } = renderRefero({ questionnaire: q, props: { fetchValueSet: fetchValueSetFn } });
     expect(getByText('Mistenkt legemiddel')).toBeInTheDocument();
     await act(async () => {
-      userEvent.type(getByTestId('item_af3cff52-5879-4db0-c671-1fb2bec90309-label'), 't');
+      await userEvent.type(getByTestId('item_af3cff52-5879-4db0-c671-1fb2bec90309-label'), 't');
     });
 
     expect(getByText(/ Prøv med et annet ord eller sjekk for skrivefeil/i)).toBeInTheDocument();
@@ -280,8 +280,8 @@ describe('autosuggest-view', () => {
 
     expect(getByText('Mistenkt legemiddel')).toBeInTheDocument();
     await act(async () => {
-      userEvent.type(getByTestId('item_af3cff52-5879-4db0-c671-1fb2bec90309-label'), 'f');
-      userEvent.tab();
+      await userEvent.type(getByTestId('item_af3cff52-5879-4db0-c671-1fb2bec90309-label'), 'f');
+      await userEvent.tab();
     });
 
     expect(queryByText(/ Prøv med et annet ord eller sjekk for skrivefeil/i)).not.toBeInTheDocument();
@@ -304,7 +304,7 @@ describe('autosuggest-view', () => {
         userEvent.type(getByTestId('item_af3cff52-5879-4db0-c671-1fb2bec90309-label'), 't');
       });
       await act(async () => {
-        userEvent.click(getByText('Fyrstekake'));
+        await userEvent.click(getByText('Fyrstekake'));
       });
       const expectedAnswer: QuestionnaireResponseItemAnswer = {
         valueCoding: {
@@ -331,7 +331,7 @@ describe('autosuggest-view', () => {
 
     expect(getByText('Mistenkt legemiddel')).toBeInTheDocument();
     await act(async () => {
-      userEvent.type(getByTestId('item_af3cff52-5879-4db0-c671-1fb2bec90309-label'), 't');
+      await userEvent.type(getByTestId('item_af3cff52-5879-4db0-c671-1fb2bec90309-label'), 't');
     });
     await waitFor(() => expect(getByText('Teknisk feil')).toBeInTheDocument());
   });

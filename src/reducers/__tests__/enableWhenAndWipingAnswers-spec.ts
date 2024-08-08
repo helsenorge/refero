@@ -3,6 +3,7 @@ import { Form } from '../form';
 import { QuestionnaireItem } from 'fhir/r4';
 import { getQuestionnaireDefinitionItem, getDefinitionItems } from '../../util/refero-core';
 import { getResponseItem, clickCheckbox, enterText, selectChoice, createCoding, pathifyExpand } from './utils';
+import { fail } from 'assert';
 
 describe('wipe answers when collapsing enable whens', () => {
   let newState: Form;

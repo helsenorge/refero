@@ -8,7 +8,7 @@ export class RenderContext {
   public Owner: string;
   public RenderChildren?: (
     children: QuestionnaireItem[],
-    renderItem: (item: QuestionnaireItem, renderContext: RenderContext) => Array<JSX.Element | undefined>
+    renderItem: (item: QuestionnaireItem, renderContext: RenderContext) => JSX.Element | null
   ) => JSX.Element[];
 
   constructor(renderContextType: RenderContextType = RenderContextType.None, owner: string = '', columns: string[] = []) {
