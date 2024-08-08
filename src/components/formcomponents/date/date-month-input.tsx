@@ -52,21 +52,11 @@ export const DateYearMonthInput = ({
   const getDateValueFromAnswer = (
     answer: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[] | undefined
   ): string | undefined => {
-    if (answer && Array.isArray(answer)) {
-      if (answer[0].valueDate) {
-        answer[0].valueDate;
-      }
-      if (answer[0].valueDateTime) {
-        return answer[0].valueDateTime;
-      }
-    } else if (answer) {
-      if (answer.valueDate) {
-        answer.valueDate;
-      }
-      if (answer.valueDateTime) {
-        return answer.valueDateTime;
-      }
-    }
+    if (!answer) return undefined;
+
+    const answerItem = Array.isArray(answer) ? answer[0] : answer;
+
+    return answerItem.valueDate ?? answerItem.valueDateTime;
   };
 
   const getValue = (): { year: number; month: number | null } | undefined => {
