@@ -121,7 +121,7 @@ export const AttachmentComponent = (props: Props): JSX.Element | null => {
   if (pdf || isReadOnly(item)) {
     return (
       <TextView id={id} item={item} value={getPdfValue()}>
-        <RenderChildrenItems otherProps={props} />
+        <RenderChildrenItems {...props} />
       </TextView>
     );
   } else {
@@ -147,7 +147,7 @@ export const AttachmentComponent = (props: Props): JSX.Element | null => {
           idWithLinkIdAndItemIndex={props.idWithLinkIdAndItemIndex}
         />
         <div className="nested-fieldset nested-fieldset--full-height">
-          <RenderChildrenItems otherProps={props} />
+          <RenderChildrenItems {...props} />
         </div>
       </>
     );

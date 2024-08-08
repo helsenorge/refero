@@ -25,27 +25,15 @@ import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelp
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import { RenderChildrenItems, RenderItemProps } from '../renderChildren/RenderChildrenItems';
+import { useExternalRenderContext } from '@/context/externalRenderContext';
 
 export interface Props extends RenderItemProps {
   children?: React.ReactNode;
 }
 
 const Decimal = (props: Props): JSX.Element | null => {
-  const {
-    id,
-    item,
-    pdf,
-    resources,
-    children,
-    idWithLinkIdAndItemIndex,
-    path,
-    onAnswerChange,
-    promptLoginMessage,
-    responseItems,
-    index,
-    responseItem,
-  } = props;
-
+  const { id, item, pdf, resources, children, idWithLinkIdAndItemIndex, path, onAnswerChange, responseItems, index, responseItem } = props;
+  const { promptLoginMessage } = useExternalRenderContext();
   const { formState, getFieldState, control } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex || '', formState);
   const { error } = fieldState;
@@ -111,6 +99,7 @@ const Decimal = (props: Props): JSX.Element | null => {
   const maxValue = getMaxValueExtensionValue(item);
   const minValue = getMinValueExtensionValue(item);
   const validationText = getValidationTextExtension(item);
+
   return (
     <div className="page_refero__component page_refero__component_decimal">
       <FormGroup error={error?.message} mode="ongrey">
@@ -181,8 +170,10 @@ const Decimal = (props: Props): JSX.Element | null => {
         className="page_refero__deletebutton--margin-top"
       />
       <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} responseItem={responseItem} responseItems={responseItems} />
-      <RenderChildrenItems otherProps={props} />
-      <div className="nested-fieldset nested-fieldset--full-height">{children}</div>
+
+      <div className="nested-fieldset nested-fieldset--full-height">
+        <RenderChildrenItems {...props} />
+      </div>
     </div>
   );
 };

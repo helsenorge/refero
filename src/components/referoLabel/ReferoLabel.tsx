@@ -44,6 +44,7 @@ export const ReferoLabel = ({
       <Label labelId={labelId} testId={testId} labelTexts={labelText || []} htmlFor={htmlFor} className={`page_refero__label`}>
         <div className={styles.label_content}>
           <SafeText text={lblText} />
+          {/* <>{!isRequired(item) && <span>{'(Valgfritt)'}</span>}</> */}
           {afterLabelContent && afterLabelContent}
           {subLabelText && <SubLabel id={sublabelId} testId={sublabelTestId} subLabelText={subLabelText} />}
         </div>

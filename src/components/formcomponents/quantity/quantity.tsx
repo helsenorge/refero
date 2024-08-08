@@ -29,26 +29,15 @@ import RenderHelpElement from '@/components/formcomponents/help-button/RenderHel
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import { RenderChildrenItems, RenderItemProps } from '../renderChildren/RenderChildrenItems';
+import { useExternalRenderContext } from '@/context/externalRenderContext';
 
 export interface Props extends RenderItemProps {
   children?: ReactNode;
 }
 
 const Quantity = (props: Props): JSX.Element | null => {
-  const {
-    promptLoginMessage,
-    path,
-    item,
-    onAnswerChange,
-    id,
-    resources,
-    pdf,
-    idWithLinkIdAndItemIndex,
-    responseItems,
-    index,
-    children,
-    responseItem,
-  } = props;
+  const { path, item, onAnswerChange, id, resources, pdf, idWithLinkIdAndItemIndex, responseItems, index, children, responseItem } = props;
+  const { promptLoginMessage } = useExternalRenderContext();
   const { formState, getFieldState } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
@@ -204,7 +193,7 @@ const Quantity = (props: Props): JSX.Element | null => {
         <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} responseItem={responseItem} responseItems={responseItems} />
       </FormGroup>
       <div className="nested-fieldset nested-fieldset--full-height">
-        <RenderChildrenItems otherProps={props} />
+        <RenderChildrenItems {...props} />
       </div>
     </div>
   );

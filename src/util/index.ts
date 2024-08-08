@@ -40,7 +40,6 @@ import { TableCodes } from '../constants/tableTypes';
 import { Resources } from '@/util/resources';
 import { ComponentType } from 'react';
 import { RenderItemProps } from '@/components/formcomponents/renderChildren/RenderChildrenItems';
-import { FormProps } from '@/validation/ReactHookFormHoc';
 
 function openNewIfAbsolute(url: string): string {
   const regex = new RegExp('^(([a-z][a-z0-9+.-]*):.*)');

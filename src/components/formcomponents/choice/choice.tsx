@@ -29,13 +29,15 @@ import { useDispatch } from 'react-redux';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
 import { useIsEnabled } from '@/hooks/useIsEnabled';
 import { RenderChildrenItems, RenderItemProps } from '../renderChildren/RenderChildrenItems';
+import { useExternalRenderContext } from '@/context/externalRenderContext';
 
 export type ChoiceProps = RenderItemProps & {
   children?: React.ReactNode;
 };
 
 export const Choice = (props: ChoiceProps): JSX.Element | null => {
-  const { resources, containedResources, promptLoginMessage, item, onAnswerChange, path, id, pdf, responseItem } = props;
+  const { resources, containedResources, item, onAnswerChange, path, id, pdf, responseItem } = props;
+  const { promptLoginMessage } = useExternalRenderContext();
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
   const answer = useGetAnswer(responseItem, item);
   const enable = useIsEnabled(item, path);
@@ -194,7 +196,7 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
   if (pdf || isReadOnly(item)) {
     return (
       <TextView id={id} item={item} value={getPDFValue(item, answer)}>
-        <RenderChildrenItems otherProps={props} />
+        <RenderChildrenItems {...props} />
       </TextView>
     );
   }

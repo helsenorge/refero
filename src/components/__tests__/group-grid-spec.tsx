@@ -15,7 +15,6 @@ describe('group-grid-spec', () => {
 
     const rows = container.querySelectorAll('tr.page_refero__grid--row');
     expect(rows).toHaveLength(4);
-    screen.debug(undefined, 500000);
     let expectedItemsPerRow = [['1.1.1', '1.1.2', '1.1.3'], ['1.2.2', '1.2.3', '1.2.1'], ['1.3.1'], ['1.4.1']];
     for (let i = 0; i < rows.length; i++) {
       validateRow(rows[i], 5, expectedItemsPerRow[i]);

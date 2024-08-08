@@ -31,10 +31,10 @@ export const Group = (props: Props): JSX.Element | null => {
         isDirectChildOfRenderContextOwner(path || [], item, renderContext) ? (
           <ContextTypeGridRow {...props} isHelpVisible={isHelpVisible} setIsHelpVisible={setIsHelpVisible} />
         ) : (
-          <DefaultGroup componentProps={props} isHelpVisible={isHelpVisible} setIsHelpVisible={setIsHelpVisible} />
+          <DefaultGroup {...props} isHelpVisible={isHelpVisible} setIsHelpVisible={setIsHelpVisible} />
         )
       ) : (
-        <DefaultGroup componentProps={props} isHelpVisible={isHelpVisible} setIsHelpVisible={setIsHelpVisible} />
+        <DefaultGroup {...props} isHelpVisible={isHelpVisible} setIsHelpVisible={setIsHelpVisible} />
       )}
     </AsPdf>
   );

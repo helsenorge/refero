@@ -7,7 +7,7 @@ type SafeTextOwnProps<E extends React.ElementType = React.ElementType> = {
   as?: E;
 };
 
-type SafeTextProps<E extends React.ElementType> = SafeTextOwnProps<E> & Omit<React.ComponentProps<E>, keyof SafeTextOwnProps>;
+type SafeTextProps<E extends React.ElementType> = SafeTextOwnProps<E> & Omit<React.ComponentProps<E>, keyof SafeTextOwnProps | 'children'>;
 
 const __DEFAULT_ELEMENT__ = 'h2';
 
