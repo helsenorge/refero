@@ -20,6 +20,7 @@ import { getMonthOptions, getYearFromString, validateYearDigits, validateYearMax
 import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelpButton';
 import RenderHelpElement from '@/components/formcomponents/help-button/RenderHelpElement';
 import { QuestionnaireComponentItemProps } from '@/components/GenerateQuestionnaireComponents';
+import { useGetAnswer } from '@/hooks/useGetAnswer';
 
 type DateMonthProps = QuestionnaireComponentItemProps & {
   locale: LanguageLocales.ENGLISH | LanguageLocales.NORWEGIAN;
@@ -29,8 +30,6 @@ type DateMonthProps = QuestionnaireComponentItemProps & {
   className?: string;
   maxDate?: Date;
   minDate?: Date;
-  answer: QuestionnaireResponseItemAnswer;
-  children: React.ReactNode;
 };
 
 export const DateYearMonthInput = ({
@@ -44,18 +43,15 @@ export const DateYearMonthInput = ({
   onDateValueChange,
   maxDate,
   minDate,
-  answer,
   children,
-}: DateMonthProps): JSX.Element => {
+  responseItem,
+}: DateMonthProps): JSX.Element | null => {
   const { formState, getFieldState } = useFormContext<FieldValues>();
-
-  const getDateValueFromAnswer = (answer: QuestionnaireResponseItemAnswer): string | undefined => {
-    if (answer && answer.valueDate) {
-      return answer.valueDate;
-    }
-    if (answer && answer.valueDateTime) {
-      return answer.valueDateTime;
-    }
+  const answer = useGetAnswer(responseItem, item);
+  const getDateValueFromAnswer = (
+    answer: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[] | undefined
+  ): string | undefined => {
+    return Array.isArray(answer) ? answer[0].valueDate || answer[0].valueDateTime : answer?.valueDate || answer?.valueDateTime;
   };
 
   const getValue = (): { year: number; month: number | null } | undefined => {

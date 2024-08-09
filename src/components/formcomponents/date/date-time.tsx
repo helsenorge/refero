@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 import { format } from 'date-fns';
 import { isValid } from 'date-fns';
-import { QuestionnaireItem, QuestionnaireResponseItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { FieldError, FieldValues, useFormContext } from 'react-hook-form';
 import { ThunkDispatch } from 'redux-thunk';
 
@@ -29,8 +29,6 @@ import {
 import { getValidationTextExtension, getExtension } from '../../../util/extension';
 import { evaluateFhirpathExpressionToGetDate } from '../../../util/fhirpathHelper';
 import { isRequired, getId, isReadOnly } from '../../../util/index';
-import { Path } from '../../../util/refero-core';
-import { Resources } from '../../../util/resources';
 import TextView from '../textview';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
@@ -43,15 +41,9 @@ import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 
-export type Props = QuestionnaireComponentItemProps & {
-  item: QuestionnaireItem;
-  responseItem: QuestionnaireResponseItem;
-  resources?: Resources;
-  repeatButton: JSX.Element;
-  onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
-};
+export type Props = QuestionnaireComponentItemProps;
 
-const DateTimeInput: React.FC<Props> = ({
+const DateTimeInput = ({
   item,
   resources,
   path,
@@ -63,7 +55,7 @@ const DateTimeInput: React.FC<Props> = ({
   responseItem,
   index,
   responseItems,
-}) => {
+}: Props): JSX.Element | null => {
   const { promptLoginMessage } = useExternalRenderContext();
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
   const answer = useGetAnswer(responseItem, item);

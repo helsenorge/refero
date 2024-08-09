@@ -15,7 +15,6 @@ import { FormData, FormDefinition, getFormData, getFormDefinition } from '@/redu
 import ItemType from '@/constants/itemType';
 import { useSelector } from 'react-redux';
 import { isHelpItem } from '@/util/help';
-import { AutoSuggestProps } from '@/types/autoSuggestProps';
 import constants, { NAVIGATOR_BLINDZONE_ID } from '@/constants';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 
@@ -31,11 +30,9 @@ export type QuestionnaireComponentItemProps = {
   blindzone: JSX.Element | null;
   path?: Path[];
   id?: string;
-  validateScriptInjection?: boolean;
   index?: number;
   onAnswerChange?: (newState: GlobalState, path: Path[], item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
   renderContext: RenderContext;
-  autoSuggestProps?: AutoSuggestProps;
   responseItems?: QuestionnaireResponseItem[];
   idWithLinkIdAndItemIndex: string;
   children?: React.ReactNode;
@@ -48,8 +45,6 @@ export type QuestionnaireItemsProps = {
   pdf?: boolean;
   renderContext?: RenderContext;
   onAnswerChange?: (newState: GlobalState, path: Path[], item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
-  validateScriptInjection?: boolean;
-  autoSuggestProps?: AutoSuggestProps;
 };
 
 const GenerateQuestionnaireComponents = (props: QuestionnaireItemsProps): JSX.Element | null => {

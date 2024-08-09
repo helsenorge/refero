@@ -46,13 +46,12 @@ export const Text = (props: Props): JSX.Element | null => {
     path,
     onAnswerChange,
     shouldExpanderRenderChildrenWhenClosed,
-    validateScriptInjection,
     responseItems,
     responseItem,
     index,
     children,
   } = props;
-  const { promptLoginMessage } = useExternalRenderContext();
+  const { promptLoginMessage, validateScriptInjection } = useExternalRenderContext();
   const { formState, getFieldState, control } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;

@@ -39,7 +39,6 @@ const AutosuggestView = (props: AutosuggestProps): JSX.Element | null => {
     id,
     idWithLinkIdAndItemIndex,
     clearCodingAnswer,
-    autoSuggestProps,
     handleChange,
     handleStringChange,
     index,
@@ -50,11 +49,12 @@ const AutosuggestView = (props: AutosuggestProps): JSX.Element | null => {
     children,
   } = props;
   const { formState, getFieldState, control } = useFormContext<FieldValues>();
+
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
   const answer = useGetAnswer(responseItem, item);
   const enable = useIsEnabled(item, path);
-  const { fetchValueSet } = useExternalRenderContext();
+  const { fetchValueSet, autoSuggestProps } = useExternalRenderContext();
   const codingAnswer = getCodingAnswer(answer);
   const initialInputValue =
     codingAnswer?.code === OPEN_CHOICE_ID && codingAnswer?.system === OPEN_CHOICE_SYSTEM ? getStringAnswer(answer) : codingAnswer?.display;

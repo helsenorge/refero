@@ -28,21 +28,8 @@ import { useExternalRenderContext } from '@/context/externalRenderContext';
 export type Props = QuestionnaireComponentItemProps;
 
 export const String = (props: Props): JSX.Element | null => {
-  const {
-    path,
-    item,
-    onAnswerChange,
-    id,
-    pdf,
-    resources,
-    idWithLinkIdAndItemIndex,
-    validateScriptInjection,
-    children,
-    responseItems,
-    index,
-    responseItem,
-  } = props;
-  const { promptLoginMessage } = useExternalRenderContext();
+  const { path, item, onAnswerChange, id, pdf, resources, idWithLinkIdAndItemIndex, children, responseItems, index, responseItem } = props;
+  const { promptLoginMessage, validateScriptInjection } = useExternalRenderContext();
   const { formState, getFieldState, control } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;

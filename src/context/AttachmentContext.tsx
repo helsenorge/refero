@@ -46,7 +46,7 @@ export const AttachmentProvider = ({
 export const useAttachmentContext = (): AttachmentType => {
   const context = useContext(Attachment);
   if (context === undefined) {
-    throw new Error('useExternalRenderContext must be used within a ExternalRenderProvider');
+    throw new Error('useAttachmentContext must be used within a AttachmentProvider');
   }
   return context;
 };
