@@ -1,8 +1,7 @@
 import React from 'react';
 
-import ItemType from '@constants/itemType';
 import { PresentationButtonsType } from '@constants/presentationButtonsType';
-import { Questionnaire, QuestionnaireResponse, QuestionnaireItem, QuestionnaireResponseItemAnswer, Quantity } from 'fhir/r4';
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { ReferoProps } from '@/types/referoProps';
@@ -10,23 +9,21 @@ import { ReferoProps } from '@/types/referoProps';
 import RenderForm from './renderForm';
 import StepView from './stepView';
 
-import { NewValueAction, newQuantityValue, newDecimalValue, newIntegerValue } from '@/actions/newValue';
 import { GlobalState } from '@/reducers';
 import { getFormDefinition, getFormData } from '@/reducers/form';
 import { FormDefinition, FormData } from '@/reducers/form';
-import { ActionRequester } from '@/util/actionRequester';
-import { getQuestionnaireUnitExtensionValue, getPresentationButtonsExtension } from '@/util/extension';
+import { ActionRequester, IActionRequester } from '@/util/actionRequester';
+import { getPresentationButtonsExtension } from '@/util/extension';
 import { IE11HackToWorkAroundBug187484 } from '@/util/hacks';
-import { getDecimalValue } from '@/util/index';
-import { QuestionniareInspector } from '@/util/questionnaireInspector';
-import { Path, getQuestionnaireDefinitionItem, getResponseItemAndPathWithLinkId } from '@/util/refero-core';
-import { AnswerPad, ScoringCalculator } from '@/util/scoringCalculator';
+import { IQuestionnaireInspector, QuestionniareInspector } from '@/util/questionnaireInspector';
+import { Path } from '@/util/refero-core';
 import { shouldFormBeDisplayedAsStepView } from '@/util/shouldFormBeDisplayedAsStepView';
 import { createIntitialFormValues } from '@/validation/defaultFormValues';
 import { ExternalRenderProvider } from '@/context/externalRenderContext';
 import { setSkjemaDefinition } from '@/actions/form';
 import { AttachmentProvider } from '@/context/AttachmentContext';
-import QuestionnaireItems, { QuestionnaireItemsProps } from './GenerateQuestionnaireComponents';
+import GenerateQuestionnaireComponents, { QuestionnaireItemsProps } from './GenerateQuestionnaireComponents';
+import { useScoringCalculator } from '@/hooks/useScoringCalculator';
 
 const Refero = (props: ReferoProps): JSX.Element | null => {
   IE11HackToWorkAroundBug187484();
@@ -36,6 +33,7 @@ const Refero = (props: ReferoProps): JSX.Element | null => {
   const questionnaire = formDefinition?.Content;
   // const schema = createZodSchemaFromQuestionnaire(questionnaire, props.resources, questionnaire?.contained);
   const defualtVals = React.useMemo(() => createIntitialFormValues(questionnaire?.item), [questionnaire?.item?.length]);
+  const { runScoringCalculator } = useScoringCalculator();
 
   // console.log('defualtVals', defualtVals);
   const methods = useForm({
@@ -50,19 +48,12 @@ const Refero = (props: ReferoProps): JSX.Element | null => {
     // },
   });
 
-  const getScoringCalculator = (questionnaire: Questionnaire): ScoringCalculator => {
-    return new ScoringCalculator(questionnaire);
-  };
-
-  const [scoringCalculator, setScoringCalculator] = React.useState<ScoringCalculator | undefined>(
-    questionnaire ? getScoringCalculator(questionnaire) : undefined
-  );
   React.useEffect(() => {
     if (props.questionnaire) {
       dispatch(setSkjemaDefinition(props.questionnaire, props.questionnaireResponse, props.language, props.syncQuestionnaireResponse));
-      setScoringCalculator(getScoringCalculator(props.questionnaire));
     }
   }, []);
+
   const handleSubmit = (): void => {
     const { onSubmit } = props;
 
@@ -76,92 +67,35 @@ const Refero = (props: ReferoProps): JSX.Element | null => {
       props.onSave(formData.Content);
     }
   };
-
+  const handleOnChange = (
+    item: QuestionnaireItem,
+    answer: QuestionnaireResponseItemAnswer,
+    actionRequester: IActionRequester,
+    questionnaireInspector: IQuestionnaireInspector
+  ): void => {
+    if (props.onChange) {
+      props.onChange(item, answer, actionRequester, questionnaireInspector);
+    }
+  };
   const onAnswerChange = (
-    newState: GlobalState,
+    state: GlobalState,
     _path: Array<Path>,
     item: QuestionnaireItem,
     answer: QuestionnaireResponseItemAnswer
   ): void => {
-    if (props.onChange && newState.refero.form.FormDefinition.Content && newState.refero.form.FormData.Content) {
-      const actionRequester = new ActionRequester(newState.refero.form.FormDefinition.Content, newState.refero.form.FormData.Content);
+    const questionnaire = state.refero.form.FormDefinition.Content;
+    const questionnaireResponse = state.refero.form.FormData.Content;
+    if (questionnaire && questionnaireResponse) {
+      const actionRequester = new ActionRequester(questionnaire, questionnaireResponse);
 
-      const questionnaireInspector = new QuestionniareInspector(
-        newState.refero.form.FormDefinition.Content,
-        newState.refero.form.FormData.Content
-      );
-      props.onChange(item, answer, actionRequester, questionnaireInspector);
+      const questionnaireInspector = new QuestionniareInspector(questionnaire, questionnaireResponse);
+      handleOnChange(item, answer, actionRequester, questionnaireInspector);
       for (const action of actionRequester.getActions()) {
         dispatch(action);
       }
     }
 
-    runScoringCalculator(newState);
-  };
-
-  const runScoringCalculator = (newState: GlobalState): void => {
-    const questionnaireResponse = newState.refero?.form?.FormData?.Content;
-    const questionnaire = newState.refero.form.FormDefinition?.Content;
-
-    if (!questionnaire || !questionnaireResponse) return;
-    if (scoringCalculator) {
-      const scores = scoringCalculator.calculateScore(questionnaireResponse);
-
-      updateQuestionnaireResponseWithScore(scores, questionnaire, questionnaireResponse);
-
-      const fhirScores = scoringCalculator.calculateFhirScore(questionnaireResponse);
-
-      updateQuestionnaireResponseWithScore(fhirScores, questionnaire, questionnaireResponse);
-    }
-  };
-
-  const updateQuestionnaireResponseWithScore = (
-    scores: AnswerPad,
-    questionnaire: Questionnaire,
-    questionnaireResponse: QuestionnaireResponse
-  ): void => {
-    const actions: Array<NewValueAction> = [];
-    for (const linkId in scores) {
-      const item = getQuestionnaireDefinitionItem(linkId, questionnaire.item);
-      if (!item) continue;
-      const itemsAndPaths = getResponseItemAndPathWithLinkId(linkId, questionnaireResponse);
-      const value = scores[linkId];
-
-      switch (item.type) {
-        case ItemType.QUANTITY: {
-          const extension = getQuestionnaireUnitExtensionValue(item);
-          if (!extension) continue;
-
-          const quantity: Quantity = {
-            unit: extension.display,
-            system: extension.system,
-            code: extension.code,
-            value: getDecimalValue(item, value),
-          };
-          for (const itemAndPath of itemsAndPaths) {
-            actions.push(newQuantityValue(itemAndPath.path, quantity, item));
-          }
-          break;
-        }
-        case ItemType.DECIMAL: {
-          const decimalValue = getDecimalValue(item, value);
-          for (const itemAndPath of itemsAndPaths) {
-            actions.push(newDecimalValue(itemAndPath.path, decimalValue, item));
-          }
-          break;
-        }
-        case ItemType.INTEGER: {
-          const intValue = value !== undefined ? Math.round(value) : undefined;
-          for (const itemAndPath of itemsAndPaths) {
-            actions.push(newIntegerValue(itemAndPath.path, intValue, item));
-          }
-          break;
-        }
-      }
-    }
-    for (const a of actions) {
-      dispatch(a);
-    }
+    runScoringCalculator(questionnaire, questionnaireResponse);
   };
 
   const getButtonClasses = (
@@ -182,9 +116,6 @@ const Refero = (props: ReferoProps): JSX.Element | null => {
 
   const { resources, authorized } = props;
 
-  if (!resources) {
-    return null;
-  }
   if (!formDefinition || !formDefinition.Content || !resources) {
     return null;
   }
@@ -208,7 +139,7 @@ const Refero = (props: ReferoProps): JSX.Element | null => {
         resources={resources}
       >
         <FormProvider {...methods}>
-          <QuestionnaireItems {...qItemProps} pdf={true} />
+          <GenerateQuestionnaireComponents {...qItemProps} pdf={true} />
         </FormProvider>
       </ExternalRenderProvider>
     );
@@ -261,7 +192,7 @@ const Refero = (props: ReferoProps): JSX.Element | null => {
                 onSubmit={handleSubmit}
                 methods={methods}
               >
-                <QuestionnaireItems {...qItemProps} pdf={false} />
+                <GenerateQuestionnaireComponents {...qItemProps} pdf={false} />
               </RenderForm>
             )}
           </FormProvider>

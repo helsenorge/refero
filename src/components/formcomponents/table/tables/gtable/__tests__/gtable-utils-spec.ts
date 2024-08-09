@@ -7,7 +7,7 @@ import {
   getNumberOfRowsGTable,
   getValueFromAnswer,
 } from '../utils';
-import ItemType from '../../../../../../constants/itemType';
+import ItemType, { IItemType } from '../../../../../../constants/itemType';
 import { QuestionnaireItemWithAnswers } from '../../interface';
 import { Extensions } from '../../../../../../constants/extensions';
 import { QUESTIONNAIRE_ITEM_CONTROL_SYSTEM } from '../../../../../../constants/valuesets';
@@ -15,7 +15,7 @@ import { QUESTIONNAIRE_ITEM_CONTROL_SYSTEM } from '../../../../../../constants/v
 type MockAnswerProps = Partial<QuestionnaireResponseItemAnswer>;
 type MockResponseItemProps = Partial<QuestionnaireResponseItem>;
 type MockQuestionnaireItemProps = Partial<Omit<QuestionnaireItem, 'type'>> & {
-  type: string;
+  type: IItemType;
 };
 type MockResponseProps = Partial<QuestionnaireResponse>;
 
@@ -211,7 +211,7 @@ describe('gtable-utils-spec', () => {
 
   describe('getGtablebodyObject', () => {
     it('should create a GTable object with rows and headers', () => {
-      const questionnaireItems: QuestionnaireItem[] = [
+      const items: QuestionnaireItem[] = [
         generateMockQuestionnaireItem({
           linkId: '1',
           text: 'First Question',
@@ -243,28 +243,26 @@ describe('gtable-utils-spec', () => {
           generateMockResponseItem({ linkId: '2', answer: [generateMockResponseAnswer({ valueString: 'Answer 2' })] }),
         ],
       });
-      const gTable = getGtablebodyObject(questionnaireItems, questionnaireResponse);
+      const gTable = getGtablebodyObject(items, questionnaireResponse);
       expect(gTable.rows.length).toBe(1);
       expect(gTable.headerRow.length).toBe(2);
       expect(gTable.rows[0].columns.length).toBe(2);
     });
 
     it('should handle empty questionnaire items correctly', () => {
-      const questionnaireItems: QuestionnaireItem[] = [];
+      const items: QuestionnaireItem[] = [];
       const questionnaireResponse = generateMockQuestionnaireResponse({
         status: 'completed',
         item: [generateMockResponseItem({ linkId: '1', answer: [generateMockResponseAnswer({ valueString: 'Answer 1' })] })],
       });
-      const gTable = getGtablebodyObject(questionnaireItems, questionnaireResponse);
+      const gTable = getGtablebodyObject(items, questionnaireResponse);
       expect(gTable.rows.length).toBe(0);
       expect(gTable.headerRow.length).toBe(0);
     });
 
     it('should handle null questionnaire response correctly', () => {
-      const questionnaireItems: QuestionnaireItem[] = [
-        generateMockQuestionnaireItem({ linkId: '1', text: 'First Question', type: 'string' }),
-      ];
-      const gTable = getGtablebodyObject(questionnaireItems, null);
+      const items: QuestionnaireItem[] = [generateMockQuestionnaireItem({ linkId: '1', text: 'First Question', type: 'string' })];
+      const gTable = getGtablebodyObject(items, null);
       expect(gTable.rows.length).toBe(0);
       expect(gTable.headerRow.length).toBe(0);
     });

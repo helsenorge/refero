@@ -22,6 +22,8 @@ interface FormButtonsInterface {
   onPauseButtonClicked?: (questionnaireResponse?: QuestionnaireResponse) => void;
   isHelsenorgeForm?: boolean;
   isStepView?: boolean;
+  isAuthorized?: boolean;
+  loginButton?: JSX.Element;
 }
 
 const FormButtons = ({
@@ -35,42 +37,48 @@ const FormButtons = ({
   onCancelButtonClicked,
   onPauseButtonClicked,
   isHelsenorgeForm,
+  isAuthorized,
+  loginButton,
 }: FormButtonsInterface): JSX.Element | null => {
   const buttonOrder = isStepView ? buttonOrderStepView : buttonOrderNormalView;
 
   return (
     <div className={styles.formButtonsWrapper}>
-      <>
-        {Object.values(buttonOrder).map((buttonType: ButtonType): JSX.Element | null => {
-          switch (buttonType) {
-            case ButtonType.pauseButton:
-              return (
-                <PauseFormButton
-                  key={buttonType}
-                  pauseButtonText={pauseButtonText}
-                  isHelsenorgeForm={isHelsenorgeForm}
-                  onPauseButtonClicked={onPauseButtonClicked}
-                  pauseButtonDisabled={pauseButtonDisabled}
-                />
-              );
-            case ButtonType.cancelButton:
-              return (
-                <CancelFormButton key={buttonType} cancelButtonText={cancelButtonText} onCancelButtonClicked={onCancelButtonClicked} />
-              );
-            case ButtonType.submitButton:
-              return (
-                <SubmitFormButton
-                  key={buttonType}
-                  onSubmitButtonClicked={onSubmitButtonClicked}
-                  submitButtonDisabled={submitButtonDisabled}
-                  submitButtonText={submitButtonText}
-                />
-              );
-            default:
-              return <></>;
-          }
-        })}
-      </>
+      {!isAuthorized && loginButton ? (
+        <div className="page_refero__buttonwrapper page_refero__saveblock">{loginButton}</div>
+      ) : (
+        <>
+          {Object.values(buttonOrder).map((buttonType: ButtonType): JSX.Element | null => {
+            switch (buttonType) {
+              case ButtonType.pauseButton:
+                return (
+                  <PauseFormButton
+                    key={buttonType}
+                    pauseButtonText={pauseButtonText}
+                    isHelsenorgeForm={isHelsenorgeForm}
+                    onPauseButtonClicked={onPauseButtonClicked}
+                    pauseButtonDisabled={pauseButtonDisabled}
+                  />
+                );
+              case ButtonType.cancelButton:
+                return (
+                  <CancelFormButton key={buttonType} cancelButtonText={cancelButtonText} onCancelButtonClicked={onCancelButtonClicked} />
+                );
+              case ButtonType.submitButton:
+                return (
+                  <SubmitFormButton
+                    key={buttonType}
+                    onSubmitButtonClicked={onSubmitButtonClicked}
+                    submitButtonDisabled={submitButtonDisabled}
+                    submitButtonText={submitButtonText}
+                  />
+                );
+              default:
+                return <></>;
+            }
+          })}
+        </>
+      )}
     </div>
   );
 };

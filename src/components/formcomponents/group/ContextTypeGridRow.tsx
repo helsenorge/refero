@@ -3,7 +3,7 @@ import GroupHeader from './GroupHeader';
 import { RenderContext } from '@/util/renderContext';
 import React, { Dispatch } from 'react';
 import { QuestionnaireComponentItemProps } from '@/components/GenerateQuestionnaireComponents';
-import QuestionnaireItems from '@/components/GenerateQuestionnaireComponents';
+import GenerateQuestionnaireComponents from '@/components/GenerateQuestionnaireComponents';
 
 type ContextTypeGridRowProps = QuestionnaireComponentItemProps & {
   isHelpVisible: boolean;
@@ -48,7 +48,9 @@ const ContextTypeGridRow = ({ isHelpVisible, setIsHelpVisible, ...rest }: Contex
         />
       </td>
       {item?.item &&
-        renderChildren(item?.item, (childItem, context) => <QuestionnaireItems {...rest} items={[childItem]} renderContext={context} />)}
+        renderChildren(item?.item, (childItem, context) => (
+          <GenerateQuestionnaireComponents {...rest} items={[childItem]} renderContext={context} />
+        ))}
     </tr>
   );
 };
