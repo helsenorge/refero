@@ -23,7 +23,7 @@ export interface Path {
 }
 export function getRootQuestionnaireResponseItemFromData(
   definitionLinkId: string,
-  formData: FormData
+  formData?: FormData | null
 ): QuestionnaireResponseItem[] | undefined {
   if (!formData || !formData.Content) {
     return undefined;

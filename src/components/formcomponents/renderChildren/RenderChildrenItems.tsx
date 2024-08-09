@@ -18,6 +18,7 @@ export type RenderItemProps = {
   pdf?: boolean;
   language?: string;
   includeSkipLink?: boolean;
+  blindzone: JSX.Element | null;
   path?: Path[];
   id?: string;
   validateScriptInjection?: boolean;
@@ -34,6 +35,7 @@ export type RenderItemProps = {
   autoSuggestProps?: AutoSuggestProps;
   responseItems?: QuestionnaireResponseItem[];
   idWithLinkIdAndItemIndex: string;
+  children?: React.ReactNode;
 };
 
 const RenderItem = (props: RenderItemProps): JSX.Element | null => {
@@ -101,7 +103,7 @@ export const RenderChildrenItems = (props: RenderChildrenItemsProps): JSX.Elemen
   return (
     <>
       {item.item.map(childItem => {
-        return <RenderItem key={childItem.linkId} {...props} item={childItem} renderContext={renderContext} />;
+        return <RenderItem key={childItem.linkId} {...props} item={childItem} />;
       })}
     </>
   );

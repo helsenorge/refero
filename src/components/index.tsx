@@ -2,14 +2,7 @@ import React from 'react';
 
 import ItemType from '@constants/itemType';
 import { PresentationButtonsType } from '@constants/presentationButtonsType';
-import {
-  QuestionnaireResponseItem,
-  Questionnaire,
-  QuestionnaireResponse,
-  QuestionnaireItem,
-  QuestionnaireResponseItemAnswer,
-  Quantity,
-} from 'fhir/r4';
+import { Questionnaire, QuestionnaireResponse, QuestionnaireItem, QuestionnaireResponseItemAnswer, Quantity } from 'fhir/r4';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { ReferoProps } from '@/types/referoProps';
@@ -18,36 +11,21 @@ import RenderForm from './renderForm';
 import StepView from './stepView';
 
 import { NewValueAction, newQuantityValue, newDecimalValue, newIntegerValue } from '@/actions/newValue';
-import Constants, { NAVIGATOR_BLINDZONE_ID } from '@/constants/index';
 import { GlobalState } from '@/reducers';
 import { getFormDefinition, getFormData } from '@/reducers/form';
 import { FormDefinition, FormData } from '@/reducers/form';
 import { ActionRequester } from '@/util/actionRequester';
-import {
-  getQuestionnaireUnitExtensionValue,
-  getPresentationButtonsExtension,
-  getNavigatorExtension,
-  getCodingTextTableValues,
-} from '@/util/extension';
-import { getTopLevelElements } from '@/util/getTopLevelElements';
+import { getQuestionnaireUnitExtensionValue, getPresentationButtonsExtension } from '@/util/extension';
 import { IE11HackToWorkAroundBug187484 } from '@/util/hacks';
-import { getComponentForItem, isHiddenItem, getDecimalValue, isRepeat } from '@/util/index';
+import { getDecimalValue } from '@/util/index';
 import { QuestionniareInspector } from '@/util/questionnaireInspector';
-import {
-  getRootQuestionnaireResponseItemFromData,
-  Path,
-  createPathForItem,
-  createIdSuffix,
-  getQuestionnaireDefinitionItem,
-  getResponseItemAndPathWithLinkId,
-} from '@/util/refero-core';
-import { RenderContext } from '@/util/renderContext';
+import { Path, getQuestionnaireDefinitionItem, getResponseItemAndPathWithLinkId } from '@/util/refero-core';
 import { AnswerPad, ScoringCalculator } from '@/util/scoringCalculator';
 import { shouldFormBeDisplayedAsStepView } from '@/util/shouldFormBeDisplayedAsStepView';
 import { createIntitialFormValues } from '@/validation/defaultFormValues';
 import { ExternalRenderProvider } from '@/context/externalRenderContext';
-import { Resources } from '@/util/resources';
 import { setSkjemaDefinition } from '@/actions/form';
+import RenderQuestionnaireItems from './QuestionnaireItems';
 
 const Refero = (props: ReferoProps): JSX.Element | null => {
   IE11HackToWorkAroundBug187484();
@@ -78,7 +56,12 @@ const Refero = (props: ReferoProps): JSX.Element | null => {
   const [scoringCalculator, setScoringCalculator] = React.useState<ScoringCalculator | undefined>(
     questionnaire ? getScoringCalculator(questionnaire) : undefined
   );
-
+  React.useEffect(() => {
+    if (props.questionnaire) {
+      dispatch(setSkjemaDefinition(props.questionnaire, props.questionnaireResponse, props.language, props.syncQuestionnaireResponse));
+      setScoringCalculator(getScoringCalculator(props.questionnaire));
+    }
+  }, []);
   const handleSubmit = (): void => {
     const { onSubmit } = props;
 
@@ -92,13 +75,6 @@ const Refero = (props: ReferoProps): JSX.Element | null => {
       props.onSave(formData.Content);
     }
   };
-
-  React.useEffect(() => {
-    if (props.questionnaire) {
-      dispatch(setSkjemaDefinition(props.questionnaire, props.questionnaireResponse, props.language, props.syncQuestionnaireResponse));
-      setScoringCalculator(getScoringCalculator(props.questionnaire));
-    }
-  }, []);
 
   const onAnswerChange = (
     newState: GlobalState,
@@ -187,71 +163,6 @@ const Refero = (props: ReferoProps): JSX.Element | null => {
     }
   };
 
-  const renderFormItems = (
-    formDefinition: FormDefinition | null,
-    formData: FormData | null,
-    resources?: Resources,
-
-    path?: Path[],
-    pdf?: boolean
-  ): JSX.Element[] | undefined => {
-    if (!formDefinition || !formDefinition.Content || !formDefinition.Content.item) {
-      return undefined;
-    }
-    const contained = formDefinition.Content.contained;
-    const renderedItems: Array<JSX.Element> | undefined = [];
-    const isNavigatorEnabled = !!getNavigatorExtension(formDefinition.Content);
-    let isNavigatorBlindzoneInitiated = false;
-    const questionnaireItemArray: QuestionnaireItem[] | undefined = shouldFormBeDisplayedAsStepView(formDefinition)
-      ? getTopLevelElements(formDefinition)
-      : formDefinition.Content.item;
-
-    questionnaireItemArray?.map(item => {
-      if (isHiddenItem(item)) return [];
-      const Comp = getComponentForItem(item.type, getCodingTextTableValues(item));
-      if (!Comp) return null;
-
-      let responseItems: QuestionnaireResponseItem[] | undefined;
-      if (formData) {
-        responseItems = getRootQuestionnaireResponseItemFromData(item.linkId, formData);
-      }
-      if (responseItems && responseItems.length > 0) {
-        responseItems.forEach((responseItem, index) => {
-          const newPath = createPathForItem(path, item, responseItem, index);
-
-          // legg på blindzone rett over den første seksjonen
-          if (isNavigatorEnabled && item.type === ItemType.GROUP && !isNavigatorBlindzoneInitiated) {
-            isNavigatorBlindzoneInitiated = true;
-            renderedItems.push(<section id={NAVIGATOR_BLINDZONE_ID}></section>);
-          }
-          const renderContext = new RenderContext();
-          renderedItems.push(
-            <Comp
-              {...props}
-              idWithLinkIdAndItemIndex={`${item.linkId}${createIdSuffix(newPath, index, isRepeat(item))}`}
-              language={formDefinition.Content?.language}
-              pdf={pdf}
-              includeSkipLink={isNavigatorEnabled && item.type === ItemType.GROUP}
-              key={`item_${responseItem.linkId}_${index}`}
-              id={'item_' + responseItem.linkId + createIdSuffix(newPath, index, isRepeat(item))}
-              item={item}
-              responseItem={responseItem}
-              resources={resources}
-              containedResources={contained}
-              path={newPath}
-              headerTag={Constants.DEFAULT_HEADER_TAG}
-              index={index}
-              responseItems={responseItems}
-              onAnswerChange={onAnswerChange}
-              renderContext={renderContext}
-            />
-          );
-        });
-      }
-    });
-    return renderedItems;
-  };
-
   const getButtonClasses = (
     presentationButtonsType: PresentationButtonsType | null,
     defaultClasses: string[] = [],
@@ -268,34 +179,7 @@ const Refero = (props: ReferoProps): JSX.Element | null => {
     return classes.join(' ');
   };
 
-  const {
-    resources,
-    authorized,
-    blockSubmit,
-    onSave,
-    onCancel,
-    onSubmit,
-    loginButton,
-    validationSummaryPlacement,
-    submitButtonDisabled,
-    saveButtonDisabled,
-    onFieldsNotCorrectlyFilledOut,
-    onStepChange,
-  } = props;
-
-  const referoProps = {
-    authorized,
-    blockSubmit,
-    onSave,
-    onCancel,
-    onSubmit,
-    loginButton,
-    validationSummaryPlacement,
-    submitButtonDisabled,
-    saveButtonDisabled,
-    onFieldsNotCorrectlyFilledOut,
-    onStepChange,
-  };
+  const { resources, authorized } = props;
 
   if (!resources) {
     return null;
@@ -316,7 +200,9 @@ const Refero = (props: ReferoProps): JSX.Element | null => {
         onStepChange={props.onStepChange}
         promptLoginMessage={props.promptLoginMessage}
       >
-        <FormProvider {...methods}>{renderFormItems(formDefinition, formData, props.resources, [], true)} </FormProvider>
+        <FormProvider {...methods}>
+          <RenderQuestionnaireItems {...props} items={questionnaire?.item} onAnswerChange={onAnswerChange} pdf={true} />
+        </FormProvider>
       </ExternalRenderProvider>
     );
   }
@@ -341,26 +227,24 @@ const Refero = (props: ReferoProps): JSX.Element | null => {
           {isStepView ? (
             <StepView
               isAuthorized={authorized}
-              referoProps={referoProps}
+              referoProps={props}
               resources={resources}
-              formItems={renderFormItems(formDefinition, formData, props.resources, [], false)}
-              formDefinition={formDefinition}
               onSave={handleSave}
               onSubmit={handleSubmit}
               methods={methods}
+              onAnswerChange={onAnswerChange}
             />
           ) : (
             <RenderForm
               isAuthorized={authorized}
               isStepView={false}
-              referoProps={referoProps}
+              referoProps={props}
               resources={resources}
               onSave={handleSave}
               onSubmit={handleSubmit}
               methods={methods}
-              validationSummaryPlacement={validationSummaryPlacement}
             >
-              {renderFormItems(formDefinition, formData, props.resources, [], false)}
+              <RenderQuestionnaireItems {...props} items={questionnaire?.item} onAnswerChange={onAnswerChange} pdf={false} />
             </RenderForm>
           )}
         </FormProvider>

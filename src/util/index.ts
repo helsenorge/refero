@@ -61,10 +61,7 @@ export const isTableCode = (extensionCode: string | string[]): boolean => {
   return isTable;
 };
 
-export function getComponentForItem(
-  type: string,
-  extensionCode?: string | string[]
-): ComponentType<RenderItemProps> | ComponentType<RenderItemProps> | undefined {
+export function getComponentForItem(type: string, extensionCode?: string | string[]): ComponentType<RenderItemProps> | undefined {
   if (String(type) === ItemType.GROUP && !!extensionCode && isTableCode(extensionCode)) {
     return TableContainer;
   } else if (String(type) === ItemType.GROUP) {

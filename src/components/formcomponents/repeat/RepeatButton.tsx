@@ -15,8 +15,8 @@ import { Resources } from '../../../util/resources';
 
 interface Props {
   item: QuestionnaireItem;
-  parentPath?: Array<Path>;
-  responseItems?: Array<QuestionnaireResponseItem>;
+  parentPath?: Path[];
+  responseItems?: QuestionnaireResponseItem[];
   resources?: Resources;
   disabled: boolean;
 }
