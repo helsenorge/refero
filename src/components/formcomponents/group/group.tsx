@@ -8,9 +8,9 @@ import { useState } from 'react';
 import ContextTypeGrid from './ContextTypeGrid';
 import ContextTypeGridRow from './ContextTypeGridRow';
 import DefaultGroup from './DefaultGroup';
-import { RenderItemProps } from '@/components/QuestionnaireItems';
+import { QuestionnaireComponentItemProps } from '@/components/GenerateQuestionnaireComponents';
 
-export type Props = RenderItemProps;
+export type Props = QuestionnaireComponentItemProps;
 
 export const Group = (props: Props): JSX.Element | null => {
   const { pdf, renderContext, path, item } = props;

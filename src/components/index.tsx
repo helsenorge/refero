@@ -25,7 +25,8 @@ import { shouldFormBeDisplayedAsStepView } from '@/util/shouldFormBeDisplayedAsS
 import { createIntitialFormValues } from '@/validation/defaultFormValues';
 import { ExternalRenderProvider } from '@/context/externalRenderContext';
 import { setSkjemaDefinition } from '@/actions/form';
-import RenderQuestionnaireItems from './QuestionnaireItems';
+import { AttachmentProvider } from '@/context/AttachmentContext';
+import QuestionnaireItems, { QuestionnaireItemsProps } from './GenerateQuestionnaireComponents';
 
 const Refero = (props: ReferoProps): JSX.Element | null => {
   IE11HackToWorkAroundBug187484();
@@ -187,7 +188,12 @@ const Refero = (props: ReferoProps): JSX.Element | null => {
   if (!formDefinition || !formDefinition.Content || !resources) {
     return null;
   }
-
+  const qItemProps: QuestionnaireItemsProps = {
+    items: questionnaire?.item,
+    onAnswerChange,
+    autoSuggestProps: props.autoSuggestProps,
+    validateScriptInjection: props.validateScriptInjection,
+  };
   if (props.pdf) {
     return (
       <ExternalRenderProvider
@@ -199,9 +205,10 @@ const Refero = (props: ReferoProps): JSX.Element | null => {
         onFieldsNotCorrectlyFilledOut={props.onFieldsNotCorrectlyFilledOut}
         onStepChange={props.onStepChange}
         promptLoginMessage={props.promptLoginMessage}
+        resources={resources}
       >
         <FormProvider {...methods}>
-          <RenderQuestionnaireItems {...props} items={questionnaire?.item} onAnswerChange={onAnswerChange} pdf={true} />
+          <QuestionnaireItems {...qItemProps} pdf={true} />
         </FormProvider>
       </ExternalRenderProvider>
     );
@@ -222,32 +229,43 @@ const Refero = (props: ReferoProps): JSX.Element | null => {
         onFieldsNotCorrectlyFilledOut={props.onFieldsNotCorrectlyFilledOut}
         onStepChange={props.onStepChange}
         promptLoginMessage={props.promptLoginMessage}
+        resources={resources}
       >
-        <FormProvider {...methods}>
-          {isStepView ? (
-            <StepView
-              isAuthorized={authorized}
-              referoProps={props}
-              resources={resources}
-              onSave={handleSave}
-              onSubmit={handleSubmit}
-              methods={methods}
-              onAnswerChange={onAnswerChange}
-            />
-          ) : (
-            <RenderForm
-              isAuthorized={authorized}
-              isStepView={false}
-              referoProps={props}
-              resources={resources}
-              onSave={handleSave}
-              onSubmit={handleSubmit}
-              methods={methods}
-            >
-              <RenderQuestionnaireItems {...props} items={questionnaire?.item} onAnswerChange={onAnswerChange} pdf={false} />
-            </RenderForm>
-          )}
-        </FormProvider>
+        <AttachmentProvider
+          attachmentErrorMessage={props.attachmentErrorMessage}
+          attachmentMaxFileSize={props.attachmentMaxFileSize}
+          attachmentValidTypes={props.attachmentValidTypes}
+          onDeleteAttachment={props.onDeleteAttachment}
+          onRequestAttachmentLink={props.onRequestAttachmentLink}
+          onOpenAttachment={props.onOpenAttachment}
+          uploadAttachment={props.uploadAttachment}
+        >
+          <FormProvider {...methods}>
+            {isStepView ? (
+              <StepView
+                isAuthorized={authorized}
+                referoProps={props}
+                qItemProps={qItemProps}
+                resources={resources}
+                onSave={handleSave}
+                onSubmit={handleSubmit}
+                methods={methods}
+              />
+            ) : (
+              <RenderForm
+                isAuthorized={authorized}
+                isStepView={false}
+                referoProps={props}
+                resources={resources}
+                onSave={handleSave}
+                onSubmit={handleSubmit}
+                methods={methods}
+              >
+                <QuestionnaireItems {...qItemProps} pdf={false} />
+              </RenderForm>
+            )}
+          </FormProvider>
+        </AttachmentProvider>
       </ExternalRenderProvider>
     </div>
   );

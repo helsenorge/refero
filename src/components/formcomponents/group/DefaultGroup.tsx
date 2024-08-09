@@ -9,12 +9,12 @@ import { Dispatch } from 'react';
 
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
-import { RenderItemProps } from '@/components/QuestionnaireItems';
+import { QuestionnaireComponentItemProps } from '@/components/GenerateQuestionnaireComponents';
 import { useSelector } from 'react-redux';
 import { GlobalState } from '@/reducers';
 import { getFormDefinition } from '@/reducers/form';
 
-type DefaultGroup = RenderItemProps & {
+type DefaultGroup = QuestionnaireComponentItemProps & {
   isHelpVisible: boolean;
   setIsHelpVisible: Dispatch<React.SetStateAction<boolean>>;
 };

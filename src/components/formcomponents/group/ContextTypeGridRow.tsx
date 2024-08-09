@@ -2,10 +2,10 @@ import { QuestionnaireItem } from 'fhir/r4';
 import GroupHeader from './GroupHeader';
 import { RenderContext } from '@/util/renderContext';
 import React, { Dispatch } from 'react';
-import { RenderItemProps } from '@/components/QuestionnaireItems';
-import QuestionnaireItems from '@/components/QuestionnaireItems';
+import { QuestionnaireComponentItemProps } from '@/components/GenerateQuestionnaireComponents';
+import QuestionnaireItems from '@/components/GenerateQuestionnaireComponents';
 
-type ContextTypeGridRowProps = RenderItemProps & {
+type ContextTypeGridRowProps = QuestionnaireComponentItemProps & {
   isHelpVisible: boolean;
   setIsHelpVisible: Dispatch<React.SetStateAction<boolean>>;
 };

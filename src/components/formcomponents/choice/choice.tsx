@@ -26,10 +26,10 @@ import TextView from '../textview';
 import { useDispatch } from 'react-redux';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
 import { useIsEnabled } from '@/hooks/useIsEnabled';
-import { RenderItemProps } from '@/components/QuestionnaireItems';
+import { QuestionnaireComponentItemProps } from '@/components/GenerateQuestionnaireComponents';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 
-export type ChoiceProps = RenderItemProps;
+export type ChoiceProps = QuestionnaireComponentItemProps;
 
 export const Choice = (props: ChoiceProps): JSX.Element | null => {
   const { resources, containedResources, item, onAnswerChange, path, id, pdf, responseItem, children } = props;

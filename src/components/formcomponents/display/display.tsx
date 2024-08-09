@@ -7,12 +7,12 @@ import { renderPrefix, getText, getId } from '@/util/index';
 import SafeText from '@/components/referoLabel/SafeText';
 import { useIsEnabled } from '@/hooks/useIsEnabled';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
-import { RenderItemProps } from '@/components/QuestionnaireItems';
+import { QuestionnaireComponentItemProps } from '@/components/GenerateQuestionnaireComponents';
 import { useSelector } from 'react-redux';
 import { GlobalState } from '@/reducers';
 import { getFormDefinition } from '@/reducers/form';
 
-export type Props = RenderItemProps;
+export type Props = QuestionnaireComponentItemProps;
 
 const Display = ({ id, pdf, item, resources, path }: Props): JSX.Element | null => {
   const { onRenderMarkdown } = useExternalRenderContext();
