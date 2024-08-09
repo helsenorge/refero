@@ -12,7 +12,7 @@ import Pdf from '../textview';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
-import { RenderItemProps } from '../renderChildren/RenderChildrenItems';
+import { RenderItemProps } from '@/components/QuestionnaireItems';
 
 type Props = RenderItemProps & {
   handleStringChange: (event: React.FocusEvent<HTMLInputElement, Element>) => void;

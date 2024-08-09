@@ -5,9 +5,8 @@ import { RenderContext } from '@/util/renderContext';
 import { getColumns } from './helpers';
 
 import { RenderContextType } from '@/constants/renderContextType';
-import { RenderItemProps } from '../renderChildren/RenderChildrenItems';
 import { QuestionnaireItem } from 'fhir/r4';
-import QuestionnaireItems from '@/components/QuestionnaireItems';
+import QuestionnaireItems, { RenderItemProps } from '@/components/QuestionnaireItems';
 
 type ContextTypeGridProps = RenderItemProps;
 type Props = {

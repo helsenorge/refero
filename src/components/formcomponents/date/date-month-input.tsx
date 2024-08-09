@@ -19,7 +19,7 @@ import TextView from '../textview';
 import { getMonthOptions, getYearFromString, validateYearDigits, validateYearMax, validateYearMin } from '@/util/date-utils';
 import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelpButton';
 import RenderHelpElement from '@/components/formcomponents/help-button/RenderHelpElement';
-import { RenderItemProps } from '../renderChildren/RenderChildrenItems';
+import { RenderItemProps } from '@/components/QuestionnaireItems';
 
 type DateMonthProps = RenderItemProps & {
   locale: LanguageLocales.ENGLISH | LanguageLocales.NORWEGIAN;
