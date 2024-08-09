@@ -122,8 +122,6 @@ const Refero = (props: ReferoProps): JSX.Element | null => {
   const qItemProps: QuestionnaireItemsProps = {
     items: questionnaire?.item,
     onAnswerChange,
-    autoSuggestProps: props.autoSuggestProps,
-    validateScriptInjection: props.validateScriptInjection,
   };
   if (props.pdf) {
     return (
@@ -137,6 +135,8 @@ const Refero = (props: ReferoProps): JSX.Element | null => {
         onStepChange={props.onStepChange}
         promptLoginMessage={props.promptLoginMessage}
         resources={resources}
+        autoSuggestProps={props.autoSuggestProps}
+        validateScriptInjection={props.validateScriptInjection}
       >
         <FormProvider {...methods}>
           <GenerateQuestionnaireComponents {...qItemProps} pdf={true} />
@@ -161,6 +161,8 @@ const Refero = (props: ReferoProps): JSX.Element | null => {
         onStepChange={props.onStepChange}
         promptLoginMessage={props.promptLoginMessage}
         resources={resources}
+        autoSuggestProps={props.autoSuggestProps}
+        validateScriptInjection={props.validateScriptInjection}
       >
         <AttachmentProvider
           attachmentErrorMessage={props.attachmentErrorMessage}

@@ -1,3 +1,4 @@
+import { AutoSuggestProps } from '@/types/autoSuggestProps';
 import { OrgenhetHierarki } from '@/types/orgenhetHierarki';
 import { Resources } from '@/util/resources';
 import { QuestionnaireItem, ValueSet } from 'fhir/r4';
@@ -29,7 +30,9 @@ type ExternalRenderType = {
   onFieldsNotCorrectlyFilledOut?: () => void;
   onStepChange?: (newIndex: number) => void;
   promptLoginMessage?: () => void;
-  resources: Resources;
+  resources?: Resources;
+  validateScriptInjection?: boolean;
+  autoSuggestProps?: AutoSuggestProps;
 };
 
 const ExternalRender = createContext<ExternalRenderType | undefined>(undefined);
@@ -61,7 +64,9 @@ export type ExternalRenderProviderProps = {
   onFieldsNotCorrectlyFilledOut?: () => void;
   onStepChange?: (newIndex: number) => void;
   promptLoginMessage?: () => void;
-  resources: Resources;
+  resources?: Resources;
+  validateScriptInjection?: boolean;
+  autoSuggestProps?: AutoSuggestProps;
 };
 export const ExternalRenderProvider = ({
   children,
@@ -74,6 +79,8 @@ export const ExternalRenderProvider = ({
   onStepChange,
   promptLoginMessage,
   resources,
+  autoSuggestProps,
+  validateScriptInjection,
 }: ExternalRenderProviderProps): JSX.Element => {
   return (
     <ExternalRender.Provider
@@ -87,6 +94,8 @@ export const ExternalRenderProvider = ({
         onStepChange,
         promptLoginMessage,
         resources,
+        autoSuggestProps,
+        validateScriptInjection,
       }}
     >
       {children}

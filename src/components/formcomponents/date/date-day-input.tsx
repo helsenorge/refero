@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 import { format, isValid } from 'date-fns';
 import { QuestionnaireResponseItemAnswer } from 'fhir/r4';
@@ -30,7 +30,6 @@ type DateDayInputProps = QuestionnaireComponentItemProps & {
   className?: string;
   maxDate?: Date;
   minDate?: Date;
-  children: React.ReactNode;
 };
 
 export const DateDayInput = ({

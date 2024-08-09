@@ -16,25 +16,39 @@ import RenderHelpElement from '@/components/formcomponents/help-button/RenderHel
 import { useState } from 'react';
 import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelpButton';
 import { QuestionnaireComponentItemProps } from '@/components/GenerateQuestionnaireComponents';
+import { useGetAnswer } from '@/hooks/useGetAnswer';
 
 type Props = QuestionnaireComponentItemProps & {
   label?: string;
   subLabel?: string;
-  children: React.ReactNode;
   onDateValueChange: (newValue: string) => void;
   maxDate?: Date;
   minDate?: Date;
-  answer: QuestionnaireResponseItemAnswer;
 };
 
-export const DateYearInput = (props: Props): JSX.Element => {
-  const { id, pdf, item, resources, label, subLabel, onDateValueChange, maxDate, minDate, answer, idWithLinkIdAndItemIndex, children } =
-    props;
+export const DateYearInput = (props: Props): JSX.Element | null => {
+  const {
+    id,
+    pdf,
+    item,
+    resources,
+    label,
+    responseItem,
+    subLabel,
+    onDateValueChange,
+    maxDate,
+    minDate,
+    idWithLinkIdAndItemIndex,
+    children,
+  } = props;
   const { formState, getFieldState, control } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
+  const answer = useGetAnswer(responseItem, item);
   const { error } = fieldState;
   const [isHelpVisible, setIsHelpVisible] = useState(false);
-  const getYear = (answer: QuestionnaireResponseItemAnswer): (number | undefined)[] | undefined => {
+  const getYear = (
+    answer: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[] | undefined
+  ): (number | undefined)[] | undefined => {
     if (Array.isArray(answer)) {
       return answer.map(m => createDateFromYear(item, m)?.getFullYear());
     }
@@ -63,7 +77,7 @@ export const DateYearInput = (props: Props): JSX.Element => {
     }
   };
 
-  const answerState = answer ? Number(answer.valueDate) : getYear(answer)?.[0];
+  const answerState = answer ? (Array.isArray(answer) ? getYear(answer)?.[0] : Number(answer.valueDate)) : undefined;
 
   if (pdf || isReadOnly(item)) {
     return (
