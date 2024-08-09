@@ -18,7 +18,7 @@ import {
   hasOptions,
   isAboveDropdownThreshold,
 } from '@/util/choice';
-import { isReadOnly, isDataReceiver } from '@/util/index';
+import { isReadOnly } from '@/util/index';
 
 import AutosuggestView from '../choice-common/autosuggest-view';
 import ReceiverComponentWrapper from '../receiver-component/receiver-component-wrapper';
@@ -41,13 +41,15 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
   const getValue = (
     item: QuestionnaireItem,
     answer?: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer
-  ): (string | undefined)[] | undefined => {
+  ): string[] | undefined => {
     if (answer && Array.isArray(answer)) {
-      return answer.map((el: QuestionnaireResponseItemAnswer) => {
-        if (el && el.valueCoding && el.valueCoding.code) {
-          return el.valueCoding.code;
-        }
-      });
+      return answer
+        .map((el: QuestionnaireResponseItemAnswer) => {
+          if (el && el.valueCoding && el.valueCoding.code) {
+            return el.valueCoding.code;
+          }
+        })
+        .filter(x => x !== undefined);
     } else if (answer && !Array.isArray(answer) && answer.valueCoding && answer.valueCoding.code) {
       if (answer.valueCoding?.code === item.initial?.[0]?.valueCoding?.code && answer.valueCoding?.display === undefined) {
         resetInitialAnswer(answer.valueCoding.code);
@@ -56,7 +58,7 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
     }
     const initialSelectedOption = item.answerOption?.filter(x => x.initialSelected);
     if (initialSelectedOption && initialSelectedOption.length > 0) {
-      return [initialSelectedOption[0].valueCoding?.code];
+      return [initialSelectedOption[0].valueCoding?.code].filter(x => x !== undefined);
     }
     if (!item || !item.initial || item.initial.length === 0 || !item.initial[0].valueCoding || !!item.initial[0].valueCoding.code) {
       return undefined;
@@ -64,19 +66,7 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
     return [String(item.initial[0].valueCoding.code)];
   };
 
-  const getDataReceiverValue = (answer: Array<QuestionnaireResponseItemAnswer>): (string | undefined)[] => {
-    return answer.map((el: QuestionnaireResponseItemAnswer) => {
-      if (el && el.valueCoding && el.valueCoding.display) {
-        return el.valueCoding.display;
-      }
-    });
-  };
-
   const getPDFValue = (item: QuestionnaireItem, answer?: QuestionnaireResponseItemAnswer[] | QuestionnaireResponseItemAnswer): string => {
-    if (isDataReceiver(item) && Array.isArray(answer)) {
-      return getDataReceiverValue(answer).join(', ');
-    }
-
     const value = getValue(item, answer);
     if (!value) {
       let text = '';
