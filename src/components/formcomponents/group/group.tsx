@@ -19,10 +19,8 @@ export const Group = (props: Props): JSX.Element | null => {
   if (!enable) {
     return null;
   }
-  const localRenderContextType = getLocalRenderContextType(item);
-  const isLocalRenderContextTypeGrid = localRenderContextType === RenderContextType.Grid;
+  const isLocalRenderContextTypeGrid = getLocalRenderContextType(item) === RenderContextType.Grid;
   const isRenderContextTypeGrid = renderContext.RenderContextType === RenderContextType.Grid;
-
   return (
     <AsPdf pdf={!!pdf}>
       {isLocalRenderContextTypeGrid ? (

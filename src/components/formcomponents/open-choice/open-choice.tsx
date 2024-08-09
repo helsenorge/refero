@@ -39,9 +39,7 @@ import { useIsEnabled } from '@/hooks/useIsEnabled';
 import { RenderItemProps } from '../renderChildren/RenderChildrenItems';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 
-export type OpenChoiceProps = RenderItemProps & {
-  children?: React.ReactNode;
-};
+export type OpenChoiceProps = RenderItemProps;
 
 export const OpenChoice = (props: OpenChoiceProps): JSX.Element | null => {
   const { id, item, pdf, responseItem, containedResources, resources, path, onAnswerChange, children } = props;

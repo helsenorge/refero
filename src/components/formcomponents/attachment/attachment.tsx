@@ -14,7 +14,7 @@ import TextView from '../textview';
 import { useDispatch } from 'react-redux';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
 import { useIsEnabled } from '@/hooks/useIsEnabled';
-import { RenderChildrenItems, RenderItemProps } from '../renderChildren/RenderChildrenItems';
+import { RenderItemProps } from '../renderChildren/RenderChildrenItems';
 
 export type Props = RenderItemProps & {
   children?: React.ReactNode;
@@ -39,6 +39,7 @@ export const AttachmentComponent = (props: Props): JSX.Element | null => {
     attachmentValidTypes,
     attachmentErrorMessage,
     responseItem,
+    children,
   } = props;
 
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
@@ -121,7 +122,7 @@ export const AttachmentComponent = (props: Props): JSX.Element | null => {
   if (pdf || isReadOnly(item)) {
     return (
       <TextView id={id} item={item} value={getPdfValue()}>
-        <RenderChildrenItems {...props} />
+        {children}
       </TextView>
     );
   } else {
@@ -146,9 +147,7 @@ export const AttachmentComponent = (props: Props): JSX.Element | null => {
           attachmentErrorMessage={attachmentErrorMessage}
           idWithLinkIdAndItemIndex={props.idWithLinkIdAndItemIndex}
         />
-        <div className="nested-fieldset nested-fieldset--full-height">
-          <RenderChildrenItems {...props} />
-        </div>
+        <div className="nested-fieldset nested-fieldset--full-height">{children}</div>
       </>
     );
   }

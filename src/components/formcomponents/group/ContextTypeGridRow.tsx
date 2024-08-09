@@ -1,17 +1,17 @@
 import { QuestionnaireItem } from 'fhir/r4';
 import GroupHeader from './GroupHeader';
 import { RenderContext } from '@/util/renderContext';
-import { Dispatch } from 'react';
-import { RenderChildrenItems, RenderItemProps } from '../renderChildren/RenderChildrenItems';
+import React, { Dispatch } from 'react';
+import { RenderItemProps } from '../renderChildren/RenderChildrenItems';
+import QuestionnaireItems from '@/components/QuestionnaireItems';
 
 type ContextTypeGridRowProps = RenderItemProps & {
   isHelpVisible: boolean;
   setIsHelpVisible: Dispatch<React.SetStateAction<boolean>>;
 };
-const ContextTypeGridRow = (props: ContextTypeGridRowProps): JSX.Element => {
-  const { isHelpVisible, setIsHelpVisible, item, resources, renderContext, headerTag } = props;
-
-  renderContext.RenderChildren = (
+const ContextTypeGridRow = ({ isHelpVisible, setIsHelpVisible, ...rest }: ContextTypeGridRowProps): JSX.Element => {
+  const { item, resources, renderContext, headerTag } = rest;
+  const renderChildren = (
     childItems: QuestionnaireItem[],
     itemRenderer: (item: QuestionnaireItem, renderContext: RenderContext) => JSX.Element | null
   ): JSX.Element[] => {
@@ -47,7 +47,8 @@ const ContextTypeGridRow = (props: ContextTypeGridRowProps): JSX.Element => {
           resources={resources}
         />
       </td>
-      {<RenderChildrenItems {...props} />}
+      {item?.item &&
+        renderChildren(item?.item, (childItem, context) => <QuestionnaireItems {...rest} items={[childItem]} renderContext={context} />)}
     </tr>
   );
 };

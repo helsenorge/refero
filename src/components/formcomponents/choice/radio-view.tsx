@@ -16,7 +16,7 @@ import RenderHelpElement from '@/components/formcomponents/help-button/RenderHel
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 
-import { RenderChildrenItems, RenderItemProps } from '../renderChildren/RenderChildrenItems';
+import { RenderItemProps } from '../renderChildren/RenderChildrenItems';
 
 export type Props = RenderItemProps & {
   options?: Array<Options>;
@@ -38,6 +38,7 @@ const RadioView = (props: Props): JSX.Element => {
     path,
     index,
     idWithLinkIdAndItemIndex,
+    children,
   } = props;
   const { formState, getFieldState, control } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
@@ -100,9 +101,7 @@ const RadioView = (props: Props): JSX.Element => {
         className="page_refero__deletebutton--margin-top"
       />
       <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} responseItem={responseItem} responseItems={responseItems} />
-      <div className="nested-fieldset nested-fieldset--full-height">
-        <RenderChildrenItems {...props} />
-      </div>
+      <div className="nested-fieldset nested-fieldset--full-height">{children}</div>
     </div>
   );
 };

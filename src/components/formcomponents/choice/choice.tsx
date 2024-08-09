@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, Coding } from 'fhir/r4';
 import { ThunkDispatch } from 'redux-thunk';
 
@@ -28,15 +26,13 @@ import TextView from '../textview';
 import { useDispatch } from 'react-redux';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
 import { useIsEnabled } from '@/hooks/useIsEnabled';
-import { RenderChildrenItems, RenderItemProps } from '../renderChildren/RenderChildrenItems';
+import { RenderItemProps } from '../renderChildren/RenderChildrenItems';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 
-export type ChoiceProps = RenderItemProps & {
-  children?: React.ReactNode;
-};
+export type ChoiceProps = RenderItemProps;
 
 export const Choice = (props: ChoiceProps): JSX.Element | null => {
-  const { resources, containedResources, item, onAnswerChange, path, id, pdf, responseItem } = props;
+  const { resources, containedResources, item, onAnswerChange, path, id, pdf, responseItem, children } = props;
   const { promptLoginMessage } = useExternalRenderContext();
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
   const answer = useGetAnswer(responseItem, item);
@@ -196,7 +192,7 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
   if (pdf || isReadOnly(item)) {
     return (
       <TextView id={id} item={item} value={getPDFValue(item, answer)}>
-        <RenderChildrenItems {...props} />
+        {children}
       </TextView>
     );
   }
@@ -207,19 +203,27 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
         itemControlValue ? (
           renderComponentBasedOnType()
         ) : aboveDropdownThreshold ? (
-          <DropdownView options={options} handleChange={handleChange} selected={value} {...props} />
+          <DropdownView options={options} handleChange={handleChange} selected={value} {...props}>
+            {children}
+          </DropdownView>
         ) : (
-          <RadioView options={options} handleChange={handleChange} selected={value} {...props} />
+          <RadioView options={options} handleChange={handleChange} selected={value} {...props}>
+            {children}
+          </RadioView>
         )
       ) : shouldRenderAutosuggest ? (
-        <AutosuggestView handleChange={handleChange} clearCodingAnswer={clearCodingAnswer} {...props} />
+        <AutosuggestView handleChange={handleChange} clearCodingAnswer={clearCodingAnswer} {...props}>
+          {children}
+        </AutosuggestView>
       ) : isReceiverComponent ? (
         <ReceiverComponentWrapper
           {...props}
           handleChange={handleChange}
           selected={getValue(props.item, answer)}
           clearCodingAnswer={clearCodingAnswer}
-        />
+        >
+          {children}
+        </ReceiverComponentWrapper>
       ) : null}
     </>
   );
