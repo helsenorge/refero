@@ -17,6 +17,7 @@ import { useState } from 'react';
 import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelpButton';
 import { RenderItemProps } from '../renderChildren/RenderChildrenItems';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
+import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 
 type Props = RenderItemProps & {
   label?: string;
@@ -93,6 +94,15 @@ export const DateYearInput = (props: Props): JSX.Element => {
 
   return (
     <FormGroup error={getErrorText(error)}>
+      <ReferoLabel
+        item={item}
+        resources={resources}
+        htmlFor={`${getId(id)}-input`}
+        labelId={`${getId(id)}-label`}
+        testId={`${getId(id)}-label-test`}
+        sublabelId={`${getId(id)}-sublabel`}
+        afterLabelContent={<RenderHelpButton isHelpVisible={isHelpVisible} item={item} setIsHelpVisible={setIsHelpVisible} />}
+      />
       <RenderHelpElement item={item} isHelpVisible={isHelpVisible} />
       <Controller
         name={idWithLinkIdAndItemIndex}
@@ -118,6 +128,7 @@ export const DateYearInput = (props: Props): JSX.Element => {
         render={({ field: { onChange, ...rest } }): JSX.Element => (
           <Input
             {...rest}
+            inputId={`${getId(id)}-input`}
             type="number"
             testId={getId(id)}
             onChange={e => {
