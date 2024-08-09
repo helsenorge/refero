@@ -8,7 +8,7 @@ import {
 import { RenderContext } from '@/util/renderContext';
 import { getChildHeaderTag, getComponentForItem, isHiddenItem, isRepeat } from '@/util/index';
 import { Resources } from '@/util/resources';
-import { Attachment, QuestionnaireItem, QuestionnaireResponseItem, QuestionnaireResponseItemAnswer, Resource } from 'fhir/r4';
+import { QuestionnaireItem, QuestionnaireResponseItem, QuestionnaireResponseItemAnswer, Resource } from 'fhir/r4';
 import { GlobalState } from '@/reducers';
 import { getCodingTextTableValues, getNavigatorExtension } from '@/util/extension';
 import { FormData, FormDefinition, getFormData, getFormDefinition } from '@/reducers/form';
@@ -17,8 +17,9 @@ import { useSelector } from 'react-redux';
 import { isHelpItem } from '@/util/help';
 import { AutoSuggestProps } from '@/types/autoSuggestProps';
 import constants, { NAVIGATOR_BLINDZONE_ID } from '@/constants';
+import { useExternalRenderContext } from '@/context/externalRenderContext';
 
-export type RenderItemProps = {
+export type QuestionnaireComponentItemProps = {
   resources?: Resources;
   responseItem: QuestionnaireResponseItem;
   containedResources?: Resource[];
@@ -32,13 +33,6 @@ export type RenderItemProps = {
   id?: string;
   validateScriptInjection?: boolean;
   index?: number;
-  attachmentErrorMessage?: string;
-  attachmentMaxFileSize?: number;
-  attachmentValidTypes?: string[];
-  onRequestAttachmentLink?: (file: string) => string;
-  onOpenAttachment?: (fileId: string) => void;
-  onDeleteAttachment?: (fileId: string, onSuccess: () => void) => void;
-  uploadAttachment?: (files: File[], onSuccess: (attachment: Attachment) => void) => void;
   onAnswerChange?: (newState: GlobalState, path: Path[], item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
   renderContext: RenderContext;
   autoSuggestProps?: AutoSuggestProps;
@@ -47,27 +41,20 @@ export type RenderItemProps = {
   children?: React.ReactNode;
 };
 
-type QuestionnaireItemsProps = {
+export type QuestionnaireItemsProps = {
   items: QuestionnaireItem[] | undefined;
   responseItem?: QuestionnaireResponseItem;
-  resources?: Resources;
   path?: Path[];
   pdf?: boolean;
   renderContext?: RenderContext;
   onAnswerChange?: (newState: GlobalState, path: Path[], item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
-  attachmentErrorMessage?: string;
-  attachmentMaxFileSize?: number;
-  attachmentValidTypes?: string[];
-  onRequestAttachmentLink?: (file: string) => string;
-  onOpenAttachment?: (fileId: string) => void;
-  onDeleteAttachment?: (fileId: string, onSuccess: () => void) => void;
-  uploadAttachment?: (files: File[], onSuccess: (attachment: Attachment) => void) => void;
   validateScriptInjection?: boolean;
   autoSuggestProps?: AutoSuggestProps;
 };
 
-const QuestionnaireItems = (props: QuestionnaireItemsProps): JSX.Element | null => {
-  const { items, resources, path = [], pdf = false, renderContext = new RenderContext(), onAnswerChange, responseItem } = props;
+const GenerateQuestionnaireComponents = (props: QuestionnaireItemsProps): JSX.Element | null => {
+  const { items, path = [], pdf = false, renderContext = new RenderContext(), onAnswerChange, responseItem } = props;
+  const { resources } = useExternalRenderContext();
   const formDefinition = useSelector<GlobalState, FormDefinition | null>((state: GlobalState) => getFormDefinition(state));
   const formData = useSelector<GlobalState, FormData | null>((state: GlobalState) => getFormData(state));
   const questionnaire = formDefinition?.Content;
@@ -138,9 +125,8 @@ const QuestionnaireItems = (props: QuestionnaireItemsProps): JSX.Element | null 
                 renderContext={renderContext}
               >
                 {item.item && (
-                  <QuestionnaireItems
+                  <GenerateQuestionnaireComponents
                     items={item.item}
-                    resources={resources}
                     path={newPath}
                     pdf={pdf}
                     onAnswerChange={onAnswerChange}
@@ -157,4 +143,4 @@ const QuestionnaireItems = (props: QuestionnaireItemsProps): JSX.Element | null 
   );
 };
 
-export default QuestionnaireItems;
+export default GenerateQuestionnaireComponents;

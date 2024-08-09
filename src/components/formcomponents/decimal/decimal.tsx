@@ -24,10 +24,10 @@ import RenderHelpElement from '@/components/formcomponents/help-button/RenderHel
 import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelpButton';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
-import { RenderItemProps } from '@/components/QuestionnaireItems';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
+import { QuestionnaireComponentItemProps } from '@/components/GenerateQuestionnaireComponents';
 
-export type Props = RenderItemProps;
+export type Props = QuestionnaireComponentItemProps;
 
 const Decimal = (props: Props): JSX.Element | null => {
   const { id, item, pdf, resources, children, idWithLinkIdAndItemIndex, path, onAnswerChange, responseItems, index, responseItem } = props;

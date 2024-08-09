@@ -1,4 +1,5 @@
 import { OrgenhetHierarki } from '@/types/orgenhetHierarki';
+import { Resources } from '@/util/resources';
 import { QuestionnaireItem, ValueSet } from 'fhir/r4';
 import { createContext, useContext, ReactNode } from 'react';
 
@@ -28,6 +29,7 @@ type ExternalRenderType = {
   onFieldsNotCorrectlyFilledOut?: () => void;
   onStepChange?: (newIndex: number) => void;
   promptLoginMessage?: () => void;
+  resources: Resources;
 };
 
 const ExternalRender = createContext<ExternalRenderType | undefined>(undefined);
@@ -59,6 +61,7 @@ export type ExternalRenderProviderProps = {
   onFieldsNotCorrectlyFilledOut?: () => void;
   onStepChange?: (newIndex: number) => void;
   promptLoginMessage?: () => void;
+  resources: Resources;
 };
 export const ExternalRenderProvider = ({
   children,
@@ -70,6 +73,7 @@ export const ExternalRenderProvider = ({
   onFieldsNotCorrectlyFilledOut,
   onStepChange,
   promptLoginMessage,
+  resources,
 }: ExternalRenderProviderProps): JSX.Element => {
   return (
     <ExternalRender.Provider
@@ -82,6 +86,7 @@ export const ExternalRenderProvider = ({
         onFieldsNotCorrectlyFilledOut,
         onStepChange,
         promptLoginMessage,
+        resources,
       }}
     >
       {children}

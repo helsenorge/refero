@@ -6,9 +6,9 @@ import { getColumns } from './helpers';
 
 import { RenderContextType } from '@/constants/renderContextType';
 import { QuestionnaireItem } from 'fhir/r4';
-import QuestionnaireItems, { RenderItemProps } from '@/components/QuestionnaireItems';
+import QuestionnaireItems, { QuestionnaireComponentItemProps } from '@/components/GenerateQuestionnaireComponents';
 
-type ContextTypeGridProps = RenderItemProps;
+type ContextTypeGridProps = QuestionnaireComponentItemProps;
 type Props = {
   item: QuestionnaireItem;
   columns: string[];

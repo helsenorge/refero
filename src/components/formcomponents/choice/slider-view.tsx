@@ -18,9 +18,9 @@ import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelp
 import RenderHelpElement from '@/components/formcomponents/help-button/RenderHelpElement';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
-import { RenderItemProps } from '@/components/QuestionnaireItems';
+import { QuestionnaireComponentItemProps } from '@/components/GenerateQuestionnaireComponents';
 
-export type SliderProps = RenderItemProps & {
+export type SliderProps = QuestionnaireComponentItemProps & {
   handleChange: (sliderStep: string) => void;
   selected?: Array<string | undefined>;
 };

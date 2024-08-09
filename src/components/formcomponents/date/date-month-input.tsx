@@ -19,9 +19,9 @@ import TextView from '../textview';
 import { getMonthOptions, getYearFromString, validateYearDigits, validateYearMax, validateYearMin } from '@/util/date-utils';
 import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelpButton';
 import RenderHelpElement from '@/components/formcomponents/help-button/RenderHelpElement';
-import { RenderItemProps } from '@/components/QuestionnaireItems';
+import { QuestionnaireComponentItemProps } from '@/components/GenerateQuestionnaireComponents';
 
-type DateMonthProps = RenderItemProps & {
+type DateMonthProps = QuestionnaireComponentItemProps & {
   locale: LanguageLocales.ENGLISH | LanguageLocales.NORWEGIAN;
   label?: string;
   subLabel?: string;

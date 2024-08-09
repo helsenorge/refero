@@ -23,9 +23,9 @@ import { useDispatch } from 'react-redux';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
-import { RenderItemProps } from '@/components/QuestionnaireItems';
+import { QuestionnaireComponentItemProps } from '@/components/GenerateQuestionnaireComponents';
 
-export type DateProps = RenderItemProps & {
+export type DateProps = QuestionnaireComponentItemProps & {
   item: QuestionnaireItem;
   questionnaire?: Questionnaire;
   answer: QuestionnaireResponseItemAnswer;

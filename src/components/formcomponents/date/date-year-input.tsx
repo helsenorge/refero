@@ -15,9 +15,9 @@ import TextView from '../textview';
 import RenderHelpElement from '@/components/formcomponents/help-button/RenderHelpElement';
 import { useState } from 'react';
 import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelpButton';
-import { RenderItemProps } from '@/components/QuestionnaireItems';
+import { QuestionnaireComponentItemProps } from '@/components/GenerateQuestionnaireComponents';
 
-type Props = RenderItemProps & {
+type Props = QuestionnaireComponentItemProps & {
   label?: string;
   subLabel?: string;
   children: React.ReactNode;
