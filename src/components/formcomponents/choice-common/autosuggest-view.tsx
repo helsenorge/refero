@@ -24,7 +24,7 @@ import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 
-import { RenderItemProps } from '../renderChildren/RenderChildrenItems';
+import { RenderItemProps } from '@/components/QuestionnaireItems';
 
 export type AutosuggestProps = RenderItemProps & {
   handleChange: (code?: string, systemArg?: string, displayArg?: string) => void;

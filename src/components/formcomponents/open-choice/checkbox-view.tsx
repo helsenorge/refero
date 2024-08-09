@@ -17,7 +17,7 @@ import RenderHelpElement from '@/components/formcomponents/help-button/RenderHel
 import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelpButton';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
-import { RenderItemProps } from '../renderChildren/RenderChildrenItems';
+import { RenderItemProps } from '@/components/QuestionnaireItems';
 
 type Props = RenderItemProps & {
   options?: Array<Options>;

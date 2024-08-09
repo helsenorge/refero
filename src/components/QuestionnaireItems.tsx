@@ -8,7 +8,7 @@ import {
 import { RenderContext } from '@/util/renderContext';
 import { getChildHeaderTag, getComponentForItem, isHiddenItem, isRepeat } from '@/util/index';
 import { Resources } from '@/util/resources';
-import { Attachment, QuestionnaireItem, QuestionnaireResponseItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
+import { Attachment, QuestionnaireItem, QuestionnaireResponseItem, QuestionnaireResponseItemAnswer, Resource } from 'fhir/r4';
 import { GlobalState } from '@/reducers';
 import { getCodingTextTableValues, getNavigatorExtension } from '@/util/extension';
 import { FormData, FormDefinition, getFormData, getFormDefinition } from '@/reducers/form';
@@ -17,6 +17,35 @@ import { useSelector } from 'react-redux';
 import { isHelpItem } from '@/util/help';
 import { AutoSuggestProps } from '@/types/autoSuggestProps';
 import constants, { NAVIGATOR_BLINDZONE_ID } from '@/constants';
+
+export type RenderItemProps = {
+  resources?: Resources;
+  responseItem: QuestionnaireResponseItem;
+  containedResources?: Resource[];
+  item: QuestionnaireItem;
+  headerTag?: number;
+  pdf?: boolean;
+  language?: string;
+  includeSkipLink?: boolean;
+  blindzone: JSX.Element | null;
+  path?: Path[];
+  id?: string;
+  validateScriptInjection?: boolean;
+  index?: number;
+  attachmentErrorMessage?: string;
+  attachmentMaxFileSize?: number;
+  attachmentValidTypes?: string[];
+  onRequestAttachmentLink?: (file: string) => string;
+  onOpenAttachment?: (fileId: string) => void;
+  onDeleteAttachment?: (fileId: string, onSuccess: () => void) => void;
+  uploadAttachment?: (files: File[], onSuccess: (attachment: Attachment) => void) => void;
+  onAnswerChange?: (newState: GlobalState, path: Path[], item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
+  renderContext: RenderContext;
+  autoSuggestProps?: AutoSuggestProps;
+  responseItems?: QuestionnaireResponseItem[];
+  idWithLinkIdAndItemIndex: string;
+  children?: React.ReactNode;
+};
 
 type QuestionnaireItemsProps = {
   items: QuestionnaireItem[] | undefined;

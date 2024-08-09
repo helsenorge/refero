@@ -7,7 +7,7 @@ import { renderPrefix, getText, getId } from '@/util/index';
 import SafeText from '@/components/referoLabel/SafeText';
 import { useIsEnabled } from '@/hooks/useIsEnabled';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
-import { RenderItemProps } from '../renderChildren/RenderChildrenItems';
+import { RenderItemProps } from '@/components/QuestionnaireItems';
 import { useSelector } from 'react-redux';
 import { GlobalState } from '@/reducers';
 import { getFormDefinition } from '@/reducers/form';

@@ -23,7 +23,7 @@ import { useDispatch } from 'react-redux';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
-import { RenderChildrenItems, RenderItemProps } from '../renderChildren/RenderChildrenItems';
+import { RenderItemProps } from '@/components/QuestionnaireItems';
 
 export type DateProps = RenderItemProps & {
   item: QuestionnaireItem;
@@ -37,7 +37,7 @@ export type DateProps = RenderItemProps & {
 };
 
 const DateComponent = (props: DateProps): JSX.Element => {
-  const { item, questionnaire, answer, resources, language, onAnswerChange, responseItems, responseItem, path, index } = props;
+  const { item, questionnaire, answer, resources, language, onAnswerChange, responseItems, responseItem, path, index, children } = props;
 
   const { onRenderMarkdown, promptLoginMessage } = useExternalRenderContext();
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
@@ -163,9 +163,7 @@ const DateComponent = (props: DateProps): JSX.Element => {
       />
       <RenderRepeatButton path={path.slice(0, -1)} item={item} index={index} responseItem={responseItem} responseItems={responseItems} />
 
-      <div className="nested-fieldset nested-fieldset--full-height">
-        <RenderChildrenItems {...props} />
-      </div>
+      <div className="nested-fieldset nested-fieldset--full-height">{children}</div>
     </div>
   );
 };

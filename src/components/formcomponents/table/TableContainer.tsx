@@ -11,7 +11,7 @@ import { TABLE_CODES_VALUES, TableCodes } from '@/constants/tableTypes';
 import { GlobalState } from '@/reducers';
 import { getFormData, getFormDefinition } from '@/reducers/form';
 import { getCodingTextTableValues } from '@/util/extension';
-import { RenderItemProps } from '../renderChildren/RenderChildrenItems';
+import { RenderItemProps } from '@/components/QuestionnaireItems';
 
 export type Props = RenderItemProps & {
   className?: string;

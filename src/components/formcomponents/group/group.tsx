@@ -8,7 +8,7 @@ import { useState } from 'react';
 import ContextTypeGrid from './ContextTypeGrid';
 import ContextTypeGridRow from './ContextTypeGridRow';
 import DefaultGroup from './DefaultGroup';
-import { RenderItemProps } from '../renderChildren/RenderChildrenItems';
+import { RenderItemProps } from '@/components/QuestionnaireItems';
 
 export type Props = RenderItemProps;
 

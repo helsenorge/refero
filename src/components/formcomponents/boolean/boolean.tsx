@@ -22,7 +22,7 @@ import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelp
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
-import { RenderItemProps } from '../renderChildren/RenderChildrenItems';
+import { RenderItemProps } from '@/components/QuestionnaireItems';
 import { getFormDefinition } from '@/reducers/form';
 
 export type Props = RenderItemProps & {
