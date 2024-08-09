@@ -6,7 +6,7 @@ import { getColumns } from './helpers';
 
 import { RenderContextType } from '@/constants/renderContextType';
 import { QuestionnaireItem } from 'fhir/r4';
-import QuestionnaireItems, { QuestionnaireComponentItemProps } from '@/components/GenerateQuestionnaireComponents';
+import GenerateQuestionnaireComponents, { QuestionnaireComponentItemProps } from '@/components/GenerateQuestionnaireComponents';
 
 type ContextTypeGridProps = QuestionnaireComponentItemProps;
 type Props = {
@@ -32,7 +32,7 @@ const ContextTypeGrid = (props: ContextTypeGridProps): JSX.Element => {
           </tr>
         </thead>
         <tbody>
-          <QuestionnaireItems
+          <GenerateQuestionnaireComponents
             {...props}
             items={item.item}
             renderContext={new RenderContext(RenderContextType.Grid, item.linkId, columns)}
