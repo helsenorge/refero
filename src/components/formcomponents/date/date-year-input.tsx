@@ -17,6 +17,7 @@ import { useState } from 'react';
 import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelpButton';
 import { QuestionnaireComponentItemProps } from '@/components/GenerateQuestionnaireComponents';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
+import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 
 type Props = QuestionnaireComponentItemProps & {
   label?: string;
@@ -51,6 +52,9 @@ export const DateYearInput = (props: Props): JSX.Element | null => {
   ): (number | undefined)[] | undefined => {
     if (Array.isArray(answer)) {
       return answer.map(m => createDateFromYear(item, m)?.getFullYear());
+    } else if (answer) {
+      const year = createDateFromYear(item, answer)?.getFullYear();
+      return [year];
     }
   };
 
@@ -77,7 +81,7 @@ export const DateYearInput = (props: Props): JSX.Element | null => {
     }
   };
 
-  const answerState = answer ? (Array.isArray(answer) ? getYear(answer)?.[0] : Number(answer.valueDate)) : undefined;
+  const answerState = getYear(answer)?.[0];
 
   if (pdf || isReadOnly(item)) {
     return (
@@ -89,6 +93,15 @@ export const DateYearInput = (props: Props): JSX.Element | null => {
 
   return (
     <FormGroup error={getErrorText(error)}>
+      <ReferoLabel
+        item={item}
+        resources={resources}
+        htmlFor={`${getId(id)}-input`}
+        labelId={`${getId(id)}-label`}
+        testId={`${getId(id)}-label-test`}
+        sublabelId={`${getId(id)}-sublabel`}
+        afterLabelContent={<RenderHelpButton isHelpVisible={isHelpVisible} item={item} setIsHelpVisible={setIsHelpVisible} />}
+      />
       <RenderHelpElement item={item} isHelpVisible={isHelpVisible} />
       <Controller
         name={idWithLinkIdAndItemIndex}
@@ -114,6 +127,7 @@ export const DateYearInput = (props: Props): JSX.Element | null => {
         render={({ field: { onChange, ...rest } }): JSX.Element => (
           <Input
             {...rest}
+            inputId={`${getId(id)}-input`}
             type="number"
             testId={getId(id)}
             onChange={e => {

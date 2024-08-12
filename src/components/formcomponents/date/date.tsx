@@ -76,7 +76,7 @@ const DateComponent = (props: DateProps): JSX.Element | null => {
   };
 
   const onDateValueChange = (newValue: string): void => {
-    const existingAnswer = Array.isArray(answer) ? answer.join(', ') : answer?.valueDate || '';
+    const existingAnswer = Array.isArray(answer) ? answer[0].valueDate : answer?.valueDate || '';
     if (dispatch && newValue !== existingAnswer && path) {
       dispatch(newDateValueAsync(path, newValue, item))?.then(
         newState => onAnswerChange && onAnswerChange(newState, path, item, { valueDate: newValue } as QuestionnaireResponseItemAnswer)

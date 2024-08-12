@@ -37,42 +37,42 @@ describe('Hidden components should not render', () => {
     expect(queryByLabelText('1')).not.toBeInTheDocument();
   });
 
-  it.skip('unhidden date renders', () => {
+  it('unhidden date renders', () => {
     const q = createQuestionnaire(createItem(ItemType.DATE, createQuestionnaireHiddenExtension(false)));
     const { queryByLabelText } = createWrapper(q);
 
     expect(queryByLabelText('1')).toBeInTheDocument();
   });
 
-  it.skip('hidden date does not render', () => {
+  it('hidden date does not render', () => {
     const q = createQuestionnaire(createItem(ItemType.DATE, createQuestionnaireHiddenExtension(true)));
     const { queryByLabelText } = createWrapper(q);
 
     expect(queryByLabelText('1')).not.toBeInTheDocument();
   });
 
-  it.skip('unhidden time renders', () => {
+  it('unhidden time renders', () => {
     const q = createQuestionnaire(createItem(ItemType.TIME, createQuestionnaireHiddenExtension(false)));
     const { queryByLabelText } = createWrapper(q);
 
     expect(queryByLabelText('1')).toBeInTheDocument();
   });
 
-  it.skip('hidden time does not render', () => {
+  it('hidden time does not render', () => {
     const q = createQuestionnaire(createItem(ItemType.TIME, createQuestionnaireHiddenExtension(true)));
     const { queryByLabelText } = createWrapper(q);
 
     expect(queryByLabelText('1')).not.toBeInTheDocument();
   });
 
-  it.skip('unhidden dateTime renders', () => {
+  it('unhidden dateTime renders', () => {
     const q = createQuestionnaire(createItem(ItemType.DATETIME, createQuestionnaireHiddenExtension(false)));
     const { queryByLabelText } = createWrapper(q);
 
     expect(queryByLabelText('1')).toBeInTheDocument();
   });
 
-  it.skip('hidden dateTime does not render', () => {
+  it('hidden dateTime does not render', () => {
     const q = createQuestionnaire(createItem(ItemType.DATETIME, createQuestionnaireHiddenExtension(true)));
     const { queryByLabelText } = createWrapper(q);
 

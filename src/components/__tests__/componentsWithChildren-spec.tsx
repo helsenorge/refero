@@ -26,7 +26,7 @@ describe('Components render children', () => {
     expect(secondChild).toBeInTheDocument();
   });
 
-  it.skip('date with children renders', () => {
+  it('date with children renders', () => {
     const q = createQuestionnaire(creatNestedItem(itemType.DATE));
     const { queryByLabelText } = createWrapper(q);
     const firstChild = queryByLabelText('2');
@@ -35,7 +35,7 @@ describe('Components render children', () => {
     expect(secondChild).toBeInTheDocument();
   });
 
-  it.skip('time with children renders', () => {
+  it('time with children renders', () => {
     const q = createQuestionnaire(creatNestedItem(itemType.TIME));
     const { queryByLabelText } = createWrapper(q);
     const firstChild = queryByLabelText('2');
@@ -44,7 +44,7 @@ describe('Components render children', () => {
     expect(secondChild).toBeInTheDocument();
   });
 
-  it.skip('dateTime with children renders', () => {
+  it('dateTime with children renders', () => {
     const q = createQuestionnaire(creatNestedItem(itemType.DATETIME));
     const { queryByLabelText } = createWrapper(q);
     const firstChild = queryByLabelText('2');
