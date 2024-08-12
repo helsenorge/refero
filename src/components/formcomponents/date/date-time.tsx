@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 import { format, parseISO } from 'date-fns';
 import { isValid } from 'date-fns';
-import { QuestionnaireItem, QuestionnaireResponseItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { FieldError, FieldValues, useFormContext } from 'react-hook-form';
 import { ThunkDispatch } from 'redux-thunk';
 
@@ -29,32 +29,25 @@ import {
 import { getValidationTextExtension, getExtension } from '../../../util/extension';
 import { evaluateFhirpathExpressionToGetDate } from '../../../util/fhirpathHelper';
 import { isRequired, getId, isReadOnly } from '../../../util/index';
-import { Path } from '../../../util/refero-core';
-import { Resources } from '../../../util/resources';
 import TextView from '../textview';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { useDispatch } from 'react-redux';
 import RenderHelpButton from '../help-button/RenderHelpButton';
 import RenderHelpElement from '../help-button/RenderHelpElement';
-import { RenderItemProps } from '../renderChildren/RenderChildrenItems';
+import { QuestionnaireComponentItemProps } from '@/components/GenerateQuestionnaireComponents';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
-export type Props = RenderItemProps & {
-  item: QuestionnaireItem;
-  responseItem: QuestionnaireResponseItem;
-  resources?: Resources;
-  repeatButton: JSX.Element;
-  onAnswerChange: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
-};
+import { useExternalRenderContext } from '@/context/externalRenderContext';
 
-const DateTimeInput: React.FC<Props> = ({
+export type Props = QuestionnaireComponentItemProps;
+
+const DateTimeInput = ({
   item,
   resources,
   path,
   pdf,
-  promptLoginMessage,
   id,
   onAnswerChange,
   idWithLinkIdAndItemIndex,
@@ -62,7 +55,8 @@ const DateTimeInput: React.FC<Props> = ({
   responseItem,
   index,
   responseItems,
-}) => {
+}: Props): JSX.Element | null => {
+  const { promptLoginMessage } = useExternalRenderContext();
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
   const answer = useGetAnswer(responseItem, item);
   const [isHelpVisible, setIsHelpVisible] = useState(false);

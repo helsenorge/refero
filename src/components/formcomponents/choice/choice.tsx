@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, Coding } from 'fhir/r4';
 import { ThunkDispatch } from 'redux-thunk';
 
@@ -20,7 +18,7 @@ import {
   hasOptions,
   isAboveDropdownThreshold,
 } from '@/util/choice';
-import { isReadOnly, isDataReceiver } from '@/util/index';
+import { isReadOnly } from '@/util/index';
 
 import AutosuggestView from '../choice-common/autosuggest-view';
 import ReceiverComponentWrapper from '../receiver-component/receiver-component-wrapper';
@@ -28,14 +26,14 @@ import TextView from '../textview';
 import { useDispatch } from 'react-redux';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
 import { useIsEnabled } from '@/hooks/useIsEnabled';
-import { RenderChildrenItems, RenderItemProps } from '../renderChildren/RenderChildrenItems';
+import { QuestionnaireComponentItemProps } from '@/components/GenerateQuestionnaireComponents';
+import { useExternalRenderContext } from '@/context/externalRenderContext';
 
-export type ChoiceProps = RenderItemProps & {
-  children?: React.ReactNode;
-};
+export type ChoiceProps = QuestionnaireComponentItemProps;
 
 export const Choice = (props: ChoiceProps): JSX.Element | null => {
-  const { resources, containedResources, promptLoginMessage, item, onAnswerChange, path, id, pdf, responseItem } = props;
+  const { resources, containedResources, item, onAnswerChange, path, id, pdf, responseItem, children } = props;
+  const { promptLoginMessage } = useExternalRenderContext();
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
   const answer = useGetAnswer(responseItem, item);
   const enable = useIsEnabled(item, path);
@@ -43,13 +41,15 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
   const getValue = (
     item: QuestionnaireItem,
     answer?: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer
-  ): (string | undefined)[] | undefined => {
+  ): string[] | undefined => {
     if (answer && Array.isArray(answer)) {
-      return answer.map((el: QuestionnaireResponseItemAnswer) => {
-        if (el && el.valueCoding && el.valueCoding.code) {
-          return el.valueCoding.code;
-        }
-      });
+      return answer
+        .map((el: QuestionnaireResponseItemAnswer) => {
+          if (el && el.valueCoding && el.valueCoding.code) {
+            return el.valueCoding.code;
+          }
+        })
+        .filter(x => x !== undefined);
     } else if (answer && !Array.isArray(answer) && answer.valueCoding && answer.valueCoding.code) {
       if (answer.valueCoding?.code === item.initial?.[0]?.valueCoding?.code && answer.valueCoding?.display === undefined) {
         resetInitialAnswer(answer.valueCoding.code);
@@ -58,7 +58,7 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
     }
     const initialSelectedOption = item.answerOption?.filter(x => x.initialSelected);
     if (initialSelectedOption && initialSelectedOption.length > 0) {
-      return [initialSelectedOption[0].valueCoding?.code];
+      return [initialSelectedOption[0].valueCoding?.code].filter(x => x !== undefined);
     }
     if (!item || !item.initial || item.initial.length === 0 || !item.initial[0].valueCoding || !!item.initial[0].valueCoding.code) {
       return undefined;
@@ -66,19 +66,7 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
     return [String(item.initial[0].valueCoding.code)];
   };
 
-  const getDataReceiverValue = (answer: Array<QuestionnaireResponseItemAnswer>): (string | undefined)[] => {
-    return answer.map((el: QuestionnaireResponseItemAnswer) => {
-      if (el && el.valueCoding && el.valueCoding.display) {
-        return el.valueCoding.display;
-      }
-    });
-  };
-
   const getPDFValue = (item: QuestionnaireItem, answer?: QuestionnaireResponseItemAnswer[] | QuestionnaireResponseItemAnswer): string => {
-    if (isDataReceiver(item) && Array.isArray(answer)) {
-      return getDataReceiverValue(answer).join(', ');
-    }
-
     const value = getValue(item, answer);
     if (!value) {
       let text = '';
@@ -194,7 +182,7 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
   if (pdf || isReadOnly(item)) {
     return (
       <TextView id={id} item={item} value={getPDFValue(item, answer)}>
-        <RenderChildrenItems otherProps={props} />
+        {children}
       </TextView>
     );
   }
@@ -205,19 +193,27 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
         itemControlValue ? (
           renderComponentBasedOnType()
         ) : aboveDropdownThreshold ? (
-          <DropdownView options={options} handleChange={handleChange} selected={value} {...props} />
+          <DropdownView options={options} handleChange={handleChange} selected={value} {...props}>
+            {children}
+          </DropdownView>
         ) : (
-          <RadioView options={options} handleChange={handleChange} selected={value} {...props} />
+          <RadioView options={options} handleChange={handleChange} selected={value} {...props}>
+            {children}
+          </RadioView>
         )
       ) : shouldRenderAutosuggest ? (
-        <AutosuggestView handleChange={handleChange} clearCodingAnswer={clearCodingAnswer} {...props} />
+        <AutosuggestView handleChange={handleChange} clearCodingAnswer={clearCodingAnswer} {...props}>
+          {children}
+        </AutosuggestView>
       ) : isReceiverComponent ? (
         <ReceiverComponentWrapper
           {...props}
           handleChange={handleChange}
           selected={getValue(props.item, answer)}
           clearCodingAnswer={clearCodingAnswer}
-        />
+        >
+          {children}
+        </ReceiverComponentWrapper>
       ) : null}
     </>
   );

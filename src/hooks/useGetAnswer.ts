@@ -5,27 +5,21 @@ import { FormData, getFormData } from '@/reducers/form';
 import { getCalculatedExpressionExtension, getCopyExtension } from '@/util/extension';
 import { evaluateFhirpathExpressionToGetString } from '@/util/fhirpathHelper';
 import { getAnswerFromResponseItem } from '@/util/refero-core';
-import { QuestionnaireItem, QuestionnaireResponseItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
+import { Extension, QuestionnaireItem, QuestionnaireResponseItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { useSelector } from 'react-redux';
 
-export function getAnswerIfDataReceiver(
+function getAnswerIfDataReceiver(
   formData: FormData | null,
-  item?: QuestionnaireItem
+  item: QuestionnaireItem,
+  extension: Extension
 ): QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[] | undefined {
-  if (item) {
-    const extension = getCopyExtension(item);
-    if (extension) {
-      let result = evaluateFhirpathExpressionToGetString(extension, formData?.Content);
+  let result = evaluateFhirpathExpressionToGetString(extension, formData?.Content);
 
-      if (getCalculatedExpressionExtension(item)) {
-        result = result.map((m: any) => m.value as number);
-      }
-
-      return getQuestionnaireResponseItemAnswer(item.type, result);
-    }
-    return undefined;
+  if (getCalculatedExpressionExtension(item)) {
+    result = result.map((m: any) => m.value as number);
   }
-  return undefined;
+
+  return getQuestionnaireResponseItemAnswer(item.type, result);
 }
 
 function getQuestionnaireResponseItemAnswer(
@@ -69,5 +63,6 @@ export const useGetAnswer = (
   item?: QuestionnaireItem
 ): QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[] | undefined => {
   const formData = useSelector<GlobalState, FormData | null>(state => getFormData(state));
-  return getAnswerIfDataReceiver(formData, item) ?? getAnswerFromResponseItem(responseItem);
+  const dataRecieverExtension = item && getCopyExtension(item);
+  return dataRecieverExtension ? getAnswerIfDataReceiver(formData, item, dataRecieverExtension) : getAnswerFromResponseItem(responseItem);
 };

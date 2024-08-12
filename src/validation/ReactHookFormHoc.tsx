@@ -2,7 +2,7 @@ import React from 'react';
 
 import { FieldError, FieldValues, UseFormReturn, useFormContext } from 'react-hook-form';
 
-import { RenderItemProps } from '@/components/formcomponents/renderChildren/RenderChildrenItems';
+import { QuestionnaireComponentItemProps } from '@/components/formcomponents/renderChildren/RenderChildrenItems';
 
 export type FormProps = Omit<UseFormReturn<FieldValues, unknown, undefined>, 'getFieldState'> & {
   invalid: boolean;
@@ -12,7 +12,9 @@ export type FormProps = Omit<UseFormReturn<FieldValues, unknown, undefined>, 'ge
   error?: FieldError | undefined;
 };
 
-function withReactHookFormHoc<T extends RenderItemProps>(WrappedComponent: React.ComponentType<T & FormProps>): React.ComponentType<T> {
+function withReactHookFormHoc<T extends QuestionnaireComponentItemProps>(
+  WrappedComponent: React.ComponentType<T & FormProps>
+): React.ComponentType<T> {
   const EnhancedComponent: React.FC<T> = props => {
     const { formState, getFieldState, control, register, ...rest } = useFormContext<FieldValues>();
     const fieldState = getFieldState(props.idWithLinkIdAndItemIndex || '', formState) || {

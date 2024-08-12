@@ -1,4 +1,4 @@
-import { FocusEvent } from 'react';
+import React, { FocusEvent } from 'react';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, Coding } from 'fhir/r4';
 import { ThunkDispatch } from 'redux-thunk';
@@ -36,18 +36,17 @@ import TextView from '../textview';
 import { useDispatch } from 'react-redux';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
 import { useIsEnabled } from '@/hooks/useIsEnabled';
-import { RenderChildrenItems, RenderItemProps } from '../renderChildren/RenderChildrenItems';
+import { QuestionnaireComponentItemProps } from '@/components/GenerateQuestionnaireComponents';
+import { useExternalRenderContext } from '@/context/externalRenderContext';
 
-export type Props = RenderItemProps & {
-  children: JSX.Element;
-};
+export type OpenChoiceProps = QuestionnaireComponentItemProps;
 
-export const OpenChoice = (props: Props): JSX.Element | null => {
-  const { id, item, pdf, responseItem, containedResources, resources, promptLoginMessage, path, onAnswerChange } = props;
+export const OpenChoice = (props: OpenChoiceProps): JSX.Element | null => {
+  const { id, item, pdf, responseItem, containedResources, resources, path, onAnswerChange, children } = props;
+  const { promptLoginMessage } = useExternalRenderContext();
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
   const answer = useGetAnswer(responseItem, item);
   const enable = useIsEnabled(item, path);
-
   const getDataReceiverValue = (answer: QuestionnaireResponseItemAnswer[]): string[] | undefined => {
     return answer
       .filter(f => f.valueCoding?.code !== OPEN_CHOICE_ID)
@@ -283,7 +282,7 @@ export const OpenChoice = (props: Props): JSX.Element | null => {
   if (pdf || isReadOnly(item)) {
     return (
       <TextView id={id} item={item} value={getPDFValue(item, answer)}>
-        <RenderChildrenItems otherProps={props} />
+        {children}
       </TextView>
     );
   }

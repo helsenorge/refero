@@ -36,7 +36,7 @@ export function getPresentationButtonsExtension(questionniare: Questionnaire): P
   return null;
 }
 
-export function getNavigatorExtension(questionniare: Questionnaire): Array<Coding> | undefined {
+export function getNavigatorExtension(questionniare: Questionnaire): Coding[] | undefined {
   const navigatorExtension = getExtension(Extensions.NAVIGATOR_URL, questionniare);
   return navigatorExtension?.valueCodeableConcept?.coding;
 }
@@ -44,9 +44,9 @@ export function getNavigatorExtension(questionniare: Questionnaire): Array<Codin
 export function getSidebarSections(
   questionniare: Questionnaire,
   onRenderMarkdown?: (item: QuestionnaireItem, markup: string) => string
-): Array<SidebarItem> {
-  const items: Array<SidebarItem> = [];
-  const getSidebarItems = (currentItem: QuestionnaireItem, currentItems: Array<SidebarItem>): void => {
+): SidebarItem[] {
+  const items: SidebarItem[] = [];
+  const getSidebarItems = (currentItem: QuestionnaireItem, currentItems: SidebarItem[]): void => {
     const itemControls = getItemControlExtensionValue(currentItem);
     if (
       currentItem.type === itemType.TEXT &&

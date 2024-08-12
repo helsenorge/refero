@@ -1,4 +1,6 @@
+import { AutoSuggestProps } from '@/types/autoSuggestProps';
 import { OrgenhetHierarki } from '@/types/orgenhetHierarki';
+import { Resources } from '@/util/resources';
 import { QuestionnaireItem, ValueSet } from 'fhir/r4';
 import { createContext, useContext, ReactNode } from 'react';
 
@@ -25,6 +27,12 @@ type ExternalRenderType = {
     errorCallback: (error: string) => void
   ) => void;
   fetchReceivers?: (successCallback: (receivers: OrgenhetHierarki[]) => void, errorCallback: () => void) => void;
+  onFieldsNotCorrectlyFilledOut?: () => void;
+  onStepChange?: (newIndex: number) => void;
+  promptLoginMessage?: () => void;
+  resources?: Resources;
+  validateScriptInjection?: boolean;
+  autoSuggestProps?: AutoSuggestProps;
 };
 
 const ExternalRender = createContext<ExternalRenderType | undefined>(undefined);
@@ -53,6 +61,12 @@ export type ExternalRenderProviderProps = {
     errorCallback: (error: string) => void
   ) => void;
   fetchReceivers?: (successCallback: (receivers: OrgenhetHierarki[]) => void, errorCallback: () => void) => void;
+  onFieldsNotCorrectlyFilledOut?: () => void;
+  onStepChange?: (newIndex: number) => void;
+  promptLoginMessage?: () => void;
+  resources?: Resources;
+  validateScriptInjection?: boolean;
+  autoSuggestProps?: AutoSuggestProps;
 };
 export const ExternalRenderProvider = ({
   children,
@@ -61,9 +75,29 @@ export const ExternalRenderProvider = ({
   onRenderMarkdown,
   fetchValueSet,
   fetchReceivers,
+  onFieldsNotCorrectlyFilledOut,
+  onStepChange,
+  promptLoginMessage,
+  resources,
+  autoSuggestProps,
+  validateScriptInjection,
 }: ExternalRenderProviderProps): JSX.Element => {
   return (
-    <ExternalRender.Provider value={{ onRequestHelpElement, onRequestHelpButton, onRenderMarkdown, fetchValueSet, fetchReceivers }}>
+    <ExternalRender.Provider
+      value={{
+        onRequestHelpElement,
+        onRequestHelpButton,
+        onRenderMarkdown,
+        fetchValueSet,
+        fetchReceivers,
+        onFieldsNotCorrectlyFilledOut,
+        onStepChange,
+        promptLoginMessage,
+        resources,
+        autoSuggestProps,
+        validateScriptInjection,
+      }}
+    >
       {children}
     </ExternalRender.Provider>
   );

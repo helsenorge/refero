@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { parseISO } from 'date-fns';
 import { QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { ThunkDispatch } from 'redux-thunk';
@@ -21,21 +19,17 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
-import { RenderChildrenItems, RenderItemProps } from '../renderChildren/RenderChildrenItems';
-import { getFormDefinition } from '@/reducers/form';
+import { QuestionnaireComponentItemProps } from '@/components/GenerateQuestionnaireComponents';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
+import { FormDefinition, getFormDefinition } from '@/reducers/form';
 
-export type DateProps = RenderItemProps & {
-  children?: React.ReactNode;
-};
+export type DateProps = QuestionnaireComponentItemProps;
 
-const DateComponent = (props: DateProps): JSX.Element => {
-  const { item, resources, language, promptLoginMessage, children, onAnswerChange, responseItems, responseItem, path, index } = props;
-  const formDefinition = useSelector((state: GlobalState) => getFormDefinition(state));
-  const questionnaire = formDefinition?.Content;
+const DateComponent = (props: DateProps): JSX.Element | null => {
+  const { item, resources, language, onAnswerChange, responseItems, responseItem, path, index, children } = props;
   const answer = useGetAnswer(responseItem, item);
-
-  const { onRenderMarkdown } = useExternalRenderContext();
+  const questionnaire = useSelector<GlobalState, FormDefinition | undefined | null>(state => getFormDefinition(state))?.Content;
+  const { onRenderMarkdown, promptLoginMessage } = useExternalRenderContext();
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
   const getMaxDate = (): Date | undefined => {
     const maxDate = getExtension(Extensions.DATE_MAX_VALUE_URL, item);
@@ -159,11 +153,7 @@ const DateComponent = (props: DateProps): JSX.Element => {
       />
       <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} responseItem={responseItem} responseItems={responseItems} />
 
-      {children ? (
-        <div className="nested-fieldset nested-fieldset--full-height">
-          <RenderChildrenItems otherProps={props} />
-        </div>
-      ) : null}
+      <div className="nested-fieldset nested-fieldset--full-height">{children}</div>
     </div>
   );
 };

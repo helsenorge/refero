@@ -22,28 +22,15 @@ import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelp
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
-import { RenderChildrenItems, RenderItemProps } from '../renderChildren/RenderChildrenItems';
+import { QuestionnaireComponentItemProps } from '@/components/GenerateQuestionnaireComponents';
 import { getFormDefinition } from '@/reducers/form';
 
-export type Props = RenderItemProps & {
+export type Props = QuestionnaireComponentItemProps & {
   children?: React.ReactNode;
 };
 
 const Boolean = (props: Props): JSX.Element | null => {
-  const {
-    item,
-    promptLoginMessage,
-    onAnswerChange,
-    path,
-    pdf,
-    id,
-    resources,
-    responseItems,
-    index,
-    children,
-    idWithLinkIdAndItemIndex,
-    responseItem,
-  } = props;
+  const { item, onAnswerChange, path, pdf, id, resources, responseItems, index, idWithLinkIdAndItemIndex, responseItem, children } = props;
   const formDefinition = useSelector((state: GlobalState) => getFormDefinition(state));
   const questionnaire = formDefinition?.Content;
 
@@ -52,7 +39,7 @@ const Boolean = (props: Props): JSX.Element | null => {
   const { error } = fieldState;
 
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
-  const { onRenderMarkdown } = useExternalRenderContext();
+  const { onRenderMarkdown, promptLoginMessage } = useExternalRenderContext();
   const enable = useIsEnabled(item, path);
   const [isHelpVisible, setIsHelpVisible] = useState(false);
   const answer = useGetAnswer(responseItem, item);
@@ -168,9 +155,7 @@ const Boolean = (props: Props): JSX.Element | null => {
       />
       <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} responseItem={responseItem} responseItems={responseItems} />
 
-      <div className="nested-fieldset nested-fieldset--full-height">
-        <RenderChildrenItems otherProps={props} />
-      </div>
+      <div className="nested-fieldset nested-fieldset--full-height">{children}</div>
     </div>
   );
 };

@@ -15,37 +15,36 @@ import TextView from '../textview';
 import RenderHelpElement from '@/components/formcomponents/help-button/RenderHelpElement';
 import { useState } from 'react';
 import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelpButton';
-import { RenderItemProps } from '../renderChildren/RenderChildrenItems';
+import { QuestionnaireComponentItemProps } from '@/components/GenerateQuestionnaireComponents';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 
-type Props = RenderItemProps & {
+type Props = QuestionnaireComponentItemProps & {
   label?: string;
   subLabel?: string;
-  children?: React.ReactNode;
   onDateValueChange: (newValue: string) => void;
   maxDate?: Date;
   minDate?: Date;
 };
 
-export const DateYearInput = (props: Props): JSX.Element => {
+export const DateYearInput = (props: Props): JSX.Element | null => {
   const {
     id,
     pdf,
     item,
     resources,
     label,
+    responseItem,
     subLabel,
     onDateValueChange,
     maxDate,
     minDate,
     idWithLinkIdAndItemIndex,
-    responseItem,
     children,
   } = props;
-  const answer = useGetAnswer(responseItem, item);
   const { formState, getFieldState, control } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
+  const answer = useGetAnswer(responseItem, item);
   const { error } = fieldState;
   const [isHelpVisible, setIsHelpVisible] = useState(false);
   const getYear = (

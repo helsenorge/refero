@@ -8,9 +8,9 @@ import { useState } from 'react';
 import ContextTypeGrid from './ContextTypeGrid';
 import ContextTypeGridRow from './ContextTypeGridRow';
 import DefaultGroup from './DefaultGroup';
-import { RenderItemProps } from '../renderChildren/RenderChildrenItems';
+import { QuestionnaireComponentItemProps } from '@/components/GenerateQuestionnaireComponents';
 
-export type Props = RenderItemProps;
+export type Props = QuestionnaireComponentItemProps;
 
 export const Group = (props: Props): JSX.Element | null => {
   const { pdf, renderContext, path, item } = props;
@@ -19,10 +19,8 @@ export const Group = (props: Props): JSX.Element | null => {
   if (!enable) {
     return null;
   }
-  const localRenderContextType = getLocalRenderContextType(item);
-  const isLocalRenderContextTypeGrid = localRenderContextType === RenderContextType.Grid;
+  const isLocalRenderContextTypeGrid = getLocalRenderContextType(item) === RenderContextType.Grid;
   const isRenderContextTypeGrid = renderContext.RenderContextType === RenderContextType.Grid;
-
   return (
     <AsPdf pdf={!!pdf}>
       {isLocalRenderContextTypeGrid ? (
@@ -31,10 +29,10 @@ export const Group = (props: Props): JSX.Element | null => {
         isDirectChildOfRenderContextOwner(path || [], item, renderContext) ? (
           <ContextTypeGridRow {...props} isHelpVisible={isHelpVisible} setIsHelpVisible={setIsHelpVisible} />
         ) : (
-          <DefaultGroup componentProps={props} isHelpVisible={isHelpVisible} setIsHelpVisible={setIsHelpVisible} />
+          <DefaultGroup {...props} isHelpVisible={isHelpVisible} setIsHelpVisible={setIsHelpVisible} />
         )
       ) : (
-        <DefaultGroup componentProps={props} isHelpVisible={isHelpVisible} setIsHelpVisible={setIsHelpVisible} />
+        <DefaultGroup {...props} isHelpVisible={isHelpVisible} setIsHelpVisible={setIsHelpVisible} />
       )}
     </AsPdf>
   );

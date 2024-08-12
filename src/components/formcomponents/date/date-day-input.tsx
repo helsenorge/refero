@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 import { format, isValid } from 'date-fns';
 import { QuestionnaireResponseItemAnswer } from 'fhir/r4';
@@ -16,12 +16,12 @@ import TextView from '../textview';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { formatDateToStringDDMMYYYY, parseStringToDateDDMMYYYY, validateDate, validateMaxDate, validateMinDate } from '@/util/date-utils';
-import { RenderItemProps } from '../renderChildren/RenderChildrenItems';
+import { QuestionnaireComponentItemProps } from '@/components/GenerateQuestionnaireComponents';
 import RenderHelpButton from '../help-button/RenderHelpButton';
 import RenderHelpElement from '../help-button/RenderHelpElement';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
 
-type DateDayInputProps = RenderItemProps & {
+type DateDayInputProps = QuestionnaireComponentItemProps & {
   locale: LanguageLocales.ENGLISH | LanguageLocales.NORWEGIAN;
   label?: string;
   subLabel?: string;
@@ -30,7 +30,6 @@ type DateDayInputProps = RenderItemProps & {
   className?: string;
   maxDate?: Date;
   minDate?: Date;
-  children?: React.ReactNode;
 };
 
 export const DateDayInput = ({

@@ -17,8 +17,7 @@ describe('Group component renders with correct classes', () => {
     const id = 'table';
     const extension = createItemControlExtension(id);
     const item = createItemWithExtensions('group', id, extension);
-    const { container, debug } = createWrapperForGroupItem(item);
-    debug();
+    const { container } = createWrapperForGroupItem(item);
     expectToFindClasses(container, id, ...defaultClasses, '.page_refero__itemControl_table');
   });
 

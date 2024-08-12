@@ -1,4 +1,4 @@
-import { ReactNode, useState } from 'react';
+import { useState } from 'react';
 
 import { QuestionnaireResponseItemAnswer, Quantity as QuantityType } from 'fhir/r4';
 import { Controller, FieldValues, useFormContext } from 'react-hook-form';
@@ -28,27 +28,14 @@ import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelp
 import RenderHelpElement from '@/components/formcomponents/help-button/RenderHelpElement';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
-import { RenderChildrenItems, RenderItemProps } from '../renderChildren/RenderChildrenItems';
+import { QuestionnaireComponentItemProps } from '@/components/GenerateQuestionnaireComponents';
+import { useExternalRenderContext } from '@/context/externalRenderContext';
 
-export interface Props extends RenderItemProps {
-  children?: ReactNode;
-}
+export type Props = QuestionnaireComponentItemProps;
 
 const Quantity = (props: Props): JSX.Element | null => {
-  const {
-    promptLoginMessage,
-    path,
-    item,
-    onAnswerChange,
-    id,
-    resources,
-    pdf,
-    idWithLinkIdAndItemIndex,
-    responseItems,
-    index,
-    children,
-    responseItem,
-  } = props;
+  const { path, item, onAnswerChange, id, resources, pdf, idWithLinkIdAndItemIndex, responseItems, index, children, responseItem } = props;
+  const { promptLoginMessage } = useExternalRenderContext();
   const { formState, getFieldState } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
@@ -203,9 +190,7 @@ const Quantity = (props: Props): JSX.Element | null => {
         />
         <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} responseItem={responseItem} responseItems={responseItems} />
       </FormGroup>
-      <div className="nested-fieldset nested-fieldset--full-height">
-        <RenderChildrenItems otherProps={props} />
-      </div>
+      <div className="nested-fieldset nested-fieldset--full-height">{children}</div>
     </div>
   );
 };

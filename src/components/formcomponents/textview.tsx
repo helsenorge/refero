@@ -13,7 +13,7 @@ interface Props {
   item: QuestionnaireItem;
   value?: string | number;
   textClass?: string;
-  children: ReactNode;
+  children?: ReactNode;
 }
 
 const TextView = ({ id, item, value, textClass, children }: Props): JSX.Element | null => {

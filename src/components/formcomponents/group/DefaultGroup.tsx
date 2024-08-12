@@ -9,18 +9,17 @@ import { Dispatch } from 'react';
 
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
-import { RenderChildrenItems, RenderItemProps } from '../renderChildren/RenderChildrenItems';
+import { QuestionnaireComponentItemProps } from '@/components/GenerateQuestionnaireComponents';
 import { useSelector } from 'react-redux';
 import { GlobalState } from '@/reducers';
 import { getFormDefinition } from '@/reducers/form';
 
-type DefaultGroup = {
+type DefaultGroup = QuestionnaireComponentItemProps & {
   isHelpVisible: boolean;
   setIsHelpVisible: Dispatch<React.SetStateAction<boolean>>;
-  componentProps: RenderItemProps;
 };
-const DefaultGroup = ({ isHelpVisible, setIsHelpVisible, componentProps }: DefaultGroup): JSX.Element => {
-  const { item, resources, headerTag, includeSkipLink, path, onAnswerChange, responseItem, index, id, responseItems } = componentProps;
+const DefaultGroup = ({ isHelpVisible, setIsHelpVisible, children, ...rest }: DefaultGroup): JSX.Element => {
+  const { item, resources, headerTag, includeSkipLink, path, onAnswerChange, responseItem, index, id, responseItems } = rest;
   const { onRenderMarkdown } = useExternalRenderContext();
   const formDefinition = useSelector((state: GlobalState) => getFormDefinition(state));
   const questionnaire = formDefinition?.Content;
@@ -36,7 +35,7 @@ const DefaultGroup = ({ isHelpVisible, setIsHelpVisible, componentProps }: Defau
       />
       <RenderHelpElement item={item} isHelpVisible={isHelpVisible} />
       <div id={`${getId(id)}-navanchor`} className={getClassNames(item)}>
-        <RenderChildrenItems otherProps={componentProps} />
+        {children}
       </div>
       {includeSkipLink && path?.length === 1 && (
         <AnchorLink className="page_refero__skiplink" href="#navigator-button">

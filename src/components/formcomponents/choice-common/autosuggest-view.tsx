@@ -24,9 +24,9 @@ import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 
-import { RenderChildrenItems, RenderItemProps } from '../renderChildren/RenderChildrenItems';
+import { QuestionnaireComponentItemProps } from '@/components/GenerateQuestionnaireComponents';
 
-export type AutosuggestProps = RenderItemProps & {
+export type AutosuggestProps = QuestionnaireComponentItemProps & {
   handleChange: (code?: string, systemArg?: string, displayArg?: string) => void;
   clearCodingAnswer: (coding: Coding) => void;
   handleStringChange?: (value: string) => void;
@@ -39,7 +39,6 @@ const AutosuggestView = (props: AutosuggestProps): JSX.Element | null => {
     id,
     idWithLinkIdAndItemIndex,
     clearCodingAnswer,
-    autoSuggestProps,
     handleChange,
     handleStringChange,
     index,
@@ -47,13 +46,15 @@ const AutosuggestView = (props: AutosuggestProps): JSX.Element | null => {
     responseItem,
     path,
     onAnswerChange,
+    children,
   } = props;
   const { formState, getFieldState, control } = useFormContext<FieldValues>();
+
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
   const answer = useGetAnswer(responseItem, item);
   const enable = useIsEnabled(item, path);
-  const { fetchValueSet } = useExternalRenderContext();
+  const { fetchValueSet, autoSuggestProps } = useExternalRenderContext();
   const codingAnswer = getCodingAnswer(answer);
   const initialInputValue =
     codingAnswer?.code === OPEN_CHOICE_ID && codingAnswer?.system === OPEN_CHOICE_SYSTEM ? getStringAnswer(answer) : codingAnswer?.display;
@@ -253,9 +254,7 @@ const AutosuggestView = (props: AutosuggestProps): JSX.Element | null => {
         />
         <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} responseItem={responseItem} responseItems={responseItems} />
       </FormGroup>
-      <div className="nested-fieldset nested-fieldset--full-height">
-        <RenderChildrenItems otherProps={props} />
-      </div>
+      <div className="nested-fieldset nested-fieldset--full-height">{children}</div>
     </div>
   );
 };

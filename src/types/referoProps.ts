@@ -10,23 +10,23 @@ import { GlobalState } from '@/reducers';
 import { NewValueAction } from '@/actions/newValue';
 
 export interface ReferoProps {
-  store?: Store<GlobalState, NewValueAction>;
-  authorized: boolean;
+  store?: Store<GlobalState, NewValueAction>; //TODO: remove?
+  authorized: boolean; //TODO: add to correct place
   blockSubmit?: boolean;
   onSave?: (questionnaireResponse: QuestionnaireResponse) => void;
   onCancel?: () => void;
   onSubmit: (questionnaireResponse: QuestionnaireResponse) => void;
-  loginButton: JSX.Element;
+  loginButton: JSX.Element; //TODO: add to correct place or remove
   resources?: Resources;
   pdf?: boolean;
   promptLoginMessage?: () => void;
-  attachmentErrorMessage?: string;
-  attachmentMaxFileSize?: number;
-  attachmentValidTypes?: Array<string>;
-  onRequestAttachmentLink?: (fileId: string) => string;
-  onOpenAttachment?: (fileId: string) => void;
-  onDeleteAttachment?: (fileId: string, onSuccess: () => void) => void;
-  uploadAttachment?: (files: File[], onSuccess: (attachment: Attachment) => void) => void;
+  attachmentErrorMessage?: string; //TODO: add to context
+  attachmentMaxFileSize?: number; //TODO: add to context
+  attachmentValidTypes?: string[]; //TODO: add to context
+  onRequestAttachmentLink?: (fileId: string) => string; //TODO: add to context
+  onOpenAttachment?: (fileId: string) => void; //TODO: add to context
+  onDeleteAttachment?: (fileId: string, onSuccess: () => void) => void; //TODO: add to context
+  uploadAttachment?: (files: File[], onSuccess: (attachment: Attachment) => void) => void; //TODO: add to context
   questionnaire?: Questionnaire;
   questionnaireResponse?: QuestionnaireResponse;
   language?: string;

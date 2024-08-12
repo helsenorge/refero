@@ -19,11 +19,11 @@ import TextView from '../textview';
 import { getMonthOptions, getYearFromString, validateYearDigits, validateYearMax, validateYearMin } from '@/util/date-utils';
 import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelpButton';
 import RenderHelpElement from '@/components/formcomponents/help-button/RenderHelpElement';
-import { RenderItemProps } from '../renderChildren/RenderChildrenItems';
+import { QuestionnaireComponentItemProps } from '@/components/GenerateQuestionnaireComponents';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 
-type DateMonthProps = RenderItemProps & {
+type DateMonthProps = QuestionnaireComponentItemProps & {
   locale: LanguageLocales.ENGLISH | LanguageLocales.NORWEGIAN;
   label?: string;
   subLabel?: string;
@@ -31,7 +31,6 @@ type DateMonthProps = RenderItemProps & {
   className?: string;
   maxDate?: Date;
   minDate?: Date;
-  children?: React.ReactNode;
 };
 
 export const DateYearMonthInput = ({
@@ -45,9 +44,9 @@ export const DateYearMonthInput = ({
   onDateValueChange,
   maxDate,
   minDate,
-  responseItem,
   children,
-}: DateMonthProps): JSX.Element => {
+  responseItem,
+}: DateMonthProps): JSX.Element | null => {
   const { formState, getFieldState } = useFormContext<FieldValues>();
   const answer = useGetAnswer(responseItem, item);
   const getDateValueFromAnswer = (

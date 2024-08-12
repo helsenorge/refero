@@ -30,29 +30,28 @@ import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelp
 import RenderHelpElement from '@/components/formcomponents/help-button/RenderHelpElement';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
-import { RenderChildrenItems, RenderItemProps } from '../renderChildren/RenderChildrenItems';
+import { QuestionnaireComponentItemProps } from '@/components/GenerateQuestionnaireComponents';
+import { useExternalRenderContext } from '@/context/externalRenderContext';
 
-export type Props = RenderItemProps & {
+export type Props = QuestionnaireComponentItemProps & {
   shouldExpanderRenderChildrenWhenClosed?: boolean;
-  children?: React.ReactNode;
 };
 export const Text = (props: Props): JSX.Element | null => {
   const {
     id,
     item,
     pdf,
-    children,
     resources,
     idWithLinkIdAndItemIndex,
-    promptLoginMessage,
     path,
     onAnswerChange,
     shouldExpanderRenderChildrenWhenClosed,
-    validateScriptInjection,
     responseItems,
     responseItem,
     index,
+    children,
   } = props;
+  const { promptLoginMessage, validateScriptInjection } = useExternalRenderContext();
   const { formState, getFieldState, control } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
@@ -89,7 +88,7 @@ export const Text = (props: Props): JSX.Element | null => {
     return (
       <div id={id} className="page_refero__component page_refero__component_expandabletext">
         <Expander title={item.text ? item.text : ''} renderChildrenWhenClosed={shouldExpanderRenderChildrenWhenClosed ? true : false}>
-          <RenderChildrenItems otherProps={props} />
+          {children}
         </Expander>
       </div>
     );
@@ -98,7 +97,7 @@ export const Text = (props: Props): JSX.Element | null => {
   if (pdf || isReadOnly(item)) {
     return (
       <TextView id={id} item={item} value={getPDFStringValue(answer, resources)} textClass="page_refero__component_readonlytext">
-        <RenderChildrenItems otherProps={props} />
+        {children}
       </TextView>
     );
   }
@@ -183,9 +182,7 @@ export const Text = (props: Props): JSX.Element | null => {
         />
         <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} responseItem={responseItem} responseItems={responseItems} />
       </FormGroup>
-      <div className="nested-fieldset nested-fieldset--full-height">
-        <RenderChildrenItems otherProps={props} />
-      </div>
+      <div className="nested-fieldset nested-fieldset--full-height">{children}</div>
     </div>
   );
 };

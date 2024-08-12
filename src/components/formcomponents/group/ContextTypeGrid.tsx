@@ -5,10 +5,10 @@ import { RenderContext } from '@/util/renderContext';
 import { getColumns } from './helpers';
 
 import { RenderContextType } from '@/constants/renderContextType';
-import { RenderChildrenItems, RenderItemProps } from '../renderChildren/RenderChildrenItems';
 import { QuestionnaireItem } from 'fhir/r4';
+import GenerateQuestionnaireComponents, { QuestionnaireComponentItemProps } from '@/components/GenerateQuestionnaireComponents';
 
-type ContextTypeGridProps = RenderItemProps;
+type ContextTypeGridProps = QuestionnaireComponentItemProps;
 type Props = {
   item: QuestionnaireItem;
   columns: string[];
@@ -23,7 +23,6 @@ const ContextTypeGrid = (props: ContextTypeGridProps): JSX.Element => {
   const { item, index, path, id, onAnswerChange, responseItem, resources, responseItems } = props;
   const columns = getColumns(item);
 
-  const newRenderContext = new RenderContext(RenderContextType.Grid, item.linkId, columns);
   return (
     <>
       <table id={getId(id)} className="page_refero__grid">
@@ -33,7 +32,11 @@ const ContextTypeGrid = (props: ContextTypeGridProps): JSX.Element => {
           </tr>
         </thead>
         <tbody>
-          <RenderChildrenItems otherProps={{ ...props, renderContext: newRenderContext }} />
+          <GenerateQuestionnaireComponents
+            {...props}
+            items={item.item}
+            renderContext={new RenderContext(RenderContextType.Grid, item.linkId, columns)}
+          />
         </tbody>
       </table>
       <RenderDeleteButton

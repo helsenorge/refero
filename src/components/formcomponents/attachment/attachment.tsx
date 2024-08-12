@@ -14,9 +14,10 @@ import TextView from '../textview';
 import { useDispatch } from 'react-redux';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
 import { useIsEnabled } from '@/hooks/useIsEnabled';
-import { RenderChildrenItems, RenderItemProps } from '../renderChildren/RenderChildrenItems';
+import { useAttachmentContext } from '@/context/AttachmentContext';
+import { QuestionnaireComponentItemProps } from '@/components/GenerateQuestionnaireComponents';
 
-export type Props = RenderItemProps & {
+export type Props = QuestionnaireComponentItemProps & {
   children?: React.ReactNode;
 };
 type UploadedFile = {
@@ -24,23 +25,16 @@ type UploadedFile = {
   id: string;
 };
 export const AttachmentComponent = (props: Props): JSX.Element | null => {
+  const { path, item, onAnswerChange, pdf, id, resources, responseItem, children } = props;
   const {
-    uploadAttachment,
-    path,
-    item,
-    onAnswerChange,
-    onDeleteAttachment,
-    pdf,
-    id,
-    resources,
     onOpenAttachment,
     onRequestAttachmentLink,
     attachmentMaxFileSize,
     attachmentValidTypes,
     attachmentErrorMessage,
-    responseItem,
-  } = props;
-
+    onDeleteAttachment,
+    uploadAttachment,
+  } = useAttachmentContext();
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
   const enable = useIsEnabled(item, path);
   const answer = useGetAnswer(responseItem, item);
@@ -121,7 +115,7 @@ export const AttachmentComponent = (props: Props): JSX.Element | null => {
   if (pdf || isReadOnly(item)) {
     return (
       <TextView id={id} item={item} value={getPdfValue()}>
-        <RenderChildrenItems otherProps={props} />
+        {children}
       </TextView>
     );
   } else {
@@ -146,9 +140,7 @@ export const AttachmentComponent = (props: Props): JSX.Element | null => {
           attachmentErrorMessage={attachmentErrorMessage}
           idWithLinkIdAndItemIndex={props.idWithLinkIdAndItemIndex}
         />
-        <div className="nested-fieldset nested-fieldset--full-height">
-          <RenderChildrenItems otherProps={props} />
-        </div>
+        <div className="nested-fieldset nested-fieldset--full-height">{children}</div>
       </>
     );
   }

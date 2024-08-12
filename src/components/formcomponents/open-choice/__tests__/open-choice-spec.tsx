@@ -1,4 +1,4 @@
-import { renderRefero, waitFor } from '@test/test-utils.tsx';;
+import { renderRefero, waitFor } from '@test/test-utils.tsx';
 
 import {
   QuestionnaireItem,

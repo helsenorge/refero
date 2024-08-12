@@ -16,13 +16,14 @@ import { getMinOccursExtensionValue } from './extension';
 import ItemType from '../constants/itemType';
 import { FormData, FormDefinition } from '../reducers/form';
 import { enableWhenMatches } from '../util/enableWhenMatcher';
+import { isRepeat } from '.';
 export interface Path {
   linkId: string;
   index?: number;
 }
 export function getRootQuestionnaireResponseItemFromData(
   definitionLinkId: string,
-  formData: FormData
+  formData?: FormData | null
 ): QuestionnaireResponseItem[] | undefined {
   if (!formData || !formData.Content) {
     return undefined;
@@ -453,11 +454,11 @@ export function createPathForItem(
     newPath = copyPath(path);
   }
 
-  index = item.repeats ? index : undefined;
+  index = isRepeat(item) ? index : undefined;
   if (item && responseItem) {
     newPath.push({
       linkId: responseItem.linkId,
-      ...(item.repeats && { index }),
+      ...(isRepeat(item) && { index }),
     });
   }
 
@@ -465,7 +466,7 @@ export function createPathForItem(
 }
 
 export function shouldRenderDeleteButton(item: QuestionnaireItem, index: number): boolean {
-  if (!item.repeats) {
+  if (!isRepeat(item)) {
     return false;
   }
   if (index === 0) {

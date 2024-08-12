@@ -4,6 +4,7 @@ import ItemType, { IItemType } from '../constants/itemType';
 
 import itemControlConstants from '@/constants/itemcontrol';
 import { getItemControlExtensionValue } from '@/util/extension';
+import { isReadOnly, isRepeat } from '@/util';
 
 export type DefaultValues = Record<string, IItemType | unknown>;
 
@@ -11,9 +12,9 @@ export const createIntitialFormValues = (items?: QuestionnaireItem[]): DefaultVa
   if (!items) return {};
   const createInitialFormValuesForItems = (items: QuestionnaireItem[]): DefaultValues => {
     return items.reduce((acc: DefaultValues, item) => {
-      const key = item.repeats ? `${item.linkId}^0` : item.linkId;
+      const key = isRepeat(item) ? `${item.linkId}^0` : item.linkId;
       const itemValue = getInitialFormValueForItemtype(key, item);
-      if (!item.readOnly) {
+      if (!isReadOnly(item)) {
         acc = { ...acc, ...(itemValue && itemValue) };
       }
       if (item.item && item.item.length > 0) {

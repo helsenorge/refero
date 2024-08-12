@@ -8,7 +8,6 @@ import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Input from '@helsenorge/designsystem-react/components/Input';
 
 import { debounce } from '@helsenorge/core-utils/debounce';
-import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 
 import { NewValueAction, newStringValueAsync } from '@/actions/newValue';
 import { GlobalState } from '@/reducers';
@@ -23,30 +22,14 @@ import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelp
 import RenderHelpElement from '@/components/formcomponents/help-button/RenderHelpElement';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
-import { RenderChildrenItems, RenderItemProps } from '../renderChildren/RenderChildrenItems';
+import { QuestionnaireComponentItemProps } from '@/components/GenerateQuestionnaireComponents';
+import { useExternalRenderContext } from '@/context/externalRenderContext';
 
-export type Props = RenderItemProps & {
-  oneToTwoColumn: boolean;
-  children?: React.ReactNode;
-};
+export type Props = QuestionnaireComponentItemProps;
 
 export const String = (props: Props): JSX.Element | null => {
-  const {
-    promptLoginMessage,
-    path,
-    item,
-    onAnswerChange,
-    id,
-    pdf,
-    resources,
-    idWithLinkIdAndItemIndex,
-    validateScriptInjection,
-    children,
-    responseItems,
-    index,
-    responseItem,
-  } = props;
-
+  const { path, item, onAnswerChange, id, pdf, resources, idWithLinkIdAndItemIndex, children, responseItems, index, responseItem } = props;
+  const { promptLoginMessage, validateScriptInjection } = useExternalRenderContext();
   const { formState, getFieldState, control } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
@@ -163,11 +146,8 @@ export const String = (props: Props): JSX.Element | null => {
         <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} responseItem={responseItem} responseItems={responseItems} />
       </FormGroup>
 
-        <div className="nested-fieldset nested-fieldset--full-height">
-          <RenderChildrenItems otherProps={props} />
-        </div>
+      {children && <div className="nested-fieldset nested-fieldset--full-height">{children}</div>}
     </div>
   );
 };
-const layoutChangeComponent = layoutChange(String);
-export default layoutChangeComponent;
+export default String;

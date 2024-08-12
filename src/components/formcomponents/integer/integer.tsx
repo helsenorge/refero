@@ -23,29 +23,15 @@ import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelp
 import RenderHelpElement from '@/components/formcomponents/help-button/RenderHelpElement';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
-import { RenderChildrenItems, RenderItemProps } from '../renderChildren/RenderChildrenItems';
+import { QuestionnaireComponentItemProps } from '@/components/GenerateQuestionnaireComponents';
+import { useExternalRenderContext } from '@/context/externalRenderContext';
 
-export type Props = RenderItemProps & {
-  children?: React.ReactNode;
-};
-
+export type Props = QuestionnaireComponentItemProps;
 const Integer = (props: Props): JSX.Element | null => {
-  const {
-    item,
-    resources,
-    id,
-    children,
-    pdf,
-    idWithLinkIdAndItemIndex,
-    promptLoginMessage,
-    path,
-    responseItem,
-    onAnswerChange,
-    responseItems,
-    index,
-  } = props;
+  const { item, resources, id, pdf, idWithLinkIdAndItemIndex, path, responseItem, onAnswerChange, responseItems, index, children } = props;
 
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
+  const { promptLoginMessage } = useExternalRenderContext();
   const { formState, getFieldState, control } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
@@ -167,9 +153,7 @@ const Integer = (props: Props): JSX.Element | null => {
         />
         <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} responseItem={responseItem} responseItems={responseItems} />
       </FormGroup>
-      <div className="nested-fieldset nested-fieldset--full-height">
-        <RenderChildrenItems otherProps={props} />
-      </div>
+      <div className="nested-fieldset nested-fieldset--full-height">{children}</div>
     </div>
   );
 };

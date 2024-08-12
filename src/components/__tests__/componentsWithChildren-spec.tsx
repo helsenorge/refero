@@ -53,7 +53,7 @@ describe('Components render children', () => {
     expect(secondChild).toBeInTheDocument();
   });
 
-  it.skip('decimal with children renders', () => {
+  it('decimal with children renders', () => {
     const q = createQuestionnaire(creatNestedItem(itemType.DECIMAL));
     const { queryByLabelText } = createWrapper(q);
     const firstChild = queryByLabelText('2');
