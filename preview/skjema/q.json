@@ -38,6 +38,11 @@
   ],
   "item": [
     {
+      "initial": [
+        {
+          "valueDate": "1994-05"
+        }
+      ],
       "linkId": "71d92d62-cad3-445b-848d-4efd281078d3",
       "type": "date",
       "required": true,
@@ -49,7 +54,9 @@
         { "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sublabel", "valueMarkdown": "**Dato sublabel**" },
         {
           "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-          "valueCodeableConcept": { "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "year" }] }
+          "valueCodeableConcept": {
+            "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "yearMonth" }]
+          }
         }
       ],
       "_text": { "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown", "valueMarkdown": "**Dato**" }] },

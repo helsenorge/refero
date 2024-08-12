@@ -21,6 +21,7 @@ import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelp
 import RenderHelpElement from '@/components/formcomponents/help-button/RenderHelpElement';
 import { RenderItemProps } from '../renderChildren/RenderChildrenItems';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
+import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 
 type DateMonthProps = RenderItemProps & {
   locale: LanguageLocales.ENGLISH | LanguageLocales.NORWEGIAN;
@@ -59,15 +60,14 @@ export const DateYearMonthInput = ({
     return answerItem.valueDate ?? answerItem.valueDateTime;
   };
 
-  const getValue = (): { year: number; month: number | null } | undefined => {
+  const getValue = (): { year: number; month: string | null } | undefined => {
     const stringValue = getDateValueFromAnswer(answer);
 
     if (!stringValue) {
       return undefined;
     } else {
-      const monthPart = stringValue.split('-')[1];
       const yearValue = parseInt(stringValue.split('-')[0]) || 0;
-      const monthValue = monthPart === '' || monthPart === undefined ? null : parseInt(stringValue.split('-')[1]) - 1;
+      const monthValue = stringValue.split('-')[1];
       return {
         year: yearValue,
         month: monthValue,
@@ -79,7 +79,7 @@ export const DateYearMonthInput = ({
   const monthsField = getFieldState(`${idWithLinkIdAndItemIndex}-yearmonth-month`, formState);
   const monthOptions = getMonthOptions(resources);
   const [year, setYear] = useState<string | undefined>(getValue()?.year.toString());
-  const [month, setMonth] = useState<string | undefined | null>(getValue()?.month?.toString() || monthOptions[0].optionValue);
+  const [month, setMonth] = useState<string | undefined | null>(getValue()?.month?.toString());
 
   const convertToPDFValue = (answer: QuestionnaireResponseItemAnswer): string => {
     const value = getDateValueFromAnswer(answer);
@@ -136,6 +136,15 @@ export const DateYearMonthInput = ({
   return (
     <>
       <FormGroup error={getErrorText(getCombinedFieldError())}>
+        <ReferoLabel
+          item={item}
+          resources={resources}
+          htmlFor={`${getId(id)}-input`}
+          labelId={`${getId(id)}-label`}
+          testId={`${getId(id)}-label-test`}
+          sublabelId={`${getId(id)}-sublabel`}
+          afterLabelContent={<RenderHelpButton isHelpVisible={isHelpVisible} item={item} setIsHelpVisible={setIsHelpVisible} />}
+        />
         <RenderHelpElement item={item} isHelpVisible={isHelpVisible} />
         <Controller
           name={idWithLinkIdAndItemIndex + '-yearmonth-year'}
@@ -160,6 +169,7 @@ export const DateYearMonthInput = ({
           render={({ field: { onChange } }): JSX.Element => (
             <Input
               type="number"
+              inputId={`${getId(id)}-input`}
               testId={getId(id)}
               onChange={e => {
                 handleYearMonthChange(e.target.value, month);
@@ -191,7 +201,8 @@ export const DateYearMonthInput = ({
           }}
           render={({ field: { onChange } }): JSX.Element => (
             <Select
-              label={<Label labelTexts={[{ text: 'Velg noe', type: 'semibold' }]} />}
+              selectId={`${getId(id)}-select`}
+              testId={'month-select'}
               onChange={e => {
                 handleYearMonthChange(year, e.target.value);
                 onChange(getConcatinatedYearAndMonth(year, e.target.value));
