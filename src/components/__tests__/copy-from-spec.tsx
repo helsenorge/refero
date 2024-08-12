@@ -5,7 +5,7 @@ import { Questionnaire, QuestionnaireItem, Extension, QuestionnaireItemEnableWhe
 import Valueset from '../../util/__tests__/__data__/valuesets/valueset-8459';
 import { createDataReceiverExpressionExtension, createItemControlExtension } from '../__tests__/utils';
 import ItemType from '../../constants/itemType';
-import { act, renderRefero, userEvent, waitFor } from '../../../test/test-utils';
+import { act, queryByLabelText, renderRefero, userEvent, waitFor } from '../../../test/test-utils';
 import { clickByLabelText } from '@test/selectors';
 import ItemControlConstants, { ItemControlValue } from '@/constants/itemcontrol';
 import { Extensions } from '@/constants/extensions';
@@ -160,7 +160,30 @@ describe('Copy value from item', () => {
       await waitFor(async () => expect(getByTestId(/item_2/i)).toBeInTheDocument());
       await waitFor(async () => expect(getByTestId(/item_2/i)).toHaveTextContent('Mann'));
     });
-    it('should copy DROPDOWN value', async () => {});
+    it('should copy DROPDOWN value', async () => {
+      const sender = createSenderChoiceItem(ItemType.CHOICE, createItemControlExtension(ItemControlConstants.DROPDOWN));
+      const reciever = createReciverChoiceItem(ItemType.CHOICE, ItemControlConstants.DROPDOWN);
+      const q = createQuestionnaire(sender, reciever);
+      const { getByLabelText, queryByTestId, getByTestId, getByRole } = createWrapper(q);
+      expect(queryByTestId(/item_2/i)).not.toBeInTheDocument();
+      await act(async () => {
+        userEvent.selectOptions(getByLabelText(`${sender.text}`), getByRole('option', { name: 'Mann' }) as HTMLOptionElement);
+      });
+      await waitFor(async () => expect(getByTestId(/item_2/i)).toBeInTheDocument());
+      await waitFor(async () => expect(getByTestId(/item_2/i)).toHaveTextContent('Mann'));
+    });
+    it.skip('should copy SLIDER value', async () => {
+      const sender = createSenderChoiceItem(ItemType.CHOICE, createItemControlExtension(ItemControlConstants.SLIDER));
+      const reciever = createReciverChoiceItem(ItemType.CHOICE, ItemControlConstants.SLIDER);
+      const q = createQuestionnaire(sender, reciever);
+      const { getByLabelText, queryByTestId, getByTestId, getByRole } = createWrapper(q);
+      expect(queryByTestId(/item_2/i)).not.toBeInTheDocument();
+      await act(async () => {
+        userEvent.selectOptions(getByLabelText(`${sender.text}`), getByRole('option', { name: 'Mann' }) as HTMLOptionElement);
+      });
+      await waitFor(async () => expect(getByTestId(/item_2/i)).toBeInTheDocument());
+      await waitFor(async () => expect(getByTestId(/item_2/i)).toHaveTextContent('Mann'));
+    });
   });
   describe('should copy OPEN-CHOICE value', () => {
     it('should copy CHECKBOX value', async () => {
@@ -189,23 +212,37 @@ describe('Copy value from item', () => {
       await waitFor(async () => expect(getByTestId(/item_2/i)).toBeInTheDocument());
       await waitFor(async () => expect(getByTestId(/item_2/i)).toHaveTextContent('Mann'));
     });
-    it('should copy DROPDOWN value', async () => {});
+    it('should copy DROPDOWN value', async () => {
+      const sender = createSenderChoiceItem(ItemType.OPENCHOICE, createItemControlExtension(ItemControlConstants.DROPDOWN));
+      const reciever = createReciverChoiceItem(ItemType.OPENCHOICE, ItemControlConstants.DROPDOWN);
+      const q = createQuestionnaire(sender, reciever);
+      const { getByLabelText, queryByTestId, getByTestId, getByRole } = createWrapper(q);
+      expect(queryByTestId(/item_2/i)).not.toBeInTheDocument();
+      await act(async () => {
+        userEvent.selectOptions(getByLabelText(`${sender.text}`), getByRole('option', { name: 'Mann' }) as HTMLOptionElement);
+      });
+      await waitFor(async () => expect(getByTestId(/item_2/i)).toBeInTheDocument());
+      await waitFor(async () => expect(getByTestId(/item_2/i)).toHaveTextContent('Mann'));
+    });
+    it('should copy EXTRA-FIELD value', async () => {
+      const sender = createSenderChoiceItem(ItemType.OPENCHOICE, createItemControlExtension(ItemControlConstants.CHECKBOX));
+      const reciever = createReciverChoiceItem(ItemType.OPENCHOICE, ItemControlConstants.CHECKBOX);
+      const q = createQuestionnaire(sender, reciever);
+      const { getByLabelText, queryByTestId, getByTestId } = createWrapper(q);
+      expect(queryByTestId(/item_2/i)).not.toBeInTheDocument();
+      expect(getByLabelText(/Annet/i)).toBeInTheDocument();
+
+      await act(async () => {
+        userEvent.click(getByLabelText(/Annet/i));
+      });
+      await act(async () => {
+        userEvent.type(getByTestId('item_1-label'), 'e');
+      });
+      await waitFor(async () => expect(getByTestId(/item_2/i)).toBeInTheDocument());
+
+      await waitFor(async () => expect(getByTestId(/item_2/i)).toHaveTextContent('e'));
+    });
   });
-  // it('unhidden drop-down open-choice renders', () => {
-  //   const item = createChoiceItem(ItemType.OPENCHOICE, createItemControlExtension('drop-down'), createCopyFromExtension(false));
-  //   const q = createQuestionnaire(item);
-  //   const { queryByLabelText } = createWrapper(q);
-
-  //   expect(queryByLabelText('1')).toBeInTheDocument();
-  // });
-
-  // it('hidden drop-down open-choice does not render', () => {
-  //   const item = createChoiceItem(ItemType.OPENCHOICE, createItemControlExtension('drop-down'), createCopyFromExtension(true));
-  //   const q = createQuestionnaire(item);
-  //   const { queryByLabelText } = createWrapper(q);
-
-  //   expect(queryByLabelText('1')).not.toBeInTheDocument();
-  // });
 });
 
 function createItem(

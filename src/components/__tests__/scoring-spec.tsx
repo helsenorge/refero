@@ -10,6 +10,7 @@ import { getCalculatedExpressionExtension } from '../../util/extension';
 import { inputAnswer, findQuestionnaireItem, findItem } from './utils';
 import { renderRefero } from '../../../test/test-utils';
 import { clickByLabelText, clickByTestId, typeByLabelText } from '../../../test/selectors';
+import { performance } from 'perf_hooks';
 
 describe('Component renders and calculates score', () => {
   it('fhirpath score should be updated when decimal questions are answered', async () => {
@@ -35,7 +36,15 @@ describe('Component renders and calculates score', () => {
     const fhirpathItem = await findByLabelText('Fhir sum element');
     expect(fhirpathItem).toHaveValue(42);
   });
+  it.skip('fhirpath score should be updated when integer questions are answered - should work with zeros', async () => {
+    const questionnaire = setFhirpath('4', "QuestionnaireResponse.item.where(linkId='2').answer.value", FhirpathScoreDataModel);
+    const { container, findByLabelText } = createWrapper(questionnaire);
 
+    await inputAnswer('2', 0, container);
+
+    const fhirpathItem = await findByLabelText('Fhir sum element');
+    expect(fhirpathItem).toHaveValue(0);
+  });
   it('fhirpath score should be updated when quantity questions are answered', async () => {
     const questionnaire = setFhirpath('4', "QuestionnaireResponse.item.where(linkId='3').answer.value.value", FhirpathScoreDataModel);
     const { container, findByLabelText } = createWrapper(questionnaire);
@@ -147,7 +156,7 @@ describe('Component renders and calculates score', () => {
   }
   it('total score and section score should be updated', async () => {
     const { container } = createWrapper(SectionScoreDataModel);
-
+    const startScoreCalculation = performance.now();
     const expectedScores: { [linkId: string]: number | null } = {
       totalscore_31: null,
       sectionscore_213: null,
@@ -186,6 +195,11 @@ describe('Component renders and calculates score', () => {
     expectedScores.sectionscore_213 = 12;
     expectedScores.totalscore_31 = 26;
     expectScores(expectedScores, container);
+
+    const endScoreCalculation = performance.now();
+    const scoreCalculationDuration = endScoreCalculation - startScoreCalculation;
+    console.log(`Score calculation took ${scoreCalculationDuration} ms`);
+    expect(scoreCalculationDuration).toBeLessThan(2000);
   });
 });
 

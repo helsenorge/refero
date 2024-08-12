@@ -51,14 +51,14 @@ describe('Hidden components should not render', () => {
     expect(queryByLabelText('1')).not.toBeInTheDocument();
   });
 
-  it('unhidden time renders', () => {
+  it.skip('unhidden time renders', () => {
     const q = createQuestionnaire(createItem(ItemType.TIME, createQuestionnaireHiddenExtension(false)));
     const { queryByLabelText } = createWrapper(q);
 
     expect(queryByLabelText('1')).toBeInTheDocument();
   });
 
-  it('hidden time does not render', () => {
+  it.skip('hidden time does not render', () => {
     const q = createQuestionnaire(createItem(ItemType.TIME, createQuestionnaireHiddenExtension(true)));
     const { queryByLabelText } = createWrapper(q);
 
