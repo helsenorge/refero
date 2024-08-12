@@ -278,7 +278,9 @@ export const OpenChoice = (props: OpenChoiceProps): JSX.Element | null => {
   const itemControlValue = getItemControlValue(item);
   const shouldRenderAutosuggest = hasCanonicalValueSet(item) && itemControlValue === ItemControlConstants.AUTOCOMPLETE;
   const value = getValue(item, answer);
-
+  if (!enable) {
+    return null;
+  }
   if (pdf || isReadOnly(item)) {
     return (
       <TextView id={id} item={item} value={getPDFValue(item, answer)}>
@@ -286,9 +288,7 @@ export const OpenChoice = (props: OpenChoiceProps): JSX.Element | null => {
       </TextView>
     );
   }
-  if (!enable) {
-    return null;
-  }
+
   return (
     <>
       {hasOptionsAndNoCanonicalValueSet ? (

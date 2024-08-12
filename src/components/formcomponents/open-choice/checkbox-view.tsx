@@ -112,7 +112,7 @@ const CheckboxView = (props: Props): JSX.Element | null => {
         className="page_refero__deletebutton--margin-top"
       />
       <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} responseItem={responseItem} responseItems={responseItems} />
-      <div className="nested-fieldset nested-fieldset--full-height">{children}</div>
+      {children && <div className="nested-fieldset nested-fieldset--full-height">{children}</div>}
     </div>
   );
 };
