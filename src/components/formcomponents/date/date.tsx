@@ -26,10 +26,10 @@ import { FormDefinition, getFormDefinition } from '@/reducers/form';
 export type DateProps = QuestionnaireComponentItemProps;
 
 const DateComponent = (props: DateProps): JSX.Element | null => {
-  const { item, resources, language, onAnswerChange, responseItems, responseItem, path, index, children } = props;
+  const { item, resources, language, responseItems, responseItem, path, index, children } = props;
   const answer = useGetAnswer(responseItem, item);
   const questionnaire = useSelector<GlobalState, FormDefinition | undefined | null>(state => getFormDefinition(state))?.Content;
-  const { onRenderMarkdown, promptLoginMessage } = useExternalRenderContext();
+  const { onRenderMarkdown, promptLoginMessage, onAnswerChange } = useExternalRenderContext();
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
   const getMaxDate = (): Date | undefined => {
     const maxDate = getExtension(Extensions.DATE_MAX_VALUE_URL, item);
@@ -79,7 +79,7 @@ const DateComponent = (props: DateProps): JSX.Element | null => {
     const existingAnswer = Array.isArray(answer) ? answer[0].valueDate : answer?.valueDate || '';
     if (dispatch && newValue !== existingAnswer && path) {
       dispatch(newDateValueAsync(path, newValue, item))?.then(
-        newState => onAnswerChange && onAnswerChange(newState, path, item, { valueDate: newValue } as QuestionnaireResponseItemAnswer)
+        newState => onAnswerChange && onAnswerChange(newState, item, { valueDate: newValue } as QuestionnaireResponseItemAnswer)
       );
 
       if (promptLoginMessage) {
@@ -146,7 +146,6 @@ const DateComponent = (props: DateProps): JSX.Element | null => {
         item={item}
         path={path}
         index={index}
-        onAnswerChange={onAnswerChange}
         responseItem={responseItem}
         resources={resources}
         className="page_refero__deletebutton--margin-top"

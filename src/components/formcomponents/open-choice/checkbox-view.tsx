@@ -37,7 +37,6 @@ const CheckboxView = (props: Props): JSX.Element | null => {
     renderOpenField,
     idWithLinkIdAndItemIndex,
     selected,
-    onAnswerChange,
     responseItems,
     responseItem,
     children,
@@ -106,7 +105,6 @@ const CheckboxView = (props: Props): JSX.Element | null => {
         item={item}
         path={path}
         index={index}
-        onAnswerChange={onAnswerChange}
         responseItem={responseItem}
         resources={resources}
         className="page_refero__deletebutton--margin-top"

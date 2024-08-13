@@ -30,8 +30,8 @@ import { QuestionnaireComponentItemProps } from '@/components/GenerateQuestionna
 export type Props = QuestionnaireComponentItemProps;
 
 const Decimal = (props: Props): JSX.Element | null => {
-  const { id, item, pdf, resources, children, idWithLinkIdAndItemIndex, path, onAnswerChange, responseItems, index, responseItem } = props;
-  const { promptLoginMessage } = useExternalRenderContext();
+  const { id, item, pdf, resources, children, idWithLinkIdAndItemIndex, path, responseItems, index, responseItem } = props;
+  const { promptLoginMessage, onAnswerChange } = useExternalRenderContext();
   const { formState, getFieldState, control } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex || '', formState);
   const { error } = fieldState;
@@ -74,7 +74,7 @@ const Decimal = (props: Props): JSX.Element | null => {
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     const value = parseFloat(event.target.value);
     dispatch(newDecimalValueAsync(path || [], value, item))?.then(newState => {
-      return onAnswerChange && onAnswerChange(newState, path || [], item, { valueDecimal: value } as QuestionnaireResponseItemAnswer);
+      return onAnswerChange(newState, item, { valueDecimal: value } as QuestionnaireResponseItemAnswer);
     });
 
     if (promptLoginMessage) {
@@ -162,7 +162,6 @@ const Decimal = (props: Props): JSX.Element | null => {
         item={item}
         path={path}
         index={index}
-        onAnswerChange={onAnswerChange}
         responseItem={responseItem}
         resources={resources}
         className="page_refero__deletebutton--margin-top"

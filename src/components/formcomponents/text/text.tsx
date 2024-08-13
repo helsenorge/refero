@@ -44,14 +44,13 @@ export const Text = (props: Props): JSX.Element | null => {
     resources,
     idWithLinkIdAndItemIndex,
     path,
-    onAnswerChange,
     shouldExpanderRenderChildrenWhenClosed,
     responseItems,
     responseItem,
     index,
     children,
   } = props;
-  const { promptLoginMessage, validateScriptInjection } = useExternalRenderContext();
+  const { promptLoginMessage, validateScriptInjection, onAnswerChange } = useExternalRenderContext();
   const { formState, getFieldState, control } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
@@ -61,8 +60,8 @@ export const Text = (props: Props): JSX.Element | null => {
   const enable = useIsEnabled(item, path);
   const handleChange = (event: React.FormEvent): void => {
     const value = (event.target as HTMLInputElement).value;
-    if (dispatch && path && onAnswerChange) {
-      dispatch(newStringValueAsync(path, value, item))?.then(newState => onAnswerChange(newState, path, item, { valueString: value }));
+    if (dispatch && path) {
+      dispatch(newStringValueAsync(path, value, item))?.then(newState => onAnswerChange(newState, item, { valueString: value }));
     }
 
     if (promptLoginMessage) {
@@ -175,7 +174,6 @@ export const Text = (props: Props): JSX.Element | null => {
           item={item}
           path={path}
           index={index}
-          onAnswerChange={onAnswerChange}
           responseItem={responseItem}
           resources={resources}
           className="page_refero__deletebutton--margin-top"

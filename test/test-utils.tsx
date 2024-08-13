@@ -19,6 +19,7 @@ import { ReferoProps } from '../src/types/referoProps';
 import { Resources } from '../src/util/resources';
 import { createIntitialFormValues, DefaultValues } from '../src/validation/defaultFormValues';
 import { ExternalRenderProvider } from '@/context/externalRenderContext';
+import { AttachmentProvider } from '@/context/AttachmentContext';
 
 const mockStore = configureMockStore<Partial<GlobalState>>([thunk]);
 
@@ -47,11 +48,11 @@ const AllTheProviders = ({
   referoProps?: Partial<ReferoProps>;
 }) => {
   return (
-    <ExternalRenderProviderWrapper props={referoProps}>
-      <Provider store={store}>
+    <Provider store={store}>
+      <ExternalRenderProviderWrapper props={referoProps}>
         <FormWrapper defaultValues={defaultValues}>{children}</FormWrapper>
-      </Provider>
-    </ExternalRenderProviderWrapper>
+      </ExternalRenderProviderWrapper>
+    </Provider>
   );
 };
 

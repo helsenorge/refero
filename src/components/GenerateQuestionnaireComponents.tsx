@@ -31,7 +31,6 @@ export type QuestionnaireComponentItemProps = {
   path?: Path[];
   id?: string;
   index?: number;
-  onAnswerChange?: (newState: GlobalState, path: Path[], item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
   renderContext: RenderContext;
   responseItems?: QuestionnaireResponseItem[];
   idWithLinkIdAndItemIndex: string;
@@ -44,11 +43,10 @@ export type QuestionnaireItemsProps = {
   path?: Path[];
   pdf?: boolean;
   renderContext?: RenderContext;
-  onAnswerChange?: (newState: GlobalState, path: Path[], item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
 };
 
 const GenerateQuestionnaireComponents = (props: QuestionnaireItemsProps): JSX.Element | null => {
-  const { items, path = [], pdf = false, renderContext = new RenderContext(), onAnswerChange, responseItem } = props;
+  const { items, path = [], pdf = false, renderContext = new RenderContext(), responseItem } = props;
   const { resources } = useExternalRenderContext();
   const formDefinition = useSelector<GlobalState, FormDefinition | null>((state: GlobalState) => getFormDefinition(state));
   const formData = useSelector<GlobalState, FormData | null>((state: GlobalState) => getFormData(state));
@@ -116,18 +114,9 @@ const GenerateQuestionnaireComponents = (props: QuestionnaireItemsProps): JSX.El
                 headerTag={headerTag}
                 index={index}
                 responseItems={responseItems}
-                onAnswerChange={onAnswerChange}
                 renderContext={renderContext}
               >
-                {item.item && (
-                  <GenerateQuestionnaireComponents
-                    items={item.item}
-                    path={newPath}
-                    pdf={pdf}
-                    onAnswerChange={onAnswerChange}
-                    responseItem={responseItem}
-                  />
-                )}
+                {item.item && <GenerateQuestionnaireComponents items={item.item} path={newPath} pdf={pdf} responseItem={responseItem} />}
               </Comp>
             );
           });

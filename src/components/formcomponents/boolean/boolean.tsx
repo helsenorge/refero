@@ -30,7 +30,8 @@ export type Props = QuestionnaireComponentItemProps & {
 };
 
 const Boolean = (props: Props): JSX.Element | null => {
-  const { item, onAnswerChange, path, pdf, id, resources, responseItems, index, idWithLinkIdAndItemIndex, responseItem, children } = props;
+  const { item, path, pdf, id, resources, responseItems, index, idWithLinkIdAndItemIndex, responseItem, children } = props;
+
   const formDefinition = useSelector((state: GlobalState) => getFormDefinition(state));
   const questionnaire = formDefinition?.Content;
 
@@ -39,7 +40,7 @@ const Boolean = (props: Props): JSX.Element | null => {
   const { error } = fieldState;
 
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
-  const { onRenderMarkdown, promptLoginMessage } = useExternalRenderContext();
+  const { onRenderMarkdown, promptLoginMessage, onAnswerChange } = useExternalRenderContext();
   const enable = useIsEnabled(item, path);
   const [isHelpVisible, setIsHelpVisible] = useState(false);
   const answer = useGetAnswer(responseItem, item);
@@ -61,7 +62,7 @@ const Boolean = (props: Props): JSX.Element | null => {
     if (dispatch) {
       path &&
         dispatch(newBooleanValueAsync(path, newValue, item))?.then(
-          newState => onAnswerChange && onAnswerChange(newState, path, item, { valueBoolean: newValue })
+          newState => onAnswerChange && onAnswerChange(newState, item, { valueBoolean: newValue })
         );
     }
 
@@ -148,7 +149,6 @@ const Boolean = (props: Props): JSX.Element | null => {
         item={item}
         path={path}
         index={index}
-        onAnswerChange={onAnswerChange}
         responseItem={responseItem}
         resources={resources}
         className="page_refero__deletebutton--margin-top"

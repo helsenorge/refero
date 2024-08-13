@@ -49,14 +49,13 @@ const DateTimeInput = ({
   path,
   pdf,
   id,
-  onAnswerChange,
   idWithLinkIdAndItemIndex,
   children,
   responseItem,
   index,
   responseItems,
 }: Props): JSX.Element | null => {
-  const { promptLoginMessage } = useExternalRenderContext();
+  const { promptLoginMessage, onAnswerChange } = useExternalRenderContext();
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
   const answer = useGetAnswer(responseItem, item);
   const [isHelpVisible, setIsHelpVisible] = useState(false);
@@ -210,7 +209,7 @@ const DateTimeInput = ({
     if (fullDate) {
       if (dispatch && existingAnswer !== fullDate && onAnswerChange && path) {
         dispatch(newDateTimeValueAsync(path, fullDate, item))?.then(newState =>
-          onAnswerChange(newState, path, item, { valueDateTime: fullDate } as QuestionnaireResponseItemAnswer)
+          onAnswerChange(newState, item, { valueDateTime: fullDate })
         );
       }
 
@@ -306,7 +305,6 @@ const DateTimeInput = ({
         item={item}
         path={path}
         index={index}
-        onAnswerChange={onAnswerChange}
         responseItem={responseItem}
         resources={resources}
         className="page_refero__deletebutton--margin-top"

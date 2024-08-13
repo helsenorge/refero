@@ -33,20 +33,8 @@ enum SliderDisplayTypes {
 type LeftRightLabels = { leftLabel: string; rightLabel: string };
 
 const SliderView = (props: SliderProps): JSX.Element | null => {
-  const {
-    item,
-    handleChange,
-    selected,
-    resources,
-    idWithLinkIdAndItemIndex,
-    id,
-    onAnswerChange,
-    responseItems,
-    responseItem,
-    path,
-    index,
-    children,
-  } = props;
+  const { item, handleChange, selected, resources, idWithLinkIdAndItemIndex, id, responseItems, responseItem, path, index, children } =
+    props;
   const { formState, getFieldState, control } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
@@ -124,7 +112,6 @@ const SliderView = (props: SliderProps): JSX.Element | null => {
           item={item}
           path={path}
           index={index}
-          onAnswerChange={onAnswerChange}
           responseItem={responseItem}
           resources={resources}
           className="page_refero__deletebutton--margin-top"

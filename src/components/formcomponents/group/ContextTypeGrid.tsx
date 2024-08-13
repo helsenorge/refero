@@ -20,7 +20,7 @@ const RenderHeaders = ({ item, columns }: Props): JSX.Element => {
 };
 
 const ContextTypeGrid = (props: ContextTypeGridProps): JSX.Element => {
-  const { item, index, path, id, onAnswerChange, responseItem, resources, responseItems } = props;
+  const { item, index, path, id, responseItem, resources, responseItems } = props;
   const columns = getColumns(item);
 
   return (
@@ -43,7 +43,6 @@ const ContextTypeGrid = (props: ContextTypeGridProps): JSX.Element => {
         item={item}
         path={path}
         index={index}
-        onAnswerChange={onAnswerChange}
         responseItem={responseItem}
         resources={resources}
         className="page_refero__deletebutton--margin-top"
