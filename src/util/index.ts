@@ -2,7 +2,7 @@ import Group from '@components/formcomponents/group/group';
 import Display from '@formcomponents/display/display';
 import Text from '@formcomponents/text/text';
 import { Questionnaire, QuestionnaireResponseItem, QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
-import marked from 'marked';
+import { marked } from 'marked';
 import * as uuid from 'uuid';
 
 import { isValid, invalidNodes } from '@helsenorge/core-utils/string-utils';
@@ -208,9 +208,9 @@ function getMarkdownValue(
 ): string {
   const itemValue = getHyperlinkExtensionValue(item);
   const questionnaireValue = questionnaire ? getHyperlinkExtensionValue(questionnaire) : undefined;
-
   const renderer = new marked.Renderer();
-  renderer.link = (href: string, title: string, text: string): string => {
+
+  renderer.link = ({ href, title, text }): string => {
     const urlString = `<a href=${href} ${
       title ? `title=${title}` : ''
     } target="_blank" rel="noopener noreferrer" class="external" aria-label=${
@@ -218,8 +218,9 @@ function getMarkdownValue(
     }>${text}</a>`;
     return urlString;
   };
+
   const rendererSameWindow = new marked.Renderer();
-  rendererSameWindow.link = (href: string, title: string, text: string): string => {
+  rendererSameWindow.link = ({ href, title, text }): string => {
     const urlString = `<a href=${href} ${title ? `title=${title}` : ''} target="${openNewIfAbsolute(
       href
     )}" rel="noopener noreferrer" aria-label=${openNewIfAbsolute(href) === '_blank' ? srLinkText : ''}>${text}</a>`;
@@ -230,12 +231,10 @@ function getMarkdownValue(
     return onRenderMarkdown(item, markdownText.toString());
   }
   if (itemValue === HyperlinkTarget.SAME_WINDOW || (!itemValue && questionnaireValue === HyperlinkTarget.SAME_WINDOW)) {
-    marked.setOptions({ renderer: rendererSameWindow });
-    return marked(markdownText.toString());
+    return marked(markdownText.toString(), { async: false, renderer: rendererSameWindow });
   }
 
-  marked.setOptions({ renderer: renderer });
-  return marked(markdownText.toString());
+  return marked(markdownText.toString(), { renderer: renderer, async: false });
 }
 
 export function getChildHeaderTag(item?: QuestionnaireItem, headerTag?: number): number {
