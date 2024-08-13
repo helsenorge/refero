@@ -1,4 +1,4 @@
-import React, { FocusEvent } from 'react';
+import { FocusEvent } from 'react';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, Coding } from 'fhir/r4';
 import { ThunkDispatch } from 'redux-thunk';

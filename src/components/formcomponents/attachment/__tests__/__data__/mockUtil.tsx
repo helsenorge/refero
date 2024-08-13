@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 
 import { QuestionnaireStatusCodes } from '../../../../../types/fhirEnums';

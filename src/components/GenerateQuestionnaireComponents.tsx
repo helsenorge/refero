@@ -8,7 +8,7 @@ import {
 import { RenderContext } from '@/util/renderContext';
 import { getChildHeaderTag, getComponentForItem, isHiddenItem, isRepeat } from '@/util/index';
 import { Resources } from '@/util/resources';
-import { QuestionnaireItem, QuestionnaireResponseItem, QuestionnaireResponseItemAnswer, Resource } from 'fhir/r4';
+import { QuestionnaireItem, QuestionnaireResponseItem, Resource } from 'fhir/r4';
 import { GlobalState } from '@/reducers';
 import { getCodingTextTableValues, getNavigatorExtension } from '@/util/extension';
 import { FormData, FormDefinition, getFormData, getFormDefinition } from '@/reducers/form';
