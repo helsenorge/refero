@@ -11,7 +11,7 @@ import LanguageLocales from '@helsenorge/core-utils/constants/languages';
 import FormFillerSidebar from './FormFillerSidebar';
 import { emptyPropertyReplacer } from './helpers';
 import { getResources } from './resources/referoResources';
-import skjema from './skjema/NHN_Testskjema_Options-nb-NO-v0.1.json';
+import skjema from './skjema/NHN_Testskjema_Dato-nb-NO-v1.0.json';
 // import skjema from '../src/components/__tests__/__data__/group-grid/q.json';
 
 import ReferoContainer from '../src/components/index';

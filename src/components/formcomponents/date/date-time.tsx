@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { format, parseISO } from 'date-fns';
+import { format } from 'date-fns';
 import { isValid } from 'date-fns';
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { FieldError, FieldValues, useFormContext } from 'react-hook-form';
@@ -8,11 +8,9 @@ import { ThunkDispatch } from 'redux-thunk';
 
 import { DateTimeUnit } from '../../../types/dateTypes';
 
-import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
 import { DatePicker, DateTimePickerWrapper, DateTime } from '@helsenorge/datepicker/components/DatePicker';
 
 import { NewValueAction, newDateTimeValueAsync } from '../../../actions/newValue';
-import { Extensions } from '../../../constants/extensions';
 import { GlobalState } from '../../../reducers';
 import { initialize, safeParseJSON } from '../../../util/date-fns-utils';
 import {
@@ -26,8 +24,7 @@ import {
   parseStringToDateDDMMYYYY,
   formatDateToStringDDMMYYYY,
 } from '../../../util/date-utils';
-import { getValidationTextExtension, getExtension } from '../../../util/extension';
-import { evaluateFhirpathExpressionToGetDate } from '../../../util/fhirpathHelper';
+import { getValidationTextExtension } from '../../../util/extension';
 import { isRequired, getId, isReadOnly } from '../../../util/index';
 import TextView from '../textview';
 
@@ -40,6 +37,7 @@ import { useGetAnswer } from '@/hooks/useGetAnswer';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
+import { useMinMaxDate } from './useMinMaxDate';
 
 export type Props = QuestionnaireComponentItemProps;
 
@@ -63,6 +61,7 @@ const DateTimeInput = ({
   const dateField = getFieldState(`${idWithLinkIdAndItemIndex}-date`, formState);
   const hoursField = getFieldState(`${idWithLinkIdAndItemIndex}-hours`, formState);
   const minutesField = getFieldState(`${idWithLinkIdAndItemIndex}-minutes`, formState);
+  const { minDateTime, maxDateTime } = useMinMaxDate(item);
 
   const getDefaultDate = (
     item: QuestionnaireItem,
@@ -85,44 +84,6 @@ const DateTimeInput = ({
       return safeParseJSON(item.initial[0].valueDateTime);
     }
     return safeParseJSON(item.initial[0].valueDate);
-  };
-
-  const getMaxDate = (): Date | undefined => {
-    const maxDate = getExtension(Extensions.DATE_MAX_VALUE_URL, item);
-    if (maxDate && maxDate.valueString) return evaluateFhirpathExpressionToGetDate(item, maxDate.valueString);
-    return getMaxDateWithExtension();
-  };
-
-  const getMaxDateWithExtension = (): Date | undefined => {
-    const maxDate = getExtension(Extensions.MAX_VALUE_URL, item);
-    if (!maxDate) {
-      return;
-    }
-    if (maxDate.valueDate) {
-      return parseISO(maxDate.valueDate);
-    } else if (maxDate.valueDateTime) {
-      return parseISO(maxDate.valueDateTime);
-    }
-    return undefined;
-  };
-
-  const getMinDate = (): Date | undefined => {
-    const minDate = getExtension(Extensions.DATE_MIN_VALUE_URL, item);
-    if (minDate && minDate.valueString) return evaluateFhirpathExpressionToGetDate(item, minDate.valueString);
-    return getMinDateWithExtension();
-  };
-
-  const getMinDateWithExtension = (): Date | undefined => {
-    const minDate = getExtension(Extensions.MIN_VALUE_URL, item);
-    if (!minDate) {
-      return;
-    }
-    if (minDate.valueDate) {
-      return parseISO(minDate.valueDate);
-    } else if (minDate.valueDateTime) {
-      return parseISO(minDate.valueDateTime);
-    }
-    return undefined;
   };
 
   const convertDateToString = (item: QuestionnaireItem, answer?: QuestionnaireResponseItemAnswer): string | undefined => {
@@ -156,9 +117,6 @@ const DateTimeInput = ({
   const [date, setDate] = React.useState<Date | undefined>(getDefaultDate(item, answer));
   const [hours, setHours] = React.useState(getHoursOrMinutesFromDate(date, DateTimeUnit.Hours));
   const [minutes, setMinutes] = React.useState(getHoursOrMinutesFromDate(date, DateTimeUnit.Minutes));
-
-  const maxDateTime = getMaxDate();
-  const minDateTime = getMinDate();
 
   const getErrorText = (error: FieldError | undefined): string | undefined => {
     const validationTextExtension = getValidationTextExtension(item);
@@ -315,4 +273,4 @@ const DateTimeInput = ({
   );
 };
 
-export default layoutChange(DateTimeInput);
+export default DateTimeInput;
