@@ -34,8 +34,8 @@ import { useExternalRenderContext } from '@/context/externalRenderContext';
 export type Props = QuestionnaireComponentItemProps;
 
 const Quantity = (props: Props): JSX.Element | null => {
-  const { path, item, onAnswerChange, id, resources, pdf, idWithLinkIdAndItemIndex, responseItems, index, children, responseItem } = props;
-  const { promptLoginMessage } = useExternalRenderContext();
+  const { path, item, id, resources, pdf, idWithLinkIdAndItemIndex, responseItems, index, children, responseItem } = props;
+  const { promptLoginMessage, onAnswerChange } = useExternalRenderContext();
   const { formState, getFieldState } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
@@ -84,9 +84,8 @@ const Quantity = (props: Props): JSX.Element | null => {
       quantity.value = value;
     }
 
-    dispatch(newQuantityValueAsync(path || [], quantity, item))?.then(
-      newState =>
-        onAnswerChange && onAnswerChange(newState, path || [], item, { valueQuantity: quantity } as QuestionnaireResponseItemAnswer)
+    dispatch(newQuantityValueAsync(path || [], quantity, item))?.then(newState =>
+      onAnswerChange(newState, item, { valueQuantity: quantity } as QuestionnaireResponseItemAnswer)
     );
 
     if (promptLoginMessage) {
@@ -183,7 +182,6 @@ const Quantity = (props: Props): JSX.Element | null => {
           item={item}
           path={path}
           index={index}
-          onAnswerChange={onAnswerChange}
           responseItem={responseItem}
           resources={resources}
           className="page_refero__deletebutton--margin-top"

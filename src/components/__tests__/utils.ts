@@ -3,6 +3,7 @@ import {
   Extension,
   Questionnaire,
   QuestionnaireItem,
+  QuestionnaireItemEnableWhen,
   QuestionnaireResponse,
   QuestionnaireResponseItem,
   QuestionnaireResponseItemAnswer,
@@ -12,6 +13,7 @@ import { queryHelpers, userEvent, screen, act } from '@test/test-utils';
 import valueSet from '../../constants/valuesets';
 import { IActionRequester } from '../../util/actionRequester';
 import { IQuestionnaireInspector } from '../../util/questionnaireInspector';
+import { QuestionnaireItemEnableWhenOperatorCodes } from '@/types/fhirEnums';
 
 export async function inputAnswer(linkId: string, answer: number | string, element: HTMLElement) {
   const input = findItem(linkId, element);

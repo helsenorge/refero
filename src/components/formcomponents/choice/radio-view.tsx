@@ -32,7 +32,6 @@ const RadioView = (props: Props): JSX.Element => {
     handleChange,
     selected,
     resources,
-    onAnswerChange,
     responseItems,
     responseItem,
     path,
@@ -95,7 +94,6 @@ const RadioView = (props: Props): JSX.Element => {
         item={item}
         path={path}
         index={index}
-        onAnswerChange={onAnswerChange}
         responseItem={responseItem}
         resources={resources}
         className="page_refero__deletebutton--margin-top"

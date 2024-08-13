@@ -1,4 +1,4 @@
-import React, { FocusEvent } from 'react';
+import { FocusEvent } from 'react';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, Coding } from 'fhir/r4';
 import { ThunkDispatch } from 'redux-thunk';
@@ -42,8 +42,8 @@ import { useExternalRenderContext } from '@/context/externalRenderContext';
 export type OpenChoiceProps = QuestionnaireComponentItemProps;
 
 export const OpenChoice = (props: OpenChoiceProps): JSX.Element | null => {
-  const { id, item, pdf, responseItem, containedResources, resources, path, onAnswerChange, children } = props;
-  const { promptLoginMessage } = useExternalRenderContext();
+  const { id, item, pdf, responseItem, containedResources, resources, path, children } = props;
+  const { promptLoginMessage, onAnswerChange } = useExternalRenderContext();
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
   const answer = useGetAnswer(responseItem, item);
   const enable = useIsEnabled(item, path);
@@ -134,13 +134,11 @@ export const OpenChoice = (props: OpenChoiceProps): JSX.Element | null => {
   };
 
   const handleStringChange = (value: string): void => {
-    if (dispatch && onAnswerChange && path) {
+    if (dispatch && path) {
       if (value.length > 0) {
-        dispatch(newCodingStringValueAsync(path, value, item))?.then(newState =>
-          onAnswerChange(newState, path, item, { valueString: value })
-        );
+        dispatch(newCodingStringValueAsync(path, value, item))?.then(newState => onAnswerChange(newState, item, { valueString: value }));
       } else {
-        dispatch(removeCodingStringValueAsync(path, item))?.then(newState => onAnswerChange(newState, path, item, { valueString: '' }));
+        dispatch(removeCodingStringValueAsync(path, item))?.then(newState => onAnswerChange(newState, item, { valueString: '' }));
       }
     }
 
@@ -157,16 +155,16 @@ export const OpenChoice = (props: OpenChoiceProps): JSX.Element | null => {
   };
 
   const resetInitialAnswer = (code: string): void => {
-    if (dispatch && code && path && onAnswerChange) {
+    if (dispatch && code && path) {
       const coding = getAnswerValueCoding(code);
       const responseAnswer = { valueCoding: coding };
       if (getIndexOfAnswer(code, answer) > -1) {
-        dispatch(removeCodingValueAsync(path, coding, item))?.then(newState => onAnswerChange(newState, path, item, responseAnswer));
+        dispatch(removeCodingValueAsync(path, coding, item))?.then(newState => onAnswerChange(newState, item, responseAnswer));
         if (promptLoginMessage) {
           promptLoginMessage();
         }
       }
-      dispatch(newCodingValueAsync(path, coding, item, true))?.then(newState => onAnswerChange(newState, path, item, responseAnswer));
+      dispatch(newCodingValueAsync(path, coding, item, true))?.then(newState => onAnswerChange(newState, item, responseAnswer));
       if (promptLoginMessage) {
         promptLoginMessage();
       }
@@ -174,17 +172,17 @@ export const OpenChoice = (props: OpenChoiceProps): JSX.Element | null => {
   };
 
   const handleCheckboxChange = (code?: string): void => {
-    if (dispatch && code && path && onAnswerChange) {
+    if (dispatch && code && path) {
       const coding = getAnswerValueCoding(code);
       const responseAnswer = { valueCoding: coding };
       if (getIndexOfAnswer(code, answer) > -1) {
-        dispatch(removeCodingValueAsync(path, coding, item))?.then(newState => onAnswerChange(newState, path, item, responseAnswer));
+        dispatch(removeCodingValueAsync(path, coding, item))?.then(newState => onAnswerChange(newState, item, responseAnswer));
 
         if (promptLoginMessage) {
           promptLoginMessage();
         }
       } else {
-        dispatch(newCodingValueAsync(path, coding, item, true))?.then(newState => onAnswerChange(newState, path, item, responseAnswer));
+        dispatch(newCodingValueAsync(path, coding, item, true))?.then(newState => onAnswerChange(newState, item, responseAnswer));
         if (promptLoginMessage) {
           promptLoginMessage();
         }
@@ -195,9 +193,9 @@ export const OpenChoice = (props: OpenChoiceProps): JSX.Element | null => {
   };
 
   const clearCodingAnswer = (coding: Coding): void => {
-    if (dispatch && onAnswerChange && path) {
+    if (dispatch && path) {
       const responseAnswer = { valueCoding: coding };
-      dispatch(removeCodingValueAsync(path, coding, item))?.then(newState => onAnswerChange(newState, path, item, responseAnswer));
+      dispatch(removeCodingValueAsync(path, coding, item))?.then(newState => onAnswerChange(newState, item, responseAnswer));
       if (promptLoginMessage) {
         promptLoginMessage();
       }
@@ -205,10 +203,10 @@ export const OpenChoice = (props: OpenChoiceProps): JSX.Element | null => {
   };
 
   const handleChange = (code?: string, systemArg?: string, displayArg?: string): void => {
-    if (dispatch && code && path && onAnswerChange) {
+    if (dispatch && code && path) {
       const coding = getAnswerValueCoding(code, systemArg, displayArg);
       const responseAnswer = { valueCoding: coding };
-      dispatch(newCodingValueAsync(path, coding, item))?.then(newState => onAnswerChange(newState, path, item, responseAnswer));
+      dispatch(newCodingValueAsync(path, coding, item))?.then(newState => onAnswerChange(newState, item, responseAnswer));
       if (promptLoginMessage) {
         promptLoginMessage();
       }
@@ -227,19 +225,19 @@ export const OpenChoice = (props: OpenChoiceProps): JSX.Element | null => {
   };
 
   const singleValueHandler = (coding: Coding): void => {
-    if (dispatch && path && onAnswerChange) {
+    if (dispatch && path) {
       if (coding.code !== OPEN_CHOICE_ID) {
-        dispatch(removeCodingStringValueAsync(path, item))?.then(newState => onAnswerChange(newState, path, item, { valueString: '' }));
+        dispatch(removeCodingStringValueAsync(path, item))?.then(newState => onAnswerChange(newState, item, { valueString: '' }));
       }
     }
   };
 
   const multiValueHandler = (coding: Coding): void => {
-    if (dispatch && onAnswerChange && path) {
+    if (dispatch && path) {
       const isShown = shouldShowExtraChoice(answer);
 
       if (isShown && coding.code === OPEN_CHOICE_ID) {
-        dispatch(removeCodingStringValueAsync(path, item))?.then(newState => onAnswerChange(newState, path, item, { valueString: '' }));
+        dispatch(removeCodingStringValueAsync(path, item))?.then(newState => onAnswerChange(newState, item, { valueString: '' }));
       }
     }
   };
@@ -278,7 +276,9 @@ export const OpenChoice = (props: OpenChoiceProps): JSX.Element | null => {
   const itemControlValue = getItemControlValue(item);
   const shouldRenderAutosuggest = hasCanonicalValueSet(item) && itemControlValue === ItemControlConstants.AUTOCOMPLETE;
   const value = getValue(item, answer);
-
+  if (!enable) {
+    return null;
+  }
   if (pdf || isReadOnly(item)) {
     return (
       <TextView id={id} item={item} value={getPDFValue(item, answer)}>
@@ -286,9 +286,7 @@ export const OpenChoice = (props: OpenChoiceProps): JSX.Element | null => {
       </TextView>
     );
   }
-  if (!enable) {
-    return null;
-  }
+
   return (
     <>
       {hasOptionsAndNoCanonicalValueSet ? (

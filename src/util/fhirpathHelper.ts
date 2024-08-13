@@ -1,31 +1,32 @@
 import { QuestionnaireItem, Extension, QuestionnaireResponse } from 'fhir/r4';
-import fhirpath from 'fhirpath';
+import fhirpath, { Context } from 'fhirpath';
 import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
 
-import r4 from './fhirpathLoaderHelper';
+export async function evaluateFhirpathExpressionToGetDate(item: QuestionnaireItem, fhirExpression: string): Promise<Date | undefined> {
+  const result = await fhirpath.evaluate(item, fhirExpression, undefined, fhirpath_r4_model);
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-
-export function evaluateFhirpathExpressionToGetDate(item: QuestionnaireItem, fhirExpression: string): Date | undefined {
-  const result = fhirpath.evaluate(item, fhirExpression, null, r4);
-  if (result.length > 0) {
-    return new Date(result[0].asStr);
+  if (Array.isArray(result)) {
+    return new Date(result[0]);
   }
 
-  return;
+  return undefined;
 }
 
 export function evaluateFhirpathExpressionToGetString(fhirExtension: Extension, questionnare?: QuestionnaireResponse | null): any {
   const qCopy = structuredClone(questionnare);
   const qExt = structuredClone(fhirExtension);
   try {
-    return fhirpath.evaluate(qCopy, qExt.valueString, null, fhirpath_r4_model);
+    if (qExt.valueString) {
+      return fhirpath.evaluate(qCopy, qExt.valueString, undefined, fhirpath_r4_model);
+    } else {
+      return [];
+    }
   } catch (error) {
     return [];
   }
 }
 
-export function evaluateExtension(path: string | object, questionnare?: QuestionnaireResponse | null, context?: 'object' | null): unknown {
+export function evaluateExtension(path: string | fhirpath.Path, questionnare?: QuestionnaireResponse | null, context?: Context): unknown {
   const qCopy = structuredClone(questionnare);
   /**
    *  Evaluates the "path" FHIRPath expression on the given resource or part of the resource,

@@ -50,9 +50,9 @@ describe('Default form values', () => {
       expect(wrapper.queryByTestId(/summary-element-Tom integer/i)).toBeInTheDocument();
     });
   });
-  describe('Initial date value', () => {});
-  describe('Initial dateTime value', () => {});
-  describe('Initial time value', () => {});
+  describe.skip('Initial date value', () => {});
+  describe.skip('Initial dateTime value', () => {});
+  describe.skip('Initial time value', () => {});
   describe('Initial choice value', () => {
     describe('initial Radiobutton value', () => {
       it('prefilled values should not cause a validation error on submit', async () => {

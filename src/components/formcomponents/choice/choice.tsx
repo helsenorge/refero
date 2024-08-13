@@ -32,8 +32,8 @@ import { useExternalRenderContext } from '@/context/externalRenderContext';
 export type ChoiceProps = QuestionnaireComponentItemProps;
 
 export const Choice = (props: ChoiceProps): JSX.Element | null => {
-  const { resources, containedResources, item, onAnswerChange, path, id, pdf, responseItem, children } = props;
-  const { promptLoginMessage } = useExternalRenderContext();
+  const { resources, containedResources, item, path, id, pdf, responseItem, children } = props;
+  const { promptLoginMessage, onAnswerChange } = useExternalRenderContext();
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
   const answer = useGetAnswer(responseItem, item);
   const enable = useIsEnabled(item, path);
@@ -90,13 +90,13 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
       const coding = getAnswerValueCoding(code);
       const responseAnswer = { valueCoding: coding } as QuestionnaireResponseItemAnswer;
       if (getIndexOfAnswer(code, answer) > -1 && onAnswerChange && path) {
-        dispatch(removeCodingValueAsync(path, coding, item))?.then(newState => onAnswerChange(newState, path, item, responseAnswer));
+        dispatch(removeCodingValueAsync(path, coding, item))?.then(newState => onAnswerChange(newState, item, responseAnswer));
         if (promptLoginMessage) {
           promptLoginMessage();
         }
       }
       if (onAnswerChange && path)
-        dispatch(newCodingValueAsync(path, coding, item, true))?.then(newState => onAnswerChange(newState, path, item, responseAnswer));
+        dispatch(newCodingValueAsync(path, coding, item, true))?.then(newState => onAnswerChange(newState, item, responseAnswer));
       if (promptLoginMessage) {
         promptLoginMessage();
       }
@@ -108,12 +108,12 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
       const coding = getAnswerValueCoding(code);
       const responseAnswer = { valueCoding: coding } as QuestionnaireResponseItemAnswer;
       if (getIndexOfAnswer(code, answer) > -1 && onAnswerChange && path) {
-        dispatch(removeCodingValueAsync(path, coding, item))?.then(newState => onAnswerChange(newState, path, item, responseAnswer));
+        dispatch(removeCodingValueAsync(path, coding, item))?.then(newState => onAnswerChange(newState, item, responseAnswer));
         if (promptLoginMessage) {
           promptLoginMessage();
         }
       } else if (onAnswerChange && path) {
-        dispatch(newCodingValueAsync(path, coding, item, true))?.then(newState => onAnswerChange(newState, path, item, responseAnswer));
+        dispatch(newCodingValueAsync(path, coding, item, true))?.then(newState => onAnswerChange(newState, item, responseAnswer));
         if (promptLoginMessage) {
           promptLoginMessage();
         }
@@ -125,7 +125,7 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
     if (dispatch && onAnswerChange && path) {
       const responseAnswer = { valueCoding: coding };
 
-      dispatch(removeCodingValueAsync(path, coding, item))?.then(newState => onAnswerChange(newState, path, item, responseAnswer));
+      dispatch(removeCodingValueAsync(path, coding, item))?.then(newState => onAnswerChange(newState, item, responseAnswer));
       if (promptLoginMessage) {
         promptLoginMessage();
       }
@@ -137,7 +137,7 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
       const coding = getAnswerValueCoding(code, systemArg, displayArg);
       const responseAnswer = { valueCoding: coding };
 
-      dispatch(newCodingValueAsync(path, coding, item))?.then(newState => onAnswerChange(newState, path, item, responseAnswer));
+      dispatch(newCodingValueAsync(path, coding, item))?.then(newState => onAnswerChange(newState, item, responseAnswer));
       if (promptLoginMessage) {
         promptLoginMessage();
       }

@@ -102,7 +102,7 @@ describe('Dropdown-view - choice', () => {
         ...q,
         item: q.item?.map(x => ({ ...x, repeats: true })),
       };
-      const { getByTestId, queryAllByTestId } = createWrapper(questionnaire);
+      const { queryAllByTestId } = createWrapper(questionnaire);
 
       await clickButtonTimes(/-repeat-button/i, 2);
 

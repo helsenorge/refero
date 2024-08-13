@@ -28,8 +28,8 @@ import { useExternalRenderContext } from '@/context/externalRenderContext';
 export type Props = QuestionnaireComponentItemProps;
 
 export const String = (props: Props): JSX.Element | null => {
-  const { path, item, onAnswerChange, id, pdf, resources, idWithLinkIdAndItemIndex, children, responseItems, index, responseItem } = props;
-  const { promptLoginMessage, validateScriptInjection } = useExternalRenderContext();
+  const { path, item, id, pdf, resources, idWithLinkIdAndItemIndex, children, responseItems, index, responseItem } = props;
+  const { promptLoginMessage, validateScriptInjection, onAnswerChange } = useExternalRenderContext();
   const { formState, getFieldState, control } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
@@ -39,9 +39,9 @@ export const String = (props: Props): JSX.Element | null => {
   const enable = useIsEnabled(item, path);
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     const value = event.target.value;
-    if (dispatch && onAnswerChange && path) {
+    if (dispatch && path) {
       dispatch(newStringValueAsync(path, value, item))?.then(newState => {
-        return onAnswerChange(newState, path, item, { valueString: value });
+        return onAnswerChange(newState, item, { valueString: value });
       });
     }
 
@@ -138,7 +138,6 @@ export const String = (props: Props): JSX.Element | null => {
           item={item}
           path={path}
           index={index}
-          onAnswerChange={onAnswerChange}
           responseItem={responseItem}
           resources={resources}
           className="page_refero__deletebutton--margin-top"

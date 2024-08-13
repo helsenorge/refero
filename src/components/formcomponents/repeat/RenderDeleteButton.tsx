@@ -2,7 +2,6 @@ import { QuestionnaireItem, QuestionnaireResponseItem, QuestionnaireResponseItem
 
 import DeleteButton from './DeleteButton';
 
-import { GlobalState } from '@/reducers';
 import { Path, shouldRenderDeleteButton } from '@/util/refero-core';
 import { Resources } from '@/util/resources';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
@@ -14,22 +13,14 @@ type Props = {
   path?: Path[];
   responseItem?: QuestionnaireResponseItem;
   resources?: Resources;
-  onAnswerChange?: (newState: GlobalState, path: Path[], item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
 };
 
-export const RenderDeleteButton = ({
-  resources,
-  className,
-  responseItem,
-  item,
-  path,
-  onAnswerChange,
-  index,
-}: Props): JSX.Element | null => {
+export const RenderDeleteButton = ({ resources, className, responseItem, item, path, index }: Props): JSX.Element | null => {
   if (!shouldRenderDeleteButton(item, index || 0)) {
     return null;
   }
   const answer = useGetAnswer(responseItem, item);
+
   const hasAnwer = (answer: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[] | undefined): boolean => {
     return !!answer && Object.keys(answer).length > 0;
   };
@@ -41,14 +32,7 @@ export const RenderDeleteButton = ({
   }
   return (
     <div className="page_refero__deletebutton-wrapper">
-      <DeleteButton
-        className={className}
-        item={item}
-        path={path}
-        resources={resources}
-        mustShowConfirm={mustShowConfirm}
-        onAnswerChange={onAnswerChange}
-      />
+      <DeleteButton className={className} item={item} path={path} resources={resources} mustShowConfirm={mustShowConfirm} />
     </div>
   );
 };

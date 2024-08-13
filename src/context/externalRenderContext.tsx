@@ -1,7 +1,11 @@
+import useOnAnswerChange from '@/hooks/useOnAnswerChange';
+import { GlobalState } from '@/reducers';
 import { AutoSuggestProps } from '@/types/autoSuggestProps';
 import { OrgenhetHierarki } from '@/types/orgenhetHierarki';
+import { IActionRequester } from '@/util/actionRequester';
+import { IQuestionnaireInspector } from '@/util/questionnaireInspector';
 import { Resources } from '@/util/resources';
-import { QuestionnaireItem, ValueSet } from 'fhir/r4';
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer, ValueSet } from 'fhir/r4';
 import { createContext, useContext, ReactNode } from 'react';
 
 type ExternalRenderType = {
@@ -33,6 +37,7 @@ type ExternalRenderType = {
   resources?: Resources;
   validateScriptInjection?: boolean;
   autoSuggestProps?: AutoSuggestProps;
+  onAnswerChange: (state: GlobalState, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
 };
 
 const ExternalRender = createContext<ExternalRenderType | undefined>(undefined);
@@ -67,6 +72,12 @@ export type ExternalRenderProviderProps = {
   resources?: Resources;
   validateScriptInjection?: boolean;
   autoSuggestProps?: AutoSuggestProps;
+  onChange?: (
+    item: QuestionnaireItem,
+    answer: QuestionnaireResponseItemAnswer,
+    actionRequester: IActionRequester,
+    questionnaireInspector: IQuestionnaireInspector
+  ) => void;
 };
 export const ExternalRenderProvider = ({
   children,
@@ -81,7 +92,9 @@ export const ExternalRenderProvider = ({
   resources,
   autoSuggestProps,
   validateScriptInjection,
+  onChange,
 }: ExternalRenderProviderProps): JSX.Element => {
+  const onAnswerChange = useOnAnswerChange(onChange);
   return (
     <ExternalRender.Provider
       value={{
@@ -96,6 +109,7 @@ export const ExternalRenderProvider = ({
         resources,
         autoSuggestProps,
         validateScriptInjection,
+        onAnswerChange,
       }}
     >
       {children}
