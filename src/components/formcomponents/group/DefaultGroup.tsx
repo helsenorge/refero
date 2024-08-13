@@ -19,7 +19,7 @@ type DefaultGroup = QuestionnaireComponentItemProps & {
   setIsHelpVisible: Dispatch<React.SetStateAction<boolean>>;
 };
 const DefaultGroup = ({ isHelpVisible, setIsHelpVisible, children, ...rest }: DefaultGroup): JSX.Element => {
-  const { item, resources, headerTag, includeSkipLink, path, onAnswerChange, responseItem, index, id, responseItems } = rest;
+  const { item, resources, headerTag, includeSkipLink, path, responseItem, index, id, responseItems } = rest;
   const { onRenderMarkdown } = useExternalRenderContext();
   const formDefinition = useSelector((state: GlobalState) => getFormDefinition(state));
   const questionnaire = formDefinition?.Content;
@@ -46,7 +46,6 @@ const DefaultGroup = ({ isHelpVisible, setIsHelpVisible, children, ...rest }: De
         item={item}
         path={path}
         index={index}
-        onAnswerChange={onAnswerChange}
         responseItem={responseItem}
         resources={resources}
         className="page_refero__deletebutton--margin-top"

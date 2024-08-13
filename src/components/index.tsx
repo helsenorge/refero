@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { PresentationButtonsType } from '@constants/presentationButtonsType';
-import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
+
 import { FormProvider, useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { ReferoProps } from '@/types/referoProps';
@@ -12,18 +12,16 @@ import StepView from './stepView';
 import { GlobalState } from '@/reducers';
 import { getFormDefinition, getFormData } from '@/reducers/form';
 import { FormDefinition, FormData } from '@/reducers/form';
-import { ActionRequester, IActionRequester } from '@/util/actionRequester';
+
 import { getPresentationButtonsExtension } from '@/util/extension';
 import { IE11HackToWorkAroundBug187484 } from '@/util/hacks';
-import { IQuestionnaireInspector, QuestionniareInspector } from '@/util/questionnaireInspector';
-import { Path } from '@/util/refero-core';
+
 import { shouldFormBeDisplayedAsStepView } from '@/util/shouldFormBeDisplayedAsStepView';
 import { createIntitialFormValues } from '@/validation/defaultFormValues';
 import { ExternalRenderProvider } from '@/context/externalRenderContext';
 import { setSkjemaDefinition } from '@/actions/form';
 import { AttachmentProvider } from '@/context/AttachmentContext';
-import GenerateQuestionnaireComponents, { QuestionnaireItemsProps } from './GenerateQuestionnaireComponents';
-import { useScoringCalculator } from '@/hooks/useScoringCalculator';
+import GenerateQuestionnaireComponents from './GenerateQuestionnaireComponents';
 
 const Refero = (props: ReferoProps): JSX.Element | null => {
   IE11HackToWorkAroundBug187484();
@@ -33,7 +31,6 @@ const Refero = (props: ReferoProps): JSX.Element | null => {
   const questionnaire = formDefinition?.Content;
   // const schema = createZodSchemaFromQuestionnaire(questionnaire, props.resources, questionnaire?.contained);
   const defualtVals = React.useMemo(() => createIntitialFormValues(questionnaire?.item), [questionnaire?.item?.length]);
-  const { runScoringCalculator } = useScoringCalculator();
 
   // console.log('defualtVals', defualtVals);
   const methods = useForm({
@@ -67,36 +64,6 @@ const Refero = (props: ReferoProps): JSX.Element | null => {
       props.onSave(formData.Content);
     }
   };
-  const handleOnChange = (
-    item: QuestionnaireItem,
-    answer: QuestionnaireResponseItemAnswer,
-    actionRequester: IActionRequester,
-    questionnaireInspector: IQuestionnaireInspector
-  ): void => {
-    if (props.onChange) {
-      props.onChange(item, answer, actionRequester, questionnaireInspector);
-    }
-  };
-  const onAnswerChange = (
-    state: GlobalState,
-    _path: Array<Path>,
-    item: QuestionnaireItem,
-    answer: QuestionnaireResponseItemAnswer
-  ): void => {
-    const questionnaire = state.refero.form.FormDefinition.Content;
-    const questionnaireResponse = state.refero.form.FormData.Content;
-    if (questionnaire && questionnaireResponse) {
-      const actionRequester = new ActionRequester(questionnaire, questionnaireResponse);
-
-      const questionnaireInspector = new QuestionniareInspector(questionnaire, questionnaireResponse);
-      handleOnChange(item, answer, actionRequester, questionnaireInspector);
-      for (const action of actionRequester.getActions()) {
-        dispatch(action);
-      }
-    }
-
-    runScoringCalculator(questionnaire, questionnaireResponse);
-  };
 
   const getButtonClasses = (
     presentationButtonsType: PresentationButtonsType | null,
@@ -119,10 +86,7 @@ const Refero = (props: ReferoProps): JSX.Element | null => {
   if (!formDefinition || !formDefinition.Content || !resources) {
     return null;
   }
-  const qItemProps: QuestionnaireItemsProps = {
-    items: questionnaire?.item,
-    onAnswerChange,
-  };
+
   if (props.pdf) {
     return (
       <ExternalRenderProvider
@@ -139,7 +103,7 @@ const Refero = (props: ReferoProps): JSX.Element | null => {
         validateScriptInjection={props.validateScriptInjection}
       >
         <FormProvider {...methods}>
-          <GenerateQuestionnaireComponents {...qItemProps} pdf={true} />
+          <GenerateQuestionnaireComponents items={questionnaire?.item} pdf={true} />
         </FormProvider>
       </ExternalRenderProvider>
     );
@@ -163,6 +127,7 @@ const Refero = (props: ReferoProps): JSX.Element | null => {
         resources={resources}
         autoSuggestProps={props.autoSuggestProps}
         validateScriptInjection={props.validateScriptInjection}
+        onChange={props.onChange}
       >
         <AttachmentProvider
           attachmentErrorMessage={props.attachmentErrorMessage}
@@ -178,7 +143,6 @@ const Refero = (props: ReferoProps): JSX.Element | null => {
               <StepView
                 isAuthorized={authorized}
                 referoProps={props}
-                qItemProps={qItemProps}
                 resources={resources}
                 onSave={handleSave}
                 onSubmit={handleSubmit}
@@ -194,7 +158,7 @@ const Refero = (props: ReferoProps): JSX.Element | null => {
                 onSubmit={handleSubmit}
                 methods={methods}
               >
-                <GenerateQuestionnaireComponents {...qItemProps} pdf={false} />
+                <GenerateQuestionnaireComponents items={questionnaire?.item} pdf={false} />
               </RenderForm>
             )}
           </FormProvider>

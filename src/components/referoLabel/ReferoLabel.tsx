@@ -45,8 +45,8 @@ export const ReferoLabel = ({
         <div className={styles.label_content}>
           <SafeText text={lblText} />
           {/* <>{!isRequired(item) && <span>{'(Valgfritt)'}</span>}</> */}
-          {afterLabelContent && afterLabelContent}
           {subLabelText && <SubLabel id={sublabelId} testId={sublabelTestId} subLabelText={subLabelText} />}
+          {afterLabelContent && afterLabelContent}
         </div>
       </Label>
     </div>

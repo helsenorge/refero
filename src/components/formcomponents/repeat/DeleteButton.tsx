@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
+import { QuestionnaireItem } from 'fhir/r4';
 import { useDispatch } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
@@ -13,6 +13,7 @@ import { NewValueAction, deleteRepeatItemAsync } from '../../../actions/newValue
 import { GlobalState } from '../../../reducers';
 import { Path } from '../../../util/refero-core';
 import { Resources } from '../../../util/resources';
+import { useExternalRenderContext } from '@/context/externalRenderContext';
 
 interface Props {
   className?: string;
@@ -20,17 +21,16 @@ interface Props {
   path?: Array<Path>;
   resources?: Resources;
   mustShowConfirm?: boolean;
-  onAnswerChange?: (newState: GlobalState, path: Array<Path>, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
 }
 
-const DeleteButton = ({ resources, item, path, onAnswerChange, mustShowConfirm }: Props): JSX.Element => {
+const DeleteButton = ({ resources, item, path, mustShowConfirm }: Props): JSX.Element => {
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
+  const { onAnswerChange } = useExternalRenderContext();
   const [showConfirm, setShowConfirm] = useState(false);
+
   const onDeleteRepeatItemConfirmed = (): void => {
     if (dispatch && item && path) {
-      dispatch(deleteRepeatItemAsync(path, item))?.then(
-        newState => onAnswerChange && onAnswerChange(newState, path, item, {} as QuestionnaireResponseItemAnswer)
-      );
+      dispatch(deleteRepeatItemAsync(path, item))?.then(newState => onAnswerChange(newState, item, {}));
     }
     setShowConfirm(false);
   };

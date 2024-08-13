@@ -190,7 +190,7 @@ function renderWrapperWithItem(item: QuestionnaireItem, answer: QuestionnaireRes
   //   dispatch={() => undefined as any}
   //   item={item}
   //   path={[]}
-  //   onAnswerChange={() => {}}
+
   //   responseItem={{
   //     linkId: item.linkId,
   //   }}

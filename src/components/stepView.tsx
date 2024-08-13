@@ -11,19 +11,19 @@ import { Resources } from '../util/resources';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 import { useSelector } from 'react-redux';
 import { GlobalState } from '@/reducers';
-import RenderQuestionnaireItems, { QuestionnaireItemsProps } from './GenerateQuestionnaireComponents';
+import RenderQuestionnaireItems from './GenerateQuestionnaireComponents';
 
 interface StepViewProps {
   isAuthorized: boolean;
   referoProps: ReferoProps;
-  qItemProps: QuestionnaireItemsProps;
+
   resources: Resources;
   onSave: () => void;
   onSubmit: () => void;
   methods: UseFormReturn<FieldValues, unknown, undefined>;
 }
 
-const StepView = ({ isAuthorized, referoProps, qItemProps, resources, onSave, onSubmit, methods }: StepViewProps): JSX.Element | null => {
+const StepView = ({ isAuthorized, referoProps, resources, onSave, onSubmit, methods }: StepViewProps): JSX.Element | null => {
   const formDefinition = useSelector<GlobalState, FormDefinition | null>((state: GlobalState) => getFormDefinition(state));
   const [stepIndex, setStepIndex] = React.useState(0);
   const { onStepChange } = useExternalRenderContext();
@@ -64,7 +64,7 @@ const StepView = ({ isAuthorized, referoProps, qItemProps, resources, onSave, on
         previousStep={previousStep}
         methods={methods}
       >
-        <RenderQuestionnaireItems {...qItemProps} items={[topLevelElements[stepIndex]]} pdf={false} />
+        <RenderQuestionnaireItems items={[topLevelElements[stepIndex]]} pdf={false} />
       </RenderForm>
     </>
   );

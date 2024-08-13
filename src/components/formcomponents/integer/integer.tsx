@@ -28,10 +28,10 @@ import { useExternalRenderContext } from '@/context/externalRenderContext';
 
 export type Props = QuestionnaireComponentItemProps;
 const Integer = (props: Props): JSX.Element | null => {
-  const { item, resources, id, pdf, idWithLinkIdAndItemIndex, path, responseItem, onAnswerChange, responseItems, index, children } = props;
+  const { item, resources, id, pdf, idWithLinkIdAndItemIndex, path, responseItem, responseItems, index, children } = props;
 
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
-  const { promptLoginMessage } = useExternalRenderContext();
+  const { promptLoginMessage, onAnswerChange } = useExternalRenderContext();
   const { formState, getFieldState, control } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
@@ -67,8 +67,8 @@ const Integer = (props: Props): JSX.Element | null => {
 
   const handleChange = (event: React.FormEvent<HTMLInputElement>): void => {
     const value = parseInt((event.target as HTMLInputElement).value, 10);
-    if (dispatch && onAnswerChange && path) {
-      dispatch(newIntegerValueAsync(path, value, item))?.then(newState => onAnswerChange(newState, path, item, { valueInteger: value }));
+    if (dispatch && path) {
+      dispatch(newIntegerValueAsync(path, value, item))?.then(newState => onAnswerChange(newState, item, { valueInteger: value }));
     }
 
     if (promptLoginMessage) {
@@ -146,7 +146,6 @@ const Integer = (props: Props): JSX.Element | null => {
           item={item}
           path={path}
           index={index}
-          onAnswerChange={onAnswerChange}
           responseItem={responseItem}
           resources={resources}
           className="page_refero__deletebutton--margin-top"

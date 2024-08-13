@@ -55,8 +55,7 @@ export const DateYearMonthInput = ({
     if (!answer) return undefined;
 
     const answerItem = Array.isArray(answer) ? answer[0] : answer;
-
-    return answerItem.valueDate ?? answerItem.valueDateTime;
+    return answerItem ? answerItem.valueDate ?? answerItem.valueDateTime : '';
   };
 
   const getValue = (): { year: number; month: string | null } | undefined => {

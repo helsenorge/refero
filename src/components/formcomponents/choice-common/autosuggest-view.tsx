@@ -45,7 +45,6 @@ const AutosuggestView = (props: AutosuggestProps): JSX.Element | null => {
     responseItems,
     responseItem,
     path,
-    onAnswerChange,
     children,
   } = props;
   const { formState, getFieldState, control } = useFormContext<FieldValues>();
@@ -247,7 +246,6 @@ const AutosuggestView = (props: AutosuggestProps): JSX.Element | null => {
           item={item}
           path={path}
           index={index}
-          onAnswerChange={onAnswerChange}
           responseItem={responseItem}
           resources={resources}
           className="page_refero__deletebutton--margin-top"

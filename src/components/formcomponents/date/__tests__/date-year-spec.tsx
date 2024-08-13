@@ -6,7 +6,6 @@ import { Extensions } from '../../../../constants/extensions';
 import { clickButtonTimes, submitForm } from '../../../../../test/selectors';
 import { getResources } from '../../../../../preview/resources/referoResources';
 import { vi } from 'vitest';
-import { screen } from '@testing-library/dom';
 
 const resources = {
   ...getResources(''),
@@ -269,7 +268,6 @@ describe('Date year', () => {
         });
 
         await submitForm();
-        screen.debug(undefined, 30000);
         expect(getByText(resources.year_field_mindate + ': 1994')).toBeInTheDocument();
       });
       it('Should show error message for max value', async () => {

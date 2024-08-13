@@ -16,6 +16,7 @@ import { useGetAnswer } from '@/hooks/useGetAnswer';
 import { useIsEnabled } from '@/hooks/useIsEnabled';
 import { useAttachmentContext } from '@/context/AttachmentContext';
 import { QuestionnaireComponentItemProps } from '@/components/GenerateQuestionnaireComponents';
+import { useExternalRenderContext } from '@/context/externalRenderContext';
 
 export type Props = QuestionnaireComponentItemProps & {
   children?: React.ReactNode;
@@ -25,7 +26,7 @@ type UploadedFile = {
   id: string;
 };
 export const AttachmentComponent = (props: Props): JSX.Element | null => {
-  const { path, item, onAnswerChange, pdf, id, resources, responseItem, children } = props;
+  const { path, item, pdf, id, resources, responseItem, children } = props;
   const {
     onOpenAttachment,
     onRequestAttachmentLink,
@@ -38,13 +39,14 @@ export const AttachmentComponent = (props: Props): JSX.Element | null => {
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
   const enable = useIsEnabled(item, path);
   const answer = useGetAnswer(responseItem, item);
+  const { onAnswerChange } = useExternalRenderContext();
   const onUpload = (files: UploadFile[]): void => {
     if (uploadAttachment) {
       for (const file of files) {
         const onSuccess = (attachment: Attachment): void => {
           if (onAnswerChange && attachment && path) {
             dispatch(newAttachmentAsync(path, attachment, item, isRepeat(item)))?.then(newState =>
-              onAnswerChange(newState, path, item, { valueAttachment: attachment })
+              onAnswerChange(newState, item, { valueAttachment: attachment })
             );
           }
         };
@@ -61,7 +63,7 @@ export const AttachmentComponent = (props: Props): JSX.Element | null => {
           const attachment: Attachment = { url: fileId };
           if (path)
             dispatch(removeAttachmentAsync(path, attachment, item))?.then(
-              newState => onAnswerChange && onAnswerChange(newState, path, item, { valueAttachment: attachment })
+              newState => onAnswerChange && onAnswerChange(newState, item, { valueAttachment: attachment })
             );
         }
       };
