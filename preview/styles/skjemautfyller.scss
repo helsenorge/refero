@@ -1,10 +1,10 @@
 @import './_variables.scss';
-@import '@helsenorge/designsystem-react/scss/_spacers.scss';
-@import '@helsenorge/designsystem-react/scss/_breakpoints.scss';
-@import './sidebar';
-@import './fieldset';
-@import './helpbutton.scss';
-@import './navigator.scss';
+@import "@helsenorge/designsystem-react/scss/_spacers.scss";
+@import "@helsenorge/designsystem-react/scss/_breakpoints.scss";
+@import "./sidebar";
+@import "./fieldset";
+@import "./helpbutton.scss";
+@import "./navigator.scss";
 
 .page_refero__fixed-scroll-offset {
   scroll-padding-bottom: 70px;
@@ -48,7 +48,7 @@
       position: absolute;
     }
 
-    .page_refero__autosuggest div[role='combobox'] {
+    .page_refero__autosuggest div[role="combobox"] {
       max-width: 36rem;
     }
   }
@@ -263,6 +263,15 @@
     background-color: #efe4fd;
     padding: 1.75rem 2rem;
   }
+  .page_refero__receivercomponent {
+    h2 {
+      margin: 0;
+    }
+
+    .page_refero__sublabel {
+      margin-bottom: 2rem;
+    }
+  }
   &__table_hn1 {
     &__heading {
       font-weight: bold;
@@ -343,7 +352,7 @@
 }
 
 .page_refero__stickybar .page_refero__saveblock {
-  @media (min-width: map-get($grid-breakpoints, sm)) {
+  @media (min-width: map-get($grid-breakpoints, xs)) {
     position: sticky;
     bottom: 0;
     background-color: #fff;
@@ -368,16 +377,6 @@
   }
   .atom_helptrigger-button {
     transform: scale(0.5);
-  }
-}
-
-.page_refero .page_refero__receivercomponent {
-  h2 {
-    margin: 0;
-  }
-
-  .page_refero__sublabel {
-    margin-bottom: 2rem;
   }
 }
 

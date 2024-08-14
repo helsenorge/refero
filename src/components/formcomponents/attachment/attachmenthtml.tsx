@@ -98,8 +98,8 @@ const attachmentHtml = ({
           item={item}
           resources={resources}
           htmlFor={id}
-          labelId={`${getId(id)}-string-label`}
-          testId={`${getId(id)}-string-label`}
+          labelId={`${getId(id)}-attachment-label`}
+          testId={`${getId(id)}-attachment-label`}
           afterLabelContent={<RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />}
         />
         <FileUpload
@@ -111,6 +111,7 @@ const attachmentHtml = ({
             validate: () => true,
             shouldUnregister: true,
           })}
+          wrapperTestId={`${getId(id)}-attachment`}
           inputId={id}
           onChangeFile={handleUpload}
           onDeleteFile={handleDelete}

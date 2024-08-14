@@ -39,7 +39,9 @@ export const AttachmentComponent = (props: Props): JSX.Element | null => {
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
   const enable = useIsEnabled(item, path);
   const answer = useGetAnswer(responseItem, item);
+
   const { onAnswerChange } = useExternalRenderContext();
+
   const onUpload = (files: UploadFile[]): void => {
     if (uploadAttachment) {
       for (const file of files) {
@@ -80,7 +82,7 @@ export const AttachmentComponent = (props: Props): JSX.Element | null => {
     return buttonText;
   };
 
-  const getAttachment = (): UploadedFile[] => {
+  const getAttachment = (): UploadedFile[] | undefined => {
     if (Array.isArray(answer)) {
       return answer.map(v => {
         return {
@@ -98,7 +100,7 @@ export const AttachmentComponent = (props: Props): JSX.Element | null => {
         ];
       }
     }
-    return [];
+    return undefined;
   };
 
   const getPdfValue = (): string => {
@@ -111,6 +113,7 @@ export const AttachmentComponent = (props: Props): JSX.Element | null => {
 
     return '';
   };
+
   if (!enable) {
     return null;
   }
