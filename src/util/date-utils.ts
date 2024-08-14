@@ -1,7 +1,7 @@
-import { parse, format, setHours, setMinutes, getYear, startOfDay, isValid, isBefore, isAfter, endOfDay } from 'date-fns';
+import { parse, format, setHours, setMinutes, getYear, startOfDay, isValid, isBefore, isAfter, endOfDay, parseISO } from 'date-fns';
 import { QuestionnaireResponseItemAnswer } from 'fhir/r4';
 
-import { DateFormat, DatePickerFormat, DateTimeUnit } from '../types/dateTypes';
+import { DateFormat, DatePickerFormat, DateTimeUnit, TimeValues } from '../types/dateTypes';
 
 import { safeParseJSON } from './date-fns-utils';
 import { Resources } from './resources';
@@ -53,6 +53,36 @@ export const getHoursOrMinutesFromDate = (date: Date | undefined, unitToGet: Dat
   }
 
   return undefined;
+};
+
+export const extractTimeFromAnswer = (
+  answer: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[] | undefined
+): TimeValues | null => {
+  if (!answer) return null;
+
+  const getTimeValues = (timeStr: string): TimeValues => {
+    const date = parseISO(timeStr);
+    return {
+      hours: date.getHours(),
+      minutes: date.getMinutes(),
+    };
+  };
+
+  let timeStr: string | undefined;
+
+  if (Array.isArray(answer)) {
+    if (answer.length > 0) {
+      timeStr = answer[0].valueTime || answer[0].valueDate || answer[0].valueDateTime;
+    }
+  } else {
+    timeStr = answer.valueTime || answer.valueDate || answer.valueDateTime;
+  }
+
+  if (timeStr) {
+    return getTimeValues(timeStr);
+  }
+
+  return null;
 };
 
 export const parseStringToDateDDMMYYYY = (valueToParse: string | Date | undefined): Date | undefined => {

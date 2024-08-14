@@ -3,14 +3,13 @@ import React from 'react';
 import { getHours, getMinutes } from 'date-fns';
 import { QuestionnaireResponseItemAnswer } from 'fhir/r4';
 
-import TimeInput from '@helsenorge/date-time/components/time-input';
-import * as DateTimeConstants from '@helsenorge/date-time/constants/datetime';
+import * as DateTimeConstants from '../../../constants/dateTimeConstants';
 
 import { newTimeValueAsync, NewValueAction } from '../../../actions/newValue';
 import { Extensions } from '../../../constants/extensions';
 import { safeParseJSON } from '../../../util/date-fns-utils';
-import { getExtension, getValidationTextExtension } from '../../../util/extension';
-import { isReadOnly, isRequired, getId } from '../../../util/index';
+import { getExtension } from '../../../util/extension';
+import { isReadOnly, isRequired } from '../../../util/index';
 import { QuestionnaireComponentItemProps } from '@/components/GenerateQuestionnaireComponents';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
@@ -21,11 +20,11 @@ import { GlobalState } from '@/reducers';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import { DateTime } from '@helsenorge/datepicker/components/DatePicker';
 import { FieldValues, useFormContext } from 'react-hook-form';
-import { validateHours, validateMinutes } from '@/util/date-utils';
+import { extractTimeFromAnswer, validateHours, validateMinutes } from '@/util/date-utils';
 
 export type Props = QuestionnaireComponentItemProps;
 
-export const Time = ({
+const Time = ({
   index,
   item,
   responseItem,
@@ -33,16 +32,16 @@ export const Time = ({
   resources,
   path,
   pdf,
-  id,
   idWithLinkIdAndItemIndex,
-  onAnswerChange,
   children,
-}: Props) => {
-  const { promptLoginMessage } = useExternalRenderContext();
+}: Props): JSX.Element | null => {
+  const { promptLoginMessage, onAnswerChange } = useExternalRenderContext();
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
-  const { register } = useFormContext<FieldValues>();
+  const { register, setValue } = useFormContext<FieldValues>();
 
   const answer = useGetAnswer(responseItem, item);
+  const [hours, setHours] = React.useState(extractTimeFromAnswer(answer)?.hours);
+  const [minutes, setMinutes] = React.useState(extractTimeFromAnswer(answer)?.minutes);
 
   const convertAnswerToString = (answer: QuestionnaireResponseItemAnswer): string => {
     if (answer && answer.valueTime) {
@@ -90,54 +89,54 @@ export const Time = ({
     return `${formattedHours}${DateTimeConstants.TIME_SEPARATOR}${formattedMinutes}`;
   };
 
-  const getMaxHour = (): number => {
-    const maxTime = getExtension(Extensions.MAX_VALUE_URL, item);
-    if (!maxTime) {
-      return 23;
-    }
-    const maxTimeString = String(maxTime.valueTime);
-    const hoursString = (maxTimeString || '').split(DateTimeConstants.TIME_SEPARATOR)[0];
-    return parseInt(hoursString, 10);
-  };
+  // const getMaxHour = (): number => {
+  //   const maxTime = getExtension(Extensions.MAX_VALUE_URL, item);
+  //   if (!maxTime) {
+  //     return 23;
+  //   }
+  //   const maxTimeString = String(maxTime.valueTime);
+  //   const hoursString = (maxTimeString || '').split(DateTimeConstants.TIME_SEPARATOR)[0];
+  //   return parseInt(hoursString, 10);
+  // };
 
-  const getMaxMinute = (): number => {
-    const maxTime = getExtension(Extensions.MAX_VALUE_URL, item);
-    if (!maxTime) {
-      return 59;
-    }
-    const maxTimeString = String(maxTime.valueTime);
-    const minuteString = (maxTimeString || '').split(DateTimeConstants.TIME_SEPARATOR)[1];
-    return parseInt(minuteString, 10);
-  };
+  // const getMaxMinute = (): number => {
+  //   const maxTime = getExtension(Extensions.MAX_VALUE_URL, item);
+  //   if (!maxTime) {
+  //     return 59;
+  //   }
+  //   const maxTimeString = String(maxTime.valueTime);
+  //   const minuteString = (maxTimeString || '').split(DateTimeConstants.TIME_SEPARATOR)[1];
+  //   return parseInt(minuteString, 10);
+  // };
 
-  const getMinHour = (): number => {
-    const minTime = getExtension(Extensions.MIN_VALUE_URL, item);
-    if (!minTime) {
-      return 0;
-    }
-    const minTimeString = String(minTime.valueTime);
-    const hoursString = (minTimeString || '').split(DateTimeConstants.TIME_SEPARATOR)[0];
-    return parseInt(hoursString, 10);
-  };
+  // const getMinHour = (): number => {
+  //   const minTime = getExtension(Extensions.MIN_VALUE_URL, item);
+  //   if (!minTime) {
+  //     return 0;
+  //   }
+  //   const minTimeString = String(minTime.valueTime);
+  //   const hoursString = (minTimeString || '').split(DateTimeConstants.TIME_SEPARATOR)[0];
+  //   return parseInt(hoursString, 10);
+  // };
 
-  const getMinMinute = (): number => {
-    const minTime = getExtension(Extensions.MIN_VALUE_URL, item);
-    if (!minTime) {
-      return 0;
-    }
-    const minTimeString = String(minTime.valueTime);
-    const minuteString = (minTimeString || '').split(DateTimeConstants.TIME_SEPARATOR)[1];
-    return parseInt(minuteString, 10);
-  };
+  // const getMinMinute = (): number => {
+  //   const minTime = getExtension(Extensions.MIN_VALUE_URL, item);
+  //   if (!minTime) {
+  //     return 0;
+  //   }
+  //   const minTimeString = String(minTime.valueTime);
+  //   const minuteString = (minTimeString || '').split(DateTimeConstants.TIME_SEPARATOR)[1];
+  //   return parseInt(minuteString, 10);
+  // };
 
   const dispatchNewTime = (newTime: string): void => {
     if (dispatch && onAnswerChange && path) {
-      dispatch(newTimeValueAsync(path, newTime, item))?.then(newState => onAnswerChange(newState, path, item, { valueTime: newTime }));
+      dispatch(newTimeValueAsync(path, newTime, item))?.then(newState => onAnswerChange(newState, item, { valueTime: newTime }));
     }
   };
 
-  const onTimeChange = (newTime: string = ''): void => {
-    const validTime = makeValidTime(newTime);
+  const updateQuestionnaireResponse = (newHours: number | undefined, newMinutes: number | undefined): void => {
+    const validTime = makeValidTime(newHours, newMinutes);
 
     dispatchNewTime(validTime);
     if (promptLoginMessage) {
@@ -145,16 +144,27 @@ export const Time = ({
     }
   };
 
-  const makeValidTime = (time: string): string => {
-    const values = time.split(':');
-    const hours = values[0] || '00';
-    const minutes = values[1] || '00';
-    return addSeconds(`${hours.slice(-2)}:${minutes.slice(-2)}`);
+  const handleHoursChange = (newHours: number | undefined): void => {
+    setHours(newHours);
+    setValue(`${idWithLinkIdAndItemIndex}-hours`, newHours);
+    updateQuestionnaireResponse(newHours, minutes);
+  };
+  const handleMinutesChange = (newMinutes: number | undefined): void => {
+    setMinutes(newMinutes);
+    setValue(`${idWithLinkIdAndItemIndex}-minutes`, newMinutes);
+    updateQuestionnaireResponse(hours, newMinutes);
+  };
+
+  const makeValidTime = (hours: number | undefined, minutes: number | undefined): string => {
+    const paddedHours = hours?.toString().padStart(2, '0');
+    const paddedMinutes = minutes?.toString().padStart(2, '0');
+
+    return addSeconds(`${paddedHours}:${paddedMinutes}`);
   };
 
   const addSeconds = (time: string): string => {
-    if (time !== '' && time.split(':').length === 2) {
-      return (time += ':00');
+    if (time && time.split(':').length === 2) {
+      return `${time}:00`;
     }
     return time;
   };
@@ -179,12 +189,12 @@ export const Time = ({
     return '';
   };
 
-  const getResetButtonText = (): string => {
-    if (resources && resources.resetTime) {
-      return resources.resetTime;
-    }
-    return '';
-  };
+  // const getResetButtonText = (): string => {
+  //   if (resources && resources.resetTime) {
+  //     return resources.resetTime;
+  //   }
+  //   return '';
+  // };
 
   if (pdf || isReadOnly(item)) {
     const value = getPDFValue();
@@ -198,25 +208,6 @@ export const Time = ({
 
   return (
     <div className="page_refero__component page_refero__component_time">
-      <TimeInput
-        {...register(item.linkId, {
-          required: isRequired(item),
-        })}
-        id={getId(id)}
-        value={getValue()}
-        isRequired={isRequired(item)}
-        maxHour={getMaxHour()}
-        minHour={getMinHour()}
-        maxMinute={getMaxMinute()}
-        minMinute={getMinMinute()}
-        onBlur={onTimeChange}
-        errorMessage={getValidationTextExtension(item)}
-        resetButton={{
-          resetButtonText: getResetButtonText(),
-          onReset: onTimeChange,
-        }}
-      />
-
       <DateTime
         {...register(idWithLinkIdAndItemIndex + '-hours', {
           required: {
@@ -233,7 +224,7 @@ export const Time = ({
         defaultValue={Number(hours)}
         timeUnit="hours"
         onChange={e => {
-          handleHoursChange(e.target.value);
+          handleHoursChange(Number(e.target.value));
         }}
       />
       <DateTime
@@ -252,14 +243,13 @@ export const Time = ({
         defaultValue={Number(minutes)}
         timeUnit="minutes"
         onChange={e => {
-          handleMinutesChange(e.target.value);
+          handleMinutesChange(Number(e.target.value));
         }}
       />
       <RenderDeleteButton
         item={item}
         path={path}
         index={index}
-        onAnswerChange={onAnswerChange}
         responseItem={responseItem}
         resources={resources}
         className="page_refero__deletebutton--margin-top"
@@ -269,3 +259,5 @@ export const Time = ({
     </div>
   );
 };
+
+export default Time;
