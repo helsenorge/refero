@@ -8,7 +8,7 @@ import * as DateTimeConstants from '../../../constants/dateTimeConstants';
 import { newTimeValueAsync, NewValueAction } from '../../../actions/newValue';
 import { Extensions } from '../../../constants/extensions';
 import { safeParseJSON } from '../../../util/date-fns-utils';
-import { getExtension } from '../../../util/extension';
+import { getExtension, getValidationTextExtension } from '../../../util/extension';
 import { isReadOnly, isRequired } from '../../../util/index';
 import { QuestionnaireComponentItemProps } from '@/components/GenerateQuestionnaireComponents';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
@@ -18,8 +18,8 @@ import { useDispatch } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { GlobalState } from '@/reducers';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
-import { DateTime } from '@helsenorge/datepicker/components/DatePicker';
-import { FieldValues, useFormContext } from 'react-hook-form';
+import { DateTime, DateTimePickerWrapper } from '@helsenorge/datepicker/components/DatePicker';
+import { FieldError, FieldValues, useFormContext } from 'react-hook-form';
 import { extractTimeFromAnswer, validateHours, validateMinutes } from '@/util/date-utils';
 
 export type Props = QuestionnaireComponentItemProps;
@@ -37,7 +37,9 @@ const Time = ({
 }: Props): JSX.Element | null => {
   const { promptLoginMessage, onAnswerChange } = useExternalRenderContext();
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
-  const { register, setValue } = useFormContext<FieldValues>();
+  const { formState, getFieldState, register, setValue } = useFormContext<FieldValues>();
+  const hoursField = getFieldState(`${idWithLinkIdAndItemIndex}-hours`, formState);
+  const minutesField = getFieldState(`${idWithLinkIdAndItemIndex}-minutes`, formState);
 
   const answer = useGetAnswer(responseItem, item);
   const [hours, setHours] = React.useState(extractTimeFromAnswer(answer)?.hours);
@@ -145,11 +147,17 @@ const Time = ({
   };
 
   const handleHoursChange = (newHours: number | undefined): void => {
+    if (!minutes) {
+      setMinutes(Number('00'));
+    }
     setHours(newHours);
     setValue(`${idWithLinkIdAndItemIndex}-hours`, newHours);
     updateQuestionnaireResponse(newHours, minutes);
   };
   const handleMinutesChange = (newMinutes: number | undefined): void => {
+    if (!hours) {
+      setHours(Number('00'));
+    }
     setMinutes(newMinutes);
     setValue(`${idWithLinkIdAndItemIndex}-minutes`, newMinutes);
     updateQuestionnaireResponse(hours, newMinutes);
@@ -168,6 +176,28 @@ const Time = ({
     }
     return time;
   };
+
+  const getErrorText = (error: FieldError | undefined): string | undefined => {
+    const validationTextExtension = getValidationTextExtension(item);
+    if (validationTextExtension) {
+      return validationTextExtension;
+    }
+    if (error) {
+      return error.message;
+    }
+  };
+
+  function getCombinedFieldError(hoursField: FieldValues, minutesField: FieldValues): FieldError | undefined {
+    const error = hoursField.error || minutesField.error || undefined;
+    return error;
+  }
+
+  // const getResetButtonText = (): string => {
+  //   if (resources && resources.resetTime) {
+  //     return resources.resetTime;
+  //   }
+  //   return '';
+  // };
 
   const padNumber = (value?: string): string => {
     if (value) {
@@ -189,13 +219,6 @@ const Time = ({
     return '';
   };
 
-  // const getResetButtonText = (): string => {
-  //   if (resources && resources.resetTime) {
-  //     return resources.resetTime;
-  //   }
-  //   return '';
-  // };
-
   if (pdf || isReadOnly(item)) {
     const value = getPDFValue();
 
@@ -208,44 +231,46 @@ const Time = ({
 
   return (
     <div className="page_refero__component page_refero__component_time">
-      <DateTime
-        {...register(idWithLinkIdAndItemIndex + '-hours', {
-          required: {
-            value: isRequired(item),
-            message: resources?.formRequiredErrorMessage || '',
-          },
-          validate: {
-            validHours: value => {
-              return validateHours(Number(value), resources);
+      <DateTimePickerWrapper errorText={getErrorText(getCombinedFieldError(hoursField, minutesField))}>
+        <DateTime
+          {...register(idWithLinkIdAndItemIndex + '-hours', {
+            required: {
+              value: isRequired(item),
+              message: resources?.formRequiredErrorMessage || '',
             },
-          },
-        })}
-        testId={`datetime-1`}
-        defaultValue={Number(hours)}
-        timeUnit="hours"
-        onChange={e => {
-          handleHoursChange(Number(e.target.value));
-        }}
-      />
-      <DateTime
-        {...register(idWithLinkIdAndItemIndex + '-minutes', {
-          required: {
-            value: isRequired(item),
-            message: resources?.formRequiredErrorMessage || '',
-          },
-          validate: {
-            validMinutes: value => {
-              return validateMinutes(Number(value), resources);
+            validate: {
+              validHours: value => {
+                return validateHours(Number(value), resources);
+              },
             },
-          },
-        })}
-        testId={`datetime-2`}
-        defaultValue={Number(minutes)}
-        timeUnit="minutes"
-        onChange={e => {
-          handleMinutesChange(Number(e.target.value));
-        }}
-      />
+          })}
+          testId={`datetime-1`}
+          defaultValue={Number(hours)}
+          timeUnit="hours"
+          onChange={e => {
+            handleHoursChange(Number(e.target.value));
+          }}
+        />
+        <DateTime
+          {...register(idWithLinkIdAndItemIndex + '-minutes', {
+            required: {
+              value: isRequired(item),
+              message: resources?.formRequiredErrorMessage || '',
+            },
+            validate: {
+              validMinutes: value => {
+                return validateMinutes(Number(value), resources);
+              },
+            },
+          })}
+          testId={`datetime-2`}
+          defaultValue={Number(minutes)}
+          timeUnit="minutes"
+          onChange={e => {
+            handleMinutesChange(Number(e.target.value));
+          }}
+        />
+      </DateTimePickerWrapper>
       <RenderDeleteButton
         item={item}
         path={path}
