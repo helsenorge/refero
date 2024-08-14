@@ -9,7 +9,7 @@ import { newTimeValueAsync, NewValueAction } from '../../../actions/newValue';
 import { Extensions } from '../../../constants/extensions';
 import { safeParseJSON } from '../../../util/date-fns-utils';
 import { getExtension, getValidationTextExtension } from '../../../util/extension';
-import { isReadOnly, isRequired } from '../../../util/index';
+import { getId, isReadOnly, isRequired } from '../../../util/index';
 import { QuestionnaireComponentItemProps } from '@/components/GenerateQuestionnaireComponents';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
@@ -21,10 +21,14 @@ import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import { DateTime, DateTimePickerWrapper } from '@helsenorge/datepicker/components/DatePicker';
 import { FieldError, FieldValues, useFormContext } from 'react-hook-form';
 import { extractTimeFromAnswer, validateHours, validateMinutes } from '@/util/date-utils';
+import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
+import RenderHelpButton from '../help-button/RenderHelpButton';
+import RenderHelpElement from '../help-button/RenderHelpElement';
 
 export type Props = QuestionnaireComponentItemProps;
 
 const Time = ({
+  id,
   index,
   item,
   responseItem,
@@ -42,6 +46,7 @@ const Time = ({
   const minutesField = getFieldState(`${idWithLinkIdAndItemIndex}-minutes`, formState);
 
   const answer = useGetAnswer(responseItem, item);
+  const [isHelpVisible, setIsHelpVisible] = React.useState(false);
   const [hours, setHours] = React.useState(extractTimeFromAnswer(answer)?.hours);
   const [minutes, setMinutes] = React.useState(extractTimeFromAnswer(answer)?.minutes);
 
@@ -231,6 +236,16 @@ const Time = ({
 
   return (
     <div className="page_refero__component page_refero__component_time">
+      <ReferoLabel
+        item={item}
+        resources={resources}
+        htmlFor={`${getId(id)}-datetime-hours`}
+        labelId={`${getId(id)}-label`}
+        testId={`${getId(id)}-label-test`}
+        sublabelId={`${getId(id)}-sublabel`}
+        afterLabelContent={<RenderHelpButton isHelpVisible={isHelpVisible} item={item} setIsHelpVisible={setIsHelpVisible} />}
+      />
+      <RenderHelpElement isHelpVisible={isHelpVisible} item={item} />
       <DateTimePickerWrapper errorText={getErrorText(getCombinedFieldError(hoursField, minutesField))}>
         <DateTime
           {...register(idWithLinkIdAndItemIndex + '-hours', {
@@ -263,6 +278,7 @@ const Time = ({
               },
             },
           })}
+          inputId={`${getId(id)}-datetime-hours`}
           testId={`datetime-2`}
           defaultValue={Number(minutes)}
           timeUnit="minutes"
