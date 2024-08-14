@@ -1,5 +1,5 @@
-import { Matcher, render, screen } from '@test/test-utils.tsx';
-
+import { act, findByRole, Matcher, render, renderRefero, screen } from '@test/test-utils.tsx';
+import { q } from './__data__/';
 import userEvent from '@testing-library/user-event';
 
 import {
@@ -14,6 +14,11 @@ import { convertBytesToMBString, convertMBToBytes } from '../attachmentUtil';
 import constants from '../../../../constants';
 import { AttachmentComponent } from '../attachment';
 import { vi } from 'vitest';
+import { Questionnaire, QuestionnaireResponseItemAnswer } from 'fhir/r4';
+import { ReferoProps } from '@/types/referoProps';
+import { getResources } from '../../../../../preview/resources/referoResources';
+import { clickButtonTimes } from '@test/selectors';
+import { Extensions } from '@/constants/extensions';
 
 vi.mock('@helsenorge/file-upload/components/file-upload/useFileUpload', () => ({
   useFileUpload: vi.fn(() => ({
@@ -60,9 +65,98 @@ function expectNoFileErrors() {
   expect(screen.queryByText(wrongFileTypeMsg)).toBe(null);
   expect(screen.queryByText(mockFileTooLarge)).toBe(null);
 }
+const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle ut dette feltet', ikkeBesvart: 'ikkeBesvart' };
+describe('Attachment', () => {
+  describe('Render', () => {
+    it('Should render as text if props.pdf', () => {
+      const questionnaire: Questionnaire = {
+        ...q,
+        item: q.item?.map(x => ({ ...x, repeats: false })),
+      };
+      const { queryByText, debug } = createWrapper(questionnaire, { pdf: true });
+      debug(undefined, 20000);
+      expect(queryByText(resources.ikkeBesvart)).toBeInTheDocument();
+    });
+    it('Should render text if item is readonly', () => {
+      const questionnaire: Questionnaire = {
+        ...q,
+        item: q.item?.map(x => ({ ...x, readOnly: true, repeats: false })),
+      };
 
-describe.skip('<AttachmentComponent />', () => {
-  describe('File Type validation', () => {
+      const { queryByText } = createWrapper(questionnaire);
+      expect(queryByText(resources.ikkeBesvart)).toBeInTheDocument();
+    });
+    it('Should render as input if props.pdf === false && item is not readonly', () => {
+      const questionnaire: Questionnaire = {
+        ...q,
+        item: q.item?.map(x => ({ ...x, repeats: false })),
+      };
+      const { queryByText } = createWrapper(questionnaire);
+      expect(queryByText(resources.ikkeBesvart)).not.toBeInTheDocument();
+    });
+  });
+  describe('help button', () => {
+    it('Should render helpButton', async () => {
+      const { container } = createWrapper(q);
+
+      expect(container.querySelector('.page_refero__helpButton')).toBeInTheDocument();
+    });
+    it('Should render helpElement when helpbutton is clicked', async () => {
+      const { container } = createWrapper(q);
+
+      expect(container.querySelector('.page_refero__helpButton')).toBeInTheDocument();
+
+      expect(container.querySelector('.page_refero__helpComponent--open')).not.toBeInTheDocument();
+
+      const helpButton = container.querySelector('.page_refero__helpButton');
+      if (helpButton) {
+        await act(async () => {
+          userEvent.click(helpButton);
+        });
+      }
+      expect(container.querySelector('.page_refero__helpComponent--open')).toBeInTheDocument();
+    });
+  });
+
+  describe('onChange', () => {
+    it('Should update component with value from answer', async () => {
+      const questionnaire: Questionnaire = {
+        ...q,
+        item: q.item?.map(x => ({
+          ...x,
+          repeats: false,
+        })),
+      };
+      const { getByLabelText } = createWrapper(questionnaire);
+
+      const inputElement = getByLabelText(/Attachment/i);
+      expect(inputElement).toBeInTheDocument();
+      expect(inputElement).toHaveAttribute('type', 'text');
+      expect(inputElement).toHaveAttribute('id', `item_${q?.item?.[0].linkId}`);
+      await act(async () => {
+        userEvent.type(inputElement, '123');
+      });
+      expect(getByLabelText(/Attachment/i)).toHaveValue('123');
+    });
+    it('Should call onChange with correct value', async () => {
+      const questionnaire: Questionnaire = {
+        ...q,
+      };
+      const onChange = vi.fn();
+      const { getByLabelText } = createWrapper(questionnaire, { onChange });
+      expect(getByLabelText(/Attachment/i)).toBeInTheDocument();
+      const input = 'string';
+      await act(async () => {
+        userEvent.type(getByLabelText(/Attachment/i), input);
+      });
+      const expectedAnswer: QuestionnaireResponseItemAnswer = {
+        valueString: input,
+      };
+      expect(onChange).toHaveBeenCalledTimes(input.length);
+      expect(onChange).toHaveBeenCalledWith(expect.any(Object), expectedAnswer, expect.any(Object), expect.any(Object));
+    });
+  });
+  describe.skip('File Type validation', () => {
     it('When uploading a file - Show error if mime type is NOT among valid types', async () => {
       const qItem = createMockQuestionnaireItem(qItemMockName, undefined, true);
       const validTypes = [MIME_TYPES_TEST.PNG, MIME_TYPES_TEST.JPG, MIME_TYPES_TEST.PDF];
@@ -82,7 +176,7 @@ describe.skip('<AttachmentComponent />', () => {
     });
   });
 
-  describe('File Size validation - Questionnaire Extension', () => {
+  describe.skip('File Size validation - Questionnaire Extension', () => {
     it('When uploading a file - Show resource size error if size > max rule in qItem', async () => {
       const qItem = createMockQuestionnaireItem(qItemMockName, 5, true);
       const validTypes = [MIME_TYPES_TEST.PlainText];
@@ -132,7 +226,7 @@ describe.skip('<AttachmentComponent />', () => {
     });
   });
 
-  describe('File Size validation - Max Setttings From Props', () => {
+  describe.skip('File Size validation - Max Setttings From Props', () => {
     it('When uploading a file - Show resource size error if filesize > Props Max', async () => {
       const qItem = createMockQuestionnaireItem(qItemMockName, undefined, false);
       const validTypes = [MIME_TYPES_TEST.PlainText];
@@ -162,7 +256,7 @@ describe.skip('<AttachmentComponent />', () => {
     });
   });
 
-  describe('File validation - Prioritiy of rules', () => {
+  describe.skip('File validation - Prioritiy of rules', () => {
     it('When uploading a file - File type errors should have priority over other errors', async () => {
       const qItem = createMockQuestionnaireItem(qItemMockName, 2, true);
       const validTypes = [MIME_TYPES_TEST.PlainText];
@@ -203,3 +297,16 @@ describe.skip('<AttachmentComponent />', () => {
     });
   });
 });
+
+function createWrapper(questionnaire: Questionnaire, props: Partial<ReferoProps> = {}) {
+  const attahchmentProps: Partial<ReferoProps> = {
+    attachmentErrorMessage: 'attachmentErrorMessage',
+    attachmentMaxFileSize: 20,
+    attachmentValidTypes: ['json', 'jpg', 'png', 'pdf'],
+    onRequestAttachmentLink: vi.fn(),
+    onOpenAttachment: vi.fn(),
+    onDeleteAttachment: vi.fn(),
+    uploadAttachment: vi.fn(),
+  };
+  return renderRefero({ questionnaire, props: { ...props, ...attahchmentProps }, resources });
+}
