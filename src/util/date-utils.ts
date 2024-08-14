@@ -1,5 +1,5 @@
 import { parse, format, setHours, setMinutes, getYear, startOfDay, isValid, isBefore, isAfter, endOfDay, parseISO } from 'date-fns';
-import { QuestionnaireResponseItemAnswer } from 'fhir/r4';
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 
 import { DateFormat, DatePickerFormat, DateTimeUnit, TimeValues } from '../types/dateTypes';
 
@@ -8,6 +8,9 @@ import { Resources } from './resources';
 import Constants from '../constants/index';
 
 import '@helsenorge/datepicker/components/DatePicker/';
+import { getExtension } from './extension';
+import { Extensions } from '@/constants/extensions';
+import * as DateTimeConstants from '../constants/dateTimeConstants';
 
 export function getFullFnsDate(
   date: Date | string | undefined,
@@ -159,6 +162,46 @@ export const getYearFromString = (dateString: string): string => {
   return dateString ? dateString.split('-')[0] : '';
 };
 
+const getMaxHour = (item: QuestionnaireItem): number => {
+  const maxTime = getExtension(Extensions.MAX_VALUE_URL, item);
+  if (!maxTime || !maxTime.valueTime) {
+    return 23;
+  }
+  const maxTimeString = maxTime.valueTime;
+  const hoursString = (maxTimeString || '').split(DateTimeConstants.TIME_SEPARATOR)[0];
+  return parseInt(hoursString, 10);
+};
+
+const getMaxMinute = (item: QuestionnaireItem): number => {
+  const maxTime = getExtension(Extensions.MAX_VALUE_URL, item);
+  if (!maxTime || !maxTime.valueTime) {
+    return 59;
+  }
+  const maxTimeString = maxTime.valueTime;
+  const minuteString = (maxTimeString || '').split(DateTimeConstants.TIME_SEPARATOR)[1];
+  return parseInt(minuteString, 10);
+};
+
+const getMinHour = (item: QuestionnaireItem): number => {
+  const minTime = getExtension(Extensions.MIN_VALUE_URL, item);
+  if (!minTime || !minTime.valueTime) {
+    return 0;
+  }
+  const minTimeString = minTime.valueTime;
+  const hoursString = (minTimeString || '').split(DateTimeConstants.TIME_SEPARATOR)[0];
+  return parseInt(hoursString, 10);
+};
+
+const getMinMinute = (item: QuestionnaireItem): number => {
+  const minTime = getExtension(Extensions.MIN_VALUE_URL, item);
+  if (!minTime || !minTime.valueTime) {
+    return 0;
+  }
+  const minTimeString = minTime.valueTime;
+  const minuteString = (minTimeString || '').split(DateTimeConstants.TIME_SEPARATOR)[1];
+  return parseInt(minuteString, 10);
+};
+
 export const validateDate = (dateToValidate: Date | undefined, resources: Resources | undefined): true | string => {
   if (!isValid(dateToValidate)) {
     return resources?.dateError_invalid || '';
@@ -188,15 +231,19 @@ export const validateMaxDate = (
   return true;
 };
 
-export const validateHours = (hours: number | undefined, resources: Resources | undefined): true | string => {
-  if (hours && (hours < 0 || hours > 23)) {
+export const validateHours = (hours: number | undefined, resources: Resources | undefined, item: QuestionnaireItem): true | string => {
+  const minHours = getMinHour(item);
+  const maxHours = getMaxHour(item);
+  if (hours && (hours < minHours || hours > maxHours)) {
     return resources?.dateError_time_invalid || '';
   }
   return true;
 };
 
-export const validateMinutes = (minutes: number | undefined, resources: Resources | undefined): true | string => {
-  if (minutes && (minutes < 0 || minutes > 59)) {
+export const validateMinutes = (minutes: number | undefined, resources: Resources | undefined, item: QuestionnaireItem): true | string => {
+  const minMinutes = getMinMinute(item);
+  const maxMinutes = getMaxMinute(item);
+  if (minutes && (minutes < minMinutes || minutes > maxMinutes)) {
     return resources?.dateError_time_invalid || '';
   }
   return true;

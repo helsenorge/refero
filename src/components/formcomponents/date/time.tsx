@@ -96,46 +96,6 @@ const Time = ({
     return `${formattedHours}${DateTimeConstants.TIME_SEPARATOR}${formattedMinutes}`;
   };
 
-  // const getMaxHour = (): number => {
-  //   const maxTime = getExtension(Extensions.MAX_VALUE_URL, item);
-  //   if (!maxTime) {
-  //     return 23;
-  //   }
-  //   const maxTimeString = String(maxTime.valueTime);
-  //   const hoursString = (maxTimeString || '').split(DateTimeConstants.TIME_SEPARATOR)[0];
-  //   return parseInt(hoursString, 10);
-  // };
-
-  // const getMaxMinute = (): number => {
-  //   const maxTime = getExtension(Extensions.MAX_VALUE_URL, item);
-  //   if (!maxTime) {
-  //     return 59;
-  //   }
-  //   const maxTimeString = String(maxTime.valueTime);
-  //   const minuteString = (maxTimeString || '').split(DateTimeConstants.TIME_SEPARATOR)[1];
-  //   return parseInt(minuteString, 10);
-  // };
-
-  // const getMinHour = (): number => {
-  //   const minTime = getExtension(Extensions.MIN_VALUE_URL, item);
-  //   if (!minTime) {
-  //     return 0;
-  //   }
-  //   const minTimeString = String(minTime.valueTime);
-  //   const hoursString = (minTimeString || '').split(DateTimeConstants.TIME_SEPARATOR)[0];
-  //   return parseInt(hoursString, 10);
-  // };
-
-  // const getMinMinute = (): number => {
-  //   const minTime = getExtension(Extensions.MIN_VALUE_URL, item);
-  //   if (!minTime) {
-  //     return 0;
-  //   }
-  //   const minTimeString = String(minTime.valueTime);
-  //   const minuteString = (minTimeString || '').split(DateTimeConstants.TIME_SEPARATOR)[1];
-  //   return parseInt(minuteString, 10);
-  // };
-
   const dispatchNewTime = (newTime: string): void => {
     if (dispatch && onAnswerChange && path) {
       dispatch(newTimeValueAsync(path, newTime, item))?.then(newState => onAnswerChange(newState, item, { valueTime: newTime }));
@@ -255,7 +215,7 @@ const Time = ({
             },
             validate: {
               validHours: value => {
-                return validateHours(Number(value), resources);
+                return validateHours(Number(value), resources, item);
               },
             },
           })}
@@ -274,7 +234,7 @@ const Time = ({
             },
             validate: {
               validMinutes: value => {
-                return validateMinutes(Number(value), resources);
+                return validateMinutes(Number(value), resources, item);
               },
             },
           })}
