@@ -2,9 +2,9 @@ import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItem } from 'fhi
 
 import { QuestionnaireStatusCodes } from '../../../../../types/fhirEnums';
 
-import { Props } from '../../attachment';
 import { Resources } from '../../../../../util/resources';
 import { vi } from 'vitest';
+import { ReferoProps } from '@/types/referoProps';
 
 const mockQuestionnaire: Questionnaire = {
   resourceType: 'Questionnaire',
@@ -58,9 +58,9 @@ export function createMockAttachmentProps(
   attachmentMaxFileSize?: number,
   attachmentErrorMessage?: string,
   attachmentValidTypes?: string[]
-): Props {
+): Partial<ReferoProps> {
   // Create a base mock with required and default properties.
-  const mockProps: Partial<Props> = {
+  const mockProps: Partial<ReferoProps> = {
     dispatch: vi.fn(),
     path: [],
     item, // Required parameter
@@ -80,7 +80,7 @@ export function createMockAttachmentProps(
   if (attachmentValidTypes !== undefined) {
     mockProps.attachmentValidTypes = attachmentValidTypes;
   }
-  return mockProps as Props;
+  return mockProps;
 }
 
 /** Mock Testing Util method */

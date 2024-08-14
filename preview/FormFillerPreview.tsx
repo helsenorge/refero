@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import { composeWithDevTools } from '@redux-devtools/extension';
-import { Bundle, Questionnaire, QuestionnaireItem, QuestionnaireResponse, ValueSet } from 'fhir/r4';
+import { Attachment, Bundle, Questionnaire, QuestionnaireItem, QuestionnaireResponse, ValueSet } from 'fhir/r4';
 import { Provider } from 'react-redux';
 import { Store, legacy_createStore as createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
@@ -11,8 +11,8 @@ import LanguageLocales from '@helsenorge/core-utils/constants/languages';
 import FormFillerSidebar from './FormFillerSidebar';
 import { emptyPropertyReplacer } from './helpers';
 import { getResources } from './resources/referoResources';
-import skjema from './skjema/NHN_Test_OpenChoice_Validering-nb-NO.json';
-// import skjema from '../src/components/__tests__/__data__/group-grid/q.json';
+//import skjema from './skjema/NHN_Testskjema_Options-nb-NO-v0.1.json';
+import skjema from '../src/components/formcomponents/attachment/__tests__/__data__/q.json';
 
 import ReferoContainer from '../src/components/index';
 import valueSet from '../src/constants/valuesets';
@@ -99,6 +99,12 @@ const FormFillerPreview = ({ showFormFiller }: Props): JSX.Element => {
     console.log(JSON.stringify(questionnaireResponse));
   };
   const [lang, setLang] = useState<number>(0);
+  const uploadAttachment = (file: File[], onSuccess: (attachment: Attachment) => void): void => {
+    onSuccess({ data: file[0].name, contentType: 'image/png', url: 'url' });
+  };
+  const onDeleteAttachment = (fileId: string, onSuccess: () => void): void => {
+    onSuccess();
+  };
   return (
     <Provider store={store}>
       <div className="overlay">
@@ -118,6 +124,10 @@ const FormFillerPreview = ({ showFormFiller }: Props): JSX.Element => {
                   questionnaire={getQuestionnaireFromBubndle(questionnaireForPreview, lang)}
                   onCancel={showFormFiller}
                   onChange={(): void => {}}
+                  uploadAttachment={uploadAttachment}
+                  onDeleteAttachment={onDeleteAttachment}
+                  attachmentMaxFileSize={20}
+                  onOpenAttachment={(): void => {}}
                   onSave={(questionnaireResponse: QuestionnaireResponse): void => {
                     setQuestionnaireResponse(questionnaireResponse);
                     setShowResponse(true);

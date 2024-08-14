@@ -1,11 +1,17 @@
 @import './_variables.scss';
 @import "@helsenorge/designsystem-react/scss/_spacers.scss";
 @import "@helsenorge/designsystem-react/scss/_breakpoints.scss";
+@import "@helsenorge/designsystem-react/scss/_breakpoints.scss";
 @import "./sidebar";
 @import "./fieldset";
 @import "./helpbutton.scss";
 @import "./navigator.scss";
 
+
+.container{
+  margin-left: 22.5%;
+  width: 55%;
+}
 .page_refero__fixed-scroll-offset {
   scroll-padding-bottom: 70px;
 }
