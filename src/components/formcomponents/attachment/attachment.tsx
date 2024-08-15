@@ -18,7 +18,6 @@ import { useAttachmentContext } from '@/context/AttachmentContext';
 import { QuestionnaireComponentItemProps } from '@/components/GenerateQuestionnaireComponents';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 import { TextMessage } from '@/types/text-message';
-import { use } from 'marked';
 
 export type Props = QuestionnaireComponentItemProps & {
   children?: React.ReactNode;
@@ -147,6 +146,7 @@ export const AttachmentComponent = (props: Props): JSX.Element | null => {
           isRequired={isRequired(item)}
           multiple={isRepeat(item)}
           errorText={getValidationTextExtension(item)}
+          customErrorMessage={customErrorMessage}
           onRequestAttachmentLink={onRequestAttachmentLink}
           maxFiles={getMaxOccursExtensionValue(item)}
           minFiles={getMinOccursExtensionValue(item)}

@@ -35,8 +35,8 @@ export const MimeType_For_Test_Util = {
 /** Mock Testing Util method */
 export function createMockFile(fileName: string, mimeType: string, size: number): File {
   // Initialize content with the specified size (the content itself doesn't matter for the mock)
-  const fileContent = new Array(size).fill('a').join('');
-  const blob = new Blob([fileContent], { type: mimeType });
+  // const fileContent = new Array(size).fill('a').join('');
+  const blob = new Blob(['a'], { type: mimeType });
   const lastModifiedDate = new Date();
   const mockFile = new File([blob], fileName, {
     type: mimeType,

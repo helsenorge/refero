@@ -1,7 +1,15 @@
 import { useState } from 'react';
 
 import { composeWithDevTools } from '@redux-devtools/extension';
-import { Attachment, Bundle, Questionnaire, QuestionnaireItem, QuestionnaireResponse, ValueSet } from 'fhir/r4';
+import {
+  Attachment,
+  Bundle,
+  Questionnaire,
+  QuestionnaireItem,
+  QuestionnaireResponse,
+  QuestionnaireResponseItemAnswer,
+  ValueSet,
+} from 'fhir/r4';
 import { Provider } from 'react-redux';
 import { Store, legacy_createStore as createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
@@ -19,6 +27,8 @@ import valueSet from '../src/constants/valuesets';
 import rootReducer from '../src/reducers/index';
 import { QuestionnaireStatusCodes } from '../src/types/fhirEnums';
 import { EnhetType, OrgenhetHierarki } from '../src/types/orgenhetHierarki';
+import { IActionRequester } from '@/index';
+import { IQuestionnaireInspector } from '@/util/questionnaireInspector';
 
 type Props = {
   showFormFiller: () => void;
@@ -88,6 +98,16 @@ const fetchValueSetFn = (
     },
   });
 };
+const MimeTypes = {
+  PlainText: 'text/plain',
+  HTML: 'text/html',
+  CSV: 'text/csv',
+  JPG: 'image/jpeg',
+  PNG: 'image/png',
+  GIF: 'image/gif',
+  PDF: 'application/pdf',
+  JSON: 'application/json',
+};
 const FormFillerPreview = ({ showFormFiller }: Props): JSX.Element => {
   const store: Store = createStore(rootReducer, composeWithDevTools(applyMiddleware(thunk)));
 
@@ -100,10 +120,23 @@ const FormFillerPreview = ({ showFormFiller }: Props): JSX.Element => {
   };
   const [lang, setLang] = useState<number>(0);
   const uploadAttachment = (file: File[], onSuccess: (attachment: Attachment) => void): void => {
-    onSuccess({ data: file[0].name, contentType: 'image/png', url: 'url' });
+    onSuccess({ data: file[0].name, contentType: file[0].type, url: 'url' });
   };
   const onDeleteAttachment = (fileId: string, onSuccess: () => void): void => {
     onSuccess();
+  };
+  const onOpenAttachment = (fileId: string): void => {
+    // eslint-disable-next-line no-console
+    console.log(fileId);
+  };
+  const onChange = (
+    item: QuestionnaireItem,
+    answer: QuestionnaireResponseItemAnswer,
+    actionRequester: IActionRequester,
+    questionnaireInspector: IQuestionnaireInspector
+  ): void => {
+    // eslint-disable-next-line no-console
+    console.log(item, answer, actionRequester, questionnaireInspector);
   };
   return (
     <Provider store={store}>
@@ -123,11 +156,7 @@ const FormFillerPreview = ({ showFormFiller }: Props): JSX.Element => {
                   store={store}
                   questionnaire={getQuestionnaireFromBubndle(questionnaireForPreview, lang)}
                   onCancel={showFormFiller}
-                  onChange={(): void => {}}
-                  uploadAttachment={uploadAttachment}
-                  onDeleteAttachment={onDeleteAttachment}
-                  attachmentMaxFileSize={20}
-                  onOpenAttachment={(): void => {}}
+                  onChange={onChange}
                   onSave={(questionnaireResponse: QuestionnaireResponse): void => {
                     setQuestionnaireResponse(questionnaireResponse);
                     setShowResponse(true);
@@ -144,6 +173,11 @@ const FormFillerPreview = ({ showFormFiller }: Props): JSX.Element => {
                   language={LanguageLocales.NORWEGIAN}
                   fetchValueSet={fetchValueSetFn}
                   fetchReceivers={fetchReceiversFn}
+                  uploadAttachment={uploadAttachment}
+                  onDeleteAttachment={onDeleteAttachment}
+                  onOpenAttachment={onOpenAttachment}
+                  attachmentValidTypes={[MimeTypes.PNG, MimeTypes.JPG, MimeTypes.PDF, MimeTypes.PlainText]}
+                  attachmentMaxFileSize={1}
                 />
               </div>
             ) : (
