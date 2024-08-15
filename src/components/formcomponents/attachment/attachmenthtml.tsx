@@ -18,8 +18,9 @@ import { Resources } from '@/util/resources';
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelpButton';
 import RenderHelpElement from '@/components/formcomponents/help-button/RenderHelpElement';
+import { TextMessage } from '@/types/text-message';
 
-interface Props {
+type Props = {
   onUpload: (files: UploadFile[]) => void;
   onDelete: (fileId: string) => void;
   onOpen?: (fileId: string) => void;
@@ -38,9 +39,10 @@ interface Props {
   attachmentMaxFileSize?: number;
   attachmentValidTypes?: Array<string>;
   idWithLinkIdAndItemIndex: string;
+  customErrorMessage: TextMessage | undefined;
 }
 
-const attachmentHtml = ({
+const AttachmentHtml = ({
   id,
   onUpload,
   onDelete,
@@ -54,6 +56,7 @@ const attachmentHtml = ({
   minFiles,
   item,
   idWithLinkIdAndItemIndex,
+  customErrorMessage,
 }: Props): JSX.Element | null => {
   const { formState, getFieldState, register: internalRegister } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex || '', formState);
@@ -65,8 +68,8 @@ const attachmentHtml = ({
   const { register, acceptedFiles, rejectedFiles, setAcceptedFiles, setRejectedFiles } = useFileUpload(
     internalRegister,
     [
-      (file): true | string => (file ? validateFileSize(file, getMaxValueBytes, item, resources?.attachmentError_fileSize) : true),
       (file): true | string => (file ? validateFileType(file, validFileTypes, item, resources?.attachmentError_fileType) : true),
+      (file): true | string => (file ? validateFileSize(file, getMaxValueBytes, item, resources?.attachmentError_fileSize) : true),
     ],
     [
       (files): true | string =>
@@ -122,6 +125,11 @@ const attachmentHtml = ({
           helpElement={<RenderHelpElement item={item} isHelpVisible={isHelpVisible} />}
           onOpenFile={onOpen}
         />
+        {customErrorMessage && (
+          <NotificationPanel label={customErrorMessage.Title} variant="error">
+            {customErrorMessage.Body}
+          </NotificationPanel>
+        )}
         {attachmentErrorMessage && <NotificationPanel variant="alert">{attachmentErrorMessage}</NotificationPanel>}
       </FormGroup>
     </div>
