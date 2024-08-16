@@ -11,7 +11,7 @@ import LanguageLocales from '@helsenorge/core-utils/constants/languages';
 import FormFillerSidebar from './FormFillerSidebar';
 import { emptyPropertyReplacer } from './helpers';
 import { getResources } from './resources/referoResources';
-import skjema from './skjema/NHN_Testskjema_Dato-nb-NO-v1.0.json';
+import skjema from './skjema/q.json';
 // import skjema from '../src/components/__tests__/__data__/group-grid/q.json';
 
 import ReferoContainer from '../src/components/index';
@@ -19,6 +19,7 @@ import valueSet from '../src/constants/valuesets';
 import rootReducer from '../src/reducers/index';
 import { QuestionnaireStatusCodes } from '../src/types/fhirEnums';
 import { EnhetType, OrgenhetHierarki } from '../src/types/orgenhetHierarki';
+import { addAnswerToItems } from '@/components/formcomponents/table/tables/utils';
 
 type Props = {
   showFormFiller: () => void;
@@ -99,6 +100,7 @@ const FormFillerPreview = ({ showFormFiller }: Props): JSX.Element => {
     console.log(JSON.stringify(questionnaireResponse));
   };
   const [lang, setLang] = useState<number>(0);
+  const addAnswerToItem = (item: QuestionnaireItem): void => {};
   return (
     <Provider store={store}>
       <div className="overlay">
@@ -117,7 +119,7 @@ const FormFillerPreview = ({ showFormFiller }: Props): JSX.Element => {
                   store={store}
                   questionnaire={getQuestionnaireFromBubndle(questionnaireForPreview, lang)}
                   onCancel={showFormFiller}
-                  onChange={(): void => {}}
+                  onChange={addAnswerToItem}
                   onSave={(questionnaireResponse: QuestionnaireResponse): void => {
                     setQuestionnaireResponse(questionnaireResponse);
                     setShowResponse(true);

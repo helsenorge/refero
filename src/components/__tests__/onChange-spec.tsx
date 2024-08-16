@@ -1,4 +1,4 @@
-import { screen, userEvent, act, renderRefero } from '../../../test/test-utils';
+import { screen, userEvent, act, renderRefero, waitFor, findByTestId } from '../../../test/test-utils';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, Quantity, Coding, Questionnaire } from 'fhir/r4';
 
@@ -18,6 +18,7 @@ import {
 } from './utils';
 import { clickByLabelText, typeAndTabByLabelText, typeByLabelText } from '../../../test/selectors';
 import { parse } from 'date-fns';
+import { getByLabelText } from '@testing-library/dom';
 
 function toCoding(code: string, system?: string): Coding {
   return {
@@ -226,31 +227,38 @@ describe('onAnswerChange callback gets called and can request additional changes
 
     const { container } = wrapper(onChange, questionnaireWithAllItemTypes);
     await clickByLabelText(/Boolean/i);
+
     expect(container.querySelector('#item_6b-2')).toBeChecked();
   });
 
-  it.skip('date gets updated', async () => {
+  it('date gets updated', async () => {
+    const dateString = '2024-08-14T00:00:00+02';
     const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
-      actionRequester.addDateAnswer('7a', '2020-05-17');
+      actionRequester.addDateAnswer('7a', dateString);
     });
 
-    const { container } = wrapper(onChange, questionnaireWithAllItemTypes);
+    const { queryByLabelText } = wrapper(onChange, questionnaireWithAllItemTypes);
 
-    await inputAnswer('1', 0.1, container);
-    const item = findItem('7a-datepicker_input', container);
-    expect(item).toHaveValue('17.05.2020');
+    await act(async () => {
+      await clickByLabelText(/Boolean/i);
+    });
+
+    expect(queryByLabelText('Date')).toHaveValue(dateString);
   });
-  it.skip('date gets cleared', async () => {
+  it('date gets cleared', async () => {
+    const dateString = '2024-08-14T00:00:00+02';
+
     const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
-      actionRequester.addDateAnswer('7a', '2020-05-17');
+      actionRequester.addDateAnswer('7a', dateString);
       actionRequester.clearDateAnswer('7a');
     });
 
-    const { container } = wrapper(onChange, questionnaireWithAllItemTypes);
+    const { queryByLabelText } = wrapper(onChange, questionnaireWithAllItemTypes);
+    await act(async () => {
+      await clickByLabelText(/Boolean/i);
+    });
 
-    await inputAnswer('1', 0.1, container);
-    const item = findItem('7a-datepicker_input', container);
-    expect(item).toHaveValue(null);
+    expect(queryByLabelText('Date')).toHaveValue(null);
   });
   it.skip('time gets updated', async () => {
     const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
@@ -283,33 +291,34 @@ describe('onAnswerChange callback gets called and can request additional changes
     item = screen.getByLabelText('#item_7b_minutes');
     expect(item).toHaveValue(null);
   });
-  it.skip('dateTime gets updated', async () => {
+  it('dateTime gets updated', async () => {
     const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
-      actionRequester.addDateTimeAnswer('7c', '2020-05-17T12:01:00Z');
+      actionRequester.addDateTimeAnswer('7c', '2024-08-14T10:20:00+02');
     });
 
-    const { container } = wrapper(onChange, questionnaireWithAllItemTypes);
+    const { container, getByLabelText } = wrapper(onChange, questionnaireWithAllItemTypes);
 
-    await inputAnswer('1', 0.1, container);
+    await act(async () => {
+      await inputAnswer('1', 0.1, container);
+    });
+    const date = getByLabelText('DateTime');
 
-    const item = screen.getByTestId('date-time-picker');
-    const date = item.getAttribute('value') || '';
-    const dateString = parse(date, Constants.DATE_TIME_FORMAT, new Date());
-    expect(dateString).toBe('2020-05-17T12:01:00+00:00');
+    expect(date).toHaveValue('14.08.2024');
   });
-  it.skip('dateTime gets cleared', async () => {
+  it.only('dateTime gets cleared', async () => {
     const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
-      actionRequester.addDateTimeAnswer('7c', '2020-05-17T12:01:00Z');
+      actionRequester.addDateTimeAnswer('7c', '2024-08-14T00:00:00+02');
       actionRequester.clearDateTimeAnswer('7c');
     });
 
-    const { container } = wrapper(onChange, questionnaireWithAllItemTypes);
+    const { container, getByLabelText } = wrapper(onChange, questionnaireWithAllItemTypes);
 
-    await inputAnswer('1', 0.1, container);
+    await act(async () => {
+      await inputAnswer('1', 0.1, container);
+    });
+    const date = getByLabelText('DateTime');
 
-    const item = screen.getByTestId('date-time-picker');
-    const date = item.getAttribute('value');
-    expect(date).toBe(undefined);
+    expect(date).toHaveValue('');
   });
 
   it('string gets updated', async () => {

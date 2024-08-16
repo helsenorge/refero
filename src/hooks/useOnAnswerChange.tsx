@@ -25,6 +25,7 @@ const useOnAnswerChange = (
       const questionnaireInspector = new QuestionniareInspector(questionnaire, questionnaireResponse);
       onChange && onChange(item, answer, actionRequester, questionnaireInspector);
       for (const action of actionRequester.getActions()) {
+        console.log(action);
         dispatch(action);
       }
     }

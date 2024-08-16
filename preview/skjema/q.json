@@ -1,7 +1,20 @@
 {
   "resourceType": "Questionnaire",
+  "language": "nb-NO",
+  "id": "4171d6c9-43ee-4f2b-863b-2080beacd382",
+  "name": "Integer_unit_tests",
+  "title": "Tittel",
   "status": "draft",
+  "publisher": "NHN",
   "meta": {
+    "profile": ["http://ehelse.no/fhir/StructureDefinition/sdf-Questionnaire"],
+    "tag": [
+      {
+        "system": "urn:ietf:bcp:47",
+        "code": "nb-NO",
+        "display": "Bokmål"
+      }
+    ],
     "security": [
       {
         "code": "3",
@@ -10,30 +23,40 @@
       }
     ]
   },
-  "contained": [
+  "contact": [
     {
-      "url": "http://ehelse.no/fhir/ValueSet/Predefined",
-      "resourceType": "ValueSet",
-      "id": "1101",
-      "version": "1.0",
-      "name": "urn:oid:1101",
-      "title": "Ja / Nei (structor)",
-      "status": "draft",
-      "publisher": "NHN",
-      "compose": {
-        "include": [
+      "name": "http://www.nhn.no"
+    }
+  ],
+  "subjectType": ["Patient"],
+  "extension": [
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sidebar",
+      "valueCoding": {
+        "system": "http://helsenorge.no/fhir/ValueSet/sdf-sidebar",
+        "code": "1"
+      }
+    },
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-information-message",
+      "valueCoding": {
+        "system": "http://helsenorge.no/fhir/ValueSet/sdf-information-message",
+        "code": "1"
+      }
+    },
+    {
+      "url": "http://helsenorge.no/fhir/StructureDefintion/sdf-itemControl-visibility",
+      "valueCodeableConcept": {
+        "coding": [
           {
-            "system": "urn:oid:2.16.578.1.12.4.1.1101",
-            "concept": [
-              {
-                "code": "1",
-                "display": "Ja"
-              },
-              {
-                "code": "2",
-                "display": "Nei"
-              }
-            ]
+            "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
+            "code": "hide-help",
+            "display": "Hide help texts"
+          },
+          {
+            "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
+            "code": "hide-sublabel",
+            "display": "Hide sublabel texts"
           }
         ]
       }
@@ -41,64 +64,65 @@
   ],
   "item": [
     {
-      "linkId": "7cac5305-a794-440a-89ba-72f588e3449f",
-      "type": "open-choice",
-      "text": "CHOICE - CHECKBOX",
-      "required": false,
-      "extension": [
-        { "url": "http://ehelse.no/fhir/StructureDefinition/repeatstext", "valueString": "Legg til" },
-        { "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-minOccurs", "valueInteger": 1 },
-        { "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-maxOccurs", "valueInteger": 4 },
-        { "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sublabel", "valueMarkdown": "**Dato sublabel**" },
-        {
-          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-          "valueCodeableConcept": {
-            "coding": [
-              {
-                "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
-                "code": "check-box"
-              }
-            ]
-          }
-        }
-      ],
-      "answerValueSet": "#1101"
-    },
-    {
-      "linkId": "f6835f3b-27d1-46bc-8a4d-beedf599269f",
-      "type": "open-choice",
-      "text": "CHOICE - CHECKBOX",
-      "required": false,
+      "linkId": "5fece702-bf32-445b-979d-862ade17306a",
+      "type": "attachment",
+      "text": "Attachment - Markdown",
       "extension": [
         {
-          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-          "valueCodeableConcept": {
-            "coding": [
-              {
-                "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
-                "code": "check-box"
-              },
-              {
-                "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
-                "code": "data-receiver"
-              }
-            ]
-          }
+          "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sublabel",
+          "valueMarkdown": "min: 5, max: 10, **Custom err**"
         },
         {
-          "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
-          "valueString": "QuestionnaireResponse.descendants().where(linkId='7cac5305-a794-440a-89ba-72f588e3449f').answer.value"
+          "url": "http://hl7.org/fhir/StructureDefinition/maxSize",
+          "valueDecimal": 20
         }
       ],
-      "answerValueSet": "#1101",
-      "readOnly": true,
-      "enableWhen": [
+      "required": true,
+      "_text": {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+            "valueMarkdown": "**Attachment - Markdown**"
+          }
+        ]
+      },
+      "item": [
         {
-          "answerBoolean": true,
-          "question": "7cac5305-a794-440a-89ba-72f588e3449f",
-          "operator": "exists"
+          "linkId": "510f4a04-b5d7-4d58-8a5e-8ba7ed85b231",
+          "type": "text",
+          "required": false,
+          "repeats": false,
+          "readOnly": true,
+          "maxLength": 250,
+          "_text": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                "valueMarkdown": "Help text"
+              }
+            ]
+          },
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "help"
+                  }
+                ]
+              }
+            }
+          ]
         }
       ]
+    },
+    {
+      "linkId": "a9730d7f-b3c8-4359-82e0-5d5abbf585ac",
+      "type": "dateTime",
+      "text": "DateTime",
+      "required": false
     }
   ]
 }
