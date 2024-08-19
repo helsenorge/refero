@@ -1,11 +1,23 @@
-import { parse, format, setHours, setMinutes, getYear, startOfDay, isValid, isBefore, isAfter, endOfDay } from 'date-fns';
+import {
+  format,
+  formatISO,
+  setHours,
+  setMinutes,
+  getYear,
+  startOfDay,
+  isValid,
+  isBefore,
+  isAfter,
+  endOfDay,
+  parseISO,
+  parse,
+} from 'date-fns';
 import { QuestionnaireResponseItemAnswer } from 'fhir/r4';
 
 import { DateFormat, DatePickerFormat, DateTimeUnit } from '../types/dateTypes';
 
 import { safeParseJSON } from './date-fns-utils';
 import { Resources } from './resources';
-import Constants from '../constants/index';
 
 import '@helsenorge/datepicker/components/DatePicker/';
 
@@ -14,24 +26,43 @@ export function getFullFnsDate(
   hours: string | undefined,
   minutes: string | undefined
 ): string | undefined {
-  if (typeof date == 'string') {
-    date = parseStringToDateDDMMYYYY(date);
+  let newDate: Date | undefined = undefined;
+  if (date === undefined) {
+    const now = new Date();
+    let onlyTime: string | undefined = undefined;
+    if (hours !== undefined && hours !== '00') {
+      onlyTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), parseInt(hours.padStart(2, '0'), 10)).toISOString();
+    }
+    if (minutes !== undefined && minutes !== '00') {
+      onlyTime = new Date(
+        now.getFullYear(),
+        now.getMonth(),
+        now.getDate(),
+        onlyTime ? new Date(onlyTime).getHours() : now.getHours(),
+        parseInt(minutes.padStart(2, '0'), 10)
+      ).toISOString();
+    }
+    if (onlyTime) return onlyTime;
   }
-
-  if (!date || !isValid(date)) {
+  if (typeof date === 'string') {
+    newDate = parseISO(date);
+  } else {
+    newDate = date;
+  }
+  if (!newDate || !isValid(newDate)) {
     return undefined;
   } else {
     if (hours) {
-      const hoursNumber = parseInt(hours, 10);
-      date = setHours(date, hoursNumber);
+      const hoursNumber = parseInt(hours.padStart(2, '0'), 10);
+      newDate = setHours(newDate, hoursNumber);
     }
     if (minutes) {
-      const minutesNumber = parseInt(minutes, 10);
-      date = setMinutes(date, minutesNumber);
+      const minutesNumber = parseInt(minutes.padStart(2, '0'), 10);
+      newDate = setMinutes(newDate, minutesNumber);
     }
   }
 
-  return format(date, Constants.DATE_TIME_FORMAT);
+  return formatISO(newDate);
 }
 
 export const getDateFromAnswer = (answer: QuestionnaireResponseItemAnswer): Date | string | undefined => {
@@ -57,18 +88,25 @@ export const getHoursOrMinutesFromDate = (date: Date | undefined, unitToGet: Dat
 
 export const parseStringToDateDDMMYYYY = (valueToParse: string | Date | undefined): Date | undefined => {
   if (valueToParse) {
-    if (typeof valueToParse == 'string') {
-      return parse(valueToParse, 'dd.MM.yyyy', new Date());
+    if (typeof valueToParse === 'string') {
+      const isoParsed = parseISO(valueToParse);
+      return isValid(isoParsed) ? isoParsed : parse(valueToParse, DateFormat.ddMMyyyy, new Date());
     } else {
       return valueToParse;
     }
   }
 };
 export const formatDateToStringDDMMYYYY = (dateToFormat: Date | undefined): string => {
-  return format(dateToFormat || '', 'dd.MM.yyyy');
+  const formattedDate = dateToFormat ? formatISO(dateToFormat) : '';
+  return formattedDate;
 };
 
-export const getMonthOptions = (resources: Resources | undefined) => {
+export const getMonthOptions = (
+  resources: Resources | undefined
+): {
+  optionName: string | undefined;
+  optionValue: string;
+}[] => {
   return [
     {
       optionName: '',
@@ -130,7 +168,7 @@ export const getYearFromString = (dateString: string): string => {
 };
 
 export const validateDate = (dateToValidate: Date | undefined, resources: Resources | undefined): true | string => {
-  if (!isValid(dateToValidate)) {
+  if (dateToValidate && !isValid(dateToValidate)) {
     return resources?.dateError_invalid || '';
   }
   return true;

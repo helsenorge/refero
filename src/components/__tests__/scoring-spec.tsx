@@ -36,7 +36,7 @@ describe('Component renders and calculates score', () => {
     const fhirpathItem = await findByLabelText('Fhir sum element');
     expect(fhirpathItem).toHaveValue(42);
   });
-  it.skip('fhirpath score should be updated when integer questions are answered - should work with zeros', async () => {
+  it('fhirpath score should be updated when integer questions are answered - should work with zeros', async () => {
     const questionnaire = setFhirpath('4', "QuestionnaireResponse.item.where(linkId='2').answer.value", FhirpathScoreDataModel);
     const { container, findByLabelText } = createWrapper(questionnaire);
 

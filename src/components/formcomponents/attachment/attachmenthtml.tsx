@@ -40,7 +40,7 @@ type Props = {
   attachmentValidTypes?: Array<string>;
   idWithLinkIdAndItemIndex: string;
   customErrorMessage: TextMessage | undefined;
-}
+};
 
 const AttachmentHtml = ({
   id,
@@ -136,4 +136,4 @@ const AttachmentHtml = ({
   );
 };
 
-export default attachmentHtml;
+export default AttachmentHtml;

@@ -19,7 +19,7 @@ import { ReferoProps } from '../src/types/referoProps';
 import { Resources } from '../src/util/resources';
 import { createIntitialFormValues, DefaultValues } from '../src/validation/defaultFormValues';
 import { ExternalRenderProvider } from '@/context/externalRenderContext';
-import { AttachmentProvider } from '@/context/AttachmentContext';
+import { AttachmentProvider, AttachmentProviderProps } from '@/context/AttachmentContext';
 
 const mockStore = configureMockStore<Partial<GlobalState>>([thunk]);
 

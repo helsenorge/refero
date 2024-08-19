@@ -1,4 +1,4 @@
-import { isAfter, isBefore, isSameDay, isSameHour } from 'date-fns';
+import { isAfter, isBefore, isSameDay, isSameHour, parseISO } from 'date-fns';
 import { QuestionnaireItemEnableWhen, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 
 import { QuestionnaireEnableOperator } from '../types/fhirEnums';
@@ -166,8 +166,8 @@ function enableWhenMatchesDateAnswer(
     return false;
   }
 
-  const aValueDate = safeParseJSON(answerValueDate) as Date;
-  const ewAnswerDate = safeParseJSON(enableWhenAnswerDate) as Date;
+  const aValueDate = safeParseJSON(answerValueDate) ?? (parseISO(answerValueDate) as Date);
+  const ewAnswerDate = safeParseJSON(enableWhenAnswerDate) ?? (parseISO(enableWhenAnswerDate) as Date);
 
   switch (operator) {
     case OPERATOR_EQUALS:
@@ -196,8 +196,8 @@ function enableWhenMatchesDateTimeAnswer(
     return false;
   }
 
-  const aValueDateTime = safeParseJSON(String(answerValueDateTime)) as Date;
-  const ewAnswerDateTime = safeParseJSON(String(enableWhenAnswerDateTime)) as Date;
+  const aValueDateTime = safeParseJSON(String(answerValueDateTime)) ?? (parseISO(String(enableWhenAnswerDateTime)) as Date);
+  const ewAnswerDateTime = safeParseJSON(String(enableWhenAnswerDateTime)) ?? (parseISO(String(enableWhenAnswerDateTime)) as Date);
 
   switch (operator) {
     case OPERATOR_EQUALS:

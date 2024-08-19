@@ -58,7 +58,6 @@ const DateComponent = (props: DateProps): JSX.Element | null => {
 
   const itemControls = getItemControlExtensionValue(item);
   let element: JSX.Element | undefined = undefined;
-
   if (itemControls && itemControls.some(itemControl => itemControl.code === itemControlConstants.YEAR)) {
     element = (
       <DateYearInput

@@ -95,6 +95,7 @@ export const ExternalRenderProvider = ({
   onChange,
 }: ExternalRenderProviderProps): JSX.Element => {
   const onAnswerChange = useOnAnswerChange(onChange);
+
   return (
     <ExternalRender.Provider
       value={{
