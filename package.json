@@ -113,6 +113,8 @@
     "uuid": "^9.0.1"
   },
   "optionalDependencies": {
-    "@rollup/rollup-linux-x64-gnu": "4.9.5"
+    "@rollup/rollup-linux-x64-gnu": "4.9.5",
+    "@ast-grep/napi-linux-x64-gnu": "0.26.2",
+    "@swc/core-linux-x64-gnu": "^1.7.14"
   }
 }
