@@ -1,3 +1,6 @@
+## 16.0.0-beta20
+
+- Core 32 and react 18
 ## 16.0.0-beta11
 
 - fixed types for lib.
