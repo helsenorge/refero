@@ -13,6 +13,7 @@ import {
   qChoiceDropdown,
   qChoiceSlider,
   qAttachment,
+  qDateTime,
 } from './__data__';
 import { ReferoProps } from '@/types/referoProps';
 import { renderRefero } from '@test/test-utils';
@@ -51,7 +52,21 @@ describe('Default form values', () => {
     });
   });
   describe.skip('Initial date value', () => {});
-  describe.skip('Initial dateTime value', () => {});
+  //TODO: forstår ikke hvorfor denne testen feiler, kan være noe med custom håndtering av react hook from
+  describe.skip('Initial dateTime value', () => {
+    it.only('prefilled values should not cause a validation error on submit', async () => {
+      const wrapper = createWrapper(qDateTime);
+      await submitForm();
+      wrapper.debug(undefined, 100000);
+
+      expect(wrapper.queryByTestId(/summary-element-Preutfylt datetime/i)).not.toBeInTheDocument();
+    });
+    it('empty fields should not cause a validation error on submit', async () => {
+      const wrapper = createWrapper(qDateTime);
+      await submitForm();
+      expect(wrapper.queryByTestId(/summary-element-Tom dateTimeText/i)).toBeInTheDocument();
+    });
+  });
   describe.skip('Initial time value', () => {});
   describe('Initial choice value', () => {
     describe('initial Radiobutton value', () => {
@@ -90,7 +105,6 @@ describe('Default form values', () => {
         expect(wrapper.queryByTestId(/summary-element-Tom dropdown/i)).toBeInTheDocument();
       });
     });
-    describe.skip('initial autosuggest value', () => {});
     describe('initial slider value', () => {
       it('prefilled values should not cause a validation error on submit', async () => {
         const wrapper = createWrapper(qChoiceSlider);

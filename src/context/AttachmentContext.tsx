@@ -1,14 +1,14 @@
-import { Attachment as FhirAttachment } from 'fhir/r4';
+import { ReferoProps } from '@/types/referoProps';
 import { createContext, useContext, ReactNode } from 'react';
 
 type AttachmentType = {
-  attachmentErrorMessage?: string;
-  attachmentMaxFileSize?: number;
-  attachmentValidTypes?: string[];
-  onRequestAttachmentLink?: (fileId: string) => string;
-  onOpenAttachment?: (fileId: string) => void;
-  onDeleteAttachment?: (fileId: string, onSuccess: () => void) => void;
-  uploadAttachment?: (files: File[], onSuccess: (attachment: FhirAttachment) => void) => void;
+  attachmentErrorMessage?: ReferoProps['attachmentErrorMessage'];
+  attachmentMaxFileSize?: ReferoProps['attachmentMaxFileSize'];
+  attachmentValidTypes?: ReferoProps['attachmentValidTypes'];
+  onRequestAttachmentLink?: ReferoProps['onRequestAttachmentLink'];
+  onOpenAttachment?: ReferoProps['onOpenAttachment'];
+  onDeleteAttachment?: ReferoProps['onDeleteAttachment'];
+  uploadAttachment?: ReferoProps['uploadAttachment'];
 };
 
 const Attachment = createContext<AttachmentType | undefined>(undefined);

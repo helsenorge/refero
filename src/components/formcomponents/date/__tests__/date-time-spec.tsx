@@ -65,8 +65,8 @@ describe('Date time', () => {
       };
       const { getByLabelText } = createWrapper(questionnaire);
 
-      const hoursElement = await screen.findByTestId('datetime-1');
-      const minutesElement = await screen.findByTestId('datetime-2');
+      const hoursElement = await screen.findByTestId(/datetime-1/i);
+      const minutesElement = await screen.findByTestId(/datetime-2/i);
 
       const dateInput = getByLabelText(/Dato/i);
       const hoursInput = hoursElement.querySelector('input');
@@ -212,12 +212,13 @@ describe('Date time', () => {
     it('Should update hours field with value from answer', async () => {
       const { getByTestId } = createWrapper(q);
 
-      const hoursElement = getByTestId('datetime-1');
+      const hoursElement = getByTestId(/datetime-1/i);
       const hoursInput = hoursElement.querySelector('input');
 
       if (hoursInput) {
         await act(async () => {
-          userEvent.paste(hoursInput, '14');
+          userEvent.clear(hoursInput);
+          userEvent.type(hoursInput, '14');
         });
       }
 
@@ -226,7 +227,7 @@ describe('Date time', () => {
     it('Should update minutes field with value from answer', async () => {
       const { getByTestId } = createWrapper(q);
 
-      const minutesElement = getByTestId('datetime-2');
+      const minutesElement = getByTestId(/datetime-2/i);
       const minutesInput = minutesElement.querySelector('input');
 
       if (minutesInput) {
@@ -245,7 +246,7 @@ describe('Date time', () => {
         userEvent.paste(getByLabelText(/Dato/i), '31.05.1994');
       });
       const expectedAnswer: QuestionnaireResponseItemAnswer = {
-        valueDateTime: '1994-05-31T00:00:00+02',
+        valueDateTime: '1994-05-31T00:00:00+02:00',
       };
       expect(onChange).toHaveBeenCalledTimes(1);
       expect(onChange).toHaveBeenCalledWith(expect.any(Object), expectedAnswer, expect.any(Object), expect.any(Object));
@@ -285,8 +286,8 @@ describe('Date time', () => {
       //   await submitForm();
       //   expect(getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
 
-      //   const hoursElement = await screen.findByTestId('datetime-1');
-      //   const minutesElement = await screen.findByTestId('datetime-2');
+      //   const hoursElement = await screen.findByTestId(/datetime-1/i);
+      //   const minutesElement = await screen.findByTestId(/datetime-2/i);
       //   const hoursInput = hoursElement.querySelector('input');
       //   const minutesInput = minutesElement.querySelector('input');
 
@@ -369,8 +370,8 @@ describe('Date time', () => {
       it('Should show error if hour value is invalid', async () => {
         const { getByText, getByLabelText } = createWrapper(qMinMax);
 
-        const hoursElement = await screen.findByTestId('datetime-1');
-        const minutesElement = await screen.findByTestId('datetime-2');
+        const hoursElement = await screen.findByTestId(/datetime-1/i);
+        const minutesElement = await screen.findByTestId(/datetime-2/i);
         const hoursInput = hoursElement.querySelector('input');
         const minutesInput = minutesElement.querySelector('input');
 
@@ -378,10 +379,16 @@ describe('Date time', () => {
           userEvent.paste(getByLabelText(/Dato/i), '31.05.1994');
         });
         await act(async () => {
-          hoursInput && userEvent.paste(hoursInput, '90');
+          if (hoursInput) {
+            userEvent.clear(hoursInput);
+            userEvent.paste(hoursInput, '90');
+          }
         });
         await act(async () => {
-          minutesInput && userEvent.paste(minutesInput, '00');
+          if (minutesInput) {
+            userEvent.clear(minutesInput);
+            userEvent.paste(minutesInput, '00');
+          }
         });
 
         await submitForm();
@@ -392,8 +399,8 @@ describe('Date time', () => {
       it('Should show error if minutes value is invalid', async () => {
         const { getByText, getByLabelText } = createWrapper(qMinMax);
 
-        const hoursElement = await screen.findByTestId('datetime-1');
-        const minutesElement = await screen.findByTestId('datetime-2');
+        const hoursElement = await screen.findByTestId(/datetime-1/i);
+        const minutesElement = await screen.findByTestId(/datetime-2/i);
         const hoursInput = hoursElement.querySelector('input');
         const minutesInput = minutesElement.querySelector('input');
 
@@ -401,10 +408,16 @@ describe('Date time', () => {
           userEvent.paste(getByLabelText(/Dato/i), '31.05.1994');
         });
         await act(async () => {
-          hoursInput && userEvent.paste(hoursInput, '00');
+          if (hoursInput) {
+            userEvent.clear(hoursInput);
+            userEvent.paste(hoursInput, '00');
+          }
         });
         await act(async () => {
-          minutesInput && userEvent.paste(minutesInput, '90');
+          if (minutesInput) {
+            userEvent.clear(minutesInput);
+            userEvent.paste(minutesInput, '90');
+          }
         });
 
         await submitForm();

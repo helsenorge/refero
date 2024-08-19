@@ -16,7 +16,7 @@ const useOnAnswerChange = (
   const dispatch = useDispatch();
   const { runScoringCalculator } = useScoringCalculator();
 
-  const onAnswerChange = (state: GlobalState, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer): void => {
+  return (state: GlobalState, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer): void => {
     const questionnaire = state.refero.form.FormDefinition.Content;
     const questionnaireResponse = state.refero.form.FormData.Content;
     if (questionnaire && questionnaireResponse) {
@@ -25,13 +25,11 @@ const useOnAnswerChange = (
       const questionnaireInspector = new QuestionniareInspector(questionnaire, questionnaireResponse);
       onChange && onChange(item, answer, actionRequester, questionnaireInspector);
       for (const action of actionRequester.getActions()) {
-        console.log(action);
         dispatch(action);
       }
     }
 
     runScoringCalculator(questionnaire, questionnaireResponse);
   };
-  return onAnswerChange;
 };
 export default useOnAnswerChange;
