@@ -5,5 +5,5 @@
     "noEmit": true
   },
   "include": ["src", "test", "preview"],
-  "exclude": ["**/__mocks__/*", "**/__data__/*"]
+  "exclude": ["**/__mocks__/*", "**/__data__/*", "**/__tests__/*"]
 }

@@ -200,7 +200,7 @@ describe('Decimal', () => {
       const expectedAnswer: QuestionnaireResponseItemAnswer = {
         valueDecimal: 1.2,
       };
-      expect(onChange).toHaveBeenCalledTimes(2);
+      expect(onChange).toHaveBeenCalledTimes(3);
       expect(onChange).toHaveBeenCalledWith(expect.any(Object), expectedAnswer, expect.any(Object), expect.any(Object));
     });
   });
