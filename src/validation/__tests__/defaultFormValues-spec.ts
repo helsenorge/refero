@@ -54,7 +54,7 @@ describe('Default form values', () => {
   describe.skip('Initial date value', () => {});
   //TODO: forstår ikke hvorfor denne testen feiler, kan være noe med custom håndtering av react hook from
   describe.skip('Initial dateTime value', () => {
-    it.only('prefilled values should not cause a validation error on submit', async () => {
+    it('prefilled values should not cause a validation error on submit', async () => {
       const wrapper = createWrapper(qDateTime);
       await submitForm();
       wrapper.debug(undefined, 100000);
