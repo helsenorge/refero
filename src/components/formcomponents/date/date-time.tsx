@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import { format } from 'date-fns';
-import { isValid } from 'date-fns';
+
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { FieldError, FieldValues, useFormContext } from 'react-hook-form';
 import { ThunkDispatch } from 'redux-thunk';
@@ -128,11 +128,9 @@ const DateTimeInput = ({
 
   const getErrorText = (error: FieldError | undefined): string | undefined => {
     const validationTextExtension = getValidationTextExtension(item);
-    if (validationTextExtension) {
-      return validationTextExtension;
-    }
+
     if (error) {
-      return error.message;
+      return validationTextExtension || error.message;
     }
   };
 
@@ -148,7 +146,6 @@ const DateTimeInput = ({
     } else if (newDate) {
       dateString = newDate;
     }
-    console.log('dateString', dateString);
     setValue(`${idWithLinkIdAndItemIndex}-date`, dateString);
     updateQuestionnaireResponse(dateString, hours, minutes);
   };
