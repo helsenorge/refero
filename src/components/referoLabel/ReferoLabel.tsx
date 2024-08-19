@@ -4,7 +4,7 @@ import Label, { LabelText } from '@helsenorge/designsystem-react/components/Labe
 
 import SafeText from './SafeText';
 import SubLabel from './sublabel';
-import { getLabelText, getSublabelText } from '@/util';
+import { getLabelText, getSublabelText, isRequired } from '@/util';
 import { Resources } from '@/util/resources';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 import { useSelector } from 'react-redux';
@@ -40,15 +40,15 @@ export const ReferoLabel = ({
   const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
   const lblText = getLabelText(item, onRenderMarkdown, questionnaire, resources);
   return (
-    <div style={{ alignItems: 'center' }}>
+    <div style={{ alignItems: 'center' }} className={styles.label_content}>
       <Label labelId={labelId} testId={testId} labelTexts={labelText || []} htmlFor={htmlFor} className={`page_refero__label`}>
-        <div className={styles.label_content}>
+        <div>
           <SafeText text={lblText} />
-          {/* <>{!isRequired(item) && <span>{'(Valgfritt)'}</span>}</> */}
+          {/* <>{isRequired(item) && <span>{'(Valgfritt)'}</span>}</> */}
           {subLabelText && <SubLabel id={sublabelId} testId={sublabelTestId} subLabelText={subLabelText} />}
-          {afterLabelContent && afterLabelContent}
         </div>
       </Label>
+      {afterLabelContent && afterLabelContent}
     </div>
   );
 };

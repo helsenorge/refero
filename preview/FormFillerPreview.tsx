@@ -1,7 +1,15 @@
 import { useState } from 'react';
 
 import { composeWithDevTools } from '@redux-devtools/extension';
-import { Bundle, Questionnaire, QuestionnaireItem, QuestionnaireResponse, ValueSet } from 'fhir/r4';
+import {
+  Attachment,
+  Bundle,
+  Questionnaire,
+  QuestionnaireItem,
+  QuestionnaireResponse,
+  QuestionnaireResponseItemAnswer,
+  ValueSet,
+} from 'fhir/r4';
 import { Provider } from 'react-redux';
 import { Store, legacy_createStore as createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
@@ -11,15 +19,16 @@ import LanguageLocales from '@helsenorge/core-utils/constants/languages';
 import FormFillerSidebar from './FormFillerSidebar';
 import { emptyPropertyReplacer } from './helpers';
 import { getResources } from './resources/referoResources';
-import skjema from './skjema/q.json';
-// import skjema from '../src/components/__tests__/__data__/group-grid/q.json';
+//import skjema from './skjema/NHN_Testskjema_Options-nb-NO-v0.1.json';
+import skjema from '../src/components/formcomponents/attachment/__tests__/__data__/q.json';
 
 import ReferoContainer from '../src/components/index';
 import valueSet from '../src/constants/valuesets';
 import rootReducer from '../src/reducers/index';
 import { QuestionnaireStatusCodes } from '../src/types/fhirEnums';
 import { EnhetType, OrgenhetHierarki } from '../src/types/orgenhetHierarki';
-import { addAnswerToItems } from '@/components/formcomponents/table/tables/utils';
+import { IActionRequester } from '@/index';
+import { IQuestionnaireInspector } from '@/util/questionnaireInspector';
 
 type Props = {
   showFormFiller: () => void;
@@ -89,6 +98,16 @@ const fetchValueSetFn = (
     },
   });
 };
+const MimeTypes = {
+  PlainText: 'text/plain',
+  HTML: 'text/html',
+  CSV: 'text/csv',
+  JPG: 'image/jpeg',
+  PNG: 'image/png',
+  GIF: 'image/gif',
+  PDF: 'application/pdf',
+  JSON: 'application/json',
+};
 const FormFillerPreview = ({ showFormFiller }: Props): JSX.Element => {
   const store: Store = createStore(rootReducer, composeWithDevTools(applyMiddleware(thunk)));
 
@@ -100,7 +119,25 @@ const FormFillerPreview = ({ showFormFiller }: Props): JSX.Element => {
     console.log(JSON.stringify(questionnaireResponse));
   };
   const [lang, setLang] = useState<number>(0);
-  const addAnswerToItem = (item: QuestionnaireItem): void => {};
+  const uploadAttachment = (file: File[], onSuccess: (attachment: Attachment) => void): void => {
+    onSuccess({ data: file[0].name, contentType: file[0].type, url: 'url' });
+  };
+  const onDeleteAttachment = (fileId: string, onSuccess: () => void): void => {
+    onSuccess();
+  };
+  const onOpenAttachment = (fileId: string): void => {
+    // eslint-disable-next-line no-console
+    console.log(fileId);
+  };
+  const onChange = (
+    item: QuestionnaireItem,
+    answer: QuestionnaireResponseItemAnswer,
+    actionRequester: IActionRequester,
+    questionnaireInspector: IQuestionnaireInspector
+  ): void => {
+    // eslint-disable-next-line no-console
+    console.log(item, answer, actionRequester, questionnaireInspector);
+  };
   return (
     <Provider store={store}>
       <div className="overlay">
@@ -119,7 +156,7 @@ const FormFillerPreview = ({ showFormFiller }: Props): JSX.Element => {
                   store={store}
                   questionnaire={getQuestionnaireFromBubndle(questionnaireForPreview, lang)}
                   onCancel={showFormFiller}
-                  onChange={addAnswerToItem}
+                  onChange={onChange}
                   onSave={(questionnaireResponse: QuestionnaireResponse): void => {
                     setQuestionnaireResponse(questionnaireResponse);
                     setShowResponse(true);
@@ -136,6 +173,11 @@ const FormFillerPreview = ({ showFormFiller }: Props): JSX.Element => {
                   language={LanguageLocales.NORWEGIAN}
                   fetchValueSet={fetchValueSetFn}
                   fetchReceivers={fetchReceiversFn}
+                  uploadAttachment={uploadAttachment}
+                  onDeleteAttachment={onDeleteAttachment}
+                  onOpenAttachment={onOpenAttachment}
+                  attachmentValidTypes={[MimeTypes.PNG, MimeTypes.JPG, MimeTypes.PDF, MimeTypes.PlainText]}
+                  attachmentMaxFileSize={1}
                 />
               </div>
             ) : (

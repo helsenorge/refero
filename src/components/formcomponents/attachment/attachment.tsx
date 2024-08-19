@@ -28,7 +28,7 @@ type UploadedFile = {
 };
 export const AttachmentComponent = (props: Props): JSX.Element | null => {
   const { path, item, pdf, id, resources, responseItem, children } = props;
-  const [customErrorMessage] = useState<TextMessage | undefined>(undefined);
+  const [customErrorMessage, setCustomErrorMessage] = useState<TextMessage | undefined>(undefined);
   const {
     onOpenAttachment,
     onRequestAttachmentLink,
@@ -54,12 +54,12 @@ export const AttachmentComponent = (props: Props): JSX.Element | null => {
             );
           }
         };
-        // const onError = (errormessage: TextMessage | null): void => {
-        //   if (errormessage) {
-        //     setCustomErrorMessage(errormessage);
-        //   }
-        // };
-        uploadAttachment([file], onSuccess);
+        const onError = (errormessage: TextMessage | null): void => {
+          if (errormessage) {
+            setCustomErrorMessage(errormessage);
+          }
+        };
+        uploadAttachment([file], onSuccess, onError);
       }
     }
   };
@@ -75,12 +75,12 @@ export const AttachmentComponent = (props: Props): JSX.Element | null => {
             );
         }
       };
-      // const onError = (errormessage: TextMessage | null): void => {
-      //   if (errormessage) {
-      //     setCustomErrorMessage(errormessage);
-      //   }
-      // };
-      onDeleteAttachment(fileId, onSuccess);
+      const onError = (errormessage: TextMessage | null): void => {
+        if (errormessage) {
+          setCustomErrorMessage(errormessage);
+        }
+      };
+      onDeleteAttachment(fileId, onSuccess, onError);
     }
   };
 

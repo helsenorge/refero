@@ -50,7 +50,7 @@ const AllTheProviders = ({
   return (
     <Provider store={store}>
       <ExternalRenderProviderWrapper props={referoProps}>
-        <AttachmentProvider {...(referoProps as AttachmentProviderProps)}>
+        <AttachmentProvider props={referoProps}>
           <FormWrapper defaultValues={defaultValues}>{children}</FormWrapper>
         </AttachmentProvider>
       </ExternalRenderProviderWrapper>

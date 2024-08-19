@@ -1,5 +1,5 @@
 import { act, userEvent, Matcher, renderRefero, screen } from '@test/test-utils.tsx';
-import { q } from './__data__';
+import { q } from './__data__/';
 
 import { MimeType_For_Test_Util as MIME_TYPES_TEST, createMockFile } from './__data__/mockUtil';
 import { convertMBToBytes } from '../attachmentUtil';
