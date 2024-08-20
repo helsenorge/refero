@@ -3,7 +3,8 @@ import fhirpath, { Context } from 'fhirpath';
 import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
 
 export async function evaluateFhirpathExpressionToGetDate(item: QuestionnaireItem, fhirExpression: string): Promise<Date | undefined> {
-  const result = await fhirpath.evaluate(item, fhirExpression, undefined, fhirpath_r4_model);
+  const iCopy = structuredClone(item);
+  const result = await fhirpath.evaluate(iCopy, fhirExpression, undefined, fhirpath_r4_model);
 
   if (Array.isArray(result)) {
     return new Date(result[0]);

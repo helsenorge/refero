@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import { Attachment } from 'fhir/r4';
 import { ThunkDispatch } from 'redux-thunk';
@@ -17,6 +17,7 @@ import { useIsEnabled } from '@/hooks/useIsEnabled';
 import { useAttachmentContext } from '@/context/AttachmentContext';
 import { QuestionnaireComponentItemProps } from '@/components/GenerateQuestionnaireComponents';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
+import { TextMessage } from '@/types/text-message';
 
 export type Props = QuestionnaireComponentItemProps & {
   children?: React.ReactNode;
@@ -27,6 +28,7 @@ type UploadedFile = {
 };
 export const AttachmentComponent = (props: Props): JSX.Element | null => {
   const { path, item, pdf, id, resources, responseItem, children } = props;
+  const [customErrorMessage, setCustomErrorMessage] = useState<TextMessage | undefined>(undefined);
   const {
     onOpenAttachment,
     onRequestAttachmentLink,
@@ -39,7 +41,9 @@ export const AttachmentComponent = (props: Props): JSX.Element | null => {
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
   const enable = useIsEnabled(item, path);
   const answer = useGetAnswer(responseItem, item);
+
   const { onAnswerChange } = useExternalRenderContext();
+
   const onUpload = (files: UploadFile[]): void => {
     if (uploadAttachment) {
       for (const file of files) {
@@ -50,8 +54,12 @@ export const AttachmentComponent = (props: Props): JSX.Element | null => {
             );
           }
         };
-
-        uploadAttachment([file], onSuccess);
+        const onError = (errormessage: TextMessage | null): void => {
+          if (errormessage) {
+            setCustomErrorMessage(errormessage);
+          }
+        };
+        uploadAttachment([file], onSuccess, onError);
       }
     }
   };
@@ -67,8 +75,12 @@ export const AttachmentComponent = (props: Props): JSX.Element | null => {
             );
         }
       };
-
-      onDeleteAttachment(fileId, onSuccess);
+      const onError = (errormessage: TextMessage | null): void => {
+        if (errormessage) {
+          setCustomErrorMessage(errormessage);
+        }
+      };
+      onDeleteAttachment(fileId, onSuccess, onError);
     }
   };
 
@@ -80,7 +92,7 @@ export const AttachmentComponent = (props: Props): JSX.Element | null => {
     return buttonText;
   };
 
-  const getAttachment = (): UploadedFile[] => {
+  const getAttachment = (): UploadedFile[] | undefined => {
     if (Array.isArray(answer)) {
       return answer.map(v => {
         return {
@@ -98,7 +110,7 @@ export const AttachmentComponent = (props: Props): JSX.Element | null => {
         ];
       }
     }
-    return [];
+    return undefined;
   };
 
   const getPdfValue = (): string => {
@@ -111,6 +123,7 @@ export const AttachmentComponent = (props: Props): JSX.Element | null => {
 
     return '';
   };
+
   if (!enable) {
     return null;
   }
@@ -133,6 +146,7 @@ export const AttachmentComponent = (props: Props): JSX.Element | null => {
           isRequired={isRequired(item)}
           multiple={isRepeat(item)}
           errorText={getValidationTextExtension(item)}
+          customErrorMessage={customErrorMessage}
           onRequestAttachmentLink={onRequestAttachmentLink}
           maxFiles={getMaxOccursExtensionValue(item)}
           minFiles={getMinOccursExtensionValue(item)}

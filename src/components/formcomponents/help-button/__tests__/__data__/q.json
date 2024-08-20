@@ -1,10 +1,10 @@
 {
-  "title": "Default verdi",
-  "description": "Tester default verdi for validering",
   "resourceType": "Questionnaire",
   "language": "nb-NO",
-  "name": "DefaultVerdi",
-  "status": "active",
+  "id": "4171d6c9-43ee-4f2b-863b-2080beacd382",
+  "name": "Integer_unit_tests",
+  "title": "Tittel",
+  "status": "draft",
   "publisher": "NHN",
   "meta": {
     "profile": ["http://ehelse.no/fhir/StructureDefinition/sdf-Questionnaire"],
@@ -62,24 +62,43 @@
       }
     }
   ],
-  "id": "1ce1a649-f81a-4f97-8c36-8a798a0e025a",
   "item": [
     {
-      "linkId": "fe12296c-0b13-4bc2-867d-c1e364cf40c8",
-      "type": "dateTime",
-      "text": "Tom dateTimeText",
-      "required": true
-    },
-    {
-      "linkId": "1c5001d5-07f0-41e0-8b7d-0ead16d437f2",
-      "type": "dateTime",
-      "text": "Preutfylt dateTimeText",
-      "required": true,
-      "initial": [
+      "linkId": "1131c46c-1e44-4f71-8ac4-6b3ab2cdd91a",
+      "type": "group",
+      "text": "Help-element test",
+      "item": [
         {
-          "valueDateTime": "1994-05-31T14:00:00+02"
+          "linkId": "bee820a4-4bbe-427e-8c39-00a0d9c5518c",
+          "type": "text",
+          "required": false,
+          "repeats": false,
+          "readOnly": true,
+          "maxLength": 250,
+          "_text": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                "valueMarkdown": "Hjelp"
+              }
+            ]
+          },
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "help"
+                  }
+                ]
+              }
+            }
+          ]
         }
-      ]
+      ],
+      "required": false
     }
   ]
 }

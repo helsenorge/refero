@@ -81,17 +81,17 @@ describe('Copy value from item', () => {
     await waitFor(async () => expect(getByTestId(/item_2/i)).toBeInTheDocument());
     await waitFor(async () => expect(getByTestId(/item_2/i)).toHaveTextContent('12.12.2024'));
   });
-  it.skip('should copy DATETIME value', async () => {
+  it('should copy DATETIME value', async () => {
     const sender = createSenderItem(ItemType.DATETIME);
     const reciever = createRecieverItem(ItemType.DATETIME);
     const q = createQuestionnaire(sender, reciever);
     const { getByLabelText, queryByTestId, getByTestId } = createWrapper(q);
     expect(queryByTestId(/item_2/i)).not.toBeInTheDocument();
     await act(async () => {
-      userEvent.type(getByLabelText(`${sender.text}`), '12.12.2024');
+      userEvent.paste(getByLabelText(`${sender.text}`), '12.12.2024');
     });
     await waitFor(async () => expect(getByTestId(/item_2/i)).toBeInTheDocument());
-    await waitFor(async () => expect(getByTestId(/item_2/i)).toHaveTextContent('12.12.2024'));
+    await waitFor(async () => expect(getByTestId(/item_2/i)).toHaveTextContent('12.12.2024 00:00'));
   });
   it.skip('should copy TIME value', async () => {
     const sender = createSenderItem(ItemType.DATETIME);

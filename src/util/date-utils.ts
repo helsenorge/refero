@@ -1,11 +1,23 @@
-import { parse, format, setHours, setMinutes, getYear, startOfDay, isValid, isBefore, isAfter, endOfDay } from 'date-fns';
+import {
+  format,
+  formatISO,
+  setHours,
+  setMinutes,
+  getYear,
+  startOfDay,
+  isValid,
+  isBefore,
+  isAfter,
+  endOfDay,
+  parseISO,
+  parse,
+} from 'date-fns';
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 
 import { DateFormat, DatePickerFormat, DateTimeUnit, TimeValues } from '../types/dateTypes';
 
 import { safeParseJSON } from './date-fns-utils';
 import { Resources } from './resources';
-import Constants from '../constants/index';
 
 import '@helsenorge/datepicker/components/DatePicker/';
 import { getExtension } from './extension';
@@ -17,10 +29,28 @@ export function getFullFnsDate(
   minutes: string | undefined
 ): string | undefined {
   let newDate: Date | undefined = undefined;
-  if (typeof date == 'string') {
-    newDate = parseStringToDateDDMMYYYY(date);
+  if (date === undefined) {
+    const now = new Date();
+    let onlyTime: string | undefined = undefined;
+    if (hours !== undefined && hours !== '00') {
+      onlyTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), parseInt(hours.padStart(2, '0'), 10)).toISOString();
+    }
+    if (minutes !== undefined && minutes !== '00') {
+      onlyTime = new Date(
+        now.getFullYear(),
+        now.getMonth(),
+        now.getDate(),
+        onlyTime ? new Date(onlyTime).getHours() : now.getHours(),
+        parseInt(minutes.padStart(2, '0'), 10)
+      ).toISOString();
+    }
+    if (onlyTime) return onlyTime;
   }
-
+  if (typeof date === 'string') {
+    newDate = parseISO(date);
+  } else {
+    newDate = date;
+  }
   if (!newDate || !isValid(newDate)) {
     return undefined;
   } else {
@@ -34,7 +64,7 @@ export function getFullFnsDate(
     }
   }
 
-  return format(newDate, Constants.DATE_TIME_FORMAT);
+  return formatISO(newDate);
 }
 
 export const getDateFromAnswer = (answer: QuestionnaireResponseItemAnswer): Date | string | undefined => {
@@ -94,18 +124,25 @@ export const extractTimeFromAnswer = (
 
 export const parseStringToDateDDMMYYYY = (valueToParse: string | Date | undefined): Date | undefined => {
   if (valueToParse) {
-    if (typeof valueToParse == 'string') {
-      return parse(valueToParse, 'dd.MM.yyyy', new Date());
+    if (typeof valueToParse === 'string') {
+      const isoParsed = parseISO(valueToParse);
+      return isValid(isoParsed) ? isoParsed : parse(valueToParse, DateFormat.ddMMyyyy, new Date());
     } else {
       return valueToParse;
     }
   }
 };
 export const formatDateToStringDDMMYYYY = (dateToFormat: Date | undefined): string => {
-  return format(dateToFormat || '', 'dd.MM.yyyy');
+  const formattedDate = dateToFormat ? formatISO(dateToFormat) : '';
+  return formattedDate;
 };
 
-export const getMonthOptions = (resources: Resources | undefined) => {
+export const getMonthOptions = (
+  resources: Resources | undefined
+): {
+  optionName: string | undefined;
+  optionValue: string;
+}[] => {
   return [
     {
       optionName: resources?.yearmonth_field_month_placeholder,

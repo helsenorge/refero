@@ -12,6 +12,20 @@ Object.defineProperty(window, 'scrollTo', {
   value: vi.fn(),
   writable: true,
 });
+class MockDataTransfer {
+  files: File[];
+
+  constructor() {
+    this.files = [];
+  }
+  items = {
+    add: (file: File): void => {
+      this.files.push(file);
+    },
+  };
+}
+
+vi.stubGlobal('DataTransfer', MockDataTransfer);
 window.HTMLElement.prototype.scrollIntoView = vi.fn();
 const scrollIntoViewMock = vi.fn();
 vi.stubGlobal('scrollIntoView', scrollIntoViewMock);
