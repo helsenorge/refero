@@ -46,8 +46,10 @@ const Time = ({
 
   const answer = useGetAnswer(responseItem, item);
   const [isHelpVisible, setIsHelpVisible] = React.useState(false);
-  const [hours, setHours] = React.useState(extractTimeFromAnswer(answer, item)?.hours);
-  const [minutes, setMinutes] = React.useState(extractTimeFromAnswer(answer, item)?.minutes);
+  const timeFromAnswer = extractTimeFromAnswer(answer, item);
+  const [hours, setHours] = React.useState(timeFromAnswer?.hours);
+  const [minutes, setMinutes] = React.useState(timeFromAnswer?.minutes);
+  //Må det være state?
 
   const convertAnswerToString = (answer: QuestionnaireResponseItemAnswer): string => {
     if (answer && answer.valueTime) {
@@ -114,6 +116,8 @@ const Time = ({
     if (!minutes) {
       setMinutes(Number('00'));
     }
+    //skrive bare 0?
+    //ikke oppdater state her inne
     setHours(newHours);
     setValue(`${idWithLinkIdAndItemIndex}-hours`, newHours);
     updateQuestionnaireResponse(newHours, minutes);
@@ -122,6 +126,8 @@ const Time = ({
     if (!hours) {
       setHours(Number('00'));
     }
+    //skrive bare 0?
+    //ikke oppdater state her inne
     setMinutes(newMinutes);
     setValue(`${idWithLinkIdAndItemIndex}-minutes`, newMinutes);
     updateQuestionnaireResponse(hours, newMinutes);
@@ -142,11 +148,11 @@ const Time = ({
   };
 
   const getErrorText = (error: FieldError | undefined): string | undefined => {
-    const validationTextExtension = getValidationTextExtension(item);
-    if (validationTextExtension) {
-      return validationTextExtension;
-    }
     if (error) {
+      const validationTextExtension = getValidationTextExtension(item);
+      if (validationTextExtension) {
+        return validationTextExtension;
+      }
       return error.message;
     }
   };
@@ -242,12 +248,6 @@ const Time = ({
               validMinutes: value => {
                 return validateMinutes(Number(value), resources);
               },
-              // validMinTime: value => {
-              //   return validateMinTime(hours, Number(value), resources, item);
-              // },
-              // validMaxTime: value => {
-              //   return validateMaxTime(hours, Number(value), resources, item);
-              // },
             },
           })}
           testId={`time-2`}

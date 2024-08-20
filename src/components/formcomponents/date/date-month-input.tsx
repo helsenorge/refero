@@ -192,13 +192,13 @@ export const DateYearMonthInput = ({
             }}
             render={({ field: { onChange } }): JSX.Element => (
               <Select
+                className={styles.monthSelect}
                 selectId={`${getId(id)}-select`}
                 testId={'month-select'}
                 onChange={e => {
                   handleYearMonthChange(year, e.target.value);
                   onChange(getConcatinatedYearAndMonth(year, e.target.value));
                 }}
-                width={10}
                 defaultValue={month ? month : monthOptions[0].optionValue}
               >
                 {monthOptions.map(option => (

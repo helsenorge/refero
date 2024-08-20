@@ -83,6 +83,8 @@ export const extractTimeFromAnswer = (
     timeStr = initial.valueTime || initial.valueDate || initial.valueDateTime;
   }
 
+  //Logikken over kan gjøres enklere
+
   if (timeStr) {
     return getTimeValues(timeStr);
   }
@@ -207,6 +209,7 @@ export const getYearFromString = (dateString: string): string => {
 const parseTimeToDate = (time?: string): Date => {
   const today = new Date();
   const localDate = new Date(today);
+  //sjekke
 
   if (time) {
     const [hours, minutes, seconds] = time.split(':').map(Number);

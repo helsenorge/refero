@@ -28,10 +28,6 @@ const DateComponent = (props: DateProps): JSX.Element | null => {
   const enable = useIsEnabled(item, path);
   let element: JSX.Element | undefined = undefined;
 
-  if (!element || !enable) {
-    return null;
-  }
-
   const answer = useGetAnswer(responseItem, item);
   const { promptLoginMessage, onAnswerChange } = useExternalRenderContext();
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
@@ -64,6 +60,10 @@ const DateComponent = (props: DateProps): JSX.Element | null => {
     element = <DateYearMonthInput {...props} locale={getLocaleFromLanguage()} onDateValueChange={onDateValueChange} />;
   } else {
     element = <DateDayInput {...props} locale={getLocaleFromLanguage()} onDateValueChange={onDateValueChange} />;
+  }
+
+  if (!element || !enable) {
+    return null;
   }
 
   return (
