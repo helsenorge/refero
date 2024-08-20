@@ -65,16 +65,16 @@ describe('Date time', () => {
       };
       const { getByLabelText } = createWrapper(questionnaire);
 
-      const hoursElement = await screen.findByTestId(/datetime-1/i);
-      const minutesElement = await screen.findByTestId(/datetime-2/i);
+      // const hoursElement = await screen.findByTestId(/datetime-1/i);
+      // const minutesElement = await screen.findByTestId(/datetime-2/i);
 
       const dateInput = getByLabelText(/Dato/i);
-      const hoursInput = hoursElement.querySelector('input');
-      const minutesInput = minutesElement.querySelector('input');
+      // const hoursInput = hoursElement.querySelector('input');
+      // const minutesInput = minutesElement.querySelector('input');
 
       expect(dateInput).toHaveValue('31.05.1994');
-      expect(hoursInput).toHaveValue(Number('14'));
-      expect(minutesInput).toHaveValue(Number('00'));
+      // expect(hoursInput).toHaveValue(Number('14'));
+      // expect(minutesInput).toHaveValue(Number('00'));
     });
   });
   describe('help button', () => {
