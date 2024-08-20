@@ -6,7 +6,6 @@ import { Controller, FieldError, FieldValues, useFormContext } from 'react-hook-
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Input from '@helsenorge/designsystem-react/components/Input';
-import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
 import Select from '@helsenorge/designsystem-react/components/Select';
 
 import { LanguageLocales } from '@helsenorge/core-utils/constants/languages';
@@ -22,15 +21,13 @@ import RenderHelpElement from '@/components/formcomponents/help-button/RenderHel
 import { QuestionnaireComponentItemProps } from '@/components/GenerateQuestionnaireComponents';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
+import { useMinMaxDate } from './useMinMaxDate';
+
+import styles from '../../../styles/date-year-month.module.css';
 
 type DateMonthProps = QuestionnaireComponentItemProps & {
   locale: LanguageLocales.ENGLISH | LanguageLocales.NORWEGIAN;
-  label?: string;
-  subLabel?: string;
   onDateValueChange: (newValue: string) => void;
-  className?: string;
-  maxDate?: Date;
-  minDate?: Date;
 };
 
 export const DateYearMonthInput = ({
@@ -38,17 +35,15 @@ export const DateYearMonthInput = ({
   idWithLinkIdAndItemIndex,
   pdf,
   item,
-  resources,
-  label,
-  subLabel,
-  onDateValueChange,
-  maxDate,
-  minDate,
-  children,
   responseItem,
+  resources,
+  onDateValueChange,
+  children,
 }: DateMonthProps): JSX.Element | null => {
   const { formState, getFieldState } = useFormContext<FieldValues>();
   const answer = useGetAnswer(responseItem, item);
+  const { minDateTime, maxDateTime } = useMinMaxDate(item);
+
   const getDateValueFromAnswer = (
     answer: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[] | undefined
   ): string | undefined => {
@@ -84,10 +79,16 @@ export const DateYearMonthInput = ({
     return value ? format(value, 'MMMM yyyy') : '';
   };
 
-  const getPDFValue = (): string => {
+  const getPDFValue = (answer: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[] | undefined): string => {
     const ikkeBesvartText = resources?.ikkeBesvart || '';
     if (Array.isArray(answer)) {
-      return answer.map(m => convertToPDFValue(m)).join(', ');
+      const answerString = answer
+        .map(m => convertToPDFValue(m))
+        .filter(x => x !== undefined)
+        .join(', ');
+      return answerString;
+    } else if (answer) {
+      return convertToPDFValue(answer) ?? ikkeBesvartText;
     }
     return ikkeBesvartText;
   };
@@ -125,7 +126,7 @@ export const DateYearMonthInput = ({
 
   if (pdf || isReadOnly(item)) {
     return (
-      <TextView id={id} item={item} value={getPDFValue()}>
+      <TextView id={id} item={item} value={getPDFValue(answer)}>
         {children}
       </TextView>
     );
@@ -144,78 +145,70 @@ export const DateYearMonthInput = ({
           afterLabelContent={<RenderHelpButton isHelpVisible={isHelpVisible} item={item} setIsHelpVisible={setIsHelpVisible} />}
         />
         <RenderHelpElement item={item} isHelpVisible={isHelpVisible} />
-        <Controller
-          name={idWithLinkIdAndItemIndex + '-yearmonth-year'}
-          shouldUnregister={true}
-          rules={{
-            required: {
-              value: isRequired(item),
-              message: resources?.yearmonth_field_required || '',
-            },
-            validate: {
-              validYear: value => {
-                return validateYearDigits(getYearFromString(value), resources);
+        <div className={styles.yearMonthWrapper}>
+          <Controller
+            name={idWithLinkIdAndItemIndex + '-yearmonth-year'}
+            shouldUnregister={true}
+            rules={{
+              required: {
+                value: isRequired(item),
+                message: resources?.yearmonth_field_required || '',
               },
-              validMinDate: value => {
-                return validateYearMin(minDate, Number(getYearFromString(value)), resources);
+              validate: {
+                validYear: value => {
+                  return validateYearDigits(getYearFromString(value), resources);
+                },
+                validMinDate: value => {
+                  return validateYearMin(minDateTime, Number(getYearFromString(value)), resources);
+                },
+                validMaxDate: value => {
+                  return validateYearMax(maxDateTime, Number(getYearFromString(value)), resources);
+                },
               },
-              validMaxDate: value => {
-                return validateYearMax(maxDate, Number(getYearFromString(value)), resources);
+            }}
+            render={({ field: { onChange } }): JSX.Element => (
+              <Input
+                type="number"
+                inputId={`${getId(id)}-input`}
+                testId={getId(id)}
+                onChange={e => {
+                  handleYearMonthChange(e.target.value, month);
+                  onChange(getConcatinatedYearAndMonth(e.target.value, month));
+                }}
+                width={10}
+                defaultValue={year ?? ''}
+              />
+            )}
+          />
+          <Controller
+            name={idWithLinkIdAndItemIndex + '-yearmonth-month'}
+            shouldUnregister={true}
+            rules={{
+              required: {
+                value: isRequired(item),
+                message: resources?.yearmonth_field_required || '',
               },
-            },
-          }}
-          render={({ field: { onChange } }): JSX.Element => (
-            <Input
-              type="number"
-              inputId={`${getId(id)}-input`}
-              testId={getId(id)}
-              onChange={e => {
-                handleYearMonthChange(e.target.value, month);
-                onChange(getConcatinatedYearAndMonth(e.target.value, month));
-              }}
-              label={
-                <Label
-                  labelId={`${getId(id)}-label-yearmonth`}
-                  labelTexts={[{ text: label || '' }]}
-                  sublabel={
-                    <Sublabel id={`${getId(id)}-sublabel-dateYearMonth`} sublabelTexts={[{ text: subLabel || '', type: 'normal' }]} />
-                  }
-                  afterLabelChildren={<RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />}
-                />
-              }
-              width={10}
-              defaultValue={year ?? ''}
-            />
-          )}
-        />
-        <Controller
-          name={idWithLinkIdAndItemIndex + '-yearmonth-month'}
-          shouldUnregister={true}
-          rules={{
-            required: {
-              value: isRequired(item),
-              message: resources?.yearmonth_field_required || '',
-            },
-          }}
-          render={({ field: { onChange } }): JSX.Element => (
-            <Select
-              selectId={`${getId(id)}-select`}
-              testId={'month-select'}
-              onChange={e => {
-                handleYearMonthChange(year, e.target.value);
-                onChange(getConcatinatedYearAndMonth(year, e.target.value));
-              }}
-              width={10}
-              defaultValue={month ? month : monthOptions[0].optionValue}
-            >
-              {monthOptions.map(option => (
-                <option key={option.optionValue} value={option.optionValue}>
-                  {option.optionName}
-                </option>
-              ))}
-            </Select>
-          )}
-        />
+            }}
+            render={({ field: { onChange } }): JSX.Element => (
+              <Select
+                selectId={`${getId(id)}-select`}
+                testId={'month-select'}
+                onChange={e => {
+                  handleYearMonthChange(year, e.target.value);
+                  onChange(getConcatinatedYearAndMonth(year, e.target.value));
+                }}
+                width={10}
+                defaultValue={month ? month : monthOptions[0].optionValue}
+              >
+                {monthOptions.map(option => (
+                  <option key={option.optionValue} value={option.optionValue}>
+                    {option.optionName}
+                  </option>
+                ))}
+              </Select>
+            )}
+          />
+        </div>
       </FormGroup>
     </>
   );

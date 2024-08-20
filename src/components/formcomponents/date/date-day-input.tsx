@@ -21,14 +21,11 @@ import RenderHelpButton from '../help-button/RenderHelpButton';
 import RenderHelpElement from '../help-button/RenderHelpElement';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
+import { useMinMaxDate } from './useMinMaxDate';
 
 type DateDayInputProps = QuestionnaireComponentItemProps & {
   locale: LanguageLocales.ENGLISH | LanguageLocales.NORWEGIAN;
-  label?: string;
-  subLabel?: string;
   onDateValueChange: (newValue: string) => void;
-  maxDate?: Date;
-  minDate?: Date;
 };
 
 export const DateDayInput = ({
@@ -38,8 +35,6 @@ export const DateDayInput = ({
   item,
   responseItem,
   onDateValueChange,
-  maxDate,
-  minDate,
   children,
 }: DateDayInputProps): JSX.Element | null => {
   const [isHelpVisible, setIsHelpVisible] = useState(false);
@@ -47,6 +42,7 @@ export const DateDayInput = ({
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
   const answer = useGetAnswer(responseItem, item);
+  const { minDateTime, maxDateTime } = useMinMaxDate(item);
   const { resources } = useExternalRenderContext();
 
   const getDateAnswerValue = (
@@ -180,10 +176,10 @@ export const DateDayInput = ({
               return validateDate(value ? parseStringToDateDDMMYYYY(value) : undefined, resources);
             },
             validMinDate: value => {
-              return validateMinDate(minDate, parseStringToDateDDMMYYYY(value), resources);
+              return validateMinDate(minDateTime, parseStringToDateDDMMYYYY(value), resources);
             },
             validMaxDate: value => {
-              return validateMaxDate(maxDate, parseStringToDateDDMMYYYY(value), resources);
+              return validateMaxDate(maxDateTime, parseStringToDateDDMMYYYY(value), resources);
             },
           },
         }}
@@ -194,8 +190,8 @@ export const DateDayInput = ({
             autoComplete=""
             dateButtonAriaLabel="Open datepicker"
             dateFormat={'dd.MM.yyyy'}
-            minDate={minDate}
-            maxDate={maxDate}
+            minDate={minDateTime}
+            maxDate={maxDateTime}
             onChange={(e, newDate) => {
               handleChange(newDate);
               onChange(newDate);

@@ -105,7 +105,7 @@ export const formatDateToStringDDMMYYYY = (dateToFormat: Date | undefined): stri
 export const getMonthOptions = (resources: Resources | undefined) => {
   return [
     {
-      optionName: '',
+      optionName: resources?.yearmonth_field_month_placeholder,
       optionValue: '',
     },
     {
