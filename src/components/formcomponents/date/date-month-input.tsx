@@ -24,6 +24,7 @@ import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { useMinMaxDate } from './useMinMaxDate';
 
 import styles from '../../../styles/date-year-month.module.css';
+import { useExternalRenderContext } from '@/context/externalRenderContext';
 
 type DateMonthProps = QuestionnaireComponentItemProps & {
   locale: LanguageLocales.ENGLISH | LanguageLocales.NORWEGIAN;
@@ -36,12 +37,12 @@ export const DateYearMonthInput = ({
   pdf,
   item,
   responseItem,
-  resources,
   onDateValueChange,
   children,
 }: DateMonthProps): JSX.Element | null => {
   const { formState, getFieldState } = useFormContext<FieldValues>();
   const answer = useGetAnswer(responseItem, item);
+  const { resources } = useExternalRenderContext();
   const { minDateTime, maxDateTime } = useMinMaxDate(item);
 
   const getDateValueFromAnswer = (

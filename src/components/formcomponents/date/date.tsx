@@ -13,25 +13,30 @@ import { GlobalState } from '../../../reducers';
 
 import { getItemControlExtensionValue } from '../../../util/extension';
 
-import { getLabelText, getSublabelText } from '../../../util/index';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import { QuestionnaireComponentItemProps } from '@/components/GenerateQuestionnaireComponents';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
-import { FormDefinition, getFormDefinition } from '@/reducers/form';
-import { useMinMaxDate } from './useMinMaxDate';
+import { useIsEnabled } from '@/hooks/useIsEnabled';
 
 export type DateProps = QuestionnaireComponentItemProps;
 
 const DateComponent = (props: DateProps): JSX.Element | null => {
   const { item, resources, language, responseItems, responseItem, path, index, children } = props;
+  const enable = useIsEnabled(item, path);
+  let element: JSX.Element | undefined = undefined;
+
+  if (!element || !enable) {
+    return null;
+  }
+
   const answer = useGetAnswer(responseItem, item);
-  const questionnaire = useSelector<GlobalState, FormDefinition | undefined | null>(state => getFormDefinition(state))?.Content;
-  const { onRenderMarkdown, promptLoginMessage, onAnswerChange } = useExternalRenderContext();
+  const { promptLoginMessage, onAnswerChange } = useExternalRenderContext();
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
-  const { minDateTime, maxDateTime } = useMinMaxDate(item);
+  const itemControls = getItemControlExtensionValue(item);
+
   const onDateValueChange = (newValue: string): void => {
     const existingAnswer = Array.isArray(answer) ? answer[0].valueDate : answer?.valueDate || '';
     if (dispatch && newValue !== existingAnswer && path) {
@@ -53,47 +58,12 @@ const DateComponent = (props: DateProps): JSX.Element | null => {
     return LanguageLocales.NORWEGIAN;
   };
 
-  const labelText = getLabelText(item, onRenderMarkdown, questionnaire, resources);
-  const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
-
-  const itemControls = getItemControlExtensionValue(item);
-  let element: JSX.Element | undefined = undefined;
-
   if (itemControls && itemControls.some(itemControl => itemControl.code === itemControlConstants.YEAR)) {
-    element = (
-      <DateYearInput
-        {...props}
-        label={labelText}
-        subLabel={subLabelText}
-        onDateValueChange={onDateValueChange}
-        maxDate={maxDateTime}
-        minDate={minDateTime}
-      />
-    );
+    element = <DateYearInput {...props} onDateValueChange={onDateValueChange} />;
   } else if (itemControls && itemControls.some(itemControl => itemControl.code === itemControlConstants.YEARMONTH)) {
-    element = (
-      <DateYearMonthInput
-        {...props}
-        label={labelText}
-        locale={getLocaleFromLanguage()}
-        subLabel={subLabelText}
-        onDateValueChange={onDateValueChange}
-        maxDate={maxDateTime}
-        minDate={minDateTime}
-      />
-    );
+    element = <DateYearMonthInput {...props} locale={getLocaleFromLanguage()} onDateValueChange={onDateValueChange} />;
   } else {
-    element = (
-      <DateDayInput
-        {...props}
-        locale={getLocaleFromLanguage()}
-        label={labelText}
-        subLabel={subLabelText}
-        onDateValueChange={onDateValueChange}
-        maxDate={maxDateTime}
-        minDate={minDateTime}
-      />
-    );
+    element = <DateDayInput {...props} locale={getLocaleFromLanguage()} onDateValueChange={onDateValueChange} />;
   }
 
   return (

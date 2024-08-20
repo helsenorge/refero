@@ -16,24 +16,25 @@ export function getFullFnsDate(
   hours: string | undefined,
   minutes: string | undefined
 ): string | undefined {
+  let newDate: Date | undefined = undefined;
   if (typeof date == 'string') {
-    date = parseStringToDateDDMMYYYY(date);
+    newDate = parseStringToDateDDMMYYYY(date);
   }
 
-  if (!date || !isValid(date)) {
+  if (!newDate || !isValid(newDate)) {
     return undefined;
   } else {
     if (hours) {
-      const hoursNumber = parseInt(hours, 10);
-      date = setHours(date, hoursNumber);
+      const hoursNumber = parseInt(hours.padStart(2, '0'), 10);
+      newDate = setHours(newDate, hoursNumber);
     }
     if (minutes) {
-      const minutesNumber = parseInt(minutes, 10);
-      date = setMinutes(date, minutesNumber);
+      const minutesNumber = parseInt(minutes.padStart(2, '0'), 10);
+      newDate = setMinutes(newDate, minutesNumber);
     }
   }
 
-  return format(date, Constants.DATE_TIME_FORMAT);
+  return format(newDate, Constants.DATE_TIME_FORMAT);
 }
 
 export const getDateFromAnswer = (answer: QuestionnaireResponseItemAnswer): Date | string | undefined => {
