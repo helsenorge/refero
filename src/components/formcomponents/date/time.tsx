@@ -6,9 +6,8 @@ import { QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import * as DateTimeConstants from '../../../constants/dateTimeConstants';
 
 import { newTimeValueAsync, NewValueAction } from '../../../actions/newValue';
-import { Extensions } from '../../../constants/extensions';
 import { safeParseJSON } from '../../../util/date-fns-utils';
-import { getExtension, getValidationTextExtension } from '../../../util/extension';
+import { getValidationTextExtension } from '../../../util/extension';
 import { getId, isReadOnly, isRequired } from '../../../util/index';
 import { QuestionnaireComponentItemProps } from '@/components/GenerateQuestionnaireComponents';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
@@ -20,7 +19,7 @@ import { GlobalState } from '@/reducers';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import { DateTime, DateTimePickerWrapper } from '@helsenorge/datepicker/components/DatePicker';
 import { FieldError, FieldValues, useFormContext } from 'react-hook-form';
-import { extractTimeFromAnswer, validateHours, validateMinutes } from '@/util/date-utils';
+import { extractTimeFromAnswer, validateHours, validateMaxTime, validateMinTime, validateMinutes } from '@/util/date-utils';
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import RenderHelpButton from '../help-button/RenderHelpButton';
 import RenderHelpElement from '../help-button/RenderHelpElement';
@@ -47,8 +46,8 @@ const Time = ({
 
   const answer = useGetAnswer(responseItem, item);
   const [isHelpVisible, setIsHelpVisible] = React.useState(false);
-  const [hours, setHours] = React.useState(extractTimeFromAnswer(answer)?.hours);
-  const [minutes, setMinutes] = React.useState(extractTimeFromAnswer(answer)?.minutes);
+  const [hours, setHours] = React.useState(extractTimeFromAnswer(answer, item)?.hours);
+  const [minutes, setMinutes] = React.useState(extractTimeFromAnswer(answer, item)?.minutes);
 
   const convertAnswerToString = (answer: QuestionnaireResponseItemAnswer): string => {
     if (answer && answer.valueTime) {
@@ -215,11 +214,18 @@ const Time = ({
             },
             validate: {
               validHours: value => {
-                return validateHours(Number(value), resources, item);
+                return validateHours(Number(value), resources);
+              },
+              validMinTime: value => {
+                return validateMinTime(Number(value), minutes, resources, item);
+              },
+              validMaxTime: value => {
+                return validateMaxTime(Number(value), minutes, resources, item);
               },
             },
           })}
-          testId={`datetime-1`}
+          inputId={`${getId(id)}-datetime-hours`}
+          testId={`time-1`}
           defaultValue={Number(hours)}
           timeUnit="hours"
           onChange={e => {
@@ -234,12 +240,17 @@ const Time = ({
             },
             validate: {
               validMinutes: value => {
-                return validateMinutes(Number(value), resources, item);
+                return validateMinutes(Number(value), resources);
               },
+              // validMinTime: value => {
+              //   return validateMinTime(hours, Number(value), resources, item);
+              // },
+              // validMaxTime: value => {
+              //   return validateMaxTime(hours, Number(value), resources, item);
+              // },
             },
           })}
-          inputId={`${getId(id)}-datetime-hours`}
-          testId={`datetime-2`}
+          testId={`time-2`}
           defaultValue={Number(minutes)}
           timeUnit="minutes"
           onChange={e => {

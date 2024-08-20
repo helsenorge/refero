@@ -1,6 +1,6 @@
 import { Questionnaire, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { act, findByRole, renderRefero, userEvent, waitFor } from '@test/test-utils.tsx';
-import { q, qMinMax, qMinMaxCustomError } from './__data__/time';
+import { q } from './__data__/time';
 import { ReferoProps } from '../../../../types/referoProps';
 import { Extensions } from '../../../../constants/extensions';
 import { clickButtonTimes, submitForm } from '../../../../../test/selectors';
@@ -39,383 +39,418 @@ describe('Time', () => {
       expect(queryByText(/, kl\./i)).not.toBeInTheDocument();
     });
   });
-  // describe('initialvalue', () => {
-  //   it('Initial value should not be set', async () => {
-  //     const questionnaire: Questionnaire = {
-  //       ...q,
-  //       item: q.item?.map(x => ({
-  //         ...x,
-  //         repeats: false,
-  //       })),
-  //     };
-  //     const { getByLabelText } = createWrapper(questionnaire);
+  describe('initialvalue', () => {
+    it('Initial value should not be set', async () => {
+      const questionnaire: Questionnaire = {
+        ...q,
+        item: q.item?.map(x => ({
+          ...x,
+          repeats: false,
+        })),
+      };
+      const { getByLabelText } = createWrapper(questionnaire);
 
-  //     expect(getByLabelText(/Dato/i)).toHaveValue('');
-  //   });
-  //   it('Initial value should be set', async () => {
-  //     const questionnaire: Questionnaire = {
-  //       ...q,
-  //       item: q.item?.map(x => ({
-  //         ...x,
-  //         repeats: false,
-  //         initial: [
-  //           {
-  //             valueDateTime: '1994-05-31T14:00:00+02',
-  //           },
-  //         ],
-  //       })),
-  //     };
-  //     const { getByLabelText } = createWrapper(questionnaire);
+      expect(getByLabelText(/Klokkeslett/i)).toHaveValue(null);
+    });
+    it('Initial value should be set', async () => {
+      const questionnaire: Questionnaire = {
+        ...q,
+        item: q.item?.map(x => ({
+          ...x,
+          repeats: false,
+          initial: [
+            {
+              valueTime: '14:30:00',
+            },
+          ],
+        })),
+      };
+      const { getByLabelText } = createWrapper(questionnaire);
 
-  //     const hoursElement = await screen.findByTestId('datetime-1');
-  //     const minutesElement = await screen.findByTestId('datetime-2');
+      const minutesElement = await screen.findByTestId('time-2');
 
-  //     const dateInput = getByLabelText(/Dato/i);
-  //     const hoursInput = hoursElement.querySelector('input');
-  //     const minutesInput = minutesElement.querySelector('input');
+      const hoursInput = getByLabelText(/Klokkeslett/i);
+      const minutesInput = minutesElement.querySelector('input');
 
-  //     expect(dateInput).toHaveValue('31.05.1994');
-  //     expect(hoursInput).toHaveValue(Number('14'));
-  //     expect(minutesInput).toHaveValue(Number('00'));
-  //   });
-  // });
-  // describe('help button', () => {
-  //   it('Should render helpButton', async () => {
-  //     const { container } = createWrapper(q);
+      screen.debug();
 
-  //     expect(container.querySelector('.page_refero__helpButton')).toBeInTheDocument();
-  //   });
-  //   it('Should render helpElement when helpbutton is clicked', async () => {
-  //     const { container } = createWrapper(q);
+      expect(hoursInput).toHaveValue(Number('14'));
+      expect(minutesInput).toHaveValue(Number('30'));
+    });
+  });
+  describe('help button', () => {
+    it('Should render helpButton', async () => {
+      const { container } = createWrapper(q);
 
-  //     expect(container.querySelector('.page_refero__helpButton')).toBeInTheDocument();
+      expect(container.querySelector('.page_refero__helpButton')).toBeInTheDocument();
+    });
+    it('Should render helpElement when helpbutton is clicked', async () => {
+      const { container } = createWrapper(q);
 
-  //     expect(container.querySelector('.page_refero__helpComponent--open')).not.toBeInTheDocument();
+      expect(container.querySelector('.page_refero__helpButton')).toBeInTheDocument();
 
-  //     const helpButton = container.querySelector('.page_refero__helpButton');
-  //     if (helpButton) {
-  //       await act(async () => {
-  //         userEvent.click(helpButton);
-  //       });
-  //     }
+      expect(container.querySelector('.page_refero__helpComponent--open')).not.toBeInTheDocument();
 
-  //     expect(container.querySelector('.page_refero__helpComponent--open')).toBeInTheDocument();
-  //   });
-  // });
-  // describe('repeat button', () => {
-  //   it('Should render repeat button if item repeats', () => {
-  //     const questionnaire: Questionnaire = {
-  //       ...q,
-  //       item: q.item?.map(x => ({ ...x, repeats: true })),
-  //     };
+      const helpButton = container.querySelector('.page_refero__helpButton');
+      if (helpButton) {
+        await act(async () => {
+          userEvent.click(helpButton);
+        });
+      }
 
-  //     const { getByTestId } = createWrapper(questionnaire);
-  //     const repeatButton = getByTestId(/-repeat-button/i);
-  //     expect(repeatButton).toBeInTheDocument();
-  //   });
+      expect(container.querySelector('.page_refero__helpComponent--open')).toBeInTheDocument();
+    });
+  });
+  describe('repeat button', () => {
+    it('Should render repeat button if item repeats', () => {
+      const questionnaire: Questionnaire = {
+        ...q,
+        item: q.item?.map(x => ({ ...x, repeats: true })),
+      };
 
-  //   it('Should not render repeat button if item does not repeats', () => {
-  //     const questionnaire: Questionnaire = {
-  //       ...q,
-  //       item: q.item?.map(x => ({ ...x, repeats: false })),
-  //     };
-  //     const { queryByTestId } = createWrapper(questionnaire);
-  //     const repeatButton = queryByTestId(/-repeat-button/i);
-  //     expect(repeatButton).not.toBeInTheDocument();
-  //   });
-  //   it('Should add item when repeat is clicked and remove button when maxOccurance(4) is reached', async () => {
-  //     const questionnaire: Questionnaire = {
-  //       ...q,
-  //       item: q.item?.map(x => ({ ...x, repeats: true })),
-  //       extension: q.extension?.map(y => {
-  //         if (y.url === Extensions.MIN_OCCURS_URL) {
-  //           return { ...y, valueInteger: 2 };
-  //         }
-  //         return y;
-  //       }),
-  //     };
-  //     const { queryAllByLabelText, queryByTestId } = createWrapper(questionnaire);
-  //     await clickButtonTimes(/-repeat-button/i, 3);
+      const { getByTestId } = createWrapper(questionnaire);
+      const repeatButton = getByTestId(/-repeat-button/i);
+      expect(repeatButton).toBeInTheDocument();
+    });
 
-  //     expect(queryAllByLabelText(/Dato/i)).toHaveLength(4);
-  //     expect(queryByTestId(/-repeat-button/i)).not.toBeInTheDocument();
-  //   });
-  // });
-  // describe('delete button', () => {
-  //   it('Should render delete button if item repeats and number of repeated items is greater than minOccurance(2)', async () => {
-  //     const questionnaire: Questionnaire = {
-  //       ...q,
-  //       item: q.item?.map(x => ({ ...x, repeats: true })),
-  //     };
-  //     const { queryAllByTestId } = createWrapper(questionnaire);
+    it('Should not render repeat button if item does not repeats', () => {
+      const questionnaire: Questionnaire = {
+        ...q,
+        item: q.item?.map(x => ({ ...x, repeats: false })),
+      };
+      const { queryByTestId } = createWrapper(questionnaire);
+      const repeatButton = queryByTestId(/-repeat-button/i);
+      expect(repeatButton).not.toBeInTheDocument();
+    });
+    it('Should add item when repeat is clicked and remove button when maxOccurance(4) is reached', async () => {
+      const questionnaire: Questionnaire = {
+        ...q,
+        item: q.item?.map(x => ({ ...x, repeats: true })),
+        extension: q.extension?.map(y => {
+          if (y.url === Extensions.MIN_OCCURS_URL) {
+            return { ...y, valueInteger: 2 };
+          }
+          return y;
+        }),
+      };
+      const { queryAllByLabelText, queryByTestId } = createWrapper(questionnaire);
+      await clickButtonTimes(/-repeat-button/i, 3);
 
-  //     await clickButtonTimes(/-repeat-button/i, 2);
+      expect(queryAllByLabelText(/Klokkeslett/i)).toHaveLength(4);
+      expect(queryByTestId(/-repeat-button/i)).not.toBeInTheDocument();
+    });
+  });
+  describe('delete button', () => {
+    it('Should render delete button if item repeats and number of repeated items is greater than minOccurance(2)', async () => {
+      const questionnaire: Questionnaire = {
+        ...q,
+        item: q.item?.map(x => ({ ...x, repeats: true })),
+      };
+      const { queryAllByTestId } = createWrapper(questionnaire);
 
-  //     expect(queryAllByTestId(/-delete-button/i)).toHaveLength(2);
-  //   });
-  //   it('Should not render delete button if item repeats and number of repeated items is lower or equal than minOccurance(2)', async () => {
-  //     const questionnaire: Questionnaire = {
-  //       ...q,
-  //       item: q.item?.map(x => ({ ...x, repeats: true })),
-  //     };
-  //     const { queryByTestId } = createWrapper(questionnaire);
+      await clickButtonTimes(/-repeat-button/i, 2);
 
-  //     expect(queryByTestId(/-delete-button/i)).not.toBeInTheDocument();
-  //   });
-  //   it('Should show confirmationbox when deletebutton is clicked', async () => {
-  //     const questionnaire: Questionnaire = {
-  //       ...q,
-  //       item: q.item?.map(x => ({ ...x, repeats: true })),
-  //     };
-  //     const { getByTestId } = createWrapper(questionnaire);
+      expect(queryAllByTestId(/-delete-button/i)).toHaveLength(2);
+    });
+    it('Should not render delete button if item repeats and number of repeated items is lower or equal than minOccurance(2)', async () => {
+      const questionnaire: Questionnaire = {
+        ...q,
+        item: q.item?.map(x => ({ ...x, repeats: true })),
+      };
+      const { queryByTestId } = createWrapper(questionnaire);
 
-  //     await clickButtonTimes(/-repeat-button/i, 1);
+      expect(queryByTestId(/-delete-button/i)).not.toBeInTheDocument();
+    });
+    it('Should show confirmationbox when deletebutton is clicked', async () => {
+      const questionnaire: Questionnaire = {
+        ...q,
+        item: q.item?.map(x => ({ ...x, repeats: true })),
+      };
+      const { getByTestId } = createWrapper(questionnaire);
 
-  //     expect(getByTestId(/-delete-button/i)).toBeInTheDocument();
-  //     await clickButtonTimes(/-delete-button/i, 1);
+      await clickButtonTimes(/-repeat-button/i, 1);
 
-  //     expect(getByTestId(/-delete-confirm-modal/i)).toBeInTheDocument();
-  //   });
-  //   it('Should remove item when delete button is clicked', async () => {
-  //     const questionnaire: Questionnaire = {
-  //       ...q,
-  //       item: q.item?.map(x => ({ ...x, repeats: true })),
-  //     };
-  //     const { getByTestId, queryByTestId } = createWrapper(questionnaire);
+      expect(getByTestId(/-delete-button/i)).toBeInTheDocument();
+      await clickButtonTimes(/-delete-button/i, 1);
 
-  //     await clickButtonTimes(/-repeat-button/i, 1);
+      expect(getByTestId(/-delete-confirm-modal/i)).toBeInTheDocument();
+    });
+    it('Should remove item when delete button is clicked', async () => {
+      const questionnaire: Questionnaire = {
+        ...q,
+        item: q.item?.map(x => ({ ...x, repeats: true })),
+      };
+      const { getByTestId, queryByTestId } = createWrapper(questionnaire);
 
-  //     expect(getByTestId(/-delete-button/i)).toBeInTheDocument();
-  //     await clickButtonTimes(/-delete-button/i, 1);
+      await clickButtonTimes(/-repeat-button/i, 1);
 
-  //     const confirmModal = getByTestId(/-delete-confirm-modal/i);
-  //     await act(async () => {
-  //       userEvent.click(await findByRole(confirmModal, 'button', { name: /Forkast endringer/i }));
-  //     });
+      expect(getByTestId(/-delete-button/i)).toBeInTheDocument();
+      await clickButtonTimes(/-delete-button/i, 1);
 
-  //     expect(queryByTestId(/-delete-button/i)).not.toBeInTheDocument();
-  //   });
-  // });
-  // describe('onChange', () => {
-  //   it('Should update date field with value from answer', async () => {
-  //     const { getByLabelText } = createWrapper(q);
+      const confirmModal = getByTestId(/-delete-confirm-modal/i);
+      await act(async () => {
+        userEvent.click(await findByRole(confirmModal, 'button', { name: /Forkast endringer/i }));
+      });
 
-  //     const inputElement = getByLabelText(/Dato/i);
+      expect(queryByTestId(/-delete-button/i)).not.toBeInTheDocument();
+    });
+  });
+  describe('onChange', () => {
+    it('Should update hour field with value from answer', async () => {
+      const { getByLabelText } = createWrapper(q);
 
-  //     expect(inputElement).toBeInTheDocument();
-  //     expect(inputElement).toHaveAttribute('type', 'text');
-  //     expect(inputElement).toHaveAttribute('id', `item_${q?.item?.[0].linkId}^0-datepicker`);
-  //     await act(async () => {
-  //       userEvent.paste(inputElement, '31.05.1994');
-  //     });
+      const hoursElement = getByLabelText(/Klokkeslett/i);
 
-  //     expect(inputElement).toHaveValue('31.05.1994');
-  //   });
-  //   it('Should update hours field with value from answer', async () => {
-  //     const { getByTestId } = createWrapper(q);
+      expect(hoursElement).toBeInTheDocument();
+      expect(hoursElement).toHaveAttribute('type', 'number');
+      expect(hoursElement).toHaveAttribute('id', `item_${q?.item?.[0].linkId}^0-datetime-hours`);
+      await act(async () => {
+        userEvent.paste(hoursElement, '14');
+      });
 
-  //     const hoursElement = getByTestId('datetime-1');
-  //     const hoursInput = hoursElement.querySelector('input');
+      expect(hoursElement).toHaveValue(Number('14'));
+    });
+    it('Should update minutes field with value from answer', async () => {
+      const { getByTestId } = createWrapper(q);
 
-  //     if (hoursInput) {
-  //       await act(async () => {
-  //         userEvent.paste(hoursInput, '14');
-  //       });
-  //     }
+      const minutesElement = getByTestId('time-2');
+      const minutesInput = minutesElement.querySelector('input');
 
-  //     expect(hoursInput).toHaveValue(Number('14'));
-  //   });
-  //   it('Should update minutes field with value from answer', async () => {
-  //     const { getByTestId } = createWrapper(q);
+      if (minutesInput) {
+        await act(async () => {
+          userEvent.paste(minutesInput, '30');
+        });
+      }
 
-  //     const minutesElement = getByTestId('datetime-2');
-  //     const minutesInput = minutesElement.querySelector('input');
+      expect(minutesInput).toHaveValue(Number('30'));
+    });
+    it('Should call onChange with correct value when date field changes', async () => {
+      const onChange = vi.fn();
+      const { getByLabelText, getByTestId } = createWrapper(q, { onChange });
 
-  //     if (minutesInput) {
-  //       await act(async () => {
-  //         userEvent.paste(minutesInput, '00');
-  //       });
-  //     }
+      const hoursElement = getByLabelText(/Klokkeslett/i);
+      const minutesElement = getByTestId('time-2');
+      const minutesInput = minutesElement.querySelector('input');
 
-  //     expect(minutesInput).toHaveValue(Number('00'));
-  //   });
-  //   it('Should call onChange with correct value when date field changes', async () => {
-  //     const onChange = vi.fn();
-  //     const { getByLabelText } = createWrapper(q, { onChange });
-  //     expect(getByLabelText(/Dato/i)).toBeInTheDocument();
-  //     await act(async () => {
-  //       userEvent.paste(getByLabelText(/Dato/i), '31.05.1994');
-  //     });
-  //     const expectedAnswer: QuestionnaireResponseItemAnswer = {
-  //       valueDateTime: '1994-05-31T00:00:00+02',
-  //     };
-  //     expect(onChange).toHaveBeenCalledTimes(1);
-  //     expect(onChange).toHaveBeenCalledWith(expect.any(Object), expectedAnswer, expect.any(Object), expect.any(Object));
-  //   });
-  // });
-  // describe('Validation', () => {
-  //   describe('Required', () => {
-  //     it('Should show error if field is required and value is empty', async () => {
-  //       const questionnaire: Questionnaire = {
-  //         ...q,
-  //         item: q.item?.map(x => ({ ...x, required: true })),
-  //       };
-  //       const { getByText } = createWrapper(questionnaire);
-  //       await submitForm();
+      expect(hoursElement).toBeInTheDocument();
+      expect(minutesElement).toBeInTheDocument();
 
-  //       expect(getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
-  //     });
-  //     it('Should not show error if required and has value', async () => {
-  //       const questionnaire: Questionnaire = {
-  //         ...q,
-  //         item: q.item?.map(x => ({ ...x, required: true })),
-  //       };
-  //       const { getByLabelText, queryByText } = createWrapper(questionnaire);
-  //       await act(async () => {
-  //         userEvent.type(getByLabelText(/Dato/i), '31.05.1994');
-  //       });
-  //       await submitForm();
+      await act(async () => {
+        userEvent.paste(hoursElement, '14');
+      });
 
-  //       expect(queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
-  //     });
-  //     it('Should remove error on change if form is submitted', async () => {
-  //       const questionnaire: Questionnaire = {
-  //         ...q,
-  //         item: q.item?.map(x => ({ ...x, required: true })),
-  //       };
-  //       const { getByText, queryByText, getByLabelText } = createWrapper(questionnaire);
-  //       await submitForm();
-  //       expect(getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
+      if (minutesInput) {
+        await act(async () => {
+          userEvent.paste(minutesInput, '30');
+        });
+      }
 
-  //       const hoursElement = await screen.findByTestId('datetime-1');
-  //       const minutesElement = await screen.findByTestId('datetime-2');
-  //       const hoursInput = hoursElement.querySelector('input');
-  //       const minutesInput = minutesElement.querySelector('input');
+      const expectedAnswer: QuestionnaireResponseItemAnswer = {
+        valueTime: '14:30:00',
+      };
+      expect(onChange).toHaveBeenCalledWith(expect.any(Object), expectedAnswer, expect.any(Object), expect.any(Object));
+    });
+  });
+  describe('Validation', () => {
+    describe('Required', () => {
+      it('Should show error if field is required and value is empty', async () => {
+        const questionnaire: Questionnaire = {
+          ...q,
+          item: q.item?.map(x => ({ ...x, required: true })),
+        };
+        const { getByText } = createWrapper(questionnaire);
+        await submitForm();
 
-  //       await act(async () => {
-  //         userEvent.type(getByLabelText(/Dato/i), '31.05.1994');
-  //       });
-  //       await act(async () => {
-  //         hoursInput && userEvent.type(hoursInput, '14');
-  //       });
-  //       await act(async () => {
-  //         minutesInput && userEvent.type(minutesInput, '00');
-  //         userEvent.tab();
-  //       });
+        expect(getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
+      });
+      it('Should not show error if required and has value', async () => {
+        const questionnaire: Questionnaire = {
+          ...q,
+          item: q.item?.map(x => ({ ...x, required: true })),
+        };
+        const { getByLabelText, queryByText, getByTestId } = createWrapper(questionnaire);
 
-  //       await waitFor(() => {
-  //         expect(queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
-  //       });
-  //     });
-  //     it('Should show error if date is invalid', async () => {
-  //       const { getByLabelText, getByText } = createWrapper(q);
+        const hoursElement = getByLabelText(/Klokkeslett/i);
+        const minutesElement = getByTestId('time-2');
+        const minutesInput = minutesElement.querySelector('input');
 
-  //       await act(async () => {
-  //         userEvent.paste(getByLabelText(/Dato/i), '313131');
-  //       });
+        await act(async () => {
+          userEvent.type(hoursElement, '14');
+        });
+        if (minutesInput) {
+          await act(async () => {
+            userEvent.paste(minutesInput, '30');
+          });
+        }
 
-  //       await submitForm();
-  //       expect(getByText(resources.dateError_invalid)).toBeInTheDocument();
-  //     });
-  //     it('Should show error message for min value', async () => {
-  //       const { getByLabelText, getByText } = createWrapper(qMinMax);
+        await submitForm();
 
-  //       await act(async () => {
-  //         userEvent.paste(getByLabelText(/Dato/i), '31.05.1904');
-  //       });
+        expect(queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
+      });
+      // it('Should remove error on change if form is submitted', async () => {
+      //   const questionnaire: Questionnaire = {
+      //     ...q,
+      //     item: q.item?.map(x => ({ ...x, required: true })),
+      //   };
+      //   const { getByText, queryByText, getByLabelText, getByTestId } = createWrapper(questionnaire);
+      //   await submitForm();
+      //   expect(getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
 
-  //       await submitForm();
-  //       expect(getByText(resources.errorBeforeMinDate + ': 31.05.1994')).toBeInTheDocument();
-  //     });
-  //     it('Should show error message for max value', async () => {
-  //       const { getByLabelText, getByText } = createWrapper(qMinMax);
+      //   const hoursElement = getByLabelText(/Klokkeslett/i);
+      //   const minutesElement = getByTestId('time-2');
+      //   const minutesInput = minutesElement.querySelector('input');
 
-  //       await act(async () => {
-  //         userEvent.paste(getByLabelText(/Dato/i), '31.05.2095');
-  //       });
+      //   await act(async () => {
+      //     userEvent.type(hoursElement, '14');
+      //   });
+      //   if (minutesInput) {
+      //     await act(async () => {
+      //       userEvent.paste(minutesInput, '30');
+      //       userEvent.tab();
+      //     });
+      //   }
 
-  //       await submitForm();
-  //       expect(getByText(resources.errorAfterMaxDate + ': 31.05.2094')).toBeInTheDocument();
-  //     });
-  //     it('Should show custom error message for min value', async () => {
-  //       const { getByLabelText, getByText } = createWrapper(qMinMaxCustomError);
+      //   await waitFor(() => {
+      //     expect(queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
+      //   });
+      // });
+      it('Should show error if hour value is invalid', async () => {
+        const { getByLabelText, getByText } = createWrapper(q);
 
-  //       await act(async () => {
-  //         userEvent.paste(getByLabelText(/Dato/i), '31.05.1904');
-  //       });
+        await act(async () => {
+          userEvent.paste(getByLabelText(/Klokkeslett/i), '99');
+        });
 
-  //       await submitForm();
-  //       expect(getByText('Custom errormessage')).toBeInTheDocument();
-  //     });
-  //     it('Should show custom error message for max value', async () => {
-  //       const { getByLabelText, getByText } = createWrapper(qMinMaxCustomError);
+        await submitForm();
+        expect(getByText(resources.dateError_time_invalid)).toBeInTheDocument();
+      });
+      it('Should show error if minute value is invalid', async () => {
+        const { getByLabelText, getByText, getByTestId } = createWrapper(q);
 
-  //       await act(async () => {
-  //         userEvent.paste(getByLabelText(/Dato/i), '31.05.2095');
-  //       });
+        const hoursElement = getByLabelText(/Klokkeslett/i);
+        const minutesElement = getByTestId('time-2');
+        const minutesInput = minutesElement.querySelector('input');
 
-  //       await submitForm();
-  //       expect(getByText('Custom errormessage')).toBeInTheDocument();
-  //     });
-  //     it('Should not show error if date value is between min value and max value', async () => {
-  //       const { getByLabelText, queryByText } = createWrapper(qMinMax);
+        await act(async () => {
+          userEvent.type(hoursElement, '14');
+        });
+        if (minutesInput) {
+          await act(async () => {
+            userEvent.paste(minutesInput, '99');
+          });
+        }
 
-  //       await act(async () => {
-  //         userEvent.paste(getByLabelText(/Dato/i), '31.05.2024');
-  //       });
+        await submitForm();
+        expect(getByText(resources.dateError_time_invalid)).toBeInTheDocument();
+      });
+      it('Should show error message if hour value is lesser than min value', async () => {
+        const { getByTestId, getByLabelText, getByText } = createWrapper(q);
 
-  //       await submitForm();
-  //       expect(queryByText(resources.errorBeforeMinDate + ': 31.05.1994')).not.toBeInTheDocument();
-  //       expect(queryByText(resources.errorAfterMaxDate + ': 31.05.2094')).not.toBeInTheDocument();
-  //     });
-  //     it('Should show error if hour value is invalid', async () => {
-  //       const { getByText, getByLabelText } = createWrapper(qMinMax);
+        const hoursElement = getByLabelText(/Klokkeslett/i);
+        const minutesElement = getByTestId('time-2');
+        const minutesInput = minutesElement.querySelector('input');
 
-  //       const hoursElement = await screen.findByTestId('datetime-1');
-  //       const minutesElement = await screen.findByTestId('datetime-2');
-  //       const hoursInput = hoursElement.querySelector('input');
-  //       const minutesInput = minutesElement.querySelector('input');
+        await act(async () => {
+          userEvent.paste(hoursElement, '14');
+        });
+        if (minutesInput) {
+          await act(async () => {
+            userEvent.paste(minutesInput, '20');
+          });
+        }
 
-  //       await act(async () => {
-  //         userEvent.paste(getByLabelText(/Dato/i), '31.05.1994');
-  //       });
-  //       await act(async () => {
-  //         hoursInput && userEvent.paste(hoursInput, '90');
-  //       });
-  //       await act(async () => {
-  //         minutesInput && userEvent.paste(minutesInput, '00');
-  //       });
+        await submitForm();
+        expect(getByText(resources.dateError_time_invalid)).toBeInTheDocument();
+      });
+      // it('Should show error message for max value', async () => {
+      //   const { getByLabelText, getByText } = createWrapper(qMinMax);
 
-  //       await submitForm();
-  //       await waitFor(() => {
-  //         expect(getByText(resources.dateError_time_invalid)).toBeInTheDocument();
-  //       });
-  //     });
-  //     it('Should show error if minutes value is invalid', async () => {
-  //       const { getByText, getByLabelText } = createWrapper(qMinMax);
+      //   await act(async () => {
+      //     userEvent.paste(getByLabelText(/Dato/i), '31.05.2095');
+      //   });
 
-  //       const hoursElement = await screen.findByTestId('datetime-1');
-  //       const minutesElement = await screen.findByTestId('datetime-2');
-  //       const hoursInput = hoursElement.querySelector('input');
-  //       const minutesInput = minutesElement.querySelector('input');
+      //   await submitForm();
+      //   expect(getByText(resources.errorAfterMaxDate + ': 31.05.2094')).toBeInTheDocument();
+      // });
+      // it('Should show custom error message for min value', async () => {
+      //   const { getByLabelText, getByText } = createWrapper(qMinMaxCustomError);
 
-  //       await act(async () => {
-  //         userEvent.paste(getByLabelText(/Dato/i), '31.05.1994');
-  //       });
-  //       await act(async () => {
-  //         hoursInput && userEvent.paste(hoursInput, '00');
-  //       });
-  //       await act(async () => {
-  //         minutesInput && userEvent.paste(minutesInput, '90');
-  //       });
+      //   await act(async () => {
+      //     userEvent.paste(getByLabelText(/Dato/i), '31.05.1904');
+      //   });
 
-  //       await submitForm();
-  //       await waitFor(() => {
-  //         expect(getByText(resources.dateError_time_invalid)).toBeInTheDocument();
-  //       });
-  //     });
-  //   });
-  // });
+      //   await submitForm();
+      //   expect(getByText('Custom errormessage')).toBeInTheDocument();
+      // });
+      // it('Should show custom error message for max value', async () => {
+      //   const { getByLabelText, getByText } = createWrapper(qMinMaxCustomError);
+
+      //   await act(async () => {
+      //     userEvent.paste(getByLabelText(/Dato/i), '31.05.2095');
+      //   });
+
+      //   await submitForm();
+      //   expect(getByText('Custom errormessage')).toBeInTheDocument();
+      // });
+      // it('Should not show error if date value is between min value and max value', async () => {
+      //   const { getByLabelText, queryByText } = createWrapper(qMinMax);
+
+      //   await act(async () => {
+      //     userEvent.paste(getByLabelText(/Dato/i), '31.05.2024');
+      //   });
+
+      //   await submitForm();
+      //   expect(queryByText(resources.errorBeforeMinDate + ': 31.05.1994')).not.toBeInTheDocument();
+      //   expect(queryByText(resources.errorAfterMaxDate + ': 31.05.2094')).not.toBeInTheDocument();
+      // });
+      // it('Should show error if hour value is invalid', async () => {
+      //   const { getByText, getByLabelText } = createWrapper(qMinMax);
+
+      //   const hoursElement = await screen.findByTestId('datetime-1');
+      //   const minutesElement = await screen.findByTestId('datetime-2');
+      //   const hoursInput = hoursElement.querySelector('input');
+      //   const minutesInput = minutesElement.querySelector('input');
+
+      //   await act(async () => {
+      //     userEvent.paste(getByLabelText(/Dato/i), '31.05.1994');
+      //   });
+      //   await act(async () => {
+      //     hoursInput && userEvent.paste(hoursInput, '90');
+      //   });
+      //   await act(async () => {
+      //     minutesInput && userEvent.paste(minutesInput, '00');
+      //   });
+
+      //   await submitForm();
+      //   await waitFor(() => {
+      //     expect(getByText(resources.dateError_time_invalid)).toBeInTheDocument();
+      //   });
+      // });
+      // it('Should show error if minutes value is invalid', async () => {
+      //   const { getByText, getByLabelText } = createWrapper(qMinMax);
+
+      //   const hoursElement = await screen.findByTestId('datetime-1');
+      //   const minutesElement = await screen.findByTestId('datetime-2');
+      //   const hoursInput = hoursElement.querySelector('input');
+      //   const minutesInput = minutesElement.querySelector('input');
+
+      //   await act(async () => {
+      //     userEvent.paste(getByLabelText(/Dato/i), '31.05.1994');
+      //   });
+      //   await act(async () => {
+      //     hoursInput && userEvent.paste(hoursInput, '00');
+      //   });
+      //   await act(async () => {
+      //     minutesInput && userEvent.paste(minutesInput, '90');
+      //   });
+
+      //   await submitForm();
+      //   await waitFor(() => {
+      //     expect(getByText(resources.dateError_time_invalid)).toBeInTheDocument();
+      //   });
+      // });
+    });
+  });
 });
 
 const createWrapper = (questionnaire: Questionnaire, props: Partial<ReferoProps> = {}) => {
