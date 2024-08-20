@@ -1,4 +1,4 @@
-import { ChangeEvent, FormEvent, useState } from 'react';
+import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 
 import { ValueSet, Coding } from 'fhir/r4';
 import { Controller, FieldValues, useFormContext } from 'react-hook-form';
@@ -54,9 +54,11 @@ const AutosuggestView = (props: AutosuggestProps): JSX.Element | null => {
   const answer = useGetAnswer(responseItem, item);
   const enable = useIsEnabled(item, path);
   const { fetchValueSet, autoSuggestProps } = useExternalRenderContext();
+
   const codingAnswer = getCodingAnswer(answer);
   const initialInputValue =
     codingAnswer?.code === OPEN_CHOICE_ID && codingAnswer?.system === OPEN_CHOICE_SYSTEM ? getStringAnswer(answer) : codingAnswer?.display;
+
   const [isHelpVisible, setIsHelpVisible] = useState(false);
   const [inputValue, setInputValue] = useState(initialInputValue || '');
   const [lastSearchValue, setLastSearchValue] = useState('');
@@ -66,7 +68,9 @@ const AutosuggestView = (props: AutosuggestProps): JSX.Element | null => {
   const [isLoading, setIsLoading] = useState(false);
   const [hasLoadError, setHasLoadError] = useState(false);
   const [isDirty, setIsDirty] = useState(false);
-
+  useEffect(() => {
+    if (initialInputValue) setInputValue(initialInputValue);
+  }, [initialInputValue]);
   const isOpenChoice = (): boolean => {
     return item.type === ItemType.OPENCHOICE;
   };

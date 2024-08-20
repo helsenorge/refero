@@ -91,9 +91,7 @@ describe('Quantity', () => {
 
       const helpButton = container.querySelector('.page_refero__helpButton');
       if (helpButton) {
-        await act(async () => {
-          userEvent.click(helpButton);
-        });
+        await userEvent.click(helpButton);
       }
 
       expect(container.querySelector('.page_refero__helpComponent--open')).toBeInTheDocument();
@@ -186,9 +184,7 @@ describe('Quantity', () => {
       await clickButtonTimes(/-delete-button/i, 1);
 
       const confirmModal = getByTestId(/-delete-confirm-modal/i);
-      await act(async () => {
-        userEvent.click(await findByRole(confirmModal, 'button', { name: /Forkast endringer/i }));
-      });
+      await userEvent.click(await findByRole(confirmModal, 'button', { name: /Forkast endringer/i }));
       expect(queryByTestId(/-delete-button/i)).not.toBeInTheDocument();
     });
   });
@@ -217,9 +213,7 @@ describe('Quantity', () => {
       expect(getByLabelText(/Quantity/i)).toBeInTheDocument();
       expect(getByLabelText(/Quantity/i)).toHaveAttribute('type', 'number');
       expect(getByLabelText(/Quantity/i)).toHaveAttribute('id', `item_${q?.item?.[0].linkId}^0`);
-      await act(async () => {
-        userEvent.type(getByLabelText(/Quantity/i), '123');
-      });
+      await userEvent.type(getByLabelText(/Quantity/i), '123');
       expect(getByLabelText(/Quantity/i)).toHaveValue(123);
     });
     it('Should update component with value from answer - without unit', async () => {
@@ -236,9 +230,7 @@ describe('Quantity', () => {
       expect(getByLabelText(/Quantity/i)).toBeInTheDocument();
       expect(getByLabelText(/Quantity/i)).toHaveAttribute('type', 'number');
       expect(getByLabelText(/Quantity/i)).toHaveAttribute('id', `item_${q?.item?.[0].linkId}^0`);
-      await act(async () => {
-        userEvent.type(getByLabelText(/Quantity/i), '123');
-      });
+      await userEvent.type(getByLabelText(/Quantity/i), '123');
       expect(getByLabelText(/Quantity/i)).toHaveValue(123);
     });
     it('Should call onChange with correct value', async () => {
@@ -263,9 +255,7 @@ describe('Quantity', () => {
       const onChange = vi.fn();
       const { getByLabelText } = createWrapper(questionnaire, { onChange });
       expect(getByLabelText(/Quantity/i)).toBeInTheDocument();
-      await act(async () => {
-        userEvent.type(getByLabelText(/Quantity/i), '1');
-      });
+      await userEvent.type(getByLabelText(/Quantity/i), '1');
       const expectedAnswer: QuestionnaireResponseItemAnswer = {
         valueQuantity: {
           code: 'cm',
@@ -296,9 +286,7 @@ describe('Quantity', () => {
           item: q.item?.map(x => ({ ...x, required: true })),
         };
         const { getByLabelText, queryByText } = createWrapper(questionnaire);
-        await act(async () => {
-          userEvent.type(getByLabelText(/Quantity/i), '123');
-        });
+        await userEvent.type(getByLabelText(/Quantity/i), '123');
         await submitForm();
 
         expect(queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
@@ -313,10 +301,8 @@ describe('Quantity', () => {
 
         expect(getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
 
-        await act(async () => {
-          userEvent.type(getByLabelText(/Quantity/i), '123');
-          userEvent.tab();
-        });
+        await userEvent.type(getByLabelText(/Quantity/i), '123');
+        await userEvent.tab();
         expect(queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
       });
     });
@@ -337,9 +323,7 @@ describe('Quantity', () => {
           item: q.item?.map(x => ({ ...x, required: false })),
         };
         const { getByLabelText, queryByText } = createWrapper(questionnaire);
-        await act(async () => {
-          userEvent.type(getByLabelText(/Quantity/i), '8');
-        });
+        await userEvent.type(getByLabelText(/Quantity/i), '8');
         await submitForm();
 
         expect(queryByText('Custom error')).not.toBeInTheDocument();
@@ -350,16 +334,12 @@ describe('Quantity', () => {
           item: q.item?.map(x => ({ ...x, required: false })),
         };
         const { getByText, queryByText, getByLabelText } = createWrapper(questionnaire);
-        await act(async () => {
-          userEvent.type(getByLabelText(/Quantity/i), '12');
-        });
+        await userEvent.type(getByLabelText(/Quantity/i), '12');
         await submitForm();
 
         expect(getByText('Custom error')).toBeInTheDocument();
-        await act(async () => {
-          userEvent.clear(getByLabelText(/Quantity/i));
-          userEvent.type(getByLabelText(/Quantity/i), '8');
-        });
+        await userEvent.clear(getByLabelText(/Quantity/i));
+        await userEvent.type(getByLabelText(/Quantity/i), '8');
 
         expect(queryByText('Custom error')).not.toBeInTheDocument();
       });
@@ -381,9 +361,7 @@ describe('Quantity', () => {
           item: q.item?.map(x => ({ ...x, required: false })),
         };
         const { getByLabelText, queryByText } = createWrapper(questionnaire);
-        await act(async () => {
-          userEvent.type(getByLabelText(/Quantity/i), '8');
-        });
+        await userEvent.type(getByLabelText(/Quantity/i), '8');
         await submitForm();
 
         expect(queryByText('Custom error')).not.toBeInTheDocument();
@@ -394,16 +372,12 @@ describe('Quantity', () => {
           item: q.item?.map(x => ({ ...x, required: false })),
         };
         const { queryByText, getByLabelText } = createWrapper(questionnaire);
-        await act(async () => {
-          userEvent.type(getByLabelText(/Quantity/i), '3');
-        });
+        await userEvent.type(getByLabelText(/Quantity/i), '3');
         await submitForm();
 
         expect(queryByText('Custom error')).toBeInTheDocument();
-        await act(async () => {
-          userEvent.clear(getByLabelText(/Quantity/i));
-          userEvent.type(getByLabelText(/Quantity/i), '8');
-        });
+        await userEvent.clear(getByLabelText(/Quantity/i));
+        await userEvent.type(getByLabelText(/Quantity/i), '8');
 
         expect(queryByText('Custom error')).not.toBeInTheDocument();
       });
@@ -431,9 +405,7 @@ describe('Quantity', () => {
           })),
         };
         const { getByLabelText, queryByText } = createWrapper(questionnaire);
-        await act(async () => {
-          userEvent.type(getByLabelText(/Quantity/i), '6.12');
-        });
+        await userEvent.type(getByLabelText(/Quantity/i), '6.12');
         await submitForm();
 
         expect(queryByText(resources.oppgiGyldigVerdi)).not.toBeInTheDocument();
@@ -447,16 +419,12 @@ describe('Quantity', () => {
           })),
         };
         const { queryByText, getByLabelText } = createWrapper(questionnaire);
-        await act(async () => {
-          userEvent.type(getByLabelText(/Quantity/i), '6.121212');
-        });
+        await userEvent.type(getByLabelText(/Quantity/i), '6.121212');
         await submitForm();
 
         expect(queryByText(resources.oppgiGyldigVerdi)).toBeInTheDocument();
-        await act(async () => {
-          userEvent.clear(getByLabelText(/Quantity/i));
-          userEvent.type(getByLabelText(/Quantity/i), '6.2');
-        });
+        await userEvent.clear(getByLabelText(/Quantity/i));
+        await userEvent.type(getByLabelText(/Quantity/i), '6.2');
 
         expect(queryByText(resources.oppgiGyldigVerdi)).not.toBeInTheDocument();
       });

@@ -19,7 +19,7 @@ import LanguageLocales from '@helsenorge/core-utils/constants/languages';
 import FormFillerSidebar from './FormFillerSidebar';
 import { emptyPropertyReplacer } from './helpers';
 import { getResources } from './resources/referoResources';
-import skjema from './skjema/NHN_Testskjema_Options-nb-NO-v0.1.json';
+import skjema from './skjema/q.json';
 //import skjema from '../src/components/formcomponents/attachment/__tests__/__data__/q.json';
 
 import ReferoContainer from '../src/components/index';

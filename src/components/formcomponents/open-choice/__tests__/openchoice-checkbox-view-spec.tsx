@@ -1,5 +1,5 @@
 import { Questionnaire, QuestionnaireItemAnswerOption } from 'fhir/r4';
-import { act, findByRole, renderRefero, userEvent } from '@test/test-utils.tsx';;
+import { findByRole, renderRefero, userEvent } from '@test/test-utils.tsx';
 import { clickButtonTimes, selectCheckboxOption, submitForm } from '../../../../../test/selectors';
 import { checkboxView as q } from './__data__/index';
 import { ReferoProps } from '../../../../types/referoProps';
@@ -103,9 +103,7 @@ describe('checkbox-view - openchoice', () => {
 
       await clickButtonTimes(/-repeat-button/i, 1);
       await clickButtonTimes(/-delete-button/i, 1);
-      await act(async () => {
-        userEvent.click(await findByRole(getByTestId(/-delete-confirm-modal/i), 'button', { name: /Forkast endringer/i }));
-      });
+      await userEvent.click(await findByRole(getByTestId(/-delete-confirm-modal/i), 'button', { name: /Forkast endringer/i }));
       expect(queryByTestId(/-delete-button/i)).not.toBeInTheDocument();
     });
   });
@@ -159,7 +157,7 @@ describe('checkbox-view - openchoice', () => {
         await typeExtraField('test');
 
         expect(onChange).toHaveBeenCalledWith(expect.any(Object), answer, expect.any(Object), expect.any(Object));
-        expect(onChange).toHaveBeenCalledTimes(2);
+        expect(onChange).toHaveBeenCalledTimes(5);
       });
     });
     describe('Validation', () => {
@@ -198,9 +196,7 @@ describe('checkbox-view - openchoice', () => {
           expect(getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
 
           await typeExtraField('epost@test.com');
-          await act(async () => {
-            userEvent.tab();
-          });
+          await userEvent.tab();
           expect(queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
         });
       });
@@ -261,9 +257,7 @@ describe('checkbox-view - openchoice', () => {
 
         await selectCheckboxOption(/Ja/i);
 
-        await act(async () => {
-          userEvent.tab();
-        });
+        await userEvent.tab();
         expect(queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
       });
     });

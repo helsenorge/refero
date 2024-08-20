@@ -18,9 +18,7 @@ describe('Text', () => {
     it('should render correct tag', async () => {
       const { findByText, queryByText } = renderRefero({ questionnaire: qinline, resources: getResources('') });
       expect(queryByText(/Her er teksten som skal åpnes av knappen over, med markDown/i)).not.toBeInTheDocument();
-      await act(async () => {
-        userEvent.click(await findByText(/Her er teksten som skal åpnes/i));
-      });
+      await userEvent.click(await findByText(/Her er teksten som skal åpnes/i));
       expect(await findByText(/Her er teksten som skal åpnes av knappen over, med markDown/i)).toBeInTheDocument();
     });
 
@@ -96,7 +94,7 @@ describe('Text', () => {
       const inputElement = getByLabelText(/String/i);
       expect(inputElement).toBeInTheDocument();
       expect(inputElement).toHaveAttribute('id', `item_${q?.item?.[0].linkId}`);
-      userEvent.type(inputElement, '123');
+      await userEvent.type(inputElement, '123');
 
       expect(getByLabelText(/String/i)).toHaveValue('123');
     });
@@ -108,9 +106,7 @@ describe('Text', () => {
       const { getByLabelText } = createWrapper(questionnaire, { onChange });
       expect(getByLabelText(/String/i)).toBeInTheDocument();
       const input = 'string';
-      await act(async () => {
-        await userEvent.type(getByLabelText(/String/i), input);
-      });
+      await userEvent.type(getByLabelText(/String/i), input);
       const expectedAnswer: QuestionnaireResponseItemAnswer = {
         valueString: input,
       };
@@ -133,9 +129,7 @@ describe('Text', () => {
 
       const helpButton = container.querySelector('.page_refero__helpButton');
       if (helpButton) {
-        await act(async () => {
-          userEvent.click(helpButton);
-        });
+        await userEvent.click(helpButton);
       }
       expect(container.querySelector('.page_refero__helpComponent--open')).toBeInTheDocument();
     });
@@ -273,9 +267,7 @@ describe('Text', () => {
       await clickButtonTimes(/-delete-button/i, 1);
 
       const confirmModal = getByTestId(/-delete-confirm-modal/i);
-      await act(async () => {
-        userEvent.click(await findByRole(confirmModal, 'button', { name: /Forkast endringer/i }));
-      });
+      await userEvent.click(await findByRole(confirmModal, 'button', { name: /Forkast endringer/i }));
       expect(queryByTestId(/-delete-button/i)).not.toBeInTheDocument();
     });
   });
@@ -302,9 +294,7 @@ describe('Text', () => {
           })),
         };
         const { getByLabelText, queryByText } = createWrapper(questionnaire);
-        await act(async () => {
-          userEvent.type(getByLabelText(/String/i), 'abc');
-        });
+        await userEvent.type(getByLabelText(/String/i), 'abc');
         await submitForm();
 
         expect(queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
@@ -321,10 +311,8 @@ describe('Text', () => {
         await submitForm();
         expect(getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
 
-        await act(async () => {
-          userEvent.type(getByLabelText(/String/i), 'abc');
-          userEvent.tab();
-        });
+        await userEvent.type(getByLabelText(/String/i), 'abc');
+        await userEvent.tab();
         expect(queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
       });
     });
@@ -351,9 +339,7 @@ describe('Text', () => {
           })),
         };
         const { getByLabelText, queryByText } = createWrapper(questionnaire);
-        await act(async () => {
-          userEvent.paste(getByLabelText(/String/i), 'epost@test.com');
-        });
+        await userEvent.type(getByLabelText(/String/i), 'epost@test.com');
         await submitForm();
         expect(queryByText('Custom error')).not.toBeInTheDocument();
       });
@@ -366,15 +352,11 @@ describe('Text', () => {
           })),
         };
         const { getByText, queryByText, getByLabelText } = createWrapper(questionnaire);
-        await act(async () => {
-          userEvent.paste(getByLabelText(/String/i), 'e@st.co');
-        });
+        await userEvent.type(getByLabelText(/String/i), 'e@st.co');
         await submitForm();
         expect(getByText('Custom error')).toBeInTheDocument();
-        await act(async () => {
-          userEvent.clear(getByLabelText(/String/i));
-          userEvent.paste(getByLabelText(/String/i), 'epost@test.com');
-        });
+        await userEvent.clear(getByLabelText(/String/i));
+        await userEvent.type(getByLabelText(/String/i), 'epost@test.com');
 
         expect(queryByText('Custom error')).not.toBeInTheDocument();
       });
@@ -402,9 +384,7 @@ describe('Text', () => {
           })),
         };
         const { getByLabelText, queryByText } = createWrapper(questionnaire);
-        await act(async () => {
-          userEvent.paste(getByLabelText(/String/i), 'epost@test.com');
-        });
+        await userEvent.type(getByLabelText(/String/i), 'epost@test.com');
         await submitForm();
 
         expect(queryByText('Custom error')).not.toBeInTheDocument();
@@ -418,15 +398,11 @@ describe('Text', () => {
           })),
         };
         const { getByText, queryByText, getByLabelText } = createWrapper(questionnaire);
-        await act(async () => {
-          userEvent.paste(getByLabelText(/String/i), 'eposteneraølt@asdasdst.com');
-        });
+        await userEvent.type(getByLabelText(/String/i), 'eposteneraølt@asdasdst.com');
         await submitForm();
         expect(getByText('Custom error')).toBeInTheDocument();
-        await act(async () => {
-          userEvent.clear(getByLabelText(/String/i));
-          userEvent.type(getByLabelText(/String/i), 'epost@test.com');
-        });
+        await userEvent.clear(getByLabelText(/String/i));
+        await userEvent.type(getByLabelText(/String/i), 'epost@test.com');
 
         expect(queryByText('Custom error')).not.toBeInTheDocument();
       });
@@ -454,9 +430,7 @@ describe('Text', () => {
           })),
         };
         const { getByLabelText, queryByText } = createWrapper(questionnaire);
-        await act(async () => {
-          await userEvent.paste(getByLabelText(/String/i), 'epost@test.com');
-        });
+        await userEvent.type(getByLabelText(/String/i), 'epost@test.com');
         await submitForm();
 
         expect(queryByText('Custom error')).not.toBeInTheDocument();
@@ -470,15 +444,11 @@ describe('Text', () => {
           })),
         };
         const { getByText, queryByText, getByLabelText } = createWrapper(questionnaire);
-        await act(async () => {
-          userEvent.paste(getByLabelText(/String/i), 'epostsdsdcom');
-        });
+        await userEvent.type(getByLabelText(/String/i), 'epostsdsdcom');
         await submitForm();
         expect(getByText('Custom error')).toBeInTheDocument();
-        await act(async () => {
-          userEvent.clear(getByLabelText(/String/i));
-          userEvent.type(getByLabelText(/String/i), 'epost@test.com');
-        });
+        await userEvent.clear(getByLabelText(/String/i));
+        await userEvent.type(getByLabelText(/String/i), 'epost@test.com');
 
         expect(queryByText('Custom error')).not.toBeInTheDocument();
       });
@@ -488,10 +458,8 @@ describe('Text', () => {
         const validateScriptInjection = true;
         const value = 'input med <html>';
         const { findByText, findByLabelText } = createWrapper(qScriptInjection, { validateScriptInjection });
-        await act(async () => {
-          userEvent.type(await findByLabelText(/String1/i), value);
-          userEvent.type(await findByLabelText(/String2 - Obligatorisk/i), 'test');
-        });
+        await userEvent.type(await findByLabelText(/String1/i), value);
+        await userEvent.type(await findByLabelText(/String2 - Obligatorisk/i), 'test');
         await submitForm();
         const actualElement = await findByText(/er ikke tillatt/i);
         expect(actualElement).toBeInTheDocument();
@@ -502,9 +470,7 @@ describe('Text', () => {
         const { findByDisplayValue, findByLabelText, queryByRole } = createWrapper(qScriptInjection, {
           validateScriptInjection,
         });
-        await act(async () => {
-          userEvent.type(await findByLabelText(/String2 - Obligatorisk/i), value);
-        });
+        await userEvent.type(await findByLabelText(/String2 - Obligatorisk/i), value);
         await submitForm();
         const actualElement = await findByDisplayValue(value);
         const actualAlert = queryByRole('alert');
@@ -515,9 +481,7 @@ describe('Text', () => {
         const validateScriptInjection = true;
         const value = 'input uten html';
         const { findByDisplayValue, findByLabelText, queryByRole } = createWrapper(qScriptInjection, { validateScriptInjection });
-        await act(async () => {
-          userEvent.type(await findByLabelText(/String2 - Obligatorisk/i), value);
-        });
+        await userEvent.type(await findByLabelText(/String2 - Obligatorisk/i), value);
         const actualAlert = queryByRole('alert');
         const item = await findByDisplayValue(value);
 

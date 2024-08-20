@@ -30,9 +30,7 @@ describe('string', () => {
       expect(container.querySelector('.page_refero__helpComponent--open')).not.toBeInTheDocument();
 
       if (helpButton) {
-        await act(async () => {
-          userEvent.click(helpButton);
-        });
+        await userEvent.click(helpButton);
       }
       expect(container.querySelector('.page_refero__helpComponent--open')).toBeInTheDocument();
     });
@@ -77,9 +75,7 @@ describe('string', () => {
         );
       };
       const { getByTestId } = createWrapper(q, { onRequestHelpButton, onRequestHelpElement });
-      await act(async () => {
-        userEvent.click(getByTestId('custom-help'));
-      });
+      await userEvent.click(getByTestId('custom-help'));
       const customHelpElement = getByTestId('custom-help-element');
       expect(customHelpElement).toHaveAttribute('data-itemtype', ItemType.GROUP);
       expect(customHelpElement).toHaveAttribute('data-helpitemid', 'bee820a4-4bbe-427e-8c39-00a0d9c5518c');

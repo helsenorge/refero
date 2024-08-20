@@ -61,10 +61,10 @@ export default defineConfig(({ command, isPreview }): UserConfig => {
     plugins: [
       peerDepsExternal(),
       tsconfigPaths({
-        projects: [path.resolve(__dirname, 'tsconfig.base.json')],
+        projects: [path.resolve(__dirname, 'tsconfig.build.json')],
       }),
       dts({
-        tsconfigPath: path.resolve(__dirname, 'tsconfig.base.json'),
+        tsconfigPath: path.resolve(__dirname, 'tsconfig.build.json'),
         outDir: path.resolve(__dirname, 'lib/types'),
         include: ['src'],
         exclude: ['__test__', '__mocks__', '__data__'],

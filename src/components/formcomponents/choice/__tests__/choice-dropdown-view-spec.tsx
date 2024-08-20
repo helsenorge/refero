@@ -49,9 +49,7 @@ describe('Dropdown-view - choice', () => {
       expect(container.querySelector('.page_refero__helpComponent--open')).not.toBeInTheDocument();
       const helpButton = container.querySelector('.page_refero__helpButton');
       if (helpButton) {
-        await act(async () => {
-          userEvent.click(helpButton);
-        });
+        await userEvent.click(helpButton);
       }
       expect(container.querySelector('.page_refero__helpComponent--open')).toBeInTheDocument();
     });
@@ -144,9 +142,7 @@ describe('Dropdown-view - choice', () => {
       await clickButtonTimes(/-delete-button/i, 1);
 
       const confirmModal = getByTestId(/-delete-confirm-modal/i);
-      await act(async () => {
-        userEvent.click(await findByRole(confirmModal, 'button', { name: /Forkast endringer/i }));
-      });
+      await userEvent.click(await findByRole(confirmModal, 'button', { name: /Forkast endringer/i }));
       expect(queryByTestId(/-delete-button/i)).not.toBeInTheDocument();
     });
   });
@@ -183,9 +179,7 @@ describe('Dropdown-view - choice', () => {
       };
       const { getByRole, getByLabelText } = createWrapper(questionnaire);
 
-      await act(async () => {
-        userEvent.selectOptions(getByLabelText(/Dropdown view label/i), getByRole('option', { name: 'Ja' }) as HTMLOptionElement);
-      });
+      await userEvent.selectOptions(getByLabelText(/Dropdown view label/i), getByRole('option', { name: 'Ja' }) as HTMLOptionElement);
 
       expect((getByRole('option', { name: 'Ja' }) as HTMLOptionElement as HTMLOptionElement).selected).toBe(true);
     });
@@ -197,9 +191,7 @@ describe('Dropdown-view - choice', () => {
       const onChange = vi.fn();
       const { getByRole, getByLabelText } = createWrapper(questionnaire, { onChange });
       expect(getByRole('option', { name: 'Ja' }) as HTMLOptionElement).toBeInTheDocument();
-      await act(async () => {
-        userEvent.selectOptions(getByLabelText(/Dropdown view label/i), getByRole('option', { name: 'Ja' }) as HTMLOptionElement);
-      });
+      await userEvent.selectOptions(getByLabelText(/Dropdown view label/i), getByRole('option', { name: 'Ja' }) as HTMLOptionElement);
 
       expect(onChange).toHaveBeenCalledTimes(1);
       expect(onChange).toHaveBeenCalledWith(expect.any(Object), expectedAnswer, expect.any(Object), expect.any(Object));
@@ -223,9 +215,7 @@ describe('Dropdown-view - choice', () => {
           item: q.item?.map(x => ({ ...x, required: true, repeats: false })),
         };
         const { queryByText, getByRole, getByLabelText } = createWrapper(questionnaire);
-        await act(async () => {
-          userEvent.selectOptions(getByLabelText(/Dropdown view label/i), getByRole('option', { name: 'Ja' }) as HTMLOptionElement);
-        });
+        await userEvent.selectOptions(getByLabelText(/Dropdown view label/i), getByRole('option', { name: 'Ja' }) as HTMLOptionElement);
         await submitForm();
         expect(queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
       });
@@ -238,9 +228,7 @@ describe('Dropdown-view - choice', () => {
         await submitForm();
         expect(getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
 
-        await act(async () => {
-          userEvent.selectOptions(getByLabelText(/Dropdown view label/i), getByRole('option', { name: 'Ja' }) as HTMLOptionElement);
-        });
+        await userEvent.selectOptions(getByLabelText(/Dropdown view label/i), getByRole('option', { name: 'Ja' }) as HTMLOptionElement);
         expect(queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
       });
     });

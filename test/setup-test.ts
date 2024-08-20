@@ -8,25 +8,36 @@ import './__mocks__/IntersectionObserver';
 // import './__mocks__/useSize';
 // import './__mocks__/useHover';
 // import './__mocks__/usePseudoClasses';
+
+// @ts-expect-error global is not defined
+global.IS_REACT_ACT_ENVIRONMENT = true;
+// @ts-expect-error global is not defined
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
+// @ts-expect-error global is not defined
+self.IS_REACT_ACT_ENVIRONMENT = true;
+// @ts-expect-error global is not defined
+window.IS_REACT_ACT_ENVIRONMENT = true;
+// @ts-expect-error global is not defined
+this.IS_REACT_ACT_ENVIRONMENT = true;
+
 Object.defineProperty(window, 'scrollTo', {
   value: vi.fn(),
   writable: true,
 });
-class MockDataTransfer {
-  files: File[];
+// class MockDataTransfer {
+//   files: File[];
 
-  constructor() {
-    this.files = [];
-  }
-  items = {
-    add: (file: File): void => {
-      this.files.push(file);
-    },
-  };
-}
+//   constructor() {
+//     this.files = [];
+//   }
+//   items = {
+//     add: (file: File): void => {
+//       this.files.push(file);
+//     },
+//   };
+// }
 
-vi.stubGlobal('DataTransfer', MockDataTransfer);
+// vi.stubGlobal('DataTransfer', MockDataTransfer);
 window.HTMLElement.prototype.scrollIntoView = vi.fn();
 const scrollIntoViewMock = vi.fn();
 vi.stubGlobal('scrollIntoView', scrollIntoViewMock);

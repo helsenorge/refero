@@ -75,9 +75,7 @@ describe('Decimal', () => {
 
       const helpButton = container.querySelector('.page_refero__helpButton');
       if (helpButton) {
-        await act(async () => {
-          userEvent.click(helpButton);
-        });
+        await userEvent.click(helpButton);
       }
 
       expect(container.querySelector('.page_refero__helpComponent--open')).toBeInTheDocument();
@@ -170,9 +168,7 @@ describe('Decimal', () => {
       await clickButtonTimes(/-delete-button/i, 1);
 
       const confirmModal = getByTestId(/-delete-confirm-modal/i);
-      await act(async () => {
-        userEvent.click(await findByRole(confirmModal, 'button', { name: /Forkast endringer/i }));
-      });
+      await userEvent.click(await findByRole(confirmModal, 'button', { name: /Forkast endringer/i }));
 
       expect(queryByTestId(/-delete-button/i)).not.toBeInTheDocument();
     });
@@ -185,22 +181,18 @@ describe('Decimal', () => {
       expect(inputElement).toBeInTheDocument();
       expect(inputElement).toHaveAttribute('type', 'number');
       expect(inputElement).toHaveAttribute('id', `item_${q?.item?.[0].linkId}^0`);
-      await act(async () => {
-        userEvent.type(inputElement, '123');
-      });
+      await userEvent.type(inputElement, '123');
       expect(getByLabelText(/Decimal/i)).toHaveValue(123);
     });
     it('Should call onChange with correct value', async () => {
       const onChange = vi.fn();
       const { getByLabelText } = createWrapper(q, { onChange });
       expect(getByLabelText(/Decimal/i)).toBeInTheDocument();
-      await act(async () => {
-        userEvent.type(getByLabelText(/Decimal/i), '1.2');
-      });
+      await userEvent.type(getByLabelText(/Decimal/i), '1.2');
       const expectedAnswer: QuestionnaireResponseItemAnswer = {
         valueDecimal: 1.2,
       };
-      expect(onChange).toHaveBeenCalledTimes(3);
+      expect(onChange).toHaveBeenCalledTimes(2);
       expect(onChange).toHaveBeenCalledWith(expect.any(Object), expectedAnswer, expect.any(Object), expect.any(Object));
     });
   });
@@ -222,9 +214,7 @@ describe('Decimal', () => {
           item: q.item?.map(x => ({ ...x, required: true })),
         };
         const { getByLabelText, queryByText } = createWrapper(questionnaire);
-        await act(async () => {
-          userEvent.type(getByLabelText(/Decimal/i), '123');
-        });
+        await userEvent.type(getByLabelText(/Decimal/i), '123');
         await submitForm();
 
         expect(queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
@@ -238,10 +228,8 @@ describe('Decimal', () => {
         await submitForm();
         expect(getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
 
-        await act(async () => {
-          userEvent.type(getByLabelText(/Decimal/i), '123');
-          userEvent.tab();
-        });
+        await userEvent.type(getByLabelText(/Decimal/i), '123');
+        await userEvent.tab();
         expect(queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
       });
     });
@@ -262,9 +250,7 @@ describe('Decimal', () => {
           item: q.item?.map(x => ({ ...x, required: false })),
         };
         const { getByLabelText, queryByText } = createWrapper(questionnaire);
-        await act(async () => {
-          userEvent.type(getByLabelText(/Decimal/i), '8');
-        });
+        await userEvent.type(getByLabelText(/Decimal/i), '8');
         await submitForm();
 
         expect(queryByText('Custom error')).not.toBeInTheDocument();
@@ -275,15 +261,11 @@ describe('Decimal', () => {
           item: q.item?.map(x => ({ ...x, required: false })),
         };
         const { getByText, queryByText, getByLabelText } = createWrapper(questionnaire);
-        await act(async () => {
-          userEvent.type(getByLabelText(/Decimal/i), '12');
-        });
+        await userEvent.type(getByLabelText(/Decimal/i), '12');
         await submitForm();
         expect(getByText('Custom error')).toBeInTheDocument();
-        await act(async () => {
-          userEvent.clear(getByLabelText(/Decimal/i));
-          userEvent.type(getByLabelText(/Decimal/i), '8');
-        });
+        await userEvent.clear(getByLabelText(/Decimal/i));
+        await userEvent.type(getByLabelText(/Decimal/i), '8');
 
         expect(queryByText('Custom error')).not.toBeInTheDocument();
       });
@@ -305,9 +287,7 @@ describe('Decimal', () => {
           item: q.item?.map(x => ({ ...x, required: false })),
         };
         const { getByLabelText, queryByText } = createWrapper(questionnaire);
-        await act(async () => {
-          userEvent.type(getByLabelText(/Decimal/i), '8');
-        });
+        await userEvent.type(getByLabelText(/Decimal/i), '8');
         await submitForm();
 
         expect(queryByText('Custom error')).not.toBeInTheDocument();
@@ -318,15 +298,11 @@ describe('Decimal', () => {
           item: q.item?.map(x => ({ ...x, required: false })),
         };
         const { queryByText, getByLabelText } = createWrapper(questionnaire);
-        await act(async () => {
-          userEvent.type(getByLabelText(/Decimal/i), '3');
-        });
+        await userEvent.type(getByLabelText(/Decimal/i), '3');
         await submitForm();
         expect(queryByText('Custom error')).toBeInTheDocument();
-        await act(async () => {
-          userEvent.clear(getByLabelText(/Decimal/i));
-          userEvent.type(getByLabelText(/Decimal/i), '8');
-        });
+        await userEvent.clear(getByLabelText(/Decimal/i));
+        await userEvent.type(getByLabelText(/Decimal/i), '8');
 
         expect(queryByText('Custom error')).not.toBeInTheDocument();
       });
@@ -354,9 +330,7 @@ describe('Decimal', () => {
           })),
         };
         const { getByLabelText, queryByText } = createWrapper(questionnaire);
-        await act(async () => {
-          userEvent.type(getByLabelText(/Decimal/i), '6.12');
-        });
+        await userEvent.type(getByLabelText(/Decimal/i), '6.12');
         await submitForm();
 
         expect(queryByText(resources.oppgiGyldigVerdi)).not.toBeInTheDocument();
@@ -370,15 +344,11 @@ describe('Decimal', () => {
           })),
         };
         const { queryByText, getByLabelText } = createWrapper(questionnaire);
-        await act(async () => {
-          userEvent.type(getByLabelText(/Decimal/i), '6.121212');
-        });
+        await userEvent.type(getByLabelText(/Decimal/i), '6.121212');
         await submitForm();
         expect(queryByText(resources.oppgiGyldigVerdi)).toBeInTheDocument();
-        await act(async () => {
-          userEvent.clear(getByLabelText(/Decimal/i));
-          userEvent.type(getByLabelText(/Decimal/i), '6.12');
-        });
+        await userEvent.clear(getByLabelText(/Decimal/i));
+        await userEvent.type(getByLabelText(/Decimal/i), '6.12');
 
         expect(queryByText(resources.oppgiGyldigVerdi)).not.toBeInTheDocument();
       });

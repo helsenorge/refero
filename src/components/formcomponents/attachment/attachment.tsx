@@ -45,6 +45,7 @@ export const AttachmentComponent = (props: Props): JSX.Element | null => {
   const { onAnswerChange } = useExternalRenderContext();
 
   const onUpload = (files: UploadFile[]): void => {
+    console.log('onUploadAttachment', uploadAttachment);
     if (uploadAttachment) {
       for (const file of files) {
         const onSuccess = (attachment: Attachment): void => {
@@ -65,6 +66,7 @@ export const AttachmentComponent = (props: Props): JSX.Element | null => {
   };
 
   const onDelete = (fileId: string): void => {
+    console.log('onDeleteAttachment', onDeleteAttachment);
     if (onDeleteAttachment) {
       const onSuccess = (): void => {
         if (dispatch) {

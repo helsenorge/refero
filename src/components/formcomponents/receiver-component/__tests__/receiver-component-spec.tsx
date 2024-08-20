@@ -134,16 +134,14 @@ describe('ReceiverComponent', () => {
         adresseKomponent_velgHelseforetak: 'Velg helseforetak',
       },
     });
-    await act(async () => {
-      await selectDropdownOptionByName('Velg region', /region 1/i);
+    await selectDropdownOptionByName('Velg region', /region 1/i);
 
-      await selectDropdownOptionByName('Velg helseforetak', /Receiver 11/i);
+    await selectDropdownOptionByName('Velg helseforetak', /Receiver 11/i);
 
-      expect(queryByText(/Region 1 \/ Receiver 11/i)).toBeInTheDocument();
+    expect(queryByText(/Region 1 \/ Receiver 11/i)).toBeInTheDocument();
 
-      await selectDropdownOptionByName('Velg region', /region 1/i);
-      expect(queryByText(/Region 1 \/ Receiver 11/i)).not.toBeInTheDocument();
-    });
+    await selectDropdownOptionByName('Velg region', /region 1/i);
+    expect(queryByText(/Region 1 \/ Receiver 11/i)).not.toBeInTheDocument();
   });
 
   it('Should call handleChange when a leaf node is selected', async () => {
@@ -160,11 +158,9 @@ describe('ReceiverComponent', () => {
         adresseKomponent_velgHelseforetak: 'Velg helseforetak',
       },
     });
-    await act(async () => {
-      await selectDropdownOptionByName('Velg region', /region 1/i);
+    await selectDropdownOptionByName('Velg region', /region 1/i);
 
-      await selectDropdownOptionByName('Velg helseforetak', /Receiver 11/i);
-    });
+    await selectDropdownOptionByName('Velg helseforetak', /Receiver 11/i);
 
     expect(onChange).toHaveBeenCalled();
   });

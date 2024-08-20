@@ -76,9 +76,7 @@ describe('Integer', () => {
 
       const helpButton = container.querySelector('.page_refero__helpButton');
       if (helpButton) {
-        await act(async () => {
-          userEvent.click(helpButton);
-        });
+        await userEvent.click(helpButton);
       }
       expect(container.querySelector('.page_refero__helpComponent--open')).toBeInTheDocument();
     });
@@ -163,9 +161,7 @@ describe('Integer', () => {
       await clickButtonTimes(/-delete-button/i, 1);
 
       const confirmModal = getByTestId(/-delete-confirm-modal/i);
-      await act(async () => {
-        userEvent.click(await findByRole(confirmModal, 'button', { name: /Forkast endringer/i }));
-      });
+      await userEvent.click(await findByRole(confirmModal, 'button', { name: /Forkast endringer/i }));
       expect(queryByTestId(/-delete-button/i)).not.toBeInTheDocument();
     });
   });
@@ -178,7 +174,7 @@ describe('Integer', () => {
       expect(inputElement).toBeInTheDocument();
       expect(inputElement).toHaveAttribute('type', 'number');
       expect(inputElement).toHaveAttribute('id', `item_${q?.item?.[0].linkId}`);
-      userEvent.type(inputElement, '123');
+      await userEvent.type(inputElement, '123');
 
       expect(getByLabelText(/Integer/i)).toHaveValue(123);
     });
@@ -187,9 +183,7 @@ describe('Integer', () => {
       const onChange = vi.fn();
       const { getByLabelText } = createWrapper(questionnaire, { onChange });
       expect(getByLabelText(/Integer/i)).toBeInTheDocument();
-      await act(async () => {
-        userEvent.type(getByLabelText(/Integer/i), '123');
-      });
+      await userEvent.type(getByLabelText(/Integer/i), '123');
       const expectedAnswer: QuestionnaireResponseItemAnswer = {
         valueInteger: 123,
       };
@@ -227,9 +221,7 @@ describe('Integer', () => {
 
         expect(getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
         await typeByLabelText(/Integer/i, '123');
-        await act(async () => {
-          await userEvent.tab();
-        });
+        await userEvent.tab();
         expect(queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
       });
     });

@@ -161,12 +161,12 @@ function renderRefero({ questionnaire, props, initialState, resources, defaultVa
   );
 }
 export * from '@testing-library/react';
-
+const user = userEvent.setup();
 export {
   customRender as render,
   customRenderMockStore as renderMockStore,
   renderWithRedux,
   renderWithReduxAndHookFormMock,
   renderRefero,
-  userEvent,
+  user as userEvent,
 };

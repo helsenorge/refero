@@ -52,9 +52,7 @@ describe('Radio-view - choice', () => {
       expect(container.querySelector('.page_refero__helpComponent--open')).not.toBeInTheDocument();
       const helpButton = container.querySelector('.page_refero__helpButton');
       if (helpButton) {
-        await act(async () => {
-          userEvent.click(helpButton);
-        });
+        await userEvent.click(helpButton);
       }
       expect(container.querySelector('.page_refero__helpComponent--open')).toBeInTheDocument();
     });
@@ -94,7 +92,7 @@ describe('Radio-view - choice', () => {
   describe('delete button', () => {
     it('Should render delete button if item repeats and number of repeated items is greater than minOccurance(2)', async () => {
       const questionnaire = addManyPropertiesToQuestionnaireItem(q, [{ property: 'repeats', value: true }]);
-      const { getByTestId, queryAllByTestId } = createWrapper(questionnaire);
+      const { queryAllByTestId } = createWrapper(questionnaire);
 
       await clickButtonTimes(/-repeat-button/i, 2);
 
@@ -127,9 +125,7 @@ describe('Radio-view - choice', () => {
       await clickButtonTimes(/-delete-button/i, 1);
 
       const confirmModal = getByTestId(/-delete-confirm-modal/i);
-      await act(async () => {
-        userEvent.click(await findByRole(confirmModal, 'button', { name: /Forkast endringer/i }));
-      });
+      await userEvent.click(await findByRole(confirmModal, 'button', { name: /Forkast endringer/i }));
 
       expect(queryByTestId(/-delete-button/i)).not.toBeInTheDocument();
     });
@@ -157,9 +153,7 @@ describe('Radio-view - choice', () => {
       const questionnaire = addManyPropertiesToQuestionnaireItem(q, [{ property: 'repeats', value: false }]);
       const { getByLabelText, getByTestId } = createWrapper(questionnaire);
 
-      await act(async () => {
-        userEvent.click(getByLabelText(/Annet/i));
-      });
+      await userEvent.click(getByLabelText(/Annet/i));
       expect(getByTestId(/-extra-field/i)).toBeInTheDocument();
       expect(getByLabelText(/Annet/i)).toBeChecked();
     });
@@ -167,9 +161,7 @@ describe('Radio-view - choice', () => {
       const questionnaire = addManyPropertiesToQuestionnaireItem(q, [{ property: 'repeats', value: false }]);
       const { getByLabelText } = createWrapper(questionnaire);
 
-      await act(async () => {
-        userEvent.click(getByLabelText(/Ja/i));
-      });
+      await userEvent.click(getByLabelText(/Ja/i));
 
       expect(getByLabelText(/Ja/i)).toBeChecked();
     });
@@ -178,9 +170,7 @@ describe('Radio-view - choice', () => {
       const onChange = vi.fn();
       const { getByLabelText } = createWrapper(questionnaire, { onChange });
       expect(getByLabelText(/Ja/i)).toBeInTheDocument();
-      await act(async () => {
-        userEvent.click(getByLabelText(/Ja/i));
-      });
+      await userEvent.click(getByLabelText(/Ja/i));
 
       expect(onChange).toHaveBeenCalledTimes(2);
       expect(onChange).toHaveBeenCalledWith(expect.any(Object), expectedAnswer, expect.any(Object), expect.any(Object));
@@ -205,9 +195,7 @@ describe('Radio-view - choice', () => {
           { property: 'required', value: true },
         ]);
         const { queryByText, getByLabelText } = createWrapper(questionnaire);
-        await act(async () => {
-          userEvent.click(getByLabelText(/Ja/i));
-        });
+        await userEvent.click(getByLabelText(/Ja/i));
         await submitForm();
         expect(queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
       });
@@ -220,10 +208,8 @@ describe('Radio-view - choice', () => {
         await submitForm();
         expect(getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
 
-        await act(async () => {
-          userEvent.click(getByLabelText(/Ja/i));
-          userEvent.tab();
-        });
+        await userEvent.click(getByLabelText(/Ja/i));
+        await userEvent.tab();
         expect(queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
       });
     });
@@ -269,7 +255,7 @@ describe('Radio-view - choice', () => {
         await typeExtraField('test');
 
         expect(onChange).toHaveBeenCalledWith(expect.any(Object), answer, expect.any(Object), expect.any(Object));
-        expect(onChange).toHaveBeenCalledTimes(2);
+        expect(onChange).toHaveBeenCalledTimes(5);
       });
     });
     describe('Validation', () => {
@@ -308,9 +294,7 @@ describe('Radio-view - choice', () => {
           expect(getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
 
           await typeExtraField('epost@test.com');
-          await act(async () => {
-            userEvent.tab();
-          });
+          await userEvent.tab();
           expect(queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
         });
       });

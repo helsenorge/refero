@@ -43,10 +43,10 @@
   },
   "devDependencies": {
     "@redux-devtools/extension": "^3.3.0",
-    "@testing-library/dom": "^10.1.0",
-    "@testing-library/jest-dom": "^6.4.6",
+    "@testing-library/dom": "^10.4.0",
+    "@testing-library/jest-dom": "^6.4.8",
     "@testing-library/react": "^16.0.0",
-    "@testing-library/user-event": "^13.5.0",
+    "@testing-library/user-event": "^14.5.2",
     "@types/dompurify": "^3.0.5",
     "@types/fhir": "^0.0.41",
     "@types/node": "^20.14.8",

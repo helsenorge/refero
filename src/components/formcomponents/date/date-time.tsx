@@ -196,7 +196,7 @@ const DateTimeInput = ({
         resources={resources}
         htmlFor={`${getId(id)}-datepicker`}
         labelId={`${getId(id)}-label`}
-        testId={`${getId(id)}-label-test`}
+        testId={`${getId(id)}-datetime-label`}
         sublabelId={`${getId(id)}-sublabel`}
         afterLabelContent={<RenderHelpButton isHelpVisible={isHelpVisible} item={item} setIsHelpVisible={setIsHelpVisible} />}
       />
@@ -224,7 +224,7 @@ const DateTimeInput = ({
             },
           })}
           inputId={`${getId(id)}-datepicker`}
-          testId={`${getId(id)}-datepicker-test`}
+          testId={`${getId(id)}-datetime`}
           autoComplete=""
           dateButtonAriaLabel="Open datepicker"
           dateFormat={'dd.MM.yyyy'}
