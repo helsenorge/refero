@@ -232,7 +232,7 @@ const getMaxTime = (item: QuestionnaireItem): string | undefined => {
 };
 
 export const validateDate = (dateToValidate: Date | undefined, resources: Resources | undefined): true | string => {
-  if (!isValid(dateToValidate)) {
+  if (dateToValidate && !isValid(dateToValidate)) {
     return resources?.dateError_invalid || '';
   }
   return true;
