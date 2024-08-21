@@ -12,6 +12,7 @@ export interface ReferoState {
   form: Form;
 }
 // Benyttes kun for tester eller hvis Refero kjøres utenfor helsenorge
+//@ts-expect-error - Brukes kun for tester eller hvis Refero kjøres utenfor helsenorge
 const rootReducer: Reducer<GlobalState, NewValueAction | FormAction> = combineReducers({
   refero: combineReducers({ form }),
 });

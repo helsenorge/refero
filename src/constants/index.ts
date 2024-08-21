@@ -1,5 +1,4 @@
-import { MimeTypes } from '@helsenorge/file-upload/components/dropzone';
-
+import { MimeTypes } from '@helsenorge/file-upload/components/file-upload';
 import codeSystems from './codingsystems';
 
 export default {
