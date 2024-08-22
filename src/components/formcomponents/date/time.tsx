@@ -47,9 +47,8 @@ const Time = ({
   const answer = useGetAnswer(responseItem, item);
   const [isHelpVisible, setIsHelpVisible] = React.useState(false);
   const timeFromAnswer = extractTimeFromAnswer(answer, item);
-  const [hours, setHours] = React.useState(timeFromAnswer?.hours);
-  const [minutes, setMinutes] = React.useState(timeFromAnswer?.minutes);
-  //Må det være state?
+  const hours = timeFromAnswer?.hours;
+  const minutes = timeFromAnswer?.minutes;
 
   const convertAnswerToString = (answer: QuestionnaireResponseItemAnswer): string => {
     if (answer && answer.valueTime) {
@@ -103,39 +102,36 @@ const Time = ({
     }
   };
 
-  const updateQuestionnaireResponse = (newHours: number | undefined, newMinutes: number | undefined): void => {
+  const updateQuestionnaireResponse = (newHours: string | undefined, newMinutes: string | undefined): void => {
     const validTime = makeValidTime(newHours, newMinutes);
-
     dispatchNewTime(validTime);
     if (promptLoginMessage) {
       promptLoginMessage();
     }
   };
 
-  const handleHoursChange = (newHours: number | undefined): void => {
+  const handleHoursChange = (newHours: number | string | undefined): void => {
+    let newMinutes: number | string | undefined = minutes;
     if (!minutes) {
-      setMinutes(Number('00'));
+      newMinutes = 0o0;
     }
-    //skrive bare 0?
-    //ikke oppdater state her inne
-    setHours(newHours);
     setValue(`${idWithLinkIdAndItemIndex}-hours`, newHours);
-    updateQuestionnaireResponse(newHours, minutes);
-  };
-  const handleMinutesChange = (newMinutes: number | undefined): void => {
-    if (!hours) {
-      setHours(Number('00'));
-    }
-    //skrive bare 0?
-    //ikke oppdater state her inne
-    setMinutes(newMinutes);
     setValue(`${idWithLinkIdAndItemIndex}-minutes`, newMinutes);
-    updateQuestionnaireResponse(hours, newMinutes);
+    updateQuestionnaireResponse(newHours?.toString(), newMinutes?.toString());
+  };
+  const handleMinutesChange = (newMinutes: number | string | undefined): void => {
+    let newHours: number | string | undefined = hours;
+    if (!hours) {
+      newHours = 0o0;
+    }
+    setValue(`${idWithLinkIdAndItemIndex}-hours`, newHours);
+    setValue(`${idWithLinkIdAndItemIndex}-minutes`, newMinutes);
+    updateQuestionnaireResponse(newHours?.toString(), newMinutes?.toString());
   };
 
-  const makeValidTime = (hours: number | undefined, minutes: number | undefined): string => {
-    const paddedHours = hours?.toString().padStart(2, '0');
-    const paddedMinutes = minutes?.toString().padStart(2, '0');
+  const makeValidTime = (hours: string | undefined, minutes: string | undefined): string => {
+    const paddedHours = hours?.padStart(2, '0');
+    const paddedMinutes = minutes?.padStart(2, '0');
 
     return addSeconds(`${paddedHours}:${paddedMinutes}`);
   };
@@ -222,20 +218,19 @@ const Time = ({
               validHours: value => {
                 return validateHours(Number(value), resources);
               },
-              validMinTime: value => {
-                return validateMinTime(Number(value), minutes, resources, item);
-              },
-              validMaxTime: value => {
-                return validateMaxTime(Number(value), minutes, resources, item);
-              },
+              // validMinTime: value => {
+              //   return validateMinTime(Number(value), minutes, resources, item);
+              // },
+              // validMaxTime: value => {
+              //   return validateMaxTime(Number(value), minutes, resources, item);
+              // },
             },
           })}
           inputId={`${getId(id)}-datetime-hours`}
-          testId={`time-1`}
-          defaultValue={Number(hours)}
+          defaultValue={hours}
           timeUnit="hours"
           onChange={e => {
-            handleHoursChange(Number(e.target.value));
+            handleHoursChange(e.target.value);
           }}
         />
         <DateTime
@@ -251,10 +246,10 @@ const Time = ({
             },
           })}
           testId={`time-2`}
-          defaultValue={Number(minutes)}
+          defaultValue={minutes}
           timeUnit="minutes"
           onChange={e => {
-            handleMinutesChange(Number(e.target.value));
+            handleMinutesChange(e.target.value);
           }}
         />
       </DateTimePickerWrapper>

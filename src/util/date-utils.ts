@@ -302,14 +302,14 @@ export const validateMaxDate = (
 };
 
 export const validateHours = (hours: number | undefined, resources: Resources | undefined): true | string => {
-  if (hours && (hours < 24 || hours >= 0)) {
+  if (hours === undefined || hours < 0 || hours >= 24) {
     return resources?.dateError_time_invalid || '';
   }
   return true;
 };
 
 export const validateMinutes = (minutes: number | undefined, resources: Resources | undefined): true | string => {
-  if (minutes && (minutes < 60 || minutes >= 0)) {
+  if (minutes === undefined || minutes < 0 || minutes >= 60) {
     return resources?.dateError_time_invalid || '';
   }
   return true;
