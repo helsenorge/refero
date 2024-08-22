@@ -47,7 +47,6 @@ const RenderForm = ({
   const onSubmitReactHookForm: SubmitHandler<FieldValues> = (): void => {
     onSubmit();
   };
-
   const displayPauseButtonInNormalView = referoProps.onSave ? onSave : undefined;
   const displayPauseButtonInStepView = displayPreviousButton ? previousStep : undefined;
   const displayValidationSummaryOnTop: boolean =
@@ -65,7 +64,6 @@ const RenderForm = ({
   return (
     <>
       <form onSubmit={methods.handleSubmit(onSubmitReactHookForm)}>
-        {/* <Validation errorSummary="test" /> */}
         {displayValidationSummaryOnTop && <ValidationSummary resources={resources} />}
         {children}
         <FormButtons

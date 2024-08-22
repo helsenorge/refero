@@ -22,7 +22,7 @@ import { getResources } from './resources/referoResources';
 //import skjema from './skjema/NHN_Testskjema_Options-nb-NO-v0.1.json';
 import skjema from '../src/components/formcomponents/attachment/__tests__/__data__/q.json';
 
-import ReferoContainer from '../src/components/index';
+import ReferoContainer from '@helsenorge/refero';
 import valueSet from '../src/constants/valuesets';
 import rootReducer from '../src/reducers/index';
 import { QuestionnaireStatusCodes } from '../src/types/fhirEnums';
@@ -119,6 +119,7 @@ const FormFillerPreview = ({ showFormFiller }: Props): JSX.Element => {
     console.log(JSON.stringify(questionnaireResponse));
   };
   const [lang, setLang] = useState<number>(0);
+  const [stepIndex, setStepIndex] = useState<number>(0);
   const uploadAttachment = (file: File[], onSuccess: (attachment: Attachment) => void): void => {
     onSuccess({ data: file[0].name, contentType: file[0].type, url: 'url' });
   };
@@ -178,6 +179,7 @@ const FormFillerPreview = ({ showFormFiller }: Props): JSX.Element => {
                   onOpenAttachment={onOpenAttachment}
                   attachmentValidTypes={[MimeTypes.PNG, MimeTypes.JPG, MimeTypes.PDF, MimeTypes.PlainText]}
                   attachmentMaxFileSize={1}
+                  onStepChange={(newIndex: number): void => setStepIndex(newIndex)}
                 />
               </div>
             ) : (
