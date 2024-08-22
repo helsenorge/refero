@@ -1,3 +1,10 @@
+## 16.0.0-beta21
+
+- Update types in build package.json
+- Fix memory leak with onStepChange
+- updates to tsconfig
+
+
 ## 16.0.0-beta11
 
 - fixed types for lib.
