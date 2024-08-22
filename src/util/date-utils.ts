@@ -12,14 +12,16 @@ import {
   parseISO,
   parse,
 } from 'date-fns';
-import { QuestionnaireResponseItemAnswer } from 'fhir/r4';
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 
-import { DateFormat, DatePickerFormat, DateTimeUnit } from '../types/dateTypes';
+import { DateFormat, DatePickerFormat, DateTimeUnit, TimeValues } from '../types/dateTypes';
 
 import { safeParseJSON } from './date-fns-utils';
 import { Resources } from './resources';
 
 import '@helsenorge/datepicker/components/DatePicker/';
+import { getExtension } from './extension';
+import { Extensions } from '@/constants/extensions';
 
 export function getFullFnsDate(
   date: Date | string | undefined,
@@ -86,6 +88,40 @@ export const getHoursOrMinutesFromDate = (date: Date | undefined, unitToGet: Dat
   return undefined;
 };
 
+const getTimeValues = (timeStr: string): TimeValues => {
+  const date = parse(timeStr, 'HH:mm:ss', new Date());
+  return {
+    hours: date.getHours(),
+    minutes: date.getMinutes(),
+  };
+};
+
+export const extractTimeFromAnswer = (
+  answer: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[] | undefined,
+  item: QuestionnaireItem
+): TimeValues | null => {
+  if (!answer && !item.initial) return null;
+
+  let timeStr: string | undefined;
+
+  if (Array.isArray(answer) && answer.length > 0) {
+    timeStr = answer[0].valueTime || answer[0].valueDate || answer[0].valueDateTime;
+  } else if (answer && !Array.isArray(answer)) {
+    timeStr = answer.valueTime || answer.valueDate || answer.valueDateTime;
+  } else if (item.initial && item.initial.length > 0) {
+    const initial = item.initial[0];
+    timeStr = initial.valueTime || initial.valueDate || initial.valueDateTime;
+  }
+
+  //Logikken over kan gjøres enklere
+
+  if (timeStr) {
+    return getTimeValues(timeStr);
+  }
+
+  return null;
+};
+
 export const parseStringToDateDDMMYYYY = (valueToParse: string | Date | undefined): Date | undefined => {
   if (valueToParse) {
     if (typeof valueToParse === 'string') {
@@ -109,7 +145,7 @@ export const getMonthOptions = (
 }[] => {
   return [
     {
-      optionName: '',
+      optionName: resources?.yearmonth_field_month_placeholder,
       optionValue: '',
     },
     {
@@ -167,6 +203,75 @@ export const getYearFromString = (dateString: string): string => {
   return dateString ? dateString.split('-')[0] : '';
 };
 
+// const getMaxHour = (item: QuestionnaireItem): number => {
+//   const maxTime = getExtension(Extensions.MAX_VALUE_URL, item);
+//   if (!maxTime || !maxTime.valueTime) {
+//     return 23;
+//   }
+//   const maxTimeString = maxTime.valueTime;
+//   const hoursString = (maxTimeString || '').split(DateTimeConstants.TIME_SEPARATOR)[0];
+//   return parseInt(hoursString, 10);
+// };
+
+// const getMaxMinute = (item: QuestionnaireItem): number => {
+//   const maxTime = getExtension(Extensions.MAX_VALUE_URL, item);
+//   if (!maxTime || !maxTime.valueTime) {
+//     return 59;
+//   }
+//   const maxTimeString = maxTime.valueTime;
+//   const minuteString = (maxTimeString || '').split(DateTimeConstants.TIME_SEPARATOR)[1];
+//   return parseInt(minuteString, 10);
+// };
+
+// const getMinHour = (item: QuestionnaireItem): number => {
+//   const minTime = getExtension(Extensions.MIN_VALUE_URL, item);
+//   if (!minTime || !minTime.valueTime) {
+//     return 0;
+//   }
+//   const minTimeString = minTime.valueTime;
+//   const hoursString = (minTimeString || '').split(DateTimeConstants.TIME_SEPARATOR)[0];
+//   return parseInt(hoursString, 10);
+// };
+
+// const getMinMinute = (item: QuestionnaireItem): number => {
+//   const minTime = getExtension(Extensions.MIN_VALUE_URL, item);
+//   if (!minTime || !minTime.valueTime) {
+//     return 0;
+//   }
+//   const minTimeString = minTime.valueTime;
+//   const minuteString = (minTimeString || '').split(DateTimeConstants.TIME_SEPARATOR)[1];
+//   return parseInt(minuteString, 10);
+// };
+
+const parseTimeToDate = (time?: string): Date => {
+  const today = new Date();
+  const localDate = new Date(today);
+  //sjekke
+
+  if (time) {
+    const [hours, minutes, seconds] = time.split(':').map(Number);
+    localDate.setHours(hours, minutes, seconds, 0);
+  }
+
+  return localDate;
+};
+
+const getMinTime = (item: QuestionnaireItem): string | undefined => {
+  const minTime = getExtension(Extensions.MIN_VALUE_URL, item);
+  if (!minTime || !minTime.valueTime) {
+    return;
+  }
+  return minTime.valueTime;
+};
+
+const getMaxTime = (item: QuestionnaireItem): string | undefined => {
+  const maxTime = getExtension(Extensions.MAX_VALUE_URL, item);
+  if (!maxTime || !maxTime.valueTime) {
+    return;
+  }
+  return maxTime.valueTime;
+};
+
 export const validateDate = (dateToValidate: Date | undefined, resources: Resources | undefined): true | string => {
   if (dateToValidate && !isValid(dateToValidate)) {
     return resources?.dateError_invalid || '';
@@ -197,14 +302,46 @@ export const validateMaxDate = (
 };
 
 export const validateHours = (hours: number | undefined, resources: Resources | undefined): true | string => {
-  if (hours && (hours < 0 || hours > 23)) {
+  if (hours === undefined || hours < 0 || hours >= 24) {
     return resources?.dateError_time_invalid || '';
   }
   return true;
 };
 
 export const validateMinutes = (minutes: number | undefined, resources: Resources | undefined): true | string => {
-  if (minutes && (minutes < 0 || minutes > 59)) {
+  if (minutes === undefined || minutes < 0 || minutes >= 60) {
+    return resources?.dateError_time_invalid || '';
+  }
+  return true;
+};
+
+export const validateMinTime = (
+  hours: number | undefined,
+  minutes: number | undefined,
+  resources: Resources | undefined,
+  item: QuestionnaireItem
+): true | string => {
+  const minTime: Date = parseTimeToDate(getMinTime(item));
+  const timeToValidate: Date = parseTimeToDate(`${hours}:${minutes}:00`);
+
+  console.log(minTime);
+  console.log(timeToValidate);
+
+  if (timeToValidate < minTime) {
+    return resources?.dateError_time_invalid || '';
+  }
+  return true;
+};
+
+export const validateMaxTime = (
+  hours: number | undefined,
+  minutes: number | undefined,
+  resources: Resources | undefined,
+  item: QuestionnaireItem
+): true | string => {
+  const maxTime = parseTimeToDate(getMaxTime(item));
+  const timeToValidate = parseTimeToDate(`${hours}:${minutes}:00`);
+  if (timeToValidate > maxTime) {
     return resources?.dateError_time_invalid || '';
   }
   return true;
