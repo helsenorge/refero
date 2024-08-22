@@ -4,5 +4,7 @@
     "types": ["vite/client", "vitest/globals", "vitest/jsdom"],
     "typeRoots": ["./node_modules/@types"],
     "baseUrl": "."
-  }
+  },
+  "include": ["src", "test", "preview"],
+  "exclude": ["**/__mocks__/*", "**/__data__/*"]
 }
