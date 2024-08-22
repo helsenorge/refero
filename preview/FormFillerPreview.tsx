@@ -178,6 +178,7 @@ const FormFillerPreview = ({ showFormFiller }: Props): JSX.Element => {
                   onOpenAttachment={onOpenAttachment}
                   attachmentValidTypes={[MimeTypes.PNG, MimeTypes.JPG, MimeTypes.PDF, MimeTypes.PlainText]}
                   attachmentMaxFileSize={1}
+                  onStepChange={(newIndex: number): void => setLang(newIndex)}
                 />
               </div>
             ) : (

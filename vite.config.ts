@@ -91,6 +91,7 @@ export default defineConfig(({ command, isPreview }): UserConfig => {
           exports: {
             '.': {
               import: './refero.es.js',
+              types: './types/src/index.d.ts',
             },
           },
         }),

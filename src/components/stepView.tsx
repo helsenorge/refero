@@ -43,7 +43,7 @@ const StepView = ({ isAuthorized, referoProps, resources, onSave, onSubmit, meth
       onStepChange(stepIndex);
     }
     window.scrollTo(0, 0);
-  }, [stepIndex, onStepChange]);
+  }, [stepIndex]);
 
   if (topLevelElements.length === 0) {
     return null;
