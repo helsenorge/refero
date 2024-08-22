@@ -28,6 +28,5 @@
       "react": ["./node_modules/@types/react"]
     }
   },
-  "include": ["src", "preview", "test"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

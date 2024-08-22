@@ -6,14 +6,14 @@ import cssnano from 'cssnano';
 import copy from 'rollup-plugin-copy';
 import generatePackageJson from 'rollup-plugin-generate-package-json';
 import peerDepsExternal from 'rollup-plugin-peer-deps-external';
-import { defineConfig } from 'vite';
+import { defineConfig, UserConfig } from 'vite';
 import dts from 'vite-plugin-dts';
 import { libInjectCss } from 'vite-plugin-lib-inject-css';
 import tsconfigPaths from 'vite-tsconfig-paths';
 
 const OUTPUT_DIRECTORY = 'lib';
 
-export default defineConfig(({ command, isPreview }) => {
+export default defineConfig(({ command, isPreview }): UserConfig => {
   const dev = command === 'serve' && !isPreview;
 
   return {
@@ -91,6 +91,7 @@ export default defineConfig(({ command, isPreview }) => {
           exports: {
             '.': {
               import: './refero.es.js',
+              types: './types/src/index.d.ts',
             },
           },
         }),

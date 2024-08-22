@@ -278,6 +278,7 @@ function getAnswer<T>(
   answer?: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]
 ): T | undefined {
   if (Array.isArray(answer)) {
+    //@ts-expect-error - TS doesn't know that key is a valid key of QuestionnaireResponseItemAnswer
     return answer?.reduce((acc, x) => acc || (x[key] as T), undefined);
   } else if (answer) {
     return answer[key] as T;

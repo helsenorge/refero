@@ -17,7 +17,7 @@ export interface ReferoProps {
   onSave?: (questionnaireResponse: QuestionnaireResponse) => void;
   onCancel?: () => void;
   onSubmit: (questionnaireResponse: QuestionnaireResponse) => void;
-  loginButton: JSX.Element; //TODO: add to correct place or remove
+  loginButton?: JSX.Element;
   resources?: Resources;
   pdf?: boolean;
   promptLoginMessage?: () => void;
