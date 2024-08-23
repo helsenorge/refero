@@ -1,5 +1,9 @@
 ## 16.0.0-beta22
 
+- fix types for built package.json
+
+## 16.0.0-beta22
+
 - Added time component
 
 ## 16.0.0-beta21
