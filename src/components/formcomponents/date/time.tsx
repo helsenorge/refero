@@ -49,6 +49,8 @@ const Time = ({
   const timeFromAnswer = extractTimeFromAnswer(answer, item);
   const hours = timeFromAnswer?.hours;
   const minutes = timeFromAnswer?.minutes;
+  console.log(hours, 'hours');
+  console.log(minutes, 'minutes');
 
   const convertAnswerToString = (answer: QuestionnaireResponseItemAnswer): string => {
     if (answer && answer.valueTime) {

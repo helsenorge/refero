@@ -22,7 +22,7 @@ import { getResources } from './resources/referoResources';
 import skjema from './skjema/mandatory_time.json';
 // import skjema from '../src/components/__tests__/__data__/group-grid/q.json';
 
-import ReferoContainer from '@helsenorge/refero';
+import ReferoContainer from '../src/components/index';
 import valueSet from '../src/constants/valuesets';
 import rootReducer from '../src/reducers/index';
 import { QuestionnaireStatusCodes } from '../src/types/fhirEnums';
