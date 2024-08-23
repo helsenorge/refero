@@ -115,10 +115,12 @@ const DateTimeInput = ({
   };
 
   const getErrorText = (error: FieldError | undefined): string | undefined => {
-    const validationTextExtension = getValidationTextExtension(item);
-
     if (error) {
-      return validationTextExtension || error.message;
+      const validationTextExtension = getValidationTextExtension(item);
+      if (validationTextExtension) {
+        return validationTextExtension;
+      }
+      return error.message;
     }
   };
 
@@ -243,7 +245,7 @@ const DateTimeInput = ({
             },
             validate: {
               validHours: value => {
-                return validateHours(Number(value), resources, item);
+                return validateHours(Number(value), resources);
               },
             },
           })}
@@ -262,7 +264,7 @@ const DateTimeInput = ({
             },
             validate: {
               validMinutes: value => {
-                return validateMinutes(Number(value), resources, item);
+                return validateMinutes(Number(value), resources);
               },
             },
           })}
