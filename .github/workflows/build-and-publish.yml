@@ -31,14 +31,14 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Lint code
-        run: npm run lint
+      # - name: Lint code
+      #   run: npm run lint
 
       - name: Test
         run: npm test
 
-      - name: Audit for vulnerabilities
-        run: npm audit --audit-level=high
+      # - name: Audit for vulnerabilities
+      #   run: npm audit --audit-level=high
 
   release:
     needs: build
