@@ -29,7 +29,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       # - name: Lint code
       #   run: npm run lint
@@ -51,10 +51,7 @@ jobs:
           node-version: 20
 
       - name: Install dependencies
-        run: npm install
-
-      - name: Install semantic-release and plugins
-        run: npm install -g semantic-release @semantic-release/changelog @semantic-release/git @semantic-release/npm
+        run: npm ci
 
       - name: Run semantic-release (dry run)
         run: npx semantic-release --dry-run
