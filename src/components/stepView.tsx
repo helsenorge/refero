@@ -41,8 +41,8 @@ const StepView = ({ isAuthorized, referoProps, resources, onSave, onSubmit, meth
   React.useEffect(() => {
     if (onStepChange) {
       onStepChange(stepIndex);
+      window.scrollTo(0, 0);
     }
-    window.scrollTo(0, 0);
   }, [stepIndex]);
 
   if (topLevelElements.length === 0) {

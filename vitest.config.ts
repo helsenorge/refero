@@ -30,17 +30,17 @@ export default defineConfig(configEnv =>
             classNameStrategy: 'non-scoped',
           },
         },
+        coverage: {
+          reporter: ['cobertura', 'json'],
+        },
+        reporters: ['default', 'junit', 'html'],
+        outputFile: {
+          junit: 'test-report.xml',
+        },
         server: {
           deps: {
             inline: ['@helsenorge/designsystem-react', '@helsenorge/datepicker'],
           },
-        },
-        coverage: {
-          reporter: ['cobertura', 'json'],
-        },
-        reporters: ['default', 'junit', 'default', 'html'],
-        outputFile: {
-          junit: 'test-report.xml',
         },
       },
     })

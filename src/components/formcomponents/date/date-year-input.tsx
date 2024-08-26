@@ -5,7 +5,6 @@ import { Controller, FieldError, FieldValues, useFormContext } from 'react-hook-
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Input from '@helsenorge/designsystem-react/components/Input';
-import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
 
 import { getId, isReadOnly, isRequired } from '../../../util';
 import { createDateFromYear } from '../../../util/createDateFromYear';
@@ -18,35 +17,22 @@ import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelp
 import { QuestionnaireComponentItemProps } from '@/components/GenerateQuestionnaireComponents';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
+import { useExternalRenderContext } from '@/context/externalRenderContext';
+import { useMinMaxDate } from './useMinMaxDate';
 
 type Props = QuestionnaireComponentItemProps & {
-  label?: string;
-  subLabel?: string;
   onDateValueChange: (newValue: string) => void;
-  maxDate?: Date;
-  minDate?: Date;
 };
 
 export const DateYearInput = (props: Props): JSX.Element | null => {
-  const {
-    id,
-    pdf,
-    item,
-    resources,
-    label,
-    responseItem,
-    subLabel,
-    onDateValueChange,
-    maxDate,
-    minDate,
-    idWithLinkIdAndItemIndex,
-    children,
-  } = props;
+  const { id, pdf, item, responseItem, onDateValueChange, idWithLinkIdAndItemIndex, children } = props;
   const { formState, getFieldState, control } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const answer = useGetAnswer(responseItem, item);
+  const { resources } = useExternalRenderContext();
   const { error } = fieldState;
   const [isHelpVisible, setIsHelpVisible] = useState(false);
+  const { minDateTime, maxDateTime } = useMinMaxDate(item);
   const getYear = (
     answer: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[] | undefined
   ): (number | undefined)[] | undefined => {
@@ -116,10 +102,10 @@ export const DateYearInput = (props: Props): JSX.Element | null => {
               return validateYearDigits(value, resources);
             },
             validMinDate: value => {
-              return validateYearMin(minDate, value, resources);
+              return validateYearMin(minDateTime, value, resources);
             },
             validMaxDate: value => {
-              return validateYearMax(maxDate, value, resources);
+              return validateYearMax(maxDateTime, value, resources);
             },
           },
         }}
@@ -134,14 +120,6 @@ export const DateYearInput = (props: Props): JSX.Element | null => {
               onChange(e.target.value);
               onYearChange(Number(e.target.value));
             }}
-            label={
-              <Label
-                labelId={`${getId(id)}-label-dateYear`}
-                labelTexts={[{ text: label || '' }]}
-                sublabel={<Sublabel id={`${getId(id)}-sublabel-dateYear`} sublabelTexts={[{ text: subLabel || '', type: 'normal' }]} />}
-                afterLabelChildren={<RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />}
-              />
-            }
             value={answerState ?? ''}
             width={10}
           />

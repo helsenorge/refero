@@ -20,16 +20,12 @@ import { QuestionnaireComponentItemProps } from '@/components/GenerateQuestionna
 import RenderHelpButton from '../help-button/RenderHelpButton';
 import RenderHelpElement from '../help-button/RenderHelpElement';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
+import { useExternalRenderContext } from '@/context/externalRenderContext';
+import { useMinMaxDate } from './useMinMaxDate';
 
 type DateDayInputProps = QuestionnaireComponentItemProps & {
   locale: LanguageLocales.ENGLISH | LanguageLocales.NORWEGIAN;
-  label?: string;
-  subLabel?: string;
   onDateValueChange: (newValue: string) => void;
-  validationErrorRenderer?: JSX.Element;
-  className?: string;
-  maxDate?: Date;
-  minDate?: Date;
 };
 
 export const DateDayInput = ({
@@ -37,17 +33,17 @@ export const DateDayInput = ({
   idWithLinkIdAndItemIndex,
   pdf,
   item,
-  resources,
+  responseItem,
   onDateValueChange,
-  maxDate,
-  minDate,
   children,
 }: DateDayInputProps): JSX.Element | null => {
   const [isHelpVisible, setIsHelpVisible] = useState(false);
   const { formState, getFieldState } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
-  const answer = useGetAnswer(item);
+  const answer = useGetAnswer(responseItem, item);
+  const { minDateTime, maxDateTime } = useMinMaxDate(item);
+  const { resources } = useExternalRenderContext();
 
   const getDateAnswerValue = (
     answer?: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[] | undefined
@@ -75,19 +71,19 @@ export const DateDayInput = ({
   const parsedDateAnswerValue = parseStringToDateDDMMYYYY(dateAnswerValue);
   const [defaultDate, setDefaultDate] = useState<Date | undefined>(parsedDateAnswerValue);
 
-  const getValue = (): (Date | undefined)[] | undefined => {
+  const getValue = (): Date[] | undefined => {
     if (answer && Array.isArray(answer)) {
-      return answer.map(m => safeParseJSON(String(getDateAnswerValue(m))));
+      return answer.map(m => safeParseJSON(String(getDateAnswerValue(m)))).filter(x => x !== undefined);
     }
 
     if (Array.isArray(item.initial)) {
-      return item.initial.map(m => safeParseJSON(String(getDateAnswerValue(m))));
+      return item.initial.map(m => safeParseJSON(String(getDateAnswerValue(m)))).filter(x => x !== undefined);
     }
 
     if (answer) {
-      const parsedDate = [safeParseJSON(String(getDateAnswerValue(answer)))];
-      if (isValid(parsedDate[0]) === true) {
-        return parsedDate;
+      const parsedDate = safeParseJSON(String(getDateAnswerValue(answer)));
+      if (isValid(parsedDate) === true && parsedDate !== undefined) {
+        return [parsedDate];
       } else {
         return undefined;
       }
@@ -177,13 +173,13 @@ export const DateDayInput = ({
           },
           validate: {
             validDate: value => {
-              return validateDate(parseStringToDateDDMMYYYY(value), resources);
+              return validateDate(value ? parseStringToDateDDMMYYYY(value) : undefined, resources);
             },
             validMinDate: value => {
-              return validateMinDate(minDate, parseStringToDateDDMMYYYY(value), resources);
+              return validateMinDate(minDateTime, parseStringToDateDDMMYYYY(value), resources);
             },
             validMaxDate: value => {
-              return validateMaxDate(maxDate, parseStringToDateDDMMYYYY(value), resources);
+              return validateMaxDate(maxDateTime, parseStringToDateDDMMYYYY(value), resources);
             },
           },
         }}
@@ -194,8 +190,8 @@ export const DateDayInput = ({
             autoComplete=""
             dateButtonAriaLabel="Open datepicker"
             dateFormat={'dd.MM.yyyy'}
-            minDate={minDate}
-            maxDate={maxDate}
+            minDate={minDateTime}
+            maxDate={maxDateTime}
             onChange={(e, newDate) => {
               handleChange(newDate);
               onChange(newDate);

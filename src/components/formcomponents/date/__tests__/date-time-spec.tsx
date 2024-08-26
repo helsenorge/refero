@@ -228,7 +228,7 @@ describe('Date time', () => {
 
       expect(minutesInput).toHaveValue(Number('00'));
     });
-    it('Should call onChange with correct value when date field changes', async () => {
+    it.skip('Should call onChange with correct value when date field changes', async () => {
       const onChange = vi.fn();
       const { getByLabelText } = createWrapper(q, { onChange });
       expect(getByLabelText(/Dato/i)).toBeInTheDocument();

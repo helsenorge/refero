@@ -1,6 +1,6 @@
 {
   "name": "@helsenorge/refero",
-  "version": "16.0.0-beta20",
+  "version": "16.0.0-beta.25",
   "description": "Refero is a library that uses a fhir r4 schema and creates a interactive form using helsenorge packages.",
   "author": "helsenorge",
   "license": "MIT",
@@ -22,7 +22,8 @@
     "test:ui": "vitest --ui",
     "test:preview": "vite preview --outDir html",
     "dev": "vite",
-    "build:lib": "vite build"
+    "build:lib": "vite build",
+    "prepare": "npm run build:lib"
   },
   "husky": {
     "hooks": {
