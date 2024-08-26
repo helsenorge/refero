@@ -19,7 +19,7 @@ import { GlobalState } from '@/reducers';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import { DateTime, DateTimePickerWrapper } from '@helsenorge/datepicker/components/DatePicker';
 import { FieldError, FieldValues, useFormContext } from 'react-hook-form';
-import { extractTimeFromAnswer, validateHours, validateMaxTime, validateMinTime, validateMinutes } from '@/util/date-utils';
+import { extractHoursAndMinutesFromAnswer, validateHours, validateMaxTime, validateMinTime, validateMinutes } from '@/util/date-utils';
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import RenderHelpButton from '../help-button/RenderHelpButton';
 import RenderHelpElement from '../help-button/RenderHelpElement';
@@ -46,11 +46,9 @@ const Time = ({
 
   const answer = useGetAnswer(responseItem, item);
   const [isHelpVisible, setIsHelpVisible] = React.useState(false);
-  const timeFromAnswer = extractTimeFromAnswer(answer, item);
-  const hours = timeFromAnswer?.hours;
-  const minutes = timeFromAnswer?.minutes;
-  console.log(hours, 'hours');
-  console.log(minutes, 'minutes');
+  const hoursAndMinutesFromAnswer = extractHoursAndMinutesFromAnswer(answer, item);
+  const hours = hoursAndMinutesFromAnswer?.hours;
+  const minutes = hoursAndMinutesFromAnswer?.minutes;
 
   const convertAnswerToString = (answer: QuestionnaireResponseItemAnswer): string => {
     if (answer && answer.valueTime) {
@@ -220,12 +218,12 @@ const Time = ({
               validHours: value => {
                 return validateHours(Number(value), resources);
               },
-              // validMinTime: value => {
-              //   return validateMinTime(Number(value), minutes, resources, item);
-              // },
-              // validMaxTime: value => {
-              //   return validateMaxTime(Number(value), minutes, resources, item);
-              // },
+              validMinTime: value => {
+                return validateMinTime(Number(value), minutes, resources, item);
+              },
+              validMaxTime: value => {
+                return validateMaxTime(Number(value), minutes, resources, item);
+              },
             },
           })}
           inputId={`${getId(id)}-datetime-hours`}

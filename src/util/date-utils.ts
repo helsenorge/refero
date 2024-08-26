@@ -88,38 +88,28 @@ export const getHoursOrMinutesFromDate = (date: Date | undefined, unitToGet: Dat
   return undefined;
 };
 
-const getTimeValues = (timeStr: string): TimeValues => {
-  const date = parse(timeStr, 'HH:mm:ss', new Date());
+const getHoursAndMinutesFromTime = (timeStr: string): TimeValues => {
+  const [hours, minutes] = timeStr.split(':').map(Number);
   return {
-    hours: date.getHours(),
-    minutes: date.getMinutes(),
+    hours: isNaN(hours) ? 0 : hours,
+    minutes: isNaN(minutes) ? 0 : minutes,
   };
 };
 
-export const extractTimeFromAnswer = (
+const extractTimeFromAnswer = (ans?: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]) => {
+  if (Array.isArray(ans) && ans.length > 0) {
+    return ans[0].valueTime || ans[0].valueDate || ans[0].valueDateTime;
+  } else if (ans && !Array.isArray(ans)) {
+    return ans.valueTime || ans.valueDate || ans.valueDateTime;
+  }
+};
+
+export const extractHoursAndMinutesFromAnswer = (
   answer: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[] | undefined,
   item: QuestionnaireItem
 ): TimeValues | null => {
-  if (!answer && !item.initial) return null;
-
-  let timeStr: string | undefined;
-
-  if (Array.isArray(answer) && answer.length > 0) {
-    timeStr = answer[0].valueTime || answer[0].valueDate || answer[0].valueDateTime;
-  } else if (answer && !Array.isArray(answer)) {
-    timeStr = answer.valueTime || answer.valueDate || answer.valueDateTime;
-  } else if (item.initial && item.initial.length > 0) {
-    const initial = item.initial[0];
-    timeStr = initial.valueTime || initial.valueDate || initial.valueDateTime;
-  }
-
-  //Logikken over kan gjøres enklere
-
-  if (timeStr) {
-    return getTimeValues(timeStr);
-  }
-
-  return null;
+  const timeStr = extractTimeFromAnswer(answer) || extractTimeFromAnswer(item.initial);
+  return timeStr ? getHoursAndMinutesFromTime(timeStr) : null;
 };
 
 export const parseStringToDateDDMMYYYY = (valueToParse: string | Date | undefined): Date | undefined => {
@@ -203,57 +193,15 @@ export const getYearFromString = (dateString: string): string => {
   return dateString ? dateString.split('-')[0] : '';
 };
 
-// const getMaxHour = (item: QuestionnaireItem): number => {
-//   const maxTime = getExtension(Extensions.MAX_VALUE_URL, item);
-//   if (!maxTime || !maxTime.valueTime) {
-//     return 23;
-//   }
-//   const maxTimeString = maxTime.valueTime;
-//   const hoursString = (maxTimeString || '').split(DateTimeConstants.TIME_SEPARATOR)[0];
-//   return parseInt(hoursString, 10);
-// };
-
-// const getMaxMinute = (item: QuestionnaireItem): number => {
-//   const maxTime = getExtension(Extensions.MAX_VALUE_URL, item);
-//   if (!maxTime || !maxTime.valueTime) {
-//     return 59;
-//   }
-//   const maxTimeString = maxTime.valueTime;
-//   const minuteString = (maxTimeString || '').split(DateTimeConstants.TIME_SEPARATOR)[1];
-//   return parseInt(minuteString, 10);
-// };
-
-// const getMinHour = (item: QuestionnaireItem): number => {
-//   const minTime = getExtension(Extensions.MIN_VALUE_URL, item);
-//   if (!minTime || !minTime.valueTime) {
-//     return 0;
-//   }
-//   const minTimeString = minTime.valueTime;
-//   const hoursString = (minTimeString || '').split(DateTimeConstants.TIME_SEPARATOR)[0];
-//   return parseInt(hoursString, 10);
-// };
-
-// const getMinMinute = (item: QuestionnaireItem): number => {
-//   const minTime = getExtension(Extensions.MIN_VALUE_URL, item);
-//   if (!minTime || !minTime.valueTime) {
-//     return 0;
-//   }
-//   const minTimeString = minTime.valueTime;
-//   const minuteString = (minTimeString || '').split(DateTimeConstants.TIME_SEPARATOR)[1];
-//   return parseInt(minuteString, 10);
-// };
-
 const parseTimeToDate = (time?: string): Date => {
-  const today = new Date();
-  const localDate = new Date(today);
-  //sjekke
+  const dateToReturn = new Date();
 
   if (time) {
     const [hours, minutes, seconds] = time.split(':').map(Number);
-    localDate.setHours(hours, minutes, seconds, 0);
+    dateToReturn.setHours(hours, minutes, seconds, 0);
   }
 
-  return localDate;
+  return dateToReturn;
 };
 
 const getMinTime = (item: QuestionnaireItem): string | undefined => {
@@ -323,9 +271,6 @@ export const validateMinTime = (
 ): true | string => {
   const minTime: Date = parseTimeToDate(getMinTime(item));
   const timeToValidate: Date = parseTimeToDate(`${hours}:${minutes}:00`);
-
-  console.log(minTime);
-  console.log(timeToValidate);
 
   if (timeToValidate < minTime) {
     return resources?.dateError_time_invalid || '';

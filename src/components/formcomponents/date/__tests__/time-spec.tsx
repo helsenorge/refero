@@ -1,6 +1,6 @@
 import { Questionnaire, QuestionnaireResponseItemAnswer } from 'fhir/r4';
-import { act, findByRole, renderRefero, userEvent, waitFor } from '@test/test-utils.tsx';
-import { q } from './__data__/time';
+import { act, findByRole, fireEvent, renderRefero, userEvent, waitFor } from '@test/test-utils.tsx';
+import { q, qMinMaxCustomError } from './__data__/time';
 import { ReferoProps } from '../../../../types/referoProps';
 import { Extensions } from '../../../../constants/extensions';
 import { clickButtonTimes, submitForm } from '../../../../../test/selectors';
@@ -71,8 +71,6 @@ describe('Time', () => {
 
       const hoursInput = getByLabelText(/Klokkeslett/i);
       const minutesInput = minutesElement.querySelector('input');
-
-      screen.debug();
 
       expect(hoursInput).toHaveValue(Number('14'));
       expect(minutesInput).toHaveValue(Number('30'));
@@ -236,13 +234,12 @@ describe('Time', () => {
       expect(minutesElement).toBeInTheDocument();
 
       await act(async () => {
-        userEvent.paste(hoursElement, '14');
+        fireEvent.change(hoursElement, { target: { value: '14' } });
       });
 
       if (minutesInput) {
         await act(async () => {
-          userEvent.paste(minutesInput, '30');
-          userEvent.tab();
+          fireEvent.change(minutesInput, { target: { value: '30' } });
         });
       }
 
@@ -276,13 +273,16 @@ describe('Time', () => {
         const minutesInput = minutesElement.querySelector('input');
 
         await act(async () => {
-          userEvent.type(hoursElement, '14');
+          fireEvent.change(hoursElement, { target: { value: '14' } });
         });
         if (minutesInput) {
           await act(async () => {
-            userEvent.paste(minutesInput, '30');
+            fireEvent.change(minutesInput, { target: { value: '30' } });
           });
         }
+
+        expect(hoursElement).toHaveValue(Number('14'));
+        expect(minutesInput).toHaveValue(Number('30'));
 
         await submitForm();
 
@@ -326,15 +326,11 @@ describe('Time', () => {
         expect(getByText(resources.dateError_time_invalid)).toBeInTheDocument();
       });
       it('Should show error if minute value is invalid', async () => {
-        const { getByLabelText, getByText, getByTestId } = createWrapper(q);
+        const { getByText, getByTestId } = createWrapper(q);
 
-        const hoursElement = getByLabelText(/Klokkeslett/i);
         const minutesElement = getByTestId('time-2');
         const minutesInput = minutesElement.querySelector('input');
 
-        await act(async () => {
-          userEvent.type(hoursElement, '14');
-        });
         if (minutesInput) {
           await act(async () => {
             userEvent.paste(minutesInput, '99');
@@ -342,115 +338,103 @@ describe('Time', () => {
         }
 
         await submitForm();
-        screen.debug(undefined, 30000);
         expect(getByText(resources.dateError_time_invalid)).toBeInTheDocument();
       });
-      // it('Should show error message if hour value is lesser than min value', async () => {
-      //   const { getByTestId, getByLabelText, getByText } = createWrapper(q);
+      it('Should show error message if time value is lesser than min-time', async () => {
+        const { getByTestId, getByLabelText, getByText } = createWrapper(q);
 
-      //   const hoursElement = getByLabelText(/Klokkeslett/i);
-      //   const minutesElement = getByTestId('time-2');
-      //   const minutesInput = minutesElement.querySelector('input');
+        const hoursElement = getByLabelText(/Klokkeslett/i);
+        const minutesElement = getByTestId('time-2');
+        const minutesInput = minutesElement.querySelector('input');
 
-      //   await act(async () => {
-      //     userEvent.paste(hoursElement, '14');
-      //   });
-      //   if (minutesInput) {
-      //     await act(async () => {
-      //       userEvent.paste(minutesInput, '20');
-      //     });
-      //   }
+        await act(async () => {
+          fireEvent.change(hoursElement, { target: { value: '14' } });
+        });
+        if (minutesInput) {
+          await act(async () => {
+            fireEvent.change(minutesInput, { target: { value: '20' } });
+          });
+        }
 
-      //   await submitForm();
-      //   expect(getByText(resources.dateError_time_invalid)).toBeInTheDocument();
-      // });
-      // it('Should show error message for max value', async () => {
-      //   const { getByLabelText, getByText } = createWrapper(qMinMax);
+        await submitForm();
+        expect(getByText(resources.dateError_time_invalid)).toBeInTheDocument();
+      });
+      it('Should show error message if time value is greater than max-time', async () => {
+        const { getByTestId, getByLabelText, getByText } = createWrapper(q);
 
-      //   await act(async () => {
-      //     userEvent.paste(getByLabelText(/Dato/i), '31.05.2095');
-      //   });
+        const hoursElement = getByLabelText(/Klokkeslett/i);
+        const minutesElement = getByTestId('time-2');
+        const minutesInput = minutesElement.querySelector('input');
 
-      //   await submitForm();
-      //   expect(getByText(resources.errorAfterMaxDate + ': 31.05.2094')).toBeInTheDocument();
-      // });
-      // it('Should show custom error message for min value', async () => {
-      //   const { getByLabelText, getByText } = createWrapper(qMinMaxCustomError);
+        await act(async () => {
+          fireEvent.change(hoursElement, { target: { value: '16' } });
+        });
+        if (minutesInput) {
+          await act(async () => {
+            fireEvent.change(minutesInput, { target: { value: '46' } });
+          });
+        }
 
-      //   await act(async () => {
-      //     userEvent.paste(getByLabelText(/Dato/i), '31.05.1904');
-      //   });
+        await submitForm();
+        expect(getByText(resources.dateError_time_invalid)).toBeInTheDocument();
+      });
+      it('Should show custom error message for min-time', async () => {
+        const { getByLabelText, getByTestId, getByText } = createWrapper(qMinMaxCustomError);
 
-      //   await submitForm();
-      //   expect(getByText('Custom errormessage')).toBeInTheDocument();
-      // });
-      // it('Should show custom error message for max value', async () => {
-      //   const { getByLabelText, getByText } = createWrapper(qMinMaxCustomError);
+        const hoursElement = getByLabelText(/Klokkeslett/i);
+        const minutesElement = getByTestId('time-2');
+        const minutesInput = minutesElement.querySelector('input');
 
-      //   await act(async () => {
-      //     userEvent.paste(getByLabelText(/Dato/i), '31.05.2095');
-      //   });
+        await act(async () => {
+          fireEvent.change(hoursElement, { target: { value: '14' } });
+        });
+        if (minutesInput) {
+          await act(async () => {
+            fireEvent.change(minutesInput, { target: { value: '20' } });
+          });
+        }
 
-      //   await submitForm();
-      //   expect(getByText('Custom errormessage')).toBeInTheDocument();
-      // });
-      // it('Should not show error if date value is between min value and max value', async () => {
-      //   const { getByLabelText, queryByText } = createWrapper(qMinMax);
+        await submitForm();
+        expect(getByText('Custom errormessage')).toBeInTheDocument();
+      });
+      it('Should show custom error message for max-time', async () => {
+        const { getByLabelText, getByTestId, getByText } = createWrapper(qMinMaxCustomError);
 
-      //   await act(async () => {
-      //     userEvent.paste(getByLabelText(/Dato/i), '31.05.2024');
-      //   });
+        const hoursElement = getByLabelText(/Klokkeslett/i);
+        const minutesElement = getByTestId('time-2');
+        const minutesInput = minutesElement.querySelector('input');
 
-      //   await submitForm();
-      //   expect(queryByText(resources.errorBeforeMinDate + ': 31.05.1994')).not.toBeInTheDocument();
-      //   expect(queryByText(resources.errorAfterMaxDate + ': 31.05.2094')).not.toBeInTheDocument();
-      // });
-      // it('Should show error if hour value is invalid', async () => {
-      //   const { getByText, getByLabelText } = createWrapper(qMinMax);
+        await act(async () => {
+          fireEvent.change(hoursElement, { target: { value: '16' } });
+        });
+        if (minutesInput) {
+          await act(async () => {
+            fireEvent.change(minutesInput, { target: { value: '46' } });
+          });
+        }
 
-      //   const hoursElement = await screen.findByTestId('datetime-1');
-      //   const minutesElement = await screen.findByTestId('datetime-2');
-      //   const hoursInput = hoursElement.querySelector('input');
-      //   const minutesInput = minutesElement.querySelector('input');
+        await submitForm();
+        expect(getByText('Custom errormessage')).toBeInTheDocument();
+      });
+      it('Should not show error if date value is between min-time and max-time', async () => {
+        const { getByLabelText, getByTestId, queryByText } = createWrapper(q);
 
-      //   await act(async () => {
-      //     userEvent.paste(getByLabelText(/Dato/i), '31.05.1994');
-      //   });
-      //   await act(async () => {
-      //     hoursInput && userEvent.paste(hoursInput, '90');
-      //   });
-      //   await act(async () => {
-      //     minutesInput && userEvent.paste(minutesInput, '00');
-      //   });
+        const hoursElement = getByLabelText(/Klokkeslett/i);
+        const minutesElement = getByTestId('time-2');
+        const minutesInput = minutesElement.querySelector('input');
 
-      //   await submitForm();
-      //   await waitFor(() => {
-      //     expect(getByText(resources.dateError_time_invalid)).toBeInTheDocument();
-      //   });
-      // });
-      // it('Should show error if minutes value is invalid', async () => {
-      //   const { getByText, getByLabelText } = createWrapper(qMinMax);
+        await act(async () => {
+          fireEvent.change(hoursElement, { target: { value: '15' } });
+        });
+        if (minutesInput) {
+          await act(async () => {
+            fireEvent.change(minutesInput, { target: { value: '30' } });
+          });
+        }
 
-      //   const hoursElement = await screen.findByTestId('datetime-1');
-      //   const minutesElement = await screen.findByTestId('datetime-2');
-      //   const hoursInput = hoursElement.querySelector('input');
-      //   const minutesInput = minutesElement.querySelector('input');
-
-      //   await act(async () => {
-      //     userEvent.paste(getByLabelText(/Dato/i), '31.05.1994');
-      //   });
-      //   await act(async () => {
-      //     hoursInput && userEvent.paste(hoursInput, '00');
-      //   });
-      //   await act(async () => {
-      //     minutesInput && userEvent.paste(minutesInput, '90');
-      //   });
-
-      //   await submitForm();
-      //   await waitFor(() => {
-      //     expect(getByText(resources.dateError_time_invalid)).toBeInTheDocument();
-      //   });
-      // });
+        await submitForm();
+        expect(queryByText(resources.dateError_time_invalid)).not.toBeInTheDocument();
+      });
     });
   });
 });
