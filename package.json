@@ -22,7 +22,8 @@
     "test:ui": "vitest --ui",
     "test:preview": "vite preview --outDir html",
     "dev": "vite",
-    "build:lib": "vite build"
+    "build:lib": "vite build",
+    "prepare": "npm run build:lib"
   },
   "husky": {
     "hooks": {
