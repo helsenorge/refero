@@ -26,7 +26,7 @@ const GroupHeader = ({ item, resources, headerTag, isHelpVisible, setIsHelpVisib
     return null;
   }
 
-  const HeaderTag = `h${headerTag}` as 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
+  const HeaderTag = `h${headerTag ?? 2}` as 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
   const headerText = getHeaderText(item, questionnaire, resources, onRenderMarkdown);
   return (
     <>

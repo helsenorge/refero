@@ -70,7 +70,7 @@ const GenerateQuestionnaireComponents = (props: QuestionnaireItemsProps): JSX.El
 
         responseItems = getRootQuestionnaireResponseItemFromData(item.linkId, formData);
         const isNavigatorEnabled = !!getNavigatorExtension(questionnaire);
-
+        let isNavigatorBlindzoneInitiated = false;
         if (!responseItems && responseItem) {
           const { item: childItems, answer: childAnswers } = responseItem;
           headerTag = getChildHeaderTag(item, headerTag);
@@ -82,8 +82,9 @@ const GenerateQuestionnaireComponents = (props: QuestionnaireItemsProps): JSX.El
           } else {
             responseItems = [];
           }
-        } else if (responseItems && responseItems.length > 0 && isNavigatorEnabled) {
-          blindzone = <div id={NAVIGATOR_BLINDZONE_ID} tabIndex={-1} />;
+        } else if (responseItems && responseItems.length > 0 && isNavigatorEnabled && !isNavigatorBlindzoneInitiated) {
+          isNavigatorBlindzoneInitiated = true;
+          blindzone = <section id={NAVIGATOR_BLINDZONE_ID} tabIndex={-1} />;
           includeSkipLink = isNavigatorEnabled && item.type === ItemType.GROUP;
         } else if (responseItems && responseItems.length > 0) {
           headerTag = constants.DEFAULT_HEADER_TAG;
