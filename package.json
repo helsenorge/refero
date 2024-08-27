@@ -31,11 +31,6 @@
     }
   },
   "peerDependencies": {
-    "@helsenorge/autosuggest": "^32.0.0",
-    "@helsenorge/core-utils": "^32.0.0",
-    "@helsenorge/datepicker": "^8.0.0",
-    "@helsenorge/designsystem-react": "^8.0.0",
-    "@helsenorge/file-upload": "^32.0.0",
     "react": "^17.0.0 || ^18.0.0",
     "react-dom": "^17.0.0 || ^18.0.0",
     "react-redux": "^8.1.3",
