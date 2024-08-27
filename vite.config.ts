@@ -84,14 +84,14 @@ export default defineConfig(({ command, isPreview }): UserConfig => {
           repository: pkg.repository,
           version: pkg.version,
           module: 'refero.es.js',
-          types: 'types/src/index.d.ts',
+          types: 'types/index.d.ts',
           license: pkg.license,
           dependencies: pkg.dependencies,
           peerDependencies: pkg.peerDependencies,
           exports: {
             '.': {
               import: './refero.es.js',
-              types: './types/src/index.d.ts',
+              types: './types/index.d.ts',
             },
           },
         }),
