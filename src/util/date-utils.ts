@@ -324,9 +324,6 @@ export const validateMinTime = (
   const minTime: Date = parseTimeToDate(getMinTime(item));
   const timeToValidate: Date = parseTimeToDate(`${hours}:${minutes}:00`);
 
-  console.log(minTime);
-  console.log(timeToValidate);
-
   if (timeToValidate < minTime) {
     return resources?.dateError_time_invalid || '';
   }

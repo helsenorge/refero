@@ -243,7 +243,7 @@ const DateTimeInput = ({
             },
             validate: {
               validHours: value => {
-                return validateHours(Number(value), resources, item);
+                return validateHours(Number(value), resources);
               },
             },
           })}
