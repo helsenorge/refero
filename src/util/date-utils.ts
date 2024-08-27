@@ -88,19 +88,19 @@ export const getHoursOrMinutesFromDate = (date: Date | undefined, unitToGet: Dat
   return undefined;
 };
 
-const getHoursAndMinutesFromTime = (timeStr: string): TimeValues => {
-  const [hours, minutes] = timeStr.split(':').map(Number);
+const getHoursAndMinutesFromTime = (timeString: string): TimeValues => {
+  const [hours, minutes] = timeString.split(':').map(Number);
   return {
     hours: isNaN(hours) ? 0 : hours,
     minutes: isNaN(minutes) ? 0 : minutes,
   };
 };
 
-const extractTimeFromAnswer = (ans?: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]) => {
-  if (Array.isArray(ans) && ans.length > 0) {
-    return ans[0].valueTime || ans[0].valueDate || ans[0].valueDateTime;
-  } else if (ans && !Array.isArray(ans)) {
-    return ans.valueTime || ans.valueDate || ans.valueDateTime;
+const extractTimeFromAnswer = (answer?: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]): string | undefined => {
+  if (Array.isArray(answer) && answer.length > 0) {
+    return answer[0].valueTime || answer[0].valueDate || answer[0].valueDateTime;
+  } else if (answer && !Array.isArray(answer)) {
+    return answer.valueTime || answer.valueDate || answer.valueDateTime;
   }
 };
 
@@ -108,8 +108,8 @@ export const extractHoursAndMinutesFromAnswer = (
   answer: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[] | undefined,
   item: QuestionnaireItem
 ): TimeValues | null => {
-  const timeStr = extractTimeFromAnswer(answer) || extractTimeFromAnswer(item.initial);
-  return timeStr ? getHoursAndMinutesFromTime(timeStr) : null;
+  const timeString = extractTimeFromAnswer(answer) || extractTimeFromAnswer(item.initial);
+  return timeString ? getHoursAndMinutesFromTime(timeString) : null;
 };
 
 export const parseStringToDateDDMMYYYY = (valueToParse: string | Date | undefined): Date | undefined => {
@@ -197,8 +197,8 @@ const parseTimeToDate = (time?: string): Date => {
   const dateToReturn = new Date();
 
   if (time) {
-    const [hours, minutes, seconds] = time.split(':').map(Number);
-    dateToReturn.setHours(hours, minutes, seconds, 0);
+    const [hours, minutes] = time.split(':').map(Number);
+    dateToReturn.setHours(hours, minutes);
   }
 
   return dateToReturn;
