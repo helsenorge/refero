@@ -101,9 +101,19 @@ const Refero = (props: ReferoProps): JSX.Element | null => {
         autoSuggestProps={props.autoSuggestProps}
         validateScriptInjection={props.validateScriptInjection}
       >
-        <FormProvider {...methods}>
-          <GenerateQuestionnaireComponents items={questionnaire?.item} pdf={true} />
-        </FormProvider>
+        <AttachmentProvider
+          attachmentErrorMessage={props.attachmentErrorMessage}
+          attachmentMaxFileSize={props.attachmentMaxFileSize}
+          attachmentValidTypes={props.attachmentValidTypes}
+          onDeleteAttachment={props.onDeleteAttachment}
+          onRequestAttachmentLink={props.onRequestAttachmentLink}
+          onOpenAttachment={props.onOpenAttachment}
+          uploadAttachment={props.uploadAttachment}
+        >
+          <FormProvider {...methods}>
+            <GenerateQuestionnaireComponents items={questionnaire?.item} pdf={true} />
+          </FormProvider>
+        </AttachmentProvider>
       </ExternalRenderProvider>
     );
   }
