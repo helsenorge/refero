@@ -1,6 +1,6 @@
 {
   "name": "@helsenorge/refero",
-  "version": "15.0.9",
+  "version": "15.0.10",
   "engines": {
     "node": "^18.0.0",
     "npm": ">=9.0.0"
@@ -14,7 +14,10 @@
     "CHANGES",
     "LICENSE"
   ],
-  "repository": "github:helsenorge/refero",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/helsenorge/refero.git"
+  },
   "scripts": {
     "lint": "eslint 'src/**/*.ts{,x}' --quiet",
     "build:js": "tsc --p config/tsconfig.build.json",

@@ -1,3 +1,10 @@
+## 15.0.10
+
+---
+
+- fix pipeline to publish with correct tag to npm
+- fix small error in package.json
+
 ## 15.0.9
 
 ---
