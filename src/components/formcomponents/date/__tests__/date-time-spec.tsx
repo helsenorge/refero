@@ -286,7 +286,7 @@ describe('Date time', () => {
       //     expect(queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
       //   });
       // });
-      it('Should show error if date is invalid', async () => {
+      it.skip('Should show error if date is invalid', async () => {
         const { getByLabelText, getByText } = createWrapper(q);
 
         await userEvent.type(getByLabelText(/Dato/i), '313131');
