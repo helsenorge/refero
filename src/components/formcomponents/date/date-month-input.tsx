@@ -75,9 +75,9 @@ export const DateYearMonthInput = ({
   const [year, setYear] = useState<string | undefined>(getValue()?.year.toString());
   const [month, setMonth] = useState<string | undefined | null>(getValue()?.month?.toString());
 
-  const convertToPDFValue = (answer: QuestionnaireResponseItemAnswer): string => {
+  const convertToPDFValue = (answer: QuestionnaireResponseItemAnswer): string | undefined => {
     const value = getDateValueFromAnswer(answer);
-    return value ? format(value, 'MMMM yyyy') : '';
+    return value ? format(value, 'MMMM yyyy') : undefined;
   };
 
   const getPDFValue = (answer: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[] | undefined): string => {

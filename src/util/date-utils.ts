@@ -103,6 +103,9 @@ const extractTimeFromAnswer = (answer?: QuestionnaireResponseItemAnswer | Questi
     return answer.valueTime || answer.valueDate || answer.valueDateTime;
   }
 };
+//slå sammen funksjoner?
+//answer parameter/inital parameter
+//linje 101+103 slå sammen
 
 export const extractHoursAndMinutesFromAnswer = (
   answer: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[] | undefined,
@@ -203,6 +206,8 @@ const parseTimeToDate = (time?: string): Date => {
 
   return dateToReturn;
 };
+//lage tester til util metoder
+//optional time streng?
 
 const getMinTime = (item: QuestionnaireItem): string | undefined => {
   const minTime = getExtension(Extensions.MIN_VALUE_URL, item);
@@ -270,14 +275,14 @@ export const validateMinTime = (
   item: QuestionnaireItem
 ): true | string => {
   const minTime: Date = parseTimeToDate(getMinTime(item));
-  const timeToValidate: Date = parseTimeToDate(`${hours}:${minutes}:00`);
+  const timeToValidate: Date = parseTimeToDate(`${hours}:${minutes}`);
 
   if (timeToValidate < minTime) {
     return resources?.dateError_time_invalid || '';
   }
   return true;
 };
-
+//hvis mintime/maxtime er undefined, returner true
 export const validateMaxTime = (
   hours: number | undefined,
   minutes: number | undefined,
