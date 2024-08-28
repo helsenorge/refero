@@ -114,8 +114,8 @@
   "dependencies": {
     "@helsenorge/autosuggest": "^32.0.0",
     "@helsenorge/core-utils": "^32.0.0",
-    "@helsenorge/datepicker": "^8.0.0",
-    "@helsenorge/designsystem-react": "^8.0.0",
+    "@helsenorge/datepicker": "^8.2.1",
+    "@helsenorge/designsystem-react": "^8.2.1",
     "@helsenorge/file-upload": "^32.0.0",
     "classnames": "^2.3.2",
     "date-fns": "^3.6.0",
