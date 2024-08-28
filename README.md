@@ -3,30 +3,29 @@
 React component that consumes a [FHIR Questionnaire](https://hl7.org/fhir/R4/questionnaire.html) object and renders it as a form.
 
 ## PeerDependencies
-
-- [@helsenorge/core-utils](https://www.npmjs.com/package/@helsenorge/core-utils)
-- [@helsenorge/file-upload](https://www.npmjs.com/package/@helsenorge/file-upload)
-- [@helsenorge/date-time](https://www.npmjs.com/package/@helsenorge/date-time)
-- [@helsenorge/autosuggest](https://www.npmjs.com/package/@helsenorge/autosuggest)
-- [@helsenorge/designsystem-react](https://www.npmjs.com/package/@helsenorge/designsystem-react)
 - [react](https://www.npmjs.com/package/react)
 - [react-dom](https://www.npmjs.com/package/react-dom)
 - [redux](https://www.npmjs.com/package/redux)
 - [react-redux](https://www.npmjs.com/package/react-redux)
-- [redux-thunk](https://www.npmjs.com/package/redux-thunk)
+
 
 ## Dependencies
-
-- [@helsenorge/core-utils](https://www.npmjs.com/package/@helsenorge/core-utils)
-- [@helsenorge/file-upload](https://www.npmjs.com/package/@helsenorge/file-upload)
-- [@helsenorge/date-time](https://www.npmjs.com/package/@helsenorge/date-time)
-- [@helsenorge/autosuggest](https://www.npmjs.com/package/@helsenorge/autosuggest)
-- [@helsenorge/designsystem-react](https://www.npmjs.com/package/@helsenorge/designsystem-react)
+- [dompurify](https://www.npmjs.com/package/dompurify)
 - [firepath](https://www.npmjs.com/package/firepath)
+- [immer](https://www.npmjs.com/package/immer)
 - [marked](https://www.npmjs.com/package/marked)
 - [uuid](https://www.npmjs.com/package/uuid)
-- [dompurify](https://www.npmjs.com/package/dompurify)
-- [immer](https://www.npmjs.com/package/immer)
+- [react-collapse](https://www.npmjs.com/package/react-collapse)
+- [react-hook-form](https://www.npmjs.com/package/react-hook-form)
+- [redux-thunk](https://www.npmjs.com/package/redux-thunk)
+- [date-fns](https://www.npmjs.com/package/date-fns)
+- [classnames](https://www.npmjs.com/package/classnames)
+- [@helsenorge/core-utils](https://www.npmjs.com/package/
+@helsenorge/core-utils)
+- [@helsenorge/file-upload](https://www.npmjs.com/package/@helsenorge/file-upload)
+- [@helsenorge/datepicker](https://www.npmjs.com/package/@helsenorge/datepicker)
+- [@helsenorge/autosuggest](https://www.npmjs.com/package/@helsenorge/autosuggest)
+- [@helsenorge/designsystem-react](https://www.npmjs.com/package/@helsenorge/designsystem-react)
 
 ## Example usage
 
@@ -39,7 +38,7 @@ import { Refero, rootReducer } from '@helsenorge/refero';
 
 let store: Store<{}> = createStore(rootReducer, applyMiddleware(thunk));
 
-class App extends Component<{}, {}> {
+von App extends Component<{}, {}> {
   render() {
     return (
       <Provider store={store}>

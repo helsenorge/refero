@@ -49,16 +49,12 @@ describe('Component renders help items', () => {
 
     // click help button to open the help element
     expectedOpeningStatus = true;
-    await act(async () => {
-      userEvent.click(container.querySelectorAll('.helpButton')[0]);
-    });
+    await userEvent.click(container.querySelectorAll('.helpButton')[0]);
     expect(container.querySelectorAll('.helpElement')).toHaveLength(1);
 
     // click help button to close the help element
     expectedOpeningStatus = false;
-    await act(async () => {
-      userEvent.click(container.querySelectorAll('.helpButton')[0]);
-    });
+    await userEvent.click(container.querySelectorAll('.helpButton')[0]);
     expect(container.querySelectorAll('.helpElement')).toHaveLength(0);
   });
 });
@@ -69,24 +65,18 @@ describe('repeat with enableWhen', () => {
 
     // clicking the repeat button, repeats the elements
     expect(container.querySelectorAll('input[type="checkbox"]')).toHaveLength(1);
-    await act(async () => {
-      userEvent.click(screen.getByTestId(/-repeat-button/i));
-    });
+    await userEvent.click(screen.getByTestId(/-repeat-button/i));
     expect(container.querySelectorAll('input[type="checkbox"]')).toHaveLength(2);
 
     // no enableWhen components should be visible
     expect(container.querySelectorAll('input[type="text"]')).toHaveLength(0);
 
     // Click first boolean input, and enableWhen component should be enabled
-    await act(async () => {
-      userEvent.click(container.querySelectorAll('input[type="checkbox"]')[0]);
-    });
+    await userEvent.click(container.querySelectorAll('input[type="checkbox"]')[0]);
     expect(container.querySelectorAll('input[type="text"]')).toHaveLength(1);
 
     // Click last boolean input, and enableWhen component should be enabled
-    await act(async () => {
-      userEvent.click(container.querySelectorAll('input[type="checkbox"]')[1]);
-    });
+    await userEvent.click(container.querySelectorAll('input[type="checkbox"]')[1]);
     expect(container.querySelectorAll('input[type="text"]')).toHaveLength(2);
   });
 });

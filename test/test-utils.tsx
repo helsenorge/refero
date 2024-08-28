@@ -19,7 +19,7 @@ import { ReferoProps } from '../src/types/referoProps';
 import { Resources } from '../src/util/resources';
 import { createIntitialFormValues, DefaultValues } from '../src/validation/defaultFormValues';
 import { ExternalRenderProvider } from '@/context/externalRenderContext';
-import { AttachmentProvider, AttachmentProviderProps } from '@/context/AttachmentContext';
+import { AttachmentProvider } from '@/context/AttachmentContext';
 
 const mockStore = configureMockStore<Partial<GlobalState>>([thunk]);
 
@@ -161,12 +161,12 @@ function renderRefero({ questionnaire, props, initialState, resources, defaultVa
   );
 }
 export * from '@testing-library/react';
-
+const user = userEvent.setup();
 export {
   customRender as render,
   customRenderMockStore as renderMockStore,
   renderWithRedux,
   renderWithReduxAndHookFormMock,
   renderRefero,
-  userEvent,
+  user as userEvent,
 };

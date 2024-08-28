@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 import { format } from 'date-fns';
 import { QuestionnaireResponseItemAnswer } from 'fhir/r4';

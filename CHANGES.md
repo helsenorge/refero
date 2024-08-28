@@ -1,9 +1,21 @@
+
+## 16.0.0-beta22
+
+- fix types for built package.json
+
+## 16.0.0-beta22
+
+- Added time component
+
 ## 16.0.0-beta21
 
 - Update types in build package.json
 - Fix memory leak with onStepChange
 - updates to tsconfig
 
+## 16.0.0-beta20
+
+- Core 32 and react 18
 
 ## 16.0.0-beta11
 

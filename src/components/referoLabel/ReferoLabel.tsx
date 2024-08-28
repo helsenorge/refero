@@ -4,7 +4,7 @@ import Label, { LabelText } from '@helsenorge/designsystem-react/components/Labe
 
 import SafeText from './SafeText';
 import SubLabel from './sublabel';
-import { getLabelText, getSublabelText, isRequired } from '@/util';
+import { getLabelText, getSublabelText } from '@/util';
 import { Resources } from '@/util/resources';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 import { useSelector } from 'react-redux';

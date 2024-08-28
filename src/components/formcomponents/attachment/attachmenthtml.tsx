@@ -130,7 +130,7 @@ const AttachmentHtml = ({
             {customErrorMessage.Body}
           </NotificationPanel>
         )}
-        {attachmentErrorMessage && <NotificationPanel variant="alert">{attachmentErrorMessage}</NotificationPanel>}
+        {attachmentErrorMessage && <NotificationPanel variant="error">{attachmentErrorMessage}</NotificationPanel>}
       </FormGroup>
     </div>
   );

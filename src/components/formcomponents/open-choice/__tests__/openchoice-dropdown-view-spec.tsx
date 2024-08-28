@@ -116,9 +116,7 @@ describe('Dropdown-view - choice', () => {
       await clickButtonTimes(/-repeat-button/i, 1);
 
       await clickButtonTimes(/-delete-button/i, 1);
-      await act(async () => {
-        userEvent.click(await findByRole(getByTestId(/-delete-confirm-modal/i), 'button', { name: /Forkast endringer/i }));
-      });
+      await userEvent.click(await findByRole(getByTestId(/-delete-confirm-modal/i), 'button', { name: /Forkast endringer/i }));
       expect(queryByTestId(/-delete-button/i)).not.toBeInTheDocument();
     });
   });
@@ -233,14 +231,11 @@ describe('Dropdown-view - choice', () => {
         const questionnaire = addManyPropertiesToQuestionnaireItem(q, [{ property: 'repeats', value: false }]);
 
         const { getByTestId } = createWrapper(questionnaire, { onChange });
-
         await selectDropdownOptionByName(/Dropdown view label/i, 'Annet');
         expect(getByTestId(/-extra-field/i)).toBeInTheDocument();
-
         await typeExtraField('test');
-
         expect(onChange).toHaveBeenCalledWith(expect.any(Object), answer, expect.any(Object), expect.any(Object));
-        expect(onChange).toHaveBeenCalledTimes(2);
+        expect(onChange).toHaveBeenCalledTimes(5);
       });
     });
     describe('Validation', () => {
@@ -280,9 +275,7 @@ describe('Dropdown-view - choice', () => {
           expect(getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
 
           await typeExtraField('epost@test.com');
-          await act(async () => {
-            userEvent.tab();
-          });
+          await userEvent.tab();
           expect(queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
         });
       });

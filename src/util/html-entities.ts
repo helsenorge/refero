@@ -82,6 +82,7 @@ const reHasEscapedHtml = RegExp(reEscapedHtml.source);
  * // => 'fred, barney, & pebbles'
  */
 export const unescapeHtmlEntities = (s: string): string =>
+  //@ts-expect-error - s is always a string
   s && reHasEscapedHtml.test(s) ? s.replace(reEscapedHtml, entity => htmlUnescapes[entity] || "'") : s || '';
 
 /**
