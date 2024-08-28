@@ -11,13 +11,17 @@ import { NewValueAction } from '@/actions/newValue';
 import { TextMessage } from './text-message';
 
 export interface ReferoProps {
+  /**
+   * The store prop is not used and is @deprecated.
+   * It will be removed in a future version.
+   */
   store?: Store<GlobalState, NewValueAction>;
   authorized: boolean;
   blockSubmit?: boolean;
   onSave?: (questionnaireResponse: QuestionnaireResponse) => void;
   onCancel?: () => void;
   onSubmit: (questionnaireResponse: QuestionnaireResponse) => void;
-  loginButton?: JSX.Element;
+  loginButton: JSX.Element;
   resources?: Resources;
   pdf?: boolean;
   promptLoginMessage?: () => void;
