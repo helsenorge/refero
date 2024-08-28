@@ -35,7 +35,7 @@ describe('Components render children', () => {
     expect(secondChild).toBeInTheDocument();
   });
 
-  it.skip('time with children renders', () => {
+  it('time with children renders', () => {
     const q = createQuestionnaire(creatNestedItem(itemType.TIME));
     const { queryByLabelText } = createWrapper(q);
     const firstChild = queryByLabelText('2');

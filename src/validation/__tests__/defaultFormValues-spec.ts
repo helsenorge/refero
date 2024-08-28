@@ -14,6 +14,7 @@ import {
   qChoiceSlider,
   qAttachment,
   qDateTime,
+  qDateDay,
 } from './__data__';
 import { ReferoProps } from '@/types/referoProps';
 import { renderRefero } from '@test/test-utils';
@@ -51,7 +52,18 @@ describe('Default form values', () => {
       expect(wrapper.queryByTestId(/summary-element-Tom integer/i)).toBeInTheDocument();
     });
   });
-  describe.skip('Initial date value', () => {});
+  describe('Initial dateDay value', () => {
+    it('prefilled values should not cause a validation error on submit', async () => {
+      const wrapper = createWrapper(qDateDay);
+      await submitForm();
+      expect(wrapper.queryByTestId(/summary-element-Preutfylt dateDay/i)).not.toBeInTheDocument();
+    });
+    it('empty fields should not cause a validation error on submit', async () => {
+      const wrapper = createWrapper(qDateDay);
+      await submitForm();
+      expect(wrapper.queryByTestId(/summary-element-Tom dateDay/i)).toBeInTheDocument();
+    });
+  });
   //TODO: forstår ikke hvorfor denne testen feiler, kan være noe med custom håndtering av react hook from
   describe.skip('Initial dateTime value', () => {
     it('prefilled values should not cause a validation error on submit', async () => {

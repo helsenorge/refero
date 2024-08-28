@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { format, isValid } from 'date-fns';
 import { QuestionnaireResponseItemAnswer } from 'fhir/r4';
@@ -38,7 +38,7 @@ export const DateDayInput = ({
   children,
 }: DateDayInputProps): JSX.Element | null => {
   const [isHelpVisible, setIsHelpVisible] = useState(false);
-  const { formState, getFieldState } = useFormContext<FieldValues>();
+  const { formState, getFieldState, setValue } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
   const answer = useGetAnswer(responseItem, item);
@@ -68,8 +68,13 @@ export const DateDayInput = ({
   };
 
   const dateAnswerValue = getDateAnswerValue(answer);
-  const parsedDateAnswerValue = parseStringToDateDDMMYYYY(dateAnswerValue);
-  const [defaultDate, setDefaultDate] = useState<Date | undefined>(parsedDateAnswerValue);
+  const defaultDate: Date | undefined = parseStringToDateDDMMYYYY(dateAnswerValue);
+
+  useEffect(() => {
+    if (defaultDate) {
+      setValue(`${idWithLinkIdAndItemIndex}`, defaultDate);
+    }
+  }, []);
 
   const getValue = (): Date[] | undefined => {
     if (answer && Array.isArray(answer)) {
@@ -103,9 +108,6 @@ export const DateDayInput = ({
     } else {
       handleChangeString(newDate);
     }
-    if (defaultDate) {
-      setDefaultDate(undefined);
-    }
   };
 
   const handleChangeString = (value: string): void => {
@@ -115,9 +117,6 @@ export const DateDayInput = ({
     } else {
       onDateValueChange('');
     }
-    if (defaultDate) {
-      setDefaultDate(undefined);
-    }
   };
 
   const handleChangeDate = (value: Date | undefined): void => {
@@ -126,9 +125,6 @@ export const DateDayInput = ({
       onDateValueChange(valueAsString);
     } else {
       onDateValueChange('');
-    }
-    if (defaultDate) {
-      setDefaultDate(undefined);
     }
   };
 

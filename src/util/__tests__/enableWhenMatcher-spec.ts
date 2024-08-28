@@ -500,7 +500,7 @@ describe('Given a Questionnaire item with type string', () => {
   });
 });
 
-describe.skip('Given a Questionnaire item with type time', () => {
+describe('Given a Questionnaire item with type time', () => {
   it('Should return true when operator is "=" ', () => {
     const result = enableWhenMatches(
       { question: '1.0.0', operator: '=', answerTime: '11:15' },
