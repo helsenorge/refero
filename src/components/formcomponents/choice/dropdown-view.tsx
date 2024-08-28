@@ -111,7 +111,6 @@ const DropdownView = (props: Props): JSX.Element | null => {
         path={path}
         index={index}
         responseItem={responseItem}
-        resources={resources}
         className="page_refero__deletebutton--margin-top"
       />
       <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} responseItem={responseItem} responseItems={responseItems} />

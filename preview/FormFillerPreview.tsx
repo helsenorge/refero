@@ -138,7 +138,7 @@ const FormFillerPreview = ({ showFormFiller }: Props): JSX.Element => {
     questionnaireInspector: IQuestionnaireInspector
   ): void => {
     // eslint-disable-next-line no-console
-    console.log(item, answer, actionRequester, questionnaireInspector);
+    // console.log(item, answer, actionRequester, questionnaireInspector);
   };
   return (
     <Provider store={store}>

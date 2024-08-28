@@ -12,20 +12,18 @@ import Modal from '@helsenorge/designsystem-react/components/Modal';
 import { NewValueAction, deleteRepeatItemAsync } from '../../../actions/newValue';
 import { GlobalState } from '../../../reducers';
 import { Path } from '../../../util/refero-core';
-import { Resources } from '../../../util/resources';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 
-interface Props {
+type Props = {
   className?: string;
   item: QuestionnaireItem;
   path?: Array<Path>;
-  resources?: Resources;
   mustShowConfirm?: boolean;
-}
+};
 
-const DeleteButton = ({ resources, item, path, mustShowConfirm }: Props): JSX.Element => {
+const DeleteButton = ({ item, path, mustShowConfirm }: Props): JSX.Element => {
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
-  const { onAnswerChange } = useExternalRenderContext();
+  const { onAnswerChange, resources } = useExternalRenderContext();
   const [showConfirm, setShowConfirm] = useState(false);
 
   const onDeleteRepeatItemConfirmed = (): void => {

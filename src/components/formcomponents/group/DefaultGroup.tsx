@@ -47,7 +47,6 @@ const DefaultGroup = ({ isHelpVisible, setIsHelpVisible, children, ...rest }: De
         path={path}
         index={index}
         responseItem={responseItem}
-        resources={resources}
         className="page_refero__deletebutton--margin-top"
       />
       <RenderRepeatButton
