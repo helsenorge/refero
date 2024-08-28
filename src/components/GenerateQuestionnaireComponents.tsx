@@ -69,6 +69,7 @@ const GenerateQuestionnaireComponents = (props: QuestionnaireItemsProps): JSX.El
         let responseItems: QuestionnaireResponseItem[] | undefined;
 
         responseItems = getRootQuestionnaireResponseItemFromData(item.linkId, formData);
+
         const isNavigatorEnabled = !!getNavigatorExtension(questionnaire);
         let isNavigatorBlindzoneInitiated = false;
         if (!responseItems && responseItem) {
@@ -94,7 +95,7 @@ const GenerateQuestionnaireComponents = (props: QuestionnaireItemsProps): JSX.El
           return responseItems.map((responseItem, index) => {
             const newPath = createPathForItem(path, item, responseItem, index);
             const idWithLinkIdAndItemIndex = `${item.linkId}${createIdSuffix(newPath, index, isRepeat(item))}`;
-            const key = `item_${responseItem.linkId}_${index}`;
+            const key = `item_${responseItem.linkId}_${index}_${responseItems.length}`;
             const id = `item_${responseItem.linkId}${createIdSuffix(newPath, index, isRepeat(item))}`;
 
             return (
@@ -104,7 +105,6 @@ const GenerateQuestionnaireComponents = (props: QuestionnaireItemsProps): JSX.El
                 key={key}
                 idWithLinkIdAndItemIndex={idWithLinkIdAndItemIndex}
                 language={language}
-                pdf={pdf}
                 includeSkipLink={includeSkipLink}
                 containedResources={containedResources}
                 id={id}
