@@ -309,7 +309,7 @@ export function deleteRepeatItem(itemPath: Array<Path>, item: QuestionnaireItem)
   };
 }
 
-export function deleteRepeatItemAsync(itemPath: Array<Path>, item: QuestionnaireItem) {
+export function deleteRepeatItemAsync(itemPath: Path[], item: QuestionnaireItem) {
   return async (dispatch: ThunkDispatch<GlobalState, void, NewValueAction>, getState: () => GlobalState): Promise<GlobalState> => {
     dispatch(deleteRepeatItem(itemPath, item));
     return await Promise.resolve(getState());
