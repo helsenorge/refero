@@ -38,8 +38,7 @@ import { Refero, rootReducer } from '@helsenorge/refero';
 
 let store: Store<{}> = createStore(rootReducer, applyMiddleware(thunk));
 
-von App extends Component<{}, {}> {
-  render() {
+const App = () => {
     return (
       <Provider store={store}>
         <Refero
@@ -81,6 +80,7 @@ von App extends Component<{}, {}> {
         />
       </Provider>
     );
+};
 ```
 
 ## Props
