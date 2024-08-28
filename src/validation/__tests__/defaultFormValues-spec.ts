@@ -69,8 +69,6 @@ describe('Default form values', () => {
     it('prefilled values should not cause a validation error on submit', async () => {
       const wrapper = createWrapper(qDateTime);
       await submitForm();
-      wrapper.debug(undefined, 100000);
-
       expect(wrapper.queryByTestId(/summary-element-Preutfylt datetime/i)).not.toBeInTheDocument();
     });
     it('empty fields should not cause a validation error on submit', async () => {

@@ -91,9 +91,7 @@ describe('Time', () => {
 
       const helpButton = container.querySelector('.page_refero__helpButton');
       if (helpButton) {
-        await act(async () => {
-          userEvent.click(helpButton);
-        });
+        await userEvent.click(helpButton);
       }
 
       expect(container.querySelector('.page_refero__helpComponent--open')).toBeInTheDocument();
@@ -186,9 +184,7 @@ describe('Time', () => {
       await clickButtonTimes(/-delete-button/i, 1);
 
       const confirmModal = getByTestId(/-delete-confirm-modal/i);
-      await act(async () => {
-        userEvent.click(await findByRole(confirmModal, 'button', { name: /Forkast endringer/i }));
-      });
+      await userEvent.click(await findByRole(confirmModal, 'button', { name: /Forkast endringer/i }));
 
       expect(queryByTestId(/-delete-button/i)).not.toBeInTheDocument();
     });
@@ -202,9 +198,7 @@ describe('Time', () => {
       expect(hoursElement).toBeInTheDocument();
       expect(hoursElement).toHaveAttribute('type', 'number');
       expect(hoursElement).toHaveAttribute('id', `item_${q?.item?.[0].linkId}^0-datetime-hours`);
-      await act(async () => {
-        userEvent.paste(hoursElement, '14');
-      });
+      await userEvent.type(hoursElement, '14');
 
       expect(hoursElement).toHaveValue(Number('14'));
     });
@@ -215,9 +209,7 @@ describe('Time', () => {
       const minutesInput = minutesElement.querySelector('input');
 
       if (minutesInput) {
-        await act(async () => {
-          userEvent.paste(minutesInput, '30');
-        });
+        await userEvent.type(minutesInput, '30');
       }
 
       expect(minutesInput).toHaveValue(Number('30'));
@@ -230,17 +222,9 @@ describe('Time', () => {
       const minutesElement = getByTestId('time-2');
       const minutesInput = minutesElement.querySelector('input');
 
-      expect(hoursElement).toBeInTheDocument();
-      expect(minutesElement).toBeInTheDocument();
-
-      await act(async () => {
-        fireEvent.change(hoursElement, { target: { value: '14' } });
-      });
-
+      await userEvent.type(hoursElement, '14');
       if (minutesInput) {
-        await act(async () => {
-          fireEvent.change(minutesInput, { target: { value: '30' } });
-        });
+        await userEvent.type(minutesInput, '30');
       }
 
       const expectedAnswer: QuestionnaireResponseItemAnswer = {
@@ -272,13 +256,9 @@ describe('Time', () => {
         const minutesElement = getByTestId('time-2');
         const minutesInput = minutesElement.querySelector('input');
 
-        await act(async () => {
-          fireEvent.change(hoursElement, { target: { value: '14' } });
-        });
+        await userEvent.type(hoursElement, '14');
         if (minutesInput) {
-          await act(async () => {
-            fireEvent.change(minutesInput, { target: { value: '30' } });
-          });
+          await userEvent.type(minutesInput, '30');
         }
 
         expect(hoursElement).toHaveValue(Number('14'));
@@ -318,9 +298,7 @@ describe('Time', () => {
       it('Should show error if hour value is invalid', async () => {
         const { getByLabelText, getByText } = createWrapper(q);
 
-        await act(async () => {
-          userEvent.paste(getByLabelText(/Klokkeslett/i), '99');
-        });
+        await userEvent.type(getByLabelText(/Klokkeslett/i), '99');
 
         await submitForm();
         expect(getByText(resources.dateError_time_invalid)).toBeInTheDocument();
@@ -332,9 +310,7 @@ describe('Time', () => {
         const minutesInput = minutesElement.querySelector('input');
 
         if (minutesInput) {
-          await act(async () => {
-            userEvent.paste(minutesInput, '99');
-          });
+          await userEvent.type(minutesInput, '99');
         }
 
         await submitForm();
@@ -347,13 +323,9 @@ describe('Time', () => {
         const minutesElement = getByTestId('time-2');
         const minutesInput = minutesElement.querySelector('input');
 
-        await act(async () => {
-          fireEvent.change(hoursElement, { target: { value: '14' } });
-        });
+        await userEvent.type(hoursElement, '14');
         if (minutesInput) {
-          await act(async () => {
-            fireEvent.change(minutesInput, { target: { value: '20' } });
-          });
+          await userEvent.type(minutesInput, '20');
         }
 
         await submitForm();
@@ -366,13 +338,9 @@ describe('Time', () => {
         const minutesElement = getByTestId('time-2');
         const minutesInput = minutesElement.querySelector('input');
 
-        await act(async () => {
-          fireEvent.change(hoursElement, { target: { value: '16' } });
-        });
+        await userEvent.type(hoursElement, '16');
         if (minutesInput) {
-          await act(async () => {
-            fireEvent.change(minutesInput, { target: { value: '46' } });
-          });
+          await userEvent.type(minutesInput, '46');
         }
 
         await submitForm();
@@ -385,13 +353,9 @@ describe('Time', () => {
         const minutesElement = getByTestId('time-2');
         const minutesInput = minutesElement.querySelector('input');
 
-        await act(async () => {
-          fireEvent.change(hoursElement, { target: { value: '14' } });
-        });
+        await userEvent.type(hoursElement, '14');
         if (minutesInput) {
-          await act(async () => {
-            fireEvent.change(minutesInput, { target: { value: '20' } });
-          });
+          await userEvent.type(minutesInput, '20');
         }
 
         await submitForm();
@@ -404,13 +368,9 @@ describe('Time', () => {
         const minutesElement = getByTestId('time-2');
         const minutesInput = minutesElement.querySelector('input');
 
-        await act(async () => {
-          fireEvent.change(hoursElement, { target: { value: '16' } });
-        });
+        await userEvent.type(hoursElement, '16');
         if (minutesInput) {
-          await act(async () => {
-            fireEvent.change(minutesInput, { target: { value: '46' } });
-          });
+          await userEvent.type(minutesInput, '46');
         }
 
         await submitForm();
@@ -423,13 +383,9 @@ describe('Time', () => {
         const minutesElement = getByTestId('time-2');
         const minutesInput = minutesElement.querySelector('input');
 
-        await act(async () => {
-          fireEvent.change(hoursElement, { target: { value: '15' } });
-        });
+        await userEvent.type(hoursElement, '15');
         if (minutesInput) {
-          await act(async () => {
-            fireEvent.change(minutesInput, { target: { value: '30' } });
-          });
+          await userEvent.type(minutesInput, '30');
         }
 
         await submitForm();

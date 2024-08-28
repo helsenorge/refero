@@ -189,18 +189,20 @@ describe('Date day', () => {
       expect(inputElement).toHaveAttribute('type', 'text');
       expect(inputElement).toHaveAttribute('id', `item_${q?.item?.[0].linkId}^0-datepicker`);
 
-      await userEvent.type(inputElement, '31.05.1994');
+      await userEvent.click(inputElement);
+      await userEvent.paste('31.05.1994');
       expect(getByLabelText(/Dato/i)).toHaveValue('31.05.1994');
     });
     it('Should call onChange with correct value', async () => {
       const onChange = vi.fn();
       const { getByLabelText } = createWrapper(q, { onChange });
       expect(getByLabelText(/Dato/i)).toBeInTheDocument();
-      await userEvent.type(getByLabelText(/Dato/i), '31.05.1994');
+      await userEvent.click(getByLabelText(/Dato/i));
+      await userEvent.paste('31.05.1994');
       const expectedAnswer: QuestionnaireResponseItemAnswer = {
         valueDate: '31.05.1994',
       };
-      expect(onChange).toHaveBeenCalledTimes(6);
+      expect(onChange).toHaveBeenCalledTimes(1);
       expect(onChange).toHaveBeenCalledWith(expect.any(Object), expectedAnswer, expect.any(Object), expect.any(Object));
     });
   });
@@ -251,7 +253,8 @@ describe('Date day', () => {
       it('Should show error message for min value', async () => {
         const { getByLabelText, getByText } = createWrapper(qMinMax);
 
-        await userEvent.type(getByLabelText(/Dato/i), '31.05.1904');
+        await userEvent.click(getByLabelText(/Dato/i));
+        await userEvent.paste('31.05.1904');
 
         await submitForm();
         expect(getByText(resources.errorBeforeMinDate + ': 31.05.1994')).toBeInTheDocument();
@@ -259,7 +262,8 @@ describe('Date day', () => {
       it('Should show error message for max value', async () => {
         const { getByLabelText, getByText } = createWrapper(qMinMax);
 
-        await userEvent.type(getByLabelText(/Dato/i), '31.05.2095');
+        await userEvent.click(getByLabelText(/Dato/i));
+        await userEvent.paste('31.05.2095');
 
         await submitForm();
         expect(getByText(resources.errorAfterMaxDate + ': 31.05.2094')).toBeInTheDocument();
@@ -267,7 +271,8 @@ describe('Date day', () => {
       it('Should show custom error message for min value', async () => {
         const { getByLabelText, getByText } = createWrapper(qMinMaxCustomError);
 
-        await userEvent.type(getByLabelText(/Dato/i), '31.05.1904');
+        await userEvent.click(getByLabelText(/Dato/i));
+        await userEvent.paste('31.05.1904');
 
         await submitForm();
         expect(getByText('Custom errormessage')).toBeInTheDocument();
@@ -275,7 +280,8 @@ describe('Date day', () => {
       it('Should show custom error message for max value', async () => {
         const { getByLabelText, getByText } = createWrapper(qMinMaxCustomError);
 
-        await userEvent.type(getByLabelText(/Dato/i), '31.05.2095');
+        await userEvent.click(getByLabelText(/Dato/i));
+        await userEvent.paste('31.05.2095');
 
         await submitForm();
         expect(getByText('Custom errormessage')).toBeInTheDocument();
@@ -283,7 +289,8 @@ describe('Date day', () => {
       it('Should not show error if date value is between min value and max value', async () => {
         const { getByLabelText, queryByText } = createWrapper(qMinMax);
 
-        await userEvent.type(getByLabelText(/Dato/i), '31.05.2024');
+        await userEvent.click(getByLabelText(/Dato/i));
+        await userEvent.paste('31.05.2024');
 
         await submitForm();
         expect(queryByText(resources.errorBeforeMinDate + ': 31.05.1994')).not.toBeInTheDocument();
