@@ -258,7 +258,7 @@ const ReceiverComponent = ({
           <Loader />
         </div>
       )}
-      {hasLoadError && <NotificationPanel variant="alert">{resources?.adresseKomponent_loadError}</NotificationPanel>}
+      {hasLoadError && <NotificationPanel variant="error">{resources?.adresseKomponent_loadError}</NotificationPanel>}
 
       {receiverTreeNodes.length > 0 && renderSelects()}
       {selectedReceiver && (

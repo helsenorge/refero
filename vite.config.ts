@@ -5,11 +5,11 @@ import autoprefixer from 'autoprefixer';
 import cssnano from 'cssnano';
 import copy from 'rollup-plugin-copy';
 import generatePackageJson from 'rollup-plugin-generate-package-json';
-import peerDepsExternal from 'rollup-plugin-peer-deps-external';
 import { defineConfig, UserConfig } from 'vite';
 import dts from 'vite-plugin-dts';
 import { libInjectCss } from 'vite-plugin-lib-inject-css';
 import tsconfigPaths from 'vite-tsconfig-paths';
+import { externalizeDeps } from 'vite-plugin-externalize-deps';
 
 const OUTPUT_DIRECTORY = 'lib';
 
@@ -59,7 +59,10 @@ export default defineConfig(({ command, isPreview }): UserConfig => {
     },
 
     plugins: [
-      peerDepsExternal(),
+      externalizeDeps({
+        peerDeps: true,
+        deps: false,
+      }),
       tsconfigPaths({
         projects: [path.resolve(__dirname, 'tsconfig.build.json')],
       }),

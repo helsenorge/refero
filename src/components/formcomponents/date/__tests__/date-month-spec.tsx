@@ -89,9 +89,7 @@ describe('Date month', () => {
 
       const helpButton = container.querySelector('.page_refero__helpButton');
       if (helpButton) {
-        await act(async () => {
-          userEvent.click(helpButton);
-        });
+        await userEvent.click(helpButton);
       }
 
       expect(container.querySelector('.page_refero__helpComponent--open')).toBeInTheDocument();
@@ -184,9 +182,7 @@ describe('Date month', () => {
       await clickButtonTimes(/-delete-button/i, 1);
 
       const confirmModal = getByTestId(/-delete-confirm-modal/i);
-      await act(async () => {
-        userEvent.click(await findByRole(confirmModal, 'button', { name: /Forkast endringer/i }));
-      });
+      await userEvent.click(await findByRole(confirmModal, 'button', { name: /Forkast endringer/i }));
 
       expect(queryByTestId(/-delete-button/i)).not.toBeInTheDocument();
     });
@@ -199,9 +195,7 @@ describe('Date month', () => {
       expect(inputElement).toBeInTheDocument();
       expect(inputElement).toHaveAttribute('type', 'number');
       expect(inputElement).toHaveAttribute('id', `item_${q?.item?.[0].linkId}^0-input`);
-      await act(async () => {
-        userEvent.paste(inputElement, '1994');
-      });
+      await userEvent.type(inputElement, '1994');
       expect(getByLabelText(/Dato/i)).toHaveValue(1994);
     });
     it('Should call onChange with correct value', async () => {
@@ -212,13 +206,9 @@ describe('Date month', () => {
       const monthElement = await screen.findByTestId('month-select');
       const monthSelect = monthElement.querySelector('select');
 
-      await act(async () => {
-        userEvent.paste(getByLabelText(/Dato/i), '1994');
-      });
+      await userEvent.type(getByLabelText(/Dato/i), '1994');
       if (monthSelect) {
-        await act(async () => {
-          userEvent.selectOptions(monthSelect, '05');
-        });
+        await userEvent.selectOptions(monthSelect, '05');
       }
 
       const expectedAnswer: QuestionnaireResponseItemAnswer = {
@@ -247,9 +237,7 @@ describe('Date month', () => {
           item: q.item?.map(x => ({ ...x, required: true })),
         };
         const { getByLabelText, queryByText } = createWrapper(questionnaire);
-        await act(async () => {
-          userEvent.type(getByLabelText(/Dato/i), '31.05.1994');
-        });
+        await userEvent.type(getByLabelText(/Dato/i), '31.05.1994');
         await submitForm();
 
         expect(queryByText(resources.yearmonth_field_required)).not.toBeInTheDocument();
@@ -266,14 +254,10 @@ describe('Date month', () => {
         const monthElement = await screen.findByTestId('month-select');
         const monthSelect = monthElement.querySelector('select');
 
-        await act(async () => {
-          userEvent.type(getByLabelText(/Dato/i), '1994');
-          userEvent.tab();
-        });
+        await userEvent.type(getByLabelText(/Dato/i), '1994');
+        await userEvent.tab();
         if (monthSelect) {
-          await act(async () => {
-            userEvent.selectOptions(monthSelect, '05');
-          });
+          await userEvent.selectOptions(monthSelect, '05');
         }
 
         expect(queryByText(resources.yearmonth_field_required)).not.toBeInTheDocument();
@@ -281,9 +265,7 @@ describe('Date month', () => {
       it('Should show error if date is invalid', async () => {
         const { getByLabelText, getByText } = createWrapper(q);
 
-        await act(async () => {
-          userEvent.paste(getByLabelText(/Dato/i), '333');
-        });
+        await userEvent.type(getByLabelText(/Dato/i), '333');
 
         await submitForm();
         expect(getByText(resources.yearmonth_field_invalid)).toBeInTheDocument();
@@ -291,9 +273,7 @@ describe('Date month', () => {
       it('Should show error message for min value', async () => {
         const { getByLabelText, getByText } = createWrapper(qMinMax);
 
-        await act(async () => {
-          userEvent.paste(getByLabelText(/Dato/i), '1904');
-        });
+        await userEvent.type(getByLabelText(/Dato/i), '1904');
 
         await submitForm();
         expect(getByText(resources.year_field_mindate + ': 1994')).toBeInTheDocument();
@@ -301,9 +281,7 @@ describe('Date month', () => {
       it('Should show error message for max value', async () => {
         const { getByLabelText, getByText } = createWrapper(qMinMax);
 
-        await act(async () => {
-          userEvent.paste(getByLabelText(/Dato/i), '2095');
-        });
+        await userEvent.type(getByLabelText(/Dato/i), '2095');
 
         await submitForm();
         expect(getByText(resources.year_field_maxdate + ': 2094')).toBeInTheDocument();
@@ -311,9 +289,7 @@ describe('Date month', () => {
       it('Should show custom error message for min value', async () => {
         const { getByLabelText, getByText } = createWrapper(qMinMaxCustomError);
 
-        await act(async () => {
-          userEvent.paste(getByLabelText(/Dato/i), '1904');
-        });
+        await userEvent.type(getByLabelText(/Dato/i), '1904');
 
         await submitForm();
         expect(getByText('Custom errormessage')).toBeInTheDocument();
@@ -321,9 +297,7 @@ describe('Date month', () => {
       it('Should show custom error message for max value', async () => {
         const { getByLabelText, getByText } = createWrapper(qMinMaxCustomError);
 
-        await act(async () => {
-          userEvent.paste(getByLabelText(/Dato/i), '2095');
-        });
+        await userEvent.type(getByLabelText(/Dato/i), '2095');
 
         await submitForm();
         expect(getByText('Custom errormessage')).toBeInTheDocument();
@@ -331,9 +305,7 @@ describe('Date month', () => {
       it('Should not show error if date value is between min value and max value', async () => {
         const { getByLabelText, queryByText } = createWrapper(qMinMax);
 
-        await act(async () => {
-          userEvent.paste(getByLabelText(/Dato/i), '2024');
-        });
+        await userEvent.type(getByLabelText(/Dato/i), '2024');
 
         await submitForm();
         expect(queryByText(resources.year_field_mindate + ': 1994')).not.toBeInTheDocument();
@@ -352,13 +324,9 @@ describe('Date month', () => {
         const monthElement = await screen.findByTestId('month-select');
         const monthSelect = monthElement.querySelector('select');
 
-        await act(async () => {
-          userEvent.paste(getByLabelText(/Dato/i), '2024');
-        });
+        await userEvent.type(getByLabelText(/Dato/i), '2024');
         if (monthSelect) {
-          await act(async () => {
-            userEvent.selectOptions(monthSelect, '05');
-          });
+          await userEvent.selectOptions(monthSelect, '05');
         }
 
         expect(queryByText(resources.yearmonth_field_required)).not.toBeInTheDocument();

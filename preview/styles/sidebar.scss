@@ -310,11 +310,11 @@ $helpdrawer-font: 'Georgia, Source Sans Pro, _sans-serif';
 /* for fixed sections (no expand/collapse) .steptitle is placed directly on h2 instead of button */
 h2.skjemasidebar__draweraccordionsteptitle {
   background: none;
+  padding: 0.5rem 2rem;
   &:hover {
     box-shadow: none;
     cursor: inherit;
   }
-  padding: 0.5rem 2rem;
 }
 
 .skjemasidebar__draweraccordion .step {

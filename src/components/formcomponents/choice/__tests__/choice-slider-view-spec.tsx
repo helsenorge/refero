@@ -52,12 +52,8 @@ describe('Slider-view', () => {
 
       const { container, getByRole } = createWrapper(q, { onChange });
 
-      await act(async () => {
-        userEvent.click(getByRole('slider'));
-      });
-      await act(async () => {
-        userEvent.keyboard('{ArrowRight}');
-      });
+      await userEvent.click(getByRole('slider'));
+      await userEvent.keyboard('{ArrowRight}');
 
       expect(onChange).toHaveBeenCalledTimes(1);
       expect(container.querySelector('div[role="slider"]')).toHaveAttribute('aria-valuetext', '&#9917 Ja');
@@ -70,14 +66,10 @@ describe('Slider-view', () => {
       };
       const onChange = vi.fn();
       const { container } = createWrapper(questionnaire, { onChange });
-      await act(async () => {
-        const JaElement = container.querySelectorAll('div.slider__value');
-        if (JaElement[1]) {
-          await act(async () => {
-            userEvent.click(JaElement[1]);
-          });
-        }
-      });
+      const JaElement = container.querySelectorAll('div.slider__value');
+      if (JaElement[1]) {
+        await userEvent.click(JaElement[1]);
+      }
       expect(onChange).toHaveBeenCalledTimes(1);
       expect(onChange).toHaveBeenCalledWith(expect.any(Object), expectedAnswer, expect.any(Object), expect.any(Object));
     });
@@ -96,9 +88,7 @@ describe('Slider-view', () => {
       expect(container.querySelector('.page_refero__helpComponent--open')).not.toBeInTheDocument();
       const helpButton = container.querySelector('.page_refero__helpButton');
       if (helpButton) {
-        await act(async () => {
-          userEvent.click(helpButton);
-        });
+        await userEvent.click(helpButton);
       }
 
       expect(container.querySelector('.page_refero__helpComponent--open')).toBeInTheDocument();
@@ -190,9 +180,7 @@ describe('Slider-view', () => {
       await clickButtonTimes(/-delete-button/i, 1);
 
       const confirmModal = getByTestId(/-delete-confirm-modal/i);
-      await act(async () => {
-        userEvent.click(await findByRole(confirmModal, 'button', { name: /Forkast endringer/i }));
-      });
+      await userEvent.click(await findByRole(confirmModal, 'button', { name: /Forkast endringer/i }));
 
       expect(queryByTestId(/-delete-button/i)).not.toBeInTheDocument();
     });
@@ -217,9 +205,7 @@ describe('Slider-view', () => {
           item: q.item?.map(x => ({ ...x, required: true, repeats: false })),
         };
         const { queryByText, getByText } = createWrapper(questionnaire);
-        await act(async () => {
-          userEvent.click(getByText(/Ja/i));
-        });
+        await userEvent.click(getByText(/Ja/i));
         await submitForm();
 
         expect(queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
@@ -234,10 +220,8 @@ describe('Slider-view', () => {
 
         expect(getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
 
-        await act(async () => {
-          userEvent.click(getByText(/Ja/i));
-          userEvent.tab();
-        });
+        await userEvent.click(getByText(/Ja/i));
+        await userEvent.tab();
         expect(queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
       });
     });

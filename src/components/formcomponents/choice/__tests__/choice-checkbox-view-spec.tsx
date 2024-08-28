@@ -1,5 +1,5 @@
 import { Questionnaire } from 'fhir/r4';
-import { act, findByRole, renderRefero, userEvent } from '@test/test-utils.tsx';;
+import { act, findByRole, renderRefero, userEvent } from '@test/test-utils.tsx';
 import { checkboxView as q } from './__data__/index';
 import { ReferoProps } from '../../../../types/referoProps';
 import { Extensions } from '../../../../constants/extensions';
@@ -49,9 +49,7 @@ describe('checkbox-view - choice', () => {
       expect(container.querySelector('.page_refero__helpComponent--open')).not.toBeInTheDocument();
       const helpButton = container.querySelector('.page_refero__helpButton');
       if (helpButton) {
-        await act(async () => {
-          userEvent.click(helpButton);
-        });
+        await userEvent.click(helpButton);
       }
       expect(container.querySelector('.page_refero__helpComponent--open')).toBeInTheDocument();
     });
@@ -143,9 +141,7 @@ describe('checkbox-view - choice', () => {
       await clickButtonTimes(/-delete-button/i, 1);
 
       const confirmModal = getByTestId(/-delete-confirm-modal/i);
-      await act(async () => {
-        userEvent.click(await findByRole(confirmModal, 'button', { name: /Forkast endringer/i }));
-      });
+      await userEvent.click(await findByRole(confirmModal, 'button', { name: /Forkast endringer/i }));
 
       expect(queryByTestId(/-delete-button/i)).not.toBeInTheDocument();
     });
@@ -185,9 +181,7 @@ describe('checkbox-view - choice', () => {
       };
       const { getByLabelText } = createWrapper(questionnaire);
 
-      await act(async () => {
-        userEvent.click(getByLabelText(/Ja/i));
-      });
+      await userEvent.click(getByLabelText(/Ja/i));
 
       expect(getByLabelText(/Ja/i)).toBeChecked();
     });
@@ -199,9 +193,7 @@ describe('checkbox-view - choice', () => {
       const onChange = vi.fn();
       const { getByLabelText } = createWrapper(questionnaire, { onChange });
       expect(getByLabelText(/Ja/i)).toBeInTheDocument();
-      await act(async () => {
-        userEvent.click(getByLabelText(/Ja/i));
-      });
+      await userEvent.click(getByLabelText(/Ja/i));
 
       expect(onChange).toHaveBeenCalledTimes(1);
       expect(onChange).toHaveBeenCalledWith(expect.any(Object), expectedAnswer, expect.any(Object), expect.any(Object));
@@ -225,9 +217,7 @@ describe('checkbox-view - choice', () => {
           item: q.item?.map(x => ({ ...x, required: true, repeats: false })),
         };
         const { queryByText, getByLabelText } = createWrapper(questionnaire);
-        await act(async () => {
-          userEvent.click(getByLabelText(/Ja/i));
-        });
+        await userEvent.click(getByLabelText(/Ja/i));
         await submitForm();
         expect(queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
       });
@@ -240,10 +230,8 @@ describe('checkbox-view - choice', () => {
         await submitForm();
         expect(getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
 
-        await act(async () => {
-          userEvent.click(getByLabelText(/Ja/i));
-          userEvent.tab();
-        });
+        await userEvent.click(getByLabelText(/Ja/i));
+        await userEvent.tab();
         expect(queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
       });
     });

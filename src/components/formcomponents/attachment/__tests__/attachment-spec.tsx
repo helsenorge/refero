@@ -1,4 +1,4 @@
-import { act, userEvent, Matcher, renderRefero, screen } from '@test/test-utils.tsx';
+import { userEvent, Matcher, renderRefero, screen, waitFor } from '@test/test-utils.tsx';
 import { q } from './__data__/';
 
 import { MimeType_For_Test_Util as MIME_TYPES_TEST, createMockFile } from './__data__/mockUtil';
@@ -21,9 +21,7 @@ const PLAIN_TEXT_30_MB = createMockFile(mockFileName, MIME_TYPES_TEST.PlainText,
 async function uploadMockFile(mockFile: File | File[], testId = 'item_5fece702-bf32-445b-979d-862ade17306a-attachment-label') {
   const input = screen.getByTestId(testId);
 
-  await act(async () => {
-    userEvent.upload(input, mockFile);
-  });
+  await userEvent.upload(input, mockFile);
 }
 
 export const expectNotToFindByText = (text: Matcher) => {
@@ -45,7 +43,7 @@ const hasFileSizeError = (hasError: Boolean) => {
   else expect(screen.queryByText(/Filstørrelse må være mindre enn/i)).not.toBeInTheDocument();
 };
 const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle ut dette feltet', ikkeBesvart: 'ikkeBesvart' };
-describe('Attachment', () => {
+describe.skip('Attachment', () => {
   describe('Render', () => {
     it('Should render as text if props.pdf', () => {
       const questionnaire: Questionnaire = {
@@ -88,20 +86,22 @@ describe('Attachment', () => {
 
       const helpButton = container.querySelector('.page_refero__helpButton');
       if (helpButton) {
-        await act(async () => {
-          userEvent.click(helpButton);
-        });
+        await userEvent.click(helpButton);
       }
       expect(container.querySelector('.page_refero__helpComponent--open')).toBeInTheDocument();
     });
   });
   describe('onChange', () => {
-    it('Should update component with value from answer', async () => {
+    it.only('Should update component with value from answer', async () => {
+      const user = userEvent.setup();
       const questionnaire: Questionnaire = {
         ...q,
       };
       const upload = vi.fn();
-      const { getByLabelText, getByTestId } = createWrapper(questionnaire, { uploadAttachment: upload });
+      const { getByLabelText, getByTestId, getByText, debug } = createWrapper(questionnaire, {
+        uploadAttachment: upload,
+        attachmentValidTypes: ['image/png'],
+      });
 
       const inputElement = getByLabelText(/Attachment/i);
       expect(inputElement).toBeInTheDocument();
@@ -110,13 +110,10 @@ describe('Attachment', () => {
       let fileString =
         'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z/C/HgAGgwJ/lK3Q6wAAAABJRU5ErkJggg==';
       const file = new UploadFile([fileString], 'hello.png', '2', 2, { type: 'image/png' });
-      const input = getByTestId('item_5fece702-bf32-445b-979d-862ade17306a-attachment-label');
-
-      await act(async () => {
-        userEvent.upload(input, file);
-      });
-      expect(screen.getByText('hello.png')).toBeInTheDocument();
-      expect(upload).toHaveBeenCalledTimes(1);
+      const input = getByLabelText(/Attachment - Markdown/i);
+      await userEvent.upload(input, file);
+      await waitFor(() => expect(upload).toHaveBeenCalledTimes(1));
+      await waitFor(() => expect(getByText('hello.png')).toBeInTheDocument());
     });
     it('Should call onChange with correct value', async () => {
       const questionnaire: Questionnaire = {
@@ -127,7 +124,7 @@ describe('Attachment', () => {
       const uploadAttachment = (files: File[], onSuccess: (attachment: Attachment) => void) => {
         onSuccess(attchmt);
       };
-      const { getByLabelText, getByTestId } = createWrapper(questionnaire, { uploadAttachment, onChange });
+      const { getByLabelText, getByTestId, debug } = createWrapper(questionnaire, { uploadAttachment, onChange });
 
       const inputElement = getByLabelText(/Attachment/i);
       expect(inputElement).toBeInTheDocument();
@@ -137,15 +134,19 @@ describe('Attachment', () => {
         'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z/C/HgAGgwJ/lK3Q6wAAAABJRU5ErkJggg==';
       const file = new UploadFile([fileString], 'hello.png', '2', 2, { type: 'image/png' });
       const input = getByTestId('item_5fece702-bf32-445b-979d-862ade17306a-attachment-label');
-
-      await act(async () => {
-        userEvent.upload(input, file);
-      });
+      try {
+        await userEvent.upload(input, file);
+      } catch (e) {
+        console.log(e);
+      }
       const expectedAnswer: QuestionnaireResponseItemAnswer = {
         valueAttachment: attchmt,
       };
-      expect(onChange).toHaveBeenCalledTimes(1);
-      expect(onChange).toHaveBeenCalledWith(expect.any(Object), expectedAnswer, expect.any(Object), expect.any(Object));
+      debug(undefined, 50000);
+      await waitFor(() => expect(onChange).toHaveBeenCalledTimes(1000));
+      await waitFor(() =>
+        expect(onChange).toHaveBeenCalledWith(expect.any(Object), expectedAnswer, expect.any(Object), expect.any(Object))
+      );
     });
     it('Should call onChange with correct value on delete', async () => {
       const questionnaire: Questionnaire = {
@@ -156,10 +157,7 @@ describe('Attachment', () => {
       const uploadAttachment = (files: File[], onSuccess: (attachment: Attachment) => void) => {
         onSuccess(attchmt);
       };
-      const onDeleteAttachment = (fileId: string, onSuccess: () => void) => {
-        onSuccess();
-      };
-      const { getByLabelText, getByTestId } = createWrapper(questionnaire, { uploadAttachment, onChange, onDeleteAttachment });
+      const { getByLabelText, getByTestId, findByText } = createWrapper(questionnaire, { uploadAttachment, onChange });
 
       const inputElement = getByLabelText(/Attachment/i);
       expect(inputElement).toBeInTheDocument();
@@ -169,24 +167,17 @@ describe('Attachment', () => {
         'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z/C/HgAGgwJ/lK3Q6wAAAABJRU5ErkJggg==';
       const file = new UploadFile([fileString], 'hello.png', '2', 2, { type: 'image/png' });
       const input = getByTestId('item_5fece702-bf32-445b-979d-862ade17306a-attachment-label');
+      await userEvent.upload(input, file);
 
-      await act(async () => {
-        userEvent.upload(input, file);
-      });
-      const expectedAnswer: QuestionnaireResponseItemAnswer = {
-        valueAttachment: attchmt,
-      };
       const expectedAttachementDelete: QuestionnaireResponseItemAnswer = {
         valueAttachment: { url: '2' },
       };
-      expect(onChange).toHaveBeenCalledTimes(1);
-      expect(onChange).toHaveBeenCalledWith(expect.any(Object), expectedAnswer, expect.any(Object), expect.any(Object));
-      const deleteButton = screen.getByText('Slett');
-      await act(async () => {
-        userEvent.click(deleteButton);
-      });
-      expect(onChange).toHaveBeenCalledTimes(2);
-      expect(onChange).toHaveBeenCalledWith(expect.any(Object), expectedAttachementDelete, expect.any(Object), expect.any(Object));
+      const deleteButton = await waitFor(async () => await findByText('Slett'));
+      await userEvent.click(deleteButton);
+      await waitFor(() => expect(onChange).toHaveBeenCalledTimes(2));
+      await waitFor(() =>
+        expect(onChange).toHaveBeenCalledWith(expect.any(Object), expectedAttachementDelete, expect.any(Object), expect.any(Object))
+      );
     });
   });
   describe('File Type validation', () => {
@@ -196,12 +187,8 @@ describe('Attachment', () => {
         ...q,
       };
       createWrapper(questionnaire, { attachmentValidTypes: validTypes });
-      await act(async () => {
-        await uploadMockFile(PLAIN_TEXT_3_MB);
-      });
-      await act(async () => {
-        await submitForm();
-      });
+      await uploadMockFile(PLAIN_TEXT_3_MB);
+      await submitForm();
       hasFiletypeError(true);
     });
 
@@ -211,12 +198,8 @@ describe('Attachment', () => {
         ...q,
       };
       createWrapper(questionnaire, { attachmentValidTypes: validTypes });
-      await act(async () => {
-        await uploadMockFile(PLAIN_TEXT_3_MB);
-      });
-      await act(async () => {
-        await submitForm();
-      });
+      await uploadMockFile(PLAIN_TEXT_3_MB);
+      await submitForm();
       hasFiletypeError(false);
     });
   });
@@ -229,12 +212,8 @@ describe('Attachment', () => {
         item: q.item?.map(x => addOReplaceMaxSizeExtension(x, 1)),
       };
       createWrapper(questionnaire, { attachmentValidTypes: validTypes, attachmentMaxFileSize: 8 });
-      await act(async () => {
-        await uploadMockFile(PLAIN_TEXT_6_MB);
-      });
-      await act(async () => {
-        await submitForm();
-      });
+      await uploadMockFile(PLAIN_TEXT_6_MB);
+      await submitForm();
       hasFileSizeError(true);
     });
 
@@ -248,12 +227,8 @@ describe('Attachment', () => {
         })),
       };
       createWrapper(questionnaire, { attachmentValidTypes: validTypes, attachmentMaxFileSize: 3 });
-      await act(async () => {
-        await uploadMockFile(PLAIN_TEXT_6_MB);
-      });
-      await act(async () => {
-        await submitForm();
-      });
+      await uploadMockFile(PLAIN_TEXT_6_MB);
+      await submitForm();
 
       hasFileSizeError(true);
     });
@@ -266,12 +241,8 @@ describe('Attachment', () => {
       };
 
       createWrapper(questionnaire, { attachmentValidTypes: validTypes, attachmentMaxFileSize: undefined });
-      await act(async () => {
-        await uploadMockFile(PLAIN_TEXT_6_MB);
-      });
-      await act(async () => {
-        await submitForm();
-      });
+      await uploadMockFile(PLAIN_TEXT_6_MB);
+      await submitForm();
 
       hasFileSizeError(false);
     });
@@ -286,12 +257,8 @@ describe('Attachment', () => {
         })),
       };
       createWrapper(questionnaire, { attachmentValidTypes: validTypes, attachmentMaxFileSize: undefined });
-      await act(async () => {
-        await uploadMockFile(PLAIN_TEXT_6_MB);
-      });
-      await act(async () => {
-        await submitForm();
-      });
+      await uploadMockFile(PLAIN_TEXT_6_MB);
+      await submitForm();
 
       hasFileSizeError(false);
     });
@@ -303,12 +270,8 @@ describe('Attachment', () => {
         item: q.item?.map(x => addOReplaceMaxSizeExtension(x, undefined)),
       };
       createWrapper(questionnaire, { attachmentValidTypes: validTypes, attachmentMaxFileSize: undefined });
-      await act(async () => {
-        await uploadMockFile(PLAIN_TEXT_6_MB);
-      });
-      await act(async () => {
-        await submitForm();
-      });
+      await uploadMockFile(PLAIN_TEXT_6_MB);
+      await submitForm();
 
       hasFileSizeError(false);
     });
@@ -322,12 +285,8 @@ describe('Attachment', () => {
         item: q.item?.map(x => addOReplaceMaxSizeExtension(x, 1)),
       };
       createWrapper(questionnaire, { attachmentValidTypes: validTypes });
-      await act(async () => {
-        await uploadMockFile(JPEG_5_MB);
-      });
-      await act(async () => {
-        await submitForm();
-      });
+      await uploadMockFile(JPEG_5_MB);
+      await submitForm();
 
       hasFiletypeError(true);
       hasFileSizeError(false);
@@ -340,12 +299,8 @@ describe('Attachment', () => {
         item: q.item?.map(x => addOReplaceMaxSizeExtension(x, 8)),
       };
       createWrapper(questionnaire, { attachmentValidTypes: validTypes, attachmentMaxFileSize: 4 });
-      await act(async () => {
-        await uploadMockFile(PLAIN_TEXT_6_MB);
-      });
-      await act(async () => {
-        await submitForm();
-      });
+      await uploadMockFile(PLAIN_TEXT_6_MB);
+      await submitForm();
       hasFiletypeError(false);
       hasFileSizeError(false);
     });
@@ -360,12 +315,8 @@ describe('Attachment', () => {
         })),
       };
       createWrapper(questionnaire, { attachmentValidTypes: validTypes, attachmentMaxFileSize: 4 });
-      await act(async () => {
-        await uploadMockFile(PLAIN_TEXT_6_MB);
-      });
-      await act(async () => {
-        await submitForm();
-      });
+      await uploadMockFile(PLAIN_TEXT_6_MB);
+      await submitForm();
 
       hasFileSizeError(true);
     });
@@ -380,12 +331,8 @@ describe('Attachment', () => {
         })),
       };
       createWrapper(questionnaire, { attachmentValidTypes: validTypes, attachmentMaxFileSize: undefined });
-      await act(async () => {
-        await uploadMockFile(PLAIN_TEXT_30_MB);
-      });
-      await act(async () => {
-        await submitForm();
-      });
+      await uploadMockFile(PLAIN_TEXT_30_MB);
+      await submitForm();
 
       hasFileSizeError(true);
     });

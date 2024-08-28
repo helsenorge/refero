@@ -1,3 +1,4 @@
+
 ## 16.0.0-beta22
 
 - fix types for built package.json
@@ -12,6 +13,9 @@
 - Fix memory leak with onStepChange
 - updates to tsconfig
 
+## 16.0.0-beta20
+
+- Core 32 and react 18
 
 ## 16.0.0-beta11
 

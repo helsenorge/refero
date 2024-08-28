@@ -80,9 +80,7 @@ describe('onAnswerChange callback gets called and can request additional changes
     });
 
     const { container } = wrapper(onChange, questionnaireWithAllItemTypes);
-    await act(async () => {
-      await inputAnswer('1', 0.1, container);
-    });
+    await inputAnswer('1', 0.1, container);
 
     const updatedInput = await screen.findByDisplayValue('42');
     expect(updatedInput).toBeInTheDocument();
@@ -95,9 +93,7 @@ describe('onAnswerChange callback gets called and can request additional changes
     });
 
     const { container } = wrapper(onChange, questionnaireWithAllItemTypes);
-    await act(async () => {
-      await inputAnswer('1', 0.1, container);
-    });
+    await inputAnswer('1', 0.1, container);
     const item = findItem('2', container);
 
     expect(item).toHaveValue(null);
@@ -110,9 +106,7 @@ describe('onAnswerChange callback gets called and can request additional changes
 
     const { container } = wrapper(onChange, questionnaireWithAllItemTypes);
 
-    await act(async () => {
-      await inputAnswer('1', 0.1, container);
-    });
+    await inputAnswer('1', 0.1, container);
     const item = await findItemByDispayValue('42');
     expect(item).toHaveValue(42);
   });
@@ -124,9 +118,7 @@ describe('onAnswerChange callback gets called and can request additional changes
     });
 
     const { container } = wrapper(onChange, questionnaireWithAllItemTypes);
-    await act(async () => {
-      await inputAnswer('1', 0.1, container);
-    });
+    await inputAnswer('1', 0.1, container);
     const item = findItem('3', container);
     expect(item).toHaveValue(null);
   });
@@ -239,9 +231,7 @@ describe('onAnswerChange callback gets called and can request additional changes
 
     const { queryByLabelText } = wrapper(onChange, questionnaireWithAllItemTypes);
 
-    await act(async () => {
-      await clickByLabelText(/Boolean/i);
-    });
+    await clickByLabelText(/Boolean/i);
 
     expect(queryByLabelText('Date')).toHaveValue(dateString);
   });
@@ -254,9 +244,7 @@ describe('onAnswerChange callback gets called and can request additional changes
     });
 
     const { queryByLabelText } = wrapper(onChange, questionnaireWithAllItemTypes);
-    await act(async () => {
-      await clickByLabelText(/Boolean/i);
-    });
+    await clickByLabelText(/Boolean/i);
 
     expect(queryByLabelText('Date')).toHaveValue(null);
   });
@@ -298,9 +286,7 @@ describe('onAnswerChange callback gets called and can request additional changes
 
     const { container, getByLabelText } = wrapper(onChange, questionnaireWithAllItemTypes);
 
-    await act(async () => {
-      await inputAnswer('1', 0.1, container);
-    });
+    await inputAnswer('1', 0.1, container);
     const date = getByLabelText('DateTime');
 
     expect(date).toHaveValue('14.08.2024');
@@ -315,9 +301,7 @@ describe('onAnswerChange callback gets called and can request additional changes
 
     const { container, getByLabelText } = wrapper(onChange, questionnaireWithAllItemTypes);
 
-    await act(async () => {
-      await inputAnswer('1', 0.1, container);
-    });
+    await inputAnswer('1', 0.1, container);
     const date = getByLabelText('DateTime');
 
     expect(date).toHaveValue('');
@@ -422,9 +406,7 @@ describe('onAnswerChange callback gets called and can request additional changes
 
     const { queryAllByLabelText, findByLabelText } = wrapper(onChange, questionnaireWithRepeats);
 
-    await act(async () => {
-      userEvent.type(await findByLabelText('Integer'), '1');
-    });
+    await userEvent.type(await findByLabelText('Integer'), '1');
     const items = queryAllByLabelText('Decimal');
     expect(items).toHaveLength(3);
 

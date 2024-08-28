@@ -5,9 +5,9 @@ import { Questionnaire, QuestionnaireItem, Extension, QuestionnaireItemEnableWhe
 import Valueset from '../../util/__tests__/__data__/valuesets/valueset-8459';
 import { createDataReceiverExpressionExtension, createItemControlExtension } from '../__tests__/utils';
 import ItemType from '../../constants/itemType';
-import { act, queryByLabelText, renderRefero, userEvent, waitFor } from '../../../test/test-utils';
+import { renderRefero, userEvent, waitFor } from '../../../test/test-utils';
 import { clickByLabelText } from '@test/selectors';
-import ItemControlConstants, { ItemControlValue } from '@/constants/itemcontrol';
+import ItemControlConstants from '@/constants/itemcontrol';
 import { Extensions } from '@/constants/extensions';
 import valueSet from '@/constants/valuesets';
 
@@ -18,9 +18,7 @@ describe('Copy value from item', () => {
     const q = createQuestionnaire(sender, reciever);
     const { getByLabelText, queryByTestId, getByTestId } = createWrapper(q);
     expect(queryByTestId(/item_2/i)).not.toBeInTheDocument();
-    await act(async () => {
-      userEvent.type(getByLabelText(`${sender.text}`), '123');
-    });
+    await userEvent.type(getByLabelText(`${sender.text}`), '123');
     await waitFor(async () => expect(getByTestId(/item_2/i)).toBeInTheDocument());
     await waitFor(async () => expect(getByTestId(/item_2/i)).toHaveTextContent('123'));
   });
@@ -30,9 +28,7 @@ describe('Copy value from item', () => {
     const q = createQuestionnaire(sender, reciever);
     const { getByLabelText, queryByTestId, getByTestId } = createWrapper(q);
     expect(queryByTestId(/item_2/i)).not.toBeInTheDocument();
-    await act(async () => {
-      userEvent.type(getByLabelText(`${sender.text}`), '123');
-    });
+    await userEvent.type(getByLabelText(`${sender.text}`), '123');
     await waitFor(async () => expect(getByTestId(/item_2/i)).toBeInTheDocument());
     await waitFor(async () => expect(getByTestId(/item_2/i)).toHaveTextContent('123'));
   });
@@ -42,9 +38,7 @@ describe('Copy value from item', () => {
     const q = createQuestionnaire(sender, reciever);
     const { getByLabelText, queryByTestId, getByTestId } = createWrapper(q);
     expect(queryByTestId(/item_2/i)).not.toBeInTheDocument();
-    await act(async () => {
-      userEvent.type(getByLabelText(`${sender.text}`), '123');
-    });
+    await userEvent.type(getByLabelText(`${sender.text}`), '123');
     await waitFor(async () => expect(getByTestId(/item_2/i)).toBeInTheDocument());
     await waitFor(async () => expect(getByTestId(/item_2/i)).toHaveTextContent('123'));
   });
@@ -54,9 +48,7 @@ describe('Copy value from item', () => {
     const q = createQuestionnaire(sender, reciever);
     const { getByLabelText, queryByTestId, getByTestId } = createWrapper(q);
     expect(queryByTestId(/item_2/i)).not.toBeInTheDocument();
-    await act(async () => {
-      userEvent.type(getByLabelText(`${sender.text}`), '123.12');
-    });
+    await userEvent.type(getByLabelText(`${sender.text}`), '123.12');
     await waitFor(async () => expect(getByTestId(/item_2/i)).toBeInTheDocument());
     await waitFor(async () => expect(getByTestId(/item_2/i)).toHaveTextContent('123.12'));
   });
@@ -75,9 +67,7 @@ describe('Copy value from item', () => {
     const q = createQuestionnaire(sender, reciever);
     const { getByLabelText, queryByTestId, getByTestId } = createWrapper(q);
     expect(queryByTestId(/item_2/i)).not.toBeInTheDocument();
-    await act(async () => {
-      userEvent.type(getByLabelText(`${sender.text}`), '12');
-    });
+    await userEvent.type(getByLabelText(`${sender.text}`), '12');
     await waitFor(async () => expect(getByTestId(/item_2/i)).toBeInTheDocument());
     await waitFor(async () => expect(getByTestId(/item_2/i)).toHaveTextContent('12.12.2024'));
   });
@@ -86,10 +76,11 @@ describe('Copy value from item', () => {
     const reciever = createRecieverItem(ItemType.DATETIME);
     const q = createQuestionnaire(sender, reciever);
     const { getByLabelText, queryByTestId, getByTestId } = createWrapper(q);
+
     expect(queryByTestId(/item_2/i)).not.toBeInTheDocument();
-    await act(async () => {
-      userEvent.paste(getByLabelText(`${sender.text}`), '12.12.2024');
-    });
+    await userEvent.click(getByLabelText(`${sender.text}`));
+    await userEvent.paste('12.12.2024');
+
     await waitFor(async () => expect(getByTestId(/item_2/i)).toBeInTheDocument());
     await waitFor(async () => expect(getByTestId(/item_2/i)).toHaveTextContent('12.12.2024 00:00'));
   });
@@ -99,9 +90,7 @@ describe('Copy value from item', () => {
     const q = createQuestionnaire(sender, reciever);
     const { getByLabelText, queryByTestId, getByTestId } = createWrapper(q);
     expect(queryByTestId(/item_2/i)).not.toBeInTheDocument();
-    await act(async () => {
-      userEvent.type(getByLabelText(`${sender.text}`), '12:12');
-    });
+    await userEvent.type(getByLabelText(`${sender.text}`), '12:12');
     await waitFor(async () => expect(getByTestId(/item_2/i)).toBeInTheDocument());
     await waitFor(async () => expect(getByTestId(/item_2/i)).toHaveTextContent('12:12'));
   });
@@ -127,9 +116,7 @@ describe('Copy value from item', () => {
     const q = createQuestionnaire(sender, reciever);
     const { getByLabelText, queryByTestId, getByTestId } = createWrapper(q);
     expect(queryByTestId(/item_2/i)).not.toBeInTheDocument();
-    await act(async () => {
-      userEvent.paste(getByLabelText(`${sender.text}`), '12');
-    });
+    await userEvent.type(getByLabelText(`${sender.text}`), '12');
     await waitFor(async () => expect(getByTestId(/item_2/i)).toBeInTheDocument());
     await waitFor(async () => expect(getByTestId(/item_2/i)).toHaveTextContent('12'));
   });
@@ -141,9 +128,7 @@ describe('Copy value from item', () => {
       const { getByLabelText, queryByTestId, getByTestId } = createWrapper(q);
       expect(queryByTestId(/item_2/i)).not.toBeInTheDocument();
       expect(getByLabelText(/Mann/i)).toBeInTheDocument();
-      await act(async () => {
-        userEvent.click(getByLabelText(/Mann/i));
-      });
+      await userEvent.click(getByLabelText(/Mann/i));
       await waitFor(async () => expect(getByTestId(/item_2/i)).toBeInTheDocument());
       await waitFor(async () => expect(getByTestId(/item_2/i)).toHaveTextContent('Mann'));
     });
@@ -154,9 +139,7 @@ describe('Copy value from item', () => {
       const { getByLabelText, queryByTestId, getByTestId } = createWrapper(q);
       expect(queryByTestId(/item_2/i)).not.toBeInTheDocument();
       expect(getByLabelText(/Mann/i)).toBeInTheDocument();
-      await act(async () => {
-        userEvent.click(getByLabelText(/Mann/i));
-      });
+      await userEvent.click(getByLabelText(/Mann/i));
       await waitFor(async () => expect(getByTestId(/item_2/i)).toBeInTheDocument());
       await waitFor(async () => expect(getByTestId(/item_2/i)).toHaveTextContent('Mann'));
     });
@@ -166,9 +149,7 @@ describe('Copy value from item', () => {
       const q = createQuestionnaire(sender, reciever);
       const { getByLabelText, queryByTestId, getByTestId, getByRole } = createWrapper(q);
       expect(queryByTestId(/item_2/i)).not.toBeInTheDocument();
-      await act(async () => {
-        userEvent.selectOptions(getByLabelText(`${sender.text}`), getByRole('option', { name: 'Mann' }) as HTMLOptionElement);
-      });
+      await userEvent.selectOptions(getByLabelText(`${sender.text}`), getByRole('option', { name: 'Mann' }) as HTMLOptionElement);
       await waitFor(async () => expect(getByTestId(/item_2/i)).toBeInTheDocument());
       await waitFor(async () => expect(getByTestId(/item_2/i)).toHaveTextContent('Mann'));
     });
@@ -178,9 +159,7 @@ describe('Copy value from item', () => {
       const q = createQuestionnaire(sender, reciever);
       const { getByLabelText, queryByTestId, getByTestId, getByRole } = createWrapper(q);
       expect(queryByTestId(/item_2/i)).not.toBeInTheDocument();
-      await act(async () => {
-        userEvent.selectOptions(getByLabelText(`${sender.text}`), getByRole('option', { name: 'Mann' }) as HTMLOptionElement);
-      });
+      await userEvent.selectOptions(getByLabelText(`${sender.text}`), getByRole('option', { name: 'Mann' }) as HTMLOptionElement);
       await waitFor(async () => expect(getByTestId(/item_2/i)).toBeInTheDocument());
       await waitFor(async () => expect(getByTestId(/item_2/i)).toHaveTextContent('Mann'));
     });
@@ -193,9 +172,7 @@ describe('Copy value from item', () => {
       const { getByLabelText, queryByTestId, getByTestId } = createWrapper(q);
       expect(queryByTestId(/item_2/i)).not.toBeInTheDocument();
       expect(getByLabelText(/Mann/i)).toBeInTheDocument();
-      await act(async () => {
-        userEvent.click(getByLabelText(/Mann/i));
-      });
+      await userEvent.click(getByLabelText(/Mann/i));
       await waitFor(async () => expect(getByTestId(/item_2/i)).toBeInTheDocument());
       await waitFor(async () => expect(getByTestId(/item_2/i)).toHaveTextContent('Mann'));
     });
@@ -206,9 +183,7 @@ describe('Copy value from item', () => {
       const { getByLabelText, queryByTestId, getByTestId } = createWrapper(q);
       expect(queryByTestId(/item_2/i)).not.toBeInTheDocument();
       expect(getByLabelText(/Mann/i)).toBeInTheDocument();
-      await act(async () => {
-        userEvent.click(getByLabelText(/Mann/i));
-      });
+      await userEvent.click(getByLabelText(/Mann/i));
       await waitFor(async () => expect(getByTestId(/item_2/i)).toBeInTheDocument());
       await waitFor(async () => expect(getByTestId(/item_2/i)).toHaveTextContent('Mann'));
     });
@@ -218,9 +193,7 @@ describe('Copy value from item', () => {
       const q = createQuestionnaire(sender, reciever);
       const { getByLabelText, queryByTestId, getByTestId, getByRole } = createWrapper(q);
       expect(queryByTestId(/item_2/i)).not.toBeInTheDocument();
-      await act(async () => {
-        userEvent.selectOptions(getByLabelText(`${sender.text}`), getByRole('option', { name: 'Mann' }) as HTMLOptionElement);
-      });
+      await userEvent.selectOptions(getByLabelText(`${sender.text}`), getByRole('option', { name: 'Mann' }) as HTMLOptionElement);
       await waitFor(async () => expect(getByTestId(/item_2/i)).toBeInTheDocument());
       await waitFor(async () => expect(getByTestId(/item_2/i)).toHaveTextContent('Mann'));
     });
@@ -232,12 +205,8 @@ describe('Copy value from item', () => {
       expect(queryByTestId(/item_2/i)).not.toBeInTheDocument();
       expect(getByLabelText(/Annet/i)).toBeInTheDocument();
 
-      await act(async () => {
-        userEvent.click(getByLabelText(/Annet/i));
-      });
-      await act(async () => {
-        userEvent.type(getByTestId('item_1-label'), 'e');
-      });
+      await userEvent.click(getByLabelText(/Annet/i));
+      await userEvent.type(getByTestId('item_1-label'), 'e');
       await waitFor(async () => expect(getByTestId(/item_2/i)).toBeInTheDocument());
 
       await waitFor(async () => expect(getByTestId(/item_2/i)).toHaveTextContent('e'));

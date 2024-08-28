@@ -76,9 +76,7 @@ describe('Boolean', () => {
       expect(container.querySelector('.page_refero__helpComponent--open')).not.toBeInTheDocument();
       const elm = container.querySelector('.page_refero__helpButton');
       if (elm) {
-        await act(async () => {
-          userEvent.click(elm);
-        });
+        await userEvent.click(elm);
       }
 
       expect(container.querySelector('.page_refero__helpComponent--open')).toBeInTheDocument();
@@ -129,7 +127,7 @@ describe('Boolean', () => {
         ...q,
         item: q.item?.map(x => ({ ...x, repeats: true })),
       };
-      const { getByTestId, queryAllByTestId } = createWrapper(questionnaire);
+      const { queryAllByTestId } = createWrapper(questionnaire);
       await clickButtonTimes(/-repeat-button/i, 2);
 
       expect(queryAllByTestId(/-delete-button/i)).toHaveLength(2);
@@ -170,9 +168,7 @@ describe('Boolean', () => {
       await clickButtonTimes(/-delete-button/i, 1);
 
       const confirmModal = getByTestId(/-delete-confirm-modal/i);
-      await act(async () => {
-        userEvent.click(await findByRole(confirmModal, 'button', { name: /Forkast endringer/i }));
-      });
+      await userEvent.click(await findByRole(confirmModal, 'button', { name: /Forkast endringer/i }));
 
       expect(queryByTestId(/-delete-button/i)).not.toBeInTheDocument();
     });
@@ -186,9 +182,7 @@ describe('Boolean', () => {
       expect(inputElement).toHaveAttribute('type', `checkbox`);
 
       expect(inputElement).toHaveAttribute('id', `item_${q?.item?.[0].linkId}^0`);
-      await act(async () => {
-        userEvent.click(inputElement);
-      });
+      await userEvent.click(inputElement);
       expect(getByLabelText(/Boolean/i)).toBeChecked();
     });
     it('Should call onChange with correct value', async () => {
