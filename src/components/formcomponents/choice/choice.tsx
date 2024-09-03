@@ -38,11 +38,11 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
   const answer = useGetAnswer(responseItem, item);
   const enable = useIsEnabled(item, path);
 
-  const getValue = (
+  const getAnswerValue = (
     item: QuestionnaireItem,
     answer?: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer
   ): string[] | undefined => {
-    if (answer && Array.isArray(answer)) {
+    if (Array.isArray(answer)) {
       return answer
         .map((el: QuestionnaireResponseItemAnswer) => {
           if (el && el.valueCoding && el.valueCoding.code) {
@@ -50,20 +50,37 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
           }
         })
         .filter(x => x !== undefined);
-    } else if (answer && !Array.isArray(answer) && answer.valueCoding && answer.valueCoding.code) {
+    } else if (answer?.valueCoding?.code) {
       if (answer.valueCoding?.code === item.initial?.[0]?.valueCoding?.code && answer.valueCoding?.display === undefined) {
         resetInitialAnswer(answer.valueCoding.code);
       }
       return [answer.valueCoding.code];
     }
+  };
+
+  const getInitialValue = (item: QuestionnaireItem): string[] | undefined => {
     const initialSelectedOption = item.answerOption?.filter(x => x.initialSelected);
     if (initialSelectedOption && initialSelectedOption.length > 0) {
-      return [initialSelectedOption[0].valueCoding?.code].filter(x => x !== undefined);
+      return initialSelectedOption[0].valueCoding?.code ? [initialSelectedOption[0].valueCoding?.code] : undefined;
     }
     if (!item || !item.initial || item.initial.length === 0 || !item.initial[0].valueCoding || !!item.initial[0].valueCoding.code) {
       return undefined;
     }
-    return [String(item.initial[0].valueCoding.code)];
+    return item.initial[0].valueCoding.code ? [item.initial[0].valueCoding.code] : undefined;
+  };
+
+  const getValue = (
+    item: QuestionnaireItem,
+    answer?: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer
+  ): string[] | undefined => {
+    const answerValue = getAnswerValue(item, answer);
+    const initialValue = getInitialValue(item);
+    if (answerValue) {
+      return answerValue;
+    } else if (initialValue) {
+      return initialValue;
+    }
+    return undefined;
   };
 
   const getPDFValue = (item: QuestionnaireItem, answer?: QuestionnaireResponseItemAnswer[] | QuestionnaireResponseItemAnswer): string => {

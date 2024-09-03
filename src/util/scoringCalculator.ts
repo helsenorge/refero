@@ -48,6 +48,7 @@ export class ScoringCalculator {
   private totalScoreItem: QuestionnaireItem | undefined;
   private itemCache: Map<string, QuestionnaireItem> = new Map<string, QuestionnaireItem>();
   private fhirScoreCache: Map<string, QuestionnaireItem> = new Map<string, QuestionnaireItem>();
+  private isScoringQuestionnaire: boolean = false;
 
   constructor(questionnaire: Questionnaire) {
     this.initializeCaches(questionnaire);
@@ -55,6 +56,7 @@ export class ScoringCalculator {
 
   private initializeCaches(questionnaire: Questionnaire): void {
     this.traverseQuestionnaire(questionnaire);
+    this.isScoringQuestionnaire = this.hasScoring(questionnaire);
   }
 
   private traverseQuestionnaire(qItem: Questionnaire | QuestionnaireItem, level: number = 0): CalculatedScores {
@@ -261,4 +263,21 @@ export class ScoringCalculator {
   public getCachedTotalOrSectionItem(linkId: string): QuestionnaireItem | undefined {
     return this.itemCache.get(linkId);
   }
+
+  private hasScoring(questionnaire: Questionnaire): boolean {
+    const hasScoringInItem = (item: QuestionnaireItem): boolean => {
+      if (scoringItemType(item) !== ScoringItemType.NONE) {
+        return true;
+      }
+      if (item.item && item.item.length > 0) {
+        return item.item.some(nestedItem => hasScoringInItem(nestedItem));
+      }
+      return false;
+    };
+
+    return questionnaire?.item?.some(item => hasScoringInItem(item)) ?? false;
+  }
+  public getIsScoringQuestionnaire = (): boolean => {
+    return this.isScoringQuestionnaire;
+  };
 }

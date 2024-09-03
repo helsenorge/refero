@@ -24,7 +24,7 @@ export const useScoringCalculator = (): {
   }, [formDefinition?.Content]);
 
   const runScoringCalculator = (questionnaire?: Questionnaire | null, questionnaireResponse?: QuestionnaireResponse | null): void => {
-    if (!questionnaire || !questionnaireResponse || !scoringCalculator) return;
+    if (!questionnaire || !questionnaireResponse || !scoringCalculator || !questionnaireHasScoring()) return;
 
     const scores = scoringCalculator.calculateScore(questionnaireResponse);
     updateQuestionnaireResponseWithScore(scores, questionnaire, questionnaireResponse);
@@ -77,6 +77,9 @@ export const useScoringCalculator = (): {
       }
     }
   };
-
+  const questionnaireHasScoring = (): boolean => {
+    if (!scoringCalculator) return false;
+    return scoringCalculator.getIsScoringQuestionnaire() ?? false;
+  };
   return { runScoringCalculator };
 };

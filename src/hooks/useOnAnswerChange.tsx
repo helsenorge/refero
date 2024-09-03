@@ -28,7 +28,6 @@ const useOnAnswerChange = (
         dispatch(action);
       }
     }
-
     runScoringCalculator(questionnaire, questionnaireResponse);
   };
 };
