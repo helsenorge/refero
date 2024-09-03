@@ -32,6 +32,7 @@ import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import { QuestionnaireComponentItemProps } from '@/components/GenerateQuestionnaireComponents';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
+import Display from '../display/display';
 
 export type Props = QuestionnaireComponentItemProps & {
   shouldExpanderRenderChildrenWhenClosed?: boolean;
@@ -76,6 +77,9 @@ export const Text = (props: Props): JSX.Element | null => {
   };
 
   const itemControls = getItemControlExtensionValue(item);
+  if (itemControls && itemControls.some(itemControl => itemControl.code === itemControlConstants.HIGHLIGHT)) {
+    return <Display {...props} />;
+  }
   if (!enable) {
     return null;
   }

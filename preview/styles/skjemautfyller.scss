@@ -1,16 +1,20 @@
 @import './_variables.scss';
-@import "@helsenorge/designsystem-react/scss/_spacers.scss";
-@import "@helsenorge/designsystem-react/scss/_breakpoints.scss";
-@import "@helsenorge/designsystem-react/scss/_breakpoints.scss";
-@import "./sidebar";
-@import "./fieldset";
-@import "./helpbutton.scss";
-@import "./navigator.scss";
+@import '@helsenorge/designsystem-react/scss/_spacers.scss';
+@import '@helsenorge/designsystem-react/scss/_breakpoints.scss';
+@import './sidebar';
+@import './fieldset';
+@import './helpbutton.scss';
+@import './navigator.scss';
 
-
-.container{
+.container {
   margin-left: 22.5%;
   width: 55%;
+}
+@media (max-width: map-get($grid-breakpoints, md)) {
+  .container {
+    width: 100%;
+    margin-left: 0;
+  }
 }
 .page_refero__fixed-scroll-offset {
   scroll-padding-bottom: 70px;
@@ -40,7 +44,6 @@
 
   div > label:first-child {
     display: inline-block;
-    padding: 0.625rem 0 0.625rem 0;
   }
 
   .page_refero__component_choice_autosuggest {
@@ -54,7 +57,7 @@
       position: absolute;
     }
 
-    .page_refero__autosuggest div[role="combobox"] {
+    .page_refero__autosuggest div[role='combobox'] {
       max-width: 36rem;
     }
   }
