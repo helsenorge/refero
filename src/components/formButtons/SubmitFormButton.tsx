@@ -2,7 +2,7 @@ import { FormEvent, KeyboardEvent, MouseEvent } from 'react';
 
 import Button from '@helsenorge/designsystem-react/components/Button';
 
-import styles from '../../styles/formButtons.module.css';
+import styles from './formButtons.module.css';
 
 type Props = {
   submitButtonDisabled?: boolean;

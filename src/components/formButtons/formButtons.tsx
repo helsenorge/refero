@@ -7,7 +7,7 @@ import { ButtonType, buttonOrderNormalView, buttonOrderStepView } from '../../ty
 import { CancelFormButton } from './CancelFormButton';
 import { PauseFormButton } from './PauseFormButton';
 import { SubmitFormButton } from './SubmitFormButton';
-import styles from '../../styles/formButtons.module.css';
+import styles from './formButtons.module.css';
 
 interface FormButtonsInterface {
   submitButtonText: string;
@@ -47,7 +47,7 @@ const FormButtons = ({
       {!isAuthorized && loginButton ? (
         <div className="page_refero__buttonwrapper page_refero__saveblock">{loginButton}</div>
       ) : (
-        <>
+        <div className={styles.formButtonInnerWrapper}>
           {Object.values(buttonOrder).map((buttonType: ButtonType): JSX.Element | null => {
             switch (buttonType) {
               case ButtonType.pauseButton:
@@ -77,7 +77,7 @@ const FormButtons = ({
                 return <></>;
             }
           })}
-        </>
+        </div>
       )}
     </div>
   );
