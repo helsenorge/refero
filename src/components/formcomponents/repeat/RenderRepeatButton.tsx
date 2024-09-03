@@ -13,7 +13,6 @@ const RenderRepeatButton = ({
   path,
   responseItems,
   responseItem,
-  resources,
 }: {
   item: QuestionnaireItem;
   index?: number;
@@ -30,7 +29,6 @@ const RenderRepeatButton = ({
     <div className="page_refero__repeatbutton-wrapper">
       <RepeatButton
         key={`item_${item.linkId}_add_repeat_item`}
-        resources={resources}
         item={item}
         responseItems={responseItems}
         parentPath={path}

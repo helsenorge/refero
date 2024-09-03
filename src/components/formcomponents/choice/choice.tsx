@@ -91,12 +91,10 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
       const responseAnswer = { valueCoding: coding } as QuestionnaireResponseItemAnswer;
       if (getIndexOfAnswer(code, answer) > -1 && onAnswerChange && path) {
         dispatch(removeCodingValueAsync(path, coding, item))?.then(newState => onAnswerChange(newState, item, responseAnswer));
-        if (promptLoginMessage) {
-          promptLoginMessage();
-        }
       }
-      if (onAnswerChange && path)
+      if (onAnswerChange && path) {
         dispatch(newCodingValueAsync(path, coding, item, true))?.then(newState => onAnswerChange(newState, item, responseAnswer));
+      }
       if (promptLoginMessage) {
         promptLoginMessage();
       }
@@ -106,17 +104,14 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
   const handleCheckboxChange = (code?: string): void => {
     if (dispatch && code) {
       const coding = getAnswerValueCoding(code);
-      const responseAnswer = { valueCoding: coding } as QuestionnaireResponseItemAnswer;
+      const responseAnswer = { valueCoding: coding };
       if (getIndexOfAnswer(code, answer) > -1 && onAnswerChange && path) {
         dispatch(removeCodingValueAsync(path, coding, item))?.then(newState => onAnswerChange(newState, item, responseAnswer));
-        if (promptLoginMessage) {
-          promptLoginMessage();
-        }
       } else if (onAnswerChange && path) {
         dispatch(newCodingValueAsync(path, coding, item, true))?.then(newState => onAnswerChange(newState, item, responseAnswer));
-        if (promptLoginMessage) {
-          promptLoginMessage();
-        }
+      }
+      if (promptLoginMessage) {
+        promptLoginMessage();
       }
     }
   };
