@@ -24,7 +24,7 @@ import { useIsEnabled } from '@/hooks/useIsEnabled';
 export type DateProps = QuestionnaireComponentItemProps;
 
 const DateComponent = (props: DateProps): JSX.Element | null => {
-  const { item, resources, language, responseItems, responseItem, path, index, children } = props;
+  const { item, language, responseItems, responseItem, path, index, children } = props;
   const enable = useIsEnabled(item, path);
   let element: JSX.Element | undefined = undefined;
 
