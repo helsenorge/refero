@@ -28,6 +28,7 @@ import { useGetAnswer } from '@/hooks/useGetAnswer';
 import { useIsEnabled } from '@/hooks/useIsEnabled';
 import { QuestionnaireComponentItemProps } from '@/components/GenerateQuestionnaireComponents';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
+import { useEffect } from 'react';
 
 export type ChoiceProps = QuestionnaireComponentItemProps;
 
@@ -37,11 +38,18 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
   const answer = useGetAnswer(responseItem, item);
   const enable = useIsEnabled(item, path);
+  useEffect(() => {
+    if (
+      !Array.isArray(answer) &&
+      answer?.valueCoding?.code &&
+      answer?.valueCoding?.code === item.initial?.[0]?.valueCoding?.code &&
+      answer?.valueCoding?.display === undefined
+    ) {
+      resetInitialAnswer(answer?.valueCoding?.code);
+    }
+  }, [answer]);
 
-  const getAnswerValue = (
-    item: QuestionnaireItem,
-    answer?: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer
-  ): string[] | undefined => {
+  const getAnswerValue = (answer?: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer): string[] | undefined => {
     if (Array.isArray(answer)) {
       return answer
         .map((el: QuestionnaireResponseItemAnswer) => {
@@ -51,34 +59,32 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
         })
         .filter(x => x !== undefined);
     } else if (answer?.valueCoding?.code) {
-      if (answer.valueCoding?.code === item.initial?.[0]?.valueCoding?.code && answer.valueCoding?.display === undefined) {
-        resetInitialAnswer(answer.valueCoding.code);
-      }
       return [answer.valueCoding.code];
     }
+    return undefined;
   };
 
   const getInitialValue = (item: QuestionnaireItem): string[] | undefined => {
+    const code = item?.initial?.[0]?.valueCoding?.code;
     const initialSelectedOption = item.answerOption?.filter(x => x.initialSelected);
+
     if (initialSelectedOption && initialSelectedOption.length > 0) {
-      return initialSelectedOption[0].valueCoding?.code ? [initialSelectedOption[0].valueCoding?.code] : undefined;
+      const initialSelectedCode = initialSelectedOption[0].valueCoding?.code;
+      return initialSelectedCode ? [initialSelectedCode] : undefined;
     }
-    if (!item || !item.initial || item.initial.length === 0 || !item.initial[0].valueCoding || !!item.initial[0].valueCoding.code) {
-      return undefined;
-    }
-    return item.initial[0].valueCoding.code ? [item.initial[0].valueCoding.code] : undefined;
+    return code ? [code] : undefined;
   };
 
   const getValue = (
     item: QuestionnaireItem,
     answer?: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer
   ): string[] | undefined => {
-    const answerValue = getAnswerValue(item, answer);
-    const initialValue = getInitialValue(item);
+    const answerValue = getAnswerValue(answer);
     if (answerValue) {
       return answerValue;
-    } else if (initialValue) {
-      return initialValue;
+    } else {
+      const initialValue = getInitialValue(item);
+      if (initialValue) return initialValue;
     }
     return undefined;
   };
@@ -102,14 +108,13 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
     return { code, display, system };
   };
 
-  const resetInitialAnswer = (code: string): void => {
-    if (dispatch && code) {
+  const resetInitialAnswer = (code?: string): void => {
+    if (code && onAnswerChange && path) {
       const coding = getAnswerValueCoding(code);
-      const responseAnswer = { valueCoding: coding } as QuestionnaireResponseItemAnswer;
-      if (getIndexOfAnswer(code, answer) > -1 && onAnswerChange && path) {
+      const responseAnswer = { valueCoding: coding };
+      if (getIndexOfAnswer(code, answer) > -1) {
         dispatch(removeCodingValueAsync(path, coding, item))?.then(newState => onAnswerChange(newState, item, responseAnswer));
-      }
-      if (onAnswerChange && path) {
+      } else {
         dispatch(newCodingValueAsync(path, coding, item, true))?.then(newState => onAnswerChange(newState, item, responseAnswer));
       }
       if (promptLoginMessage) {
@@ -119,22 +124,11 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
   };
 
   const handleCheckboxChange = (code?: string): void => {
-    if (dispatch && code) {
-      const coding = getAnswerValueCoding(code);
-      const responseAnswer = { valueCoding: coding };
-      if (getIndexOfAnswer(code, answer) > -1 && onAnswerChange && path) {
-        dispatch(removeCodingValueAsync(path, coding, item))?.then(newState => onAnswerChange(newState, item, responseAnswer));
-      } else if (onAnswerChange && path) {
-        dispatch(newCodingValueAsync(path, coding, item, true))?.then(newState => onAnswerChange(newState, item, responseAnswer));
-      }
-      if (promptLoginMessage) {
-        promptLoginMessage();
-      }
-    }
+    resetInitialAnswer(code);
   };
 
   const clearCodingAnswer = (coding: Coding): void => {
-    if (dispatch && onAnswerChange && path) {
+    if (onAnswerChange && path) {
       const responseAnswer = { valueCoding: coding };
 
       dispatch(removeCodingValueAsync(path, coding, item))?.then(newState => onAnswerChange(newState, item, responseAnswer));
@@ -145,7 +139,7 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
   };
 
   const handleChange = (code?: string, systemArg?: string, displayArg?: string): void => {
-    if (dispatch && code && onAnswerChange && path) {
+    if (code && onAnswerChange && path) {
       const coding = getAnswerValueCoding(code, systemArg, displayArg);
       const responseAnswer = { valueCoding: coding };
 
@@ -218,12 +212,7 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
           {children}
         </AutosuggestView>
       ) : isReceiverComponent ? (
-        <ReceiverComponentWrapper
-          {...props}
-          handleChange={handleChange}
-          selected={getValue(props.item, answer)}
-          clearCodingAnswer={clearCodingAnswer}
-        >
+        <ReceiverComponentWrapper {...props} handleChange={handleChange} selected={value} clearCodingAnswer={clearCodingAnswer}>
           {children}
         </ReceiverComponentWrapper>
       ) : null}

@@ -1,4 +1,4 @@
-import { newDecimalValue, newIntegerValue, newQuantityValue } from '@/actions/newValue';
+import { newDecimalValue, newIntegerValue, newQuantityValue, NewValueAction } from '@/actions/newValue';
 import ItemType from '@/constants/itemType';
 import { GlobalState } from '@/reducers';
 import { getFormDefinition } from '@/reducers/form';
@@ -9,12 +9,13 @@ import { AnswerPad, ScoringCalculator } from '@/util/scoringCalculator';
 import { Quantity, Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { ThunkDispatch } from 'redux-thunk';
 
 export const useScoringCalculator = (): {
   runScoringCalculator: (questionnaire?: Questionnaire | null, questionnaireResponse?: QuestionnaireResponse | null) => void;
 } => {
   const formDefinition = useSelector((state: GlobalState) => getFormDefinition(state));
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
   const [scoringCalculator, setScoringCalculator] = useState<ScoringCalculator | undefined>();
 
   useEffect(() => {
