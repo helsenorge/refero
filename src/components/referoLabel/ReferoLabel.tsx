@@ -50,7 +50,9 @@ export const ReferoLabel = ({
       >
         <div>
           <SafeText as="span" text={`${lblText}`} className={styles.referoLabelSafetext} />
-          {!isRequired(item) && !isReadOnly(item) && <span className={styles.LabelOptionalText}>{' (Valgfritt)'}</span>}
+          {!isRequired(item) && !isReadOnly(item) && (
+            <span className={styles.LabelOptionalText}>{` ${resources?.formOptional || '(Valgfritt)'}`}</span>
+          )}
         </div>
         {subLabelText && <SubLabel id={sublabelId} testId={sublabelTestId} subLabelText={subLabelText} />}
       </Label>
