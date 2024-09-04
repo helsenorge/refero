@@ -35,10 +35,11 @@ function toQuantity(value: number, code: string, unit: string, system?: string):
 }
 
 async function addValueToInputByTypeAndTab(componentLabel: string, value: string) {
-  const element = screen.getByLabelText(componentLabel);
-  await typeAndTabByLabelText(componentLabel, value);
+  const regexLabel = new RegExp(componentLabel, 'i');
+  const element = await screen.findByLabelText(regexLabel);
+  await typeAndTabByLabelText(regexLabel, value);
 
-  const answer = screen.getByRole('spinbutton', { name: componentLabel });
+  const answer = screen.getByRole('spinbutton', { name: `${componentLabel} (Valgfritt)` });
   return { answer, element };
 }
 
@@ -66,7 +67,7 @@ describe('onAnswerChange callback gets called and can request additional changes
 
     const { answer } = await addValueToInputByTypeAndTab('Decimal', '0.1');
 
-    const integerAnswer = getByLabelText('Integer');
+    const integerAnswer = getByLabelText(/Integer/i);
 
     expect(answer).toHaveValue(0.1);
     expect(integerAnswer).toHaveValue(null);
@@ -128,7 +129,7 @@ describe('onAnswerChange callback gets called and can request additional changes
 
     const { queryByLabelText } = wrapper(onChange, questionnaireWithAllItemTypes);
     await clickByLabelText(/Boolean/i);
-    const updatedInput = queryByLabelText('Boolean');
+    const updatedInput = queryByLabelText(/Boolean/i);
     expect(updatedInput).toBeChecked();
   });
 
@@ -140,7 +141,7 @@ describe('onAnswerChange callback gets called and can request additional changes
 
     const { queryByLabelText } = wrapper(onChange, questionnaireWithAllItemTypes);
     await clickByLabelText(/Boolean/i);
-    const updatedInput = queryByLabelText('Boolean');
+    const updatedInput = queryByLabelText(/Boolean/i);
     expect(updatedInput).not.toBeChecked();
   });
 
@@ -285,7 +286,7 @@ describe('onAnswerChange callback gets called and can request additional changes
     const { container, getByLabelText } = wrapper(onChange, questionnaireWithAllItemTypes);
 
     await inputAnswer('1', 0.1, container);
-    const date = getByLabelText('DateTime');
+    const date = getByLabelText(/DateTime/i);
 
     expect(date).toHaveValue('14.08.2024');
   });
@@ -312,7 +313,7 @@ describe('onAnswerChange callback gets called and can request additional changes
 
     const { queryByLabelText } = wrapper(onChange, questionnaireWithAllItemTypes);
     await clickByLabelText(/Boolean/i);
-    expect(queryByLabelText('String')).toHaveValue('Hello World!');
+    expect(queryByLabelText(/String/i)).toHaveValue('Hello World!');
   });
 
   it('string gets cleared', async () => {
@@ -348,9 +349,9 @@ describe('onAnswerChange callback gets called and can request additional changes
     const { queryByLabelText } = wrapper(onChange, questionnaireWithAllItemTypes);
 
     await clickByLabelText(/Boolean/i);
-    expect(queryByLabelText('String')).toHaveValue('Hello World!');
+    expect(queryByLabelText(/String/i)).toHaveValue('Hello World!');
 
-    expect(queryByLabelText('Integer')).toHaveValue(42);
+    expect(queryByLabelText(/Integer/i)).toHaveValue(42);
   });
 
   it('opencboice other option can be updated', async () => {
@@ -404,8 +405,8 @@ describe('onAnswerChange callback gets called and can request additional changes
 
     const { queryAllByLabelText, findByLabelText } = wrapper(onChange, questionnaireWithRepeats);
 
-    await userEvent.type(await findByLabelText('Integer'), '1');
-    const items = queryAllByLabelText('Decimal');
+    await userEvent.type(await findByLabelText(/Integer/i), '1');
+    const items = queryAllByLabelText(/Decimal/i);
     expect(items).toHaveLength(3);
 
     expect(items[0]).toHaveValue(0.1);
@@ -420,9 +421,9 @@ describe('onAnswerChange callback gets called and can request additional changes
 
     const { queryByLabelText } = wrapper(onChange, questionnaireWithNestedItems);
 
-    await typeByLabelText('Decimal', '1');
+    await typeByLabelText(/Decimal/i, '1');
 
-    expect(queryByLabelText('String')).toHaveValue('Hello');
+    expect(queryByLabelText(/String/i)).toHaveValue('Hello');
   });
 
   it('can update items nested under answer', async () => {
@@ -431,8 +432,8 @@ describe('onAnswerChange callback gets called and can request additional changes
     });
 
     const { queryByLabelText } = wrapper(onChange, questionnaireWithNestedItems);
-    await typeByLabelText('Decimal', '1');
-    expect(queryByLabelText('nested under non-group')).toHaveValue(42);
+    await typeByLabelText(/Decimal/i, '1');
+    expect(queryByLabelText(/nested under non-group/i)).toHaveValue(42);
   });
 
   it('can query to get both questionnaire and questionnaire response', async () => {
@@ -443,7 +444,7 @@ describe('onAnswerChange callback gets called and can request additional changes
 
     wrapper(onChange, questionnaireWithNestedItems);
 
-    await typeByLabelText('Decimal', '1');
+    await typeByLabelText(/Decimal/i, '1');
 
     expect(result.length).toBe(1);
     expect(result[0].QuestionnaireItem.linkId).toBe('1.3.1.1');
@@ -460,7 +461,7 @@ describe('onAnswerChange callback gets called and can request additional changes
 
     wrapper(onChange, questionnaireWithNestedItems);
 
-    await typeByLabelText('Decimal', '1');
+    await typeByLabelText(/Decimal/i, '1');
 
     expect(result.length).toBe(0);
   });
@@ -473,7 +474,7 @@ describe('onAnswerChange callback gets called and can request additional changes
 
     wrapper(onChange, questionnaireWithNestedItems);
 
-    await typeByLabelText('Decimal', '1');
+    await typeByLabelText(/Decimal/i, '1');
 
     expect(result.length).toBe(2);
     expect(result[0].QuestionnaireItem.linkId).toBe('1.3.1.1');
@@ -495,7 +496,7 @@ describe('onAnswerChange callback gets called and can request additional changes
 
     wrapper(onChange, questionnaireWithRepeats);
 
-    await typeByLabelText('Integer', '1');
+    await typeByLabelText(/Integer/i, '1');
 
     expect(result.length).toBe(1);
     expect(result[0].QuestionnaireItem.linkId).toBe('1');

@@ -74,7 +74,7 @@ const Decimal = (props: Props): JSX.Element | null => {
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     const value = parseFloat(event.target.value);
     dispatch(newDecimalValueAsync(path || [], value, item))?.then(newState => {
-      return onAnswerChange(newState, item, { valueDecimal: value } as QuestionnaireResponseItemAnswer);
+      return onAnswerChange(newState, item, { valueDecimal: value });
     });
 
     if (promptLoginMessage) {

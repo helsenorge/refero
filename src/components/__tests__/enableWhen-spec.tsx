@@ -8,20 +8,20 @@ import { selectCheckboxOption } from '../../../test/selectors';
 describe('enableWhen with checkboxes and multiple answers', () => {
   it('enableWhen should trigger when correct answer is selected', async () => {
     const { queryByLabelText } = createWrapper(questionnaireWithEnableWhen);
-    expect(queryByLabelText('Flere sykdommer')).not.toBeInTheDocument();
-    await selectCheckboxOption('Andre sykdommer');
+    expect(queryByLabelText(/Flere sykdommer/i)).not.toBeInTheDocument();
+    await selectCheckboxOption(/Andre sykdommer/i);
 
-    expect(queryByLabelText('Flere sykdommer')).toBeInTheDocument();
+    expect(queryByLabelText(/Flere sykdommer/i)).toBeInTheDocument();
   });
 
   it('enableWhen should trigger when correct answer is selected along with other answers', async () => {
     const { queryByLabelText } = createWrapper(questionnaireWithEnableWhen);
-    expect(queryByLabelText('Flere sykdommer')).not.toBeInTheDocument();
-    await selectCheckboxOption('Allergi');
-    await selectCheckboxOption('Hepatitt C');
-    await selectCheckboxOption('Andre sykdommer');
+    expect(queryByLabelText(/Flere sykdommer/i)).not.toBeInTheDocument();
+    await selectCheckboxOption(/Allergi/i);
+    await selectCheckboxOption(/Hepatitt C/i);
+    await selectCheckboxOption(/Andre sykdommer/i);
 
-    expect(queryByLabelText('Flere sykdommer')).toBeInTheDocument();
+    expect(queryByLabelText(/Flere sykdommer/i)).toBeInTheDocument();
   });
 });
 
