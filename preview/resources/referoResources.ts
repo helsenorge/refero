@@ -230,7 +230,7 @@ export const getResources = (language: string): Resources => {
     formSend: 'Fullfør',
     formSave: 'Vis QuestionnaireResponse',
     formError: 'Sjekk at alt er riktig utfylt.',
-    formOptional: '(valgfritt)',
+    formOptional: '(Valgfritt)',
     formRequired: '(må fylles ut)',
     repeatButtonText: 'Legg til',
     avsluttSkjema: 'Avslutt skjema',
