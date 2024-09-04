@@ -4,7 +4,7 @@ import Label, { LabelText } from '@helsenorge/designsystem-react/components/Labe
 
 import SafeText from './SafeText';
 import SubLabel from './sublabel';
-import { getLabelText, getSublabelText, isRequired } from '@/util';
+import { getLabelText, getSublabelText, isReadOnly, isRequired } from '@/util';
 import { Resources } from '@/util/resources';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 import { useSelector } from 'react-redux';
@@ -50,7 +50,7 @@ export const ReferoLabel = ({
       >
         <div>
           <SafeText as="span" text={`${lblText}`} className={styles.referoLabelSafetext} />
-          {!isRequired(item) && <span className={styles.LabelOptionalText}>{' (Valgfritt)'}</span>}
+          {!isRequired(item) && !isReadOnly(item) && <span className={styles.LabelOptionalText}>{' (Valgfritt)'}</span>}
         </div>
         {subLabelText && <SubLabel id={sublabelId} testId={sublabelTestId} subLabelText={subLabelText} />}
       </Label>

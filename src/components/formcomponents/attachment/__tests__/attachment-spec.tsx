@@ -43,7 +43,7 @@ const hasFileSizeError = (hasError: Boolean) => {
   else expect(screen.queryByText(/Filstørrelse må være mindre enn/i)).not.toBeInTheDocument();
 };
 const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle ut dette feltet', ikkeBesvart: 'ikkeBesvart' };
-describe.skip('Attachment', () => {
+describe('Attachment', () => {
   describe('Render', () => {
     it('Should render as text if props.pdf', () => {
       const questionnaire: Questionnaire = {
@@ -91,14 +91,13 @@ describe.skip('Attachment', () => {
       expect(container.querySelector('.page_refero__helpComponent--open')).toBeInTheDocument();
     });
   });
-  describe('onChange', () => {
-    it.only('Should update component with value from answer', async () => {
-      const user = userEvent.setup();
+  describe.skip('onChange', () => {
+    it('Should update component with value from answer', async () => {
       const questionnaire: Questionnaire = {
         ...q,
       };
       const upload = vi.fn();
-      const { getByLabelText, getByTestId, getByText, debug } = createWrapper(questionnaire, {
+      const { getByLabelText, getByTestId, getByText } = createWrapper(questionnaire, {
         uploadAttachment: upload,
         attachmentValidTypes: ['image/png'],
       });
@@ -181,7 +180,7 @@ describe.skip('Attachment', () => {
     });
   });
   describe('File Type validation', () => {
-    it('When uploading a file - Show error if mime type is NOT among valid types', async () => {
+    it.skip('When uploading a file - Show error if mime type is NOT among valid types', async () => {
       const validTypes = [MIME_TYPES_TEST.PNG, MIME_TYPES_TEST.JPG, MIME_TYPES_TEST.PDF];
       const questionnaire: Questionnaire = {
         ...q,
@@ -205,7 +204,7 @@ describe.skip('Attachment', () => {
   });
 
   describe('File Size validation - Questionnaire Extension', () => {
-    it('When uploading a file - Show resource size error if size > max rule in qItem, item has priority', async () => {
+    it.skip('When uploading a file - Show resource size error if size > max rule in qItem, item has priority', async () => {
       const validTypes = [MIME_TYPES_TEST.PlainText];
       const questionnaire: Questionnaire = {
         ...q,
@@ -217,7 +216,7 @@ describe.skip('Attachment', () => {
       hasFileSizeError(true);
     });
 
-    it('When uploading a file - Show resource size error if size > max rule in referoProps and no maxSize extension is set on the item', async () => {
+    it.skip('When uploading a file - Show resource size error if size > max rule in referoProps and no maxSize extension is set on the item', async () => {
       const validTypes = [MIME_TYPES_TEST.PlainText];
       const questionnaire: Questionnaire = {
         ...q,
@@ -278,7 +277,7 @@ describe.skip('Attachment', () => {
   });
 
   describe('File validation - Prioritiy of rules', () => {
-    it('When uploading a file - File type errors should have priority over other errors', async () => {
+    it.skip('When uploading a file - File type errors should have priority over other errors', async () => {
       const validTypes = [MIME_TYPES_TEST.PNG, MIME_TYPES_TEST.PDF];
       const questionnaire: Questionnaire = {
         ...q,
@@ -305,7 +304,7 @@ describe.skip('Attachment', () => {
       hasFileSizeError(false);
     });
 
-    it('When uploading a file - And questionnaire max rule is not set, use props max value if set', async () => {
+    it.skip('When uploading a file - And questionnaire max rule is not set, use props max value if set', async () => {
       const validTypes = [MIME_TYPES_TEST.PlainText];
       const questionnaire: Questionnaire = {
         ...q,
@@ -321,7 +320,7 @@ describe.skip('Attachment', () => {
       hasFileSizeError(true);
     });
 
-    it('When uploading a file - Refero constant should be fallback if neither qItem rule or props', async () => {
+    it.skip('When uploading a file - Refero constant should be fallback if neither qItem rule or props', async () => {
       const validTypes = [MIME_TYPES_TEST.PlainText];
       const questionnaire: Questionnaire = {
         ...q,

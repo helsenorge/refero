@@ -11,90 +11,110 @@ describe('Components render children', () => {
   it('attachments with children renders', () => {
     const q = createQuestionnaire(creatNestedItem(itemType.ATTATCHMENT));
     const { queryByLabelText } = createWrapper(q);
-    const firstChild = queryByLabelText('2');
+    const firstChildLabel = new RegExp('2', 'i');
+    const firstChild = queryByLabelText(firstChildLabel);
     expect(firstChild).toBeInTheDocument();
-    const secondChild = queryByLabelText('3');
+    const secondChildLabel = new RegExp('3', 'i');
+    const secondChild = queryByLabelText(secondChildLabel);
     expect(secondChild).toBeInTheDocument();
   });
 
   it('booleans with children renders', async () => {
     const q = createQuestionnaire(creatNestedItem(itemType.BOOLEAN));
-    const { findByLabelText } = createWrapper(q);
-    const firstChild = await findByLabelText('2');
+    const { queryByLabelText, findByLabelText } = createWrapper(q);
+    const firstChildLabel = new RegExp('2', 'i');
+    const firstChild = queryByLabelText(firstChildLabel);
     expect(firstChild).toBeInTheDocument();
-    const secondChild = await findByLabelText('3');
+    const secondChildLabel = new RegExp('3', 'i');
+    const secondChild = await findByLabelText(secondChildLabel);
     expect(secondChild).toBeInTheDocument();
   });
 
   it('date with children renders', () => {
     const q = createQuestionnaire(creatNestedItem(itemType.DATE));
     const { queryByLabelText } = createWrapper(q);
-    const firstChild = queryByLabelText('2');
+    const firstChildLabel = new RegExp('2', 'i');
+    const firstChild = queryByLabelText(firstChildLabel);
     expect(firstChild).toBeInTheDocument();
-    const secondChild = queryByLabelText('3');
+    const secondChildLabel = new RegExp('3', 'i');
+    const secondChild = queryByLabelText(secondChildLabel);
     expect(secondChild).toBeInTheDocument();
   });
 
   it.skip('time with children renders', () => {
     const q = createQuestionnaire(creatNestedItem(itemType.TIME));
     const { queryByLabelText } = createWrapper(q);
-    const firstChild = queryByLabelText('2');
+    const firstChildLabel = new RegExp('2', 'i');
+    const firstChild = queryByLabelText(firstChildLabel);
     expect(firstChild).toBeInTheDocument();
-    const secondChild = queryByLabelText('3');
+    const secondChildLabel = new RegExp('3', 'i');
+    const secondChild = queryByLabelText(secondChildLabel);
     expect(secondChild).toBeInTheDocument();
   });
 
   it('dateTime with children renders', () => {
     const q = createQuestionnaire(creatNestedItem(itemType.DATETIME));
     const { queryByLabelText } = createWrapper(q);
-    const firstChild = queryByLabelText('2');
+    const firstChildLabel = new RegExp('2', 'i');
+    const firstChild = queryByLabelText(firstChildLabel);
     expect(firstChild).toBeInTheDocument();
-    const secondChild = queryByLabelText('3');
+    const secondChildLabel = new RegExp('3', 'i');
+    const secondChild = queryByLabelText(secondChildLabel);
     expect(secondChild).toBeInTheDocument();
   });
 
   it('decimal with children renders', () => {
     const q = createQuestionnaire(creatNestedItem(itemType.DECIMAL));
     const { queryByLabelText } = createWrapper(q);
-    const firstChild = queryByLabelText('2');
+    const firstChildLabel = new RegExp('2', 'i');
+    const firstChild = queryByLabelText(firstChildLabel);
     expect(firstChild).toBeInTheDocument();
-    const secondChild = queryByLabelText('3');
+    const secondChildLabel = new RegExp('3', 'i');
+    const secondChild = queryByLabelText(secondChildLabel);
     expect(secondChild).toBeInTheDocument();
   });
 
   it('integer with children renders', () => {
     const q = createQuestionnaire(creatNestedItem(itemType.INTEGER));
     const { queryByLabelText } = createWrapper(q);
-    const firstChild = queryByLabelText('2');
+    const firstChildLabel = new RegExp('2', 'i');
+    const firstChild = queryByLabelText(firstChildLabel);
     expect(firstChild).toBeInTheDocument();
-    const secondChild = queryByLabelText('3');
+    const secondChildLabel = new RegExp('3', 'i');
+    const secondChild = queryByLabelText(secondChildLabel);
     expect(secondChild).toBeInTheDocument();
   });
 
   it('quantity with children renders', () => {
     const q = createQuestionnaire(creatNestedItem(itemType.QUANTITY));
     const { queryByLabelText } = createWrapper(q);
-    const firstChild = queryByLabelText('2');
+    const firstChildLabel = new RegExp('2', 'i');
+    const firstChild = queryByLabelText(firstChildLabel);
     expect(firstChild).toBeInTheDocument();
-    const secondChild = queryByLabelText('3');
+    const secondChildLabel = new RegExp('3', 'i');
+    const secondChild = queryByLabelText(secondChildLabel);
     expect(secondChild).toBeInTheDocument();
   });
 
   it('string with children renders', () => {
     const q = createQuestionnaire(creatNestedItem(itemType.STRING));
     const { queryByLabelText } = createWrapper(q);
-    const firstChild = queryByLabelText('2');
+    const firstChildLabel = new RegExp('2', 'i');
+    const firstChild = queryByLabelText(firstChildLabel);
     expect(firstChild).toBeInTheDocument();
-    const secondChild = queryByLabelText('3');
+    const secondChildLabel = new RegExp('3', 'i');
+    const secondChild = queryByLabelText(secondChildLabel);
     expect(secondChild).toBeInTheDocument();
   });
 
   it('text with children renders', () => {
     const q = createQuestionnaire(creatNestedItem(itemType.TEXT));
     const { queryByLabelText } = createWrapper(q);
-    const firstChild = queryByLabelText('2');
+    const firstChildLabel = new RegExp('2', 'i');
+    const firstChild = queryByLabelText(firstChildLabel);
     expect(firstChild).toBeInTheDocument();
-    const secondChild = queryByLabelText('3');
+    const secondChildLabel = new RegExp('3', 'i');
+    const secondChild = queryByLabelText(secondChildLabel);
     expect(secondChild).toBeInTheDocument();
   });
 
@@ -122,9 +142,11 @@ describe('Components render children', () => {
     const item = createNestedChoiceItem(itemType.CHOICE, createItemControlExtension(itemControlConstants.DROPDOWN));
     const q = createQuestionnaire(item);
     const { queryByLabelText } = createWrapper(q);
-    const firstChild = queryByLabelText('2');
+    const firstChildLabel = new RegExp('2', 'i');
+    const firstChild = queryByLabelText(firstChildLabel);
     expect(firstChild).toBeInTheDocument();
-    const secondChild = queryByLabelText('3');
+    const secondChildLabel = new RegExp('3', 'i');
+    const secondChild = queryByLabelText(secondChildLabel);
     expect(secondChild).toBeInTheDocument();
   });
   it('sliderchoice with children renders', () => {
@@ -160,9 +182,11 @@ describe('Components render children', () => {
     const item = createNestedChoiceItem(itemType.OPENCHOICE, createItemControlExtension(itemControlConstants.DROPDOWN));
     const q = createQuestionnaire(item);
     const { queryByLabelText } = createWrapper(q);
-    const firstChild = queryByLabelText('2');
+    const firstChildLabel = new RegExp('2', 'i');
+    const firstChild = queryByLabelText(firstChildLabel);
     expect(firstChild).toBeInTheDocument();
-    const secondChild = queryByLabelText('3');
+    const secondChildLabel = new RegExp('3', 'i');
+    const secondChild = queryByLabelText(secondChildLabel);
     expect(secondChild).toBeInTheDocument();
   });
 });
