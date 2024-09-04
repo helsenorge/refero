@@ -1,3 +1,8 @@
+## 16.0.0-beta.28
+
+- Fix referolabel
+- Fix styling to look like old refero
+- Preformance improvements
 
 ## 16.0.0-beta22
 
