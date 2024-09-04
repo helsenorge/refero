@@ -1,9 +1,9 @@
-import { screen, userEvent, act, renderRefero, waitFor, findByTestId } from '../../../test/test-utils';
+import { screen, userEvent, renderRefero } from '../../../test/test-utils';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, Quantity, Coding, Questionnaire } from 'fhir/r4';
 
 import '../../util/__tests__/defineFetch';
-import Constants, { OPEN_CHOICE_ID } from '../../constants/index';
+import { OPEN_CHOICE_ID } from '../../constants/index';
 import { IActionRequester } from '../../util/actionRequester';
 import { IQuestionnaireInspector, QuestionnaireItemPair } from '../../util/questionnaireInspector';
 import questionnaireWithAllItemTypes from './__data__/onChange/allItemTypes';
@@ -17,8 +17,6 @@ import {
   createOnChangeFuncForQuestionnaireInspector,
 } from './utils';
 import { clickByLabelText, typeAndTabByLabelText, typeByLabelText } from '../../../test/selectors';
-import { parse } from 'date-fns';
-import { getByLabelText } from '@testing-library/dom';
 
 function toCoding(code: string, system?: string): Coding {
   return {
