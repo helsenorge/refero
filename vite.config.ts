@@ -28,6 +28,9 @@ export default defineConfig(({ command, isPreview }): UserConfig => {
       postcss: {
         plugins: [autoprefixer(), cssnano({ preset: 'default' })],
       },
+      modules: {
+        scopeBehaviour: 'global',
+      },
     },
     resolve: {
       extensions: ['.ts', '.tsx', '.js', '.json', '.scss', '.css'],
