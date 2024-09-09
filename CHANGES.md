@@ -80,6 +80,13 @@
 
 - Rework of refero with new components
 - removed old components and added new from @helsenorge designsystem
+## 15.0.10
+
+---
+
+- fix pipeline to publish with correct tag to npm
+- fix small error in package.json
+
 ## 15.0.9
 
 ---

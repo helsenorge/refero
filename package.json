@@ -30,8 +30,11 @@
     ".vite/manifest.json",
     "style.css"
   ],
-  "repository": "github:helsenorge/refero",
   "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/helsenorge/refero.git"
+  },
   "scripts": {
     "lint": "eslint --ext .ts,.tsx src/ --fix",
     "test": "vitest run",
