@@ -1,5 +1,5 @@
 import { QuestionnaireItem } from 'fhir/r4';
-import styles from './safetext.module.css';
+import styles from './referoLabel.module.css';
 import Label, { LabelText } from '@helsenorge/designsystem-react/components/Label';
 
 import SafeText from './SafeText';
@@ -40,23 +40,25 @@ export const ReferoLabel = ({
   const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
   const lblText = getLabelText(item, onRenderMarkdown, questionnaire, resources);
   return (
-    <div style={{ alignItems: 'center' }} className={styles.label_content}>
-      <Label
-        labelId={labelId}
-        testId={testId}
-        labelTexts={labelText || []}
-        htmlFor={htmlFor}
-        className={`${styles.pageReferoLabel} page_refero__label`}
-      >
-        <div>
-          <SafeText as="span" text={`${lblText}`} className={styles.referoLabelSafetext} />
-          {!isRequired(item) && !isReadOnly(item) && (
-            <span className={styles.LabelOptionalText}>{` ${resources?.formOptional || '(Valgfritt)'}`}</span>
-          )}
-        </div>
-        {subLabelText && <SubLabel id={sublabelId} testId={sublabelTestId} subLabelText={subLabelText} />}
-      </Label>
-      {afterLabelContent ?? null}
+    <div className={`${styles.labelWithHelp} labelWithHelp`}>
+      <div className={styles.label_content}>
+        <Label
+          labelId={labelId}
+          testId={testId}
+          labelTexts={labelText || []}
+          htmlFor={htmlFor}
+          className={`${styles.pageReferoLabel} page_refero__label`}
+        >
+          <div className={`${styles.textOptionalWrapper}`}>
+            <SafeText as="span" text={`${lblText}`} className={`${styles.referoLabelSafetext} referoLabelSafetext`} />
+            {!isRequired(item) && !isReadOnly(item) && (
+              <span className={`${styles.LabelOptionalText} LabelOptionalText`}>{` ${resources?.formOptional || ` (Valgfritt)`}`}</span>
+            )}
+          </div>
+        </Label>
+        {afterLabelContent ?? null}
+      </div>
+      {subLabelText && <SubLabel id={sublabelId} testId={sublabelTestId} subLabelText={subLabelText} />}
     </div>
   );
 };

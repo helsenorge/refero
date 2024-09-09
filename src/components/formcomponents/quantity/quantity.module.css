@@ -1,0 +1,8 @@
+.inputWrapper {
+  display: flex;
+  align-items: end;
+}
+.pageReferoUnit {
+  font-size: 1.25rem;
+      margin-left: 1rem;
+}

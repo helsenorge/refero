@@ -1,26 +1,8 @@
-.pageReferoLabel {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 1.5rem;
-}
+
 .safetext {
   /* font-weight: 600;
   font-size: 1.125rem;
   line-height: 1.75rem; */
   margin-bottom: -0.5rem;
   padding: .625rem 0;
-}
-.referoLabelSafetext {
-  font-size: 1.125rem;
-  font-weight: 600;
-}
-.LabelOptionalText {
-  font-size: 1.125rem;
-  font-style: italic;
-}
-.after_label_content {
-  align-self: center;
-}
-.label_content {
-  display: flex;
 }

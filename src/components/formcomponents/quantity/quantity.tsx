@@ -6,7 +6,7 @@ import { ThunkDispatch } from 'redux-thunk';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Input from '@helsenorge/designsystem-react/components/Input';
-
+import styles from './quantity.module.css';
 import { NewValueAction, newQuantityValueAsync } from '@/actions/newValue';
 import { GlobalState } from '@/reducers';
 import {
@@ -159,7 +159,7 @@ const Quantity = (props: Props): JSX.Element | null => {
             }),
           }}
           render={({ field: { onChange, ...rest } }): JSX.Element => (
-            <>
+            <div className={styles.inputWrapper}>
               <Input
                 {...rest}
                 value={value !== undefined ? value + '' : ''}
@@ -174,8 +174,8 @@ const Quantity = (props: Props): JSX.Element | null => {
                 }}
                 width={7}
               />
-              <span className="page_refero__unit">{getUnit()}</span>
-            </>
+              <span className={`${styles.pageReferoUnit} page_refero__unit`}>{getUnit()}</span>
+            </div>
           )}
         />
         <RenderDeleteButton
