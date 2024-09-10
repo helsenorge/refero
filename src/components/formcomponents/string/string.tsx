@@ -30,7 +30,7 @@ export type Props = QuestionnaireComponentItemProps;
 export const String = (props: Props): JSX.Element | null => {
   const { path, item, id, pdf, resources, idWithLinkIdAndItemIndex, children, responseItems, index, responseItem } = props;
   const { promptLoginMessage, validateScriptInjection, onAnswerChange } = useExternalRenderContext();
-  const { formState, getFieldState, control } = useFormContext<FieldValues>();
+  const { formState, getFieldState } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
@@ -85,7 +85,6 @@ export const String = (props: Props): JSX.Element | null => {
         <RenderHelpElement item={item} isHelpVisible={isHelpVisible} />
         <Controller
           name={idWithLinkIdAndItemIndex}
-          control={control}
           shouldUnregister={true}
           defaultValue={value}
           rules={{
@@ -115,24 +114,26 @@ export const String = (props: Props): JSX.Element | null => {
               },
             }),
           }}
-          render={({ field: { onChange, ref, name } }): JSX.Element => (
-            <Input
-              name={name}
-              ref={ref}
-              disabled={item.readOnly}
-              defaultValue={value}
-              onChange={(e): void => {
-                handleInputChange(e);
-                onChange(e.target.value);
-              }}
-              type="text"
-              width={25}
-              testId={`${getId(id)}-string`}
-              inputId={getId(id)}
-              placeholder={getPlaceholder(item)}
-              className="page_refero__input"
-            />
-          )}
+          render={({ field: { onChange, ref, name } }): JSX.Element => {
+            return (
+              <Input
+                name={name}
+                ref={ref}
+                disabled={item.readOnly}
+                defaultValue={value}
+                onChange={(e): void => {
+                  handleInputChange(e);
+                  onChange(e.target.value);
+                }}
+                type="text"
+                width={25}
+                testId={`${getId(id)}-string`}
+                inputId={getId(id)}
+                placeholder={getPlaceholder(item)}
+                className="page_refero__input"
+              />
+            );
+          }}
         />
         <RenderDeleteButton
           item={item}

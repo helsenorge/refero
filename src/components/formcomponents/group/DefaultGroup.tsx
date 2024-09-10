@@ -4,7 +4,7 @@ import GroupHeader from './GroupHeader';
 import { getClassNames, getHeaderText } from './helpers';
 import AnchorLink from '@helsenorge/designsystem-react/components/AnchorLink';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
-
+import styles from './defaultGroup.module.css';
 import { Dispatch } from 'react';
 
 import { useExternalRenderContext } from '@/context/externalRenderContext';
@@ -34,14 +34,15 @@ const DefaultGroup = ({ isHelpVisible, setIsHelpVisible, children, ...rest }: De
         resources={resources}
       />
       <RenderHelpElement item={item} isHelpVisible={isHelpVisible} />
-      <div id={`${getId(id)}-navanchor`} className={getClassNames(item)}>
-        {children}
-      </div>
       {includeSkipLink && path?.length === 1 && (
-        <AnchorLink className="page_refero__skiplink" href="#navigator-button">
+        <AnchorLink className={`${styles.page_refero__skiplink} page_refero__skiplink`} href="#navigator-button">
           {resources?.skipLinkText}
         </AnchorLink>
       )}
+      <div id={`${getId(id)}-navanchor`} className={getClassNames(item)}>
+        {children}
+      </div>
+
       <RenderDeleteButton
         item={item}
         path={path}

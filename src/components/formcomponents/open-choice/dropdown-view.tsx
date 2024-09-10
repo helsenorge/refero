@@ -7,8 +7,6 @@ import { Options } from '@/types/formTypes/radioGroupOptions';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Select from '@helsenorge/designsystem-react/components/Select';
 
-import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
-
 import { shouldShowExtraChoice } from '@/util/choice';
 import { getValidationTextExtension } from '@/util/extension';
 import { isRequired, getId } from '@/util/index';
@@ -45,7 +43,7 @@ const DropdownView = (props: Props): JSX.Element | null => {
     index,
   } = props;
   const [isHelpVisible, setIsHelpVisible] = React.useState(false);
-  const { formState, getFieldState, control } = useFormContext<FieldValues>();
+  const { formState, getFieldState } = useFormContext<FieldValues>();
   const { error } = getFieldState(idWithLinkIdAndItemIndex, formState);
 
   if (!options) {
@@ -71,7 +69,6 @@ const DropdownView = (props: Props): JSX.Element | null => {
         <RenderHelpElement item={item} isHelpVisible={isHelpVisible} />
         <Controller
           name={idWithLinkIdAndItemIndex}
-          control={control}
           shouldUnregister={true}
           defaultValue={selected?.[0] || ''}
           rules={{
@@ -116,4 +113,4 @@ const DropdownView = (props: Props): JSX.Element | null => {
   );
 };
 
-export default layoutChange(DropdownView);
+export default DropdownView;

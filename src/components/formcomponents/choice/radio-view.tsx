@@ -39,7 +39,7 @@ const RadioView = (props: Props): JSX.Element => {
     idWithLinkIdAndItemIndex,
     children,
   } = props;
-  const { formState, getFieldState, control } = useFormContext<FieldValues>();
+  const { formState, getFieldState } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
 
@@ -62,7 +62,6 @@ const RadioView = (props: Props): JSX.Element => {
           <Controller
             name={idWithLinkIdAndItemIndex}
             key={`${option.type}-${index}`}
-            control={control}
             shouldUnregister={true}
             defaultValue={selectedValue}
             rules={{

@@ -6,8 +6,6 @@ import { ThunkDispatch } from 'redux-thunk';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Input from '@helsenorge/designsystem-react/components/Input';
 
-import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
-
 import { NewValueAction, newIntegerValueAsync } from '@/actions/newValue';
 import { GlobalState } from '@/reducers';
 import { getPlaceholder, getMaxValueExtensionValue, getMinValueExtensionValue, getValidationTextExtension } from '@/util/extension';
@@ -32,7 +30,7 @@ const Integer = (props: Props): JSX.Element | null => {
 
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
   const { promptLoginMessage, onAnswerChange } = useExternalRenderContext();
-  const { formState, getFieldState, control } = useFormContext<FieldValues>();
+  const { formState, getFieldState } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
   const [isHelpVisible, setIsHelpVisible] = useState(false);
@@ -104,7 +102,6 @@ const Integer = (props: Props): JSX.Element | null => {
         <RenderHelpElement item={item} isHelpVisible={isHelpVisible} />
         <Controller
           name={idWithLinkIdAndItemIndex}
-          control={control}
           shouldUnregister={true}
           defaultValue={value}
           rules={{
@@ -156,5 +153,4 @@ const Integer = (props: Props): JSX.Element | null => {
   );
 };
 
-const layoytChangeComponent = layoutChange(Integer);
-export default layoytChangeComponent;
+export default Integer;

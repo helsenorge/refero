@@ -52,7 +52,7 @@ export const Text = (props: Props): JSX.Element | null => {
     children,
   } = props;
   const { promptLoginMessage, validateScriptInjection, onAnswerChange } = useExternalRenderContext();
-  const { formState, getFieldState, control } = useFormContext<FieldValues>();
+  const { formState, getFieldState } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
@@ -126,7 +126,6 @@ export const Text = (props: Props): JSX.Element | null => {
         <Controller
           name={idWithLinkIdAndItemIndex}
           defaultValue={value || ''}
-          control={control}
           shouldUnregister={true}
           rules={{
             required: {

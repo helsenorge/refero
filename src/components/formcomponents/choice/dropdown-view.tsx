@@ -5,8 +5,6 @@ import { Controller, FieldValues, useFormContext } from 'react-hook-form';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Select from '@helsenorge/designsystem-react/components/Select';
 
-import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
-
 import { getPlaceholder } from '@/util/extension';
 import { getId, isRequired } from '@/util/index';
 
@@ -40,7 +38,7 @@ const DropdownView = (props: Props): JSX.Element | null => {
     children,
   } = props;
 
-  const { formState, getFieldState, control } = useFormContext<FieldValues>();
+  const { formState, getFieldState } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
 
@@ -71,7 +69,6 @@ const DropdownView = (props: Props): JSX.Element | null => {
         <Controller
           name={idWithLinkIdAndItemIndex}
           shouldUnregister={true}
-          control={control}
           defaultValue={value}
           rules={{
             required: {
@@ -119,4 +116,4 @@ const DropdownView = (props: Props): JSX.Element | null => {
   );
 };
 
-export default layoutChange(DropdownView);
+export default DropdownView;
