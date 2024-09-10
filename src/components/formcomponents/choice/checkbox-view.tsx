@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { Controller, FieldValues, useFormContext } from 'react-hook-form';
+import { FieldValues, useFormContext } from 'react-hook-form';
 
 import { Options } from '@/types/formTypes/radioGroupOptions';
 
@@ -40,10 +40,16 @@ const CheckboxView = (props: Props): JSX.Element | null => {
   } = props;
   const [isHelpVisible, setIsHelpVisible] = useState(false);
 
-  const { formState, getFieldState } = useFormContext<FieldValues>();
+  const { formState, getFieldState, register } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
-
+  const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, {
+    required: {
+      message: resources?.formRequiredErrorMessage ?? 'Påkrevd felt',
+      value: isRequired(item),
+    },
+    shouldUnregister: true,
+  });
   return (
     <div className="page_refero__component page_refero__component_choice page_refero__component_choice_checkbox">
       <FormGroup mode="ongrey" error={error?.message}>
@@ -59,40 +65,17 @@ const CheckboxView = (props: Props): JSX.Element | null => {
         <RenderHelpElement item={item} isHelpVisible={isHelpVisible} />
 
         {options?.map((option, index) => (
-          <Controller
-            name={idWithLinkIdAndItemIndex}
+          <Checkbox
+            {...rest}
             key={`${option.type}-${index}`}
-            shouldUnregister={true}
-            defaultValue={selected}
-            rules={{
-              required: {
-                message: resources?.formRequiredErrorMessage ?? 'Påkrevd felt',
-                value: isRequired(item),
-              },
-            }}
-            render={({ field: { value, onChange, ...rest } }): JSX.Element => {
-              return (
-                <Checkbox
-                  {...rest}
-                  inputId={`${getId(id)}-hn-${index}`}
-                  testId={`${getId(id)}-${index}-checkbox-choice`}
-                  label={<Label testId={`${getId(id)}-${index}-checkbox-choice-label`} labelTexts={[{ text: option.label }]} />}
-                  checked={selected?.some((val?: string) => val === option.type)}
-                  value={option.type}
-                  onChange={(e): void => {
-                    const valueCopy = value ? [...value] : [];
-                    if (e.target.checked) {
-                      valueCopy.push(option.type);
-                    } else {
-                      const idx = valueCopy.findIndex(code => option.type === code);
-                      valueCopy?.splice(idx, 1);
-                    }
-                    onChange(valueCopy);
-
-                    handleChange(option.type);
-                  }}
-                />
-              );
+            inputId={`${getId(id)}-hn-${index}`}
+            testId={`${getId(id)}-${index}-checkbox-choice`}
+            label={<Label testId={`${getId(id)}-${index}-checkbox-choice-label`} labelTexts={[{ text: option.label }]} />}
+            checked={selected?.some((val?: string) => val === option.type)}
+            value={option.type}
+            onChange={(e): void => {
+              onChange(e);
+              handleChange(option.type);
             }}
           />
         ))}

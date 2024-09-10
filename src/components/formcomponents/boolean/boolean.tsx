@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { Controller, FieldValues, useFormContext } from 'react-hook-form';
+import { FieldValues, useFormContext } from 'react-hook-form';
 import { ThunkDispatch } from 'redux-thunk';
 
 import Checkbox from '@helsenorge/designsystem-react/components/Checkbox';
@@ -33,8 +33,8 @@ const Boolean = (props: Props): JSX.Element | null => {
   const formDefinition = useSelector((state: GlobalState) => getFormDefinition(state));
   const questionnaire = formDefinition?.Content;
 
-  const { formState, getFieldState } = useFormContext<FieldValues>();
-  const fieldState = getFieldState(props.idWithLinkIdAndItemIndex, formState);
+  const { formState, getFieldState, register } = useFormContext<FieldValues>();
+  const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
 
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
@@ -91,57 +91,47 @@ const Boolean = (props: Props): JSX.Element | null => {
       />
     );
   }
-
+  const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, {
+    required: {
+      value: isRequired(item),
+      message: resources?.formRequiredErrorMessage ?? 'Feltet er påkrevd',
+    },
+    shouldUnregister: true,
+  });
   return (
     // Dette er en hack for FHI-skjema. TODO: fjern hack
     <div className="page_refero__component page_refero__component_boolean">
       <FormGroup error={error?.message}>
-        <Controller
-          name={idWithLinkIdAndItemIndex || ''}
-          shouldUnregister={true}
-          defaultValue={value}
-          rules={{
-            required: {
-              value: isRequired(item),
-              message: resources?.formRequiredErrorMessage ?? 'Feltet er påkrevd',
-            },
+        <Checkbox
+          {...rest}
+          testId={`${getId(id)}-boolean`}
+          inputId={getId(id)}
+          label={
+            <Label
+              labelId={`${getId(id)}-label-boolean`}
+              testId={`${getId(id)}-label-boolean`}
+              labelTexts={[{ text: labelText, type: 'semibold' }]}
+              htmlFor={getId(id)}
+              className="page_refero__label"
+              sublabel={
+                <Sublabel
+                  testId={`${getId(id)}-sublabel-boolean`}
+                  id={`${getId(id)}-sublabel-boolean`}
+                  sublabelTexts={[{ text: subLabelText, type: 'normal' }]}
+                />
+              }
+              afterLabelChildren={<RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />}
+            >
+              <SafeText text={labelText} />
+            </Label>
+          }
+          checked={value}
+          onChange={(e): void => {
+            handleChange();
+            onChange(e);
           }}
-          render={({ field: { onChange, ...rest } }): JSX.Element => {
-            return (
-              <Checkbox
-                {...rest}
-                testId={`${getId(id)}-boolean`}
-                inputId={getId(id)}
-                label={
-                  <Label
-                    labelId={`${getId(id)}-label-boolean`}
-                    testId={`${getId(id)}-label-boolean`}
-                    labelTexts={[{ text: labelText, type: 'semibold' }]}
-                    htmlFor={getId(id)}
-                    className="page_refero__label"
-                    sublabel={
-                      <Sublabel
-                        testId={`${getId(id)}-sublabel-boolean`}
-                        id={`${getId(id)}-sublabel-boolean`}
-                        sublabelTexts={[{ text: subLabelText, type: 'normal' }]}
-                      />
-                    }
-                    afterLabelChildren={<RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />}
-                  >
-                    <SafeText text={labelText} />
-                  </Label>
-                }
-                checked={value}
-                onChange={(): void => {
-                  handleChange();
-                  onChange(!value);
-                }}
-                className="page_refero__input"
-              />
-            );
-          }}
+          className="page_refero__input"
         />
-
         <RenderHelpElement item={item} isHelpVisible={isHelpVisible} />
       </FormGroup>
       <RenderDeleteButton

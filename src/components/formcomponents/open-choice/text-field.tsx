@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Controller, FieldValues, useFormContext } from 'react-hook-form';
+import { FieldValues, useFormContext } from 'react-hook-form';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Input from '@helsenorge/designsystem-react/components/Input';
@@ -21,7 +21,7 @@ type Props = QuestionnaireComponentItemProps & {
 const textField = (props: Props): JSX.Element | null => {
   const { id, pdf, item, handleStringChange, handleChange, children, resources, idWithLinkIdAndItemIndex, responseItem } = props;
   const formName = `${idWithLinkIdAndItemIndex}-extra-field`;
-  const { formState, getFieldState } = useFormContext<FieldValues>();
+  const { formState, getFieldState, register } = useFormContext<FieldValues>();
   const { error } = getFieldState(formName, formState);
   const answer = useGetAnswer(responseItem, item);
 
@@ -41,6 +41,31 @@ const textField = (props: Props): JSX.Element | null => {
   const pattern = getRegexExtension(item);
   const errorMessage = getValidationTextExtension(item);
   const value = getStringValue(answer);
+  const { onChange, onBlur, ...rest } = register(`${idWithLinkIdAndItemIndex}-extra-field`, {
+    required: {
+      value: isRequired(item),
+      message: resources?.formRequiredErrorMessage ?? 'Feltet er påkrevd',
+    },
+    ...(minLength && {
+      minLength: {
+        value: minLength || 0,
+        message: errorMessage ?? resources?.stringOverMaxLengthError ?? 'Verdien er for kort',
+      },
+    }),
+    ...(maxLength && {
+      maxLength: {
+        value: maxLength,
+        message: errorMessage ?? resources?.stringOverMaxLengthError ?? 'Verdien er for lang',
+      },
+    }),
+    ...(pattern && {
+      pattern: {
+        value: new RegExp(pattern),
+        message: errorMessage ?? 'Det er en feil på feltet',
+      },
+    }),
+    shouldUnregister: true,
+  });
   return (
     <FormGroup error={error?.message} mode="ongrey">
       <ReferoLabel
@@ -51,57 +76,26 @@ const textField = (props: Props): JSX.Element | null => {
         testId={`${getId(id)}-label`}
         sublabelId={`${getId(id)}-sublabel`}
       />
-      <Controller
-        name={`${idWithLinkIdAndItemIndex}-extra-field`}
-        shouldUnregister={true}
-        defaultValue={value}
-        rules={{
-          required: {
-            value: isRequired(item),
-            message: resources?.formRequiredErrorMessage ?? 'Feltet er påkrevd',
-          },
-          ...(minLength && {
-            minLength: {
-              value: minLength || 0,
-              message: errorMessage ?? resources?.stringOverMaxLengthError ?? 'Verdien er for kort',
-            },
-          }),
-          ...(maxLength && {
-            maxLength: {
-              value: maxLength,
-              message: errorMessage ?? resources?.stringOverMaxLengthError ?? 'Verdien er for lang',
-            },
-          }),
-          ...(pattern && {
-            pattern: {
-              value: new RegExp(pattern),
-              message: errorMessage ?? 'Det er en feil på feltet',
-            },
-          }),
+
+      <Input
+        {...rest}
+        disabled={isReadOnly(item)}
+        type="text"
+        mode="ongrey"
+        inputId={`${getId(id)}-extra-field`}
+        testId={`${getId(id)}-extra-field`}
+        value={value}
+        placeholder={getPlaceholder(item)}
+        readOnly={isReadOnly(item)}
+        onChange={(e): void => {
+          onChange(e);
+          handleChange(e.target.value);
         }}
-        render={({ field: { onChange, ref, name, onBlur } }): JSX.Element => (
-          <Input
-            name={name}
-            ref={ref}
-            disabled={isReadOnly(item)}
-            type="text"
-            mode="ongrey"
-            inputId={`${getId(id)}-extra-field`}
-            testId={`${getId(id)}-extra-field`}
-            value={value}
-            placeholder={getPlaceholder(item)}
-            readOnly={isReadOnly(item)}
-            onChange={(e): void => {
-              onChange(e.target.value);
-              handleChange(e.target.value);
-            }}
-            onBlur={(e): void => {
-              handleOnBlur(e);
-              onChange(e.target.value);
-              onBlur();
-            }}
-          />
-        )}
+        onBlur={(e): void => {
+          handleOnBlur(e);
+          onChange(e);
+          onBlur(e);
+        }}
       />
     </FormGroup>
   );

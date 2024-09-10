@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { Controller, FieldValues, useFormContext } from 'react-hook-form';
+import { FieldValues, useFormContext } from 'react-hook-form';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Select from '@helsenorge/designsystem-react/components/Select';
@@ -38,7 +38,7 @@ const DropdownView = (props: Props): JSX.Element | null => {
     children,
   } = props;
 
-  const { formState, getFieldState } = useFormContext<FieldValues>();
+  const { formState, getFieldState, register } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
 
@@ -52,6 +52,14 @@ const DropdownView = (props: Props): JSX.Element | null => {
   }
   const value = selected?.[0] || '';
   const shouldShowPlaceholder = !isRequired(item) || value === '';
+  const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, {
+    required: {
+      message: resources?.formRequiredErrorMessage ?? 'Feltet må fylles ut',
+      value: isRequired(item),
+    },
+    shouldUnregister: true,
+  });
+
   return (
     <div className="page_refero__component page_refero__component_choice page_refero__component_choice_dropdown">
       <FormGroup mode="ongrey" error={error?.message}>
@@ -66,41 +74,28 @@ const DropdownView = (props: Props): JSX.Element | null => {
         />
         <RenderHelpElement item={item} isHelpVisible={isHelpVisible} />
 
-        <Controller
-          name={idWithLinkIdAndItemIndex}
-          shouldUnregister={true}
-          defaultValue={value}
-          rules={{
-            required: {
-              message: resources?.formRequiredErrorMessage ?? 'Feltet må fylles ut',
-              value: isRequired(item),
-            },
+        <Select
+          {...rest}
+          value={value}
+          selectId={getId(id)}
+          testId={getId(id)}
+          onChange={(e): void => {
+            onChange(e);
+            handleChange(e.target.value);
           }}
-          render={({ field: { onChange, ...rest } }): JSX.Element => (
-            <Select
-              {...rest}
-              selectId={getId(id)}
-              testId={getId(id)}
-              onChange={(e): void => {
-                onChange(e);
-                handleChange(e.target.value);
-              }}
-              value={value}
-              className="page_refero__input"
-            >
-              {shouldShowPlaceholder && (
-                <option key={getId(id) + placeholder} value={undefined}>
-                  {placeholder}
-                </option>
-              )}
-              {options?.map(dropdownOption => (
-                <option key={getId(id) + dropdownOption.label} value={dropdownOption.type}>
-                  {dropdownOption.label}
-                </option>
-              ))}
-            </Select>
+          className="page_refero__input"
+        >
+          {shouldShowPlaceholder && (
+            <option key={getId(id) + placeholder} value={''}>
+              {placeholder}
+            </option>
           )}
-        />
+          {options?.map(dropdownOption => (
+            <option key={getId(id) + dropdownOption.label} value={dropdownOption.type}>
+              {dropdownOption.label}
+            </option>
+          ))}
+        </Select>
       </FormGroup>
 
       <RenderDeleteButton

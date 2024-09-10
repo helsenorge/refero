@@ -45,7 +45,7 @@ const Refero = (props: ReferoProps): JSX.Element | null => {
     //   return zodResolver(schema)(data, context, options);
     // },
   });
-
+  console.log(JSON.stringify(methods.getValues()));
   React.useEffect(() => {
     if (props.questionnaire) {
       dispatch(setSkjemaDefinition(props.questionnaire, props.questionnaireResponse, props.language, props.syncQuestionnaireResponse));
