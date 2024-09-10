@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import { format, isValid } from 'date-fns';
 import { QuestionnaireResponseItemAnswer } from 'fhir/r4';
@@ -15,7 +15,14 @@ import { getId, isReadOnly, isRequired } from '../../../util/index';
 import TextView from '../textview';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
-import { formatDateToStringDDMMYYYY, parseStringToDateDDMMYYYY, validateDate, validateMaxDate, validateMinDate } from '@/util/date-utils';
+import {
+  formatDateToString,
+  isValueFormatDDMMYYYY,
+  parseStringToDate,
+  validateDate,
+  validateMaxDate,
+  validateMinDate,
+} from '@/util/date-utils';
 import { QuestionnaireComponentItemProps } from '@/components/GenerateQuestionnaireComponents';
 import RenderHelpButton from '../help-button/RenderHelpButton';
 import RenderHelpElement from '../help-button/RenderHelpElement';
@@ -38,7 +45,7 @@ export const DateDayInput = ({
   children,
 }: DateDayInputProps): JSX.Element | null => {
   const [isHelpVisible, setIsHelpVisible] = useState(false);
-  const { formState, getFieldState, setValue } = useFormContext<FieldValues>();
+  const { formState, getFieldState } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
   const answer = useGetAnswer(responseItem, item);
@@ -68,13 +75,7 @@ export const DateDayInput = ({
   };
 
   const dateAnswerValue = getDateAnswerValue(answer);
-  const defaultDate: Date | undefined = parseStringToDateDDMMYYYY(dateAnswerValue);
-
-  useEffect(() => {
-    if (defaultDate) {
-      setValue(`${idWithLinkIdAndItemIndex}`, defaultDate);
-    }
-  }, []);
+  const [date, setDate] = useState<Date | string | undefined>(parseStringToDate(dateAnswerValue));
 
   const getValue = (): Date[] | undefined => {
     if (answer && Array.isArray(answer)) {
@@ -103,28 +104,23 @@ export const DateDayInput = ({
   };
 
   const handleChange = (newDate: string | Date | undefined): void => {
-    if (typeof newDate !== 'string') {
-      handleChangeDate(newDate);
-    } else {
-      handleChangeString(newDate);
-    }
-  };
-
-  const handleChangeString = (value: string): void => {
-    const valueAsDate = parseStringToDateDDMMYYYY(value);
-    if (isValid(valueAsDate)) {
-      onDateValueChange(value);
-    } else {
-      onDateValueChange('');
-    }
-  };
-
-  const handleChangeDate = (value: Date | undefined): void => {
-    if (isValid(value)) {
-      const valueAsString = formatDateToStringDDMMYYYY(value);
-      onDateValueChange(valueAsString);
-    } else {
-      onDateValueChange('');
+    if (typeof newDate === 'string') {
+      if (isValueFormatDDMMYYYY(newDate)) {
+        const parsedDate = parseStringToDate(newDate);
+        if (parsedDate && isValid(parsedDate)) {
+          const formatedDate = format(parsedDate, 'yyyy-MM-dd');
+          onDateValueChange(formatedDate);
+          setDate(formatedDate);
+        }
+      } else {
+        onDateValueChange(newDate);
+        setDate(newDate);
+      }
+    } else if (isValid(newDate)) {
+      const valueAsString = formatDateToString(newDate);
+      const formatedDate = format(valueAsString, 'yyyy-MM-dd');
+      onDateValueChange(formatedDate);
+      setDate(formatedDate);
     }
   };
 
@@ -169,13 +165,13 @@ export const DateDayInput = ({
           },
           validate: {
             validDate: value => {
-              return validateDate(value ? parseStringToDateDDMMYYYY(value) : undefined, resources);
+              return validateDate(value ? parseStringToDate(value) : undefined, resources);
             },
             validMinDate: value => {
-              return validateMinDate(minDateTime, parseStringToDateDDMMYYYY(value), resources);
+              return validateMinDate(minDateTime, parseStringToDate(value), resources);
             },
             validMaxDate: value => {
-              return validateMaxDate(maxDateTime, parseStringToDateDDMMYYYY(value), resources);
+              return validateMaxDate(maxDateTime, parseStringToDate(value), resources);
             },
           },
         }}
@@ -188,11 +184,11 @@ export const DateDayInput = ({
             dateFormat={'dd.MM.yyyy'}
             minDate={minDateTime}
             maxDate={maxDateTime}
-            onChange={(e, newDate) => {
+            onChange={(_e, newDate) => {
               handleChange(newDate);
               onChange(newDate);
             }}
-            dateValue={isValid(defaultDate) ? defaultDate : undefined}
+            dateValue={isValid(date) ? date : undefined}
           />
         )}
       />

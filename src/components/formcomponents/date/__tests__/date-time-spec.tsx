@@ -346,12 +346,12 @@ describe('Date time', () => {
         if (hoursInput) {
           await userEvent.clear(hoursInput);
           await userEvent.click(hoursInput);
-          await userEvent.paste('90');
+          await userEvent.type(hoursInput, '90');
         }
         if (minutesInput) {
           await userEvent.clear(minutesInput);
           await userEvent.click(minutesInput);
-          await userEvent.paste('00');
+          await userEvent.type(minutesInput, '00');
         }
 
         await submitForm();
@@ -371,12 +371,12 @@ describe('Date time', () => {
         if (hoursInput) {
           await userEvent.clear(hoursInput);
           await userEvent.click(hoursInput);
-          await userEvent.paste('00');
+          await userEvent.type(hoursInput, '00');
         }
         if (minutesInput) {
           await userEvent.clear(minutesInput);
           await userEvent.click(minutesInput);
-          await userEvent.paste('90');
+          await userEvent.type(minutesInput, '90');
         }
 
         await submitForm();

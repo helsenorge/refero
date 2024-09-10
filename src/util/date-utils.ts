@@ -115,17 +115,35 @@ export const extractHoursAndMinutesFromAnswer = (
   return timeString ? getHoursAndMinutesFromTime(timeString) : null;
 };
 
-export const parseStringToDateDDMMYYYY = (valueToParse: string | Date | undefined): Date | undefined => {
-  if (valueToParse) {
-    if (typeof valueToParse === 'string') {
-      const isoParsed = parseISO(valueToParse);
-      return isValid(isoParsed) ? isoParsed : parse(valueToParse, DateFormat.ddMMyyyy, new Date());
-    } else {
-      return valueToParse;
-    }
+const isValueFormatYYYYMMDD = (dateString: string): boolean => {
+  const dateFormatRegex = /^\d{4}-\d{2}-\d{2}$/;
+  if (!dateFormatRegex.test(dateString)) {
+    return false;
+  }
+
+  return true;
+};
+
+export const isValueFormatDDMMYYYY = (dateString: string): boolean => {
+  const dateFormatRegex = /^\d{2}\.\d{2}\.\d{4}$/;
+  if (!dateFormatRegex.test(dateString)) {
+    return false;
+  }
+
+  return true;
+};
+
+export const parseStringToDate = (valueToParse: string | undefined): Date | undefined => {
+  if (valueToParse && isValueFormatYYYYMMDD(valueToParse)) {
+    return parse(valueToParse, 'yyyy-MM-dd', new Date());
+  } else if (valueToParse && isValueFormatDDMMYYYY(valueToParse)) {
+    return parse(valueToParse, 'dd.MM.yyyy', new Date());
+  } else if (valueToParse) {
+    return parseISO(valueToParse);
   }
 };
-export const formatDateToStringDDMMYYYY = (dateToFormat: Date | undefined): string => {
+
+export const formatDateToString = (dateToFormat: Date | undefined): string => {
   const formattedDate = dateToFormat ? formatISO(dateToFormat) : '';
   return formattedDate;
 };

@@ -1,8 +1,8 @@
 import { useState } from 'react';
 
-import { format, parseISO, isValid, formatISO, parse } from 'date-fns';
+import { format, isValid } from 'date-fns';
 
-import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
+import { QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { FieldError, FieldValues, useFormContext } from 'react-hook-form';
 import { ThunkDispatch } from 'redux-thunk';
 
@@ -12,7 +12,7 @@ import { DatePicker, DateTimePickerWrapper, DateTime } from '@helsenorge/datepic
 
 import { NewValueAction, newDateTimeValueAsync } from '../../../actions/newValue';
 import { GlobalState } from '../../../reducers';
-import { initialize, safeParseJSON } from '../../../util/date-fns-utils';
+import { initialize } from '../../../util/date-fns-utils';
 import {
   getFullFnsDate,
   getHoursOrMinutesFromDate,
@@ -21,7 +21,7 @@ import {
   validateMaxDate,
   validateHours,
   validateMinutes,
-  parseStringToDateDDMMYYYY,
+  parseStringToDate,
 } from '../../../util/date-utils';
 import { getValidationTextExtension } from '../../../util/extension';
 import { isRequired, getId, isReadOnly } from '../../../util/index';
@@ -64,17 +64,16 @@ const DateTimeInput = ({
   const minutesField = getFieldState(`${idWithLinkIdAndItemIndex}-minutes`, formState);
   const { minDateTime, maxDateTime } = useMinMaxDate(item);
   const enable = useIsEnabled(item);
-  const getDefaultDate = (
-    item: QuestionnaireItem,
-    answer?: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]
-  ): Date | undefined => {
-    const answerValue = Array.isArray(answer) ? answer[0] : answer;
 
-    if (answerValue && answerValue.valueDateTime) {
-      return parseISO(answerValue.valueDateTime) ?? safeParseJSON(answerValue.valueDateTime);
-    }
+  const getDateAnswerValue = (
+    answer?: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[] | undefined
+  ): string | undefined => {
+    const answerValue = Array.isArray(answer) ? answer[0] : answer;
     if (answerValue && answerValue.valueDate) {
-      return parseISO(answerValue.valueDate) ?? safeParseJSON(answerValue.valueDate);
+      return answerValue.valueDate;
+    }
+    if (answerValue && answerValue.valueDateTime) {
+      return answerValue.valueDateTime;
     }
     if (!item || !item.initial || item.initial.length === 0) {
       return undefined;
@@ -83,20 +82,18 @@ const DateTimeInput = ({
       return undefined;
     }
     if (item.initial[0].valueDateTime) {
-      return parseISO(item.initial[0].valueDateTime) ?? safeParseJSON(item.initial[0].valueDateTime);
+      return item.initial[0].valueDateTime;
     }
-    if (item.initial[0].valueDate) {
-      return parseISO(item.initial[0].valueDate) ?? safeParseJSON(item.initial[0].valueDate);
-    }
-    return undefined;
+    return item.initial[0].valueDate;
   };
 
-  const date = getDefaultDate(item, answer);
+  const dateAnswerValue = getDateAnswerValue(answer);
+  const date: Date | undefined = parseStringToDate(dateAnswerValue);
   const hours = getHoursOrMinutesFromDate(date, DateTimeUnit.Hours);
   const minutes = getHoursOrMinutesFromDate(date, DateTimeUnit.Minutes);
 
-  const convertDateToString = (item: QuestionnaireItem, answer?: QuestionnaireResponseItemAnswer): string | undefined => {
-    const date = getDefaultDate(item, answer);
+  const convertDateToString = (answer?: QuestionnaireResponseItemAnswer): string | undefined => {
+    const date = getDateAnswerValue(answer);
     if (date) {
       return format(date, 'dd.MM.yyyy HH:mm');
     }
@@ -105,13 +102,13 @@ const DateTimeInput = ({
 
   const getStringValue = (): string => {
     if (Array.isArray(answer)) {
-      return answer.map(m => convertDateToString(item, m)).join(', ');
+      return answer.map(x => convertDateToString(x)).join(', ');
     }
     let text = '';
     if (resources && resources.ikkeBesvart) {
       text = resources.ikkeBesvart;
     }
-    return convertDateToString(item, answer) ?? text;
+    return convertDateToString(answer) ?? text;
   };
 
   const getErrorText = (error: FieldError | undefined): string | undefined => {
@@ -129,28 +126,11 @@ const DateTimeInput = ({
     return error;
   }
 
-  const handleDateChange = (newDate: Date | string | undefined): void => {
-    let dateString: Date | string | undefined = '';
-    if (typeof newDate === 'object') {
-      dateString = formatISO(newDate);
-    } else if (typeof newDate === 'string') {
-      if (newDate === '') {
-        dateString = undefined;
-      } else if (isValid(parseISO(newDate))) {
-        dateString = parseISO(newDate);
-      } else if (isValid(parse(newDate, 'dd.MM.yyyy', new Date()))) {
-        dateString = parse(newDate, 'dd.MM.yyyy', new Date());
-      } else {
-        dateString = '';
-      }
-    } else if (newDate) {
-      dateString = newDate;
-    }
-
-    setValue(`${idWithLinkIdAndItemIndex}-date`, dateString);
-    trigger(`${idWithLinkIdAndItemIndex}-date`);
-    updateQuestionnaireResponse(dateString, hours, minutes);
+  const handleDateChange = (newDate: string | Date | undefined): void => {
+    updateQuestionnaireResponse(newDate, hours, minutes);
+    setValue(`${idWithLinkIdAndItemIndex}-date`, newDate);
   };
+
   const handleHoursChange = (newHours: string | undefined): void => {
     setValue(`${idWithLinkIdAndItemIndex}-hours`, newHours);
     if (newHours && Number(newHours) >= 0 && Number(newHours) < 24) {
@@ -168,10 +148,14 @@ const DateTimeInput = ({
   };
 
   const updateQuestionnaireResponse = (date: Date | string | undefined, hours: string | undefined, minutes: string | undefined): void => {
-    const fullDate = getFullFnsDate(date, hours, minutes);
-    const existingAnswer = !Array.isArray(answer) ? answer?.valueDateTime : answer?.map(m => m.valueDateTime).join(', ');
+    let fullDate: string | undefined = '';
+    if (typeof date === 'string') {
+      fullDate = `${date}:${hours}:${minutes}`;
+    } else {
+      fullDate = getFullFnsDate(date, hours, minutes);
+    }
 
-    if (dispatch && existingAnswer !== fullDate && onAnswerChange && path) {
+    if (dispatch && onAnswerChange && path) {
       dispatch(newDateTimeValueAsync(path, fullDate ?? '', item))?.then(newState =>
         onAnswerChange(newState, item, { valueDateTime: fullDate })
       );
@@ -215,13 +199,13 @@ const DateTimeInput = ({
             },
             validate: {
               validDate: value => {
-                return validateDate(value ? parseStringToDateDDMMYYYY(value) : undefined, resources);
+                return validateDate(value ? parseStringToDate(value) : undefined, resources);
               },
               validMinDate: value => {
-                return validateMinDate(minDateTime, parseStringToDateDDMMYYYY(value), resources);
+                return validateMinDate(minDateTime, parseStringToDate(value), resources);
               },
               validMaxDate: value => {
-                return validateMaxDate(maxDateTime, parseStringToDateDDMMYYYY(value), resources);
+                return validateMaxDate(maxDateTime, parseStringToDate(value), resources);
               },
             },
           })}
@@ -230,7 +214,7 @@ const DateTimeInput = ({
           autoComplete=""
           dateButtonAriaLabel="Open datepicker"
           dateFormat={'dd.MM.yyyy'}
-          dateValue={date}
+          dateValue={isValid(date) ? date : undefined}
           minDate={minDateTime}
           maxDate={maxDateTime}
           onChange={(_e, newDate) => {
