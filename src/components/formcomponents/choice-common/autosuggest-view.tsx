@@ -1,7 +1,7 @@
 import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 
 import { ValueSet, Coding } from 'fhir/r4';
-import { Controller, FieldValues, useFormContext } from 'react-hook-form';
+import { FieldValues, useFormContext } from 'react-hook-form';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Loader from '@helsenorge/designsystem-react/components/Loader';
@@ -47,7 +47,7 @@ const AutosuggestView = (props: AutosuggestProps): JSX.Element | null => {
     path,
     children,
   } = props;
-  const { formState, getFieldState } = useFormContext<FieldValues>();
+  const { formState, getFieldState, register } = useFormContext<FieldValues>();
 
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
@@ -181,6 +181,13 @@ const AutosuggestView = (props: AutosuggestProps): JSX.Element | null => {
   if (!enable) {
     return null;
   }
+  const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, {
+    required: {
+      value: isRequired(item),
+      message: resources?.formRequiredErrorMessage ?? 'Feltet er påkrevd',
+    },
+    shouldUnregister: true,
+  });
   return (
     <div className="page_refero__component page_refero__component_choice page_refero__component_choice_autosuggest">
       <FormGroup error={error?.message}>
@@ -195,45 +202,40 @@ const AutosuggestView = (props: AutosuggestProps): JSX.Element | null => {
         />
         <RenderHelpElement item={item} isHelpVisible={isHelpVisible} />
 
-        <Controller
-          name={idWithLinkIdAndItemIndex}
-          shouldUnregister={true}
-          defaultValue={inputValue}
-          rules={{
-            required: {
-              value: isRequired(item),
-              message: resources?.formRequiredErrorMessage ?? 'Feltet er påkrevd',
+        <Autosuggest
+          inputProps={{
+            ...rest,
+            id: getId(id),
+            onChange: (e: FormEvent<HTMLElement>, AutosuggestChangeEvent): void => {
+              onChange({
+                target: {
+                  value: '',
+                },
+              });
+              onChangeInput(e, AutosuggestChangeEvent);
+            },
+            value: inputValue,
+            type: 'search',
+            onBlur: (e: ChangeEvent<HTMLElement>, AutosuggestChangeEvent): void => {
+              onBlur(e, AutosuggestChangeEvent);
             },
           }}
-          render={({ field: { onChange, ...rest } }): JSX.Element => (
-            <Autosuggest
-              inputProps={{
-                ...rest,
-                id: getId(id),
-                onChange: (e: FormEvent<HTMLElement>, AutosuggestChangeEvent): void => {
-                  onChange('');
-                  onChangeInput(e, AutosuggestChangeEvent);
-                },
-                value: inputValue,
-                type: 'search',
-                onBlur: (e: ChangeEvent<HTMLElement>, AutosuggestChangeEvent): void => {
-                  onBlur(e, AutosuggestChangeEvent);
-                },
-              }}
-              className="page_refero__autosuggest"
-              suggestions={suggestions}
-              onSuggestionsFetchRequested={debouncedOnSuggestionsFetchRequested}
-              onSuggestionsClearRequested={(): void => {
-                // vis samme resultatsett neste gang feltet får fokus
-              }}
-              renderSuggestion={(suggestion: Suggestion): JSX.Element => <div>{suggestion.label}</div>}
-              onSuggestionSelected={(e, data): void => {
-                onChange([data.suggestion.value]);
-                onSuggestionSelected(e, data);
-              }}
-              focusInputOnSuggestionClick={true}
-            />
-          )}
+          className="page_refero__autosuggest"
+          suggestions={suggestions}
+          onSuggestionsFetchRequested={debouncedOnSuggestionsFetchRequested}
+          onSuggestionsClearRequested={(): void => {
+            // vis samme resultatsett neste gang feltet får fokus
+          }}
+          renderSuggestion={(suggestion: Suggestion): JSX.Element => <div>{suggestion.label}</div>}
+          onSuggestionSelected={(e, data): void => {
+            onChange({
+              target: {
+                value: [data.suggestion.value],
+              },
+            });
+            onSuggestionSelected(e, data);
+          }}
+          focusInputOnSuggestionClick={true}
         />
 
         {isLoading && (

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import { QuestionnaireResponseItemAnswer, Quantity as QuantityType } from 'fhir/r4';
-import { Controller, FieldValues, useFormContext } from 'react-hook-form';
+import { FieldValues, useFormContext } from 'react-hook-form';
 import { ThunkDispatch } from 'redux-thunk';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
@@ -36,7 +36,7 @@ export type Props = QuestionnaireComponentItemProps;
 const Quantity = (props: Props): JSX.Element | null => {
   const { path, item, id, resources, pdf, idWithLinkIdAndItemIndex, responseItems, index, children, responseItem } = props;
   const { promptLoginMessage, onAnswerChange } = useExternalRenderContext();
-  const { formState, getFieldState } = useFormContext<FieldValues>();
+  const { formState, getFieldState, register } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
 
@@ -115,6 +115,32 @@ const Quantity = (props: Props): JSX.Element | null => {
   const minValue = getMinValueExtensionValue(item);
   const maxValue = getMaxValueExtensionValue(item);
   const errorMessage = getValidationTextExtension(item);
+  const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, {
+    required: {
+      value: isRequired(item),
+      message: resources?.formRequiredErrorMessage ?? 'Feltet er påkrevd',
+    },
+
+    ...(maxValue && {
+      max: {
+        value: maxValue,
+        message: errorMessage ?? resources?.oppgiGyldigVerdi ?? 'Verdien er for høy',
+      },
+    }),
+    ...(minValue && {
+      min: {
+        value: minValue,
+        message: errorMessage ?? resources?.oppgiGyldigVerdi ?? 'Verdien er for lav',
+      },
+    }),
+    ...(decimalPattern && {
+      pattern: {
+        value: new RegExp(decimalPattern),
+        message: resources?.oppgiGyldigVerdi ?? 'Verdien er ikke et gyldig tall',
+      },
+    }),
+    shouldUnregister: true,
+  });
   return (
     <div className="page_refero__component page_refero__component_quantity">
       <FormGroup error={error?.message} mode="ongrey">
@@ -129,55 +155,24 @@ const Quantity = (props: Props): JSX.Element | null => {
         />
         <RenderHelpElement isHelpVisible={isHelpVisible} item={item} />
 
-        <Controller
-          name={idWithLinkIdAndItemIndex}
-          shouldUnregister={true}
-          defaultValue={value}
-          rules={{
-            required: {
-              value: isRequired(item),
-              message: resources?.formRequiredErrorMessage ?? 'Feltet er påkrevd',
-            },
+        <div className={styles.inputWrapper}>
+          <Input
+            {...rest}
+            value={value !== undefined ? value + '' : ''}
+            type="number"
+            inputId={getId(id)}
+            testId={getId(id)}
+            placeholder={getPlaceholder(item)}
+            className="page_refero__quantity"
+            onChange={(e): void => {
+              onChange(e);
+              handleChange(e);
+            }}
+            width={7}
+          />
+          <span className={`${styles.pageReferoUnit} page_refero__unit`}>{getUnit()}</span>
+        </div>
 
-            ...(maxValue && {
-              max: {
-                value: maxValue,
-                message: errorMessage ?? resources?.oppgiGyldigVerdi ?? 'Verdien er for høy',
-              },
-            }),
-            ...(minValue && {
-              min: {
-                value: minValue,
-                message: errorMessage ?? resources?.oppgiGyldigVerdi ?? 'Verdien er for lav',
-              },
-            }),
-            ...(decimalPattern && {
-              pattern: {
-                value: new RegExp(decimalPattern),
-                message: resources?.oppgiGyldigVerdi ?? 'Verdien er ikke et gyldig tall',
-              },
-            }),
-          }}
-          render={({ field: { onChange, ...rest } }): JSX.Element => (
-            <div className={styles.inputWrapper}>
-              <Input
-                {...rest}
-                value={value !== undefined ? value + '' : ''}
-                type="number"
-                inputId={getId(id)}
-                testId={getId(id)}
-                placeholder={getPlaceholder(item)}
-                className="page_refero__quantity"
-                onChange={(e): void => {
-                  onChange(e.target.value);
-                  handleChange(e);
-                }}
-                width={7}
-              />
-              <span className={`${styles.pageReferoUnit} page_refero__unit`}>{getUnit()}</span>
-            </div>
-          )}
-        />
         <RenderDeleteButton
           item={item}
           path={path}

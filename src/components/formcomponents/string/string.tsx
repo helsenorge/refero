@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { Controller, FieldValues, useFormContext } from 'react-hook-form';
+import { FieldValues, useFormContext } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 
@@ -30,7 +30,7 @@ export type Props = QuestionnaireComponentItemProps;
 export const String = (props: Props): JSX.Element | null => {
   const { path, item, id, pdf, resources, idWithLinkIdAndItemIndex, children, responseItems, index, responseItem } = props;
   const { promptLoginMessage, validateScriptInjection, onAnswerChange } = useExternalRenderContext();
-  const { formState, getFieldState } = useFormContext<FieldValues>();
+  const { formState, getFieldState, register } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
@@ -71,6 +71,34 @@ export const String = (props: Props): JSX.Element | null => {
     debouncedHandleChange(event);
   };
   const value = getStringValue(answer);
+  const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, {
+    required: {
+      value: isRequired(item),
+      message: resources?.formRequiredErrorMessage ?? 'Feltet er påkrevd',
+    },
+    ...(validateScriptInjection && {
+      validate: (value: string): true | string => scriptInjectionValidation(value, resources),
+    }),
+    ...(minLength && {
+      minLength: {
+        value: minLength || 0,
+        message: errorMessage ?? resources?.stringOverMaxLengthError ?? 'Verdien er for kort',
+      },
+    }),
+    ...(maxLength && {
+      maxLength: {
+        value: maxLength,
+        message: errorMessage ?? resources?.stringOverMaxLengthError ?? 'Verdien er for lang',
+      },
+    }),
+    ...(pattern && {
+      pattern: {
+        value: new RegExp(pattern),
+        message: errorMessage ?? resources?.oppgiGyldigVerdi ?? 'Verdien er for lav',
+      },
+    }),
+    shouldUnregister: true,
+  });
   return (
     <div className="page_refero__component page_refero__component_string">
       <FormGroup error={error?.message ?? ''} mode="ongrey">
@@ -83,57 +111,20 @@ export const String = (props: Props): JSX.Element | null => {
           afterLabelContent={<RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />}
         />
         <RenderHelpElement item={item} isHelpVisible={isHelpVisible} />
-        <Controller
-          name={idWithLinkIdAndItemIndex}
-          shouldUnregister={true}
+        <Input
+          {...rest}
+          disabled={item.readOnly}
           defaultValue={value}
-          rules={{
-            required: {
-              value: isRequired(item),
-              message: resources?.formRequiredErrorMessage ?? 'Feltet er påkrevd',
-            },
-            ...(validateScriptInjection && {
-              validate: (value: string): true | string => scriptInjectionValidation(value, resources),
-            }),
-            ...(minLength && {
-              minLength: {
-                value: minLength || 0,
-                message: errorMessage ?? resources?.stringOverMaxLengthError ?? 'Verdien er for kort',
-              },
-            }),
-            ...(maxLength && {
-              maxLength: {
-                value: maxLength,
-                message: errorMessage ?? resources?.stringOverMaxLengthError ?? 'Verdien er for lang',
-              },
-            }),
-            ...(pattern && {
-              pattern: {
-                value: new RegExp(pattern),
-                message: errorMessage ?? resources?.oppgiGyldigVerdi ?? 'Verdien er for lav',
-              },
-            }),
+          onChange={(e): void => {
+            handleInputChange(e);
+            onChange(e);
           }}
-          render={({ field: { onChange, ref, name } }): JSX.Element => {
-            return (
-              <Input
-                name={name}
-                ref={ref}
-                disabled={item.readOnly}
-                defaultValue={value}
-                onChange={(e): void => {
-                  handleInputChange(e);
-                  onChange(e.target.value);
-                }}
-                type="text"
-                width={25}
-                testId={`${getId(id)}-string`}
-                inputId={getId(id)}
-                placeholder={getPlaceholder(item)}
-                className="page_refero__input"
-              />
-            );
-          }}
+          type="text"
+          width={25}
+          testId={`${getId(id)}-string`}
+          inputId={getId(id)}
+          placeholder={getPlaceholder(item)}
+          className="page_refero__input"
         />
         <RenderDeleteButton
           item={item}

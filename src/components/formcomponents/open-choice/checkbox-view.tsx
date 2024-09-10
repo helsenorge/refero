@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { Controller, FieldValues, useFormContext } from 'react-hook-form';
+import { FieldValues, useFormContext } from 'react-hook-form';
 
 import { Options } from '@/types/formTypes/radioGroupOptions';
 
@@ -42,12 +42,19 @@ const CheckboxView = (props: Props): JSX.Element | null => {
     children,
     path,
   } = props;
-  const { formState, getFieldState } = useFormContext<FieldValues>();
+  const { formState, getFieldState, register } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
 
   const answer = useGetAnswer(responseItem, item);
   const [isHelpVisible, setIsHelpVisible] = useState(false);
+  const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, {
+    required: {
+      message: resources?.formRequiredErrorMessage ?? 'Påkrevd felt',
+      value: isRequired(item),
+    },
+    shouldUnregister: true,
+  });
   return (
     <div className="page_refero__component page_refero__component_openchoice page_refero__component_openchoice_checkbox">
       <FormGroup error={error?.message} mode="ongrey">
@@ -64,38 +71,18 @@ const CheckboxView = (props: Props): JSX.Element | null => {
         <RenderHelpElement item={item} isHelpVisible={isHelpVisible} />
 
         {options?.map((option, index) => (
-          <Controller
-            name={idWithLinkIdAndItemIndex}
+          <Checkbox
+            {...rest}
             key={`${option.type}-${index}`}
-            shouldUnregister={true}
-            defaultValue={selected}
-            rules={{
-              required: {
-                message: resources?.formRequiredErrorMessage ?? 'Påkrevd felt',
-                value: isRequired(item),
-              },
+            inputId={`${id}-${option.type}`}
+            testId={`${getId(id)}-${index}-checkbox-openchoice`}
+            label={<Label testId={`${getId(id)}-${index}-checkbox-openchoice-label`} labelTexts={[{ text: option.label }]} />}
+            checked={selected?.some((val: string | undefined) => val === option?.type)}
+            value={option.type}
+            onChange={(e): void => {
+              onChange(e);
+              handleChange(option.type);
             }}
-            render={({ field: { value, onChange, ...rest } }): JSX.Element => (
-              <Checkbox
-                {...rest}
-                inputId={`${id}-${option.type}`}
-                testId={`${getId(id)}-${index}-checkbox-openchoice`}
-                label={<Label testId={`${getId(id)}-${index}-checkbox-openchoice-label`} labelTexts={[{ text: option.label }]} />}
-                checked={selected?.some((val: string | undefined) => val === option?.type)}
-                value={option.type}
-                onChange={(e): void => {
-                  const valueCopy = value ? [...value] : [];
-                  if (e.target.checked) {
-                    valueCopy.push(option.type);
-                  } else {
-                    const idx = valueCopy.findIndex(code => option.type === code);
-                    valueCopy.splice(idx, 1);
-                  }
-                  onChange(valueCopy);
-                  handleChange(option.type);
-                }}
-              />
-            )}
           />
         ))}
       </FormGroup>

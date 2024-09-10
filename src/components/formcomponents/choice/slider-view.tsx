@@ -90,7 +90,7 @@ const SliderView = (props: SliderProps): JSX.Element | null => {
           }}
           control={control}
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          render={({ field: { onChange, ref, ...rest } }): JSX.Element => (
+          render={({ field: { onChange, ...rest } }): JSX.Element => (
             <Slider
               {...rest}
               labelLeft={leftRightLabels?.leftLabel}

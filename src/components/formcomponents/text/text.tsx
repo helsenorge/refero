@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { Controller, FieldValues, useFormContext } from 'react-hook-form';
+import { FieldValues, useFormContext } from 'react-hook-form';
 import { ThunkDispatch } from 'redux-thunk';
 
 import Expander from '@helsenorge/designsystem-react/components/Expander';
@@ -52,7 +52,7 @@ export const Text = (props: Props): JSX.Element | null => {
     children,
   } = props;
   const { promptLoginMessage, validateScriptInjection, onAnswerChange } = useExternalRenderContext();
-  const { formState, getFieldState } = useFormContext<FieldValues>();
+  const { formState, getFieldState, register } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
@@ -110,7 +110,34 @@ export const Text = (props: Props): JSX.Element | null => {
   const minLength = getMinLengthExtensionValue(item);
   const pattern = getRegexExtension(item);
   const validationTextMessage = getValidationTextExtension(item);
-
+  const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, {
+    required: {
+      value: isRequired(item),
+      message: resources?.formRequiredErrorMessage || 'Verdien er påkrevd',
+    },
+    ...(minLength && {
+      minLength: {
+        value: minLength || 0,
+        message: validationTextMessage ?? resources?.stringOverMaxLengthError ?? 'Verdien er for kort',
+      },
+    }),
+    ...(maxLength && {
+      maxLength: {
+        value: maxLength,
+        message: validationTextMessage ?? resources?.stringOverMaxLengthError ?? 'Verdien er for lang',
+      },
+    }),
+    ...(pattern && {
+      pattern: {
+        value: new RegExp(pattern),
+        message: validationTextMessage ?? resources?.oppgiGyldigVerdi ?? 'Verdien er for lav',
+      },
+    }),
+    ...(validateScriptInjection && {
+      validate: (value: string): true | string => scriptInjectionValidation(value, resources),
+    }),
+    shouldUnregister: true,
+  });
   return (
     <div className="page_refero__component page_refero__component_text">
       <FormGroup error={error?.message} mode="ongrey">
@@ -123,56 +150,23 @@ export const Text = (props: Props): JSX.Element | null => {
           afterLabelContent={<RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />}
         />
         <RenderHelpElement item={item} isHelpVisible={isHelpVisible} />
-        <Controller
-          name={idWithLinkIdAndItemIndex}
-          defaultValue={value || ''}
-          shouldUnregister={true}
-          rules={{
-            required: {
-              value: isRequired(item),
-              message: resources?.formRequiredErrorMessage || 'Verdien er påkrevd',
-            },
-            ...(minLength && {
-              minLength: {
-                value: minLength || 0,
-                message: validationTextMessage ?? resources?.stringOverMaxLengthError ?? 'Verdien er for kort',
-              },
-            }),
-            ...(maxLength && {
-              maxLength: {
-                value: maxLength,
-                message: validationTextMessage ?? resources?.stringOverMaxLengthError ?? 'Verdien er for lang',
-              },
-            }),
-            ...(pattern && {
-              pattern: {
-                value: new RegExp(pattern),
-                message: validationTextMessage ?? resources?.oppgiGyldigVerdi ?? 'Verdien er for lav',
-              },
-            }),
-            ...(validateScriptInjection && {
-              validate: (value: string): true | string => scriptInjectionValidation(value, resources),
-            }),
+
+        <Textarea
+          {...rest}
+          defaultValue={value}
+          onChange={(e): void => {
+            onTextAreaChange(e);
+            onChange(e);
           }}
-          render={({ field: { onChange, name, ref } }): JSX.Element => (
-            <Textarea
-              ref={ref}
-              name={name}
-              defaultValue={value}
-              onChange={(e): void => {
-                onTextAreaChange(e);
-                onChange(e?.target?.value);
-              }}
-              textareaId={getId(id)}
-              maxRows={Constants.DEFAULT_TEXTAREA_HEIGHT}
-              placeholder={getPlaceholder(item)}
-              testId={`${getId(id)}-text`}
-              grow={true}
-              maxCharacters={maxLength}
-              maxText={maxLength ? resources?.maxLengthText?.replace('{0}', `${maxLength}`) : ''}
-            />
-          )}
+          textareaId={getId(id)}
+          maxRows={Constants.DEFAULT_TEXTAREA_HEIGHT}
+          placeholder={getPlaceholder(item)}
+          testId={`${getId(id)}-text`}
+          grow={true}
+          maxCharacters={maxLength}
+          maxText={maxLength ? resources?.maxLengthText?.replace('{0}', `${maxLength}`) : ''}
         />
+
         <RenderDeleteButton
           item={item}
           path={path}

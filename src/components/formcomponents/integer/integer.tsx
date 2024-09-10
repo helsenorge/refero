@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { Controller, FieldValues, useFormContext } from 'react-hook-form';
+import { FieldValues, useFormContext } from 'react-hook-form';
 import { ThunkDispatch } from 'redux-thunk';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
@@ -30,7 +30,7 @@ const Integer = (props: Props): JSX.Element | null => {
 
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
   const { promptLoginMessage, onAnswerChange } = useExternalRenderContext();
-  const { formState, getFieldState } = useFormContext<FieldValues>();
+  const { formState, getFieldState, register } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
   const [isHelpVisible, setIsHelpVisible] = useState(false);
@@ -87,6 +87,25 @@ const Integer = (props: Props): JSX.Element | null => {
   const errorMessage = getValidationTextExtension(item);
   const minValue = getMinValueExtensionValue(item);
   const maxValue = getMaxValueExtensionValue(item);
+  const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, {
+    required: {
+      value: isRequired(item),
+      message: resources?.formRequiredErrorMessage ?? 'Feltet er påkrevd',
+    },
+    ...(maxValue && {
+      max: {
+        value: maxValue,
+        message: errorMessage ?? resources?.oppgiGyldigVerdi ?? 'Verdien er for høy',
+      },
+    }),
+    ...(minValue && {
+      min: {
+        value: minValue,
+        message: errorMessage ?? resources?.oppgiGyldigVerdi ?? 'Verdien er for lav',
+      },
+    }),
+    shouldUnregister: true,
+  });
   return (
     <div className="page_refero__component page_refero__component_integer">
       <FormGroup error={error?.message} mode="ongrey">
@@ -100,44 +119,20 @@ const Integer = (props: Props): JSX.Element | null => {
           afterLabelContent={<RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />}
         />
         <RenderHelpElement item={item} isHelpVisible={isHelpVisible} />
-        <Controller
-          name={idWithLinkIdAndItemIndex}
-          shouldUnregister={true}
-          defaultValue={value}
-          rules={{
-            required: {
-              value: isRequired(item),
-              message: resources?.formRequiredErrorMessage ?? 'Feltet er påkrevd',
-            },
-            ...(maxValue && {
-              max: {
-                value: maxValue,
-                message: errorMessage ?? resources?.oppgiGyldigVerdi ?? 'Verdien er for høy',
-              },
-            }),
-            ...(minValue && {
-              min: {
-                value: minValue,
-                message: errorMessage ?? resources?.oppgiGyldigVerdi ?? 'Verdien er for lav',
-              },
-            }),
+
+        <Input
+          {...rest}
+          type="number"
+          value={Array.isArray(value) ? value.join(', ') : value}
+          inputId={getId(id)}
+          testId={getId(id)}
+          onChange={(e): void => {
+            onChange(e);
+            handleChange(e);
           }}
-          render={({ field: { onChange, ...rest } }): JSX.Element => (
-            <Input
-              {...rest}
-              type="number"
-              value={Array.isArray(value) ? value.join(', ') : value}
-              inputId={getId(id)}
-              testId={getId(id)}
-              onChange={(e): void => {
-                onChange(e.target.value);
-                handleChange(e);
-              }}
-              placeholder={getPlaceholder(item)}
-              className="page_refero__input"
-              width={25}
-            />
-          )}
+          placeholder={getPlaceholder(item)}
+          className="page_refero__input"
+          width={25}
         />
         <RenderDeleteButton
           item={item}
