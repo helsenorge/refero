@@ -43,7 +43,7 @@ const RadioView = (props: Props): JSX.Element | null => {
     index,
     children,
   } = props;
-  const { formState, getFieldState, control } = useFormContext<FieldValues>();
+  const { formState, getFieldState } = useFormContext<FieldValues>();
   const { error } = getFieldState(idWithLinkIdAndItemIndex, formState);
   const [isHelpVisible, setIsHelpVisible] = React.useState(false);
   if (!options) {
@@ -67,7 +67,6 @@ const RadioView = (props: Props): JSX.Element | null => {
           <Controller
             name={idWithLinkIdAndItemIndex}
             key={`${option.type}-${index}`}
-            control={control}
             shouldUnregister={true}
             defaultValue={selectedValue}
             rules={{

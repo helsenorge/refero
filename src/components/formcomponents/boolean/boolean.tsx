@@ -7,8 +7,6 @@ import Checkbox from '@helsenorge/designsystem-react/components/Checkbox';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
 
-import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
-
 import Pdf from './pdf';
 import { NewValueAction, newBooleanValueAsync } from '@/actions/newValue';
 import { GlobalState } from '@/reducers';
@@ -35,7 +33,7 @@ const Boolean = (props: Props): JSX.Element | null => {
   const formDefinition = useSelector((state: GlobalState) => getFormDefinition(state));
   const questionnaire = formDefinition?.Content;
 
-  const { formState, getFieldState, control } = useFormContext<FieldValues>();
+  const { formState, getFieldState } = useFormContext<FieldValues>();
   const fieldState = getFieldState(props.idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
 
@@ -100,7 +98,6 @@ const Boolean = (props: Props): JSX.Element | null => {
       <FormGroup error={error?.message}>
         <Controller
           name={idWithLinkIdAndItemIndex || ''}
-          control={control}
           shouldUnregister={true}
           defaultValue={value}
           rules={{
@@ -109,38 +106,40 @@ const Boolean = (props: Props): JSX.Element | null => {
               message: resources?.formRequiredErrorMessage ?? 'Feltet er påkrevd',
             },
           }}
-          render={({ field: { onChange, ...rest } }): JSX.Element => (
-            <Checkbox
-              {...rest}
-              testId={`${getId(id)}-boolean`}
-              inputId={getId(id)}
-              label={
-                <Label
-                  labelId={`${getId(id)}-label-boolean`}
-                  testId={`${getId(id)}-label-boolean`}
-                  labelTexts={[{ text: labelText, type: 'semibold' }]}
-                  htmlFor={getId(id)}
-                  className="page_refero__label"
-                  sublabel={
-                    <Sublabel
-                      testId={`${getId(id)}-sublabel-boolean`}
-                      id={`${getId(id)}-sublabel-boolean`}
-                      sublabelTexts={[{ text: subLabelText, type: 'normal' }]}
-                    />
-                  }
-                  afterLabelChildren={<RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />}
-                >
-                  <SafeText text={labelText} />
-                </Label>
-              }
-              checked={value}
-              onChange={(): void => {
-                handleChange();
-                onChange(!value);
-              }}
-              className="page_refero__input"
-            />
-          )}
+          render={({ field: { onChange, ...rest } }): JSX.Element => {
+            return (
+              <Checkbox
+                {...rest}
+                testId={`${getId(id)}-boolean`}
+                inputId={getId(id)}
+                label={
+                  <Label
+                    labelId={`${getId(id)}-label-boolean`}
+                    testId={`${getId(id)}-label-boolean`}
+                    labelTexts={[{ text: labelText, type: 'semibold' }]}
+                    htmlFor={getId(id)}
+                    className="page_refero__label"
+                    sublabel={
+                      <Sublabel
+                        testId={`${getId(id)}-sublabel-boolean`}
+                        id={`${getId(id)}-sublabel-boolean`}
+                        sublabelTexts={[{ text: subLabelText, type: 'normal' }]}
+                      />
+                    }
+                    afterLabelChildren={<RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />}
+                  >
+                    <SafeText text={labelText} />
+                  </Label>
+                }
+                checked={value}
+                onChange={(): void => {
+                  handleChange();
+                  onChange(!value);
+                }}
+                className="page_refero__input"
+              />
+            );
+          }}
         />
 
         <RenderHelpElement item={item} isHelpVisible={isHelpVisible} />
@@ -159,5 +158,4 @@ const Boolean = (props: Props): JSX.Element | null => {
   );
 };
 
-const layoutChangeComponent = layoutChange(Boolean);
-export default layoutChangeComponent;
+export default Boolean;

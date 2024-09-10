@@ -8,8 +8,6 @@ import { ThunkDispatch } from 'redux-thunk';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Input from '@helsenorge/designsystem-react/components/Input';
 
-import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
-
 import { NewValueAction, newDecimalValueAsync } from '@/actions/newValue';
 import { GlobalState } from '@/reducers';
 import { getMaxValueExtensionValue, getMinValueExtensionValue, getPlaceholder, getValidationTextExtension } from '@/util/extension';
@@ -32,7 +30,7 @@ export type Props = QuestionnaireComponentItemProps;
 const Decimal = (props: Props): JSX.Element | null => {
   const { id, item, pdf, resources, children, idWithLinkIdAndItemIndex, path, responseItems, index, responseItem } = props;
   const { promptLoginMessage, onAnswerChange } = useExternalRenderContext();
-  const { formState, getFieldState, control } = useFormContext<FieldValues>();
+  const { formState, getFieldState } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex || '', formState);
   const { error } = fieldState;
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
@@ -112,8 +110,7 @@ const Decimal = (props: Props): JSX.Element | null => {
         />
         <RenderHelpElement item={item} isHelpVisible={isHelpVisible} />
         <Controller
-          name={idWithLinkIdAndItemIndex || ''}
-          control={control}
+          name={idWithLinkIdAndItemIndex}
           shouldUnregister={true}
           defaultValue={value ? value + '' : ''}
           rules={{
@@ -172,5 +169,4 @@ const Decimal = (props: Props): JSX.Element | null => {
   );
 };
 
-const layoutChangeComponent = layoutChange(Decimal);
-export default layoutChangeComponent;
+export default Decimal;

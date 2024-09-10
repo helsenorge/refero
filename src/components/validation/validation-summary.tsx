@@ -22,12 +22,13 @@ const ValidationSummary = ({ resources }: Props): JSX.Element | null => {
 
   const errorSummaryRef = useRef<HTMLDivElement | null>(null);
 
-  const { setFocus, formState } = useFormContext();
+  const { setFocus, formState, getFieldState } = useFormContext();
   const { submitCount, errors } = formState;
-  const errorArray = Object.entries(errors);
 
   const handleErrorButtonClicked = (e: React.MouseEvent<HTMLButtonElement>, fieldName: string): void => {
     e.preventDefault();
+    const field = getFieldState(fieldName, formState);
+    console.log('field', field);
     setFocus(fieldName, {
       shouldSelect: true,
     });
@@ -38,12 +39,14 @@ const ValidationSummary = ({ resources }: Props): JSX.Element | null => {
       errorSummaryRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, [submitCount, errors]);
+
   const allErrors = getItemTextFromErrors(errors, formData, formDefinition);
-  return errorArray.length > 0 ? (
+
+  return allErrors.length > 0 ? (
     <div ref={errorSummaryRef} data-testid="validation-summary">
       <ul className={styles.validationSummary_list}>
         <h3 className={styles.validationSummary_header}>{resources.validationSummaryHeader}</h3>
-        {errorArray &&
+        {allErrors &&
           allErrors.map(({ text, fieldName }) => (
             <li data-testid={`summary-element-${text}`} className={styles.validationSummary_listItem} key={fieldName}>
               <button

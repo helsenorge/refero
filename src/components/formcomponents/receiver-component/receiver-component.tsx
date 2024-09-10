@@ -36,7 +36,7 @@ const ReceiverComponent = ({
   clearCodingAnswer,
   idWithLinkIdAndItemIndex,
 }: ReceiverComponentProps): JSX.Element | null => {
-  const { formState, getFieldState, control } = useFormContext<FieldValues>();
+  const { formState, getFieldState } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
   const [receiverTreeNodes, setReceiverTreeNodes] = React.useState<OrgenhetHierarki[]>([]);
@@ -186,7 +186,6 @@ const ReceiverComponent = ({
         <Controller
           key={`${selectKey}-${level}`}
           name={`${idWithLinkIdAndItemIndex}-${selectKey}`}
-          control={control}
           shouldUnregister={true}
           defaultValue={value}
           rules={{

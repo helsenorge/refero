@@ -42,7 +42,7 @@ const CheckboxView = (props: Props): JSX.Element | null => {
     children,
     path,
   } = props;
-  const { formState, getFieldState, control } = useFormContext<FieldValues>();
+  const { formState, getFieldState } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
 
@@ -67,7 +67,6 @@ const CheckboxView = (props: Props): JSX.Element | null => {
           <Controller
             name={idWithLinkIdAndItemIndex}
             key={`${option.type}-${index}`}
-            control={control}
             shouldUnregister={true}
             defaultValue={selected}
             rules={{

@@ -47,7 +47,7 @@ const AutosuggestView = (props: AutosuggestProps): JSX.Element | null => {
     path,
     children,
   } = props;
-  const { formState, getFieldState, control } = useFormContext<FieldValues>();
+  const { formState, getFieldState } = useFormContext<FieldValues>();
 
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
@@ -197,7 +197,6 @@ const AutosuggestView = (props: AutosuggestProps): JSX.Element | null => {
 
         <Controller
           name={idWithLinkIdAndItemIndex}
-          control={control}
           shouldUnregister={true}
           defaultValue={inputValue}
           rules={{
