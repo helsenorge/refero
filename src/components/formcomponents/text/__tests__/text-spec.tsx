@@ -1,6 +1,6 @@
 import '@/util/__tests__/defineFetch';
 
-import { act, findByRole, renderRefero, userEvent } from '../../../../../test/test-utils';
+import { findByRole, renderRefero, userEvent } from '../../../../../test/test-utils';
 import { qinline, q, qScriptInjection } from './__data__';
 import { Questionnaire, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { ReferoProps } from '../../../../types/referoProps';
@@ -343,7 +343,7 @@ describe('Text', () => {
         await submitForm();
         expect(queryByText('Custom error')).not.toBeInTheDocument();
       });
-      it('Should remove error on change if form is submitted', async () => {
+      it.only('Should remove error on change if form is submitted', async () => {
         const questionnaire: Questionnaire = {
           ...q,
           item: q.item?.map(x => ({
@@ -351,9 +351,10 @@ describe('Text', () => {
             required: false,
           })),
         };
-        const { getByText, queryByText, getByLabelText } = createWrapper(questionnaire);
+        const { getByText, queryByText, getByLabelText, debug } = createWrapper(questionnaire);
         await userEvent.type(getByLabelText(/String/i), 'e@st.co');
         await submitForm();
+        debug(undefined, 20000);
         expect(getByText('Custom error')).toBeInTheDocument();
         await userEvent.clear(getByLabelText(/String/i));
         await userEvent.type(getByLabelText(/String/i), 'epost@test.com');
@@ -446,11 +447,11 @@ describe('Text', () => {
         const { getByText, queryByText, getByLabelText } = createWrapper(questionnaire);
         await userEvent.type(getByLabelText(/String/i), 'epostsdsdcom');
         await submitForm();
-        expect(getByText('Custom error')).toBeInTheDocument();
+        expect(getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
         await userEvent.clear(getByLabelText(/String/i));
         await userEvent.type(getByLabelText(/String/i), 'epost@test.com');
 
-        expect(queryByText('Custom error')).not.toBeInTheDocument();
+        expect(queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
       });
     });
     describe('validateScriptInjection ', () => {

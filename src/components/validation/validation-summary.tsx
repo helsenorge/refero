@@ -38,7 +38,6 @@ const ValidationSummary = ({ resources }: Props): JSX.Element | null => {
   }, [submitCount, errors]);
 
   const allErrors = getItemTextFromErrors(errors, formData, formDefinition);
-
   return allErrors.length > 0 ? (
     <div ref={errorSummaryRef} data-testid="validation-summary">
       <ul className={styles.validationSummary_list}>
@@ -51,7 +50,7 @@ const ValidationSummary = ({ resources }: Props): JSX.Element | null => {
                 className={styles.validationSummary_button}
                 onClick={(e): void => handleErrorButtonClicked(e, fieldName)}
               >
-                <SafeText text={text} />
+                <SafeText as="p" text={text.toString()} />
               </button>
             </li>
           ))}

@@ -1,5 +1,11 @@
 import { getDecimalPattern, getMaxLength, isRequired, scriptInjectionValidation } from '@/util';
-import { getMaxValueExtensionValue, getMinValueExtensionValue, getRegexExtension, getValidationTextExtension } from '@/util/extension';
+import {
+  getMaxValueExtensionValue,
+  getMinValueExtensionValue,
+  getRegexExtension,
+  getValidationTextExtension,
+  getMinLengthExtensionValue,
+} from '@/util/extension';
 import { Resources } from '@/util/resources';
 import { QuestionnaireItem } from 'fhir/r4';
 import { ValidationRule, ValidationValue } from 'react-hook-form';
@@ -74,7 +80,7 @@ export const maxLength = ({ item, resources, message }: ValidationRuleInput): Va
 };
 
 export const minLength = ({ item, resources, message }: ValidationRuleInput): ValidationRule<number> | undefined => {
-  const minLength = getMinValueExtensionValue(item);
+  const minLength = getMinLengthExtensionValue(item);
   const customErrorMessage = getValidationTextExtension(item);
   return minLength
     ? {
