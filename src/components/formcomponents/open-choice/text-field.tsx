@@ -5,14 +5,16 @@ import { FieldValues, useFormContext } from 'react-hook-form';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Input from '@helsenorge/designsystem-react/components/Input';
 
-import { getValidationTextExtension, getPlaceholder, getMinLengthExtensionValue, getRegexExtension } from '../../../util/extension';
-import { isReadOnly, isRequired, getId, getPDFStringValue, getMaxLength, getStringValue } from '../../../util/index';
+import { getPlaceholder } from '../../../util/extension';
+import { isReadOnly, getId, getPDFStringValue, getStringValue } from '../../../util/index';
 
 import Pdf from '../textview';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
 import { QuestionnaireComponentItemProps } from '@/components/GenerateQuestionnaireComponents';
+import { maxLength, minLength, regexpPattern, required, scriptInjection } from '@/components/validation/rules';
+import { useExternalRenderContext } from '@/context/externalRenderContext';
 
 type Props = QuestionnaireComponentItemProps & {
   handleStringChange: (event: React.FocusEvent<HTMLInputElement, Element>) => void;
@@ -21,10 +23,11 @@ type Props = QuestionnaireComponentItemProps & {
 const textField = (props: Props): JSX.Element | null => {
   const { id, pdf, item, handleStringChange, handleChange, children, resources, idWithLinkIdAndItemIndex, responseItem } = props;
   const formName = `${idWithLinkIdAndItemIndex}-extra-field`;
+
   const { formState, getFieldState, register } = useFormContext<FieldValues>();
   const { error } = getFieldState(formName, formState);
   const answer = useGetAnswer(responseItem, item);
-
+  const { validateScriptInjection } = useExternalRenderContext();
   if (pdf) {
     return (
       <Pdf item={item} value={getPDFStringValue(answer)}>
@@ -36,34 +39,14 @@ const textField = (props: Props): JSX.Element | null => {
     handleStringChange(e);
   };
 
-  const maxLength = getMaxLength(item);
-  const minLength = getMinLengthExtensionValue(item);
-  const pattern = getRegexExtension(item);
-  const errorMessage = getValidationTextExtension(item);
   const value = getStringValue(answer);
   const { onChange, onBlur, ...rest } = register(`${idWithLinkIdAndItemIndex}-extra-field`, {
-    required: {
-      value: isRequired(item),
-      message: resources?.formRequiredErrorMessage ?? 'Feltet er påkrevd',
-    },
-    ...(minLength && {
-      minLength: {
-        value: minLength || 0,
-        message: errorMessage ?? resources?.stringOverMaxLengthError ?? 'Verdien er for kort',
-      },
-    }),
-    ...(maxLength && {
-      maxLength: {
-        value: maxLength,
-        message: errorMessage ?? resources?.stringOverMaxLengthError ?? 'Verdien er for lang',
-      },
-    }),
-    ...(pattern && {
-      pattern: {
-        value: new RegExp(pattern),
-        message: errorMessage ?? 'Det er en feil på feltet',
-      },
-    }),
+    required: required({ item, resources }),
+    minLength: minLength({ item, resources }),
+    maxLength: maxLength({ item, resources }),
+    pattern: regexpPattern({ item, resources }),
+    validate: (value: string): string | true | undefined =>
+      scriptInjection({ value, resources, shouldValidate: !!validateScriptInjection }),
     shouldUnregister: true,
   });
   return (

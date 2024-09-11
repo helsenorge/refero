@@ -11,8 +11,8 @@ import { debounce } from '@helsenorge/core-utils/debounce';
 
 import { NewValueAction, newStringValueAsync } from '@/actions/newValue';
 import { GlobalState } from '@/reducers';
-import { getMinLengthExtensionValue, getPlaceholder, getRegexExtension, getValidationTextExtension } from '@/util/extension';
-import { isReadOnly, isRequired, getId, getStringValue, getPDFStringValue, getMaxLength, scriptInjectionValidation } from '@/util/index';
+import { getPlaceholder } from '@/util/extension';
+import { isReadOnly, getId, getStringValue, getPDFStringValue } from '@/util/index';
 import TextView from '../textview';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
@@ -24,6 +24,7 @@ import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import { QuestionnaireComponentItemProps } from '@/components/GenerateQuestionnaireComponents';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
+import { maxLength, minLength, regexpPattern, required, scriptInjection } from '@/components/validation/rules';
 
 export type Props = QuestionnaireComponentItemProps;
 
@@ -60,10 +61,6 @@ export const String = (props: Props): JSX.Element | null => {
     );
   }
 
-  const maxLength = getMaxLength(item);
-  const minLength = getMinLengthExtensionValue(item);
-  const pattern = getRegexExtension(item);
-  const errorMessage = getValidationTextExtension(item);
   const debouncedHandleChange: (event: React.ChangeEvent<HTMLInputElement>) => void = debounce(handleChange, 250, false);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
@@ -72,31 +69,12 @@ export const String = (props: Props): JSX.Element | null => {
   };
   const value = getStringValue(answer);
   const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, {
-    required: {
-      value: isRequired(item),
-      message: resources?.formRequiredErrorMessage ?? 'Feltet er påkrevd',
-    },
-    ...(validateScriptInjection && {
-      validate: (value: string): true | string => scriptInjectionValidation(value, resources),
-    }),
-    ...(minLength && {
-      minLength: {
-        value: minLength || 0,
-        message: errorMessage ?? resources?.stringOverMaxLengthError ?? 'Verdien er for kort',
-      },
-    }),
-    ...(maxLength && {
-      maxLength: {
-        value: maxLength,
-        message: errorMessage ?? resources?.stringOverMaxLengthError ?? 'Verdien er for lang',
-      },
-    }),
-    ...(pattern && {
-      pattern: {
-        value: new RegExp(pattern),
-        message: errorMessage ?? resources?.oppgiGyldigVerdi ?? 'Verdien er for lav',
-      },
-    }),
+    required: required({ item, resources }),
+    minLength: minLength({ item, resources }),
+    maxLength: maxLength({ item, resources }),
+    pattern: regexpPattern({ item, resources }),
+    validate: (value: string): string | true | undefined =>
+      scriptInjection({ value, resources, shouldValidate: !!validateScriptInjection }),
     shouldUnregister: true,
   });
   return (

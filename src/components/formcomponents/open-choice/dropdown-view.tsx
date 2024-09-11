@@ -8,8 +8,8 @@ import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Select from '@helsenorge/designsystem-react/components/Select';
 
 import { shouldShowExtraChoice } from '@/util/choice';
-import { getValidationTextExtension } from '@/util/extension';
-import { isRequired, getId } from '@/util/index';
+
+import { getId } from '@/util/index';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
@@ -18,6 +18,7 @@ import RenderHelpElement from '@/components/formcomponents/help-button/RenderHel
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import { QuestionnaireComponentItemProps } from '@/components/GenerateQuestionnaireComponents';
+import { required } from '@/components/validation/rules';
 
 type Props = QuestionnaireComponentItemProps & {
   options?: Array<Options>;
@@ -55,10 +56,7 @@ const DropdownView = (props: Props): JSX.Element | null => {
     handleChange(e.target.value);
   };
   const { onChange: handleFormChange, ...rest } = register(idWithLinkIdAndItemIndex, {
-    required: {
-      message: getValidationTextExtension(item) ?? resources?.formRequiredErrorMessage ?? '',
-      value: isRequired(item),
-    },
+    required: required({ item, resources }),
     shouldUnregister: true,
   });
   return (

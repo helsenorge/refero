@@ -93,7 +93,7 @@ const GenerateQuestionnaireComponents = (props: QuestionnaireItemsProps): JSX.El
 
         if (responseItems && responseItems.length > 0) {
           return responseItems.map((responseItem, index) => {
-            const newPath = createPathForItem(path, item, responseItem, index);
+            const newPath = createPathForItem(path, item, index);
             const idWithLinkIdAndItemIndex = `${item.linkId}${createIdSuffix(newPath, index, isRepeat(item))}`;
             const key = `item_${responseItem.linkId}_${index}_${responseItems.length}`;
             const id = `item_${responseItem.linkId}${createIdSuffix(newPath, index, isRepeat(item))}`;

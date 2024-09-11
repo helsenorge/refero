@@ -12,7 +12,7 @@ import { debounce } from '@helsenorge/core-utils/debounce';
 
 import { OPEN_CHOICE_ID, OPEN_CHOICE_SYSTEM } from '@/constants';
 import ItemType from '@/constants/itemType';
-import { isRequired, getId } from '@/util/index';
+import { getId } from '@/util/index';
 import { getStringAnswer, hasStringAnswer, getCodingAnswer } from '@/util/refero-core';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
@@ -25,6 +25,7 @@ import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 
 import { QuestionnaireComponentItemProps } from '@/components/GenerateQuestionnaireComponents';
+import { required } from '@/components/validation/rules';
 
 export type AutosuggestProps = QuestionnaireComponentItemProps & {
   handleChange: (code?: string, systemArg?: string, displayArg?: string) => void;
@@ -182,10 +183,7 @@ const AutosuggestView = (props: AutosuggestProps): JSX.Element | null => {
     return null;
   }
   const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, {
-    required: {
-      value: isRequired(item),
-      message: resources?.formRequiredErrorMessage ?? 'Feltet er påkrevd',
-    },
+    required: required({ item, resources }),
     shouldUnregister: true,
   });
   return (

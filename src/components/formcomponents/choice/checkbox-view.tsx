@@ -8,7 +8,7 @@ import Checkbox from '@helsenorge/designsystem-react/components/Checkbox';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Label from '@helsenorge/designsystem-react/components/Label';
 
-import { getId, isRequired } from '@/util/index';
+import { getId } from '@/util/index';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelpButton';
@@ -16,6 +16,7 @@ import RenderHelpElement from '@/components/formcomponents/help-button/RenderHel
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import { QuestionnaireComponentItemProps } from '@/components/GenerateQuestionnaireComponents';
+import { required } from '@/components/validation/rules';
 
 export type Props = QuestionnaireComponentItemProps & {
   options?: Array<Options>;
@@ -44,10 +45,7 @@ const CheckboxView = (props: Props): JSX.Element | null => {
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
   const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, {
-    required: {
-      message: resources?.formRequiredErrorMessage ?? 'Påkrevd felt',
-      value: isRequired(item),
-    },
+    required: required({ item, resources }),
     shouldUnregister: true,
   });
   return (

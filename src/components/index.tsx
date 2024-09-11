@@ -17,13 +17,13 @@ import { getPresentationButtonsExtension } from '@/util/extension';
 import { IE11HackToWorkAroundBug187484 } from '@/util/hacks';
 
 import { shouldFormBeDisplayedAsStepView } from '@/util/shouldFormBeDisplayedAsStepView';
-import { createIntitialFormValues } from '@/validation/defaultFormValues';
 import { ExternalRenderProvider } from '@/context/externalRenderContext';
 import { setSkjemaDefinition } from '@/actions/form';
 import { AttachmentProvider } from '@/context/AttachmentContext';
 import GenerateQuestionnaireComponents from './GenerateQuestionnaireComponents';
 import { ThunkDispatch } from 'redux-thunk';
 import { NewValueAction } from '@/actions/newValue';
+import { createIntitialFormValues } from '@/validation/defaultFormValues';
 
 const Refero = (props: ReferoProps): JSX.Element | null => {
   IE11HackToWorkAroundBug187484();

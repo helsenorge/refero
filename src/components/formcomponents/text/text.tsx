@@ -13,14 +13,8 @@ import { NewValueAction, newStringValueAsync } from '@/actions/newValue';
 import Constants from '@/constants/index';
 import itemControlConstants from '@/constants/itemcontrol';
 import { GlobalState } from '@/reducers';
-import {
-  getPlaceholder,
-  getMinLengthExtensionValue,
-  getItemControlExtensionValue,
-  getRegexExtension,
-  getValidationTextExtension,
-} from '@/util/extension';
-import { isReadOnly, isRequired, getId, getStringValue, getMaxLength, getPDFStringValue, scriptInjectionValidation } from '@/util/index';
+import { getPlaceholder, getItemControlExtensionValue } from '@/util/extension';
+import { isReadOnly, getId, getStringValue, getMaxLength, getPDFStringValue } from '@/util/index';
 import { ReferoLabel } from '../../referoLabel/ReferoLabel';
 import TextView from '../textview';
 import { useDispatch } from 'react-redux';
@@ -33,6 +27,7 @@ import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import { QuestionnaireComponentItemProps } from '@/components/GenerateQuestionnaireComponents';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 import Display from '../display/display';
+import { maxLength, minLength, regexpPattern, required, scriptInjection } from '@/components/validation/rules';
 
 export type Props = QuestionnaireComponentItemProps & {
   shouldExpanderRenderChildrenWhenClosed?: boolean;
@@ -106,36 +101,14 @@ export const Text = (props: Props): JSX.Element | null => {
   }
 
   const value = getStringValue(answer);
-  const maxLength = getMaxLength(item);
-  const minLength = getMinLengthExtensionValue(item);
-  const pattern = getRegexExtension(item);
-  const validationTextMessage = getValidationTextExtension(item);
+
   const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, {
-    required: {
-      value: isRequired(item),
-      message: resources?.formRequiredErrorMessage || 'Verdien er påkrevd',
-    },
-    ...(minLength && {
-      minLength: {
-        value: minLength || 0,
-        message: validationTextMessage ?? resources?.stringOverMaxLengthError ?? 'Verdien er for kort',
-      },
-    }),
-    ...(maxLength && {
-      maxLength: {
-        value: maxLength,
-        message: validationTextMessage ?? resources?.stringOverMaxLengthError ?? 'Verdien er for lang',
-      },
-    }),
-    ...(pattern && {
-      pattern: {
-        value: new RegExp(pattern),
-        message: validationTextMessage ?? resources?.oppgiGyldigVerdi ?? 'Verdien er for lav',
-      },
-    }),
-    ...(validateScriptInjection && {
-      validate: (value: string): true | string => scriptInjectionValidation(value, resources),
-    }),
+    required: required({ item, resources }),
+    minLength: minLength({ item, resources }),
+    maxLength: maxLength({ item, resources }),
+    pattern: regexpPattern({ item, resources }),
+    validate: (value: string): string | true | undefined =>
+      scriptInjection({ value, resources, shouldValidate: !!validateScriptInjection }),
     shouldUnregister: true,
   });
   return (
@@ -163,8 +136,8 @@ export const Text = (props: Props): JSX.Element | null => {
           placeholder={getPlaceholder(item)}
           testId={`${getId(id)}-text`}
           grow={true}
-          maxCharacters={maxLength}
-          maxText={maxLength ? resources?.maxLengthText?.replace('{0}', `${maxLength}`) : ''}
+          maxCharacters={getMaxLength(item)}
+          maxText={getMaxLength(item) ? resources?.maxLengthText?.replace('{0}', `${getMaxLength(item)}`) : ''}
         />
 
         <RenderDeleteButton

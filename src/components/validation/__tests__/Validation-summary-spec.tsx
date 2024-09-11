@@ -1,4 +1,4 @@
-import { act, renderRefero, userEvent } from '@test/test-utils.tsx';
+import { renderRefero, userEvent } from '@test/test-utils.tsx';
 import { q } from './__data__/';
 import { ReferoProps } from '@/types/referoProps';
 import { getResources } from '../../../../preview/resources/referoResources';

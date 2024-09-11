@@ -10,7 +10,7 @@ import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label
 import Pdf from './pdf';
 import { NewValueAction, newBooleanValueAsync } from '@/actions/newValue';
 import { GlobalState } from '@/reducers';
-import { isReadOnly, getId, getSublabelText, isRequired, getLabelText } from '@/util/index';
+import { isReadOnly, getId, getSublabelText, getLabelText } from '@/util/index';
 import SafeText from '../../referoLabel/SafeText';
 import { useDispatch, useSelector } from 'react-redux';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
@@ -22,6 +22,7 @@ import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import { QuestionnaireComponentItemProps } from '@/components/GenerateQuestionnaireComponents';
 import { getFormDefinition } from '@/reducers/form';
+import { required } from '@/components/validation/rules';
 
 export type Props = QuestionnaireComponentItemProps & {
   children?: React.ReactNode;
@@ -92,10 +93,7 @@ const Boolean = (props: Props): JSX.Element | null => {
     );
   }
   const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, {
-    required: {
-      value: isRequired(item),
-      message: resources?.formRequiredErrorMessage ?? 'Feltet er påkrevd',
-    },
+    required: required({ item, resources }),
     shouldUnregister: true,
   });
   return (
