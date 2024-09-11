@@ -19,6 +19,7 @@ import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelpButton';
 import RenderHelpElement from '@/components/formcomponents/help-button/RenderHelpElement';
 import { TextMessage } from '@/types/text-message';
+import { required } from '@/components/validation/rules';
 
 type Props = {
   onUpload: (files: UploadFile[]) => void;
@@ -48,7 +49,6 @@ const AttachmentHtml = ({
   onDelete,
   onOpen,
   resources,
-  isRequired,
   attachmentErrorMessage,
   maxFiles,
   attachmentMaxFileSize,
@@ -107,10 +107,7 @@ const AttachmentHtml = ({
         />
         <FileUpload
           {...register(item.linkId, {
-            required: {
-              value: !!isRequired,
-              message: resources?.attachmentError_required || '',
-            },
+            required: required({ item, resources }),
             validate: () => true,
             shouldUnregister: true,
           })}

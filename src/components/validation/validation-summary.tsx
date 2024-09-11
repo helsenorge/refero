@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 
 import { useFormContext } from 'react-hook-form';
 
@@ -22,8 +22,7 @@ const ValidationSummary = ({ resources }: Props): JSX.Element | null => {
 
   const errorSummaryRef = useRef<HTMLDivElement | null>(null);
   const { setFocus, formState } = useFormContext();
-  const { submitCount, errors, defaultValues } = formState;
-  console.log('defaultValues', defaultValues);
+  const { submitCount, errors } = formState;
   const handleErrorButtonClicked = (e: React.MouseEvent<HTMLButtonElement>, fieldName: string): void => {
     e.preventDefault();
 

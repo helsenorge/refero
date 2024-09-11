@@ -15,6 +15,7 @@ import RenderHelpElement from '@/components/formcomponents/help-button/RenderHel
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import { QuestionnaireComponentItemProps } from '@/components/GenerateQuestionnaireComponents';
+import { required } from '@/components/validation/rules';
 
 export type Props = QuestionnaireComponentItemProps & {
   options?: Array<Options>;
@@ -53,10 +54,7 @@ const DropdownView = (props: Props): JSX.Element | null => {
   const value = selected?.[0] || '';
   const shouldShowPlaceholder = !isRequired(item) || value === '';
   const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, {
-    required: {
-      message: resources?.formRequiredErrorMessage ?? 'Feltet må fylles ut',
-      value: isRequired(item),
-    },
+    required: required({ item, resources }),
     shouldUnregister: true,
   });
 

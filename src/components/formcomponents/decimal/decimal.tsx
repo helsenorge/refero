@@ -10,8 +10,8 @@ import Input from '@helsenorge/designsystem-react/components/Input';
 
 import { NewValueAction, newDecimalValueAsync } from '@/actions/newValue';
 import { GlobalState } from '@/reducers';
-import { getMaxValueExtensionValue, getMinValueExtensionValue, getPlaceholder, getValidationTextExtension } from '@/util/extension';
-import { isReadOnly, getId, getDecimalPattern, isRequired } from '@/util/index';
+import { getPlaceholder } from '@/util/extension';
+import { isReadOnly, getId } from '@/util/index';
 import TextView from '../textview';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
@@ -24,6 +24,7 @@ import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 import { QuestionnaireComponentItemProps } from '@/components/GenerateQuestionnaireComponents';
+import { decimalPattern, maxValue, minValue, required } from '@/components/validation/rules';
 
 export type Props = QuestionnaireComponentItemProps;
 
@@ -91,33 +92,12 @@ const Decimal = (props: Props): JSX.Element | null => {
       </TextView>
     );
   }
-  const decimalPattern = getDecimalPattern(item);
-  const maxValue = getMaxValueExtensionValue(item);
-  const minValue = getMinValueExtensionValue(item);
-  const validationText = getValidationTextExtension(item);
+
   const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, {
-    required: {
-      value: isRequired(item),
-      message: resources?.formRequiredErrorMessage ?? 'Feltet er påkrevd',
-    },
-    ...(maxValue && {
-      max: {
-        value: maxValue,
-        message: validationText ?? resources?.oppgiGyldigVerdi ?? 'Verdien er for høy',
-      },
-    }),
-    ...(minValue && {
-      min: {
-        value: minValue,
-        message: validationText ?? resources?.oppgiGyldigVerdi ?? 'Verdien er for lav',
-      },
-    }),
-    ...(decimalPattern && {
-      pattern: {
-        value: new RegExp(decimalPattern),
-        message: resources?.oppgiGyldigVerdi ?? 'Verdien er ikke et gyldig tall',
-      },
-    }),
+    required: required({ item, resources }),
+    max: maxValue({ item, resources }),
+    min: minValue({ item, resources }),
+    pattern: decimalPattern({ item, resources }),
     shouldUnregister: true,
   });
   return (

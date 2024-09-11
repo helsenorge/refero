@@ -9,8 +9,7 @@ import Label from '@helsenorge/designsystem-react/components/Label';
 import RadioButton from '@helsenorge/designsystem-react/components/RadioButton';
 
 import { shouldShowExtraChoice } from '@/util/choice';
-import { getValidationTextExtension } from '@/util/extension';
-import { isRequired, getId } from '@/util/index';
+import { getId } from '@/util/index';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
@@ -19,6 +18,7 @@ import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelp
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import { QuestionnaireComponentItemProps } from '@/components/GenerateQuestionnaireComponents';
+import { required } from '@/components/validation/rules';
 
 type Props = QuestionnaireComponentItemProps & {
   options?: Array<Options>;
@@ -52,10 +52,7 @@ const RadioView = (props: Props): JSX.Element | null => {
   const selectedValue = (selected && selected[0]) || '';
   const answer = useGetAnswer(responseItem, item);
   const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, {
-    required: {
-      value: isRequired(item),
-      message: getValidationTextExtension(item) ?? resources?.formRequiredErrorMessage ?? 'Feltet må fylles ut',
-    },
+    required: required({ item, resources }),
     shouldUnregister: true,
   });
   return (

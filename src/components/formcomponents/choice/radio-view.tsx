@@ -8,7 +8,7 @@ import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Label from '@helsenorge/designsystem-react/components/Label';
 import RadioButton from '@helsenorge/designsystem-react/components/RadioButton';
 
-import { isRequired, getId } from '@/util/index';
+import { getId } from '@/util/index';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelpButton';
@@ -17,6 +17,7 @@ import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 
 import { QuestionnaireComponentItemProps } from '@/components/GenerateQuestionnaireComponents';
+import { required } from '@/components/validation/rules';
 
 export type Props = QuestionnaireComponentItemProps & {
   options?: Array<Options>;
@@ -46,10 +47,7 @@ const RadioView = (props: Props): JSX.Element => {
   const [isHelpVisible, setIsHelpVisible] = useState(false);
   const selectedValue = (selected && selected[0]) || '';
   const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, {
-    required: {
-      value: isRequired(item),
-      message: resources?.formRequiredErrorMessage ?? 'Feltet må fylles ut',
-    },
+    required: required({ item, resources }),
     shouldUnregister: true,
   });
   return (

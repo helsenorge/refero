@@ -8,9 +8,9 @@ import { Slider, SliderStep } from '@helsenorge/designsystem-react/components/Sl
 
 import codeSystems from '@/constants/codingsystems';
 import { Extensions } from '@/constants/extensions';
-import { getId, isRequired } from '@/util';
+import { getId } from '@/util';
 import { getCodes as getCodingSystemCodes } from '@/util/codingsystem';
-import { getExtension, getValidationTextExtension } from '@/util/extension';
+import { getExtension } from '@/util/extension';
 import { isString } from '@/util/typeguards';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
@@ -19,6 +19,7 @@ import RenderHelpElement from '@/components/formcomponents/help-button/RenderHel
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import { QuestionnaireComponentItemProps } from '@/components/GenerateQuestionnaireComponents';
+import { required } from '@/components/validation/rules';
 
 export type SliderProps = QuestionnaireComponentItemProps & {
   handleChange: (sliderStep: string) => void;
@@ -83,13 +84,9 @@ const SliderView = (props: SliderProps): JSX.Element | null => {
           name={idWithLinkIdAndItemIndex}
           shouldUnregister={true}
           rules={{
-            required: {
-              message: getValidationTextExtension(item) ?? resources?.formRequiredErrorMessage ?? 'Påkrevd felt',
-              value: isRequired(item),
-            },
+            required: required({ item, resources }),
           }}
           control={control}
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
           render={({ field: { onChange, ...rest } }): JSX.Element => (
             <Slider
               {...rest}
