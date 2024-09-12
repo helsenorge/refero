@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import { format } from 'date-fns';
-import { QuestionnaireResponseItemAnswer } from 'fhir/r4';
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { Controller, FieldError, FieldValues, useFormContext } from 'react-hook-form';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
@@ -54,7 +54,7 @@ export const DateYearMonthInput = ({
     return answerItem ? answerItem.valueDate ?? answerItem.valueDateTime : '';
   };
 
-  const getValue = (): { year: number; month: string | null } | undefined => {
+  const getYearAndMonth = (): { year: number; month: string | null } | undefined => {
     const stringValue = getDateValueFromAnswer(answer);
 
     if (!stringValue) {
@@ -68,30 +68,42 @@ export const DateYearMonthInput = ({
       };
     }
   };
+
+  const getValue = (
+    item: QuestionnaireItem,
+    answer?: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]
+  ): string | string[] | undefined => {
+    if (answer && Array.isArray(answer)) {
+      return answer.map(m => m.valueDate).filter(f => f !== undefined);
+    }
+    if (answer && answer.valueDate !== undefined && answer.valueDate !== null) {
+      return answer.valueDate;
+    }
+    if (!item || !item.initial || item.initial.length === 0 || !item.initial[0].valueDate) {
+      return '';
+    }
+  };
+
   const [isHelpVisible, setIsHelpVisible] = useState(false);
   const yearField = getFieldState(`${idWithLinkIdAndItemIndex}-yearmonth-year`, formState);
   const monthsField = getFieldState(`${idWithLinkIdAndItemIndex}-yearmonth-month`, formState);
   const monthOptions = getMonthOptions(resources);
-  const [year, setYear] = useState<string | undefined>(getValue()?.year.toString());
-  const [month, setMonth] = useState<string | undefined | null>(getValue()?.month?.toString());
+  const [year, setYear] = useState<string | undefined>(getYearAndMonth()?.year.toString());
+  const [month, setMonth] = useState<string | undefined | null>(getYearAndMonth()?.month?.toString());
 
-  const convertToPDFValue = (answer: QuestionnaireResponseItemAnswer): string | undefined => {
-    const value = getDateValueFromAnswer(answer);
-    return value ? format(value, 'MMMM yyyy') : undefined;
-  };
-
-  const getPDFValue = (answer: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[] | undefined): string => {
-    const ikkeBesvartText = resources?.ikkeBesvart || '';
-    if (Array.isArray(answer)) {
-      const answerString = answer
-        .map(m => convertToPDFValue(m))
-        .filter(x => x !== undefined)
-        .join(', ');
-      return answerString;
-    } else if (answer) {
-      return convertToPDFValue(answer) ?? ikkeBesvartText;
+  const getPDFValue = (): string | number => {
+    const value = getValue(item, answer);
+    if (value === undefined || value === null || value === '') {
+      let text = '';
+      if (resources && resources.ikkeBesvart) {
+        text = resources.ikkeBesvart;
+      }
+      return text;
     }
-    return ikkeBesvartText;
+    if (Array.isArray(value)) {
+      return value.map(d => d && format(d, 'MMMM yyyy')).join(', ');
+    }
+    return format(value, 'MMMM yyyy');
   };
 
   const getErrorText = (error: FieldError | undefined): string | undefined => {
@@ -127,7 +139,7 @@ export const DateYearMonthInput = ({
 
   if (pdf || isReadOnly(item)) {
     return (
-      <TextView id={id} item={item} value={getPDFValue(answer)}>
+      <TextView id={id} item={item} value={getPDFValue()}>
         {children}
       </TextView>
     );

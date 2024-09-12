@@ -61,23 +61,23 @@ describe('Copy value from item', () => {
     await clickByLabelText(`${sender.text}`);
     await waitFor(async () => expect(getByTestId(/item_2-label/i)).toBeInTheDocument());
   });
-  it.skip('should copy DATE value', async () => {
+  it('should copy DATE value', async () => {
     const sender = createSenderItem(ItemType.DATE);
     const reciever = createRecieverItem(ItemType.DATE);
     const q = createQuestionnaire(sender, reciever);
     const { getByLabelText, queryByTestId, getByTestId } = createWrapper(q);
     expect(queryByTestId(/item_2/i)).not.toBeInTheDocument();
-    await userEvent.type(getByLabelText(`${sender.text}`), '12');
+    await userEvent.type(getByLabelText(`${sender.text}`), '12.12.2024');
     await waitFor(async () => expect(getByTestId(/item_2/i)).toBeInTheDocument());
-    await waitFor(async () => expect(getByTestId(/item_2/i)).toHaveTextContent('12.12.2024'));
+    await waitFor(async () => expect(getByTestId(/item_2/i)).toHaveTextContent('12. desember 2024'));
   });
   it('should copy DATETIME value', async () => {
     const sender = createSenderItem(ItemType.DATETIME);
     const reciever = createRecieverItem(ItemType.DATETIME);
     const q = createQuestionnaire(sender, reciever);
     const { getByLabelText, queryByTestId, getByTestId } = createWrapper(q);
-
     expect(queryByTestId(/item_2/i)).not.toBeInTheDocument();
+
     await userEvent.click(getByLabelText(`${sender.text}`));
     await userEvent.paste('12.12.2024');
 

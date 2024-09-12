@@ -21,11 +21,11 @@ const resources = {
 
 describe('Date month', () => {
   describe('Render', () => {
-    it.skip('Should render as text if props.pdf', () => {
+    it('Should render as text if props.pdf', () => {
       const { queryByText } = createWrapper(q, { pdf: true });
       expect(queryByText('Ikke besvart')).toBeInTheDocument();
     });
-    it.skip('Should render text if item is readonly', () => {
+    it('Should render text if item is readonly', () => {
       const questionnaire: Questionnaire = {
         ...q,
         item: q.item?.map(x => ({ ...x, readOnly: true })),

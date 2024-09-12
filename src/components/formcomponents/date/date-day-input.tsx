@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import { format, isValid } from 'date-fns';
-import { QuestionnaireResponseItemAnswer } from 'fhir/r4';
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { Controller, FieldError, FieldValues, useFormContext } from 'react-hook-form';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
@@ -9,7 +9,6 @@ import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import { LanguageLocales } from '@helsenorge/core-utils/constants/languages';
 import DatePicker from '@helsenorge/datepicker/components/DatePicker';
 
-import { safeParseJSON } from '../../../util/date-fns-utils';
 import { getValidationTextExtension } from '../../../util/extension';
 import { getId, isReadOnly, isRequired } from '../../../util/index';
 import TextView from '../textview';
@@ -77,30 +76,34 @@ export const DateDayInput = ({
   const dateAnswerValue = getDateAnswerValue(answer);
   const [date, setDate] = useState<Date | string | undefined>(parseStringToDate(dateAnswerValue));
 
-  const getValue = (): Date[] | undefined => {
+  const getValue = (
+    item: QuestionnaireItem,
+    answer?: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]
+  ): string | string[] | undefined => {
     if (answer && Array.isArray(answer)) {
-      return answer.map(m => safeParseJSON(String(getDateAnswerValue(m)))).filter(x => x !== undefined);
+      return answer.map(m => m.valueDate).filter(f => f !== undefined);
     }
-
-    if (Array.isArray(item.initial)) {
-      return item.initial.map(m => safeParseJSON(String(getDateAnswerValue(m)))).filter(x => x !== undefined);
+    if (answer && answer.valueDate !== undefined && answer.valueDate !== null) {
+      return answer.valueDate;
     }
-
-    if (answer) {
-      const parsedDate = safeParseJSON(String(getDateAnswerValue(answer)));
-      if (isValid(parsedDate) === true && parsedDate !== undefined) {
-        return [parsedDate];
-      } else {
-        return undefined;
-      }
+    if (!item || !item.initial || item.initial.length === 0 || !item.initial[0].valueDate) {
+      return '';
     }
   };
 
-  const getPDFValue = (): string => {
-    const date = getValue();
-    const ikkeBesvartText = resources?.ikkeBesvart || '';
-
-    return date ? date.map(d => d && format(d, 'd. MMMM yyyy')).join(', ') : ikkeBesvartText;
+  const getPDFValue = (): string | number => {
+    const value = getValue(item, answer);
+    if (value === undefined || value === null || value === '') {
+      let text = '';
+      if (resources && resources.ikkeBesvart) {
+        text = resources.ikkeBesvart;
+      }
+      return text;
+    }
+    if (Array.isArray(value)) {
+      return value.map(d => d && format(d, 'd. MMMM yyyy')).join(', ');
+    }
+    return format(value, 'd. MMMM yyyy');
   };
 
   const handleChange = (newDate: string | Date | undefined): void => {
@@ -165,7 +168,7 @@ export const DateDayInput = ({
           },
           validate: {
             validDate: value => {
-              return validateDate(value ? parseStringToDate(value) : undefined, resources);
+              return validateDate(parseStringToDate(value) ? parseStringToDate(value) : value, resources);
             },
             validMinDate: value => {
               return validateMinDate(minDateTime, parseStringToDate(value), resources);

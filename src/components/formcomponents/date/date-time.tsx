@@ -58,7 +58,7 @@ const DateTimeInput = ({
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
   const answer = useGetAnswer(responseItem, item);
   const [isHelpVisible, setIsHelpVisible] = useState(false);
-  const { formState, getFieldState, register, setValue, trigger } = useFormContext<FieldValues>();
+  const { formState, getFieldState, register, setValue } = useFormContext<FieldValues>();
   const dateField = getFieldState(`${idWithLinkIdAndItemIndex}-date`, formState);
   const hoursField = getFieldState(`${idWithLinkIdAndItemIndex}-hours`, formState);
   const minutesField = getFieldState(`${idWithLinkIdAndItemIndex}-minutes`, formState);
@@ -88,27 +88,24 @@ const DateTimeInput = ({
   };
 
   const dateAnswerValue = getDateAnswerValue(answer);
-  const date: Date | undefined = parseStringToDate(dateAnswerValue);
-  const hours = getHoursOrMinutesFromDate(date, DateTimeUnit.Hours);
-  const minutes = getHoursOrMinutesFromDate(date, DateTimeUnit.Minutes);
+  const [date, setDate] = useState<Date | string | undefined>(parseStringToDate(dateAnswerValue));
+  const [hours, setHours] = useState(getHoursOrMinutesFromDate(date, DateTimeUnit.Hours) || '00');
+  const [minutes, setMinutes] = useState(getHoursOrMinutesFromDate(date, DateTimeUnit.Minutes) || '00');
 
-  const convertDateToString = (answer?: QuestionnaireResponseItemAnswer): string | undefined => {
-    const date = getDateAnswerValue(answer);
-    if (date) {
-      return format(date, 'dd.MM.yyyy HH:mm');
+  const getPDFValue = (): string | number | undefined => {
+    // const value = getValue(item, answer);
+    const datetest = getDateAnswerValue(answer);
+    const datetestparsed = parseStringToDate(datetest);
+    if (dateAnswerValue === undefined || dateAnswerValue === null || dateAnswerValue === '') {
+      let text = '';
+      if (resources && resources.ikkeBesvart) {
+        text = resources.ikkeBesvart;
+      }
+      return text;
     }
-    return undefined;
-  };
-
-  const getStringValue = (): string => {
-    if (Array.isArray(answer)) {
-      return answer.map(x => convertDateToString(x)).join(', ');
+    if (datetestparsed && isValid(datetestparsed)) {
+      return format(datetestparsed, 'dd.MM.yyyy HH:mm');
     }
-    let text = '';
-    if (resources && resources.ikkeBesvart) {
-      text = resources.ikkeBesvart;
-    }
-    return convertDateToString(answer) ?? text;
   };
 
   const getErrorText = (error: FieldError | undefined): string | undefined => {
@@ -127,32 +124,42 @@ const DateTimeInput = ({
   }
 
   const handleDateChange = (newDate: string | Date | undefined): void => {
+    setDate(newDate);
     updateQuestionnaireResponse(newDate, hours, minutes);
     setValue(`${idWithLinkIdAndItemIndex}-date`, newDate);
   };
 
   const handleHoursChange = (newHours: string | undefined): void => {
     setValue(`${idWithLinkIdAndItemIndex}-hours`, newHours);
+    newHours && setHours(newHours);
     if (newHours && Number(newHours) >= 0 && Number(newHours) < 24) {
-      trigger(`${idWithLinkIdAndItemIndex}-hours`);
-
       updateQuestionnaireResponse(date, newHours, minutes);
     }
   };
   const handleMinutesChange = (newMinutes: string | undefined): void => {
     setValue(`${idWithLinkIdAndItemIndex}-minutes`, newMinutes);
-    trigger(`${idWithLinkIdAndItemIndex}-minutes`);
+    newMinutes && setMinutes(newMinutes);
     if (newMinutes && Number(newMinutes) >= 0 && Number(newMinutes) < 60) {
       updateQuestionnaireResponse(date, hours, newMinutes);
     }
   };
 
-  const updateQuestionnaireResponse = (date: Date | string | undefined, hours: string | undefined, minutes: string | undefined): void => {
+  const updateQuestionnaireResponse = (
+    newDate: Date | string | undefined,
+    newHours: string | undefined,
+    newMinutes: string | undefined
+  ): void => {
     let fullDate: string | undefined = '';
-    if (typeof date === 'string') {
-      fullDate = `${date}:${hours}:${minutes}`;
-    } else {
-      fullDate = getFullFnsDate(date, hours, minutes);
+    if (typeof newDate === 'string') {
+      const parsedDate = parseStringToDate(newDate);
+      if (isValid(parsedDate)) {
+        if (parsedDate && isValid(parsedDate)) {
+          const formatedDate = format(parsedDate, 'yyyy-MM-dd');
+          fullDate = getFullFnsDate(formatedDate, newHours, newMinutes);
+        }
+      }
+    } else if (isValid(newDate)) {
+      fullDate = getFullFnsDate(newDate, newHours, newMinutes);
     }
 
     if (dispatch && onAnswerChange && path) {
@@ -170,7 +177,7 @@ const DateTimeInput = ({
   }
   if (pdf || isReadOnly(item)) {
     return (
-      <TextView id={id} item={item} value={getStringValue()}>
+      <TextView id={id} item={item} value={getPDFValue()}>
         {children}
       </TextView>
     );
@@ -199,7 +206,7 @@ const DateTimeInput = ({
             },
             validate: {
               validDate: value => {
-                return validateDate(value ? parseStringToDate(value) : undefined, resources);
+                return validateDate(parseStringToDate(value) ? parseStringToDate(value) : value, resources);
               },
               validMinDate: value => {
                 return validateMinDate(minDateTime, parseStringToDate(value), resources);
@@ -233,7 +240,7 @@ const DateTimeInput = ({
               },
             },
           })}
-          testId={`${getId(id)}-datetime-1`}
+          testId={`hours-test`}
           defaultValue={hours ? Number(hours) : 0}
           timeUnit="hours"
           onChange={e => {
@@ -252,7 +259,7 @@ const DateTimeInput = ({
               },
             },
           })}
-          testId={`${getId(id)}-datetime-2`}
+          testId={`minutes-test`}
           defaultValue={minutes ? Number(minutes) : 0}
           timeUnit="minutes"
           onChange={e => {
