@@ -7,8 +7,6 @@ import { ThunkDispatch } from 'redux-thunk';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Input from '@helsenorge/designsystem-react/components/Input';
 
-import { debounce } from '@helsenorge/core-utils/debounce';
-
 import { NewValueAction, newStringValueAsync } from '@/actions/newValue';
 import { GlobalState } from '@/reducers';
 import { getPlaceholder } from '@/util/extension';
@@ -38,6 +36,7 @@ export const String = (props: Props): JSX.Element | null => {
   const [isHelpVisible, setIsHelpVisible] = useState(false);
   const answer = useGetAnswer(responseItem, item);
   const enable = useIsEnabled(item, path);
+
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     const value = event.target.value;
     if (dispatch && path) {
@@ -50,6 +49,7 @@ export const String = (props: Props): JSX.Element | null => {
       promptLoginMessage();
     }
   };
+
   if (!enable) {
     return null;
   }
@@ -61,11 +61,8 @@ export const String = (props: Props): JSX.Element | null => {
     );
   }
 
-  const debouncedHandleChange: (event: React.ChangeEvent<HTMLInputElement>) => void = debounce(handleChange, 250, false);
-
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    event.persist();
-    debouncedHandleChange(event);
+    handleChange(event);
   };
   const value = getStringValue(answer);
   const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, {
@@ -91,8 +88,8 @@ export const String = (props: Props): JSX.Element | null => {
         <RenderHelpElement item={item} isHelpVisible={isHelpVisible} />
         <Input
           {...rest}
-          disabled={item.readOnly}
           value={value}
+          disabled={item.readOnly}
           onChange={(e): void => {
             handleInputChange(e);
             onChange(e);

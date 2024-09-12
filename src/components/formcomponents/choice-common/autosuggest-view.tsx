@@ -205,11 +205,7 @@ const AutosuggestView = (props: AutosuggestProps): JSX.Element | null => {
             ...rest,
             id: getId(id),
             onChange: (e: FormEvent<HTMLElement>, AutosuggestChangeEvent): void => {
-              onChange({
-                target: {
-                  value: '',
-                },
-              });
+              onChange(e);
               onChangeInput(e, AutosuggestChangeEvent);
             },
             value: inputValue,
