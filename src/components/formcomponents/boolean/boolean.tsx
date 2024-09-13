@@ -1,18 +1,16 @@
 import React, { useState } from 'react';
 
-import { Controller, FieldValues, useFormContext } from 'react-hook-form';
+import { FieldValues, useFormContext } from 'react-hook-form';
 import { ThunkDispatch } from 'redux-thunk';
 
 import Checkbox from '@helsenorge/designsystem-react/components/Checkbox';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
 
-import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
-
 import Pdf from './pdf';
 import { NewValueAction, newBooleanValueAsync } from '@/actions/newValue';
 import { GlobalState } from '@/reducers';
-import { isReadOnly, getId, getSublabelText, isRequired, getLabelText } from '@/util/index';
+import { isReadOnly, getId, getSublabelText, getLabelText } from '@/util/index';
 import SafeText from '../../referoLabel/SafeText';
 import { useDispatch, useSelector } from 'react-redux';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
@@ -24,6 +22,7 @@ import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import { QuestionnaireComponentItemProps } from '@/components/GenerateQuestionnaireComponents';
 import { getFormDefinition } from '@/reducers/form';
+import { required } from '@/components/validation/rules';
 
 export type Props = QuestionnaireComponentItemProps & {
   children?: React.ReactNode;
@@ -35,8 +34,8 @@ const Boolean = (props: Props): JSX.Element | null => {
   const formDefinition = useSelector((state: GlobalState) => getFormDefinition(state));
   const questionnaire = formDefinition?.Content;
 
-  const { formState, getFieldState, control } = useFormContext<FieldValues>();
-  const fieldState = getFieldState(props.idWithLinkIdAndItemIndex, formState);
+  const { formState, getFieldState, register } = useFormContext<FieldValues>();
+  const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
 
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
@@ -93,56 +92,44 @@ const Boolean = (props: Props): JSX.Element | null => {
       />
     );
   }
-
+  const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, {
+    required: required({ item, resources }),
+    shouldUnregister: true,
+  });
   return (
     // Dette er en hack for FHI-skjema. TODO: fjern hack
     <div className="page_refero__component page_refero__component_boolean">
       <FormGroup error={error?.message}>
-        <Controller
-          name={idWithLinkIdAndItemIndex || ''}
-          control={control}
-          shouldUnregister={true}
-          defaultValue={value}
-          rules={{
-            required: {
-              value: isRequired(item),
-              message: resources?.formRequiredErrorMessage ?? 'Feltet er påkrevd',
-            },
-          }}
-          render={({ field: { onChange, ...rest } }): JSX.Element => (
-            <Checkbox
-              {...rest}
-              testId={`${getId(id)}-boolean`}
-              inputId={getId(id)}
-              label={
-                <Label
-                  labelId={`${getId(id)}-label-boolean`}
-                  testId={`${getId(id)}-label-boolean`}
-                  labelTexts={[{ text: labelText, type: 'semibold' }]}
-                  htmlFor={getId(id)}
-                  className="page_refero__label"
-                  sublabel={
-                    <Sublabel
-                      testId={`${getId(id)}-sublabel-boolean`}
-                      id={`${getId(id)}-sublabel-boolean`}
-                      sublabelTexts={[{ text: subLabelText, type: 'normal' }]}
-                    />
-                  }
-                  afterLabelChildren={<RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />}
-                >
-                  <SafeText text={labelText} />
-                </Label>
+        <Checkbox
+          {...rest}
+          testId={`${getId(id)}-boolean`}
+          inputId={getId(id)}
+          label={
+            <Label
+              labelId={`${getId(id)}-label-boolean`}
+              testId={`${getId(id)}-label-boolean`}
+              labelTexts={[{ text: labelText, type: 'semibold' }]}
+              htmlFor={getId(id)}
+              className="page_refero__label"
+              sublabel={
+                <Sublabel
+                  testId={`${getId(id)}-sublabel-boolean`}
+                  id={`${getId(id)}-sublabel-boolean`}
+                  sublabelTexts={[{ text: subLabelText, type: 'normal' }]}
+                />
               }
-              checked={value}
-              onChange={(): void => {
-                handleChange();
-                onChange(!value);
-              }}
-              className="page_refero__input"
-            />
-          )}
+              afterLabelChildren={<RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />}
+            >
+              <SafeText text={labelText} />
+            </Label>
+          }
+          checked={value}
+          onChange={(e): void => {
+            handleChange();
+            onChange(e);
+          }}
+          className="page_refero__input"
         />
-
         <RenderHelpElement item={item} isHelpVisible={isHelpVisible} />
       </FormGroup>
       <RenderDeleteButton
@@ -150,7 +137,6 @@ const Boolean = (props: Props): JSX.Element | null => {
         path={path}
         index={index}
         responseItem={responseItem}
-        resources={resources}
         className="page_refero__deletebutton--margin-top"
       />
       <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} responseItem={responseItem} responseItems={responseItems} />
@@ -160,5 +146,4 @@ const Boolean = (props: Props): JSX.Element | null => {
   );
 };
 
-const layoutChangeComponent = layoutChange(Boolean);
-export default layoutChangeComponent;
+export default Boolean;

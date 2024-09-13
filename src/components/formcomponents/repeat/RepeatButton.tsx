@@ -11,18 +11,18 @@ import { addRepeatItem } from '../../../actions/newValue';
 import { GlobalState } from '../../../reducers';
 import { getRepeatsTextExtension } from '../../../util/extension';
 import { Path } from '../../../util/refero-core';
-import { Resources } from '../../../util/resources';
+import { useExternalRenderContext } from '@/context/externalRenderContext';
 
 interface Props {
   item: QuestionnaireItem;
   parentPath?: Path[];
   responseItems?: QuestionnaireResponseItem[];
-  resources?: Resources;
   disabled: boolean;
 }
 
-export const RepeatButton = ({ item, resources, parentPath, responseItems, disabled }: Props): JSX.Element => {
+export const RepeatButton = ({ item, parentPath, responseItems, disabled }: Props): JSX.Element => {
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
+  const { resources } = useExternalRenderContext();
   const onAddRepeatItem = (): void => {
     if (dispatch && item) {
       dispatch(addRepeatItem(parentPath, item, responseItems));

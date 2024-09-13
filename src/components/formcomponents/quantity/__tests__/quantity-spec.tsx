@@ -1,5 +1,5 @@
 import { Questionnaire, QuestionnaireResponseItemAnswer } from 'fhir/r4';
-import { act, findByRole, renderRefero, userEvent } from '@test/test-utils.tsx';
+import { findByRole, renderRefero, userEvent } from '@test/test-utils.tsx';
 import { q } from './__data__';
 import { ReferoProps } from '../../../../types/referoProps';
 import { Extensions } from '../../../../constants/extensions';
@@ -422,11 +422,11 @@ describe('Quantity', () => {
         await userEvent.type(getByLabelText(/Quantity/i), '6.121212');
         await submitForm();
 
-        expect(queryByText(resources.oppgiGyldigVerdi)).toBeInTheDocument();
+        expect(queryByText('Custom error')).toBeInTheDocument();
         await userEvent.clear(getByLabelText(/Quantity/i));
         await userEvent.type(getByLabelText(/Quantity/i), '6.2');
 
-        expect(queryByText(resources.oppgiGyldigVerdi)).not.toBeInTheDocument();
+        expect(queryByText('Custom error')).not.toBeInTheDocument();
       });
     });
   });

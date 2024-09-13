@@ -1,13 +1,9 @@
-.safetext {
-  font-weight: 600;
-  font-size: 1.25rem;
-  line-height: 1.75rem;
-  margin-bottom: -0.5rem;
-}
 
-.after_label_content {
-  align-self: center;
-}
-.label_content {
-  display: flex;
+.safetext {
+  /* font-weight: 600;
+  font-size: 1.125rem;
+  line-height: 1.75rem; */
+  margin-bottom: -0.5rem;
+  padding: .625rem 0;
+  text-align: left;
 }

@@ -1,0 +1,31 @@
+.pageReferoLabel {
+  margin-bottom: 0.5rem;
+}
+.labelWithHelp {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 0.5rem;
+}
+.textOptionalWrapper {
+  display: flex;
+  align-items: center;
+}
+.referoLabelSafetext {
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+.LabelOptionalText {
+  font-size: 1.125rem;
+  margin-left: 0.3rem;
+  font-style: italic;
+}
+.after_label_content {
+  align-self: center;
+}
+.label_content {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 0.2rem;
+  align-items: center;
+
+}

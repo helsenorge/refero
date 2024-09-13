@@ -1,6 +1,6 @@
 {
   "name": "@helsenorge/refero",
-  "version": "16.0.0-beta.27",
+  "version": "16.0.0-beta.28",
   "description": "Refero is a library that uses a fhir r4 schema and creates a interactive form using helsenorge packages.",
   "keywords": [
     "react",
@@ -30,8 +30,11 @@
     ".vite/manifest.json",
     "style.css"
   ],
-  "repository": "github:helsenorge/refero",
   "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/helsenorge/refero.git"
+  },
   "scripts": {
     "lint": "eslint --ext .ts,.tsx src/ --fix",
     "test": "vitest run",
@@ -53,9 +56,14 @@
   },
   "peerDependencies": {
     "react": "^17.0.0 || ^18.0.0",
-    "react-dom": "^18.3.1",
+    "react-dom": "^17.0.0 || ^18.0.0",
     "react-redux": "^8.1.3",
-    "redux": "^4.2.1"
+    "redux": "^4.2.1",
+    "@helsenorge/datepicker": "^8.0.0",
+    "@helsenorge/designsystem-react": "^8.0.0",
+    "@helsenorge/file-upload": "^32.0.0",
+    "@helsenorge/autosuggest": "^32.0.0",
+    "redux-thunk": "^2.4.2"
   },
   "devDependencies": {
     "@redux-devtools/extension": "^3.3.0",
@@ -106,17 +114,18 @@
     "typescript": "^5.5.4",
     "vite": "^5.4.1",
     "vite-plugin-dts": "^4.0.3",
-    "vite-plugin-externalize-deps": "^0.1.0",
+    "vite-plugin-externalize-deps": "^0.8.0",
     "vite-plugin-lib-inject-css": "^2.1.1",
     "vite-tsconfig-paths": "^4.3.2",
-    "vitest": "^2.0.5"
+    "vitest": "^2.0.5",
+    "@helsenorge/datepicker": "^8.0.0",
+    "@helsenorge/designsystem-react": "^8.0.0",
+    "@helsenorge/file-upload": "^32.0.0",
+    "@helsenorge/autosuggest": "^32.0.0",
+    "redux-thunk": "^2.4.2"
   },
   "dependencies": {
-    "@helsenorge/autosuggest": "^32.0.0",
     "@helsenorge/core-utils": "^32.0.0",
-    "@helsenorge/datepicker": "^8.2.1",
-    "@helsenorge/designsystem-react": "^8.2.1",
-    "@helsenorge/file-upload": "^32.0.0",
     "classnames": "^2.3.2",
     "date-fns": "^3.6.0",
     "dompurify": "^3.1.6",
@@ -124,8 +133,7 @@
     "immer": "^9.0.21",
     "marked": "^14.0.0",
     "react-collapse": "^5.1.1",
-    "react-hook-form": "^7.52.0",
-    "redux-thunk": "^2.4.2",
+    "react-hook-form": "^7.0.0",
     "uuid": "^9.0.1"
   },
   "optionalDependencies": {

@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { Coding } from 'fhir/r4';
-import { Controller, FieldValues, useFormContext } from 'react-hook-form';
+import { FieldValues, useFormContext } from 'react-hook-form';
 
 import { EnhetType, OrgenhetHierarki } from '@/types/orgenhetHierarki';
 
@@ -36,7 +36,7 @@ const ReceiverComponent = ({
   clearCodingAnswer,
   idWithLinkIdAndItemIndex,
 }: ReceiverComponentProps): JSX.Element | null => {
-  const { formState, getFieldState, control } = useFormContext<FieldValues>();
+  const { formState, getFieldState, register } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
   const [receiverTreeNodes, setReceiverTreeNodes] = React.useState<OrgenhetHierarki[]>([]);
@@ -181,51 +181,42 @@ const ReceiverComponent = ({
       }
     };
     const value = selectedPath[level] ? selectedPath[level].toString() : '';
+    const { onChange, ...rest } = register(`${idWithLinkIdAndItemIndex}-${selectKey}`, {
+      required: {
+        value: true,
+        message: resources?.adresseKomponent_feilmelding || 'Påkrevd felt',
+      },
+      validate: (): true | string =>
+        getReceiverName(receiverTreeNodes, selectedPath) ? true : resources?.adresseKomponent_feilmelding || 'Kan ikke være tom streng',
+      shouldUnregister: true,
+    });
     return (
       <FormGroup error={error?.message}>
-        <Controller
+        <Select
+          {...rest}
           key={`${selectKey}-${level}`}
-          name={`${idWithLinkIdAndItemIndex}-${selectKey}`}
-          control={control}
-          shouldUnregister={true}
-          defaultValue={value}
-          rules={{
-            required: {
-              value: true,
-              message: resources?.adresseKomponent_feilmelding || 'Påkrevd felt',
-            },
-            validate: (): true | string =>
-              getReceiverName(receiverTreeNodes, selectedPath)
-                ? true
-                : resources?.adresseKomponent_feilmelding || 'Kan ikke være tom streng',
+          onChange={(e): void => {
+            handleSelectChange(e);
+            onChange(e);
           }}
-          render={({ field: { onChange, ...rest } }): JSX.Element => (
-            <Select
-              {...rest}
-              onChange={(e): void => {
-                handleSelectChange(e);
-                onChange(e.target.value);
-              }}
-              value={value}
-              testId={`${getId(id)}-${selectKey}`}
-              selectId={`${getId(id)}-${selectKey}`}
-              label={
-                <Label labelTexts={[]}>
-                  <SafeText text={label} />
-                </Label>
-              }
-              className="page_refero__input"
-            >
-              {selectOptions.map(option => {
-                return (
-                  <option key={`${option.value}-${option.label}`} value={option.value}>
-                    {option.label}
-                  </option>
-                );
-              })}
-            </Select>
-          )}
-        />
+          value={value}
+          testId={`${getId(id)}-${selectKey}`}
+          selectId={`${getId(id)}-${selectKey}`}
+          label={
+            <Label labelTexts={[]}>
+              <SafeText text={label} />
+            </Label>
+          }
+          className="page_refero__input"
+        >
+          {selectOptions.map(option => {
+            return (
+              <option key={`${option.value}-${option.label}`} value={option.value}>
+                {option.label}
+              </option>
+            );
+          })}
+        </Select>
       </FormGroup>
     );
   };

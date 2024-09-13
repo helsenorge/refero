@@ -59,33 +59,50 @@
       }
     }
   ],
-  "id": "0a675e90-9d38-48af-f656-b2ac07fd5abd",
+  "id": "b94988d1-9fc7-4d86-8b37-480458ff44db",
   "item": [
     {
-      "linkId": "4767e08d-f314-43a6-84ca-ee3c76b3f04e",
-      "type": "dateTime",
-      "text": "Dato 1",
-      "required": false
-    },
-    {
-      "linkId": "4bfdd38f-27ff-4c27-f045-672b61c78e3b",
-      "type": "dateTime",
-      "text": "Dato 2",
-      "required": false,
+      "linkId": "cfb396cc-696d-462a-f3ce-9f0f59fb45d4",
+      "type": "string",
       "extension": [
         {
-          "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
-          "valueString": "QuestionnaireResponse.descendants().where(linkId='4767e08d-f314-43a6-84ca-ee3c76b3f04e').answer.value"
+          "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sublabel",
+          "valueMarkdown": "String1 - sublabel"
         }
       ],
-      "readOnly": true,
-      "enableWhen": [
+      "required": false,
+      "text": "String1"
+    },
+    {
+      "linkId": "179e2765-0d77-4774-84f8-a07674315111",
+      "type": "string",
+      "extension": [
         {
-          "answerBoolean": true,
-          "question": "4767e08d-f314-43a6-84ca-ee3c76b3f04e",
-          "operator": "exists"
+          "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sublabel",
+          "valueMarkdown": "String2 - Obligatorisk - sublabel"
         }
-      ]
+      ],
+      "required": true,
+      "text": "String2 - Obligatorisk"
+    },
+    {
+      "linkId": "70375289-f0b8-430c-8f08-27f13764b2e1",
+      "type": "string",
+      "extension": [
+        {
+          "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sublabel",
+          "valueMarkdown": "String3 - markdown - sublabel"
+        }
+      ],
+      "_text": {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+            "valueMarkdown": "String3 - markdown"
+          }
+        ]
+      },
+      "text": "String3 - markdown"
     }
   ]
 }

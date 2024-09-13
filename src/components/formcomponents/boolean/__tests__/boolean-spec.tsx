@@ -1,8 +1,8 @@
 import { Questionnaire, QuestionnaireResponseItemAnswer } from 'fhir/r4';
-import { act, findByRole, renderRefero, userEvent } from '@test/test-utils.tsx';
+import { findByRole, renderRefero, userEvent } from '@test/test-utils.tsx';
 import { q } from './__data__';
 import { ReferoProps } from '../../../../types/referoProps';
-import { clickButtonTimes, clickByLabelText, clickByTestId, submitForm } from '../../../../../test/selectors';
+import { clickButtonTimes, clickByLabelText, submitForm } from '../../../../../test/selectors';
 import { getResources } from '../../../../../preview/resources/referoResources';
 import { vi } from 'vitest';
 const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle ut dette feltet' };

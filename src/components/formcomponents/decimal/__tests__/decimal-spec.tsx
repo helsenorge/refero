@@ -346,11 +346,12 @@ describe('Decimal', () => {
         const { queryByText, getByLabelText } = createWrapper(questionnaire);
         await userEvent.type(getByLabelText(/Decimal/i), '6.121212');
         await submitForm();
-        expect(queryByText(resources.oppgiGyldigVerdi)).toBeInTheDocument();
+
+        expect(queryByText('Custom error')).toBeInTheDocument();
         await userEvent.clear(getByLabelText(/Decimal/i));
         await userEvent.type(getByLabelText(/Decimal/i), '6.12');
 
-        expect(queryByText(resources.oppgiGyldigVerdi)).not.toBeInTheDocument();
+        expect(queryByText('Custom error')).not.toBeInTheDocument();
       });
     });
   });

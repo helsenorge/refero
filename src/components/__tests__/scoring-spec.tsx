@@ -20,9 +20,9 @@ describe('Component renders and calculates score', () => {
     await inputAnswer('1', 42, container);
 
     const item = findItem('1', container);
-    expect(item).toHaveValue(42);
 
-    const fhirpathItem = await findByLabelText('Fhir sum element');
+    expect(item).toHaveValue(42);
+    const fhirpathItem = await findByLabelText(/Fhir sum element/i);
 
     expect(fhirpathItem).toHaveValue(42);
   });
@@ -33,7 +33,7 @@ describe('Component renders and calculates score', () => {
 
     await inputAnswer('2', 42, container);
 
-    const fhirpathItem = await findByLabelText('Fhir sum element');
+    const fhirpathItem = await findByLabelText(/Fhir sum element/i);
     expect(fhirpathItem).toHaveValue(42);
   });
   it('fhirpath score should be updated when integer questions are answered - should work with zeros', async () => {
@@ -42,7 +42,7 @@ describe('Component renders and calculates score', () => {
 
     await inputAnswer('2', 0, container);
 
-    const fhirpathItem = await findByLabelText('Fhir sum element');
+    const fhirpathItem = await findByLabelText(/Fhir sum element/i);
     expect(fhirpathItem).toHaveValue(0);
   });
   it('fhirpath score should be updated when quantity questions are answered', async () => {
@@ -54,7 +54,7 @@ describe('Component renders and calculates score', () => {
     const item = findItem('3', container);
     expect(item).toHaveValue(42);
 
-    const fhirpathItem = await findByLabelText('Fhir sum element');
+    const fhirpathItem = await findByLabelText(/Fhir sum element/i);
     expect(fhirpathItem).toHaveValue(42);
   });
 
@@ -76,7 +76,7 @@ describe('Component renders and calculates score', () => {
     item = findItem('2', container);
     expect(item).toHaveValue(21);
 
-    const fhirpathItem = await findByLabelText('Fhir sum element');
+    const fhirpathItem = await findByLabelText(/Fhir sum element/i);
     expect(fhirpathItem).toHaveValue(42);
   });
 
@@ -86,7 +86,7 @@ describe('Component renders and calculates score', () => {
 
     await inputAnswer('1', 42, container);
 
-    const fhirpathItem = await findByLabelText('Fhir sum element');
+    const fhirpathItem = await findByLabelText(/Fhir sum element/i);
     expect(fhirpathItem).toHaveValue(null);
   });
 
@@ -102,49 +102,49 @@ describe('Component renders and calculates score', () => {
 
   it('total score should be updated when options in choice item as radio-button is selected', async () => {
     const { getByLabelText } = createWrapper(ChoiceRadioButtonDataModel);
-    const sum = getByLabelText('Sum');
+    const sum = getByLabelText(/Sum/i);
     expect(sum).toHaveValue(null);
 
     await clickByLabelText('Mer enn halvparten av dagene');
-    const sum2 = getByLabelText('Sum');
+    const sum2 = getByLabelText(/Sum/i);
     expect(sum2).toHaveValue(2);
 
     await clickByLabelText('Noen dager');
-    const sum3 = getByLabelText('Sum');
+    const sum3 = getByLabelText(/Sum/i);
     expect(sum3).toHaveValue(1);
   });
 
   it('total score should be updated when options in choice item as check-box is selected', async () => {
     const { getByLabelText } = createWrapper(ChoiceCheckBoxDataModel);
 
-    const sum = getByLabelText('Sum');
+    const sum = getByLabelText(/Sum/i);
     expect(sum).toHaveValue(null);
 
     await clickByLabelText('Mer enn halvparten av dagene');
-    const sum2 = getByLabelText('Sum');
+    const sum2 = getByLabelText(/Sum/i);
     expect(sum2).toHaveValue(2);
 
     await clickByLabelText('Nesten hver dag');
-    const sum3 = getByLabelText('Sum');
+    const sum3 = getByLabelText(/Sum/i);
     expect(sum3).toHaveValue(5);
 
     await clickByLabelText('Mer enn halvparten av dagene');
-    const sum4 = getByLabelText('Sum');
+    const sum4 = getByLabelText(/Sum/i);
     expect(sum4).toHaveValue(3);
   });
 
   it('total score should be updated when options in open-choice item is selected', async () => {
     const { getByLabelText } = createWrapper(OpenChoiceDataModel);
 
-    const sum = getByLabelText('Sum');
+    const sum = getByLabelText(/Sum/i);
     expect(sum).toHaveValue(null);
 
     await clickByLabelText('Mer enn halvparten av dagene');
-    const sum2 = getByLabelText('Sum');
+    const sum2 = getByLabelText(/Sum/i);
     expect(sum2).toHaveValue(2);
 
     await clickByLabelText('Nesten hver dag');
-    const sum3 = getByLabelText('Sum');
+    const sum3 = getByLabelText(/Sum/i);
     expect(sum3).toHaveValue(3);
   });
   function expectScores(scores: { [linkId: string]: number | null }, container: HTMLElement) {
@@ -208,12 +208,12 @@ describe('Code Scoring', () => {
   it('Section scoring on decimal grouping with limit 2 digit in decimal. Round decimal to integer less than 5', async () => {
     const { getByDisplayValue, getByText } = createWrapper(CodeScoreDataModel);
 
-    await typeByLabelText('Decimal 1', '42.451', false);
+    await typeByLabelText(/Decimal 1/i, '42.451', false);
 
     const sum1 = getByDisplayValue(42.451);
     expect(sum1).toBeInTheDocument();
 
-    await typeByLabelText('Decimal 2', '1.041', false);
+    await typeByLabelText(/Decimal 2/i, '1.041', false);
 
     const sum2 = getByDisplayValue(1.041);
     expect(sum2).toBeInTheDocument();
@@ -228,11 +228,11 @@ describe('Code Scoring', () => {
   it('Section scoring on decimal grouping with limit 2 digit in decimal. Round decimal to integer more than 5', async () => {
     const { getByDisplayValue, getByText } = createWrapper(CodeScoreDataModel);
 
-    await typeByLabelText('Decimal 1', '42.551', false);
+    await typeByLabelText(/Decimal 1/i, '42.551', false);
     let sum = getByDisplayValue(42.551);
     expect(sum).toBeInTheDocument();
 
-    await typeByLabelText('Decimal 2', '1.041', false);
+    await typeByLabelText(/Decimal 2/i, '1.041', false);
 
     const sum2 = getByDisplayValue(1.041);
     expect(sum2).toBeInTheDocument();
@@ -247,11 +247,11 @@ describe('Code Scoring', () => {
   it('Section scoring on integer grouping', async () => {
     const { getByDisplayValue, getByText, getAllByDisplayValue } = createWrapper(CodeScoreDataModel);
 
-    await typeByLabelText('Integer 1', '42', false);
+    await typeByLabelText(/Integer 1/i, '42', false);
     let sum = getByDisplayValue(42);
     expect(sum).toBeInTheDocument();
 
-    await typeByLabelText('Integer 2', '2', false);
+    await typeByLabelText(/Integer 2/i, '2', false);
 
     const sum2 = getAllByDisplayValue(2);
     expect(sum2[0]).toHaveValue(2);
@@ -263,11 +263,11 @@ describe('Code Scoring', () => {
   it('Section scoring on quantity grouping', async () => {
     const { getByDisplayValue, getByText } = createWrapper(CodeScoreDataModel);
 
-    await typeByLabelText('Quantity (cm)', '165.234', false);
+    await typeByLabelText(/Quantity 1/i, '165.234', false);
     let sum = getByDisplayValue(165.234);
     expect(sum).toBeInTheDocument();
 
-    await typeByLabelText('Nytt quantityfelt med en egen enhet der man feks skal regne sammen to cm felt', '45.234', false);
+    await typeByLabelText(/Nytt quantityfelt med en egen enhet der man feks skal regne sammen to cm felt/i, '45.234', false);
 
     const sum2 = getByDisplayValue(45.234);
     expect(sum2).toBeInTheDocument();
@@ -277,13 +277,13 @@ describe('Code Scoring', () => {
 
   it('Section scoring on multiple choice grouping, with section scoring quantity extention kilo. Select one', async () => {
     const { getByText } = createWrapper(CodeScoreDataModel);
-    await clickByLabelText('Svært medtatt, vansker med å ta til deg væske eller næring');
+    await clickByLabelText(/Svært medtatt, vansker med å ta til deg væske eller næring/i);
     expect(getByText('50 kilo')).toBeInTheDocument();
   });
 
   it('Section scoring on multiple choice grouping, with section scoring quantity extention kilo. Select multiple', async () => {
     const { getByText } = createWrapper(CodeScoreDataModel);
-    await clickByLabelText('Svært medtatt, vansker med å ta til deg væske eller næring');
+    await clickByLabelText(/Svært medtatt, vansker med å ta til deg væske eller næring/i);
     await clickByLabelText(/utslett som ikke lar seg avbleke/i);
     expect(getByText('100 kilo')).toBeInTheDocument();
   });
@@ -291,8 +291,8 @@ describe('Code Scoring', () => {
   it('Section scoring on multiple choice grouping, with section scoring quantity without extension. Select multiple', async () => {
     const { getAllByText } = createWrapper(CodeScoreDataModel);
 
-    await clickByLabelText('Astma');
-    await clickByLabelText('Kols');
+    await clickByLabelText(/Astma/i);
+    await clickByLabelText(/Kols/i);
 
     expect(getAllByText('50 score')).toHaveLength(2);
   });
@@ -300,8 +300,8 @@ describe('Code Scoring', () => {
   it('Total QS scoring', async () => {
     const { getByText } = createWrapper(CodeScoreDataModel);
 
-    await clickByLabelText('Astma');
-    await clickByLabelText('Feber');
+    await clickByLabelText(/Astma/i);
+    await clickByLabelText(/Feber/i);
 
     expect(getByText('35 score')).toBeInTheDocument();
   });

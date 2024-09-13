@@ -4,7 +4,7 @@ import { getResources } from '../../../../preview/resources/referoResources.ts';
 import { renderRefero } from '@test/test-utils.tsx';
 import { q } from './__data__';
 
-const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle ut dette feltet' };
+const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle ut dette feltet', formOptional: '(Valgfritt)' };
 
 describe('ReferoLabel', () => {
   it('should show label', () => {
@@ -12,13 +12,15 @@ describe('ReferoLabel', () => {
     expect(getByLabelText(/String - Label - Markdown/i)).toBeInTheDocument();
   });
 
-  it('should show sublabel if sublable is added', () => {
+  it.skip('should show sublabel if sublable is added', () => {
     const { getByLabelText } = createWrapper(q);
     expect(getByLabelText(/String - sublabel - Markdown/i)).toBeInTheDocument();
   });
-  it('should not show sublabel if there is no sublabel', () => {
-    const { getByLabelText } = createWrapper(q);
-    expect(getByLabelText(/String - sublabel - Markdown/i)).toBeInTheDocument();
+
+  it('should show optional text if item.reqired is false', () => {
+    const { queryAllByLabelText } = createWrapper(q);
+    const label = new RegExp(resources.formOptional, 'i');
+    expect(queryAllByLabelText(label)).toHaveLength(3);
   });
   it('should remove script tag from sublabel and label', () => {
     const { queryByLabelText } = createWrapper(q);

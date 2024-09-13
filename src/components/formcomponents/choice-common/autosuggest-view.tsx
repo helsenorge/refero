@@ -1,7 +1,7 @@
 import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 
 import { ValueSet, Coding } from 'fhir/r4';
-import { Controller, FieldValues, useFormContext } from 'react-hook-form';
+import { FieldValues, useFormContext } from 'react-hook-form';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Loader from '@helsenorge/designsystem-react/components/Loader';
@@ -12,7 +12,7 @@ import { debounce } from '@helsenorge/core-utils/debounce';
 
 import { OPEN_CHOICE_ID, OPEN_CHOICE_SYSTEM } from '@/constants';
 import ItemType from '@/constants/itemType';
-import { isRequired, getId } from '@/util/index';
+import { getId } from '@/util/index';
 import { getStringAnswer, hasStringAnswer, getCodingAnswer } from '@/util/refero-core';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
@@ -25,6 +25,7 @@ import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 
 import { QuestionnaireComponentItemProps } from '@/components/GenerateQuestionnaireComponents';
+import { required } from '@/components/validation/rules';
 
 export type AutosuggestProps = QuestionnaireComponentItemProps & {
   handleChange: (code?: string, systemArg?: string, displayArg?: string) => void;
@@ -47,7 +48,7 @@ const AutosuggestView = (props: AutosuggestProps): JSX.Element | null => {
     path,
     children,
   } = props;
-  const { formState, getFieldState, control } = useFormContext<FieldValues>();
+  const { formState, getFieldState, register } = useFormContext<FieldValues>();
 
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
@@ -181,6 +182,10 @@ const AutosuggestView = (props: AutosuggestProps): JSX.Element | null => {
   if (!enable) {
     return null;
   }
+  const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, {
+    required: required({ item, resources }),
+    shouldUnregister: true,
+  });
   return (
     <div className="page_refero__component page_refero__component_choice page_refero__component_choice_autosuggest">
       <FormGroup error={error?.message}>
@@ -195,46 +200,36 @@ const AutosuggestView = (props: AutosuggestProps): JSX.Element | null => {
         />
         <RenderHelpElement item={item} isHelpVisible={isHelpVisible} />
 
-        <Controller
-          name={idWithLinkIdAndItemIndex}
-          control={control}
-          shouldUnregister={true}
-          defaultValue={inputValue}
-          rules={{
-            required: {
-              value: isRequired(item),
-              message: resources?.formRequiredErrorMessage ?? 'Feltet er påkrevd',
+        <Autosuggest
+          inputProps={{
+            ...rest,
+            id: getId(id),
+            onChange: (e: FormEvent<HTMLElement>, AutosuggestChangeEvent): void => {
+              onChange(e);
+              onChangeInput(e, AutosuggestChangeEvent);
+            },
+            value: inputValue,
+            type: 'search',
+            onBlur: (e: ChangeEvent<HTMLElement>, AutosuggestChangeEvent): void => {
+              onBlur(e, AutosuggestChangeEvent);
             },
           }}
-          render={({ field: { onChange, ...rest } }): JSX.Element => (
-            <Autosuggest
-              inputProps={{
-                ...rest,
-                id: getId(id),
-                onChange: (e: FormEvent<HTMLElement>, AutosuggestChangeEvent): void => {
-                  onChange('');
-                  onChangeInput(e, AutosuggestChangeEvent);
-                },
-                value: inputValue,
-                type: 'search',
-                onBlur: (e: ChangeEvent<HTMLElement>, AutosuggestChangeEvent): void => {
-                  onBlur(e, AutosuggestChangeEvent);
-                },
-              }}
-              className="page_refero__autosuggest"
-              suggestions={suggestions}
-              onSuggestionsFetchRequested={debouncedOnSuggestionsFetchRequested}
-              onSuggestionsClearRequested={(): void => {
-                // vis samme resultatsett neste gang feltet får fokus
-              }}
-              renderSuggestion={(suggestion: Suggestion): JSX.Element => <div>{suggestion.label}</div>}
-              onSuggestionSelected={(e, data): void => {
-                onChange([data.suggestion.value]);
-                onSuggestionSelected(e, data);
-              }}
-              focusInputOnSuggestionClick={true}
-            />
-          )}
+          className="page_refero__autosuggest"
+          suggestions={suggestions}
+          onSuggestionsFetchRequested={debouncedOnSuggestionsFetchRequested}
+          onSuggestionsClearRequested={(): void => {
+            // vis samme resultatsett neste gang feltet får fokus
+          }}
+          renderSuggestion={(suggestion: Suggestion): JSX.Element => <div>{suggestion.label}</div>}
+          onSuggestionSelected={(e, data): void => {
+            onChange({
+              target: {
+                value: [data.suggestion.value],
+              },
+            });
+            onSuggestionSelected(e, data);
+          }}
+          focusInputOnSuggestionClick={true}
         />
 
         {isLoading && (
@@ -251,7 +246,6 @@ const AutosuggestView = (props: AutosuggestProps): JSX.Element | null => {
           path={path}
           index={index}
           responseItem={responseItem}
-          resources={resources}
           className="page_refero__deletebutton--margin-top"
         />
         <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} responseItem={responseItem} responseItems={responseItems} />

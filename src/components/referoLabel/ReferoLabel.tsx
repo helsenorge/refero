@@ -1,10 +1,10 @@
 import { QuestionnaireItem } from 'fhir/r4';
-import styles from './safetext.module.css';
+import styles from './referoLabel.module.css';
 import Label, { LabelText } from '@helsenorge/designsystem-react/components/Label';
 
 import SafeText from './SafeText';
 import SubLabel from './sublabel';
-import { getLabelText, getSublabelText } from '@/util';
+import { getLabelText, getSublabelText, isReadOnly, isRequired } from '@/util';
 import { Resources } from '@/util/resources';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 import { useSelector } from 'react-redux';
@@ -40,15 +40,25 @@ export const ReferoLabel = ({
   const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
   const lblText = getLabelText(item, onRenderMarkdown, questionnaire, resources);
   return (
-    <div style={{ alignItems: 'center' }} className={styles.label_content}>
-      <Label labelId={labelId} testId={testId} labelTexts={labelText || []} htmlFor={htmlFor} className={`page_refero__label`}>
-        <div>
-          <SafeText text={lblText} />
-          {/* <>{isRequired(item) && <span>{'(Valgfritt)'}</span>}</> */}
-          {subLabelText && <SubLabel id={sublabelId} testId={sublabelTestId} subLabelText={subLabelText} />}
-        </div>
-      </Label>
-      {afterLabelContent && afterLabelContent}
+    <div className={`${styles.labelWithHelp} labelWithHelp`}>
+      <div className={styles.label_content}>
+        <Label
+          labelId={labelId}
+          testId={testId}
+          labelTexts={labelText || []}
+          htmlFor={htmlFor}
+          className={`${styles.pageReferoLabel} page_refero__label`}
+        >
+          <div className={`${styles.textOptionalWrapper}`}>
+            <SafeText as="span" text={`${lblText}`} className={`${styles.referoLabelSafetext} referoLabelSafetext`} />
+            {!isRequired(item) && !isReadOnly(item) && (
+              <span className={`${styles.LabelOptionalText} LabelOptionalText`}>{` ${resources?.formOptional || ` (Valgfritt)`}`}</span>
+            )}
+          </div>
+        </Label>
+        {afterLabelContent ?? null}
+      </div>
+      {subLabelText && <SubLabel id={sublabelId} testId={sublabelTestId} subLabelText={subLabelText} />}
     </div>
   );
 };

@@ -1,3 +1,8 @@
+## 16.0.0-beta.28
+
+- Fix referolabel
+- Fix styling to look like old refero
+- Preformance improvements
 
 ## 16.0.0-beta22
 
@@ -75,6 +80,13 @@
 
 - Rework of refero with new components
 - removed old components and added new from @helsenorge designsystem
+## 15.0.10
+
+---
+
+- fix pipeline to publish with correct tag to npm
+- fix small error in package.json
+
 ## 15.0.9
 
 ---

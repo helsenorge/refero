@@ -3,7 +3,6 @@ import { QuestionnaireItem, QuestionnaireResponseItem, QuestionnaireResponseItem
 import DeleteButton from './DeleteButton';
 
 import { Path, shouldRenderDeleteButton } from '@/util/refero-core';
-import { Resources } from '@/util/resources';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
 
 type Props = {
@@ -12,10 +11,9 @@ type Props = {
   item: QuestionnaireItem;
   path?: Path[];
   responseItem?: QuestionnaireResponseItem;
-  resources?: Resources;
 };
 
-export const RenderDeleteButton = ({ resources, className, responseItem, item, path, index }: Props): JSX.Element | null => {
+export const RenderDeleteButton = ({ className, responseItem, item, path, index }: Props): JSX.Element | null => {
   if (!shouldRenderDeleteButton(item, index || 0)) {
     return null;
   }
@@ -30,9 +28,10 @@ export const RenderDeleteButton = ({ resources, className, responseItem, item, p
   if (!mustShowConfirm && responseItem && responseItem.item) {
     mustShowConfirm = responseItem.item.some(item => (item ? hasAnwer(answer) : false));
   }
+
   return (
     <div className="page_refero__deletebutton-wrapper">
-      <DeleteButton className={className} item={item} path={path} resources={resources} mustShowConfirm={mustShowConfirm} />
+      <DeleteButton className={className} item={item} path={path} mustShowConfirm={mustShowConfirm} />
     </div>
   );
 };

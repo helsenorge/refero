@@ -1,22 +1,16 @@
 import { useState } from 'react';
 
 import { QuestionnaireResponseItemAnswer, Quantity as QuantityType } from 'fhir/r4';
-import { Controller, FieldValues, useFormContext } from 'react-hook-form';
+import { FieldValues, useFormContext } from 'react-hook-form';
 import { ThunkDispatch } from 'redux-thunk';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Input from '@helsenorge/designsystem-react/components/Input';
-
+import styles from './quantity.module.css';
 import { NewValueAction, newQuantityValueAsync } from '@/actions/newValue';
 import { GlobalState } from '@/reducers';
-import {
-  getMaxValueExtensionValue,
-  getMinValueExtensionValue,
-  getPlaceholder,
-  getQuestionnaireUnitExtensionValue,
-  getValidationTextExtension,
-} from '@/util/extension';
-import { isReadOnly, getId, isRequired, getDecimalPattern } from '@/util/index';
+import { getPlaceholder, getQuestionnaireUnitExtensionValue } from '@/util/extension';
+import { isReadOnly, getId } from '@/util/index';
 
 import TextView from '../textview';
 
@@ -30,13 +24,14 @@ import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import { QuestionnaireComponentItemProps } from '@/components/GenerateQuestionnaireComponents';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
+import { decimalPattern, maxValue, minValue, required } from '@/components/validation/rules';
 
 export type Props = QuestionnaireComponentItemProps;
 
 const Quantity = (props: Props): JSX.Element | null => {
   const { path, item, id, resources, pdf, idWithLinkIdAndItemIndex, responseItems, index, children, responseItem } = props;
   const { promptLoginMessage, onAnswerChange } = useExternalRenderContext();
-  const { formState, getFieldState } = useFormContext<FieldValues>();
+  const { formState, getFieldState, register } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
 
@@ -111,10 +106,14 @@ const Quantity = (props: Props): JSX.Element | null => {
     );
   }
   const value = getValue(answer);
-  const decimalPattern = getDecimalPattern(item);
-  const minValue = getMinValueExtensionValue(item);
-  const maxValue = getMaxValueExtensionValue(item);
-  const errorMessage = getValidationTextExtension(item);
+
+  const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, {
+    required: required({ item, resources }),
+    max: maxValue({ item, resources }),
+    min: minValue({ item, resources }),
+    pattern: decimalPattern({ item, resources }),
+    shouldUnregister: true,
+  });
   return (
     <div className="page_refero__component page_refero__component_quantity">
       <FormGroup error={error?.message} mode="ongrey">
@@ -129,61 +128,29 @@ const Quantity = (props: Props): JSX.Element | null => {
         />
         <RenderHelpElement isHelpVisible={isHelpVisible} item={item} />
 
-        <Controller
-          name={idWithLinkIdAndItemIndex}
-          shouldUnregister={true}
-          defaultValue={value}
-          rules={{
-            required: {
-              value: isRequired(item),
-              message: resources?.formRequiredErrorMessage ?? 'Feltet er påkrevd',
-            },
+        <div className={styles.inputWrapper}>
+          <Input
+            {...rest}
+            value={value !== undefined ? value + '' : ''}
+            type="number"
+            inputId={getId(id)}
+            testId={getId(id)}
+            placeholder={getPlaceholder(item)}
+            className="page_refero__quantity"
+            onChange={(e): void => {
+              onChange(e);
+              handleChange(e);
+            }}
+            width={7}
+          />
+          <span className={`${styles.pageReferoUnit} page_refero__unit`}>{getUnit()}</span>
+        </div>
 
-            ...(maxValue && {
-              max: {
-                value: maxValue,
-                message: errorMessage ?? resources?.oppgiGyldigVerdi ?? 'Verdien er for høy',
-              },
-            }),
-            ...(minValue && {
-              min: {
-                value: minValue,
-                message: errorMessage ?? resources?.oppgiGyldigVerdi ?? 'Verdien er for lav',
-              },
-            }),
-            ...(decimalPattern && {
-              pattern: {
-                value: new RegExp(decimalPattern),
-                message: resources?.oppgiGyldigVerdi ?? 'Verdien er ikke et gyldig tall',
-              },
-            }),
-          }}
-          render={({ field: { onChange, ...rest } }): JSX.Element => (
-            <>
-              <Input
-                {...rest}
-                value={value !== undefined ? value + '' : ''}
-                type="number"
-                inputId={getId(id)}
-                testId={getId(id)}
-                placeholder={getPlaceholder(item)}
-                className="page_refero__quantity"
-                onChange={(e): void => {
-                  onChange(e.target.value);
-                  handleChange(e);
-                }}
-                width={7}
-              />
-              <span className="page_refero__unit">{getUnit()}</span>
-            </>
-          )}
-        />
         <RenderDeleteButton
           item={item}
           path={path}
           index={index}
           responseItem={responseItem}
-          resources={resources}
           className="page_refero__deletebutton--margin-top"
         />
         <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} responseItem={responseItem} responseItems={responseItems} />

@@ -4,6 +4,8 @@ import { ActionRequester, IActionRequester } from '@/util/actionRequester';
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { IQuestionnaireInspector, QuestionniareInspector } from '@/util/questionnaireInspector';
 import { GlobalState } from '@/reducers';
+import { ThunkDispatch } from 'redux-thunk';
+import { NewValueAction } from '@/actions/newValue';
 
 const useOnAnswerChange = (
   onChange?: (
@@ -13,7 +15,7 @@ const useOnAnswerChange = (
     questionnaireInspector: IQuestionnaireInspector
   ) => void
 ): ((state: GlobalState, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void) => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
   const { runScoringCalculator } = useScoringCalculator();
 
   return (state: GlobalState, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer): void => {
@@ -28,7 +30,6 @@ const useOnAnswerChange = (
         dispatch(action);
       }
     }
-
     runScoringCalculator(questionnaire, questionnaireResponse);
   };
 };

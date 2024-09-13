@@ -1,17 +1,15 @@
 import React from 'react';
 
-import { Controller, FieldValues, useFormContext } from 'react-hook-form';
+import { FieldValues, useFormContext } from 'react-hook-form';
 
 import { Options } from '@/types/formTypes/radioGroupOptions';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Select from '@helsenorge/designsystem-react/components/Select';
 
-import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
-
 import { shouldShowExtraChoice } from '@/util/choice';
-import { getValidationTextExtension } from '@/util/extension';
-import { isRequired, getId } from '@/util/index';
+
+import { getId } from '@/util/index';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
@@ -20,6 +18,7 @@ import RenderHelpElement from '@/components/formcomponents/help-button/RenderHel
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import { QuestionnaireComponentItemProps } from '@/components/GenerateQuestionnaireComponents';
+import { required } from '@/components/validation/rules';
 
 type Props = QuestionnaireComponentItemProps & {
   options?: Array<Options>;
@@ -45,7 +44,7 @@ const DropdownView = (props: Props): JSX.Element | null => {
     index,
   } = props;
   const [isHelpVisible, setIsHelpVisible] = React.useState(false);
-  const { formState, getFieldState, control } = useFormContext<FieldValues>();
+  const { formState, getFieldState, register } = useFormContext<FieldValues>();
   const { error } = getFieldState(idWithLinkIdAndItemIndex, formState);
 
   if (!options) {
@@ -56,6 +55,10 @@ const DropdownView = (props: Props): JSX.Element | null => {
   const onChange = (e: React.ChangeEvent<HTMLSelectElement>): void => {
     handleChange(e.target.value);
   };
+  const { onChange: handleFormChange, ...rest } = register(idWithLinkIdAndItemIndex, {
+    required: required({ item, resources }),
+    shouldUnregister: true,
+  });
   return (
     <div className="page_refero__component page_refero__component_openchoice page_refero__component_openchoice_dropdown">
       <FormGroup error={error?.message} mode="ongrey">
@@ -69,38 +72,25 @@ const DropdownView = (props: Props): JSX.Element | null => {
           afterLabelContent={<RenderHelpButton isHelpVisible={isHelpVisible} item={item} setIsHelpVisible={setIsHelpVisible} />}
         />
         <RenderHelpElement item={item} isHelpVisible={isHelpVisible} />
-        <Controller
-          name={idWithLinkIdAndItemIndex}
-          control={control}
-          shouldUnregister={true}
-          defaultValue={selected?.[0] || ''}
-          rules={{
-            required: {
-              message: getValidationTextExtension(item) ?? resources?.formRequiredErrorMessage ?? '',
-              value: isRequired(item),
-            },
+
+        <Select
+          {...rest}
+          selectId={getId(id)}
+          className="page_refero__input"
+          testId={getId(id)}
+          onChange={(e): void => {
+            handleFormChange(e);
+            onChange(e);
           }}
-          render={({ field: { onChange: handleChange, ...rest } }): JSX.Element => (
-            <Select
-              {...rest}
-              selectId={getId(id)}
-              className="page_refero__input"
-              testId={getId(id)}
-              onChange={(e): void => {
-                handleChange(e);
-                onChange(e);
-              }}
-              value={selected?.[0] || ''}
-            >
-              <option value={undefined}>{resources?.selectDefaultPlaceholder || ''}</option>
-              {options.map(option => (
-                <option key={getId(id) + option.label} value={option.type}>
-                  {option.label}
-                </option>
-              ))}
-            </Select>
-          )}
-        />
+          value={selected?.[0] || ''}
+        >
+          <option value={undefined}>{resources?.selectDefaultPlaceholder || ''}</option>
+          {options.map(option => (
+            <option key={getId(id) + option.label} value={option.type}>
+              {option.label}
+            </option>
+          ))}
+        </Select>
         {shouldShowExtraChoice(answer) && <div className="page_refero__component_openchoice_openfield">{renderOpenField()}</div>}
       </FormGroup>
       <RenderDeleteButton
@@ -108,7 +98,6 @@ const DropdownView = (props: Props): JSX.Element | null => {
         path={path}
         index={index}
         responseItem={responseItem}
-        resources={resources}
         className="page_refero__deletebutton--margin-top"
       />
       <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} responseItem={responseItem} responseItems={responseItems} />
@@ -117,4 +106,4 @@ const DropdownView = (props: Props): JSX.Element | null => {
   );
 };
 
-export default layoutChange(DropdownView);
+export default DropdownView;

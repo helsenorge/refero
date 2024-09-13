@@ -1,19 +1,17 @@
 import React, { useState } from 'react';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
-import { Controller, FieldValues, useFormContext } from 'react-hook-form';
+import { FieldValues, useFormContext } from 'react-hook-form';
 
 import { ThunkDispatch } from 'redux-thunk';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Input from '@helsenorge/designsystem-react/components/Input';
 
-import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
-
 import { NewValueAction, newDecimalValueAsync } from '@/actions/newValue';
 import { GlobalState } from '@/reducers';
-import { getMaxValueExtensionValue, getMinValueExtensionValue, getPlaceholder, getValidationTextExtension } from '@/util/extension';
-import { isReadOnly, getId, getDecimalPattern, isRequired } from '@/util/index';
+import { getPlaceholder } from '@/util/extension';
+import { isReadOnly, getId } from '@/util/index';
 import TextView from '../textview';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
@@ -26,13 +24,14 @@ import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 import { QuestionnaireComponentItemProps } from '@/components/GenerateQuestionnaireComponents';
+import { decimalPattern, maxValue, minValue, required } from '@/components/validation/rules';
 
 export type Props = QuestionnaireComponentItemProps;
 
 const Decimal = (props: Props): JSX.Element | null => {
   const { id, item, pdf, resources, children, idWithLinkIdAndItemIndex, path, responseItems, index, responseItem } = props;
   const { promptLoginMessage, onAnswerChange } = useExternalRenderContext();
-  const { formState, getFieldState, control } = useFormContext<FieldValues>();
+  const { formState, getFieldState, register } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex || '', formState);
   const { error } = fieldState;
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
@@ -74,7 +73,7 @@ const Decimal = (props: Props): JSX.Element | null => {
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     const value = parseFloat(event.target.value);
     dispatch(newDecimalValueAsync(path || [], value, item))?.then(newState => {
-      return onAnswerChange(newState, item, { valueDecimal: value } as QuestionnaireResponseItemAnswer);
+      return onAnswerChange(newState, item, { valueDecimal: value });
     });
 
     if (promptLoginMessage) {
@@ -93,11 +92,14 @@ const Decimal = (props: Props): JSX.Element | null => {
       </TextView>
     );
   }
-  const decimalPattern = getDecimalPattern(item);
-  const maxValue = getMaxValueExtensionValue(item);
-  const minValue = getMinValueExtensionValue(item);
-  const validationText = getValidationTextExtension(item);
 
+  const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, {
+    required: required({ item, resources }),
+    max: maxValue({ item, resources }),
+    min: minValue({ item, resources }),
+    pattern: decimalPattern({ item, resources }),
+    shouldUnregister: true,
+  });
   return (
     <div className="page_refero__component page_refero__component_decimal">
       <FormGroup error={error?.message} mode="ongrey">
@@ -111,51 +113,19 @@ const Decimal = (props: Props): JSX.Element | null => {
           afterLabelContent={<RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />}
         />
         <RenderHelpElement item={item} isHelpVisible={isHelpVisible} />
-        <Controller
-          name={idWithLinkIdAndItemIndex || ''}
-          control={control}
-          shouldUnregister={true}
-          defaultValue={value ? value + '' : ''}
-          rules={{
-            required: {
-              value: isRequired(item),
-              message: resources?.formRequiredErrorMessage ?? 'Feltet er påkrevd',
-            },
-            ...(maxValue && {
-              max: {
-                value: maxValue,
-                message: validationText ?? resources?.oppgiGyldigVerdi ?? 'Verdien er for høy',
-              },
-            }),
-            ...(minValue && {
-              min: {
-                value: minValue,
-                message: validationText ?? resources?.oppgiGyldigVerdi ?? 'Verdien er for lav',
-              },
-            }),
-            ...(decimalPattern && {
-              pattern: {
-                value: new RegExp(decimalPattern),
-                message: resources?.oppgiGyldigVerdi ?? 'Verdien er ikke et gyldig tall',
-              },
-            }),
+
+        <Input
+          {...rest}
+          type="number"
+          inputId={getId(id)}
+          value={value ? value + '' : ''}
+          placeholder={getPlaceholder(item)}
+          className="page_refero__input"
+          onChange={(e): void => {
+            handleChange(e);
+            onChange(e);
           }}
-          render={({ field: { onChange, ...rest } }): JSX.Element => (
-            <Input
-              {...rest}
-              type="number"
-              inputId={getId(id)}
-              name={getId(id)}
-              value={value ? value + '' : ''}
-              placeholder={getPlaceholder(item)}
-              className="page_refero__input"
-              onChange={(e): void => {
-                handleChange(e);
-                onChange(e.target.value);
-              }}
-              width={25}
-            />
-          )}
+          width={25}
         />
       </FormGroup>
       <RenderDeleteButton
@@ -163,7 +133,6 @@ const Decimal = (props: Props): JSX.Element | null => {
         path={path}
         index={index}
         responseItem={responseItem}
-        resources={resources}
         className="page_refero__deletebutton--margin-top"
       />
       <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} responseItem={responseItem} responseItems={responseItems} />
@@ -173,5 +142,4 @@ const Decimal = (props: Props): JSX.Element | null => {
   );
 };
 
-const layoutChangeComponent = layoutChange(Decimal);
-export default layoutChangeComponent;
+export default Decimal;

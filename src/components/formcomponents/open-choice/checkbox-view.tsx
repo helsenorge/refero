@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { Controller, FieldValues, useFormContext } from 'react-hook-form';
+import { FieldValues, useFormContext } from 'react-hook-form';
 
 import { Options } from '@/types/formTypes/radioGroupOptions';
 
@@ -9,7 +9,7 @@ import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Label from '@helsenorge/designsystem-react/components/Label';
 
 import { shouldShowExtraChoice } from '@/util/choice';
-import { isRequired, getId } from '@/util/index';
+import { getId } from '@/util/index';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
@@ -18,6 +18,7 @@ import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelp
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import { QuestionnaireComponentItemProps } from '@/components/GenerateQuestionnaireComponents';
+import { required } from '@/components/validation/rules';
 
 type Props = QuestionnaireComponentItemProps & {
   options?: Array<Options>;
@@ -42,12 +43,16 @@ const CheckboxView = (props: Props): JSX.Element | null => {
     children,
     path,
   } = props;
-  const { formState, getFieldState, control } = useFormContext<FieldValues>();
+  const { formState, getFieldState, register } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
 
   const answer = useGetAnswer(responseItem, item);
   const [isHelpVisible, setIsHelpVisible] = useState(false);
+  const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, {
+    required: required({ item, resources }),
+    shouldUnregister: true,
+  });
   return (
     <div className="page_refero__component page_refero__component_openchoice page_refero__component_openchoice_checkbox">
       <FormGroup error={error?.message} mode="ongrey">
@@ -64,39 +69,18 @@ const CheckboxView = (props: Props): JSX.Element | null => {
         <RenderHelpElement item={item} isHelpVisible={isHelpVisible} />
 
         {options?.map((option, index) => (
-          <Controller
-            name={idWithLinkIdAndItemIndex}
+          <Checkbox
+            {...rest}
             key={`${option.type}-${index}`}
-            control={control}
-            shouldUnregister={true}
-            defaultValue={selected}
-            rules={{
-              required: {
-                message: resources?.formRequiredErrorMessage ?? 'Påkrevd felt',
-                value: isRequired(item),
-              },
+            inputId={`${id}-${option.type}`}
+            testId={`${getId(id)}-${index}-checkbox-openchoice`}
+            label={<Label testId={`${getId(id)}-${index}-checkbox-openchoice-label`} labelTexts={[{ text: option.label }]} />}
+            checked={selected?.some((val: string | undefined) => val === option?.type)}
+            value={option.type}
+            onChange={(e): void => {
+              onChange(e);
+              handleChange(option.type);
             }}
-            render={({ field: { value, onChange, ...rest } }): JSX.Element => (
-              <Checkbox
-                {...rest}
-                inputId={`${id}-${option.type}`}
-                testId={`${getId(id)}-${index}-checkbox-openchoice`}
-                label={<Label testId={`${getId(id)}-${index}-checkbox-openchoice-label`} labelTexts={[{ text: option.label }]} />}
-                checked={selected?.some((val: string | undefined) => val === option?.type)}
-                value={option.type}
-                onChange={(e): void => {
-                  const valueCopy = value ? [...value] : [];
-                  if (e.target.checked) {
-                    valueCopy.push(option.type);
-                  } else {
-                    const idx = valueCopy.findIndex(code => option.type === code);
-                    valueCopy.splice(idx, 1);
-                  }
-                  onChange(valueCopy);
-                  handleChange(option.type);
-                }}
-              />
-            )}
           />
         ))}
       </FormGroup>
@@ -106,7 +90,6 @@ const CheckboxView = (props: Props): JSX.Element | null => {
         path={path}
         index={index}
         responseItem={responseItem}
-        resources={resources}
         className="page_refero__deletebutton--margin-top"
       />
       <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} responseItem={responseItem} responseItems={responseItems} />

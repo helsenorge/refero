@@ -12,141 +12,141 @@ describe('Hidden components should not render', () => {
   it('unhidden attachment renders', () => {
     const q = createQuestionnaire(createItem(ItemType.ATTATCHMENT, createQuestionnaireHiddenExtension(false)));
     const { queryByLabelText } = createWrapper(q);
-
-    expect(queryByLabelText('1')).toBeInTheDocument();
+    const labelRegex = new RegExp('1', 'i');
+    expect(queryByLabelText(labelRegex)).toBeInTheDocument();
   });
 
   it('hidden attachment does not render', () => {
     const q = createQuestionnaire(createItem(ItemType.ATTATCHMENT, createQuestionnaireHiddenExtension(true)));
     const { queryByLabelText } = createWrapper(q);
-
-    expect(queryByLabelText('1')).not.toBeInTheDocument();
+    const labelRegex = new RegExp('1', 'i');
+    expect(queryByLabelText(labelRegex)).not.toBeInTheDocument();
   });
 
   it('unhidden boolean renders', () => {
     const q = createQuestionnaire(createItem(ItemType.BOOLEAN, createQuestionnaireHiddenExtension(false)));
     const { queryByLabelText } = createWrapper(q);
-
-    expect(queryByLabelText('1')).toBeInTheDocument();
+    const labelRegex = new RegExp('1', 'i');
+    expect(queryByLabelText(labelRegex)).toBeInTheDocument();
   });
 
   it('hidden boolean does not render', () => {
     const q = createQuestionnaire(createItem(ItemType.BOOLEAN, createQuestionnaireHiddenExtension(true)));
     const { queryByLabelText } = createWrapper(q);
-
-    expect(queryByLabelText('1')).not.toBeInTheDocument();
+    const labelRegex = new RegExp('1', 'i');
+    expect(queryByLabelText(labelRegex)).not.toBeInTheDocument();
   });
 
   it('unhidden date renders', () => {
     const q = createQuestionnaire(createItem(ItemType.DATE, createQuestionnaireHiddenExtension(false)));
     const { queryByLabelText } = createWrapper(q);
-
-    expect(queryByLabelText('1')).toBeInTheDocument();
+    const labelRegex = new RegExp('1', 'i');
+    expect(queryByLabelText(labelRegex)).toBeInTheDocument();
   });
 
   it('hidden date does not render', () => {
     const q = createQuestionnaire(createItem(ItemType.DATE, createQuestionnaireHiddenExtension(true)));
     const { queryByLabelText } = createWrapper(q);
-
-    expect(queryByLabelText('1')).not.toBeInTheDocument();
+    const labelRegex = new RegExp('1', 'i');
+    expect(queryByLabelText(labelRegex)).not.toBeInTheDocument();
   });
 
   it('unhidden time renders', () => {
     const q = createQuestionnaire(createItem(ItemType.TIME, createQuestionnaireHiddenExtension(false)));
     const { queryByLabelText } = createWrapper(q);
-
-    expect(queryByLabelText('1')).toBeInTheDocument();
+    const labelRegex = new RegExp('1', 'i');
+    expect(queryByLabelText(labelRegex)).toBeInTheDocument();
   });
 
   it('hidden time does not render', () => {
     const q = createQuestionnaire(createItem(ItemType.TIME, createQuestionnaireHiddenExtension(true)));
     const { queryByLabelText } = createWrapper(q);
-
-    expect(queryByLabelText('1')).not.toBeInTheDocument();
+    const labelRegex = new RegExp('1', 'i');
+    expect(queryByLabelText(labelRegex)).not.toBeInTheDocument();
   });
 
   it('unhidden dateTime renders', () => {
     const q = createQuestionnaire(createItem(ItemType.DATETIME, createQuestionnaireHiddenExtension(false)));
     const { queryByLabelText } = createWrapper(q);
-
-    expect(queryByLabelText('1')).toBeInTheDocument();
+    const labelRegex = new RegExp('1', 'i');
+    expect(queryByLabelText(labelRegex)).toBeInTheDocument();
   });
 
   it('hidden dateTime does not render', () => {
     const q = createQuestionnaire(createItem(ItemType.DATETIME, createQuestionnaireHiddenExtension(true)));
     const { queryByLabelText } = createWrapper(q);
-
-    expect(queryByLabelText('1')).not.toBeInTheDocument();
+    const labelRegex = new RegExp('1', 'i');
+    expect(queryByLabelText(labelRegex)).not.toBeInTheDocument();
   });
 
   it('unhidden decimal renders', () => {
     const q = createQuestionnaire(createItem(ItemType.DECIMAL, createQuestionnaireHiddenExtension(false)));
     const { queryByLabelText } = createWrapper(q);
-
-    expect(queryByLabelText('1')).toBeInTheDocument();
+    const labelRegex = new RegExp('1', 'i');
+    expect(queryByLabelText(labelRegex)).toBeInTheDocument();
   });
 
   it('hidden decimal does not render', () => {
     const q = createQuestionnaire(createItem(ItemType.DECIMAL, createQuestionnaireHiddenExtension(true)));
     const { queryByLabelText } = createWrapper(q);
-
-    expect(queryByLabelText('1')).not.toBeInTheDocument();
+    const labelRegex = new RegExp('1', 'i');
+    expect(queryByLabelText(labelRegex)).not.toBeInTheDocument();
   });
 
   it('unhidden integer renders', () => {
     const q = createQuestionnaire(createItem(ItemType.INTEGER, createQuestionnaireHiddenExtension(false)));
     const { queryByLabelText } = createWrapper(q);
-
-    expect(queryByLabelText('1')).toBeInTheDocument();
+    const labelRegex = new RegExp('1', 'i');
+    expect(queryByLabelText(labelRegex)).toBeInTheDocument();
   });
 
   it('hidden integer does not render', () => {
     const q = createQuestionnaire(createItem(ItemType.INTEGER, createQuestionnaireHiddenExtension(true)));
     const { queryByLabelText } = createWrapper(q);
-
-    expect(queryByLabelText('1')).not.toBeInTheDocument();
+    const labelRegex = new RegExp('1', 'i');
+    expect(queryByLabelText(labelRegex)).not.toBeInTheDocument();
   });
 
   it('unhidden quantity renders', () => {
     const q = createQuestionnaire(createItem(ItemType.QUANTITY, createQuestionnaireHiddenExtension(false)));
     const { queryByLabelText } = createWrapper(q);
-
-    expect(queryByLabelText('1')).toBeInTheDocument();
+    const labelRegex = new RegExp('1', 'i');
+    expect(queryByLabelText(labelRegex)).toBeInTheDocument();
   });
 
   it('hidden quantity does not render', () => {
     const q = createQuestionnaire(createItem(ItemType.QUANTITY, createQuestionnaireHiddenExtension(true)));
     const { queryByLabelText } = createWrapper(q);
-
-    expect(queryByLabelText('1')).not.toBeInTheDocument();
+    const labelRegex = new RegExp('1', 'i');
+    expect(queryByLabelText(labelRegex)).not.toBeInTheDocument();
   });
 
   it('unhidden string renders', () => {
     const q = createQuestionnaire(createItem(ItemType.STRING, createQuestionnaireHiddenExtension(false)));
     const { queryByLabelText } = createWrapper(q);
-
-    expect(queryByLabelText('1')).toBeInTheDocument();
+    const labelRegex = new RegExp('1', 'i');
+    expect(queryByLabelText(labelRegex)).toBeInTheDocument();
   });
 
   it('hidden string does not render', () => {
     const q = createQuestionnaire(createItem(ItemType.STRING, createQuestionnaireHiddenExtension(true)));
     const { queryByLabelText } = createWrapper(q);
-
-    expect(queryByLabelText('1')).not.toBeInTheDocument();
+    const labelRegex = new RegExp('1', 'i');
+    expect(queryByLabelText(labelRegex)).not.toBeInTheDocument();
   });
 
   it('unhidden text renders', () => {
     const q = createQuestionnaire(createItem(ItemType.TEXT, createQuestionnaireHiddenExtension(false)));
     const { queryByLabelText } = createWrapper(q);
-
-    expect(queryByLabelText('1')).toBeInTheDocument();
+    const labelRegex = new RegExp('1', 'i');
+    expect(queryByLabelText(labelRegex)).toBeInTheDocument();
   });
 
   it('hidden text does not render', () => {
     const q = createQuestionnaire(createItem(ItemType.TEXT, createQuestionnaireHiddenExtension(true)));
     const { queryByLabelText } = createWrapper(q);
-
-    expect(queryByLabelText('1')).not.toBeInTheDocument();
+    const labelRegex = new RegExp('1', 'i');
+    expect(queryByLabelText(labelRegex)).not.toBeInTheDocument();
   });
 
   it('unhidden radio-button choice renders', () => {
@@ -184,16 +184,17 @@ describe('Hidden components should not render', () => {
   it('unhidden drop-down choice renders', () => {
     const item = createChoiceItem(ItemType.CHOICE, createItemControlExtension('drop-down'), createQuestionnaireHiddenExtension(false));
     const q = createQuestionnaire(item);
+    const labelRegex = new RegExp('1', 'i');
     const { queryByLabelText } = createWrapper(q);
-    expect(queryByLabelText('1')).toBeInTheDocument();
+    expect(queryByLabelText(labelRegex)).toBeInTheDocument();
   });
 
   it('hidden drop-down choice does not render', () => {
     const item = createChoiceItem(ItemType.CHOICE, createItemControlExtension('drop-down'), createQuestionnaireHiddenExtension(true));
     const q = createQuestionnaire(item);
     const { queryByLabelText } = createWrapper(q);
-
-    expect(queryByLabelText('1')).not.toBeInTheDocument();
+    const labelRegex = new RegExp('1', 'i');
+    expect(queryByLabelText(labelRegex)).not.toBeInTheDocument();
   });
 
   it('unhidden radio-button open-choice renders', () => {
@@ -240,16 +241,16 @@ describe('Hidden components should not render', () => {
     const item = createChoiceItem(ItemType.OPENCHOICE, createItemControlExtension('drop-down'), createQuestionnaireHiddenExtension(false));
     const q = createQuestionnaire(item);
     const { queryByLabelText } = createWrapper(q);
-
-    expect(queryByLabelText('1')).toBeInTheDocument();
+    const labelRegex = new RegExp('1', 'i');
+    expect(queryByLabelText(labelRegex)).toBeInTheDocument();
   });
 
   it('hidden drop-down open-choice does not render', () => {
     const item = createChoiceItem(ItemType.OPENCHOICE, createItemControlExtension('drop-down'), createQuestionnaireHiddenExtension(true));
     const q = createQuestionnaire(item);
     const { queryByLabelText } = createWrapper(q);
-
-    expect(queryByLabelText('1')).not.toBeInTheDocument();
+    const labelRegex = new RegExp('1', 'i');
+    expect(queryByLabelText(labelRegex)).not.toBeInTheDocument();
   });
 });
 

@@ -176,35 +176,42 @@ function processDeleteRepeatItemAction(action: NewValueAction, state: Form): For
       return state;
     }
 
-    let arrayToDeleteItem: Array<QuestionnaireResponseItem> | undefined = [];
+    let arrayToDeleteItem: QuestionnaireResponseItem[] | undefined = [];
+
     if (action.itemPath.length === 1 && draft.FormData.Content) {
       arrayToDeleteItem = draft.FormData.Content.item;
-    } else if (action.itemPath.length > 0) {
-      // length >1 means group wrapped in group
+    } else if (action.itemPath.length > 1) {
       const parentPath = action.itemPath.slice(0, -1);
       const itemToAddTo = getResponseItemWithPath(parentPath, draft.FormData);
       arrayToDeleteItem = getArrayToAddGroupTo(itemToAddTo);
     }
 
-    if (!arrayToDeleteItem || arrayToDeleteItem.length === 0) {
+    if (!arrayToDeleteItem || arrayToDeleteItem.length === 0 || !action.item) {
       return;
     }
 
-    if (!action.item) {
-      return;
-    }
     const definitionLinkId = action.item.linkId;
     const index = action.itemPath[action.itemPath.length - 1].index;
+
     let itemIndexInArray = 0;
-    for (let i = 0; i <= arrayToDeleteItem.length - 1; i++) {
+
+    // console.log('Initial arrayToDeleteItem:', JSON.stringify(current(arrayToDeleteItem)));
+    // console.log('Item to match:', JSON.stringify(action.item));
+    // console.log('Expected index to remove:', JSON.stringify(index));
+
+    for (let i = 0; i < arrayToDeleteItem.length; i++) {
       if (arrayToDeleteItem[i].linkId === definitionLinkId) {
+        // console.log(`Matching item found at index ${i}, itemIndexInArray: ${JSON.stringify(itemIndexInArray)}`);
         if (itemIndexInArray === index) {
+          // console.log(`Deleting item at index ${i}`);
           arrayToDeleteItem.splice(i, 1);
           break;
         }
         itemIndexInArray++;
       }
     }
+
+    // console.log('Final arrayToDeleteItem:', JSON.stringify(current(arrayToDeleteItem)));
   });
 }
 
@@ -215,7 +222,7 @@ function copyItem(
   questionnaire: Questionnaire
 ): QuestionnaireResponseItem {
   if (!target) {
-    target = { linkId: source.linkId } as QuestionnaireResponseItem;
+    target = { linkId: source.linkId };
 
     if (source.text) {
       target.text = source.text;
@@ -226,9 +233,9 @@ function copyItem(
     if (!target.item) {
       target.item = [];
     }
-    const newResponseItem = {
+    const newResponseItem: QuestionnaireResponseItem = {
       linkId: source.item[i].linkId,
-    } as QuestionnaireResponseItem;
+    };
     if (source.item[i].text) {
       newResponseItem.text = source.item[i].text;
     }
@@ -263,17 +270,17 @@ function copyItem(
         target.answer = [];
       }
       const answer = source.answer[i];
-      const targetAnswer = {
-        item: [] as QuestionnaireResponseItem[],
-      } as QuestionnaireResponseItemAnswer;
+      const targetAnswer: QuestionnaireResponseItemAnswer = {
+        item: [],
+      };
 
       for (let j = 0; answer && answer.item && j < answer.item.length; j++) {
-        const newResponseItem = {
+        const newResponseItem: QuestionnaireResponseItem = {
           linkId: answer.item[j].linkId,
           answer: getInitialAnswerForCopyItem(source, questionnaire, answer.item[j]),
           text: answer.item[j]?.text,
-        } as QuestionnaireResponseItem;
-        (targetAnswer.item as QuestionnaireResponseItem[]).push(newResponseItem);
+        };
+        targetAnswer.item?.push(newResponseItem);
         target.text = source.text;
         copyItem(answer.item[j], newResponseItem, questionnaireDraft, questionnaire);
       }
@@ -432,9 +439,9 @@ function processNewValueAction(action: NewValueAction, state: Form): Form {
       responseItem.answer = [];
     }
 
-    let answer = responseItem.answer[0];
+    let answer: QuestionnaireResponseItemAnswer = responseItem.answer[0];
     if (!answer) {
-      answer = {} as QuestionnaireResponseItemAnswer;
+      answer = {};
       responseItem.answer.push(answer);
     }
 
@@ -473,10 +480,10 @@ function processNewValueAction(action: NewValueAction, state: Form): Form {
     if (action.valueCoding) {
       hasAnswer = true;
 
-      const coding = {
+      const coding: Coding = {
         code: action.valueCoding.code,
         display: action.valueCoding.display,
-      } as Coding;
+      };
 
       if (action.valueCoding.system !== undefined && action.valueCoding.system !== null) {
         coding.system = action.valueCoding.system;
@@ -486,7 +493,7 @@ function processNewValueAction(action: NewValueAction, state: Form): Form {
         if (Object.keys(answer).length === 0) {
           answer.valueCoding = coding;
         } else {
-          const newAnswer = {} as QuestionnaireResponseItemAnswer;
+          const newAnswer: QuestionnaireResponseItemAnswer = {};
           newAnswer.valueCoding = coding;
           responseItem.answer.push(newAnswer);
         }
@@ -497,7 +504,7 @@ function processNewValueAction(action: NewValueAction, state: Form): Form {
     if (action.valueAttachment && Object.keys(action.valueAttachment).length > 0) {
       hasAnswer = true;
 
-      const attachment = {
+      const attachment: Attachment = {
         url: action.valueAttachment.url,
         title: action.valueAttachment.title,
         data: action.valueAttachment.data,
@@ -506,13 +513,13 @@ function processNewValueAction(action: NewValueAction, state: Form): Form {
         hash: action.valueAttachment.hash,
         size: action.valueAttachment.size,
         language: action.valueAttachment.language,
-      } as Attachment;
+      };
 
       if (action.multipleAnswers) {
         if (Object.keys(answer).length === 0) {
           answer.valueAttachment = attachment;
         } else {
-          const newAnswer = {} as QuestionnaireResponseItemAnswer;
+          const newAnswer: QuestionnaireResponseItemAnswer = {};
           newAnswer.valueAttachment = attachment;
           responseItem.answer.push(newAnswer);
         }
@@ -552,9 +559,9 @@ function processNewCodingStringValueAction(action: NewValueAction, state: Form):
         }
       }
 
-      const newAnswer = {
+      const newAnswer: QuestionnaireResponseItemAnswer = {
         valueString: action.valueString,
-      } as QuestionnaireResponseItemAnswer;
+      };
 
       if (found >= 0) {
         responseItem.answer[found] = newAnswer;

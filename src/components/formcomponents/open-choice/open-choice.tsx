@@ -160,9 +160,6 @@ export const OpenChoice = (props: OpenChoiceProps): JSX.Element | null => {
       const responseAnswer = { valueCoding: coding };
       if (getIndexOfAnswer(code, answer) > -1) {
         dispatch(removeCodingValueAsync(path, coding, item))?.then(newState => onAnswerChange(newState, item, responseAnswer));
-        if (promptLoginMessage) {
-          promptLoginMessage();
-        }
       }
       dispatch(newCodingValueAsync(path, coding, item, true))?.then(newState => onAnswerChange(newState, item, responseAnswer));
       if (promptLoginMessage) {
@@ -177,17 +174,12 @@ export const OpenChoice = (props: OpenChoiceProps): JSX.Element | null => {
       const responseAnswer = { valueCoding: coding };
       if (getIndexOfAnswer(code, answer) > -1) {
         dispatch(removeCodingValueAsync(path, coding, item))?.then(newState => onAnswerChange(newState, item, responseAnswer));
-
-        if (promptLoginMessage) {
-          promptLoginMessage();
-        }
       } else {
         dispatch(newCodingValueAsync(path, coding, item, true))?.then(newState => onAnswerChange(newState, item, responseAnswer));
-        if (promptLoginMessage) {
-          promptLoginMessage();
-        }
       }
-
+      if (promptLoginMessage) {
+        promptLoginMessage();
+      }
       interceptHandler(coding, getItemControlValue(item));
     }
   };

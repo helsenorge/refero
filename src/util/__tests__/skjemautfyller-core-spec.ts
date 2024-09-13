@@ -156,20 +156,16 @@ describe('hasAnswer', () => {
 
 describe('item path', () => {
   it('should create path correct', () => {
-    expect(createPathForItem([], { linkId: 'qwe', repeats: true } as QuestionnaireItem, { linkId: 'qwe' }, 1)).toEqual([
-      { linkId: 'qwe', index: 1 },
-    ]);
-    expect(createPathForItem([], { linkId: 'qwe' } as QuestionnaireItem, { linkId: 'qwe' }, undefined)).toEqual([{ linkId: 'qwe' }]);
+    expect(createPathForItem([], { linkId: 'qwe', repeats: true } as QuestionnaireItem, 1)).toEqual([{ linkId: 'qwe', index: 1 }]);
+    expect(createPathForItem([], { linkId: 'qwe' } as QuestionnaireItem, undefined)).toEqual([{ linkId: 'qwe' }]);
     let response: Array<Path> = [
       { linkId: 'test', index: 0 },
       { linkId: 'abc', index: 2 },
     ];
-    expect(
-      createPathForItem([{ linkId: 'test', index: 0 }], { linkId: 'abc', repeats: true } as QuestionnaireItem, { linkId: 'abc' }, 2)
-    ).toEqual(response);
+    expect(createPathForItem([{ linkId: 'test', index: 0 }], { linkId: 'abc', repeats: true } as QuestionnaireItem, 2)).toEqual(response);
     const path = [{ linkId: 'test' }, { linkId: 'test2' }];
     response = [{ linkId: 'test' }, { linkId: 'test2' }, { linkId: 'abc', index: 3 }];
-    expect(createPathForItem(path, { linkId: 'abc', repeats: true } as QuestionnaireItem, { linkId: 'abc' }, 3)).toEqual(response);
+    expect(createPathForItem(path, { linkId: 'abc', repeats: true } as QuestionnaireItem, 3)).toEqual(response);
   });
 });
 

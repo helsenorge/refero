@@ -1,17 +1,15 @@
 import React, { useState } from 'react';
 
-import { Controller, FieldValues, useFormContext } from 'react-hook-form';
+import { FieldValues, useFormContext } from 'react-hook-form';
 import { ThunkDispatch } from 'redux-thunk';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Input from '@helsenorge/designsystem-react/components/Input';
 
-import layoutChange from '@helsenorge/core-utils/hoc/layout-change';
-
 import { NewValueAction, newIntegerValueAsync } from '@/actions/newValue';
 import { GlobalState } from '@/reducers';
-import { getPlaceholder, getMaxValueExtensionValue, getMinValueExtensionValue, getValidationTextExtension } from '@/util/extension';
-import { isReadOnly, isRequired, getId } from '@/util/index';
+import { getPlaceholder } from '@/util/extension';
+import { isReadOnly, getId } from '@/util/index';
 
 import TextView from '../textview';
 
@@ -25,6 +23,7 @@ import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import { QuestionnaireComponentItemProps } from '@/components/GenerateQuestionnaireComponents';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
+import { maxValue, minValue, required } from '@/components/validation/rules';
 
 export type Props = QuestionnaireComponentItemProps;
 const Integer = (props: Props): JSX.Element | null => {
@@ -32,7 +31,7 @@ const Integer = (props: Props): JSX.Element | null => {
 
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
   const { promptLoginMessage, onAnswerChange } = useExternalRenderContext();
-  const { formState, getFieldState, control } = useFormContext<FieldValues>();
+  const { formState, getFieldState, register } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
   const [isHelpVisible, setIsHelpVisible] = useState(false);
@@ -86,9 +85,12 @@ const Integer = (props: Props): JSX.Element | null => {
     );
   }
   const value = getValue();
-  const errorMessage = getValidationTextExtension(item);
-  const minValue = getMinValueExtensionValue(item);
-  const maxValue = getMaxValueExtensionValue(item);
+  const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, {
+    required: required({ item, resources }),
+    max: maxValue({ item, resources }),
+    min: minValue({ item, resources }),
+    shouldUnregister: true,
+  });
   return (
     <div className="page_refero__component page_refero__component_integer">
       <FormGroup error={error?.message} mode="ongrey">
@@ -102,52 +104,26 @@ const Integer = (props: Props): JSX.Element | null => {
           afterLabelContent={<RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />}
         />
         <RenderHelpElement item={item} isHelpVisible={isHelpVisible} />
-        <Controller
-          name={idWithLinkIdAndItemIndex}
-          control={control}
-          shouldUnregister={true}
-          defaultValue={value}
-          rules={{
-            required: {
-              value: isRequired(item),
-              message: resources?.formRequiredErrorMessage ?? 'Feltet er påkrevd',
-            },
-            ...(maxValue && {
-              max: {
-                value: maxValue,
-                message: errorMessage ?? resources?.oppgiGyldigVerdi ?? 'Verdien er for høy',
-              },
-            }),
-            ...(minValue && {
-              min: {
-                value: minValue,
-                message: errorMessage ?? resources?.oppgiGyldigVerdi ?? 'Verdien er for lav',
-              },
-            }),
+
+        <Input
+          {...rest}
+          type="number"
+          value={Array.isArray(value) ? value.join(', ') : value}
+          inputId={getId(id)}
+          testId={getId(id)}
+          onChange={(e): void => {
+            onChange(e);
+            handleChange(e);
           }}
-          render={({ field: { onChange, ...rest } }): JSX.Element => (
-            <Input
-              {...rest}
-              type="number"
-              value={Array.isArray(value) ? value.join(', ') : value}
-              inputId={getId(id)}
-              testId={getId(id)}
-              onChange={(e): void => {
-                onChange(e.target.value);
-                handleChange(e);
-              }}
-              placeholder={getPlaceholder(item)}
-              className="page_refero__input"
-              width={25}
-            />
-          )}
+          placeholder={getPlaceholder(item)}
+          className="page_refero__input"
+          width={25}
         />
         <RenderDeleteButton
           item={item}
           path={path}
           index={index}
           responseItem={responseItem}
-          resources={resources}
           className="page_refero__deletebutton--margin-top"
         />
         <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} responseItem={responseItem} responseItems={responseItems} />
@@ -157,5 +133,4 @@ const Integer = (props: Props): JSX.Element | null => {
   );
 };
 
-const layoytChangeComponent = layoutChange(Integer);
-export default layoytChangeComponent;
+export default Integer;

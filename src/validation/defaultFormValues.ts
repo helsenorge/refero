@@ -7,9 +7,12 @@ import { getItemControlExtensionValue } from '@/util/extension';
 import { isReadOnly, isRepeat } from '@/util';
 
 export type DefaultValues = Record<string, IItemType | unknown>;
+const excludedTypes = ['group', 'display', 'reference', 'url'];
+type excludedTypes = 'group' | 'display' | 'reference' | 'url';
 
 export const createIntitialFormValues = (items?: QuestionnaireItem[]): DefaultValues => {
   if (!items) return {};
+
   const createInitialFormValuesForItems = (items: QuestionnaireItem[]): DefaultValues => {
     return items.reduce((acc: DefaultValues, item) => {
       const key = isRepeat(item) ? `${item.linkId}^0` : item.linkId;
@@ -24,10 +27,10 @@ export const createIntitialFormValues = (items?: QuestionnaireItem[]): DefaultVa
       return acc;
     }, {});
   };
-  return createInitialFormValuesForItems(items);
+  const initialValues = createInitialFormValuesForItems(items);
+  return initialValues;
 };
-const excludedTypes = ['group', 'display', 'reference', 'url'];
-type excludedTypes = 'group' | 'display' | 'reference' | 'url';
+
 const getInitialFormValueForItemtype = (key: string, item: QuestionnaireItem): DefaultValues | undefined => {
   if (excludedTypes.includes(item.type)) return;
   const itemControls = getItemControlExtensionValue(item);
@@ -55,6 +58,7 @@ const getValueforFormItem = (
   }
   return getDefaultValuesForQuestionnaireItemType(item.type);
 };
+
 const initialValuesBasedOnItemType = (
   initial: QuestionnaireItemInitial[]
 ): (string | number | boolean | Attachment | Reference | undefined)[] => {
@@ -75,6 +79,7 @@ const initialValuesBasedOnItemType = (
     )
     .filter(x => x !== undefined);
 };
+
 export const getDefaultValuesForQuestionnaireItemType = (
   type: QuestionnaireItem['type']
 ): string | number | null | symbol | [] | boolean => {

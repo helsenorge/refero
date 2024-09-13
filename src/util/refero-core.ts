@@ -442,12 +442,24 @@ export function findFirstGuidInString(input: string): string | null {
   const match = input.match(regex);
   return match ? match[0] : null;
 }
-export function createPathForItem(
-  path: Path[] | undefined,
-  item: QuestionnaireItem,
-  responseItem: QuestionnaireResponseItem,
-  index: number | undefined
-): Path[] {
+export const isQuestionnaireItem = (item: QuestionnaireItem | QuestionnaireResponseItem): item is QuestionnaireItem => {
+  return (item as QuestionnaireItem).type !== undefined && (item as QuestionnaireItem).linkId !== undefined;
+};
+
+export const getUniqueId = (item: QuestionnaireItem, path?: Path[], index?: number): string => {
+  let rawId = '';
+  const newPath = createPathForItem(path, item, index);
+  rawId = `${item.linkId}${createIdSuffix(newPath, index, isRepeat(item))}`;
+  return rawId.replace(/\./g, '-');
+};
+export function extractLinkIdFromUniqueId(uniqueId: string): string {
+  const [linkIdWithDashes] = uniqueId.split('^');
+
+  const linkId = linkIdWithDashes.replace(/-/g, '.');
+
+  return linkId;
+}
+export function createPathForItem(path: Path[] | undefined, item: QuestionnaireItem, index: number | undefined): Path[] {
   let newPath: Path[];
   if (path === null || path === undefined) {
     newPath = [];
@@ -456,9 +468,9 @@ export function createPathForItem(
   }
 
   index = isRepeat(item) ? index : undefined;
-  if (item && responseItem) {
+  if (item) {
     newPath.push({
-      linkId: responseItem.linkId,
+      linkId: item.linkId,
       ...(isRepeat(item) && { index }),
     });
   }

@@ -138,7 +138,7 @@ const FormFillerPreview = ({ showFormFiller }: Props): JSX.Element => {
     questionnaireInspector: IQuestionnaireInspector
   ): void => {
     // eslint-disable-next-line no-console
-    console.log(item, answer, actionRequester, questionnaireInspector);
+    // console.log(item, answer, actionRequester, questionnaireInspector);
   };
   return (
     <Provider store={store}>
@@ -154,10 +154,8 @@ const FormFillerPreview = ({ showFormFiller }: Props): JSX.Element => {
             {!showResponse ? (
               <div className="page_refero">
                 <ReferoContainer
-                  key={123}
-                  store={store}
                   questionnaire={getQuestionnaireFromBubndle(questionnaireForPreview, lang)}
-                  onCancel={showFormFiller}
+                  onCancel={() => {}}
                   onChange={onChange}
                   onSave={(questionnaireResponse: QuestionnaireResponse): void => {
                     setQuestionnaireResponse(questionnaireResponse);
@@ -180,7 +178,7 @@ const FormFillerPreview = ({ showFormFiller }: Props): JSX.Element => {
                   onOpenAttachment={onOpenAttachment}
                   attachmentValidTypes={[MimeTypes.PNG, MimeTypes.JPG, MimeTypes.PDF, MimeTypes.PlainText]}
                   attachmentMaxFileSize={1}
-                  onStepChange={(newIndex: number): void => setStepIndex(newIndex)}
+                  // onStepChange={(newIndex: number): void => setStepIndex(newIndex)}
                 />
               </div>
             ) : (
