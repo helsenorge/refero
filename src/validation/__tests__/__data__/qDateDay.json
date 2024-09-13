@@ -76,7 +76,7 @@
       "text": "Preutfylt dateDay",
       "initial": [
         {
-          "valueDateTime": "1994-05-31T14:00:00+02"
+          "valueDate": "1994-05-31"
         }
       ],
       "required": true

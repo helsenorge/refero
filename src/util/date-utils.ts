@@ -115,37 +115,30 @@ export const extractHoursAndMinutesFromAnswer = (
   return timeString ? getHoursAndMinutesFromTime(timeString) : null;
 };
 
-const isValueFormatYYYYMMDD = (dateString: string): boolean => {
-  const dateFormatRegex = /^\d{4}-\d{2}-\d{2}$/;
-  if (!dateFormatRegex.test(dateString)) {
-    return false;
-  }
-
-  return true;
+export const isValueFormatYYYYMMDD = (value: string): boolean => {
+  return /^\d{4}-\d{2}-\d{2}$/.test(value);
 };
 
-export const isValueFormatDDMMYYYY = (dateString: string): boolean => {
-  const dateFormatRegex = /^\d{2}\.\d{2}\.\d{4}$/;
-  if (!dateFormatRegex.test(dateString)) {
-    return false;
-  }
-
-  return true;
+export const isValueFormatDDMMYYYY = (value: string): boolean => {
+  return /^\d{2}\.\d{2}\.\d{4}$/.test(value);
 };
 
-const isValueFormatISO = (value: string): boolean => {
-  const regex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[\+\-]\d{2}:\d{2})?$/;
-  return regex.test(value);
+export const isValueFormatISO = (value: string): boolean => {
+  return /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z$/.test(value);
 };
 
 export const parseStringToDate = (valueToParse: string | undefined): Date | undefined => {
-  if (valueToParse && isValueFormatYYYYMMDD(valueToParse)) {
-    return parse(valueToParse, 'yyyy-MM-dd', new Date());
-  } else if (valueToParse && isValueFormatDDMMYYYY(valueToParse)) {
-    return parse(valueToParse, 'dd.MM.yyyy', new Date());
-  } else if (valueToParse && isValueFormatISO(valueToParse)) {
-    const parsedDate = parseISO(valueToParse);
-    return parsedDate;
+  if (typeof valueToParse === 'string') {
+    if (valueToParse && isValueFormatYYYYMMDD(valueToParse)) {
+      const test = parse(valueToParse, 'yyyy-MM-dd', new Date());
+      return test;
+    } else if (valueToParse && isValueFormatDDMMYYYY(valueToParse)) {
+      const test = parse(valueToParse, 'dd.MM.yyyy', new Date());
+      return test;
+    } else if (valueToParse && isValueFormatISO(valueToParse)) {
+      const parsedDate = parseISO(valueToParse);
+      return parsedDate;
+    }
   }
 };
 

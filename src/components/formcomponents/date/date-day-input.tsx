@@ -168,7 +168,14 @@ export const DateDayInput = ({
           },
           validate: {
             validDate: value => {
-              return validateDate(parseStringToDate(value) ? parseStringToDate(value) : value, resources);
+              if (Array.isArray(value)) {
+                value = value[0];
+              }
+              if (typeof value === 'string') {
+                return validateDate(parseStringToDate(value), resources);
+              } else {
+                return validateDate(value, resources);
+              }
             },
             validMinDate: value => {
               return validateMinDate(minDateTime, parseStringToDate(value), resources);

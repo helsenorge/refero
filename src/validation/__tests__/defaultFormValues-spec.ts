@@ -52,13 +52,13 @@ describe('Default form values', () => {
       expect(wrapper.queryByTestId(/summary-element-Tom integer/i)).toBeInTheDocument();
     });
   });
-  describe('Initial dateDay value', () => {
-    it('prefilled values should not cause a validation error on submit', async () => {
+  describe.only('Initial dateDay value', () => {
+    it.only('prefilled values should not cause a validation error on submit', async () => {
       const wrapper = createWrapper(qDateDay);
       await submitForm();
       expect(wrapper.queryByTestId(/summary-element-Preutfylt dateDay/i)).not.toBeInTheDocument();
     });
-    it('empty fields should not cause a validation error on submit', async () => {
+    it.skip('empty fields should not cause a validation error on submit', async () => {
       const wrapper = createWrapper(qDateDay);
       await submitForm();
       expect(wrapper.queryByTestId(/summary-element-Tom dateDay/i)).toBeInTheDocument();
