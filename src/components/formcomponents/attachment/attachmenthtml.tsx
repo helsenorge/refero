@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import { QuestionnaireItem } from 'fhir/r4';
 import { FieldValues, useFormContext } from 'react-hook-form';
-
+import styles from '../common-styles.module.css';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import NotificationPanel from '@helsenorge/designsystem-react/components/NotificationPanel';
 
@@ -96,7 +96,7 @@ const AttachmentHtml = ({
 
   return (
     <div className="page_refero__component page_refero__component_attachment" data-testid={getId(id)}>
-      <FormGroup error={concatErrorMessages()}>
+      <FormGroup error={concatErrorMessages()} errorWrapperClassName={styles.paddingBottom}>
         <ReferoLabel
           item={item}
           resources={resources}

@@ -146,7 +146,7 @@ export const getPrimitiveValueFromItemType = <
     case ItemType.DECIMAL:
       return res.valueDecimal ?? 0;
     case ItemType.BOOLEAN:
-      return res.valueBoolean === true ? `[X]` : `[ ]` ?? false;
+      return res.valueBoolean === true ? `[X]` : `[ ]`;
     case ItemType.DATE:
       return extractValueFromDate(res.valueDate);
     case ItemType.DATETIME:

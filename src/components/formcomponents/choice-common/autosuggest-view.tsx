@@ -2,7 +2,7 @@ import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 
 import { ValueSet, Coding } from 'fhir/r4';
 import { FieldValues, useFormContext } from 'react-hook-form';
-
+import styles from '../common-styles.module.css';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Loader from '@helsenorge/designsystem-react/components/Loader';
 import NotificationPanel from '@helsenorge/designsystem-react/components/NotificationPanel';
@@ -188,7 +188,7 @@ const AutosuggestView = (props: AutosuggestProps): JSX.Element | null => {
   });
   return (
     <div className="page_refero__component page_refero__component_choice page_refero__component_choice_autosuggest">
-      <FormGroup error={error?.message}>
+      <FormGroup error={error?.message} errorWrapperClassName={styles.paddingBottom}>
         <ReferoLabel
           item={item}
           resources={resources}

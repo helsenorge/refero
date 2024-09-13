@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { FieldValues, useFormContext } from 'react-hook-form';
-
+import styles from '../common-styles.module.css';
 import { ThunkDispatch } from 'redux-thunk';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
@@ -102,7 +102,7 @@ const Decimal = (props: Props): JSX.Element | null => {
   });
   return (
     <div className="page_refero__component page_refero__component_decimal">
-      <FormGroup error={error?.message} mode="ongrey">
+      <FormGroup error={error?.message} mode="ongrey" errorWrapperClassName={styles.paddingBottom}>
         <ReferoLabel
           item={item}
           resources={resources}

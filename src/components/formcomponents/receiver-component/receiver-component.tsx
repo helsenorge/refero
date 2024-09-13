@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Coding } from 'fhir/r4';
 import { FieldValues, useFormContext } from 'react-hook-form';
-
+import styles from '../common-styles.module.css';
 import { EnhetType, OrgenhetHierarki } from '@/types/orgenhetHierarki';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
@@ -191,7 +191,7 @@ const ReceiverComponent = ({
       shouldUnregister: true,
     });
     return (
-      <FormGroup error={error?.message}>
+      <FormGroup error={error?.message} errorWrapperClassName={styles.paddingBottom}>
         <Select
           {...rest}
           key={`${selectKey}-${level}`}

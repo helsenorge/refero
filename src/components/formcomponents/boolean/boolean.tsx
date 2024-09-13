@@ -2,11 +2,10 @@ import React, { useState } from 'react';
 
 import { FieldValues, useFormContext } from 'react-hook-form';
 import { ThunkDispatch } from 'redux-thunk';
-
 import Checkbox from '@helsenorge/designsystem-react/components/Checkbox';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
-
+import styles from '../common-styles.module.css';
 import Pdf from './pdf';
 import { NewValueAction, newBooleanValueAsync } from '@/actions/newValue';
 import { GlobalState } from '@/reducers';
@@ -99,7 +98,7 @@ const Boolean = (props: Props): JSX.Element | null => {
   return (
     // Dette er en hack for FHI-skjema. TODO: fjern hack
     <div className="page_refero__component page_refero__component_boolean">
-      <FormGroup error={error?.message}>
+      <FormGroup error={error?.message} errorWrapperClassName={styles.paddingBottom}>
         <Checkbox
           {...rest}
           testId={`${getId(id)}-boolean`}

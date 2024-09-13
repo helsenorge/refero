@@ -5,7 +5,7 @@ import { Controller, FieldValues, useFormContext } from 'react-hook-form';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import { Slider, SliderStep } from '@helsenorge/designsystem-react/components/Slider';
-
+import styles from '../common-styles.module.css';
 import codeSystems from '@/constants/codingsystems';
 import { Extensions } from '@/constants/extensions';
 import { getId } from '@/util';
@@ -69,7 +69,7 @@ const SliderView = (props: SliderProps): JSX.Element | null => {
 
   return (
     <div className="page_refero__component page_refero__component_choice page_refero__component_choice_slider">
-      <FormGroup mode="ongrey" error={error?.message}>
+      <FormGroup mode="ongrey" error={error?.message} errorWrapperClassName={styles.paddingBottom}>
         <ReferoLabel
           htmlFor={id}
           item={item}
