@@ -4,7 +4,7 @@ import { FieldValues, useFormContext } from 'react-hook-form';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Input from '@helsenorge/designsystem-react/components/Input';
-
+import styles from '../common-styles.module.css';
 import { getPlaceholder } from '../../../util/extension';
 import { isReadOnly, getId, getPDFStringValue, getStringValue } from '../../../util/index';
 
@@ -50,7 +50,7 @@ const textField = (props: Props): JSX.Element | null => {
     shouldUnregister: true,
   });
   return (
-    <FormGroup error={error?.message} mode="ongrey">
+    <FormGroup error={error?.message} mode="ongrey" errorWrapperClassName={styles.paddingBottom}>
       <ReferoLabel
         item={item}
         resources={resources}

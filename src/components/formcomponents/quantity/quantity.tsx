@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { QuestionnaireResponseItemAnswer, Quantity as QuantityType } from 'fhir/r4';
 import { FieldValues, useFormContext } from 'react-hook-form';
 import { ThunkDispatch } from 'redux-thunk';
-
+import styles2 from '../common-styles.module.css';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Input from '@helsenorge/designsystem-react/components/Input';
 import styles from './quantity.module.css';
@@ -116,7 +116,7 @@ const Quantity = (props: Props): JSX.Element | null => {
   });
   return (
     <div className="page_refero__component page_refero__component_quantity">
-      <FormGroup error={error?.message} mode="ongrey">
+      <FormGroup error={error?.message} mode="ongrey" errorWrapperClassName={styles2.paddingBottom}>
         <ReferoLabel
           item={item}
           resources={resources}

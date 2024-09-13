@@ -4,7 +4,7 @@ import { FieldValues, useFormContext } from 'react-hook-form';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Select from '@helsenorge/designsystem-react/components/Select';
-
+import styles from '../common-styles.module.css';
 import { getPlaceholder } from '@/util/extension';
 import { getId, isRequired } from '@/util/index';
 
@@ -60,7 +60,7 @@ const DropdownView = (props: Props): JSX.Element | null => {
 
   return (
     <div className="page_refero__component page_refero__component_choice page_refero__component_choice_dropdown">
-      <FormGroup mode="ongrey" error={error?.message}>
+      <FormGroup mode="ongrey" error={error?.message} errorWrapperClassName={styles.paddingBottom}>
         <ReferoLabel
           item={item}
           resources={resources}

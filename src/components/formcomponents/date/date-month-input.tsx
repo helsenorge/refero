@@ -1,5 +1,5 @@
 import { useState } from 'react';
-
+import styles2 from '../common-styles.module.css';
 import { format } from 'date-fns';
 import { QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { Controller, FieldError, FieldValues, useFormContext } from 'react-hook-form';
@@ -135,7 +135,7 @@ export const DateYearMonthInput = ({
 
   return (
     <>
-      <FormGroup error={getErrorText(getCombinedFieldError())}>
+      <FormGroup error={getErrorText(getCombinedFieldError())} errorWrapperClassName={styles2.paddingBottom}>
         <ReferoLabel
           item={item}
           resources={resources}
