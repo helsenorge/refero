@@ -72,7 +72,7 @@ describe('Copy value from item', () => {
     const { getByLabelText, queryByTestId, getByTestId } = createWrapper(q);
     expect(queryByTestId(/item_2/i)).not.toBeInTheDocument();
     const labelRegex = new RegExp(`${sender.text}`, 'i');
-    await userEvent.type(getByLabelText(labelRegex), '12');
+    await userEvent.type(getByLabelText(labelRegex), '12.12.2024');
     await waitFor(async () => expect(getByTestId(/item_2/i)).toBeInTheDocument());
     await waitFor(async () => expect(getByTestId(/item_2/i)).toHaveTextContent('12. desember 2024'));
   });
@@ -83,8 +83,7 @@ describe('Copy value from item', () => {
     const { getByLabelText, queryByTestId, getByTestId } = createWrapper(q);
     expect(queryByTestId(/item_2/i)).not.toBeInTheDocument();
     const labelRegex = new RegExp(`${sender.text}`, 'i');
-    await userEvent.click(getByLabelText(labelRegex));
-    await userEvent.paste('12.12.2024');
+    await userEvent.type(getByLabelText(labelRegex), '12.12.2024');
 
     await waitFor(async () => expect(getByTestId(/item_2/i)).toBeInTheDocument());
     await waitFor(async () => expect(getByTestId(/item_2/i)).toHaveTextContent('12.12.2024 00:00'));

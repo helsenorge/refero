@@ -93,9 +93,8 @@ const DateTimeInput = ({
   const [minutes, setMinutes] = useState(getHoursOrMinutesFromDate(date, DateTimeUnit.Minutes) || '00');
 
   const getPDFValue = (): string | number | undefined => {
-    // const value = getValue(item, answer);
-    const datetest = getDateAnswerValue(answer);
-    const datetestparsed = parseStringToDate(datetest);
+    const value = getDateAnswerValue(answer);
+    const valueParsed = parseStringToDate(value);
     if (dateAnswerValue === undefined || dateAnswerValue === null || dateAnswerValue === '') {
       let text = '';
       if (resources && resources.ikkeBesvart) {
@@ -103,8 +102,8 @@ const DateTimeInput = ({
       }
       return text;
     }
-    if (datetestparsed && isValid(datetestparsed)) {
-      return format(datetestparsed, 'dd.MM.yyyy HH:mm');
+    if (valueParsed && isValid(valueParsed)) {
+      return format(valueParsed, 'dd.MM.yyyy HH:mm');
     }
   };
 
