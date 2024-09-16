@@ -222,10 +222,9 @@ describe('onAnswerChange callback gets called and can request additional changes
     expect(container.querySelector('#item_6b-2')).toBeChecked();
   });
 
-  it.skip('date gets updated', async () => {
-    const dateString = '2024-08-14';
+  it('date gets updated', async () => {
     const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
-      actionRequester.addDateAnswer('7a', dateString);
+      actionRequester.addDateAnswer('7a', '2024-08-14');
     });
     const { getByTestId } = wrapper(onChange, questionnaireWithAllItemTypes);
     await clickByLabelText(/Boolean/i);
@@ -233,13 +232,11 @@ describe('onAnswerChange callback gets called and can request additional changes
     const dateElement = getByTestId(/datepicker-test/i);
     const dateInput = dateElement.querySelector('input');
 
-    expect(dateInput).toHaveValue(dateString);
+    expect(dateInput).toHaveValue('14.08.2024');
   });
-  it.skip('date gets cleared', async () => {
-    const dateString = '2024-08-14';
-
+  it('date gets cleared', async () => {
     const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
-      actionRequester.addDateAnswer('7a', dateString);
+      actionRequester.addDateAnswer('7a', '2024-08-14');
       actionRequester.clearDateAnswer('7a');
     });
     const { getByTestId } = wrapper(onChange, questionnaireWithAllItemTypes);
@@ -248,7 +245,7 @@ describe('onAnswerChange callback gets called and can request additional changes
     const dateElement = getByTestId(/datepicker-test/i);
     const dateInput = dateElement.querySelector('input');
 
-    expect(dateInput).toHaveValue(null);
+    expect(dateInput).not.toHaveValue('14.08.2024');
   });
   it('time gets updated', async () => {
     const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {

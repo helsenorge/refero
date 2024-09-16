@@ -74,7 +74,7 @@ export const DateDayInput = ({
   };
 
   const dateAnswerValue = getDateAnswerValue(answer);
-  const [date, setDate] = useState<Date | string | undefined>(parseStringToDate(dateAnswerValue));
+  const date = parseStringToDate(dateAnswerValue);
 
   const getValue = (
     item: QuestionnaireItem,
@@ -113,17 +113,14 @@ export const DateDayInput = ({
         if (parsedDate && isValid(parsedDate)) {
           const formatedDate = format(parsedDate, 'yyyy-MM-dd');
           onDateValueChange(formatedDate);
-          setDate(formatedDate);
         }
       } else {
         onDateValueChange(newDate);
-        setDate(newDate);
       }
     } else if (isValid(newDate)) {
       const valueAsString = formatDateToString(newDate);
       const formatedDate = format(valueAsString, 'yyyy-MM-dd');
       onDateValueChange(formatedDate);
-      setDate(formatedDate);
     }
   };
 
