@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { format, isValid } from 'date-fns';
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { Controller, FieldError, FieldValues, useFormContext } from 'react-hook-form';
-
+import styles from '../common-styles.module.css';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 
 import { LanguageLocales } from '@helsenorge/core-utils/constants/languages';
@@ -146,7 +146,7 @@ export const DateDayInput = ({
   }
 
   return (
-    <FormGroup error={getErrorText(error)}>
+    <FormGroup error={getErrorText(error)} errorWrapperClassName={styles.paddingBottom}>
       <ReferoLabel
         item={item}
         resources={resources}

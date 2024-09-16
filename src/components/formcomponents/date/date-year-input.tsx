@@ -2,7 +2,7 @@
 
 import { QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { Controller, FieldError, FieldValues, useFormContext } from 'react-hook-form';
-
+import styles from '../common-styles.module.css';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Input from '@helsenorge/designsystem-react/components/Input';
 
@@ -78,7 +78,7 @@ export const DateYearInput = (props: Props): JSX.Element | null => {
   }
 
   return (
-    <FormGroup error={getErrorText(error)}>
+    <FormGroup error={getErrorText(error)} errorWrapperClassName={styles.paddingBottom}>
       <ReferoLabel
         item={item}
         resources={resources}

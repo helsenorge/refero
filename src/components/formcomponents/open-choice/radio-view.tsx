@@ -3,7 +3,7 @@ import React from 'react';
 import { FieldValues, useFormContext } from 'react-hook-form';
 
 import { Options } from '@/types/formTypes/radioGroupOptions';
-
+import styles from '../common-styles.module.css';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Label from '@helsenorge/designsystem-react/components/Label';
 import RadioButton from '@helsenorge/designsystem-react/components/RadioButton';
@@ -57,7 +57,7 @@ const RadioView = (props: Props): JSX.Element | null => {
   });
   return (
     <div className="page_refero__component page_refero__component_openchoice page_refero__component_openchoice_radiobutton">
-      <FormGroup error={error?.message} mode="ongrey">
+      <FormGroup error={error?.message} mode="ongrey" errorWrapperClassName={styles.paddingBottom}>
         <ReferoLabel
           item={item}
           resources={resources}
