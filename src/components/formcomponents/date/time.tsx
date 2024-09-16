@@ -172,6 +172,7 @@ const Time = ({
             },
           })}
           inputId={`${getId(id)}-datetime-hours`}
+          testId={`time-1`}
           defaultValue={Number(hours)}
           timeUnit="hours"
           onChange={e => {
