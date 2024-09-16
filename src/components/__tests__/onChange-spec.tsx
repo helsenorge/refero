@@ -285,11 +285,10 @@ describe('onAnswerChange callback gets called and can request additional changes
     expect(hoursInput).toHaveValue(null);
     expect(minutesInput).toHaveValue(null);
   });
-  it.skip('dateTime gets updated', async () => {
+  it('dateTime gets updated', async () => {
     const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
-      actionRequester.addDateTimeAnswer('7c', '2024-08-14T10:20:00+02');
+      actionRequester.addDateTimeAnswer('7c', '2024-08-14T12:30:00+02:00');
     });
-
     const { container, getByLabelText } = wrapper(onChange, questionnaireWithAllItemTypes);
 
     await inputAnswer('1', 0.1, container);
@@ -299,16 +298,15 @@ describe('onAnswerChange callback gets called and can request additional changes
   });
   //DateTime component does not clear the value of the input when the new date set from actionRequester is undefined.
   //The date gets cleared from the QuestionnaireResponse and answer is empty
-  it.skip('dateTime gets cleared', async () => {
+  it('dateTime gets cleared', async () => {
     const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
-      actionRequester.addDateTimeAnswer('7c', '2024-08-14T00:00:00+02');
+      actionRequester.addDateTimeAnswer('7c', '1994-05-31T12:30:00+02:00');
       actionRequester.clearDateTimeAnswer('7c');
     });
-
     const { container, getByLabelText } = wrapper(onChange, questionnaireWithAllItemTypes);
 
     await inputAnswer('1', 0.1, container);
-    const date = getByLabelText('DateTime');
+    const date = getByLabelText(/DateTime/i);
 
     expect(date).toHaveValue('');
   });

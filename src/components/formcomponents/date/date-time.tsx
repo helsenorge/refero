@@ -88,9 +88,9 @@ const DateTimeInput = ({
   };
 
   const dateAnswerValue = getDateAnswerValue(answer);
-  const [date, setDate] = useState<Date | string | undefined>(parseStringToDate(dateAnswerValue));
-  const [hours, setHours] = useState(getHoursOrMinutesFromDate(date, DateTimeUnit.Hours) || '00');
-  const [minutes, setMinutes] = useState(getHoursOrMinutesFromDate(date, DateTimeUnit.Minutes) || '00');
+  const date: Date | string | undefined = parseStringToDate(dateAnswerValue);
+  const hours = getHoursOrMinutesFromDate(date, DateTimeUnit.Hours) || '00';
+  const minutes = getHoursOrMinutesFromDate(date, DateTimeUnit.Minutes) || '00';
 
   const getPDFValue = (): string | number | undefined => {
     const value = getDateAnswerValue(answer);
@@ -123,21 +123,18 @@ const DateTimeInput = ({
   }
 
   const handleDateChange = (newDate: string | Date | undefined): void => {
-    setDate(newDate);
     updateQuestionnaireResponse(newDate, hours, minutes);
     setValue(`${idWithLinkIdAndItemIndex}-date`, newDate);
   };
 
   const handleHoursChange = (newHours: string | undefined): void => {
     setValue(`${idWithLinkIdAndItemIndex}-hours`, newHours);
-    newHours && setHours(newHours);
     if (newHours && Number(newHours) >= 0 && Number(newHours) < 24) {
       updateQuestionnaireResponse(date, newHours, minutes);
     }
   };
   const handleMinutesChange = (newMinutes: string | undefined): void => {
     setValue(`${idWithLinkIdAndItemIndex}-minutes`, newMinutes);
-    newMinutes && setMinutes(newMinutes);
     if (newMinutes && Number(newMinutes) >= 0 && Number(newMinutes) < 60) {
       updateQuestionnaireResponse(date, hours, newMinutes);
     }
