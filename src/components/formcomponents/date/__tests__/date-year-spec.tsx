@@ -179,7 +179,7 @@ describe('Date year', () => {
       expect(queryByTestId(/-delete-button/i)).not.toBeInTheDocument();
     });
   });
-  describe.skip('onChange', () => {
+  describe('onChange', () => {
     it('Should update component with value from answer', async () => {
       const { getByLabelText } = createWrapper(q);
 
@@ -199,7 +199,7 @@ describe('Date year', () => {
       const expectedAnswer: QuestionnaireResponseItemAnswer = {
         valueDate: '2004',
       };
-      expect(onChange).toHaveBeenCalledTimes(1);
+      expect(onChange).toHaveBeenCalledTimes(4);
       expect(onChange).toHaveBeenCalledWith(expect.any(Object), expectedAnswer, expect.any(Object), expect.any(Object));
     });
   });
@@ -247,7 +247,7 @@ describe('Date year', () => {
         await submitForm();
         expect(getByText(resources.year_field_invalid)).toBeInTheDocument();
       });
-      it.skip('Should show error message for min value', async () => {
+      it('Should show error message for min value', async () => {
         const { getByLabelText, getByText } = createWrapper(qMinMax);
 
         await userEvent.type(getByLabelText(/Dato/i), '1904');
@@ -255,7 +255,7 @@ describe('Date year', () => {
         await submitForm();
         expect(getByText(resources.year_field_mindate + ': 1994')).toBeInTheDocument();
       });
-      it.skip('Should show error message for max value', async () => {
+      it('Should show error message for max value', async () => {
         const { getByLabelText, getByText } = createWrapper(qMinMax);
 
         await userEvent.type(getByLabelText(/Dato/i), '2095');

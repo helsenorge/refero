@@ -1,10 +1,7 @@
 {
-  "title": "Default verdi",
-  "description": "Tester default verdi for validering",
   "resourceType": "Questionnaire",
   "language": "nb-NO",
-  "name": "DefaultVerdi",
-  "status": "active",
+  "status": "draft",
   "publisher": "NHN",
   "meta": {
     "profile": ["http://ehelse.no/fhir/StructureDefinition/sdf-Questionnaire"],
@@ -62,22 +59,55 @@
       }
     }
   ],
-  "id": "1ce1a649-f81a-4f97-8c36-8a798a0e025a",
+  "id": "0c55ac5a-afce-41c1-84fa-91decb2e8a31",
   "item": [
     {
-      "linkId": "fe12296c-0b13-4bc2-867d-c1e364cf40c8",
-      "type": "dateTime",
-      "text": "Tom datetime",
-      "required": true
+      "linkId": "62ae4513-cb5b-4284-8458-48f39dc98a7d",
+      "type": "date",
+      "text": "Dato 1",
+      "required": false,
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                "code": "year"
+              }
+            ]
+          }
+        }
+      ]
     },
     {
-      "linkId": "1c5001d5-07f0-41e0-8b7d-0ead16d437f2",
-      "type": "dateTime",
-      "text": "Preutfylt datetime",
+      "linkId": "cc15e3aa-94ac-4ab4-930b-bbcc3594bcf4",
+      "type": "date",
+      "text": "Dato 2",
       "required": false,
-      "initial": [
+      "extension": [
         {
-          "valueDateTime": "1994-05-31T11:30:00+00:00"
+          "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+          "valueString": "QuestionnaireResponse.descendants().where(linkId='62ae4513-cb5b-4284-8458-48f39dc98a7d').answer.value"
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                "code": "year"
+              }
+            ]
+          }
+        }
+      ],
+      "readOnly": true,
+      "enableWhen": [
+        {
+          "answerBoolean": true,
+          "question": "62ae4513-cb5b-4284-8458-48f39dc98a7d",
+          "operator": "exists"
         }
       ]
     }

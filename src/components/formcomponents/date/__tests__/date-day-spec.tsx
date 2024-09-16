@@ -1,5 +1,5 @@
 import { Questionnaire, QuestionnaireResponseItemAnswer } from 'fhir/r4';
-import { act, findByRole, renderRefero, userEvent, waitFor } from '@test/test-utils.tsx';
+import { findByRole, renderRefero, userEvent } from '@test/test-utils.tsx';
 import { q, qMinMax, qMinMaxCustomError } from './__data__/date-day';
 import { ReferoProps } from '../../../../types/referoProps';
 import { Extensions } from '../../../../constants/extensions';
@@ -57,7 +57,7 @@ describe('Date day', () => {
           repeats: false,
           initial: [
             {
-              valueDate: '31.05.1994',
+              valueDate: '1994-05-31',
             },
           ],
         })),
@@ -189,18 +189,20 @@ describe('Date day', () => {
       expect(inputElement).toHaveAttribute('type', 'text');
       expect(inputElement).toHaveAttribute('id', `item_${q?.item?.[0].linkId}^0-datepicker`);
 
-      await userEvent.type(inputElement, '31.05.1994');
+      await userEvent.click(inputElement);
+      await userEvent.paste('31.05.1994');
       expect(getByLabelText(/Dato/i)).toHaveValue('31.05.1994');
     });
     it('Should call onChange with correct value', async () => {
       const onChange = vi.fn();
       const { getByLabelText } = createWrapper(q, { onChange });
       expect(getByLabelText(/Dato/i)).toBeInTheDocument();
-      await userEvent.type(getByLabelText(/Dato/i), '31.05.1994');
+      await userEvent.click(getByLabelText(/Dato/i));
+      await userEvent.paste('31.05.1994');
       const expectedAnswer: QuestionnaireResponseItemAnswer = {
-        valueDate: '31.05.1994',
+        valueDate: '1994-05-31',
       };
-      expect(onChange).toHaveBeenCalledTimes(6);
+      expect(onChange).toHaveBeenCalledTimes(1);
       expect(onChange).toHaveBeenCalledWith(expect.any(Object), expectedAnswer, expect.any(Object), expect.any(Object));
     });
   });
@@ -252,7 +254,6 @@ describe('Date day', () => {
         const { getByLabelText, getByText } = createWrapper(qMinMax);
 
         await userEvent.type(getByLabelText(/Dato/i), '31.05.1904');
-
         await submitForm();
         expect(getByText(resources.errorBeforeMinDate + ': 31.05.1994')).toBeInTheDocument();
       });

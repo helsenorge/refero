@@ -88,51 +88,61 @@ export const getHoursOrMinutesFromDate = (date: Date | undefined, unitToGet: Dat
   return undefined;
 };
 
-const getTimeValues = (timeStr: string): TimeValues => {
-  const date = parse(timeStr, 'HH:mm:ss', new Date());
+const getHoursAndMinutesFromTime = (timeString: string): TimeValues => {
+  const [hours, minutes] = timeString.split(':').map(String);
   return {
-    hours: date.getHours(),
-    minutes: date.getMinutes(),
+    hours: !hours ? '00' : hours,
+    minutes: !minutes ? '00' : minutes,
   };
 };
 
-export const extractTimeFromAnswer = (
+const extractTimeFromAnswer = (answer?: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]): string | undefined => {
+  if (Array.isArray(answer) && answer.length > 0) {
+    return answer[0].valueTime || answer[0].valueDate || answer[0].valueDateTime;
+  } else if (answer && !Array.isArray(answer)) {
+    return answer.valueTime || answer.valueDate || answer.valueDateTime;
+  }
+};
+//slå sammen funksjoner?
+//answer parameter/inital parameter
+//linje 101+103 slå sammen
+
+export const extractHoursAndMinutesFromAnswer = (
   answer: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[] | undefined,
   item: QuestionnaireItem
 ): TimeValues | null => {
-  if (!answer && !item.initial) return null;
-
-  let timeStr: string | undefined;
-
-  if (Array.isArray(answer) && answer.length > 0) {
-    timeStr = answer[0].valueTime || answer[0].valueDate || answer[0].valueDateTime;
-  } else if (answer && !Array.isArray(answer)) {
-    timeStr = answer.valueTime || answer.valueDate || answer.valueDateTime;
-  } else if (item.initial && item.initial.length > 0) {
-    const initial = item.initial[0];
-    timeStr = initial.valueTime || initial.valueDate || initial.valueDateTime;
-  }
-
-  //Logikken over kan gjøres enklere
-
-  if (timeStr) {
-    return getTimeValues(timeStr);
-  }
-
-  return null;
+  const timeString = extractTimeFromAnswer(answer) || extractTimeFromAnswer(item.initial);
+  return timeString ? getHoursAndMinutesFromTime(timeString) : null;
 };
 
-export const parseStringToDateDDMMYYYY = (valueToParse: string | Date | undefined): Date | undefined => {
-  if (valueToParse) {
-    if (typeof valueToParse === 'string') {
-      const isoParsed = parseISO(valueToParse);
-      return isValid(isoParsed) ? isoParsed : parse(valueToParse, DateFormat.ddMMyyyy, new Date());
-    } else {
-      return valueToParse;
+export const isValueFormatYYYYMMDD = (value: string): boolean => {
+  return /^\d{4}-\d{2}-\d{2}$/.test(value);
+};
+
+export const isValueFormatDDMMYYYY = (value: string): boolean => {
+  return /^\d{2}\.\d{2}\.\d{4}$/.test(value);
+};
+
+export const isValueFormatISO = (value: string): boolean => {
+  return /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|(?:\+|-)\d{2}:\d{2})$/.test(value);
+};
+
+export const parseStringToDate = (valueToParse: string | undefined): Date | undefined => {
+  if (typeof valueToParse === 'string') {
+    if (valueToParse && isValueFormatYYYYMMDD(valueToParse)) {
+      const test = parse(valueToParse, 'yyyy-MM-dd', new Date());
+      return test;
+    } else if (valueToParse && isValueFormatDDMMYYYY(valueToParse)) {
+      const test = parse(valueToParse, 'dd.MM.yyyy', new Date());
+      return test;
+    } else if (valueToParse && isValueFormatISO(valueToParse)) {
+      const parsedDate = parseISO(valueToParse);
+      return parsedDate;
     }
   }
 };
-export const formatDateToStringDDMMYYYY = (dateToFormat: Date | undefined): string => {
+
+export const formatDateToString = (dateToFormat: Date | undefined): string => {
   const formattedDate = dateToFormat ? formatISO(dateToFormat) : '';
   return formattedDate;
 };
@@ -203,57 +213,25 @@ export const getYearFromString = (dateString: string): string => {
   return dateString ? dateString.split('-')[0] : '';
 };
 
-// const getMaxHour = (item: QuestionnaireItem): number => {
-//   const maxTime = getExtension(Extensions.MAX_VALUE_URL, item);
-//   if (!maxTime || !maxTime.valueTime) {
-//     return 23;
-//   }
-//   const maxTimeString = maxTime.valueTime;
-//   const hoursString = (maxTimeString || '').split(DateTimeConstants.TIME_SEPARATOR)[0];
-//   return parseInt(hoursString, 10);
-// };
+const parseTimestringToDate = (timeToParse?: string): Date | undefined => {
+  const dateToReturn = new Date();
 
-// const getMaxMinute = (item: QuestionnaireItem): number => {
-//   const maxTime = getExtension(Extensions.MAX_VALUE_URL, item);
-//   if (!maxTime || !maxTime.valueTime) {
-//     return 59;
-//   }
-//   const maxTimeString = maxTime.valueTime;
-//   const minuteString = (maxTimeString || '').split(DateTimeConstants.TIME_SEPARATOR)[1];
-//   return parseInt(minuteString, 10);
-// };
-
-// const getMinHour = (item: QuestionnaireItem): number => {
-//   const minTime = getExtension(Extensions.MIN_VALUE_URL, item);
-//   if (!minTime || !minTime.valueTime) {
-//     return 0;
-//   }
-//   const minTimeString = minTime.valueTime;
-//   const hoursString = (minTimeString || '').split(DateTimeConstants.TIME_SEPARATOR)[0];
-//   return parseInt(hoursString, 10);
-// };
-
-// const getMinMinute = (item: QuestionnaireItem): number => {
-//   const minTime = getExtension(Extensions.MIN_VALUE_URL, item);
-//   if (!minTime || !minTime.valueTime) {
-//     return 0;
-//   }
-//   const minTimeString = minTime.valueTime;
-//   const minuteString = (minTimeString || '').split(DateTimeConstants.TIME_SEPARATOR)[1];
-//   return parseInt(minuteString, 10);
-// };
-
-const parseTimeToDate = (time?: string): Date => {
-  const today = new Date();
-  const localDate = new Date(today);
-  //sjekke
-
-  if (time) {
-    const [hours, minutes, seconds] = time.split(':').map(Number);
-    localDate.setHours(hours, minutes, seconds, 0);
+  if (timeToParse) {
+    const [hours, minutes] = timeToParse.split(':').map(Number);
+    dateToReturn.setHours(hours, minutes);
+    return dateToReturn;
   }
+};
 
-  return localDate;
+const parseHoursAndMinutesToDate = (hours?: string, minutes?: string): Date | undefined => {
+  const dateToReturn = new Date();
+  const timeToParse = `${hours}:${minutes}:00`;
+
+  if (hours && minutes) {
+    const [hours, minutes] = timeToParse.split(':').map(Number);
+    dateToReturn.setHours(hours, minutes);
+    return dateToReturn;
+  }
 };
 
 const getMinTime = (item: QuestionnaireItem): string | undefined => {
@@ -273,7 +251,7 @@ const getMaxTime = (item: QuestionnaireItem): string | undefined => {
 };
 
 export const validateDate = (dateToValidate: Date | undefined, resources: Resources | undefined): true | string => {
-  if (dateToValidate && !isValid(dateToValidate)) {
+  if (!isValid(dateToValidate)) {
     return resources?.dateError_invalid || '';
   }
   return true;
@@ -316,29 +294,29 @@ export const validateMinutes = (minutes: number | undefined, resources: Resource
 };
 
 export const validateMinTime = (
-  hours: number | undefined,
-  minutes: number | undefined,
+  hours: string | undefined,
+  minutes: string | undefined,
   resources: Resources | undefined,
   item: QuestionnaireItem
 ): true | string => {
-  const minTime: Date = parseTimeToDate(getMinTime(item));
-  const timeToValidate: Date = parseTimeToDate(`${hours}:${minutes}:00`);
+  const minTime = parseTimestringToDate(getMinTime(item));
+  const timeToValidate = parseHoursAndMinutesToDate(hours, minutes);
 
-  if (timeToValidate < minTime) {
+  if (minTime && timeToValidate && timeToValidate < minTime) {
     return resources?.dateError_time_invalid || '';
   }
   return true;
 };
-
+//hvis mintime/maxtime er undefined, returner true
 export const validateMaxTime = (
-  hours: number | undefined,
-  minutes: number | undefined,
+  hours: string | undefined,
+  minutes: string | undefined,
   resources: Resources | undefined,
   item: QuestionnaireItem
 ): true | string => {
-  const maxTime = parseTimeToDate(getMaxTime(item));
-  const timeToValidate = parseTimeToDate(`${hours}:${minutes}:00`);
-  if (timeToValidate > maxTime) {
+  const maxTime = parseTimestringToDate(getMaxTime(item));
+  const timeToValidate = parseHoursAndMinutesToDate(`${hours}:${minutes}:00`);
+  if (timeToValidate && maxTime && timeToValidate > maxTime) {
     return resources?.dateError_time_invalid || '';
   }
   return true;

@@ -14,6 +14,8 @@ import {
   qChoiceSlider,
   qAttachment,
   qDateTime,
+  qDateDay,
+  qTime,
 } from './__data__';
 import { ReferoProps } from '@/types/referoProps';
 import { renderRefero } from '@test/test-utils';
@@ -51,23 +53,44 @@ describe('Default form values', () => {
       expect(wrapper.queryByTestId(/summary-element-Tom integer/i)).toBeInTheDocument();
     });
   });
-  describe.skip('Initial date value', () => {});
-  //TODO: forstår ikke hvorfor denne testen feiler, kan være noe med custom håndtering av react hook from
-  describe.skip('Initial dateTime value', () => {
+  describe('Initial dateDay value', () => {
     it('prefilled values should not cause a validation error on submit', async () => {
-      const wrapper = createWrapper(qDateTime);
+      const wrapper = createWrapper(qDateDay);
       await submitForm();
-      wrapper.debug(undefined, 100000);
-
-      expect(wrapper.queryByTestId(/summary-element-Preutfylt datetime/i)).not.toBeInTheDocument();
+      expect(wrapper.queryByTestId(/summary-element-Preutfylt dateDay/i)).not.toBeInTheDocument();
     });
     it('empty fields should not cause a validation error on submit', async () => {
-      const wrapper = createWrapper(qDateTime);
+      const wrapper = createWrapper(qDateDay);
       await submitForm();
-      expect(wrapper.queryByTestId(/summary-element-Tom dateTimeText/i)).toBeInTheDocument();
+      expect(wrapper.queryByTestId(/summary-element-Tom dateDay/i)).toBeInTheDocument();
     });
   });
-  describe.skip('Initial time value', () => {});
+  describe('Initial dateTime value', () => {
+    it.skip('prefilled values should not cause a validation error on submit', async () => {
+      const wrapper = createWrapper(qDateTime);
+      await submitForm();
+      const summaryElement = wrapper.queryByTestId(/summary-element-Preutfylt datetime/i);
+      expect(summaryElement).not.toBeInTheDocument();
+    });
+    it.skip('empty fields should not cause a validation error on submit', async () => {
+      const wrapper = createWrapper(qDateTime);
+      await submitForm();
+      const summaryElement = wrapper.queryByTestId(/summary-element-Tom datetime/i);
+      expect(summaryElement).toBeInTheDocument();
+    });
+  });
+  describe('Initial time value', () => {
+    it('prefilled values should not cause a validation error on submit', async () => {
+      const wrapper = createWrapper(qTime);
+      await submitForm();
+      expect(wrapper.queryByTestId(/summary-element-Preutfylt time/i)).not.toBeInTheDocument();
+    });
+    it.skip('empty fields should not cause a validation error on submit', async () => {
+      const wrapper = createWrapper(qTime);
+      await submitForm();
+      expect(wrapper.queryByTestId(/summary-element-Tom time/i)).toBeInTheDocument();
+    });
+  });
   describe('Initial choice value', () => {
     describe('initial Radiobutton value', () => {
       it('prefilled values should not cause a validation error on submit', async () => {

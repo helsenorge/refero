@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import { format, isValid } from 'date-fns';
-import { QuestionnaireResponseItemAnswer } from 'fhir/r4';
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { Controller, FieldError, FieldValues, useFormContext } from 'react-hook-form';
 import styles from '../common-styles.module.css';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
@@ -9,13 +9,19 @@ import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import { LanguageLocales } from '@helsenorge/core-utils/constants/languages';
 import DatePicker from '@helsenorge/datepicker/components/DatePicker';
 
-import { safeParseJSON } from '../../../util/date-fns-utils';
 import { getValidationTextExtension } from '../../../util/extension';
 import { getId, isReadOnly, isRequired } from '../../../util/index';
 import TextView from '../textview';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
-import { formatDateToStringDDMMYYYY, parseStringToDateDDMMYYYY, validateDate, validateMaxDate, validateMinDate } from '@/util/date-utils';
+import {
+  formatDateToString,
+  isValueFormatDDMMYYYY,
+  parseStringToDate,
+  validateDate,
+  validateMaxDate,
+  validateMinDate,
+} from '@/util/date-utils';
 import { QuestionnaireComponentItemProps } from '@/components/GenerateQuestionnaireComponents';
 import RenderHelpButton from '../help-button/RenderHelpButton';
 import RenderHelpElement from '../help-button/RenderHelpElement';
@@ -68,76 +74,62 @@ export const DateDayInput = ({
   };
 
   const dateAnswerValue = getDateAnswerValue(answer);
-  const parsedDateAnswerValue = parseStringToDateDDMMYYYY(dateAnswerValue);
-  const [defaultDate, setDefaultDate] = useState<Date | undefined>(parsedDateAnswerValue);
+  const date = parseStringToDate(dateAnswerValue);
 
-  const getValue = (): Date[] | undefined => {
+  const getValue = (
+    item: QuestionnaireItem,
+    answer?: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]
+  ): string | string[] | undefined => {
     if (answer && Array.isArray(answer)) {
-      return answer.map(m => safeParseJSON(String(getDateAnswerValue(m)))).filter(x => x !== undefined);
+      return answer.map(m => m.valueDate).filter(f => f !== undefined);
     }
-
-    if (Array.isArray(item.initial)) {
-      return item.initial.map(m => safeParseJSON(String(getDateAnswerValue(m)))).filter(x => x !== undefined);
+    if (answer && answer.valueDate !== undefined && answer.valueDate !== null) {
+      return answer.valueDate;
     }
-
-    if (answer) {
-      const parsedDate = safeParseJSON(String(getDateAnswerValue(answer)));
-      if (isValid(parsedDate) === true && parsedDate !== undefined) {
-        return [parsedDate];
-      } else {
-        return undefined;
-      }
+    if (!item || !item.initial || item.initial.length === 0 || !item.initial[0].valueDate) {
+      return '';
     }
   };
 
-  const getPDFValue = (): string => {
-    const date = getValue();
-    const ikkeBesvartText = resources?.ikkeBesvart || '';
-
-    return date ? date.map(d => d && format(d, 'd. MMMM yyyy')).join(', ') : ikkeBesvartText;
+  const getPDFValue = (): string | number => {
+    const value = getValue(item, answer);
+    if (value === undefined || value === null || value === '') {
+      let text = '';
+      if (resources && resources.ikkeBesvart) {
+        text = resources.ikkeBesvart;
+      }
+      return text;
+    }
+    if (Array.isArray(value)) {
+      return value.map(d => d && format(d, 'd. MMMM yyyy')).join(', ');
+    }
+    return format(value, 'd. MMMM yyyy');
   };
 
   const handleChange = (newDate: string | Date | undefined): void => {
-    if (typeof newDate !== 'string') {
-      handleChangeDate(newDate);
-    } else {
-      handleChangeString(newDate);
-    }
-    if (defaultDate) {
-      setDefaultDate(undefined);
-    }
-  };
-
-  const handleChangeString = (value: string): void => {
-    const valueAsDate = parseStringToDateDDMMYYYY(value);
-    if (isValid(valueAsDate)) {
-      onDateValueChange(value);
-    } else {
-      onDateValueChange('');
-    }
-    if (defaultDate) {
-      setDefaultDate(undefined);
-    }
-  };
-
-  const handleChangeDate = (value: Date | undefined): void => {
-    if (isValid(value)) {
-      const valueAsString = formatDateToStringDDMMYYYY(value);
-      onDateValueChange(valueAsString);
-    } else {
-      onDateValueChange('');
-    }
-    if (defaultDate) {
-      setDefaultDate(undefined);
+    if (typeof newDate === 'string') {
+      if (isValueFormatDDMMYYYY(newDate)) {
+        const parsedDate = parseStringToDate(newDate);
+        if (parsedDate && isValid(parsedDate)) {
+          const formatedDate = format(parsedDate, 'yyyy-MM-dd');
+          onDateValueChange(formatedDate);
+        }
+      } else {
+        onDateValueChange(newDate);
+      }
+    } else if (isValid(newDate)) {
+      const valueAsString = formatDateToString(newDate);
+      const formatedDate = format(valueAsString, 'yyyy-MM-dd');
+      onDateValueChange(formatedDate);
     }
   };
 
   const getErrorText = (error: FieldError | undefined): string | undefined => {
-    const validationTextExtension = getValidationTextExtension(item);
-    if (validationTextExtension) {
-      return validationTextExtension;
-    }
     if (error) {
+      const validationTextExtension = getValidationTextExtension(item);
+      if (validationTextExtension) {
+        return validationTextExtension;
+      }
       return error.message;
     }
   };
@@ -173,13 +165,20 @@ export const DateDayInput = ({
           },
           validate: {
             validDate: value => {
-              return validateDate(value ? parseStringToDateDDMMYYYY(value) : undefined, resources);
+              if (Array.isArray(value)) {
+                value = value[0];
+              }
+              if (typeof value === 'string') {
+                return value ? validateDate(parseStringToDate(value), resources) : true;
+              } else {
+                return value ? validateDate(value, resources) : true;
+              }
             },
             validMinDate: value => {
-              return validateMinDate(minDateTime, parseStringToDateDDMMYYYY(value), resources);
+              return validateMinDate(minDateTime, parseStringToDate(value), resources);
             },
             validMaxDate: value => {
-              return validateMaxDate(maxDateTime, parseStringToDateDDMMYYYY(value), resources);
+              return validateMaxDate(maxDateTime, parseStringToDate(value), resources);
             },
           },
         }}
@@ -192,11 +191,11 @@ export const DateDayInput = ({
             dateFormat={'dd.MM.yyyy'}
             minDate={minDateTime}
             maxDate={maxDateTime}
-            onChange={(e, newDate) => {
+            onChange={(_e, newDate) => {
               handleChange(newDate);
               onChange(newDate);
             }}
-            dateValue={isValid(defaultDate) ? defaultDate : undefined}
+            dateValue={isValid(date) ? date : undefined}
           />
         )}
       />

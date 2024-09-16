@@ -1,9 +1,10 @@
 {
-  "title": "Default verdi",
-  "description": "Tester default verdi for validering",
   "resourceType": "Questionnaire",
   "language": "nb-NO",
+  "id": "1ce1a649-f81a-4f97-8c36-8a798a0e025a",
   "name": "DefaultVerdi",
+  "title": "Default verdi",
+  "description": "Tester default verdi for validering",
   "status": "active",
   "publisher": "NHN",
   "meta": {
@@ -62,22 +63,21 @@
       }
     }
   ],
-  "id": "1ce1a649-f81a-4f97-8c36-8a798a0e025a",
   "item": [
     {
-      "linkId": "fe12296c-0b13-4bc2-867d-c1e364cf40c8",
-      "type": "dateTime",
-      "text": "Tom datetime",
+      "linkId": "3cbd1e1b-fa49-4b9b-871e-2598213ab393",
+      "type": "time",
+      "text": "Tom time",
       "required": true
     },
     {
-      "linkId": "1c5001d5-07f0-41e0-8b7d-0ead16d437f2",
-      "type": "dateTime",
-      "text": "Preutfylt datetime",
+      "linkId": "f46e79e5-bdd1-44e0-c2ee-89335756e834",
+      "type": "time",
+      "text": "Preutfylt time",
       "required": false,
       "initial": [
         {
-          "valueDateTime": "1994-05-31T11:30:00+00:00"
+          "valueTime": "14:30:00"
         }
       ]
     }

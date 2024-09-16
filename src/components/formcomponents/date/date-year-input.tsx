@@ -58,11 +58,11 @@ export const DateYearInput = (props: Props): JSX.Element | null => {
   };
 
   const getErrorText = (error: FieldError | undefined): string | undefined => {
-    const validationTextExtension = getValidationTextExtension(item);
-    if (validationTextExtension) {
-      return validationTextExtension;
-    }
     if (error) {
+      const validationTextExtension = getValidationTextExtension(item);
+      if (validationTextExtension) {
+        return validationTextExtension;
+      }
       return error.message;
     }
   };
