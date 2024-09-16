@@ -1,12 +1,6 @@
 import React from 'react';
 
-import { getHours, getMinutes } from 'date-fns';
-import { QuestionnaireResponseItemAnswer } from 'fhir/r4';
-
-import * as DateTimeConstants from '../../../constants/dateTimeConstants';
-
 import { newTimeValueAsync, NewValueAction } from '../../../actions/newValue';
-import { safeParseJSON } from '../../../util/date-fns-utils';
 import { getValidationTextExtension } from '../../../util/extension';
 import { getId, isReadOnly, isRequired } from '../../../util/index';
 import { QuestionnaireComponentItemProps } from '@/components/GenerateQuestionnaireComponents';
@@ -23,6 +17,8 @@ import { extractHoursAndMinutesFromAnswer, validateHours, validateMaxTime, valid
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import RenderHelpButton from '../help-button/RenderHelpButton';
 import RenderHelpElement from '../help-button/RenderHelpElement';
+import TextView from '../textview';
+import { useIsEnabled } from '@/hooks/useIsEnabled';
 
 export type Props = QuestionnaireComponentItemProps;
 
@@ -40,61 +36,15 @@ const Time = ({
 }: Props): JSX.Element | null => {
   const { promptLoginMessage, onAnswerChange } = useExternalRenderContext();
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
+  const enable = useIsEnabled(item);
   const { formState, getFieldState, register, setValue } = useFormContext<FieldValues>();
   const hoursField = getFieldState(`${idWithLinkIdAndItemIndex}-hours`, formState);
   const minutesField = getFieldState(`${idWithLinkIdAndItemIndex}-minutes`, formState);
-
   const answer = useGetAnswer(responseItem, item);
   const [isHelpVisible, setIsHelpVisible] = React.useState(false);
   const hoursAndMinutesFromAnswer = extractHoursAndMinutesFromAnswer(answer, item);
   const hours = hoursAndMinutesFromAnswer?.hours;
   const minutes = hoursAndMinutesFromAnswer?.minutes;
-
-  const convertAnswerToString = (answer: QuestionnaireResponseItemAnswer): string => {
-    if (answer && answer.valueTime) {
-      return answer.valueTime;
-    }
-    if (answer && answer.valueDate) {
-      return getTimeStringFromDate(safeParseJSON(String(answer.valueDate)));
-    }
-    if (answer && answer.valueDateTime) {
-      return getTimeStringFromDate(safeParseJSON(String(answer.valueDateTime)));
-    }
-    return '';
-  };
-
-  const getValue = (): string | undefined => {
-    if (Array.isArray(answer)) {
-      return answer.map(m => convertAnswerToString(m)).join(', ');
-    }
-    if (answer) {
-      return convertAnswerToString(answer);
-    }
-  };
-
-  const getPDFValue = (): string => {
-    const value = getValue();
-    if (!value) {
-      let text = '';
-      if (resources && resources.ikkeBesvart) {
-        text = resources.ikkeBesvart;
-      }
-      return text;
-    }
-    return value;
-  };
-
-  const getTimeStringFromDate = (date: Date | undefined): string => {
-    if (!date) {
-      return '';
-    }
-    const hours = getHours(date);
-    const minutes = getMinutes(date);
-    const formattedHours = String(hours).padStart(2, '0');
-    const formattedMinutes = String(minutes).padStart(2, '0');
-
-    return `${formattedHours}${DateTimeConstants.TIME_SEPARATOR}${formattedMinutes}`;
-  };
 
   const dispatchNewTime = (newTime: string): void => {
     if (dispatch && onAnswerChange && path) {
@@ -113,7 +63,7 @@ const Time = ({
   const handleHoursChange = (newHours: number | string | undefined): void => {
     let newMinutes: number | string | undefined = minutes;
     if (!minutes) {
-      newMinutes = 0o0;
+      newMinutes = '00';
     }
     setValue(`${idWithLinkIdAndItemIndex}-hours`, newHours);
     setValue(`${idWithLinkIdAndItemIndex}-minutes`, newMinutes);
@@ -122,7 +72,7 @@ const Time = ({
   const handleMinutesChange = (newMinutes: number | string | undefined): void => {
     let newHours: number | string | undefined = hours;
     if (!hours) {
-      newHours = 0o0;
+      newHours = '00';
     }
     setValue(`${idWithLinkIdAndItemIndex}-hours`, newHours);
     setValue(`${idWithLinkIdAndItemIndex}-minutes`, newMinutes);
@@ -165,33 +115,28 @@ const Time = ({
   //   return '';
   // };
 
-  const padNumber = (value?: string): string => {
-    if (value) {
-      const values = value.split(':');
-      let retVal = '';
-      for (let i = 0; i < values.length; i++) {
-        let timeString = '';
-        if (parseInt(values[i], 10) < 10 && values[i].length === 1) {
-          timeString += '0';
-        }
-        timeString += values[i];
-        if (i !== values.length - 1) {
-          timeString += ':';
-        }
-        retVal += timeString;
+  const getPDFValue = (): string | undefined => {
+    const hoursAndMinutesValue = extractHoursAndMinutesFromAnswer(answer, item);
+    const hoursValue = hoursAndMinutesFromAnswer?.hours;
+    const minutesValue = hoursAndMinutesFromAnswer?.minutes;
+    if (hoursAndMinutesValue === null || hoursAndMinutesValue === undefined) {
+      let text = '';
+      if (resources && resources.ikkeBesvart) {
+        text = resources.ikkeBesvart;
       }
-      return retVal;
+      return text;
     }
-    return '';
+    return `${'kl. '} ${hoursValue}:${minutesValue}`;
   };
 
+  if (!enable) {
+    return null;
+  }
   if (pdf || isReadOnly(item)) {
-    const value = getPDFValue();
-
     return (
-      <span>
-        {', kl. '} {padNumber(value)}
-      </span>
+      <TextView id={id} item={item} value={getPDFValue()}>
+        {children}
+      </TextView>
     );
   }
 
@@ -216,18 +161,18 @@ const Time = ({
             },
             validate: {
               validHours: value => {
-                return validateHours(Number(value), resources);
+                return value ? validateHours(Number(value), resources) : true;
               },
               validMinTime: value => {
-                return validateMinTime(Number(value), minutes, resources, item);
+                return validateMinTime(value, minutes, resources, item);
               },
               validMaxTime: value => {
-                return validateMaxTime(Number(value), minutes, resources, item);
+                return validateMaxTime(value, minutes, resources, item);
               },
             },
           })}
           inputId={`${getId(id)}-datetime-hours`}
-          defaultValue={hours}
+          defaultValue={Number(hours)}
           timeUnit="hours"
           onChange={e => {
             handleHoursChange(e.target.value);
@@ -246,7 +191,7 @@ const Time = ({
             },
           })}
           testId={`time-2`}
-          defaultValue={minutes}
+          defaultValue={Number(minutes)}
           timeUnit="minutes"
           onChange={e => {
             handleMinutesChange(e.target.value);

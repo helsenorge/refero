@@ -219,7 +219,7 @@ describe('Date time', () => {
 
       expect(minutesInput).toHaveValue(Number('00'));
     });
-    it.skip('Should call onChange with correct value when date field changes', async () => {
+    it('Should call onChange with correct value when date field changes', async () => {
       const onChange = vi.fn();
       const { getByLabelText } = createWrapper(q, { onChange });
       expect(getByLabelText(/Dato/i)).toBeInTheDocument();
@@ -277,7 +277,7 @@ describe('Date time', () => {
       //     expect(queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
       //   });
       // });
-      it.only('Should show error if date is invalid', async () => {
+      it('Should show error if date is invalid', async () => {
         const { getByLabelText, getByText } = createWrapper(q);
 
         await userEvent.type(getByLabelText(/Dato/i), '313131');

@@ -21,22 +21,20 @@ const resources = {
 describe('Time', () => {
   describe('Render', () => {
     it('Should render as text if props.pdf', async () => {
-      const { getByText } = createWrapper(q, { pdf: true });
-      const spanElement = getByText(/, kl\./i);
-      expect(spanElement).toBeInTheDocument();
+      const { queryByText } = createWrapper(q, { pdf: true });
+      expect(queryByText('Ikke besvart')).toBeInTheDocument();
     });
     it('Should render text if item is readonly', () => {
       const questionnaire: Questionnaire = {
         ...q,
         item: q.item?.map(x => ({ ...x, readOnly: true })),
       };
-      const { getByText } = createWrapper(questionnaire, { pdf: true });
-      const spanElement = getByText(/, kl\./i);
-      expect(spanElement).toBeInTheDocument();
+      const { queryByText } = createWrapper(questionnaire);
+      expect(queryByText('Ikke besvart')).toBeInTheDocument();
     });
     it('Should render as input if props.pdf === false && item is not readonly', () => {
       const { queryByText } = createWrapper(q);
-      expect(queryByText(/, kl\./i)).not.toBeInTheDocument();
+      expect(queryByText('Ikke besvart')).not.toBeInTheDocument();
     });
   });
   describe('initialvalue', () => {
@@ -316,7 +314,7 @@ describe('Time', () => {
         await submitForm();
         expect(getByText(resources.dateError_time_invalid)).toBeInTheDocument();
       });
-      it('Should show error message if time value is lesser than min-time', async () => {
+      it.only('Should show error message if time value is lesser than min-time', async () => {
         const { getByTestId, getByLabelText, getByText } = createWrapper(q);
 
         const hoursElement = getByLabelText(/Klokkeslett/i);

@@ -43,7 +43,9 @@
         { "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sublabel", "valueMarkdown": "Skriv inn et klokkeslett" },
         { "url": "http://ehelse.no/fhir/StructureDefinition/repeatstext", "valueString": "Legg til" },
         { "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-minOccurs", "valueInteger": 1 },
-        { "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-maxOccurs", "valueInteger": 4 }
+        { "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-maxOccurs", "valueInteger": 4 },
+        { "url": "http://hl7.org/fhir/StructureDefinition/minValue", "valueTime": "14:30:00" },
+        { "url": "http://hl7.org/fhir/StructureDefinition/maxValue", "valueTime": "16:45:00" }
       ],
       "required": true,
       "repeats": true,

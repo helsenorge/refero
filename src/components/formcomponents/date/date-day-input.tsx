@@ -172,9 +172,9 @@ export const DateDayInput = ({
                 value = value[0];
               }
               if (typeof value === 'string') {
-                return validateDate(parseStringToDate(value), resources);
+                return value ? validateDate(parseStringToDate(value), resources) : true;
               } else {
-                return validateDate(value, resources);
+                return value ? validateDate(value, resources) : true;
               }
             },
             validMinDate: value => {

@@ -89,10 +89,10 @@ export const getHoursOrMinutesFromDate = (date: Date | undefined, unitToGet: Dat
 };
 
 const getHoursAndMinutesFromTime = (timeString: string): TimeValues => {
-  const [hours, minutes] = timeString.split(':').map(Number);
+  const [hours, minutes] = timeString.split(':').map(String);
   return {
-    hours: isNaN(hours) ? 0 : hours,
-    minutes: isNaN(minutes) ? 0 : minutes,
+    hours: !hours ? '00' : hours,
+    minutes: !minutes ? '00' : minutes,
   };
 };
 
@@ -213,18 +213,26 @@ export const getYearFromString = (dateString: string): string => {
   return dateString ? dateString.split('-')[0] : '';
 };
 
-const parseTimeToDate = (time?: string): Date => {
+const parseTimestringToDate = (timeToParse?: string): Date | undefined => {
   const dateToReturn = new Date();
 
-  if (time) {
-    const [hours, minutes] = time.split(':').map(Number);
+  if (timeToParse) {
+    const [hours, minutes] = timeToParse.split(':').map(Number);
     dateToReturn.setHours(hours, minutes);
+    return dateToReturn;
   }
-
-  return dateToReturn;
 };
-//lage tester til util metoder
-//optional time streng?
+
+const parseHoursAndMinutesToDate = (hours?: string, minutes?: string): Date | undefined => {
+  const dateToReturn = new Date();
+  const timeToParse = `${hours}:${minutes}:00`;
+
+  if (hours && minutes) {
+    const [hours, minutes] = timeToParse.split(':').map(Number);
+    dateToReturn.setHours(hours, minutes);
+    return dateToReturn;
+  }
+};
 
 const getMinTime = (item: QuestionnaireItem): string | undefined => {
   const minTime = getExtension(Extensions.MIN_VALUE_URL, item);
@@ -243,7 +251,7 @@ const getMaxTime = (item: QuestionnaireItem): string | undefined => {
 };
 
 export const validateDate = (dateToValidate: Date | undefined, resources: Resources | undefined): true | string => {
-  if (dateToValidate && !isValid(dateToValidate)) {
+  if (!isValid(dateToValidate)) {
     return resources?.dateError_invalid || '';
   }
   return true;
@@ -286,29 +294,29 @@ export const validateMinutes = (minutes: number | undefined, resources: Resource
 };
 
 export const validateMinTime = (
-  hours: number | undefined,
-  minutes: number | undefined,
+  hours: string | undefined,
+  minutes: string | undefined,
   resources: Resources | undefined,
   item: QuestionnaireItem
 ): true | string => {
-  const minTime: Date = parseTimeToDate(getMinTime(item));
-  const timeToValidate: Date = parseTimeToDate(`${hours}:${minutes}`);
+  const minTime = parseTimestringToDate(getMinTime(item));
+  const timeToValidate = parseHoursAndMinutesToDate(hours, minutes);
 
-  if (timeToValidate < minTime) {
+  if (minTime && timeToValidate && timeToValidate < minTime) {
     return resources?.dateError_time_invalid || '';
   }
   return true;
 };
 //hvis mintime/maxtime er undefined, returner true
 export const validateMaxTime = (
-  hours: number | undefined,
-  minutes: number | undefined,
+  hours: string | undefined,
+  minutes: string | undefined,
   resources: Resources | undefined,
   item: QuestionnaireItem
 ): true | string => {
-  const maxTime = parseTimeToDate(getMaxTime(item));
-  const timeToValidate = parseTimeToDate(`${hours}:${minutes}:00`);
-  if (timeToValidate > maxTime) {
+  const maxTime = parseTimestringToDate(getMaxTime(item));
+  const timeToValidate = parseHoursAndMinutesToDate(`${hours}:${minutes}:00`);
+  if (timeToValidate && maxTime && timeToValidate > maxTime) {
     return resources?.dateError_time_invalid || '';
   }
   return true;

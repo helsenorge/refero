@@ -14,6 +14,6 @@ export enum DateFormat {
 }
 
 export interface TimeValues {
-  hours: number;
-  minutes: number;
+  hours: string;
+  minutes: string;
 }
