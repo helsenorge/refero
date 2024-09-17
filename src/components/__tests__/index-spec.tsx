@@ -1,5 +1,5 @@
 import React from 'react';
-import { act, render, screen } from '../../../test/test-utils';
+import { render, screen } from '../../../test/test-utils';
 import userEvent from '@testing-library/user-event';
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';

@@ -1,4 +1,4 @@
-import { act, renderRefero, userEvent } from '@test/test-utils.tsx';
+import { renderRefero, userEvent } from '@test/test-utils.tsx';
 import { q } from './__data__/';
 
 import { Questionnaire, QuestionnaireItem } from 'fhir/r4';

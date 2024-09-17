@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { Questionnaire } from 'fhir/r4';
 
 import { getSidebarSections } from '../../src/util/extension';

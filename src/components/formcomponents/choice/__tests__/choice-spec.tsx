@@ -1,13 +1,12 @@
 import { renderRefero, screen } from '../../../../../test/test-utils';
 
 import '../../../../util/__tests__/defineFetch';
-import { QuestionnaireItem, QuestionnaireItemAnswerOption, QuestionnaireResponseItemAnswer, Extension } from 'fhir/r4';
+import { QuestionnaireItem, QuestionnaireItemAnswerOption, Extension } from 'fhir/r4';
 import itemType from '../../../../constants/itemType';
 import { Extensions } from '../../../../constants/extensions';
 import { createQuestionnaire } from '@/components/__tests__/utils';
 import { getResources } from '../../../../../preview/resources/referoResources';
 const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle ut dette feltet', oppgiGyldigVerdi: 'ikke gyldig tall' };
-const initAnswer: QuestionnaireResponseItemAnswer[] = [{}];
 
 // Provide the mock implementation
 
@@ -180,21 +179,9 @@ function createValueTimeOption(...options: string[]): QuestionnaireItemAnswerOpt
   });
 }
 
-function renderWrapperWithItem(item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer[] = initAnswer) {
+function renderWrapperWithItem(item: QuestionnaireItem) {
   const q = createQuestionnaire({ items: [item] });
   renderRefero({ questionnaire: q, resources: resources });
-
-  // <Choice
-  //   id={item.linkId}
-  //   idWithLinkIdAndItemIndex={item.linkId}
-  //   dispatch={() => undefined as any}
-  //   item={item}
-  //   path={[]}
-
-  //   responseItem={{
-  //     linkId: item.linkId,
-  //   }}
-  // />
 }
 
 function createItemWithOption(...options: QuestionnaireItemAnswerOption[]): QuestionnaireItem {

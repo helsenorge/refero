@@ -25,7 +25,7 @@ import {
   enterOpenChoiceText,
   removeOpenChoiceText,
 } from './utils';
-import { vi } from 'vitest';
+import { Mocked, vi } from 'vitest';
 import { fail } from 'assert';
 
 vi.mock('uuid');
@@ -42,7 +42,7 @@ describe('QuestionnaireResponseAnswer shall reflect user input', () => {
     }
     definitionItems = dItems;
 
-    const mockedUuid = uuid as vi.Mocked<typeof uuid>;
+    const mockedUuid = uuid as Mocked<typeof uuid>;
     //@ts-ignore
     mockedUuid.v4.mockReturnValue('uuid');
   });
@@ -271,7 +271,7 @@ function verifyAnswer(
   linkId: string,
   state: Form,
   path: Array<Path>,
-  test: (it: vi.Matchers<QuestionnaireResponseItemAnswer[] | undefined | void, undefined>) => unknown
+  test: (it: Matchers<QuestionnaireResponseItemAnswer[] | undefined | void, undefined>) => unknown
 ) {
   const r = getResponseItem(linkId, state, path);
   if (!r) return fail();
