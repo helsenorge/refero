@@ -371,9 +371,6 @@ describe('Date time', () => {
           await userEvent.clear(minutesInput);
           await userEvent.type(minutesInput, '90');
         }
-
-        screen.debug(undefined, 30000);
-
         await submitForm();
         await waitFor(() => {
           expect(getByText(resources.dateError_time_invalid)).toBeInTheDocument();
