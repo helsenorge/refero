@@ -2,7 +2,7 @@ import { q } from './__data__';
 
 import { EnhetType, OrgenhetHierarki } from '../../../../types/orgenhetHierarki';
 
-import { act, renderRefero } from '@test/test-utils.tsx';
+import { renderRefero } from '@test/test-utils.tsx';
 import { selectDropdownOptionByName } from '../../../../../test/selectors';
 import { getResources } from '../../../../../preview/resources/referoResources';
 import { vi } from 'vitest';

@@ -8,7 +8,7 @@ import {
   QuestionnaireResponseItemAnswer,
 } from 'fhir/r4';
 import { Extensions } from '../../constants/extensions';
-import { queryHelpers, userEvent, screen, act } from '@test/test-utils';
+import { queryHelpers, userEvent, screen } from '@test/test-utils';
 import valueSet from '../../constants/valuesets';
 import { IActionRequester } from '../../util/actionRequester';
 import { IQuestionnaireInspector } from '../../util/questionnaireInspector';

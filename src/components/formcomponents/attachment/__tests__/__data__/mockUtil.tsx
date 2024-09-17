@@ -1,19 +1,4 @@
-import { Questionnaire, QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
-
-import { QuestionnaireStatusCodes } from '../../../../../types/fhirEnums';
-
-import { Resources } from '../../../../../util/resources';
-import { vi } from 'vitest';
-import { ReferoProps } from '@/types/referoProps';
-
-const mockQuestionnaire: Questionnaire = {
-  resourceType: 'Questionnaire',
-  status: QuestionnaireStatusCodes.ACTIVE,
-};
-
-const mockQuestionnaireResponseMock: QuestionnaireResponseItem = {
-  linkId: '',
-};
+import { QuestionnaireItem } from 'fhir/r4';
 
 export const mockMinFiles: number = 2;
 export const mockMaxFiles: number = 2;
@@ -48,39 +33,6 @@ export function createMockFile(fileName: string, mimeType: string, size: number)
     writable: false,
   });
   return mockFile;
-}
-
-/** Mock Testing Util method */
-export function createMockAttachmentProps(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  item: QuestionnaireItem | any,
-  partialResources: Partial<Resources>,
-  attachmentMaxFileSize?: number,
-  attachmentErrorMessage?: string,
-  attachmentValidTypes?: string[]
-): Partial<ReferoProps> {
-  // Create a base mock with required and default properties.
-  const mockProps: Partial<ReferoProps> = {
-    dispatch: vi.fn(),
-    path: [],
-    item, // Required parameter
-    questionnaire: mockQuestionnaire,
-    responseItem: mockQuestionnaireResponseMock,
-    answer: [],
-    resources: partialResources as Resources,
-    onAnswerChange: vi.fn(),
-    // ... other props with their mock implementations
-  };
-  if (attachmentMaxFileSize !== undefined) {
-    mockProps.attachmentMaxFileSize = attachmentMaxFileSize;
-  }
-  if (attachmentErrorMessage !== undefined) {
-    mockProps.attachmentErrorMessage = attachmentErrorMessage;
-  }
-  if (attachmentValidTypes !== undefined) {
-    mockProps.attachmentValidTypes = attachmentValidTypes;
-  }
-  return mockProps;
 }
 
 /** Mock Testing Util method */

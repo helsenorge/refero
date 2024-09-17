@@ -97,7 +97,7 @@ describe('Attachment', () => {
         ...q,
       };
       const upload = vi.fn();
-      const { getByLabelText, getByTestId, getByText } = createWrapper(questionnaire, {
+      const { getByLabelText, getByText } = createWrapper(questionnaire, {
         uploadAttachment: upload,
         attachmentValidTypes: ['image/png'],
       });
@@ -120,6 +120,7 @@ describe('Attachment', () => {
       };
       const onChange = vi.fn();
       const attchmt: Attachment = { url: 'test' };
+      //@ts-expect-error - mock function
       const uploadAttachment = (files: File[], onSuccess: (attachment: Attachment) => void) => {
         onSuccess(attchmt);
       };
@@ -153,6 +154,7 @@ describe('Attachment', () => {
       };
       const onChange = vi.fn();
       const attchmt: Attachment = { url: 'test' };
+      //@ts-expect-error - mock function
       const uploadAttachment = (files: File[], onSuccess: (attachment: Attachment) => void) => {
         onSuccess(attchmt);
       };
