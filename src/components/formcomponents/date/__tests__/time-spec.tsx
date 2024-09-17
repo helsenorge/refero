@@ -314,7 +314,7 @@ describe('Time', () => {
         await submitForm();
         expect(getByText(resources.dateError_time_invalid)).toBeInTheDocument();
       });
-      it.only('Should show error message if time value is lesser than min-time', async () => {
+      it('Should show error message if time value is lesser than min-time', async () => {
         const { getByTestId, getByLabelText, getByText } = createWrapper(q);
 
         const hoursElement = getByLabelText(/Klokkeslett/i);

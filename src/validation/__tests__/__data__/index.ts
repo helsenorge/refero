@@ -18,6 +18,7 @@ const qChoiceSlider: Questionnaire = JSON.parse(fs.readFileSync(__dirname + '/qC
 const qAttachment: Questionnaire = JSON.parse(fs.readFileSync(__dirname + '/qAttachment.json').toString());
 const qDateTime: Questionnaire = JSON.parse(fs.readFileSync(__dirname + '/qDateTime.json').toString());
 const qDateDay: Questionnaire = JSON.parse(fs.readFileSync(__dirname + '/qDateDay.json').toString());
+const qDateMonth: Questionnaire = JSON.parse(fs.readFileSync(__dirname + '/qDateMonth.json').toString());
 const qTime: Questionnaire = JSON.parse(fs.readFileSync(__dirname + '/qTime.json').toString());
 
 export {
@@ -38,5 +39,6 @@ export {
   qOpenChoiceDropdown,
   qDateTime,
   qDateDay,
+  qDateMonth,
   qTime,
 };

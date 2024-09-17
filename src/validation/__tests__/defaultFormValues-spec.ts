@@ -16,6 +16,7 @@ import {
   qDateTime,
   qDateDay,
   qTime,
+  qDateMonth,
 } from './__data__';
 import { ReferoProps } from '@/types/referoProps';
 import { renderRefero } from '@test/test-utils';
@@ -65,14 +66,26 @@ describe('Default form values', () => {
       expect(wrapper.queryByTestId(/summary-element-Tom dateDay/i)).toBeInTheDocument();
     });
   });
-  describe('Initial dateTime value', () => {
-    it.skip('prefilled values should not cause a validation error on submit', async () => {
+  describe.skip('Initial dateMonth value', () => {
+    it('prefilled values should not cause a validation error on submit', async () => {
+      const wrapper = createWrapper(qDateMonth);
+      await submitForm();
+      expect(wrapper.queryByTestId(/summary-element-Preutfylt dateMonth/i)).not.toBeInTheDocument();
+    });
+    it('empty fields should not cause a validation error on submit', async () => {
+      const wrapper = createWrapper(qDateMonth);
+      await submitForm();
+      expect(wrapper.queryByTestId(/summary-element-Tom dateMonth/i)).toBeInTheDocument();
+    });
+  });
+  describe.skip('Initial dateTime value', () => {
+    it('prefilled values should not cause a validation error on submit', async () => {
       const wrapper = createWrapper(qDateTime);
       await submitForm();
       const summaryElement = wrapper.queryByTestId(/summary-element-Preutfylt datetime/i);
       expect(summaryElement).not.toBeInTheDocument();
     });
-    it.skip('empty fields should not cause a validation error on submit', async () => {
+    it('empty fields should not cause a validation error on submit', async () => {
       const wrapper = createWrapper(qDateTime);
       await submitForm();
       const summaryElement = wrapper.queryByTestId(/summary-element-Tom datetime/i);
