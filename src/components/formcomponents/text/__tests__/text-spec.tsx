@@ -343,7 +343,7 @@ describe('Text', () => {
         await submitForm();
         expect(queryByText('Custom error')).not.toBeInTheDocument();
       });
-      it.only('Should remove error on change if form is submitted', async () => {
+      it('Should remove error on change if form is submitted', async () => {
         const questionnaire: Questionnaire = {
           ...q,
           item: q.item?.map(x => ({
