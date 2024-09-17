@@ -47,7 +47,6 @@ const RenderForm = ({
   const onSubmitReactHookForm: SubmitHandler<FieldValues> = (): void => {
     onSubmit();
   };
-  const { errors } = methods.formState;
   const displayPauseButtonInNormalView = referoProps.onSave ? onSave : undefined;
   const displayPauseButtonInStepView = displayPreviousButton ? previousStep : undefined;
   const displayValidationSummaryOnTop: boolean =
