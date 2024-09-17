@@ -351,10 +351,9 @@ describe('Text', () => {
             required: false,
           })),
         };
-        const { getByText, queryByText, getByLabelText, debug } = createWrapper(questionnaire);
+        const { getByText, queryByText, getByLabelText } = createWrapper(questionnaire);
         await userEvent.type(getByLabelText(/String/i), 'e@st.co');
         await submitForm();
-        debug(undefined, 20000);
         expect(getByText('Custom error')).toBeInTheDocument();
         await userEvent.clear(getByLabelText(/String/i));
         await userEvent.type(getByLabelText(/String/i), 'epost@test.com');

@@ -87,25 +87,34 @@ const DateTimeInput = ({
     return item.initial[0].valueDate;
   };
 
+  if (!enable) {
+    return null;
+  }
   const dateAnswerValue = getDateAnswerValue(answer);
   const date: Date | string | undefined = parseStringToDate(dateAnswerValue);
+
+  if (pdf || isReadOnly(item)) {
+    const getPDFValue = (): string | number | undefined => {
+      if (dateAnswerValue === undefined || dateAnswerValue === null || dateAnswerValue === '') {
+        let text = '';
+        if (resources && resources.ikkeBesvart) {
+          text = resources.ikkeBesvart;
+        }
+        return text;
+      }
+      if (date && isValid(date)) {
+        return format(date, 'dd.MM.yyyy HH:mm');
+      }
+    };
+    return (
+      <TextView id={id} item={item} value={getPDFValue()}>
+        {children}
+      </TextView>
+    );
+  }
+
   const hours = getHoursOrMinutesFromDate(date, DateTimeUnit.Hours) || '00';
   const minutes = getHoursOrMinutesFromDate(date, DateTimeUnit.Minutes) || '00';
-
-  const getPDFValue = (): string | number | undefined => {
-    const value = getDateAnswerValue(answer);
-    const valueParsed = parseStringToDate(value);
-    if (dateAnswerValue === undefined || dateAnswerValue === null || dateAnswerValue === '') {
-      let text = '';
-      if (resources && resources.ikkeBesvart) {
-        text = resources.ikkeBesvart;
-      }
-      return text;
-    }
-    if (valueParsed && isValid(valueParsed)) {
-      return format(valueParsed, 'dd.MM.yyyy HH:mm');
-    }
-  };
 
   const getErrorText = (error: FieldError | undefined): string | undefined => {
     if (error) {
@@ -168,16 +177,7 @@ const DateTimeInput = ({
       promptLoginMessage();
     }
   };
-  if (!enable) {
-    return null;
-  }
-  if (pdf || isReadOnly(item)) {
-    return (
-      <TextView id={id} item={item} value={getPDFValue()}>
-        {children}
-      </TextView>
-    );
-  }
+
   return (
     <div className="page_refero__component page_refero__component_datetime" data-testid={`${getId(id)}-container`}>
       <ReferoLabel

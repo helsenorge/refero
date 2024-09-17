@@ -25,7 +25,7 @@ import {
   enterOpenChoiceText,
   removeOpenChoiceText,
 } from './utils';
-import { Mocked, vi } from 'vitest';
+import { Assertion, Mocked, vi } from 'vitest';
 import { fail } from 'assert';
 
 vi.mock('uuid');
@@ -271,7 +271,7 @@ function verifyAnswer(
   linkId: string,
   state: Form,
   path: Array<Path>,
-  test: (it: Matchers<QuestionnaireResponseItemAnswer[] | undefined | void, undefined>) => unknown
+  test: (it: Assertion<QuestionnaireResponseItemAnswer[] | undefined | void>) => unknown
 ) {
   const r = getResponseItem(linkId, state, path);
   if (!r) return fail();

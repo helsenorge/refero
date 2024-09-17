@@ -20,7 +20,7 @@ const resources = {
 
 describe('Date time', () => {
   describe('Render', () => {
-    it('Should render as text if props.pdf', () => {
+    it('Should render as text if props.pdf', async () => {
       const { queryByText } = createWrapper(q, { pdf: true });
       expect(queryByText('Ikke besvart')).toBeInTheDocument();
     });
@@ -254,29 +254,6 @@ describe('Date time', () => {
 
         expect(queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
       });
-      // it('Should remove error on change if form is submitted', async () => {
-      //   const questionnaire: Questionnaire = {
-      //     ...q,
-      //     item: q.item?.map(x => ({ ...x, required: true })),
-      //   };
-      //   const { getByText, queryByText, getByLabelText } = createWrapper(questionnaire);
-      //   await submitForm();
-      //   expect(getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
-
-      //   const hoursElement = await screen.findByTestId(/datetime-1/i);
-      //   const minutesElement = await screen.findByTestId(/datetime-2/i);
-      //   const hoursInput = hoursElement.querySelector('input');
-      //   const minutesInput = minutesElement.querySelector('input');
-
-      //     userEvent.type(getByLabelText(/Dato/i), '31.05.1994');
-      //     hoursInput && userEvent.type(hoursInput, '14');
-      //     minutesInput && userEvent.type(minutesInput, '00');
-      //     userEvent.tab();
-
-      //   waitFor(() => {
-      //     expect(queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
-      //   });
-      // });
       it('Should show error if date is invalid', async () => {
         const { getByLabelText, getByText } = createWrapper(q);
 
@@ -372,9 +349,7 @@ describe('Date time', () => {
           await userEvent.type(minutesInput, '90');
         }
         await submitForm();
-        await waitFor(() => {
-          expect(getByText(resources.dateError_time_invalid)).toBeInTheDocument();
-        });
+        expect(getByText(resources.dateError_time_invalid)).toBeInTheDocument();
       });
     });
   });
