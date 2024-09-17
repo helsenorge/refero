@@ -446,7 +446,7 @@ describe('Text', () => {
         const { getByText, queryByText, getByLabelText } = createWrapper(questionnaire);
         await userEvent.type(getByLabelText(/String/i), 'epostsdsdcom');
         await submitForm();
-        expect(getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
+        expect(getByText('Custom error')).toBeInTheDocument();
         await userEvent.clear(getByLabelText(/String/i));
         await userEvent.type(getByLabelText(/String/i), 'epost@test.com');
 
