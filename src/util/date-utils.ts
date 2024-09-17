@@ -315,7 +315,7 @@ export const validateMaxTime = (
   item: QuestionnaireItem
 ): true | string => {
   const maxTime = parseTimestringToDate(getMaxTime(item));
-  const timeToValidate = parseHoursAndMinutesToDate(`${hours}:${minutes}:00`);
+  const timeToValidate = parseHoursAndMinutesToDate(hours, minutes);
   if (timeToValidate && maxTime && timeToValidate > maxTime) {
     return resources?.dateError_time_invalid || '';
   }
