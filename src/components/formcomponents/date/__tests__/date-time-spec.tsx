@@ -58,7 +58,7 @@ describe('Date time', () => {
           repeats: false,
           initial: [
             {
-              valueDateTime: '1994-05-31T00:00:00+02:00',
+              valueDateTime: '1994-05-31T00:00:00+00:00',
             },
           ],
         })),

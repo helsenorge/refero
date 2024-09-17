@@ -40,7 +40,6 @@ import { useMinMaxDate } from './useMinMaxDate';
 import { useIsEnabled } from '@/hooks/useIsEnabled';
 
 export type Props = QuestionnaireComponentItemProps;
-initialize();
 
 const DateTimeInput = ({
   item,
@@ -54,6 +53,8 @@ const DateTimeInput = ({
   index,
   responseItems,
 }: Props): JSX.Element | null => {
+  initialize();
+
   const { promptLoginMessage, onAnswerChange } = useExternalRenderContext();
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
   const answer = useGetAnswer(responseItem, item);
