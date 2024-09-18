@@ -267,6 +267,8 @@ describe('QuestionnaireResponseAnswer shall reflect user input', () => {
   });
 });
 
+import { expect, Assertion } from 'vitest';
+
 function verifyAnswer(
   linkId: string,
   state: Form,
