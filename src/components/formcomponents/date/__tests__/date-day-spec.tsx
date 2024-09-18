@@ -17,6 +17,12 @@ const resources = {
 };
 
 describe('Date day', () => {
+  beforeEach(() => {
+    process.env.TZ = 'Europe/Oslo';
+  });
+  afterEach(() => {
+    delete process.env.TZ;
+  });
   describe('Render', () => {
     it('Should render as text if props.pdf', () => {
       const { queryByText } = createWrapper(q, { pdf: true });
