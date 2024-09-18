@@ -221,94 +221,101 @@ describe('onAnswerChange callback gets called and can request additional changes
 
     expect(container.querySelector('#item_6b-2')).toBeChecked();
   });
-
-  it('date gets updated', async () => {
-    const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
-      actionRequester.addDateAnswer('7a', '2024-08-14');
+  describe('date and time fields gets updated', () => {
+    beforeEach(() => {
+      process.env.TZ = 'Europe/Oslo';
     });
-    const { getByTestId } = wrapper(onChange, questionnaireWithAllItemTypes);
-    await clickByLabelText(/Boolean/i);
-
-    const dateElement = getByTestId(/datepicker-test/i);
-    const dateInput = dateElement.querySelector('input');
-
-    expect(dateInput).toHaveValue('14.08.2024');
-  });
-  it('date gets cleared', async () => {
-    const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
-      actionRequester.addDateAnswer('7a', '2024-08-14');
-      actionRequester.clearDateAnswer('7a');
+    afterEach(() => {
+      delete process.env.TZ;
     });
-    const { getByTestId } = wrapper(onChange, questionnaireWithAllItemTypes);
-    await clickByLabelText(/Boolean/i);
+    it('date gets updated', async () => {
+      const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
+        actionRequester.addDateAnswer('7a', '2024-08-14');
+      });
+      const { getByTestId } = wrapper(onChange, questionnaireWithAllItemTypes);
+      await clickByLabelText(/Boolean/i);
 
-    const dateElement = getByTestId(/datepicker-test/i);
-    const dateInput = dateElement.querySelector('input');
+      const dateElement = getByTestId(/datepicker-test/i);
+      const dateInput = dateElement.querySelector('input');
 
-    expect(dateInput).not.toHaveValue('14.08.2024');
-  });
-  it('time gets updated', async () => {
-    const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
-      actionRequester.addTimeAnswer('7b', '12:01:00');
+      expect(dateInput).toHaveValue('14.08.2024');
     });
-    const { container, getByTestId } = wrapper(onChange, questionnaireWithAllItemTypes);
-    await inputAnswer('1', 0.1, container);
+    it('date gets cleared', async () => {
+      const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
+        actionRequester.addDateAnswer('7a', '2024-08-14');
+        actionRequester.clearDateAnswer('7a');
+      });
+      const { getByTestId } = wrapper(onChange, questionnaireWithAllItemTypes);
+      await clickByLabelText(/Boolean/i);
 
-    const hoursElement = getByTestId(/time-1/i);
-    const hoursInput = hoursElement.querySelector('input');
-    const minutesElement = screen.getByTestId(/time-2/i);
-    const minutesInput = minutesElement.querySelector('input');
+      const dateElement = getByTestId(/datepicker-test/i);
+      const dateInput = dateElement.querySelector('input');
 
-    if (hoursInput) {
-      await userEvent.type(hoursInput, '12');
-    }
-    if (minutesInput) {
-      await userEvent.type(minutesInput, '01');
-    }
-
-    expect(hoursInput).toHaveValue(Number('12'));
-    expect(minutesInput).toHaveValue(Number('01'));
-  });
-  it('time gets cleared', async () => {
-    const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
-      actionRequester.addTimeAnswer('7b', '12:01');
-      actionRequester.clearTimeAnswer('7b');
+      expect(dateInput).not.toHaveValue('14.08.2024');
     });
-    const { container, getByTestId } = wrapper(onChange, questionnaireWithAllItemTypes);
-    await inputAnswer('1', 0.1, container);
+    it('time gets updated', async () => {
+      const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
+        actionRequester.addTimeAnswer('7b', '12:01:00');
+      });
+      const { container, getByTestId } = wrapper(onChange, questionnaireWithAllItemTypes);
+      await inputAnswer('1', 0.1, container);
 
-    const hoursElement = getByTestId(/time-1/i);
-    const hoursInput = hoursElement.querySelector('input');
-    const minutesElement = screen.getByTestId(/time-2/i);
-    const minutesInput = minutesElement.querySelector('input');
+      const hoursElement = getByTestId(/time-1/i);
+      const hoursInput = hoursElement.querySelector('input');
+      const minutesElement = screen.getByTestId(/time-2/i);
+      const minutesInput = minutesElement.querySelector('input');
 
-    expect(hoursInput).toHaveValue(null);
-    expect(minutesInput).toHaveValue(null);
-  });
-  it('dateTime gets updated', async () => {
-    const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
-      actionRequester.addDateTimeAnswer('7c', '2024-08-14T12:30:00+02:00');
+      if (hoursInput) {
+        await userEvent.type(hoursInput, '12');
+      }
+      if (minutesInput) {
+        await userEvent.type(minutesInput, '01');
+      }
+
+      expect(hoursInput).toHaveValue(Number('12'));
+      expect(minutesInput).toHaveValue(Number('01'));
     });
-    const { container, getByLabelText } = wrapper(onChange, questionnaireWithAllItemTypes);
+    it('time gets cleared', async () => {
+      const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
+        actionRequester.addTimeAnswer('7b', '12:01');
+        actionRequester.clearTimeAnswer('7b');
+      });
+      const { container, getByTestId } = wrapper(onChange, questionnaireWithAllItemTypes);
+      await inputAnswer('1', 0.1, container);
 
-    await inputAnswer('1', 0.1, container);
-    const date = getByLabelText(/DateTime/i);
+      const hoursElement = getByTestId(/time-1/i);
+      const hoursInput = hoursElement.querySelector('input');
+      const minutesElement = screen.getByTestId(/time-2/i);
+      const minutesInput = minutesElement.querySelector('input');
 
-    expect(date).toHaveValue('14.08.2024');
-  });
-  //DateTime component does not clear the value of the input when the new date set from actionRequester is undefined.
-  //The date gets cleared from the QuestionnaireResponse and answer is empty
-  it('dateTime gets cleared', async () => {
-    const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
-      actionRequester.addDateTimeAnswer('7c', '1994-05-31T12:30:00+02:00');
-      actionRequester.clearDateTimeAnswer('7c');
+      expect(hoursInput).toHaveValue(null);
+      expect(minutesInput).toHaveValue(null);
     });
-    const { container, getByLabelText } = wrapper(onChange, questionnaireWithAllItemTypes);
+    it('dateTime gets updated', async () => {
+      const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
+        actionRequester.addDateTimeAnswer('7c', '2024-08-14T12:30:00+02:00');
+      });
+      const { container, getByLabelText } = wrapper(onChange, questionnaireWithAllItemTypes);
 
-    await inputAnswer('1', 0.1, container);
-    const date = getByLabelText(/DateTime/i);
+      await inputAnswer('1', 0.1, container);
+      const date = getByLabelText(/DateTime/i);
 
-    expect(date).toHaveValue('');
+      expect(date).toHaveValue('14.08.2024');
+    });
+    //DateTime component does not clear the value of the input when the new date set from actionRequester is undefined.
+    //The date gets cleared from the QuestionnaireResponse and answer is empty
+    it('dateTime gets cleared', async () => {
+      const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
+        actionRequester.addDateTimeAnswer('7c', '1994-05-31T12:30:00+02:00');
+        actionRequester.clearDateTimeAnswer('7c');
+      });
+      const { container, getByLabelText } = wrapper(onChange, questionnaireWithAllItemTypes);
+
+      await inputAnswer('1', 0.1, container);
+      const date = getByLabelText(/DateTime/i);
+
+      expect(date).toHaveValue('');
+    });
   });
 
   it('string gets updated', async () => {
