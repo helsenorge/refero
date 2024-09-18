@@ -11,8 +11,8 @@ import {
   ValueSet,
 } from 'fhir/r4';
 import { Provider } from 'react-redux';
-import { Store, legacy_createStore as createStore, applyMiddleware } from 'redux';
-import thunk from 'redux-thunk';
+import { legacy_createStore as createStore, applyMiddleware } from 'redux';
+import { thunk } from 'redux-thunk';
 
 import LanguageLocales from '@helsenorge/core-utils/constants/languages';
 
@@ -113,7 +113,7 @@ const MimeTypes = {
 };
 
 const FormFillerPreview = (props: Props): JSX.Element => {
-  const store: Store = createStore(rootReducer, composeWithDevTools(applyMiddleware(thunk)));
+  const store = createStore(rootReducer, composeWithDevTools(applyMiddleware(thunk)));
 
   const questionnaireForPreview = JSON.parse(JSON.stringify(skjema ?? {}, emptyPropertyReplacer)) as Bundle<Questionnaire> | Questionnaire;
   const [questionnaireResponse, setQuestionnaireResponse] = useState<QuestionnaireResponse>();

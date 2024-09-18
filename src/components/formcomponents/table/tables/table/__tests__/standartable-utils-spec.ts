@@ -19,6 +19,7 @@ import { QuestionnaireItemWithAnswers } from '../../interface';
 import { QuestionnaireResponseItem, QuestionnaireItem, QuestionnaireResponse, Resource } from 'fhir/r4';
 import { Mock, vi } from 'vitest';
 import { IStandardTableColumn } from '../interface';
+import { Options } from '@/types/formTypes/radioGroupOptions';
 vi.mock('../../utils');
 vi.mock('../../../../../../util/choice');
 

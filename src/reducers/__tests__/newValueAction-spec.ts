@@ -267,11 +267,13 @@ describe('QuestionnaireResponseAnswer shall reflect user input', () => {
   });
 });
 
+import { expect, Assertion } from 'vitest';
+
 function verifyAnswer(
   linkId: string,
   state: Form,
   path: Array<Path>,
-  test: (it: Matchers<QuestionnaireResponseItemAnswer[] | undefined | void, undefined>) => unknown
+  test: (it: Assertion<QuestionnaireResponseItemAnswer[] | undefined | void>) => unknown
 ) {
   const r = getResponseItem(linkId, state, path);
   if (!r) return fail();
