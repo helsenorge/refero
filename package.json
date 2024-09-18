@@ -122,7 +122,8 @@
     "@helsenorge/designsystem-react": "^8.0.0",
     "@helsenorge/file-upload": "^32.0.0",
     "@helsenorge/autosuggest": "^32.0.0",
-    "redux-thunk": "^2.4.2"
+    "redux-thunk": "^2.4.2",
+    "mockdate": "^3.0.5"
   },
   "dependencies": {
     "@helsenorge/core-utils": "^32.0.0",
