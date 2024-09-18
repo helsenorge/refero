@@ -7,6 +7,7 @@ import { clickButtonTimes, submitForm } from '../../../../../test/selectors';
 import { getResources } from '../../../../../preview/resources/referoResources';
 import { vi } from 'vitest';
 import { screen } from '@testing-library/dom';
+import MockDate from 'mockdate';
 
 const resources = {
   ...getResources(''),
@@ -220,6 +221,7 @@ describe('Date time', () => {
       expect(minutesInput).toHaveValue(Number('00'));
     });
     it('Should call onChange with correct value when date field changes', async () => {
+      MockDate.set('1994-05-31T00:00:00+02:00');
       const onChange = vi.fn();
       const { getByLabelText } = createWrapper(q, { onChange });
       expect(getByLabelText(/Dato/i)).toBeInTheDocument();
@@ -229,6 +231,7 @@ describe('Date time', () => {
       };
       expect(onChange).toHaveBeenCalledTimes(10);
       expect(onChange).toHaveBeenCalledWith(expect.any(Object), expectedAnswer, expect.any(Object), expect.any(Object));
+      MockDate.reset();
     });
   });
   describe('Validation', () => {
