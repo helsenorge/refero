@@ -44,7 +44,7 @@ describe('Step-view', () => {
 
   // This test only works with 3-step questionnaires
   it('Buttons in step-view: Should call right functions and display correct texts in step-view', async () => {
-    const { getByText, queryByText, queryAllByText, debug } = createWrapper(StepViewQuestionnaire);
+    const { getByText, queryByText, queryAllByText } = createWrapper(StepViewQuestionnaire);
 
     // Step 1
     expect(getByText(resources.nextStep)).toBeInTheDocument();
@@ -64,7 +64,6 @@ describe('Step-view', () => {
 
     await typeByLabelText(/String/i, 'epost@test.com');
     await submitForm();
-    debug(undefined, 20000);
     // Step 3
     await typeByLabelText(/Hvor mange liter blod/i, '2.23');
     await submitForm();

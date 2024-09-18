@@ -65,39 +65,47 @@ describe('Copy value from item', () => {
     await clickByLabelText(`${sender.text}`);
     await waitFor(async () => expect(getByTestId(/item_2-label/i)).toBeInTheDocument());
   });
-  it('should copy DATE value', async () => {
-    const sender = createSenderItem(ItemType.DATE);
-    const reciever = createRecieverItem(ItemType.DATE);
-    const q = createQuestionnaire(sender, reciever);
-    const { getByLabelText, queryByTestId, getByTestId } = createWrapper(q);
-    expect(queryByTestId(/item_2/i)).not.toBeInTheDocument();
-    const labelRegex = new RegExp(`${sender.text}`, 'i');
-    await userEvent.type(getByLabelText(labelRegex), '12.12.2024');
-    await waitFor(async () => expect(getByTestId(/item_2/i)).toBeInTheDocument());
-    await waitFor(async () => expect(getByTestId(/item_2/i)).toHaveTextContent('12. desember 2024'));
-  });
-  it('should copy DATETIME value', async () => {
-    const sender = createSenderItem(ItemType.DATETIME);
-    const reciever = createRecieverItem(ItemType.DATETIME);
-    const q = createQuestionnaire(sender, reciever);
-    const { getByLabelText, queryByTestId, getByTestId } = createWrapper(q);
-    expect(queryByTestId(/item_2/i)).not.toBeInTheDocument();
-    const labelRegex = new RegExp(`${sender.text}`, 'i');
-    await userEvent.type(getByLabelText(labelRegex), '12.12.2024');
+  describe('should copy DATE and TIME values', () => {
+    beforeEach(() => {
+      process.env.TZ = 'Europe/Oslo';
+    });
+    afterEach(() => {
+      delete process.env.TZ;
+    });
+    it('should copy DATE value', async () => {
+      const sender = createSenderItem(ItemType.DATE);
+      const reciever = createRecieverItem(ItemType.DATE);
+      const q = createQuestionnaire(sender, reciever);
+      const { getByLabelText, queryByTestId, getByTestId } = createWrapper(q);
+      expect(queryByTestId(/item_2/i)).not.toBeInTheDocument();
+      const labelRegex = new RegExp(`${sender.text}`, 'i');
+      await userEvent.type(getByLabelText(labelRegex), '12.12.2024');
+      await waitFor(async () => expect(getByTestId(/item_2/i)).toBeInTheDocument());
+      await waitFor(async () => expect(getByTestId(/item_2/i)).toHaveTextContent('12. desember 2024'));
+    });
+    it('should copy DATETIME value', async () => {
+      const sender = createSenderItem(ItemType.DATETIME);
+      const reciever = createRecieverItem(ItemType.DATETIME);
+      const q = createQuestionnaire(sender, reciever);
+      const { getByLabelText, queryByTestId, getByTestId } = createWrapper(q);
+      expect(queryByTestId(/item_2/i)).not.toBeInTheDocument();
+      const labelRegex = new RegExp(`${sender.text}`, 'i');
+      await userEvent.type(getByLabelText(labelRegex), '12.12.2024');
 
-    await waitFor(async () => expect(getByTestId(/item_2/i)).toBeInTheDocument());
-    await waitFor(async () => expect(getByTestId(/item_2/i)).toHaveTextContent('12.12.2024 00:00'));
-  });
-  it('should copy TIME value', async () => {
-    const sender = createSenderItem(ItemType.TIME);
-    const reciever = createRecieverItem(ItemType.TIME);
-    const q = createQuestionnaire(sender, reciever);
-    const { getByLabelText, queryByTestId, getByTestId } = createWrapper(q);
-    expect(queryByTestId(/item_2/i)).not.toBeInTheDocument();
-    const labelRegex = new RegExp(`${sender.text}`, 'i');
-    await userEvent.type(getByLabelText(labelRegex), '12');
-    await waitFor(async () => expect(getByTestId(/item_2/i)).toBeInTheDocument());
-    await waitFor(async () => expect(getByTestId(/item_2/i)).toHaveTextContent('12:00'));
+      await waitFor(async () => expect(getByTestId(/item_2/i)).toBeInTheDocument());
+      await waitFor(async () => expect(getByTestId(/item_2/i)).toHaveTextContent('12.12.2024 00:00'));
+    });
+    it('should copy TIME value', async () => {
+      const sender = createSenderItem(ItemType.TIME);
+      const reciever = createRecieverItem(ItemType.TIME);
+      const q = createQuestionnaire(sender, reciever);
+      const { getByLabelText, queryByTestId, getByTestId } = createWrapper(q);
+      expect(queryByTestId(/item_2/i)).not.toBeInTheDocument();
+      const labelRegex = new RegExp(`${sender.text}`, 'i');
+      await userEvent.type(getByLabelText(labelRegex), '12');
+      await waitFor(async () => expect(getByTestId(/item_2/i)).toBeInTheDocument());
+      await waitFor(async () => expect(getByTestId(/item_2/i)).toHaveTextContent('12:00'));
+    });
   });
   it('should copy QUANTITY value', async () => {
     const sender = createSenderItem(ItemType.QUANTITY, {

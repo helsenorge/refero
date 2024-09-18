@@ -124,7 +124,7 @@ describe('Attachment', () => {
       const uploadAttachment = (files: File[], onSuccess: (attachment: Attachment) => void) => {
         onSuccess(attchmt);
       };
-      const { getByLabelText, getByTestId, debug } = createWrapper(questionnaire, { uploadAttachment, onChange });
+      const { getByLabelText, getByTestId } = createWrapper(questionnaire, { uploadAttachment, onChange });
 
       const inputElement = getByLabelText(/Attachment/i);
       expect(inputElement).toBeInTheDocument();
@@ -142,7 +142,6 @@ describe('Attachment', () => {
       const expectedAnswer: QuestionnaireResponseItemAnswer = {
         valueAttachment: attchmt,
       };
-      debug(undefined, 50000);
       await waitFor(() => expect(onChange).toHaveBeenCalledTimes(1000));
       await waitFor(() =>
         expect(onChange).toHaveBeenCalledWith(expect.any(Object), expectedAnswer, expect.any(Object), expect.any(Object))

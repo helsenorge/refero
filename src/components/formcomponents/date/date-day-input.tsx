@@ -28,6 +28,7 @@ import RenderHelpElement from '../help-button/RenderHelpElement';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 import { useMinMaxDate } from './useMinMaxDate';
+import { initialize } from '@/util/date-fns-utils';
 
 type DateDayInputProps = QuestionnaireComponentItemProps & {
   locale: LanguageLocales.ENGLISH | LanguageLocales.NORWEGIAN;
@@ -43,6 +44,8 @@ export const DateDayInput = ({
   onDateValueChange,
   children,
 }: DateDayInputProps): JSX.Element | null => {
+  initialize();
+
   const [isHelpVisible, setIsHelpVisible] = useState(false);
   const { formState, getFieldState } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);

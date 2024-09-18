@@ -25,7 +25,7 @@ import {
   enterOpenChoiceText,
   removeOpenChoiceText,
 } from './utils';
-import { Mocked, vi } from 'vitest';
+import { Assertion, Mocked, vi } from 'vitest';
 import { fail } from 'assert';
 
 vi.mock('uuid');
