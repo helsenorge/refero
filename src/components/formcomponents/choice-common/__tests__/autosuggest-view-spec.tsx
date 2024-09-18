@@ -1,6 +1,6 @@
 import { Questionnaire, QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItemAnswer, ValueSet } from 'fhir/r4';
 
-import { waitFor, userEvent, renderRefero, act, findByRole } from '@test/test-utils.tsx';
+import { waitFor, userEvent, renderRefero, findByRole } from '@test/test-utils.tsx';
 import { q } from './__data__/index';
 import { generateQuestionnaireResponse } from '../../../../actions/generateQuestionnaireResponse';
 import valueSet from '../../../../constants/valuesets';

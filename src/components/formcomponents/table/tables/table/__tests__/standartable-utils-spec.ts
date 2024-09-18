@@ -17,7 +17,8 @@ import * as choiceUtils from '../../../../../../util/choice';
 import * as tableUtils from '../../utils';
 import { QuestionnaireItemWithAnswers } from '../../interface';
 import { QuestionnaireResponseItem, QuestionnaireItem, QuestionnaireResponse, Resource } from 'fhir/r4';
-import { vi } from 'vitest';
+import { Mock, vi } from 'vitest';
+import { IStandardTableColumn } from '../interface';
 vi.mock('../../utils');
 vi.mock('../../../../../../util/choice');
 
@@ -54,12 +55,13 @@ describe('emptyTableWithId', () => {
 
 describe('createTableColumn', () => {
   it('should create a table column with the given value, index, and id', () => {
-    const column = createTableColumn('value', 0, 'columnId');
+    const column = createTableColumn('value', 0, 'columnId', 'boolean');
     expect(column).toEqual({
+      type: 'boolean',
       value: 'value',
       index: 0,
       id: 'columnId',
-    });
+    } as IStandardTableColumn);
   });
 });
 
@@ -138,13 +140,13 @@ describe('createBodyRows', () => {
   });
 
   it('should create body rows from the given questionnaire items, response items, extra column flag, and choice values', () => {
-    (tableUtils.getEnabledQuestionnaireItemsWithAnswers as vi.Mock).mockImplementation((): QuestionnaireResponseItem[] => {
+    (tableUtils.getEnabledQuestionnaireItemsWithAnswers as Mock).mockImplementation((): QuestionnaireResponseItem[] => {
       return [
         { linkId: '1', answer: [{ valueCoding: { code: '1' } }] },
         { linkId: '2', answer: [{ valueCoding: { code: '2' } }] },
       ] as QuestionnaireResponseItem[];
     });
-    (tableUtils.transformAnswersToListOfStrings as vi.Mock).mockImplementation(() => {
+    (tableUtils.transformAnswersToListOfStrings as Mock).mockImplementation(() => {
       return ['A', 'B'];
     });
     const items: QuestionnaireItem[] = [
@@ -191,7 +193,7 @@ describe('createBodyRows', () => {
   });
 
   it('should create body rows without an extra column if the flag is false', () => {
-    (tableUtils.getEnabledQuestionnaireItemsWithAnswers as vi.Mock).mockImplementation((): QuestionnaireResponseItem[] => {
+    (tableUtils.getEnabledQuestionnaireItemsWithAnswers as Mock).mockImplementation((): QuestionnaireResponseItem[] => {
       return [
         { linkId: '1', answer: [{ valueCoding: { code: '1' } }] },
         { linkId: '2', answer: [{ valueCoding: { code: '2' } }] },
@@ -271,7 +273,7 @@ describe('createRowsFromAnswersCodes', () => {
     vi.restoreAllMocks();
   });
   it('should create rows from the given response item and choice values', () => {
-    (choiceUtils.getSystemForItem as vi.Mock).mockImplementation(() => {
+    (choiceUtils.getSystemForItem as Mock).mockImplementation(() => {
       return 'sys';
     });
     const item: QuestionnaireItemWithAnswers = {
@@ -317,7 +319,7 @@ describe('createColumnsFromAnswers', () => {
     vi.restoreAllMocks();
   });
   it('should create columns from the given response item and choice values', () => {
-    (tableUtils.transformAnswersToListOfStrings as vi.Mock).mockImplementation(() => {
+    (tableUtils.transformAnswersToListOfStrings as Mock).mockImplementation(() => {
       return ['A', 'B'];
     });
     const item: QuestionnaireItemWithAnswers = {
@@ -351,7 +353,7 @@ describe('createColumnsFromAnswers', () => {
   });
 
   it('should return an empty array if no choice values are provided', () => {
-    (tableUtils.transformAnswersToListOfStrings as vi.Mock).mockImplementation(() => {
+    (tableUtils.transformAnswersToListOfStrings as Mock).mockImplementation(() => {
       return [];
     });
     const item: QuestionnaireItemWithAnswers = {
@@ -420,7 +422,7 @@ describe('getStandardTableObject', () => {
   });
 
   it('should return a table with the response items id, header row, and body rows', () => {
-    (tableUtils.getEnabledQuestionnaireItemsWithAnswers as vi.Mock).mockImplementation(() => {
+    (tableUtils.getEnabledQuestionnaireItemsWithAnswers as Mock).mockImplementation(() => {
       return [
         { linkId: '1', text: 'Question 1', answer: [{ valueCoding: { code: '1' } }] },
         {
@@ -429,10 +431,10 @@ describe('getStandardTableObject', () => {
         },
       ] as QuestionnaireResponseItem[];
     });
-    (tableUtils.transformAnswersToListOfStrings as vi.Mock).mockImplementation(() => {
+    (tableUtils.transformAnswersToListOfStrings as Mock).mockImplementation(() => {
       return ['string'];
     });
-    (choiceUtils.getContainedOptions as vi.Mock).mockImplementation((): Options[] => {
+    (choiceUtils.getContainedOptions as Mock).mockImplementation((): Options[] => {
       return [
         { type: '1', label: 'Option A' },
         { type: '2', label: 'Option B' },
@@ -550,7 +552,7 @@ describe('needsExtraColumn', () => {
     vi.restoreAllMocks();
   });
   it('should return true if any answer has a non-empty last column value', () => {
-    (tableUtils.getEnabledQuestionnaireItemsWithAnswers as vi.Mock).mockImplementation(() => {
+    (tableUtils.getEnabledQuestionnaireItemsWithAnswers as Mock).mockImplementation(() => {
       return [
         { linkId: '1', text: 'Question 1', answer: [{ valueCoding: { code: 'A' } }] },
         {
@@ -560,7 +562,7 @@ describe('needsExtraColumn', () => {
         },
       ] as QuestionnaireResponseItem[];
     });
-    (tableUtils.transformAnswersToListOfStrings as vi.Mock).mockImplementation(() => {
+    (tableUtils.transformAnswersToListOfStrings as Mock).mockImplementation(() => {
       return ['string'];
     });
     const items: QuestionnaireItem[] = [
@@ -586,7 +588,7 @@ describe('needsExtraColumn', () => {
   });
 
   it('should return false if items have no children', () => {
-    (tableUtils.getEnabledQuestionnaireItemsWithAnswers as vi.Mock).mockImplementation(() => {
+    (tableUtils.getEnabledQuestionnaireItemsWithAnswers as Mock).mockImplementation(() => {
       return [
         { linkId: '1', text: 'Question 1', answer: [{ valueCoding: { code: 'A' } }] },
         {
@@ -596,7 +598,7 @@ describe('needsExtraColumn', () => {
         },
       ] as QuestionnaireResponseItem[];
     });
-    (tableUtils.transformAnswersToListOfStrings as vi.Mock).mockImplementation(() => {
+    (tableUtils.transformAnswersToListOfStrings as Mock).mockImplementation(() => {
       return [];
     });
     const items: QuestionnaireItem[] = [

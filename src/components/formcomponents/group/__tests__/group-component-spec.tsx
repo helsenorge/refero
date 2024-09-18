@@ -1,5 +1,5 @@
 import '../../../../util/__tests__/defineFetch';
-import { act, renderRefero, userEvent } from '@test/test-utils.tsx';
+import { renderRefero, userEvent } from '@test/test-utils.tsx';
 import q from './__data__';
 import Constants from '../../../../constants';
 import { Questionnaire } from 'fhir/r4';

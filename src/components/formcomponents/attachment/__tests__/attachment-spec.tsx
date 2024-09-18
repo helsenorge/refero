@@ -97,7 +97,7 @@ describe('Attachment', () => {
         ...q,
       };
       const upload = vi.fn();
-      const { getByLabelText, getByTestId, getByText } = createWrapper(questionnaire, {
+      const { getByLabelText, getByText } = createWrapper(questionnaire, {
         uploadAttachment: upload,
         attachmentValidTypes: ['image/png'],
       });
@@ -120,10 +120,11 @@ describe('Attachment', () => {
       };
       const onChange = vi.fn();
       const attchmt: Attachment = { url: 'test' };
+      //@ts-expect-error - mock function
       const uploadAttachment = (files: File[], onSuccess: (attachment: Attachment) => void) => {
         onSuccess(attchmt);
       };
-      const { getByLabelText, getByTestId, debug } = createWrapper(questionnaire, { uploadAttachment, onChange });
+      const { getByLabelText, getByTestId } = createWrapper(questionnaire, { uploadAttachment, onChange });
 
       const inputElement = getByLabelText(/Attachment/i);
       expect(inputElement).toBeInTheDocument();
@@ -141,7 +142,6 @@ describe('Attachment', () => {
       const expectedAnswer: QuestionnaireResponseItemAnswer = {
         valueAttachment: attchmt,
       };
-      debug(undefined, 50000);
       await waitFor(() => expect(onChange).toHaveBeenCalledTimes(1000));
       await waitFor(() =>
         expect(onChange).toHaveBeenCalledWith(expect.any(Object), expectedAnswer, expect.any(Object), expect.any(Object))
@@ -153,6 +153,7 @@ describe('Attachment', () => {
       };
       const onChange = vi.fn();
       const attchmt: Attachment = { url: 'test' };
+      //@ts-expect-error - mock function
       const uploadAttachment = (files: File[], onSuccess: (attachment: Attachment) => void) => {
         onSuccess(attchmt);
       };

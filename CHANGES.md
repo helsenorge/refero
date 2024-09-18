@@ -1,3 +1,10 @@
+## 16.0.0-beta.29
+
+- Update to date components
+- Update to date-time components
+- Update to time components
+- Navigator bug fixed
+
 ## 16.0.0-beta.28
 
 - Fix referolabel

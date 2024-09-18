@@ -79,7 +79,9 @@ const fetchValueSetFn = (
   _searchString: string,
   _item: QuestionnaireItem,
   successCallback: (valueSet: ValueSet) => void,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   _errorCallback: (error: string) => void
+  // eslint-disable-next-line
 ): any => {
   successCallback({
     resourceType: 'ValueSet',
@@ -109,7 +111,8 @@ const MimeTypes = {
   PDF: 'application/pdf',
   JSON: 'application/json',
 };
-const FormFillerPreview = ({ showFormFiller }: Props): JSX.Element => {
+
+const FormFillerPreview = (props: Props): JSX.Element => {
   const store: Store = createStore(rootReducer, composeWithDevTools(applyMiddleware(thunk)));
 
   const questionnaireForPreview = JSON.parse(JSON.stringify(skjema ?? {}, emptyPropertyReplacer)) as Bundle<Questionnaire> | Questionnaire;
@@ -120,10 +123,10 @@ const FormFillerPreview = ({ showFormFiller }: Props): JSX.Element => {
     console.log(JSON.stringify(questionnaireResponse));
   };
   const [lang, setLang] = useState<number>(0);
-  const [stepIndex, setStepIndex] = useState<number>(0);
   const uploadAttachment = (file: File[], onSuccess: (attachment: Attachment) => void): void => {
     onSuccess({ data: file[0].name, contentType: file[0].type, url: 'url' });
   };
+  //@ts-expect-error error
   const onDeleteAttachment = (fileId: string, onSuccess: () => void): void => {
     onSuccess();
   };
@@ -131,10 +134,19 @@ const FormFillerPreview = ({ showFormFiller }: Props): JSX.Element => {
     // eslint-disable-next-line no-console
     console.log(fileId);
   };
+
   const onChange = (
+    //@ts-expect-error error
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     item: QuestionnaireItem,
+    //@ts-expect-error error
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     answer: QuestionnaireResponseItemAnswer,
+    //@ts-expect-error error
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     actionRequester: IActionRequester,
+    //@ts-expect-error error
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     questionnaireInspector: IQuestionnaireInspector
   ): void => {
     // eslint-disable-next-line no-console

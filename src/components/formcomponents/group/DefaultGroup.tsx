@@ -4,7 +4,7 @@ import GroupHeader from './GroupHeader';
 import { getClassNames, getHeaderText } from './helpers';
 import AnchorLink from '@helsenorge/designsystem-react/components/AnchorLink';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
-import styles from './defaultGroup.module.css';
+import styles from './group.module.css';
 import { Dispatch } from 'react';
 
 import { useExternalRenderContext } from '@/context/externalRenderContext';

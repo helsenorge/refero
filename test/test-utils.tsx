@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { ReactElement } from 'react';
+import React, { ReactElement, ReactNode } from 'react';
 
 import { render, RenderOptions, RenderResult } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
@@ -50,7 +50,7 @@ const AllTheProviders = ({
   return (
     <Provider store={store}>
       <ExternalRenderProviderWrapper props={referoProps}>
-        <AttachmentProvider props={referoProps}>
+        <AttachmentProvider {...referoProps}>
           <FormWrapper defaultValues={defaultValues}>{children}</FormWrapper>
         </AttachmentProvider>
       </ExternalRenderProviderWrapper>
@@ -99,16 +99,24 @@ interface CustomRenderOptions extends Omit<RenderOptions, 'queries'> {
 }
 const renderWithRedux = (
   ui: React.ReactElement,
-  { initialState, store = createStore(rootReducer, initialState, applyMiddleware(thunk)), ...renderOptions }: CustomRenderOptions = {}
+  {
+    initialState,
+    store = createStore(rootReducer, initialState as GlobalState, applyMiddleware(thunk)),
+    ...renderOptions
+  }: CustomRenderOptions = {}
 ) => {
-  const Wrapper: React.FC = ({ children }) => <Provider store={store}>{children}</Provider>;
+  const Wrapper = ({ children }: { children: ReactNode }) => <Provider store={store}>{children}</Provider>;
   return { ...render(ui, { wrapper: Wrapper, ...renderOptions }), store };
 };
 const renderWithReduxAndHookFormMock = (
   ui: React.ReactElement,
-  { initialState, store = createStore(rootReducer, initialState, applyMiddleware(thunk)), ...renderOptions }: CustomRenderOptions = {}
+  {
+    initialState,
+    store = createStore(rootReducer, initialState as GlobalState, applyMiddleware(thunk)),
+    ...renderOptions
+  }: CustomRenderOptions = {}
 ) => {
-  const Wrapper: React.FC = ({ children }) => (
+  const Wrapper = ({ children }: { children: ReactNode }) => (
     <Provider store={store}>
       <FormWrapper defaultValues={{}}>{children}</FormWrapper>
     </Provider>
