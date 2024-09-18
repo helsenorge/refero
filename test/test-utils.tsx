@@ -7,9 +7,9 @@ import userEvent from '@testing-library/user-event';
 import { Questionnaire } from 'fhir/r4';
 import { FormProvider, useForm } from 'react-hook-form';
 import { Provider } from 'react-redux';
-import { applyMiddleware, createStore, Store } from 'redux';
+import { Action, applyMiddleware, legacy_createStore as createStore, Store } from 'redux';
 import configureMockStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
+import { thunk, ThunkDispatch } from 'redux-thunk';
 
 import { getResources } from '../preview/resources/referoResources';
 import { generateQuestionnaireResponse } from '../src/actions/generateQuestionnaireResponse';
@@ -20,6 +20,7 @@ import { Resources } from '../src/util/resources';
 import { createIntitialFormValues, DefaultValues } from '../src/validation/defaultFormValues';
 import { ExternalRenderProvider } from '@/context/externalRenderContext';
 import { AttachmentProvider } from '@/context/AttachmentContext';
+import { FormAction, NewValueAction } from '@/index';
 
 const mockStore = configureMockStore<Partial<GlobalState>>([thunk]);
 
@@ -38,13 +39,13 @@ const AllTheProviders = ({
   children,
   initialState = {},
   defaultValues = {},
-  store = mockStore(initialState),
+  store,
   referoProps,
 }: {
   children: React.ReactNode;
   initialState?: Partial<GlobalState>;
   defaultValues?: any;
-  store?: Store<any>;
+  store: Store<GlobalState, NewValueAction | FormAction, unknown> & { dispatch: ThunkDispatch<any, undefined, Action<any>> };
   referoProps?: Partial<ReferoProps>;
 }) => {
   return (
@@ -60,8 +61,8 @@ const AllTheProviders = ({
 
 const customRender = (
   ui: ReactElement,
-  options?: Omit<RenderOptions, 'wrapper'> & { initialState?: Partial<GlobalState> } & { defaultValues?: any } & {
-    store?: Store<any>;
+  options: Omit<RenderOptions, 'wrapper'> & { initialState?: Partial<GlobalState> } & { defaultValues?: any } & {
+    store: Store<GlobalState, NewValueAction | FormAction, unknown> & { dispatch: ThunkDispatch<any, undefined, Action<any>> };
   } & { referoProps?: Partial<ReferoProps> }
 ) => {
   const { initialState, defaultValues, store, referoProps, ...renderOptions } = options || {};
@@ -77,9 +78,12 @@ const customRender = (
 const customRenderMockStore = (
   ui: ReactElement,
   options?: Omit<RenderOptions, 'wrapper'> & { initialState?: Partial<GlobalState> } & { defaultValues?: any } & {
-    store?: Store<any>;
+    store?: Store<GlobalState, NewValueAction | FormAction, unknown> & { dispatch: ThunkDispatch<any, undefined, Action<any>> };
   }
-): { renderResult: RenderResult; store: Store<any> } => {
+): {
+  renderResult: RenderResult;
+  store?: Store<GlobalState, NewValueAction | FormAction, unknown> & { dispatch: ThunkDispatch<any, undefined, Action<any>> };
+} => {
   const { initialState, defaultValues, store = mockStore(initialState || {}), ...renderOptions } = options || {};
   return {
     renderResult: render(ui, {
@@ -95,7 +99,7 @@ const customRenderMockStore = (
 };
 interface CustomRenderOptions extends Omit<RenderOptions, 'queries'> {
   initialState?: Partial<GlobalState>;
-  store?: Store<any>;
+  store?: Store<GlobalState, NewValueAction | FormAction, unknown> & { dispatch: ThunkDispatch<any, undefined, Action<any>> };
 }
 const renderWithRedux = (
   ui: React.ReactElement,
