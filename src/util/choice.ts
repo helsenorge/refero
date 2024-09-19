@@ -65,13 +65,18 @@ export function getOptions(
   return options;
 }
 
+function getValueSet(answerValueSet: QuestionnaireItem['answerValueSet'], containedResources?: Resource[]): string | undefined {
+  const id = answerValueSet?.replace('#', '');
+  const resource = getContainedResource(id, containedResources);
+
+  if (resource && resource.compose) {
+    return resource.compose.include[0].system;
+  }
+}
+
 export function getSystem(item: QuestionnaireItem, code: string, containedResources?: Resource[]): string | undefined {
   if (item.answerValueSet && item.answerValueSet.startsWith('#')) {
-    const id: string = item.answerValueSet.replace('#', '');
-    const resource = getContainedResource(id, containedResources);
-    if (resource && resource.compose) {
-      return resource.compose.include[0].system;
-    }
+    return getValueSet(item.answerValueSet, containedResources);
   } else if (item.answerOption && code) {
     const matchingCode = item.answerOption.filter(x => x.valueCoding && x.valueCoding.code === code);
     return matchingCode.length > 0 ? matchingCode[0].valueCoding?.system : undefined;
@@ -81,12 +86,7 @@ export function getSystem(item: QuestionnaireItem, code: string, containedResour
 
 export function getSystemForItem(item: QuestionnaireItem, containedResources?: Resource[]): string | undefined {
   if (item.answerValueSet && item.answerValueSet.startsWith('#')) {
-    const id: string = item.answerValueSet.replace('#', '');
-    const resource = getContainedResource(id, containedResources);
-
-    if (resource && resource.compose) {
-      return resource.compose.include[0].system;
-    }
+    return getValueSet(item.answerValueSet, containedResources);
   } else if (item.answerOption) {
     const foundOption = item.answerOption.find(option => option.valueCoding?.system);
     return foundOption?.valueCoding?.system;
@@ -94,7 +94,7 @@ export function getSystemForItem(item: QuestionnaireItem, containedResources?: R
   return undefined;
 }
 
-export function getDisplay(options: Array<Options> | undefined, value: string | undefined): string | undefined {
+export function getDisplay(options?: Options[], value?: string): string | undefined {
   if (!options || options.length === 0) {
     return undefined;
   }
@@ -396,7 +396,7 @@ function createRadiogroupOption(type: string, label: string, disabled: boolean):
   };
 }
 
-function getContainedResource(id: string, containedResources?: Resource[]): ValueSet | undefined {
+function getContainedResource(id?: string, containedResources?: Resource[]): ValueSet | undefined {
   if (!containedResources) {
     return undefined;
   }
