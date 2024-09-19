@@ -1,3 +1,7 @@
+## 16.0.0-beta.31
+
+- update peerdependencies to be "nicer"
+
 ## 16.0.0-beta.30
 
 - Fix an issue with enableWhen and choice components
