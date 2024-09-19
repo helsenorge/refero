@@ -1,3 +1,8 @@
+## 16.0.0-beta.30
+
+- Fix an issue with enableWhen and choice components
+- Upgrade redux, react-redux and redux-thunk to latest versions
+
 ## 16.0.0-beta.29
 
 - Update to date components
