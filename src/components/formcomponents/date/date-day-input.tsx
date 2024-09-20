@@ -22,7 +22,7 @@ import {
   validateMaxDate,
   validateMinDate,
 } from '@/util/date-utils';
-import { QuestionnaireComponentItemProps } from '@/components/GenerateQuestionnaireComponents';
+import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import RenderHelpButton from '../help-button/RenderHelpButton';
 import RenderHelpElement from '../help-button/RenderHelpElement';
 import { useGetAnswer } from '@/hooks/useGetAnswer';

@@ -9,7 +9,7 @@ import { Dispatch } from 'react';
 
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
-import { QuestionnaireComponentItemProps } from '@/components/GenerateQuestionnaireComponents';
+import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { useSelector } from 'react-redux';
 import { GlobalState } from '@/reducers';
 import { getFormDefinition } from '@/reducers/form';

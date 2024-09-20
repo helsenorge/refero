@@ -1,6 +1,6 @@
-import { FocusEvent } from 'react';
+import { FocusEvent, useCallback, useMemo } from 'react';
 
-import { QuestionnaireItem, QuestionnaireResponseItemAnswer, Coding } from 'fhir/r4';
+import { QuestionnaireResponseItemAnswer, Coding } from 'fhir/r4';
 import { ThunkDispatch } from 'redux-thunk';
 
 import CheckboxView from './checkbox-view';
@@ -36,7 +36,7 @@ import TextView from '../textview';
 import { useDispatch } from 'react-redux';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
 import { useIsEnabled } from '@/hooks/useIsEnabled';
-import { QuestionnaireComponentItemProps } from '@/components/GenerateQuestionnaireComponents';
+import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 
 export type OpenChoiceProps = QuestionnaireComponentItemProps;
@@ -47,237 +47,237 @@ export const OpenChoice = (props: OpenChoiceProps): JSX.Element | null => {
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
   const answer = useGetAnswer(responseItem, item);
   const enable = useIsEnabled(item, path);
-  const getDataReceiverValue = (answer: QuestionnaireResponseItemAnswer[]): string[] | undefined => {
-    return answer
+  const itemControlValue = useMemo(() => getItemControlValue(item), [item]);
+  const options = useMemo(() => getOptions(resources, item, containedResources), [resources, item, containedResources]);
+  const getDataReceiverValue = useCallback((answerList: QuestionnaireResponseItemAnswer[]): string[] | undefined => {
+    return answerList
       .filter(f => f.valueCoding?.code !== OPEN_CHOICE_ID)
-      .map((el: QuestionnaireResponseItemAnswer) => {
-        if (el && el.valueCoding) {
-          return el.valueCoding.display;
-        }
-        if (el && el.valueString) {
-          return el.valueString;
-        }
-      })
+      .map(el => el?.valueCoding?.display || el?.valueString)
       .filter((it): it is string => it !== undefined);
-  };
+  }, []);
 
-  const getPDFValue = (item: QuestionnaireItem, answer?: QuestionnaireResponseItemAnswer[] | QuestionnaireResponseItemAnswer): string => {
+  const getOpenValue = useCallback(
+    (answerList?: QuestionnaireResponseItemAnswer[] | QuestionnaireResponseItemAnswer): string | undefined => {
+      if (Array.isArray(answerList)) {
+        for (const el of answerList) {
+          if (el.valueString) {
+            return el.valueString;
+          }
+        }
+      }
+      return undefined;
+    },
+    []
+  );
+  const getValue = useCallback((): (string | undefined)[] | undefined => {
+    if (Array.isArray(answer)) {
+      return answer.map(el => el?.valueCoding?.code).filter(Boolean);
+    } else if (answer?.valueCoding?.code) {
+      if (answer.valueCoding.code === item.initial?.[0]?.valueCoding?.code && !answer.valueCoding.display) {
+        resetInitialAnswer(answer.valueCoding.code);
+      }
+      return [answer.valueCoding.code];
+    }
+    const initialSelectedOption = item.answerOption?.find(x => x.initialSelected);
+    if (initialSelectedOption?.valueCoding?.code) {
+      return [initialSelectedOption.valueCoding.code];
+    }
+    if (item.initial?.[0]?.valueCoding?.code) {
+      return [String(item.initial[0].valueCoding.code)];
+    }
+    return undefined;
+  }, [answer, item]);
+
+  const value = useMemo(() => getValue(), [getValue]);
+
+  const getPDFValue = useCallback((): string => {
     if (isDataReceiver(item) && Array.isArray(answer)) {
       return getDataReceiverValue(answer)?.join(', ') || '';
     }
-    const value = getValue(item, answer);
-
     if (!value) {
-      let text = '';
-      if (resources && resources.ikkeBesvart) {
-        text = resources.ikkeBesvart;
-      }
-      return text;
+      return resources?.ikkeBesvart || '';
     }
 
     const displayValues = value
       .filter(el => el !== OPEN_CHOICE_ID)
-      .map(el => getDisplay(getOptions(resources, item, containedResources), el))
+      .map(el => getDisplay(options, el!))
       .filter((it): it is string => it !== undefined);
+
     const openValue = getOpenValue(answer);
     if (openValue) {
       displayValues.push(openValue);
     }
 
     return displayValues.join(', ');
-  };
+  }, [answer, getDataReceiverValue, getOpenValue, isDataReceiver, item, options, resources, value]);
 
-  const getOpenValue = (answer?: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer): string | undefined => {
-    if (Array.isArray(answer)) {
-      for (let i = 0; i < answer.length; i++) {
-        const el = answer[i];
-        if (el.valueString) {
-          return el.valueString;
+  const handleStringChange = useCallback(
+    (value: string): void => {
+      if (path) {
+        if (value.length > 0) {
+          dispatch(newCodingStringValueAsync(path, value, item)).then(newState => onAnswerChange?.(newState, item, { valueString: value }));
+        } else {
+          dispatch(removeCodingStringValueAsync(path, item)).then(newState => onAnswerChange?.(newState, item, { valueString: '' }));
+        }
+        promptLoginMessage?.();
+      }
+    },
+    [dispatch, item, onAnswerChange, path, promptLoginMessage]
+  );
+
+  const handleStringChangeEvent = useCallback(
+    (event: FocusEvent<HTMLInputElement>): void => {
+      handleStringChange(event.target.value);
+    },
+    [handleStringChange]
+  );
+
+  const getAnswerValueCoding = useCallback(
+    (code: string, systemArg?: string, displayArg?: string): Coding => {
+      const display = displayArg || getDisplay(options, code);
+      const valueSetSystem = code === OPEN_CHOICE_ID ? OPEN_CHOICE_SYSTEM : getSystem(item, code, containedResources);
+      const system = systemArg || valueSetSystem;
+      return { code, display, system };
+    },
+    [containedResources, item, options]
+  );
+
+  const resetInitialAnswer = useCallback(
+    (code: string): void => {
+      if (path) {
+        const coding = getAnswerValueCoding(code);
+        const responseAnswer = { valueCoding: coding };
+        if (getIndexOfAnswer(code, answer) > -1) {
+          dispatch(removeCodingValueAsync(path, coding, item)).then(newState => onAnswerChange?.(newState, item, responseAnswer));
+        }
+        dispatch(newCodingValueAsync(path, coding, item, true)).then(newState => onAnswerChange?.(newState, item, responseAnswer));
+        promptLoginMessage?.();
+      }
+    },
+    [answer, dispatch, getAnswerValueCoding, item, onAnswerChange, path, promptLoginMessage]
+  );
+  const singleValueHandler = useCallback(
+    (coding: Coding): void => {
+      if (path && coding.code !== OPEN_CHOICE_ID) {
+        dispatch(removeCodingStringValueAsync(path, item)).then(newState => onAnswerChange?.(newState, item, { valueString: '' }));
+      }
+    },
+    [dispatch, item, onAnswerChange, path]
+  );
+
+  const multiValueHandler = useCallback(
+    (coding: Coding): void => {
+      if (path) {
+        const isShown = shouldShowExtraChoice(answer);
+        if (isShown && coding.code === OPEN_CHOICE_ID) {
+          dispatch(removeCodingStringValueAsync(path, item)).then(newState => onAnswerChange?.(newState, item, { valueString: '' }));
         }
       }
-    }
-
-    return;
-  };
-
-  const getValue = (
-    item: QuestionnaireItem,
-    answer?: Array<QuestionnaireResponseItemAnswer> | QuestionnaireResponseItemAnswer
-  ): (string | undefined)[] | undefined => {
-    if (answer && Array.isArray(answer)) {
-      return answer.map((el: QuestionnaireResponseItemAnswer) => {
-        if (el) {
-          if (el.valueCoding && el.valueCoding.code) {
-            return el.valueCoding.code;
-          }
+    },
+    [answer, dispatch, item, onAnswerChange, path]
+  );
+  const interceptHandler = useCallback(
+    (coding: Coding): void => {
+      if (itemControlValue === ItemControlConstants.CHECKBOX) {
+        multiValueHandler(coding);
+      } else {
+        singleValueHandler(coding);
+      }
+    },
+    [itemControlValue, multiValueHandler, singleValueHandler]
+  );
+  const handleCheckboxChange = useCallback(
+    (code?: string): void => {
+      if (code && path) {
+        const coding = getAnswerValueCoding(code);
+        const responseAnswer = { valueCoding: coding };
+        if (getIndexOfAnswer(code, answer) > -1) {
+          dispatch(removeCodingValueAsync(path, coding, item)).then(newState => onAnswerChange?.(newState, item, responseAnswer));
+        } else {
+          dispatch(newCodingValueAsync(path, coding, item, true)).then(newState => onAnswerChange?.(newState, item, responseAnswer));
         }
-      });
-    } else if (answer && !Array.isArray(answer) && answer.valueCoding && answer.valueCoding.code) {
-      if (answer.valueCoding?.code === item.initial?.[0].valueCoding?.code && answer.valueCoding?.display === undefined) {
-        resetInitialAnswer(answer.valueCoding.code);
+        promptLoginMessage?.();
+        interceptHandler(coding);
       }
-      return [answer.valueCoding.code];
-    }
-    const initialSelectedOption = item.answerOption?.filter(x => x.initialSelected);
-    if (initialSelectedOption && initialSelectedOption.length > 0) {
-      return [initialSelectedOption[0].valueCoding?.code];
-    }
-    if (!item || !item.initial || item.initial.length === 0 || !item.initial[0].valueCoding || !item.initial[0].valueCoding.code) {
-      return undefined;
-    }
-    return [String(item.initial[0].valueCoding.code)];
-  };
+    },
+    [answer, dispatch, getAnswerValueCoding, interceptHandler, item, onAnswerChange, path, promptLoginMessage]
+  );
 
-  const handleStringChangeEvent = (event: FocusEvent<HTMLInputElement, Element>): void => {
-    const value = event.target.value;
-    handleStringChange(value);
-  };
-
-  const handleStringChange = (value: string): void => {
-    if (dispatch && path) {
-      if (value.length > 0) {
-        dispatch(newCodingStringValueAsync(path, value, item))?.then(newState => onAnswerChange(newState, item, { valueString: value }));
-      } else {
-        dispatch(removeCodingStringValueAsync(path, item))?.then(newState => onAnswerChange(newState, item, { valueString: '' }));
+  const clearCodingAnswer = useCallback(
+    (coding: Coding): void => {
+      if (path) {
+        const responseAnswer = { valueCoding: coding };
+        dispatch(removeCodingValueAsync(path, coding, item)).then(newState => onAnswerChange?.(newState, item, responseAnswer));
+        promptLoginMessage?.();
       }
-    }
-
-    if (promptLoginMessage) {
-      promptLoginMessage();
-    }
-  };
-
-  const getAnswerValueCoding = (code: string, systemArg?: string, displayArg?: string): Coding => {
-    const display = displayArg ? displayArg : getDisplay(getOptions(resources, item, containedResources), code);
-    const valueSetSystem = code === OPEN_CHOICE_ID ? OPEN_CHOICE_SYSTEM : getSystem(item, code, containedResources);
-    const system = systemArg ? systemArg : valueSetSystem;
-    return { code, display, system };
-  };
-
-  const resetInitialAnswer = (code: string): void => {
-    if (dispatch && code && path) {
-      const coding = getAnswerValueCoding(code);
-      const responseAnswer = { valueCoding: coding };
-      if (getIndexOfAnswer(code, answer) > -1) {
-        dispatch(removeCodingValueAsync(path, coding, item))?.then(newState => onAnswerChange(newState, item, responseAnswer));
+    },
+    [dispatch, item, onAnswerChange, path, promptLoginMessage]
+  );
+  const handleChange = useCallback(
+    (code?: string, systemArg?: string, displayArg?: string): void => {
+      if (code && path) {
+        const coding = getAnswerValueCoding(code, systemArg, displayArg);
+        const responseAnswer = { valueCoding: coding };
+        dispatch(newCodingValueAsync(path, coding, item)).then(newState => onAnswerChange?.(newState, item, responseAnswer));
+        promptLoginMessage?.();
+        interceptHandler(coding);
       }
-      dispatch(newCodingValueAsync(path, coding, item, true))?.then(newState => onAnswerChange(newState, item, responseAnswer));
-      if (promptLoginMessage) {
-        promptLoginMessage();
-      }
-    }
-  };
-
-  const handleCheckboxChange = (code?: string): void => {
-    if (dispatch && code && path) {
-      const coding = getAnswerValueCoding(code);
-      const responseAnswer = { valueCoding: coding };
-      if (getIndexOfAnswer(code, answer) > -1) {
-        dispatch(removeCodingValueAsync(path, coding, item))?.then(newState => onAnswerChange(newState, item, responseAnswer));
-      } else {
-        dispatch(newCodingValueAsync(path, coding, item, true))?.then(newState => onAnswerChange(newState, item, responseAnswer));
-      }
-      if (promptLoginMessage) {
-        promptLoginMessage();
-      }
-      interceptHandler(coding, getItemControlValue(item));
-    }
-  };
-
-  const clearCodingAnswer = (coding: Coding): void => {
-    if (dispatch && path) {
-      const responseAnswer = { valueCoding: coding };
-      dispatch(removeCodingValueAsync(path, coding, item))?.then(newState => onAnswerChange(newState, item, responseAnswer));
-      if (promptLoginMessage) {
-        promptLoginMessage();
-      }
-    }
-  };
-
-  const handleChange = (code?: string, systemArg?: string, displayArg?: string): void => {
-    if (dispatch && code && path) {
-      const coding = getAnswerValueCoding(code, systemArg, displayArg);
-      const responseAnswer = { valueCoding: coding };
-      dispatch(newCodingValueAsync(path, coding, item))?.then(newState => onAnswerChange(newState, item, responseAnswer));
-      if (promptLoginMessage) {
-        promptLoginMessage();
-      }
-
-      interceptHandler(coding, getItemControlValue(item));
-    }
-  };
-
-  const interceptHandler = (coding: Coding, type: string | undefined): void => {
-    switch (type) {
-      case ItemControlConstants.CHECKBOX:
-        return multiValueHandler(coding);
-      default:
-        return singleValueHandler(coding);
-    }
-  };
-
-  const singleValueHandler = (coding: Coding): void => {
-    if (dispatch && path) {
-      if (coding.code !== OPEN_CHOICE_ID) {
-        dispatch(removeCodingStringValueAsync(path, item))?.then(newState => onAnswerChange(newState, item, { valueString: '' }));
-      }
-    }
-  };
-
-  const multiValueHandler = (coding: Coding): void => {
-    if (dispatch && path) {
-      const isShown = shouldShowExtraChoice(answer);
-
-      if (isShown && coding.code === OPEN_CHOICE_ID) {
-        dispatch(removeCodingStringValueAsync(path, item))?.then(newState => onAnswerChange(newState, item, { valueString: '' }));
-      }
-    }
-  };
+    },
+    [dispatch, getAnswerValueCoding, interceptHandler, item, onAnswerChange, path, promptLoginMessage]
+  );
 
   const renderTextField = (): JSX.Element => {
     return <TextField {...props} handleStringChange={handleStringChangeEvent} handleChange={handleStringChange} resources={resources} />;
   };
 
-  const renderComponentBasedOnType = (): JSX.Element | null => {
-    const itemControlValue = getItemControlValue(item);
-    if (!itemControlValue) {
-      return null;
-    }
-    const options = getOptions(resources, item, containedResources);
+  const hasOptionsAndNoCanonicalValueSet = useMemo(
+    () => hasOptions(resources, item, containedResources) && !hasCanonicalValueSet(item),
+    [resources, item, containedResources]
+  );
+  const aboveDropdownThreshold = useMemo(() => isAboveDropdownThreshold(options), [options]);
 
-    const commonProps = {
-      handleChange: handleChange,
-      selected: getValue(item, answer),
-      renderOpenField: (): JSX.Element | undefined => renderTextField(),
-      ...props,
-    };
+  const shouldRenderAutosuggest = useMemo(
+    () => hasCanonicalValueSet(item) && itemControlValue === ItemControlConstants.AUTOCOMPLETE,
+    [item, itemControlValue]
+  );
 
-    const componentMap = {
-      [ItemControlConstants.DROPDOWN]: <DropdownView options={options} {...commonProps} />,
-      [ItemControlConstants.CHECKBOX]: <CheckboxView options={options} {...commonProps} handleChange={handleCheckboxChange} />,
-      [ItemControlConstants.RADIOBUTTON]: <RadioView options={options} {...commonProps} />,
-      [ItemControlConstants.SLIDER]: <SliderView {...commonProps} />,
-    };
-
-    return componentMap[itemControlValue];
-  };
-
-  const hasOptionsAndNoCanonicalValueSet = hasOptions(resources, item, containedResources) && !hasCanonicalValueSet(item);
-  const options = getOptions(resources, item, containedResources);
-  const aboveDropdownThreshold = isAboveDropdownThreshold(options);
-  const itemControlValue = getItemControlValue(item);
-  const shouldRenderAutosuggest = hasCanonicalValueSet(item) && itemControlValue === ItemControlConstants.AUTOCOMPLETE;
-  const value = getValue(item, answer);
   if (!enable) {
     return null;
   }
+
   if (pdf || isReadOnly(item)) {
     return (
-      <TextView id={id} item={item} value={getPDFValue(item, answer)}>
+      <TextView id={id} item={item} value={getPDFValue()}>
         {children}
       </TextView>
     );
   }
+
+  const renderComponentBasedOnType = (): JSX.Element | null => {
+    if (!itemControlValue) {
+      return null;
+    }
+
+    const commonProps = {
+      handleChange: handleChange,
+      selected: value,
+      renderOpenField: renderTextField,
+      ...props,
+    };
+
+    switch (itemControlValue) {
+      case ItemControlConstants.DROPDOWN:
+        return <DropdownView options={options} {...commonProps} />;
+      case ItemControlConstants.CHECKBOX:
+        return <CheckboxView options={options} {...commonProps} handleChange={handleCheckboxChange} />;
+      case ItemControlConstants.RADIOBUTTON:
+        return <RadioView options={options} {...commonProps} />;
+      case ItemControlConstants.SLIDER:
+        return <SliderView {...commonProps} />;
+      default:
+        return null;
+    }
+  };
 
   return (
     <>
@@ -285,21 +285,9 @@ export const OpenChoice = (props: OpenChoiceProps): JSX.Element | null => {
         itemControlValue ? (
           renderComponentBasedOnType()
         ) : aboveDropdownThreshold ? (
-          <DropdownView
-            options={options}
-            handleChange={handleChange}
-            selected={value}
-            renderOpenField={(): JSX.Element => renderTextField()}
-            {...props}
-          />
+          <DropdownView options={options} handleChange={handleChange} selected={value} renderOpenField={renderTextField} {...props} />
         ) : (
-          <RadioView
-            options={options}
-            handleChange={handleChange}
-            selected={value}
-            renderOpenField={(): JSX.Element => renderTextField()}
-            {...props}
-          />
+          <RadioView options={options} handleChange={handleChange} selected={value} renderOpenField={renderTextField} {...props} />
         )
       ) : shouldRenderAutosuggest ? (
         <AutosuggestView

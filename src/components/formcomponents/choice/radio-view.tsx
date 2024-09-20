@@ -16,7 +16,7 @@ import RenderHelpElement from '@/components/formcomponents/help-button/RenderHel
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 
-import { QuestionnaireComponentItemProps } from '@/components/GenerateQuestionnaireComponents';
+import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { required } from '@/components/validation/rules';
 
 export type Props = QuestionnaireComponentItemProps & {

@@ -18,10 +18,11 @@ import { getItemControlExtensionValue, getValidationTextExtension } from './exte
 import { Resources } from './resources';
 import { Extensions } from '@/constants/extensions';
 import Constants, { OPEN_CHOICE_ID } from '@/constants/index';
-import itemControlConstants, { ItemControlValue, isItemControlValue } from '@/constants/itemcontrol';
+import itemControlConstants, { ItemControlValue } from '@/constants/itemcontrol';
 import ItemType from '@/constants/itemType';
 
 import { isReadOnly, isRequired } from './index';
+import { isItemControlValue } from './typeguards';
 
 export function hasCanonicalValueSet(item: QuestionnaireItem): boolean {
   return !!item.answerValueSet && item.answerValueSet.substr(0, 4) === 'http';

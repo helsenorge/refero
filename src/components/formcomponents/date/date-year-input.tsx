@@ -14,7 +14,7 @@ import TextView from '../textview';
 import RenderHelpElement from '@/components/formcomponents/help-button/RenderHelpElement';
 import { useState } from 'react';
 import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelpButton';
-import { QuestionnaireComponentItemProps } from '@/components/GenerateQuestionnaireComponents';
+import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
