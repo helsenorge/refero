@@ -1,0 +1,3801 @@
+{
+  "resourceType": "Bundle",
+  "type": "searchset",
+  "total": 2,
+  "entry": [
+    {
+      "resource": {
+        "resourceType": "Questionnaire",
+        "language": "nb-NO",
+        "id": "210",
+        "name": "HSO-rk-1",
+        "title": "Skjema for rettighetsklage",
+        "description": "Skjema for rettighetsklage",
+        "version": "2.4",
+        "status": "active",
+        "publisher": "Helse Sør-Øst",
+        "meta": {
+          "profile": ["http://ehelse.no/fhir/StructureDefinition/sdf-Questionnaire"],
+          "tag": [{ "system": "urn:ietf:bcp:47", "code": "nb-NO", "display": "Norsk bokmål" }],
+          "security": [{ "code": "2", "display": "Pasientjournal (Basis +)", "system": "urn:oid:2.16.578.1.12.4.1.1.7618" }]
+        },
+        "useContext": [
+          {
+            "code": { "system": "http://hl7.org/fhir/ValueSet/usage-context-type", "code": "focus", "display": "Clinical Focus" },
+            "valueCodeableConcept": {
+              "coding": [{ "system": "urn:oid:2.16.578.1.12.4.1.1.7614", "code": "2", "display": "Skjema for rettighetsklage" }]
+            }
+          }
+        ],
+        "contact": [{ "name": "http://www.nhn.no" }],
+        "subjectType": ["Patient"],
+        "extension": [
+          {
+            "url": "http://ehelse.no/fhir/StructureDefinition/sdf-authenticationrequirement",
+            "valueCoding": { "system": "http://ehelse.no/fhir/ValueSet/AuthenticationRequirement", "code": "3" }
+          },
+          {
+            "url": "http://ehelse.no/fhir/StructureDefinition/sdf-accessibilitytoresponse",
+            "valueCoding": { "system": "http://ehelse.no/fhir/ValueSet/AccessibilityToResponse", "code": "1" }
+          },
+          {
+            "url": "http://ehelse.no/fhir/StructureDefinition/sdf-discretion",
+            "valueCoding": { "system": "http://ehelse.no/fhir/ValueSet/Discretion", "code": "0" }
+          },
+          { "url": "http://ehelse.no/fhir/StructureDefinition/sdf-generatepdf", "valueBoolean": true },
+          { "url": "http://ehelse.no/fhir/StructureDefinition/sdf-generatenarrative", "valueBoolean": true },
+          {
+            "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-presentationbuttons",
+            "valueCoding": { "system": "http://helsenorge.no/fhir/ValueSet/presentationbuttons", "code": "static" }
+          }
+        ],
+        "purpose": "Søknadsblankett",
+        "copyright": "Er utviklet av NHN og Helse Sør-Øst",
+        "date": "2024-08-27T00:00:00+02:00",
+        "contained": [
+          {
+            "resourceType": "ValueSet",
+            "id": "Helseregion",
+            "version": "1.0",
+            "name": "Helseregion",
+            "title": "Helseregion",
+            "status": "draft",
+            "publisher": "Direktoratet for e-helse",
+            "compose": {
+              "include": [
+                {
+                  "system": "http://ehelse.no/Helseregion",
+                  "concept": [
+                    { "code": "1", "display": "Helse Sør-Øst" },
+                    { "code": "2", "display": "Helse Vest" },
+                    { "code": "3", "display": "Helse Nord" }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "resourceType": "ValueSet",
+            "id": "KlageType",
+            "version": "1.0",
+            "name": "KlageType",
+            "title": "KlageType",
+            "status": "draft",
+            "publisher": "Direktoratet for e-helse",
+            "compose": {
+              "include": [
+                {
+                  "system": "http://ehelse.no/KlageType",
+                  "concept": [
+                    { "code": "1", "display": "Jeg har fått avslag på utredning/behandling" },
+                    { "code": "2", "display": "Jeg har ikke fått time innen lovfestet tidspunkt" },
+                    { "code": "3", "display": "Jeg har ikke fått avtalt/lovet informasjon fra sykehuset" },
+                    { "code": "4", "display": "Jeg har ikke fått avtalt/lovet oppfølging fra sykehuset" }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "resourceType": "ValueSet",
+            "id": "HSOOUSBehandlingssted",
+            "version": "1.0",
+            "name": "HSOOUSBehandlingssted",
+            "title": "HSOOUSBehandlingssted",
+            "status": "draft",
+            "publisher": "Direktoratet for e-helse",
+            "compose": {
+              "include": [
+                {
+                  "system": "http://ehelse.no/HSOOUSBehandlingssted",
+                  "concept": [
+                    { "code": "1", "display": "Aker" },
+                    { "code": "2", "display": "Gaustad sykehus" },
+                    { "code": "3", "display": "Radiumhospitalet" },
+                    { "code": "4", "display": "Rikshospitalet" },
+                    { "code": "5", "display": "Spesialsykehuset for epilepsi, Sandvika" },
+                    { "code": "6", "display": "Ullevål" }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "resourceType": "ValueSet",
+            "id": "HSOInnlandetBehandlingssted",
+            "version": "1.0",
+            "name": "HSOInnlandetBehandlingssted",
+            "title": "HSOInnlandetBehandlingssted",
+            "status": "draft",
+            "publisher": "Direktoratet for e-helse",
+            "compose": {
+              "include": [
+                {
+                  "system": "http://ehelse.no/HSOInnlandetBehandlingssted",
+                  "concept": [
+                    { "code": "1", "display": "Elverum" },
+                    { "code": "2", "display": "Gjøvik" },
+                    { "code": "3", "display": "Hamar" },
+                    { "code": "4", "display": "Lillehammer" },
+                    { "code": "5", "display": "Reinsvoll" },
+                    { "code": "6", "display": "Sanderud" },
+                    { "code": "7", "display": "Tynset" }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "resourceType": "ValueSet",
+            "id": "HSOTelemarkBehandlingssted",
+            "version": "1.0",
+            "name": "HSOTelemarkBehandlingssted",
+            "title": "HSOTelemarkBehandlingssted",
+            "status": "draft",
+            "publisher": "Direktoratet for e-helse",
+            "compose": {
+              "include": [
+                {
+                  "system": "http://ehelse.no/HSOTelemarkBehandlingssted",
+                  "concept": [
+                    { "code": "1", "display": "Kragerø" },
+                    { "code": "2", "display": "Nordagutu" },
+                    { "code": "3", "display": "Notodden" },
+                    { "code": "4", "display": "Porsgrunn" },
+                    { "code": "5", "display": "Rjukan" },
+                    { "code": "6", "display": "Skien" },
+                    { "code": "7", "display": "Stathelle" }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "resourceType": "ValueSet",
+            "id": "HSOVestfoldBehandlingssted",
+            "version": "1.0",
+            "name": "HSOVestfoldBehandlingssted",
+            "title": "HSOVestfoldBehandlingssted",
+            "status": "draft",
+            "publisher": "Direktoratet for e-helse",
+            "compose": {
+              "include": [
+                {
+                  "system": "http://ehelse.no/HSOVestfoldBehandlingssted",
+                  "concept": [
+                    { "code": "1", "display": "Larvik" },
+                    { "code": "2", "display": "Tønsberg" },
+                    { "code": "3", "display": "Kysthospitalet" }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "resourceType": "ValueSet",
+            "id": "HSOOstfoldBehandlingssted",
+            "version": "1.0",
+            "name": "HSOOstfoldBehandlingssted",
+            "title": "HSOOstfoldBehandlingssted",
+            "status": "draft",
+            "publisher": "Direktoratet for e-helse",
+            "compose": {
+              "include": [
+                {
+                  "system": "http://ehelse.no/HSOOstfoldBehandlingssted",
+                  "concept": [
+                    { "code": "1", "display": "Askim" },
+                    { "code": "2", "display": "Fredrikstad" },
+                    { "code": "3", "display": "Halden" },
+                    { "code": "4", "display": "Kalnes" },
+                    { "code": "5", "display": "Moss" },
+                    { "code": "6", "display": "Sarpsborg" }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "resourceType": "ValueSet",
+            "id": "HSOSorlandetBehandlingssted",
+            "version": "1.0",
+            "name": "HSOSorlandetBehandlingssted",
+            "title": "HSOSorlandetBehandlingssted",
+            "status": "draft",
+            "publisher": "Direktoratet for e-helse",
+            "compose": {
+              "include": [
+                {
+                  "system": "http://ehelse.no/HSOSorlandetBehandlingssted",
+                  "concept": [
+                    { "code": "1", "display": "Arendal" },
+                    { "code": "2", "display": "Flekkefjord" },
+                    { "code": "3", "display": "Kristiansand" }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "resourceType": "ValueSet",
+            "id": "HSOVikenBehandlingssted",
+            "version": "1.0",
+            "name": "HSOVikenBehandlingssted",
+            "title": "HSOVikenBehandlingssted",
+            "status": "draft",
+            "publisher": "Direktoratet for e-helse",
+            "compose": {
+              "include": [
+                {
+                  "system": "http://ehelse.no/HSOVikenBehandlingssted",
+                  "concept": [
+                    { "code": "1", "display": "Blakstad" },
+                    { "code": "2", "display": "Bærum" },
+                    { "code": "3", "display": "Drammen" },
+                    { "code": "4", "display": "Hallingdal" },
+                    { "code": "5", "display": "Kongsberg" },
+                    { "code": "6", "display": "Ringerike" }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "resourceType": "ValueSet",
+            "id": "HVHelseBergen",
+            "version": "1.0",
+            "name": "HVHelseBergen",
+            "title": "HVHelseBergen",
+            "status": "draft",
+            "publisher": "Direktoratet for e-helse",
+            "compose": {
+              "include": [
+                {
+                  "system": "http://ehelse.no/HVHelseBergen",
+                  "concept": [
+                    { "code": "1", "display": "Haukeland universitetssjukehus" },
+                    { "code": "2", "display": "Kysthospitalet i Hagevik" },
+                    { "code": "3", "display": "Voss sjukehus" }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "resourceType": "ValueSet",
+            "id": "HVHelseForde",
+            "version": "1.0",
+            "name": "HVHelseForde",
+            "title": "HVHelseForde",
+            "status": "draft",
+            "publisher": "Direktoratet for e-helse",
+            "compose": {
+              "include": [
+                {
+                  "system": "http://ehelse.no/HVHelseForde",
+                  "concept": [
+                    { "code": "1", "display": "Førde sentralsjukehus" },
+                    { "code": "2", "display": "Nordfjord sjukehus" },
+                    { "code": "3", "display": "Lærdal Sjukehus" }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "resourceType": "ValueSet",
+            "id": "HVHelseFonna",
+            "version": "1.0",
+            "name": "HVHelseFonna",
+            "title": "HVHelseFonna",
+            "status": "draft",
+            "publisher": "Direktoratet for e-helse",
+            "compose": {
+              "include": [
+                {
+                  "system": "http://ehelse.no/HVHelseFonna",
+                  "concept": [
+                    { "code": "1", "display": "Haugesund sjukehus" },
+                    { "code": "2", "display": "Odda sjukehus" },
+                    { "code": "3", "display": "Stord sjukehus" }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "resourceType": "ValueSet",
+            "id": "TypeInstitusjon",
+            "version": "1.0",
+            "name": "TypeInstitusjon",
+            "title": "TypeInstitusjon",
+            "status": "draft",
+            "publisher": "Direktoratet for e-helse",
+            "compose": {
+              "include": [
+                {
+                  "system": "http://ehelse.no/TypeInstitusjon",
+                  "concept": [
+                    { "code": "1", "display": "Offentlige sykehus/institusjoner" },
+                    { "code": "2", "display": "Private sykehus/institusjoner" }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "resourceType": "ValueSet",
+            "id": "HVHelseStavanger",
+            "version": "1.0",
+            "name": "HVHelseStavanger",
+            "title": "HVHelseStavanger",
+            "status": "draft",
+            "publisher": "Direktoratet for e-helse",
+            "compose": {
+              "include": [
+                { "system": "http://ehelse.no/HVHelseStavanger", "concept": [{ "code": "1", "display": "Stavanger universitetssjukehus" }] }
+              ]
+            }
+          },
+          {
+            "resourceType": "ValueSet",
+            "id": "adresseRepresentant",
+            "version": "1",
+            "name": "adresseRepresentant",
+            "title": "adresseRepresentant",
+            "status": "draft",
+            "publisher": "Direktoratet for e-helse",
+            "compose": {
+              "include": [
+                {
+                  "system": "http://ehelse.no/adresseRepresentant",
+                  "concept": [
+                    {
+                      "code": "3",
+                      "display": "Folkeregistrert bostedsadresse til den som forespør, hvis det gjelder et barn som bor på en annen adresse."
+                    },
+                    {
+                      "code": "4",
+                      "display": "Folkeregistrert postadresse til den som forespør, hvis det gjelder et barn som bor på en annen adresse."
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "resourceType": "ValueSet",
+            "id": "adresseSelv",
+            "version": "1",
+            "name": "adresseSelv",
+            "title": "adresseSelv",
+            "status": "draft",
+            "publisher": "Direktoratet for e-helse",
+            "compose": {
+              "include": [
+                {
+                  "system": "http://ehelse.no/adresseSelv",
+                  "concept": [
+                    { "code": "1", "display": "Folkeregistrert bostedsadresse" },
+                    { "code": "2", "display": "Folkeregistert postadresse" }
+                  ]
+                }
+              ]
+            }
+          }
+        ],
+        "item": [
+          {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                "valueCodeableConcept": {
+                  "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "highlight" }]
+                }
+              }
+            ],
+            "linkId": "highlight",
+            "text": "Fyll ut dette skjemaet for å klage hvis du mener dine rettigheter som sykehuspasient ikke er i tråd med punktene som er listet under \"Hva ønsker du å klage på\".",
+            "_text": {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                  "valueMarkdown": "Fyll ut dette skjemaet for å klage hvis du mener dine rettigheter som sykehuspasient ikke er i tråd med punktene som er listet under \"Hva ønsker du å klage på\"."
+                }
+              ]
+            },
+            "type": "display"
+          },
+          {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                "valueCodeableConcept": {
+                  "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "sidebar" }]
+                }
+              }
+            ],
+            "linkId": "sot-2",
+            "code": [{ "system": "http://ehelse.no/fhir/ValueSet/SOTHeaders", "code": "SOT-2", "display": "Veiledning og ansvarlig" }],
+            "text": "Normal behandlingstid er inntil 4 uker. Du vil få svar i posten fra sykehuset.\r\n\r\nDersom du har spørsmål til innholdet i skjemaet eller har informasjon som haster, ta kontakt med sykehuset på telefon.",
+            "_text": {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                  "valueMarkdown": "Normal behandlingstid er inntil 4 uker. Du vil få svar i posten fra sykehuset.\r\n\r\nDersom du har spørsmål til innholdet i skjemaet eller har informasjon som haster, ta kontakt med sykehuset på telefon."
+                }
+              ]
+            },
+            "type": "text",
+            "required": false,
+            "repeats": false,
+            "readOnly": false
+          },
+          {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                "valueCodeableConcept": {
+                  "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "sidebar" }]
+                }
+              }
+            ],
+            "linkId": "sot-3",
+            "code": [{ "system": "http://ehelse.no/fhir/ValueSet/SOTHeaders", "code": "SOT-3", "display": "Behandling hos mottaker" }],
+            "text": "Sykehuset som mottar skjemaet er dataansvarlig for personopplysningene oppgitt i skjemaet. Opplysningene i skjemaet blir lagret og registrert i mottakers saksbehandlingssystem. Formålet med behandlingen av opplysningene i skjemaet, er å kunne behandle din forespørsel.\r\n\r\nInnsending av skjemaet er frivillig.",
+            "_text": {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                  "valueMarkdown": "Sykehuset som mottar skjemaet er dataansvarlig for personopplysningene oppgitt i skjemaet. Opplysningene i skjemaet blir lagret og registrert i mottakers saksbehandlingssystem. Formålet med behandlingen av opplysningene i skjemaet, er å kunne behandle din forespørsel.\r\n\r\nInnsending av skjemaet er frivillig."
+                }
+              ]
+            },
+            "type": "text",
+            "required": false,
+            "repeats": false,
+            "readOnly": false
+          },
+          {
+            "linkId": "2",
+            "text": "Om avdelingen du klager på",
+            "type": "group",
+            "repeats": false,
+            "item": [
+              {
+                "extension": [
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+                    "valueString": "iif(%representative.relationship.coding.where(system = 'http://hl7.org/fhir/v3/RoleCode' and (code = 'PRN' or code = 'GRANTEE')).count() > 0, true, false)"
+                  },
+                  { "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-hidden", "valueBoolean": true }
+                ],
+                "linkId": "1.99",
+                "text": "Om det er på vegne av eller ei. True er på vegne av",
+                "type": "boolean",
+                "required": false,
+                "repeats": false,
+                "readOnly": false
+              },
+              {
+                "linkId": "2.1",
+                "text": "Velg helseregion",
+                "type": "choice",
+                "required": true,
+                "repeats": false,
+                "readOnly": true,
+                "answerValueSet": "#Helseregion",
+                "initial": [{ "valueCoding": { "system": "http://ehelse.no/Helseregion", "code": "1" } }]
+              },
+              {
+                "extension": [
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/sdf-optionReference",
+                    "valueReference": { "reference": "Endpoint/4", "display": "Akershus universitetssykehus HF" }
+                  },
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/sdf-optionReference",
+                    "valueReference": { "reference": "Endpoint/36", "display": "Martina Hansens Hospital" }
+                  },
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/sdf-optionReference",
+                    "valueReference": { "reference": "Endpoint/1", "display": "Oslo universitetssykehus HF" }
+                  },
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/sdf-optionReference",
+                    "valueReference": { "reference": "Endpoint/5", "display": "Sunnaas sykehus HF" }
+                  },
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/sdf-optionReference",
+                    "valueReference": { "reference": "Endpoint/6", "display": "Sykehuset i Vestfold HF" }
+                  },
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/sdf-optionReference",
+                    "valueReference": { "reference": "Endpoint/7", "display": "Sykehuset Innlandet HF" }
+                  },
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/sdf-optionReference",
+                    "valueReference": { "reference": "Endpoint/8", "display": "Sykehuset Telemark HF" }
+                  },
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/sdf-optionReference",
+                    "valueReference": { "reference": "Endpoint/9", "display": "Sykehuset Østfold HF" }
+                  },
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/sdf-optionReference",
+                    "valueReference": { "reference": "Endpoint/10", "display": "Sørlandet sykehus HF" }
+                  },
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/sdf-optionReference",
+                    "valueReference": { "reference": "Endpoint/11", "display": "Vestre Viken HF" }
+                  }
+                ],
+                "linkId": "2.2",
+                "code": [
+                  {
+                    "system": "http://ehelse.no/fhir/ValueSet/TQQC",
+                    "code": "1",
+                    "display": "Technical endpoint for receiving QuestionnaireResponse"
+                  }
+                ],
+                "text": "Velg helseforetak i Helse Sør-Øst",
+                "type": "choice",
+                "enableWhen": [
+                  { "question": "2.1", "operator": "=", "answerCoding": { "system": "http://ehelse.no/Helseregion", "code": "1" } }
+                ],
+                "enableBehavior": "any",
+                "required": true,
+                "repeats": false,
+                "readOnly": false
+              },
+              {
+                "linkId": "2.3",
+                "text": "Velg type institusjon",
+                "type": "choice",
+                "enableWhen": [
+                  { "question": "2.1", "operator": "=", "answerCoding": { "system": "http://ehelse.no/Helseregion", "code": "2" } }
+                ],
+                "enableBehavior": "any",
+                "required": true,
+                "repeats": false,
+                "readOnly": false,
+                "answerValueSet": "#TypeInstitusjon"
+              },
+              {
+                "extension": [
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/sdf-optionReference",
+                    "valueReference": { "reference": "Endpoint/13", "display": "Helse Fonna" }
+                  },
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/sdf-optionReference",
+                    "valueReference": { "reference": "Endpoint/12", "display": "Helse Førde" }
+                  },
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/sdf-optionReference",
+                    "valueReference": { "reference": "Endpoint/2", "display": "Helse Bergen" }
+                  },
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/sdf-optionReference",
+                    "valueReference": { "reference": "Endpoint/3", "display": "Helse Stavanger" }
+                  }
+                ],
+                "linkId": "2.4",
+                "code": [
+                  {
+                    "system": "http://ehelse.no/fhir/ValueSet/TQQC",
+                    "code": "1",
+                    "display": "Technical endpoint for receiving QuestionnaireResponse"
+                  }
+                ],
+                "text": "Velg offentlige helseforetak i Helse Vest",
+                "type": "choice",
+                "enableWhen": [
+                  { "question": "2.3", "operator": "=", "answerCoding": { "system": "http://ehelse.no/TypeInstitusjon", "code": "1" } }
+                ],
+                "enableBehavior": "any",
+                "required": true,
+                "repeats": false,
+                "readOnly": false
+              },
+              {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                    "valueCodeableConcept": {
+                      "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "radio-button" }]
+                    }
+                  },
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/sdf-optionReference",
+                    "valueReference": { "reference": "Endpoint/14", "display": "NKS Jæren distriktspsykiatriske senter" }
+                  },
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/sdf-optionReference",
+                    "valueReference": { "reference": "Endpoint/15", "display": "Haraldsplass Diakonale Sykehus" }
+                  },
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/sdf-optionReference",
+                    "valueReference": {
+                      "reference": "Endpoint/16",
+                      "display": "Haugesund Sanitetsforenings Revmatismesykehus / Rehabilitering Vest"
+                    }
+                  },
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/sdf-optionReference",
+                    "valueReference": { "reference": "Endpoint/17", "display": "Voss DPS NKS Bjørkeli" }
+                  },
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/sdf-optionReference",
+                    "valueReference": { "reference": "Endpoint/18", "display": "Betanien sykehus" }
+                  },
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/sdf-optionReference",
+                    "valueReference": { "reference": "Endpoint/19", "display": "NKS Olaviken Alderspsykiatriske Sykehus" }
+                  },
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/sdf-optionReference",
+                    "valueReference": { "reference": "Endpoint/20", "display": "Solli Sykehus" }
+                  },
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/sdf-optionReference",
+                    "valueReference": { "reference": "Endpoint/21", "display": "Blå Kors Haugaland A-Senter" }
+                  }
+                ],
+                "linkId": "2.5",
+                "code": [
+                  {
+                    "system": "http://ehelse.no/fhir/ValueSet/TQQC",
+                    "code": "1",
+                    "display": "Technical endpoint for receiving QuestionnaireResponse"
+                  }
+                ],
+                "text": "Velg private sykehus/institusjoner",
+                "type": "choice",
+                "enableWhen": [
+                  { "question": "2.3", "operator": "=", "answerCoding": { "system": "http://ehelse.no/TypeInstitusjon", "code": "2" } }
+                ],
+                "enableBehavior": "any",
+                "required": true,
+                "repeats": false,
+                "readOnly": false
+              },
+              {
+                "linkId": "2.6",
+                "text": "_Lovisenberg Diakonale Sykehus, Diakonhjemmet sykehus, Revmatismesykehuset og Betanien Hospital Skien tilbyr ikke denne digitale tjenesten._",
+                "_text": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                      "valueMarkdown": "_Lovisenberg Diakonale Sykehus, Diakonhjemmet sykehus, Revmatismesykehuset og Betanien Hospital Skien tilbyr ikke denne digitale tjenesten._"
+                    }
+                  ]
+                },
+                "type": "display",
+                "enableWhen": [
+                  { "question": "2.1", "operator": "=", "answerCoding": { "system": "http://ehelse.no/Helseregion", "code": "1" } }
+                ],
+                "enableBehavior": "any"
+              },
+              {
+                "extension": [
+                  { "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "Velg ett av alternativene" },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                    "valueCodeableConcept": {
+                      "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "radio-button" }]
+                    }
+                  }
+                ],
+                "linkId": "2.7",
+                "text": "Velg behandlingssted under.",
+                "type": "choice",
+                "enableWhen": [{ "question": "2.2", "operator": "=", "answerReference": { "reference": "Endpoint/1" } }],
+                "enableBehavior": "any",
+                "required": true,
+                "repeats": false,
+                "readOnly": false,
+                "answerValueSet": "#HSOOUSBehandlingssted"
+              },
+              {
+                "extension": [
+                  { "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "Velg ett av alternativene" },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                    "valueCodeableConcept": {
+                      "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "radio-button" }]
+                    }
+                  }
+                ],
+                "linkId": "2.8",
+                "text": "Velg behandlingssted under.",
+                "type": "choice",
+                "enableWhen": [{ "question": "2.2", "operator": "=", "answerReference": { "reference": "Endpoint/7" } }],
+                "enableBehavior": "any",
+                "required": true,
+                "repeats": false,
+                "readOnly": false,
+                "answerValueSet": "#HSOInnlandetBehandlingssted"
+              },
+              {
+                "extension": [
+                  { "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "Velg ett av alternativene" },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                    "valueCodeableConcept": {
+                      "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "radio-button" }]
+                    }
+                  }
+                ],
+                "linkId": "2.9",
+                "text": "Velg behandlingssted under.",
+                "type": "choice",
+                "enableWhen": [{ "question": "2.2", "operator": "=", "answerReference": { "reference": "Endpoint/8" } }],
+                "enableBehavior": "any",
+                "required": true,
+                "repeats": false,
+                "readOnly": false,
+                "answerValueSet": "#HSOTelemarkBehandlingssted"
+              },
+              {
+                "extension": [
+                  { "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "Velg ett av alternativene" },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                    "valueCodeableConcept": {
+                      "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "radio-button" }]
+                    }
+                  }
+                ],
+                "linkId": "2.10",
+                "text": "Velg behandlingssted under.",
+                "type": "choice",
+                "enableWhen": [{ "question": "2.2", "operator": "=", "answerReference": { "reference": "Endpoint/9" } }],
+                "enableBehavior": "any",
+                "required": true,
+                "repeats": false,
+                "readOnly": false,
+                "answerValueSet": "#HSOOstfoldBehandlingssted"
+              },
+              {
+                "extension": [
+                  { "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "Velg ett av alternativene" },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                    "valueCodeableConcept": {
+                      "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "radio-button" }]
+                    }
+                  }
+                ],
+                "linkId": "2.11",
+                "text": "Velg behandlingssted under.",
+                "type": "choice",
+                "enableWhen": [{ "question": "2.2", "operator": "=", "answerReference": { "reference": "Endpoint/10" } }],
+                "enableBehavior": "any",
+                "required": true,
+                "repeats": false,
+                "readOnly": false,
+                "answerValueSet": "#HSOSorlandetBehandlingssted"
+              },
+              {
+                "extension": [
+                  { "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "Velg ett av alternativene" },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                    "valueCodeableConcept": {
+                      "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "radio-button" }]
+                    }
+                  }
+                ],
+                "linkId": "2.12",
+                "text": "Velg behandlingssted under.",
+                "type": "choice",
+                "enableWhen": [{ "question": "2.2", "operator": "=", "answerReference": { "reference": "Endpoint/11" } }],
+                "enableBehavior": "any",
+                "required": true,
+                "repeats": false,
+                "readOnly": false,
+                "answerValueSet": "#HSOVikenBehandlingssted"
+              },
+              {
+                "extension": [
+                  { "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "Velg ett av alternativene" },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                    "valueCodeableConcept": {
+                      "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "radio-button" }]
+                    }
+                  }
+                ],
+                "linkId": "2.13",
+                "text": "Velg behandlingssted under.",
+                "type": "choice",
+                "enableWhen": [{ "question": "2.2", "operator": "=", "answerReference": { "reference": "Endpoint/6" } }],
+                "enableBehavior": "any",
+                "required": true,
+                "repeats": false,
+                "readOnly": false,
+                "answerValueSet": "#HSOVestfoldBehandlingssted"
+              },
+              {
+                "extension": [
+                  { "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "Velg ett av alternativene" },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                    "valueCodeableConcept": {
+                      "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "radio-button" }]
+                    }
+                  }
+                ],
+                "linkId": "2.14",
+                "text": "Velg behandlingssted under.",
+                "type": "choice",
+                "enableWhen": [{ "question": "2.4", "operator": "=", "answerReference": { "reference": "Endpoint/2" } }],
+                "enableBehavior": "any",
+                "required": true,
+                "repeats": false,
+                "readOnly": false,
+                "answerValueSet": "#HVHelseBergen"
+              },
+              {
+                "extension": [
+                  { "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "Velg ett av alternativene" },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                    "valueCodeableConcept": {
+                      "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "radio-button" }]
+                    }
+                  }
+                ],
+                "linkId": "2.15",
+                "text": "Velg behandlingssted under.",
+                "type": "choice",
+                "enableWhen": [{ "question": "2.4", "operator": "=", "answerReference": { "reference": "Endpoint/12" } }],
+                "enableBehavior": "any",
+                "required": true,
+                "repeats": false,
+                "readOnly": false,
+                "answerValueSet": "#HVHelseForde"
+              },
+              {
+                "extension": [
+                  { "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "Velg ett av alternativene" },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                    "valueCodeableConcept": {
+                      "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "radio-button" }]
+                    }
+                  }
+                ],
+                "linkId": "2.16",
+                "text": "Velg behandlingssted under.",
+                "type": "choice",
+                "enableWhen": [{ "question": "2.4", "operator": "=", "answerReference": { "reference": "Endpoint/13" } }],
+                "enableBehavior": "any",
+                "required": true,
+                "repeats": false,
+                "readOnly": false,
+                "answerValueSet": "#HVHelseFonna"
+              },
+              {
+                "extension": [
+                  { "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "Velg ett av alternativene" },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                    "valueCodeableConcept": {
+                      "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "radio-button" }]
+                    }
+                  }
+                ],
+                "linkId": "2.17",
+                "text": "Velg behandlingssted under.",
+                "type": "choice",
+                "enableWhen": [{ "question": "2.4", "operator": "=", "answerReference": { "reference": "Endpoint/3" } }],
+                "enableBehavior": "any",
+                "required": true,
+                "repeats": false,
+                "readOnly": false,
+                "answerValueSet": "#HVHelseStavanger"
+              },
+              {
+                "linkId": "202beca9-1ed8-4684-a56d-9583855e7f56",
+                "type": "string",
+                "text": "Hvilken avdeling klager du på?",
+                "extension": [
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
+                    "valueString": "Fyll ut feltet. Skriv kun norske bokstaver og tall. Spesialtegn og tegn på andre språk er ikke mulig."
+                  },
+                  {
+                    "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sublabel",
+                    "valueMarkdown": "Se brev fra sykehuset for å finne navnet på avdelingen du klager på."
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/regex",
+                    "valueString": "^(?:[æøåÆØÅëËäÄöÖáÁéÉóÓàÀèÈòÒa-zA-Z0-9,.!?()+-/:\"']|[ \\r\\n\\t])*$"
+                  }
+                ],
+                "required": true,
+                "maxLength": 250,
+                "enableWhen": [
+                  { "question": "2.2", "operator": "=", "answerReference": { "reference": "Endpoint/4" } },
+                  { "question": "2.2", "operator": "=", "answerReference": { "reference": "Endpoint/1" } },
+                  { "question": "2.2", "operator": "=", "answerReference": { "reference": "Endpoint/5" } },
+                  { "question": "2.2", "operator": "=", "answerReference": { "reference": "Endpoint/6" } },
+                  { "question": "2.2", "operator": "=", "answerReference": { "reference": "Endpoint/7" } },
+                  { "question": "2.2", "operator": "=", "answerReference": { "reference": "Endpoint/8" } },
+                  { "question": "2.2", "operator": "=", "answerReference": { "reference": "Endpoint/9" } },
+                  { "question": "2.2", "operator": "=", "answerReference": { "reference": "Endpoint/10" } },
+                  { "question": "2.2", "operator": "=", "answerReference": { "reference": "Endpoint/11" } }
+                ]
+              }
+            ]
+          },
+          {
+            "linkId": "3",
+            "text": "Opplysninger om den personen klagen gjelder",
+            "type": "group",
+            "repeats": false,
+            "item": [
+              {
+                "linkId": "3.1",
+                "text": "Personopplysninger",
+                "type": "group",
+                "repeats": false,
+                "item": [
+                  {
+                    "extension": [
+                      {
+                        "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+                        "valueString": "Patient.name.where(use = 'official').select(iif(given.count() > 1, given.take(count()-1), given).join(' '))"
+                      }
+                    ],
+                    "linkId": "3.1.1",
+                    "text": "Fornavn",
+                    "type": "string",
+                    "required": false,
+                    "repeats": false,
+                    "readOnly": true,
+                    "maxLength": 250
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+                        "valueString": "Patient.name.where(use = 'official').family"
+                      }
+                    ],
+                    "linkId": "3.1.2",
+                    "text": "Etternavn",
+                    "type": "string",
+                    "required": false,
+                    "repeats": false,
+                    "readOnly": true,
+                    "maxLength": 250
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
+                        "valueString": "Fyll ut feltet med maks 250 tegn. Skriv kun norske bokstaver og tall. Spesialtegn og tegn på andre språk er ikke mulig."
+                      },
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/regex",
+                        "valueString": "^(?:[æøåÆØÅëËäÄöÖáÁéÉóÓàÀèÈòÒa-zA-Z0-9,.!?()+-/:\"']|[ \\r\\n\\t])*$"
+                      }
+                    ],
+                    "linkId": "3.1.3",
+                    "text": "Eventuelt tidligere navn",
+                    "type": "string",
+                    "required": false,
+                    "repeats": false,
+                    "readOnly": false,
+                    "maxLength": 250
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+                        "valueString": "Patient.identifier.where(use = 'official' and system = 'urn:oid:2.16.578.1.12.4.1.4.1').value"
+                      }
+                    ],
+                    "linkId": "3.1.4",
+                    "text": "Fødselsnummer (11 siffer)",
+                    "type": "string",
+                    "required": true,
+                    "repeats": false,
+                    "readOnly": true,
+                    "maxLength": 250
+                  }
+                ]
+              },
+              {
+                "linkId": "3.2",
+                "text": "Telefonnummer",
+                "type": "group",
+                "repeats": false,
+                "item": [
+                  {
+                    "extension": [
+                      {
+                        "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+                        "valueString": "Patient.telecom.where(use = 'mobile' and system = 'phone').value"
+                      }
+                    ],
+                    "linkId": "3.2.1",
+                    "text": "Mobiltelefonnummer",
+                    "type": "string",
+                    "required": false,
+                    "repeats": false,
+                    "readOnly": true,
+                    "maxLength": 250
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
+                        "valueString": "Fyll ut feltet med minimum 5 tegn, maks 12 tegn. Telefonnummeret kan starte med + eller 00 for å angi landkode."
+                      },
+                      { "url": "http://hl7.org/fhir/StructureDefinition/regex", "valueString": "^((\\+|00)(\\d{1,3}))?\\d{5,12}$" }
+                    ],
+                    "linkId": "3.2.2",
+                    "text": "Eventuelt annet telefonnummer vi kan nå deg på",
+                    "type": "string",
+                    "required": false,
+                    "repeats": false,
+                    "readOnly": false,
+                    "maxLength": 250
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "linkId": "4",
+            "text": "Opplysninger om den som klager",
+            "type": "group",
+            "enableWhen": [{ "question": "1.99", "operator": "=", "answerBoolean": true }],
+            "enableBehavior": "any",
+            "repeats": false,
+            "item": [
+              {
+                "linkId": "4.1",
+                "text": "Personopplysninger",
+                "type": "group",
+                "repeats": false,
+                "item": [
+                  {
+                    "extension": [
+                      {
+                        "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+                        "valueString": "RelatedPerson.name.where(use = 'official').select(given.join(' ') & ' ' & family)"
+                      }
+                    ],
+                    "linkId": "4.1.1",
+                    "text": "Navn",
+                    "type": "string",
+                    "required": false,
+                    "repeats": false,
+                    "readOnly": true,
+                    "maxLength": 250
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+                        "valueString": "RelatedPerson.identifier.where(use = 'official' and system = 'urn:oid:2.16.578.1.12.4.1.4.1').value"
+                      }
+                    ],
+                    "linkId": "4.1.2",
+                    "text": "Fødselsnummer (11 siffer)",
+                    "type": "string",
+                    "required": false,
+                    "repeats": false,
+                    "readOnly": true,
+                    "maxLength": 250
+                  }
+                ]
+              },
+              {
+                "linkId": "4.2",
+                "text": "Telefonnummer",
+                "type": "group",
+                "repeats": false,
+                "item": [
+                  {
+                    "extension": [
+                      {
+                        "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+                        "valueString": "RelatedPerson.telecom.where(use = 'mobile' and system = 'phone').value"
+                      }
+                    ],
+                    "linkId": "4.2.1",
+                    "text": "Mobiltelefonnummer",
+                    "type": "string",
+                    "required": false,
+                    "repeats": false,
+                    "readOnly": true,
+                    "maxLength": 250
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
+                        "valueString": "Fyll ut feltet med minimum 5 tegn, maks 12 tegn. Telefonnummeret kan starte med + eller 00 for å angi landkode."
+                      },
+                      { "url": "http://hl7.org/fhir/StructureDefinition/regex", "valueString": "^((\\+|00)(\\d{1,3}))?\\d{5,12}$" }
+                    ],
+                    "linkId": "4.2.2",
+                    "text": "Eventuelt annet telefonnummer vi kan nå deg på",
+                    "type": "string",
+                    "required": false,
+                    "repeats": false,
+                    "readOnly": false,
+                    "maxLength": 250
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "linkId": "5",
+            "text": "Adresse",
+            "type": "group",
+            "repeats": false,
+            "item": [
+              {
+                "linkId": "5.99",
+                "text": "Dersom henvendelsen gjelder et barn på annen adresse enn den forelder som forespør, hak av for å velge egen adresse.",
+                "type": "boolean",
+                "enableWhen": [{ "question": "1.99", "operator": "=", "answerBoolean": true }],
+                "enableBehavior": "any",
+                "required": false,
+                "repeats": false,
+                "readOnly": false
+              },
+              {
+                "extension": [
+                  { "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "Velg ett av alternativene." }
+                ],
+                "linkId": "5.1",
+                "text": "Velg adresse til den det gjelder",
+                "type": "choice",
+                "enableWhen": [{ "question": "5.99", "operator": "=", "answerBoolean": false }],
+                "enableBehavior": "any",
+                "required": true,
+                "repeats": false,
+                "readOnly": false,
+                "answerValueSet": "#adresseSelv",
+                "item": [
+                  {
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                        "valueCodeableConcept": {
+                          "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "help" }]
+                        }
+                      }
+                    ],
+                    "linkId": "5.1.1",
+                    "text": "Bostedsadresse er hovedadressen som er registrert i folkeregisteret. Postadressen er en tilleggs- eller midlertidig adresse du har oppgitt til folkeregisteret for å få tilsendt post til det stedet du oppholder deg i en periode, når du ikke melder permanent flytting.",
+                    "type": "text",
+                    "required": false,
+                    "repeats": false,
+                    "readOnly": false
+                  },
+                  {
+                    "linkId": "5.1.2",
+                    "text": "Det er ikke registert en fullstendig postadresse. Velg bostedsadresse.",
+                    "_text": {
+                      "extension": [
+                        {
+                          "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                          "valueMarkdown": "### Det er ikke registert en postadresse. Velg bostedsadresse."
+                        }
+                      ]
+                    },
+                    "type": "display",
+                    "enableWhen": [
+                      { "question": "5.4.3", "operator": "exists", "answerBoolean": false },
+                      { "question": "5.4.4", "operator": "exists", "answerBoolean": false },
+                      { "question": "5.4.5", "operator": "exists", "answerBoolean": false },
+                      { "question": "5.1", "operator": "=", "answerCoding": { "system": "http://ehelse.no/adresseSelv", "code": "2" } }
+                    ],
+                    "enableBehavior": "all"
+                  }
+                ]
+              },
+              {
+                "extension": [
+                  { "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "Velg ett av alternativene." }
+                ],
+                "linkId": "5.2",
+                "text": "Velg adresse til forelder som forespør",
+                "type": "choice",
+                "enableWhen": [{ "question": "5.99", "operator": "=", "answerBoolean": true }],
+                "enableBehavior": "any",
+                "required": true,
+                "repeats": false,
+                "readOnly": false,
+                "answerValueSet": "#adresseRepresentant",
+                "item": [
+                  {
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                        "valueCodeableConcept": {
+                          "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "help" }]
+                        }
+                      }
+                    ],
+                    "linkId": "5.2.1",
+                    "text": "Bostedsadresse er hovedadressen som er registrert i folkeregisteret. Postadressen er en tilleggs- eller midlertidig adresse du har oppgitt til folkeregisteret for å få tilsendt post til det stedet du oppholder deg i en periode, når du ikke melder permanent flytting.",
+                    "type": "text",
+                    "required": false,
+                    "repeats": false,
+                    "readOnly": false
+                  },
+                  {
+                    "linkId": "5.2.2",
+                    "text": "Det er ikke registert en fullstendig postadresse. Velg bostedsadresse.",
+                    "_text": {
+                      "extension": [
+                        {
+                          "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                          "valueMarkdown": "### Det er ikke registert en postadresse. Velg bostedsadresse."
+                        }
+                      ]
+                    },
+                    "type": "display",
+                    "enableWhen": [
+                      { "question": "5.6.3", "operator": "exists", "answerBoolean": false },
+                      { "question": "5.6.4", "operator": "exists", "answerBoolean": false },
+                      { "question": "5.6.5", "operator": "exists", "answerBoolean": false },
+                      {
+                        "question": "5.2",
+                        "operator": "=",
+                        "answerCoding": { "system": "http://ehelse.no/adresseRepresentant", "code": "4" }
+                      }
+                    ],
+                    "enableBehavior": "all"
+                  }
+                ]
+              },
+              {
+                "linkId": "5.3",
+                "code": [
+                  { "system": "urn:oid:2.16.578.1.12.4.1.1.3401", "code": "H", "display": "Bostedsadresse" },
+                  { "system": "http://ehelse.no/adresseSelv", "code": "1", "display": "Folkeregistrert bostedsadresse til den det gjelder" }
+                ],
+                "text": "Folkeregistrert bostedsadresse til den det gjelder",
+                "type": "group",
+                "enableWhen": [
+                  { "question": "5.1", "operator": "=", "answerCoding": { "system": "http://ehelse.no/adresseSelv", "code": "1" } }
+                ],
+                "enableBehavior": "any",
+                "repeats": false,
+                "item": [
+                  {
+                    "extension": [
+                      {
+                        "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+                        "valueString": "Patient.name.where(use = 'official').select(given.join(' ') & ' ' & family)"
+                      }
+                    ],
+                    "linkId": "5.3.1",
+                    "text": "Navn",
+                    "type": "string",
+                    "required": false,
+                    "repeats": false,
+                    "readOnly": true,
+                    "maxLength": 250
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+                        "valueString": "Patient.address.where(use = 'home').line.first()"
+                      }
+                    ],
+                    "linkId": "5.3.2",
+                    "text": "Adresse",
+                    "type": "string",
+                    "required": false,
+                    "repeats": false,
+                    "readOnly": true,
+                    "maxLength": 250
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+                        "valueString": "Patient.address.where(use = 'home').postalCode"
+                      }
+                    ],
+                    "linkId": "5.3.3",
+                    "text": "Postnummer",
+                    "type": "string",
+                    "required": false,
+                    "repeats": false,
+                    "readOnly": true,
+                    "maxLength": 4
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+                        "valueString": "Patient.address.where(use = 'home').city"
+                      }
+                    ],
+                    "linkId": "5.3.4",
+                    "text": "Poststed",
+                    "type": "string",
+                    "required": false,
+                    "repeats": false,
+                    "readOnly": true,
+                    "maxLength": 250
+                  }
+                ]
+              },
+              {
+                "linkId": "5.4",
+                "code": [
+                  { "system": "urn:oid:2.16.578.1.12.4.1.1.3401", "code": "PST", "display": "Postadresse" },
+                  { "system": "http://ehelse.no/adresseSelv", "code": "2", "display": "Folkeregistrert postadresse til den det gjelder" }
+                ],
+                "text": "Folkeregistrert postadresse til den det gjelder",
+                "type": "group",
+                "enableWhen": [
+                  { "question": "5.1", "operator": "=", "answerCoding": { "system": "http://ehelse.no/adresseSelv", "code": "2" } }
+                ],
+                "enableBehavior": "any",
+                "repeats": false,
+                "item": [
+                  {
+                    "extension": [
+                      {
+                        "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+                        "valueString": "Patient.name.where(use = 'official').select(given.join(' ') & ' ' & family)"
+                      }
+                    ],
+                    "linkId": "5.4.1",
+                    "text": "Navn",
+                    "type": "string",
+                    "required": false,
+                    "repeats": false,
+                    "readOnly": true,
+                    "maxLength": 250
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+                        "valueString": "Patient.address.where(use = 'temp').line[0]"
+                      }
+                    ],
+                    "linkId": "5.4.2",
+                    "text": "C/o",
+                    "type": "string",
+                    "required": false,
+                    "repeats": false,
+                    "readOnly": true,
+                    "maxLength": 250
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+                        "valueString": "Patient.address.where(use = 'temp').line[1]"
+                      }
+                    ],
+                    "linkId": "5.4.3",
+                    "text": "Adresse",
+                    "type": "string",
+                    "required": false,
+                    "repeats": false,
+                    "readOnly": true,
+                    "maxLength": 250
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+                        "valueString": "Patient.address.where(use = 'temp').line[2]"
+                      }
+                    ],
+                    "linkId": "5.4.4",
+                    "text": "Postnummer",
+                    "type": "string",
+                    "required": false,
+                    "repeats": false,
+                    "readOnly": true,
+                    "maxLength": 15
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+                        "valueString": "Patient.address.where(use = 'temp').line[3]"
+                      }
+                    ],
+                    "linkId": "5.4.5",
+                    "text": "Poststed",
+                    "type": "string",
+                    "required": false,
+                    "repeats": false,
+                    "readOnly": true,
+                    "maxLength": 250
+                  }
+                ]
+              },
+              {
+                "linkId": "5.5",
+                "code": [
+                  { "system": "urn:oid:2.16.578.1.12.4.1.1.3401", "code": "H", "display": "Bostedsadresse" },
+                  {
+                    "system": "http://ehelse.no/adresseRepresentant",
+                    "code": "3",
+                    "display": "Folkeregistrert bostedsadresse til den som forespør"
+                  }
+                ],
+                "text": "Folkeregistrert bostedsadresse til den som forespør",
+                "type": "group",
+                "enableWhen": [
+                  { "question": "5.2", "operator": "=", "answerCoding": { "system": "http://ehelse.no/adresseRepresentant", "code": "3" } }
+                ],
+                "enableBehavior": "any",
+                "repeats": false,
+                "item": [
+                  {
+                    "extension": [
+                      {
+                        "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+                        "valueString": "RelatedPerson.name.where(use = 'official').select(given.join(' ') & ' ' & family)"
+                      }
+                    ],
+                    "linkId": "5.5.1",
+                    "text": "Navn",
+                    "type": "string",
+                    "required": false,
+                    "repeats": false,
+                    "readOnly": true,
+                    "maxLength": 250
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+                        "valueString": "RelatedPerson.address.where(use = 'home').line.first()"
+                      }
+                    ],
+                    "linkId": "5.5.2",
+                    "text": "Adresse",
+                    "type": "string",
+                    "required": false,
+                    "repeats": false,
+                    "readOnly": true,
+                    "maxLength": 250
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+                        "valueString": "RelatedPerson.address.where(use = 'home').postalCode"
+                      }
+                    ],
+                    "linkId": "5.5.3",
+                    "text": "Postnummer",
+                    "type": "string",
+                    "required": false,
+                    "repeats": false,
+                    "readOnly": true,
+                    "maxLength": 4
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+                        "valueString": "RelatedPerson.address.where(use = 'home').city"
+                      }
+                    ],
+                    "linkId": "5.5.4",
+                    "text": "Poststed",
+                    "type": "string",
+                    "required": false,
+                    "repeats": false,
+                    "readOnly": true,
+                    "maxLength": 250
+                  }
+                ]
+              },
+              {
+                "linkId": "5.6",
+                "code": [
+                  { "system": "urn:oid:2.16.578.1.12.4.1.1.3401", "code": "PST", "display": "Postadresse" },
+                  {
+                    "system": "http://ehelse.no/adresseRepresentant",
+                    "code": "4",
+                    "display": "Folkeregistrert postadresse til den som forespør"
+                  }
+                ],
+                "text": "Folkeregistrert postadresse til den som forespør",
+                "type": "group",
+                "enableWhen": [
+                  { "question": "5.2", "operator": "=", "answerCoding": { "system": "http://ehelse.no/adresseRepresentant", "code": "4" } }
+                ],
+                "enableBehavior": "any",
+                "repeats": false,
+                "item": [
+                  {
+                    "extension": [
+                      {
+                        "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+                        "valueString": "RelatedPerson.name.where(use = 'official').select(given.join(' ') & ' ' & family)"
+                      }
+                    ],
+                    "linkId": "5.6.1",
+                    "text": "Navn",
+                    "type": "string",
+                    "required": false,
+                    "repeats": false,
+                    "readOnly": true
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+                        "valueString": "RelatedPerson.address.where(use = 'temp').line[0]"
+                      }
+                    ],
+                    "linkId": "5.6.2",
+                    "text": "C/o",
+                    "type": "string",
+                    "required": false,
+                    "repeats": false,
+                    "readOnly": true,
+                    "maxLength": 250
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+                        "valueString": "RelatedPerson.address.where(use = 'temp').line[1]"
+                      }
+                    ],
+                    "linkId": "5.6.3",
+                    "text": "Adresse",
+                    "type": "string",
+                    "required": false,
+                    "repeats": false,
+                    "readOnly": true,
+                    "maxLength": 250
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+                        "valueString": "RelatedPerson.address.where(use = 'temp').line[2]"
+                      }
+                    ],
+                    "linkId": "5.6.4",
+                    "text": "Postnummer",
+                    "type": "string",
+                    "required": false,
+                    "repeats": false,
+                    "readOnly": true,
+                    "maxLength": 15
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+                        "valueString": "RelatedPerson.address.where(use = 'temp').line[3]"
+                      }
+                    ],
+                    "linkId": "5.6.5",
+                    "text": "Poststed",
+                    "type": "string",
+                    "required": false,
+                    "repeats": false,
+                    "readOnly": true,
+                    "maxLength": 250
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "linkId": "6",
+            "text": "Hva ønsker du å klage på?",
+            "type": "group",
+            "repeats": false,
+            "item": [
+              {
+                "extension": [
+                  { "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "Velg ett av alternativene" },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                    "valueCodeableConcept": {
+                      "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "radio-button" }]
+                    }
+                  }
+                ],
+                "linkId": "6.1",
+                "text": "Hva gjelder din klage?",
+                "type": "choice",
+                "required": true,
+                "repeats": false,
+                "readOnly": false,
+                "answerValueSet": "#KlageType"
+              },
+              {
+                "extension": [
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
+                    "valueString": "Velg dato, eller skriv dato på denne måten: dd.mm.åååå"
+                  }
+                ],
+                "linkId": "6.2",
+                "text": "Hva er datoen på brevet der du fikk vite om avslaget?",
+                "type": "date",
+                "enableWhen": [
+                  { "question": "6.1", "operator": "=", "answerCoding": { "system": "http://ehelse.no/KlageType", "code": "1" } }
+                ],
+                "enableBehavior": "any",
+                "required": true,
+                "repeats": false,
+                "readOnly": false
+              },
+              {
+                "extension": [
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
+                    "valueString": "Velg dato, eller skriv dato på denne måten: dd.mm.åååå"
+                  }
+                ],
+                "linkId": "6.3",
+                "text": "Når har du fått time?",
+                "type": "date",
+                "enableWhen": [
+                  { "question": "6.1", "operator": "=", "answerCoding": { "system": "http://ehelse.no/KlageType", "code": "2" } }
+                ],
+                "enableBehavior": "any",
+                "repeats": false,
+                "readOnly": false
+              },
+              {
+                "extension": [
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
+                    "valueString": "Velg dato, eller skriv dato på denne måten: dd.mm.åååå"
+                  }
+                ],
+                "linkId": "6.4",
+                "text": "Når sendte din fastlege (eller annen henviser) henvisningen til sykehuset?",
+                "type": "date",
+                "enableWhen": [
+                  { "question": "6.1", "operator": "=", "answerCoding": { "system": "http://ehelse.no/KlageType", "code": "3" } }
+                ],
+                "enableBehavior": "any",
+                "required": true,
+                "repeats": false,
+                "readOnly": false
+              },
+              {
+                "extension": [
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
+                    "valueString": "Velg dato, eller skriv dato på denne måten: dd.mm.åååå"
+                  }
+                ],
+                "linkId": "6.5",
+                "text": "Når var du til utredning/behandling på avdelingen du klager på?",
+                "type": "date",
+                "enableWhen": [
+                  { "question": "6.1", "operator": "=", "answerCoding": { "system": "http://ehelse.no/KlageType", "code": "4" } }
+                ],
+                "enableBehavior": "any",
+                "repeats": false,
+                "readOnly": false
+              },
+              {
+                "extension": [
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
+                    "valueString": "Fyll ut feltet. Skriv kun norske bokstaver og tall. Spesialtegn og tegn på andre språk er ikke mulig."
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/regex",
+                    "valueString": "^(?:[æøåÆØÅëËäÄöÖáÁéÉóÓàÀèÈòÒa-zA-Z0-9,.!?()+-/:\"'% §&_]|[ \\r\\n\\t])*$"
+                  }
+                ],
+                "linkId": "6.6",
+                "text": "Gi en kort beskrivelse av det du klager på",
+                "type": "text",
+                "required": true,
+                "repeats": false,
+                "readOnly": false,
+                "maxLength": 2500
+              }
+            ]
+          },
+          {
+            "linkId": "7",
+            "text": "Innsending",
+            "type": "group",
+            "repeats": false,
+            "item": [
+              {
+                "linkId": "7.1",
+                "text": "Skjemaet vil bli sendt til Akershus universitetssykehus. Er ikke dette korrekt, endre mottaker over",
+                "_text": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                      "valueMarkdown": "Skjemaet vil bli sendt til **Akershus universitetssykehus**. Er ikke dette korrekt, endre mottaker over."
+                    }
+                  ]
+                },
+                "type": "display",
+                "enableWhen": [{ "question": "2.2", "operator": "=", "answerReference": { "reference": "Endpoint/4" } }],
+                "enableBehavior": "any"
+              },
+              {
+                "linkId": "251df1e3-eae2-4a86-8111-77deb74fd130",
+                "text": "Skjemaet vil bli sendt til Martina Hansens Hospital. Er ikke dette korrekt, endre mottaker over.",
+                "_text": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                      "valueMarkdown": "Skjemaet vil bli sendt til **Martina Hansens Hospital**. Er ikke dette korrekt, endre mottaker over."
+                    }
+                  ]
+                },
+                "type": "display",
+                "enableWhen": [{ "question": "2.2", "operator": "=", "answerReference": { "reference": "Endpoint/36" } }],
+                "enableBehavior": "any"
+              },
+              {
+                "linkId": "7.2",
+                "text": "Skjemaet vil bli sendt til Oslo universitetssykehus. Er ikke dette korrekt, endre mottaker over",
+                "_text": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                      "valueMarkdown": "Skjemaet vil bli sendt til **Oslo universitetssykehus**. Er ikke dette korrekt, endre mottaker over."
+                    }
+                  ]
+                },
+                "type": "display",
+                "enableWhen": [{ "question": "2.2", "operator": "=", "answerReference": { "reference": "Endpoint/1" } }],
+                "enableBehavior": "any"
+              },
+              {
+                "linkId": "7.3",
+                "text": "Skjemaet vil bli sendt til Sunnaas sykehus. Er ikke dette korrekt, endre mottaker over",
+                "_text": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                      "valueMarkdown": "Skjemaet vil bli sendt til **Sunnaas sykehus**. Er ikke dette korrekt, endre mottaker over."
+                    }
+                  ]
+                },
+                "type": "display",
+                "enableWhen": [{ "question": "2.2", "operator": "=", "answerReference": { "reference": "Endpoint/5" } }],
+                "enableBehavior": "any"
+              },
+              {
+                "linkId": "7.4",
+                "text": "Skjemaet vil bli sendt til Sykehuset i Vestfold. Er ikke dette korrekt, endre mottaker over",
+                "_text": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                      "valueMarkdown": "Skjemaet vil bli sendt til **Sykehuset i Vestfold**. Er ikke dette korrekt, endre mottaker over."
+                    }
+                  ]
+                },
+                "type": "display",
+                "enableWhen": [{ "question": "2.2", "operator": "=", "answerReference": { "reference": "Endpoint/6" } }],
+                "enableBehavior": "any"
+              },
+              {
+                "linkId": "7.5",
+                "text": "Skjemaet vil bli sendt til Sykehuset Innlandet. Er ikke dette korrekt, endre mottaker over",
+                "_text": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                      "valueMarkdown": "Skjemaet vil bli sendt til **Sykehuset Innlandet**. Er ikke dette korrekt, endre mottaker over."
+                    }
+                  ]
+                },
+                "type": "display",
+                "enableWhen": [{ "question": "2.2", "operator": "=", "answerReference": { "reference": "Endpoint/7" } }],
+                "enableBehavior": "any"
+              },
+              {
+                "linkId": "7.6",
+                "text": "Skjemaet vil bli sendt til Sykehuset Telemark. Er ikke dette korrekt, endre mottaker over",
+                "_text": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                      "valueMarkdown": "Skjemaet vil bli sendt til **Sykehuset Telemark**. Er ikke dette korrekt, endre mottaker over."
+                    }
+                  ]
+                },
+                "type": "display",
+                "enableWhen": [{ "question": "2.2", "operator": "=", "answerReference": { "reference": "Endpoint/8" } }],
+                "enableBehavior": "any"
+              },
+              {
+                "linkId": "7.7",
+                "text": "Skjemaet vil bli sendt til Sykehuset Østfold. Er ikke dette korrekt, endre mottaker over",
+                "_text": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                      "valueMarkdown": "Skjemaet vil bli sendt til **Sykehuset Østfold**. Er ikke dette korrekt, endre mottaker over."
+                    }
+                  ]
+                },
+                "type": "display",
+                "enableWhen": [{ "question": "2.2", "operator": "=", "answerReference": { "reference": "Endpoint/9" } }],
+                "enableBehavior": "any"
+              },
+              {
+                "linkId": "7.8",
+                "text": "Skjemaet vil bli sendt til Sørlandet sykehus. Er ikke dette korrekt, endre mottaker over",
+                "_text": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                      "valueMarkdown": "Skjemaet vil bli sendt til **Sørlandet sykehus**. Er ikke dette korrekt, endre mottaker over."
+                    }
+                  ]
+                },
+                "type": "display",
+                "enableWhen": [{ "question": "2.2", "operator": "=", "answerReference": { "reference": "Endpoint/10" } }],
+                "enableBehavior": "any"
+              },
+              {
+                "linkId": "7.9",
+                "text": "Skjemaet vil bli sendt til Vestre Viken helseforetak. Er ikke dette korrekt, endre mottaker over",
+                "_text": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                      "valueMarkdown": "Skjemaet vil bli sendt til **Vestre Viken helseforetak**. Er ikke dette korrekt, endre mottaker over."
+                    }
+                  ]
+                },
+                "type": "display",
+                "enableWhen": [{ "question": "2.2", "operator": "=", "answerReference": { "reference": "Endpoint/11" } }],
+                "enableBehavior": "any"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Questionnaire",
+        "language": "nn-NO",
+        "id": "213",
+        "name": "HSO-rk-1",
+        "title": "Skjema for rettsklage",
+        "description": "Skjema for rettighetsklage",
+        "version": "2.4",
+        "status": "active",
+        "publisher": "Helse Sør-Øst",
+        "meta": {
+          "profile": ["http://ehelse.no/fhir/StructureDefinition/sdf-Questionnaire"],
+          "tag": [{ "system": "urn:ietf:bcp:47", "code": "nn-NO", "display": "Nynorsk" }],
+          "security": [{ "code": "2", "display": "Pasientjournal (Basis +)", "system": "urn:oid:2.16.578.1.12.4.1.1.7618" }]
+        },
+        "useContext": [
+          {
+            "code": { "system": "http://hl7.org/fhir/ValueSet/usage-context-type", "code": "focus", "display": "Clinical Focus" },
+            "valueCodeableConcept": {
+              "coding": [{ "system": "urn:oid:2.16.578.1.12.4.1.1.7614", "code": "2", "display": "Skjema for rettighetsklage" }]
+            }
+          }
+        ],
+        "contact": [{ "name": "http://www.nhn.no" }],
+        "subjectType": ["Patient"],
+        "extension": [
+          {
+            "url": "http://ehelse.no/fhir/StructureDefinition/sdf-authenticationrequirement",
+            "valueCoding": { "system": "http://ehelse.no/fhir/ValueSet/AuthenticationRequirement", "code": "3" }
+          },
+          {
+            "url": "http://ehelse.no/fhir/StructureDefinition/sdf-accessibilitytoresponse",
+            "valueCoding": { "system": "http://ehelse.no/fhir/ValueSet/AccessibilityToResponse", "code": "1" }
+          },
+          {
+            "url": "http://ehelse.no/fhir/StructureDefinition/sdf-discretion",
+            "valueCoding": { "system": "http://ehelse.no/fhir/ValueSet/Discretion", "code": "0" }
+          },
+          { "url": "http://ehelse.no/fhir/StructureDefinition/sdf-generatepdf", "valueBoolean": true },
+          { "url": "http://ehelse.no/fhir/StructureDefinition/sdf-generatenarrative", "valueBoolean": true },
+          {
+            "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-presentationbuttons",
+            "valueCoding": { "system": "http://helsenorge.no/fhir/ValueSet/presentationbuttons", "code": "static" }
+          }
+        ],
+        "purpose": "Søknadsblankett",
+        "copyright": "Er utviklet av NHN og Helse Sør-Øst",
+        "date": "2024-08-27T00:00:00+02:00",
+        "contained": [
+          {
+            "resourceType": "ValueSet",
+            "id": "Helseregion",
+            "version": "1.0",
+            "name": "Helseregion",
+            "title": "Helseregion",
+            "status": "draft",
+            "publisher": "Direktoratet for e-helse",
+            "compose": {
+              "include": [
+                {
+                  "system": "http://ehelse.no/Helseregion",
+                  "concept": [
+                    { "code": "1", "display": "Helse Sør-Aust" },
+                    { "code": "2", "display": "Helse Vest" },
+                    { "code": "3", "display": "Helse Nord" }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "resourceType": "ValueSet",
+            "id": "KlageType",
+            "version": "1.0",
+            "name": "KlageType",
+            "title": "KlageType",
+            "status": "draft",
+            "publisher": "Direktoratet for e-helse",
+            "compose": {
+              "include": [
+                {
+                  "system": "http://ehelse.no/KlageType",
+                  "concept": [
+                    { "code": "1", "display": "Eg har fått avslag på utgreiing /behandling" },
+                    { "code": "2", "display": "Eg har ikkje fått time innan lovfesta tidspunkt" },
+                    { "code": "3", "display": "Eg har ikkje fått avtalt/lova informasjon frå sjukehuset" },
+                    { "code": "4", "display": "Eg har ikkje fått avtalt/lova oppfølging frå sjukehuset" }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "resourceType": "ValueSet",
+            "id": "HSOOUSBehandlingssted",
+            "version": "1.0",
+            "name": "HSOOUSBehandlingssted",
+            "title": "HSOOUSBehandlingssted",
+            "status": "draft",
+            "publisher": "Direktoratet for e-helse",
+            "compose": {
+              "include": [
+                {
+                  "system": "http://ehelse.no/HSOOUSBehandlingssted",
+                  "concept": [
+                    { "code": "1", "display": "Aker" },
+                    { "code": "2", "display": "Gaustad sykehus" },
+                    { "code": "3", "display": "Radiumhospitalet" },
+                    { "code": "4", "display": "Rikshospitalet" },
+                    { "code": "5", "display": "Spesialsykehuset for epilepsi, Sandvika" },
+                    { "code": "6", "display": "Ullevål" }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "resourceType": "ValueSet",
+            "id": "HSOInnlandetBehandlingssted",
+            "version": "1.0",
+            "name": "HSOInnlandetBehandlingssted",
+            "title": "HSOInnlandetBehandlingssted",
+            "status": "draft",
+            "publisher": "Direktoratet for e-helse",
+            "compose": {
+              "include": [
+                {
+                  "system": "http://ehelse.no/HSOInnlandetBehandlingssted",
+                  "concept": [
+                    { "code": "1", "display": "Elverum" },
+                    { "code": "2", "display": "Gjøvik" },
+                    { "code": "3", "display": "Hamar" },
+                    { "code": "4", "display": "Lillehammer" },
+                    { "code": "5", "display": "Reinsvoll" },
+                    { "code": "6", "display": "Sanderud" },
+                    { "code": "7", "display": "Tynset" }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "resourceType": "ValueSet",
+            "id": "HSOTelemarkBehandlingssted",
+            "version": "1.0",
+            "name": "HSOTelemarkBehandlingssted",
+            "title": "HSOTelemarkBehandlingssted",
+            "status": "draft",
+            "publisher": "Direktoratet for e-helse",
+            "compose": {
+              "include": [
+                {
+                  "system": "http://ehelse.no/HSOTelemarkBehandlingssted",
+                  "concept": [
+                    { "code": "1", "display": "Kragerø" },
+                    { "code": "2", "display": "Nordagutu" },
+                    { "code": "3", "display": "Notodden" },
+                    { "code": "4", "display": "Porsgrunn" },
+                    { "code": "5", "display": "Rjukan" },
+                    { "code": "6", "display": "Skien" },
+                    { "code": "7", "display": "Stathelle" }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "resourceType": "ValueSet",
+            "id": "HSOVestfoldBehandlingssted",
+            "version": "1.0",
+            "name": "HSOVestfoldBehandlingssted",
+            "title": "HSOVestfoldBehandlingssted",
+            "status": "draft",
+            "publisher": "Direktoratet for e-helse",
+            "compose": {
+              "include": [
+                {
+                  "system": "http://ehelse.no/HSOVestfoldBehandlingssted",
+                  "concept": [
+                    { "code": "1", "display": "Larvik" },
+                    { "code": "2", "display": "Tønsberg" },
+                    { "code": "3", "display": "Kysthospitalet" }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "resourceType": "ValueSet",
+            "id": "HSOOstfoldBehandlingssted",
+            "version": "1.0",
+            "name": "HSOOstfoldBehandlingssted",
+            "title": "HSOOstfoldBehandlingssted",
+            "status": "draft",
+            "publisher": "Direktoratet for e-helse",
+            "compose": {
+              "include": [
+                {
+                  "system": "http://ehelse.no/HSOOstfoldBehandlingssted",
+                  "concept": [
+                    { "code": "1", "display": "Askim" },
+                    { "code": "2", "display": "Fredrikstad" },
+                    { "code": "3", "display": "Halden" },
+                    { "code": "4", "display": "Kalnes" },
+                    { "code": "5", "display": "Moss" },
+                    { "code": "6", "display": "Sarpsborg" }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "resourceType": "ValueSet",
+            "id": "HSOSorlandetBehandlingssted",
+            "version": "1.0",
+            "name": "HSOSorlandetBehandlingssted",
+            "title": "HSOSorlandetBehandlingssted",
+            "status": "draft",
+            "publisher": "Direktoratet for e-helse",
+            "compose": {
+              "include": [
+                {
+                  "system": "http://ehelse.no/HSOSorlandetBehandlingssted",
+                  "concept": [
+                    { "code": "1", "display": "Arendal" },
+                    { "code": "2", "display": "Flekkefjord" },
+                    { "code": "3", "display": "Kristiansand" }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "resourceType": "ValueSet",
+            "id": "HSOVikenBehandlingssted",
+            "version": "1.0",
+            "name": "HSOVikenBehandlingssted",
+            "title": "HSOVikenBehandlingssted",
+            "status": "draft",
+            "publisher": "Direktoratet for e-helse",
+            "compose": {
+              "include": [
+                {
+                  "system": "http://ehelse.no/HSOVikenBehandlingssted",
+                  "concept": [
+                    { "code": "1", "display": "Blakstad" },
+                    { "code": "2", "display": "Bærum" },
+                    { "code": "3", "display": "Drammen" },
+                    { "code": "4", "display": "Hallingdal" },
+                    { "code": "5", "display": "Kongsberg" },
+                    { "code": "6", "display": "Ringerike" }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "resourceType": "ValueSet",
+            "id": "HVHelseBergen",
+            "version": "1.0",
+            "name": "HVHelseBergen",
+            "title": "HVHelseBergen",
+            "status": "draft",
+            "publisher": "Direktoratet for e-helse",
+            "compose": {
+              "include": [
+                {
+                  "system": "http://ehelse.no/HVHelseBergen",
+                  "concept": [
+                    { "code": "1", "display": "Haukeland universitetssjukehus" },
+                    { "code": "2", "display": "Kysthospitalet i Hagevik" },
+                    { "code": "3", "display": "Voss sjukehus" }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "resourceType": "ValueSet",
+            "id": "HVHelseForde",
+            "version": "1.0",
+            "name": "HVHelseForde",
+            "title": "HVHelseForde",
+            "status": "draft",
+            "publisher": "Direktoratet for e-helse",
+            "compose": {
+              "include": [
+                {
+                  "system": "http://ehelse.no/HVHelseForde",
+                  "concept": [
+                    { "code": "1", "display": "Førde sentralsjukehus" },
+                    { "code": "2", "display": "Nordfjord sjukehus" },
+                    { "code": "3", "display": "Lærdal Sjukehus" }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "resourceType": "ValueSet",
+            "id": "HVHelseFonna",
+            "version": "1.0",
+            "name": "HVHelseFonna",
+            "title": "HVHelseFonna",
+            "status": "draft",
+            "publisher": "Direktoratet for e-helse",
+            "compose": {
+              "include": [
+                {
+                  "system": "http://ehelse.no/HVHelseFonna",
+                  "concept": [
+                    { "code": "1", "display": "Haugesund sjukehus" },
+                    { "code": "2", "display": "Odda sjukehus" },
+                    { "code": "3", "display": "Stord sjukehus" }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "resourceType": "ValueSet",
+            "id": "TypeInstitusjon",
+            "version": "1.0",
+            "name": "TypeInstitusjon",
+            "title": "TypeInstitusjon",
+            "status": "draft",
+            "publisher": "Direktoratet for e-helse",
+            "compose": {
+              "include": [
+                {
+                  "system": "http://ehelse.no/TypeInstitusjon",
+                  "concept": [
+                    { "code": "1", "display": "Offentlige sykehus/institusjoner" },
+                    { "code": "2", "display": "Private sykehus/institusjoner" }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "resourceType": "ValueSet",
+            "id": "HVHelseStavanger",
+            "version": "1.0",
+            "name": "HVHelseStavanger",
+            "title": "HVHelseStavanger",
+            "status": "draft",
+            "publisher": "Direktoratet for e-helse",
+            "compose": {
+              "include": [
+                { "system": "http://ehelse.no/HVHelseStavanger", "concept": [{ "code": "1", "display": "Stavanger universitetssjukehus" }] }
+              ]
+            }
+          },
+          {
+            "resourceType": "ValueSet",
+            "id": "adresseRepresentant",
+            "version": "1",
+            "name": "adresseRepresentant",
+            "title": "adresseRepresentant",
+            "status": "draft",
+            "publisher": "Direktoratet for e-helse",
+            "compose": {
+              "include": [
+                {
+                  "system": "http://ehelse.no/adresseRepresentant",
+                  "concept": [
+                    {
+                      "code": "3",
+                      "display": "Folkeregistrert bustadadresse til den som spør, viss det gjeld eit barn som bur på ei anna adresse"
+                    },
+                    {
+                      "code": "4",
+                      "display": "Folkeregistrert postadresse til den som spør, viss det gjeld eit barn som bur på ei anna adresse"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "resourceType": "ValueSet",
+            "id": "adresseSelv",
+            "version": "1",
+            "name": "adresseSelv",
+            "title": "adresseSelv",
+            "status": "draft",
+            "publisher": "Direktoratet for e-helse",
+            "compose": {
+              "include": [
+                {
+                  "system": "http://ehelse.no/adresseSelv",
+                  "concept": [
+                    { "code": "1", "display": "Folkeregistrert bustadadresse" },
+                    { "code": "2", "display": "Folkeregistert postadresse" }
+                  ]
+                }
+              ]
+            }
+          }
+        ],
+        "item": [
+          {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                "valueCodeableConcept": {
+                  "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "highlight" }]
+                }
+              }
+            ],
+            "linkId": "highlight",
+            "text": "Fyll ut dette skjemaet for å klaga viss du meiner rettane dine som sjukehuspasient ikkje er i tråd med punkta som er lista under \"Kva ønsker du å klaga på\".",
+            "_text": {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                  "valueMarkdown": "Fyll ut dette skjemaet for å klaga viss du meiner rettane dine som sjukehuspasient ikkje er i tråd med punkta som er lista under \"Kva ønsker du å klaga på\"."
+                }
+              ]
+            },
+            "type": "display"
+          },
+          {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                "valueCodeableConcept": {
+                  "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "sidebar" }]
+                }
+              }
+            ],
+            "linkId": "sot-2",
+            "code": [{ "system": "http://ehelse.no/fhir/ValueSet/SOTHeaders", "code": "SOT-2", "display": "Veiledning og ansvarlig" }],
+            "text": "Normal behandlingstid er inntil 4 uker. Du vil få svar i posten fra sykehuset.\r\n\r\nDersom du har spørsmål til innholdet i skjemaet eller har informasjon som haster, ta kontakt med sykehuset på telefon.",
+            "_text": {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                  "valueMarkdown": "Normal handsamingstid er inntil 4 veker. Du vil få svar i posten frå sjukehuset.\r\n\r\nDersom du har spørsmål til innhaldet i skjemaet eller har informasjon som hastar, ta kontakt med sjukehuset på telefon."
+                }
+              ]
+            },
+            "type": "text",
+            "required": false,
+            "repeats": false,
+            "readOnly": false
+          },
+          {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                "valueCodeableConcept": {
+                  "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "sidebar" }]
+                }
+              }
+            ],
+            "linkId": "sot-3",
+            "code": [{ "system": "http://ehelse.no/fhir/ValueSet/SOTHeaders", "code": "SOT-3", "display": "Behandling hos mottaker" }],
+            "text": "Sykehuset som mottar skjemaet er dataansvarlig for personopplysningene oppgitt i skjemaet. Opplysningene i skjemaet blir lagret og registrert i mottakers saksbehandlingssystem. Formålet med behandlingen av opplysningene i skjemaet, er å kunne behandle din forespørsel.\r\n\r\nInnsending av skjemaet er frivillig.",
+            "_text": {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                  "valueMarkdown": "Sjukehuset du sender skjemaet til er dataansvarleg for personopplysingane oppgjeve i skjemaet. Formålet med handsaminga av personopplysingane i skjemaet, er å kunne behandle din førespurnad i sjukehusets sakshandsamingssystem. \r\n\r\nInnsending av skjemaet er frivillig."
+                }
+              ]
+            },
+            "type": "text",
+            "required": false,
+            "repeats": false,
+            "readOnly": false
+          },
+          {
+            "linkId": "2",
+            "text": "Om avdelinga du klagar på",
+            "type": "group",
+            "repeats": false,
+            "item": [
+              {
+                "extension": [
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+                    "valueString": "iif(%representative.relationship.coding.where(system = 'http://hl7.org/fhir/v3/RoleCode' and (code = 'PRN' or code = 'GRANTEE')).count() > 0, true, false)"
+                  },
+                  { "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-hidden", "valueBoolean": true }
+                ],
+                "linkId": "1.99",
+                "text": "Om det er på vegne av eller ei. True er på vegne av",
+                "type": "boolean",
+                "required": false,
+                "repeats": false,
+                "readOnly": false
+              },
+              {
+                "linkId": "2.1",
+                "text": "Vel helseregion",
+                "type": "choice",
+                "required": true,
+                "repeats": false,
+                "readOnly": true,
+                "answerValueSet": "#Helseregion",
+                "initial": [{ "valueCoding": { "system": "http://ehelse.no/Helseregion", "code": "1" } }]
+              },
+              {
+                "extension": [
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/sdf-optionReference",
+                    "valueReference": { "reference": "Endpoint/4", "display": "Akershus universitetssykehus HF" }
+                  },
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/sdf-optionReference",
+                    "valueReference": { "reference": "Endpoint/36", "display": "Martina Hansens Hospital" }
+                  },
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/sdf-optionReference",
+                    "valueReference": { "reference": "Endpoint/1", "display": "Oslo universitetssykehus HF" }
+                  },
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/sdf-optionReference",
+                    "valueReference": { "reference": "Endpoint/5", "display": "Sunnaas sykehus HF" }
+                  },
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/sdf-optionReference",
+                    "valueReference": { "reference": "Endpoint/6", "display": "Sykehuset i Vestfold HF" }
+                  },
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/sdf-optionReference",
+                    "valueReference": { "reference": "Endpoint/7", "display": "Sykehuset Innlandet HF" }
+                  },
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/sdf-optionReference",
+                    "valueReference": { "reference": "Endpoint/8", "display": "Sykehuset Telemark HF" }
+                  },
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/sdf-optionReference",
+                    "valueReference": { "reference": "Endpoint/9", "display": "Sykehuset Østfold HF" }
+                  },
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/sdf-optionReference",
+                    "valueReference": { "reference": "Endpoint/10", "display": "Sørlandet sykehus HF" }
+                  },
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/sdf-optionReference",
+                    "valueReference": { "reference": "Endpoint/11", "display": "Vestre Viken HF" }
+                  }
+                ],
+                "linkId": "2.2",
+                "code": [
+                  {
+                    "system": "http://ehelse.no/fhir/ValueSet/TQQC",
+                    "code": "1",
+                    "display": "Technical endpoint for receiving QuestionnaireResponse"
+                  }
+                ],
+                "text": "Vel helseføretak i Helse Sør-Aust",
+                "type": "choice",
+                "enableWhen": [
+                  { "question": "2.1", "operator": "=", "answerCoding": { "system": "http://ehelse.no/Helseregion", "code": "1" } }
+                ],
+                "enableBehavior": "any",
+                "required": true,
+                "repeats": false,
+                "readOnly": false
+              },
+              {
+                "linkId": "2.3",
+                "text": "Vel type institusjon",
+                "type": "choice",
+                "enableWhen": [
+                  { "question": "2.1", "operator": "=", "answerCoding": { "system": "http://ehelse.no/Helseregion", "code": "2" } }
+                ],
+                "enableBehavior": "any",
+                "required": true,
+                "repeats": false,
+                "readOnly": false,
+                "answerValueSet": "#TypeInstitusjon"
+              },
+              {
+                "extension": [
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/sdf-optionReference",
+                    "valueReference": { "reference": "Endpoint/13", "display": "Helse Fonna" }
+                  },
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/sdf-optionReference",
+                    "valueReference": { "reference": "Endpoint/12", "display": "Helse Førde" }
+                  },
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/sdf-optionReference",
+                    "valueReference": { "reference": "Endpoint/2", "display": "Helse Bergen" }
+                  },
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/sdf-optionReference",
+                    "valueReference": { "reference": "Endpoint/3", "display": "Helse Stavanger" }
+                  }
+                ],
+                "linkId": "2.4",
+                "code": [
+                  {
+                    "system": "http://ehelse.no/fhir/ValueSet/TQQC",
+                    "code": "1",
+                    "display": "Technical endpoint for receiving QuestionnaireResponse"
+                  }
+                ],
+                "text": "Vel offentlige helseforetak i Helse Vest",
+                "type": "choice",
+                "enableWhen": [
+                  { "question": "2.3", "operator": "=", "answerCoding": { "system": "http://ehelse.no/TypeInstitusjon", "code": "1" } }
+                ],
+                "enableBehavior": "any",
+                "required": true,
+                "repeats": false,
+                "readOnly": false
+              },
+              {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                    "valueCodeableConcept": {
+                      "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "radio-button" }]
+                    }
+                  },
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/sdf-optionReference",
+                    "valueReference": { "reference": "Endpoint/14", "display": "NKS Jæren distriktspsykiatriske senter" }
+                  },
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/sdf-optionReference",
+                    "valueReference": { "reference": "Endpoint/15", "display": "Haraldsplass Diakonale Sykehus" }
+                  },
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/sdf-optionReference",
+                    "valueReference": {
+                      "reference": "Endpoint/16",
+                      "display": "Haugesund Sanitetsforenings Revmatismesykehus / Rehabilitering Vest"
+                    }
+                  },
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/sdf-optionReference",
+                    "valueReference": { "reference": "Endpoint/17", "display": "Voss DPS NKS Bjørkeli" }
+                  },
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/sdf-optionReference",
+                    "valueReference": { "reference": "Endpoint/18", "display": "Betanien sykehus" }
+                  },
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/sdf-optionReference",
+                    "valueReference": { "reference": "Endpoint/19", "display": "NKS Olaviken Alderspsykiatriske Sykehus" }
+                  },
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/sdf-optionReference",
+                    "valueReference": { "reference": "Endpoint/20", "display": "Solli Sykehus" }
+                  },
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/sdf-optionReference",
+                    "valueReference": { "reference": "Endpoint/21", "display": "Blå Kors Haugaland A-Senter" }
+                  }
+                ],
+                "linkId": "2.5",
+                "code": [
+                  {
+                    "system": "http://ehelse.no/fhir/ValueSet/TQQC",
+                    "code": "1",
+                    "display": "Technical endpoint for receiving QuestionnaireResponse"
+                  }
+                ],
+                "text": "Vel private sjukehus/institusjonar",
+                "type": "choice",
+                "enableWhen": [
+                  { "question": "2.3", "operator": "=", "answerCoding": { "system": "http://ehelse.no/TypeInstitusjon", "code": "2" } }
+                ],
+                "enableBehavior": "any",
+                "required": true,
+                "repeats": false,
+                "readOnly": false
+              },
+              {
+                "linkId": "2.6",
+                "text": "_Lovisenberg Diakonale Sjukehus, Diakonhjemmet sjukehus, Revmatismesjukehuset og Betanien Hospital Skien tilbyr ikkje denne digitale tenesta._",
+                "_text": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                      "valueMarkdown": "_Lovisenberg Diakonale Sjukehus, Diakonhjemmet sjukehus, Revmatismesjukehuset og Betanien Hospital Skien tilbyr ikkje denne digitale tenesta._"
+                    }
+                  ]
+                },
+                "type": "display",
+                "enableWhen": [
+                  { "question": "2.1", "operator": "=", "answerCoding": { "system": "http://ehelse.no/Helseregion", "code": "1" } }
+                ],
+                "enableBehavior": "any"
+              },
+              {
+                "extension": [
+                  { "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "Vel eitt av alternativa" },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                    "valueCodeableConcept": {
+                      "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "radio-button" }]
+                    }
+                  }
+                ],
+                "linkId": "2.7",
+                "text": "Vel behandlingsstad under.",
+                "type": "choice",
+                "enableWhen": [{ "question": "2.2", "operator": "=", "answerReference": { "reference": "Endpoint/1" } }],
+                "enableBehavior": "any",
+                "required": true,
+                "repeats": false,
+                "readOnly": false,
+                "answerValueSet": "#HSOOUSBehandlingssted"
+              },
+              {
+                "extension": [
+                  { "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "Vel eitt av alternativa" },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                    "valueCodeableConcept": {
+                      "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "radio-button" }]
+                    }
+                  }
+                ],
+                "linkId": "2.8",
+                "text": "Vel behandlingsstad under.",
+                "type": "choice",
+                "enableWhen": [{ "question": "2.2", "operator": "=", "answerReference": { "reference": "Endpoint/7" } }],
+                "enableBehavior": "any",
+                "required": true,
+                "repeats": false,
+                "readOnly": false,
+                "answerValueSet": "#HSOInnlandetBehandlingssted"
+              },
+              {
+                "extension": [
+                  { "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "Vel eitt av alternativa" },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                    "valueCodeableConcept": {
+                      "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "radio-button" }]
+                    }
+                  }
+                ],
+                "linkId": "2.9",
+                "text": "Vel behandlingsstad under.",
+                "type": "choice",
+                "enableWhen": [{ "question": "2.2", "operator": "=", "answerReference": { "reference": "Endpoint/8" } }],
+                "enableBehavior": "any",
+                "required": true,
+                "repeats": false,
+                "readOnly": false,
+                "answerValueSet": "#HSOTelemarkBehandlingssted"
+              },
+              {
+                "extension": [
+                  { "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "Vel eitt av alternativa" },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                    "valueCodeableConcept": {
+                      "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "radio-button" }]
+                    }
+                  }
+                ],
+                "linkId": "2.10",
+                "text": "Vel behandlingsstad under.",
+                "type": "choice",
+                "enableWhen": [{ "question": "2.2", "operator": "=", "answerReference": { "reference": "Endpoint/9" } }],
+                "enableBehavior": "any",
+                "required": true,
+                "repeats": false,
+                "readOnly": false,
+                "answerValueSet": "#HSOOstfoldBehandlingssted"
+              },
+              {
+                "extension": [
+                  { "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "Vel eitt av alternativa" },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                    "valueCodeableConcept": {
+                      "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "radio-button" }]
+                    }
+                  }
+                ],
+                "linkId": "2.11",
+                "text": "Vel behandlingsstad under.",
+                "type": "choice",
+                "enableWhen": [{ "question": "2.2", "operator": "=", "answerReference": { "reference": "Endpoint/10" } }],
+                "enableBehavior": "any",
+                "required": true,
+                "repeats": false,
+                "readOnly": false,
+                "answerValueSet": "#HSOSorlandetBehandlingssted"
+              },
+              {
+                "extension": [
+                  { "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "Vel eitt av alternativa" },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                    "valueCodeableConcept": {
+                      "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "radio-button" }]
+                    }
+                  }
+                ],
+                "linkId": "2.12",
+                "text": "Vel behandlingsstad under.",
+                "type": "choice",
+                "enableWhen": [{ "question": "2.2", "operator": "=", "answerReference": { "reference": "Endpoint/11" } }],
+                "enableBehavior": "any",
+                "required": true,
+                "repeats": false,
+                "readOnly": false,
+                "answerValueSet": "#HSOVikenBehandlingssted"
+              },
+              {
+                "extension": [
+                  { "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "Vel eitt av alternativa" },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                    "valueCodeableConcept": {
+                      "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "radio-button" }]
+                    }
+                  }
+                ],
+                "linkId": "2.13",
+                "text": "Vel behandlingsstad under.",
+                "type": "choice",
+                "enableWhen": [{ "question": "2.2", "operator": "=", "answerReference": { "reference": "Endpoint/6" } }],
+                "enableBehavior": "any",
+                "required": true,
+                "repeats": false,
+                "readOnly": false,
+                "answerValueSet": "#HSOVestfoldBehandlingssted"
+              },
+              {
+                "extension": [
+                  { "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "Vel eitt av alternativa" },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                    "valueCodeableConcept": {
+                      "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "radio-button" }]
+                    }
+                  }
+                ],
+                "linkId": "2.14",
+                "text": "Vel behandlingsstad under.",
+                "type": "choice",
+                "enableWhen": [{ "question": "2.4", "operator": "=", "answerReference": { "reference": "Endpoint/2" } }],
+                "enableBehavior": "any",
+                "required": true,
+                "repeats": false,
+                "readOnly": false,
+                "answerValueSet": "#HVHelseBergen"
+              },
+              {
+                "extension": [
+                  { "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "Vel eitt av alternativa" },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                    "valueCodeableConcept": {
+                      "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "radio-button" }]
+                    }
+                  }
+                ],
+                "linkId": "2.15",
+                "text": "Vel behandlingsstad under.",
+                "type": "choice",
+                "enableWhen": [{ "question": "2.4", "operator": "=", "answerReference": { "reference": "Endpoint/12" } }],
+                "enableBehavior": "any",
+                "required": true,
+                "repeats": false,
+                "readOnly": false,
+                "answerValueSet": "#HVHelseForde"
+              },
+              {
+                "extension": [
+                  { "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "Vel eitt av alternativa" },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                    "valueCodeableConcept": {
+                      "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "radio-button" }]
+                    }
+                  }
+                ],
+                "linkId": "2.16",
+                "text": "Vel behandlingsstad under.",
+                "type": "choice",
+                "enableWhen": [{ "question": "2.4", "operator": "=", "answerReference": { "reference": "Endpoint/13" } }],
+                "enableBehavior": "any",
+                "required": true,
+                "repeats": false,
+                "readOnly": false,
+                "answerValueSet": "#HVHelseFonna"
+              },
+              {
+                "extension": [
+                  { "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "Vel eitt av alternativa" },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                    "valueCodeableConcept": {
+                      "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "radio-button" }]
+                    }
+                  }
+                ],
+                "linkId": "2.17",
+                "text": "Vel behandlingsstad under.",
+                "type": "choice",
+                "enableWhen": [{ "question": "2.4", "operator": "=", "answerReference": { "reference": "Endpoint/3" } }],
+                "enableBehavior": "any",
+                "required": true,
+                "repeats": false,
+                "readOnly": false,
+                "answerValueSet": "#HVHelseStavanger"
+              },
+              {
+                "linkId": "202beca9-1ed8-4684-a56d-9583855e7f56",
+                "type": "string",
+                "text": "Kva avdeling klagar du på?",
+                "extension": [
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
+                    "valueString": "Fyll ut feltet. Skriv berre norske bokstavar og tall. Spesialteikn og teikn på andre språk er ikkje mogleg."
+                  },
+                  {
+                    "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sublabel",
+                    "valueMarkdown": "Sjå brev frå sjukehuset for å finna namnet på avdelinga du klagar på."
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/regex",
+                    "valueString": "^(?:[æøåÆØÅëËäÄöÖáÁéÉóÓàÀèÈòÒa-zA-Z0-9,.!?()+-/:\"']|[ \\r\\n\\t])*$"
+                  }
+                ],
+                "required": true,
+                "maxLength": 250,
+                "enableWhen": [
+                  { "question": "2.2", "operator": "=", "answerReference": { "reference": "Endpoint/4" } },
+                  { "question": "2.2", "operator": "=", "answerReference": { "reference": "Endpoint/1" } },
+                  { "question": "2.2", "operator": "=", "answerReference": { "reference": "Endpoint/5" } },
+                  { "question": "2.2", "operator": "=", "answerReference": { "reference": "Endpoint/6" } },
+                  { "question": "2.2", "operator": "=", "answerReference": { "reference": "Endpoint/7" } },
+                  { "question": "2.2", "operator": "=", "answerReference": { "reference": "Endpoint/8" } },
+                  { "question": "2.2", "operator": "=", "answerReference": { "reference": "Endpoint/9" } },
+                  { "question": "2.2", "operator": "=", "answerReference": { "reference": "Endpoint/10" } },
+                  { "question": "2.2", "operator": "=", "answerReference": { "reference": "Endpoint/11" } }
+                ]
+              }
+            ]
+          },
+          {
+            "linkId": "3",
+            "text": "Opplysningar om den klagen gjeld",
+            "type": "group",
+            "repeats": false,
+            "item": [
+              {
+                "linkId": "3.1",
+                "text": "Personopplysningar",
+                "type": "group",
+                "repeats": false,
+                "item": [
+                  {
+                    "extension": [
+                      {
+                        "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+                        "valueString": "Patient.name.where(use = 'official').select(iif(given.count() > 1, given.take(count()-1), given).join(' '))"
+                      }
+                    ],
+                    "linkId": "3.1.1",
+                    "text": "Fornamn",
+                    "type": "string",
+                    "required": false,
+                    "repeats": false,
+                    "readOnly": true,
+                    "maxLength": 250
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+                        "valueString": "Patient.name.where(use = 'official').family"
+                      }
+                    ],
+                    "linkId": "3.1.2",
+                    "text": "Etternamn",
+                    "type": "string",
+                    "required": false,
+                    "repeats": false,
+                    "readOnly": true,
+                    "maxLength": 250
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
+                        "valueString": "Fyll ut feltet med maks 250 teikn. Skriv berre norske bokstavar og tall. Spesialteikn og teikn på andre språk er ikkje mogleg"
+                      },
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/regex",
+                        "valueString": "^(?:[æøåÆØÅëËäÄöÖáÁéÉóÓàÀèÈòÒa-zA-Z0-9,.!?()+-/:\"']|[ \\r\\n\\t])*$"
+                      }
+                    ],
+                    "linkId": "3.1.3",
+                    "text": "Eventuelt tidlegare namn",
+                    "type": "string",
+                    "required": false,
+                    "repeats": false,
+                    "readOnly": false,
+                    "maxLength": 250
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+                        "valueString": "Patient.identifier.where(use = 'official' and system = 'urn:oid:2.16.578.1.12.4.1.4.1').value"
+                      }
+                    ],
+                    "linkId": "3.1.4",
+                    "text": "Fødselsnummer (11 siffer)",
+                    "type": "string",
+                    "required": true,
+                    "repeats": false,
+                    "readOnly": true,
+                    "maxLength": 250
+                  }
+                ]
+              },
+              {
+                "linkId": "3.2",
+                "text": "Telefonnummer",
+                "type": "group",
+                "repeats": false,
+                "item": [
+                  {
+                    "extension": [
+                      {
+                        "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+                        "valueString": "Patient.telecom.where(use = 'mobile' and system = 'phone').value"
+                      }
+                    ],
+                    "linkId": "3.2.1",
+                    "text": "Mobiltelefonnummer",
+                    "type": "string",
+                    "required": false,
+                    "repeats": false,
+                    "readOnly": true,
+                    "maxLength": 250
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
+                        "valueString": "Fyll ut feltet med minimum 5 teikn, maks 12 teikn. Telefonnummeret kan starta med + eller 00 for å angi landskode"
+                      },
+                      { "url": "http://hl7.org/fhir/StructureDefinition/regex", "valueString": "^((\\+|00)(\\d{1,3}))?\\d{5,12}$" }
+                    ],
+                    "linkId": "3.2.2",
+                    "text": "Eventuelt anna telefonnummer vi kan nå deg på",
+                    "type": "string",
+                    "required": false,
+                    "repeats": false,
+                    "readOnly": false,
+                    "maxLength": 250
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "linkId": "4",
+            "text": "Opplysingar om deg som klagar",
+            "type": "group",
+            "enableWhen": [{ "question": "1.99", "operator": "=", "answerBoolean": true }],
+            "enableBehavior": "any",
+            "repeats": false,
+            "item": [
+              {
+                "linkId": "4.1",
+                "text": "Personopplysninger",
+                "type": "group",
+                "repeats": false,
+                "item": [
+                  {
+                    "extension": [
+                      {
+                        "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+                        "valueString": "RelatedPerson.name.where(use = 'official').select(given.join(' ') & ' ' & family)"
+                      }
+                    ],
+                    "linkId": "4.1.1",
+                    "text": "Namn",
+                    "type": "string",
+                    "required": false,
+                    "repeats": false,
+                    "readOnly": true,
+                    "maxLength": 250
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+                        "valueString": "RelatedPerson.identifier.where(use = 'official' and system = 'urn:oid:2.16.578.1.12.4.1.4.1').value"
+                      }
+                    ],
+                    "linkId": "4.1.2",
+                    "text": "Fødselsnummer (11 siffer)",
+                    "type": "string",
+                    "required": false,
+                    "repeats": false,
+                    "readOnly": true,
+                    "maxLength": 250
+                  }
+                ]
+              },
+              {
+                "linkId": "4.2",
+                "text": "Telefonnummer",
+                "type": "group",
+                "repeats": false,
+                "item": [
+                  {
+                    "extension": [
+                      {
+                        "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+                        "valueString": "RelatedPerson.telecom.where(use = 'mobile' and system = 'phone').value"
+                      }
+                    ],
+                    "linkId": "4.2.1",
+                    "text": "Mobiltelefonnummer",
+                    "type": "string",
+                    "required": false,
+                    "repeats": false,
+                    "readOnly": true,
+                    "maxLength": 250
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
+                        "valueString": "Fyll ut feltet med minimum 5 teikn, maks 12 teikn. Telefonnummeret kan starta med + eller 00 for å angi landskode"
+                      },
+                      { "url": "http://hl7.org/fhir/StructureDefinition/regex", "valueString": "^((\\+|00)(\\d{1,3}))?\\d{5,12}$" }
+                    ],
+                    "linkId": "4.2.2",
+                    "text": "Eventuelt annet telefonnummer vi kan nå deg på",
+                    "type": "string",
+                    "required": false,
+                    "repeats": false,
+                    "readOnly": false,
+                    "maxLength": 250
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "linkId": "5",
+            "text": "Adresse",
+            "type": "group",
+            "repeats": false,
+            "item": [
+              {
+                "linkId": "5.99",
+                "text": "Dersom førespurnaden gjeld eit barn på anna adresse enn den forelderen som spør, hak av for å velja eiga adresse.",
+                "type": "boolean",
+                "enableWhen": [{ "question": "1.99", "operator": "=", "answerBoolean": true }],
+                "enableBehavior": "any",
+                "required": false,
+                "repeats": false,
+                "readOnly": false
+              },
+              {
+                "extension": [
+                  { "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "Vel eitt av alternativa" }
+                ],
+                "linkId": "5.1",
+                "text": "Vel adresse til den det gjeld",
+                "type": "choice",
+                "enableWhen": [{ "question": "5.99", "operator": "=", "answerBoolean": false }],
+                "enableBehavior": "any",
+                "required": true,
+                "repeats": false,
+                "readOnly": false,
+                "answerValueSet": "#adresseSelv",
+                "item": [
+                  {
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                        "valueCodeableConcept": {
+                          "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "help" }]
+                        }
+                      }
+                    ],
+                    "linkId": "5.1.1",
+                    "text": "Bustadadresse er hovudadressa som er registrert i folkeregisteret. Postadressa er ein tilleggs- eller mellombels adresse du har gitt opp til folkeregisteret for å få tilsendt post til den staden du oppheld deg i ein periode, når du ikkje melder permanent flytting.",
+                    "type": "text",
+                    "required": false,
+                    "repeats": false,
+                    "readOnly": false
+                  },
+                  {
+                    "linkId": "5.1.2",
+                    "text": "### Det er ikkje registert ei fullstendig postadresse. Vel bustadadresse.",
+                    "_text": {
+                      "extension": [
+                        {
+                          "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                          "valueMarkdown": "### Det er ikkje registert ei fullstendig postadresse. Vel bustadadresse."
+                        }
+                      ]
+                    },
+                    "type": "display",
+                    "enableWhen": [
+                      { "question": "5.4.3", "operator": "exists", "answerBoolean": false },
+                      { "question": "5.4.4", "operator": "exists", "answerBoolean": false },
+                      { "question": "5.4.5", "operator": "exists", "answerBoolean": false },
+                      { "question": "5.1", "operator": "=", "answerCoding": { "system": "http://ehelse.no/adresseSelv", "code": "2" } }
+                    ],
+                    "enableBehavior": "all"
+                  }
+                ]
+              },
+              {
+                "extension": [
+                  { "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "Velg ett av alternativene." }
+                ],
+                "linkId": "5.2",
+                "text": "Vel adresse til forelder som spør",
+                "type": "choice",
+                "enableWhen": [{ "question": "5.99", "operator": "=", "answerBoolean": true }],
+                "enableBehavior": "any",
+                "required": true,
+                "repeats": false,
+                "readOnly": false,
+                "answerValueSet": "#adresseRepresentant",
+                "item": [
+                  {
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                        "valueCodeableConcept": {
+                          "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "help" }]
+                        }
+                      }
+                    ],
+                    "linkId": "5.2.1",
+                    "text": "Bustadadresse er hovudadressa som er registrert i folkeregisteret. Postadressa er ein tilleggs- eller mellombels adresse du har gitt opp til folkeregisteret for å få tilsendt post til den staden du oppheld deg i ein periode, når du ikkje melder permanent flytting.",
+                    "type": "text",
+                    "required": false,
+                    "repeats": false,
+                    "readOnly": false
+                  },
+                  {
+                    "linkId": "5.2.2",
+                    "text": "### Det er ikkje registert ei fullstendig postadresse. Vel bustadadresse.",
+                    "_text": {
+                      "extension": [
+                        {
+                          "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                          "valueMarkdown": "### Det er ikkje registert ei fullstendig postadresse. Vel bustadadresse."
+                        }
+                      ]
+                    },
+                    "type": "display",
+                    "enableWhen": [
+                      { "question": "5.6.3", "operator": "exists", "answerBoolean": false },
+                      { "question": "5.6.4", "operator": "exists", "answerBoolean": false },
+                      { "question": "5.6.5", "operator": "exists", "answerBoolean": false },
+                      {
+                        "question": "5.2",
+                        "operator": "=",
+                        "answerCoding": { "system": "http://ehelse.no/adresseRepresentant", "code": "4" }
+                      }
+                    ],
+                    "enableBehavior": "all"
+                  }
+                ]
+              },
+              {
+                "linkId": "5.3",
+                "code": [
+                  { "system": "urn:oid:2.16.578.1.12.4.1.1.3401", "code": "H", "display": "Bostedsadresse" },
+                  { "system": "http://ehelse.no/adresseSelv", "code": "1", "display": "Folkeregistrert bostedsadresse til den det gjelder" }
+                ],
+                "text": "Folkeregistrert bustadadresse til den det gjeld",
+                "type": "group",
+                "enableWhen": [
+                  { "question": "5.1", "operator": "=", "answerCoding": { "system": "http://ehelse.no/adresseSelv", "code": "1" } }
+                ],
+                "enableBehavior": "any",
+                "repeats": false,
+                "item": [
+                  {
+                    "extension": [
+                      {
+                        "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+                        "valueString": "Patient.name.where(use = 'official').select(given.join(' ') & ' ' & family)"
+                      }
+                    ],
+                    "linkId": "5.3.1",
+                    "text": "Namn",
+                    "type": "string",
+                    "required": false,
+                    "repeats": false,
+                    "readOnly": true,
+                    "maxLength": 250
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+                        "valueString": "Patient.address.where(use = 'home').line.first()"
+                      }
+                    ],
+                    "linkId": "5.3.2",
+                    "text": "Adresse",
+                    "type": "string",
+                    "required": false,
+                    "repeats": false,
+                    "readOnly": true,
+                    "maxLength": 250
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+                        "valueString": "Patient.address.where(use = 'home').postalCode"
+                      }
+                    ],
+                    "linkId": "5.3.3",
+                    "text": "Postnummer",
+                    "type": "string",
+                    "required": false,
+                    "repeats": false,
+                    "readOnly": true,
+                    "maxLength": 4
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+                        "valueString": "Patient.address.where(use = 'home').city"
+                      }
+                    ],
+                    "linkId": "5.3.4",
+                    "text": "Poststad",
+                    "type": "string",
+                    "required": false,
+                    "repeats": false,
+                    "readOnly": true,
+                    "maxLength": 250
+                  }
+                ]
+              },
+              {
+                "linkId": "5.4",
+                "code": [
+                  { "system": "urn:oid:2.16.578.1.12.4.1.1.3401", "code": "PST", "display": "Postadresse" },
+                  { "system": "http://ehelse.no/adresseSelv", "code": "2", "display": "Folkeregistrert postadresse til den det gjelder" }
+                ],
+                "text": "Folkeregistrert postadresse til den det gjeld",
+                "type": "group",
+                "enableWhen": [
+                  { "question": "5.1", "operator": "=", "answerCoding": { "system": "http://ehelse.no/adresseSelv", "code": "2" } }
+                ],
+                "enableBehavior": "any",
+                "repeats": false,
+                "item": [
+                  {
+                    "extension": [
+                      {
+                        "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+                        "valueString": "Patient.name.where(use = 'official').select(given.join(' ') & ' ' & family)"
+                      }
+                    ],
+                    "linkId": "5.4.1",
+                    "text": "Namn",
+                    "type": "string",
+                    "required": false,
+                    "repeats": false,
+                    "readOnly": true,
+                    "maxLength": 250
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+                        "valueString": "Patient.address.where(use = 'temp').line[0]"
+                      }
+                    ],
+                    "linkId": "5.4.2",
+                    "text": "C/o",
+                    "type": "string",
+                    "required": false,
+                    "repeats": false,
+                    "readOnly": true,
+                    "maxLength": 250
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+                        "valueString": "Patient.address.where(use = 'temp').line[1]"
+                      }
+                    ],
+                    "linkId": "5.4.3",
+                    "text": "Adresse",
+                    "type": "string",
+                    "required": false,
+                    "repeats": false,
+                    "readOnly": true,
+                    "maxLength": 250
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+                        "valueString": "Patient.address.where(use = 'temp').line[2]"
+                      }
+                    ],
+                    "linkId": "5.4.4",
+                    "text": "Postnummer",
+                    "type": "string",
+                    "required": false,
+                    "repeats": false,
+                    "readOnly": true,
+                    "maxLength": 15
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+                        "valueString": "Patient.address.where(use = 'temp').line[3]"
+                      }
+                    ],
+                    "linkId": "5.4.5",
+                    "text": "Poststad",
+                    "type": "string",
+                    "required": false,
+                    "repeats": false,
+                    "readOnly": true,
+                    "maxLength": 250
+                  }
+                ]
+              },
+              {
+                "linkId": "5.5",
+                "code": [
+                  { "system": "urn:oid:2.16.578.1.12.4.1.1.3401", "code": "H", "display": "Bostedsadresse" },
+                  {
+                    "system": "http://ehelse.no/adresseRepresentant",
+                    "code": "3",
+                    "display": "Folkeregistrert bostedsadresse til den som forespør"
+                  }
+                ],
+                "text": "Folkeregistrert bustadadresse til den som spør",
+                "type": "group",
+                "enableWhen": [
+                  { "question": "5.2", "operator": "=", "answerCoding": { "system": "http://ehelse.no/adresseRepresentant", "code": "3" } }
+                ],
+                "enableBehavior": "any",
+                "repeats": false,
+                "item": [
+                  {
+                    "extension": [
+                      {
+                        "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+                        "valueString": "RelatedPerson.name.where(use = 'official').select(given.join(' ') & ' ' & family)"
+                      }
+                    ],
+                    "linkId": "5.5.1",
+                    "text": "Namn",
+                    "type": "string",
+                    "required": false,
+                    "repeats": false,
+                    "readOnly": true,
+                    "maxLength": 250
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+                        "valueString": "RelatedPerson.address.where(use = 'home').line.first()"
+                      }
+                    ],
+                    "linkId": "5.5.2",
+                    "text": "Adresse",
+                    "type": "string",
+                    "required": false,
+                    "repeats": false,
+                    "readOnly": true,
+                    "maxLength": 250
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+                        "valueString": "RelatedPerson.address.where(use = 'home').postalCode"
+                      }
+                    ],
+                    "linkId": "5.5.3",
+                    "text": "Postnummer",
+                    "type": "string",
+                    "required": false,
+                    "repeats": false,
+                    "readOnly": true,
+                    "maxLength": 4
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+                        "valueString": "RelatedPerson.address.where(use = 'home').city"
+                      }
+                    ],
+                    "linkId": "5.5.4",
+                    "text": "Poststad",
+                    "type": "string",
+                    "required": false,
+                    "repeats": false,
+                    "readOnly": true,
+                    "maxLength": 250
+                  }
+                ]
+              },
+              {
+                "linkId": "5.6",
+                "code": [
+                  { "system": "urn:oid:2.16.578.1.12.4.1.1.3401", "code": "PST", "display": "Postadresse" },
+                  {
+                    "system": "http://ehelse.no/adresseRepresentant",
+                    "code": "4",
+                    "display": "Folkeregistrert postadresse til den som forespør"
+                  }
+                ],
+                "text": "Folkeregistrert postadresse til den som spør",
+                "type": "group",
+                "enableWhen": [
+                  { "question": "5.2", "operator": "=", "answerCoding": { "system": "http://ehelse.no/adresseRepresentant", "code": "4" } }
+                ],
+                "enableBehavior": "any",
+                "repeats": false,
+                "item": [
+                  {
+                    "extension": [
+                      {
+                        "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+                        "valueString": "RelatedPerson.name.where(use = 'official').select(given.join(' ') & ' ' & family)"
+                      }
+                    ],
+                    "linkId": "5.6.1",
+                    "text": "Namn",
+                    "type": "string",
+                    "required": false,
+                    "repeats": false,
+                    "readOnly": true
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+                        "valueString": "RelatedPerson.address.where(use = 'temp').line[0]"
+                      }
+                    ],
+                    "linkId": "5.6.2",
+                    "text": "C/o",
+                    "type": "string",
+                    "required": false,
+                    "repeats": false,
+                    "readOnly": true,
+                    "maxLength": 250
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+                        "valueString": "RelatedPerson.address.where(use = 'temp').line[1]"
+                      }
+                    ],
+                    "linkId": "5.6.3",
+                    "text": "Adresse",
+                    "type": "string",
+                    "required": false,
+                    "repeats": false,
+                    "readOnly": true,
+                    "maxLength": 250
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+                        "valueString": "RelatedPerson.address.where(use = 'temp').line[2]"
+                      }
+                    ],
+                    "linkId": "5.6.4",
+                    "text": "Postnummer",
+                    "type": "string",
+                    "required": false,
+                    "repeats": false,
+                    "readOnly": true,
+                    "maxLength": 15
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+                        "valueString": "RelatedPerson.address.where(use = 'temp').line[3]"
+                      }
+                    ],
+                    "linkId": "5.6.5",
+                    "text": "Poststad",
+                    "type": "string",
+                    "required": false,
+                    "repeats": false,
+                    "readOnly": true,
+                    "maxLength": 250
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "linkId": "6",
+            "text": "Kva ynskjer du å klaga på?",
+            "type": "group",
+            "repeats": false,
+            "item": [
+              {
+                "extension": [
+                  { "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "Vel eitt av alternativa" },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                    "valueCodeableConcept": {
+                      "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "radio-button" }]
+                    }
+                  }
+                ],
+                "linkId": "6.1",
+                "text": "Kva gjeld klaga di?",
+                "type": "choice",
+                "required": true,
+                "repeats": false,
+                "readOnly": false,
+                "answerValueSet": "#KlageType"
+              },
+              {
+                "extension": [
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
+                    "valueString": "Vel dato, eller skriv dato på denne måten: dd.mm.åååå"
+                  }
+                ],
+                "linkId": "6.2",
+                "text": "Kva er datoen på brevet der du fekk vita om avslaget?",
+                "type": "date",
+                "enableWhen": [
+                  { "question": "6.1", "operator": "=", "answerCoding": { "system": "http://ehelse.no/KlageType", "code": "1" } }
+                ],
+                "enableBehavior": "any",
+                "required": true,
+                "repeats": false,
+                "readOnly": false
+              },
+              {
+                "extension": [
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
+                    "valueString": "Vel dato, eller skriv dato på denne måten: dd.mm.åååå"
+                  }
+                ],
+                "linkId": "6.3",
+                "text": "Når har du fått time?",
+                "type": "date",
+                "enableWhen": [
+                  { "question": "6.1", "operator": "=", "answerCoding": { "system": "http://ehelse.no/KlageType", "code": "2" } }
+                ],
+                "enableBehavior": "any",
+                "repeats": false,
+                "readOnly": false
+              },
+              {
+                "extension": [
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
+                    "valueString": "Vel dato, eller skriv dato på denne måten: dd.mm.åååå"
+                  }
+                ],
+                "linkId": "6.4",
+                "text": "Når sende fastlegen din (eller annan tilviser) tilvisninga til sjukehuset?",
+                "type": "date",
+                "enableWhen": [
+                  { "question": "6.1", "operator": "=", "answerCoding": { "system": "http://ehelse.no/KlageType", "code": "3" } }
+                ],
+                "enableBehavior": "any",
+                "required": true,
+                "repeats": false,
+                "readOnly": false
+              },
+              {
+                "extension": [
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
+                    "valueString": "Vel dato, eller skriv dato på denne måten: dd.mm.åååå"
+                  }
+                ],
+                "linkId": "6.5",
+                "text": "Når var du til utgreiing/behandling på avdelinga du klagar på?",
+                "type": "date",
+                "enableWhen": [
+                  { "question": "6.1", "operator": "=", "answerCoding": { "system": "http://ehelse.no/KlageType", "code": "4" } }
+                ],
+                "enableBehavior": "any",
+                "repeats": false,
+                "readOnly": false
+              },
+              {
+                "extension": [
+                  {
+                    "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
+                    "valueString": "Skriv berre norske bokstavar og tall. Spesialteikn og teikn på andre språk er ikkje mogleg"
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/regex",
+                    "valueString": "^(?:[æøåÆØÅëËäÄöÖáÁéÉóÓàÀèÈòÒa-zA-Z0-9,.!?()+-/:\"'% §&_]|[ \\r\\n\\t])*$"
+                  }
+                ],
+                "linkId": "6.6",
+                "text": "Gje ei kort forklaring på det klaga di gjeld",
+                "type": "text",
+                "required": true,
+                "repeats": false,
+                "readOnly": false,
+                "maxLength": 2500
+              }
+            ]
+          },
+          {
+            "linkId": "7",
+            "text": "Send inn",
+            "type": "group",
+            "repeats": false,
+            "item": [
+              {
+                "linkId": "7.1",
+                "text": "Skjemaet vil bli sendt til **Akershus universitetssykehus**. Er ikkje dette korrekt, endre mottakar over.",
+                "_text": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                      "valueMarkdown": "Skjemaet vil bli sendt til **Akershus universitetssykehus**. Er ikkje dette korrekt, endre mottakar over."
+                    }
+                  ]
+                },
+                "type": "display",
+                "enableWhen": [{ "question": "2.2", "operator": "=", "answerReference": { "reference": "Endpoint/4" } }],
+                "enableBehavior": "any"
+              },
+              {
+                "linkId": "251df1e3-eae2-4a86-8111-77deb74fd130",
+                "text": "Skjemaet vil bli sendt til **Martina Hansens Hospital**. Er ikkje dette korrekt, endre mottakar over.",
+                "_text": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                      "valueMarkdown": "Skjemaet vil bli sendt til **Martina Hansens Hospital**. Er ikkje dette korrekt, endre mottakar over."
+                    }
+                  ]
+                },
+                "type": "display",
+                "enableWhen": [{ "question": "2.2", "operator": "=", "answerReference": { "reference": "Endpoint/36" } }],
+                "enableBehavior": "any"
+              },
+              {
+                "linkId": "7.2",
+                "text": "Skjemaet vil bli sendt til **Oslo universitetssykehus**. Er ikkje dette korrekt, endre mottakar over.",
+                "_text": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                      "valueMarkdown": "Skjemaet vil bli sendt til **Oslo universitetssykehus**. Er ikkje dette korrekt, endre mottakar over."
+                    }
+                  ]
+                },
+                "type": "display",
+                "enableWhen": [{ "question": "2.2", "operator": "=", "answerReference": { "reference": "Endpoint/1" } }],
+                "enableBehavior": "any"
+              },
+              {
+                "linkId": "7.3",
+                "text": "Skjemaet vil bli sendt til **Sunnaas sykehus**. Er ikkje dette korrekt, endre mottakar over.",
+                "_text": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                      "valueMarkdown": "Skjemaet vil bli sendt til **Sunnaas sykehus**. Er ikkje dette korrekt, endre mottakar over."
+                    }
+                  ]
+                },
+                "type": "display",
+                "enableWhen": [{ "question": "2.2", "operator": "=", "answerReference": { "reference": "Endpoint/5" } }],
+                "enableBehavior": "any"
+              },
+              {
+                "linkId": "7.4",
+                "text": "Skjemaet vil bli sendt til **Sykehuset i Vestfold**. Er ikkje dette korrekt, endre mottakar over",
+                "_text": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                      "valueMarkdown": "Skjemaet vil bli sendt til **Sykehuset i Vestfold**. Er ikkje dette korrekt, endre mottakar over"
+                    }
+                  ]
+                },
+                "type": "display",
+                "enableWhen": [{ "question": "2.2", "operator": "=", "answerReference": { "reference": "Endpoint/6" } }],
+                "enableBehavior": "any"
+              },
+              {
+                "linkId": "7.5",
+                "text": "Skjemaet vil bli sendt til **Sykehuset Innlandet**. Er ikkje dette korrekt, endre mottakar over.",
+                "_text": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                      "valueMarkdown": "Skjemaet vil bli sendt til **Sykehuset Innlandet**. Er ikkje dette korrekt, endre mottakar over."
+                    }
+                  ]
+                },
+                "type": "display",
+                "enableWhen": [{ "question": "2.2", "operator": "=", "answerReference": { "reference": "Endpoint/7" } }],
+                "enableBehavior": "any"
+              },
+              {
+                "linkId": "7.6",
+                "text": "Skjemaet vil bli sendt til **Sykehuset Telemark**. Er ikkje dette korrekt, endre mottakar over.",
+                "_text": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                      "valueMarkdown": "Skjemaet vil bli sendt til **Sykehuset Telemark**. Er ikkje dette korrekt, endre mottakar over."
+                    }
+                  ]
+                },
+                "type": "display",
+                "enableWhen": [{ "question": "2.2", "operator": "=", "answerReference": { "reference": "Endpoint/8" } }],
+                "enableBehavior": "any"
+              },
+              {
+                "linkId": "7.7",
+                "text": "Skjemaet vil bli sendt til **Sykehuset Østfold**. Er ikkje dette korrekt, endre mottakar over.",
+                "_text": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                      "valueMarkdown": "Skjemaet vil bli sendt til **Sykehuset Østfold**. Er ikkje dette korrekt, endre mottakar over."
+                    }
+                  ]
+                },
+                "type": "display",
+                "enableWhen": [{ "question": "2.2", "operator": "=", "answerReference": { "reference": "Endpoint/9" } }],
+                "enableBehavior": "any"
+              },
+              {
+                "linkId": "7.8",
+                "text": "Skjemaet vil bli sendt til **Sørlandet sykehus**. Er ikkje dette korrekt, endre mottakar over.",
+                "_text": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                      "valueMarkdown": "Skjemaet vil bli sendt til **Sørlandet sykehus**. Er ikkje dette korrekt, endre mottakar over."
+                    }
+                  ]
+                },
+                "type": "display",
+                "enableWhen": [{ "question": "2.2", "operator": "=", "answerReference": { "reference": "Endpoint/10" } }],
+                "enableBehavior": "any"
+              },
+              {
+                "linkId": "7.9",
+                "text": "Skjemaet vil bli sendt til **Vestre Viken helseforetak**. Er ikkje dette korrekt, endre mottakar over.",
+                "_text": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                      "valueMarkdown": "Skjemaet vil bli sendt til **Vestre Viken helseforetak**. Er ikkje dette korrekt, endre mottakar over."
+                    }
+                  ]
+                },
+                "type": "display",
+                "enableWhen": [{ "question": "2.2", "operator": "=", "answerReference": { "reference": "Endpoint/11" } }],
+                "enableBehavior": "any"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

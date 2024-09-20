@@ -3,7 +3,7 @@ import React from 'react';
 import { newTimeValueAsync, NewValueAction } from '../../../actions/newValue';
 import { getValidationTextExtension } from '../../../util/extension';
 import { getId, isReadOnly, isRequired } from '../../../util/index';
-import { QuestionnaireComponentItemProps } from '@/components/GenerateQuestionnaireComponents';
+import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 import { useGetAnswer } from '@/hooks/useGetAnswer';

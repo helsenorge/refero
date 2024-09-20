@@ -17,6 +17,7 @@ import ItemType from '../constants/itemType';
 import { FormData, FormDefinition } from '../reducers/form';
 import { enableWhenMatches } from '../util/enableWhenMatcher';
 import { isRepeat } from '.';
+import { isOfTypeQuestionnaireResponseItem } from './typeguards';
 export interface Path {
   linkId: string;
   index?: number;
@@ -28,12 +29,22 @@ export function getRootQuestionnaireResponseItemFromData(
   if (!formData || !formData.Content) {
     return undefined;
   }
-  const content = formData.Content;
+  const response = formData.Content;
 
-  if (!content.item || content.item.length === 0) {
+  if (!response.item || response.item.length === 0) {
     return undefined;
   }
-  return getItemWithIdFromResponseItemArray(definitionLinkId, content.item);
+  return getItemWithIdFromResponseItemArray(definitionLinkId, response.item);
+}
+export function getResponseItems(formData: FormData | null): QuestionnaireResponseItem[] | undefined {
+  if (!formData || !formData.Content) {
+    return undefined;
+  }
+  const response = formData.Content;
+  if (!response.item || response.item.length === 0) {
+    return undefined;
+  }
+  return response.item;
 }
 
 export function isInGroupContext(path: Path[], item: QuestionnaireResponseItem, items: QuestionnaireResponseItem[]): boolean {
@@ -167,17 +178,6 @@ export function getAnswerFromResponseItem(
     return responseItem.answer;
   }
   return responseItem.answer[0];
-}
-
-export function getResponseItems(formData: FormData | null): QuestionnaireResponseItem[] | undefined {
-  if (!formData || !formData.Content) {
-    return undefined;
-  }
-  const response = formData.Content;
-  if (!response.item || response.item.length === 0) {
-    return undefined;
-  }
-  return response.item;
 }
 
 export function getDefinitionItems(formDefinition: FormDefinition | null): QuestionnaireItem[] | undefined {
@@ -442,9 +442,6 @@ export function findFirstGuidInString(input: string): string | null {
   const match = input.match(regex);
   return match ? match[0] : null;
 }
-export const isQuestionnaireItem = (item: QuestionnaireItem | QuestionnaireResponseItem): item is QuestionnaireItem => {
-  return (item as QuestionnaireItem).type !== undefined && (item as QuestionnaireItem).linkId !== undefined;
-};
 
 export const getUniqueId = (item: QuestionnaireItem, path?: Path[], index?: number): string => {
   let rawId = '';
@@ -559,10 +556,6 @@ function getResponseItemAndPathWithLinkIdTraverse(
 
   currentPath.pop();
   return response;
-}
-
-function isOfTypeQuestionnaireResponseItem(item: QuestionnaireResponse | QuestionnaireResponseItem): item is QuestionnaireResponseItem {
-  return item.hasOwnProperty('answer');
 }
 
 export function getResponseItemWithPath(path: Path[], formData: FormData): QuestionnaireResponseItem | undefined {

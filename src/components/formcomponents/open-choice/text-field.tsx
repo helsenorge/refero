@@ -12,7 +12,7 @@ import Pdf from '../textview';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
-import { QuestionnaireComponentItemProps } from '@/components/GenerateQuestionnaireComponents';
+import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { maxLength, minLength, regexpPattern, required, scriptInjection } from '@/components/validation/rules';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 

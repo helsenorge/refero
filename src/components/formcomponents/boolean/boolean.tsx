@@ -19,7 +19,7 @@ import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelp
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
-import { QuestionnaireComponentItemProps } from '@/components/GenerateQuestionnaireComponents';
+import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { getFormDefinition } from '@/reducers/form';
 import { required } from '@/components/validation/rules';
 
