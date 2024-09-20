@@ -10,7 +10,6 @@ import dts from 'vite-plugin-dts';
 import { libInjectCss } from 'vite-plugin-lib-inject-css';
 import tsconfigPaths from 'vite-tsconfig-paths';
 import { externalizeDeps } from 'vite-plugin-externalize-deps';
-
 const OUTPUT_DIRECTORY = 'lib';
 
 export default defineConfig(({ command, isPreview }): UserConfig => {

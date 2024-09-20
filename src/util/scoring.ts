@@ -52,21 +52,6 @@ export function scoringItemType(item: QuestionnaireItem): ScoringItemType {
   return ScoringItemType.NONE;
 }
 
-export function isSectionScoringItem(item: QuestionnaireItem): boolean {
-  const scoring = getCodingWithScoring(item);
-  return scoring ? scoring.code === Type.SECTION_SCORE : false;
-}
-
-export function isTotalScoringItem(item: QuestionnaireItem): boolean {
-  const scoring = getCodingWithScoring(item);
-  return scoring ? scoring.code === Type.TOTAL_SCORE : false;
-}
-
-export function isQuestionScoringItem(item: QuestionnaireItem): boolean {
-  const scoring = getCodingWithScoring(item);
-  return scoring ? scoring.code === Type.QUESTION_SCORE : false;
-}
-
 function getCodingWithScoring(item: QuestionnaireItem): Coding | undefined {
   if (!item.code) return;
 

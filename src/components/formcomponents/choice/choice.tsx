@@ -25,9 +25,9 @@ import TextView from '../textview';
 import { useDispatch } from 'react-redux';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
 import { useIsEnabled } from '@/hooks/useIsEnabled';
-import { QuestionnaireComponentItemProps } from '@/components/GenerateQuestionnaireComponents';
+import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
-import { useEffect } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 
 export type ChoiceProps = QuestionnaireComponentItemProps;
 
@@ -45,16 +45,16 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
     }
   }, [answer]);
 
-  const getAnswerValue = (): string[] | undefined => {
+  const getAnswerValue = useCallback((): string[] | undefined => {
     if (Array.isArray(answer)) {
       return answer.map(el => el?.valueCoding?.code).filter(Boolean) as string[];
     } else if (answer?.valueCoding?.code) {
       return [answer.valueCoding.code];
     }
     return undefined;
-  };
+  }, [answer]);
 
-  const getInitialValue = (): string[] | undefined => {
+  const getInitialValue = useCallback((): string[] | undefined => {
     const initialSelectedCode = item.answerOption?.find(option => option.initialSelected)?.valueCoding?.code;
 
     if (initialSelectedCode) {
@@ -62,11 +62,11 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
     }
     const code = item.initial?.[0]?.valueCoding?.code;
     return code ? [code] : undefined;
-  };
+  }, [item]);
 
-  const getValue = (): string[] | undefined => {
+  const getValue = useCallback((): string[] | undefined => {
     return getAnswerValue() || getInitialValue();
-  };
+  }, [getAnswerValue, getInitialValue]);
 
   const getPDFValue = (): string => {
     const value = getValue();
@@ -81,53 +81,67 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
     const system = systemArg || getSystem(item, code, containedResources);
     return { code, display, system };
   };
+  const answerContainsCode = useCallback(
+    (code: string): boolean => {
+      const codes = getAnswerValue();
+      return codes ? codes.includes(code) : false;
+    },
+    [getAnswerValue]
+  );
 
-  const resetInitialAnswer = (code?: string): void => {
-    if (code && onAnswerChange && path) {
-      const coding = getAnswerValueCoding(code);
-      const responseAnswer = { valueCoding: coding };
-      if (answerContainsCode(code)) {
-        dispatch(removeCodingValueAsync(path, coding, item)).then(newState => onAnswerChange(newState, item, responseAnswer));
-      }
-      dispatch(newCodingValueAsync(path, coding, item, true)).then(newState => onAnswerChange(newState, item, responseAnswer));
-      promptLoginMessage?.();
-    }
-  };
-
-  const handleCheckboxChange = (code?: string): void => {
-    if (code && onAnswerChange && path) {
-      const coding = getAnswerValueCoding(code);
-      const responseAnswer = { valueCoding: coding };
-      if (answerContainsCode(code)) {
-        dispatch(removeCodingValueAsync(path, coding, item)).then(newState => onAnswerChange(newState, item, responseAnswer));
-      } else {
+  const resetInitialAnswer = useCallback(
+    (code?: string): void => {
+      if (code && onAnswerChange && path) {
+        const coding = getAnswerValueCoding(code);
+        const responseAnswer = { valueCoding: coding };
+        if (answerContainsCode(code)) {
+          dispatch(removeCodingValueAsync(path, coding, item)).then(newState => onAnswerChange(newState, item, responseAnswer));
+        }
         dispatch(newCodingValueAsync(path, coding, item, true)).then(newState => onAnswerChange(newState, item, responseAnswer));
+        promptLoginMessage?.();
       }
-      promptLoginMessage?.();
-    }
-  };
+    },
+    [answerContainsCode, dispatch, getAnswerValueCoding, item, onAnswerChange, path, promptLoginMessage]
+  );
 
-  const clearCodingAnswer = (coding: Coding): void => {
-    if (onAnswerChange && path) {
-      const responseAnswer = { valueCoding: coding };
-      dispatch(removeCodingValueAsync(path, coding, item)).then(newState => onAnswerChange(newState, item, responseAnswer));
-      promptLoginMessage?.();
-    }
-  };
+  const handleCheckboxChange = useCallback(
+    (code?: string): void => {
+      if (code && onAnswerChange && path) {
+        const coding = getAnswerValueCoding(code);
+        const responseAnswer = { valueCoding: coding };
+        if (answerContainsCode(code)) {
+          dispatch(removeCodingValueAsync(path, coding, item)).then(newState => onAnswerChange(newState, item, responseAnswer));
+        } else {
+          dispatch(newCodingValueAsync(path, coding, item, true)).then(newState => onAnswerChange(newState, item, responseAnswer));
+        }
+        promptLoginMessage?.();
+      }
+    },
+    [answerContainsCode, dispatch, getAnswerValueCoding, item, onAnswerChange, path, promptLoginMessage]
+  );
 
-  const handleChange = (code?: string, systemArg?: string, displayArg?: string): void => {
-    if (code && onAnswerChange && path) {
-      const coding = getAnswerValueCoding(code, systemArg, displayArg);
-      const responseAnswer = { valueCoding: coding };
-      dispatch(newCodingValueAsync(path, coding, item)).then(newState => onAnswerChange(newState, item, responseAnswer));
-      promptLoginMessage?.();
-    }
-  };
+  const clearCodingAnswer = useCallback(
+    (coding: Coding): void => {
+      if (onAnswerChange && path) {
+        const responseAnswer = { valueCoding: coding };
+        dispatch(removeCodingValueAsync(path, coding, item)).then(newState => onAnswerChange(newState, item, responseAnswer));
+        promptLoginMessage?.();
+      }
+    },
+    [dispatch, item, onAnswerChange, path, promptLoginMessage]
+  );
 
-  const answerContainsCode = (code: string): boolean => {
-    const codes = getAnswerValue();
-    return codes ? codes.includes(code) : false;
-  };
+  const handleChange = useCallback(
+    (code?: string, systemArg?: string, displayArg?: string): void => {
+      if (code && onAnswerChange && path) {
+        const coding = getAnswerValueCoding(code, systemArg, displayArg);
+        const responseAnswer = { valueCoding: coding };
+        dispatch(newCodingValueAsync(path, coding, item)).then(newState => onAnswerChange(newState, item, responseAnswer));
+        promptLoginMessage?.();
+      }
+    },
+    [dispatch, getAnswerValueCoding, item, onAnswerChange, path, promptLoginMessage]
+  );
 
   const renderComponentBasedOnType = (): JSX.Element | null => {
     const itemControlValue = getItemControlValue(item);
@@ -154,6 +168,25 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
     }
   };
 
+  const itemControlValue = useMemo(() => getItemControlValue(item), [item]);
+
+  const options = useMemo(() => getOptions(resources, item, containedResources), [resources, item, containedResources]);
+  const value = useMemo(() => getValue(), [getAnswerValue, getInitialValue]);
+
+  const shouldRenderAutosuggest = useMemo(
+    () => hasCanonicalValueSet(item) && itemControlValue === itemControlConstants.AUTOCOMPLETE,
+    [item, itemControlValue]
+  );
+
+  const isReceiverComponent = useMemo(() => itemControlValue === itemControlConstants.RECEIVERCOMPONENT, [itemControlValue]);
+
+  const hasOptionsAndNoCanonicalValueSet = useMemo(
+    () => hasOptions(resources, item, containedResources) && !hasCanonicalValueSet(item),
+    [resources, item, containedResources]
+  );
+
+  const aboveDropdownThreshold = useMemo(() => isAboveDropdownThreshold(options), [options]);
+
   if (!enable) return null;
 
   if (pdf || isReadOnly(item)) {
@@ -164,20 +197,14 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
     );
   }
 
-  const options = getOptions(resources, item, containedResources);
-  const itemControlValue = getItemControlValue(item);
-  const value = getValue();
-
-  const shouldRenderAutosuggest = hasCanonicalValueSet(item) && itemControlValue === itemControlConstants.AUTOCOMPLETE;
-  const isReceiverComponent = itemControlValue === itemControlConstants.RECEIVERCOMPONENT;
-
-  const hasOptionsAndNoCanonicalValueSet = hasOptions(resources, item, containedResources) && !hasCanonicalValueSet(item);
-  const aboveDropdownThreshold = isAboveDropdownThreshold(options);
+  if (!hasOptionsAndNoCanonicalValueSet && !shouldRenderAutosuggest && !isReceiverComponent) {
+    return null;
+  }
 
   return (
     <>
-      {hasOptionsAndNoCanonicalValueSet ? (
-        itemControlValue ? (
+      {hasOptionsAndNoCanonicalValueSet &&
+        (itemControlValue ? (
           renderComponentBasedOnType()
         ) : aboveDropdownThreshold ? (
           <DropdownView options={options} handleChange={handleChange} selected={value} {...props}>
@@ -187,16 +214,17 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
           <RadioView options={options} handleChange={handleChange} selected={value} {...props}>
             {children}
           </RadioView>
-        )
-      ) : shouldRenderAutosuggest ? (
+        ))}
+      {shouldRenderAutosuggest && (
         <AutosuggestView handleChange={handleChange} clearCodingAnswer={clearCodingAnswer} {...props}>
           {children}
         </AutosuggestView>
-      ) : isReceiverComponent ? (
+      )}
+      {isReceiverComponent && (
         <ReceiverComponentWrapper {...props} handleChange={handleChange} selected={value} clearCodingAnswer={clearCodingAnswer}>
           {children}
         </ReceiverComponentWrapper>
-      ) : null}
+      )}
     </>
   );
 };

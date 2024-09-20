@@ -1,6 +1,3 @@
-import Group from '@components/formcomponents/group/group';
-import Display from '@formcomponents/display/display';
-import Text from '@formcomponents/text/text';
 import { Questionnaire, QuestionnaireResponseItem, QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { marked } from 'marked';
 import * as uuid from 'uuid';
@@ -18,28 +15,14 @@ import {
   getHyperlinkExtensionValue,
   getCopyExtension,
 } from './extension';
-import Attachment from '@formcomponents/attachment/attachment';
-import Boolean from '@formcomponents/boolean/boolean';
-import Choice from '@formcomponents/choice/choice';
-import Date from '@formcomponents/date/date';
-import DateTimeInput from '@formcomponents/date/date-time';
-import Time from '@formcomponents/date/time';
-import Decimal from '@formcomponents/decimal/decimal';
-import Integer from '@formcomponents/integer/integer';
-import OpenChoice from '@formcomponents/open-choice/open-choice';
-import Quantity from '@formcomponents/quantity/quantity';
-import StringComponent from '@formcomponents/string/string';
-import TableContainer from '@formcomponents/table/TableContainer';
+
 import CodingSystemConstants from '../constants/codingsystems';
 import { Extensions } from '../constants/extensions';
 import { HyperlinkTarget } from '../constants/hyperlinkTarget';
 import Constants from '../constants/index';
-import ItemType from '../constants/itemType';
 import { RenderOptionCode } from '../constants/renderOptionCode';
 import { TableCodes } from '../constants/tableTypes';
 import { Resources } from '@/util/resources';
-import { ComponentType } from 'react';
-import { QuestionnaireComponentItemProps } from '@/components/GenerateQuestionnaireComponents';
 
 function openNewIfAbsolute(url: string): string {
   const regex = new RegExp('^(([a-z][a-z0-9+.-]*):.*)');
@@ -60,57 +43,6 @@ export const isTableCode = (extensionCode: string | string[]): boolean => {
   });
   return isTable;
 };
-
-export function getComponentForItem(
-  type: string,
-  extensionCode?: string | string[]
-): ComponentType<QuestionnaireComponentItemProps> | undefined {
-  if (String(type) === ItemType.GROUP && !!extensionCode && isTableCode(extensionCode)) {
-    return TableContainer;
-  } else if (String(type) === ItemType.GROUP) {
-    return Group;
-  }
-  if (String(type) === ItemType.DISPLAY) {
-    return Display;
-  }
-  if (String(type) === ItemType.BOOLEAN) {
-    return Boolean;
-  }
-  if (String(type) === ItemType.DECIMAL) {
-    return Decimal;
-  }
-  if (String(type) === ItemType.INTEGER) {
-    return Integer;
-  }
-  if (String(type) === ItemType.DATE) {
-    return Date;
-  }
-  if (String(type) === ItemType.DATETIME) {
-    return DateTimeInput;
-  }
-  if (String(type) === ItemType.TIME) {
-    return Time;
-  }
-  if (String(type) === ItemType.STRING) {
-    return StringComponent;
-  }
-  if (String(type) === ItemType.TEXT) {
-    return Text;
-  }
-  if (String(type) === ItemType.CHOICE) {
-    return Choice;
-  }
-  if (String(type) === ItemType.OPENCHOICE) {
-    return OpenChoice;
-  }
-  if (String(type) === ItemType.ATTATCHMENT) {
-    return Attachment;
-  }
-  if (String(type) === ItemType.QUANTITY) {
-    return Quantity;
-  }
-  return undefined;
-}
 
 export function isStringEmpty(string: string | undefined): boolean {
   return string === '' || string === null || string === undefined;

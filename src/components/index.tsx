@@ -20,7 +20,7 @@ import { shouldFormBeDisplayedAsStepView } from '@/util/shouldFormBeDisplayedAsS
 import { ExternalRenderProvider } from '@/context/externalRenderContext';
 import { setSkjemaDefinition } from '@/actions/form';
 import { AttachmentProvider } from '@/context/AttachmentContext';
-import GenerateQuestionnaireComponents from './GenerateQuestionnaireComponents';
+import GenerateQuestionnaireComponents from './createQuestionnaire/GenerateQuestionnaireComponents';
 import { ThunkDispatch } from 'redux-thunk';
 import { NewValueAction } from '@/actions/newValue';
 import { createIntitialFormValues } from '@/validation/defaultFormValues';

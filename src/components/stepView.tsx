@@ -11,7 +11,7 @@ import { Resources } from '../util/resources';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 import { useSelector } from 'react-redux';
 import { GlobalState } from '@/reducers';
-import RenderQuestionnaireItems from './GenerateQuestionnaireComponents';
+import RenderQuestionnaireItems from './createQuestionnaire/GenerateQuestionnaireComponents';
 
 interface StepViewProps {
   isAuthorized: boolean;

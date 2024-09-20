@@ -11,7 +11,7 @@ import { TABLE_CODES_VALUES, TableCodes } from '@/constants/tableTypes';
 import { GlobalState } from '@/reducers';
 import { getFormData, getFormDefinition } from '@/reducers/form';
 import { getCodingTextTableValues } from '@/util/extension';
-import { QuestionnaireComponentItemProps } from '@/components/GenerateQuestionnaireComponents';
+import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 
 export type Props = QuestionnaireComponentItemProps & {
   className?: string;

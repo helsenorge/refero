@@ -7,8 +7,9 @@ import { Extensions } from '../constants/extensions';
 import itemControlConstants from '../constants/itemcontrol';
 import itemType from '../constants/itemType';
 import { PresentationButtonsType } from '../constants/presentationButtonsType';
-import { TABLE_CODES_VALUES, TableCodes } from '../constants/tableTypes';
+import { TABLE_CODES_VALUES } from '../constants/tableTypes';
 import { getText } from '../util/index';
+import { hasCode, isTableCode } from './typeguards';
 
 export function getValidationTextExtension(item: QuestionnaireItem): string | undefined {
   const validationTextExtension = getExtension(Extensions.VALIDATIONTEXT_URL, item);
@@ -36,7 +37,7 @@ export function getPresentationButtonsExtension(questionniare: Questionnaire): P
   return null;
 }
 
-export function getNavigatorExtension(questionniare: Questionnaire): Coding[] | undefined {
+export function getNavigatorExtension(questionniare?: Questionnaire | null): Coding[] | undefined {
   const navigatorExtension = getExtension(Extensions.NAVIGATOR_URL, questionniare);
   return navigatorExtension?.valueCodeableConcept?.coding;
 }
@@ -77,7 +78,7 @@ export function getExtensions(item: QuestionnaireItem): Extension[] {
   return item.extension ?? [];
 }
 
-export function getExtension(url: string, item?: QuestionnaireItem | Element | Questionnaire): Extension | undefined {
+export function getExtension(url: string, item?: QuestionnaireItem | Element | Questionnaire | null): Extension | undefined {
   if (!item || !item.extension || item.extension.length === 0) {
     return undefined;
   }
@@ -179,14 +180,6 @@ export function getItemControlExtensionValue(item: QuestionnaireItem): Coding[] 
   }
   return itemControlExtension.valueCodeableConcept.coding;
 }
-
-const hasCode = (code: string | undefined): code is string => {
-  return !!code;
-};
-
-const isTableCode = (code: TABLE_CODES_VALUES): code is TABLE_CODES_VALUES => {
-  return Object.values(TableCodes).includes(code);
-};
 
 export const getCodingTextTableValues = (item: QuestionnaireItem): TABLE_CODES_VALUES[] => {
   const extension = getItemControlExtensionValue(item);

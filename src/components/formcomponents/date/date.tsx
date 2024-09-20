@@ -1,4 +1,3 @@
-import { QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { ThunkDispatch } from 'redux-thunk';
 
 import { LanguageLocales } from '@helsenorge/core-utils/constants/languages';
@@ -17,52 +16,54 @@ import { useDispatch } from 'react-redux';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
-import { QuestionnaireComponentItemProps } from '@/components/GenerateQuestionnaireComponents';
+import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
 import { useIsEnabled } from '@/hooks/useIsEnabled';
+import { useCallback, useMemo } from 'react';
 
 export type DateProps = QuestionnaireComponentItemProps;
 
 const DateComponent = (props: DateProps): JSX.Element | null => {
   const { item, language, responseItems, responseItem, path, index, children } = props;
   const enable = useIsEnabled(item, path);
-  let element: JSX.Element | undefined = undefined;
 
   const answer = useGetAnswer(responseItem, item);
   const { promptLoginMessage, onAnswerChange } = useExternalRenderContext();
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
-  const itemControls = getItemControlExtensionValue(item);
+  const itemControls = useMemo(() => getItemControlExtensionValue(item), [item]);
+  const { YEAR, YEARMONTH } = itemControlConstants;
 
-  const onDateValueChange = (newValue: string): void => {
-    const existingAnswer = Array.isArray(answer) ? answer[0].valueDate : answer?.valueDate || '';
-    if (dispatch && newValue !== existingAnswer && path) {
-      dispatch(newDateValueAsync(path, newValue, item))?.then(
-        newState => onAnswerChange && onAnswerChange(newState, item, { valueDate: newValue } as QuestionnaireResponseItemAnswer)
-      );
+  const onDateValueChange = useCallback(
+    (newValue: string): void => {
+      const existingAnswer = Array.isArray(answer) ? answer[0].valueDate : answer?.valueDate || '';
+      if (newValue !== existingAnswer && path) {
+        dispatch(newDateValueAsync(path, newValue, item)).then(newState => {
+          onAnswerChange?.(newState, item, { valueDate: newValue });
+        });
 
-      if (promptLoginMessage) {
-        promptLoginMessage();
+        promptLoginMessage?.();
       }
+    },
+    [answer, dispatch, item, onAnswerChange, path, promptLoginMessage]
+  );
+
+  const locale = useMemo(() => {
+    return language?.toLowerCase() === 'en-gb' ? LanguageLocales.ENGLISH : LanguageLocales.NORWEGIAN;
+  }, [language]);
+
+  const element = useMemo(() => {
+    if (itemControls?.some(control => control.code === YEAR)) {
+      return <DateYearInput {...props} onDateValueChange={onDateValueChange} />;
+    } else if (itemControls?.some(control => control.code === YEARMONTH)) {
+      return <DateYearMonthInput {...props} locale={locale} onDateValueChange={onDateValueChange} />;
+    } else {
+      return <DateDayInput {...props} locale={locale} onDateValueChange={onDateValueChange} />;
     }
-  };
-
-  const getLocaleFromLanguage = (): LanguageLocales.ENGLISH | LanguageLocales.NORWEGIAN => {
-    if (language?.toLowerCase() === 'en-gb') {
-      return LanguageLocales.ENGLISH;
-    }
-
-    return LanguageLocales.NORWEGIAN;
-  };
-
-  if (itemControls && itemControls.some(itemControl => itemControl.code === itemControlConstants.YEAR)) {
-    element = <DateYearInput {...props} onDateValueChange={onDateValueChange} />;
-  } else if (itemControls && itemControls.some(itemControl => itemControl.code === itemControlConstants.YEARMONTH)) {
-    element = <DateYearMonthInput {...props} locale={getLocaleFromLanguage()} onDateValueChange={onDateValueChange} />;
-  } else {
-    element = <DateDayInput {...props} locale={getLocaleFromLanguage()} onDateValueChange={onDateValueChange} />;
+  }, [itemControls, locale, onDateValueChange, props]);
+  if (!enable) {
+    return null;
   }
-
-  if (!element || !enable) {
+  if (!element) {
     return null;
   }
 
