@@ -1,5 +1,3 @@
-// import React from 'react';
-
 import { QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { Controller, FieldError, FieldValues, useFormContext } from 'react-hook-form';
 import styles from '../common-styles.module.css';
