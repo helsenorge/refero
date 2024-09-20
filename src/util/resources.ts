@@ -404,11 +404,11 @@ export interface Resources {
    */
   attachmentError_required?: string;
   /**
-   * Legg til minst {0} filer
+   * Legg til minst {0} fil(er)
    */
   attachmentError_minFiles?: string;
   /**
-   * Maks {0} filer er tillatt
+   * Maks {0} fil(er) er tillatt
    */
   attachmentError_maxFiles?: string;
   /**
