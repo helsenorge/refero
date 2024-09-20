@@ -44,8 +44,8 @@ export const DateYearInput = (props: Props): JSX.Element | null => {
     }
   };
 
-  const onYearChange = (year: number): void => {
-    onDateValueChange(year === 0 ? '' : year.toString());
+  const onYearChange = (year: string | number | readonly string[] | undefined): void => {
+    !year ? '' : onDateValueChange(year.toString());
   };
 
   const getPDFValue = (): string => {
@@ -67,8 +67,7 @@ export const DateYearInput = (props: Props): JSX.Element | null => {
     }
   };
 
-  const answerState = getYear(answer)?.[0];
-
+  const answerState: string = getYear(answer)?.[0]?.toString() || '';
   if (pdf || isReadOnly(item)) {
     return (
       <TextView id={id} item={item} value={getPDFValue()}>
@@ -120,7 +119,7 @@ export const DateYearInput = (props: Props): JSX.Element | null => {
               onChange(e.target.value);
               onYearChange(Number(e.target.value));
             }}
-            value={answerState ?? ''}
+            value={answerState}
             width={10}
           />
         )}
