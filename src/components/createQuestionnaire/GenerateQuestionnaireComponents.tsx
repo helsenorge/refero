@@ -77,6 +77,7 @@ const GenerateQuestionnaireComponents = (props: QuestionnaireItemsProps): JSX.El
 
         return (
           <RenderResponseItems
+            key={item.linkId}
             item={item}
             responseItems={responseItems}
             path={path}
@@ -88,7 +89,7 @@ const GenerateQuestionnaireComponents = (props: QuestionnaireItemsProps): JSX.El
             pdf={pdf}
             isNavigatorEnabled={isNavigatorEnabled}
             headerTag={headerTag}
-          ></RenderResponseItems>
+          />
         );
       })}
     </>

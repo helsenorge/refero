@@ -1,3 +1,9 @@
+## 16.0.0-beta.32
+
+- Added more validation messages
+- Fix groups showing correct heading based on nesting
+- Fix tables showing date and time correctly
+
 ## 16.0.0-beta.31
 
 - update peerdependencies to be "nicer"

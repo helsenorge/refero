@@ -31,7 +31,6 @@ import {
 } from '../../../../util/refero-core';
 
 import { TIME_SEPARATOR } from '@/constants/dateTimeConstants';
-import { safeParseJSON } from '@/util/date-fns-utils';
 type QuantityKeys = keyof Pick<Quantity, 'value' | 'code' | 'system' | 'unit'> | 'display';
 type Codingkeys = keyof Pick<Coding, 'code' | 'display' | 'system'>;
 type AttachmentKeys = keyof Pick<Attachment, 'data' | 'url' | 'title' | 'size' | 'contentType' | 'language' | 'id' | 'hash' | 'creation'>;
@@ -61,8 +60,7 @@ const extractValueFromDate = (inputValue?: string): string => {
   if (!inputValue) {
     return '';
   }
-  const date = safeParseJSON(inputValue);
-  return date ? format(date, DATEFORMATS.DATE) : '';
+  return inputValue ? format(inputValue, DATEFORMATS.DATE) : '';
 };
 const extractValueFromTime = (inputTime?: string): string => {
   if (!inputTime) {
@@ -78,8 +76,7 @@ const extractValueFromDateTime = (inputValue?: string): string => {
   if (!inputValue) {
     return '';
   }
-  const date = safeParseJSON(inputValue);
-  return date ? format(date, DATEFORMATS.DATETIME) : '';
+  return inputValue ? format(inputValue, DATEFORMATS.DATETIME) : '';
 };
 
 export const extractValueFromAttachment = (inputValue?: Attachment, field: AttachmentKeys = 'url'): string | number => {
