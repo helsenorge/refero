@@ -280,14 +280,14 @@ export const validateMaxDate = (
 };
 
 export const validateHours = (hours: number | undefined, resources: Resources | undefined): true | string => {
-  if (hours === undefined || hours < 0 || hours >= 24) {
+  if (hours && (hours < 0 || hours >= 24)) {
     return resources?.dateError_time_invalid || '';
   }
   return true;
 };
 
 export const validateMinutes = (minutes: number | undefined, resources: Resources | undefined): true | string => {
-  if (minutes === undefined || minutes < 0 || minutes >= 60) {
+  if (minutes && (minutes < 0 || minutes >= 60)) {
     return resources?.dateError_time_invalid || '';
   }
   return true;

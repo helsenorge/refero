@@ -12,7 +12,7 @@ import { ThunkDispatch } from 'redux-thunk';
 import { GlobalState } from '@/reducers';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import { DateTime, DateTimePickerWrapper } from '@helsenorge/datepicker/components/DatePicker';
-import { FieldError, FieldValues, useFormContext } from 'react-hook-form';
+import { Controller, FieldError, FieldValues, useFormContext } from 'react-hook-form';
 import { extractHoursAndMinutesFromAnswer, validateHours, validateMaxTime, validateMinTime, validateMinutes } from '@/util/date-utils';
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import RenderHelpButton from '../help-button/RenderHelpButton';
@@ -37,7 +37,7 @@ const Time = ({
   const { promptLoginMessage, onAnswerChange } = useExternalRenderContext();
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
   const enable = useIsEnabled(item);
-  const { formState, getFieldState, register, setValue } = useFormContext<FieldValues>();
+  const { formState, getFieldState, trigger } = useFormContext<FieldValues>();
   const hoursField = getFieldState(`${idWithLinkIdAndItemIndex}-hours`, formState);
   const minutesField = getFieldState(`${idWithLinkIdAndItemIndex}-minutes`, formState);
   const answer = useGetAnswer(responseItem, item);
@@ -65,17 +65,17 @@ const Time = ({
     if (!minutes) {
       newMinutes = '00';
     }
-    setValue(`${idWithLinkIdAndItemIndex}-hours`, newHours);
-    setValue(`${idWithLinkIdAndItemIndex}-minutes`, newMinutes);
     updateQuestionnaireResponse(newHours?.toString(), newMinutes?.toString());
   };
   const handleMinutesChange = (newMinutes: number | string | undefined): void => {
+    //trigger validations for the hour field as well
+    if (formState.isSubmitted) {
+      trigger();
+    }
     let newHours: number | string | undefined = hours;
     if (!hours) {
       newHours = '00';
     }
-    setValue(`${idWithLinkIdAndItemIndex}-hours`, newHours);
-    setValue(`${idWithLinkIdAndItemIndex}-minutes`, newMinutes);
     updateQuestionnaireResponse(newHours?.toString(), newMinutes?.toString());
   };
 
@@ -153,8 +153,10 @@ const Time = ({
       />
       <RenderHelpElement isHelpVisible={isHelpVisible} item={item} />
       <DateTimePickerWrapper errorText={getErrorText(getCombinedFieldError(hoursField, minutesField))}>
-        <DateTime
-          {...register(idWithLinkIdAndItemIndex + '-hours', {
+        <Controller
+          name={idWithLinkIdAndItemIndex + '-hours'}
+          shouldUnregister={true}
+          rules={{
             required: {
               value: isRequired(item),
               message: resources?.formRequiredErrorMessage || '',
@@ -170,17 +172,24 @@ const Time = ({
                 return validateMaxTime(value, minutes, resources, item);
               },
             },
-          })}
-          inputId={`${getId(id)}-datetime-hours`}
-          testId={`time-1`}
-          defaultValue={Number(hours)}
-          timeUnit="hours"
-          onChange={e => {
-            handleHoursChange(e.target.value);
           }}
+          render={({ field: { onChange } }): JSX.Element => (
+            <DateTime
+              inputId={`${getId(id)}-datetime-hours`}
+              testId={`time-1`}
+              defaultValue={Number(hours)}
+              timeUnit="hours"
+              onChange={e => {
+                handleHoursChange(e.target.value);
+                onChange(e.target.value);
+              }}
+            />
+          )}
         />
-        <DateTime
-          {...register(idWithLinkIdAndItemIndex + '-minutes', {
+        <Controller
+          name={idWithLinkIdAndItemIndex + '-minutes'}
+          shouldUnregister={true}
+          rules={{
             required: {
               value: isRequired(item),
               message: resources?.formRequiredErrorMessage || '',
@@ -190,13 +199,18 @@ const Time = ({
                 return validateMinutes(Number(value), resources);
               },
             },
-          })}
-          testId={`time-2`}
-          defaultValue={Number(minutes)}
-          timeUnit="minutes"
-          onChange={e => {
-            handleMinutesChange(e.target.value);
           }}
+          render={({ field: { onChange } }): JSX.Element => (
+            <DateTime
+              testId={`time-2`}
+              defaultValue={Number(minutes)}
+              timeUnit="minutes"
+              onChange={e => {
+                handleMinutesChange(e.target.value);
+                onChange(e.target.value);
+              }}
+            />
+          )}
         />
       </DateTimePickerWrapper>
       <RenderDeleteButton
