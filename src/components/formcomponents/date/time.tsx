@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import { newTimeValueAsync, NewValueAction } from '../../../actions/newValue';
 import { getValidationTextExtension } from '../../../util/extension';
@@ -37,7 +37,7 @@ const Time = ({
   const { promptLoginMessage, onAnswerChange } = useExternalRenderContext();
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
   const enable = useIsEnabled(item);
-  const { formState, getFieldState, getValues, trigger } = useFormContext<FieldValues>();
+  const { formState, getFieldState, setValue, getValues, trigger } = useFormContext<FieldValues>();
   const hoursField = getFieldState(`${idWithLinkIdAndItemIndex}-hours`, formState);
   const minutesField = getFieldState(`${idWithLinkIdAndItemIndex}-minutes`, formState);
   const answer = useGetAnswer(responseItem, item);
@@ -45,6 +45,11 @@ const Time = ({
   const hoursAndMinutesFromAnswer = extractHoursAndMinutesFromAnswer(answer, item);
   const hours = hoursAndMinutesFromAnswer?.hours;
   const minutes = hoursAndMinutesFromAnswer?.minutes;
+
+  useEffect(() => {
+    setValue(`${idWithLinkIdAndItemIndex}-hours`, hours);
+    setValue(`${idWithLinkIdAndItemIndex}-minutes`, minutes);
+  }, []);
 
   const dispatchNewTime = (newTime: string): void => {
     if (dispatch && onAnswerChange && path) {
