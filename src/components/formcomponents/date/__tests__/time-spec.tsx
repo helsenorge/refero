@@ -295,9 +295,16 @@ describe('Time', () => {
         await waitFor(async () => expect(queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument());
       });
       it('Should show error if hour value is invalid', async () => {
-        const { getByLabelText, getByText } = createWrapper(q);
+        const { getByLabelText, getByText, getByTestId } = createWrapper(q);
 
-        await userEvent.type(getByLabelText(/Klokkeslett/i), '99');
+        const hoursElement = getByLabelText(/Klokkeslett/i);
+        const minutesElement = getByTestId('time-2');
+        const minutesInput = minutesElement.querySelector('input');
+
+        await userEvent.type(hoursElement, '99');
+        if (minutesInput) {
+          await userEvent.type(minutesInput, '12');
+        }
 
         await submitForm();
         expect(getByText(resources.dateError_time_invalid)).toBeInTheDocument();

@@ -37,7 +37,7 @@ const Time = ({
   const { promptLoginMessage, onAnswerChange } = useExternalRenderContext();
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
   const enable = useIsEnabled(item);
-  const { formState, getFieldState, trigger } = useFormContext<FieldValues>();
+  const { formState, getFieldState, getValues, trigger } = useFormContext<FieldValues>();
   const hoursField = getFieldState(`${idWithLinkIdAndItemIndex}-hours`, formState);
   const minutesField = getFieldState(`${idWithLinkIdAndItemIndex}-minutes`, formState);
   const answer = useGetAnswer(responseItem, item);
@@ -68,9 +68,9 @@ const Time = ({
     updateQuestionnaireResponse(newHours?.toString(), newMinutes?.toString());
   };
   const handleMinutesChange = (newMinutes: number | string | undefined): void => {
-    //trigger validations for the hour field as well
+    //trigger validations in the hour field as well, to validate if time is valid
     if (formState.isSubmitted) {
-      trigger();
+      trigger(idWithLinkIdAndItemIndex + '-hours');
     }
     let newHours: number | string | undefined = hours;
     if (!hours) {
@@ -163,13 +163,16 @@ const Time = ({
             },
             validate: {
               validHours: value => {
-                return value ? validateHours(Number(value), resources) : true;
+                const minutesValue = getValues(idWithLinkIdAndItemIndex + '-minutes');
+                return value && minutesValue ? validateHours(Number(value), resources) : true;
               },
               validMinTime: value => {
-                return validateMinTime(value, minutes, resources, item);
+                const minutesValue = getValues(idWithLinkIdAndItemIndex + '-minutes');
+                return value && minutesValue ? validateMinTime(value, minutesValue, resources, item) : true;
               },
               validMaxTime: value => {
-                return validateMaxTime(value, minutes, resources, item);
+                const minutesValue = getValues(idWithLinkIdAndItemIndex + '-minutes');
+                return value && minutesValue ? validateMaxTime(value, minutesValue, resources, item) : true;
               },
             },
           }}
@@ -196,7 +199,8 @@ const Time = ({
             },
             validate: {
               validMinutes: value => {
-                return validateMinutes(Number(value), resources);
+                const hoursValue = getValues(idWithLinkIdAndItemIndex + '-hours');
+                return value && hoursValue ? validateMinutes(Number(value), resources) : true;
               },
             },
           }}
