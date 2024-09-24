@@ -36,7 +36,7 @@ describe('Default form values', () => {
       await submitForm();
       expect(wrapper.queryByTestId(/summary-element-Preutfylt decimal/i)).not.toBeInTheDocument();
     });
-    it('empty fields should not cause a validation error on submit', async () => {
+    it('empty fields should cause a validation error on submit', async () => {
       const wrapper = createWrapper(qDecimal);
       await submitForm();
       expect(wrapper.queryByTestId(/summary-element-Tom decimal/i)).toBeInTheDocument();
@@ -48,7 +48,7 @@ describe('Default form values', () => {
       await submitForm();
       expect(wrapper.queryByTestId(/summary-element-Preutfylt integer/i)).not.toBeInTheDocument();
     });
-    it('empty fields should not cause a validation error on submit', async () => {
+    it('empty fields should cause a validation error on submit', async () => {
       const wrapper = createWrapper(qInteger);
       await submitForm();
       expect(wrapper.queryByTestId(/summary-element-Tom integer/i)).toBeInTheDocument();
@@ -67,36 +67,36 @@ describe('Default form values', () => {
         await submitForm();
         expect(wrapper.queryByTestId(/summary-element-Preutfylt dateDay/i)).not.toBeInTheDocument();
       });
-      it('empty fields should not cause a validation error on submit', async () => {
+      it('empty fields should cause a validation error on submit', async () => {
         const wrapper = createWrapper(qDateDay);
         await submitForm();
         expect(wrapper.queryByTestId(/summary-element-Tom dateDay/i)).toBeInTheDocument();
       });
     });
-    describe.skip('Initial dateMonth value', () => {
+    describe('Initial dateMonth value', () => {
       it('prefilled values should not cause a validation error on submit', async () => {
         const wrapper = createWrapper(qDateMonth);
         await submitForm();
         expect(wrapper.queryByTestId(/summary-element-Preutfylt dateMonth/i)).not.toBeInTheDocument();
       });
-      it('empty fields should not cause a validation error on submit', async () => {
+      it('empty fields should cause a validation error on submit', async () => {
         const wrapper = createWrapper(qDateMonth);
         await submitForm();
-        expect(wrapper.queryByTestId(/summary-element-Tom dateMonth/i)).toBeInTheDocument();
+        const summaryElements = wrapper.queryAllByTestId(/summary-element-Tom dateMonth/i);
+        expect(summaryElements[0]).toBeInTheDocument();
+        expect(summaryElements[1]).toBeInTheDocument();
       });
     });
-    describe.skip('Initial dateTime value', () => {
+    describe('Initial dateTime value', () => {
       it('prefilled values should not cause a validation error on submit', async () => {
         const wrapper = createWrapper(qDateTime);
         await submitForm();
-        const summaryElement = wrapper.queryByTestId(/summary-element-Preutfylt datetime/i);
-        expect(summaryElement).not.toBeInTheDocument();
+        expect(wrapper.queryByTestId(/summary-element-Preutfylt datetime/i)).not.toBeInTheDocument();
       });
-      it('empty fields should not cause a validation error on submit', async () => {
+      it('empty fields should cause a validation error on submit', async () => {
         const wrapper = createWrapper(qDateTime);
         await submitForm();
-        const summaryElement = wrapper.queryByTestId(/summary-element-Tom datetime/i);
-        expect(summaryElement).toBeInTheDocument();
+        expect(wrapper.queryByTestId(/summary-element-Tom datetime/i)).toBeInTheDocument();
       });
     });
     describe('Initial time value', () => {
@@ -105,10 +105,12 @@ describe('Default form values', () => {
         await submitForm();
         expect(wrapper.queryByTestId(/summary-element-Preutfylt time/i)).not.toBeInTheDocument();
       });
-      it.skip('empty fields should not cause a validation error on submit', async () => {
+      it('empty fields should cause a validation error on submit', async () => {
         const wrapper = createWrapper(qTime);
         await submitForm();
-        expect(wrapper.queryByTestId(/summary-element-Tom time/i)).toBeInTheDocument();
+        const summaryElements = wrapper.queryAllByTestId(/summary-element-Tom time/i);
+        expect(summaryElements[0]).toBeInTheDocument();
+        expect(summaryElements[1]).toBeInTheDocument();
       });
     });
   });
@@ -119,7 +121,7 @@ describe('Default form values', () => {
         await submitForm();
         expect(wrapper.queryByTestId(/summary-element-Preutfylt radioknapper/i)).not.toBeInTheDocument();
       });
-      it('empty fields should not cause a validation error on submit', async () => {
+      it('empty fields should cause a validation error on submit', async () => {
         const wrapper = createWrapper(qChoiceRadio);
         await submitForm();
         expect(wrapper.queryByTestId(/summary-element-Tom radioknapper/i)).toBeInTheDocument();
@@ -131,7 +133,7 @@ describe('Default form values', () => {
         await submitForm();
         expect(wrapper.queryByTestId(/summary-element-Preutfylt checkbox/i)).not.toBeInTheDocument();
       });
-      it('empty fields should not cause a validation error on submit', async () => {
+      it('empty fields should cause a validation error on submit', async () => {
         const wrapper = createWrapper(qChoiceCheckbox);
         await submitForm();
         expect(wrapper.queryByTestId(/summary-element-Tom checkbox/i)).toBeInTheDocument();
@@ -143,7 +145,7 @@ describe('Default form values', () => {
         await submitForm();
         expect(wrapper.queryByTestId(/summary-element-Preutfylt dropdown/i)).not.toBeInTheDocument();
       });
-      it('empty fields should not cause a validation error on submit', async () => {
+      it('empty fields should cause a validation error on submit', async () => {
         const wrapper = createWrapper(qChoiceDropdown);
         await submitForm();
         expect(wrapper.queryByTestId(/summary-element-Tom dropdown/i)).toBeInTheDocument();
@@ -155,7 +157,7 @@ describe('Default form values', () => {
         await submitForm();
         expect(wrapper.queryByTestId(/summary-element-Preutfylt slider/i)).not.toBeInTheDocument();
       });
-      it('empty fields should not cause a validation error on submit', async () => {
+      it('empty fields should cause a validation error on submit', async () => {
         const wrapper = createWrapper(qChoiceSlider);
         await submitForm();
         expect(wrapper.queryByTestId(/summary-element-Tom slider/i)).toBeInTheDocument();
@@ -169,7 +171,7 @@ describe('Default form values', () => {
         await submitForm();
         expect(wrapper.queryByTestId(/summary-element-Preutfylt radioknapper/i)).not.toBeInTheDocument();
       });
-      it('empty fields should not cause a validation error on submit', async () => {
+      it('empty fields should cause a validation error on submit', async () => {
         const wrapper = createWrapper(qOpenChoiceRadio);
         await submitForm();
         expect(wrapper.queryByTestId(/summary-element-Tom radioknapper/i)).toBeInTheDocument();
@@ -181,7 +183,7 @@ describe('Default form values', () => {
         await submitForm();
         expect(wrapper.queryByTestId(/summary-element-Preutfylt checkbox/i)).not.toBeInTheDocument();
       });
-      it('empty fields should not cause a validation error on submit', async () => {
+      it('empty fields should cause a validation error on submit', async () => {
         const wrapper = createWrapper(qOpenChoiceCheckbox);
         await submitForm();
         expect(wrapper.queryByTestId(/summary-element-Tom checkbox/i)).toBeInTheDocument();
@@ -193,7 +195,7 @@ describe('Default form values', () => {
         await submitForm();
         expect(wrapper.queryByTestId(/summary-element-Preutfylt dropdown/i)).not.toBeInTheDocument();
       });
-      it('empty fields should not cause a validation error on submit', async () => {
+      it('empty fields should cause a validation error on submit', async () => {
         const wrapper = createWrapper(qChoiceDropdown);
         await submitForm();
         expect(wrapper.queryByTestId(/summary-element-Tom dropdown/i)).toBeInTheDocument();
@@ -206,7 +208,7 @@ describe('Default form values', () => {
       await submitForm();
       expect(wrapper.queryByTestId(/summary-element-Preutfylt string/i)).not.toBeInTheDocument();
     });
-    it('empty fields should not cause a validation error on submit', async () => {
+    it('empty fields should cause a validation error on submit', async () => {
       const wrapper = createWrapper(qString);
       await submitForm();
       expect(wrapper.queryByTestId(/summary-element-Tom string/i)).toBeInTheDocument();
@@ -218,14 +220,14 @@ describe('Default form values', () => {
       await submitForm();
       expect(wrapper.queryByTestId(/summary-element-Preutfylt boolean/i)).not.toBeInTheDocument();
     });
-    it('empty fields should not cause a validation error on submit', async () => {
+    it('empty fields should cause a validation error on submit', async () => {
       const wrapper = createWrapper(qBoolean);
       await submitForm();
       expect(wrapper.queryByTestId(/summary-element-Tom boolean/i)).toBeInTheDocument();
     });
   });
   describe('Initial attachment value', () => {
-    it('empty fields should not cause a validation error on submit', async () => {
+    it('empty fields should cause a validation error on submit', async () => {
       const wrapper = createWrapper(qAttachment);
       await submitForm();
       expect(wrapper.queryByTestId(/summary-element-Tom attachment/i)).toBeInTheDocument();
@@ -237,7 +239,7 @@ describe('Default form values', () => {
       await submitForm();
       expect(wrapper.queryByTestId(/summary-element-Preutfylt quantity/i)).not.toBeInTheDocument();
     });
-    it('empty fields should not cause a validation error on submit', async () => {
+    it('empty fields should cause a validation error on submit', async () => {
       const wrapper = createWrapper(qQuantity);
       await submitForm();
       expect(wrapper.queryByTestId(/summary-element-Tom quantity/i)).toBeInTheDocument();
@@ -249,7 +251,7 @@ describe('Default form values', () => {
       await submitForm();
       expect(wrapper.queryByTestId(/summary-element-Preutfylt text/i)).not.toBeInTheDocument();
     });
-    it('empty fields should not cause a validation error on submit', async () => {
+    it('empty fields should cause a validation error on submit', async () => {
       const wrapper = createWrapper(qText);
       await submitForm();
       expect(wrapper.queryByTestId(/summary-element-Tom text/i)).toBeInTheDocument();
