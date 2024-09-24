@@ -64,14 +64,21 @@ describe('Date time', () => {
           repeats: false,
           initial: [
             {
-              valueDateTime: '1994-05-31T00:00:00+00:00',
+              valueDateTime: '1994-05-31T14:30:00+02:00',
             },
           ],
         })),
       };
       const { getByLabelText } = createWrapper(questionnaire);
       const dateInput = getByLabelText(/Dato/i);
+      const hoursElement = screen.getByTestId(/hours-test/i);
+      const minutesElement = screen.getByTestId(/minutes-test/i);
+      const hoursInput = hoursElement.querySelector('input');
+      const minutesInput = minutesElement.querySelector('input');
+
       await waitFor(async () => expect(dateInput).toHaveValue('31.05.1994'));
+      await waitFor(async () => expect(hoursInput).toHaveValue(14));
+      await waitFor(async () => expect(minutesInput).toHaveValue(30));
     });
   });
   describe('help button', () => {
@@ -213,7 +220,7 @@ describe('Date time', () => {
         await userEvent.type(hoursInput, '14');
       }
 
-      await waitFor(async () => expect(hoursInput).toHaveValue(Number('14')));
+      await waitFor(async () => expect(hoursInput).toHaveValue(14));
     });
     it('Should update minutes field with value from answer', async () => {
       const { getByTestId } = createWrapper(q);

@@ -58,7 +58,7 @@
   "peerDependencies": {
     "@helsenorge/autosuggest": "^32.0.0",
     "@helsenorge/datepicker": "^8.0.0",
-    "@helsenorge/designsystem-react": "^8.0.0",
+    "@helsenorge/designsystem-react": "^8.5.0",
     "@helsenorge/file-upload": "^32.0.0",
     "react": "^17.0.0 || ^18.0.0",
     "react-dom": "^17.0.0 || ^18.0.0",
@@ -69,7 +69,7 @@
   "devDependencies": {
     "@helsenorge/autosuggest": "^32.0.0",
     "@helsenorge/datepicker": "^8.0.0",
-    "@helsenorge/designsystem-react": "^8.0.0",
+    "@helsenorge/designsystem-react": "^8.5.0",
     "@helsenorge/file-upload": "^32.0.0",
     "@redux-devtools/extension": "^3.3.0",
     "@testing-library/dom": "^10.4.0",

@@ -6,7 +6,7 @@ import { Extensions } from '../../../../constants/extensions';
 import { clickButtonTimes, submitForm } from '../../../../../test/selectors';
 import { getResources } from '../../../../../preview/resources/referoResources';
 import { vi } from 'vitest';
-import { screen } from '@testing-library/dom';
+import { screen, waitFor } from '@testing-library/dom';
 
 const resources = {
   ...getResources(''),
@@ -272,47 +272,51 @@ describe('Time', () => {
 
         expect(queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
       });
-      // it('Should remove error on change if form is submitted', async () => {
-      //   const questionnaire: Questionnaire = {
-      //     ...q,
-      //     item: q.item?.map(x => ({ ...x, required: true })),
-      //   };
-      //   const { getByText, queryByText, getByLabelText, getByTestId } = createWrapper(questionnaire);
-      //   await submitForm();
-      //   expect(getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
+      it('Should remove error on change if form is submitted', async () => {
+        const questionnaire: Questionnaire = {
+          ...q,
+          item: q.item?.map(x => ({ ...x, required: true })),
+        };
+        const { getByText, queryByText, getByLabelText, getByTestId } = createWrapper(questionnaire);
 
-      //   const hoursElement = getByLabelText(/Klokkeslett/i);
-      //   const minutesElement = getByTestId('time-2');
-      //   const minutesInput = minutesElement.querySelector('input');
+        await submitForm();
+        expect(getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
 
-      //   await act(async () => {
-      //     userEvent.type(hoursElement, '14');
-      //   });
-      //   if (minutesInput) {
-      //     await act(async () => {
-      //       userEvent.paste(minutesInput, '30');
-      //       userEvent.tab();
-      //     });
-      //   }
+        const hoursElement = getByLabelText(/Klokkeslett/i);
+        const minutesElement = getByTestId('time-2');
+        const minutesInput = minutesElement.querySelector('input');
 
-      //   await waitFor(() => {
-      //     expect(queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
-      //   });
-      // });
+        await userEvent.type(hoursElement, '14');
+        if (minutesInput) {
+          userEvent.type(minutesInput, '30');
+          userEvent.tab();
+        }
+
+        await waitFor(async () => expect(queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument());
+      });
       it('Should show error if hour value is invalid', async () => {
-        const { getByLabelText, getByText } = createWrapper(q);
+        const { getByLabelText, getByText, getByTestId } = createWrapper(q);
 
-        await userEvent.type(getByLabelText(/Klokkeslett/i), '99');
+        const hoursElement = getByLabelText(/Klokkeslett/i);
+        const minutesElement = getByTestId('time-2');
+        const minutesInput = minutesElement.querySelector('input');
+
+        await userEvent.type(hoursElement, '99');
+        if (minutesInput) {
+          await userEvent.type(minutesInput, '12');
+        }
 
         await submitForm();
         expect(getByText(resources.dateError_time_invalid)).toBeInTheDocument();
       });
       it('Should show error if minute value is invalid', async () => {
-        const { getByText, getByTestId } = createWrapper(q);
+        const { getByLabelText, getByText, getByTestId } = createWrapper(q);
 
+        const hoursElement = getByLabelText(/Klokkeslett/i);
         const minutesElement = getByTestId('time-2');
         const minutesInput = minutesElement.querySelector('input');
 
+        await userEvent.type(hoursElement, '12');
         if (minutesInput) {
           await userEvent.type(minutesInput, '99');
         }
