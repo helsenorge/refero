@@ -1,10 +1,19 @@
 {
   "resourceType": "Questionnaire",
   "id": "21",
-  "version": "0.1",
   "name": "PHQ-9",
   "title": "Testskjema for onChange",
+  "version": "0.1",
   "status": "draft",
+  "meta": {
+    "security": [
+      {
+        "code": "3",
+        "display": "Helsehjelp (Full)",
+        "system": "urn:oid:2.16.578.1.12.4.1.1.7618"
+      }
+    ]
+  },
   "date": "2018-02-02",
   "contained": [
     {
@@ -121,21 +130,59 @@
     },
     {
       "linkId": "7b",
-      "text": "Time",
-      "type": "time"
-    },
-    {
-      "linkId": "7c",
       "text": "DateTime",
       "type": "dateTime"
     },
     {
+      "linkId": "7c",
+      "type": "date",
+      "text": "DateYear",
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                "code": "year"
+              }
+            ]
+          }
+        }
+      ],
+      "required": false
+    },
+    {
+      "linkId": "7d",
+      "type": "date",
+      "text": "DateMonth",
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                "code": "yearMonth"
+              }
+            ]
+          }
+        }
+      ],
+      "required": false
+    },
+    {
       "linkId": "8",
+      "text": "Time",
+      "type": "time"
+    },
+    {
+      "linkId": "9",
       "text": "String",
       "type": "string"
     },
     {
-      "linkId": "9",
+      "linkId": "10",
       "text": "Text",
       "type": "text"
     }
