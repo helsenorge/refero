@@ -17,6 +17,7 @@ import {
   qDateDay,
   qTime,
   qDateMonth,
+  qDateYear,
 } from './__data__';
 import { ReferoProps } from '@/types/referoProps';
 import { renderRefero } from '@test/test-utils';
@@ -71,6 +72,18 @@ describe('Default form values', () => {
         const wrapper = createWrapper(qDateDay);
         await submitForm();
         expect(wrapper.queryByTestId(/summary-element-Tom dateDay/i)).toBeInTheDocument();
+      });
+    });
+    describe('Initial dateYear value', () => {
+      it('prefilled values should not cause a validation error on submit', async () => {
+        const wrapper = createWrapper(qDateYear);
+        await submitForm();
+        expect(wrapper.queryByTestId(/summary-element-Preutfylt dateYear/i)).not.toBeInTheDocument();
+      });
+      it('empty fields should cause a validation error on submit', async () => {
+        const wrapper = createWrapper(qDateYear);
+        await submitForm();
+        expect(wrapper.queryByTestId(/summary-element-Tom dateYear/i)).toBeInTheDocument();
       });
     });
     describe('Initial dateMonth value', () => {
