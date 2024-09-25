@@ -84,7 +84,6 @@ export const RenderResponseItems = ({
             items={item.item}
             path={newPath}
             pdf={pdf}
-            responseItem={responseItem}
             renderContext={renderContext}
             headerTag={newHeaderTag}
           />
