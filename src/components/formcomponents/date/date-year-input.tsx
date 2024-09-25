@@ -17,12 +17,15 @@ import { useGetAnswer } from '@/hooks/useGetAnswer';
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 import { useMinMaxDate } from './useMinMaxDate';
+import { initialize } from '@/util/date-fns-utils';
 
 type Props = QuestionnaireComponentItemProps & {
   onDateValueChange: (newValue: string) => void;
 };
 
 export const DateYearInput = (props: Props): JSX.Element | null => {
+  initialize();
+
   const { id, pdf, item, responseItem, onDateValueChange, idWithLinkIdAndItemIndex, children } = props;
   const { formState, getFieldState, control } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
