@@ -8,7 +8,7 @@ import { getValidationTextExtension } from '@/util/extension';
 export const validateMinFiles = (
   files: UploadFile[],
   minFiles: number,
-  item: QuestionnaireItem,
+  item?: QuestionnaireItem,
   errorMessage?: string,
   genericErrorText?: string
 ): string | true => {
@@ -24,7 +24,7 @@ export const validateMinFiles = (
 export const validateMaxFiles = (
   files: UploadFile[],
   maxFiles: number,
-  item: QuestionnaireItem,
+  item?: QuestionnaireItem,
   errorMessage?: string,
   genericErrorText?: string
 ): string | true => {
@@ -40,7 +40,7 @@ export const validateMaxFiles = (
 export const validateFileSize = (
   file: UploadFile,
   maxSize: number,
-  item: QuestionnaireItem,
+  item?: QuestionnaireItem,
   errorMessage?: string,
   genericErrorText?: string
 ): string | true => {
@@ -56,7 +56,7 @@ export const validateFileSize = (
 export const validateFileType = (
   file: UploadFile,
   validTypes: string[],
-  item: QuestionnaireItem,
+  item?: QuestionnaireItem,
   errorMessage?: string,
   genericErrorText?: string
 ): string | true => {
@@ -83,7 +83,7 @@ const sizeIsValid = (file: UploadFile, size: number): boolean => {
   return true;
 };
 
-export const getCustomValidationText = (item: QuestionnaireItem, genericErrorText?: string): string => {
+export const getCustomValidationText = (item?: QuestionnaireItem, genericErrorText?: string): string => {
   const validationText = getValidationTextExtension(item);
   if (validationText) {
     return validationText;

@@ -10,7 +10,7 @@ import { useExternalRenderContext } from '@/context/externalRenderContext';
 
 interface Props {
   id?: string;
-  item: QuestionnaireItem;
+  item?: QuestionnaireItem;
   value?: string | number;
   textClass?: string;
   children?: ReactNode;

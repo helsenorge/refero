@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 import { FieldValues, useFormContext } from 'react-hook-form';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 import styles from '../common-styles.module.css';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
@@ -23,11 +23,18 @@ import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 import { maxLength, minLength, regexpPattern, required, scriptInjection } from '@/components/validation/rules';
+import { debounce } from '@helsenorge/core-utils/debounce';
+import { findQuestionnaireItem, getResponseItemWithPathSelector } from '@/reducers/selectors';
+import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 
 export type Props = QuestionnaireComponentItemProps;
 
 export const String = (props: Props): JSX.Element | null => {
-  const { path, item, id, pdf, resources, idWithLinkIdAndItemIndex, children, responseItems, index, responseItem } = props;
+  const { path, id, pdf, resources, idWithLinkIdAndItemIndex, children, index, linkId } = props;
+  const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
+  const responseItem = useSelector<GlobalState, QuestionnaireResponseItem | undefined>(state =>
+    getResponseItemWithPathSelector(state, path)
+  );
   const { promptLoginMessage, validateScriptInjection, onAnswerChange } = useExternalRenderContext();
   const { formState, getFieldState, register } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
@@ -35,11 +42,12 @@ export const String = (props: Props): JSX.Element | null => {
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
   const [isHelpVisible, setIsHelpVisible] = useState(false);
   const answer = useGetAnswer(responseItem, item);
+
   const enable = useIsEnabled(item, path);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     const value = event.target.value;
-    if (dispatch && path) {
+    if (dispatch && path && item) {
       dispatch(newStringValueAsync(path, value, item))?.then(newState => {
         return onAnswerChange(newState, item, { valueString: value });
       });
@@ -61,9 +69,10 @@ export const String = (props: Props): JSX.Element | null => {
     );
   }
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    handleChange(event);
-  };
+  // const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+  //   handleChange(event);
+  // };
+  const handleInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void = debounce(handleChange, 250, false);
   const value = getStringValue(answer);
   const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, {
     required: required({ item, resources }),
@@ -88,8 +97,8 @@ export const String = (props: Props): JSX.Element | null => {
         <RenderHelpElement item={item} isHelpVisible={isHelpVisible} />
         <Input
           {...rest}
-          value={value}
-          disabled={item.readOnly}
+          defaultValue={value}
+          disabled={item?.readOnly}
           onChange={(e): void => {
             handleInputChange(e);
             onChange(e);
@@ -108,7 +117,7 @@ export const String = (props: Props): JSX.Element | null => {
           responseItem={responseItem}
           className="page_refero__deletebutton--margin-top"
         />
-        <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} responseItem={responseItem} responseItems={responseItems} />
+        <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} responseItem={responseItem} />
       </FormGroup>
 
       {children && <div className="nested-fieldset nested-fieldset--full-height">{children}</div>}

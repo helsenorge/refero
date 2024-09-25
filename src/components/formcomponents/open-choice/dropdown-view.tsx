@@ -19,6 +19,10 @@ import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { required } from '@/components/validation/rules';
+import { useSelector } from 'react-redux';
+import { findQuestionnaireItem, getResponseItemWithPathSelector } from '@/reducers/selectors';
+import { GlobalState } from '@/reducers';
+import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 
 type Props = QuestionnaireComponentItemProps & {
   options?: Array<Options>;
@@ -28,28 +32,15 @@ type Props = QuestionnaireComponentItemProps & {
 };
 
 const DropdownView = (props: Props): JSX.Element | null => {
-  const {
-    options,
-    item,
-    id,
-    handleChange,
-    selected,
-    resources,
-    renderOpenField,
-    idWithLinkIdAndItemIndex,
-    responseItems,
-    responseItem,
-    children,
-    path,
-    index,
-  } = props;
+  const { options, id, handleChange, selected, resources, renderOpenField, idWithLinkIdAndItemIndex, linkId, children, path, index } =
+    props;
   const [isHelpVisible, setIsHelpVisible] = React.useState(false);
   const { formState, getFieldState, register } = useFormContext<FieldValues>();
   const { error } = getFieldState(idWithLinkIdAndItemIndex, formState);
-
-  if (!options) {
-    return null;
-  }
+  const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
+  const responseItem = useSelector<GlobalState, QuestionnaireResponseItem | undefined>(state =>
+    getResponseItemWithPathSelector(state, path)
+  );
 
   const answer = useGetAnswer(responseItem, item);
   const onChange = (e: React.ChangeEvent<HTMLSelectElement>): void => {
@@ -59,6 +50,9 @@ const DropdownView = (props: Props): JSX.Element | null => {
     required: required({ item, resources }),
     shouldUnregister: true,
   });
+  if (!options) {
+    return null;
+  }
   return (
     <div className="page_refero__component page_refero__component_openchoice page_refero__component_openchoice_dropdown">
       <FormGroup error={error?.message} mode="ongrey" errorWrapperClassName={styles.paddingBottom}>
@@ -100,7 +94,7 @@ const DropdownView = (props: Props): JSX.Element | null => {
         responseItem={responseItem}
         className="page_refero__deletebutton--margin-top"
       />
-      <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} responseItem={responseItem} responseItems={responseItems} />
+      <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} responseItem={responseItem} />
       <div className="nested-fieldset nested-fieldset--full-height">{children}</div>
     </div>
   );

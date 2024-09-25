@@ -16,6 +16,10 @@ import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { required } from '@/components/validation/rules';
+import { useSelector } from 'react-redux';
+import { findQuestionnaireItem, getResponseItemWithPathSelector } from '@/reducers/selectors';
+import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
+import { GlobalState } from '@/reducers';
 
 export type Props = QuestionnaireComponentItemProps & {
   options?: Array<Options>;
@@ -24,21 +28,11 @@ export type Props = QuestionnaireComponentItemProps & {
 };
 
 const DropdownView = (props: Props): JSX.Element | null => {
-  const {
-    options,
-    item,
-    id,
-    handleChange,
-    selected,
-    resources,
-    idWithLinkIdAndItemIndex,
-    responseItems,
-    responseItem,
-    path,
-    index,
-    children,
-  } = props;
-
+  const { options, linkId, id, handleChange, selected, resources, idWithLinkIdAndItemIndex, path, index, children } = props;
+  const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
+  const responseItem = useSelector<GlobalState, QuestionnaireResponseItem | undefined>(state =>
+    getResponseItemWithPathSelector(state, path)
+  );
   const { formState, getFieldState, register } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
@@ -103,7 +97,7 @@ const DropdownView = (props: Props): JSX.Element | null => {
         responseItem={responseItem}
         className="page_refero__deletebutton--margin-top"
       />
-      <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} responseItem={responseItem} responseItems={responseItems} />
+      <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} responseItem={responseItem} />
       <div className="nested-fieldset nested-fieldset--full-height">{children}</div>
     </div>
   );

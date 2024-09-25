@@ -11,10 +11,14 @@ import { QuestionnaireComponentItemProps } from '@/components/createQuestionnair
 import { useSelector } from 'react-redux';
 import { GlobalState } from '@/reducers';
 import { getFormDefinition } from '@/reducers/form';
+import { QuestionnaireItem } from 'fhir/r4';
+import { findQuestionnaireItem } from '@/reducers/selectors';
 
 export type Props = QuestionnaireComponentItemProps;
 
-const Display = ({ id, pdf, item, resources, path }: Props): JSX.Element | null => {
+const Display = ({ id, pdf, resources, path, linkId }: Props): JSX.Element | null => {
+  const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
+
   const { onRenderMarkdown } = useExternalRenderContext();
   const formDefinition = useSelector((state: GlobalState) => getFormDefinition(state));
   const questionnaire = formDefinition?.Content;

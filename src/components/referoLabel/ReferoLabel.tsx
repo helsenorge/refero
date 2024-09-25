@@ -12,7 +12,7 @@ import { GlobalState } from '@/reducers';
 import { getFormDefinition } from '@/reducers/form';
 
 type Props = {
-  item: QuestionnaireItem;
+  item?: QuestionnaireItem;
   resources?: Resources;
   labelId: string;
   testId: string;
@@ -34,8 +34,7 @@ export const ReferoLabel = ({
   sublabelTestId,
   afterLabelContent,
 }: Props): JSX.Element => {
-  const formDefinition = useSelector((state: GlobalState) => getFormDefinition(state));
-  const questionnaire = formDefinition?.Content;
+  const questionnaire = useSelector((state: GlobalState) => getFormDefinition(state))?.Content;
   const { onRenderMarkdown } = useExternalRenderContext();
   const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
   const lblText = getLabelText(item, onRenderMarkdown, questionnaire, resources);

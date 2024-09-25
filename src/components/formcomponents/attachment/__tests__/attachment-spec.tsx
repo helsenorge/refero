@@ -50,8 +50,8 @@ describe('Attachment', () => {
         ...q,
         item: q.item?.map(x => ({ ...x, repeats: false })),
       };
-      const { queryByText } = createWrapper(questionnaire, { pdf: true });
-      expect(queryByText(resources.ikkeBesvart)).toBeInTheDocument();
+      const { getByText } = createWrapper(questionnaire, { pdf: true });
+      expect(getByText(resources.ikkeBesvart)).toBeInTheDocument();
     });
     it('Should render text if item is readonly', () => {
       const questionnaire: Questionnaire = {
@@ -59,8 +59,8 @@ describe('Attachment', () => {
         item: q.item?.map(x => ({ ...x, readOnly: true, repeats: false })),
       };
 
-      const { queryByText } = createWrapper(questionnaire);
-      expect(queryByText(resources.ikkeBesvart)).toBeInTheDocument();
+      const { getByText } = createWrapper(questionnaire);
+      expect(getByText(resources.ikkeBesvart)).toBeInTheDocument();
     });
     it('Should render as input if props.pdf === false && item is not readonly', () => {
       const questionnaire: Questionnaire = {
@@ -97,7 +97,7 @@ describe('Attachment', () => {
         ...q,
       };
       const upload = vi.fn();
-      const { getByLabelText, getByText } = createWrapper(questionnaire, {
+      const { getByLabelText, findByText } = createWrapper(questionnaire, {
         uploadAttachment: upload,
         attachmentValidTypes: ['image/png'],
       });
@@ -112,7 +112,7 @@ describe('Attachment', () => {
       const input = getByLabelText(/Attachment - Markdown/i);
       await userEvent.upload(input, file);
       await waitFor(() => expect(upload).toHaveBeenCalledTimes(1));
-      await waitFor(() => expect(getByText('hello.png')).toBeInTheDocument());
+      await waitFor(async () => expect(await findByText('hello.png')).toBeInTheDocument());
     });
     it('Should call onChange with correct value', async () => {
       const questionnaire: Questionnaire = {

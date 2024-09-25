@@ -9,11 +9,19 @@ import ContextTypeGrid from './ContextTypeGrid';
 import ContextTypeGridRow from './ContextTypeGridRow';
 import DefaultGroup from './DefaultGroup';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
+import { useSelector } from 'react-redux';
+import { GlobalState } from '@/reducers';
+import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
+import { findQuestionnaireItem, getResponseItemWithPathSelector } from '@/reducers/selectors';
 
 export type Props = QuestionnaireComponentItemProps;
 
 export const Group = (props: Props): JSX.Element | null => {
-  const { pdf, renderContext, path, item } = props;
+  const { pdf, renderContext, path, linkId } = props;
+  const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
+  const responseItem = useSelector<GlobalState, QuestionnaireResponseItem | undefined>(state =>
+    getResponseItemWithPathSelector(state, path)
+  );
   const enable = useIsEnabled(item, path);
   const [isHelpVisible, setIsHelpVisible] = useState(false);
   if (!enable) {
@@ -24,7 +32,7 @@ export const Group = (props: Props): JSX.Element | null => {
   return (
     <AsPdf pdf={!!pdf}>
       {isLocalRenderContextTypeGrid ? (
-        <ContextTypeGrid {...props} />
+        <ContextTypeGrid {...props} item={item} responseItem={responseItem} />
       ) : isRenderContextTypeGrid ? (
         isDirectChildOfRenderContextOwner(path || [], item, renderContext) ? (
           <ContextTypeGridRow {...props} isHelpVisible={isHelpVisible} setIsHelpVisible={setIsHelpVisible} />

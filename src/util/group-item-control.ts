@@ -7,8 +7,8 @@ import itemType from '../constants/itemType';
 type GroupKeys = keyof typeof itemControlConstants.Group;
 type GroupValues = (typeof itemControlConstants.Group)[GroupKeys];
 
-export function getGroupItemControl(item: QuestionnaireItem): Coding[] {
-  if (item.type !== itemType.GROUP) return [];
+export function getGroupItemControl(item?: QuestionnaireItem): Coding[] {
+  if (item?.type !== itemType.GROUP) return [];
 
   const itemControl = getItemControlExtensionValue(item);
   if (!itemControl) return [];

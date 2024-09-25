@@ -1,6 +1,6 @@
 import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 
-import { ValueSet, Coding } from 'fhir/r4';
+import { ValueSet, Coding, QuestionnaireResponseItem, QuestionnaireItem } from 'fhir/r4';
 import { FieldValues, useFormContext } from 'react-hook-form';
 import styles from '../common-styles.module.css';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
@@ -26,6 +26,9 @@ import { useExternalRenderContext } from '@/context/externalRenderContext';
 
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { required } from '@/components/validation/rules';
+import { useSelector } from 'react-redux';
+import { GlobalState } from '@/reducers';
+import { findQuestionnaireItem, getResponseItemWithPathSelector } from '@/reducers/selectors';
 
 export type AutosuggestProps = QuestionnaireComponentItemProps & {
   handleChange: (code?: string, systemArg?: string, displayArg?: string) => void;
@@ -34,22 +37,13 @@ export type AutosuggestProps = QuestionnaireComponentItemProps & {
 };
 
 const AutosuggestView = (props: AutosuggestProps): JSX.Element | null => {
-  const {
-    resources,
-    item,
-    id,
-    idWithLinkIdAndItemIndex,
-    clearCodingAnswer,
-    handleChange,
-    handleStringChange,
-    index,
-    responseItems,
-    responseItem,
-    path,
-    children,
-  } = props;
+  const { resources, linkId, id, idWithLinkIdAndItemIndex, clearCodingAnswer, handleChange, handleStringChange, index, path, children } =
+    props;
   const { formState, getFieldState, register } = useFormContext<FieldValues>();
-
+  const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
+  const responseItem = useSelector<GlobalState, QuestionnaireResponseItem | undefined>(state =>
+    getResponseItemWithPathSelector(state, path)
+  );
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
   const answer = useGetAnswer(responseItem, item);
@@ -73,7 +67,7 @@ const AutosuggestView = (props: AutosuggestProps): JSX.Element | null => {
     if (initialInputValue) setInputValue(initialInputValue);
   }, [initialInputValue]);
   const isOpenChoice = (): boolean => {
-    return item.type === ItemType.OPENCHOICE;
+    return item?.type === ItemType.OPENCHOICE;
   };
 
   const successCallback = (valueSet: ValueSet): void => {
@@ -121,7 +115,7 @@ const AutosuggestView = (props: AutosuggestProps): JSX.Element | null => {
     if (value === lastSearchValue) {
       return;
     }
-    if (fetchValueSet) {
+    if (fetchValueSet && item) {
       setIsLoading(true);
       setSuggestions([]);
       setLastSearchValue(value);
@@ -248,7 +242,7 @@ const AutosuggestView = (props: AutosuggestProps): JSX.Element | null => {
           responseItem={responseItem}
           className="page_refero__deletebutton--margin-top"
         />
-        <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} responseItem={responseItem} responseItems={responseItems} />
+        <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} responseItem={responseItem} />
       </FormGroup>
       <div className="nested-fieldset nested-fieldset--full-height">{children}</div>
     </div>

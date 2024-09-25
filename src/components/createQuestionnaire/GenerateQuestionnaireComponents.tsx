@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { useSelector, shallowEqual } from 'react-redux';
-import { QuestionnaireItem, QuestionnaireResponseItem, Resource } from 'fhir/r4';
+import { QuestionnaireItem, Resource } from 'fhir/r4';
 
 import { RenderContext } from '@/util/renderContext';
 import { isHiddenItem } from '@/util/index';
@@ -16,9 +16,8 @@ import { RenderResponseItems } from './RenderResponseItems';
 
 export type QuestionnaireComponentItemProps = {
   resources?: Resources;
-  responseItem: QuestionnaireResponseItem;
   containedResources?: Resource[];
-  item: QuestionnaireItem;
+  linkId: string;
   headerTag?: number;
   pdf?: boolean;
   language?: string;
@@ -28,7 +27,6 @@ export type QuestionnaireComponentItemProps = {
   id: string;
   index: number;
   renderContext: RenderContext;
-  responseItems: QuestionnaireResponseItem[];
   idWithLinkIdAndItemIndex: string;
   children?: React.ReactNode;
 };

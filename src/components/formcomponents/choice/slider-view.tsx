@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
+import { QuestionnaireItem, QuestionnaireItemAnswerOption, QuestionnaireResponseItem } from 'fhir/r4';
 import { Controller, FieldValues, useFormContext } from 'react-hook-form';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
@@ -20,6 +20,9 @@ import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { required } from '@/components/validation/rules';
+import { useSelector } from 'react-redux';
+import { findQuestionnaireItem, getResponseItemWithPathSelector } from '@/reducers/selectors';
+import { GlobalState } from '@/reducers';
 
 export type SliderProps = QuestionnaireComponentItemProps & {
   handleChange: (sliderStep: string) => void;
@@ -34,22 +37,25 @@ enum SliderDisplayTypes {
 type LeftRightLabels = { leftLabel: string; rightLabel: string };
 
 const SliderView = (props: SliderProps): JSX.Element | null => {
-  const { item, handleChange, selected, resources, idWithLinkIdAndItemIndex, id, responseItems, responseItem, path, index, children } =
-    props;
+  const { linkId, handleChange, selected, resources, idWithLinkIdAndItemIndex, id, path, index, children } = props;
+  const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
+  const responseItem = useSelector<GlobalState, QuestionnaireResponseItem | undefined>(state =>
+    getResponseItemWithPathSelector(state, path)
+  );
   const { formState, getFieldState, control } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
 
   const [isHelpVisible, setIsHelpVisible] = useState(false);
   const onValueChange = (index: number): void => {
-    const code = item.answerOption?.[index]?.valueCoding?.code;
+    const code = item?.answerOption?.[index]?.valueCoding?.code;
     if (code) {
       handleChange(code);
     }
   };
 
   const getSelectedStep = (): number | undefined => {
-    if (item.answerOption && selected && selected[0]) {
+    if (item?.answerOption && selected && selected[0]) {
       const stepCodes = getCodes(item.answerOption);
       for (let i = 0; i < stepCodes.length; i++) {
         if (stepCodes[i] === selected[0]) {
@@ -93,7 +99,7 @@ const SliderView = (props: SliderProps): JSX.Element | null => {
               labelLeft={leftRightLabels?.leftLabel}
               labelRight={leftRightLabels?.rightLabel}
               steps={sliderSteps}
-              testId={getId(item.linkId)}
+              testId={getId(item?.linkId)}
               onChange={(value): void => {
                 if (!isNaN(value)) {
                   onValueChange(value);
@@ -112,7 +118,7 @@ const SliderView = (props: SliderProps): JSX.Element | null => {
           responseItem={responseItem}
           className="page_refero__deletebutton--margin-top"
         />
-        <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} responseItem={responseItem} responseItems={responseItems} />
+        <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} responseItem={responseItem} />
         <div className="nested-fieldset nested-fieldset--full-height">{children}</div>
       </FormGroup>
     </div>

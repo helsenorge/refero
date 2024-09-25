@@ -14,7 +14,7 @@ import { Path } from '../../../util/refero-core';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 
 interface Props {
-  item: QuestionnaireItem;
+  item?: QuestionnaireItem;
   parentPath?: Path[];
   responseItems?: QuestionnaireResponseItem[];
   disabled: boolean;
@@ -34,7 +34,7 @@ export const RepeatButton = ({ item, parentPath, responseItems, disabled }: Prop
       onClick={onAddRepeatItem}
       variant="borderless"
       disabled={disabled}
-      testId={`${item.linkId}-repeat-button`}
+      testId={`${item?.linkId}-repeat-button`}
       ariaLabel={`${text || 'Copy'}`}
     >
       <Icon svgIcon={PlusLarge} />

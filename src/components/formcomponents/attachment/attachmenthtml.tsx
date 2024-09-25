@@ -36,7 +36,7 @@ type Props = {
   onRequestAttachmentLink?: (file: string) => string;
   maxFiles?: number;
   minFiles?: number;
-  item: QuestionnaireItem;
+  item?: QuestionnaireItem;
   attachmentMaxFileSize?: number;
   attachmentValidTypes?: Array<string>;
   idWithLinkIdAndItemIndex: string;
@@ -106,7 +106,7 @@ const AttachmentHtml = ({
           afterLabelContent={<RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />}
         />
         <FileUpload
-          {...register(item.linkId, {
+          {...register(idWithLinkIdAndItemIndex, {
             required: required({ item, resources }),
             validate: () => true,
             shouldUnregister: true,

@@ -16,7 +16,7 @@ import { useExternalRenderContext } from '@/context/externalRenderContext';
 
 type Props = {
   className?: string;
-  item: QuestionnaireItem;
+  item?: QuestionnaireItem;
   path?: Array<Path>;
   mustShowConfirm?: boolean;
 };
@@ -44,8 +44,8 @@ const DeleteButton = ({ item, path, mustShowConfirm }: Props): JSX.Element => {
   const onConfirmCancel = (): void => {
     setShowConfirm(false);
   };
-  const pathItem = path?.filter(p => p.linkId === item.linkId);
-  const testId = `${pathItem?.[0].linkId ?? item.linkId}-${pathItem?.[0].index ?? 0}`;
+  const pathItem = path?.filter(p => p.linkId === item?.linkId);
+  const testId = `${pathItem?.[0].linkId ?? item?.linkId}-${pathItem?.[0].index ?? 0}`;
   return (
     <>
       <br />

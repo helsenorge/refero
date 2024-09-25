@@ -8,7 +8,7 @@ import { useGetAnswer } from '@/hooks/useGetAnswer';
 type Props = {
   className?: string;
   index?: number;
-  item: QuestionnaireItem;
+  item?: QuestionnaireItem;
   path?: Path[];
   responseItem?: QuestionnaireResponseItem;
 };

@@ -5,24 +5,27 @@ import { RenderContext } from '@/util/renderContext';
 import { getColumns } from './helpers';
 
 import { RenderContextType } from '@/constants/renderContextType';
-import { QuestionnaireItem } from 'fhir/r4';
+import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import GenerateQuestionnaireComponents, {
   QuestionnaireComponentItemProps,
 } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 
-type ContextTypeGridProps = QuestionnaireComponentItemProps;
+type ContextTypeGridProps = QuestionnaireComponentItemProps & {
+  item?: QuestionnaireItem;
+  responseItem?: QuestionnaireResponseItem;
+};
 type Props = {
-  item: QuestionnaireItem;
+  item?: QuestionnaireItem;
   columns: string[];
 };
 const RenderHeaders = ({ item, columns }: Props): JSX.Element => {
-  const headers = columns.map((c, i) => <th key={`${item.linkId}-${c}-${i}`}>{c}</th>);
-  headers.unshift(<th key={`${item.linkId}-X`}>{item.text ? item.text : ''}</th>);
+  const headers = columns.map((c, i) => <th key={`${item?.linkId}-${c}-${i}`}>{c}</th>);
+  headers.unshift(<th key={`${item?.linkId}-X`}>{item?.text ? item.text : ''}</th>);
   return <>{headers}</>;
 };
 
 const ContextTypeGrid = (props: ContextTypeGridProps): JSX.Element => {
-  const { item, index, path, id, responseItem, resources, responseItems } = props;
+  const { item, index, path, id, responseItem, resources } = props;
   const columns = getColumns(item);
 
   return (
@@ -36,8 +39,8 @@ const ContextTypeGrid = (props: ContextTypeGridProps): JSX.Element => {
         <tbody>
           <GenerateQuestionnaireComponents
             {...props}
-            items={item.item}
-            renderContext={new RenderContext(RenderContextType.Grid, item.linkId, columns)}
+            items={item?.item}
+            renderContext={new RenderContext(RenderContextType.Grid, item?.linkId, columns)}
           />
         </tbody>
       </table>
@@ -48,14 +51,7 @@ const ContextTypeGrid = (props: ContextTypeGridProps): JSX.Element => {
         responseItem={responseItem}
         className="page_refero__deletebutton--margin-top"
       />
-      <RenderRepeatButton
-        item={item}
-        index={index}
-        path={path?.slice(0, -1)}
-        resources={resources}
-        responseItem={responseItem}
-        responseItems={responseItems}
-      />
+      <RenderRepeatButton item={item} index={index} path={path?.slice(0, -1)} resources={resources} responseItem={responseItem} />
     </>
   );
 };

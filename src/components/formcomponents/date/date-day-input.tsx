@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import { format, isValid } from 'date-fns';
-import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
+import { QuestionnaireItem, QuestionnaireResponseItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { Controller, FieldError, FieldValues, useFormContext } from 'react-hook-form';
 import styles from '../common-styles.module.css';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
@@ -29,6 +29,9 @@ import { useGetAnswer } from '@/hooks/useGetAnswer';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 import { useMinMaxDate } from './useMinMaxDate';
 import { initialize } from '@/util/date-fns-utils';
+import { GlobalState } from '@/reducers';
+import { useSelector } from 'react-redux';
+import { findQuestionnaireItem, getResponseItemWithPathSelector } from '@/reducers/selectors';
 
 type DateDayInputProps = QuestionnaireComponentItemProps & {
   locale: LanguageLocales.ENGLISH | LanguageLocales.NORWEGIAN;
@@ -39,13 +42,16 @@ export const DateDayInput = ({
   id,
   idWithLinkIdAndItemIndex,
   pdf,
-  item,
-  responseItem,
+  linkId,
   onDateValueChange,
   children,
+  path,
 }: DateDayInputProps): JSX.Element | null => {
   initialize();
-
+  const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
+  const responseItem = useSelector<GlobalState, QuestionnaireResponseItem | undefined>(state =>
+    getResponseItemWithPathSelector(state, path)
+  );
   const [isHelpVisible, setIsHelpVisible] = useState(false);
   const { formState, getFieldState } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
@@ -80,7 +86,7 @@ export const DateDayInput = ({
   const date = parseStringToDate(dateAnswerValue);
 
   const getValue = (
-    item: QuestionnaireItem,
+    item?: QuestionnaireItem,
     answer?: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]
   ): string | string[] | undefined => {
     if (answer && Array.isArray(answer)) {

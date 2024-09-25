@@ -11,7 +11,7 @@ import { findHelpItem, getHelpItemType } from '@/util/help';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 
 type Props = {
-  item: QuestionnaireItem;
+  item?: QuestionnaireItem;
   setIsHelpVisible: React.Dispatch<React.SetStateAction<boolean>>;
   isHelpVisible: boolean;
 };

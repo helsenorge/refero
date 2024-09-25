@@ -5,7 +5,7 @@ import { parseISO } from 'date-fns';
 import { QuestionnaireItem } from 'fhir/r4';
 import { useEffect, useState } from 'react';
 
-export const useMinMaxDate = (item: QuestionnaireItem): { minDateTime: Date | undefined; maxDateTime: Date | undefined } => {
+export const useMinMaxDate = (item?: QuestionnaireItem): { minDateTime: Date | undefined; maxDateTime: Date | undefined } => {
   const [minDateTime, setMinDateTime] = useState<Date | undefined>();
   const [maxDateTime, setMaxDateTime] = useState<Date | undefined>();
   const getMinDateWithExtension = (): Date | undefined => {

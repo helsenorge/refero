@@ -14,7 +14,7 @@ import { isReadOnly, getId } from '@/util/index';
 import TextView from '../textview';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
 import { useIsEnabled } from '@/hooks/useIsEnabled';
 import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelpButton';
@@ -24,11 +24,16 @@ import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 import { maxValue, minValue, required } from '@/components/validation/rules';
+import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
+import { findQuestionnaireItem, getResponseItemWithPathSelector } from '@/reducers/selectors';
 
 export type Props = QuestionnaireComponentItemProps;
 const Integer = (props: Props): JSX.Element | null => {
-  const { item, resources, id, pdf, idWithLinkIdAndItemIndex, path, responseItem, responseItems, index, children } = props;
-
+  const { resources, id, pdf, idWithLinkIdAndItemIndex, path, linkId, index, children } = props;
+  const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
+  const responseItem = useSelector<GlobalState, QuestionnaireResponseItem | undefined>(state =>
+    getResponseItemWithPathSelector(state, path)
+  );
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
   const { promptLoginMessage, onAnswerChange } = useExternalRenderContext();
   const { formState, getFieldState, register } = useFormContext<FieldValues>();
@@ -66,7 +71,7 @@ const Integer = (props: Props): JSX.Element | null => {
 
   const handleChange = (event: React.FormEvent<HTMLInputElement>): void => {
     const value = parseInt((event.target as HTMLInputElement).value, 10);
-    if (dispatch && path) {
+    if (dispatch && path && item) {
       dispatch(newIntegerValueAsync(path, value, item))?.then(newState => onAnswerChange(newState, item, { valueInteger: value }));
     }
 
@@ -126,7 +131,7 @@ const Integer = (props: Props): JSX.Element | null => {
           responseItem={responseItem}
           className="page_refero__deletebutton--margin-top"
         />
-        <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} responseItem={responseItem} responseItems={responseItems} />
+        <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} responseItem={responseItem} />
       </FormGroup>
       <div className="nested-fieldset nested-fieldset--full-height">{children}</div>
     </div>

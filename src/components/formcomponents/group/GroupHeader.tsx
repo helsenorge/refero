@@ -11,7 +11,7 @@ import { getFormDefinition } from '@/reducers/form';
 import { GlobalState } from '@/reducers';
 
 type GroupHeaderProps = {
-  item: QuestionnaireItem;
+  item?: QuestionnaireItem;
   questionnaire?: Questionnaire | null;
   resources?: Resources;
   headerTag?: number;

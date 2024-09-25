@@ -23,7 +23,7 @@ export interface Path {
   index?: number;
 }
 export function getRootQuestionnaireResponseItemFromData(
-  definitionLinkId: string,
+  definitionLinkId?: string,
   formData?: FormData | null
 ): QuestionnaireResponseItem[] | undefined {
   if (!formData || !formData.Content) {
@@ -192,8 +192,8 @@ export function getDefinitionItems(formDefinition: FormDefinition | null): Quest
 }
 
 export function getItemWithIdFromResponseItemArray(
-  linkId: string,
-  responseItems: QuestionnaireResponseItem[] | undefined
+  linkId?: string,
+  responseItems?: QuestionnaireResponseItem[] | undefined
 ): QuestionnaireResponseItem[] | undefined {
   if (!responseItems || responseItems.length === 0) {
     return undefined;
@@ -475,7 +475,7 @@ export function createPathForItem(path: Path[] | undefined, item: QuestionnaireI
   return newPath;
 }
 
-export function shouldRenderDeleteButton(item: QuestionnaireItem, index: number): boolean {
+export function shouldRenderDeleteButton(item?: QuestionnaireItem, index?: number): boolean {
   if (!isRepeat(item)) {
     return false;
   }
@@ -484,7 +484,7 @@ export function shouldRenderDeleteButton(item: QuestionnaireItem, index: number)
   }
   const minOccurs = getMinOccursExtensionValue(item);
   if (minOccurs) {
-    if (index >= minOccurs) {
+    if (index && index >= minOccurs) {
       return true;
     }
   } else {

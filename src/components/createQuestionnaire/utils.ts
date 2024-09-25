@@ -24,14 +24,14 @@ import { FormData } from '@/reducers/form';
 import ItemType from '@/constants/itemType';
 
 export const getResponseItems = (
-  item: QuestionnaireItem,
+  item?: QuestionnaireItem,
   formData?: FormData | null,
   path?: Path[]
 ): QuestionnaireResponseItem[] | undefined => {
   if (!formData || !formData.Content || !formData.Content.item || !path) {
     return undefined;
   }
-  const responseItemsFromData = getRootQuestionnaireResponseItemFromData(item.linkId, formData);
+  const responseItemsFromData = getRootQuestionnaireResponseItemFromData(item?.linkId, formData);
 
   if (responseItemsFromData) {
     return responseItemsFromData;
@@ -43,7 +43,7 @@ export const getResponseItems = (
     return undefined;
   }
 
-  if (responseItem.linkId === item.linkId) {
+  if (responseItem.linkId === item?.linkId) {
     // If the response item matches the current item, return it
     return [responseItem];
   } else {
@@ -51,7 +51,7 @@ export const getResponseItems = (
     const childItems = responseItem.item;
     const childAnswers = responseItem.answer?.flatMap(ans => ans.item || []);
 
-    const matchingItems = getItemWithIdFromResponseItemArray(item.linkId, [...(childItems || []), ...(childAnswers || [])]);
+    const matchingItems = getItemWithIdFromResponseItemArray(item?.linkId, [...(childItems || []), ...(childAnswers || [])]);
 
     return matchingItems;
   }

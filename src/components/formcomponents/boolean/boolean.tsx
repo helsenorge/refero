@@ -22,14 +22,19 @@ import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { getFormDefinition } from '@/reducers/form';
 import { required } from '@/components/validation/rules';
+import { findQuestionnaireItem, getResponseItemWithPathSelector } from '@/reducers/selectors';
+import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 
 export type Props = QuestionnaireComponentItemProps & {
   children?: React.ReactNode;
 };
 
 const Boolean = (props: Props): JSX.Element | null => {
-  const { item, path, pdf, id, resources, responseItems, index, idWithLinkIdAndItemIndex, responseItem, children } = props;
-
+  const { path, pdf, id, resources, index, idWithLinkIdAndItemIndex, linkId, children } = props;
+  const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
+  const responseItem = useSelector<GlobalState, QuestionnaireResponseItem | undefined>(state =>
+    getResponseItemWithPathSelector(state, path)
+  );
   const formDefinition = useSelector((state: GlobalState) => getFormDefinition(state));
   const questionnaire = formDefinition?.Content;
 
@@ -57,7 +62,7 @@ const Boolean = (props: Props): JSX.Element | null => {
 
   const handleChange = (): void => {
     const newValue = !getValue();
-    if (dispatch) {
+    if (dispatch && item) {
       path &&
         dispatch(newBooleanValueAsync(path, newValue, item))?.then(
           newState => onAnswerChange && onAnswerChange(newState, item, { valueBoolean: newValue })
@@ -138,7 +143,7 @@ const Boolean = (props: Props): JSX.Element | null => {
         responseItem={responseItem}
         className="page_refero__deletebutton--margin-top"
       />
-      <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} responseItem={responseItem} responseItems={responseItems} />
+      <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} responseItem={responseItem} />
 
       <div className="nested-fieldset nested-fieldset--full-height">{children}</div>
     </div>

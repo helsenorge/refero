@@ -17,6 +17,10 @@ import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { required } from '@/components/validation/rules';
+import { useSelector } from 'react-redux';
+import { GlobalState } from '@/reducers';
+import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
+import { findQuestionnaireItem, getResponseItemWithPathSelector } from '@/reducers/selectors';
 
 export type Props = QuestionnaireComponentItemProps & {
   options?: Array<Options>;
@@ -25,20 +29,11 @@ export type Props = QuestionnaireComponentItemProps & {
 };
 
 const CheckboxView = (props: Props): JSX.Element | null => {
-  const {
-    options,
-    item,
-    id,
-    handleChange,
-    resources,
-    idWithLinkIdAndItemIndex,
-    selected,
-    responseItems,
-    responseItem,
-    path,
-    children,
-    index,
-  } = props;
+  const { options, linkId, id, handleChange, resources, idWithLinkIdAndItemIndex, selected, path, children, index } = props;
+  const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
+  const responseItem = useSelector<GlobalState, QuestionnaireResponseItem | undefined>(state =>
+    getResponseItemWithPathSelector(state, path)
+  );
   const [isHelpVisible, setIsHelpVisible] = useState(false);
 
   const { formState, getFieldState, register } = useFormContext<FieldValues>();
@@ -85,7 +80,7 @@ const CheckboxView = (props: Props): JSX.Element | null => {
         responseItem={responseItem}
         className="page_refero__deletebutton--margin-top"
       />
-      <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} responseItem={responseItem} responseItems={responseItems} />
+      <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} responseItem={responseItem} />
       <div className="nested-fieldset nested-fieldset--full-height">{children}</div>
     </div>
   );

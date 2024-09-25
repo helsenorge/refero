@@ -1,5 +1,6 @@
 import { GlobalState } from '@/reducers';
 import { FormData, getFormData } from '@/reducers/form';
+import { getAllResponseItems } from '@/reducers/selectors';
 import { QuestionnaireItemEnableBehaviorCodes } from '@/types/fhirEnums';
 import {
   enableWhenMatchesAnswer,
@@ -42,7 +43,14 @@ export function isEnableWhenEnabled(
     : enableMatches.some(x => x === true);
 }
 
-export const useIsEnabled = (item: QuestionnaireItem, path?: Path[]): boolean => {
+export const useIsEnabled = (item?: QuestionnaireItem, path?: Path[]): boolean => {
   const formData = useSelector<GlobalState, FormData | null>(state => getFormData(state));
   return !item || !item.enableWhen ? true : isEnableWhenEnabled(item.enableWhen, item.enableBehavior, path || [], formData);
 };
+
+// export const useCheckIfEnabled = (): ((item?: QuestionnaireItem, path?: Path[]) => boolean) => {
+//   const responseItems = useSelector<GlobalState, QuestionnaireResponseItem[]>(state => getAllResponseItems(state), shallowEqual);
+//   const checkIfEneabled = (item?: QuestionnaireItem, path?: Path[]): boolean =>
+//     !path || !item || !item.enableWhen ? true : isEnableWhenEnabled(item.enableWhen, item.enableBehavior, path, responseItems);
+//   return checkIfEneabled;
+// };

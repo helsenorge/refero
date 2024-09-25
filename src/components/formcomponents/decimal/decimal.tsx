@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
+import { QuestionnaireItem, QuestionnaireResponseItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { FieldValues, useFormContext } from 'react-hook-form';
 import styles from '../common-styles.module.css';
 import { ThunkDispatch } from 'redux-thunk';
@@ -15,7 +15,7 @@ import { isReadOnly, getId } from '@/util/index';
 import TextView from '../textview';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
 import { useIsEnabled } from '@/hooks/useIsEnabled';
 import RenderHelpElement from '@/components/formcomponents/help-button/RenderHelpElement';
@@ -25,12 +25,17 @@ import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { decimalPattern, maxValue, minValue, required } from '@/components/validation/rules';
+import { findQuestionnaireItem, getResponseItemWithPathSelector } from '@/reducers/selectors';
 
 export type Props = QuestionnaireComponentItemProps;
 
 const Decimal = (props: Props): JSX.Element | null => {
-  const { id, item, pdf, resources, children, idWithLinkIdAndItemIndex, path, responseItems, index, responseItem } = props;
+  const { id, linkId, pdf, resources, children, idWithLinkIdAndItemIndex, path, index } = props;
   const { promptLoginMessage, onAnswerChange } = useExternalRenderContext();
+  const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
+  const responseItem = useSelector<GlobalState, QuestionnaireResponseItem | undefined>(state =>
+    getResponseItemWithPathSelector(state, path)
+  );
   const { formState, getFieldState, register } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex || '', formState);
   const { error } = fieldState;
@@ -41,7 +46,7 @@ const Decimal = (props: Props): JSX.Element | null => {
   const enable = useIsEnabled(item, path);
 
   const getValue = (
-    item: QuestionnaireItem,
+    item?: QuestionnaireItem,
     answer?: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]
   ): string | number | number[] | undefined => {
     if (answer && Array.isArray(answer)) {
@@ -72,9 +77,11 @@ const Decimal = (props: Props): JSX.Element | null => {
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     const value = parseFloat(event.target.value);
-    dispatch(newDecimalValueAsync(path || [], value, item))?.then(newState => {
-      return onAnswerChange(newState, item, { valueDecimal: value });
-    });
+    if (item) {
+      dispatch(newDecimalValueAsync(path || [], value, item))?.then(newState => {
+        return onAnswerChange(newState, item, { valueDecimal: value });
+      });
+    }
 
     if (promptLoginMessage) {
       promptLoginMessage();
@@ -135,7 +142,7 @@ const Decimal = (props: Props): JSX.Element | null => {
         responseItem={responseItem}
         className="page_refero__deletebutton--margin-top"
       />
-      <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} responseItem={responseItem} responseItems={responseItems} />
+      <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} responseItem={responseItem} />
 
       <div className="nested-fieldset nested-fieldset--full-height">{children}</div>
     </div>

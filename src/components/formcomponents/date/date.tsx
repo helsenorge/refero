@@ -12,7 +12,7 @@ import { GlobalState } from '../../../reducers';
 
 import { getItemControlExtensionValue } from '../../../util/extension';
 
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
@@ -20,11 +20,17 @@ import { QuestionnaireComponentItemProps } from '@/components/createQuestionnair
 import { useGetAnswer } from '@/hooks/useGetAnswer';
 import { useIsEnabled } from '@/hooks/useIsEnabled';
 import { useCallback, useMemo } from 'react';
+import { findQuestionnaireItem, getResponseItemWithPathSelector } from '@/reducers/selectors';
+import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 
 export type DateProps = QuestionnaireComponentItemProps;
 
 const DateComponent = (props: DateProps): JSX.Element | null => {
-  const { item, language, responseItems, responseItem, path, index, children } = props;
+  const { language, linkId, path, index, children } = props;
+  const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
+  const responseItem = useSelector<GlobalState, QuestionnaireResponseItem | undefined>(state =>
+    getResponseItemWithPathSelector(state, path)
+  );
   const enable = useIsEnabled(item, path);
 
   const answer = useGetAnswer(responseItem, item);
@@ -36,7 +42,7 @@ const DateComponent = (props: DateProps): JSX.Element | null => {
   const onDateValueChange = useCallback(
     (newValue: string): void => {
       const existingAnswer = Array.isArray(answer) ? answer[0].valueDate : answer?.valueDate || '';
-      if (newValue !== existingAnswer && path) {
+      if (newValue !== existingAnswer && path && item) {
         dispatch(newDateValueAsync(path, newValue, item)).then(newState => {
           onAnswerChange?.(newState, item, { valueDate: newValue });
         });
@@ -77,7 +83,7 @@ const DateComponent = (props: DateProps): JSX.Element | null => {
         responseItem={responseItem}
         className="page_refero__deletebutton--margin-top"
       />
-      <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} responseItem={responseItem} responseItems={responseItems} />
+      <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} responseItem={responseItem} />
 
       <div className="nested-fieldset nested-fieldset--full-height">{children}</div>
     </div>

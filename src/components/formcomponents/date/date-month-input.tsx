@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import styles2 from '../common-styles.module.css';
 import { format } from 'date-fns';
-import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
+import { QuestionnaireItem, QuestionnaireResponseItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { Controller, FieldError, FieldValues, useFormContext } from 'react-hook-form';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
@@ -25,6 +25,9 @@ import { useMinMaxDate } from './useMinMaxDate';
 
 import styles from '../../../styles/date-year-month.module.css';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
+import { GlobalState } from '@/reducers';
+import { useSelector } from 'react-redux';
+import { findQuestionnaireItem, getResponseItemWithPathSelector } from '@/reducers/selectors';
 
 type DateMonthProps = QuestionnaireComponentItemProps & {
   locale: LanguageLocales.ENGLISH | LanguageLocales.NORWEGIAN;
@@ -35,11 +38,15 @@ export const DateYearMonthInput = ({
   id,
   idWithLinkIdAndItemIndex,
   pdf,
-  item,
-  responseItem,
+  linkId,
   onDateValueChange,
   children,
+  path,
 }: DateMonthProps): JSX.Element | null => {
+  const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
+  const responseItem = useSelector<GlobalState, QuestionnaireResponseItem | undefined>(state =>
+    getResponseItemWithPathSelector(state, path)
+  );
   const { formState, getFieldState } = useFormContext<FieldValues>();
   const answer = useGetAnswer(responseItem, item);
   const { resources } = useExternalRenderContext();
@@ -70,7 +77,7 @@ export const DateYearMonthInput = ({
   };
 
   const getValue = (
-    item: QuestionnaireItem,
+    item?: QuestionnaireItem,
     answer?: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]
   ): string | string[] | undefined => {
     if (answer && Array.isArray(answer)) {

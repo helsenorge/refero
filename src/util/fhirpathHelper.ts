@@ -2,7 +2,10 @@ import { QuestionnaireItem, Extension, QuestionnaireResponse } from 'fhir/r4';
 import fhirpath, { Context } from 'fhirpath';
 import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
 
-export async function evaluateFhirpathExpressionToGetDate(item: QuestionnaireItem, fhirExpression: string): Promise<Date | undefined> {
+export async function evaluateFhirpathExpressionToGetDate(item?: QuestionnaireItem, fhirExpression?: string): Promise<Date | undefined> {
+  if (!item || !fhirExpression) {
+    return undefined;
+  }
   const iCopy = structuredClone(item);
   const result = await fhirpath.evaluate(iCopy, fhirExpression, undefined, fhirpath_r4_model);
 

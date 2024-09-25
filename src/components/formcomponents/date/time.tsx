@@ -7,7 +7,7 @@ import { QuestionnaireComponentItemProps } from '@/components/createQuestionnair
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { GlobalState } from '@/reducers';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
@@ -19,22 +19,17 @@ import RenderHelpButton from '../help-button/RenderHelpButton';
 import RenderHelpElement from '../help-button/RenderHelpElement';
 import TextView from '../textview';
 import { useIsEnabled } from '@/hooks/useIsEnabled';
+import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
+import { findQuestionnaireItem, getResponseItemWithPathSelector } from '@/reducers/selectors';
 
 export type Props = QuestionnaireComponentItemProps;
 
-const Time = ({
-  id,
-  index,
-  item,
-  responseItem,
-  responseItems,
-  resources,
-  path,
-  pdf,
-  idWithLinkIdAndItemIndex,
-  children,
-}: Props): JSX.Element | null => {
+const Time = ({ id, index, linkId, resources, path, pdf, idWithLinkIdAndItemIndex, children }: Props): JSX.Element | null => {
   const { promptLoginMessage, onAnswerChange } = useExternalRenderContext();
+  const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
+  const responseItem = useSelector<GlobalState, QuestionnaireResponseItem | undefined>(state =>
+    getResponseItemWithPathSelector(state, path)
+  );
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
   const enable = useIsEnabled(item);
   const { formState, getFieldState, setValue, getValues, trigger } = useFormContext<FieldValues>();
@@ -52,7 +47,7 @@ const Time = ({
   }, []);
 
   const dispatchNewTime = (newTime: string): void => {
-    if (dispatch && onAnswerChange && path) {
+    if (dispatch && onAnswerChange && path && item) {
       dispatch(newTimeValueAsync(path, newTime, item))?.then(newState => onAnswerChange(newState, item, { valueTime: newTime }));
     }
   };
@@ -229,7 +224,7 @@ const Time = ({
         responseItem={responseItem}
         className="page_refero__deletebutton--margin-top"
       />
-      <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} responseItem={responseItem} responseItems={responseItems} />
+      <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} responseItem={responseItem} />
       {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
     </div>
   );

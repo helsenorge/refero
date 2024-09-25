@@ -1,6 +1,6 @@
 import { FocusEvent, useCallback, useMemo } from 'react';
 
-import { QuestionnaireResponseItemAnswer, Coding } from 'fhir/r4';
+import { QuestionnaireResponseItemAnswer, Coding, QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { ThunkDispatch } from 'redux-thunk';
 
 import CheckboxView from './checkbox-view';
@@ -33,16 +33,21 @@ import {
 import SliderView from '../choice/slider-view';
 import AutosuggestView from '../choice-common/autosuggest-view';
 import TextView from '../textview';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
 import { useIsEnabled } from '@/hooks/useIsEnabled';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
+import { findQuestionnaireItem, getResponseItemWithPathSelector } from '@/reducers/selectors';
 
 export type OpenChoiceProps = QuestionnaireComponentItemProps;
 
 export const OpenChoice = (props: OpenChoiceProps): JSX.Element | null => {
-  const { id, item, pdf, responseItem, containedResources, resources, path, children } = props;
+  const { id, pdf, linkId, containedResources, resources, path, children } = props;
+  const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
+  const responseItem = useSelector<GlobalState, QuestionnaireResponseItem | undefined>(state =>
+    getResponseItemWithPathSelector(state, path)
+  );
   const { promptLoginMessage, onAnswerChange } = useExternalRenderContext();
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
   const answer = useGetAnswer(responseItem, item);
@@ -73,16 +78,16 @@ export const OpenChoice = (props: OpenChoiceProps): JSX.Element | null => {
     if (Array.isArray(answer)) {
       return answer.map(el => el?.valueCoding?.code).filter(Boolean);
     } else if (answer?.valueCoding?.code) {
-      if (answer.valueCoding.code === item.initial?.[0]?.valueCoding?.code && !answer.valueCoding.display) {
+      if (answer.valueCoding.code === item?.initial?.[0]?.valueCoding?.code && !answer.valueCoding.display) {
         resetInitialAnswer(answer.valueCoding.code);
       }
       return [answer.valueCoding.code];
     }
-    const initialSelectedOption = item.answerOption?.find(x => x.initialSelected);
+    const initialSelectedOption = item?.answerOption?.find(x => x.initialSelected);
     if (initialSelectedOption?.valueCoding?.code) {
       return [initialSelectedOption.valueCoding.code];
     }
-    if (item.initial?.[0]?.valueCoding?.code) {
+    if (item?.initial?.[0]?.valueCoding?.code) {
       return [String(item.initial[0].valueCoding.code)];
     }
     return undefined;
@@ -113,7 +118,7 @@ export const OpenChoice = (props: OpenChoiceProps): JSX.Element | null => {
 
   const handleStringChange = useCallback(
     (value: string): void => {
-      if (path) {
+      if (path && item) {
         if (value.length > 0) {
           dispatch(newCodingStringValueAsync(path, value, item)).then(newState => onAnswerChange?.(newState, item, { valueString: value }));
         } else {
@@ -147,10 +152,12 @@ export const OpenChoice = (props: OpenChoiceProps): JSX.Element | null => {
       if (path) {
         const coding = getAnswerValueCoding(code);
         const responseAnswer = { valueCoding: coding };
-        if (getIndexOfAnswer(code, answer) > -1) {
+        if (getIndexOfAnswer(code, answer) > -1 && item) {
           dispatch(removeCodingValueAsync(path, coding, item)).then(newState => onAnswerChange?.(newState, item, responseAnswer));
         }
-        dispatch(newCodingValueAsync(path, coding, item, true)).then(newState => onAnswerChange?.(newState, item, responseAnswer));
+        if (item) {
+          dispatch(newCodingValueAsync(path, coding, item, true)).then(newState => onAnswerChange?.(newState, item, responseAnswer));
+        }
         promptLoginMessage?.();
       }
     },
@@ -158,7 +165,7 @@ export const OpenChoice = (props: OpenChoiceProps): JSX.Element | null => {
   );
   const singleValueHandler = useCallback(
     (coding: Coding): void => {
-      if (path && coding.code !== OPEN_CHOICE_ID) {
+      if (path && coding.code !== OPEN_CHOICE_ID && item) {
         dispatch(removeCodingStringValueAsync(path, item)).then(newState => onAnswerChange?.(newState, item, { valueString: '' }));
       }
     },
@@ -169,7 +176,7 @@ export const OpenChoice = (props: OpenChoiceProps): JSX.Element | null => {
     (coding: Coding): void => {
       if (path) {
         const isShown = shouldShowExtraChoice(answer);
-        if (isShown && coding.code === OPEN_CHOICE_ID) {
+        if (isShown && coding.code === OPEN_CHOICE_ID && item) {
           dispatch(removeCodingStringValueAsync(path, item)).then(newState => onAnswerChange?.(newState, item, { valueString: '' }));
         }
       }
@@ -188,7 +195,7 @@ export const OpenChoice = (props: OpenChoiceProps): JSX.Element | null => {
   );
   const handleCheckboxChange = useCallback(
     (code?: string): void => {
-      if (code && path) {
+      if (code && path && item) {
         const coding = getAnswerValueCoding(code);
         const responseAnswer = { valueCoding: coding };
         if (getIndexOfAnswer(code, answer) > -1) {
@@ -205,7 +212,7 @@ export const OpenChoice = (props: OpenChoiceProps): JSX.Element | null => {
 
   const clearCodingAnswer = useCallback(
     (coding: Coding): void => {
-      if (path) {
+      if (path && item) {
         const responseAnswer = { valueCoding: coding };
         dispatch(removeCodingValueAsync(path, coding, item)).then(newState => onAnswerChange?.(newState, item, responseAnswer));
         promptLoginMessage?.();
@@ -215,7 +222,7 @@ export const OpenChoice = (props: OpenChoiceProps): JSX.Element | null => {
   );
   const handleChange = useCallback(
     (code?: string, systemArg?: string, displayArg?: string): void => {
-      if (code && path) {
+      if (code && path && item) {
         const coding = getAnswerValueCoding(code, systemArg, displayArg);
         const responseAnswer = { valueCoding: coding };
         dispatch(newCodingValueAsync(path, coding, item)).then(newState => onAnswerChange?.(newState, item, responseAnswer));

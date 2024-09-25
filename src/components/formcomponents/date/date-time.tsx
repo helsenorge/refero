@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 import { format, isValid } from 'date-fns';
 
-import { QuestionnaireResponseItemAnswer } from 'fhir/r4';
+import { QuestionnaireItem, QuestionnaireResponseItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { Controller, FieldError, FieldValues, useFormContext } from 'react-hook-form';
 import { ThunkDispatch } from 'redux-thunk';
 
@@ -28,7 +28,7 @@ import { isRequired, getId, isReadOnly } from '../../../util/index';
 import TextView from '../textview';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import RenderHelpButton from '../help-button/RenderHelpButton';
 import RenderHelpElement from '../help-button/RenderHelpElement';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
@@ -38,25 +38,19 @@ import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 import { useMinMaxDate } from './useMinMaxDate';
 import { useIsEnabled } from '@/hooks/useIsEnabled';
+import { findQuestionnaireItem, getResponseItemWithPathSelector } from '@/reducers/selectors';
 
 export type Props = QuestionnaireComponentItemProps;
 
-const DateTimeInput = ({
-  item,
-  resources,
-  path,
-  pdf,
-  id,
-  idWithLinkIdAndItemIndex,
-  children,
-  responseItem,
-  index,
-  responseItems,
-}: Props): JSX.Element | null => {
+const DateTimeInput = ({ linkId, resources, path, pdf, id, idWithLinkIdAndItemIndex, children, index }: Props): JSX.Element | null => {
   initialize();
 
   const { promptLoginMessage, onAnswerChange } = useExternalRenderContext();
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
+  const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
+  const responseItem = useSelector<GlobalState, QuestionnaireResponseItem | undefined>(state =>
+    getResponseItemWithPathSelector(state, path)
+  );
   const answer = useGetAnswer(responseItem, item);
   const [isHelpVisible, setIsHelpVisible] = useState(false);
   const { formState, getFieldState, setValue } = useFormContext<FieldValues>();
@@ -171,7 +165,7 @@ const DateTimeInput = ({
       fullDate = getFullFnsDate(newDate, newHours, newMinutes);
     }
 
-    if (dispatch && onAnswerChange && path) {
+    if (dispatch && onAnswerChange && path && item) {
       dispatch(newDateTimeValueAsync(path, fullDate ?? '', item))?.then(newState =>
         onAnswerChange(newState, item, { valueDateTime: fullDate })
       );
@@ -296,7 +290,7 @@ const DateTimeInput = ({
         responseItem={responseItem}
         className="page_refero__deletebutton--margin-top"
       />
-      <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} responseItem={responseItem} responseItems={responseItems} />
+      <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} responseItem={responseItem} />
       {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
     </div>
   );

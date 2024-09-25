@@ -17,7 +17,7 @@ import { getPlaceholder, getItemControlExtensionValue } from '@/util/extension';
 import { isReadOnly, getId, getStringValue, getMaxLength, getPDFStringValue } from '@/util/index';
 import { ReferoLabel } from '../../referoLabel/ReferoLabel';
 import TextView from '../textview';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
 import { useIsEnabled } from '@/hooks/useIsEnabled';
 import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelpButton';
@@ -28,25 +28,19 @@ import { QuestionnaireComponentItemProps } from '@/components/createQuestionnair
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 import Display from '../display/display';
 import { maxLength, minLength, regexpPattern, required, scriptInjection } from '@/components/validation/rules';
+import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
+import { findQuestionnaireItem, getResponseItemWithPathSelector } from '@/reducers/selectors';
 
 export type Props = QuestionnaireComponentItemProps & {
   shouldExpanderRenderChildrenWhenClosed?: boolean;
 };
 export const Text = (props: Props): JSX.Element | null => {
-  const {
-    id,
-    item,
-    pdf,
-    resources,
-    idWithLinkIdAndItemIndex,
-    path,
-    shouldExpanderRenderChildrenWhenClosed,
-    responseItems,
-    responseItem,
-    index,
-    children,
-  } = props;
+  const { id, pdf, resources, idWithLinkIdAndItemIndex, path, shouldExpanderRenderChildrenWhenClosed, linkId, index, children } = props;
   const { promptLoginMessage, validateScriptInjection, onAnswerChange } = useExternalRenderContext();
+  const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
+  const responseItem = useSelector<GlobalState, QuestionnaireResponseItem | undefined>(state =>
+    getResponseItemWithPathSelector(state, path)
+  );
   const { formState, getFieldState, register } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
@@ -56,7 +50,7 @@ export const Text = (props: Props): JSX.Element | null => {
   const enable = useIsEnabled(item, path);
   const handleChange = (event: React.FormEvent): void => {
     const value = (event.target as HTMLInputElement).value;
-    if (dispatch && path) {
+    if (dispatch && path && item) {
       dispatch(newStringValueAsync(path, value, item))?.then(newState => onAnswerChange(newState, item, { valueString: value }));
     }
 
@@ -85,7 +79,7 @@ export const Text = (props: Props): JSX.Element | null => {
   if (itemControls && itemControls.some(itemControl => itemControl.code === itemControlConstants.INLINE)) {
     return (
       <div id={id} className="page_refero__component page_refero__component_expandabletext">
-        <Expander title={item.text ? item.text : ''} renderChildrenWhenClosed={shouldExpanderRenderChildrenWhenClosed ? true : false}>
+        <Expander title={item?.text ? item.text : ''} renderChildrenWhenClosed={shouldExpanderRenderChildrenWhenClosed ? true : false}>
           {children}
         </Expander>
       </div>
@@ -147,7 +141,7 @@ export const Text = (props: Props): JSX.Element | null => {
           responseItem={responseItem}
           className="page_refero__deletebutton--margin-top"
         />
-        <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} responseItem={responseItem} responseItems={responseItems} />
+        <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} responseItem={responseItem} />
       </FormGroup>
       <div className="nested-fieldset nested-fieldset--full-height">{children}</div>
     </div>
