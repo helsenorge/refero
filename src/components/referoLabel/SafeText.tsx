@@ -1,3 +1,4 @@
+import { memo, useMemo } from 'react';
 import styles from './safetext.module.css';
 
 import { SanitizeText } from '@/util/sanitize/domPurifyHelper';
@@ -13,15 +14,16 @@ const __DEFAULT_ELEMENT__ = 'h2';
 
 function SafeText<E extends React.ElementType = typeof __DEFAULT_ELEMENT__>({ text, as, ...props }: SafeTextProps<E>): JSX.Element {
   const Component = as || __DEFAULT_ELEMENT__;
+  const sanitizedText = useMemo(() => SanitizeText(text), [text]);
   return (
     <Component
       {...props}
       className={props.className ? props.className : styles.safetext}
       dangerouslySetInnerHTML={{
-        __html: SanitizeText(text) ?? '',
+        __html: sanitizedText,
       }}
     />
   );
 }
 
-export default SafeText;
+export default memo(SafeText);

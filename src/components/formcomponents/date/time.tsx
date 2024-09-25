@@ -24,8 +24,8 @@ import { findQuestionnaireItem, getResponseItemWithPathSelector } from '@/reduce
 
 export type Props = QuestionnaireComponentItemProps;
 
-const Time = ({ id, index, linkId, resources, path, pdf, idWithLinkIdAndItemIndex, children }: Props): JSX.Element | null => {
-  const { promptLoginMessage, onAnswerChange } = useExternalRenderContext();
+const Time = ({ id, index, linkId, path, pdf, idWithLinkIdAndItemIndex, children }: Props): JSX.Element | null => {
+  const { promptLoginMessage, onAnswerChange, resources } = useExternalRenderContext();
   const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
   const responseItem = useSelector<GlobalState, QuestionnaireResponseItem | undefined>(state =>
     getResponseItemWithPathSelector(state, path)

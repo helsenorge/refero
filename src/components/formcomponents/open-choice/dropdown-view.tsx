@@ -23,6 +23,7 @@ import { useSelector } from 'react-redux';
 import { findQuestionnaireItem, getResponseItemWithPathSelector } from '@/reducers/selectors';
 import { GlobalState } from '@/reducers';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
+import { useExternalRenderContext } from '@/context/externalRenderContext';
 
 type Props = QuestionnaireComponentItemProps & {
   options?: Array<Options>;
@@ -32,8 +33,7 @@ type Props = QuestionnaireComponentItemProps & {
 };
 
 const DropdownView = (props: Props): JSX.Element | null => {
-  const { options, id, handleChange, selected, resources, renderOpenField, idWithLinkIdAndItemIndex, linkId, children, path, index } =
-    props;
+  const { options, id, handleChange, selected, renderOpenField, idWithLinkIdAndItemIndex, linkId, children, path, index } = props;
   const [isHelpVisible, setIsHelpVisible] = React.useState(false);
   const { formState, getFieldState, register } = useFormContext<FieldValues>();
   const { error } = getFieldState(idWithLinkIdAndItemIndex, formState);
@@ -41,7 +41,7 @@ const DropdownView = (props: Props): JSX.Element | null => {
   const responseItem = useSelector<GlobalState, QuestionnaireResponseItem | undefined>(state =>
     getResponseItemWithPathSelector(state, path)
   );
-
+  const { resources } = useExternalRenderContext();
   const answer = useGetAnswer(responseItem, item);
   const onChange = (e: React.ChangeEvent<HTMLSelectElement>): void => {
     handleChange(e.target.value);

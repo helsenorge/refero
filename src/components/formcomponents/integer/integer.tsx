@@ -29,13 +29,13 @@ import { findQuestionnaireItem, getResponseItemWithPathSelector } from '@/reduce
 
 export type Props = QuestionnaireComponentItemProps;
 const Integer = (props: Props): JSX.Element | null => {
-  const { resources, id, pdf, idWithLinkIdAndItemIndex, path, linkId, index, children } = props;
+  const { id, pdf, idWithLinkIdAndItemIndex, path, linkId, index, children } = props;
   const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
   const responseItem = useSelector<GlobalState, QuestionnaireResponseItem | undefined>(state =>
     getResponseItemWithPathSelector(state, path)
   );
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
-  const { promptLoginMessage, onAnswerChange } = useExternalRenderContext();
+  const { promptLoginMessage, onAnswerChange, resources } = useExternalRenderContext();
   const { formState, getFieldState, register } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;

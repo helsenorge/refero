@@ -6,7 +6,7 @@ import { IActionRequester } from '@/util/actionRequester';
 import { IQuestionnaireInspector } from '@/util/questionnaireInspector';
 import { Resources } from '@/util/resources';
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, ValueSet } from 'fhir/r4';
-import { createContext, useContext, ReactNode } from 'react';
+import { createContext, useContext, ReactNode, useMemo } from 'react';
 
 type ExternalRenderType = {
   onRequestHelpElement?: (
@@ -96,26 +96,38 @@ export const ExternalRenderProvider = ({
 }: ExternalRenderProviderProps): JSX.Element => {
   const onAnswerChange = useOnAnswerChange(onChange);
 
-  return (
-    <ExternalRender.Provider
-      value={{
-        onRequestHelpElement,
-        onRequestHelpButton,
-        onRenderMarkdown,
-        fetchValueSet,
-        fetchReceivers,
-        onFieldsNotCorrectlyFilledOut,
-        onStepChange,
-        promptLoginMessage,
-        resources,
-        autoSuggestProps,
-        validateScriptInjection,
-        onAnswerChange,
-      }}
-    >
-      {children}
-    </ExternalRender.Provider>
+  const contextValue = useMemo(
+    () => ({
+      onRequestHelpElement,
+      onRequestHelpButton,
+      onRenderMarkdown,
+      fetchValueSet,
+      fetchReceivers,
+      onFieldsNotCorrectlyFilledOut,
+      onStepChange,
+      promptLoginMessage,
+      resources,
+      autoSuggestProps,
+      validateScriptInjection,
+      onAnswerChange,
+    }),
+    [
+      onRequestHelpElement,
+      onRequestHelpButton,
+      onRenderMarkdown,
+      fetchValueSet,
+      fetchReceivers,
+      onFieldsNotCorrectlyFilledOut,
+      onStepChange,
+      promptLoginMessage,
+      resources,
+      autoSuggestProps,
+      validateScriptInjection,
+      onAnswerChange,
+    ]
   );
+
+  return <ExternalRender.Provider value={contextValue}>{children}</ExternalRender.Provider>;
 };
 
 export const useExternalRenderContext = (): ExternalRenderType => {

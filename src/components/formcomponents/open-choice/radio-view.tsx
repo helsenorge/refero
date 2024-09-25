@@ -23,6 +23,7 @@ import { useSelector } from 'react-redux';
 import { GlobalState } from '@/reducers';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { findQuestionnaireItem, getResponseItemWithPathSelector } from '@/reducers/selectors';
+import { useExternalRenderContext } from '@/context/externalRenderContext';
 
 type Props = QuestionnaireComponentItemProps & {
   options?: Array<Options>;
@@ -32,8 +33,8 @@ type Props = QuestionnaireComponentItemProps & {
 };
 
 const RadioView = (props: Props): JSX.Element | null => {
-  const { options, id, handleChange, selected, resources, renderOpenField, idWithLinkIdAndItemIndex, linkId, path, index, children } =
-    props;
+  const { options, id, handleChange, selected, renderOpenField, idWithLinkIdAndItemIndex, linkId, path, index, children } = props;
+  const { resources } = useExternalRenderContext();
   const { formState, getFieldState, register } = useFormContext<FieldValues>();
   const { error } = getFieldState(idWithLinkIdAndItemIndex, formState);
   const [isHelpVisible, setIsHelpVisible] = React.useState(false);

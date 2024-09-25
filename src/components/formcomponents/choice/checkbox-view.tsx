@@ -21,6 +21,7 @@ import { useSelector } from 'react-redux';
 import { GlobalState } from '@/reducers';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { findQuestionnaireItem, getResponseItemWithPathSelector } from '@/reducers/selectors';
+import { useExternalRenderContext } from '@/context/externalRenderContext';
 
 export type Props = QuestionnaireComponentItemProps & {
   options?: Array<Options>;
@@ -29,8 +30,9 @@ export type Props = QuestionnaireComponentItemProps & {
 };
 
 const CheckboxView = (props: Props): JSX.Element | null => {
-  const { options, linkId, id, handleChange, resources, idWithLinkIdAndItemIndex, selected, path, children, index } = props;
+  const { options, linkId, id, handleChange, idWithLinkIdAndItemIndex, selected, path, children, index } = props;
   const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
+  const { resources } = useExternalRenderContext();
   const responseItem = useSelector<GlobalState, QuestionnaireResponseItem | undefined>(state =>
     getResponseItemWithPathSelector(state, path)
   );

@@ -42,10 +42,10 @@ import { findQuestionnaireItem, getResponseItemWithPathSelector } from '@/reduce
 
 export type Props = QuestionnaireComponentItemProps;
 
-const DateTimeInput = ({ linkId, resources, path, pdf, id, idWithLinkIdAndItemIndex, children, index }: Props): JSX.Element | null => {
+const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, children, index }: Props): JSX.Element | null => {
   initialize();
 
-  const { promptLoginMessage, onAnswerChange } = useExternalRenderContext();
+  const { promptLoginMessage, onAnswerChange, resources } = useExternalRenderContext();
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
   const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
   const responseItem = useSelector<GlobalState, QuestionnaireResponseItem | undefined>(state =>

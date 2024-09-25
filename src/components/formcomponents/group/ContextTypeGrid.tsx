@@ -9,6 +9,7 @@ import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import GenerateQuestionnaireComponents, {
   QuestionnaireComponentItemProps,
 } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
+import { useExternalRenderContext } from '@/context/externalRenderContext';
 
 type ContextTypeGridProps = QuestionnaireComponentItemProps & {
   item?: QuestionnaireItem;
@@ -25,9 +26,9 @@ const RenderHeaders = ({ item, columns }: Props): JSX.Element => {
 };
 
 const ContextTypeGrid = (props: ContextTypeGridProps): JSX.Element => {
-  const { item, index, path, id, responseItem, resources } = props;
+  const { item, index, path, id, responseItem } = props;
   const columns = getColumns(item);
-
+  const { resources } = useExternalRenderContext();
   return (
     <>
       <table id={getId(id)} className="page_refero__grid">

@@ -30,8 +30,8 @@ import { findQuestionnaireItem, getResponseItemWithPathSelector } from '@/reduce
 export type Props = QuestionnaireComponentItemProps;
 
 const Decimal = (props: Props): JSX.Element | null => {
-  const { id, linkId, pdf, resources, children, idWithLinkIdAndItemIndex, path, index } = props;
-  const { promptLoginMessage, onAnswerChange } = useExternalRenderContext();
+  const { id, linkId, pdf, children, idWithLinkIdAndItemIndex, path, index } = props;
+  const { promptLoginMessage, onAnswerChange, resources } = useExternalRenderContext();
   const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
   const responseItem = useSelector<GlobalState, QuestionnaireResponseItem | undefined>(state =>
     getResponseItemWithPathSelector(state, path)

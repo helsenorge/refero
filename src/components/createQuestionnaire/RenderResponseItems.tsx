@@ -3,7 +3,7 @@ import GenerateQuestionnaireComponents, { QuestionnaireComponentItemProps } from
 import { getChildHeaderTag, isRepeat } from '@/util';
 import { QuestionnaireItem, QuestionnaireResponseItem, Resource } from 'fhir/r4';
 import { RenderContext } from '@/util/renderContext';
-import { Resources } from '@/util/resources';
+
 import ItemType from '@/constants/itemType';
 import constants, { NAVIGATOR_BLINDZONE_ID } from '@/constants';
 
@@ -12,7 +12,6 @@ type RenderResponseItemsProps = {
   responseItems: QuestionnaireResponseItem[];
   path: Path[];
   ItemComponent: React.ComponentType<QuestionnaireComponentItemProps>;
-  resources?: Resources;
   language?: string;
   containedResources?: Resource[];
   renderContext: RenderContext;
@@ -26,7 +25,6 @@ export const RenderResponseItems = ({
   responseItems,
   path,
   ItemComponent,
-  resources,
   language,
   containedResources,
   renderContext,
@@ -69,7 +67,6 @@ export const RenderResponseItems = ({
         containedResources={containedResources}
         id={id}
         linkId={item.linkId}
-        resources={resources}
         path={newPath}
         headerTag={newHeaderTag}
         index={index}

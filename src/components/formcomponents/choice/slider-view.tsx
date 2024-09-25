@@ -23,6 +23,7 @@ import { required } from '@/components/validation/rules';
 import { useSelector } from 'react-redux';
 import { findQuestionnaireItem, getResponseItemWithPathSelector } from '@/reducers/selectors';
 import { GlobalState } from '@/reducers';
+import { useExternalRenderContext } from '@/context/externalRenderContext';
 
 export type SliderProps = QuestionnaireComponentItemProps & {
   handleChange: (sliderStep: string) => void;
@@ -37,7 +38,8 @@ enum SliderDisplayTypes {
 type LeftRightLabels = { leftLabel: string; rightLabel: string };
 
 const SliderView = (props: SliderProps): JSX.Element | null => {
-  const { linkId, handleChange, selected, resources, idWithLinkIdAndItemIndex, id, path, index, children } = props;
+  const { linkId, handleChange, selected, idWithLinkIdAndItemIndex, id, path, index, children } = props;
+  const { resources } = useExternalRenderContext();
   const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
   const responseItem = useSelector<GlobalState, QuestionnaireResponseItem | undefined>(state =>
     getResponseItemWithPathSelector(state, path)

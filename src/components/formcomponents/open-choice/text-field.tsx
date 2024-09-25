@@ -25,17 +25,18 @@ type Props = QuestionnaireComponentItemProps & {
   handleChange: (value: string) => void;
 };
 const textField = (props: Props): JSX.Element | null => {
-  const { id, pdf, handleStringChange, handleChange, children, resources, idWithLinkIdAndItemIndex, linkId, path } = props;
+  const { id, pdf, handleStringChange, handleChange, children, idWithLinkIdAndItemIndex, linkId, path } = props;
   const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
   const responseItem = useSelector<GlobalState, QuestionnaireResponseItem | undefined>(state =>
     getResponseItemWithPathSelector(state, path)
   );
+
   const formName = `${idWithLinkIdAndItemIndex}-extra-field`;
 
   const { formState, getFieldState, register } = useFormContext<FieldValues>();
   const { error } = getFieldState(formName, formState);
   const answer = useGetAnswer(responseItem, item);
-  const { validateScriptInjection } = useExternalRenderContext();
+  const { validateScriptInjection, resources } = useExternalRenderContext();
   if (pdf) {
     return (
       <Pdf item={item} value={getPDFStringValue(answer)}>

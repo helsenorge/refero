@@ -30,7 +30,7 @@ export type Props = QuestionnaireComponentItemProps & {
 };
 
 const Boolean = (props: Props): JSX.Element | null => {
-  const { path, pdf, id, resources, index, idWithLinkIdAndItemIndex, linkId, children } = props;
+  const { path, pdf, id, index, idWithLinkIdAndItemIndex, linkId, children } = props;
   const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
   const responseItem = useSelector<GlobalState, QuestionnaireResponseItem | undefined>(state =>
     getResponseItemWithPathSelector(state, path)
@@ -43,7 +43,7 @@ const Boolean = (props: Props): JSX.Element | null => {
   const { error } = fieldState;
 
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
-  const { onRenderMarkdown, promptLoginMessage, onAnswerChange } = useExternalRenderContext();
+  const { onRenderMarkdown, promptLoginMessage, onAnswerChange, resources } = useExternalRenderContext();
   const enable = useIsEnabled(item, path);
   const [isHelpVisible, setIsHelpVisible] = useState(false);
   const answer = useGetAnswer(responseItem, item);

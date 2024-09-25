@@ -7,15 +7,16 @@ import GenerateQuestionnaireComponents from '@/components/createQuestionnaire/Ge
 import { useSelector } from 'react-redux';
 import { GlobalState } from '@/reducers';
 import { findQuestionnaireItem } from '@/reducers/selectors';
+import { useExternalRenderContext } from '@/context/externalRenderContext';
 
 type ContextTypeGridRowProps = QuestionnaireComponentItemProps & {
   isHelpVisible: boolean;
   setIsHelpVisible: Dispatch<React.SetStateAction<boolean>>;
 };
 const ContextTypeGridRow = ({ isHelpVisible, setIsHelpVisible, ...rest }: ContextTypeGridRowProps): JSX.Element => {
-  const { resources, renderContext, headerTag, linkId } = rest;
+  const { renderContext, headerTag, linkId } = rest;
   const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
-
+  const { resources } = useExternalRenderContext();
   const renderChildren = (
     childItems: QuestionnaireItem[],
     itemRenderer: (item: QuestionnaireItem, renderContext: RenderContext) => JSX.Element | null

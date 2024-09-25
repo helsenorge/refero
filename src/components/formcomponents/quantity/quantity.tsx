@@ -30,12 +30,13 @@ import { findQuestionnaireItem, getResponseItemWithPathSelector } from '@/reduce
 export type Props = QuestionnaireComponentItemProps;
 
 const Quantity = (props: Props): JSX.Element | null => {
-  const { path, id, resources, pdf, idWithLinkIdAndItemIndex, index, children, linkId } = props;
+  const { path, id, pdf, idWithLinkIdAndItemIndex, index, children, linkId } = props;
   const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
+
   const responseItem = useSelector<GlobalState, QuestionnaireResponseItem | undefined>(state =>
     getResponseItemWithPathSelector(state, path)
   );
-  const { promptLoginMessage, onAnswerChange } = useExternalRenderContext();
+  const { promptLoginMessage, onAnswerChange, resources } = useExternalRenderContext();
   const { formState, getFieldState, register } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;

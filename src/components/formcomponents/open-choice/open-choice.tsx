@@ -43,12 +43,12 @@ import { findQuestionnaireItem, getResponseItemWithPathSelector } from '@/reduce
 export type OpenChoiceProps = QuestionnaireComponentItemProps;
 
 export const OpenChoice = (props: OpenChoiceProps): JSX.Element | null => {
-  const { id, pdf, linkId, containedResources, resources, path, children } = props;
+  const { id, pdf, linkId, containedResources, path, children } = props;
   const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
   const responseItem = useSelector<GlobalState, QuestionnaireResponseItem | undefined>(state =>
     getResponseItemWithPathSelector(state, path)
   );
-  const { promptLoginMessage, onAnswerChange } = useExternalRenderContext();
+  const { promptLoginMessage, onAnswerChange, resources } = useExternalRenderContext();
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
   const answer = useGetAnswer(responseItem, item);
   const enable = useIsEnabled(item, path);
@@ -234,7 +234,7 @@ export const OpenChoice = (props: OpenChoiceProps): JSX.Element | null => {
   );
 
   const renderTextField = (): JSX.Element => {
-    return <TextField {...props} handleStringChange={handleStringChangeEvent} handleChange={handleStringChange} resources={resources} />;
+    return <TextField {...props} handleStringChange={handleStringChangeEvent} handleChange={handleStringChange} />;
   };
 
   const hasOptionsAndNoCanonicalValueSet = useMemo(

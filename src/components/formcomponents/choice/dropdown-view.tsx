@@ -20,6 +20,7 @@ import { useSelector } from 'react-redux';
 import { findQuestionnaireItem, getResponseItemWithPathSelector } from '@/reducers/selectors';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { GlobalState } from '@/reducers';
+import { useExternalRenderContext } from '@/context/externalRenderContext';
 
 export type Props = QuestionnaireComponentItemProps & {
   options?: Array<Options>;
@@ -28,7 +29,8 @@ export type Props = QuestionnaireComponentItemProps & {
 };
 
 const DropdownView = (props: Props): JSX.Element | null => {
-  const { options, linkId, id, handleChange, selected, resources, idWithLinkIdAndItemIndex, path, index, children } = props;
+  const { options, linkId, id, handleChange, selected, idWithLinkIdAndItemIndex, path, index, children } = props;
+  const { resources } = useExternalRenderContext();
   const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
   const responseItem = useSelector<GlobalState, QuestionnaireResponseItem | undefined>(state =>
     getResponseItemWithPathSelector(state, path)

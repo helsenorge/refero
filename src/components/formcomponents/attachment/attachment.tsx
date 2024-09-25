@@ -28,7 +28,7 @@ type UploadedFile = {
   id: string;
 };
 export const AttachmentComponent = (props: Props): JSX.Element | null => {
-  const { path, pdf, id, resources, linkId, children } = props;
+  const { path, pdf, id, linkId, children } = props;
   const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
   const responseItem = useSelector<GlobalState, QuestionnaireResponseItem | undefined>(state =>
     getResponseItemWithPathSelector(state, path)
@@ -47,7 +47,7 @@ export const AttachmentComponent = (props: Props): JSX.Element | null => {
   const enable = useIsEnabled(item, path);
   const answer = useGetAnswer(responseItem, item);
 
-  const { onAnswerChange } = useExternalRenderContext();
+  const { onAnswerChange, resources } = useExternalRenderContext();
 
   const onUpload = (files: UploadFile[]): void => {
     if (uploadAttachment && item) {

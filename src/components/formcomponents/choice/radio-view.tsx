@@ -22,6 +22,7 @@ import { useSelector } from 'react-redux';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { findQuestionnaireItem, getResponseItemWithPathSelector } from '@/reducers/selectors';
 import { GlobalState } from '@/reducers';
+import { useExternalRenderContext } from '@/context/externalRenderContext';
 
 export type Props = QuestionnaireComponentItemProps & {
   options?: Array<Options>;
@@ -30,7 +31,8 @@ export type Props = QuestionnaireComponentItemProps & {
 };
 
 const RadioView = (props: Props): JSX.Element => {
-  const { options, id, handleChange, selected, resources, linkId, path, index, idWithLinkIdAndItemIndex, children } = props;
+  const { options, id, handleChange, selected, linkId, path, index, idWithLinkIdAndItemIndex, children } = props;
+  const { resources } = useExternalRenderContext();
   const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
   const responseItem = useSelector<GlobalState, QuestionnaireResponseItem | undefined>(state =>
     getResponseItemWithPathSelector(state, path)

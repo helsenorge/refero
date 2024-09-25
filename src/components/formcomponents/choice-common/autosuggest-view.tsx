@@ -37,8 +37,7 @@ export type AutosuggestProps = QuestionnaireComponentItemProps & {
 };
 
 const AutosuggestView = (props: AutosuggestProps): JSX.Element | null => {
-  const { resources, linkId, id, idWithLinkIdAndItemIndex, clearCodingAnswer, handleChange, handleStringChange, index, path, children } =
-    props;
+  const { linkId, id, idWithLinkIdAndItemIndex, clearCodingAnswer, handleChange, handleStringChange, index, path, children } = props;
   const { formState, getFieldState, register } = useFormContext<FieldValues>();
   const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
   const responseItem = useSelector<GlobalState, QuestionnaireResponseItem | undefined>(state =>
@@ -48,7 +47,7 @@ const AutosuggestView = (props: AutosuggestProps): JSX.Element | null => {
   const { error } = fieldState;
   const answer = useGetAnswer(responseItem, item);
   const enable = useIsEnabled(item, path);
-  const { fetchValueSet, autoSuggestProps } = useExternalRenderContext();
+  const { fetchValueSet, autoSuggestProps, resources } = useExternalRenderContext();
 
   const codingAnswer = getCodingAnswer(answer);
   const initialInputValue =

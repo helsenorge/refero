@@ -21,12 +21,13 @@ type DefaultGroup = QuestionnaireComponentItemProps & {
   setIsHelpVisible: Dispatch<React.SetStateAction<boolean>>;
 };
 const DefaultGroup = ({ isHelpVisible, setIsHelpVisible, children, ...rest }: DefaultGroup): JSX.Element => {
-  const { resources, headerTag, includeSkipLink, path, linkId, index, id } = rest;
+  const { headerTag, includeSkipLink, path, linkId, index, id } = rest;
+
   const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
   const responseItem = useSelector<GlobalState, QuestionnaireResponseItem | undefined>(state =>
     getResponseItemWithPathSelector(state, path)
   );
-  const { onRenderMarkdown } = useExternalRenderContext();
+  const { onRenderMarkdown, resources } = useExternalRenderContext();
   const formDefinition = useSelector((state: GlobalState) => getFormDefinition(state));
   const questionnaire = formDefinition?.Content;
 

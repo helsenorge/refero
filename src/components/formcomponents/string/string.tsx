@@ -30,11 +30,12 @@ import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 export type Props = QuestionnaireComponentItemProps;
 
 export const String = (props: Props): JSX.Element | null => {
-  const { path, id, pdf, resources, idWithLinkIdAndItemIndex, children, index, linkId } = props;
+  const { path, id, pdf, idWithLinkIdAndItemIndex, children, index, linkId } = props;
   const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
   const responseItem = useSelector<GlobalState, QuestionnaireResponseItem | undefined>(state =>
     getResponseItemWithPathSelector(state, path)
   );
+  const { resources } = useExternalRenderContext();
   const { promptLoginMessage, validateScriptInjection, onAnswerChange } = useExternalRenderContext();
   const { formState, getFieldState, register } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
