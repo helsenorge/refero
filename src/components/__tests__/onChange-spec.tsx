@@ -1,4 +1,4 @@
-import { screen, userEvent, renderRefero } from '../../../test/test-utils';
+import { screen, userEvent, renderRefero, waitFor } from '../../../test/test-utils';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer, Quantity, Coding, Questionnaire } from 'fhir/r4';
 
@@ -303,12 +303,15 @@ describe('onAnswerChange callback gets called and can request additional changes
       const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
         actionRequester.addDateAnswer('7d', '2024-05');
       });
-      const { container, getByLabelText } = wrapper(onChange, questionnaireWithAllItemTypes);
+      const { container, getByLabelText, findByTestId } = wrapper(onChange, questionnaireWithAllItemTypes);
 
       await inputAnswer('1', 0.1, container);
-      const date = getByLabelText(/DateMonth/i);
+      const dateElement = getByLabelText(/DateMonth/i);
+      const monthElement = await findByTestId('month-select');
+      const monthSelect = monthElement.querySelector('select');
 
-      expect(date).toHaveValue(2024);
+      await waitFor(async () => expect(dateElement).toHaveValue(2024));
+      await waitFor(async () => expect(monthSelect).toHaveValue('05'));
     });
     it('dateMonth gets cleared', async () => {
       const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
