@@ -19,6 +19,7 @@ import RenderHelpButton from '../help-button/RenderHelpButton';
 import RenderHelpElement from '../help-button/RenderHelpElement';
 import TextView from '../textview';
 import { useIsEnabled } from '@/hooks/useIsEnabled';
+import { initialize } from '@/util/date-fns-utils';
 
 export type Props = QuestionnaireComponentItemProps;
 
@@ -34,6 +35,8 @@ const Time = ({
   idWithLinkIdAndItemIndex,
   children,
 }: Props): JSX.Element | null => {
+  initialize();
+
   const { promptLoginMessage, onAnswerChange } = useExternalRenderContext();
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
   const enable = useIsEnabled(item);

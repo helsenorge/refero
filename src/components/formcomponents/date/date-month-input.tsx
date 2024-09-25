@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import styles2 from '../common-styles.module.css';
 import { format } from 'date-fns';
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
@@ -25,6 +25,7 @@ import { useMinMaxDate } from './useMinMaxDate';
 
 import styles from '../../../styles/date-year-month.module.css';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
+import { initialize } from '@/util/date-fns-utils';
 
 type DateMonthProps = QuestionnaireComponentItemProps & {
   locale: LanguageLocales.ENGLISH | LanguageLocales.NORWEGIAN;
@@ -40,7 +41,9 @@ export const DateYearMonthInput = ({
   onDateValueChange,
   children,
 }: DateMonthProps): JSX.Element | null => {
-  const { formState, getFieldState } = useFormContext<FieldValues>();
+  initialize();
+
+  const { setValue, formState, getFieldState, getValues } = useFormContext<FieldValues>();
   const answer = useGetAnswer(responseItem, item);
   const { resources } = useExternalRenderContext();
   const { minDateTime, maxDateTime } = useMinMaxDate(item);
@@ -69,6 +72,18 @@ export const DateYearMonthInput = ({
     }
   };
 
+  const [isHelpVisible, setIsHelpVisible] = useState(false);
+  const yearField = getFieldState(`${idWithLinkIdAndItemIndex}-yearmonth-year`, formState);
+  const monthsField = getFieldState(`${idWithLinkIdAndItemIndex}-yearmonth-month`, formState);
+  const monthOptions = getMonthOptions(resources);
+  const year: string | undefined = getYearAndMonth()?.year.toString();
+  const month: string | undefined | null = getYearAndMonth()?.month?.toString();
+
+  useEffect(() => {
+    setValue(`${idWithLinkIdAndItemIndex}-yearmonth-year`, year);
+    setValue(`${idWithLinkIdAndItemIndex}-yearmonth-month`, month);
+  }, []);
+
   const getValue = (
     item: QuestionnaireItem,
     answer?: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]
@@ -83,13 +98,6 @@ export const DateYearMonthInput = ({
       return '';
     }
   };
-
-  const [isHelpVisible, setIsHelpVisible] = useState(false);
-  const yearField = getFieldState(`${idWithLinkIdAndItemIndex}-yearmonth-year`, formState);
-  const monthsField = getFieldState(`${idWithLinkIdAndItemIndex}-yearmonth-month`, formState);
-  const monthOptions = getMonthOptions(resources);
-  const [year, setYear] = useState<string | undefined>(getYearAndMonth()?.year.toString());
-  const [month, setMonth] = useState<string | undefined | null>(getYearAndMonth()?.month?.toString());
 
   const getPDFValue = (): string | number => {
     const value = getValue(item, answer);
@@ -128,9 +136,6 @@ export const DateYearMonthInput = ({
   };
 
   const handleYearMonthChange = (newYear: string | undefined, newMonth: string | undefined | null): void => {
-    setYear(newYear);
-    setMonth(newMonth);
-
     if (newYear && newMonth) {
       const concatinatedString = getConcatinatedYearAndMonth(newYear, newMonth);
       onDateValueChange(concatinatedString);
@@ -185,11 +190,13 @@ export const DateYearMonthInput = ({
                 inputId={`${getId(id)}-input`}
                 testId={getId(id)}
                 onChange={e => {
-                  handleYearMonthChange(e.target.value, month);
-                  onChange(getConcatinatedYearAndMonth(e.target.value, month));
+                  const monthValue = getValues(idWithLinkIdAndItemIndex + '-yearmonth-month');
+                  handleYearMonthChange(e.target.value, monthValue);
+                  onChange(e.target.value);
                 }}
                 width={10}
                 defaultValue={year ?? ''}
+                value={year}
               />
             )}
           />
@@ -208,10 +215,12 @@ export const DateYearMonthInput = ({
                 selectId={`${getId(id)}-select`}
                 testId={'month-select'}
                 onChange={e => {
-                  handleYearMonthChange(year, e.target.value);
-                  onChange(getConcatinatedYearAndMonth(year, e.target.value));
+                  const yearValue = getValues(idWithLinkIdAndItemIndex + '-yearmonth-year');
+                  handleYearMonthChange(yearValue, e.target.value);
+                  onChange(e.target.value);
                 }}
-                defaultValue={month ? month : monthOptions[0].optionValue}
+                defaultValue={month ?? monthOptions[0].optionValue}
+                value={month}
               >
                 {monthOptions.map(option => (
                   <option key={option.optionValue} value={option.optionValue}>
