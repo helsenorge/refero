@@ -1,3 +1,9 @@
+## 16.0.0-beta.33
+
+- Upgraded @helsenorge/designsystem and @helsenorge/datepicker to v8.5.0
+- Added tests for dateYear and dateMonth in onChange-spec, copyFrom-spec and defaultFormValues-spec
+- Calls initialize function from date-fns-utils in all date components and time.tsx
+
 ## 16.0.0-beta.32
 
 - Added more validation messages
