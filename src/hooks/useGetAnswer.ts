@@ -60,8 +60,8 @@ function getQuestionnaireResponseItemAnswer(
 }
 
 export const useGetAnswer = (
-  linkId: string,
-  path: Path[]
+  linkId?: string,
+  path?: Path[]
 ): QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[] | undefined => {
   const questionnaireResponse = useSelector<GlobalState, QuestionnaireResponse | null | undefined>(questionnaireResponseSelector);
   const item2 = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));

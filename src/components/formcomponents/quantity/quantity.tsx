@@ -156,7 +156,7 @@ const Quantity = (props: Props): JSX.Element | null => {
           responseItem={responseItem}
           className="page_refero__deletebutton--margin-top"
         />
-        <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} responseItem={responseItem} />
+        <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} />
       </FormGroup>
       <div className="nested-fieldset nested-fieldset--full-height">{children}</div>
     </div>

@@ -50,7 +50,13 @@ const DefaultGroup = ({ isHelpVisible, setIsHelpVisible, children, ...rest }: De
         {children}
       </div>
 
-      <RenderDeleteButton item={item} path={path} index={index} className="page_refero__deletebutton--margin-top" />
+      <RenderDeleteButton
+        item={item}
+        path={path}
+        index={index}
+        className="page_refero__deletebutton--margin-top"
+        responseItem={responseItem}
+      />
       <RenderRepeatButton item={item} index={index} path={path?.slice(0, -1)} resources={resources} />
     </section>
   );

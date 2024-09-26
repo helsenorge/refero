@@ -10,27 +10,25 @@ import { Resources } from '@/util/resources';
 import { GlobalState } from '@/reducers';
 import { useSelector } from 'react-redux';
 import { getFlatMapResponseItemsForItemSelector } from '@/reducers/selectors';
+import { useGetAnswer } from '@/hooks/useGetAnswer';
 
 const RenderRepeatButton = ({
   item,
   index,
   path,
-  responseItem,
 }: {
   item?: QuestionnaireItem;
   index?: number;
   path: Path[];
-  responseItem?: QuestionnaireResponseItem;
   resources?: Resources;
 }): JSX.Element | null => {
   const responseItems = useSelector<GlobalState, QuestionnaireResponseItem[] | undefined>(state =>
     getFlatMapResponseItemsForItemSelector(state, item?.linkId, path)
   );
-
+  const answer = useGetAnswer;
   if (!item?.repeats || !shouldRenderRepeatButton(item, responseItems, index)) {
     return null;
   }
-
   return (
     <div className="page_refero__repeatbutton-wrapper">
       <RepeatButton
@@ -38,7 +36,7 @@ const RenderRepeatButton = ({
         item={item}
         responseItems={responseItems}
         parentPath={path}
-        disabled={item?.type !== ItemType.GROUP && !responseItem?.answer}
+        disabled={item?.type !== ItemType.GROUP && !answer}
       />
     </div>
   );

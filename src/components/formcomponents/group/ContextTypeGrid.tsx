@@ -52,7 +52,7 @@ const ContextTypeGrid = (props: ContextTypeGridProps): JSX.Element => {
         responseItem={responseItem}
         className="page_refero__deletebutton--margin-top"
       />
-      <RenderRepeatButton item={item} index={index} path={path?.slice(0, -1)} resources={resources} responseItem={responseItem} />
+      <RenderRepeatButton item={item} index={index} path={path?.slice(0, -1)} resources={resources} />
     </>
   );
 };
