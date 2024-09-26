@@ -20,6 +20,7 @@ import { useMinMaxDate } from './useMinMaxDate';
 import { useSelector } from 'react-redux';
 import { findQuestionnaireItem, getResponseItemWithPathSelector } from '@/reducers/selectors';
 import { GlobalState } from '@/reducers';
+import { initialize } from '@/util/date-fns-utils';
 
 type Props = QuestionnaireComponentItemProps & {
   onDateValueChange: (newValue: string) => void;
@@ -31,6 +32,8 @@ export const DateYearInput = (props: Props): JSX.Element | null => {
   const responseItem = useSelector<GlobalState, QuestionnaireResponseItem | undefined>(state =>
     getResponseItemWithPathSelector(state, path)
   );
+  initialize();
+
   const { formState, getFieldState, control } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const answer = useGetAnswer(responseItem, item);

@@ -20,15 +20,17 @@ import RenderHelpElement from '../help-button/RenderHelpElement';
 import TextView from '../textview';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { findQuestionnaireItem, getResponseItemWithPathSelector } from '@/reducers/selectors';
+import { initialize } from '@/util/date-fns-utils';
 
 export type Props = QuestionnaireComponentItemProps;
 
-const Time = ({ id, index, linkId, path, pdf, idWithLinkIdAndItemIndex, children }: Props): JSX.Element | null => {
-  const { promptLoginMessage, onAnswerChange, resources } = useExternalRenderContext();
+const Time = ({ id, index, path, linkId, pdf, idWithLinkIdAndItemIndex, children }: Props): JSX.Element | null => {
+  initialize();
   const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
   const responseItem = useSelector<GlobalState, QuestionnaireResponseItem | undefined>(state =>
     getResponseItemWithPathSelector(state, path)
   );
+  const { promptLoginMessage, onAnswerChange, resources } = useExternalRenderContext();
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
   const { formState, getFieldState, setValue, getValues, trigger } = useFormContext<FieldValues>();
   const hoursField = getFieldState(`${idWithLinkIdAndItemIndex}-hours`, formState);
