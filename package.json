@@ -1,6 +1,6 @@
 {
   "name": "@helsenorge/refero",
-  "version": "16.0.0-beta.32",
+  "version": "16.0.0-beta.33",
   "description": "Refero is a library that uses a fhir r4 schema and creates a interactive form using helsenorge packages.",
   "keywords": [
     "react",
@@ -68,7 +68,7 @@
   },
   "devDependencies": {
     "@helsenorge/autosuggest": "^32.0.0",
-    "@helsenorge/datepicker": "^8.0.0",
+    "@helsenorge/datepicker": "^8.5.0",
     "@helsenorge/designsystem-react": "^8.5.0",
     "@helsenorge/file-upload": "^32.0.0",
     "@redux-devtools/extension": "^3.3.0",
