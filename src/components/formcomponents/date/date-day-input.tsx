@@ -155,6 +155,7 @@ export const DateDayInput = ({
         testId={`${getId(id)}-label-test`}
         sublabelId={`${getId(id)}-sublabel`}
         afterLabelContent={<RenderHelpButton isHelpVisible={isHelpVisible} item={item} setIsHelpVisible={setIsHelpVisible} />}
+        dateLabel={resources?.dateFormat_ddmmyyyy}
       />
       <RenderHelpElement isHelpVisible={isHelpVisible} item={item} />
 
