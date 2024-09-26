@@ -1,3 +1,8 @@
+## 16.0.0-beta.34
+
+- Fixed bug where year field became empty if too many numbers were typed
+- Added label for date format in dateDay and dateTime
+
 ## 16.0.0-beta.33
 
 - Upgraded @helsenorge/designsystem and @helsenorge/datepicker to v8.5.0
