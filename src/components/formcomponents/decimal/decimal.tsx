@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { QuestionnaireItem, QuestionnaireResponseItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { FieldValues, useFormContext } from 'react-hook-form';
 import styles from '../common-styles.module.css';
 import { ThunkDispatch } from 'redux-thunk';
@@ -24,7 +24,7 @@ import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { decimalPattern, maxValue, minValue, required } from '@/components/validation/rules';
-import { findQuestionnaireItem, getResponseItemWithPathSelector } from '@/reducers/selectors';
+import { findQuestionnaireItem } from '@/reducers/selectors';
 
 export type Props = QuestionnaireComponentItemProps;
 
@@ -32,9 +32,7 @@ const Decimal = (props: Props): JSX.Element | null => {
   const { id, linkId, pdf, children, idWithLinkIdAndItemIndex, path, index } = props;
   const { promptLoginMessage, onAnswerChange, resources } = useExternalRenderContext();
   const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
-  const responseItem = useSelector<GlobalState, QuestionnaireResponseItem | undefined>(state =>
-    getResponseItemWithPathSelector(state, path)
-  );
+
   const { formState, getFieldState, register } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex || '', formState);
   const { error } = fieldState;
@@ -131,13 +129,7 @@ const Decimal = (props: Props): JSX.Element | null => {
           width={25}
         />
       </FormGroup>
-      <RenderDeleteButton
-        item={item}
-        path={path}
-        index={index}
-        responseItem={responseItem}
-        className="page_refero__deletebutton--margin-top"
-      />
+      <RenderDeleteButton item={item} path={path} index={index} className="page_refero__deletebutton--margin-top" />
       <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} />
 
       <div className="nested-fieldset nested-fieldset--full-height">{children}</div>

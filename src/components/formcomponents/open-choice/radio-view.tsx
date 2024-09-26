@@ -21,8 +21,8 @@ import { QuestionnaireComponentItemProps } from '@/components/createQuestionnair
 import { required } from '@/components/validation/rules';
 import { useSelector } from 'react-redux';
 import { GlobalState } from '@/reducers';
-import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
-import { findQuestionnaireItem, getResponseItemWithPathSelector } from '@/reducers/selectors';
+import { QuestionnaireItem } from 'fhir/r4';
+import { findQuestionnaireItem } from '@/reducers/selectors';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 
 type Props = QuestionnaireComponentItemProps & {
@@ -39,9 +39,6 @@ const RadioView = (props: Props): JSX.Element | null => {
   const { error } = getFieldState(idWithLinkIdAndItemIndex, formState);
   const [isHelpVisible, setIsHelpVisible] = React.useState(false);
   const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
-  const responseItem = useSelector<GlobalState, QuestionnaireResponseItem | undefined>(state =>
-    getResponseItemWithPathSelector(state, path)
-  );
 
   const selectedValue = (selected && selected[0]) || '';
   const answer = useGetAnswer(linkId, path);
@@ -82,13 +79,7 @@ const RadioView = (props: Props): JSX.Element | null => {
         ))}
       </FormGroup>
       {shouldShowExtraChoice(answer) ? <div className="page_refero__component_openchoice_openfield">{renderOpenField()}</div> : null}
-      <RenderDeleteButton
-        item={item}
-        path={path}
-        index={index}
-        responseItem={responseItem}
-        className="page_refero__deletebutton--margin-top"
-      />
+      <RenderDeleteButton item={item} path={path} index={index} className="page_refero__deletebutton--margin-top" />
       <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} />
 
       <div className="nested-fieldset nested-fieldset--full-height">{children}</div>

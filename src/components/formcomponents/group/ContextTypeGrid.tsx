@@ -26,7 +26,7 @@ const RenderHeaders = ({ item, columns }: Props): JSX.Element => {
 };
 
 const ContextTypeGrid = (props: ContextTypeGridProps): JSX.Element => {
-  const { item, index, path, id, responseItem } = props;
+  const { item, index, path, id } = props;
   const columns = getColumns(item);
   const { resources } = useExternalRenderContext();
   return (
@@ -45,13 +45,7 @@ const ContextTypeGrid = (props: ContextTypeGridProps): JSX.Element => {
           />
         </tbody>
       </table>
-      <RenderDeleteButton
-        item={item}
-        path={path}
-        index={index}
-        responseItem={responseItem}
-        className="page_refero__deletebutton--margin-top"
-      />
+      <RenderDeleteButton item={item} path={path} index={index} className="page_refero__deletebutton--margin-top" />
       <RenderRepeatButton item={item} index={index} path={path?.slice(0, -1)} resources={resources} />
     </>
   );

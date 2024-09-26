@@ -19,17 +19,14 @@ import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
 import { useCallback, useMemo } from 'react';
-import { findQuestionnaireItem, getResponseItemWithPathSelector } from '@/reducers/selectors';
-import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
+import { findQuestionnaireItem } from '@/reducers/selectors';
+import { QuestionnaireItem } from 'fhir/r4';
 
 export type DateProps = QuestionnaireComponentItemProps;
 
 const DateComponent = (props: DateProps): JSX.Element | null => {
   const { language, linkId, path, index, children } = props;
   const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
-  const responseItem = useSelector<GlobalState, QuestionnaireResponseItem | undefined>(state =>
-    getResponseItemWithPathSelector(state, path)
-  );
 
   const answer = useGetAnswer(linkId, path);
   const { promptLoginMessage, onAnswerChange } = useExternalRenderContext();
@@ -72,13 +69,7 @@ const DateComponent = (props: DateProps): JSX.Element | null => {
   return (
     <div className="page_refero__component page_refero__component_date">
       {element}
-      <RenderDeleteButton
-        item={item}
-        path={path}
-        index={index}
-        responseItem={responseItem}
-        className="page_refero__deletebutton--margin-top"
-      />
+      <RenderDeleteButton item={item} path={path} index={index} className="page_refero__deletebutton--margin-top" />
       <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} />
 
       <div className="nested-fieldset nested-fieldset--full-height">{children}</div>

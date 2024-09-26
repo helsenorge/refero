@@ -19,8 +19,8 @@ import { QuestionnaireComponentItemProps } from '@/components/createQuestionnair
 import { required } from '@/components/validation/rules';
 import { useSelector } from 'react-redux';
 import { GlobalState } from '@/reducers';
-import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
-import { findQuestionnaireItem, getResponseItemWithPathSelector } from '@/reducers/selectors';
+import { QuestionnaireItem } from 'fhir/r4';
+import { findQuestionnaireItem } from '@/reducers/selectors';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 
 export type Props = QuestionnaireComponentItemProps & {
@@ -33,9 +33,7 @@ const CheckboxView = (props: Props): JSX.Element | null => {
   const { options, linkId, id, handleChange, idWithLinkIdAndItemIndex, selected, path, children, index } = props;
   const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
   const { resources } = useExternalRenderContext();
-  const responseItem = useSelector<GlobalState, QuestionnaireResponseItem | undefined>(state =>
-    getResponseItemWithPathSelector(state, path)
-  );
+
   const [isHelpVisible, setIsHelpVisible] = useState(false);
 
   const { formState, getFieldState, register } = useFormContext<FieldValues>();
@@ -75,13 +73,7 @@ const CheckboxView = (props: Props): JSX.Element | null => {
           />
         ))}
       </FormGroup>
-      <RenderDeleteButton
-        item={item}
-        path={path}
-        index={index}
-        responseItem={responseItem}
-        className="page_refero__deletebutton--margin-top"
-      />
+      <RenderDeleteButton item={item} path={path} index={index} className="page_refero__deletebutton--margin-top" />
       <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} />
       <div className="nested-fieldset nested-fieldset--full-height">{children}</div>
     </div>

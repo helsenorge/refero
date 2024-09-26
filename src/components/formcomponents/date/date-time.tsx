@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 import { format, isValid } from 'date-fns';
 
-import { QuestionnaireItem, QuestionnaireResponseItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { Controller, FieldError, FieldValues, useFormContext } from 'react-hook-form';
 import { ThunkDispatch } from 'redux-thunk';
 
@@ -37,7 +37,7 @@ import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 import { useMinMaxDate } from './useMinMaxDate';
-import { findQuestionnaireItem, getResponseItemWithPathSelector } from '@/reducers/selectors';
+import { findQuestionnaireItem } from '@/reducers/selectors';
 
 export type Props = QuestionnaireComponentItemProps;
 
@@ -47,9 +47,7 @@ const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, childr
   const { promptLoginMessage, onAnswerChange, resources } = useExternalRenderContext();
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
   const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
-  const responseItem = useSelector<GlobalState, QuestionnaireResponseItem | undefined>(state =>
-    getResponseItemWithPathSelector(state, path)
-  );
+
   const answer = useGetAnswer(linkId, path);
   const [isHelpVisible, setIsHelpVisible] = useState(false);
   const { formState, getFieldState, setValue } = useFormContext<FieldValues>();
@@ -278,13 +276,7 @@ const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, childr
           )}
         />
       </DateTimePickerWrapper>
-      <RenderDeleteButton
-        item={item}
-        path={path}
-        index={index}
-        responseItem={responseItem}
-        className="page_refero__deletebutton--margin-top"
-      />
+      <RenderDeleteButton item={item} path={path} index={index} className="page_refero__deletebutton--margin-top" />
       <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} />
       {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
     </div>

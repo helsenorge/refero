@@ -13,8 +13,8 @@ import { QuestionnaireComponentItemProps } from '@/components/createQuestionnair
 import { useSelector } from 'react-redux';
 import { GlobalState } from '@/reducers';
 import { getFormDefinition } from '@/reducers/form';
-import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
-import { findQuestionnaireItem, getResponseItemWithPathSelector } from '@/reducers/selectors';
+import { QuestionnaireItem } from 'fhir/r4';
+import { findQuestionnaireItem } from '@/reducers/selectors';
 
 type DefaultGroup = QuestionnaireComponentItemProps & {
   isHelpVisible: boolean;
@@ -24,9 +24,7 @@ const DefaultGroup = ({ isHelpVisible, setIsHelpVisible, children, ...rest }: De
   const { headerTag, includeSkipLink, path, linkId, index, id } = rest;
 
   const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
-  const responseItem = useSelector<GlobalState, QuestionnaireResponseItem | undefined>(state =>
-    getResponseItemWithPathSelector(state, path)
-  );
+
   const { onRenderMarkdown, resources } = useExternalRenderContext();
   const formDefinition = useSelector((state: GlobalState) => getFormDefinition(state));
   const questionnaire = formDefinition?.Content;
@@ -50,13 +48,7 @@ const DefaultGroup = ({ isHelpVisible, setIsHelpVisible, children, ...rest }: De
         {children}
       </div>
 
-      <RenderDeleteButton
-        item={item}
-        path={path}
-        index={index}
-        className="page_refero__deletebutton--margin-top"
-        responseItem={responseItem}
-      />
+      <RenderDeleteButton item={item} path={path} index={index} className="page_refero__deletebutton--margin-top" />
       <RenderRepeatButton item={item} index={index} path={path?.slice(0, -1)} resources={resources} />
     </section>
   );

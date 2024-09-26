@@ -21,8 +21,8 @@ import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { getFormDefinition } from '@/reducers/form';
 import { required } from '@/components/validation/rules';
-import { findQuestionnaireItem, getResponseItemWithPathSelector } from '@/reducers/selectors';
-import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
+import { findQuestionnaireItem } from '@/reducers/selectors';
+import { QuestionnaireItem } from 'fhir/r4';
 
 export type Props = QuestionnaireComponentItemProps & {
   children?: React.ReactNode;
@@ -31,9 +31,7 @@ export type Props = QuestionnaireComponentItemProps & {
 const Boolean = (props: Props): JSX.Element | null => {
   const { path, pdf, id, index, idWithLinkIdAndItemIndex, linkId, children } = props;
   const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
-  const responseItem = useSelector<GlobalState, QuestionnaireResponseItem | undefined>(state =>
-    getResponseItemWithPathSelector(state, path)
-  );
+
   const formDefinition = useSelector((state: GlobalState) => getFormDefinition(state));
   const questionnaire = formDefinition?.Content;
 
@@ -132,13 +130,7 @@ const Boolean = (props: Props): JSX.Element | null => {
         />
         <RenderHelpElement item={item} isHelpVisible={isHelpVisible} />
       </FormGroup>
-      <RenderDeleteButton
-        item={item}
-        path={path}
-        index={index}
-        responseItem={responseItem}
-        className="page_refero__deletebutton--margin-top"
-      />
+      <RenderDeleteButton item={item} path={path} index={index} className="page_refero__deletebutton--margin-top" />
 
       <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} />
 

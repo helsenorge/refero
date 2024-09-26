@@ -17,8 +17,8 @@ import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { required } from '@/components/validation/rules';
 import { useSelector } from 'react-redux';
-import { findQuestionnaireItem, getResponseItemWithPathSelector } from '@/reducers/selectors';
-import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
+import { findQuestionnaireItem } from '@/reducers/selectors';
+import { QuestionnaireItem } from 'fhir/r4';
 import { GlobalState } from '@/reducers';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 
@@ -32,9 +32,7 @@ const DropdownView = (props: Props): JSX.Element | null => {
   const { options, linkId, id, handleChange, selected, idWithLinkIdAndItemIndex, path, index, children } = props;
   const { resources } = useExternalRenderContext();
   const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
-  const responseItem = useSelector<GlobalState, QuestionnaireResponseItem | undefined>(state =>
-    getResponseItemWithPathSelector(state, path)
-  );
+
   const { formState, getFieldState, register } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
@@ -92,13 +90,7 @@ const DropdownView = (props: Props): JSX.Element | null => {
         </Select>
       </FormGroup>
 
-      <RenderDeleteButton
-        item={item}
-        path={path}
-        index={index}
-        responseItem={responseItem}
-        className="page_refero__deletebutton--margin-top"
-      />
+      <RenderDeleteButton item={item} path={path} index={index} className="page_refero__deletebutton--margin-top" />
       <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} />
       <div className="nested-fieldset nested-fieldset--full-height">{children}</div>
     </div>

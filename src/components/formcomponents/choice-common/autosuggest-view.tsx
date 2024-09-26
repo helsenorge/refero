@@ -1,6 +1,6 @@
 import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 
-import { ValueSet, Coding, QuestionnaireResponseItem, QuestionnaireItem } from 'fhir/r4';
+import { ValueSet, Coding, QuestionnaireItem } from 'fhir/r4';
 import { FieldValues, useFormContext } from 'react-hook-form';
 import styles from '../common-styles.module.css';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
@@ -27,7 +27,7 @@ import { QuestionnaireComponentItemProps } from '@/components/createQuestionnair
 import { required } from '@/components/validation/rules';
 import { useSelector } from 'react-redux';
 import { GlobalState } from '@/reducers';
-import { findQuestionnaireItem, getResponseItemWithPathSelector } from '@/reducers/selectors';
+import { findQuestionnaireItem } from '@/reducers/selectors';
 
 export type AutosuggestProps = QuestionnaireComponentItemProps & {
   handleChange: (code?: string, systemArg?: string, displayArg?: string) => void;
@@ -39,9 +39,7 @@ const AutosuggestView = (props: AutosuggestProps): JSX.Element | null => {
   const { linkId, id, idWithLinkIdAndItemIndex, clearCodingAnswer, handleChange, handleStringChange, index, path, children } = props;
   const { formState, getFieldState, register } = useFormContext<FieldValues>();
   const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
-  const responseItem = useSelector<GlobalState, QuestionnaireResponseItem | undefined>(state =>
-    getResponseItemWithPathSelector(state, path)
-  );
+
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
   const answer = useGetAnswer(linkId, path);
@@ -230,13 +228,7 @@ const AutosuggestView = (props: AutosuggestProps): JSX.Element | null => {
           <div className="page_refero__no-suggestions">{resources?.autosuggestNoSuggestions?.replace('{0}', inputValue)}</div>
         )}
         {hasLoadError && <NotificationPanel variant="error">{resources?.autoSuggestLoadError}</NotificationPanel>}
-        <RenderDeleteButton
-          item={item}
-          path={path}
-          index={index}
-          responseItem={responseItem}
-          className="page_refero__deletebutton--margin-top"
-        />
+        <RenderDeleteButton item={item} path={path} index={index} className="page_refero__deletebutton--margin-top" />
         <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} />
       </FormGroup>
       <div className="nested-fieldset nested-fieldset--full-height">{children}</div>

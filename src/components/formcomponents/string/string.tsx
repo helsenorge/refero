@@ -23,17 +23,15 @@ import { QuestionnaireComponentItemProps } from '@/components/createQuestionnair
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 import { maxLength, minLength, regexpPattern, required, scriptInjection } from '@/components/validation/rules';
 import { debounce } from '@helsenorge/core-utils/debounce';
-import { findQuestionnaireItem, getResponseItemWithPathSelector } from '@/reducers/selectors';
-import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
+import { findQuestionnaireItem } from '@/reducers/selectors';
+import { QuestionnaireItem } from 'fhir/r4';
 
 export type Props = QuestionnaireComponentItemProps;
 
 export const String = (props: Props): JSX.Element | null => {
   const { path, id, pdf, idWithLinkIdAndItemIndex, children, index, linkId } = props;
   const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
-  const responseItem = useSelector<GlobalState, QuestionnaireResponseItem | undefined>(state =>
-    getResponseItemWithPathSelector(state, path)
-  );
+
   const { resources } = useExternalRenderContext();
   const { promptLoginMessage, validateScriptInjection, onAnswerChange } = useExternalRenderContext();
   const { formState, getFieldState, register } = useFormContext<FieldValues>();
@@ -105,13 +103,7 @@ export const String = (props: Props): JSX.Element | null => {
           placeholder={getPlaceholder(item)}
           className="page_refero__input"
         />
-        <RenderDeleteButton
-          item={item}
-          path={path}
-          index={index}
-          responseItem={responseItem}
-          className="page_refero__deletebutton--margin-top"
-        />
+        <RenderDeleteButton item={item} path={path} index={index} className="page_refero__deletebutton--margin-top" />
         <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} />
       </FormGroup>
 
