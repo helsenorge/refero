@@ -1,13 +1,7 @@
 import { GlobalState } from '@/reducers';
-import { FormData, getFormData } from '@/reducers/form';
+import { getResponseItemsSelector } from '@/reducers/selectors';
 import { QuestionnaireItemEnableBehaviorCodes } from '@/types/fhirEnums';
-import {
-  enableWhenMatchesAnswer,
-  getQuestionnaireResponseItemWithLinkid,
-  getResponseItems,
-  isInGroupContext,
-  Path,
-} from '@/util/refero-core';
+import { enableWhenMatchesAnswer, getQuestionnaireResponseItemWithLinkid, isInGroupContext, Path } from '@/util/refero-core';
 import { QuestionnaireItem, QuestionnaireItemEnableWhen, QuestionnaireResponseItem } from 'fhir/r4';
 import { useSelector } from 'react-redux';
 
@@ -42,15 +36,13 @@ export function isEnableWhenEnabled(
 }
 
 export const useIsEnabled = (item?: QuestionnaireItem, path?: Path[]): boolean => {
-  const formData = useSelector<GlobalState, FormData | null>(state => getFormData(state));
-  return !item || !item.enableWhen
-    ? true
-    : isEnableWhenEnabled(item.enableWhen, item.enableBehavior, path || [], getResponseItems(formData));
+  const responseItems = useSelector<GlobalState, QuestionnaireResponseItem[] | undefined>(getResponseItemsSelector);
+  return !item || !item.enableWhen ? true : isEnableWhenEnabled(item.enableWhen, item.enableBehavior, path || [], responseItems);
 };
 
 export const useCheckIfEnabled = (): ((item?: QuestionnaireItem, path?: Path[]) => boolean) => {
-  const formData = useSelector<GlobalState, FormData | null>(state => getFormData(state));
+  const responseItems = useSelector<GlobalState, QuestionnaireResponseItem[] | undefined>(getResponseItemsSelector);
   const checkIfEneabled = (item?: QuestionnaireItem, path?: Path[]): boolean =>
-    !path || !item || !item.enableWhen ? true : isEnableWhenEnabled(item.enableWhen, item.enableBehavior, path, getResponseItems(formData));
+    !path || !item || !item.enableWhen ? true : isEnableWhenEnabled(item.enableWhen, item.enableBehavior, path, responseItems);
   return checkIfEneabled;
 };

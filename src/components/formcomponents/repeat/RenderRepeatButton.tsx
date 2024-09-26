@@ -6,26 +6,27 @@ import ItemType from '@/constants/itemType';
 import { shouldRenderRepeatButton } from '@/util';
 import { Path } from '@/util/refero-core';
 import { Resources } from '@/util/resources';
-import { getResponseItems } from '@/components/createQuestionnaire/utils';
-import { getFormData } from '@/reducers/form';
+
 import { GlobalState } from '@/reducers';
 import { useSelector } from 'react-redux';
+import { getFlatMapResponseItemsForItemSelector, getResponseItemWithPathSelector } from '@/reducers/selectors';
 
 const RenderRepeatButton = ({
   item,
   index,
   path,
-  responseItem,
 }: {
   item?: QuestionnaireItem;
   index?: number;
   path: Path[];
-  responseItem?: QuestionnaireResponseItem;
   resources?: Resources;
 }): JSX.Element | null => {
-  const formData = useSelector((state: GlobalState) => getFormData(state));
-  const responseItems = getResponseItems(item, formData, path);
-
+  const responseItems = useSelector<GlobalState, QuestionnaireResponseItem[] | undefined>(state =>
+    getFlatMapResponseItemsForItemSelector(state, item?.linkId, path)
+  );
+  const responseItem = useSelector<GlobalState, QuestionnaireResponseItem | undefined>(state =>
+    getResponseItemWithPathSelector(state, path)
+  );
   if (!item?.repeats || !shouldRenderRepeatButton(item, responseItems, index)) {
     return null;
   }

@@ -105,14 +105,8 @@ export const String = (props: Props): JSX.Element | null => {
           placeholder={getPlaceholder(item)}
           className="page_refero__input"
         />
-        <RenderDeleteButton
-          item={item}
-          path={path}
-          index={index}
-          responseItem={responseItem}
-          className="page_refero__deletebutton--margin-top"
-        />
-        <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} responseItem={responseItem} />
+        <RenderDeleteButton item={item} path={path} index={index} className="page_refero__deletebutton--margin-top" />
+        <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} />
       </FormGroup>
 
       {children && <div className="nested-fieldset nested-fieldset--full-height">{children}</div>}

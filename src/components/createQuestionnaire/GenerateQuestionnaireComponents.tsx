@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { useSelector, shallowEqual } from 'react-redux';
-import { QuestionnaireItem, Resource } from 'fhir/r4';
+import { QuestionnaireItem, QuestionnaireResponseItem, Resource } from 'fhir/r4';
 
 import { RenderContext } from '@/util/renderContext';
 import { isHiddenItem } from '@/util/index';
@@ -9,9 +9,10 @@ import { getFormData, getFormDefinition } from '@/reducers/form';
 import { isHelpItem } from '@/util/help';
 import { GlobalState } from '@/reducers';
 import { Path } from '@/util/refero-core';
-import { getComponentForItem, getResponseItems } from './utils';
+import { getComponentForItem } from './utils';
 import { RenderResponseItems } from './RenderResponseItems';
 import { useCheckIfEnabled } from '@/hooks/useIsEnabled';
+import { getFlatMapResponseItemsForItemSelector } from '@/reducers/selectors';
 
 export type QuestionnaireComponentItemProps = {
   containedResources?: Resource[];
@@ -64,7 +65,9 @@ const GenerateQuestionnaireComponents = (props: QuestionnaireItemsProps): JSX.El
           return null;
         }
 
-        const responseItems = useMemo(() => getResponseItems(item, formData, path), [path, item, formData]);
+        const responseItems = useSelector<GlobalState, QuestionnaireResponseItem[] | undefined>(state =>
+          getFlatMapResponseItemsForItemSelector(state, item.linkId, path)
+        );
         if (!responseItems || responseItems.length === 0) {
           return null;
         }
