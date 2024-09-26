@@ -15,7 +15,7 @@ import { findQuestionnaireItem } from '@/reducers/selectors';
 
 export type Props = QuestionnaireComponentItemProps;
 
-const Display = ({ id, pdf, path, linkId }: Props): JSX.Element | null => {
+const Display = ({ id, pdf, linkId }: Props): JSX.Element | null => {
   const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
 
   const { onRenderMarkdown, resources } = useExternalRenderContext();
