@@ -21,6 +21,7 @@ type Props = {
   sublabelId?: string;
   sublabelTestId?: string;
   afterLabelContent?: JSX.Element | null;
+  dateLabel?: string;
 };
 
 export const ReferoLabel = ({
@@ -33,6 +34,7 @@ export const ReferoLabel = ({
   sublabelId,
   sublabelTestId,
   afterLabelContent,
+  dateLabel,
 }: Props): JSX.Element => {
   const formDefinition = useSelector((state: GlobalState) => getFormDefinition(state));
   const questionnaire = formDefinition?.Content;
@@ -51,8 +53,12 @@ export const ReferoLabel = ({
         >
           <div className={`${styles.textOptionalWrapper}`}>
             <SafeText as="span" text={`${lblText}`} className={`${styles.referoLabelSafetext} referoLabelSafetext`} />
-            {!isRequired(item) && !isReadOnly(item) && (
-              <span className={`${styles.LabelOptionalText} LabelOptionalText`}>{` ${resources?.formOptional || ` (Valgfritt)`}`}</span>
+            {!isRequired(item) && !isReadOnly(item) ? (
+              <span
+                className={`${styles.LabelOptionalText} LabelOptionalText`}
+              >{` ${dateLabel && dateLabel + ' '}${resources?.formOptional || ` (Valgfritt)`}`}</span>
+            ) : (
+              <span className={`${styles.LabelOptionalText} LabelOptionalText`}>{` ${dateLabel && dateLabel}`}</span>
             )}
           </div>
         </Label>

@@ -317,6 +317,7 @@ export const getResources = (language: string): Resources => {
     attachmentError_fileType: 'Tillatte filtyper er:',
     dateError_invalid: 'Ugyldig dato',
     dateError_time_invalid: 'Ugyldig klokkeslett',
+    dateFormat_ddmmyyyy: '(dd.mm.åååå)',
     dateLabel_january: 'Januar',
     dateLabel_february: 'Februar',
     dateLabel_march: 'Mars',
