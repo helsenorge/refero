@@ -44,7 +44,7 @@ const Boolean = (props: Props): JSX.Element | null => {
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
   const { onRenderMarkdown, promptLoginMessage, onAnswerChange, resources } = useExternalRenderContext();
   const [isHelpVisible, setIsHelpVisible] = useState(false);
-  const answer = useGetAnswer(responseItem, item);
+  const answer = useGetAnswer(linkId, path);
   const getValue = (): boolean => {
     if (answer && Array.isArray(answer)) {
       return answer.map(m => m.valueBoolean).filter(f => f !== undefined)[0] ?? false;

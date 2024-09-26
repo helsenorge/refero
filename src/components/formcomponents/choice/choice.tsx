@@ -1,4 +1,4 @@
-import { Coding, QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
+import { Coding, QuestionnaireItem } from 'fhir/r4';
 import { ThunkDispatch } from 'redux-thunk';
 
 import CheckboxView from './checkbox-view';
@@ -27,7 +27,7 @@ import { useGetAnswer } from '@/hooks/useGetAnswer';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 import { useCallback, useEffect, useMemo } from 'react';
-import { findQuestionnaireItem, getResponseItemWithPathSelector } from '@/reducers/selectors';
+import { findQuestionnaireItem } from '@/reducers/selectors';
 
 export type ChoiceProps = QuestionnaireComponentItemProps;
 
@@ -35,12 +35,10 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
   const { containedResources, path, id, pdf, linkId, children } = props;
 
   const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
-  const responseItem = useSelector<GlobalState, QuestionnaireResponseItem | undefined>(state =>
-    getResponseItemWithPathSelector(state, path)
-  );
+
   const { promptLoginMessage, onAnswerChange, resources } = useExternalRenderContext();
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
-  const answer = useGetAnswer(responseItem, item);
+  const answer = useGetAnswer(linkId, path);
   useEffect(() => {
     if (!Array.isArray(answer) && answer?.valueCoding?.code && !answer?.valueCoding?.display) {
       if (answer?.valueCoding?.code === item?.initial?.[0]?.valueCoding?.code) {

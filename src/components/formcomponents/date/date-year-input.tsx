@@ -1,4 +1,4 @@
-import { QuestionnaireItem, QuestionnaireResponseItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { Controller, FieldError, FieldValues, useFormContext } from 'react-hook-form';
 import styles from '../common-styles.module.css';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
@@ -18,7 +18,7 @@ import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 import { useMinMaxDate } from './useMinMaxDate';
 import { useSelector } from 'react-redux';
-import { findQuestionnaireItem, getResponseItemWithPathSelector } from '@/reducers/selectors';
+import { findQuestionnaireItem } from '@/reducers/selectors';
 import { GlobalState } from '@/reducers';
 import { initialize } from '@/util/date-fns-utils';
 
@@ -29,14 +29,12 @@ type Props = QuestionnaireComponentItemProps & {
 export const DateYearInput = (props: Props): JSX.Element | null => {
   const { id, pdf, linkId, onDateValueChange, idWithLinkIdAndItemIndex, children, path } = props;
   const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
-  const responseItem = useSelector<GlobalState, QuestionnaireResponseItem | undefined>(state =>
-    getResponseItemWithPathSelector(state, path)
-  );
+
   initialize();
 
   const { formState, getFieldState, control } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
-  const answer = useGetAnswer(responseItem, item);
+  const answer = useGetAnswer(linkId, path);
   const { resources } = useExternalRenderContext();
   const { error } = fieldState;
   const [isHelpVisible, setIsHelpVisible] = useState(false);

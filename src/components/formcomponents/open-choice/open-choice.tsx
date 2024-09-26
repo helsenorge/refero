@@ -1,6 +1,6 @@
 import { FocusEvent, useCallback, useMemo } from 'react';
 
-import { QuestionnaireResponseItemAnswer, Coding, QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
+import { QuestionnaireResponseItemAnswer, Coding, QuestionnaireItem } from 'fhir/r4';
 import { ThunkDispatch } from 'redux-thunk';
 
 import CheckboxView from './checkbox-view';
@@ -37,19 +37,17 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
-import { findQuestionnaireItem, getResponseItemWithPathSelector } from '@/reducers/selectors';
+import { findQuestionnaireItem } from '@/reducers/selectors';
 
 export type OpenChoiceProps = QuestionnaireComponentItemProps;
 
 export const OpenChoice = (props: OpenChoiceProps): JSX.Element | null => {
   const { id, pdf, linkId, containedResources, path, children } = props;
   const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
-  const responseItem = useSelector<GlobalState, QuestionnaireResponseItem | undefined>(state =>
-    getResponseItemWithPathSelector(state, path)
-  );
+
   const { promptLoginMessage, onAnswerChange, resources } = useExternalRenderContext();
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
-  const answer = useGetAnswer(responseItem, item);
+  const answer = useGetAnswer(linkId, path);
   const itemControlValue = useMemo(() => getItemControlValue(item), [item]);
   const options = useMemo(() => getOptions(resources, item, containedResources), [resources, item, containedResources]);
   const getDataReceiverValue = useCallback((answerList: QuestionnaireResponseItemAnswer[]): string[] | undefined => {

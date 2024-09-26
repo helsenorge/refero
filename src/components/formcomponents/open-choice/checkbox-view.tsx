@@ -42,7 +42,7 @@ const CheckboxView = (props: Props): JSX.Element | null => {
   const responseItem = useSelector<GlobalState, QuestionnaireResponseItem | undefined>(state =>
     getResponseItemWithPathSelector(state, path)
   );
-  const answer = useGetAnswer(responseItem, item);
+  const answer = useGetAnswer(linkId, path);
   const [isHelpVisible, setIsHelpVisible] = useState(false);
   const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, {
     required: required({ item, resources }),

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import styles2 from '../common-styles.module.css';
 import { format } from 'date-fns';
-import { QuestionnaireItem, QuestionnaireResponseItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { Controller, FieldError, FieldValues, useFormContext } from 'react-hook-form';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
@@ -27,7 +27,7 @@ import styles from '../../../styles/date-year-month.module.css';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 import { GlobalState } from '@/reducers';
 import { useSelector } from 'react-redux';
-import { findQuestionnaireItem, getResponseItemWithPathSelector } from '@/reducers/selectors';
+import { findQuestionnaireItem } from '@/reducers/selectors';
 import { initialize } from '@/util/date-fns-utils';
 
 type DateMonthProps = QuestionnaireComponentItemProps & {
@@ -47,12 +47,9 @@ export const DateYearMonthInput = ({
   initialize();
 
   const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
-  const responseItem = useSelector<GlobalState, QuestionnaireResponseItem | undefined>(state =>
-    getResponseItemWithPathSelector(state, path)
-  );
 
   const { setValue, formState, getFieldState, getValues } = useFormContext<FieldValues>();
-  const answer = useGetAnswer(responseItem, item);
+  const answer = useGetAnswer(linkId, path);
   const { resources } = useExternalRenderContext();
   const { minDateTime, maxDateTime } = useMinMaxDate(item);
 

@@ -39,7 +39,7 @@ const Integer = (props: Props): JSX.Element | null => {
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
   const [isHelpVisible, setIsHelpVisible] = useState(false);
-  const answer = useGetAnswer(responseItem, item);
+  const answer = useGetAnswer(linkId, path);
   const getValue = (): string | number | number[] | undefined => {
     if (answer && Array.isArray(answer)) {
       return answer.map(m => m.valueInteger).filter(f => f !== undefined);

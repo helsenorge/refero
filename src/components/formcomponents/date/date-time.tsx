@@ -50,7 +50,7 @@ const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, childr
   const responseItem = useSelector<GlobalState, QuestionnaireResponseItem | undefined>(state =>
     getResponseItemWithPathSelector(state, path)
   );
-  const answer = useGetAnswer(responseItem, item);
+  const answer = useGetAnswer(linkId, path);
   const [isHelpVisible, setIsHelpVisible] = useState(false);
   const { formState, getFieldState, setValue } = useFormContext<FieldValues>();
   const dateField = getFieldState(`${idWithLinkIdAndItemIndex}-date`, formState);

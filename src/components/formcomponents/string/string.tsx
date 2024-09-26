@@ -41,7 +41,7 @@ export const String = (props: Props): JSX.Element | null => {
   const { error } = fieldState;
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
   const [isHelpVisible, setIsHelpVisible] = useState(false);
-  const answer = useGetAnswer(responseItem, item);
+  const answer = useGetAnswer(linkId, path);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     const value = event.target.value;
@@ -105,8 +105,14 @@ export const String = (props: Props): JSX.Element | null => {
           placeholder={getPlaceholder(item)}
           className="page_refero__input"
         />
-        <RenderDeleteButton item={item} path={path} index={index} className="page_refero__deletebutton--margin-top" />
-        <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} />
+        <RenderDeleteButton
+          item={item}
+          path={path}
+          index={index}
+          responseItem={responseItem}
+          className="page_refero__deletebutton--margin-top"
+        />
+        <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} responseItem={responseItem} />
       </FormGroup>
 
       {children && <div className="nested-fieldset nested-fieldset--full-height">{children}</div>}

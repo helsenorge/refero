@@ -42,7 +42,7 @@ const Quantity = (props: Props): JSX.Element | null => {
 
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
   const [isHelpVisible, setIsHelpVisible] = useState(false);
-  const answer = useGetAnswer(responseItem, item);
+  const answer = useGetAnswer(linkId, path);
 
   const getValue = (
     answer?: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]

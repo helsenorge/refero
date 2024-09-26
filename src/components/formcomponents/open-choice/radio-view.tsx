@@ -44,7 +44,7 @@ const RadioView = (props: Props): JSX.Element | null => {
   );
 
   const selectedValue = (selected && selected[0]) || '';
-  const answer = useGetAnswer(responseItem, item);
+  const answer = useGetAnswer(linkId, path);
 
   const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, {
     required: required({ item, resources }),

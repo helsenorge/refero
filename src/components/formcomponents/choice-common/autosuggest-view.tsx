@@ -44,7 +44,7 @@ const AutosuggestView = (props: AutosuggestProps): JSX.Element | null => {
   );
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
-  const answer = useGetAnswer(responseItem, item);
+  const answer = useGetAnswer(linkId, path);
   const { fetchValueSet, autoSuggestProps, resources } = useExternalRenderContext();
 
   const codingAnswer = getCodingAnswer(answer);

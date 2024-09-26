@@ -9,24 +9,24 @@ import { Resources } from '@/util/resources';
 
 import { GlobalState } from '@/reducers';
 import { useSelector } from 'react-redux';
-import { getFlatMapResponseItemsForItemSelector, getResponseItemWithPathSelector } from '@/reducers/selectors';
+import { getFlatMapResponseItemsForItemSelector } from '@/reducers/selectors';
 
 const RenderRepeatButton = ({
   item,
   index,
   path,
+  responseItem,
 }: {
   item?: QuestionnaireItem;
   index?: number;
   path: Path[];
+  responseItem?: QuestionnaireResponseItem;
   resources?: Resources;
 }): JSX.Element | null => {
   const responseItems = useSelector<GlobalState, QuestionnaireResponseItem[] | undefined>(state =>
     getFlatMapResponseItemsForItemSelector(state, item?.linkId, path)
   );
-  const responseItem = useSelector<GlobalState, QuestionnaireResponseItem | undefined>(state =>
-    getResponseItemWithPathSelector(state, path)
-  );
+
   if (!item?.repeats || !shouldRenderRepeatButton(item, responseItems, index)) {
     return null;
   }

@@ -42,7 +42,7 @@ const DropdownView = (props: Props): JSX.Element | null => {
     getResponseItemWithPathSelector(state, path)
   );
   const { resources } = useExternalRenderContext();
-  const answer = useGetAnswer(responseItem, item);
+  const answer = useGetAnswer(linkId, path);
   const onChange = (e: React.ChangeEvent<HTMLSelectElement>): void => {
     handleChange(e.target.value);
   };

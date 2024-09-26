@@ -31,7 +31,7 @@ const DateComponent = (props: DateProps): JSX.Element | null => {
     getResponseItemWithPathSelector(state, path)
   );
 
-  const answer = useGetAnswer(responseItem, item);
+  const answer = useGetAnswer(linkId, path);
   const { promptLoginMessage, onAnswerChange } = useExternalRenderContext();
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
   const itemControls = useMemo(() => getItemControlExtensionValue(item), [item]);

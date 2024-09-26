@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import { format, isValid } from 'date-fns';
-import { QuestionnaireItem, QuestionnaireResponseItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { Controller, FieldError, FieldValues, useFormContext } from 'react-hook-form';
 import styles from '../common-styles.module.css';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
@@ -31,7 +31,7 @@ import { useMinMaxDate } from './useMinMaxDate';
 import { initialize } from '@/util/date-fns-utils';
 import { GlobalState } from '@/reducers';
 import { useSelector } from 'react-redux';
-import { findQuestionnaireItem, getResponseItemWithPathSelector } from '@/reducers/selectors';
+import { findQuestionnaireItem } from '@/reducers/selectors';
 
 type DateDayInputProps = QuestionnaireComponentItemProps & {
   locale: LanguageLocales.ENGLISH | LanguageLocales.NORWEGIAN;
@@ -49,14 +49,12 @@ export const DateDayInput = ({
 }: DateDayInputProps): JSX.Element | null => {
   initialize();
   const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
-  const responseItem = useSelector<GlobalState, QuestionnaireResponseItem | undefined>(state =>
-    getResponseItemWithPathSelector(state, path)
-  );
+
   const [isHelpVisible, setIsHelpVisible] = useState(false);
   const { formState, getFieldState } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
-  const answer = useGetAnswer(responseItem, item);
+  const answer = useGetAnswer(linkId, path);
   const { minDateTime, maxDateTime } = useMinMaxDate(item);
   const { resources } = useExternalRenderContext();
 

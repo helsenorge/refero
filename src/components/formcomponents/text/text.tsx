@@ -46,7 +46,7 @@ export const Text = (props: Props): JSX.Element | null => {
   const { error } = fieldState;
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
   const [isHelpVisible, setIsHelpVisible] = useState(false);
-  const answer = useGetAnswer(responseItem, item);
+  const answer = useGetAnswer(linkId, path);
   const handleChange = (event: React.FormEvent): void => {
     const value = (event.target as HTMLInputElement).value;
     if (dispatch && path && item) {

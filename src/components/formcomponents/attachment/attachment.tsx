@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { Attachment, QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
+import { Attachment, QuestionnaireItem } from 'fhir/r4';
 import { ThunkDispatch } from 'redux-thunk';
 
 import { UploadFile } from '@helsenorge/file-upload/components/file-upload';
@@ -17,7 +17,7 @@ import { useAttachmentContext } from '@/context/AttachmentContext';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 import { TextMessage } from '@/types/text-message';
-import { findQuestionnaireItem, getResponseItemWithPathSelector } from '@/reducers/selectors';
+import { findQuestionnaireItem } from '@/reducers/selectors';
 
 export type Props = QuestionnaireComponentItemProps & {
   children?: React.ReactNode;
@@ -29,9 +29,7 @@ type UploadedFile = {
 export const AttachmentComponent = (props: Props): JSX.Element | null => {
   const { path, pdf, id, linkId, children } = props;
   const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
-  const responseItem = useSelector<GlobalState, QuestionnaireResponseItem | undefined>(state =>
-    getResponseItemWithPathSelector(state, path)
-  );
+
   const [customErrorMessage, setCustomErrorMessage] = useState<TextMessage | undefined>(undefined);
   const {
     onOpenAttachment,
@@ -43,7 +41,7 @@ export const AttachmentComponent = (props: Props): JSX.Element | null => {
     uploadAttachment,
   } = useAttachmentContext();
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
-  const answer = useGetAnswer(responseItem, item);
+  const answer = useGetAnswer(linkId, path);
 
   const { onAnswerChange, resources } = useExternalRenderContext();
 
