@@ -11,6 +11,7 @@ import { GlobalState } from '@/reducers';
 import { Path } from '@/util/refero-core';
 import { getComponentForItem, getResponseItems } from './utils';
 import { RenderResponseItems } from './RenderResponseItems';
+import { useCheckIfEnabled } from '@/hooks/useIsEnabled';
 
 export type QuestionnaireComponentItemProps = {
   containedResources?: Resource[];
@@ -37,8 +38,8 @@ export type QuestionnaireItemsProps = {
 };
 
 const GenerateQuestionnaireComponents = (props: QuestionnaireItemsProps): JSX.Element | null => {
-  const { items, path = [], pdf = false, renderContext = new RenderContext(), headerTag } = props;
-
+  const { items, path, pdf = false, renderContext = new RenderContext(), headerTag } = props;
+  const checkIfEnabled = useCheckIfEnabled();
   const formDefinition = useSelector((state: GlobalState) => getFormDefinition(state), shallowEqual);
   const formData = useSelector((state: GlobalState) => getFormData(state), shallowEqual);
 
@@ -63,7 +64,7 @@ const GenerateQuestionnaireComponents = (props: QuestionnaireItemsProps): JSX.El
           return null;
         }
 
-        const responseItems = getResponseItems(item, formData, path);
+        const responseItems = useMemo(() => getResponseItems(item, formData, path), [path, item, formData]);
         if (!responseItems || responseItems.length === 0) {
           return null;
         }
@@ -76,6 +77,7 @@ const GenerateQuestionnaireComponents = (props: QuestionnaireItemsProps): JSX.El
             path={path}
             ItemComponent={ItemComponent}
             language={language}
+            checkIfEnabled={checkIfEnabled}
             containedResources={containedResources}
             renderContext={renderContext}
             pdf={pdf}

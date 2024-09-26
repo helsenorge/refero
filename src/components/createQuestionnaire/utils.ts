@@ -28,7 +28,7 @@ export const getResponseItems = (
   formData?: FormData | null,
   path?: Path[]
 ): QuestionnaireResponseItem[] | undefined => {
-  if (!formData || !formData.Content || !formData.Content.item || !path) {
+  if (!formData || !formData.Content || !formData.Content.item) {
     return undefined;
   }
   const responseItemsFromData = getRootQuestionnaireResponseItemFromData(item?.linkId, formData);
@@ -56,7 +56,7 @@ export const getResponseItems = (
     return matchingItems;
   }
 };
-function getResponseItemWithPath(path: Path[], items: QuestionnaireResponseItem[]): QuestionnaireResponseItem | undefined {
+function getResponseItemWithPath(path: Path[] = [], items: QuestionnaireResponseItem[]): QuestionnaireResponseItem | undefined {
   let currentItems = items;
   let responseItem: QuestionnaireResponseItem | undefined;
 

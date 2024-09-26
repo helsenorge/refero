@@ -456,7 +456,7 @@ export function extractLinkIdFromUniqueId(uniqueId: string): string {
 
   return linkId;
 }
-export function createPathForItem(path: Path[] | undefined, item: QuestionnaireItem, index: number | undefined): Path[] {
+export function createPathForItem(path?: Path[] | undefined, item?: QuestionnaireItem, index?: number | undefined): Path[] {
   let newPath: Path[];
   if (path === null || path === undefined) {
     newPath = [];

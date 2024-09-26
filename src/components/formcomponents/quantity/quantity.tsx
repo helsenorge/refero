@@ -17,7 +17,6 @@ import TextView from '../textview';
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { useDispatch, useSelector } from 'react-redux';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
-import { useIsEnabled } from '@/hooks/useIsEnabled';
 import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelpButton';
 import RenderHelpElement from '@/components/formcomponents/help-button/RenderHelpElement';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
@@ -44,7 +43,6 @@ const Quantity = (props: Props): JSX.Element | null => {
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
   const [isHelpVisible, setIsHelpVisible] = useState(false);
   const answer = useGetAnswer(responseItem, item);
-  const enable = useIsEnabled(item, path);
 
   const getValue = (
     answer?: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]
@@ -102,9 +100,7 @@ const Quantity = (props: Props): JSX.Element | null => {
     }
     return '';
   };
-  if (!enable) {
-    return null;
-  }
+
   if (pdf || isReadOnly(item)) {
     return (
       <TextView id={id} item={item} value={getPDFValue()}>

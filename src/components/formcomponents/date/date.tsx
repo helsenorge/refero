@@ -18,7 +18,6 @@ import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
-import { useIsEnabled } from '@/hooks/useIsEnabled';
 import { useCallback, useMemo } from 'react';
 import { findQuestionnaireItem, getResponseItemWithPathSelector } from '@/reducers/selectors';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
@@ -31,7 +30,6 @@ const DateComponent = (props: DateProps): JSX.Element | null => {
   const responseItem = useSelector<GlobalState, QuestionnaireResponseItem | undefined>(state =>
     getResponseItemWithPathSelector(state, path)
   );
-  const enable = useIsEnabled(item, path);
 
   const answer = useGetAnswer(responseItem, item);
   const { promptLoginMessage, onAnswerChange } = useExternalRenderContext();
@@ -66,9 +64,7 @@ const DateComponent = (props: DateProps): JSX.Element | null => {
       return <DateDayInput {...props} locale={locale} onDateValueChange={onDateValueChange} />;
     }
   }, [itemControls, locale, onDateValueChange, props]);
-  if (!enable) {
-    return null;
-  }
+
   if (!element) {
     return null;
   }

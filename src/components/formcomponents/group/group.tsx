@@ -2,7 +2,6 @@ import AsPdf from './AsPdf';
 import { getLocalRenderContextType, isDirectChildOfRenderContextOwner } from './helpers';
 import { RenderContextType } from '@/constants/renderContextType';
 
-import { useIsEnabled } from '@/hooks/useIsEnabled';
 import { useState } from 'react';
 
 import ContextTypeGrid from './ContextTypeGrid';
@@ -22,11 +21,8 @@ export const Group = (props: Props): JSX.Element | null => {
   const responseItem = useSelector<GlobalState, QuestionnaireResponseItem | undefined>(state =>
     getResponseItemWithPathSelector(state, path)
   );
-  const enable = useIsEnabled(item, path);
   const [isHelpVisible, setIsHelpVisible] = useState(false);
-  if (!enable) {
-    return null;
-  }
+
   const isLocalRenderContextTypeGrid = getLocalRenderContextType(item) === RenderContextType.Grid;
   const isRenderContextTypeGrid = renderContext.RenderContextType === RenderContextType.Grid;
   return (

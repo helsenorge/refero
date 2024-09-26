@@ -15,7 +15,6 @@ import TextView from '../textview';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
-import { useIsEnabled } from '@/hooks/useIsEnabled';
 import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelpButton';
 import RenderHelpElement from '@/components/formcomponents/help-button/RenderHelpElement';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
@@ -44,8 +43,6 @@ export const String = (props: Props): JSX.Element | null => {
   const [isHelpVisible, setIsHelpVisible] = useState(false);
   const answer = useGetAnswer(responseItem, item);
 
-  const enable = useIsEnabled(item, path);
-
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     const value = event.target.value;
     if (dispatch && path && item) {
@@ -59,9 +56,6 @@ export const String = (props: Props): JSX.Element | null => {
     }
   };
 
-  if (!enable) {
-    return null;
-  }
   if (pdf || isReadOnly(item)) {
     return (
       <TextView id={id} item={item} value={getPDFStringValue(answer, resources)} textClass="page_refero__component_readonlytext">

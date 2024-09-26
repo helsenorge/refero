@@ -37,7 +37,6 @@ import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 import { useMinMaxDate } from './useMinMaxDate';
-import { useIsEnabled } from '@/hooks/useIsEnabled';
 import { findQuestionnaireItem, getResponseItemWithPathSelector } from '@/reducers/selectors';
 
 export type Props = QuestionnaireComponentItemProps;
@@ -58,7 +57,6 @@ const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, childr
   const hoursField = getFieldState(`${idWithLinkIdAndItemIndex}-hours`, formState);
   const minutesField = getFieldState(`${idWithLinkIdAndItemIndex}-minutes`, formState);
   const { minDateTime, maxDateTime } = useMinMaxDate(item);
-  const enable = useIsEnabled(item);
 
   const getDateAnswerValue = (
     answer?: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[] | undefined
@@ -82,9 +80,6 @@ const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, childr
     return item.initial[0].valueDate;
   };
 
-  if (!enable) {
-    return null;
-  }
   const dateAnswerValue = getDateAnswerValue(answer);
   const date: Date | string | undefined = parseStringToDate(dateAnswerValue);
 

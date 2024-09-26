@@ -35,7 +35,6 @@ import AutosuggestView from '../choice-common/autosuggest-view';
 import TextView from '../textview';
 import { useDispatch, useSelector } from 'react-redux';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
-import { useIsEnabled } from '@/hooks/useIsEnabled';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 import { findQuestionnaireItem, getResponseItemWithPathSelector } from '@/reducers/selectors';
@@ -51,7 +50,6 @@ export const OpenChoice = (props: OpenChoiceProps): JSX.Element | null => {
   const { promptLoginMessage, onAnswerChange, resources } = useExternalRenderContext();
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
   const answer = useGetAnswer(responseItem, item);
-  const enable = useIsEnabled(item, path);
   const itemControlValue = useMemo(() => getItemControlValue(item), [item]);
   const options = useMemo(() => getOptions(resources, item, containedResources), [resources, item, containedResources]);
   const getDataReceiverValue = useCallback((answerList: QuestionnaireResponseItemAnswer[]): string[] | undefined => {
@@ -247,10 +245,6 @@ export const OpenChoice = (props: OpenChoiceProps): JSX.Element | null => {
     () => hasCanonicalValueSet(item) && itemControlValue === ItemControlConstants.AUTOCOMPLETE,
     [item, itemControlValue]
   );
-
-  if (!enable) {
-    return null;
-  }
 
   if (pdf || isReadOnly(item)) {
     return (

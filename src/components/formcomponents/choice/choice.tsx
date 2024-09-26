@@ -24,7 +24,6 @@ import ReceiverComponentWrapper from '../receiver-component/receiver-component-w
 import TextView from '../textview';
 import { useDispatch, useSelector } from 'react-redux';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
-import { useIsEnabled } from '@/hooks/useIsEnabled';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 import { useCallback, useEffect, useMemo } from 'react';
@@ -42,7 +41,6 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
   const { promptLoginMessage, onAnswerChange, resources } = useExternalRenderContext();
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
   const answer = useGetAnswer(responseItem, item);
-  const enable = useIsEnabled(item, path);
   useEffect(() => {
     if (!Array.isArray(answer) && answer?.valueCoding?.code && !answer?.valueCoding?.display) {
       if (answer?.valueCoding?.code === item?.initial?.[0]?.valueCoding?.code) {
@@ -192,8 +190,6 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
   );
 
   const aboveDropdownThreshold = useMemo(() => isAboveDropdownThreshold(options), [options]);
-
-  if (!enable) return null;
 
   if (pdf || isReadOnly(item)) {
     return (

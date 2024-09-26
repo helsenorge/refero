@@ -17,7 +17,6 @@ import { getStringAnswer, hasStringAnswer, getCodingAnswer } from '@/util/refero
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
-import { useIsEnabled } from '@/hooks/useIsEnabled';
 import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelpButton';
 import RenderHelpElement from '@/components/formcomponents/help-button/RenderHelpElement';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
@@ -46,7 +45,6 @@ const AutosuggestView = (props: AutosuggestProps): JSX.Element | null => {
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
   const answer = useGetAnswer(responseItem, item);
-  const enable = useIsEnabled(item, path);
   const { fetchValueSet, autoSuggestProps, resources } = useExternalRenderContext();
 
   const codingAnswer = getCodingAnswer(answer);
@@ -172,9 +170,7 @@ const AutosuggestView = (props: AutosuggestProps): JSX.Element | null => {
       setNoSuggestionsToShow(false);
     }
   };
-  if (!enable) {
-    return null;
-  }
+
   const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, {
     required: required({ item, resources }),
     shouldUnregister: true,

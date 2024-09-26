@@ -13,7 +13,6 @@ import { isRequired, getId, isReadOnly, isRepeat } from '@/util/index';
 import TextView from '../textview';
 import { useDispatch, useSelector } from 'react-redux';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
-import { useIsEnabled } from '@/hooks/useIsEnabled';
 import { useAttachmentContext } from '@/context/AttachmentContext';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
@@ -44,7 +43,6 @@ export const AttachmentComponent = (props: Props): JSX.Element | null => {
     uploadAttachment,
   } = useAttachmentContext();
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
-  const enable = useIsEnabled(item, path);
   const answer = useGetAnswer(responseItem, item);
 
   const { onAnswerChange, resources } = useExternalRenderContext();
@@ -129,9 +127,6 @@ export const AttachmentComponent = (props: Props): JSX.Element | null => {
     return '';
   };
 
-  if (!enable) {
-    return null;
-  }
   if (pdf || isReadOnly(item)) {
     return (
       <TextView id={id} item={item} value={getPdfValue()}>

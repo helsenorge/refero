@@ -13,7 +13,6 @@ import { isReadOnly, getId, getSublabelText, getLabelText } from '@/util/index';
 import SafeText from '../../referoLabel/SafeText';
 import { useDispatch, useSelector } from 'react-redux';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
-import { useIsEnabled } from '@/hooks/useIsEnabled';
 import RenderHelpElement from '@/components/formcomponents/help-button/RenderHelpElement';
 import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelpButton';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
@@ -44,7 +43,6 @@ const Boolean = (props: Props): JSX.Element | null => {
 
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
   const { onRenderMarkdown, promptLoginMessage, onAnswerChange, resources } = useExternalRenderContext();
-  const enable = useIsEnabled(item, path);
   const [isHelpVisible, setIsHelpVisible] = useState(false);
   const answer = useGetAnswer(responseItem, item);
   const getValue = (): boolean => {
@@ -77,9 +75,7 @@ const Boolean = (props: Props): JSX.Element | null => {
   const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
   const labelText = getLabelText(item, onRenderMarkdown, questionnaire, resources);
   const value = getValue();
-  if (!enable) {
-    return null;
-  }
+
   if (pdf) {
     return <Pdf item={item} checked={getValue()} />;
   } else if (isReadOnly(item)) {

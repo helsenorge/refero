@@ -10,7 +10,7 @@ import constants, { NAVIGATOR_BLINDZONE_ID } from '@/constants';
 type RenderResponseItemsProps = {
   item: QuestionnaireItem;
   responseItems: QuestionnaireResponseItem[];
-  path: Path[];
+  path?: Path[];
   ItemComponent: React.ComponentType<QuestionnaireComponentItemProps>;
   language?: string;
   containedResources?: Resource[];
@@ -18,6 +18,7 @@ type RenderResponseItemsProps = {
   pdf?: boolean;
   isNavigatorEnabled: boolean;
   headerTag?: number;
+  checkIfEnabled: (item?: QuestionnaireItem, path?: Path[]) => boolean;
 };
 
 export const RenderResponseItems = ({
@@ -31,59 +32,65 @@ export const RenderResponseItems = ({
   pdf,
   isNavigatorEnabled,
   headerTag,
-}: RenderResponseItemsProps): JSX.Element[] => {
+  checkIfEnabled,
+}: RenderResponseItemsProps): JSX.Element[] | null => {
   let isNavigatorBlindzoneInitiated = false;
 
-  return responseItems.map((responseItem, index) => {
-    const newPath = createPathForItem(path, item, index);
-    const idWithLinkIdAndItemIndex = `${item.linkId}${createIdSuffix(newPath, index, isRepeat(item))}`;
-    const key = `item_${responseItem.linkId}_${index}`;
-    const id = `item_${responseItem.linkId}${createIdSuffix(newPath, index, isRepeat(item))}`;
+  return responseItems
+    .map((responseItem, index) => {
+      const newPath = createPathForItem(path, item, index);
 
-    let blindzone: JSX.Element | null = null;
-    let includeSkipLink = false;
-    let newHeaderTag = headerTag;
-
-    if (item.type === ItemType.GROUP) {
-      if (headerTag !== undefined) {
-        newHeaderTag = getChildHeaderTag(item, headerTag);
-      } else {
-        newHeaderTag = constants.DEFAULT_HEADER_TAG;
+      if (!checkIfEnabled(item, newPath)) {
+        return null;
       }
-    }
+      const idWithLinkIdAndItemIndex = `${item.linkId}${createIdSuffix(newPath, index, isRepeat(item))}`;
+      const id = `item_${responseItem.linkId}${createIdSuffix(newPath, index, isRepeat(item))}`;
 
-    if (isNavigatorEnabled && !isNavigatorBlindzoneInitiated) {
-      isNavigatorBlindzoneInitiated = true;
-      blindzone = <section id={NAVIGATOR_BLINDZONE_ID} tabIndex={-1} />;
-      includeSkipLink = item.type === ItemType.GROUP;
-    }
+      let blindzone: JSX.Element | null = null;
+      let includeSkipLink = false;
+      let newHeaderTag = headerTag;
 
-    return (
-      <ItemComponent
-        key={key}
-        idWithLinkIdAndItemIndex={idWithLinkIdAndItemIndex}
-        language={language}
-        includeSkipLink={includeSkipLink}
-        containedResources={containedResources}
-        id={id}
-        linkId={item.linkId}
-        path={newPath}
-        headerTag={newHeaderTag}
-        index={index}
-        renderContext={renderContext}
-        pdf={pdf}
-        blindzone={blindzone}
-      >
-        {item.item && (
-          <GenerateQuestionnaireComponents
-            items={item.item}
-            path={newPath}
-            pdf={pdf}
-            renderContext={renderContext}
-            headerTag={newHeaderTag}
-          />
-        )}
-      </ItemComponent>
-    );
-  });
+      if (item.type === ItemType.GROUP) {
+        if (headerTag !== undefined) {
+          newHeaderTag = getChildHeaderTag(item, headerTag);
+        } else {
+          newHeaderTag = constants.DEFAULT_HEADER_TAG;
+        }
+      }
+
+      if (isNavigatorEnabled && !isNavigatorBlindzoneInitiated) {
+        isNavigatorBlindzoneInitiated = true;
+        blindzone = <section id={NAVIGATOR_BLINDZONE_ID} tabIndex={-1} />;
+        includeSkipLink = item.type === ItemType.GROUP;
+      }
+
+      return (
+        <ItemComponent
+          key={id}
+          idWithLinkIdAndItemIndex={idWithLinkIdAndItemIndex}
+          language={language}
+          includeSkipLink={includeSkipLink}
+          containedResources={containedResources}
+          id={id}
+          linkId={item.linkId}
+          path={newPath}
+          headerTag={newHeaderTag}
+          index={index}
+          renderContext={renderContext}
+          pdf={pdf}
+          blindzone={blindzone}
+        >
+          {item.item && (
+            <GenerateQuestionnaireComponents
+              items={item.item}
+              path={newPath}
+              pdf={pdf}
+              renderContext={renderContext}
+              headerTag={newHeaderTag}
+            />
+          )}
+        </ItemComponent>
+      );
+    })
+    .filter(component => component !== null);
 };

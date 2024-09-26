@@ -5,7 +5,6 @@ import { getItemControlExtensionValue, getMarkdownExtensionValue } from '@/util/
 import { renderPrefix, getText, getId } from '@/util/index';
 
 import SafeText from '@/components/referoLabel/SafeText';
-import { useIsEnabled } from '@/hooks/useIsEnabled';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { useSelector } from 'react-redux';
@@ -23,14 +22,11 @@ const Display = ({ id, pdf, path, linkId }: Props): JSX.Element | null => {
   const formDefinition = useSelector((state: GlobalState) => getFormDefinition(state));
   const questionnaire = formDefinition?.Content;
   const itemControls = item ? getItemControlExtensionValue(item) : null;
-  const enable = useIsEnabled(item, path);
   const highlightClass =
     itemControls && itemControls.some(itemControl => itemControl.code === itemControlConstants.HIGHLIGHT)
       ? 'page_refero__component_highlight'
       : '';
-  if (!enable) {
-    return null;
-  }
+
   let value: JSX.Element | undefined = undefined;
   if (item) {
     const markdown = item._text ? getMarkdownExtensionValue(item._text) : undefined;

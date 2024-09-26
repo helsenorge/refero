@@ -16,16 +16,19 @@ import { IStandardTable } from './interface';
 import { StandardTableHeader } from './StandardTableHeader';
 import { getDisplayToSortBy, getStandardTableObject } from './utils';
 import { transformCodingToSortDirection } from '../utils';
+import { useSelector } from 'react-redux';
+import { GlobalState } from '@/reducers';
+import { containedResourceSelector } from '../../tableSelector';
 
 interface Props {
   items: QuestionnaireItem[];
   tableCodesCoding: Coding[];
   questionnaireResponse?: QuestionnaireResponse | null;
-  resource?: Resource[];
 }
 
-export const StandardTable = ({ items, questionnaireResponse, resource, tableCodesCoding }: Props): JSX.Element => {
+export const StandardTable = ({ items, questionnaireResponse, tableCodesCoding }: Props): JSX.Element => {
   const displayToSortBy = getDisplayToSortBy(tableCodesCoding);
+  const resource = useSelector<GlobalState, Resource[] | undefined>(containedResourceSelector);
 
   const [sortDir, setSortDir] = useState<SortDirection | undefined>(transformCodingToSortDirection(tableCodesCoding));
   const [table, setTable] = useState<IStandardTable>(

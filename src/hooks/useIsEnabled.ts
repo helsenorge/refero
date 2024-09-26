@@ -1,6 +1,5 @@
 import { GlobalState } from '@/reducers';
 import { FormData, getFormData } from '@/reducers/form';
-import { getAllResponseItems } from '@/reducers/selectors';
 import { QuestionnaireItemEnableBehaviorCodes } from '@/types/fhirEnums';
 import {
   enableWhenMatchesAnswer,
@@ -16,11 +15,10 @@ export function isEnableWhenEnabled(
   enableWhen: QuestionnaireItemEnableWhen[],
   enableBehavior: string | undefined,
   path: Path[],
-  formData: FormData | null
+  responseItems: QuestionnaireResponseItem[] | undefined
 ): boolean {
   const enableMatches: Array<boolean> = [];
   enableWhen.forEach((enableWhen: QuestionnaireItemEnableWhen) => {
-    const responseItems = getResponseItems(formData);
     const enableWhenQuestion = enableWhen.question;
     for (let i = 0; responseItems && i < responseItems.length; i++) {
       let responseItem: QuestionnaireResponseItem | undefined = responseItems[i];
@@ -45,12 +43,14 @@ export function isEnableWhenEnabled(
 
 export const useIsEnabled = (item?: QuestionnaireItem, path?: Path[]): boolean => {
   const formData = useSelector<GlobalState, FormData | null>(state => getFormData(state));
-  return !item || !item.enableWhen ? true : isEnableWhenEnabled(item.enableWhen, item.enableBehavior, path || [], formData);
+  return !item || !item.enableWhen
+    ? true
+    : isEnableWhenEnabled(item.enableWhen, item.enableBehavior, path || [], getResponseItems(formData));
 };
 
-// export const useCheckIfEnabled = (): ((item?: QuestionnaireItem, path?: Path[]) => boolean) => {
-//   const responseItems = useSelector<GlobalState, QuestionnaireResponseItem[]>(state => getAllResponseItems(state), shallowEqual);
-//   const checkIfEneabled = (item?: QuestionnaireItem, path?: Path[]): boolean =>
-//     !path || !item || !item.enableWhen ? true : isEnableWhenEnabled(item.enableWhen, item.enableBehavior, path, responseItems);
-//   return checkIfEneabled;
-// };
+export const useCheckIfEnabled = (): ((item?: QuestionnaireItem, path?: Path[]) => boolean) => {
+  const formData = useSelector<GlobalState, FormData | null>(state => getFormData(state));
+  const checkIfEneabled = (item?: QuestionnaireItem, path?: Path[]): boolean =>
+    !path || !item || !item.enableWhen ? true : isEnableWhenEnabled(item.enableWhen, item.enableBehavior, path, getResponseItems(formData));
+  return checkIfEneabled;
+};

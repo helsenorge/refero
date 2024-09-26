@@ -18,7 +18,6 @@ import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import RenderHelpButton from '../help-button/RenderHelpButton';
 import RenderHelpElement from '../help-button/RenderHelpElement';
 import TextView from '../textview';
-import { useIsEnabled } from '@/hooks/useIsEnabled';
 import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { findQuestionnaireItem, getResponseItemWithPathSelector } from '@/reducers/selectors';
 
@@ -31,7 +30,6 @@ const Time = ({ id, index, linkId, path, pdf, idWithLinkIdAndItemIndex, children
     getResponseItemWithPathSelector(state, path)
   );
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
-  const enable = useIsEnabled(item);
   const { formState, getFieldState, setValue, getValues, trigger } = useFormContext<FieldValues>();
   const hoursField = getFieldState(`${idWithLinkIdAndItemIndex}-hours`, formState);
   const minutesField = getFieldState(`${idWithLinkIdAndItemIndex}-minutes`, formState);
@@ -129,9 +127,6 @@ const Time = ({ id, index, linkId, path, pdf, idWithLinkIdAndItemIndex, children
     return `${'kl. '} ${hoursValue}:${minutesValue}`;
   };
 
-  if (!enable) {
-    return null;
-  }
   if (pdf || isReadOnly(item)) {
     return (
       <TextView id={id} item={item} value={getPDFValue()}>
