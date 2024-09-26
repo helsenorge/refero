@@ -179,6 +179,7 @@ const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, childr
         testId={`${getId(id)}-datetime-label`}
         sublabelId={`${getId(id)}-sublabel`}
         afterLabelContent={<RenderHelpButton isHelpVisible={isHelpVisible} item={item} setIsHelpVisible={setIsHelpVisible} />}
+        dateLabel={resources?.dateFormat_ddmmyyyy}
       />
       <RenderHelpElement isHelpVisible={isHelpVisible} item={item} />
       <DateTimePickerWrapper

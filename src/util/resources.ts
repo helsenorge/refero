@@ -428,6 +428,10 @@ export interface Resources {
    */
   dateError_time_invalid?: string;
   /**
+   * (dd.mm.åååå)
+   */
+  dateFormat_ddmmyyyy?: string;
+  /**
    * Januar
    */
   dateLabel_january?: string;

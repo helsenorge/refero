@@ -5,7 +5,6 @@ import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Input from '@helsenorge/designsystem-react/components/Input';
 
 import { getId, isReadOnly, isRequired } from '../../../util';
-import { createDateFromYear } from '../../../util/createDateFromYear';
 import { validateYearDigits, validateYearMax, validateYearMin } from '../../../util/date-utils';
 import { getValidationTextExtension } from '../../../util/extension';
 import TextView from '../textview';
@@ -39,28 +38,37 @@ export const DateYearInput = (props: Props): JSX.Element | null => {
   const { error } = fieldState;
   const [isHelpVisible, setIsHelpVisible] = useState(false);
   const { minDateTime, maxDateTime } = useMinMaxDate(item);
-  const getYear = (
-    answer: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[] | undefined
-  ): (number | undefined)[] | undefined => {
-    if (Array.isArray(answer)) {
-      return answer.map(m => createDateFromYear(item, m)?.getFullYear());
-    } else if (answer) {
-      const year = createDateFromYear(item, answer)?.getFullYear();
-      return [year];
+
+  const getYearValue = (answer?: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[] | undefined): string | undefined => {
+    const answerValue = Array.isArray(answer) ? answer[0] : answer;
+    if (answerValue && answerValue.valueDate) {
+      return answerValue.valueDate;
     }
+    if (!item || !item.initial || item.initial.length === 0) {
+      return undefined;
+    }
+    if (!item.initial[0].valueDate) {
+      return undefined;
+    }
+    return item.initial[0].valueDate;
   };
 
-  const onYearChange = (year: string | number | readonly string[] | undefined): void => {
-    !year ? '' : onDateValueChange(year.toString());
+  const onYearChange = (year: string | undefined): void => {
+    onDateValueChange(year ?? '');
   };
 
-  const getPDFValue = (): string => {
-    const ikkeBesvartText = resources?.ikkeBesvart || '';
-    return (
-      getYear(answer)
-        ?.map(m => m?.toString())
-        .join(', ') || ikkeBesvartText
-    );
+  const getPDFValue = (yearValue: string | undefined): string | number => {
+    if (yearValue === undefined || yearValue === null || yearValue === '') {
+      let text = '';
+      if (resources && resources.ikkeBesvart) {
+        text = resources.ikkeBesvart;
+      }
+      return text;
+    }
+    if (Array.isArray(yearValue)) {
+      return yearValue.map(year => year).join(', ');
+    }
+    return yearValue;
   };
 
   const getErrorText = (error: FieldError | undefined): string | undefined => {
@@ -73,10 +81,11 @@ export const DateYearInput = (props: Props): JSX.Element | null => {
     }
   };
 
-  const answerState: string = getYear(answer)?.[0]?.toString() || '';
+  const yearValue: string | undefined = getYearValue(answer);
+
   if (pdf || isReadOnly(item)) {
     return (
-      <TextView id={id} item={item} value={getPDFValue()}>
+      <TextView id={id} item={item} value={getPDFValue(yearValue)}>
         {children}
       </TextView>
     );
@@ -122,10 +131,10 @@ export const DateYearInput = (props: Props): JSX.Element | null => {
             type="number"
             testId={getId(id)}
             onChange={e => {
+              onYearChange(e.target.value);
               onChange(e.target.value);
-              onYearChange(Number(e.target.value));
             }}
-            value={answerState}
+            value={yearValue}
             width={10}
           />
         )}
