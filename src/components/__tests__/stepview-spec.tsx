@@ -3,7 +3,7 @@ import { Questionnaire } from 'fhir/r4';
 import '../../util/__tests__/defineFetch';
 
 import StepViewQuestionnaire from './__data__/stepview';
-import { renderRefero } from '../../../test/test-utils';
+import { renderRefero, screen } from '../../../test/test-utils';
 import { ReferoProps } from '../../types/referoProps';
 import { clickButtonTimes, selectCheckboxOption, submitForm, typeByLabelText } from '../../../test/selectors';
 import { getResources } from '../../../preview/resources/referoResources';
@@ -21,6 +21,7 @@ const resources = {
 const onSubmitMock = vi.fn();
 const onStepChangeMock = vi.fn();
 
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const createWrapper = (questionnaire: Questionnaire, props: Partial<ReferoProps> = {}) => {
   return renderRefero({
     questionnaire,
@@ -30,10 +31,10 @@ const createWrapper = (questionnaire: Questionnaire, props: Partial<ReferoProps>
 
 describe('Step-view', () => {
   it('Should render StepView if a top-level element has the code "step"', () => {
-    const { getByText, queryByText } = createWrapper(StepViewQuestionnaire);
+    createWrapper(StepViewQuestionnaire);
 
-    expect(getByText('Gruppe 1')).toBeInTheDocument();
-    expect(queryByText('Gruppe 2')).not.toBeInTheDocument();
+    expect(screen.getByText('Gruppe 1')).toBeInTheDocument();
+    expect(screen.queryByText('Gruppe 2')).not.toBeInTheDocument();
   });
 
   it('Should call onStepChange if the step updates in step-view', async () => {
@@ -44,22 +45,22 @@ describe('Step-view', () => {
 
   // This test only works with 3-step questionnaires
   it('Buttons in step-view: Should call right functions and display correct texts in step-view', async () => {
-    const { getByText, queryByText, queryAllByText } = createWrapper(StepViewQuestionnaire);
+    createWrapper(StepViewQuestionnaire);
 
     // Step 1
-    expect(getByText(resources.nextStep)).toBeInTheDocument();
+    expect(screen.getByText(resources.nextStep)).toBeInTheDocument();
     await submitForm();
     // Step 2
-    expect(getByText(resources.previousStep)).toBeInTheDocument();
+    expect(screen.getByText(resources.previousStep)).toBeInTheDocument();
     await clickButtonTimes(/refero-pause-button/i, 1);
 
     // Step 1
-    expect(queryByText(resources.previousStep)).not.toBeInTheDocument();
+    expect(screen.queryByText(resources.previousStep)).not.toBeInTheDocument();
     await submitForm();
 
     // Step 2 - should get validation error
     await submitForm();
-    expect(queryAllByText(/Du må fylle ut dette feltet/i)).toHaveLength(2);
+    expect(screen.queryAllByText(/Du må fylle ut dette feltet/i)).toHaveLength(2);
     await selectCheckboxOption(/Mann/i);
 
     await typeByLabelText(/String/i, 'epost@test.com');
