@@ -56,9 +56,9 @@ export const ReferoLabel = ({
             {!isRequired(item) && !isReadOnly(item) ? (
               <span
                 className={`${styles.LabelOptionalText} LabelOptionalText`}
-              >{` ${dateLabel && dateLabel + ' '}${resources?.formOptional || ` (Valgfritt)`}`}</span>
+              >{` ${dateLabel ? dateLabel + ' ' : ''}${resources?.formOptional || ` (Valgfritt)`}`}</span>
             ) : (
-              <span className={`${styles.LabelOptionalText} LabelOptionalText`}>{` ${dateLabel && dateLabel}`}</span>
+              dateLabel && <span className={`${styles.LabelOptionalText} LabelOptionalText`}>{` ${dateLabel}`}</span>
             )}
           </div>
         </Label>
