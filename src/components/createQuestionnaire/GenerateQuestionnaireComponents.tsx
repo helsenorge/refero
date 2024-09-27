@@ -6,7 +6,6 @@ import { RenderContext } from '@/util/renderContext';
 import { getNavigatorExtension } from '@/util/extension';
 
 import { Path } from '@/util/refero-core';
-import { useCheckIfEnabled } from '@/hooks/useIsEnabled';
 import { languageSelector, questionnaireSelector } from '@/reducers/selectors';
 import ItemRenderer from './ItemRenderer';
 

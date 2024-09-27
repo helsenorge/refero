@@ -1,4 +1,4 @@
-import { memo, useMemo } from 'react';
+import { memo } from 'react';
 import { QuestionnaireItem, Resource } from 'fhir/r4';
 import { RenderContext } from '@/util/renderContext';
 import { isHiddenItem } from '@/util/index';

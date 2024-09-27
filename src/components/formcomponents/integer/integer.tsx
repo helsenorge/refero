@@ -109,7 +109,6 @@ const Integer = (props: Props): JSX.Element | null => {
 
         <Input
           {...rest}
-          size="medium"
           type="number"
           value={Array.isArray(value) ? value.join(', ') : value}
           inputId={getId(id)}
