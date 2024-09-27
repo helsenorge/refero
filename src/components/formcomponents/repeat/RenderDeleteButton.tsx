@@ -7,6 +7,7 @@ import { useGetAnswer } from '@/hooks/useGetAnswer';
 import { useSelector } from 'react-redux';
 import { GlobalState } from '@/reducers';
 import { getResponseItemWithPathSelector } from '@/reducers/selectors';
+import { memo } from 'react';
 
 type Props = {
   className?: string;
@@ -15,7 +16,7 @@ type Props = {
   path?: Path[];
 };
 
-export const RenderDeleteButton = ({ className, item, path, index }: Props): JSX.Element | null => {
+export const RenderDeleteButton = memo(function RenderDeleteButton({ className, item, path, index }: Props): JSX.Element | null {
   const responseItem = useSelector<GlobalState, QuestionnaireResponseItem | undefined>(state =>
     getResponseItemWithPathSelector(state, path)
   );
@@ -39,6 +40,6 @@ export const RenderDeleteButton = ({ className, item, path, index }: Props): JSX
       <DeleteButton className={className} item={item} path={path} mustShowConfirm={mustShowConfirm} />
     </div>
   );
-};
+});
 
 export default RenderDeleteButton;

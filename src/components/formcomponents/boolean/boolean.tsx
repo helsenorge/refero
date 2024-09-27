@@ -23,6 +23,7 @@ import { getFormDefinition } from '@/reducers/form';
 import { required } from '@/components/validation/rules';
 import { findQuestionnaireItem } from '@/reducers/selectors';
 import { QuestionnaireItem } from 'fhir/r4';
+import useOnAnswerChange from '@/hooks/useOnAnswerChange';
 
 export type Props = QuestionnaireComponentItemProps & {
   children?: React.ReactNode;
@@ -40,7 +41,9 @@ const Boolean = (props: Props): JSX.Element | null => {
   const { error } = fieldState;
 
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
-  const { onRenderMarkdown, promptLoginMessage, onAnswerChange, resources } = useExternalRenderContext();
+  const { onRenderMarkdown, promptLoginMessage, globalOnChange, resources } = useExternalRenderContext();
+  const onAnswerChange = useOnAnswerChange(globalOnChange);
+
   const [isHelpVisible, setIsHelpVisible] = useState(false);
   const answer = useGetAnswer(linkId, path);
   const getValue = (): boolean => {
@@ -65,9 +68,7 @@ const Boolean = (props: Props): JSX.Element | null => {
         );
     }
 
-    if (promptLoginMessage) {
-      promptLoginMessage();
-    }
+    promptLoginMessage?.();
   };
 
   const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);

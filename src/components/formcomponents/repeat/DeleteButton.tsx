@@ -13,6 +13,7 @@ import { NewValueAction, deleteRepeatItemAsync } from '../../../actions/newValue
 import { GlobalState } from '../../../reducers';
 import { Path } from '../../../util/refero-core';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
+import useOnAnswerChange from '@/hooks/useOnAnswerChange';
 
 type Props = {
   className?: string;
@@ -23,7 +24,8 @@ type Props = {
 
 const DeleteButton = ({ item, path, mustShowConfirm }: Props): JSX.Element => {
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
-  const { onAnswerChange, resources } = useExternalRenderContext();
+  const { globalOnChange, resources } = useExternalRenderContext();
+  const onAnswerChange = useOnAnswerChange(globalOnChange);
   const [showConfirm, setShowConfirm] = useState(false);
 
   const onDeleteRepeatItemConfirmed = (): void => {

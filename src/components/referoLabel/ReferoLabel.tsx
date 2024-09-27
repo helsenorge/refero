@@ -20,8 +20,8 @@ type Props = {
   htmlFor?: string;
   sublabelId?: string;
   sublabelTestId?: string;
-  afterLabelContent?: JSX.Element | null;
   dateLabel?: string;
+  children?: React.ReactNode;
 };
 
 export const ReferoLabel = ({
@@ -33,8 +33,8 @@ export const ReferoLabel = ({
   testId,
   sublabelId,
   sublabelTestId,
-  afterLabelContent,
   dateLabel,
+  children,
 }: Props): JSX.Element => {
   const questionnaire = useSelector((state: GlobalState) => getFormDefinition(state))?.Content;
   const { onRenderMarkdown } = useExternalRenderContext();
@@ -55,13 +55,13 @@ export const ReferoLabel = ({
             {!isRequired(item) && !isReadOnly(item) ? (
               <span
                 className={`${styles.LabelOptionalText} LabelOptionalText`}
-              >{` ${dateLabel && dateLabel + ' '}${resources?.formOptional || ` (Valgfritt)`}`}</span>
+              >{` ${dateLabel ?? ''} ${resources?.formOptional || ` (Valgfritt)`}`}</span>
             ) : (
-              <span className={`${styles.LabelOptionalText} LabelOptionalText`}>{` ${dateLabel && dateLabel}`}</span>
+              dateLabel ?? <span className={`${styles.LabelOptionalText} LabelOptionalText`}>{dateLabel}</span>
             )}
           </div>
         </Label>
-        {afterLabelContent ?? null}
+        {children}
       </div>
       {subLabelText && <SubLabel id={sublabelId} testId={sublabelTestId} subLabelText={subLabelText} />}
     </div>

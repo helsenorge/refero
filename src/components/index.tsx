@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 //test
 import { PresentationButtonsType } from '@constants/presentationButtonsType';
 
@@ -75,57 +75,31 @@ const Refero = (props: ReferoProps): JSX.Element | null => {
       dispatch(setSkjemaDefinition(props.questionnaire, props.questionnaireResponse, props.language, props.syncQuestionnaireResponse));
     }
   }, []);
-  const externalRenderProps = useMemo(
-    () => ({
-      onRequestHelpElement,
-      onRequestHelpButton,
-      onRenderMarkdown,
-      fetchValueSet,
-      fetchReceivers,
-      onFieldsNotCorrectlyFilledOut,
-      onStepChange,
-      promptLoginMessage,
-      resources,
-      autoSuggestProps,
-      validateScriptInjection,
-      onChange,
-    }),
-    [
-      onRequestHelpElement,
-      onRequestHelpButton,
-      onRenderMarkdown,
-      fetchValueSet,
-      fetchReceivers,
-      onFieldsNotCorrectlyFilledOut,
-      onStepChange,
-      promptLoginMessage,
-      resources,
-      autoSuggestProps,
-      validateScriptInjection,
-      onChange,
-    ]
-  );
 
-  const attachmentProviderProps = React.useMemo(
-    () => ({
-      attachmentErrorMessage,
-      attachmentMaxFileSize,
-      attachmentValidTypes,
-      onDeleteAttachment,
-      onRequestAttachmentLink,
-      onOpenAttachment,
-      uploadAttachment,
-    }),
-    [
-      attachmentErrorMessage,
-      attachmentMaxFileSize,
-      attachmentValidTypes,
-      onDeleteAttachment,
-      onRequestAttachmentLink,
-      onOpenAttachment,
-      uploadAttachment,
-    ]
-  );
+  const externalRenderProps = {
+    onRequestHelpElement,
+    onRequestHelpButton,
+    onRenderMarkdown,
+    fetchValueSet,
+    fetchReceivers,
+    onFieldsNotCorrectlyFilledOut,
+    onStepChange,
+    promptLoginMessage,
+    resources,
+    autoSuggestProps,
+    validateScriptInjection,
+    onChange,
+  };
+
+  const attachmentProviderProps = {
+    attachmentErrorMessage,
+    attachmentMaxFileSize,
+    attachmentValidTypes,
+    onDeleteAttachment,
+    onRequestAttachmentLink,
+    onOpenAttachment,
+    uploadAttachment,
+  };
   const handleSubmit = (): void => {
     const { onSubmit } = props;
 

@@ -1,11 +1,11 @@
-import { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
+import { QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r4';
 import { GlobalState } from '.';
 import { Form, FormData, FormDefinition, getFormDefinition } from './form';
 import { getItemWithIdFromResponseItemArray, getRootQuestionnaireResponseItemFromData, Path } from '@/util/refero-core';
 import { createSelector } from 'reselect';
 
 export const questionnaireSelector = createSelector(
-  [(state: GlobalState): FormDefinition | undefined | null => getFormDefinition(state)],
+  [(state: GlobalState): FormDefinition | undefined | null => state?.refero?.form.FormDefinition],
   (formDefinition: FormDefinition | undefined | null) => formDefinition?.Content
 );
 export const getFormDataSelector = createSelector([(state: GlobalState): Form | undefined => state?.refero?.form], formData => {
@@ -181,3 +181,11 @@ function getResponseItemWithPath(path: Path[] = [], items: QuestionnaireResponse
 
   return responseItem;
 }
+export const getLinkIdFromResponseItems = createSelector([getFlatMapResponseItemsForItemSelector], responseItems => {
+  const ids = responseItems?.map(item => item.linkId);
+  return ids;
+});
+export const languageSelector = createSelector(
+  [(state: GlobalState): QuestionnaireResponse | null | undefined => state.refero.form.FormData.Content],
+  formData => formData?.language
+);

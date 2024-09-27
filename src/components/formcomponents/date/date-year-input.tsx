@@ -100,8 +100,9 @@ export const DateYearInput = (props: Props): JSX.Element | null => {
         labelId={`${getId(id)}-label`}
         testId={`${getId(id)}-label-test`}
         sublabelId={`${getId(id)}-sublabel`}
-        afterLabelContent={<RenderHelpButton isHelpVisible={isHelpVisible} item={item} setIsHelpVisible={setIsHelpVisible} />}
-      />
+      >
+        <RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />
+      </ReferoLabel>
       <RenderHelpElement item={item} isHelpVisible={isHelpVisible} />
       <Controller
         name={idWithLinkIdAndItemIndex}

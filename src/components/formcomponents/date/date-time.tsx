@@ -38,13 +38,16 @@ import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 import { useMinMaxDate } from './useMinMaxDate';
 import { findQuestionnaireItem } from '@/reducers/selectors';
+import useOnAnswerChange from '@/hooks/useOnAnswerChange';
 
 export type Props = QuestionnaireComponentItemProps;
 
 const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, children, index }: Props): JSX.Element | null => {
   initialize();
 
-  const { promptLoginMessage, onAnswerChange, resources } = useExternalRenderContext();
+  const { promptLoginMessage, globalOnChange, resources } = useExternalRenderContext();
+  const onAnswerChange = useOnAnswerChange(globalOnChange);
+
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
   const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
 
@@ -178,9 +181,10 @@ const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, childr
         labelId={`${getId(id)}-label`}
         testId={`${getId(id)}-datetime-label`}
         sublabelId={`${getId(id)}-sublabel`}
-        afterLabelContent={<RenderHelpButton isHelpVisible={isHelpVisible} item={item} setIsHelpVisible={setIsHelpVisible} />}
         dateLabel={resources?.dateFormat_ddmmyyyy}
-      />
+      >
+        <RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />
+      </ReferoLabel>
       <RenderHelpElement isHelpVisible={isHelpVisible} item={item} />
       <DateTimePickerWrapper
         testId={`${getId(id)}-datetime-wrapper`}

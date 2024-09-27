@@ -18,6 +18,7 @@ import { QuestionnaireComponentItemProps } from '@/components/createQuestionnair
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 import { TextMessage } from '@/types/text-message';
 import { findQuestionnaireItem } from '@/reducers/selectors';
+import useOnAnswerChange from '@/hooks/useOnAnswerChange';
 
 export type Props = QuestionnaireComponentItemProps & {
   children?: React.ReactNode;
@@ -43,8 +44,8 @@ export const AttachmentComponent = (props: Props): JSX.Element | null => {
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
   const answer = useGetAnswer(linkId, path);
 
-  const { onAnswerChange, resources } = useExternalRenderContext();
-
+  const { globalOnChange, resources } = useExternalRenderContext();
+  const onAnswerChange = useOnAnswerChange(globalOnChange);
   const onUpload = (files: UploadFile[]): void => {
     if (uploadAttachment && item) {
       for (const file of files) {

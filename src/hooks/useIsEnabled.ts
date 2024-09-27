@@ -3,6 +3,7 @@ import { getResponseItemsSelector } from '@/reducers/selectors';
 import { QuestionnaireItemEnableBehaviorCodes } from '@/types/fhirEnums';
 import { enableWhenMatchesAnswer, getQuestionnaireResponseItemWithLinkid, isInGroupContext, Path } from '@/util/refero-core';
 import { QuestionnaireItem, QuestionnaireItemEnableWhen, QuestionnaireResponseItem } from 'fhir/r4';
+import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
 export function isEnableWhenEnabled(
@@ -42,7 +43,10 @@ export const useIsEnabled = (item?: QuestionnaireItem, path?: Path[]): boolean =
 
 export const useCheckIfEnabled = (): ((item?: QuestionnaireItem, path?: Path[]) => boolean) => {
   const responseItems = useSelector<GlobalState, QuestionnaireResponseItem[] | undefined>(getResponseItemsSelector);
-  const checkIfEneabled = (item?: QuestionnaireItem, path?: Path[]): boolean =>
-    !path || !item || !item.enableWhen ? true : isEnableWhenEnabled(item.enableWhen, item.enableBehavior, path, responseItems);
+  const checkIfEneabled = useCallback(
+    (item?: QuestionnaireItem, path?: Path[]): boolean =>
+      !path || !item || !item.enableWhen ? true : isEnableWhenEnabled(item.enableWhen, item.enableBehavior, path, responseItems),
+    [responseItems]
+  );
   return checkIfEneabled;
 };

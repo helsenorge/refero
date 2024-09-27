@@ -21,6 +21,7 @@ import { useGetAnswer } from '@/hooks/useGetAnswer';
 import { useCallback, useMemo } from 'react';
 import { findQuestionnaireItem } from '@/reducers/selectors';
 import { QuestionnaireItem } from 'fhir/r4';
+import useOnAnswerChange from '@/hooks/useOnAnswerChange';
 
 export type DateProps = QuestionnaireComponentItemProps;
 
@@ -29,7 +30,9 @@ const DateComponent = (props: DateProps): JSX.Element | null => {
   const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
 
   const answer = useGetAnswer(linkId, path);
-  const { promptLoginMessage, onAnswerChange } = useExternalRenderContext();
+  const { promptLoginMessage, globalOnChange } = useExternalRenderContext();
+  const onAnswerChange = useOnAnswerChange(globalOnChange);
+
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
   const itemControls = useMemo(() => getItemControlExtensionValue(item), [item]);
   const { YEAR, YEARMONTH } = itemControlConstants;

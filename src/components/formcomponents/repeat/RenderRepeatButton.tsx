@@ -11,8 +11,9 @@ import { GlobalState } from '@/reducers';
 import { useSelector } from 'react-redux';
 import { getFlatMapResponseItemsForItemSelector } from '@/reducers/selectors';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
+import { memo } from 'react';
 
-const RenderRepeatButton = ({
+const RenderRepeatButton = memo(function RenderRepeatButton({
   item,
   index,
   path,
@@ -21,7 +22,7 @@ const RenderRepeatButton = ({
   index?: number;
   path: Path[];
   resources?: Resources;
-}): JSX.Element | null => {
+}): JSX.Element | null {
   const responseItems = useSelector<GlobalState, QuestionnaireResponseItem[] | undefined>(state =>
     getFlatMapResponseItemsForItemSelector(state, item?.linkId, path)
   );
@@ -40,6 +41,6 @@ const RenderRepeatButton = ({
       />
     </div>
   );
-};
+});
 
 export default RenderRepeatButton;

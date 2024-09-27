@@ -1,18 +1,14 @@
 import React, { useMemo } from 'react';
-import { useSelector, shallowEqual } from 'react-redux';
-import { QuestionnaireItem, QuestionnaireResponseItem, Resource } from 'fhir/r4';
+import { useSelector } from 'react-redux';
+import { FhirResource, QuestionnaireItem, Resource } from 'fhir/r4';
 
 import { RenderContext } from '@/util/renderContext';
-import { isHiddenItem } from '@/util/index';
-import { getCodingTextTableValues, getNavigatorExtension } from '@/util/extension';
-import { getFormData, getFormDefinition } from '@/reducers/form';
-import { isHelpItem } from '@/util/help';
-import { GlobalState } from '@/reducers';
+import { getNavigatorExtension } from '@/util/extension';
+
 import { Path } from '@/util/refero-core';
-import { getComponentForItem } from './utils';
-import { RenderResponseItems } from './RenderResponseItems';
 import { useCheckIfEnabled } from '@/hooks/useIsEnabled';
-import { getFlatMapResponseItemsForItemSelector } from '@/reducers/selectors';
+import { languageSelector, questionnaireSelector } from '@/reducers/selectors';
+import ItemRenderer from './ItemRenderer';
 
 export type QuestionnaireComponentItemProps = {
   containedResources?: Resource[];
@@ -36,59 +32,38 @@ export type QuestionnaireItemsProps = {
   pdf?: boolean;
   renderContext?: RenderContext;
   headerTag?: number;
+  isNavigatorEnabled?: boolean;
+  containedResources?: FhirResource[];
 };
 
 const GenerateQuestionnaireComponents = (props: QuestionnaireItemsProps): JSX.Element | null => {
-  const { items, path, pdf = false, renderContext = new RenderContext(), headerTag } = props;
-  const checkIfEnabled = useCheckIfEnabled();
-  const formDefinition = useSelector((state: GlobalState) => getFormDefinition(state), shallowEqual);
-  const formData = useSelector((state: GlobalState) => getFormData(state), shallowEqual);
+  const { items, path, pdf = false, renderContext, headerTag } = props;
 
-  const questionnaire = useMemo(() => formDefinition?.Content, [formDefinition]);
+  const renderContextValue = useMemo(() => renderContext || new RenderContext(), [renderContext]);
+  const language = useSelector(languageSelector);
+  const questionnaire = useSelector(questionnaireSelector);
   const containedResources = useMemo(() => questionnaire?.contained, [questionnaire]);
-  const language = useMemo(() => formData?.Content?.language, [formData]);
   const isNavigatorEnabled = useMemo(() => !!getNavigatorExtension(questionnaire), [questionnaire]);
 
-  if (!items || !questionnaire || questionnaire.item?.length === 0) {
+  if (!items) {
     return null;
   }
 
   return (
     <>
-      {items.map(item => {
-        if (isHelpItem(item) || isHiddenItem(item)) {
-          return null;
-        }
-
-        const ItemComponent = getComponentForItem(item.type, getCodingTextTableValues(item));
-        if (!ItemComponent) {
-          return null;
-        }
-
-        const responseItems = useSelector<GlobalState, QuestionnaireResponseItem[] | undefined>(state =>
-          getFlatMapResponseItemsForItemSelector(state, item.linkId, path)
-        );
-        if (!responseItems || responseItems.length === 0) {
-          return null;
-        }
-
-        return (
-          <RenderResponseItems
-            key={item.linkId}
-            item={item}
-            responseItems={responseItems}
-            path={path}
-            ItemComponent={ItemComponent}
-            language={language}
-            checkIfEnabled={checkIfEnabled}
-            containedResources={containedResources}
-            renderContext={renderContext}
-            pdf={pdf}
-            isNavigatorEnabled={isNavigatorEnabled}
-            headerTag={headerTag}
-          />
-        );
-      })}
+      {items.map(item => (
+        <ItemRenderer
+          key={item.linkId}
+          item={item}
+          path={path}
+          renderContextValue={renderContextValue}
+          language={language}
+          containedResources={containedResources}
+          pdf={pdf}
+          isNavigatorEnabled={isNavigatorEnabled}
+          headerTag={headerTag}
+        />
+      ))}
     </>
   );
 };

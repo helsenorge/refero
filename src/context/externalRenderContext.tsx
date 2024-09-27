@@ -1,5 +1,3 @@
-import useOnAnswerChange from '@/hooks/useOnAnswerChange';
-import { GlobalState } from '@/reducers';
 import { AutoSuggestProps } from '@/types/autoSuggestProps';
 import { OrgenhetHierarki } from '@/types/orgenhetHierarki';
 import { IActionRequester } from '@/util/actionRequester';
@@ -37,7 +35,12 @@ type ExternalRenderType = {
   resources?: Resources;
   validateScriptInjection?: boolean;
   autoSuggestProps?: AutoSuggestProps;
-  onAnswerChange: (state: GlobalState, item: QuestionnaireItem, answer: QuestionnaireResponseItemAnswer) => void;
+  globalOnChange?: (
+    item: QuestionnaireItem,
+    answer: QuestionnaireResponseItemAnswer,
+    actionRequester: IActionRequester,
+    questionnaireInspector: IQuestionnaireInspector
+  ) => void;
 };
 
 const ExternalRender = createContext<ExternalRenderType | undefined>(undefined);
@@ -94,8 +97,6 @@ export const ExternalRenderProvider = ({
   validateScriptInjection,
   onChange,
 }: ExternalRenderProviderProps): JSX.Element => {
-  const onAnswerChange = useOnAnswerChange(onChange);
-
   const contextValue = useMemo(
     () => ({
       onRequestHelpElement,
@@ -109,7 +110,7 @@ export const ExternalRenderProvider = ({
       resources,
       autoSuggestProps,
       validateScriptInjection,
-      onAnswerChange,
+      globalOnChange: onChange,
     }),
     [
       onRequestHelpElement,
@@ -123,7 +124,7 @@ export const ExternalRenderProvider = ({
       resources,
       autoSuggestProps,
       validateScriptInjection,
-      onAnswerChange,
+      onChange,
     ]
   );
 

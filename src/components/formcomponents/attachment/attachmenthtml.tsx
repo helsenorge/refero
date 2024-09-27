@@ -103,8 +103,9 @@ const AttachmentHtml = ({
           htmlFor={id}
           labelId={`${getId(id)}-attachment-label`}
           testId={`${getId(id)}-attachment-label`}
-          afterLabelContent={<RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />}
-        />
+        >
+          <RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />
+        </ReferoLabel>
         <FileUpload
           {...register(idWithLinkIdAndItemIndex, {
             required: required({ item, resources }),

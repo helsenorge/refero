@@ -12,10 +12,11 @@ import { GlobalState } from '@/reducers';
 import { getFormDefinition } from '@/reducers/form';
 import { QuestionnaireItem } from 'fhir/r4';
 import { findQuestionnaireItem } from '@/reducers/selectors';
+import { memo } from 'react';
 
 export type Props = QuestionnaireComponentItemProps;
 
-const Display = ({ id, pdf, linkId }: Props): JSX.Element | null => {
+const Display = memo(function Display({ id, pdf, linkId }: Props): JSX.Element | null {
   const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
 
   const { onRenderMarkdown, resources } = useExternalRenderContext();
@@ -48,6 +49,6 @@ const Display = ({ id, pdf, linkId }: Props): JSX.Element | null => {
   }
 
   return <div className={`page_refero__component page_refero__component_display ${highlightClass}`}>{value}</div>;
-};
+});
 
 export default Display;

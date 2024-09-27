@@ -165,8 +165,9 @@ export const DateYearMonthInput = ({
           labelId={`${getId(id)}-label`}
           testId={`${getId(id)}-label-test`}
           sublabelId={`${getId(id)}-sublabel`}
-          afterLabelContent={<RenderHelpButton isHelpVisible={isHelpVisible} item={item} setIsHelpVisible={setIsHelpVisible} />}
-        />
+        >
+          <RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />
+        </ReferoLabel>
         <RenderHelpElement item={item} isHelpVisible={isHelpVisible} />
         <div className={styles.yearMonthWrapper}>
           <Controller

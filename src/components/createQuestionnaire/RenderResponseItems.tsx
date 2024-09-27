@@ -1,15 +1,15 @@
-import { createIdSuffix, createPathForItem, Path } from '@/util/refero-core';
-import GenerateQuestionnaireComponents, { QuestionnaireComponentItemProps } from './GenerateQuestionnaireComponents';
-import { getChildHeaderTag, isRepeat } from '@/util';
-import { QuestionnaireItem, QuestionnaireResponseItem, Resource } from 'fhir/r4';
+import { Path } from '@/util/refero-core';
+import { QuestionnaireComponentItemProps } from './GenerateQuestionnaireComponents';
+
+import { QuestionnaireItem, Resource } from 'fhir/r4';
 import { RenderContext } from '@/util/renderContext';
 
-import ItemType from '@/constants/itemType';
-import constants, { NAVIGATOR_BLINDZONE_ID } from '@/constants';
+import { memo, useRef } from 'react';
+import ResponseItem from './ResponseItem';
 
 type RenderResponseItemsProps = {
   item: QuestionnaireItem;
-  responseItems: QuestionnaireResponseItem[];
+  responseItems: string[];
   path?: Path[];
   ItemComponent: React.ComponentType<QuestionnaireComponentItemProps>;
   language?: string;
@@ -18,10 +18,9 @@ type RenderResponseItemsProps = {
   pdf?: boolean;
   isNavigatorEnabled: boolean;
   headerTag?: number;
-  checkIfEnabled: (item?: QuestionnaireItem, path?: Path[]) => boolean;
 };
 
-export const RenderResponseItems = ({
+export const RenderResponseItems = memo(function RenderResponseItems({
   item,
   responseItems,
   path,
@@ -32,65 +31,26 @@ export const RenderResponseItems = ({
   pdf,
   isNavigatorEnabled,
   headerTag,
-  checkIfEnabled,
-}: RenderResponseItemsProps): JSX.Element[] | null => {
-  let isNavigatorBlindzoneInitiated = false;
+}: RenderResponseItemsProps): JSX.Element[] | null {
+  const isNavigatorBlindzoneInitiatedRef = useRef(false);
 
   return responseItems
-    .map((responseItem, index) => {
-      const newPath = createPathForItem(path, item, index);
-
-      if (!checkIfEnabled(item, newPath)) {
-        return null;
-      }
-      const idWithLinkIdAndItemIndex = `${item.linkId}${createIdSuffix(newPath, index, isRepeat(item))}`;
-      const id = `item_${responseItem.linkId}${createIdSuffix(newPath, index, isRepeat(item))}`;
-
-      let blindzone: JSX.Element | null = null;
-      let includeSkipLink = false;
-      let newHeaderTag = headerTag;
-
-      if (item.type === ItemType.GROUP) {
-        if (headerTag !== undefined) {
-          newHeaderTag = getChildHeaderTag(item, headerTag);
-        } else {
-          newHeaderTag = constants.DEFAULT_HEADER_TAG;
-        }
-      }
-
-      if (isNavigatorEnabled && !isNavigatorBlindzoneInitiated) {
-        isNavigatorBlindzoneInitiated = true;
-        blindzone = <section id={NAVIGATOR_BLINDZONE_ID} tabIndex={-1} />;
-        includeSkipLink = item.type === ItemType.GROUP;
-      }
-
-      return (
-        <ItemComponent
-          key={id}
-          idWithLinkIdAndItemIndex={idWithLinkIdAndItemIndex}
-          language={language}
-          includeSkipLink={includeSkipLink}
-          containedResources={containedResources}
-          id={id}
-          linkId={item.linkId}
-          path={newPath}
-          headerTag={newHeaderTag}
-          index={index}
-          renderContext={renderContext}
-          pdf={pdf}
-          blindzone={blindzone}
-        >
-          {item.item && (
-            <GenerateQuestionnaireComponents
-              items={item.item}
-              path={newPath}
-              pdf={pdf}
-              renderContext={renderContext}
-              headerTag={newHeaderTag}
-            />
-          )}
-        </ItemComponent>
-      );
-    })
+    .map((linkId, index) => (
+      <ResponseItem
+        key={`${linkId}-${index}`}
+        linkId={linkId}
+        index={index}
+        item={item}
+        path={path}
+        ItemComponent={ItemComponent}
+        language={language}
+        containedResources={containedResources}
+        renderContext={renderContext}
+        pdf={pdf}
+        isNavigatorEnabled={isNavigatorEnabled}
+        headerTag={headerTag}
+        isNavigatorBlindzoneInitiatedRef={isNavigatorBlindzoneInitiatedRef}
+      />
+    ))
     .filter(component => component !== null);
-};
+});

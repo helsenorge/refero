@@ -25,6 +25,7 @@ import { maxLength, minLength, regexpPattern, required, scriptInjection } from '
 import { debounce } from '@helsenorge/core-utils/debounce';
 import { findQuestionnaireItem } from '@/reducers/selectors';
 import { QuestionnaireItem } from 'fhir/r4';
+import useOnAnswerChange from '@/hooks/useOnAnswerChange';
 
 export type Props = QuestionnaireComponentItemProps;
 
@@ -32,8 +33,9 @@ export const String = (props: Props): JSX.Element | null => {
   const { path, id, pdf, idWithLinkIdAndItemIndex, children, index, linkId } = props;
   const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
 
-  const { resources } = useExternalRenderContext();
-  const { promptLoginMessage, validateScriptInjection, onAnswerChange } = useExternalRenderContext();
+  const { promptLoginMessage, validateScriptInjection, globalOnChange, resources } = useExternalRenderContext();
+  const onAnswerChange = useOnAnswerChange(globalOnChange);
+
   const { formState, getFieldState, register } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
@@ -65,7 +67,11 @@ export const String = (props: Props): JSX.Element | null => {
   // const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
   //   handleChange(event);
   // };
-  const handleInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void = debounce(handleChange, 250, false);
+  const debouncedHandleChange: (event: React.ChangeEvent<HTMLInputElement>) => void = debounce(handleChange, 250, false);
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+    event.persist();
+    debouncedHandleChange(event);
+  };
   const value = getStringValue(answer);
   const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, {
     required: required({ item, resources }),
@@ -85,8 +91,9 @@ export const String = (props: Props): JSX.Element | null => {
           htmlFor={getId(id)}
           labelId={`${getId(id)}-string-label`}
           testId={`${getId(id)}-string-label`}
-          afterLabelContent={<RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />}
-        />
+        >
+          <RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />
+        </ReferoLabel>
         <RenderHelpElement item={item} isHelpVisible={isHelpVisible} />
         <Input
           {...rest}

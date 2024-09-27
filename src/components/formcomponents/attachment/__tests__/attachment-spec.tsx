@@ -106,7 +106,7 @@ describe('Attachment', () => {
       expect(inputElement).toBeInTheDocument();
       expect(inputElement).toHaveAttribute('type', 'file');
       expect(inputElement).toHaveAttribute('id', `item_${q?.item?.[0].linkId}`);
-      let fileString =
+      const fileString =
         'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z/C/HgAGgwJ/lK3Q6wAAAABJRU5ErkJggg==';
       const file = new UploadFile([fileString], 'hello.png', '2', 2, { type: 'image/png' });
       const input = getByLabelText(/Attachment - Markdown/i);
@@ -130,7 +130,7 @@ describe('Attachment', () => {
       expect(inputElement).toBeInTheDocument();
       expect(inputElement).toHaveAttribute('type', 'file');
       expect(inputElement).toHaveAttribute('id', `item_${q?.item?.[0].linkId}`);
-      let fileString =
+      const fileString =
         'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z/C/HgAGgwJ/lK3Q6wAAAABJRU5ErkJggg==';
       const file = new UploadFile([fileString], 'hello.png', '2', 2, { type: 'image/png' });
       const input = getByTestId('item_5fece702-bf32-445b-979d-862ade17306a-attachment-label');

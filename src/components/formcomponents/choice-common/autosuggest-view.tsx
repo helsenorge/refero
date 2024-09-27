@@ -183,8 +183,9 @@ const AutosuggestView = (props: AutosuggestProps): JSX.Element | null => {
           labelId={`${getId(id)}-autosuggest-label`}
           testId={`${getId(id)}-label`}
           sublabelId={`${getId(id)}-sublabel`}
-          afterLabelContent={<RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />}
-        />
+        >
+          <RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />
+        </ReferoLabel>
         <RenderHelpElement item={item} isHelpVisible={isHelpVisible} />
 
         <Autosuggest
