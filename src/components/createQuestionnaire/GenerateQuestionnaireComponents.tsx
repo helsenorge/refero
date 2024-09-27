@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { FhirResource, QuestionnaireItem, Resource } from 'fhir/r4';
+import { Resource, QuestionnaireItem } from 'fhir/r4';
 
 import { RenderContext } from '@/util/renderContext';
 import { getNavigatorExtension } from '@/util/extension';
@@ -32,7 +32,7 @@ export type QuestionnaireItemsProps = {
   renderContext?: RenderContext;
   headerTag?: number;
   isNavigatorEnabled?: boolean;
-  containedResources?: FhirResource[];
+  containedResources?: Resource[];
 };
 
 const GenerateQuestionnaireComponents = (props: QuestionnaireItemsProps): JSX.Element | null => {
