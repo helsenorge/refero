@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import { format, isValid } from 'date-fns';
 
@@ -53,7 +53,7 @@ const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, childr
 
   const answer = useGetAnswer(linkId, path);
   const [isHelpVisible, setIsHelpVisible] = useState(false);
-  const { formState, getFieldState, setValue } = useFormContext<FieldValues>();
+  const { formState, getFieldState, getValues } = useFormContext<FieldValues>();
   const dateField = getFieldState(`${idWithLinkIdAndItemIndex}-date`, formState);
   const hoursField = getFieldState(`${idWithLinkIdAndItemIndex}-hours`, formState);
   const minutesField = getFieldState(`${idWithLinkIdAndItemIndex}-minutes`, formState);
@@ -104,14 +104,8 @@ const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, childr
     );
   }
 
-  const hours = getHoursOrMinutesFromDate(date, DateTimeUnit.Hours) || '00';
-  const minutes = getHoursOrMinutesFromDate(date, DateTimeUnit.Minutes) || '00';
-
-  useEffect(() => {
-    setValue(`${idWithLinkIdAndItemIndex}-date`, date);
-    setValue(`${idWithLinkIdAndItemIndex}-hours`, hours);
-    setValue(`${idWithLinkIdAndItemIndex}-minutes`, minutes);
-  }, []);
+  const hours = getHoursOrMinutesFromDate(date, DateTimeUnit.Hours);
+  const minutes = getHoursOrMinutesFromDate(date, DateTimeUnit.Minutes);
 
   const getErrorText = (error: FieldError | undefined): string | undefined => {
     if (error) {
@@ -172,6 +166,13 @@ const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, childr
     }
   };
 
+  const doesAnyFieldsHaveValue = (): boolean => {
+    const dateValue = getValues(idWithLinkIdAndItemIndex + '-date');
+    const hoursValue = getValues(idWithLinkIdAndItemIndex + '-hours');
+    const minutesValue = getValues(idWithLinkIdAndItemIndex + '-minutes');
+    return dateValue || hoursValue || minutesValue;
+  };
+
   return (
     <div className="page_refero__component page_refero__component_datetime" data-testid={`${getId(id)}-container`}>
       <ReferoLabel
@@ -200,13 +201,13 @@ const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, childr
             },
             validate: {
               validDate: value => {
-                return validateDate(parseStringToDate(value) ? parseStringToDate(value) : value, resources);
+                return doesAnyFieldsHaveValue() ? validateDate(parseStringToDate(value) ?? value, resources) : true;
               },
               validMinDate: value => {
-                return validateMinDate(minDateTime, parseStringToDate(value), resources);
+                return doesAnyFieldsHaveValue() ? validateMinDate(minDateTime, parseStringToDate(value), resources) : true;
               },
               validMaxDate: value => {
-                return validateMaxDate(maxDateTime, parseStringToDate(value), resources);
+                return doesAnyFieldsHaveValue() ? validateMaxDate(maxDateTime, parseStringToDate(value), resources) : true;
               },
             },
           }}
@@ -237,7 +238,7 @@ const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, childr
             },
             validate: {
               validHours: value => {
-                return validateHours(Number(value), resources);
+                return doesAnyFieldsHaveValue() ? validateHours(Number(value), resources) : true;
               },
             },
           }}
@@ -264,7 +265,7 @@ const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, childr
             },
             validate: {
               validMinutes: value => {
-                return validateMinutes(Number(value), resources);
+                return doesAnyFieldsHaveValue() ? validateMinutes(Number(value), resources) : true;
               },
             },
           }}
