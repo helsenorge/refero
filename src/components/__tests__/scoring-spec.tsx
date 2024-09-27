@@ -147,7 +147,7 @@ describe('Component renders and calculates score', () => {
     const sum3 = getByLabelText(/Sum/i);
     expect(sum3).toHaveValue(3);
   });
-  function expectScores(scores: { [linkId: string]: number | null }, container: HTMLElement) {
+  function expectScores(scores: { [linkId: string]: number | null }, container: HTMLElement): void {
     for (const linkId in scores) {
       const value = scores[linkId];
       const item = findItem(linkId, container);
@@ -197,10 +197,9 @@ describe('Component renders and calculates score', () => {
 
     const endScoreCalculation = performance.now();
     const scoreCalculationDuration = endScoreCalculation - startScoreCalculation;
+    // eslint-disable-next-line no-console
     console.log(`Score calculation took ${scoreCalculationDuration} ms`);
     expectScores(expectedScores, container);
-
-    // expect(scoreCalculationDuration).toBeLessThan(2000);
   });
 });
 
@@ -229,7 +228,7 @@ describe('Code Scoring', () => {
     const { getByDisplayValue, getByText } = createWrapper(CodeScoreDataModel);
 
     await typeByLabelText(/Decimal 1/i, '42.551', false);
-    let sum = getByDisplayValue(42.551);
+    const sum = getByDisplayValue(42.551);
     expect(sum).toBeInTheDocument();
 
     await typeByLabelText(/Decimal 2/i, '1.041', false);
@@ -248,7 +247,7 @@ describe('Code Scoring', () => {
     const { getByDisplayValue, getByText, getAllByDisplayValue } = createWrapper(CodeScoreDataModel);
 
     await typeByLabelText(/Integer 1/i, '42', false);
-    let sum = getByDisplayValue(42);
+    const sum = getByDisplayValue(42);
     expect(sum).toBeInTheDocument();
 
     await typeByLabelText(/Integer 2/i, '2', false);
@@ -264,7 +263,7 @@ describe('Code Scoring', () => {
     const { getByDisplayValue, getByText } = createWrapper(CodeScoreDataModel);
 
     await typeByLabelText(/Quantity 1/i, '165.234', false);
-    let sum = getByDisplayValue(165.234);
+    const sum = getByDisplayValue(165.234);
     expect(sum).toBeInTheDocument();
 
     await typeByLabelText(/Nytt quantityfelt med en egen enhet der man feks skal regne sammen to cm felt/i, '45.234', false);
@@ -319,6 +318,7 @@ export function setFhirpath(linkId: string, expression: string, q: Questionnaire
   return newQuestionnaire;
 }
 
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function createWrapper(questionnaire: Questionnaire) {
   return renderRefero({ questionnaire, props: { authorized: true } });
 }

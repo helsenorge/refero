@@ -6,7 +6,7 @@ import { renderPrefix, getText } from '../../../util/index';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 
 interface Props {
-  item: QuestionnaireItem;
+  item?: QuestionnaireItem;
   checked: boolean;
   children?: ReactNode;
 }
@@ -17,9 +17,9 @@ const pdf = ({ item, checked, children }: Props): JSX.Element => {
     <div>
       {/* eslint-disable react/jsx-no-literals */}
       {checked ? (
-        <b data-testid={`item_${item.linkId}-pdf`}>[ X ]</b>
+        <b data-testid={`item_${item?.linkId}-pdf`}>[ X ]</b>
       ) : (
-        <b data-testid={`item_${item.linkId}-pdf`}>[&nbsp;&nbsp;&nbsp;&nbsp;]</b>
+        <b data-testid={`item_${item?.linkId}-pdf`}>[&nbsp;&nbsp;&nbsp;&nbsp;]</b>
       )}{' '}
       {`${renderPrefix(item)} ${getText(item, onRenderMarkdown)}`}
       {children ? (

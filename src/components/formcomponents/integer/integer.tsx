@@ -14,9 +14,8 @@ import { isReadOnly, getId } from '@/util/index';
 import TextView from '../textview';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
-import { useIsEnabled } from '@/hooks/useIsEnabled';
 import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelpButton';
 import RenderHelpElement from '@/components/formcomponents/help-button/RenderHelpElement';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
@@ -24,19 +23,23 @@ import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 import { maxValue, minValue, required } from '@/components/validation/rules';
+import { QuestionnaireItem } from 'fhir/r4';
+import { findQuestionnaireItem } from '@/reducers/selectors';
+import useOnAnswerChange from '@/hooks/useOnAnswerChange';
 
 export type Props = QuestionnaireComponentItemProps;
 const Integer = (props: Props): JSX.Element | null => {
-  const { item, resources, id, pdf, idWithLinkIdAndItemIndex, path, responseItem, responseItems, index, children } = props;
+  const { id, pdf, idWithLinkIdAndItemIndex, path, linkId, index, children } = props;
+  const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
 
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
-  const { promptLoginMessage, onAnswerChange } = useExternalRenderContext();
+  const { promptLoginMessage, globalOnChange, resources } = useExternalRenderContext();
+  const onAnswerChange = useOnAnswerChange(globalOnChange);
   const { formState, getFieldState, register } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
   const [isHelpVisible, setIsHelpVisible] = useState(false);
-  const enable = useIsEnabled(item, path);
-  const answer = useGetAnswer(responseItem, item);
+  const answer = useGetAnswer(linkId, path);
   const getValue = (): string | number | number[] | undefined => {
     if (answer && Array.isArray(answer)) {
       return answer.map(m => m.valueInteger).filter(f => f !== undefined);
@@ -66,7 +69,7 @@ const Integer = (props: Props): JSX.Element | null => {
 
   const handleChange = (event: React.FormEvent<HTMLInputElement>): void => {
     const value = parseInt((event.target as HTMLInputElement).value, 10);
-    if (dispatch && path) {
+    if (dispatch && path && item) {
       dispatch(newIntegerValueAsync(path, value, item))?.then(newState => onAnswerChange(newState, item, { valueInteger: value }));
     }
 
@@ -74,9 +77,7 @@ const Integer = (props: Props): JSX.Element | null => {
       promptLoginMessage();
     }
   };
-  if (!enable) {
-    return null;
-  }
+
   if (pdf || isReadOnly(item)) {
     return (
       <TextView id={id} item={item} value={getPDFValue()}>
@@ -101,8 +102,9 @@ const Integer = (props: Props): JSX.Element | null => {
           labelId={`${getId(id)}-label-integer`}
           testId={`${getId(id)}-integer-label`}
           sublabelId={`${getId(id)}-integer-sublabel`}
-          afterLabelContent={<RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />}
-        />
+        >
+          <RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />
+        </ReferoLabel>
         <RenderHelpElement item={item} isHelpVisible={isHelpVisible} />
 
         <Input
@@ -119,14 +121,8 @@ const Integer = (props: Props): JSX.Element | null => {
           className="page_refero__input"
           width={25}
         />
-        <RenderDeleteButton
-          item={item}
-          path={path}
-          index={index}
-          responseItem={responseItem}
-          className="page_refero__deletebutton--margin-top"
-        />
-        <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} responseItem={responseItem} responseItems={responseItems} />
+        <RenderDeleteButton item={item} path={path} index={index} className="page_refero__deletebutton--margin-top" />
+        <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} />
       </FormGroup>
       <div className="nested-fieldset nested-fieldset--full-height">{children}</div>
     </div>

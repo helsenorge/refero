@@ -19,33 +19,67 @@ import TableContainer from '@formcomponents/table/TableContainer';
 import { ComponentType } from 'react';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { isTableCode } from '@/util';
-import { getItemWithIdFromResponseItemArray, getRootQuestionnaireResponseItemFromData } from '@/util/refero-core';
+import { getItemWithIdFromResponseItemArray, getRootQuestionnaireResponseItemFromData, Path } from '@/util/refero-core';
 import { FormData } from '@/reducers/form';
 import ItemType from '@/constants/itemType';
 
 export const getResponseItems = (
-  item: QuestionnaireItem,
+  item?: QuestionnaireItem,
   formData?: FormData | null,
-  responseItem?: QuestionnaireResponseItem
+  path?: Path[]
 ): QuestionnaireResponseItem[] | undefined => {
-  const responseItemsFromData = getRootQuestionnaireResponseItemFromData(item.linkId, formData);
+  if (!formData || !formData.Content || !formData.Content.item) {
+    return undefined;
+  }
+  const responseItemsFromData = getRootQuestionnaireResponseItemFromData(item?.linkId, formData);
 
   if (responseItemsFromData) {
     return responseItemsFromData;
-  } else if (responseItem) {
-    const childItems = responseItem.item;
-    const childAnswers = responseItem.answer;
-
-    if (childItems) {
-      return getItemWithIdFromResponseItemArray(item.linkId, childItems);
-    } else if (childAnswers && childAnswers[0]?.item) {
-      return getItemWithIdFromResponseItemArray(item.linkId, childAnswers[0].item);
-    } else {
-      return [];
-    }
   }
-  return undefined;
+  // Navigate to the response item corresponding to the current path
+  const responseItem = getResponseItemWithPath(path, formData.Content.item);
+
+  if (!responseItem) {
+    return undefined;
+  }
+
+  if (responseItem.linkId === item?.linkId) {
+    // If the response item matches the current item, return it
+    return [responseItem];
+  } else {
+    // Otherwise, search within its child items
+    const childItems = responseItem.item;
+    const childAnswers = responseItem.answer?.flatMap(ans => ans.item || []);
+
+    const matchingItems = getItemWithIdFromResponseItemArray(item?.linkId, [...(childItems || []), ...(childAnswers || [])]);
+
+    return matchingItems;
+  }
 };
+function getResponseItemWithPath(path: Path[] = [], items: QuestionnaireResponseItem[]): QuestionnaireResponseItem | undefined {
+  let currentItems = items;
+  let responseItem: QuestionnaireResponseItem | undefined;
+
+  for (const pathPart of path) {
+    const index = pathPart.index ?? 0;
+
+    const matchingItems = currentItems.filter(item => item.linkId === pathPart.linkId);
+    if (matchingItems.length <= index) {
+      return undefined;
+    }
+
+    responseItem = matchingItems[index];
+
+    if (!responseItem) {
+      return undefined;
+    }
+
+    // Prepare for the next iteration
+    currentItems = responseItem.item || responseItem.answer?.flatMap(ans => ans.item || []) || [];
+  }
+
+  return responseItem;
+}
 export function getComponentForItem(
   type: string,
   extensionCode?: string | string[]

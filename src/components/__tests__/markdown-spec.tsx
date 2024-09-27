@@ -6,8 +6,8 @@ import { renderRefero } from '../../../test/test-utils';
 
 describe('support for external markdown', () => {
   it('enableWhen should trigger when correct answer is selected', async () => {
-    let visited: { [key: string]: string } = {};
-    let cb = (q: QuestionnaireItem, _markdown: string): string => {
+    const visited: { [key: string]: string } = {};
+    const cb = (q: QuestionnaireItem): string => {
       visited[q.linkId] = q.type;
       return '';
     };
@@ -24,8 +24,8 @@ describe('support for external markdown', () => {
     expect(visited['6a']).toBe(ItemType.OPENCHOICE);
     expect(visited['6b']).toBe(ItemType.OPENCHOICE);
     expect(visited['6c']).toBe(ItemType.OPENCHOICE);
-    // expect(visited['7a']).toBe(ItemType.DATE);
-    // expect(visited['7b']).toBe(ItemType.TIME);
+    expect(visited['7a']).toBe(ItemType.DATE);
+    expect(visited['7b']).toBe(ItemType.TIME);
     expect(visited['7c']).toBe(ItemType.DATETIME);
     expect(visited['8']).toBe(ItemType.STRING);
     expect(visited['9']).toBe(ItemType.TEXT);
@@ -34,6 +34,7 @@ describe('support for external markdown', () => {
   });
 });
 
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function createWrapper(questionnaire: Questionnaire, markdownCb: (q: QuestionnaireItem, markdown: string) => string) {
   return renderRefero({ questionnaire, props: { onRenderMarkdown: markdownCb } });
 }

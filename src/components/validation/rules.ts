@@ -11,7 +11,7 @@ import { QuestionnaireItem } from 'fhir/r4';
 import { ValidationRule, ValidationValue } from 'react-hook-form';
 
 type ValidationRuleInput = {
-  item: QuestionnaireItem;
+  item?: QuestionnaireItem;
   resources?: Resources;
   message?: string;
 };

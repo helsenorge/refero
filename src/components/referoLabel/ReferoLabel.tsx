@@ -12,7 +12,7 @@ import { GlobalState } from '@/reducers';
 import { getFormDefinition } from '@/reducers/form';
 
 type Props = {
-  item: QuestionnaireItem;
+  item?: QuestionnaireItem;
   resources?: Resources;
   labelId: string;
   testId: string;
@@ -20,8 +20,8 @@ type Props = {
   htmlFor?: string;
   sublabelId?: string;
   sublabelTestId?: string;
-  afterLabelContent?: JSX.Element | null;
   dateLabel?: string;
+  children?: React.ReactNode;
 };
 
 export const ReferoLabel = ({
@@ -33,11 +33,10 @@ export const ReferoLabel = ({
   testId,
   sublabelId,
   sublabelTestId,
-  afterLabelContent,
   dateLabel,
+  children,
 }: Props): JSX.Element => {
-  const formDefinition = useSelector((state: GlobalState) => getFormDefinition(state));
-  const questionnaire = formDefinition?.Content;
+  const questionnaire = useSelector((state: GlobalState) => getFormDefinition(state))?.Content;
   const { onRenderMarkdown } = useExternalRenderContext();
   const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
   const lblText = getLabelText(item, onRenderMarkdown, questionnaire, resources);
@@ -56,13 +55,13 @@ export const ReferoLabel = ({
             {!isRequired(item) && !isReadOnly(item) ? (
               <span
                 className={`${styles.LabelOptionalText} LabelOptionalText`}
-              >{` ${dateLabel ? dateLabel + ' ' : ''}${resources?.formOptional || ` (Valgfritt)`}`}</span>
+              >{` ${dateLabel ?? ''} ${resources?.formOptional || ` (Valgfritt)`}`}</span>
             ) : (
-              dateLabel && <span className={`${styles.LabelOptionalText} LabelOptionalText`}>{` ${dateLabel}`}</span>
+              dateLabel ?? <span className={`${styles.LabelOptionalText} LabelOptionalText`}>{dateLabel}</span>
             )}
           </div>
         </Label>
-        {afterLabelContent ?? null}
+        {children}
       </div>
       {subLabelText && <SubLabel id={sublabelId} testId={sublabelTestId} subLabelText={subLabelText} />}
     </div>

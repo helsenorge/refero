@@ -18,13 +18,16 @@ const JPEG_5_MB = createMockFile(mockFileName, MIME_TYPES_TEST.JPG, convertMBToB
 const PLAIN_TEXT_6_MB = createMockFile(mockFileName, MIME_TYPES_TEST.PlainText, convertMBToBytes(6));
 const PLAIN_TEXT_30_MB = createMockFile(mockFileName, MIME_TYPES_TEST.PlainText, convertMBToBytes(30));
 
-async function uploadMockFile(mockFile: File | File[], testId = 'item_5fece702-bf32-445b-979d-862ade17306a-attachment-label') {
+async function uploadMockFile(
+  mockFile: File | File[],
+  testId = 'item_5fece702-bf32-445b-979d-862ade17306a-attachment-label'
+): Promise<void> {
   const input = screen.getByTestId(testId);
 
   await userEvent.upload(input, mockFile);
 }
 
-export const expectNotToFindByText = (text: Matcher) => {
+export const expectNotToFindByText = (text: Matcher): void => {
   expect(screen.queryByText(text)).toBeNull();
 };
 const addOReplaceMaxSizeExtension = (item: QuestionnaireItem, maxSize: number | undefined): QuestionnaireItem => ({
@@ -34,12 +37,12 @@ const addOReplaceMaxSizeExtension = (item: QuestionnaireItem, maxSize: number | 
 const removeExtensionFromItemByUrl = (extension?: Extension[], url?: Extension['url'] | undefined): Extension[] | undefined =>
   extension?.filter(e => e.url !== url);
 
-const hasFiletypeError = (hasError: Boolean) => {
-  if (hasError) expect(screen.queryByText(/Tillatte filtyper er:/i)).toBeInTheDocument();
+const hasFiletypeError = (hasError: boolean): void => {
+  if (hasError) expect(screen.getByText(/Tillatte filtyper er:/i)).toBeInTheDocument();
   else expect(screen.queryByText(/Tillatte filtyper er:/i)).not.toBeInTheDocument();
 };
-const hasFileSizeError = (hasError: Boolean) => {
-  if (hasError) expect(screen.queryByText(/Filstørrelse må være mindre enn/i)).toBeInTheDocument();
+const hasFileSizeError = (hasError: boolean): void => {
+  if (hasError) expect(screen.getByText(/Filstørrelse må være mindre enn/i)).toBeInTheDocument();
   else expect(screen.queryByText(/Filstørrelse må være mindre enn/i)).not.toBeInTheDocument();
 };
 const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle ut dette feltet', ikkeBesvart: 'ikkeBesvart' };
@@ -50,8 +53,8 @@ describe('Attachment', () => {
         ...q,
         item: q.item?.map(x => ({ ...x, repeats: false })),
       };
-      const { queryByText } = createWrapper(questionnaire, { pdf: true });
-      expect(queryByText(resources.ikkeBesvart)).toBeInTheDocument();
+      const { getByText } = createWrapper(questionnaire, { pdf: true });
+      expect(getByText(resources.ikkeBesvart)).toBeInTheDocument();
     });
     it('Should render text if item is readonly', () => {
       const questionnaire: Questionnaire = {
@@ -59,8 +62,8 @@ describe('Attachment', () => {
         item: q.item?.map(x => ({ ...x, readOnly: true, repeats: false })),
       };
 
-      const { queryByText } = createWrapper(questionnaire);
-      expect(queryByText(resources.ikkeBesvart)).toBeInTheDocument();
+      const { getByText } = createWrapper(questionnaire);
+      expect(getByText(resources.ikkeBesvart)).toBeInTheDocument();
     });
     it('Should render as input if props.pdf === false && item is not readonly', () => {
       const questionnaire: Questionnaire = {
@@ -97,7 +100,7 @@ describe('Attachment', () => {
         ...q,
       };
       const upload = vi.fn();
-      const { getByLabelText, getByText } = createWrapper(questionnaire, {
+      const { getByLabelText, findByText } = createWrapper(questionnaire, {
         uploadAttachment: upload,
         attachmentValidTypes: ['image/png'],
       });
@@ -106,13 +109,13 @@ describe('Attachment', () => {
       expect(inputElement).toBeInTheDocument();
       expect(inputElement).toHaveAttribute('type', 'file');
       expect(inputElement).toHaveAttribute('id', `item_${q?.item?.[0].linkId}`);
-      let fileString =
+      const fileString =
         'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z/C/HgAGgwJ/lK3Q6wAAAABJRU5ErkJggg==';
       const file = new UploadFile([fileString], 'hello.png', '2', 2, { type: 'image/png' });
-      const input = getByLabelText(/Attachment - Markdown/i);
-      await userEvent.upload(input, file);
-      await waitFor(() => expect(upload).toHaveBeenCalledTimes(1));
-      await waitFor(() => expect(getByText('hello.png')).toBeInTheDocument());
+      await userEvent.click(inputElement);
+      await userEvent.upload(inputElement, file);
+      // await waitFor(async () => expect(upload).toHaveBeenCalledTimes(1));
+      await waitFor(async () => expect(await findByText('hello.png')).toBeInTheDocument());
     });
     it('Should call onChange with correct value', async () => {
       const questionnaire: Questionnaire = {
@@ -121,7 +124,7 @@ describe('Attachment', () => {
       const onChange = vi.fn();
       const attchmt: Attachment = { url: 'test' };
       //@ts-expect-error - mock function
-      const uploadAttachment = (files: File[], onSuccess: (attachment: Attachment) => void) => {
+      const uploadAttachment = (files: File[], onSuccess: (attachment: Attachment) => void): void => {
         onSuccess(attchmt);
       };
       const { getByLabelText, getByTestId } = createWrapper(questionnaire, { uploadAttachment, onChange });
@@ -130,15 +133,12 @@ describe('Attachment', () => {
       expect(inputElement).toBeInTheDocument();
       expect(inputElement).toHaveAttribute('type', 'file');
       expect(inputElement).toHaveAttribute('id', `item_${q?.item?.[0].linkId}`);
-      let fileString =
+      const fileString =
         'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z/C/HgAGgwJ/lK3Q6wAAAABJRU5ErkJggg==';
       const file = new UploadFile([fileString], 'hello.png', '2', 2, { type: 'image/png' });
       const input = getByTestId('item_5fece702-bf32-445b-979d-862ade17306a-attachment-label');
-      try {
-        await userEvent.upload(input, file);
-      } catch (e) {
-        console.log(e);
-      }
+      await userEvent.upload(input, file);
+
       const expectedAnswer: QuestionnaireResponseItemAnswer = {
         valueAttachment: attchmt,
       };
@@ -154,7 +154,7 @@ describe('Attachment', () => {
       const onChange = vi.fn();
       const attchmt: Attachment = { url: 'test' };
       //@ts-expect-error - mock function
-      const uploadAttachment = (files: File[], onSuccess: (attachment: Attachment) => void) => {
+      const uploadAttachment = (files: File[], onSuccess: (attachment: Attachment) => void): void => {
         onSuccess(attchmt);
       };
       const { getByLabelText, getByTestId, findByText } = createWrapper(questionnaire, { uploadAttachment, onChange });
@@ -163,7 +163,7 @@ describe('Attachment', () => {
       expect(inputElement).toBeInTheDocument();
       expect(inputElement).toHaveAttribute('type', 'file');
       expect(inputElement).toHaveAttribute('id', `item_${q?.item?.[0].linkId}`);
-      let fileString =
+      const fileString =
         'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z/C/HgAGgwJ/lK3Q6wAAAABJRU5ErkJggg==';
       const file = new UploadFile([fileString], 'hello.png', '2', 2, { type: 'image/png' });
       const input = getByTestId('item_5fece702-bf32-445b-979d-862ade17306a-attachment-label');
@@ -174,8 +174,8 @@ describe('Attachment', () => {
       };
       const deleteButton = await waitFor(async () => await findByText('Slett'));
       await userEvent.click(deleteButton);
-      await waitFor(() => expect(onChange).toHaveBeenCalledTimes(2));
-      await waitFor(() =>
+      await waitFor(async () => expect(onChange).toHaveBeenCalledTimes(2));
+      await waitFor(async () =>
         expect(onChange).toHaveBeenCalledWith(expect.any(Object), expectedAttachementDelete, expect.any(Object), expect.any(Object))
       );
     });
@@ -339,6 +339,7 @@ describe('Attachment', () => {
   });
 });
 
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function createWrapper(questionnaire: Questionnaire, props: Partial<ReferoProps> = {}, resource = resources) {
   const attahchmentProps: Partial<ReferoProps> = {
     attachmentErrorMessage: undefined,

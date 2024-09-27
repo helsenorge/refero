@@ -38,6 +38,11 @@
                   "text": "nested under non-group"
                 }
               ]
+            },
+            {
+              "linkId": "1.3.2",
+              "text": "IntegerNested",
+              "type": "integer"
             }
           ]
         }

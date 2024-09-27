@@ -37,7 +37,7 @@ export const getFileExtension = (filename: string): string => {
   return filename.slice(((filename.lastIndexOf('.') - 1) >>> 0) + 2);
 };
 
-export function getAttachmentMaxSizeBytesToUse(defaultMaxProps: number | undefined, item: QuestionnaireItem): number {
+export function getAttachmentMaxSizeBytesToUse(defaultMaxProps: number | undefined, item?: QuestionnaireItem): number {
   if (item) {
     const questionnaireMaxRuleSizeMB = getMaxSizeExtensionValue(item);
     if (questionnaireMaxRuleSizeMB !== undefined) {

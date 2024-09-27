@@ -29,6 +29,9 @@ import { useGetAnswer } from '@/hooks/useGetAnswer';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 import { useMinMaxDate } from './useMinMaxDate';
 import { initialize } from '@/util/date-fns-utils';
+import { GlobalState } from '@/reducers';
+import { useSelector } from 'react-redux';
+import { findQuestionnaireItem } from '@/reducers/selectors';
 
 type DateDayInputProps = QuestionnaireComponentItemProps & {
   locale: LanguageLocales.ENGLISH | LanguageLocales.NORWEGIAN;
@@ -39,18 +42,19 @@ export const DateDayInput = ({
   id,
   idWithLinkIdAndItemIndex,
   pdf,
-  item,
-  responseItem,
+  linkId,
   onDateValueChange,
   children,
+  path,
 }: DateDayInputProps): JSX.Element | null => {
   initialize();
+  const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
 
   const [isHelpVisible, setIsHelpVisible] = useState(false);
   const { formState, getFieldState } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
-  const answer = useGetAnswer(responseItem, item);
+  const answer = useGetAnswer(linkId, path);
   const { minDateTime, maxDateTime } = useMinMaxDate(item);
   const { resources } = useExternalRenderContext();
 
@@ -80,7 +84,7 @@ export const DateDayInput = ({
   const date = parseStringToDate(dateAnswerValue);
 
   const getValue = (
-    item: QuestionnaireItem,
+    item?: QuestionnaireItem,
     answer?: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]
   ): string | string[] | undefined => {
     if (answer && Array.isArray(answer)) {
@@ -154,9 +158,10 @@ export const DateDayInput = ({
         labelId={`${getId(id)}-label`}
         testId={`${getId(id)}-label-test`}
         sublabelId={`${getId(id)}-sublabel`}
-        afterLabelContent={<RenderHelpButton isHelpVisible={isHelpVisible} item={item} setIsHelpVisible={setIsHelpVisible} />}
         dateLabel={resources?.dateFormat_ddmmyyyy}
-      />
+      >
+        <RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />
+      </ReferoLabel>
       <RenderHelpElement isHelpVisible={isHelpVisible} item={item} />
 
       <Controller

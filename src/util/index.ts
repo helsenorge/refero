@@ -48,32 +48,32 @@ export function isStringEmpty(string: string | undefined): boolean {
   return string === '' || string === null || string === undefined;
 }
 
-export function isReadOnly(item: QuestionnaireItem): boolean {
+export function isReadOnly(item?: QuestionnaireItem): boolean {
   if (item && item.readOnly) {
     return item.readOnly;
   }
   return false;
 }
 
-export function isRequired(item: QuestionnaireItem): boolean {
+export function isRequired(item?: QuestionnaireItem): boolean {
   if (item && item.required) {
     return item.required;
   }
   return false;
 }
 
-export function isRepeat(item: QuestionnaireItem): boolean {
+export function isRepeat(item?: QuestionnaireItem): boolean {
   if (item && item.repeats) {
     return item.repeats;
   }
   return false;
 }
 
-export function isDataReceiver(item: QuestionnaireItem): boolean {
+export function isDataReceiver(item?: QuestionnaireItem): boolean {
   return getCopyExtension(item) !== undefined;
 }
 
-export function isHiddenItem(item: QuestionnaireItem): boolean | undefined {
+export function isHiddenItem(item?: QuestionnaireItem): boolean | undefined {
   return (
     getQuestionnaireHiddenExtensionValue(item) ||
     getQuestionnaireItemCodeValue(item, CodingSystemConstants.RenderingOptions) === RenderOptionCode.KunPdf
@@ -87,7 +87,7 @@ export function getId(id?: string): string {
   return uuid.v4();
 }
 
-export function renderPrefix(item: QuestionnaireItem): string {
+export function renderPrefix(item?: QuestionnaireItem): string {
   if (!item || !item.prefix) {
     return '';
   }
@@ -95,7 +95,7 @@ export function renderPrefix(item: QuestionnaireItem): string {
 }
 
 export function getSublabelText(
-  item: QuestionnaireItem,
+  item?: QuestionnaireItem,
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string,
   questionnaire?: Questionnaire | null,
   resources?: Resources
@@ -107,7 +107,7 @@ export function getSublabelText(
   return '';
 }
 export function getLabelText(
-  item: QuestionnaireItem,
+  item?: QuestionnaireItem,
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string,
   questionnaire?: Questionnaire | null,
   resources?: Resources
@@ -115,7 +115,7 @@ export function getLabelText(
   return `${renderPrefix(item)} ${getText(item, onRenderMarkdown, questionnaire, resources)}`;
 }
 export function getText(
-  item: QuestionnaireItem,
+  item?: QuestionnaireItem,
   onRenderMarkdown?: (item: QuestionnaireItem, markdown: string) => string,
   questionnaire?: Questionnaire | null,
   resources?: Resources
@@ -176,7 +176,7 @@ export function getChildHeaderTag(item?: QuestionnaireItem, headerTag?: number):
   return hasHeader(item) ? headerTag + 1 : headerTag;
 }
 
-function hasHeader(item: QuestionnaireItem): boolean {
+function hasHeader(item?: QuestionnaireItem): boolean {
   if (!getText(item)) {
     return false;
   }
@@ -186,7 +186,7 @@ function hasHeader(item: QuestionnaireItem): boolean {
   return true;
 }
 
-export function getLinkId(item: QuestionnaireItem): string {
+export function getLinkId(item?: QuestionnaireItem): string {
   if (item && item.linkId) {
     return item.linkId;
   }
@@ -216,14 +216,14 @@ export function getPDFStringValue(
   return value;
 }
 
-export function getMaxLength(item: QuestionnaireItem): number | undefined {
+export function getMaxLength(item?: QuestionnaireItem): number | undefined {
   if (!item || !item.maxLength) {
     return undefined;
   }
   return Number(item.maxLength);
 }
 
-export function repeats(item: QuestionnaireItem): boolean {
+export function repeats(item?: QuestionnaireItem): boolean {
   if (item && item.repeats) {
     return item.repeats;
   }
@@ -231,8 +231,8 @@ export function repeats(item: QuestionnaireItem): boolean {
 }
 
 export function shouldRenderRepeatButton(
-  item: QuestionnaireItem,
-  response: Array<QuestionnaireResponseItem> | undefined,
+  item?: QuestionnaireItem,
+  response?: Array<QuestionnaireResponseItem> | undefined,
   index?: number
 ): boolean {
   if (!repeats(item)) {
@@ -252,7 +252,7 @@ export function shouldRenderRepeatButton(
     return false;
   }
 
-  if (item.readOnly) {
+  if (item?.readOnly) {
     return false;
   }
 
@@ -283,7 +283,7 @@ export function getTextValidationErrorMessage(
   return getValidationTextExtension(item) || '';
 }
 
-export function getDecimalPattern(item: QuestionnaireItem): string | undefined {
+export function getDecimalPattern(item?: QuestionnaireItem): string | undefined {
   const step = getExtension(Extensions.STEP_URL, item);
 
   const integerPart = '[+-]?[0-9]+';
@@ -305,7 +305,7 @@ export function getDecimalPattern(item: QuestionnaireItem): string | undefined {
   }
 }
 
-export function getDecimalValue(item: QuestionnaireItem, value: number | undefined): number | undefined {
+export function getDecimalValue(item?: QuestionnaireItem, value?: number | undefined): number | undefined {
   const decimalPlacesExtension = getExtension(Extensions.STEP_URL, item);
   if (value && decimalPlacesExtension && decimalPlacesExtension.valueInteger != null) {
     const places = Number(decimalPlacesExtension.valueInteger);

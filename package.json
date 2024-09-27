@@ -135,6 +135,7 @@
     "marked": "^14.0.0",
     "react-collapse": "^5.1.1",
     "react-hook-form": "^7.0.0",
+    "reselect": "^5.1.1",
     "uuid": "^10.0.0"
   },
   "optionalDependencies": {

@@ -13,7 +13,6 @@ import { isReadOnly, getId, getSublabelText, getLabelText } from '@/util/index';
 import SafeText from '../../referoLabel/SafeText';
 import { useDispatch, useSelector } from 'react-redux';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
-import { useIsEnabled } from '@/hooks/useIsEnabled';
 import RenderHelpElement from '@/components/formcomponents/help-button/RenderHelpElement';
 import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelpButton';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
@@ -22,13 +21,17 @@ import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { getFormDefinition } from '@/reducers/form';
 import { required } from '@/components/validation/rules';
+import { findQuestionnaireItem } from '@/reducers/selectors';
+import { QuestionnaireItem } from 'fhir/r4';
+import useOnAnswerChange from '@/hooks/useOnAnswerChange';
 
 export type Props = QuestionnaireComponentItemProps & {
   children?: React.ReactNode;
 };
 
 const Boolean = (props: Props): JSX.Element | null => {
-  const { item, path, pdf, id, resources, responseItems, index, idWithLinkIdAndItemIndex, responseItem, children } = props;
+  const { path, pdf, id, index, idWithLinkIdAndItemIndex, linkId, children } = props;
+  const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
 
   const formDefinition = useSelector((state: GlobalState) => getFormDefinition(state));
   const questionnaire = formDefinition?.Content;
@@ -38,10 +41,11 @@ const Boolean = (props: Props): JSX.Element | null => {
   const { error } = fieldState;
 
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
-  const { onRenderMarkdown, promptLoginMessage, onAnswerChange } = useExternalRenderContext();
-  const enable = useIsEnabled(item, path);
+  const { onRenderMarkdown, promptLoginMessage, globalOnChange, resources } = useExternalRenderContext();
+  const onAnswerChange = useOnAnswerChange(globalOnChange);
+
   const [isHelpVisible, setIsHelpVisible] = useState(false);
-  const answer = useGetAnswer(responseItem, item);
+  const answer = useGetAnswer(linkId, path);
   const getValue = (): boolean => {
     if (answer && Array.isArray(answer)) {
       return answer.map(m => m.valueBoolean).filter(f => f !== undefined)[0] ?? false;
@@ -57,24 +61,20 @@ const Boolean = (props: Props): JSX.Element | null => {
 
   const handleChange = (): void => {
     const newValue = !getValue();
-    if (dispatch) {
+    if (dispatch && item) {
       path &&
         dispatch(newBooleanValueAsync(path, newValue, item))?.then(
           newState => onAnswerChange && onAnswerChange(newState, item, { valueBoolean: newValue })
         );
     }
 
-    if (promptLoginMessage) {
-      promptLoginMessage();
-    }
+    promptLoginMessage?.();
   };
 
   const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
   const labelText = getLabelText(item, onRenderMarkdown, questionnaire, resources);
   const value = getValue();
-  if (!enable) {
-    return null;
-  }
+
   if (pdf) {
     return <Pdf item={item} checked={getValue()} />;
   } else if (isReadOnly(item)) {
@@ -131,14 +131,9 @@ const Boolean = (props: Props): JSX.Element | null => {
         />
         <RenderHelpElement item={item} isHelpVisible={isHelpVisible} />
       </FormGroup>
-      <RenderDeleteButton
-        item={item}
-        path={path}
-        index={index}
-        responseItem={responseItem}
-        className="page_refero__deletebutton--margin-top"
-      />
-      <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} responseItem={responseItem} responseItems={responseItems} />
+      <RenderDeleteButton item={item} path={path} index={index} className="page_refero__deletebutton--margin-top" />
+
+      <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} />
 
       <div className="nested-fieldset nested-fieldset--full-height">{children}</div>
     </div>

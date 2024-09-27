@@ -49,13 +49,14 @@ describe('Group component renders with correct classes', () => {
   });
 });
 
-function expectToFindClasses(container: HTMLElement, id: string, ...classes: string[]) {
+function expectToFindClasses(container: HTMLElement, id: string, ...classes: string[]): void {
   const item = findItemById(id, container);
   for (const c of classes) {
     expect(item.className?.includes(c.slice(1))).toEqual(true);
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function createWrapperForGroupItem(item: QuestionnaireItem) {
   return createWrapper({ ...questionnaire, item: [item] });
 }
@@ -70,6 +71,7 @@ function createItemWithExtensions(itemType: IItemType, id = '1', ...extensions: 
   };
 }
 
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const createWrapper = (questionnaire: Questionnaire, props: Partial<ReferoProps> = {}) => {
   return renderRefero({ questionnaire, props: { ...props, resources, pdf: false } });
 };

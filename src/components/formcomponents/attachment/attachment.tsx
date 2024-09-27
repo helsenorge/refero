@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { Attachment } from 'fhir/r4';
+import { Attachment, QuestionnaireItem } from 'fhir/r4';
 import { ThunkDispatch } from 'redux-thunk';
 
 import { UploadFile } from '@helsenorge/file-upload/components/file-upload';
@@ -11,13 +11,14 @@ import { GlobalState } from '@/reducers';
 import { getValidationTextExtension, getMaxOccursExtensionValue, getMinOccursExtensionValue } from '@/util/extension';
 import { isRequired, getId, isReadOnly, isRepeat } from '@/util/index';
 import TextView from '../textview';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
-import { useIsEnabled } from '@/hooks/useIsEnabled';
 import { useAttachmentContext } from '@/context/AttachmentContext';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 import { TextMessage } from '@/types/text-message';
+import { findQuestionnaireItem } from '@/reducers/selectors';
+import useOnAnswerChange from '@/hooks/useOnAnswerChange';
 
 export type Props = QuestionnaireComponentItemProps & {
   children?: React.ReactNode;
@@ -27,7 +28,9 @@ type UploadedFile = {
   id: string;
 };
 export const AttachmentComponent = (props: Props): JSX.Element | null => {
-  const { path, item, pdf, id, resources, responseItem, children } = props;
+  const { path, pdf, id, linkId, children } = props;
+  const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
+
   const [customErrorMessage, setCustomErrorMessage] = useState<TextMessage | undefined>(undefined);
   const {
     onOpenAttachment,
@@ -39,13 +42,12 @@ export const AttachmentComponent = (props: Props): JSX.Element | null => {
     uploadAttachment,
   } = useAttachmentContext();
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
-  const enable = useIsEnabled(item, path);
-  const answer = useGetAnswer(responseItem, item);
+  const answer = useGetAnswer(linkId, path);
 
-  const { onAnswerChange } = useExternalRenderContext();
-
+  const { globalOnChange, resources } = useExternalRenderContext();
+  const onAnswerChange = useOnAnswerChange(globalOnChange);
   const onUpload = (files: UploadFile[]): void => {
-    if (uploadAttachment) {
+    if (uploadAttachment && item) {
       for (const file of files) {
         const onSuccess = (attachment: Attachment): void => {
           if (onAnswerChange && attachment && path) {
@@ -65,7 +67,7 @@ export const AttachmentComponent = (props: Props): JSX.Element | null => {
   };
 
   const onDelete = (fileId: string): void => {
-    if (onDeleteAttachment) {
+    if (onDeleteAttachment && item) {
       const onSuccess = (): void => {
         if (dispatch) {
           const attachment: Attachment = { url: fileId };
@@ -124,9 +126,6 @@ export const AttachmentComponent = (props: Props): JSX.Element | null => {
     return '';
   };
 
-  if (!enable) {
-    return null;
-  }
   if (pdf || isReadOnly(item)) {
     return (
       <TextView id={id} item={item} value={getPdfValue()}>

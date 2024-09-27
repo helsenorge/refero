@@ -1,6 +1,6 @@
 import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 
-import { ValueSet, Coding } from 'fhir/r4';
+import { ValueSet, Coding, QuestionnaireItem } from 'fhir/r4';
 import { FieldValues, useFormContext } from 'react-hook-form';
 import styles from '../common-styles.module.css';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
@@ -17,7 +17,6 @@ import { getStringAnswer, hasStringAnswer, getCodingAnswer } from '@/util/refero
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
-import { useIsEnabled } from '@/hooks/useIsEnabled';
 import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelpButton';
 import RenderHelpElement from '@/components/formcomponents/help-button/RenderHelpElement';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
@@ -26,6 +25,9 @@ import { useExternalRenderContext } from '@/context/externalRenderContext';
 
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { required } from '@/components/validation/rules';
+import { useSelector } from 'react-redux';
+import { GlobalState } from '@/reducers';
+import { findQuestionnaireItem } from '@/reducers/selectors';
 
 export type AutosuggestProps = QuestionnaireComponentItemProps & {
   handleChange: (code?: string, systemArg?: string, displayArg?: string) => void;
@@ -34,27 +36,14 @@ export type AutosuggestProps = QuestionnaireComponentItemProps & {
 };
 
 const AutosuggestView = (props: AutosuggestProps): JSX.Element | null => {
-  const {
-    resources,
-    item,
-    id,
-    idWithLinkIdAndItemIndex,
-    clearCodingAnswer,
-    handleChange,
-    handleStringChange,
-    index,
-    responseItems,
-    responseItem,
-    path,
-    children,
-  } = props;
+  const { linkId, id, idWithLinkIdAndItemIndex, clearCodingAnswer, handleChange, handleStringChange, index, path, children } = props;
   const { formState, getFieldState, register } = useFormContext<FieldValues>();
+  const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
 
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
-  const answer = useGetAnswer(responseItem, item);
-  const enable = useIsEnabled(item, path);
-  const { fetchValueSet, autoSuggestProps } = useExternalRenderContext();
+  const answer = useGetAnswer(linkId, path);
+  const { fetchValueSet, autoSuggestProps, resources } = useExternalRenderContext();
 
   const codingAnswer = getCodingAnswer(answer);
   const initialInputValue =
@@ -73,7 +62,7 @@ const AutosuggestView = (props: AutosuggestProps): JSX.Element | null => {
     if (initialInputValue) setInputValue(initialInputValue);
   }, [initialInputValue]);
   const isOpenChoice = (): boolean => {
-    return item.type === ItemType.OPENCHOICE;
+    return item?.type === ItemType.OPENCHOICE;
   };
 
   const successCallback = (valueSet: ValueSet): void => {
@@ -121,7 +110,7 @@ const AutosuggestView = (props: AutosuggestProps): JSX.Element | null => {
     if (value === lastSearchValue) {
       return;
     }
-    if (fetchValueSet) {
+    if (fetchValueSet && item) {
       setIsLoading(true);
       setSuggestions([]);
       setLastSearchValue(value);
@@ -179,9 +168,7 @@ const AutosuggestView = (props: AutosuggestProps): JSX.Element | null => {
       setNoSuggestionsToShow(false);
     }
   };
-  if (!enable) {
-    return null;
-  }
+
   const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, {
     required: required({ item, resources }),
     shouldUnregister: true,
@@ -196,8 +183,9 @@ const AutosuggestView = (props: AutosuggestProps): JSX.Element | null => {
           labelId={`${getId(id)}-autosuggest-label`}
           testId={`${getId(id)}-label`}
           sublabelId={`${getId(id)}-sublabel`}
-          afterLabelContent={<RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />}
-        />
+        >
+          <RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />
+        </ReferoLabel>
         <RenderHelpElement item={item} isHelpVisible={isHelpVisible} />
 
         <Autosuggest
@@ -241,14 +229,8 @@ const AutosuggestView = (props: AutosuggestProps): JSX.Element | null => {
           <div className="page_refero__no-suggestions">{resources?.autosuggestNoSuggestions?.replace('{0}', inputValue)}</div>
         )}
         {hasLoadError && <NotificationPanel variant="error">{resources?.autoSuggestLoadError}</NotificationPanel>}
-        <RenderDeleteButton
-          item={item}
-          path={path}
-          index={index}
-          responseItem={responseItem}
-          className="page_refero__deletebutton--margin-top"
-        />
-        <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} responseItem={responseItem} responseItems={responseItems} />
+        <RenderDeleteButton item={item} path={path} index={index} className="page_refero__deletebutton--margin-top" />
+        <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} />
       </FormGroup>
       <div className="nested-fieldset nested-fieldset--full-height">{children}</div>
     </div>

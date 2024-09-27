@@ -16,6 +16,11 @@ import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { required } from '@/components/validation/rules';
+import { useSelector } from 'react-redux';
+import { findQuestionnaireItem } from '@/reducers/selectors';
+import { QuestionnaireItem } from 'fhir/r4';
+import { GlobalState } from '@/reducers';
+import { useExternalRenderContext } from '@/context/externalRenderContext';
 
 export type Props = QuestionnaireComponentItemProps & {
   options?: Array<Options>;
@@ -24,20 +29,9 @@ export type Props = QuestionnaireComponentItemProps & {
 };
 
 const DropdownView = (props: Props): JSX.Element | null => {
-  const {
-    options,
-    item,
-    id,
-    handleChange,
-    selected,
-    resources,
-    idWithLinkIdAndItemIndex,
-    responseItems,
-    responseItem,
-    path,
-    index,
-    children,
-  } = props;
+  const { options, linkId, id, handleChange, selected, idWithLinkIdAndItemIndex, path, index, children } = props;
+  const { resources } = useExternalRenderContext();
+  const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
 
   const { formState, getFieldState, register } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
@@ -68,10 +62,10 @@ const DropdownView = (props: Props): JSX.Element | null => {
           labelId={`${getId(id)}-label`}
           testId={`${getId(id)}-label`}
           sublabelId="select-sublabel"
-          afterLabelContent={<RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />}
-        />
+        >
+          <RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />
+        </ReferoLabel>
         <RenderHelpElement item={item} isHelpVisible={isHelpVisible} />
-
         <Select
           {...rest}
           value={value}
@@ -96,14 +90,8 @@ const DropdownView = (props: Props): JSX.Element | null => {
         </Select>
       </FormGroup>
 
-      <RenderDeleteButton
-        item={item}
-        path={path}
-        index={index}
-        responseItem={responseItem}
-        className="page_refero__deletebutton--margin-top"
-      />
-      <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} responseItem={responseItem} responseItems={responseItems} />
+      <RenderDeleteButton item={item} path={path} index={index} className="page_refero__deletebutton--margin-top" />
+      <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} />
       <div className="nested-fieldset nested-fieldset--full-height">{children}</div>
     </div>
   );

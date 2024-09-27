@@ -7,7 +7,7 @@ import { QuestionnaireComponentItemProps } from '@/components/createQuestionnair
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { GlobalState } from '@/reducers';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
@@ -18,32 +18,24 @@ import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import RenderHelpButton from '../help-button/RenderHelpButton';
 import RenderHelpElement from '../help-button/RenderHelpElement';
 import TextView from '../textview';
-import { useIsEnabled } from '@/hooks/useIsEnabled';
+import { QuestionnaireItem } from 'fhir/r4';
+import { findQuestionnaireItem } from '@/reducers/selectors';
 import { initialize } from '@/util/date-fns-utils';
+import useOnAnswerChange from '@/hooks/useOnAnswerChange';
 
 export type Props = QuestionnaireComponentItemProps;
 
-const Time = ({
-  id,
-  index,
-  item,
-  responseItem,
-  responseItems,
-  resources,
-  path,
-  pdf,
-  idWithLinkIdAndItemIndex,
-  children,
-}: Props): JSX.Element | null => {
+const Time = ({ id, index, path, linkId, pdf, idWithLinkIdAndItemIndex, children }: Props): JSX.Element | null => {
   initialize();
+  const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
 
-  const { promptLoginMessage, onAnswerChange } = useExternalRenderContext();
+  const { promptLoginMessage, globalOnChange, resources } = useExternalRenderContext();
+  const onAnswerChange = useOnAnswerChange(globalOnChange);
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
-  const enable = useIsEnabled(item);
   const { formState, getFieldState, setValue, getValues, trigger } = useFormContext<FieldValues>();
   const hoursField = getFieldState(`${idWithLinkIdAndItemIndex}-hours`, formState);
   const minutesField = getFieldState(`${idWithLinkIdAndItemIndex}-minutes`, formState);
-  const answer = useGetAnswer(responseItem, item);
+  const answer = useGetAnswer(linkId, path);
   const [isHelpVisible, setIsHelpVisible] = React.useState(false);
   const hoursAndMinutesFromAnswer = extractHoursAndMinutesFromAnswer(answer, item);
   const hours = hoursAndMinutesFromAnswer?.hours;
@@ -55,7 +47,7 @@ const Time = ({
   }, []);
 
   const dispatchNewTime = (newTime: string): void => {
-    if (dispatch && onAnswerChange && path) {
+    if (dispatch && onAnswerChange && path && item) {
       dispatch(newTimeValueAsync(path, newTime, item))?.then(newState => onAnswerChange(newState, item, { valueTime: newTime }));
     }
   };
@@ -137,9 +129,6 @@ const Time = ({
     return `${'kl. '} ${hoursValue}:${minutesValue}`;
   };
 
-  if (!enable) {
-    return null;
-  }
   if (pdf || isReadOnly(item)) {
     return (
       <TextView id={id} item={item} value={getPDFValue()}>
@@ -157,8 +146,9 @@ const Time = ({
         labelId={`${getId(id)}-label`}
         testId={`${getId(id)}-label-test`}
         sublabelId={`${getId(id)}-sublabel`}
-        afterLabelContent={<RenderHelpButton isHelpVisible={isHelpVisible} item={item} setIsHelpVisible={setIsHelpVisible} />}
-      />
+      >
+        <RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />
+      </ReferoLabel>
       <RenderHelpElement isHelpVisible={isHelpVisible} item={item} />
       <DateTimePickerWrapper errorText={getErrorText(getCombinedFieldError(hoursField, minutesField))}>
         <Controller
@@ -225,14 +215,8 @@ const Time = ({
           )}
         />
       </DateTimePickerWrapper>
-      <RenderDeleteButton
-        item={item}
-        path={path}
-        index={index}
-        responseItem={responseItem}
-        className="page_refero__deletebutton--margin-top"
-      />
-      <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} responseItem={responseItem} responseItems={responseItems} />
+      <RenderDeleteButton item={item} path={path} index={index} className="page_refero__deletebutton--margin-top" />
+      <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} />
       {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
     </div>
   );

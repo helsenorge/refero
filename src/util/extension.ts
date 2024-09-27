@@ -11,7 +11,7 @@ import { TABLE_CODES_VALUES } from '../constants/tableTypes';
 import { getText } from '../util/index';
 import { hasCode, isTableCode } from './typeguards';
 
-export function getValidationTextExtension(item: QuestionnaireItem): string | undefined {
+export function getValidationTextExtension(item?: QuestionnaireItem): string | undefined {
   const validationTextExtension = getExtension(Extensions.VALIDATIONTEXT_URL, item);
   if (!validationTextExtension || !validationTextExtension.valueString) {
     return undefined;
@@ -44,13 +44,13 @@ export function getNavigatorExtension(questionniare?: Questionnaire | null): Cod
 
 export function getSidebarSections(
   questionniare: Questionnaire,
-  onRenderMarkdown?: (item: QuestionnaireItem, markup: string) => string
+  onRenderMarkdown?: (item?: QuestionnaireItem, markup?: string) => string
 ): SidebarItem[] {
   const items: SidebarItem[] = [];
-  const getSidebarItems = (currentItem: QuestionnaireItem, currentItems: SidebarItem[]): void => {
+  const getSidebarItems = (currentItem?: QuestionnaireItem, currentItems?: SidebarItem[]): void => {
     const itemControls = getItemControlExtensionValue(currentItem);
     if (
-      currentItem.type === itemType.TEXT &&
+      currentItem?.type === itemType.TEXT &&
       itemControls &&
       itemControls.some(itemControl => itemControl.code === itemControlConstants.SIDEBAR)
     ) {
@@ -59,23 +59,23 @@ export function getSidebarSections(
         markdownText: getText(currentItem, onRenderMarkdown),
       });
     }
-    currentItem.item?.forEach((item: QuestionnaireItem) => {
+    currentItem?.item?.forEach((item?: QuestionnaireItem) => {
       getSidebarItems(item, currentItems);
     });
   };
-  questionniare.item?.forEach((item: QuestionnaireItem) => {
+  questionniare.item?.forEach((item?: QuestionnaireItem) => {
     getSidebarItems(item, items);
   });
   return items;
 }
 
-export function isItemSidebar(item: QuestionnaireItem): boolean {
+export function isItemSidebar(item?: QuestionnaireItem): boolean {
   const itemControls = getItemControlExtensionValue(item);
   return itemControls !== undefined && itemControls.some(itemControl => itemControl.code === itemControlConstants.SIDEBAR);
 }
 
-export function getExtensions(item: QuestionnaireItem): Extension[] {
-  return item.extension ?? [];
+export function getExtensions(item?: QuestionnaireItem): Extension[] {
+  return item?.extension ?? [];
 }
 
 export function getExtension(url: string, item?: QuestionnaireItem | Element | Questionnaire | null): Extension | undefined {
@@ -89,7 +89,7 @@ export function getExtension(url: string, item?: QuestionnaireItem | Element | Q
   return filteredExtension[0];
 }
 
-export function getPlaceholder(item: QuestionnaireItem): string | undefined {
+export function getPlaceholder(item?: QuestionnaireItem): string | undefined {
   if (!item || !item.extension || item.extension.length === 0) {
     return undefined;
   }
@@ -100,7 +100,7 @@ export function getPlaceholder(item: QuestionnaireItem): string | undefined {
   return extension.valueString;
 }
 
-export function getQuestionnaireUnitExtensionValue(item: QuestionnaireItem): Coding | undefined {
+export function getQuestionnaireUnitExtensionValue(item?: QuestionnaireItem): Coding | undefined {
   if (!item || !item.extension || item.extension.length === 0) {
     return undefined;
   }
@@ -111,7 +111,7 @@ export function getQuestionnaireUnitExtensionValue(item: QuestionnaireItem): Cod
   return extension.valueCoding;
 }
 
-export function getMaxValueExtensionValue(item: QuestionnaireItem): number | undefined {
+export function getMaxValueExtensionValue(item?: QuestionnaireItem): number | undefined {
   const maxValue = getExtension(Extensions.MAX_VALUE_URL, item);
   if (maxValue && maxValue.valueDecimal !== null && maxValue.valueDecimal !== undefined) {
     return Number(maxValue.valueDecimal);
@@ -122,7 +122,7 @@ export function getMaxValueExtensionValue(item: QuestionnaireItem): number | und
   return undefined;
 }
 
-export function getMinValueExtensionValue(item: QuestionnaireItem): number | undefined {
+export function getMinValueExtensionValue(item?: QuestionnaireItem): number | undefined {
   const minValue = getExtension(Extensions.MIN_VALUE_URL, item);
   if (minValue && minValue.valueDecimal !== null && minValue.valueDecimal !== undefined) {
     return Number(minValue.valueDecimal);
@@ -133,7 +133,7 @@ export function getMinValueExtensionValue(item: QuestionnaireItem): number | und
   return undefined;
 }
 
-export function getMinOccursExtensionValue(item: QuestionnaireItem): number | undefined {
+export function getMinOccursExtensionValue(item?: QuestionnaireItem): number | undefined {
   const minValue = getExtension(Extensions.MIN_OCCURS_URL, item);
   if (minValue && minValue.valueInteger !== null && minValue.valueInteger !== undefined) {
     return Number(minValue.valueInteger);
@@ -141,7 +141,7 @@ export function getMinOccursExtensionValue(item: QuestionnaireItem): number | un
   return undefined;
 }
 
-export function getMaxOccursExtensionValue(item: QuestionnaireItem): number | undefined {
+export function getMaxOccursExtensionValue(item?: QuestionnaireItem): number | undefined {
   const maxValue = getExtension(Extensions.MAX_OCCURS_URL, item);
   if (maxValue && maxValue.valueInteger !== null && maxValue.valueInteger !== undefined) {
     return Number(maxValue.valueInteger);
@@ -149,7 +149,7 @@ export function getMaxOccursExtensionValue(item: QuestionnaireItem): number | un
   return undefined;
 }
 
-export function getMinLengthExtensionValue(item: QuestionnaireItem): number | undefined {
+export function getMinLengthExtensionValue(item?: QuestionnaireItem): number | undefined {
   const minLength = getExtension(Extensions.MIN_LENGTH_URL, item);
   if (minLength && minLength.valueInteger) {
     return Number(minLength.valueInteger);
@@ -157,7 +157,7 @@ export function getMinLengthExtensionValue(item: QuestionnaireItem): number | un
   return undefined;
 }
 
-export function getRegexExtension(item: QuestionnaireItem): string | undefined {
+export function getRegexExtension(item?: QuestionnaireItem): string | undefined {
   const regexExtension = getExtension(Extensions.REGEX_URL, item);
   if (!regexExtension || !regexExtension.valueString) {
     return undefined;
@@ -165,7 +165,7 @@ export function getRegexExtension(item: QuestionnaireItem): string | undefined {
   return regexExtension.valueString;
 }
 
-export function getRepeatsTextExtension(item: QuestionnaireItem): string | undefined {
+export function getRepeatsTextExtension(item?: QuestionnaireItem): string | undefined {
   const repeatsTextExtension = getExtension(Extensions.REPEATSTEXT_URL, item);
   if (!repeatsTextExtension || !repeatsTextExtension.valueString) {
     return undefined;
@@ -173,7 +173,7 @@ export function getRepeatsTextExtension(item: QuestionnaireItem): string | undef
   return repeatsTextExtension.valueString;
 }
 
-export function getItemControlExtensionValue(item: QuestionnaireItem): Coding[] | undefined {
+export function getItemControlExtensionValue(item?: QuestionnaireItem): Coding[] | undefined {
   const itemControlExtension = getExtension(Extensions.ITEMCONTROL_URL, item);
   if (!itemControlExtension || !itemControlExtension.valueCodeableConcept || !itemControlExtension.valueCodeableConcept.coding) {
     return undefined;
@@ -181,7 +181,7 @@ export function getItemControlExtensionValue(item: QuestionnaireItem): Coding[] 
   return itemControlExtension.valueCodeableConcept.coding;
 }
 
-export const getCodingTextTableValues = (item: QuestionnaireItem): TABLE_CODES_VALUES[] => {
+export const getCodingTextTableValues = (item?: QuestionnaireItem): TABLE_CODES_VALUES[] => {
   const extension = getItemControlExtensionValue(item);
   const codeValues =
     extension
@@ -191,7 +191,7 @@ export const getCodingTextTableValues = (item: QuestionnaireItem): TABLE_CODES_V
   return codeValues;
 };
 
-export function getMarkdownExtensionValue(item: QuestionnaireItem | Element): string | undefined {
+export function getMarkdownExtensionValue(item?: QuestionnaireItem | Element): string | undefined {
   const markdownExtension = getExtension(Extensions.MARKDOWN_URL, item);
   if (!markdownExtension || !markdownExtension.valueMarkdown) {
     return undefined;
@@ -199,7 +199,7 @@ export function getMarkdownExtensionValue(item: QuestionnaireItem | Element): st
   return markdownExtension.valueMarkdown;
 }
 
-export function getSublabelExtensionValue(item: QuestionnaireItem | Element): string | undefined {
+export function getSublabelExtensionValue(item?: QuestionnaireItem | Element): string | undefined {
   const markdownExtension = getExtension(Extensions.SUBLABEL_URL, item);
   if (!markdownExtension || !markdownExtension.valueMarkdown) {
     return undefined;
@@ -207,7 +207,7 @@ export function getSublabelExtensionValue(item: QuestionnaireItem | Element): st
   return markdownExtension.valueMarkdown;
 }
 
-export function getQuestionnaireHiddenExtensionValue(item: QuestionnaireItem): boolean | undefined {
+export function getQuestionnaireHiddenExtensionValue(item?: QuestionnaireItem): boolean | undefined {
   const questionnaireHiddenExtension = getExtension(Extensions.QUESTIONNAIRE_HIDDEN_URL, item);
   if (!questionnaireHiddenExtension || !questionnaireHiddenExtension.valueBoolean) {
     return false;
@@ -215,7 +215,7 @@ export function getQuestionnaireHiddenExtensionValue(item: QuestionnaireItem): b
   return questionnaireHiddenExtension.valueBoolean;
 }
 
-export function getCalculatedExpressionExtension(item: QuestionnaireItem): Extension | undefined {
+export function getCalculatedExpressionExtension(item?: QuestionnaireItem): Extension | undefined {
   const calculatedExpressionExtension = getExtension(Extensions.CALCULATED_EXPRESSION_URL, item);
   if (
     !calculatedExpressionExtension ||
@@ -227,7 +227,7 @@ export function getCalculatedExpressionExtension(item: QuestionnaireItem): Exten
   return calculatedExpressionExtension;
 }
 
-export function getCopyExtension(item: QuestionnaireItem): Extension | undefined {
+export function getCopyExtension(item?: QuestionnaireItem): Extension | undefined {
   const extension = getExtension(Extensions.COPY_EXPRESSION_URL, item);
   if (!extension || !extension.valueString) {
     return;
@@ -235,7 +235,7 @@ export function getCopyExtension(item: QuestionnaireItem): Extension | undefined
   return extension;
 }
 
-export function getHyperlinkExtensionValue(item: QuestionnaireItem | Element | Questionnaire): number | undefined {
+export function getHyperlinkExtensionValue(item?: QuestionnaireItem | Element | Questionnaire): number | undefined {
   const hyperlinkExtension = getExtension(Extensions.HYPERLINK_URL, item);
   if (hyperlinkExtension && hyperlinkExtension.valueCoding && hyperlinkExtension.valueCoding.code) {
     return parseInt(hyperlinkExtension.valueCoding.code);
@@ -243,7 +243,7 @@ export function getHyperlinkExtensionValue(item: QuestionnaireItem | Element | Q
   return undefined;
 }
 
-export function getMaxSizeExtensionValue(item: QuestionnaireItem): number | undefined {
+export function getMaxSizeExtensionValue(item?: QuestionnaireItem): number | undefined {
   const maxValue = getExtension(Extensions.MAX_SIZE_URL, item);
   if (maxValue && maxValue.valueDecimal !== null && maxValue.valueDecimal !== undefined) {
     return Number(maxValue.valueDecimal);

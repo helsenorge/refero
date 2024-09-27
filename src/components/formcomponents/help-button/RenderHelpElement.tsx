@@ -9,7 +9,7 @@ import { useExternalRenderContext } from '@/context/externalRenderContext';
 
 type Props = {
   isHelpVisible: boolean;
-  item: QuestionnaireItem;
+  item?: QuestionnaireItem;
 };
 
 const RenderHelpElement = ({ isHelpVisible, item }: Props): JSX.Element | null => {

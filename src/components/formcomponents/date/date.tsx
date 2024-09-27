@@ -12,23 +12,27 @@ import { GlobalState } from '../../../reducers';
 
 import { getItemControlExtensionValue } from '../../../util/extension';
 
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
-import { useIsEnabled } from '@/hooks/useIsEnabled';
 import { useCallback, useMemo } from 'react';
+import { findQuestionnaireItem } from '@/reducers/selectors';
+import { QuestionnaireItem } from 'fhir/r4';
+import useOnAnswerChange from '@/hooks/useOnAnswerChange';
 
 export type DateProps = QuestionnaireComponentItemProps;
 
 const DateComponent = (props: DateProps): JSX.Element | null => {
-  const { item, language, responseItems, responseItem, path, index, children } = props;
-  const enable = useIsEnabled(item, path);
+  const { language, linkId, path, index, children } = props;
+  const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
 
-  const answer = useGetAnswer(responseItem, item);
-  const { promptLoginMessage, onAnswerChange } = useExternalRenderContext();
+  const answer = useGetAnswer(linkId, path);
+  const { promptLoginMessage, globalOnChange } = useExternalRenderContext();
+  const onAnswerChange = useOnAnswerChange(globalOnChange);
+
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
   const itemControls = useMemo(() => getItemControlExtensionValue(item), [item]);
   const { YEAR, YEARMONTH } = itemControlConstants;
@@ -36,7 +40,7 @@ const DateComponent = (props: DateProps): JSX.Element | null => {
   const onDateValueChange = useCallback(
     (newValue: string): void => {
       const existingAnswer = Array.isArray(answer) ? answer[0].valueDate : answer?.valueDate || '';
-      if (newValue !== existingAnswer && path) {
+      if (newValue !== existingAnswer && path && item) {
         dispatch(newDateValueAsync(path, newValue, item)).then(newState => {
           onAnswerChange?.(newState, item, { valueDate: newValue });
         });
@@ -60,9 +64,7 @@ const DateComponent = (props: DateProps): JSX.Element | null => {
       return <DateDayInput {...props} locale={locale} onDateValueChange={onDateValueChange} />;
     }
   }, [itemControls, locale, onDateValueChange, props]);
-  if (!enable) {
-    return null;
-  }
+
   if (!element) {
     return null;
   }
@@ -70,14 +72,8 @@ const DateComponent = (props: DateProps): JSX.Element | null => {
   return (
     <div className="page_refero__component page_refero__component_date">
       {element}
-      <RenderDeleteButton
-        item={item}
-        path={path}
-        index={index}
-        responseItem={responseItem}
-        className="page_refero__deletebutton--margin-top"
-      />
-      <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} responseItem={responseItem} responseItems={responseItems} />
+      <RenderDeleteButton item={item} path={path} index={index} className="page_refero__deletebutton--margin-top" />
+      <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} />
 
       <div className="nested-fieldset nested-fieldset--full-height">{children}</div>
     </div>

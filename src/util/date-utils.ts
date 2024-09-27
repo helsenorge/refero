@@ -109,9 +109,9 @@ const extractTimeFromAnswer = (answer?: QuestionnaireResponseItemAnswer | Questi
 
 export const extractHoursAndMinutesFromAnswer = (
   answer: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[] | undefined,
-  item: QuestionnaireItem
+  item?: QuestionnaireItem
 ): TimeValues | null => {
-  const timeString = extractTimeFromAnswer(answer) || extractTimeFromAnswer(item.initial);
+  const timeString = extractTimeFromAnswer(answer) || extractTimeFromAnswer(item?.initial);
   return timeString ? getHoursAndMinutesFromTime(timeString) : null;
 };
 
@@ -234,7 +234,7 @@ const parseHoursAndMinutesToDate = (hours?: string, minutes?: string): Date | un
   }
 };
 
-const getMinTime = (item: QuestionnaireItem): string | undefined => {
+const getMinTime = (item?: QuestionnaireItem): string | undefined => {
   const minTime = getExtension(Extensions.MIN_VALUE_URL, item);
   if (!minTime || !minTime.valueTime) {
     return;
@@ -242,7 +242,7 @@ const getMinTime = (item: QuestionnaireItem): string | undefined => {
   return minTime.valueTime;
 };
 
-const getMaxTime = (item: QuestionnaireItem): string | undefined => {
+const getMaxTime = (item?: QuestionnaireItem): string | undefined => {
   const maxTime = getExtension(Extensions.MAX_VALUE_URL, item);
   if (!maxTime || !maxTime.valueTime) {
     return;
@@ -297,7 +297,7 @@ export const validateMinTime = (
   hours: string | undefined,
   minutes: string | undefined,
   resources: Resources | undefined,
-  item: QuestionnaireItem
+  item?: QuestionnaireItem
 ): true | string => {
   const minTime = parseTimestringToDate(getMinTime(item));
   const timeToValidate = parseHoursAndMinutesToDate(hours, minutes);
@@ -312,7 +312,7 @@ export const validateMaxTime = (
   hours: string | undefined,
   minutes: string | undefined,
   resources: Resources | undefined,
-  item: QuestionnaireItem
+  item?: QuestionnaireItem
 ): true | string => {
   const maxTime = parseTimestringToDate(getMaxTime(item));
   const timeToValidate = parseHoursAndMinutesToDate(hours, minutes);

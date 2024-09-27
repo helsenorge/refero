@@ -1,19 +1,20 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import ItemType from '@/constants/itemType';
 import { GlobalState } from '@/reducers';
-import { FormData, getFormData } from '@/reducers/form';
+import { findQuestionnaireItem, getResponseItemWithPathSelector, questionnaireResponseSelector } from '@/reducers/selectors';
 import { getCalculatedExpressionExtension, getCopyExtension } from '@/util/extension';
 import { evaluateFhirpathExpressionToGetString } from '@/util/fhirpathHelper';
-import { getAnswerFromResponseItem } from '@/util/refero-core';
-import { Extension, QuestionnaireItem, QuestionnaireResponseItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
+import { getAnswerFromResponseItem, Path } from '@/util/refero-core';
+import { Extension, QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
+
 import { useSelector } from 'react-redux';
 
 function getAnswerIfDataReceiver(
-  formData: FormData | null,
+  questionnaireResponse: QuestionnaireResponse | null | undefined,
   item: QuestionnaireItem,
   extension: Extension
 ): QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[] | undefined {
-  let result = evaluateFhirpathExpressionToGetString(extension, formData?.Content);
+  let result = evaluateFhirpathExpressionToGetString(extension, questionnaireResponse);
 
   if (getCalculatedExpressionExtension(item)) {
     result = result.map((m: any) => m.value as number);
@@ -59,10 +60,16 @@ function getQuestionnaireResponseItemAnswer(
 }
 
 export const useGetAnswer = (
-  responseItem?: QuestionnaireResponseItem,
-  item?: QuestionnaireItem
+  linkId?: string,
+  path?: Path[]
 ): QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[] | undefined => {
-  const formData = useSelector<GlobalState, FormData | null>(state => getFormData(state));
-  const dataRecieverExtension = item && getCopyExtension(item);
-  return dataRecieverExtension ? getAnswerIfDataReceiver(formData, item, dataRecieverExtension) : getAnswerFromResponseItem(responseItem);
+  const questionnaireResponse = useSelector<GlobalState, QuestionnaireResponse | null | undefined>(questionnaireResponseSelector);
+  const item2 = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
+  const responseItem = useSelector<GlobalState, QuestionnaireResponseItem | undefined>(state =>
+    getResponseItemWithPathSelector(state, path)
+  );
+  const dataRecieverExtension = item2 && getCopyExtension(item2);
+  return dataRecieverExtension
+    ? getAnswerIfDataReceiver(questionnaireResponse, item2, dataRecieverExtension)
+    : getAnswerFromResponseItem(responseItem);
 };

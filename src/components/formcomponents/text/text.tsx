@@ -17,9 +17,8 @@ import { getPlaceholder, getItemControlExtensionValue } from '@/util/extension';
 import { isReadOnly, getId, getStringValue, getMaxLength, getPDFStringValue } from '@/util/index';
 import { ReferoLabel } from '../../referoLabel/ReferoLabel';
 import TextView from '../textview';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
-import { useIsEnabled } from '@/hooks/useIsEnabled';
 import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelpButton';
 import RenderHelpElement from '@/components/formcomponents/help-button/RenderHelpElement';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
@@ -28,35 +27,27 @@ import { QuestionnaireComponentItemProps } from '@/components/createQuestionnair
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 import Display from '../display/display';
 import { maxLength, minLength, regexpPattern, required, scriptInjection } from '@/components/validation/rules';
+import { QuestionnaireItem } from 'fhir/r4';
+import { findQuestionnaireItem } from '@/reducers/selectors';
+import useOnAnswerChange from '@/hooks/useOnAnswerChange';
 
 export type Props = QuestionnaireComponentItemProps & {
   shouldExpanderRenderChildrenWhenClosed?: boolean;
 };
 export const Text = (props: Props): JSX.Element | null => {
-  const {
-    id,
-    item,
-    pdf,
-    resources,
-    idWithLinkIdAndItemIndex,
-    path,
-    shouldExpanderRenderChildrenWhenClosed,
-    responseItems,
-    responseItem,
-    index,
-    children,
-  } = props;
-  const { promptLoginMessage, validateScriptInjection, onAnswerChange } = useExternalRenderContext();
+  const { id, pdf, idWithLinkIdAndItemIndex, path, shouldExpanderRenderChildrenWhenClosed, linkId, index, children } = props;
+  const { promptLoginMessage, validateScriptInjection, globalOnChange, resources } = useExternalRenderContext();
+  const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
+  const onAnswerChange = useOnAnswerChange(globalOnChange);
   const { formState, getFieldState, register } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
   const [isHelpVisible, setIsHelpVisible] = useState(false);
-  const answer = useGetAnswer(responseItem, item);
-  const enable = useIsEnabled(item, path);
+  const answer = useGetAnswer(linkId, path);
   const handleChange = (event: React.FormEvent): void => {
     const value = (event.target as HTMLInputElement).value;
-    if (dispatch && path) {
+    if (dispatch && path && item) {
       dispatch(newStringValueAsync(path, value, item))?.then(newState => onAnswerChange(newState, item, { valueString: value }));
     }
 
@@ -75,9 +66,7 @@ export const Text = (props: Props): JSX.Element | null => {
   if (itemControls && itemControls.some(itemControl => itemControl.code === itemControlConstants.HIGHLIGHT)) {
     return <Display {...props} />;
   }
-  if (!enable) {
-    return null;
-  }
+
   if (itemControls && itemControls.some(itemControl => itemControl.code === itemControlConstants.SIDEBAR)) {
     return null;
   }
@@ -85,7 +74,7 @@ export const Text = (props: Props): JSX.Element | null => {
   if (itemControls && itemControls.some(itemControl => itemControl.code === itemControlConstants.INLINE)) {
     return (
       <div id={id} className="page_refero__component page_refero__component_expandabletext">
-        <Expander title={item.text ? item.text : ''} renderChildrenWhenClosed={shouldExpanderRenderChildrenWhenClosed ? true : false}>
+        <Expander title={item?.text ? item.text : ''} renderChildrenWhenClosed={shouldExpanderRenderChildrenWhenClosed ? true : false}>
           {children}
         </Expander>
       </div>
@@ -120,8 +109,9 @@ export const Text = (props: Props): JSX.Element | null => {
           item={item}
           labelId={`${getId(id)}-text-label`}
           resources={resources}
-          afterLabelContent={<RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />}
-        />
+        >
+          <RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />
+        </ReferoLabel>
         <RenderHelpElement item={item} isHelpVisible={isHelpVisible} />
 
         <Textarea
@@ -140,14 +130,8 @@ export const Text = (props: Props): JSX.Element | null => {
           maxText={getMaxLength(item) ? resources?.maxLengthText?.replace('{0}', `${getMaxLength(item)}`) : ''}
         />
 
-        <RenderDeleteButton
-          item={item}
-          path={path}
-          index={index}
-          responseItem={responseItem}
-          className="page_refero__deletebutton--margin-top"
-        />
-        <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} responseItem={responseItem} responseItems={responseItems} />
+        <RenderDeleteButton item={item} path={path} index={index} className="page_refero__deletebutton--margin-top" />
+        <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} />
       </FormGroup>
       <div className="nested-fieldset nested-fieldset--full-height">{children}</div>
     </div>

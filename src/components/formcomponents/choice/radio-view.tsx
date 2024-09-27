@@ -18,6 +18,11 @@ import RenderDeleteButton from '../repeat/RenderDeleteButton';
 
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { required } from '@/components/validation/rules';
+import { useSelector } from 'react-redux';
+import { QuestionnaireItem } from 'fhir/r4';
+import { findQuestionnaireItem } from '@/reducers/selectors';
+import { GlobalState } from '@/reducers';
+import { useExternalRenderContext } from '@/context/externalRenderContext';
 
 export type Props = QuestionnaireComponentItemProps & {
   options?: Array<Options>;
@@ -26,20 +31,10 @@ export type Props = QuestionnaireComponentItemProps & {
 };
 
 const RadioView = (props: Props): JSX.Element => {
-  const {
-    options,
-    item,
-    id,
-    handleChange,
-    selected,
-    resources,
-    responseItems,
-    responseItem,
-    path,
-    index,
-    idWithLinkIdAndItemIndex,
-    children,
-  } = props;
+  const { options, id, handleChange, selected, linkId, path, index, idWithLinkIdAndItemIndex, children } = props;
+  const { resources } = useExternalRenderContext();
+  const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
+
   const { formState, getFieldState, register } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
@@ -59,8 +54,9 @@ const RadioView = (props: Props): JSX.Element => {
           labelId={`${getId(id)}-choice-label`}
           testId={`${getId(id)}-choice-label`}
           sublabelId={`${getId(id)}-choice-sublabel`}
-          afterLabelContent={<RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />}
-        />
+        >
+          <RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />
+        </ReferoLabel>
         <RenderHelpElement item={item} isHelpVisible={isHelpVisible} />
         {options?.map((option: Options, index: number) => (
           <RadioButton
@@ -79,14 +75,8 @@ const RadioView = (props: Props): JSX.Element => {
           />
         ))}
       </FormGroup>
-      <RenderDeleteButton
-        item={item}
-        path={path}
-        index={index}
-        responseItem={responseItem}
-        className="page_refero__deletebutton--margin-top"
-      />
-      <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} responseItem={responseItem} responseItems={responseItems} />
+      <RenderDeleteButton item={item} path={path} index={index} className="page_refero__deletebutton--margin-top" />
+      <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} />
       <div className="nested-fieldset nested-fieldset--full-height">{children}</div>
     </div>
   );

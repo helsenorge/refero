@@ -1,4 +1,4 @@
-import { Coding } from 'fhir/r4';
+import { Coding, QuestionnaireItem } from 'fhir/r4';
 import { ThunkDispatch } from 'redux-thunk';
 
 import CheckboxView from './checkbox-view';
@@ -22,24 +22,29 @@ import { isReadOnly } from '@/util/index';
 import AutosuggestView from '../choice-common/autosuggest-view';
 import ReceiverComponentWrapper from '../receiver-component/receiver-component-wrapper';
 import TextView from '../textview';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
-import { useIsEnabled } from '@/hooks/useIsEnabled';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 import { useCallback, useEffect, useMemo } from 'react';
+import { findQuestionnaireItem } from '@/reducers/selectors';
+import useOnAnswerChange from '@/hooks/useOnAnswerChange';
 
 export type ChoiceProps = QuestionnaireComponentItemProps;
 
 export const Choice = (props: ChoiceProps): JSX.Element | null => {
-  const { resources, containedResources, item, path, id, pdf, responseItem, children } = props;
-  const { promptLoginMessage, onAnswerChange } = useExternalRenderContext();
+  const { containedResources, path, id, pdf, linkId, children } = props;
+
+  const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
+
+  const { promptLoginMessage, globalOnChange, resources } = useExternalRenderContext();
+  const onAnswerChange = useOnAnswerChange(globalOnChange);
+
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
-  const answer = useGetAnswer(responseItem, item);
-  const enable = useIsEnabled(item, path);
+  const answer = useGetAnswer(linkId, path);
   useEffect(() => {
     if (!Array.isArray(answer) && answer?.valueCoding?.code && !answer?.valueCoding?.display) {
-      if (answer?.valueCoding?.code === item.initial?.[0]?.valueCoding?.code) {
+      if (answer?.valueCoding?.code === item?.initial?.[0]?.valueCoding?.code) {
         resetInitialAnswer(answer?.valueCoding?.code);
       }
     }
@@ -55,12 +60,12 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
   }, [answer]);
 
   const getInitialValue = useCallback((): string[] | undefined => {
-    const initialSelectedCode = item.answerOption?.find(option => option.initialSelected)?.valueCoding?.code;
+    const initialSelectedCode = item?.answerOption?.find(option => option.initialSelected)?.valueCoding?.code;
 
     if (initialSelectedCode) {
       return [initialSelectedCode];
     }
-    const code = item.initial?.[0]?.valueCoding?.code;
+    const code = item?.initial?.[0]?.valueCoding?.code;
     return code ? [code] : undefined;
   }, [item]);
 
@@ -91,7 +96,7 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
 
   const resetInitialAnswer = useCallback(
     (code?: string): void => {
-      if (code && onAnswerChange && path) {
+      if (code && onAnswerChange && path && item) {
         const coding = getAnswerValueCoding(code);
         const responseAnswer = { valueCoding: coding };
         if (answerContainsCode(code)) {
@@ -106,7 +111,7 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
 
   const handleCheckboxChange = useCallback(
     (code?: string): void => {
-      if (code && onAnswerChange && path) {
+      if (code && onAnswerChange && path && item) {
         const coding = getAnswerValueCoding(code);
         const responseAnswer = { valueCoding: coding };
         if (answerContainsCode(code)) {
@@ -122,7 +127,7 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
 
   const clearCodingAnswer = useCallback(
     (coding: Coding): void => {
-      if (onAnswerChange && path) {
+      if (onAnswerChange && path && item) {
         const responseAnswer = { valueCoding: coding };
         dispatch(removeCodingValueAsync(path, coding, item)).then(newState => onAnswerChange(newState, item, responseAnswer));
         promptLoginMessage?.();
@@ -133,7 +138,7 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
 
   const handleChange = useCallback(
     (code?: string, systemArg?: string, displayArg?: string): void => {
-      if (code && onAnswerChange && path) {
+      if (code && onAnswerChange && path && item) {
         const coding = getAnswerValueCoding(code, systemArg, displayArg);
         const responseAnswer = { valueCoding: coding };
         dispatch(newCodingValueAsync(path, coding, item)).then(newState => onAnswerChange(newState, item, responseAnswer));
@@ -186,8 +191,6 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
   );
 
   const aboveDropdownThreshold = useMemo(() => isAboveDropdownThreshold(options), [options]);
-
-  if (!enable) return null;
 
   if (pdf || isReadOnly(item)) {
     return (

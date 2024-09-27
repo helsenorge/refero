@@ -24,18 +24,18 @@ import ItemType from '@/constants/itemType';
 import { isReadOnly, isRequired } from './index';
 import { isItemControlValue } from './typeguards';
 
-export function hasCanonicalValueSet(item: QuestionnaireItem): boolean {
-  return !!item.answerValueSet && item.answerValueSet.substr(0, 4) === 'http';
+export function hasCanonicalValueSet(item?: QuestionnaireItem): boolean {
+  return !!item?.answerValueSet && item.answerValueSet.substr(0, 4) === 'http';
 }
 
-export function hasOptions(resources: Resources | undefined, item: QuestionnaireItem, containedResources?: Resource[]): boolean {
+export function hasOptions(resources: Resources | undefined, item?: QuestionnaireItem, containedResources?: Resource[]): boolean {
   const options = getOptions(resources, item, containedResources);
   return !!options && options.length > 0;
 }
 
 export function getOptions(
   resources: Resources | undefined,
-  item: QuestionnaireItem,
+  item?: QuestionnaireItem,
   containedResources?: Resource[]
 ): Array<Options> | undefined {
   if (!item) {
@@ -75,11 +75,11 @@ function getValueSet(answerValueSet: QuestionnaireItem['answerValueSet'], contai
   }
 }
 
-export function getSystem(item: QuestionnaireItem, code: string, containedResources?: Resource[]): string | undefined {
-  if (item.answerValueSet && item.answerValueSet.startsWith('#')) {
-    return getValueSet(item.answerValueSet, containedResources);
-  } else if (item.answerOption && code) {
-    const matchingCode = item.answerOption.filter(x => x.valueCoding && x.valueCoding.code === code);
+export function getSystem(item?: QuestionnaireItem, code?: string, containedResources?: Resource[]): string | undefined {
+  if (item?.answerValueSet && item?.answerValueSet.startsWith('#')) {
+    return getValueSet(item?.answerValueSet, containedResources);
+  } else if (item?.answerOption && code) {
+    const matchingCode = item?.answerOption.filter(x => x.valueCoding && x.valueCoding.code === code);
     return matchingCode.length > 0 ? matchingCode[0].valueCoding?.system : undefined;
   }
   return undefined;
@@ -155,7 +155,7 @@ export function isAboveDropdownThreshold(options: Array<Options> | undefined): b
   return options.length > Constants.CHOICE_DROPDOWN_TRESHOLD;
 }
 
-export function getItemControlValue(item: QuestionnaireItem): ItemControlValue | undefined {
+export function getItemControlValue(item?: QuestionnaireItem): ItemControlValue | undefined {
   const itemControl = getItemControlExtensionValue(item);
   if (itemControl) {
     for (const control of itemControl) {

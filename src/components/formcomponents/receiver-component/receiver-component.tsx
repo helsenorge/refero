@@ -12,7 +12,6 @@ import NotificationPanel from '@helsenorge/designsystem-react/components/Notific
 import Select from '@helsenorge/designsystem-react/components/Select';
 
 import { getId } from '@/util';
-import { Resources } from '@/util/resources';
 
 import SafeText from '../../referoLabel/SafeText';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
@@ -20,7 +19,6 @@ import { useExternalRenderContext } from '@/context/externalRenderContext';
 export interface ReceiverComponentProps {
   selected?: Array<string | undefined>;
   id?: string;
-  resources?: Resources;
   label?: string;
   handleChange: (code?: string, systemArg?: string, displayArg?: string) => void;
   clearCodingAnswer: (coding: Coding) => void;
@@ -31,20 +29,20 @@ export interface ReceiverComponentProps {
 const ReceiverComponent = ({
   selected,
   id,
-  resources,
   handleChange,
   clearCodingAnswer,
   idWithLinkIdAndItemIndex,
 }: ReceiverComponentProps): JSX.Element | null => {
   const { formState, getFieldState, register } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
+
   const { error } = fieldState;
   const [receiverTreeNodes, setReceiverTreeNodes] = React.useState<OrgenhetHierarki[]>([]);
   const [selectedPath, setSelectedPath] = React.useState<number[]>([]);
   const [selectedReceiver, setSelectedReceiver] = React.useState<string>('');
   const [isLoading, setIsLoading] = React.useState<boolean>(true);
   const [hasLoadError, setHasLoadError] = React.useState<boolean>(false);
-  const { fetchReceivers } = useExternalRenderContext();
+  const { fetchReceivers, resources } = useExternalRenderContext();
   React.useEffect(() => {
     if (fetchReceivers) {
       fetchReceivers(loadSuccessCallback, loadErrorCallback);

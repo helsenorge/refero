@@ -25,6 +25,9 @@ import { useMinMaxDate } from './useMinMaxDate';
 
 import styles from '../../../styles/date-year-month.module.css';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
+import { GlobalState } from '@/reducers';
+import { useSelector } from 'react-redux';
+import { findQuestionnaireItem } from '@/reducers/selectors';
 import { initialize } from '@/util/date-fns-utils';
 
 type DateMonthProps = QuestionnaireComponentItemProps & {
@@ -36,15 +39,17 @@ export const DateYearMonthInput = ({
   id,
   idWithLinkIdAndItemIndex,
   pdf,
-  item,
-  responseItem,
+  linkId,
   onDateValueChange,
   children,
+  path,
 }: DateMonthProps): JSX.Element | null => {
   initialize();
 
+  const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
+
   const { setValue, formState, getFieldState, getValues } = useFormContext<FieldValues>();
-  const answer = useGetAnswer(responseItem, item);
+  const answer = useGetAnswer(linkId, path);
   const { resources } = useExternalRenderContext();
   const { minDateTime, maxDateTime } = useMinMaxDate(item);
 
@@ -85,7 +90,7 @@ export const DateYearMonthInput = ({
   }, []);
 
   const getValue = (
-    item: QuestionnaireItem,
+    item?: QuestionnaireItem,
     answer?: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]
   ): string | string[] | undefined => {
     if (answer && Array.isArray(answer)) {
@@ -160,8 +165,9 @@ export const DateYearMonthInput = ({
           labelId={`${getId(id)}-label`}
           testId={`${getId(id)}-label-test`}
           sublabelId={`${getId(id)}-sublabel`}
-          afterLabelContent={<RenderHelpButton isHelpVisible={isHelpVisible} item={item} setIsHelpVisible={setIsHelpVisible} />}
-        />
+        >
+          <RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />
+        </ReferoLabel>
         <RenderHelpElement item={item} isHelpVisible={isHelpVisible} />
         <div className={styles.yearMonthWrapper}>
           <Controller

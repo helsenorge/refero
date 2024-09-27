@@ -13,17 +13,19 @@ import { NewValueAction, deleteRepeatItemAsync } from '../../../actions/newValue
 import { GlobalState } from '../../../reducers';
 import { Path } from '../../../util/refero-core';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
+import useOnAnswerChange from '@/hooks/useOnAnswerChange';
 
 type Props = {
   className?: string;
-  item: QuestionnaireItem;
+  item?: QuestionnaireItem;
   path?: Array<Path>;
   mustShowConfirm?: boolean;
 };
 
 const DeleteButton = ({ item, path, mustShowConfirm }: Props): JSX.Element => {
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
-  const { onAnswerChange, resources } = useExternalRenderContext();
+  const { globalOnChange, resources } = useExternalRenderContext();
+  const onAnswerChange = useOnAnswerChange(globalOnChange);
   const [showConfirm, setShowConfirm] = useState(false);
 
   const onDeleteRepeatItemConfirmed = (): void => {
@@ -44,8 +46,8 @@ const DeleteButton = ({ item, path, mustShowConfirm }: Props): JSX.Element => {
   const onConfirmCancel = (): void => {
     setShowConfirm(false);
   };
-  const pathItem = path?.filter(p => p.linkId === item.linkId);
-  const testId = `${pathItem?.[0].linkId ?? item.linkId}-${pathItem?.[0].index ?? 0}`;
+  const pathItem = path?.filter(p => p.linkId === item?.linkId);
+  const testId = `${pathItem?.[0].linkId ?? item?.linkId}-${pathItem?.[0].index ?? 0}`;
   return (
     <>
       <br />

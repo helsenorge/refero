@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 import { format, isValid } from 'date-fns';
 
-import { QuestionnaireResponseItemAnswer } from 'fhir/r4';
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { Controller, FieldError, FieldValues, useFormContext } from 'react-hook-form';
 import { ThunkDispatch } from 'redux-thunk';
 
@@ -28,7 +28,7 @@ import { isRequired, getId, isReadOnly } from '../../../util/index';
 import TextView from '../textview';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import RenderHelpButton from '../help-button/RenderHelpButton';
 import RenderHelpElement from '../help-button/RenderHelpElement';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
@@ -37,34 +37,27 @@ import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 import { useMinMaxDate } from './useMinMaxDate';
-import { useIsEnabled } from '@/hooks/useIsEnabled';
+import { findQuestionnaireItem } from '@/reducers/selectors';
+import useOnAnswerChange from '@/hooks/useOnAnswerChange';
 
 export type Props = QuestionnaireComponentItemProps;
 
-const DateTimeInput = ({
-  item,
-  resources,
-  path,
-  pdf,
-  id,
-  idWithLinkIdAndItemIndex,
-  children,
-  responseItem,
-  index,
-  responseItems,
-}: Props): JSX.Element | null => {
+const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, children, index }: Props): JSX.Element | null => {
   initialize();
 
-  const { promptLoginMessage, onAnswerChange } = useExternalRenderContext();
+  const { promptLoginMessage, globalOnChange, resources } = useExternalRenderContext();
+  const onAnswerChange = useOnAnswerChange(globalOnChange);
+
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
-  const answer = useGetAnswer(responseItem, item);
+  const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
+
+  const answer = useGetAnswer(linkId, path);
   const [isHelpVisible, setIsHelpVisible] = useState(false);
   const { formState, getFieldState, setValue } = useFormContext<FieldValues>();
   const dateField = getFieldState(`${idWithLinkIdAndItemIndex}-date`, formState);
   const hoursField = getFieldState(`${idWithLinkIdAndItemIndex}-hours`, formState);
   const minutesField = getFieldState(`${idWithLinkIdAndItemIndex}-minutes`, formState);
   const { minDateTime, maxDateTime } = useMinMaxDate(item);
-  const enable = useIsEnabled(item);
 
   const getDateAnswerValue = (
     answer?: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[] | undefined
@@ -88,9 +81,6 @@ const DateTimeInput = ({
     return item.initial[0].valueDate;
   };
 
-  if (!enable) {
-    return null;
-  }
   const dateAnswerValue = getDateAnswerValue(answer);
   const date: Date | string | undefined = parseStringToDate(dateAnswerValue);
 
@@ -171,7 +161,7 @@ const DateTimeInput = ({
       fullDate = getFullFnsDate(newDate, newHours, newMinutes);
     }
 
-    if (dispatch && onAnswerChange && path) {
+    if (dispatch && onAnswerChange && path && item) {
       dispatch(newDateTimeValueAsync(path, fullDate ?? '', item))?.then(newState =>
         onAnswerChange(newState, item, { valueDateTime: fullDate })
       );
@@ -191,9 +181,10 @@ const DateTimeInput = ({
         labelId={`${getId(id)}-label`}
         testId={`${getId(id)}-datetime-label`}
         sublabelId={`${getId(id)}-sublabel`}
-        afterLabelContent={<RenderHelpButton isHelpVisible={isHelpVisible} item={item} setIsHelpVisible={setIsHelpVisible} />}
         dateLabel={resources?.dateFormat_ddmmyyyy}
-      />
+      >
+        <RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />
+      </ReferoLabel>
       <RenderHelpElement isHelpVisible={isHelpVisible} item={item} />
       <DateTimePickerWrapper
         testId={`${getId(id)}-datetime-wrapper`}
@@ -290,14 +281,8 @@ const DateTimeInput = ({
           )}
         />
       </DateTimePickerWrapper>
-      <RenderDeleteButton
-        item={item}
-        path={path}
-        index={index}
-        responseItem={responseItem}
-        className="page_refero__deletebutton--margin-top"
-      />
-      <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} responseItem={responseItem} responseItems={responseItems} />
+      <RenderDeleteButton item={item} path={path} index={index} className="page_refero__deletebutton--margin-top" />
+      <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} />
       {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
     </div>
   );

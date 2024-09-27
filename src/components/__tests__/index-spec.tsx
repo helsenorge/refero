@@ -21,7 +21,13 @@ describe('Component renders help items', () => {
   it('help button should be visible and control the help element', async () => {
     let expectedOpeningStatus = false;
 
-    const helpButtonCb = (item: QuestionnaireItem, helpItem: QuestionnaireItem, helpType: string, helpText: string, opening: boolean) => {
+    const helpButtonCb = (
+      item: QuestionnaireItem,
+      helpItem: QuestionnaireItem,
+      helpType: string,
+      helpText: string,
+      opening: boolean
+    ): JSX.Element => {
       expect(item.linkId).toBe('1');
       expect(helpItem.linkId).toBe('1.1');
       expect(helpText).toBe('help text');
@@ -31,7 +37,13 @@ describe('Component renders help items', () => {
       return <div className="helpButton">{'help button'}</div>;
     };
 
-    const helpElementCb = (item: QuestionnaireItem, helpItem: QuestionnaireItem, helpType: string, helpText: string, opening: boolean) => {
+    const helpElementCb = (
+      item: QuestionnaireItem,
+      helpItem: QuestionnaireItem,
+      helpType: string,
+      helpText: string,
+      opening: boolean
+    ): JSX.Element => {
       expect(item.linkId).toBe('1');
       expect(helpItem.linkId).toBe('1.1');
       expect(helpText).toBe('help text');
@@ -111,6 +123,7 @@ describe('Copying from ...', () => {
   });
 });
 
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function createWrapper(
   questionnaire: Questionnaire,
   helpButtonCb?: (item: QuestionnaireItem, helpItem: QuestionnaireItem, helpType: string, help: string, opening: boolean) => JSX.Element,

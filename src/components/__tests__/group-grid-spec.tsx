@@ -15,14 +15,14 @@ describe('group-grid-spec', () => {
 
     const rows = container.querySelectorAll('tr.page_refero__grid--row');
     expect(rows).toHaveLength(4);
-    let expectedItemsPerRow = [['1.1.1', '1.1.2', '1.1.3'], ['1.2.2', '1.2.3', '1.2.1'], ['1.3.1'], ['1.4.1']];
+    const expectedItemsPerRow = [['1.1.1', '1.1.2', '1.1.3'], ['1.2.2', '1.2.3', '1.2.1'], ['1.3.1'], ['1.4.1']];
     for (let i = 0; i < rows.length; i++) {
       validateRow(rows[i], 5, expectedItemsPerRow[i]);
     }
   });
 });
 
-function validateRow(wrapper: Element, expectedNumCells: number, expectedItemLinkIds: string[]) {
+function validateRow(wrapper: Element, expectedNumCells: number, expectedItemLinkIds: string[]): void {
   const numCells = wrapper.querySelectorAll('td');
   expect(numCells).toHaveLength(expectedNumCells);
 
@@ -35,6 +35,7 @@ function validateRow(wrapper: Element, expectedNumCells: number, expectedItemLin
   // expect(cells.map(it => it.prop('item')!.linkId)).toEqual(expectedItemLinkIds);
 }
 
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function createWrapper(questionnaire: Questionnaire) {
   return renderRefero({ questionnaire });
 }

@@ -4,20 +4,26 @@ import DeleteButton from './DeleteButton';
 
 import { Path, shouldRenderDeleteButton } from '@/util/refero-core';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
+import { useSelector } from 'react-redux';
+import { GlobalState } from '@/reducers';
+import { getResponseItemWithPathSelector } from '@/reducers/selectors';
+import { memo } from 'react';
 
 type Props = {
   className?: string;
   index?: number;
-  item: QuestionnaireItem;
+  item?: QuestionnaireItem;
   path?: Path[];
-  responseItem?: QuestionnaireResponseItem;
 };
 
-export const RenderDeleteButton = ({ className, responseItem, item, path, index }: Props): JSX.Element | null => {
-  if (!shouldRenderDeleteButton(item, index || 0)) {
+export const RenderDeleteButton = memo(function RenderDeleteButton({ className, item, path, index }: Props): JSX.Element | null {
+  const responseItem = useSelector<GlobalState, QuestionnaireResponseItem | undefined>(state =>
+    getResponseItemWithPathSelector(state, path)
+  );
+  if (!shouldRenderDeleteButton(item, index || 0) || !item || !path) {
     return null;
   }
-  const answer = useGetAnswer(responseItem, item);
+  const answer = useGetAnswer(item?.linkId, path);
 
   const hasAnwer = (answer: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[] | undefined): boolean => {
     return !!answer && Object.keys(answer).length > 0;
@@ -34,6 +40,6 @@ export const RenderDeleteButton = ({ className, responseItem, item, path, index 
       <DeleteButton className={className} item={item} path={path} mustShowConfirm={mustShowConfirm} />
     </div>
   );
-};
+});
 
 export default RenderDeleteButton;

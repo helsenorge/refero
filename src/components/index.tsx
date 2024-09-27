@@ -26,6 +26,31 @@ import { NewValueAction } from '@/actions/newValue';
 import { createIntitialFormValues } from '@/validation/defaultFormValues';
 
 const Refero = (props: ReferoProps): JSX.Element | null => {
+  const {
+    resources,
+    authorized,
+    pdf,
+    sticky,
+    onRequestHelpButton,
+    onRequestHelpElement,
+    onRenderMarkdown,
+    fetchReceivers,
+    fetchValueSet,
+    onFieldsNotCorrectlyFilledOut,
+    onStepChange,
+    promptLoginMessage,
+    autoSuggestProps,
+    validateScriptInjection,
+    onChange,
+    attachmentErrorMessage,
+    attachmentMaxFileSize,
+    attachmentValidTypes,
+    onDeleteAttachment,
+    onRequestAttachmentLink,
+    onOpenAttachment,
+    uploadAttachment,
+    // ... any other props
+  } = props;
   IE11HackToWorkAroundBug187484();
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
   const formDefinition = useSelector<GlobalState, FormDefinition | null>((state: GlobalState) => getFormDefinition(state));
@@ -51,6 +76,30 @@ const Refero = (props: ReferoProps): JSX.Element | null => {
     }
   }, []);
 
+  const externalRenderProps = {
+    onRequestHelpElement,
+    onRequestHelpButton,
+    onRenderMarkdown,
+    fetchValueSet,
+    fetchReceivers,
+    onFieldsNotCorrectlyFilledOut,
+    onStepChange,
+    promptLoginMessage,
+    resources,
+    autoSuggestProps,
+    validateScriptInjection,
+    onChange,
+  };
+
+  const attachmentProviderProps = {
+    attachmentErrorMessage,
+    attachmentMaxFileSize,
+    attachmentValidTypes,
+    onDeleteAttachment,
+    onRequestAttachmentLink,
+    onOpenAttachment,
+    uploadAttachment,
+  };
   const handleSubmit = (): void => {
     const { onSubmit } = props;
 
@@ -81,36 +130,14 @@ const Refero = (props: ReferoProps): JSX.Element | null => {
     return classes.join(' ');
   };
 
-  const { resources, authorized } = props;
-
   if (!formDefinition || !formDefinition.Content || !resources) {
     return null;
   }
 
-  if (props.pdf) {
+  if (pdf) {
     return (
-      <ExternalRenderProvider
-        onRequestHelpButton={props.onRequestHelpButton}
-        onRequestHelpElement={props.onRequestHelpElement}
-        onRenderMarkdown={props.onRenderMarkdown}
-        fetchReceivers={props.fetchReceivers}
-        fetchValueSet={props.fetchValueSet}
-        onFieldsNotCorrectlyFilledOut={props.onFieldsNotCorrectlyFilledOut}
-        onStepChange={props.onStepChange}
-        promptLoginMessage={props.promptLoginMessage}
-        resources={resources}
-        autoSuggestProps={props.autoSuggestProps}
-        validateScriptInjection={props.validateScriptInjection}
-      >
-        <AttachmentProvider
-          attachmentErrorMessage={props.attachmentErrorMessage}
-          attachmentMaxFileSize={props.attachmentMaxFileSize}
-          attachmentValidTypes={props.attachmentValidTypes}
-          onDeleteAttachment={props.onDeleteAttachment}
-          onRequestAttachmentLink={props.onRequestAttachmentLink}
-          onOpenAttachment={props.onOpenAttachment}
-          uploadAttachment={props.uploadAttachment}
-        >
+      <ExternalRenderProvider {...externalRenderProps}>
+        <AttachmentProvider {...attachmentProviderProps}>
           <FormProvider {...methods}>
             <GenerateQuestionnaireComponents items={questionnaire?.item} pdf={true} />
           </FormProvider>
@@ -123,31 +150,10 @@ const Refero = (props: ReferoProps): JSX.Element | null => {
   const isStepView = shouldFormBeDisplayedAsStepView(formDefinition);
 
   return (
-    <div className={getButtonClasses(presentationButtonsType, ['page_refero__content'], props.sticky)}>
+    <div className={getButtonClasses(presentationButtonsType, ['page_refero__content'], sticky)}>
       <div className="page_refero__messageboxes" />
-      <ExternalRenderProvider
-        onRequestHelpButton={props.onRequestHelpButton}
-        onRequestHelpElement={props.onRequestHelpElement}
-        onRenderMarkdown={props.onRenderMarkdown}
-        fetchReceivers={props.fetchReceivers}
-        fetchValueSet={props.fetchValueSet}
-        onFieldsNotCorrectlyFilledOut={props.onFieldsNotCorrectlyFilledOut}
-        onStepChange={props.onStepChange}
-        promptLoginMessage={props.promptLoginMessage}
-        resources={resources}
-        autoSuggestProps={props.autoSuggestProps}
-        validateScriptInjection={props.validateScriptInjection}
-        onChange={props.onChange}
-      >
-        <AttachmentProvider
-          attachmentErrorMessage={props.attachmentErrorMessage}
-          attachmentMaxFileSize={props.attachmentMaxFileSize}
-          attachmentValidTypes={props.attachmentValidTypes}
-          onDeleteAttachment={props.onDeleteAttachment}
-          onRequestAttachmentLink={props.onRequestAttachmentLink}
-          onOpenAttachment={props.onOpenAttachment}
-          uploadAttachment={props.uploadAttachment}
-        >
+      <ExternalRenderProvider {...externalRenderProps}>
+        <AttachmentProvider {...attachmentProviderProps}>
           <FormProvider {...methods}>
             {isStepView ? (
               <StepView

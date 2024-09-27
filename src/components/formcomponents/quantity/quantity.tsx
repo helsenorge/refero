@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { QuestionnaireResponseItemAnswer, Quantity as QuantityType } from 'fhir/r4';
+import { QuestionnaireResponseItemAnswer, Quantity as QuantityType, QuestionnaireItem } from 'fhir/r4';
 import { FieldValues, useFormContext } from 'react-hook-form';
 import { ThunkDispatch } from 'redux-thunk';
 import styles2 from '../common-styles.module.css';
@@ -15,9 +15,8 @@ import { isReadOnly, getId } from '@/util/index';
 import TextView from '../textview';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
-import { useIsEnabled } from '@/hooks/useIsEnabled';
 import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelpButton';
 import RenderHelpElement from '@/components/formcomponents/help-button/RenderHelpElement';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
@@ -25,20 +24,24 @@ import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 import { decimalPattern, maxValue, minValue, required } from '@/components/validation/rules';
+import { findQuestionnaireItem } from '@/reducers/selectors';
+import useOnAnswerChange from '@/hooks/useOnAnswerChange';
 
 export type Props = QuestionnaireComponentItemProps;
 
 const Quantity = (props: Props): JSX.Element | null => {
-  const { path, item, id, resources, pdf, idWithLinkIdAndItemIndex, responseItems, index, children, responseItem } = props;
-  const { promptLoginMessage, onAnswerChange } = useExternalRenderContext();
+  const { path, id, pdf, idWithLinkIdAndItemIndex, index, children, linkId } = props;
+  const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
+
+  const { promptLoginMessage, globalOnChange, resources } = useExternalRenderContext();
+  const onAnswerChange = useOnAnswerChange(globalOnChange);
   const { formState, getFieldState, register } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
 
   const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
   const [isHelpVisible, setIsHelpVisible] = useState(false);
-  const answer = useGetAnswer(responseItem, item);
-  const enable = useIsEnabled(item, path);
+  const answer = useGetAnswer(linkId, path);
 
   const getValue = (
     answer?: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]
@@ -78,10 +81,11 @@ const Quantity = (props: Props): JSX.Element | null => {
     if (value !== null && !isNaN(value) && isFinite(value)) {
       quantity.value = value;
     }
-
-    dispatch(newQuantityValueAsync(path || [], quantity, item))?.then(newState =>
-      onAnswerChange(newState, item, { valueQuantity: quantity } as QuestionnaireResponseItemAnswer)
-    );
+    if (dispatch && path && item) {
+      dispatch(newQuantityValueAsync(path || [], quantity, item))?.then(newState =>
+        onAnswerChange(newState, item, { valueQuantity: quantity } as QuestionnaireResponseItemAnswer)
+      );
+    }
 
     if (promptLoginMessage) {
       promptLoginMessage();
@@ -95,9 +99,7 @@ const Quantity = (props: Props): JSX.Element | null => {
     }
     return '';
   };
-  if (!enable) {
-    return null;
-  }
+
   if (pdf || isReadOnly(item)) {
     return (
       <TextView id={id} item={item} value={getPDFValue()}>
@@ -124,8 +126,9 @@ const Quantity = (props: Props): JSX.Element | null => {
           labelId={`${getId(id)}-quantity-label`}
           testId={`${getId(id)}-quantity-label`}
           sublabelId={`${getId(id)}-quantity-sublabel`}
-          afterLabelContent={<RenderHelpButton isHelpVisible={isHelpVisible} item={item} setIsHelpVisible={setIsHelpVisible} />}
-        />
+        >
+          <RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />
+        </ReferoLabel>
         <RenderHelpElement isHelpVisible={isHelpVisible} item={item} />
 
         <div className={styles.inputWrapper}>
@@ -146,14 +149,8 @@ const Quantity = (props: Props): JSX.Element | null => {
           <span className={`${styles.pageReferoUnit} page_refero__unit`}>{getUnit()}</span>
         </div>
 
-        <RenderDeleteButton
-          item={item}
-          path={path}
-          index={index}
-          responseItem={responseItem}
-          className="page_refero__deletebutton--margin-top"
-        />
-        <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} responseItem={responseItem} responseItems={responseItems} />
+        <RenderDeleteButton item={item} path={path} index={index} className="page_refero__deletebutton--margin-top" />
+        <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} />
       </FormGroup>
       <div className="nested-fieldset nested-fieldset--full-height">{children}</div>
     </div>
