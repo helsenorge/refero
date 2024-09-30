@@ -28,7 +28,7 @@ export const findQuestionnaireItem = createSelector(
         if (item.linkId === linkId) {
           return item;
         }
-        if (item.item) {
+        if (item?.item) {
           const found = findItem(item.item);
           if (found !== undefined) {
             return found;
@@ -62,10 +62,10 @@ export const getResponseItemWithPathSelector = createSelector(
     let item = rootItems[path[0].index || 0];
 
     for (let i = 1; i < path.length; i++) {
-      let itemsWithLinkIdFromPath = getItemWithIdFromResponseItemArray(path[i].linkId, item.item);
+      let itemsWithLinkIdFromPath = getItemWithIdFromResponseItemArray(path[i].linkId, item?.item);
 
       if (!itemsWithLinkIdFromPath || itemsWithLinkIdFromPath.length === 0) {
-        const itemsFromAnswer = item.answer?.map(a => a.item).reduce((a, b) => (a || []).concat(b || []), []);
+        const itemsFromAnswer = item?.answer?.map(a => a.item).reduce((a, b) => (a || []).concat(b || []), []);
 
         itemsWithLinkIdFromPath = getItemWithIdFromResponseItemArray(path[i].linkId, itemsFromAnswer);
 
@@ -99,7 +99,7 @@ export const getAllResponseItems = createSelector(
             }
           }
         }
-        if (item.item) {
+        if (item?.item) {
           const items = findItem(item.item);
           if (items && items.length > 0) {
             responseItems.push(...items);
@@ -128,7 +128,7 @@ export const getFlatMapResponseItemsForItemSelector = createSelector(
     (_: GlobalState, _linkId?: string, path?: Path[]): Path[] | undefined => path,
   ],
   (item?: QuestionnaireItem, formData?: FormData, path?: Path[]): QuestionnaireResponseItem[] | undefined => {
-    if (!formData || !formData.Content || !formData.Content.item) {
+    if (!formData?.Content?.item) {
       return undefined;
     }
     const responseItemsFromData = getRootQuestionnaireResponseItemFromData(item?.linkId, formData);
@@ -148,7 +148,7 @@ export const getFlatMapResponseItemsForItemSelector = createSelector(
       return [responseItem];
     } else {
       // Otherwise, search within its child items
-      const childItems = responseItem.item;
+      const childItems = responseItem?.item;
       const childAnswers = responseItem.answer?.flatMap(ans => ans.item || []);
 
       const matchingItems = getItemWithIdFromResponseItemArray(item?.linkId, [...(childItems || []), ...(childAnswers || [])]);
@@ -176,7 +176,7 @@ function getResponseItemWithPath(path: Path[] = [], items: QuestionnaireResponse
     }
 
     // Prepare for the next iteration
-    currentItems = responseItem.item || responseItem.answer?.flatMap(ans => ans.item || []) || [];
+    currentItems = responseItem.item || responseItem.answer?.flatMap(ans => ans?.item || []) || [];
   }
 
   return responseItem;
@@ -186,6 +186,6 @@ export const getLinkIdFromResponseItems = createSelector([getFlatMapResponseItem
   return ids;
 });
 export const languageSelector = createSelector(
-  [(state: GlobalState): QuestionnaireResponse | null | undefined => state.refero.form.FormData.Content],
+  [(state: GlobalState): QuestionnaireResponse | null | undefined => state.refero.form.FormData?.Content],
   formData => formData?.language
 );
