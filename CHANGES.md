@@ -1,3 +1,7 @@
+## 16.0.0-beta.37
+- Fixed date fields getting error even though they were optional and didn't have value
+- Created correct validation for min/max value in yearMonth field
+
 ## 16.0.0-beta.36
 
 - Width based on max length of answer in string, number and dropdown components
