@@ -12,7 +12,7 @@ import { debounce } from '@helsenorge/core-utils/debounce';
 
 import { OPEN_CHOICE_ID, OPEN_CHOICE_SYSTEM } from '@/constants';
 import ItemType from '@/constants/itemType';
-import { getId } from '@/util/index';
+import { getId, getMaxLength } from '@/util/index';
 import { getStringAnswer, hasStringAnswer, getCodingAnswer } from '@/util/refero-core';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
@@ -173,6 +173,8 @@ const AutosuggestView = (props: AutosuggestProps): JSX.Element | null => {
     required: required({ item, resources }),
     shouldUnregister: true,
   });
+  const maxCharacters = getMaxLength(item);
+  const width = maxCharacters ? (maxCharacters > 40 ? 40 : maxCharacters) : 25;
   return (
     <div className="page_refero__component page_refero__component_choice page_refero__component_choice_autosuggest">
       <FormGroup error={error?.message} errorWrapperClassName={styles.paddingBottom}>
@@ -192,6 +194,7 @@ const AutosuggestView = (props: AutosuggestProps): JSX.Element | null => {
           inputProps={{
             ...rest,
             id: getId(id),
+            width: width,
             onChange: (e: FormEvent<HTMLElement>, AutosuggestChangeEvent): void => {
               onChange(e);
               onChangeInput(e, AutosuggestChangeEvent);

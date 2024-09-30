@@ -10,7 +10,7 @@ import Input from '@helsenorge/designsystem-react/components/Input';
 
 import { NewValueAction, newDecimalValueAsync } from '@/actions/newValue';
 import { GlobalState } from '@/reducers';
-import { getPlaceholder } from '@/util/extension';
+import { getMaxValueExtensionValue, getPlaceholder } from '@/util/extension';
 import { isReadOnly, getId } from '@/util/index';
 import TextView from '../textview';
 
@@ -104,6 +104,8 @@ const Decimal = (props: Props): JSX.Element | null => {
     pattern: decimalPattern({ item, resources }),
     shouldUnregister: true,
   });
+  const maxCharacters = getMaxValueExtensionValue(item) ? getMaxValueExtensionValue(item)?.toString().length : undefined;
+  const width = maxCharacters ? (maxCharacters > 40 ? 40 : maxCharacters + 2) : 7;
   return (
     <div className="page_refero__component page_refero__component_decimal">
       <FormGroup error={error?.message} mode="ongrey" errorWrapperClassName={styles.paddingBottom}>
@@ -130,7 +132,7 @@ const Decimal = (props: Props): JSX.Element | null => {
             handleChange(e);
             onChange(e);
           }}
-          width={25}
+          width={width}
         />
       </FormGroup>
       <RenderDeleteButton item={item} path={path} index={index} className="page_refero__deletebutton--margin-top" />

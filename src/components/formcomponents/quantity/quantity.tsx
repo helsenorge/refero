@@ -9,7 +9,7 @@ import Input from '@helsenorge/designsystem-react/components/Input';
 import styles from './quantity.module.css';
 import { NewValueAction, newQuantityValueAsync } from '@/actions/newValue';
 import { GlobalState } from '@/reducers';
-import { getPlaceholder, getQuestionnaireUnitExtensionValue } from '@/util/extension';
+import { getMaxValueExtensionValue, getPlaceholder, getQuestionnaireUnitExtensionValue } from '@/util/extension';
 import { isReadOnly, getId } from '@/util/index';
 
 import TextView from '../textview';
@@ -116,6 +116,8 @@ const Quantity = (props: Props): JSX.Element | null => {
     pattern: decimalPattern({ item, resources }),
     shouldUnregister: true,
   });
+  const maxCharacters = getMaxValueExtensionValue(item) ? getMaxValueExtensionValue(item)?.toString().length : undefined;
+  const width = maxCharacters ? (maxCharacters > 40 ? 40 : maxCharacters + 2) : 7;
   return (
     <div className="page_refero__component page_refero__component_quantity">
       <FormGroup error={error?.message} mode="ongrey" errorWrapperClassName={styles2.paddingBottom}>
@@ -144,7 +146,7 @@ const Quantity = (props: Props): JSX.Element | null => {
               onChange(e);
               handleChange(e);
             }}
-            width={7}
+            width={width}
           />
           <span className={`${styles.pageReferoUnit} page_refero__unit`}>{getUnit()}</span>
         </div>
