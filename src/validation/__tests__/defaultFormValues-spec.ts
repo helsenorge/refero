@@ -109,7 +109,10 @@ describe('Default form values', () => {
       it('empty fields should cause a validation error on submit', async () => {
         const wrapper = createWrapper(qDateTime);
         await submitForm();
-        expect(wrapper.queryByTestId(/summary-element-Tom datetime/i)).toBeInTheDocument();
+        const summaryElements = wrapper.queryAllByTestId(/summary-element-Tom datetime/i);
+        expect(summaryElements[0]).toBeInTheDocument();
+        expect(summaryElements[1]).toBeInTheDocument();
+        expect(summaryElements[2]).toBeInTheDocument();
       });
     });
     describe('Initial time value', () => {

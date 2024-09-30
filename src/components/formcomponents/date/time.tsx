@@ -108,13 +108,6 @@ const Time = ({ id, index, path, linkId, pdf, idWithLinkIdAndItemIndex, children
     return error;
   }
 
-  // const getResetButtonText = (): string => {
-  //   if (resources && resources.resetTime) {
-  //     return resources.resetTime;
-  //   }
-  //   return '';
-  // };
-
   const getPDFValue = (): string | undefined => {
     const hoursAndMinutesValue = extractHoursAndMinutesFromAnswer(answer, item);
     const hoursValue = hoursAndMinutesFromAnswer?.hours;

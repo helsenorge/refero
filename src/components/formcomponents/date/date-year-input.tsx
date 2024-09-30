@@ -114,13 +114,13 @@ export const DateYearInput = (props: Props): JSX.Element | null => {
           },
           validate: {
             validYear: value => {
-              return validateYearDigits(value, resources);
+              return value ? validateYearDigits(value, resources) : true;
             },
             validMinDate: value => {
-              return validateYearMin(minDateTime, value, resources);
+              return value ? validateYearMin(minDateTime, value, resources) : true;
             },
             validMaxDate: value => {
-              return validateYearMax(maxDateTime, value, resources);
+              return value ? validateYearMax(maxDateTime, value, resources) : true;
             },
           },
         }}
