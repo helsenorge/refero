@@ -54,6 +54,7 @@ const FormButtons = ({
                 return (
                   <PauseFormButton
                     key={buttonType}
+                    isStepView={isStepView}
                     pauseButtonText={pauseButtonText}
                     isHelsenorgeForm={isHelsenorgeForm}
                     onPauseButtonClicked={onPauseButtonClicked}

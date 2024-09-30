@@ -16,7 +16,7 @@ interface RenderFormProps {
   isStepView: boolean;
   referoProps: ReferoProps;
   resources: Resources;
-  onSave: () => void;
+  onSave?: () => void;
   onSubmit: () => void;
   displayNextButton?: boolean;
   displayPreviousButton?: boolean;
@@ -70,7 +70,7 @@ const RenderForm = ({
           isStepView={isStepView}
           submitButtonText={displayNextButton && resources.nextStep ? resources.nextStep : resources.formSend}
           cancelButtonText={resources.formCancel}
-          pauseButtonText={displayPreviousButton && resources.previousStep ? resources.previousStep : resources.formSave}
+          pauseButtonText={displayPreviousButton && isStepView ? resources.previousStep || 'Lagre' : resources.formSave}
           submitButtonDisabled={referoProps.blockSubmit}
           pauseButtonDisabled={referoProps.saveButtonDisabled}
           onSubmitButtonClicked={displayNextButton ? methods.handleSubmit(handleNextStep) : methods.handleSubmit(onSubmitReactHookForm)}
