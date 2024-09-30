@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import styles2 from '../common-styles.module.css';
-import { format } from 'date-fns';
+import { format, getYear, isValid, parse } from 'date-fns';
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { Controller, FieldError, FieldValues, useFormContext } from 'react-hook-form';
 
@@ -15,7 +15,7 @@ import { getValidationTextExtension } from '../../../util/extension';
 
 import TextView from '../textview';
 
-import { getMonthOptions, getYearFromString, validateYearDigits, validateYearMax, validateYearMin } from '@/util/date-utils';
+import { getMonthOptions, getYearFromString, validateYearDigits, validateYearMonthMax, validateYearMonthMin } from '@/util/date-utils';
 import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelpButton';
 import RenderHelpElement from '@/components/formcomponents/help-button/RenderHelpElement';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
@@ -29,6 +29,7 @@ import { GlobalState } from '@/reducers';
 import { useSelector } from 'react-redux';
 import { findQuestionnaireItem } from '@/reducers/selectors';
 import { initialize } from '@/util/date-fns-utils';
+import { DateFormat } from '@/types/dateTypes';
 
 type DateMonthProps = QuestionnaireComponentItemProps & {
   locale: LanguageLocales.ENGLISH | LanguageLocales.NORWEGIAN;
@@ -48,7 +49,7 @@ export const DateYearMonthInput = ({
 
   const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
 
-  const { setValue, formState, getFieldState, getValues } = useFormContext<FieldValues>();
+  const { formState, getFieldState, setValue, getValues, trigger } = useFormContext<FieldValues>();
   const answer = useGetAnswer(linkId, path);
   const { resources } = useExternalRenderContext();
   const { minDateTime, maxDateTime } = useMinMaxDate(item);
@@ -81,8 +82,8 @@ export const DateYearMonthInput = ({
   const yearField = getFieldState(`${idWithLinkIdAndItemIndex}-yearmonth-year`, formState);
   const monthsField = getFieldState(`${idWithLinkIdAndItemIndex}-yearmonth-month`, formState);
   const monthOptions = getMonthOptions(resources);
-  const year: string | undefined = getYearAndMonth()?.year.toString();
-  const month: string | undefined | null = getYearAndMonth()?.month?.toString();
+  const year: string | undefined = getYearAndMonth()?.year.toString() || '';
+  const month: string | undefined | null = getYearAndMonth()?.month || '';
 
   useEffect(() => {
     setValue(`${idWithLinkIdAndItemIndex}-yearmonth-year`, year);
@@ -114,9 +115,20 @@ export const DateYearMonthInput = ({
       return text;
     }
     if (Array.isArray(value)) {
-      return value.map(d => d && format(d, 'MMMM yyyy')).join(', ');
+      return value
+        .map(d => {
+          const valueParsed = parse(d, DateFormat.yyyyMM, new Date());
+          if (isValid(valueParsed)) {
+            return format(d, 'MMMM yyyy');
+          }
+        })
+        .join(', ');
     }
-    return format(value, 'MMMM yyyy');
+    const valueParsed = parse(value, DateFormat.yyyyMM, new Date());
+    if (isValid(valueParsed)) {
+      return format(valueParsed, 'MMMM yyyy');
+    }
+    return value;
   };
 
   const getErrorText = (error: FieldError | undefined): string | undefined => {
@@ -140,11 +152,26 @@ export const DateYearMonthInput = ({
     return `${newYearString}-${newMonthString}`;
   };
 
-  const handleYearMonthChange = (newYear: string | undefined, newMonth: string | undefined | null): void => {
+  const handleYearChange = (newYear: string | undefined, newMonth: string | undefined | null): void => {
+    let newValue = '';
     if (newYear && newMonth) {
-      const concatinatedString = getConcatinatedYearAndMonth(newYear, newMonth);
-      onDateValueChange(concatinatedString);
+      newValue = getConcatinatedYearAndMonth(newYear, newMonth);
+    } else if (newYear) {
+      newValue = newYear;
     }
+    onDateValueChange(newValue);
+  };
+  const handleMonthChange = (newYear: string | undefined, newMonth: string | undefined | null): void => {
+    if (formState.isSubmitted) {
+      trigger(idWithLinkIdAndItemIndex + '-yearmonth-year');
+    }
+    let newValue = '';
+    if (newYear && newMonth) {
+      newValue = getConcatinatedYearAndMonth(newYear, newMonth);
+    } else if (newMonth) {
+      newValue = `${getYear(new Date())}-${newMonth}`;
+    }
+    onDateValueChange(newValue);
   };
 
   const doesAnyFieldsHaveValue = (): boolean => {
@@ -189,10 +216,16 @@ export const DateYearMonthInput = ({
                   return doesAnyFieldsHaveValue() ? validateYearDigits(getYearFromString(value), resources) : true;
                 },
                 validMinDate: value => {
-                  return doesAnyFieldsHaveValue() ? validateYearMin(minDateTime, Number(getYearFromString(value)), resources) : true;
+                  const monthValue = getValues(idWithLinkIdAndItemIndex + '-yearmonth-month');
+                  return doesAnyFieldsHaveValue()
+                    ? validateYearMonthMin(minDateTime, getYearFromString(value), monthValue, resources)
+                    : true;
                 },
                 validMaxDate: value => {
-                  return doesAnyFieldsHaveValue() ? validateYearMax(maxDateTime, Number(getYearFromString(value)), resources) : true;
+                  const monthValue = getValues(idWithLinkIdAndItemIndex + '-yearmonth-month');
+                  return doesAnyFieldsHaveValue()
+                    ? validateYearMonthMax(maxDateTime, getYearFromString(value), monthValue, resources)
+                    : true;
                 },
               },
             }}
@@ -203,11 +236,10 @@ export const DateYearMonthInput = ({
                 testId={getId(id)}
                 onChange={e => {
                   const monthValue = getValues(idWithLinkIdAndItemIndex + '-yearmonth-month');
-                  handleYearMonthChange(e.target.value, monthValue);
+                  handleYearChange(e.target.value, monthValue);
                   onChange(e.target.value);
                 }}
                 width={10}
-                defaultValue={year ?? ''}
                 value={year}
               />
             )}
@@ -228,11 +260,10 @@ export const DateYearMonthInput = ({
                 testId={'month-select'}
                 onChange={e => {
                   const yearValue = getValues(idWithLinkIdAndItemIndex + '-yearmonth-year');
-                  handleYearMonthChange(yearValue, e.target.value);
+                  handleMonthChange(yearValue, e.target.value);
                   onChange(e.target.value);
                 }}
-                defaultValue={month ?? monthOptions[0].optionValue}
-                value={month}
+                value={month ?? monthOptions[0].optionValue}
               >
                 {monthOptions.map(option => (
                   <option key={option.optionValue} value={option.optionValue}>

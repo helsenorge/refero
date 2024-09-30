@@ -47,8 +47,8 @@
         { "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-minOccurs", "valueInteger": 1 },
         { "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-maxOccurs", "valueInteger": 4 },
         { "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sublabel", "valueMarkdown": "**Dato sublabel**" },
-        { "url": "http://hl7.org/fhir/StructureDefinition/minValue", "valueDate": "1994-05-31" },
-        { "url": "http://hl7.org/fhir/StructureDefinition/maxValue", "valueDate": "2094-05-31" },
+        { "url": "http://hl7.org/fhir/StructureDefinition/minValue", "valueDate": "1994-05" },
+        { "url": "http://hl7.org/fhir/StructureDefinition/maxValue", "valueDate": "1996-05" },
         {
           "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
           "valueCodeableConcept": {

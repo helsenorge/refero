@@ -17,6 +17,7 @@ const resources = {
   yearmonth_field_required: 'Årstall og måned er påkrevd',
   yearmonth_field_invalid: 'Ugyldig verdi',
   yearmonth_field_invalid_year: 'Du må skrive inn et gyldig årstall',
+  errorAfterMaxDate: 'Dato kan ikke være etter maksimum dato',
 };
 
 describe('Date month', () => {
@@ -215,7 +216,7 @@ describe('Date month', () => {
         valueDate: '1994-05',
       };
 
-      expect(onChange).toHaveBeenCalledTimes(1);
+      expect(onChange).toHaveBeenCalledTimes(5);
       expect(onChange).toHaveBeenCalledWith(expect.any(Object), expectedAnswer, expect.any(Object), expect.any(Object));
     });
   });
@@ -270,34 +271,70 @@ describe('Date month', () => {
         await submitForm();
         expect(getByText(resources.yearmonth_field_invalid)).toBeInTheDocument();
       });
-      it('Should show error message for min value', async () => {
+      it('Should show error message for min value, if month is correct but year is too low', async () => {
         const { getByLabelText, getByText } = createWrapper(qMinMax);
 
-        await userEvent.type(getByLabelText(/Dato/i), '1904');
+        const monthElement = await screen.findByTestId('month-select');
+        const monthSelect = monthElement.querySelector('select');
+
+        await userEvent.type(getByLabelText(/Dato/i), '1993');
+        await userEvent.tab();
+        if (monthSelect) {
+          await userEvent.selectOptions(monthSelect, '05');
+        }
 
         await submitForm();
-        expect(getByText(resources.year_field_mindate + ': 1994')).toBeInTheDocument();
+        expect(getByText(resources.errorBeforeMinDate + ': mai 1994')).toBeInTheDocument();
       });
-      it('Should show error message for max value', async () => {
+      it('Should show error message for max value, if month is correct but year is too high', async () => {
         const { getByLabelText, getByText } = createWrapper(qMinMax);
 
-        await userEvent.type(getByLabelText(/Dato/i), '2095');
+        const monthElement = await screen.findByTestId('month-select');
+        const monthSelect = monthElement.querySelector('select');
+
+        await userEvent.type(getByLabelText(/Dato/i), '1997');
+        await userEvent.tab();
+        if (monthSelect) {
+          await userEvent.selectOptions(monthSelect, '05');
+        }
 
         await submitForm();
-        expect(getByText(resources.year_field_maxdate + ': 2094')).toBeInTheDocument();
+        expect(getByText(resources.errorAfterMaxDate + ': mai 1996')).toBeInTheDocument();
       });
-      it('Should show custom error message for min value', async () => {
-        const { getByLabelText, getByText } = createWrapper(qMinMaxCustomError);
+      it('Should show error message for min value, if year is correct but month is too low', async () => {
+        const { getByLabelText, getByText } = createWrapper(qMinMax);
 
-        await userEvent.type(getByLabelText(/Dato/i), '1904');
+        const monthElement = await screen.findByTestId('month-select');
+        const monthSelect = monthElement.querySelector('select');
+
+        await userEvent.type(getByLabelText(/Dato/i), '1994');
+        await userEvent.tab();
+        if (monthSelect) {
+          await userEvent.selectOptions(monthSelect, '04');
+        }
 
         await submitForm();
-        expect(getByText('Custom errormessage')).toBeInTheDocument();
+        expect(getByText(resources.errorBeforeMinDate + ': mai 1994')).toBeInTheDocument();
       });
-      it('Should show custom error message for max value', async () => {
+      it('Should show error message for max value, if year is correct but month is too high', async () => {
+        const { getByLabelText, getByText } = createWrapper(qMinMax);
+
+        const monthElement = await screen.findByTestId('month-select');
+        const monthSelect = monthElement.querySelector('select');
+
+        await userEvent.type(getByLabelText(/Dato/i), '1996');
+        await userEvent.tab();
+        if (monthSelect) {
+          await userEvent.selectOptions(monthSelect, '06');
+        }
+
+        await submitForm();
+        expect(getByText(resources.errorAfterMaxDate + ': mai 1996')).toBeInTheDocument();
+      });
+      it('Should show custom error message if error', async () => {
         const { getByLabelText, getByText } = createWrapper(qMinMaxCustomError);
 
-        await userEvent.type(getByLabelText(/Dato/i), '2095');
+        await userEvent.type(getByLabelText(/Dato/i), '1997');
 
         await submitForm();
         expect(getByText('Custom errormessage')).toBeInTheDocument();
@@ -305,11 +342,18 @@ describe('Date month', () => {
       it('Should not show error if date value is between min value and max value', async () => {
         const { getByLabelText, queryByText } = createWrapper(qMinMax);
 
-        await userEvent.type(getByLabelText(/Dato/i), '2024');
+        const monthElement = await screen.findByTestId('month-select');
+        const monthSelect = monthElement.querySelector('select');
+
+        await userEvent.type(getByLabelText(/Dato/i), '1995');
+        await userEvent.tab();
+        if (monthSelect) {
+          await userEvent.selectOptions(monthSelect, '05');
+        }
 
         await submitForm();
-        expect(queryByText(resources.year_field_mindate + ': 1994')).not.toBeInTheDocument();
-        expect(queryByText(resources.year_field_maxdate + ': 2094')).not.toBeInTheDocument();
+        expect(queryByText(resources.errorAfterMaxDate + ': mai 1994')).not.toBeInTheDocument();
+        expect(queryByText(resources.errorBeforeMinDate + ': mai 1996')).not.toBeInTheDocument();
       });
       it('Should remove error on change if form is submitted', async () => {
         const questionnaire: Questionnaire = {
