@@ -349,3 +349,35 @@ export const validateYearMax = (maxDate: Date | undefined, yearToValidate: numbe
   }
   return true;
 };
+
+export const validateYearMonthMin = (
+  minDate: Date | undefined,
+  yearToValidate: string,
+  monthToValidate: string,
+  resources: Resources | undefined
+): true | string => {
+  if (minDate) {
+    const yearMonthToValidate = `${yearToValidate}-${monthToValidate}`;
+    const dateToValidate = parse(yearMonthToValidate, DateFormat.yyyyMM, new Date());
+    if (dateToValidate < minDate) {
+      return `${resources?.errorBeforeMinDate}: ${format(minDate, DateFormat.MMMMyyyy)}`;
+    }
+  }
+  return true;
+};
+
+export const validateYearMonthMax = (
+  maxDate: Date | undefined,
+  yearToValidate: string,
+  monthToValidate: string,
+  resources: Resources | undefined
+): true | string => {
+  if (maxDate) {
+    const yearMonthToValidate = `${yearToValidate}-${monthToValidate}`;
+    const dateToValidate = parse(yearMonthToValidate, DateFormat.yyyyMM, new Date());
+    if (dateToValidate > maxDate) {
+      return `${resources?.errorAfterMaxDate}: ${format(maxDate, DateFormat.MMMMyyyy)}`;
+    }
+  }
+  return true;
+};

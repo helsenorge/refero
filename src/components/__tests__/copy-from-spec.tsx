@@ -129,6 +129,7 @@ describe('Copy value from item', () => {
       if (monthSelect) {
         await userEvent.selectOptions(monthSelect, '05');
       }
+
       const elm = await findByTestId(/item_2/i);
       expect(elm).toBeInTheDocument();
       await waitFor(async () => expect(getByTestId(/item_2/i)).toHaveTextContent('mai 2024'));
