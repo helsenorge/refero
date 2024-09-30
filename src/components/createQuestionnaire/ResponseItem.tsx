@@ -6,7 +6,7 @@ import ItemType from '@/constants/itemType';
 import { getChildHeaderTag, isRepeat } from '@/util';
 import { createIdSuffix, createPathForItem, Path } from '@/util/refero-core';
 import { RenderContext } from '@/util/renderContext';
-import { QuestionnaireItem, Resource } from 'fhir/r4';
+import { Resource, QuestionnaireItem } from 'fhir/r4';
 
 type ResponseItemProps = {
   linkId: string;

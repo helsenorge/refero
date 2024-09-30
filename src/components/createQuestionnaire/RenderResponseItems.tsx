@@ -1,7 +1,7 @@
 import { Path } from '@/util/refero-core';
 import { QuestionnaireComponentItemProps } from './GenerateQuestionnaireComponents';
 
-import { QuestionnaireItem, Resource } from 'fhir/r4';
+import { Resource, QuestionnaireItem } from 'fhir/r4';
 import { RenderContext } from '@/util/renderContext';
 
 import { memo, useRef } from 'react';
