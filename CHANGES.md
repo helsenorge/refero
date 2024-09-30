@@ -1,3 +1,8 @@
+## 16.0.0-beta.36
+
+- Width based on max length of answer in string, number and dropdown components
+- Fix spacings in all components
+
 ## 16.0.0-beta.34
 
 - Fixed bug where year field became empty if too many numbers were typed
