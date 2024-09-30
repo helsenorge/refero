@@ -44,6 +44,7 @@
 
   div > label:first-child {
     display: inline-block;
+    padding: 0;
   }
 
   .page_refero__component_choice_autosuggest {
@@ -389,8 +390,8 @@
   }
 }
 
-.page_refero__receiverselect .atom_select {
+.page_refero__input  {
   margin-bottom: 2rem;
-  max-width: 30rem;
   width: 100%;
+
 }

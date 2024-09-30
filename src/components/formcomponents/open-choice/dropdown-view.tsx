@@ -51,6 +51,12 @@ const DropdownView = (props: Props): JSX.Element | null => {
   if (!options) {
     return null;
   }
+  const getWith = (options: Array<Options>): number => {
+    const maxCharacters = options?.reduce((acc, option) => (option.label.length > acc ? option.label.length : acc), 0);
+    const placeholderLength = resources?.selectDefaultPlaceholder ? resources.selectDefaultPlaceholder.length : 0;
+    let width = maxCharacters ? (maxCharacters > 40 ? 40 : maxCharacters) : 25;
+    return (width = placeholderLength > width ? placeholderLength : width);
+  };
   return (
     <div className="page_refero__component page_refero__component_openchoice page_refero__component_openchoice_dropdown">
       <FormGroup error={error?.message} mode="ongrey" errorWrapperClassName={styles.paddingBottom}>
@@ -68,6 +74,7 @@ const DropdownView = (props: Props): JSX.Element | null => {
 
         <Select
           {...rest}
+          width={getWith(options)}
           selectId={getId(id)}
           className="page_refero__input"
           testId={getId(id)}

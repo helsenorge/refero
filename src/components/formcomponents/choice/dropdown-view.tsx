@@ -51,7 +51,15 @@ const DropdownView = (props: Props): JSX.Element | null => {
     required: required({ item, resources }),
     shouldUnregister: true,
   });
-
+  if (!options) {
+    return null;
+  }
+  const getWith = (options: Array<Options>): number => {
+    const maxCharacters = options?.reduce((acc, option) => (option.label.length > acc ? option.label.length : acc), 0);
+    const placeholderLength = placeholder ? placeholder.length : 0;
+    let width = maxCharacters ? (maxCharacters > 40 ? 40 : maxCharacters) : 25;
+    return (width = placeholderLength > width ? placeholderLength : width);
+  };
   return (
     <div className="page_refero__component page_refero__component_choice page_refero__component_choice_dropdown">
       <FormGroup mode="ongrey" error={error?.message} errorWrapperClassName={styles.paddingBottom}>
@@ -68,6 +76,7 @@ const DropdownView = (props: Props): JSX.Element | null => {
         <RenderHelpElement item={item} isHelpVisible={isHelpVisible} />
         <Select
           {...rest}
+          width={getWith(options)}
           value={value}
           selectId={getId(id)}
           testId={getId(id)}

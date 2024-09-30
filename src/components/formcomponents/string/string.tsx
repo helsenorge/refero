@@ -10,7 +10,7 @@ import Input from '@helsenorge/designsystem-react/components/Input';
 import { NewValueAction, newStringValueAsync } from '@/actions/newValue';
 import { GlobalState } from '@/reducers';
 import { getPlaceholder } from '@/util/extension';
-import { isReadOnly, getId, getStringValue, getPDFStringValue } from '@/util/index';
+import { isReadOnly, getId, getStringValue, getPDFStringValue, getMaxLength } from '@/util/index';
 import TextView from '../textview';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
@@ -82,6 +82,9 @@ export const String = (props: Props): JSX.Element | null => {
       scriptInjection({ value, resources, shouldValidate: !!validateScriptInjection }),
     shouldUnregister: true,
   });
+  const maxCharacters = getMaxLength(item);
+  const width = maxCharacters ? (maxCharacters > 40 ? 40 : maxCharacters) : 25;
+
   return (
     <div className="page_refero__component page_refero__component_string">
       <FormGroup error={error?.message ?? ''} mode="ongrey" errorWrapperClassName={styles.paddingBottom}>
@@ -104,7 +107,7 @@ export const String = (props: Props): JSX.Element | null => {
             onChange(e);
           }}
           type="text"
-          width={25}
+          width={width}
           testId={`${getId(id)}-string`}
           inputId={getId(id)}
           placeholder={getPlaceholder(item)}
