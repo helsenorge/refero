@@ -1,3 +1,6 @@
+## 16.0.0-beta.38
+- add undefined check for items.item in selectors
+
 ## 16.0.0-beta.37
 - Fixed date fields getting error even though they were optional and didn't have value
 - Created correct validation for min/max value in yearMonth field
