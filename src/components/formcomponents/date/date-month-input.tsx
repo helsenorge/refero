@@ -147,6 +147,12 @@ export const DateYearMonthInput = ({
     }
   };
 
+  const doesAnyFieldsHaveValue = (): boolean => {
+    const yearValue = getValues(idWithLinkIdAndItemIndex + '-yearmonth-year');
+    const monthValue = getValues(idWithLinkIdAndItemIndex + '-yearmonth-month');
+    return yearValue || monthValue;
+  };
+
   if (pdf || isReadOnly(item)) {
     return (
       <TextView id={id} item={item} value={getPDFValue()}>
@@ -180,13 +186,13 @@ export const DateYearMonthInput = ({
               },
               validate: {
                 validYear: value => {
-                  return validateYearDigits(getYearFromString(value), resources);
+                  return doesAnyFieldsHaveValue() ? validateYearDigits(getYearFromString(value), resources) : true;
                 },
                 validMinDate: value => {
-                  return validateYearMin(minDateTime, Number(getYearFromString(value)), resources);
+                  return doesAnyFieldsHaveValue() ? validateYearMin(minDateTime, Number(getYearFromString(value)), resources) : true;
                 },
                 validMaxDate: value => {
-                  return validateYearMax(maxDateTime, Number(getYearFromString(value)), resources);
+                  return doesAnyFieldsHaveValue() ? validateYearMax(maxDateTime, Number(getYearFromString(value)), resources) : true;
                 },
               },
             }}
