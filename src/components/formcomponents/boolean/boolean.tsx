@@ -96,7 +96,6 @@ const Boolean = (props: Props): JSX.Element | null => {
     shouldUnregister: true,
   });
   return (
-    // Dette er en hack for FHI-skjema. TODO: fjern hack
     <div className="page_refero__component page_refero__component_boolean">
       <FormGroup error={error?.message} errorWrapperClassName={styles.paddingBottom}>
         <Checkbox

@@ -8,7 +8,7 @@ import Input from '@helsenorge/designsystem-react/components/Input';
 
 import { NewValueAction, newIntegerValueAsync } from '@/actions/newValue';
 import { GlobalState } from '@/reducers';
-import { getPlaceholder } from '@/util/extension';
+import { getMaxValueExtensionValue, getPlaceholder } from '@/util/extension';
 import { isReadOnly, getId } from '@/util/index';
 
 import TextView from '../textview';
@@ -92,6 +92,8 @@ const Integer = (props: Props): JSX.Element | null => {
     min: minValue({ item, resources }),
     shouldUnregister: true,
   });
+  const maxCharacters = getMaxValueExtensionValue(item) ? getMaxValueExtensionValue(item)?.toString().length : undefined;
+  const width = maxCharacters ? (maxCharacters > 40 ? 40 : maxCharacters + 2) : 7;
   return (
     <div className="page_refero__component page_refero__component_integer">
       <FormGroup error={error?.message} mode="ongrey" errorWrapperClassName={styles.paddingBottom}>
@@ -119,7 +121,7 @@ const Integer = (props: Props): JSX.Element | null => {
           }}
           placeholder={getPlaceholder(item)}
           className="page_refero__input"
-          width={25}
+          width={width}
         />
         <RenderDeleteButton item={item} path={path} index={index} className="page_refero__deletebutton--margin-top" />
         <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} />

@@ -23,7 +23,7 @@ interface StepViewProps {
   methods: UseFormReturn<FieldValues, unknown, undefined>;
 }
 
-const StepView = ({ isAuthorized, referoProps, resources, onSave, onSubmit, methods }: StepViewProps): JSX.Element | null => {
+const StepView = ({ isAuthorized, referoProps, resources, onSubmit, methods }: StepViewProps): JSX.Element | null => {
   const formDefinition = useSelector<GlobalState, FormDefinition | null>((state: GlobalState) => getFormDefinition(state));
   const [stepIndex, setStepIndex] = React.useState(0);
   const { onStepChange } = useExternalRenderContext();
@@ -56,7 +56,6 @@ const StepView = ({ isAuthorized, referoProps, resources, onSave, onSubmit, meth
         isStepView={true}
         referoProps={referoProps}
         resources={resources}
-        onSave={onSave}
         onSubmit={onSubmit}
         displayNextButton={stepIndex !== topLevelElements.length - 1}
         displayPreviousButton={stepIndex > 0}
