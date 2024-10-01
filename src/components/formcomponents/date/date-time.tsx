@@ -26,7 +26,7 @@ import {
 import { getValidationTextExtension } from '../../../util/extension';
 import { isRequired, getId, isReadOnly } from '../../../util/index';
 import TextView from '../textview';
-
+import styles from '../common-styles.module.css';
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { useDispatch, useSelector } from 'react-redux';
 import RenderHelpButton from '../help-button/RenderHelpButton';
@@ -39,6 +39,7 @@ import { useExternalRenderContext } from '@/context/externalRenderContext';
 import { useMinMaxDate } from './useMinMaxDate';
 import { findQuestionnaireItem } from '@/reducers/selectors';
 import useOnAnswerChange from '@/hooks/useOnAnswerChange';
+import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 
 export type Props = QuestionnaireComponentItemProps;
 
@@ -175,119 +176,121 @@ const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, childr
 
   return (
     <div className="page_refero__component page_refero__component_datetime" data-testid={`${getId(id)}-container`}>
-      <ReferoLabel
-        item={item}
-        resources={resources}
-        htmlFor={`${getId(id)}-datepicker`}
-        labelId={`${getId(id)}-label`}
-        testId={`${getId(id)}-datetime-label`}
-        sublabelId={`${getId(id)}-sublabel`}
-        dateLabel={resources?.dateFormat_ddmmyyyy}
+      <FormGroup
+        error={getErrorText(getCombinedFieldError(dateField, hoursField, minutesField))}
+        errorWrapperClassName={styles.paddingBottom}
       >
-        <RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />
-      </ReferoLabel>
-      <RenderHelpElement isHelpVisible={isHelpVisible} item={item} />
-      <DateTimePickerWrapper
-        testId={`${getId(id)}-datetime-wrapper`}
-        errorText={getErrorText(getCombinedFieldError(dateField, hoursField, minutesField))}
-      >
-        <Controller
-          name={`${idWithLinkIdAndItemIndex}-date`}
-          shouldUnregister={true}
-          rules={{
-            required: {
-              value: isRequired(item),
-              message: resources?.formRequiredErrorMessage || '',
-            },
-            validate: {
-              validDate: value => {
-                return doesAnyFieldsHaveValue() ? validateDate(parseStringToDate(value) ?? value, resources) : true;
+        <ReferoLabel
+          item={item}
+          resources={resources}
+          htmlFor={`${getId(id)}-datepicker`}
+          labelId={`${getId(id)}-label`}
+          testId={`${getId(id)}-datetime-label`}
+          sublabelId={`${getId(id)}-sublabel`}
+          dateLabel={resources?.dateFormat_ddmmyyyy}
+        >
+          <RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />
+        </ReferoLabel>
+        <RenderHelpElement isHelpVisible={isHelpVisible} item={item} />
+        <DateTimePickerWrapper testId={`${getId(id)}-datetime-wrapper`}>
+          <Controller
+            name={`${idWithLinkIdAndItemIndex}-date`}
+            shouldUnregister={true}
+            rules={{
+              required: {
+                value: isRequired(item),
+                message: resources?.formRequiredErrorMessage || '',
               },
-              validMinDate: value => {
-                return doesAnyFieldsHaveValue() ? validateMinDate(minDateTime, parseStringToDate(value), resources) : true;
+              validate: {
+                validDate: value => {
+                  return doesAnyFieldsHaveValue() ? validateDate(parseStringToDate(value) ?? value, resources) : true;
+                },
+                validMinDate: value => {
+                  return doesAnyFieldsHaveValue() ? validateMinDate(minDateTime, parseStringToDate(value), resources) : true;
+                },
+                validMaxDate: value => {
+                  return doesAnyFieldsHaveValue() ? validateMaxDate(maxDateTime, parseStringToDate(value), resources) : true;
+                },
               },
-              validMaxDate: value => {
-                return doesAnyFieldsHaveValue() ? validateMaxDate(maxDateTime, parseStringToDate(value), resources) : true;
+            }}
+            render={({ field: { onChange, ...rest } }): JSX.Element => (
+              <DatePicker
+                {...rest}
+                inputId={`${getId(id)}-datepicker`}
+                testId={`${getId(id)}-datetime`}
+                autoComplete=""
+                dateButtonAriaLabel="Open datepicker"
+                dateFormat={'dd.MM.yyyy'}
+                dateValue={isValid(date) ? date : undefined}
+                minDate={minDateTime}
+                maxDate={maxDateTime}
+                onChange={(_e, newDate) => {
+                  handleDateChange(newDate);
+                  onChange(newDate);
+                }}
+              />
+            )}
+          />
+          <Controller
+            name={idWithLinkIdAndItemIndex + '-hours'}
+            shouldUnregister={true}
+            rules={{
+              required: {
+                value: isRequired(item),
+                message: resources?.formRequiredErrorMessage || '',
               },
-            },
-          }}
-          render={({ field: { onChange, ...rest } }): JSX.Element => (
-            <DatePicker
-              {...rest}
-              inputId={`${getId(id)}-datepicker`}
-              testId={`${getId(id)}-datetime`}
-              autoComplete=""
-              dateButtonAriaLabel="Open datepicker"
-              dateFormat={'dd.MM.yyyy'}
-              dateValue={isValid(date) ? date : undefined}
-              minDate={minDateTime}
-              maxDate={maxDateTime}
-              onChange={(e, newDate) => {
-                handleDateChange(newDate);
-                onChange(e);
-              }}
-            />
-          )}
-        />
-        <Controller
-          name={idWithLinkIdAndItemIndex + '-hours'}
-          shouldUnregister={true}
-          rules={{
-            required: {
-              value: isRequired(item),
-              message: resources?.formRequiredErrorMessage || '',
-            },
-            validate: {
-              validHours: value => {
-                return doesAnyFieldsHaveValue() ? validateHours(Number(value), resources) : true;
+              validate: {
+                validHours: value => {
+                  return doesAnyFieldsHaveValue() ? validateHours(Number(value), resources) : true;
+                },
               },
-            },
-          }}
-          render={({ field: { onChange, ...rest } }): JSX.Element => (
-            <DateTime
-              {...rest}
-              testId={`hours-test`}
-              timeUnit="hours"
-              onChange={e => {
-                handleHoursChange(e.target.value);
-                onChange(e);
-              }}
-              defaultValue={Number(hours)}
-            />
-          )}
-        />
-        <Controller
-          name={idWithLinkIdAndItemIndex + '-minutes'}
-          defaultValue={15}
-          shouldUnregister={true}
-          rules={{
-            required: {
-              value: isRequired(item),
-              message: resources?.formRequiredErrorMessage || '',
-            },
-            validate: {
-              validMinutes: value => {
-                return doesAnyFieldsHaveValue() ? validateMinutes(Number(value), resources) : true;
+            }}
+            render={({ field: { onChange, ...rest } }): JSX.Element => (
+              <DateTime
+                {...rest}
+                testId={`hours-test`}
+                timeUnit="hours"
+                onChange={e => {
+                  handleHoursChange(e.target.value);
+                  onChange(e.target.value);
+                }}
+                defaultValue={Number(hours)}
+              />
+            )}
+          />
+          <Controller
+            name={idWithLinkIdAndItemIndex + '-minutes'}
+            defaultValue={15}
+            shouldUnregister={true}
+            rules={{
+              required: {
+                value: isRequired(item),
+                message: resources?.formRequiredErrorMessage || '',
               },
-            },
-          }}
-          render={({ field: { onChange, ...rest } }): JSX.Element => (
-            <DateTime
-              {...rest}
-              testId={`minutes-test`}
-              timeUnit="minutes"
-              onChange={e => {
-                handleMinutesChange(e.target.value);
-                onChange(e);
-              }}
-              defaultValue={Number(minutes)}
-            />
-          )}
-        />
-      </DateTimePickerWrapper>
-      <RenderDeleteButton item={item} path={path} index={index} className="page_refero__deletebutton--margin-top" />
-      <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} />
-      {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
+              validate: {
+                validMinutes: value => {
+                  return doesAnyFieldsHaveValue() ? validateMinutes(Number(value), resources) : true;
+                },
+              },
+            }}
+            render={({ field: { onChange, ...rest } }): JSX.Element => (
+              <DateTime
+                {...rest}
+                testId={`minutes-test`}
+                timeUnit="minutes"
+                onChange={e => {
+                  handleMinutesChange(e.target.value);
+                  onChange(e.target.value);
+                }}
+                defaultValue={Number(minutes)}
+              />
+            )}
+          />
+        </DateTimePickerWrapper>
+        <RenderDeleteButton item={item} path={path} index={index} className="page_refero__deletebutton--margin-top" />
+        <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} />
+        {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
+      </FormGroup>
     </div>
   );
 };
