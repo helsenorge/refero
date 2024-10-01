@@ -80,8 +80,6 @@ export const DateDayInput = ({
     return item.initial[0].valueDate;
   };
 
-  console.log(formState.errors);
-
   const dateAnswerValue = getDateAnswerValue(answer);
   const date = parseStringToDate(dateAnswerValue);
 

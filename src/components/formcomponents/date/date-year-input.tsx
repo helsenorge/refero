@@ -1,5 +1,5 @@
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
-import { Controller, FieldError, FieldValues, useFormContext } from 'react-hook-form';
+import { FieldError, FieldValues, useFormContext } from 'react-hook-form';
 import styles from '../common-styles.module.css';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Input from '@helsenorge/designsystem-react/components/Input';
@@ -31,7 +31,7 @@ export const DateYearInput = (props: Props): JSX.Element | null => {
 
   initialize();
 
-  const { formState, getFieldState } = useFormContext<FieldValues>();
+  const { formState, getFieldState, register } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const answer = useGetAnswer(linkId, path);
   const { resources } = useExternalRenderContext();
@@ -90,7 +90,24 @@ export const DateYearInput = (props: Props): JSX.Element | null => {
       </TextView>
     );
   }
-
+  const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, {
+    required: {
+      value: isRequired(item),
+      message: resources?.year_field_required || '',
+    },
+    validate: {
+      validYear: value => {
+        return value ? validateYearDigits(value, resources) : true;
+      },
+      validMinDate: value => {
+        return value ? validateYearMin(minDateTime, value, resources) : true;
+      },
+      validMaxDate: value => {
+        return value ? validateYearMax(maxDateTime, value, resources) : true;
+      },
+    },
+    shouldUnregister: true,
+  });
   return (
     <FormGroup error={getErrorText(error)} errorWrapperClassName={styles.paddingBottom}>
       <ReferoLabel
@@ -104,40 +121,17 @@ export const DateYearInput = (props: Props): JSX.Element | null => {
         <RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />
       </ReferoLabel>
       <RenderHelpElement item={item} isHelpVisible={isHelpVisible} />
-      <Controller
-        name={idWithLinkIdAndItemIndex}
-        shouldUnregister={true}
-        rules={{
-          required: {
-            value: isRequired(item),
-            message: resources?.year_field_required || '',
-          },
-          validate: {
-            validYear: value => {
-              return value ? validateYearDigits(value, resources) : true;
-            },
-            validMinDate: value => {
-              return value ? validateYearMin(minDateTime, value, resources) : true;
-            },
-            validMaxDate: value => {
-              return value ? validateYearMax(maxDateTime, value, resources) : true;
-            },
-          },
+      <Input
+        {...rest}
+        inputId={`${getId(id)}-input`}
+        type="number"
+        testId={getId(id)}
+        onChange={e => {
+          onYearChange(e.target.value);
+          onChange(e);
         }}
-        render={({ field: { onChange, ...rest } }): JSX.Element => (
-          <Input
-            {...rest}
-            inputId={`${getId(id)}-input`}
-            type="number"
-            testId={getId(id)}
-            onChange={e => {
-              onYearChange(e.target.value);
-              onChange(e);
-            }}
-            value={yearValue}
-            width={10}
-          />
-        )}
+        value={yearValue}
+        width={10}
       />
     </FormGroup>
   );
