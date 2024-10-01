@@ -241,7 +241,6 @@ export const DateYearMonthInput = ({
           width={10}
           value={year}
         />
-
         <Select
           {...registerMonth}
           className={styles.monthSelect}
