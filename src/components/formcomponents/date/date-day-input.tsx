@@ -80,6 +80,8 @@ export const DateDayInput = ({
     return item.initial[0].valueDate;
   };
 
+  console.log(formState.errors);
+
   const dateAnswerValue = getDateAnswerValue(answer);
   const date = parseStringToDate(dateAnswerValue);
 
@@ -191,8 +193,9 @@ export const DateDayInput = ({
             },
           },
         }}
-        render={({ field: { onChange } }): JSX.Element => (
+        render={({ field: { onChange, ...rest } }): JSX.Element => (
           <DatePicker
+            {...rest}
             inputId={`${getId(id)}-datepicker`}
             testId={`${getId(id)}-datepicker-test`}
             autoComplete=""

@@ -211,8 +211,9 @@ const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, childr
               },
             },
           }}
-          render={({ field: { onChange } }): JSX.Element => (
+          render={({ field: { onChange, ...rest } }): JSX.Element => (
             <DatePicker
+              {...rest}
               inputId={`${getId(id)}-datepicker`}
               testId={`${getId(id)}-datetime`}
               autoComplete=""
@@ -242,8 +243,9 @@ const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, childr
               },
             },
           }}
-          render={({ field: { onChange } }): JSX.Element => (
+          render={({ field: { onChange, ...rest } }): JSX.Element => (
             <DateTime
+              {...rest}
               testId={`hours-test`}
               timeUnit="hours"
               onChange={e => {
@@ -269,8 +271,9 @@ const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, childr
               },
             },
           }}
-          render={({ field: { onChange } }): JSX.Element => (
+          render={({ field: { onChange, ...rest } }): JSX.Element => (
             <DateTime
+              {...rest}
               testId={`minutes-test`}
               timeUnit="minutes"
               onChange={e => {

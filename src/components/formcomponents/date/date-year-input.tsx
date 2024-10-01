@@ -31,7 +31,7 @@ export const DateYearInput = (props: Props): JSX.Element | null => {
 
   initialize();
 
-  const { formState, getFieldState, control } = useFormContext<FieldValues>();
+  const { formState, getFieldState } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const answer = useGetAnswer(linkId, path);
   const { resources } = useExternalRenderContext();
@@ -124,7 +124,6 @@ export const DateYearInput = (props: Props): JSX.Element | null => {
             },
           },
         }}
-        control={control}
         render={({ field: { onChange, ...rest } }): JSX.Element => (
           <Input
             {...rest}

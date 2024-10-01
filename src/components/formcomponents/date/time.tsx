@@ -167,8 +167,9 @@ const Time = ({ id, index, path, linkId, pdf, idWithLinkIdAndItemIndex, children
               },
             },
           }}
-          render={({ field: { onChange } }): JSX.Element => (
+          render={({ field: { onChange, ...rest } }): JSX.Element => (
             <DateTime
+              {...rest}
               inputId={`${getId(id)}-datetime-hours`}
               testId={`time-1`}
               defaultValue={Number(hours)}
@@ -195,8 +196,9 @@ const Time = ({ id, index, path, linkId, pdf, idWithLinkIdAndItemIndex, children
               },
             },
           }}
-          render={({ field: { onChange } }): JSX.Element => (
+          render={({ field: { onChange, ...rest } }): JSX.Element => (
             <DateTime
+              {...rest}
               testId={`time-2`}
               defaultValue={Number(minutes)}
               timeUnit="minutes"

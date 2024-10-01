@@ -229,8 +229,9 @@ export const DateYearMonthInput = ({
                 },
               },
             }}
-            render={({ field: { onChange } }): JSX.Element => (
+            render={({ field: { onChange, ...rest } }): JSX.Element => (
               <Input
+                {...rest}
                 type="number"
                 inputId={`${getId(id)}-input`}
                 testId={getId(id)}
@@ -253,8 +254,9 @@ export const DateYearMonthInput = ({
                 message: resources?.yearmonth_field_required || '',
               },
             }}
-            render={({ field: { onChange } }): JSX.Element => (
+            render={({ field: { onChange, ...rest } }): JSX.Element => (
               <Select
+                {...rest}
                 className={styles.monthSelect}
                 selectId={`${getId(id)}-select`}
                 testId={'month-select'}
