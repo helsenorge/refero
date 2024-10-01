@@ -82,6 +82,19 @@
           "linkId": "59f67350-cf34-4f7c-8f80-1553cdbd017b",
           "type": "date",
           "text": "Date year",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "year"
+                  }
+                ]
+              }
+            }
+          ],
           "required": true
         },
         {
