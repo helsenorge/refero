@@ -67,27 +67,15 @@
       "text": "Gruppe 1",
       "item": [
         {
-          "linkId": "3eaca1ae-84f4-4349-cb10-17a097111e78",
-          "type": "date",
-          "text": "Date day",
-          "required": true
-        },
-        {
           "linkId": "408b9d99-6e19-4a7f-9395-4e300a91b524",
           "type": "dateTime",
-          "text": "Date time",
-          "required": true
-        },
-        {
-          "linkId": "59f67350-cf34-4f7c-8f80-1553cdbd017b",
-          "type": "date",
-          "text": "Date year",
+          "text": "Date-time",
           "required": true
         },
         {
           "linkId": "9f7a8320-b943-4e32-f33a-824135051191",
           "type": "date",
-          "text": "Date month",
+          "text": "Year month",
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
@@ -106,7 +94,7 @@
         {
           "linkId": "9f7a8320-b943-4e32-f33a-824135051199",
           "type": "date",
-          "text": "year",
+          "text": "Year",
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
@@ -125,7 +113,7 @@
         {
           "linkId": "9f7a8320-b943-4e32-f33a-824135471199",
           "type": "date",
-          "text": "day",
+          "text": "Day",
           "required": true
         },
         {
