@@ -203,7 +203,7 @@ export const DateYearMonthInput = ({
       <RenderHelpElement item={item} isHelpVisible={isHelpVisible} />
       <div className={styles.yearMonthWrapper}>
         <Controller
-          name={idWithLinkIdAndItemIndex + '-yearmonth-year'}
+          name={`${idWithLinkIdAndItemIndex}-yearmonth-year`}
           shouldUnregister={true}
           rules={{
             required: {
@@ -215,11 +215,11 @@ export const DateYearMonthInput = ({
                 return doesAnyFieldsHaveValue() ? validateYearDigits(getYearFromString(value), resources) : true;
               },
               validMinDate: value => {
-                const monthValue = getValues(idWithLinkIdAndItemIndex + '-yearmonth-month');
+                const monthValue = getValues(`${idWithLinkIdAndItemIndex}-yearmonth-year`);
                 return doesAnyFieldsHaveValue() ? validateYearMonthMin(minDateTime, getYearFromString(value), monthValue, resources) : true;
               },
               validMaxDate: value => {
-                const monthValue = getValues(idWithLinkIdAndItemIndex + '-yearmonth-month');
+                const monthValue = getValues(`${idWithLinkIdAndItemIndex}-yearmonth-year`);
                 return doesAnyFieldsHaveValue() ? validateYearMonthMax(maxDateTime, getYearFromString(value), monthValue, resources) : true;
               },
             },
@@ -231,7 +231,7 @@ export const DateYearMonthInput = ({
               inputId={`${getId(id)}-input`}
               testId={getId(id)}
               onChange={e => {
-                const monthValue = getValues(idWithLinkIdAndItemIndex + '-yearmonth-month');
+                const monthValue = getValues(`${idWithLinkIdAndItemIndex}-yearmonth-month`);
                 handleYearChange(e.target.value, monthValue);
                 onChange(e.target.value);
               }}
@@ -241,7 +241,7 @@ export const DateYearMonthInput = ({
           )}
         />
         <Controller
-          name={idWithLinkIdAndItemIndex + '-yearmonth-month'}
+          name={`${idWithLinkIdAndItemIndex}-yearmonth-month`}
           shouldUnregister={true}
           rules={{
             required: {
@@ -256,7 +256,7 @@ export const DateYearMonthInput = ({
               selectId={`${getId(id)}-select`}
               testId={'month-select'}
               onChange={e => {
-                const yearValue = getValues(idWithLinkIdAndItemIndex + '-yearmonth-year');
+                const yearValue = getValues(`${idWithLinkIdAndItemIndex}-yearmonth-year`);
                 handleMonthChange(yearValue, e.target.value);
                 onChange(e.target.value);
               }}

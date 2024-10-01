@@ -260,7 +260,6 @@ const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, childr
           />
           <Controller
             name={idWithLinkIdAndItemIndex + '-minutes'}
-            defaultValue={15}
             shouldUnregister={true}
             rules={{
               required: {
