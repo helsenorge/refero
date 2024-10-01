@@ -12,6 +12,7 @@ import { ThunkDispatch } from 'redux-thunk';
 import { GlobalState } from '@/reducers';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import { DateTime, DateTimePickerWrapper } from '@helsenorge/datepicker/components/DatePicker';
+import styles from '../common-styles.module.css';
 import { Controller, FieldError, FieldValues, useFormContext } from 'react-hook-form';
 import { extractHoursAndMinutesFromAnswer, validateHours, validateMaxTime, validateMinTime, validateMinutes } from '@/util/date-utils';
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
@@ -22,6 +23,7 @@ import { QuestionnaireItem } from 'fhir/r4';
 import { findQuestionnaireItem } from '@/reducers/selectors';
 import { initialize } from '@/util/date-fns-utils';
 import useOnAnswerChange from '@/hooks/useOnAnswerChange';
+import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 
 export type Props = QuestionnaireComponentItemProps;
 
@@ -132,87 +134,89 @@ const Time = ({ id, index, path, linkId, pdf, idWithLinkIdAndItemIndex, children
 
   return (
     <div className="page_refero__component page_refero__component_time">
-      <ReferoLabel
-        item={item}
-        resources={resources}
-        htmlFor={`${getId(id)}-datetime-hours`}
-        labelId={`${getId(id)}-label`}
-        testId={`${getId(id)}-label-test`}
-        sublabelId={`${getId(id)}-sublabel`}
-      >
-        <RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />
-      </ReferoLabel>
-      <RenderHelpElement isHelpVisible={isHelpVisible} item={item} />
-      <DateTimePickerWrapper errorText={getErrorText(getCombinedFieldError(hoursField, minutesField))}>
-        <Controller
-          name={idWithLinkIdAndItemIndex + '-hours'}
-          shouldUnregister={true}
-          rules={{
-            required: {
-              value: isRequired(item),
-              message: resources?.formRequiredErrorMessage || '',
-            },
-            validate: {
-              validHours: value => {
-                const minutesValue = getValues(idWithLinkIdAndItemIndex + '-minutes');
-                return value && minutesValue ? validateHours(Number(value), resources) : true;
+      <FormGroup error={getErrorText(getCombinedFieldError(hoursField, minutesField))} errorWrapperClassName={styles.paddingBottom}>
+        <ReferoLabel
+          item={item}
+          resources={resources}
+          htmlFor={`${getId(id)}-datetime-hours`}
+          labelId={`${getId(id)}-label`}
+          testId={`${getId(id)}-label-test`}
+          sublabelId={`${getId(id)}-sublabel`}
+        >
+          <RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />
+        </ReferoLabel>
+        <RenderHelpElement isHelpVisible={isHelpVisible} item={item} />
+        <DateTimePickerWrapper>
+          <Controller
+            name={idWithLinkIdAndItemIndex + '-hours'}
+            shouldUnregister={true}
+            rules={{
+              required: {
+                value: isRequired(item),
+                message: resources?.formRequiredErrorMessage || '',
               },
-              validMinTime: value => {
-                const minutesValue = getValues(idWithLinkIdAndItemIndex + '-minutes');
-                return value && minutesValue ? validateMinTime(value, minutesValue, resources, item) : true;
+              validate: {
+                validHours: value => {
+                  const minutesValue = getValues(idWithLinkIdAndItemIndex + '-minutes');
+                  return value && minutesValue ? validateHours(Number(value), resources) : true;
+                },
+                validMinTime: value => {
+                  const minutesValue = getValues(idWithLinkIdAndItemIndex + '-minutes');
+                  return value && minutesValue ? validateMinTime(value, minutesValue, resources, item) : true;
+                },
+                validMaxTime: value => {
+                  const minutesValue = getValues(idWithLinkIdAndItemIndex + '-minutes');
+                  return value && minutesValue ? validateMaxTime(value, minutesValue, resources, item) : true;
+                },
               },
-              validMaxTime: value => {
-                const minutesValue = getValues(idWithLinkIdAndItemIndex + '-minutes');
-                return value && minutesValue ? validateMaxTime(value, minutesValue, resources, item) : true;
+            }}
+            render={({ field: { onChange, ...rest } }): JSX.Element => (
+              <DateTime
+                {...rest}
+                inputId={`${getId(id)}-datetime-hours`}
+                testId={`time-1`}
+                defaultValue={Number(hours)}
+                timeUnit="hours"
+                onChange={e => {
+                  handleHoursChange(e.target.value);
+                  onChange(e.target.value);
+                }}
+              />
+            )}
+          />
+          <Controller
+            name={idWithLinkIdAndItemIndex + '-minutes'}
+            shouldUnregister={true}
+            rules={{
+              required: {
+                value: isRequired(item),
+                message: resources?.formRequiredErrorMessage || '',
               },
-            },
-          }}
-          render={({ field: { onChange, ...rest } }): JSX.Element => (
-            <DateTime
-              {...rest}
-              inputId={`${getId(id)}-datetime-hours`}
-              testId={`time-1`}
-              defaultValue={Number(hours)}
-              timeUnit="hours"
-              onChange={e => {
-                handleHoursChange(e.target.value);
-                onChange(e.target.value);
-              }}
-            />
-          )}
-        />
-        <Controller
-          name={idWithLinkIdAndItemIndex + '-minutes'}
-          shouldUnregister={true}
-          rules={{
-            required: {
-              value: isRequired(item),
-              message: resources?.formRequiredErrorMessage || '',
-            },
-            validate: {
-              validMinutes: value => {
-                const hoursValue = getValues(idWithLinkIdAndItemIndex + '-hours');
-                return value && hoursValue ? validateMinutes(Number(value), resources) : true;
+              validate: {
+                validMinutes: value => {
+                  const hoursValue = getValues(idWithLinkIdAndItemIndex + '-hours');
+                  return value && hoursValue ? validateMinutes(Number(value), resources) : true;
+                },
               },
-            },
-          }}
-          render={({ field: { onChange, ...rest } }): JSX.Element => (
-            <DateTime
-              {...rest}
-              testId={`time-2`}
-              defaultValue={Number(minutes)}
-              timeUnit="minutes"
-              onChange={e => {
-                handleMinutesChange(e.target.value);
-                onChange(e.target.value);
-              }}
-            />
-          )}
-        />
-      </DateTimePickerWrapper>
-      <RenderDeleteButton item={item} path={path} index={index} className="page_refero__deletebutton--margin-top" />
-      <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} />
-      {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
+            }}
+            render={({ field: { onChange, ...rest } }): JSX.Element => (
+              <DateTime
+                {...rest}
+                testId={`time-2`}
+                defaultValue={Number(minutes)}
+                timeUnit="minutes"
+                onChange={e => {
+                  handleMinutesChange(e.target.value);
+                  onChange(e.target.value);
+                }}
+              />
+            )}
+          />
+        </DateTimePickerWrapper>
+        <RenderDeleteButton item={item} path={path} index={index} className="page_refero__deletebutton--margin-top" />
+        <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} />
+        {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
+      </FormGroup>
     </div>
   );
 };
