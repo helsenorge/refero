@@ -25,7 +25,7 @@ const ValidationSummary = ({ resources }: Props): JSX.Element | null => {
   const { submitCount, errors } = formState;
   const handleErrorButtonClicked = (e: React.MouseEvent<HTMLButtonElement>, fieldName: string): void => {
     e.preventDefault();
-
+    console.log(fieldName);
     setFocus(fieldName, {
       shouldSelect: true,
     });

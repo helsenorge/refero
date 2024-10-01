@@ -203,9 +203,9 @@ export const DateDayInput = ({
             dateFormat={'dd.MM.yyyy'}
             minDate={minDateTime}
             maxDate={maxDateTime}
-            onChange={(_e, newDate) => {
+            onChange={(e, newDate) => {
               handleChange(newDate);
-              onChange(newDate);
+              onChange(e);
             }}
             dateValue={isValid(date) ? date : undefined}
           />

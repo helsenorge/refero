@@ -224,9 +224,9 @@ const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, childr
                 dateValue={isValid(date) ? date : undefined}
                 minDate={minDateTime}
                 maxDate={maxDateTime}
-                onChange={(_e, newDate) => {
+                onChange={(e, newDate) => {
                   handleDateChange(newDate);
-                  onChange(newDate);
+                  onChange(e);
                 }}
               />
             )}
@@ -252,7 +252,7 @@ const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, childr
                 timeUnit="hours"
                 onChange={e => {
                   handleHoursChange(e.target.value);
-                  onChange(e.target.value);
+                  onChange(e);
                 }}
                 defaultValue={Number(hours)}
               />
@@ -280,7 +280,7 @@ const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, childr
                 timeUnit="minutes"
                 onChange={e => {
                   handleMinutesChange(e.target.value);
-                  onChange(e.target.value);
+                  onChange(e);
                 }}
                 defaultValue={Number(minutes)}
               />
