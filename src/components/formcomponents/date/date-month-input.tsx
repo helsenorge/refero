@@ -238,7 +238,7 @@ export const DateYearMonthInput = ({
                 onChange={e => {
                   const monthValue = getValues(idWithLinkIdAndItemIndex + '-yearmonth-month');
                   handleYearChange(e.target.value, monthValue);
-                  onChange(e.target.value);
+                  onChange(e);
                 }}
                 width={10}
                 value={year}
@@ -263,7 +263,7 @@ export const DateYearMonthInput = ({
                 onChange={e => {
                   const yearValue = getValues(idWithLinkIdAndItemIndex + '-yearmonth-year');
                   handleMonthChange(yearValue, e.target.value);
-                  onChange(e.target.value);
+                  onChange(e);
                 }}
                 value={month ?? monthOptions[0].optionValue}
               >
