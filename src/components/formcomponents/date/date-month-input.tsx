@@ -189,94 +189,88 @@ export const DateYearMonthInput = ({
   }
 
   return (
-    <>
-      <FormGroup error={getErrorText(getCombinedFieldError())} errorWrapperClassName={styles2.paddingBottom}>
-        <ReferoLabel
-          item={item}
-          resources={resources}
-          htmlFor={`${getId(id)}-input`}
-          labelId={`${getId(id)}-label`}
-          testId={`${getId(id)}-label-test`}
-          sublabelId={`${getId(id)}-sublabel`}
-        >
-          <RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />
-        </ReferoLabel>
-        <RenderHelpElement item={item} isHelpVisible={isHelpVisible} />
-        <div className={styles.yearMonthWrapper}>
-          <Controller
-            name={idWithLinkIdAndItemIndex + '-yearmonth-year'}
-            shouldUnregister={true}
-            rules={{
-              required: {
-                value: isRequired(item),
-                message: resources?.yearmonth_field_required || '',
+    <FormGroup error={getErrorText(getCombinedFieldError())} errorWrapperClassName={styles2.paddingBottom}>
+      <ReferoLabel
+        item={item}
+        resources={resources}
+        htmlFor={`${getId(id)}-input`}
+        labelId={`${getId(id)}-label`}
+        testId={`${getId(id)}-label-test`}
+        sublabelId={`${getId(id)}-sublabel`}
+      >
+        <RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />
+      </ReferoLabel>
+      <RenderHelpElement item={item} isHelpVisible={isHelpVisible} />
+      <div className={styles.yearMonthWrapper}>
+        <Controller
+          name={idWithLinkIdAndItemIndex + '-yearmonth-year'}
+          shouldUnregister={true}
+          rules={{
+            required: {
+              value: isRequired(item),
+              message: resources?.yearmonth_field_required || '',
+            },
+            validate: {
+              validYear: value => {
+                return doesAnyFieldsHaveValue() ? validateYearDigits(getYearFromString(value), resources) : true;
               },
-              validate: {
-                validYear: value => {
-                  return doesAnyFieldsHaveValue() ? validateYearDigits(getYearFromString(value), resources) : true;
-                },
-                validMinDate: value => {
-                  const monthValue = getValues(idWithLinkIdAndItemIndex + '-yearmonth-month');
-                  return doesAnyFieldsHaveValue()
-                    ? validateYearMonthMin(minDateTime, getYearFromString(value), monthValue, resources)
-                    : true;
-                },
-                validMaxDate: value => {
-                  const monthValue = getValues(idWithLinkIdAndItemIndex + '-yearmonth-month');
-                  return doesAnyFieldsHaveValue()
-                    ? validateYearMonthMax(maxDateTime, getYearFromString(value), monthValue, resources)
-                    : true;
-                },
+              validMinDate: value => {
+                const monthValue = getValues(idWithLinkIdAndItemIndex + '-yearmonth-month');
+                return doesAnyFieldsHaveValue() ? validateYearMonthMin(minDateTime, getYearFromString(value), monthValue, resources) : true;
               },
-            }}
-            render={({ field: { onChange, ...rest } }): JSX.Element => (
-              <Input
-                {...rest}
-                type="number"
-                inputId={`${getId(id)}-input`}
-                testId={getId(id)}
-                onChange={e => {
-                  const monthValue = getValues(idWithLinkIdAndItemIndex + '-yearmonth-month');
-                  handleYearChange(e.target.value, monthValue);
-                  onChange(e.target.value);
-                }}
-                width={10}
-                value={year}
-              />
-            )}
-          />
-          <Controller
-            name={idWithLinkIdAndItemIndex + '-yearmonth-month'}
-            shouldUnregister={true}
-            rules={{
-              required: {
-                value: isRequired(item),
-                message: resources?.yearmonth_field_required || '',
+              validMaxDate: value => {
+                const monthValue = getValues(idWithLinkIdAndItemIndex + '-yearmonth-month');
+                return doesAnyFieldsHaveValue() ? validateYearMonthMax(maxDateTime, getYearFromString(value), monthValue, resources) : true;
               },
-            }}
-            render={({ field: { onChange, ...rest } }): JSX.Element => (
-              <Select
-                {...rest}
-                className={styles.monthSelect}
-                selectId={`${getId(id)}-select`}
-                testId={'month-select'}
-                onChange={e => {
-                  const yearValue = getValues(idWithLinkIdAndItemIndex + '-yearmonth-year');
-                  handleMonthChange(yearValue, e.target.value);
-                  onChange(e.target.value);
-                }}
-                value={month ?? monthOptions[0].optionValue}
-              >
-                {monthOptions.map(option => (
-                  <option key={option.optionValue} value={option.optionValue}>
-                    {option.optionName}
-                  </option>
-                ))}
-              </Select>
-            )}
-          />
-        </div>
-      </FormGroup>
-    </>
+            },
+          }}
+          render={({ field: { onChange, ...rest } }): JSX.Element => (
+            <Input
+              {...rest}
+              type="number"
+              inputId={`${getId(id)}-input`}
+              testId={getId(id)}
+              onChange={e => {
+                const monthValue = getValues(idWithLinkIdAndItemIndex + '-yearmonth-month');
+                handleYearChange(e.target.value, monthValue);
+                onChange(e.target.value);
+              }}
+              width={10}
+              value={year}
+            />
+          )}
+        />
+        <Controller
+          name={idWithLinkIdAndItemIndex + '-yearmonth-month'}
+          shouldUnregister={true}
+          rules={{
+            required: {
+              value: isRequired(item),
+              message: resources?.yearmonth_field_required || '',
+            },
+          }}
+          render={({ field: { onChange, ...rest } }): JSX.Element => (
+            <Select
+              {...rest}
+              className={styles.monthSelect}
+              selectId={`${getId(id)}-select`}
+              testId={'month-select'}
+              onChange={e => {
+                const yearValue = getValues(idWithLinkIdAndItemIndex + '-yearmonth-year');
+                handleMonthChange(yearValue, e.target.value);
+                onChange(e.target.value);
+              }}
+              value={month ?? monthOptions[0].optionValue}
+            >
+              {monthOptions.map(option => (
+                <option key={option.optionValue} value={option.optionValue}>
+                  {option.optionName}
+                </option>
+              ))}
+            </Select>
+          )}
+        />
+      </div>
+    </FormGroup>
   );
 };
