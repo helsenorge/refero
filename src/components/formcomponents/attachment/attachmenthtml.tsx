@@ -12,7 +12,7 @@ import { useFileUpload } from '@helsenorge/file-upload/components/file-upload/us
 import { validateFileSize, validateFileType, validateMaxFiles, validateMinFiles } from './attachment-validation';
 import { getAttachmentMaxSizeBytesToUse } from './attachmentUtil';
 import { VALID_FILE_TYPES } from '@/constants';
-import { getId } from '@/util';
+import { getId, isReadOnly } from '@/util';
 import { Resources } from '@/util/resources';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
@@ -20,8 +20,11 @@ import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelp
 import RenderHelpElement from '@/components/formcomponents/help-button/RenderHelpElement';
 import { TextMessage } from '@/types/text-message';
 import { required } from '@/components/validation/rules';
+import { useGetAnswer } from '@/hooks/useGetAnswer';
+import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
+import { ReadOnly } from '../read-only/readOnly';
 
-type Props = {
+type Props = QuestionnaireComponentItemProps & {
   onUpload: (files: UploadFile[]) => void;
   onDelete: (fileId: string) => void;
   onOpen?: (fileId: string) => void;
@@ -43,24 +46,36 @@ type Props = {
   customErrorMessage: TextMessage | undefined;
 };
 
-const AttachmentHtml = ({
-  id,
-  onUpload,
-  onDelete,
-  onOpen,
-  resources,
-  attachmentErrorMessage,
-  maxFiles,
-  attachmentMaxFileSize,
-  attachmentValidTypes,
-  minFiles,
-  item,
-  idWithLinkIdAndItemIndex,
-  customErrorMessage,
-}: Props): JSX.Element | null => {
+type UploadedFile = {
+  name: string;
+  id: string;
+};
+
+const AttachmentHtml = (props: Props): JSX.Element | null => {
+  const {
+    id,
+    onUpload,
+    onDelete,
+    onOpen,
+    resources,
+    attachmentErrorMessage,
+    maxFiles,
+    attachmentMaxFileSize,
+    attachmentValidTypes,
+    minFiles,
+    item,
+    idWithLinkIdAndItemIndex,
+    customErrorMessage,
+    path,
+    linkId,
+    pdf,
+    children,
+  } = props;
+
   const { formState, getFieldState, register: internalRegister } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex || '', formState);
   const { error } = fieldState;
+  const answer = useGetAnswer(linkId, path);
   const getMaxValueBytes = getAttachmentMaxSizeBytesToUse(attachmentMaxFileSize, item);
   const validFileTypes = attachmentValidTypes ? attachmentValidTypes : VALID_FILE_TYPES;
   const deleteText = resources ? resources.deleteAttachmentText : undefined;
@@ -94,6 +109,51 @@ const AttachmentHtml = ({
     return error?.types ? Object.values(error.types).join('. ') : '';
   };
 
+  const getAttachment = (): UploadedFile[] | undefined => {
+    if (Array.isArray(answer)) {
+      return answer.map(v => {
+        return {
+          id: v.valueAttachment?.url ?? '-1',
+          name: v.valueAttachment && v.valueAttachment.title ? v.valueAttachment.title : '',
+        };
+      });
+    } else {
+      if (answer && answer.valueAttachment && answer.valueAttachment.url) {
+        return [
+          {
+            id: answer.valueAttachment.url,
+            name: answer.valueAttachment.title ? answer.valueAttachment.title : '',
+          },
+        ];
+      }
+    }
+    return undefined;
+  };
+
+  const getPdfValue = (): string => {
+    const attachments = getAttachment();
+    if (attachments) {
+      return attachments.map(v => v.name).join(', ');
+    } else if (resources) {
+      return resources.ikkeBesvart;
+    }
+
+    return '';
+  };
+
+  register(idWithLinkIdAndItemIndex, {
+    required: required({ item, resources }),
+    validate: () => true,
+    shouldUnregister: true,
+  });
+
+  if (pdf || isReadOnly(item)) {
+    return (
+      <ReadOnly pdf={pdf} id={id} item={item} pdfValue={getPdfValue()} errors={error}>
+        {children}
+      </ReadOnly>
+    );
+  }
   return (
     <div className="page_refero__component page_refero__component_attachment" data-testid={getId(id)}>
       <FormGroup error={concatErrorMessages()} errorWrapperClassName={styles.paddingBottom}>
@@ -107,11 +167,6 @@ const AttachmentHtml = ({
           <RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />
         </ReferoLabel>
         <FileUpload
-          {...register(idWithLinkIdAndItemIndex, {
-            required: required({ item, resources }),
-            validate: () => true,
-            shouldUnregister: true,
-          })}
           wrapperTestId={`${getId(id)}-attachment`}
           inputId={id}
           onChangeFile={handleUpload}
