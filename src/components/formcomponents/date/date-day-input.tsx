@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import { format, isValid } from 'date-fns';
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
-import { Controller, FieldError, FieldValues, useFormContext } from 'react-hook-form';
+import { FieldError, FieldValues, useFormContext } from 'react-hook-form';
 import styles from '../common-styles.module.css';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 
@@ -51,7 +51,7 @@ export const DateDayInput = ({
   const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
 
   const [isHelpVisible, setIsHelpVisible] = useState(false);
-  const { formState, getFieldState } = useFormContext<FieldValues>();
+  const { formState, getFieldState, register } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
   const answer = useGetAnswer(linkId, path);
@@ -148,7 +148,31 @@ export const DateDayInput = ({
       </TextView>
     );
   }
-
+  const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, {
+    required: {
+      value: isRequired(item),
+      message: resources?.formRequiredErrorMessage || '',
+    },
+    validate: {
+      validDate: value => {
+        if (Array.isArray(value)) {
+          value = value[0];
+        }
+        if (typeof value === 'string') {
+          return value ? validateDate(parseStringToDate(value), resources) : true;
+        } else {
+          return value ? validateDate(value, resources) : true;
+        }
+      },
+      validMinDate: value => {
+        return validateMinDate(minDateTime, parseStringToDate(value), resources);
+      },
+      validMaxDate: value => {
+        return validateMaxDate(maxDateTime, parseStringToDate(value), resources);
+      },
+    },
+    shouldUnregister: true,
+  });
   return (
     <FormGroup error={getErrorText(error)} errorWrapperClassName={styles.paddingBottom}>
       <ReferoLabel
@@ -164,49 +188,20 @@ export const DateDayInput = ({
       </ReferoLabel>
       <RenderHelpElement isHelpVisible={isHelpVisible} item={item} />
 
-      <Controller
-        name={idWithLinkIdAndItemIndex}
-        shouldUnregister={true}
-        rules={{
-          required: {
-            value: isRequired(item),
-            message: resources?.formRequiredErrorMessage || '',
-          },
-          validate: {
-            validDate: value => {
-              if (Array.isArray(value)) {
-                value = value[0];
-              }
-              if (typeof value === 'string') {
-                return value ? validateDate(parseStringToDate(value), resources) : true;
-              } else {
-                return value ? validateDate(value, resources) : true;
-              }
-            },
-            validMinDate: value => {
-              return validateMinDate(minDateTime, parseStringToDate(value), resources);
-            },
-            validMaxDate: value => {
-              return validateMaxDate(maxDateTime, parseStringToDate(value), resources);
-            },
-          },
+      <DatePicker
+        {...rest}
+        inputId={`${getId(id)}-datepicker`}
+        testId={`${getId(id)}-datepicker-test`}
+        autoComplete=""
+        dateButtonAriaLabel="Open datepicker"
+        dateFormat={'dd.MM.yyyy'}
+        minDate={minDateTime}
+        maxDate={maxDateTime}
+        onChange={(e, newDate) => {
+          handleChange(newDate);
+          onChange(e);
         }}
-        render={({ field: { onChange } }): JSX.Element => (
-          <DatePicker
-            inputId={`${getId(id)}-datepicker`}
-            testId={`${getId(id)}-datepicker-test`}
-            autoComplete=""
-            dateButtonAriaLabel="Open datepicker"
-            dateFormat={'dd.MM.yyyy'}
-            minDate={minDateTime}
-            maxDate={maxDateTime}
-            onChange={(_e, newDate) => {
-              handleChange(newDate);
-              onChange(newDate);
-            }}
-            dateValue={isValid(date) ? date : undefined}
-          />
-        )}
+        dateValue={isValid(date) ? date : undefined}
       />
     </FormGroup>
   );

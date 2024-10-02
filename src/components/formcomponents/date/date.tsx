@@ -54,11 +54,13 @@ const DateComponent = (props: DateProps): JSX.Element | null => {
   const locale = useMemo(() => {
     return language?.toLowerCase() === 'en-gb' ? LanguageLocales.ENGLISH : LanguageLocales.NORWEGIAN;
   }, [language]);
+  const isYearMonth = itemControls?.some(control => control.code === YEARMONTH);
+  const isYear = itemControls?.some(control => control.code === YEAR);
 
   const element = useMemo(() => {
-    if (itemControls?.some(control => control.code === YEAR)) {
+    if (isYear) {
       return <DateYearInput {...props} onDateValueChange={onDateValueChange} />;
-    } else if (itemControls?.some(control => control.code === YEARMONTH)) {
+    } else if (isYearMonth) {
       return <DateYearMonthInput {...props} locale={locale} onDateValueChange={onDateValueChange} />;
     } else {
       return <DateDayInput {...props} locale={locale} onDateValueChange={onDateValueChange} />;
