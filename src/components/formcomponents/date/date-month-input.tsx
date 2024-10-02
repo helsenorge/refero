@@ -196,11 +196,11 @@ export const DateYearMonthInput = ({
         return doesAnyFieldsHaveValue() ? validateYearDigits(getYearFromString(value), resources) : true;
       },
       validMinDate: value => {
-        const monthValue = getValues(`${idWithLinkIdAndItemIndex}-yearmonth-year`);
+        const monthValue = getValues(`${idWithLinkIdAndItemIndex}-yearmonth-month`);
         return doesAnyFieldsHaveValue() ? validateYearMonthMin(minDateTime, getYearFromString(value), monthValue, resources) : true;
       },
       validMaxDate: value => {
-        const monthValue = getValues(`${idWithLinkIdAndItemIndex}-yearmonth-year`);
+        const monthValue = getValues(`${idWithLinkIdAndItemIndex}-yearmonth-month`);
         return doesAnyFieldsHaveValue() ? validateYearMonthMax(maxDateTime, getYearFromString(value), monthValue, resources) : true;
       },
     },
