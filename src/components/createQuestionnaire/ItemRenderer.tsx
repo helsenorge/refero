@@ -32,7 +32,6 @@ const responseItemsSelector = createSelector([getFlatMapResponseItemsForItemSele
 const ItemRenderer = memo(function ItemRenderer({
   item,
   path,
-
   renderContextValue,
   language,
   containedResources,

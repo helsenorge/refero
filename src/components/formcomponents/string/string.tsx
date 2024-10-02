@@ -84,7 +84,6 @@ export const String = (props: Props): JSX.Element | null => {
   });
   const maxCharacters = getMaxLength(item);
   const width = maxCharacters ? (maxCharacters > 40 ? 40 : maxCharacters) : 25;
-
   return (
     <div className="page_refero__component page_refero__component_string">
       <FormGroup error={error?.message ?? ''} mode="ongrey" errorWrapperClassName={styles.paddingBottom}>
@@ -101,7 +100,7 @@ export const String = (props: Props): JSX.Element | null => {
         <Input
           {...rest}
           defaultValue={value}
-          disabled={item?.readOnly}
+          readOnly={item?.readOnly}
           onChange={(e): void => {
             handleInputChange(e);
             onChange(e);

@@ -404,20 +404,25 @@ export function enableWhenMatchesAnswer(
   });
   return matches;
 }
+export function createIdSuffix(path: Path[] | undefined, index?: number, repeats?: boolean): string {
+  const indices: number[] = [];
 
-export function createIdSuffix(path: Path[] | undefined, index = 0, repeats: boolean | undefined): string {
-  let suffix = '';
-
+  // Include all indices from the path, even if they are 0
   if (path) {
     path.forEach(p => {
-      if (p.index) {
-        suffix += '^' + p.index;
+      if (p.index !== undefined && p.index !== null) {
+        indices.push(p.index);
       }
     });
   }
-  if (!repeats) return suffix;
 
-  return suffix + '^' + index;
+  // Append the current index if repeats is true
+  if (repeats && index !== undefined && index !== null) {
+    indices.push(index);
+  }
+
+  // Build the suffix by joining indices with '^'
+  return indices.map(i => `^${i}`).join('');
 }
 export function parseSuffix(suffix: string, linkId: string): Path[] {
   const paths: Path[] = [];
@@ -425,7 +430,10 @@ export function parseSuffix(suffix: string, linkId: string): Path[] {
   if (suffix) {
     const indices = suffix.split('^').filter(part => part !== '');
     indices.forEach(part => {
-      paths.push({ linkId, index: parseInt(part, 10) });
+      const index = parseInt(part, 10);
+      if (!isNaN(index)) {
+        paths.push({ linkId, index });
+      }
     });
   }
 
@@ -437,6 +445,7 @@ export function parseIdSuffix(input: string): Path[] {
 
   return paths;
 }
+
 export function findFirstGuidInString(input: string): string | null {
   const regex = /\b[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}\b/;
   const match = input.match(regex);
@@ -493,7 +502,7 @@ export function shouldRenderDeleteButton(item?: QuestionnaireItem, index?: numbe
   return false;
 }
 
-function copyPath(path: Path[]): Path[] {
+export function copyPath(path: Path[]): Path[] {
   const newPath: Path[] = [];
   for (let i = 0; i < path.length; i++) {
     newPath.push(Object.assign({}, path[i]));

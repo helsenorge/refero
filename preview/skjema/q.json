@@ -1,17 +1,14 @@
 {
+  "title": "Testskjema tallverdier",
   "resourceType": "Questionnaire",
   "language": "nb-NO",
-  "id": "adf71e61-c6f8-4bf5-c8e9-a64f9fa3fc1f",
-  "name": "NHN_Testskjema_beriking",
-  "title": "Testskjema beriking",
-  "description": "Testskjema for å vise berikede felter",
-  "version": "1.1",
-  "status": "active",
+  "name": "NHN_Testskjema_Tall",
+  "status": "draft",
   "publisher": "NHN",
   "meta": {
     "profile": ["http://ehelse.no/fhir/StructureDefinition/sdf-Questionnaire"],
     "tag": [{ "system": "urn:ietf:bcp:47", "code": "nb-NO", "display": "Bokmål" }],
-    "security": [{ "code": "1", "display": "Helseregister (Basis)", "system": "urn:oid:2.16.578.1.12.4.1.1.7618" }]
+    "security": [{ "code": "3", "display": "Helsehjelp (Full)", "system": "urn:oid:2.16.578.1.12.4.1.1.7618" }]
   },
   "contact": [{ "name": "http://www.nhn.no" }],
   "subjectType": ["Patient"],
@@ -36,11 +33,11 @@
           }
         ]
       }
-    },
-    { "url": "http://ehelse.no/fhir/StructureDefinition/sdf-endpoint", "valueReference": { "reference": "Endpoint/1000" } }
+    }
   ],
-  "date": "2024-09-25T00:00:00+02:00",
-  "url": "Questionnaire/adf71e61-c6f8-4bf5-c8e9-a64f9fa3fc1f",
+  "id": "647c8f15-fd27-4077-aa88-82954068032a",
+  "version": "0.1",
+  "date": "2024-03-15T00:00:00+01:00",
   "contained": [
     {
       "url": "http://ehelse.no/fhir/ValueSet/Predefined",
@@ -66,699 +63,380 @@
   ],
   "item": [
     {
-      "linkId": "1febde66-8c88-4698-84cd-5a0a7d716f69",
+      "linkId": "a745ad7a-8378-4c30-8bcb-8b2b577321d6",
       "type": "group",
-      "text": "Pasient",
-      "required": false,
+      "text": "Heltall",
       "item": [
+        { "linkId": "ea091217-043c-43fe-8627-f15e70a32494", "type": "integer", "text": "Uten noen ting", "required": false },
         {
-          "linkId": "9620f794-a148-40b3-88eb-8a9762a7e09e",
-          "type": "string",
-          "text": "Fødselsnummer",
-          "required": false,
-          "extension": [
+          "linkId": "120799d1-7827-4264-c6b4-55eb2b559303",
+          "type": "integer",
+          "text": "Uten noen ting med hjelpeikon",
+          "item": [
             {
-              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
-              "valueString": "Patient.identifier.where(use = 'official' and (system = 'urn:oid:2.16.578.1.12.4.1.4.1' or system = 'urn:oid:2.16.578.1.12.4.1.4.2')).value"
+              "linkId": "5b81f659-9fca-47ea-e02f-269b5f10bb5a",
+              "type": "text",
+              "required": false,
+              "repeats": false,
+              "readOnly": true,
+              "maxLength": 250,
+              "_text": {
+                "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown", "valueMarkdown": "HJELP!" }]
+              },
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                  "valueCodeableConcept": {
+                    "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "help" }]
+                  }
+                }
+              ]
             }
           ],
-          "readOnly": true
+          "required": false
         },
         {
-          "linkId": "8e8644bd-5030-4da0-840d-8e4b279cf879",
-          "type": "string",
-          "text": "Fullt navn",
-          "required": false,
-          "extension": [
-            {
-              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
-              "valueString": "Patient.name.where(use = 'official').select(given.join(' ') & ' ' & family)"
-            }
-          ],
-          "readOnly": true
+          "linkId": "1d8db967-70a5-4c41-fc7e-b3345b28b43f",
+          "type": "integer",
+          "text": "Uten noen ting med instruks",
+          "extension": [{ "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sublabel", "valueMarkdown": "Instruks" }],
+          "required": false
         },
+        { "linkId": "5da1cca3-7d8d-419f-8fad-481b02a2169a", "type": "integer", "text": "Uten noen ting obligatorisk", "required": true },
         {
-          "linkId": "74abd09f-c89e-45df-89d6-2975429c88eb",
-          "type": "string",
-          "text": "Fornavn + mellomnavn",
-          "required": false,
-          "extension": [
-            {
-              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
-              "valueString": "Patient.name.where(use = 'official').given.join(' ')"
-            }
-          ],
-          "readOnly": true
-        },
-        {
-          "linkId": "bbe18ba6-f857-471d-a0f6-64cbdf0f2b60",
-          "type": "string",
-          "text": "Etternavn",
-          "required": false,
-          "extension": [
-            {
-              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
-              "valueString": "Patient.name.where(use = 'official').family"
-            }
-          ],
-          "readOnly": true
-        },
-        {
-          "linkId": "6694fe49-7afd-4918-b2f1-02645fc55825",
-          "type": "string",
-          "text": "Fødselsdato",
-          "required": false,
-          "extension": [{ "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath", "valueString": "Patient.birthDate" }],
-          "readOnly": true
-        },
-        {
-          "linkId": "ca29aae1-1102-456c-fdc2-d4630ba148ff",
-          "type": "string",
-          "text": "Alder",
-          "required": false,
+          "linkId": "a36290d9-e754-42c1-8897-9f7ddb48d4d2",
+          "type": "integer",
+          "text": "Beriket med alder",
+          "readOnly": true,
           "extension": [
             {
               "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
               "valueString": "Patient.extension.where(url = 'http://helsenorge.no/fhir/StructureDefinition/sdf-age').value"
             }
-          ],
+          ]
+        },
+        {
+          "linkId": "9859eaa1-2e30-46e4-86dc-7a4303fea449",
+          "type": "integer",
+          "text": "Preutfylt",
+          "required": false,
+          "initial": [{ "valueInteger": 123 }]
+        },
+        {
+          "linkId": "0bce6bd8-1bbf-4d60-86d1-df73887f0259",
+          "type": "integer",
+          "text": "Preutfylt read only",
+          "required": false,
+          "initial": [{ "valueInteger": 123 }],
           "readOnly": true
         },
         {
-          "linkId": "f8d1dca8-babd-4745-c350-7fd1b602438f",
-          "type": "string",
-          "text": "Kjønn",
+          "linkId": "523f7763-bfa5-4322-883e-e66633e2704d",
+          "type": "integer",
+          "text": "Min verdi 100 med feilmelding",
+          "extension": [
+            { "url": "http://hl7.org/fhir/StructureDefinition/minValue", "valueInteger": 100 },
+            { "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "Her er det feil " }
+          ],
+          "required": false
+        },
+        {
+          "linkId": "78124655-143e-4f27-82cd-1eb3bd48eb3f",
+          "type": "integer",
+          "text": "Max verdi 100 med feilmelding",
+          "extension": [
+            { "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "Her er det feil " },
+            { "url": "http://hl7.org/fhir/StructureDefinition/maxValue", "valueInteger": 100 }
+          ],
+          "required": false
+        },
+        {
+          "linkId": "4b5a933e-ec98-443e-9896-dc1d9cb9d0ca",
+          "type": "integer",
+          "text": "Min verdi 100 Max verdi 200 med feilmelding",
+          "extension": [
+            { "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "Her er det feil " },
+            { "url": "http://hl7.org/fhir/StructureDefinition/minValue", "valueInteger": 100 },
+            { "url": "http://hl7.org/fhir/StructureDefinition/maxValue", "valueInteger": 200 }
+          ],
+          "required": false
+        },
+        { "linkId": "Verdi1", "type": "integer", "text": "Regnestykke: Verdi 1", "required": false },
+        { "linkId": "Verdi2", "type": "integer", "text": "Regnestykke: Verdi 2", "required": false },
+        {
+          "linkId": "af2d86ff-9c86-46d4-85a9-8e9d660acfc7",
+          "type": "integer",
+          "text": "Regnestykke: SUM",
           "required": false,
           "extension": [
             {
-              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
-              "valueString": "iif(%patient.gender.empty() or %patient.gender = 'other' or %patient.gender = 'unknown', 'Ukjent', iif(%patient.gender = 'female', 'Kvinne', 'Mann'))"
+              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-calculatedExpression",
+              "valueString": "QuestionnaireResponse.descendants().where(linkId='Verdi1').answer.value + QuestionnaireResponse.descendants().where(linkId='Verdi2').answer.value"
             }
-          ],
-          "readOnly": true
-        },
-        {
-          "linkId": "8836df13-f19a-42f7-c56e-9e2cdc02887d",
-          "type": "string",
-          "text": "Mobiltelefonnummer\n",
-          "required": false,
-          "extension": [
-            {
-              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
-              "valueString": "Patient.telecom.where(use = 'mobile' and system = 'phone').value"
-            }
-          ],
-          "readOnly": true
-        },
-        {
-          "linkId": "7efa0380-2fff-493f-cbfd-ae50aaa89551",
-          "type": "string",
-          "text": "Epost\n",
-          "required": false,
-          "extension": [
-            {
-              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
-              "valueString": "Patient.telecom.where(use = 'home' and system = 'email').value"
-            }
-          ],
-          "readOnly": true
-        },
-        {
-          "linkId": "ecd7fe0e-2dfd-4b3a-8e57-51194e9c428e",
-          "type": "string",
-          "text": "Adresse",
-          "required": false,
-          "extension": [
-            {
-              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
-              "valueString": "Patient.address.where(use = 'home').line.first()"
-            }
-          ],
-          "readOnly": true
-        },
-        {
-          "linkId": "a140ae69-0ec2-4284-80c3-42ac6063b831",
-          "type": "string",
-          "text": "Postnummer\n\n",
-          "required": false,
-          "extension": [
-            {
-              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
-              "valueString": "Patient.address.where(use = 'home').postalCode"
-            }
-          ],
-          "readOnly": true
-        },
-        {
-          "linkId": "a090adfa-25f4-4f54-84e7-7fce61e4ddc9",
-          "type": "string",
-          "text": "Poststed\n",
-          "required": false,
-          "extension": [
-            { "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath", "valueString": "Patient.address.where(use = 'home').city" }
-          ],
-          "readOnly": true
-        },
-        {
-          "linkId": "4796b624-253a-4c8c-eec5-72bdc53aeaa7",
-          "type": "string",
-          "text": "Midlertidig c/o\n",
-          "required": false,
-          "extension": [
-            {
-              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
-              "valueString": "Patient.address.where(use = 'temp').line[0]"
-            }
-          ],
-          "readOnly": true
-        },
-        {
-          "linkId": "7a52c16d-6209-44ad-edc9-9e3ae8f53abb",
-          "type": "string",
-          "text": "Midlertidig adresse",
-          "required": false,
-          "extension": [
-            {
-              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
-              "valueString": "Patient.address.where(use = 'temp').line[1]"
-            }
-          ],
-          "readOnly": true
-        },
-        {
-          "linkId": "953ef9f0-31e2-4257-80fb-c6b6e5dfd67d",
-          "type": "string",
-          "text": "Midlertidig postnummer\n",
-          "required": false,
-          "extension": [
-            {
-              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
-              "valueString": "Patient.address.where(use = 'temp').line[2]"
-            }
-          ],
-          "readOnly": true
-        },
-        {
-          "linkId": "1fc38bee-eac0-49ec-8087-f4e610e810cd",
-          "type": "string",
-          "text": "Midlertidig poststed\n",
-          "required": false,
-          "extension": [
-            {
-              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
-              "valueString": "Patient.address.where(use = 'temp').line[3]"
-            }
-          ],
-          "readOnly": true
+          ]
         }
-      ]
+      ],
+      "required": false
     },
     {
-      "linkId": "6ff35c20-9103-4689-819e-8a14ef8d9b39",
+      "linkId": "6b2d858d-9783-4d8c-e89f-fbbec53ea71c",
       "type": "group",
-      "text": "På vegne av innbygger\n",
-      "required": false,
+      "text": "Decimaltall",
       "item": [
+        { "linkId": "4627d25b-b4a5-4053-87de-8b0b293b6cd6", "type": "decimal", "text": "Uten noen ting", "required": false },
         {
-          "linkId": "2bbc914c-d520-401e-979e-69912a2b30a7",
-          "type": "string",
-          "text": "Rep. Fødselsnummer",
-          "required": false,
-          "extension": [
-            {
-              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
-              "valueString": "RelatedPerson.identifier.where(use = 'official' and (system = 'urn:oid:2.16.578.1.12.4.1.4.1' or system = 'urn:oid:2.16.578.1.12.4.1.4.2')).value"
-            }
-          ],
-          "readOnly": true
-        },
-        {
-          "linkId": "0bafecf6-9aeb-4bff-93cc-414cd6e50904",
-          "type": "string",
-          "required": false,
-          "extension": [
-            {
-              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
-              "valueString": "RelatedPerson.name.where(use = 'official').select(given.join(' ') & ' ' & family)"
-            }
-          ],
-          "readOnly": true,
-          "text": "Rep. Navn"
-        },
-        {
-          "linkId": "e5e9b2a7-5a16-4e41-8e94-fc8452df9ce0",
-          "type": "string",
-          "required": false,
-          "extension": [{ "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath", "valueString": "RelatedPerson.birthDate" }],
-          "readOnly": true,
-          "text": "Rep. Fødselsdato"
-        },
-        {
-          "linkId": "3b91d878-21fc-4aba-8535-5af85685d209",
-          "type": "string",
-          "required": false,
-          "extension": [
-            {
-              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
-              "valueString": "RelatedPerson.extension.where(url = 'http://helsenorge.no/fhir/StructureDefinition/sdf-age').value"
-            }
-          ],
-          "readOnly": true,
-          "text": "Rep. Alder"
-        },
-        {
-          "linkId": "f40e300b-162a-40f0-c43f-2f4465ad5ad6",
-          "type": "string",
-          "required": false,
-          "extension": [
-            {
-              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
-              "valueString": "iif(RelatedPerson.gender.empty() or RelatedPerson.gender = 'other' or RelatedPerson.gender = 'unknown', 'Ukjent', iif(RelatedPerson.gender = 'female', 'Kvinne', 'Mann'))"
-            }
-          ],
-          "readOnly": true,
-          "text": "Rep. Kjønn"
-        },
-        {
-          "linkId": "7129982b-1452-4280-9806-25b8b8605a80",
-          "type": "string",
-          "required": false,
-          "extension": [
-            {
-              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
-              "valueString": "RelatedPerson.telecom.where(use = 'mobile' and system = 'phone').value"
-            }
-          ],
-          "readOnly": true,
-          "text": "Rep. Mobiltelefonnummer"
-        },
-        {
-          "linkId": "ddfd54c5-d636-4301-87ca-7a671dbc1008",
-          "type": "string",
-          "required": false,
-          "extension": [
-            {
-              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
-              "valueString": "RelatedPerson.address.where(use = 'home').line.first()"
-            }
-          ],
-          "readOnly": true,
-          "text": "Rep. Adresse"
-        },
-        {
-          "linkId": "919fd907-a02e-4dfb-8d5e-e90f59b68463",
-          "type": "string",
-          "required": false,
-          "extension": [
-            {
-              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
-              "valueString": "RelatedPerson.address.where(use = 'home').postalCode"
-            }
-          ],
-          "readOnly": true,
-          "text": "Rep. Postnummer"
-        },
-        {
-          "linkId": "2025ad68-b975-4f6e-90db-8090cf3ebd54",
-          "type": "string",
-          "required": false,
-          "extension": [
-            {
-              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
-              "valueString": "RelatedPerson.address.where(use = 'home').city"
-            }
-          ],
-          "readOnly": true,
-          "text": "Rep. Poststed"
-        },
-        {
-          "linkId": "d1313507-1a92-4910-8da1-f499819e9cae",
-          "type": "string",
-          "required": false,
-          "extension": [
-            {
-              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
-              "valueString": "RelatedPerson.address.where(use = 'temp').line[0]"
-            }
-          ],
-          "readOnly": true,
-          "text": "Rep. Midlertidig c/o"
-        },
-        {
-          "linkId": "164bd393-bfdc-4d3c-8ebd-b7651f56a0d5",
-          "type": "string",
-          "required": false,
-          "extension": [
-            {
-              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
-              "valueString": "RelatedPerson.address.where(use = 'temp').line[1]"
-            }
-          ],
-          "readOnly": true,
-          "text": "Rep. Midlertidig adresse"
-        },
-        {
-          "linkId": "1e740f3a-ee30-4773-ad10-04b65033efe1",
-          "type": "string",
-          "required": false,
-          "extension": [
-            {
-              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
-              "valueString": "RelatedPerson.address.where(use = 'temp').line[2]"
-            }
-          ],
-          "readOnly": true,
-          "text": "Rep. Midlertidig postnummer"
-        },
-        {
-          "linkId": "30f5aaf8-ae82-46a6-8f77-7f76da17521f",
-          "type": "string",
-          "required": false,
-          "extension": [
-            {
-              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
-              "valueString": "RelatedPerson.address.where(use = 'temp').line[3]"
-            }
-          ],
-          "readOnly": true,
-          "text": "Rep. Midlertidig poststed"
-        }
-      ]
-    },
-    {
-      "linkId": "040b30bd-05cc-4110-db62-a4a686aeca5d",
-      "type": "group",
-      "text": "Fastlege\n",
-      "required": false,
-      "item": [
-        {
-          "linkId": "70248448-786f-4238-bf3e-8c9c5fd53fd1",
-          "type": "string",
-          "required": false,
-          "extension": [
-            {
-              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
-              "valueString": "Practitioner.name.where(use = 'official').select(given.join(' ') & ' ' & family)"
-            }
-          ],
-          "readOnly": true,
-          "text": "Fastlege Fullt navn"
-        },
-        {
-          "linkId": "daacf6a1-7a4d-40d0-8dc0-fc89a91613a8",
-          "type": "string",
-          "required": false,
-          "extension": [
-            {
-              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
-              "valueString": "Practitioner.name.where(use = 'official').given.join(' ')"
-            }
-          ],
-          "readOnly": true,
-          "text": "Fastlege Fornavn + mellomnavn"
-        },
-        {
-          "linkId": "915a981d-2d14-4a6c-88e7-45b16f1c0941",
-          "type": "string",
-          "required": false,
-          "extension": [
-            {
-              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
-              "valueString": "Practitioner.name.where(use = 'official').family"
-            }
-          ],
-          "readOnly": true,
-          "text": "Fastlege Etternavn"
-        },
-        {
-          "linkId": "e0db6406-9289-4303-86ea-67af009eeaf5",
-          "type": "string",
-          "required": false,
-          "extension": [
-            { "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath", "valueString": "Practitioner.contained.first().name" }
-          ],
-          "readOnly": true,
-          "text": "Fastlege Legekontorets navn"
-        },
-        {
-          "linkId": "9ce96669-3bc8-44ac-e804-fde69cdce745",
-          "type": "string",
-          "required": false,
-          "extension": [
-            {
-              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
-              "valueString": "Practitioner.contained.first().telecom.where(use = 'work' and system = 'phone').value"
-            }
-          ],
-          "readOnly": true,
-          "text": "Fastlege Legekontorets telefonnummer"
-        },
-        {
-          "linkId": "f698ac62-2f0a-44ed-f43a-38ec8f6dd2d1",
-          "type": "string",
-          "required": false,
-          "extension": [
-            {
-              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
-              "valueString": "Practitioner.contained.first().address.where(use = 'work').line.first()"
-            }
-          ],
-          "readOnly": true,
-          "text": "Fastlege Adresselinje 1"
-        },
-        {
-          "linkId": "133071e4-9835-4b13-ad37-0772d01d307b",
-          "type": "string",
-          "required": false,
-          "extension": [
-            {
-              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
-              "valueString": "Practitioner.contained.first().address.where(use = 'work').line.skip(1).first()"
-            }
-          ],
-          "readOnly": true,
-          "text": "Fastlege Adresselinje 2"
-        },
-        {
-          "linkId": "474d0dd2-ea6a-482d-8463-a639de8bff97",
-          "type": "string",
-          "required": false,
-          "extension": [
-            {
-              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
-              "valueString": "Practitioner.contained.first().address.where(use = 'work').line.skip(2).first()"
-            }
-          ],
-          "readOnly": true,
-          "text": "Fastlege Adresselinje 3"
-        },
-        {
-          "linkId": "20c9d27e-69e7-4887-b7e5-171ce404614a",
-          "type": "string",
-          "required": false,
-          "extension": [
-            {
-              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
-              "valueString": "Practitioner.contained.first().address.where(use = 'work').postalCode"
-            }
-          ],
-          "readOnly": true,
-          "text": "Fastlege Postnummer"
-        },
-        {
-          "linkId": "52aaa10e-029e-443b-9d2d-8dd016f3c4ba",
-          "type": "string",
-          "required": false,
-          "extension": [
-            {
-              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
-              "valueString": "Practitioner.contained.first().address.where(use = 'work').city"
-            }
-          ],
-          "readOnly": true,
-          "text": "Fastlege Poststed"
-        },
-        {
-          "linkId": "fb84220d-c178-4b56-9626-8b8556289353",
-          "type": "string",
-          "required": false,
-          "extension": [
-            {
-              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
-              "valueString": "Practitioner.contained.first().address.where(use = 'work').country"
-            }
-          ],
-          "readOnly": true,
-          "text": "Fastlege Land"
-        }
-      ]
-    },
-    {
-      "linkId": "0e6ae632-110a-4745-8bcd-06d18dbe90f4",
-      "type": "group",
-      "text": "Representert relasjon",
-      "required": false,
-      "item": [
-        {
-          "linkId": "11c3356c-e15e-46e5-8619-3949ce2ce133",
-          "type": "string",
-          "required": false,
-          "extension": [
-            {
-              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
-              "valueString": "iif(%representative.relationship.coding.where((system = 'http://hl7.org/fhir/v3/RoleCode' or system = 'urn:oid:2.16.578.1.12.4.1.1.7611') and (code = 'PRN' or code = 'GRANTEE' or code = 'FU' or code = 'TD' or code = 'FO' or code = 'VE')).count() > 0, true, false)"
-            }
-          ],
-          "readOnly": true,
-          "text": "Rep.rel Fylles skjema ut på vegne av noen andre? (true/false)"
-        },
-        {
-          "linkId": "e08bfe13-fca2-4211-8517-d09a25ff6620",
-          "type": "string",
-          "required": false,
-          "extension": [
-            {
-              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
-              "valueString": "iif(%representative.relationship.coding.where(system = 'urn:oid:2.16.578.1.12.4.1.1.7611' and code = 'FU').count() > 0, true, false)"
-            }
-          ],
-          "readOnly": true,
-          "text": "Rep.rel Representert ved tildelt ordinær fullmakt? (true/false)"
-        },
-        {
-          "linkId": "ed00b6f2-793d-455d-c765-83774378787b",
-          "type": "string",
-          "required": false,
-          "extension": [
-            {
-              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
-              "valueString": "iif(%representative.relationship.coding.where(system = 'urn:oid:2.16.578.1.12.4.1.1.7611' and code = 'TD').count() > 0, true, false)"
-            }
-          ],
-          "readOnly": true,
-          "text": "Rep.rel Representert ved fullmakt for ikke samtkkekompetente? (true/false)"
-        },
-        {
-          "linkId": "69c03ca2-12a4-4b07-fae0-97fe5889273a",
-          "type": "string",
-          "required": false,
-          "extension": [
-            {
-              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
-              "valueString": "iif(%representative.relationship.coding.where(system = 'urn:oid:2.16.578.1.12.4.1.1.7611' and code = 'FO').count() > 0, true, false)"
-            }
-          ],
-          "readOnly": true,
-          "text": "Rep.rel Representert ved forelder? (true/false)"
-        },
-        {
-          "linkId": "c07cc4cd-41df-4369-a1f1-cb661c6b5f2f",
-          "type": "string",
-          "required": false,
-          "extension": [
-            {
-              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
-              "valueString": "iif(%representative.relationship.coding.where(system = 'urn:oid:2.16.578.1.12.4.1.1.7611' and code = 'VE').count() > 0, true, false)"
-            }
-          ],
-          "readOnly": true,
-          "text": "Rep.rel Representert ved vergemålsvedtak? (true/false)"
-        }
-      ]
-    },
-    {
-      "linkId": "0f37b88a-831e-4895-8cec-3b44cc7288cb",
-      "type": "group",
-      "text": "Diverse",
-      "required": false,
-      "item": [
-        {
-          "linkId": "43e5f455-8ea9-4dd2-8a90-40022ddfe271",
-          "type": "string",
-          "text": "Diverse Dagens dato",
-          "required": false,
-          "extension": [{ "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath", "valueString": "today()" }],
-          "readOnly": true
-        }
-      ]
-    },
-    {
-      "linkId": "b026f2d7-38c1-435e-8d0a-aca2a824104b",
-      "type": "group",
-      "text": "På nivå 2",
-      "item": [
-        {
-          "linkId": "7b27de45-050d-4f50-80f7-6fc074b4fd9f",
-          "type": "choice",
+          "linkId": "df57fa17-86d2-4763-8bb2-6b68dc04e103",
+          "type": "decimal",
+          "text": "Uten noen ting med hjelpeikon",
           "item": [
             {
-              "linkId": "02633e10-ce4a-4305-b749-031ec990b8f8",
-              "type": "string",
-              "text": "Adresse ved JA",
-              "code": [
-                {
-                  "code": "1",
-                  "display": "Default",
-                  "system": "http://helsenorge.no/fhir/CodeSystem/RenderOptions",
-                  "id": "95a3bb58-1936-4eee-843a-5356ab9a53f5"
-                }
-              ],
+              "linkId": "17519043-9aad-4bac-9c98-71f889fa5b6a",
+              "type": "text",
               "required": false,
+              "repeats": false,
+              "readOnly": true,
+              "maxLength": 250,
+              "_text": {
+                "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown", "valueMarkdown": "Hjelp!" }]
+              },
               "extension": [
                 {
-                  "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
-                  "valueString": "Patient.address.where(use = 'home').line.first()"
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                  "valueCodeableConcept": {
+                    "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "help" }]
+                  }
                 }
-              ],
-              "readOnly": true,
+              ]
+            }
+          ],
+          "required": false
+        },
+        {
+          "linkId": "355b3e8d-e029-4bcb-834b-d63ef92a6d67",
+          "type": "decimal",
+          "text": "Uten noen ting med instruks",
+          "extension": [{ "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sublabel", "valueMarkdown": "Instruks" }],
+          "required": false
+        },
+        { "linkId": "501362d6-a08c-41e4-884e-e3b5be6d014c", "type": "decimal", "text": "Uten noen ting obligatorisk", "required": true },
+        {
+          "linkId": "efd83f32-9fb5-4ac1-fd78-cb79ab541490",
+          "type": "decimal",
+          "text": "Beriket med alder",
+          "readOnly": true,
+          "extension": [
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+              "valueString": "Patient.extension.where(url = 'http://helsenorge.no/fhir/StructureDefinition/sdf-age').value"
+            }
+          ]
+        },
+        {
+          "linkId": "5d6fa1e7-4eca-4b66-8cae-e08d33a27022",
+          "type": "decimal",
+          "text": "Preutfylt",
+          "required": false,
+          "initial": [{ "valueDecimal": 12.34 }]
+        },
+        {
+          "linkId": "5b781291-d28a-462d-84a2-9889c71ee6a5",
+          "type": "decimal",
+          "text": "Preutfylt read only",
+          "required": false,
+          "initial": [{ "valueDecimal": 12.45 }],
+          "readOnly": true
+        },
+        {
+          "linkId": "c7f483c1-2f4b-4d25-8e55-f1a880cba438",
+          "type": "decimal",
+          "text": "Max 2 decimaler med feilmelding",
+          "extension": [
+            { "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "Her er det feil " },
+            { "url": "http://hl7.org/fhir/StructureDefinition/maxDecimalPlaces", "valueInteger": 2 }
+          ],
+          "required": false
+        },
+        {
+          "linkId": "7ae47e67-293d-49c6-9da5-78cf53d3c6a7",
+          "type": "decimal",
+          "text": "Min verdi 100 med feilmelding",
+          "extension": [
+            { "url": "http://hl7.org/fhir/StructureDefinition/minValue", "valueInteger": 100 },
+            { "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "Her er det feil " }
+          ],
+          "required": false
+        },
+        {
+          "linkId": "8352da51-bc9b-4084-b3d4-2e41de4d1328",
+          "type": "decimal",
+          "text": "Max verdi 100 med feilmelding",
+          "extension": [
+            { "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "Her er det feil " },
+            { "url": "http://hl7.org/fhir/StructureDefinition/maxValue", "valueInteger": 100 }
+          ],
+          "required": false
+        },
+        {
+          "linkId": "c53efcac-836e-469d-81d4-48e8dce53d23",
+          "type": "decimal",
+          "text": "Min verdi 100 Max verdi 200 med feilmelding",
+          "extension": [
+            { "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "Her er det feil " },
+            { "url": "http://hl7.org/fhir/StructureDefinition/minValue", "valueInteger": 100 },
+            { "url": "http://hl7.org/fhir/StructureDefinition/maxValue", "valueInteger": 200 }
+          ],
+          "required": false
+        },
+        { "linkId": "Verdi3", "type": "integer", "text": "Regnestykke: Verdi 3", "required": false },
+        { "linkId": "Verdi4", "type": "integer", "text": "Regnestykke: Verdi 2", "required": false },
+        {
+          "linkId": "279573e9-36e0-4d3b-8377-9b4216097b0f",
+          "type": "integer",
+          "text": "Regnestykke: SUM",
+          "required": false,
+          "extension": [
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-calculatedExpression",
+              "valueString": "QuestionnaireResponse.descendants().where(linkId='Verdi3').answer.value + QuestionnaireResponse.descendants().where(linkId='Verdi4').answer.value"
+            }
+          ]
+        }
+      ],
+      "required": false
+    },
+    {
+      "linkId": "8ba7042c-090b-4c1a-e446-dd50341ba2db",
+      "type": "group",
+      "text": "Enable when",
+      "item": [
+        {
+          "linkId": "6a321a95-bf41-45e8-8c3a-f63a248d736b",
+          "type": "display",
+          "text": "Tekst åpnes om sum er større enn 2 fra tallfelt",
+          "required": false,
+          "enableWhen": [{ "question": "af2d86ff-9c86-46d4-85a9-8e9d660acfc7", "operator": ">", "answerInteger": 2 }]
+        },
+        {
+          "linkId": "2e265749-9c0e-41ca-8de5-1a276fc52fed",
+          "type": "display",
+          "text": "Tekst åpnes om sum er større enn 2 fra decimalfelt",
+          "required": false,
+          "enableWhen": [{ "question": "279573e9-36e0-4d3b-8377-9b4216097b0f", "operator": ">", "answerInteger": 2 }]
+        },
+        {
+          "linkId": "6d1c868f-a19e-4b14-e6c2-6caa05df573c",
+          "type": "choice",
+          "text": "Vil du åpne?",
+          "item": [
+            {
+              "linkId": "9964b03c-1759-48c8-eb5e-c7255142eacb",
+              "type": "integer",
+              "text": "Uten noen ting tall",
+              "required": false,
               "enableWhen": [
                 {
-                  "question": "7b27de45-050d-4f50-80f7-6fc074b4fd9f",
+                  "question": "6d1c868f-a19e-4b14-e6c2-6caa05df573c",
                   "operator": "=",
                   "answerCoding": { "system": "urn:oid:2.16.578.1.12.4.1.1101", "code": "1" }
                 }
               ]
             },
             {
-              "linkId": "b3a9c546-dda6-4b3e-e4c1-525be6662572",
-              "type": "string",
-              "text": "Fullt navn ved NEI",
-              "code": [
-                {
-                  "code": "1",
-                  "display": "Default",
-                  "system": "http://helsenorge.no/fhir/CodeSystem/RenderOptions",
-                  "id": "a462ef7f-63bc-4a64-986c-8de267ef1f95"
-                }
-              ],
+              "linkId": "c8c34ec1-63a0-4d10-b30e-b09d62cb45f1",
+              "type": "decimal",
+              "text": "Uten noen ting decimal",
               "required": false,
-              "extension": [
-                {
-                  "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
-                  "valueString": "Patient.name.where(use = 'official').select(given.join(' ') & ' ' & family)"
-                }
-              ],
-              "readOnly": true,
               "enableWhen": [
                 {
-                  "question": "7b27de45-050d-4f50-80f7-6fc074b4fd9f",
+                  "question": "6d1c868f-a19e-4b14-e6c2-6caa05df573c",
                   "operator": "=",
-                  "answerCoding": { "system": "urn:oid:2.16.578.1.12.4.1.1101", "code": "2" }
+                  "answerCoding": { "system": "urn:oid:2.16.578.1.12.4.1.1101", "code": "1" }
                 }
               ]
             }
           ],
           "required": false,
+          "answerValueSet": "#1101"
+        }
+      ],
+      "required": false
+    },
+    {
+      "linkId": "1760235a-7b34-4c4a-86f0-054897e68a6e",
+      "type": "group",
+      "text": "Kopiering",
+      "item": [
+        {
+          "linkId": "75c9480d-a36f-4fc9-9fea-79f54093725f",
+          "type": "integer",
+          "text": "Kopi Preutfylt tall",
+          "required": false,
           "extension": [
             {
               "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
               "valueCodeableConcept": {
-                "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "radio-button" }]
+                "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
               }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueString": "QuestionnaireResponse.descendants().where(linkId='9859eaa1-2e30-46e4-86dc-7a4303fea449').answer.value"
             }
           ],
-          "answerValueSet": "#1101",
-          "text": "Svar her"
+          "readOnly": true,
+          "enableWhen": [{ "answerBoolean": true, "question": "9859eaa1-2e30-46e4-86dc-7a4303fea449", "operator": "exists" }]
+        },
+        {
+          "linkId": "e74e20e2-f3e6-4aa5-8da9-acd093386099",
+          "type": "decimal",
+          "text": "Kopi fra Preutfylt decimal",
+          "required": false,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueString": "QuestionnaireResponse.descendants().where(linkId='5d6fa1e7-4eca-4b66-8cae-e08d33a27022').answer.value"
+            }
+          ],
+          "readOnly": true,
+          "enableWhen": [{ "answerBoolean": true, "question": "5d6fa1e7-4eca-4b66-8cae-e08d33a27022", "operator": "exists" }]
+        }
+      ],
+      "required": false
+    },
+    {
+      "linkId": "4d3ca2c8-2c5c-427e-a686-682c327bbd7b",
+      "type": "group",
+      "text": "Gjentakelse",
+      "item": [
+        {
+          "linkId": "2d1dc9db-299c-4f2b-bd20-16628dc1d176",
+          "type": "integer",
+          "text": "Uten noen ting tall maks 2",
+          "required": false,
+          "repeats": true,
+          "extension": [
+            { "url": "http://ehelse.no/fhir/StructureDefinition/repeatstext", "valueString": "Legg til tall" },
+            { "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-minOccurs", "valueInteger": 1 },
+            { "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-maxOccurs", "valueInteger": 2 }
+          ]
+        },
+        {
+          "linkId": "7d88075c-7363-4e9d-8972-693c423dac08",
+          "type": "decimal",
+          "text": "Uten noen ting decimal maks 2",
+          "required": false,
+          "repeats": true,
+          "extension": [
+            { "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-minOccurs", "valueInteger": 1 },
+            { "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-maxOccurs", "valueInteger": 2 },
+            { "url": "http://ehelse.no/fhir/StructureDefinition/repeatstext", "valueString": "Legg til decimal" }
+          ]
         }
       ],
       "required": false
