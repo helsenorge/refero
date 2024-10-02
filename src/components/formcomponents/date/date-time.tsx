@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { format, isValid } from 'date-fns';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
-import { Controller, FieldError, FieldValues, useFormContext } from 'react-hook-form';
+import { FieldError, FieldValues, useFormContext } from 'react-hook-form';
 import { ThunkDispatch } from 'redux-thunk';
 
 import { DateTimeUnit } from '../../../types/dateTypes';
@@ -26,7 +26,7 @@ import {
 import { getValidationTextExtension } from '../../../util/extension';
 import { isRequired, getId, isReadOnly } from '../../../util/index';
 import TextView from '../textview';
-
+import styles from '../common-styles.module.css';
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { useDispatch, useSelector } from 'react-redux';
 import RenderHelpButton from '../help-button/RenderHelpButton';
@@ -39,6 +39,7 @@ import { useExternalRenderContext } from '@/context/externalRenderContext';
 import { useMinMaxDate } from './useMinMaxDate';
 import { findQuestionnaireItem } from '@/reducers/selectors';
 import useOnAnswerChange from '@/hooks/useOnAnswerChange';
+import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 
 export type Props = QuestionnaireComponentItemProps;
 
@@ -53,7 +54,7 @@ const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, childr
 
   const answer = useGetAnswer(linkId, path);
   const [isHelpVisible, setIsHelpVisible] = useState(false);
-  const { formState, getFieldState, getValues } = useFormContext<FieldValues>();
+  const { formState, getFieldState, getValues, register } = useFormContext<FieldValues>();
   const dateField = getFieldState(`${idWithLinkIdAndItemIndex}-date`, formState);
   const hoursField = getFieldState(`${idWithLinkIdAndItemIndex}-hours`, formState);
   const minutesField = getFieldState(`${idWithLinkIdAndItemIndex}-minutes`, formState);
@@ -172,119 +173,109 @@ const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, childr
     const minutesValue = getValues(idWithLinkIdAndItemIndex + '-minutes');
     return dateValue || hoursValue || minutesValue;
   };
-
+  const registerDate = register(`${idWithLinkIdAndItemIndex}-date`, {
+    required: {
+      value: isRequired(item),
+      message: resources?.formRequiredErrorMessage || '',
+    },
+    validate: {
+      validDate: value => {
+        return doesAnyFieldsHaveValue() ? validateDate(parseStringToDate(value) ?? value, resources) : true;
+      },
+      validMinDate: value => {
+        return doesAnyFieldsHaveValue() ? validateMinDate(minDateTime, parseStringToDate(value), resources) : true;
+      },
+      validMaxDate: value => {
+        return doesAnyFieldsHaveValue() ? validateMaxDate(maxDateTime, parseStringToDate(value), resources) : true;
+      },
+    },
+    shouldUnregister: true,
+  });
+  const registerHours = register(`${idWithLinkIdAndItemIndex}-hours`, {
+    required: {
+      value: isRequired(item),
+      message: resources?.formRequiredErrorMessage || '',
+    },
+    validate: {
+      validHours: value => {
+        return doesAnyFieldsHaveValue() ? validateHours(Number(value), resources) : true;
+      },
+    },
+    shouldUnregister: true,
+  });
+  const registerMinutes = register(`${idWithLinkIdAndItemIndex}-minutes`, {
+    required: {
+      value: isRequired(item),
+      message: resources?.formRequiredErrorMessage || '',
+    },
+    validate: {
+      validMinutes: value => {
+        return doesAnyFieldsHaveValue() ? validateMinutes(Number(value), resources) : true;
+      },
+    },
+    shouldUnregister: true,
+  });
   return (
     <div className="page_refero__component page_refero__component_datetime" data-testid={`${getId(id)}-container`}>
-      <ReferoLabel
-        item={item}
-        resources={resources}
-        htmlFor={`${getId(id)}-datepicker`}
-        labelId={`${getId(id)}-label`}
-        testId={`${getId(id)}-datetime-label`}
-        sublabelId={`${getId(id)}-sublabel`}
-        dateLabel={resources?.dateFormat_ddmmyyyy}
+      <FormGroup
+        error={getErrorText(getCombinedFieldError(dateField, hoursField, minutesField))}
+        errorWrapperClassName={styles.paddingBottom}
       >
-        <RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />
-      </ReferoLabel>
-      <RenderHelpElement isHelpVisible={isHelpVisible} item={item} />
-      <DateTimePickerWrapper
-        testId={`${getId(id)}-datetime-wrapper`}
-        errorText={getErrorText(getCombinedFieldError(dateField, hoursField, minutesField))}
-      >
-        <Controller
-          name={`${idWithLinkIdAndItemIndex}-date`}
-          shouldUnregister={true}
-          rules={{
-            required: {
-              value: isRequired(item),
-              message: resources?.formRequiredErrorMessage || '',
-            },
-            validate: {
-              validDate: value => {
-                return doesAnyFieldsHaveValue() ? validateDate(parseStringToDate(value) ?? value, resources) : true;
-              },
-              validMinDate: value => {
-                return doesAnyFieldsHaveValue() ? validateMinDate(minDateTime, parseStringToDate(value), resources) : true;
-              },
-              validMaxDate: value => {
-                return doesAnyFieldsHaveValue() ? validateMaxDate(maxDateTime, parseStringToDate(value), resources) : true;
-              },
-            },
-          }}
-          render={({ field: { onChange } }): JSX.Element => (
-            <DatePicker
-              inputId={`${getId(id)}-datepicker`}
-              testId={`${getId(id)}-datetime`}
-              autoComplete=""
-              dateButtonAriaLabel="Open datepicker"
-              dateFormat={'dd.MM.yyyy'}
-              dateValue={isValid(date) ? date : undefined}
-              minDate={minDateTime}
-              maxDate={maxDateTime}
-              onChange={(_e, newDate) => {
-                handleDateChange(newDate);
-                onChange(newDate);
-              }}
-            />
-          )}
-        />
-        <Controller
-          name={idWithLinkIdAndItemIndex + '-hours'}
-          shouldUnregister={true}
-          rules={{
-            required: {
-              value: isRequired(item),
-              message: resources?.formRequiredErrorMessage || '',
-            },
-            validate: {
-              validHours: value => {
-                return doesAnyFieldsHaveValue() ? validateHours(Number(value), resources) : true;
-              },
-            },
-          }}
-          render={({ field: { onChange } }): JSX.Element => (
-            <DateTime
-              testId={`hours-test`}
-              timeUnit="hours"
-              onChange={e => {
-                handleHoursChange(e.target.value);
-                onChange(e.target.value);
-              }}
-              defaultValue={Number(hours)}
-            />
-          )}
-        />
-        <Controller
-          name={idWithLinkIdAndItemIndex + '-minutes'}
-          defaultValue={15}
-          shouldUnregister={true}
-          rules={{
-            required: {
-              value: isRequired(item),
-              message: resources?.formRequiredErrorMessage || '',
-            },
-            validate: {
-              validMinutes: value => {
-                return doesAnyFieldsHaveValue() ? validateMinutes(Number(value), resources) : true;
-              },
-            },
-          }}
-          render={({ field: { onChange } }): JSX.Element => (
-            <DateTime
-              testId={`minutes-test`}
-              timeUnit="minutes"
-              onChange={e => {
-                handleMinutesChange(e.target.value);
-                onChange(e.target.value);
-              }}
-              defaultValue={Number(minutes)}
-            />
-          )}
-        />
-      </DateTimePickerWrapper>
-      <RenderDeleteButton item={item} path={path} index={index} className="page_refero__deletebutton--margin-top" />
-      <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} />
-      {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
+        <ReferoLabel
+          item={item}
+          resources={resources}
+          htmlFor={`${getId(id)}-datepicker`}
+          labelId={`${getId(id)}-label`}
+          testId={`${getId(id)}-datetime-label`}
+          sublabelId={`${getId(id)}-sublabel`}
+          dateLabel={resources?.dateFormat_ddmmyyyy}
+        >
+          <RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />
+        </ReferoLabel>
+        <RenderHelpElement isHelpVisible={isHelpVisible} item={item} />
+        <DateTimePickerWrapper testId={`${getId(id)}-datetime-wrapper`}>
+          <DatePicker
+            {...registerDate}
+            inputId={`${getId(id)}-datepicker`}
+            testId={`${getId(id)}-datetime`}
+            autoComplete=""
+            dateButtonAriaLabel="Open datepicker"
+            dateFormat={'dd.MM.yyyy'}
+            dateValue={isValid(date) ? date : undefined}
+            minDate={minDateTime}
+            maxDate={maxDateTime}
+            onChange={(e, newDate) => {
+              handleDateChange(newDate);
+              registerDate.onChange(e);
+            }}
+          />
+
+          <DateTime
+            {...registerHours}
+            testId={`hours-test`}
+            timeUnit="hours"
+            onChange={e => {
+              handleHoursChange(e.target.value);
+              registerHours.onChange(e);
+            }}
+            defaultValue={Number(hours)}
+          />
+
+          <DateTime
+            {...registerMinutes}
+            testId={`minutes-test`}
+            timeUnit="minutes"
+            onChange={e => {
+              handleMinutesChange(e.target.value);
+              registerMinutes.onChange(e);
+            }}
+            defaultValue={Number(minutes)}
+          />
+        </DateTimePickerWrapper>
+        <RenderDeleteButton item={item} path={path} index={index} className="page_refero__deletebutton--margin-top" />
+        <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} />
+        {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
+      </FormGroup>
     </div>
   );
 };

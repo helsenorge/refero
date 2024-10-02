@@ -10,22 +10,36 @@
     "tag": [{ "system": "urn:ietf:bcp:47", "code": "nb-NO", "display": "Bokmål" }],
     "security": [{ "code": "3", "display": "Helsehjelp (Full)", "system": "urn:oid:2.16.578.1.12.4.1.1.7618" }]
   },
-  "contact": [{ "name": "http://www.nhn.no" }],
+  "contact": [
+    {
+      "name": "http://www.nhn.no"
+    }
+  ],
   "subjectType": ["Patient"],
   "extension": [
     {
       "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sidebar",
-      "valueCoding": { "system": "http://helsenorge.no/fhir/ValueSet/sdf-sidebar", "code": "1" }
+      "valueCoding": {
+        "system": "http://helsenorge.no/fhir/ValueSet/sdf-sidebar",
+        "code": "1"
+      }
     },
     {
       "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-information-message",
-      "valueCoding": { "system": "http://helsenorge.no/fhir/ValueSet/sdf-information-message", "code": "1" }
+      "valueCoding": {
+        "system": "http://helsenorge.no/fhir/ValueSet/sdf-information-message",
+        "code": "1"
+      }
     },
     {
       "url": "http://helsenorge.no/fhir/StructureDefintion/sdf-itemControl-visibility",
       "valueCodeableConcept": {
         "coding": [
-          { "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions", "code": "hide-help", "display": "Hide help texts" },
+          {
+            "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
+            "code": "hide-help",
+            "display": "Hide help texts"
+          },
           {
             "system": "http://helsenorge.no/fhir/CodeSystem/AttachmentRenderOptions",
             "code": "hide-sublabel",
@@ -35,7 +49,6 @@
       }
     }
   ],
-  "id": "647c8f15-fd27-4077-aa88-82954068032a",
   "version": "0.1",
   "date": "2024-03-15T00:00:00+01:00",
   "contained": [
@@ -61,6 +74,7 @@
       }
     }
   ],
+  "id": "59949a4c-f71f-4249-805e-90acf0929fc3",
   "item": [
     {
       "linkId": "a745ad7a-8378-4c30-8bcb-8b2b577321d6",
