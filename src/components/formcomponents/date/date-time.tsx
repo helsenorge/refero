@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { format, isValid } from 'date-fns';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
-import { Controller, FieldError, FieldValues, useFormContext } from 'react-hook-form';
+import { FieldError, FieldValues, useFormContext } from 'react-hook-form';
 import { ThunkDispatch } from 'redux-thunk';
 
 import { DateTimeUnit } from '../../../types/dateTypes';
