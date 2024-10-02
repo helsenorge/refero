@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import styles2 from '../common-styles.module.css';
 import { format, getYear, isValid, parse } from 'date-fns';
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
-import { Controller, FieldError, FieldValues, useFormContext } from 'react-hook-form';
+import { FieldError, FieldValues, useFormContext } from 'react-hook-form';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Input from '@helsenorge/designsystem-react/components/Input';
@@ -241,7 +241,6 @@ export const DateYearMonthInput = ({
           width={10}
           value={year}
         />
-
         <Select
           {...registerMonth}
           className={styles.monthSelect}

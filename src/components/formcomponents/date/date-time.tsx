@@ -54,7 +54,7 @@ const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, childr
 
   const answer = useGetAnswer(linkId, path);
   const [isHelpVisible, setIsHelpVisible] = useState(false);
-  const { formState, getFieldState, getValues } = useFormContext<FieldValues>();
+  const { formState, getFieldState, getValues, register } = useFormContext<FieldValues>();
   const dateField = getFieldState(`${idWithLinkIdAndItemIndex}-date`, formState);
   const hoursField = getFieldState(`${idWithLinkIdAndItemIndex}-hours`, formState);
   const minutesField = getFieldState(`${idWithLinkIdAndItemIndex}-minutes`, formState);
@@ -173,7 +173,48 @@ const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, childr
     const minutesValue = getValues(idWithLinkIdAndItemIndex + '-minutes');
     return dateValue || hoursValue || minutesValue;
   };
-
+  const registerDate = register(`${idWithLinkIdAndItemIndex}-date`, {
+    required: {
+      value: isRequired(item),
+      message: resources?.formRequiredErrorMessage || '',
+    },
+    validate: {
+      validDate: value => {
+        return doesAnyFieldsHaveValue() ? validateDate(parseStringToDate(value) ?? value, resources) : true;
+      },
+      validMinDate: value => {
+        return doesAnyFieldsHaveValue() ? validateMinDate(minDateTime, parseStringToDate(value), resources) : true;
+      },
+      validMaxDate: value => {
+        return doesAnyFieldsHaveValue() ? validateMaxDate(maxDateTime, parseStringToDate(value), resources) : true;
+      },
+    },
+    shouldUnregister: true,
+  });
+  const registerHours = register(`${idWithLinkIdAndItemIndex}-hours`, {
+    required: {
+      value: isRequired(item),
+      message: resources?.formRequiredErrorMessage || '',
+    },
+    validate: {
+      validHours: value => {
+        return doesAnyFieldsHaveValue() ? validateHours(Number(value), resources) : true;
+      },
+    },
+    shouldUnregister: true,
+  });
+  const registerMinutes = register(`${idWithLinkIdAndItemIndex}-minutes`, {
+    required: {
+      value: isRequired(item),
+      message: resources?.formRequiredErrorMessage || '',
+    },
+    validate: {
+      validMinutes: value => {
+        return doesAnyFieldsHaveValue() ? validateMinutes(Number(value), resources) : true;
+      },
+    },
+    shouldUnregister: true,
+  });
   return (
     <div className="page_refero__component page_refero__component_datetime" data-testid={`${getId(id)}-container`}>
       <FormGroup
@@ -193,97 +234,42 @@ const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, childr
         </ReferoLabel>
         <RenderHelpElement isHelpVisible={isHelpVisible} item={item} />
         <DateTimePickerWrapper testId={`${getId(id)}-datetime-wrapper`}>
-          <Controller
-            name={`${idWithLinkIdAndItemIndex}-date`}
-            shouldUnregister={true}
-            rules={{
-              required: {
-                value: isRequired(item),
-                message: resources?.formRequiredErrorMessage || '',
-              },
-              validate: {
-                validDate: value => {
-                  return doesAnyFieldsHaveValue() ? validateDate(parseStringToDate(value) ?? value, resources) : true;
-                },
-                validMinDate: value => {
-                  return doesAnyFieldsHaveValue() ? validateMinDate(minDateTime, parseStringToDate(value), resources) : true;
-                },
-                validMaxDate: value => {
-                  return doesAnyFieldsHaveValue() ? validateMaxDate(maxDateTime, parseStringToDate(value), resources) : true;
-                },
-              },
+          <DatePicker
+            {...registerDate}
+            inputId={`${getId(id)}-datepicker`}
+            testId={`${getId(id)}-datetime`}
+            autoComplete=""
+            dateButtonAriaLabel="Open datepicker"
+            dateFormat={'dd.MM.yyyy'}
+            dateValue={isValid(date) ? date : undefined}
+            minDate={minDateTime}
+            maxDate={maxDateTime}
+            onChange={(e, newDate) => {
+              handleDateChange(newDate);
+              registerDate.onChange(e);
             }}
-            render={({ field: { onChange, ...rest } }): JSX.Element => (
-              <DatePicker
-                {...rest}
-                inputId={`${getId(id)}-datepicker`}
-                testId={`${getId(id)}-datetime`}
-                autoComplete=""
-                dateButtonAriaLabel="Open datepicker"
-                dateFormat={'dd.MM.yyyy'}
-                dateValue={isValid(date) ? date : undefined}
-                minDate={minDateTime}
-                maxDate={maxDateTime}
-                onChange={(e, newDate) => {
-                  handleDateChange(newDate);
-                  onChange(e);
-                }}
-              />
-            )}
           />
-          <Controller
-            name={idWithLinkIdAndItemIndex + '-hours'}
-            shouldUnregister={true}
-            rules={{
-              required: {
-                value: isRequired(item),
-                message: resources?.formRequiredErrorMessage || '',
-              },
-              validate: {
-                validHours: value => {
-                  return doesAnyFieldsHaveValue() ? validateHours(Number(value), resources) : true;
-                },
-              },
+
+          <DateTime
+            {...registerHours}
+            testId={`hours-test`}
+            timeUnit="hours"
+            onChange={e => {
+              handleHoursChange(e.target.value);
+              registerHours.onChange(e);
             }}
-            render={({ field: { onChange, ...rest } }): JSX.Element => (
-              <DateTime
-                {...rest}
-                testId={`hours-test`}
-                timeUnit="hours"
-                onChange={e => {
-                  handleHoursChange(e.target.value);
-                  onChange(e);
-                }}
-                defaultValue={Number(hours)}
-              />
-            )}
+            defaultValue={Number(hours)}
           />
-          <Controller
-            name={idWithLinkIdAndItemIndex + '-minutes'}
-            shouldUnregister={true}
-            rules={{
-              required: {
-                value: isRequired(item),
-                message: resources?.formRequiredErrorMessage || '',
-              },
-              validate: {
-                validMinutes: value => {
-                  return doesAnyFieldsHaveValue() ? validateMinutes(Number(value), resources) : true;
-                },
-              },
+
+          <DateTime
+            {...registerMinutes}
+            testId={`minutes-test`}
+            timeUnit="minutes"
+            onChange={e => {
+              handleMinutesChange(e.target.value);
+              registerMinutes.onChange(e);
             }}
-            render={({ field: { onChange, ...rest } }): JSX.Element => (
-              <DateTime
-                {...rest}
-                testId={`minutes-test`}
-                timeUnit="minutes"
-                onChange={e => {
-                  handleMinutesChange(e.target.value);
-                  onChange(e);
-                }}
-                defaultValue={Number(minutes)}
-              />
-            )}
+            defaultValue={Number(minutes)}
           />
         </DateTimePickerWrapper>
         <RenderDeleteButton item={item} path={path} index={index} className="page_refero__deletebutton--margin-top" />
