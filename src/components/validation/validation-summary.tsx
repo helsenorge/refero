@@ -36,7 +36,7 @@ const ValidationSummary = ({ resources }: Props): JSX.Element | null => {
     }
   }, [submitCount, errors]);
 
-  const allErrors = getItemTextFromErrors(errors, formData, formDefinition);
+  const allErrors = getItemTextFromErrors(errors, formData, formDefinition?.Content?.item);
   return allErrors.length > 0 ? (
     <div ref={errorSummaryRef} data-testid="validation-summary">
       <ul className={styles.validationSummary_list}>
