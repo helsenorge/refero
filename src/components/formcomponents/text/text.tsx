@@ -16,7 +16,6 @@ import { GlobalState } from '@/reducers';
 import { getPlaceholder, getItemControlExtensionValue } from '@/util/extension';
 import { isReadOnly, getId, getStringValue, getMaxLength, getPDFStringValue } from '@/util/index';
 import { ReferoLabel } from '../../referoLabel/ReferoLabel';
-import TextView from '../textview';
 import { useDispatch, useSelector } from 'react-redux';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
 import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelpButton';
@@ -30,6 +29,7 @@ import { maxLength, minLength, regexpPattern, required, scriptInjection } from '
 import { QuestionnaireItem } from 'fhir/r4';
 import { findQuestionnaireItem } from '@/reducers/selectors';
 import useOnAnswerChange from '@/hooks/useOnAnswerChange';
+import { ReadOnly } from '../read-only/readOnly';
 
 export type Props = QuestionnaireComponentItemProps & {
   shouldExpanderRenderChildrenWhenClosed?: boolean;
@@ -81,14 +81,6 @@ export const Text = (props: Props): JSX.Element | null => {
     );
   }
 
-  if (pdf || isReadOnly(item)) {
-    return (
-      <TextView id={id} item={item} value={getPDFStringValue(answer, resources)} textClass="page_refero__component_readonlytext">
-        {children}
-      </TextView>
-    );
-  }
-
   const value = getStringValue(answer);
 
   const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, {
@@ -100,6 +92,21 @@ export const Text = (props: Props): JSX.Element | null => {
       scriptInjection({ value, resources, shouldValidate: !!validateScriptInjection }),
     shouldUnregister: true,
   });
+
+  if (pdf || isReadOnly(item)) {
+    return (
+      <ReadOnly
+        pdf={pdf}
+        id={id}
+        item={item}
+        pdfValue={getPDFStringValue(answer, resources)}
+        errors={error}
+        textClass="page_refero__component_readonlytext"
+      >
+        {children}
+      </ReadOnly>
+    );
+  }
   return (
     <div className="page_refero__component page_refero__component_text">
       <FormGroup error={error?.message} mode="ongrey" errorWrapperClassName={styles.paddingBottom}>

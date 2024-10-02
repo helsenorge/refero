@@ -11,7 +11,6 @@ import { NewValueAction, newStringValueAsync } from '@/actions/newValue';
 import { GlobalState } from '@/reducers';
 import { getPlaceholder } from '@/util/extension';
 import { isReadOnly, getId, getStringValue, getPDFStringValue, getMaxLength } from '@/util/index';
-import TextView from '../textview';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
@@ -26,6 +25,7 @@ import { debounce } from '@helsenorge/core-utils/debounce';
 import { findQuestionnaireItem } from '@/reducers/selectors';
 import { QuestionnaireItem } from 'fhir/r4';
 import useOnAnswerChange from '@/hooks/useOnAnswerChange';
+import { ReadOnly } from '../read-only/readOnly';
 
 export type Props = QuestionnaireComponentItemProps;
 
@@ -56,14 +56,6 @@ export const String = (props: Props): JSX.Element | null => {
     }
   };
 
-  if (pdf || isReadOnly(item)) {
-    return (
-      <TextView id={id} item={item} value={getPDFStringValue(answer, resources)} textClass="page_refero__component_readonlytext">
-        {children}
-      </TextView>
-    );
-  }
-
   // const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
   //   handleChange(event);
   // };
@@ -85,6 +77,20 @@ export const String = (props: Props): JSX.Element | null => {
   const maxCharacters = getMaxLength(item);
   const width = maxCharacters ? (maxCharacters > 40 ? 40 : maxCharacters) : 25;
 
+  if (pdf || isReadOnly(item)) {
+    return (
+      <ReadOnly
+        pdf={pdf}
+        id={id}
+        item={item}
+        pdfValue={getPDFStringValue(answer, resources)}
+        errors={error}
+        textClass="page_refero__component_readonlytext"
+      >
+        {children}
+      </ReadOnly>
+    );
+  }
   return (
     <div className="page_refero__component page_refero__component_string">
       <FormGroup error={error?.message ?? ''} mode="ongrey" errorWrapperClassName={styles.paddingBottom}>

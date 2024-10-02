@@ -12,8 +12,6 @@ import { GlobalState } from '@/reducers';
 import { getMaxValueExtensionValue, getPlaceholder, getQuestionnaireUnitExtensionValue } from '@/util/extension';
 import { isReadOnly, getId } from '@/util/index';
 
-import TextView from '../textview';
-
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { useDispatch, useSelector } from 'react-redux';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
@@ -26,6 +24,7 @@ import { useExternalRenderContext } from '@/context/externalRenderContext';
 import { decimalPattern, maxValue, minValue, required } from '@/components/validation/rules';
 import { findQuestionnaireItem } from '@/reducers/selectors';
 import useOnAnswerChange from '@/hooks/useOnAnswerChange';
+import { ReadOnly } from '../read-only/readOnly';
 
 export type Props = QuestionnaireComponentItemProps;
 
@@ -100,13 +99,6 @@ const Quantity = (props: Props): JSX.Element | null => {
     return '';
   };
 
-  if (pdf || isReadOnly(item)) {
-    return (
-      <TextView id={id} item={item} value={getPDFValue()}>
-        {children}
-      </TextView>
-    );
-  }
   const value = getValue(answer);
 
   const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, {
@@ -118,6 +110,14 @@ const Quantity = (props: Props): JSX.Element | null => {
   });
   const maxCharacters = getMaxValueExtensionValue(item) ? getMaxValueExtensionValue(item)?.toString().length : undefined;
   const width = maxCharacters ? (maxCharacters > 40 ? 40 : maxCharacters + 2) : 7;
+
+  if (pdf || isReadOnly(item)) {
+    return (
+      <ReadOnly pdf={pdf} id={id} item={item} pdfValue={getPDFValue()} errors={error}>
+        {children}
+      </ReadOnly>
+    );
+  }
   return (
     <div className="page_refero__component page_refero__component_quantity">
       <FormGroup error={error?.message} mode="ongrey" errorWrapperClassName={styles2.paddingBottom}>

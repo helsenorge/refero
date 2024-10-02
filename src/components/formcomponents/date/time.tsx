@@ -158,6 +158,7 @@ const Time = ({ id, index, path, linkId, pdf, idWithLinkIdAndItemIndex, children
     },
     shouldUnregister: true,
   });
+
   if (pdf || isReadOnly(item)) {
     return (
       <ReadOnly pdf={pdf} id={id} item={item} pdfValue={getPDFValue()} errors={getCombinedFieldError(hoursField, minutesField)}>

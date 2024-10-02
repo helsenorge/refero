@@ -10,10 +10,11 @@ type Props = {
   item?: QuestionnaireItem;
   pdfValue?: string | number;
   errors: FieldError | undefined;
+  textClass?: string;
   children?: React.ReactNode;
 };
 
-export const ReadOnly = ({ pdf, id, item, pdfValue, children, errors }: Props): JSX.Element => {
+export const ReadOnly = ({ pdf, id, item, pdfValue, children, errors, textClass }: Props): JSX.Element => {
   const getErrorText = (error: FieldError | undefined): string | undefined => {
     if (error) {
       const validationTextExtension = getValidationTextExtension(item);
@@ -27,12 +28,12 @@ export const ReadOnly = ({ pdf, id, item, pdfValue, children, errors }: Props): 
   return (
     <>
       {pdf ? (
-        <TextView id={id} item={item} value={pdfValue}>
+        <TextView id={id} item={item} value={pdfValue} textClass={textClass}>
           {children}
         </TextView>
       ) : (
         <FormGroup error={getErrorText(errors)}>
-          <TextView id={id} item={item} value={pdfValue}>
+          <TextView id={id} item={item} value={pdfValue} textClass={textClass}>
             {children}
           </TextView>
         </FormGroup>

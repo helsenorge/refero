@@ -86,6 +86,7 @@ const Integer = (props: Props): JSX.Element | null => {
   });
   const maxCharacters = getMaxValueExtensionValue(item) ? getMaxValueExtensionValue(item)?.toString().length : undefined;
   const width = maxCharacters ? (maxCharacters > 40 ? 40 : maxCharacters + 2) : 7;
+
   if (pdf || isReadOnly(item)) {
     return (
       <ReadOnly pdf={pdf} id={id} item={item} pdfValue={getPDFValue()} errors={error}>
