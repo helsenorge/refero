@@ -404,7 +404,6 @@ export function enableWhenMatchesAnswer(
   });
   return matches;
 }
-
 export function createIdSuffix(path: Path[] | undefined, index = 0, repeats: boolean | undefined): string {
   let suffix = '';
 
@@ -437,6 +436,7 @@ export function parseIdSuffix(input: string): Path[] {
 
   return paths;
 }
+
 export function findFirstGuidInString(input: string): string | null {
   const regex = /\b[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}\b/;
   const match = input.match(regex);
@@ -493,7 +493,7 @@ export function shouldRenderDeleteButton(item?: QuestionnaireItem, index?: numbe
   return false;
 }
 
-function copyPath(path: Path[]): Path[] {
+export function copyPath(path: Path[]): Path[] {
   const newPath: Path[] = [];
   for (let i = 0; i < path.length; i++) {
     newPath.push(Object.assign({}, path[i]));

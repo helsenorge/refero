@@ -95,6 +95,7 @@ describe('Default form values', () => {
       it('empty fields should cause a validation error on submit', async () => {
         const wrapper = createWrapper(qDateMonth);
         await submitForm();
+        wrapper.debug(undefined, 200000);
         const summaryElements = wrapper.queryAllByTestId(/summary-element-Tom dateMonth/i);
         expect(summaryElements[0]).toBeInTheDocument();
         expect(summaryElements[1]).toBeInTheDocument();

@@ -46,8 +46,8 @@ const ResponseItem = memo(function ResponseItem({
     return null;
   }
 
-  const idWithLinkIdAndItemIndex = `${linkId}${createIdSuffix(newPath, index, isRepeat(item))}`;
-  const id = `item_${linkId}${createIdSuffix(newPath, index, isRepeat(item))}`;
+  const idWithLinkIdAndItemIndex = `${linkId}${createIdSuffix(path, index, isRepeat(item))}`;
+  const id = `item_${idWithLinkIdAndItemIndex}`;
 
   let blindzone: JSX.Element | null = null;
   let includeSkipLink = false;
