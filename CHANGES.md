@@ -1,4 +1,8 @@
 ## 16.0.0-beta.39
+- fix bug with ids
+- fix bug with text on errorsummary on linkids with uuid + text
+
+## 16.0.0-beta.39
 - Replaced Controller with register in date components to fix error-summary bug
 
 ## 16.0.0-beta.38
