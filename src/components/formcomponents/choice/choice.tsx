@@ -27,6 +27,7 @@ import { useExternalRenderContext } from '@/context/externalRenderContext';
 import { useCallback, useEffect, useMemo } from 'react';
 import { findQuestionnaireItem } from '@/reducers/selectors';
 import useOnAnswerChange from '@/hooks/useOnAnswerChange';
+import { ReadOnly } from '../read-only/readOnly';
 
 export type ChoiceProps = QuestionnaireComponentItemProps;
 
@@ -167,6 +168,12 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
         return <RadioView options={options} pdfValue={pdfValue} {...commonProps} />;
       case itemControlConstants.SLIDER:
         return <SliderView {...commonProps} />;
+      case itemControlConstants.DATARECEIVER:
+        return (
+          <ReadOnly item={item} id={props.idWithLinkIdAndItemIndex} pdfValue={pdfValue}>
+            {children}
+          </ReadOnly>
+        );
       default:
         return null;
     }

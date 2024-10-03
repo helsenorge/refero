@@ -9,7 +9,7 @@ type Props = {
   id?: string;
   item?: QuestionnaireItem;
   pdfValue?: string | number;
-  errors: FieldError | undefined;
+  errors?: FieldError;
   textClass?: string;
   children?: React.ReactNode;
 };

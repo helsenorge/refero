@@ -118,7 +118,7 @@ describe('Copying from ...', () => {
     it('Choice selected options displays in data-receiver element', async () => {
       const { container } = createWrapper(ChoiceCopyFrom);
       await selectCheckboxOption('Option 1');
-      expect(findItemById('item_data-receiver-choice-id', container)).toBeInTheDocument();
+      expect(findItemById('data-receiver-choice-id', container)).toBeInTheDocument();
     });
   });
 });
