@@ -9,7 +9,7 @@ import Label from '@helsenorge/designsystem-react/components/Label';
 import RadioButton from '@helsenorge/designsystem-react/components/RadioButton';
 
 import { shouldShowExtraChoice } from '@/util/choice';
-import { getId } from '@/util/index';
+import { getId, isReadOnly } from '@/util/index';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
@@ -24,16 +24,19 @@ import { GlobalState } from '@/reducers';
 import { QuestionnaireItem } from 'fhir/r4';
 import { findQuestionnaireItem } from '@/reducers/selectors';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
+import { ReadOnly } from '../read-only/readOnly';
 
 type Props = QuestionnaireComponentItemProps & {
   options?: Array<Options>;
   handleChange: (radioButton: string) => void;
   selected?: Array<string | undefined>;
   renderOpenField: () => JSX.Element | undefined;
+  pdfValue?: string | number;
 };
 
 const RadioView = (props: Props): JSX.Element | null => {
-  const { options, id, handleChange, selected, renderOpenField, idWithLinkIdAndItemIndex, linkId, path, index, children } = props;
+  const { options, id, handleChange, selected, renderOpenField, idWithLinkIdAndItemIndex, linkId, path, index, pdf, pdfValue, children } =
+    props;
   const { resources } = useExternalRenderContext();
   const { formState, getFieldState, register } = useFormContext<FieldValues>();
   const { error } = getFieldState(idWithLinkIdAndItemIndex, formState);
@@ -47,6 +50,14 @@ const RadioView = (props: Props): JSX.Element | null => {
     required: required({ item, resources }),
     shouldUnregister: true,
   });
+
+  if (pdf || isReadOnly(item)) {
+    return (
+      <ReadOnly pdf={pdf} id={id} item={item} pdfValue={pdfValue} errors={error}>
+        {children}
+      </ReadOnly>
+    );
+  }
   if (!options) {
     return null;
   }

@@ -17,7 +17,7 @@ import {
 import { OPEN_CHOICE_ID, OPEN_CHOICE_SYSTEM } from '@/constants';
 import ItemControlConstants from '@/constants/itemcontrol';
 import { GlobalState } from '@/reducers';
-import { isReadOnly, isDataReceiver } from '@/util';
+import { isDataReceiver } from '@/util';
 import {
   getOptions,
   shouldShowExtraChoice,
@@ -32,7 +32,6 @@ import {
 
 import SliderView from '../choice/slider-view';
 import AutosuggestView from '../choice-common/autosuggest-view';
-import TextView from '../textview';
 import { useDispatch, useSelector } from 'react-redux';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
@@ -43,7 +42,7 @@ import useOnAnswerChange from '@/hooks/useOnAnswerChange';
 export type OpenChoiceProps = QuestionnaireComponentItemProps;
 
 export const OpenChoice = (props: OpenChoiceProps): JSX.Element | null => {
-  const { id, pdf, linkId, containedResources, path, children } = props;
+  const { linkId, containedResources, path } = props;
   const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
 
   const { promptLoginMessage, globalOnChange, resources } = useExternalRenderContext();
@@ -246,14 +245,6 @@ export const OpenChoice = (props: OpenChoiceProps): JSX.Element | null => {
     [item, itemControlValue]
   );
 
-  if (pdf || isReadOnly(item)) {
-    return (
-      <TextView id={id} item={item} value={getPDFValue()}>
-        {children}
-      </TextView>
-    );
-  }
-
   const renderComponentBasedOnType = (): JSX.Element | null => {
     if (!itemControlValue) {
       return null;
@@ -266,13 +257,15 @@ export const OpenChoice = (props: OpenChoiceProps): JSX.Element | null => {
       ...props,
     };
 
+    const pdfValue = getPDFValue();
+
     switch (itemControlValue) {
       case ItemControlConstants.DROPDOWN:
-        return <DropdownView options={options} {...commonProps} />;
+        return <DropdownView options={options} pdfValue={pdfValue} {...commonProps} />;
       case ItemControlConstants.CHECKBOX:
-        return <CheckboxView options={options} {...commonProps} handleChange={handleCheckboxChange} />;
+        return <CheckboxView options={options} pdfValue={pdfValue} {...commonProps} handleChange={handleCheckboxChange} />;
       case ItemControlConstants.RADIOBUTTON:
-        return <RadioView options={options} {...commonProps} />;
+        return <RadioView options={options} pdfValue={pdfValue} {...commonProps} />;
       case ItemControlConstants.SLIDER:
         return <SliderView {...commonProps} />;
       default:
@@ -286,15 +279,30 @@ export const OpenChoice = (props: OpenChoiceProps): JSX.Element | null => {
         itemControlValue ? (
           renderComponentBasedOnType()
         ) : aboveDropdownThreshold ? (
-          <DropdownView options={options} handleChange={handleChange} selected={value} renderOpenField={renderTextField} {...props} />
+          <DropdownView
+            options={options}
+            handleChange={handleChange}
+            selected={value}
+            renderOpenField={renderTextField}
+            pdfValue={getPDFValue()}
+            {...props}
+          />
         ) : (
-          <RadioView options={options} handleChange={handleChange} selected={value} renderOpenField={renderTextField} {...props} />
+          <RadioView
+            options={options}
+            handleChange={handleChange}
+            selected={value}
+            renderOpenField={renderTextField}
+            pdfValue={getPDFValue()}
+            {...props}
+          />
         )
       ) : shouldRenderAutosuggest ? (
         <AutosuggestView
           handleChange={handleChange}
           clearCodingAnswer={clearCodingAnswer}
           handleStringChange={handleStringChange}
+          pdfValue={getPDFValue()}
           {...props}
         />
       ) : null}

@@ -9,7 +9,7 @@ import Select from '@helsenorge/designsystem-react/components/Select';
 
 import { shouldShowExtraChoice } from '@/util/choice';
 
-import { getId } from '@/util/index';
+import { getId, isReadOnly } from '@/util/index';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
@@ -24,16 +24,19 @@ import { findQuestionnaireItem } from '@/reducers/selectors';
 import { GlobalState } from '@/reducers';
 import { QuestionnaireItem } from 'fhir/r4';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
+import { ReadOnly } from '../read-only/readOnly';
 
 type Props = QuestionnaireComponentItemProps & {
   options?: Array<Options>;
   handleChange: (code: string) => void;
   selected?: Array<string | undefined>;
   renderOpenField: () => JSX.Element | undefined;
+  pdfValue?: string | number;
 };
 
 const DropdownView = (props: Props): JSX.Element | null => {
-  const { options, id, handleChange, selected, renderOpenField, idWithLinkIdAndItemIndex, linkId, children, path, index } = props;
+  const { options, id, handleChange, selected, renderOpenField, idWithLinkIdAndItemIndex, linkId, children, path, index, pdf, pdfValue } =
+    props;
   const [isHelpVisible, setIsHelpVisible] = React.useState(false);
   const { formState, getFieldState, register } = useFormContext<FieldValues>();
   const { error } = getFieldState(idWithLinkIdAndItemIndex, formState);
@@ -57,6 +60,14 @@ const DropdownView = (props: Props): JSX.Element | null => {
     let width = maxCharacters ? (maxCharacters > 40 ? 40 : maxCharacters) : 25;
     return (width = placeholderLength > width ? placeholderLength : width);
   };
+
+  if (pdf || isReadOnly(item)) {
+    return (
+      <ReadOnly pdf={pdf} id={id} item={item} pdfValue={pdfValue} errors={error}>
+        {children}
+      </ReadOnly>
+    );
+  }
   return (
     <div className="page_refero__component page_refero__component_openchoice page_refero__component_openchoice_dropdown">
       <FormGroup error={error?.message} mode="ongrey" errorWrapperClassName={styles.paddingBottom}>

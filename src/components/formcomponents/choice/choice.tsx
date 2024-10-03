@@ -17,11 +17,9 @@ import {
   hasOptions,
   isAboveDropdownThreshold,
 } from '@/util/choice';
-import { isReadOnly } from '@/util/index';
 
 import AutosuggestView from '../choice-common/autosuggest-view';
 import ReceiverComponentWrapper from '../receiver-component/receiver-component-wrapper';
-import TextView from '../textview';
 import { useDispatch, useSelector } from 'react-redux';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
@@ -33,7 +31,7 @@ import useOnAnswerChange from '@/hooks/useOnAnswerChange';
 export type ChoiceProps = QuestionnaireComponentItemProps;
 
 export const Choice = (props: ChoiceProps): JSX.Element | null => {
-  const { containedResources, path, id, pdf, linkId, children } = props;
+  const { containedResources, path, linkId, children } = props;
 
   const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
 
@@ -149,6 +147,7 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
   );
 
   const renderComponentBasedOnType = (): JSX.Element | null => {
+    const pdfValue = getPDFValue();
     const itemControlValue = getItemControlValue(item);
     if (!itemControlValue) return null;
 
@@ -161,11 +160,11 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
 
     switch (itemControlValue) {
       case itemControlConstants.DROPDOWN:
-        return <DropdownView options={options} {...commonProps} />;
+        return <DropdownView options={options} pdfValue={pdfValue} {...commonProps} />;
       case itemControlConstants.CHECKBOX:
-        return <CheckboxView options={options} {...commonProps} handleChange={handleCheckboxChange} />;
+        return <CheckboxView options={options} pdfValue={pdfValue} {...commonProps} handleChange={handleCheckboxChange} />;
       case itemControlConstants.RADIOBUTTON:
-        return <RadioView options={options} {...commonProps} />;
+        return <RadioView options={options} pdfValue={pdfValue} {...commonProps} />;
       case itemControlConstants.SLIDER:
         return <SliderView {...commonProps} />;
       default:
@@ -192,39 +191,37 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
 
   const aboveDropdownThreshold = useMemo(() => isAboveDropdownThreshold(options), [options]);
 
-  if (pdf || isReadOnly(item)) {
-    return (
-      <TextView id={id} item={item} value={getPDFValue()}>
-        {children}
-      </TextView>
-    );
-  }
-
   if (!hasOptionsAndNoCanonicalValueSet && !shouldRenderAutosuggest && !isReceiverComponent) {
     return null;
   }
-
   return (
     <>
       {hasOptionsAndNoCanonicalValueSet &&
         (itemControlValue ? (
           renderComponentBasedOnType()
         ) : aboveDropdownThreshold ? (
-          <DropdownView options={options} handleChange={handleChange} selected={value} {...props}>
+          <DropdownView options={options} handleChange={handleChange} selected={value} pdfValue={getPDFValue()} {...props}>
             {children}
           </DropdownView>
         ) : (
-          <RadioView options={options} handleChange={handleChange} selected={value} {...props}>
+          <RadioView options={options} handleChange={handleChange} selected={value} pdfValue={getPDFValue()} {...props}>
             {children}
           </RadioView>
         ))}
       {shouldRenderAutosuggest && (
-        <AutosuggestView handleChange={handleChange} clearCodingAnswer={clearCodingAnswer} {...props}>
+        <AutosuggestView handleChange={handleChange} clearCodingAnswer={clearCodingAnswer} pdfValue={getPDFValue()} {...props}>
           {children}
         </AutosuggestView>
       )}
       {isReceiverComponent && (
-        <ReceiverComponentWrapper {...props} handleChange={handleChange} selected={value} clearCodingAnswer={clearCodingAnswer}>
+        <ReceiverComponentWrapper
+          item={item}
+          handleChange={handleChange}
+          selected={value}
+          clearCodingAnswer={clearCodingAnswer}
+          pdfValue={getPDFValue()}
+          {...props}
+        >
           {children}
         </ReceiverComponentWrapper>
       )}

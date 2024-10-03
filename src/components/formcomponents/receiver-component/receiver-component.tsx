@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Coding } from 'fhir/r4';
+import { Coding, QuestionnaireItem } from 'fhir/r4';
 import { FieldValues, useFormContext } from 'react-hook-form';
 import styles from '../common-styles.module.css';
 import { EnhetType, OrgenhetHierarki } from '@/types/orgenhetHierarki';
@@ -11,27 +11,35 @@ import Loader from '@helsenorge/designsystem-react/components/Loader';
 import NotificationPanel from '@helsenorge/designsystem-react/components/NotificationPanel';
 import Select from '@helsenorge/designsystem-react/components/Select';
 
-import { getId } from '@/util';
+import { getId, isReadOnly } from '@/util';
 
 import SafeText from '../../referoLabel/SafeText';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
+import { ReadOnly } from '../read-only/readOnly';
+import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 
-export interface ReceiverComponentProps {
+export type ReceiverComponentProps = QuestionnaireComponentItemProps & {
+  item?: QuestionnaireItem;
   selected?: Array<string | undefined>;
   id?: string;
   label?: string;
   handleChange: (code?: string, systemArg?: string, displayArg?: string) => void;
   clearCodingAnswer: (coding: Coding) => void;
   idWithLinkIdAndItemIndex: string;
+  pdfValue?: string | number;
   children?: React.ReactNode;
-}
+};
 
 const ReceiverComponent = ({
+  item,
   selected,
   id,
   handleChange,
   clearCodingAnswer,
   idWithLinkIdAndItemIndex,
+  pdf,
+  pdfValue,
+  children,
 }: ReceiverComponentProps): JSX.Element | null => {
   const { formState, getFieldState, register } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
@@ -188,6 +196,14 @@ const ReceiverComponent = ({
         getReceiverName(receiverTreeNodes, selectedPath) ? true : resources?.adresseKomponent_feilmelding || 'Kan ikke være tom streng',
       shouldUnregister: true,
     });
+
+    if (pdf || isReadOnly(item)) {
+      return (
+        <ReadOnly pdf={pdf} id={id} item={item} pdfValue={pdfValue} errors={error}>
+          {children}
+        </ReadOnly>
+      );
+    }
     return (
       <FormGroup error={error?.message} errorWrapperClassName={styles.paddingBottom}>
         <Select
