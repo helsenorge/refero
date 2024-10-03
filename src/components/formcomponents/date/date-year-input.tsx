@@ -7,7 +7,6 @@ import Input from '@helsenorge/designsystem-react/components/Input';
 import { getId, isReadOnly, isRequired } from '../../../util';
 import { validateYearDigits, validateYearMax, validateYearMin } from '../../../util/date-utils';
 import { getValidationTextExtension } from '../../../util/extension';
-import TextView from '../textview';
 import RenderHelpElement from '@/components/formcomponents/help-button/RenderHelpElement';
 import { useState } from 'react';
 import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelpButton';
@@ -20,6 +19,7 @@ import { useSelector } from 'react-redux';
 import { findQuestionnaireItem } from '@/reducers/selectors';
 import { GlobalState } from '@/reducers';
 import { initialize } from '@/util/date-fns-utils';
+import { ReadOnly } from '../read-only/readOnly';
 
 type Props = QuestionnaireComponentItemProps & {
   onDateValueChange: (newValue: string) => void;
@@ -83,13 +83,6 @@ export const DateYearInput = (props: Props): JSX.Element | null => {
 
   const yearValue: string | undefined = getYearValue(answer);
 
-  if (pdf || isReadOnly(item)) {
-    return (
-      <TextView id={id} item={item} value={getPDFValue(yearValue)}>
-        {children}
-      </TextView>
-    );
-  }
   const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, {
     required: {
       value: isRequired(item),
@@ -108,6 +101,14 @@ export const DateYearInput = (props: Props): JSX.Element | null => {
     },
     shouldUnregister: true,
   });
+
+  if (pdf || isReadOnly(item)) {
+    return (
+      <ReadOnly pdf={pdf} id={id} item={item} pdfValue={getPDFValue(yearValue)} errors={error}>
+        {children}
+      </ReadOnly>
+    );
+  }
   return (
     <FormGroup error={getErrorText(error)} errorWrapperClassName={styles.paddingBottom}>
       <ReferoLabel

@@ -13,8 +13,6 @@ import { LanguageLocales } from '@helsenorge/core-utils/constants/languages';
 import { getId, isReadOnly, isRequired } from '../../../util';
 import { getValidationTextExtension } from '../../../util/extension';
 
-import TextView from '../textview';
-
 import { getMonthOptions, getYearFromString, validateYearDigits, validateYearMonthMax, validateYearMonthMin } from '@/util/date-utils';
 import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelpButton';
 import RenderHelpElement from '@/components/formcomponents/help-button/RenderHelpElement';
@@ -30,6 +28,7 @@ import { useSelector } from 'react-redux';
 import { findQuestionnaireItem } from '@/reducers/selectors';
 import { initialize } from '@/util/date-fns-utils';
 import { DateFormat } from '@/types/dateTypes';
+import { ReadOnly } from '../read-only/readOnly';
 
 type DateMonthProps = QuestionnaireComponentItemProps & {
   locale: LanguageLocales.ENGLISH | LanguageLocales.NORWEGIAN;
@@ -179,6 +178,7 @@ export const DateYearMonthInput = ({
     const monthValue = getValues(idWithLinkIdAndItemIndex + '-yearmonth-month');
     return yearValue || monthValue;
   };
+
   const registerMonth = register(`${idWithLinkIdAndItemIndex}-yearmonth-month`, {
     required: {
       value: isRequired(item),
@@ -206,14 +206,14 @@ export const DateYearMonthInput = ({
     },
     shouldUnregister: true,
   });
+
   if (pdf || isReadOnly(item)) {
     return (
-      <TextView id={id} item={item} value={getPDFValue()}>
+      <ReadOnly pdf={pdf} id={id} item={item} pdfValue={getPDFValue()} errors={getCombinedFieldError()}>
         {children}
-      </TextView>
+      </ReadOnly>
     );
   }
-
   return (
     <FormGroup error={getErrorText(getCombinedFieldError())} errorWrapperClassName={styles2.paddingBottom}>
       <ReferoLabel

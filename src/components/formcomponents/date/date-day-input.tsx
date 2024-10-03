@@ -11,7 +11,6 @@ import DatePicker from '@helsenorge/datepicker/components/DatePicker';
 
 import { getValidationTextExtension } from '../../../util/extension';
 import { getId, isReadOnly, isRequired } from '../../../util/index';
-import TextView from '../textview';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import {
@@ -32,6 +31,7 @@ import { initialize } from '@/util/date-fns-utils';
 import { GlobalState } from '@/reducers';
 import { useSelector } from 'react-redux';
 import { findQuestionnaireItem } from '@/reducers/selectors';
+import { ReadOnly } from '../read-only/readOnly';
 
 type DateDayInputProps = QuestionnaireComponentItemProps & {
   locale: LanguageLocales.ENGLISH | LanguageLocales.NORWEGIAN;
@@ -141,13 +141,6 @@ export const DateDayInput = ({
     }
   };
 
-  if (pdf || isReadOnly(item)) {
-    return (
-      <TextView id={id} item={item} value={getPDFValue()}>
-        {children}
-      </TextView>
-    );
-  }
   const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, {
     required: {
       value: isRequired(item),
@@ -173,6 +166,14 @@ export const DateDayInput = ({
     },
     shouldUnregister: true,
   });
+
+  if (pdf || isReadOnly(item)) {
+    return (
+      <ReadOnly pdf={pdf} id={id} item={item} pdfValue={getPDFValue()} errors={error}>
+        {children}
+      </ReadOnly>
+    );
+  }
   return (
     <FormGroup error={getErrorText(error)} errorWrapperClassName={styles.paddingBottom}>
       <ReferoLabel

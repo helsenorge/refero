@@ -6,7 +6,7 @@ import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Select from '@helsenorge/designsystem-react/components/Select';
 import styles from '../common-styles.module.css';
 import { getPlaceholder } from '@/util/extension';
-import { getId, isRequired } from '@/util/index';
+import { getId, isReadOnly, isRequired } from '@/util/index';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { Options } from '@/types/formTypes/radioGroupOptions';
@@ -21,15 +21,17 @@ import { findQuestionnaireItem } from '@/reducers/selectors';
 import { QuestionnaireItem } from 'fhir/r4';
 import { GlobalState } from '@/reducers';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
+import { ReadOnly } from '../read-only/readOnly';
 
 export type Props = QuestionnaireComponentItemProps & {
   options?: Array<Options>;
   handleChange: (code: string) => void;
   selected?: Array<string | undefined>;
+  pdfValue?: string | number;
 };
 
 const DropdownView = (props: Props): JSX.Element | null => {
-  const { options, linkId, id, handleChange, selected, idWithLinkIdAndItemIndex, path, index, children } = props;
+  const { options, linkId, id, handleChange, selected, idWithLinkIdAndItemIndex, path, index, pdf, pdfValue, children } = props;
   const { resources } = useExternalRenderContext();
   const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
 
@@ -60,6 +62,14 @@ const DropdownView = (props: Props): JSX.Element | null => {
     let width = maxCharacters ? (maxCharacters > 40 ? 40 : maxCharacters) : 25;
     return (width = placeholderLength > width ? placeholderLength : width);
   };
+
+  if (pdf || isReadOnly(item)) {
+    return (
+      <ReadOnly pdf={pdf} id={id} item={item} pdfValue={pdfValue} errors={error}>
+        {children}
+      </ReadOnly>
+    );
+  }
   return (
     <div className="page_refero__component page_refero__component_choice page_refero__component_choice_dropdown">
       <FormGroup mode="ongrey" error={error?.message} errorWrapperClassName={styles.paddingBottom}>

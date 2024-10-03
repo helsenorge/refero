@@ -6,9 +6,7 @@ import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Input from '@helsenorge/designsystem-react/components/Input';
 import styles from '../common-styles.module.css';
 import { getPlaceholder } from '../../../util/extension';
-import { isReadOnly, getId, getPDFStringValue, getStringValue } from '../../../util/index';
-
-import Pdf from '../textview';
+import { isReadOnly, getId, getStringValue } from '../../../util/index';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
@@ -19,13 +17,15 @@ import { findQuestionnaireItem } from '@/reducers/selectors';
 import { useSelector } from 'react-redux';
 import { GlobalState } from '@/reducers';
 import { QuestionnaireItem } from 'fhir/r4';
+import { ReadOnly } from '../read-only/readOnly';
 
 type Props = QuestionnaireComponentItemProps & {
   handleStringChange: (event: React.FocusEvent<HTMLInputElement, Element>) => void;
   handleChange: (value: string) => void;
+  pdfValue?: string | number;
 };
 const textField = (props: Props): JSX.Element | null => {
-  const { id, pdf, handleStringChange, handleChange, children, idWithLinkIdAndItemIndex, linkId, path } = props;
+  const { id, pdf, handleStringChange, handleChange, children, idWithLinkIdAndItemIndex, linkId, path, pdfValue } = props;
   const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
 
   const formName = `${idWithLinkIdAndItemIndex}-extra-field`;
@@ -34,13 +34,7 @@ const textField = (props: Props): JSX.Element | null => {
   const { error } = getFieldState(formName, formState);
   const answer = useGetAnswer(linkId, path);
   const { validateScriptInjection, resources } = useExternalRenderContext();
-  if (pdf) {
-    return (
-      <Pdf item={item} value={getPDFStringValue(answer)}>
-        {children}
-      </Pdf>
-    );
-  }
+
   const handleOnBlur = (e: React.FocusEvent<HTMLInputElement, Element>): void => {
     handleStringChange(e);
   };
@@ -55,6 +49,14 @@ const textField = (props: Props): JSX.Element | null => {
       scriptInjection({ value, resources, shouldValidate: !!validateScriptInjection }),
     shouldUnregister: true,
   });
+
+  if (pdf || isReadOnly(item)) {
+    return (
+      <ReadOnly pdf={pdf} id={id} item={item} pdfValue={pdfValue} errors={error}>
+        {children}
+      </ReadOnly>
+    );
+  }
   return (
     <FormGroup error={error?.message} mode="ongrey" errorWrapperClassName={styles.paddingBottom}>
       <ReferoLabel

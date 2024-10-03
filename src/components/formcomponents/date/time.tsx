@@ -18,12 +18,12 @@ import { extractHoursAndMinutesFromAnswer, validateHours, validateMaxTime, valid
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import RenderHelpButton from '../help-button/RenderHelpButton';
 import RenderHelpElement from '../help-button/RenderHelpElement';
-import TextView from '../textview';
 import { QuestionnaireItem } from 'fhir/r4';
 import { findQuestionnaireItem } from '@/reducers/selectors';
 import { initialize } from '@/util/date-fns-utils';
 import useOnAnswerChange from '@/hooks/useOnAnswerChange';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
+import { ReadOnly } from '../read-only/readOnly';
 
 export type Props = QuestionnaireComponentItemProps;
 
@@ -124,13 +124,6 @@ const Time = ({ id, index, path, linkId, pdf, idWithLinkIdAndItemIndex, children
     return `${'kl. '} ${hoursValue}:${minutesValue}`;
   };
 
-  if (pdf || isReadOnly(item)) {
-    return (
-      <TextView id={id} item={item} value={getPDFValue()}>
-        {children}
-      </TextView>
-    );
-  }
   const registerHours = register(`${idWithLinkIdAndItemIndex}-hours`, {
     required: {
       value: isRequired(item),
@@ -165,6 +158,14 @@ const Time = ({ id, index, path, linkId, pdf, idWithLinkIdAndItemIndex, children
     },
     shouldUnregister: true,
   });
+
+  if (pdf || isReadOnly(item)) {
+    return (
+      <ReadOnly pdf={pdf} id={id} item={item} pdfValue={getPDFValue()} errors={getCombinedFieldError(hoursField, minutesField)}>
+        {children}
+      </ReadOnly>
+    );
+  }
   return (
     <div className="page_refero__component page_refero__component_time">
       <FormGroup error={getErrorText(getCombinedFieldError(hoursField, minutesField))} errorWrapperClassName={styles.paddingBottom}>

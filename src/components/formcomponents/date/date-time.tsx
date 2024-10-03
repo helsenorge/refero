@@ -25,7 +25,6 @@ import {
 } from '../../../util/date-utils';
 import { getValidationTextExtension } from '../../../util/extension';
 import { isRequired, getId, isReadOnly } from '../../../util/index';
-import TextView from '../textview';
 import styles from '../common-styles.module.css';
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { useDispatch, useSelector } from 'react-redux';
@@ -40,6 +39,7 @@ import { useMinMaxDate } from './useMinMaxDate';
 import { findQuestionnaireItem } from '@/reducers/selectors';
 import useOnAnswerChange from '@/hooks/useOnAnswerChange';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
+import { ReadOnly } from '../read-only/readOnly';
 
 export type Props = QuestionnaireComponentItemProps;
 
@@ -84,27 +84,6 @@ const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, childr
 
   const dateAnswerValue = getDateAnswerValue(answer);
   const date: Date | string | undefined = parseStringToDate(dateAnswerValue);
-
-  if (pdf || isReadOnly(item)) {
-    const getPDFValue = (): string | number | undefined => {
-      if (dateAnswerValue === undefined || dateAnswerValue === null || dateAnswerValue === '') {
-        let text = '';
-        if (resources && resources.ikkeBesvart) {
-          text = resources.ikkeBesvart;
-        }
-        return text;
-      }
-      if (date && isValid(date)) {
-        return format(date, 'dd.MM.yyyy HH:mm');
-      }
-    };
-    return (
-      <TextView id={id} item={item} value={getPDFValue()}>
-        {children}
-      </TextView>
-    );
-  }
-
   const hours = getHoursOrMinutesFromDate(date, DateTimeUnit.Hours);
   const minutes = getHoursOrMinutesFromDate(date, DateTimeUnit.Minutes);
 
@@ -173,6 +152,20 @@ const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, childr
     const minutesValue = getValues(idWithLinkIdAndItemIndex + '-minutes');
     return dateValue || hoursValue || minutesValue;
   };
+
+  const getPDFValue = (): string | number | undefined => {
+    if (dateAnswerValue === undefined || dateAnswerValue === null || dateAnswerValue === '') {
+      let text = '';
+      if (resources && resources.ikkeBesvart) {
+        text = resources.ikkeBesvart;
+      }
+      return text;
+    }
+    if (date && isValid(date)) {
+      return format(date, 'dd.MM.yyyy HH:mm');
+    }
+  };
+
   const registerDate = register(`${idWithLinkIdAndItemIndex}-date`, {
     required: {
       value: isRequired(item),
@@ -215,6 +208,14 @@ const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, childr
     },
     shouldUnregister: true,
   });
+
+  if (pdf || isReadOnly(item)) {
+    return (
+      <ReadOnly pdf={pdf} id={id} item={item} pdfValue={getPDFValue()} errors={getCombinedFieldError(dateField, hoursField, minutesField)}>
+        {children}
+      </ReadOnly>
+    );
+  }
   return (
     <div className="page_refero__component page_refero__component_datetime" data-testid={`${getId(id)}-container`}>
       <FormGroup
