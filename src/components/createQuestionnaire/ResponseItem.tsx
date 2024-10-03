@@ -6,7 +6,7 @@ import ItemType from '@/constants/itemType';
 import { getChildHeaderTag, isRepeat } from '@/util';
 import { createIdSuffix, createPathForItem, Path } from '@/util/refero-core';
 import { RenderContext } from '@/util/renderContext';
-import { Resource, QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
+import { Resource, QuestionnaireItem } from 'fhir/r4';
 
 type ResponseItemProps = {
   linkId: string;
@@ -47,7 +47,7 @@ const ResponseItem = memo(function ResponseItem({
   }
 
   const idWithLinkIdAndItemIndex = `${linkId}${createIdSuffix(path, index, isRepeat(item))}`;
-  const id = `item_${linkId}${idWithLinkIdAndItemIndex}`;
+  const id = `item_${idWithLinkIdAndItemIndex}`;
 
   let blindzone: JSX.Element | null = null;
   let includeSkipLink = false;
