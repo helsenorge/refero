@@ -404,25 +404,19 @@ export function enableWhenMatchesAnswer(
   });
   return matches;
 }
-export function createIdSuffix(path: Path[] | undefined, index?: number, repeats?: boolean): string {
-  const indices: number[] = [];
+export function createIdSuffix(path: Path[] | undefined, index = 0, repeats: boolean | undefined): string {
+  let suffix = '';
 
-  // Include all indices from the path, even if they are 0
   if (path) {
     path.forEach(p => {
-      if (p.index !== undefined && p.index !== null) {
-        indices.push(p.index);
+      if (p.index) {
+        suffix += '^' + p.index;
       }
     });
   }
+  if (!repeats) return suffix;
 
-  // Append the current index if repeats is true
-  if (repeats && index !== undefined && index !== null) {
-    indices.push(index);
-  }
-
-  // Build the suffix by joining indices with '^'
-  return indices.map(i => `^${i}`).join('');
+  return suffix + '^' + index;
 }
 export function parseSuffix(suffix: string, linkId: string): Path[] {
   const paths: Path[] = [];
@@ -430,10 +424,7 @@ export function parseSuffix(suffix: string, linkId: string): Path[] {
   if (suffix) {
     const indices = suffix.split('^').filter(part => part !== '');
     indices.forEach(part => {
-      const index = parseInt(part, 10);
-      if (!isNaN(index)) {
-        paths.push({ linkId, index });
-      }
+      paths.push({ linkId, index: parseInt(part, 10) });
     });
   }
 

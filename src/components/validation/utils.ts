@@ -2,7 +2,7 @@ import { QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItem } f
 import { FieldError, FieldErrors, FieldErrorsImpl, FieldValues, Merge } from 'react-hook-form';
 
 import { getText } from '@/util';
-import { getQuestionnaireDefinitionItem } from '@/util/refero-core';
+import { findFirstGuidInString, getQuestionnaireDefinitionItem } from '@/util/refero-core';
 import { FormData } from '@/reducers/form';
 
 export type ResponseItemsWithFieldNames = {
@@ -25,7 +25,7 @@ const isNestedErrorObject = (
 function isQuestionnaireResponseItem(item: QuestionnaireResponse | QuestionnaireResponseItem): item is QuestionnaireResponseItem {
   return 'linkId' in item;
 }
-const getItemFromErrorKeys = (
+export const getItemFromErrorKeys = (
   errors: FieldErrors<FieldValues>,
   responseItem: QuestionnaireResponse | null | undefined = null
 ): ResponseItemsWithFieldNames[] => {
@@ -154,13 +154,17 @@ function findItemRecursive(
 
   return null;
 }
-function extractLinkIdAndIndexPath(fieldNameParts: string[]): { linkId: string; indexPath: number[] } {
+export function extractLinkIdAndIndexPath(fieldNameParts: string[]): { linkId: string; indexPath: number[] } {
   const linkIdParts: string[] = [];
   const indexPath: number[] = [];
-
   for (const part of fieldNameParts) {
     const subParts = part.split('^');
-    linkIdParts.push(subParts[0]);
+    const guid = findFirstGuidInString(part);
+    if (guid) {
+      linkIdParts.push(guid);
+    } else {
+      linkIdParts.push(subParts[0]);
+    }
 
     for (let i = 1; i < subParts.length; i++) {
       const index = parseInt(subParts[i], 10);
