@@ -21,7 +21,7 @@ import { QuestionnaireComponentItemProps } from '@/components/createQuestionnair
 import { required } from '@/components/validation/rules';
 import { useSelector } from 'react-redux';
 import { findQuestionnaireItem } from '@/reducers/selectors';
-import { GlobalState, useAppDispatch } from '@/reducers';
+import { GlobalState } from '@/reducers';
 import { QuestionnaireItem } from 'fhir/r4';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 import { ReadOnly } from '../read-only/readOnly';

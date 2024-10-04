@@ -6,7 +6,7 @@ import { StandardTable } from './tables/table/StandardTable';
 import TableHn1 from './tables/table-hn1/TableHn1';
 import TableHn2 from './tables/table-hn2/TableHn2';
 import { TableCodes } from '@/constants/tableTypes';
-import { GlobalState, useAppDispatch } from '@/reducers';
+import { GlobalState } from '@/reducers';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 
 import { findQuestionnaireItem, questionnaireResponseSelector } from '@/reducers/selectors';

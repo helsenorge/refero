@@ -12,7 +12,7 @@ import { FormData } from '@/reducers/form';
 import { getFlatMapResponseItemsForItemSelector } from '@/reducers/selectors';
 import { createSelector } from 'reselect';
 import { useSelector } from 'react-redux';
-import { GlobalState, useAppDispatch } from '@/reducers';
+import { GlobalState } from '@/reducers';
 import { useIsEnabled } from '@/hooks/useIsEnabled';
 
 type ItemRendererProps = {
