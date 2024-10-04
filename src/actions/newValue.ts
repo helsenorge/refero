@@ -1,5 +1,5 @@
 import { Coding, QuestionnaireItem, Attachment, QuestionnaireResponseItem, Quantity } from 'fhir/r4';
-import { createAction } from '@reduxjs/toolkit';
+import { createAction, PayloadAction } from '@reduxjs/toolkit';
 
 import { AppDispatch, GlobalState } from '../reducers';
 import { Path } from '../util/refero-core';
@@ -53,21 +53,17 @@ export type DateTimeItemPayload = Pick<NewValuePayload, 'itemPath' | 'valueDateT
 export type DeleteRepeatItemPayload = Pick<NewValuePayload, 'itemPath' | 'item'>;
 export const newValue = createAction<NewValuePayload>(NEW_VALUE);
 
-// export function newAttachment(
-//   itemPath: Array<Path>,
-//   value: Attachment,
-//   item: QuestionnaireItem | undefined,
-//   multipleAnswers?: boolean
-// ): NewValueAction {
-//   return {
-//     type: NEW_VALUE,
-//     itemPath,
-//     valueAttachment: value,
-//     item: item,
-//     multipleAnswers,
-//   };
-// }
-export const newAttachment = createAction<NewAttachmentPayload>(NEW_VALUE);
+export const newAttachmentAction = createAction<NewAttachmentPayload>(NEW_VALUE);
+
+/*
+ * @deprecated this will be removed in a future version, use newAttachmentAction instead
+ */
+export const newAttachment = (
+  itemPath: NewAttachmentPayload['itemPath'],
+  value: NewAttachmentPayload['valueAttachment'],
+  item: NewAttachmentPayload['item'],
+  multipleAnswers?: NewAttachmentPayload['multipleAnswers']
+): PayloadAction<NewAttachmentPayload> => newAttachmentAction({ itemPath, valueAttachment: value, item, multipleAnswers });
 
 export function newAttachmentAsync(
   itemPath: Array<Path>,
@@ -76,81 +72,72 @@ export function newAttachmentAsync(
   multipleAnswers?: boolean
 ) {
   return async (dispatch: AppDispatch, getState: () => GlobalState): Promise<GlobalState> => {
-    dispatch(newAttachment({ itemPath, valueAttachment: value, item, multipleAnswers }));
+    dispatch(newAttachmentAction({ itemPath, valueAttachment: value, item, multipleAnswers }));
     return await Promise.resolve(getState());
   };
 }
-export const removeAttachment = createAction<RemoveAttachmentPayload>(REMOVE_ATTACHMENT_VALUE);
-// export function removeAttachment2(itemPath: Array<Path>, value: Attachment, item: QuestionnaireItem | undefined): NewValueAction {
-//   return {
-//     type: REMOVE_ATTACHMENT_VALUE,
-//     itemPath,
-//     valueAttachment: value,
-//     item: item,
-//   };
-// }
+export const removeAttachmentAction = createAction<RemoveAttachmentPayload>(REMOVE_ATTACHMENT_VALUE);
+
+/*
+ * @deprecated this will be removed in a future version, use removeAttachmentAction instead
+ */
+export const removeAttachment = (
+  itemPath: RemoveAttachmentPayload['itemPath'],
+  value: RemoveAttachmentPayload['valueAttachment'],
+  item: RemoveAttachmentPayload['item']
+): PayloadAction<RemoveAttachmentPayload> => removeAttachmentAction({ itemPath, valueAttachment: value, item });
 
 export function removeAttachmentAsync(itemPath: Array<Path>, value: Attachment, item?: QuestionnaireItem) {
   return async (dispatch: AppDispatch, getState: () => GlobalState): Promise<GlobalState> => {
-    dispatch(removeAttachment({ itemPath, valueAttachment: value, item }));
+    dispatch(removeAttachmentAction({ itemPath, valueAttachment: value, item }));
     return await Promise.resolve(getState());
   };
 }
-export const newBooleanValue = createAction<BooleanItemPayload>(NEW_VALUE);
-
-// export function newBooleanValue2(itemPath: Array<Path>, value: boolean, item: QuestionnaireItem | undefined): NewValueAction {
-//   return {
-//     type: NEW_VALUE,
-//     itemPath,
-//     valueBoolean: value,
-//     item,
-//   };
-// }
+export const newBooleanValueAction = createAction<BooleanItemPayload>(NEW_VALUE);
+/*
+ * @deprecated this will be removed in a future version, use newBooleanValueAction instead
+ */
+export const newBooleanValue = (
+  itemPath: BooleanItemPayload['itemPath'],
+  value: BooleanItemPayload['valueBoolean'],
+  item: BooleanItemPayload['item']
+): PayloadAction<BooleanItemPayload> => newBooleanValueAction({ itemPath, valueBoolean: value, item });
 
 export function newBooleanValueAsync(itemPath: Array<Path>, value: boolean, item?: QuestionnaireItem) {
   return async (dispatch: AppDispatch, getState: () => GlobalState): Promise<GlobalState> => {
-    dispatch(newBooleanValue({ itemPath, valueBoolean: value, item }));
+    dispatch(newBooleanValueAction({ itemPath, valueBoolean: value, item }));
     return await Promise.resolve(getState());
   };
 }
-export const newCodingValue = createAction<CodingValueItemPayload>(NEW_VALUE);
-// export function newCodingValue2(
-//   itemPath: Array<Path>,
-//   value: Coding,
-//   item: QuestionnaireItem | undefined,
-//   multipleAnswers?: boolean
-// ): NewValueAction {
-//   return {
-//     type: NEW_VALUE,
-//     itemPath,
-//     valueCoding: value,
-//     item: item,
-//     multipleAnswers,
-//   };
-// }
+
+export const newCodingValueAction = createAction<CodingValueItemPayload>(NEW_VALUE);
+/*
+ * @deprecated this will be removed in a future version, use newCodingValueAction instead
+ */
+export const newCodingValue = (
+  itemPath: CodingValueItemPayload['itemPath'],
+  value: CodingValueItemPayload['valueCoding'],
+  item: CodingValueItemPayload['item'],
+  multipleAnswers?: CodingValueItemPayload['multipleAnswers']
+): PayloadAction<CodingValueItemPayload> => newCodingValueAction({ itemPath, valueCoding: value, item, multipleAnswers });
 
 export function newCodingValueAsync(itemPath: Array<Path>, value: Coding, item?: QuestionnaireItem, multipleAnswers?: boolean) {
   return async (dispatch: AppDispatch, getState: () => GlobalState): Promise<GlobalState> => {
-    dispatch(newCodingValue({ itemPath, valueCoding: value, item, multipleAnswers }));
+    dispatch(newCodingValueAction({ itemPath, valueCoding: value, item, multipleAnswers }));
     return await Promise.resolve(getState());
   };
 }
 
-export const newCodingStringValue = createAction<CodingStringPayload>(NEW_CODINGSTRING_VALUE);
-// export function newCodingStringValue2(
-//   itemPath: Array<Path>,
-//   value: string,
-//   item: QuestionnaireItem | undefined,
-//   multipleAnswers?: boolean
-// ): NewValueAction {
-//   return {
-//     type: NEW_CODINGSTRING_VALUE,
-//     itemPath,
-//     valueString: value,
-//     item: item,
-//     multipleAnswers,
-//   };
-// }
+export const newCodingStringValueAction = createAction<CodingStringPayload>(NEW_CODINGSTRING_VALUE);
+/*
+ * @deprecated this will be removed in a future version, use newCodingStringValueAction instead
+ */
+export const newCodingStringValue = (
+  itemPath: CodingStringPayload['itemPath'],
+  value: CodingStringPayload['valueString'],
+  item: CodingStringPayload['item'],
+  multipleAnswers?: CodingStringPayload['multipleAnswers']
+): PayloadAction<CodingStringPayload> => newCodingStringValueAction({ itemPath, valueString: value, item, multipleAnswers });
 
 export function newCodingStringValueAsync(
   itemPath: Array<Path>,
@@ -159,185 +146,188 @@ export function newCodingStringValueAsync(
   multipleAnswers?: boolean
 ) {
   return async (dispatch: AppDispatch, getState: () => GlobalState): Promise<GlobalState> => {
-    dispatch(newCodingStringValue({ itemPath, valueString: value, item, multipleAnswers }));
+    dispatch(newCodingStringValueAction({ itemPath, valueString: value, item, multipleAnswers }));
     return await Promise.resolve(getState());
   };
 }
 
-export const removeCodingStringValue = createAction<RemoveCodingStringPayload>(REMOVE_CODINGSTRING_VALUE);
-// export function removeCodingStringValue2(itemPath: Array<Path>, item?: QuestionnaireItem): NewValueAction {
-//   return {
-//     type: REMOVE_CODINGSTRING_VALUE,
-//     itemPath,
-//     item: item,
-//   };
-// }
+export const removeCodingStringValueAction = createAction<RemoveCodingStringPayload>(REMOVE_CODINGSTRING_VALUE);
+/*
+ * @deprecated this will be removed in a future version, use removeCodingStringValueAction instead
+ */
+export const removeCodingStringValue = (
+  itemPath: RemoveCodingStringPayload['itemPath'],
+  item: RemoveCodingStringPayload['item']
+): PayloadAction<RemoveCodingStringPayload> => removeCodingStringValueAction({ itemPath, item });
 
 export function removeCodingStringValueAsync(itemPath: Array<Path>, item?: QuestionnaireItem) {
   return async (dispatch: AppDispatch, getState: () => GlobalState): Promise<GlobalState> => {
-    dispatch(removeCodingStringValue({ itemPath, item }));
+    dispatch(removeCodingStringValueAction({ itemPath, item }));
     return await Promise.resolve(getState());
   };
 }
 
-// export function newQuantityValue2(itemPath: Array<Path>, value: Quantity, item?: QuestionnaireItem): NewValueAction {
-//   return {
-//     type: NEW_VALUE,
-//     itemPath,
-//     valueQuantity: value,
-//     item,
-//   };
-// }
-export const newQuantityValue = createAction<QuantityItemPayload>(NEW_VALUE);
+export const newQuantityValueAction = createAction<QuantityItemPayload>(NEW_VALUE);
+/*
+ * @deprecated this will be removed in a future version, use newQuantityValueAction instead
+ */
+export const newQuantityValue = (
+  itemPath: QuantityItemPayload['itemPath'],
+  value: QuantityItemPayload['valueQuantity'],
+  item: QuantityItemPayload['item']
+): PayloadAction<QuantityItemPayload> => newQuantityValueAction({ itemPath, valueQuantity: value, item });
 
 export function newQuantityValueAsync(itemPath: Array<Path>, value: Quantity, item?: QuestionnaireItem) {
   return async (dispatch: AppDispatch, getState: () => GlobalState): Promise<GlobalState> => {
-    dispatch(newQuantityValue({ itemPath, valueQuantity: value, item }));
+    dispatch(newQuantityValueAction({ itemPath, valueQuantity: value, item }));
     return await Promise.resolve(getState());
   };
 }
 
-export const removeCodingValue = createAction<RemoveCodingValuePayload>(REMOVE_CODING_VALUE);
-// export function removeCodingValue2(itemPath: Array<Path>, value: Coding, item?: QuestionnaireItem): NewValueAction {
-//   return {
-//     type: REMOVE_CODING_VALUE,
-//     itemPath,
-//     valueCoding: value,
-//     item: item,
-//   };
-// }
+export const removeCodingValueAction = createAction<RemoveCodingValuePayload>(REMOVE_CODING_VALUE);
+
+/*
+ * @deprecated this will be removed in a future version, use removeCodingValueAction instead
+ */
+export const removeCodingValue = (
+  itemPath: RemoveCodingValuePayload['itemPath'],
+  value: RemoveCodingValuePayload['valueCoding'],
+  item: RemoveCodingValuePayload['item']
+): PayloadAction<RemoveCodingValuePayload> => removeCodingValueAction({ itemPath, valueCoding: value, item });
 
 export function removeCodingValueAsync(itemPath: Array<Path>, value: Coding, item?: QuestionnaireItem) {
   return async (dispatch: AppDispatch, getState: () => GlobalState): Promise<GlobalState> => {
-    dispatch(removeCodingValue({ itemPath, valueCoding: value, item }));
+    dispatch(removeCodingValueAction({ itemPath, valueCoding: value, item }));
     return await Promise.resolve(getState());
   };
 }
-export const newDecimalValue = createAction<DecimalValuePayload>(NEW_VALUE);
+
+export const newDecimalValueAction = createAction<DecimalValuePayload>(NEW_VALUE);
+/*
+ * @deprecated this will be removed in a future version, use newDecimalValueAction instead
+ */
+export const newDecimalValue = (
+  itemPath: DecimalValuePayload['itemPath'],
+  value: DecimalValuePayload['valueDecimal'],
+  item: DecimalValuePayload['item']
+): PayloadAction<DecimalValuePayload> => newDecimalValueAction({ itemPath, valueDecimal: value, item });
+
 export function newDecimalValueAsync(itemPath: Array<Path>, value: number, item?: QuestionnaireItem) {
   return async (dispatch: AppDispatch, getState: () => GlobalState): Promise<GlobalState> => {
-    dispatch(newDecimalValue({ itemPath, valueDecimal: value, item }));
+    dispatch(newDecimalValueAction({ itemPath, valueDecimal: value, item }));
     return await Promise.resolve(getState());
   };
 }
-// export function newDecimalValue2(itemPath: Array<Path>, value?: number, item?: QuestionnaireItem): NewValueAction {
-//   return {
-//     type: NEW_VALUE,
-//     itemPath,
-//     valueDecimal: value,
-//     item: item,
-//   };
-// }
 
-export const newIntegerValue = createAction<IntegerItemPayload>(NEW_VALUE);
-// export function newIntegerValue2(itemPath: Array<Path>, value?: number, item?: QuestionnaireItem): NewValueAction {
-//   return {
-//     type: NEW_VALUE,
-//     itemPath,
-//     valueInteger: value,
-//     item,
-//   };
-// }
+export const newIntegerValueAction = createAction<IntegerItemPayload>(NEW_VALUE);
+
+/*
+ * @deprecated this will be removed in a future version, use newIntegerValueAction instead
+ */
+export const newIntegerValue = (
+  itemPath: IntegerItemPayload['itemPath'],
+  value: IntegerItemPayload['valueInteger'],
+  item: IntegerItemPayload['item']
+): PayloadAction<IntegerItemPayload> => newIntegerValueAction({ itemPath, valueInteger: value, item });
 
 export function newIntegerValueAsync(itemPath: Path[], value: number, item?: QuestionnaireItem) {
   return async (dispatch: AppDispatch, getState: () => GlobalState): Promise<GlobalState> => {
-    dispatch(newIntegerValue({ itemPath, valueInteger: value, item }));
+    dispatch(newIntegerValueAction({ itemPath, valueInteger: value, item }));
     return await Promise.resolve(getState());
   };
 }
 
-export const newStringValue = createAction<StringItemPayload>(NEW_VALUE);
+export const newStringValueAction = createAction<StringItemPayload>(NEW_VALUE);
+
+/*
+ * @deprecated this will be removed in a future version, use newStringValueAction instead
+ */
+export const newStringValue = (
+  itemPath: StringItemPayload['itemPath'],
+  value: StringItemPayload['valueString'],
+  item: StringItemPayload['item']
+): PayloadAction<StringItemPayload> => newStringValueAction({ itemPath, valueString: value, item });
 
 export function newStringValueAsync(itemPath: Array<Path>, value: string, item?: QuestionnaireItem) {
   return async (dispatch: AppDispatch, getState: () => GlobalState): Promise<GlobalState> => {
-    dispatch(newStringValue({ itemPath, valueString: value, item }));
+    dispatch(newStringValueAction({ itemPath, valueString: value, item }));
     return await Promise.resolve(getState());
   };
 }
-// export function newStringValue2(itemPath: Array<Path>, value: string, item?: QuestionnaireItem): NewValueAction {
-//   return {
-//     type: NEW_VALUE,
-//     itemPath,
-//     valueString: value,
-//     item: item,
-//   };
-// }
 
-export const newDateValue = createAction<DateItemPayload>(NEW_VALUE);
-// export function newDateValue2(itemPath: Array<Path>, value: string, item?: QuestionnaireItem): NewValueAction {
-//   return {
-//     type: NEW_VALUE,
-//     itemPath,
-//     valueDate: value,
-//     item: item,
-//   };
-// }
+export const newDateValueAction = createAction<DateItemPayload>(NEW_VALUE);
+/*
+ * @deprecated this will be removed in a future version, use newDateValueAction instead
+ */
+export const newDateValue = (
+  itemPath: DateItemPayload['itemPath'],
+  value: DateItemPayload['valueDate'],
+  item: DateItemPayload['item']
+): PayloadAction<DateItemPayload> => newDateValueAction({ itemPath, valueDate: value, item });
 
 export function newDateValueAsync(itemPath: Array<Path>, value: string, item?: QuestionnaireItem) {
   return async (dispatch: AppDispatch, getState: () => GlobalState): Promise<GlobalState> => {
-    dispatch(newDateValue({ itemPath, valueDate: value, item }));
+    dispatch(newDateValueAction({ itemPath, valueDate: value, item }));
     return await Promise.resolve(getState());
   };
 }
 
-export const newTimeValue = createAction<TimeItemPayload>(NEW_VALUE);
-// export function newTimeValue2(itemPath: Array<Path>, value: string, item: QuestionnaireItem | undefined): NewValueAction {
-//   return {
-//     type: NEW_VALUE,
-//     itemPath,
-//     valueTime: value,
-//     item: item,
-//   };
-// }
+export const newTimeValueAction = createAction<TimeItemPayload>(NEW_VALUE);
+/*
+ * @deprecated this will be removed in a future version, use newTimeValueAction instead
+ */
+export const newTimeValue = (
+  itemPath: TimeItemPayload['itemPath'],
+  value: TimeItemPayload['valueTime'],
+  item: TimeItemPayload['item']
+): PayloadAction<TimeItemPayload> => newTimeValueAction({ itemPath, valueTime: value, item });
+
 export function newTimeValueAsync(itemPath: Array<Path>, value: string, item?: QuestionnaireItem) {
   return async (dispatch: AppDispatch, getState: () => GlobalState): Promise<GlobalState> => {
-    dispatch(newTimeValue({ itemPath, valueTime: value, item }));
+    dispatch(newTimeValueAction({ itemPath, valueTime: value, item }));
     return await Promise.resolve(getState());
   };
 }
 
-export const newDateTimeValue = createAction<DateTimeItemPayload>(NEW_VALUE);
-// export function newDateTimeValue(itemPath: Array<Path>, value: string, item: QuestionnaireItem | undefined): NewValueAction {
-//   return {
-//     type: NEW_VALUE,
-//     itemPath,
-//     valueDateTime: value,
-//     item: item,
-//   };
-// }
+export const newDateTimeValueAction = createAction<DateTimeItemPayload>(NEW_VALUE);
+/*
+ * @deprecated this will be removed in a future version, use newDateTimeValueAction instead
+ */
+export const newDateTimeValue = (
+  itemPath: DateTimeItemPayload['itemPath'],
+  value: DateTimeItemPayload['valueDateTime'],
+  item: DateTimeItemPayload['item']
+): PayloadAction<DateTimeItemPayload> => newDateTimeValueAction({ itemPath, valueDateTime: value, item });
 
 export function newDateTimeValueAsync(itemPath: Array<Path>, value: string, item?: QuestionnaireItem) {
   return async (dispatch: AppDispatch, getState: () => GlobalState): Promise<GlobalState> => {
-    dispatch(newDateTimeValue({ itemPath, valueDateTime: value, item }));
+    dispatch(newDateTimeValueAction({ itemPath, valueDateTime: value, item }));
     return await Promise.resolve(getState());
   };
 }
-export const addRepeatItem = createAction<RepeatItemPayload>(ADD_REPEAT_ITEM);
-// export function addRepeatItem(
-//   parentPath: Array<Path> | undefined,
-//   item: QuestionnaireItem,
-//   responseItems: Array<QuestionnaireResponseItem> | undefined
-// ): NewValueAction {
-//   return {
-//     type: ADD_REPEAT_ITEM,
-//     parentPath,
-//     item,
-//     responseItems,
-//   };
-// }
 
-export const deleteRepeatItem = createAction<DeleteRepeatItemPayload>(DELETE_REPEAT_ITEM);
-// export function deleteRepeatItem(itemPath: Array<Path>, item: QuestionnaireItem): NewValueAction {
-//   return {
-//     type: DELETE_REPEAT_ITEM,
-//     itemPath,
-//     item,
-//   };
-// }
+export const addRepeatItemAction = createAction<RepeatItemPayload>(ADD_REPEAT_ITEM);
+/*
+ * @deprecated this will be removed in a future version, use addRepeatItemAction instead
+ */
+export const addRepeatItem = (
+  parentPath: RepeatItemPayload['parentPath'],
+  item: RepeatItemPayload['item'],
+  responseItems: RepeatItemPayload['responseItems']
+): PayloadAction<RepeatItemPayload> => addRepeatItemAction({ parentPath, item, responseItems });
+
+export const deleteRepeatItemAction = createAction<DeleteRepeatItemPayload>(DELETE_REPEAT_ITEM);
+/*
+ * @deprecated this will be removed in a future version, use deleteRepeatItemAction instead
+ */
+export const deleteRepeatItem = (
+  itemPath: DeleteRepeatItemPayload['itemPath'],
+  item: DeleteRepeatItemPayload['item']
+): PayloadAction<DeleteRepeatItemPayload> => deleteRepeatItemAction({ itemPath, item });
 
 export function deleteRepeatItemAsync(itemPath: Path[], item: QuestionnaireItem) {
   return async (dispatch: AppDispatch, getState: () => GlobalState): Promise<GlobalState> => {
-    dispatch(deleteRepeatItem({ itemPath, item }));
+    dispatch(deleteRepeatItemAction({ itemPath, item }));
     return await Promise.resolve(getState());
   };
 }

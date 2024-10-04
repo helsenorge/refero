@@ -1,5 +1,5 @@
 import { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
-import { Action, createAction } from '@reduxjs/toolkit';
+import { Action, createAction, PayloadAction } from '@reduxjs/toolkit';
 
 export type SET_SKJEMA_DEFINITION = 'refero/SET_SKJEMA_DEFINITION';
 export const SET_SKJEMA_DEFINITION: SET_SKJEMA_DEFINITION = 'refero/SET_SKJEMA_DEFINITION';
@@ -23,6 +23,6 @@ export const setSkjemaDefinition = (
   questionnaireResponse?: QuestionnaireResponse,
   language?: string,
   syncQuestionnaireResponse?: boolean
-) => {
+): PayloadAction<SetFormDefinitionAction> => {
   return setSkjemaDefinitionAction({ questionnaire, questionnaireResponse, language, syncQuestionnaireResponse });
 };

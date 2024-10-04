@@ -4,7 +4,7 @@ import Button from '@helsenorge/designsystem-react/components/Button';
 import Icon from '@helsenorge/designsystem-react/components/Icon';
 import PlusLarge from '@helsenorge/designsystem-react/components/Icons/PlusLarge';
 
-import { addRepeatItem } from '../../../actions/newValue';
+import { addRepeatItemAction } from '../../../actions/newValue';
 import { useAppDispatch } from '../../../reducers';
 import { getRepeatsTextExtension } from '../../../util/extension';
 import { Path } from '../../../util/refero-core';
@@ -22,7 +22,7 @@ export const RepeatButton = ({ item, parentPath, responseItems, disabled }: Prop
   const { resources } = useExternalRenderContext();
   const onAddRepeatItem = (): void => {
     if (dispatch && item) {
-      dispatch(addRepeatItem({ parentPath, item, responseItems }));
+      dispatch(addRepeatItemAction({ parentPath, item, responseItems }));
     }
   };
   const text = getRepeatsTextExtension(item);

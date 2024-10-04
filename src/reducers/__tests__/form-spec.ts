@@ -2,20 +2,20 @@
 
 import '../../util/__tests__/defineFetch';
 import reducer, { Form } from '../form';
-import { Coding, QuestionnaireResponseItem, Attachment } from 'fhir/r4';
+import { QuestionnaireResponseItem } from 'fhir/r4';
 import {
-  newStringValue,
-  newBooleanValue,
-  newDecimalValue,
-  newIntegerValue,
-  newDateValue,
-  newDateTimeValue,
-  newTimeValue,
-  newCodingValue,
-  addRepeatItem,
-  newAttachment,
-  deleteRepeatItem,
+  newStringValueAction,
+  newBooleanValueAction,
+  newDecimalValueAction,
+  newIntegerValueAction,
+  newDateValueAction,
+  newDateTimeValueAction,
+  newTimeValueAction,
+  newCodingValueAction,
+  addRepeatItemAction,
+  deleteRepeatItemAction,
   NewValuePayload,
+  newAttachmentAction,
 } from '../../actions/newValue';
 import {
   getQuestionnaireDefinitionItem,
@@ -27,14 +27,14 @@ import {
 import dataModel from './__data__/dummy-data-model';
 import { fail } from 'assert';
 import { PayloadAction } from '@reduxjs/toolkit';
-import ResponseItem from '@/components/createQuestionnaire/ResponseItem';
-import { NewValueAction } from 'lib/types';
-import { type } from 'os';
-import form from '../form';
 
 describe('new value action', () => {
   it('should update string value', () => {
-    let action: PayloadAction<NewValuePayload> = newStringValue({ itemPath: [{ linkId: '1' }], valueString: 'ny string', item: undefined });
+    let action: PayloadAction<NewValuePayload> = newStringValueAction({
+      itemPath: [{ linkId: '1' }],
+      valueString: 'ny string',
+      item: undefined,
+    });
     let newState: Form | undefined = reducer(dataModel.refero.form, action);
     if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
       return fail();
@@ -45,7 +45,7 @@ describe('new value action', () => {
     }
     expect(item.answer[0].valueString).toEqual('ny string');
 
-    action = newStringValue({ itemPath: [{ linkId: '1' }], valueString: '', item: undefined });
+    action = newStringValueAction({ itemPath: [{ linkId: '1' }], valueString: '', item: undefined });
     newState = reducer(dataModel.refero.form, action);
     if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
       return fail();
@@ -55,7 +55,11 @@ describe('new value action', () => {
   });
 
   it('should update boolean value', () => {
-    let action: PayloadAction<NewValuePayload> = newBooleanValue({ itemPath: [{ linkId: 'b' }], valueBoolean: true, item: undefined });
+    let action: PayloadAction<NewValuePayload> = newBooleanValueAction({
+      itemPath: [{ linkId: 'b' }],
+      valueBoolean: true,
+      item: undefined,
+    });
     let newState: Form | undefined = reducer(dataModel.refero.form, action);
     if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
       return fail();
@@ -66,7 +70,7 @@ describe('new value action', () => {
     }
     expect(item.answer[0].valueBoolean).toEqual(true);
 
-    action = newBooleanValue({ itemPath: [{ linkId: 'b' }], valueBoolean: false, item: undefined });
+    action = newBooleanValueAction({ itemPath: [{ linkId: 'b' }], valueBoolean: false, item: undefined });
     newState = reducer(dataModel.refero.form, action);
     if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
       return fail();
@@ -79,7 +83,7 @@ describe('new value action', () => {
   });
 
   it('should update decimal value', () => {
-    let action: PayloadAction<NewValuePayload> = newDecimalValue({ itemPath: [{ linkId: 'd' }], valueDecimal: 1.5, item: undefined });
+    let action: PayloadAction<NewValuePayload> = newDecimalValueAction({ itemPath: [{ linkId: 'd' }], valueDecimal: 1.5, item: undefined });
     let newState: Form | undefined = reducer(dataModel.refero.form, action);
     if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
       return fail();
@@ -90,7 +94,7 @@ describe('new value action', () => {
     }
     expect(item.answer[0].valueDecimal).toEqual(1.5);
 
-    action = newDecimalValue({ itemPath: [{ linkId: 'd' }], valueDecimal: 2.5, item: undefined });
+    action = newDecimalValueAction({ itemPath: [{ linkId: 'd' }], valueDecimal: 2.5, item: undefined });
     newState = reducer(dataModel.refero.form, action);
     if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
       return fail();
@@ -103,7 +107,7 @@ describe('new value action', () => {
   });
 
   it('should update integer value', () => {
-    let action: PayloadAction<NewValuePayload> = newIntegerValue({ itemPath: [{ linkId: 'i' }], valueInteger: 3, item: undefined });
+    let action: PayloadAction<NewValuePayload> = newIntegerValueAction({ itemPath: [{ linkId: 'i' }], valueInteger: 3, item: undefined });
     let newState: Form | undefined = reducer(dataModel.refero.form, action);
     if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
       return fail();
@@ -114,7 +118,7 @@ describe('new value action', () => {
     }
     expect(item.answer[0].valueInteger).toEqual(3);
 
-    action = newIntegerValue({ itemPath: [{ linkId: 'i' }], valueInteger: 4, item: undefined });
+    action = newIntegerValueAction({ itemPath: [{ linkId: 'i' }], valueInteger: 4, item: undefined });
     newState = reducer(dataModel.refero.form, action);
     if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
       return fail();
@@ -127,7 +131,7 @@ describe('new value action', () => {
   });
 
   it('should update date value', () => {
-    let action: PayloadAction<NewValuePayload> = newDateValue({
+    let action: PayloadAction<NewValuePayload> = newDateValueAction({
       itemPath: [{ linkId: 'date' }],
       valueDate: '2018-05-18T10:28:45Z',
       item: undefined,
@@ -142,7 +146,7 @@ describe('new value action', () => {
     }
     expect(item.answer[0].valueDate).toEqual('2018-05-18T10:28:45Z');
 
-    action = newDateValue({ itemPath: [{ linkId: 'date' }], valueDate: '2017-05-18T10:28:45Z', item: undefined });
+    action = newDateValueAction({ itemPath: [{ linkId: 'date' }], valueDate: '2017-05-18T10:28:45Z', item: undefined });
     newState = reducer(dataModel.refero.form, action);
     if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
       return fail();
@@ -155,7 +159,7 @@ describe('new value action', () => {
   });
 
   it('should update datetime value', () => {
-    const action: PayloadAction<NewValuePayload> = newDateTimeValue({
+    const action: PayloadAction<NewValuePayload> = newDateTimeValueAction({
       itemPath: [{ linkId: 'dt' }],
       valueDateTime: '2018-05-11T10:28:45Z',
       item: undefined,
@@ -171,7 +175,7 @@ describe('new value action', () => {
     expect(item.answer[0].valueDateTime).toEqual('2018-05-11T10:28:45Z');
   });
   it('should update datetime value', () => {
-    let action: PayloadAction<NewValuePayload> = newDateTimeValue({
+    let action: PayloadAction<NewValuePayload> = newDateTimeValueAction({
       itemPath: [{ linkId: 'dt' }],
       valueDateTime: '2018-05-11T10:28:45Z',
       item: undefined,
@@ -186,7 +190,7 @@ describe('new value action', () => {
     }
     expect(item.answer[0].valueDateTime).toEqual('2018-05-11T10:28:45Z');
 
-    action = newDateTimeValue({ itemPath: [{ linkId: 'dt' }], valueDateTime: '2017-05-18T10:28:45Z', item: undefined });
+    action = newDateTimeValueAction({ itemPath: [{ linkId: 'dt' }], valueDateTime: '2017-05-18T10:28:45Z', item: undefined });
     newState = reducer(dataModel.refero.form, action);
     if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
       return fail();
@@ -199,7 +203,7 @@ describe('new value action', () => {
   });
 
   it('should update time value', () => {
-    let action: PayloadAction<NewValuePayload> = newTimeValue({ itemPath: [{ linkId: 't' }], valueTime: '09:00', item: undefined });
+    let action: PayloadAction<NewValuePayload> = newTimeValueAction({ itemPath: [{ linkId: 't' }], valueTime: '09:00', item: undefined });
     let newState: Form | undefined = reducer(dataModel.refero.form, action);
     if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
       return fail();
@@ -210,7 +214,7 @@ describe('new value action', () => {
     }
     expect(item.answer[0].valueTime).toEqual('09:00');
 
-    action = newTimeValue({ itemPath: [{ linkId: 't' }], valueTime: '17:00', item: undefined });
+    action = newTimeValueAction({ itemPath: [{ linkId: 't' }], valueTime: '17:00', item: undefined });
     newState = reducer(dataModel.refero.form, action);
     if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
       return fail();
@@ -223,7 +227,11 @@ describe('new value action', () => {
   });
 
   it('should update string value', () => {
-    let action: PayloadAction<NewValuePayload> = newStringValue({ itemPath: [{ linkId: 't0' }], valueString: 'test', item: undefined });
+    let action: PayloadAction<NewValuePayload> = newStringValueAction({
+      itemPath: [{ linkId: 't0' }],
+      valueString: 'test',
+      item: undefined,
+    });
     let newState: Form | undefined = reducer(dataModel.refero.form, action);
     if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
       return fail();
@@ -234,7 +242,7 @@ describe('new value action', () => {
     }
     expect(item.answer[0].valueString).toEqual('test');
 
-    action = newStringValue({ itemPath: [{ linkId: 't0' }], valueString: 'test2', item: undefined });
+    action = newStringValueAction({ itemPath: [{ linkId: 't0' }], valueString: 'test2', item: undefined });
     newState = reducer(dataModel.refero.form, action);
     if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
       return fail();
@@ -247,7 +255,7 @@ describe('new value action', () => {
   });
 
   it('should update coding value', () => {
-    let action: PayloadAction<NewValuePayload> = newCodingValue({
+    let action: PayloadAction<NewValuePayload> = newCodingValueAction({
       itemPath: [{ linkId: 'c' }],
       valueCoding: { code: 'y', display: 'displayy' },
       item: undefined,
@@ -267,7 +275,7 @@ describe('new value action', () => {
     expect(answer.valueCoding.code).toEqual('y');
     expect(answer.valueCoding.display).toEqual('displayy');
 
-    action = newCodingValue({ itemPath: [{ linkId: 'c' }], valueCoding: { code: 'n', display: 'new display' }, item: undefined });
+    action = newCodingValueAction({ itemPath: [{ linkId: 'c' }], valueCoding: { code: 'n', display: 'new display' }, item: undefined });
     newState = reducer(dataModel.refero.form, action);
     if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
       return fail();
@@ -285,7 +293,7 @@ describe('new value action', () => {
   });
 
   it('should update attachment fields', () => {
-    const action: PayloadAction<NewValuePayload> = newAttachment({
+    const action: PayloadAction<NewValuePayload> = newAttachmentAction({
       itemPath: [{ linkId: 'attachment' }],
       valueAttachment: { url: 'y', title: 'display', data: '123', contentType: 'image/jpg' },
       item: undefined,
@@ -310,7 +318,7 @@ describe('new value action', () => {
   });
 
   it('should update attachment value', () => {
-    let action: PayloadAction<NewValuePayload> = newAttachment({
+    let action: PayloadAction<NewValuePayload> = newAttachmentAction({
       itemPath: [{ linkId: 'attachment' }],
       valueAttachment: { url: 'y', title: 'displayy' },
       item: undefined,
@@ -330,7 +338,11 @@ describe('new value action', () => {
     expect(answer.valueAttachment.url).toEqual('y');
     expect(answer.valueAttachment.title).toEqual('displayy');
 
-    action = newAttachment({ itemPath: [{ linkId: 'attachment' }], valueAttachment: { url: 'n', title: 'new display' }, item: undefined });
+    action = newAttachmentAction({
+      itemPath: [{ linkId: 'attachment' }],
+      valueAttachment: { url: 'n', title: 'new display' },
+      item: undefined,
+    });
     newState = reducer(dataModel.refero.form, action);
     if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
       return fail();
@@ -348,7 +360,7 @@ describe('new value action', () => {
   });
 
   it('should be able to remove attachment value', () => {
-    let action: PayloadAction<NewValuePayload> = newAttachment({
+    let action: PayloadAction<NewValuePayload> = newAttachmentAction({
       itemPath: [{ linkId: 'attachment' }],
       valueAttachment: { url: 'y', title: 'display' },
       item: undefined,
@@ -368,7 +380,7 @@ describe('new value action', () => {
     expect(answer.valueAttachment.url).toEqual('y');
     expect(answer.valueAttachment.title).toEqual('display');
 
-    action = newAttachment({ itemPath: [{ linkId: 'attachment' }], valueAttachment: undefined, item: undefined });
+    action = newAttachmentAction({ itemPath: [{ linkId: 'attachment' }], valueAttachment: undefined, item: undefined });
     newState = reducer(dataModel.refero.form, action);
     if (!newState || !newState.FormData.Content || !newState.FormData.Content.item || newState.FormData.Content.item.length === 0) {
       return fail();
@@ -384,7 +396,7 @@ describe('new value action', () => {
 
 describe('new value action', () => {
   it('should not copy non existing item', () => {
-    const action: PayloadAction<NewValuePayload> = addRepeatItem({
+    const action: PayloadAction<NewValuePayload> = addRepeatItemAction({
       parentPath: [{ linkId: 'foobar' }],
       item: { linkId: 'foobar', type: 'group' },
       responseItems: undefined,
@@ -397,7 +409,7 @@ describe('new value action', () => {
   });
 
   it('should add group', () => {
-    const action: PayloadAction<NewValuePayload> = addRepeatItem({
+    const action: PayloadAction<NewValuePayload> = addRepeatItemAction({
       parentPath: [],
       item: { linkId: 'addGroupTest1', type: 'group' },
       responseItems: [
@@ -457,7 +469,7 @@ describe('new value action', () => {
     expect(addedGroup.item[1].linkId).toEqual('addGroupTest12');
   });
   it('should add nested group', () => {
-    let action: PayloadAction<NewValuePayload> = addRepeatItem({
+    let action: PayloadAction<NewValuePayload> = addRepeatItemAction({
       parentPath: [{ linkId: 'group110' }],
       item: { linkId: 'group110.1', type: 'group' },
       responseItems: [
@@ -494,7 +506,7 @@ describe('new value action', () => {
     expect(addedGroup.item.length).toEqual(1);
     expect(addedGroup.item[0].linkId).toEqual('group110.11');
 
-    action = addRepeatItem({
+    action = addRepeatItemAction({
       parentPath: [{ linkId: 'group110' }],
       item: { linkId: 'group110.1', type: 'group' },
       responseItems: [
@@ -526,7 +538,7 @@ describe('new value action', () => {
     ]);
     expect(addedGroup).toBeDefined();
 
-    action = deleteRepeatItem({
+    action = deleteRepeatItemAction({
       itemPath: [{ linkId: 'group110' }, { linkId: 'group110.1', index: 1 }],
       item: { linkId: 'group110.1', type: 'group' },
     });
@@ -557,7 +569,7 @@ describe('new value action', () => {
 
 describe('update enable when action', () => {
   it('should update deactivated and tømme answers', () => {
-    let action: PayloadAction<NewValuePayload> = newBooleanValue({
+    let action: PayloadAction<NewValuePayload> = newBooleanValueAction({
       itemPath: [{ linkId: 'b' }],
       valueBoolean: true,
       item: {
@@ -570,7 +582,7 @@ describe('update enable when action', () => {
       return fail();
     }
 
-    action = newBooleanValue({
+    action = newBooleanValueAction({
       itemPath: [{ linkId: 'b' }],
       valueBoolean: false,
       item: {
