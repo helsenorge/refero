@@ -1,10 +1,8 @@
-import { ThunkDispatch } from 'redux-thunk';
-import { NewValueAction } from '../actions/newValue';
-import { GlobalState } from '../reducers';
+import { AppDispatch } from '../reducers';
 import { Path } from '../util/refero-core';
 
 export interface DispatchProps {
-  dispatch: ThunkDispatch<GlobalState, void, NewValueAction>;
+  dispatch: AppDispatch;
   mount: () => void;
 
   path: Array<Path>;

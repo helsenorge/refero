@@ -1,4 +1,4 @@
-import { GlobalState, useAppDispatch } from '@/reducers';
+import { GlobalState } from '@/reducers';
 import { getResponseItemsSelector } from '@/reducers/selectors';
 import { QuestionnaireItemEnableBehaviorCodes } from '@/types/fhirEnums';
 import { enableWhenMatchesAnswer, getQuestionnaireResponseItemWithLinkid, isInGroupContext, Path } from '@/util/refero-core';

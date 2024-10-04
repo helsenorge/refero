@@ -1,5 +1,5 @@
 import { Coding, QuestionnaireItem, Attachment, QuestionnaireResponseItem, Quantity } from 'fhir/r4';
-import { ThunkDispatch, createAction } from '@reduxjs/toolkit';
+import { createAction } from '@reduxjs/toolkit';
 
 import { AppDispatch, GlobalState } from '../reducers';
 import { Path } from '../util/refero-core';

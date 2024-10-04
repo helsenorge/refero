@@ -63,8 +63,7 @@
     "react": "^17.0.0 || ^18.0.0",
     "react-dom": "^17.0.0 || ^18.0.0",
     "react-redux": "^8.0.0 || ^9.0.0",
-    "redux": "^4.0.0 || ^5.0.0",
-    "redux-thunk": "^2.0.0 || ^3.0.0"
+    "redux": "^4.0.0 || ^5.0.0"
   },
   "devDependencies": {
     "@helsenorge/autosuggest": "^32.0.0",
@@ -132,7 +131,6 @@
     "date-fns": "^3.6.0",
     "dompurify": "^3.1.6",
     "fhirpath": "3.15.1",
-    "immer": "^9.0.21",
     "marked": "^14.0.0",
     "react-collapse": "^5.1.1",
     "react-hook-form": "^7.0.0",

@@ -15,7 +15,7 @@ import { maxLength, minLength, regexpPattern, required, scriptInjection } from '
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 import { findQuestionnaireItem } from '@/reducers/selectors';
 import { useSelector } from 'react-redux';
-import { GlobalState, useAppDispatch } from '@/reducers';
+import { GlobalState } from '@/reducers';
 import { QuestionnaireItem } from 'fhir/r4';
 import { ReadOnly } from '../read-only/readOnly';
 

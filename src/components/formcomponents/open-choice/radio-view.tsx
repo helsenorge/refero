@@ -20,7 +20,7 @@ import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { required } from '@/components/validation/rules';
 import { useSelector } from 'react-redux';
-import { GlobalState, useAppDispatch } from '@/reducers';
+import { GlobalState } from '@/reducers';
 import { QuestionnaireItem } from 'fhir/r4';
 import { findQuestionnaireItem } from '@/reducers/selectors';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
