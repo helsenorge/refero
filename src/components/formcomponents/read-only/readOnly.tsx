@@ -3,6 +3,7 @@ import TextView from '../textview';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import { FieldError } from 'react-hook-form';
 import { getValidationTextExtension } from '@/util/extension';
+import { getId } from '@/util';
 
 type Props = {
   pdf?: boolean;
@@ -28,12 +29,12 @@ export const ReadOnly = ({ pdf, id, item, pdfValue, children, errors, textClass 
   return (
     <>
       {pdf ? (
-        <TextView id={id} item={item} value={pdfValue} textClass={textClass}>
+        <TextView id={id} testId={`${getId(id)}-pdf`} item={item} value={pdfValue} textClass={textClass}>
           {children}
         </TextView>
       ) : (
         <FormGroup error={getErrorText(errors)}>
-          <TextView id={id} item={item} value={pdfValue} textClass={textClass}>
+          <TextView id={id} testId={`${getId(id)}-readonly`} item={item} value={pdfValue} textClass={textClass}>
             {children}
           </TextView>
         </FormGroup>
