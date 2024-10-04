@@ -16,16 +16,16 @@ import { LanguageLocales } from '@helsenorge/core-utils/constants/languages';
 import { SetFormDefinitionAction, setSkjemaDefinitionAction } from '@/actions/form';
 import { generateQuestionnaireResponse } from '@/actions/generateQuestionnaireResponse';
 import {
-  addRepeatItem,
-  newCodingStringValue,
+  addRepeatItemAction,
+  newCodingStringValueAction,
   newValue,
   NewValuePayload,
-  removeCodingStringValue,
-  removeCodingValue,
-  removeAttachment,
+  removeCodingStringValueAction,
+  removeCodingValueAction,
+  removeAttachmentAction,
   DeleteRepeatItemPayload,
   RepeatItemPayload,
-  deleteRepeatItem,
+  deleteRepeatItemAction,
   RemoveAttachmentPayload,
   CodingStringPayload,
   RemoveCodingStringPayload,
@@ -91,56 +91,27 @@ const formSlice = createSlice({
       .addCase(newValue, (state, action: PayloadAction<NewValuePayload>) => {
         processNewValueAction(action.payload, state);
       })
-      .addCase(newCodingStringValue, (state, action: PayloadAction<CodingStringPayload>) => {
+      .addCase(newCodingStringValueAction, (state, action: PayloadAction<CodingStringPayload>) => {
         processNewCodingStringValueAction(action.payload, state);
       })
-      .addCase(removeCodingStringValue, (state, action: PayloadAction<RemoveCodingStringPayload>) => {
+      .addCase(removeCodingStringValueAction, (state, action: PayloadAction<RemoveCodingStringPayload>) => {
         processRemoveCodingStringValueAction(action.payload, state);
       })
-      .addCase(removeCodingValue, (state, action: PayloadAction<RemoveCodingValuePayload>) => {
+      .addCase(removeCodingValueAction, (state, action: PayloadAction<RemoveCodingValuePayload>) => {
         processRemoveCodingValueAction(action.payload, state);
       })
-      .addCase(removeAttachment, (state, action: PayloadAction<RemoveAttachmentPayload>) => {
+      .addCase(removeAttachmentAction, (state, action: PayloadAction<RemoveAttachmentPayload>) => {
         processRemoveAttachmentValueAction(action.payload, state);
       })
-      .addCase(addRepeatItem, (state, action: PayloadAction<RepeatItemPayload>) => {
+      .addCase(addRepeatItemAction, (state, action: PayloadAction<RepeatItemPayload>) => {
         processAddRepeatItemAction(action.payload, state);
       })
-      .addCase(deleteRepeatItem, (state, action: PayloadAction<DeleteRepeatItemPayload>) => {
+      .addCase(deleteRepeatItemAction, (state, action: PayloadAction<DeleteRepeatItemPayload>) => {
         processDeleteRepeatItemAction(action.payload, state);
       });
   },
 });
 export default formSlice.reducer;
-// export default function reducer(state: Form = initialState, action: NewValueAction | FormAction): Form | undefined {
-//   switch (action.type) {
-//     case NEW_VALUE:
-//       return processNewValueAction(action, state);
-
-//     case REMOVE_ATTACHMENT_VALUE:
-//       return processRemoveAttachmentValueAction(action, state);
-
-//     case REMOVE_CODING_VALUE:
-//       return processRemoveCodingValueAction(action, state);
-
-//     case NEW_CODINGSTRING_VALUE:
-//       return processNewCodingStringValueAction(action, state);
-
-//     case REMOVE_CODINGSTRING_VALUE:
-//       return processRemoveCodingStringValueAction(action, state);
-
-//     case ADD_REPEAT_ITEM:
-//       return processAddRepeatItemAction(action, state);
-
-//     case DELETE_REPEAT_ITEM:
-//       return processDeleteRepeatItemAction(action, state);
-
-//     case SET_SKJEMA_DEFINITION:
-//       return processSetSkjemaDefinition(action, state);
-//     default:
-//       return state;
-//   }
-// }
 
 export function getFormData(state: GlobalState): FormData | null {
   if (!state.refero?.form?.FormData) {

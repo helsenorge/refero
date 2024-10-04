@@ -1,4 +1,4 @@
-import { newDecimalValue, newIntegerValue, newQuantityValue } from '@/actions/newValue';
+import { newDecimalValueAction, newIntegerValueAction, newQuantityValueAction } from '@/actions/newValue';
 import ItemType from '@/constants/itemType';
 import { GlobalState, useAppDispatch } from '@/reducers';
 import { getFormDefinition } from '@/reducers/form';
@@ -56,21 +56,21 @@ export const useScoringCalculator = (): {
             value: getDecimalValue(item, value),
           };
           for (const itemAndPath of itemsAndPaths) {
-            dispatch(newQuantityValue({ itemPath: itemAndPath.path, valueQuantity: quantity, item }));
+            dispatch(newQuantityValueAction({ itemPath: itemAndPath.path, valueQuantity: quantity, item }));
           }
           break;
         }
         case ItemType.DECIMAL: {
           const decimalValue = getDecimalValue(item, value);
           for (const itemAndPath of itemsAndPaths) {
-            dispatch(newDecimalValue({ itemPath: itemAndPath.path, valueDecimal: decimalValue, item }));
+            dispatch(newDecimalValueAction({ itemPath: itemAndPath.path, valueDecimal: decimalValue, item }));
           }
           break;
         }
         case ItemType.INTEGER: {
           const intValue = value !== undefined ? Math.round(value) : undefined;
           for (const itemAndPath of itemsAndPaths) {
-            dispatch(newIntegerValue({ itemPath: itemAndPath.path, valueInteger: intValue, item }));
+            dispatch(newIntegerValueAction({ itemPath: itemAndPath.path, valueInteger: intValue, item }));
           }
           break;
         }
