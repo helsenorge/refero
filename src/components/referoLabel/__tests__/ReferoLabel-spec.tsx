@@ -1,8 +1,8 @@
 import { Questionnaire } from 'fhir/r4';
-import { ReferoProps } from 'lib/types';
 import { getResources } from '../../../../preview/resources/referoResources.ts';
 import { renderRefero } from '@test/test-utils.tsx';
 import { q } from './__data__';
+import { ReferoProps } from '@/types/referoProps.ts';
 
 const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle ut dette feltet', formOptional: '(Valgfritt)' };
 
