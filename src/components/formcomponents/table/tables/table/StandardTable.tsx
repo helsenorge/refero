@@ -17,7 +17,7 @@ import { StandardTableHeader } from './StandardTableHeader';
 import { getDisplayToSortBy, getStandardTableObject } from './utils';
 import { transformCodingToSortDirection } from '../utils';
 import { useSelector } from 'react-redux';
-import { GlobalState } from '@/reducers';
+import { GlobalState, useAppDispatch } from '@/reducers';
 import { containedResourceSelector } from '../../tableSelector';
 
 interface Props {

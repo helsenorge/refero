@@ -1,20 +1,32 @@
-import { combineReducers, Reducer } from 'redux';
+import { configureStore, combineReducers, ThunkDispatch, UnknownAction, ThunkAction } from '@reduxjs/toolkit';
+import formReducer, { Form } from './form'; // Importing the `Form` type for explicit typing
+import { useDispatch } from 'react-redux';
 
-import form, { Form } from './form';
-import { FormAction } from '@/actions/form';
-import { NewValueAction } from '@/actions/newValue';
+// Define your ReferoState using the same `Form` type from the old setup
+export interface ReferoState {
+  form: Form; // Explicitly use the `Form` type from the form reducer
+}
 
+// GlobalState still directly uses the ReferoState type as before
 export interface GlobalState {
   refero: ReferoState;
 }
 
-export interface ReferoState {
-  form: Form;
-}
-// Benyttes kun for tester eller hvis Refero kjøres utenfor helsenorge
-//@ts-expect-error - Brukes kun for tester eller hvis Refero kjøres utenfor helsenorge
-const rootReducer: Reducer<GlobalState, NewValueAction | FormAction> = combineReducers({
-  refero: combineReducers({ form }),
+// Combine the reducers just as you were doing before, but now with configureStore
+const rootReducer = combineReducers({
+  refero: combineReducers({ form: formReducer }),
 });
 
+// Create the store using `configureStore`, as per Redux Toolkit’s recommendation
+export const store = configureStore({
+  reducer: rootReducer, // Using the combined reducer
+});
+
+// You can directly infer AppDispatch and RootState from the store itself
+export type AppDispatch = ThunkDispatch<GlobalState, unknown, UnknownAction>;
+export type RootState = ReturnType<typeof store.getState>;
+export type AppThunk<ReturnType = void> = ThunkAction<ReturnType, GlobalState, unknown, UnknownAction>;
+
+export const useAppDispatch = useDispatch.withTypes<AppDispatch>();
+// Default export for store
 export default rootReducer;

@@ -16,7 +16,7 @@ import {
 } from '@/actions/newValue';
 import { OPEN_CHOICE_ID, OPEN_CHOICE_SYSTEM } from '@/constants';
 import ItemControlConstants from '@/constants/itemcontrol';
-import { GlobalState } from '@/reducers';
+import { GlobalState, useAppDispatch } from '@/reducers';
 import { isDataReceiver } from '@/util';
 import {
   getOptions,
@@ -47,7 +47,7 @@ export const OpenChoice = (props: OpenChoiceProps): JSX.Element | null => {
 
   const { promptLoginMessage, globalOnChange, resources } = useExternalRenderContext();
   const onAnswerChange = useOnAnswerChange(globalOnChange);
-  const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
+  const dispatch = useAppDispatch();
   const answer = useGetAnswer(linkId, path);
   const itemControlValue = useMemo(() => getItemControlValue(item), [item]);
   const options = useMemo(() => getOptions(resources, item, containedResources), [resources, item, containedResources]);

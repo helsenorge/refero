@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 
 import { FieldValues, useFormContext } from 'react-hook-form';
-import { useDispatch, useSelector } from 'react-redux';
-import { ThunkDispatch } from 'redux-thunk';
+import { useSelector } from 'react-redux';
+
 import styles from '../common-styles.module.css';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Input from '@helsenorge/designsystem-react/components/Input';
 
-import { NewValueAction, newStringValueAsync } from '@/actions/newValue';
-import { GlobalState } from '@/reducers';
+import { newStringValueAsync } from '@/actions/newValue';
+import { GlobalState, useAppDispatch } from '@/reducers';
 import { getPlaceholder } from '@/util/extension';
 import { isReadOnly, getId, getStringValue, getPDFStringValue, getMaxLength } from '@/util/index';
 
@@ -39,16 +39,15 @@ export const String = (props: Props): JSX.Element | null => {
   const { formState, getFieldState, register } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
-  const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
+  const dispatch = useAppDispatch();
   const [isHelpVisible, setIsHelpVisible] = useState(false);
   const answer = useGetAnswer(linkId, path);
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+  const handleChange = async (event: React.ChangeEvent<HTMLInputElement>): Promise<void> => {
     const value = event.target.value;
     if (dispatch && path && item) {
-      dispatch(newStringValueAsync(path, value, item))?.then(newState => {
-        return onAnswerChange(newState, item, { valueString: value });
-      });
+      const newState = await dispatch(newStringValueAsync(path, value, item));
+      onAnswerChange(newState, item, { valueString: value });
     }
 
     if (promptLoginMessage) {

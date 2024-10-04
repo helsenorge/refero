@@ -13,7 +13,6 @@ export const PauseFormButton = ({
   onPauseButtonClicked,
   pauseButtonDisabled,
   isHelsenorgeForm,
-  isStepView,
 }: Props): JSX.Element | null => {
   return (
     <div className={`pauseButtonStyle ${isHelsenorgeForm ? 'hideOnSmallScreen' : 'displayOnSmallScreen'}`}>

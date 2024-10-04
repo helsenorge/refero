@@ -6,7 +6,7 @@ import { QuestionnaireResponse, Attachment, Questionnaire, QuestionnaireItem, Qu
 import { OrgenhetHierarki } from './orgenhetHierarki';
 import { ValidationSummaryPlacement } from './formTypes/validationSummaryPlacement';
 import { Store } from 'redux';
-import { GlobalState } from '@/reducers';
+import { GlobalState, useAppDispatch } from '@/reducers';
 import { NewValueAction } from '@/actions/newValue';
 import { TextMessage } from './text-message';
 

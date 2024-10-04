@@ -31,12 +31,12 @@ React component that consumes a [FHIR Questionnaire](https://hl7.org/fhir/R4/que
 
 ```tsx
 import React from 'react';
-import { Store, createStore, applyMiddleware } from 'redux';
-import { Provider } from 'react-redux';
+import { applyMiddleware } from 'redux';
+import { Provider, configureStore } from '@reduxjs/toolkit';
 import { thunk } from 'redux-thunk';
 import { Refero, rootReducer } from '@helsenorge/refero';
 
-let store: Store<{}> = createStore(rootReducer, applyMiddleware(thunk));
+const store = configureStore({ reducer: rootReducer, middleware: getDefaultMiddleware => getDefaultMiddleware() });
 
 const App = () => {
     return (

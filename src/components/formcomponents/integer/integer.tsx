@@ -1,18 +1,17 @@
 import React, { useState } from 'react';
 
 import { FieldValues, useFormContext } from 'react-hook-form';
-import { ThunkDispatch } from 'redux-thunk';
 import styles from '../common-styles.module.css';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Input from '@helsenorge/designsystem-react/components/Input';
 
-import { NewValueAction, newIntegerValueAsync } from '@/actions/newValue';
-import { GlobalState } from '@/reducers';
+import { newIntegerValueAsync } from '@/actions/newValue';
+import { GlobalState, useAppDispatch } from '@/reducers';
 import { getMaxValueExtensionValue, getPlaceholder } from '@/util/extension';
 import { isReadOnly, getId } from '@/util/index';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
 import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelpButton';
 import RenderHelpElement from '@/components/formcomponents/help-button/RenderHelpElement';
@@ -31,7 +30,7 @@ const Integer = (props: Props): JSX.Element | null => {
   const { id, pdf, idWithLinkIdAndItemIndex, path, linkId, index, children } = props;
   const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
 
-  const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
+  const dispatch = useAppDispatch();
   const { promptLoginMessage, globalOnChange, resources } = useExternalRenderContext();
   const onAnswerChange = useOnAnswerChange(globalOnChange);
   const { formState, getFieldState, register } = useFormContext<FieldValues>();

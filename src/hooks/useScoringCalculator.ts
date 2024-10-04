@@ -1,6 +1,6 @@
-import { newDecimalValue, newIntegerValue, newQuantityValue, NewValueAction } from '@/actions/newValue';
+import { newDecimalValue, newIntegerValue, newQuantityValue } from '@/actions/newValue';
 import ItemType from '@/constants/itemType';
-import { GlobalState } from '@/reducers';
+import { GlobalState, useAppDispatch } from '@/reducers';
 import { getFormDefinition } from '@/reducers/form';
 import { getDecimalValue } from '@/util';
 import { getQuestionnaireUnitExtensionValue } from '@/util/extension';
@@ -8,14 +8,13 @@ import { getQuestionnaireDefinitionItem, getResponseItemAndPathWithLinkId } from
 import { AnswerPad, ScoringCalculator } from '@/util/scoringCalculator';
 import { Quantity, Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { ThunkDispatch } from 'redux-thunk';
+import { useSelector } from 'react-redux';
 
 export const useScoringCalculator = (): {
   runScoringCalculator: (questionnaire?: Questionnaire | null, questionnaireResponse?: QuestionnaireResponse | null) => void;
 } => {
   const formDefinition = useSelector((state: GlobalState) => getFormDefinition(state));
-  const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
+  const dispatch = useAppDispatch();
   const [scoringCalculator, setScoringCalculator] = useState<ScoringCalculator | undefined>();
 
   useEffect(() => {
@@ -57,21 +56,21 @@ export const useScoringCalculator = (): {
             value: getDecimalValue(item, value),
           };
           for (const itemAndPath of itemsAndPaths) {
-            dispatch(newQuantityValue(itemAndPath.path, quantity, item));
+            dispatch(newQuantityValue({ itemPath: itemAndPath.path, valueQuantity: quantity, item }));
           }
           break;
         }
         case ItemType.DECIMAL: {
           const decimalValue = getDecimalValue(item, value);
           for (const itemAndPath of itemsAndPaths) {
-            dispatch(newDecimalValue(itemAndPath.path, decimalValue, item));
+            dispatch(newDecimalValue({ itemPath: itemAndPath.path, valueDecimal: decimalValue, item }));
           }
           break;
         }
         case ItemType.INTEGER: {
           const intValue = value !== undefined ? Math.round(value) : undefined;
           for (const itemAndPath of itemsAndPaths) {
-            dispatch(newIntegerValue(itemAndPath.path, intValue, item));
+            dispatch(newIntegerValue({ itemPath: itemAndPath.path, valueInteger: intValue, item }));
           }
           break;
         }

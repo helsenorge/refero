@@ -4,7 +4,6 @@ import { getItemControlValue } from './choice';
 import { getResponseItemAndPathWithLinkId, getQuestionnaireDefinitionItem, Path } from './refero-core';
 import {
   newIntegerValue,
-  NewValueAction,
   newDecimalValue,
   newCodingValue,
   newCodingStringValue,
@@ -16,8 +15,10 @@ import {
   newStringValue,
   removeCodingValue,
   removeCodingStringValue,
+  NewValuePayload,
 } from '@/actions/newValue';
 import itemControlConstants from '@/constants/itemcontrol';
+import { PayloadAction } from '@reduxjs/toolkit';
 
 export interface IActionRequester {
   addIntegerAnswer(linkId: string, value: number, index?: number): void;
@@ -55,7 +56,7 @@ class ItemAndPath {
 }
 
 export class ActionRequester implements IActionRequester {
-  private actions: Array<NewValueAction> = [];
+  private actions: PayloadAction<NewValuePayload, string>[] = [];
   private questionnaire: Questionnaire;
   private questionnaireResponse: QuestionnaireResponse;
 
@@ -67,7 +68,7 @@ export class ActionRequester implements IActionRequester {
   public addIntegerAnswer(linkId: string, value: number, index: number = 0): void {
     const itemAndPath = this.getItemAndPath(linkId, index);
     if (itemAndPath) {
-      this.actions.push(newIntegerValue(itemAndPath.path, value, itemAndPath.item));
+      this.actions.push(newIntegerValue({ itemPath: itemAndPath.path, valueInteger: value, item: itemAndPath.item }));
     }
   }
 
@@ -78,7 +79,7 @@ export class ActionRequester implements IActionRequester {
   public addDecimalAnswer(linkId: string, value: number, index: number = 0): void {
     const itemAndPath = this.getItemAndPath(linkId, index);
     if (itemAndPath) {
-      this.actions.push(newDecimalValue(itemAndPath.path, value, itemAndPath.item));
+      this.actions.push(newDecimalValue({ itemPath: itemAndPath.path, valueDecimal: value, item: itemAndPath.item }));
     }
   }
 
@@ -89,14 +90,21 @@ export class ActionRequester implements IActionRequester {
   public addChoiceAnswer(linkId: string, value: Coding, index: number = 0): void {
     const itemAndPath = this.getItemAndPath(linkId, index);
     if (itemAndPath) {
-      this.actions.push(newCodingValue(itemAndPath.path, value, itemAndPath.item, this.isCheckbox(itemAndPath.item)));
+      this.actions.push(
+        newCodingValue({
+          itemPath: itemAndPath.path,
+          valueCoding: value,
+          item: itemAndPath.item,
+          multipleAnswers: this.isCheckbox(itemAndPath.item),
+        })
+      );
     }
   }
 
   public removeChoiceAnswer(linkId: string, value: Coding, index: number = 0): void {
     const itemAndPath = this.getItemAndPath(linkId, index);
     if (itemAndPath && this.isCheckbox(itemAndPath.item)) {
-      this.actions.push(removeCodingValue(itemAndPath.path, value, itemAndPath.item));
+      this.actions.push(removeCodingValue({ itemPath: itemAndPath.path, valueCoding: value, item: itemAndPath.item }));
     }
   }
 
@@ -104,9 +112,16 @@ export class ActionRequester implements IActionRequester {
     const itemAndPath = this.getItemAndPath(linkId, index);
     if (itemAndPath) {
       if (typeof value === 'string') {
-        this.actions.push(newCodingStringValue(itemAndPath.path, value, itemAndPath.item));
+        this.actions.push(newCodingStringValue({ itemPath: itemAndPath.path, valueString: value, item: itemAndPath.item }));
       } else {
-        this.actions.push(newCodingValue(itemAndPath.path, value, itemAndPath.item, this.isCheckbox(itemAndPath.item)));
+        this.actions.push(
+          newCodingValue({
+            itemPath: itemAndPath.path,
+            valueCoding: value,
+            item: itemAndPath.item,
+            multipleAnswers: this.isCheckbox(itemAndPath.item),
+          })
+        );
       }
     }
   }
@@ -115,9 +130,9 @@ export class ActionRequester implements IActionRequester {
     const itemAndPath = this.getItemAndPath(linkId, index);
     if (itemAndPath) {
       if (typeof value === 'string') {
-        this.actions.push(removeCodingStringValue(itemAndPath.path, itemAndPath.item));
+        this.actions.push(removeCodingStringValue({ itemPath: itemAndPath.path, item: itemAndPath.item }));
       } else if (this.isCheckbox(itemAndPath.item)) {
-        this.actions.push(removeCodingValue(itemAndPath.path, value, itemAndPath.item));
+        this.actions.push(removeCodingValue({ itemPath: itemAndPath.path, valueCoding: value, item: itemAndPath.item }));
       }
     }
   }
@@ -125,7 +140,7 @@ export class ActionRequester implements IActionRequester {
   public addBooleanAnswer(linkId: string, value: boolean, index: number = 0): void {
     const itemAndPath = this.getItemAndPath(linkId, index);
     if (itemAndPath) {
-      this.actions.push(newBooleanValue(itemAndPath.path, value, itemAndPath.item));
+      this.actions.push(newBooleanValue({ itemPath: itemAndPath.path, valueBoolean: value, item: itemAndPath.item }));
     }
   }
 
@@ -136,7 +151,7 @@ export class ActionRequester implements IActionRequester {
   public addDateAnswer(linkId: string, value: string, index: number = 0): void {
     const itemAndPath = this.getItemAndPath(linkId, index);
     if (itemAndPath) {
-      this.actions.push(newDateValue(itemAndPath.path, value, itemAndPath.item));
+      this.actions.push(newDateValue({ itemPath: itemAndPath.path, valueDate: value, item: itemAndPath.item }));
     }
   }
 
@@ -147,7 +162,7 @@ export class ActionRequester implements IActionRequester {
   public addTimeAnswer(linkId: string, value: string, index: number = 0): void {
     const itemAndPath = this.getItemAndPath(linkId, index);
     if (itemAndPath) {
-      this.actions.push(newTimeValue(itemAndPath.path, value, itemAndPath.item));
+      this.actions.push(newTimeValue({ itemPath: itemAndPath.path, valueTime: value, item: itemAndPath.item }));
     }
   }
 
@@ -158,7 +173,7 @@ export class ActionRequester implements IActionRequester {
   public addDateTimeAnswer(linkId: string, value: string, index: number = 0): void {
     const itemAndPath = this.getItemAndPath(linkId, index);
     if (itemAndPath) {
-      this.actions.push(newDateTimeValue(itemAndPath.path, value, itemAndPath.item));
+      this.actions.push(newDateTimeValue({ itemPath: itemAndPath.path, valueDateTime: value, item: itemAndPath.item }));
     }
   }
 
@@ -169,7 +184,7 @@ export class ActionRequester implements IActionRequester {
   public addQuantityAnswer(linkId: string, value: Quantity, index: number = 0): void {
     const itemAndPath = this.getItemAndPath(linkId, index);
     if (itemAndPath) {
-      this.actions.push(newQuantityValue(itemAndPath.path, value, itemAndPath.item));
+      this.actions.push(newQuantityValue({ itemPath: itemAndPath.path, valueQuantity: value, item: itemAndPath.item }));
     }
   }
 
@@ -180,7 +195,7 @@ export class ActionRequester implements IActionRequester {
   public addStringAnswer(linkId: string, value: string, index: number = 0): void {
     const itemAndPath = this.getItemAndPath(linkId, index);
     if (itemAndPath) {
-      this.actions.push(newStringValue(itemAndPath.path, value, itemAndPath.item));
+      this.actions.push(newStringValue({ itemPath: itemAndPath.path, valueString: value, item: itemAndPath.item }));
     }
   }
 
@@ -188,7 +203,7 @@ export class ActionRequester implements IActionRequester {
     this.addStringAnswer(linkId, '', index);
   }
 
-  public getActions(): Array<NewValueAction> {
+  public getActions(): PayloadAction<NewValuePayload, string>[] {
     return this.actions;
   }
 

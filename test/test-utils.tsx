@@ -7,9 +7,8 @@ import userEvent from '@testing-library/user-event';
 import { Questionnaire } from 'fhir/r4';
 import { FormProvider, useForm } from 'react-hook-form';
 import { Provider } from 'react-redux';
-import { Action, applyMiddleware, legacy_createStore as createStore, Store } from 'redux';
+import { configureStore, Store } from '@reduxjs/toolkit';
 import configureMockStore from 'redux-mock-store';
-import { thunk, ThunkDispatch } from 'redux-thunk';
 
 import { getResources } from '../preview/resources/referoResources';
 import { generateQuestionnaireResponse } from '../src/actions/generateQuestionnaireResponse';
@@ -20,9 +19,8 @@ import { Resources } from '../src/util/resources';
 import { createIntitialFormValues, DefaultValues } from '../src/validation/defaultFormValues';
 import { ExternalRenderProvider } from '@/context/externalRenderContext';
 import { AttachmentProvider } from '@/context/AttachmentContext';
-import { FormAction, NewValueAction } from '@/index';
 
-const mockStore = configureMockStore<Partial<GlobalState>>([thunk]);
+const mockStore = configureMockStore<Partial<GlobalState>>();
 
 export const FormWrapper = ({ children, defaultValues }: { children: React.ReactNode; defaultValues: any }) => {
   const methods = useForm({
@@ -45,7 +43,7 @@ const AllTheProviders = ({
   children: React.ReactNode;
   initialState?: Partial<GlobalState>;
   defaultValues?: any;
-  store: Store<GlobalState, NewValueAction | FormAction, unknown> & { dispatch: ThunkDispatch<any, undefined, Action<any>> };
+  store: Store;
   referoProps?: Partial<ReferoProps>;
 }) => {
   return (
@@ -62,7 +60,7 @@ const AllTheProviders = ({
 const customRender = (
   ui: ReactElement,
   options: Omit<RenderOptions, 'wrapper'> & { initialState?: Partial<GlobalState> } & { defaultValues?: any } & {
-    store: Store<GlobalState, NewValueAction | FormAction, unknown> & { dispatch: ThunkDispatch<any, undefined, Action<any>> };
+    store: Store;
   } & { referoProps?: Partial<ReferoProps> }
 ) => {
   const { initialState, defaultValues, store, referoProps, ...renderOptions } = options || {};
@@ -78,11 +76,11 @@ const customRender = (
 const customRenderMockStore = (
   ui: ReactElement,
   options?: Omit<RenderOptions, 'wrapper'> & { initialState?: Partial<GlobalState> } & { defaultValues?: any } & {
-    store?: Store<GlobalState, NewValueAction | FormAction, unknown> & { dispatch: ThunkDispatch<any, undefined, Action<any>> };
+    store?: Store;
   }
 ): {
   renderResult: RenderResult;
-  store?: Store<GlobalState, NewValueAction | FormAction, unknown> & { dispatch: ThunkDispatch<any, undefined, Action<any>> };
+  store?: Store;
 } => {
   const { initialState, defaultValues, store = mockStore(initialState || {}), ...renderOptions } = options || {};
   return {
@@ -99,13 +97,17 @@ const customRenderMockStore = (
 };
 interface CustomRenderOptions extends Omit<RenderOptions, 'queries'> {
   initialState?: Partial<GlobalState>;
-  store?: Store<GlobalState, NewValueAction | FormAction, unknown> & { dispatch: ThunkDispatch<any, undefined, Action<any>> };
+  store?: Store;
 }
 const renderWithRedux = (
   ui: React.ReactElement,
   {
     initialState,
-    store = createStore(rootReducer, initialState as GlobalState, applyMiddleware(thunk)),
+    store = configureStore({
+      reducer: rootReducer,
+      preloadedState: initialState as GlobalState,
+      middleware: getDefaultMiddleware => getDefaultMiddleware(),
+    }),
     ...renderOptions
   }: CustomRenderOptions = {}
 ) => {
@@ -116,7 +118,11 @@ const renderWithReduxAndHookFormMock = (
   ui: React.ReactElement,
   {
     initialState,
-    store = createStore(rootReducer, initialState as GlobalState, applyMiddleware(thunk)),
+    store = configureStore({
+      reducer: rootReducer,
+      preloadedState: initialState as GlobalState,
+      middleware: getDefaultMiddleware => getDefaultMiddleware(),
+    }),
     ...renderOptions
   }: CustomRenderOptions = {}
 ) => {
@@ -154,7 +160,7 @@ function renderRefero({ questionnaire, props, initialState, resources, defaultVa
       },
     },
   };
-  const store = createStore(rootReducer, state, applyMiddleware(thunk));
+  const store = configureStore({ reducer: rootReducer, preloadedState: state, middleware: getDefaultMiddleware => getDefaultMiddleware() });
   const defaultReactHookFormValues = defaultValues ?? createIntitialFormValues(questionnaire.item);
 
   return customRender(

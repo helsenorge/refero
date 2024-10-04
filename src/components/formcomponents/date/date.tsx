@@ -1,18 +1,16 @@
-import { ThunkDispatch } from 'redux-thunk';
-
 import { LanguageLocales } from '@helsenorge/core-utils/constants/languages';
 
 import { DateDayInput } from './date-day-input';
 import { DateYearMonthInput } from './date-month-input';
 import { DateYearInput } from './date-year-input';
-import { NewValueAction, newDateValueAsync } from '../../../actions/newValue';
+import { newDateValueAsync } from '../../../actions/newValue';
 
 import itemControlConstants from '../../../constants/itemcontrol';
-import { GlobalState } from '../../../reducers';
+import { GlobalState, useAppDispatch } from '../../../reducers';
 
 import { getItemControlExtensionValue } from '../../../util/extension';
 
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
@@ -33,7 +31,7 @@ const DateComponent = (props: DateProps): JSX.Element | null => {
   const { promptLoginMessage, globalOnChange } = useExternalRenderContext();
   const onAnswerChange = useOnAnswerChange(globalOnChange);
 
-  const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
+  const dispatch = useAppDispatch();
   const itemControls = useMemo(() => getItemControlExtensionValue(item), [item]);
   const { YEAR, YEARMONTH } = itemControlConstants;
 
