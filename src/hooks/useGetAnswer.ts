@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import ItemType from '@/constants/itemType';
-import { GlobalState } from '@/reducers';
+import { GlobalState, useAppDispatch } from '@/reducers';
 import { findQuestionnaireItem, getResponseItemWithPathSelector, questionnaireResponseSelector } from '@/reducers/selectors';
 import { getCalculatedExpressionExtension, getCopyExtension } from '@/util/extension';
 import { evaluateFhirpathExpressionToGetString } from '@/util/fhirpathHelper';

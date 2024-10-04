@@ -1,15 +1,15 @@
 import React, { useEffect } from 'react';
 
-import { newTimeValueAsync, NewValueAction } from '../../../actions/newValue';
+import { newTimeValueAsync } from '../../../actions/newValue';
 import { getValidationTextExtension } from '../../../util/extension';
 import { getId, isReadOnly, isRequired } from '../../../util/index';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
-import { useDispatch, useSelector } from 'react-redux';
-import { ThunkDispatch } from 'redux-thunk';
-import { GlobalState } from '@/reducers';
+import { useSelector } from 'react-redux';
+
+import { GlobalState, useAppDispatch } from '@/reducers';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import { DateTime, DateTimePickerWrapper } from '@helsenorge/datepicker/components/DatePicker';
 import styles from '../common-styles.module.css';
@@ -33,7 +33,7 @@ const Time = ({ id, index, path, linkId, pdf, idWithLinkIdAndItemIndex, children
 
   const { promptLoginMessage, globalOnChange, resources } = useExternalRenderContext();
   const onAnswerChange = useOnAnswerChange(globalOnChange);
-  const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
+  const dispatch = useAppDispatch();
   const { formState, getFieldState, setValue, getValues, trigger, register } = useFormContext<FieldValues>();
   const hoursField = getFieldState(`${idWithLinkIdAndItemIndex}-hours`, formState);
   const minutesField = getFieldState(`${idWithLinkIdAndItemIndex}-minutes`, formState);

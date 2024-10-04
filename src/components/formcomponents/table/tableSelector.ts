@@ -1,10 +1,10 @@
-// import { GlobalState } from '@/reducers';
+// import { GlobalState, useAppDispatch } from '@/reducers';
 // import { findQuestionnaireItem } from '@/reducers/selectors';
 // import { QuestionnaireItem } from 'fhir/r4';
 // import { useSelector } from 'react-redux';
 // import { createSelector } from 'reselect';
 
-import { GlobalState } from '@/reducers';
+import { GlobalState, useAppDispatch } from '@/reducers';
 import { findQuestionnaireItem, questionnaireSelector } from '@/reducers/selectors';
 import { getCodingTextTableValues } from '@/util/extension';
 import LanguageLocales from '@helsenorge/core-utils/constants/languages';

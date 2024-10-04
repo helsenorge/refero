@@ -3,13 +3,13 @@ import React from 'react';
 import { PresentationButtonsType } from '@constants/presentationButtonsType';
 
 import { FormProvider, useForm } from 'react-hook-form';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { ReferoProps } from '@/types/referoProps';
 
 import RenderForm from './renderForm';
 import StepView from './stepView';
 
-import { GlobalState } from '@/reducers';
+import { GlobalState, useAppDispatch } from '@/reducers';
 import { getFormDefinition, getFormData } from '@/reducers/form';
 import { FormDefinition, FormData } from '@/reducers/form';
 
@@ -21,8 +21,6 @@ import { ExternalRenderProvider } from '@/context/externalRenderContext';
 import { setSkjemaDefinition } from '@/actions/form';
 import { AttachmentProvider } from '@/context/AttachmentContext';
 import GenerateQuestionnaireComponents from './createQuestionnaire/GenerateQuestionnaireComponents';
-import { ThunkDispatch } from 'redux-thunk';
-import { NewValueAction } from '@/actions/newValue';
 import { createIntitialFormValues } from '@/validation/defaultFormValues';
 
 const Refero = (props: ReferoProps): JSX.Element | null => {
@@ -52,7 +50,7 @@ const Refero = (props: ReferoProps): JSX.Element | null => {
     // ... any other props
   } = props;
   IE11HackToWorkAroundBug187484();
-  const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
+  const dispatch = useAppDispatch();
   const formDefinition = useSelector<GlobalState, FormDefinition | null>((state: GlobalState) => getFormDefinition(state));
   const formData = useSelector<GlobalState, FormData | null>((state: GlobalState) => getFormData(state));
   const questionnaire = formDefinition?.Content;

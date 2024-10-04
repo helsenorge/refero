@@ -1,19 +1,17 @@
 import { useState } from 'react';
 
 import { QuestionnaireItem } from 'fhir/r4';
-import { useDispatch } from 'react-redux';
-import { ThunkDispatch } from 'redux-thunk';
 
 import Button from '@helsenorge/designsystem-react/components/Button';
 import Icon from '@helsenorge/designsystem-react/components/Icon';
 import TrashCan from '@helsenorge/designsystem-react/components/Icons/TrashCan';
 import Modal from '@helsenorge/designsystem-react/components/Modal';
 
-import { NewValueAction, deleteRepeatItemAsync } from '../../../actions/newValue';
-import { GlobalState } from '../../../reducers';
+import { deleteRepeatItemAsync } from '../../../actions/newValue';
 import { Path } from '../../../util/refero-core';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 import useOnAnswerChange from '@/hooks/useOnAnswerChange';
+import { useAppDispatch } from '@/reducers';
 
 type Props = {
   className?: string;
@@ -23,7 +21,7 @@ type Props = {
 };
 
 const DeleteButton = ({ item, path, mustShowConfirm }: Props): JSX.Element => {
-  const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
+  const dispatch = useAppDispatch();
   const { globalOnChange, resources } = useExternalRenderContext();
   const onAnswerChange = useOnAnswerChange(globalOnChange);
   const [showConfirm, setShowConfirm] = useState(false);

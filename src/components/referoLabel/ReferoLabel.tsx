@@ -8,7 +8,7 @@ import { getLabelText, getSublabelText, isReadOnly, isRequired } from '@/util';
 import { Resources } from '@/util/resources';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 import { useSelector } from 'react-redux';
-import { GlobalState } from '@/reducers';
+import { GlobalState, useAppDispatch } from '@/reducers';
 import { getFormDefinition } from '@/reducers/form';
 
 type Props = {

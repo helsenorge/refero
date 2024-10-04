@@ -26,7 +26,7 @@ export type QuestionnaireComponentItemProps = {
 };
 
 export type QuestionnaireItemsProps = {
-  items: QuestionnaireItem[] | undefined;
+  items?: QuestionnaireItem[];
   path?: Path[];
   pdf?: boolean;
   renderContext?: RenderContext;

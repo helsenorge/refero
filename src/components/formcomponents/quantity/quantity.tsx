@@ -2,18 +2,17 @@ import { useState } from 'react';
 
 import { QuestionnaireResponseItemAnswer, Quantity as QuantityType, QuestionnaireItem } from 'fhir/r4';
 import { FieldValues, useFormContext } from 'react-hook-form';
-import { ThunkDispatch } from 'redux-thunk';
 import styles2 from '../common-styles.module.css';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Input from '@helsenorge/designsystem-react/components/Input';
 import styles from './quantity.module.css';
-import { NewValueAction, newQuantityValueAsync } from '@/actions/newValue';
-import { GlobalState } from '@/reducers';
+import { newQuantityValueAsync } from '@/actions/newValue';
+import { GlobalState, useAppDispatch } from '@/reducers';
 import { getMaxValueExtensionValue, getPlaceholder, getQuestionnaireUnitExtensionValue } from '@/util/extension';
 import { isReadOnly, getId } from '@/util/index';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
 import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelpButton';
 import RenderHelpElement from '@/components/formcomponents/help-button/RenderHelpElement';
@@ -38,7 +37,7 @@ const Quantity = (props: Props): JSX.Element | null => {
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
 
-  const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
+  const dispatch = useAppDispatch();
   const [isHelpVisible, setIsHelpVisible] = useState(false);
   const answer = useGetAnswer(linkId, path);
 

@@ -1,16 +1,15 @@
 import React, { useState } from 'react';
 
 import { Attachment, QuestionnaireItem } from 'fhir/r4';
-import { ThunkDispatch } from 'redux-thunk';
 
 import { UploadFile } from '@helsenorge/file-upload/components/file-upload';
 
 import AttachmentHtml from './attachmenthtml';
-import { NewValueAction, newAttachmentAsync, removeAttachmentAsync } from '@/actions/newValue';
-import { GlobalState } from '@/reducers';
+import { newAttachmentAsync, removeAttachmentAsync } from '@/actions/newValue';
+import { GlobalState, useAppDispatch } from '@/reducers';
 import { getValidationTextExtension, getMaxOccursExtensionValue, getMinOccursExtensionValue } from '@/util/extension';
 import { isRequired, getId, isRepeat } from '@/util/index';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useAttachmentContext } from '@/context/AttachmentContext';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
@@ -36,7 +35,7 @@ export const AttachmentComponent = (props: Props): JSX.Element | null => {
     onDeleteAttachment,
     uploadAttachment,
   } = useAttachmentContext();
-  const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
+  const dispatch = useAppDispatch();
 
   const { globalOnChange, resources } = useExternalRenderContext();
   const onAnswerChange = useOnAnswerChange(globalOnChange);

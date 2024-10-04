@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
 
 import { FieldValues, useFormContext } from 'react-hook-form';
-import { ThunkDispatch } from 'redux-thunk';
+
 import Checkbox from '@helsenorge/designsystem-react/components/Checkbox';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Label, { Sublabel } from '@helsenorge/designsystem-react/components/Label';
 import styles from '../common-styles.module.css';
 import Pdf from './pdf';
-import { NewValueAction, newBooleanValueAsync } from '@/actions/newValue';
-import { GlobalState } from '@/reducers';
+import { newBooleanValueAsync } from '@/actions/newValue';
+import { GlobalState, useAppDispatch } from '@/reducers';
 import { isReadOnly, getId, getSublabelText, getLabelText } from '@/util/index';
 import SafeText from '../../referoLabel/SafeText';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
 import RenderHelpElement from '@/components/formcomponents/help-button/RenderHelpElement';
 import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelpButton';
@@ -40,7 +40,7 @@ const Boolean = (props: Props): JSX.Element | null => {
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
 
-  const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
+  const dispatch = useAppDispatch();
   const { onRenderMarkdown, promptLoginMessage, globalOnChange, resources } = useExternalRenderContext();
   const onAnswerChange = useOnAnswerChange(globalOnChange);
 

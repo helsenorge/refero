@@ -1,13 +1,12 @@
 import { Coding, QuestionnaireItem } from 'fhir/r4';
-import { ThunkDispatch } from 'redux-thunk';
 
 import CheckboxView from './checkbox-view';
 import DropdownView from './dropdown-view';
 import RadioView from './radio-view';
 import SliderView from './slider-view';
-import { NewValueAction, newCodingValueAsync, removeCodingValueAsync } from '@/actions/newValue';
+import { newCodingValueAsync, removeCodingValueAsync } from '@/actions/newValue';
 import itemControlConstants from '@/constants/itemcontrol';
-import { GlobalState } from '@/reducers';
+import { GlobalState, useAppDispatch } from '@/reducers';
 import {
   getOptions,
   getSystem,
@@ -20,7 +19,7 @@ import {
 
 import AutosuggestView from '../choice-common/autosuggest-view';
 import ReceiverComponentWrapper from '../receiver-component/receiver-component-wrapper';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
@@ -39,7 +38,7 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
   const { promptLoginMessage, globalOnChange, resources } = useExternalRenderContext();
   const onAnswerChange = useOnAnswerChange(globalOnChange);
 
-  const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
+  const dispatch = useAppDispatch();
   const answer = useGetAnswer(linkId, path);
   useEffect(() => {
     if (!Array.isArray(answer) && answer?.valueCoding?.code && !answer?.valueCoding?.display) {
