@@ -1,4 +1,7 @@
-## 16.0.0-beta.39
+## 16.0.0-beta.41
+- Added redux toolkit
+
+## 16.0.0-beta.40
 - fix bug with ids
 - fix bug with text on errorsummary on linkids with uuid + text
 
