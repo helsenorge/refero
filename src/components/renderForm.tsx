@@ -39,13 +39,13 @@ const RenderForm = ({
   const displayPauseButtonInStepView = displayPreviousButton ? previousStep : undefined;
 
   // eslint-disable-next-line no-console
-  console.log('RenderForm stepProps 3:', referoProps.stepProps);
+  console.log('Refero - RenderForm is microweb?', referoProps.isMicroweb);
+  // eslint-disable-next-line no-console
+  console.log('Refero - RenderForm is microweb step?', referoProps.isMicrowebStep);
 
-
-  if ( referoProps.stepProps?.isMicrowebStep && isStepView) {
+  if ( referoProps.isMicrowebStep && isStepView) {
     // eslint-disable-next-line no-console
     console.warn("Stegvisning i Skjema er ikke støttet i Microweb step modus");
-
   }
 
   const buttonOrderStepView = {
@@ -70,17 +70,17 @@ const RenderForm = ({
 
    // eslint-disable-next-line @typescript-eslint/no-explicit-any
    const getButtonOrder = (): any => {
-    if (isStepView && referoProps.stepProps?.isMicrowebStep === false) {
+    if (isStepView && referoProps.isMicrowebStep === false) {
       return buttonOrderStepView;
     }
-    if (referoProps.stepProps?.isMicrowebStep) {
+    if (referoProps.isMicrowebStep) {
       return buttonOrderMicroWeb;
     }
     return buttonOrderNormalView;
   }
 
   const getPauseButtonClasses = (): string | undefined => {
-    if ( referoProps.stepProps?.isMicrowebStep ) { 
+    if ( referoProps.isMicrowebStep ) { 
         return 'page_refero__pausebutton_microweb';
     }
     if ( isStepView ) {
@@ -89,25 +89,11 @@ const RenderForm = ({
     return 'page_refero__pausebutton';
   }
 
-  /*const isPauseButtonDisabled = (): boolean | undefined => {
-
-    // eslint-disable-next-line no-console
-    console.log("IS PAUSE BUTTON DISABLED CALLED");
-    if ( referoProps.stepProps?.isMicrowebStep ) { 
-        // eslint-disable-next-line no-console
-        console.log("FALSE SINCE MICROWEB STEP");
-        return false;
-    }
-
-    return referoProps.saveButtonDisabled;
-
-  }*/
-
   const getPauseButtonText = (): string | undefined => {
       if ( displayPreviousButton) {
         return resources.previousStep;
       } 
-      else if ( referoProps.stepProps?.isMicrowebStep ) {
+      else if ( referoProps.isMicrowebStep ) {
         return 'Tilbake';
       }
       else {
@@ -117,12 +103,9 @@ const RenderForm = ({
 
   const processStepBackCalled = (): void => { 
       // eslint-disable-next-line no-console
-
       // eslint-disable-next-line no-console
       console.log("Step back called");
-      if ( referoProps.stepProps?.onStepProcessBack ) {
-        referoProps.stepProps?.onStepProcessBack();
-      }
+      referoProps.onStepProcessBack
   };
 
   const getOnPauseCallBackToUse = (isMicroweb: boolean | undefined): (() => void) | undefined => {
@@ -138,7 +121,7 @@ const RenderForm = ({
   };
 
   const isPauseButtonDisabled = (): boolean | undefined => {
-    if ( referoProps.stepProps?.isMicrowebStep ) {
+    if ( referoProps.isMicrowebStep ) {
       return false;
     }
     return referoProps.saveButtonDisabled;
@@ -148,11 +131,11 @@ const RenderForm = ({
   const handleCancel = () => {
     // eslint-disable-next-line no-console
     console.log('handleCancel called');
-    if ( referoProps.stepProps?.isMicrowebStep ) {
-        if ( referoProps.stepProps?.onStepProcessCancel ) {
+    if ( referoProps.isMicrowebStep ) {
+        if ( referoProps.onStepProcessCancel ) {
           // eslint-disable-next-line no-console
           console.log("Invoking cancel callback");
-          return referoProps.stepProps?.onStepProcessCancel();
+          return referoProps.onStepProcessCancel();
         }
     }
     if (referoProps.onCancel) {
@@ -175,8 +158,8 @@ const RenderForm = ({
             optionalLabel={resources.formOptional}
             cancelButtonText={resources.formCancel}
             pauseButtonText={ getPauseButtonText()}
-            onPause={getOnPauseCallBackToUse(referoProps.stepProps?.isMicrowebStep)}
-            pauseButtonClasses={`${referoProps.stepProps?.isMicrowebStep ? 'page_refero__pausebutton_stepView' : 'page_refero__pausebutton'}`}
+            onPause={getOnPauseCallBackToUse(referoProps.isMicrowebStep)}
+            pauseButtonClasses={`${referoProps.isMicrowebStep ? 'page_refero__pausebutton_stepView' : 'page_refero__pausebutton'}`}
             submitButtonClasses={getPauseButtonClasses()}
             pauseButtonType="display"
             submitButtonType="display"

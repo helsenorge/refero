@@ -8,7 +8,6 @@ import { AutoSuggestProps } from './autoSuggestProps';
 import { QuestionnaireResponse, Attachment, Questionnaire, QuestionnaireItem, QuestionnaireResponseItemAnswer, ValueSet } from 'fhir/r4';
 import { OrgenhetHierarki } from './orgenhetHierarki';
 import { TextMessage } from './text-message';
-import { StepProps } from './stepProps';
 
 export interface ReferoProps {
   store?: Store<{}>;
@@ -72,7 +71,9 @@ export interface ReferoProps {
   fetchReceivers?: (successCallback: (receivers: Array<OrgenhetHierarki>) => void, errorCallback: () => void) => void;
   onFieldsNotCorrectlyFilledOut?: () => void;
   onStepChange?: (newIndex: number) => void;
-  stepProps?: StepProps;
   isMicroweb: boolean;
   isMicrowebStep: boolean;
+  onStepProcessCancel?: () => void;
+  onStepProcessBack?: () => void;
+  onStepProcessForward?: () => void;
 }
