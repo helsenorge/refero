@@ -73,4 +73,6 @@ export interface ReferoProps {
   onFieldsNotCorrectlyFilledOut?: () => void;
   onStepChange?: (newIndex: number) => void;
   stepProps?: StepProps;
+  isMicroweb: boolean;
+  isMicrowebStep: boolean;
 }

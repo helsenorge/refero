@@ -1,3 +1,9 @@
+## 15.2.0-beta1
+
+---
+
+- Update in renderForm to use onpause and onCancel buttons when in process flow
+
 ## 15.2.0-beta0
 
 ---

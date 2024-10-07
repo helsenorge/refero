@@ -20,6 +20,8 @@ interface RenderFormProps {
   previousStep?: () => void;
 }
 
+
+
 const RenderForm = ({
   isAuthorized,
   isStepView,
@@ -35,6 +37,16 @@ const RenderForm = ({
 }: RenderFormProps): JSX.Element => {
   const displayPauseButtonInNormalView = referoProps.onSave ? onSave : undefined;
   const displayPauseButtonInStepView = displayPreviousButton ? previousStep : undefined;
+
+  // eslint-disable-next-line no-console
+  console.log('RenderForm stepProps 3:', referoProps.stepProps);
+
+
+  if ( referoProps.stepProps?.isMicrowebStep && isStepView) {
+    // eslint-disable-next-line no-console
+    console.warn("Stegvisning i Skjema er ikke støttet i Microweb step modus");
+
+  }
 
   const buttonOrderStepView = {
     1: ButtonType.pauseButton,
@@ -77,6 +89,77 @@ const RenderForm = ({
     return 'page_refero__pausebutton';
   }
 
+  /*const isPauseButtonDisabled = (): boolean | undefined => {
+
+    // eslint-disable-next-line no-console
+    console.log("IS PAUSE BUTTON DISABLED CALLED");
+    if ( referoProps.stepProps?.isMicrowebStep ) { 
+        // eslint-disable-next-line no-console
+        console.log("FALSE SINCE MICROWEB STEP");
+        return false;
+    }
+
+    return referoProps.saveButtonDisabled;
+
+  }*/
+
+  const getPauseButtonText = (): string | undefined => {
+      if ( displayPreviousButton) {
+        return resources.previousStep;
+      } 
+      else if ( referoProps.stepProps?.isMicrowebStep ) {
+        return 'Tilbake';
+      }
+      else {
+        return resources.formSave;
+      }
+  }
+
+  const processStepBackCalled = (): void => { 
+      // eslint-disable-next-line no-console
+
+      // eslint-disable-next-line no-console
+      console.log("Step back called");
+      if ( referoProps.stepProps?.onStepProcessBack ) {
+        referoProps.stepProps?.onStepProcessBack();
+      }
+  };
+
+  const getOnPauseCallBackToUse = (isMicroweb: boolean | undefined): (() => void) | undefined => {
+    // Important to check isMicroweb first since it should take precedence even though stepView is true 
+    // since in process flow
+    if ( isMicroweb ) {
+      return processStepBackCalled;
+    }
+    if (isStepView ) {
+      return displayPauseButtonInStepView;
+    }
+    return displayPauseButtonInNormalView;
+  };
+
+  const isPauseButtonDisabled = (): boolean | undefined => {
+    if ( referoProps.stepProps?.isMicrowebStep ) {
+      return false;
+    }
+    return referoProps.saveButtonDisabled;
+  };
+
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+  const handleCancel = () => {
+    // eslint-disable-next-line no-console
+    console.log('handleCancel called');
+    if ( referoProps.stepProps?.isMicrowebStep ) {
+        if ( referoProps.stepProps?.onStepProcessCancel ) {
+          // eslint-disable-next-line no-console
+          console.log("Invoking cancel callback");
+          return referoProps.stepProps?.onStepProcessCancel();
+        }
+    }
+    if (referoProps.onCancel) {
+      return referoProps.onCancel;
+    }
+  };
+
 
   return (
     <>
@@ -91,16 +174,16 @@ const RenderForm = ({
             requiredLabel={resources.formRequired}
             optionalLabel={resources.formOptional}
             cancelButtonText={resources.formCancel}
-            pauseButtonText={displayPreviousButton ? resources.previousStep : resources.formSave}
-            onPause={isStepView ? displayPauseButtonInStepView : displayPauseButtonInNormalView}
-            pauseButtonClasses={getPauseButtonClasses()}
+            pauseButtonText={ getPauseButtonText()}
+            onPause={getOnPauseCallBackToUse(referoProps.stepProps?.isMicrowebStep)}
+            pauseButtonClasses={`${referoProps.stepProps?.isMicrowebStep ? 'page_refero__pausebutton_stepView' : 'page_refero__pausebutton'}`}
             submitButtonClasses={getPauseButtonClasses()}
             pauseButtonType="display"
             submitButtonType="display"
             cancelButtonType="display"
             pauseButtonLevel="secondary"
             buttonOrder={getButtonOrder()}
-            onCancel={referoProps.onCancel}
+            onCancel={handleCancel}
             buttonClasses="page_refero__saveblock"
             validationSummaryPlacement={referoProps.validationSummaryPlacement}
             validationSummary={{
@@ -108,7 +191,7 @@ const RenderForm = ({
               header: resources.validationSummaryHeader,
             }}
             submitButtonDisabled={referoProps.submitButtonDisabled}
-            pauseButtonDisabled={referoProps.saveButtonDisabled}
+            pauseButtonDisabled={isPauseButtonDisabled()}
             onFieldsNotCorrectlyFilledOut={referoProps.onFieldsNotCorrectlyFilledOut}
           >
             {formItemsToBeRendered}
