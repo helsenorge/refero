@@ -6,7 +6,7 @@ import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { FieldError, FieldValues, useFormContext } from 'react-hook-form';
 import { ThunkDispatch } from 'redux-thunk';
 
-import { DateTimeUnit } from '../../../types/dateTypes';
+import { DateFormat, DateTimeUnit } from '../../../types/dateTypes';
 
 import { DatePicker, DateTimePickerWrapper, DateTime } from '@helsenorge/datepicker/components/DatePicker';
 
@@ -22,6 +22,7 @@ import {
   validateHours,
   validateMinutes,
   parseStringToDate,
+  getPDFValueForDate,
 } from '../../../util/date-utils';
 import { getValidationTextExtension } from '../../../util/extension';
 import { isRequired, getId, isReadOnly } from '../../../util/index';
@@ -86,6 +87,7 @@ const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, childr
   const date: Date | string | undefined = parseStringToDate(dateAnswerValue);
   const hours = getHoursOrMinutesFromDate(date, DateTimeUnit.Hours);
   const minutes = getHoursOrMinutesFromDate(date, DateTimeUnit.Minutes);
+  const pdfValue = getPDFValueForDate(dateAnswerValue, resources?.ikkeBesvart, DateFormat.yyyyMMddHHmmssXXX, DateFormat.ddMMyyyyHHmm);
 
   const getErrorText = (error: FieldError | undefined): string | undefined => {
     if (error) {
@@ -153,19 +155,6 @@ const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, childr
     return dateValue || hoursValue || minutesValue;
   };
 
-  const getPDFValue = (): string | number | undefined => {
-    if (dateAnswerValue === undefined || dateAnswerValue === null || dateAnswerValue === '') {
-      let text = '';
-      if (resources && resources.ikkeBesvart) {
-        text = resources.ikkeBesvart;
-      }
-      return text;
-    }
-    if (date && isValid(date)) {
-      return format(date, 'dd.MM.yyyy HH:mm');
-    }
-  };
-
   const registerDate = register(`${idWithLinkIdAndItemIndex}-date`, {
     required: {
       value: isRequired(item),
@@ -211,7 +200,7 @@ const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, childr
 
   if (pdf || isReadOnly(item)) {
     return (
-      <ReadOnly pdf={pdf} id={id} item={item} pdfValue={getPDFValue()} errors={getCombinedFieldError(dateField, hoursField, minutesField)}>
+      <ReadOnly pdf={pdf} id={id} item={item} pdfValue={pdfValue} errors={getCombinedFieldError(dateField, hoursField, minutesField)}>
         {children}
       </ReadOnly>
     );
