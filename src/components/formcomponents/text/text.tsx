@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 
 import { FieldValues, useFormContext } from 'react-hook-form';
-import { ThunkDispatch } from 'redux-thunk';
 
 import Expander from '@helsenorge/designsystem-react/components/Expander';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
@@ -9,14 +8,14 @@ import Textarea from '@helsenorge/designsystem-react/components/Textarea';
 import styles from '../common-styles.module.css';
 import { debounce } from '@helsenorge/core-utils/debounce';
 
-import { NewValueAction, newStringValueAsync } from '@/actions/newValue';
+import { newStringValueAsync } from '@/actions/newValue';
 import Constants from '@/constants/index';
 import itemControlConstants from '@/constants/itemcontrol';
-import { GlobalState } from '@/reducers';
+import { GlobalState, useAppDispatch } from '@/reducers';
 import { getPlaceholder, getItemControlExtensionValue } from '@/util/extension';
 import { isReadOnly, getId, getStringValue, getMaxLength, getPDFStringValue } from '@/util/index';
 import { ReferoLabel } from '../../referoLabel/ReferoLabel';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
 import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelpButton';
 import RenderHelpElement from '@/components/formcomponents/help-button/RenderHelpElement';
@@ -42,7 +41,7 @@ export const Text = (props: Props): JSX.Element | null => {
   const { formState, getFieldState, register } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
-  const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
+  const dispatch = useAppDispatch();
   const [isHelpVisible, setIsHelpVisible] = useState(false);
   const answer = useGetAnswer(linkId, path);
   const handleChange = (event: React.FormEvent): void => {

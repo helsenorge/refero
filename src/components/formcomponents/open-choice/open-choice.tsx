@@ -1,22 +1,15 @@
 import { FocusEvent, useCallback, useMemo } from 'react';
 
 import { QuestionnaireResponseItemAnswer, Coding, QuestionnaireItem } from 'fhir/r4';
-import { ThunkDispatch } from 'redux-thunk';
 
 import CheckboxView from './checkbox-view';
 import DropdownView from './dropdown-view';
 import RadioView from './radio-view';
 import TextField from './text-field';
-import {
-  NewValueAction,
-  removeCodingValueAsync,
-  newCodingValueAsync,
-  newCodingStringValueAsync,
-  removeCodingStringValueAsync,
-} from '@/actions/newValue';
+import { removeCodingValueAsync, newCodingValueAsync, newCodingStringValueAsync, removeCodingStringValueAsync } from '@/actions/newValue';
 import { OPEN_CHOICE_ID, OPEN_CHOICE_SYSTEM } from '@/constants';
 import ItemControlConstants from '@/constants/itemcontrol';
-import { GlobalState } from '@/reducers';
+import { GlobalState, useAppDispatch } from '@/reducers';
 import { isDataReceiver } from '@/util';
 import {
   getOptions,
@@ -32,7 +25,7 @@ import {
 
 import SliderView from '../choice/slider-view';
 import AutosuggestView from '../choice-common/autosuggest-view';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
@@ -47,7 +40,7 @@ export const OpenChoice = (props: OpenChoiceProps): JSX.Element | null => {
 
   const { promptLoginMessage, globalOnChange, resources } = useExternalRenderContext();
   const onAnswerChange = useOnAnswerChange(globalOnChange);
-  const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
+  const dispatch = useAppDispatch();
   const answer = useGetAnswer(linkId, path);
   const itemControlValue = useMemo(() => getItemControlValue(item), [item]);
   const options = useMemo(() => getOptions(resources, item, containedResources), [resources, item, containedResources]);

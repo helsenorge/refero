@@ -2,7 +2,7 @@ import { QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItem } f
 import { GlobalState } from '.';
 import { Form, FormData, FormDefinition, getFormDefinition } from './form';
 import { getItemWithIdFromResponseItemArray, getRootQuestionnaireResponseItemFromData, Path } from '@/util/refero-core';
-import { createSelector } from 'reselect';
+import { createSelector } from '@reduxjs/toolkit';
 
 export const questionnaireSelector = createSelector(
   [(state: GlobalState): FormDefinition | undefined | null => state?.refero?.form.FormDefinition],

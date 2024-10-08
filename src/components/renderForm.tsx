@@ -71,7 +71,7 @@ const RenderForm = ({
           submitButtonText={displayNextButton && resources.nextStep ? resources.nextStep : resources.formSend}
           cancelButtonText={resources.formCancel}
           pauseButtonText={displayPreviousButton && isStepView ? resources.previousStep || 'Lagre' : resources.formSave}
-          submitButtonDisabled={referoProps.blockSubmit}
+          submitButtonDisabled={referoProps.submitButtonDisabled}
           pauseButtonDisabled={referoProps.saveButtonDisabled}
           onSubmitButtonClicked={displayNextButton ? methods.handleSubmit(handleNextStep) : methods.handleSubmit(onSubmitReactHookForm)}
           onCancelButtonClicked={(): void => {

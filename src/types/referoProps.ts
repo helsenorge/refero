@@ -6,8 +6,7 @@ import { QuestionnaireResponse, Attachment, Questionnaire, QuestionnaireItem, Qu
 import { OrgenhetHierarki } from './orgenhetHierarki';
 import { ValidationSummaryPlacement } from './formTypes/validationSummaryPlacement';
 import { Store } from 'redux';
-import { GlobalState } from '@/reducers';
-import { NewValueAction } from '@/actions/newValue';
+import {} from '@/actions/newValue';
 import { TextMessage } from './text-message';
 
 export interface ReferoProps {
@@ -15,7 +14,7 @@ export interface ReferoProps {
    * The store prop is not used and is @deprecated.
    * It will be removed in a future version.
    */
-  store?: Store<GlobalState, NewValueAction>;
+  store?: Store;
   authorized: boolean;
   blockSubmit?: boolean;
   onSave?: (questionnaireResponse: QuestionnaireResponse) => void;

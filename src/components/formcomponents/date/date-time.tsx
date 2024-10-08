@@ -4,14 +4,13 @@ import { format, isValid } from 'date-fns';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { FieldError, FieldValues, useFormContext } from 'react-hook-form';
-import { ThunkDispatch } from 'redux-thunk';
 
 import { DateFormat, DateTimeUnit } from '../../../types/dateTypes';
 
 import { DatePicker, DateTimePickerWrapper, DateTime } from '@helsenorge/datepicker/components/DatePicker';
 
-import { NewValueAction, newDateTimeValueAsync } from '../../../actions/newValue';
-import { GlobalState } from '../../../reducers';
+import { newDateTimeValueAsync } from '../../../actions/newValue';
+import { GlobalState, useAppDispatch } from '../../../reducers';
 import { initialize } from '../../../util/date-fns-utils';
 import {
   getFullFnsDate,
@@ -28,7 +27,7 @@ import { getValidationTextExtension } from '../../../util/extension';
 import { isRequired, getId, isReadOnly } from '../../../util/index';
 import styles from '../common-styles.module.css';
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import RenderHelpButton from '../help-button/RenderHelpButton';
 import RenderHelpElement from '../help-button/RenderHelpElement';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
@@ -50,7 +49,7 @@ const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, childr
   const { promptLoginMessage, globalOnChange, resources } = useExternalRenderContext();
   const onAnswerChange = useOnAnswerChange(globalOnChange);
 
-  const dispatch = useDispatch<ThunkDispatch<GlobalState, void, NewValueAction>>();
+  const dispatch = useAppDispatch();
   const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
 
   const answer = useGetAnswer(linkId, path);

@@ -5,7 +5,7 @@
     "ecmaVersion": 2020,
     "sourceType": "module"
   },
-  "plugins": ["react", "import", "testing-library", "jest-dom", "@typescript-eslint"],
+  "plugins": ["react", "import", "testing-library", "@typescript-eslint"],
   "globals": {
     "React": true,
     "JSX": true
@@ -19,9 +19,9 @@
     "react/display-name": "warn",
     "no-console": "error",
     "no-debugger": "error",
-    "react/react-in-jsx-scope": 0,
-    "@typescript-eslint/no-use-before-define": 0,
-    "@typescript-eslint/no-inferrable-types": 0
+    "react/react-in-jsx-scope": "off",
+    "@typescript-eslint/no-use-before-define": "off",
+    "@typescript-eslint/no-inferrable-types": "off"
   },
   "settings": {
     "react": {

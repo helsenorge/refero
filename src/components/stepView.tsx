@@ -16,7 +16,6 @@ import RenderQuestionnaireItems from './createQuestionnaire/GenerateQuestionnair
 interface StepViewProps {
   isAuthorized: boolean;
   referoProps: ReferoProps;
-
   resources: Resources;
   onSave: () => void;
   onSubmit: () => void;

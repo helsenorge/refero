@@ -1,6 +1,5 @@
 import { useState } from 'react';
 
-import { composeWithDevTools } from '@redux-devtools/extension';
 import {
   Attachment,
   Bundle,
@@ -11,8 +10,6 @@ import {
   ValueSet,
 } from 'fhir/r4';
 import { Provider } from 'react-redux';
-import { legacy_createStore as createStore, applyMiddleware } from 'redux';
-import { thunk } from 'redux-thunk';
 
 import LanguageLocales from '@helsenorge/core-utils/constants/languages';
 
@@ -20,8 +17,6 @@ import FormFillerSidebar from './FormFillerSidebar';
 import { emptyPropertyReplacer } from './helpers';
 import { getResources } from './resources/referoResources';
 import skjema from './skjema/q.json';
-//import skjema from '../src/components/formcomponents/attachment/__tests__/__data__/q.json';
-// import skjema from '../src/components/__tests__/__data__/group-grid/q.json';
 
 import ReferoContainer from '../src/components/index';
 import valueSet from '../src/constants/valuesets';
@@ -30,6 +25,7 @@ import { QuestionnaireStatusCodes } from '../src/types/fhirEnums';
 import { EnhetType, OrgenhetHierarki } from '../src/types/orgenhetHierarki';
 import { IActionRequester } from '@/index';
 import { IQuestionnaireInspector } from '@/util/questionnaireInspector';
+import { configureStore } from '@reduxjs/toolkit';
 
 type Props = {
   showFormFiller: () => void;
@@ -113,7 +109,7 @@ const MimeTypes = {
 };
 
 const FormFillerPreview = (props: Props): JSX.Element => {
-  const store = createStore(rootReducer, composeWithDevTools(applyMiddleware(thunk)));
+  const store = configureStore({ reducer: rootReducer, middleware: getDefaultMiddleware => getDefaultMiddleware() });
 
   const questionnaireForPreview = JSON.parse(JSON.stringify(skjema ?? {}, emptyPropertyReplacer)) as Bundle<Questionnaire> | Questionnaire;
   const [questionnaireResponse, setQuestionnaireResponse] = useState<QuestionnaireResponse>();
