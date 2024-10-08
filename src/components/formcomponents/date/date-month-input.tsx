@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import styles2 from '../common-styles.module.css';
-import { format, getYear, isValid, parse } from 'date-fns';
-import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
+import { getYear } from 'date-fns';
+import { QuestionnaireItem } from 'fhir/r4';
 import { FieldError, FieldValues, useFormContext } from 'react-hook-form';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
@@ -13,7 +13,14 @@ import { LanguageLocales } from '@helsenorge/core-utils/constants/languages';
 import { getId, isReadOnly, isRequired } from '../../../util';
 import { getValidationTextExtension } from '../../../util/extension';
 
-import { getMonthOptions, getYearFromString, validateYearDigits, validateYearMonthMax, validateYearMonthMin } from '@/util/date-utils';
+import {
+  getMonthOptions,
+  getPDFValueForDate,
+  getYearFromString,
+  validateYearDigits,
+  validateYearMonthMax,
+  validateYearMonthMin,
+} from '@/util/date-utils';
 import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelpButton';
 import RenderHelpElement from '@/components/formcomponents/help-button/RenderHelpElement';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
@@ -47,29 +54,25 @@ export const DateYearMonthInput = ({
   initialize();
 
   const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
-
-  const { formState, getFieldState, setValue, getValues, trigger, register } = useFormContext<FieldValues>();
   const answer = useGetAnswer(linkId, path);
+  const { formState, getFieldState, setValue, getValues, trigger, register } = useFormContext<FieldValues>();
   const { resources } = useExternalRenderContext();
   const { minDateTime, maxDateTime } = useMinMaxDate(item);
 
-  const getDateValueFromAnswer = (
-    answer: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[] | undefined
-  ): string | undefined => {
+  const getDateValueFromAnswer = (): string | undefined => {
     if (!answer) return undefined;
 
     const answerItem = Array.isArray(answer) ? answer[0] : answer;
     return answerItem ? answerItem.valueDate ?? answerItem.valueDateTime : '';
   };
+  const dateValue = getDateValueFromAnswer();
 
   const getYearAndMonth = (): { year: number; month: string | null } | undefined => {
-    const stringValue = getDateValueFromAnswer(answer);
-
-    if (!stringValue) {
+    if (!dateValue) {
       return undefined;
     } else {
-      const yearValue = parseInt(stringValue.split('-')[0]) || 0;
-      const monthValue = stringValue.split('-')[1];
+      const yearValue = parseInt(dateValue.split('-')[0]) || 0;
+      const monthValue = dateValue.split('-')[1];
       return {
         year: yearValue,
         month: monthValue,
@@ -83,52 +86,12 @@ export const DateYearMonthInput = ({
   const monthOptions = getMonthOptions(resources);
   const year: string | undefined = getYearAndMonth()?.year.toString() || '';
   const month: string | undefined | null = getYearAndMonth()?.month || '';
+  const pdfValue = getPDFValueForDate(dateValue, resources?.ikkeBesvart, DateFormat.yyyyMM, DateFormat.MMMMyyyy);
 
   useEffect(() => {
     setValue(`${idWithLinkIdAndItemIndex}-yearmonth-year`, year);
     setValue(`${idWithLinkIdAndItemIndex}-yearmonth-month`, month);
   }, []);
-
-  const getValue = (
-    item?: QuestionnaireItem,
-    answer?: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]
-  ): string | string[] | undefined => {
-    if (answer && Array.isArray(answer)) {
-      return answer.map(m => m.valueDate).filter(f => f !== undefined);
-    }
-    if (answer && answer.valueDate !== undefined && answer.valueDate !== null) {
-      return answer.valueDate;
-    }
-    if (!item || !item.initial || item.initial.length === 0 || !item.initial[0].valueDate) {
-      return '';
-    }
-  };
-
-  const getPDFValue = (): string | number => {
-    const value = getValue(item, answer);
-    if (value === undefined || value === null || value === '') {
-      let text = '';
-      if (resources && resources.ikkeBesvart) {
-        text = resources.ikkeBesvart;
-      }
-      return text;
-    }
-    if (Array.isArray(value)) {
-      return value
-        .map(d => {
-          const valueParsed = parse(d, DateFormat.yyyyMM, new Date());
-          if (isValid(valueParsed)) {
-            return format(d, 'MMMM yyyy');
-          }
-        })
-        .join(', ');
-    }
-    const valueParsed = parse(value, DateFormat.yyyyMM, new Date());
-    if (isValid(valueParsed)) {
-      return format(valueParsed, 'MMMM yyyy');
-    }
-    return value;
-  };
 
   const getErrorText = (error: FieldError | undefined): string | undefined => {
     if (error) {
@@ -209,7 +172,7 @@ export const DateYearMonthInput = ({
 
   if (pdf || isReadOnly(item)) {
     return (
-      <ReadOnly pdf={pdf} id={id} item={item} pdfValue={getPDFValue()} errors={getCombinedFieldError()}>
+      <ReadOnly pdf={pdf} id={id} item={item} pdfValue={pdfValue} errors={getCombinedFieldError()}>
         {children}
       </ReadOnly>
     );
