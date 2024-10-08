@@ -1,8 +1,8 @@
 import { useState } from 'react';
 
-import { format, isValid } from 'date-fns';
+import { format, isValid, parse } from 'date-fns';
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
-import { FieldError, FieldValues, useFormContext } from 'react-hook-form';
+import { FieldError, FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
 import styles from '../common-styles.module.css';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 
@@ -32,6 +32,7 @@ import { GlobalState } from '@/reducers';
 import { useSelector } from 'react-redux';
 import { findQuestionnaireItem } from '@/reducers/selectors';
 import { ReadOnly } from '../read-only/readOnly';
+import { DateFormat } from '@/types/dateTypes';
 
 type DateDayInputProps = QuestionnaireComponentItemProps & {
   locale: LanguageLocales.ENGLISH | LanguageLocales.NORWEGIAN;
@@ -108,9 +109,22 @@ export const DateDayInput = ({
       return text;
     }
     if (Array.isArray(value)) {
-      return value.map(d => d && format(d, 'd. MMMM yyyy')).join(', ');
+      return value
+        .map(d => {
+          const valueParsed = parse(d, DateFormat.yyyyMMdd, new Date());
+          if (isValid(valueParsed)) {
+            return format(valueParsed, DateFormat.dMMyyyy);
+          } else {
+            return value;
+          }
+        })
+        .join(', ');
     }
-    return format(value, 'd. MMMM yyyy');
+    const valueParsed = parse(value, DateFormat.yyyyMMdd, new Date());
+    if (isValid(valueParsed)) {
+      return format(valueParsed, DateFormat.dMMyyyy);
+    }
+    return value;
   };
 
   const handleChange = (newDate: string | Date | undefined): void => {
@@ -141,7 +155,7 @@ export const DateDayInput = ({
     }
   };
 
-  const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, {
+  const validationRules: RegisterOptions<FieldValues, string> | undefined = {
     required: {
       value: isRequired(item),
       message: resources?.formRequiredErrorMessage || '',
@@ -165,7 +179,9 @@ export const DateDayInput = ({
       },
     },
     shouldUnregister: true,
-  });
+  };
+
+  const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, pdf ? undefined : validationRules);
 
   if (pdf || isReadOnly(item)) {
     return (

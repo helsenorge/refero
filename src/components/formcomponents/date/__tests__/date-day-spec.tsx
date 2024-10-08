@@ -25,16 +25,18 @@ describe('Date day', () => {
   });
   describe('Render', () => {
     it('Should render as text if props.pdf', () => {
-      const { queryByText } = createWrapper(q, { pdf: true });
+      const { queryByText, queryByTestId } = createWrapper(q, { pdf: true });
       expect(queryByText('Ikke besvart')).toBeInTheDocument();
+      expect(queryByTestId(/pdf/i)).toBeInTheDocument();
     });
-    it('Should render text if item is readonly', () => {
+    it('Should render as text if item is readonly', () => {
       const questionnaire: Questionnaire = {
         ...q,
         item: q.item?.map(x => ({ ...x, readOnly: true })),
       };
-      const { queryByText } = createWrapper(questionnaire);
+      const { queryByText, queryByTestId } = createWrapper(questionnaire);
       expect(queryByText('Ikke besvart')).toBeInTheDocument();
+      expect(queryByTestId(/readonly/i)).toBeInTheDocument();
     });
     it('Should render as input if props.pdf === false && item is not readonly', () => {
       const { queryByText } = createWrapper(q);
@@ -309,6 +311,16 @@ describe('Date day', () => {
         await userEvent.type(getByLabelText(/Dato/i), '31.05.2024');
 
         expect(queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
+      });
+      it('readOnly value should get validation error if error exist', async () => {
+        const questionnaire: Questionnaire = {
+          ...q,
+          item: q.item?.map(x => ({ ...x, readOnly: true, required: true })),
+        };
+        const { getByText } = createWrapper(questionnaire);
+        await submitForm();
+
+        expect(getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
       });
     });
   });
