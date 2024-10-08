@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { memo, useContext } from 'react';
 import { QuestionnaireItem, Resource } from 'fhir/r4';
 import { RenderContext } from '@/util/renderContext';
 import { isHiddenItem } from '@/util/index';
@@ -14,6 +14,7 @@ import { createSelector } from 'reselect';
 import { useSelector } from 'react-redux';
 import { GlobalState } from '@/reducers';
 import { useIsEnabled } from '@/hooks/useIsEnabled';
+import ComponentMappingContext from '@/POC/ComponentMappingContext';
 
 type ItemRendererProps = {
   item: QuestionnaireItem;
@@ -44,8 +45,8 @@ const ItemRenderer = memo(function ItemRenderer({
   if (isHelpItem(item) || isHiddenItem(item)) {
     return null;
   }
-
-  const ItemComponent = getComponentForItem(item.type, getCodingTextTableValues(item));
+  const { componentMapping } = useContext(ComponentMappingContext);
+  const ItemComponent = componentMapping[item.type];
   if (!ItemComponent) {
     return null;
   }

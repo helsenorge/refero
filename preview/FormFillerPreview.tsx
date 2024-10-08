@@ -26,6 +26,9 @@ import { EnhetType, OrgenhetHierarki } from '../src/types/orgenhetHierarki';
 import { IActionRequester } from '@/index';
 import { IQuestionnaireInspector } from '@/util/questionnaireInspector';
 import { configureStore } from '@reduxjs/toolkit';
+import ComponentMappingContext, { defaultComponentMapping } from '@/POC/ComponentMappingContext';
+import ItemType from '@/constants/itemType';
+import MyCustomStringComponent from '@/POC/CustomStringComponent';
 
 type Props = {
   showFormFiller: () => void;
@@ -148,6 +151,10 @@ const FormFillerPreview = (props: Props): JSX.Element => {
     // eslint-disable-next-line no-console
     // console.log(item, answer, actionRequester, questionnaireInspector);
   };
+  const customComponentMapping = {
+    ...defaultComponentMapping,
+    [ItemType.STRING]: MyCustomStringComponent,
+  };
   return (
     <Provider store={store}>
       <div className="overlay">
@@ -161,33 +168,35 @@ const FormFillerPreview = (props: Props): JSX.Element => {
           <div className="referoContainer-div">
             {!showResponse ? (
               <div className="page_refero">
-                <ReferoContainer
-                  questionnaire={getQuestionnaireFromBubndle(questionnaireForPreview, lang)}
-                  onCancel={() => {}}
-                  onChange={onChange}
-                  onSave={(questionnaireResponse: QuestionnaireResponse): void => {
-                    setQuestionnaireResponse(questionnaireResponse);
-                    setShowResponse(true);
-                  }}
-                  // eslint-disable-next-line no-console
-                  onSubmit={handleSubmit}
-                  authorized={true}
-                  resources={getResources('')}
-                  sticky={true}
-                  saveButtonDisabled={false}
-                  loginButton={<button>{'Login'}</button>}
-                  syncQuestionnaireResponse
-                  validateScriptInjection
-                  language={LanguageLocales.NORWEGIAN}
-                  fetchValueSet={fetchValueSetFn}
-                  fetchReceivers={fetchReceiversFn}
-                  uploadAttachment={uploadAttachment}
-                  onDeleteAttachment={onDeleteAttachment}
-                  onOpenAttachment={onOpenAttachment}
-                  attachmentValidTypes={[MimeTypes.PNG, MimeTypes.JPG, MimeTypes.PDF, MimeTypes.PlainText]}
-                  attachmentMaxFileSize={1}
-                  // onStepChange={(newIndex: number): void => setStepIndex(newIndex)}
-                />
+                <ComponentMappingContext.Provider value={{ componentMapping: customComponentMapping }}>
+                  <ReferoContainer
+                    questionnaire={getQuestionnaireFromBubndle(questionnaireForPreview, lang)}
+                    onCancel={() => {}}
+                    onChange={onChange}
+                    onSave={(questionnaireResponse: QuestionnaireResponse): void => {
+                      setQuestionnaireResponse(questionnaireResponse);
+                      setShowResponse(true);
+                    }}
+                    // eslint-disable-next-line no-console
+                    onSubmit={handleSubmit}
+                    authorized={true}
+                    resources={getResources('')}
+                    sticky={true}
+                    saveButtonDisabled={false}
+                    loginButton={<button>{'Login'}</button>}
+                    syncQuestionnaireResponse
+                    validateScriptInjection
+                    language={LanguageLocales.NORWEGIAN}
+                    fetchValueSet={fetchValueSetFn}
+                    fetchReceivers={fetchReceiversFn}
+                    uploadAttachment={uploadAttachment}
+                    onDeleteAttachment={onDeleteAttachment}
+                    onOpenAttachment={onOpenAttachment}
+                    attachmentValidTypes={[MimeTypes.PNG, MimeTypes.JPG, MimeTypes.PDF, MimeTypes.PlainText]}
+                    attachmentMaxFileSize={1}
+                    // onStepChange={(newIndex: number): void => setStepIndex(newIndex)}
+                  />
+                </ComponentMappingContext.Provider>
               </div>
             ) : (
               <div>
