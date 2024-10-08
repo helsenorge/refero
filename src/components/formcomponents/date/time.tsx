@@ -14,7 +14,14 @@ import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import { DateTime, DateTimePickerWrapper } from '@helsenorge/datepicker/components/DatePicker';
 import styles from '../common-styles.module.css';
 import { FieldError, FieldValues, useFormContext } from 'react-hook-form';
-import { extractHoursAndMinutesFromAnswer, validateHours, validateMaxTime, validateMinTime, validateMinutes } from '@/util/date-utils';
+import {
+  extractHoursAndMinutesFromAnswer,
+  getPDFValueForTime,
+  validateHours,
+  validateMaxTime,
+  validateMinTime,
+  validateMinutes,
+} from '@/util/date-utils';
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import RenderHelpButton from '../help-button/RenderHelpButton';
 import RenderHelpElement from '../help-button/RenderHelpElement';
@@ -110,20 +117,6 @@ const Time = ({ id, index, path, linkId, pdf, idWithLinkIdAndItemIndex, children
     return error;
   }
 
-  const getPDFValue = (): string | undefined => {
-    const hoursAndMinutesValue = extractHoursAndMinutesFromAnswer(answer, item);
-    const hoursValue = hoursAndMinutesFromAnswer?.hours;
-    const minutesValue = hoursAndMinutesFromAnswer?.minutes;
-    if (hoursAndMinutesValue === null || hoursAndMinutesValue === undefined) {
-      let text = '';
-      if (resources && resources.ikkeBesvart) {
-        text = resources.ikkeBesvart;
-      }
-      return text;
-    }
-    return `${'kl. '} ${hoursValue}:${minutesValue}`;
-  };
-
   const registerHours = register(`${idWithLinkIdAndItemIndex}-hours`, {
     required: {
       value: isRequired(item),
@@ -161,7 +154,13 @@ const Time = ({ id, index, path, linkId, pdf, idWithLinkIdAndItemIndex, children
 
   if (pdf || isReadOnly(item)) {
     return (
-      <ReadOnly pdf={pdf} id={id} item={item} pdfValue={getPDFValue()} errors={getCombinedFieldError(hoursField, minutesField)}>
+      <ReadOnly
+        pdf={pdf}
+        id={id}
+        item={item}
+        pdfValue={getPDFValueForTime(answer, item, resources)}
+        errors={getCombinedFieldError(hoursField, minutesField)}
+      >
         {children}
       </ReadOnly>
     );

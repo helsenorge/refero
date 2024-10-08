@@ -385,8 +385,8 @@ export const validateYearMonthMax = (
 export const getPDFValueForDate = (
   value: string | string[] | undefined,
   notAnsweredText: string | undefined,
-  formatToParseTo: DateFormat,
-  formatToFormatTo: DateFormat
+  formatToParseTo?: DateFormat,
+  formatToFormatTo?: DateFormat
 ): string | number => {
   if (value === undefined || value === null || value === '') {
     let text = '';
@@ -395,21 +395,44 @@ export const getPDFValueForDate = (
     }
     return text;
   }
-  if (Array.isArray(value)) {
-    return value
-      .map(d => {
-        const valueParsed = parse(d, formatToParseTo, new Date());
-        if (isValid(valueParsed)) {
-          return format(valueParsed, formatToFormatTo);
-        } else {
-          return value;
-        }
-      })
-      .join(', ');
+  if (formatToFormatTo && formatToParseTo) {
+    if (Array.isArray(value)) {
+      return value
+        .map(d => {
+          const valueParsed = parse(d, formatToParseTo, new Date());
+          if (isValid(valueParsed)) {
+            return format(valueParsed, formatToFormatTo);
+          } else {
+            return value;
+          }
+        })
+        .join(', ');
+    }
+    const valueParsed = parse(value, formatToParseTo, new Date());
+    if (isValid(valueParsed)) {
+      return format(valueParsed, formatToFormatTo);
+    }
   }
-  const valueParsed = parse(value, formatToParseTo, new Date());
-  if (isValid(valueParsed)) {
-    return format(valueParsed, formatToFormatTo);
+  if (Array.isArray(value)) {
+    return value.map(d => d).join(', ');
   }
   return value;
+};
+
+export const getPDFValueForTime = (
+  answer: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[] | undefined,
+  item: QuestionnaireItem | undefined,
+  resources: Resources | undefined
+): string | undefined => {
+  const hoursAndMinutesValue = extractHoursAndMinutesFromAnswer(answer, item);
+  const hoursValue = hoursAndMinutesValue?.hours;
+  const minutesValue = hoursAndMinutesValue?.minutes;
+  if (hoursAndMinutesValue === null || hoursAndMinutesValue === undefined) {
+    let text = '';
+    if (resources && resources.ikkeBesvart) {
+      text = resources.ikkeBesvart;
+    }
+    return text;
+  }
+  return `${'kl. '} ${hoursValue}:${minutesValue}`;
 };
