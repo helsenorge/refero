@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { format, isValid, parse } from 'date-fns';
+import { format, isValid } from 'date-fns';
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { FieldError, FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
 import styles from '../common-styles.module.css';
@@ -15,6 +15,7 @@ import { getId, isReadOnly, isRequired } from '../../../util/index';
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import {
   formatDateToString,
+  getPDFValueForDate,
   isValueFormatDDMMYYYY,
   parseStringToDate,
   validateDate,
@@ -83,49 +84,7 @@ export const DateDayInput = ({
 
   const dateAnswerValue = getDateAnswerValue(answer);
   const date = parseStringToDate(dateAnswerValue);
-
-  const getValue = (
-    item?: QuestionnaireItem,
-    answer?: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]
-  ): string | string[] | undefined => {
-    if (answer && Array.isArray(answer)) {
-      return answer.map(m => m.valueDate).filter(f => f !== undefined);
-    }
-    if (answer && answer.valueDate !== undefined && answer.valueDate !== null) {
-      return answer.valueDate;
-    }
-    if (!item || !item.initial || item.initial.length === 0 || !item.initial[0].valueDate) {
-      return '';
-    }
-  };
-
-  const getPDFValue = (): string | number => {
-    const value = getValue(item, answer);
-    if (value === undefined || value === null || value === '') {
-      let text = '';
-      if (resources && resources.ikkeBesvart) {
-        text = resources.ikkeBesvart;
-      }
-      return text;
-    }
-    if (Array.isArray(value)) {
-      return value
-        .map(d => {
-          const valueParsed = parse(d, DateFormat.yyyyMMdd, new Date());
-          if (isValid(valueParsed)) {
-            return format(valueParsed, DateFormat.dMMyyyy);
-          } else {
-            return value;
-          }
-        })
-        .join(', ');
-    }
-    const valueParsed = parse(value, DateFormat.yyyyMMdd, new Date());
-    if (isValid(valueParsed)) {
-      return format(valueParsed, DateFormat.dMMyyyy);
-    }
-    return value;
-  };
+  const pdfValue = getPDFValueForDate(dateAnswerValue, resources?.ikkeBesvart, DateFormat.yyyyMMdd, DateFormat.dMMyyyy);
 
   const handleChange = (newDate: string | Date | undefined): void => {
     if (typeof newDate === 'string') {
@@ -185,7 +144,7 @@ export const DateDayInput = ({
 
   if (pdf || isReadOnly(item)) {
     return (
-      <ReadOnly pdf={pdf} id={id} item={item} pdfValue={getPDFValue()} errors={error}>
+      <ReadOnly pdf={pdf} id={id} item={item} pdfValue={pdfValue} errors={error}>
         {children}
       </ReadOnly>
     );

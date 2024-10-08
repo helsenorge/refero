@@ -381,3 +381,35 @@ export const validateYearMonthMax = (
   }
   return true;
 };
+
+export const getPDFValueForDate = (
+  value: string | string[] | undefined,
+  notAnsweredText: string | undefined,
+  formatToParseTo: DateFormat,
+  formatToFormatTo: DateFormat
+): string | number => {
+  if (value === undefined || value === null || value === '') {
+    let text = '';
+    if (notAnsweredText) {
+      text = notAnsweredText;
+    }
+    return text;
+  }
+  if (Array.isArray(value)) {
+    return value
+      .map(d => {
+        const valueParsed = parse(d, formatToParseTo, new Date());
+        if (isValid(valueParsed)) {
+          return format(valueParsed, formatToFormatTo);
+        } else {
+          return value;
+        }
+      })
+      .join(', ');
+  }
+  const valueParsed = parse(value, formatToParseTo, new Date());
+  if (isValid(valueParsed)) {
+    return format(valueParsed, formatToFormatTo);
+  }
+  return value;
+};
