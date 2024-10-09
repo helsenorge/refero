@@ -14,6 +14,7 @@ import {
   getSublabelExtensionValue,
   getHyperlinkExtensionValue,
   getCopyExtension,
+  getValidateReadOnlyExtension,
 } from './extension';
 
 import CodingSystemConstants from '../constants/codingsystems';
@@ -53,6 +54,10 @@ export function isReadOnly(item?: QuestionnaireItem): boolean {
     return item.readOnly;
   }
   return false;
+}
+
+export function shouldValidateReadOnly(item?: QuestionnaireItem): boolean {
+  return getValidateReadOnlyExtension(item) === true;
 }
 
 export function isRequired(item?: QuestionnaireItem): boolean {

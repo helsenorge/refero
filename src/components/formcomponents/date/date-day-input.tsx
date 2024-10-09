@@ -144,7 +144,15 @@ export const DateDayInput = ({
 
   if (pdf || isReadOnly(item)) {
     return (
-      <ReadOnly pdf={pdf} id={id} item={item} pdfValue={pdfValue} errors={error}>
+      <ReadOnly
+        pdf={pdf}
+        id={id}
+        idWithLinkIdAndItemIndex={idWithLinkIdAndItemIndex}
+        item={item}
+        value={dateAnswerValue}
+        pdfValue={pdfValue}
+        errors={error}
+      >
         {children}
       </ReadOnly>
     );

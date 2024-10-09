@@ -235,6 +235,14 @@ export function getCopyExtension(item?: QuestionnaireItem): Extension | undefine
   return extension;
 }
 
+export function getValidateReadOnlyExtension(item?: QuestionnaireItem): boolean | undefined {
+  const validateReadOnlyExtension = getExtension(Extensions.VALIDATE_READONLY_URL, item);
+  if (!validateReadOnlyExtension || !validateReadOnlyExtension.valueBoolean) {
+    return false;
+  }
+  return validateReadOnlyExtension.valueBoolean;
+}
+
 export function getHyperlinkExtensionValue(item?: QuestionnaireItem | Element | Questionnaire): number | undefined {
   const hyperlinkExtension = getExtension(Extensions.HYPERLINK_URL, item);
   if (hyperlinkExtension && hyperlinkExtension.valueCoding && hyperlinkExtension.valueCoding.code) {

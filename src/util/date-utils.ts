@@ -130,14 +130,11 @@ export const isValueFormatISO = (value: string): boolean => {
 export const parseStringToDate = (valueToParse: string | undefined): Date | undefined => {
   if (typeof valueToParse === 'string') {
     if (valueToParse && isValueFormatYYYYMMDD(valueToParse)) {
-      const test = parse(valueToParse, 'yyyy-MM-dd', new Date());
-      return test;
+      return parse(valueToParse, 'yyyy-MM-dd', new Date());
     } else if (valueToParse && isValueFormatDDMMYYYY(valueToParse)) {
-      const test = parse(valueToParse, 'dd.MM.yyyy', new Date());
-      return test;
+      return parse(valueToParse, 'dd.MM.yyyy', new Date());
     } else if (valueToParse && isValueFormatISO(valueToParse)) {
-      const parsedDate = parseISO(valueToParse);
-      return parsedDate;
+      return parseISO(valueToParse);
     }
   }
 };
