@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import styles2 from '../common-styles.module.css';
 import { getYear } from 'date-fns';
 import { QuestionnaireItem } from 'fhir/r4';
-import { FieldError, FieldValues, useFormContext } from 'react-hook-form';
+import { FieldError, FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Input from '@helsenorge/designsystem-react/components/Input';
@@ -142,14 +142,7 @@ export const DateYearMonthInput = ({
     return yearValue || monthValue;
   };
 
-  const registerMonth = register(`${idWithLinkIdAndItemIndex}-yearmonth-month`, {
-    required: {
-      value: isRequired(item),
-      message: resources?.yearmonth_field_required || '',
-    },
-    shouldUnregister: true,
-  });
-  const registerYear = register(`${idWithLinkIdAndItemIndex}-yearmonth-year`, {
+  const validationRulesYear: RegisterOptions<FieldValues, string> | undefined = {
     required: {
       value: isRequired(item),
       message: resources?.yearmonth_field_required || '',
@@ -168,7 +161,24 @@ export const DateYearMonthInput = ({
       },
     },
     shouldUnregister: true,
-  });
+  };
+
+  const validationRulesMonth: RegisterOptions<FieldValues, string> | undefined = {
+    required: {
+      value: isRequired(item),
+      message: resources?.yearmonth_field_required || '',
+    },
+    shouldUnregister: true,
+  };
+
+  const { onChange: onChangeYear, ...restYear } = register(
+    `${idWithLinkIdAndItemIndex}-yearmonth-year`,
+    pdf ? undefined : validationRulesYear
+  );
+  const { onChange: onChangeMonth, ...restMonth } = register(
+    `${idWithLinkIdAndItemIndex}-yearmonth-month`,
+    pdf ? undefined : validationRulesMonth
+  );
 
   if (pdf || isReadOnly(item)) {
     return (
@@ -192,27 +202,27 @@ export const DateYearMonthInput = ({
       <RenderHelpElement item={item} isHelpVisible={isHelpVisible} />
       <div className={styles.yearMonthWrapper}>
         <Input
-          {...registerYear}
+          {...restYear}
           type="number"
           inputId={`${getId(id)}-input`}
           testId={getId(id)}
           onChange={e => {
             const monthValue = getValues(`${idWithLinkIdAndItemIndex}-yearmonth-month`);
             handleYearChange(e.target.value, monthValue);
-            registerYear.onChange(e);
+            onChangeYear(e);
           }}
           width={10}
           value={year}
         />
         <Select
-          {...registerMonth}
+          {...restMonth}
           className={styles.monthSelect}
           selectId={`${getId(id)}-select`}
           testId={'month-select'}
           onChange={e => {
             const yearValue = getValues(`${idWithLinkIdAndItemIndex}-yearmonth-year`);
             handleMonthChange(yearValue, e.target.value);
-            registerMonth.onChange(e);
+            onChangeMonth(e);
           }}
           value={month ?? monthOptions[0].optionValue}
         >

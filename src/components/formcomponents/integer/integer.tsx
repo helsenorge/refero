@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { FieldValues, useFormContext } from 'react-hook-form';
+import { FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
 import styles from '../common-styles.module.css';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Input from '@helsenorge/designsystem-react/components/Input';
@@ -77,18 +77,29 @@ const Integer = (props: Props): JSX.Element | null => {
   };
 
   const value = getValue();
-  const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, {
+  const maxCharacters = getMaxValueExtensionValue(item) ? getMaxValueExtensionValue(item)?.toString().length : undefined;
+  const width = maxCharacters ? (maxCharacters > 40 ? 40 : maxCharacters + 2) : 7;
+
+  const validationRules: RegisterOptions<FieldValues, string> | undefined = {
     required: required({ item, resources }),
     max: maxValue({ item, resources }),
     min: minValue({ item, resources }),
     shouldUnregister: true,
-  });
-  const maxCharacters = getMaxValueExtensionValue(item) ? getMaxValueExtensionValue(item)?.toString().length : undefined;
-  const width = maxCharacters ? (maxCharacters > 40 ? 40 : maxCharacters + 2) : 7;
+  };
+
+  const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, pdf ? undefined : validationRules);
 
   if (pdf || isReadOnly(item)) {
     return (
-      <ReadOnly pdf={pdf} id={id} item={item} pdfValue={getPDFValue()} errors={error}>
+      <ReadOnly
+        pdf={pdf}
+        id={id}
+        idWithLinkIdAndItemIndex={idWithLinkIdAndItemIndex}
+        item={item}
+        value={value}
+        pdfValue={getPDFValue()}
+        errors={error}
+      >
         {children}
       </ReadOnly>
     );

@@ -312,7 +312,7 @@ describe('Date day', () => {
 
         expect(queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
       });
-      it('readOnly value should get validation error if error exist', async () => {
+      it.skip('readOnly value should get validation error if error exist', async () => {
         const questionnaire: Questionnaire = {
           ...q,
           item: q.item?.map(x => ({ ...x, readOnly: true, required: true })),

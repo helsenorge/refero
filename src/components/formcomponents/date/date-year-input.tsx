@@ -1,5 +1,5 @@
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
-import { FieldError, FieldValues, useFormContext } from 'react-hook-form';
+import { FieldError, FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
 import styles from '../common-styles.module.css';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Input from '@helsenorge/designsystem-react/components/Input';
@@ -69,7 +69,7 @@ export const DateYearInput = (props: Props): JSX.Element | null => {
 
   const yearValue: string | undefined = getYearValue(answer);
 
-  const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, {
+  const validationRules: RegisterOptions<FieldValues, string> | undefined = {
     required: {
       value: isRequired(item),
       message: resources?.year_field_required || '',
@@ -86,11 +86,21 @@ export const DateYearInput = (props: Props): JSX.Element | null => {
       },
     },
     shouldUnregister: true,
-  });
+  };
+
+  const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, pdf ? undefined : validationRules);
 
   if (pdf || isReadOnly(item)) {
     return (
-      <ReadOnly pdf={pdf} id={id} item={item} pdfValue={getPDFValueForDate(yearValue, resources?.ikkeBesvart)} errors={error}>
+      <ReadOnly
+        pdf={pdf}
+        id={id}
+        idWithLinkIdAndItemIndex={idWithLinkIdAndItemIndex}
+        item={item}
+        value={yearValue}
+        pdfValue={getPDFValueForDate(yearValue, resources?.ikkeBesvart)}
+        errors={error}
+      >
         {children}
       </ReadOnly>
     );
