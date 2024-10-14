@@ -1,6 +1,9 @@
 {
+  "title": "test_schema",
+  "description": "test_schema",
   "resourceType": "Questionnaire",
   "language": "nb-NO",
+  "name": "TestSchema",
   "status": "draft",
   "publisher": "NHN",
   "meta": {
@@ -59,20 +62,19 @@
       }
     }
   ],
-  "id": "027d85ff-c942-494f-fffc-6b268afe9544",
+  "id": "2d2b744d-e2c0-4c9f-9e39-f40a08926241",
   "item": [
     {
-      "linkId": "540f641d-ae6a-481e-cc9f-2a72f283aa7e",
-      "type": "string",
-      "text": "normal",
-      "required": true
-    },
-    {
-      "linkId": "8ce7074e-25c4-47d4-d639-32fa34ff41f3",
-      "type": "string",
-      "text": "readonly",
-      "required": true,
-      "readOnly": true
+      "linkId": "b6455a50-928c-4a48-8cf8-6be95979180a",
+      "type": "attachment",
+      "text": "Attachment-item",
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/maxSize",
+          "valueDecimal": 5
+        }
+      ],
+      "required": false
     }
   ]
 }

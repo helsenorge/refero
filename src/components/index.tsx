@@ -18,7 +18,7 @@ import { IE11HackToWorkAroundBug187484 } from '@/util/hacks';
 
 import { shouldFormBeDisplayedAsStepView } from '@/util/shouldFormBeDisplayedAsStepView';
 import { ExternalRenderProvider } from '@/context/externalRenderContext';
-import { setSkjemaDefinition } from '@/actions/form';
+import { setSkjemaDefinitionAction } from '@/actions/form';
 import { AttachmentProvider } from '@/context/AttachmentContext';
 import GenerateQuestionnaireComponents from './createQuestionnaire/GenerateQuestionnaireComponents';
 import { createIntitialFormValues } from '@/validation/defaultFormValues';
@@ -47,7 +47,6 @@ const Refero = (props: ReferoProps): JSX.Element | null => {
     onRequestAttachmentLink,
     onOpenAttachment,
     uploadAttachment,
-    // ... any other props
   } = props;
   IE11HackToWorkAroundBug187484();
   const dispatch = useAppDispatch();
@@ -70,9 +69,16 @@ const Refero = (props: ReferoProps): JSX.Element | null => {
   });
   React.useEffect(() => {
     if (props.questionnaire) {
-      dispatch(setSkjemaDefinition(props.questionnaire, props.questionnaireResponse, props.language, props.syncQuestionnaireResponse));
+      dispatch(
+        setSkjemaDefinitionAction({
+          questionnaire: props.questionnaire,
+          questionnaireResponse: props.questionnaireResponse,
+          language: props.language,
+          syncQuestionnaireResponse: props.syncQuestionnaireResponse,
+        })
+      );
     }
-  }, []);
+  }, [props.language, props.syncQuestionnaireResponse]);
 
   const externalRenderProps = {
     onRequestHelpElement,
