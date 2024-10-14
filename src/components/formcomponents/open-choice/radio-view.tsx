@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { FieldValues, useFormContext } from 'react-hook-form';
+import { FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
 
 import { Options } from '@/types/formTypes/radioGroupOptions';
 import styles from '../common-styles.module.css';
@@ -46,10 +46,12 @@ const RadioView = (props: Props): JSX.Element | null => {
   const selectedValue = (selected && selected[0]) || '';
   const answer = useGetAnswer(linkId, path);
 
-  const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, {
+  const validationRules: RegisterOptions<FieldValues, string> | undefined = {
     required: required({ item, resources }),
     shouldUnregister: true,
-  });
+  };
+
+  const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, pdf ? undefined : validationRules);
 
   if (pdf || isReadOnly(item)) {
     return (
@@ -57,9 +59,6 @@ const RadioView = (props: Props): JSX.Element | null => {
         {children}
       </ReadOnly>
     );
-  }
-  if (!options) {
-    return null;
   }
   return (
     <div className="page_refero__component page_refero__component_openchoice page_refero__component_openchoice_radiobutton">
@@ -74,7 +73,7 @@ const RadioView = (props: Props): JSX.Element | null => {
           <RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />
         </ReferoLabel>
         <RenderHelpElement item={item} isHelpVisible={isHelpVisible} />
-        {options.map((option: Options, index: number) => (
+        {options?.map((option: Options, index: number) => (
           <RadioButton
             {...rest}
             key={`${getId(id)}-${index.toString()}`}

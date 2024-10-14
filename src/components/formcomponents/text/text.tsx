@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { FieldValues, useFormContext } from 'react-hook-form';
+import { FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
 
 import Expander from '@helsenorge/designsystem-react/components/Expander';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
@@ -82,7 +82,7 @@ export const Text = (props: Props): JSX.Element | null => {
 
   const value = getStringValue(answer);
 
-  const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, {
+  const validationRules: RegisterOptions<FieldValues, string> | undefined = {
     required: required({ item, resources }),
     minLength: minLength({ item, resources }),
     maxLength: maxLength({ item, resources }),
@@ -90,14 +90,18 @@ export const Text = (props: Props): JSX.Element | null => {
     validate: (value: string): string | true | undefined =>
       scriptInjection({ value, resources, shouldValidate: !!validateScriptInjection }),
     shouldUnregister: true,
-  });
+  };
+
+  const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, pdf ? undefined : validationRules);
 
   if (pdf || isReadOnly(item)) {
     return (
       <ReadOnly
         pdf={pdf}
         id={id}
+        idWithLinkIdAndItemIndex={idWithLinkIdAndItemIndex}
         item={item}
+        value={value}
         pdfValue={getPDFStringValue(answer, resources)}
         errors={error}
         textClass="page_refero__component_readonlytext"

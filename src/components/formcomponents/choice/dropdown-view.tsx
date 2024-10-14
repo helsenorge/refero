@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { FieldValues, useFormContext } from 'react-hook-form';
+import { FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Select from '@helsenorge/designsystem-react/components/Select';
@@ -49,19 +49,19 @@ const DropdownView = (props: Props): JSX.Element | null => {
   }
   const value = selected?.[0] || '';
   const shouldShowPlaceholder = !isRequired(item) || value === '';
-  const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, {
-    required: required({ item, resources }),
-    shouldUnregister: true,
-  });
-  if (!options) {
-    return null;
-  }
-  const getWith = (options: Array<Options>): number => {
+  const getWith = (options: Array<Options> | undefined): number => {
     const maxCharacters = options?.reduce((acc, option) => (option.label.length > acc ? option.label.length : acc), 0);
     const placeholderLength = placeholder ? placeholder.length : 0;
     let width = maxCharacters ? (maxCharacters > 40 ? 40 : maxCharacters) : 25;
     return (width = placeholderLength > width ? placeholderLength : width);
   };
+
+  const validationRules: RegisterOptions<FieldValues, string> | undefined = {
+    required: required({ item, resources }),
+    shouldUnregister: true,
+  };
+
+  const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, pdf ? undefined : validationRules);
 
   if (pdf || isReadOnly(item)) {
     return (

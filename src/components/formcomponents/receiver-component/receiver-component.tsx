@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { Coding, QuestionnaireItem } from 'fhir/r4';
-import { FieldValues, useFormContext } from 'react-hook-form';
+import { FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
 import styles from '../common-styles.module.css';
 import { EnhetType, OrgenhetHierarki } from '@/types/orgenhetHierarki';
 
@@ -187,7 +187,8 @@ const ReceiverComponent = ({
       }
     };
     const value = selectedPath[level] ? selectedPath[level].toString() : '';
-    const { onChange, ...rest } = register(`${idWithLinkIdAndItemIndex}-${selectKey}`, {
+
+    const validationRules: RegisterOptions<FieldValues, string> | undefined = {
       required: {
         value: true,
         message: resources?.adresseKomponent_feilmelding || 'Påkrevd felt',
@@ -195,11 +196,21 @@ const ReceiverComponent = ({
       validate: (): true | string =>
         getReceiverName(receiverTreeNodes, selectedPath) ? true : resources?.adresseKomponent_feilmelding || 'Kan ikke være tom streng',
       shouldUnregister: true,
-    });
+    };
+
+    const { onChange, ...rest } = register(`${idWithLinkIdAndItemIndex}-${selectKey}`, pdf ? undefined : validationRules);
 
     if (pdf || isReadOnly(item)) {
       return (
-        <ReadOnly pdf={pdf} id={id} item={item} pdfValue={pdfValue} errors={error}>
+        <ReadOnly
+          pdf={pdf}
+          id={id}
+          idWithLinkIdAndItemIndex={idWithLinkIdAndItemIndex}
+          item={item}
+          value={value}
+          pdfValue={pdfValue}
+          errors={error}
+        >
           {children}
         </ReadOnly>
       );

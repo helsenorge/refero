@@ -1,4 +1,4 @@
-import { QuestionnaireItem } from 'fhir/r4';
+import { Attachment, QuestionnaireItem } from 'fhir/r4';
 import TextView from '../textview';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import { FieldError, FieldValues, useFormContext } from 'react-hook-form';
@@ -11,7 +11,7 @@ type Props = {
   id?: string;
   idWithLinkIdAndItemIndex?: string;
   item?: QuestionnaireItem;
-  value?: string | number | number[] | undefined;
+  value?: string | number | number[] | Attachment | Attachment[] | undefined;
   pdfValue?: string | number;
   errors?: FieldError;
   textClass?: string;
