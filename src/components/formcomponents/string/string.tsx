@@ -20,7 +20,7 @@ import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
-import { maxLength, minLength, regexpPattern, required, scriptInjection } from '@/components/validation/rules';
+import { getErrorMessage, maxLength, minLength, regexpPattern, required, scriptInjection } from '@/components/validation/rules';
 import { debounce } from '@helsenorge/core-utils/debounce';
 import { findQuestionnaireItem } from '@/reducers/selectors';
 import { QuestionnaireItem } from 'fhir/r4';
@@ -63,9 +63,11 @@ export const String = (props: Props): JSX.Element | null => {
     event.persist();
     debouncedHandleChange(event);
   };
+
   const value = getStringValue(answer);
   const maxCharacters = getMaxLength(item);
   const width = maxCharacters ? (maxCharacters > 40 ? 40 : maxCharacters) : 25;
+  const errorMessage = getErrorMessage(item, error);
 
   const validationRules: RegisterOptions<FieldValues, string> | undefined = {
     required: required({ item, resources }),
@@ -97,7 +99,7 @@ export const String = (props: Props): JSX.Element | null => {
   }
   return (
     <div className="page_refero__component page_refero__component_string">
-      <FormGroup error={error?.message ?? ''} mode="ongrey" errorWrapperClassName={styles.paddingBottom}>
+      <FormGroup error={errorMessage} mode="ongrey" errorWrapperClassName={styles.paddingBottom}>
         <ReferoLabel
           item={item}
           resources={resources}

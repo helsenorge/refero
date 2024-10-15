@@ -64,26 +64,13 @@
   "id": "75dc5309-00ee-4e65-bc07-0e9f87f3311c",
   "item": [
     {
-      "linkId": "74194510-ced6-408b-f951-640915978679",
-      "type": "decimal",
-
-      "text": "Decimal",
+      "linkId": "bb5bcd44-4052-4650-a5c5-33778e10df01",
+      "type": "quantity",
+      "text": "Quantity",
       "extension": [
         {
           "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sublabel",
-          "valueMarkdown": "**Decimal sublabel**"
-        },
-        {
-          "url": "http://hl7.org/fhir/StructureDefinition/minValue",
-          "valueInteger": 5
-        },
-        {
-          "url": "http://hl7.org/fhir/StructureDefinition/maxValue",
-          "valueInteger": 10
-        },
-        {
-          "url": "http://hl7.org/fhir/StructureDefinition/maxDecimalPlaces",
-          "valueInteger": 2
+          "valueMarkdown": "**Quantity sublabel**"
         },
         {
           "url": "http://ehelse.no/fhir/StructureDefinition/repeatstext",
@@ -96,11 +83,35 @@
         {
           "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-maxOccurs",
           "valueInteger": 4
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/maxDecimalPlaces",
+          "valueInteger": 2
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/minValue",
+          "valueInteger": 5
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/maxValue",
+          "valueInteger": 10
+        },
+        {
+          "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
+          "valueString": "Custom error"
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+          "valueCoding": {
+            "code": "cm",
+            "display": "centimeter",
+            "system": "http://unitsofmeasure.org"
+          }
         }
       ],
       "item": [
         {
-          "linkId": "b033b54f-e6d4-433c-85dd-14a721c6bff0",
+          "linkId": "d0fda21a-a660-4e7d-941d-f4a6bfa1f41f",
           "type": "text",
           "required": false,
           "repeats": false,
@@ -134,7 +145,7 @@
         "extension": [
           {
             "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
-            "valueMarkdown": "**Decimal**"
+            "valueMarkdown": "**Quantity**"
           }
         ]
       },

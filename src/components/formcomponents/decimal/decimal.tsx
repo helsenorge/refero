@@ -21,7 +21,7 @@ import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
-import { decimalPattern, maxValue, minValue, required } from '@/components/validation/rules';
+import { decimalPattern, getErrorMessage, maxValue, minValue, required } from '@/components/validation/rules';
 import { findQuestionnaireItem } from '@/reducers/selectors';
 import useOnAnswerChange from '@/hooks/useOnAnswerChange';
 import { ReadOnly } from '../read-only/readOnly';
@@ -89,6 +89,7 @@ const Decimal = (props: Props): JSX.Element | null => {
   const value = getValue(item, answer);
   const maxCharacters = getMaxValueExtensionValue(item) ? getMaxValueExtensionValue(item)?.toString().length : undefined;
   const width = maxCharacters ? (maxCharacters > 40 ? 40 : maxCharacters + 2) : 7;
+  const errorMessage = getErrorMessage(item, error);
 
   const validationRules: RegisterOptions<FieldValues, string> | undefined = {
     required: required({ item, resources }),
@@ -117,7 +118,7 @@ const Decimal = (props: Props): JSX.Element | null => {
   }
   return (
     <div className="page_refero__component page_refero__component_decimal">
-      <FormGroup error={error?.message} mode="ongrey" errorWrapperClassName={styles.paddingBottom}>
+      <FormGroup error={errorMessage} mode="ongrey" errorWrapperClassName={styles.paddingBottom}>
         <ReferoLabel
           item={item}
           resources={resources}

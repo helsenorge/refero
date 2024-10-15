@@ -17,6 +17,7 @@ import SafeText from '../../referoLabel/SafeText';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 import { ReadOnly } from '../read-only/readOnly';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
+import { getErrorMessage, required } from '@/components/validation/rules';
 
 export type ReceiverComponentProps = QuestionnaireComponentItemProps & {
   item?: QuestionnaireItem;
@@ -42,9 +43,6 @@ const ReceiverComponent = ({
   children,
 }: ReceiverComponentProps): JSX.Element | null => {
   const { formState, getFieldState, register } = useFormContext<FieldValues>();
-  const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
-
-  const { error } = fieldState;
   const [receiverTreeNodes, setReceiverTreeNodes] = React.useState<OrgenhetHierarki[]>([]);
   const [selectedPath, setSelectedPath] = React.useState<number[]>([]);
   const [selectedReceiver, setSelectedReceiver] = React.useState<string>('');
@@ -176,8 +174,13 @@ const ReceiverComponent = ({
   };
 
   const createSelect = (treeNodes: Array<OrgenhetHierarki>, level: number, selectKey: string): JSX.Element => {
+    const fieldState = getFieldState(`${idWithLinkIdAndItemIndex}-${selectKey}`, formState);
+    const { error } = fieldState;
+
     const selectOptions = treeNodes.map(node => new Option(node.Navn, node.OrgenhetId.toString()));
     const label = getLabelText(treeNodes[0].EnhetType) || '';
+    const value = selectedPath[level] ? selectedPath[level].toString() : '';
+    const errorMessage = getErrorMessage(item, error);
 
     const handleSelectChange = (evt: React.ChangeEvent<HTMLSelectElement>): void => {
       const newValue = evt.target.value;
@@ -186,13 +189,9 @@ const ReceiverComponent = ({
         onChangeDropdownValue(level, node);
       }
     };
-    const value = selectedPath[level] ? selectedPath[level].toString() : '';
 
     const validationRules: RegisterOptions<FieldValues, string> | undefined = {
-      required: {
-        value: true,
-        message: resources?.adresseKomponent_feilmelding || 'Påkrevd felt',
-      },
+      required: required({ item, resources, message: resources?.adresseKomponent_feilmelding }),
       validate: (): true | string =>
         getReceiverName(receiverTreeNodes, selectedPath) ? true : resources?.adresseKomponent_feilmelding || 'Kan ikke være tom streng',
       shouldUnregister: true,
@@ -216,7 +215,7 @@ const ReceiverComponent = ({
       );
     }
     return (
-      <FormGroup error={error?.message} errorWrapperClassName={styles.paddingBottom}>
+      <FormGroup error={errorMessage} errorWrapperClassName={styles.paddingBottom}>
         <Select
           {...rest}
           key={`${selectKey}-${level}`}

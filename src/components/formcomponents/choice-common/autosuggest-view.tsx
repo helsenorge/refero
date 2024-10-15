@@ -24,7 +24,7 @@ import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
-import { required } from '@/components/validation/rules';
+import { getErrorMessage, required } from '@/components/validation/rules';
 import { useSelector } from 'react-redux';
 import { GlobalState } from '@/reducers';
 import { findQuestionnaireItem } from '@/reducers/selectors';
@@ -185,6 +185,7 @@ const AutosuggestView = (props: AutosuggestProps): JSX.Element | null => {
 
   const maxCharacters = getMaxLength(item);
   const width = maxCharacters ? (maxCharacters > 40 ? 40 : maxCharacters) : 25;
+  const errorMessage = getErrorMessage(item, error);
 
   const validationRules: RegisterOptions<FieldValues, string> | undefined = {
     required: required({ item, resources }),
@@ -202,7 +203,7 @@ const AutosuggestView = (props: AutosuggestProps): JSX.Element | null => {
   }
   return (
     <div className="page_refero__component page_refero__component_choice page_refero__component_choice_autosuggest">
-      <FormGroup error={error?.message} errorWrapperClassName={styles.paddingBottom}>
+      <FormGroup error={errorMessage} errorWrapperClassName={styles.paddingBottom}>
         <ReferoLabel
           item={item}
           resources={resources}

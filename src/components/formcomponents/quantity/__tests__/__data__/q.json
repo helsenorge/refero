@@ -97,10 +97,6 @@
           "valueInteger": 10
         },
         {
-          "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
-          "valueString": "Custom error"
-        },
-        {
           "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
           "valueCoding": {
             "code": "cm",

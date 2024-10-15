@@ -8,7 +8,7 @@ import {
 } from '@/util/extension';
 import { Resources } from '@/util/resources';
 import { QuestionnaireItem } from 'fhir/r4';
-import { ValidationRule, ValidationValue } from 'react-hook-form';
+import { FieldError, ValidationRule, ValidationValue } from 'react-hook-form';
 
 type ValidationRuleInput = {
   item?: QuestionnaireItem;
@@ -16,10 +16,23 @@ type ValidationRuleInput = {
   message?: string;
 };
 type ValidationRuleReturnValue<T extends ValidationValue = ValidationValue> = string | ValidationRule<T> | undefined;
-export const required = ({ item, resources, message }: ValidationRuleInput): ValidationRuleReturnValue<boolean> => ({
-  value: isRequired(item),
-  message: message ?? resources?.formRequiredErrorMessage ?? 'Feltet er påkrevd',
-});
+
+export const getErrorMessage = (item: QuestionnaireItem | undefined, error: FieldError | undefined): string | undefined => {
+  if (error) {
+    const validationTextExtension = getValidationTextExtension(item);
+    if (validationTextExtension) {
+      return validationTextExtension;
+    }
+    return error.message;
+  }
+};
+
+export const required = ({ item, resources, message }: ValidationRuleInput): ValidationRuleReturnValue<boolean> => {
+  return {
+    value: isRequired(item),
+    message: message ?? resources?.formRequiredErrorMessage ?? 'Feltet er påkrevd',
+  };
+};
 
 export const maxValue = ({ item, resources, message }: ValidationRuleInput): ValidationRuleReturnValue<number> => {
   const maxValue = getMaxValueExtensionValue(item);

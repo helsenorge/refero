@@ -19,7 +19,7 @@ import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
-import { maxValue, minValue, required } from '@/components/validation/rules';
+import { getErrorMessage, maxValue, minValue, required } from '@/components/validation/rules';
 import { QuestionnaireItem } from 'fhir/r4';
 import { findQuestionnaireItem } from '@/reducers/selectors';
 import useOnAnswerChange from '@/hooks/useOnAnswerChange';
@@ -79,6 +79,7 @@ const Integer = (props: Props): JSX.Element | null => {
   const value = getValue();
   const maxCharacters = getMaxValueExtensionValue(item) ? getMaxValueExtensionValue(item)?.toString().length : undefined;
   const width = maxCharacters ? (maxCharacters > 40 ? 40 : maxCharacters + 2) : 7;
+  const errorMessage = getErrorMessage(item, error);
 
   const validationRules: RegisterOptions<FieldValues, string> | undefined = {
     required: required({ item, resources }),
@@ -106,7 +107,7 @@ const Integer = (props: Props): JSX.Element | null => {
   }
   return (
     <div className="page_refero__component page_refero__component_integer">
-      <FormGroup error={error?.message} mode="ongrey" errorWrapperClassName={styles.paddingBottom}>
+      <FormGroup error={errorMessage} mode="ongrey" errorWrapperClassName={styles.paddingBottom}>
         <ReferoLabel
           item={item}
           resources={resources}

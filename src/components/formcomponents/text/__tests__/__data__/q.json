@@ -72,10 +72,6 @@
           "valueMarkdown": "**String sublabel**"
         },
         {
-          "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
-          "valueString": "Custom error"
-        },
-        {
           "url": "http://hl7.org/fhir/StructureDefinition/minLength",
           "valueInteger": 10
         },

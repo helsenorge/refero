@@ -1,8 +1,9 @@
 {
-  "title": "Title",
   "resourceType": "Questionnaire",
   "language": "nb-NO",
-  "name": "Techinal_boolean",
+  "id": "4171d6c9-43ee-4f2b-863b-2080beacd382",
+  "name": "Integer_unit_tests",
+  "title": "Tittel",
   "status": "draft",
   "publisher": "NHN",
   "meta": {
@@ -63,16 +64,28 @@
   ],
   "item": [
     {
+      "linkId": "1cdeacb1-4c4a-4cd3-9b46-7fb3435c3c4e",
+      "type": "integer",
       "extension": [
         {
-          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-          "valueCodeableConcept": {
-            "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "autocomplete" }]
-          }
+          "url": "http://hl7.org/fhir/StructureDefinition/minValue",
+          "valueInteger": 5
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/maxValue",
+          "valueInteger": 10
+        },
+        {
+          "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
+          "valueString": "Custom error"
         },
         {
           "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sublabel",
-          "valueMarkdown": "For eksempel Ibux Tab 400 mg. Skriv inn minst 3 tegn for å søke."
+          "valueMarkdown": "min: 5, max: 10, **Custom err**"
+        },
+        {
+          "url": "http://ehelse.no/fhir/StructureDefinition/repeatstext",
+          "valueString": "Legg til"
         },
         {
           "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-minOccurs",
@@ -83,42 +96,48 @@
           "valueInteger": 4
         }
       ],
-      "linkId": "af3cff52-5879-4db0-c671-1fb2bec90309",
-      "text": "Mistenkt legemiddel",
-      "type": "choice",
       "required": true,
+      "_text": {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+            "valueMarkdown": "Integer - **Markdown**"
+          }
+        ]
+      },
+      "text": "Integer - Markdown",
       "repeats": false,
-      "readOnly": false,
-      "answerValueSet": "http://helsedirektoratet.no/ValueSet/legemiddeloppslag",
       "item": [
         {
-          "extension": [
-            {
-              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-              "valueCodeableConcept": {
-                "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "help" }]
-              }
-            },
-            { "url": "http://hl7.org/fhir/StructureDefinition/regex", "valueString": "^[\\x00-\\x7F\\xA0-\\xFF]+$" }
-          ],
-          "linkId": "af3cff52-5879-4db0-c671-1fb2bec90310",
-          "text": "Hvis du ikke finner legemiddelet (medisinen) eller vaksinen ved å søke på minimum 3 bokstaver, må du kontakte lege, tannlege eller farmasøyt for å få meldt bivirkningen.\r\n\r\nMange legemidler finnes i ulike legemiddelformer, for eksempel tabletter og stikkpiller. Finner du ikke riktig legemiddelform eller styrken, velger du øverste alternativ og krysser av for at du er usikker.",
+          "linkId": "fac9637d-649c-46b3-8511-8b217addf979",
+          "type": "text",
+          "required": false,
+          "repeats": false,
+          "readOnly": true,
+          "maxLength": 250,
           "_text": {
             "extension": [
               {
                 "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
-                "valueMarkdown": "Hvis du ikke finner legemiddelet (medisinen) eller vaksinen ved å søke på minimum 3 bokstaver, må du kontakte lege, tannlege eller farmasøyt for å få meldt bivirkningen.\n\nMange legemidler finnes i ulike legemiddelformer, for eksempel tabletter og stikkpiller. Finner du ikke riktig legemiddelform eller styrken, velger du øverste alternativ og krysser av for at du er usikker."
+                "valueMarkdown": "Help text"
               }
             ]
           },
-          "type": "text",
-          "required": false,
-          "repeats": false,
-          "readOnly": false,
-          "maxLength": 250
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
+                    "code": "help"
+                  }
+                ]
+              }
+            }
+          ]
         }
       ]
     }
-  ],
-  "id": "75dc5309-00ee-4e65-bc07-0e9f87f3311c"
+  ]
 }

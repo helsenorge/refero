@@ -24,7 +24,7 @@ import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 import Display from '../display/display';
-import { maxLength, minLength, regexpPattern, required, scriptInjection } from '@/components/validation/rules';
+import { getErrorMessage, maxLength, minLength, regexpPattern, required, scriptInjection } from '@/components/validation/rules';
 import { QuestionnaireItem } from 'fhir/r4';
 import { findQuestionnaireItem } from '@/reducers/selectors';
 import useOnAnswerChange from '@/hooks/useOnAnswerChange';
@@ -81,6 +81,7 @@ export const Text = (props: Props): JSX.Element | null => {
   }
 
   const value = getStringValue(answer);
+  const errorMessage = getErrorMessage(item, error);
 
   const validationRules: RegisterOptions<FieldValues, string> | undefined = {
     required: required({ item, resources }),
@@ -112,7 +113,7 @@ export const Text = (props: Props): JSX.Element | null => {
   }
   return (
     <div className="page_refero__component page_refero__component_text">
-      <FormGroup error={error?.message} mode="ongrey" errorWrapperClassName={styles.paddingBottom}>
+      <FormGroup error={errorMessage} mode="ongrey" errorWrapperClassName={styles.paddingBottom}>
         <ReferoLabel
           testId={`${getId(id)}-text-label`}
           htmlFor={getId(id)}
