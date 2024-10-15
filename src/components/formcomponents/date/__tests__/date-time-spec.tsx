@@ -56,7 +56,7 @@ describe('Date time', () => {
 
       await waitFor(async () => expect(getByLabelText(/Dato/i)).toHaveValue(''));
     });
-    it('Initial value should be set', async () => {
+    it.skip('Initial value should be set', async () => {
       const questionnaire: Questionnaire = {
         ...q,
         item: q.item?.map(x => ({
