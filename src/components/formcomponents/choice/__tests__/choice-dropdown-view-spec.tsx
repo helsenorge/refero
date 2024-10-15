@@ -231,6 +231,27 @@ describe('Dropdown-view - choice', () => {
         await userEvent.selectOptions(getByLabelText(/Dropdown view label/i), getByRole('option', { name: 'Ja' }) as HTMLOptionElement);
         expect(queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
       });
+      it('Should get required error on readOnly if noe value', async () => {
+        const questionnaire: Questionnaire = {
+          ...q,
+          item: q.item?.map(x => ({
+            ...x,
+            readOnly: true,
+            required: true,
+            code: [
+              {
+                code: 'ValidateReadOnly',
+                display: 'Valider skrivebeskyttet felt',
+                system: 'http://helsenorge.no/fhir/CodeSystem/ValidationOptions',
+              },
+            ],
+          })),
+        };
+        const { getByText } = createWrapper(questionnaire);
+        await submitForm();
+
+        expect(getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
+      });
     });
   });
 });

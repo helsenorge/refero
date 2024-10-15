@@ -49,8 +49,6 @@ const CheckboxView = (props: Props): JSX.Element | null => {
 
   const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, pdf ? undefined : validationRules);
 
-  register(idWithLinkIdAndItemIndex, pdf ? undefined : validationRules);
-
   if (pdf || isReadOnly(item)) {
     return (
       <ReadOnly pdf={pdf} id={id} item={item} pdfValue={pdfValue} errors={error}>

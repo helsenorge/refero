@@ -12,7 +12,7 @@ import { useFileUpload } from '@helsenorge/file-upload/components/file-upload/us
 import { validateFileSize, validateFileType, validateMaxFiles, validateMinFiles } from './attachment-validation';
 import { getAttachmentMaxSizeBytesToUse } from './attachmentUtil';
 import { VALID_FILE_TYPES } from '@/constants';
-import { getId, isReadOnly, isRequired } from '@/util';
+import { getId, isReadOnly } from '@/util';
 import { Resources } from '@/util/resources';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
@@ -23,6 +23,7 @@ import { useGetAnswer } from '@/hooks/useGetAnswer';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { ReadOnly } from '../read-only/readOnly';
 import { getValidationTextExtension } from '@/util/extension';
+import { required } from '@/components/validation/rules';
 
 type Props = QuestionnaireComponentItemProps & {
   onUpload: (files: UploadFile[]) => void;
@@ -158,10 +159,7 @@ const AttachmentHtml = (props: Props): JSX.Element | null => {
   };
 
   const validationRules: RegisterOptions<FieldValues, string> | undefined = {
-    required: {
-      value: isRequired(item),
-      message: resources?.formRequiredErrorMessage || '',
-    },
+    required: required({ item, resources }),
     validate: () => true,
     shouldUnregister: true,
   };
