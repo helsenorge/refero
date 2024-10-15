@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import { Attachment, QuestionnaireItem } from 'fhir/r4';
-import { FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
+import { FieldError, FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
 import styles from '../common-styles.module.css';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import NotificationPanel from '@helsenorge/designsystem-react/components/NotificationPanel';
@@ -12,17 +12,17 @@ import { useFileUpload } from '@helsenorge/file-upload/components/file-upload/us
 import { validateFileSize, validateFileType, validateMaxFiles, validateMinFiles } from './attachment-validation';
 import { getAttachmentMaxSizeBytesToUse } from './attachmentUtil';
 import { VALID_FILE_TYPES } from '@/constants';
-import { getId, isReadOnly } from '@/util';
+import { getId, isReadOnly, isRequired } from '@/util';
 import { Resources } from '@/util/resources';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelpButton';
 import RenderHelpElement from '@/components/formcomponents/help-button/RenderHelpElement';
 import { TextMessage } from '@/types/text-message';
-import { required } from '@/components/validation/rules';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { ReadOnly } from '../read-only/readOnly';
+import { getValidationTextExtension } from '@/util/extension';
 
 type Props = QuestionnaireComponentItemProps & {
   onUpload: (files: UploadFile[]) => void;
@@ -80,7 +80,7 @@ const AttachmentHtml = (props: Props): JSX.Element | null => {
   const validFileTypes = attachmentValidTypes ? attachmentValidTypes : VALID_FILE_TYPES;
   const deleteText = resources ? resources.deleteAttachmentText : undefined;
   const [isHelpVisible, setIsHelpVisible] = useState(false);
-  const { register, acceptedFiles, rejectedFiles, setAcceptedFiles, setRejectedFiles } = useFileUpload(
+  const { acceptedFiles, rejectedFiles, setAcceptedFiles, setRejectedFiles } = useFileUpload(
     internalRegister,
     [
       (file): true | string => (file ? validateFileType(file, validFileTypes, item, resources?.attachmentError_fileType) : true),
@@ -105,8 +105,14 @@ const AttachmentHtml = (props: Props): JSX.Element | null => {
     setRejectedFiles(rejectedFiles.filter(x => x.id !== fileId));
   };
 
-  const concatErrorMessages = (): string => {
-    return error?.types ? Object.values(error.types).join('. ') : '';
+  const getErrorText = (error: FieldError | undefined): string | undefined => {
+    if (error) {
+      const validationTextExtension = getValidationTextExtension(item);
+      if (validationTextExtension) {
+        return validationTextExtension;
+      }
+      return error.message;
+    }
   };
 
   const getAttachmentValue = (): Attachment | Attachment[] | undefined => {
@@ -152,12 +158,15 @@ const AttachmentHtml = (props: Props): JSX.Element | null => {
   };
 
   const validationRules: RegisterOptions<FieldValues, string> | undefined = {
-    required: required({ item, resources }),
+    required: {
+      value: isRequired(item),
+      message: resources?.formRequiredErrorMessage || '',
+    },
     validate: () => true,
     shouldUnregister: true,
   };
 
-  register(idWithLinkIdAndItemIndex, pdf ? undefined : validationRules);
+  const { onChange, ...rest } = internalRegister(idWithLinkIdAndItemIndex, pdf ? undefined : validationRules);
 
   if (pdf || isReadOnly(item)) {
     return (
@@ -174,9 +183,10 @@ const AttachmentHtml = (props: Props): JSX.Element | null => {
       </ReadOnly>
     );
   }
+
   return (
     <div className="page_refero__component page_refero__component_attachment" data-testid={getId(id)}>
-      <FormGroup error={concatErrorMessages()} errorWrapperClassName={styles.paddingBottom}>
+      <FormGroup error={getErrorText(error)} errorWrapperClassName={styles.paddingBottom}>
         <ReferoLabel
           item={item}
           resources={resources}
@@ -187,8 +197,12 @@ const AttachmentHtml = (props: Props): JSX.Element | null => {
           <RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />
         </ReferoLabel>
         <FileUpload
+          {...rest}
           wrapperTestId={`${getId(id)}-attachment`}
           inputId={id}
+          onChange={e => {
+            onChange(e);
+          }}
           onChangeFile={handleUpload}
           onDeleteFile={handleDelete}
           chooseFilesText={resources?.chooseFilesText}

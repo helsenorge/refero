@@ -22,7 +22,7 @@ export type Props = QuestionnaireComponentItemProps & {
 };
 
 export const AttachmentComponent = (props: Props): JSX.Element | null => {
-  const { path, id, linkId, children } = props;
+  const { path, id, idWithLinkIdAndItemIndex, linkId, children } = props;
   const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
 
   const [customErrorMessage, setCustomErrorMessage] = useState<TextMessage | undefined>(undefined);
@@ -108,7 +108,7 @@ export const AttachmentComponent = (props: Props): JSX.Element | null => {
         attachmentValidTypes={attachmentValidTypes}
         item={item}
         attachmentErrorMessage={attachmentErrorMessage}
-        idWithLinkIdAndItemIndex={props.idWithLinkIdAndItemIndex}
+        idWithLinkIdAndItemIndex={idWithLinkIdAndItemIndex}
       />
       <div className="nested-fieldset nested-fieldset--full-height">{children}</div>
     </>

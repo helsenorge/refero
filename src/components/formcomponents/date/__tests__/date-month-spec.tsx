@@ -375,6 +375,27 @@ describe('Date month', () => {
 
         expect(queryByText(resources.yearmonth_field_required)).not.toBeInTheDocument();
       });
+      it('readOnly value should get validation error if error exist', async () => {
+        const questionnaire: Questionnaire = {
+          ...q,
+          item: q.item?.map(x => ({
+            ...x,
+            readOnly: true,
+            required: true,
+            code: [
+              {
+                code: 'ValidateReadOnly',
+                display: 'Valider skrivebeskyttet felt',
+                system: 'http://helsenorge.no/fhir/CodeSystem/ValidationOptions',
+              },
+            ],
+          })),
+        };
+        const { getByText } = createWrapper(questionnaire);
+        await submitForm();
+
+        expect(getByText(resources.yearmonth_field_required)).toBeInTheDocument();
+      });
     });
   });
 });
