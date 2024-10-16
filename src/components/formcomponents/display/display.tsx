@@ -18,12 +18,10 @@ import { useCustomElement } from '@/POC/useCustomElement';
 export type Props = QuestionnaireComponentItemProps;
 const Display = memo(function Display({ id, pdf, linkId }: Props): JSX.Element | null {
   const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
-  const element = useCustomElement(item);
-  if (element) {
-    return element;
-  }
   const { onRenderMarkdown, resources } = useExternalRenderContext();
   const formDefinition = useSelector((state: GlobalState) => getFormDefinition(state));
+  const element = useCustomElement(item);
+
   const questionnaire = formDefinition?.Content;
   const itemControls = item ? getItemControlExtensionValue(item) : null;
   const highlightClass =
@@ -43,7 +41,9 @@ const Display = memo(function Display({ id, pdf, linkId }: Props): JSX.Element |
       value = <p id={getId(id)}>{`${renderPrefix(item)} ${text}`}</p>;
     }
   }
-
+  if (element) {
+    return element;
+  }
   if (pdf) {
     if (!value) {
       return null;
