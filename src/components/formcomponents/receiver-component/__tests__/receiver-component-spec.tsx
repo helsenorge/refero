@@ -3,9 +3,10 @@ import { q } from './__data__';
 import { EnhetType, OrgenhetHierarki } from '../../../../types/orgenhetHierarki';
 
 import { renderRefero } from '@test/test-utils.tsx';
-import { selectDropdownOptionByName } from '../../../../../test/selectors';
+import { selectDropdownOptionByName, submitForm } from '../../../../../test/selectors';
 import { getResources } from '../../../../../preview/resources/referoResources';
 import { vi } from 'vitest';
+import { Questionnaire } from 'fhir/r4';
 
 const receivers = [
   {
@@ -27,10 +28,17 @@ const receivers = [
   },
 ];
 
+const resources = {
+  ...getResources(''),
+  adresseKomponent_velgHelseregion: 'Velg region',
+  adresseKomponent_velgHelseforetak: 'Velg helseforetak',
+  adresseKomponent_feilmelding: 'Du må velge en mottaker',
+};
+
 describe('ReceiverComponent', () => {
   it('Should call function to load receivers on mount', () => {
     const fetchReceivers = vi.fn();
-    renderRefero({ questionnaire: q, props: { fetchReceivers }, resources: getResources('') });
+    renderRefero({ questionnaire: q, props: { fetchReceivers }, resources: resources });
 
     expect(fetchReceivers).toHaveBeenCalled();
   });
@@ -39,7 +47,7 @@ describe('ReceiverComponent', () => {
     const fetchReceiversFn = (_successCallback: (receivers: Array<OrgenhetHierarki>) => void, errorCallback: () => void) => {
       errorCallback();
     };
-    const { findByRole } = renderRefero({ questionnaire: q, props: { fetchReceivers: fetchReceiversFn }, resources: getResources('') });
+    const { findByRole } = renderRefero({ questionnaire: q, props: { fetchReceivers: fetchReceiversFn }, resources: resources });
     expect(await findByRole('alert')).toBeInTheDocument();
   });
 
@@ -51,10 +59,10 @@ describe('ReceiverComponent', () => {
     const { findByText } = renderRefero({
       questionnaire: q,
       props: { fetchReceivers: fetchReceiversFn, onChange },
-      resources: getResources(''),
+      resources: resources,
     });
-    await selectDropdownOptionByName('Velg helseregion', /region 1/i);
-    await selectDropdownOptionByName('Velg helseforetak', 'Receiver 1');
+    await selectDropdownOptionByName(resources.adresseKomponent_velgHelseregion, /region 1/i);
+    await selectDropdownOptionByName(resources.adresseKomponent_velgHelseforetak, 'Receiver 1');
 
     expect(await findByText(/Region 1 \/ Receiver 1/i)).toBeInTheDocument();
   });
@@ -66,7 +74,7 @@ describe('ReceiverComponent', () => {
     const { findAllByRole } = renderRefero({
       questionnaire: q,
       props: { fetchReceivers },
-      resources: getResources(''),
+      resources: resources,
     });
     expect(await findAllByRole('combobox')).toHaveLength(2);
   });
@@ -77,11 +85,7 @@ describe('ReceiverComponent', () => {
     const { queryByText } = renderRefero({
       questionnaire: q,
       props: { fetchReceivers },
-      resources: {
-        ...getResources(''),
-        adresseKomponent_velgHelseregion: 'Velg region',
-        adresseKomponent_velgHelseforetak: 'Velg helseforetak',
-      },
+      resources: resources,
     });
     expect(queryByText('Velg region')).toBeInTheDocument();
     await selectDropdownOptionByName('Velg region', /region 1/i);
@@ -95,11 +99,7 @@ describe('ReceiverComponent', () => {
     const { queryByText } = renderRefero({
       questionnaire: q,
       props: { fetchReceivers, onChange },
-      resources: {
-        ...getResources(''),
-        adresseKomponent_velgHelseregion: 'Velg region',
-        adresseKomponent_velgHelseforetak: 'Velg helseforetak',
-      },
+      resources: resources,
     });
     await selectDropdownOptionByName('Velg region', /region 1/i);
 
@@ -119,16 +119,45 @@ describe('ReceiverComponent', () => {
     renderRefero({
       questionnaire: q,
       props: { fetchReceivers, onChange },
-      resources: {
-        ...getResources(''),
-        adresseKomponent_velgHelseregion: 'Velg region',
-        adresseKomponent_velgHelseforetak: 'Velg helseforetak',
-      },
+      resources: resources,
     });
     await selectDropdownOptionByName('Velg region', /region 1/i);
 
     await selectDropdownOptionByName('Velg helseforetak', /Receiver 11/i);
 
     expect(onChange).toHaveBeenCalled();
+  });
+
+  it('readOnly value should get validation error if error exist', async () => {
+    const fetchReceivers = (successCallback: (receivers: Array<OrgenhetHierarki>) => void) => {
+      successCallback(receivers);
+    };
+    const onChange = vi.fn();
+
+    const questionnaire: Questionnaire = {
+      ...q,
+      item: q.item?.map(x => ({
+        ...x,
+        readOnly: true,
+        required: true,
+        code: [
+          {
+            code: 'ValidateReadOnly',
+            display: 'Valider skrivebeskyttet felt',
+            system: 'http://helsenorge.no/fhir/CodeSystem/ValidationOptions',
+          },
+        ],
+      })),
+    };
+
+    const { queryByText } = renderRefero({
+      questionnaire: questionnaire,
+      props: { fetchReceivers, onChange },
+      resources: resources,
+    });
+
+    await submitForm();
+
+    expect(queryByText(resources.adresseKomponent_feilmelding)).toBeInTheDocument();
   });
 });

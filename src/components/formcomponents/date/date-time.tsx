@@ -3,9 +3,9 @@ import { useState } from 'react';
 import { format, isValid } from 'date-fns';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
-import { FieldError, FieldValues, useFormContext } from 'react-hook-form';
+import { FieldError, FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
 
-import { DateTimeUnit } from '../../../types/dateTypes';
+import { DateFormat, DateTimeUnit } from '../../../types/dateTypes';
 
 import { DatePicker, DateTimePickerWrapper, DateTime } from '@helsenorge/datepicker/components/DatePicker';
 
@@ -21,6 +21,7 @@ import {
   validateHours,
   validateMinutes,
   parseStringToDate,
+  getPDFValueForDate,
 } from '../../../util/date-utils';
 import { getValidationTextExtension } from '../../../util/extension';
 import { isRequired, getId, isReadOnly } from '../../../util/index';
@@ -85,6 +86,7 @@ const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, childr
   const date: Date | string | undefined = parseStringToDate(dateAnswerValue);
   const hours = getHoursOrMinutesFromDate(date, DateTimeUnit.Hours);
   const minutes = getHoursOrMinutesFromDate(date, DateTimeUnit.Minutes);
+  const pdfValue = getPDFValueForDate(dateAnswerValue, resources?.ikkeBesvart, DateFormat.yyyyMMddHHmmssXXX, DateFormat.ddMMyyyyHHmm);
 
   const getErrorText = (error: FieldError | undefined): string | undefined => {
     if (error) {
@@ -152,20 +154,7 @@ const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, childr
     return dateValue || hoursValue || minutesValue;
   };
 
-  const getPDFValue = (): string | number | undefined => {
-    if (dateAnswerValue === undefined || dateAnswerValue === null || dateAnswerValue === '') {
-      let text = '';
-      if (resources && resources.ikkeBesvart) {
-        text = resources.ikkeBesvart;
-      }
-      return text;
-    }
-    if (date && isValid(date)) {
-      return format(date, 'dd.MM.yyyy HH:mm');
-    }
-  };
-
-  const registerDate = register(`${idWithLinkIdAndItemIndex}-date`, {
+  const validationRulesDate: RegisterOptions<FieldValues, string> | undefined = {
     required: {
       value: isRequired(item),
       message: resources?.formRequiredErrorMessage || '',
@@ -182,8 +171,9 @@ const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, childr
       },
     },
     shouldUnregister: true,
-  });
-  const registerHours = register(`${idWithLinkIdAndItemIndex}-hours`, {
+  };
+
+  const validationRulesHours: RegisterOptions<FieldValues, string> | undefined = {
     required: {
       value: isRequired(item),
       message: resources?.formRequiredErrorMessage || '',
@@ -194,8 +184,9 @@ const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, childr
       },
     },
     shouldUnregister: true,
-  });
-  const registerMinutes = register(`${idWithLinkIdAndItemIndex}-minutes`, {
+  };
+
+  const validationRulesMinutes: RegisterOptions<FieldValues, string> | undefined = {
     required: {
       value: isRequired(item),
       message: resources?.formRequiredErrorMessage || '',
@@ -206,11 +197,26 @@ const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, childr
       },
     },
     shouldUnregister: true,
-  });
+  };
+
+  const { onChange: onChangeDate, ...restDate } = register(`${idWithLinkIdAndItemIndex}-date`, pdf ? undefined : validationRulesDate);
+  const { onChange: onChangeHours, ...restHours } = register(`${idWithLinkIdAndItemIndex}-hours`, pdf ? undefined : validationRulesHours);
+  const { onChange: onChangeMinutes, ...restMinutes } = register(
+    `${idWithLinkIdAndItemIndex}-minutes`,
+    pdf ? undefined : validationRulesMinutes
+  );
 
   if (pdf || isReadOnly(item)) {
     return (
-      <ReadOnly pdf={pdf} id={id} item={item} pdfValue={getPDFValue()} errors={getCombinedFieldError(dateField, hoursField, minutesField)}>
+      <ReadOnly
+        pdf={pdf}
+        id={id}
+        idWithLinkIdAndItemIndex={idWithLinkIdAndItemIndex}
+        item={item}
+        value={dateAnswerValue}
+        pdfValue={pdfValue}
+        errors={getCombinedFieldError(dateField, hoursField, minutesField)}
+      >
         {children}
       </ReadOnly>
     );
@@ -235,7 +241,7 @@ const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, childr
         <RenderHelpElement isHelpVisible={isHelpVisible} item={item} />
         <DateTimePickerWrapper testId={`${getId(id)}-datetime-wrapper`}>
           <DatePicker
-            {...registerDate}
+            {...restDate}
             inputId={`${getId(id)}-datepicker`}
             testId={`${getId(id)}-datetime`}
             autoComplete=""
@@ -246,28 +252,28 @@ const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, childr
             maxDate={maxDateTime}
             onChange={(e, newDate) => {
               handleDateChange(newDate);
-              registerDate.onChange(e);
+              onChangeDate(e);
             }}
           />
 
           <DateTime
-            {...registerHours}
+            {...restHours}
             testId={`hours-test`}
             timeUnit="hours"
             onChange={e => {
               handleHoursChange(e.target.value);
-              registerHours.onChange(e);
+              onChangeHours(e);
             }}
             defaultValue={Number(hours)}
           />
 
           <DateTime
-            {...registerMinutes}
+            {...restMinutes}
             testId={`minutes-test`}
             timeUnit="minutes"
             onChange={e => {
               handleMinutesChange(e.target.value);
-              registerMinutes.onChange(e);
+              onChangeMinutes(e);
             }}
             defaultValue={Number(minutes)}
           />

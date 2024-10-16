@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { FieldValues, useFormContext } from 'react-hook-form';
+import { FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
 import styles from '../common-styles.module.css';
 import { Options } from '@/types/formTypes/radioGroupOptions';
 
@@ -41,14 +41,25 @@ const CheckboxView = (props: Props): JSX.Element | null => {
   const { formState, getFieldState, register } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
-  const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, {
+
+  const validationRules: RegisterOptions<FieldValues, string> | undefined = {
     required: required({ item, resources }),
     shouldUnregister: true,
-  });
+  };
+
+  const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, pdf ? undefined : validationRules);
 
   if (pdf || isReadOnly(item)) {
     return (
-      <ReadOnly pdf={pdf} id={id} item={item} pdfValue={pdfValue} errors={error}>
+      <ReadOnly
+        pdf={pdf}
+        id={id}
+        idWithLinkIdAndItemIndex={idWithLinkIdAndItemIndex}
+        item={item}
+        value={selected}
+        pdfValue={pdfValue}
+        errors={error}
+      >
         {children}
       </ReadOnly>
     );

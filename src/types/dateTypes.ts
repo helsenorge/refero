@@ -11,8 +11,12 @@ export enum DatePickerFormat {
 
 export enum DateFormat {
   ddMMyyyy = 'dd.MM.yyyy',
+  dMMyyyy = 'd. MMMM yyyy',
+  yyyyMMdd = 'yyyy-MM-dd',
   yyyyMM = 'yyyy-MM',
   MMMMyyyy = 'MMMM yyyy',
+  ddMMyyyyHHmm = 'dd.MM.yyyy HH:mm',
+  yyyyMMddHHmmssXXX = "yyyy-MM-dd'T'HH:mm:ssXXX",
 }
 
 export interface TimeValues {

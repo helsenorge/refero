@@ -183,6 +183,29 @@ describe('autosuggest-view', () => {
         await userEvent.click(getByText('Fyrstekake'));
         expect(queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
       });
+      it('readOnly value should get validation error if error exist', async () => {
+        const questionnaire: Questionnaire = {
+          ...q,
+          item: q.item?.map(x => ({
+            ...x,
+            readOnly: true,
+            required: true,
+            code: [
+              {
+                code: 'ValidateReadOnly',
+                display: 'Valider skrivebeskyttet felt',
+                system: 'http://helsenorge.no/fhir/CodeSystem/ValidationOptions',
+              },
+            ],
+          })),
+        };
+        const { queryByText } = renderRefero({
+          questionnaire,
+        });
+        await submitForm();
+
+        expect(queryByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
+      });
     });
   });
   it('skal kalle fetchValueSet når input endres', async () => {

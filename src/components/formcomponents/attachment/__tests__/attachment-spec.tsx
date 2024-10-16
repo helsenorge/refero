@@ -180,161 +180,184 @@ describe('Attachment', () => {
       );
     });
   });
-  describe('File Type validation', () => {
-    it.skip('When uploading a file - Show error if mime type is NOT among valid types', async () => {
-      const validTypes = [MIME_TYPES_TEST.PNG, MIME_TYPES_TEST.JPG, MIME_TYPES_TEST.PDF];
-      const questionnaire: Questionnaire = {
-        ...q,
-      };
-      createWrapper(questionnaire, { attachmentValidTypes: validTypes });
-      await uploadMockFile(PLAIN_TEXT_3_MB);
-      await submitForm();
-      hasFiletypeError(true);
-    });
-
-    it('When uploading a file - Do NOT show error file type error message when valid mime', async () => {
-      const validTypes = [MIME_TYPES_TEST.PNG, MIME_TYPES_TEST.JPG, MIME_TYPES_TEST.PDF, MIME_TYPES_TEST.PlainText];
-      const questionnaire: Questionnaire = {
-        ...q,
-      };
-      createWrapper(questionnaire, { attachmentValidTypes: validTypes });
-      await uploadMockFile(PLAIN_TEXT_3_MB);
-      await submitForm();
-      hasFiletypeError(false);
-    });
-  });
-
-  describe('File Size validation - Questionnaire Extension', () => {
-    it.skip('When uploading a file - Show resource size error if size > max rule in qItem, item has priority', async () => {
-      const validTypes = [MIME_TYPES_TEST.PlainText];
-      const questionnaire: Questionnaire = {
-        ...q,
-        item: q.item?.map(x => addOReplaceMaxSizeExtension(x, 1)),
-      };
-      createWrapper(questionnaire, { attachmentValidTypes: validTypes, attachmentMaxFileSize: 8 });
-      await uploadMockFile(PLAIN_TEXT_6_MB);
-      await submitForm();
-      hasFileSizeError(true);
-    });
-
-    it.skip('When uploading a file - Show resource size error if size > max rule in referoProps and no maxSize extension is set on the item', async () => {
-      const validTypes = [MIME_TYPES_TEST.PlainText];
+  describe('validation', () => {
+    it('readOnly value should get validation error if error exist', async () => {
       const questionnaire: Questionnaire = {
         ...q,
         item: q.item?.map(x => ({
           ...x,
-          extension: removeExtensionFromItemByUrl(x.extension, ExtensionConstants.MAX_SIZE_URL),
+          readOnly: true,
+          required: true,
+          code: [
+            {
+              code: 'ValidateReadOnly',
+              display: 'Valider skrivebeskyttet felt',
+              system: 'http://helsenorge.no/fhir/CodeSystem/ValidationOptions',
+            },
+          ],
         })),
       };
-      createWrapper(questionnaire, { attachmentValidTypes: validTypes, attachmentMaxFileSize: 3 });
-      await uploadMockFile(PLAIN_TEXT_6_MB);
+      const { getByText } = createWrapper(questionnaire);
       await submitForm();
 
-      hasFileSizeError(true);
+      expect(getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
+    });
+    describe('File Type validation', () => {
+      it.skip('When uploading a file - Show error if mime type is NOT among valid types', async () => {
+        const validTypes = [MIME_TYPES_TEST.PNG, MIME_TYPES_TEST.JPG, MIME_TYPES_TEST.PDF];
+        const questionnaire: Questionnaire = {
+          ...q,
+        };
+        createWrapper(questionnaire, { attachmentValidTypes: validTypes });
+        await uploadMockFile(PLAIN_TEXT_3_MB);
+        await submitForm();
+        hasFiletypeError(true);
+      });
+
+      it('When uploading a file - Do NOT show error file type error message when valid mime', async () => {
+        const validTypes = [MIME_TYPES_TEST.PNG, MIME_TYPES_TEST.JPG, MIME_TYPES_TEST.PDF, MIME_TYPES_TEST.PlainText];
+        const questionnaire: Questionnaire = {
+          ...q,
+        };
+        createWrapper(questionnaire, { attachmentValidTypes: validTypes });
+        await uploadMockFile(PLAIN_TEXT_3_MB);
+        await submitForm();
+        hasFiletypeError(false);
+      });
     });
 
-    it('When uploading a file - Do NOT show resource size error if file size excactly max rule from qItem', async () => {
-      const validTypes = [MIME_TYPES_TEST.PlainText];
-      const questionnaire: Questionnaire = {
-        ...q,
-        item: q.item?.map(x => addOReplaceMaxSizeExtension(x, 6)),
-      };
+    describe('File Size validation - Questionnaire Extension', () => {
+      it.skip('When uploading a file - Show resource size error if size > max rule in qItem, item has priority', async () => {
+        const validTypes = [MIME_TYPES_TEST.PlainText];
+        const questionnaire: Questionnaire = {
+          ...q,
+          item: q.item?.map(x => addOReplaceMaxSizeExtension(x, 1)),
+        };
+        createWrapper(questionnaire, { attachmentValidTypes: validTypes, attachmentMaxFileSize: 8 });
+        await uploadMockFile(PLAIN_TEXT_6_MB);
+        await submitForm();
+        hasFileSizeError(true);
+      });
 
-      createWrapper(questionnaire, { attachmentValidTypes: validTypes, attachmentMaxFileSize: undefined });
-      await uploadMockFile(PLAIN_TEXT_6_MB);
-      await submitForm();
+      it.skip('When uploading a file - Show resource size error if size > max rule in referoProps and no maxSize extension is set on the item', async () => {
+        const validTypes = [MIME_TYPES_TEST.PlainText];
+        const questionnaire: Questionnaire = {
+          ...q,
+          item: q.item?.map(x => ({
+            ...x,
+            extension: removeExtensionFromItemByUrl(x.extension, ExtensionConstants.MAX_SIZE_URL),
+          })),
+        };
+        createWrapper(questionnaire, { attachmentValidTypes: validTypes, attachmentMaxFileSize: 3 });
+        await uploadMockFile(PLAIN_TEXT_6_MB);
+        await submitForm();
 
-      hasFileSizeError(false);
+        hasFileSizeError(true);
+      });
+
+      it('When uploading a file - Do NOT show resource size error if file size excactly max rule from qItem', async () => {
+        const validTypes = [MIME_TYPES_TEST.PlainText];
+        const questionnaire: Questionnaire = {
+          ...q,
+          item: q.item?.map(x => addOReplaceMaxSizeExtension(x, 6)),
+        };
+
+        createWrapper(questionnaire, { attachmentValidTypes: validTypes, attachmentMaxFileSize: undefined });
+        await uploadMockFile(PLAIN_TEXT_6_MB);
+        await submitForm();
+
+        hasFileSizeError(false);
+      });
+
+      it('When uploading a file - And not set Questionnaire item max rule will be read as null and should be skipped', async () => {
+        const validTypes = [MIME_TYPES_TEST.PlainText];
+        const questionnaire: Questionnaire = {
+          ...q,
+          item: q.item?.map(x => ({
+            ...x,
+            extension: removeExtensionFromItemByUrl(x.extension, ExtensionConstants.MAX_SIZE_URL),
+          })),
+        };
+        createWrapper(questionnaire, { attachmentValidTypes: validTypes, attachmentMaxFileSize: undefined });
+        await uploadMockFile(PLAIN_TEXT_6_MB);
+        await submitForm();
+
+        hasFileSizeError(false);
+      });
+
+      it('When uploading a file - And not set Questionnaire item max rule with undefined value should be skipped', async () => {
+        const validTypes = [MIME_TYPES_TEST.PlainText];
+        const questionnaire: Questionnaire = {
+          ...q,
+          item: q.item?.map(x => addOReplaceMaxSizeExtension(x, undefined)),
+        };
+        createWrapper(questionnaire, { attachmentValidTypes: validTypes, attachmentMaxFileSize: undefined });
+        await uploadMockFile(PLAIN_TEXT_6_MB);
+        await submitForm();
+
+        hasFileSizeError(false);
+      });
     });
 
-    it('When uploading a file - And not set Questionnaire item max rule will be read as null and should be skipped', async () => {
-      const validTypes = [MIME_TYPES_TEST.PlainText];
-      const questionnaire: Questionnaire = {
-        ...q,
-        item: q.item?.map(x => ({
-          ...x,
-          extension: removeExtensionFromItemByUrl(x.extension, ExtensionConstants.MAX_SIZE_URL),
-        })),
-      };
-      createWrapper(questionnaire, { attachmentValidTypes: validTypes, attachmentMaxFileSize: undefined });
-      await uploadMockFile(PLAIN_TEXT_6_MB);
-      await submitForm();
+    describe('File validation - Prioritiy of rules', () => {
+      it.skip('When uploading a file - File type errors should have priority over other errors', async () => {
+        const validTypes = [MIME_TYPES_TEST.PNG, MIME_TYPES_TEST.PDF];
+        const questionnaire: Questionnaire = {
+          ...q,
+          item: q.item?.map(x => addOReplaceMaxSizeExtension(x, 1)),
+        };
+        createWrapper(questionnaire, { attachmentValidTypes: validTypes });
+        await uploadMockFile(JPEG_5_MB);
+        await submitForm();
 
-      hasFileSizeError(false);
-    });
+        hasFiletypeError(true);
+        hasFileSizeError(false);
+      });
 
-    it('When uploading a file - And not set Questionnaire item max rule with undefined value should be skipped', async () => {
-      const validTypes = [MIME_TYPES_TEST.PlainText];
-      const questionnaire: Questionnaire = {
-        ...q,
-        item: q.item?.map(x => addOReplaceMaxSizeExtension(x, undefined)),
-      };
-      createWrapper(questionnaire, { attachmentValidTypes: validTypes, attachmentMaxFileSize: undefined });
-      await uploadMockFile(PLAIN_TEXT_6_MB);
-      await submitForm();
+      it('When uploading a file - Questionniare Item Max Rule has priority over props if both set', async () => {
+        const validTypes = [MIME_TYPES_TEST.PNG, MIME_TYPES_TEST.PlainText];
+        const questionnaire: Questionnaire = {
+          ...q,
+          item: q.item?.map(x => addOReplaceMaxSizeExtension(x, 8)),
+        };
+        createWrapper(questionnaire, { attachmentValidTypes: validTypes, attachmentMaxFileSize: 4 });
+        await uploadMockFile(PLAIN_TEXT_6_MB);
+        await submitForm();
+        hasFiletypeError(false);
+        hasFileSizeError(false);
+      });
 
-      hasFileSizeError(false);
-    });
-  });
+      it.skip('When uploading a file - And questionnaire max rule is not set, use props max value if set', async () => {
+        const validTypes = [MIME_TYPES_TEST.PlainText];
+        const questionnaire: Questionnaire = {
+          ...q,
+          item: q.item?.map(x => ({
+            ...x,
+            extension: removeExtensionFromItemByUrl(x.extension, ExtensionConstants.MAX_SIZE_URL),
+          })),
+        };
+        createWrapper(questionnaire, { attachmentValidTypes: validTypes, attachmentMaxFileSize: 4 });
+        await uploadMockFile(PLAIN_TEXT_6_MB);
+        await submitForm();
 
-  describe('File validation - Prioritiy of rules', () => {
-    it.skip('When uploading a file - File type errors should have priority over other errors', async () => {
-      const validTypes = [MIME_TYPES_TEST.PNG, MIME_TYPES_TEST.PDF];
-      const questionnaire: Questionnaire = {
-        ...q,
-        item: q.item?.map(x => addOReplaceMaxSizeExtension(x, 1)),
-      };
-      createWrapper(questionnaire, { attachmentValidTypes: validTypes });
-      await uploadMockFile(JPEG_5_MB);
-      await submitForm();
+        hasFileSizeError(true);
+      });
 
-      hasFiletypeError(true);
-      hasFileSizeError(false);
-    });
+      it.skip('When uploading a file - Refero constant should be fallback if neither qItem rule or props', async () => {
+        const validTypes = [MIME_TYPES_TEST.PlainText];
+        const questionnaire: Questionnaire = {
+          ...q,
+          item: q.item?.map(x => ({
+            ...x,
+            extension: removeExtensionFromItemByUrl(x.extension, ExtensionConstants.MAX_SIZE_URL),
+          })),
+        };
+        createWrapper(questionnaire, { attachmentValidTypes: validTypes, attachmentMaxFileSize: undefined });
+        await uploadMockFile(PLAIN_TEXT_30_MB);
+        await submitForm();
 
-    it('When uploading a file - Questionniare Item Max Rule has priority over props if both set', async () => {
-      const validTypes = [MIME_TYPES_TEST.PNG, MIME_TYPES_TEST.PlainText];
-      const questionnaire: Questionnaire = {
-        ...q,
-        item: q.item?.map(x => addOReplaceMaxSizeExtension(x, 8)),
-      };
-      createWrapper(questionnaire, { attachmentValidTypes: validTypes, attachmentMaxFileSize: 4 });
-      await uploadMockFile(PLAIN_TEXT_6_MB);
-      await submitForm();
-      hasFiletypeError(false);
-      hasFileSizeError(false);
-    });
-
-    it.skip('When uploading a file - And questionnaire max rule is not set, use props max value if set', async () => {
-      const validTypes = [MIME_TYPES_TEST.PlainText];
-      const questionnaire: Questionnaire = {
-        ...q,
-        item: q.item?.map(x => ({
-          ...x,
-          extension: removeExtensionFromItemByUrl(x.extension, ExtensionConstants.MAX_SIZE_URL),
-        })),
-      };
-      createWrapper(questionnaire, { attachmentValidTypes: validTypes, attachmentMaxFileSize: 4 });
-      await uploadMockFile(PLAIN_TEXT_6_MB);
-      await submitForm();
-
-      hasFileSizeError(true);
-    });
-
-    it.skip('When uploading a file - Refero constant should be fallback if neither qItem rule or props', async () => {
-      const validTypes = [MIME_TYPES_TEST.PlainText];
-      const questionnaire: Questionnaire = {
-        ...q,
-        item: q.item?.map(x => ({
-          ...x,
-          extension: removeExtensionFromItemByUrl(x.extension, ExtensionConstants.MAX_SIZE_URL),
-        })),
-      };
-      createWrapper(questionnaire, { attachmentValidTypes: validTypes, attachmentMaxFileSize: undefined });
-      await uploadMockFile(PLAIN_TEXT_30_MB);
-      await submitForm();
-
-      hasFileSizeError(true);
+        hasFileSizeError(true);
+      });
     });
   });
 });

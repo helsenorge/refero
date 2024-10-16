@@ -1,7 +1,8 @@
 import * as fs from 'fs';
 import { Questionnaire } from 'fhir/r4';
 
-const qScriptInjection: Questionnaire = JSON.parse(fs.readFileSync(__dirname + '/q.json').toString());
-const q2: Questionnaire = JSON.parse(fs.readFileSync(__dirname + '/q2.json').toString());
+const q: Questionnaire = JSON.parse(fs.readFileSync(__dirname + '/q.json').toString());
+const qScriptInjection: Questionnaire = JSON.parse(fs.readFileSync(__dirname + '/q-scriptInjection.json').toString());
+const qCustomErrorMessage: Questionnaire = JSON.parse(fs.readFileSync(__dirname + '/q-customErrorMessage.json').toString());
 
-export { qScriptInjection, q2 as q };
+export { q, qScriptInjection, qCustomErrorMessage };

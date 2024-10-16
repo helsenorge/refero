@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import { format, isValid } from 'date-fns';
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
-import { FieldError, FieldValues, useFormContext } from 'react-hook-form';
+import { FieldError, FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
 import styles from '../common-styles.module.css';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 
@@ -15,6 +15,7 @@ import { getId, isReadOnly, isRequired } from '../../../util/index';
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import {
   formatDateToString,
+  getPDFValueForDate,
   isValueFormatDDMMYYYY,
   parseStringToDate,
   validateDate,
@@ -32,6 +33,7 @@ import { GlobalState } from '@/reducers';
 import { useSelector } from 'react-redux';
 import { findQuestionnaireItem } from '@/reducers/selectors';
 import { ReadOnly } from '../read-only/readOnly';
+import { DateFormat } from '@/types/dateTypes';
 
 type DateDayInputProps = QuestionnaireComponentItemProps & {
   locale: LanguageLocales.ENGLISH | LanguageLocales.NORWEGIAN;
@@ -82,36 +84,7 @@ export const DateDayInput = ({
 
   const dateAnswerValue = getDateAnswerValue(answer);
   const date = parseStringToDate(dateAnswerValue);
-
-  const getValue = (
-    item?: QuestionnaireItem,
-    answer?: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[]
-  ): string | string[] | undefined => {
-    if (answer && Array.isArray(answer)) {
-      return answer.map(m => m.valueDate).filter(f => f !== undefined);
-    }
-    if (answer && answer.valueDate !== undefined && answer.valueDate !== null) {
-      return answer.valueDate;
-    }
-    if (!item || !item.initial || item.initial.length === 0 || !item.initial[0].valueDate) {
-      return '';
-    }
-  };
-
-  const getPDFValue = (): string | number => {
-    const value = getValue(item, answer);
-    if (value === undefined || value === null || value === '') {
-      let text = '';
-      if (resources && resources.ikkeBesvart) {
-        text = resources.ikkeBesvart;
-      }
-      return text;
-    }
-    if (Array.isArray(value)) {
-      return value.map(d => d && format(d, 'd. MMMM yyyy')).join(', ');
-    }
-    return format(value, 'd. MMMM yyyy');
-  };
+  const pdfValue = getPDFValueForDate(dateAnswerValue, resources?.ikkeBesvart, DateFormat.yyyyMMdd, DateFormat.dMMyyyy);
 
   const handleChange = (newDate: string | Date | undefined): void => {
     if (typeof newDate === 'string') {
@@ -141,7 +114,7 @@ export const DateDayInput = ({
     }
   };
 
-  const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, {
+  const validationRules: RegisterOptions<FieldValues, string> | undefined = {
     required: {
       value: isRequired(item),
       message: resources?.formRequiredErrorMessage || '',
@@ -165,11 +138,21 @@ export const DateDayInput = ({
       },
     },
     shouldUnregister: true,
-  });
+  };
+
+  const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, pdf ? undefined : validationRules);
 
   if (pdf || isReadOnly(item)) {
     return (
-      <ReadOnly pdf={pdf} id={id} item={item} pdfValue={getPDFValue()} errors={error}>
+      <ReadOnly
+        pdf={pdf}
+        id={id}
+        idWithLinkIdAndItemIndex={idWithLinkIdAndItemIndex}
+        item={item}
+        value={dateAnswerValue}
+        pdfValue={pdfValue}
+        errors={error}
+      >
         {children}
       </ReadOnly>
     );

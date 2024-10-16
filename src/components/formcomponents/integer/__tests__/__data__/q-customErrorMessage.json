@@ -1,9 +1,9 @@
 {
   "resourceType": "Questionnaire",
   "language": "nb-NO",
-  "id": "75dc5309-00ee-4e65-bc07-0e9f87f3311c",
-  "name": "Techinal_boolean",
-  "title": "Title",
+  "id": "4171d6c9-43ee-4f2b-863b-2080beacd382",
+  "name": "Integer_unit_tests",
+  "title": "Tittel",
   "status": "draft",
   "publisher": "NHN",
   "meta": {
@@ -64,64 +64,24 @@
   ],
   "item": [
     {
-      "linkId": "3dec9e0d-7b78-424e-8a59-f0909510985d",
-      "type": "open-choice",
-      "required": true,
-      "answerOption": [
-        {
-          "valueCoding": {
-            "id": "30008dd7-3713-42cd-86c2-da0d3cd5c4c9",
-            "code": "ja",
-            "system": "urn:uuid:b4d3b26f-e0cc-4d56-9574-aea793dc7c4c",
-            "display": "Ja"
-          }
-        },
-        {
-          "valueCoding": {
-            "id": "9719c30a-7a75-46d6-a7b3-edbae7070720",
-            "code": "nei",
-            "system": "urn:uuid:b4d3b26f-e0cc-4d56-9574-aea793dc7c4c",
-            "display": "Nei"
-          }
-        },
-        {
-          "valueCoding": {
-            "id": "79485049-32ba-4e21-9a85-49935cd336cd",
-            "code": "vet-ikke",
-            "system": "urn:uuid:b4d3b26f-e0cc-4d56-9574-aea793dc7c4c",
-            "display": "Vet ikke"
-          }
-        }
-      ],
-      "_text": {
-        "extension": [
-          {
-            "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
-            "valueMarkdown": "**Checkbox view label**"
-          }
-        ]
-      },
-      "text": "Checkbox view label",
-      "maxLength": 20,
+      "linkId": "1cdeacb1-4c4a-4cd3-9b46-7fb3435c3c4e",
+      "type": "integer",
       "extension": [
         {
-          "url": "http://hl7.org/fhir/StructureDefinition/minLength",
+          "url": "http://hl7.org/fhir/StructureDefinition/minValue",
+          "valueInteger": 5
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/maxValue",
           "valueInteger": 10
         },
         {
-          "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sublabel",
-          "valueMarkdown": "**Checkbox view sublabel**"
+          "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
+          "valueString": "Custom error"
         },
         {
-          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-          "valueCodeableConcept": {
-            "coding": [
-              {
-                "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
-                "code": "check-box"
-              }
-            ]
-          }
+          "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sublabel",
+          "valueMarkdown": "min: 5, max: 10, **Custom err**"
         },
         {
           "url": "http://ehelse.no/fhir/StructureDefinition/repeatstext",
@@ -136,10 +96,20 @@
           "valueInteger": 4
         }
       ],
-      "repeats": true,
+      "required": true,
+      "_text": {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+            "valueMarkdown": "Integer - **Markdown**"
+          }
+        ]
+      },
+      "text": "Integer - Markdown",
+      "repeats": false,
       "item": [
         {
-          "linkId": "f799ebd5-7cac-4d15-8b84-2e6037124401",
+          "linkId": "fac9637d-649c-46b3-8511-8b217addf979",
           "type": "text",
           "required": false,
           "repeats": false,
