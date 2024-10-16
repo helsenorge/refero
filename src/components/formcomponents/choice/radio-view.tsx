@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { FieldValues, useFormContext } from 'react-hook-form';
+import { FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
 
 import { Options } from '@/types/formTypes/radioGroupOptions';
 import styles from '../common-styles.module.css';
@@ -43,14 +43,25 @@ const RadioView = (props: Props): JSX.Element => {
 
   const [isHelpVisible, setIsHelpVisible] = useState(false);
   const selectedValue = (selected && selected[0]) || '';
-  const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, {
+
+  const validationRules: RegisterOptions<FieldValues, string> | undefined = {
     required: required({ item, resources }),
     shouldUnregister: true,
-  });
+  };
+
+  const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, pdf ? undefined : validationRules);
 
   if (pdf || isReadOnly(item)) {
     return (
-      <ReadOnly pdf={pdf} id={id} item={item} pdfValue={pdfValue} errors={error}>
+      <ReadOnly
+        pdf={pdf}
+        id={id}
+        idWithLinkIdAndItemIndex={idWithLinkIdAndItemIndex}
+        item={item}
+        value={selected}
+        pdfValue={pdfValue}
+        errors={error}
+      >
         {children}
       </ReadOnly>
     );

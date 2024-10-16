@@ -6,6 +6,8 @@ export const SliderLabels = 'http://helsenorge.no/fhir/CodeSystem/SliderLabels' 
 export const SliderDisplayType = 'http://helsenorge.no/fhir/CodeSystem/SliderDisplayType' as const;
 export const RenderingOptions = 'http://helsenorge.no/fhir/CodeSystem/RenderOptions' as const;
 export const OpenChoice_system = 'http://helsenorge.no/fhir/CodeSystem/open-choice' as const;
+export const ValidationOptions = 'http://helsenorge.no/fhir/CodeSystem/ValidationOptions' as const;
+
 const codeSystems = {
   RenderingOptions,
   TableColumnName,
@@ -15,6 +17,7 @@ const codeSystems = {
   SliderLabels,
   SliderDisplayType,
   OpenChoice_system,
+  ValidationOptions,
 };
 
 export type CodeSystems = typeof codeSystems;

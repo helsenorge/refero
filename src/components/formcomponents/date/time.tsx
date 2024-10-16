@@ -13,8 +13,15 @@ import { GlobalState, useAppDispatch } from '@/reducers';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import { DateTime, DateTimePickerWrapper } from '@helsenorge/datepicker/components/DatePicker';
 import styles from '../common-styles.module.css';
-import { FieldError, FieldValues, useFormContext } from 'react-hook-form';
-import { extractHoursAndMinutesFromAnswer, validateHours, validateMaxTime, validateMinTime, validateMinutes } from '@/util/date-utils';
+import { FieldError, FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
+import {
+  extractHoursAndMinutesFromAnswer,
+  getPDFValueForTime,
+  validateHours,
+  validateMaxTime,
+  validateMinTime,
+  validateMinutes,
+} from '@/util/date-utils';
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import RenderHelpButton from '../help-button/RenderHelpButton';
 import RenderHelpElement from '../help-button/RenderHelpElement';
@@ -42,6 +49,13 @@ const Time = ({ id, index, path, linkId, pdf, idWithLinkIdAndItemIndex, children
   const hoursAndMinutesFromAnswer = extractHoursAndMinutesFromAnswer(answer, item);
   const hours = hoursAndMinutesFromAnswer?.hours;
   const minutes = hoursAndMinutesFromAnswer?.minutes;
+
+  const getTimeValueFromAnswer = (): string | undefined => {
+    if (!answer) return undefined;
+
+    const answerItem = Array.isArray(answer) ? answer[0] : answer;
+    return answerItem ? answerItem.valueTime : '';
+  };
 
   useEffect(() => {
     setValue(`${idWithLinkIdAndItemIndex}-hours`, hours);
@@ -110,21 +124,7 @@ const Time = ({ id, index, path, linkId, pdf, idWithLinkIdAndItemIndex, children
     return error;
   }
 
-  const getPDFValue = (): string | undefined => {
-    const hoursAndMinutesValue = extractHoursAndMinutesFromAnswer(answer, item);
-    const hoursValue = hoursAndMinutesFromAnswer?.hours;
-    const minutesValue = hoursAndMinutesFromAnswer?.minutes;
-    if (hoursAndMinutesValue === null || hoursAndMinutesValue === undefined) {
-      let text = '';
-      if (resources && resources.ikkeBesvart) {
-        text = resources.ikkeBesvart;
-      }
-      return text;
-    }
-    return `${'kl. '} ${hoursValue}:${minutesValue}`;
-  };
-
-  const registerHours = register(`${idWithLinkIdAndItemIndex}-hours`, {
+  const validationRulesHours: RegisterOptions<FieldValues, string> | undefined = {
     required: {
       value: isRequired(item),
       message: resources?.formRequiredErrorMessage || '',
@@ -144,8 +144,9 @@ const Time = ({ id, index, path, linkId, pdf, idWithLinkIdAndItemIndex, children
       },
     },
     shouldUnregister: true,
-  });
-  const registerMinutes = register(`${idWithLinkIdAndItemIndex}-minutes`, {
+  };
+
+  const validationRulesMinutes: RegisterOptions<FieldValues, string> | undefined = {
     required: {
       value: isRequired(item),
       message: resources?.formRequiredErrorMessage || '',
@@ -157,11 +158,25 @@ const Time = ({ id, index, path, linkId, pdf, idWithLinkIdAndItemIndex, children
       },
     },
     shouldUnregister: true,
-  });
+  };
+
+  const { onChange: onChangeHours, ...restHours } = register(`${idWithLinkIdAndItemIndex}-hours`, pdf ? undefined : validationRulesHours);
+  const { onChange: onChangeMinutes, ...restMinutes } = register(
+    `${idWithLinkIdAndItemIndex}-minutes`,
+    pdf ? undefined : validationRulesMinutes
+  );
 
   if (pdf || isReadOnly(item)) {
     return (
-      <ReadOnly pdf={pdf} id={id} item={item} pdfValue={getPDFValue()} errors={getCombinedFieldError(hoursField, minutesField)}>
+      <ReadOnly
+        pdf={pdf}
+        id={id}
+        idWithLinkIdAndItemIndex={idWithLinkIdAndItemIndex}
+        item={item}
+        value={getTimeValueFromAnswer()}
+        pdfValue={getPDFValueForTime(answer, item, resources)}
+        errors={getCombinedFieldError(hoursField, minutesField)}
+      >
         {children}
       </ReadOnly>
     );
@@ -182,25 +197,25 @@ const Time = ({ id, index, path, linkId, pdf, idWithLinkIdAndItemIndex, children
         <RenderHelpElement isHelpVisible={isHelpVisible} item={item} />
         <DateTimePickerWrapper>
           <DateTime
-            {...registerHours}
+            {...restHours}
             inputId={`${getId(id)}-datetime-hours`}
             testId={`time-1`}
             defaultValue={Number(hours)}
             timeUnit="hours"
             onChange={e => {
               handleHoursChange(e.target.value);
-              registerHours.onChange(e);
+              onChangeHours(e);
             }}
           />
 
           <DateTime
-            {...registerMinutes}
+            {...restMinutes}
             testId={`time-2`}
             defaultValue={Number(minutes)}
             timeUnit="minutes"
             onChange={e => {
               handleMinutesChange(e.target.value);
-              registerMinutes.onChange(e);
+              onChangeMinutes(e);
             }}
           />
         </DateTimePickerWrapper>

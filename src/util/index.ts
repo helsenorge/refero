@@ -23,6 +23,8 @@ import Constants from '../constants/index';
 import { RenderOptionCode } from '../constants/renderOptionCode';
 import { TableCodes } from '../constants/tableTypes';
 import { Resources } from '@/util/resources';
+import codeSystems from '../constants/codingsystems';
+import { VALIDATE_READONLY_CODE } from '@/constants/codes';
 
 function openNewIfAbsolute(url: string): string {
   const regex = new RegExp('^(([a-z][a-z0-9+.-]*):.*)');
@@ -53,6 +55,10 @@ export function isReadOnly(item?: QuestionnaireItem): boolean {
     return item.readOnly;
   }
   return false;
+}
+
+export function shouldValidateReadOnly(item?: QuestionnaireItem): boolean {
+  return getQuestionnaireItemCodeValue(item, codeSystems.ValidationOptions) === VALIDATE_READONLY_CODE;
 }
 
 export function isRequired(item?: QuestionnaireItem): boolean {

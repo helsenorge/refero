@@ -1,16 +1,27 @@
 {
+  "title": "test_schema",
+  "description": "test_schema",
   "resourceType": "Questionnaire",
   "language": "nb-NO",
-  "id": "c3d97c84-b148-486e-c893-e0a20f3da042",
-  "name": "NHN_Testskjema_TextBox",
-  "title": "Testskjema tekstboks",
-  "version": "0.1",
+  "name": "TestSchema",
   "status": "draft",
   "publisher": "NHN",
   "meta": {
     "profile": ["http://ehelse.no/fhir/StructureDefinition/sdf-Questionnaire"],
-    "tag": [{ "system": "urn:ietf:bcp:47", "code": "nb-NO", "display": "Bokmål" }],
-    "security": [{ "code": "3", "display": "Helsehjelp (Full)", "system": "urn:oid:2.16.578.1.12.4.1.1.7618" }]
+    "tag": [
+      {
+        "system": "urn:ietf:bcp:47",
+        "code": "nb-NO",
+        "display": "Bokmål"
+      }
+    ],
+    "security": [
+      {
+        "code": "3",
+        "display": "Helsehjelp (Full)",
+        "system": "urn:oid:2.16.578.1.12.4.1.1.7618"
+      }
+    ]
   },
   "contact": [{ "name": "http://www.nhn.no" }],
   "subjectType": ["Patient"],

@@ -1,9 +1,8 @@
 {
+  "title": "Tittel",
   "resourceType": "Questionnaire",
   "language": "nb-NO",
-  "id": "75dc5309-00ee-4e65-bc07-0e9f87f3311c",
-  "name": "Techinal_boolean",
-  "title": "Title",
+  "name": "Teknisk_string",
   "status": "draft",
   "publisher": "NHN",
   "meta": {
@@ -62,70 +61,23 @@
       }
     }
   ],
+  "id": "a2c22f04-f4b1-45d8-8731-67239b1dbc6b",
   "item": [
     {
-      "linkId": "3dec9e0d-7b78-424e-8a59-f0909510985d",
-      "type": "open-choice",
-      "required": true,
-      "answerOption": [
-        {
-          "valueCoding": {
-            "id": "30008dd7-3713-42cd-86c2-da0d3cd5c4c9",
-            "code": "ja",
-            "system": "urn:uuid:b4d3b26f-e0cc-4d56-9574-aea793dc7c4c",
-            "display": "Ja"
-          }
-        },
-        {
-          "valueCoding": {
-            "id": "9719c30a-7a75-46d6-a7b3-edbae7070720",
-            "code": "nei",
-            "system": "urn:uuid:b4d3b26f-e0cc-4d56-9574-aea793dc7c4c",
-            "display": "Nei"
-          }
-        },
-        {
-          "valueCoding": {
-            "id": "79485049-32ba-4e21-9a85-49935cd336cd",
-            "code": "vet-ikke",
-            "system": "urn:uuid:b4d3b26f-e0cc-4d56-9574-aea793dc7c4c",
-            "display": "Vet ikke"
-          }
-        }
-      ],
-      "_text": {
-        "extension": [
-          {
-            "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
-            "valueMarkdown": "**Checkbox view label**"
-          }
-        ]
-      },
-      "text": "Checkbox view label",
-      "maxLength": 20,
+      "linkId": "9f296680-528a-4496-daf8-89771bc1f19c",
+      "type": "text",
       "extension": [
+        {
+          "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sublabel",
+          "valueMarkdown": "**String sublabel**"
+        },
+        {
+          "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
+          "valueString": "Custom error"
+        },
         {
           "url": "http://hl7.org/fhir/StructureDefinition/minLength",
           "valueInteger": 10
-        },
-        {
-          "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sublabel",
-          "valueMarkdown": "**Checkbox view sublabel**"
-        },
-        {
-          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-          "valueCodeableConcept": {
-            "coding": [
-              {
-                "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control",
-                "code": "check-box"
-              }
-            ]
-          }
-        },
-        {
-          "url": "http://ehelse.no/fhir/StructureDefinition/repeatstext",
-          "valueString": "Legg til"
         },
         {
           "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-minOccurs",
@@ -134,12 +86,19 @@
         {
           "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-maxOccurs",
           "valueInteger": 4
+        },
+        {
+          "url": "http://ehelse.no/fhir/StructureDefinition/repeatstext",
+          "valueString": "Legg til"
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/regex",
+          "valueString": "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$"
         }
       ],
-      "repeats": true,
       "item": [
         {
-          "linkId": "f799ebd5-7cac-4d15-8b84-2e6037124401",
+          "linkId": "886ba9d4-e7cd-4c23-b581-46ea81a1deca",
           "type": "text",
           "required": false,
           "repeats": false,
@@ -167,7 +126,19 @@
             }
           ]
         }
-      ]
+      ],
+      "required": true,
+      "_text": {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+            "valueMarkdown": "**String markdown**"
+          }
+        ]
+      },
+      "text": "String markdown",
+      "maxLength": 20,
+      "repeats": true
     }
   ]
 }
