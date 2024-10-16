@@ -6,9 +6,58 @@
     <title>Preview schema</title>
   </head>
   <body>
+    
     <div id="root"></div>
     <script type="module" src="main.tsx">
       window.global = window;
+    </script>
+    <script>
+        class HnDisplay extends HTMLElement {
+            static get observedAttributes() {
+                return ['text'];
+            }
+
+            constructor() {
+                super();
+                this.attachShadow({ mode: 'open' });
+
+                // Create a container to hold the SVG and text
+                this.container = document.createElement('div');
+                this.kittenSvg = `
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="100" height="100">
+                        <circle cx="12" cy="12" r="10" fill="#f4a261" />
+                        <circle cx="8" cy="10" r="1.5" fill="#000" />
+                        <circle cx="16" cy="10" r="1.5" fill="#000" />
+                        <path d="M9,16 Q12,18 15,16" stroke="#000" stroke-width="1.5" fill="none" />
+                    </svg>
+                `;
+
+                // Initial rendering of the component
+                this.updateContent();
+
+                // Attach the container to the shadow DOM
+                this.shadowRoot.appendChild(this.container);
+            }
+
+            attributeChangedCallback(name, oldValue, newValue) {
+                if (name === 'text') {
+                    this.updateContent();
+                }
+            }
+
+            updateContent() {
+                const text = this.getAttribute('text') || '';
+                this.container.innerHTML = `
+                    ${this.kittenSvg}
+                    <p>Text fra webcomponent</p>
+                    <p>${text}</p>
+
+                `;
+            }
+        }
+
+        // Register the web component
+        customElements.define('hn-display', HnDisplay);
     </script>
   </body>
 </html>

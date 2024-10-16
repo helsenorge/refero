@@ -1,7 +1,7 @@
 import designsystemtypography from '@helsenorge/designsystem-react/scss/typography.module.scss';
 
 import itemControlConstants from '@/constants/itemcontrol';
-import { getItemControlExtensionValue, getMarkdownExtensionValue } from '@/util/extension';
+import { getExtension, getItemControlExtensionValue, getMarkdownExtensionValue } from '@/util/extension';
 import { renderPrefix, getText, getId } from '@/util/index';
 
 import SafeText from '@/components/referoLabel/SafeText';
@@ -13,12 +13,15 @@ import { getFormDefinition } from '@/reducers/form';
 import { QuestionnaireItem } from 'fhir/r4';
 import { findQuestionnaireItem } from '@/reducers/selectors';
 import { memo } from 'react';
+import { useCustomElement } from '@/POC/useCustomElement';
 
 export type Props = QuestionnaireComponentItemProps;
-
 const Display = memo(function Display({ id, pdf, linkId }: Props): JSX.Element | null {
   const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
-
+  const element = useCustomElement(item);
+  if (element) {
+    return element;
+  }
   const { onRenderMarkdown, resources } = useExternalRenderContext();
   const formDefinition = useSelector((state: GlobalState) => getFormDefinition(state));
   const questionnaire = formDefinition?.Content;

@@ -2,10 +2,10 @@ import { memo, useContext } from 'react';
 import { QuestionnaireItem, Resource } from 'fhir/r4';
 import { RenderContext } from '@/util/renderContext';
 import { isHiddenItem } from '@/util/index';
-import { getCodingTextTableValues } from '@/util/extension';
+
 import { isHelpItem } from '@/util/help';
 import { createPathForItem, Path } from '@/util/refero-core';
-import { getComponentForItem } from './utils';
+
 import { RenderResponseItems } from './RenderResponseItems';
 
 import { FormData } from '@/reducers/form';
