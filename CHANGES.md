@@ -1,3 +1,6 @@
+## 16.0.0-beta.42
+- Made validation possible for readOnly fields
+
 ## 16.0.0-beta.41
 - Added redux toolkit
 
