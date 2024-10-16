@@ -11,7 +11,7 @@ type Props = {
   id?: string;
   idWithLinkIdAndItemIndex?: string;
   item?: QuestionnaireItem;
-  value?: string | number | number[] | Attachment | Attachment[] | undefined;
+  value?: string | (string | undefined)[] | number | number[] | Attachment | Attachment[] | undefined;
   pdfValue?: string | number;
   errors?: FieldError;
   textClass?: string;
