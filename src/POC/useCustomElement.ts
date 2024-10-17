@@ -7,6 +7,7 @@ import { GlobalState } from '@/reducers';
 import { getFormDefinition } from '@/reducers/form';
 import { getText } from '@/util';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
+import { SanitizeText } from '@/util/sanitize/domPurifyHelper';
 
 export const useCustomElement = (item?: QuestionnaireItem): JSX.Element | null => {
   const customElementExtension = getExtension(CUSTOM_ELEMENT_EXTENSION_URL, item);
@@ -24,10 +25,9 @@ export const useCustomElement = (item?: QuestionnaireItem): JSX.Element | null =
 
   useEffect(() => {
     if (customElementRef.current) {
-      customElementRef.current.setAttribute('text', markdown ? markdown : text || '');
+      customElementRef.current.setAttribute('text', markdown ? SanitizeText(text) : text || '');
     }
   }, [customElementRef]);
-
   return createElement(elementName, {
     ref: customElementRef,
   });

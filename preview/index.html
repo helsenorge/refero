@@ -21,7 +21,6 @@
                 super();
                 this.attachShadow({ mode: 'open' });
 
-                // Create a container to hold the SVG and text
                 this.container = document.createElement('div');
                 this.kittenSvg = `
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="100" height="100">
@@ -32,10 +31,7 @@
                     </svg>
                 `;
 
-                // Initial rendering of the component
                 this.updateContent();
-
-                // Attach the container to the shadow DOM
                 this.shadowRoot.appendChild(this.container);
             }
 
