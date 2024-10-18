@@ -273,7 +273,7 @@ const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, childr
           />
         </DateTimePickerWrapper>
         <RenderDeleteButton item={item} path={path} index={index} className="page_refero__deletebutton--margin-top" />
-        <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} />
+        <RenderRepeatButton path={path} item={item} index={index} />
         {children ? <div className="nested-fieldset nested-fieldset--full-height">{children}</div> : null}
       </FormGroup>
     </div>
