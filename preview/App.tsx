@@ -3,7 +3,6 @@ import './init';
 import { useState } from 'react';
 import './styles/skjemautfyller.scss';
 import './styles/sidebar.scss';
-import './styles/refero.scss';
 
 import FormFillerPreview from './FormFillerPreview';
 
