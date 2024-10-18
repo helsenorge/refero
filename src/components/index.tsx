@@ -85,11 +85,11 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
   componentDidMount(): void {
     this.props.mount();
     // eslint-disable-next-line no-console
-    console.log("--- Refero component did mount ---");
+    console.log("---------------- Refero loaded OK ----------------");
     // eslint-disable-next-line no-console
-    console.log("Is microweb? " + this.props.isMicroweb);
+    console.log("Refero: Is microweb? " + this.props.isMicroweb);
     // eslint-disable-next-line no-console
-    console.log("Is microweb step? " + this.props.isMicrowebStep);
+    console.log("Refero: Is microweb step? " + this.props.isMicrowebStep);
   }
 
   componentDidUpdate(): void {
@@ -322,6 +322,10 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
       onStepChange,
       isMicroweb, 
       isMicrowebStep,
+      onStepProcessBack,
+      onStepProcessCancel,
+      onStepProcessForward,
+      onCancelMicroweb
     } = this.props;
     if (!formDefinition || !resources) {
       return;
@@ -341,6 +345,10 @@ class Refero extends React.Component<StateProps & DispatchProps & ReferoProps, S
       onStepChange,
       isMicroweb, 
       isMicrowebStep,  // TODO - need callbacks here too?
+      onStepProcessBack,
+      onStepProcessCancel,
+      onStepProcessForward,
+      onCancelMicroweb
     };
 
     return (

@@ -38,14 +38,9 @@ const RenderForm = ({
   const displayPauseButtonInNormalView = referoProps.onSave ? onSave : undefined;
   const displayPauseButtonInStepView = displayPreviousButton ? previousStep : undefined;
 
-  // eslint-disable-next-line no-console
-  console.log('Refero - RenderForm is microweb?', referoProps.isMicroweb);
-  // eslint-disable-next-line no-console
-  console.log('Refero - RenderForm is microweb step?', referoProps.isMicrowebStep);
-
   if ( referoProps.isMicrowebStep && isStepView) {
     // eslint-disable-next-line no-console
-    console.warn("Stegvisning i Skjema er ikke støttet i Microweb step modus");
+    console.warn("Refero: Stegvisning i Skjema er ikke støttet i Microweb step modus");
   }
 
   const buttonOrderStepView = {
@@ -101,18 +96,14 @@ const RenderForm = ({
       }
   }
 
-  const processStepBackCalled = (): void => { 
-      // eslint-disable-next-line no-console
-      // eslint-disable-next-line no-console
-      console.log("Step back called");
-      referoProps.onStepProcessBack
-  };
 
   const getOnPauseCallBackToUse = (isMicroweb: boolean | undefined): (() => void) | undefined => {
     // Important to check isMicroweb first since it should take precedence even though stepView is true 
     // since in process flow
     if ( isMicroweb ) {
-      return processStepBackCalled;
+      // eslint-disable-next-line no-console
+      console.log("Debug: Microweb and Step back called - ");
+      return referoProps.onStepProcessBack;
     }
     if (isStepView ) {
       return displayPauseButtonInStepView;
@@ -130,18 +121,40 @@ const RenderForm = ({
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const handleCancel = () => {
     // eslint-disable-next-line no-console
-    console.log('handleCancel called');
+    console.log('Refero: HandleCancel called');
     if ( referoProps.isMicrowebStep ) {
+        // eslint-disable-next-line no-console
+        console.log("Refero: Is microwebsstep");
+        
         if ( referoProps.onStepProcessCancel ) {
+            // eslint-disable-next-line no-console
+            console.log("Refero: Cancel callback is set OK");
           // eslint-disable-next-line no-console
-          console.log("Invoking cancel callback");
+          console.log("Refero: Invoking cancel callback");
           return referoProps.onStepProcessCancel();
+        } else {
+          // eslint-disable-next-line no-console
+          console.log("Cancel callback is not set");
         }
     }
     if (referoProps.onCancel) {
       return referoProps.onCancel;
     }
   };
+
+
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+  const handleSubmit = () => {
+
+     if ( referoProps.isMicrowebStep ) {
+        if ( referoProps.onStepProcessForward)
+        {
+        referoProps.onStepProcessForward();
+     }
+    }
+
+      return onSubmit
+  }
 
 
   return (
@@ -153,7 +166,7 @@ const RenderForm = ({
             disabled={referoProps.blockSubmit}
             submitButtonText={displayNextButton ? resources.nextStep : resources.formSend}
             errorMessage={resources.formError}
-            onSubmit={displayNextButton ? nextStep : onSubmit}
+            onSubmit={displayNextButton ? nextStep : handleSubmit()}
             requiredLabel={resources.formRequired}
             optionalLabel={resources.formOptional}
             cancelButtonText={resources.formCancel}
