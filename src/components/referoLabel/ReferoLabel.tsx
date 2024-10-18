@@ -53,11 +53,9 @@ export const ReferoLabel = ({
           <div className={`${styles.textOptionalWrapper}`}>
             <SafeText as="span" text={`${lblText}`} className={`${styles.referoLabelSafetext} referoLabelSafetext`} />
             {!isRequired(item) && !isReadOnly(item) ? (
-              <span
-                className={`${styles.LabelOptionalText} LabelOptionalText`}
-              >{` ${dateLabel ?? ''} ${resources?.formOptional || ` (Valgfritt)`}`}</span>
+              <span className={`${styles.LabelOptionalText}`}>{` ${dateLabel || ''} ${resources?.formOptional || ` (Valgfritt)`}`}</span>
             ) : (
-              dateLabel ?? <span className={`${styles.LabelOptionalText} LabelOptionalText`}>{dateLabel}</span>
+              dateLabel && <span className={`${styles.LabelOptionalText}`}>{dateLabel}</span>
             )}
           </div>
         </Label>
