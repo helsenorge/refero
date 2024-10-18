@@ -61,7 +61,7 @@ export function syncQuestionnaireResponse(q: Questionnaire, qr: QuestionnaireRes
 }
 
 function synQuestionnaireResponseItem(qItem: QuestionnaireItem, qrItem: QuestionnaireResponseItem): QuestionnaireResponseItem {
-  const newQrItem = { ...qrItem }; // Create a copy of qrItem
+  const newQrItem = JSON.parse(JSON.stringify(qrItem));
   const qrItemCopy: QuestionnaireResponseItem[] = [];
   const qrAnswerItemCopy: QuestionnaireResponseItem[] = [];
   const qrItems = createDictionary(qrItem.item || []);

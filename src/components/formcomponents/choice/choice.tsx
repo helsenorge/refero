@@ -1,4 +1,4 @@
-import { Coding, QuestionnaireItem } from 'fhir/r4';
+import { Coding, QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 
 import CheckboxView from './checkbox-view';
 import DropdownView from './dropdown-view';
@@ -27,19 +27,19 @@ import { useCallback, useEffect, useMemo } from 'react';
 import { findQuestionnaireItem } from '@/reducers/selectors';
 import useOnAnswerChange from '@/hooks/useOnAnswerChange';
 import { ReadOnly } from '../read-only/readOnly';
+import { isDataReceiver } from '@/util';
 
 export type ChoiceProps = QuestionnaireComponentItemProps;
 
 export const Choice = (props: ChoiceProps): JSX.Element | null => {
   const { containedResources, path, linkId, children } = props;
-
   const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
+  const answer = useGetAnswer(linkId, path);
 
   const { promptLoginMessage, globalOnChange, resources } = useExternalRenderContext();
+  const dispatch = useAppDispatch();
   const onAnswerChange = useOnAnswerChange(globalOnChange);
 
-  const dispatch = useAppDispatch();
-  const answer = useGetAnswer(linkId, path);
   useEffect(() => {
     if (!Array.isArray(answer) && answer?.valueCoding?.code && !answer?.valueCoding?.display) {
       if (answer?.valueCoding?.code === item?.initial?.[0]?.valueCoding?.code) {
@@ -72,6 +72,16 @@ export const Choice = (props: ChoiceProps): JSX.Element | null => {
   }, [getAnswerValue, getInitialValue]);
 
   const getPDFValue = (): string => {
+    const getDataReceiverValue = (answer: Array<QuestionnaireResponseItemAnswer>): (string | undefined)[] => {
+      return answer.map((el: QuestionnaireResponseItemAnswer) => {
+        if (el && el.valueCoding && el.valueCoding.display) {
+          return el.valueCoding.display;
+        }
+      });
+    };
+    if (isDataReceiver(item)) {
+      return getDataReceiverValue(answer as Array<QuestionnaireResponseItemAnswer>).join(', ');
+    }
     const value = getValue();
     if (!value) {
       return resources?.ikkeBesvart || '';

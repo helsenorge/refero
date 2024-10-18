@@ -1,6 +1,6 @@
 import { Questionnaire, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { findByRole, renderRefero, userEvent } from '@test/test-utils.tsx';
-import { q } from './__data__';
+import { q, qCustomErrorMessage } from './__data__';
 import { ReferoProps } from '../../../../types/referoProps';
 import { Extensions } from '../../../../constants/extensions';
 import { clickButtonTimes, submitForm, typeByLabelText } from '../../../../../test/selectors';
@@ -224,12 +224,33 @@ describe('Integer', () => {
         await userEvent.tab();
         expect(queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
       });
+      it('readOnly value should get validation error if error exist', async () => {
+        const questionnaire: Questionnaire = {
+          ...q,
+          item: q.item?.map(x => ({
+            ...x,
+            readOnly: true,
+            required: true,
+            code: [
+              {
+                code: 'ValidateReadOnly',
+                display: 'Valider skrivebeskyttet felt',
+                system: 'http://helsenorge.no/fhir/CodeSystem/ValidationOptions',
+              },
+            ],
+          })),
+        };
+        const { queryByText } = createWrapper(questionnaire);
+        await submitForm();
+
+        expect(queryByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
+      });
     });
     describe('maxValue', () => {
       it('Should not show error if value is empty', async () => {
         const questionnaire: Questionnaire = {
-          ...q,
-          item: q.item?.map(x => ({ ...x, required: false })),
+          ...qCustomErrorMessage,
+          item: qCustomErrorMessage.item?.map(x => ({ ...x, required: false })),
         };
         const { queryByText } = createWrapper(questionnaire);
         await submitForm();
@@ -238,8 +259,8 @@ describe('Integer', () => {
       });
       it('Should not show error if value is bellow max value (10) and over min(5)', async () => {
         const questionnaire: Questionnaire = {
-          ...q,
-          item: q.item?.map(x => ({ ...x, required: false })),
+          ...qCustomErrorMessage,
+          item: qCustomErrorMessage.item?.map(x => ({ ...x, required: false })),
         };
         const { queryByText } = createWrapper(questionnaire);
         await typeByLabelText(/Integer/i, '8');
@@ -249,8 +270,8 @@ describe('Integer', () => {
       });
       it('Should remove error on change if form is submitted', async () => {
         const questionnaire: Questionnaire = {
-          ...q,
-          item: q.item?.map(x => ({ ...x, required: false })),
+          ...qCustomErrorMessage,
+          item: qCustomErrorMessage.item?.map(x => ({ ...x, required: false })),
         };
         const { getByText, queryByText } = createWrapper(questionnaire);
         await typeByLabelText(/Integer/i, '12');
@@ -265,8 +286,8 @@ describe('Integer', () => {
     describe('minValue', () => {
       it('Should not show error if value is empty', async () => {
         const questionnaire: Questionnaire = {
-          ...q,
-          item: q.item?.map(x => ({ ...x, required: false })),
+          ...qCustomErrorMessage,
+          item: qCustomErrorMessage.item?.map(x => ({ ...x, required: false })),
         };
         const { queryByText } = createWrapper(questionnaire);
         await submitForm();
@@ -274,7 +295,7 @@ describe('Integer', () => {
         expect(queryByText('Custom error')).not.toBeInTheDocument();
       });
       it('Should not show error if value is bellow max value (10) and over min(5)', async () => {
-        const questionnaire = addManyPropertiesToQuestionnaireItem(q, [{ property: 'required', value: false }]);
+        const questionnaire = addManyPropertiesToQuestionnaireItem(qCustomErrorMessage, [{ property: 'required', value: false }]);
 
         const { queryByText } = createWrapper(questionnaire);
         await typeByLabelText(/Integer/i, '8');
@@ -284,8 +305,8 @@ describe('Integer', () => {
       });
       it('Should remove error on change if form is submitted', async () => {
         const questionnaire: Questionnaire = {
-          ...q,
-          item: q.item?.map(x => ({ ...x, required: false })),
+          ...qCustomErrorMessage,
+          item: qCustomErrorMessage.item?.map(x => ({ ...x, required: false })),
         };
         const { getByText, queryByText } = createWrapper(questionnaire);
         await typeByLabelText(/Integer/i, '3');

@@ -1,6 +1,6 @@
 import { Questionnaire, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { findByRole, renderRefero, userEvent } from '@test/test-utils.tsx';
-import { q } from './__data__';
+import { q, qCustomErrorMessage } from './__data__';
 import { ReferoProps } from '../../../../types/referoProps';
 import { Extensions } from '../../../../constants/extensions';
 import { clickButtonTimes, submitForm } from '../../../../../test/selectors';
@@ -305,12 +305,33 @@ describe('Quantity', () => {
         await userEvent.tab();
         expect(queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
       });
+      it('readOnly value should get validation error if error exist', async () => {
+        const questionnaire: Questionnaire = {
+          ...q,
+          item: q.item?.map(x => ({
+            ...x,
+            readOnly: true,
+            required: true,
+            code: [
+              {
+                code: 'ValidateReadOnly',
+                display: 'Valider skrivebeskyttet felt',
+                system: 'http://helsenorge.no/fhir/CodeSystem/ValidationOptions',
+              },
+            ],
+          })),
+        };
+        const { queryByText } = createWrapper(questionnaire);
+        await submitForm();
+
+        expect(queryByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
+      });
     });
     describe('maxValue', () => {
       it('Should not show error if value is empty', async () => {
         const questionnaire: Questionnaire = {
-          ...q,
-          item: q.item?.map(x => ({ ...x, required: false })),
+          ...qCustomErrorMessage,
+          item: qCustomErrorMessage.item?.map(x => ({ ...x, required: false })),
         };
         const { queryByText } = createWrapper(questionnaire);
         await submitForm();
@@ -319,8 +340,8 @@ describe('Quantity', () => {
       });
       it('Should not show error if value is bellow max value (10) and over min(5)', async () => {
         const questionnaire: Questionnaire = {
-          ...q,
-          item: q.item?.map(x => ({ ...x, required: false })),
+          ...qCustomErrorMessage,
+          item: qCustomErrorMessage.item?.map(x => ({ ...x, required: false })),
         };
         const { getByLabelText, queryByText } = createWrapper(questionnaire);
         await userEvent.type(getByLabelText(/Quantity/i), '8');
@@ -330,8 +351,8 @@ describe('Quantity', () => {
       });
       it('Should remove error on change if form is submitted', async () => {
         const questionnaire: Questionnaire = {
-          ...q,
-          item: q.item?.map(x => ({ ...x, required: false })),
+          ...qCustomErrorMessage,
+          item: qCustomErrorMessage.item?.map(x => ({ ...x, required: false })),
         };
         const { getByText, queryByText, getByLabelText } = createWrapper(questionnaire);
         await userEvent.type(getByLabelText(/Quantity/i), '12');
@@ -347,8 +368,8 @@ describe('Quantity', () => {
     describe('minValue', () => {
       it('Should not show error if value is empty', async () => {
         const questionnaire: Questionnaire = {
-          ...q,
-          item: q.item?.map(x => ({ ...x, required: false })),
+          ...qCustomErrorMessage,
+          item: qCustomErrorMessage.item?.map(x => ({ ...x, required: false })),
         };
         const { queryByText } = createWrapper(questionnaire);
         await submitForm();
@@ -357,8 +378,8 @@ describe('Quantity', () => {
       });
       it('Should not show error if value is bellow max value (10) and over min(5)', async () => {
         const questionnaire: Questionnaire = {
-          ...q,
-          item: q.item?.map(x => ({ ...x, required: false })),
+          ...qCustomErrorMessage,
+          item: qCustomErrorMessage.item?.map(x => ({ ...x, required: false })),
         };
         const { getByLabelText, queryByText } = createWrapper(questionnaire);
         await userEvent.type(getByLabelText(/Quantity/i), '8');
@@ -368,8 +389,8 @@ describe('Quantity', () => {
       });
       it('Should remove error on change if form is submitted', async () => {
         const questionnaire: Questionnaire = {
-          ...q,
-          item: q.item?.map(x => ({ ...x, required: false })),
+          ...qCustomErrorMessage,
+          item: qCustomErrorMessage.item?.map(x => ({ ...x, required: false })),
         };
         const { queryByText, getByLabelText } = createWrapper(questionnaire);
         await userEvent.type(getByLabelText(/Quantity/i), '3');
@@ -412,8 +433,8 @@ describe('Quantity', () => {
       });
       it('Should remove error on change if form is submitted', async () => {
         const questionnaire: Questionnaire = {
-          ...q,
-          item: q.item?.map(x => ({
+          ...qCustomErrorMessage,
+          item: qCustomErrorMessage.item?.map(x => ({
             ...x,
             required: false,
           })),

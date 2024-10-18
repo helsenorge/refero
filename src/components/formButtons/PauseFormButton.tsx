@@ -14,6 +14,9 @@ export const PauseFormButton = ({
   pauseButtonDisabled,
   isHelsenorgeForm,
 }: Props): JSX.Element | null => {
+  if (!onPauseButtonClicked) {
+    return null;
+  }
   return (
     <div className={`pauseButtonStyle ${isHelsenorgeForm ? 'hideOnSmallScreen' : 'displayOnSmallScreen'}`}>
       <Button variant="outline" disabled={pauseButtonDisabled} onClick={onPauseButtonClicked} testId="refero-pause-button">

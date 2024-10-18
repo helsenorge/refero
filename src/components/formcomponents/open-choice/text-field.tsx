@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { FieldValues, useFormContext } from 'react-hook-form';
+import { FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Input from '@helsenorge/designsystem-react/components/Input';
@@ -11,7 +11,7 @@ import { isReadOnly, getId, getStringValue } from '../../../util/index';
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
-import { maxLength, minLength, regexpPattern, required, scriptInjection } from '@/components/validation/rules';
+import { getErrorMessage, maxLength, minLength, regexpPattern, required, scriptInjection } from '@/components/validation/rules';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 import { findQuestionnaireItem } from '@/reducers/selectors';
 import { useSelector } from 'react-redux';
@@ -26,21 +26,21 @@ type Props = QuestionnaireComponentItemProps & {
 };
 const textField = (props: Props): JSX.Element | null => {
   const { id, pdf, handleStringChange, handleChange, children, idWithLinkIdAndItemIndex, linkId, path, pdfValue } = props;
-  const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
-
-  const formName = `${idWithLinkIdAndItemIndex}-extra-field`;
-
   const { formState, getFieldState, register } = useFormContext<FieldValues>();
-  const { error } = getFieldState(formName, formState);
-  const answer = useGetAnswer(linkId, path);
   const { validateScriptInjection, resources } = useExternalRenderContext();
+  const formName = `${idWithLinkIdAndItemIndex}-extra-field`;
+  const { error } = getFieldState(formName, formState);
+
+  const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
+  const answer = useGetAnswer(linkId, path);
+  const value = getStringValue(answer);
+  const errorMessage = getErrorMessage(item, error);
 
   const handleOnBlur = (e: React.FocusEvent<HTMLInputElement, Element>): void => {
     handleStringChange(e);
   };
 
-  const value = getStringValue(answer);
-  const { onChange, onBlur, ...rest } = register(`${idWithLinkIdAndItemIndex}-extra-field`, {
+  const validationRules: RegisterOptions<FieldValues, string> | undefined = {
     required: required({ item, resources }),
     minLength: minLength({ item, resources }),
     maxLength: maxLength({ item, resources }),
@@ -48,17 +48,27 @@ const textField = (props: Props): JSX.Element | null => {
     validate: (value: string): string | true | undefined =>
       scriptInjection({ value, resources, shouldValidate: !!validateScriptInjection }),
     shouldUnregister: true,
-  });
+  };
+
+  const { onChange, onBlur, ...rest } = register(`${idWithLinkIdAndItemIndex}-extra-field`, pdf ? undefined : validationRules);
 
   if (pdf || isReadOnly(item)) {
     return (
-      <ReadOnly pdf={pdf} id={id} item={item} pdfValue={pdfValue} errors={error}>
+      <ReadOnly
+        pdf={pdf}
+        id={id}
+        idWithLinkIdAndItemIndex={idWithLinkIdAndItemIndex}
+        item={item}
+        value={value}
+        pdfValue={pdfValue}
+        errors={error}
+      >
         {children}
       </ReadOnly>
     );
   }
   return (
-    <FormGroup error={error?.message} mode="ongrey" errorWrapperClassName={styles.paddingBottom}>
+    <FormGroup error={errorMessage} mode="ongrey" errorWrapperClassName={styles.paddingBottom}>
       <ReferoLabel
         item={item}
         resources={resources}

@@ -1,7 +1,7 @@
 import '@/util/__tests__/defineFetch';
 
 import { findByRole, renderRefero, userEvent } from '../../../../../test/test-utils';
-import { qinline, q, qScriptInjection } from './__data__';
+import { qinline, q, qScriptInjection, qCustomErrorMessage } from './__data__';
 import { Questionnaire, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { ReferoProps } from '../../../../types/referoProps';
 import { Extensions } from '../../../../constants/extensions';
@@ -315,12 +315,33 @@ describe('Text', () => {
         await userEvent.tab();
         expect(queryByText(resources.formRequiredErrorMessage)).not.toBeInTheDocument();
       });
+      it('readOnly value should get validation error if error exist', async () => {
+        const questionnaire: Questionnaire = {
+          ...q,
+          item: q.item?.map(x => ({
+            ...x,
+            readOnly: true,
+            required: true,
+            code: [
+              {
+                code: 'ValidateReadOnly',
+                display: 'Valider skrivebeskyttet felt',
+                system: 'http://helsenorge.no/fhir/CodeSystem/ValidationOptions',
+              },
+            ],
+          })),
+        };
+        const { queryByText } = createWrapper(questionnaire);
+        await submitForm();
+
+        expect(queryByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
+      });
     });
     describe('minLength validation', () => {
       it('Should not show error if value is empty', async () => {
         const questionnaire: Questionnaire = {
-          ...q,
-          item: q.item?.map(x => ({
+          ...qCustomErrorMessage,
+          item: qCustomErrorMessage.item?.map(x => ({
             ...x,
             required: false,
           })),
@@ -332,8 +353,8 @@ describe('Text', () => {
       });
       it('Should not show error if value is bellow maxLength (20) and over minLemgth(10)', async () => {
         const questionnaire: Questionnaire = {
-          ...q,
-          item: q.item?.map(x => ({
+          ...qCustomErrorMessage,
+          item: qCustomErrorMessage.item?.map(x => ({
             ...x,
             required: false,
           })),
@@ -345,8 +366,8 @@ describe('Text', () => {
       });
       it('Should remove error on change if form is submitted', async () => {
         const questionnaire: Questionnaire = {
-          ...q,
-          item: q.item?.map(x => ({
+          ...qCustomErrorMessage,
+          item: qCustomErrorMessage.item?.map(x => ({
             ...x,
             required: false,
           })),
@@ -364,8 +385,8 @@ describe('Text', () => {
     describe('maxLength validation', () => {
       it('Should not show error if value is empty', async () => {
         const questionnaire: Questionnaire = {
-          ...q,
-          item: q.item?.map(x => ({
+          ...qCustomErrorMessage,
+          item: qCustomErrorMessage.item?.map(x => ({
             ...x,
             required: false,
           })),
@@ -377,8 +398,8 @@ describe('Text', () => {
       });
       it('Should not show error if value is bellow maxLength (20) and over minLemgth(10)', async () => {
         const questionnaire: Questionnaire = {
-          ...q,
-          item: q.item?.map(x => ({
+          ...qCustomErrorMessage,
+          item: qCustomErrorMessage.item?.map(x => ({
             ...x,
             required: false,
           })),
@@ -391,8 +412,8 @@ describe('Text', () => {
       });
       it('Should remove error on change if form is submitted', async () => {
         const questionnaire: Questionnaire = {
-          ...q,
-          item: q.item?.map(x => ({
+          ...qCustomErrorMessage,
+          item: qCustomErrorMessage.item?.map(x => ({
             ...x,
             required: false,
           })),
@@ -410,8 +431,8 @@ describe('Text', () => {
     describe('Pattern (email) validation', () => {
       it('Should not show error if value is empty', async () => {
         const questionnaire: Questionnaire = {
-          ...q,
-          item: q.item?.map(x => ({
+          ...qCustomErrorMessage,
+          item: qCustomErrorMessage.item?.map(x => ({
             ...x,
             required: false,
           })),
@@ -423,8 +444,8 @@ describe('Text', () => {
       });
       it('Should not show error if value is valid pattern', async () => {
         const questionnaire: Questionnaire = {
-          ...q,
-          item: q.item?.map(x => ({
+          ...qCustomErrorMessage,
+          item: qCustomErrorMessage.item?.map(x => ({
             ...x,
             required: false,
           })),
@@ -437,8 +458,8 @@ describe('Text', () => {
       });
       it('Should remove error on change if form is submitted', async () => {
         const questionnaire: Questionnaire = {
-          ...q,
-          item: q.item?.map(x => ({
+          ...qCustomErrorMessage,
+          item: qCustomErrorMessage.item?.map(x => ({
             ...x,
             required: false,
           })),

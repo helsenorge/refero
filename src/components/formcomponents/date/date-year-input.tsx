@@ -1,11 +1,11 @@
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
-import { FieldError, FieldValues, useFormContext } from 'react-hook-form';
+import { FieldError, FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
 import styles from '../common-styles.module.css';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Input from '@helsenorge/designsystem-react/components/Input';
 
 import { getId, isReadOnly, isRequired } from '../../../util';
-import { validateYearDigits, validateYearMax, validateYearMin } from '../../../util/date-utils';
+import { getPDFValueForDate, validateYearDigits, validateYearMax, validateYearMin } from '../../../util/date-utils';
 import { getValidationTextExtension } from '../../../util/extension';
 import RenderHelpElement from '@/components/formcomponents/help-button/RenderHelpElement';
 import { useState } from 'react';
@@ -57,20 +57,6 @@ export const DateYearInput = (props: Props): JSX.Element | null => {
     onDateValueChange(year ?? '');
   };
 
-  const getPDFValue = (yearValue: string | undefined): string | number => {
-    if (yearValue === undefined || yearValue === null || yearValue === '') {
-      let text = '';
-      if (resources && resources.ikkeBesvart) {
-        text = resources.ikkeBesvart;
-      }
-      return text;
-    }
-    if (Array.isArray(yearValue)) {
-      return yearValue.map(year => year).join(', ');
-    }
-    return yearValue;
-  };
-
   const getErrorText = (error: FieldError | undefined): string | undefined => {
     if (error) {
       const validationTextExtension = getValidationTextExtension(item);
@@ -83,7 +69,7 @@ export const DateYearInput = (props: Props): JSX.Element | null => {
 
   const yearValue: string | undefined = getYearValue(answer);
 
-  const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, {
+  const validationRules: RegisterOptions<FieldValues, string> | undefined = {
     required: {
       value: isRequired(item),
       message: resources?.year_field_required || '',
@@ -100,11 +86,21 @@ export const DateYearInput = (props: Props): JSX.Element | null => {
       },
     },
     shouldUnregister: true,
-  });
+  };
+
+  const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, pdf ? undefined : validationRules);
 
   if (pdf || isReadOnly(item)) {
     return (
-      <ReadOnly pdf={pdf} id={id} item={item} pdfValue={getPDFValue(yearValue)} errors={error}>
+      <ReadOnly
+        pdf={pdf}
+        id={id}
+        idWithLinkIdAndItemIndex={idWithLinkIdAndItemIndex}
+        item={item}
+        value={yearValue}
+        pdfValue={getPDFValueForDate(yearValue, resources?.ikkeBesvart)}
+        errors={error}
+      >
         {children}
       </ReadOnly>
     );

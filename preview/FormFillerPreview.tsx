@@ -23,7 +23,7 @@ import valueSet from '../src/constants/valuesets';
 import rootReducer from '../src/reducers/index';
 import { QuestionnaireStatusCodes } from '../src/types/fhirEnums';
 import { EnhetType, OrgenhetHierarki } from '../src/types/orgenhetHierarki';
-import { IActionRequester } from '@/index';
+import { IActionRequester, setSkjemaDefinitionAction } from '@/actions/form';
 import { IQuestionnaireInspector } from '@/util/questionnaireInspector';
 import { configureStore } from '@reduxjs/toolkit';
 
@@ -130,7 +130,7 @@ const FormFillerPreview = (props: Props): JSX.Element => {
     // eslint-disable-next-line no-console
     console.log(fileId);
   };
-
+  const dispatch = store.dispatch;
   const onChange = (
     //@ts-expect-error error
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -166,8 +166,15 @@ const FormFillerPreview = (props: Props): JSX.Element => {
                   onCancel={() => {}}
                   onChange={onChange}
                   onSave={(questionnaireResponse: QuestionnaireResponse): void => {
-                    setQuestionnaireResponse(questionnaireResponse);
-                    setShowResponse(true);
+                    // setQuestionnaireResponse(questionnaireResponse);
+                    // setShowResponse(true);
+                    dispatch(
+                      setSkjemaDefinitionAction({
+                        syncQuestionnaireResponse: true,
+                        questionnaire: getQuestionnaireFromBubndle(questionnaireForPreview, lang),
+                        questionnaireResponse,
+                      })
+                    );
                   }}
                   // eslint-disable-next-line no-console
                   onSubmit={handleSubmit}

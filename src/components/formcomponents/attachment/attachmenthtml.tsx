@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
-import { QuestionnaireItem } from 'fhir/r4';
-import { FieldValues, useFormContext } from 'react-hook-form';
+import { Attachment, QuestionnaireItem } from 'fhir/r4';
+import { FieldError, FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
 import styles from '../common-styles.module.css';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import NotificationPanel from '@helsenorge/designsystem-react/components/NotificationPanel';
@@ -19,10 +19,11 @@ import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelpButton';
 import RenderHelpElement from '@/components/formcomponents/help-button/RenderHelpElement';
 import { TextMessage } from '@/types/text-message';
-import { required } from '@/components/validation/rules';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { ReadOnly } from '../read-only/readOnly';
+import { getValidationTextExtension } from '@/util/extension';
+import { required } from '@/components/validation/rules';
 
 type Props = QuestionnaireComponentItemProps & {
   onUpload: (files: UploadFile[]) => void;
@@ -80,7 +81,7 @@ const AttachmentHtml = (props: Props): JSX.Element | null => {
   const validFileTypes = attachmentValidTypes ? attachmentValidTypes : VALID_FILE_TYPES;
   const deleteText = resources ? resources.deleteAttachmentText : undefined;
   const [isHelpVisible, setIsHelpVisible] = useState(false);
-  const { register, acceptedFiles, rejectedFiles, setAcceptedFiles, setRejectedFiles } = useFileUpload(
+  const { acceptedFiles, rejectedFiles, setAcceptedFiles, setRejectedFiles } = useFileUpload(
     internalRegister,
     [
       (file): true | string => (file ? validateFileType(file, validFileTypes, item, resources?.attachmentError_fileType) : true),
@@ -105,35 +106,51 @@ const AttachmentHtml = (props: Props): JSX.Element | null => {
     setRejectedFiles(rejectedFiles.filter(x => x.id !== fileId));
   };
 
-  const concatErrorMessages = (): string => {
-    return error?.types ? Object.values(error.types).join('. ') : '';
+  const getErrorText = (error: FieldError | undefined): string | undefined => {
+    if (error) {
+      const validationTextExtension = getValidationTextExtension(item);
+      if (validationTextExtension) {
+        return validationTextExtension;
+      }
+      return error.message;
+    }
   };
 
-  const getAttachment = (): UploadedFile[] | undefined => {
+  const getAttachmentValue = (): Attachment | Attachment[] | undefined => {
     if (Array.isArray(answer)) {
-      return answer.map(v => {
-        return {
-          id: v.valueAttachment?.url ?? '-1',
-          name: v.valueAttachment && v.valueAttachment.title ? v.valueAttachment.title : '',
-        };
-      });
-    } else {
-      if (answer && answer.valueAttachment && answer.valueAttachment.url) {
-        return [
-          {
-            id: answer.valueAttachment.url,
-            name: answer.valueAttachment.title ? answer.valueAttachment.title : '',
-          },
-        ];
-      }
+      return answer.map(v => v.valueAttachment).filter((attachment): attachment is Attachment => attachment !== undefined);
+    } else if (answer && answer.valueAttachment) {
+      return answer.valueAttachment;
     }
     return undefined;
   };
 
+  const attachmentValue = getAttachmentValue();
+
+  const getAttachmentValueForPdf = (): UploadedFile[] | undefined => {
+    if (Array.isArray(attachmentValue)) {
+      return attachmentValue.map(attachment => {
+        return {
+          id: attachment.url ?? '-1',
+          name: attachment.title || '',
+        };
+      });
+    } else if (attachmentValue && attachmentValue.url) {
+      return [
+        {
+          id: attachmentValue.url,
+          name: attachmentValue.title || '',
+        },
+      ];
+    }
+
+    return undefined;
+  };
+
   const getPdfValue = (): string => {
-    const attachments = getAttachment();
-    if (attachments) {
-      return attachments.map(v => v.name).join(', ');
+    const attachmentValueForPdf = getAttachmentValueForPdf();
+    if (attachmentValueForPdf) {
+      return attachmentValueForPdf.map(v => v.name).join(', ');
     } else if (resources) {
       return resources.ikkeBesvart;
     }
@@ -141,22 +158,33 @@ const AttachmentHtml = (props: Props): JSX.Element | null => {
     return '';
   };
 
-  register(idWithLinkIdAndItemIndex, {
+  const validationRules: RegisterOptions<FieldValues, string> | undefined = {
     required: required({ item, resources }),
     validate: () => true,
     shouldUnregister: true,
-  });
+  };
+
+  const { onChange, ...rest } = internalRegister(idWithLinkIdAndItemIndex, pdf ? undefined : validationRules);
 
   if (pdf || isReadOnly(item)) {
     return (
-      <ReadOnly pdf={pdf} id={id} item={item} pdfValue={getPdfValue()} errors={error}>
+      <ReadOnly
+        pdf={pdf}
+        id={id}
+        idWithLinkIdAndItemIndex={idWithLinkIdAndItemIndex}
+        item={item}
+        value={attachmentValue}
+        pdfValue={getPdfValue()}
+        errors={error}
+      >
         {children}
       </ReadOnly>
     );
   }
+
   return (
     <div className="page_refero__component page_refero__component_attachment" data-testid={getId(id)}>
-      <FormGroup error={concatErrorMessages()} errorWrapperClassName={styles.paddingBottom}>
+      <FormGroup error={getErrorText(error)} errorWrapperClassName={styles.paddingBottom}>
         <ReferoLabel
           item={item}
           resources={resources}
@@ -167,8 +195,12 @@ const AttachmentHtml = (props: Props): JSX.Element | null => {
           <RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />
         </ReferoLabel>
         <FileUpload
+          {...rest}
           wrapperTestId={`${getId(id)}-attachment`}
           inputId={id}
+          onChange={e => {
+            onChange(e);
+          }}
           onChangeFile={handleUpload}
           onDeleteFile={handleDelete}
           chooseFilesText={resources?.chooseFilesText}

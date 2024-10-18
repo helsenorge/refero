@@ -10,17 +10,18 @@ import { useExternalRenderContext } from '@/context/externalRenderContext';
 
 interface Props {
   id?: string;
+  testId?: string;
   item?: QuestionnaireItem;
   value?: string | number;
   textClass?: string;
   children?: ReactNode;
 }
 
-const TextView = ({ id, item, value, textClass, children }: Props): JSX.Element | null => {
+const TextView = ({ id, testId, item, value, textClass, children }: Props): JSX.Element | null => {
   const { onRenderMarkdown } = useExternalRenderContext();
   const [isHelpVisible, setIsHelpVisible] = useState(false);
   return (
-    <div data-testid={`${getId(id)}-text-view`} id={getId(id)}>
+    <div data-testid={testId} id={getId(id)}>
       <>
         <SafeText as="b" text={getText(item, onRenderMarkdown)} />
 

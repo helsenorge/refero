@@ -130,14 +130,11 @@ export const isValueFormatISO = (value: string): boolean => {
 export const parseStringToDate = (valueToParse: string | undefined): Date | undefined => {
   if (typeof valueToParse === 'string') {
     if (valueToParse && isValueFormatYYYYMMDD(valueToParse)) {
-      const test = parse(valueToParse, 'yyyy-MM-dd', new Date());
-      return test;
+      return parse(valueToParse, 'yyyy-MM-dd', new Date());
     } else if (valueToParse && isValueFormatDDMMYYYY(valueToParse)) {
-      const test = parse(valueToParse, 'dd.MM.yyyy', new Date());
-      return test;
+      return parse(valueToParse, 'dd.MM.yyyy', new Date());
     } else if (valueToParse && isValueFormatISO(valueToParse)) {
-      const parsedDate = parseISO(valueToParse);
-      return parsedDate;
+      return parseISO(valueToParse);
     }
   }
 };
@@ -380,4 +377,59 @@ export const validateYearMonthMax = (
     }
   }
   return true;
+};
+
+export const getPDFValueForDate = (
+  value: string | string[] | undefined,
+  notAnsweredText: string | undefined,
+  formatToParseTo?: DateFormat,
+  formatToFormatTo?: DateFormat
+): string | number => {
+  if (value === undefined || value === null || value === '') {
+    let text = '';
+    if (notAnsweredText) {
+      text = notAnsweredText;
+    }
+    return text;
+  }
+  if (formatToFormatTo && formatToParseTo) {
+    if (Array.isArray(value)) {
+      return value
+        .map(d => {
+          const valueParsed = parse(d, formatToParseTo, new Date());
+          if (isValid(valueParsed)) {
+            return format(valueParsed, formatToFormatTo);
+          } else {
+            return value;
+          }
+        })
+        .join(', ');
+    }
+    const valueParsed = parse(value, formatToParseTo, new Date());
+    if (isValid(valueParsed)) {
+      return format(valueParsed, formatToFormatTo);
+    }
+  }
+  if (Array.isArray(value)) {
+    return value.map(d => d).join(', ');
+  }
+  return value;
+};
+
+export const getPDFValueForTime = (
+  answer: QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[] | undefined,
+  item: QuestionnaireItem | undefined,
+  resources: Resources | undefined
+): string | undefined => {
+  const hoursAndMinutesValue = extractHoursAndMinutesFromAnswer(answer, item);
+  const hoursValue = hoursAndMinutesValue?.hours;
+  const minutesValue = hoursAndMinutesValue?.minutes;
+  if (hoursAndMinutesValue === null || hoursAndMinutesValue === undefined) {
+    let text = '';
+    if (resources && resources.ikkeBesvart) {
+      text = resources.ikkeBesvart;
+    }
+    return text;
+  }
+  return `${'kl. '} ${hoursValue}:${minutesValue}`;
 };

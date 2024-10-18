@@ -364,6 +364,27 @@ describe('Date time', () => {
 
       await waitFor(async () => expect(getByText(resources.dateError_time_invalid)).toBeInTheDocument());
     });
+    it('readOnly value should get validation error if error exist', async () => {
+      const questionnaire: Questionnaire = {
+        ...q,
+        item: q.item?.map(x => ({
+          ...x,
+          readOnly: true,
+          required: true,
+          code: [
+            {
+              code: 'ValidateReadOnly',
+              display: 'Valider skrivebeskyttet felt',
+              system: 'http://helsenorge.no/fhir/CodeSystem/ValidationOptions',
+            },
+          ],
+        })),
+      };
+      const { getByText } = createWrapper(questionnaire);
+      await submitForm();
+
+      expect(getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
+    });
   });
 });
 
