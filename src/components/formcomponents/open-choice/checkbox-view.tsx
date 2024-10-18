@@ -101,7 +101,7 @@ const CheckboxView = (props: Props): JSX.Element | null => {
       </FormGroup>
       {shouldShowExtraChoice(answer) && <div className="page_refero__component_openchoice_openfield">{renderOpenField()}</div>}
       <RenderDeleteButton item={item} path={path} index={index} className="page_refero__deletebutton--margin-top" />
-      <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} />
+      <RenderRepeatButton path={path} item={item} index={index} />
       {children && <div className="nested-fieldset nested-fieldset--full-height">{children}</div>}
     </div>
   );

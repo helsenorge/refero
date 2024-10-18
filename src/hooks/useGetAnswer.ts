@@ -64,12 +64,13 @@ export const useGetAnswer = (
   path?: Path[]
 ): QuestionnaireResponseItemAnswer | QuestionnaireResponseItemAnswer[] | undefined => {
   const questionnaireResponse = useSelector<GlobalState, QuestionnaireResponse | null | undefined>(questionnaireResponseSelector);
-  const item2 = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
+  const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
   const responseItem = useSelector<GlobalState, QuestionnaireResponseItem | undefined>(state =>
     getResponseItemWithPathSelector(state, path)
   );
-  const dataRecieverExtension = item2 && getCopyExtension(item2);
+  const dataRecieverExtension = item && getCopyExtension(item);
+
   return dataRecieverExtension
-    ? getAnswerIfDataReceiver(questionnaireResponse, item2, dataRecieverExtension)
+    ? getAnswerIfDataReceiver(questionnaireResponse, item, dataRecieverExtension)
     : getAnswerFromResponseItem(responseItem);
 };

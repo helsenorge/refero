@@ -1,8 +1,33 @@
 {
+<<<<<<< HEAD
+  "resourceType": "Questionnaire",
+  "language": "nb-NO",
+  "status": "draft",
+  "publisher": "NHN",
+  "meta": {
+    "profile": ["http://ehelse.no/fhir/StructureDefinition/sdf-Questionnaire"],
+    "tag": [
+      {
+        "system": "urn:ietf:bcp:47",
+        "code": "nb-NO",
+        "display": "Bokmål"
+      }
+    ],
+    "security": [
+      {
+        "code": "3",
+        "display": "Helsehjelp (Full)",
+        "system": "urn:oid:2.16.578.1.12.4.1.1.7618"
+      }
+    ]
+  },
+  "contact": [
+=======
   "resourceType": "Bundle",
   "type": "searchset",
   "total": 2,
   "entry": [
+>>>>>>> origin/rubenr/react-hook-form
     {
       "resource": {
         "resourceType": "Questionnaire",
@@ -14676,5 +14701,69 @@
         ]
       }
     }
+<<<<<<< HEAD
+  ],
+  "id": "122e17a7-e34d-4886-99dc-cdfe5684e044",
+  "item": [
+    {
+      "linkId": "5826c800-4acc-4b8a-86f9-5297d2076e3f",
+      "type": "integer",
+      "text": "REPEATABLE INT\n",
+      "required": true,
+      "repeats": true,
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/minValue",
+          "valueInteger": 0
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/maxValue",
+          "valueInteger": 10
+        },
+        {
+          "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
+          "valueString": "Custom error"
+        }
+      ]
+    },
+    {
+      "linkId": "bb872176-bda2-44ee-879c-1600f745abd7",
+      "type": "group",
+      "text": "REPEATEABLE GROUP\n",
+      "item": [
+        {
+          "linkId": "a511b461-8271-4f11-fc6e-1e0d0247f48c",
+          "type": "integer",
+          "text": "REPEATABLE INT\n",
+          "required": true,
+          "repeats": true,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/minValue",
+              "valueInteger": 0
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/maxValue",
+              "valueInteger": 10
+            },
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
+              "valueString": "Custom error"
+            }
+          ]
+        },
+        {
+          "linkId": "d12f1982-da04-46cd-85ea-c1200b286828",
+          "type": "string",
+          "text": "REPEATEABLE STRING",
+          "required": true,
+          "repeats": true
+        }
+      ],
+      "required": false,
+      "repeats": true
+    }
+=======
+>>>>>>> origin/rubenr/react-hook-form
   ]
 }

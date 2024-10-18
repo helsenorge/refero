@@ -99,7 +99,7 @@ const RadioView = (props: Props): JSX.Element | null => {
       </FormGroup>
       {shouldShowExtraChoice(answer) ? <div className="page_refero__component_openchoice_openfield">{renderOpenField()}</div> : null}
       <RenderDeleteButton item={item} path={path} index={index} className="page_refero__deletebutton--margin-top" />
-      <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} />
+      <RenderRepeatButton path={path} item={item} index={index} />
 
       <div className="nested-fieldset nested-fieldset--full-height">{children}</div>
     </div>

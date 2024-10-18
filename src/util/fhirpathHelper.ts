@@ -1,5 +1,5 @@
-import { QuestionnaireItem, Extension, QuestionnaireResponse } from 'fhir/r4';
-import fhirpath, { Context } from 'fhirpath';
+import { QuestionnaireItem, Extension, QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r4';
+import fhirpath, { compile, Context, evaluate } from 'fhirpath';
 import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
 
 export async function evaluateFhirpathExpressionToGetDate(item?: QuestionnaireItem, fhirExpression?: string): Promise<Date | undefined> {
@@ -15,13 +15,54 @@ export async function evaluateFhirpathExpressionToGetDate(item?: QuestionnaireIt
 
   return undefined;
 }
+export async function getAnswerFromResponseItem(responseItem?: QuestionnaireResponseItem): Promise<any> {
+  try {
+    return await fhirpath.evaluate(responseItem, 'answer');
+  } catch (e) {
+    console.log(e);
+  }
+}
+
+export async function getResonseItem(linkId: string, responseItem: QuestionnaireResponseItem): Promise<any[] | undefined> {
+  if (!linkId || !responseItem) {
+    return undefined;
+  }
+  try {
+    const compiledExpression = fhirpath.compile(
+      `item.descendants().where(linkId='${linkId}') | answer.item.descendants().where(linkId='${linkId}')`,
+      fhirpath_r4_model
+    );
+    return compiledExpression(responseItem);
+  } catch (e) {
+    console.log(e);
+    return undefined;
+  }
+}
+
+export const descendantsHasAnswer = (questionnaire?: QuestionnaireResponseItem[] | null): boolean => {
+  if (!questionnaire || !questionnaire.length) {
+    return false; // Return false if the questionnaire is null, undefined, or has no items.
+  }
+  try {
+    const result = fhirpath.evaluate({ item: questionnaire }, 'item.descendants().where(answer.exists()).exists()');
+    return Array.isArray(result) ? result[0] === true : false;
+  } catch (e) {
+    console.log(e);
+  }
+  return false;
+};
 
 export function evaluateFhirpathExpressionToGetString(fhirExtension: Extension, questionnare?: QuestionnaireResponse | null): any {
   const qCopy = structuredClone(questionnare);
   const qExt = structuredClone(fhirExtension);
+  console.log(JSON.stringify(qCopy, null, 2));
+  console.log(JSON.stringify(qExt, null, 2));
+
   try {
     if (qExt.valueString) {
-      return fhirpath.evaluate(qCopy, qExt.valueString, undefined, fhirpath_r4_model);
+      const compiledExpression = fhirpath.compile(qExt.valueString, fhirpath_r4_model);
+
+      return compiledExpression(qCopy);
     } else {
       return [];
     }

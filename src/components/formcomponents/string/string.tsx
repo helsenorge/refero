@@ -126,7 +126,7 @@ export const String = (props: Props): JSX.Element | null => {
           className="page_refero__input"
         />
         <RenderDeleteButton item={item} path={path} index={index} className="page_refero__deletebutton--margin-top" />
-        <RenderRepeatButton path={path?.slice(0, -1)} item={item} index={index} />
+        <RenderRepeatButton path={path} item={item} index={index} />
       </FormGroup>
 
       {children && <div className="nested-fieldset nested-fieldset--full-height">{children}</div>}
