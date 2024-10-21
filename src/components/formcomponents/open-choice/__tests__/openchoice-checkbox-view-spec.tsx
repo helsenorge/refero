@@ -1,6 +1,6 @@
 import { Questionnaire, QuestionnaireItemAnswerOption } from 'fhir/r4';
 import { findByRole, renderRefero, userEvent } from '@test/test-utils.tsx';
-import { clickButtonTimes, selectCheckboxOption, submitForm } from '../../../../../test/selectors';
+import { clickButtonTimes, repeatCheckboxTimes, selectCheckboxOption, submitForm } from '../../../../../test/selectors';
 import { checkboxView as q } from './__data__/index';
 import { ReferoProps } from '../../../../types/referoProps';
 import { typeExtraField } from './utils';
@@ -69,7 +69,7 @@ describe('checkbox-view - openchoice', () => {
     it('Should add item when repeat is clicked and remove button when maxOccurance(4) is reached', async () => {
       const questionnaire = addPropertyToQuestionnaireItem(q, 'repeats', true);
       const { queryAllByText, queryByTestId } = createWrapper(questionnaire);
-      await clickButtonTimes(/-repeat-button/i, 3);
+      await repeatCheckboxTimes(/Ja/i, 3);
       expect(queryAllByText(/Checkbox view label/i)).toHaveLength(4);
       expect(queryByTestId(/-repeat-button/i)).not.toBeInTheDocument();
     });
@@ -78,7 +78,7 @@ describe('checkbox-view - openchoice', () => {
     it('Should render delete button if item repeats and number of repeated items is greater than minOccurance(2)', async () => {
       const questionnaire = addPropertyToQuestionnaireItem(q, 'repeats', true);
       const { queryAllByTestId } = createWrapper(questionnaire);
-      await clickButtonTimes(/-repeat-button/i, 2);
+      await repeatCheckboxTimes(/Ja/i, 2);
 
       expect(queryAllByTestId(/-delete-button/i)).toHaveLength(2);
     });
@@ -92,7 +92,7 @@ describe('checkbox-view - openchoice', () => {
       const questionnaire = addPropertyToQuestionnaireItem(q, 'repeats', true);
       const { getByTestId } = createWrapper(questionnaire);
 
-      await clickButtonTimes(/-repeat-button/i, 1);
+      await repeatCheckboxTimes(/Ja/i, 1);
       await clickButtonTimes(/-delete-button/i, 1);
 
       expect(getByTestId(/-delete-confirm-modal/i)).toBeInTheDocument();
@@ -101,7 +101,7 @@ describe('checkbox-view - openchoice', () => {
       const questionnaire = addPropertyToQuestionnaireItem(q, 'repeats', true);
       const { getByTestId, queryByTestId } = createWrapper(questionnaire);
 
-      await clickButtonTimes(/-repeat-button/i, 1);
+      await repeatCheckboxTimes(/Ja/i, 1);
       await clickButtonTimes(/-delete-button/i, 1);
       await userEvent.click(await findByRole(getByTestId(/-delete-confirm-modal/i), 'button', { name: /Forkast endringer/i }));
       expect(queryByTestId(/-delete-button/i)).not.toBeInTheDocument();

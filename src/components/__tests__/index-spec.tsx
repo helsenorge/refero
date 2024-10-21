@@ -1,15 +1,11 @@
 import React from 'react';
-import { render, screen } from '../../../test/test-utils';
+import { renderRefero, screen } from '../../../test/test-utils';
 import userEvent from '@testing-library/user-event';
-import { configureStore } from '@reduxjs/toolkit';
 
 import { Questionnaire, QuestionnaireItem } from 'fhir/r4';
 
 import '../../util/__tests__/defineFetch';
 import itemControlConstants from '../../constants/itemcontrol';
-import rootReducer from '../../reducers';
-import { Resources } from '../../util/resources';
-import { ReferoContainer } from '../index';
 import RenderingOptionsData from './__data__/renderingOptions';
 import ChoiceCopyFrom from './__data__/copyFrom/choice';
 import { createItemControlExtension, findItemById } from '../__tests__/utils';
@@ -72,23 +68,23 @@ describe('Component renders help items', () => {
 
 describe('repeat with enableWhen', () => {
   it('When we add a section with repeat, the enableWhen component should be hidden per default', async () => {
-    const { container } = createWrapper(questionnaireWithRepeatedEnableWhens());
-
+    createWrapper(questionnaireWithRepeatedEnableWhens());
     // clicking the repeat button, repeats the elements
-    expect(container.querySelectorAll('input[type="checkbox"]')).toHaveLength(1);
+    expect(screen.queryAllByLabelText(/Checkbox/i)).toHaveLength(1);
+    expect(screen.queryByLabelText(/enableWhen/i)).not.toBeInTheDocument();
+
+    await userEvent.click(screen.getByLabelText(/Checkbox/i));
+    screen.debug();
+    await userEvent.type(await screen.findByLabelText(/enableWhen/i), '2');
+
     await userEvent.click(screen.getByTestId(/-repeat-button/i));
-    expect(container.querySelectorAll('input[type="checkbox"]')).toHaveLength(2);
 
-    // no enableWhen components should be visible
-    expect(container.querySelectorAll('input[type="text"]')).toHaveLength(0);
+    expect(screen.queryByLabelText(/enableWhen/i)).toBeInTheDocument();
+    expect(screen.queryAllByLabelText(/Checkbox/i)).toHaveLength(2);
 
-    // Click first boolean input, and enableWhen component should be enabled
-    await userEvent.click(container.querySelectorAll('input[type="checkbox"]')[0]);
-    expect(container.querySelectorAll('input[type="text"]')).toHaveLength(1);
-
-    // Click last boolean input, and enableWhen component should be enabled
-    await userEvent.click(container.querySelectorAll('input[type="checkbox"]')[1]);
-    expect(container.querySelectorAll('input[type="text"]')).toHaveLength(2);
+    // Click second boolean input, and enableWhen component should be enabled
+    await userEvent.click(screen.queryAllByLabelText(/Checkbox/i)[1]);
+    expect(screen.getAllByLabelText(/enableWhen/i)).toHaveLength(2);
   });
 });
 
@@ -128,23 +124,7 @@ function createWrapper(
   helpButtonCb?: (item: QuestionnaireItem, helpItem: QuestionnaireItem, helpType: string, help: string, opening: boolean) => JSX.Element,
   helpElementCb?: (item: QuestionnaireItem, helpItem: QuestionnaireItem, helpType: string, help: string, opening: boolean) => JSX.Element
 ) {
-  const store = configureStore({ reducer: rootReducer, middleware: getDefaultMiddleware => getDefaultMiddleware() });
-  return render(
-    <ReferoContainer
-      loginButton={<React.Fragment />}
-      authorized={true}
-      onCancel={() => {}}
-      onSave={() => {}}
-      onSubmit={() => {}}
-      resources={{} as Resources}
-      questionnaire={questionnaire}
-      onRequestHelpButton={helpButtonCb}
-      onRequestHelpElement={helpElementCb}
-    />,
-    {
-      store,
-    }
-  );
+  return renderRefero({ questionnaire, props: { onRequestHelpButton: helpButtonCb, onRequestHelpElement: helpElementCb } });
 }
 
 function questionnaireWithRepeatedEnableWhens(): Questionnaire {
@@ -171,7 +151,7 @@ function questionnaireWithRepeatedEnableWhens(): Questionnaire {
               {
                 linkId: '8.1.2',
                 text: 'enableWhen',
-                type: 'string',
+                type: 'integer',
                 enableBehavior: 'any',
                 enableWhen: [
                   {

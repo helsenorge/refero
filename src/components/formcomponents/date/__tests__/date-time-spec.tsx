@@ -3,10 +3,11 @@ import { findByRole, renderRefero, userEvent, waitFor } from '@test/test-utils.t
 import { q, qMinMax, qMinMaxCustomError } from './__data__/date-time';
 import { ReferoProps } from '../../../../types/referoProps';
 import { Extensions } from '../../../../constants/extensions';
-import { clickButtonTimes, submitForm } from '../../../../../test/selectors';
+import { clickButtonTimes, repeatNTimes, submitForm } from '../../../../../test/selectors';
 import { getResources } from '../../../../../preview/resources/referoResources';
 import { vi } from 'vitest';
 import { screen } from '@testing-library/dom';
+import { createWrapper } from './date-year-spec';
 
 const resources = {
   ...getResources(''),
@@ -134,7 +135,8 @@ describe('Date time', () => {
         }),
       };
       const { queryAllByLabelText, queryByTestId } = createWrapper(questionnaire);
-      await clickButtonTimes(/-repeat-button/i, 3);
+      const input = '31.05.2095';
+      await repeatNTimes(input, 3, /Dato/i);
 
       await waitFor(async () => expect(queryAllByLabelText(/Dato/i)).toHaveLength(4));
       await waitFor(async () => expect(queryByTestId(/-repeat-button/i)).not.toBeInTheDocument());
@@ -147,8 +149,8 @@ describe('Date time', () => {
         item: q.item?.map(x => ({ ...x, repeats: true })),
       };
       const { queryAllByTestId } = createWrapper(questionnaire);
-
-      await clickButtonTimes(/-repeat-button/i, 2);
+      const input = '31.05.2095';
+      await repeatNTimes(input, 2, /Dato/i);
 
       await waitFor(async () => expect(queryAllByTestId(/-delete-button/i)).toHaveLength(2));
     });
@@ -167,7 +169,8 @@ describe('Date time', () => {
       };
       const { getByTestId } = createWrapper(questionnaire);
 
-      await clickButtonTimes(/-repeat-button/i, 1);
+      const input = '31.05.2095';
+      await repeatNTimes(input, 1, /Dato/i);
 
       await waitFor(async () => expect(getByTestId(/-delete-button/i)).toBeInTheDocument());
 
@@ -182,7 +185,8 @@ describe('Date time', () => {
       };
       const { getByTestId, queryByTestId } = createWrapper(questionnaire);
 
-      await clickButtonTimes(/-repeat-button/i, 1);
+      const input = '31.05.2095';
+      await repeatNTimes(input, 1, /Dato/i);
 
       await waitFor(async () => expect(getByTestId(/-delete-button/i)).toBeInTheDocument());
 

@@ -3,7 +3,7 @@ import { findByRole, renderRefero, userEvent } from '@test/test-utils.tsx';
 import { checkboxView as q } from './__data__/index';
 import { ReferoProps } from '../../../../types/referoProps';
 import { Extensions } from '../../../../constants/extensions';
-import { clickButtonTimes, submitForm } from '../../../../../test/selectors';
+import { clickButtonTimes, repeatCheckboxTimes, submitForm } from '../../../../../test/selectors';
 import { getResources } from '../../../../../preview/resources/referoResources';
 import { vi } from 'vitest';
 
@@ -88,7 +88,7 @@ describe('checkbox-view - choice', () => {
       };
       const { queryAllByText, queryByTestId } = createWrapper(questionnaire);
 
-      await clickButtonTimes(/-repeat-button/i, 3);
+      await repeatCheckboxTimes(/Ja/i, 3);
       expect(queryAllByText(/Checkbox view label/i)).toHaveLength(4);
       expect(queryByTestId(/-repeat-button/i)).not.toBeInTheDocument();
     });
@@ -101,7 +101,7 @@ describe('checkbox-view - choice', () => {
       };
       const { queryAllByTestId } = createWrapper(questionnaire);
 
-      await clickButtonTimes(/-repeat-button/i, 2);
+      await repeatCheckboxTimes(/Ja/i, 2);
 
       expect(queryAllByTestId(/-delete-button/i)).toHaveLength(2);
     });
@@ -121,7 +121,7 @@ describe('checkbox-view - choice', () => {
       };
       const { getByTestId } = createWrapper(questionnaire);
 
-      await clickButtonTimes(/-repeat-button/i, 1);
+      await repeatCheckboxTimes(/Ja/i, 1);
 
       expect(getByTestId(/-delete-button/i)).toBeInTheDocument();
       await clickButtonTimes(/-delete-button/i, 1);
@@ -135,7 +135,7 @@ describe('checkbox-view - choice', () => {
       };
       const { getByTestId, queryByTestId } = createWrapper(questionnaire);
 
-      await clickButtonTimes(/-repeat-button/i, 1);
+      await repeatCheckboxTimes(/Ja/i, 1);
       expect(getByTestId(/-delete-button/i)).toBeInTheDocument();
 
       await clickButtonTimes(/-delete-button/i, 1);

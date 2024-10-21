@@ -3,7 +3,7 @@ import { findByRole, renderRefero, userEvent } from '@test/test-utils.tsx';
 import { dropdownView as q } from './__data__/index';
 import { ReferoProps } from '../../../../types/referoProps';
 import { Extensions } from '../../../../constants/extensions';
-import { clickButtonTimes, submitForm } from '../../../../../test/selectors';
+import { clickButtonTimes, repeatDropDownTimes, submitForm } from '../../../../../test/selectors';
 import { getResources } from '../../../../../preview/resources/referoResources';
 import { vi } from 'vitest';
 
@@ -88,7 +88,7 @@ describe('Dropdown-view - choice', () => {
       };
       const { queryAllByText, queryByTestId } = createWrapper(questionnaire);
 
-      await clickButtonTimes(/-repeat-button/i, 3);
+      await repeatDropDownTimes(/Dropdown view label/i, 3, 'Ja');
 
       expect(queryAllByText(/Dropdown view label/i)).toHaveLength(4);
       expect(queryByTestId(/-repeat-button/i)).not.toBeInTheDocument();
@@ -102,7 +102,7 @@ describe('Dropdown-view - choice', () => {
       };
       const { queryAllByTestId } = createWrapper(questionnaire);
 
-      await clickButtonTimes(/-repeat-button/i, 2);
+      await repeatDropDownTimes(/Dropdown view label/i, 2, 'Ja');
 
       expect(queryAllByTestId(/-delete-button/i)).toHaveLength(2);
     });
@@ -122,7 +122,7 @@ describe('Dropdown-view - choice', () => {
       };
       const { getByTestId } = createWrapper(questionnaire);
 
-      await clickButtonTimes(/-repeat-button/i, 1);
+      await repeatDropDownTimes(/Dropdown view label/i, 1, 'Ja');
 
       expect(getByTestId(/-delete-button/i)).toBeInTheDocument();
 
@@ -136,7 +136,7 @@ describe('Dropdown-view - choice', () => {
         item: q.item?.map(x => ({ ...x, repeats: true })),
       };
       const { getByTestId, queryByTestId } = createWrapper(questionnaire);
-      await clickButtonTimes(/-repeat-button/i, 1);
+      await repeatDropDownTimes(/Dropdown view label/i, 1, 'Ja');
 
       expect(getByTestId(/-delete-button/i)).toBeInTheDocument();
       await clickButtonTimes(/-delete-button/i, 1);

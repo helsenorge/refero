@@ -1,6 +1,6 @@
 import { Questionnaire, QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItemAnswer, ValueSet } from 'fhir/r4';
 
-import { waitFor, userEvent, renderRefero, findByRole } from '@test/test-utils.tsx';
+import { waitFor, userEvent, renderRefero, findByRole, screen } from '@test/test-utils.tsx';
 import { q } from './__data__/index';
 import { generateQuestionnaireResponse } from '../../../../actions/generateQuestionnaireResponse';
 import valueSet from '../../../../constants/valuesets';
@@ -81,20 +81,59 @@ describe('autosuggest-view', () => {
           return y;
         }),
       };
-      const { queryAllByLabelText, queryByTestId } = renderRefero({ questionnaire });
-      await clickButtonTimes(/-repeat-button/i, 3);
-      expect(queryAllByLabelText(/Mistenkt legemiddel/i)).toHaveLength(4);
-      expect(queryByTestId(/-repeat-button/i)).not.toBeInTheDocument();
+      const fetchValueSetFn = (
+        _searchString: string,
+        _item: QuestionnaireItem,
+        successCallback: (valueSet: ValueSet) => void,
+        _errorCallback: (error: string) => void
+      ) => {
+        successCallback(successReturnValueSet);
+      };
+      renderRefero({
+        questionnaire,
+        props: { fetchValueSet: fetchValueSetFn },
+      });
+
+      await userEvent.type(screen.getByLabelText(/Mistenkt legemiddel/i), 'fyr');
+      await userEvent.click(await screen.findByText(/Fyrstekake/i));
+      await clickButtonTimes(/-repeat-button/i, 1);
+
+      await userEvent.type(screen.getAllByLabelText(/Mistenkt legemiddel/i)[1], 'fyr');
+      await userEvent.click(screen.getByText(/Fyrstekake/i));
+      await clickButtonTimes(/-repeat-button/i, 1);
+
+      await userEvent.type(screen.getAllByLabelText(/Mistenkt legemiddel/i)[2], 'fyr');
+      await userEvent.click(screen.getByText(/Fyrstekake/i));
+      await clickButtonTimes(/-repeat-button/i, 1);
+
+      expect(screen.queryAllByLabelText(/Mistenkt legemiddel/i)).toHaveLength(4);
+      expect(screen.queryByTestId(/-repeat-button/i)).not.toBeInTheDocument();
     });
   });
   describe('delete button', () => {
     it('Should render delete button if item repeats and number of repeated items is greater than minOccurance(2)', async () => {
       const questionnaire = addPropertyToQuestionnaireItem(q, 'repeats', true);
-      const { queryAllByTestId } = renderRefero({ questionnaire });
+      const fetchValueSetFn = (
+        _searchString: string,
+        _item: QuestionnaireItem,
+        successCallback: (valueSet: ValueSet) => void,
+        _errorCallback: (error: string) => void
+      ) => {
+        successCallback(successReturnValueSet);
+      };
+      renderRefero({
+        questionnaire,
+        props: { fetchValueSet: fetchValueSetFn },
+      });
+      await userEvent.type(screen.getByLabelText(/Mistenkt legemiddel/i), 'f');
 
-      await clickButtonTimes(/-repeat-button/i, 2);
+      await userEvent.click(await screen.findByText(/Fyrstekake/i));
+      await clickButtonTimes(/-repeat-button/i, 1);
+      await userEvent.type(screen.getAllByLabelText(/Mistenkt legemiddel/i)[1], 'fyr');
+      await userEvent.click(screen.getByText(/Fyrstekake/i));
+      await clickButtonTimes(/-repeat-button/i, 1);
 
-      expect(queryAllByTestId(/-delete-button/i)).toHaveLength(2);
+      expect(screen.queryAllByTestId(/-delete-button/i)).toHaveLength(2);
     });
     it('Should not render delete button if item repeats and number of repeated items is lower or equal than minOccurance(2)', async () => {
       const questionnaire = addPropertyToQuestionnaireItem(q, 'repeats', true);
@@ -104,29 +143,55 @@ describe('autosuggest-view', () => {
     });
     it('Should show confirmationbox when deletebutton is clicked', async () => {
       const questionnaire = addPropertyToQuestionnaireItem(q, 'repeats', true);
-      const { getByTestId } = renderRefero({ questionnaire });
+      const fetchValueSetFn = (
+        _searchString: string,
+        _item: QuestionnaireItem,
+        successCallback: (valueSet: ValueSet) => void,
+        _errorCallback: (error: string) => void
+      ) => {
+        successCallback(successReturnValueSet);
+      };
+      renderRefero({
+        questionnaire,
+        props: { fetchValueSet: fetchValueSetFn },
+      });
+      await userEvent.type(screen.getByLabelText(/Mistenkt legemiddel/i), 'f');
 
+      await userEvent.click(await screen.findByText(/Fyrstekake/i));
       await clickButtonTimes(/-repeat-button/i, 1);
 
-      expect(getByTestId(/-delete-button/i)).toBeInTheDocument();
+      expect(screen.getByTestId(/-delete-button/i)).toBeInTheDocument();
       await clickButtonTimes(/-delete-button/i, 1);
 
-      expect(getByTestId(/-delete-confirm-modal/i)).toBeInTheDocument();
+      expect(screen.getByTestId(/-delete-confirm-modal/i)).toBeInTheDocument();
     });
     it('Should remove item when delete button is clicked', async () => {
       const questionnaire = addPropertyToQuestionnaireItem(q, 'repeats', true);
-      const { getByTestId, queryByTestId } = renderRefero({ questionnaire });
+      const fetchValueSetFn = (
+        _searchString: string,
+        _item: QuestionnaireItem,
+        successCallback: (valueSet: ValueSet) => void,
+        _errorCallback: (error: string) => void
+      ) => {
+        successCallback(successReturnValueSet);
+      };
+      renderRefero({
+        questionnaire,
+        props: { fetchValueSet: fetchValueSetFn },
+      });
+      await userEvent.type(screen.getByLabelText(/Mistenkt legemiddel/i), 'f');
 
+      await userEvent.click(await screen.findByText(/Fyrstekake/i));
       await clickButtonTimes(/-repeat-button/i, 1);
 
-      expect(getByTestId(/-delete-button/i)).toBeInTheDocument();
+      expect(screen.getByTestId(/-delete-button/i)).toBeInTheDocument();
 
       await clickButtonTimes(/-delete-button/i, 1);
 
-      const confirmModal = getByTestId(/-delete-confirm-modal/i);
+      const confirmModal = screen.getByTestId(/-delete-confirm-modal/i);
       await userEvent.click(await findByRole(confirmModal, 'button', { name: /Forkast endringer/i }));
 
-      expect(queryByTestId(/-delete-button/i)).not.toBeInTheDocument();
+      expect(screen.queryByTestId(/-delete-button/i)).not.toBeInTheDocument();
     });
   });
   describe('Validation', () => {

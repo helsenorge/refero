@@ -1,5 +1,5 @@
 import { QuestionnaireItem, Extension, QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r4';
-import fhirpath, { compile, Context, evaluate } from 'fhirpath';
+import fhirpath, { Context } from 'fhirpath';
 import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
 
 export async function evaluateFhirpathExpressionToGetDate(item?: QuestionnaireItem, fhirExpression?: string): Promise<Date | undefined> {
@@ -51,12 +51,23 @@ export const descendantsHasAnswer = (questionnaire?: QuestionnaireResponseItem[]
   }
   return false;
 };
+export const hasDescendants = (questionnaire?: QuestionnaireResponseItem[] | null): boolean => {
+  if (!questionnaire || !questionnaire.length) {
+    return false; // Return false if the questionnaire is null, undefined, or has no items.
+  }
+  try {
+    const result = fhirpath.evaluate({ item: questionnaire }, 'item.descendants().exists()');
+    console.log(result);
+    return Array.isArray(result) ? result[0] === true : false;
+  } catch (e) {
+    console.log(e);
+  }
+  return false;
+};
 
 export function evaluateFhirpathExpressionToGetString(fhirExtension: Extension, questionnare?: QuestionnaireResponse | null): any {
   const qCopy = structuredClone(questionnare);
   const qExt = structuredClone(fhirExtension);
-  console.log(JSON.stringify(qCopy, null, 2));
-  console.log(JSON.stringify(qExt, null, 2));
 
   try {
     if (qExt.valueString) {
