@@ -138,9 +138,8 @@ const Quantity = (props: Props): JSX.Element | null => {
           labelId={`${getId(id)}-quantity-label`}
           testId={`${getId(id)}-quantity-label`}
           sublabelId={`${getId(id)}-quantity-sublabel`}
-        >
-          <RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />
-        </ReferoLabel>
+          afterLabelChildren={<RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />}
+        />
         <RenderHelpElement isHelpVisible={isHelpVisible} item={item} />
 
         <div className={styles.inputWrapper}>

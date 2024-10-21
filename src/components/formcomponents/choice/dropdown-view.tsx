@@ -88,9 +88,8 @@ const DropdownView = (props: Props): JSX.Element | null => {
           labelId={`${getId(id)}-label`}
           testId={`${getId(id)}-label`}
           sublabelId="select-sublabel"
-        >
-          <RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />
-        </ReferoLabel>
+          afterLabelChildren={<RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />}
+        />
         <RenderHelpElement item={item} isHelpVisible={isHelpVisible} />
         <Select
           {...rest}

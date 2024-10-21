@@ -106,9 +106,8 @@ export const String = (props: Props): JSX.Element | null => {
           htmlFor={getId(id)}
           labelId={`${getId(id)}-string-label`}
           testId={`${getId(id)}-string-label`}
-        >
-          <RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />
-        </ReferoLabel>
+          afterLabelChildren={<RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />}
+        />
         <RenderHelpElement item={item} isHelpVisible={isHelpVisible} />
         <Input
           {...rest}

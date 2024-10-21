@@ -191,9 +191,8 @@ const Time = ({ id, index, path, linkId, pdf, idWithLinkIdAndItemIndex, children
           labelId={`${getId(id)}-label`}
           testId={`${getId(id)}-label-test`}
           sublabelId={`${getId(id)}-sublabel`}
-        >
-          <RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />
-        </ReferoLabel>
+          afterLabelChildren={<RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />}
+        />
         <RenderHelpElement isHelpVisible={isHelpVisible} item={item} />
         <DateTimePickerWrapper>
           <DateTime

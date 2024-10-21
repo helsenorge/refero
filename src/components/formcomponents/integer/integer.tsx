@@ -115,9 +115,8 @@ const Integer = (props: Props): JSX.Element | null => {
           labelId={`${getId(id)}-label-integer`}
           testId={`${getId(id)}-integer-label`}
           sublabelId={`${getId(id)}-integer-sublabel`}
-        >
-          <RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />
-        </ReferoLabel>
+          afterLabelChildren={<RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />}
+        />
         <RenderHelpElement item={item} isHelpVisible={isHelpVisible} />
 
         <Input

@@ -120,9 +120,8 @@ export const Text = (props: Props): JSX.Element | null => {
           item={item}
           labelId={`${getId(id)}-text-label`}
           resources={resources}
-        >
-          <RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />
-        </ReferoLabel>
+          afterLabelChildren={<RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />}
+        />
         <RenderHelpElement item={item} isHelpVisible={isHelpVisible} />
 
         <Textarea
