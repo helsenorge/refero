@@ -1,10 +1,10 @@
-import { findByRole, renderRefero, userEvent } from '@test/test-utils.tsx';
+import { findByRole, renderRefero, screen, userEvent } from '@test/test-utils.tsx';
 import { q, qScriptInjection, qCustomErrorMessage } from './__data__/';
 
 import { Questionnaire, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { ReferoProps } from '../../../../types/referoProps';
 import { Extensions } from '../../../../constants/extensions';
-import { clickButtonTimes, submitForm } from '../../../../../test/selectors';
+import { clickButtonTimes, repeatNTimes, submitForm } from '../../../../../test/selectors';
 import { getResources } from '../../../../../preview/resources/referoResources';
 import { vi } from 'vitest';
 
@@ -116,19 +116,24 @@ describe('string', () => {
     it('Should add item when repeat is clicked and remove button when maxOccurance(4) is reached', async () => {
       const questionnaire: Questionnaire = {
         ...q,
-        item: q.item?.map(x => ({ ...x, repeats: true })),
-        extension: q.extension?.map(y => {
-          if (y.url === Extensions.MIN_OCCURS_URL) {
-            return { ...y, valueInteger: 2 };
-          }
-          return y;
-        }),
+        item: q.item?.map(x => ({
+          ...x,
+          repeats: true,
+          readOnly: false,
+          extension: x.extension?.map(y => {
+            if (y.url === Extensions.MIN_OCCURS_URL) {
+              return { ...y, valueInteger: 2 };
+            }
+            return y;
+          }),
+        })),
       };
-      const { queryAllByLabelText, queryByTestId } = createWrapper(questionnaire);
-      await clickButtonTimes(/-repeat-button/i, 3);
+      createWrapper(questionnaire);
+      const input = 'string';
+      await repeatNTimes(input, 3, /String/i);
 
-      expect(queryAllByLabelText(/String/i)).toHaveLength(4);
-      expect(queryByTestId(/-repeat-button/i)).not.toBeInTheDocument();
+      expect(screen.queryAllByLabelText(/String/i)).toHaveLength(4);
+      expect(screen.queryByTestId(/-repeat-button/i)).not.toBeInTheDocument();
     });
   });
   describe('delete button', () => {
@@ -136,11 +141,20 @@ describe('string', () => {
     it('Should render delete button if item repeats and number of repeated items is greater than minOccurance(2)', async () => {
       const questionnaire: Questionnaire = {
         ...q,
-        item: q.item?.map(x => ({ ...x, repeats: true })),
+        item: q.item?.map(x => ({
+          ...x,
+          repeats: true,
+          extension: x.extension?.map(y => {
+            if (y.url === Extensions.MIN_OCCURS_URL) {
+              return { ...y, valueInteger: 2 };
+            }
+            return y;
+          }),
+        })),
       };
       const { queryAllByTestId } = createWrapper(questionnaire);
-
-      await clickButtonTimes(/-repeat-button/i, 2);
+      const input = 'string';
+      await repeatNTimes(input, 3, /String/i);
 
       expect(queryAllByTestId(/-delete-button/i)).toHaveLength(2);
     });
@@ -159,8 +173,9 @@ describe('string', () => {
         item: q.item?.map(x => ({ ...x, repeats: true })),
       };
       const { getByTestId } = createWrapper(questionnaire);
+      const input = 'string';
 
-      await clickButtonTimes(/-repeat-button/i, 1);
+      await repeatNTimes(input, 1, /String/i);
 
       expect(getByTestId(/-delete-button/i)).toBeInTheDocument();
       await clickButtonTimes(/-delete-button/i, 1);
@@ -173,8 +188,9 @@ describe('string', () => {
         item: q.item?.map(x => ({ ...x, repeats: true })),
       };
       const { getByTestId, queryByTestId } = createWrapper(questionnaire);
+      const input = 'string';
 
-      await clickButtonTimes(/-repeat-button/i, 1);
+      await repeatNTimes(input, 1, /String/i);
 
       expect(getByTestId(/-delete-button/i)).toBeInTheDocument();
       await clickButtonTimes(/-delete-button/i, 1);

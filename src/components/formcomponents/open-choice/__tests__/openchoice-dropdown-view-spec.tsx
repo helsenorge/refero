@@ -4,7 +4,7 @@ import { dropdownView as q } from './__data__/index';
 import { ReferoProps } from '../../../../types/referoProps';
 import { Extensions } from '../../../../constants/extensions';
 import { typeExtraField } from './utils';
-import { clickButtonTimes, selectDropdownOptionByName, submitForm } from '../../../../../test/selectors';
+import { clickButtonTimes, repeatDropDownTimes, selectDropdownOptionByName, submitForm } from '../../../../../test/selectors';
 import { addManyPropertiesToQuestionnaireItem, addPropertyToQuestionnaireItem } from '../../../../../test/questionnairHelpers';
 import { getResources } from '../../../../../preview/resources/referoResources';
 import { vi } from 'vitest';
@@ -82,7 +82,7 @@ describe('Dropdown-view - choice', () => {
         }),
       };
       const { queryAllByText, queryByTestId } = createWrapper(questionnaire);
-      await clickButtonTimes(/-repeat-button/i, 3);
+      await repeatDropDownTimes(/Dropdown view label/i, 3, 'Ja');
       expect(queryAllByText(/Dropdown view label/i)).toHaveLength(4);
       expect(queryByTestId(/-repeat-button/i)).not.toBeInTheDocument();
     });
@@ -91,7 +91,7 @@ describe('Dropdown-view - choice', () => {
     it('Should render delete button if item repeats and number of repeated items is greater than minOccurance(2)', async () => {
       const questionnaire = addPropertyToQuestionnaireItem(q, 'repeats', true);
       const { queryAllByTestId } = createWrapper(questionnaire);
-      await clickButtonTimes(/-repeat-button/i, 2);
+      await repeatDropDownTimes(/Dropdown view label/i, 2, 'Ja');
 
       expect(queryAllByTestId(/-delete-button/i)).toHaveLength(2);
     });
@@ -104,7 +104,7 @@ describe('Dropdown-view - choice', () => {
     it('Should show confirmationbox when deletebutton is clicked', async () => {
       const questionnaire = addPropertyToQuestionnaireItem(q, 'repeats', true);
       const { getByTestId } = createWrapper(questionnaire);
-      await clickButtonTimes(/-repeat-button/i, 1);
+      await repeatDropDownTimes(/Dropdown view label/i, 1, 'Ja');
 
       await clickButtonTimes(/-delete-button/i, 1);
 
@@ -113,8 +113,7 @@ describe('Dropdown-view - choice', () => {
     it('Should remove item when delete button is clicked', async () => {
       const questionnaire = addPropertyToQuestionnaireItem(q, 'repeats', true);
       const { getByTestId, queryByTestId } = createWrapper(questionnaire);
-      await clickButtonTimes(/-repeat-button/i, 1);
-
+      await repeatDropDownTimes(/Dropdown view label/i, 1, 'Ja');
       await clickButtonTimes(/-delete-button/i, 1);
       await userEvent.click(await findByRole(getByTestId(/-delete-confirm-modal/i), 'button', { name: /Forkast endringer/i }));
       expect(queryByTestId(/-delete-button/i)).not.toBeInTheDocument();

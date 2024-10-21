@@ -1,4 +1,7 @@
-## 16.0.0-beta.42
+## 16.0.0-beta.44
+- fix repeatable items not being disabled when they should be
+
+## 16.0.0-beta.43
 - fix redux error calling updateSkjemaDefinisjonAction
 
 ## 16.0.0-beta.42

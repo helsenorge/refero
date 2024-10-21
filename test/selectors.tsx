@@ -9,7 +9,12 @@ export async function clickButtonTimes(id: Matcher, times: number): Promise<void
     await userEvent.click(screen.getByTestId(id));
   }
 }
-
+export async function repeatNTimes(input: string, n: number, labelText: Matcher): Promise<void> {
+  for (let i = 0; i < n; i++) {
+    await userEvent.type(screen.queryAllByLabelText(labelText)[i], input);
+    await clickButtonTimes(/-repeat-button/i, 1);
+  }
+}
 export async function selectDropdownOptionByName(
   dropdownId: Matcher,
   optionName: string | RegExp | ((accessibleName: string, element: Element) => boolean) | undefined
@@ -38,7 +43,30 @@ export async function clickByLabelText(id: Matcher): Promise<void> {
   expect(elm).toBeInTheDocument();
   await userEvent.click(elm);
 }
-
+export async function repeatCheckboxTimes(id: Matcher, n: number): Promise<void> {
+  for (let i = 0; i < n; i++) {
+    const elm = screen.getAllByLabelText(id);
+    await userEvent.click(elm[i]);
+    await clickButtonTimes(/-repeat-button/i, 1);
+  }
+}
+export async function repeatSliderTimes(id: Matcher, n: number): Promise<void> {
+  for (let i = 0; i < n; i++) {
+    await userEvent.click(screen.getAllByText(id)[i]);
+    screen.debug(screen.getAllByText(id)[i]);
+    await clickButtonTimes(/-repeat-button/i, 1);
+  }
+}
+export async function repeatDropDownTimes(
+  id: Matcher,
+  n: number,
+  optionName: string | RegExp | ((accessibleName: string, element: Element) => boolean) | undefined
+): Promise<void> {
+  for (let i = 0; i < n; i++) {
+    await userEvent.selectOptions(screen.getAllByLabelText(id)[i], screen.getAllByRole('option', { name: optionName })[i]);
+    await clickButtonTimes(/-repeat-button/i, 1);
+  }
+}
 export async function typeAndTabByLabelText(id: Matcher, value: string): Promise<void> {
   await userEvent.type(screen.getByLabelText(id), value);
   await userEvent.tab();

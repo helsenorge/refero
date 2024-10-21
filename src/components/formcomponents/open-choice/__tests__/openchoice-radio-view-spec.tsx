@@ -4,7 +4,7 @@ import { radioView as q } from './__data__/index';
 import { ReferoProps } from '../../../../types/referoProps';
 import { Extensions } from '../../../../constants/extensions';
 import { typeExtraField } from './utils';
-import { clickButtonTimes, selectCheckboxOption, submitForm } from '../../../../../test/selectors';
+import { clickButtonTimes, repeatCheckboxTimes, selectCheckboxOption, submitForm } from '../../../../../test/selectors';
 import { addManyPropertiesToQuestionnaireItem } from '../../../../../test/questionnairHelpers';
 import { getResources } from '../../../../../preview/resources/referoResources';
 import { vi } from 'vitest';
@@ -83,7 +83,7 @@ describe('Radio-view - choice', () => {
         }),
       };
       const { queryAllByText, queryByTestId } = createWrapper(questionnaire);
-      await clickButtonTimes(/-repeat-button/i, 3);
+      await repeatCheckboxTimes(/Ja/i, 3);
 
       expect(queryAllByText(/Radio view label/i)).toHaveLength(4);
       expect(queryByTestId(/-repeat-button/i)).not.toBeInTheDocument();
@@ -94,7 +94,7 @@ describe('Radio-view - choice', () => {
       const questionnaire = addManyPropertiesToQuestionnaireItem(q, [{ property: 'repeats', value: true }]);
       const { queryAllByTestId } = createWrapper(questionnaire);
 
-      await clickButtonTimes(/-repeat-button/i, 2);
+      await repeatCheckboxTimes(/Ja/i, 2);
 
       expect(queryAllByTestId(/-delete-button/i)).toHaveLength(2);
     });
@@ -108,7 +108,7 @@ describe('Radio-view - choice', () => {
       const questionnaire = addManyPropertiesToQuestionnaireItem(q, [{ property: 'repeats', value: true }]);
       const { getByTestId } = createWrapper(questionnaire);
 
-      await clickButtonTimes(/-repeat-button/i, 1);
+      await repeatCheckboxTimes(/Ja/i, 1);
 
       expect(getByTestId(/-delete-button/i)).toBeInTheDocument();
       await clickButtonTimes(/-delete-button/i, 1);
@@ -119,7 +119,7 @@ describe('Radio-view - choice', () => {
       const questionnaire = addManyPropertiesToQuestionnaireItem(q, [{ property: 'repeats', value: true }]);
       const { getByTestId, queryByTestId } = createWrapper(questionnaire);
 
-      await clickButtonTimes(/-repeat-button/i, 1);
+      await repeatCheckboxTimes(/Ja/i, 1);
 
       expect(getByTestId(/-delete-button/i)).toBeInTheDocument();
       await clickButtonTimes(/-delete-button/i, 1);

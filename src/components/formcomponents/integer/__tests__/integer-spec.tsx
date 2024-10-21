@@ -3,7 +3,7 @@ import { findByRole, renderRefero, userEvent } from '@test/test-utils.tsx';
 import { q, qCustomErrorMessage } from './__data__';
 import { ReferoProps } from '../../../../types/referoProps';
 import { Extensions } from '../../../../constants/extensions';
-import { clickButtonTimes, submitForm, typeByLabelText } from '../../../../../test/selectors';
+import { clickButtonTimes, repeatNTimes, submitForm, typeByLabelText } from '../../../../../test/selectors';
 import { addManyPropertiesToQuestionnaireItem } from '../../../../../test/questionnairHelpers';
 import { getResources } from '../../../../../preview/resources/referoResources';
 import { vi } from 'vitest';
@@ -114,7 +114,8 @@ describe('Integer', () => {
         }),
       };
       const { queryAllByLabelText, queryByTestId } = createWrapper(questionnaire);
-      await clickButtonTimes(/-repeat-button/i, 3);
+      const input = '2';
+      await repeatNTimes(input, 3, /Integer/i);
 
       expect(queryAllByLabelText(/Integer/i)).toHaveLength(4);
       expect(queryByTestId(/-repeat-button/i)).not.toBeInTheDocument();
@@ -127,7 +128,8 @@ describe('Integer', () => {
         item: q.item?.map(x => ({ ...x, repeats: true })),
       };
       const { queryAllByTestId } = createWrapper(questionnaire);
-      await clickButtonTimes(/-repeat-button/i, 2);
+      const input = '2';
+      await repeatNTimes(input, 2, /Integer/i);
 
       expect(queryAllByTestId(/-delete-button/i)).toHaveLength(2);
     });
@@ -143,8 +145,8 @@ describe('Integer', () => {
     it('Should show confirmationbox when deletebutton is clicked', async () => {
       const questionnaire = addManyPropertiesToQuestionnaireItem(q, [{ property: 'repeats', value: true }]);
       const { getByTestId } = createWrapper(questionnaire);
-
-      await clickButtonTimes(/-repeat-button/i, 1);
+      const input = '2';
+      await repeatNTimes(input, 1, /Integer/i);
 
       expect(getByTestId(/-delete-button/i)).toBeInTheDocument();
       await clickButtonTimes(/-delete-button/i, 1);
@@ -155,7 +157,8 @@ describe('Integer', () => {
       const questionnaire = addManyPropertiesToQuestionnaireItem(q, [{ property: 'repeats', value: true }]);
       const { getByTestId, queryByTestId } = createWrapper(questionnaire);
 
-      await clickButtonTimes(/-repeat-button/i, 1);
+      const input = '2';
+      await repeatNTimes(input, 1, /Integer/i);
 
       expect(getByTestId(/-delete-button/i)).toBeInTheDocument();
       await clickButtonTimes(/-delete-button/i, 1);

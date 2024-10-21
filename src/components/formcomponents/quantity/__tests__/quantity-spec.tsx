@@ -3,7 +3,7 @@ import { findByRole, renderRefero, userEvent } from '@test/test-utils.tsx';
 import { q, qCustomErrorMessage } from './__data__';
 import { ReferoProps } from '../../../../types/referoProps';
 import { Extensions } from '../../../../constants/extensions';
-import { clickButtonTimes, submitForm } from '../../../../../test/selectors';
+import { clickButtonTimes, repeatNTimes, submitForm } from '../../../../../test/selectors';
 import { getResources } from '../../../../../preview/resources/referoResources';
 import { vi } from 'vitest';
 
@@ -121,7 +121,7 @@ describe('Quantity', () => {
     it('Should add item when repeat is clicked and remove button when maxOccurance(4) is reached', async () => {
       const questionnaire: Questionnaire = {
         ...q,
-        item: q.item?.map(x => ({ ...x, repeats: true })),
+        item: q.item?.map(x => ({ ...x, repeats: true, readOnly: false })),
         extension: q.extension?.map(y => {
           if (y.url === Extensions.MIN_OCCURS_URL) {
             return { ...y, valueInteger: 2 };
@@ -130,7 +130,9 @@ describe('Quantity', () => {
         }),
       };
       const { queryAllByLabelText, queryByTestId } = createWrapper(questionnaire);
-      await clickButtonTimes(/-repeat-button/i, 3);
+
+      const input = '2.2';
+      await repeatNTimes(input, 3, /Quantity/i);
 
       expect(queryAllByLabelText(/Quantity/i)).toHaveLength(4);
       expect(queryByTestId(/-repeat-button/i)).not.toBeInTheDocument();
@@ -144,7 +146,8 @@ describe('Quantity', () => {
       };
       const { queryAllByTestId } = createWrapper(questionnaire);
 
-      await clickButtonTimes(/-repeat-button/i, 2);
+      const input = '2.2';
+      await repeatNTimes(input, 2, /Quantity/i);
 
       expect(queryAllByTestId(/-delete-button/i)).toHaveLength(2);
     });
@@ -163,8 +166,8 @@ describe('Quantity', () => {
         item: q.item?.map(x => ({ ...x, repeats: true })),
       };
       const { getByTestId } = createWrapper(questionnaire);
-
-      await clickButtonTimes(/-repeat-button/i, 1);
+      const input = '2.2';
+      await repeatNTimes(input, 1, /Quantity/i);
 
       expect(getByTestId(/-delete-button/i)).toBeInTheDocument();
       await clickButtonTimes(/-delete-button/i, 1);
@@ -177,8 +180,8 @@ describe('Quantity', () => {
         item: q.item?.map(x => ({ ...x, repeats: true })),
       };
       const { getByTestId, queryByTestId } = createWrapper(questionnaire);
-
-      await clickButtonTimes(/-repeat-button/i, 1);
+      const input = '2.2';
+      await repeatNTimes(input, 1, /Quantity/i);
 
       expect(getByTestId(/-delete-button/i)).toBeInTheDocument();
       await clickButtonTimes(/-delete-button/i, 1);
