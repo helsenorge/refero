@@ -31,7 +31,7 @@ const GroupHeader = ({ item, resources, headerTag, isHelpVisible, setIsHelpVisib
   return (
     <>
       <SafeText as={HeaderTag} text={headerText} className={'page_refero__heading'} />
-      <RenderHelpButton isHelpVisible={isHelpVisible} item={item} setIsHelpVisible={setIsHelpVisible} />
+      <RenderHelpButton isHelpVisible={isHelpVisible} item={item} setIsHelpVisible={setIsHelpVisible} padding={true} />
     </>
   );
 };
