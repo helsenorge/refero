@@ -12,7 +12,10 @@ $featureColor1: #5b22a6;
 }
 
 .page_refero__helpButton {
-  margin-left: 1rem;
+
+  &.padding {
+    padding-left: .75rem;
+  }
 
   .atom_inline-functionbutton {
     position: relative;

@@ -77,9 +77,8 @@ const RadioView = (props: Props): JSX.Element | null => {
           labelId={`${getId(id)}-open-choice-label`}
           testId={`${getId(id)}-open-choice-label`}
           sublabelId={`${getId(id)}-open-choice-sublabel`}
-        >
-          <RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />
-        </ReferoLabel>
+          afterLabelChildren={<RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />}
+        />
         <RenderHelpElement item={item} isHelpVisible={isHelpVisible} />
         {options?.map((option: Options, index: number) => (
           <RadioButton

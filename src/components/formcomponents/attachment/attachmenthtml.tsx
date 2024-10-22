@@ -191,9 +191,8 @@ const AttachmentHtml = (props: Props): JSX.Element | null => {
           htmlFor={id}
           labelId={`${getId(id)}-attachment-label`}
           testId={`${getId(id)}-attachment-label`}
-        >
-          <RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />
-        </ReferoLabel>
+          afterLabelChildren={<RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />}
+        />
         <FileUpload
           {...rest}
           wrapperTestId={`${getId(id)}-attachment`}

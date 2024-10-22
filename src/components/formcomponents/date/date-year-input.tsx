@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { FieldError, FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
 import styles from '../common-styles.module.css';
@@ -8,7 +9,6 @@ import { getId, isReadOnly, isRequired } from '../../../util';
 import { getPDFValueForDate, validateYearDigits, validateYearMax, validateYearMin } from '../../../util/date-utils';
 import { getValidationTextExtension } from '../../../util/extension';
 import RenderHelpElement from '@/components/formcomponents/help-button/RenderHelpElement';
-import { useState } from 'react';
 import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelpButton';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
@@ -114,9 +114,8 @@ export const DateYearInput = (props: Props): JSX.Element | null => {
         labelId={`${getId(id)}-label`}
         testId={`${getId(id)}-label-test`}
         sublabelId={`${getId(id)}-sublabel`}
-      >
-        <RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />
-      </ReferoLabel>
+        afterLabelChildren={<RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />}
+      />
       <RenderHelpElement item={item} isHelpVisible={isHelpVisible} />
       <Input
         {...rest}

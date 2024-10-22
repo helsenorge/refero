@@ -25,7 +25,7 @@ const TextView = ({ id, testId, item, value, textClass, children }: Props): JSX.
       <>
         <SafeText as="b" text={getText(item, onRenderMarkdown)} />
 
-        <RenderHelpButton isHelpVisible={isHelpVisible} item={item} setIsHelpVisible={setIsHelpVisible} />
+        <RenderHelpButton isHelpVisible={isHelpVisible} item={item} setIsHelpVisible={setIsHelpVisible} padding={true} />
         <RenderHelpElement isHelpVisible={isHelpVisible} item={item} />
       </>
       <div className={textClass || ''}>{value}</div>

@@ -126,9 +126,8 @@ const Decimal = (props: Props): JSX.Element | null => {
           labelId={`${getId(id)}-label-decimal`}
           testId={`${getId(id)}-decimal-label`}
           sublabelId={`${getId(id)}-decimal-sublabel`}
-        >
-          <RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />
-        </ReferoLabel>
+          afterLabelChildren={<RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />}
+        />
         <RenderHelpElement item={item} isHelpVisible={isHelpVisible} />
 
         <Input

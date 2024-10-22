@@ -26,6 +26,7 @@ import { EnhetType, OrgenhetHierarki } from '../src/types/orgenhetHierarki';
 import { IActionRequester, setSkjemaDefinitionAction } from '@/actions/form';
 import { IQuestionnaireInspector } from '@/util/questionnaireInspector';
 import { configureStore } from '@reduxjs/toolkit';
+import HelpButton from './external-components/HelpButton';
 
 type Props = {
   showFormFiller: () => void;
@@ -193,6 +194,9 @@ const FormFillerPreview = (props: Props): JSX.Element => {
                   onOpenAttachment={onOpenAttachment}
                   attachmentValidTypes={[MimeTypes.PNG, MimeTypes.JPG, MimeTypes.PDF, MimeTypes.PlainText]}
                   attachmentMaxFileSize={1}
+                  onRequestHelpButton={(_1, _2, _3, _4, opening) => {
+                    return <HelpButton opening={opening} />;
+                  }}
                   // onStepChange={(newIndex: number): void => setStepIndex(newIndex)}
                 />
               </div>

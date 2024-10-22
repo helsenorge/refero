@@ -82,9 +82,8 @@ const SliderView = (props: SliderProps): JSX.Element | null => {
           labelId={`${getId(id)}-slider-choice-label`}
           testId={`${getId(id)}-slider-choice-label`}
           resources={resources}
-        >
-          <RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />
-        </ReferoLabel>
+          afterLabelChildren={<RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />}
+        />
         <RenderHelpElement item={item} isHelpVisible={isHelpVisible} />
 
         <Controller

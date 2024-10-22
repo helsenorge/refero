@@ -21,8 +21,8 @@ import {
   validateYearMonthMax,
   validateYearMonthMin,
 } from '@/util/date-utils';
-import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelpButton';
-import RenderHelpElement from '@/components/formcomponents/help-button/RenderHelpElement';
+import RenderHelpButton from '../help-button/RenderHelpButton';
+import RenderHelpElement from '../help-button/RenderHelpElement';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
@@ -196,9 +196,8 @@ export const DateYearMonthInput = ({
         labelId={`${getId(id)}-label`}
         testId={`${getId(id)}-label-test`}
         sublabelId={`${getId(id)}-sublabel`}
-      >
-        <RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />
-      </ReferoLabel>
+        afterLabelChildren={<RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />}
+      />
       <RenderHelpElement item={item} isHelpVisible={isHelpVisible} />
       <div className={styles.yearMonthWrapper}>
         <Input
