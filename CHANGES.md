@@ -1,3 +1,6 @@
+## 16.0.0-beta.45
+- Fixed bugs related to placement of label and helpbutton
+
 ## 16.0.0-beta.44
 - fix repeatable items not being disabled when they should be
 
