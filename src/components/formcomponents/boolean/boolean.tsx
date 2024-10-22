@@ -81,7 +81,13 @@ const Boolean = (props: Props): JSX.Element | null => {
     return (
       <Checkbox
         testId={`${getId(id)}-readonly`}
-        label={<Label testId={`${getId(id)}-label-readonly`} labelTexts={[{ text: labelText }]} />}
+        label={
+          <Label
+            testId={`${getId(id)}-label-readonly`}
+            labelTexts={[{ text: labelText }]}
+            afterLabelChildren={<RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />}
+          />
+        }
         checked={getValue()}
         disabled={true}
         onChange={(): void => {
