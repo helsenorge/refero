@@ -1,11 +1,11 @@
 import '@/util/__tests__/defineFetch';
 
-import { findByRole, renderRefero, userEvent } from '../../../../../test/test-utils';
+import { findByRole, renderRefero, screen, userEvent } from '../../../../../test/test-utils';
 import { qinline, q, qScriptInjection, qCustomErrorMessage } from './__data__';
 import { Questionnaire, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { ReferoProps } from '../../../../types/referoProps';
 import { Extensions } from '../../../../constants/extensions';
-import { clickButtonTimes, submitForm } from '../../../../../test/selectors';
+import { clickButtonTimes, repeatNTimes, submitForm } from '../../../../../test/selectors';
 import { getResources } from '../../../../../preview/resources/referoResources';
 import { vi } from 'vitest';
 vi.mock('@helsenorge/core-utils/debounce', () => ({
@@ -177,7 +177,8 @@ describe('Text', () => {
       };
       const { queryAllByLabelText, queryByTestId } = createWrapper(questionnaire);
 
-      await clickButtonTimes(/-repeat-button/i, 3);
+      const input = 'entotre';
+      await repeatNTimes(input, 3, /String/i);
 
       expect(queryAllByLabelText(/String/i)).toHaveLength(4);
       expect(queryByTestId(/-repeat-button/i)).not.toBeInTheDocument();
@@ -198,11 +199,12 @@ describe('Text', () => {
           }),
         })),
       };
-      const { queryAllByTestId } = createWrapper(questionnaire);
+      createWrapper(questionnaire);
 
-      await clickButtonTimes(/-repeat-button/i, 2);
-
-      expect(queryAllByTestId(/-delete-button/i)).toHaveLength(2);
+      const input = 'string';
+      await repeatNTimes(input, 3, /String/i);
+      const elements = await screen.findAllByTestId(/-delete-button/i);
+      expect(elements).toHaveLength(2);
     });
     it('Should not render delete button if item repeats and number of repeated items is lower or equal than minOccurance(2)', async () => {
       const questionnaire: Questionnaire = {
@@ -228,17 +230,12 @@ describe('Text', () => {
         item: q.item?.map(x => ({
           ...x,
           repeats: true,
-          extension: x.extension?.map(y => {
-            if (y.url === Extensions.MIN_OCCURS_URL) {
-              return { ...y, valueInteger: 2 };
-            }
-            return y;
-          }),
         })),
       };
       const { getByTestId } = createWrapper(questionnaire);
 
-      await clickButtonTimes(/-repeat-button/i, 1);
+      const input = 'entotre';
+      await repeatNTimes(input, 1, /String/i);
 
       expect(getByTestId(/-delete-button/i)).toBeInTheDocument();
       await clickButtonTimes(/-delete-button/i, 1);
@@ -251,17 +248,11 @@ describe('Text', () => {
         item: q.item?.map(x => ({
           ...x,
           repeats: true,
-          extension: x.extension?.map(y => {
-            if (y.url === Extensions.MIN_OCCURS_URL) {
-              return { ...y, valueInteger: 2 };
-            }
-            return y;
-          }),
         })),
       };
       const { getByTestId, queryByTestId } = createWrapper(questionnaire);
-
-      await clickButtonTimes(/-repeat-button/i, 1);
+      const input = 'entotre';
+      await repeatNTimes(input, 1, /String/i);
 
       expect(getByTestId(/-delete-button/i)).toBeInTheDocument();
       await clickButtonTimes(/-delete-button/i, 1);

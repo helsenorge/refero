@@ -3,7 +3,7 @@ import { findByRole, renderRefero, userEvent } from '@test/test-utils.tsx';
 import { q, qCustomErrorMessage } from './__data__';
 import { ReferoProps } from '../../../../types/referoProps';
 import { Extensions } from '../../../../constants/extensions';
-import { clickButtonTimes, submitForm } from '../../../../../test/selectors';
+import { clickButtonTimes, repeatNTimes, submitForm } from '../../../../../test/selectors';
 import { getResources } from '../../../../../preview/resources/referoResources';
 import { vi } from 'vitest';
 
@@ -114,8 +114,8 @@ describe('Decimal', () => {
         }),
       };
       const { queryAllByLabelText, queryByTestId } = createWrapper(questionnaire);
-      await clickButtonTimes(/-repeat-button/i, 3);
-
+      const input = '2.2';
+      await repeatNTimes(input, 3, /Decimal/i);
       expect(queryAllByLabelText(/Decimal/i)).toHaveLength(4);
       expect(queryByTestId(/-repeat-button/i)).not.toBeInTheDocument();
     });
@@ -128,7 +128,8 @@ describe('Decimal', () => {
       };
       const { queryAllByTestId } = createWrapper(questionnaire);
 
-      await clickButtonTimes(/-repeat-button/i, 2);
+      const input = '2.2';
+      await repeatNTimes(input, 2, /Decimal/i);
 
       expect(queryAllByTestId(/-delete-button/i)).toHaveLength(2);
     });
@@ -148,7 +149,8 @@ describe('Decimal', () => {
       };
       const { getByTestId } = createWrapper(questionnaire);
 
-      await clickButtonTimes(/-repeat-button/i, 1);
+      const input = '2.2';
+      await repeatNTimes(input, 1, /Decimal/i);
 
       expect(getByTestId(/-delete-button/i)).toBeInTheDocument();
       await clickButtonTimes(/-delete-button/i, 1);
@@ -162,7 +164,8 @@ describe('Decimal', () => {
       };
       const { getByTestId, queryByTestId } = createWrapper(questionnaire);
 
-      await clickButtonTimes(/-repeat-button/i, 1);
+      const input = '2.2';
+      await repeatNTimes(input, 1, /Decimal/i);
 
       expect(getByTestId(/-delete-button/i)).toBeInTheDocument();
       await clickButtonTimes(/-delete-button/i, 1);

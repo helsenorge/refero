@@ -3,7 +3,7 @@ import { findByRole, renderRefero, userEvent } from '@test/test-utils.tsx';
 import { q, qMinMaxCustomError } from './__data__/time';
 import { ReferoProps } from '../../../../types/referoProps';
 import { Extensions } from '../../../../constants/extensions';
-import { clickButtonTimes, submitForm } from '../../../../../test/selectors';
+import { clickButtonTimes, repeatNTimes, submitForm } from '../../../../../test/selectors';
 import { getResources } from '../../../../../preview/resources/referoResources';
 import { vi } from 'vitest';
 import { screen, waitFor } from '@testing-library/dom';
@@ -134,7 +134,8 @@ describe('Time', () => {
         }),
       };
       const { queryAllByLabelText, queryByTestId } = createWrapper(questionnaire);
-      await clickButtonTimes(/-repeat-button/i, 3);
+      const input = '14';
+      await repeatNTimes(input, 3, /Klokkeslett/i);
 
       expect(queryAllByLabelText(/Klokkeslett/i)).toHaveLength(4);
       expect(queryByTestId(/-repeat-button/i)).not.toBeInTheDocument();
@@ -148,7 +149,8 @@ describe('Time', () => {
       };
       const { queryAllByTestId } = createWrapper(questionnaire);
 
-      await clickButtonTimes(/-repeat-button/i, 2);
+      const input = '14';
+      await repeatNTimes(input, 2, /Klokkeslett/i);
 
       expect(queryAllByTestId(/-delete-button/i)).toHaveLength(2);
     });
@@ -168,7 +170,8 @@ describe('Time', () => {
       };
       const { getByTestId } = createWrapper(questionnaire);
 
-      await clickButtonTimes(/-repeat-button/i, 1);
+      const input = '14';
+      await repeatNTimes(input, 1, /Klokkeslett/i);
 
       expect(getByTestId(/-delete-button/i)).toBeInTheDocument();
       await clickButtonTimes(/-delete-button/i, 1);
@@ -182,7 +185,8 @@ describe('Time', () => {
       };
       const { getByTestId, queryByTestId } = createWrapper(questionnaire);
 
-      await clickButtonTimes(/-repeat-button/i, 1);
+      const input = '14';
+      await repeatNTimes(input, 1, /Klokkeslett/i);
 
       expect(getByTestId(/-delete-button/i)).toBeInTheDocument();
       await clickButtonTimes(/-delete-button/i, 1);

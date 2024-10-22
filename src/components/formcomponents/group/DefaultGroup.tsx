@@ -49,7 +49,7 @@ const DefaultGroup = ({ isHelpVisible, setIsHelpVisible, children, ...rest }: De
       </div>
 
       <RenderDeleteButton item={item} path={path} index={index} className="page_refero__deletebutton--margin-top" />
-      <RenderRepeatButton item={item} index={index} path={path?.slice(0, -1)} resources={resources} />
+      <RenderRepeatButton item={item} index={index} path={path} resources={resources} />
     </section>
   );
 };

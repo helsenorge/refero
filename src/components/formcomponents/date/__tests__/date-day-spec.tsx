@@ -3,7 +3,7 @@ import { findByRole, renderRefero, userEvent } from '@test/test-utils.tsx';
 import { q, qMinMax, qMinMaxCustomError } from './__data__/date-day';
 import { ReferoProps } from '../../../../types/referoProps';
 import { Extensions } from '../../../../constants/extensions';
-import { clickButtonTimes, submitForm } from '../../../../../test/selectors';
+import { clickButtonTimes, repeatNTimes, submitForm } from '../../../../../test/selectors';
 import { getResources } from '../../../../../preview/resources/referoResources';
 import { vi } from 'vitest';
 
@@ -129,7 +129,8 @@ describe('Date day', () => {
         }),
       };
       const { queryAllByLabelText, queryByTestId } = createWrapper(questionnaire);
-      await clickButtonTimes(/-repeat-button/i, 3);
+      const input = '31.05.1994';
+      await repeatNTimes(input, 3, /Dato/i);
 
       expect(queryAllByLabelText(/Dato/i)).toHaveLength(4);
       expect(queryByTestId(/-repeat-button/i)).not.toBeInTheDocument();
@@ -143,7 +144,8 @@ describe('Date day', () => {
       };
       const { queryAllByTestId } = createWrapper(questionnaire);
 
-      await clickButtonTimes(/-repeat-button/i, 2);
+      const input = '31.05.1994';
+      await repeatNTimes(input, 2, /Dato/i);
 
       expect(queryAllByTestId(/-delete-button/i)).toHaveLength(2);
     });
@@ -163,7 +165,8 @@ describe('Date day', () => {
       };
       const { getByTestId } = createWrapper(questionnaire);
 
-      await clickButtonTimes(/-repeat-button/i, 1);
+      const input = '31.05.1994';
+      await repeatNTimes(input, 1, /Dato/i);
 
       expect(getByTestId(/-delete-button/i)).toBeInTheDocument();
       await clickButtonTimes(/-delete-button/i, 1);
@@ -177,7 +180,8 @@ describe('Date day', () => {
       };
       const { getByTestId, queryByTestId } = createWrapper(questionnaire);
 
-      await clickButtonTimes(/-repeat-button/i, 1);
+      const input = '31.05.1994';
+      await repeatNTimes(input, 1, /Dato/i);
 
       expect(getByTestId(/-delete-button/i)).toBeInTheDocument();
       await clickButtonTimes(/-delete-button/i, 1);

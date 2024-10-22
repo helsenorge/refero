@@ -204,7 +204,83 @@ export function getItemWithIdFromResponseItemArray(
   }
   return filteredItems;
 }
+export const descendantsHasPrimitiveAnswer = (items?: QuestionnaireResponseItem[] | undefined): boolean => {
+  if (!items || items.length === 0) {
+    return false;
+  }
 
+  // Group items by linkId
+  const itemsByLinkId: { [linkId: string]: QuestionnaireResponseItem[] } = {};
+
+  for (const item of items) {
+    if (!item.linkId) {
+      continue; // Skip items without linkId
+    }
+
+    if (!itemsByLinkId[item.linkId]) {
+      itemsByLinkId[item.linkId] = [];
+    }
+    itemsByLinkId[item.linkId].push(item);
+  }
+
+  // Check each group of items with the same linkId
+  for (const linkId in itemsByLinkId) {
+    const itemGroup = itemsByLinkId[linkId];
+
+    // For each item in the group, check if it has a primitive answer
+    for (const item of itemGroup) {
+      const hasAnswer = itemHasPrimitiveAnswer(item);
+      if (!hasAnswer) {
+        // If any item in the group lacks a primitive answer, return false
+        return false;
+      }
+    }
+  }
+
+  // If all groups passed the checks, return true
+  return true;
+};
+
+// Helper function to check if an item or its descendants have primitive answers
+function itemHasPrimitiveAnswer(item: QuestionnaireResponseItem): boolean {
+  // Check if the item has answers with primitive values
+  if (item.answer && item.answer.length > 0) {
+    for (const answer of item.answer) {
+      // Check for primitive value[x] properties
+      const hasPrimitiveValue = Object.keys(answer).some(key => {
+        if (key.startsWith('value') && key !== 'value') {
+          if (key === 'valueCoding') {
+            // Check if valueCoding.code exists
+            return answer.valueCoding && answer.valueCoding.code !== undefined;
+          } else if (key === 'valueQuantity') {
+            // Check if valueQuantity.value exists
+            return answer.valueQuantity && answer.valueQuantity.value !== undefined;
+          } else {
+            // For other value[x], check if it's not an object (primitive value)
+            return (
+              answer[key as keyof QuestionnaireResponseItemAnswer] !== undefined &&
+              typeof answer[key as keyof QuestionnaireResponseItemAnswer] !== 'object'
+            );
+          }
+        }
+        return false;
+      });
+
+      if (hasPrimitiveValue) {
+        // Found a primitive value
+        return true;
+      }
+    }
+  }
+
+  // Recursively check child items
+  if (item.item && item.item.length > 0) {
+    return descendantsHasPrimitiveAnswer(item.item);
+  }
+
+  // No primitive answers found in this item
+  return false;
+}
 export function getItemsWithIdFromResponseItemArray(
   linkId: string,
   responseItems: QuestionnaireResponseItem[] | undefined,

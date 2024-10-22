@@ -2,7 +2,7 @@ import { Questionnaire, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { findByRole, renderRefero, userEvent } from '@test/test-utils.tsx';
 import { q } from './__data__';
 import { ReferoProps } from '../../../../types/referoProps';
-import { clickButtonTimes, clickByLabelText, submitForm } from '../../../../../test/selectors';
+import { clickButtonTimes, clickByLabelText, repeatCheckboxTimes, submitForm } from '../../../../../test/selectors';
 import { getResources } from '../../../../../preview/resources/referoResources';
 import { vi } from 'vitest';
 const resources = { ...getResources(''), formRequiredErrorMessage: 'Du må fylle ut dette feltet' };
@@ -115,7 +115,7 @@ describe('Boolean', () => {
         }),
       };
       const { queryAllByLabelText, queryByTestId } = createWrapper(questionnaire);
-      await clickButtonTimes(/-repeat-button/i, 3);
+      await repeatCheckboxTimes(/Boolean/i, 3);
 
       expect(queryAllByLabelText(/Boolean/i)).toHaveLength(4);
       expect(queryByTestId(/-repeat-button/i)).not.toBeInTheDocument();
@@ -128,7 +128,7 @@ describe('Boolean', () => {
         item: q.item?.map(x => ({ ...x, repeats: true })),
       };
       const { queryAllByTestId } = createWrapper(questionnaire);
-      await clickButtonTimes(/-repeat-button/i, 2);
+      await repeatCheckboxTimes(/Boolean/i, 2);
 
       expect(queryAllByTestId(/-delete-button/i)).toHaveLength(2);
     });
@@ -148,7 +148,7 @@ describe('Boolean', () => {
       };
       const { getByTestId } = createWrapper(questionnaire);
 
-      await clickButtonTimes(/-repeat-button/i, 1);
+      await repeatCheckboxTimes(/Boolean/i, 1);
       const deleteButton = getByTestId(/-delete-button/i);
       expect(deleteButton).toBeInTheDocument();
       await clickButtonTimes(/-delete-button/i, 1);
@@ -162,7 +162,7 @@ describe('Boolean', () => {
       };
       const { getByTestId, queryByTestId } = createWrapper(questionnaire);
 
-      await clickButtonTimes(/-repeat-button/i, 1);
+      await repeatCheckboxTimes(/Boolean/i, 1);
       expect(getByTestId(/-delete-button/i)).toBeInTheDocument();
 
       await clickButtonTimes(/-delete-button/i, 1);
