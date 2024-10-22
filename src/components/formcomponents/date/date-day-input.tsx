@@ -1,5 +1,3 @@
-import { useState } from 'react';
-
 import { format, isValid } from 'date-fns';
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { FieldError, FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
@@ -23,8 +21,6 @@ import {
   validateMinDate,
 } from '@/util/date-utils';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
-import RenderHelpButton from '../help-button/RenderHelpButton';
-import RenderHelpElement from '../help-button/RenderHelpElement';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 import { useMinMaxDate } from './useMinMaxDate';
@@ -52,7 +48,6 @@ export const DateDayInput = ({
   initialize();
   const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
 
-  const [isHelpVisible, setIsHelpVisible] = useState(false);
   const { formState, getFieldState, register } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
@@ -166,10 +161,8 @@ export const DateDayInput = ({
         labelId={`${getId(id)}-label`}
         testId={`${getId(id)}-label-test`}
         sublabelId={`${getId(id)}-sublabel`}
-        afterLabelChildren={<RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />}
         dateLabel={resources?.dateFormat_ddmmyyyy}
       />
-      <RenderHelpElement isHelpVisible={isHelpVisible} item={item} />
 
       <DatePicker
         {...rest}
