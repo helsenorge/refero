@@ -144,16 +144,21 @@ const RenderForm = ({
 
 
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  const handleSubmit = () => {
-
+  const handleSubmit = (): (() => void) => {
+     // eslint-disable-next-line no-console
+     console.log("Handle submit called");
      if ( referoProps.isMicrowebStep ) {
-        if ( referoProps.onStepProcessForward)
-        {
-        referoProps.onStepProcessForward();
-     }
+        // eslint-disable-next-line no-console
+        console.log("Is microweb step");
+        // eslint-disable-next-line no-console
+        console.log("Using step process foward");
+        if ( referoProps.onStepProcessForward) {
+          // eslint-disable-next-line no-console
+          console.log("Returning callback onStepProcessForward");
+          return referoProps.onStepProcessForward;
+        }
     }
-
-      return onSubmit
+    return onSubmit;
   }
 
 
