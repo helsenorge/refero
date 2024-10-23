@@ -13,8 +13,6 @@ import { getId, isReadOnly } from '@/util/index';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
-import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelpButton';
-import RenderHelpElement from '@/components/formcomponents/help-button/RenderHelpElement';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
@@ -37,7 +35,6 @@ type Props = QuestionnaireComponentItemProps & {
 const DropdownView = (props: Props): JSX.Element | null => {
   const { options, id, handleChange, selected, renderOpenField, idWithLinkIdAndItemIndex, linkId, children, path, index, pdf, pdfValue } =
     props;
-  const [isHelpVisible, setIsHelpVisible] = React.useState(false);
   const { formState, getFieldState, register } = useFormContext<FieldValues>();
   const { error } = getFieldState(idWithLinkIdAndItemIndex, formState);
   const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
@@ -87,9 +84,7 @@ const DropdownView = (props: Props): JSX.Element | null => {
           labelId={`${getId(id)}-open-choice-label`}
           testId={`${getId(id)}-open-choice-label`}
           sublabelId={`${getId(id)}-open-choice-sublabel`}
-          afterLabelChildren={<RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />}
         />
-        <RenderHelpElement item={item} isHelpVisible={isHelpVisible} />
 
         <Select
           {...rest}

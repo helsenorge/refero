@@ -43,6 +43,11 @@
     display: none;
   }
 
+  //Overstyrer styling som arves fra afterLabelChildren i Label. Brukes foreløpig kun i boolean.tsx.
+  .label_helpButton_align {
+    align-items: flex-start !important;
+  }
+
   .page_refero__component_choice_autosuggest {
     .page_refero__no-suggestions {
       font-size: 1rem;

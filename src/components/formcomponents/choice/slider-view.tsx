@@ -1,5 +1,3 @@
-import { useState } from 'react';
-
 import { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
 import { Controller, FieldValues, useFormContext } from 'react-hook-form';
 
@@ -14,8 +12,6 @@ import { getExtension } from '@/util/extension';
 import { isString } from '@/util/typeguards';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
-import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelpButton';
-import RenderHelpElement from '@/components/formcomponents/help-button/RenderHelpElement';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
@@ -46,7 +42,6 @@ const SliderView = (props: SliderProps): JSX.Element | null => {
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
 
-  const [isHelpVisible, setIsHelpVisible] = useState(false);
   const onValueChange = (index: number): void => {
     const code = item?.answerOption?.[index]?.valueCoding?.code;
     if (code) {
@@ -82,9 +77,7 @@ const SliderView = (props: SliderProps): JSX.Element | null => {
           labelId={`${getId(id)}-slider-choice-label`}
           testId={`${getId(id)}-slider-choice-label`}
           resources={resources}
-          afterLabelChildren={<RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />}
         />
-        <RenderHelpElement item={item} isHelpVisible={isHelpVisible} />
 
         <Controller
           name={idWithLinkIdAndItemIndex}

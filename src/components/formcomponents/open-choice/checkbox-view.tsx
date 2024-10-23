@@ -1,5 +1,3 @@
-import { useState } from 'react';
-
 import { FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
 import styles from '../common-styles.module.css';
 import { Options } from '@/types/formTypes/radioGroupOptions';
@@ -13,8 +11,6 @@ import { getId, isReadOnly } from '@/util/index';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
-import RenderHelpElement from '@/components/formcomponents/help-button/RenderHelpElement';
-import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelpButton';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
@@ -44,7 +40,6 @@ const CheckboxView = (props: Props): JSX.Element | null => {
   const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
 
   const answer = useGetAnswer(linkId, path);
-  const [isHelpVisible, setIsHelpVisible] = useState(false);
 
   const validationRules: RegisterOptions<FieldValues, string> | undefined = {
     required: required({ item, resources }),
@@ -78,9 +73,7 @@ const CheckboxView = (props: Props): JSX.Element | null => {
           labelId={`${getId(id)}-open-choice-label`}
           testId={`${getId(id)}-open-choice-label`}
           sublabelId={`${getId(id)}-open-choice-sublabel`}
-          afterLabelChildren={<RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />}
         />
-        <RenderHelpElement item={item} isHelpVisible={isHelpVisible} />
 
         {options?.map((option, index) => (
           <Checkbox

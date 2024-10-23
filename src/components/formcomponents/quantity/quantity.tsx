@@ -1,5 +1,3 @@
-import { useState } from 'react';
-
 import { QuestionnaireResponseItemAnswer, Quantity as QuantityType, QuestionnaireItem } from 'fhir/r4';
 import { FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
 import styles2 from '../common-styles.module.css';
@@ -14,8 +12,6 @@ import { isReadOnly, getId } from '@/util/index';
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { useSelector } from 'react-redux';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
-import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelpButton';
-import RenderHelpElement from '@/components/formcomponents/help-button/RenderHelpElement';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
@@ -38,7 +34,6 @@ const Quantity = (props: Props): JSX.Element | null => {
   const { error } = fieldState;
 
   const dispatch = useAppDispatch();
-  const [isHelpVisible, setIsHelpVisible] = useState(false);
   const answer = useGetAnswer(linkId, path);
 
   const getValue = (
@@ -138,9 +133,7 @@ const Quantity = (props: Props): JSX.Element | null => {
           labelId={`${getId(id)}-quantity-label`}
           testId={`${getId(id)}-quantity-label`}
           sublabelId={`${getId(id)}-quantity-sublabel`}
-          afterLabelChildren={<RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />}
         />
-        <RenderHelpElement isHelpVisible={isHelpVisible} item={item} />
 
         <div className={styles.inputWrapper}>
           <Input

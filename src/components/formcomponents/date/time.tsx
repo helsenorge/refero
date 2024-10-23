@@ -23,8 +23,6 @@ import {
   validateMinutes,
 } from '@/util/date-utils';
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
-import RenderHelpButton from '../help-button/RenderHelpButton';
-import RenderHelpElement from '../help-button/RenderHelpElement';
 import { QuestionnaireItem } from 'fhir/r4';
 import { findQuestionnaireItem } from '@/reducers/selectors';
 import { initialize } from '@/util/date-fns-utils';
@@ -45,7 +43,6 @@ const Time = ({ id, index, path, linkId, pdf, idWithLinkIdAndItemIndex, children
   const hoursField = getFieldState(`${idWithLinkIdAndItemIndex}-hours`, formState);
   const minutesField = getFieldState(`${idWithLinkIdAndItemIndex}-minutes`, formState);
   const answer = useGetAnswer(linkId, path);
-  const [isHelpVisible, setIsHelpVisible] = React.useState(false);
   const hoursAndMinutesFromAnswer = extractHoursAndMinutesFromAnswer(answer, item);
   const hours = hoursAndMinutesFromAnswer?.hours;
   const minutes = hoursAndMinutesFromAnswer?.minutes;
@@ -191,9 +188,7 @@ const Time = ({ id, index, path, linkId, pdf, idWithLinkIdAndItemIndex, children
           labelId={`${getId(id)}-label`}
           testId={`${getId(id)}-label-test`}
           sublabelId={`${getId(id)}-sublabel`}
-          afterLabelChildren={<RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />}
         />
-        <RenderHelpElement isHelpVisible={isHelpVisible} item={item} />
         <DateTimePickerWrapper>
           <DateTime
             {...restHours}

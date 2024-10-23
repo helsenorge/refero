@@ -17,8 +17,6 @@ import { getStringAnswer, hasStringAnswer, getCodingAnswer } from '@/util/refero
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
-import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelpButton';
-import RenderHelpElement from '@/components/formcomponents/help-button/RenderHelpElement';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
@@ -63,7 +61,6 @@ const AutosuggestView = (props: AutosuggestProps): JSX.Element | null => {
   const initialInputValue =
     codingAnswer?.code === OPEN_CHOICE_ID && codingAnswer?.system === OPEN_CHOICE_SYSTEM ? getStringAnswer(answer) : codingAnswer?.display;
 
-  const [isHelpVisible, setIsHelpVisible] = useState(false);
   const [inputValue, setInputValue] = useState(initialInputValue || '');
   const [lastSearchValue, setLastSearchValue] = useState('');
   const [system, setSystem] = useState('');
@@ -211,9 +208,7 @@ const AutosuggestView = (props: AutosuggestProps): JSX.Element | null => {
           labelId={`${getId(id)}-autosuggest-label`}
           testId={`${getId(id)}-label`}
           sublabelId={`${getId(id)}-sublabel`}
-          afterLabelChildren={<RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />}
         />
-        <RenderHelpElement item={item} isHelpVisible={isHelpVisible} />
 
         <Autosuggest
           inputProps={{

@@ -1,5 +1,3 @@
-import { useState } from 'react';
-
 import { FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
@@ -10,8 +8,6 @@ import { getId, isReadOnly, isRequired } from '@/util/index';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { Options } from '@/types/formTypes/radioGroupOptions';
-import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelpButton';
-import RenderHelpElement from '@/components/formcomponents/help-button/RenderHelpElement';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
@@ -39,7 +35,6 @@ const DropdownView = (props: Props): JSX.Element | null => {
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
 
-  const [isHelpVisible, setIsHelpVisible] = useState(false);
   let placeholder: string | undefined = '';
 
   if (getPlaceholder(item)) {
@@ -88,9 +83,7 @@ const DropdownView = (props: Props): JSX.Element | null => {
           labelId={`${getId(id)}-label`}
           testId={`${getId(id)}-label`}
           sublabelId="select-sublabel"
-          afterLabelChildren={<RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />}
         />
-        <RenderHelpElement item={item} isHelpVisible={isHelpVisible} />
         <Select
           {...rest}
           width={getWith(options)}

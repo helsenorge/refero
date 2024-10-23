@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 import { FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
 import { useSelector } from 'react-redux';
@@ -14,8 +14,6 @@ import { isReadOnly, getId, getStringValue, getPDFStringValue, getMaxLength } fr
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
-import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelpButton';
-import RenderHelpElement from '@/components/formcomponents/help-button/RenderHelpElement';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
@@ -40,7 +38,6 @@ export const String = (props: Props): JSX.Element | null => {
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
   const dispatch = useAppDispatch();
-  const [isHelpVisible, setIsHelpVisible] = useState(false);
   const answer = useGetAnswer(linkId, path);
 
   const handleChange = async (event: React.ChangeEvent<HTMLInputElement>): Promise<void> => {
@@ -106,9 +103,7 @@ export const String = (props: Props): JSX.Element | null => {
           htmlFor={getId(id)}
           labelId={`${getId(id)}-string-label`}
           testId={`${getId(id)}-string-label`}
-          afterLabelChildren={<RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />}
         />
-        <RenderHelpElement item={item} isHelpVisible={isHelpVisible} />
         <Input
           {...rest}
           defaultValue={value}

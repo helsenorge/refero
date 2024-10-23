@@ -1,5 +1,3 @@
-import { useState } from 'react';
-
 import { Attachment, QuestionnaireItem } from 'fhir/r4';
 import { FieldError, FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
 import styles from '../common-styles.module.css';
@@ -16,8 +14,6 @@ import { getId, isReadOnly } from '@/util';
 import { Resources } from '@/util/resources';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
-import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelpButton';
-import RenderHelpElement from '@/components/formcomponents/help-button/RenderHelpElement';
 import { TextMessage } from '@/types/text-message';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
@@ -80,7 +76,6 @@ const AttachmentHtml = (props: Props): JSX.Element | null => {
   const getMaxValueBytes = getAttachmentMaxSizeBytesToUse(attachmentMaxFileSize, item);
   const validFileTypes = attachmentValidTypes ? attachmentValidTypes : VALID_FILE_TYPES;
   const deleteText = resources ? resources.deleteAttachmentText : undefined;
-  const [isHelpVisible, setIsHelpVisible] = useState(false);
   const { acceptedFiles, rejectedFiles, setAcceptedFiles, setRejectedFiles } = useFileUpload(
     internalRegister,
     [
@@ -191,7 +186,6 @@ const AttachmentHtml = (props: Props): JSX.Element | null => {
           htmlFor={id}
           labelId={`${getId(id)}-attachment-label`}
           testId={`${getId(id)}-attachment-label`}
-          afterLabelChildren={<RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />}
         />
         <FileUpload
           {...rest}
@@ -206,7 +200,6 @@ const AttachmentHtml = (props: Props): JSX.Element | null => {
           deleteText={deleteText}
           acceptedFiles={acceptedFiles}
           rejectedFiles={rejectedFiles}
-          helpElement={<RenderHelpElement item={item} isHelpVisible={isHelpVisible} />}
           onOpenFile={onOpen}
         />
         {customErrorMessage && (

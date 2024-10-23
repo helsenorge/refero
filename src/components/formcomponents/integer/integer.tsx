@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 import { FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
 import styles from '../common-styles.module.css';
@@ -13,8 +13,6 @@ import { isReadOnly, getId } from '@/util/index';
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { useSelector } from 'react-redux';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
-import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelpButton';
-import RenderHelpElement from '@/components/formcomponents/help-button/RenderHelpElement';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
@@ -36,7 +34,6 @@ const Integer = (props: Props): JSX.Element | null => {
   const { formState, getFieldState, register } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
-  const [isHelpVisible, setIsHelpVisible] = useState(false);
   const answer = useGetAnswer(linkId, path);
   const getValue = (): string | number | number[] | undefined => {
     if (answer && Array.isArray(answer)) {
@@ -115,9 +112,7 @@ const Integer = (props: Props): JSX.Element | null => {
           labelId={`${getId(id)}-label-integer`}
           testId={`${getId(id)}-integer-label`}
           sublabelId={`${getId(id)}-integer-sublabel`}
-          afterLabelChildren={<RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />}
         />
-        <RenderHelpElement item={item} isHelpVisible={isHelpVisible} />
 
         <Input
           {...rest}

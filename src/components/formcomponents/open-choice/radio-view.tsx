@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
 
 import { Options } from '@/types/formTypes/radioGroupOptions';
@@ -13,8 +11,6 @@ import { getId, isReadOnly } from '@/util/index';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
-import RenderHelpElement from '@/components/formcomponents/help-button/RenderHelpElement';
-import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelpButton';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
@@ -40,7 +36,6 @@ const RadioView = (props: Props): JSX.Element | null => {
   const { resources } = useExternalRenderContext();
   const { formState, getFieldState, register } = useFormContext<FieldValues>();
   const { error } = getFieldState(idWithLinkIdAndItemIndex, formState);
-  const [isHelpVisible, setIsHelpVisible] = React.useState(false);
   const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
 
   const selectedValue = (selected && selected[0]) || '';
@@ -77,9 +72,7 @@ const RadioView = (props: Props): JSX.Element | null => {
           labelId={`${getId(id)}-open-choice-label`}
           testId={`${getId(id)}-open-choice-label`}
           sublabelId={`${getId(id)}-open-choice-sublabel`}
-          afterLabelChildren={<RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />}
         />
-        <RenderHelpElement item={item} isHelpVisible={isHelpVisible} />
         {options?.map((option: Options, index: number) => (
           <RadioButton
             {...rest}
