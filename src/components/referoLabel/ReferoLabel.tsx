@@ -24,6 +24,7 @@ type Props = {
   sublabelId?: string;
   sublabelTestId?: string;
   dateLabel?: string;
+  attachmentLabel?: string;
   afterLabelChildren?: JSX.Element | null;
   children?: React.ReactNode;
 };
@@ -38,6 +39,7 @@ export const ReferoLabel = ({
   sublabelId,
   sublabelTestId,
   dateLabel,
+  attachmentLabel,
   afterLabelChildren,
   children,
 }: Props): JSX.Element => {
@@ -64,7 +66,7 @@ export const ReferoLabel = ({
                 {!isRequired(item) && !isReadOnly(item) ? (
                   <span
                     className={`${styles.LabelOptionalText}`}
-                  >{` ${dateLabel || ''} ${resources?.formOptional || ` (Valgfritt)`}`}</span>
+                  >{` ${dateLabel || ''} ${resources?.formOptional || ` (valgfritt)`}`}</span>
                 ) : (
                   dateLabel && <span className={`${styles.LabelOptionalText}`}>{dateLabel}</span>
                 )}
@@ -75,6 +77,7 @@ export const ReferoLabel = ({
           {children}
         </div>
         {subLabelText && <SubLabel id={sublabelId} testId={sublabelTestId} subLabelText={subLabelText} />}
+        {attachmentLabel && <SubLabel id={sublabelId} testId={sublabelTestId} subLabelText={attachmentLabel} />}
       </div>
       <RenderHelpElement isHelpVisible={isHelpVisible} item={item} />
     </>
