@@ -38,7 +38,6 @@ const DefaultGroup = ({ isHelpVisible, setIsHelpVisible, children, ...rest }: De
         item={item}
         resources={resources}
       />
-      <RenderHelpElement item={item} isHelpVisible={isHelpVisible} />
       {includeSkipLink && path?.length === 1 && (
         <AnchorLink className={`${styles.page_refero__skiplink} page_refero__skiplink`} href="#navigator-button">
           {resources?.skipLinkText}

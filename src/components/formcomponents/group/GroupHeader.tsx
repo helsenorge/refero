@@ -9,6 +9,7 @@ import { Dispatch } from 'react';
 import { useSelector } from 'react-redux';
 import { getFormDefinition } from '@/reducers/form';
 import { GlobalState } from '@/reducers';
+import RenderHelpElement from '../help-button/RenderHelpElement';
 
 type GroupHeaderProps = {
   item?: QuestionnaireItem;
@@ -32,6 +33,7 @@ const GroupHeader = ({ item, resources, headerTag, isHelpVisible, setIsHelpVisib
     <>
       <SafeText as={HeaderTag} text={headerText} className={'page_refero__heading'} />
       <RenderHelpButton isHelpVisible={isHelpVisible} item={item} setIsHelpVisible={setIsHelpVisible} padding={true} />
+      <RenderHelpElement isHelpVisible={isHelpVisible} item={item} />
     </>
   );
 };

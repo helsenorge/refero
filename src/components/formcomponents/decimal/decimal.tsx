@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
@@ -15,8 +15,6 @@ import { isReadOnly, getId } from '@/util/index';
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { useSelector } from 'react-redux';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
-import RenderHelpElement from '@/components/formcomponents/help-button/RenderHelpElement';
-import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelpButton';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
@@ -39,7 +37,6 @@ const Decimal = (props: Props): JSX.Element | null => {
   const fieldState = getFieldState(idWithLinkIdAndItemIndex || '', formState);
   const { error } = fieldState;
   const dispatch = useAppDispatch();
-  const [isHelpVisible, setIsHelpVisible] = useState(false);
 
   const answer = useGetAnswer(linkId, path);
 
@@ -126,9 +123,7 @@ const Decimal = (props: Props): JSX.Element | null => {
           labelId={`${getId(id)}-label-decimal`}
           testId={`${getId(id)}-decimal-label`}
           sublabelId={`${getId(id)}-decimal-sublabel`}
-          afterLabelChildren={<RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />}
         />
-        <RenderHelpElement item={item} isHelpVisible={isHelpVisible} />
 
         <Input
           {...rest}

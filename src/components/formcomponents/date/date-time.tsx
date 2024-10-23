@@ -1,5 +1,3 @@
-import { useState } from 'react';
-
 import { format, isValid } from 'date-fns';
 
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
@@ -28,8 +26,6 @@ import { isRequired, getId, isReadOnly } from '../../../util/index';
 import styles from '../common-styles.module.css';
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import { useSelector } from 'react-redux';
-import RenderHelpButton from '../help-button/RenderHelpButton';
-import RenderHelpElement from '../help-button/RenderHelpElement';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
@@ -53,7 +49,6 @@ const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, childr
   const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
 
   const answer = useGetAnswer(linkId, path);
-  const [isHelpVisible, setIsHelpVisible] = useState(false);
   const { formState, getFieldState, getValues, register } = useFormContext<FieldValues>();
   const dateField = getFieldState(`${idWithLinkIdAndItemIndex}-date`, formState);
   const hoursField = getFieldState(`${idWithLinkIdAndItemIndex}-hours`, formState);
@@ -235,9 +230,7 @@ const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, childr
           testId={`${getId(id)}-datetime-label`}
           sublabelId={`${getId(id)}-sublabel`}
           dateLabel={resources?.dateFormat_ddmmyyyy}
-          afterLabelChildren={<RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />}
         />
-        <RenderHelpElement isHelpVisible={isHelpVisible} item={item} />
         <DateTimePickerWrapper testId={`${getId(id)}-datetime-wrapper`}>
           <DatePicker
             {...restDate}

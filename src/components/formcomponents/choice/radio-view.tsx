@@ -1,5 +1,3 @@
-import { useState } from 'react';
-
 import { FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
 
 import { Options } from '@/types/formTypes/radioGroupOptions';
@@ -11,8 +9,6 @@ import RadioButton from '@helsenorge/designsystem-react/components/RadioButton';
 import { getId, isReadOnly } from '@/util/index';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
-import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelpButton';
-import RenderHelpElement from '@/components/formcomponents/help-button/RenderHelpElement';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 
@@ -41,7 +37,6 @@ const RadioView = (props: Props): JSX.Element => {
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
 
-  const [isHelpVisible, setIsHelpVisible] = useState(false);
   const selectedValue = (selected && selected[0]) || '';
 
   const validationRules: RegisterOptions<FieldValues, string> | undefined = {
@@ -75,9 +70,7 @@ const RadioView = (props: Props): JSX.Element => {
           labelId={`${getId(id)}-choice-label`}
           testId={`${getId(id)}-choice-label`}
           sublabelId={`${getId(id)}-choice-sublabel`}
-          afterLabelChildren={<RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />}
         />
-        <RenderHelpElement item={item} isHelpVisible={isHelpVisible} />
         {options?.map((option: Options, index: number) => (
           <RadioButton
             {...rest}

@@ -1,5 +1,3 @@
-import { useState } from 'react';
-
 import { FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
 import styles from '../common-styles.module.css';
 import { Options } from '@/types/formTypes/radioGroupOptions';
@@ -11,8 +9,6 @@ import Label from '@helsenorge/designsystem-react/components/Label';
 import { getId, isReadOnly } from '@/util/index';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
-import RenderHelpButton from '@/components/formcomponents/help-button/RenderHelpButton';
-import RenderHelpElement from '@/components/formcomponents/help-button/RenderHelpElement';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
@@ -35,8 +31,6 @@ const CheckboxView = (props: Props): JSX.Element | null => {
   const { options, linkId, id, handleChange, idWithLinkIdAndItemIndex, selected, path, children, index, pdf, pdfValue } = props;
   const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
   const { resources } = useExternalRenderContext();
-
-  const [isHelpVisible, setIsHelpVisible] = useState(false);
 
   const { formState, getFieldState, register } = useFormContext<FieldValues>();
   const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
@@ -74,9 +68,7 @@ const CheckboxView = (props: Props): JSX.Element | null => {
           labelId={`${getId(id)}-label`}
           testId={`${getId(id)}-label`}
           sublabelId="select-sublsbel"
-          afterLabelChildren={<RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />}
         />
-        <RenderHelpElement item={item} isHelpVisible={isHelpVisible} />
         {options?.map((option, index) => (
           <Checkbox
             {...rest}

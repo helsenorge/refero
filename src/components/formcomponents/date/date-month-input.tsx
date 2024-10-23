@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import styles2 from '../common-styles.module.css';
 import { getYear } from 'date-fns';
 import { QuestionnaireItem } from 'fhir/r4';
@@ -21,8 +21,6 @@ import {
   validateYearMonthMax,
   validateYearMonthMin,
 } from '@/util/date-utils';
-import RenderHelpButton from '../help-button/RenderHelpButton';
-import RenderHelpElement from '../help-button/RenderHelpElement';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
@@ -80,7 +78,6 @@ export const DateYearMonthInput = ({
     }
   };
 
-  const [isHelpVisible, setIsHelpVisible] = useState(false);
   const yearField = getFieldState(`${idWithLinkIdAndItemIndex}-yearmonth-year`, formState);
   const monthsField = getFieldState(`${idWithLinkIdAndItemIndex}-yearmonth-month`, formState);
   const monthOptions = getMonthOptions(resources);
@@ -196,9 +193,7 @@ export const DateYearMonthInput = ({
         labelId={`${getId(id)}-label`}
         testId={`${getId(id)}-label-test`}
         sublabelId={`${getId(id)}-sublabel`}
-        afterLabelChildren={<RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />}
       />
-      <RenderHelpElement item={item} isHelpVisible={isHelpVisible} />
       <div className={styles.yearMonthWrapper}>
         <Input
           {...restYear}

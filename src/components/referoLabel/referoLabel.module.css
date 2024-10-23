@@ -18,12 +18,14 @@
   font-size: 1.125rem;
   margin-left: 0.3rem;
 }
-.after_label_content {
-  align-self: center;
-}
 .label_content {
   display: flex;
   flex-direction: row;
   margin-bottom: 0.2rem;
+  align-items: center;
+}
+.label_helpButton_wrapper {
+  display: flex;
+  gap: 0.75rem; 
   align-items: center;
 }
