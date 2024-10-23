@@ -61,15 +61,17 @@ export const ReferoLabel = ({
               className={`${styles.pageReferoLabel}`}
               afterLabelChildren={afterLabelChildren}
             >
-              <div className={`${styles.textOptionalWrapper}`}>
-                <SafeText as="span" text={`${lblText}`} className={`${styles.referoLabelSafetext}`} />
-                {!isRequired(item) && !isReadOnly(item) ? (
-                  <span
-                    className={`${styles.LabelOptionalText}`}
-                  >{` ${dateLabel || ''} ${resources?.formOptional || ` (valgfritt)`}`}</span>
-                ) : (
-                  dateLabel && <span className={`${styles.LabelOptionalText}`}>{dateLabel}</span>
-                )}
+              <div className={`${styles.labelWrapper}`}>
+                <div>
+                  <SafeText as="span" text={lblText + '&nbsp'} className={`${styles.referoLabelSafetext}`} />
+                </div>
+                <div>
+                  {!isRequired(item) && !isReadOnly(item) ? (
+                    <span className={`${styles.extraLabelText}`}>{`${dateLabel || ''} ${resources?.formOptional || `(valgfritt)`}`}</span>
+                  ) : (
+                    dateLabel && <span className={`${styles.extraLabelText}`}>{dateLabel}</span>
+                  )}
+                </div>
               </div>
             </Label>
             <RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />

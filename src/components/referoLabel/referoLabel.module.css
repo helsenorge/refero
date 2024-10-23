@@ -6,17 +6,16 @@
   flex-direction: column;
   margin-bottom: 0rem;
 }
-.textOptionalWrapper {
+.labelWrapper {
   display: flex;
-  align-items: center;
+  flex-wrap: wrap;
 }
 .referoLabelSafetext {
   font-size: 1.125rem;
   font-weight: 600;
 }
-.LabelOptionalText {
+.extraLabelText {
   font-size: 1.125rem;
-  margin-left: 0.3rem;
 }
 .label_content {
   display: flex;
@@ -27,5 +26,5 @@
 .label_helpButton_wrapper {
   display: flex;
   gap: 0.75rem; 
-  align-items: center;
+  align-items: flex-start;
 }
