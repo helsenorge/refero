@@ -1,3 +1,6 @@
+## 16.0.0-beta.46
+- Seperated HelpButton from Label and recreated styling
+
 ## 16.0.0-beta.45
 - Fixed bugs related to placement of label and helpbutton
 

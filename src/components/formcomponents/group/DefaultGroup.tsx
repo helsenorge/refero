@@ -1,5 +1,4 @@
 import { getId } from '@/util';
-import RenderHelpElement from '../help-button/RenderHelpElement';
 import GroupHeader from './GroupHeader';
 import { getClassNames, getHeaderText } from './helpers';
 import AnchorLink from '@helsenorge/designsystem-react/components/AnchorLink';
