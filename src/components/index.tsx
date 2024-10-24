@@ -55,10 +55,10 @@ const Refero = (props: ReferoProps): JSX.Element | null => {
   const questionnaire = formDefinition?.Content;
   // const schema = createZodSchemaFromQuestionnaire(questionnaire, props.resources, questionnaire?.contained);
   const defualtVals = React.useMemo(() => createIntitialFormValues(questionnaire?.item), [questionnaire?.item?.length]);
-
   const methods = useForm({
     defaultValues: defualtVals,
     shouldFocusError: false,
+    mode: 'onBlur',
     criteriaMode: 'all',
     // resolver: async (data, context, options) => {
     //   // you can debug your validation schema here
