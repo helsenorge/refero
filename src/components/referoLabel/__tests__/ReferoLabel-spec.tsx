@@ -18,9 +18,8 @@ describe('ReferoLabel', () => {
   });
 
   it('should show optional text if item.reqired is false', () => {
-    const { queryAllByLabelText } = createWrapper(q);
-    const label = new RegExp(resources.formOptional, 'i');
-    expect(queryAllByLabelText(label)).toHaveLength(3);
+    const { queryAllByText } = createWrapper(q);
+    expect(queryAllByText(resources.formOptional)).toHaveLength(3);
   });
   it('should remove script tag from sublabel and label', () => {
     const { queryByLabelText } = createWrapper(q);
