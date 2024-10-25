@@ -1,3 +1,6 @@
+## 16.0.0-beta.48
+- Fixed more bugs related to label and helpButton
+
 ## 16.0.0-beta.47
 - Added mode "onBlur" to useForm
 
