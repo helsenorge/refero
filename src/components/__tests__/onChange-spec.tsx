@@ -41,11 +41,10 @@ async function addValueToInputByTypeAndTab(
   answer: HTMLElement;
   element: HTMLElement;
 }> {
-  const regexLabel = new RegExp(componentLabel, 'i');
-  const element = await screen.findByLabelText(regexLabel);
-  await typeAndTabByLabelText(regexLabel, value);
+  const element = await screen.findByLabelText(componentLabel);
+  await typeAndTabByLabelText(componentLabel, value);
 
-  const answer = screen.getByRole('spinbutton', { name: `${componentLabel} (Valgfritt)` });
+  const answer = screen.getByRole('spinbutton', { name: componentLabel });
   return { answer, element };
 }
 
