@@ -8,6 +8,7 @@ import { ValidationSummaryPlacement } from './formTypes/validationSummaryPlaceme
 import { Store } from 'redux';
 import {} from '@/actions/newValue';
 import { TextMessage } from './text-message';
+import { UseFormProps } from 'react-hook-form';
 
 export interface ReferoProps {
   /**
@@ -75,4 +76,10 @@ export interface ReferoProps {
   fetchReceivers?: (successCallback: (receivers: Array<OrgenhetHierarki>) => void, errorCallback: () => void) => void;
   onFieldsNotCorrectlyFilledOut?: () => void;
   onStepChange?: (newIndex: number) => void;
+  useFormProps?: UseFormProps<
+    {
+      [x: string]: any;
+    },
+    any
+  >;
 }
