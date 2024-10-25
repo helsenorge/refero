@@ -13,6 +13,7 @@ import { getFormDefinition } from '@/reducers/form';
 import RenderHelpButton from '../formcomponents/help-button/RenderHelpButton';
 import { useState } from 'react';
 import RenderHelpElement from '../formcomponents/help-button/RenderHelpElement';
+import { getMarkdownExtensionValue } from '@/util/extension';
 
 type Props = {
   item?: QuestionnaireItem;
@@ -24,6 +25,7 @@ type Props = {
   sublabelId?: string;
   sublabelTestId?: string;
   dateLabel?: string;
+  attachmentLabel?: string;
   afterLabelChildren?: JSX.Element | null;
   children?: React.ReactNode;
 };
@@ -38,6 +40,7 @@ export const ReferoLabel = ({
   sublabelId,
   sublabelTestId,
   dateLabel,
+  attachmentLabel,
   afterLabelChildren,
   children,
 }: Props): JSX.Element => {
@@ -46,36 +49,36 @@ export const ReferoLabel = ({
   const { onRenderMarkdown } = useExternalRenderContext();
   const subLabelText = getSublabelText(item, onRenderMarkdown, questionnaire, resources);
   const lblText = getLabelText(item, onRenderMarkdown, questionnaire, resources);
+
   return (
     <>
-      <div className={`${styles.labelWithHelp}`}>
-        <div className={styles.label_content}>
-          <div className={styles.label_helpButton_wrapper}>
-            <Label
-              labelId={labelId}
-              testId={testId}
-              labelTexts={labelText || []}
-              htmlFor={htmlFor}
-              className={`${styles.pageReferoLabel}`}
-              afterLabelChildren={afterLabelChildren}
-            >
-              <div className={`${styles.textOptionalWrapper}`}>
-                <SafeText as="span" text={`${lblText}`} className={`${styles.referoLabelSafetext}`} />
-                {!isRequired(item) && !isReadOnly(item) ? (
-                  <span
-                    className={`${styles.LabelOptionalText}`}
-                  >{` ${dateLabel || ''} ${resources?.formOptional || ` (Valgfritt)`}`}</span>
-                ) : (
-                  dateLabel && <span className={`${styles.LabelOptionalText}`}>{dateLabel}</span>
-                )}
-              </div>
-            </Label>
+      <div className={styles.referoLabel_label_wrapper}>
+        <div>
+          <Label
+            labelId={labelId}
+            testId={testId}
+            labelTexts={labelText || []}
+            htmlFor={htmlFor}
+            className={styles.pageReferoLabel}
+            afterLabelChildren={afterLabelChildren}
+          >
+            <SafeText as="span" text={lblText} className={styles.referoLabel_safetext}></SafeText>
+          </Label>
+        </div>
+        <div className={styles.referoLabel_extraLabel_and_helpButton_wrapper}>
+          {!isRequired(item) && !isReadOnly(item) ? (
+            <span className={styles.referoLabel_extraLabel}>{`${dateLabel || ''} ${resources?.formOptional || `(valgfritt)`}`}</span>
+          ) : (
+            dateLabel && <span className={styles.referoLabel_extraLabel}>{dateLabel}</span>
+          )}
+          <div className={styles.referoLabel_helpButton}>
             <RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />
           </div>
-          {children}
         </div>
-        {subLabelText && <SubLabel id={sublabelId} testId={sublabelTestId} subLabelText={subLabelText} />}
       </div>
+      {children}
+      {subLabelText && <SubLabel id={sublabelId} testId={sublabelTestId} subLabelText={subLabelText} />}
+      {attachmentLabel && <SubLabel id={sublabelId} testId={sublabelTestId} subLabelText={attachmentLabel} />}
       <RenderHelpElement isHelpVisible={isHelpVisible} item={item} />
     </>
   );

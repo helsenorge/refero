@@ -186,6 +186,7 @@ const AttachmentHtml = (props: Props): JSX.Element | null => {
           htmlFor={id}
           labelId={`${getId(id)}-attachment-label`}
           testId={`${getId(id)}-attachment-label`}
+          attachmentLabel={resources?.supportedFileFormats}
         />
         <FileUpload
           {...rest}

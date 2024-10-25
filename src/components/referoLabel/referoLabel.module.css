@@ -1,31 +1,29 @@
 .pageReferoLabel {
   margin-bottom: 0rem;
 }
-.labelWithHelp {
+.referoLabel_label_wrapper {
   display: flex;
-  flex-direction: column;
-  margin-bottom: 0rem;
-}
-.textOptionalWrapper {
-  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
   align-items: center;
 }
-.referoLabelSafetext {
+.referoLabel_safetext {
   font-size: 1.125rem;
   font-weight: 600;
+  line-height: 1.75rem;
 }
-.LabelOptionalText {
+.referoLabel_safetext > * {
+  margin: 0;
+}
+.referoLabel_extraLabel_and_helpButton_wrapper {
+  display: flex;
+  align-items: center;
+}
+.referoLabel_extraLabel {
   font-size: 1.125rem;
-  margin-left: 0.3rem;
+  margin-right: 0.5rem;
+  line-height: 1.75rem;
 }
-.label_content {
-  display: flex;
-  flex-direction: row;
-  margin-bottom: 0.2rem;
-  align-items: center;
-}
-.label_helpButton_wrapper {
-  display: flex;
-  gap: 0.75rem; 
-  align-items: center;
+.referoLabel_helpButton {
+  margin-left: 0.5rem;
 }
