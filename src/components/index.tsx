@@ -47,6 +47,7 @@ const Refero = (props: ReferoProps): JSX.Element | null => {
     onRequestAttachmentLink,
     onOpenAttachment,
     uploadAttachment,
+    useFormProps,
   } = props;
   IE11HackToWorkAroundBug187484();
   const dispatch = useAppDispatch();
@@ -55,11 +56,13 @@ const Refero = (props: ReferoProps): JSX.Element | null => {
   const questionnaire = formDefinition?.Content;
   // const schema = createZodSchemaFromQuestionnaire(questionnaire, props.resources, questionnaire?.contained);
   const defualtVals = React.useMemo(() => createIntitialFormValues(questionnaire?.item), [questionnaire?.item?.length]);
-
   const methods = useForm({
     defaultValues: defualtVals,
     shouldFocusError: false,
+    mode: 'onBlur',
     criteriaMode: 'all',
+    ...(useFormProps !== undefined && { ...useFormProps }),
+
     // resolver: async (data, context, options) => {
     //   // you can debug your validation schema here
     //   console.log('resolver in data', data);

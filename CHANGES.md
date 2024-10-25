@@ -1,3 +1,6 @@
+## 16.0.0-beta.47
+- Added mode "onBlur" to useForm
+
 ## 16.0.0-beta.46
 - Seperated HelpButton from Label and recreated styling
 
