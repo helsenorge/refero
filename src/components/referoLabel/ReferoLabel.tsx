@@ -71,7 +71,9 @@ export const ReferoLabel = ({
           ) : (
             dateLabel && <span className={styles.referoLabel_extraLabel}>{dateLabel}</span>
           )}
-          <RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />
+          <div className={styles.referoLabel_helpButton}>
+            <RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />
+          </div>
         </div>
       </div>
       {children}
