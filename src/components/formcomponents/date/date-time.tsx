@@ -36,6 +36,7 @@ import { findQuestionnaireItem } from '@/reducers/selectors';
 import useOnAnswerChange from '@/hooks/useOnAnswerChange';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import { ReadOnly } from '../read-only/readOnly';
+import { shouldValidate } from '@/components/validation/utils';
 
 export type Props = QuestionnaireComponentItemProps;
 
@@ -194,11 +195,17 @@ const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, childr
     shouldUnregister: true,
   };
 
-  const { onChange: onChangeDate, ...restDate } = register(`${idWithLinkIdAndItemIndex}-date`, pdf ? undefined : validationRulesDate);
-  const { onChange: onChangeHours, ...restHours } = register(`${idWithLinkIdAndItemIndex}-hours`, pdf ? undefined : validationRulesHours);
+  const { onChange: onChangeDate, ...restDate } = register(
+    `${idWithLinkIdAndItemIndex}-date`,
+    shouldValidate(item, pdf) ? validationRulesDate : undefined
+  );
+  const { onChange: onChangeHours, ...restHours } = register(
+    `${idWithLinkIdAndItemIndex}-hours`,
+    shouldValidate(item, pdf) ? validationRulesHours : undefined
+  );
   const { onChange: onChangeMinutes, ...restMinutes } = register(
     `${idWithLinkIdAndItemIndex}-minutes`,
-    pdf ? undefined : validationRulesMinutes
+    shouldValidate(item, pdf) ? validationRulesMinutes : undefined
   );
 
   if (pdf || isReadOnly(item)) {

@@ -23,6 +23,7 @@ import { decimalPattern, getErrorMessage, maxValue, minValue, required } from '@
 import { findQuestionnaireItem } from '@/reducers/selectors';
 import useOnAnswerChange from '@/hooks/useOnAnswerChange';
 import { ReadOnly } from '../read-only/readOnly';
+import { shouldValidate } from '@/components/validation/utils';
 
 export type Props = QuestionnaireComponentItemProps;
 
@@ -95,8 +96,7 @@ const Decimal = (props: Props): JSX.Element | null => {
     pattern: decimalPattern({ item, resources }),
     shouldUnregister: true,
   };
-
-  const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, pdf ? undefined : validationRules);
+  const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, shouldValidate(item, pdf) ? validationRules : undefined);
 
   if (pdf || isReadOnly(item)) {
     return (

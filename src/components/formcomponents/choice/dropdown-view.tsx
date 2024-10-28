@@ -18,6 +18,7 @@ import { QuestionnaireItem } from 'fhir/r4';
 import { GlobalState } from '@/reducers';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 import { ReadOnly } from '../read-only/readOnly';
+import { shouldValidate } from '@/components/validation/utils';
 
 export type Props = QuestionnaireComponentItemProps & {
   options?: Array<Options>;
@@ -55,8 +56,7 @@ const DropdownView = (props: Props): JSX.Element | null => {
     required: required({ item, resources }),
     shouldUnregister: true,
   };
-
-  const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, pdf ? undefined : validationRules);
+  const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, shouldValidate(item, pdf) ? validationRules : undefined);
 
   if (pdf || isReadOnly(item)) {
     return (

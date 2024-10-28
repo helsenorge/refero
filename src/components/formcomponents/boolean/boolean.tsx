@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { FieldValues, useFormContext } from 'react-hook-form';
+import { FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
 
 import Checkbox from '@helsenorge/designsystem-react/components/Checkbox';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
@@ -24,6 +24,7 @@ import { required } from '@/components/validation/rules';
 import { findQuestionnaireItem } from '@/reducers/selectors';
 import { QuestionnaireItem } from 'fhir/r4';
 import useOnAnswerChange from '@/hooks/useOnAnswerChange';
+import { shouldValidate } from '@/components/validation/utils';
 
 export type Props = QuestionnaireComponentItemProps & {
   children?: React.ReactNode;
@@ -97,10 +98,13 @@ const Boolean = (props: Props): JSX.Element | null => {
       />
     );
   }
-  const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, {
+
+  const validationRules: RegisterOptions<FieldValues, string> | undefined = {
     required: required({ item, resources }),
     shouldUnregister: true,
-  });
+  };
+  const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, shouldValidate(item, pdf) ? validationRules : undefined);
+
   return (
     <div className="page_refero__component page_refero__component_boolean">
       <FormGroup error={error?.message} errorWrapperClassName={styles.paddingBottom}>

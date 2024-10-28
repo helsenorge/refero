@@ -20,6 +20,7 @@ import { QuestionnaireComponentItemProps } from '@/components/createQuestionnair
 import { ReadOnly } from '../read-only/readOnly';
 import { getValidationTextExtension } from '@/util/extension';
 import { required } from '@/components/validation/rules';
+import { shouldValidate } from '@/components/validation/utils';
 
 type Props = QuestionnaireComponentItemProps & {
   onUpload: (files: UploadFile[]) => void;
@@ -158,8 +159,7 @@ const AttachmentHtml = (props: Props): JSX.Element | null => {
     validate: () => true,
     shouldUnregister: true,
   };
-
-  const { onChange, ...rest } = internalRegister(idWithLinkIdAndItemIndex, pdf ? undefined : validationRules);
+  const { onChange, ...rest } = internalRegister(idWithLinkIdAndItemIndex, shouldValidate(item, pdf) ? validationRules : undefined);
 
   if (pdf || isReadOnly(item)) {
     return (
