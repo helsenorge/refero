@@ -1,13 +1,12 @@
 import { format, isValid } from 'date-fns';
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
-import { FieldError, FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
+import { FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
 import styles from '../common-styles.module.css';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 
 import { LanguageLocales } from '@helsenorge/core-utils/constants/languages';
 import DatePicker from '@helsenorge/datepicker/components/DatePicker';
 
-import { getValidationTextExtension } from '../../../util/extension';
 import { getId, isReadOnly, isRequired } from '../../../util/index';
 
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
@@ -31,6 +30,7 @@ import { findQuestionnaireItem } from '@/reducers/selectors';
 import { ReadOnly } from '../read-only/readOnly';
 import { DateFormat } from '@/types/dateTypes';
 import { shouldValidate } from '@/components/validation/utils';
+import { getErrorMessage } from '@/components/validation/rules';
 
 type DateDayInputProps = QuestionnaireComponentItemProps & {
   locale: LanguageLocales.ENGLISH | LanguageLocales.NORWEGIAN;
@@ -100,16 +100,6 @@ export const DateDayInput = ({
     }
   };
 
-  const getErrorText = (error: FieldError | undefined): string | undefined => {
-    if (error) {
-      const validationTextExtension = getValidationTextExtension(item);
-      if (validationTextExtension) {
-        return validationTextExtension;
-      }
-      return error.message;
-    }
-  };
-
   const validationRules: RegisterOptions<FieldValues, string> | undefined = {
     required: {
       value: isRequired(item),
@@ -153,7 +143,7 @@ export const DateDayInput = ({
     );
   }
   return (
-    <FormGroup error={getErrorText(error)} errorWrapperClassName={styles.paddingBottom}>
+    <FormGroup error={getErrorMessage(item, error)} errorWrapperClassName={styles.paddingBottom}>
       <ReferoLabel
         item={item}
         resources={resources}

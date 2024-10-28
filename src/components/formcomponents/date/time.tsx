@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 
 import { newTimeValueAsync } from '../../../actions/newValue';
-import { getValidationTextExtension } from '../../../util/extension';
 import { getId, isReadOnly, isRequired } from '../../../util/index';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
@@ -30,6 +29,7 @@ import useOnAnswerChange from '@/hooks/useOnAnswerChange';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import { ReadOnly } from '../read-only/readOnly';
 import { shouldValidate } from '@/components/validation/utils';
+import { getErrorMessage } from '@/components/validation/rules';
 
 export type Props = QuestionnaireComponentItemProps;
 
@@ -107,16 +107,6 @@ const Time = ({ id, index, path, linkId, pdf, idWithLinkIdAndItemIndex, children
     return time;
   };
 
-  const getErrorText = (error: FieldError | undefined): string | undefined => {
-    if (error) {
-      const validationTextExtension = getValidationTextExtension(item);
-      if (validationTextExtension) {
-        return validationTextExtension;
-      }
-      return error.message;
-    }
-  };
-
   function getCombinedFieldError(hoursField: FieldValues, minutesField: FieldValues): FieldError | undefined {
     const error = hoursField.error || minutesField.error || undefined;
     return error;
@@ -184,7 +174,10 @@ const Time = ({ id, index, path, linkId, pdf, idWithLinkIdAndItemIndex, children
   }
   return (
     <div className="page_refero__component page_refero__component_time">
-      <FormGroup error={getErrorText(getCombinedFieldError(hoursField, minutesField))} errorWrapperClassName={styles.paddingBottom}>
+      <FormGroup
+        error={getErrorMessage(item, getCombinedFieldError(hoursField, minutesField))}
+        errorWrapperClassName={styles.paddingBottom}
+      >
         <ReferoLabel
           item={item}
           resources={resources}
