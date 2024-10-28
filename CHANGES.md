@@ -1,3 +1,6 @@
+## 16.0.0-beta.49
+- Bugfix: readOnly fields without ValidateReadOnly code failed
+
 ## 16.0.0-beta.48
 - Fixed more bugs related to label and helpButton
 
