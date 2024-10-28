@@ -1,3 +1,6 @@
+## 16.0.0-beta.50
+- Add css class page_refero__buttons to button-container
+
 ## 16.0.0-beta.49
 - Bugfix: readOnly fields without ValidateReadOnly code failed
 
