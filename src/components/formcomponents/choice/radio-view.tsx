@@ -13,7 +13,7 @@ import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
-import { required } from '@/components/validation/rules';
+import { getErrorMessage, required } from '@/components/validation/rules';
 import { useSelector } from 'react-redux';
 import { QuestionnaireItem } from 'fhir/r4';
 import { findQuestionnaireItem } from '@/reducers/selectors';
@@ -63,7 +63,7 @@ const RadioView = (props: Props): JSX.Element => {
   }
   return (
     <div className="page_refero__component page_refero__component_choice page_refero__component_choice_radiobutton">
-      <FormGroup mode="ongrey" error={error?.message} errorWrapperClassName={styles.paddingBottom}>
+      <FormGroup mode="ongrey" error={getErrorMessage(item, error)} errorWrapperClassName={styles.paddingBottom}>
         <ReferoLabel
           item={item}
           resources={resources}

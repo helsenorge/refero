@@ -18,6 +18,7 @@ import { GlobalState } from '@/reducers';
 import { initialize } from '@/util/date-fns-utils';
 import { ReadOnly } from '../read-only/readOnly';
 import { shouldValidate } from '@/components/validation/utils';
+import { getErrorMessage } from '@/components/validation/rules';
 
 type Props = QuestionnaireComponentItemProps & {
   onDateValueChange: (newValue: string) => void;
@@ -52,16 +53,6 @@ export const DateYearInput = (props: Props): JSX.Element | null => {
 
   const onYearChange = (year: string | undefined): void => {
     onDateValueChange(year ?? '');
-  };
-
-  const getErrorText = (error: FieldError | undefined): string | undefined => {
-    if (error) {
-      const validationTextExtension = getValidationTextExtension(item);
-      if (validationTextExtension) {
-        return validationTextExtension;
-      }
-      return error.message;
-    }
   };
 
   const yearValue: string | undefined = getYearValue(answer);
@@ -102,7 +93,7 @@ export const DateYearInput = (props: Props): JSX.Element | null => {
     );
   }
   return (
-    <FormGroup error={getErrorText(error)} errorWrapperClassName={styles.paddingBottom}>
+    <FormGroup error={getErrorMessage(item, error)} errorWrapperClassName={styles.paddingBottom}>
       <ReferoLabel
         item={item}
         resources={resources}

@@ -16,7 +16,7 @@ import { useGetAnswer } from '@/hooks/useGetAnswer';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
-import { required } from '@/components/validation/rules';
+import { getErrorMessage, required } from '@/components/validation/rules';
 import { useSelector } from 'react-redux';
 import { findQuestionnaireItem } from '@/reducers/selectors';
 import { GlobalState } from '@/reducers';
@@ -79,7 +79,7 @@ const DropdownView = (props: Props): JSX.Element | null => {
   }
   return (
     <div className="page_refero__component page_refero__component_openchoice page_refero__component_openchoice_dropdown">
-      <FormGroup error={error?.message} mode="ongrey" errorWrapperClassName={styles.paddingBottom}>
+      <FormGroup error={getErrorMessage(item, error)} mode="ongrey" errorWrapperClassName={styles.paddingBottom}>
         <ReferoLabel
           item={item}
           resources={resources}
