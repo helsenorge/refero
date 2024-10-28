@@ -27,6 +27,7 @@ import { useSelector } from 'react-redux';
 import { GlobalState } from '@/reducers';
 import { findQuestionnaireItem } from '@/reducers/selectors';
 import { ReadOnly } from '../read-only/readOnly';
+import { shouldValidate } from '@/components/validation/utils';
 
 export type AutosuggestProps = QuestionnaireComponentItemProps & {
   handleChange: (code?: string, systemArg?: string, displayArg?: string) => void;
@@ -188,8 +189,7 @@ const AutosuggestView = (props: AutosuggestProps): JSX.Element | null => {
     required: required({ item, resources }),
     shouldUnregister: true,
   };
-
-  const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, pdf ? undefined : validationRules);
+  const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, shouldValidate(item, pdf) ? validationRules : undefined);
 
   if (pdf || isReadOnly(item)) {
     return (

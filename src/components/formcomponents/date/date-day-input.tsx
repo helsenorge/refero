@@ -30,6 +30,7 @@ import { useSelector } from 'react-redux';
 import { findQuestionnaireItem } from '@/reducers/selectors';
 import { ReadOnly } from '../read-only/readOnly';
 import { DateFormat } from '@/types/dateTypes';
+import { shouldValidate } from '@/components/validation/utils';
 
 type DateDayInputProps = QuestionnaireComponentItemProps & {
   locale: LanguageLocales.ENGLISH | LanguageLocales.NORWEGIAN;
@@ -134,8 +135,7 @@ export const DateDayInput = ({
     },
     shouldUnregister: true,
   };
-
-  const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, pdf ? undefined : validationRules);
+  const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, shouldValidate(item, pdf) ? validationRules : undefined);
 
   if (pdf || isReadOnly(item)) {
     return (

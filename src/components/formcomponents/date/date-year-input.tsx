@@ -17,6 +17,7 @@ import { findQuestionnaireItem } from '@/reducers/selectors';
 import { GlobalState } from '@/reducers';
 import { initialize } from '@/util/date-fns-utils';
 import { ReadOnly } from '../read-only/readOnly';
+import { shouldValidate } from '@/components/validation/utils';
 
 type Props = QuestionnaireComponentItemProps & {
   onDateValueChange: (newValue: string) => void;
@@ -83,8 +84,7 @@ export const DateYearInput = (props: Props): JSX.Element | null => {
     },
     shouldUnregister: true,
   };
-
-  const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, pdf ? undefined : validationRules);
+  const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, shouldValidate(item, pdf) ? validationRules : undefined);
 
   if (pdf || isReadOnly(item)) {
     return (

@@ -34,6 +34,7 @@ import { findQuestionnaireItem } from '@/reducers/selectors';
 import { initialize } from '@/util/date-fns-utils';
 import { DateFormat } from '@/types/dateTypes';
 import { ReadOnly } from '../read-only/readOnly';
+import { shouldValidate } from '@/components/validation/utils';
 
 type DateMonthProps = QuestionnaireComponentItemProps & {
   locale: LanguageLocales.ENGLISH | LanguageLocales.NORWEGIAN;
@@ -170,11 +171,11 @@ export const DateYearMonthInput = ({
 
   const { onChange: onChangeYear, ...restYear } = register(
     `${idWithLinkIdAndItemIndex}-yearmonth-year`,
-    pdf ? undefined : validationRulesYear
+    shouldValidate(item, pdf) ? validationRulesYear : undefined
   );
   const { onChange: onChangeMonth, ...restMonth } = register(
     `${idWithLinkIdAndItemIndex}-yearmonth-month`,
-    pdf ? undefined : validationRulesMonth
+    shouldValidate(item, pdf) ? validationRulesMonth : undefined
   );
 
   if (pdf || isReadOnly(item)) {
