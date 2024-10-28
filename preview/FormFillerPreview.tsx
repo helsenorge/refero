@@ -167,15 +167,15 @@ const FormFillerPreview = (props: Props): JSX.Element => {
                   onCancel={() => {}}
                   onChange={onChange}
                   onSave={(questionnaireResponse: QuestionnaireResponse): void => {
-                    // setQuestionnaireResponse(questionnaireResponse);
-                    // setShowResponse(true);
-                    dispatch(
-                      setSkjemaDefinitionAction({
-                        syncQuestionnaireResponse: true,
-                        questionnaire: getQuestionnaireFromBubndle(questionnaireForPreview, lang),
-                        questionnaireResponse,
-                      })
-                    );
+                    setQuestionnaireResponse(questionnaireResponse);
+                    setShowResponse(true);
+                    // dispatch(
+                    //   setSkjemaDefinitionAction({
+                    //     syncQuestionnaireResponse: true,
+                    //     questionnaire: getQuestionnaireFromBubndle(questionnaireForPreview, lang),
+                    //     questionnaireResponse,
+                    //   })
+                    // );
                   }}
                   // eslint-disable-next-line no-console
                   onSubmit={handleSubmit}
