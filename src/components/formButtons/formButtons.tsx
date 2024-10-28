@@ -43,7 +43,7 @@ const FormButtons = ({
   const buttonOrder = isStepView ? buttonOrderStepView : buttonOrderNormalView;
 
   return (
-    <div className={styles.formButtonsWrapper}>
+    <div className={`${styles.formButtonsWrapper} page_refero__buttons`}>
       {!isAuthorized && loginButton ? (
         <div className="page_refero__buttonwrapper page_refero__saveblock">{loginButton}</div>
       ) : (
