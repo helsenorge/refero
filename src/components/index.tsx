@@ -156,7 +156,6 @@ const Refero = (props: ReferoProps): JSX.Element | null => {
 
   const presentationButtonsType = getPresentationButtonsExtension(formDefinition.Content);
   const isStepView = shouldFormBeDisplayedAsStepView(formDefinition);
-  console.log('presentationButtonsType', presentationButtonsType);
   return (
     <div className={getButtonClasses(presentationButtonsType, ['page_refero__content'], sticky)}>
       <div className="page_refero__messageboxes" />
