@@ -1,5 +1,5 @@
 import { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
-import { Controller, FieldValues, useFormContext } from 'react-hook-form';
+import { Controller, FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
 
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import { Slider, SliderStep } from '@helsenorge/designsystem-react/components/Slider';
@@ -15,11 +15,12 @@ import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
-import { required } from '@/components/validation/rules';
+import { getErrorMessage, required } from '@/components/validation/rules';
 import { useSelector } from 'react-redux';
 import { findQuestionnaireItem } from '@/reducers/selectors';
 import { GlobalState } from '@/reducers';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
+import { shouldValidate } from '@/components/validation/utils';
 
 export type SliderProps = QuestionnaireComponentItemProps & {
   handleChange: (sliderStep: string) => void;
@@ -34,7 +35,7 @@ enum SliderDisplayTypes {
 type LeftRightLabels = { leftLabel: string; rightLabel: string };
 
 const SliderView = (props: SliderProps): JSX.Element | null => {
-  const { linkId, handleChange, selected, idWithLinkIdAndItemIndex, id, path, index, children } = props;
+  const { linkId, handleChange, selected, idWithLinkIdAndItemIndex, id, path, index, pdf, children } = props;
   const { resources } = useExternalRenderContext();
   const item = useSelector<GlobalState, QuestionnaireItem | undefined>(state => findQuestionnaireItem(state, linkId));
 
@@ -68,9 +69,13 @@ const SliderView = (props: SliderProps): JSX.Element | null => {
   );
   const leftRightLabels = getLeftRightLabels(item);
 
+  const validationRules: RegisterOptions<FieldValues, string> | undefined = {
+    required: required({ item, resources }),
+  };
+
   return (
     <div className="page_refero__component page_refero__component_choice page_refero__component_choice_slider">
-      <FormGroup mode="ongrey" error={error?.message} errorWrapperClassName={styles.paddingBottom}>
+      <FormGroup mode="ongrey" error={getErrorMessage(item, error)} errorWrapperClassName={styles.paddingBottom}>
         <ReferoLabel
           htmlFor={id}
           item={item}
@@ -82,9 +87,7 @@ const SliderView = (props: SliderProps): JSX.Element | null => {
         <Controller
           name={idWithLinkIdAndItemIndex}
           shouldUnregister={true}
-          rules={{
-            required: required({ item, resources }),
-          }}
+          rules={shouldValidate(item, pdf) ? validationRules : undefined}
           control={control}
           render={({ field: { onChange, ...rest } }): JSX.Element => (
             <Slider

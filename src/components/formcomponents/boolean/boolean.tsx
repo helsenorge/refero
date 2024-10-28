@@ -20,7 +20,7 @@ import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { getFormDefinition } from '@/reducers/form';
-import { required } from '@/components/validation/rules';
+import { getErrorMessage, required } from '@/components/validation/rules';
 import { findQuestionnaireItem } from '@/reducers/selectors';
 import { QuestionnaireItem } from 'fhir/r4';
 import useOnAnswerChange from '@/hooks/useOnAnswerChange';
@@ -76,38 +76,39 @@ const Boolean = (props: Props): JSX.Element | null => {
   const labelText = getLabelText(item, onRenderMarkdown, questionnaire, resources);
   const value = getValue();
 
-  if (pdf) {
-    return <Pdf item={item} checked={getValue()} />;
-  } else if (isReadOnly(item)) {
-    return (
-      <Checkbox
-        testId={`${getId(id)}-readonly`}
-        label={
-          <Label
-            testId={`${getId(id)}-label-readonly`}
-            labelTexts={[{ text: labelText }]}
-            afterLabelChildren={<RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />}
-          />
-        }
-        checked={getValue()}
-        disabled={true}
-        onChange={(): void => {
-          /*kan ikke endres, er alltid disabled*/
-        }}
-        className="page_refero__input"
-      />
-    );
-  }
-
   const validationRules: RegisterOptions<FieldValues, string> | undefined = {
     required: required({ item, resources }),
     shouldUnregister: true,
   };
   const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, shouldValidate(item, pdf) ? validationRules : undefined);
 
+  if (pdf) {
+    return <Pdf item={item} checked={getValue()} />;
+  } else if (isReadOnly(item)) {
+    return (
+      <FormGroup error={getErrorMessage(item, error)}>
+        <Checkbox
+          testId={`${getId(id)}-readonly`}
+          label={
+            <Label
+              testId={`${getId(id)}-label-readonly`}
+              labelTexts={[{ text: labelText }]}
+              afterLabelChildren={<RenderHelpButton item={item} setIsHelpVisible={setIsHelpVisible} isHelpVisible={isHelpVisible} />}
+            />
+          }
+          checked={getValue()}
+          disabled={true}
+          onChange={(): void => {
+            /*kan ikke endres, er alltid disabled*/
+          }}
+          className="page_refero__input"
+        />
+      </FormGroup>
+    );
+  }
   return (
     <div className="page_refero__component page_refero__component_boolean">
-      <FormGroup error={error?.message} errorWrapperClassName={styles.paddingBottom}>
+      <FormGroup error={getErrorMessage(item, error)} errorWrapperClassName={styles.paddingBottom}>
         <Checkbox
           {...rest}
           testId={`${getId(id)}-boolean`}
