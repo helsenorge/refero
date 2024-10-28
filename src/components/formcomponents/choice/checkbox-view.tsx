@@ -12,7 +12,7 @@ import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
-import { required } from '@/components/validation/rules';
+import { getErrorMessage, required } from '@/components/validation/rules';
 import { useSelector } from 'react-redux';
 import { GlobalState } from '@/reducers';
 import { QuestionnaireItem } from 'fhir/r4';
@@ -60,7 +60,7 @@ const CheckboxView = (props: Props): JSX.Element | null => {
   }
   return (
     <div className="page_refero__component page_refero__component_choice page_refero__component_choice_checkbox">
-      <FormGroup mode="ongrey" error={error?.message} errorWrapperClassName={styles.paddingBottom}>
+      <FormGroup mode="ongrey" error={getErrorMessage(item, error)} errorWrapperClassName={styles.paddingBottom}>
         <ReferoLabel
           item={item}
           resources={resources}

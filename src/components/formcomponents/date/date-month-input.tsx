@@ -11,7 +11,6 @@ import Select from '@helsenorge/designsystem-react/components/Select';
 import { LanguageLocales } from '@helsenorge/core-utils/constants/languages';
 
 import { getId, isReadOnly, isRequired } from '../../../util';
-import { getValidationTextExtension } from '../../../util/extension';
 
 import {
   getMonthOptions,
@@ -35,6 +34,7 @@ import { initialize } from '@/util/date-fns-utils';
 import { DateFormat } from '@/types/dateTypes';
 import { ReadOnly } from '../read-only/readOnly';
 import { shouldValidate } from '@/components/validation/utils';
+import { getErrorMessage } from '@/components/validation/rules';
 
 type DateMonthProps = QuestionnaireComponentItemProps & {
   locale: LanguageLocales.ENGLISH | LanguageLocales.NORWEGIAN;
@@ -90,16 +90,6 @@ export const DateYearMonthInput = ({
     setValue(`${idWithLinkIdAndItemIndex}-yearmonth-year`, year);
     setValue(`${idWithLinkIdAndItemIndex}-yearmonth-month`, month);
   }, []);
-
-  const getErrorText = (error: FieldError | undefined): string | undefined => {
-    if (error) {
-      const validationTextExtension = getValidationTextExtension(item);
-      if (validationTextExtension) {
-        return validationTextExtension;
-      }
-      return error.message;
-    }
-  };
 
   const getCombinedFieldError = (): FieldError | undefined => {
     const error = yearField.error || monthsField.error || undefined;
@@ -186,7 +176,7 @@ export const DateYearMonthInput = ({
     );
   }
   return (
-    <FormGroup error={getErrorText(getCombinedFieldError())} errorWrapperClassName={styles2.paddingBottom}>
+    <FormGroup error={getErrorMessage(item, getCombinedFieldError())} errorWrapperClassName={styles2.paddingBottom}>
       <ReferoLabel
         item={item}
         resources={resources}

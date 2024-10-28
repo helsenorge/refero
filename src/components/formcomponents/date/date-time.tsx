@@ -21,7 +21,6 @@ import {
   parseStringToDate,
   getPDFValueForDate,
 } from '../../../util/date-utils';
-import { getValidationTextExtension } from '../../../util/extension';
 import { isRequired, getId, isReadOnly } from '../../../util/index';
 import styles from '../common-styles.module.css';
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
@@ -37,6 +36,7 @@ import useOnAnswerChange from '@/hooks/useOnAnswerChange';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import { ReadOnly } from '../read-only/readOnly';
 import { shouldValidate } from '@/components/validation/utils';
+import { getErrorMessage } from '@/components/validation/rules';
 
 export type Props = QuestionnaireComponentItemProps;
 
@@ -83,16 +83,6 @@ const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, childr
   const hours = getHoursOrMinutesFromDate(date, DateTimeUnit.Hours);
   const minutes = getHoursOrMinutesFromDate(date, DateTimeUnit.Minutes);
   const pdfValue = getPDFValueForDate(dateAnswerValue, resources?.ikkeBesvart, DateFormat.yyyyMMddHHmmssXXX, DateFormat.ddMMyyyyHHmm);
-
-  const getErrorText = (error: FieldError | undefined): string | undefined => {
-    if (error) {
-      const validationTextExtension = getValidationTextExtension(item);
-      if (validationTextExtension) {
-        return validationTextExtension;
-      }
-      return error.message;
-    }
-  };
 
   function getCombinedFieldError(dateField: FieldValues, hoursField: FieldValues, minutesField: FieldValues): FieldError | undefined {
     const error = dateField.error || hoursField.error || minutesField.error || undefined;
@@ -226,7 +216,7 @@ const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, childr
   return (
     <div className="page_refero__component page_refero__component_datetime" data-testid={`${getId(id)}-container`}>
       <FormGroup
-        error={getErrorText(getCombinedFieldError(dateField, hoursField, minutesField))}
+        error={getErrorMessage(item, getCombinedFieldError(dateField, hoursField, minutesField))}
         errorWrapperClassName={styles.paddingBottom}
       >
         <ReferoLabel
