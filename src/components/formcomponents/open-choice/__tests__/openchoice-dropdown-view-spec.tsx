@@ -172,11 +172,12 @@ describe('Dropdown-view - choice', () => {
     describe('Required', () => {
       it('Should show error if field is required and value is empty', async () => {
         const questionnaire = addManyPropertiesToQuestionnaireItem(q, [
-          { property: 'required', value: true },
           { property: 'repeats', value: false },
+          { property: 'required', value: true },
         ]);
         createWrapper(questionnaire);
-        expect(screen.getByRole('option', { name: 'Ja' }) as HTMLOptionElement).toBeInTheDocument();
+        await selectDropdownOptionByName(/Dropdown view label/i, 'Velg...');
+
         await submitForm();
         expect(screen.getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
       });
@@ -245,12 +246,12 @@ describe('Dropdown-view - choice', () => {
             { property: 'required', value: true },
           ]);
 
-          const { getByText, getByTestId } = createWrapper(questionnaire);
+          createWrapper(questionnaire);
 
           await selectDropdownOptionByName(/Dropdown view label/i, 'Annet');
-          expect(getByTestId(/-extra-field/i)).toBeInTheDocument();
+          expect(screen.getByTestId(/-extra-field/i)).toBeInTheDocument();
           await submitForm();
-          expect(getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
+          expect(screen.getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
         });
         it('Should not show error if required and has value', async () => {
           const questionnaire = addManyPropertiesToQuestionnaireItem(q, [
