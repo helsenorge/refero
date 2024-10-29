@@ -18,8 +18,8 @@ import TableContainer from '@formcomponents/table/TableContainer';
 
 import { ComponentType } from 'react';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
-import { isTableCode } from '@/util';
-import { getItemWithIdFromResponseItemArray, getRootQuestionnaireResponseItemFromData, Path } from '@/util/refero-core';
+import { isRepeat, isTableCode } from '@/util';
+import { createIdSuffix, getItemWithIdFromResponseItemArray, getRootQuestionnaireResponseItemFromData, Path } from '@/util/refero-core';
 import { FormData } from '@/reducers/form';
 import ItemType from '@/constants/itemType';
 
@@ -130,3 +130,6 @@ export function getComponentForItem(
   }
   return undefined;
 }
+
+export const createIdFormComponentIds = (item?: QuestionnaireItem, path?: Path[], index?: number): string =>
+  `${item?.linkId}-${createIdSuffix(path, index, isRepeat(item))}`;

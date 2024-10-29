@@ -129,7 +129,6 @@ const Refero = (props: ReferoProps): JSX.Element | null => {
     const classes = [...defaultClasses];
 
     if (presentationButtonsType === PresentationButtonsType.None) {
-      console.log('presentationButtonsType', presentationButtonsType);
       classes.push('page_refero__hidden_buttons');
     } else if (presentationButtonsType === PresentationButtonsType.Sticky || (sticky && !presentationButtonsType)) {
       classes.push('page_refero__stickybar');
