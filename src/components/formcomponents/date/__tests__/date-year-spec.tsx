@@ -1,5 +1,5 @@
 import { Questionnaire, QuestionnaireResponseItemAnswer } from 'fhir/r4';
-import { findByRole, renderRefero, screen, userEvent } from '@test/test-utils.tsx';
+import { findByRole, renderRefero, userEvent } from '@test/test-utils.tsx';
 import { q, qMinMax, qMinMaxCustomError } from './__data__/date-year';
 import { ReferoProps } from '../../../../types/referoProps';
 import { Extensions } from '../../../../constants/extensions';
@@ -189,7 +189,7 @@ describe('Date year', () => {
       const inputElement = getByLabelText(/Dato/i);
       expect(inputElement).toBeInTheDocument();
       expect(inputElement).toHaveAttribute('type', 'number');
-      expect(inputElement).toHaveAttribute('id', `item_${q?.item?.[0].linkId}^0-input`);
+      expect(inputElement).toHaveAttribute('id', `item_${q?.item?.[0].linkId}^0#id-input`);
 
       await userEvent.type(inputElement, '2004');
       expect(getByLabelText(/Dato/i)).toHaveValue(2004);

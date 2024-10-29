@@ -198,7 +198,7 @@ describe('Date month', () => {
       const inputElement = getByLabelText(/Dato/i);
       expect(inputElement).toBeInTheDocument();
       expect(inputElement).toHaveAttribute('type', 'number');
-      expect(inputElement).toHaveAttribute('id', `item_${q?.item?.[0].linkId}^0-input`);
+      expect(inputElement).toHaveAttribute('id', `item_${q?.item?.[0].linkId}^0#id-input`);
       await userEvent.type(inputElement, '1994');
       expect(getByLabelText(/Dato/i)).toHaveValue(1994);
     });

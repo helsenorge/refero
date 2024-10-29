@@ -20,7 +20,7 @@ const PLAIN_TEXT_30_MB = createMockFile(mockFileName, MIME_TYPES_TEST.PlainText,
 
 async function uploadMockFile(
   mockFile: File | File[],
-  testId = 'item_5fece702-bf32-445b-979d-862ade17306a-attachment-label'
+  testId = 'item_5fece702-bf32-445b-979d-862ade17306a#id-attachment-label'
 ): Promise<void> {
   const input = screen.getByTestId(testId);
 

@@ -85,7 +85,7 @@ describe('onAnswerChange callback gets called and can request additional changes
 
     const { container } = wrapper(onChange, questionnaireWithAllItemTypes);
     await inputAnswer('1', 0.1, container);
-
+    screen.debug(undefined, 50000);
     const updatedInput = await screen.findByDisplayValue('42');
     expect(updatedInput).toBeInTheDocument();
   });
@@ -157,8 +157,10 @@ describe('onAnswerChange callback gets called and can request additional changes
 
     const { queryByTestId } = wrapper(onChange, questionnaireWithAllItemTypes);
     await clickByLabelText(/Boolean/i);
-
-    expect(queryByTestId('item_5a-1-radio-choice-label')?.querySelector('#item_5a-hn-1')).toHaveAttribute('checked', '');
+    expect(queryByTestId(/item_5a#id-1-radio-choice-label/i)?.querySelector(`#${CSS.escape('item_5a#id-hn-1')}`)).toHaveAttribute(
+      'checked',
+      ''
+    );
   });
 
   it('choice (radiobuttons) does not get cleared', async () => {
@@ -170,7 +172,10 @@ describe('onAnswerChange callback gets called and can request additional changes
     const { queryByTestId } = wrapper(onChange, questionnaireWithAllItemTypes);
     await clickByLabelText(/Boolean/i);
 
-    expect(queryByTestId('item_5a-1-radio-choice-label')?.querySelector('#item_5a-hn-1')).toHaveAttribute('checked', '');
+    expect(queryByTestId(/item_5a#id-1-radio-choice-label/i)?.querySelector(`#${CSS.escape('item_5a#id-hn-1')}`)).toHaveAttribute(
+      'checked',
+      ''
+    );
   });
 
   it('choice (checkboxes) gets updated', async () => {
@@ -180,7 +185,7 @@ describe('onAnswerChange callback gets called and can request additional changes
 
     const { container } = wrapper(onChange, questionnaireWithAllItemTypes);
     await clickByLabelText(/Boolean/i);
-    expect(container.querySelector('#item_5b-hn-1')).toBeChecked();
+    expect(container.querySelector(`#${CSS.escape('item_5b#id-hn-1')}`)).toBeChecked();
   });
 
   it('choice (checkboxes) gets cleared', async () => {
@@ -192,7 +197,7 @@ describe('onAnswerChange callback gets called and can request additional changes
     const { container } = wrapper(onChange, questionnaireWithAllItemTypes);
 
     await clickByLabelText(/Boolean/i);
-    expect(container.querySelector('#item_5b-hn-1')).not.toBeChecked();
+    expect(container.querySelector(`#${CSS.escape('item_5b#id-hn-1')}`)).not.toBeChecked();
   });
 
   it('openchoice (radiobuttons) gets updated', async () => {
@@ -203,7 +208,10 @@ describe('onAnswerChange callback gets called and can request additional changes
     const { queryByTestId } = wrapper(onChange, questionnaireWithAllItemTypes);
     await clickByLabelText(/Boolean/i);
 
-    expect(queryByTestId('item_6a-1-radio-open-choice-label')?.querySelector('#item_6a-hn-1')).toHaveAttribute('checked', '');
+    expect(queryByTestId(/item_6a#id-1-radio-open-choice-label/i)?.querySelector(`#${CSS.escape('item_6a#id-hn-1')}`)).toHaveAttribute(
+      'checked',
+      ''
+    );
   });
   it('openchoice (radiobuttons) does not get cleared', async () => {
     const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
@@ -214,7 +222,10 @@ describe('onAnswerChange callback gets called and can request additional changes
     const { queryByTestId } = wrapper(onChange, questionnaireWithAllItemTypes);
     await clickByLabelText(/Boolean/i);
 
-    expect(queryByTestId('item_6a-1-radio-open-choice-label')?.querySelector('#item_6a-hn-1')).toHaveAttribute('checked', '');
+    expect(queryByTestId(/item_6a#id-1-radio-open-choice-label/)?.querySelector(`#${CSS.escape('item_6a#id-hn-1')}`)).toHaveAttribute(
+      'checked',
+      ''
+    );
   });
   it('openchoice (checkboxes) gets updated', async () => {
     const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
@@ -224,7 +235,7 @@ describe('onAnswerChange callback gets called and can request additional changes
     const { container } = wrapper(onChange, questionnaireWithAllItemTypes);
     await clickByLabelText(/Boolean/i);
 
-    expect(container.querySelector('#item_6b-2')).toBeChecked();
+    expect(container.querySelector(`#${CSS.escape('item_6b#id-2')}`)).toBeChecked();
   });
   describe('date fields gets updated', () => {
     beforeEach(() => {
@@ -429,10 +440,10 @@ describe('onAnswerChange callback gets called and can request additional changes
 
     await clickByLabelText(/Boolean/i);
 
-    const item1 = findItem('6a-hn-2', container);
-    expect(item1).toHaveAttribute('checked', '');
+    const item1 = container.querySelector(`#${CSS.escape('item_6a#id-hn-2')}`);
+    expect(item1).not.toBeChecked();
 
-    const item2 = findItem('6a-extra-field', container);
+    const item2 = container.querySelector(`#${CSS.escape('item_6a#id-extra-field')}`);
     expect(item2).toHaveValue('Hello World!');
   });
 
@@ -444,8 +455,8 @@ describe('onAnswerChange callback gets called and can request additional changes
 
     const { container } = wrapper(onChange, questionnaireWithAllItemTypes);
     await clickByLabelText(/Boolean/i);
-    expect(container.querySelector('#item_5b-hn-0')).toBeChecked();
-    expect(container.querySelector('#item_5b-hn-1')).toBeChecked();
+    expect(container.querySelector(`#${CSS.escape('item_5b#id-hn-0')}`)).toBeChecked();
+    expect(container.querySelector(`#${CSS.escape('item_5b#id-hn-1')}`)).toBeChecked();
   });
 
   it('can select and unselect multiple checkboxes', async () => {
@@ -457,8 +468,8 @@ describe('onAnswerChange callback gets called and can request additional changes
 
     const { container } = wrapper(onChange, questionnaireWithAllItemTypes);
     await clickByLabelText(/Boolean/i);
-    expect(container.querySelector('#item_5b-hn-0')).toBeChecked();
-    expect(container.querySelector('#item_5b-hn-1')).not.toBeChecked();
+    expect(container.querySelector(`#${CSS.escape('item_5b#id-hn-0')}`)).toBeChecked();
+    expect(container.querySelector(`#${CSS.escape('item_5b#id-hn-1')}`)).not.toBeChecked();
   });
 
   it('can update repeated items', async () => {

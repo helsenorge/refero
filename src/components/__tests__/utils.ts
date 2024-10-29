@@ -24,7 +24,8 @@ export function findItem(linkId: string, element: HTMLElement) {
   return findItemById(id, element);
 }
 export function findItemById(id: string, element: HTMLElement) {
-  const el = element.querySelector(`#${id}`);
+  const escapedId = CSS.escape(`${id}#id`);
+  const el = element.querySelector(`#${escapedId}`);
   if (!el) {
     throw queryHelpers.getElementError(`Found no elements with the [id="${id}"]`, element);
   }

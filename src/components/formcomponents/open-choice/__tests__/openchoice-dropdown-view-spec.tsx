@@ -1,5 +1,5 @@
 import { Questionnaire, QuestionnaireItemAnswerOption } from 'fhir/r4';
-import { findByRole, renderRefero, userEvent } from '@test/test-utils.tsx';
+import { findByRole, renderRefero, screen, userEvent } from '@test/test-utils.tsx';
 import { dropdownView as q } from './__data__/index';
 import { ReferoProps } from '../../../../types/referoProps';
 import { Extensions } from '../../../../constants/extensions';
@@ -175,10 +175,10 @@ describe('Dropdown-view - choice', () => {
           { property: 'required', value: true },
           { property: 'repeats', value: false },
         ]);
-        const { getByRole, getByText } = createWrapper(questionnaire);
-        expect(getByRole('option', { name: 'Ja' }) as HTMLOptionElement).toBeInTheDocument();
+        createWrapper(questionnaire);
+        expect(screen.getByRole('option', { name: 'Ja' }) as HTMLOptionElement).toBeInTheDocument();
         await submitForm();
-        expect(getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
+        expect(screen.getByText(resources.formRequiredErrorMessage)).toBeInTheDocument();
       });
       it('Should not show error if required and has value', async () => {
         const questionnaire = addManyPropertiesToQuestionnaireItem(q, [

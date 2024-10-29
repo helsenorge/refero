@@ -215,7 +215,7 @@ describe('Quantity', () => {
 
       expect(getByLabelText(/Quantity/i)).toBeInTheDocument();
       expect(getByLabelText(/Quantity/i)).toHaveAttribute('type', 'number');
-      expect(getByLabelText(/Quantity/i)).toHaveAttribute('id', `item_${q?.item?.[0].linkId}^0`);
+      expect(getByLabelText(/Quantity/i)).toHaveAttribute('id', `item_${q?.item?.[0].linkId}^0#id`);
       await userEvent.type(getByLabelText(/Quantity/i), '123');
       expect(getByLabelText(/Quantity/i)).toHaveValue(123);
     });
@@ -232,7 +232,7 @@ describe('Quantity', () => {
 
       expect(getByLabelText(/Quantity/i)).toBeInTheDocument();
       expect(getByLabelText(/Quantity/i)).toHaveAttribute('type', 'number');
-      expect(getByLabelText(/Quantity/i)).toHaveAttribute('id', `item_${q?.item?.[0].linkId}^0`);
+      expect(getByLabelText(/Quantity/i)).toHaveAttribute('id', `item_${q?.item?.[0].linkId}^0#id`);
       await userEvent.type(getByLabelText(/Quantity/i), '123');
       expect(getByLabelText(/Quantity/i)).toHaveValue(123);
     });

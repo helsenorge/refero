@@ -71,7 +71,6 @@ describe('group', () => {
       createWrapper(questionnaire);
       const input = 'entotre';
       await repeatNTimes(input, 3, /REPEATABLE INT/i);
-      screen.debug();
       expect(screen.queryAllByText(/Overskrift/i)).toHaveLength(4);
       expect(screen.queryByTestId(/-repeat-button/i)).not.toBeInTheDocument();
     });
@@ -95,7 +94,6 @@ describe('group', () => {
       const { queryAllByTestId } = createWrapper(questionnaire);
       const input = 'entotre';
       await repeatNTimes(input, 3, /REPEATABLE INT/i);
-      screen.debug(undefined, 50000);
       expect(queryAllByTestId(/-delete-button/i)).toHaveLength(2);
     });
     it.skip('Should not render delete button if item repeats and number of repeated items is lower or equal than minOccurance(2)', async () => {

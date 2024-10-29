@@ -132,4 +132,4 @@ export function getComponentForItem(
 }
 
 export const createIdFormComponentIds = (item?: QuestionnaireItem, path?: Path[], index?: number): string =>
-  `${item?.linkId}-${createIdSuffix(path, index, isRepeat(item))}`;
+  `${item?.linkId}${createIdSuffix(path, index, isRepeat(item))}#id`;

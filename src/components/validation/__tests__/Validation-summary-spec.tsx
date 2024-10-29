@@ -40,7 +40,7 @@ describe('Validation-summary', () => {
     const errorArray = queryAllByTestId(/summary-element-/i);
     expect(errorArray).toHaveLength(6);
 
-    await userEvent.type(getByTestId('item_ab1bb454-3697-4def-81da-77c565a5c1e4-string-label'), 'abc');
+    await userEvent.type(getByTestId('item_ab1bb454-3697-4def-81da-77c565a5c1e4#id-string-label'), 'abc');
     const errorArrayAfter = queryAllByTestId(/summary-element-/i);
 
     expect(errorArrayAfter).toHaveLength(5);
@@ -52,7 +52,7 @@ describe('Validation-summary', () => {
     const errorArray = queryAllByTestId(/summary-element-/i);
     expect(errorArray).toHaveLength(6);
 
-    await userEvent.type(getByTestId('item_98e87a24-a6ef-425f-8534-1c4032828b5f^0-integer-label'), '12');
+    await userEvent.type(getByTestId('item_98e87a24-a6ef-425f-8534-1c4032828b5f^0#id-integer-label'), '12');
     await userEvent.click(getByTestId('98e87a24-a6ef-425f-8534-1c4032828b5f-repeat-button'));
 
     await submitForm();
@@ -67,7 +67,7 @@ describe('Validation-summary', () => {
     let errorArray = queryAllByTestId(/summary-element-/i);
     expect(errorArray).toHaveLength(6);
 
-    await userEvent.click(getByTestId('item_b0c2cb74-2ffd-45ad-9c37-31be5e5b1548-3-radio-open-choice-label'));
+    await userEvent.click(getByTestId('item_b0c2cb74-2ffd-45ad-9c37-31be5e5b1548#id-3-radio-open-choice-label'));
 
     errorArray = queryAllByTestId(/summary-element-/i);
     expect(errorArray).toHaveLength(5);
@@ -75,7 +75,7 @@ describe('Validation-summary', () => {
     errorArray = queryAllByTestId(/summary-element-/i);
     expect(errorArray).toHaveLength(6);
 
-    await userEvent.type(getByTestId('item_b0c2cb74-2ffd-45ad-9c37-31be5e5b1548-label'), 'abc');
+    await userEvent.type(getByTestId('item_b0c2cb74-2ffd-45ad-9c37-31be5e5b1548#id-label'), 'abc');
     errorArray = queryAllByTestId(/summary-element-/i);
     expect(errorArray).toHaveLength(5);
   });

@@ -205,7 +205,7 @@ describe('Time', () => {
 
       expect(hoursElement).toBeInTheDocument();
       expect(hoursElement).toHaveAttribute('type', 'number');
-      expect(hoursElement).toHaveAttribute('id', `item_${q?.item?.[0].linkId}^0-datetime-hours`);
+      expect(hoursElement).toHaveAttribute('id', `item_${q?.item?.[0].linkId}^0#id-datetime-hours`);
       await userEvent.type(hoursElement, '14');
 
       expect(hoursElement).toHaveValue(Number('14'));

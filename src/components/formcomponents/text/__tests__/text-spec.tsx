@@ -93,7 +93,7 @@ describe('Text', () => {
 
       const inputElement = getByLabelText(/String/i);
       expect(inputElement).toBeInTheDocument();
-      expect(inputElement).toHaveAttribute('id', `item_${q?.item?.[0].linkId}`);
+      expect(inputElement).toHaveAttribute('id', `item_${q?.item?.[0].linkId}#id`);
       await userEvent.type(inputElement, '123');
 
       expect(getByLabelText(/String/i)).toHaveValue('123');

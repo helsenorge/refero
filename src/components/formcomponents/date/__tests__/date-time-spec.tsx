@@ -7,7 +7,7 @@ import { clickButtonTimes, repeatNTimes, submitForm } from '../../../../../test/
 import { getResources } from '../../../../../preview/resources/referoResources';
 import { vi } from 'vitest';
 import { screen } from '@testing-library/dom';
-import { createWrapper } from './date-year-spec';
+// import { createWrapper } from './date-year-spec';
 
 const resources = {
   ...getResources(''),
@@ -207,7 +207,7 @@ describe('Date time', () => {
 
       expect(inputElement).toBeInTheDocument();
       expect(inputElement).toHaveAttribute('type', 'text');
-      expect(inputElement).toHaveAttribute('id', `item_${q?.item?.[0].linkId}^0-datepicker`);
+      expect(inputElement).toHaveAttribute('id', `item_${q?.item?.[0].linkId}^0#id-datepicker`);
 
       await userEvent.type(inputElement, '31.05.1994');
 

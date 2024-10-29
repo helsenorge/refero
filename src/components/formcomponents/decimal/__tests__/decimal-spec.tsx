@@ -183,7 +183,7 @@ describe('Decimal', () => {
       const inputElement = getByLabelText(/Decimal/i);
       expect(inputElement).toBeInTheDocument();
       expect(inputElement).toHaveAttribute('type', 'number');
-      expect(inputElement).toHaveAttribute('id', `item_${q?.item?.[0].linkId}^0`);
+      expect(inputElement).toHaveAttribute('id', `item_${q?.item?.[0].linkId}^0#id`);
       await userEvent.type(inputElement, '123');
       expect(getByLabelText(/Decimal/i)).toHaveValue(123);
     });

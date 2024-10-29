@@ -53,7 +53,6 @@ export async function repeatCheckboxTimes(id: Matcher, n: number): Promise<void>
 export async function repeatSliderTimes(id: Matcher, n: number): Promise<void> {
   for (let i = 0; i < n; i++) {
     await userEvent.click(screen.getAllByText(id)[i]);
-    screen.debug(screen.getAllByText(id)[i]);
     await clickButtonTimes(/-repeat-button/i, 1);
   }
 }

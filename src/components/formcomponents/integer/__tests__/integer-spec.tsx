@@ -176,7 +176,7 @@ describe('Integer', () => {
       const inputElement = getByLabelText(/Integer/i);
       expect(inputElement).toBeInTheDocument();
       expect(inputElement).toHaveAttribute('type', 'number');
-      expect(inputElement).toHaveAttribute('id', `item_${q?.item?.[0].linkId}`);
+      expect(inputElement).toHaveAttribute('id', `item_${q?.item?.[0].linkId}#id`);
       await userEvent.type(inputElement, '123');
 
       expect(getByLabelText(/Integer/i)).toHaveValue(123);

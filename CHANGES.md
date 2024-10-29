@@ -1,3 +1,6 @@
+## 16.0.0-beta.53
+- Bugfix: Random characters appearing in input fields. Updated idWithLinkIdAndIndex to work around problem with rhf name
+
 ## 16.0.0-beta.52
 - Bugfix: Activation of a repeatable group
 

@@ -181,7 +181,7 @@ describe('Boolean', () => {
       expect(inputElement).toBeInTheDocument();
       expect(inputElement).toHaveAttribute('type', `checkbox`);
 
-      expect(inputElement).toHaveAttribute('id', `item_${q?.item?.[0].linkId}^0`);
+      expect(inputElement).toHaveAttribute('id', `item_${q?.item?.[0].linkId}^0#id`);
       await userEvent.click(inputElement);
       expect(getByLabelText(/Boolean/i)).toBeChecked();
     });

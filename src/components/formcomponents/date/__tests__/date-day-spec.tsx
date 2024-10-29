@@ -199,7 +199,7 @@ describe('Date day', () => {
       const inputElement = getByLabelText(/Dato/i);
       expect(inputElement).toBeInTheDocument();
       expect(inputElement).toHaveAttribute('type', 'text');
-      expect(inputElement).toHaveAttribute('id', `item_${q?.item?.[0].linkId}^0-datepicker`);
+      expect(inputElement).toHaveAttribute('id', `item_${q?.item?.[0].linkId}^0#id-datepicker`);
 
       await userEvent.click(inputElement);
       await userEvent.paste('31.05.1994');

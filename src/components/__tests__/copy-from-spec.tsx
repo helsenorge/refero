@@ -65,9 +65,9 @@ describe('Copy value from item', () => {
     const reciever = createRecieverItem(ItemType.BOOLEAN);
     const q = createQuestionnaire(sender, reciever);
     const { queryByTestId, findByTestId } = createWrapper(q);
-    expect(queryByTestId(/item_2-label/i)).not.toBeInTheDocument();
+    expect(queryByTestId(/item_2#id-label/i)).not.toBeInTheDocument();
     await clickByLabelText(`${sender.text}`);
-    const elm = await findByTestId(/item_2-label/i);
+    const elm = await findByTestId(/item_2#id-label/i);
     expect(elm).toBeInTheDocument();
   });
   describe('should copy DATE and TIME values', () => {
@@ -270,7 +270,7 @@ describe('Copy value from item', () => {
       expect(getByLabelText(/Annet/i)).toBeInTheDocument();
 
       await userEvent.click(getByLabelText(/Annet/i));
-      await userEvent.type(getByTestId('item_1-label'), 'e');
+      await userEvent.type(getByTestId('item_1#id-label'), 'e');
       const elm = await findByTestId(/item_2/i);
       expect(elm).toBeInTheDocument();
 
