@@ -26,7 +26,6 @@ const RenderRepeatButton = memo(function RenderRepeatButton({
     getFlatMapResponseItemsForItemSelector(state, item?.linkId, parentPath)
   );
 
-  // console.log('item', item);
   if (!item?.repeats || !shouldRenderRepeatButton(item, responseItems, index)) {
     return null;
   }
