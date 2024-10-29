@@ -92,7 +92,11 @@ export const Text = (props: Props): JSX.Element | null => {
   };
 
   const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, shouldValidate(item, pdf) ? validationRules : undefined);
-
+  if (item?.linkId === '2.900.1.1') {
+    console.log('item', item);
+    console.log('answer', answer);
+    console.log('value', value);
+  }
   if (pdf || isReadOnly(item)) {
     return (
       <ReadOnly

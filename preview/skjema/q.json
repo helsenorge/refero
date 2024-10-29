@@ -1192,7 +1192,7 @@
                       }
                     ],
                     "linkId": "4.600.300",
-                    "text": "Annen kjent seksualpartner",
+                    "text": "TEST",
                     "type": "boolean",
                     "item": [
                       {
@@ -1221,6 +1221,53 @@
                         "text": "Omtrent når hadde dere sex sist?",
                         "type": "string",
                         "enableWhen": [{ "question": "4.600.300", "answerBoolean": true, "operator": "=" }],
+                        "required": true,
+                        "maxLength": 20,
+                        "extension": [
+                          { "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sublabel", "valueMarkdown": "Skriv inn måned og år" }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                        "valueCodeableConcept": {
+                          "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "radio-button" }]
+                        }
+                      }
+                    ],
+                    "linkId": "4.600.43534500",
+                    "text": "TEST",
+                    "type": "boolean",
+                    "item": [
+                      {
+                        "extension": [
+                          {
+                            "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                            "valueCodeableConcept": {
+                              "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "help" }]
+                            }
+                          }
+                        ],
+                        "linkId": "4.600.300.3451",
+                        "text": "For eksempel en kollega, venn eller bekjent..",
+                        "type": "text",
+                        "_text": {
+                          "extension": [
+                            {
+                              "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                              "valueMarkdown": "For eksempel elsker, en kollega, fast sex-venn, venn eller bekjent."
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "linkId": "4.600.300.2",
+                        "text": "Omtrent når hadde dere sex sist?",
+                        "type": "string",
+                        "enableWhen": [{ "question": "4.600.43534500", "answerBoolean": true, "operator": "=" }],
                         "required": true,
                         "maxLength": 20,
                         "extension": [
