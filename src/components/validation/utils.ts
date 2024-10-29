@@ -1,7 +1,7 @@
 import { QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r4';
 import { FieldError, FieldErrors, FieldErrorsImpl, FieldValues, Merge } from 'react-hook-form';
 
-import { getText } from '@/util';
+import { getText, isReadOnly, shouldValidateReadOnly } from '@/util';
 import { findFirstGuidInString, getQuestionnaireDefinitionItem } from '@/util/refero-core';
 import { FormData } from '@/reducers/form';
 
@@ -191,4 +191,8 @@ export const getItemTextFromErrors = (
       return { item: getQuestionnaireDefinitionItem(item.linkId, questionnaireItem), fieldName, message };
     })
     .map(({ fieldName, item, message }) => ({ text: getText(item), fieldName, message }));
+};
+
+export const shouldValidate = (item: QuestionnaireItem | undefined, pdf: boolean | undefined): boolean => {
+  return (!pdf && !isReadOnly(item)) || (!pdf && isReadOnly(item) && shouldValidateReadOnly(item));
 };

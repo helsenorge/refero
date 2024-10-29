@@ -13,7 +13,6 @@ import { getFormDefinition } from '@/reducers/form';
 import RenderHelpButton from '../formcomponents/help-button/RenderHelpButton';
 import { useState } from 'react';
 import RenderHelpElement from '../formcomponents/help-button/RenderHelpElement';
-import { getMarkdownExtensionValue } from '@/util/extension';
 
 type Props = {
   item?: QuestionnaireItem;

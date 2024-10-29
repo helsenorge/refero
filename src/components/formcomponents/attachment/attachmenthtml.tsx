@@ -19,7 +19,8 @@ import { useGetAnswer } from '@/hooks/useGetAnswer';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { ReadOnly } from '../read-only/readOnly';
 import { getValidationTextExtension } from '@/util/extension';
-import { required } from '@/components/validation/rules';
+import { getErrorMessage, required } from '@/components/validation/rules';
+import { shouldValidate } from '@/components/validation/utils';
 
 type Props = QuestionnaireComponentItemProps & {
   onUpload: (files: UploadFile[]) => void;
@@ -101,16 +102,6 @@ const AttachmentHtml = (props: Props): JSX.Element | null => {
     setRejectedFiles(rejectedFiles.filter(x => x.id !== fileId));
   };
 
-  const getErrorText = (error: FieldError | undefined): string | undefined => {
-    if (error) {
-      const validationTextExtension = getValidationTextExtension(item);
-      if (validationTextExtension) {
-        return validationTextExtension;
-      }
-      return error.message;
-    }
-  };
-
   const getAttachmentValue = (): Attachment | Attachment[] | undefined => {
     if (Array.isArray(answer)) {
       return answer.map(v => v.valueAttachment).filter((attachment): attachment is Attachment => attachment !== undefined);
@@ -158,8 +149,7 @@ const AttachmentHtml = (props: Props): JSX.Element | null => {
     validate: () => true,
     shouldUnregister: true,
   };
-
-  const { onChange, ...rest } = internalRegister(idWithLinkIdAndItemIndex, pdf ? undefined : validationRules);
+  const { onChange, ...rest } = internalRegister(idWithLinkIdAndItemIndex, shouldValidate(item, pdf) ? validationRules : undefined);
 
   if (pdf || isReadOnly(item)) {
     return (
@@ -179,7 +169,7 @@ const AttachmentHtml = (props: Props): JSX.Element | null => {
 
   return (
     <div className="page_refero__component page_refero__component_attachment" data-testid={getId(id)}>
-      <FormGroup error={getErrorText(error)} errorWrapperClassName={styles.paddingBottom}>
+      <FormGroup error={getErrorMessage(item, error)} errorWrapperClassName={styles.paddingBottom}>
         <ReferoLabel
           item={item}
           resources={resources}

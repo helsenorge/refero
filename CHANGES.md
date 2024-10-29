@@ -1,3 +1,15 @@
+## 16.0.0-beta.51
+- Bugfix: Fixed extra-label placement
+- Bugfix: Couldn't add zero to decimal field
+- Use getErrorMessage in all components
+- Added styling to prevent unwanted override from Designsystem
+
+## 16.0.0-beta.50
+- Add css class page_refero__buttons to button-container
+
+## 16.0.0-beta.49
+- Bugfix: readOnly fields without ValidateReadOnly code failed
+
 ## 16.0.0-beta.48
 - Fixed more bugs related to label and helpButton
 

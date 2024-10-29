@@ -2,9 +2,9 @@ import { Attachment, QuestionnaireItem } from 'fhir/r4';
 import TextView from '../textview';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import { FieldError, FieldValues, useFormContext } from 'react-hook-form';
-import { getValidationTextExtension } from '@/util/extension';
 import { getId, shouldValidateReadOnly } from '@/util';
 import { useEffect } from 'react';
+import { getErrorMessage } from '@/components/validation/rules';
 
 type Props = {
   pdf?: boolean;
@@ -27,16 +27,6 @@ export const ReadOnly = ({ pdf, id, idWithLinkIdAndItemIndex, item, value, pdfVa
     }
   }, [value]);
 
-  const getErrorText = (error: FieldError | undefined): string | undefined => {
-    if (error) {
-      const validationTextExtension = getValidationTextExtension(item);
-      if (validationTextExtension) {
-        return validationTextExtension;
-      }
-      return error.message;
-    }
-  };
-
   if (pdf) {
     return (
       <TextView id={id} testId={`${getId(id)}-pdf`} item={item} value={pdfValue} textClass={textClass}>
@@ -45,7 +35,7 @@ export const ReadOnly = ({ pdf, id, idWithLinkIdAndItemIndex, item, value, pdfVa
     );
   } else if (shouldValidateReadOnly(item)) {
     return (
-      <FormGroup error={getErrorText(errors)}>
+      <FormGroup error={getErrorMessage(item, errors)}>
         <TextView id={id} testId={`${getId(id)}-readonly`} item={item} value={pdfValue} textClass={textClass}>
           {children}
         </TextView>

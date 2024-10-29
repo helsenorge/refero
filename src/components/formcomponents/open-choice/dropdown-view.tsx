@@ -16,13 +16,14 @@ import { useGetAnswer } from '@/hooks/useGetAnswer';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
-import { required } from '@/components/validation/rules';
+import { getErrorMessage, required } from '@/components/validation/rules';
 import { useSelector } from 'react-redux';
 import { findQuestionnaireItem } from '@/reducers/selectors';
 import { GlobalState } from '@/reducers';
 import { QuestionnaireItem } from 'fhir/r4';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 import { ReadOnly } from '../read-only/readOnly';
+import { shouldValidate } from '@/components/validation/utils';
 
 type Props = QuestionnaireComponentItemProps & {
   options?: Array<Options>;
@@ -53,11 +54,13 @@ const DropdownView = (props: Props): JSX.Element | null => {
     required: required({ item, resources }),
     shouldUnregister: true,
   };
-
   const onChange = (e: React.ChangeEvent<HTMLSelectElement>): void => {
     handleChange(e.target.value);
   };
-  const { onChange: handleFormChange, ...rest } = register(idWithLinkIdAndItemIndex, pdf ? undefined : validationRules);
+  const { onChange: handleFormChange, ...rest } = register(
+    idWithLinkIdAndItemIndex,
+    shouldValidate(item, pdf) ? validationRules : undefined
+  );
 
   if (pdf || isReadOnly(item)) {
     return (
@@ -76,7 +79,7 @@ const DropdownView = (props: Props): JSX.Element | null => {
   }
   return (
     <div className="page_refero__component page_refero__component_openchoice page_refero__component_openchoice_dropdown">
-      <FormGroup error={error?.message} mode="ongrey" errorWrapperClassName={styles.paddingBottom}>
+      <FormGroup error={getErrorMessage(item, error)} mode="ongrey" errorWrapperClassName={styles.paddingBottom}>
         <ReferoLabel
           item={item}
           resources={resources}

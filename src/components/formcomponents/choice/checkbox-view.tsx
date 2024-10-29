@@ -12,13 +12,14 @@ import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
 import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
-import { required } from '@/components/validation/rules';
+import { getErrorMessage, required } from '@/components/validation/rules';
 import { useSelector } from 'react-redux';
 import { GlobalState } from '@/reducers';
 import { QuestionnaireItem } from 'fhir/r4';
 import { findQuestionnaireItem } from '@/reducers/selectors';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 import { ReadOnly } from '../read-only/readOnly';
+import { shouldValidate } from '@/components/validation/utils';
 
 export type Props = QuestionnaireComponentItemProps & {
   options?: Array<Options>;
@@ -40,8 +41,7 @@ const CheckboxView = (props: Props): JSX.Element | null => {
     required: required({ item, resources }),
     shouldUnregister: true,
   };
-
-  const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, pdf ? undefined : validationRules);
+  const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, shouldValidate(item, pdf) ? validationRules : undefined);
 
   if (pdf || isReadOnly(item)) {
     return (
@@ -60,7 +60,7 @@ const CheckboxView = (props: Props): JSX.Element | null => {
   }
   return (
     <div className="page_refero__component page_refero__component_choice page_refero__component_choice_checkbox">
-      <FormGroup mode="ongrey" error={error?.message} errorWrapperClassName={styles.paddingBottom}>
+      <FormGroup mode="ongrey" error={getErrorMessage(item, error)} errorWrapperClassName={styles.paddingBottom}>
         <ReferoLabel
           item={item}
           resources={resources}

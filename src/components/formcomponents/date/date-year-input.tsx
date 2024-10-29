@@ -1,12 +1,11 @@
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
-import { FieldError, FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
+import { FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
 import styles from '../common-styles.module.css';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import Input from '@helsenorge/designsystem-react/components/Input';
 
 import { getId, isReadOnly, isRequired } from '../../../util';
 import { getPDFValueForDate, validateYearDigits, validateYearMax, validateYearMin } from '../../../util/date-utils';
-import { getValidationTextExtension } from '../../../util/extension';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
@@ -17,6 +16,8 @@ import { findQuestionnaireItem } from '@/reducers/selectors';
 import { GlobalState } from '@/reducers';
 import { initialize } from '@/util/date-fns-utils';
 import { ReadOnly } from '../read-only/readOnly';
+import { shouldValidate } from '@/components/validation/utils';
+import { getErrorMessage } from '@/components/validation/rules';
 
 type Props = QuestionnaireComponentItemProps & {
   onDateValueChange: (newValue: string) => void;
@@ -53,16 +54,6 @@ export const DateYearInput = (props: Props): JSX.Element | null => {
     onDateValueChange(year ?? '');
   };
 
-  const getErrorText = (error: FieldError | undefined): string | undefined => {
-    if (error) {
-      const validationTextExtension = getValidationTextExtension(item);
-      if (validationTextExtension) {
-        return validationTextExtension;
-      }
-      return error.message;
-    }
-  };
-
   const yearValue: string | undefined = getYearValue(answer);
 
   const validationRules: RegisterOptions<FieldValues, string> | undefined = {
@@ -83,8 +74,7 @@ export const DateYearInput = (props: Props): JSX.Element | null => {
     },
     shouldUnregister: true,
   };
-
-  const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, pdf ? undefined : validationRules);
+  const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, shouldValidate(item, pdf) ? validationRules : undefined);
 
   if (pdf || isReadOnly(item)) {
     return (
@@ -102,7 +92,7 @@ export const DateYearInput = (props: Props): JSX.Element | null => {
     );
   }
   return (
-    <FormGroup error={getErrorText(error)} errorWrapperClassName={styles.paddingBottom}>
+    <FormGroup error={getErrorMessage(item, error)} errorWrapperClassName={styles.paddingBottom}>
       <ReferoLabel
         item={item}
         resources={resources}

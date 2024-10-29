@@ -18,6 +18,7 @@ import { useSelector } from 'react-redux';
 import { GlobalState } from '@/reducers';
 import { QuestionnaireItem } from 'fhir/r4';
 import { ReadOnly } from '../read-only/readOnly';
+import { shouldValidate } from '@/components/validation/utils';
 
 type Props = QuestionnaireComponentItemProps & {
   handleStringChange: (event: React.FocusEvent<HTMLInputElement, Element>) => void;
@@ -49,8 +50,10 @@ const textField = (props: Props): JSX.Element | null => {
       scriptInjection({ value, resources, shouldValidate: !!validateScriptInjection }),
     shouldUnregister: true,
   };
-
-  const { onChange, onBlur, ...rest } = register(`${idWithLinkIdAndItemIndex}-extra-field`, pdf ? undefined : validationRules);
+  const { onChange, onBlur, ...rest } = register(
+    `${idWithLinkIdAndItemIndex}-extra-field`,
+    shouldValidate(item, pdf) ? validationRules : undefined
+  );
 
   if (pdf || isReadOnly(item)) {
     return (

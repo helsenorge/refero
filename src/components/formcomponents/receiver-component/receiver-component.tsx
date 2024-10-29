@@ -18,6 +18,7 @@ import { useExternalRenderContext } from '@/context/externalRenderContext';
 import { ReadOnly } from '../read-only/readOnly';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { getErrorMessage, required } from '@/components/validation/rules';
+import { shouldValidate } from '@/components/validation/utils';
 
 export type ReceiverComponentProps = QuestionnaireComponentItemProps & {
   item?: QuestionnaireItem;
@@ -196,8 +197,10 @@ const ReceiverComponent = ({
         getReceiverName(receiverTreeNodes, selectedPath) ? true : resources?.adresseKomponent_feilmelding || 'Kan ikke være tom streng',
       shouldUnregister: true,
     };
-
-    const { onChange, ...rest } = register(`${idWithLinkIdAndItemIndex}-${selectKey}`, pdf ? undefined : validationRules);
+    const { onChange, ...rest } = register(
+      `${idWithLinkIdAndItemIndex}-${selectKey}`,
+      shouldValidate(item, pdf) ? validationRules : undefined
+    );
 
     if (pdf || isReadOnly(item)) {
       return (
