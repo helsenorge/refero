@@ -204,6 +204,23 @@ export function getItemWithIdFromResponseItemArray(
   }
   return filteredItems;
 }
+
+function itemChildrenHasAnswer(item: QuestionnaireResponseItem, hasAnswer: boolean): boolean {
+  if (!hasAnswer && item.item) {
+    for (const child of item.item) {
+      hasAnswer = itemHasPrimitiveAnswer(child);
+      if (hasAnswer) {
+        return hasAnswer;
+      } else {
+        if (child.item) {
+          hasAnswer = itemChildrenHasAnswer(child, hasAnswer);
+        }
+      }
+    }
+  }
+  return hasAnswer;
+}
+
 export const descendantsHasPrimitiveAnswer = (items?: QuestionnaireResponseItem[] | undefined): boolean => {
   if (!items || items.length === 0) {
     return false;
@@ -229,7 +246,7 @@ export const descendantsHasPrimitiveAnswer = (items?: QuestionnaireResponseItem[
 
     // For each item in the group, check if it has a primitive answer
     for (const item of itemGroup) {
-      const hasAnswer = itemHasPrimitiveAnswer(item);
+      const hasAnswer = itemChildrenHasAnswer(item, itemHasPrimitiveAnswer(item));
       if (!hasAnswer) {
         // If any item in the group lacks a primitive answer, return false
         return false;

@@ -200,15 +200,9 @@ function processDeleteRepeatItemAction(action: NewValuePayload, state: Form): Fo
 
   let itemIndexInArray = 0;
 
-  // console.log('Initial arrayToDeleteItem:', JSON.stringify(current(arrayToDeleteItem)));
-  // console.log('Item to match:', JSON.stringify(action.item));
-  // console.log('Expected index to remove:', JSON.stringify(index));
-
   for (let i = 0; i < arrayToDeleteItem.length; i++) {
     if (arrayToDeleteItem[i].linkId === definitionLinkId) {
-      // console.log(`Matching item found at index ${i}, itemIndexInArray: ${JSON.stringify(itemIndexInArray)}`);
       if (itemIndexInArray === index) {
-        // console.log(`Deleting item at index ${i}`);
         arrayToDeleteItem.splice(i, 1);
         break;
       }
