@@ -1,3 +1,6 @@
+## 16.0.0-beta.52
+- Bugfix: Activation of a repeatable group
+
 ## 16.0.0-beta.51
 - Bugfix: Fixed extra-label placement
 - Bugfix: Couldn't add zero to decimal field
