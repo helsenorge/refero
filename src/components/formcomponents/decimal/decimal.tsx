@@ -129,7 +129,7 @@ const Decimal = (props: Props): JSX.Element | null => {
           {...rest}
           type="number"
           inputId={getId(id)}
-          value={value ? value + '' : ''}
+          value={Array.isArray(value) ? value.join(', ') : value}
           placeholder={getPlaceholder(item)}
           className="page_refero__input"
           onChange={(e): void => {
