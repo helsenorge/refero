@@ -4,6 +4,7 @@ import { FieldError, FieldErrors, FieldErrorsImpl, FieldValues, Merge } from 're
 import { getText, isReadOnly, shouldValidateReadOnly } from '@/util';
 import { findFirstGuidInString, getQuestionnaireDefinitionItem } from '@/util/refero-core';
 import { FormData } from '@/reducers/form';
+import { decodeString } from '../createQuestionnaire/utils';
 
 export type ResponseItemsWithFieldNames = {
   item: QuestionnaireResponseItem;
@@ -55,6 +56,7 @@ export const getItemFromErrorKeys = (
     if (isFieldError(errorObject)) {
       const { linkId, indexPath } = extractLinkIdAndIndexPath(parentFieldName);
       const itm = getResponseItemByLinkIdAndIndexPath(linkId, indexPath, responseItem);
+
       if (itm) {
         return [
           {
@@ -154,18 +156,32 @@ function findItemRecursive(
 
   return null;
 }
+function specialDatePart(inpStr: string): string | null {
+  const dateParts = ['-date', '-hours', '-minutes', '-yearmonth-year', '-yearmonth-month'];
+  for (const term of dateParts) {
+    const index = inpStr.indexOf(term);
+    if (index !== -1) {
+      return inpStr.substring(0, index);
+    }
+  }
+
+  return null;
+}
 export function extractLinkIdAndIndexPath(fieldNameParts: string[]): { linkId: string; indexPath: number[] } {
   const linkIdParts: string[] = [];
   const indexPath: number[] = [];
   for (const part of fieldNameParts) {
     const subParts = part.split('^');
     const guid = findFirstGuidInString(part);
+    const dateLinkId = specialDatePart(part);
+
     if (guid) {
       linkIdParts.push(guid);
+    } else if (dateLinkId) {
+      linkIdParts.push(decodeString(dateLinkId));
     } else {
       linkIdParts.push(subParts[0]);
     }
-
     for (let i = 1; i < subParts.length; i++) {
       const index = parseInt(subParts[i], 10);
       if (!isNaN(index)) {
@@ -174,7 +190,7 @@ export function extractLinkIdAndIndexPath(fieldNameParts: string[]): { linkId: s
     }
   }
 
-  const linkId = linkIdParts.join('.');
+  const linkId = decodeString(linkIdParts.join('.'));
   return { linkId, indexPath };
 }
 

@@ -1,11 +1,13 @@
-import { format, isValid } from 'date-fns';
-
-import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
+import { useState } from 'react';
+import { useSelector } from 'react-redux';
 import { FieldError, FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
 
-import { DateFormat, DateTimeUnit } from '../../../types/dateTypes';
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 
+import { format, isValid } from 'date-fns';
 import { DatePicker, DateTimePickerWrapper, DateTime } from '@helsenorge/datepicker/components/DatePicker';
+
+import { DateFormat, DateTimeUnit } from '../../../types/dateTypes';
 
 import { newDateTimeValueAsync } from '../../../actions/newValue';
 import { GlobalState, useAppDispatch } from '../../../reducers';
@@ -24,7 +26,6 @@ import {
 import { isRequired, getId, isReadOnly } from '../../../util/index';
 import styles from '../common-styles.module.css';
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
-import { useSelector } from 'react-redux';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
@@ -36,8 +37,7 @@ import useOnAnswerChange from '@/hooks/useOnAnswerChange';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import { ReadOnly } from '../read-only/readOnly';
 import { shouldValidate } from '@/components/validation/utils';
-import { getErrorMessage } from '@/components/validation/rules';
-import { useState } from 'react';
+import { getErrorMessage, isNumber } from '@/components/validation/rules';
 
 export type Props = QuestionnaireComponentItemProps;
 
@@ -255,7 +255,7 @@ const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, childr
               handleHoursChange(e.target.value);
               onChangeHours(e);
             }}
-            defaultValue={Number(hours)}
+            defaultValue={isNumber(hours) ? Number(hours) : 0}
           />
 
           <DateTime
@@ -266,7 +266,7 @@ const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, childr
               handleMinutesChange(e.target.value);
               onChangeMinutes(e);
             }}
-            defaultValue={Number(minutes)}
+            defaultValue={isNumber(minutes) ? Number(minutes) : 0}
           />
         </DateTimePickerWrapper>
         <RenderDeleteButton item={item} path={path} index={index} className="page_refero__deletebutton--margin-top" />

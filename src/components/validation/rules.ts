@@ -17,6 +17,10 @@ type ValidationRuleInput = {
 };
 type ValidationRuleReturnValue<T extends ValidationValue = ValidationValue> = string | ValidationRule<T> | undefined;
 
+export const isNumber = (input: unknown): input is number => {
+  return typeof input === 'number' && Number.isFinite(input);
+};
+
 export const getErrorMessage = (item: QuestionnaireItem | undefined, error: FieldError | undefined): string | undefined => {
   if (error) {
     const validationTextExtension = getValidationTextExtension(item);
@@ -48,7 +52,7 @@ export const maxValue = ({ item, resources, message }: ValidationRuleInput): Val
 export const minValue = ({ item, resources, message }: ValidationRuleInput): ValidationRuleReturnValue<number> => {
   const minValue = getMinValueExtensionValue(item);
   const customErrorMessage = getValidationTextExtension(item);
-  return minValue
+  return isNumber(minValue)
     ? {
         value: minValue,
         message: message ?? customErrorMessage ?? resources?.oppgiGyldigVerdi ?? 'Verdien er for lav',
@@ -84,7 +88,7 @@ export const maxLength = ({ item, resources, message }: ValidationRuleInput): Va
   const maxLength = getMaxLength(item);
   const customErrorMessage = getValidationTextExtension(item);
 
-  return maxLength
+  return isNumber(maxLength)
     ? {
         value: maxLength,
         message: message ?? customErrorMessage ?? resources?.stringOverMaxLengthError ?? 'Verdien er for lang',
@@ -95,7 +99,7 @@ export const maxLength = ({ item, resources, message }: ValidationRuleInput): Va
 export const minLength = ({ item, resources, message }: ValidationRuleInput): ValidationRule<number> | undefined => {
   const minLength = getMinLengthExtensionValue(item);
   const customErrorMessage = getValidationTextExtension(item);
-  return minLength
+  return isNumber(minLength)
     ? {
         value: minLength,
         message: message ?? customErrorMessage ?? resources?.stringOverMaxLengthError ?? 'Verdien er for kort',

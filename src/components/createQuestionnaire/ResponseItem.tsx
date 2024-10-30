@@ -3,10 +3,11 @@ import { useCheckIfEnabled } from '@/hooks/useIsEnabled';
 import GenerateQuestionnaireComponents, { QuestionnaireComponentItemProps } from './GenerateQuestionnaireComponents';
 import constants, { NAVIGATOR_BLINDZONE_ID } from '@/constants';
 import ItemType from '@/constants/itemType';
-import { getChildHeaderTag, isRepeat } from '@/util';
-import { createIdSuffix, createPathForItem, Path } from '@/util/refero-core';
+import { getChildHeaderTag } from '@/util';
+import { createPathForItem, Path } from '@/util/refero-core';
 import { RenderContext } from '@/util/renderContext';
 import { Resource, QuestionnaireItem } from 'fhir/r4';
+import { createIdFormComponentIds } from './utils';
 
 type ResponseItemProps = {
   linkId: string;
@@ -46,7 +47,7 @@ const ResponseItem = memo(function ResponseItem({
     return null;
   }
 
-  const idWithLinkIdAndItemIndex = `${linkId}${createIdSuffix(path, index, isRepeat(item))}`;
+  const idWithLinkIdAndItemIndex = createIdFormComponentIds(item, path, index);
   const id = `item_${idWithLinkIdAndItemIndex}`;
 
   let blindzone: JSX.Element | null = null;

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 
 import { newTimeValueAsync } from '../../../actions/newValue';
 import { getId, isReadOnly, isRequired } from '../../../util/index';
@@ -29,7 +29,7 @@ import useOnAnswerChange from '@/hooks/useOnAnswerChange';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import { ReadOnly } from '../read-only/readOnly';
 import { shouldValidate } from '@/components/validation/utils';
-import { getErrorMessage } from '@/components/validation/rules';
+import { getErrorMessage, isNumber } from '@/components/validation/rules';
 
 export type Props = QuestionnaireComponentItemProps;
 
@@ -191,7 +191,7 @@ const Time = ({ id, index, path, linkId, pdf, idWithLinkIdAndItemIndex, children
             {...restHours}
             inputId={`${getId(id)}-datetime-hours`}
             testId={`time-1`}
-            defaultValue={Number(hours)}
+            defaultValue={isNumber(hours) ? Number(hours) : 0}
             timeUnit="hours"
             onChange={e => {
               handleHoursChange(e.target.value);
@@ -202,7 +202,7 @@ const Time = ({ id, index, path, linkId, pdf, idWithLinkIdAndItemIndex, children
           <DateTime
             {...restMinutes}
             testId={`time-2`}
-            defaultValue={Number(minutes)}
+            defaultValue={isNumber(minutes) ? Number(minutes) : 0}
             timeUnit="minutes"
             onChange={e => {
               handleMinutesChange(e.target.value);

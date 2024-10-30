@@ -2,14 +2,15 @@ import '../../util/__tests__/defineFetch';
 import { Questionnaire } from 'fhir/r4';
 import GroupGridModel from './__data__/group-grid';
 import { renderRefero, screen } from '../../../test/test-utils';
+import { encodeString } from '../createQuestionnaire/utils';
 
 describe('group-grid-spec', () => {
   it('renders table with reordered items', () => {
-    const { container, getAllByRole, queryAllByText } = createWrapper(GroupGridModel);
-    expect(getAllByRole('table')).toHaveLength(1);
+    const { container } = createWrapper(GroupGridModel);
+    expect(screen.getAllByRole('table')).toHaveLength(1);
 
     ['X', 'SpmA', 'SpmB', 'SpmC', 'SpmD'].forEach(element => {
-      const els = queryAllByText(element);
+      const els = screen.queryAllByText(element);
       expect(els.length).toBeGreaterThan(0);
     });
 
@@ -27,7 +28,7 @@ function validateRow(wrapper: Element, expectedNumCells: number, expectedItemLin
   expect(numCells).toHaveLength(expectedNumCells);
 
   expectedItemLinkIds.forEach(expectedItemLinkId => {
-    const id = `item_${expectedItemLinkId}-decimal-label`;
+    const id = `item_${encodeString(expectedItemLinkId)}-decimal-label`;
     const cell = screen.queryByTestId(id);
     expect(cell).toBeInTheDocument();
   });

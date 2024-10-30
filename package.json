@@ -1,6 +1,6 @@
 {
   "name": "@helsenorge/refero",
-  "version": "16.0.0-beta.51",
+  "version": "16.0.0-beta.54",
   "description": "Refero is a library that uses a fhir r4 schema and creates a interactive form using helsenorge packages.",
   "keywords": [
     "react",
@@ -38,7 +38,7 @@
   "scripts": {
     "lint": "eslint --ext .ts,.tsx src/ --fix",
     "test": "vitest run",
-    "test:watch": "vitest watch",
+    "test:watch": "vitest dev",
     "test:ui": "vitest --ui",
     "test:preview": "vite preview --outDir html",
     "dev": "vite",
