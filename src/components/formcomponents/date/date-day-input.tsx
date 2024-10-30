@@ -31,6 +31,7 @@ import { ReadOnly } from '../read-only/readOnly';
 import { DateFormat } from '@/types/dateTypes';
 import { shouldValidate } from '@/components/validation/utils';
 import { getErrorMessage } from '@/components/validation/rules';
+import { useEffect, useState } from 'react';
 
 type DateDayInputProps = QuestionnaireComponentItemProps & {
   locale: LanguageLocales.ENGLISH | LanguageLocales.NORWEGIAN;
@@ -79,14 +80,22 @@ export const DateDayInput = ({
   };
 
   const dateAnswerValue = getDateAnswerValue(answer);
-  const date = parseStringToDate(dateAnswerValue);
+  const dateAnswerValueParsed = parseStringToDate(dateAnswerValue);
+  const [dateValue, setDateValue] = useState(dateAnswerValueParsed);
   const pdfValue = getPDFValueForDate(dateAnswerValue, resources?.ikkeBesvart, DateFormat.yyyyMMdd, DateFormat.dMMyyyy);
+
+  useEffect(() => {
+    if (isValid(dateAnswerValueParsed)) {
+      setDateValue(dateAnswerValueParsed);
+    }
+  }, [answer]);
 
   const handleChange = (newDate: string | Date | undefined): void => {
     if (typeof newDate === 'string') {
       if (isValueFormatDDMMYYYY(newDate)) {
         const parsedDate = parseStringToDate(newDate);
         if (parsedDate && isValid(parsedDate)) {
+          setDateValue(parsedDate);
           const formatedDate = format(parsedDate, 'yyyy-MM-dd');
           onDateValueChange(formatedDate);
         }
@@ -94,6 +103,7 @@ export const DateDayInput = ({
         onDateValueChange(newDate);
       }
     } else if (isValid(newDate)) {
+      setDateValue(newDate);
       const valueAsString = formatDateToString(newDate);
       const formatedDate = format(valueAsString, 'yyyy-MM-dd');
       onDateValueChange(formatedDate);
@@ -167,7 +177,7 @@ export const DateDayInput = ({
           handleChange(newDate);
           onChange(e);
         }}
-        dateValue={isValid(date) ? date : undefined}
+        dateValue={isValid(dateValue) ? dateValue : undefined}
       />
     </FormGroup>
   );
