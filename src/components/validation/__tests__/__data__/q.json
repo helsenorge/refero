@@ -121,6 +121,27 @@
           "maxLength": 20
         },
         {
+          "linkId": "1.2.3.4.5",
+          "type": "string",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/regex",
+              "valueString": "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$"
+            },
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
+              "valueString": "custom error message"
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/minLength",
+              "valueInteger": 5
+            }
+          ],
+          "required": true,
+          "text": "PERIOD-EMAIL",
+          "maxLength": 20
+        },
+        {
           "linkId": "b0c2cb74-2ffd-45ad-9c37-31be5e5b1548",
           "type": "open-choice",
           "text": "Radio - open choice - predeffinert",
