@@ -17,7 +17,7 @@ type ValidationRuleInput = {
 };
 type ValidationRuleReturnValue<T extends ValidationValue = ValidationValue> = string | ValidationRule<T> | undefined;
 
-const isNumber = (input: unknown): input is number => {
+export const isNumber = (input: unknown): input is number => {
   return typeof input === 'number' && Number.isFinite(input);
 };
 

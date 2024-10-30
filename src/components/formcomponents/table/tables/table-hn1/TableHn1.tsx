@@ -16,9 +16,9 @@ const TableHn1 = ({ items, questionnaireResponse }: Props): JSX.Element => {
   return (
     <HnTable className="page_refero__table_hn1">
       <TableBody className="page_refero__table_hn1__body">
-        {answerValues.map(item => (
+        {answerValues?.map(item => (
           <TableRow key={item.id} className="page_refero__table_hn1__body__row">
-            {item.columns.map(({ value, id, type }) => (
+            {item?.columns.map(({ value, id, type }) => (
               <React.Fragment key={id}>
                 <TableCell dataLabel={value ?? ''} className="page_refero__table_hn1__body__row__cell">
                   <span className={type === TABLE_HN1_TABLE_TYPES.HEADER ? 'page_refero__table_hn1__heading' : ''}>{value ?? ''}</span>
