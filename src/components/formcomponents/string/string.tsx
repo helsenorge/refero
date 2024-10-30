@@ -19,7 +19,6 @@ import RenderDeleteButton from '../repeat/RenderDeleteButton';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { useExternalRenderContext } from '@/context/externalRenderContext';
 import { getErrorMessage, maxLength, minLength, regexpPattern, required, scriptInjection } from '@/components/validation/rules';
-import { debounce } from '@helsenorge/core-utils/debounce';
 import { findQuestionnaireItem } from '@/reducers/selectors';
 import { QuestionnaireItem } from 'fhir/r4';
 import useOnAnswerChange from '@/hooks/useOnAnswerChange';
@@ -53,14 +52,14 @@ export const String = (props: Props): JSX.Element | null => {
     }
   };
 
-  // const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-  //   handleChange(event);
-  // };
-  const debouncedHandleChange: (event: React.ChangeEvent<HTMLInputElement>) => void = debounce(handleChange, 250, false);
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    event.persist();
-    debouncedHandleChange(event);
+    handleChange(event);
   };
+  // const debouncedHandleChange: (event: React.ChangeEvent<HTMLInputElement>) => void = debounce(handleChange, 250, false);
+  // const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+  //   event.persist();
+  //   debouncedHandleChange(event);
+  // };
 
   const value = getStringValue(answer);
   const maxCharacters = getMaxLength(item);
@@ -107,7 +106,7 @@ export const String = (props: Props): JSX.Element | null => {
         />
         <Input
           {...rest}
-          defaultValue={value}
+          value={value}
           readOnly={item?.readOnly}
           onChange={(e): void => {
             handleInputChange(e);
