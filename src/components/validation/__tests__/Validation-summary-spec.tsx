@@ -1,4 +1,4 @@
-import { renderRefero, userEvent } from '@test/test-utils.tsx';
+import { renderRefero, screen, userEvent } from '@test/test-utils.tsx';
 import { q } from './__data__/';
 import { ReferoProps } from '@/types/referoProps';
 import { getResources } from '../../../../preview/resources/referoResources';
@@ -24,7 +24,7 @@ describe('Validation-summary', () => {
     const { queryAllByTestId, getByTestId, getByLabelText } = createWrapper(q);
     await submitForm();
     const errorArray = queryAllByTestId(/summary-element-/i);
-    expect(errorArray).toHaveLength(6);
+    expect(errorArray).toHaveLength(7);
     await userEvent.click(getByTestId('summary-button-Textarea'));
     expect(getByLabelText('Textarea')).toHaveFocus();
   });
@@ -32,25 +32,25 @@ describe('Validation-summary', () => {
     const { queryAllByTestId } = createWrapper(q);
     await submitForm();
     const errorArray = queryAllByTestId(/summary-element-/i);
-    expect(errorArray).toHaveLength(6);
+    expect(errorArray).toHaveLength(7);
   });
   it('should remove the errors from the summary if a field changes to valid', async () => {
     const { queryAllByTestId, getByTestId } = createWrapper(q);
     await submitForm();
     const errorArray = queryAllByTestId(/summary-element-/i);
-    expect(errorArray).toHaveLength(6);
+    expect(errorArray).toHaveLength(7);
 
     await userEvent.type(getByTestId('item_ab1bb454-3697-4def-81da-77c565a5c1e4-string-label'), 'abc');
     const errorArrayAfter = queryAllByTestId(/summary-element-/i);
 
-    expect(errorArrayAfter).toHaveLength(5);
+    expect(errorArrayAfter).toHaveLength(6);
   });
   it('should add an error to the summary if a repeatable field is added', async () => {
     const { queryAllByTestId, getByTestId } = createWrapper(q);
     await submitForm();
 
     const errorArray = queryAllByTestId(/summary-element-/i);
-    expect(errorArray).toHaveLength(6);
+    expect(errorArray).toHaveLength(7);
 
     await userEvent.type(getByTestId('item_98e87a24-a6ef-425f-8534-1c4032828b5f^0-integer-label'), '12');
     await userEvent.click(getByTestId('98e87a24-a6ef-425f-8534-1c4032828b5f-repeat-button'));
@@ -58,26 +58,28 @@ describe('Validation-summary', () => {
     await submitForm();
     const errorArrayAfter = queryAllByTestId(/summary-element-/i);
 
-    expect(errorArrayAfter).toHaveLength(7);
+    expect(errorArrayAfter).toHaveLength(8);
   });
   it('should work with the extra input field on open choice', async () => {
     const { queryAllByTestId, getByTestId } = createWrapper(q);
     await submitForm();
 
     let errorArray = queryAllByTestId(/summary-element-/i);
-    expect(errorArray).toHaveLength(6);
+    expect(errorArray).toHaveLength(7);
 
     await userEvent.click(getByTestId('item_b0c2cb74-2ffd-45ad-9c37-31be5e5b1548-3-radio-open-choice-label'));
 
     errorArray = queryAllByTestId(/summary-element-/i);
-    expect(errorArray).toHaveLength(5);
+    expect(errorArray).toHaveLength(6);
+    await submitForm();
+    errorArray = queryAllByTestId(/summary-element-/i);
+    expect(errorArray).toHaveLength(7);
+
+    await userEvent.type(getByTestId('item_b0c2cb74-2ffd-45ad-9c37-31be5e5b1548-label'), 'abc');
+    await userEvent.type(screen.getByLabelText(/PERIOD-EMAIL/i), '123');
     await submitForm();
     errorArray = queryAllByTestId(/summary-element-/i);
     expect(errorArray).toHaveLength(6);
-
-    await userEvent.type(getByTestId('item_b0c2cb74-2ffd-45ad-9c37-31be5e5b1548-label'), 'abc');
-    errorArray = queryAllByTestId(/summary-element-/i);
-    expect(errorArray).toHaveLength(5);
   });
 });
 function createWrapper(questionnaire: Questionnaire, props: Partial<ReferoProps> = {}) {
