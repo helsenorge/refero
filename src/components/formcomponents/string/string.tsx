@@ -107,7 +107,7 @@ export const String = (props: Props): JSX.Element | null => {
         />
         <Input
           {...rest}
-          defaultValue={value}
+          defaultValue={value ?? ''}
           readOnly={item?.readOnly}
           onChange={(e): void => {
             handleInputChange(e);
