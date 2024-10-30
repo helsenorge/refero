@@ -36,7 +36,7 @@ import useOnAnswerChange from '@/hooks/useOnAnswerChange';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import { ReadOnly } from '../read-only/readOnly';
 import { shouldValidate } from '@/components/validation/utils';
-import { getErrorMessage } from '@/components/validation/rules';
+import { getErrorMessage, isNumber } from '@/components/validation/rules';
 
 export type Props = QuestionnaireComponentItemProps;
 
@@ -253,7 +253,7 @@ const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, childr
               handleHoursChange(e.target.value);
               onChangeHours(e);
             }}
-            defaultValue={Number(hours)}
+            defaultValue={isNumber(hours) ? Number(hours) : 0}
           />
 
           <DateTime
@@ -264,7 +264,7 @@ const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, childr
               handleMinutesChange(e.target.value);
               onChangeMinutes(e);
             }}
-            defaultValue={Number(minutes)}
+            defaultValue={isNumber(minutes) ? Number(minutes) : 0}
           />
         </DateTimePickerWrapper>
         <RenderDeleteButton item={item} path={path} index={index} className="page_refero__deletebutton--margin-top" />

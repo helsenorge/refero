@@ -1,4 +1,4 @@
-import { format, isAfter, isBefore, parse } from 'date-fns';
+import { format, isAfter, isBefore, isValid, parse } from 'date-fns';
 import {
   Attachment,
   Coding,
@@ -57,10 +57,14 @@ const extractValueFromQuantity = (quantity: Quantity | undefined, field: Quantit
   }
 };
 const extractValueFromDate = (inputValue?: string): string => {
-  if (!inputValue) {
+  try {
+    if (!inputValue && !isValid(inputValue)) {
+      return '';
+    }
+    return inputValue ? format(inputValue, DATEFORMATS.DATE) : '';
+  } catch (_error) {
     return '';
   }
-  return inputValue ? format(inputValue, DATEFORMATS.DATE) : '';
 };
 const extractValueFromTime = (inputTime?: string): string => {
   if (!inputTime) {
@@ -73,10 +77,14 @@ const extractValueFromTime = (inputTime?: string): string => {
   return `${time[0]}${TIME_SEPARATOR}${time[1]}`;
 };
 const extractValueFromDateTime = (inputValue?: string): string => {
-  if (!inputValue) {
+  try {
+    if (!inputValue) {
+      return '';
+    }
+    return inputValue ? format(inputValue, DATEFORMATS.DATETIME) : '';
+  } catch (_error) {
     return '';
   }
-  return inputValue ? format(inputValue, DATEFORMATS.DATETIME) : '';
 };
 
 export const extractValueFromAttachment = (inputValue?: Attachment, field: AttachmentKeys = 'url'): string | number => {
