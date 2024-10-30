@@ -293,14 +293,14 @@ export const validateTimeDigits = (
 };
 
 export const validateHours = (hours: number | undefined, resources: Resources | undefined): true | string => {
-  if (!hours || (hours && (hours < 0 || hours >= 24))) {
+  if (hours === undefined || hours === null || (hours && (hours < 0 || hours >= 24))) {
     return resources?.dateError_time_invalid || '';
   }
   return true;
 };
 
 export const validateMinutes = (minutes: number | undefined, resources: Resources | undefined): true | string => {
-  if (!minutes || (minutes && (minutes < 0 || minutes >= 60))) {
+  if (minutes === undefined || minutes === null || (minutes && (minutes < 0 || minutes >= 60))) {
     return resources?.dateError_time_invalid || '';
   }
   return true;
