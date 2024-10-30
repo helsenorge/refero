@@ -85,6 +85,7 @@ const Integer = (props: Props): JSX.Element | null => {
     min: minValue({ item, resources }),
     shouldUnregister: true,
   };
+  console.log(validationRules.min);
   const { onChange, ...rest } = register(idWithLinkIdAndItemIndex, shouldValidate(item, pdf) ? validationRules : undefined);
 
   if (pdf || isReadOnly(item)) {
