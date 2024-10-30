@@ -371,7 +371,7 @@ describe('onAnswerChange callback gets called and can request additional changes
     expect(minutesInput).toHaveValue(null);
   });
 
-  it.skip('string gets updated', async () => {
+  it('string gets updated', async () => {
     const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
       actionRequester.addStringAnswer('9', 'Hello World!');
     });
