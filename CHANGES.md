@@ -1,3 +1,6 @@
+## 16.0.0-beta.54
+- update default form values
+
 ## 16.0.0-beta.53
 - Change the way id's are created. encode periods (.) to %2E to fix weird behaviour with react hook form
 
