@@ -37,6 +37,7 @@ import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import { ReadOnly } from '../read-only/readOnly';
 import { shouldValidate } from '@/components/validation/utils';
 import { getErrorMessage } from '@/components/validation/rules';
+import { useState } from 'react';
 
 export type Props = QuestionnaireComponentItemProps;
 
@@ -79,9 +80,10 @@ const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, childr
   };
 
   const dateAnswerValue = getDateAnswerValue(answer);
-  const date: Date | string | undefined = parseStringToDate(dateAnswerValue);
-  const hours = getHoursOrMinutesFromDate(date, DateTimeUnit.Hours);
-  const minutes = getHoursOrMinutesFromDate(date, DateTimeUnit.Minutes);
+  const dateAnswerValueParsed = parseStringToDate(dateAnswerValue);
+  const [dateValue, setDateValue] = useState(dateAnswerValueParsed);
+  const hours = getHoursOrMinutesFromDate(dateAnswerValueParsed, DateTimeUnit.Hours);
+  const minutes = getHoursOrMinutesFromDate(dateAnswerValueParsed, DateTimeUnit.Minutes);
   const pdfValue = getPDFValueForDate(dateAnswerValue, resources?.ikkeBesvart, DateFormat.yyyyMMddHHmmssXXX, DateFormat.ddMMyyyyHHmm);
 
   function getCombinedFieldError(dateField: FieldValues, hoursField: FieldValues, minutesField: FieldValues): FieldError | undefined {
@@ -95,12 +97,12 @@ const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, childr
 
   const handleHoursChange = (newHours: string | undefined): void => {
     if (newHours && Number(newHours) >= 0 && Number(newHours) < 24) {
-      updateQuestionnaireResponse(date, newHours, minutes);
+      updateQuestionnaireResponse(dateValue, newHours, minutes);
     }
   };
   const handleMinutesChange = (newMinutes: string | undefined): void => {
     if (newMinutes && Number(newMinutes) >= 0 && Number(newMinutes) < 60) {
-      updateQuestionnaireResponse(date, hours, newMinutes);
+      updateQuestionnaireResponse(dateValue, hours, newMinutes);
     }
   };
 
@@ -112,13 +114,13 @@ const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, childr
     let fullDate: string | undefined = '';
     if (typeof newDate === 'string') {
       const parsedDate = parseStringToDate(newDate);
-      if (isValid(parsedDate)) {
-        if (parsedDate && isValid(parsedDate)) {
-          const formatedDate = format(parsedDate, 'yyyy-MM-dd');
-          fullDate = getFullFnsDate(formatedDate, newHours, newMinutes);
-        }
+      if (parsedDate && isValid(parsedDate)) {
+        setDateValue(parsedDate);
+        const formatedDate = format(parsedDate, 'yyyy-MM-dd');
+        fullDate = getFullFnsDate(formatedDate, newHours, newMinutes);
       }
     } else if (isValid(newDate)) {
+      setDateValue(newDate);
       fullDate = getFullFnsDate(newDate, newHours, newMinutes);
     }
 
@@ -236,7 +238,7 @@ const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, childr
             autoComplete=""
             dateButtonAriaLabel="Open datepicker"
             dateFormat={'dd.MM.yyyy'}
-            dateValue={isValid(date) ? date : undefined}
+            dateValue={isValid(dateValue) ? dateValue : undefined}
             minDate={minDateTime}
             maxDate={maxDateTime}
             onChange={(e, newDate) => {

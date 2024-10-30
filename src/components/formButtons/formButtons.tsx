@@ -20,7 +20,6 @@ interface FormButtonsInterface {
     | ((e: MouseEvent<HTMLElement, MouseEvent> | FormEvent<{}> | KeyboardEvent<HTMLUListElement> | null | undefined) => void);
   onCancelButtonClicked?: () => void;
   onPauseButtonClicked?: (questionnaireResponse?: QuestionnaireResponse) => void;
-  isHelsenorgeForm?: boolean;
   isStepView?: boolean;
   isAuthorized?: boolean;
   loginButton?: JSX.Element;
@@ -36,14 +35,13 @@ const FormButtons = ({
   onSubmitButtonClicked,
   onCancelButtonClicked,
   onPauseButtonClicked,
-  isHelsenorgeForm,
   isAuthorized,
   loginButton,
 }: FormButtonsInterface): JSX.Element | null => {
   const buttonOrder = isStepView ? buttonOrderStepView : buttonOrderNormalView;
 
   return (
-    <div className={`${styles.formButtonsWrapper} page_refero__buttons`}>
+    <div className={styles.formButtonsWrapper}>
       {!isAuthorized && loginButton ? (
         <div className="page_refero__buttonwrapper page_refero__saveblock">{loginButton}</div>
       ) : (
@@ -56,7 +54,6 @@ const FormButtons = ({
                     key={buttonType}
                     isStepView={isStepView}
                     pauseButtonText={pauseButtonText}
-                    isHelsenorgeForm={isHelsenorgeForm}
                     onPauseButtonClicked={onPauseButtonClicked}
                     pauseButtonDisabled={pauseButtonDisabled}
                   />
