@@ -90,7 +90,7 @@ const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, childr
     if (isValid(dateAnswerValueParsed)) {
       setDateValue(dateAnswerValueParsed);
     }
-  }, [answer]);
+  }, [dateAnswerValue]);
 
   function getCombinedFieldError(dateField: FieldValues, hoursField: FieldValues, minutesField: FieldValues): FieldError | undefined {
     const error = dateField.error || hoursField.error || minutesField.error || undefined;

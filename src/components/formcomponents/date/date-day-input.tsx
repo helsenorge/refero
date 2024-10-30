@@ -88,7 +88,7 @@ export const DateDayInput = ({
     if (isValid(dateAnswerValueParsed)) {
       setDateValue(dateAnswerValueParsed);
     }
-  }, [answer]);
+  }, [dateAnswerValue]);
 
   const handleChange = (newDate: string | Date | undefined): void => {
     if (typeof newDate === 'string') {
