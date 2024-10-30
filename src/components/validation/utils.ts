@@ -4,6 +4,7 @@ import { FieldError, FieldErrors, FieldErrorsImpl, FieldValues, Merge } from 're
 import { getText, isReadOnly, shouldValidateReadOnly } from '@/util';
 import { findFirstGuidInString, getQuestionnaireDefinitionItem } from '@/util/refero-core';
 import { FormData } from '@/reducers/form';
+import { decodeString } from '../createQuestionnaire/utils';
 
 export type ResponseItemsWithFieldNames = {
   item: QuestionnaireResponseItem;
@@ -174,7 +175,7 @@ export function extractLinkIdAndIndexPath(fieldNameParts: string[]): { linkId: s
     }
   }
 
-  const linkId = linkIdParts.join('.');
+  const linkId = decodeString(linkIdParts.join('.'));
   return { linkId, indexPath };
 }
 

@@ -132,4 +132,17 @@ export function getComponentForItem(
 }
 
 export const createIdFormComponentIds = (item?: QuestionnaireItem, path?: Path[], index?: number): string =>
-  `${item?.linkId}-${createIdSuffix(path, index, isRepeat(item))}`;
+  encodeString(`${item?.linkId}${createIdSuffix(path, index, isRepeat(item))}`);
+
+export function encodeString(input: string): string {
+  // Replace all occurrences of "." with "%2E"
+  const encodedString = input.replace(/\./g, '%2E');
+
+  return encodedString;
+}
+
+export function decodeString(encodedId: string): string {
+  const originalString = encodedId.replace(/%2E/g, '.');
+
+  return originalString;
+}

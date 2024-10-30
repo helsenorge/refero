@@ -11,6 +11,7 @@ import { inputAnswer, findQuestionnaireItem, findItem } from './utils';
 import { renderRefero } from '../../../test/test-utils';
 import { clickByLabelText, clickByTestId, typeByLabelText } from '../../../test/selectors';
 import { performance } from 'perf_hooks';
+import { encodeString } from '../createQuestionnaire/utils';
 
 describe('Component renders and calculates score', () => {
   it('fhirpath score should be updated when decimal questions are answered', async () => {
@@ -165,33 +166,33 @@ describe('Component renders and calculates score', () => {
     };
     expectScores(expectedScores, container);
 
-    await clickByTestId(/item_2.1.1-2-radio-choice-label/i);
+    await clickByTestId(`item_${encodeString('2.1.1-2')}-radio-choice-label`);
     expectedScores.totalscore_31 = 4;
     expectedScores.sectionscore_213 = 4;
     expectScores(expectedScores, container);
 
-    await clickByTestId(/item_2.2.2-3-checkbox-choice-label/i);
+    await clickByTestId(`item_${encodeString('2.2.2-3')}-checkbox-choice-label`);
     expectedScores.sectionscore_223 = 8;
     expectedScores.totalscore_31 = 12;
     expectScores(expectedScores, container);
 
-    await clickByTestId(/item_2.3.2.2.1-0-radio-choice-label/i);
+    await clickByTestId(`item_${encodeString('2.3.2.2.1-0')}-radio-choice-label`);
     expectedScores.sectionscore_230 = 1;
     expectedScores.totalscore_31 = 13;
     expectScores(expectedScores, container);
 
-    await clickByTestId(/item_2.3.1-1-radio-choice-label/i);
+    await clickByTestId(encodeString('item_2.3.1-1-radio-choice-label'));
     expectedScores.sectionscore_230 = 3;
     expectedScores.totalscore_31 = 15;
     expectScores(expectedScores, container);
 
-    await clickByTestId(/item_2.3.2.1-0-checkbox-choice-label/i);
-    await clickByTestId(/item_2.3.2.1-1-checkbox-choice-label/i);
+    await clickByTestId(encodeString('item_2.3.2.1-0-checkbox-choice-label'));
+    await clickByTestId(encodeString('item_2.3.2.1-1-checkbox-choice-label'));
     expectedScores.sectionscore_230 = 6;
     expectedScores.totalscore_31 = 18;
     expectScores(expectedScores, container);
 
-    await clickByTestId(/item_2.1.2-3-checkbox-choice-label/i);
+    await clickByTestId(encodeString('item_2.1.2-3-checkbox-choice-label'));
     expectedScores.sectionscore_213 = 12;
     expectedScores.totalscore_31 = 26;
 
