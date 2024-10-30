@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 
 import { newTimeValueAsync } from '../../../actions/newValue';
 import { getId, isReadOnly, isRequired } from '../../../util/index';
