@@ -38,7 +38,7 @@
   "scripts": {
     "lint": "eslint --ext .ts,.tsx src/ --fix",
     "test": "vitest run",
-    "test:watch": "vitest watch",
+    "test:watch": "vitest dev",
     "test:ui": "vitest --ui",
     "test:preview": "vite preview --outDir html",
     "dev": "vite",
