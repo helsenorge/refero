@@ -124,6 +124,7 @@ export function getMaxValueExtensionValue(item?: QuestionnaireItem): number | un
 
 export function getMinValueExtensionValue(item?: QuestionnaireItem): number | undefined {
   const minValue = getExtension(Extensions.MIN_VALUE_URL, item);
+
   if (minValue && minValue.valueDecimal !== null && minValue.valueDecimal !== undefined) {
     return Number(minValue.valueDecimal);
   }
