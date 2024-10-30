@@ -14,7 +14,7 @@ import {
 } from 'date-fns';
 import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 
-import { DateFormat, DatePickerFormat, DateTimeUnit, TimeValues } from '../types/dateTypes';
+import { DateFormat, DatePickerFormat, DateTimeUnit, TimeUnit, TimeValues } from '../types/dateTypes';
 
 import { safeParseJSON } from './date-fns-utils';
 import { Resources } from './resources';
@@ -272,6 +272,22 @@ export const validateMaxDate = (
 ): true | string => {
   if (maxDateTime && dateToValidate && isAfter(dateToValidate, endOfDay(maxDateTime))) {
     return `${resources?.errorAfterMaxDate}: ${format(maxDateTime, DateFormat.ddMMyyyy)}`;
+  }
+  return true;
+};
+
+export const validateTimeDigits = (
+  timeToValidate: string | undefined,
+  timeUnit: TimeUnit,
+  resources: Resources | undefined
+): true | string => {
+  if (timeToValidate && timeToValidate.length > 2) {
+    if (timeUnit === TimeUnit.Hours) {
+      return resources?.timeError_hours_digits || '';
+    }
+    if (timeUnit === TimeUnit.Minutes) {
+      return resources?.timeError_minutes_digits || '';
+    }
   }
   return true;
 };
