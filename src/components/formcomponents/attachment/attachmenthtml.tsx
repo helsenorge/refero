@@ -18,7 +18,6 @@ import { TextMessage } from '@/types/text-message';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { ReadOnly } from '../read-only/readOnly';
-import { getValidationTextExtension } from '@/util/extension';
 import { getErrorMessage, required } from '@/components/validation/rules';
 import { shouldValidate } from '@/components/validation/utils';
 
@@ -71,8 +70,9 @@ const AttachmentHtml = (props: Props): JSX.Element | null => {
   } = props;
 
   const { formState, getFieldState, register: internalRegister } = useFormContext<FieldValues>();
-  const fieldState = getFieldState(idWithLinkIdAndItemIndex || '', formState);
+  const fieldState = getFieldState(idWithLinkIdAndItemIndex, formState);
   const { error } = fieldState;
+
   const answer = useGetAnswer(linkId, path);
   const getMaxValueBytes = getAttachmentMaxSizeBytesToUse(attachmentMaxFileSize, item);
   const validFileTypes = attachmentValidTypes ? attachmentValidTypes : VALID_FILE_TYPES;
