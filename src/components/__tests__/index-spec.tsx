@@ -74,7 +74,6 @@ describe('repeat with enableWhen', () => {
     expect(screen.queryByLabelText(/enableWhen/i)).not.toBeInTheDocument();
 
     await userEvent.click(screen.getByLabelText(/Checkbox/i));
-    screen.debug();
     await userEvent.type(await screen.findByLabelText(/enableWhen/i), '2');
 
     await userEvent.click(screen.getByTestId(/-repeat-button/i));

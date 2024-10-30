@@ -83,7 +83,7 @@ export const DateYearInput = (props: Props): JSX.Element | null => {
         id={id}
         idWithLinkIdAndItemIndex={idWithLinkIdAndItemIndex}
         item={item}
-        value={yearValue}
+        value={yearValue || ''}
         pdfValue={getPDFValueForDate(yearValue, resources?.ikkeBesvart)}
         errors={error}
       >
@@ -110,7 +110,7 @@ export const DateYearInput = (props: Props): JSX.Element | null => {
           onYearChange(e.target.value);
           onChange(e);
         }}
-        value={yearValue}
+        value={yearValue || ''}
         width={10}
       />
     </FormGroup>
