@@ -117,7 +117,7 @@ const Boolean = (props: Props): JSX.Element | null => {
             <Label
               labelId={`${getId(id)}-label-boolean`}
               testId={`${getId(id)}-label-boolean`}
-              labelTexts={[{ text: item?.text || '', type: 'semibold' }]}
+              labelTexts={[{ text: item?.text || '', type: 'normal' }]}
               htmlFor={getId(id)}
               className="page_refero__label label_helpButton_align"
               sublabel={
