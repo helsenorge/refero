@@ -5,6 +5,7 @@ import ItemType, { IItemType } from '../constants/itemType';
 import itemControlConstants from '@/constants/itemcontrol';
 import { getItemControlExtensionValue } from '@/util/extension';
 import { isReadOnly, isRepeat } from '@/util';
+import { encodeString } from '@/components/createQuestionnaire/utils';
 
 export type DefaultValues = Record<string, IItemType | unknown>;
 const excludedTypes = ['group', 'display', 'reference', 'url'];
@@ -33,20 +34,21 @@ export const createIntitialFormValues = (items?: QuestionnaireItem[]): DefaultVa
 
 const getInitialFormValueForItemtype = (key: string, item: QuestionnaireItem): DefaultValues | undefined => {
   if (excludedTypes.includes(item.type)) return;
+  const encodedKey = encodeString(key);
   const itemControls = getItemControlExtensionValue(item);
   switch (item.type) {
     case ItemType.DATE:
       if (itemControls && itemControls.some(itemControl => itemControl.code === itemControlConstants.YEARMONTH)) {
-        return { [`${key}-yearmonth-year`]: '', [`${key}-yearmonth-month`]: '' };
+        return { [`${encodedKey}-yearmonth-year`]: '', [`${encodedKey}-yearmonth-month`]: '' };
       } else {
-        return { [key]: getValueforFormItem(item) };
+        return { [encodedKey]: getValueforFormItem(item) };
       }
     case ItemType.DATETIME:
-      return { [`${key}-date`]: '', [`${key}-hours`]: '', [`${key}-minutes`]: '' };
+      return { [`${encodedKey}-date`]: '', [`${encodedKey}-hours`]: '', [`${encodedKey}-minutes`]: '' };
     case ItemType.TIME:
-      return { [`${key}-hours`]: '', [`${key}-minutes`]: '' };
+      return { [`${encodedKey}-hours`]: '', [`${encodedKey}-minutes`]: '' };
     default:
-      return { [key]: getValueforFormItem(item) };
+      return { [encodedKey]: getValueforFormItem(item) };
   }
 };
 
