@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { FieldError, FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
 
@@ -85,6 +85,12 @@ const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, childr
   const hours = getHoursOrMinutesFromDate(dateAnswerValueParsed, DateTimeUnit.Hours);
   const minutes = getHoursOrMinutesFromDate(dateAnswerValueParsed, DateTimeUnit.Minutes);
   const pdfValue = getPDFValueForDate(dateAnswerValue, resources?.ikkeBesvart, DateFormat.yyyyMMddHHmmssXXX, DateFormat.ddMMyyyyHHmm);
+
+  useEffect(() => {
+    if (isValid(dateAnswerValueParsed)) {
+      setDateValue(dateAnswerValueParsed);
+    }
+  }, [answer]);
 
   function getCombinedFieldError(dateField: FieldValues, hoursField: FieldValues, minutesField: FieldValues): FieldError | undefined {
     const error = dateField.error || hoursField.error || minutesField.error || undefined;
