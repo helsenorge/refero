@@ -1,5 +1,5 @@
 import '../../../../util/__tests__/defineFetch';
-import { renderRefero, screen, userEvent } from '@test/test-utils.tsx';
+import { queryByText, renderRefero, screen, userEvent } from '@test/test-utils.tsx';
 import { repeatQ, q } from './__data__';
 import Constants from '../../../../constants';
 import { Questionnaire } from 'fhir/r4';
@@ -107,10 +107,10 @@ describe('group', () => {
             : [{ url: Extensions.MIN_OCCURS_URL, valueInteger: 2 }],
         })),
       };
-      const { queryByTestId } = createWrapper(questionnaire);
+      createWrapper(questionnaire);
       const input = '5';
       await repeatGroupNTimes(input, 1, /REPEATABLE INT/i);
-      expect(queryByTestId(/-delete-button/i)).not.toBeInTheDocument();
+      expect(screen.queryByTestId(/-delete-button/i)).not.toBeInTheDocument();
     });
 
     it('Should remove item when delete button is clicked', async () => {
@@ -118,12 +118,12 @@ describe('group', () => {
         ...repeatQ,
         item: repeatQ.item?.map(x => ({ ...x, repeats: true })),
       };
-      const { queryByTestId } = createWrapper(questionnaire);
+      createWrapper(questionnaire);
       const input = '5';
       await repeatGroupNTimes(input, 1, /REPEATABLE INT/i);
       await clickButtonTimes(/-delete-button/i, 1);
 
-      expect(queryByTestId(/-delete-button/i)).not.toBeInTheDocument();
+      expect(screen.queryByTestId(/-delete-button/i)).not.toBeInTheDocument();
     });
   });
 });
