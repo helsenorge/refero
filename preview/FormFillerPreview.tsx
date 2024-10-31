@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import {
   Attachment,
@@ -13,11 +13,10 @@ import { Provider } from 'react-redux';
 
 import LanguageLocales from '@helsenorge/core-utils/constants/languages';
 
-import FormFillerSidebar from './FormFillerSidebar';
 import { emptyPropertyReplacer } from './helpers';
 import { getResources } from './resources/referoResources';
 import skjema from './skjema/q.json';
-
+import qr from './skjema/responses/qr.json';
 import ReferoContainer from '../src/components/index';
 import valueSet from '../src/constants/valuesets';
 import rootReducer from '../src/reducers/index';
@@ -27,6 +26,7 @@ import { IActionRequester, setSkjemaDefinitionAction } from '@/actions/form';
 import { IQuestionnaireInspector } from '@/util/questionnaireInspector';
 import { configureStore } from '@reduxjs/toolkit';
 import HelpButton from './external-components/HelpButton';
+import Button from '@helsenorge/designsystem-react/components/Button';
 
 type Props = {
   showFormFiller: () => void;
@@ -109,17 +109,22 @@ const MimeTypes = {
   JSON: 'application/json',
 };
 
-const FormFillerPreview = (props: Props): JSX.Element => {
+const FormFillerPreview = (): JSX.Element => {
   const store = configureStore({ reducer: rootReducer, middleware: getDefaultMiddleware => getDefaultMiddleware() });
+  const [lang, setLang] = useState<number>(0);
 
-  const questionnaireForPreview = JSON.parse(JSON.stringify(skjema ?? {}, emptyPropertyReplacer)) as Bundle<Questionnaire> | Questionnaire;
-  const [questionnaireResponse, setQuestionnaireResponse] = useState<QuestionnaireResponse>();
+  const parsedQuestionnaire = JSON.parse(JSON.stringify(skjema ?? {}, emptyPropertyReplacer)) as Bundle<Questionnaire> | Questionnaire;
+  const mainQuestionnaire = getQuestionnaireFromBubndle(parsedQuestionnaire, 0);
+
+  const parsedQuestionnaireResponse = JSON.parse(JSON.stringify(qr ?? {}, emptyPropertyReplacer)) as QuestionnaireResponse;
+
+  const [questionnaire, setQuestionnaire] = useState<Questionnaire>(mainQuestionnaire);
+  const [questionnaireResponse, setQuestionnaireResponse] = useState<QuestionnaireResponse>(parsedQuestionnaireResponse);
   const [showResponse, setShowResponse] = useState<boolean>(false);
   const handleSubmit = (questionnaireResponse: QuestionnaireResponse): void => {
     // eslint-disable-next-line no-console
     console.log(JSON.stringify(questionnaireResponse));
   };
-  const [lang, setLang] = useState<number>(0);
   const uploadAttachment = (file: File[], onSuccess: (attachment: Attachment) => void): void => {
     onSuccess({ data: file[0].name, contentType: file[0].type, url: 'url' });
   };
@@ -149,33 +154,38 @@ const FormFillerPreview = (props: Props): JSX.Element => {
     // eslint-disable-next-line no-console
     // console.log(item, answer, actionRequester, questionnaireInspector);
   };
+  const setQr = (): void => {
+    dispatch(
+      setSkjemaDefinitionAction({
+        questionnaire: mainQuestionnaire,
+        questionnaireResponse: parsedQuestionnaireResponse,
+      })
+    );
+  };
+
+  if (!questionnaire) return <div>{'loading...'}</div>;
   return (
     <Provider store={store}>
       <div className="overlay">
         <div className="preview-window">
-          <div className="title align-everything">
+          <div className="title align-everything" style={{ marginBottom: '2rem' }}>
             <h1>{'Preview'}</h1>
-            <button onClick={(): void => setLang(lang === 0 ? 1 : 0)}>{`Endre språk ${lang === 0 ? 'til engelsk' : 'til norsk'}`}</button>
+            <div style={{ display: 'inline-flex', gap: '2rem' }}>
+              <Button onClick={(): void => setLang(lang === 0 ? 1 : 0)}>{`Endre språk ${lang === 0 ? 'til engelsk' : 'til norsk'}`}</Button>{' '}
+              <Button onClick={setQr}>{'Set QR'}</Button>
+            </div>
           </div>
-          <FormFillerSidebar questionnaire={getQuestionnaireFromBubndle(questionnaireForPreview, lang)} />
 
           <div className="referoContainer-div">
             {!showResponse ? (
               <div className="page_refero">
                 <ReferoContainer
-                  questionnaire={getQuestionnaireFromBubndle(questionnaireForPreview, lang)}
+                  questionnaire={questionnaire}
                   onCancel={() => {}}
                   onChange={onChange}
                   onSave={(questionnaireResponse: QuestionnaireResponse): void => {
                     setQuestionnaireResponse(questionnaireResponse);
                     setShowResponse(true);
-                    // dispatch(
-                    //   setSkjemaDefinitionAction({
-                    //     syncQuestionnaireResponse: true,
-                    //     questionnaire: getQuestionnaireFromBubndle(questionnaireForPreview, lang),
-                    //     questionnaireResponse,
-                    //   })
-                    // );
                   }}
                   // eslint-disable-next-line no-console
                   onSubmit={handleSubmit}
@@ -203,7 +213,14 @@ const FormFillerPreview = (props: Props): JSX.Element => {
             ) : (
               <div>
                 <pre>{JSON.stringify(questionnaireResponse, null, 2)}</pre>
-                <button onClick={(): void => setShowResponse(false)}>{'Tilbake til skjemautfyller'}</button>
+                <Button
+                  onClick={(): void => {
+                    setShowResponse(false);
+                    setQr();
+                  }}
+                >
+                  {'Tilbake til skjemautfyller'}
+                </Button>
               </div>
             )}
           </div>

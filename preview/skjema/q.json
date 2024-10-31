@@ -1,30 +1,93 @@
 {
   "resourceType": "Questionnaire",
-  "language": "nb-NO",
-  "id": "68",
-  "name": "NHN_Testskjema_Dato",
-  "title": "Testskjema dato",
-  "version": "1.0",
-  "status": "draft",
-  "publisher": "NHN",
+  "id": "2",
   "meta": {
     "profile": ["http://ehelse.no/fhir/StructureDefinition/sdf-Questionnaire"],
-    "tag": [{ "system": "urn:ietf:bcp:47", "code": "nb-NO", "display": "Norsk bokmål" }],
-    "security": [{ "code": "3", "display": "Helsehjelp (Full)", "system": "urn:oid:2.16.578.1.12.4.1.1.7618" }]
+    "tag": [{ "system": "urn:ietf:bcp:47", "code": "nb-NO", "display": "Norsk bokmål" }]
   },
-  "useContext": [
+  "language": "nb-NO",
+  "contained": [
     {
-      "code": { "system": "http://hl7.org/fhir/ValueSet/usage-context-type", "code": "focus", "display": "Clinical Focus" },
-      "valueCodeableConcept": {
-        "coding": [{ "system": "urn:oid:2.16.578.1.12.4.1.1.8655", "code": "S", "display": "Helsehjelp knyttet til somatisk sykdom" }]
+      "resourceType": "ValueSet",
+      "id": "1101",
+      "version": "1.0",
+      "name": "urn:oid:1101",
+      "title": "Ja / Nei",
+      "status": "draft",
+      "publisher": "Direktoratet for e-helse",
+      "compose": {
+        "include": [
+          {
+            "system": "urn:oid:2.16.578.1.12.4.1.1101",
+            "concept": [
+              { "code": "1", "display": "Ja" },
+              { "code": "2", "display": "Nei" }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "resourceType": "ValueSet",
+      "id": "1102",
+      "version": "1.0",
+      "name": "urn:oid:1102",
+      "title": "ja, nei, vet ikke",
+      "status": "draft",
+      "publisher": "Direktoratet for e-helse",
+      "compose": {
+        "include": [
+          {
+            "system": "urn:oid:2.16.578.1.12.4.1.1102",
+            "concept": [
+              { "code": "1", "display": "Ja" },
+              { "code": "2", "display": "Nei" },
+              { "code": "3", "display": "Vet ikke" }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "resourceType": "ValueSet",
+      "id": "TEST01",
+      "version": "1.0",
+      "name": "TEST-01",
+      "title": "Admininstrasjonssted for vaksiner",
+      "status": "draft",
+      "publisher": "Direktoratet for e-helse",
+      "compose": {
+        "include": [
+          {
+            "system": "http://ehelse.no/TEST01",
+            "concept": [
+              { "code": "1", "display": "Valg 1" },
+              { "code": "2", "display": "Valg 2" },
+              { "code": "3", "display": "Valg 3" },
+              { "code": "4", "display": "Valg 4" },
+              { "code": "5", "display": "Valg 5" },
+              { "code": "6", "display": "Valg 6" },
+              { "code": "7", "display": "Valg 7" },
+              { "code": "8", "display": "Valg 8" }
+            ]
+          }
+        ]
       }
     }
   ],
-  "subjectType": ["Person"],
   "extension": [
+    { "url": "http://ehelse.no/fhir/StructureDefinition/sdf-endpoint", "valueReference": { "reference": "Endpoint/1000" } },
+    {
+      "url": "http://ehelse.no/fhir/StructureDefinition/sdf-authenticationrequirement",
+      "valueCoding": { "system": "http://ehelse.no/fhir/ValueSet/AuthenticationRequirement", "code": "3" }
+    },
     {
       "url": "http://ehelse.no/fhir/StructureDefinition/sdf-accessibilitytoresponse",
       "valueCoding": { "system": "http://ehelse.no/fhir/ValueSet/AccessibilityToResponse", "code": "1" }
+    },
+    {
+      "url": "http://ehelse.no/fhir/StructureDefinition/sdf-canbeperformedby",
+      "valueCoding": { "system": "http://ehelse.no/fhir/ValueSet/CanBePerformedBy", "code": "1" }
     },
     {
       "url": "http://ehelse.no/fhir/StructureDefinition/sdf-discretion",
@@ -37,2041 +100,2438 @@
       "valueCoding": { "system": "http://helsenorge.no/fhir/ValueSet/presentationbuttons", "code": "sticky" }
     },
     {
-      "url": "http://ehelse.no/fhir/StructureDefinition/sdf-authenticationrequirement",
-      "valueCoding": { "system": "http://ehelse.no/fhir/ValueSet/AuthenticationRequirement", "code": "3" }
+      "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-questionnaire-navgiator-state",
+      "valueCodeableConcept": {
+        "coding": [{ "system": "http://helsenorge.no/fhir/CodeSystem/sdf-questionnaire-navigator-state", "code": "navigator" }]
+      }
     }
   ],
-  "copyright": "Er utviklet av NHN",
-  "date": "2020-10-23",
+  "version": "0.2",
+  "name": "Ehelse_AlleKonstruksjoner",
+  "title": "Eksempelskjema helsenorge.no",
+  "status": "draft",
+  "subjectType": ["Person"],
+  "date": "2019-09-18",
+  "publisher": "Direktoratet for e-helse",
+  "contact": [{ "name": "http://www.e-helse.no" }],
+  "description": "Skjema som viser alle muligheter",
+  "useContext": [
+    {
+      "code": { "system": "http://hl7.org/fhir/ValueSet/usage-context-type", "code": "focus", "display": "Clinical Focus" },
+      "valueCodeableConcept": {
+        "coding": [{ "system": "urn:oid:2.16.578.1.12.4.1.1.8655", "code": "A", "display": "Andre  helsehjelpsområder" }]
+      }
+    }
+  ],
+  "purpose": "Test",
+  "copyright": "Er utviklet av Direktoratet for e-helse til fri benyttelse",
+  "approvalDate": "2018-02-02",
+  "lastReviewDate": "2018-02-02",
   "item": [
     {
-      "linkId": "1",
-      "text": "Nye tester laget mars 2024",
-      "type": "group",
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": {
+            "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "highlight" }]
+          }
+        },
+        { "url": "http://hl7.org/fhir/StructureDefinition/regex", "valueString": "^[\\x00-\\x7F\\xA0-\\xFF]+$" }
+      ],
+      "linkId": "highlight",
+      "text": "Denne teksten kommer i en lilla highlight boks. Det er ItemControl = Hightlight som styrer om teksten skal vises i en lilla boks. \r\nHer kan også markdown benyttes som f.eks. **bold**.",
+      "_text": {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+            "valueMarkdown": "Denne teksten kommer i en lilla highlight boks. Det er \"ItemControl\" = \"Hightlight\" som styrer om teksten skal vises i en lilla boks. \r\nHer kan også markdown benyttes som f.eks. **bold**."
+          }
+        ]
+      },
+      "type": "text",
+      "required": false,
       "repeats": false,
+      "readOnly": false
+    },
+    {
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": { "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "sidebar" }] }
+        },
+        { "url": "http://hl7.org/fhir/StructureDefinition/regex", "valueString": "^[\\x00-\\x7F\\xA0-\\xFF]+$" }
+      ],
+      "linkId": "sot-2",
+      "code": [{ "system": "http://ehelse.no/fhir/ValueSet/SOTHeaders", "code": "SOT-2", "display": "Veiledning og ansvarlig" }],
+      "text": "Veiledning og ansvar (se markdown-feltet for teksten)",
+      "_text": {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+            "valueMarkdown": "\"ItemControl\" = \"Sidebar\" og \"Code\" som inneholder valueCoding til SOTHeaders og code satt til SOT-2, vil legge til en tekst over standardtekst for \"Veiledning og ansvar\" i prosesshjelpen. \r\n\r\nHer kan du for eksempel legge inn teksten: Du vil ikke få svar på dette skjemaet."
+          }
+        ]
+      },
+      "type": "text",
+      "required": false,
+      "repeats": false,
+      "readOnly": false
+    },
+    {
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": { "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "sidebar" }] }
+        },
+        { "url": "http://hl7.org/fhir/StructureDefinition/regex", "valueString": "^(?:[æøåÆØÅa-zA-Z0-9,.!?@()+\\-\\/*]|[ \\r\\n\\t])*$" }
+      ],
+      "linkId": "sot-3",
+      "code": [{ "system": "http://ehelse.no/fhir/ValueSet/SOTHeaders", "code": "SOT-3", "display": "Behandling hos mottaker" }],
+      "text": "Behandling hos mottaker (se markdown-feltet for teksten)",
+      "_text": {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+            "valueMarkdown": "\"ItemControl\" = \"Sidebar\" og \"Code\" som inneholder valueCoding til SOTHeaders og code satt til SOT-3, vil legge til en tekst over standardtekst for \"Behandling hos mottar\" i prosesshjelpen. \r\n\r\nHer kan du for eksempel legge inn teksten: Du vil ikke få svar på dette skjemaet."
+          }
+        ]
+      },
+      "type": "text",
+      "required": false,
+      "repeats": false,
+      "readOnly": false,
       "item": [
         {
-          "linkId": "ecc38742-5123-4d24-851a-47deec752d0e",
-          "type": "group",
-          "text": "Date",
-          "required": false,
-          "item": [
-            { "linkId": "e99a4e3c-cb6c-4cdb-88e7-442288ca8d7f", "type": "date", "text": "Uten noen ting", "required": false },
+          "extension": [
             {
-              "linkId": "ede77071-6ce8-49e2-d480-b32fc00447fb",
-              "type": "date",
-              "text": "Kopi fra: Uten noen ting",
-              "required": false,
-              "extension": [
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                  "valueCodeableConcept": {
-                    "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
-                  }
-                },
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
-                  "valueString": "QuestionnaireResponse.descendants().where(linkId='e99a4e3c-cb6c-4cdb-88e7-442288ca8d7f').answer.value"
-                }
-              ],
-              "readOnly": true,
-              "enableWhen": [{ "answerBoolean": true, "question": "e99a4e3c-cb6c-4cdb-88e7-442288ca8d7f", "operator": "exists" }]
+              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+              "valueString": "iif(%representative.relationship.coding.where(system = 'http://hl7.org/fhir/v3/RoleCode' and (code = 'PRN' or code = 'GRANTEE')).count() > 0, true, false)"
             },
-            { "linkId": "7796a067-d32f-4718-85e6-0a90d48da6fc", "type": "date", "text": "Uten noen ting obligatorisk", "required": true },
-            {
-              "linkId": "cd96a559-3e6a-4168-854b-96508f76724f",
-              "type": "date",
-              "text": "Uten noen ting instruks",
-              "extension": [{ "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sublabel", "valueMarkdown": "Instruks" }]
-            },
-            {
-              "linkId": "7be63482-b7ca-45c5-9e29-6ce05a1cb941",
-              "type": "date",
-              "text": "Uten noen ting Hjelp",
-              "item": [
-                {
-                  "linkId": "2e33d30c-f917-4473-a6cf-ab65225311a7",
-                  "type": "text",
-                  "required": false,
-                  "repeats": false,
-                  "readOnly": true,
-                  "maxLength": 250,
-                  "_text": {
-                    "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown", "valueMarkdown": "Hjelp!" }]
-                  },
-                  "extension": [
-                    {
-                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                      "valueCodeableConcept": {
-                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "help" }]
-                      }
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "extension": [
-                {
-                  "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
-                  "valueString": "Velg dato, eller skriv dato på denne måten: dd.mm.åååå."
-                }
-              ],
-              "linkId": "8b2ea36b-d81e-44e4-82c7-445167b46fa9",
-              "text": "Preutfylt - vises ikke i skjemabygger !! Er kodet inn",
-              "type": "date",
-              "repeats": false,
-              "readOnly": false,
-              "initial": [{ "valueDate": "2020-10-23" }]
-            },
-            {
-              "extension": [
-                {
-                  "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
-                  "valueString": "Velg dato, eller skriv dato på denne måten: dd.mm.åååå."
-                }
-              ],
-              "linkId": "d1079060-8bb8-4b87-8088-35fc8162e852",
-              "text": "Preutfylt - read only - vises ikke i skjemabygger !! Er kodet inn",
-              "type": "date",
-              "repeats": false,
-              "readOnly": true,
-              "initial": [{ "valueDate": "2020-10-23" }]
-            },
-            {
-              "linkId": "917ad3b4-f0cf-44ac-ce56-aa31f46d0f96",
-              "type": "date",
-              "text": "Beriket med fødseladato",
-              "required": false,
-              "extension": [{ "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath", "valueString": "Patient.birthDate" }],
-              "readOnly": true
-            },
-            {
-              "linkId": "a540960c-32df-4c0a-b75d-e83f897c576f",
-              "type": "date",
-              "text": "Beriket med dagens dato",
-              "required": false,
-              "extension": [{ "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath", "valueString": "today()" }],
-              "readOnly": true
-            },
-            {
-              "linkId": "348959d1-5078-4b7f-91e2-5cfac8e528dc",
-              "type": "date",
-              "text": "Min date er fast dato Med valideringstekst",
-              "required": false,
-              "extension": [
-                { "url": "http://hl7.org/fhir/StructureDefinition/minValue", "valueDate": "2024-03-20" },
-                { "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "valideringstekst" }
-              ]
-            },
-            {
-              "linkId": "aae0f4c4-0036-4e15-85fa-15705f439215",
-              "type": "date",
-              "text": "Min date er dagens dato",
-              "required": false,
-              "extension": [{ "url": "http://ehelse.no/fhir/StructureDefinition/sdf-minvalue", "valueString": "today()" }]
-            },
-            {
-              "linkId": "2d4a9814-8f9c-49e9-8de9-589ec123f54b",
-              "type": "date",
-              "text": "Min date er dagens dato + 1 dag",
-              "required": false,
-              "extension": [{ "url": "http://ehelse.no/fhir/StructureDefinition/sdf-minvalue", "valueString": "today() + 1 days" }]
-            },
-            {
-              "linkId": "ec913ca3-7b97-4c77-98c4-a41544cc5acc",
-              "type": "date",
-              "text": "Min date er dagens dato + 1 uke",
-              "required": false,
-              "extension": [{ "url": "http://ehelse.no/fhir/StructureDefinition/sdf-minvalue", "valueString": "today() + 1 weeks" }]
-            },
-            {
-              "linkId": "17302bcb-a10c-4761-8b4d-9262174f9371",
-              "type": "date",
-              "text": "Min date er dagens dato + 1 måned",
-              "required": false,
-              "extension": [{ "url": "http://ehelse.no/fhir/StructureDefinition/sdf-minvalue", "valueString": "today() + 1 months" }]
-            },
-            {
-              "linkId": "e50f0c8a-50d8-435c-b675-00390c662889",
-              "type": "date",
-              "text": "Min date er dagens dato + 1 år",
-              "required": false,
-              "extension": [{ "url": "http://ehelse.no/fhir/StructureDefinition/sdf-minvalue", "valueString": "today() + 1 years" }]
-            },
-            {
-              "linkId": "bf53cb50-bf60-48cc-eeaa-574a68a73062",
-              "type": "date",
-              "text": "Max date er fast dato med valideringstekst",
-              "required": false,
-              "extension": [
-                { "url": "http://hl7.org/fhir/StructureDefinition/maxValue", "valueDate": "2024-03-20" },
-                { "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "Valideringstekst" }
-              ]
-            },
-            {
-              "linkId": "f5f62ede-5b4b-49eb-899c-9481a2c5b133",
-              "type": "date",
-              "text": "Max date er dagens dato",
-              "required": false,
-              "extension": [
-                { "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "Valideringstekst" },
-                { "url": "http://ehelse.no/fhir/StructureDefinition/sdf-maxvalue", "valueString": "today()" }
-              ]
-            },
-            {
-              "linkId": "f5e60b6c-13c5-484c-9317-7aba250b816c",
-              "type": "date",
-              "text": "Max date er dagens dato + 1 dag",
-              "required": false,
-              "extension": [
-                { "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "Valideringstekst" },
-                { "url": "http://ehelse.no/fhir/StructureDefinition/sdf-maxvalue", "valueString": "today() + 1 days" }
-              ]
-            },
-            {
-              "linkId": "6ab5ea15-9851-43b2-e842-600950a9b223",
-              "type": "date",
-              "text": "Max date er dagens dato + 1 uke",
-              "required": false,
-              "extension": [
-                { "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "Valideringstekst" },
-                { "url": "http://ehelse.no/fhir/StructureDefinition/sdf-maxvalue", "valueString": "today() + 1 weeks" }
-              ]
-            },
-            {
-              "linkId": "cfad5918-8648-496e-87b4-ec34e0f9ca9f",
-              "type": "date",
-              "text": "Max date er dagens dato + 1 år",
-              "required": false,
-              "extension": [
-                { "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "Valideringstekst" },
-                { "url": "http://ehelse.no/fhir/StructureDefinition/sdf-maxvalue", "valueString": "today() + 1 years" }
-              ]
-            },
-            {
-              "linkId": "03e51e67-d592-48de-c8fa-1d82edb8f18c",
-              "type": "date",
-              "text": "Mindate er dagens dato - Max date er dagens dato + 1 år",
-              "required": false,
-              "extension": [
-                { "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "Valideringstekst" },
-                { "url": "http://ehelse.no/fhir/StructureDefinition/sdf-maxvalue", "valueString": "today() + 1 years" },
-                { "url": "http://ehelse.no/fhir/StructureDefinition/sdf-minvalue", "valueString": "today()" }
-              ]
-            },
-            {
-              "linkId": "2a688664-ccd5-409e-fe0e-85b5cf6210f1",
-              "type": "date",
-              "text": "Min date er dagens dato - 1 dag",
-              "extension": [{ "url": "http://ehelse.no/fhir/StructureDefinition/sdf-minvalue", "valueString": "today() - 1 days" }],
-              "required": false
-            },
-            {
-              "linkId": "24f71657-1274-45eb-b0de-9a081b09bb9f",
-              "type": "date",
-              "text": "Min date er dagens dato - 1 uke",
-              "extension": [{ "url": "http://ehelse.no/fhir/StructureDefinition/sdf-minvalue", "valueString": "today() - 1 weeks" }],
-              "required": false
-            },
-            {
-              "linkId": "5304e976-953b-4ba7-ef61-63b804cdd2c3",
-              "type": "date",
-              "text": "Min date er dagens dato - 1 måned",
-              "extension": [{ "url": "http://ehelse.no/fhir/StructureDefinition/sdf-minvalue", "valueString": "today() - 1 months" }],
-              "required": false
-            },
-            {
-              "linkId": "5c51fd42-b5df-4a37-a34a-c5217159c610",
-              "type": "date",
-              "text": "Min date er dagens dato - 1 år",
-              "extension": [{ "url": "http://ehelse.no/fhir/StructureDefinition/sdf-minvalue", "valueString": "today() - 1 years" }],
-              "required": false
-            },
-            {
-              "linkId": "a4ff9548-b852-46e6-b9bd-08208cf48884",
-              "type": "date",
-              "text": "Max date er dagens dato - 1 dag",
-              "required": false,
-              "extension": [{ "url": "http://ehelse.no/fhir/StructureDefinition/sdf-maxvalue", "valueString": "today() - 1 days" }]
-            },
-            {
-              "linkId": "f73a58b0-ed71-454c-876f-d88663dfd48b",
-              "type": "date",
-              "text": "Max date er dagens dato - 1 uke",
-              "required": false,
-              "extension": [{ "url": "http://ehelse.no/fhir/StructureDefinition/sdf-maxvalue", "valueString": "today() - 1 weeks" }]
-            },
-            {
-              "linkId": "1e4beb34-ca98-4709-85d7-4c68c79c3309",
-              "type": "date",
-              "text": "Max date er dagens dato - 1 måned",
-              "required": false,
-              "extension": [{ "url": "http://ehelse.no/fhir/StructureDefinition/sdf-maxvalue", "valueString": "today() - 1 months" }]
-            },
-            {
-              "linkId": "439ffd07-0e67-44c6-8148-0f88c42e885e",
-              "type": "date",
-              "text": "Max date er dagens dato - 1 år",
-              "required": false,
-              "extension": [{ "url": "http://ehelse.no/fhir/StructureDefinition/sdf-maxvalue", "valueString": "today() - 1 years" }]
-            },
-            {
-              "linkId": "dc477c88-5edf-45b4-875c-ba270474e7ed",
-              "type": "date",
-              "text": "Min date er dagens dato - 1 dag,  Max date er dagens dato + 1 år",
-              "required": false,
-              "extension": [
-                { "url": "http://ehelse.no/fhir/StructureDefinition/sdf-minvalue", "valueString": "today() - 1 days" },
-                { "url": "http://ehelse.no/fhir/StructureDefinition/sdf-maxvalue", "valueString": "today() + 1 years" }
-              ]
-            }
-          ]
-        },
-        {
-          "linkId": "728795af-b9bc-4969-860d-a9c36789080b",
-          "type": "group",
-          "text": "Datetime",
-          "required": false,
-          "item": [
-            { "linkId": "ba526491-f6cf-42e6-8b14-8c021692ee60", "type": "dateTime", "text": "Uten noen ting", "required": false },
-            {
-              "linkId": "7c8b580f-1e70-40ff-8e77-4fdaf3e27fa4",
-              "type": "dateTime",
-              "text": "Kopi fra: Uten noen ting",
-              "required": false,
-              "extension": [
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                  "valueCodeableConcept": {
-                    "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
-                  }
-                },
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
-                  "valueString": "QuestionnaireResponse.descendants().where(linkId='ba526491-f6cf-42e6-8b14-8c021692ee60').answer.value"
-                }
-              ],
-              "readOnly": true,
-              "enableWhen": [{ "answerBoolean": true, "question": "ba526491-f6cf-42e6-8b14-8c021692ee60", "operator": "exists" }]
-            },
-            {
-              "linkId": "5d1aa625-d7d4-4c0a-d939-497840becbc2",
-              "type": "dateTime",
-              "text": "Uten noen ting obligatorisk",
-              "required": true
-            },
-            {
-              "linkId": "fe5ea56a-012b-45f7-84a7-5d2b3d6db46c",
-              "type": "dateTime",
-              "text": "Uten noen ting instruks",
-              "extension": [{ "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sublabel", "valueMarkdown": "Instruks" }]
-            },
-            {
-              "linkId": "e8314bca-e959-4fed-80a7-6410f929a94c",
-              "type": "dateTime",
-              "text": "Uten noen ting Hjelp",
-              "item": [
-                {
-                  "linkId": "7e86a500-68f7-4e13-8f7d-a135dcd9a4fb",
-                  "type": "text",
-                  "required": false,
-                  "repeats": false,
-                  "readOnly": true,
-                  "maxLength": 250,
-                  "_text": {
-                    "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown", "valueMarkdown": "Hjelp!" }]
-                  },
-                  "extension": [
-                    {
-                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                      "valueCodeableConcept": {
-                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "help" }]
-                      }
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "extension": [
-                {
-                  "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
-                  "valueString": "Velg dato, eller skriv dato på denne måten: dd.mm.åååå."
-                }
-              ],
-              "linkId": "dd5c233f-ecd7-4665-8ff2-92bb3eb7d696",
-              "text": "Preutfylt - vises ikke i skjemabygger !! Er kodet inn",
-              "type": "dateTime",
-              "repeats": false,
-              "readOnly": false,
-              "initial": [{ "valueDate": "2020-10-23" }]
-            },
-            {
-              "extension": [
-                {
-                  "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
-                  "valueString": "Velg dato, eller skriv dato på denne måten: dd.mm.åååå."
-                }
-              ],
-              "linkId": "91aca787-3047-4e10-8dad-748607f06200",
-              "text": "Preutfylt - read only - vises ikke i skjemabygger !! Er kodet inn",
-              "type": "dateTime",
-              "repeats": false,
-              "readOnly": true,
-              "initial": [{ "valueDate": "2020-10-23" }]
-            },
-            {
-              "linkId": "ad3705e6-47e4-4e53-87e9-4aa95b8f1616",
-              "type": "dateTime",
-              "text": "Beriket med fødseladato N/A",
-              "required": false,
-              "extension": [{ "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath", "valueString": "Patient.birthDate" }],
-              "readOnly": true
-            },
-            {
-              "linkId": "27430078-4043-4e0a-f7e3-ca60be77fc7b",
-              "type": "date",
-              "text": "Beriket med dagens dato og klokkeslett",
-              "required": false,
-              "extension": [{ "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath", "valueString": "now()" }],
-              "readOnly": true
-            },
-            {
-              "linkId": "89630880-8888-4e89-9733-4c6e509fc298",
-              "type": "dateTime",
-              "text": "Min date er fast dato Med valideringstekst",
-              "required": false,
-              "extension": [
-                { "url": "http://hl7.org/fhir/StructureDefinition/minValue", "valueDate": "2024-03-20" },
-                { "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "valideringstekst" }
-              ]
-            },
-            {
-              "linkId": "9267e1e1-a09e-4d59-9cd0-04264bf13ec4",
-              "type": "dateTime",
-              "text": "Min date er dagens dato",
-              "required": false,
-              "extension": [{ "url": "http://ehelse.no/fhir/StructureDefinition/sdf-minvalue", "valueString": "today()" }]
-            },
-            {
-              "linkId": "c124b69e-5f9d-4df7-869e-9409aa3ecd40",
-              "type": "dateTime",
-              "text": "Min date er dagens dato + 1 dag",
-              "required": false,
-              "extension": [{ "url": "http://ehelse.no/fhir/StructureDefinition/sdf-minvalue", "valueString": "today() + 1 days" }]
-            },
-            {
-              "linkId": "340af33f-5364-46f0-c5c0-b2e158e8d037",
-              "type": "dateTime",
-              "text": "Min date er dagens dato + 1 uke",
-              "required": false,
-              "extension": [{ "url": "http://ehelse.no/fhir/StructureDefinition/sdf-minvalue", "valueString": "today() + 1 weeks" }]
-            },
-            {
-              "linkId": "5cbb08e4-1d19-48cd-82fa-541a153120de",
-              "type": "dateTime",
-              "text": "Min date er dagens dato + 1 måned",
-              "required": false,
-              "extension": [{ "url": "http://ehelse.no/fhir/StructureDefinition/sdf-minvalue", "valueString": "today() + 1 months" }]
-            },
-            {
-              "linkId": "03052134-356c-4a2d-8161-6eaea1a30806",
-              "type": "dateTime",
-              "text": "Min date er dagens dato + 1 år",
-              "required": false,
-              "extension": [{ "url": "http://ehelse.no/fhir/StructureDefinition/sdf-minvalue", "valueString": "today() + 1 years" }]
-            },
-            {
-              "linkId": "5cf8355d-799c-4eda-f340-d4e956e92ff9",
-              "type": "dateTime",
-              "text": "Max date er fast dato med valideringstekst",
-              "required": false,
-              "extension": [
-                { "url": "http://hl7.org/fhir/StructureDefinition/maxValue", "valueDate": "2024-03-20" },
-                { "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "Valideringstekst" }
-              ]
-            },
-            {
-              "linkId": "f3b7cfbe-a9a0-404f-80e0-5707fe159ade",
-              "type": "dateTime",
-              "text": "Max date er dagens dato",
-              "required": false,
-              "extension": [
-                { "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "Valideringstekst" },
-                { "url": "http://ehelse.no/fhir/StructureDefinition/sdf-maxvalue", "valueString": "today()" }
-              ]
-            },
-            {
-              "linkId": "0655394f-6d20-4193-c1f9-23e2ffa68f59",
-              "type": "dateTime",
-              "text": "Max date er dagens dato + 1 dag",
-              "required": false,
-              "extension": [
-                { "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "Valideringstekst" },
-                { "url": "http://ehelse.no/fhir/StructureDefinition/sdf-maxvalue", "valueString": "today() + 1 days" }
-              ]
-            },
-            {
-              "linkId": "789fb4ef-19bf-4443-8231-7237ceef25eb",
-              "type": "dateTime",
-              "text": "Max date er dagens dato + 1 uke",
-              "required": false,
-              "extension": [
-                { "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "Valideringstekst" },
-                { "url": "http://ehelse.no/fhir/StructureDefinition/sdf-maxvalue", "valueString": "today() + 1 weeks" }
-              ]
-            },
-            {
-              "linkId": "b33f8fcb-983a-4348-ec05-f13dde894a65",
-              "type": "dateTime",
-              "text": "Max date er dagens dato + 1 år",
-              "required": false,
-              "extension": [
-                { "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "Valideringstekst" },
-                { "url": "http://ehelse.no/fhir/StructureDefinition/sdf-maxvalue", "valueString": "today() + 1 years" }
-              ]
-            },
-            {
-              "linkId": "a6fd8317-8f88-413d-82f0-d6d70be4904e",
-              "type": "dateTime",
-              "text": "Mindate er dagens dato - Max date er dagens dato + 1 år",
-              "required": false,
-              "extension": [
-                { "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "Valideringstekst" },
-                { "url": "http://ehelse.no/fhir/StructureDefinition/sdf-maxvalue", "valueString": "today() + 1 years" },
-                { "url": "http://ehelse.no/fhir/StructureDefinition/sdf-minvalue", "valueString": "today()" }
-              ]
-            },
-            {
-              "linkId": "b69b98e3-c292-486a-9aa7-87770930378b",
-              "type": "dateTime",
-              "text": "Min date er dagens dato - 1 dag",
-              "extension": [{ "url": "http://ehelse.no/fhir/StructureDefinition/sdf-minvalue", "valueString": "today() - 1 days" }],
-              "required": false
-            },
-            {
-              "linkId": "7733f724-8a37-4ea7-d9d4-0ac6c74525d9",
-              "type": "dateTime",
-              "text": "Min date er dagens dato - 1 uke",
-              "extension": [{ "url": "http://ehelse.no/fhir/StructureDefinition/sdf-minvalue", "valueString": "today() - 1 weeks" }],
-              "required": false
-            },
-            {
-              "linkId": "7cf364ad-478a-434e-c035-301d38b324db",
-              "type": "dateTime",
-              "text": "Min date er dagens dato - 1 måned",
-              "extension": [{ "url": "http://ehelse.no/fhir/StructureDefinition/sdf-minvalue", "valueString": "today() - 1 months" }],
-              "required": false
-            },
-            {
-              "linkId": "f45a58b0-a9a6-49b3-8aad-d9e7b4ac9cfc",
-              "type": "dateTime",
-              "text": "Min date er dagens dato - 1 år",
-              "extension": [{ "url": "http://ehelse.no/fhir/StructureDefinition/sdf-minvalue", "valueString": "today() - 1 years" }],
-              "required": false
-            },
-            {
-              "linkId": "2e06799f-7933-4be6-f5d1-8125339aee95",
-              "type": "dateTime",
-              "text": "Max date er dagens dato - 1 dag",
-              "required": false,
-              "extension": [{ "url": "http://ehelse.no/fhir/StructureDefinition/sdf-maxvalue", "valueString": "today() - 1 days" }]
-            },
-            {
-              "linkId": "bf8d16e8-256b-499c-8e30-fa26f9df755c",
-              "type": "dateTime",
-              "text": "Max date er dagens dato - 1 uke",
-              "required": false,
-              "extension": [{ "url": "http://ehelse.no/fhir/StructureDefinition/sdf-maxvalue", "valueString": "today() - 1 weeks" }]
-            },
-            {
-              "linkId": "390297ba-6b54-4f7b-83ed-89597e3a047c",
-              "type": "dateTime",
-              "text": "Max date er dagens dato - 1 måned",
-              "required": false,
-              "extension": [{ "url": "http://ehelse.no/fhir/StructureDefinition/sdf-maxvalue", "valueString": "today() - 1 months" }]
-            },
-            {
-              "linkId": "cdfe77ac-61e0-4036-88a1-d25c8ee0aa71",
-              "type": "dateTime",
-              "text": "Max date er dagens dato - 1 år",
-              "required": false,
-              "extension": [{ "url": "http://ehelse.no/fhir/StructureDefinition/sdf-maxvalue", "valueString": "today() - 1 years" }]
-            },
-            {
-              "linkId": "88709b84-cbd4-4652-b3ab-7553ec7f4d0d",
-              "type": "dateTime",
-              "text": "Min date er dagens dato - 1 dag,  Max date er dagens dato + 1 år",
-              "required": false,
-              "extension": [
-                { "url": "http://ehelse.no/fhir/StructureDefinition/sdf-minvalue", "valueString": "today() - 1 days" },
-                { "url": "http://ehelse.no/fhir/StructureDefinition/sdf-maxvalue", "valueString": "today() + 1 years" }
-              ]
-            }
-          ]
-        },
-        {
-          "linkId": "3339eb8a-e8c2-43b9-8c4e-5855252cd84e",
-          "type": "group",
-          "text": "Måned",
-          "required": false,
-          "item": [
-            {
-              "linkId": "cda62038-d064-4cd4-8d0a-37475bdfaf62",
-              "type": "date",
-              "text": "Uten noen ting",
-              "required": false,
-              "extension": [
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                  "valueCodeableConcept": {
-                    "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "yearMonth" }]
-                  }
-                }
-              ]
-            },
-            {
-              "linkId": "5c44d9bd-5144-46f4-83ca-dd2c47ced452",
-              "type": "date",
-              "text": "Kopi fra: Uten noen ting",
-              "required": false,
-              "extension": [
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                  "valueCodeableConcept": {
-                    "coding": [
-                      { "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "yearMonth" },
-                      { "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }
-                    ]
-                  }
-                },
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
-                  "valueString": "QuestionnaireResponse.descendants().where(linkId='cda62038-d064-4cd4-8d0a-37475bdfaf62').answer.value"
-                }
-              ],
-              "readOnly": true,
-              "enableWhen": [{ "answerBoolean": true, "question": "cda62038-d064-4cd4-8d0a-37475bdfaf62", "operator": "exists" }]
-            },
-            {
-              "linkId": "f960e82b-8bd2-4e26-83a9-a3e48d74491c",
-              "type": "date",
-              "text": "Uten noen ting obligatorisk",
-              "required": true,
-              "extension": [
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                  "valueCodeableConcept": {
-                    "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "yearMonth" }]
-                  }
-                }
-              ]
-            },
-            {
-              "linkId": "f45eeaa5-1261-4ce5-81bd-f3c8704c530f",
-              "type": "date",
-              "text": "Uten noen ting instruks",
-              "extension": [
-                { "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sublabel", "valueMarkdown": "Instruks" },
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                  "valueCodeableConcept": {
-                    "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "yearMonth" }]
-                  }
-                }
-              ]
-            },
-            {
-              "linkId": "b1825f59-e1f5-40e5-9555-af994f5d97df",
-              "type": "date",
-              "text": "Uten noen ting Hjelp",
-              "extension": [
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                  "valueCodeableConcept": {
-                    "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "yearMonth" }]
-                  }
-                }
-              ],
-              "item": [
-                {
-                  "linkId": "541b750f-8e42-491b-82ee-bbff52e37f46",
-                  "type": "text",
-                  "required": false,
-                  "repeats": false,
-                  "readOnly": true,
-                  "maxLength": 250,
-                  "_text": {
-                    "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown", "valueMarkdown": "Hjelp!" }]
-                  },
-                  "extension": [
-                    {
-                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                      "valueCodeableConcept": {
-                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "help" }]
-                      }
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "extension": [
-                {
-                  "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
-                  "valueString": "Velg dato, eller skriv dato på denne måten: dd.mm.åååå."
-                },
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                  "valueCodeableConcept": {
-                    "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "yearMonth" }]
-                  }
-                }
-              ],
-              "linkId": "6be81659-7bbf-4b5f-8fa2-c5d50c044a48",
-              "text": "Preutfylt - vises ikke i skjemabygger !! Er kodet inn",
-              "type": "date",
-              "repeats": false,
-              "readOnly": false,
-              "initial": [{ "valueDate": "2020-10-23" }]
-            },
-            {
-              "extension": [
-                {
-                  "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
-                  "valueString": "Velg dato, eller skriv dato på denne måten: dd.mm.åååå."
-                },
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                  "valueCodeableConcept": {
-                    "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "yearMonth" }]
-                  }
-                }
-              ],
-              "linkId": "730350cd-dd83-4f8f-8523-00bc470be18e",
-              "text": "Preutfylt - read only - vises ikke i skjemabygger !! Er kodet inn",
-              "type": "date",
-              "repeats": false,
-              "readOnly": true,
-              "initial": [{ "valueDate": "2020-10-23" }]
-            },
-            {
-              "linkId": "d2ca472e-ede2-414e-e73d-3b1b0de7b2d4",
-              "type": "date",
-              "text": "Beriket med fødseladato N/A",
-              "required": false,
-              "extension": [
-                { "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath", "valueString": "Patient.birthDate" },
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                  "valueCodeableConcept": {
-                    "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "yearMonth" }]
-                  }
-                }
-              ],
-              "readOnly": true
-            },
-            {
-              "linkId": "308dfb43-202f-4f39-8704-f584e9678813",
-              "type": "date",
-              "text": "Beriket med dagens dato",
-              "required": false,
-              "extension": [
-                { "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath", "valueString": "now()" },
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                  "valueCodeableConcept": {
-                    "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "yearMonth" }]
-                  }
-                }
-              ],
-              "readOnly": true
-            },
-            {
-              "linkId": "ac5ea508-8fd6-434a-9572-f4b24e40ac75",
-              "type": "date",
-              "text": "Min date er fast dato Med valideringstekst",
-              "required": false,
-              "extension": [
-                { "url": "http://hl7.org/fhir/StructureDefinition/minValue", "valueDate": "2024-03-20" },
-                { "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "valideringstekst" },
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                  "valueCodeableConcept": {
-                    "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "yearMonth" }]
-                  }
-                }
-              ]
-            },
-            {
-              "linkId": "c0beae7c-1999-4f3e-f30c-eb9918448786",
-              "type": "date",
-              "text": "Min date er dagens dato",
-              "required": false,
-              "extension": [
-                { "url": "http://ehelse.no/fhir/StructureDefinition/sdf-minvalue", "valueString": "today()" },
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                  "valueCodeableConcept": {
-                    "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "yearMonth" }]
-                  }
-                }
-              ]
-            },
-            {
-              "linkId": "863c31a2-b3fb-4090-997b-384c1c1c18a8",
-              "type": "date",
-              "text": "Min date er dagens dato + 1 dag",
-              "required": false,
-              "extension": [
-                { "url": "http://ehelse.no/fhir/StructureDefinition/sdf-minvalue", "valueString": "today() + 1 days" },
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                  "valueCodeableConcept": {
-                    "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "yearMonth" }]
-                  }
-                }
-              ]
-            },
-            {
-              "linkId": "6968ea06-e107-4333-8962-ab91c7371487",
-              "type": "date",
-              "text": "Min date er dagens dato + 1 uke",
-              "required": false,
-              "extension": [
-                { "url": "http://ehelse.no/fhir/StructureDefinition/sdf-minvalue", "valueString": "today() + 1 weeks" },
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                  "valueCodeableConcept": {
-                    "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "yearMonth" }]
-                  }
-                }
-              ]
-            },
-            {
-              "linkId": "ba37bc84-a997-4e1f-88a2-bd23e333b858",
-              "type": "date",
-              "text": "Min date er dagens dato + 1 måned",
-              "required": false,
-              "extension": [
-                { "url": "http://ehelse.no/fhir/StructureDefinition/sdf-minvalue", "valueString": "today() + 1 months" },
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                  "valueCodeableConcept": {
-                    "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "yearMonth" }]
-                  }
-                }
-              ]
-            },
-            {
-              "linkId": "d91fdaaa-71fd-4e97-8341-a75cd00897e4",
-              "type": "date",
-              "text": "Min date er dagens dato + 1 år",
-              "required": false,
-              "extension": [
-                { "url": "http://ehelse.no/fhir/StructureDefinition/sdf-minvalue", "valueString": "today() + 1 years" },
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                  "valueCodeableConcept": {
-                    "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "yearMonth" }]
-                  }
-                }
-              ]
-            },
-            {
-              "linkId": "1fba82fb-94f4-47f0-898c-5f3b0b1c79fe",
-              "type": "date",
-              "text": "Max date er fast dato med valideringstekst",
-              "required": false,
-              "extension": [
-                { "url": "http://hl7.org/fhir/StructureDefinition/maxValue", "valueDate": "2024-03-20" },
-                { "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "Valideringstekst" },
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                  "valueCodeableConcept": {
-                    "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "yearMonth" }]
-                  }
-                }
-              ]
-            },
-            {
-              "linkId": "91427533-563a-4046-c6ce-a05d77ef1899",
-              "type": "date",
-              "text": "Max date er dagens dato",
-              "required": false,
-              "extension": [
-                { "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "Valideringstekst" },
-                { "url": "http://ehelse.no/fhir/StructureDefinition/sdf-maxvalue", "valueString": "today()" },
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                  "valueCodeableConcept": {
-                    "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "yearMonth" }]
-                  }
-                }
-              ]
-            },
-            {
-              "linkId": "27cc64fe-4688-40cd-d8ab-fe0eb300c99e",
-              "type": "date",
-              "text": "Max date er dagens dato + 1 dag",
-              "required": false,
-              "extension": [
-                { "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "Valideringstekst" },
-                { "url": "http://ehelse.no/fhir/StructureDefinition/sdf-maxvalue", "valueString": "today() + 1 days" },
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                  "valueCodeableConcept": {
-                    "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "yearMonth" }]
-                  }
-                }
-              ]
-            },
-            {
-              "linkId": "aa17e5a4-3427-435f-8bee-c02bdde6e745",
-              "type": "date",
-              "text": "Max date er dagens dato + 1 uke",
-              "required": false,
-              "extension": [
-                { "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "Valideringstekst" },
-                { "url": "http://ehelse.no/fhir/StructureDefinition/sdf-maxvalue", "valueString": "today() + 1 weeks" },
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                  "valueCodeableConcept": {
-                    "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "yearMonth" }]
-                  }
-                }
-              ]
-            },
-            {
-              "linkId": "2cccbf35-2142-4f70-84ee-1b75a3c59ffb",
-              "type": "date",
-              "text": "Max date er dagens dato + 1 år",
-              "required": false,
-              "extension": [
-                { "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "Valideringstekst" },
-                { "url": "http://ehelse.no/fhir/StructureDefinition/sdf-maxvalue", "valueString": "today() + 1 years" },
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                  "valueCodeableConcept": {
-                    "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "yearMonth" }]
-                  }
-                }
-              ]
-            },
-            {
-              "linkId": "942f734c-9ec8-470b-8c36-f5bf350371d8",
-              "type": "date",
-              "text": "Mindate er dagens dato - Max date er dagens dato + 1 år",
-              "required": false,
-              "extension": [
-                { "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "Valideringstekst" },
-                { "url": "http://ehelse.no/fhir/StructureDefinition/sdf-maxvalue", "valueString": "today() + 1 years" },
-                { "url": "http://ehelse.no/fhir/StructureDefinition/sdf-minvalue", "valueString": "today()" },
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                  "valueCodeableConcept": {
-                    "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "yearMonth" }]
-                  }
-                }
-              ]
-            },
-            {
-              "linkId": "fe58d54b-e0ce-4c3b-93bd-7a78c2cd668d",
-              "type": "date",
-              "text": "Min date er dagens dato - 1 dag",
-              "extension": [
-                { "url": "http://ehelse.no/fhir/StructureDefinition/sdf-minvalue", "valueString": "today() - 1 days" },
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                  "valueCodeableConcept": {
-                    "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "yearMonth" }]
-                  }
-                }
-              ],
-              "required": false
-            },
-            {
-              "linkId": "1b1e6299-4578-4c3c-9bec-9b6b005acb23",
-              "type": "date",
-              "text": "Min date er dagens dato - 1 uke",
-              "extension": [
-                { "url": "http://ehelse.no/fhir/StructureDefinition/sdf-minvalue", "valueString": "today() - 1 weeks" },
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                  "valueCodeableConcept": {
-                    "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "yearMonth" }]
-                  }
-                }
-              ],
-              "required": false
-            },
-            {
-              "linkId": "0c47d24b-c060-47b8-c0fc-dab6bfc391fe",
-              "type": "date",
-              "text": "Min date er dagens dato - 1 måned",
-              "extension": [
-                { "url": "http://ehelse.no/fhir/StructureDefinition/sdf-minvalue", "valueString": "today() - 1 months" },
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                  "valueCodeableConcept": {
-                    "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "yearMonth" }]
-                  }
-                }
-              ],
-              "required": false
-            },
-            {
-              "linkId": "979e97a4-131c-4b15-80ce-3709728cc689",
-              "type": "date",
-              "text": "Min date er dagens dato - 1 år",
-              "extension": [
-                { "url": "http://ehelse.no/fhir/StructureDefinition/sdf-minvalue", "valueString": "today() - 1 years" },
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                  "valueCodeableConcept": {
-                    "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "yearMonth" }]
-                  }
-                }
-              ],
-              "required": false
-            },
-            {
-              "linkId": "3c279c6e-efb6-4ae1-8d1d-48dad428abc3",
-              "type": "date",
-              "text": "Max date er dagens dato - 1 dag",
-              "required": false,
-              "extension": [
-                { "url": "http://ehelse.no/fhir/StructureDefinition/sdf-maxvalue", "valueString": "today() - 1 days" },
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                  "valueCodeableConcept": {
-                    "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "yearMonth" }]
-                  }
-                }
-              ]
-            },
-            {
-              "linkId": "a90a309d-afdf-42e1-a3b4-85abb32fc3d9",
-              "type": "date",
-              "text": "Max date er dagens dato - 1 uke",
-              "required": false,
-              "extension": [
-                { "url": "http://ehelse.no/fhir/StructureDefinition/sdf-maxvalue", "valueString": "today() - 1 weeks" },
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                  "valueCodeableConcept": {
-                    "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "yearMonth" }]
-                  }
-                }
-              ]
-            },
-            {
-              "linkId": "499cfd9e-4a63-4af1-8b1f-d4d29e4cfc93",
-              "type": "date",
-              "text": "Max date er dagens dato - 1 måned",
-              "required": false,
-              "extension": [
-                { "url": "http://ehelse.no/fhir/StructureDefinition/sdf-maxvalue", "valueString": "today() - 1 months" },
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                  "valueCodeableConcept": {
-                    "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "yearMonth" }]
-                  }
-                }
-              ]
-            },
-            {
-              "linkId": "47faf6f0-6032-40d6-b3af-119520320cb2",
-              "type": "date",
-              "text": "Max date er dagens dato - 1 år",
-              "required": false,
-              "extension": [
-                { "url": "http://ehelse.no/fhir/StructureDefinition/sdf-maxvalue", "valueString": "today() - 1 years" },
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                  "valueCodeableConcept": {
-                    "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "yearMonth" }]
-                  }
-                }
-              ]
-            },
-            {
-              "linkId": "6a17b6a2-fbe4-4a48-efa3-0213c26134fc",
-              "type": "date",
-              "text": "Min date er dagens dato - 1 dag,  Max date er dagens dato + 1 år",
-              "required": false,
-              "extension": [
-                { "url": "http://ehelse.no/fhir/StructureDefinition/sdf-minvalue", "valueString": "today() - 1 days" },
-                { "url": "http://ehelse.no/fhir/StructureDefinition/sdf-maxvalue", "valueString": "today() + 1 years" },
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                  "valueCodeableConcept": {
-                    "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "yearMonth" }]
-                  }
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "linkId": "a8442123-8605-4d60-829c-30a7eab5b156",
-          "type": "group",
-          "text": "År",
-          "required": false,
-          "item": [
-            {
-              "linkId": "232fbe1f-0217-485b-e7b6-282ab5683946",
-              "type": "date",
-              "text": "Uten noen ting",
-              "required": false,
-              "extension": [
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                  "valueCodeableConcept": {
-                    "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "year" }]
-                  }
-                }
-              ]
-            },
-            {
-              "linkId": "e0bd0c23-9df4-45ac-81b2-e49b132620eb",
-              "type": "date",
-              "text": "Kopi fra: Uten noen ting",
-              "required": false,
-              "extension": [
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                  "valueCodeableConcept": {
-                    "coding": [
-                      { "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "year" },
-                      { "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }
-                    ]
-                  }
-                },
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
-                  "valueString": "QuestionnaireResponse.descendants().where(linkId='232fbe1f-0217-485b-e7b6-282ab5683946').answer.value"
-                }
-              ],
-              "readOnly": true,
-              "enableWhen": [{ "answerBoolean": true, "question": "232fbe1f-0217-485b-e7b6-282ab5683946", "operator": "exists" }]
-            },
-            {
-              "linkId": "9866eec9-e6c2-487a-bcc4-0f6c470afeb0",
-              "type": "date",
-              "text": "Uten noen ting obligatorisk",
-              "required": true,
-              "extension": [
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                  "valueCodeableConcept": {
-                    "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "year" }]
-                  }
-                }
-              ]
-            },
-            {
-              "linkId": "2580a3fa-15a6-4d3a-8faa-fb41051cf8ae",
-              "type": "date",
-              "text": "Uten noen ting instruks",
-              "extension": [
-                { "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sublabel", "valueMarkdown": "Instruks" },
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                  "valueCodeableConcept": {
-                    "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "year" }]
-                  }
-                }
-              ]
-            },
-            {
-              "linkId": "ddb71e99-fee5-4aee-ec7a-9a17a62af2df",
-              "type": "date",
-              "text": "Uten noen ting Hjelp",
-              "extension": [
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                  "valueCodeableConcept": {
-                    "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "year" }]
-                  }
-                }
-              ],
-              "item": [
-                {
-                  "linkId": "fda03be6-c287-418e-c4b8-6cafd548ab85",
-                  "type": "text",
-                  "required": false,
-                  "repeats": false,
-                  "readOnly": true,
-                  "maxLength": 250,
-                  "_text": {
-                    "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown", "valueMarkdown": "Hjelp!" }]
-                  },
-                  "extension": [
-                    {
-                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                      "valueCodeableConcept": {
-                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "help" }]
-                      }
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "extension": [
-                {
-                  "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
-                  "valueString": "Velg dato, eller skriv dato på denne måten: dd.mm.åååå."
-                },
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                  "valueCodeableConcept": {
-                    "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "year" }]
-                  }
-                }
-              ],
-              "linkId": "7a542be9-a92f-4cbb-f6c1-8e0d54194cc5",
-              "text": "Preutfylt - vises ikke i skjemabygger !! Er kodet inn",
-              "type": "date",
-              "repeats": false,
-              "readOnly": false,
-              "initial": [{ "valueDate": "2020-10-23" }]
-            },
-            {
-              "extension": [
-                {
-                  "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
-                  "valueString": "Velg dato, eller skriv dato på denne måten: dd.mm.åååå."
-                },
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                  "valueCodeableConcept": {
-                    "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "year" }]
-                  }
-                }
-              ],
-              "linkId": "ecc28678-131c-40c8-ec1a-b1bf3781c088",
-              "text": "Preutfylt - read only - vises ikke i skjemabygger !! Er kodet inn",
-              "type": "date",
-              "repeats": false,
-              "readOnly": true,
-              "initial": [{ "valueDate": "2020-10-23" }]
-            },
-            {
-              "linkId": "89a6fff0-f22c-4ab8-8a71-7a9f9799884f",
-              "type": "date",
-              "text": "Beriket med fødseladato N/A",
-              "required": false,
-              "extension": [
-                { "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath", "valueString": "Patient.birthDate" },
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                  "valueCodeableConcept": {
-                    "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "year" }]
-                  }
-                }
-              ],
-              "readOnly": true
-            },
-            {
-              "linkId": "39e79959-ea49-4670-8b09-220a243194a7",
-              "type": "date",
-              "text": "Beriket med dagens dato?",
-              "required": false,
-              "extension": [
-                { "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath", "valueString": "now()" },
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                  "valueCodeableConcept": {
-                    "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "year" }]
-                  }
-                }
-              ],
-              "readOnly": true
-            },
-            {
-              "linkId": "f9804fa1-3cce-4fde-e8ca-8518a1cebab7",
-              "type": "date",
-              "text": "Min date er fast dato Med valideringstekst",
-              "required": false,
-              "extension": [
-                { "url": "http://hl7.org/fhir/StructureDefinition/minValue", "valueDate": "2024-03-20" },
-                { "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "valideringstekst" },
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                  "valueCodeableConcept": {
-                    "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "year" }]
-                  }
-                }
-              ]
-            },
-            {
-              "linkId": "5a42e9eb-bfba-481e-8061-be6b74a8fcab",
-              "type": "date",
-              "text": "Min date er dagens dato",
-              "required": false,
-              "extension": [
-                { "url": "http://ehelse.no/fhir/StructureDefinition/sdf-minvalue", "valueString": "today()" },
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                  "valueCodeableConcept": {
-                    "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "year" }]
-                  }
-                }
-              ]
-            },
-            {
-              "linkId": "a5b67b5e-3824-4907-8ed1-a29ee257cd02",
-              "type": "date",
-              "text": "Min date er dagens dato + 1 dag",
-              "required": false,
-              "extension": [
-                { "url": "http://ehelse.no/fhir/StructureDefinition/sdf-minvalue", "valueString": "today() + 1 days" },
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                  "valueCodeableConcept": {
-                    "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "year" }]
-                  }
-                }
-              ]
-            },
-            {
-              "linkId": "d6ceb2a3-2cb4-4f02-8959-bea7514c3f07",
-              "type": "date",
-              "text": "Min date er dagens dato + 1 uke",
-              "required": false,
-              "extension": [
-                { "url": "http://ehelse.no/fhir/StructureDefinition/sdf-minvalue", "valueString": "today() + 1 weeks" },
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                  "valueCodeableConcept": {
-                    "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "year" }]
-                  }
-                }
-              ]
-            },
-            {
-              "linkId": "5aa294b2-76ae-476e-f7da-f1dbab9f17c1",
-              "type": "date",
-              "text": "Min date er dagens dato + 1 måned",
-              "required": false,
-              "extension": [
-                { "url": "http://ehelse.no/fhir/StructureDefinition/sdf-minvalue", "valueString": "today() + 1 months" },
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                  "valueCodeableConcept": {
-                    "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "year" }]
-                  }
-                }
-              ]
-            },
-            {
-              "linkId": "a67e28e4-c6a1-410d-9d51-dda0e4f54efd",
-              "type": "date",
-              "text": "Min date er dagens dato + 1 år",
-              "required": false,
-              "extension": [
-                { "url": "http://ehelse.no/fhir/StructureDefinition/sdf-minvalue", "valueString": "today() + 1 years" },
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                  "valueCodeableConcept": {
-                    "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "year" }]
-                  }
-                }
-              ]
-            },
-            {
-              "linkId": "97170bee-fe40-43eb-8ba5-c292e4faa84a",
-              "type": "date",
-              "text": "Max date er fast dato med valideringstekst",
-              "required": false,
-              "extension": [
-                { "url": "http://hl7.org/fhir/StructureDefinition/maxValue", "valueDate": "2024-03-20" },
-                { "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "Valideringstekst" },
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                  "valueCodeableConcept": {
-                    "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "year" }]
-                  }
-                }
-              ]
-            },
-            {
-              "linkId": "5aaa1260-3a70-43e0-83d0-5c8674cb066f",
-              "type": "date",
-              "text": "Max date er dagens dato",
-              "required": false,
-              "extension": [
-                { "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "Valideringstekst" },
-                { "url": "http://ehelse.no/fhir/StructureDefinition/sdf-maxvalue", "valueString": "today()" },
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                  "valueCodeableConcept": {
-                    "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "year" }]
-                  }
-                }
-              ]
-            },
-            {
-              "linkId": "9909b5c9-9261-42b4-8926-451c48d506a0",
-              "type": "date",
-              "text": "Max date er dagens dato + 1 dag",
-              "required": false,
-              "extension": [
-                { "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "Valideringstekst" },
-                { "url": "http://ehelse.no/fhir/StructureDefinition/sdf-maxvalue", "valueString": "today() + 1 days" },
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                  "valueCodeableConcept": {
-                    "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "year" }]
-                  }
-                }
-              ]
-            },
-            {
-              "linkId": "8d9adab6-8195-41c6-87ec-094bc99c17ab",
-              "type": "date",
-              "text": "Max date er dagens dato + 1 uke",
-              "required": false,
-              "extension": [
-                { "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "Valideringstekst" },
-                { "url": "http://ehelse.no/fhir/StructureDefinition/sdf-maxvalue", "valueString": "today() + 1 weeks" },
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                  "valueCodeableConcept": {
-                    "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "year" }]
-                  }
-                }
-              ]
-            },
-            {
-              "linkId": "dc8891bc-10a0-4f60-ec42-2f591f5783b8",
-              "type": "date",
-              "text": "Max date er dagens dato + 1 år",
-              "required": false,
-              "extension": [
-                { "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "Valideringstekst" },
-                { "url": "http://ehelse.no/fhir/StructureDefinition/sdf-maxvalue", "valueString": "today() + 1 years" },
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                  "valueCodeableConcept": {
-                    "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "year" }]
-                  }
-                }
-              ]
-            },
-            {
-              "linkId": "d895447f-f50c-4111-8e3b-f118a9779e12",
-              "type": "date",
-              "text": "Mindate er dagens dato - Max date er dagens dato + 1 år",
-              "required": false,
-              "extension": [
-                { "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "Valideringstekst" },
-                { "url": "http://ehelse.no/fhir/StructureDefinition/sdf-maxvalue", "valueString": "today() + 1 years" },
-                { "url": "http://ehelse.no/fhir/StructureDefinition/sdf-minvalue", "valueString": "today()" },
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                  "valueCodeableConcept": {
-                    "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "year" }]
-                  }
-                }
-              ]
-            },
-            {
-              "linkId": "da63bab9-3a85-4149-8a65-7a3915799f39",
-              "type": "date",
-              "text": "Min date er dagens dato - 1 dag",
-              "extension": [
-                { "url": "http://ehelse.no/fhir/StructureDefinition/sdf-minvalue", "valueString": "today() - 1 days" },
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                  "valueCodeableConcept": {
-                    "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "year" }]
-                  }
-                }
-              ],
-              "required": false
-            },
-            {
-              "linkId": "269943a5-4d5d-4f13-f761-05a8efaa528d",
-              "type": "date",
-              "text": "Min date er dagens dato - 1 uke",
-              "extension": [
-                { "url": "http://ehelse.no/fhir/StructureDefinition/sdf-minvalue", "valueString": "today() - 1 weeks" },
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                  "valueCodeableConcept": {
-                    "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "year" }]
-                  }
-                }
-              ],
-              "required": false
-            },
-            {
-              "linkId": "12b4036b-96e4-448c-8029-14a40e6d7f3a",
-              "type": "date",
-              "text": "Min date er dagens dato - 1 måned",
-              "extension": [
-                { "url": "http://ehelse.no/fhir/StructureDefinition/sdf-minvalue", "valueString": "today() - 1 months" },
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                  "valueCodeableConcept": {
-                    "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "year" }]
-                  }
-                }
-              ],
-              "required": false
-            },
-            {
-              "linkId": "9f4f63df-6d95-46ee-8d1d-6b3cf354aa43",
-              "type": "date",
-              "text": "Min date er dagens dato - 1 år",
-              "extension": [
-                { "url": "http://ehelse.no/fhir/StructureDefinition/sdf-minvalue", "valueString": "today() - 1 years" },
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                  "valueCodeableConcept": {
-                    "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "year" }]
-                  }
-                }
-              ],
-              "required": false
-            },
-            {
-              "linkId": "57910118-9053-40dd-9425-8a6b6a4d65fa",
-              "type": "date",
-              "text": "Max date er dagens dato - 1 dag",
-              "required": false,
-              "extension": [
-                { "url": "http://ehelse.no/fhir/StructureDefinition/sdf-maxvalue", "valueString": "today() - 1 days" },
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                  "valueCodeableConcept": {
-                    "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "year" }]
-                  }
-                }
-              ]
-            },
-            {
-              "linkId": "6717723d-d864-4878-8aad-8ffe52b04320",
-              "type": "date",
-              "text": "Max date er dagens dato - 1 uke",
-              "required": false,
-              "extension": [
-                { "url": "http://ehelse.no/fhir/StructureDefinition/sdf-maxvalue", "valueString": "today() - 1 weeks" },
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                  "valueCodeableConcept": {
-                    "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "year" }]
-                  }
-                }
-              ]
-            },
-            {
-              "linkId": "bfee612e-adf6-4029-9c2b-976cc03ccac4",
-              "type": "date",
-              "text": "Max date er dagens dato - 1 måned",
-              "required": false,
-              "extension": [
-                { "url": "http://ehelse.no/fhir/StructureDefinition/sdf-maxvalue", "valueString": "today() - 1 months" },
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                  "valueCodeableConcept": {
-                    "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "year" }]
-                  }
-                }
-              ]
-            },
-            {
-              "linkId": "ba12ab85-95c7-49f8-84bc-3098c0d8a13d",
-              "type": "date",
-              "text": "Max date er dagens dato - 1 år",
-              "required": false,
-              "extension": [
-                { "url": "http://ehelse.no/fhir/StructureDefinition/sdf-maxvalue", "valueString": "today() - 1 years" },
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                  "valueCodeableConcept": {
-                    "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "year" }]
-                  }
-                }
-              ]
-            },
-            {
-              "linkId": "df865286-b6b8-49e7-807e-db40134138b9",
-              "type": "date",
-              "text": "Min date er dagens dato - 1 dag,  Max date er dagens dato + 1 år",
-              "required": false,
-              "extension": [
-                { "url": "http://ehelse.no/fhir/StructureDefinition/sdf-minvalue", "valueString": "today() - 1 days" },
-                { "url": "http://ehelse.no/fhir/StructureDefinition/sdf-maxvalue", "valueString": "today() + 1 years" },
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                  "valueCodeableConcept": {
-                    "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "year" }]
-                  }
-                }
-              ]
-            }
-          ]
-        },
-        {
-          "linkId": "7095fd19-dabf-4458-f7ff-c7cd7a2371b1",
-          "type": "group",
-          "text": "Time",
-          "item": [
-            { "linkId": "93bed9ef-7e93-4d63-ce8d-fccea6f0c82f", "type": "time", "text": "Uten noen ting", "required": false },
-            { "linkId": "6e0644e1-8624-413f-8f4f-e85318b92ac3", "type": "time", "text": "Obligatorisk", "required": true },
-            {
-              "linkId": "0769ffdb-a295-4314-83d2-f336ae7a9c5a",
-              "type": "time",
-              "text": "Kopi fra Uten noen ting",
-              "extension": [
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                  "valueCodeableConcept": {
-                    "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
-                  }
-                },
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
-                  "valueString": "QuestionnaireResponse.descendants().where(linkId='93bed9ef-7e93-4d63-ce8d-fccea6f0c82f').answer.value"
-                }
-              ],
-              "readOnly": true,
-              "enableWhen": [{ "answerBoolean": true, "question": "93bed9ef-7e93-4d63-ce8d-fccea6f0c82f", "operator": "exists" }]
-            },
-            {
-              "linkId": "22c61d73-cdee-4177-8d6a-084522222cd1",
-              "type": "time",
-              "text": "Instruks",
-              "extension": [
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                  "valueCodeableConcept": {
-                    "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "data-receiver" }]
-                  }
-                },
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
-                  "valueString": "QuestionnaireResponse.descendants().where(linkId='93bed9ef-7e93-4d63-ce8d-fccea6f0c82f').answer.value"
-                },
-                { "url": "http://helsenorge.no/fhir/StructureDefinition/sdf-sublabel", "valueMarkdown": "Instruks" }
-              ],
-              "readOnly": true,
-              "enableWhen": [{ "answerBoolean": true, "question": "93bed9ef-7e93-4d63-ce8d-fccea6f0c82f", "operator": "exists" }]
-            },
-            {
-              "linkId": "dc16b685-0848-4b1e-819f-af5b52166304",
-              "type": "time",
-              "text": "Hjelp",
-              "item": [
-                {
-                  "linkId": "518c7b68-6c0d-488f-8f1f-b462c94d6142",
-                  "type": "text",
-                  "required": false,
-                  "repeats": false,
-                  "readOnly": true,
-                  "maxLength": 250,
-                  "_text": {
-                    "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown", "valueMarkdown": "Hjelp!" }]
-                  },
-                  "extension": [
-                    {
-                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                      "valueCodeableConcept": {
-                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "help" }]
-                      }
-                    }
-                  ]
-                }
-              ],
-              "required": false
-            },
-            {
-              "linkId": "b1220222-57a7-458e-87fa-be0a1be540a2",
-              "type": "time",
-              "text": "Gjentakelse",
-              "item": [
-                {
-                  "linkId": "b3fdf099-01c3-43c1-8cbe-e08f70083acf",
-                  "type": "text",
-                  "required": false,
-                  "repeats": false,
-                  "readOnly": true,
-                  "maxLength": 250,
-                  "_text": {
-                    "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown", "valueMarkdown": "Hjelp!" }]
-                  },
-                  "extension": [
-                    {
-                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                      "valueCodeableConcept": {
-                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "help" }]
-                      }
-                    }
-                  ]
-                }
-              ],
-              "required": false,
-              "repeats": true
-            },
-            {
-              "linkId": "ecd4ba5e-08d1-43f4-846a-3e6a067d4927",
-              "type": "time",
-              "text": "Gjentakelse min 2 maks 10 med feilmelding og ny tekst på knapp ",
-              "item": [
-                {
-                  "linkId": "6a75b689-22a7-4bf5-81f4-274378940bec",
-                  "type": "text",
-                  "required": false,
-                  "repeats": false,
-                  "readOnly": true,
-                  "maxLength": 250,
-                  "_text": {
-                    "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown", "valueMarkdown": "Hjelp!" }]
-                  },
-                  "extension": [
-                    {
-                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                      "valueCodeableConcept": {
-                        "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "help" }]
-                      }
-                    }
-                  ]
-                }
-              ],
-              "required": false,
-              "repeats": true,
-              "extension": [
-                { "url": "http://ehelse.no/fhir/StructureDefinition/repeatstext", "valueString": "Klokkeslett må legges til" },
-                { "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-minOccurs", "valueInteger": 2 },
-                { "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-maxOccurs", "valueInteger": 10 }
-              ]
-            },
-            {
-              "linkId": "34be5768-fa47-42d8-d8b2-a0f51ecb77f7",
-              "type": "time",
-              "text": "Beriking med time()?",
-              "required": false,
-              "readOnly": true,
-              "extension": [{ "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath", "valueString": "time()" }]
-            }
+            { "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-hidden", "valueBoolean": true }
           ],
-          "required": false
+          "linkId": "0.1",
+          "text": "Om det er på vegne av eller ei. True er på vegne av",
+          "type": "boolean",
+          "required": false,
+          "repeats": false,
+          "readOnly": false
+        },
+        {
+          "linkId": "0.2",
+          "text": "Opplysninger om den som fyller ut skjemaet",
+          "_text": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                "valueMarkdown": "### Opplysninger om den som fyller ut skjemaet\r\n\r\n*Om du fyller for deg selv, vil ikke disse feltene være utfylt*"
+              }
+            ]
+          },
+          "type": "group",
+          "enableWhen": [{ "question": "0.1", "operator": "=", "answerBoolean": true }],
+          "enableBehavior": "any",
+          "repeats": false,
+          "item": [
+            {
+              "extension": [
+                {
+                  "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+                  "valueString": "RelatedPerson.name.where(use = 'official').select(given.join(' ') & ' ' & family)"
+                }
+              ],
+              "linkId": "0.2.1",
+              "text": "Navn",
+              "type": "string",
+              "required": false,
+              "repeats": false,
+              "readOnly": true,
+              "maxLength": 250
+            },
+            {
+              "extension": [
+                {
+                  "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+                  "valueString": "RelatedPerson.identifier.where(use = 'official' and (system = 'urn:oid:2.16.578.1.12.4.1.4.1' or system = 'urn:oid:2.16.578.1.12.4.1.4.2')).value"
+                }
+              ],
+              "linkId": "0.2.2",
+              "text": "Fødselsnummer (11 siffer)",
+              "type": "string",
+              "required": false,
+              "repeats": false,
+              "readOnly": true,
+              "maxLength": 250
+            }
+          ]
         }
       ]
     },
     {
-      "linkId": "e3420756-2b65-468b-8c0a-3fcd68381c02",
+      "linkId": "1",
+      "prefix": "1.",
+      "text": "Dette er en gruppeoverskrift på første nivå. Med prefix 1.",
       "type": "group",
-      "text": "Forrige skjema, også med gamle valideringer",
-      "required": false,
+      "repeats": false,
+      "item": [
+        { "linkId": "1.1", "text": "Dette er en forklarende tekst av typen Display", "type": "display" },
+        {
+          "linkId": "1.2",
+          "text": "Dette er en gruppe på andre nivå",
+          "type": "group",
+          "repeats": false,
+          "item": [
+            { "linkId": "1.2.1", "text": "Dette er en forklarende tekst av typen Display", "type": "display" },
+            {
+              "linkId": "1.2.2",
+              "text": "Dette er en gruppe på tredje nivå",
+              "type": "group",
+              "repeats": false,
+              "item": [{ "linkId": "1.2.2.1", "text": "Dette er en forklarende tekst av typen Display", "type": "display" }]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "2",
+      "prefix": "2.",
+      "text": "Her kommer en gruppe med alle typer inputfelter",
+      "type": "group",
+      "repeats": false,
+      "item": [
+        { "linkId": "2.1", "text": "Dato", "type": "date", "required": false, "repeats": false, "readOnly": false },
+        { "linkId": "2.2", "text": "Dato og tid", "type": "dateTime", "required": false, "repeats": false, "readOnly": false },
+        { "linkId": "2.3", "text": "Tid", "type": "time", "required": false, "repeats": false, "readOnly": false },
+        { "linkId": "2.4", "text": "Tekstfelt 1 linje", "type": "string", "required": false, "repeats": false, "readOnly": false },
+        { "linkId": "2.5", "text": "Tekstfelt flere linjer", "type": "text", "required": false, "repeats": false, "readOnly": false },
+        {
+          "linkId": "2.6",
+          "text": "Opplasting av vedlegg til skjema",
+          "type": "attachment",
+          "required": false,
+          "repeats": false,
+          "readOnly": false
+        },
+        {
+          "linkId": "2.7",
+          "text": "Her er et integer felt for tallverdier.",
+          "type": "integer",
+          "required": false,
+          "repeats": false,
+          "readOnly": false
+        },
+        {
+          "linkId": "2.8",
+          "text": "Her er et decimal felt. Desimaldelen er synlig, men det er kun heltallsdelen som påvirkes av opp-/nedknappene. Desimaldelen må manuelt endres",
+          "type": "decimal",
+          "required": false,
+          "repeats": false,
+          "readOnly": false
+        },
+        {
+          "linkId": "2.9",
+          "text": "Checkbox som benyttes til for eksempel samtykke. Ikke til ja/nei",
+          "type": "boolean",
+          "required": false,
+          "repeats": false,
+          "readOnly": false
+        },
+        {
+          "linkId": "2.10",
+          "text": "Her kommer en gruppe med checkbokser",
+          "type": "group",
+          "repeats": false,
+          "item": [
+            { "linkId": "2.10.1", "text": "Valg 1", "type": "boolean", "required": false, "repeats": false, "readOnly": false },
+            { "linkId": "2.10.2", "text": "Valg 2", "type": "boolean", "required": false, "repeats": false, "readOnly": false },
+            { "linkId": "2.10.3", "text": "Valg 3", "type": "boolean", "required": false, "repeats": false, "readOnly": false },
+            { "linkId": "2.10.4", "text": "Valg 4", "type": "boolean", "required": false, "repeats": false, "readOnly": false }
+          ]
+        },
+        {
+          "linkId": "2.11",
+          "text": "Svaralternativer av typen Choice med et \"referencevalue\" kodeverk definert utenfor skjemaet for gjenbruk på flere spørsmål",
+          "type": "choice",
+          "required": false,
+          "repeats": false,
+          "readOnly": false,
+          "answerValueSet": "#1101"
+        },
+        {
+          "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/entryFormat", "valueString": "Velg en verdi i listen" }],
+          "linkId": "2.12",
+          "text": "Svaralternativer av typen Choice med et \"referncevalue\" kodeverk definert utenfor skjemaet for gjenbruk på flere spørsmål. Her er det flere enn 6 verdier.",
+          "type": "choice",
+          "required": false,
+          "repeats": false,
+          "readOnly": false,
+          "answerValueSet": "#TEST01"
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "check-box" }]
+              }
+            }
+          ],
+          "linkId": "2.13",
+          "text": "Svaralternativer av typen Choice med et \"referencevalue\" kodeverk definert utenfor skjemaet for gjenbruk på flere spørsmål. Kontekst: hake av flere checkbokser i et kodeverk. Kodes til check-box",
+          "type": "choice",
+          "required": false,
+          "repeats": false,
+          "readOnly": false,
+          "answerValueSet": "#TEST01"
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "radio-button" }]
+              }
+            }
+          ],
+          "linkId": "2.14",
+          "text": "Svaralternativer av typen Choice med et \"referencevalue\" kodeverk definert utenfor skjemaet for gjenbruk på flere spørsmål. Her kodes det til radio",
+          "type": "choice",
+          "required": false,
+          "repeats": false,
+          "readOnly": false,
+          "answerValueSet": "#TEST01"
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "drop-down" }]
+              }
+            }
+          ],
+          "linkId": "2.15",
+          "text": "Svaralternativer av typen Choice med et \"referencevalue\" kodeverk definert utenfor skjemaet for gjenbruk på flere spørsmål. Her kodes det til dropdown og er kun 3 verdier. Dvs. at default funskjonalitet med radioknapper overstyres.",
+          "type": "choice",
+          "required": false,
+          "repeats": false,
+          "readOnly": false,
+          "answerValueSet": "#TEST01"
+        }
+      ]
+    },
+    {
+      "linkId": "3",
+      "prefix": "3.",
+      "text": "Eksempler på valideringsregler",
+      "type": "group",
+      "repeats": false,
       "item": [
         {
-          "linkId": "2",
-          "text": "Datetime",
-          "type": "group",
+          "extension": [
+            { "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "Du må skrive minimum 4 tegn" },
+            { "url": "http://hl7.org/fhir/StructureDefinition/minLength", "valueInteger": 4 }
+          ],
+          "linkId": "3.1",
+          "text": "Min lengde, med valideringstekst.",
+          "type": "string",
+          "required": false,
           "repeats": false,
+          "readOnly": false
+        },
+        {
+          "extension": [
+            { "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "Du kan maks skrive maksimum 10 tegn" }
+          ],
+          "linkId": "3.2",
+          "text": "Maks lengde. Ikke valideringstekst, men ikke mulig å skrive flere tegn enn det som er angitt.",
+          "type": "string",
+          "required": false,
+          "repeats": false,
+          "readOnly": false,
+          "maxLength": 10
+        },
+        {
+          "extension": [
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
+              "valueString": "Du må skrive minimum 2 tegn og maksimum 8 tegn"
+            },
+            { "url": "http://hl7.org/fhir/StructureDefinition/minLength", "valueInteger": 2 }
+          ],
+          "linkId": "3.3",
+          "text": "Min og maks lengde, med valideringstekst.",
+          "type": "string",
+          "required": false,
+          "repeats": false,
+          "readOnly": false,
+          "maxLength": 8
+        },
+        {
+          "extension": [
+            { "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "Du kan maks ha 2 desimaler" },
+            { "url": "http://hl7.org/fhir/StructureDefinition/maxDecimalPlaces", "valueInteger": 2 }
+          ],
+          "linkId": "3.4",
+          "text": "Maks desimalplasser med valideringstekst",
+          "type": "decimal",
+          "required": false,
+          "repeats": false,
+          "readOnly": false
+        },
+        {
+          "extension": [
+            { "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "Verdien kan ikke være større enn 10" },
+            { "url": "http://hl7.org/fhir/StructureDefinition/maxValue", "valueInteger": 10 }
+          ],
+          "linkId": "3.5",
+          "text": "Maks verdi, med valideringstekst.",
+          "type": "integer",
+          "required": false,
+          "repeats": false,
+          "readOnly": false
+        },
+        {
+          "extension": [
+            { "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "Verdien kan ikke være mindre enn 8" },
+            { "url": "http://hl7.org/fhir/StructureDefinition/minValue", "valueInteger": 8 }
+          ],
+          "linkId": "3.6",
+          "text": "Min verdi, med valideringstekst.",
+          "type": "integer",
+          "required": false,
+          "repeats": false,
+          "readOnly": false
+        },
+        {
+          "extension": [{ "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "Du må hake av her" }],
+          "linkId": "3.7",
+          "text": "Påkrevet checkboks",
+          "type": "boolean",
+          "required": true,
+          "repeats": false,
+          "readOnly": false
+        },
+        {
+          "extension": [{ "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "Du må skrive tekst her" }],
+          "linkId": "3.8",
+          "text": "Påkrevet tekstfelt",
+          "type": "string",
+          "required": true,
+          "repeats": false,
+          "readOnly": false
+        },
+        {
+          "extension": [{ "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "Du må skrive et heltall" }],
+          "linkId": "3.9",
+          "text": "Påkrevet felt for heltall",
+          "type": "integer",
+          "required": true,
+          "repeats": false,
+          "readOnly": false
+        },
+        {
+          "extension": [
+            { "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "Du må skrive en gyldig epostadresse" },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/regex",
+              "valueString": "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$"
+            }
+          ],
+          "linkId": "3.10",
+          "text": "Eksempel reg ex - E-postadresse",
+          "type": "string",
+          "required": false,
+          "repeats": false,
+          "readOnly": false
+        },
+        {
+          "extension": [
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
+              "valueString": "Du må hake av minst 1, men ikke flere enn 3"
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "check-box" }]
+              }
+            },
+            { "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-maxOccurs", "valueInteger": 3 },
+            { "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-minOccurs", "valueInteger": 1 }
+          ],
+          "linkId": "3.11",
+          "text": "Hake av flere checkbokser, min 1 maksimum 3",
+          "type": "choice",
+          "required": false,
+          "repeats": false,
+          "readOnly": false,
+          "answerValueSet": "#TEST01"
+        }
+      ]
+    },
+    {
+      "linkId": "4",
+      "prefix": "4.",
+      "text": "Bruk av sporvalg og svaravhengige spørsmål - enkeltspørmål og grupper",
+      "type": "group",
+      "repeats": false,
+      "item": [
+        {
+          "linkId": "4.1",
+          "text": "Vil du at spørsmålet under skal åpnes?",
+          "type": "choice",
+          "required": false,
+          "repeats": false,
+          "readOnly": false,
+          "answerValueSet": "#1101",
           "item": [
             {
-              "extension": [
-                {
-                  "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
-                  "valueString": "Du må velge en dato og et klokkeslett"
-                }
+              "linkId": "4.1.1",
+              "text": "Svar her, ved ja over",
+              "type": "string",
+              "enableWhen": [
+                { "question": "4.1", "operator": "=", "answerCoding": { "system": "urn:oid:2.16.578.1.12.4.1.1101", "code": "1" } }
               ],
-              "linkId": "2.1",
-              "text": "Velg dato og klokkeslett",
-              "type": "dateTime",
-              "required": true,
+              "enableBehavior": "any",
+              "required": false,
               "repeats": false,
               "readOnly": false
             }
           ]
         },
         {
-          "linkId": "3",
-          "text": "Time",
-          "type": "group",
+          "linkId": "4.2",
+          "text": "Vil du at gruppen under skal åpnes?",
+          "type": "choice",
+          "required": false,
           "repeats": false,
-          "item": [
-            {
-              "extension": [
-                { "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "Du må velge et klokkeslett" }
-              ],
-              "linkId": "3.1",
-              "text": "Velg klokkeslett",
-              "type": "time",
-              "required": true,
-              "repeats": false,
-              "readOnly": false
-            }
-          ]
+          "readOnly": false,
+          "answerValueSet": "#1101"
         },
         {
-          "linkId": "4",
-          "text": "Date",
+          "linkId": "4.3",
+          "text": "Gruppe som åpnes av spørsmålet over. Gruppen kan ligge på samme nivå som spørsmålet som åpner.",
           "type": "group",
+          "enableWhen": [
+            { "question": "4.2", "operator": "=", "answerCoding": { "system": "urn:oid:2.16.578.1.12.4.1.1101", "code": "1" } }
+          ],
+          "enableBehavior": "any",
           "repeats": false,
           "item": [
             {
-              "extension": [
-                { "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "Du må velge år, måned og dag" }
-              ],
-              "linkId": "4.1",
-              "text": "Velg år, måned og dag",
-              "type": "date",
-              "required": true,
-              "repeats": false,
-              "readOnly": false
-            }
-          ]
-        },
-        {
-          "linkId": "5",
-          "text": "Date med utvidelser",
-          "type": "group",
-          "repeats": false,
-          "item": [
-            {
-              "extension": [
-                { "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "Du må velge år" },
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                  "valueCodeableConcept": {
-                    "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "year" }]
-                  }
-                }
-              ],
-              "linkId": "5.1",
-              "text": "Velg år",
-              "type": "date",
-              "required": true,
+              "linkId": "4.3.1",
+              "text": "Svar her, om gruppen er åpnet",
+              "type": "string",
+              "required": false,
               "repeats": false,
               "readOnly": false
             },
             {
-              "extension": [
-                { "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "Du må velge år og måned" },
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                  "valueCodeableConcept": {
-                    "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "yearMonth" }]
-                  }
-                }
-              ],
-              "linkId": "5.2",
-              "text": "Velg år og måned",
-              "type": "date",
-              "required": true,
-              "repeats": false,
-              "readOnly": false
-            },
-            {
-              "extension": [
-                { "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "Du må velge måned" },
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                  "valueCodeableConcept": {
-                    "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "month" }]
-                  }
-                }
-              ],
-              "linkId": "5.3",
-              "text": "Velg måned",
-              "type": "date",
-              "required": true,
-              "repeats": false,
-              "readOnly": false
-            },
-            {
-              "extension": [
-                { "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "Du må velge dag" },
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                  "valueCodeableConcept": {
-                    "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "day" }]
-                  }
-                }
-              ],
-              "linkId": "5.4",
-              "text": "Velg dag",
-              "type": "date",
-              "required": true,
-              "repeats": false,
-              "readOnly": false
-            }
-          ]
-        },
-        {
-          "linkId": "6",
-          "text": "Date med validering",
-          "type": "group",
-          "repeats": false,
-          "item": [
-            {
-              "extension": [
-                {
-                  "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
-                  "valueString": "Velg dato, eller skriv dato på denne måten: dd.mm.åååå. Dato må være større enn dagens dato."
-                },
-                { "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpathvalidation", "valueString": "this.value >= today()" },
-                { "url": "http://ehelse.no/fhir/StructureDefinition/sdf-minvalue", "valueString": "today()" }
-              ],
-              "linkId": "6.1",
-              "text": "Forventet termin",
-              "type": "date",
-              "required": true,
-              "repeats": false,
-              "readOnly": false
-            },
-            {
-              "extension": [
-                {
-                  "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
-                  "valueString": "Velg dato, eller skriv dato på denne måten: dd.mm.åååå. Dato må være mindre enn dagens dato."
-                },
-                { "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpathvalidation", "valueString": "this.value <= today()" },
-                { "url": "http://ehelse.no/fhir/StructureDefinition/sdf-maxvalue", "valueString": "today()" }
-              ],
-              "linkId": "6.2",
-              "text": "Når var siste menstruasjon?",
-              "type": "date",
-              "required": true,
-              "repeats": false,
-              "readOnly": false
-            },
-            {
-              "extension": [
-                {
-                  "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
-                  "valueString": "Du kan velge en dato fra i dag og 7 dager tilbake i tid. Dato skal ha format dd.mm.åååå."
-                },
-                {
-                  "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpathvalidation",
-                  "valueString": "this.value <= today()  and this.value >=today() - 7 days"
-                },
-                { "url": "http://ehelse.no/fhir/StructureDefinition/sdf-maxvalue", "valueString": "today()" },
-                { "url": "http://ehelse.no/fhir/StructureDefinition/sdf-minvalue", "valueString": "today() - 7 days" }
-              ],
-              "linkId": "6.3",
-              "text": "Hvilken dag fikk du symptomer?",
-              "type": "date",
-              "required": true,
-              "repeats": false,
-              "readOnly": false
-            },
-            {
-              "extension": [
-                {
-                  "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
-                  "valueString": "Velg dato, eller skriv dato på denne måten: dd.mm.åååå."
-                },
-                { "url": "http://ehelse.no/fhir/StructureDefinition/sdf-minvalue", "valueString": "@2020-10-01" }
-              ],
-              "linkId": "6.4",
-              "text": "Min date med fhir path",
-              "type": "date",
-              "required": true,
-              "repeats": false,
-              "readOnly": false
-            },
-            {
-              "extension": [
-                {
-                  "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
-                  "valueString": "Velg dato, eller skriv dato på denne måten: dd.mm.åååå."
-                },
-                { "url": "http://ehelse.no/fhir/StructureDefinition/sdf-maxvalue", "valueString": "@2020-11-01" }
-              ],
-              "linkId": "6.5",
-              "text": "Max date med fhir path",
-              "type": "date",
-              "required": true,
-              "repeats": false,
-              "readOnly": false
-            },
-            {
-              "extension": [
-                {
-                  "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
-                  "valueString": "Velg dato, eller skriv dato på denne måten: dd.mm.åååå."
-                },
-                { "url": "http://ehelse.no/fhir/StructureDefinition/sdf-maxvalue", "valueString": "@2020-11-01" },
-                { "url": "http://ehelse.no/fhir/StructureDefinition/sdf-minvalue", "valueString": "@2020-10-01" }
-              ],
-              "linkId": "6.6",
-              "text": "Max og min date med fhir path",
-              "type": "date",
-              "required": true,
-              "repeats": false,
-              "readOnly": false
-            },
-            {
-              "extension": [
-                {
-                  "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
-                  "valueString": "Velg dato, eller skriv dato på denne måten: dd.mm.åååå."
-                }
-              ],
-              "linkId": "6.7",
-              "text": "Initial date gammel måte",
-              "type": "date",
-              "required": true,
+              "linkId": "4.3.2",
+              "text": "Vil du at gruppen under skal åpnes? Her kommer enda en gruppe",
+              "type": "choice",
+              "required": false,
               "repeats": false,
               "readOnly": false,
-              "initial": [{ "valueDate": "2020-10-23" }]
+              "answerValueSet": "#1101"
             },
             {
-              "extension": [
-                {
-                  "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
-                  "valueString": "Velg dato, eller skriv dato på denne måten: dd.mm.åååå."
-                },
-                { "url": "http://hl7.org/fhir/StructureDefinition/minValue", "valueDateTime": "2020-10-22T22:00:00+00:00" }
+              "linkId": "4.3.3",
+              "text": "Gruppe som åpnes av spørsmålet over. Gruppen kan ligge på samme nivå som spørsmålet som åpner..",
+              "type": "group",
+              "enableWhen": [
+                { "question": "4.3.2", "operator": "=", "answerCoding": { "system": "urn:oid:2.16.578.1.12.4.1.1101", "code": "1" } }
               ],
-              "linkId": "6.8",
-              "text": "Min dato gammel måte",
-              "type": "date",
-              "required": true,
+              "enableBehavior": "any",
               "repeats": false,
-              "readOnly": false
-            },
-            {
-              "extension": [
+              "item": [
                 {
-                  "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
-                  "valueString": "Velg dato, eller skriv dato på denne måten: dd.mm.åååå."
-                },
-                { "url": "http://hl7.org/fhir/StructureDefinition/maxValue", "valueDateTime": "2020-10-29T23:00:00+00:00" }
-              ],
-              "linkId": "6.9",
-              "text": "Max dato gammel måte",
-              "type": "date",
-              "required": true,
-              "repeats": false,
-              "readOnly": false
-            },
+                  "linkId": "4.3.4.1",
+                  "text": "Svar her, om gruppen er åpnet",
+                  "type": "string",
+                  "required": false,
+                  "repeats": false,
+                  "readOnly": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "linkId": "4.4",
+          "text": "Vil du at spørsmålet under skal åpnes? hasAnswer",
+          "type": "string",
+          "required": false,
+          "repeats": false,
+          "readOnly": false,
+          "item": [
             {
-              "extension": [
-                {
-                  "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
-                  "valueString": "Velg dato, eller skriv dato på denne måten: dd.mm.åååå."
-                },
-                { "url": "http://hl7.org/fhir/StructureDefinition/maxValue", "valueDateTime": "2020-10-29T23:00:00+00:00" },
-                { "url": "http://hl7.org/fhir/StructureDefinition/minValue", "valueDateTime": "2020-10-22T22:00:00+00:00" }
-              ],
-              "linkId": "6.10",
-              "text": "Min og max dato gammel måte",
-              "type": "date",
-              "required": true,
+              "linkId": "4.4.1",
+              "text": "Svar her, ved verdi i svaret over",
+              "type": "string",
+              "enableWhen": [{ "question": "4.4", "operator": "=", "answerBoolean": true }],
+              "enableBehavior": "any",
+              "required": false,
               "repeats": false,
               "readOnly": false
             }
           ]
+        }
+      ]
+    },
+    {
+      "linkId": "5",
+      "prefix": "5.",
+      "text": "Preutfylte felt med \"Initial\" verdier",
+      "type": "group",
+      "repeats": false,
+      "item": [
+        {
+          "linkId": "5.1",
+          "text": "Dato",
+          "type": "date",
+          "required": false,
+          "repeats": false,
+          "readOnly": false,
+          "initial": [{ "valueDate": "2008-12-12" }]
+        },
+        {
+          "linkId": "5.2",
+          "text": "Tid",
+          "type": "time",
+          "required": false,
+          "repeats": false,
+          "readOnly": false,
+          "initial": [{ "valueTime": "12:30:00" }]
+        },
+        {
+          "linkId": "5.3",
+          "text": "Dato og tid",
+          "type": "dateTime",
+          "required": false,
+          "repeats": false,
+          "readOnly": false,
+          "initial": [{ "valueDateTime": "2008-12-12T11:30:00+00:00" }]
+        },
+        {
+          "linkId": "5.4",
+          "text": "Tekstfelt 1 linje",
+          "type": "string",
+          "required": false,
+          "repeats": false,
+          "readOnly": false,
+          "initial": [{ "valueString": "Tekst 1 linje" }]
+        },
+        {
+          "linkId": "5.5",
+          "text": "Tekstfelt flere linjer",
+          "type": "text",
+          "required": false,
+          "repeats": false,
+          "readOnly": false,
+          "initial": [{ "valueString": "Tekst flerlinje" }]
+        },
+        {
+          "linkId": "5.6",
+          "text": "Her er et integer felt for tallverdier.",
+          "type": "integer",
+          "required": false,
+          "repeats": false,
+          "readOnly": false,
+          "initial": [{ "valueInteger": 123 }]
+        },
+        {
+          "linkId": "5.7",
+          "text": "Her er et decimal felt. Desimaldelen er synlig, men det er kun heltallsdelen som påvirkes av opp-/nedknappene. Desimaldelen må manuelt endres",
+          "type": "decimal",
+          "required": false,
+          "repeats": false,
+          "readOnly": false,
+          "initial": [{ "valueDecimal": 1.22 }]
+        },
+        {
+          "linkId": "5.8",
+          "text": "Checkbox som benyttes til for eksempel samtykke. Ikke til ja/nei",
+          "type": "boolean",
+          "required": false,
+          "repeats": false,
+          "readOnly": false,
+          "initial": [{ "valueBoolean": true }]
+        }
+      ]
+    },
+    {
+      "linkId": "6",
+      "prefix": "6.",
+      "text": "Preutfylte felt med \"Initial\" verdier og read only",
+      "type": "group",
+      "repeats": false,
+      "item": [
+        {
+          "linkId": "6.1",
+          "text": "Dato",
+          "type": "date",
+          "required": false,
+          "repeats": false,
+          "readOnly": true,
+          "initial": [{ "valueDate": "2008-12-12" }]
+        },
+        {
+          "linkId": "6.2",
+          "text": "Tid",
+          "type": "time",
+          "required": false,
+          "repeats": false,
+          "readOnly": true,
+          "initial": [{ "valueTime": "12:30:00" }]
+        },
+        {
+          "linkId": "6.3",
+          "text": "Dato og tid",
+          "type": "dateTime",
+          "required": false,
+          "repeats": false,
+          "readOnly": true,
+          "initial": [{ "valueDateTime": "2008-12-12T11:30:00+00:00" }]
+        },
+        {
+          "linkId": "6.4",
+          "text": "Tekstfelt 1 linje",
+          "type": "string",
+          "required": false,
+          "repeats": false,
+          "readOnly": true,
+          "initial": [{ "valueString": "Tekst 1 linje" }]
+        },
+        {
+          "linkId": "6.5",
+          "text": "Tekstfelt flere linjer",
+          "type": "text",
+          "required": false,
+          "repeats": false,
+          "readOnly": true,
+          "initial": [{ "valueString": "Tekst flerlinje" }]
+        },
+        {
+          "linkId": "6.6",
+          "text": "Her er et integer felt for tallverdier.",
+          "type": "integer",
+          "required": false,
+          "repeats": false,
+          "readOnly": true,
+          "initial": [{ "valueInteger": 123 }]
+        },
+        {
+          "linkId": "6.7",
+          "text": "Her er et decimal felt. Desimaldelen er synlig, men det er kun heltallsdelen som påvirkes av opp-/nedknappene. Desimaldelen må manuelt endres",
+          "type": "decimal",
+          "required": false,
+          "repeats": false,
+          "readOnly": true,
+          "initial": [{ "valueDecimal": 122.0 }]
+        },
+        {
+          "linkId": "6.8",
+          "text": "Checkbox som benyttes til for eksempel samtykke. Ikke til ja/nei",
+          "type": "boolean",
+          "required": false,
+          "repeats": false,
+          "readOnly": true,
+          "initial": [{ "valueBoolean": true }]
+        },
+        {
+          "extension": [
+            { "url": "http://hl7.org/fhir/StructureDefinition/entryFormat", "valueString": "Velg en verdi i listen" },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "radio-button" }]
+              }
+            }
+          ],
+          "linkId": "6.9",
+          "text": "Svaralternativer av typen Choice med et \"referncevalue\" kodeverk definert utenfor skjemaet for gjenbruk på flere spørsmål. PREVALGT VERDI",
+          "type": "choice",
+          "required": false,
+          "repeats": false,
+          "readOnly": false,
+          "answerValueSet": "#TEST01",
+          "initial": [{ "valueCoding": { "system": "http://ehelse.no/TEST01", "code": "2" } }]
+        }
+      ]
+    },
+    {
+      "linkId": "7",
+      "prefix": "7.",
+      "text": "Repeterende elementer",
+      "type": "group",
+      "repeats": false,
+      "item": [
+        { "linkId": "7.1", "text": "Repeterende enkeltelement", "type": "string", "required": false, "repeats": true, "readOnly": false },
+        {
+          "extension": [{ "url": "http://ehelse.no/fhir/StructureDefinition/repeatstext", "valueString": "Legg til" }],
+          "linkId": "7.2",
+          "text": "Repeterende gruppe der alle elementer i gruppen repeteres",
+          "type": "group",
+          "repeats": true,
+          "item": [
+            {
+              "extension": [{ "url": "http://ehelse.no/fhir/StructureDefinition/repeatstext", "valueString": "Legg til" }],
+              "linkId": "7.2.1",
+              "text": "Dato og tid",
+              "type": "dateTime",
+              "required": false,
+              "repeats": false,
+              "readOnly": false
+            },
+            { "linkId": "7.2.2", "text": "Tekstfelt 1 linje", "type": "string", "required": false, "repeats": false, "readOnly": false },
+            { "linkId": "7.2.3", "text": "Tekstfelt flere linjer", "type": "text", "required": false, "repeats": false, "readOnly": false },
+            {
+              "linkId": "7.2.4",
+              "text": "Her er et integer felt for tallverdier.",
+              "type": "integer",
+              "required": false,
+              "repeats": false,
+              "readOnly": false
+            },
+            {
+              "linkId": "7.2.5",
+              "text": "Her er et decimal felt. Desimaldelen er synlig, men det er kun heltallsdelen som påvirkes av opp-/nedknappene. Desimaldelen må manuelt endres",
+              "type": "decimal",
+              "required": false,
+              "repeats": false,
+              "readOnly": false
+            },
+            {
+              "linkId": "7.2.6",
+              "text": "Checkbox som benyttes til for eksempel samtykke. Ikke til ja/nei",
+              "type": "boolean",
+              "required": false,
+              "repeats": false,
+              "readOnly": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "8",
+      "prefix": "8.",
+      "text": "Her kommer en gruppe med alle typer inputfelter er påkrevet",
+      "type": "group",
+      "repeats": false,
+      "item": [
+        { "linkId": "8.1", "text": "Dato", "type": "date", "required": true, "repeats": false, "readOnly": false },
+        { "linkId": "8.2", "text": "Dato og tid", "type": "dateTime", "required": true, "repeats": false, "readOnly": false },
+        { "linkId": "8.3", "text": "Tid", "type": "time", "required": true, "repeats": false, "readOnly": false },
+        { "linkId": "8.4", "text": "Tekstfelt 1 linje", "type": "string", "required": true, "repeats": false, "readOnly": false },
+        { "linkId": "8.5", "text": "Tekstfelt flere linjer", "type": "text", "required": true, "repeats": false, "readOnly": false },
+        {
+          "linkId": "8.6",
+          "text": "Opplasting av vedlegg til skjema",
+          "type": "attachment",
+          "required": true,
+          "repeats": false,
+          "readOnly": false
+        },
+        {
+          "linkId": "8.7",
+          "text": "Svaralternativer av typen Choice med et \"referencevalue\" kodeverk definert utenfor skjemaet for gjenbruk på flere spørsmål",
+          "type": "choice",
+          "required": true,
+          "repeats": false,
+          "readOnly": false,
+          "answerValueSet": "#1101"
+        },
+        {
+          "linkId": "8.8",
+          "text": "Her er et integer felt for tallverdier.",
+          "type": "integer",
+          "required": true,
+          "repeats": false,
+          "readOnly": false
+        },
+        {
+          "linkId": "8.9",
+          "text": "Her er et decimal felt. Desimaldelen er synlig, men det er kun heltallsdelen som påvirkes av opp-/nedknappene. Desimaldelen må manuelt endres",
+          "type": "decimal",
+          "required": true,
+          "repeats": false,
+          "readOnly": false
+        },
+        {
+          "linkId": "8.10",
+          "text": "Checkbox som benyttes til for eksempel samtykke. Ikke til ja/nei",
+          "type": "boolean",
+          "required": true,
+          "repeats": false,
+          "readOnly": false
+        },
+        {
+          "linkId": "8.11",
+          "text": "Svaralternativer av typen Choice med et \"referncevalue\" kodeverk definert utenfor skjemaet for gjenbruk på flere spørsmål. Her er det flere enn 5 verdier.",
+          "type": "choice",
+          "required": true,
+          "repeats": false,
+          "readOnly": false,
+          "answerValueSet": "#TEST01"
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "check-box" }]
+              }
+            }
+          ],
+          "linkId": "8.12",
+          "text": "Hake av flere checkbokser",
+          "type": "choice",
+          "required": true,
+          "repeats": false,
+          "readOnly": false,
+          "answerValueSet": "#TEST01"
+        }
+      ]
+    },
+    {
+      "linkId": "9",
+      "prefix": "9.",
+      "text": "Her kommer en gruppe med  typene som støtter \"Skyggetekst\"",
+      "type": "group",
+      "repeats": false,
+      "item": [
+        {
+          "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/entryFormat", "valueString": "Eks. 12.12.2018" }],
+          "linkId": "9.1",
+          "text": "Dato",
+          "type": "date",
+          "required": false,
+          "repeats": false,
+          "readOnly": false
+        },
+        {
+          "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/entryFormat", "valueString": "Eks. 12" }],
+          "linkId": "9.2",
+          "text": "Tekstfelt 1 linje",
+          "type": "string",
+          "required": false,
+          "repeats": false,
+          "readOnly": false
+        },
+        {
+          "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/entryFormat", "valueString": "Tekst kan skrives her" }],
+          "linkId": "9.3",
+          "text": "Tekstfelt flere linjer",
+          "type": "text",
+          "required": false,
+          "repeats": false,
+          "readOnly": false
+        },
+        {
+          "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/entryFormat", "valueString": "Heltall kan skrives her" }],
+          "linkId": "9.4",
+          "text": "Her er et integer felt for tallverdier.",
+          "type": "integer",
+          "required": false,
+          "repeats": false,
+          "readOnly": false
+        },
+        {
+          "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/entryFormat", "valueString": "Desimaltall kan skrives her" }],
+          "linkId": "9.5",
+          "text": "Her er et decimal felt. Desimaldelen er synlig, men det er kun heltallsdelen som påvirkes av opp-/nedknappene. Desimaldelen må manuelt endres",
+          "type": "decimal",
+          "required": false,
+          "repeats": false,
+          "readOnly": false
+        }
+      ]
+    },
+    {
+      "linkId": "10",
+      "text": "Repeterende enkeltelementer",
+      "type": "group",
+      "repeats": false,
+      "item": [
+        { "linkId": "10.1", "text": "Dato", "type": "date", "required": false, "repeats": true, "readOnly": false },
+        { "linkId": "10.2", "text": "Dato og tid", "type": "dateTime", "required": false, "repeats": true, "readOnly": false },
+        { "linkId": "10.3", "text": "Tid", "type": "time", "required": false, "repeats": true, "readOnly": false },
+        { "linkId": "10.4", "text": "Tekstfelt 1 linje", "type": "string", "required": false, "repeats": true, "readOnly": false },
+        { "linkId": "10.5", "text": "Tekstfelt flere linjer", "type": "text", "required": false, "repeats": true, "readOnly": false },
+        {
+          "linkId": "10.6",
+          "text": "Opplasting av vedlegg til skjema",
+          "type": "attachment",
+          "required": false,
+          "repeats": true,
+          "readOnly": false
+        },
+        {
+          "linkId": "10.7",
+          "text": "Her er et integer felt for tallverdier.",
+          "type": "integer",
+          "required": false,
+          "repeats": true,
+          "readOnly": false
+        },
+        {
+          "linkId": "10.8",
+          "text": "Her er et decimal felt. Desimaldelen er synlig, men det er kun heltallsdelen som påvirkes av opp-/nedknappene. Desimaldelen må manuelt endres",
+          "type": "decimal",
+          "required": false,
+          "repeats": true,
+          "readOnly": false
+        },
+        {
+          "linkId": "10.9",
+          "text": "Checkbox som benyttes til for eksempel samtykke. Ikke til ja/nei",
+          "type": "boolean",
+          "required": false,
+          "repeats": true,
+          "readOnly": false
+        },
+        {
+          "linkId": "10.10",
+          "text": "Svaralternativer av typen Choice med et \"referencevalue\" kodeverk definert utenfor skjemaet for gjenbruk på flere spørsmål",
+          "type": "choice",
+          "required": false,
+          "repeats": true,
+          "readOnly": false,
+          "answerValueSet": "#1101"
+        },
+        {
+          "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/entryFormat", "valueString": "Velg en verdi i listen" }],
+          "linkId": "10.11",
+          "text": "Svaralternativer av typen Choice med et \"referncevalue\" kodeverk definert utenfor skjemaet for gjenbruk på flere spørsmål. Her er det flere enn 6 verdier.",
+          "type": "choice",
+          "required": false,
+          "repeats": true,
+          "readOnly": false,
+          "answerValueSet": "#TEST01"
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "check-box" }]
+              }
+            }
+          ],
+          "linkId": "10.12",
+          "text": "Svaralternativer av typen Choice med et \"referencevalue\" kodeverk definert utenfor skjemaet for gjenbruk på flere spørsmål. Kontekst: hake av flere checkbokser i et kodeverk. Kodes til check-box",
+          "type": "choice",
+          "required": false,
+          "repeats": true,
+          "readOnly": false,
+          "answerValueSet": "#TEST01"
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "radio-button" }]
+              }
+            }
+          ],
+          "linkId": "10.13",
+          "text": "Svaralternativer av typen Choice med et \"referencevalue\" kodeverk definert utenfor skjemaet for gjenbruk på flere spørsmål. Her kodes det til radio",
+          "type": "choice",
+          "required": false,
+          "repeats": true,
+          "readOnly": false,
+          "answerValueSet": "#TEST01"
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "drop-down" }]
+              }
+            }
+          ],
+          "linkId": "10.14",
+          "text": "Svaralternativer av typen Choice med et \"referencevalue\" kodeverk definert utenfor skjemaet for gjenbruk på flere spørsmål. Her kodes det til dropdown og er kun 3 verdier. Dvs. at default funskjonalitet med radioknapper overstyres.",
+          "type": "choice",
+          "required": false,
+          "repeats": true,
+          "readOnly": false,
+          "answerValueSet": "#1102"
+        }
+      ]
+    },
+    {
+      "extension": [
+        { "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-maxOccurs", "valueInteger": 3 },
+        { "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-minOccurs", "valueInteger": 1 }
+      ],
+      "linkId": "11",
+      "text": "Repeterende gruppe der alle elementer i gruppen repeteres min 1 maks 3",
+      "type": "group",
+      "repeats": true,
+      "item": [
+        { "linkId": "11.1", "text": "Dato og tid", "type": "dateTime", "required": false, "repeats": false, "readOnly": false },
+        { "linkId": "11.2", "text": "Tekstfelt 1 linje", "type": "string", "required": false, "repeats": false, "readOnly": false },
+        { "linkId": "11.3", "text": "Tekstfelt flere linjer", "type": "text", "required": false, "repeats": false, "readOnly": false },
+        {
+          "linkId": "11.4",
+          "text": "Her er et integer felt for tallverdier.",
+          "type": "integer",
+          "required": false,
+          "repeats": false,
+          "readOnly": false
+        },
+        {
+          "linkId": "11.5",
+          "text": "Her er et decimal felt. Desimaldelen er synlig, men det er kun heltallsdelen som påvirkes av opp-/nedknappene. Desimaldelen må manuelt endres",
+          "type": "decimal",
+          "required": false,
+          "repeats": false,
+          "readOnly": false
+        }
+      ]
+    },
+    {
+      "linkId": "12",
+      "text": "Repetere et enkeltelement med regler",
+      "type": "group",
+      "repeats": false,
+      "item": [
+        {
+          "extension": [
+            { "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-maxOccurs", "valueInteger": 3 },
+            { "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-minOccurs", "valueInteger": 1 }
+          ],
+          "linkId": "12.1",
+          "text": "Repeterende enkeltelement, min 1 maks 3",
+          "type": "string",
+          "required": false,
+          "repeats": true,
+          "readOnly": false
+        }
+      ]
+    },
+    {
+      "linkId": "13",
+      "text": "Forklarende tekst mellom spørsmålstekst og inputområde. Formateringsmuligheter i Displayelementer",
+      "type": "group",
+      "repeats": false,
+      "item": [
+        {
+          "linkId": "13.1",
+          "text": "Tekstfelt 1 linje",
+          "_text": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                "valueMarkdown": "**Tekstfelt 1 linje** \r\n\r\n*En linje til med forklarende tekst*"
+              }
+            ]
+          },
+          "type": "string",
+          "required": false,
+          "repeats": false,
+          "readOnly": false
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "radio-button" }]
+              }
+            }
+          ],
+          "linkId": "13.2",
+          "text": "Svaralternativer av typen Choice med et \"referencevalue\" kodeverk definert utenfor skjemaet for gjenbruk på flere spørsmål. Her kodes det til radio",
+          "_text": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                "valueMarkdown": "**Svaralternativer av typen Choice med et \"referencevalue\" kodeverk definert utenfor skjemaet for gjenbruk på flere spørsmål. Her kodes det til radio** \r\n\r\n*En linje til med forklarende tekst*"
+              }
+            ]
+          },
+          "type": "choice",
+          "required": false,
+          "repeats": true,
+          "readOnly": false,
+          "answerValueSet": "#TEST01"
+        },
+        {
+          "linkId": "13.3",
+          "text": "Her skal det stå masse rart. Men jeg vil heller bruke MarkDown teksten..",
+          "_text": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                "valueMarkdown": "# Overskrift 1 #\r\n\r\n## Overskrift 2 ##\r\n \r\n* Listelement 1 \r\n* Listelement 2 \r\n* Listelement 3\r\n\r\n1. Listelement med numrering 1 \r\n2. Listelement med numrering 2 \r\n3. Listelement med numrering 3\r\n\r\nEn lenke [VG](http://www.vg.no/ \"VG\") midt inne i teksten.\r\n\r\n[VG](http://www.vg.no/)\r\n\r\nhttp://www.vg.no/\r\n\r\n*Kursiv tekst* \r\n\r\n**Fet tekst**\r\n\r\n**_Tekst_ **\r\n\r\n_Tekst_"
+              }
+            ]
+          },
+          "type": "display"
+        }
+      ]
+    },
+    {
+      "linkId": "14",
+      "text": "Kvantiteter og kodede verdier",
+      "type": "group",
+      "repeats": false,
+      "item": [
+        {
+          "extension": [
+            { "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "Du må oppgi en verdi mellom 30 og 300" },
+            { "url": "http://hl7.org/fhir/StructureDefinition/maxValue", "valueInteger": 300 },
+            { "url": "http://hl7.org/fhir/StructureDefinition/minValue", "valueInteger": 30 },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+              "valueCoding": { "system": "http://unitsofmeasure.org", "code": "cm", "display": "centimeter" }
+            }
+          ],
+          "linkId": "14.1",
+          "text": "Hvor lang er du?",
+          "type": "quantity",
+          "required": false,
+          "repeats": false,
+          "readOnly": false
+        },
+        {
+          "extension": [
+            { "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "Du må oppgi en verdi mellom 20 og 500" },
+            { "url": "http://hl7.org/fhir/StructureDefinition/maxValue", "valueInteger": 500 },
+            { "url": "http://hl7.org/fhir/StructureDefinition/minValue", "valueInteger": 20 },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+              "valueCoding": { "system": "http://unitsofmeasure.org", "code": "kg", "display": "kilo" }
+            }
+          ],
+          "linkId": "14.2",
+          "text": "Hvor mye veier du?",
+          "type": "quantity",
+          "required": false,
+          "repeats": false,
+          "readOnly": false
+        },
+        {
+          "extension": [
+            { "url": "http://hl7.org/fhir/StructureDefinition/maxValue", "valueInteger": 45 },
+            { "url": "http://hl7.org/fhir/StructureDefinition/minValue", "valueInteger": 30 },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+              "valueCoding": { "system": "http://unitsofmeasure.org", "code": "degree Celsius", "display": "grader celcius" }
+            }
+          ],
+          "linkId": "14.3",
+          "code": [
+            { "system": "http://loinc.org", "code": "8310-5", "display": "Body temperature" },
+            { "system": "http://loinc.org", "code": "8311-3", "display": "Body temperature 1 hour maximum" },
+            { "system": "http://loinc.org", "code": "8309-7", "display": "Body temperature from Pediatric incubator" }
+          ],
+          "text": "Hva er temperaturen din?",
+          "type": "quantity",
+          "required": false,
+          "repeats": false,
+          "readOnly": false
+        },
+        {
+          "linkId": "14.4",
+          "text": "Kodede verdier i førerrettprosjektet",
+          "type": "group",
+          "repeats": false,
+          "item": [
+            {
+              "linkId": "14.4.1",
+              "text": "Førerkortgruppe 1 - delkonklusjon",
+              "type": "group",
+              "repeats": false,
+              "item": [
+                {
+                  "linkId": "14.4.1.1",
+                  "code": [
+                    {
+                      "system": "http://ehelse.no/fhir/ValueSet/QuestionConclusionLicenseGroup",
+                      "code": "QCL-1",
+                      "display": "Conclusion Licence group 1"
+                    }
+                  ],
+                  "text": "Er helsekravene i forskriften likevel oppfylt? Eventuell begrenset varighet, kjørevurdering og/eller særlige vilkår angis i konklusjonen.",
+                  "type": "choice",
+                  "required": true,
+                  "repeats": false,
+                  "readOnly": false,
+                  "answerValueSet": "#TEST01",
+                  "item": [
+                    {
+                      "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/minValue", "valueInteger": 1 }],
+                      "linkId": "14.4.1.1.1",
+                      "text": "Begrenset varighet - oppgi antall måneder",
+                      "type": "integer",
+                      "enableWhen": [
+                        { "question": "14.4.1.1", "operator": "=", "answerCoding": { "system": "http://ehelse.no/TEST01", "code": "2" } }
+                      ],
+                      "enableBehavior": "any",
+                      "required": true,
+                      "repeats": false,
+                      "readOnly": false
+                    }
+                  ]
+                },
+                {
+                  "linkId": "14.4.1.2",
+                  "code": [
+                    {
+                      "system": "http://ehelse.no/fhir/ValueSet/QuestionConditions",
+                      "code": "QC-1",
+                      "display": "Optisk korreksjon må brukes under føring av motorvogn i førerkortgruppe 1, 2 og 3."
+                    }
+                  ],
+                  "text": "Optisk korreksjon må brukes under føring av motorvogn i førerkortgruppe 1, 2 og 3.",
+                  "type": "boolean",
+                  "required": false,
+                  "repeats": false,
+                  "readOnly": false
+                },
+                {
+                  "linkId": "14.4.1.3",
+                  "code": [
+                    {
+                      "system": "http://ehelse.no/fhir/ValueSet/QuestionConditions",
+                      "code": "QC-6",
+                      "display": "Helseattest gis med forbehold om at det leveres godkjent Helseattest førerett – syn"
+                    }
+                  ],
+                  "text": "Helseattest gis med forbehold om at det leveres godkjent Helseattest førerett – syn",
+                  "type": "boolean",
+                  "required": false,
+                  "repeats": false,
+                  "readOnly": false
+                }
+              ]
+            },
+            {
+              "linkId": "14.4.2",
+              "text": "Førerkortgruppe 1 - hovedkonklusjon",
+              "type": "group",
+              "repeats": false,
+              "item": [
+                {
+                  "linkId": "14.4.2.1",
+                  "code": [
+                    {
+                      "system": "http://ehelse.no/fhir/ValueSet/ConclusionLicenseGroup",
+                      "code": "CL-1",
+                      "display": "Conclusion Licence group 1"
+                    }
+                  ],
+                  "text": "Helsekrav",
+                  "type": "choice",
+                  "required": true,
+                  "repeats": false,
+                  "readOnly": false,
+                  "answerValueSet": "#TEST01",
+                  "item": [
+                    {
+                      "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/minValue", "valueInteger": 1 }],
+                      "linkId": "14.4.2.1.1",
+                      "text": "Begrenset varighet - oppgi antall måneder",
+                      "type": "integer",
+                      "enableWhen": [
+                        { "question": "14.4.2.1", "operator": "=", "answerCoding": { "system": "http://ehelse.no/TEST01", "code": "2" } }
+                      ],
+                      "enableBehavior": "any",
+                      "required": true,
+                      "repeats": false,
+                      "readOnly": false
+                    }
+                  ]
+                },
+                {
+                  "linkId": "14.4.2.2",
+                  "code": [
+                    {
+                      "system": "http://ehelse.no/fhir/ValueSet/ConclutionConditions",
+                      "code": "CC-1",
+                      "display": "Optisk korreksjon må brukes under føring av motorvogn i førerkortgruppe 1, 2 og 3."
+                    }
+                  ],
+                  "text": "Optisk korreksjon må brukes under føring av motorvogn i førerkortgruppe 1, 2 og 3.",
+                  "type": "boolean",
+                  "required": false,
+                  "repeats": false,
+                  "readOnly": true
+                },
+                {
+                  "linkId": "14.4.2.3",
+                  "code": [
+                    {
+                      "system": "http://ehelse.no/fhir/ValueSet/ConclutionConditions",
+                      "code": "CC-6",
+                      "display": "Helseattest gis med forbehold om at det leveres godkjent Helseattest førerett – syn"
+                    }
+                  ],
+                  "text": "Helseattest gis med forbehold om at det leveres godkjent Helseattest førerett – syn",
+                  "type": "boolean",
+                  "required": false,
+                  "repeats": false,
+                  "readOnly": true
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "15",
+      "text": "Berikingsdata innbygger",
+      "type": "group",
+      "repeats": false,
+      "item": [
+        {
+          "extension": [
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+              "valueString": "Patient.identifier.where(use = 'official' and system = 'urn:oid:2.16.578.1.12.4.1.4.1').value"
+            }
+          ],
+          "linkId": "15.1",
+          "text": "Fødselsnummer",
+          "type": "string",
+          "required": false,
+          "repeats": false,
+          "readOnly": true
+        },
+        {
+          "extension": [
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+              "valueString": "Patient.identifier.where(use = 'official' and (system = 'urn:oid:2.16.578.1.12.4.1.4.1' or system = 'urn:oid:2.16.578.1.12.4.1.4.2')).value"
+            }
+          ],
+          "linkId": "15.2",
+          "text": "Fødselsnummer og D-nummer",
+          "type": "string",
+          "required": false,
+          "repeats": false,
+          "readOnly": true
+        },
+        {
+          "extension": [{ "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath", "valueString": "Patient.birthDate" }],
+          "linkId": "15.3",
+          "text": "Fødselsdato",
+          "type": "date",
+          "required": false,
+          "repeats": false,
+          "readOnly": true
+        },
+        {
+          "extension": [
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+              "valueString": "iif($this is Patient, iif(Patient.gender.empty() or Patient.gender = 'other' or Patient.gender = 'unknown', 'Ukjent', iif(Patient.gender = 'female', 'Kvinne', 'Mann')), {})"
+            }
+          ],
+          "linkId": "15.4",
+          "text": "Kjønn gammel versjon i TEST",
+          "type": "string",
+          "required": false,
+          "repeats": false,
+          "readOnly": true
+        },
+        {
+          "extension": [
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+              "valueString": "Patient.name.where(use = 'official').select(iif(given.count() > 1, given.take(count()-1), given).join(' '))"
+            }
+          ],
+          "linkId": "15.5",
+          "text": "Fornavn",
+          "type": "string",
+          "required": false,
+          "repeats": false,
+          "readOnly": true
+        },
+        {
+          "extension": [
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+              "valueString": "Patient.name.where(use = 'official').select(iif(given.count() > 1, given.last(), ''))"
+            }
+          ],
+          "linkId": "15.6",
+          "text": "Mellomnavn",
+          "type": "string",
+          "required": false,
+          "repeats": false,
+          "readOnly": true
+        },
+        {
+          "extension": [
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+              "valueString": "Patient.name.where(use = 'official').family"
+            }
+          ],
+          "linkId": "15.7",
+          "text": "Etternavn",
+          "type": "string",
+          "required": false,
+          "repeats": false,
+          "readOnly": true
+        },
+        {
+          "extension": [
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+              "valueString": "Patient.telecom.where(use = 'mobile' and system = 'phone').value"
+            }
+          ],
+          "linkId": "15.8",
+          "text": "Telefonnummer fra kontaktregisteret DIFI",
+          "type": "string",
+          "required": false,
+          "repeats": false,
+          "readOnly": true
+        },
+        {
+          "extension": [
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+              "valueString": "Patient.telecom.where(use = 'home' and system = 'email').value"
+            }
+          ],
+          "linkId": "15.9",
+          "text": "Epost fra kontaktregisteret DIFI",
+          "type": "string",
+          "required": false,
+          "repeats": false,
+          "readOnly": true
+        },
+        {
+          "extension": [
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+              "valueString": "Patient.address.where(use = 'home').line.first()"
+            }
+          ],
+          "linkId": "15.10",
+          "text": "Adresselinje 1",
+          "type": "string",
+          "required": false,
+          "repeats": false,
+          "readOnly": true
+        },
+        {
+          "extension": [
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+              "valueString": "Patient.address.where(use = 'home').line.skip(1).first()"
+            }
+          ],
+          "linkId": "15.11",
+          "text": "Adresselinje 2",
+          "type": "string",
+          "required": false,
+          "repeats": false,
+          "readOnly": true
+        },
+        {
+          "extension": [
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+              "valueString": "Patient.address.where(use = 'home').line.skip(2).first()"
+            }
+          ],
+          "linkId": "15.12",
+          "text": "Adresselinje 3",
+          "type": "string",
+          "required": false,
+          "repeats": false,
+          "readOnly": true
+        },
+        {
+          "extension": [
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+              "valueString": "Patient.address.where(use = 'home').postalCode"
+            }
+          ],
+          "linkId": "15.13",
+          "text": "Postnummer",
+          "type": "string",
+          "required": false,
+          "repeats": false,
+          "readOnly": true
+        },
+        {
+          "extension": [
+            { "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath", "valueString": "Patient.address.where(use = 'home').city" }
+          ],
+          "linkId": "15.14",
+          "text": "Poststed",
+          "type": "string",
+          "required": false,
+          "repeats": false,
+          "readOnly": true
+        },
+        {
+          "extension": [
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+              "valueString": "Patient.address.where(use = 'home').country"
+            }
+          ],
+          "linkId": "15.15",
+          "text": "Land",
+          "type": "string",
+          "required": false,
+          "repeats": false,
+          "readOnly": true
+        },
+        {
+          "extension": [
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+              "valueString": "Patient.name.where(use = 'official').select(given.join(' ') & ' ' & family)"
+            }
+          ],
+          "linkId": "15.16",
+          "text": "Innbyggers navn",
+          "type": "string",
+          "required": false,
+          "repeats": false,
+          "readOnly": true
+        },
+        {
+          "extension": [{ "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath", "valueString": "%patient.gender" }],
+          "linkId": "15.17",
+          "text": "Kjønn råformat",
+          "type": "string",
+          "required": false,
+          "repeats": false,
+          "readOnly": true
+        },
+        {
+          "extension": [
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+              "valueString": "iif(%patient.gender.empty() or %patient.gender = 'other' or %patient.gender = 'unknown', 'Ukjent', iif(%patient.gender = 'female', 'Kvinne', 'Mann'))"
+            }
+          ],
+          "linkId": "15.18",
+          "text": "Kjønn ny versjon i MAS",
+          "type": "string",
+          "required": false,
+          "repeats": false,
+          "readOnly": true
+        }
+      ]
+    },
+    {
+      "linkId": "16",
+      "text": "Beriking fastlege",
+      "type": "group",
+      "repeats": false,
+      "item": [
+        {
+          "extension": [
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+              "valueString": "Practitioner.name.where(use = 'official').select(iif(given.count() > 1, given.take(count()-1), given).join(' '))"
+            }
+          ],
+          "linkId": "16.1",
+          "text": "Fornavn",
+          "type": "string",
+          "required": false,
+          "repeats": false,
+          "readOnly": true
+        },
+        {
+          "extension": [
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+              "valueString": "Practitioner.name.where(use = 'official').select(iif(given.count() > 1, given.last(), ''))"
+            }
+          ],
+          "linkId": "16.2",
+          "text": "Mellomnavn",
+          "type": "string",
+          "required": false,
+          "repeats": false,
+          "readOnly": true
+        },
+        {
+          "extension": [
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+              "valueString": "Practitioner.name.where(use = 'official').family"
+            }
+          ],
+          "linkId": "16.3",
+          "text": "Etternavn",
+          "type": "string",
+          "required": false,
+          "repeats": false,
+          "readOnly": true
+        },
+        {
+          "extension": [
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+              "valueString": "Practitioner.telecom.where(use = 'work' and system = 'phone').value"
+            }
+          ],
+          "linkId": "16.4",
+          "text": "Telefonnummer",
+          "type": "string",
+          "required": false,
+          "repeats": false,
+          "readOnly": true
+        },
+        {
+          "extension": [
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+              "valueString": "Practitioner.telecom.where(use = 'work' and system = 'email').value"
+            }
+          ],
+          "linkId": "16.5",
+          "text": "Epost",
+          "type": "string",
+          "required": false,
+          "repeats": false,
+          "readOnly": true
+        },
+        {
+          "extension": [
+            { "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath", "valueString": "Practitioner.contained.first().name" }
+          ],
+          "linkId": "16.6",
+          "text": "Legekontorets firmanavn",
+          "type": "string",
+          "required": false,
+          "repeats": false,
+          "readOnly": true
+        },
+        {
+          "extension": [
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+              "valueString": "Practitioner.contained.first().telecom.where(use = 'work' and system = 'phone').value"
+            }
+          ],
+          "linkId": "16.7",
+          "text": "Legekontorets telefonnummer",
+          "type": "string",
+          "required": false,
+          "repeats": false,
+          "readOnly": true
+        },
+        {
+          "extension": [
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+              "valueString": "Practitioner.contained.first().telecom.where(use = 'work' and system = 'email').value"
+            }
+          ],
+          "linkId": "16.8",
+          "text": "Legekontorets epostadresse",
+          "type": "string",
+          "required": false,
+          "repeats": false,
+          "readOnly": true
+        },
+        {
+          "extension": [
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+              "valueString": "Practitioner.contained.first().address.where(use = 'work').line.first()"
+            }
+          ],
+          "linkId": "16.9",
+          "text": "Legekontorets adresselinje 1",
+          "type": "string",
+          "required": false,
+          "repeats": false,
+          "readOnly": true
+        },
+        {
+          "extension": [
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+              "valueString": "Practitioner.contained.first().address.where(use = 'work').line.skip(1).first()"
+            }
+          ],
+          "linkId": "16.10",
+          "text": "Legekontorets adresselinje 2",
+          "type": "string",
+          "required": false,
+          "repeats": false,
+          "readOnly": true
+        },
+        {
+          "extension": [
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+              "valueString": "Practitioner.contained.first().address.where(use = 'work').line.skip(2).first()"
+            }
+          ],
+          "linkId": "16.11",
+          "text": "Legekontorets adresselinje 3",
+          "type": "string",
+          "required": false,
+          "repeats": false,
+          "readOnly": true
+        },
+        {
+          "extension": [
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+              "valueString": "Practitioner.contained.first().address.where(use = 'work').postalCode"
+            }
+          ],
+          "linkId": "16.12",
+          "text": "Legekontorets Postnummer",
+          "type": "string",
+          "required": false,
+          "repeats": false,
+          "readOnly": true
+        },
+        {
+          "extension": [
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+              "valueString": "Practitioner.contained.first().address.where(use = 'work').city"
+            }
+          ],
+          "linkId": "16.13",
+          "text": "Legekontorets Poststed",
+          "type": "string",
+          "required": false,
+          "repeats": false,
+          "readOnly": true
+        },
+        {
+          "extension": [
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+              "valueString": "Practitioner.contained.first().address.where(use = 'work').country"
+            }
+          ],
+          "linkId": "16.14",
+          "text": "Legekontorets Land",
+          "type": "string",
+          "required": false,
+          "repeats": false,
+          "readOnly": true
+        },
+        {
+          "extension": [
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+              "valueString": "Practitioner.name.where(use = 'official').select(given.join(' ') & ' ' & family)"
+            }
+          ],
+          "linkId": "16.15",
+          "text": "Legens navn",
+          "type": "string",
+          "required": false,
+          "repeats": false,
+          "readOnly": true
+        },
+        {
+          "extension": [
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-fhirpath",
+              "valueString": "Practitioner.identifier.where(use = 'official' and system = 'urn:oid:2.16.578.1.12.4.1.4.4').value"
+            }
+          ],
+          "linkId": "16.16",
+          "text": "Legens HPR-nummer",
+          "type": "string",
+          "required": false,
+          "repeats": false,
+          "readOnly": true
+        }
+      ]
+    },
+    {
+      "linkId": "17",
+      "text": "Hidden - feltet under skal skjules",
+      "type": "group",
+      "repeats": false,
+      "item": [
+        {
+          "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-hidden", "valueBoolean": true }],
+          "linkId": "17.1",
+          "text": "Dette feltet skal ikke vises for innbygger. For eksempel ved kalkulasjoner og skåringer som kun mottaker skal se.",
+          "type": "string",
+          "required": false,
+          "repeats": false,
+          "readOnly": false
+        }
+      ]
+    },
+    {
+      "linkId": "18",
+      "text": "Skåring - Ordinal - tallverdi i options brukt i kalkulajsoner og en sum",
+      "type": "group",
+      "repeats": false,
+      "item": [
+        {
+          "linkId": "18.1",
+          "text": "Hvor ofte har du vært plaget av ett eller flere av de følgende problemene i løpet av de siste to ukene.",
+          "_text": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                "valueMarkdown": "Hvor ofte har du vært plaget av de følgende problemene i løpet av *de siste to ukene.*"
+              }
+            ]
+          },
+          "type": "display"
+        },
+        {
+          "linkId": "18.2",
+          "code": [{ "system": "http://ehelse.no/scoringFormulas", "code": "QS", "display": "QuestionScore" }],
+          "text": "Følt deg nedfor, deprimert eller fylt av håpløshet",
+          "type": "choice",
+          "required": false,
+          "repeats": false,
+          "readOnly": false,
+          "answerOption": [
+            {
+              "valueCoding": {
+                "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue", "valueDecimal": 0.0 }],
+                "code": "LA6568-5",
+                "display": "Ikke i det hele tatt"
+              }
+            },
+            {
+              "valueCoding": {
+                "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue", "valueDecimal": 1.0 }],
+                "code": "LA6569-3",
+                "display": "Noen dager"
+              }
+            },
+            {
+              "valueCoding": {
+                "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue", "valueDecimal": 2.0 }],
+                "code": "LA6570-1",
+                "display": "Mer enn halvparten av dagene"
+              }
+            },
+            {
+              "valueCoding": {
+                "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue", "valueDecimal": 3.0 }],
+                "code": "LA6571-9",
+                "display": "Nesten hver dag"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "18.3",
+          "code": [{ "system": "http://ehelse.no/scoringFormulas", "code": "QS", "display": "QuestionScore" }],
+          "text": "Vansker med å sovne, sove uten avbrudd eller sovet for mye",
+          "type": "choice",
+          "required": false,
+          "repeats": false,
+          "readOnly": false,
+          "answerOption": [
+            {
+              "valueCoding": {
+                "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue", "valueDecimal": 0.0 }],
+                "code": "LA6568-5",
+                "display": "Ikke i det hele tatt"
+              }
+            },
+            {
+              "valueCoding": {
+                "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue", "valueDecimal": 1.0 }],
+                "code": "LA6569-3",
+                "display": "Noen dager"
+              }
+            },
+            {
+              "valueCoding": {
+                "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue", "valueDecimal": 2.0 }],
+                "code": "LA6570-1",
+                "display": "Mer enn halvparten av dagene"
+              }
+            },
+            {
+              "valueCoding": {
+                "extension": [{ "url": "http://hl7.org/fhir/StructureDefinition/ordinalValue", "valueDecimal": 3.0 }],
+                "code": "LA6571-9",
+                "display": "Nesten hver dag"
+              }
+            }
+          ]
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+              "valueCoding": { "system": "http://ehelse.no/Score", "code": "score", "display": "score" }
+            }
+          ],
+          "linkId": "18.4",
+          "code": [{ "system": "http://ehelse.no/scoringFormulas", "code": "TS", "display": "Totalscore" }],
+          "text": "Sum",
+          "type": "quantity",
+          "required": false,
+          "repeats": false,
+          "readOnly": false
+        }
+      ]
+    },
+    {
+      "linkId": "19",
+      "text": "Regex",
+      "type": "group",
+      "repeats": false,
+      "item": [
+        {
+          "extension": [
+            { "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "Kun 4 heltall er lovlig." },
+            { "url": "http://hl7.org/fhir/StructureDefinition/regex", "valueString": "^([0-9]){4}$" }
+          ],
+          "linkId": "19.1",
+          "text": "Postnummer",
+          "type": "string",
+          "required": false,
+          "repeats": false,
+          "readOnly": false
+        },
+        {
+          "extension": [
+            { "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "Du må skrive en gyldig epostadresse" },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/regex",
+              "valueString": "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$"
+            }
+          ],
+          "linkId": "19.2",
+          "text": "Eksempel reg ex - E-postadresse",
+          "type": "string",
+          "required": false,
+          "repeats": false,
+          "readOnly": false
+        },
+        {
+          "extension": [
+            { "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "Du må oppgi et korrekt telefonnummer" },
+            { "url": "http://hl7.org/fhir/StructureDefinition/regex", "valueString": "^((\\+|00)(\\d{1,3}))?\\d{5,12}$" }
+          ],
+          "linkId": "19.3",
+          "text": "Telefonnummer",
+          "type": "string",
+          "required": false,
+          "repeats": false,
+          "readOnly": false
+        },
+        {
+          "extension": [
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/validationtext",
+              "valueString": "Du må oppgi et korrekt fødselsnummer 11 siffer"
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/regex",
+              "valueString": "\\b((((0[1-9]|[12]\\d|3[01])([04][13578]|[15][02]))|((0[1-9]|[12]\\d|30)([04][469]|[15]1))|((0[1-9]|[12]\\d)([04]2)))|((([0-7][1-9]|[12]\\d|3[01])(0[13578]|1[02]))|(([0-7][1-9]|[12]\\d|30)(0[469]|11))|(([0-7][1-9]|[12]\\d)(02))))\\d{7}\\b"
+            }
+          ],
+          "linkId": "19.4",
+          "text": "Fødselsnummer",
+          "type": "string",
+          "required": false,
+          "repeats": false,
+          "readOnly": false
+        },
+        {
+          "extension": [
+            { "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "Du kan kun oppgi bokstaver" },
+            { "url": "http://hl7.org/fhir/StructureDefinition/regex", "valueString": "^[a-zA-ZæøåÆØÅ ]*$" }
+          ],
+          "linkId": "19.5",
+          "text": "Kun bokstaver inkludert Æ Ø Å",
+          "type": "string",
+          "required": false,
+          "repeats": false,
+          "readOnly": false
+        },
+        {
+          "extension": [
+            { "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "Du kan kun oppgi tall" },
+            { "url": "http://hl7.org/fhir/StructureDefinition/regex", "valueString": "\\d" }
+          ],
+          "linkId": "19.6",
+          "text": "Kun tall",
+          "type": "string",
+          "required": false,
+          "repeats": false,
+          "readOnly": false
+        },
+        {
+          "extension": [
+            { "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "Du må oppgi et fornavn og et etternavn" },
+            { "url": "http://hl7.org/fhir/StructureDefinition/regex", "valueString": "^[[:upper:]][[:lower:]]+ [[:upper:]][[:lower:]]+$" }
+          ],
+          "linkId": "19.7",
+          "text": "Fornavn og etternavn",
+          "_text": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                "valueMarkdown": "**Fornavn og etternavn**\r\n*Matcher hele linjer med bare to ord. Ordene må være skilt med én enkel SPACE. Stor bokstav først i hvert ord, resten små bokstaver*"
+              }
+            ]
+          },
+          "type": "string",
+          "required": false,
+          "repeats": false,
+          "readOnly": false
+        },
+        {
+          "extension": [
+            { "url": "http://ehelse.no/fhir/StructureDefinition/validationtext", "valueString": "Du må oppgi korrekt bankkontonummer" },
+            { "url": "http://hl7.org/fhir/StructureDefinition/regex", "valueString": "[0­9]{4}\\.[0­9]{2}\\.[0­9]{5}" }
+          ],
+          "linkId": "19.8",
+          "text": "Bankkonto",
+          "type": "string",
+          "required": false,
+          "repeats": false,
+          "readOnly": false
+        }
+      ]
+    },
+    {
+      "linkId": "20",
+      "text": "Preutfylte verdier Choice",
+      "type": "group",
+      "repeats": false,
+      "item": [
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "radio-button" }]
+              }
+            }
+          ],
+          "linkId": "20.1",
+          "text": "Svaralternativer av typen Choice med et \"referencevalue\" kodeverk definert utenfor skjemaet for gjenbruk på flere spørsmål. Her kodes det til radio",
+          "type": "choice",
+          "required": false,
+          "repeats": false,
+          "readOnly": true,
+          "answerValueSet": "#TEST01"
+        }
+      ]
+    },
+    {
+      "linkId": "21",
+      "text": "Hjelp - HelpButton",
+      "type": "group",
+      "repeats": false,
+      "item": [
+        {
+          "linkId": "21.1",
+          "text": "Søkers personopplysninger",
+          "type": "group",
+          "repeats": false,
+          "item": [
+            {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                  "valueCodeableConcept": {
+                    "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "help" }]
+                  }
+                }
+              ],
+              "linkId": "21.1.1",
+              "text": "Hjelpetekst til Søkers personopplysninger",
+              "type": "text",
+              "required": false,
+              "repeats": false,
+              "readOnly": false
+            }
+          ]
+        },
+        {
+          "linkId": "21.2",
+          "text": "Personopplysninger",
+          "type": "group",
+          "repeats": false,
+          "item": [
+            {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                  "valueCodeableConcept": {
+                    "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "help" }]
+                  }
+                }
+              ],
+              "linkId": "21.2.1",
+              "text": "Hjelpetekst til personopplysninger",
+              "type": "text",
+              "required": false,
+              "repeats": false,
+              "readOnly": false
+            }
+          ]
+        },
+        {
+          "linkId": "21.3",
+          "text": "Her kan du skrive noe",
+          "type": "string",
+          "required": false,
+          "repeats": false,
+          "readOnly": false,
+          "item": [
+            {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                  "valueCodeableConcept": {
+                    "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "help" }]
+                  }
+                }
+              ],
+              "linkId": "21.3.1",
+              "text": "Hjelpetekst med markDown til \"Her kan du skrive noe\"",
+              "_text": {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                    "valueMarkdown": "Hjelpetekst med markDown til \"Her kan du skrive noe\"\r\n\r\nHer **kommer** det mer *tekst*"
+                  }
+                ]
+              },
+              "type": "text",
+              "required": false,
+              "repeats": false,
+              "readOnly": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "22",
+      "text": "Hjelpetekst fra API - utfyller bestemmer utseendet på dette",
+      "type": "group",
+      "repeats": false,
+      "item": [
+        {
+          "linkId": "22.1",
+          "text": "Søkers personopplysninger",
+          "type": "group",
+          "repeats": false,
+          "item": [
+            {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                  "valueCodeableConcept": {
+                    "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "help-link" }]
+                  }
+                }
+              ],
+              "linkId": "22.1.1",
+              "text": "https://lovdata.no/forskrift/2004-01-19-298/§16",
+              "type": "text",
+              "required": false,
+              "repeats": false,
+              "readOnly": false
+            }
+          ]
+        },
+        {
+          "linkId": "22.2",
+          "text": "Personopplysninger",
+          "type": "group",
+          "repeats": false,
+          "item": [
+            {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                  "valueCodeableConcept": {
+                    "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "help-link" }]
+                  }
+                }
+              ],
+              "linkId": "22.2.1",
+              "text": "https://lovdata.no/forskrift/2004-01-19-298/§16",
+              "type": "text",
+              "required": false,
+              "repeats": false,
+              "readOnly": false
+            }
+          ]
+        },
+        {
+          "linkId": "22.3",
+          "text": "Her kan du skrive noe",
+          "type": "string",
+          "required": false,
+          "repeats": false,
+          "readOnly": false,
+          "item": [
+            {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                  "valueCodeableConcept": {
+                    "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "help-link" }]
+                  }
+                }
+              ],
+              "linkId": "22.3.1",
+              "text": "https://lovdata.no/forskrift/2004-01-19-298/§16",
+              "type": "text",
+              "required": false,
+              "repeats": false,
+              "readOnly": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "23",
+      "text": "Inline tekstvisning",
+      "type": "group",
+      "repeats": false,
+      "item": [
+        {
+          "linkId": "23.1",
+          "text": "Her er en gruppe",
+          "type": "group",
+          "repeats": false,
+          "item": [
+            {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                  "valueCodeableConcept": {
+                    "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "inline" }]
+                  }
+                }
+              ],
+              "linkId": "23.1.1",
+              "text": "Her er linjen som åpner teksten",
+              "type": "text",
+              "required": false,
+              "repeats": false,
+              "readOnly": false,
+              "item": [
+                {
+                  "linkId": "23.1.1.1",
+                  "text": "Her er teksten som skal åpnes",
+                  "_text": {
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/rendering-markdown",
+                        "valueMarkdown": "Her er teksten som skal åpnes av knappen over, med markDown\r\n\r\nHer **kommer** det mer *tekst* \r\n\r\n[Les mer on inline her:](https://www.hl7.org/fhir/codesystem-questionnaire-item-control.html)"
+                      }
+                    ]
+                  },
+                  "type": "display"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "24",
+      "text": "Valg av mottakere og endepunkter i skjema",
+      "type": "group",
+      "repeats": false,
+      "item": [
+        {
+          "extension": [
+            { "url": "http://hl7.org/fhir/StructureDefinition/entryFormat", "valueString": "Velg en verdi i listen" },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [{ "system": "http://hl7.org/fhir/ValueSet/questionnaire-item-control", "code": "drop-down" }]
+              }
+            },
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-optionReference",
+              "valueReference": { "reference": "Endpoint/2", "display": "Helse Bergen HF" }
+            },
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-optionReference",
+              "valueReference": { "reference": "Endpoint/12", "display": "Helse Førde HF" }
+            },
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-optionReference",
+              "valueReference": { "reference": "Endpoint/13", "display": "Helse Fonna HF" }
+            },
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-optionReference",
+              "valueReference": { "reference": "Endpoint/14", "display": "Jæren Distriktspsykiatriske Senter" }
+            },
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-optionReference",
+              "valueReference": { "reference": "Endpoint/15", "display": "Haraldsplass Diakonale Sykehus" }
+            },
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-optionReference",
+              "valueReference": { "reference": "Endpoint/16", "display": "Haugesund Sanitetsforenings Revmatismesykehus" }
+            },
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-optionReference",
+              "valueReference": { "reference": "Endpoint/17", "display": "Voss Dps Nks Bjørkeli" }
+            },
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-optionReference",
+              "valueReference": { "reference": "Endpoint/18", "display": "Stiftelsen Betanien Bergen" }
+            },
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-optionReference",
+              "valueReference": { "reference": "Endpoint/19", "display": "Nks Olaviken Alderspsykiatriske Sykehus" }
+            },
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-optionReference",
+              "valueReference": { "reference": "Endpoint/20", "display": "Solli Sykehus" }
+            },
+            {
+              "url": "http://ehelse.no/fhir/StructureDefinition/sdf-optionReference",
+              "valueReference": { "reference": "Endpoint/21", "display": "Blå Kors Haugaland A- Senter" }
+            }
+          ],
+          "linkId": "24.1",
+          "code": [
+            {
+              "system": "http://ehelse.no/fhir/ValueSet/TQQC",
+              "code": "1",
+              "display": "Technical endpoint for receiving QuestionnaireResponse"
+            }
+          ],
+          "text": "Svaralternativer av typen Choice med et \"referenceValue\"-sett definert direkte i skjemaet ved bruk av attributtet Questionnaire.item.option. Her adressater.",
+          "type": "choice",
+          "required": false,
+          "repeats": false,
+          "readOnly": false
         }
       ]
     }
