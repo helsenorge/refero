@@ -1,3 +1,7 @@
+## 16.0.0-beta.55
+- Bugfix: Backspace deleted the entire datestring in DateDay and DateTime
+- Bugfix: FormButtons placement
+
 ## 16.0.0-beta.54
 - update default form values
 

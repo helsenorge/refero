@@ -2,7 +2,6 @@ import '../../util/__tests__/defineFetch';
 
 import { Questionnaire, QuestionnaireItem, Extension, QuestionnaireItemEnableWhen } from 'fhir/r4';
 
-import Valueset from '../../util/__tests__/__data__/valuesets/valueset-8459';
 import { createDataReceiverExpressionExtension, createItemControlExtension } from '../__tests__/utils';
 import ItemType from '../../constants/itemType';
 import { renderRefero, userEvent, waitFor } from '../../../test/test-utils';
@@ -10,6 +9,7 @@ import { clickByLabelText } from '@test/selectors';
 import ItemControlConstants from '@/constants/itemcontrol';
 import { Extensions } from '@/constants/extensions';
 import valueSet from '@/constants/valuesets';
+import { Valueset } from '@/util/__tests__/__data__/valuesets/valueset-8459';
 
 describe('Copy value from item', () => {
   it('should copy STRING value', async () => {

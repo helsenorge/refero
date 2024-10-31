@@ -2,8 +2,6 @@ import { FormEvent, KeyboardEvent, MouseEvent } from 'react';
 
 import Button from '@helsenorge/designsystem-react/components/Button';
 
-import styles from './formButtons.module.css';
-
 type Props = {
   submitButtonDisabled?: boolean;
   onSubmitButtonClicked?:
@@ -22,7 +20,7 @@ export const SubmitFormButton = ({ submitButtonText, submitButtonDisabled, onSub
     }
   };
   return (
-    <div className={styles.submitButtonStyle}>
+    <div>
       <Button type="submit" disabled={submitButtonDisabled} onClick={handleSubmit} testId="refero-submit-button">
         {submitButtonText}
       </Button>

@@ -1,11 +1,13 @@
-import { format, isValid } from 'date-fns';
-
-import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
+import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { FieldError, FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
 
-import { DateFormat, DateTimeUnit } from '../../../types/dateTypes';
+import { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 
+import { format, isValid } from 'date-fns';
 import { DatePicker, DateTimePickerWrapper, DateTime } from '@helsenorge/datepicker/components/DatePicker';
+
+import { DateFormat, DateTimeUnit } from '../../../types/dateTypes';
 
 import { newDateTimeValueAsync } from '../../../actions/newValue';
 import { GlobalState, useAppDispatch } from '../../../reducers';
@@ -24,7 +26,6 @@ import {
 import { isRequired, getId, isReadOnly } from '../../../util/index';
 import styles from '../common-styles.module.css';
 import { ReferoLabel } from '@/components/referoLabel/ReferoLabel';
-import { useSelector } from 'react-redux';
 import { QuestionnaireComponentItemProps } from '@/components/createQuestionnaire/GenerateQuestionnaireComponents';
 import { useGetAnswer } from '@/hooks/useGetAnswer';
 import RenderRepeatButton from '../repeat/RenderRepeatButton';
@@ -79,10 +80,17 @@ const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, childr
   };
 
   const dateAnswerValue = getDateAnswerValue(answer);
-  const date: Date | string | undefined = parseStringToDate(dateAnswerValue);
-  const hours = getHoursOrMinutesFromDate(date, DateTimeUnit.Hours);
-  const minutes = getHoursOrMinutesFromDate(date, DateTimeUnit.Minutes);
+  const dateAnswerValueParsed = parseStringToDate(dateAnswerValue);
+  const [dateValue, setDateValue] = useState(dateAnswerValueParsed);
+  const hours = getHoursOrMinutesFromDate(dateAnswerValueParsed, DateTimeUnit.Hours);
+  const minutes = getHoursOrMinutesFromDate(dateAnswerValueParsed, DateTimeUnit.Minutes);
   const pdfValue = getPDFValueForDate(dateAnswerValue, resources?.ikkeBesvart, DateFormat.yyyyMMddHHmmssXXX, DateFormat.ddMMyyyyHHmm);
+
+  useEffect(() => {
+    if (isValid(dateAnswerValueParsed)) {
+      setDateValue(dateAnswerValueParsed);
+    }
+  }, [dateAnswerValue]);
 
   function getCombinedFieldError(dateField: FieldValues, hoursField: FieldValues, minutesField: FieldValues): FieldError | undefined {
     const error = dateField.error || hoursField.error || minutesField.error || undefined;
@@ -95,12 +103,12 @@ const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, childr
 
   const handleHoursChange = (newHours: string | undefined): void => {
     if (newHours && Number(newHours) >= 0 && Number(newHours) < 24) {
-      updateQuestionnaireResponse(date, newHours, minutes);
+      updateQuestionnaireResponse(dateValue, newHours, minutes);
     }
   };
   const handleMinutesChange = (newMinutes: string | undefined): void => {
     if (newMinutes && Number(newMinutes) >= 0 && Number(newMinutes) < 60) {
-      updateQuestionnaireResponse(date, hours, newMinutes);
+      updateQuestionnaireResponse(dateValue, hours, newMinutes);
     }
   };
 
@@ -112,13 +120,13 @@ const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, childr
     let fullDate: string | undefined = '';
     if (typeof newDate === 'string') {
       const parsedDate = parseStringToDate(newDate);
-      if (isValid(parsedDate)) {
-        if (parsedDate && isValid(parsedDate)) {
-          const formatedDate = format(parsedDate, 'yyyy-MM-dd');
-          fullDate = getFullFnsDate(formatedDate, newHours, newMinutes);
-        }
+      if (parsedDate && isValid(parsedDate)) {
+        setDateValue(parsedDate);
+        const formatedDate = format(parsedDate, 'yyyy-MM-dd');
+        fullDate = getFullFnsDate(formatedDate, newHours, newMinutes);
       }
     } else if (isValid(newDate)) {
+      setDateValue(newDate);
       fullDate = getFullFnsDate(newDate, newHours, newMinutes);
     }
 
@@ -236,7 +244,7 @@ const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, childr
             autoComplete=""
             dateButtonAriaLabel="Open datepicker"
             dateFormat={'dd.MM.yyyy'}
-            dateValue={isValid(date) ? date : undefined}
+            dateValue={isValid(dateValue) ? dateValue : undefined}
             minDate={minDateTime}
             maxDate={maxDateTime}
             onChange={(e, newDate) => {
