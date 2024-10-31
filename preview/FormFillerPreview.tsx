@@ -16,7 +16,7 @@ import LanguageLocales from '@helsenorge/core-utils/constants/languages';
 import FormFillerSidebar from './FormFillerSidebar';
 import { emptyPropertyReplacer } from './helpers';
 import { getResources } from './resources/referoResources';
-import skjema from './skjema/mandatory_time.json';
+import skjema from './skjema/HV-SOS-1-v2.4.json';
 
 import ReferoContainer from '../src/components/index';
 import valueSet from '../src/constants/valuesets';
@@ -47,28 +47,72 @@ const getQuestionnaireFromBubndle = (bundle: Bundle<Questionnaire> | Questionnai
 const fetchReceiversFn = (successCallback: (receivers: Array<OrgenhetHierarki>) => void): any => {
   successCallback([
     {
-      OrgenhetId: 1,
+      OrgenhetId: 204,
+      Navn: 'Helse Vest',
+      EnhetType: 1,
       EndepunktId: null,
-      Navn: 'Region 1',
-      EnhetType: EnhetType.Region,
       UnderOrgenheter: [
-        { OrgenhetId: 11, EndepunktId: '1', Navn: 'Receiver 1', EnhetType: EnhetType.Foretak, UnderOrgenheter: null },
-        { OrgenhetId: 12, EndepunktId: '11', Navn: 'Receiver 11', EnhetType: EnhetType.Foretak, UnderOrgenheter: null },
+        {
+          OrgenhetId: 227,
+          Navn: 'Betanien sykehus',
+          EnhetType: 2,
+          EndepunktId: '18',
+          UnderOrgenheter: null,
+          VisningType: 2,
+          ForelderId: 204,
+          ExpectedChildCount: 0,
+          StatusType: 2,
+        },
+        {
+          OrgenhetId: 221,
+          Navn: 'Helse Førde',
+          EnhetType: 2,
+          EndepunktId: '12',
+          UnderOrgenheter: null,
+          VisningType: 2,
+          ForelderId: 204,
+          ExpectedChildCount: 0,
+          StatusType: 2,
+        },
+        {
+          OrgenhetId: 218,
+          Navn: 'Helse Stavanger',
+          EnhetType: 2,
+          EndepunktId: '3',
+          UnderOrgenheter: null,
+          VisningType: 2,
+          ForelderId: 204,
+          ExpectedChildCount: 0,
+          StatusType: 2,
+        },
       ],
+      VisningType: 2,
+      ForelderId: null,
+      ExpectedChildCount: 3,
+      StatusType: 2,
     },
     {
-      OrgenhetId: 2,
+      OrgenhetId: 190,
+      Navn: 'TestRegion Norsk Helsenett',
+      EnhetType: 1,
       EndepunktId: null,
-      Navn: 'Region 2',
-      EnhetType: EnhetType.Region,
-      UnderOrgenheter: [{ OrgenhetId: 21, EndepunktId: '2', Navn: 'Receiver 2', EnhetType: EnhetType.Foretak, UnderOrgenheter: null }],
-    },
-    {
-      OrgenhetId: 2,
-      EndepunktId: '1',
-      Navn: 'Region 3',
-      EnhetType: EnhetType.Foretak,
-      UnderOrgenheter: null,
+      UnderOrgenheter: [
+        {
+          OrgenhetId: 187,
+          Navn: 'Testforetak 1 Norsk Helsenett',
+          EnhetType: 2,
+          EndepunktId: 'test-endpoint',
+          UnderOrgenheter: null,
+          VisningType: 1,
+          ForelderId: 190,
+          ExpectedChildCount: 0,
+          StatusType: 2,
+        },
+      ],
+      VisningType: 2,
+      ForelderId: null,
+      ExpectedChildCount: 1,
+      StatusType: 2,
     },
   ]);
 };
