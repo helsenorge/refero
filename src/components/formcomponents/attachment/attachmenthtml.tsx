@@ -1,5 +1,5 @@
 import { Attachment, QuestionnaireItem } from 'fhir/r4';
-import { FieldError, FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
+import { FieldValues, RegisterOptions, useFormContext } from 'react-hook-form';
 import styles from '../common-styles.module.css';
 import FormGroup from '@helsenorge/designsystem-react/components/FormGroup';
 import NotificationPanel from '@helsenorge/designsystem-react/components/NotificationPanel';

@@ -158,10 +158,10 @@ describe('onAnswerChange callback gets called and can request additional changes
     const { queryByTestId } = wrapper(onChange, questionnaireWithAllItemTypes);
     await clickByLabelText(/Boolean/i);
 
-    expect(queryByTestId('item_5a-1-radio-choice-label')?.querySelector('#item_5a-hn-1')).toHaveAttribute('checked', '');
+    expect(queryByTestId('item_5a-1-radio-choice-label')?.querySelector('#item_5a-hn-1')).toBeChecked();
   });
 
-  it('choice (radiobuttons) does not get cleared', async () => {
+  it('choice (radiobuttons) get cleared', async () => {
     const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
       actionRequester.addChoiceAnswer('5a', toCoding('2', 'urn:oid:2.16.578.1.12.4.1.1101'));
       actionRequester.removeChoiceAnswer('5a', toCoding('2', 'urn:oid:2.16.578.1.12.4.1.1101'));
@@ -170,7 +170,7 @@ describe('onAnswerChange callback gets called and can request additional changes
     const { queryByTestId } = wrapper(onChange, questionnaireWithAllItemTypes);
     await clickByLabelText(/Boolean/i);
 
-    expect(queryByTestId('item_5a-1-radio-choice-label')?.querySelector('#item_5a-hn-1')).toHaveAttribute('checked', '');
+    expect(queryByTestId('item_5a-1-radio-choice-label')?.querySelector('#item_5a-hn-1')).toBeChecked();
   });
 
   it('choice (checkboxes) gets updated', async () => {
@@ -203,9 +203,9 @@ describe('onAnswerChange callback gets called and can request additional changes
     const { queryByTestId } = wrapper(onChange, questionnaireWithAllItemTypes);
     await clickByLabelText(/Boolean/i);
 
-    expect(queryByTestId('item_6a-1-radio-open-choice-label')?.querySelector('#item_6a-hn-1')).toHaveAttribute('checked', '');
+    expect(queryByTestId('item_6a-1-radio-open-choice-label')?.querySelector('#item_6a-hn-1')).toBeChecked();
   });
-  it('openchoice (radiobuttons) does not get cleared', async () => {
+  it('openchoice (radiobuttons) get cleared', async () => {
     const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
       actionRequester.addChoiceAnswer('6a', toCoding('2', 'urn:oid:2.16.578.1.12.4.1.1101'));
       actionRequester.removeChoiceAnswer('6a', toCoding('2', 'urn:oid:2.16.578.1.12.4.1.1101'));
@@ -214,7 +214,7 @@ describe('onAnswerChange callback gets called and can request additional changes
     const { queryByTestId } = wrapper(onChange, questionnaireWithAllItemTypes);
     await clickByLabelText(/Boolean/i);
 
-    expect(queryByTestId('item_6a-1-radio-open-choice-label')?.querySelector('#item_6a-hn-1')).toHaveAttribute('checked', '');
+    expect(queryByTestId('item_6a-1-radio-open-choice-label')?.querySelector('#item_6a-hn-1')).toBeChecked();
   });
   it('openchoice (checkboxes) gets updated', async () => {
     const onChange = createOnChangeFuncForActionRequester((actionRequester: IActionRequester) => {
@@ -430,7 +430,7 @@ describe('onAnswerChange callback gets called and can request additional changes
     await clickByLabelText(/Boolean/i);
 
     const item1 = findItem('6a-hn-2', container);
-    expect(item1).toHaveAttribute('checked', '');
+    expect(item1).toBeChecked();
 
     const item2 = findItem('6a-extra-field', container);
     expect(item2).toHaveValue('Hello World!');

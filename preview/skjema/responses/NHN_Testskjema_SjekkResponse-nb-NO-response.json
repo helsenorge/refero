@@ -1,0 +1,726 @@
+{
+  "resourceType": "QuestionnaireResponse",
+  "status": "in-progress",
+  "item": [
+    {
+      "linkId": "fcd20b3a-1177-4201-8bec-b7fbb4761f8b",
+      "text": "Kun data inn",
+      "item": [
+        {
+          "linkId": "f7d17eff-75d8-4df2-8f97-bc76c3b29f42",
+          "text": "Enlinje",
+          "answer": [
+            {
+              "valueString": "asd"
+            }
+          ]
+        },
+        {
+          "linkId": "3de26587-4032-4dc1-8463-9650729623a2",
+          "text": "Flerlinje",
+          "answer": [
+            {
+              "valueString": "asdasd\nasdasd"
+            }
+          ]
+        },
+        {
+          "linkId": "cc24a2b4-84de-42fe-8a15-2fd13313f014",
+          "text": "Tall",
+          "answer": [
+            {
+              "valueInteger": 12
+            }
+          ]
+        },
+        {
+          "linkId": "0626b077-4964-4b8a-8de5-9b5768f315d6",
+          "text": "Desimaltall",
+          "answer": [
+            {
+              "valueInteger": 2
+            }
+          ]
+        },
+        {
+          "linkId": "0d7465e6-2e98-4b26-c56c-4ac1b85a3786",
+          "text": "Kvantitet",
+          "answer": [
+            {
+              "valueQuantity": {
+                "unit": "centimeter",
+                "system": "http://unitsofmeasure.org",
+                "code": "cm",
+                "value": 12
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "3e84d30d-3c83-4e83-afab-30ad5e6f33c8",
+          "text": "Vedlegg",
+          "answer": [
+            {
+              "valueAttachment": {
+                "url": "url",
+                "data": "avatar.png",
+                "contentType": "image/png"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "bd2ae123-dcbc-4a9e-8f41-4122369d2592",
+          "text": "Alternativer med predefinert kodeverk",
+          "answer": [
+            {
+              "valueCoding": {
+                "code": "1",
+                "display": "Ja",
+                "system": "urn:oid:2.16.578.1.12.4.1.1102"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "7a1d6e54-97d6-48c8-87c4-bbe4f50ddf34",
+          "text": "Alternativer med predefinert kodeverk og tekstfelt for åpent svar",
+          "answer": [
+            {
+              "valueCoding": {
+                "code": "2",
+                "display": "Nei",
+                "system": "urn:oid:2.16.578.1.12.4.1.1102"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "890eef76-a7c7-4fb9-8aaa-db03c40091ed",
+          "text": "Alternativer med lokaldefinert kodeverk",
+          "answer": [
+            {
+              "valueCoding": {
+                "code": "hei",
+                "display": "Hei",
+                "system": "urn:uuid:8cf3ec30-64dc-4c58-bdce-a2346f382664"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "25c56054-6d79-449e-a16f-b31064a55610",
+          "text": "Alternativer med lokaldefinert kodeverk og tekstfelt for åpent svar",
+          "answer": [
+            {
+              "valueCoding": {
+                "code": "på",
+                "display": "på",
+                "system": "urn:uuid:8cf3ec30-64dc-4c58-bdce-a2346f382664"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "cd20ddf0-9cfa-407f-b217-5d5bd1bd208e",
+      "text": "Virker repetisjoner i responsen?",
+      "item": [
+        {
+          "linkId": "43a9fb20-a017-48b2-8455-2e99390a9226",
+          "text": "Enlinje",
+          "answer": [
+            {
+              "valueString": "asdasd"
+            }
+          ]
+        },
+        {
+          "linkId": "43a9fb20-a017-48b2-8455-2e99390a9226",
+          "text": "Enlinje",
+          "answer": [
+            {
+              "valueString": "Enlinje2"
+            }
+          ]
+        },
+        {
+          "linkId": "3092346b-b5a4-4908-9d98-f41590077967",
+          "text": "Flerlinje",
+          "answer": [
+            {
+              "valueString": "adsasd\nasd"
+            }
+          ]
+        },
+        {
+          "linkId": "3092346b-b5a4-4908-9d98-f41590077967",
+          "text": "Flerlinje",
+          "answer": [
+            {
+              "valueString": "Flerlinje2"
+            }
+          ]
+        },
+        {
+          "linkId": "f9c3688b-7b48-42b7-8c7c-8d1e9a0f77db",
+          "text": "Tall",
+          "answer": [
+            {
+              "valueInteger": 1
+            }
+          ]
+        },
+        {
+          "linkId": "f9c3688b-7b48-42b7-8c7c-8d1e9a0f77db",
+          "text": "Tall",
+          "answer": [
+            {
+              "valueInteger": 2
+            }
+          ]
+        },
+        {
+          "linkId": "591bad56-41fc-49c4-e53d-92d5ea361573",
+          "text": "Desimaltall",
+          "answer": [
+            {
+              "valueInteger": 1
+            }
+          ]
+        },
+        {
+          "linkId": "591bad56-41fc-49c4-e53d-92d5ea361573",
+          "text": "Desimaltall",
+          "answer": [
+            {
+              "valueInteger": 2
+            }
+          ]
+        },
+        {
+          "linkId": "fda7c1f0-a73c-4d04-8a26-5ad330dd1a17",
+          "text": "Kvantitet",
+          "answer": [
+            {
+              "valueQuantity": {
+                "unit": "centimeter",
+                "system": "http://unitsofmeasure.org",
+                "code": "cm",
+                "value": 12
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "fda7c1f0-a73c-4d04-8a26-5ad330dd1a17",
+          "text": "Kvantitet",
+          "answer": [
+            {
+              "valueQuantity": {
+                "unit": "centimeter",
+                "system": "http://unitsofmeasure.org",
+                "code": "cm",
+                "value": 12
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "9f6e223c-60a2-4741-8293-c7177a70e26f",
+          "text": "Vedlegg",
+          "answer": [
+            {
+              "valueAttachment": {
+                "url": "url",
+                "data": "268308_10150320751675185_7452549_n.jpg",
+                "contentType": "image/jpeg"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "ba345b42-11ec-40c8-8486-eb0bcb56461f",
+          "text": "Alternativer med predefinert kodeverk",
+          "answer": [
+            {
+              "valueCoding": {
+                "code": "1",
+                "display": "Ja",
+                "system": "urn:oid:2.16.578.1.12.4.1.1102"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "ba345b42-11ec-40c8-8486-eb0bcb56461f",
+          "text": "Alternativer med predefinert kodeverk",
+          "answer": [
+            {
+              "valueCoding": {
+                "code": "2",
+                "display": "Nei",
+                "system": "urn:oid:2.16.578.1.12.4.1.1102"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "ea9769b1-4b9e-463c-9f8b-7d2a40525f21",
+          "text": "Alternativer med predefinert kodeverk og tekstfelt for åpent svar",
+          "answer": [
+            {
+              "valueCoding": {
+                "code": "1",
+                "display": "Ja",
+                "system": "urn:oid:2.16.578.1.12.4.1.1102"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "ea9769b1-4b9e-463c-9f8b-7d2a40525f21",
+          "text": "Alternativer med predefinert kodeverk og tekstfelt for åpent svar",
+          "answer": [
+            {
+              "valueCoding": {
+                "code": "3",
+                "display": "Vet ikke",
+                "system": "urn:oid:2.16.578.1.12.4.1.1102"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "453f18b3-583a-441a-b570-341c92e1adc3",
+          "text": "Alternativer med lokaldefinert kodeverk",
+          "answer": [
+            {
+              "valueCoding": {
+                "code": "hei",
+                "display": "Hei",
+                "system": "urn:uuid:8cf3ec30-64dc-4c58-bdce-a2346f382664"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "453f18b3-583a-441a-b570-341c92e1adc3",
+          "text": "Alternativer med lokaldefinert kodeverk",
+          "answer": [
+            {
+              "valueCoding": {
+                "code": "på",
+                "display": "på",
+                "system": "urn:uuid:8cf3ec30-64dc-4c58-bdce-a2346f382664"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "bd50ba50-bd34-4532-fe2a-9e7042783431",
+          "text": "Alternativer med lokaldefinert kodeverk og tekstfelt for åpent svar",
+          "answer": [
+            {
+              "valueCoding": {
+                "code": "deg",
+                "display": "deg",
+                "system": "urn:uuid:8cf3ec30-64dc-4c58-bdce-a2346f382664"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "bd50ba50-bd34-4532-fe2a-9e7042783431",
+          "text": "Alternativer med lokaldefinert kodeverk og tekstfelt for åpent svar",
+          "answer": [
+            {
+              "valueCoding": {
+                "code": "other",
+                "display": "Annet",
+                "system": "http://helsenorge.no/fhir/CodeSystem/open-choice"
+              }
+            },
+            {
+              "valueString": "abc"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "917ad148-3622-4cec-87fb-5c1888ff7934",
+      "text": "Virker enable when i reponsen pr komponent? Kun med funksjonen \"Er besvart\" - aka exists = True",
+      "item": [
+        {
+          "linkId": "42075675-8817-4848-bb5e-6cbb59a0fd40",
+          "text": "Enlinje",
+          "answer": [
+            {
+              "item": [
+                {
+                  "linkId": "3a7ae5cd-ce5e-49bb-bbd9-0c970377f430",
+                  "text": "Virker!"
+                }
+              ],
+              "valueString": "1"
+            }
+          ]
+        },
+        {
+          "linkId": "42075675-8817-4848-bb5e-6cbb59a0fd40",
+          "text": "Enlinje",
+          "answer": [
+            {
+              "item": [
+                {
+                  "linkId": "3a7ae5cd-ce5e-49bb-bbd9-0c970377f430",
+                  "answer": [],
+                  "text": "Virker!"
+                }
+              ],
+              "valueString": "2"
+            }
+          ]
+        },
+        {
+          "linkId": "b5f7d86a-0d50-4857-81d8-502c3227f721",
+          "text": "Flerlinje",
+          "answer": [
+            {
+              "item": [
+                {
+                  "linkId": "26703ded-8dcc-45fb-e8b0-8c265c04f28f",
+                  "text": "Virker!"
+                }
+              ],
+              "valueString": "1"
+            }
+          ]
+        },
+        {
+          "linkId": "d18b12f7-7cae-453d-8651-3be28bc74a37",
+          "text": "Tall",
+          "answer": [
+            {
+              "item": [
+                {
+                  "linkId": "9a33521f-7de6-40f7-86a3-24f07e8d07a5",
+                  "text": "Virker!"
+                }
+              ],
+              "valueInteger": 2
+            }
+          ]
+        },
+        {
+          "linkId": "f3a6dc47-fa67-4bf7-88ec-4ac7d593633c",
+          "text": "Desimaltall",
+          "answer": [
+            {
+              "item": [
+                {
+                  "linkId": "6f5ee02a-903e-481f-8da6-9d3cf14c449d",
+                  "text": "Virker!"
+                }
+              ],
+              "valueInteger": 1
+            }
+          ]
+        },
+        {
+          "linkId": "89ae8da5-9c35-4e0c-8598-153cc8322426",
+          "text": "Kvantitet",
+          "answer": [
+            {
+              "item": [
+                {
+                  "linkId": "4a10ae39-728a-413f-fdd3-34ce2bd8ca06",
+                  "text": "Virker!"
+                }
+              ],
+              "valueQuantity": {
+                "unit": "centimeter",
+                "system": "http://unitsofmeasure.org",
+                "code": "cm",
+                "value": 2
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "a937e161-677e-4a98-8991-4fa8dc071588",
+          "text": "Vedlegg støttes ikke skjemabyggeren, men kan kodes inn ....",
+          "answer": [
+            {
+              "item": [
+                {
+                  "linkId": "cb143f32-0f6e-469b-ded5-578c47697ea1",
+                  "text": "Virker!"
+                }
+              ],
+              "valueAttachment": {
+                "url": "url",
+                "data": "Alternativ Logo 2.png",
+                "contentType": "image/png"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "db45b4d2-30ca-4008-ab75-125976df9bc5",
+          "text": "Alternativer med predefinert kodeverk",
+          "answer": [
+            {
+              "item": [
+                {
+                  "linkId": "9364ca09-ff77-4798-a6d6-c87c2737812d",
+                  "text": "Virker!"
+                }
+              ],
+              "valueCoding": {
+                "code": "3",
+                "display": "Vet ikke",
+                "system": "urn:oid:2.16.578.1.12.4.1.1102"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "388bfce6-91c7-4aa6-8699-504bb5926191",
+          "text": "Alternativer med predefinert kodeverk og tekstfelt for åpent svar",
+          "answer": [
+            {
+              "item": [
+                {
+                  "linkId": "e4b2b5d5-8472-4c72-bc9f-ca01e0d7ede9",
+                  "text": "Virker!"
+                }
+              ],
+              "valueCoding": {
+                "code": "3",
+                "display": "Vet ikke",
+                "system": "urn:oid:2.16.578.1.12.4.1.1102"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "91205a30-14b5-4bf1-9a24-ab92fce3a56c",
+          "text": "Alternativer med lokaldefinert kodeverk",
+          "answer": [
+            {
+              "item": [
+                {
+                  "linkId": "1c3f4759-9fcf-4197-de00-cfbbfd45be12",
+                  "text": "Virker!"
+                }
+              ],
+              "valueCoding": {
+                "code": "deg",
+                "display": "deg",
+                "system": "urn:uuid:8cf3ec30-64dc-4c58-bdce-a2346f382664"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "56541bce-1ce6-4f04-88c0-a928fd68fdc6",
+          "text": "Alternativer med lokaldefinert kodeverk og tekstfelt for åpent svar",
+          "answer": [
+            {
+              "item": [
+                {
+                  "linkId": "1619d2f8-472e-4242-9f46-e95bf503c486",
+                  "text": "Virker!"
+                }
+              ],
+              "valueCoding": {
+                "code": "other",
+                "display": "Annet",
+                "system": "http://helsenorge.no/fhir/CodeSystem/open-choice"
+              }
+            },
+            {
+              "valueString": "12"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "fb10de5f-50c1-4e88-a5c6-c012e633d91f",
+      "text": "Kommer det noen skåringer i responsen?",
+      "item": [
+        {
+          "linkId": "87321ad0-12c5-4a39-9dc9-cc5ed2076ea3",
+          "text": "Gruppe 1",
+          "item": [
+            {
+              "linkId": "4a737860-a22d-49d4-82f1-5fe6cf45e22a",
+              "text": "Velg verdi",
+              "answer": [
+                {
+                  "valueCoding": {
+                    "code": "nei",
+                    "display": "Nei",
+                    "system": "urn:uuid:769b09ac-a05b-4c54-9937-26209abd4be5"
+                  }
+                }
+              ]
+            },
+            {
+              "linkId": "adc60315-05bc-43cb-8cad-b6a55cfd619a",
+              "text": "Del Sum",
+              "answer": [
+                {
+                  "valueInteger": 2
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "linkId": "94d8b6cd-c29c-42e9-8627-897f9da40c6e",
+          "text": "Gruppe 2",
+          "item": [
+            {
+              "linkId": "1740c220-5a12-48cb-a938-58ff333aa1ee",
+              "text": "Velg verdi",
+              "answer": [
+                {
+                  "valueCoding": {
+                    "code": "ja",
+                    "display": "Ja",
+                    "system": "urn:uuid:769b09ac-a05b-4c54-9937-26209abd4be5"
+                  }
+                }
+              ]
+            },
+            {
+              "linkId": "f2239532-867b-4b7c-e09e-98ad4884339a",
+              "text": "Del Sum",
+              "answer": [
+                {
+                  "valueInteger": 1
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "linkId": "10f59732-3a76-4b2e-8e5a-f63e7e651170",
+          "text": "Totalsum",
+          "answer": [
+            {
+              "valueInteger": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "5d03949b-f370-45a5-88b1-d8a52fb6c651",
+      "text": "Virker kalkulasjoner i responsen?",
+      "item": [
+        {
+          "linkId": "Heltall1",
+          "text": "Heltall 1",
+          "answer": [
+            {
+              "valueInteger": 12
+            }
+          ]
+        },
+        {
+          "linkId": "Heltall2",
+          "text": "Heltall 2",
+          "answer": [
+            {
+              "valueInteger": 12
+            }
+          ]
+        },
+        {
+          "linkId": "88b810a6-7360-4f7e-e4af-3e251794c7de",
+          "text": "Sum heltall",
+          "answer": [
+            {
+              "valueInteger": 24
+            }
+          ]
+        },
+        {
+          "linkId": "Decimaltall1",
+          "text": "Decimaltall 1",
+          "answer": [
+            {
+              "valueDecimal": 2.2
+            }
+          ]
+        },
+        {
+          "linkId": "Decimaltall2",
+          "text": "Decimaltall 2",
+          "answer": [
+            {
+              "valueDecimal": 2.23
+            }
+          ]
+        },
+        {
+          "linkId": "9eb0a518-d2ec-48c7-89ce-dfe5e6316f64",
+          "text": "Decimaltall sum",
+          "answer": [
+            {
+              "valueDecimal": 4.43
+            }
+          ]
+        },
+        {
+          "linkId": "Enhet1",
+          "text": "Enhet 1",
+          "answer": [
+            {
+              "valueQuantity": {
+                "unit": "kilo",
+                "system": "http://unitsofmeasure.org",
+                "code": "kg",
+                "value": 1
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "Enhet2",
+          "text": "Enhet 2",
+          "answer": [
+            {
+              "valueQuantity": {
+                "unit": "kilo",
+                "system": "http://unitsofmeasure.org",
+                "code": "kg",
+                "value": 12.23
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "ed14783c-5d95-4e69-ebf0-854fb8369894",
+          "text": "Sum Enhet",
+          "answer": [
+            {
+              "valueQuantity": {
+                "unit": "kilo",
+                "system": "http://unitsofmeasure.org",
+                "code": "kg",
+                "value": 13.23
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

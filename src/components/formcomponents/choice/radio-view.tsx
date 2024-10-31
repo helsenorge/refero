@@ -84,7 +84,7 @@ const RadioView = (props: Props): JSX.Element => {
             testId={`${getId(id)}-${index}-radio-choice`}
             mode="ongrey"
             label={<Label testId={`${getId(id)}-${index}-radio-choice-label`} labelTexts={[{ text: option.label }]} />}
-            defaultChecked={selectedValue === option?.type}
+            checked={selectedValue === option?.type}
           />
         ))}
       </FormGroup>
