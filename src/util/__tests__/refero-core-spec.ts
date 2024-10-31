@@ -1,5 +1,6 @@
 import itemType from '../../constants/itemType';
 import { Path, createIdSuffix, descendantsHasPrimitiveAnswer, findFirstGuidInString, getQuestionnaireItemsWithType, parseIdSuffix } from '../refero-core';
+import { GroupRepeatWithAnswer, GroupRepeatWithNoAnswer } from './__data__/valuesets/valueset-8459';
 
 describe('utils', () => {
   describe('findQuestionnaireItemWithType, in parent', () => {
@@ -204,185 +205,14 @@ describe('utils', () => {
 
   describe('descendantsHasPrimitiveAnswer', () => {
     it('should group be repeatable, when one item has asnwer', () => {
-      const item = [
-        {
-          linkId: "100",
-          text: "Mistenkte legemidler",
-          item: [
-            {
-              linkId: "100.1",
-              text: "Du kan melde bivirkninger av godkjente legemidler, inkludert vaksiner og legemidler på godkjenningsfritak."
-            },
-            {
-              linkId: "100.3",
-              text: "Hva ønsker du å melde bivirkninger av?",
-              answer: [
-                {
-                  item: [
-                    {
-                      linkId: "100.5",
-                      text: "Koronavaksine",
-                      item: [
-                        {
-                          linkId: "100.5.1",
-                          text: "Hvilken koronavaksine mistenker du er årsaken til bivirkningen(e)?",
-                          answer: [
-                            {
-                              item: [
-                                {
-                                  linkId: "100.5.1.1",
-                                  text: "Hvilken vaksinevariant?"
-                                },
-                                {
-                                  linkId: "100.5.1.2",
-                                  text: "Hvilken vaksinevariant?"
-                                },
-                                {
-                                  linkId: "100.5.1.3",
-                                  text: "Hvilken vaksinevariant?",
-                                  answer: [
-                                      {
-                                        valueCoding: {
-                                          system: "http://ehelse.no/AstraZenecaVaksinevarianter",
-                                          code: "ID_DD84030F-4306-4698-8FE2-2F06FA90FFE5",
-                                          display: "Vaxzevria inj væske, susp"
-                                        }
-                                      }
-                                    ]
-                                  },
-                                  {
-                                    linkId: "100.5.1.4",
-                                    text: "Hvilken vaksinevariant?",
-                                    answer: [
-                                      {
-                                        valueCoding: {
-                                          system: "http://ehelse.no/JohnsonJohnsonVaksinevarianter",
-                                          code: "ID_9EAA8B6D-629C-4694-B948-CDD6068EDE37",
-                                          display: "Jcovden inj væske, susp"
-                                        }
-                                      }
-                                    ]
-                                  },
-                                  {
-                                    linkId: "100.5.1.5",
-                                    text: "Hvilken vaksinevariant?",
-                                    answer: [
-                                      {
-                                        valueCoding: {
-                                          system: "http://ehelse.no/NovavaxVaksinevarianter",
-                                          code: "ID_05F547DC-3591-4998-A574-2BC37DF6873E",
-                                          display: "Nuvaxovid inj, disp"
-                                        }
-                                      }
-                                    ]
-                                  }
-                                ]
-                              }]
-                        }
-                      ]
-                    },
-                  ],
-                  valueCoding: {
-                    code: "koronavaksine",
-                    display: "Koronavaksine",
-                    system: "http://ehelse.no/TypeLegemiddel"
-                  }
-                }
-              ]
-            },
-          ]
-        }
-      ];
+      const item = GroupRepeatWithAnswer;
 
       const result = descendantsHasPrimitiveAnswer(item);
       expect(result).toBeTruthy();
     });
 
     it('should group not be repeatable, when items has no asnwer', () => {
-       const item = [
-        {
-          linkId: "100",
-          text: "Mistenkte legemidler",
-          item: [
-            {
-              linkId: "100.1",
-              text: "Du kan melde bivirkninger av godkjente legemidler, inkludert vaksiner og legemidler på godkjenningsfritak."
-            },
-            {
-              linkId: "100.3",
-              text: "Hva ønsker du å melde bivirkninger av?",
-              answer: [
-                {
-                  item: [
-                    {
-                      linkId: "100.5",
-                      text: "Koronavaksine",
-                      item: [
-                        {
-                          linkId: "100.5.1",
-                          text: "Hvilken koronavaksine mistenker du er årsaken til bivirkningen(e)?",
-                          answer: [
-                            {
-                              item: [
-                                {
-                                  linkId: "100.5.1.1",
-                                  text: "Hvilken vaksinevariant?"
-                                },
-                                {
-                                  linkId: "100.5.1.2",
-                                  text: "Hvilken vaksinevariant?"
-                                },
-                                {
-                                  linkId: "100.5.1.3",
-                                  text: "Hvilken vaksinevariant?",
-                                  answer: [
-                                      {
-                                        valueCoding: {
-                                          system: "http://ehelse.no/AstraZenecaVaksinevarianter",
-                                          code: "ID_DD84030F-4306-4698-8FE2-2F06FA90FFE5",
-                                          display: "Vaxzevria inj væske, susp"
-                                        }
-                                      }
-                                    ]
-                                },
-                                {
-                                  linkId: "100.5.1.4",
-                                  text: "Hvilken vaksinevariant?",
-                                  answer: [
-                                    {
-                                      valueCoding: {
-                                        system: "http://ehelse.no/JohnsonJohnsonVaksinevarianter",
-                                        code: "ID_9EAA8B6D-629C-4694-B948-CDD6068EDE37",
-                                        display: "Jcovden inj væske, susp"
-                                      }
-                                    }
-                                  ]
-                                },
-                                {
-                                  linkId: "100.5.1.5",
-                                  text: "Hvilken vaksinevariant?",
-                                  answer: [
-                                    {
-                                      valueCoding: {
-                                        system: "http://ehelse.no/NovavaxVaksinevarianter",
-                                        code: "ID_05F547DC-3591-4998-A574-2BC37DF6873E",
-                                        display: "Nuvaxovid inj, disp"
-                                      }
-                                    }
-                                  ]
-                                }
-                              ]
-                            }]
-                        }
-                      ]
-                    },
-                  ],
-                }
-              ]
-            },
-          ]
-        }
-      ];
+       const item = GroupRepeatWithNoAnswer;
 
       const result = descendantsHasPrimitiveAnswer(item);
       expect(result).toBeFalsy();
