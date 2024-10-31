@@ -261,7 +261,7 @@ const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, childr
               handleHoursChange(e.target.value);
               onChangeHours(e);
             }}
-            value={isNumber(hours) ? Number(hours) : 0}
+            value={isNumber(hours) ? Number(hours) : undefined}
           />
 
           <DateTime
@@ -272,7 +272,7 @@ const DateTimeInput = ({ linkId, path, pdf, id, idWithLinkIdAndItemIndex, childr
               handleMinutesChange(e.target.value);
               onChangeMinutes(e);
             }}
-            value={isNumber(minutes) ? Number(minutes) : 0}
+            value={isNumber(minutes) ? Number(minutes) : undefined}
           />
         </DateTimePickerWrapper>
         <RenderDeleteButton item={item} path={path} index={index} className="page_refero__deletebutton--margin-top" />

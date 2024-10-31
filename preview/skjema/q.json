@@ -308,6 +308,13 @@
           "linkId": "2.6",
           "text": "Opplasting av vedlegg til skjema",
           "type": "attachment",
+          "extension": [
+            { "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-maxOccurs", "valueDecimal": 1 },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/maxSize",
+              "valueDecimal": 20
+            }
+          ],
           "required": false,
           "repeats": false,
           "readOnly": false
