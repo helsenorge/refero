@@ -1,21 +1,10 @@
+import { MimeType } from '@/util/attachmentHelper';
 import { QuestionnaireItem } from 'fhir/r4';
 
 export const mockMinFiles: number = 2;
 export const mockMaxFiles: number = 2;
 export const mockMaxSize: number = 1 * 1024 * 1024;
-export const mockValidMimeTypes: string[] = ['image/jpeg', 'image/png'];
-
-/** Mock Testing Enum */
-export const MimeType_For_Test_Util = {
-  PlainText: 'text/plain',
-  HTML: 'text/html',
-  CSV: 'text/csv',
-  JPG: 'image/jpeg',
-  PNG: 'image/png',
-  GIF: 'image/gif',
-  PDF: 'application/pdf',
-  JSON: 'application/json',
-};
+export const mockValidMimeTypes: string[] = [MimeType.JPEG, MimeType.PNG];
 
 /** Mock Testing Util method */
 export function createMockFile(fileName: string, mimeType: string, size: number): File {
